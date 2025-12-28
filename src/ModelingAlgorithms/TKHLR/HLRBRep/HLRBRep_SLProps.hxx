@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -49,17 +50,17 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT HLRBRep_SLProps(const Standard_Address& S,
-                                  const Standard_Real     U,
-                                  const Standard_Real     V,
-                                  const Standard_Integer  N,
-                                  const Standard_Real     Resolution);
+  Standard_EXPORT HLRBRep_SLProps(const HLRBRep_SurfacePtr& S,
+                                  const Standard_Real       U,
+                                  const Standard_Real       V,
+                                  const Standard_Integer    N,
+                                  const Standard_Real       Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V>.
-  Standard_EXPORT HLRBRep_SLProps(const Standard_Address& S,
-                                  const Standard_Integer  N,
-                                  const Standard_Real     Resolution);
+  Standard_EXPORT HLRBRep_SLProps(const HLRBRep_SurfacePtr& S,
+                                  const Standard_Integer    N,
+                                  const Standard_Real       Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V> and the surface.
@@ -68,7 +69,7 @@ public:
 
   //! Initializes the local properties of the surface S
   //! for the new surface.
-  Standard_EXPORT void SetSurface(const Standard_Address& S);
+  Standard_EXPORT void SetSurface(const HLRBRep_SurfacePtr& S);
 
   //! Initializes the local properties of the surface S
   //! for the new parameter values (<U>, <V>).
@@ -144,31 +145,31 @@ public:
 
 protected:
 private:
-  Standard_Address mySurf;
-  Standard_Real    myU;
-  Standard_Real    myV;
-  Standard_Integer myDerOrder;
-  Standard_Integer myCN;
-  Standard_Real    myLinTol;
-  gp_Pnt           myPnt;
-  gp_Vec           myD1u;
-  gp_Vec           myD1v;
-  gp_Vec           myD2u;
-  gp_Vec           myD2v;
-  gp_Vec           myDuv;
-  gp_Dir           myNormal;
-  Standard_Real    myMinCurv;
-  Standard_Real    myMaxCurv;
-  gp_Dir           myDirMinCurv;
-  gp_Dir           myDirMaxCurv;
-  Standard_Real    myMeanCurv;
-  Standard_Real    myGausCurv;
-  Standard_Integer mySignificantFirstDerivativeOrderU;
-  Standard_Integer mySignificantFirstDerivativeOrderV;
-  LProp_Status     myUTangentStatus;
-  LProp_Status     myVTangentStatus;
-  LProp_Status     myNormalStatus;
-  LProp_Status     myCurvatureStatus;
+  HLRBRep_SurfacePtr mySurf;
+  Standard_Real      myU;
+  Standard_Real      myV;
+  Standard_Integer   myDerOrder;
+  Standard_Integer   myCN;
+  Standard_Real      myLinTol;
+  gp_Pnt             myPnt;
+  gp_Vec             myD1u;
+  gp_Vec             myD1v;
+  gp_Vec             myD2u;
+  gp_Vec             myD2v;
+  gp_Vec             myDuv;
+  gp_Dir             myNormal;
+  Standard_Real      myMinCurv;
+  Standard_Real      myMaxCurv;
+  gp_Dir             myDirMinCurv;
+  gp_Dir             myDirMaxCurv;
+  Standard_Real      myMeanCurv;
+  Standard_Real      myGausCurv;
+  Standard_Integer   mySignificantFirstDerivativeOrderU;
+  Standard_Integer   mySignificantFirstDerivativeOrderV;
+  LProp_Status       myUTangentStatus;
+  LProp_Status       myVTangentStatus;
+  LProp_Status       myNormalStatus;
+  LProp_Status       myCurvatureStatus;
 };
 
 #endif // _HLRBRep_SLProps_HeaderFile

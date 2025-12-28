@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Intersection.hxx>
 #include <Standard_Integer.hxx>
@@ -37,14 +38,14 @@ public:
 
   Standard_EXPORT HLRBRep_TheIntPCurvePCurveOfCInter();
 
-  Standard_EXPORT void Perform(const Standard_Address& Curve1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& Curve1,
                                const IntRes2d_Domain&  Domain1,
-                               const Standard_Address& Curve2,
+                               const HLRBRep_CurvePtr& Curve2,
                                const IntRes2d_Domain&  Domain2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
 
-  Standard_EXPORT void Perform(const Standard_Address& Curve1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& Curve1,
                                const IntRes2d_Domain&  Domain1,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -54,9 +55,9 @@ public:
   Standard_EXPORT Standard_Integer GetMinNbSamples() const;
 
 protected:
-  Standard_EXPORT void Perform(const Standard_Address& Curve1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& Curve1,
                                const IntRes2d_Domain&  Domain1,
-                               const Standard_Address& Curve2,
+                               const HLRBRep_CurvePtr& Curve2,
                                const IntRes2d_Domain&  Domain2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol,
@@ -64,7 +65,7 @@ protected:
                                const Standard_Real     DeltaU,
                                const Standard_Real     DeltaV);
 
-  Standard_EXPORT void Perform(const Standard_Address& Curve1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& Curve1,
                                const IntRes2d_Domain&  Domain1,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol,
@@ -79,9 +80,9 @@ private:
   //! : for case when point of intersection was found
   //! : during prelimanary search for line (case of bad parameterization of Bspline for example).
   Standard_EXPORT Standard_Boolean
-    findIntersect(const Standard_Address&                                 Curve1,
+    findIntersect(const HLRBRep_CurvePtr&                                 Curve1,
                   const IntRes2d_Domain&                                  Domain1,
-                  const Standard_Address&                                 Curve2,
+                  const HLRBRep_CurvePtr&                                 Curve2,
                   const IntRes2d_Domain&                                  Domain2,
                   const Standard_Real                                     TolConf,
                   const Standard_Real                                     Tol,

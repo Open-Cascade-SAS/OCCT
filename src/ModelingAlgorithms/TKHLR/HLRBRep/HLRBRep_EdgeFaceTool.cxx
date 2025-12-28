@@ -26,10 +26,10 @@
 
 //=================================================================================================
 
-Standard_Real HLRBRep_EdgeFaceTool::CurvatureValue(const Standard_Address F,
-                                                   const Standard_Real    U,
-                                                   const Standard_Real    V,
-                                                   const gp_Dir&          Tg)
+Standard_Real HLRBRep_EdgeFaceTool::CurvatureValue(const HLRBRep_SurfacePtr F,
+                                                   const Standard_Real      U,
+                                                   const Standard_Real      V,
+                                                   const gp_Dir&            Tg)
 {
   gp_Pnt P;
   gp_Vec D1U, D1V, D2U, D2V, D2UV;
@@ -58,11 +58,11 @@ Standard_Real HLRBRep_EdgeFaceTool::CurvatureValue(const Standard_Address F,
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_EdgeFaceTool::UVPoint(const Standard_Real    Par,
-                                               const Standard_Address E,
-                                               const Standard_Address F,
-                                               Standard_Real&         U,
-                                               Standard_Real&         V)
+Standard_Boolean HLRBRep_EdgeFaceTool::UVPoint(const Standard_Real      Par,
+                                               const HLRBRep_CurvePtr   E,
+                                               const HLRBRep_SurfacePtr F,
+                                               Standard_Real&           U,
+                                               Standard_Real&           V)
 {
   Standard_Real pfbid, plbid;
   if (BRep_Tool::CurveOnSurface(((HLRBRep_Curve*)E)->Curve().Edge(),

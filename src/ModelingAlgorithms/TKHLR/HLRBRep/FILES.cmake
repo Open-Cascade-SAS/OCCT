@@ -124,6 +124,7 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_ThePolyhedronToolOfInterCSurf_0.cxx
   HLRBRep_TheProjPCurOfCInter.hxx
   HLRBRep_TheProjPCurOfCInter_0.cxx
+  HLRBRep_TypeDef.hxx
   HLRBRep_TheQuadCurvExactInterCSurf.hxx
   HLRBRep_TheQuadCurvExactInterCSurf.cxx
   HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx

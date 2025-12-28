@@ -21,6 +21,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <HLRBRep_TheIntConicCurveOfCInter.hxx>
 #include <HLRBRep_TheIntPCurvePCurveOfCInter.hxx>
@@ -48,83 +49,83 @@ public:
   HLRBRep_CInter();
 
   //! Self Intersection of a curve
-  HLRBRep_CInter(const Standard_Address& C, const Standard_Real TolConf, const Standard_Real Tol);
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C, const Standard_Real TolConf, const Standard_Real Tol);
 
   //! Self Intersection of a curve with a domain.
-  HLRBRep_CInter(const Standard_Address& C,
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C,
                  const IntRes2d_Domain&  D,
                  const Standard_Real     TolConf,
                  const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  HLRBRep_CInter(const Standard_Address& C1,
-                 const Standard_Address& C2,
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C1,
+                 const HLRBRep_CurvePtr& C2,
                  const Standard_Real     TolConf,
                  const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  HLRBRep_CInter(const Standard_Address& C1,
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C1,
                  const IntRes2d_Domain&  D1,
-                 const Standard_Address& C2,
+                 const HLRBRep_CurvePtr& C2,
                  const Standard_Real     TolConf,
                  const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  HLRBRep_CInter(const Standard_Address& C1,
-                 const Standard_Address& C2,
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C1,
+                 const HLRBRep_CurvePtr& C2,
                  const IntRes2d_Domain&  D2,
                  const Standard_Real     TolConf,
                  const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  HLRBRep_CInter(const Standard_Address& C1,
+  HLRBRep_CInter(const HLRBRep_CurvePtr& C1,
                  const IntRes2d_Domain&  D1,
-                 const Standard_Address& C2,
+                 const HLRBRep_CurvePtr& C2,
                  const IntRes2d_Domain&  D2,
                  const Standard_Real     TolConf,
                  const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform(const Standard_Address& C1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& C1,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& C2,
+                               const HLRBRep_CurvePtr& C2,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  void Perform(const Standard_Address& C1,
-               const Standard_Address& C2,
+  void Perform(const HLRBRep_CurvePtr& C1,
+               const HLRBRep_CurvePtr& C2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform(const Standard_Address& C1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& C1,
                                const IntRes2d_Domain&  D1,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform(const Standard_Address& C1,
+  Standard_EXPORT void Perform(const HLRBRep_CurvePtr& C1,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  void Perform(const Standard_Address& C1,
+  void Perform(const HLRBRep_CurvePtr& C1,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& C2,
+               const HLRBRep_CurvePtr& C2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
 
   //! Intersection between 2 curves.
-  void Perform(const Standard_Address& C1,
-               const Standard_Address& C2,
+  void Perform(const HLRBRep_CurvePtr& C1,
+               const HLRBRep_CurvePtr& C2,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
 
   //! Create a domain from a curve
-  Standard_EXPORT IntRes2d_Domain ComputeDomain(const Standard_Address& C1,
+  Standard_EXPORT IntRes2d_Domain ComputeDomain(const HLRBRep_CurvePtr& C1,
                                                 const Standard_Real     TolDomain) const;
 
   //! Set / get minimum number of points in polygon intersection.
@@ -134,9 +135,9 @@ public:
 protected:
 private:
   //! Intersection between 2 curves.
-  Standard_EXPORT void InternalPerform(const Standard_Address& C1,
+  Standard_EXPORT void InternalPerform(const HLRBRep_CurvePtr& C1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& C2,
+                                       const HLRBRep_CurvePtr& C2,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
@@ -144,12 +145,12 @@ private:
 
   //! Part of InternalCompositePerform function
   Standard_EXPORT void InternalCompositePerform_noRecurs(const Standard_Integer      NbInterC1,
-                                                         const Standard_Address&     C1,
+                                                         const HLRBRep_CurvePtr&     C1,
                                                          const Standard_Integer      NumInterC1,
                                                          const TColStd_Array1OfReal& Tab1,
                                                          const IntRes2d_Domain&      D1,
                                                          const Standard_Integer      NbInterC2,
-                                                         const Standard_Address&     C2,
+                                                         const HLRBRep_CurvePtr&     C2,
                                                          const Standard_Integer      NumInterC2,
                                                          const TColStd_Array1OfReal& Tab2,
                                                          const IntRes2d_Domain&      D2,
@@ -157,12 +158,12 @@ private:
                                                          const Standard_Real         Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void InternalCompositePerform(const Standard_Address&     C1,
+  Standard_EXPORT void InternalCompositePerform(const HLRBRep_CurvePtr&     C1,
                                                 const IntRes2d_Domain&      D1,
                                                 const Standard_Integer      N1,
                                                 const Standard_Integer      NB1,
                                                 const TColStd_Array1OfReal& Tab1,
-                                                const Standard_Address&     C2,
+                                                const HLRBRep_CurvePtr&     C2,
                                                 const IntRes2d_Domain&      D2,
                                                 const Standard_Integer      N2,
                                                 const Standard_Integer      NB2,
@@ -180,8 +181,8 @@ private:
   HLRBRep_TheIntPCurvePCurveOfCInter intcurvcurv;
 };
 
-#define TheCurve Standard_Address
-#define TheCurve_hxx <Standard_Address.hxx>
+#define TheCurve HLRBRep_CurvePtr
+#define TheCurve_hxx <HLRBRep_CurvePtr.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_TheProjPCur HLRBRep_TheProjPCurOfCInter

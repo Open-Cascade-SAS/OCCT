@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <Standard_Boolean.hxx>
 #include <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
 #include <math_Vector.hxx>
@@ -36,8 +37,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter(
-    const Standard_Address& C1,
-    const Standard_Address& C2,
+    const HLRBRep_CurvePtr& C1,
+    const HLRBRep_CurvePtr& C2,
     const Standard_Real     Tol);
 
   Standard_EXPORT void Perform(const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly1,

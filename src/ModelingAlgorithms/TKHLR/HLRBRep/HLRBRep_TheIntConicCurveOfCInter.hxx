@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <HLRBRep_TypeDef.hxx>
 #include <IntRes2d_Intersection.hxx>
 class IntCurve_IConicTool;
 class HLRBRep_CurveTool;
@@ -44,7 +45,7 @@ public:
   //! Intersection between a line and a parametric curve.
   HLRBRep_TheIntConicCurveOfCInter(const gp_Lin2d&         L,
                                    const IntRes2d_Domain&  D1,
-                                   const Standard_Address& PCurve,
+                                   const HLRBRep_CurvePtr& PCurve,
                                    const IntRes2d_Domain&  D2,
                                    const Standard_Real     TolConf,
                                    const Standard_Real     Tol);
@@ -52,7 +53,7 @@ public:
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Circ2d&        C,
                                                    const IntRes2d_Domain&  D1,
-                                                   const Standard_Address& PCurve,
+                                                   const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
                                                    const Standard_Real     TolConf,
                                                    const Standard_Real     Tol);
@@ -60,7 +61,7 @@ public:
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Elips2d&       E,
                                                    const IntRes2d_Domain&  D1,
-                                                   const Standard_Address& PCurve,
+                                                   const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
                                                    const Standard_Real     TolConf,
                                                    const Standard_Real     Tol);
@@ -68,7 +69,7 @@ public:
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Parab2d&       Prb,
                                                    const IntRes2d_Domain&  D1,
-                                                   const Standard_Address& PCurve,
+                                                   const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
                                                    const Standard_Real     TolConf,
                                                    const Standard_Real     Tol);
@@ -77,7 +78,7 @@ public:
   //! and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Hypr2d&        H,
                                                    const IntRes2d_Domain&  D1,
-                                                   const Standard_Address& PCurve,
+                                                   const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
                                                    const Standard_Real     TolConf,
                                                    const Standard_Real     Tol);
@@ -85,7 +86,7 @@ public:
   //! Intersection between a line and a parametric curve.
   void Perform(const gp_Lin2d&         L,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& PCurve,
+               const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
@@ -93,7 +94,7 @@ public:
   //! Intersection between a line and a parametric curve.
   void Perform(const gp_Circ2d&        C,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& PCurve,
+               const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
@@ -101,7 +102,7 @@ public:
   //! Intersection between an ellipse and a parametric curve.
   void Perform(const gp_Elips2d&       E,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& PCurve,
+               const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
@@ -109,7 +110,7 @@ public:
   //! Intersection between a parabola and a parametric curve.
   void Perform(const gp_Parab2d&       Prb,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& PCurve,
+               const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
@@ -118,7 +119,7 @@ public:
   //! and a parametric curve.
   void Perform(const gp_Hypr2d&        H,
                const IntRes2d_Domain&  D1,
-               const Standard_Address& PCurve,
+               const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
                const Standard_Real     TolConf,
                const Standard_Real     Tol);
@@ -129,7 +130,7 @@ private:
   //! and a parametric curve.
   void Perform(const IntCurve_IConicTool& ICurve,
                const IntRes2d_Domain&     D1,
-               const Standard_Address&    PCurve,
+               const HLRBRep_CurvePtr&    PCurve,
                const IntRes2d_Domain&     D2,
                const Standard_Real        TolConf,
                const Standard_Real        Tol);
@@ -137,8 +138,8 @@ private:
 
 #define TheImpTool IntCurve_IConicTool
 #define TheImpTool_hxx <IntCurve_IConicTool.hxx>
-#define ThePCurve Standard_Address
-#define ThePCurve_hxx <Standard_Address.hxx>
+#define ThePCurve HLRBRep_CurvePtr
+#define ThePCurve_hxx <HLRBRep_CurvePtr.hxx>
 #define ThePCurveTool HLRBRep_CurveTool
 #define ThePCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define TheProjPCur HLRBRep_TheProjPCurOfCInter

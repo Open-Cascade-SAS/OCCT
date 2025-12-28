@@ -19,6 +19,7 @@
 
 #include <Extrema_GFuncExtPC.hxx>
 #include <Extrema_POnCurv2d.hxx>
+#include <HLRBRep_TypeDef.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -27,7 +28,7 @@
 
 //! Type alias for 2D curve extremum function using HLRBRep_CurveTool.
 using HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter =
-  Extrema_GFuncExtPC<Standard_Address,
+  Extrema_GFuncExtPC<HLRBRep_CurvePtr,
                      HLRBRep_CurveTool,
                      Extrema_POnCurv2d,
                      gp_Pnt2d,

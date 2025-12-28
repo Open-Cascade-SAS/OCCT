@@ -23,7 +23,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
+Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
                                                          const gp_Pnt2d&         P,
                                                          const Standard_Real     LowParameter,
                                                          const Standard_Real     HighParameter,
@@ -63,7 +63,7 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address&
   return theparam;
 }
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
+Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
                                                          const gp_Pnt2d&         P,
                                                          const Standard_Real     Tol)
 {
