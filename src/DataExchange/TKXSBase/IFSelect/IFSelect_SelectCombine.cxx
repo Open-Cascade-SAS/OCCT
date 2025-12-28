@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectCombine, IFSelect_Selection)
 
-IFSelect_SelectCombine::IFSelect_SelectCombine() {}
+IFSelect_SelectCombine::IFSelect_SelectCombine() = default;
 
 //      {  thelist = new IFSelect_SequenceOfSelection();  }
 

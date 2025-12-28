@@ -40,7 +40,7 @@ public:
       : myObjects(theObjects) {};
 
   //! Returns bounding box of object with index theIndex
-  virtual Select3D_BndBox3d Box(const int theIndex) const override
+  Select3D_BndBox3d Box(const int theIndex) const override
   {
     const occ::handle<SelectMgr_SelectableObject>& anObject = myObjects.FindKey(theIndex + 1);
     Bnd_Box                                        aBox;
@@ -54,7 +54,7 @@ public:
   }
 
   //! Returns bounding box of the whole subset.
-  virtual Select3D_BndBox3d Box() const override
+  Select3D_BndBox3d Box() const override
   {
     if (!myBox.IsValid())
     {
@@ -68,7 +68,7 @@ public:
 
   //! Returns center of object with index theIndex in the set
   //! along the given axis theAxis
-  virtual double Center(const int theIndex, const int theAxis) const override
+  double Center(const int theIndex, const int theAxis) const override
   {
     const Select3D_BndBox3d aBndBox = Box(theIndex);
 
@@ -76,10 +76,10 @@ public:
   }
 
   //! Returns size of objects set.
-  virtual int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Size(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
-  virtual void Swap(const int theIndex1, const int theIndex2) override
+  void Swap(const int theIndex1, const int theIndex2) override
   {
     myObjects.Swap(theIndex1 + 1, theIndex2 + 1);
   }
@@ -185,13 +185,13 @@ public:
   }
 
   //! Returns bounding box of object with index theIndex
-  virtual Select3D_BndBox3d Box(const int theIndex) const override
+  Select3D_BndBox3d Box(const int theIndex) const override
   {
     return *myBoundings(theIndex + 1);
   }
 
   //! Returns bounding box of the whole subset.
-  virtual Select3D_BndBox3d Box() const override
+  Select3D_BndBox3d Box() const override
   {
     if (!myBox.IsValid())
     {
@@ -205,7 +205,7 @@ public:
 
   //! Returns center of object with index theIndex in the set
   //! along the given axis theAxis
-  virtual double Center(const int theIndex, const int theAxis) const override
+  double Center(const int theIndex, const int theAxis) const override
   {
     const Select3D_BndBox3d& aBoundingBox = *myBoundings(theIndex + 1);
 
@@ -213,10 +213,10 @@ public:
   }
 
   //! Returns size of objects set.
-  virtual int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Size(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
-  virtual void Swap(const int theIndex1, const int theIndex2) override
+  void Swap(const int theIndex1, const int theIndex2) override
   {
     const int aStructIdx1 = theIndex1 + 1;
     const int aStructIdx2 = theIndex2 + 1;

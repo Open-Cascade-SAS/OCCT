@@ -31,7 +31,7 @@ public:
   {
   }
 
-  virtual void send(const TCollection_AsciiString& theString,
+  void send(const TCollection_AsciiString& theString,
                     const Message_Gravity          theGravity) const override
   {
     if (theGravity >= Message_Info)

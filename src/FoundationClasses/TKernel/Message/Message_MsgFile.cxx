@@ -21,8 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <OSD_OpenFile.hxx>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <mutex>
 
 typedef NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>

@@ -25,7 +25,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAppliedDateAndTimeAssignment::RWStepAP214_RWAppliedDateAndTimeAssignment() {}
+RWStepAP214_RWAppliedDateAndTimeAssignment::RWStepAP214_RWAppliedDateAndTimeAssignment() = default;
 
 void RWStepAP214_RWAppliedDateAndTimeAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,

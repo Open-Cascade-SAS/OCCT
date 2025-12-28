@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Ellipse, StepGeom_Conic)
 
-StepGeom_Ellipse::StepGeom_Ellipse() {}
+StepGeom_Ellipse::StepGeom_Ellipse() = default;
 
 void StepGeom_Ellipse::Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const StepGeom_Axis2Placement&               aPosition,

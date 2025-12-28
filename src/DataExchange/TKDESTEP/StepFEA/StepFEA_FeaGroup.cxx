@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaGroup, StepBasic_Group)
 
 //=================================================================================================
 
-StepFEA_FeaGroup::StepFEA_FeaGroup() {}
+StepFEA_FeaGroup::StepFEA_FeaGroup() = default;
 
 //=================================================================================================
 

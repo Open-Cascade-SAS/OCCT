@@ -59,12 +59,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_EdgeFace()
-      : IntTools_EdgeFace(),
+      : 
         BOPAlgo_ParallelAlgo(),
         myIE(-1),
         myIF(-1) {};
   //
-  virtual ~BOPAlgo_EdgeFace() {};
+  ~BOPAlgo_EdgeFace() override = default;
 
   //
   void SetIndices(const int nE, const int nF)
@@ -103,7 +103,7 @@ public:
   }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

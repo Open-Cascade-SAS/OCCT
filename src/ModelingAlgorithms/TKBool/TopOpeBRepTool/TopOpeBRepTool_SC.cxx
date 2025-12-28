@@ -25,7 +25,7 @@
 // ----------------------------------------------------------------------
 static TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = nullptr;
 
-Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(void)
+Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC()
 {
   if (TopOpeBRepTool_PSC == nullptr)
     TopOpeBRepTool_PSC = new TopOpeBRepTool_ShapeClassifier();

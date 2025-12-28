@@ -16,7 +16,7 @@
 
 #include <IntPolyh_Triangle.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #define MyTolerance 10.0e-7
 #define MyConfusionPrecision 10.0e-12
 #define SquareMyConfusionPrecision 10.0e-24

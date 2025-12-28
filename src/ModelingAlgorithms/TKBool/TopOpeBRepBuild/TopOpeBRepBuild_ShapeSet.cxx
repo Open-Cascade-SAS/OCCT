@@ -80,7 +80,7 @@ TopOpeBRepBuild_ShapeSet::TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubSha
   myCheckShape = false; // temporary NYI
 }
 
-TopOpeBRepBuild_ShapeSet::~TopOpeBRepBuild_ShapeSet() {}
+TopOpeBRepBuild_ShapeSet::~TopOpeBRepBuild_ShapeSet() = default;
 
 //=================================================================================================
 

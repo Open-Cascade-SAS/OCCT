@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SurfaceOfRevolution, IGESData_IGESEntity)
 
-IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution() {}
+IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution() = default;
 
 void IGESGeom_SurfaceOfRevolution::Init(const occ::handle<IGESGeom_Line>&       anAxis,
                                         const occ::handle<IGESData_IGESEntity>& aGeneratrix,

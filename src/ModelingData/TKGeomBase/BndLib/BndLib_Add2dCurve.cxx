@@ -125,7 +125,7 @@ public:
   {
   }
 
-  bool Value(const math_Vector& X, double& F)
+  bool Value(const math_Vector& X, double& F) override
   {
     if (!CheckInputData(X(1)))
     {
@@ -138,7 +138,7 @@ public:
     return true;
   }
 
-  int NbVariables() const { return 1; }
+  int NbVariables() const override { return 1; }
 
 private:
   Curv2dMaxMinCoordMVar& operator=(const Curv2dMaxMinCoordMVar&) = delete;
@@ -174,7 +174,7 @@ public:
   {
   }
 
-  bool Value(const double X, double& F)
+  bool Value(const double X, double& F) override
   {
     if (!CheckInputData(X))
     {
@@ -213,7 +213,7 @@ BndLib_Box2dCurve::BndLib_Box2dCurve()
 
 //=================================================================================================
 
-BndLib_Box2dCurve::~BndLib_Box2dCurve() {}
+BndLib_Box2dCurve::~BndLib_Box2dCurve() = default;
 
 //=================================================================================================
 

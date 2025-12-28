@@ -190,7 +190,7 @@ OpenGl_Context::OpenGl_Context(const occ::handle<OpenGl_Caps>& theCaps)
       mySharedResources(new OpenGl_ResourcesMap()),
       myDelayed(new OpenGl_DelayReleaseMap()),
       myUnusedResources(new OpenGl_ResourcesStack()),
-      myClippingState(),
+      
       myGlLibHandle(nullptr),
       myFuncs(new OpenGl_GlFunctions()),
       myGapi(

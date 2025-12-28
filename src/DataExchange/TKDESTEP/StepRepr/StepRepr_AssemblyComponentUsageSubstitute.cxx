@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute, Standard_Transient)
 
-StepRepr_AssemblyComponentUsageSubstitute::StepRepr_AssemblyComponentUsageSubstitute() {}
+StepRepr_AssemblyComponentUsageSubstitute::StepRepr_AssemblyComponentUsageSubstitute() = default;
 
 void StepRepr_AssemblyComponentUsageSubstitute::Init(
   const occ::handle<TCollection_HAsciiString>&        aName,

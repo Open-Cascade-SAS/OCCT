@@ -26,8 +26,7 @@
 
 RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::
   RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem()
-{
-}
+= default;
 
 //=================================================================================================
 

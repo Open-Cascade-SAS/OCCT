@@ -22,7 +22,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
 

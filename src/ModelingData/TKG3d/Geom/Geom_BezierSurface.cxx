@@ -397,8 +397,8 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
   occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
     new NCollection_HArray2<gp_Pnt>(1, NbUPoles, 1, NbVPoles);
 
-  urational = 0;
-  vrational = 0;
+  urational = false;
+  vrational = false;
 
   npoles->ChangeArray2() = SurfacePoles;
 
@@ -584,10 +584,10 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     {
       nweights = new NCollection_HArray2<double>(1, UDeg + 1, 1, VDegree() + 1);
 
-      BSplSLib::IncreaseDegree(1,
+      BSplSLib::IncreaseDegree(true,
                                oldUDeg,
                                UDeg,
-                               0,
+                               false,
                                poles->Array2(),
                                &weights->Array2(),
                                biduknots,
@@ -600,10 +600,10 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     }
     else
     {
-      BSplSLib::IncreaseDegree(1,
+      BSplSLib::IncreaseDegree(true,
                                oldUDeg,
                                UDeg,
-                               0,
+                               false,
                                poles->Array2(),
                                BSplSLib::NoWeights(),
                                biduknots,
@@ -623,10 +623,10 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     {
       nweights = new NCollection_HArray2<double>(1, UDeg + 1, 1, VDeg + 1);
 
-      BSplSLib::IncreaseDegree(0,
+      BSplSLib::IncreaseDegree(false,
                                oldVDeg,
                                VDeg,
-                               0,
+                               false,
                                poles->Array2(),
                                &weights->Array2(),
                                bidvknots,
@@ -639,10 +639,10 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     }
     else
     {
-      BSplSLib::IncreaseDegree(0,
+      BSplSLib::IncreaseDegree(false,
                                oldVDeg,
                                VDeg,
-                               0,
+                               false,
                                poles->Array2(),
                                BSplSLib::NoWeights(),
                                bidvknots,
@@ -962,8 +962,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          vparameter_11,
                          uspanlenght_11,
                          vspanlenght_11,
-                         0,
-                         0,
+                         false,
+                         false,
                          UDegree(),
                          VDegree(),
                          0,
@@ -981,8 +981,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          vparameter_11,
                          uspanlenght_11,
                          vspanlenght_11,
-                         0,
-                         0,
+                         false,
+                         false,
                          UDegree(),
                          VDegree(),
                          0,
@@ -1613,8 +1613,8 @@ void Geom_BezierSurface::D3(const double U,
                  VDegree(),
                  urational,
                  vrational,
-                 0,
-                 0,
+                 false,
+                 false,
                  P,
                  D1U,
                  D1V,
@@ -1642,8 +1642,8 @@ void Geom_BezierSurface::D3(const double U,
                  VDegree(),
                  urational,
                  vrational,
-                 0,
-                 0,
+                 false,
+                 false,
                  P,
                  D1U,
                  D1V,
@@ -1691,8 +1691,8 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  VDegree(),
                  urational,
                  vrational,
-                 0,
-                 0,
+                 false,
+                 false,
                  Derivative);
   }
   else
@@ -1713,8 +1713,8 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  VDegree(),
                  urational,
                  vrational,
-                 0,
-                 0,
+                 false,
+                 false,
                  Derivative);
   }
   return Derivative;
@@ -1779,13 +1779,13 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
     const NCollection_Array2<double>& Weights = weights->Array2();
     NCollection_Array1<double>        VCurveWeights(Weights.LowerCol(), Weights.UpperCol());
     BSplSLib::Iso(U,
-                  1,
+                  true,
                   Poles,
                   &Weights,
                   biduknots,
                   &bidumults,
                   UDegree(),
-                  0,
+                  false,
                   VCurvePoles,
                   &VCurveWeights);
     if (urational)
@@ -1796,13 +1796,13 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
   else
   {
     BSplSLib::Iso(U,
-                  1,
+                  true,
                   Poles,
                   BSplSLib::NoWeights(),
                   biduknots,
                   &bidumults,
                   UDegree(),
-                  0,
+                  false,
                   VCurvePoles,
                   PLib::NoWeights());
     UIsoCurve = new Geom_BezierCurve(VCurvePoles);
@@ -1835,13 +1835,13 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
     const NCollection_Array2<double>& Weights = weights->Array2();
     NCollection_Array1<double>        VCurveWeights(Weights.LowerRow(), Weights.UpperRow());
     BSplSLib::Iso(V,
-                  0,
+                  false,
                   Poles,
                   &Weights,
                   bidvknots,
                   &bidvmults,
                   VDegree(),
-                  0,
+                  false,
                   VCurvePoles,
                   &VCurveWeights);
     if (vrational)
@@ -1852,13 +1852,13 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
   else
   {
     BSplSLib::Iso(V,
-                  0,
+                  false,
                   Poles,
                   BSplSLib::NoWeights(),
                   bidvknots,
                   &bidvmults,
                   VDegree(),
-                  0,
+                  false,
                   VCurvePoles,
                   PLib::NoWeights());
     VIsoCurve = new Geom_BezierCurve(VCurvePoles);
@@ -2018,8 +2018,8 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
                            VDegree(),
                            urational,
                            vrational,
-                           0,
-                           0,
+                           false,
+                           false,
                            1.,
                            umaxderivinv,
                            vmaxderivinv);
@@ -2036,13 +2036,13 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
                            VDegree(),
                            urational,
                            vrational,
-                           0,
-                           0,
+                           false,
+                           false,
                            1.,
                            umaxderivinv,
                            vmaxderivinv);
     }
-    maxderivinvok = 1;
+    maxderivinvok = true;
   }
   UTolerance = Tolerance3D * umaxderivinv;
   VTolerance = Tolerance3D * vmaxderivinv;

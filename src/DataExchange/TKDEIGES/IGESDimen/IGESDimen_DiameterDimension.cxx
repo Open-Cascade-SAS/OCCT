@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DiameterDimension, IGESData_IGESEntity)
 
-IGESDimen_DiameterDimension::IGESDimen_DiameterDimension() {}
+IGESDimen_DiameterDimension::IGESDimen_DiameterDimension() = default;
 
 void IGESDimen_DiameterDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                        const occ::handle<IGESDimen_LeaderArrow>& aLeader,

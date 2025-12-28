@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_TypeQualifier, Standard_Transient)
 
-StepShape_TypeQualifier::StepShape_TypeQualifier() {}
+StepShape_TypeQualifier::StepShape_TypeQualifier() = default;
 
 void StepShape_TypeQualifier::Init(const occ::handle<TCollection_HAsciiString>& name)
 {

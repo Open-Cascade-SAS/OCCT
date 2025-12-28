@@ -19,7 +19,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-ShapeCustom_Curve::ShapeCustom_Curve() {}
+ShapeCustom_Curve::ShapeCustom_Curve() = default;
 
 //=================================================================================================
 

@@ -51,7 +51,7 @@ static bool Degenerate(occ::handle<GccInt_Bisec>& aBisector, const double Tolera
 //=============================================================================
 // function :
 //=============================================================================
-Bisector_BisecAna::Bisector_BisecAna() {}
+Bisector_BisecAna::Bisector_BisecAna() = default;
 
 //=============================================================================
 //              calcul the distance between the point and the bissectrice.              +

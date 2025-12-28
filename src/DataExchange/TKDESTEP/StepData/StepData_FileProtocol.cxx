@@ -24,7 +24,7 @@ static const char* thename = ""; // Empty schema name for file protocols
 
 //  Protocol factory created on demand with other Protocols
 
-StepData_FileProtocol::StepData_FileProtocol() {}
+StepData_FileProtocol::StepData_FileProtocol() = default;
 
 void StepData_FileProtocol::Add(const occ::handle<StepData_Protocol>& protocol)
 {

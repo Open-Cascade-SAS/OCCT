@@ -32,7 +32,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWVolume3dElementRepresentation::RWStepFEA_RWVolume3dElementRepresentation() {}
+RWStepFEA_RWVolume3dElementRepresentation::RWStepFEA_RWVolume3dElementRepresentation() = default;
 
 //=================================================================================================
 

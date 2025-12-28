@@ -63,7 +63,7 @@ vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
 
 //=================================================================================================
 
-IVtkTools_DisplayModeFilter::~IVtkTools_DisplayModeFilter() {}
+IVtkTools_DisplayModeFilter::~IVtkTools_DisplayModeFilter() = default;
 
 //============================================================================
 // Method: RequestData

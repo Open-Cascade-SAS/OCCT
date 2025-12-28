@@ -252,7 +252,7 @@ bool BRepBuilderAPI_FastSewing::Add(const occ::handle<Geom_Surface>& theSurface)
 
 //=================================================================================================
 
-void BRepBuilderAPI_FastSewing::Perform(void)
+void BRepBuilderAPI_FastSewing::Perform()
 {
   if (myFaceVec.IsEmpty())
   {

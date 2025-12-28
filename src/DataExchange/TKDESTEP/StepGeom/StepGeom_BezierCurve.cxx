@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurve, StepGeom_BSplineCurve)
 
-StepGeom_BezierCurve::StepGeom_BezierCurve() {}
+StepGeom_BezierCurve::StepGeom_BezierCurve() = default;

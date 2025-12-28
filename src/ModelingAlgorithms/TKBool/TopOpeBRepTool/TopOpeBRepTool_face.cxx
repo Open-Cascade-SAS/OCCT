@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-TopOpeBRepTool_face::TopOpeBRepTool_face() {}
+TopOpeBRepTool_face::TopOpeBRepTool_face() = default;
 
 static void FUN_reverse(const TopoDS_Face& f, TopoDS_Face& frev)
 {

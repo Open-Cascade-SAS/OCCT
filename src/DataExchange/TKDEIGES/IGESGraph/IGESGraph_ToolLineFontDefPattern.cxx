@@ -32,7 +32,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESGraph_ToolLineFontDefPattern::IGESGraph_ToolLineFontDefPattern() {}
+IGESGraph_ToolLineFontDefPattern::IGESGraph_ToolLineFontDefPattern() = default;
 
 void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
   const occ::handle<IGESGraph_LineFontDefPattern>& ent,

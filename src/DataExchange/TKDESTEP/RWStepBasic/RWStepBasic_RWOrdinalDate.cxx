@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWOrdinalDate::RWStepBasic_RWOrdinalDate() {}
+RWStepBasic_RWOrdinalDate::RWStepBasic_RWOrdinalDate() = default;
 
 void RWStepBasic_RWOrdinalDate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

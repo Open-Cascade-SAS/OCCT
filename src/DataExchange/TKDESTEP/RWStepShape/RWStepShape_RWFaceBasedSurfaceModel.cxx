@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWFaceBasedSurfaceModel::RWStepShape_RWFaceBasedSurfaceModel() {}
+RWStepShape_RWFaceBasedSurfaceModel::RWStepShape_RWFaceBasedSurfaceModel() = default;
 
 //=================================================================================================
 

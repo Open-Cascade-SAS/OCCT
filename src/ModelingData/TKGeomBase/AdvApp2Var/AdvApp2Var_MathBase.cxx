@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 // AdvApp2Var_MathBase.cxx
-#include <math.h>
+#include <cmath>
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_Data_f2c.hxx>
 #include <AdvApp2Var_MathBase.hxx>

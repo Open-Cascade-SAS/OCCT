@@ -19,7 +19,7 @@
 //=================================================================================================
 
 HelixGeom_BuilderHelixCoil::HelixGeom_BuilderHelixCoil()
-    : HelixGeom_BuilderHelixGen()
+     
 {
   myT1          = 0.;
   myT2          = 2. * M_PI;
@@ -31,7 +31,7 @@ HelixGeom_BuilderHelixCoil::HelixGeom_BuilderHelixCoil()
 
 //=================================================================================================
 
-HelixGeom_BuilderHelixCoil::~HelixGeom_BuilderHelixCoil() {}
+HelixGeom_BuilderHelixCoil::~HelixGeom_BuilderHelixCoil() = default;
 
 //=================================================================================================
 

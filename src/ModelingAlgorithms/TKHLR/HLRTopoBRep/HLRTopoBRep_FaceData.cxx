@@ -18,4 +18,4 @@
 
 //=================================================================================================
 
-HLRTopoBRep_FaceData::HLRTopoBRep_FaceData() {}
+HLRTopoBRep_FaceData::HLRTopoBRep_FaceData() = default;

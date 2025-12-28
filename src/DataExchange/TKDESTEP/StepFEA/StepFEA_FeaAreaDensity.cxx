@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaAreaDensity, StepFEA_FeaMaterialPropertyRe
 
 //=================================================================================================
 
-StepFEA_FeaAreaDensity::StepFEA_FeaAreaDensity() {}
+StepFEA_FeaAreaDensity::StepFEA_FeaAreaDensity() = default;
 
 //=================================================================================================
 

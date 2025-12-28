@@ -736,7 +736,7 @@ bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaul
 
 //! Assign the shader program.
 template <typename T>
-inline void setAspectProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram, T thePrsAspect)
+inline void setAspectProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram, const T& thePrsAspect)
 {
   if (!thePrsAspect.IsNull())
   {

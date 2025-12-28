@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWLocalTime::RWStepBasic_RWLocalTime() {}
+RWStepBasic_RWLocalTime::RWStepBasic_RWLocalTime() = default;
 
 void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

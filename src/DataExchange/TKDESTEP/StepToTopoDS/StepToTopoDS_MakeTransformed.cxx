@@ -36,7 +36,7 @@
 //  + pour CartesianOperator3d
 //=================================================================================================
 
-StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed() {}
+StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed() = default;
 
 //=================================================================================================
 

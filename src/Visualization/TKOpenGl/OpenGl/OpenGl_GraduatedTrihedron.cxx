@@ -24,7 +24,7 @@
 #include <Precision.hxx>
 
 #ifndef _WIN32
-  #include <string.h>
+  #include <cstring>
 #endif
 
 namespace

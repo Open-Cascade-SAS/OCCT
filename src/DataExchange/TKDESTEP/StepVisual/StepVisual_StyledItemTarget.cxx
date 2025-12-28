@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepVisual_StyledItemTarget::StepVisual_StyledItemTarget() {}
+StepVisual_StyledItemTarget::StepVisual_StyledItemTarget() = default;
 
 //=================================================================================================
 

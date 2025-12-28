@@ -608,7 +608,7 @@ void TNaming_Localizer::FindNeighbourg(
 
 //=================================================================================================
 
-TNaming_Localizer::TNaming_Localizer() {}
+TNaming_Localizer::TNaming_Localizer() = default;
 
 //=================================================================================================
 
@@ -761,7 +761,7 @@ void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& 
   }
   // szy
   NCollection_List<TopoDS_Shape>::Iterator it(aList);
-  bool                                     found = 0;
+  bool                                     found = false;
   for (; it.More(); it.Next())
   {
     SC = it.Value();
@@ -778,7 +778,7 @@ void TNaming_Localizer::FindShapeContext(const occ::handle<TNaming_NamedShape>& 
         {
           if (exp.Current().IsSame(S))
           {
-            found = 1;
+            found = true;
 #ifdef OCCT_DEBUG_SC
             std::cout << "Find Context shape = " << SC.TShape() << "ShapeType = " << SC.ShapeType()
                       << std::endl;

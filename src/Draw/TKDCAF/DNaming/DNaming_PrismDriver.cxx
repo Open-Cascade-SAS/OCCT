@@ -52,7 +52,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_PrismDriver, TFunction_Driver)
 // OCAF
 //=================================================================================================
 
-DNaming_PrismDriver::DNaming_PrismDriver() {}
+DNaming_PrismDriver::DNaming_PrismDriver() = default;
 
 //=======================================================================
 // function : Validate

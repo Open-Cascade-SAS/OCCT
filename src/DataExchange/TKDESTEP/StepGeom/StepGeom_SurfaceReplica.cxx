@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceReplica, StepGeom_Surface)
 
-StepGeom_SurfaceReplica::StepGeom_SurfaceReplica() {}
+StepGeom_SurfaceReplica::StepGeom_SurfaceReplica() = default;
 
 void StepGeom_SurfaceReplica::Init(
   const occ::handle<TCollection_HAsciiString>&                   aName,

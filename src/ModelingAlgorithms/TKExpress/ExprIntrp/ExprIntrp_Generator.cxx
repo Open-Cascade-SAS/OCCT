@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_Generator, Standard_Transient)
 #include <ExprIntrp_yaccanal.hxx>
 ExprIntrp_Analysis ExprIntrp_Recept;
 
-ExprIntrp_Generator::ExprIntrp_Generator() {}
+ExprIntrp_Generator::ExprIntrp_Generator() = default;
 
 void ExprIntrp_Generator::Use(const occ::handle<Expr_NamedFunction>& func)
 {

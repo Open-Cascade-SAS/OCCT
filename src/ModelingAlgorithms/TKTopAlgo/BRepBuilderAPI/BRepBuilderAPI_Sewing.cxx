@@ -100,6 +100,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <utility>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_Sewing, Standard_Transient)
 
@@ -517,8 +518,8 @@ static void ComputeToleranceVertex(TopoDS_Vertex theV1, TopoDS_Vertex theV2, Top
   BRep_Builder  aBB;
   //
   aEps  = RealEpsilon();
-  aV[0] = theV1;
-  aV[1] = theV2;
+  aV[0] = std::move(theV1);
+  aV[1] = std::move(theV2);
   for (m = 0; m < 2; ++m)
   {
     aP[m] = BRep_Tool::Pnt(aV[m]);
@@ -567,9 +568,9 @@ static void ComputeToleranceVertex(TopoDS_Vertex  theV1,
   double        aR[3];
   TopoDS_Vertex aV[3];
   gp_XYZ        aXYZ(0., 0., 0.);
-  aV[0] = theV1;
-  aV[1] = theV2;
-  aV[2] = theV3;
+  aV[0] = std::move(theV1);
+  aV[1] = std::move(theV2);
+  aV[2] = std::move(theV3);
   for (int i = 0; i < 3; ++i)
   {
     aP[i] = BRep_Tool::Pnt(aV[i]);

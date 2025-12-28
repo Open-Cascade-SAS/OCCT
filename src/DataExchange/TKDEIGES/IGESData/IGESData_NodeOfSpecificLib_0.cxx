@@ -24,7 +24,7 @@
 #include <IGESData_Protocol.hxx>
 #include <IGESData_SpecificLib.hxx>
 
-IGESData_NodeOfSpecificLib::IGESData_NodeOfSpecificLib() {}
+IGESData_NodeOfSpecificLib::IGESData_NodeOfSpecificLib() = default;
 
 void IGESData_NodeOfSpecificLib::AddNode(const occ::handle<IGESData_GlobalNodeOfSpecificLib>& anode)
 {

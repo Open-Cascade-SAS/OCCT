@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <IntPolyh_Couple.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

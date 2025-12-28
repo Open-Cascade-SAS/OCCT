@@ -18,7 +18,7 @@
 #include <StepVisual_TextLiteral.hxx>
 #include <StepVisual_TextOrCharacter.hxx>
 
-StepVisual_TextOrCharacter::StepVisual_TextOrCharacter() {}
+StepVisual_TextOrCharacter::StepVisual_TextOrCharacter() = default;
 
 int StepVisual_TextOrCharacter::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

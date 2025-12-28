@@ -280,7 +280,7 @@ static void BuildDomains(TopoDS_Face&                           myFace,
   for (itF.Initialize(Faces); itF.More(); itF.Next())
   {
     TopoDS_Face&        F = TopoDS::Face(itF.ChangeValue());
-    BRepAdaptor_Surface S(F, 0);
+    BRepAdaptor_Surface S(F, false);
     double              Tol = BRep_Tool::Tolerance(F);
 
     BRepTopAdaptor_FClass2d CL(F, Precision::Confusion());

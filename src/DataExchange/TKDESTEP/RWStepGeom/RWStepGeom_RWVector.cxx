@@ -19,7 +19,7 @@
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_Vector.hxx>
 
-RWStepGeom_RWVector::RWStepGeom_RWVector() {}
+RWStepGeom_RWVector::RWStepGeom_RWVector() = default;
 
 void RWStepGeom_RWVector::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                    const int                                   num,

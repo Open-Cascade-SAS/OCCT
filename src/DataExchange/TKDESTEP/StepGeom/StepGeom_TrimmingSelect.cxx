@@ -18,7 +18,7 @@
 #include <StepGeom_TrimmingMember.hxx>
 #include <StepGeom_TrimmingSelect.hxx>
 
-StepGeom_TrimmingSelect::StepGeom_TrimmingSelect() {}
+StepGeom_TrimmingSelect::StepGeom_TrimmingSelect() = default;
 
 int StepGeom_TrimmingSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

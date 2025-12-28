@@ -4863,11 +4863,11 @@ public:
                                double            theTransp = 1.0);
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int) override {}
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int) override {}
 
 private:
   double            myX1, myY1, myX2, myY2;
@@ -5812,13 +5812,13 @@ public:
   }
 
   //! Returns TRUE for accepted display modes.
-  virtual bool AcceptDisplayMode(const int theMode) const override
+  bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == 0 || theMode == 1;
   }
 
   //! Compute presentation.
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>&,
                        const occ::handle<Prs3d_Presentation>& thePrs,
                        const int                              theMode) override
   {
@@ -5846,7 +5846,7 @@ public:
   }
 
   //! Compute selection.
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                 const int                               theMode) override
   {
     if (theMode == 0)
@@ -6559,7 +6559,7 @@ public:
 
 protected:
   //! Evaluate the command.
-  virtual void update(const AIS_AnimationProgress& theProgress) override
+  void update(const AIS_AnimationProgress& theProgress) override
   {
     TCollection_AsciiString aCmd = myCommand;
     replace(aCmd, "%pts", TCollection_AsciiString(theProgress.Pts));
@@ -6629,7 +6629,7 @@ public:
   }
 
   //! Start playback.
-  virtual void StartTimer(const double theStartPts,
+  void StartTimer(const double theStartPts,
                           const double thePlaySpeed,
                           const bool   theToUpdate,
                           const bool   theToStopTimer) override
@@ -6642,7 +6642,7 @@ public:
   }
 
   //! Pause animation.
-  virtual void Pause() override
+  void Pause() override
   {
     myState = AnimationState_Paused;
     // default implementation would stop all children,
@@ -6652,7 +6652,7 @@ public:
   }
 
   //! Stop animation.
-  virtual void Stop() override
+  void Stop() override
   {
     base_type::Stop();
     abortPlayback();
@@ -6660,7 +6660,7 @@ public:
 
   //! Process one step of the animation according to the input time progress, including all
   //! children.
-  virtual void updateWithChildren(const AIS_AnimationProgress& thePosition) override
+  void updateWithChildren(const AIS_AnimationProgress& thePosition) override
   {
     occ::handle<V3d_View> aView = myView;
     if (!aView.IsNull() && !myCamStart.IsNull())
@@ -12225,12 +12225,12 @@ static int VManipulator(Draw_Interpretor& theDi, int theArgsNb, const char** the
     else if (anArg == "-adjustsize" || anArg == "-noadjustsize")
     {
       anAttachOptions.SetAdjustSize(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
     }
     else if (anArg == "-enablemodes")
     {
       anAttachOptions.SetEnableModes(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
     }
     //
     else if (anArg == "-starttransform" && anArgIter + 2 < theArgsNb

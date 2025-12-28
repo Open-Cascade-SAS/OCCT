@@ -30,7 +30,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static void                      PrintState(Draw_Interpretor& aDI, const TopAbs_State& aState);
 static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge& E,
                                                 const TopoDS_Face& F,

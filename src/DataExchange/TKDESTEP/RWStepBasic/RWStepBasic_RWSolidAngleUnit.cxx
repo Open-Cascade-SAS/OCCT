@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWSolidAngleUnit::RWStepBasic_RWSolidAngleUnit() {}
+RWStepBasic_RWSolidAngleUnit::RWStepBasic_RWSolidAngleUnit() = default;
 
 void RWStepBasic_RWSolidAngleUnit::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

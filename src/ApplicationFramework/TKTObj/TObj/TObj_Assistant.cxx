@@ -114,7 +114,7 @@ int TObj_Assistant::FindTypeIndex(const occ::handle<Standard_Type>& theType)
 class TObj_Assistant_UnknownType : public Standard_Transient
 {
 public:
-  TObj_Assistant_UnknownType() {}
+  TObj_Assistant_UnknownType() = default;
   // Empty constructor
 
   // CASCADE RTTI

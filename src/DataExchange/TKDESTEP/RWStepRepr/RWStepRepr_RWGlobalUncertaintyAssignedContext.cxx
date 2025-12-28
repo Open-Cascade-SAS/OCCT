@@ -19,7 +19,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 
-RWStepRepr_RWGlobalUncertaintyAssignedContext::RWStepRepr_RWGlobalUncertaintyAssignedContext() {}
+RWStepRepr_RWGlobalUncertaintyAssignedContext::RWStepRepr_RWGlobalUncertaintyAssignedContext() = default;
 
 void RWStepRepr_RWGlobalUncertaintyAssignedContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,

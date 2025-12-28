@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceSelfIntersect()
-      : IntTools_FaceFace(),
+      : 
         BOPAlgo_ParallelAlgo(),
         myIF(-1),
         myTolF(1.e-7)
@@ -54,7 +54,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_FaceSelfIntersect() {}
+  ~BOPAlgo_FaceSelfIntersect() override = default;
 
   //
   void SetIndex(const int nF) { myIF = nF; }
@@ -75,7 +75,7 @@ public:
   double TolF() const { return myTolF; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
@@ -101,7 +101,7 @@ typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIn
 //=================================================================================================
 
 BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
-    : BOPAlgo_PaveFiller()
+     
 {
   myLevelOfCheck   = BOPDS_DS::NbInterfTypes() - 1;
   myNonDestructive = true;
@@ -110,7 +110,7 @@ BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 
 //=================================================================================================
 
-BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI() {}
+BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI() = default;
 
 //=================================================================================================
 

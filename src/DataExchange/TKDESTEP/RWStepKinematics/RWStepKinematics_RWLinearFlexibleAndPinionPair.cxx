@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWLinearFlexibleAndPinionPair::RWStepKinematics_RWLinearFlexibleAndPinionPair() {}
+RWStepKinematics_RWLinearFlexibleAndPinionPair::RWStepKinematics_RWLinearFlexibleAndPinionPair() = default;
 
 //=================================================================================================
 

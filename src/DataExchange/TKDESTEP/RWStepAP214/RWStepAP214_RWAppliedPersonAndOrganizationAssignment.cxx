@@ -25,8 +25,7 @@
 
 RWStepAP214_RWAppliedPersonAndOrganizationAssignment::
   RWStepAP214_RWAppliedPersonAndOrganizationAssignment()
-{
-}
+= default;
 
 void RWStepAP214_RWAppliedPersonAndOrganizationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,

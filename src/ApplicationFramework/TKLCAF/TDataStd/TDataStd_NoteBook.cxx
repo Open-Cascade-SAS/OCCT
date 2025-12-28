@@ -76,7 +76,7 @@ const Standard_GUID& TDataStd_NoteBook::GetID()
 
 //=================================================================================================
 
-TDataStd_NoteBook::TDataStd_NoteBook() {}
+TDataStd_NoteBook::TDataStd_NoteBook() = default;
 
 //=================================================================================================
 

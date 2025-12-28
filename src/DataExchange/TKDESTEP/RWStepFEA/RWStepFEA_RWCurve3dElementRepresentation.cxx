@@ -33,7 +33,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurve3dElementRepresentation::RWStepFEA_RWCurve3dElementRepresentation() {}
+RWStepFEA_RWCurve3dElementRepresentation::RWStepFEA_RWCurve3dElementRepresentation() = default;
 
 //=================================================================================================
 

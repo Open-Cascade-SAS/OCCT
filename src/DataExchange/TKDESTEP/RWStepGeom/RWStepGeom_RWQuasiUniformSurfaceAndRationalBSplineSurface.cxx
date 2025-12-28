@@ -24,8 +24,7 @@
 
 RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::
   RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface()
-{
-}
+= default;
 
 void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&                               data,

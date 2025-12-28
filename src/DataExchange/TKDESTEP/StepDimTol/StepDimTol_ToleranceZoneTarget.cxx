@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() {}
+StepDimTol_ToleranceZoneTarget::StepDimTol_ToleranceZoneTarget() = default;
 
 //=================================================================================================
 

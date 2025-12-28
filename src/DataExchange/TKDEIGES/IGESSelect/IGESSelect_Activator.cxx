@@ -52,7 +52,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Activator, IFSelect_Activator)
 
 static int THE_IGESSelect_Activator_initActivator = 0;

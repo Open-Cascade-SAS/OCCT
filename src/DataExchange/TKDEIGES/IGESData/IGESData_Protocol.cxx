@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_Protocol, Interface_Protocol)
 
-IGESData_Protocol::IGESData_Protocol() {}
+IGESData_Protocol::IGESData_Protocol() = default;
 
 int IGESData_Protocol::NbResources() const
 {

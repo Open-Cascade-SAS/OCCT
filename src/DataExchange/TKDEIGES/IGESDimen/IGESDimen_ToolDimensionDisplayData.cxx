@@ -34,7 +34,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDimen_ToolDimensionDisplayData::IGESDimen_ToolDimensionDisplayData() {}
+IGESDimen_ToolDimensionDisplayData::IGESDimen_ToolDimensionDisplayData() = default;
 
 void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
   const occ::handle<IGESDimen_DimensionDisplayData>& ent,

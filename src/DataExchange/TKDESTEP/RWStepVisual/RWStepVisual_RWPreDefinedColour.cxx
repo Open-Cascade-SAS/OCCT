@@ -19,7 +19,7 @@
 #include <StepVisual_PreDefinedColour.hxx>
 #include <StepVisual_PreDefinedItem.hxx>
 
-RWStepVisual_RWPreDefinedColour::RWStepVisual_RWPreDefinedColour() {}
+RWStepVisual_RWPreDefinedColour::RWStepVisual_RWPreDefinedColour() = default;
 
 void RWStepVisual_RWPreDefinedColour::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

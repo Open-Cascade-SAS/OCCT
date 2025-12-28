@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition, Standard_Transient)
 
-StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition() {}
+StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition() = default;
 
 void StepBasic_ApplicationProtocolDefinition::Init(
   const occ::handle<TCollection_HAsciiString>&     aStatus,

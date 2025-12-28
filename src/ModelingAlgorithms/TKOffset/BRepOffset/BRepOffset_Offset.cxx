@@ -84,7 +84,7 @@ static int  NbOFFSET = 0;
   #include <DrawTrSurf.hxx>
   #include <DBRep.hxx>
 #endif
-#include <stdio.h>
+#include <cstdio>
 #include <Geom_BSplineSurface.hxx>
 
 static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
@@ -364,7 +364,7 @@ static void ComputeCurve3d(const TopoDS_Edge&               Edge,
 
 //=================================================================================================
 
-BRepOffset_Offset::BRepOffset_Offset() {}
+BRepOffset_Offset::BRepOffset_Offset() = default;
 
 //=================================================================================================
 

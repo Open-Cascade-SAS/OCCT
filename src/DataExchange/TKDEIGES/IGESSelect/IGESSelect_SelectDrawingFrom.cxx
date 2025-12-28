@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectDrawingFrom, IFSelect_SelectDeduct)
 
-IGESSelect_SelectDrawingFrom::IGESSelect_SelectDrawingFrom() {}
+IGESSelect_SelectDrawingFrom::IGESSelect_SelectDrawingFrom() = default;
 
 bool IGESSelect_SelectDrawingFrom::HasUniqueResult() const
 {

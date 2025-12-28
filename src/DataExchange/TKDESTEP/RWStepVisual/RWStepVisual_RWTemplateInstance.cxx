@@ -18,7 +18,7 @@
 #include <StepRepr_RepresentationMap.hxx>
 #include <StepVisual_TemplateInstance.hxx>
 
-RWStepVisual_RWTemplateInstance::RWStepVisual_RWTemplateInstance() {}
+RWStepVisual_RWTemplateInstance::RWStepVisual_RWTemplateInstance() = default;
 
 void RWStepVisual_RWTemplateInstance::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

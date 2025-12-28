@@ -45,7 +45,7 @@ BinTools_ShapeSetBase::BinTools_ShapeSetBase()
 
 //=================================================================================================
 
-BinTools_ShapeSetBase::~BinTools_ShapeSetBase() {}
+BinTools_ShapeSetBase::~BinTools_ShapeSetBase() = default;
 
 //=================================================================================================
 

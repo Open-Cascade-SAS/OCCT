@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
 
-IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid() {}
+IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid() = default;
 
 void IGESGraph_UniformRectGrid::Init(const int    nbProps,
                                      const int    finite,

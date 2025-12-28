@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnit, Standard_Transient)
 
-StepBasic_DerivedUnit::StepBasic_DerivedUnit() {}
+StepBasic_DerivedUnit::StepBasic_DerivedUnit() = default;
 
 void StepBasic_DerivedUnit::Init(
   const occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>>& elements)

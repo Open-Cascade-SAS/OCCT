@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ItemDefinedTransformation, Standard_Transient)
 
-StepRepr_ItemDefinedTransformation::StepRepr_ItemDefinedTransformation() {}
+StepRepr_ItemDefinedTransformation::StepRepr_ItemDefinedTransformation() = default;
 
 void StepRepr_ItemDefinedTransformation::Init(
   const occ::handle<TCollection_HAsciiString>&    aName,

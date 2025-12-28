@@ -17,7 +17,7 @@
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 
-StepGeom_Axis2Placement::StepGeom_Axis2Placement() {}
+StepGeom_Axis2Placement::StepGeom_Axis2Placement() = default;
 
 int StepGeom_Axis2Placement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

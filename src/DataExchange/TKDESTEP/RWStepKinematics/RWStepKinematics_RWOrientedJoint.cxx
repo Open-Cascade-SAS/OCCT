@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWOrientedJoint::RWStepKinematics_RWOrientedJoint() {}
+RWStepKinematics_RWOrientedJoint::RWStepKinematics_RWOrientedJoint() = default;
 
 //=================================================================================================
 

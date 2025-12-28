@@ -36,7 +36,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolDiameterDimension::IGESDimen_ToolDiameterDimension() {}
+IGESDimen_ToolDiameterDimension::IGESDimen_ToolDiameterDimension() = default;
 
 void IGESDimen_ToolDiameterDimension::ReadOwnParams(
   const occ::handle<IGESDimen_DiameterDimension>& ent,

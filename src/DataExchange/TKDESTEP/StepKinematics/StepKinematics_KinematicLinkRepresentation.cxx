@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentation, StepRepr_
 
 //=================================================================================================
 
-StepKinematics_KinematicLinkRepresentation::StepKinematics_KinematicLinkRepresentation() {}
+StepKinematics_KinematicLinkRepresentation::StepKinematics_KinematicLinkRepresentation() = default;
 
 //=================================================================================================
 

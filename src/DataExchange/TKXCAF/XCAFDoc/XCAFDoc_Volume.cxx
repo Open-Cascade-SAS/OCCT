@@ -26,7 +26,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Volume, TDataStd_Real, "xcaf", "Vo
 
 //=================================================================================================
 
-XCAFDoc_Volume::XCAFDoc_Volume() {}
+XCAFDoc_Volume::XCAFDoc_Volume() = default;
 
 //=================================================================================================
 

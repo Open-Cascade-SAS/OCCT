@@ -30,8 +30,7 @@
 
 RWStepKinematics_RWLowOrderKinematicPairWithRange::
   RWStepKinematics_RWLowOrderKinematicPairWithRange()
-{
-}
+= default;
 
 //=================================================================================================
 

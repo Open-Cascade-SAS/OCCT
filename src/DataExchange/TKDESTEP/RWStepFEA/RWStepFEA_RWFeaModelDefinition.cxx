@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaModelDefinition::RWStepFEA_RWFeaModelDefinition() {}
+RWStepFEA_RWFeaModelDefinition::RWStepFEA_RWFeaModelDefinition() = default;
 
 //=================================================================================================
 

@@ -22,7 +22,7 @@
 #include "RWStepBasic_RWSiUnitName.pxx"
 #include "RWStepBasic_RWSiPrefix.pxx"
 
-RWStepBasic_RWSiUnitAndPlaneAngleUnit::RWStepBasic_RWSiUnitAndPlaneAngleUnit() {}
+RWStepBasic_RWSiUnitAndPlaneAngleUnit::RWStepBasic_RWSiUnitAndPlaneAngleUnit() = default;
 
 void RWStepBasic_RWSiUnitAndPlaneAngleUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,

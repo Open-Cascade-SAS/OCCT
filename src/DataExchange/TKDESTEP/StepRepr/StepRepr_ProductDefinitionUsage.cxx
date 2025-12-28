@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionUsage, StepBasic_ProductDef
 
 //=================================================================================================
 
-StepRepr_ProductDefinitionUsage::StepRepr_ProductDefinitionUsage() {}
+StepRepr_ProductDefinitionUsage::StepRepr_ProductDefinitionUsage() = default;

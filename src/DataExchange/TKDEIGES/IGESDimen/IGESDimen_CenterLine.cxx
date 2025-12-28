@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CenterLine, IGESData_IGESEntity)
 
-IGESDimen_CenterLine::IGESDimen_CenterLine() {}
+IGESDimen_CenterLine::IGESDimen_CenterLine() = default;
 
 void IGESDimen_CenterLine::Init(const int                                      aDataType,
                                 const double                                   aZdisp,

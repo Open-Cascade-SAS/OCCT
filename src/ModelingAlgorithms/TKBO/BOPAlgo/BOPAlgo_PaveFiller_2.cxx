@@ -51,7 +51,7 @@ public:
         myT(-1.),
         myTolVNew(-1.) {};
   //
-  virtual ~BOPAlgo_VertexEdge() {};
+  ~BOPAlgo_VertexEdge() override = default;
 
   //
   void SetIndices(const int nV, const int nE)
@@ -101,7 +101,7 @@ public:
   const occ::handle<BOPDS_PaveBlock>& PaveBlock() const { return myPB; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

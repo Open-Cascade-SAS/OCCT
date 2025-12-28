@@ -54,7 +54,7 @@ class ShapeSelector : public BVH_Traverse<double, 3, BVH_BoxSet<double, 3, TopoD
 {
 public:
   //! Constructor
-  ShapeSelector() {}
+  ShapeSelector() = default;
 
   //! Sets the Box for selection
   void SetBox(const Bnd_Box& theBox) { myBox = Bnd_Tools::Bnd2BVH(theBox); }
@@ -64,7 +64,7 @@ public:
 
 public:
   //! Defines the rules for node rejection by bounding box
-  virtual bool RejectNode(const BVH_Vec3d& theCornerMin,
+  bool RejectNode(const BVH_Vec3d& theCornerMin,
                           const BVH_Vec3d& theCornerMax,
                           bool&            theIsInside) const override
   {
@@ -74,10 +74,10 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
+  bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex, const bool& theIsInside) override
+  bool Accept(const int theIndex, const bool& theIsInside) override
   {
     if (theIsInside || !myBox.IsOut(myBVHSet->Box(theIndex)))
     {
@@ -100,7 +100,7 @@ class ShapeSelectorVoid : public BVH_Traverse<double, 3, void, bool>
 {
 public:
   //! Constructor
-  ShapeSelectorVoid() {}
+  ShapeSelectorVoid() = default;
 
   //! Sets the Box for selection
   void SetBox(const Bnd_Box& theBox) { myBox = Bnd_Tools::Bnd2BVH(theBox); }
@@ -117,7 +117,7 @@ public:
 
 public:
   //! Defines the rules for node rejection by bounding box
-  virtual bool RejectNode(const BVH_Vec3d& theCornerMin,
+  bool RejectNode(const BVH_Vec3d& theCornerMin,
                           const BVH_Vec3d& theCornerMax,
                           bool&            theIsInside) const override
   {
@@ -127,10 +127,10 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
+  bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex, const bool& theIsInside) override
+  bool Accept(const int theIndex, const bool& theIsInside) override
   {
     if (theIsInside || !myBox.IsOut(myBoxSet->Box(theIndex)))
     {
@@ -251,14 +251,14 @@ class PairShapesSelector : public BVH_PairTraverse<double, 3, BVH_BoxSet<double,
 {
 public:
   //! Constructor
-  PairShapesSelector() {}
+  PairShapesSelector() = default;
 
   //! Returns the selected pairs of shapes
   const NCollection_List<std::pair<TopoDS_Shape, TopoDS_Shape>>& Pairs() const { return myPairs; }
 
 public:
   //! Defines the rules for node rejection
-  virtual bool RejectNode(const BVH_Vec3d& theCornerMin1,
+  bool RejectNode(const BVH_Vec3d& theCornerMin1,
                           const BVH_Vec3d& theCornerMax1,
                           const BVH_Vec3d& theCornerMin2,
                           const BVH_Vec3d& theCornerMax2,
@@ -269,7 +269,7 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex1, const int theIndex2) override
+  bool Accept(const int theIndex1, const int theIndex2) override
   {
     BVH_Box<double, 3> aBox1 = myBVHSet1->Box(theIndex1);
     BVH_Box<double, 3> aBox2 = myBVHSet2->Box(theIndex2);
@@ -294,7 +294,7 @@ class PairShapesSelectorVoid : public BVH_PairTraverse<double, 3>
 {
 public:
   //! Constructor
-  PairShapesSelectorVoid() {}
+  PairShapesSelectorVoid() = default;
 
   //! Returns the selected pairs of shapes
   const NCollection_List<std::pair<TopoDS_Shape, TopoDS_Shape>>& Pairs() const { return myPairs; }
@@ -310,7 +310,7 @@ public:
 
 public:
   //! Defines the rules for node rejection
-  virtual bool RejectNode(const BVH_Vec3d& theCornerMin1,
+  bool RejectNode(const BVH_Vec3d& theCornerMin1,
                           const BVH_Vec3d& theCornerMax1,
                           const BVH_Vec3d& theCornerMin2,
                           const BVH_Vec3d& theCornerMax2,
@@ -321,7 +321,7 @@ public:
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex1, const int theIndex2) override
+  bool Accept(const int theIndex1, const int theIndex2) override
   {
     BVH_Box<double, 3> aBox1 = mySBSet1->Box(theIndex1);
     BVH_Box<double, 3> aBox2 = mySBSet2->Box(theIndex2);
@@ -450,7 +450,7 @@ static int QABVH_PairSelect(Draw_Interpretor& theDI, int theArgc, const char** t
 //=======================================================================
 struct Triangle
 {
-  Triangle() {}
+  Triangle() = default;
 
   Triangle(const BVH_Vec3d& theP1, const BVH_Vec3d& theP2, const BVH_Vec3d& theP3)
       : _Node1(theP1),
@@ -541,11 +541,11 @@ class MeshMeshDistance : public BVH_PairDistance<double, 3, BVH_BoxSet<double, 3
 {
 public:
   //! Constructor
-  MeshMeshDistance() {}
+  MeshMeshDistance() = default;
 
 public:
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex1, const int theIndex2) override
+  bool Accept(const int theIndex1, const int theIndex2) override
   {
     const Triangle& aTri1 = myBVHSet1->Element(theIndex1);
     const Triangle& aTri2 = myBVHSet2->Element(theIndex2);
@@ -662,7 +662,7 @@ class QABVH_TriangleSet : public BVH_Triangulation<double, 3>
 {
 public:
   QABVH_TriangleSet()
-      : BVH_Triangulation<double, 3>()
+       
   {
   }
 
@@ -710,7 +710,7 @@ class QABVH_Geometry : public BVH_Geometry<double, 3>
 {
 public:
   QABVH_Geometry()
-      : BVH_Geometry<double, 3>()
+       
   {
   }
 

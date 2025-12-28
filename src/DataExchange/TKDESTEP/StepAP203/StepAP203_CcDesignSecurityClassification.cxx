@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSecurityClassification,
 
 //=================================================================================================
 
-StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassification() {}
+StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassification() = default;
 
 //=================================================================================================
 

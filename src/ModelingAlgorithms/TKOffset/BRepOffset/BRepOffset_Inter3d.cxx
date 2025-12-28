@@ -1028,7 +1028,7 @@ void BRepOffset_Inter3d::ContextIntByInt(
     myTouched.Add(CF);
     if (ExtentContext)
     {
-      BRepOffset_Tool::EnLargeFace(CF, NF, 0, 0);
+      BRepOffset_Tool::EnLargeFace(CF, NF, false, false);
       MES.Bind(CF, NF);
     }
   }
@@ -1173,7 +1173,7 @@ void BRepOffset_Inter3d::ContextIntByInt(
         //      OE = TopoDS::Edge(MapSF(F).Generated(E));
         if (!MES.IsBound(OF))
         {
-          BRepOffset_Tool::EnLargeFace(OF, NF, 1, 1);
+          BRepOffset_Tool::EnLargeFace(OF, NF, true, true);
           MES.Bind(OF, NF);
         }
         else

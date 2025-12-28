@@ -36,7 +36,7 @@
 // MGE 31/07/98
 //=================================================================================================
 
-IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface() {}
+IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface() = default;
 
 //=================================================================================================
 

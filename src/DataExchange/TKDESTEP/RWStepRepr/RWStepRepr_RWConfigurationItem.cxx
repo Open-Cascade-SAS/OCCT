@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWConfigurationItem::RWStepRepr_RWConfigurationItem() {}
+RWStepRepr_RWConfigurationItem::RWStepRepr_RWConfigurationItem() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepAP214_RWAutoDesignDocumentReference::RWStepAP214_RWAutoDesignDocumentReference() {}
+RWStepAP214_RWAutoDesignDocumentReference::RWStepAP214_RWAutoDesignDocumentReference() = default;
 
 void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,

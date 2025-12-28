@@ -38,15 +38,15 @@ public:
   {
   }
 
-  Standard_EXPORT int NbVariables() const { return 4; }
+  Standard_EXPORT int NbVariables() const override { return 4; }
 
-  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F)
+  Standard_EXPORT bool Value(const math_Vector& X, double& F) override
   {
     F = myS1->Value(X(1), X(2)).SquareDistance(myS2->Value(X(3), X(4)));
     return true;
   }
 
-  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G)
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override
   {
     gp_Pnt P1, P2;
     gp_Vec Du1s1, Dv1s1;
@@ -64,7 +64,7 @@ public:
     return true;
   }
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G)
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override
   {
     F = myS1->Value(X(1), X(2)).SquareDistance(myS2->Value(X(3), X(4)));
 

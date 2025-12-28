@@ -252,8 +252,8 @@ int dtoa_stats[7]; /* strtod_{64,96,bigcomp},dtoa_{exact,64,96,bigcomp} */
   #define Debug(x)  /*nothing*/
 #endif
 
-#include "stdlib.h"
-#include "string.h"
+#include <cstdlib>
+#include <cstring>
 
 #ifdef USE_LOCALE
   #include "locale.h"
@@ -316,7 +316,7 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
   #define NO_STRTOD_BIGCOMP
 #endif
 
-#include "errno.h"
+#include <cerrno>
 
 #ifdef NO_ERRNO /*{*/
   #undef Set_errno
@@ -357,11 +357,11 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
   #endif
 
 #else /* ifndef Bad_float_h */
-  #include "float.h"
+  #include <cfloat>
 #endif /* Bad_float_h */
 
 #ifndef __MATH_H__
-  #include "math.h"
+  #include <cmath>
 #endif
 
 #ifdef __cplusplus

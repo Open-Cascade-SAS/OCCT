@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivide, ShapeUpgrade_Tool)
 //=================================================================================================
 
 ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide()
-    : ShapeUpgrade_Tool(),
+    : 
       myStatus(0)
 {
   mySegmentMode      = true;
@@ -53,7 +53,7 @@ ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide()
 //=================================================================================================
 
 ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide(const TopoDS_Face& F)
-    : ShapeUpgrade_Tool(),
+    : 
       myStatus(0)
 {
   mySegmentMode      = true;

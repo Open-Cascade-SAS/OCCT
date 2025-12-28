@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductConceptContext, StepBasic_Applicatio
 
 //=================================================================================================
 
-StepBasic_ProductConceptContext::StepBasic_ProductConceptContext() {}
+StepBasic_ProductConceptContext::StepBasic_ProductConceptContext() = default;
 
 //=================================================================================================
 

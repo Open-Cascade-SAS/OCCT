@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductContext, StepBasic_ApplicationContextElement)
 
-StepBasic_ProductContext::StepBasic_ProductContext() {}
+StepBasic_ProductContext::StepBasic_ProductContext() = default;
 
 void StepBasic_ProductContext::Init(
   const occ::handle<TCollection_HAsciiString>&     aName,

@@ -18,7 +18,7 @@
 #include <StepShape_FaceOuterBound.hxx>
 #include <StepShape_Loop.hxx>
 
-RWStepShape_RWFaceOuterBound::RWStepShape_RWFaceOuterBound() {}
+RWStepShape_RWFaceOuterBound::RWStepShape_RWFaceOuterBound() = default;
 
 void RWStepShape_RWFaceOuterBound::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

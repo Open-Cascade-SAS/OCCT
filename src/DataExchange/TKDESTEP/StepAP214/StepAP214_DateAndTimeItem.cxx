@@ -31,7 +31,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
 
-StepAP214_DateAndTimeItem::StepAP214_DateAndTimeItem() {}
+StepAP214_DateAndTimeItem::StepAP214_DateAndTimeItem() = default;
 
 int StepAP214_DateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

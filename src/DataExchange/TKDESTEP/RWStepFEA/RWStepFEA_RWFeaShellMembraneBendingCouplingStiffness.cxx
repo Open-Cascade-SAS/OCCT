@@ -25,8 +25,7 @@
 
 RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::
   RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness()
-{
-}
+= default;
 
 //=================================================================================================
 

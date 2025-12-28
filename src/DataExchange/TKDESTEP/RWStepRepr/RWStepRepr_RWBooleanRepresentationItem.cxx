@@ -17,7 +17,7 @@
 #include <StepRepr_BooleanRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWBooleanRepresentationItem::RWStepRepr_RWBooleanRepresentationItem() {}
+RWStepRepr_RWBooleanRepresentationItem::RWStepRepr_RWBooleanRepresentationItem() = default;
 
 void RWStepRepr_RWBooleanRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&            theData,

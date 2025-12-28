@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepShape_RightAngularWedge.hxx>
 
-RWStepShape_RWRightAngularWedge::RWStepShape_RWRightAngularWedge() {}
+RWStepShape_RWRightAngularWedge::RWStepShape_RWRightAngularWedge() = default;
 
 void RWStepShape_RWRightAngularWedge::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

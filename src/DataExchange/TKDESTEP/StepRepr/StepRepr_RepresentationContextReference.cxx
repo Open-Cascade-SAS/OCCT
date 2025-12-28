@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationContextReference, Standard_Tra
 
 //=================================================================================================
 
-StepRepr_RepresentationContextReference::StepRepr_RepresentationContextReference() {}
+StepRepr_RepresentationContextReference::StepRepr_RepresentationContextReference() = default;
 
 //=================================================================================================
 

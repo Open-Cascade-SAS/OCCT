@@ -19,7 +19,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-static const TCollection_ExtendedString& String(occ::handle<StdObjMgt_Persistent> theValue)
+static const TCollection_ExtendedString& String(const occ::handle<StdObjMgt_Persistent>& theValue)
 {
   if (theValue)
     return theValue->ExtString()->String();
@@ -28,7 +28,7 @@ static const TCollection_ExtendedString& String(occ::handle<StdObjMgt_Persistent
 }
 
 template <class HArray>
-static typename HArray::ArrayHandle Array(occ::handle<StdObjMgt_Persistent> theValue)
+static typename HArray::ArrayHandle Array(const occ::handle<StdObjMgt_Persistent>& theValue)
 {
   occ::handle<HArray> anArray = occ::down_cast<HArray>(theValue);
   return anArray ? anArray->Array() : nullptr;

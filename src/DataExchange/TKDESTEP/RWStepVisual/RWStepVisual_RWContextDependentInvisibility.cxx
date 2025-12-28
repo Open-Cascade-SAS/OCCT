@@ -22,7 +22,7 @@
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_InvisibilityContext.hxx>
 
-RWStepVisual_RWContextDependentInvisibility::RWStepVisual_RWContextDependentInvisibility() {}
+RWStepVisual_RWContextDependentInvisibility::RWStepVisual_RWContextDependentInvisibility() = default;
 
 void RWStepVisual_RWContextDependentInvisibility::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,

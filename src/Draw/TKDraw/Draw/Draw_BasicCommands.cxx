@@ -54,7 +54,7 @@ static clock_t CPU_CURRENT; // cpu time already used at last
 #else                       /* _WIN32 */
 
   #include <sys/resource.h>
-  #include <signal.h>
+  #include <csignal>
   #include <unistd.h>
 
   #if defined(__hpux) || defined(HPUX)

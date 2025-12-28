@@ -61,7 +61,7 @@ static void ProcessFace(const NCollection_Sequence<int>&         theFaceNodes,
                         const double                             theShrinkCoef,
                         const bool                               theIsShrinked,
                         const bool                               theIsShaded,
-                        occ::handle<Graphic3d_ArrayOfPrimitives> theArray)
+                        const occ::handle<Graphic3d_ArrayOfPrimitives>& theArray)
 {
   const int aNbPolyNodes = theFaceNodes.Length();
 

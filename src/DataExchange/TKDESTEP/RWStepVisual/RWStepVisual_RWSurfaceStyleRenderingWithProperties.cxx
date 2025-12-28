@@ -29,8 +29,7 @@
 
 RWStepVisual_RWSurfaceStyleRenderingWithProperties::
   RWStepVisual_RWSurfaceStyleRenderingWithProperties()
-{
-}
+= default;
 
 //=================================================================================================
 

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorOfTransientProcess, Transfer_ActorOfProcessForTransient)
 
-Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess() {}
+Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess() = default;
 
 //=============================================================================
 

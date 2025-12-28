@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Subedge, StepShape_Edge)
 
 //=================================================================================================
 
-StepShape_Subedge::StepShape_Subedge() {}
+StepShape_Subedge::StepShape_Subedge() = default;
 
 //=================================================================================================
 

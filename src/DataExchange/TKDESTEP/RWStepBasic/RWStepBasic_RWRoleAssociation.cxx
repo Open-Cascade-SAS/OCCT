@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWRoleAssociation::RWStepBasic_RWRoleAssociation() {}
+RWStepBasic_RWRoleAssociation::RWStepBasic_RWRoleAssociation() = default;
 
 //=================================================================================================
 

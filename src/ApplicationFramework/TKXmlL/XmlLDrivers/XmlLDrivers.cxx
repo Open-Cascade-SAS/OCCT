@@ -27,7 +27,7 @@
 #include <XmlMDocStd.hxx>
 #include <XmlMFunction.hxx>
 
-#include <time.h>
+#include <ctime>
 static Standard_GUID XmlLStorageDriver("13a56820-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID XmlLRetrievalDriver("13a56822-8269-11d5-aab2-0050044b1af1");
 

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentationItem)
 
-StepShape_GeometricSet::StepShape_GeometricSet() {}
+StepShape_GeometricSet::StepShape_GeometricSet() = default;
 
 void StepShape_GeometricSet::Init(
   const occ::handle<TCollection_HAsciiString>&                          aName,

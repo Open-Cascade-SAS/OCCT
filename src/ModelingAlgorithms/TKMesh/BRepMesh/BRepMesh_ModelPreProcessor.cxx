@@ -274,11 +274,11 @@ private:
 
 //=================================================================================================
 
-BRepMesh_ModelPreProcessor::BRepMesh_ModelPreProcessor() {}
+BRepMesh_ModelPreProcessor::BRepMesh_ModelPreProcessor() = default;
 
 //=================================================================================================
 
-BRepMesh_ModelPreProcessor::~BRepMesh_ModelPreProcessor() {}
+BRepMesh_ModelPreProcessor::~BRepMesh_ModelPreProcessor() = default;
 
 //=================================================================================================
 

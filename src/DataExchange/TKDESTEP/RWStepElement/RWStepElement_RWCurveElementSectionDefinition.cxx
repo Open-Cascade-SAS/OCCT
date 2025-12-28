@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWCurveElementSectionDefinition::RWStepElement_RWCurveElementSectionDefinition() {}
+RWStepElement_RWCurveElementSectionDefinition::RWStepElement_RWCurveElementSectionDefinition() = default;
 
 //=================================================================================================
 

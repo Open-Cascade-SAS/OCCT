@@ -41,11 +41,11 @@ public:
         mySeamCoordInd(isTheUSeam ? 1 : 0), // Defines, U- or V-seam is used
         myIsoParameter(theIsoParameter) {};
 
-  virtual int NbVariables() const { return 3; };
+  int NbVariables() const override { return 3; };
 
-  virtual int NbEquations() const { return 3; }
+  int NbEquations() const override { return 3; }
 
-  virtual bool Value(const math_Vector& theX, math_Vector& theF)
+  bool Value(const math_Vector& theX, math_Vector& theF) override
   {
     try
     {
@@ -65,7 +65,7 @@ public:
     return true;
   };
 
-  virtual bool Derivatives(const math_Vector& theX, math_Matrix& theD)
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
     try
     {
@@ -101,7 +101,7 @@ public:
     return true;
   };
 
-  virtual bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
   {
     if (!Value(theX, theF))
       return false;

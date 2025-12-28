@@ -68,7 +68,7 @@
 #include <Geom_Curve.hxx>
 #include <Message.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif

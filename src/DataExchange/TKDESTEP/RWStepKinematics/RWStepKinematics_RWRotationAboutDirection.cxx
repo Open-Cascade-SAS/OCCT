@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRotationAboutDirection::RWStepKinematics_RWRotationAboutDirection() {}
+RWStepKinematics_RWRotationAboutDirection::RWStepKinematics_RWRotationAboutDirection() = default;
 
 //=================================================================================================
 

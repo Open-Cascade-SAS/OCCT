@@ -58,7 +58,7 @@ static void MapFacesToBuildSolids(
 //=================================================================================================
 
 BOPAlgo_BOP::BOPAlgo_BOP()
-    : BOPAlgo_ToolsProvider()
+     
 {
   Clear();
 }
@@ -73,7 +73,7 @@ BOPAlgo_BOP::BOPAlgo_BOP(const occ::handle<NCollection_BaseAllocator>& theAlloca
 
 //=================================================================================================
 
-BOPAlgo_BOP::~BOPAlgo_BOP() {}
+BOPAlgo_BOP::~BOPAlgo_BOP() = default;
 
 //=================================================================================================
 

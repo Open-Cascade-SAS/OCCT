@@ -22,7 +22,7 @@
   #include <TCollection_AsciiString.hxx>
 
   #include <dirent.h>
-  #include <stdio.h>
+  #include <cstdio>
   #include <sys/stat.h>
 
 OSD_DirectoryIterator::OSD_DirectoryIterator()

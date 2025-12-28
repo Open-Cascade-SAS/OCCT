@@ -91,7 +91,7 @@ TCollection_AsciiString OpenGl_Buffer::FormatTarget(unsigned int theTarget)
 //=================================================================================================
 
 OpenGl_Buffer::OpenGl_Buffer()
-    : OpenGl_Resource(),
+    : 
       myOffset(nullptr),
       myBufferId(NO_BUFFER),
       myComponentsNb(4),

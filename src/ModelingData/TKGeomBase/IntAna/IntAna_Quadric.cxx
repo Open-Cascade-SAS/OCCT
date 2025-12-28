@@ -41,7 +41,7 @@
 //----------------------------------------------------------------------
 //-- Quadric Vide
 //----------------------------------------------------------------------
-IntAna_Quadric::IntAna_Quadric(void)
+IntAna_Quadric::IntAna_Quadric()
 {
   CXX = CYY = CZZ = CXY = CXZ = CYZ = CX = CY = CZ = 0.0;
   CCte                                             = 1.0;

@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_LineFontDefPattern, IGESData_LineFontEntity)
 
-IGESGraph_LineFontDefPattern::IGESGraph_LineFontDefPattern() {}
+IGESGraph_LineFontDefPattern::IGESGraph_LineFontDefPattern() = default;
 
 // This class inherits from IGESData_LineFontEntity
 

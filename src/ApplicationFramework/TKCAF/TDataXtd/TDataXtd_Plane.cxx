@@ -90,7 +90,7 @@ occ::handle<TDataXtd_Plane> TDataXtd_Plane::Set(const TDF_Label& L, const gp_Pln
 
 //=================================================================================================
 
-TDataXtd_Plane::TDataXtd_Plane() {}
+TDataXtd_Plane::TDataXtd_Plane() = default;
 
 //=================================================================================================
 

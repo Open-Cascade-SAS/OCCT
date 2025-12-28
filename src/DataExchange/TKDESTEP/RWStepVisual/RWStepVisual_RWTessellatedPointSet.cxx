@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedPointSet::RWStepVisual_RWTessellatedPointSet() {}
+RWStepVisual_RWTessellatedPointSet::RWStepVisual_RWTessellatedPointSet() = default;
 
 //=================================================================================================
 

@@ -37,7 +37,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDraw_ToolRectArraySubfigure::IGESDraw_ToolRectArraySubfigure() {}
+IGESDraw_ToolRectArraySubfigure::IGESDraw_ToolRectArraySubfigure() = default;
 
 void IGESDraw_ToolRectArraySubfigure::ReadOwnParams(
   const occ::handle<IGESDraw_RectArraySubfigure>& ent,

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Invisibility, Standard_Transient)
 
-StepVisual_Invisibility::StepVisual_Invisibility() {}
+StepVisual_Invisibility::StepVisual_Invisibility() = default;
 
 void StepVisual_Invisibility::Init(
   const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems)

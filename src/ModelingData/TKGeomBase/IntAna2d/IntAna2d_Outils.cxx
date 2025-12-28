@@ -205,7 +205,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
   }
   if (nbsol > 4)
   {
-    same  = 1;
+    same  = true;
     nbsol = 0;
   }
 }

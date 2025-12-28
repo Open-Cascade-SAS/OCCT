@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide, ShapeUpgrade_FaceDivid
 //=================================================================================================
 
 ShapeUpgrade_ClosedFaceDivide::ShapeUpgrade_ClosedFaceDivide()
-    : ShapeUpgrade_FaceDivide()
+     
 {
   myNbSplit = 1;
 }

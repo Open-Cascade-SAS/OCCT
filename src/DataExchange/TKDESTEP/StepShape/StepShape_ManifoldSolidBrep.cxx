@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep, StepShape_SolidModel)
 
-StepShape_ManifoldSolidBrep::StepShape_ManifoldSolidBrep() {}
+StepShape_ManifoldSolidBrep::StepShape_ManifoldSolidBrep() = default;
 
 void StepShape_ManifoldSolidBrep::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepShape_ClosedShell>&    aOuter)

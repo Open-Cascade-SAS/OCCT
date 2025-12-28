@@ -49,12 +49,12 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // #include <ShapeCustom.hxx>
 #ifdef _MSC_VER
   #include <stdlib.h>
 #else
-  #include <errno.h>
+  #include <cerrno>
 #endif
 // extern int errno;
 

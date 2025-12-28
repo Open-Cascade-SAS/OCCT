@@ -70,7 +70,7 @@ public:
     memcpy(Attribs, theAttribs.AttributesArray(), sizeof(Graphic3d_Attribute) * NbAttributes);
   }
 
-  virtual bool HasColorAttribute() const
+  bool HasColorAttribute() const override
   {
     for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
@@ -83,7 +83,7 @@ public:
     return false;
   }
 
-  virtual bool HasNormalAttribute() const
+  bool HasNormalAttribute() const override
   {
     for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
@@ -96,7 +96,7 @@ public:
     return false;
   }
 
-  virtual void BindPositionAttribute(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void BindPositionAttribute(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {
@@ -126,7 +126,7 @@ public:
     }
   }
 
-  virtual void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {
@@ -149,7 +149,7 @@ public:
     }
   }
 
-  virtual void UnbindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void UnbindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {

@@ -18,7 +18,7 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <Standard_DimensionMismatch.hxx>
 
-Plate_LinearXYZConstraint::Plate_LinearXYZConstraint() {}
+Plate_LinearXYZConstraint::Plate_LinearXYZConstraint() = default;
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(
   const NCollection_Array1<Plate_PinpointConstraint>& thePPC,

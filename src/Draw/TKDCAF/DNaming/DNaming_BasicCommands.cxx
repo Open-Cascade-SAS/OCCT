@@ -34,7 +34,7 @@
 #include <TNaming_Builder.hxx>
 #include <TDataStd_Name.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // POP : first Wrong Declaration : now it is correct
 //       second not used
@@ -385,7 +385,7 @@ static int Collect(Draw_Interpretor& di, int nb, const char** arg)
 {
   NCollection_Map<occ::handle<TNaming_NamedShape>> MNS;
   occ::handle<TNaming_NamedShape>                  A;
-  bool                                             OnlyModif = 1;
+  bool                                             OnlyModif = true;
 
   if (nb >= 3)
   {

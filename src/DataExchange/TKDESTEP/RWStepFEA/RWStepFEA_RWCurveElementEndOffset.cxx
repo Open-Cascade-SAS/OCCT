@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurveElementEndOffset::RWStepFEA_RWCurveElementEndOffset() {}
+RWStepFEA_RWCurveElementEndOffset::RWStepFEA_RWCurveElementEndOffset() = default;
 
 //=================================================================================================
 

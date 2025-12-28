@@ -22,7 +22,7 @@
 #include <StepRepr_ExternallyDefinedRepresentation.hxx>
 #include <StepRepr_Representation.hxx>
 
-StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem() {}
+StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem() = default;
 
 int StepAP214_AutoDesignGeneralOrgItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

@@ -30,7 +30,7 @@
 
 //=================================================================================================
 
-RWStepAP203_RWCcDesignDateAndTimeAssignment::RWStepAP203_RWCcDesignDateAndTimeAssignment() {}
+RWStepAP203_RWCcDesignDateAndTimeAssignment::RWStepAP203_RWCcDesignDateAndTimeAssignment() = default;
 
 //=================================================================================================
 

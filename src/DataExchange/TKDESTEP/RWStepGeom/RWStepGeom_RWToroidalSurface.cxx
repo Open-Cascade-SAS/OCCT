@@ -19,7 +19,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
 
-RWStepGeom_RWToroidalSurface::RWStepGeom_RWToroidalSurface() {}
+RWStepGeom_RWToroidalSurface::RWStepGeom_RWToroidalSurface() = default;
 
 void RWStepGeom_RWToroidalSurface::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

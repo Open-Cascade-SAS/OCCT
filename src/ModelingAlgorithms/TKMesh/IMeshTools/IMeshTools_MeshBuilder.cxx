@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IMeshTools_MeshBuilder, Message_Algorithm)
 
 //=================================================================================================
 
-IMeshTools_MeshBuilder::IMeshTools_MeshBuilder() {}
+IMeshTools_MeshBuilder::IMeshTools_MeshBuilder() = default;
 
 //=================================================================================================
 
@@ -32,7 +32,7 @@ IMeshTools_MeshBuilder::IMeshTools_MeshBuilder(const occ::handle<IMeshTools_Cont
 
 //=================================================================================================
 
-IMeshTools_MeshBuilder::~IMeshTools_MeshBuilder() {}
+IMeshTools_MeshBuilder::~IMeshTools_MeshBuilder() = default;
 
 //=================================================================================================
 

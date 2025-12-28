@@ -30,7 +30,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
 
-StepAP214_OrganizationItem::StepAP214_OrganizationItem() {}
+StepAP214_OrganizationItem::StepAP214_OrganizationItem() = default;
 
 int StepAP214_OrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

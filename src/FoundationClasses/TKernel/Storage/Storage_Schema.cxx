@@ -31,7 +31,7 @@
 #include <Storage_TypedCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
 
 #define DATATYPE_MIGRATION

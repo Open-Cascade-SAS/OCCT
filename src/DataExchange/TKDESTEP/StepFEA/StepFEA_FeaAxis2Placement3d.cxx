@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d, StepGeom_Axis2Placement3
 
 //=================================================================================================
 
-StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d() {}
+StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d() = default;
 
 //=================================================================================================
 

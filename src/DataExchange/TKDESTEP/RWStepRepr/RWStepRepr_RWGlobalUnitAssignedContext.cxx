@@ -19,7 +19,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 
-RWStepRepr_RWGlobalUnitAssignedContext::RWStepRepr_RWGlobalUnitAssignedContext() {}
+RWStepRepr_RWGlobalUnitAssignedContext::RWStepRepr_RWGlobalUnitAssignedContext() = default;
 
 void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

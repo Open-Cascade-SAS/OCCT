@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate() {}
+RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate() = default;
 
 void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

@@ -13,7 +13,7 @@
 
 #include <Vrml_SFRotation.hxx>
 
-Vrml_SFRotation::Vrml_SFRotation() {}
+Vrml_SFRotation::Vrml_SFRotation() = default;
 
 Vrml_SFRotation::Vrml_SFRotation(const double aRotationX,
                                  const double aRotationY,

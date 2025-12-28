@@ -18,7 +18,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ReparametrisedCompositeCurveSegment,
                            StepGeom_CompositeCurveSegment)
 
-StepGeom_ReparametrisedCompositeCurveSegment::StepGeom_ReparametrisedCompositeCurveSegment() {}
+StepGeom_ReparametrisedCompositeCurveSegment::StepGeom_ReparametrisedCompositeCurveSegment() = default;
 
 void StepGeom_ReparametrisedCompositeCurveSegment::Init(
   const StepGeom_TransitionCode      aTransition,

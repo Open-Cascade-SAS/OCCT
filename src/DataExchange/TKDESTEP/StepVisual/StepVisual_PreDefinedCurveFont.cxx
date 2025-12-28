@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedCurveFont, StepVisual_PreDefinedItem)
 
-StepVisual_PreDefinedCurveFont::StepVisual_PreDefinedCurveFont() {}
+StepVisual_PreDefinedCurveFont::StepVisual_PreDefinedCurveFont() = default;

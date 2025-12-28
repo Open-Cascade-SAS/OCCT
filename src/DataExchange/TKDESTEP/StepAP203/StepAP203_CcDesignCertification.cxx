@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignCertification, StepBasic_Certificat
 
 //=================================================================================================
 
-StepAP203_CcDesignCertification::StepAP203_CcDesignCertification() {}
+StepAP203_CcDesignCertification::StepAP203_CcDesignCertification() = default;
 
 //=================================================================================================
 

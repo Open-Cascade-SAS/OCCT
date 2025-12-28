@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CameraModel.hxx>
 
-RWStepVisual_RWCameraModel::RWStepVisual_RWCameraModel() {}
+RWStepVisual_RWCameraModel::RWStepVisual_RWCameraModel() = default;
 
 void RWStepVisual_RWCameraModel::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

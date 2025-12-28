@@ -34,7 +34,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolEllipsoid::IGESSolid_ToolEllipsoid() {}
+IGESSolid_ToolEllipsoid::IGESSolid_ToolEllipsoid() = default;
 
 void IGESSolid_ToolEllipsoid::ReadOwnParams(const occ::handle<IGESSolid_Ellipsoid>& ent,
                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,

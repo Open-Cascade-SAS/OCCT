@@ -26,8 +26,7 @@
 
 RWStepFEA_RWAlignedSurface3dElementCoordinateSystem::
   RWStepFEA_RWAlignedSurface3dElementCoordinateSystem()
-{
-}
+= default;
 
 //=================================================================================================
 

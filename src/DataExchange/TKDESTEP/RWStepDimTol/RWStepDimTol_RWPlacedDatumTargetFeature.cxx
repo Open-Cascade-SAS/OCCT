@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWPlacedDatumTargetFeature::RWStepDimTol_RWPlacedDatumTargetFeature() {}
+RWStepDimTol_RWPlacedDatumTargetFeature::RWStepDimTol_RWPlacedDatumTargetFeature() = default;
 
 //=================================================================================================
 

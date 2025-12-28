@@ -24,7 +24,7 @@
 #include <Interface_GeneralLib.hxx>
 #include <Interface_NodeOfGeneralLib.hxx>
 
-Interface_GlobalNodeOfGeneralLib::Interface_GlobalNodeOfGeneralLib() {}
+Interface_GlobalNodeOfGeneralLib::Interface_GlobalNodeOfGeneralLib() = default;
 
 void Interface_GlobalNodeOfGeneralLib::Add(const occ::handle<Interface_GeneralModule>& amodule,
                                            const occ::handle<Interface_Protocol>&      aprotocol)

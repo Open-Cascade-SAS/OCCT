@@ -38,7 +38,7 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                      const int                                    thePxTop,
                      const int                                    thePxWidth,
                      const int                                    thePxHeight)
-    : Aspect_Window(),
+    : 
       myXWindow(0),
       myFBConfig(nullptr),
       myXLeft(thePxLeft),
@@ -126,7 +126,7 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
 Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                      const Aspect_Drawable                        theXWin,
                      const Aspect_FBConfig                        theFBConfig)
-    : Aspect_Window(),
+    : 
       myXWindow(theXWin),
       myFBConfig(theFBConfig),
       myXLeft(0),

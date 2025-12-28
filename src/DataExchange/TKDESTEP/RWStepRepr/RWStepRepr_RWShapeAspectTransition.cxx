@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWShapeAspectTransition::RWStepRepr_RWShapeAspectTransition() {}
+RWStepRepr_RWShapeAspectTransition::RWStepRepr_RWShapeAspectTransition() = default;
 
 //=================================================================================================
 

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSilhouette, Standard_Transient)
 
-StepVisual_SurfaceStyleSilhouette::StepVisual_SurfaceStyleSilhouette() {}
+StepVisual_SurfaceStyleSilhouette::StepVisual_SurfaceStyleSilhouette() = default;
 
 void StepVisual_SurfaceStyleSilhouette::Init(
   const occ::handle<StepVisual_CurveStyle>& aStyleOfSilhouette)

@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWRepresentationReference::RWStepRepr_RWRepresentationReference() {}
+RWStepRepr_RWRepresentationReference::RWStepRepr_RWRepresentationReference() = default;
 
 //=================================================================================================
 

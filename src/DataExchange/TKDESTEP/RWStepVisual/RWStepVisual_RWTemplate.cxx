@@ -19,7 +19,7 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepVisual_Template.hxx>
 
-RWStepVisual_RWTemplate::RWStepVisual_RWTemplate() {}
+RWStepVisual_RWTemplate::RWStepVisual_RWTemplate() = default;
 
 void RWStepVisual_RWTemplate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

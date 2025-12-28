@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ConeFrustum, IGESData_IGESEntity)
 
-IGESSolid_ConeFrustum::IGESSolid_ConeFrustum() {}
+IGESSolid_ConeFrustum::IGESSolid_ConeFrustum() = default;
 
 void IGESSolid_ConeFrustum::Init(const double  Ht,
                                  const double  R1,

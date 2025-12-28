@@ -16,7 +16,7 @@
 
 #include <AdvApp2Var_MathBase.hxx>
 
-static integer init_STMAT(void)
+static integer init_STMAT()
 {
   // Init PRCSN
   doublereal EPSIL1 = 1.e-9, EPSIL2 = 1.e-8, EPSIL3 = 1.e-9, EPSIL4 = 1.e-4;

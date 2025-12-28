@@ -54,7 +54,7 @@ using TheQuadCurvExactInter = HLRBRep_TheQuadCurvExactInterCSurf;
 
 //==================================================================================================
 
-HLRBRep_InterCSurf::HLRBRep_InterCSurf() {}
+HLRBRep_InterCSurf::HLRBRep_InterCSurf() = default;
 
 //==================================================================================================
 

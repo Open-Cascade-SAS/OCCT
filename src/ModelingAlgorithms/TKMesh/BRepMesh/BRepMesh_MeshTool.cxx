@@ -54,7 +54,7 @@ BRepMesh_MeshTool::BRepMesh_MeshTool(
 
 //=================================================================================================
 
-BRepMesh_MeshTool::~BRepMesh_MeshTool() {}
+BRepMesh_MeshTool::~BRepMesh_MeshTool() = default;
 
 //=================================================================================================
 

@@ -57,10 +57,10 @@ public:
   DEFINE_STANDARD_ALLOC
   //
   BOPAlgo_EdgeEdge()
-      : IntTools_EdgeEdge(),
+      : 
         BOPAlgo_ParallelAlgo() {};
   //
-  virtual ~BOPAlgo_EdgeEdge() {};
+  ~BOPAlgo_EdgeEdge() override = default;
 
   //
   void SetPaveBlock1(const occ::handle<BOPDS_PaveBlock>& aPB) { myPB1 = aPB; }
@@ -85,7 +85,7 @@ public:
   void SetFuzzyValue(const double theFuzz) { IntTools_EdgeEdge::SetFuzzyValue(theFuzz); }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

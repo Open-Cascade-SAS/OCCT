@@ -33,7 +33,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESAppli_ToolPWBArtworkStackup::IGESAppli_ToolPWBArtworkStackup() {}
+IGESAppli_ToolPWBArtworkStackup::IGESAppli_ToolPWBArtworkStackup() = default;
 
 void IGESAppli_ToolPWBArtworkStackup::ReadOwnParams(
   const occ::handle<IGESAppli_PWBArtworkStackup>& ent,

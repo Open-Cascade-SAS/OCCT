@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWStraightnessTolerance::RWStepDimTol_RWStraightnessTolerance() {}
+RWStepDimTol_RWStraightnessTolerance::RWStepDimTol_RWStraightnessTolerance() = default;
 
 //=================================================================================================
 

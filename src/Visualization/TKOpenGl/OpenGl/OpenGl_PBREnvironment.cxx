@@ -108,8 +108,8 @@ private:
   }
 
 private:
-  OpenGl_PBREnvironmentSentry(const OpenGl_PBREnvironmentSentry&);
-  OpenGl_PBREnvironmentSentry& operator=(const OpenGl_PBREnvironmentSentry&);
+  OpenGl_PBREnvironmentSentry(const OpenGl_PBREnvironmentSentry&) = delete;
+  OpenGl_PBREnvironmentSentry& operator=(const OpenGl_PBREnvironmentSentry&) = delete;
 
 private:
   const occ::handle<OpenGl_Context> myContext;

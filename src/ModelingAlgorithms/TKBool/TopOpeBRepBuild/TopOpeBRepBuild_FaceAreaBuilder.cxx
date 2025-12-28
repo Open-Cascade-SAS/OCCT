@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder() {}
+TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder() = default;
 
 //=================================================================================================
 

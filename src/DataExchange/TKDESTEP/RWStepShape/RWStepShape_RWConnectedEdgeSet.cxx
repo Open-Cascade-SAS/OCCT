@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWConnectedEdgeSet::RWStepShape_RWConnectedEdgeSet() {}
+RWStepShape_RWConnectedEdgeSet::RWStepShape_RWConnectedEdgeSet() = default;
 
 //=================================================================================================
 

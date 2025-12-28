@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DesignContext, StepBasic_ProductDefinitionContext)
 
-StepBasic_DesignContext::StepBasic_DesignContext() {}
+StepBasic_DesignContext::StepBasic_DesignContext() = default;

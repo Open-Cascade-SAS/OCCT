@@ -78,7 +78,7 @@ static bool IsInter(Bnd_Box2d& theBox, const gp_Lin2d& theL, const double theP);
 
 //=================================================================================================
 
-BRepClass_Intersector::BRepClass_Intersector() {}
+BRepClass_Intersector::BRepClass_Intersector() = default;
 
 //=================================================================================================
 

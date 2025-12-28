@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedPresentedItem, StepVisual_PresentedItem)
 
-StepAP214_AppliedPresentedItem::StepAP214_AppliedPresentedItem() {}
+StepAP214_AppliedPresentedItem::StepAP214_AppliedPresentedItem() = default;
 
 void StepAP214_AppliedPresentedItem::Init(
   const occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>>& aItems)

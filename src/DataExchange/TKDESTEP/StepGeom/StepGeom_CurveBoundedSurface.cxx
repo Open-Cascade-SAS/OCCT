@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveBoundedSurface, StepGeom_BoundedSurface
 
 //=================================================================================================
 
-StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface() {}
+StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface() = default;
 
 //=================================================================================================
 

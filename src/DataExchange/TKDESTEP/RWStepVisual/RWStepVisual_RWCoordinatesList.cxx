@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWCoordinatesList::RWStepVisual_RWCoordinatesList() {}
+RWStepVisual_RWCoordinatesList::RWStepVisual_RWCoordinatesList() = default;
 
 //=================================================================================================
 

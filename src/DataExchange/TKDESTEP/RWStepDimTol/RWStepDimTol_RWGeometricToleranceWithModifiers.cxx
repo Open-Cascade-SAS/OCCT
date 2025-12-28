@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWGeometricToleranceWithModifiers::RWStepDimTol_RWGeometricToleranceWithModifiers() {}
+RWStepDimTol_RWGeometricToleranceWithModifiers::RWStepDimTol_RWGeometricToleranceWithModifiers() = default;
 
 //=================================================================================================
 

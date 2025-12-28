@@ -22,8 +22,7 @@
 
 RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::
   RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit()
-{
-}
+= default;
 
 void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                        data,

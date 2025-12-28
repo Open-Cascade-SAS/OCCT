@@ -37,7 +37,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDefs_ToolTabularData::IGESDefs_ToolTabularData() {}
+IGESDefs_ToolTabularData::IGESDefs_ToolTabularData() = default;
 
 void IGESDefs_ToolTabularData::ReadOwnParams(const occ::handle<IGESDefs_TabularData>& ent,
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,

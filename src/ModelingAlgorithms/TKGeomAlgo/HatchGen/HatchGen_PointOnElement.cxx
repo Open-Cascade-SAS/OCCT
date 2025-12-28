@@ -24,7 +24,7 @@
 //=================================================================================================
 
 HatchGen_PointOnElement::HatchGen_PointOnElement()
-    : HatchGen_IntersectionPoint(),
+    : 
       myType(HatchGen_UNDETERMINED)
 {
 }

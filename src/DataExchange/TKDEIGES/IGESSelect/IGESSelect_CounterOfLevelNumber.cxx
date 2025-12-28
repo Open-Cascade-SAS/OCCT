@@ -18,7 +18,7 @@
 #include <MoniTool_Macros.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
 
 IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber(const bool withmap,

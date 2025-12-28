@@ -22,14 +22,9 @@
 #include <IntCurve_PConic.hxx>
 
 IntCurve_PConic::IntCurve_PConic(const IntCurve_PConic& PC)
-    : axe(PC.axe),
-      prm1(PC.prm1),
-      prm2(PC.prm2),
-      TheEpsX(PC.TheEpsX),
-      TheAccuracy(PC.TheAccuracy),
-      type(PC.type)
-{
-}
+    
+      
+= default;
 
 IntCurve_PConic::IntCurve_PConic(const gp_Elips2d& E)
     : axe(E.Axis()),

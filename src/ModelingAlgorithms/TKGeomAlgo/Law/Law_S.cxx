@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Law_S, Law_BSpFunc)
 
-Law_S::Law_S() {}
+Law_S::Law_S() = default;
 
 void Law_S::Set(const double Pdeb, const double Valdeb, const double Pfin, const double Valfin)
 {

@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory, Standard_Transient)
 
-CDF_Directory::CDF_Directory() {}
+CDF_Directory::CDF_Directory() = default;
 
 void CDF_Directory::Add(const occ::handle<CDM_Document>& aDocument)
 {

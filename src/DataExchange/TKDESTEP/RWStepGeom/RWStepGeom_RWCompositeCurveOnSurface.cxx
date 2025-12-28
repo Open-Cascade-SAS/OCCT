@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepGeom_RWCompositeCurveOnSurface::RWStepGeom_RWCompositeCurveOnSurface() {}
+RWStepGeom_RWCompositeCurveOnSurface::RWStepGeom_RWCompositeCurveOnSurface() = default;
 
 void RWStepGeom_RWCompositeCurveOnSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

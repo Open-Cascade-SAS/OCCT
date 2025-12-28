@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnSurface, StepGeom_Point)
 
-StepGeom_PointOnSurface::StepGeom_PointOnSurface() {}
+StepGeom_PointOnSurface::StepGeom_PointOnSurface() = default;
 
 void StepGeom_PointOnSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const occ::handle<StepGeom_Surface>&         aBasisSurface,

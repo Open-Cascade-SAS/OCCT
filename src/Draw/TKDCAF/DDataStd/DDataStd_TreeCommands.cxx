@@ -27,7 +27,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // TreeNode : SetNode

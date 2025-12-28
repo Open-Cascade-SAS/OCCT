@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeWithSolutionCoordinateSystem, StepFEA_Nod
 
 //=================================================================================================
 
-StepFEA_NodeWithSolutionCoordinateSystem::StepFEA_NodeWithSolutionCoordinateSystem() {}
+StepFEA_NodeWithSolutionCoordinateSystem::StepFEA_NodeWithSolutionCoordinateSystem() = default;

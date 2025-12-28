@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionFieldVarying, StepElement_S
 
 //=================================================================================================
 
-StepElement_SurfaceSectionFieldVarying::StepElement_SurfaceSectionFieldVarying() {}
+StepElement_SurfaceSectionFieldVarying::StepElement_SurfaceSectionFieldVarying() = default;
 
 //=================================================================================================
 

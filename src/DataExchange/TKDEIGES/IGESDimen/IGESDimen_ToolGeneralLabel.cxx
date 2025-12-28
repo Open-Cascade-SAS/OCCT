@@ -35,7 +35,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESDimen_ToolGeneralLabel::IGESDimen_ToolGeneralLabel() {}
+IGESDimen_ToolGeneralLabel::IGESDimen_ToolGeneralLabel() = default;
 
 void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_GeneralLabel>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

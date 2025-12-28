@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_FlatnessTolerance, StepDimTol_GeometricTol
 
 //=================================================================================================
 
-StepDimTol_FlatnessTolerance::StepDimTol_FlatnessTolerance() {}
+StepDimTol_FlatnessTolerance::StepDimTol_FlatnessTolerance() = default;

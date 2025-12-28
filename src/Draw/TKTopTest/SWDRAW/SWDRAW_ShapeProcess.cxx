@@ -67,12 +67,12 @@ static int ApplySequence(Draw_Interpretor& di, int argc, const char** argv)
 
 void SWDRAW_ShapeProcess::InitCommands(Draw_Interpretor& theCommands)
 {
-  static bool initactor = 0;
+  static bool initactor = false;
   if (initactor)
   {
     return;
   }
-  initactor = 1;
+  initactor = true;
 
   ShapeProcess_OperLibrary::Init();
 

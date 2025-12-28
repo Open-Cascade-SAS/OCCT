@@ -34,7 +34,7 @@
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepShape_DimensionalSize.hxx>
 
-StepAP214_DocumentReferenceItem::StepAP214_DocumentReferenceItem() {}
+StepAP214_DocumentReferenceItem::StepAP214_DocumentReferenceItem() = default;
 
 int StepAP214_DocumentReferenceItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

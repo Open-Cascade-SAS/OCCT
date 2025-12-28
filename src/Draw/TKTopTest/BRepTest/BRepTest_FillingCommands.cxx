@@ -67,7 +67,7 @@
 
 #include <BRepTest_Objects.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #include <gp_Pnt.hxx>
 
 // pour mes tests

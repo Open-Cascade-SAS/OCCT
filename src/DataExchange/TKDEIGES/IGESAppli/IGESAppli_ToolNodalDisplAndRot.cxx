@@ -39,7 +39,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-IGESAppli_ToolNodalDisplAndRot::IGESAppli_ToolNodalDisplAndRot() {}
+IGESAppli_ToolNodalDisplAndRot::IGESAppli_ToolNodalDisplAndRot() = default;
 
 void IGESAppli_ToolNodalDisplAndRot::ReadOwnParams(
   const occ::handle<IGESAppli_NodalDisplAndRot>& ent,

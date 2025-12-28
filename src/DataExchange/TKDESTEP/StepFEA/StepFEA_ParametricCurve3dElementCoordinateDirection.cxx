@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateDirection,
 
 StepFEA_ParametricCurve3dElementCoordinateDirection::
   StepFEA_ParametricCurve3dElementCoordinateDirection()
-{
-}
+= default;
 
 //=================================================================================================
 

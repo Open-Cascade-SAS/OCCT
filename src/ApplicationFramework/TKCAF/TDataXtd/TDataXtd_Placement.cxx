@@ -45,7 +45,7 @@ occ::handle<TDataXtd_Placement> TDataXtd_Placement::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-TDataXtd_Placement::TDataXtd_Placement() {}
+TDataXtd_Placement::TDataXtd_Placement() = default;
 
 //=================================================================================================
 

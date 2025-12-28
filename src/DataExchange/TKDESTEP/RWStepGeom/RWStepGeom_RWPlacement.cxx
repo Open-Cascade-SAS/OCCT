@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Placement.hxx>
 
-RWStepGeom_RWPlacement::RWStepGeom_RWPlacement() {}
+RWStepGeom_RWPlacement::RWStepGeom_RWPlacement() = default;
 
 void RWStepGeom_RWPlacement::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

@@ -20,7 +20,7 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleSelect.hxx>
 
-RWStepVisual_RWPresentationStyleAssignment::RWStepVisual_RWPresentationStyleAssignment() {}
+RWStepVisual_RWPresentationStyleAssignment::RWStepVisual_RWPresentationStyleAssignment() = default;
 
 void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,

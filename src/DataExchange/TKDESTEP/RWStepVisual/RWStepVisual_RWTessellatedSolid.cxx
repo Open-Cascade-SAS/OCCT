@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedSolid::RWStepVisual_RWTessellatedSolid() {}
+RWStepVisual_RWTessellatedSolid::RWStepVisual_RWTessellatedSolid() = default;
 
 //=================================================================================================
 

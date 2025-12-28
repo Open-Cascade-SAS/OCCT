@@ -21,7 +21,7 @@
 #include <StepShape_Loop.hxx>
 #include <StepShape_OrientedEdge.hxx>
 
-RWStepShape_RWFaceBound::RWStepShape_RWFaceBound() {}
+RWStepShape_RWFaceBound::RWStepShape_RWFaceBound() = default;
 
 void RWStepShape_RWFaceBound::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

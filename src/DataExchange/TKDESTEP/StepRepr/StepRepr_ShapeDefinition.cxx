@@ -18,7 +18,7 @@
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepRepr_ShapeDefinition.hxx>
 
-StepRepr_ShapeDefinition::StepRepr_ShapeDefinition() {}
+StepRepr_ShapeDefinition::StepRepr_ShapeDefinition() = default;
 
 int StepRepr_ShapeDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

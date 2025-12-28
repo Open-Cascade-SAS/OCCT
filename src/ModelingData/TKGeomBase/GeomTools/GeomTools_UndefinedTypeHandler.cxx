@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomTools_UndefinedTypeHandler, Standard_Transient)
 
-GeomTools_UndefinedTypeHandler::GeomTools_UndefinedTypeHandler() {}
+GeomTools_UndefinedTypeHandler::GeomTools_UndefinedTypeHandler() = default;
 
 //=================================================================================================
 

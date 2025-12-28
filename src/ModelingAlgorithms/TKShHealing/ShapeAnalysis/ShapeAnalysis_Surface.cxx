@@ -513,7 +513,7 @@ bool ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d& p2d1,
   double               RV = SA.VResolution(1.);
 
   if (RU < Precision::PConfusion() || RV < Precision::PConfusion())
-    return 0;
+    return false;
   double du = std::abs(p2d1.X() - p2d2.X()) / RU;
   double dv = std::abs(p2d1.Y() - p2d2.Y()) / RV;
   max3d *= ratio;

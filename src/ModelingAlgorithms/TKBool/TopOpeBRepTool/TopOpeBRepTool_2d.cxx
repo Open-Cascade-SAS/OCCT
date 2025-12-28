@@ -212,7 +212,7 @@ Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
 }
 
 // ------------------------------------------------------------------------------------
-int FC2D_AddNewCurveOnSurface(occ::handle<Geom2d_Curve> C2D,
+int FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& C2D,
                               const TopoDS_Edge&        E,
                               const TopoDS_Face&        F,
                               const double&             f2d,
@@ -393,7 +393,7 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_EditableCurveOnSurface(const Topo
 }
 
 // ------------------------------------------------------------------------------------
-static void FC2D_translate(occ::handle<Geom2d_Curve> C2D,
+static void FC2D_translate(const occ::handle<Geom2d_Curve>& C2D,
                            //                           const TopoDS_Edge& E,
                            const TopoDS_Edge&,
                            const TopoDS_Face& F,

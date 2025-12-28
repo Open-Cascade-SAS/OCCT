@@ -18,7 +18,7 @@
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_PointStyle.hxx>
 
-RWStepVisual_RWPointStyle::RWStepVisual_RWPointStyle() {}
+RWStepVisual_RWPointStyle::RWStepVisual_RWPointStyle() = default;
 
 void RWStepVisual_RWPointStyle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

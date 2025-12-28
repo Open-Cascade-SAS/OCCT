@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractType, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ContractType::StepBasic_ContractType() {}
+StepBasic_ContractType::StepBasic_ContractType() = default;
 
 //=================================================================================================
 

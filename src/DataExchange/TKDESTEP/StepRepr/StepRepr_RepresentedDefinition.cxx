@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-StepRepr_RepresentedDefinition::StepRepr_RepresentedDefinition() {}
+StepRepr_RepresentedDefinition::StepRepr_RepresentedDefinition() = default;
 
 //=================================================================================================
 

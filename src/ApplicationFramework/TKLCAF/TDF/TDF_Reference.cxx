@@ -50,7 +50,7 @@ occ::handle<TDF_Reference> TDF_Reference::Set(const TDF_Label& L, const TDF_Labe
 
 //=================================================================================================
 
-TDF_Reference::TDF_Reference() {}
+TDF_Reference::TDF_Reference() = default;
 
 //=================================================================================================
 

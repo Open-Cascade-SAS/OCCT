@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedFace, StepShape_Face)
 
-StepShape_OrientedFace::StepShape_OrientedFace() {}
+StepShape_OrientedFace::StepShape_OrientedFace() = default;
 
 void StepShape_OrientedFace::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_Face>&           aFaceElement,

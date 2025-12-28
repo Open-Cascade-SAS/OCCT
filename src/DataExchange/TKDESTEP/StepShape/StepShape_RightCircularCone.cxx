@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCone, StepGeom_GeometricRepresentationItem)
 
-StepShape_RightCircularCone::StepShape_RightCircularCone() {}
+StepShape_RightCircularCone::StepShape_RightCircularCone() = default;
 
 void StepShape_RightCircularCone::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepGeom_Axis1Placement>&  aPosition,

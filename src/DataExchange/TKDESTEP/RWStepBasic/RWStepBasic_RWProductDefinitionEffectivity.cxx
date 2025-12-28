@@ -19,7 +19,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWProductDefinitionEffectivity::RWStepBasic_RWProductDefinitionEffectivity() {}
+RWStepBasic_RWProductDefinitionEffectivity::RWStepBasic_RWProductDefinitionEffectivity() = default;
 
 void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,

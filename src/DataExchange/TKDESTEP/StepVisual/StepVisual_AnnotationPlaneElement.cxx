@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() {}
+StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() = default;
 
 //=================================================================================================
 

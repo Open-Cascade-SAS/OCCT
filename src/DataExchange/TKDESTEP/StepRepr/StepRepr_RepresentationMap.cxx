@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap, Standard_Transient)
 
-StepRepr_RepresentationMap::StepRepr_RepresentationMap() {}
+StepRepr_RepresentationMap::StepRepr_RepresentationMap() = default;
 
 void StepRepr_RepresentationMap::Init(
   const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin,

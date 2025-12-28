@@ -29,7 +29,7 @@ StepTidy_VectorReducer::StepTidy_VectorReducer(const occ::handle<XSControl_WorkS
 
 bool StepTidy_VectorReducer::replaceLine(const occ::handle<StepGeom_Vector>& theOldEntity,
                                          const occ::handle<StepGeom_Vector>& theNewEntity,
-                                         occ::handle<Standard_Transient>     theSharing)
+                                         const occ::handle<Standard_Transient>&     theSharing)
 {
   occ::handle<StepGeom_Line> aLine = occ::down_cast<StepGeom_Line>(theSharing);
   if (aLine->Dir() == theOldEntity)

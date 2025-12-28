@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() {}
+RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() = default;
 
 //=================================================================================================
 

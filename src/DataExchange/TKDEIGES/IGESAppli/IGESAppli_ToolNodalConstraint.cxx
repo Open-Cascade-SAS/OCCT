@@ -35,7 +35,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESAppli_ToolNodalConstraint::IGESAppli_ToolNodalConstraint() {}
+IGESAppli_ToolNodalConstraint::IGESAppli_ToolNodalConstraint() = default;
 
 void IGESAppli_ToolNodalConstraint::ReadOwnParams(const occ::handle<IGESAppli_NodalConstraint>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,

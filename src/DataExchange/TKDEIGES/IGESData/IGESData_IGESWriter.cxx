@@ -34,7 +34,7 @@
 #include <Standard_PCharacter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #define MaxcarsG 72
 #define MaxcarsP 64
 

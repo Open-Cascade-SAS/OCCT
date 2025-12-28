@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PositionTolerance, StepDimTol_GeometricTol
 
 //=================================================================================================
 
-StepDimTol_PositionTolerance::StepDimTol_PositionTolerance() {}
+StepDimTol_PositionTolerance::StepDimTol_PositionTolerance() = default;

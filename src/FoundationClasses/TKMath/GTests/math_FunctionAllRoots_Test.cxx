@@ -24,19 +24,19 @@ namespace
 class CubicFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual bool Value(const double X, double& F) override
+  bool Value(const double X, double& F) override
   {
     F = X * X * X - 6.0 * X * X + 11.0 * X - 6.0;
     return true;
   }
 
-  virtual bool Derivative(const double X, double& D) override
+  bool Derivative(const double X, double& D) override
   {
     D = 3.0 * X * X - 12.0 * X + 11.0;
     return true;
   }
 
-  virtual bool Values(const double X, double& F, double& D) override
+  bool Values(const double X, double& F, double& D) override
   {
     F = X * X * X - 6.0 * X * X + 11.0 * X - 6.0;
     D = 3.0 * X * X - 12.0 * X + 11.0;
@@ -48,19 +48,19 @@ public:
 class SineFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual bool Value(const double X, double& F) override
+  bool Value(const double X, double& F) override
   {
     F = sin(X);
     return true;
   }
 
-  virtual bool Derivative(const double X, double& D) override
+  bool Derivative(const double X, double& D) override
   {
     D = cos(X);
     return true;
   }
 
-  virtual bool Values(const double X, double& F, double& D) override
+  bool Values(const double X, double& F, double& D) override
   {
     F = sin(X);
     D = cos(X);
@@ -72,7 +72,7 @@ public:
 class NullIntervalFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual bool Value(const double X, double& F) override
+  bool Value(const double X, double& F) override
   {
     if (X >= 2.0 && X <= 4.0)
       F = 0.0;
@@ -83,7 +83,7 @@ public:
     return true;
   }
 
-  virtual bool Derivative(const double X, double& D) override
+  bool Derivative(const double X, double& D) override
   {
     if (X >= 2.0 && X <= 4.0)
       D = 0.0;
@@ -92,7 +92,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const double X, double& F, double& D) override
+  bool Values(const double X, double& F, double& D) override
   {
     if (X >= 2.0 && X <= 4.0)
     {
@@ -117,19 +117,19 @@ public:
 class QuadraticFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual bool Value(const double X, double& F) override
+  bool Value(const double X, double& F) override
   {
     F = (X - 1.5) * (X - 1.5) - 0.25;
     return true;
   }
 
-  virtual bool Derivative(const double X, double& D) override
+  bool Derivative(const double X, double& D) override
   {
     D = 2.0 * (X - 1.5);
     return true;
   }
 
-  virtual bool Values(const double X, double& F, double& D) override
+  bool Values(const double X, double& F, double& D) override
   {
     F = (X - 1.5) * (X - 1.5) - 0.25;
     D = 2.0 * (X - 1.5);
@@ -141,19 +141,19 @@ public:
 class ZeroFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual bool Value(const double, double& F) override
+  bool Value(const double, double& F) override
   {
     F = 0.0;
     return true;
   }
 
-  virtual bool Derivative(const double, double& D) override
+  bool Derivative(const double, double& D) override
   {
     D = 0.0;
     return true;
   }
 
-  virtual bool Values(const double, double& F, double& D) override
+  bool Values(const double, double& F, double& D) override
   {
     F = 0.0;
     D = 0.0;

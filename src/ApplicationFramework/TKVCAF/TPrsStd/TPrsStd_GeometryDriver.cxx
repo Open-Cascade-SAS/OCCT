@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_GeometryDriver, TPrsStd_Driver)
 
 //=================================================================================================
 
-TPrsStd_GeometryDriver::TPrsStd_GeometryDriver() {}
+TPrsStd_GeometryDriver::TPrsStd_GeometryDriver() = default;
 
 //=================================================================================================
 

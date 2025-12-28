@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepFEA_CurveElementEndCoordinateSystem::StepFEA_CurveElementEndCoordinateSystem() {}
+StepFEA_CurveElementEndCoordinateSystem::StepFEA_CurveElementEndCoordinateSystem() = default;
 
 //=================================================================================================
 

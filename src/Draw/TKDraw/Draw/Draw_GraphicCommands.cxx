@@ -31,7 +31,7 @@
 #include <iomanip>
 #include <fstream>
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808

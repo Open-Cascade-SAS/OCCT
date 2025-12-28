@@ -57,7 +57,7 @@ BRepSweep_NumLinearRegularSweep::BRepSweep_NumLinearRegularSweep(const BRepSweep
 
 //=================================================================================================
 
-BRepSweep_NumLinearRegularSweep::~BRepSweep_NumLinearRegularSweep() {}
+BRepSweep_NumLinearRegularSweep::~BRepSweep_NumLinearRegularSweep() = default;
 
 //=======================================================================
 // function : Shape

@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWPerpendicularityTolerance::RWStepDimTol_RWPerpendicularityTolerance() {}
+RWStepDimTol_RWPerpendicularityTolerance::RWStepDimTol_RWPerpendicularityTolerance() = default;
 
 //=================================================================================================
 

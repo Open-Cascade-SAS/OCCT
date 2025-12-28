@@ -56,7 +56,7 @@ occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Set(
 
 //=================================================================================================
 
-XCAFDoc_NoteComment::XCAFDoc_NoteComment() {}
+XCAFDoc_NoteComment::XCAFDoc_NoteComment() = default;
 
 //=================================================================================================
 

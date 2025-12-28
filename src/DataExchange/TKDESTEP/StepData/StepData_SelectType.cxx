@@ -228,4 +228,4 @@ void StepData_SelectType::SetReal(const double val, const char* name)
   thevalue = sm;
 }
 
-StepData_SelectType::~StepData_SelectType() {}
+StepData_SelectType::~StepData_SelectType() = default;

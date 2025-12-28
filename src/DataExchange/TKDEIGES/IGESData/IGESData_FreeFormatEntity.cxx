@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_FreeFormatEntity, IGESData_UndefinedEntity)
 
 //  Provides simple access to the constitution of an UndefinedEntity :
 //  Methods of UndefinedContent, + Type & Form, + AddEntities (little gadget)
-IGESData_FreeFormatEntity::IGESData_FreeFormatEntity() {}
+IGESData_FreeFormatEntity::IGESData_FreeFormatEntity() = default;
 
 void IGESData_FreeFormatEntity::SetTypeNumber(const int typenum)
 {

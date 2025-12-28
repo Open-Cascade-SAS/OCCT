@@ -35,7 +35,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESGeom_ToolFlash::IGESGeom_ToolFlash() {}
+IGESGeom_ToolFlash::IGESGeom_ToolFlash() = default;
 
 void IGESGeom_ToolFlash::ReadOwnParams(const occ::handle<IGESGeom_Flash>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,

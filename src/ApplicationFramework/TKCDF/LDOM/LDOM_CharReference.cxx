@@ -17,9 +17,9 @@
 
 #include <Standard_CString.hxx>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 //   Uncomment this line if you want that your XML files contain codes 0xc0-0xff
 //   as defined in Latin-1 code set. Otherwise these codes are written

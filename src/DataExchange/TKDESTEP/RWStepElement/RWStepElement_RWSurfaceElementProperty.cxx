@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWSurfaceElementProperty::RWStepElement_RWSurfaceElementProperty() {}
+RWStepElement_RWSurfaceElementProperty::RWStepElement_RWSurfaceElementProperty() = default;
 
 //=================================================================================================
 

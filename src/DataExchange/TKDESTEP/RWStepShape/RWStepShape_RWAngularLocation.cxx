@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWAngularLocation::RWStepShape_RWAngularLocation() {}
+RWStepShape_RWAngularLocation::RWStepShape_RWAngularLocation() = default;
 
 //=================================================================================================
 

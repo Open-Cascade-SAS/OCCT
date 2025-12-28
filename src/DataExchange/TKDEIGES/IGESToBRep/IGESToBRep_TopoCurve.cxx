@@ -84,7 +84,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // added by rln 32/12/97
 // #include <NCollection_Array1<int>.hxx>
@@ -93,7 +93,7 @@
 //=================================================================================================
 
 IGESToBRep_TopoCurve::IGESToBRep_TopoCurve()
-    : IGESToBRep_CurveAndSurface()
+     
 {
 }
 

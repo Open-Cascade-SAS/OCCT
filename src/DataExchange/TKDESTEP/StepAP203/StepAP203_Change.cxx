@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_Change, StepBasic_ActionAssignment)
 
 //=================================================================================================
 
-StepAP203_Change::StepAP203_Change() {}
+StepAP203_Change::StepAP203_Change() = default;
 
 //=================================================================================================
 

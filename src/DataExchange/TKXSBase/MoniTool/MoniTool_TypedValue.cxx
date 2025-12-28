@@ -21,7 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TypedValue, Standard_Transient)
 
 // Not Used :
@@ -217,7 +217,7 @@ TCollection_AsciiString MoniTool_TypedValue::Definition() const
     case MoniTool_ValueEnum: {
       def.AssignCat("Enum");
       int  startcase = 0, endcase = 0;
-      bool match = 0;
+      bool match = false;
       EnumDef(startcase, endcase, match);
       Sprintf(mess, " [%s%d-%d]", (match ? "in " : ""), startcase, endcase);
       def.AssignCat(mess);

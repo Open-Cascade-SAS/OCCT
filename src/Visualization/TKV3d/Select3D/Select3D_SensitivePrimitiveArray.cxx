@@ -139,7 +139,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
 
 private:
   Select3D_SensitivePrimitiveArray_InitFunctor operator=(
-    Select3D_SensitivePrimitiveArray_InitFunctor&);
+    Select3D_SensitivePrimitiveArray_InitFunctor&) = delete;
 
 private:
   Select3D_SensitivePrimitiveArray& myPrimArray;
@@ -162,7 +162,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_BVHFun
 
 private:
   Select3D_SensitivePrimitiveArray_BVHFunctor operator=(
-    Select3D_SensitivePrimitiveArray_BVHFunctor&);
+    Select3D_SensitivePrimitiveArray_BVHFunctor&) = delete;
 
 private:
   NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>& myGroups;

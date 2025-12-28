@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndSolidAngleUnit,
                            StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndSolidAngleUnit::StepBasic_ConversionBasedUnitAndSolidAngleUnit() {}
+StepBasic_ConversionBasedUnitAndSolidAngleUnit::StepBasic_ConversionBasedUnitAndSolidAngleUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndSolidAngleUnit::Init(
   const occ::handle<StepBasic_DimensionalExponents>& aDimensions,

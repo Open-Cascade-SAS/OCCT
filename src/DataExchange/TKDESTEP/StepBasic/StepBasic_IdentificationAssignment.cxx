@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_IdentificationAssignment, Standard_Transien
 
 //=================================================================================================
 
-StepBasic_IdentificationAssignment::StepBasic_IdentificationAssignment() {}
+StepBasic_IdentificationAssignment::StepBasic_IdentificationAssignment() = default;
 
 //=================================================================================================
 

@@ -21,7 +21,7 @@
 #include <StepShape_Sphere.hxx>
 #include <StepShape_Torus.hxx>
 
-StepShape_CsgPrimitive::StepShape_CsgPrimitive() {}
+StepShape_CsgPrimitive::StepShape_CsgPrimitive() = default;
 
 int StepShape_CsgPrimitive::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

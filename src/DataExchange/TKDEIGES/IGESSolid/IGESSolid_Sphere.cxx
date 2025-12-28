@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Sphere, IGESData_IGESEntity)
 
-IGESSolid_Sphere::IGESSolid_Sphere() {}
+IGESSolid_Sphere::IGESSolid_Sphere() = default;
 
 void IGESSolid_Sphere::Init(const double aRadius, const gp_XYZ& aCenter)
 {

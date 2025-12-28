@@ -82,7 +82,7 @@ occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(
 
 //=================================================================================================
 
-XCAFDoc_NoteBinData::XCAFDoc_NoteBinData() {}
+XCAFDoc_NoteBinData::XCAFDoc_NoteBinData() = default;
 
 //=================================================================================================
 

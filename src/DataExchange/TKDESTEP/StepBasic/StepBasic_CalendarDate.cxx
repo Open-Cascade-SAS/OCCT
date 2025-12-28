@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CalendarDate, StepBasic_Date)
 
-StepBasic_CalendarDate::StepBasic_CalendarDate() {}
+StepBasic_CalendarDate::StepBasic_CalendarDate() = default;
 
 void StepBasic_CalendarDate::Init(const int aYearComponent,
                                   const int aDayComponent,

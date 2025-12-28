@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RoleAssociation, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_RoleAssociation::StepBasic_RoleAssociation() {}
+StepBasic_RoleAssociation::StepBasic_RoleAssociation() = default;
 
 //=================================================================================================
 

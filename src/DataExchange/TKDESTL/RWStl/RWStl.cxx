@@ -71,14 +71,14 @@ class Reader : public RWStl_Reader
 {
 public:
   //! Add new node
-  virtual int AddNode(const gp_XYZ& thePnt) override
+  int AddNode(const gp_XYZ& thePnt) override
   {
     myNodes.Append(thePnt);
     return myNodes.Size();
   }
 
   //! Add new triangle
-  virtual void AddTriangle(int theNode1, int theNode2, int theNode3) override
+  void AddTriangle(int theNode1, int theNode2, int theNode3) override
   {
     myTriangles.Append(Poly_Triangle(theNode1, theNode2, theNode3));
   }
@@ -121,7 +121,7 @@ class MultiDomainReader : public Reader
 public:
   //! Add new solid
   //! Add triangulation to triangulation list for multi-domain case
-  virtual void AddSolid() override
+  void AddSolid() override
   {
     if (occ::handle<Poly_Triangulation> aCurrentTri = GetTriangulation())
     {

@@ -28,8 +28,8 @@
 #include <TopoDS_Shape.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 //
 //
 static int bfillds(Draw_Interpretor&, int, const char**);

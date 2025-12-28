@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaAxis2Placement3d::RWStepFEA_RWFeaAxis2Placement3d() {}
+RWStepFEA_RWFeaAxis2Placement3d::RWStepFEA_RWFeaAxis2Placement3d() = default;
 
 //=================================================================================================
 

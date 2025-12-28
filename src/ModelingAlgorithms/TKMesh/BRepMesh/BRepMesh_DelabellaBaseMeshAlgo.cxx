@@ -19,8 +19,8 @@
 #include <BRepMesh_Delaun.hxx>
 #include <Message.hxx>
 
-#include <string.h>
-#include <stdarg.h>
+#include <cstring>
+#include <cstdarg>
 
 #include "delabella.pxx"
 
@@ -59,11 +59,11 @@ static int logDelabella2Occ(void* theStream, const char* theFormat, ...)
 
 //=================================================================================================
 
-BRepMesh_DelabellaBaseMeshAlgo::BRepMesh_DelabellaBaseMeshAlgo() {}
+BRepMesh_DelabellaBaseMeshAlgo::BRepMesh_DelabellaBaseMeshAlgo() = default;
 
 //=================================================================================================
 
-BRepMesh_DelabellaBaseMeshAlgo::~BRepMesh_DelabellaBaseMeshAlgo() {}
+BRepMesh_DelabellaBaseMeshAlgo::~BRepMesh_DelabellaBaseMeshAlgo() = default;
 
 //=================================================================================================
 

@@ -27,7 +27,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESModel, Interface_InterfaceModel)
 
 static const char* voidline = "";

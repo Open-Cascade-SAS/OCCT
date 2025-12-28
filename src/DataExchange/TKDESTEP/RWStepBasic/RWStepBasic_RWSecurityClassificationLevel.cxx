@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWSecurityClassificationLevel::RWStepBasic_RWSecurityClassificationLevel() {}
+RWStepBasic_RWSecurityClassificationLevel::RWStepBasic_RWSecurityClassificationLevel() = default;
 
 void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,

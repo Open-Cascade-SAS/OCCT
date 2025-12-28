@@ -74,7 +74,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef DRAW
   #include <DBRep.hxx>
   #include <Geom2d_BoundedCurve.hxx>
@@ -268,7 +268,7 @@ static void Store(
   const NCollection_List<TopoDS_Shape>& theLV,
   const double                          theTol,
   const bool                            IsToUpdate,
-  occ::handle<BRepAlgo_AsDes>           theAsDes2d,
+  const occ::handle<BRepAlgo_AsDes>&           theAsDes2d,
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theDMVV)
 {
@@ -387,7 +387,7 @@ static void Store(
   const NCollection_List<TopoDS_Shape>& theLV1,
   const NCollection_List<TopoDS_Shape>& theLV2,
   const double                          theTol,
-  occ::handle<BRepAlgo_AsDes>           theAsDes2d,
+  const occ::handle<BRepAlgo_AsDes>&           theAsDes2d,
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theDMVV)
 {
@@ -1761,7 +1761,7 @@ bool BRepOffset_Inter2d::ConnexIntByInt(
       return false;
     }
     const NCollection_List<TopoDS_Shape>&    L       = it.Value();
-    bool                                     YaBuild = 0;
+    bool                                     YaBuild = false;
     NCollection_List<TopoDS_Shape>::Iterator itL(L);
     for (; itL.More(); itL.Next())
     {
@@ -1844,7 +1844,7 @@ bool BRepOffset_Inter2d::ConnexIntByInt(
       // Inter processing of images of CurE NextE.
       //------------------------------------------
       NCollection_List<TopoDS_Shape>     LV1, LV2;
-      bool                               DoInter = 1;
+      bool                               DoInter = true;
       TopoDS_Shape                       NE1, NE2;
       NCollection_Sequence<TopoDS_Shape> NE1seq, NE2seq;
       TopAbs_Orientation                 anOr1 = TopAbs_EXTERNAL, anOr2 = TopAbs_EXTERNAL;
@@ -1884,7 +1884,7 @@ bool BRepOffset_Inter2d::ConnexIntByInt(
       }
       else
       {
-        DoInter = 0;
+        DoInter = false;
       }
       if (DoInter)
       {

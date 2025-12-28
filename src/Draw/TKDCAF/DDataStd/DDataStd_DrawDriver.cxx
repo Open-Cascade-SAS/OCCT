@@ -63,7 +63,7 @@ void DDataStd_DrawDriver::Set(const occ::handle<DDataStd_DrawDriver>& DD)
 
 //=================================================================================================
 
-DDataStd_DrawDriver::DDataStd_DrawDriver() {}
+DDataStd_DrawDriver::DDataStd_DrawDriver() = default;
 
 //=================================================================================================
 

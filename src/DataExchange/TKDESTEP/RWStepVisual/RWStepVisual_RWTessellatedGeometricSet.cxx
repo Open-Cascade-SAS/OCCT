@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedGeometricSet::RWStepVisual_RWTessellatedGeometricSet() {}
+RWStepVisual_RWTessellatedGeometricSet::RWStepVisual_RWTessellatedGeometricSet() = default;
 
 //=================================================================================================
 

@@ -42,7 +42,7 @@ IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline(
   const TopoDS_Shape&              theShape,
   const int                        theShapeID,
   const occ::handle<Prs3d_Drawer>& theDrawerLink)
-    : Standard_Transient()
+     
 {
   /* ===========================
    *  Allocate involved filters

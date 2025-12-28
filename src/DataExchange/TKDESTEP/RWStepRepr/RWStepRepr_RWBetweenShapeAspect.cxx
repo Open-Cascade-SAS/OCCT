@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWBetweenShapeAspect::RWStepRepr_RWBetweenShapeAspect() {}
+RWStepRepr_RWBetweenShapeAspect::RWStepRepr_RWBetweenShapeAspect() = default;
 
 //=================================================================================================
 

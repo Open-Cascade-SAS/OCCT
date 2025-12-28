@@ -38,7 +38,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
-IGESDimen_ToolNewDimensionedGeometry::IGESDimen_ToolNewDimensionedGeometry() {}
+IGESDimen_ToolNewDimensionedGeometry::IGESDimen_ToolNewDimensionedGeometry() = default;
 
 void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,

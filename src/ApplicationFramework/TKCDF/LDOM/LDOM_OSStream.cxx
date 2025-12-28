@@ -17,7 +17,7 @@
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_Assert.hxx>
 
-#include <string.h>
+#include <cstring>
 
 //=================================================================================================
 
@@ -155,4 +155,4 @@ LDOM_OSStream::LDOM_OSStream(const int theMaxBuf)
 // function : ~LDOM_OSStream()
 // purpose  : Destructor - for g++ vtable generation in *this* translation unit
 //=======================================================================
-LDOM_OSStream::~LDOM_OSStream() {}
+LDOM_OSStream::~LDOM_OSStream() = default;

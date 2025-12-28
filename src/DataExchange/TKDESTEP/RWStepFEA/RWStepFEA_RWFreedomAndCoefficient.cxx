@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient() {}
+RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient() = default;
 
 //=================================================================================================
 

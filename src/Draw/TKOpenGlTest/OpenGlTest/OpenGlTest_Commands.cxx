@@ -92,15 +92,15 @@ public:
     {
     }
 
-    virtual ~Element() {}
+    ~Element() override = default;
 
-    virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override
     {
       if (!myIObj.IsNull())
         myIObj->Render(theWorkspace);
     }
 
-    virtual void Release(OpenGl_Context*)
+    void Release(OpenGl_Context*) override
     {
       //
     }
@@ -111,11 +111,11 @@ public:
 
 private:
   // Virtual methods implementation
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
                                 const int                               theMode) override;
 
   // Called by VUserDrawElement
@@ -503,7 +503,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 static int VVbo(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   const bool toSet    = (theArgNb > 1);
-  const bool toUseVbo = toSet ? (Draw::Atoi(theArgVec[1]) == 0) : 1;
+  const bool toUseVbo = toSet ? (Draw::Atoi(theArgVec[1]) == 0) : true;
   if (toSet)
   {
     getDefaultCaps()->vboDisable = toUseVbo;

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
 
-StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics() {}
+StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics() = default;
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(
   const occ::handle<TCollection_HAsciiString>&                                aName,

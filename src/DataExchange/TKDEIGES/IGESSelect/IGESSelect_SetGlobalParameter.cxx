@@ -22,7 +22,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetGlobalParameter, IGESSelect_ModelModifier)
 
 IGESSelect_SetGlobalParameter::IGESSelect_SetGlobalParameter(const int numpar)

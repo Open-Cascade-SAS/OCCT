@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDerivedDefinitions,
 
 StepElement_CurveElementSectionDerivedDefinitions::
   StepElement_CurveElementSectionDerivedDefinitions()
-{
-}
+= default;
 
 //=================================================================================================
 

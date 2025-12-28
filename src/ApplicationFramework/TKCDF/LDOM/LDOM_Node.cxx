@@ -42,12 +42,7 @@ const LDOM_MemManager& LDOM_Node::getOwnerDocument() const
 //=======================================================================
 
 LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther)
-{
-  myDocument  = theOther.myDocument;
-  myOrigin    = theOther.myOrigin;
-  myLastChild = theOther.myLastChild;
-  return *this;
-}
+= default;
 
 //=======================================================================
 // function : operator =

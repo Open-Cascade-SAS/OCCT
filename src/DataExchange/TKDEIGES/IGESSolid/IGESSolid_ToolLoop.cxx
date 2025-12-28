@@ -42,12 +42,12 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 03/08/98
 //=================================================================================================
 
-IGESSolid_ToolLoop::IGESSolid_ToolLoop() {}
+IGESSolid_ToolLoop::IGESSolid_ToolLoop() = default;
 
 //=================================================================================================
 

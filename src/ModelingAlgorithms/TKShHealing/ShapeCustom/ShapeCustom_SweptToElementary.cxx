@@ -46,7 +46,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_SweptToElementary, ShapeCustom_Modificati
 
 //=================================================================================================
 
-ShapeCustom_SweptToElementary::ShapeCustom_SweptToElementary() {}
+ShapeCustom_SweptToElementary::ShapeCustom_SweptToElementary() = default;
 
 //=======================================================================
 // function : IsToConvert

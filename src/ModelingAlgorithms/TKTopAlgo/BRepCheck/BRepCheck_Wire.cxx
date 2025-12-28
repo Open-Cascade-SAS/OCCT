@@ -65,7 +65,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Wire, BRepCheck_Result)
 
 static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,

@@ -19,7 +19,7 @@
 
 #include "RWStepBasic_RWAheadOrBehind.pxx"
 
-RWStepBasic_RWCoordinatedUniversalTimeOffset::RWStepBasic_RWCoordinatedUniversalTimeOffset() {}
+RWStepBasic_RWCoordinatedUniversalTimeOffset::RWStepBasic_RWCoordinatedUniversalTimeOffset() = default;
 
 void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

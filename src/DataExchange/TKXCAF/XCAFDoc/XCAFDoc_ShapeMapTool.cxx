@@ -75,7 +75,7 @@ void XCAFDoc_ShapeMapTool::Paste(const occ::handle<TDF_Attribute>& /*into*/,
 
 //=================================================================================================
 
-XCAFDoc_ShapeMapTool::XCAFDoc_ShapeMapTool() {}
+XCAFDoc_ShapeMapTool::XCAFDoc_ShapeMapTool() = default;
 
 //=================================================================================================
 

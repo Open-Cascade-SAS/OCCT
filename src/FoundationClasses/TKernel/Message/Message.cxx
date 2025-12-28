@@ -19,7 +19,7 @@
 #include <Message_Report.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 namespace
 {

@@ -26,8 +26,7 @@
 
 RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::
   RWStepFEA_RWAlignedCurve3dElementCoordinateSystem()
-{
-}
+= default;
 
 //=================================================================================================
 

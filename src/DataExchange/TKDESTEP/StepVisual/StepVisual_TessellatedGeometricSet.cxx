@@ -15,7 +15,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)
 
-StepVisual_TessellatedGeometricSet::StepVisual_TessellatedGeometricSet() {}
+StepVisual_TessellatedGeometricSet::StepVisual_TessellatedGeometricSet() = default;
 
 void StepVisual_TessellatedGeometricSet::Init(
   const occ::handle<TCollection_HAsciiString>&                                           theName,

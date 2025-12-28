@@ -23,5 +23,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicLinkRepresentationAssociation
 
 StepKinematics_KinematicLinkRepresentationAssociation::
   StepKinematics_KinematicLinkRepresentationAssociation()
-{
-}
+= default;

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePairValue, StepKinematic
 
 //=================================================================================================
 
-StepKinematics_PointOnSurfacePairValue::StepKinematics_PointOnSurfacePairValue() {}
+StepKinematics_PointOnSurfacePairValue::StepKinematics_PointOnSurfacePairValue() = default;
 
 //=================================================================================================
 

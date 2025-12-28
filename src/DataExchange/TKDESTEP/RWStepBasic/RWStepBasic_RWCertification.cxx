@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWCertification::RWStepBasic_RWCertification() {}
+RWStepBasic_RWCertification::RWStepBasic_RWCertification() = default;
 
 //=================================================================================================
 

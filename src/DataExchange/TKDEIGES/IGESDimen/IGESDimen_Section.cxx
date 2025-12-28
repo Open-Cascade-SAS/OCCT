@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Section, IGESData_IGESEntity)
 
-IGESDimen_Section::IGESDimen_Section() {}
+IGESDimen_Section::IGESDimen_Section() = default;
 
 void IGESDimen_Section::Init(const int                                      dataType,
                              const double                                   aDisp,

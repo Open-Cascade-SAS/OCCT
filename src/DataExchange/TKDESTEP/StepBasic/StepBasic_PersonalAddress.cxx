@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonalAddress, StepBasic_Address)
 
-StepBasic_PersonalAddress::StepBasic_PersonalAddress() {}
+StepBasic_PersonalAddress::StepBasic_PersonalAddress() = default;
 
 void StepBasic_PersonalAddress::Init(
   const bool                                                             hasAinternalLocation,

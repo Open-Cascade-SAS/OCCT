@@ -22,8 +22,8 @@
 #include <DrawTrSurf.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>

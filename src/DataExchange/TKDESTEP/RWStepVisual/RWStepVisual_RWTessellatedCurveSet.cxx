@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedCurveSet::RWStepVisual_RWTessellatedCurveSet() {}
+RWStepVisual_RWTessellatedCurveSet::RWStepVisual_RWTessellatedCurveSet() = default;
 
 //=================================================================================================
 

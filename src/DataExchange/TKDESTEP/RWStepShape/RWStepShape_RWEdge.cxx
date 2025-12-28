@@ -18,7 +18,7 @@
 #include <StepShape_Edge.hxx>
 #include <StepShape_Vertex.hxx>
 
-RWStepShape_RWEdge::RWStepShape_RWEdge() {}
+RWStepShape_RWEdge::RWStepShape_RWEdge() = default;
 
 void RWStepShape_RWEdge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                   const int                                   num,

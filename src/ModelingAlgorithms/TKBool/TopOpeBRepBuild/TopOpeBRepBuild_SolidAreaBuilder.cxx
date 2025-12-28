@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder() {}
+TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder() = default;
 
 //=================================================================================================
 

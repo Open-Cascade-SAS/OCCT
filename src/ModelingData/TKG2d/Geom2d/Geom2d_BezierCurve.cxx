@@ -163,7 +163,7 @@ void Geom2d_BezierCurve::Increase(const int Deg)
     nweights = new NCollection_HArray1<double>(1, Deg + 1);
     BSplCLib::IncreaseDegree(Degree(),
                              Deg,
-                             0,
+                             false,
                              poles->Array1(),
                              &weights->Array1(),
                              bidknots,
@@ -177,7 +177,7 @@ void Geom2d_BezierCurve::Increase(const int Deg)
   {
     BSplCLib::IncreaseDegree(Degree(),
                              Deg,
-                             0,
+                             false,
                              poles->Array1(),
                              BSplCLib::NoWeights(),
                              bidknots,
@@ -360,7 +360,7 @@ void Geom2d_BezierCurve::Segment(const double U1, const double U2)
     NCollection_Array1<double> wcoeffs(1, poles->Size());
     BSplCLib::BuildCache(0.0,
                          1.0,
-                         0,
+                         false,
                          Degree(),
                          bidflatknots,
                          poles->Array1(),
@@ -374,7 +374,7 @@ void Geom2d_BezierCurve::Segment(const double U1, const double U2)
   {
     BSplCLib::BuildCache(0.0,
                          1.0,
-                         0,
+                         false,
                          Degree(),
                          bidflatknots,
                          poles->Array1(),
@@ -675,7 +675,7 @@ void Geom2d_BezierCurve::Resolution(const double ToleranceUV, double& UTolerance
                            1.,
                            maxderivinv);
     }
-    maxderivinvok = 1;
+    maxderivinvok = true;
   }
   UTolerance = ToleranceUV * maxderivinv;
 }

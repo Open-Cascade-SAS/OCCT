@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerCount, IFSelect_Dispatch)
 
-IFSelect_DispPerCount::IFSelect_DispPerCount() {}
+IFSelect_DispPerCount::IFSelect_DispPerCount() = default;
 
 occ::handle<IFSelect_IntParam> IFSelect_DispPerCount::Count() const
 {

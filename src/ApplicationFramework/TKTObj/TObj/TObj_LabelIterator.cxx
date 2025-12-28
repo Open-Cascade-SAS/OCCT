@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_LabelIterator, TObj_ObjectIterator)
 
 //=================================================================================================
 
-TObj_LabelIterator::TObj_LabelIterator() {}
+TObj_LabelIterator::TObj_LabelIterator() = default;
 
 //=================================================================================================
 

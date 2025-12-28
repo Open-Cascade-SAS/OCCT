@@ -18,7 +18,7 @@
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepShape_RightCircularCylinder.hxx>
 
-RWStepShape_RWRightCircularCylinder::RWStepShape_RWRightCircularCylinder() {}
+RWStepShape_RWRightCircularCylinder::RWStepShape_RWRightCircularCylinder() = default;
 
 void RWStepShape_RWRightCircularCylinder::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

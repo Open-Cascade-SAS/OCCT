@@ -35,7 +35,7 @@
 // MGE 31/07/98
 //=================================================================================================
 
-IGESGeom_ToolTrimmedSurface::IGESGeom_ToolTrimmedSurface() {}
+IGESGeom_ToolTrimmedSurface::IGESGeom_ToolTrimmedSurface() = default;
 
 //=================================================================================================
 

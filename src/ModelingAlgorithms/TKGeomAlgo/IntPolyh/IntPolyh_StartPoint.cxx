@@ -17,7 +17,7 @@
 #include <IntPolyh_StartPoint.hxx>
 #include <IntPolyh_Triangle.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // #include <Precision.hxx>
 #define MyConfusionPrecision 10.0e-12
 

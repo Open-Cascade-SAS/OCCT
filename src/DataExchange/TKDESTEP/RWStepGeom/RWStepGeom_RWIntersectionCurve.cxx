@@ -22,7 +22,7 @@
 
 #include "RWStepGeom_RWPreferredSurfaceCurveRepresentation.pxx"
 
-RWStepGeom_RWIntersectionCurve::RWStepGeom_RWIntersectionCurve() {}
+RWStepGeom_RWIntersectionCurve::RWStepGeom_RWIntersectionCurve() = default;
 
 void RWStepGeom_RWIntersectionCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&    data,

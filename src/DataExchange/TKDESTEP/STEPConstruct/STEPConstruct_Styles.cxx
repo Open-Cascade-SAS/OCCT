@@ -222,7 +222,7 @@ bool ProcessAsCurveStyle(const StepVisual_PresentationStyleSelect& thePSS,
 
 //=================================================================================================
 
-STEPConstruct_Styles::STEPConstruct_Styles() {}
+STEPConstruct_Styles::STEPConstruct_Styles() = default;
 
 //=================================================================================================
 

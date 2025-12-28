@@ -61,7 +61,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // Number of BRepCheck_Statuses in BRepCheck_Status.hxx file
 //(BRepCheck_NoError is not considered, i.e. general status

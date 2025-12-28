@@ -54,7 +54,7 @@ public:
   }
 
   //
-  ~BOPAlgo_CBK() {}
+  ~BOPAlgo_CBK() = default;
 
   //
   void SetConnexityBlock(const BOPTools_ConnexityBlock& aCB)
@@ -90,7 +90,7 @@ typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
 //=================================================================================================
 
 BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter()
-    : BOPAlgo_Algo(),
+    : 
       myStartShapes(myAllocator),
       myShells(myAllocator),
       myLCB(myAllocator)
@@ -110,7 +110,7 @@ BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter(
 
 //=================================================================================================
 
-BOPAlgo_ShellSplitter::~BOPAlgo_ShellSplitter() {}
+BOPAlgo_ShellSplitter::~BOPAlgo_ShellSplitter() = default;
 
 //=================================================================================================
 

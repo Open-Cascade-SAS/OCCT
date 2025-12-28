@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
-StepGeom_BSplineCurve::StepGeom_BSplineCurve() {}
+StepGeom_BSplineCurve::StepGeom_BSplineCurve() = default;
 
 void StepGeom_BSplineCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

@@ -157,9 +157,9 @@ parser::parser(step::scanner* scanner_yyarg)
 {
 }
 
-parser::~parser() {}
+parser::~parser() = default;
 
-parser::syntax_error::~syntax_error() YY_NOEXCEPT YY_NOTHROW {}
+parser::syntax_error::~syntax_error() YY_NOEXCEPT YY_NOTHROW = default;
 
 /*---------------.
 | symbol kinds.  |
@@ -222,9 +222,8 @@ parser::by_kind::by_kind(by_kind&& that)
 #endif
 
 parser::by_kind::by_kind(const by_kind& that)
-    : kind_(that.kind_)
-{
-}
+     
+= default;
 
 parser::by_kind::by_kind(token_kind_type t)
     : kind_(yytranslate_(t))
@@ -255,7 +254,7 @@ parser::symbol_kind_type parser::by_kind::type_get() const YY_NOEXCEPT
 // by_state.
 parser::by_state::by_state() YY_NOEXCEPT : state(empty_state) {}
 
-parser::by_state::by_state(const by_state& that) YY_NOEXCEPT : state(that.state) {}
+parser::by_state::by_state(const by_state& that) YY_NOEXCEPT = default;
 
 void parser::by_state::clear() YY_NOEXCEPT
 {
@@ -278,7 +277,7 @@ parser::symbol_kind_type parser::by_state::kind() const YY_NOEXCEPT
     return YY_CAST(symbol_kind_type, yystos_[+state]);
 }
 
-parser::stack_symbol_type::stack_symbol_type() {}
+parser::stack_symbol_type::stack_symbol_type() = default;
 
 parser::stack_symbol_type::stack_symbol_type(YY_RVREF(stack_symbol_type) that)
     : super_type(YY_MOVE(that.state), YY_MOVE(that.value))

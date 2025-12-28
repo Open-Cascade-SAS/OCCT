@@ -32,7 +32,7 @@
 #include <XmlTObjDrivers.hxx>
 #include <OSD_FileSystem.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // Section: General commands
@@ -43,11 +43,11 @@ class TObjDRAW_Model : public TObj_Model
 {
 public:
   Standard_EXPORT TObjDRAW_Model()
-      : TObj_Model()
+       
   {
   }
 
-  virtual Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override
+  Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override
   {
     return new TObjDRAW_Model();
   }

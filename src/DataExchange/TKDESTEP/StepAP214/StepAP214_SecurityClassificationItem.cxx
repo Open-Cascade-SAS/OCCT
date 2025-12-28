@@ -34,7 +34,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
 
-StepAP214_SecurityClassificationItem::StepAP214_SecurityClassificationItem() {}
+StepAP214_SecurityClassificationItem::StepAP214_SecurityClassificationItem() = default;
 
 int StepAP214_SecurityClassificationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

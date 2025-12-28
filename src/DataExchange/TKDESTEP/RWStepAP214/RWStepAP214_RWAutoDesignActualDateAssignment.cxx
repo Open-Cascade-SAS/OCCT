@@ -23,7 +23,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAutoDesignActualDateAssignment::RWStepAP214_RWAutoDesignActualDateAssignment() {}
+RWStepAP214_RWAutoDesignActualDateAssignment::RWStepAP214_RWAutoDesignActualDateAssignment() = default;
 
 void RWStepAP214_RWAutoDesignActualDateAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

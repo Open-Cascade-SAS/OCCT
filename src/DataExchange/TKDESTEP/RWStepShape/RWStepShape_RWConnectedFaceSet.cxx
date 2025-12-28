@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWConnectedFaceSet::RWStepShape_RWConnectedFaceSet() {}
+RWStepShape_RWConnectedFaceSet::RWStepShape_RWConnectedFaceSet() = default;
 
 void RWStepShape_RWConnectedFaceSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&    data,

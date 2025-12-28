@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFromDrawing, IFSelect_SelectDeduct)
 
 #define PourDrawing 404
 
-IGESSelect_SelectFromDrawing::IGESSelect_SelectFromDrawing() {}
+IGESSelect_SelectFromDrawing::IGESSelect_SelectFromDrawing() = default;
 
 Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interface_Graph& G) const
 {

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWSurfaceStyleTransparent::RWStepVisual_RWSurfaceStyleTransparent() {}
+RWStepVisual_RWSurfaceStyleTransparent::RWStepVisual_RWSurfaceStyleTransparent() = default;
 
 //=================================================================================================
 

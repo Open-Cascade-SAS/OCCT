@@ -18,7 +18,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_IGESTypeForm, IFSelect_Signature)
 
 static char falsetype[] = "?";

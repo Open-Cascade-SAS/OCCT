@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster, Standard_Transient)
 // for 1 and 2 Entities (we stay at 5 Handles)
 // Deletion: We compact the Cluster so that the Nulls are always at the end
 //  ....                        CONSTRUCTEURS                        ....
-Interface_EntityCluster::Interface_EntityCluster() {}
+Interface_EntityCluster::Interface_EntityCluster() = default;
 
 Interface_EntityCluster::Interface_EntityCluster(const occ::handle<Standard_Transient>& ent)
 {

@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Circle.hxx>
 
-RWStepGeom_RWCircle::RWStepGeom_RWCircle() {}
+RWStepGeom_RWCircle::RWStepGeom_RWCircle() = default;
 
 void RWStepGeom_RWCircle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                    const int                                   num,

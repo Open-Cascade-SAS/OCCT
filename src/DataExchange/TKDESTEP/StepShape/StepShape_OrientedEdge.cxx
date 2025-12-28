@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
 
-StepShape_OrientedEdge::StepShape_OrientedEdge() {}
+StepShape_OrientedEdge::StepShape_OrientedEdge() = default;
 
 void StepShape_OrientedEdge::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_Edge>&           aEdgeElement,

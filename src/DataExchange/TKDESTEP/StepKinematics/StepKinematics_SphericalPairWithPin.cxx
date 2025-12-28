@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPairWithPin,
 
 //=================================================================================================
 
-StepKinematics_SphericalPairWithPin::StepKinematics_SphericalPairWithPin() {}
+StepKinematics_SphericalPairWithPin::StepKinematics_SphericalPairWithPin() = default;

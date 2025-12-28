@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxedHalfSpace, StepShape_HalfSpaceSolid)
 
-StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace() {}
+StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace() = default;
 
 void StepShape_BoxedHalfSpace::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                     const occ::handle<StepGeom_Surface>&         aBaseSurface,

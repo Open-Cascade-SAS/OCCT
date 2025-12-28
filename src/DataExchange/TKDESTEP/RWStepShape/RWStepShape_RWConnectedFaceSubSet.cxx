@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWConnectedFaceSubSet::RWStepShape_RWConnectedFaceSubSet() {}
+RWStepShape_RWConnectedFaceSubSet::RWStepShape_RWConnectedFaceSubSet() = default;
 
 //=================================================================================================
 

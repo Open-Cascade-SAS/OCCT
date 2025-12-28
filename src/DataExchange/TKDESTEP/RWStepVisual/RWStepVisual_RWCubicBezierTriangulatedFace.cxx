@@ -31,7 +31,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWCubicBezierTriangulatedFace::RWStepVisual_RWCubicBezierTriangulatedFace() {}
+RWStepVisual_RWCubicBezierTriangulatedFace::RWStepVisual_RWCubicBezierTriangulatedFace() = default;
 
 //=================================================================================================
 

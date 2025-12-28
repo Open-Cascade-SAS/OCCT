@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmingMember, StepData_SelectReal)
 
-StepGeom_TrimmingMember::StepGeom_TrimmingMember() {}
+StepGeom_TrimmingMember::StepGeom_TrimmingMember() = default;
 
 bool StepGeom_TrimmingMember::HasName() const
 {

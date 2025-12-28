@@ -148,7 +148,7 @@ bool processReadFile(IGESControl_Reader& theReader, const TCollection_AsciiStrin
 
 //=================================================================================================
 
-DEIGES_Provider::DEIGES_Provider() {}
+DEIGES_Provider::DEIGES_Provider() = default;
 
 //=================================================================================================
 

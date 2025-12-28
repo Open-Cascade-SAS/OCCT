@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool, Standard_Transient)
 
 //=================================================================================================
 
-TopOpeBRepDS_GapTool::TopOpeBRepDS_GapTool() {}
+TopOpeBRepDS_GapTool::TopOpeBRepDS_GapTool() = default;
 
 //=================================================================================================
 
@@ -96,7 +96,7 @@ bool TopOpeBRepDS_GapTool::Curve(const occ::handle<TopOpeBRepDS_Interference>& I
     if (SK == TopOpeBRepDS_CURVE)
     {
       C = myHDS->Curve(S);
-      return 1;
+      return true;
     }
     const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(G);
     for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More();
@@ -106,11 +106,11 @@ bool TopOpeBRepDS_GapTool::Curve(const occ::handle<TopOpeBRepDS_Interference>& I
       if (SK == TopOpeBRepDS_CURVE)
       {
         C = myHDS->Curve(S);
-        return 1;
+        return true;
       }
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -150,7 +150,7 @@ bool TopOpeBRepDS_GapTool::EdgeSupport(const occ::handle<TopOpeBRepDS_Interferen
       if (S.ShapeType() == TopAbs_EDGE)
       {
         E = S;
-        return 1;
+        return true;
       }
     }
     const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
@@ -164,12 +164,12 @@ bool TopOpeBRepDS_GapTool::EdgeSupport(const occ::handle<TopOpeBRepDS_Interferen
         if (S.ShapeType() == TopAbs_EDGE)
         {
           E = S;
-          return 1;
+          return true;
         }
       }
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -182,9 +182,9 @@ bool TopOpeBRepDS_GapTool::FacesSupport(const occ::handle<TopOpeBRepDS_Interfere
   if (Curve(I, C))
   {
     C.GetShapes(F1, F2);
-    return 1;
+    return true;
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -201,7 +201,7 @@ bool TopOpeBRepDS_GapTool::ParameterOnEdge(const occ::handle<TopOpeBRepDS_Interf
       if (S.IsSame(E))
       {
         U = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I)->Parameter();
-        return 1;
+        return true;
       }
     }
     const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
@@ -215,12 +215,12 @@ bool TopOpeBRepDS_GapTool::ParameterOnEdge(const occ::handle<TopOpeBRepDS_Interf
         if (S.IsSame(E))
         {
           U = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(II)->Parameter();
-          return 1;
+          return true;
         }
       }
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================

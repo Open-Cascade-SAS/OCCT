@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurve3dElementProperty::RWStepFEA_RWCurve3dElementProperty() {}
+RWStepFEA_RWCurve3dElementProperty::RWStepFEA_RWCurve3dElementProperty() = default;
 
 //=================================================================================================
 

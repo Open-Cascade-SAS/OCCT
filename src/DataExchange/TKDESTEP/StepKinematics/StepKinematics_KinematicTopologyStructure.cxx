@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyStructure, StepRepr_R
 
 //=================================================================================================
 
-StepKinematics_KinematicTopologyStructure::StepKinematics_KinematicTopologyStructure() {}
+StepKinematics_KinematicTopologyStructure::StepKinematics_KinematicTopologyStructure() = default;

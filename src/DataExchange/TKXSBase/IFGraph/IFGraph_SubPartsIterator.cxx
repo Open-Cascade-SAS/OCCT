@@ -286,4 +286,4 @@ Interface_EntityIterator IFGraph_SubPartsIterator::Entities() const
 
 //=================================================================================================
 
-IFGraph_SubPartsIterator::~IFGraph_SubPartsIterator() {}
+IFGraph_SubPartsIterator::~IFGraph_SubPartsIterator() = default;

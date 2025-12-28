@@ -18,7 +18,7 @@
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_FacetedBrep.hxx>
 
-RWStepShape_RWFacetedBrep::RWStepShape_RWFacetedBrep() {}
+RWStepShape_RWFacetedBrep::RWStepShape_RWFacetedBrep() = default;
 
 void RWStepShape_RWFacetedBrep::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

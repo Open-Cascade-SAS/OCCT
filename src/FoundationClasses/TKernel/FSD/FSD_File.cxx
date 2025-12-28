@@ -34,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(FSD_File, Storage_BaseDriver)
 
 //=================================================================================================
 
-FSD_File::FSD_File() {}
+FSD_File::FSD_File() = default;
 
 //=======================================================================
 // function : IsGoodFileType

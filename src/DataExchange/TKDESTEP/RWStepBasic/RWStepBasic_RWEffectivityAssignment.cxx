@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWEffectivityAssignment::RWStepBasic_RWEffectivityAssignment() {}
+RWStepBasic_RWEffectivityAssignment::RWStepBasic_RWEffectivityAssignment() = default;
 
 //=================================================================================================
 

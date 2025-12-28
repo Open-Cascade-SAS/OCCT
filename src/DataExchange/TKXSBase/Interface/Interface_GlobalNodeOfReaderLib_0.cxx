@@ -24,7 +24,7 @@
 #include <Interface_ReaderLib.hxx>
 #include <Interface_NodeOfReaderLib.hxx>
 
-Interface_GlobalNodeOfReaderLib::Interface_GlobalNodeOfReaderLib() {}
+Interface_GlobalNodeOfReaderLib::Interface_GlobalNodeOfReaderLib() = default;
 
 void Interface_GlobalNodeOfReaderLib::Add(const occ::handle<Interface_ReaderModule>& amodule,
                                           const occ::handle<Interface_Protocol>&     aprotocol)

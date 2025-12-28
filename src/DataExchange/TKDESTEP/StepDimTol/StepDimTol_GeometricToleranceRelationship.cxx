@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceRelationship, Standard_T
 
 //=================================================================================================
 
-StepDimTol_GeometricToleranceRelationship::StepDimTol_GeometricToleranceRelationship() {}
+StepDimTol_GeometricToleranceRelationship::StepDimTol_GeometricToleranceRelationship() = default;
 
 //=================================================================================================
 

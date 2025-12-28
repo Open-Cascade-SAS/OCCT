@@ -36,7 +36,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView() {}
+IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView() = default;
 
 void IGESDraw_ToolPerspectiveView::ReadOwnParams(const occ::handle<IGESDraw_PerspectiveView>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>& /*IR*/,

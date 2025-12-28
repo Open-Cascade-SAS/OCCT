@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_AngularDimension, IGESData_IGESEntity)
 
-IGESDimen_AngularDimension::IGESDimen_AngularDimension() {}
+IGESDimen_AngularDimension::IGESDimen_AngularDimension() = default;
 
 void IGESDimen_AngularDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                       const occ::handle<IGESDimen_WitnessLine>& aLine,

@@ -17,7 +17,7 @@
 #include <LDOM_MemManager.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <errno.h>
+#include <cerrno>
 
 //=======================================================================
 // function : LDOMString

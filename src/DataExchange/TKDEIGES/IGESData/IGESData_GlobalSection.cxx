@@ -28,7 +28,7 @@
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <UnitsMethods.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //  Local routines copying a string [the ideal would be : astr = astr->Copy()]
 //    and transforming a CString (Hollerith or not) to non-Hollerith HAsciiString.

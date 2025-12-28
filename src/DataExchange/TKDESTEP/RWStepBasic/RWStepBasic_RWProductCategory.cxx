@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductCategory::RWStepBasic_RWProductCategory() {}
+RWStepBasic_RWProductCategory::RWStepBasic_RWProductCategory() = default;
 
 void RWStepBasic_RWProductCategory::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

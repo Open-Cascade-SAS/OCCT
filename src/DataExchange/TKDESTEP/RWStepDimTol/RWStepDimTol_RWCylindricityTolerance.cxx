@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWCylindricityTolerance::RWStepDimTol_RWCylindricityTolerance() {}
+RWStepDimTol_RWCylindricityTolerance::RWStepDimTol_RWCylindricityTolerance() = default;
 
 //=================================================================================================
 

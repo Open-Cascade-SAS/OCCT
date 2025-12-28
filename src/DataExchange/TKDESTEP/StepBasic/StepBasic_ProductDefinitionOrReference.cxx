@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-StepBasic_ProductDefinitionOrReference::StepBasic_ProductDefinitionOrReference() {}
+StepBasic_ProductDefinitionOrReference::StepBasic_ProductDefinitionOrReference() = default;
 
 //=================================================================================================
 

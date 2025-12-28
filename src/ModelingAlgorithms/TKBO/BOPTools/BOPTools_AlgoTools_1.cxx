@@ -100,7 +100,7 @@ public:
   }
 
   //
-  ~BOPTools_CPC() {}
+  ~BOPTools_CPC() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -149,7 +149,7 @@ public:
   }
 
   //
-  ~BOPTools_CWT() {}
+  ~BOPTools_CWT() = default;
 
   //
   void SetFace(const TopoDS_Face& aF) { myFace = aF; }
@@ -189,7 +189,7 @@ public:
   }
 
   //
-  ~BOPTools_CDT() {}
+  ~BOPTools_CDT() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -236,7 +236,7 @@ public:
   }
 
   //
-  ~BOPTools_CVT() {}
+  ~BOPTools_CVT() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -276,7 +276,7 @@ public:
   }
 
   //
-  ~BOPTools_CET() {}
+  ~BOPTools_CET() = default;
 
   //
   void SetFace(const TopoDS_Face& aF) { myFace = aF; }

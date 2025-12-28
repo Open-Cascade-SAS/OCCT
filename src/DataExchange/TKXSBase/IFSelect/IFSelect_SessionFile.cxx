@@ -35,7 +35,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static int deja = 0;
 
 IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS)

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_TransformedSurface, Adaptor3d_Surface)
 
 //==================================================================================================
 
-GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface() {}
+GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface() = default;
 
 //==================================================================================================
 

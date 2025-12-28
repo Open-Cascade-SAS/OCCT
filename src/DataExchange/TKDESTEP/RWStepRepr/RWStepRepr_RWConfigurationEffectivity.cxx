@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWConfigurationEffectivity::RWStepRepr_RWConfigurationEffectivity() {}
+RWStepRepr_RWConfigurationEffectivity::RWStepRepr_RWConfigurationEffectivity() = default;
 
 //=================================================================================================
 

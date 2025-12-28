@@ -26,7 +26,7 @@ static const char* anUV = "UNSPECIFIED_VALUE";
 
 //=================================================================================================
 
-StepElement_MeasureOrUnspecifiedValue::StepElement_MeasureOrUnspecifiedValue() {}
+StepElement_MeasureOrUnspecifiedValue::StepElement_MeasureOrUnspecifiedValue() = default;
 
 //=================================================================================================
 

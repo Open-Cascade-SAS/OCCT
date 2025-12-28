@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWQuantifiedAssemblyComponentUsage::RWStepRepr_RWQuantifiedAssemblyComponentUsage() {}
+RWStepRepr_RWQuantifiedAssemblyComponentUsage::RWStepRepr_RWQuantifiedAssemblyComponentUsage() = default;
 
 //=================================================================================================
 

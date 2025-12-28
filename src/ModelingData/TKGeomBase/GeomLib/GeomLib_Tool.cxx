@@ -231,7 +231,7 @@ public:
   bool IsValid() const { return myIsValid; }
 
   //! Returns number of variables
-  virtual int NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
   //! Returns last computed Point in the given curve.
   //! Its value will be recomputed after calling UpdateFields(...) method,
@@ -256,7 +256,7 @@ public:
   }
 
   //! Returns value of *this (square deviation)
-  virtual bool Value(const math_Vector& thePrm, double& theVal) override
+  bool Value(const math_Vector& thePrm, double& theVal) override
   {
     double aD1;
     double aD2;
@@ -266,7 +266,7 @@ public:
   }
 
   //! Always returns 0. It is used for compatibility with the parent class.
-  virtual int GetStateNumber() override { return 0; }
+  int GetStateNumber() override { return 0; }
 
 private:
   //! The curve

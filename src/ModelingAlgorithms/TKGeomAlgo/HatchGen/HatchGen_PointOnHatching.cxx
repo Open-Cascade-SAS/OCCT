@@ -26,8 +26,8 @@
 //=================================================================================================
 
 HatchGen_PointOnHatching::HatchGen_PointOnHatching()
-    : HatchGen_IntersectionPoint(),
-      myPoints()
+    
+      
 {
 }
 

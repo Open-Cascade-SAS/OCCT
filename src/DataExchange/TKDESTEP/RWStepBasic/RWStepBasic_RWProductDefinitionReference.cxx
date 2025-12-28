@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWProductDefinitionReference::RWStepBasic_RWProductDefinitionReference() {}
+RWStepBasic_RWProductDefinitionReference::RWStepBasic_RWProductDefinitionReference() = default;
 
 //=================================================================================================
 

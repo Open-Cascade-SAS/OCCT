@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductType, StepBasic_ProductRelatedProductCategory)
 
-StepBasic_ProductType::StepBasic_ProductType() {}
+StepBasic_ProductType::StepBasic_ProductType() = default;

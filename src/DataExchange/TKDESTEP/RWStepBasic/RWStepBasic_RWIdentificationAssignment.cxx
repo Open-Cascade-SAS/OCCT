@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWIdentificationAssignment::RWStepBasic_RWIdentificationAssignment() {}
+RWStepBasic_RWIdentificationAssignment::RWStepBasic_RWIdentificationAssignment() = default;
 
 //=================================================================================================
 

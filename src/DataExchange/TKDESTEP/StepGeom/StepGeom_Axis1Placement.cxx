@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis1Placement, StepGeom_Placement)
 
-StepGeom_Axis1Placement::StepGeom_Axis1Placement() {}
+StepGeom_Axis1Placement::StepGeom_Axis1Placement() = default;
 
 void StepGeom_Axis1Placement::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const occ::handle<StepGeom_CartesianPoint>&  aLocation,

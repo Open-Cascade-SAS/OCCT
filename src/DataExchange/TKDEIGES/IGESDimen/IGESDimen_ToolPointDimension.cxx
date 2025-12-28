@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolPointDimension::IGESDimen_ToolPointDimension() {}
+IGESDimen_ToolPointDimension::IGESDimen_ToolPointDimension() = default;
 
 void IGESDimen_ToolPointDimension::ReadOwnParams(const occ::handle<IGESDimen_PointDimension>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,

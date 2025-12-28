@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectUnknownEntities, IFSelect_SelectExtract)
 
-IFSelect_SelectUnknownEntities::IFSelect_SelectUnknownEntities() {}
+IFSelect_SelectUnknownEntities::IFSelect_SelectUnknownEntities() = default;
 
 bool IFSelect_SelectUnknownEntities::Sort(const int,
                                           const occ::handle<Standard_Transient>&       ent,

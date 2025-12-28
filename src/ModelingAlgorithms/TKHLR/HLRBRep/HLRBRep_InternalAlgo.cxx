@@ -31,7 +31,7 @@
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_InternalAlgo, Standard_Transient)
 
 extern int nbPtIntersection;   // total P.I.

@@ -32,7 +32,7 @@
 #include <NCollection_HSequence.hxx>
 #include <Units_Operators.hxx>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 static occ::handle<Units_Dimensions>      nulldimensions;
 static occ::handle<Units_UnitsLexicon>    lexiconunits;

@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDraw_ToolView::IGESDraw_ToolView() {}
+IGESDraw_ToolView::IGESDraw_ToolView() = default;
 
 void IGESDraw_ToolView::ReadOwnParams(const occ::handle<IGESDraw_View>&           ent,
                                       const occ::handle<IGESData_IGESReaderData>& IR,

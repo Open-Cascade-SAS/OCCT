@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_AssocGroupType, IGESData_IGESEntity)
 
-IGESBasic_AssocGroupType::IGESBasic_AssocGroupType() {}
+IGESBasic_AssocGroupType::IGESBasic_AssocGroupType() = default;
 
 void IGESBasic_AssocGroupType::Init(const int                                    nbDataFields,
                                     const int                                    aType,

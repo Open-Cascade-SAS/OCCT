@@ -47,7 +47,7 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 
-#include <errno.h>
+#include <cerrno>
 
 //=============================================================================
 

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedItem, Standard_Transient)
 
-StepVisual_PreDefinedItem::StepVisual_PreDefinedItem() {}
+StepVisual_PreDefinedItem::StepVisual_PreDefinedItem() = default;
 
 void StepVisual_PreDefinedItem::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {

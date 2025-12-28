@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SphericalSurface, IGESData_IGESEntity)
 
-IGESSolid_SphericalSurface::IGESSolid_SphericalSurface() {}
+IGESSolid_SphericalSurface::IGESSolid_SphericalSurface() = default;
 
 void IGESSolid_SphericalSurface::Init(const occ::handle<IGESGeom_Point>&     aCenter,
                                       const double                           aRadius,

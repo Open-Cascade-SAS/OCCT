@@ -48,7 +48,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepTool_HBoxTool, Standard_Transient)
 
 //=================================================================================================
 
-TopOpeBRepTool_HBoxTool::TopOpeBRepTool_HBoxTool() {}
+TopOpeBRepTool_HBoxTool::TopOpeBRepTool_HBoxTool() = default;
 
 //=================================================================================================
 

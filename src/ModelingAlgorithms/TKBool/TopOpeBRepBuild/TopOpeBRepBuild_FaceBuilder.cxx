@@ -60,7 +60,7 @@ void debifb() {}
 
 //=================================================================================================
 
-TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder() {}
+TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder() = default;
 
 //=================================================================================================
 

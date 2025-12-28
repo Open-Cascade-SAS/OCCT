@@ -39,7 +39,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
 
-IGESGraph_ToolTextFontDef::IGESGraph_ToolTextFontDef() {}
+IGESGraph_ToolTextFontDef::IGESGraph_ToolTextFontDef() = default;
 
 void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFontDef>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

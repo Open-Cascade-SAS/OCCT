@@ -19,7 +19,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 // #include <NCollection_HArray1<double>.hxx>
-RWStepGeom_RWCartesianPoint::RWStepGeom_RWCartesianPoint() {}
+RWStepGeom_RWCartesianPoint::RWStepGeom_RWCartesianPoint() = default;
 
 void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

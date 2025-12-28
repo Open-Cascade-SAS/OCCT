@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementLocation, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_CurveElementLocation::StepFEA_CurveElementLocation() {}
+StepFEA_CurveElementLocation::StepFEA_CurveElementLocation() = default;
 
 //=================================================================================================
 

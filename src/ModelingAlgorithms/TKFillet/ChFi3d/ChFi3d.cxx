@@ -304,7 +304,7 @@ int ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
   else
   {
     TopExp_Explorer Exp;
-    bool            found = 0;
+    bool            found = false;
     for (Exp.Init(F1, TopAbs_EDGE); Exp.More() && !found; Exp.Next())
     {
       if (E.IsSame(TopoDS::Edge(Exp.Current())))
@@ -318,7 +318,7 @@ int ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
     {
       return 0;
     }
-    found = 0;
+    found = false;
     for (Exp.Init(F2, TopAbs_EDGE); Exp.More() && !found; Exp.Next())
     {
       if (E.IsSame(TopoDS::Edge(Exp.Current())))

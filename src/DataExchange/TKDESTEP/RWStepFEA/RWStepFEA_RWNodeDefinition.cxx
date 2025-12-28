@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWNodeDefinition::RWStepFEA_RWNodeDefinition() {}
+RWStepFEA_RWNodeDefinition::RWStepFEA_RWNodeDefinition() = default;
 
 //=================================================================================================
 

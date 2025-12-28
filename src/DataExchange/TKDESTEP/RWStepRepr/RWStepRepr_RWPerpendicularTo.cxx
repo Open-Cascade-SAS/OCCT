@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWPerpendicularTo::RWStepRepr_RWPerpendicularTo() {}
+RWStepRepr_RWPerpendicularTo::RWStepRepr_RWPerpendicularTo() = default;
 
 //=================================================================================================
 

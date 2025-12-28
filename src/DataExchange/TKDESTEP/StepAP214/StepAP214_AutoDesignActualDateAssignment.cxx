@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignActualDateAssignment, StepBasic_DateAssignment)
 
-StepAP214_AutoDesignActualDateAssignment::StepAP214_AutoDesignActualDateAssignment() {}
+StepAP214_AutoDesignActualDateAssignment::StepAP214_AutoDesignActualDateAssignment() = default;
 
 void StepAP214_AutoDesignActualDateAssignment::Init(
   const occ::handle<StepBasic_Date>&                                     aAssignedDate,

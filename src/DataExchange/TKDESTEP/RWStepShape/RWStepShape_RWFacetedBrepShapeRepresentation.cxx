@@ -20,7 +20,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_FacetedBrepShapeRepresentation.hxx>
 
-RWStepShape_RWFacetedBrepShapeRepresentation::RWStepShape_RWFacetedBrepShapeRepresentation() {}
+RWStepShape_RWFacetedBrepShapeRepresentation::RWStepShape_RWFacetedBrepShapeRepresentation() = default;
 
 void RWStepShape_RWFacetedBrepShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

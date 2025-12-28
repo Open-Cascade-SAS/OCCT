@@ -44,7 +44,7 @@ occ::handle<TDataStd_UAttribute> TDataStd_UAttribute::Set(const TDF_Label&     l
 
 //=================================================================================================
 
-TDataStd_UAttribute::TDataStd_UAttribute() {}
+TDataStd_UAttribute::TDataStd_UAttribute() = default;
 
 //=================================================================================================
 

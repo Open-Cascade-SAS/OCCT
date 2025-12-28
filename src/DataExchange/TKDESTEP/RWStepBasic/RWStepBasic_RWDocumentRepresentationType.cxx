@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWDocumentRepresentationType::RWStepBasic_RWDocumentRepresentationType() {}
+RWStepBasic_RWDocumentRepresentationType::RWStepBasic_RWDocumentRepresentationType() = default;
 
 //=================================================================================================
 

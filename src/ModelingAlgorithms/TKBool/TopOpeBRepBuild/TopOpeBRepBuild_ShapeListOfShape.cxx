@@ -33,7 +33,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape() {}
+TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape() = default;
 
 //=================================================================================================
 

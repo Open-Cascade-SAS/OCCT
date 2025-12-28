@@ -31,7 +31,7 @@
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESGraph_ToolColor::IGESGraph_ToolColor() {}
+IGESGraph_ToolColor::IGESGraph_ToolColor() = default;
 
 void IGESGraph_ToolColor::ReadOwnParams(const occ::handle<IGESGraph_Color>& ent,
                                         const occ::handle<IGESData_IGESReaderData>& /*IR*/,

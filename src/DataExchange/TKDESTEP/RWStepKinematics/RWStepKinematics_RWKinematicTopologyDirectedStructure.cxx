@@ -31,8 +31,7 @@
 
 RWStepKinematics_RWKinematicTopologyDirectedStructure::
   RWStepKinematics_RWKinematicTopologyDirectedStructure()
-{
-}
+= default;
 
 //=================================================================================================
 

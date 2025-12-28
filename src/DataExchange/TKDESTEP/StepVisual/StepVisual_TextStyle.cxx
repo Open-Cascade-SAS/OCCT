@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle, Standard_Transient)
 
-StepVisual_TextStyle::StepVisual_TextStyle() {}
+StepVisual_TextStyle::StepVisual_TextStyle() = default;
 
 void StepVisual_TextStyle::Init(
   const occ::handle<TCollection_HAsciiString>&           aName,

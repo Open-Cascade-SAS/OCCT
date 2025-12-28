@@ -41,7 +41,7 @@ class OBB_ExtremePointsSelector
 public:
   //! Constructor
   OBB_ExtremePointsSelector()
-      : BVH_Traverse<double, 3, BVH_BoxSet<double, 3, gp_XYZ>, Bnd_Range>(),
+      : 
         myPrmMin(RealLast()),
         myPrmMax(RealFirst())
   {
@@ -74,7 +74,7 @@ public: //! @name Getting the results
 
 public: //! @name Definition of rejection/acceptance rules
   //! Defines the rules for node rejection
-  virtual bool RejectNode(const BVH_Vec3d& theCMin,
+  bool RejectNode(const BVH_Vec3d& theCMin,
                           const BVH_Vec3d& theCMax,
                           Bnd_Range&       theMetric) const override
   {
@@ -117,7 +117,7 @@ public: //! @name Definition of rejection/acceptance rules
   }
 
   //! Rules for node rejection by the metric
-  virtual bool RejectMetric(const Bnd_Range& theMetric) const override
+  bool RejectMetric(const Bnd_Range& theMetric) const override
   {
     if (myPrmMin > myPrmMax)
       // no parameters computed
@@ -133,7 +133,7 @@ public: //! @name Definition of rejection/acceptance rules
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex, const Bnd_Range&) override
+  bool Accept(const int theIndex, const Bnd_Range&) override
   {
     const gp_XYZ& theLeaf = myBVHSet->Element(theIndex);
     double        aPrm    = myAxis.Dot(theLeaf);
@@ -152,7 +152,7 @@ public: //! @name Definition of rejection/acceptance rules
 
 public: //! @name Choosing the best branch
   //! Returns true if the metric of the left branch is better than the metric of the right
-  virtual bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
+  bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
   {
     if (myPrmMin > myPrmMax)
       // no parameters computed

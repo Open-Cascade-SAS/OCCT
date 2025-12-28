@@ -28,7 +28,7 @@
 // GeomToIGES_GeomVector
 //=============================================================================
 GeomToIGES_GeomVector::GeomToIGES_GeomVector()
-    : GeomToIGES_GeomEntity()
+     
 {
 }
 

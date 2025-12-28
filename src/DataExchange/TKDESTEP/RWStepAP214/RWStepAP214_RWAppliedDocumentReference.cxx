@@ -23,7 +23,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepAP214_RWAppliedDocumentReference::RWStepAP214_RWAppliedDocumentReference() {}
+RWStepAP214_RWAppliedDocumentReference::RWStepAP214_RWAppliedDocumentReference() = default;
 
 void RWStepAP214_RWAppliedDocumentReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

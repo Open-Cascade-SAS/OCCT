@@ -37,7 +37,7 @@
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

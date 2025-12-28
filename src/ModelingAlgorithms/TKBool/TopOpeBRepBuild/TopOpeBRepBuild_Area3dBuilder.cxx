@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_Area3dBuilder::TopOpeBRepBuild_Area3dBuilder() {}
+TopOpeBRepBuild_Area3dBuilder::TopOpeBRepBuild_Area3dBuilder() = default;
 
 //=================================================================================================
 

@@ -111,7 +111,7 @@ TDF_Label XCAFDoc_DocumentTool::DocLabel(const TDF_Label& acces)
 
 //=================================================================================================
 
-XCAFDoc_DocumentTool::XCAFDoc_DocumentTool() {}
+XCAFDoc_DocumentTool::XCAFDoc_DocumentTool() = default;
 
 //=================================================================================================
 

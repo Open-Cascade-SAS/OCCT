@@ -24,7 +24,7 @@
 #include "RWStepBasic_RWSiUnitName.pxx"
 #include "RWStepBasic_RWSiPrefix.pxx"
 
-RWStepBasic_RWSiUnitAndLengthUnit::RWStepBasic_RWSiUnitAndLengthUnit() {}
+RWStepBasic_RWSiUnitAndLengthUnit::RWStepBasic_RWSiUnitAndLengthUnit() = default;
 
 void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,

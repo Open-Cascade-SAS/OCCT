@@ -41,7 +41,7 @@
 #include <StdFail_UndefinedDerivative.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Data, Standard_Transient)
 
 int nbOkIntersection;
@@ -92,8 +92,8 @@ public:
 #endif
 
 private:
-  TableauRejection(const TableauRejection&);
-  TableauRejection& operator=(const TableauRejection&);
+  TableauRejection(const TableauRejection&) = delete;
+  TableauRejection& operator=(const TableauRejection&) = delete;
 
 public:
   //-- ============================================================

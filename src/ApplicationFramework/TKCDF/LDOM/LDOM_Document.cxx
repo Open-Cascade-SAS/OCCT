@@ -39,7 +39,7 @@ LDOM_Document::LDOM_Document(const LDOM_MemManager& aMemManager)
 
 //=================================================================================================
 
-LDOM_Document::~LDOM_Document() {}
+LDOM_Document::~LDOM_Document() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementRepresentation, StepRepr_Representatio
 
 //=================================================================================================
 
-StepFEA_ElementRepresentation::StepFEA_ElementRepresentation() {}
+StepFEA_ElementRepresentation::StepFEA_ElementRepresentation() = default;
 
 //=================================================================================================
 

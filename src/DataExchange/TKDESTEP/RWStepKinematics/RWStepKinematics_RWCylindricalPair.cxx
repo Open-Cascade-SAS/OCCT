@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWCylindricalPair::RWStepKinematics_RWCylindricalPair() {}
+RWStepKinematics_RWCylindricalPair::RWStepKinematics_RWCylindricalPair() = default;
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepShape_ValueQualifier.hxx>
 
-StepShape_ValueQualifier::StepShape_ValueQualifier() {}
+StepShape_ValueQualifier::StepShape_ValueQualifier() = default;
 
 int StepShape_ValueQualifier::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

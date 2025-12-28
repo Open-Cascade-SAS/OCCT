@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GeneralPropertyAssociation, Standard_Transi
 
 //=================================================================================================
 
-StepBasic_GeneralPropertyAssociation::StepBasic_GeneralPropertyAssociation() {}
+StepBasic_GeneralPropertyAssociation::StepBasic_GeneralPropertyAssociation() = default;
 
 //=================================================================================================
 

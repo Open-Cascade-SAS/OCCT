@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepDS_TKI.hxx>
-#include <stdlib.h>
+#include <cstdlib>
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 

@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepVisual_RWFillAreaStyle::RWStepVisual_RWFillAreaStyle() {}
+RWStepVisual_RWFillAreaStyle::RWStepVisual_RWFillAreaStyle() = default;
 
 void RWStepVisual_RWFillAreaStyle::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

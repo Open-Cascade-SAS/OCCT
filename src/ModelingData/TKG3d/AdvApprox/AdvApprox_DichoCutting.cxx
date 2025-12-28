@@ -17,7 +17,7 @@
 #include <AdvApprox_DichoCutting.hxx>
 #include <Precision.hxx>
 
-AdvApprox_DichoCutting::AdvApprox_DichoCutting() {}
+AdvApprox_DichoCutting::AdvApprox_DichoCutting() = default;
 
 bool AdvApprox_DichoCutting::Value(const double a, const double b, double& cuttingvalue) const
 {

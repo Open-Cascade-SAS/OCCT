@@ -20,7 +20,7 @@
 #include <StepAP242_IdAttribute.hxx>
 #include <StepAP242_IdAttributeSelect.hxx>
 
-RWStepAP242_RWIdAttribute::RWStepAP242_RWIdAttribute() {}
+RWStepAP242_RWIdAttribute::RWStepAP242_RWIdAttribute() = default;
 
 void RWStepAP242_RWIdAttribute::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

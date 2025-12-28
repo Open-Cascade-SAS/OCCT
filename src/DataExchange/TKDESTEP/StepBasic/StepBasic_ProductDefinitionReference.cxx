@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReference, Standard_Transi
 
 //=================================================================================================
 
-StepBasic_ProductDefinitionReference::StepBasic_ProductDefinitionReference() {}
+StepBasic_ProductDefinitionReference::StepBasic_ProductDefinitionReference() = default;
 
 //=================================================================================================
 

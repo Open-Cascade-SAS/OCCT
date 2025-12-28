@@ -35,7 +35,7 @@
 // MGE 03/08/98
 //=================================================================================================
 
-IGESGeom_ToolTransformationMatrix::IGESGeom_ToolTransformationMatrix() {}
+IGESGeom_ToolTransformationMatrix::IGESGeom_ToolTransformationMatrix() = default;
 
 //=================================================================================================
 

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Date, Standard_Transient)
 
-StepBasic_Date::StepBasic_Date() {}
+StepBasic_Date::StepBasic_Date() = default;
 
 void StepBasic_Date::Init(const int aYearComponent)
 {

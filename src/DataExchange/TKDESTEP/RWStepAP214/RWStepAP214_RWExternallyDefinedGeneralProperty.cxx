@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepAP214_RWExternallyDefinedGeneralProperty::RWStepAP214_RWExternallyDefinedGeneralProperty() {}
+RWStepAP214_RWExternallyDefinedGeneralProperty::RWStepAP214_RWExternallyDefinedGeneralProperty() = default;
 
 //=================================================================================================
 

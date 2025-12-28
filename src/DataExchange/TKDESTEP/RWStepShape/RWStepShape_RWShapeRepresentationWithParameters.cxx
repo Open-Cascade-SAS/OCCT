@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepShape_RWShapeRepresentationWithParameters::RWStepShape_RWShapeRepresentationWithParameters()
-{
-}
+= default;
 
 //=================================================================================================
 

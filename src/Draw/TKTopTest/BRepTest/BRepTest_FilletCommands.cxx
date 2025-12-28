@@ -45,7 +45,7 @@
 #include <Message.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 static double        tesp       = 1.0e-4;
 static double        t3d        = 1.e-4;

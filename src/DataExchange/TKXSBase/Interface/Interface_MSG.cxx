@@ -24,7 +24,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<TCollection_HAsciiString>> thedic;
 static NCollection_DataMap<TCollection_AsciiString, int>                                   thelist;
 static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>           thedup;

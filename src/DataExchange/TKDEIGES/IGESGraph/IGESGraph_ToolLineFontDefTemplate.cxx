@@ -31,7 +31,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESGraph_ToolLineFontDefTemplate::IGESGraph_ToolLineFontDefTemplate() {}
+IGESGraph_ToolLineFontDefTemplate::IGESGraph_ToolLineFontDefTemplate() = default;
 
 void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams(
   const occ::handle<IGESGraph_LineFontDefTemplate>& ent,

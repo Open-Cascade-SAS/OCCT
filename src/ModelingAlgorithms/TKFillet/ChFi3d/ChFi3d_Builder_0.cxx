@@ -166,7 +166,7 @@ static occ::handle<Adaptor3d_Surface> Geometry(TopOpeBRepDS_DataStructure& DStr,
     if (F.IsNull())
       return occ::handle<Adaptor3d_Surface>();
     occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface();
-    HS->Initialize(F, 0);
+    HS->Initialize(F, false);
     return HS;
   }
   else
@@ -818,7 +818,7 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
   TopAbs_Orientation Or, OrSave1, OrSave2, OrFace1, OrFace2;
   visavis        = false;
   double      u1 = 0., u2 = 0.;
-  bool        ss = 0, ok = 0;
+  bool        ss = false, ok = false;
   int         j1 = 0, j2 = 0;
   TopoDS_Face ff;
   if (fd1->IndexOfS1() == fd2->IndexOfS1())
@@ -864,7 +864,7 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
       j1 = jf1;
       j2 = jf2;
       ff = face;
-      ok = 1;
+      ok = true;
     }
   }
   if (fd1->IndexOfS2() == fd2->IndexOfS1())
@@ -906,7 +906,7 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
-      ok = 1;
+      ok = true;
       if (restore)
       {
         p1       = u1;
@@ -976,7 +976,7 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
-      ok = 1;
+      ok = true;
       if (restore)
       {
         p1       = u1;
@@ -1046,7 +1046,7 @@ bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&       DStr,
     {
       bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
-      ok = 1;
+      ok = true;
       if (restore)
       {
         p1       = u1;
@@ -1775,7 +1775,7 @@ occ::handle<Geom2d_Curve> ChFi3d_BuildPCurve(const occ::handle<Adaptor3d_Surface
     if (Vref.Dot(v2) > 0.)
       vv2.Reverse();
   }
-  return ChFi3d_BuildPCurve(Surf, p1, vv1, p2, vv2, 0);
+  return ChFi3d_BuildPCurve(Surf, p1, vv1, p2, vv2, false);
 }
 //=======================================================================
 // function : ComputeArete
@@ -2365,7 +2365,7 @@ void ChFi3d_FilDS(const int                         SolidIndex,
   TopExp_Explorer           ex;
   occ::handle<ChFiDS_Spine> spine  = CorDat->Spine();
   bool                      Closed = false;
-  bool                      Degene = 0, isVertex1 = 0, isVertex2 = 0, Singulier_en_Bout = 0;
+  bool                      Degene = false, isVertex1 = false, isVertex2 = false, Singulier_en_Bout = false;
   if (!spine.IsNull())
   {
     Closed = spine->IsPeriodic();
@@ -2544,22 +2544,22 @@ void ChFi3d_FilDS(const int                         SolidIndex,
     if (V1.IsVertex() && Fd->IsOnCurve1())
     {
       const TopoDS_Vertex& vv1 = V1.Vertex();
-      CutEdge(vv1, Fd, DStr, 1, 1);
+      CutEdge(vv1, Fd, DStr, true, 1);
     }
     if (V2.IsVertex() && Fd->IsOnCurve2())
     {
       const TopoDS_Vertex& vv2 = V2.Vertex();
-      CutEdge(vv2, Fd, DStr, 1, 2);
+      CutEdge(vv2, Fd, DStr, true, 2);
     }
     if (V3.IsVertex() && Fd->IsOnCurve1())
     {
       const TopoDS_Vertex& vv3 = V3.Vertex();
-      CutEdge(vv3, Fd, DStr, 0, 1);
+      CutEdge(vv3, Fd, DStr, false, 1);
     }
     if (V4.IsVertex() && Fd->IsOnCurve2())
     {
       const TopoDS_Vertex& vv4 = V4.Vertex();
-      CutEdge(vv4, Fd, DStr, 0, 2);
+      CutEdge(vv4, Fd, DStr, false, 2);
     }
 
     if (j == 1)
@@ -3125,10 +3125,10 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
   // Do not check the stripeshaving common corner points
   for (int iSur1 = 1; iSur1 <= 2; iSur1++)
     for (int iSur2 = 1; iSur2 <= 2; iSur2++)
-      if (theStripe1->IndexPoint(0, iSur1) == theStripe2->IndexPoint(0, iSur2)
-          || theStripe1->IndexPoint(0, iSur1) == theStripe2->IndexPoint(1, iSur2)
-          || theStripe1->IndexPoint(1, iSur1) == theStripe2->IndexPoint(0, iSur2)
-          || theStripe1->IndexPoint(1, iSur1) == theStripe2->IndexPoint(1, iSur2))
+      if (theStripe1->IndexPoint(false, iSur1) == theStripe2->IndexPoint(false, iSur2)
+          || theStripe1->IndexPoint(false, iSur1) == theStripe2->IndexPoint(true, iSur2)
+          || theStripe1->IndexPoint(true, iSur1) == theStripe2->IndexPoint(false, iSur2)
+          || theStripe1->IndexPoint(true, iSur1) == theStripe2->IndexPoint(true, iSur2))
         return;
 
   occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> aSurDat1 =
@@ -3477,11 +3477,11 @@ bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
 
     if (isIntDone)
     {
-      bool c1line = 0;
+      bool c1line = false;
       switch (ImpKK.TypeInter())
       {
         case IntAna_Line: {
-          c1line       = 1;
+          c1line       = true;
           int    nbsol = ImpKK.NbSolutions();
           gp_Lin C1;
           for (int ilin = 1; ilin <= nbsol; ilin++)
@@ -3599,7 +3599,7 @@ bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
       // Set the lowest tolerance which is used in new boolean operations.
       double tolap = 2.e-7;
       //  Modified by skv - Fri Oct 24 14:24:48 2003 OCC4077 End
-      inter.Perform(gs1, gs2, tolap, 1, 1, 1);
+      inter.Perform(gs1, gs2, tolap, true, true, true);
       if (inter.IsDone())
       {
         nbl = inter.NbLines();
@@ -4246,7 +4246,7 @@ bool ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&       DStr,
                            visavis,
                            Vtx,
                            false,
-                           0))
+                           false))
       {
         i1    = i;
         i2    = if2;
@@ -4287,7 +4287,7 @@ bool ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&       DStr,
                            visavis,
                            Vtx,
                            false,
-                           0))
+                           false))
       {
         i1    = if1;
         i2    = i;
@@ -4466,16 +4466,16 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     period = Spine->Period();
     nwf    = ElCLib::InPeriod(WF, -tol, period - tol);
-    IF     = Spine->Index(nwf, 1);
+    IF     = Spine->Index(nwf, true);
     nwl    = ElCLib::InPeriod(WL, tol, period + tol);
-    IL     = Spine->Index(nwl, 0);
+    IL     = Spine->Index(nwl, false);
     if (nwl < nwf + tol)
       IL += nbed;
   }
   else
   {
-    IF      = Spine->Index(WF, 1);
-    IL      = Spine->Index(WL, 0);
+    IF      = Spine->Index(WF, true);
+    IL      = Spine->Index(WL, false);
     Wrefdeb = std::max(Spine->FirstParameter(IF), WF);
     Wreffin = std::min(Spine->LastParameter(IL), WL);
   }
@@ -4491,7 +4491,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   // Attention on segmente eventuellement la premiere et la
   // derniere arete.
   // Traitment de la premiere arete
-  cepadur                      = 0;
+  cepadur                      = false;
   E                            = (IsOffset) ? Spine->OffsetEdges(IF) : Spine->Edges(IF);
   Bof                          = BRepLib::BuildCurve3d(E);
   const BRepAdaptor_Curve& edc = Spine->CurrentElementarySpine(IF);
@@ -4511,7 +4511,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   checkdeb = (nwf > urefdeb);
   if (checkdeb)
   {
-    Spine->Parameter(IF, nwf, pared, 0);
+    Spine->Parameter(IF, nwf, pared, false);
   }
   //
   if (E.Orientation() == TopAbs_REVERSED)
@@ -4537,7 +4537,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
       bool   checkfin = (nwl < ureffin);
       if (checkfin)
       {
-        Spine->Parameter(IL, nwl, pared, 0);
+        Spine->Parameter(IL, nwl, pared, false);
         pared = Cv->ReversedParameter(pared);
       }
       else
@@ -4567,7 +4567,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
       bool   checkfin = (nwl < ureffin);
       if (checkfin)
       {
-        Spine->Parameter(IL, nwl, pared, 0);
+        Spine->Parameter(IL, nwl, pared, false);
       }
       else
       {
@@ -4582,7 +4582,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   //
   if (std::abs(Last - First) < tolpared)
   {
-    cepadur = 1;
+    cepadur = true;
   }
   //
   // Petite veru pour les cas ou un KPart a bouffe l arete
@@ -4673,7 +4673,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
       bool   checkfin = (nwl < ureffin);
       if (checkfin)
       {
-        Spine->Parameter(iloc, nwl, pared, 0);
+        Spine->Parameter(iloc, nwl, pared, false);
       }
       else
       {
@@ -4764,7 +4764,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     //
     double rabdist = Wrefdeb - WF;
     Bout           = PDeb.Translated(-20 * rabdist * VrefDeb);
-    bool goodext   = 0;
+    bool goodext   = false;
     for (int icont = 3; icont >= 1 && !goodext; icont--)
     {
       occ::handle<Geom_BoundedCurve> anExtCurve = BSpline;
@@ -4795,7 +4795,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     }
     double rabdist = WL - Wreffin;
     Bout           = PFin.Translated(20 * rabdist * VrefFin);
-    bool goodext   = 0;
+    bool goodext   = false;
     for (int icont = 3; icont >= 1 && !goodext; icont--)
     {
       occ::handle<Geom_BoundedCurve> anExtCurve = BSpline;

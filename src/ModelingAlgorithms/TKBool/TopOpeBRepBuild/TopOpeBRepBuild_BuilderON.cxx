@@ -140,7 +140,7 @@ static void FUN_cout(const TopoDS_Shape& eON)
 
 //=================================================================================================
 
-TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON() {}
+TopOpeBRepBuild_BuilderON::TopOpeBRepBuild_BuilderON() = default;
 
 //=================================================================================================
 

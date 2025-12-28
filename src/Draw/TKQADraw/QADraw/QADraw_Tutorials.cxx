@@ -58,14 +58,14 @@ public:
   void SetAnimation(const occ::handle<AIS_Animation>& theAnim) { myAnim = theAnim; }
 
 public:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                 const int                               theMode) override;
 
-  virtual bool AcceptDisplayMode(const int theMode) const override
+  bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == MyDispMode_Main || theMode == MyDispMode_Highlight;
   }
@@ -171,20 +171,20 @@ public:
 
   void SetAnimation(const occ::handle<AIS_Animation>& theAnim) { myAnim = theAnim; }
 
-  virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                 const occ::handle<Prs3d_Drawer>&               theStyle,
                                 const int                                      theMode) override;
-  virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                          const int                                      theMode) override;
 
-  virtual bool IsForcedHilight() const override { return true; }
+  bool IsForcedHilight() const override { return true; }
 
-  virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
+  bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
                                 Aspect_VKeyMouse             theButton,
                                 Aspect_VKeyFlags             theModifiers,
                                 bool                         theIsDoubleClick) override;
 
-  virtual void SetLocation(const TopLoc_Location& theLocation) override
+  void SetLocation(const TopLoc_Location& theLocation) override
   {
     if (!myPrs.IsNull())
     {

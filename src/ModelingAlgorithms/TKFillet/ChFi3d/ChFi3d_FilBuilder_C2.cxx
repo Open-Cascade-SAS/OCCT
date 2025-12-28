@@ -138,7 +138,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   ChFi3d_InitChron(ch); // init perf initialisation
 #endif
 
-  done                                                        = 0;
+  done                                                        = false;
   const TopoDS_Vertex&                                   Vtx  = myVDataMap.FindKey(Index);
   TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator It;
@@ -211,7 +211,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   if (ang1 < M_PI / 180.)
   {
     PerformMoreThreeCorner(Index, 2);
-    done = 1;
+    done = true;
     return;
   }
 
@@ -300,7 +300,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
     if (!trouve)
     {
       PerformMoreThreeCorner(Index, 2);
-      done = 1;
+      done = true;
       return;
     }
     else
@@ -343,8 +343,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   ChFiDS_CommonPoint& CP1 = sd1->ChangeVertex(isfirst1, IFaArc1);
   ChFiDS_CommonPoint& CP2 = sd2->ChangeVertex(isfirst2, IFaArc2);
 
-  bool resetcp1 = 0;
-  bool resetcp2 = 0;
+  bool resetcp1 = false;
+  bool resetcp2 = false;
 
   TopoDS_Edge pivot;
   bool        yapiv = false;
@@ -353,7 +353,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   else
   {
     PerformMoreThreeCorner(Index, 2);
-    done = 1;
+    done = true;
     return;
   }
   if (CP1.IsOnArc() && CP2.IsOnArc())
@@ -390,7 +390,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   if (FF1.IsNull() || FF2.IsNull())
   {
     PerformMoreThreeCorner(Index, 2);
-    done = 1;
+    done = true;
     return;
   }
   BRS1.Initialize(FF1);
@@ -415,7 +415,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
     if (!ok1 || !ok2)
     {
       PerformMoreThreeCorner(Index, 2);
-      done = 1;
+      done = true;
       return;
     }
   }
@@ -444,7 +444,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
     if (!done)
     {
       PerformMoreThreeCorner(Index, 2);
-      done = 1;
+      done = true;
       return;
     }
   }
@@ -478,7 +478,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       sd1->ChangeInterferenceOnS2()  = intf12;
       sd2->ChangeInterferenceOnS1()  = intf21;
       sd2->ChangeInterferenceOnS2()  = intf22;
-      done                           = 0;
+      done                           = false;
     }
   }
 
@@ -565,14 +565,14 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         GeomFill_ConstrainedFilling fil(8, 20);
         if (sameparam)
         {
-          fil.Init(Bfac, B2, B1, 1);
+          fil.Init(Bfac, B2, B1, true);
         }
         else
         {
           occ::handle<Adaptor3d_Curve> HPivTrim =
             Hpivot->Trim(std::min(parCP1, parCP2), std::max(parCP1, parCP2), tolesp);
           Bpiv = new GeomFill_SimpleBound(HPivTrim, tolapp3d, 2.e-4);
-          fil.Init(Bfac, B2, Bpiv, B1, 1);
+          fil.Init(Bfac, B2, Bpiv, B1, true);
           BRepAdaptor_Curve2d pcpivot;
           gp_Vec              dArc, dcf;
           gp_Pnt              bidon;
@@ -586,13 +586,13 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
           {
             FaPiv    = FF2;
             HFaPiv   = HBRS2;
-            resetcp2 = 1;
+            resetcp2 = true;
           }
           else
           {
             FaPiv    = FF1;
             HFaPiv   = HBRS1;
-            resetcp1 = 1;
+            resetcp1 = true;
           }
           FaPiv.Orientation(TopAbs_FORWARD);
           pcpivot.Initialize(pivot, FaPiv);
@@ -639,11 +639,11 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
                             HFaPiv,
                             PCurveOnPiv,
                             OFaCo,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0);
+                            true,
+                            false,
+                            false,
+                            false,
+                            false);
 #ifdef OCCT_DEBUG
         ChFi3d_ResultChron(ch, t_remplissage); // result perf filling
 #endif
@@ -728,8 +728,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         TopOpeBRepDS_Curve Tcurv1(C3d, tolreached);
         Icf = DStr.AddCurve(Tcurv1);
         regdeb.SetCurve(Icf);
-        regdeb.SetS1(coin->Surf(), 0);
-        regdeb.SetS2(sd1->Surf(), 0);
+        regdeb.SetS1(coin->Surf(), false);
+        regdeb.SetS2(sd1->Surf(), false);
         myRegul.Append(regdeb);
         corner->ChangeFirstCurve(Icf);
         corner->ChangeFirstParameters(P1deb, P2deb);
@@ -770,8 +770,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         TopOpeBRepDS_Curve Tcurv2(C3d, tolreached);
         Icl = DStr.AddCurve(Tcurv2);
         regfin.SetCurve(Icl);
-        regfin.SetS1(coin->Surf(), 0);
-        regfin.SetS2(sd2->Surf(), 0);
+        regfin.SetS1(coin->Surf(), false);
+        regfin.SetS2(sd2->Surf(), false);
         myRegul.Append(regfin);
         corner->ChangeLastCurve(Icl);
         corner->ChangeLastParameters(P1fin, P2fin);
@@ -930,10 +930,10 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       BRepAdaptor_Surface&             BRFopsam  = *HBRFopsam;
       BRFopsam.Initialize(Fopsam, false);
       occ::handle<Geom2d_Curve> pcFopsam =
-        ChFi3d_BuildPCurve(HBRFopsam, ppfacsam, VVfacsam, ppfacdif, VVfacdif, 1);
+        ChFi3d_BuildPCurve(HBRFopsam, ppfacsam, VVfacsam, ppfacdif, VVfacdif, true);
       Bfac = ChFi3d_mkbound(HBRFopsam, pcFopsam, tolapp3d, 2.e-4);
       GeomFill_ConstrainedFilling fil(8, 20);
-      fil.Init(Bsam, Bdif, Bfac, 1);
+      fil.Init(Bsam, Bdif, Bfac, true);
 #if 0
       for(int ib = 0; ib < 4; ib++){
 	if(ib == 2) continue;
@@ -953,11 +953,11 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
                           HBRFopsam,
                           pcnul,
                           Osurfsam,
-                          1,
-                          0,
-                          0,
-                          0,
-                          0);
+                          true,
+                          false,
+                          false,
+                          false,
+                          false);
 #ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch, t_remplissage); // result perf filling
 #endif
@@ -1020,8 +1020,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       DStr.ChangeShapeInterferences(IFopsam).Append(interf);
 
       regdeb.SetCurve(Icf);
-      regdeb.SetS1(coin->Surf(), 0);
-      regdeb.SetS2(IFopsam, 1);
+      regdeb.SetS1(coin->Surf(), false);
+      regdeb.SetS2(IFopsam, true);
       myRegul.Append(regdeb);
       corner->ChangeFirstCurve(Icf);
       corner->ChangeFirstParameters(P1deb, P2deb);
@@ -1052,8 +1052,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       TopOpeBRepDS_Curve Tcurv2(C3d, tolreached);
       Icl = DStr.AddCurve(Tcurv2);
       regfin.SetCurve(Icl);
-      regfin.SetS1(coin->Surf(), 0);
-      regfin.SetS2(sddif->Surf(), 0);
+      regfin.SetS1(coin->Surf(), false);
+      regfin.SetS2(sddif->Surf(), false);
       myRegul.Append(regfin);
       corner->ChangeLastCurve(Icl);
       corner->ChangeLastParameters(P1fin, P2fin);

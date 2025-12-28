@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ToroidalSurface, IGESData_IGESEntity)
 
-IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface() {}
+IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface() = default;
 
 void IGESSolid_ToroidalSurface::Init(const occ::handle<IGESGeom_Point>&     aCenter,
                                      const occ::handle<IGESGeom_Direction>& anAxis,

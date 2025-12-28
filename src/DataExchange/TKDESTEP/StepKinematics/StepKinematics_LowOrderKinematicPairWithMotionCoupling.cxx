@@ -23,5 +23,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPairWithMotionCouplin
 
 StepKinematics_LowOrderKinematicPairWithMotionCoupling::
   StepKinematics_LowOrderKinematicPairWithMotionCoupling()
-{
-}
+= default;

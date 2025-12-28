@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve() {}
+StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve() = default;
 
 //=================================================================================================
 

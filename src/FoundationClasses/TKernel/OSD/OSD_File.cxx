@@ -388,9 +388,9 @@ const OSD_WhoAmI Iam = OSD_WFile;
     #define SYSV
   #endif
 
-  #include <errno.h>
-  #include <stdlib.h>
-  #include <stdio.h>
+  #include <cerrno>
+  #include <cstdlib>
+  #include <cstdio>
   #include <fcntl.h>
   #include <unistd.h>
   #include <sys/stat.h>

@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CubicBezierTessellatedEdge, StepVisual_Tes
 
 //=================================================================================================
 
-StepVisual_CubicBezierTessellatedEdge::StepVisual_CubicBezierTessellatedEdge() {}
+StepVisual_CubicBezierTessellatedEdge::StepVisual_CubicBezierTessellatedEdge() = default;

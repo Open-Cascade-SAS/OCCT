@@ -24,7 +24,7 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReaderLib.hxx>
 
-Interface_NodeOfReaderLib::Interface_NodeOfReaderLib() {}
+Interface_NodeOfReaderLib::Interface_NodeOfReaderLib() = default;
 
 void Interface_NodeOfReaderLib::AddNode(const occ::handle<Interface_GlobalNodeOfReaderLib>& anode)
 {

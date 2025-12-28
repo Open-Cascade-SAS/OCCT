@@ -300,7 +300,7 @@ static bool convertToDatumAxes(const TCollection_AsciiString& theValue,
 
 static bool setTrihedronParams(int                        theArgsNb,
                                const char**               theArgVec,
-                               occ::handle<AIS_Trihedron> theTrihedron)
+                               const occ::handle<AIS_Trihedron>& theTrihedron)
 {
   NCollection_DataMap<TCollection_AsciiString,
                       occ::handle<NCollection_HSequence<TCollection_AsciiString>>>
@@ -1972,11 +1972,11 @@ private:
   TopoDS_Face ComputeFace();
 
   // Virtual methods implementation
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                 const int                               theMode) override;
 
 protected:
@@ -2706,7 +2706,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
   return 0;
 }
 
-#include <math.h>
+#include <cmath>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Poly_Triangle.hxx>
@@ -2724,6 +2724,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 #include <Graphic3d_AspectFillArea3d.hxx>
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <utility>
 
 //===============================================================================================
 // function : CalculationOfSphere
@@ -3340,18 +3341,18 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject, AIS_InteractiveObject);
 
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Sets color to this interactive object
   //! @param theColor the color to be set
-  virtual void SetColor(const Quantity_Color& theColor) override;
+  void SetColor(const Quantity_Color& theColor) override;
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                 const int                               theMode) override;
 
   bool CheckInputCommand(
@@ -5457,17 +5458,17 @@ public:
   {
     myStartPoint   = theStartPoint;
     myPointsOnSide = thePointsOnSide;
-    myMarkerAspect = theMarkerAspect;
+    myMarkerAspect = std::move(theMarkerAspect);
   }
 
   DEFINE_STANDARD_RTTI_INLINE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject);
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
                                 const int                               theMode) override;
 
 protected:
@@ -6371,7 +6372,7 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
       }
 
     protected:
-      virtual void addPoint(const gp_Pnt&   thePoint,
+      void addPoint(const gp_Pnt&   thePoint,
                             const gp_Vec&   theNorm,
                             const gp_Pnt2d& theUV,
                             const TopoDS_Shape&) override
@@ -6564,7 +6565,7 @@ public:
 
 protected:
   //! Compute presentation.
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
                        const int                                      theMode) override
   {

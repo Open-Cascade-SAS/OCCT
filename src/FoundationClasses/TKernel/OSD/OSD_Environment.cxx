@@ -22,10 +22,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_UtfString.hxx>
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <mutex>
 
 #ifndef _WIN32
@@ -43,7 +43,7 @@ static const OSD_WhoAmI Iam = OSD_WEnvironment;
 // ----------------------------------------------------------------------
 // Create object
 
-OSD_Environment::OSD_Environment() {}
+OSD_Environment::OSD_Environment() = default;
 
 //=================================================================================================
 

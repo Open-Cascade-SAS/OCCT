@@ -28,8 +28,7 @@
 
 RWStepKinematics_RWKinematicLinkRepresentationAssociation::
   RWStepKinematics_RWKinematicLinkRepresentationAssociation()
-{
-}
+= default;
 
 //=================================================================================================
 

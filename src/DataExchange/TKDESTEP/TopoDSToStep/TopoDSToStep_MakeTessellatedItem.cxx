@@ -80,7 +80,7 @@ static void InitTriangulation(const occ::handle<Poly_Triangulation>&       theMe
 //=================================================================================================
 
 TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem()
-    : TopoDSToStep_Root()
+     
 {
 }
 
@@ -93,7 +93,7 @@ TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
   const bool                                 theToPreferSurfaceSet,
   const StepData_Factors&                    theLocalFactors,
   const Message_ProgressRange&               theProgress)
-    : TopoDSToStep_Root()
+     
 {
   Init(theFace, theTool, theFP, theToPreferSurfaceSet, theLocalFactors, theProgress);
 }
@@ -106,7 +106,7 @@ TopoDSToStep_MakeTessellatedItem::TopoDSToStep_MakeTessellatedItem(
   const occ::handle<Transfer_FinderProcess>& theFP,
   const StepData_Factors&                    theLocalFactors,
   const Message_ProgressRange&               theProgress)
-    : TopoDSToStep_Root()
+     
 {
   Init(theShell, theTool, theFP, theLocalFactors, theProgress);
 }

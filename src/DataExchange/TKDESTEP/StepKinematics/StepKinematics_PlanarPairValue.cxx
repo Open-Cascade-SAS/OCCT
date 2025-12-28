@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PlanarPairValue, StepKinematics_PairVa
 
 //=================================================================================================
 
-StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue() {}
+StepKinematics_PlanarPairValue::StepKinematics_PlanarPairValue() = default;
 
 //=================================================================================================
 

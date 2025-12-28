@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveReplica, StepGeom_Curve)
 
-StepGeom_CurveReplica::StepGeom_CurveReplica() {}
+StepGeom_CurveReplica::StepGeom_CurveReplica() = default;
 
 void StepGeom_CurveReplica::Init(
   const occ::handle<TCollection_HAsciiString>&                 aName,

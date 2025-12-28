@@ -17,7 +17,7 @@
 #include <OSD_Timer.hxx>
 #include <Standard_Type.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Timer, Standard_Transient)
 
 //=================================================================================================

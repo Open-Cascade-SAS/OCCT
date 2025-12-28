@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_CylindricalPairValue, StepKinematics_P
 
 //=================================================================================================
 
-StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue() {}
+StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue() = default;
 
 //=================================================================================================
 

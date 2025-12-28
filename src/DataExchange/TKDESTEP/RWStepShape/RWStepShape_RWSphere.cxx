@@ -18,7 +18,7 @@
 #include <StepGeom_Point.hxx>
 #include <StepShape_Sphere.hxx>
 
-RWStepShape_RWSphere::RWStepShape_RWSphere() {}
+RWStepShape_RWSphere::RWStepShape_RWSphere() = default;
 
 void RWStepShape_RWSphere::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                     const int                                   num,

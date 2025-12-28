@@ -28,11 +28,11 @@ static occ::handle<OSD_FileSystem> createDefaultFileSystem()
 
 //=================================================================================================
 
-OSD_FileSystem::OSD_FileSystem() {}
+OSD_FileSystem::OSD_FileSystem() = default;
 
 //=================================================================================================
 
-OSD_FileSystem::~OSD_FileSystem() {}
+OSD_FileSystem::~OSD_FileSystem() = default;
 
 //=================================================================================================
 

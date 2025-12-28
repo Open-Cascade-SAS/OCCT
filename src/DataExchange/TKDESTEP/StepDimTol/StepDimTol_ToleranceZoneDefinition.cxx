@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneDefinition, Standard_Transien
 
 //=================================================================================================
 
-StepDimTol_ToleranceZoneDefinition::StepDimTol_ToleranceZoneDefinition() {}
+StepDimTol_ToleranceZoneDefinition::StepDimTol_ToleranceZoneDefinition() = default;
 
 //=================================================================================================
 

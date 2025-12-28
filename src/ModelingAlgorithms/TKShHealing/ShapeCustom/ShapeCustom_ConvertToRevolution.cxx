@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_ConvertToRevolution, ShapeCustom_Modifica
 
 //=================================================================================================
 
-ShapeCustom_ConvertToRevolution::ShapeCustom_ConvertToRevolution() {}
+ShapeCustom_ConvertToRevolution::ShapeCustom_ConvertToRevolution() = default;
 
 // Analyze surface: is it to be converted?
 static bool IsToConvert(const occ::handle<Geom_Surface>& S, occ::handle<Geom_ElementarySurface>& ES)

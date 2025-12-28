@@ -35,7 +35,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate() {}
+IGESGraph_ToolTextDisplayTemplate::IGESGraph_ToolTextDisplayTemplate() = default;
 
 void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams(
   const occ::handle<IGESGraph_TextDisplayTemplate>& ent,

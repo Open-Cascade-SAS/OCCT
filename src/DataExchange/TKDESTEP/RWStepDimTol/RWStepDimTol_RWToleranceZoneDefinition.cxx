@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWToleranceZoneDefinition::RWStepDimTol_RWToleranceZoneDefinition() {}
+RWStepDimTol_RWToleranceZoneDefinition::RWStepDimTol_RWToleranceZoneDefinition() = default;
 
 //=================================================================================================
 

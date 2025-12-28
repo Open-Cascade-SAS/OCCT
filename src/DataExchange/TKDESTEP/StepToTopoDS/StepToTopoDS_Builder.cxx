@@ -91,7 +91,7 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 static void ResetPreci(occ::handle<StepData_StepModel>& theStepModel,
                        const TopoDS_Shape&              S,

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWPropertyDefinition::RWStepRepr_RWPropertyDefinition() {}
+RWStepRepr_RWPropertyDefinition::RWStepRepr_RWPropertyDefinition() = default;
 
 //=================================================================================================
 

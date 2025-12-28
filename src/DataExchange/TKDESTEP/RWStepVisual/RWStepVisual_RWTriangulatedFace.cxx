@@ -31,7 +31,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTriangulatedFace::RWStepVisual_RWTriangulatedFace() {}
+RWStepVisual_RWTriangulatedFace::RWStepVisual_RWTriangulatedFace() = default;
 
 //=================================================================================================
 

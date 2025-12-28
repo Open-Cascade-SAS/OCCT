@@ -70,7 +70,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef OCCT_DEBUG
 static bool Affich     = false;
 static int  NbSections = 0;

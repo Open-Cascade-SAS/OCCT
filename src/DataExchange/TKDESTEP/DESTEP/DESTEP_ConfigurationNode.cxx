@@ -32,7 +32,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DESTEP_ConfigurationNode::DESTEP_ConfigurationNode()
-    : DE_ShapeFixConfigurationNode()
+     
 {
   DE_ShapeFixConfigurationNode::ShapeFixParameters =
     DESTEP_Parameters::GetDefaultShapeFixParameters();

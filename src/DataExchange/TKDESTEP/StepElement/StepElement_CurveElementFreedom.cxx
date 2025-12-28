@@ -26,7 +26,7 @@ static const char* anApp  = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
-StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() {}
+StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() = default;
 
 //=================================================================================================
 

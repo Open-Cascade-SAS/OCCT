@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWGeometricSet::RWStepShape_RWGeometricSet() {}
+RWStepShape_RWGeometricSet::RWStepShape_RWGeometricSet() = default;
 
 void RWStepShape_RWGeometricSet::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

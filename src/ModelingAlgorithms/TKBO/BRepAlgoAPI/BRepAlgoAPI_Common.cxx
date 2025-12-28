@@ -21,7 +21,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Common::BRepAlgoAPI_Common()
-    : BRepAlgoAPI_BooleanOperation()
+     
 {
   myOperation = BOPAlgo_COMMON;
 }
@@ -36,7 +36,7 @@ BRepAlgoAPI_Common::BRepAlgoAPI_Common(const BOPAlgo_PaveFiller& aPF)
 
 //=================================================================================================
 
-BRepAlgoAPI_Common::~BRepAlgoAPI_Common() {}
+BRepAlgoAPI_Common::~BRepAlgoAPI_Common() = default;
 
 //=================================================================================================
 

@@ -71,14 +71,14 @@
 #include <TopoDS_Wire.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // rln
 // #include <ShapeFix_Face.hxx>
 //=================================================================================================
 
 IGESToBRep_BRepEntity::IGESToBRep_BRepEntity()
-    : IGESToBRep_CurveAndSurface()
+     
 {
   SetModeTransfer(false);
   SetContinuity(0);

@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_StructuralResponseProperty, StepRepr_Propert
 
 //=================================================================================================
 
-StepRepr_StructuralResponseProperty::StepRepr_StructuralResponseProperty() {}
+StepRepr_StructuralResponseProperty::StepRepr_StructuralResponseProperty() = default;

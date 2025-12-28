@@ -21,8 +21,8 @@
 #include <Standard_CLocaleSentry.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
-#include <string.h>
-#include <stdarg.h>
+#include <cstring>
+#include <cstdarg>
 
 //======================================================================
 // Locale-independent equivalents of C functions dealing with conversion

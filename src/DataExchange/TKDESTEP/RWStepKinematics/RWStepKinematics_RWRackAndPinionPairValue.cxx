@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRackAndPinionPairValue::RWStepKinematics_RWRackAndPinionPairValue() {}
+RWStepKinematics_RWRackAndPinionPairValue::RWStepKinematics_RWRackAndPinionPairValue() = default;
 
 //=================================================================================================
 

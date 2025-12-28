@@ -360,8 +360,8 @@ void BOPAlgo_MakePeriodic::SplitPositive()
 // purpose  : Splits the shape by the given tools
 //=======================================================================
 void BOPAlgo_MakePeriodic::SplitShape(const NCollection_List<TopoDS_Shape>& theTools,
-                                      occ::handle<BRepTools_History>        theSplitShapeHistory,
-                                      occ::handle<BRepTools_History>        theSplitToolsHistory)
+                                      const occ::handle<BRepTools_History>&        theSplitShapeHistory,
+                                      const occ::handle<BRepTools_History>&        theSplitToolsHistory)
 {
   // Make sure that the geometry from the tools will be copied to the split
   // shape. For that, the tool shapes should be given to the Boolean Operations

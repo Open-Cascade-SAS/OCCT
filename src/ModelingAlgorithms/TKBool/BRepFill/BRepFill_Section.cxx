@@ -25,10 +25,10 @@
 #include <ShapeUpgrade_RemoveLocations.hxx>
 
 BRepFill_Section::BRepFill_Section()
-    : islaw(0),
-      ispunctual(0),
-      contact(0),
-      correction(0)
+    : islaw(false),
+      ispunctual(false),
+      contact(false),
+      correction(false)
 {
 }
 
@@ -37,8 +37,8 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape&  Profile,
                                    const bool           WithContact,
                                    const bool           WithCorrection)
     : vertex(V),
-      islaw(0),
-      ispunctual(0),
+      islaw(false),
+      ispunctual(false),
       contact(WithContact),
       correction(WithCorrection)
 {

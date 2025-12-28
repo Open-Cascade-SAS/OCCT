@@ -22,8 +22,7 @@
 
 RWStepBasic_RWProductDefinitionWithAssociatedDocuments::
   RWStepBasic_RWProductDefinitionWithAssociatedDocuments()
-{
-}
+= default;
 
 void RWStepBasic_RWProductDefinitionWithAssociatedDocuments::ReadStep(
   const occ::handle<StepData_StepReaderData>&                            data,

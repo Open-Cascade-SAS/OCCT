@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PlanarCurvePairRange, StepKinematics_P
 
 //=================================================================================================
 
-StepKinematics_PlanarCurvePairRange::StepKinematics_PlanarCurvePairRange() {}
+StepKinematics_PlanarCurvePairRange::StepKinematics_PlanarCurvePairRange() = default;
 
 //=================================================================================================
 

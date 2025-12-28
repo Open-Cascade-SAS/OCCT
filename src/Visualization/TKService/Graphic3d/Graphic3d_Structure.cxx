@@ -26,7 +26,7 @@
 
 #include <Standard_Dump.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure, Standard_Transient)
 

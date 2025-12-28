@@ -70,7 +70,7 @@ void PrintE(const TDF_Label& label)
 #endif
 //=================================================================================================
 
-DNaming_TransformationDriver::DNaming_TransformationDriver() {}
+DNaming_TransformationDriver::DNaming_TransformationDriver() = default;
 
 //=======================================================================
 // function : Validate

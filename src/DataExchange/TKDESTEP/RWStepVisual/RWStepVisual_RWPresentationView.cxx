@@ -19,7 +19,7 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepVisual_PresentationView.hxx>
 
-RWStepVisual_RWPresentationView::RWStepVisual_RWPresentationView() {}
+RWStepVisual_RWPresentationView::RWStepVisual_RWPresentationView() = default;
 
 void RWStepVisual_RWPresentationView::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPair, StepKinematics_LowOrder
 
 //=================================================================================================
 
-StepKinematics_SphericalPair::StepKinematics_SphericalPair() {}
+StepKinematics_SphericalPair::StepKinematics_SphericalPair() = default;

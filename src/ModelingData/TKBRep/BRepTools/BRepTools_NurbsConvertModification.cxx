@@ -224,7 +224,7 @@ static bool newUV(const gp_Pnt&                    thePoint,
 
 //=================================================================================================
 
-BRepTools_NurbsConvertModification::BRepTools_NurbsConvertModification() {}
+BRepTools_NurbsConvertModification::BRepTools_NurbsConvertModification() = default;
 
 //=================================================================================================
 

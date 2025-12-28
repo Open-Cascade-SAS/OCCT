@@ -16,13 +16,13 @@
 Vrml_Separator::Vrml_Separator(const Vrml_SeparatorRenderCulling aRenderCulling)
 {
   myRenderCulling = aRenderCulling;
-  myFlagPrint     = 0;
+  myFlagPrint     = false;
 }
 
 Vrml_Separator::Vrml_Separator()
 {
   myRenderCulling = Vrml_AUTO;
-  myFlagPrint     = 0;
+  myFlagPrint     = false;
 }
 
 void Vrml_Separator::SetRenderCulling(const Vrml_SeparatorRenderCulling aRenderCulling)
@@ -47,12 +47,12 @@ Standard_OStream& Vrml_Separator::Print(Standard_OStream& anOStream)
       else
         anOStream << "    renderCulling\tOFF\n";
     }
-    myFlagPrint = 1;
+    myFlagPrint = true;
   } // End of if
   else
   {
     anOStream << "}\n";
-    myFlagPrint = 0;
+    myFlagPrint = false;
   }
   return anOStream;
 }

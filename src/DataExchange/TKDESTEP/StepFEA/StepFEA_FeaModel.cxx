@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaModel, StepRepr_Representation)
 
 //=================================================================================================
 
-StepFEA_FeaModel::StepFEA_FeaModel() {}
+StepFEA_FeaModel::StepFEA_FeaModel() = default;
 
 //=================================================================================================
 

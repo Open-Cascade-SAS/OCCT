@@ -315,7 +315,7 @@ OSD_PerfMeter::OSD_PerfMeter(const TCollection_AsciiString& theMeterName, const 
 
 //==================================================================================================
 
-OSD_PerfMeter::~OSD_PerfMeter() {}
+OSD_PerfMeter::~OSD_PerfMeter() = default;
 
 //==================================================================================================
 

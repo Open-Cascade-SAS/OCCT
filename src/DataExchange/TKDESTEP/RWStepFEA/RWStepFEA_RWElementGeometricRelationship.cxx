@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWElementGeometricRelationship::RWStepFEA_RWElementGeometricRelationship() {}
+RWStepFEA_RWElementGeometricRelationship::RWStepFEA_RWElementGeometricRelationship() = default;
 
 //=================================================================================================
 

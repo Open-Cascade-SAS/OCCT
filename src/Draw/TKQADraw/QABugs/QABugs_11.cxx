@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <QABugs.hxx>
 
@@ -2443,9 +2443,9 @@ public:
 class MyTestClass : public MyTestInterface
 {
 public:
-  MyTestClass() {}
+  MyTestClass() = default;
 
-  virtual int Standard_NOINLINE testMethod3(int* theIntPtr, bool theToPrintStack)
+  int Standard_NOINLINE testMethod3(int* theIntPtr, bool theToPrintStack) override
   {
     if (theToPrintStack)
     {

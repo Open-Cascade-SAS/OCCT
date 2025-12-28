@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
 
-IGESDimen_DimensionTolerance::IGESDimen_DimensionTolerance() {}
+IGESDimen_DimensionTolerance::IGESDimen_DimensionTolerance() = default;
 
 void IGESDimen_DimensionTolerance::Init(const int    nbPropVal,
                                         const int    aSecTolFlag,

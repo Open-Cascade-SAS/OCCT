@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance, Standard_Transient)
 
-StepShape_PlusMinusTolerance::StepShape_PlusMinusTolerance() {}
+StepShape_PlusMinusTolerance::StepShape_PlusMinusTolerance() = default;
 
 void StepShape_PlusMinusTolerance::Init(
   const StepShape_ToleranceMethodDefinition& range,

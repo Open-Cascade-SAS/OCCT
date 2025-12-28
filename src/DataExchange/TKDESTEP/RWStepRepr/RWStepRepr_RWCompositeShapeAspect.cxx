@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWCompositeShapeAspect::RWStepRepr_RWCompositeShapeAspect() {}
+RWStepRepr_RWCompositeShapeAspect::RWStepRepr_RWCompositeShapeAspect() = default;
 
 //=================================================================================================
 

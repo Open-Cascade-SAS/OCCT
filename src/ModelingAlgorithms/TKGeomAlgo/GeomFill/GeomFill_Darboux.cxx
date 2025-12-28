@@ -318,7 +318,7 @@ static void NormalD2(const double                          U,
   D2UVNormal = CSLib::DNNormal(1, 1, DerNUV, OrderU, OrderV);
 }
 
-GeomFill_Darboux::GeomFill_Darboux() {}
+GeomFill_Darboux::GeomFill_Darboux() = default;
 
 occ::handle<GeomFill_TrihedronLaw> GeomFill_Darboux::Copy() const
 {

@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaRepresentationItem, StepRepr_Representatio
 
 //=================================================================================================
 
-StepFEA_FeaRepresentationItem::StepFEA_FeaRepresentationItem() {}
+StepFEA_FeaRepresentationItem::StepFEA_FeaRepresentationItem() = default;

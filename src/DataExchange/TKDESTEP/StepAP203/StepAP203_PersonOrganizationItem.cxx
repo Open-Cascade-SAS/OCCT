@@ -31,7 +31,7 @@
 
 //=================================================================================================
 
-StepAP203_PersonOrganizationItem::StepAP203_PersonOrganizationItem() {}
+StepAP203_PersonOrganizationItem::StepAP203_PersonOrganizationItem() = default;
 
 //=================================================================================================
 

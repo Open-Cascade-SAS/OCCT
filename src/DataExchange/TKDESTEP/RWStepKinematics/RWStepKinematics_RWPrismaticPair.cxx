@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPrismaticPair::RWStepKinematics_RWPrismaticPair() {}
+RWStepKinematics_RWPrismaticPair::RWStepKinematics_RWPrismaticPair() = default;
 
 //=================================================================================================
 

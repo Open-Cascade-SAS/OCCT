@@ -183,7 +183,7 @@ bool TFunction_IFunction::UpdateDependencies(const TDF_Label& Access)
 
 //=================================================================================================
 
-TFunction_IFunction::TFunction_IFunction() {}
+TFunction_IFunction::TFunction_IFunction() = default;
 
 //=================================================================================================
 

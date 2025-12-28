@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEBREP_Provider, DE_Provider)
 
 //=================================================================================================
 
-DEBREP_Provider::DEBREP_Provider() {}
+DEBREP_Provider::DEBREP_Provider() = default;
 
 //=================================================================================================
 

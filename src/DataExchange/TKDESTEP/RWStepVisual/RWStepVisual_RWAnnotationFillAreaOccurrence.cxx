@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWAnnotationFillAreaOccurrence::RWStepVisual_RWAnnotationFillAreaOccurrence() {}
+RWStepVisual_RWAnnotationFillAreaOccurrence::RWStepVisual_RWAnnotationFillAreaOccurrence() = default;
 
 //=================================================================================================
 

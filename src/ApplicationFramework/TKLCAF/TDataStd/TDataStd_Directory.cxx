@@ -93,7 +93,7 @@ TDF_Label TDataStd_Directory::MakeObjectLabel(const occ::handle<TDataStd_Directo
 
 //=================================================================================================
 
-TDataStd_Directory::TDataStd_Directory() {}
+TDataStd_Directory::TDataStd_Directory() = default;
 
 //=================================================================================================
 

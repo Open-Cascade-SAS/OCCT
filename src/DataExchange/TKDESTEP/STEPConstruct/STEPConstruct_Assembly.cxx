@@ -38,7 +38,7 @@
 //  Relationship
 //=================================================================================================
 
-STEPConstruct_Assembly::STEPConstruct_Assembly() {}
+STEPConstruct_Assembly::STEPConstruct_Assembly() = default;
 
 //=================================================================================================
 

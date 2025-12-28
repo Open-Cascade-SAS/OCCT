@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianTransformationOperator.hxx>
 #include <StepGeom_PointReplica.hxx>
 
-RWStepGeom_RWPointReplica::RWStepGeom_RWPointReplica() {}
+RWStepGeom_RWPointReplica::RWStepGeom_RWPointReplica() = default;
 
 void RWStepGeom_RWPointReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

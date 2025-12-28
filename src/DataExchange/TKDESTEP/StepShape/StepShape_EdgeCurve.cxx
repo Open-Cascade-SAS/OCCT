@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeCurve, StepShape_Edge)
 
-StepShape_EdgeCurve::StepShape_EdgeCurve() {}
+StepShape_EdgeCurve::StepShape_EdgeCurve() = default;
 
 void StepShape_EdgeCurve::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                const occ::handle<StepShape_Vertex>&         aEdgeStart,

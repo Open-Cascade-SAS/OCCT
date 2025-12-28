@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWActuatedKinematicPair::RWStepKinematics_RWActuatedKinematicPair() {}
+RWStepKinematics_RWActuatedKinematicPair::RWStepKinematics_RWActuatedKinematicPair() = default;
 
 //=================================================================================================
 

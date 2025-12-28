@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ElementGeometricRelationship, Standard_Transi
 
 //=================================================================================================
 
-StepFEA_ElementGeometricRelationship::StepFEA_ElementGeometricRelationship() {}
+StepFEA_ElementGeometricRelationship::StepFEA_ElementGeometricRelationship() = default;
 
 //=================================================================================================
 

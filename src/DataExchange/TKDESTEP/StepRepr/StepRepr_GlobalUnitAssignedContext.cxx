@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUnitAssignedContext, StepRepr_RepresentationContext)
 
-StepRepr_GlobalUnitAssignedContext::StepRepr_GlobalUnitAssignedContext() {}
+StepRepr_GlobalUnitAssignedContext::StepRepr_GlobalUnitAssignedContext() = default;
 
 void StepRepr_GlobalUnitAssignedContext::Init(
   const occ::handle<TCollection_HAsciiString>&                              aContextIdentifier,

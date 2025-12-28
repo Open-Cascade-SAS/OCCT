@@ -26,8 +26,7 @@
 
 RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation::
   RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation()
-{
-}
+= default;
 
 //=================================================================================================
 

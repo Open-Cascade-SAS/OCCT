@@ -27,7 +27,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectDerived, StepSelect_StepType)
 
 STEPSelections_SelectDerived::STEPSelections_SelectDerived()
-    : StepSelect_StepType()
+     
 {
 }
 

@@ -304,7 +304,7 @@ bool OpenGl_ShaderProgram::Initialize(
                             0,
                             GL_DEBUG_SEVERITY_HIGH,
                             "Error! Compute shaders require OpenGL 4.3+");
-        return 0;
+        return false;
       }
       else if (aHeaderVer.IsEmpty())
       {
@@ -320,7 +320,7 @@ bool OpenGl_ShaderProgram::Initialize(
                             0,
                             GL_DEBUG_SEVERITY_HIGH,
                             "Error! Tessellation shaders require OpenGL 4.0+");
-        return 0;
+        return false;
       }
       else if (aHeaderVer.IsEmpty())
       {
@@ -336,7 +336,7 @@ bool OpenGl_ShaderProgram::Initialize(
                             0,
                             GL_DEBUG_SEVERITY_HIGH,
                             "Error! Geometry shaders require OpenGL 3.2+");
-        return 0;
+        return false;
       }
       else if (aHeaderVer.IsEmpty())
       {

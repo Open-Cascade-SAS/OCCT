@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface, StepShape_Face)
 
-StepShape_FaceSurface::StepShape_FaceSurface() {}
+StepShape_FaceSurface::StepShape_FaceSurface() = default;
 
 void StepShape_FaceSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                              aName,

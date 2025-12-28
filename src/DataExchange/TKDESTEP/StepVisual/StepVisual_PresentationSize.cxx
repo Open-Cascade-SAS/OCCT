@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSize, Standard_Transient)
 
-StepVisual_PresentationSize::StepVisual_PresentationSize() {}
+StepVisual_PresentationSize::StepVisual_PresentationSize() = default;
 
 void StepVisual_PresentationSize::Init(const StepVisual_PresentationSizeAssignmentSelect& aUnit,
                                        const occ::handle<StepVisual_PlanarBox>&           aSize)

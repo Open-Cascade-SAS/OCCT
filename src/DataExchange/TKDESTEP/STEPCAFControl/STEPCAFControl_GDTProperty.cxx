@@ -301,7 +301,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
 
 //=================================================================================================
 
-STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() {}
+STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() = default;
 
 //=================================================================================================
 

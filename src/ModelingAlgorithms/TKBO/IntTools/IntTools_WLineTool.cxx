@@ -291,7 +291,7 @@ static bool IsPointOnBoundary(const double theParameter,
 //=======================================================================
 static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&                  theaNeighbourPoint,
                                   const gp_Pnt2d&                  theOriginalPoint,
-                                  occ::handle<GeomAdaptor_Surface> theGASurface)
+                                  const occ::handle<GeomAdaptor_Surface>& theGASurface)
 {
   gp_Pnt2d ap1 = theaNeighbourPoint;
   gp_Pnt2d ap2 = theOriginalPoint;

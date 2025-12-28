@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Curve3dElementProperty, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_Curve3dElementProperty::StepFEA_Curve3dElementProperty() {}
+StepFEA_Curve3dElementProperty::StepFEA_Curve3dElementProperty() = default;
 
 //=================================================================================================
 

@@ -53,7 +53,7 @@ public:
     }
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -107,7 +107,7 @@ public:
     }
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -141,7 +141,7 @@ public:
   }
 
   //! Accumulate the data.
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (myUnnormImage.IsEmpty())
     {
@@ -161,7 +161,7 @@ public:
   }
 
   //! Normalize the depth values.
-  virtual void Flush() override
+  void Flush() override
   {
     float aFrom  = 0.0f;
     float aDelta = 1.0f;
@@ -215,7 +215,7 @@ public:
   {
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -269,7 +269,7 @@ public:
     }
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -312,7 +312,7 @@ public:
     myMapSelectionModeColors.Bind(0x0100, Quantity_NOC_GOLD);           // MeshVS_SMF_Group
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked < 1 || thePicked > myMainSel->NbPicked())
     {
@@ -372,7 +372,7 @@ public:
   {
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     Quantity_Color aColor(Quantity_NOC_BLACK);
     if (thePicked > 0 && thePicked <= myMainSel->NbPicked())
@@ -394,7 +394,7 @@ public:
   {
   }
 
-  virtual void Fill(const int theCol, const int theRow, const int thePicked) override
+  void Fill(const int theCol, const int theRow, const int thePicked) override
   {
     if (thePicked <= 0 || thePicked > myMainSel->NbPicked())
     {

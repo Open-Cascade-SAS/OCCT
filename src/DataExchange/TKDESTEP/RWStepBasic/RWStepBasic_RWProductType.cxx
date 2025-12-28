@@ -19,7 +19,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductType::RWStepBasic_RWProductType() {}
+RWStepBasic_RWProductType::RWStepBasic_RWProductType() = default;
 
 void RWStepBasic_RWProductType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

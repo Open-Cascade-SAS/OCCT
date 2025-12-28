@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_LimitsAndFits.hxx>
 
-RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() {}
+RWStepShape_RWLimitsAndFits::RWStepShape_RWLimitsAndFits() = default;
 
 void RWStepShape_RWLimitsAndFits::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

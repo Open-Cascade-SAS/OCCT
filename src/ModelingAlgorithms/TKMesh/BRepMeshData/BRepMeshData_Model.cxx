@@ -35,7 +35,7 @@ BRepMeshData_Model::BRepMeshData_Model(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-BRepMeshData_Model::~BRepMeshData_Model() {}
+BRepMeshData_Model::~BRepMeshData_Model() = default;
 
 //=================================================================================================
 

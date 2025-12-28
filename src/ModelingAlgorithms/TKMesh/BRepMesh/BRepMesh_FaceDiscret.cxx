@@ -32,7 +32,7 @@ BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(
 
 //=================================================================================================
 
-BRepMesh_FaceDiscret::~BRepMesh_FaceDiscret() {}
+BRepMesh_FaceDiscret::~BRepMesh_FaceDiscret() = default;
 
 //! Auxiliary functor for parallel processing of Faces.
 class BRepMesh_FaceDiscret::FaceListFunctor

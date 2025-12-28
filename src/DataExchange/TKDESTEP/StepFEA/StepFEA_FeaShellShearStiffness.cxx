@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellShearStiffness,
 
 //=================================================================================================
 
-StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness() {}
+StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness() = default;
 
 //=================================================================================================
 

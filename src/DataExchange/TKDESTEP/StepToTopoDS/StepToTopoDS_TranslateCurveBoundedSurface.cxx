@@ -39,7 +39,7 @@
 
 //=================================================================================================
 
-StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface() {}
+StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface() = default;
 
 //=================================================================================================
 

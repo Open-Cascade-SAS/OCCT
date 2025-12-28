@@ -29,8 +29,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWSphericalPairWithPinAndRange::RWStepKinematics_RWSphericalPairWithPinAndRange()
-{
-}
+= default;
 
 //=================================================================================================
 

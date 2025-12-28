@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LocalTime, Standard_Transient)
 
-StepBasic_LocalTime::StepBasic_LocalTime() {}
+StepBasic_LocalTime::StepBasic_LocalTime() = default;
 
 void StepBasic_LocalTime::Init(const int    aHourComponent,
                                const bool   hasAminuteComponent,

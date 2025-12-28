@@ -121,9 +121,9 @@ bool TNaming_Node::IsValidInTrans(int Trans)
 {
   if (myAtt->Transaction() <= Trans && Trans <= myAtt->UntilTransaction())
   {
-    return 1;
+    return true;
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================

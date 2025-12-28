@@ -18,7 +18,7 @@
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 
-RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep() {}
+RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep() = default;
 
 void RWStepShape_RWManifoldSolidBrep::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

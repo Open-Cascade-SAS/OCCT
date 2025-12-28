@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalLinearlyVarying,
 
 //=================================================================================================
 
-StepFEA_CurveElementIntervalLinearlyVarying::StepFEA_CurveElementIntervalLinearlyVarying() {}
+StepFEA_CurveElementIntervalLinearlyVarying::StepFEA_CurveElementIntervalLinearlyVarying() = default;
 
 //=================================================================================================
 

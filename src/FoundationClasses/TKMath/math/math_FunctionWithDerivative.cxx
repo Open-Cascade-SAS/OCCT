@@ -16,4 +16,4 @@
 
 //=================================================================================================
 
-math_FunctionWithDerivative::~math_FunctionWithDerivative() {}
+math_FunctionWithDerivative::~math_FunctionWithDerivative() = default;

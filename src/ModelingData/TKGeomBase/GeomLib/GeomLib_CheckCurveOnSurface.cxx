@@ -67,10 +67,10 @@ public:
 
   // returns the number of parameters of the function
   // (the function is one-dimension).
-  virtual int NbVariables() const { return 1; }
+  int NbVariables() const override { return 1; }
 
   // returns value of the function when parameters are equal to theX
-  virtual bool Value(const math_Vector& theX, double& theFVal) { return Value(theX(1), theFVal); }
+  bool Value(const math_Vector& theX, double& theFVal) override { return Value(theX(1), theFVal); }
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
@@ -94,11 +94,11 @@ public:
   }
 
   // see analogical method for abstract owner class math_MultipleVarFunction
-  virtual int GetStateNumber() { return 0; }
+  int GetStateNumber() override { return 0; }
 
   // returns the gradient of the function when parameters are
   // equal to theX
-  virtual bool Gradient(const math_Vector& theX, math_Vector& theGrad)
+  bool Gradient(const math_Vector& theX, math_Vector& theGrad) override
   {
     return Derive(theX(1), theGrad(1));
   }
@@ -148,7 +148,7 @@ public:
   }
 
   // returns value and gradient
-  virtual bool Values(const math_Vector& theX, double& theVal, math_Vector& theGrad)
+  bool Values(const math_Vector& theX, double& theVal, math_Vector& theGrad) override
   {
     if (!Value(theX, theVal))
     {
@@ -164,10 +164,10 @@ public:
   }
 
   // returns value, gradient and hessian
-  virtual bool Values(const math_Vector& theX,
+  bool Values(const math_Vector& theX,
                       double&            theVal,
                       math_Vector&       theGrad,
-                      math_Matrix&       theHessian)
+                      math_Matrix&       theHessian) override
   {
     if (!Value(theX, theVal))
     {

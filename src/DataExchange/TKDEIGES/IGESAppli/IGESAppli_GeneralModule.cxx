@@ -66,7 +66,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_GeneralModule, IGESData_GeneralModule)
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESAppli_GeneralModule::IGESAppli_GeneralModule() {}
+IGESAppli_GeneralModule::IGESAppli_GeneralModule() = default;
 
 void IGESAppli_GeneralModule::OwnSharedCase(const int                               CN,
                                             const occ::handle<IGESData_IGESEntity>& ent,

@@ -33,7 +33,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_MaterialTool,
 
 //=================================================================================================
 
-XCAFDoc_MaterialTool::XCAFDoc_MaterialTool() {}
+XCAFDoc_MaterialTool::XCAFDoc_MaterialTool() = default;
 
 //=================================================================================================
 

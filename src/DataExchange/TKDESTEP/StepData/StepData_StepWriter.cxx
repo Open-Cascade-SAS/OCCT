@@ -35,7 +35,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #define StepLong 72
 // StepLong: maximum length of a Step file line
 

@@ -97,7 +97,7 @@
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPTools_AlgoTools.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // POP for NT
 #ifdef DRAW
 
@@ -1118,12 +1118,12 @@ void BRepOffset_MakeOffset::MakeThickSolid(const Message_ProgressRange& theRange
       NbF++;
       Glue.Add(exp.Current());
     }
-    bool YaResult = 0;
+    bool YaResult = false;
     if (!myOffsetShape.IsNull())
     {
       for (exp.Init(myOffsetShape, TopAbs_FACE); exp.More(); exp.Next())
       {
-        YaResult = 1;
+        YaResult = true;
         Glue.Add(exp.Current().Reversed());
       }
 #ifdef OCCT_DEBUG
@@ -1351,9 +1351,9 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   //-------------------------------------------------------------------
   // Extension of faces and calculation of new edges of intersection.
   //-------------------------------------------------------------------
-  bool ExtentContext = 0;
+  bool ExtentContext = false;
   if (myOffset > 0)
-    ExtentContext = 1;
+    ExtentContext = true;
 
   BRepOffset_Inter3d Inter3(AsDes, Side, myTol);
   // Intersection between parallel faces
@@ -2989,9 +2989,9 @@ void BRepOffset_MakeOffset::MakeLoops(
   for (i = 1; i <= myFaces.Extent(); i++)
     LC.Append(myFaces(i));
 
-  bool InSide = 1;
+  bool InSide = true;
   if (myOffset > 0)
-    InSide = 0;
+    InSide = false;
   myMakeLoops.BuildOnContext(LC, myAnalyse, myAsDes, myImageOffset, InSide, aPS.Next(LC.Extent()));
 
 #ifdef OCCT_DEBUG

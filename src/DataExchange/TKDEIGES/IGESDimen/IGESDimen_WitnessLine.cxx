@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_WitnessLine, IGESData_IGESEntity)
 
-IGESDimen_WitnessLine::IGESDimen_WitnessLine() {}
+IGESDimen_WitnessLine::IGESDimen_WitnessLine() = default;
 
 void IGESDimen_WitnessLine::Init(const int                                      dataType,
                                  const double                                   aDisp,

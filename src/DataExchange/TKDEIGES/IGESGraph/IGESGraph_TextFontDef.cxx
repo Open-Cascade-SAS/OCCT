@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextFontDef, IGESData_IGESEntity)
 
-IGESGraph_TextFontDef::IGESGraph_TextFontDef() {}
+IGESGraph_TextFontDef::IGESGraph_TextFontDef() = default;
 
 void IGESGraph_TextFontDef::Init(
   const int                                               aFontCode,

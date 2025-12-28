@@ -44,7 +44,7 @@ const Standard_GUID& TDataStd_NamedData::GetID()
 
 //=================================================================================================
 
-TDataStd_NamedData::TDataStd_NamedData() {}
+TDataStd_NamedData::TDataStd_NamedData() = default;
 
 //=================================================================================================
 

@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESSolid_ToolSphericalSurface::IGESSolid_ToolSphericalSurface() {}
+IGESSolid_ToolSphericalSurface::IGESSolid_ToolSphericalSurface() = default;
 
 void IGESSolid_ToolSphericalSurface::ReadOwnParams(
   const occ::handle<IGESSolid_SphericalSurface>& ent,

@@ -76,7 +76,7 @@ occ::handle<TDataXtd_Point> TDataXtd_Point::Set(const TDF_Label& L, const gp_Pnt
 
 //=================================================================================================
 
-TDataXtd_Point::TDataXtd_Point() {}
+TDataXtd_Point::TDataXtd_Point() = default;
 
 //=================================================================================================
 

@@ -19,7 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_SimpleBinderOfTransient, Transfer_Binder)
 
 //  "occ::handle<Standard_Transient>": the base class for the Result
-Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient() {}
+Transfer_SimpleBinderOfTransient::Transfer_SimpleBinderOfTransient() = default;
 
 //    bool  Transfer_SimpleBinderOfTransient::IsMultiple() const
 //      {  return false;  }

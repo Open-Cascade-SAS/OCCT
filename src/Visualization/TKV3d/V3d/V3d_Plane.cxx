@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)
 //=================================================================================================
 
 V3d_Plane::V3d_Plane(const double theA, const double theB, const double theC, const double theD)
-    : myGraphicStructure(),
+    : 
       myPlane(new Graphic3d_ClipPlane(gp_Pln(theA, theB, theC, theD)))
 {
 }

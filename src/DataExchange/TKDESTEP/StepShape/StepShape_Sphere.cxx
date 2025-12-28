@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Sphere, StepGeom_GeometricRepresentationItem)
 
-StepShape_Sphere::StepShape_Sphere() {}
+StepShape_Sphere::StepShape_Sphere() = default;
 
 void StepShape_Sphere::Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const double                                 aRadius,

@@ -18,7 +18,7 @@
 #include <Draw.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 
-#include <string.h>
+#include <cstring>
 static int boptions(Draw_Interpretor&, int, const char**);
 static int brunparallel(Draw_Interpretor&, int, const char**);
 static int bnondestructive(Draw_Interpretor&, int, const char**);

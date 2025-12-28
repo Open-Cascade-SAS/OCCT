@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWSlidingSurfacePair::RWStepKinematics_RWSlidingSurfacePair() {}
+RWStepKinematics_RWSlidingSurfacePair::RWStepKinematics_RWSlidingSurfacePair() = default;
 
 //=================================================================================================
 

@@ -111,7 +111,7 @@ struct SplitDS
 
 private:
   // Assignment operator is forbidden.
-  void operator=(const SplitDS& theSplitDS);
+  void operator=(const SplitDS& theSplitDS) = delete;
 };
 
 //! Compute split points in the parameter space of the curve.

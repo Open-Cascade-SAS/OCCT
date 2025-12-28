@@ -32,7 +32,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEXCAF_ConfigurationNode::DEXCAF_ConfigurationNode()
-    : DE_ConfigurationNode()
+     
 {
 }
 

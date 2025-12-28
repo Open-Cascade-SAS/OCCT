@@ -79,7 +79,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef OCCT_DEBUG
   // #define DRAW
   #ifdef DRAW
@@ -289,7 +289,7 @@ static bool KPartCircle(
     myShape.Location(L);
     if (fabs(Alt) > gp::Resolution())
     {
-      BRepAdaptor_Surface S(mySpine, 0);
+      BRepAdaptor_Surface S(mySpine, false);
       gp_Ax1              Nor = S.Plane().Axis();
       gp_Trsf             T;
       gp_Vec              Trans(Nor.Direction());
@@ -881,7 +881,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
       Node2 = CurrentArc->SecondNode();
     }
 
-    bool StartOnEdge = 0, EndOnEdge = 0;
+    bool StartOnEdge = false, EndOnEdge = false;
 
     if (!Node1->Infinite())
     {
@@ -899,7 +899,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     }
 
     if (myJoinType == GeomAbs_Intersection)
-      StartOnEdge = EndOnEdge = 0;
+      StartOnEdge = EndOnEdge = false;
 
     //---------------------------------------------
     // Construction of geometries.
@@ -928,7 +928,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     }
     if (StartOnEdge)
     {
-      bool Start = 1;
+      bool Start = true;
       Trim.AddOrConfuse(Start, E[0], E[1], Params);
       if (Params.Length() == Vertices.Length() && Params.Length() != 0)
         Vertices.SetValue(1, VS);
@@ -939,7 +939,7 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     }
     if (EndOnEdge)
     {
-      bool Start = 0;
+      bool Start = false;
       Trim.AddOrConfuse(Start, E[0], E[1], Params);
       if (Params.Length() == Vertices.Length() && Params.Length() != 0)
         Vertices.SetValue(Params.Length(), VE);

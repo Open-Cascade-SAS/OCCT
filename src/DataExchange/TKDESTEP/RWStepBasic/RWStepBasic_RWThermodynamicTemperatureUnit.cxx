@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWThermodynamicTemperatureUnit::RWStepBasic_RWThermodynamicTemperatureUnit() {}
+RWStepBasic_RWThermodynamicTemperatureUnit::RWStepBasic_RWThermodynamicTemperatureUnit() = default;
 
 //=================================================================================================
 

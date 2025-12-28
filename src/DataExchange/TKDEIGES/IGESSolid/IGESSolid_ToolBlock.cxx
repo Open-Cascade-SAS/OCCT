@@ -34,7 +34,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolBlock::IGESSolid_ToolBlock() {}
+IGESSolid_ToolBlock::IGESSolid_ToolBlock() = default;
 
 void IGESSolid_ToolBlock::ReadOwnParams(const occ::handle<IGESSolid_Block>& ent,
                                         const occ::handle<IGESData_IGESReaderData>& /* IR */,

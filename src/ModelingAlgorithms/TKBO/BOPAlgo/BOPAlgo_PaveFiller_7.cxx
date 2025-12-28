@@ -78,7 +78,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_SplitEdge() {}
+  ~BOPAlgo_SplitEdge() override = default;
 
   //
   void SetData(const TopoDS_Edge&   aE,
@@ -123,7 +123,7 @@ public:
   void SetContext(const occ::handle<IntTools_Context>& aContext) { myContext = aContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
@@ -172,7 +172,7 @@ public:
       : BOPAlgo_ParallelAlgo(),
         myFlag(false) {};
   //
-  virtual ~BOPAlgo_MPC() {};
+  ~BOPAlgo_MPC() override = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myE = aE; }
@@ -213,7 +213,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
@@ -310,9 +310,9 @@ typedef NCollection_Vector<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
 class BOPAlgo_BPC
 {
 public:
-  BOPAlgo_BPC() {};
+  BOPAlgo_BPC() = default;
   //
-  ~BOPAlgo_BPC() {};
+  ~BOPAlgo_BPC() = default;
 
   //
   void SetFace(const TopoDS_Face& aF) { myF = aF; }

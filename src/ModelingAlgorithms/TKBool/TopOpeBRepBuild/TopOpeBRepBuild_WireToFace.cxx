@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_WireToFace::TopOpeBRepBuild_WireToFace() {}
+TopOpeBRepBuild_WireToFace::TopOpeBRepBuild_WireToFace() = default;
 
 //=================================================================================================
 

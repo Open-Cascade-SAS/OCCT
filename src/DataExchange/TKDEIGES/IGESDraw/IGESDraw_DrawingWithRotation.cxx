@@ -30,7 +30,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation, IGESData_IGESEntity)
 
-IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation() {}
+IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation() = default;
 
 void IGESDraw_DrawingWithRotation::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,

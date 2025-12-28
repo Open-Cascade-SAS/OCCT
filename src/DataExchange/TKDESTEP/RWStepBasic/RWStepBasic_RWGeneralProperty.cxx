@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWGeneralProperty::RWStepBasic_RWGeneralProperty() {}
+RWStepBasic_RWGeneralProperty::RWStepBasic_RWGeneralProperty() = default;
 
 //=================================================================================================
 

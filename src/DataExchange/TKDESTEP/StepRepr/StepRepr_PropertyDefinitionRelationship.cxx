@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRelationship, Standard_Tra
 
 //=================================================================================================
 
-StepRepr_PropertyDefinitionRelationship::StepRepr_PropertyDefinitionRelationship() {}
+StepRepr_PropertyDefinitionRelationship::StepRepr_PropertyDefinitionRelationship() = default;
 
 //=================================================================================================
 

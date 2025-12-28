@@ -23,27 +23,27 @@
 class TestBase : public Standard_Transient
 {
 public:
-  TestBase() {}
+  TestBase() = default;
 
-  virtual ~TestBase() {}
+  ~TestBase() override = default;
   DEFINE_STANDARD_RTTI_INLINE(TestBase, Standard_Transient)
 };
 
 class TestDerived : public TestBase
 {
 public:
-  TestDerived() {}
+  TestDerived() = default;
 
-  virtual ~TestDerived() {}
+  ~TestDerived() override = default;
   DEFINE_STANDARD_RTTI_INLINE(TestDerived, TestBase)
 };
 
 class TestOther : public Standard_Transient
 {
 public:
-  TestOther() {}
+  TestOther() = default;
 
-  virtual ~TestOther() {}
+  ~TestOther() override = default;
   DEFINE_STANDARD_RTTI_INLINE(TestOther, Standard_Transient)
 };
 

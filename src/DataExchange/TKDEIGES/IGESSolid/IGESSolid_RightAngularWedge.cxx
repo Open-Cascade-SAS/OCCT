@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
-IGESSolid_RightAngularWedge::IGESSolid_RightAngularWedge() {}
+IGESSolid_RightAngularWedge::IGESSolid_RightAngularWedge() = default;
 
 void IGESSolid_RightAngularWedge::Init(const gp_XYZ& aSize,
                                        const double  LowX,

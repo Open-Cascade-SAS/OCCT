@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ClosedShell, StepShape_ConnectedFaceSet)
 
-StepShape_ClosedShell::StepShape_ClosedShell() {}
+StepShape_ClosedShell::StepShape_ClosedShell() = default;

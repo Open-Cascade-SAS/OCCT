@@ -19,7 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator3d,
                            StepGeom_CartesianTransformationOperator)
 
-StepGeom_CartesianTransformationOperator3d::StepGeom_CartesianTransformationOperator3d() {}
+StepGeom_CartesianTransformationOperator3d::StepGeom_CartesianTransformationOperator3d() = default;
 
 void StepGeom_CartesianTransformationOperator3d::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

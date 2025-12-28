@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_OffsetCurve, IGESData_IGESEntity)
 
-IGESGeom_OffsetCurve::IGESGeom_OffsetCurve() {}
+IGESGeom_OffsetCurve::IGESGeom_OffsetCurve() = default;
 
 void IGESGeom_OffsetCurve::Init(const occ::handle<IGESData_IGESEntity>& aBaseCurve,
                                 const int                               anOffsetType,

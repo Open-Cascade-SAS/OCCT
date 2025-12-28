@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ElementarySurface.hxx>
 
-RWStepGeom_RWElementarySurface::RWStepGeom_RWElementarySurface() {}
+RWStepGeom_RWElementarySurface::RWStepGeom_RWElementarySurface() = default;
 
 void RWStepGeom_RWElementarySurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&    data,

@@ -297,7 +297,7 @@ public:
     return true;
   }
 
-  virtual ~VRImagePixmap()
+  ~VRImagePixmap() override
   {
     if (myVrTexture != nullptr)
     {
@@ -324,7 +324,7 @@ public:
 
 protected:
   //! Read image.
-  virtual occ::handle<Image_PixMap> ReadImage(
+  occ::handle<Image_PixMap> ReadImage(
     const occ::handle<Image_SupportedFormats>&) const override
   {
     occ::handle<VRImagePixmap> aPixmap = new VRImagePixmap();

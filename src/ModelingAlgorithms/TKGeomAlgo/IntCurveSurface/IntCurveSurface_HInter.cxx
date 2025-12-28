@@ -53,7 +53,7 @@ using TheQuadCurvExactInter = IntCurveSurface_TheQuadCurvExactHInter;
 
 //==================================================================================================
 
-IntCurveSurface_HInter::IntCurveSurface_HInter() {}
+IntCurveSurface_HInter::IntCurveSurface_HInter() = default;
 
 //==================================================================================================
 

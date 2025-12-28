@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_EdgeBuilder::TopOpeBRepBuild_EdgeBuilder() {}
+TopOpeBRepBuild_EdgeBuilder::TopOpeBRepBuild_EdgeBuilder() = default;
 
 //=================================================================================================
 

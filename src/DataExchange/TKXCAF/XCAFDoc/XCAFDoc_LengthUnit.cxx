@@ -26,7 +26,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_LengthUnit, TDF_Attribute, "xcaf",
 //=================================================================================================
 
 XCAFDoc_LengthUnit::XCAFDoc_LengthUnit()
-    : TDF_Attribute(),
+    : 
       myUnitScaleValue(1.)
 {
 }

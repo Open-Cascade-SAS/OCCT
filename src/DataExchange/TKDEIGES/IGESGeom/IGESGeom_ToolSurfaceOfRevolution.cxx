@@ -33,7 +33,7 @@
 #include <Message_Msg.hxx>
 
 // MGE 31/07/98
-IGESGeom_ToolSurfaceOfRevolution::IGESGeom_ToolSurfaceOfRevolution() {}
+IGESGeom_ToolSurfaceOfRevolution::IGESGeom_ToolSurfaceOfRevolution() = default;
 
 void IGESGeom_ToolSurfaceOfRevolution::ReadOwnParams(
   const occ::handle<IGESGeom_SurfaceOfRevolution>& ent,

@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Face, IGESData_IGESEntity)
 
-IGESSolid_Face::IGESSolid_Face() {}
+IGESSolid_Face::IGESSolid_Face() = default;
 
 void IGESSolid_Face::Init(
   const occ::handle<IGESData_IGESEntity>&                              aSurface,

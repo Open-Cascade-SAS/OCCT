@@ -36,14 +36,14 @@ class BOPDS_TSR : public BOPTools_BoxTreeSelector
 {
 public:
   BOPDS_TSR()
-      : BOPTools_BoxTreeSelector(),
+      : 
         myHasBRep(false),
         myIndex(-1)
   {
   }
 
   //
-  virtual ~BOPDS_TSR() {}
+  ~BOPDS_TSR() override = default;
 
   //
   void SetHasBRep(const bool bFlag) { myHasBRep = bFlag; }
@@ -133,7 +133,7 @@ BOPDS_Iterator::BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& the
 
 //=================================================================================================
 
-BOPDS_Iterator::~BOPDS_Iterator() {}
+BOPDS_Iterator::~BOPDS_Iterator() = default;
 
 //=================================================================================================
 

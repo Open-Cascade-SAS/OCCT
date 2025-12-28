@@ -44,7 +44,7 @@ BOPDS_SubIterator::BOPDS_SubIterator(const occ::handle<NCollection_BaseAllocator
 
 //=================================================================================================
 
-BOPDS_SubIterator::~BOPDS_SubIterator() {}
+BOPDS_SubIterator::~BOPDS_SubIterator() = default;
 
 //=================================================================================================
 

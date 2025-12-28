@@ -21,7 +21,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWMechanicalContext::RWStepBasic_RWMechanicalContext() {}
+RWStepBasic_RWMechanicalContext::RWStepBasic_RWMechanicalContext() = default;
 
 void RWStepBasic_RWMechanicalContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

@@ -34,12 +34,12 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange
 {
 public:
   BOPAlgo_ShrunkRange()
-      : IntTools_ShrunkRange()
+       
   {
   }
 
   //
-  virtual ~BOPAlgo_ShrunkRange() {}
+  ~BOPAlgo_ShrunkRange() override = default;
 
   //
   void SetPaveBlock(const occ::handle<BOPDS_PaveBlock>& aPB) { myPB = aPB; }

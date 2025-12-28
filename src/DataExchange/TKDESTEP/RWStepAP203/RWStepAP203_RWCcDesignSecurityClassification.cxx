@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepAP203_RWCcDesignSecurityClassification::RWStepAP203_RWCcDesignSecurityClassification() {}
+RWStepAP203_RWCcDesignSecurityClassification::RWStepAP203_RWCcDesignSecurityClassification() = default;
 
 //=================================================================================================
 

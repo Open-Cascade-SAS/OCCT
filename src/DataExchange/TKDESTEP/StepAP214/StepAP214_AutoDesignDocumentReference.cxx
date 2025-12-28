@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDocumentReference, StepBasic_DocumentReference)
 
-StepAP214_AutoDesignDocumentReference::StepAP214_AutoDesignDocumentReference() {}
+StepAP214_AutoDesignDocumentReference::StepAP214_AutoDesignDocumentReference() = default;
 
 void StepAP214_AutoDesignDocumentReference::Init(
   const occ::handle<StepBasic_Document>&                                       aAssignedDocument,

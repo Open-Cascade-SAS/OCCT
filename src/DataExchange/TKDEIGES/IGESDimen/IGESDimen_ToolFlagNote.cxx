@@ -36,7 +36,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolFlagNote::IGESDimen_ToolFlagNote() {}
+IGESDimen_ToolFlagNote::IGESDimen_ToolFlagNote() = default;
 
 void IGESDimen_ToolFlagNote::ReadOwnParams(const occ::handle<IGESDimen_FlagNote>&      ent,
                                            const occ::handle<IGESData_IGESReaderData>& IR,

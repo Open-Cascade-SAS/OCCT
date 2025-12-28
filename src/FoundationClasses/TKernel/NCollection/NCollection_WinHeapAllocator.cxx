@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_WinHeapAllocator, NCollection_BaseAllocat
 //=================================================================================================
 
 NCollection_WinHeapAllocator::NCollection_WinHeapAllocator(const size_t theInitSizeBytes)
-    : NCollection_BaseAllocator(),
+    : 
 #if (defined(_WIN32) || defined(__WIN32__))
       myHeapH(HeapCreate(0, theInitSizeBytes, 0)),
 #endif

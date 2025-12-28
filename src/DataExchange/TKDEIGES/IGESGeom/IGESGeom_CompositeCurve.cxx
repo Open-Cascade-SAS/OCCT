@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CompositeCurve, IGESData_IGESEntity)
 
-IGESGeom_CompositeCurve::IGESGeom_CompositeCurve() {}
+IGESGeom_CompositeCurve::IGESGeom_CompositeCurve() = default;
 
 void IGESGeom_CompositeCurve::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)

@@ -31,7 +31,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESSolid_ToolSolidAssembly::IGESSolid_ToolSolidAssembly() {}
+IGESSolid_ToolSolidAssembly::IGESSolid_ToolSolidAssembly() = default;
 
 void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_SolidAssembly>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

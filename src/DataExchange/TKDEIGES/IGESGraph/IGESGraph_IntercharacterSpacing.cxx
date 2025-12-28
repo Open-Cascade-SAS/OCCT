@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_IntercharacterSpacing, IGESData_IGESEntity)
 
-IGESGraph_IntercharacterSpacing::IGESGraph_IntercharacterSpacing() {}
+IGESGraph_IntercharacterSpacing::IGESGraph_IntercharacterSpacing() = default;
 
 void IGESGraph_IntercharacterSpacing::Init(const int nbProps, const double anISpace)
 {

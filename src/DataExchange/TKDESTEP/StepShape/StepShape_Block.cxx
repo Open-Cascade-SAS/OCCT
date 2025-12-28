@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Block, StepGeom_GeometricRepresentationItem)
 
-StepShape_Block::StepShape_Block() {}
+StepShape_Block::StepShape_Block() = default;
 
 void StepShape_Block::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                            const occ::handle<StepGeom_Axis2Placement3d>& aPosition,

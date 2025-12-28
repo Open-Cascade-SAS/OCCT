@@ -19,7 +19,7 @@
 #include <StepGeom_SurfaceOfLinearExtrusion.hxx>
 #include <StepGeom_Vector.hxx>
 
-RWStepGeom_RWSurfaceOfLinearExtrusion::RWStepGeom_RWSurfaceOfLinearExtrusion() {}
+RWStepGeom_RWSurfaceOfLinearExtrusion::RWStepGeom_RWSurfaceOfLinearExtrusion() = default;
 
 void RWStepGeom_RWSurfaceOfLinearExtrusion::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,

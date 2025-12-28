@@ -64,7 +64,7 @@ static bool FindOtherErrors(
 
 //=================================================================================================
 
-DNaming_BooleanOperationDriver::DNaming_BooleanOperationDriver() {}
+DNaming_BooleanOperationDriver::DNaming_BooleanOperationDriver() = default;
 
 //=======================================================================
 // function : Validate

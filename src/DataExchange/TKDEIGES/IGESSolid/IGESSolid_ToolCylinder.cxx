@@ -33,7 +33,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolCylinder::IGESSolid_ToolCylinder() {}
+IGESSolid_ToolCylinder::IGESSolid_ToolCylinder() = default;
 
 void IGESSolid_ToolCylinder::ReadOwnParams(const occ::handle<IGESSolid_Cylinder>& ent,
                                            const occ::handle<IGESData_IGESReaderData>& /* IR */,

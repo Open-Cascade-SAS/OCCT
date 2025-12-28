@@ -65,11 +65,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DelabellaMeshAlgoFactory, IMeshTools_MeshAlg
 
 //=================================================================================================
 
-BRepMesh_DelabellaMeshAlgoFactory::BRepMesh_DelabellaMeshAlgoFactory() {}
+BRepMesh_DelabellaMeshAlgoFactory::BRepMesh_DelabellaMeshAlgoFactory() = default;
 
 //=================================================================================================
 
-BRepMesh_DelabellaMeshAlgoFactory::~BRepMesh_DelabellaMeshAlgoFactory() {}
+BRepMesh_DelabellaMeshAlgoFactory::~BRepMesh_DelabellaMeshAlgoFactory() = default;
 
 //=================================================================================================
 

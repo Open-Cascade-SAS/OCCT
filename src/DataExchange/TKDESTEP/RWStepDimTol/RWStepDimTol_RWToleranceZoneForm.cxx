@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWToleranceZoneForm::RWStepDimTol_RWToleranceZoneForm() {}
+RWStepDimTol_RWToleranceZoneForm::RWStepDimTol_RWToleranceZoneForm() = default;
 
 //=================================================================================================
 

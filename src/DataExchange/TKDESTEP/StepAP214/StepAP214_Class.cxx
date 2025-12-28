@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_Class, StepBasic_Group)
 
 //=================================================================================================
 
-StepAP214_Class::StepAP214_Class() {}
+StepAP214_Class::StepAP214_Class() = default;

@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 //  WARNING  WARNING : The "ROW" designation is not continued as is
 //  The Attribute Number is given first (therefore, in column of HArray2 and not
 //  in row), the Column number second (therefore, as a Row number)
-IGESDefs_AttributeTable::IGESDefs_AttributeTable() {}
+IGESDefs_AttributeTable::IGESDefs_AttributeTable() = default;
 
 void IGESDefs_AttributeTable::Init(
   const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)

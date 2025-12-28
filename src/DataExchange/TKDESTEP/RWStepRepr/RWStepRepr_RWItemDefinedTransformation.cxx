@@ -21,7 +21,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWItemDefinedTransformation::RWStepRepr_RWItemDefinedTransformation() {}
+RWStepRepr_RWItemDefinedTransformation::RWStepRepr_RWItemDefinedTransformation() = default;
 
 void RWStepRepr_RWItemDefinedTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

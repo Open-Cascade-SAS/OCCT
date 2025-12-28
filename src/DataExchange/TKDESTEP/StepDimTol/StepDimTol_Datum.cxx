@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_Datum, StepRepr_ShapeAspect)
 
 //=================================================================================================
 
-StepDimTol_Datum::StepDimTol_Datum() {}
+StepDimTol_Datum::StepDimTol_Datum() = default;
 
 //=================================================================================================
 

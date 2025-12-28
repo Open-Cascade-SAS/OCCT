@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() {}
+RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() = default;
 
 //=================================================================================================
 

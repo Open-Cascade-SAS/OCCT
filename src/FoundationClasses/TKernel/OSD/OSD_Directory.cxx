@@ -30,8 +30,8 @@
 
 void _osd_wnt_set_error(OSD_Error&, int, ...);
 #else
-  #include <errno.h>
-  #include <stdio.h>
+  #include <cerrno>
+  #include <cstdio>
   #include <sys/stat.h>
   #include <unistd.h>
 

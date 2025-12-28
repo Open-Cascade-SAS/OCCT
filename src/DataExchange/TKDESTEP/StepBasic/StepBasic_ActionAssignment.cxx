@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionAssignment, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ActionAssignment::StepBasic_ActionAssignment() {}
+StepBasic_ActionAssignment::StepBasic_ActionAssignment() = default;
 
 //=================================================================================================
 

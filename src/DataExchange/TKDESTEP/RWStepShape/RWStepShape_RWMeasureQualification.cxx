@@ -21,7 +21,7 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepShape_RWMeasureQualification::RWStepShape_RWMeasureQualification() {}
+RWStepShape_RWMeasureQualification::RWStepShape_RWMeasureQualification() = default;
 
 void RWStepShape_RWMeasureQualification::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

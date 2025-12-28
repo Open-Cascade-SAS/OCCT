@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RollingCurvePair, StepKinematics_Plana
 
 //=================================================================================================
 
-StepKinematics_RollingCurvePair::StepKinematics_RollingCurvePair() {}
+StepKinematics_RollingCurvePair::StepKinematics_RollingCurvePair() = default;

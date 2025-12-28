@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianPoint, StepGeom_Point)
 
-StepGeom_CartesianPoint::StepGeom_CartesianPoint() {}
+StepGeom_CartesianPoint::StepGeom_CartesianPoint() = default;
 
 void StepGeom_CartesianPoint::Init(const occ::handle<TCollection_HAsciiString>&    theName,
                                    const occ::handle<NCollection_HArray1<double>>& aCoordinates)

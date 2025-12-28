@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_SelectorOfDataStructureOfDelaun, Standard_Tr
 
 //=================================================================================================
 
-BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun() {}
+BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun() = default;
 
 //=================================================================================================
 

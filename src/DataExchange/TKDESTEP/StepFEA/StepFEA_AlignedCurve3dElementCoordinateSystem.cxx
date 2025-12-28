@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_AlignedCurve3dElementCoordinateSystem,
 
 //=================================================================================================
 
-StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoordinateSystem() {}
+StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

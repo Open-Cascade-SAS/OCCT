@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LinearDimension, IGESData_IGESEntity)
 
-IGESDimen_LinearDimension::IGESDimen_LinearDimension() {}
+IGESDimen_LinearDimension::IGESDimen_LinearDimension() = default;
 
 void IGESDimen_LinearDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                      const occ::handle<IGESDimen_LeaderArrow>& aLeader,

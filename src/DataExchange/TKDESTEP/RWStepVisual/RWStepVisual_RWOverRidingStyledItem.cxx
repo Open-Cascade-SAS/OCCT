@@ -20,7 +20,7 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-RWStepVisual_RWOverRidingStyledItem::RWStepVisual_RWOverRidingStyledItem() {}
+RWStepVisual_RWOverRidingStyledItem::RWStepVisual_RWOverRidingStyledItem() = default;
 
 void RWStepVisual_RWOverRidingStyledItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

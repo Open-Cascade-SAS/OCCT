@@ -77,4 +77,4 @@ BRepMesh_Context::BRepMesh_Context(IMeshTools_MeshAlgoType theMeshType)
 
 //=================================================================================================
 
-BRepMesh_Context::~BRepMesh_Context() {}
+BRepMesh_Context::~BRepMesh_Context() = default;

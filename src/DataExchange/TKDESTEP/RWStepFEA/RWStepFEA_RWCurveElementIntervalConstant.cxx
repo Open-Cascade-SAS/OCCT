@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurveElementIntervalConstant::RWStepFEA_RWCurveElementIntervalConstant() {}
+RWStepFEA_RWCurveElementIntervalConstant::RWStepFEA_RWCurveElementIntervalConstant() = default;
 
 //=================================================================================================
 

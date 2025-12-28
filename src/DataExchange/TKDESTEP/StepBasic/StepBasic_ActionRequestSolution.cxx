@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ActionRequestSolution, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution() {}
+StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution() = default;
 
 //=================================================================================================
 

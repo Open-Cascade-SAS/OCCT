@@ -54,7 +54,7 @@ enum BOPAlgo_PIOperation
 //=================================================================================================
 
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
-    : BOPAlgo_Algo()
+     
 {
   myDS               = nullptr;
   myIterator         = nullptr;

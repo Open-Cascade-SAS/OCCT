@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndSolidAngleUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndSolidAngleUnit::StepBasic_SiUnitAndSolidAngleUnit() {}
+StepBasic_SiUnitAndSolidAngleUnit::StepBasic_SiUnitAndSolidAngleUnit() = default;
 
 void StepBasic_SiUnitAndSolidAngleUnit::Init(const bool                 hasAprefix,
                                              const StepBasic_SiPrefix   aPrefix,

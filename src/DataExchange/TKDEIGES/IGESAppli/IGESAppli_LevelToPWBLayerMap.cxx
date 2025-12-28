@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 
-IGESAppli_LevelToPWBLayerMap::IGESAppli_LevelToPWBLayerMap() {}
+IGESAppli_LevelToPWBLayerMap::IGESAppli_LevelToPWBLayerMap() = default;
 
 void IGESAppli_LevelToPWBLayerMap::Init(
   const int                                                                      nbPropVal,

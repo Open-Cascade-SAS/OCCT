@@ -4,7 +4,7 @@
 // Pre-include stdlib.h to avoid redefinition of integer type macros (INT8_MIN and similar in
 // generated code)
 #if !defined(_MSC_VER) || (_MSC_VER >= 1600) // Visual Studio 2010+
-  #include "stdint.h"
+  #include <cstdint>
 #endif
 
 #define YY_INT_ALIGNED short int
@@ -121,7 +121,7 @@ typedef unsigned int       flex_uint32_t;
 
 /* begin standard C++ headers. */
 #include <iostream>
-#include <errno.h>
+#include <cerrno>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -520,7 +520,7 @@ static const flex_int16_t yy_chk[373] = {
 #define YY_NO_INPUT 1
 
 #include <step.tab.hxx>
-#include "stdio.h"
+#include <cstdio>
 
 // Tell flex which function to define
 #ifdef YY_DECL
@@ -712,7 +712,7 @@ YY_DECL
 
   {
 
-    while (/*CONSTCOND*/ 1) /* loops until end-of-file is reached */
+    while (/*CONSTCOND*/ true) /* loops until end-of-file is reached */
     {
       (yy_more_len) = 0;
       if ((yy_more_flag))
@@ -1840,7 +1840,7 @@ void yyFlexLexer::yypush_buffer_state(YY_BUFFER_STATE new_buffer)
  *  The next element becomes the new top.
  *
  */
-void yyFlexLexer::yypop_buffer_state(void)
+void yyFlexLexer::yypop_buffer_state()
 {
   if (!YY_CURRENT_BUFFER)
     return;
@@ -1860,7 +1860,7 @@ void yyFlexLexer::yypop_buffer_state(void)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-void yyFlexLexer::yyensure_buffer_stack(void)
+void yyFlexLexer::yyensure_buffer_stack()
 {
   yy_size_t num_to_alloc;
 

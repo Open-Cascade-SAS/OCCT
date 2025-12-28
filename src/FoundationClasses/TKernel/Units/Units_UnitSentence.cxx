@@ -177,7 +177,7 @@ void Units_UnitSentence::SetUnits(
   const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
 {
   int                                                          index, jindex, kindex;
-  bool                                                         istheend = 0;
+  bool                                                         istheend = false;
   occ::handle<Units_Quantity>                                  quantity;
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequenceoftokens;
   occ::handle<Units_Token>                                     currenttoken;

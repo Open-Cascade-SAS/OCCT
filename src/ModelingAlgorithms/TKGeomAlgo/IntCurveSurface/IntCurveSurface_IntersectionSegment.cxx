@@ -16,7 +16,7 @@
 
 #include <IntCurveSurface_IntersectionSegment.hxx>
 
-IntCurveSurface_IntersectionSegment::IntCurveSurface_IntersectionSegment() {}
+IntCurveSurface_IntersectionSegment::IntCurveSurface_IntersectionSegment() = default;
 
 //================================================================================
 IntCurveSurface_IntersectionSegment::IntCurveSurface_IntersectionSegment(

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternallyDefinedItem, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ExternallyDefinedItem::StepBasic_ExternallyDefinedItem() {}
+StepBasic_ExternallyDefinedItem::StepBasic_ExternallyDefinedItem() = default;
 
 //=================================================================================================
 

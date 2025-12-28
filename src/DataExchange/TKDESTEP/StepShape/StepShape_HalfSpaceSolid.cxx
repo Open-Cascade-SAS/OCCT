@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_HalfSpaceSolid, StepGeom_GeometricRepresentationItem)
 
-StepShape_HalfSpaceSolid::StepShape_HalfSpaceSolid() {}
+StepShape_HalfSpaceSolid::StepShape_HalfSpaceSolid() = default;
 
 void StepShape_HalfSpaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                     const occ::handle<StepGeom_Surface>&         aBaseSurface,

@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_Check, Standard_Transient)
 // only if at least one error must be recorded (Fail-Warning)
 //=================================================================================================
 
-Interface_Check::Interface_Check() {} // construit a vide
+Interface_Check::Interface_Check() = default; // construit a vide
 
 //=================================================================================================
 

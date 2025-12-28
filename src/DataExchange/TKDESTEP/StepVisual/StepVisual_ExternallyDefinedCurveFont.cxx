@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont, StepBasic_Exte
 
 //=================================================================================================
 
-StepVisual_ExternallyDefinedCurveFont::StepVisual_ExternallyDefinedCurveFont() {}
+StepVisual_ExternallyDefinedCurveFont::StepVisual_ExternallyDefinedCurveFont() = default;

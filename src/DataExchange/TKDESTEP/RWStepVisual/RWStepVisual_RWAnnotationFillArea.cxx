@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWAnnotationFillArea::RWStepVisual_RWAnnotationFillArea() {}
+RWStepVisual_RWAnnotationFillArea::RWStepVisual_RWAnnotationFillArea() = default;
 
 //=================================================================================================
 

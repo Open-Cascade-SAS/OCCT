@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Address, Standard_Transient)
 
-StepBasic_Address::StepBasic_Address() {}
+StepBasic_Address::StepBasic_Address() = default;
 
 void StepBasic_Address::Init(const bool                                   hasAinternalLocation,
                              const occ::handle<TCollection_HAsciiString>& aInternalLocation,

@@ -19,7 +19,7 @@
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
 
-RWStepGeom_RWPcurve::RWStepGeom_RWPcurve() {}
+RWStepGeom_RWPcurve::RWStepGeom_RWPcurve() = default;
 
 void RWStepGeom_RWPcurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                    const int                                   num,

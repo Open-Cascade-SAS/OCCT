@@ -101,7 +101,7 @@ vtkStandardNewMacro(IVtkDraw_Interactor)
 
 //=================================================================================================
 
-IVtkDraw_Interactor::~IVtkDraw_Interactor() {}
+IVtkDraw_Interactor::~IVtkDraw_Interactor() = default;
 
 //=================================================================================================
 
@@ -831,7 +831,7 @@ int IVtkDraw_Interactor::ViewerMainLoop(int theArgNum, const char** /*theArgs*/)
       {
         case Button1:
           this->OnSelection();
-          this->myIsLeftButtonPressed = 1;
+          this->myIsLeftButtonPressed = true;
           this->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
           break;
         case Button2:

@@ -19,7 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDateAndPersonAssignment,
                            StepBasic_PersonAndOrganizationAssignment)
 
-StepAP214_AutoDesignDateAndPersonAssignment::StepAP214_AutoDesignDateAndPersonAssignment() {}
+StepAP214_AutoDesignDateAndPersonAssignment::StepAP214_AutoDesignDateAndPersonAssignment() = default;
 
 void StepAP214_AutoDesignDateAndPersonAssignment::Init(
   const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,

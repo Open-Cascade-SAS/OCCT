@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepElement_VolumeElementPurpose::StepElement_VolumeElementPurpose() {}
+StepElement_VolumeElementPurpose::StepElement_VolumeElementPurpose() = default;
 
 //=================================================================================================
 

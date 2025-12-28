@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ViewsVisible, IGESData_ViewKindEntity)
 
-IGESDraw_ViewsVisible::IGESDraw_ViewsVisible() {}
+IGESDraw_ViewsVisible::IGESDraw_ViewsVisible() = default;
 
 // This class inherits from IGESData_ViewKindEntity
 

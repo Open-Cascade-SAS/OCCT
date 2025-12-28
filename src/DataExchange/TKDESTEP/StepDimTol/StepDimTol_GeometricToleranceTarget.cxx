@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() {}
+StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() = default;
 
 //=================================================================================================
 

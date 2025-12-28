@@ -42,7 +42,7 @@
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)
 
 // Patch

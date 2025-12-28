@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationView, StepVisual_PresentationRepresentation)
 
-StepVisual_PresentationView::StepVisual_PresentationView() {}
+StepVisual_PresentationView::StepVisual_PresentationView() = default;

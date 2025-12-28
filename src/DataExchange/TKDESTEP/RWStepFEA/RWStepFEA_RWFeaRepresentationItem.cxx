@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaRepresentationItem::RWStepFEA_RWFeaRepresentationItem() {}
+RWStepFEA_RWFeaRepresentationItem::RWStepFEA_RWFeaRepresentationItem() = default;
 
 //=================================================================================================
 

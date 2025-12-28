@@ -74,7 +74,7 @@
 // GeomToIGES_GeomCurve
 //=============================================================================
 GeomToIGES_GeomCurve::GeomToIGES_GeomCurve()
-    : GeomToIGES_GeomEntity()
+     
 {
 }
 

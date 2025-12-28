@@ -19,7 +19,7 @@
 #include <StepShape_LoopAndPath.hxx>
 #include <StepShape_OrientedEdge.hxx>
 
-RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath() {}
+RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath() = default;
 
 void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num0,

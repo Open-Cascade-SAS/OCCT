@@ -20,5 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShA
 
 StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp::
   StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp()
-{
-}
+= default;

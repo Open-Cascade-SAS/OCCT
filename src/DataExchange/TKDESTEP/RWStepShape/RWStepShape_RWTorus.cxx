@@ -18,7 +18,7 @@
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepShape_Torus.hxx>
 
-RWStepShape_RWTorus::RWStepShape_RWTorus() {}
+RWStepShape_RWTorus::RWStepShape_RWTorus() = default;
 
 void RWStepShape_RWTorus::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                    const int                                   num,

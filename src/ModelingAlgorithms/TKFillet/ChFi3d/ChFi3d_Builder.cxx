@@ -137,7 +137,7 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
 
 //=================================================================================================
 
-ChFi3d_Builder::~ChFi3d_Builder() {}
+ChFi3d_Builder::~ChFi3d_Builder() = default;
 
 //=================================================================================================
 

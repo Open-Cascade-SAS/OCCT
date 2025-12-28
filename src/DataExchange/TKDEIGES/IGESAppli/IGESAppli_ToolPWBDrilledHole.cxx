@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolPWBDrilledHole::IGESAppli_ToolPWBDrilledHole() {}
+IGESAppli_ToolPWBDrilledHole::IGESAppli_ToolPWBDrilledHole() = default;
 
 void IGESAppli_ToolPWBDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_PWBDrilledHole>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>& /*IR*/,

@@ -54,7 +54,7 @@ vtkStandardNewMacro(IVtkTools_ShapePicker)
 //  Method: ~IVtkTools_ShapePicker
 // Purpose: Destructor
 //============================================================================
-IVtkTools_ShapePicker::~IVtkTools_ShapePicker() {}
+IVtkTools_ShapePicker::~IVtkTools_ShapePicker() = default;
 
 //============================================================================
 //  Method: SetTolerance

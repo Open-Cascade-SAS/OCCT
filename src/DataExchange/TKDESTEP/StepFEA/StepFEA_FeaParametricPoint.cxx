@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaParametricPoint, StepGeom_Point)
 
 //=================================================================================================
 
-StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint() {}
+StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint() = default;
 
 //=================================================================================================
 

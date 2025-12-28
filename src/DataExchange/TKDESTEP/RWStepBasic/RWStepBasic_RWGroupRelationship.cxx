@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWGroupRelationship::RWStepBasic_RWGroupRelationship() {}
+RWStepBasic_RWGroupRelationship::RWStepBasic_RWGroupRelationship() = default;
 
 //=================================================================================================
 

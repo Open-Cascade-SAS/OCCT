@@ -50,7 +50,7 @@
 #include <TransferBRep_ShapeBinder.hxx>
 #include <TransferBRep_ShapeListBinder.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

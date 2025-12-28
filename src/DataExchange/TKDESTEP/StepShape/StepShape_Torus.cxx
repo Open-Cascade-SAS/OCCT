@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Torus, StepGeom_GeometricRepresentationItem)
 
-StepShape_Torus::StepShape_Torus() {}
+StepShape_Torus::StepShape_Torus() = default;
 
 void StepShape_Torus::Init(const occ::handle<TCollection_HAsciiString>& aName,
                            const occ::handle<StepGeom_Axis1Placement>&  aPosition,

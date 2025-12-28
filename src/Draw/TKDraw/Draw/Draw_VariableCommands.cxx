@@ -41,7 +41,7 @@ extern Draw_Viewer dout;
 #endif
 
 #include <tcl.h>
-#include <errno.h>
+#include <cerrno>
 
 #include <OSD_Environment.hxx>
 #include <OSD_FileSystem.hxx>

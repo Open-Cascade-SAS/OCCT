@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_RadiusDimension, IGESData_IGESEntity)
 
-IGESDimen_RadiusDimension::IGESDimen_RadiusDimension() {}
+IGESDimen_RadiusDimension::IGESDimen_RadiusDimension() = default;
 
 void IGESDimen_RadiusDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                      const occ::handle<IGESDimen_LeaderArrow>& anArrow,

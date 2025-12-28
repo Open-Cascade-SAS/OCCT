@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWParallelismTolerance::RWStepDimTol_RWParallelismTolerance() {}
+RWStepDimTol_RWParallelismTolerance::RWStepDimTol_RWParallelismTolerance() = default;
 
 //=================================================================================================
 

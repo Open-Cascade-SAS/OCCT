@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease() {}
+StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease() = default;
 
 //=================================================================================================
 

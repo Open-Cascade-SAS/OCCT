@@ -34,7 +34,7 @@
 // MGE 30/07/98
 //=================================================================================================
 
-IGESGeom_ToolCurveOnSurface::IGESGeom_ToolCurveOnSurface() {}
+IGESGeom_ToolCurveOnSurface::IGESGeom_ToolCurveOnSurface() = default;
 
 //=================================================================================================
 

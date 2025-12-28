@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2d, ShapeUpgrade_SplitCurve)
 
 //=================================================================================================
 
-ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d() {}
+ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d() = default;
 
 //=================================================================================================
 

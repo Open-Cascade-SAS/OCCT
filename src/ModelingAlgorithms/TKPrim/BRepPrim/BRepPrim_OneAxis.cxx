@@ -143,7 +143,7 @@ BRepPrim_OneAxis::BRepPrim_OneAxis(const BRepPrim_Builder& B,
 
 //=================================================================================================
 
-BRepPrim_OneAxis::~BRepPrim_OneAxis() {}
+BRepPrim_OneAxis::~BRepPrim_OneAxis() = default;
 
 //=================================================================================================
 

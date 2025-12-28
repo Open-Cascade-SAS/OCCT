@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopLoc_Datum3D, Standard_Transient)
 
 //=================================================================================================
 
-TopLoc_Datum3D::TopLoc_Datum3D() {}
+TopLoc_Datum3D::TopLoc_Datum3D() = default;
 
 //=================================================================================================
 

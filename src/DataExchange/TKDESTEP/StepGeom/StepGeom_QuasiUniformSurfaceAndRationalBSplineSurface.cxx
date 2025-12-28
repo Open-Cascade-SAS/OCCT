@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface
 
 StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::
   StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface()
-{
-}
+= default;
 
 void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

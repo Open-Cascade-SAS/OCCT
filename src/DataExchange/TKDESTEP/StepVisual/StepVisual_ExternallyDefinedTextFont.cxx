@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedTextFont, StepBasic_Exter
 
 //=================================================================================================
 
-StepVisual_ExternallyDefinedTextFont::StepVisual_ExternallyDefinedTextFont() {}
+StepVisual_ExternallyDefinedTextFont::StepVisual_ExternallyDefinedTextFont() = default;

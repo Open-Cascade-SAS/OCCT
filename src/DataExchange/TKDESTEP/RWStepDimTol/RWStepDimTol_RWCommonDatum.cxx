@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum() {}
+RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum() = default;
 
 //=================================================================================================
 

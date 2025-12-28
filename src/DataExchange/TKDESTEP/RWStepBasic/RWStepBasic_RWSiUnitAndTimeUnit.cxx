@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWSiUnitAndTimeUnit::RWStepBasic_RWSiUnitAndTimeUnit() {}
+RWStepBasic_RWSiUnitAndTimeUnit::RWStepBasic_RWSiUnitAndTimeUnit() = default;
 
 //=================================================================================================
 

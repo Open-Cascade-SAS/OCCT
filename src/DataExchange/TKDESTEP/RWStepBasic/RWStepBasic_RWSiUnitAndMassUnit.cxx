@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWSiUnitAndMassUnit::RWStepBasic_RWSiUnitAndMassUnit() {}
+RWStepBasic_RWSiUnitAndMassUnit::RWStepBasic_RWSiUnitAndMassUnit() = default;
 
 //=================================================================================================
 

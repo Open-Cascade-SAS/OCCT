@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWParallelOffset::RWStepRepr_RWParallelOffset() {}
+RWStepRepr_RWParallelOffset::RWStepRepr_RWParallelOffset() = default;
 
 //=================================================================================================
 

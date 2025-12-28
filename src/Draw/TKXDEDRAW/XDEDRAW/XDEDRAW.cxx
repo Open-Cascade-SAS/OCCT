@@ -108,7 +108,7 @@
 #include <BinXCAFDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // Section: General commands

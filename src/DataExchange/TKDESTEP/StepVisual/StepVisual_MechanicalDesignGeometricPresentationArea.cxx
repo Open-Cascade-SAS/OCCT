@@ -19,5 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationArea,
 
 StepVisual_MechanicalDesignGeometricPresentationArea::
   StepVisual_MechanicalDesignGeometricPresentationArea()
-{
-}
+= default;

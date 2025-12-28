@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepElement_ElementAspect::StepElement_ElementAspect() {}
+StepElement_ElementAspect::StepElement_ElementAspect() = default;
 
 //=================================================================================================
 

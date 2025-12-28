@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbient, Standard_T
 
 //=================================================================================================
 
-StepVisual_SurfaceStyleReflectanceAmbient::StepVisual_SurfaceStyleReflectanceAmbient() {}
+StepVisual_SurfaceStyleReflectanceAmbient::StepVisual_SurfaceStyleReflectanceAmbient() = default;
 
 //=================================================================================================
 

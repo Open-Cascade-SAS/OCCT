@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWConnectedFaceShapeRepresentation::RWStepShape_RWConnectedFaceShapeRepresentation() {}
+RWStepShape_RWConnectedFaceShapeRepresentation::RWStepShape_RWConnectedFaceShapeRepresentation() = default;
 
 //=================================================================================================
 

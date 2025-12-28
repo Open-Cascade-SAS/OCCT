@@ -36,8 +36,8 @@
   #include <lmcons.h> // for UNLEN - maximum user name length GetUserName()
 #else
 const OSD_WhoAmI Iam = OSD_WProcess;
-  #include <errno.h>
-  #include <stdlib.h>
+  #include <cerrno>
+  #include <cstdlib>
   #include <sys/param.h>
   #include <sys/time.h>
   #if !defined(__EMSCRIPTEN__)
@@ -52,7 +52,7 @@ const OSD_WhoAmI Iam = OSD_WProcess;
 
 #ifndef _WIN32
 
-OSD_Process::OSD_Process() {}
+OSD_Process::OSD_Process() = default;
 
 void OSD_Process::TerminalType(TCollection_AsciiString& Name)
 {

@@ -84,9 +84,9 @@ public:
   }
 
 private:
-  EdgeAmplifier(const EdgeAmplifier& theOther);
+  EdgeAmplifier(const EdgeAmplifier& theOther) = delete;
 
-  void operator=(const EdgeAmplifier& theOther);
+  void operator=(const EdgeAmplifier& theOther) = delete;
 
 private:
   const IMeshTools_Parameters& myParameters;
@@ -114,11 +114,11 @@ bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
 
 //=================================================================================================
 
-BRepMesh_ModelHealer::BRepMesh_ModelHealer() {}
+BRepMesh_ModelHealer::BRepMesh_ModelHealer() = default;
 
 //=================================================================================================
 
-BRepMesh_ModelHealer::~BRepMesh_ModelHealer() {}
+BRepMesh_ModelHealer::~BRepMesh_ModelHealer() = default;
 
 //=================================================================================================
 

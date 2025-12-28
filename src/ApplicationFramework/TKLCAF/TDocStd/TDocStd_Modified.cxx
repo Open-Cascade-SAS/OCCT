@@ -111,7 +111,7 @@ const Standard_GUID& TDocStd_Modified::GetID()
 
 //=================================================================================================
 
-TDocStd_Modified::TDocStd_Modified() {}
+TDocStd_Modified::TDocStd_Modified() = default;
 
 //=================================================================================================
 

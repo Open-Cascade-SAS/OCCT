@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWAnnotationPlane::RWStepVisual_RWAnnotationPlane() {}
+RWStepVisual_RWAnnotationPlane::RWStepVisual_RWAnnotationPlane() = default;
 
 //=================================================================================================
 

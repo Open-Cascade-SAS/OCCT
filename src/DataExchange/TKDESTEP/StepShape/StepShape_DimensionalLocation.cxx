@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalLocation, StepRepr_ShapeAspectRe
 
 //=================================================================================================
 
-StepShape_DimensionalLocation::StepShape_DimensionalLocation() {}
+StepShape_DimensionalLocation::StepShape_DimensionalLocation() = default;

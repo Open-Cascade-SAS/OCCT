@@ -72,7 +72,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_PairOfShapeBoolean() {}
+  ~BOPAlgo_PairOfShapeBoolean() override = default;
 
   //
   TopoDS_Shape& Shape1() { return myShape1; }
@@ -90,7 +90,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
@@ -137,7 +137,7 @@ public:
 
 private:
   //! Disable the range enabled method
-  virtual void Perform(const Message_ProgressRange& /*theRange*/) {};
+  void Perform(const Message_ProgressRange& /*theRange*/) override {};
 
 private:
   Message_ProgressRange myRange;
@@ -160,7 +160,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_VFI() {}
+  ~BOPAlgo_VFI() override = default;
 
   //
   void SetVertex(const TopoDS_Vertex& aV) { myV = aV; }
@@ -184,7 +184,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

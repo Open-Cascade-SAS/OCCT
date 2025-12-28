@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 #include <IntPatch_Intersection.hxx>
 
 #include <Adaptor3d_Surface.hxx>
@@ -581,8 +581,8 @@ static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
   IsOk = false;
   // 1. Check: both surfaces have U(V)isos - lines.
   DV                                             = gp_Vec(0., 0., 1.);
-  bool                            isoS1isLine[2] = {0, 0};
-  bool                            isoS2isLine[2] = {0, 0};
+  bool                            isoS1isLine[2] = {false, false};
+  bool                            isoS2isLine[2] = {false, false};
   occ::handle<Geom_Curve>         C1, C2;
   const GeomAdaptor_Surface&      gas1 = *(GeomAdaptor_Surface*)(S1.get());
   const GeomAdaptor_Surface&      gas2 = *(GeomAdaptor_Surface*)(S2.get());

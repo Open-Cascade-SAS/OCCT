@@ -122,7 +122,7 @@ GeomFill_Profiler::GeomFill_Profiler()
 
 //=======================================================================
 
-GeomFill_Profiler::~GeomFill_Profiler() {}
+GeomFill_Profiler::~GeomFill_Profiler() = default;
 
 //=================================================================================================
 

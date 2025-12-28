@@ -18,7 +18,7 @@
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_Transformation.hxx>
 
-StepRepr_Transformation::StepRepr_Transformation() {}
+StepRepr_Transformation::StepRepr_Transformation() = default;
 
 int StepRepr_Transformation::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

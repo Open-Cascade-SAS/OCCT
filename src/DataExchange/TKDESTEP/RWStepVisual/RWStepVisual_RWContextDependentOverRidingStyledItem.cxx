@@ -25,8 +25,7 @@
 
 RWStepVisual_RWContextDependentOverRidingStyledItem::
   RWStepVisual_RWContextDependentOverRidingStyledItem()
-{
-}
+= default;
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,

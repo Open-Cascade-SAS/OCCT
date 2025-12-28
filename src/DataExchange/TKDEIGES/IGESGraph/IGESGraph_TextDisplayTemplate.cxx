@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextDisplayTemplate, IGESData_IGESEntity)
 
-IGESGraph_TextDisplayTemplate::IGESGraph_TextDisplayTemplate() {}
+IGESGraph_TextDisplayTemplate::IGESGraph_TextDisplayTemplate() = default;
 
 void IGESGraph_TextDisplayTemplate::Init(const double                              aWidth,
                                          const double                              aHeight,

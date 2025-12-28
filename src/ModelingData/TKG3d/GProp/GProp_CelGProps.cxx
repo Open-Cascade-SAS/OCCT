@@ -23,7 +23,7 @@
 #include <math_Vector.hxx>
 #include <Standard_NotImplemented.hxx>
 
-GProp_CelGProps::GProp_CelGProps() {}
+GProp_CelGProps::GProp_CelGProps() = default;
 
 void GProp_CelGProps::SetLocation(const gp_Pnt& CLocation)
 {

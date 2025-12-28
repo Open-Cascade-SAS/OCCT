@@ -20,7 +20,7 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepShape_RWQualifiedRepresentationItem::RWStepShape_RWQualifiedRepresentationItem() {}
+RWStepShape_RWQualifiedRepresentationItem::RWStepShape_RWQualifiedRepresentationItem() = default;
 
 void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextLiteral, StepGeom_GeometricRepresentationItem)
 
-StepVisual_TextLiteral::StepVisual_TextLiteral() {}
+StepVisual_TextLiteral::StepVisual_TextLiteral() = default;
 
 void StepVisual_TextLiteral::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<TCollection_HAsciiString>& aLiteral,

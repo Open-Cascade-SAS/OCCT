@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWKinematicJoint::RWStepKinematics_RWKinematicJoint() {}
+RWStepKinematics_RWKinematicJoint::RWStepKinematics_RWKinematicJoint() = default;
 
 //=================================================================================================
 

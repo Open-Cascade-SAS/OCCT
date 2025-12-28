@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWGeometricNode::RWStepFEA_RWGeometricNode() {}
+RWStepFEA_RWGeometricNode::RWStepFEA_RWGeometricNode() = default;
 
 //=================================================================================================
 

@@ -19,7 +19,7 @@
 #include <StepVisual_CameraModelD3.hxx>
 #include <StepVisual_ViewVolume.hxx>
 
-RWStepVisual_RWCameraModelD3::RWStepVisual_RWCameraModelD3() {}
+RWStepVisual_RWCameraModelD3::RWStepVisual_RWCameraModelD3() = default;
 
 void RWStepVisual_RWCameraModelD3::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

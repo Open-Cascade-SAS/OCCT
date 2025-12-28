@@ -457,13 +457,13 @@ void TNaming_Tool::FirstOlds(const occ::handle<TNaming_UsedShapes>&             
                              NCollection_List<TDF_Label>&                                   Labels)
 {
   int  TransDef;
-  bool YaModif = 0;
+  bool YaModif = false;
 
   for (; it.More(); it.Next())
   {
     if (it.IsModification())
     {
-      YaModif = 1;
+      YaModif = true;
       TNaming_OldShapeIterator it2(it);
       if (!it2.More())
       {

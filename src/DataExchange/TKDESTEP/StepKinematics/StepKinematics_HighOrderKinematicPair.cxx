@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_HighOrderKinematicPair, StepKinematics
 
 //=================================================================================================
 
-StepKinematics_HighOrderKinematicPair::StepKinematics_HighOrderKinematicPair() {}
+StepKinematics_HighOrderKinematicPair::StepKinematics_HighOrderKinematicPair() = default;

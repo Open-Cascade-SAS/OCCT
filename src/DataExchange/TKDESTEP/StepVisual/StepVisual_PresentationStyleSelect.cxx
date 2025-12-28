@@ -20,7 +20,7 @@
 #include <StepVisual_PresentationStyleSelect.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
 
-StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect() {}
+StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect() = default;
 
 int StepVisual_PresentationStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

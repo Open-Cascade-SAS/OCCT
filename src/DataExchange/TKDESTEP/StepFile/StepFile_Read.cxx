@@ -40,7 +40,7 @@
 
 #include "step.tab.hxx"
 
-#include <stdio.h>
+#include <cstdio>
 #include <mutex>
 
 #ifdef OCCT_DEBUG

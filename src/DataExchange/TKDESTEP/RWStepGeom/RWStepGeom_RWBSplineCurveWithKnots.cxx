@@ -28,7 +28,7 @@
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 #include "RWStepGeom_RWKnotType.pxx"
 
-RWStepGeom_RWBSplineCurveWithKnots::RWStepGeom_RWBSplineCurveWithKnots() {}
+RWStepGeom_RWBSplineCurveWithKnots::RWStepGeom_RWBSplineCurveWithKnots() = default;
 
 void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

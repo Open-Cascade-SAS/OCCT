@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Block, IGESData_IGESEntity)
 
-IGESSolid_Block::IGESSolid_Block() {}
+IGESSolid_Block::IGESSolid_Block() = default;
 
 void IGESSolid_Block::Init(const gp_XYZ& aSize,
                            const gp_XYZ& aCorner,

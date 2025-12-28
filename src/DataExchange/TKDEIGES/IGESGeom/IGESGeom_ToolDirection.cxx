@@ -33,7 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESGeom_ToolDirection::IGESGeom_ToolDirection() {}
+IGESGeom_ToolDirection::IGESGeom_ToolDirection() = default;
 
 void IGESGeom_ToolDirection::ReadOwnParams(const occ::handle<IGESGeom_Direction>& ent,
                                            const occ::handle<IGESData_IGESReaderData>& /* IR */,

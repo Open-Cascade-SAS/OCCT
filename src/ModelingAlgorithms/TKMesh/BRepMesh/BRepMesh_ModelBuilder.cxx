@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
 
 //=================================================================================================
 
-BRepMesh_ModelBuilder::BRepMesh_ModelBuilder() {}
+BRepMesh_ModelBuilder::BRepMesh_ModelBuilder() = default;
 
 //=================================================================================================
 
-BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder() {}
+BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder() = default;
 
 //=================================================================================================
 

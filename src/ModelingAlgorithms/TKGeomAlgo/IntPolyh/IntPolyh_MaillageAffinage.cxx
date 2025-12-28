@@ -147,10 +147,10 @@ public:
 
 public:
   //! Constructor
-  IntPolyh_BoxBndTreeSelector() {}
+  IntPolyh_BoxBndTreeSelector() = default;
 
   //! Rejects the node
-  virtual bool RejectNode(const BVH_Vec3d& theCMin1,
+  bool RejectNode(const BVH_Vec3d& theCMin1,
                           const BVH_Vec3d& theCMax1,
                           const BVH_Vec3d& theCMin2,
                           const BVH_Vec3d& theCMax2,
@@ -160,7 +160,7 @@ public:
   }
 
   //! Accepts the element
-  virtual bool Accept(const int theID1, const int theID2) override
+  bool Accept(const int theID1, const int theID2) override
   {
     if (!myBVHSet1->Box(theID1).IsOut(myBVHSet2->Box(theID2)))
     {

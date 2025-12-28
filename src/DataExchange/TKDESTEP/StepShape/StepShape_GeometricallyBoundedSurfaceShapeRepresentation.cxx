@@ -19,5 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedSurfaceShapeRepresentat
 
 StepShape_GeometricallyBoundedSurfaceShapeRepresentation::
   StepShape_GeometricallyBoundedSurfaceShapeRepresentation()
-{
-}
+= default;

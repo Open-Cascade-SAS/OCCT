@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PrismaticPair, StepKinematics_LowOrder
 
 //=================================================================================================
 
-StepKinematics_PrismaticPair::StepKinematics_PrismaticPair() {}
+StepKinematics_PrismaticPair::StepKinematics_PrismaticPair() = default;

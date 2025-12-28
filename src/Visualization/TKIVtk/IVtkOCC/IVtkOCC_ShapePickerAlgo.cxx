@@ -32,7 +32,7 @@ IVtkOCC_ShapePickerAlgo::IVtkOCC_ShapePickerAlgo()
 
 //=================================================================================================
 
-IVtkOCC_ShapePickerAlgo::~IVtkOCC_ShapePickerAlgo() {}
+IVtkOCC_ShapePickerAlgo::~IVtkOCC_ShapePickerAlgo() = default;
 
 //=================================================================================================
 

@@ -47,7 +47,7 @@
 #include <NCollection_Shared.hxx>
 
 #include <memory>
-#include <stdio.h>
+#include <cstdio>
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif

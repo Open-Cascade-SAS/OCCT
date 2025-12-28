@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_Protocol, StepData_Protocol)
 
 static const char* schemaName = "header_section";
 
-HeaderSection_Protocol::HeaderSection_Protocol() {}
+HeaderSection_Protocol::HeaderSection_Protocol() = default;
 
 int HeaderSection_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {

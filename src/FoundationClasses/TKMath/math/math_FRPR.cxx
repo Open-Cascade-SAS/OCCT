@@ -42,7 +42,7 @@ public:
 
   void Initialize(const math_Vector& p0, const math_Vector& dir);
 
-  virtual bool Value(const double x, double& fval);
+  bool Value(const double x, double& fval) override;
 };
 
 DirFunctionTer::DirFunctionTer(math_Vector&              V1,
@@ -121,7 +121,7 @@ math_FRPR::math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
 
 //=================================================================================================
 
-math_FRPR::~math_FRPR() {}
+math_FRPR::~math_FRPR() = default;
 
 //=================================================================================================
 

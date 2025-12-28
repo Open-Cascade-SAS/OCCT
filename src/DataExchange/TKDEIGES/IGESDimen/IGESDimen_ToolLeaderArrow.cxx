@@ -34,7 +34,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDimen_ToolLeaderArrow::IGESDimen_ToolLeaderArrow() {}
+IGESDimen_ToolLeaderArrow::IGESDimen_ToolLeaderArrow() = default;
 
 void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_LeaderArrow>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /* IR */,

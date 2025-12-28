@@ -23,11 +23,12 @@
 #include <StepTidy_PlaneReducer.pxx>
 #include <StepTidy_CircleReducer.pxx>
 #include <StepData_StepModel.hxx>
+#include <utility>
 
 //==================================================================================================
 
 StepTidy_DuplicateCleaner::StepTidy_DuplicateCleaner(occ::handle<XSControl_WorkSession> theWS)
-    : myWS(theWS)
+    : myWS(std::move(theWS))
 {
 }
 

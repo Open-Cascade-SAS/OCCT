@@ -28,7 +28,7 @@
 //=================================================================================================
 
 BOPDS_IteratorSI::BOPDS_IteratorSI()
-    : BOPDS_Iterator()
+     
 {
 }
 
@@ -41,7 +41,7 @@ BOPDS_IteratorSI::BOPDS_IteratorSI(const occ::handle<NCollection_BaseAllocator>&
 
 //=================================================================================================
 
-BOPDS_IteratorSI::~BOPDS_IteratorSI() {}
+BOPDS_IteratorSI::~BOPDS_IteratorSI() = default;
 
 //=================================================================================================
 

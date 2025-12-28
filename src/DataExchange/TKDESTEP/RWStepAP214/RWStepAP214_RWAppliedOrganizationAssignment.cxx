@@ -23,7 +23,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAppliedOrganizationAssignment::RWStepAP214_RWAppliedOrganizationAssignment() {}
+RWStepAP214_RWAppliedOrganizationAssignment::RWStepAP214_RWAppliedOrganizationAssignment() = default;
 
 void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,

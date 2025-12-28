@@ -33,7 +33,7 @@ extern void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector&   FEINT,
 
 //=================================================================================================
 
-TopOpeBRep_FaceEdgeFiller::TopOpeBRep_FaceEdgeFiller() {}
+TopOpeBRep_FaceEdgeFiller::TopOpeBRep_FaceEdgeFiller() = default;
 
 //=================================================================================================
 

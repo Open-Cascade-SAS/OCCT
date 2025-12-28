@@ -24,7 +24,7 @@ TopOpeBRepBuild_LoopSet::TopOpeBRepBuild_LoopSet()
 {
 }
 
-TopOpeBRepBuild_LoopSet::~TopOpeBRepBuild_LoopSet() {}
+TopOpeBRepBuild_LoopSet::~TopOpeBRepBuild_LoopSet() = default;
 
 //=================================================================================================
 

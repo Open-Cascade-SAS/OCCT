@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWGeneralDatumReference::RWStepDimTol_RWGeneralDatumReference() {}
+RWStepDimTol_RWGeneralDatumReference::RWStepDimTol_RWGeneralDatumReference() = default;
 
 //=================================================================================================
 

@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_DegenerateToroidalSurface.hxx>
 
-RWStepGeom_RWDegenerateToroidalSurface::RWStepGeom_RWDegenerateToroidalSurface() {}
+RWStepGeom_RWDegenerateToroidalSurface::RWStepGeom_RWDegenerateToroidalSurface() = default;
 
 void RWStepGeom_RWDegenerateToroidalSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignGroupAssignment, StepBasic_GroupAssignment)
 
-StepAP214_AutoDesignGroupAssignment::StepAP214_AutoDesignGroupAssignment() {}
+StepAP214_AutoDesignGroupAssignment::StepAP214_AutoDesignGroupAssignment() = default;
 
 void StepAP214_AutoDesignGroupAssignment::Init(
   const occ::handle<StepBasic_Group>&                                      aAssignedGroup,

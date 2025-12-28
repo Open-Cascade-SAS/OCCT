@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Transformation, Standard_Transient)
 
-Geom_Transformation::Geom_Transformation() {}
+Geom_Transformation::Geom_Transformation() = default;
 
 Geom_Transformation::Geom_Transformation(const gp_Trsf& T)
     : gpTrsf(T)

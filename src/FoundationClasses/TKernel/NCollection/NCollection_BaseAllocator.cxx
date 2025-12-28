@@ -40,7 +40,7 @@ void NCollection_BaseAllocator::Free(void* theAddress)
 // function : CommonBaseAllocator
 // purpose  : Creates the only one BaseAllocator
 //=======================================================================
-const occ::handle<NCollection_BaseAllocator>& NCollection_BaseAllocator::CommonBaseAllocator(void)
+const occ::handle<NCollection_BaseAllocator>& NCollection_BaseAllocator::CommonBaseAllocator()
 {
   static occ::handle<NCollection_BaseAllocator> THE_SINGLETON_ALLOC = new NCollection_BaseAllocator;
   return THE_SINGLETON_ALLOC;

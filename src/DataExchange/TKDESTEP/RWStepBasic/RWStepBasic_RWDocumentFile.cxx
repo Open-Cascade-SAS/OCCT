@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWDocumentFile::RWStepBasic_RWDocumentFile() {}
+RWStepBasic_RWDocumentFile::RWStepBasic_RWDocumentFile() = default;
 
 //=================================================================================================
 

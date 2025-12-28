@@ -19,7 +19,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWPersonAndOrganization::RWStepBasic_RWPersonAndOrganization() {}
+RWStepBasic_RWPersonAndOrganization::RWStepBasic_RWPersonAndOrganization() = default;
 
 void RWStepBasic_RWPersonAndOrganization::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

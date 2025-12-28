@@ -23,7 +23,7 @@
 #include "RWStepBasic_RWSiUnitName.pxx"
 #include "RWStepBasic_RWSiPrefix.pxx"
 
-RWStepBasic_RWSiUnitAndVolumeUnit::RWStepBasic_RWSiUnitAndVolumeUnit() {}
+RWStepBasic_RWSiUnitAndVolumeUnit::RWStepBasic_RWSiUnitAndVolumeUnit() = default;
 
 void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,

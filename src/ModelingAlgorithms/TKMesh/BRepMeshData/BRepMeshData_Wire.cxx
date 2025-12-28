@@ -31,7 +31,7 @@ BRepMeshData_Wire::BRepMeshData_Wire(const TopoDS_Wire&                         
 
 //=================================================================================================
 
-BRepMeshData_Wire::~BRepMeshData_Wire() {}
+BRepMeshData_Wire::~BRepMeshData_Wire() = default;
 
 //=================================================================================================
 

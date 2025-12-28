@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_MacroDef, IGESData_IGESEntity)
 
-IGESDefs_MacroDef::IGESDefs_MacroDef() {}
+IGESDefs_MacroDef::IGESDefs_MacroDef() = default;
 
 void IGESDefs_MacroDef::Init(
   const occ::handle<TCollection_HAsciiString>&                                   macro,

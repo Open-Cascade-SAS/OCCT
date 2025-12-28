@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole, IGESData_IGESEntity)
 
-IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole() {}
+IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole() = default;
 
 void IGESAppli_PWBDrilledHole::Init(const int    nbPropVal,
                                     const double aDrillDia,

@@ -18,7 +18,7 @@
 #include <StepVisual_PresentationRepresentation.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-StepVisual_InvisibleItem::StepVisual_InvisibleItem() {}
+StepVisual_InvisibleItem::StepVisual_InvisibleItem() = default;
 
 int StepVisual_InvisibleItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

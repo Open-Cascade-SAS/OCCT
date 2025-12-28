@@ -20,7 +20,7 @@
 #include <StepVisual_PresentationLayerUsage.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
 
-RWStepVisual_RWPresentationLayerUsage::RWStepVisual_RWPresentationLayerUsage() {}
+RWStepVisual_RWPresentationLayerUsage::RWStepVisual_RWPresentationLayerUsage() = default;
 
 void RWStepVisual_RWPresentationLayerUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,

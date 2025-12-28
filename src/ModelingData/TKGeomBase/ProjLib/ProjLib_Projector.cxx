@@ -40,7 +40,7 @@ ProjLib_Projector::ProjLib_Projector()
 
 //=================================================================================================
 
-ProjLib_Projector::~ProjLib_Projector() {}
+ProjLib_Projector::~ProjLib_Projector() = default;
 
 //=================================================================================================
 

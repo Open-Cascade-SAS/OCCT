@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Polyline.hxx>
 
-RWStepGeom_RWPolyline::RWStepGeom_RWPolyline() {}
+RWStepGeom_RWPolyline::RWStepGeom_RWPolyline() = default;
 
 void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                      const int                                   num,

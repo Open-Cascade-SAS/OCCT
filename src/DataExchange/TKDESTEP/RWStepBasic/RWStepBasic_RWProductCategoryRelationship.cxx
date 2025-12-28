@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWProductCategoryRelationship::RWStepBasic_RWProductCategoryRelationship() {}
+RWStepBasic_RWProductCategoryRelationship::RWStepBasic_RWProductCategoryRelationship() = default;
 
 //=================================================================================================
 

@@ -31,7 +31,7 @@
 #include <StepSelect_FileModifier.hxx>
 #include <StepSelect_WorkLibrary.hxx>
 
-#include <errno.h>
+#include <cerrno>
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 
 StepSelect_WorkLibrary::StepSelect_WorkLibrary(const bool copymode)
@@ -92,7 +92,7 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   {
     ctx.CCheck(0)->AddFail("Step File could not be created");
     sout << " Step File could not be created : " << ctx.FileName() << std::endl;
-    return 0;
+    return false;
   }
   sout << " Step File Name : " << ctx.FileName();
   StepData_StepWriter SW(stepmodel);

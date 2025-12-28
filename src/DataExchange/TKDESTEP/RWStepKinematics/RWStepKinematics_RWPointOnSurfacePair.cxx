@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPointOnSurfacePair::RWStepKinematics_RWPointOnSurfacePair() {}
+RWStepKinematics_RWPointOnSurfacePair::RWStepKinematics_RWPointOnSurfacePair() = default;
 
 //=================================================================================================
 

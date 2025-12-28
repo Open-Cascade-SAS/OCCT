@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_CommonDatum, StepRepr_CompositeShapeAspect
 
 //=================================================================================================
 
-StepDimTol_CommonDatum::StepDimTol_CommonDatum() {}
+StepDimTol_CommonDatum::StepDimTol_CommonDatum() = default;
 
 //=================================================================================================
 

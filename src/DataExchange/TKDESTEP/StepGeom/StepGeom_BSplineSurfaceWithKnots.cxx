@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurfaceWithKnots, StepGeom_BSplineSurface)
 
-StepGeom_BSplineSurfaceWithKnots::StepGeom_BSplineSurfaceWithKnots() {}
+StepGeom_BSplineSurfaceWithKnots::StepGeom_BSplineSurfaceWithKnots() = default;
 
 void StepGeom_BSplineSurfaceWithKnots::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

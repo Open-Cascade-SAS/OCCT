@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_OrdinateDimension, IGESData_IGESEntity)
 
-IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension() {}
+IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension() = default;
 
 void IGESDimen_OrdinateDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                        const bool                                isLine,

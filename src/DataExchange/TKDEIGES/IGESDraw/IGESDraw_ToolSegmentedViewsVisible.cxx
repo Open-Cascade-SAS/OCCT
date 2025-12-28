@@ -34,7 +34,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
 
-IGESDraw_ToolSegmentedViewsVisible::IGESDraw_ToolSegmentedViewsVisible() {}
+IGESDraw_ToolSegmentedViewsVisible::IGESDraw_ToolSegmentedViewsVisible() = default;
 
 void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
   const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,

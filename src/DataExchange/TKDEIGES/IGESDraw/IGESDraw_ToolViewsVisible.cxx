@@ -30,9 +30,9 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESDraw_ToolViewsVisible::IGESDraw_ToolViewsVisible() {}
+IGESDraw_ToolViewsVisible::IGESDraw_ToolViewsVisible() = default;
 
 void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVisible>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

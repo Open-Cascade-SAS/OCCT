@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager, Standard_Transient)
 //-Aliases
 //-Global data definitions
 //-Constructors
-Graphic3d_DataStructureManager::Graphic3d_DataStructureManager() {}
+Graphic3d_DataStructureManager::Graphic3d_DataStructureManager() = default;
 
 //=================================================================================================
 

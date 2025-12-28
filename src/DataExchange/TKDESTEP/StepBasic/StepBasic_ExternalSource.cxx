@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalSource, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ExternalSource::StepBasic_ExternalSource() {}
+StepBasic_ExternalSource::StepBasic_ExternalSource() = default;
 
 //=================================================================================================
 

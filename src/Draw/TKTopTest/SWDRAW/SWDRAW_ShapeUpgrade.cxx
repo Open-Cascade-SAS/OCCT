@@ -65,7 +65,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #include <SWDRAW_ShapeUpgrade.hxx>
 // #include <ShapeUpgrade_SupportModification.hxx>

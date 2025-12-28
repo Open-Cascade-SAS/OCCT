@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_AssemblyLink, Standard_Transient)
 
-STEPSelections_AssemblyLink::STEPSelections_AssemblyLink() {}
+STEPSelections_AssemblyLink::STEPSelections_AssemblyLink() = default;
 
 STEPSelections_AssemblyLink::STEPSelections_AssemblyLink(
   const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo,

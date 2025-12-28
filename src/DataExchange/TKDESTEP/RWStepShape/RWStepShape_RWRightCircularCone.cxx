@@ -18,7 +18,7 @@
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepShape_RightCircularCone.hxx>
 
-RWStepShape_RWRightCircularCone::RWStepShape_RWRightCircularCone() {}
+RWStepShape_RWRightCircularCone::RWStepShape_RWRightCircularCone() = default;
 
 void RWStepShape_RWRightCircularCone::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3, StepVisual_CameraModel)
 
-StepVisual_CameraModelD3::StepVisual_CameraModelD3() {}
+StepVisual_CameraModelD3::StepVisual_CameraModelD3() = default;
 
 void StepVisual_CameraModelD3::Init(
   const occ::handle<TCollection_HAsciiString>&  aName,

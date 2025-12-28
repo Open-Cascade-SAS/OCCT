@@ -35,7 +35,7 @@
 #include <Storage_StreamFormatError.hxx>
 #include <Storage_StreamWriteError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // StdStorage::Version

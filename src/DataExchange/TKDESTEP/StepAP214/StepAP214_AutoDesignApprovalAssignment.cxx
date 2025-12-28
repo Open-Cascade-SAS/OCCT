@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignApprovalAssignment, StepBasic_ApprovalAssignment)
 
-StepAP214_AutoDesignApprovalAssignment::StepAP214_AutoDesignApprovalAssignment() {}
+StepAP214_AutoDesignApprovalAssignment::StepAP214_AutoDesignApprovalAssignment() = default;
 
 void StepAP214_AutoDesignApprovalAssignment::Init(
   const occ::handle<StepBasic_Approval>&                                      aAssignedApproval,

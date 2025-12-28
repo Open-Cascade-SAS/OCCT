@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWActionMethod::RWStepBasic_RWActionMethod() {}
+RWStepBasic_RWActionMethod::RWStepBasic_RWActionMethod() = default;
 
 //=================================================================================================
 

@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRenderingWithProperties,
 
 //=================================================================================================
 
-StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRenderingWithProperties() {}
+StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRenderingWithProperties() = default;
 
 //=================================================================================================
 

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MappedItem, StepRepr_RepresentationItem)
 
-StepRepr_MappedItem::StepRepr_MappedItem() {}
+StepRepr_MappedItem::StepRepr_MappedItem() = default;
 
 void StepRepr_MappedItem::Init(const occ::handle<TCollection_HAsciiString>&    aName,
                                const occ::handle<StepRepr_RepresentationMap>&  aMappingSource,

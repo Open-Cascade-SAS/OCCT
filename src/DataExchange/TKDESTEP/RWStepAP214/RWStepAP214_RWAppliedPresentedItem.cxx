@@ -21,7 +21,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAppliedPresentedItem::RWStepAP214_RWAppliedPresentedItem() {}
+RWStepAP214_RWAppliedPresentedItem::RWStepAP214_RWAppliedPresentedItem() = default;
 
 void RWStepAP214_RWAppliedPresentedItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

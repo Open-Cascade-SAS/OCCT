@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AreaInSet, Standard_Transient)
 
-StepVisual_AreaInSet::StepVisual_AreaInSet() {}
+StepVisual_AreaInSet::StepVisual_AreaInSet() = default;
 
 void StepVisual_AreaInSet::Init(const occ::handle<StepVisual_PresentationArea>& aArea,
                                 const occ::handle<StepVisual_PresentationSet>&  aInSet)

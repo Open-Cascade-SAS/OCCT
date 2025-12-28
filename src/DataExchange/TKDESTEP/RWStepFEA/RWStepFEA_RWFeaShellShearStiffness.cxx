@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaShellShearStiffness::RWStepFEA_RWFeaShellShearStiffness() {}
+RWStepFEA_RWFeaShellShearStiffness::RWStepFEA_RWFeaShellShearStiffness() = default;
 
 //=================================================================================================
 

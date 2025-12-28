@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ContractAssignment, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_ContractAssignment::StepBasic_ContractAssignment() {}
+StepBasic_ContractAssignment::StepBasic_ContractAssignment() = default;
 
 //=================================================================================================
 

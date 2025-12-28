@@ -37,7 +37,7 @@
 #include <NCollection_HArray1.hxx>
 
 // MGE 31/07/98
-IGESSolid_ToolManifoldSolid::IGESSolid_ToolManifoldSolid() {}
+IGESSolid_ToolManifoldSolid::IGESSolid_ToolManifoldSolid() = default;
 
 void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

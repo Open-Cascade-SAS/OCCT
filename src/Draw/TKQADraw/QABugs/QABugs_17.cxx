@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <QABugs.hxx>
 
@@ -952,8 +952,8 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
   di << "Info: Precision is set to " << sfw->Precision() << "\n";
   di << "Info: MaxTolerance is set to " << sfw->MaxTolerance() << "\n";
 
-  sfw->ModifyTopologyMode()          = 1;
-  sfw->ModifyGeometryMode()          = 1;
+  sfw->ModifyTopologyMode()          = true;
+  sfw->ModifyGeometryMode()          = true;
   sfw->FixSelfIntersectingEdgeMode() = 1;
   // printf("Info: FixSelfIntersection = %d\n",sfw->FixSelfIntersection());
   di << "Info: FixSelfIntersection = " << (int)sfw->FixSelfIntersection() << "\n";
@@ -1225,11 +1225,11 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
   sfw->SetPrecision(Precision::Confusion());
 
   sfw->FixReorderMode()                      = 1;
-  sfw->ClosedWireMode()                      = 1;
+  sfw->ClosedWireMode()                      = true;
   sfw->FixDegeneratedMode()                  = 1;
   sfw->FixConnectedMode()                    = 1;
-  sfw->ModifyTopologyMode()                  = 1;
-  sfw->ModifyGeometryMode()                  = 1;
+  sfw->ModifyTopologyMode()                  = true;
+  sfw->ModifyGeometryMode()                  = true;
   sfw->FixSelfIntersectionMode()             = 1;
   sfw->FixSelfIntersectingEdgeMode()         = 1;
   sfw->FixIntersectingEdgesMode()            = 1;

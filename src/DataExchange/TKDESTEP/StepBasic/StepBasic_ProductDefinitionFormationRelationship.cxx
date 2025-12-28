@@ -24,8 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormationRelationship, Sta
 //=================================================================================================
 
 StepBasic_ProductDefinitionFormationRelationship::StepBasic_ProductDefinitionFormationRelationship()
-{
-}
+= default;
 
 //=================================================================================================
 

@@ -37,7 +37,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolAngularDimension::IGESDimen_ToolAngularDimension() {}
+IGESDimen_ToolAngularDimension::IGESDimen_ToolAngularDimension() = default;
 
 void IGESDimen_ToolAngularDimension::ReadOwnParams(
   const occ::handle<IGESDimen_AngularDimension>& ent,

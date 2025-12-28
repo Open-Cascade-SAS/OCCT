@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ParallelismTolerance,
 
 //=================================================================================================
 
-StepDimTol_ParallelismTolerance::StepDimTol_ParallelismTolerance() {}
+StepDimTol_ParallelismTolerance::StepDimTol_ParallelismTolerance() = default;

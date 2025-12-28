@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRe
 
 //=================================================================================================
 
-StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel() {}
+StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel() = default;
 
 //=================================================================================================
 

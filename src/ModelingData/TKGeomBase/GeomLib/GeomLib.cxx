@@ -1005,12 +1005,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    Dimension,
+  void Evaluate(int*    Dimension,
                         double  StartEnd[2],
                         double* Parameter,
                         int*    DerivativeRequest,
                         double* Result, // [Dimension]
-                        int*    ErrorCode);
+                        int*    ErrorCode) override;
 
 private:
   Adaptor3d_CurveOnSurface& CurveOnSurface;
@@ -2131,11 +2131,11 @@ public:
   {
   }
 
-  virtual void Evaluate(const int    theDerivativeRequest,
+  void Evaluate(const int    theDerivativeRequest,
                         const double theUParameter,
                         const double theVParameter,
                         double&      theResult,
-                        int&         theErrorCode) const
+                        int&         theErrorCode) const override
   {
     if ((myDenominator != nullptr) && (theDerivativeRequest == 0))
     {

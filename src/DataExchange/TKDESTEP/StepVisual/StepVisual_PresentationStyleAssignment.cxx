@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
-StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment() {}
+StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment() = default;
 
 void StepVisual_PresentationStyleAssignment::Init(
   const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles)

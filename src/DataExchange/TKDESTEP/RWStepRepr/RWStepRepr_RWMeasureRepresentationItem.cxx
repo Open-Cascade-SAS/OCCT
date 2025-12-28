@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWMeasureRepresentationItem::RWStepRepr_RWMeasureRepresentationItem() {}
+RWStepRepr_RWMeasureRepresentationItem::RWStepRepr_RWMeasureRepresentationItem() = default;
 
 //=================================================================================================
 

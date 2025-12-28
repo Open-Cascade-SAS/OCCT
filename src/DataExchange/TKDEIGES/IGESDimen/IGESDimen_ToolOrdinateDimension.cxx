@@ -32,7 +32,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolOrdinateDimension::IGESDimen_ToolOrdinateDimension() {}
+IGESDimen_ToolOrdinateDimension::IGESDimen_ToolOrdinateDimension() = default;
 
 void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
   const occ::handle<IGESDimen_OrdinateDimension>& theEnt,

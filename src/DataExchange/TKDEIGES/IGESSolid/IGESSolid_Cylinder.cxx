@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Cylinder, IGESData_IGESEntity)
 
-IGESSolid_Cylinder::IGESSolid_Cylinder() {}
+IGESSolid_Cylinder::IGESSolid_Cylinder() = default;
 
 void IGESSolid_Cylinder::Init(const double  aHeight,
                               const double  aRadius,

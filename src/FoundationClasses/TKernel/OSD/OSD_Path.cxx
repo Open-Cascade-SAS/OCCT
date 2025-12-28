@@ -1568,13 +1568,13 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
   TCollection_AsciiString EmptyString = "";
   TCollection_AsciiString FilePath;
   int                     len;
-  bool                    Wnt = 0;
+  bool                    Wnt = false;
 
   FilePath = aAbsFilePath;
 
   if (aDirPath.Search(":") == 2)
   { // Cas WNT
-    Wnt = 1;
+    Wnt = true;
     if (FilePath.Search(":") != 2 || UpperCase(aDirPath.Value(1)) != UpperCase(FilePath.Value(1)))
       return EmptyString;
 
@@ -1599,7 +1599,7 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
     FilePath = FilePath.SubString(2, len);
   }
   TCollection_AsciiString DirToken, FileToken;
-  bool                    Sibling = 0;
+  bool                    Sibling = false;
 
   for (int n = 1;; n++)
   {
@@ -1632,7 +1632,7 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
         return EmptyString;
 
       else
-        Sibling = 1;
+        Sibling = true;
     }
     FilePath.Insert(1, "../");
   }

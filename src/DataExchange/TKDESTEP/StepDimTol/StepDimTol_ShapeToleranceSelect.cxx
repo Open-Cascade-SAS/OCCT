@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepDimTol_ShapeToleranceSelect::StepDimTol_ShapeToleranceSelect() {}
+StepDimTol_ShapeToleranceSelect::StepDimTol_ShapeToleranceSelect() = default;
 
 //=================================================================================================
 

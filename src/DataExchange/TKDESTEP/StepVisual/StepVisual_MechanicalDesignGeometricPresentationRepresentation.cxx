@@ -19,5 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_MechanicalDesignGeometricPresentationRepre
 
 StepVisual_MechanicalDesignGeometricPresentationRepresentation::
   StepVisual_MechanicalDesignGeometricPresentationRepresentation()
-{
-}
+= default;

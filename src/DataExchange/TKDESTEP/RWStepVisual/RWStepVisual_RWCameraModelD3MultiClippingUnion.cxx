@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWCameraModelD3MultiClippingUnion::RWStepVisual_RWCameraModelD3MultiClippingUnion() {}
+RWStepVisual_RWCameraModelD3MultiClippingUnion::RWStepVisual_RWCameraModelD3MultiClippingUnion() = default;
 
 //=================================================================================================
 

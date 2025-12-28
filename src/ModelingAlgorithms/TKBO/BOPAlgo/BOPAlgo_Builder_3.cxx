@@ -384,7 +384,7 @@ public:
 
 private:
   //! Disable the range enabled method
-  virtual void Perform(const Message_ProgressRange& /* theRange*/) {}
+  void Perform(const Message_ProgressRange& /* theRange*/) override {}
 
 private:
   TopoDS_Solid          mySolid; //!< Solid to split

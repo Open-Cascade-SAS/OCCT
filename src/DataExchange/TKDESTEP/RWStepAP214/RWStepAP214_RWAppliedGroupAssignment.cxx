@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepAP214_RWAppliedGroupAssignment::RWStepAP214_RWAppliedGroupAssignment() {}
+RWStepAP214_RWAppliedGroupAssignment::RWStepAP214_RWAppliedGroupAssignment() = default;
 
 //=================================================================================================
 

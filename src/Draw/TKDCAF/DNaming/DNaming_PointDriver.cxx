@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_PointDriver, TFunction_Driver)
 //  OCAF
 //=================================================================================================
 
-DNaming_PointDriver::DNaming_PointDriver() {}
+DNaming_PointDriver::DNaming_PointDriver() = default;
 
 //=======================================================================
 // function : Validate

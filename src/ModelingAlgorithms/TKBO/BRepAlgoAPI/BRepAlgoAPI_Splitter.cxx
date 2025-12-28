@@ -20,7 +20,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter()
-    : BRepAlgoAPI_BuilderAlgo()
+     
 {
 }
 

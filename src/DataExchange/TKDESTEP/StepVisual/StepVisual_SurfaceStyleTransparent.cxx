@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleTransparent, Standard_Transien
 
 //=================================================================================================
 
-StepVisual_SurfaceStyleTransparent::StepVisual_SurfaceStyleTransparent() {}
+StepVisual_SurfaceStyleTransparent::StepVisual_SurfaceStyleTransparent() = default;
 
 //=================================================================================================
 

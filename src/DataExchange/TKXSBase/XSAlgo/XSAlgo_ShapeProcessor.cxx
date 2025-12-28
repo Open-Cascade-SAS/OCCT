@@ -136,7 +136,7 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
   const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
                                           theModifiedShapesMap,
   const int                               theFirstTPItemIndex,
-  occ::handle<ShapeExtend_MsgRegistrator> theMessages)
+  const occ::handle<ShapeExtend_MsgRegistrator>& theMessages)
 {
   if (theModifiedShapesMap.IsEmpty())
   {
@@ -220,7 +220,7 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
   const occ::handle<Transfer_FinderProcess>& theFinderProcess,
   const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
                                           theModifiedShapesMap,
-  occ::handle<ShapeExtend_MsgRegistrator> theMessages)
+  const occ::handle<ShapeExtend_MsgRegistrator>& theMessages)
 {
   if (theModifiedShapesMap.IsEmpty())
   {

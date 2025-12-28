@@ -22,7 +22,7 @@
 
 #include "RWStepGeom_RWTransitionCode.pxx"
 
-RWStepGeom_RWSurfacePatch::RWStepGeom_RWSurfacePatch() {}
+RWStepGeom_RWSurfacePatch::RWStepGeom_RWSurfacePatch() = default;
 
 void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

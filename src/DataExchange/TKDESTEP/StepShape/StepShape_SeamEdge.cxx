@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_SeamEdge, StepShape_OrientedEdge)
 
 //=================================================================================================
 
-StepShape_SeamEdge::StepShape_SeamEdge() {}
+StepShape_SeamEdge::StepShape_SeamEdge() = default;
 
 //=================================================================================================
 

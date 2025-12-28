@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepAP203_RWCcDesignCertification::RWStepAP203_RWCcDesignCertification() {}
+RWStepAP203_RWCcDesignCertification::RWStepAP203_RWCcDesignCertification() = default;
 
 //=================================================================================================
 

@@ -46,7 +46,7 @@
 #include <StepData_UndefinedEntity.hxx>
 #include <Resource_Unicode.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
 
 // The Header consists of entities analogous in principle to those

@@ -18,7 +18,7 @@
 #include <StepBasic_ApprovalPersonOrganization.hxx>
 #include <StepBasic_ProductDefinitionEffectivity.hxx>
 
-StepAP214_AutoDesignDatedItem::StepAP214_AutoDesignDatedItem() {}
+StepAP214_AutoDesignDatedItem::StepAP214_AutoDesignDatedItem() = default;
 
 int StepAP214_AutoDesignDatedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

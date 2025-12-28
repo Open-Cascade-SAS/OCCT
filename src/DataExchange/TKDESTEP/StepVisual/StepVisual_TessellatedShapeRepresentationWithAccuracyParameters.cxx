@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentationWithAccuracy
 
 StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
   StepVisual_TessellatedShapeRepresentationWithAccuracyParameters()
-{
-}
+= default;
 
 //=================================================================================================
 

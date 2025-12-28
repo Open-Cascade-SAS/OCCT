@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TCollection_HAsciiString, Standard_Transient)
 //=================================================================================================
 
 TCollection_HAsciiString::TCollection_HAsciiString()
-    : myString()
+     
 {
 }
 

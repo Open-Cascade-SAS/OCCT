@@ -38,7 +38,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESAppli_ToolPipingFlow::IGESAppli_ToolPipingFlow() {}
+IGESAppli_ToolPipingFlow::IGESAppli_ToolPipingFlow() = default;
 
 void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingFlow>&    ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,

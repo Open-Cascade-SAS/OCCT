@@ -100,7 +100,7 @@ public:
   }
 
   //! Checks whether the circle overlaps current selecting volume
-  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                        SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveCircle::Matches(theMgr, thePickResult);
@@ -120,7 +120,7 @@ public:
   }
 
   //! Checks whether the circle overlaps current selecting volume
-  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                        SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveTriangulation::Matches(theMgr, thePickResult);

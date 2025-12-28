@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Polyline, StepGeom_BoundedCurve)
 
-StepGeom_Polyline::StepGeom_Polyline() {}
+StepGeom_Polyline::StepGeom_Polyline() = default;
 
 void StepGeom_Polyline::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

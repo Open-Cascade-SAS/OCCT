@@ -32,7 +32,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESDraw_ToolPlanar::IGESDraw_ToolPlanar() {}
+IGESDraw_ToolPlanar::IGESDraw_ToolPlanar() = default;
 
 void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&         ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,

@@ -41,7 +41,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 //
 static void ProcessVertex(const TopoDS_Vertex&,
                           const NCollection_List<TopoDS_Shape>&,

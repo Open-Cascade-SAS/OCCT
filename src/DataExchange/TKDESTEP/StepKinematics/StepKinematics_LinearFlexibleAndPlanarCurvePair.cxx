@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleAndPlanarCurvePair,
 //=================================================================================================
 
 StepKinematics_LinearFlexibleAndPlanarCurvePair::StepKinematics_LinearFlexibleAndPlanarCurvePair()
-{
-}
+= default;
 
 //=================================================================================================
 

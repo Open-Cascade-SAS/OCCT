@@ -338,7 +338,7 @@ static bool Update(const occ::handle<Adaptor3d_Surface>& face,
                    const bool                            isfirst)
 {
   if (!cp.IsOnArc())
-    return 0;
+    return false;
   Adaptor3d_CurveOnSurface  c1(edonface, face);
   double                    pared      = cp.ParameterOnArc();
   double                    parltg     = fi.Parameter(isfirst);
@@ -642,12 +642,12 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       throw Standard_ConstructionError("Corner OnSame : no point on arc");
     else if (CV1.IsOnArc() && CV2.IsOnArc())
     {
-      bool sur1 = 0, sur2 = 0;
+      bool sur1 = false, sur2 = false;
       for (ex.Init(CV1.Arc(), TopAbs_VERTEX); ex.More(); ex.Next())
       {
         if (Vtx.IsSame(ex.Current()))
         {
-          sur1 = 1;
+          sur1 = true;
           break;
         }
       }
@@ -655,7 +655,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       {
         if (Vtx.IsSame(ex.Current()))
         {
-          sur2 = 1;
+          sur2 = true;
           break;
         }
       }
@@ -1323,7 +1323,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       throw Standard_ConstructionError("Failed to get p-curve of edge");
     pv1 = Hc->Value(parVtx);
     pv2 = p2dbout;
-    ChFi3d_Recale(Bs, pv1, pv2, 1);
+    ChFi3d_Recale(Bs, pv1, pv2, true);
     NCollection_Array1<double> Pardeb(1, 4), Parfin(1, 4);
     Pardeb(1) = pop1.X();
     Pardeb(2) = pop1.Y();
@@ -2574,7 +2574,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
             int prol = 0;
             ChFi3d_ExtendSurface(Sfacemoins1, prol);
           }
-          GeomInt_IntSS InterSS(Sfacemoins1, Sface, 1.e-7, 1, 1, 1);
+          GeomInt_IntSS InterSS(Sfacemoins1, Sface, 1.e-7, true, true, true);
           if (InterSS.IsDone())
           {
             trouve = false;
@@ -2854,8 +2854,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
     // storage in the DS of the intersection curve
     //////////////////////////////////////////////////////////////////////
 
-    bool Isvtx1 = 0;
-    bool Isvtx2 = 0;
+    bool Isvtx1 = false;
+    bool Isvtx2 = false;
     int  indice;
 
     if (nb == 1)
@@ -2867,7 +2867,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
         tpt.Tolerance(std::max(tpt.Tolerance(), to1));
       }
       else
-        Isvtx1 = 1;
+        Isvtx1 = true;
     }
     if (nb == nbface)
     {
@@ -2878,7 +2878,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
         tpt.Tolerance(std::max(tpt.Tolerance(), to2));
       }
       else
-        Isvtx2 = 1;
+        Isvtx2 = true;
     }
     else
     {
@@ -3574,7 +3574,7 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
   // Obtaining of curves aCint1, aPCint11 and aPCint12.
   aSurf = DStr.Surface(aSurfData->Surf()).Surface();
 
-  GeomInt_IntSS                    anInterSS(aSurfPrev, aSurf, 1.e-7, 1, 1, 1);
+  GeomInt_IntSS                    anInterSS(aSurfPrev, aSurf, 1.e-7, true, true, true);
   occ::handle<Geom_Curve>          aCint1;
   occ::handle<Geom2d_Curve>        aPCint11;
   occ::handle<Geom2d_Curve>        aPCint12;
@@ -3690,7 +3690,7 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
       aTrCracc = new Geom_TrimmedCurve(aCracc, aPar, aPar1);
 
     // Second section
-    GeomInt_IntSS anInterSS2(aSurfPrev, aSurf, 1.e-7, 1, 1, 1);
+    GeomInt_IntSS anInterSS2(aSurfPrev, aSurf, 1.e-7, true, true, true);
 
     if (!anInterSS2.IsDone())
       return;
@@ -4316,7 +4316,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
       throw Standard_Failure("Corner intersmore : no point on arc");
     else if (CV1.IsOnArc() && CV2.IsOnArc())
     {
-      bool sur2 = 0;
+      bool sur2 = false;
       for (ex.Init(CV1.Arc(), TopAbs_VERTEX); ex.More(); ex.Next())
       {
         if (Vtx.IsSame(ex.Current()))
@@ -4328,7 +4328,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
       {
         if (Vtx.IsSame(ex.Current()))
         {
-          sur2 = 1;
+          sur2 = true;
           break;
         }
       }
@@ -4835,7 +4835,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
     // fin modif
     pv1 = Hc->Value(parVtx);
     pv2 = p2dbout;
-    ChFi3d_Recale(Bs, pv1, pv2, 1);
+    ChFi3d_Recale(Bs, pv1, pv2, true);
     NCollection_Array1<double> Pardeb(1, 4), Parfin(1, 4);
     Pardeb(1) = pop1.X();
     Pardeb(2) = pop1.Y();

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedOpenShell, StepShape_OpenShell)
 
-StepShape_OrientedOpenShell::StepShape_OrientedOpenShell() {}
+StepShape_OrientedOpenShell::StepShape_OrientedOpenShell() = default;
 
 void StepShape_OrientedOpenShell::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepShape_OpenShell>& aOpenShellElement,

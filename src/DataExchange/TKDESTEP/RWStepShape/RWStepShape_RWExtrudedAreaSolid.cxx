@@ -19,7 +19,7 @@
 #include <StepGeom_Direction.hxx>
 #include <StepShape_ExtrudedAreaSolid.hxx>
 
-RWStepShape_RWExtrudedAreaSolid::RWStepShape_RWExtrudedAreaSolid() {}
+RWStepShape_RWExtrudedAreaSolid::RWStepShape_RWExtrudedAreaSolid() = default;
 
 void RWStepShape_RWExtrudedAreaSolid::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource() {}
+RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource() = default;
 
 //=================================================================================================
 

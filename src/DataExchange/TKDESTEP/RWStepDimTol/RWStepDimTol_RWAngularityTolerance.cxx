@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWAngularityTolerance::RWStepDimTol_RWAngularityTolerance() {}
+RWStepDimTol_RWAngularityTolerance::RWStepDimTol_RWAngularityTolerance() = default;
 
 //=================================================================================================
 

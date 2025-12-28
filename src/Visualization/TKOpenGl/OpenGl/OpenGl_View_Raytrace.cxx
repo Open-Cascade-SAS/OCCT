@@ -3174,7 +3174,7 @@ bool OpenGl_View::runPathtrace(const int                          theSizeX,
 {
   if (myToUpdateEnvironmentMap) // check whether the map was changed
   {
-    myAccumFrames = myToUpdateEnvironmentMap = 0;
+    myAccumFrames = myToUpdateEnvironmentMap = false;
   }
 
   if (myRenderParams.CameraApertureRadius != myPrevCameraApertureRadius

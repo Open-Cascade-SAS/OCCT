@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_SectionedArea, IGESData_IGESEntity)
 
-IGESDimen_SectionedArea::IGESDimen_SectionedArea() {}
+IGESDimen_SectionedArea::IGESDimen_SectionedArea() = default;
 
 void IGESDimen_SectionedArea::Init(
   const occ::handle<IGESData_IGESEntity>&                                   aCurve,

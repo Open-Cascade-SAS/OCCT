@@ -1763,7 +1763,7 @@ bool STEPCAFControl_Writer::writeMetadataForLabel(const occ::handle<XSControl_Wo
 void STEPCAFControl_Writer::writeMetadataRepresentationItem(
   const TCollection_AsciiString&                             theKey,
   const occ::handle<StepData_StepModel>&                     theModel,
-  const occ::handle<StepShape_ShapeDefinitionRepresentation> theShapeDefRep,
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& theShapeDefRep,
   const occ::handle<StepBasic_ProductDefinition>&            theProdDef,
   const occ::handle<StepRepr_RepresentationItem>&            theItem) const
 {

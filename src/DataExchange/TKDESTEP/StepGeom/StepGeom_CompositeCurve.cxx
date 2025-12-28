@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurve, StepGeom_BoundedCurve)
 
-StepGeom_CompositeCurve::StepGeom_CompositeCurve() {}
+StepGeom_CompositeCurve::StepGeom_CompositeCurve() = default;
 
 void StepGeom_CompositeCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                                         aName,

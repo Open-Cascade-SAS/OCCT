@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Algo, HLRBRep_InternalAlgo)
 
 //=================================================================================================
 
-HLRBRep_Algo::HLRBRep_Algo() {}
+HLRBRep_Algo::HLRBRep_Algo() = default;
 
 //=================================================================================================
 

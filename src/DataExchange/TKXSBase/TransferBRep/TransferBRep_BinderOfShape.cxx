@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TransferBRep_BinderOfShape, Transfer_Binder)
 
-TransferBRep_BinderOfShape::TransferBRep_BinderOfShape() {}
+TransferBRep_BinderOfShape::TransferBRep_BinderOfShape() = default;
 
 TransferBRep_BinderOfShape::TransferBRep_BinderOfShape(const TopoDS_Shape& res)
     : theres(res)

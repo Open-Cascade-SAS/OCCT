@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationLayerUsage, Standard_Transient)
 
-StepVisual_PresentationLayerUsage::StepVisual_PresentationLayerUsage() {}
+StepVisual_PresentationLayerUsage::StepVisual_PresentationLayerUsage() = default;
 
 void StepVisual_PresentationLayerUsage::Init(
   const occ::handle<StepVisual_PresentationLayerAssignment>& aAssignment,

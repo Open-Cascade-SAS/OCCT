@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_ToolContainer, Standard_Transient)
 
 //=================================================================================================
 
-IGESToBRep_ToolContainer::IGESToBRep_ToolContainer() {}
+IGESToBRep_ToolContainer::IGESToBRep_ToolContainer() = default;
 
 //=================================================================================================
 

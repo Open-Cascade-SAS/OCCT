@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceOuterBound, StepShape_FaceBound)
 
-StepShape_FaceOuterBound::StepShape_FaceOuterBound() {}
+StepShape_FaceOuterBound::StepShape_FaceOuterBound() = default;

@@ -38,7 +38,7 @@
 //=======================================================================
 // function : ShapeFix_EdgeConnect
 //=======================================================================
-ShapeFix_EdgeConnect::ShapeFix_EdgeConnect() {}
+ShapeFix_EdgeConnect::ShapeFix_EdgeConnect() = default;
 
 //=======================================================================
 // function : Add

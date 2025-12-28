@@ -50,7 +50,7 @@
 #include <XSControl_Utils.hxx>
 #include <Message.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferReader, Standard_Transient)
 
 //=================================================================================================

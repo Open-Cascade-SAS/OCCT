@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ParallelOffset, StepRepr_DerivedShapeAspect)
 
-StepRepr_ParallelOffset::StepRepr_ParallelOffset() {}
+StepRepr_ParallelOffset::StepRepr_ParallelOffset() = default;
 
 //=================================================================================================
 

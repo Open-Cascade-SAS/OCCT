@@ -24,7 +24,7 @@
 // Geom2dToIGES_Geom2dPoint
 //=============================================================================
 Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint()
-    : Geom2dToIGES_Geom2dEntity()
+     
 {
 }
 

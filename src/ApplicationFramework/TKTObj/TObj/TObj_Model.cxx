@@ -35,6 +35,7 @@
 #include <TObj_TNameContainer.hxx>
 #include <Message_Msg.hxx>
 #include <OSD_OpenFile.hxx>
+#include <utility>
 
 IMPLEMENT_STANDARD_RTTIEXT(TObj_Model, Standard_Transient)
 
@@ -870,7 +871,7 @@ bool TObj_Model::Paste(occ::handle<TObj_Model>          theModel,
   //                                               new TDF_RelocationTable);
   //  theModel->GetLabel().ForgetAllAttributes(true);
   TObj_TNameContainer::Set(theModel->GetLabel());
-  GetMainPartition()->Clone(theModel->GetLabel(), theRelocTable);
+  GetMainPartition()->Clone(theModel->GetLabel(), std::move(theRelocTable));
   return true;
 }
 

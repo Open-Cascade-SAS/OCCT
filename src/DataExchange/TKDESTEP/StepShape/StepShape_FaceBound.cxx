@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceBound, StepShape_TopologicalRepresentationItem)
 
-StepShape_FaceBound::StepShape_FaceBound() {}
+StepShape_FaceBound::StepShape_FaceBound() = default;
 
 void StepShape_FaceBound::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                const occ::handle<StepShape_Loop>&           aBound,

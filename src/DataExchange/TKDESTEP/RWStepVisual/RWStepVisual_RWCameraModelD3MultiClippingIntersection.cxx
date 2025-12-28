@@ -27,8 +27,7 @@
 
 RWStepVisual_RWCameraModelD3MultiClippingIntersection::
   RWStepVisual_RWCameraModelD3MultiClippingIntersection()
-{
-}
+= default;
 
 //=================================================================================================
 

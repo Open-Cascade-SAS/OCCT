@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference() {}
+StepDimTol_DatumSystemOrReference::StepDimTol_DatumSystemOrReference() = default;
 
 //=================================================================================================
 

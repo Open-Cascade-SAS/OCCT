@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCylinder, StepGeom_GeometricRepresentationItem)
 
-StepShape_RightCircularCylinder::StepShape_RightCircularCylinder() {}
+StepShape_RightCircularCylinder::StepShape_RightCircularCylinder() = default;
 
 void StepShape_RightCircularCylinder::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                            const occ::handle<StepGeom_Axis1Placement>&  aPosition,

@@ -25,7 +25,7 @@
 #include <Standard_Real.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static occ::handle<IGESData_Protocol> proto;
 
 static occ::handle<IGESData_DefaultGeneral>  stmod;

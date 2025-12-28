@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurf
 //=================================================================================================
 
 ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea()
-    : ShapeUpgrade_SplitSurface()
+     
 {
   myNbParts  = 1;
   myUnbSplit = myVnbSplit  = -1;

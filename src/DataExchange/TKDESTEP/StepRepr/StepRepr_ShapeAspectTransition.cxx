@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectTransition, StepRepr_ShapeAspectR
 
 //=================================================================================================
 
-StepRepr_ShapeAspectTransition::StepRepr_ShapeAspectTransition() {}
+StepRepr_ShapeAspectTransition::StepRepr_ShapeAspectTransition() = default;

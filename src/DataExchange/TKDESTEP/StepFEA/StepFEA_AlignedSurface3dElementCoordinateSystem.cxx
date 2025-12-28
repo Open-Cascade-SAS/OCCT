@@ -25,8 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_AlignedSurface3dElementCoordinateSystem,
 //=================================================================================================
 
 StepFEA_AlignedSurface3dElementCoordinateSystem::StepFEA_AlignedSurface3dElementCoordinateSystem()
-{
-}
+= default;
 
 //=================================================================================================
 

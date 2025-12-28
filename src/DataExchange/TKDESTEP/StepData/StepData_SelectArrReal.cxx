@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectArrReal, StepData_SelectNamed)
 
 //=================================================================================================
 
-StepData_SelectArrReal::StepData_SelectArrReal() {}
+StepData_SelectArrReal::StepData_SelectArrReal() = default;
 
 //=================================================================================================
 

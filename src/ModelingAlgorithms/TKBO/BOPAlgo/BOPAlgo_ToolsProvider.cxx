@@ -18,7 +18,7 @@
 //=================================================================================================
 
 BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider()
-    : BOPAlgo_Builder(),
+    : 
       myTools(myAllocator),
       myMapTools(100, myAllocator)
 {

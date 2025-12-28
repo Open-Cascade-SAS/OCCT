@@ -34,7 +34,7 @@ BRepMeshData_PCurve::BRepMeshData_PCurve(const IMeshData::IFacePtr& theDFace,
 
 //=================================================================================================
 
-BRepMeshData_PCurve::~BRepMeshData_PCurve() {}
+BRepMeshData_PCurve::~BRepMeshData_PCurve() = default;
 
 //=================================================================================================
 

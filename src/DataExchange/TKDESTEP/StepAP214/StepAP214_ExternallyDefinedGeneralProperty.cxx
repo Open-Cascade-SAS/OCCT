@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedGeneralProperty, StepBasic
 
 //=================================================================================================
 
-StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralProperty() {}
+StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralProperty() = default;
 
 //=================================================================================================
 

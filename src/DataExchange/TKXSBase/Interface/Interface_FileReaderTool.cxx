@@ -35,7 +35,7 @@
 #else
   #include <OSD_Signal.hxx>
 #endif
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 16/06/98
 // To use Msg class
@@ -569,7 +569,7 @@ occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int
 
 //=================================================================================================
 
-Interface_FileReaderTool::~Interface_FileReaderTool() {}
+Interface_FileReaderTool::~Interface_FileReaderTool() = default;
 
 void Interface_FileReaderTool::Clear()
 {

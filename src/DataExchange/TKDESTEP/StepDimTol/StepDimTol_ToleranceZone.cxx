@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 
 //=================================================================================================
 
-StepDimTol_ToleranceZone::StepDimTol_ToleranceZone() {}
+StepDimTol_ToleranceZone::StepDimTol_ToleranceZone() = default;
 
 //=================================================================================================
 

@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalResults, IGESData_IGESEntity)
 
-IGESAppli_NodalResults::IGESAppli_NodalResults() {}
+IGESAppli_NodalResults::IGESAppli_NodalResults() = default;
 
 // Data : Col -> // Nodes.  Row : Data per Node
 

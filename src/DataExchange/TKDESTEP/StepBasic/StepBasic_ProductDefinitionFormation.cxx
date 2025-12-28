@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionFormation, Standard_Transient)
 
-StepBasic_ProductDefinitionFormation::StepBasic_ProductDefinitionFormation() {}
+StepBasic_ProductDefinitionFormation::StepBasic_ProductDefinitionFormation() = default;
 
 void StepBasic_ProductDefinitionFormation::Init(
   const occ::handle<TCollection_HAsciiString>& aId,

@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_CompositeSurface, Geom_Surface)
 
 //=================================================================================================
 
-ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface() {}
+ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface() = default;
 
 //=================================================================================================
 

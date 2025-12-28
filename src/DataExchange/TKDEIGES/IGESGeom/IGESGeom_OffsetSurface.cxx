@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_OffsetSurface, IGESData_IGESEntity)
 
-IGESGeom_OffsetSurface::IGESGeom_OffsetSurface() {}
+IGESGeom_OffsetSurface::IGESGeom_OffsetSurface() = default;
 
 void IGESGeom_OffsetSurface::Init(const gp_XYZ&                           anIndicator,
                                   const double                            aDistance,

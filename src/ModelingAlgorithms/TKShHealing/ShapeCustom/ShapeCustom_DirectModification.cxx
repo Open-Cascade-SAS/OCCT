@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_DirectModification, ShapeCustom_Modificat
 
 //=================================================================================================
 
-ShapeCustom_DirectModification::ShapeCustom_DirectModification() {}
+ShapeCustom_DirectModification::ShapeCustom_DirectModification() = default;
 
 // S4181 returns 0 - none, 1 - indirect, 2 - negative cone, 3 - indirect negative cone
 static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)

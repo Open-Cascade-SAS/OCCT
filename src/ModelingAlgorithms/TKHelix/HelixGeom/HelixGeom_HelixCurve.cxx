@@ -21,7 +21,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <math.h>
+#include <cmath>
 
 IMPLEMENT_STANDARD_RTTIEXT(HelixGeom_HelixCurve, Adaptor3d_Curve)
 

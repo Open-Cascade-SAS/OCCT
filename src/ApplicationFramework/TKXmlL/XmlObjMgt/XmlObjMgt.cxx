@@ -19,8 +19,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <XmlObjMgt_Document.hxx>
 
-#include <errno.h>
-#include <stdio.h>
+#include <cerrno>
+#include <cstdio>
 #include <limits>
 
 static const char aRefPrefix[] = "/document/label";

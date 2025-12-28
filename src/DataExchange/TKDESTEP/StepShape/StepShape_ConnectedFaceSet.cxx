@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet, StepShape_TopologicalRepresentationItem)
 
-StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet() {}
+StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet() = default;
 
 void StepShape_ConnectedFaceSet::Init(
   const occ::handle<TCollection_HAsciiString>&                         aName,

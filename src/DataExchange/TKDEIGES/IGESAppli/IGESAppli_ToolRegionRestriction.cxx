@@ -29,7 +29,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolRegionRestriction::IGESAppli_ToolRegionRestriction() {}
+IGESAppli_ToolRegionRestriction::IGESAppli_ToolRegionRestriction() = default;
 
 void IGESAppli_ToolRegionRestriction::ReadOwnParams(
   const occ::handle<IGESAppli_RegionRestriction>& ent,

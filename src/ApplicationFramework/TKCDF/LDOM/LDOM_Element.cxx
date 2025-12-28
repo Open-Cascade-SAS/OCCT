@@ -19,7 +19,7 @@
 
 #include <Standard_ProgramError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

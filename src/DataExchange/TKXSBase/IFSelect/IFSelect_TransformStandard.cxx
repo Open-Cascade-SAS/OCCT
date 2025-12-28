@@ -32,7 +32,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_TransformStandard, IFSelect_Transformer)
 
 IFSelect_TransformStandard::IFSelect_TransformStandard()

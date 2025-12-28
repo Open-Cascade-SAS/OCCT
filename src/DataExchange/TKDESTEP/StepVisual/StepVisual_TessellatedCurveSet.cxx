@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)
 
-StepVisual_TessellatedCurveSet::StepVisual_TessellatedCurveSet() {}
+StepVisual_TessellatedCurveSet::StepVisual_TessellatedCurveSet() = default;
 
 void StepVisual_TessellatedCurveSet::Init(
   const occ::handle<TCollection_HAsciiString>&   theName,

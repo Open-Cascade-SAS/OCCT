@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_AnalysisItemWithinRepresentation, Standar
 
 //=================================================================================================
 
-StepElement_AnalysisItemWithinRepresentation::StepElement_AnalysisItemWithinRepresentation() {}
+StepElement_AnalysisItemWithinRepresentation::StepElement_AnalysisItemWithinRepresentation() = default;
 
 //=================================================================================================
 

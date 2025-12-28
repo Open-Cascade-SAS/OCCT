@@ -18,7 +18,7 @@
 #include <StepBasic_ApprovalPersonOrganization.hxx>
 #include <StepBasic_ProductDefinitionEffectivity.hxx>
 
-StepAP214_AutoDesignDateAndTimeItem::StepAP214_AutoDesignDateAndTimeItem() {}
+StepAP214_AutoDesignDateAndTimeItem::StepAP214_AutoDesignDateAndTimeItem() = default;
 
 int StepAP214_AutoDesignDateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

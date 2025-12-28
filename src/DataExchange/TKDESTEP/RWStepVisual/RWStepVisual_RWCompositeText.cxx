@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepVisual_RWCompositeText::RWStepVisual_RWCompositeText() {}
+RWStepVisual_RWCompositeText::RWStepVisual_RWCompositeText() = default;
 
 void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

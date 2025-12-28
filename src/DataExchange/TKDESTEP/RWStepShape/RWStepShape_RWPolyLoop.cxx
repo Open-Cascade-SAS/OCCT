@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_PolyLoop.hxx>
 
-RWStepShape_RWPolyLoop::RWStepShape_RWPolyLoop() {}
+RWStepShape_RWPolyLoop::RWStepShape_RWPolyLoop() = default;
 
 void RWStepShape_RWPolyLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

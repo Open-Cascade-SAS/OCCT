@@ -29,7 +29,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionPilot, IFSelect_Activator)
 
 #define MAXWORDS 200

@@ -21,8 +21,7 @@
 #include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
 
 RWStepShape_RWManifoldSurfaceShapeRepresentation::RWStepShape_RWManifoldSurfaceShapeRepresentation()
-{
-}
+= default;
 
 void RWStepShape_RWManifoldSurfaceShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                      data,

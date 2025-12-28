@@ -90,7 +90,7 @@ TopOpeBRepBuild_Builder::TopOpeBRepBuild_Builder(const TopOpeBRepDS_BuildTool& B
 // function : ~TopOpeBRepBuild_Builder
 // purpose  : virtual destructor
 //=======================================================================
-TopOpeBRepBuild_Builder::~TopOpeBRepBuild_Builder() {}
+TopOpeBRepBuild_Builder::~TopOpeBRepBuild_Builder() = default;
 
 //=================================================================================================
 

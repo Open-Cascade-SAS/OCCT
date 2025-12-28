@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_LabelDisplay, IGESData_LabelDisplayEntity)
 
-IGESDraw_LabelDisplay::IGESDraw_LabelDisplay() {}
+IGESDraw_LabelDisplay::IGESDraw_LabelDisplay() = default;
 
 void IGESDraw_LabelDisplay::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,

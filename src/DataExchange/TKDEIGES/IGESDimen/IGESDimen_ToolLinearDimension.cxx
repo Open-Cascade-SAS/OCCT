@@ -32,7 +32,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolLinearDimension::IGESDimen_ToolLinearDimension() {}
+IGESDimen_ToolLinearDimension::IGESDimen_ToolLinearDimension() = default;
 
 void IGESDimen_ToolLinearDimension::ReadOwnParams(const occ::handle<IGESDimen_LinearDimension>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWSolidAngleMeasureWithUnit::RWStepBasic_RWSolidAngleMeasureWithUnit() {}
+RWStepBasic_RWSolidAngleMeasureWithUnit::RWStepBasic_RWSolidAngleMeasureWithUnit() = default;
 
 //=================================================================================================
 

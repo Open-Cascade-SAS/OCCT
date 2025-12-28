@@ -698,8 +698,8 @@ struct TreatmentFunctor
         Ranges(0, theArrayOfArrays->Size() - 1),
         DistRef(nullptr),
         InnerSol(nullptr),
-        IsDone(nullptr),
-        Mutex()
+        IsDone(nullptr)
+        
   {
     for (int i = 0; i < theArrayOfArrays->Size(); ++i)
     {

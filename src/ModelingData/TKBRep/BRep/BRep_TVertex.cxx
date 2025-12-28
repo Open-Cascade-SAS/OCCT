@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex, TopoDS_TVertex)
 //=================================================================================================
 
 BRep_TVertex::BRep_TVertex()
-    : TopoDS_TVertex(),
+    : 
       myTolerance(RealEpsilon())
 {
 }

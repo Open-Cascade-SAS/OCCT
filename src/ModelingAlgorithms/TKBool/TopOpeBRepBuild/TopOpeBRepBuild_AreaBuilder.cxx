@@ -42,7 +42,7 @@ TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder(TopOpeBRepBuild_LoopSet
   InitAreaBuilder(LS, LC, ForceClass);
 }
 
-TopOpeBRepBuild_AreaBuilder::~TopOpeBRepBuild_AreaBuilder() {}
+TopOpeBRepBuild_AreaBuilder::~TopOpeBRepBuild_AreaBuilder() = default;
 
 //=======================================================================
 // function : CompareLoopWithListOfLoop

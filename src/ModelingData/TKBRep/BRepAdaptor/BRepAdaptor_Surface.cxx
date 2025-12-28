@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Surface, GeomAdaptor_TransformedSurface)
 
 //=================================================================================================
 
-BRepAdaptor_Surface::BRepAdaptor_Surface() {}
+BRepAdaptor_Surface::BRepAdaptor_Surface() = default;
 
 //=================================================================================================
 

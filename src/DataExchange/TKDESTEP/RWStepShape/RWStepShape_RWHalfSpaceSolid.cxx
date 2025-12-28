@@ -18,7 +18,7 @@
 #include <StepGeom_Surface.hxx>
 #include <StepShape_HalfSpaceSolid.hxx>
 
-RWStepShape_RWHalfSpaceSolid::RWStepShape_RWHalfSpaceSolid() {}
+RWStepShape_RWHalfSpaceSolid::RWStepShape_RWHalfSpaceSolid() = default;
 
 void RWStepShape_RWHalfSpaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

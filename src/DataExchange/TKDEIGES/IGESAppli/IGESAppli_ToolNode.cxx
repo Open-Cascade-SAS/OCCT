@@ -33,7 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESAppli_ToolNode::IGESAppli_ToolNode() {}
+IGESAppli_ToolNode::IGESAppli_ToolNode() = default;
 
 void IGESAppli_ToolNode::ReadOwnParams(const occ::handle<IGESAppli_Node>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,

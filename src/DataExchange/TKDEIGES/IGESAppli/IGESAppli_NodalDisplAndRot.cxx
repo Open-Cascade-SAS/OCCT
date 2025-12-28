@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot, IGESData_IGESEntity)
 
-IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot() {}
+IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot() = default;
 
 void IGESAppli_NodalDisplAndRot::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>& allNotes,

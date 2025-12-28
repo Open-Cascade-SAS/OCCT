@@ -31,7 +31,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEVRML_ConfigurationNode::DEVRML_ConfigurationNode()
-    : DE_ConfigurationNode()
+     
 {
 }
 

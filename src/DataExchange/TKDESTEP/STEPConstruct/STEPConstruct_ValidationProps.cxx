@@ -56,7 +56,7 @@
 
 //=================================================================================================
 
-STEPConstruct_ValidationProps::STEPConstruct_ValidationProps() {}
+STEPConstruct_ValidationProps::STEPConstruct_ValidationProps() = default;
 
 //=================================================================================================
 

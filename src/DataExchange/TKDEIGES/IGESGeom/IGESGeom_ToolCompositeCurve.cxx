@@ -33,7 +33,7 @@
 #include <Message_Msg.hxx>
 
 // MGE 28/07/98
-IGESGeom_ToolCompositeCurve::IGESGeom_ToolCompositeCurve() {}
+IGESGeom_ToolCompositeCurve::IGESGeom_ToolCompositeCurve() = default;
 
 void IGESGeom_ToolCompositeCurve::ReadOwnParams(const occ::handle<IGESGeom_CompositeCurve>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

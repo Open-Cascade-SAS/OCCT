@@ -76,7 +76,7 @@
 #include <Message.hxx>
 
 #include <Geom_Surface.hxx>
-#include <stdio.h>
+#include <cstdio>
 #include <Geom_BSplineCurve.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GCPnts_TangentialDeflection.hxx>

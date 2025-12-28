@@ -80,7 +80,7 @@ Draw_Viewer::Draw_Viewer()
 bool Draw_Viewer::DefineColor(const int i, const char* colname)
 {
   if (Draw_Batch)
-    return 1;
+    return true;
   return Draw_Window::DefineColor(i, colname);
 }
 

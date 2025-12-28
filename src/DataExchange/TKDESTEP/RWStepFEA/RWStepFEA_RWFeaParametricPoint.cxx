@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaParametricPoint::RWStepFEA_RWFeaParametricPoint() {}
+RWStepFEA_RWFeaParametricPoint::RWStepFEA_RWFeaParametricPoint() = default;
 
 //=================================================================================================
 

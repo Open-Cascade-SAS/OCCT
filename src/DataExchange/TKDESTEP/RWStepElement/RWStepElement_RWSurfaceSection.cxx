@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWSurfaceSection::RWStepElement_RWSurfaceSection() {}
+RWStepElement_RWSurfaceSection::RWStepElement_RWSurfaceSection() = default;
 
 //=================================================================================================
 

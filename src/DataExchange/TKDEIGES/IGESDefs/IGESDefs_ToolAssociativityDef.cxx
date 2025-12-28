@@ -35,7 +35,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDefs_ToolAssociativityDef::IGESDefs_ToolAssociativityDef() {}
+IGESDefs_ToolAssociativityDef::IGESDefs_ToolAssociativityDef() = default;
 
 void IGESDefs_ToolAssociativityDef::ReadOwnParams(
   const occ::handle<IGESDefs_AssociativityDef>& ent,

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectDiff, IFSelect_SelectControl)
 
-IFSelect_SelectDiff::IFSelect_SelectDiff() {}
+IFSelect_SelectDiff::IFSelect_SelectDiff() = default;
 
 Interface_EntityIterator IFSelect_SelectDiff::RootResult(const Interface_Graph& G) const
 {

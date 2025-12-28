@@ -17,7 +17,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWPerson::RWStepBasic_RWPerson() {}
+RWStepBasic_RWPerson::RWStepBasic_RWPerson() = default;
 
 void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                     const int                                   num,

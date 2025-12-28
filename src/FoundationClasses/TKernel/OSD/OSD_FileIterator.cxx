@@ -24,7 +24,7 @@
   #include <OSD_WhoAmI.hxx>
 
   #include <dirent.h>
-  #include <stdio.h>
+  #include <cstdio>
   #include <sys/stat.h>
   #include <sys/types.h>
   #define NAMLEN(dirent) strlen((dirent)->d_name)

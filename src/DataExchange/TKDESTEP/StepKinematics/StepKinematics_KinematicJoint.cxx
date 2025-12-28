@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicJoint, StepShape_Edge)
 
 //=================================================================================================
 
-StepKinematics_KinematicJoint::StepKinematics_KinematicJoint() {}
+StepKinematics_KinematicJoint::StepKinematics_KinematicJoint() = default;

@@ -72,7 +72,7 @@
 #include <Geom_Ellipse.hxx>
 #include <ShapeAnalysis_CanonicalRecognition.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
 {

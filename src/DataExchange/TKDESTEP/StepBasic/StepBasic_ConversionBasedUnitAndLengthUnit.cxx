@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndLengthUnit,
                            StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndLengthUnit::StepBasic_ConversionBasedUnitAndLengthUnit() {}
+StepBasic_ConversionBasedUnitAndLengthUnit::StepBasic_ConversionBasedUnitAndLengthUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndLengthUnit::Init(
   const occ::handle<StepBasic_DimensionalExponents>& aDimensions,

@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlXCAFDrivers_DocumentRetrievalDriver,
 
 //=================================================================================================
 
-XmlXCAFDrivers_DocumentRetrievalDriver::XmlXCAFDrivers_DocumentRetrievalDriver() {}
+XmlXCAFDrivers_DocumentRetrievalDriver::XmlXCAFDrivers_DocumentRetrievalDriver() = default;
 
 //=================================================================================================
 

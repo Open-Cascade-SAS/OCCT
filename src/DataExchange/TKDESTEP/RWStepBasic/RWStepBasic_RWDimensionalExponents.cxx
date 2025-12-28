@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWDimensionalExponents::RWStepBasic_RWDimensionalExponents() {}
+RWStepBasic_RWDimensionalExponents::RWStepBasic_RWDimensionalExponents() = default;
 
 void RWStepBasic_RWDimensionalExponents::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

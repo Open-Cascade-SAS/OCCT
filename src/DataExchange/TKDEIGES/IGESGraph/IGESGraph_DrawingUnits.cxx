@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DrawingUnits, IGESData_IGESEntity)
 
-IGESGraph_DrawingUnits::IGESGraph_DrawingUnits() {}
+IGESGraph_DrawingUnits::IGESGraph_DrawingUnits() = default;
 
 void IGESGraph_DrawingUnits::Init(const int                                    nbProps,
                                   const int                                    aFlag,

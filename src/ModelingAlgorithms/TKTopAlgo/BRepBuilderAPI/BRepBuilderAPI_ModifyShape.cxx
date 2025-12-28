@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape() {}
+BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape() = default;
 
 //=================================================================================================
 

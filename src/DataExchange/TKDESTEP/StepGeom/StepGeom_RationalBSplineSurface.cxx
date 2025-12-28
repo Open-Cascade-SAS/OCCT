@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RationalBSplineSurface, StepGeom_BSplineSurface)
 
-StepGeom_RationalBSplineSurface::StepGeom_RationalBSplineSurface() {}
+StepGeom_RationalBSplineSurface::StepGeom_RationalBSplineSurface() = default;
 
 void StepGeom_RationalBSplineSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

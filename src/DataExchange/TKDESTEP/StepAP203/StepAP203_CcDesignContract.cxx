@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignContract, StepBasic_ContractAssignm
 
 //=================================================================================================
 
-StepAP203_CcDesignContract::StepAP203_CcDesignContract() {}
+StepAP203_CcDesignContract::StepAP203_CcDesignContract() = default;
 
 //=================================================================================================
 

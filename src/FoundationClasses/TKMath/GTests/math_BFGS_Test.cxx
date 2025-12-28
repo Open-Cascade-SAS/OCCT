@@ -32,7 +32,7 @@
 class QuadraticFunction2D : public math_MultipleVarFunctionWithGradient
 {
 public:
-  QuadraticFunction2D() {}
+  QuadraticFunction2D() = default;
 
   int NbVariables() const override { return 2; }
 
@@ -65,7 +65,7 @@ public:
 class RosenbrockFunction : public math_MultipleVarFunctionWithGradient
 {
 public:
-  RosenbrockFunction() {}
+  RosenbrockFunction() = default;
 
   int NbVariables() const override { return 2; }
 
@@ -102,7 +102,7 @@ public:
 class Paraboloid3D : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Paraboloid3D() {}
+  Paraboloid3D() = default;
 
   int NbVariables() const override { return 3; }
 
@@ -481,7 +481,7 @@ TEST(MathBFGSTest, MultipleOptimizations)
 class SquareFunction1D : public math_MultipleVarFunctionWithGradient
 {
 public:
-  SquareFunction1D() {}
+  SquareFunction1D() = default;
 
   int NbVariables() const override { return 1; }
 

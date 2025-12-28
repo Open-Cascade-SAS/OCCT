@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Location, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFDoc_Location::XCAFDoc_Location() {}
+XCAFDoc_Location::XCAFDoc_Location() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentStorageDriver, BinDrivers_Docu
 
 //=================================================================================================
 
-BinXCAFDrivers_DocumentStorageDriver::BinXCAFDrivers_DocumentStorageDriver() {}
+BinXCAFDrivers_DocumentStorageDriver::BinXCAFDrivers_DocumentStorageDriver() = default;
 
 //=================================================================================================
 

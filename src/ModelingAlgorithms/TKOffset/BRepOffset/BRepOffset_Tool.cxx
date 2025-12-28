@@ -106,7 +106,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // The constant defines the maximal value to enlarge surfaces.
 // It is limited to 1.e+7. This limitation is justified by the
@@ -335,7 +335,7 @@ static void BuildPCurves(const TopoDS_Edge& E, const TopoDS_Face& F)
   // double Tolerance = std::max(Precision::Confusion(),BRep_Tool::Tolerance(E));
   constexpr double Tolerance = Precision::Confusion();
 
-  BRepAdaptor_Surface AS(F, 0);
+  BRepAdaptor_Surface AS(F, false);
   BRepAdaptor_Curve   AC(E);
 
   // Try to find pcurve on a bound of BSpline or Bezier surface
@@ -732,7 +732,7 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&              F1,
   occ::handle<Geom_Surface> S1 = BRep_Tool::Surface(F1);
   occ::handle<Geom_Surface> S2 = BRep_Tool::Surface(F2);
 
-  GeomInt_IntSS Inter(S1, S2, Precision::Confusion(), 1, 1, 1);
+  GeomInt_IntSS Inter(S1, S2, Precision::Confusion(), true, true, true);
 
   if (Inter.IsDone())
   {
@@ -1431,8 +1431,8 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
   if (!RefEdge.IsNull())
     CheckIntersFF(aPF.PDS(), RefEdge, TrueEdges);
 
-  bool addPCurve1 = 1;
-  bool addPCurve2 = 1;
+  bool addPCurve1 = true;
+  bool addPCurve2 = true;
 
   const BOPDS_PDS&                    pDS  = aPF.PDS();
   NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
@@ -2074,8 +2074,8 @@ static void ExtentEdge(const TopoDS_Face& F,
   if (ExtC.IsNull())
     return;
 
-  GeomLib::ExtendCurveToPoint(ExtC, PF, 1, 0);
-  GeomLib::ExtendCurveToPoint(ExtC, PL, 1, 1);
+  GeomLib::ExtendCurveToPoint(ExtC, PF, 1, false);
+  GeomLib::ExtendCurveToPoint(ExtC, PL, 1, true);
 
   occ::handle<Geom2d_Curve> CNE2d = GeomAPI::To2d(ExtC, gp_Pln(gp::XOY()));
 

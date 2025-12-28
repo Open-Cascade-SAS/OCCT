@@ -22,7 +22,7 @@
 #include <DrawTrSurf.hxx>
 #include <Draw_Marker3D.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif

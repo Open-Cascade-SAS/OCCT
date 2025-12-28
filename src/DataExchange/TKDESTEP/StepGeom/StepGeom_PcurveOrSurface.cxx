@@ -17,7 +17,7 @@
 #include <StepGeom_PcurveOrSurface.hxx>
 #include <StepGeom_Surface.hxx>
 
-StepGeom_PcurveOrSurface::StepGeom_PcurveOrSurface() {}
+StepGeom_PcurveOrSurface::StepGeom_PcurveOrSurface() = default;
 
 int StepGeom_PcurveOrSurface::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

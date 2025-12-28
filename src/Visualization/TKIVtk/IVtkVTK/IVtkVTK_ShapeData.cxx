@@ -54,7 +54,7 @@ IVtkVTK_ShapeData::IVtkVTK_ShapeData()
 
 //=================================================================================================
 
-IVtkVTK_ShapeData::~IVtkVTK_ShapeData() {}
+IVtkVTK_ShapeData::~IVtkVTK_ShapeData() = default;
 
 //=================================================================================================
 

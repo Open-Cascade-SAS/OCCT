@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XSDRAW_Vars, XSControl_Vars)
 
-XSDRAW_Vars::XSDRAW_Vars() {}
+XSDRAW_Vars::XSDRAW_Vars() = default;
 
 void XSDRAW_Vars::Set(const char* name, const occ::handle<Standard_Transient>& val)
 {

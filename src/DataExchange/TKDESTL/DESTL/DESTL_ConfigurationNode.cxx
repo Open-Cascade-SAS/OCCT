@@ -32,7 +32,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DESTL_ConfigurationNode::DESTL_ConfigurationNode()
-    : DE_ConfigurationNode()
+     
 {
 }
 

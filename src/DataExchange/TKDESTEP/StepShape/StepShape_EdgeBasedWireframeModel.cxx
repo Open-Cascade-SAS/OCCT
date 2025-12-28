@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeModel, StepGeom_Geometric
 
 //=================================================================================================
 
-StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel() {}
+StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel() = default;
 
 //=================================================================================================
 

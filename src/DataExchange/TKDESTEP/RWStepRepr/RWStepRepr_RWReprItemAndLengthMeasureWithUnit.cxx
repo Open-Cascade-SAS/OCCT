@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWReprItemAndLengthMeasureWithUnit::RWStepRepr_RWReprItemAndLengthMeasureWithUnit() {}
+RWStepRepr_RWReprItemAndLengthMeasureWithUnit::RWStepRepr_RWReprItemAndLengthMeasureWithUnit() = default;
 
 //=================================================================================================
 

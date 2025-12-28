@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetSurface, StepGeom_Surface)
 
-StepGeom_OffsetSurface::StepGeom_OffsetSurface() {}
+StepGeom_OffsetSurface::StepGeom_OffsetSurface() = default;
 
 void StepGeom_OffsetSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepGeom_Surface>&         aBasisSurface,

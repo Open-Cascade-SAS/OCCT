@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization, Standard_Transient)
 
-StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization() {}
+StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization() = default;
 
 void StepBasic_ApprovalPersonOrganization::Init(
   const StepBasic_PersonOrganizationSelect&  aPersonOrganization,

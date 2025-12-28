@@ -310,4 +310,4 @@ occ::handle<Transfer_TransientProcess> TransferBRep_Reader::TransientProcess() c
   return theProc;
 }
 
-TransferBRep_Reader::~TransferBRep_Reader() {}
+TransferBRep_Reader::~TransferBRep_Reader() = default;

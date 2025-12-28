@@ -18,7 +18,7 @@
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_OffsetCurve3d.hxx>
 
-RWStepGeom_RWOffsetCurve3d::RWStepGeom_RWOffsetCurve3d() {}
+RWStepGeom_RWOffsetCurve3d::RWStepGeom_RWOffsetCurve3d() = default;
 
 void RWStepGeom_RWOffsetCurve3d::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

@@ -33,7 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea() {}
+IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea() = default;
 
 void IGESDimen_ToolSectionedArea::ReadOwnParams(const occ::handle<IGESDimen_SectionedArea>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

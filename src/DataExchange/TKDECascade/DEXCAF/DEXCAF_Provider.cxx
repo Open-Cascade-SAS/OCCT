@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_Provider, DE_Provider)
 
 //=================================================================================================
 
-DEXCAF_Provider::DEXCAF_Provider() {}
+DEXCAF_Provider::DEXCAF_Provider() = default;
 
 //=================================================================================================
 

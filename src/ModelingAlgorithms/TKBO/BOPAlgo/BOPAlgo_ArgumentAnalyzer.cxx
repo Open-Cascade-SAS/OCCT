@@ -45,7 +45,7 @@
 //=================================================================================================
 
 BOPAlgo_ArgumentAnalyzer::BOPAlgo_ArgumentAnalyzer()
-    : BOPAlgo_Algo(),
+    : 
       myStopOnFirst(false),
       myOperation(BOPAlgo_UNKNOWN),
       myArgumentTypeMode(false),

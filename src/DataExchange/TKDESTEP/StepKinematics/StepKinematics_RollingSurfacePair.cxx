@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RollingSurfacePair, StepKinematics_Sur
 
 //=================================================================================================
 
-StepKinematics_RollingSurfacePair::StepKinematics_RollingSurfacePair() {}
+StepKinematics_RollingSurfacePair::StepKinematics_RollingSurfacePair() = default;

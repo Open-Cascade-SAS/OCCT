@@ -20,7 +20,7 @@
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 
-RWStepShape_RWToleranceValue::RWStepShape_RWToleranceValue() {}
+RWStepShape_RWToleranceValue::RWStepShape_RWToleranceValue() = default;
 
 void RWStepShape_RWToleranceValue::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

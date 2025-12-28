@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEOBJ_Provider, DE_Provider)
 
 //=================================================================================================
 
-DEOBJ_Provider::DEOBJ_Provider() {}
+DEOBJ_Provider::DEOBJ_Provider() = default;
 
 //=================================================================================================
 

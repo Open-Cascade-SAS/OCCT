@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_VertexLoop, StepShape_Loop)
 
-StepShape_VertexLoop::StepShape_VertexLoop() {}
+StepShape_VertexLoop::StepShape_VertexLoop() = default;
 
 void StepShape_VertexLoop::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                 const occ::handle<StepShape_Vertex>&         aLoopVertex)

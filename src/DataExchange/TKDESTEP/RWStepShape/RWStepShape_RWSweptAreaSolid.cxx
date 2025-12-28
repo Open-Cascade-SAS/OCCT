@@ -18,7 +18,7 @@
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepShape_SweptAreaSolid.hxx>
 
-RWStepShape_RWSweptAreaSolid::RWStepShape_RWSweptAreaSolid() {}
+RWStepShape_RWSweptAreaSolid::RWStepShape_RWSweptAreaSolid() = default;
 
 void RWStepShape_RWSweptAreaSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

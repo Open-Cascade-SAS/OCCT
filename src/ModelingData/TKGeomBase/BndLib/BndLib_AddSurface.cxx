@@ -756,7 +756,7 @@ public:
     myPenalty = std::max(myPenalty, 1.);
   }
 
-  bool Value(const math_Vector& X, double& F)
+  bool Value(const math_Vector& X, double& F) override
   {
     if (CheckInputData(X))
     {
@@ -803,7 +803,7 @@ public:
     return true;
   }
 
-  int NbVariables() const { return 2; }
+  int NbVariables() const override { return 2; }
 
 private:
   SurfMaxMinCoord& operator=(const SurfMaxMinCoord&) = delete;

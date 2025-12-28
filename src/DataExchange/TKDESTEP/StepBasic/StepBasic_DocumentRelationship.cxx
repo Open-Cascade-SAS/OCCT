@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentRelationship, Standard_Transient)
 
-StepBasic_DocumentRelationship::StepBasic_DocumentRelationship() {}
+StepBasic_DocumentRelationship::StepBasic_DocumentRelationship() = default;
 
 void StepBasic_DocumentRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                           const occ::handle<TCollection_HAsciiString>& aDescription,

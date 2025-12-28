@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
-IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure() {}
+IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure() = default;
 
 void IGESDraw_NetworkSubfigure::Init(
   const occ::handle<IGESDraw_NetworkSubfigureDef>&                            aDefinition,

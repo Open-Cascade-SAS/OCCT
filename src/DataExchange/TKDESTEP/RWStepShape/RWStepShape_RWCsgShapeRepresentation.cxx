@@ -20,7 +20,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_CsgShapeRepresentation.hxx>
 
-RWStepShape_RWCsgShapeRepresentation::RWStepShape_RWCsgShapeRepresentation() {}
+RWStepShape_RWCsgShapeRepresentation::RWStepShape_RWCsgShapeRepresentation() = default;
 
 void RWStepShape_RWCsgShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

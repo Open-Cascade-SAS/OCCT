@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PlanarBox.hxx>
 
-RWStepVisual_RWPlanarBox::RWStepVisual_RWPlanarBox() {}
+RWStepVisual_RWPlanarBox::RWStepVisual_RWPlanarBox() = default;
 
 void RWStepVisual_RWPlanarBox::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

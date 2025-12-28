@@ -37,7 +37,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
-IGESDraw_ToolLabelDisplay::IGESDraw_ToolLabelDisplay() {}
+IGESDraw_ToolLabelDisplay::IGESDraw_ToolLabelDisplay() = default;
 
 void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDisplay>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

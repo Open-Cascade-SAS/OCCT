@@ -29,7 +29,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolDrilledHole::IGESAppli_ToolDrilledHole() {}
+IGESAppli_ToolDrilledHole::IGESAppli_ToolDrilledHole() = default;
 
 void IGESAppli_ToolDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_DrilledHole>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /*IR*/,

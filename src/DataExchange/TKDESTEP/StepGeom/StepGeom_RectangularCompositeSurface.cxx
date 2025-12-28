@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface, StepGeom_BoundedSurface)
 
-StepGeom_RectangularCompositeSurface::StepGeom_RectangularCompositeSurface() {}
+StepGeom_RectangularCompositeSurface::StepGeom_RectangularCompositeSurface() = default;
 
 void StepGeom_RectangularCompositeSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                                aName,

@@ -19,7 +19,7 @@
 #include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 
-RWStepShape_RWShellBasedSurfaceModel::RWStepShape_RWShellBasedSurfaceModel() {}
+RWStepShape_RWShellBasedSurfaceModel::RWStepShape_RWShellBasedSurfaceModel() = default;
 
 void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

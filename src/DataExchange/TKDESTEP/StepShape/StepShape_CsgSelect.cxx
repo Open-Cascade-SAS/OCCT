@@ -15,7 +15,7 @@
 #include <StepShape_CsgPrimitive.hxx>
 #include <StepShape_CsgSelect.hxx>
 
-StepShape_CsgSelect::StepShape_CsgSelect() {}
+StepShape_CsgSelect::StepShape_CsgSelect() = default;
 
 void StepShape_CsgSelect::SetTypeOfContent(const int aType)
 {

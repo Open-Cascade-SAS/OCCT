@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWContractAssignment::RWStepBasic_RWContractAssignment() {}
+RWStepBasic_RWContractAssignment::RWStepBasic_RWContractAssignment() = default;
 
 //=================================================================================================
 

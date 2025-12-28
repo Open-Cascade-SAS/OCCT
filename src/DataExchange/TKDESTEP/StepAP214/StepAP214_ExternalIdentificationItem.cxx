@@ -35,7 +35,7 @@
 
 //=================================================================================================
 
-StepAP214_ExternalIdentificationItem::StepAP214_ExternalIdentificationItem() {}
+StepAP214_ExternalIdentificationItem::StepAP214_ExternalIdentificationItem() = default;
 
 //=================================================================================================
 

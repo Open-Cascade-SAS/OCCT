@@ -45,7 +45,7 @@
 static BRepOffsetAPI_MakePipeShell* Sweep     = nullptr;
 static BRepOffsetAPI_ThruSections*  Generator = nullptr;
 
-#include <stdio.h>
+#include <cstdio>
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_Pipe.hxx>

@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance() {}
+IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance() = default;
 
 void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
   const occ::handle<IGESDimen_DimensionTolerance>& ent,

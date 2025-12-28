@@ -34,10 +34,10 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 29/07/98
-IGESGeom_ToolSplineCurve::IGESGeom_ToolSplineCurve() {}
+IGESGeom_ToolSplineCurve::IGESGeom_ToolSplineCurve() = default;
 
 void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCurve>& ent,
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,

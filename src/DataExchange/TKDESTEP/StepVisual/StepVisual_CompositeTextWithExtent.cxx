@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeTextWithExtent, StepVisual_CompositeText)
 
-StepVisual_CompositeTextWithExtent::StepVisual_CompositeTextWithExtent() {}
+StepVisual_CompositeTextWithExtent::StepVisual_CompositeTextWithExtent() = default;
 
 void StepVisual_CompositeTextWithExtent::Init(
   const occ::handle<TCollection_HAsciiString>&                        aName,

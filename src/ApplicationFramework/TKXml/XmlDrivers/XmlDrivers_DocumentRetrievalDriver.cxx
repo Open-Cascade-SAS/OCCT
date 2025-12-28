@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_Docum
 
 //=================================================================================================
 
-XmlDrivers_DocumentRetrievalDriver::XmlDrivers_DocumentRetrievalDriver() {}
+XmlDrivers_DocumentRetrievalDriver::XmlDrivers_DocumentRetrievalDriver() = default;
 
 //=================================================================================================
 

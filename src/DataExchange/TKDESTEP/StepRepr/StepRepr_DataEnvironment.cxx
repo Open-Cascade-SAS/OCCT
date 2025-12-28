@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_DataEnvironment, Standard_Transient)
 
 //=================================================================================================
 
-StepRepr_DataEnvironment::StepRepr_DataEnvironment() {}
+StepRepr_DataEnvironment::StepRepr_DataEnvironment() = default;
 
 //=================================================================================================
 

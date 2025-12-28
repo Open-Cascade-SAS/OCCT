@@ -43,7 +43,7 @@ BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
 
 //=================================================================================================
 
-BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor() {}
+BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor() = default;
 
 //=================================================================================================
 

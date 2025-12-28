@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
-IGESDimen_LeaderArrow::IGESDimen_LeaderArrow() {}
+IGESDimen_LeaderArrow::IGESDimen_LeaderArrow() = default;
 
 void IGESDimen_LeaderArrow::Init(const double                                   height,
                                  const double                                   width,

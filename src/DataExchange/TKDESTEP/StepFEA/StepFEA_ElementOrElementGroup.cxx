@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup() {}
+StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup() = default;
 
 //=================================================================================================
 

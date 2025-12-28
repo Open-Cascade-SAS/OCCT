@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RevolutePairValue, StepKinematics_Pair
 
 //=================================================================================================
 
-StepKinematics_RevolutePairValue::StepKinematics_RevolutePairValue() {}
+StepKinematics_RevolutePairValue::StepKinematics_RevolutePairValue() = default;
 
 //=================================================================================================
 

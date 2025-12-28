@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Point.hxx>
 
-RWStepGeom_RWPoint::RWStepGeom_RWPoint() {}
+RWStepGeom_RWPoint::RWStepGeom_RWPoint() = default;
 
 void RWStepGeom_RWPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                   const int                                   num,

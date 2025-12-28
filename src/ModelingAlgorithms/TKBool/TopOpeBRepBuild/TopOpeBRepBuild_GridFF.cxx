@@ -1134,7 +1134,7 @@ void TopOpeBRepBuild_Builder::GSplitEdgeWES(const TopoDS_Shape&                 
 
 Standard_IMPORT bool                         FUN_ismotheropedef();
 Standard_IMPORT const TopOpeBRepBuild_GTopo& FUN_motherope();
-Standard_EXPORT bool                         GLOBAL_IEtoMERGE = 0; // xpu240498
+Standard_EXPORT bool                         GLOBAL_IEtoMERGE = false; // xpu240498
 
 #ifdef OCCT_DEBUG
 void debmergee(const int /*i*/) {}

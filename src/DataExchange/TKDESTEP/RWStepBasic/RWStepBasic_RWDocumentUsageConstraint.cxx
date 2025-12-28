@@ -19,7 +19,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWDocumentUsageConstraint::RWStepBasic_RWDocumentUsageConstraint() {}
+RWStepBasic_RWDocumentUsageConstraint::RWStepBasic_RWDocumentUsageConstraint() = default;
 
 void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,

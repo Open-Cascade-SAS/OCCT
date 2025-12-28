@@ -24,7 +24,7 @@
 #include <StepData_Protocol.hxx>
 #include <StepData_WriterLib.hxx>
 
-StepData_NodeOfWriterLib::StepData_NodeOfWriterLib() {}
+StepData_NodeOfWriterLib::StepData_NodeOfWriterLib() = default;
 
 void StepData_NodeOfWriterLib::AddNode(const occ::handle<StepData_GlobalNodeOfWriterLib>& anode)
 {

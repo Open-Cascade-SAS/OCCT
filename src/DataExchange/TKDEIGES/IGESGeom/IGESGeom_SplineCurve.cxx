@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SplineCurve, IGESData_IGESEntity)
 
-IGESGeom_SplineCurve::IGESGeom_SplineCurve() {}
+IGESGeom_SplineCurve::IGESGeom_SplineCurve() = default;
 
 void IGESGeom_SplineCurve::Init(const int                                       aType,
                                 const int                                       aDegree,

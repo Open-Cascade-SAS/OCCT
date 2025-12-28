@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_OpenShell.hxx>
 
-RWStepShape_RWOpenShell::RWStepShape_RWOpenShell() {}
+RWStepShape_RWOpenShell::RWStepShape_RWOpenShell() = default;
 
 void RWStepShape_RWOpenShell::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

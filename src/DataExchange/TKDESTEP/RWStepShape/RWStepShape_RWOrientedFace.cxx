@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_OrientedFace.hxx>
 
-RWStepShape_RWOrientedFace::RWStepShape_RWOrientedFace() {}
+RWStepShape_RWOrientedFace::RWStepShape_RWOrientedFace() = default;
 
 void RWStepShape_RWOrientedFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

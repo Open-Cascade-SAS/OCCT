@@ -38,7 +38,7 @@
 // MGE 29/07/98
 //=================================================================================================
 
-IGESGeom_ToolBSplineCurve::IGESGeom_ToolBSplineCurve() {}
+IGESGeom_ToolBSplineCurve::IGESGeom_ToolBSplineCurve() = default;
 
 //=================================================================================================
 

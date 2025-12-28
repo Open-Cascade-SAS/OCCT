@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <IntPolyh_Edge.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

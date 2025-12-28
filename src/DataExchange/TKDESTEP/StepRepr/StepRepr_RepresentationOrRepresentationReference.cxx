@@ -21,8 +21,7 @@
 //=================================================================================================
 
 StepRepr_RepresentationOrRepresentationReference::StepRepr_RepresentationOrRepresentationReference()
-{
-}
+= default;
 
 //=================================================================================================
 

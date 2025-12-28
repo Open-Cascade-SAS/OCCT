@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPlanarPairWithRange::RWStepKinematics_RWPlanarPairWithRange() {}
+RWStepKinematics_RWPlanarPairWithRange::RWStepKinematics_RWPlanarPairWithRange() = default;
 
 //=================================================================================================
 

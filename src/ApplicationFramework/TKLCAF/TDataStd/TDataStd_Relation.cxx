@@ -52,7 +52,7 @@ occ::handle<TDataStd_Relation> TDataStd_Relation::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-TDataStd_Relation::TDataStd_Relation() {}
+TDataStd_Relation::TDataStd_Relation() = default;
 
 //=================================================================================================
 

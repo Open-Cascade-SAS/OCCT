@@ -18,7 +18,7 @@
 #include <Standard_Assert.hxx>
 
 #include <mutex>
-#include <signal.h>
+#include <csignal>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
@@ -724,7 +724,7 @@ LONG _osd_debug(void)
 
 //---------- All Systems except Windows NT : ----------------------------------
 
-  #include <stdio.h>
+  #include <cstdio>
 
   #include <OSD_WhoAmI.hxx>
   #include <OSD_SIGHUP.hxx>
@@ -752,11 +752,11 @@ static bool fCtrlBrk;
 
 // const OSD_WhoAmI Iam = OSD_WPackage;
 
-typedef void(ACT_SIGIO_HANDLER)(void);
+typedef void(ACT_SIGIO_HANDLER)();
 ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = nullptr;
 
   #ifdef __GNUC__
-    #include <stdlib.h>
+    #include <cstdlib>
   #else
     #ifdef SA_SIGINFO
       #include <sys/siginfo.h>

@@ -22,5 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleLinkRepresentation,
 //=================================================================================================
 
 StepKinematics_LinearFlexibleLinkRepresentation::StepKinematics_LinearFlexibleLinkRepresentation()
-{
-}
+= default;

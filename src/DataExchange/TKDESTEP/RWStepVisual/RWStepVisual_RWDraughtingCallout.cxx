@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWDraughtingCallout::RWStepVisual_RWDraughtingCallout() {}
+RWStepVisual_RWDraughtingCallout::RWStepVisual_RWDraughtingCallout() = default;
 
 //=================================================================================================
 

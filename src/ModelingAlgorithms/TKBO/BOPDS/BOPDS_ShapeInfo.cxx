@@ -15,7 +15,7 @@
 #include <BOPDS_ShapeInfo.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

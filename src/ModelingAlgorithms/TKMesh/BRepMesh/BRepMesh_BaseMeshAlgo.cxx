@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 
 //=================================================================================================
 
-BRepMesh_BaseMeshAlgo::BRepMesh_BaseMeshAlgo() {}
+BRepMesh_BaseMeshAlgo::BRepMesh_BaseMeshAlgo() = default;
 
 //=================================================================================================
 
-BRepMesh_BaseMeshAlgo::~BRepMesh_BaseMeshAlgo() {}
+BRepMesh_BaseMeshAlgo::~BRepMesh_BaseMeshAlgo() = default;
 
 //=================================================================================================
 

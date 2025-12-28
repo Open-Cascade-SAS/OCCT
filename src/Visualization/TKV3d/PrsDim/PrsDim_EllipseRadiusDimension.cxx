@@ -49,7 +49,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 PrsDim_EllipseRadiusDimension::PrsDim_EllipseRadiusDimension(
   const TopoDS_Shape&               aShape,
   const TCollection_ExtendedString& aText)
-    : PrsDim_Relation()
+     
 {
   myFShape = aShape;
   myText   = aText;

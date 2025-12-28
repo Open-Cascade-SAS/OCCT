@@ -48,7 +48,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 // Literal param "own" in the form  :"<val>" -> first = 3
 // Now, simplified form         : <val>  directly -> first = 1
 
-IFSelect_BasicDumper::IFSelect_BasicDumper() {}
+IFSelect_BasicDumper::IFSelect_BasicDumper() = default;
 
 bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
                                     const occ::handle<Standard_Transient>& item) const

@@ -31,7 +31,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ViewTool, TDataStd_GenericEmpty, "
 
 //=================================================================================================
 
-XCAFDoc_ViewTool::XCAFDoc_ViewTool() {}
+XCAFDoc_ViewTool::XCAFDoc_ViewTool() = default;
 
 //=================================================================================================
 

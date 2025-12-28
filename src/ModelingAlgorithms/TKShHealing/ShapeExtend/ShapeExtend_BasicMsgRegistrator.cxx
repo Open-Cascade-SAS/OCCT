@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_BasicMsgRegistrator, Standard_Transient)
 
 //=================================================================================================
 
-ShapeExtend_BasicMsgRegistrator::ShapeExtend_BasicMsgRegistrator() {}
+ShapeExtend_BasicMsgRegistrator::ShapeExtend_BasicMsgRegistrator() = default;
 
 //=================================================================================================
 

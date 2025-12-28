@@ -18,7 +18,7 @@
 #include <StepGeom_PointOnSurface.hxx>
 #include <StepGeom_Surface.hxx>
 
-RWStepGeom_RWPointOnSurface::RWStepGeom_RWPointOnSurface() {}
+RWStepGeom_RWPointOnSurface::RWStepGeom_RWPointOnSurface() = default;
 
 void RWStepGeom_RWPointOnSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

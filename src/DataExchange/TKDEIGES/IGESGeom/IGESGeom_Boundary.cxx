@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Boundary, IGESData_IGESEntity)
 
-IGESGeom_Boundary::IGESGeom_Boundary() {}
+IGESGeom_Boundary::IGESGeom_Boundary() = default;
 
 void IGESGeom_Boundary::Init(
   const int                                                                 aType,

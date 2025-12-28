@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_QualifiedRepresentationItem, StepRepr_RepresentationItem)
 
-StepShape_QualifiedRepresentationItem::StepShape_QualifiedRepresentationItem() {}
+StepShape_QualifiedRepresentationItem::StepShape_QualifiedRepresentationItem() = default;
 
 void StepShape_QualifiedRepresentationItem::Init(
   const occ::handle<TCollection_HAsciiString>&                      aName,

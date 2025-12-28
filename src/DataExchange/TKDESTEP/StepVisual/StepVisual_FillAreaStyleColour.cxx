@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyleColour, Standard_Transient)
 
-StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour() {}
+StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour() = default;
 
 void StepVisual_FillAreaStyleColour::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                           const occ::handle<StepVisual_Colour>&        aFillColour)

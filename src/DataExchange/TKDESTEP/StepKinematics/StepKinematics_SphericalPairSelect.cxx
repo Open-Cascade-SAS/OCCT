@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect() {}
+StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect() = default;
 
 //=================================================================================================
 

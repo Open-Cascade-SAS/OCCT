@@ -27,7 +27,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <string.h>
+#include <cstring>
 #include <tcl.h>
 #include <fcntl.h>
 #ifndef _WIN32

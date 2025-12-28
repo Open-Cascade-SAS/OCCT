@@ -34,7 +34,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolRightAngularWedge::IGESSolid_ToolRightAngularWedge() {}
+IGESSolid_ToolRightAngularWedge::IGESSolid_ToolRightAngularWedge() = default;
 
 void IGESSolid_ToolRightAngularWedge::ReadOwnParams(
   const occ::handle<IGESSolid_RightAngularWedge>& ent,

@@ -38,9 +38,9 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESDefs_ToolAttributeDef::IGESDefs_ToolAttributeDef() {}
+IGESDefs_ToolAttributeDef::IGESDefs_ToolAttributeDef() = default;
 
 void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_AttributeDef>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

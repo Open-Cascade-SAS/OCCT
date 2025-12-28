@@ -35,7 +35,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_LayerTool, TDataStd_GenericEmpty, 
 
 //=================================================================================================
 
-XCAFDoc_LayerTool::XCAFDoc_LayerTool() {}
+XCAFDoc_LayerTool::XCAFDoc_LayerTool() = default;
 
 //=================================================================================================
 

@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurveElementLocation::RWStepFEA_RWCurveElementLocation() {}
+RWStepFEA_RWCurveElementLocation::RWStepFEA_RWCurveElementLocation() = default;
 
 //=================================================================================================
 

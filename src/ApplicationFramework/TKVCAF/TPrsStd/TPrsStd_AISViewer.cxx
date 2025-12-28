@@ -140,7 +140,7 @@ void TPrsStd_AISViewer::Update(const TDF_Label& acces)
 
 //=================================================================================================
 
-TPrsStd_AISViewer::TPrsStd_AISViewer() {}
+TPrsStd_AISViewer::TPrsStd_AISViewer() = default;
 
 //=================================================================================================
 

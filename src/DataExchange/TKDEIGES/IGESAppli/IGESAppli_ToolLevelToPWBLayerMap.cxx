@@ -35,7 +35,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-IGESAppli_ToolLevelToPWBLayerMap::IGESAppli_ToolLevelToPWBLayerMap() {}
+IGESAppli_ToolLevelToPWBLayerMap::IGESAppli_ToolLevelToPWBLayerMap() = default;
 
 void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
   const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,

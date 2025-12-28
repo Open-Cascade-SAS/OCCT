@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_TransitionalShapeRepresentation, StepShape_ShapeRepresentation)
 
-StepShape_TransitionalShapeRepresentation::StepShape_TransitionalShapeRepresentation() {}
+StepShape_TransitionalShapeRepresentation::StepShape_TransitionalShapeRepresentation() = default;

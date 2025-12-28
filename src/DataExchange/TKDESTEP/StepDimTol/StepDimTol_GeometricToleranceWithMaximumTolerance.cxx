@@ -25,8 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithMaximumTolerance,
 
 StepDimTol_GeometricToleranceWithMaximumTolerance::
   StepDimTol_GeometricToleranceWithMaximumTolerance()
-{
-}
+= default;
 
 //=================================================================================================
 

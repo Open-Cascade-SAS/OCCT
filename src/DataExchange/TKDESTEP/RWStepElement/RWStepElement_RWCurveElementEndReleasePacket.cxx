@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWCurveElementEndReleasePacket::RWStepElement_RWCurveElementEndReleasePacket() {}
+RWStepElement_RWCurveElementEndReleasePacket::RWStepElement_RWCurveElementEndReleasePacket() = default;
 
 //=================================================================================================
 

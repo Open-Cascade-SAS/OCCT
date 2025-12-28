@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWGearPairValue::RWStepKinematics_RWGearPairValue() {}
+RWStepKinematics_RWGearPairValue::RWStepKinematics_RWGearPairValue() = default;
 
 //=================================================================================================
 

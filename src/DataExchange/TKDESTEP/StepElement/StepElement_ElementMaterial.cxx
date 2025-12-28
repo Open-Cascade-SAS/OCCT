@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementMaterial, Standard_Transient)
 
 //=================================================================================================
 
-StepElement_ElementMaterial::StepElement_ElementMaterial() {}
+StepElement_ElementMaterial::StepElement_ElementMaterial() = default;
 
 //=================================================================================================
 

@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRollingSurfacePairValue::RWStepKinematics_RWRollingSurfacePairValue() {}
+RWStepKinematics_RWRollingSurfacePairValue::RWStepKinematics_RWRollingSurfacePairValue() = default;
 
 //=================================================================================================
 

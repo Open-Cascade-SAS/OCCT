@@ -78,7 +78,7 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <NCollection_List.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #define DRAW
 
@@ -166,13 +166,13 @@ static int nbedconnex(const NCollection_List<TopoDS_Shape>& L)
   for (; It1.More(); It1.Next(), i++)
   {
     const TopoDS_Shape&                      curs   = It1.Value();
-    bool                                     dejavu = 0;
+    bool                                     dejavu = false;
     NCollection_List<TopoDS_Shape>::Iterator It2(L);
     for (int j = 0; j < i && It2.More(); j++, It2.Next())
     {
       if (curs.IsSame(It2.Value()))
       {
-        dejavu = 1;
+        dejavu = true;
         break;
       }
     }
@@ -244,13 +244,13 @@ static bool IsObst(const ChFiDS_CommonPoint& CP, const TopoDS_Vertex& Vref, cons
 //=================================================================================================
 
 static void CompParam(const Geom2dAdaptor_Curve& Carc,
-                      occ::handle<Geom2d_Curve>  Ctg,
+                      const occ::handle<Geom2d_Curve>&  Ctg,
                       double&                    parc,
                       double&                    ptg,
                       const double               prefarc,
                       const double               preftg)
 {
-  bool found = 0;
+  bool found = false;
   //(1) It is checked if the provided parameters are good
   //    if pcurves have the same parameters as the spine.
   gp_Pnt2d point   = Carc.Value(prefarc);
@@ -298,7 +298,7 @@ static void CompParam(const Geom2dAdaptor_Curve& Carc,
             ptg   = p1;
             parc  = p2;
             dist  = std::abs(prefarc - p2);
-            found = 1;
+            found = true;
           }
         }
       }
@@ -606,7 +606,7 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   approx.Dump(std::cout);
 #endif
 
-  return StoreData(Data, approx, lin, S1, S2, Or, 0, 0, 0, 0, Reversed);
+  return StoreData(Data, approx, lin, S1, S2, Or, false, false, false, false, Reversed);
 }
 
 //=======================================================================
@@ -642,7 +642,7 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   approx.Dump(std::cout);
 #endif
 
-  return StoreData(Data, approx, lin, S1, S2, Or, 0, 0, 0, 0);
+  return StoreData(Data, approx, lin, S1, S2, Or, false, false, false, false);
 }
 
 //=======================================================================
@@ -975,25 +975,25 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
                           true,
-                          Data->ChangeVertex(1, ion1),
+                          Data->ChangeVertex(true, ion1),
                           tolC1);
   if (!Gf1 && !S1.IsNull())
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
                           false,
-                          Data->ChangeVertex(0, ion1),
+                          Data->ChangeVertex(false, ion1),
                           tolC1);
   if (!Gd2 && !S2.IsNull())
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
                           true,
-                          Data->ChangeVertex(1, ion2),
+                          Data->ChangeVertex(true, ion2),
                           tolC2);
   if (!Gf2 && !S2.IsNull())
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
                           false,
-                          Data->ChangeVertex(0, ion2),
+                          Data->ChangeVertex(false, ion2),
                           tolC2);
   // Parameters on ElSpine
   int nbp = lin->NbPoints();
@@ -1742,7 +1742,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   // Start of removal, 2D path controls
   // that qui s'accomodent mal des surfaces a parametrages non homogenes
   // en u et en v are extinguished.
-  TheWalk.Check2d(0);
+  TheWalk.Check2d(false);
 
   double MS = MaxStep;
   int    Nbpnt;
@@ -1840,7 +1840,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   // First the valid part is calculate, without caring for the extensions.
   //******************************************************************//
   int         again      = 0;
-  bool        tchernobyl = 0;
+  bool        tchernobyl = false;
   double      u1sov = 0., u2sov = 0.;
   TopoDS_Face bif;
   // Max step is relevant, but too great, the vector is required to detect
@@ -1936,7 +1936,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
         return false;
       }
       tchernobyl = true;
-      TheWalk.Check(0);
+      TheWalk.Check(false);
       if (Nbpnt == 1)
       {
 #ifdef OCCT_DEBUG
@@ -2018,13 +2018,13 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 
   double Rab = 0.03 * (SpLast - SpFirst);
 
-  bool debarc1 = 0, debarc2 = 0;
-  bool debcas1 = 0, debcas2 = 0;
-  bool debobst1 = 0, debobst2 = 0;
+  bool debarc1 = false, debarc2 = false;
+  bool debcas1 = false, debcas2 = false;
+  bool debobst1 = false, debobst2 = false;
 
-  bool finarc1 = 0, finarc2 = 0;
-  bool fincas1 = 0, fincas2 = 0;
-  bool finobst1 = 0, finobst2 = 0;
+  bool finarc1 = false, finarc2 = false;
+  bool fincas1 = false, fincas2 = false;
+  bool finobst1 = false, finobst2 = false;
 
   int narc1, narc2;
 
@@ -2049,7 +2049,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
         {
           if (Spine->IsPeriodic())
           {
-            debobst1 = 1;
+            debobst1 = true;
           }
           else
           {
@@ -2074,7 +2074,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
         {
           if (Spine->IsPeriodic())
           {
-            debobst2 = 1;
+            debobst2 = true;
           }
           else
           {

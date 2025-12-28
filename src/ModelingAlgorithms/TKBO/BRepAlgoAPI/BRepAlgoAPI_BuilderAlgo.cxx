@@ -23,7 +23,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
-    : BRepAlgoAPI_Algo(),
+    : 
       myNonDestructive(false),
       myGlue(BOPAlgo_GlueOff),
       myCheckInverted(true),
@@ -37,7 +37,7 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
 //=================================================================================================
 
 BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& aPF)
-    : BRepAlgoAPI_Algo(),
+    : 
       myNonDestructive(false),
       myGlue(BOPAlgo_GlueOff),
       myCheckInverted(true),

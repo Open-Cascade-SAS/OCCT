@@ -24,8 +24,7 @@
 
 StepKinematics_KinematicTopologyRepresentationSelect::
   StepKinematics_KinematicTopologyRepresentationSelect()
-{
-}
+= default;
 
 //=================================================================================================
 

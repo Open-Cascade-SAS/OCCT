@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWActionRequestSolution::RWStepBasic_RWActionRequestSolution() {}
+RWStepBasic_RWActionRequestSolution::RWStepBasic_RWActionRequestSolution() = default;
 
 //=================================================================================================
 

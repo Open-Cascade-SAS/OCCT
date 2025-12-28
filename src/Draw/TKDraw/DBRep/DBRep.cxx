@@ -43,7 +43,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // memory management
 #ifdef _WIN32
 extern Draw_Viewer dout;

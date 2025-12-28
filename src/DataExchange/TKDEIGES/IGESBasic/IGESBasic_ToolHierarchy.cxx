@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESBasic_ToolHierarchy::IGESBasic_ToolHierarchy() {}
+IGESBasic_ToolHierarchy::IGESBasic_ToolHierarchy() = default;
 
 void IGESBasic_ToolHierarchy::ReadOwnParams(const occ::handle<IGESBasic_Hierarchy>& ent,
                                             const occ::handle<IGESData_IGESReaderData>& /*IR*/,

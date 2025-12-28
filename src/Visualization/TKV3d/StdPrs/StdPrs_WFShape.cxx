@@ -75,7 +75,7 @@ public:
   }
 
 private:
-  StdPrs_WFShape_IsoFunctor operator=(StdPrs_WFShape_IsoFunctor&);
+  StdPrs_WFShape_IsoFunctor operator=(StdPrs_WFShape_IsoFunctor&) = delete;
 
 private:
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& myPolylinesU;

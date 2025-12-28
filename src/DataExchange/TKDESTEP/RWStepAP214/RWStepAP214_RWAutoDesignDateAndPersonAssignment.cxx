@@ -24,8 +24,7 @@
 #include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignDateAndPersonAssignment::RWStepAP214_RWAutoDesignDateAndPersonAssignment()
-{
-}
+= default;
 
 void RWStepAP214_RWAutoDesignDateAndPersonAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,

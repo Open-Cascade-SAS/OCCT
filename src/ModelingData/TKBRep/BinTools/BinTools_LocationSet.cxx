@@ -76,7 +76,7 @@ Standard_OStream& operator<<(Standard_OStream& OS, const gp_Trsf& T)
 
 //=================================================================================================
 
-BinTools_LocationSet::BinTools_LocationSet() {}
+BinTools_LocationSet::BinTools_LocationSet() = default;
 
 //=================================================================================================
 

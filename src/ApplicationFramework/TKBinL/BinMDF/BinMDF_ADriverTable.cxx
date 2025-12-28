@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriverTable, Standard_Transient)
 
 //=================================================================================================
 
-BinMDF_ADriverTable::BinMDF_ADriverTable() {}
+BinMDF_ADriverTable::BinMDF_ADriverTable() = default;
 
 //=======================================================================
 // function : AddDriver

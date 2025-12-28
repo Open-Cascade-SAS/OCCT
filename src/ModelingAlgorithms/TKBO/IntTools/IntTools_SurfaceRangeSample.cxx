@@ -16,7 +16,7 @@
 #include <IntTools_Range.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 
-IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample() {}
+IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample() = default;
 
 IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample(const int theIndexU,
                                                          const int theDepthU,

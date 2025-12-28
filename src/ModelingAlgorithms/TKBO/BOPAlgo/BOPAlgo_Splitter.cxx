@@ -21,7 +21,7 @@
 //=================================================================================================
 
 BOPAlgo_Splitter::BOPAlgo_Splitter()
-    : BOPAlgo_ToolsProvider()
+     
 {
 }
 
@@ -34,7 +34,7 @@ BOPAlgo_Splitter::BOPAlgo_Splitter(const occ::handle<NCollection_BaseAllocator>&
 
 //=================================================================================================
 
-BOPAlgo_Splitter::~BOPAlgo_Splitter() {}
+BOPAlgo_Splitter::~BOPAlgo_Splitter() = default;
 
 //=================================================================================================
 

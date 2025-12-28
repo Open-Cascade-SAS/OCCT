@@ -142,7 +142,7 @@ bool checkStreamWritability(Standard_OStream& theStream, const TCollection_Ascii
 
 //=================================================================================================
 
-DESTEP_Provider::DESTEP_Provider() {}
+DESTEP_Provider::DESTEP_Provider() = default;
 
 //=================================================================================================
 

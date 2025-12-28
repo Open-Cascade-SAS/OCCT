@@ -16,7 +16,7 @@
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <StepVisual_FillStyleSelect.hxx>
 
-StepVisual_FillStyleSelect::StepVisual_FillStyleSelect() {}
+StepVisual_FillStyleSelect::StepVisual_FillStyleSelect() = default;
 
 int StepVisual_FillStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

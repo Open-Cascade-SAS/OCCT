@@ -26,8 +26,8 @@
 #include <LDOM_CharReference.hxx>
 #include <LDOM_OSStream.hxx>
 
-#include <string.h>
-#include <errno.h>
+#include <cstring>
+#include <cerrno>
 #ifdef _MSC_VER
   #include <io.h>
 #else

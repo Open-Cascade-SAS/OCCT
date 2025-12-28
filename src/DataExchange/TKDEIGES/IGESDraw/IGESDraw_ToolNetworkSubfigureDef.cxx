@@ -33,7 +33,7 @@
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESDraw_ToolNetworkSubfigureDef::IGESDraw_ToolNetworkSubfigureDef() {}
+IGESDraw_ToolNetworkSubfigureDef::IGESDraw_ToolNetworkSubfigureDef() = default;
 
 void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
   const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,

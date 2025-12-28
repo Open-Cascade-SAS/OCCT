@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes, Standard_Transient)
 
 //=================================================================================================
 
-BRepAlgo_AsDes::BRepAlgo_AsDes() {}
+BRepAlgo_AsDes::BRepAlgo_AsDes() = default;
 
 //=================================================================================================
 

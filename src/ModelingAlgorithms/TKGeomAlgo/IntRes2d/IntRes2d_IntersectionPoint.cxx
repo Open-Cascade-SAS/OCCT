@@ -18,10 +18,9 @@
 #include <IntRes2d_Transition.hxx>
 
 IntRes2d_IntersectionPoint::IntRes2d_IntersectionPoint()
-    : pt(),
+    : 
       p1(RealLast()),
-      p2(RealLast()),
-      trans1(),
-      trans2()
+      p2(RealLast())
+      
 {
 }

@@ -31,7 +31,7 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 #include <StepVisual_MarkerMember.hxx>
 #include <StepVisual_MarkerSelect.hxx>
 
-StepVisual_MarkerSelect::StepVisual_MarkerSelect() {}
+StepVisual_MarkerSelect::StepVisual_MarkerSelect() = default;
 
 int StepVisual_MarkerSelect::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {

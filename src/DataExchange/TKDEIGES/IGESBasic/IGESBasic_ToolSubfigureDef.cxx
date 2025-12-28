@@ -37,7 +37,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 // MGE 03/08/98
-IGESBasic_ToolSubfigureDef::IGESBasic_ToolSubfigureDef() {}
+IGESBasic_ToolSubfigureDef::IGESBasic_ToolSubfigureDef() = default;
 
 void IGESBasic_ToolSubfigureDef::ReadOwnParams(const occ::handle<IGESBasic_SubfigureDef>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

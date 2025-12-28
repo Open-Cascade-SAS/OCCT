@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue, Standard_Transient)
 
-StepShape_ToleranceValue::StepShape_ToleranceValue() {}
+StepShape_ToleranceValue::StepShape_ToleranceValue() = default;
 
 void StepShape_ToleranceValue::Init(const occ::handle<Standard_Transient>& lower_bound,
                                     const occ::handle<Standard_Transient>& upper_bound)

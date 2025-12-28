@@ -19,7 +19,7 @@
 #include <StepVisual_PresentationArea.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
-RWStepVisual_RWAreaInSet::RWStepVisual_RWAreaInSet() {}
+RWStepVisual_RWAreaInSet::RWStepVisual_RWAreaInSet() = default;
 
 void RWStepVisual_RWAreaInSet::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

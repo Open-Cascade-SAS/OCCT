@@ -26,8 +26,7 @@
 
 RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::
   RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface()
-{
-}
+= default;
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,

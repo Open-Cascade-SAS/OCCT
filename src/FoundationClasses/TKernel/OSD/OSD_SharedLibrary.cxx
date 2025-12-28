@@ -18,7 +18,7 @@
   #include <OSD_LoadMode.hxx>
   #include <OSD_SharedLibrary.hxx>
 
-  #include <stdio.h>
+  #include <cstdio>
   #include <cstring>
 
   #ifdef __some_crappy_system__

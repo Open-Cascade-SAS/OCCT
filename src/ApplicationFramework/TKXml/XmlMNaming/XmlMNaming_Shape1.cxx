@@ -21,7 +21,7 @@
 #include <XmlMNaming_Shape1.hxx>
 #include <XmlObjMgt.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_DOMSTRING(TShapeString, "tshape")
 IMPLEMENT_DOMSTRING(LocationString, "location")
 

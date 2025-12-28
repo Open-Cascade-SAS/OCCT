@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Material, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFDoc_Material::XCAFDoc_Material() {}
+XCAFDoc_Material::XCAFDoc_Material() = default;
 
 //=================================================================================================
 

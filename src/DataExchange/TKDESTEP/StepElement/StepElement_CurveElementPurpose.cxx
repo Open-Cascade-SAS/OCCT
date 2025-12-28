@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepElement_CurveElementPurpose::StepElement_CurveElementPurpose() {}
+StepElement_CurveElementPurpose::StepElement_CurveElementPurpose() = default;
 
 //=================================================================================================
 

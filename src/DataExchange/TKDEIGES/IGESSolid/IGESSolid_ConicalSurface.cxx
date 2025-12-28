@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ConicalSurface, IGESData_IGESEntity)
 
-IGESSolid_ConicalSurface::IGESSolid_ConicalSurface() {}
+IGESSolid_ConicalSurface::IGESSolid_ConicalSurface() = default;
 
 void IGESSolid_ConicalSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
                                     const occ::handle<IGESGeom_Direction>& anAxis,

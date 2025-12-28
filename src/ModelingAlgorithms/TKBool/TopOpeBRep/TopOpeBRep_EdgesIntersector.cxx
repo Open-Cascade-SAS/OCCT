@@ -130,7 +130,7 @@ TopOpeBRep_EdgesIntersector::TopOpeBRep_EdgesIntersector()
   myselectkeep    = true;
 }
 
-TopOpeBRep_EdgesIntersector::~TopOpeBRep_EdgesIntersector() {}
+TopOpeBRep_EdgesIntersector::~TopOpeBRep_EdgesIntersector() = default;
 
 //=================================================================================================
 

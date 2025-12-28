@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepGeom_RWCurveBoundedSurface::RWStepGeom_RWCurveBoundedSurface() {}
+RWStepGeom_RWCurveBoundedSurface::RWStepGeom_RWCurveBoundedSurface() = default;
 
 //=================================================================================================
 

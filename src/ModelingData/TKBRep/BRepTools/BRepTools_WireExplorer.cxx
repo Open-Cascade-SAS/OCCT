@@ -717,10 +717,10 @@ bool SelectDouble(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Double
     {
       E = TopoDS::Edge(CE);
       L.Remove(it);
-      return 1;
+      return true;
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -736,12 +736,12 @@ bool SelectDegenerated(NCollection_List<TopoDS_Shape>& L, TopoDS_Edge& E)
       if (BRep_Tool::Degenerated(E))
       {
         L.Remove(it);
-        return 1;
+        return true;
       }
     }
     it.Next();
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================

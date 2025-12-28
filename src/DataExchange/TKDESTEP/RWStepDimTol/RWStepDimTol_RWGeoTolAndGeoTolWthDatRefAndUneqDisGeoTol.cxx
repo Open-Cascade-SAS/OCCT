@@ -29,8 +29,7 @@
 
 RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::
   RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol()
-{
-}
+= default;
 
 //=================================================================================================
 

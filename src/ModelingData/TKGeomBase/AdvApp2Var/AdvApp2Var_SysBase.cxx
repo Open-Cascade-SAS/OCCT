@@ -12,10 +12,10 @@
 // commercial license or contractual agreement.
 
 // AdvApp2Var_SysBase.cxx
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <NCollection_Array1.hxx>
-#include <string.h>
+#include <cstring>
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_Data.hxx>
 #include <Standard.hxx>

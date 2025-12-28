@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_BooleanTree, IGESData_IGESEntity)
 
-IGESSolid_BooleanTree::IGESSolid_BooleanTree() {}
+IGESSolid_BooleanTree::IGESSolid_BooleanTree() = default;
 
 void IGESSolid_BooleanTree::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& operands,

@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Shell, IGESData_IGESEntity)
 
-IGESSolid_Shell::IGESSolid_Shell() {}
+IGESSolid_Shell::IGESSolid_Shell() = default;
 
 void IGESSolid_Shell::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>& Faces,

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWGeneralPropertyRelationship::RWStepBasic_RWGeneralPropertyRelationship() {}
+RWStepBasic_RWGeneralPropertyRelationship::RWStepBasic_RWGeneralPropertyRelationship() = default;
 
 //=================================================================================================
 

@@ -18,7 +18,7 @@
 #include <StepGeom_OffsetSurface.hxx>
 #include <StepGeom_Surface.hxx>
 
-RWStepGeom_RWOffsetSurface::RWStepGeom_RWOffsetSurface() {}
+RWStepGeom_RWOffsetSurface::RWStepGeom_RWOffsetSurface() = default;
 
 void RWStepGeom_RWOffsetSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

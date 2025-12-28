@@ -19,7 +19,7 @@
 #include <StepGeom_CartesianTransformationOperator.hxx>
 #include <StepGeom_Direction.hxx>
 
-RWStepGeom_RWCartesianTransformationOperator::RWStepGeom_RWCartesianTransformationOperator() {}
+RWStepGeom_RWCartesianTransformationOperator::RWStepGeom_RWCartesianTransformationOperator() = default;
 
 void RWStepGeom_RWCartesianTransformationOperator::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

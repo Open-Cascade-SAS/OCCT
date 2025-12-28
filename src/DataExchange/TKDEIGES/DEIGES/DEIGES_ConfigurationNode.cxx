@@ -32,7 +32,7 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEIGES_ConfigurationNode::DEIGES_ConfigurationNode()
-    : DE_ShapeFixConfigurationNode()
+     
 {
   DE_ShapeFixConfigurationNode::ShapeFixParameters =
     DEIGES_Parameters::GetDefaultShapeFixParameters();

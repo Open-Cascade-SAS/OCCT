@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_Volume3dElementDescriptor, StepElement_El
 
 //=================================================================================================
 
-StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor() {}
+StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor() = default;
 
 //=================================================================================================
 

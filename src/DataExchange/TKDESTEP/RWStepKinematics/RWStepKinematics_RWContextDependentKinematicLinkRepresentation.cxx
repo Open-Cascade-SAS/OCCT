@@ -27,8 +27,7 @@
 
 RWStepKinematics_RWContextDependentKinematicLinkRepresentation::
   RWStepKinematics_RWContextDependentKinematicLinkRepresentation()
-{
-}
+= default;
 
 //=================================================================================================
 

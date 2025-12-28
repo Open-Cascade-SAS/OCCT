@@ -42,11 +42,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Dumper, IFSelect_SessionDumper)
 
 // #include <IGESSelect_SelectIGESTypeForm.hxx>
-IGESSelect_Dumper::IGESSelect_Dumper() {}
+IGESSelect_Dumper::IGESSelect_Dumper() = default;
 
 bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
                                  const occ::handle<Standard_Transient>& item) const

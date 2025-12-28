@@ -21,7 +21,7 @@
 
 #include "RWStepVisual_RWTextPath.pxx"
 
-RWStepVisual_RWTextLiteral::RWStepVisual_RWTextLiteral() {}
+RWStepVisual_RWTextLiteral::RWStepVisual_RWTextLiteral() = default;
 
 void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

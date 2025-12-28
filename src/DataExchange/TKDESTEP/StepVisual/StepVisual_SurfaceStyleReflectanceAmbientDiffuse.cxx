@@ -19,8 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleReflectanceAmbientDiffuse,
 //=================================================================================================
 
 StepVisual_SurfaceStyleReflectanceAmbientDiffuse::StepVisual_SurfaceStyleReflectanceAmbientDiffuse()
-{
-}
+= default;
 
 //=================================================================================================
 

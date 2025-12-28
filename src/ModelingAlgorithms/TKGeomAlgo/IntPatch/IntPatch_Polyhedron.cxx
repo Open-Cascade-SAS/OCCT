@@ -25,7 +25,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #define MSG_DEBUG 0
 
 #define LONGUEUR_MINI_EDGE_TRIANGLE 1e-14

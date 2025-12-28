@@ -36,7 +36,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDimen_ToolWitnessLine::IGESDimen_ToolWitnessLine() {}
+IGESDimen_ToolWitnessLine::IGESDimen_ToolWitnessLine() = default;
 
 void IGESDimen_ToolWitnessLine::ReadOwnParams(const occ::handle<IGESDimen_WitnessLine>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /* IR */,

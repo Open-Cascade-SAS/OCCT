@@ -21,7 +21,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWDocumentRelationship::RWStepBasic_RWDocumentRelationship() {}
+RWStepBasic_RWDocumentRelationship::RWStepBasic_RWDocumentRelationship() = default;
 
 void RWStepBasic_RWDocumentRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

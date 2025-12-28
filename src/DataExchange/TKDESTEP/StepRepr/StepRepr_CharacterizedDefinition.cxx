@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-StepRepr_CharacterizedDefinition::StepRepr_CharacterizedDefinition() {}
+StepRepr_CharacterizedDefinition::StepRepr_CharacterizedDefinition() = default;
 
 //=================================================================================================
 

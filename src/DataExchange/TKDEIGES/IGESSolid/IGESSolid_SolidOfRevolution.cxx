@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 
-IGESSolid_SolidOfRevolution::IGESSolid_SolidOfRevolution() {}
+IGESSolid_SolidOfRevolution::IGESSolid_SolidOfRevolution() = default;
 
 void IGESSolid_SolidOfRevolution::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
                                        const double                            Fract,

@@ -641,7 +641,7 @@ static bool TangentOnVertex(const TopoDS_Vertex& V,
   TopoDS_Face ff1, ff2;
   ChFi3d_conexfaces(E, ff1, ff2, EFMap);
   if (ff1.IsNull() || ff2.IsNull())
-    return 0;
+    return false;
   occ::handle<BRepAdaptor_Surface> S1 = new (BRepAdaptor_Surface)(ff1);
   occ::handle<BRepAdaptor_Surface> S2 = new (BRepAdaptor_Surface)(ff2);
   return TangentExtremity(V, E, S1, S2, tang);
@@ -824,16 +824,16 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
   TopoDS_Vertex                            Ve1, VStart, FVEc, LVEc, FVEv, LVEv;
   TopoDS_Edge                              Ev, Ec(Spine->Edges(1));
   if (BRep_Tool::Degenerated(Ec))
-    return 0;
+    return false;
   // it is checked if the edge is a cut edge
   TopoDS_Face ff1, ff2;
   ChFi3d_conexfaces(Ec, ff1, ff2, myEFMap);
   if (ff1.IsNull() || ff2.IsNull())
-    return 0;
+    return false;
   //  Modified by Sergey KHROMOV - Fri Dec 21 17:46:22 2001 End
   // if(BRep_Tool::Continuity(Ec,ff1,ff2) != GeomAbs_C0) return 0;
   if (ChFi3d::IsTangentFaces(Ec, ff1, ff2))
-    return 0;
+    return false;
   //  Modified by Sergey KHROMOV - Fri Dec 21 17:46:24 2001 Begin
 
   TopoDS_Face FirstFace = ff1;
@@ -1082,7 +1082,7 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
       Spine->SetFirstStatus(CurSt);
     }
   }
-  return 1;
+  return true;
 }
 
 //=================================================================================================

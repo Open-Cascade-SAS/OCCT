@@ -38,7 +38,7 @@
 #include <NCollection_List.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 //
 //
 static BOPAlgo_PaveFiller* pPF = nullptr;

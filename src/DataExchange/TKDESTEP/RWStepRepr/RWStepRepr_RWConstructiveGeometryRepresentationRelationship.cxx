@@ -22,8 +22,7 @@
 
 RWStepRepr_RWConstructiveGeometryRepresentationRelationship::
   RWStepRepr_RWConstructiveGeometryRepresentationRelationship()
-{
-}
+= default;
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                 data,

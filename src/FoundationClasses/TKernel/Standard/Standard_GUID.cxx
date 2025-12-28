@@ -16,7 +16,7 @@
 #include <Standard_IStream.hxx>
 #include <Standard_RangeError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // Fixes incorrect treatment of GUID given as a string with invalid format
 

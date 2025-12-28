@@ -45,7 +45,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // + edge, face
 // + edgeregul/updtol

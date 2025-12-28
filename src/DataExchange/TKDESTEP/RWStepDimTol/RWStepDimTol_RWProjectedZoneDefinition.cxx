@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWProjectedZoneDefinition::RWStepDimTol_RWProjectedZoneDefinition() {}
+RWStepDimTol_RWProjectedZoneDefinition::RWStepDimTol_RWProjectedZoneDefinition() = default;
 
 //=================================================================================================
 

@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedItem::RWStepVisual_RWTessellatedItem() {}
+RWStepVisual_RWTessellatedItem::RWStepVisual_RWTessellatedItem() = default;
 
 //=================================================================================================
 

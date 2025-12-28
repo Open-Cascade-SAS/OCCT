@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_UncertaintyMeasureWithUnit, StepBasic_Measu
 
 //=================================================================================================
 
-StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit() {}
+StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit() = default;
 
 //=================================================================================================
 

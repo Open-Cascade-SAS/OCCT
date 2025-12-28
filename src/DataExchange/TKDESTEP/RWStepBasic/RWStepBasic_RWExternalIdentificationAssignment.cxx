@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWExternalIdentificationAssignment::RWStepBasic_RWExternalIdentificationAssignment() {}
+RWStepBasic_RWExternalIdentificationAssignment::RWStepBasic_RWExternalIdentificationAssignment() = default;
 
 //=================================================================================================
 

@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWDocumentProductAssociation::RWStepBasic_RWDocumentProductAssociation() {}
+RWStepBasic_RWDocumentProductAssociation::RWStepBasic_RWDocumentProductAssociation() = default;
 
 //=================================================================================================
 

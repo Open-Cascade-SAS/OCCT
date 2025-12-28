@@ -155,7 +155,7 @@ static bool Arrange(const occ::handle<Geom_BezierCurve>& C1,
 
 //=================================================================================================
 
-GeomFill_BezierCurves::GeomFill_BezierCurves() {}
+GeomFill_BezierCurves::GeomFill_BezierCurves() = default;
 
 //=================================================================================================
 

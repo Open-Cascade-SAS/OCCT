@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationPlane, StepVisual_AnnotationOccu
 
 //=================================================================================================
 
-StepVisual_AnnotationPlane::StepVisual_AnnotationPlane() {}
+StepVisual_AnnotationPlane::StepVisual_AnnotationPlane() = default;
 
 //=================================================================================================
 

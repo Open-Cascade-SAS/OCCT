@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPair, StepKinematics_
 
 //=================================================================================================
 
-StepKinematics_LowOrderKinematicPair::StepKinematics_LowOrderKinematicPair() {}
+StepKinematics_LowOrderKinematicPair::StepKinematics_LowOrderKinematicPair() = default;
 
 //=================================================================================================
 

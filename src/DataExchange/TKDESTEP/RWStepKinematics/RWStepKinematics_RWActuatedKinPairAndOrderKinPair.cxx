@@ -44,8 +44,7 @@
 
 RWStepKinematics_RWActuatedKinPairAndOrderKinPair::
   RWStepKinematics_RWActuatedKinPairAndOrderKinPair()
-{
-}
+= default;
 
 //=================================================================================================
 

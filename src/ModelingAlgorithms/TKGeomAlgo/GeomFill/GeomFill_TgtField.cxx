@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TgtField, Standard_Transient)
 
 bool GeomFill_TgtField::IsScalable() const
 {
-  return 0;
+  return false;
 }
 
 //=================================================================================================

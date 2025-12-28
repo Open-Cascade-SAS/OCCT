@@ -24,7 +24,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerOne, IFSelect_Dispatch)
 
 //  Generates one packet per root (strong comp.) local to the transmitted list
-IFSelect_DispPerOne::IFSelect_DispPerOne() {}
+IFSelect_DispPerOne::IFSelect_DispPerOne() = default;
 
 TCollection_AsciiString IFSelect_DispPerOne::Label() const
 {

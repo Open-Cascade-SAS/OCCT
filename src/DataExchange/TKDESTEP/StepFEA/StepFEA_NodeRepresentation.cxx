@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeRepresentation, StepRepr_Representation)
 
 //=================================================================================================
 
-StepFEA_NodeRepresentation::StepFEA_NodeRepresentation() {}
+StepFEA_NodeRepresentation::StepFEA_NodeRepresentation() = default;
 
 //=================================================================================================
 

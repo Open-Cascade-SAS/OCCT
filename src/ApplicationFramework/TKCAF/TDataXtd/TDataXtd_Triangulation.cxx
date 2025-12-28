@@ -65,7 +65,7 @@ occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(
 //           use please the static method Set(),
 //           which returns the attribute attached to a label.
 //=======================================================================
-TDataXtd_Triangulation::TDataXtd_Triangulation() {}
+TDataXtd_Triangulation::TDataXtd_Triangulation() = default;
 
 //=======================================================================
 // function : TDataXtd_Triangulation

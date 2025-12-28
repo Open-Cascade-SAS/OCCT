@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESGraph_ToolDrawingSize::IGESGraph_ToolDrawingSize() {}
+IGESGraph_ToolDrawingSize::IGESGraph_ToolDrawingSize() = default;
 
 void IGESGraph_ToolDrawingSize::ReadOwnParams(const occ::handle<IGESGraph_DrawingSize>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /*IR*/,

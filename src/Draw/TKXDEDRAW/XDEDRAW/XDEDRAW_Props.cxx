@@ -56,7 +56,7 @@
 #include <XCAFDoc_Volume.hxx>
 #include <XDEDRAW_Props.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // --------------------- VolumeFix Begin ---
 //=================================================================================================

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationReference, Standard_Transient)
 
 //=================================================================================================
 
-StepRepr_RepresentationReference::StepRepr_RepresentationReference() {}
+StepRepr_RepresentationReference::StepRepr_RepresentationReference() = default;
 
 //=================================================================================================
 

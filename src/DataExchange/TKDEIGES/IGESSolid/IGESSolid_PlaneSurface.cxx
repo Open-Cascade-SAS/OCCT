@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_PlaneSurface, IGESData_IGESEntity)
 
-IGESSolid_PlaneSurface::IGESSolid_PlaneSurface() {}
+IGESSolid_PlaneSurface::IGESSolid_PlaneSurface() = default;
 
 void IGESSolid_PlaneSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
                                   const occ::handle<IGESGeom_Direction>& aNormal,

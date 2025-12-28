@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthMaxTol, StepDimTol_GeoTo
 
 //=================================================================================================
 
-StepDimTol_GeoTolAndGeoTolWthMaxTol::StepDimTol_GeoTolAndGeoTolWthMaxTol() {}
+StepDimTol_GeoTolAndGeoTolWthMaxTol::StepDimTol_GeoTolAndGeoTolWthMaxTol() = default;
 
 //=================================================================================================
 

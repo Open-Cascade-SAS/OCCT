@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureBuffer, OpenGl_Buffer)
 //=================================================================================================
 
 OpenGl_TextureBuffer::OpenGl_TextureBuffer()
-    : OpenGl_Buffer(),
+    : 
       myTextureId(NO_TEXTURE),
       myTexFormat(GL_RGBA32F)
 {

@@ -16,7 +16,7 @@
 
 #include <MeshTest.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -1063,9 +1063,9 @@ static int veriftriangles(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  bool quiet = 1;
+  bool quiet = true;
   if (n == 3)
-    quiet = 0;
+    quiet = false;
   TopoDS_Shape Sh = DBRep::Get(a[1]);
   if (Sh.IsNull())
     return 1;

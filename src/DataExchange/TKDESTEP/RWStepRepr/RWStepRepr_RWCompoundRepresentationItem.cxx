@@ -22,7 +22,7 @@
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem() {}
+RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem() = default;
 
 void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,

@@ -37,7 +37,7 @@
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <UnitsMethods.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // Section: Work with shapes

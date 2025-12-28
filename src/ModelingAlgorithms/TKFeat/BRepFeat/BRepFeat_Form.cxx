@@ -778,7 +778,7 @@ void BRepFeat_Form::GlobalPerform()
     //
 
     //--- generation of "just feature" for assembly = Parts of tool
-    bool             bFlag = (myPerfSelection == BRepFeat_NoSelection) ? 0 : 1;
+    bool             bFlag = (myPerfSelection == BRepFeat_NoSelection) ? false : true;
     BRepFeat_Builder theBuilder;
     theBuilder.Init(mySbase, theGShape);
     theBuilder.SetOperation(myFuse, bFlag);

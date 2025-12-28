@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWSurfaceProfileTolerance::RWStepDimTol_RWSurfaceProfileTolerance() {}
+RWStepDimTol_RWSurfaceProfileTolerance::RWStepDimTol_RWSurfaceProfileTolerance() = default;
 
 //=================================================================================================
 

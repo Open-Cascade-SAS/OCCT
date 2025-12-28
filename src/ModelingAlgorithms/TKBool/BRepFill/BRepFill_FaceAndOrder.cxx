@@ -18,7 +18,7 @@
 #include <BRepFill_Filling.hxx>
 #include <TopoDS_Face.hxx>
 
-BRepFill_FaceAndOrder::BRepFill_FaceAndOrder() {}
+BRepFill_FaceAndOrder::BRepFill_FaceAndOrder() = default;
 
 BRepFill_FaceAndOrder::BRepFill_FaceAndOrder(const TopoDS_Face& aFace, const GeomAbs_Shape anOrder)
 {

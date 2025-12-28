@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ColourSpecification, StepVisual_Colour)
 
-StepVisual_ColourSpecification::StepVisual_ColourSpecification() {}
+StepVisual_ColourSpecification::StepVisual_ColourSpecification() = default;
 
 void StepVisual_ColourSpecification::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {

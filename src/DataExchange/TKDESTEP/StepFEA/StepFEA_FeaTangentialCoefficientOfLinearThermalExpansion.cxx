@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaTangentialCoefficientOfLinearThermalExpans
 
 StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::
   StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion()
-{
-}
+= default;
 
 //=================================================================================================
 

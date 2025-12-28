@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible, IGESData_ViewKindEntity)
 
-IGESDraw_SegmentedViewsVisible::IGESDraw_SegmentedViewsVisible() {}
+IGESDraw_SegmentedViewsVisible::IGESDraw_SegmentedViewsVisible() = default;
 
 void IGESDraw_SegmentedViewsVisible::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,

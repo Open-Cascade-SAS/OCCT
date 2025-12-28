@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit, StepBasic_Nam
 
 //=================================================================================================
 
-StepBasic_ThermodynamicTemperatureUnit::StepBasic_ThermodynamicTemperatureUnit() {}
+StepBasic_ThermodynamicTemperatureUnit::StepBasic_ThermodynamicTemperatureUnit() = default;

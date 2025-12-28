@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWDocumentProductEquivalence::RWStepBasic_RWDocumentProductEquivalence() {}
+RWStepBasic_RWDocumentProductEquivalence::RWStepBasic_RWDocumentProductEquivalence() = default;
 
 //=================================================================================================
 

@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent, Standard_Transient)
 
-STEPSelections_AssemblyComponent::STEPSelections_AssemblyComponent() {}
+STEPSelections_AssemblyComponent::STEPSelections_AssemblyComponent() = default;
 
 STEPSelections_AssemblyComponent::STEPSelections_AssemblyComponent(
   const occ::handle<StepShape_ShapeDefinitionRepresentation>&                         sdr,

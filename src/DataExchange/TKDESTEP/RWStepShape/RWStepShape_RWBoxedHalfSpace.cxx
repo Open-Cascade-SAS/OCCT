@@ -19,7 +19,7 @@
 #include <StepShape_BoxDomain.hxx>
 #include <StepShape_BoxedHalfSpace.hxx>
 
-RWStepShape_RWBoxedHalfSpace::RWStepShape_RWBoxedHalfSpace() {}
+RWStepShape_RWBoxedHalfSpace::RWStepShape_RWBoxedHalfSpace() = default;
 
 void RWStepShape_RWBoxedHalfSpace::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureQualification, Standard_Transient)
 
-StepShape_MeasureQualification::StepShape_MeasureQualification() {}
+StepShape_MeasureQualification::StepShape_MeasureQualification() = default;
 
 void StepShape_MeasureQualification::Init(
   const occ::handle<TCollection_HAsciiString>&                      name,

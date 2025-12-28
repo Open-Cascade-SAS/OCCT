@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TFunction_Driver, Standard_Transient)
 
 //=================================================================================================
 
-TFunction_Driver::TFunction_Driver() {}
+TFunction_Driver::TFunction_Driver() = default;
 
 //=================================================================================================
 

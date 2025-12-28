@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_GearPairValue, StepKinematics_PairValu
 
 //=================================================================================================
 
-StepKinematics_GearPairValue::StepKinematics_GearPairValue() {}
+StepKinematics_GearPairValue::StepKinematics_GearPairValue() = default;
 
 //=================================================================================================
 

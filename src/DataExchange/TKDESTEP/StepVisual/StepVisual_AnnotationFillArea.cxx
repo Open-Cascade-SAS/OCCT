@@ -19,4 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationFillArea, StepShape_GeometricCur
 
 //=================================================================================================
 
-StepVisual_AnnotationFillArea::StepVisual_AnnotationFillArea() {}
+StepVisual_AnnotationFillArea::StepVisual_AnnotationFillArea() = default;

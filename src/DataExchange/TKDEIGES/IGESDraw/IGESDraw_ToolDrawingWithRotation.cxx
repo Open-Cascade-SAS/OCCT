@@ -38,7 +38,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDraw_ToolDrawingWithRotation::IGESDraw_ToolDrawingWithRotation() {}
+IGESDraw_ToolDrawingWithRotation::IGESDraw_ToolDrawingWithRotation() = default;
 
 void IGESDraw_ToolDrawingWithRotation::ReadOwnParams(
   const occ::handle<IGESDraw_DrawingWithRotation>& ent,

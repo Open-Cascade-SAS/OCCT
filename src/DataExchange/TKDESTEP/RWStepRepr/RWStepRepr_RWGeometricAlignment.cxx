@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWGeometricAlignment::RWStepRepr_RWGeometricAlignment() {}
+RWStepRepr_RWGeometricAlignment::RWStepRepr_RWGeometricAlignment() = default;
 
 //=================================================================================================
 

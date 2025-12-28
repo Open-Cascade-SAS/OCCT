@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShellBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
-StepShape_ShellBasedSurfaceModel::StepShape_ShellBasedSurfaceModel() {}
+StepShape_ShellBasedSurfaceModel::StepShape_ShellBasedSurfaceModel() = default;
 
 void StepShape_ShellBasedSurfaceModel::Init(
   const occ::handle<TCollection_HAsciiString>&             aName,

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectIntersection, IFSelect_SelectCombine)
 
-IFSelect_SelectIntersection::IFSelect_SelectIntersection() {}
+IFSelect_SelectIntersection::IFSelect_SelectIntersection() = default;
 
 Interface_EntityIterator IFSelect_SelectIntersection::RootResult(const Interface_Graph& G) const
 {

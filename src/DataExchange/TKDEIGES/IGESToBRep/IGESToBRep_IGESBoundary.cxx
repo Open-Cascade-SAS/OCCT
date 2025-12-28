@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_IGESBoundary, Standard_Transient)
 
 //=================================================================================================
 
-IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary() {}
+IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary() = default;
 
 //=================================================================================================
 

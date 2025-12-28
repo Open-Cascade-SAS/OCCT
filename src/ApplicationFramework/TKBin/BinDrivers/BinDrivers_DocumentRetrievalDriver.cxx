@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver, BinLDrivers_Docum
 
 //=================================================================================================
 
-BinDrivers_DocumentRetrievalDriver::BinDrivers_DocumentRetrievalDriver() {}
+BinDrivers_DocumentRetrievalDriver::BinDrivers_DocumentRetrievalDriver() = default;
 
 //=================================================================================================
 

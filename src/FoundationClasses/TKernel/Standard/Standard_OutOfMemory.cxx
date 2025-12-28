@@ -20,7 +20,7 @@
 #endif
 
 #include <algorithm>
-#include <stdlib.h>
+#include <cstdlib>
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
 

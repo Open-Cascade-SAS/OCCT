@@ -19,7 +19,7 @@
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 
-RWStepVisual_RWInvisibility::RWStepVisual_RWInvisibility() {}
+RWStepVisual_RWInvisibility::RWStepVisual_RWInvisibility() = default;
 
 void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

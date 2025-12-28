@@ -18,7 +18,7 @@
 #include <StepShape_OrientedEdge.hxx>
 #include <StepShape_Vertex.hxx>
 
-RWStepShape_RWOrientedEdge::RWStepShape_RWOrientedEdge() {}
+RWStepShape_RWOrientedEdge::RWStepShape_RWOrientedEdge() = default;
 
 void RWStepShape_RWOrientedEdge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

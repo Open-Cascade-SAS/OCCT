@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePair,
 
 //=================================================================================================
 
-StepKinematics_PointOnPlanarCurvePair::StepKinematics_PointOnPlanarCurvePair() {}
+StepKinematics_PointOnPlanarCurvePair::StepKinematics_PointOnPlanarCurvePair() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() {}
+RWStepFEA_RWFeaMassDensity::RWStepFEA_RWFeaMassDensity() = default;
 
 //=================================================================================================
 

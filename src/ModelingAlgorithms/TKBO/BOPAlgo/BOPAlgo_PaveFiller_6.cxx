@@ -141,7 +141,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceFace()
-      : IntTools_FaceFace(),
+      : 
         BOPAlgo_ParallelAlgo(),
         myIF1(-1),
         myIF2(-1),
@@ -150,7 +150,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_FaceFace() {}
+  ~BOPAlgo_FaceFace() override = default;
 
   //
   void SetIndices(const int nF1, const int nF2)
@@ -199,7 +199,7 @@ public:
   const gp_Trsf& Trsf() const { return myTrsf; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

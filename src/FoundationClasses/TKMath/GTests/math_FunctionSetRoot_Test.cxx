@@ -28,18 +28,18 @@ const double TOLERANCE = 1.0e-6;
 class LinearSystem2D : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual int NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  virtual int NbEquations() const override { return 2; }
+  int NbEquations() const override { return 2; }
 
-  virtual bool Value(const math_Vector& X, math_Vector& F) override
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = 2.0 * X(1) + X(2) - 5.0; // 2x + y - 5 = 0
     F(2) = X(1) + 2.0 * X(2) - 4.0; // x + 2y - 4 = 0
     return true;
   }
 
-  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
+  bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 2.0;
     D(1, 2) = 1.0;
@@ -48,7 +48,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
@@ -61,18 +61,18 @@ public:
 class NonlinearSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual int NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  virtual int NbEquations() const override { return 2; }
+  int NbEquations() const override { return 2; }
 
-  virtual bool Value(const math_Vector& X, math_Vector& F) override
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) * X(1) + X(2) * X(2) - 5.0; // x^2 + y^2 - 5 = 0
     F(2) = X(1) * X(2) - 2.0;               // xy - 2 = 0
     return true;
   }
 
-  virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override
   {
     D(1, 1) = 2.0 * X(1);
     D(1, 2) = 2.0 * X(2);
@@ -81,7 +81,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
@@ -94,23 +94,23 @@ public:
 class SingleVariableSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual int NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
-  virtual int NbEquations() const override { return 1; }
+  int NbEquations() const override { return 1; }
 
-  virtual bool Value(const math_Vector& X, math_Vector& F) override
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) * X(1) - 4.0;
     return true;
   }
 
-  virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override
   {
     D(1, 1) = 2.0 * X(1);
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
@@ -123,11 +123,11 @@ public:
 class OverdeterminedSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual int NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  virtual int NbEquations() const override { return 3; }
+  int NbEquations() const override { return 3; }
 
-  virtual bool Value(const math_Vector& X, math_Vector& F) override
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) + X(2) - 3.0; // x + y - 3 = 0
     F(2) = X(1) - X(2) - 1.0; // x - y - 1 = 0
@@ -135,7 +135,7 @@ public:
     return true;
   }
 
-  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
+  bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 1.0;
     D(1, 2) = 1.0;
@@ -146,7 +146,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
@@ -159,11 +159,11 @@ public:
 class ThreeVariableSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual int NbVariables() const override { return 3; }
+  int NbVariables() const override { return 3; }
 
-  virtual int NbEquations() const override { return 3; }
+  int NbEquations() const override { return 3; }
 
-  virtual bool Value(const math_Vector& X, math_Vector& F) override
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) + X(2) + X(3) - 6.0; // x + y + z - 6 = 0
     F(2) = 2.0 * X(1) - X(2) - 2.0;  // 2x - y - 2 = 0
@@ -171,7 +171,7 @@ public:
     return true;
   }
 
-  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
+  bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 1.0;
     D(1, 2) = 1.0;
@@ -185,7 +185,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);

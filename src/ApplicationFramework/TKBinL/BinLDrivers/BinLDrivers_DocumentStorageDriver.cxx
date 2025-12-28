@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver, PCDM_StorageDriver
 
 //=================================================================================================
 
-BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver() {}
+BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver() = default;
 
 //=================================================================================================
 

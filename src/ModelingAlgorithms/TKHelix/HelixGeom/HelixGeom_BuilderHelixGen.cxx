@@ -13,12 +13,12 @@
 
 #include <HelixGeom_BuilderHelixGen.hxx>
 
-#include <math.h>
+#include <cmath>
 
 //=================================================================================================
 
 HelixGeom_BuilderHelixGen::HelixGeom_BuilderHelixGen()
-    : HelixGeom_BuilderApproxCurve(),
+    : 
       myT1(0.0),
       myT2(2.0 * M_PI),
       myPitch(1.0),
@@ -30,7 +30,7 @@ HelixGeom_BuilderHelixGen::HelixGeom_BuilderHelixGen()
 
 //=================================================================================================
 
-HelixGeom_BuilderHelixGen::~HelixGeom_BuilderHelixGen() {}
+HelixGeom_BuilderHelixGen::~HelixGeom_BuilderHelixGen() = default;
 
 //=================================================================================================
 

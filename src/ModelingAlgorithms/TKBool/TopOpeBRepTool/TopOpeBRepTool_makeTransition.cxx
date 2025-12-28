@@ -61,7 +61,7 @@ static double FUN_tolang()
 
 //=================================================================================================
 
-TopOpeBRepTool_makeTransition::TopOpeBRepTool_makeTransition() {}
+TopOpeBRepTool_makeTransition::TopOpeBRepTool_makeTransition() = default;
 
 //=================================================================================================
 

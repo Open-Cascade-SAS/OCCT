@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MakeFromUsageOption, StepRepr_ProductDefinit
 
 //=================================================================================================
 
-StepRepr_MakeFromUsageOption::StepRepr_MakeFromUsageOption() {}
+StepRepr_MakeFromUsageOption::StepRepr_MakeFromUsageOption() = default;
 
 //=================================================================================================
 

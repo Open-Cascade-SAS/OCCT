@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_GeometricNode, StepFEA_NodeRepresentation)
 
 //=================================================================================================
 
-StepFEA_GeometricNode::StepFEA_GeometricNode() {}
+StepFEA_GeometricNode::StepFEA_GeometricNode() = default;

@@ -18,7 +18,7 @@
 #include <StepShape_PlusMinusTolerance.hxx>
 #include <StepShape_ToleranceMethodDefinition.hxx>
 
-RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance() {}
+RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance() = default;
 
 void RWStepShape_RWPlusMinusTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

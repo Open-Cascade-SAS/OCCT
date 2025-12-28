@@ -614,7 +614,7 @@ static int OCC301(Draw_Interpretor& di, int argc, const char** argv)
   anAngleDimension->SetDimensionAspect(anAspect);
   // Another position of dimension
   anAngleDimension->SetFlyout(aRadius);
-  context->Display(anAngleDimension, 0);
+  context->Display(anAngleDimension, false);
   return 0;
 }
 

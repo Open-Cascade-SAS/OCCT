@@ -21,8 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignSecurityClassificationAssignment,
 
 StepAP214_AutoDesignSecurityClassificationAssignment::
   StepAP214_AutoDesignSecurityClassificationAssignment()
-{
-}
+= default;
 
 void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
   const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,

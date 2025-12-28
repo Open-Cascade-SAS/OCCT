@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWOrganization::RWStepBasic_RWOrganization() {}
+RWStepBasic_RWOrganization::RWStepBasic_RWOrganization() = default;
 
 void RWStepBasic_RWOrganization::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

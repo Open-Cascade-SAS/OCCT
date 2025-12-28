@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationSet, Standard_Transient)
 
-StepVisual_PresentationSet::StepVisual_PresentationSet() {}
+StepVisual_PresentationSet::StepVisual_PresentationSet() = default;

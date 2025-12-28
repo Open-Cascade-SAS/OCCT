@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() {}
+StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() = default;
 
 //=================================================================================================
 

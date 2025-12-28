@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Person, Standard_Transient)
 
-StepBasic_Person::StepBasic_Person() {}
+StepBasic_Person::StepBasic_Person() = default;
 
 void StepBasic_Person::Init(
   const occ::handle<TCollection_HAsciiString>&                                   aId,

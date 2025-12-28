@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_MeasureWithUnit, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_MeasureWithUnit::StepBasic_MeasureWithUnit() {}
+StepBasic_MeasureWithUnit::StepBasic_MeasureWithUnit() = default;
 
 //=================================================================================================
 

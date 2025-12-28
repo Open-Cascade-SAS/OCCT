@@ -44,7 +44,7 @@ static TCollection_AsciiString    bufasc;
 static TCollection_ExtendedString bufext;
 static const char16_t*            voidext = {nullptr};
 
-XSControl_Utils::XSControl_Utils() {}
+XSControl_Utils::XSControl_Utils() = default;
 
 //  #########################################################
 //  #######           TRACE   Functions           #######

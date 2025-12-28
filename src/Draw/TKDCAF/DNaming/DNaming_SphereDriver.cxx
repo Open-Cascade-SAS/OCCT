@@ -46,7 +46,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_SphereDriver, TFunction_Driver)
 
 //=================================================================================================
 
-DNaming_SphereDriver::DNaming_SphereDriver() {}
+DNaming_SphereDriver::DNaming_SphereDriver() = default;
 
 //=======================================================================
 // function : Validate

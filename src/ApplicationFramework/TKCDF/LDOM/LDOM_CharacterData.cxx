@@ -43,11 +43,7 @@ LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_NullPtr* theNull)
 //=======================================================================
 
 LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theOther)
-{
-  LDOM_Node::operator=(theOther);
-  myLength = theOther.myLength;
-  return *this;
-}
+= default;
 
 //=================================================================================================
 

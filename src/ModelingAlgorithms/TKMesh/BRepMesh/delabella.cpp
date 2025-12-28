@@ -25,8 +25,8 @@ SOFTWARE.
 
 */
 
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
 
 // gcc 4.9 for Android doesn't have search.h
 #if !defined(__ANDROID__) || defined(__clang__)
@@ -200,7 +200,7 @@ struct CDelaBella : IDelaBella
   int (*errlog_proc)(void* file, const char* fmt, ...);
   void* errlog_file;
 
-  virtual ~CDelaBella() {}
+  virtual ~CDelaBella() = default;
 
   int Triangulate()
   {
@@ -812,7 +812,7 @@ struct CDelaBella : IDelaBella
     return true;
   }
 
-  virtual int Triangulate(int points, const float* x, const float* y = nullptr, int advance_bytes = 0)
+  int Triangulate(int points, const float* x, const float* y = nullptr, int advance_bytes = 0) override
   {
     if (!x)
       return 0;
@@ -839,7 +839,7 @@ struct CDelaBella : IDelaBella
     return out_verts;
   }
 
-  virtual int Triangulate(int points, const double* x, const double* y, int advance_bytes)
+  int Triangulate(int points, const double* x, const double* y, int advance_bytes) override
   {
     if (!x)
       return 0;
@@ -866,7 +866,7 @@ struct CDelaBella : IDelaBella
     return out_verts;
   }
 
-  virtual void Destroy()
+  void Destroy() override
   {
     if (face_alloc)
       free(face_alloc);
@@ -876,18 +876,18 @@ struct CDelaBella : IDelaBella
   }
 
   // num of points passed to last call to Triangulate()
-  virtual int GetNumInputPoints() const { return inp_verts; }
+  int GetNumInputPoints() const override { return inp_verts; }
 
   // num of verts returned from last call to Triangulate()
-  virtual int GetNumOutputVerts() const { return out_verts; }
+  int GetNumOutputVerts() const override { return out_verts; }
 
-  virtual const DelaBella_Triangle* GetFirstDelaunayTriangle() const { return first_dela_face; }
+  const DelaBella_Triangle* GetFirstDelaunayTriangle() const override { return first_dela_face; }
 
-  virtual const DelaBella_Triangle* GetFirstHullTriangle() const { return first_hull_face; }
+  const DelaBella_Triangle* GetFirstHullTriangle() const override { return first_hull_face; }
 
-  virtual const DelaBella_Vertex* GetFirstHullVertex() const { return first_hull_vert; }
+  const DelaBella_Vertex* GetFirstHullVertex() const override { return first_hull_vert; }
 
-  virtual void SetErrLog(int (*proc)(void* stream, const char* fmt, ...), void* stream)
+  void SetErrLog(int (*proc)(void* stream, const char* fmt, ...), void* stream) override
   {
     errlog_proc = proc;
     errlog_file = stream;

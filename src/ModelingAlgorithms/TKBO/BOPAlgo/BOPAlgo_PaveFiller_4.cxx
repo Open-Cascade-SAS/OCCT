@@ -51,7 +51,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_VertexFace() {}
+  ~BOPAlgo_VertexFace() override = default;
 
   //
   void SetIndices(const int nV, const int nF)
@@ -99,7 +99,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))

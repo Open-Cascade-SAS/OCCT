@@ -438,7 +438,7 @@ public:
   {
   }
 
-  bool Value(const math_Vector& X, double& F)
+  bool Value(const math_Vector& X, double& F) override
   {
     if (!CheckInputData(X(1)))
     {
@@ -451,7 +451,7 @@ public:
     return true;
   }
 
-  int NbVariables() const { return 1; }
+  int NbVariables() const override { return 1; }
 
 private:
   CurvMaxMinCoordMVar& operator=(const CurvMaxMinCoordMVar&) = delete;
@@ -487,7 +487,7 @@ public:
   {
   }
 
-  bool Value(const double X, double& F)
+  bool Value(const double X, double& F) override
   {
     if (!CheckInputData(X))
     {

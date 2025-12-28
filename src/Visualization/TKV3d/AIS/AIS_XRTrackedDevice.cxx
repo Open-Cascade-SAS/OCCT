@@ -43,7 +43,7 @@ public:
   }
 
   //! Image reader.
-  virtual occ::handle<Image_PixMap> GetImage(
+  occ::handle<Image_PixMap> GetImage(
     const occ::handle<Image_SupportedFormats>& theSupported) override
   {
     return myImageSource->ReadImage(theSupported);

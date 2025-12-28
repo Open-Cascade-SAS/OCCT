@@ -37,14 +37,14 @@
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include "stdio.h"
+#include <cstdio>
 
 // #include <StepBasic_ProductDefinitionContext.hxx>
 //: i3
 //: j4
 //=================================================================================================
 
-STEPConstruct_ContextTool::STEPConstruct_ContextTool() {}
+STEPConstruct_ContextTool::STEPConstruct_ContextTool() = default;
 
 //=================================================================================================
 

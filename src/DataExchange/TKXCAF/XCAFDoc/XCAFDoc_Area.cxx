@@ -26,7 +26,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Area, TDataStd_Real, "xcaf", "Area
 
 //=================================================================================================
 
-XCAFDoc_Area::XCAFDoc_Area() {}
+XCAFDoc_Area::XCAFDoc_Area() = default;
 
 //=================================================================================================
 

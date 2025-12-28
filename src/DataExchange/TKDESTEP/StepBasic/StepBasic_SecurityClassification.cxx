@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassification, Standard_Transient)
 
-StepBasic_SecurityClassification::StepBasic_SecurityClassification() {}
+StepBasic_SecurityClassification::StepBasic_SecurityClassification() = default;
 
 void StepBasic_SecurityClassification::Init(
   const occ::handle<TCollection_HAsciiString>&              aName,

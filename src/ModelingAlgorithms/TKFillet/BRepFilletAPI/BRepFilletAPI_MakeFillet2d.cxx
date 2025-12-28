@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-BRepFilletAPI_MakeFillet2d::BRepFilletAPI_MakeFillet2d() {}
+BRepFilletAPI_MakeFillet2d::BRepFilletAPI_MakeFillet2d() = default;
 
 //=================================================================================================
 

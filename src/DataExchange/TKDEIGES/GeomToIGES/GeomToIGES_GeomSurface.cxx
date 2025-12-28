@@ -87,7 +87,7 @@
 // GeomToIGES_GeomSurface
 //=============================================================================
 GeomToIGES_GeomSurface::GeomToIGES_GeomSurface()
-    : GeomToIGES_GeomEntity()
+     
 {
   myBRepMode = false;
   myAnalytic = false;

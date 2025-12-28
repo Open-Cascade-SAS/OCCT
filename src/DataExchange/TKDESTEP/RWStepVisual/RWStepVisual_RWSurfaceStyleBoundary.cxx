@@ -18,7 +18,7 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleBoundary.hxx>
 
-RWStepVisual_RWSurfaceStyleBoundary::RWStepVisual_RWSurfaceStyleBoundary() {}
+RWStepVisual_RWSurfaceStyleBoundary::RWStepVisual_RWSurfaceStyleBoundary() = default;
 
 void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

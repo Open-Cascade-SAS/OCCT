@@ -50,7 +50,7 @@
 // function : ShapeFix_FaceConnect
 //=======================================================================
 
-ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
+ShapeFix_FaceConnect::ShapeFix_FaceConnect() = default;
 
 //=================================================================================================
 

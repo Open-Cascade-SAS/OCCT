@@ -134,12 +134,11 @@ vtkStandardNewMacro(IVtkTools_ShapeObject)
   // Purpose: Protected constructor.
   //============================================================================
   IVtkTools_ShapeObject::IVtkTools_ShapeObject()
-{
-}
+= default;
 
 //=================================================================================================
 
-IVtkTools_ShapeObject::~IVtkTools_ShapeObject() {}
+IVtkTools_ShapeObject::~IVtkTools_ShapeObject() = default;
 
 //=================================================================================================
 

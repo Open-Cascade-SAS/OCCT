@@ -27,7 +27,7 @@
 
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 static int bapibuild(Draw_Interpretor&, int, const char**);
 static int bapibop(Draw_Interpretor&, int, const char**);

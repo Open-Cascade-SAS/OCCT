@@ -19,7 +19,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectExplore, IFSelect_SelectDeduct)
 
 IFSelect_SelectExplore::IFSelect_SelectExplore(const int level)

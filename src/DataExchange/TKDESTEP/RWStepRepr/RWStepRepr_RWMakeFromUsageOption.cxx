@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWMakeFromUsageOption::RWStepRepr_RWMakeFromUsageOption() {}
+RWStepRepr_RWMakeFromUsageOption::RWStepRepr_RWMakeFromUsageOption() = default;
 
 //=================================================================================================
 

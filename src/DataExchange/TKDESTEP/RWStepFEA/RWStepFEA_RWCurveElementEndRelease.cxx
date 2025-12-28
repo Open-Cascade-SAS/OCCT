@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurveElementEndRelease::RWStepFEA_RWCurveElementEndRelease() {}
+RWStepFEA_RWCurveElementEndRelease::RWStepFEA_RWCurveElementEndRelease() = default;
 
 //=================================================================================================
 

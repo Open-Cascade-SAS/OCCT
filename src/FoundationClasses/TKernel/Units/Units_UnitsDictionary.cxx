@@ -41,13 +41,13 @@
 
 #include "../UnitsAPI/UnitsAPI_Units_dat.pxx"
 
-#include <stdio.h>
+#include <cstdio>
 
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary, Standard_Transient)
 
 //=================================================================================================
 
-Units_UnitsDictionary::Units_UnitsDictionary() {}
+Units_UnitsDictionary::Units_UnitsDictionary() = default;
 
 //=================================================================================================
 

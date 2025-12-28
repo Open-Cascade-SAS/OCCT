@@ -123,7 +123,7 @@ static void sortbounds(const int                       nb,
   // flaguer les baillements au coins.
   int                            i, j;
   occ::handle<GeomFill_Boundary> temp;
-  rev[0] = 0;
+  rev[0] = false;
   gp_Pnt pf, pl;
   gp_Pnt qf, ql;
   for (i = 0; i < nb - 1; i++)
@@ -328,12 +328,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    Dimension,
+  void Evaluate(int*    Dimension,
                         double  StartEnd[2],
                         double* Parameter,
                         int*    DerivativeRequest,
                         double* Result, // [Dimension]
-                        int*    ErrorCode);
+                        int*    ErrorCode) override;
 
 private:
   GeomFill_ConstrainedFilling& curfil;
@@ -396,7 +396,7 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
 #endif
   for (i = 0; i <= 2; i++)
   {
-    bound[i]->Reparametrize(0., 1., 0, 0, 1., 1., rev[i]);
+    bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
   }
 #ifdef OCCT_DEBUG
   parclock.Stop();
@@ -433,8 +433,8 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
     // On  verifie enfin les conditions  de compatibilites sur les derivees
     // aux coins maintenant qu on a quelque chose a quoi les comparer.
     bool nrev[3];
-    nrev[0] = nrev[1] = 0;
-    nrev[2]           = 1;
+    nrev[0] = nrev[1] = false;
+    nrev[2]           = true;
     mig[2]            = mig[3];
     coonscnd(3, bound, nrev, stcor, ttgalg, mig);
     killcorners(3, bound, rev, nrev, stcor, ttgalg);
@@ -497,7 +497,7 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
 #endif
   for (i = 0; i <= 3; i++)
   {
-    bound[i]->Reparametrize(0., 1., 0, 0, 1., 1., rev[i]);
+    bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
   }
 #ifdef OCCT_DEBUG
   parclock.Stop();
@@ -525,8 +525,8 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
     // On  verifie enfin les conditions  de compatibilites sur les derivees
     // aux coins maintenant qu on a quelque chose a quoi les comparer.
     bool nrev[4];
-    nrev[0] = nrev[1] = 0;
-    nrev[2] = nrev[3] = 1;
+    nrev[0] = nrev[1] = false;
+    nrev[2] = nrev[3] = true;
     coonscnd(4, bound, nrev, stcor, tgalg, mig);
     killcorners(4, bound, rev, nrev, stcor, tgalg);
   }
@@ -743,7 +743,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     NCollection_Array1<int>    addm(madd[0], 1, nbadd);
     int                        nbnp, nbnk;
     if (BSplCLib::PrepareInsertKnots(degree[1],
-                                     0,
+                                     false,
                                      knots[1]->Array1(),
                                      mults[1]->Array1(),
                                      addk,
@@ -751,14 +751,14 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                                      nbnp,
                                      nbnk,
                                      tolk,
-                                     0))
+                                     false))
     {
       nm[1]    = new NCollection_HArray1<int>(1, nbnk);
       nk[1]    = new NCollection_HArray1<double>(1, nbnk);
       ncpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       ncpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       BSplCLib::InsertKnots(degree[1],
-                            0,
+                            false,
                             curvpol[1]->Array1(),
                             BSplCLib::NoWeights(),
                             knots[1]->Array1(),
@@ -770,10 +770,10 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             nk[1]->ChangeArray1(),
                             nm[1]->ChangeArray1(),
                             tolk,
-                            0);
+                            false);
 
       BSplCLib::InsertKnots(degree[1],
-                            0,
+                            false,
                             curvpol[3]->Array1(),
                             BSplCLib::NoWeights(),
                             knots[1]->Array1(),
@@ -785,12 +785,12 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             nk[1]->ChangeArray1(),
                             nm[1]->ChangeArray1(),
                             tolk,
-                            0);
+                            false);
       if (!tgtepol[1].IsNull())
       {
         ntpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[1],
-                              0,
+                              false,
                               tgtepol[1]->Array1(),
                               BSplCLib::NoWeights(),
                               knots[1]->Array1(),
@@ -802,13 +802,13 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                               nk[1]->ChangeArray1(),
                               nm[1]->ChangeArray1(),
                               tolk,
-                              0);
+                              false);
       }
       if (!tgtepol[3].IsNull())
       {
         ntpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[1],
-                              0,
+                              false,
                               tgtepol[3]->Array1(),
                               BSplCLib::NoWeights(),
                               knots[1]->Array1(),
@@ -820,7 +820,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                               nk[1]->ChangeArray1(),
                               nm[1]->ChangeArray1(),
                               tolk,
-                              0);
+                              false);
       }
     }
     if (dom[0] != 1.)
@@ -854,7 +854,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
     NCollection_Array1<int>    addm(madd[0], 1, nbadd);
     int                        nbnp, nbnk;
     if (BSplCLib::PrepareInsertKnots(degree[0],
-                                     0,
+                                     false,
                                      knots[0]->Array1(),
                                      mults[0]->Array1(),
                                      addk,
@@ -862,14 +862,14 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                                      nbnp,
                                      nbnk,
                                      tolk,
-                                     0))
+                                     false))
     {
       nm[0]    = new NCollection_HArray1<int>(1, nbnk);
       nk[0]    = new NCollection_HArray1<double>(1, nbnk);
       ncpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       ncpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       BSplCLib::InsertKnots(degree[0],
-                            0,
+                            false,
                             curvpol[0]->Array1(),
                             BSplCLib::NoWeights(),
                             knots[0]->Array1(),
@@ -881,10 +881,10 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             nk[0]->ChangeArray1(),
                             nm[0]->ChangeArray1(),
                             tolk,
-                            0);
+                            false);
 
       BSplCLib::InsertKnots(degree[0],
-                            0,
+                            false,
                             curvpol[2]->Array1(),
                             BSplCLib::NoWeights(),
                             knots[0]->Array1(),
@@ -896,12 +896,12 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             nk[0]->ChangeArray1(),
                             nm[0]->ChangeArray1(),
                             tolk,
-                            0);
+                            false);
       if (!tgtepol[0].IsNull())
       {
         ntpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[0],
-                              0,
+                              false,
                               tgtepol[0]->Array1(),
                               BSplCLib::NoWeights(),
                               knots[0]->Array1(),
@@ -913,13 +913,13 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                               nk[0]->ChangeArray1(),
                               nm[0]->ChangeArray1(),
                               tolk,
-                              0);
+                              false);
       }
       if (!tgtepol[2].IsNull())
       {
         ntpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[0],
-                              0,
+                              false,
                               tgtepol[2]->Array1(),
                               BSplCLib::NoWeights(),
                               knots[0]->Array1(),
@@ -931,7 +931,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                               nk[0]->ChangeArray1(),
                               nm[0]->ChangeArray1(),
                               tolk,
-                              0);
+                              false);
       }
     }
     if (dom[1] != 1.)
@@ -971,11 +971,11 @@ void GeomFill_ConstrainedFilling::MatchKnots()
       ab[i + 2]->SetValue(j, 1. - ab[i]->Value(j));
     }
   }
-  pq[0] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), 1, ind[0]);
-  pq[2] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), 0, ind[2]);
+  pq[0] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), true, ind[0]);
+  pq[2] = Law::MixTgt(degree[1], nk[1]->Array1(), nm[1]->Array1(), false, ind[2]);
 
-  pq[1] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), 0, ind[1]);
-  pq[3] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), 1, ind[3]);
+  pq[1] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), false, ind[1]);
+  pq[3] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), true, ind[3]);
 
 #ifdef DRAW
   if (dodraw)
@@ -1076,7 +1076,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
       double z   = 0;
       int    nbp = ntpol[i]->Length();
       int    i1 = 0, i2 = 0, j1 = 0, j2 = 0;
-      bool   inci = 0;
+      bool   inci = false;
       nt[i]       = new gp_XYZ[nbp];
       switch (i)
       {
@@ -1493,7 +1493,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
   gp_Pnt p1;
 #endif
   gp_Vec                         d1;
-  bool                           caplisse = 0;
+  bool                           caplisse = false;
   double                         maxang = 0., pmix = 0, pmixcur;
   occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
   for (int iu = 0; iu <= 30; iu++)
@@ -1510,7 +1510,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
     {
       pmixcur = vtg.Dot(vcros);
       if (pmix * pmixcur < 0.)
-        caplisse = 1;
+        caplisse = true;
     }
 #ifdef DRAW
     occ::handle<Draw_Segment3D> seg;
@@ -1554,7 +1554,7 @@ void GeomFill_ConstrainedFilling::CheckApprox(const int I)
     BSplCLib::D0(uu,
                  0,
                  degree[I % 2],
-                 0,
+                 false,
                  ncpol[I]->Array1(),
                  BSplCLib::NoWeights(),
                  nk[I % 2]->Array1(),
@@ -1565,7 +1565,7 @@ void GeomFill_ConstrainedFilling::CheckApprox(const int I)
       BSplCLib::D0(uu,
                    0,
                    degree[I % 2],
-                   0,
+                   false,
                    ntpol[I]->Array1(),
                    BSplCLib::NoWeights(),
                    nk[I % 2]->Array1(),

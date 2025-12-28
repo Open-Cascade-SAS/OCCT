@@ -37,7 +37,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 28/07/98
-IGESGeom_ToolPoint::IGESGeom_ToolPoint() {}
+IGESGeom_ToolPoint::IGESGeom_ToolPoint() = default;
 
 void IGESGeom_ToolPoint::ReadOwnParams(const occ::handle<IGESGeom_Point>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionEffectivity, StepBasic_Effectivity)
 
-StepBasic_ProductDefinitionEffectivity::StepBasic_ProductDefinitionEffectivity() {}
+StepBasic_ProductDefinitionEffectivity::StepBasic_ProductDefinitionEffectivity() = default;
 
 void StepBasic_ProductDefinitionEffectivity::Init(
   const occ::handle<TCollection_HAsciiString>&                aId,

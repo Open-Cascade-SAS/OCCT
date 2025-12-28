@@ -69,7 +69,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //  Decomposition of a file name in its parts : prefix, root, suffix
 static void SplitFileName(const char*              filename,
@@ -1972,7 +1972,7 @@ static IFSelect_ReturnStatus fun60(const occ::handle<IFSelect_SessionPilot>& pil
   occ::handle<IFSelect_WorkSession> WS = pilot->Session();
   //        ****    LastRunCheckList    ****
   Interface_CheckIterator            chlist  = WS->LastRunCheckList();
-  occ::handle<IFSelect_CheckCounter> counter = new IFSelect_CheckCounter(0);
+  occ::handle<IFSelect_CheckCounter> counter = new IFSelect_CheckCounter(false);
   counter->Analyse(chlist, WS->Model(), false);
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   counter->PrintCount(sout);

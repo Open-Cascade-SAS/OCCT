@@ -20,7 +20,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_CentroidDriver, XmlMDF_ADriver)
 
 //=================================================================================================

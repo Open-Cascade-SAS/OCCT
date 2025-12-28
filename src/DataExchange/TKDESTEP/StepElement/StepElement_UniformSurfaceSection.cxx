@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection, StepElement_Surfac
 
 //=================================================================================================
 
-StepElement_UniformSurfaceSection::StepElement_UniformSurfaceSection() {}
+StepElement_UniformSurfaceSection::StepElement_UniformSurfaceSection() = default;
 
 //=================================================================================================
 

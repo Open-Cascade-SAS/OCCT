@@ -50,7 +50,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEGLTF_Provider, DE_Provider)
 
 //=================================================================================================
 
-DEGLTF_Provider::DEGLTF_Provider() {}
+DEGLTF_Provider::DEGLTF_Provider() = default;
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspect, Standard_Transient)
 
-StepRepr_ShapeAspect::StepRepr_ShapeAspect() {}
+StepRepr_ShapeAspect::StepRepr_ShapeAspect() = default;
 
 void StepRepr_ShapeAspect::Init(const occ::handle<TCollection_HAsciiString>&        aName,
                                 const occ::handle<TCollection_HAsciiString>&        aDescription,

@@ -17,7 +17,7 @@
 #include <gp_XYZ.hxx>
 #include <XmlObjMgt_GP.hxx>
 
-#include <errno.h>
+#include <cerrno>
 static const char* Translate(const char* theStr, gp_Mat& M);
 static const char* Translate(const char* theStr, gp_XYZ& P);
 

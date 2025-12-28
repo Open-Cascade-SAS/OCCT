@@ -54,7 +54,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
-#include <errno.h>
+#include <cerrno>
 #include <BRepTools_Modifier.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>

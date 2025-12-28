@@ -19,7 +19,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWHeaderSection_RWFileName::RWHeaderSection_RWFileName() {}
+RWHeaderSection_RWFileName::RWHeaderSection_RWFileName() = default;
 
 void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

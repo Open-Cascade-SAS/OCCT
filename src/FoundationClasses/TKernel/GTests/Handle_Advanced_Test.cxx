@@ -91,7 +91,7 @@ namespace
 class QaClass50_50Anon : public QaClass49_50
 {
 public:
-  QaClass50_50Anon() {}
+  QaClass50_50Anon() = default;
 };
 } // namespace
 
@@ -101,7 +101,7 @@ namespace QaNamespace
 class QaClass50_50 : public QaClass49_50
 {
 public:
-  QaClass50_50() {}
+  QaClass50_50() = default;
 };
 } // namespace QaNamespace
 
@@ -125,7 +125,7 @@ public:
     Start();
   }
 
-  ~QATimer()
+  ~QATimer() override
   {
     Stop();
     double aTime = 0.0;

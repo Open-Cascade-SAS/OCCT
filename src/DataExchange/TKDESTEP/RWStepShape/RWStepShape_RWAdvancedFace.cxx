@@ -22,7 +22,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWAdvancedFace::RWStepShape_RWAdvancedFace() {}
+RWStepShape_RWAdvancedFace::RWStepShape_RWAdvancedFace() = default;
 
 void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

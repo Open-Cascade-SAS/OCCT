@@ -1054,7 +1054,7 @@ public:
   void SetFuzzyValue(const double theFuzzyValue) { myFuzzyValue = theFuzzyValue; }
 
   //! Checks and accepts the pair of elements.
-  virtual bool Accept(const int theID1, const int theID2) override
+  bool Accept(const int theID1, const int theID2) override
   {
     if (!RejectElement(theID1, theID2))
     {
@@ -1193,7 +1193,7 @@ class BOPAlgo_ShapeBox
 {
 public:
   //! Empty constructor
-  BOPAlgo_ShapeBox() {};
+  BOPAlgo_ShapeBox() = default;
 
   //! Sets the shape
   void SetShape(const TopoDS_Shape& theS) { myShape = theS; };
@@ -1232,7 +1232,7 @@ public:
   };
 
   //! Destructor
-  virtual ~BOPAlgo_FillIn3DParts() {};
+  ~BOPAlgo_FillIn3DParts() override = default;
 
   //! Sets the solid
   void SetSolid(const TopoDS_Solid& theSolid) { mySolid = theSolid; };
@@ -1268,7 +1268,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //! Performs the classification
-  virtual void Perform();
+  void Perform() override;
 
   //! Returns the faces classified as IN for solid
   const NCollection_List<TopoDS_Shape>& InFaces() const { return myInFaces; };

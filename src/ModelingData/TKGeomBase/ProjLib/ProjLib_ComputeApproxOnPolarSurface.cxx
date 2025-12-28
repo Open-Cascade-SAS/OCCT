@@ -452,17 +452,17 @@ public:
     myStruct.myTolV         = Surf->VResolution(Tol3d);
   }
 
-  ~ProjLib_PolarFunction() {}
+  ~ProjLib_PolarFunction() override = default;
 
-  double FirstParameter() const { return myStruct.myCurve->FirstParameter(); }
+  double FirstParameter() const override { return myStruct.myCurve->FirstParameter(); }
 
-  double LastParameter() const { return myStruct.myCurve->LastParameter(); }
+  double LastParameter() const override { return myStruct.myCurve->LastParameter(); }
 
   gp_Pnt2d Value(const double t) const { return Function_Value(t, myStruct); }
 
   bool Value(const double                  theT,
              NCollection_Array1<gp_Pnt2d>& thePnt2d,
-             NCollection_Array1<gp_Pnt>& /*thePnt*/) const
+             NCollection_Array1<gp_Pnt>& /*thePnt*/) const override
   {
     thePnt2d(1) = Function_Value(theT, myStruct);
     return true;
@@ -470,7 +470,7 @@ public:
 
   bool D1(const double /*theT*/,
           NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-          NCollection_Array1<gp_Vec>& /*theVec*/) const
+          NCollection_Array1<gp_Vec>& /*theVec*/) const override
   {
     return false;
   }
@@ -586,8 +586,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
 
 //=================================================================================================
 
-static occ::handle<Geom2d_BSplineCurve> Concat(occ::handle<Geom2d_BSplineCurve> C1,
-                                               occ::handle<Geom2d_BSplineCurve> C2,
+static occ::handle<Geom2d_BSplineCurve> Concat(const occ::handle<Geom2d_BSplineCurve>& C1,
+                                               const occ::handle<Geom2d_BSplineCurve>& C2,
                                                double                           theUJump,
                                                double                           theVJump)
 {

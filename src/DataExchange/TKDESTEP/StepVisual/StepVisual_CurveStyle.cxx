@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyle, Standard_Transient)
 
-StepVisual_CurveStyle::StepVisual_CurveStyle() {}
+StepVisual_CurveStyle::StepVisual_CurveStyle() = default;
 
 void StepVisual_CurveStyle::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const StepVisual_CurveStyleFontSelect&       aCurveFont,

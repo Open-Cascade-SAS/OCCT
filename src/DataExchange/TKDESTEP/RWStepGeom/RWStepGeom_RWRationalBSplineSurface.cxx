@@ -23,7 +23,7 @@
 
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 
-RWStepGeom_RWRationalBSplineSurface::RWStepGeom_RWRationalBSplineSurface() {}
+RWStepGeom_RWRationalBSplineSurface::RWStepGeom_RWRationalBSplineSurface() = default;
 
 void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

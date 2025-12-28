@@ -21,7 +21,7 @@
 #include <Standard_Type.hxx>
 #include <Standard_TypeMismatch.hxx>
 
-#include <string.h>
+#include <cstring>
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Failure, Standard_Transient)
 

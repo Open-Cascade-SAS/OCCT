@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Pick, IGESData_IGESEntity)
 
-IGESGraph_Pick::IGESGraph_Pick() {}
+IGESGraph_Pick::IGESGraph_Pick() = default;
 
 void IGESGraph_Pick::Init(const int nbProps, const int aPickStatus)
 {

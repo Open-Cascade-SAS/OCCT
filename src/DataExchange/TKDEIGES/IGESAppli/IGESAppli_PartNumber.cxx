@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PartNumber, IGESData_IGESEntity)
 
-IGESAppli_PartNumber::IGESAppli_PartNumber() {}
+IGESAppli_PartNumber::IGESAppli_PartNumber() = default;
 
 void IGESAppli_PartNumber::Init(const int                                    nbPropVal,
                                 const occ::handle<TCollection_HAsciiString>& aGenName,

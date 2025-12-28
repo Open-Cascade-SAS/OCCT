@@ -113,7 +113,7 @@ public:
 
 protected:
   //! Load primitive array.
-  virtual occ::handle<Poly_Triangulation> loadData(
+  occ::handle<Poly_Triangulation> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
     int                                               theThreadIndex) const override
   {
@@ -157,7 +157,7 @@ public:
 
 protected:
   //! Load primitive array.
-  virtual occ::handle<Poly_Triangulation> loadData(
+  occ::handle<Poly_Triangulation> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
     int                                               theThreadIndex) const override
   {

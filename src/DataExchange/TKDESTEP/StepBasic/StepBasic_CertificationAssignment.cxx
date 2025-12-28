@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CertificationAssignment, Standard_Transient
 
 //=================================================================================================
 
-StepBasic_CertificationAssignment::StepBasic_CertificationAssignment() {}
+StepBasic_CertificationAssignment::StepBasic_CertificationAssignment() = default;
 
 //=================================================================================================
 

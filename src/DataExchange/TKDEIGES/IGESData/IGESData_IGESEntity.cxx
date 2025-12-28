@@ -32,7 +32,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESEntity, Standard_Transient)
 
 #define ThisEntity occ::down_cast<IGESData_IGESEntity>(This())

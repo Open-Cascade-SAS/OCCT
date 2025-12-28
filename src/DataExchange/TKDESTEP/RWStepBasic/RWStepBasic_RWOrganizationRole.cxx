@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWOrganizationRole::RWStepBasic_RWOrganizationRole() {}
+RWStepBasic_RWOrganizationRole::RWStepBasic_RWOrganizationRole() = default;
 
 void RWStepBasic_RWOrganizationRole::ReadStep(
   const occ::handle<StepData_StepReaderData>&    data,

@@ -17,7 +17,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TriangulatedSurfaceSet, StepVisual_Tessell
 
 //=================================================================================================
 
-StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet() {}
+StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet() = default;
 
 //=================================================================================================
 

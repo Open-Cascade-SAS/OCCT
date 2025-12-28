@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BSplineSurface, IGESData_IGESEntity)
 
-IGESGeom_BSplineSurface::IGESGeom_BSplineSurface() {}
+IGESGeom_BSplineSurface::IGESGeom_BSplineSurface() = default;
 
 void IGESGeom_BSplineSurface::Init(const int                                       anIndexU,
                                    const int                                       anIndexV,

@@ -17,7 +17,7 @@
 #include <StepShape_HalfSpaceSolid.hxx>
 #include <StepShape_SolidModel.hxx>
 
-StepShape_BooleanOperand::StepShape_BooleanOperand() {}
+StepShape_BooleanOperand::StepShape_BooleanOperand() = default;
 
 occ::handle<StepShape_SolidModel> StepShape_BooleanOperand::SolidModel() const
 {

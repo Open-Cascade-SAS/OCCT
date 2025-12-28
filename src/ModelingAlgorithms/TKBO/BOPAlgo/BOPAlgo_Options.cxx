@@ -68,7 +68,7 @@ BOPAlgo_Options::BOPAlgo_Options(const occ::handle<NCollection_BaseAllocator>& t
 
 //=================================================================================================
 
-BOPAlgo_Options::~BOPAlgo_Options() {}
+BOPAlgo_Options::~BOPAlgo_Options() = default;
 
 //=================================================================================================
 

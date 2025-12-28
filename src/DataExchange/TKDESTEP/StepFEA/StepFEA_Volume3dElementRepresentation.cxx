@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation, StepFEA_Elemen
 
 //=================================================================================================
 
-StepFEA_Volume3dElementRepresentation::StepFEA_Volume3dElementRepresentation() {}
+StepFEA_Volume3dElementRepresentation::StepFEA_Volume3dElementRepresentation() = default;
 
 //=================================================================================================
 

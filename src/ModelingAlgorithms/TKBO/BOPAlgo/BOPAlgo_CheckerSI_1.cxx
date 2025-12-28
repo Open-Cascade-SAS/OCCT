@@ -48,7 +48,7 @@ public:
         myIZ(-1),
         myState(TopAbs_UNKNOWN) {};
   //
-  virtual ~BOPAlgo_VertexSolid() {};
+  virtual ~BOPAlgo_VertexSolid() = default;
 
   //
   void SetIndices(const int nV, const int nZ)
@@ -138,7 +138,7 @@ public:
         myHasInterf(false),
         myDS(nullptr) {};
   //
-  virtual ~BOPAlgo_ShapeSolid() {};
+  virtual ~BOPAlgo_ShapeSolid() = default;
 
   //
   void SetIndices(const int nE, const int nZ)
@@ -204,12 +204,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_SolidSolid()
-      : BOPAlgo_ShapeSolid() {};
+       {};
   //
-  virtual ~BOPAlgo_SolidSolid() {};
+  ~BOPAlgo_SolidSolid() override = default;
 
   //
-  virtual void Perform()
+  void Perform() override
   {
     Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (!aPS.More())

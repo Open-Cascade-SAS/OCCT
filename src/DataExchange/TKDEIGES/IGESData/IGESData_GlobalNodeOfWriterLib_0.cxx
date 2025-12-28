@@ -24,7 +24,7 @@
 #include <IGESData_WriterLib.hxx>
 #include <IGESData_NodeOfWriterLib.hxx>
 
-IGESData_GlobalNodeOfWriterLib::IGESData_GlobalNodeOfWriterLib() {}
+IGESData_GlobalNodeOfWriterLib::IGESData_GlobalNodeOfWriterLib() = default;
 
 void IGESData_GlobalNodeOfWriterLib::Add(const occ::handle<IGESData_ReadWriteModule>& amodule,
                                          const occ::handle<IGESData_Protocol>&        aprotocol)

@@ -36,7 +36,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDimen_ToolCenterLine::IGESDimen_ToolCenterLine() {}
+IGESDimen_ToolCenterLine::IGESDimen_ToolCenterLine() = default;
 
 void IGESDimen_ToolCenterLine::ReadOwnParams(const occ::handle<IGESDimen_CenterLine>& ent,
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,

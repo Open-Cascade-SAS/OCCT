@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellMembraneStiffness,
 
 //=================================================================================================
 
-StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness() {}
+StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness() = default;
 
 //=================================================================================================
 

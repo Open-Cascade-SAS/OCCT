@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PairValue, StepGeom_GeometricRepresent
 
 //=================================================================================================
 
-StepKinematics_PairValue::StepKinematics_PairValue() {}
+StepKinematics_PairValue::StepKinematics_PairValue() = default;
 
 //=================================================================================================
 

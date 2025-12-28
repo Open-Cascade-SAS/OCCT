@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWLengthMeasureWithUnit::RWStepBasic_RWLengthMeasureWithUnit() {}
+RWStepBasic_RWLengthMeasureWithUnit::RWStepBasic_RWLengthMeasureWithUnit() = default;
 
 //=================================================================================================
 

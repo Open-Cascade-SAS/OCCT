@@ -22,7 +22,7 @@
 
 #include "RWStepGeom_RWTransitionCode.pxx"
 
-RWStepGeom_RWCompositeCurveSegment::RWStepGeom_RWCompositeCurveSegment() {}
+RWStepGeom_RWCompositeCurveSegment::RWStepGeom_RWCompositeCurveSegment() = default;
 
 void RWStepGeom_RWCompositeCurveSegment::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

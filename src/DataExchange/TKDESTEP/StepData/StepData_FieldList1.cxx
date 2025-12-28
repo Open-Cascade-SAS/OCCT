@@ -14,7 +14,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StepData_FieldList1.hxx>
 
-StepData_FieldList1::StepData_FieldList1() {}
+StepData_FieldList1::StepData_FieldList1() = default;
 
 int StepData_FieldList1::NbFields() const
 {

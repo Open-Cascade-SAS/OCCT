@@ -19,7 +19,7 @@
 #include <StepGeom_RectangularCompositeSurface.hxx>
 #include <StepGeom_SurfacePatch.hxx>
 
-RWStepGeom_RWRectangularCompositeSurface::RWStepGeom_RWRectangularCompositeSurface() {}
+RWStepGeom_RWRectangularCompositeSurface::RWStepGeom_RWRectangularCompositeSurface() = default;
 
 void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

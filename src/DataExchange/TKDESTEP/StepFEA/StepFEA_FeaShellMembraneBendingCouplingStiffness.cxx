@@ -25,8 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellMembraneBendingCouplingStiffness,
 //=================================================================================================
 
 StepFEA_FeaShellMembraneBendingCouplingStiffness::StepFEA_FeaShellMembraneBendingCouplingStiffness()
-{
-}
+= default;
 
 //=================================================================================================
 

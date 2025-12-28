@@ -236,8 +236,23 @@ if (BUILD_ENABLE_CLANG_TIDY)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" PATHS "/opt/homebrew/opt/llvm/bin")
   if (CLANG_TIDY_EXE)
     message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-    # Safe modernization checks
-    set(CLANG_TIDY_CHECKS "-*,modernize-use-nullptr")
+    # Safe modernization checks that can be auto-fixed
+    set(CLANG_TIDY_CHECKS
+      "-*"
+      ",modernize-use-nullptr"              # Replace NULL/0 with nullptr
+      ",modernize-use-override"             # Add override to virtual methods
+      ",modernize-use-equals-default"       # Use = default for trivial special members
+      ",modernize-use-equals-delete"        # Use = delete for deleted functions
+      ",modernize-redundant-void-arg"       # Remove void from f(void) signatures
+      ",modernize-use-bool-literals"        # Use true/false instead of 1/0
+      ",modernize-use-noexcept"             # Replace throw() with noexcept
+      ",modernize-use-using"                # Replace typedef with using
+      ",modernize-deprecated-headers"       # Use C++ headers instead of C headers
+      ",readability-redundant-member-init"  # Remove redundant member initializers
+      ",readability-redundant-string-init"  # Remove redundant string initialization
+    )
+    # NOTE: performance-unnecessary-value-param excluded - breaks function pointer compatibility
+    string(REPLACE ";" "" CLANG_TIDY_CHECKS "${CLANG_TIDY_CHECKS}")
     if (BUILD_CLANG_TIDY_FIX)
       set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--fix")
     else()

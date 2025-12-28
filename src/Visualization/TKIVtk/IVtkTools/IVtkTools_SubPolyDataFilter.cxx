@@ -121,7 +121,7 @@ vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 
 //=================================================================================================
 
-IVtkTools_SubPolyDataFilter::~IVtkTools_SubPolyDataFilter() {}
+IVtkTools_SubPolyDataFilter::~IVtkTools_SubPolyDataFilter() = default;
 
 //================================================================
 // Function : RequestData
@@ -320,7 +320,7 @@ void IVtkTools_SubPolyDataFilter::Clear()
 // Function : SetData
 // Purpose  : Set ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType> theSet)
+void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType>& theSet)
 {
   myIdsSet = theSet;
 }
@@ -329,7 +329,7 @@ void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType> the
 // Function : AddData
 // Purpose  : Add ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType> theSet)
+void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType>& theSet)
 {
   for (NCollection_Map<IVtk_IdType>::Iterator anIt(theSet); anIt.More(); anIt.Next())
   {
@@ -344,7 +344,7 @@ void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType> the
 // Function : SetData
 // Purpose  : Set ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType> theIdList)
+void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType>& theIdList)
 {
   myIdsSet.Clear();
   AddData(theIdList);
@@ -354,7 +354,7 @@ void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType> th
 // Function : AddData
 // Purpose  : Add ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::AddData(const NCollection_List<IVtk_IdType> theIdList)
+void IVtkTools_SubPolyDataFilter::AddData(const NCollection_List<IVtk_IdType>& theIdList)
 {
   for (NCollection_List<IVtk_IdType>::Iterator anIt(theIdList); anIt.More(); anIt.Next())
   {

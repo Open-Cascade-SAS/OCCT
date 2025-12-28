@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_Da
 
 //=================================================================================================
 
-StepAP203_CcDesignDateAndTimeAssignment::StepAP203_CcDesignDateAndTimeAssignment() {}
+StepAP203_CcDesignDateAndTimeAssignment::StepAP203_CcDesignDateAndTimeAssignment() = default;
 
 //=================================================================================================
 

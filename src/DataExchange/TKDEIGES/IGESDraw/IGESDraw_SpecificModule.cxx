@@ -48,7 +48,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SpecificModule, IGESData_SpecificModule)
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESDraw_SpecificModule::IGESDraw_SpecificModule() {}
+IGESDraw_SpecificModule::IGESDraw_SpecificModule() = default;
 
 void IGESDraw_SpecificModule::OwnDump(const int                               CN,
                                       const occ::handle<IGESData_IGESEntity>& ent,

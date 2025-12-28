@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentUsageConstraint, Standard_Transient)
 
-StepBasic_DocumentUsageConstraint::StepBasic_DocumentUsageConstraint() {}
+StepBasic_DocumentUsageConstraint::StepBasic_DocumentUsageConstraint() = default;
 
 void StepBasic_DocumentUsageConstraint::Init(const occ::handle<StepBasic_Document>&       aSource,
                                              const occ::handle<TCollection_HAsciiString>& ase,

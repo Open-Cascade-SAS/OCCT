@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_DraughtingCallout, StepGeom_GeometricRepre
 
 //=================================================================================================
 
-StepVisual_DraughtingCallout::StepVisual_DraughtingCallout() {}
+StepVisual_DraughtingCallout::StepVisual_DraughtingCallout() = default;
 
 //=================================================================================================
 

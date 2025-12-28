@@ -45,7 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_Line3DDriver, TFunction_Driver)
 
 //=================================================================================================
 
-DNaming_Line3DDriver::DNaming_Line3DDriver() {}
+DNaming_Line3DDriver::DNaming_Line3DDriver() = default;
 
 //=======================================================================
 // function : Validate

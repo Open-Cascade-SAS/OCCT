@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidAssembly, IGESData_IGESEntity)
 
-IGESSolid_SolidAssembly::IGESSolid_SolidAssembly() {}
+IGESSolid_SolidAssembly::IGESSolid_SolidAssembly() = default;
 
 void IGESSolid_SolidAssembly::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           Items,

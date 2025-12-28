@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectUnion, IFSelect_SelectCombine)
 
-IFSelect_SelectUnion::IFSelect_SelectUnion() {}
+IFSelect_SelectUnion::IFSelect_SelectUnion() = default;
 
 Interface_EntityIterator IFSelect_SelectUnion::RootResult(const Interface_Graph& G) const
 {

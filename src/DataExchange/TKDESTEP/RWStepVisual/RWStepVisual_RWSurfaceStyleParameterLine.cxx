@@ -20,7 +20,7 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 
-RWStepVisual_RWSurfaceStyleParameterLine::RWStepVisual_RWSurfaceStyleParameterLine() {}
+RWStepVisual_RWSurfaceStyleParameterLine::RWStepVisual_RWSurfaceStyleParameterLine() = default;
 
 void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

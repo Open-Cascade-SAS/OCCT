@@ -19,5 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MechanicalDesignAndDraughtingRelationship,
 
 StepRepr_MechanicalDesignAndDraughtingRelationship::
   StepRepr_MechanicalDesignAndDraughtingRelationship()
-{
-}
+= default;

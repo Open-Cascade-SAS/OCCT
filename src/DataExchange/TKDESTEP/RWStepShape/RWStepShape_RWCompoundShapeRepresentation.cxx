@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWCompoundShapeRepresentation::RWStepShape_RWCompoundShapeRepresentation() {}
+RWStepShape_RWCompoundShapeRepresentation::RWStepShape_RWCompoundShapeRepresentation() = default;
 
 //=================================================================================================
 

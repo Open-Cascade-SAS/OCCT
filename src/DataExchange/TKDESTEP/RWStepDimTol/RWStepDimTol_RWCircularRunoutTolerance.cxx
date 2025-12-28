@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWCircularRunoutTolerance::RWStepDimTol_RWCircularRunoutTolerance() {}
+RWStepDimTol_RWCircularRunoutTolerance::RWStepDimTol_RWCircularRunoutTolerance() = default;
 
 //=================================================================================================
 

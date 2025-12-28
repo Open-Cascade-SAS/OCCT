@@ -20,10 +20,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectName, IFSelect_SelectExtract)
 
-IGESSelect_SelectName::IGESSelect_SelectName() {}
+IGESSelect_SelectName::IGESSelect_SelectName() = default;
 
 void IGESSelect_SelectName::SetName(const occ::handle<TCollection_HAsciiString>& levnum)
 {

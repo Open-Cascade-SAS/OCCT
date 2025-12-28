@@ -16,4 +16,4 @@
 
 #include <AdvApprox_Cutting.hxx>
 
-AdvApprox_Cutting::~AdvApprox_Cutting() {}
+AdvApprox_Cutting::~AdvApprox_Cutting() = default;

@@ -20,7 +20,7 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
-RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect() {}
+RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect() = default;
 
 void RWStepRepr_RWShapeAspect::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

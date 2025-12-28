@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_StartRequest, StepBasic_ActionRequestAssign
 
 //=================================================================================================
 
-StepAP203_StartRequest::StepAP203_StartRequest() {}
+StepAP203_StartRequest::StepAP203_StartRequest() = default;
 
 //=================================================================================================
 

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PreDefinedCurveFont.hxx>
 
-RWStepVisual_RWPreDefinedCurveFont::RWStepVisual_RWPreDefinedCurveFont() {}
+RWStepVisual_RWPreDefinedCurveFont::RWStepVisual_RWPreDefinedCurveFont() = default;
 
 void RWStepVisual_RWPreDefinedCurveFont::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

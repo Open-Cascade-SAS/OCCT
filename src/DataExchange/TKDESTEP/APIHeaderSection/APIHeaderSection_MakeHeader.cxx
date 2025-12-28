@@ -31,7 +31,7 @@
 #include <StepData_Protocol.hxx>
 #include <StepData_StepModel.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // This is a generic header for any STEP scheme
 static occ::handle<TCollection_HAsciiString>                                   nulstr;
 static occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> nularr;

@@ -34,7 +34,7 @@
 #include <DBRep.hxx>
 
 // #ifdef _MSC_VER
-#include <stdio.h>
+#include <cstdio>
 
 // #endif
 
@@ -388,7 +388,7 @@ static int Collect(Draw_Interpretor& di, int nb, const char** arg)
 {
   NCollection_Map<occ::handle<TNaming_NamedShape>> MNS;
   occ::handle<TNaming_NamedShape>                  A;
-  bool                                             OnlyModif = 1;
+  bool                                             OnlyModif = true;
 
   if (nb >= 3)
   {

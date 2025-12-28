@@ -131,7 +131,7 @@ const TCollection_ExtendedString& TDataStd_ExtStringArray::Value(const int index
 
 //=================================================================================================
 
-int TDataStd_ExtStringArray::Lower(void) const
+int TDataStd_ExtStringArray::Lower() const
 {
   if (myValue.IsNull())
     return 0;
@@ -140,7 +140,7 @@ int TDataStd_ExtStringArray::Lower(void) const
 
 //=================================================================================================
 
-int TDataStd_ExtStringArray::Upper(void) const
+int TDataStd_ExtStringArray::Upper() const
 {
   if (myValue.IsNull())
     return 0;
@@ -149,7 +149,7 @@ int TDataStd_ExtStringArray::Upper(void) const
 
 //=================================================================================================
 
-int TDataStd_ExtStringArray::Length(void) const
+int TDataStd_ExtStringArray::Length() const
 {
   if (myValue.IsNull())
     return 0;

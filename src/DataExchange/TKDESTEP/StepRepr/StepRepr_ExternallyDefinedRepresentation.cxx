@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation, StepRepr_Representation)
 
-StepRepr_ExternallyDefinedRepresentation::StepRepr_ExternallyDefinedRepresentation() {}
+StepRepr_ExternallyDefinedRepresentation::StepRepr_ExternallyDefinedRepresentation() = default;

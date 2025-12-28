@@ -36,7 +36,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 31/07/98
-IGESGeom_ToolTabulatedCylinder::IGESGeom_ToolTabulatedCylinder() {}
+IGESGeom_ToolTabulatedCylinder::IGESGeom_ToolTabulatedCylinder() = default;
 
 void IGESGeom_ToolTabulatedCylinder::ReadOwnParams(
   const occ::handle<IGESGeom_TabulatedCylinder>& ent,

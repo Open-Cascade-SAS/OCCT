@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndLengthUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit() {}
+StepBasic_SiUnitAndLengthUnit::StepBasic_SiUnitAndLengthUnit() = default;
 
 void StepBasic_SiUnitAndLengthUnit::Init(const bool                 hasAprefix,
                                          const StepBasic_SiPrefix   aPrefix,

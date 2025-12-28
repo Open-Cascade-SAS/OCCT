@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid, IGESData_IGESEntity)
 
-IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid() {}
+IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid() = default;
 
 void IGESSolid_ManifoldSolid::Init(
   const occ::handle<IGESSolid_Shell>&                                   aShell,

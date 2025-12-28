@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel, IGESData_LevelListEntity)
 
-IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel() {}
+IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel() = default;
 
 void IGESGraph_DefinitionLevel::Init(const occ::handle<NCollection_HArray1<int>>& allLevelNumbers)
 {

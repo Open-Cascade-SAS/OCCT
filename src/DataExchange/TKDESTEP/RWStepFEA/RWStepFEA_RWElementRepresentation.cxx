@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWElementRepresentation::RWStepFEA_RWElementRepresentation() {}
+RWStepFEA_RWElementRepresentation::RWStepFEA_RWElementRepresentation() = default;
 
 //=================================================================================================
 

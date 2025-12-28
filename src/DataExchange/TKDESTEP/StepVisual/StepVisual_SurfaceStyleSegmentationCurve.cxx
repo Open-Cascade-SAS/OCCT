@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleSegmentationCurve, Standard_Transient)
 
-StepVisual_SurfaceStyleSegmentationCurve::StepVisual_SurfaceStyleSegmentationCurve() {}
+StepVisual_SurfaceStyleSegmentationCurve::StepVisual_SurfaceStyleSegmentationCurve() = default;
 
 void StepVisual_SurfaceStyleSegmentationCurve::Init(
   const occ::handle<StepVisual_CurveStyle>& aStyleOfSegmentationCurve)

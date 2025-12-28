@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWCharacterizedRepresentation::RWStepRepr_RWCharacterizedRepresentation() {}
+RWStepRepr_RWCharacterizedRepresentation::RWStepRepr_RWCharacterizedRepresentation() = default;
 
 //=================================================================================================
 

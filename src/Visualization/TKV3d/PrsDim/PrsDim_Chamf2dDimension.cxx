@@ -47,7 +47,7 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
                                                  const occ::handle<Geom_Plane>&    aPlane,
                                                  const double                      aVal,
                                                  const TCollection_ExtendedString& aText)
-    : PrsDim_Relation()
+     
 {
   myFShape            = aFShape;
   myPlane             = aPlane;
@@ -68,7 +68,7 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
                                                  const double                      anArrowSize)
-    : PrsDim_Relation()
+     
 {
   myFShape    = aFShape;
   myPlane     = aPlane;

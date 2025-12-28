@@ -31,7 +31,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

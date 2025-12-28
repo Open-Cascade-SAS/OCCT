@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Flash, IGESData_IGESEntity)
 
-IGESGeom_Flash::IGESGeom_Flash() {}
+IGESGeom_Flash::IGESGeom_Flash() = default;
 
 void IGESGeom_Flash::Init(const gp_XY&                            aPoint,
                           const double                            aDim1,

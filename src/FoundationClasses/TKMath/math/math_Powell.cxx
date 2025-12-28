@@ -46,7 +46,7 @@ public:
 
   void Initialize(const math_Vector& p0, const math_Vector& dir);
 
-  virtual bool Value(const double x, double& fval);
+  bool Value(const double x, double& fval) override;
 };
 
 DirFunctionBis::DirFunctionBis(math_Vector&              V1,
@@ -127,7 +127,7 @@ math_Powell::math_Powell(const math_MultipleVarFunction& theFunction,
 
 //=================================================================================================
 
-math_Powell::~math_Powell() {}
+math_Powell::~math_Powell() = default;
 
 //=================================================================================================
 

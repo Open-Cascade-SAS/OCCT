@@ -19,7 +19,7 @@
 #include <StepShape_ExtrudedFaceSolid.hxx>
 #include <StepShape_FaceSurface.hxx>
 
-RWStepShape_RWExtrudedFaceSolid::RWStepShape_RWExtrudedFaceSolid() {}
+RWStepShape_RWExtrudedFaceSolid::RWStepShape_RWExtrudedFaceSolid() = default;
 
 void RWStepShape_RWExtrudedFaceSolid::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

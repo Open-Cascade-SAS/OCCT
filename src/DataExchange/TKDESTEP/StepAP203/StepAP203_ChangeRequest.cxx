@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_ChangeRequest, StepBasic_ActionRequestAssig
 
 //=================================================================================================
 
-StepAP203_ChangeRequest::StepAP203_ChangeRequest() {}
+StepAP203_ChangeRequest::StepAP203_ChangeRequest() = default;
 
 //=================================================================================================
 

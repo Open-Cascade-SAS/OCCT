@@ -58,8 +58,8 @@ struct BackPolygonOffsetSentry
   }
 
 private:
-  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&);
-  BackPolygonOffsetSentry& operator=(const BackPolygonOffsetSentry&);
+  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&) = delete;
+  BackPolygonOffsetSentry& operator=(const BackPolygonOffsetSentry&) = delete;
 
 private:
   OpenGl_Context*         myCtx;

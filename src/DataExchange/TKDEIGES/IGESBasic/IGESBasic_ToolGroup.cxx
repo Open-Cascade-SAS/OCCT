@@ -36,7 +36,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 03/08/98
-IGESBasic_ToolGroup::IGESBasic_ToolGroup() {}
+IGESBasic_ToolGroup::IGESBasic_ToolGroup() = default;
 
 void IGESBasic_ToolGroup::ReadOwnParams(const occ::handle<IGESBasic_Group>&         ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,

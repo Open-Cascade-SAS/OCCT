@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel, IGESData_IGESEntity)
 
-IGESDimen_GeneralLabel::IGESDimen_GeneralLabel() {}
+IGESDimen_GeneralLabel::IGESDimen_GeneralLabel() = default;
 
 void IGESDimen_GeneralLabel::Init(
   const occ::handle<IGESDimen_GeneralNote>&                                   aNote,

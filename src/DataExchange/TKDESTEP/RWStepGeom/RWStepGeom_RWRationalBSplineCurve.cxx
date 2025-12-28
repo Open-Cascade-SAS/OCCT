@@ -23,7 +23,7 @@
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 
-RWStepGeom_RWRationalBSplineCurve::RWStepGeom_RWRationalBSplineCurve() {}
+RWStepGeom_RWRationalBSplineCurve::RWStepGeom_RWRationalBSplineCurve() = default;
 
 void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,

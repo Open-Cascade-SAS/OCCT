@@ -17,7 +17,7 @@
 #include <StepSelect_FloatFormat.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_FloatFormat, StepSelect_FileModifier)
 
 StepSelect_FloatFormat::StepSelect_FloatFormat()

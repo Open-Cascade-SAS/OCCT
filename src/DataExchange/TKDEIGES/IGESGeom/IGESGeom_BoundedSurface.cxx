@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BoundedSurface, IGESData_IGESEntity)
 
-IGESGeom_BoundedSurface::IGESGeom_BoundedSurface() {}
+IGESGeom_BoundedSurface::IGESGeom_BoundedSurface() = default;
 
 void IGESGeom_BoundedSurface::Init(
   const int                                                               aType,

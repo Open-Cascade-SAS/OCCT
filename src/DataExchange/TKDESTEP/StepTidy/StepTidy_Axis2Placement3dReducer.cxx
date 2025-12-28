@@ -57,7 +57,7 @@ StepTidy_Axis2Placement3dReducer::StepTidy_Axis2Placement3dReducer(
 bool StepTidy_Axis2Placement3dReducer::replacePlane(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_Plane> aSharing = occ::down_cast<StepGeom_Plane>(theSharing);
   if (aSharing->Position() == theOldEntity)
@@ -73,7 +73,7 @@ bool StepTidy_Axis2Placement3dReducer::replacePlane(
 bool StepTidy_Axis2Placement3dReducer::replaceItemDefinedTransformation(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepRepr_ItemDefinedTransformation> aSharing =
     occ::down_cast<StepRepr_ItemDefinedTransformation>(theSharing);
@@ -96,7 +96,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceItemDefinedTransformation(
 bool StepTidy_Axis2Placement3dReducer::replaceCylindricalSurface(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_CylindricalSurface> aSharing =
     occ::down_cast<StepGeom_CylindricalSurface>(theSharing);
@@ -113,7 +113,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceCylindricalSurface(
 bool StepTidy_Axis2Placement3dReducer::replaceShapeRepresentation(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepShape_ShapeRepresentation> aSharing =
     occ::down_cast<StepShape_ShapeRepresentation>(theSharing);
@@ -134,7 +134,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceShapeRepresentation(
 bool StepTidy_Axis2Placement3dReducer::replaceConstructiveGeometryRepresentation(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepRepr_ConstructiveGeometryRepresentation> aSharing =
     occ::down_cast<StepRepr_ConstructiveGeometryRepresentation>(theSharing);
@@ -155,7 +155,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceConstructiveGeometryRepresentation
 bool StepTidy_Axis2Placement3dReducer::replaceCircle(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_Circle> aSharing  = occ::down_cast<StepGeom_Circle>(theSharing);
   StepGeom_Axis2Placement      aSelector = aSharing->Position();
@@ -172,7 +172,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceCircle(
 bool StepTidy_Axis2Placement3dReducer::replacePresentationLayerAssignment(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepVisual_PresentationLayerAssignment> aSharing =
     occ::down_cast<StepVisual_PresentationLayerAssignment>(theSharing);
@@ -195,7 +195,7 @@ bool StepTidy_Axis2Placement3dReducer::replacePresentationLayerAssignment(
 bool StepTidy_Axis2Placement3dReducer::replaceStyledItem(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepVisual_StyledItem> aSharing = occ::down_cast<StepVisual_StyledItem>(theSharing);
   if (aSharing->Item() == theOldEntity)
@@ -211,7 +211,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceStyledItem(
 bool StepTidy_Axis2Placement3dReducer::replaceEllipse(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_Ellipse> aSharing  = occ::down_cast<StepGeom_Ellipse>(theSharing);
   StepGeom_Axis2Placement       aSelector = aSharing->Position();
@@ -228,7 +228,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceEllipse(
 bool StepTidy_Axis2Placement3dReducer::replaceConicalSurface(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_ConicalSurface> aSharing =
     occ::down_cast<StepGeom_ConicalSurface>(theSharing);
@@ -245,7 +245,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceConicalSurface(
 bool StepTidy_Axis2Placement3dReducer::replaceToroidalSurface(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_ToroidalSurface> aSharing =
     occ::down_cast<StepGeom_ToroidalSurface>(theSharing);
@@ -262,7 +262,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceToroidalSurface(
 bool StepTidy_Axis2Placement3dReducer::replaceAdvancedBrepShapeRepresentation(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepShape_AdvancedBrepShapeRepresentation> aSharing =
     occ::down_cast<StepShape_AdvancedBrepShapeRepresentation>(theSharing);
@@ -283,7 +283,7 @@ bool StepTidy_Axis2Placement3dReducer::replaceAdvancedBrepShapeRepresentation(
 bool StepTidy_Axis2Placement3dReducer::replaceSphericalSurface(
   const occ::handle<StepGeom_Axis2Placement3d>& theOldEntity,
   const occ::handle<StepGeom_Axis2Placement3d>& theNewEntity,
-  occ::handle<Standard_Transient>               theSharing)
+  const occ::handle<Standard_Transient>&               theSharing)
 {
   occ::handle<StepGeom_SphericalSurface> aSharing =
     occ::down_cast<StepGeom_SphericalSurface>(theSharing);

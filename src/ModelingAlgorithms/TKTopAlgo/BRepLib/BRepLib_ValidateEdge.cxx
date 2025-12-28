@@ -17,14 +17,15 @@
 #include <BRepCheck.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
+#include <utility>
 
 //=================================================================================================
 
 BRepLib_ValidateEdge::BRepLib_ValidateEdge(occ::handle<Adaptor3d_Curve>          theReferenceCurve,
                                            occ::handle<Adaptor3d_CurveOnSurface> theOtherCurve,
                                            bool                                  theSameParameter)
-    : myReferenceCurve(theReferenceCurve),
-      myOtherCurve(theOtherCurve),
+    : myReferenceCurve(std::move(theReferenceCurve)),
+      myOtherCurve(std::move(theOtherCurve)),
       mySameParameter(theSameParameter),
       myControlPointsNumber(22),
       myToleranceForChecking(0),

@@ -21,8 +21,8 @@
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Assert.hxx>
 
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
 
 #ifndef _WIN32
   #include <unistd.h>

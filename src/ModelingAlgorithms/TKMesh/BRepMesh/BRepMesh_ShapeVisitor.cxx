@@ -40,7 +40,7 @@ BRepMesh_ShapeVisitor::BRepMesh_ShapeVisitor(const occ::handle<IMeshData_Model>&
 
 //=================================================================================================
 
-BRepMesh_ShapeVisitor::~BRepMesh_ShapeVisitor() {}
+BRepMesh_ShapeVisitor::~BRepMesh_ShapeVisitor() = default;
 
 //=================================================================================================
 

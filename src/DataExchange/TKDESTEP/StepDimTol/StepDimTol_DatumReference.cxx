@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReference, Standard_Transient)
 
 //=================================================================================================
 
-StepDimTol_DatumReference::StepDimTol_DatumReference() {}
+StepDimTol_DatumReference::StepDimTol_DatumReference() = default;
 
 //=================================================================================================
 

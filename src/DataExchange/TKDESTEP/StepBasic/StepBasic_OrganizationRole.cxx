@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationRole, Standard_Transient)
 
-StepBasic_OrganizationRole::StepBasic_OrganizationRole() {}
+StepBasic_OrganizationRole::StepBasic_OrganizationRole() = default;
 
 void StepBasic_OrganizationRole::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {

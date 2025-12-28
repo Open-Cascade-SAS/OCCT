@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Color, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFDoc_Color::XCAFDoc_Color() {}
+XCAFDoc_Color::XCAFDoc_Color() = default;
 
 //=================================================================================================
 

@@ -23,8 +23,7 @@
 
 RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular::
   RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular()
-{
-}
+= default;
 
 //=================================================================================================
 

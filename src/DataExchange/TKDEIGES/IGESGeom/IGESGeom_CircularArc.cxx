@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CircularArc, IGESData_IGESEntity)
 
-IGESGeom_CircularArc::IGESGeom_CircularArc() {}
+IGESGeom_CircularArc::IGESGeom_CircularArc() = default;
 
 void IGESGeom_CircularArc::Init(const double aZT,
                                 const gp_XY& aCenter,

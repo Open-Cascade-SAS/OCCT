@@ -43,7 +43,7 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    theDimension,
+  void Evaluate(int*    theDimension,
                         double* theUStartEnd,
                         double* theVStartEnd,
                         int*    theFavorIso,
@@ -53,7 +53,7 @@ public:
                         int*    theUOrder,
                         int*    theVOrder,
                         double* theResult,
-                        int*    theErrorCode) const;
+                        int*    theErrorCode) const override;
 
 private:
   occ::handle<Geom_Surface> mySurf;

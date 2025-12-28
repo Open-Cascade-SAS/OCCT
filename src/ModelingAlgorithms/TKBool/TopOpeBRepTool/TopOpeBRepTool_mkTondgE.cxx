@@ -52,7 +52,7 @@ static double FUN_tola()
 
 //=================================================================================================
 
-TopOpeBRepTool_mkTondgE::TopOpeBRepTool_mkTondgE() {}
+TopOpeBRepTool_mkTondgE::TopOpeBRepTool_mkTondgE() = default;
 
 //=================================================================================================
 

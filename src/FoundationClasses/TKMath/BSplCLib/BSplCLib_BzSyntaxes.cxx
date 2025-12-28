@@ -93,7 +93,7 @@ void BSplCLib::D0(const double                      U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
+  BSplCLib::D0(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
 }
 
 //=================================================================================================
@@ -105,7 +105,7 @@ void BSplCLib::D0(const double                        U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
+  BSplCLib::D0(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
 }
 
 //=================================================================================================
@@ -118,7 +118,7 @@ void BSplCLib::D1(const double                      U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D1(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
+  BSplCLib::D1(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
 }
 
 //=================================================================================================
@@ -131,7 +131,7 @@ void BSplCLib::D1(const double                        U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D1(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
+  BSplCLib::D1(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
 }
 
 //=================================================================================================
@@ -145,7 +145,7 @@ void BSplCLib::D2(const double                      U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D2(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
+  BSplCLib::D2(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
 }
 
 //=================================================================================================
@@ -159,7 +159,7 @@ void BSplCLib::D2(const double                        U,
 {
   const int              aDegree = Poles.Length() - 1;
   BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
-  BSplCLib::D2(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
+  BSplCLib::D2(U, 1, aDegree, false, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
 }
 
 //=================================================================================================
@@ -177,7 +177,7 @@ void BSplCLib::D3(const double                      U,
   BSplCLib::D3(U,
                1,
                aDegree,
-               0,
+               false,
                Poles,
                Weights,
                aBezierKnots.Knot,
@@ -203,7 +203,7 @@ void BSplCLib::D3(const double                        U,
   BSplCLib::D3(U,
                1,
                aDegree,
-               0,
+               false,
                Poles,
                Weights,
                aBezierKnots.Knot,

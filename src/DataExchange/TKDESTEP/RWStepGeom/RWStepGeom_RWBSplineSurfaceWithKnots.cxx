@@ -30,7 +30,7 @@
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 #include "RWStepGeom_RWKnotType.pxx"
 
-RWStepGeom_RWBSplineSurfaceWithKnots::RWStepGeom_RWBSplineSurfaceWithKnots() {}
+RWStepGeom_RWBSplineSurfaceWithKnots::RWStepGeom_RWBSplineSurfaceWithKnots() = default;
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

@@ -44,7 +44,7 @@
 #include <TopoDS_Wire.hxx>
 #include <Poly.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #define DEBUG_PCLASS_POLYGON
 #ifdef DEBUG_PCLASS_POLYGON
@@ -54,7 +54,7 @@
 
 //=================================================================================================
 
-IntTools_FClass2d::IntTools_FClass2d() {}
+IntTools_FClass2d::IntTools_FClass2d() = default;
 
 //=================================================================================================
 

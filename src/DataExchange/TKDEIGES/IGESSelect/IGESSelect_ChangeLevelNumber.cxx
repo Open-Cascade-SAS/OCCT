@@ -25,7 +25,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ChangeLevelNumber, IGESSelect_ModelModifier)
 
 IGESSelect_ChangeLevelNumber::IGESSelect_ChangeLevelNumber()

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SlidingSurfacePairValue, StepKinematic
 
 //=================================================================================================
 
-StepKinematics_SlidingSurfacePairValue::StepKinematics_SlidingSurfacePairValue() {}
+StepKinematics_SlidingSurfacePairValue::StepKinematics_SlidingSurfacePairValue() = default;
 
 //=================================================================================================
 
