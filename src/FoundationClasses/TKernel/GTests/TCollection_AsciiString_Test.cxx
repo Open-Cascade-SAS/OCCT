@@ -1381,7 +1381,7 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Build enum definition like MoniTool_TypedValue does
   aDef.AssignCat("Enum");
-  sprintf(aMess, " [in %d-%d]", 0, 1);
+  Sprintf(aMess, " [in %d-%d]", 0, 1);
   aDef.AssignCat(aMess);
 
   // Should be "Enum [in 0-1]" at this point
@@ -1391,7 +1391,7 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
   for (int i = 0; i <= 1; i++)
   {
     const char* anEnva = (i == 0) ? "Off" : "On";
-    sprintf(aMess, " %d:%s", i, anEnva);
+    Sprintf(aMess, " %d:%s", i, anEnva);
     aDef.AssignCat(aMess);
   }
 
@@ -1400,10 +1400,10 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Add alpha section
   aDef.AssignCat(" , alpha: ");
-  sprintf(aMess, "On:%d ", 1);
+  Sprintf(aMess, "On:%d ", 1);
   aDef.AssignCat("On");
   aDef.AssignCat(aMess);
-  sprintf(aMess, "Off:%d ", 0);
+  Sprintf(aMess, "Off:%d ", 0);
   aDef.AssignCat("Off");
   aDef.AssignCat(aMess);
 

@@ -3627,7 +3627,7 @@ void V3d_View::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, MyViewer)
   for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anIterator(myActiveLights); anIterator.More(); anIterator.Next())
   {
-    class occ::handle<Graphic3d_CLight>& anActiveLight = anIterator.ChangeValue();
+    occ::handle<Graphic3d_CLight>& anActiveLight = anIterator.ChangeValue();
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, anActiveLight)
   }
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myDefaultViewAxis)
