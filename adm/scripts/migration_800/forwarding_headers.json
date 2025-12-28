@@ -226,7 +226,9 @@
       "header_file": "Visualization/TKMeshVS/MeshVS/MeshVS_DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger.hxx",
       "includes": [
         "Standard_Integer.hxx",
-        "MeshVS_HArray1OfSequenceOfInteger.hxx",
+        "NCollection_Sequence.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
         "NCollection_DataMap.hxx"
       ]
     },
@@ -648,7 +650,9 @@
       "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx",
       "includes": [
         "TCollection_ExtendedString.hxx",
-        "TColStd_HArray1OfInteger.hxx",
+        "Standard_Integer.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
         "NCollection_DataMap.hxx"
       ]
     },
@@ -676,7 +680,8 @@
       "header_file": "ApplicationFramework/TKLCAF/TDataStd/TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx",
       "includes": [
         "TCollection_ExtendedString.hxx",
-        "TColStd_HArray1OfReal.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
         "NCollection_DataMap.hxx"
       ]
     },
@@ -1116,7 +1121,8 @@
       "header_file": "ModelingAlgorithms/TKBool/BRepFill/BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape.hxx",
       "includes": [
         "TopoDS_Shape.hxx",
-        "TopTools_HArray2OfShape.hxx",
+        "NCollection_Array2.hxx",
+        "NCollection_HArray2.hxx",
         "TopTools_ShapeMapHasher.hxx",
         "NCollection_DataMap.hxx"
       ]
@@ -1531,7 +1537,8 @@
     {
       "header_file": "ModelingData/TKGeomBase/FEmTool/FEmTool_ListIteratorOfListOfVectors.hxx",
       "includes": [
-        "TColStd_HArray1OfReal.hxx",
+        "NCollection_Array1.hxx",
+        "NCollection_HArray1.hxx",
         "NCollection_List.hxx"
       ]
     },

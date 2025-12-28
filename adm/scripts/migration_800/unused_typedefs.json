@@ -3,29 +3,29 @@
     {
       "name": "TNaming_MapOfShape",
       "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
-      "start_line": 73,
-      "end_line": 73,
-      "is_ncollection": true
-    },
-    {
-      "name": "TNaming_MapIteratorOfMapOfShape",
-      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
-      "start_line": 74,
-      "end_line": 74,
-      "is_ncollection": true
-    },
-    {
-      "name": "TNaming_DataMapOfShapeMapOfShape",
-      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
       "start_line": 75,
       "end_line": 75,
       "is_ncollection": true
     },
     {
-      "name": "TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape",
+      "name": "TNaming_MapIteratorOfMapOfShape",
       "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
       "start_line": 76,
+      "end_line": 76,
+      "is_ncollection": true
+    },
+    {
+      "name": "TNaming_DataMapOfShapeMapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 77,
       "end_line": 77,
+      "is_ncollection": true
+    },
+    {
+      "name": "TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 78,
+      "end_line": 79,
       "is_ncollection": true
     },
     {
@@ -40,6 +40,34 @@
       "file": "ApplicationFramework/TKLCAF/TDF/TDF_Data.cxx",
       "start_line": 36,
       "end_line": 36,
+      "is_ncollection": true
+    },
+    {
+      "name": "StdPersistent_HArray1OfShape1",
+      "file": "ApplicationFramework/TKStd/StdPersistent/StdPersistent_HArray1.hxx",
+      "start_line": 22,
+      "end_line": 22,
+      "is_ncollection": true
+    },
+    {
+      "name": "StdLPersistent_HArray1OfPersistent",
+      "file": "ApplicationFramework/TKStdL/StdLPersistent/StdLPersistent_HArray1.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "is_ncollection": true
+    },
+    {
+      "name": "StdLPersistent_HArray2OfPersistent",
+      "file": "ApplicationFramework/TKStdL/StdLPersistent/StdLPersistent_HArray2.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
+      "name": "TObj_HSequenceOfObject",
+      "file": "ApplicationFramework/TKTObj/TObj/TObj_SequenceOfObject.hxx",
+      "start_line": 26,
+      "end_line": 26,
       "is_ncollection": true
     },
     {
@@ -85,17 +113,24 @@
       "is_ncollection": true
     },
     {
+      "name": "StepDimTol_HArray1OfDatumReferenceElement",
+      "file": "DataExchange/TKDESTEP/StepDimTol/StepDimTol_DatumOrCommonDatum.hxx",
+      "start_line": 30,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
       "name": "StepVisual_VectorOfHSequenceOfInteger",
       "file": "DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedCurveSet.hxx",
-      "start_line": 28,
-      "end_line": 29,
+      "start_line": 30,
+      "end_line": 31,
       "is_ncollection": true
     },
     {
       "name": "StepVisual_Array1OfTessellatedItem",
       "file": "DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedGeometricSet.hxx",
-      "start_line": 27,
-      "end_line": 27,
+      "start_line": 26,
+      "end_line": 26,
       "is_ncollection": true
     },
     {
@@ -129,8 +164,8 @@
     {
       "name": "SequenceOfDocNames",
       "file": "Draw/TKQADraw/QABugs/QABugs_20.cxx",
-      "start_line": 3268,
-      "end_line": 3268,
+      "start_line": 3270,
+      "end_line": 3270,
       "is_ncollection": true
     },
     {
@@ -225,6 +260,13 @@
       "is_ncollection": true
     },
     {
+      "name": "Storage_ArrayOfSchema",
+      "file": "FoundationClasses/TKernel/Storage/Storage_ArrayOfSchema.hxx",
+      "start_line": 23,
+      "end_line": 23,
+      "is_ncollection": true
+    },
+    {
       "name": "BOPAlgo_ListOfEdgeInfo",
       "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
       "start_line": 72,
@@ -269,8 +311,8 @@
     {
       "name": "IntPolyh_ArrayOfInteger",
       "file": "ModelingAlgorithms/TKGeomAlgo/IntPolyh/IntPolyh_MaillageAffinage.cxx",
-      "start_line": 50,
-      "end_line": 50,
+      "start_line": 52,
+      "end_line": 52,
       "is_ncollection": true
     },
     {
@@ -395,15 +437,15 @@
     {
       "name": "MeshVS_PolyhedronVerts",
       "file": "Visualization/TKMeshVS/MeshVS/MeshVS_SensitivePolyhedron.hxx",
-      "start_line": 26,
-      "end_line": 26,
+      "start_line": 29,
+      "end_line": 29,
       "is_ncollection": true
     },
     {
       "name": "MeshVS_PolyhedronVertsIter",
       "file": "Visualization/TKMeshVS/MeshVS/MeshVS_SensitivePolyhedron.hxx",
-      "start_line": 27,
-      "end_line": 27,
+      "start_line": 30,
+      "end_line": 30,
       "is_ncollection": true
     },
     {
@@ -673,6 +715,13 @@
       "is_ncollection": true
     },
     {
+      "name": "AIS_ManipulatorObjectSequence",
+      "file": "Visualization/TKV3d/AIS/AIS_Manipulator.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
       "name": "AIS_MouseGestureMap",
       "file": "Visualization/TKV3d/AIS/AIS_MouseGesture.hxx",
       "start_line": 48,
@@ -731,29 +780,29 @@
     {
       "name": "SelectMgr_TriangFrustums",
       "file": "Visualization/TKV3d/SelectMgr/SelectMgr_TriangularFrustumSet.hxx",
-      "start_line": 22,
-      "end_line": 22,
+      "start_line": 24,
+      "end_line": 24,
       "is_ncollection": true
     },
     {
       "name": "SelectMgr_MapOfObjectSensitives",
       "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
-      "start_line": 46,
-      "end_line": 48,
+      "start_line": 48,
+      "end_line": 50,
       "is_ncollection": true
     },
     {
       "name": "SelectMgr_MapOfObjectSensitivesIterator",
       "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
-      "start_line": 49,
-      "end_line": 51,
+      "start_line": 51,
+      "end_line": 53,
       "is_ncollection": true
     },
     {
       "name": "SelectMgr_FrustumCache",
       "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
-      "start_line": 53,
-      "end_line": 54,
+      "start_line": 55,
+      "end_line": 56,
       "is_ncollection": true
     },
     {
@@ -768,10 +817,15 @@
     "src/ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
     "src/ApplicationFramework/TKCDF/CDM/CDM_MetaDataLookUpTable.hxx",
     "src/ApplicationFramework/TKLCAF/TDF/TDF_Data.cxx",
+    "src/ApplicationFramework/TKStd/StdPersistent/StdPersistent_HArray1.hxx",
+    "src/ApplicationFramework/TKStdL/StdLPersistent/StdLPersistent_HArray1.hxx",
+    "src/ApplicationFramework/TKStdL/StdLPersistent/StdLPersistent_HArray2.hxx",
+    "src/ApplicationFramework/TKTObj/TObj/TObj_SequenceOfObject.hxx",
     "src/ApplicationFramework/TKTObj/TObj/TObj_TIntSparseArray.hxx",
     "src/DataExchange/TKDE/DE/DE_ConfigurationContext.hxx",
     "src/DataExchange/TKDE/DE/DE_Wrapper.hxx",
     "src/DataExchange/TKDEGLTF/RWGltf/RWGltf_GltfFace.hxx",
+    "src/DataExchange/TKDESTEP/StepDimTol/StepDimTol_DatumOrCommonDatum.hxx",
     "src/DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedCurveSet.hxx",
     "src/DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedGeometricSet.hxx",
     "src/DataExchange/TKRWMesh/RWMesh/RWMesh_NodeAttributes.hxx",
@@ -783,6 +837,7 @@
     "src/FoundationClasses/TKMath/Poly/Poly_CoherentTriangulation.hxx",
     "src/FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
     "src/FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+    "src/FoundationClasses/TKernel/Storage/Storage_ArrayOfSchema.hxx",
     "src/ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
     "src/ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter_1.cxx",
     "src/ModelingAlgorithms/TKBO/BOPDS/BOPDS_ListOfPaveBlock.hxx",
@@ -813,6 +868,7 @@
     "src/Visualization/TKService/Graphic3d/Graphic3d_Layer.hxx",
     "src/Visualization/TKService/Graphic3d/Graphic3d_ShaderProgram.hxx",
     "src/Visualization/TKService/Graphic3d/Graphic3d_StructureManager.hxx",
+    "src/Visualization/TKV3d/AIS/AIS_Manipulator.hxx",
     "src/Visualization/TKV3d/AIS/AIS_MouseGesture.hxx",
     "src/Visualization/TKV3d/PrsMgr/PrsMgr_ListOfPresentableObjects.hxx",
     "src/Visualization/TKV3d/Select3D/Select3D_BndBox3d.hxx",
