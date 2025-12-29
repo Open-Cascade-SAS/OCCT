@@ -25,9 +25,10 @@
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ToolSphere.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
+#include <NCollection_Sequence.hxx>
 #include <V3d.hxx>
 #include <V3d_View.hxx>
+class SelectMgr_EntityOwner;
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCube, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCubeOwner, SelectMgr_EntityOwner)

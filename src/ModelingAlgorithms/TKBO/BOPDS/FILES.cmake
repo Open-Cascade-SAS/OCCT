@@ -23,7 +23,6 @@ set(OCCT_BOPDS_FILES
   BOPDS_IteratorSI.cxx
   BOPDS_IteratorSI.hxx
 
-  BOPDS_ListOfPaveBlock.hxx
 
   BOPDS_Pave.cxx
   BOPDS_Pave.hxx

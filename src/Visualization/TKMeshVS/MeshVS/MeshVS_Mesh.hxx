@@ -23,7 +23,6 @@
 #include <NCollection_DataMap.hxx>
 #include <MeshVS_MeshSelectionMethod.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
 
 class MeshVS_PrsBuilder;
 class TColStd_HPackedMapOfInteger;

@@ -30,8 +30,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_UBTree<int, Bnd_Box> ShapeAnalysis_BoxBndTree;
-
 class ShapeAnalysis_BoxBndTreeSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
 {
 public:

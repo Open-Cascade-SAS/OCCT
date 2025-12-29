@@ -18,7 +18,7 @@
 #define _Graphic3d_Structure_HeaderFile
 
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_Group.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
@@ -27,6 +27,7 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <NCollection_IndexedMap.hxx>
+class Graphic3d_Structure;
 
 class Graphic3d_StructureManager;
 class Graphic3d_DataStructureManager;

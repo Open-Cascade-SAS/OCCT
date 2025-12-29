@@ -22,7 +22,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <BOPDS_PDS.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Bnd_Box.hxx>

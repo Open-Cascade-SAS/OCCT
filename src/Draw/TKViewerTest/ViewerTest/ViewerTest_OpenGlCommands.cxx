@@ -25,7 +25,10 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DoubleMap.hxx>
+class AIS_InteractiveObject;
 
 extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
   GetMapOfAIS();

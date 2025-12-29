@@ -11,7 +11,6 @@ set(OCCT_ViewerTest_FILES
   ViewerTest_ContinuousRedrawer.cxx
   ViewerTest_ContinuousRedrawer.hxx
 
-  ViewerTest_DoubleMapOfInteractiveAndName.hxx
   ViewerTest_EventManager.cxx
   ViewerTest_EventManager.hxx
   ViewerTest_FilletCommands.cxx

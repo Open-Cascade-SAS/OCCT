@@ -17,11 +17,12 @@
 #include <Standard_NullObject.hxx>
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_FrozenShape.hxx>
-#include <TopoDS_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
+class TopoDS_Shape;
 
 //=======================================================================
 // function : MakeShape

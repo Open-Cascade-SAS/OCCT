@@ -18,7 +18,7 @@
 #include <BOPAlgo_BuilderFace.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_BoxTree.hxx>
@@ -58,6 +58,7 @@
 #include <NCollection_Map.hxx>
 
 #include <algorithm>
+class BOPDS_PaveBlock;
 
 typedef NCollection_IndexedDataMap<TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher>
   BOPAlgo_IndexedDataMapOfShapeDir;

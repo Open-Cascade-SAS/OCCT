@@ -19,7 +19,7 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_PriorityDefinitionError.hxx>
 #include <Graphic3d_StructureDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
@@ -27,6 +27,7 @@
 #include <Standard_Dump.hxx>
 
 #include <cstdio>
+class Graphic3d_Structure;
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure, Standard_Transient)
 

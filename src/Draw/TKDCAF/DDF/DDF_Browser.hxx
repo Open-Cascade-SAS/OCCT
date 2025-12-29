@@ -19,11 +19,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_AttributeIndexedMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Standard_Integer.hxx>
+
+class TDF_Attribute;
 class TDF_Data;
 class Draw_Display;
 class TCollection_AsciiString;

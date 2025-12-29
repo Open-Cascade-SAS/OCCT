@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 
 #include <CDF_MetaDataDriver.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 
 class TCollection_ExtendedString;
 class CDM_MetaData;

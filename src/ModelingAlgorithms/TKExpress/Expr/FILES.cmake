@@ -19,7 +19,6 @@ set(OCCT_Expr_FILES
   Expr_ArgTanh.cxx
   Expr_ArgTanh.hxx
 
-  Expr_Array1OfNamedUnknown.hxx
 
   Expr_BinaryExpression.cxx
   Expr_BinaryExpression.hxx
