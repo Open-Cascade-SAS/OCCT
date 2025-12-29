@@ -81,7 +81,6 @@ private:
 
     MemBlock* Next() { return myNext; }
 
-    int       mySize;
     int*      myBlock;
     int*      myEndBlock;
     int*      myFreeSpace;

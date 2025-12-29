@@ -42,8 +42,7 @@ inline bool compareStrings(char* const str, const char* theString, const int the
 //=================================================================================================
 
 inline LDOM_MemManager::MemBlock::MemBlock(const int aSize, LDOM_MemManager::MemBlock* aFirst)
-    : mySize(aSize),
-      myNext(aFirst)
+    : myNext(aFirst)
 {
   myFreeSpace = myBlock = new int[aSize];
   myEndBlock            = myBlock + aSize;
@@ -254,28 +253,6 @@ LDOM_MemManager::LDOM_MemManager(const int aBlockSize)
 
 LDOM_MemManager::~LDOM_MemManager()
 {
-#ifdef OCCT_DEBUG
-  int       aSomme = 0, aCount = 0;
-  MemBlock* aBlock = myFirstBlock;
-  // FILE * out = fopen ("/tmp/dump","w");
-  while (aBlock)
-  {
-    aCount++;
-    aSomme += aBlock->mySize;
-    //    for (const int * aPtr = aBlock -> myBlock;
-    //         aPtr < aBlock -> myEndBlock; ) {
-    //      const char * aStr = (const char *) aPtr;
-    //      int aLen = strlen (aStr) + 1;
-    //      if (aLen > 1) fprintf (out, "%s\n", aStr);
-    //      aPtr += convertBlockSize (aLen);
-    //    }
-    aBlock = aBlock->Next();
-  }
-  if (aCount > 1)
-    std::cout << ".. Destroying " << aCount << " LDOM memory allocations: " << aSomme / 256 << " kB"
-              << std::endl;
-// fclose (out);
-#endif
   delete myFirstBlock;
   if (myHashTable)
     delete myHashTable;
