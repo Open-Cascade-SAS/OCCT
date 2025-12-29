@@ -22,6 +22,7 @@
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Dir.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -52,14 +53,16 @@ public:
   //! Internal structure for Bezier curve cache data.
   struct BezierData
   {
-    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    mutable occ::handle<BSplCLib_Cache>       Cache;     //!< Cached data for evaluation
+    mutable occ::handle<NCollection_IncAllocator> Allocator; //!< Allocator for cache building (future use)
   };
 
   //! Internal structure for BSpline curve cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineCurve>      Curve; //!< BSpline curve to prevent downcasts
-    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_BSplineCurve>            Curve;     //!< BSpline curve to prevent downcasts
+    mutable occ::handle<BSplCLib_Cache>       Cache;     //!< Cached data for evaluation
+    mutable occ::handle<NCollection_IncAllocator> Allocator; //!< Allocator for cache building (future use)
   };
 
   //! Variant type for curve-specific evaluation data.

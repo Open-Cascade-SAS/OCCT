@@ -20,6 +20,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -196,7 +197,13 @@ private:
                                               int                               theNV) const;
 
 private:
-  occ::handle<Geom_BSplineSurface> myGeom;
+  //! Prepare allocator for batch evaluation.
+  //! Creates or resets the allocator with block size suitable for batch operations.
+  void prepareAllocator() const;
+
+private:
+  occ::handle<Geom_BSplineSurface>          myGeom;
+  mutable occ::handle<NCollection_IncAllocator> myAllocator; //!< Allocator for batch evaluations
 };
 
 #endif // _GeomGridEval_BSplineSurface_HeaderFile

@@ -27,6 +27,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_NullObject.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #include <variant>
 
@@ -73,14 +74,16 @@ public:
   //! Internal structure for Bezier surface cache data.
   struct BezierData
   {
-    mutable occ::handle<BSplSLib_Cache> Cache; //!< Cached data for evaluation
+    mutable occ::handle<BSplSLib_Cache>       Cache;     //!< Cached data for evaluation
+    mutable occ::handle<NCollection_IncAllocator> Allocator; //!< Allocator for cache building
   };
 
   //! Internal structure for BSpline surface cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineSurface>    Surface; //!< BSpline surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache;   //!< Cached data for evaluation
+    occ::handle<Geom_BSplineSurface>          Surface;   //!< BSpline surface to prevent downcasts
+    mutable occ::handle<BSplSLib_Cache>       Cache;     //!< Cached data for evaluation
+    mutable occ::handle<NCollection_IncAllocator> Allocator; //!< Allocator for cache building
   };
 
   //! Variant type for surface-specific evaluation data.

@@ -26,6 +26,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -59,17 +60,103 @@ void validateBSplineDegree([[maybe_unused]] int theUDegree, [[maybe_unused]] int
                                "BSplSLib: bspline degree is greater than maximum supported");
 }
 
+//! Default stack threshold for NCollection_LocalArray fallback when no allocator provided.
+static constexpr size_t THE_LOCAL_STACK_SIZE = 64;
+
 //=======================================================================
 // struct : BSplSLib_DataContainer
 // purpose: Auxiliary structure providing buffers for poles and knots used in
-//         evaluation of bspline (allocated in the stack)
+//          evaluation of bspline. Uses stack allocation via NCollection_LocalArray.
 //=======================================================================
 struct BSplSLib_DataContainer
 {
-  double poles[4 * (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1)];
-  double knots1[2 * THE_MAX_DEGREE];
-  double knots2[2 * THE_MAX_DEGREE];
-  double ders[48];
+  //! Constructor with degree-based sizing (uses NCollection_LocalArray).
+  //! @param theUDegree degree in U direction
+  //! @param theVDegree degree in V direction
+  //! @param theRational true if surface may be rational (uses 4 components per pole)
+  BSplSLib_DataContainer(int theUDegree, int theVDegree, bool theRational)
+  {
+    const int    aDim        = theRational ? 4 : 3;
+    const size_t aPolesSize  = static_cast<size_t>(aDim) * (theUDegree + 1) * (theVDegree + 1);
+    const size_t aKnots1Size = static_cast<size_t>(2 * theUDegree);
+    const size_t aKnots2Size = static_cast<size_t>(2 * theVDegree);
+
+    myPolesLocal.Allocate(aPolesSize);
+    myKnots1Local.Allocate(aKnots1Size);
+    myKnots2Local.Allocate(aKnots2Size);
+    myDersLocal.Allocate(48);
+
+    poles  = myPolesLocal;
+    knots1 = myKnots1Local;
+    knots2 = myKnots2Local;
+    ders   = myDersLocal;
+  }
+
+  //! Default constructor for backward compatibility (uses maximum degree allocation).
+  //! Creates buffers sized for maximum supported degree with rational surface.
+  BSplSLib_DataContainer()
+  {
+    const size_t aPolesSize = 4 * (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1);
+    const size_t aKnotsSize = 2 * THE_MAX_DEGREE;
+
+    myPolesLocal.Allocate(aPolesSize);
+    myKnots1Local.Allocate(aKnotsSize);
+    myKnots2Local.Allocate(aKnotsSize);
+    myDersLocal.Allocate(48);
+
+    poles  = myPolesLocal;
+    knots1 = myKnots1Local;
+    knots2 = myKnots2Local;
+    ders   = myDersLocal;
+  }
+
+  // Public member pointers for backward compatibility with existing code
+  double* poles  = nullptr;
+  double* knots1 = nullptr;
+  double* knots2 = nullptr;
+  double* ders   = nullptr;
+
+private:
+  // Stack-based storage using NCollection_LocalArray
+  NCollection_LocalArray<double, THE_LOCAL_STACK_SIZE> myPolesLocal;
+  NCollection_LocalArray<double, THE_LOCAL_STACK_SIZE> myKnots1Local;
+  NCollection_LocalArray<double, THE_LOCAL_STACK_SIZE> myKnots2Local;
+  NCollection_LocalArray<double, 48>                   myDersLocal;
+};
+
+//=======================================================================
+// struct : BSplSLib_DataContainerAlloc
+// purpose: Auxiliary structure providing buffers for poles and knots used in
+//          evaluation of bspline. Uses allocator-based allocation (no stack usage).
+//=======================================================================
+struct BSplSLib_DataContainerAlloc
+{
+  //! Constructor with allocator-based sizing.
+  //! @param theUDegree degree in U direction
+  //! @param theVDegree degree in V direction
+  //! @param theRational true if surface may be rational (uses 4 components per pole)
+  //! @param theAllocator allocator for memory pooling
+  BSplSLib_DataContainerAlloc(int                                      theUDegree,
+                              int                                      theVDegree,
+                              bool                                     theRational,
+                              const Handle(NCollection_BaseAllocator)& theAllocator)
+  {
+    const int    aDim        = theRational ? 4 : 3;
+    const size_t aPolesSize  = static_cast<size_t>(aDim) * (theUDegree + 1) * (theVDegree + 1);
+    const size_t aKnots1Size = static_cast<size_t>(2 * theUDegree);
+    const size_t aKnots2Size = static_cast<size_t>(2 * theVDegree);
+
+    poles  = static_cast<double*>(theAllocator->Allocate(aPolesSize * sizeof(double)));
+    knots1 = static_cast<double*>(theAllocator->Allocate(aKnots1Size * sizeof(double)));
+    knots2 = static_cast<double*>(theAllocator->Allocate(aKnots2Size * sizeof(double)));
+    ders   = static_cast<double*>(theAllocator->Allocate(48 * sizeof(double)));
+  }
+
+  // Public member pointers
+  double* poles  = nullptr;
+  double* knots1 = nullptr;
+  double* knots2 = nullptr;
+  double* ders   = nullptr;
 };
 } // namespace
 
@@ -302,6 +389,9 @@ void BSplSLib::RationalDerivative(const int  UDeg,
 //  The first direction to compute (smaller degree) is returned
 //  and the poles are stored according to this direction.
 
+//! Template version of PrepareEval that works with any container type
+//! that provides poles, knots1, knots2 member pointers.
+template <typename DataContainer>
 static bool PrepareEval(const double                      U,
                         const double                      V,
                         const int                         Uindex,
@@ -323,7 +413,7 @@ static bool PrepareEval(const double                      U,
                         int&                              d1, // first degree
                         int&                              d2, // second degree
                         bool&                             rational,
-                        BSplSLib_DataContainer&           dc)
+                        DataContainer&                    dc)
 {
   rational    = URat || VRat;
   int uindex  = Uindex;
@@ -658,26 +748,10 @@ void BSplSLib::D0(const double                      U,
                   const bool                        VPer,
                   gp_Pnt&                           P)
 {
-  //  int k ;
   double W;
-  HomogeneousD0(U,
-                V,
-                UIndex,
-                VIndex,
-                Poles,
-                Weights,
-                UKnots,
-                VKnots,
-                UMults,
-                VMults,
-                UDegree,
-                VDegree,
-                URat,
-                VRat,
-                UPer,
-                VPer,
-                W,
-                P);
+  HomogeneousD0(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                W, P);
   P.SetX(P.X() / W);
   P.SetY(P.Y() / W);
   P.SetZ(P.Z() / W);
@@ -685,56 +759,68 @@ void BSplSLib::D0(const double                      U,
 
 //=================================================================================================
 
-void BSplSLib::HomogeneousD0(const double                      U,
-                             const double                      V,
-                             const int                         UIndex,
-                             const int                         VIndex,
-                             const NCollection_Array2<gp_Pnt>& Poles,
-                             const NCollection_Array2<double>* Weights,
-                             const NCollection_Array1<double>& UKnots,
-                             const NCollection_Array1<double>& VKnots,
-                             const NCollection_Array1<int>*    UMults,
-                             const NCollection_Array1<int>*    VMults,
-                             const int                         UDegree,
-                             const int                         VDegree,
-                             const bool                        URat,
-                             const bool                        VRat,
-                             const bool                        UPer,
-                             const bool                        VPer,
-                             double&                           W,
-                             gp_Pnt&                           P)
+void BSplSLib::D0(const double                             U,
+                  const double                             V,
+                  const int                                UIndex,
+                  const int                                VIndex,
+                  const NCollection_Array2<gp_Pnt>&        Poles,
+                  const NCollection_Array2<double>*        Weights,
+                  const NCollection_Array1<double>&        UKnots,
+                  const NCollection_Array1<double>&        VKnots,
+                  const NCollection_Array1<int>*           UMults,
+                  const NCollection_Array1<int>*           VMults,
+                  const int                                UDegree,
+                  const int                                VDegree,
+                  const bool                               URat,
+                  const bool                               VRat,
+                  const bool                               UPer,
+                  const bool                               VPer,
+                  gp_Pnt&                                  P,
+                  const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  bool rational;
-  //  int k,dim;
+  double W;
+  HomogeneousD0(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                W, P, theAllocator);
+  P.SetX(P.X() / W);
+  P.SetY(P.Y() / W);
+  P.SetZ(P.Z() / W);
+}
+
+//=================================================================================================
+
+//! Internal implementation of HomogeneousD0 that works with any container type.
+template <typename DataContainer>
+static void HomogeneousD0Impl(const double                      U,
+                              const double                      V,
+                              const int                         UIndex,
+                              const int                         VIndex,
+                              const NCollection_Array2<gp_Pnt>& Poles,
+                              const NCollection_Array2<double>* Weights,
+                              const NCollection_Array1<double>& UKnots,
+                              const NCollection_Array1<double>& VKnots,
+                              const NCollection_Array1<int>*    UMults,
+                              const NCollection_Array1<int>*    VMults,
+                              const int                         UDegree,
+                              const int                         VDegree,
+                              const bool                        URat,
+                              const bool                        VRat,
+                              const bool                        UPer,
+                              const bool                        VPer,
+                              double&                           W,
+                              gp_Pnt&                           P,
+                              DataContainer&                    dc)
+{
+  bool   rational;
   int    dim;
   double u1, u2;
   int    d1, d2;
   W = 1.0e0;
 
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  PrepareEval(U,
-              V,
-              UIndex,
-              VIndex,
-              UDegree,
-              VDegree,
-              URat,
-              VRat,
-              UPer,
-              VPer,
-              Poles,
-              Weights,
-              UKnots,
-              VKnots,
-              UMults,
-              VMults,
-              u1,
-              u2,
-              d1,
-              d2,
-              rational,
-              dc);
+  PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+              Poles, Weights, UKnots, VKnots, UMults, VMults,
+              u1, u2, d1, d2, rational, dc);
+
   if (rational)
   {
     dim = 4;
@@ -756,58 +842,99 @@ void BSplSLib::HomogeneousD0(const double                      U,
   }
 }
 
+void BSplSLib::HomogeneousD0(const double                      U,
+                             const double                      V,
+                             const int                         UIndex,
+                             const int                         VIndex,
+                             const NCollection_Array2<gp_Pnt>& Poles,
+                             const NCollection_Array2<double>* Weights,
+                             const NCollection_Array1<double>& UKnots,
+                             const NCollection_Array1<double>& VKnots,
+                             const NCollection_Array1<int>*    UMults,
+                             const NCollection_Array1<int>*    VMults,
+                             const int                         UDegree,
+                             const int                         VDegree,
+                             const bool                        URat,
+                             const bool                        VRat,
+                             const bool                        UPer,
+                             const bool                        VPer,
+                             double&                           W,
+                             gp_Pnt&                           P)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  HomogeneousD0Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                    UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                    W, P, dc);
+}
+
 //=================================================================================================
 
-void BSplSLib::D1(const double                      U,
-                  const double                      V,
-                  const int                         UIndex,
-                  const int                         VIndex,
-                  const NCollection_Array2<gp_Pnt>& Poles,
-                  const NCollection_Array2<double>* Weights,
-                  const NCollection_Array1<double>& UKnots,
-                  const NCollection_Array1<double>& VKnots,
-                  const NCollection_Array1<int>*    UMults,
-                  const NCollection_Array1<int>*    VMults,
-                  const int                         UDegree,
-                  const int                         VDegree,
-                  const bool                        URat,
-                  const bool                        VRat,
-                  const bool                        UPer,
-                  const bool                        VPer,
-                  gp_Pnt&                           P,
-                  gp_Vec&                           Vu,
-                  gp_Vec&                           Vv)
+void BSplSLib::HomogeneousD0(const double                             U,
+                             const double                             V,
+                             const int                                UIndex,
+                             const int                                VIndex,
+                             const NCollection_Array2<gp_Pnt>&        Poles,
+                             const NCollection_Array2<double>*        Weights,
+                             const NCollection_Array1<double>&        UKnots,
+                             const NCollection_Array1<double>&        VKnots,
+                             const NCollection_Array1<int>*           UMults,
+                             const NCollection_Array1<int>*           VMults,
+                             const int                                UDegree,
+                             const int                                VDegree,
+                             const bool                               URat,
+                             const bool                               VRat,
+                             const bool                               UPer,
+                             const bool                               VPer,
+                             double&                                  W,
+                             gp_Pnt&                                  P,
+                             const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  bool rational;
-  //  int k,dim,dim2;
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  HomogeneousD0Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                    UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                    W, P, dc);
+}
+
+//=================================================================================================
+
+//! Internal implementation of D1 that works with any container type.
+template <typename DataContainer>
+static void D1Impl(const double                      U,
+                   const double                      V,
+                   const int                         UIndex,
+                   const int                         VIndex,
+                   const NCollection_Array2<gp_Pnt>& Poles,
+                   const NCollection_Array2<double>* Weights,
+                   const NCollection_Array1<double>& UKnots,
+                   const NCollection_Array1<double>& VKnots,
+                   const NCollection_Array1<int>*    UMults,
+                   const NCollection_Array1<int>*    VMults,
+                   const int                         UDegree,
+                   const int                         VDegree,
+                   const bool                        URat,
+                   const bool                        VRat,
+                   const bool                        UPer,
+                   const bool                        VPer,
+                   gp_Pnt&                           P,
+                   gp_Vec&                           Vu,
+                   gp_Vec&                           Vv,
+                   DataContainer&                    dc)
+{
+  bool    rational;
   int     dim, dim2;
   double  u1, u2;
   int     d1, d2;
   double *result, *resVu, *resVv;
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  if (PrepareEval(U,
-                  V,
-                  UIndex,
-                  VIndex,
-                  UDegree,
-                  VDegree,
-                  URat,
-                  VRat,
-                  UPer,
-                  VPer,
-                  Poles,
-                  Weights,
-                  UKnots,
-                  VKnots,
-                  UMults,
-                  VMults,
-                  u1,
-                  u2,
-                  d1,
-                  d2,
-                  rational,
-                  dc))
+
+  if (PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+                  Poles, Weights, UKnots, VKnots, UMults, VMults,
+                  u1, u2, d1, d2, rational, dc))
   {
     if (rational)
     {
@@ -875,33 +1002,96 @@ void BSplSLib::D1(const double                      U,
   Vv.SetZ(resVv[2]);
 }
 
+void BSplSLib::D1(const double                      U,
+                  const double                      V,
+                  const int                         UIndex,
+                  const int                         VIndex,
+                  const NCollection_Array2<gp_Pnt>& Poles,
+                  const NCollection_Array2<double>* Weights,
+                  const NCollection_Array1<double>& UKnots,
+                  const NCollection_Array1<double>& VKnots,
+                  const NCollection_Array1<int>*    UMults,
+                  const NCollection_Array1<int>*    VMults,
+                  const int                         UDegree,
+                  const int                         VDegree,
+                  const bool                        URat,
+                  const bool                        VRat,
+                  const bool                        UPer,
+                  const bool                        VPer,
+                  gp_Pnt&                           P,
+                  gp_Vec&                           Vu,
+                  gp_Vec&                           Vv)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  D1Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, dc);
+}
+
 //=================================================================================================
 
-void BSplSLib::HomogeneousD1(const double                      U,
-                             const double                      V,
-                             const int                         UIndex,
-                             const int                         VIndex,
-                             const NCollection_Array2<gp_Pnt>& Poles,
-                             const NCollection_Array2<double>* Weights,
-                             const NCollection_Array1<double>& UKnots,
-                             const NCollection_Array1<double>& VKnots,
-                             const NCollection_Array1<int>*    UMults,
-                             const NCollection_Array1<int>*    VMults,
-                             const int                         UDegree,
-                             const int                         VDegree,
-                             const bool                        URat,
-                             const bool                        VRat,
-                             const bool                        UPer,
-                             const bool                        VPer,
-                             gp_Pnt&                           N,
-                             gp_Vec&                           Nu,
-                             gp_Vec&                           Nv,
-                             double&                           D,
-                             double&                           Du,
-                             double&                           Dv)
+void BSplSLib::D1(const double                             U,
+                  const double                             V,
+                  const int                                UIndex,
+                  const int                                VIndex,
+                  const NCollection_Array2<gp_Pnt>&        Poles,
+                  const NCollection_Array2<double>*        Weights,
+                  const NCollection_Array1<double>&        UKnots,
+                  const NCollection_Array1<double>&        VKnots,
+                  const NCollection_Array1<int>*           UMults,
+                  const NCollection_Array1<int>*           VMults,
+                  const int                                UDegree,
+                  const int                                VDegree,
+                  const bool                               URat,
+                  const bool                               VRat,
+                  const bool                               UPer,
+                  const bool                               VPer,
+                  gp_Pnt&                                  P,
+                  gp_Vec&                                  Vu,
+                  gp_Vec&                                  Vv,
+                  const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  bool rational;
-  //  int k,dim;
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  D1Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, dc);
+}
+
+//=================================================================================================
+
+//! Internal implementation of HomogeneousD1 that works with any container type.
+template <typename DataContainer>
+static void HomogeneousD1Impl(const double                      U,
+                              const double                      V,
+                              const int                         UIndex,
+                              const int                         VIndex,
+                              const NCollection_Array2<gp_Pnt>& Poles,
+                              const NCollection_Array2<double>* Weights,
+                              const NCollection_Array1<double>& UKnots,
+                              const NCollection_Array1<double>& VKnots,
+                              const NCollection_Array1<int>*    UMults,
+                              const NCollection_Array1<int>*    VMults,
+                              const int                         UDegree,
+                              const int                         VDegree,
+                              const bool                        URat,
+                              const bool                        VRat,
+                              const bool                        UPer,
+                              const bool                        VPer,
+                              gp_Pnt&                           N,
+                              gp_Vec&                           Nu,
+                              gp_Vec&                           Nv,
+                              double&                           D,
+                              double&                           Du,
+                              double&                           Dv,
+                              DataContainer&                    dc)
+{
+  bool   rational;
   int    dim;
   double u1, u2;
   int    d1, d2;
@@ -909,31 +1099,11 @@ void BSplSLib::HomogeneousD1(const double                      U,
   D  = 1.0e0;
   Du = 0.0e0;
   Dv = 0.0e0;
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  bool                   ufirst = PrepareEval(U,
-                            V,
-                            UIndex,
-                            VIndex,
-                            UDegree,
-                            VDegree,
-                            URat,
-                            VRat,
-                            UPer,
-                            VPer,
-                            Poles,
-                            Weights,
-                            UKnots,
-                            VKnots,
-                            UMults,
-                            VMults,
-                            u1,
-                            u2,
-                            d1,
-                            d2,
-                            rational,
-                            dc);
-  dim                           = rational ? 4 : 3;
+
+  bool ufirst = PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+                            Poles, Weights, UKnots, VKnots, UMults, VMults,
+                            u1, u2, d1, d2, rational, dc);
+  dim         = rational ? 4 : 3;
 
   BSplCLib::Bohm(u1, d1, 1, *dc.knots1, dim * (d2 + 1), *dc.poles);
   BSplCLib::Bohm(u2, d2, 1, *dc.knots2, dim, *dc.poles);
@@ -964,62 +1134,111 @@ void BSplSLib::HomogeneousD1(const double                      U,
   }
 }
 
+void BSplSLib::HomogeneousD1(const double                      U,
+                             const double                      V,
+                             const int                         UIndex,
+                             const int                         VIndex,
+                             const NCollection_Array2<gp_Pnt>& Poles,
+                             const NCollection_Array2<double>* Weights,
+                             const NCollection_Array1<double>& UKnots,
+                             const NCollection_Array1<double>& VKnots,
+                             const NCollection_Array1<int>*    UMults,
+                             const NCollection_Array1<int>*    VMults,
+                             const int                         UDegree,
+                             const int                         VDegree,
+                             const bool                        URat,
+                             const bool                        VRat,
+                             const bool                        UPer,
+                             const bool                        VPer,
+                             gp_Pnt&                           N,
+                             gp_Vec&                           Nu,
+                             gp_Vec&                           Nv,
+                             double&                           D,
+                             double&                           Du,
+                             double&                           Dv)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  HomogeneousD1Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                    UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                    N, Nu, Nv, D, Du, Dv, dc);
+}
+
 //=================================================================================================
 
-void BSplSLib::D2(const double                      U,
-                  const double                      V,
-                  const int                         UIndex,
-                  const int                         VIndex,
-                  const NCollection_Array2<gp_Pnt>& Poles,
-                  const NCollection_Array2<double>* Weights,
-                  const NCollection_Array1<double>& UKnots,
-                  const NCollection_Array1<double>& VKnots,
-                  const NCollection_Array1<int>*    UMults,
-                  const NCollection_Array1<int>*    VMults,
-                  const int                         UDegree,
-                  const int                         VDegree,
-                  const bool                        URat,
-                  const bool                        VRat,
-                  const bool                        UPer,
-                  const bool                        VPer,
-                  gp_Pnt&                           P,
-                  gp_Vec&                           Vu,
-                  gp_Vec&                           Vv,
-                  gp_Vec&                           Vuu,
-                  gp_Vec&                           Vvv,
-                  gp_Vec&                           Vuv)
+void BSplSLib::HomogeneousD1(const double                             U,
+                             const double                             V,
+                             const int                                UIndex,
+                             const int                                VIndex,
+                             const NCollection_Array2<gp_Pnt>&        Poles,
+                             const NCollection_Array2<double>*        Weights,
+                             const NCollection_Array1<double>&        UKnots,
+                             const NCollection_Array1<double>&        VKnots,
+                             const NCollection_Array1<int>*           UMults,
+                             const NCollection_Array1<int>*           VMults,
+                             const int                                UDegree,
+                             const int                                VDegree,
+                             const bool                               URat,
+                             const bool                               VRat,
+                             const bool                               UPer,
+                             const bool                               VPer,
+                             gp_Pnt&                                  N,
+                             gp_Vec&                                  Nu,
+                             gp_Vec&                                  Nv,
+                             double&                                  D,
+                             double&                                  Du,
+                             double&                                  Dv,
+                             const Handle(NCollection_BaseAllocator)& theAllocator)
 {
-  bool rational;
-  //  int k,dim,dim2;
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  HomogeneousD1Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+                    UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+                    N, Nu, Nv, D, Du, Dv, dc);
+}
+
+//=================================================================================================
+
+//! Internal implementation of D2 that works with any container type.
+template <typename DataContainer>
+static void D2Impl(const double                      U,
+                   const double                      V,
+                   const int                         UIndex,
+                   const int                         VIndex,
+                   const NCollection_Array2<gp_Pnt>& Poles,
+                   const NCollection_Array2<double>* Weights,
+                   const NCollection_Array1<double>& UKnots,
+                   const NCollection_Array1<double>& VKnots,
+                   const NCollection_Array1<int>*    UMults,
+                   const NCollection_Array1<int>*    VMults,
+                   const int                         UDegree,
+                   const int                         VDegree,
+                   const bool                        URat,
+                   const bool                        VRat,
+                   const bool                        UPer,
+                   const bool                        VPer,
+                   gp_Pnt&                           P,
+                   gp_Vec&                           Vu,
+                   gp_Vec&                           Vv,
+                   gp_Vec&                           Vuu,
+                   gp_Vec&                           Vvv,
+                   gp_Vec&                           Vuv,
+                   DataContainer&                    dc)
+{
+  bool          rational;
   int           dim, dim2;
   double        u1, u2;
   int           d1, d2;
   double*       result;
   const double *resVu, *resVv, *resVuu, *resVvv, *resVuv;
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  if (PrepareEval(U,
-                  V,
-                  UIndex,
-                  VIndex,
-                  UDegree,
-                  VDegree,
-                  URat,
-                  VRat,
-                  UPer,
-                  VPer,
-                  Poles,
-                  Weights,
-                  UKnots,
-                  VKnots,
-                  UMults,
-                  VMults,
-                  u1,
-                  u2,
-                  d1,
-                  d2,
-                  rational,
-                  dc))
+
+  if (PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+                  Poles, Weights, UKnots, VKnots, UMults, VMults,
+                  u1, u2, d1, d2, rational, dc))
   {
     if (rational)
     {
@@ -1128,9 +1347,7 @@ void BSplSLib::D2(const double                      U,
   Vuv.SetZ(resVuv[2]);
 }
 
-//=================================================================================================
-
-void BSplSLib::D3(const double                      U,
+void BSplSLib::D2(const double                      U,
                   const double                      V,
                   const int                         UIndex,
                   const int                         VIndex,
@@ -1151,43 +1368,94 @@ void BSplSLib::D3(const double                      U,
                   gp_Vec&                           Vv,
                   gp_Vec&                           Vuu,
                   gp_Vec&                           Vvv,
-                  gp_Vec&                           Vuv,
-                  gp_Vec&                           Vuuu,
-                  gp_Vec&                           Vvvv,
-                  gp_Vec&                           Vuuv,
-                  gp_Vec&                           Vuvv)
+                  gp_Vec&                           Vuv)
 {
-  bool rational;
-  //  int k,dim,dim2;
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  D2Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, Vuu, Vvv, Vuv, dc);
+}
+
+//=================================================================================================
+
+void BSplSLib::D2(const double                             U,
+                  const double                             V,
+                  const int                                UIndex,
+                  const int                                VIndex,
+                  const NCollection_Array2<gp_Pnt>&        Poles,
+                  const NCollection_Array2<double>*        Weights,
+                  const NCollection_Array1<double>&        UKnots,
+                  const NCollection_Array1<double>&        VKnots,
+                  const NCollection_Array1<int>*           UMults,
+                  const NCollection_Array1<int>*           VMults,
+                  const int                                UDegree,
+                  const int                                VDegree,
+                  const bool                               URat,
+                  const bool                               VRat,
+                  const bool                               UPer,
+                  const bool                               VPer,
+                  gp_Pnt&                                  P,
+                  gp_Vec&                                  Vu,
+                  gp_Vec&                                  Vv,
+                  gp_Vec&                                  Vuu,
+                  gp_Vec&                                  Vvv,
+                  gp_Vec&                                  Vuv,
+                  const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  D2Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, Vuu, Vvv, Vuv, dc);
+}
+
+//=================================================================================================
+
+//! Internal implementation of D3 that works with any container type.
+template <typename DataContainer>
+static void D3Impl(const double                      U,
+                   const double                      V,
+                   const int                         UIndex,
+                   const int                         VIndex,
+                   const NCollection_Array2<gp_Pnt>& Poles,
+                   const NCollection_Array2<double>* Weights,
+                   const NCollection_Array1<double>& UKnots,
+                   const NCollection_Array1<double>& VKnots,
+                   const NCollection_Array1<int>*    UMults,
+                   const NCollection_Array1<int>*    VMults,
+                   const int                         UDegree,
+                   const int                         VDegree,
+                   const bool                        URat,
+                   const bool                        VRat,
+                   const bool                        UPer,
+                   const bool                        VPer,
+                   gp_Pnt&                           P,
+                   gp_Vec&                           Vu,
+                   gp_Vec&                           Vv,
+                   gp_Vec&                           Vuu,
+                   gp_Vec&                           Vvv,
+                   gp_Vec&                           Vuv,
+                   gp_Vec&                           Vuuu,
+                   gp_Vec&                           Vvvv,
+                   gp_Vec&                           Vuuv,
+                   gp_Vec&                           Vuvv,
+                   DataContainer&                    dc)
+{
+  bool          rational;
   int           dim, dim2;
   double        u1, u2;
   int           d1, d2;
   double*       result;
   const double *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv, *resVuvv;
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  if (PrepareEval(U,
-                  V,
-                  UIndex,
-                  VIndex,
-                  UDegree,
-                  VDegree,
-                  URat,
-                  VRat,
-                  UPer,
-                  VPer,
-                  Poles,
-                  Weights,
-                  UKnots,
-                  VKnots,
-                  UMults,
-                  VMults,
-                  u1,
-                  u2,
-                  d1,
-                  d2,
-                  rational,
-                  dc))
+
+  if (PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+                  Poles, Weights, UKnots, VKnots, UMults, VMults,
+                  u1, u2, d1, d2, rational, dc))
   {
     if (rational)
     {
@@ -1364,7 +1632,152 @@ void BSplSLib::D3(const double                      U,
   Vuvv.SetZ(resVuvv[2]);
 }
 
+void BSplSLib::D3(const double                      U,
+                  const double                      V,
+                  const int                         UIndex,
+                  const int                         VIndex,
+                  const NCollection_Array2<gp_Pnt>& Poles,
+                  const NCollection_Array2<double>* Weights,
+                  const NCollection_Array1<double>& UKnots,
+                  const NCollection_Array1<double>& VKnots,
+                  const NCollection_Array1<int>*    UMults,
+                  const NCollection_Array1<int>*    VMults,
+                  const int                         UDegree,
+                  const int                         VDegree,
+                  const bool                        URat,
+                  const bool                        VRat,
+                  const bool                        UPer,
+                  const bool                        VPer,
+                  gp_Pnt&                           P,
+                  gp_Vec&                           Vu,
+                  gp_Vec&                           Vv,
+                  gp_Vec&                           Vuu,
+                  gp_Vec&                           Vvv,
+                  gp_Vec&                           Vuv,
+                  gp_Vec&                           Vuuu,
+                  gp_Vec&                           Vvvv,
+                  gp_Vec&                           Vuuv,
+                  gp_Vec&                           Vuvv)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  D3Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv, dc);
+}
+
 //=================================================================================================
+
+void BSplSLib::D3(const double                             U,
+                  const double                             V,
+                  const int                                UIndex,
+                  const int                                VIndex,
+                  const NCollection_Array2<gp_Pnt>&        Poles,
+                  const NCollection_Array2<double>*        Weights,
+                  const NCollection_Array1<double>&        UKnots,
+                  const NCollection_Array1<double>&        VKnots,
+                  const NCollection_Array1<int>*           UMults,
+                  const NCollection_Array1<int>*           VMults,
+                  const int                                UDegree,
+                  const int                                VDegree,
+                  const bool                               URat,
+                  const bool                               VRat,
+                  const bool                               UPer,
+                  const bool                               VPer,
+                  gp_Pnt&                                  P,
+                  gp_Vec&                                  Vu,
+                  gp_Vec&                                  Vv,
+                  gp_Vec&                                  Vuu,
+                  gp_Vec&                                  Vvv,
+                  gp_Vec&                                  Vuv,
+                  gp_Vec&                                  Vuuu,
+                  gp_Vec&                                  Vvvv,
+                  gp_Vec&                                  Vuuv,
+                  gp_Vec&                                  Vuvv,
+                  const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  D3Impl(U, V, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer,
+         P, Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv, dc);
+}
+
+//=================================================================================================
+
+//! Internal implementation of DN that works with any container type.
+//! @return true if successful, false if derivative is zero due to degree constraints.
+template <typename DataContainer>
+static bool DNImpl(const double                      U,
+                   const double                      V,
+                   const int                         Nu,
+                   const int                         Nv,
+                   const int                         UIndex,
+                   const int                         VIndex,
+                   const NCollection_Array2<gp_Pnt>& Poles,
+                   const NCollection_Array2<double>* Weights,
+                   const NCollection_Array1<double>& UKnots,
+                   const NCollection_Array1<double>& VKnots,
+                   const NCollection_Array1<int>*    UMults,
+                   const NCollection_Array1<int>*    VMults,
+                   const int                         UDegree,
+                   const int                         VDegree,
+                   const bool                        URat,
+                   const bool                        VRat,
+                   const bool                        UPer,
+                   const bool                        VPer,
+                   gp_Vec&                           Vn,
+                   DataContainer&                    dc)
+{
+  bool   rational;
+  int    k, dim;
+  double u1, u2;
+  int    d1, d2;
+
+  bool ufirst = PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree, URat, VRat, UPer, VPer,
+                            Poles, Weights, UKnots, VKnots, UMults, VMults,
+                            u1, u2, d1, d2, rational, dc);
+  dim         = rational ? 4 : 3;
+
+  if (!rational)
+  {
+    if ((Nu > UDegree) || (Nv > VDegree))
+    {
+      Vn.SetX(0.);
+      Vn.SetY(0.);
+      Vn.SetZ(0.);
+      return false;
+    }
+  }
+
+  int n1 = ufirst ? Nu : Nv;
+  int n2 = ufirst ? Nv : Nu;
+
+  BSplCLib::Bohm(u1, d1, n1, *dc.knots1, dim * (d2 + 1), *dc.poles);
+
+  for (k = 0; k <= std::min(n1, d1); k++)
+    BSplCLib::Bohm(u2, d2, n2, *dc.knots2, dim, *(dc.poles + k * dim * (d2 + 1)));
+
+  double* result;
+  if (rational)
+  {
+    BSplSLib::RationalDerivative(d1, d2, n1, n2, *dc.poles, *dc.ders, false);
+    result = dc.ders;
+  }
+  else
+  {
+    result = dc.poles + (n1 * (d2 + 1) + n2) * dim;
+  }
+
+  Vn.SetX(result[0]);
+  Vn.SetY(result[1]);
+  Vn.SetZ(result[2]);
+  return true;
+}
 
 void BSplSLib::DN(const double                      U,
                   const double                      V,
@@ -1386,70 +1799,43 @@ void BSplSLib::DN(const double                      U,
                   const bool                        VPer,
                   gp_Vec&                           Vn)
 {
-  bool   rational;
-  int    k, dim;
-  double u1, u2;
-  int    d1, d2;
-
   validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  bool                   ufirst = PrepareEval(U,
-                            V,
-                            UIndex,
-                            VIndex,
-                            UDegree,
-                            VDegree,
-                            URat,
-                            VRat,
-                            UPer,
-                            VPer,
-                            Poles,
-                            Weights,
-                            UKnots,
-                            VKnots,
-                            UMults,
-                            VMults,
-                            u1,
-                            u2,
-                            d1,
-                            d2,
-                            rational,
-                            dc);
-  dim                           = rational ? 4 : 3;
 
-  if (!rational)
-  {
-    if ((Nu > UDegree) || (Nv > VDegree))
-    {
-      Vn.SetX(0.);
-      Vn.SetY(0.);
-      Vn.SetZ(0.);
-      return;
-    }
-  }
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, URat || VRat);
+  DNImpl(U, V, Nu, Nv, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer, Vn, dc);
+}
 
-  int n1 = ufirst ? Nu : Nv;
-  int n2 = ufirst ? Nv : Nu;
+//=================================================================================================
 
-  BSplCLib::Bohm(u1, d1, n1, *dc.knots1, dim * (d2 + 1), *dc.poles);
+void BSplSLib::DN(const double                             U,
+                  const double                             V,
+                  const int                                Nu,
+                  const int                                Nv,
+                  const int                                UIndex,
+                  const int                                VIndex,
+                  const NCollection_Array2<gp_Pnt>&        Poles,
+                  const NCollection_Array2<double>*        Weights,
+                  const NCollection_Array1<double>&        UKnots,
+                  const NCollection_Array1<double>&        VKnots,
+                  const NCollection_Array1<int>*           UMults,
+                  const NCollection_Array1<int>*           VMults,
+                  const int                                UDegree,
+                  const int                                VDegree,
+                  const bool                               URat,
+                  const bool                               VRat,
+                  const bool                               UPer,
+                  const bool                               VPer,
+                  gp_Vec&                                  Vn,
+                  const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  validateBSplineDegree(UDegree, VDegree);
 
-  for (k = 0; k <= std::min(n1, d1); k++)
-    BSplCLib::Bohm(u2, d2, n2, *dc.knots2, dim, *(dc.poles + k * dim * (d2 + 1)));
-
-  double* result;
-  if (rational)
-  {
-    BSplSLib::RationalDerivative(d1, d2, n1, n2, *dc.poles, *dc.ders, false);
-    result = dc.ders; // because false ci-dessus.
-  }
-  else
-  {
-    result = dc.poles + (n1 * (d2 + 1) + n2) * dim;
-  }
-
-  Vn.SetX(result[0]);
-  Vn.SetY(result[1]);
-  Vn.SetZ(result[2]);
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, URat || VRat, theAllocator);
+  DNImpl(U, V, Nu, Nv, UIndex, VIndex, Poles, Weights, UKnots, VKnots,
+         UMults, VMults, UDegree, VDegree, URat, VRat, UPer, VPer, Vn, dc);
 }
 
 //
@@ -2182,22 +2568,25 @@ void BSplSLib::Unperiodize(const bool                        UDirection,
 //           stored in homogeneous form
 //=======================================================================
 
-void BSplSLib::BuildCache(const double                      U,
-                          const double                      V,
-                          const double                      USpanDomain,
-                          const double                      VSpanDomain,
-                          const bool                        UPeriodic,
-                          const bool                        VPeriodic,
-                          const int                         UDegree,
-                          const int                         VDegree,
-                          const int                         UIndex,
-                          const int                         VIndex,
-                          const NCollection_Array1<double>& UFlatKnots,
-                          const NCollection_Array1<double>& VFlatKnots,
-                          const NCollection_Array2<gp_Pnt>& Poles,
-                          const NCollection_Array2<double>* Weights,
-                          NCollection_Array2<gp_Pnt>&       CachePoles,
-                          NCollection_Array2<double>*       CacheWeights)
+//! Internal implementation of BuildCache that works with any container type.
+template <typename DataContainer>
+static void BuildCacheImpl1(const double                      U,
+                            const double                      V,
+                            const double                      USpanDomain,
+                            const double                      VSpanDomain,
+                            const bool                        UPeriodic,
+                            const bool                        VPeriodic,
+                            const int                         UDegree,
+                            const int                         VDegree,
+                            const int                         UIndex,
+                            const int                         VIndex,
+                            const NCollection_Array1<double>& UFlatKnots,
+                            const NCollection_Array1<double>& VFlatKnots,
+                            const NCollection_Array2<gp_Pnt>& Poles,
+                            const NCollection_Array2<double>* Weights,
+                            NCollection_Array2<gp_Pnt>&       CachePoles,
+                            NCollection_Array2<double>*       CacheWeights,
+                            DataContainer&                    dc)
 {
   bool   rational, rational_u, rational_v, flag_u_or_v;
   int    kk, d1, d1p1, d2, d2p1, ii, jj, iii, jjj, Index;
@@ -2206,30 +2595,12 @@ void BSplSLib::BuildCache(const double                      U,
     rational_u = rational_v = true;
   else
     rational_u = rational_v = false;
-  validateBSplineDegree(UDegree, VDegree);
-  BSplSLib_DataContainer dc;
-  flag_u_or_v = PrepareEval(U,
-                            V,
-                            UIndex,
-                            VIndex,
-                            UDegree,
-                            VDegree,
-                            rational_u,
-                            rational_v,
-                            UPeriodic,
-                            VPeriodic,
-                            Poles,
-                            Weights,
-                            UFlatKnots,
-                            VFlatKnots,
-                            (BSplCLib::NoMults()),
-                            (BSplCLib::NoMults()),
-                            u1,
-                            u2,
-                            d1,
-                            d2,
-                            rational,
-                            dc);
+
+  flag_u_or_v = PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree,
+                            rational_u, rational_v, UPeriodic, VPeriodic,
+                            Poles, Weights, UFlatKnots, VFlatKnots,
+                            BSplCLib::NoMults(), BSplCLib::NoMults(),
+                            u1, u2, d1, d2, rational, dc);
   d1p1        = d1 + 1;
   d2p1        = d2 + 1;
   if (rational)
@@ -2315,15 +2686,11 @@ void BSplSLib::BuildCache(const double                      U,
     }
     if (Weights != nullptr)
     {
-      //
       // means that PrepareEval did found out that the surface was
       // locally polynomial but since the surface is constructed
       // with some weights we need to set the weight polynomial to constant
-      //
-
       for (ii = 1; ii <= d2p1; ii++)
       {
-
         for (jj = 1; jj <= d1p1; jj++)
         {
           (*CacheWeights)(ii, jj) = 0.0e0;
@@ -2334,21 +2701,79 @@ void BSplSLib::BuildCache(const double                      U,
   }
 }
 
-void BSplSLib::BuildCache(const double                      theU,
-                          const double                      theV,
-                          const double                      theUSpanDomain,
-                          const double                      theVSpanDomain,
-                          const bool                        theUPeriodicFlag,
-                          const bool                        theVPeriodicFlag,
-                          const int                         theUDegree,
-                          const int                         theVDegree,
-                          const int                         theUIndex,
-                          const int                         theVIndex,
-                          const NCollection_Array1<double>& theUFlatKnots,
-                          const NCollection_Array1<double>& theVFlatKnots,
-                          const NCollection_Array2<gp_Pnt>& thePoles,
-                          const NCollection_Array2<double>* theWeights,
-                          NCollection_Array2<double>&       theCacheArray)
+void BSplSLib::BuildCache(const double                      U,
+                          const double                      V,
+                          const double                      USpanDomain,
+                          const double                      VSpanDomain,
+                          const bool                        UPeriodic,
+                          const bool                        VPeriodic,
+                          const int                         UDegree,
+                          const int                         VDegree,
+                          const int                         UIndex,
+                          const int                         VIndex,
+                          const NCollection_Array1<double>& UFlatKnots,
+                          const NCollection_Array1<double>& VFlatKnots,
+                          const NCollection_Array2<gp_Pnt>& Poles,
+                          const NCollection_Array2<double>* Weights,
+                          NCollection_Array2<gp_Pnt>&       CachePoles,
+                          NCollection_Array2<double>*       CacheWeights)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(UDegree, VDegree, Weights != nullptr);
+  BuildCacheImpl1(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
+                  UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
+                  Poles, Weights, CachePoles, CacheWeights, dc);
+}
+
+//=================================================================================================
+
+void BSplSLib::BuildCache(const double                             U,
+                          const double                             V,
+                          const double                             USpanDomain,
+                          const double                             VSpanDomain,
+                          const bool                               UPeriodic,
+                          const bool                               VPeriodic,
+                          const int                                UDegree,
+                          const int                                VDegree,
+                          const int                                UIndex,
+                          const int                                VIndex,
+                          const NCollection_Array1<double>&        UFlatKnots,
+                          const NCollection_Array1<double>&        VFlatKnots,
+                          const NCollection_Array2<gp_Pnt>&        Poles,
+                          const NCollection_Array2<double>*        Weights,
+                          NCollection_Array2<gp_Pnt>&              CachePoles,
+                          NCollection_Array2<double>*              CacheWeights,
+                          const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  validateBSplineDegree(UDegree, VDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(UDegree, VDegree, Weights != nullptr, theAllocator);
+  BuildCacheImpl1(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
+                  UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
+                  Poles, Weights, CachePoles, CacheWeights, dc);
+}
+
+//! Internal implementation of BuildCache (theCacheArray variant) that works with any container type.
+template <typename DataContainer>
+static void BuildCacheImpl2(const double                      theU,
+                            const double                      theV,
+                            const double                      theUSpanDomain,
+                            const double                      theVSpanDomain,
+                            const bool                        theUPeriodicFlag,
+                            const bool                        theVPeriodicFlag,
+                            const int                         theUDegree,
+                            const int                         theVDegree,
+                            const int                         theUIndex,
+                            const int                         theVIndex,
+                            const NCollection_Array1<double>& theUFlatKnots,
+                            const NCollection_Array1<double>& theVFlatKnots,
+                            const NCollection_Array2<gp_Pnt>& thePoles,
+                            const NCollection_Array2<double>* theWeights,
+                            NCollection_Array2<double>&       theCacheArray,
+                            DataContainer&                    dc)
 {
   bool   flag_u_or_v;
   int    d1, d2;
@@ -2356,40 +2781,17 @@ void BSplSLib::BuildCache(const double                      theU,
   bool   isRationalOnParam = (theWeights != nullptr);
   bool   isRational;
 
-  validateBSplineDegree(theUDegree, theVDegree);
-  BSplSLib_DataContainer dc;
-  flag_u_or_v = PrepareEval(theU,
-                            theV,
-                            theUIndex,
-                            theVIndex,
-                            theUDegree,
-                            theVDegree,
-                            isRationalOnParam,
-                            isRationalOnParam,
-                            theUPeriodicFlag,
-                            theVPeriodicFlag,
-                            thePoles,
-                            theWeights,
-                            theUFlatKnots,
-                            theVFlatKnots,
-                            (BSplCLib::NoMults()),
-                            (BSplCLib::NoMults()),
-                            u1,
-                            u2,
-                            d1,
-                            d2,
-                            isRational,
-                            dc);
+  flag_u_or_v = PrepareEval(theU, theV, theUIndex, theVIndex, theUDegree, theVDegree,
+                            isRationalOnParam, isRationalOnParam, theUPeriodicFlag, theVPeriodicFlag,
+                            thePoles, theWeights, theUFlatKnots, theVFlatKnots,
+                            BSplCLib::NoMults(), BSplCLib::NoMults(),
+                            u1, u2, d1, d2, isRational, dc);
 
   int d2p1        = d2 + 1;
   int aDimension  = isRational ? 4 : 3;
-  int aCacheShift = // helps to store weights when PrepareEval did not found that the
-                    // surface is locally polynomial
-    (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
+  int aCacheShift = (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
 
   double aDomains[2];
-  // aDomains[0] corresponds to variable with minimal degree
-  // aDomains[1] corresponds to variable with maximal degree
   if (flag_u_or_v)
   {
     aDomains[0] = theUSpanDomain;
@@ -2408,8 +2810,6 @@ void BSplSLib::BuildCache(const double                      theU,
   double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
 
   double aFactors[2];
-  // aFactors[0] corresponds to variable with minimal degree
-  // aFactors[1] corresponds to variable with maximal degree
   aFactors[1] = 1.0;
   int    aRow, aCol, i;
   double aCoeff;
@@ -2443,6 +2843,59 @@ void BSplSLib::BuildCache(const double                      theU,
                            theCacheArray.LowerCol() + aCacheShift - 1,
                            1.0);
   }
+}
+
+void BSplSLib::BuildCache(const double                      theU,
+                          const double                      theV,
+                          const double                      theUSpanDomain,
+                          const double                      theVSpanDomain,
+                          const bool                        theUPeriodicFlag,
+                          const bool                        theVPeriodicFlag,
+                          const int                         theUDegree,
+                          const int                         theVDegree,
+                          const int                         theUIndex,
+                          const int                         theVIndex,
+                          const NCollection_Array1<double>& theUFlatKnots,
+                          const NCollection_Array1<double>& theVFlatKnots,
+                          const NCollection_Array2<gp_Pnt>& thePoles,
+                          const NCollection_Array2<double>* theWeights,
+                          NCollection_Array2<double>&       theCacheArray)
+{
+  validateBSplineDegree(theUDegree, theVDegree);
+
+  // Stack-based allocation using NCollection_LocalArray
+  BSplSLib_DataContainer dc(theUDegree, theVDegree, theWeights != nullptr);
+  BuildCacheImpl2(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
+                  theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
+                  thePoles, theWeights, theCacheArray, dc);
+}
+
+//=================================================================================================
+
+void BSplSLib::BuildCache(const double                             theU,
+                          const double                             theV,
+                          const double                             theUSpanDomain,
+                          const double                             theVSpanDomain,
+                          const bool                               theUPeriodicFlag,
+                          const bool                               theVPeriodicFlag,
+                          const int                                theUDegree,
+                          const int                                theVDegree,
+                          const int                                theUIndex,
+                          const int                                theVIndex,
+                          const NCollection_Array1<double>&        theUFlatKnots,
+                          const NCollection_Array1<double>&        theVFlatKnots,
+                          const NCollection_Array2<gp_Pnt>&        thePoles,
+                          const NCollection_Array2<double>*        theWeights,
+                          NCollection_Array2<double>&              theCacheArray,
+                          const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  validateBSplineDegree(theUDegree, theVDegree);
+
+  // Allocator-based allocation (no stack overhead)
+  BSplSLib_DataContainerAlloc dc(theUDegree, theVDegree, theWeights != nullptr, theAllocator);
+  BuildCacheImpl2(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
+                  theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
+                  thePoles, theWeights, theCacheArray, dc);
 }
 
 //=======================================================================

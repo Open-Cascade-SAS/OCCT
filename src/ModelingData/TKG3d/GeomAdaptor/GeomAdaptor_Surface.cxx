@@ -921,8 +921,20 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                           aBezier->IsVPeriodic(),
                                           aFlatKnotsV,
                                           aBezier->Weights());
-    aBezData.Cache
-      ->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
+
+    // Lazy allocator creation, reset on cache rebuild
+    if (aBezData.Allocator.IsNull())
+      aBezData.Allocator = new NCollection_IncAllocator();
+    else
+      aBezData.Allocator->Reset(false); // Keep blocks, reset position
+
+    aBezData.Cache->BuildCache(theU,
+                               theV,
+                               aFlatKnotsU,
+                               aFlatKnotsV,
+                               aBezier->Poles(),
+                               aBezier->Weights(),
+                               aBezData.Allocator);
   }
   else if (mySurfaceType == GeomAbs_BSplineSurface)
   {
@@ -937,12 +949,20 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                            aBSpl->IsVPeriodic(),
                                            aBSpl->VKnotSequence(),
                                            aBSpl->Weights());
+
+    // Lazy allocator creation, reset on cache rebuild
+    if (aBSplData.Allocator.IsNull())
+      aBSplData.Allocator = new NCollection_IncAllocator();
+    else
+      aBSplData.Allocator->Reset(false); // Keep blocks, reset position
+
     aBSplData.Cache->BuildCache(theU,
                                 theV,
                                 aBSpl->UKnotSequence(),
                                 aBSpl->VKnotSequence(),
                                 aBSpl->Poles(),
-                                aBSpl->Weights());
+                                aBSpl->Weights(),
+                                aBSplData.Allocator);
   }
 }
 
