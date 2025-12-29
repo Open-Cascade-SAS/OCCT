@@ -1578,19 +1578,22 @@ static TopoDS_Edge GlueEdgesWithPCurves(const NCollection_Sequence<TopoDS_Shape>
   NCollection_Sequence<occ::handle<Geom_Surface>> SurfSeq;
   NCollection_Sequence<TopLoc_Location>           LocSeq;
 
-  for (int aCurveIndex = 1;; aCurveIndex++)
-  {
-    occ::handle<Geom2d_Curve> aCurve;
-    occ::handle<Geom_Surface> aSurface;
-    TopLoc_Location           aLocation;
-    double                    aFirst, aLast;
-    BRep_Tool::CurveOnSurface(FirstEdge, aCurve, aSurface, aLocation, aFirst, aLast, aCurveIndex);
-    if (aCurve.IsNull())
-      break;
+  // TODO: Issue (#966) Code is not working correctly
+  // All previous versions were relying that that loop never reach end and break on start,
+  // because it was starting from 0 and 0st is not existing curve index.
+  // for (int aCurveIndex = 1;; aCurveIndex++)
+  // {
+  //   occ::handle<Geom2d_Curve> aCurve;
+  //   occ::handle<Geom_Surface> aSurface;
+  //   TopLoc_Location           aLocation;
+  //   double                    aFirst, aLast;
+  //   BRep_Tool::CurveOnSurface(FirstEdge, aCurve, aSurface, aLocation, aFirst, aLast,
+  //   aCurveIndex); if (aCurve.IsNull())
+  //     continue;
 
-    SurfSeq.Append(aSurface);
-    LocSeq.Append(aLocation);
-  }
+  //   SurfSeq.Append(aSurface);
+  //   LocSeq.Append(aLocation);
+  // }
 
   double fpar, lpar;
   BRep_Tool::Range(FirstEdge, fpar, lpar);
