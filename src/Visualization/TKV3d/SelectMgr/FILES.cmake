@@ -28,7 +28,6 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_FrustumBuilder.cxx
   SelectMgr_FrustumBuilder.hxx
 
-  SelectMgr_IndexedMapOfOwner.hxx
 
   SelectMgr_OrFilter.cxx
   SelectMgr_OrFilter.hxx
@@ -52,7 +51,6 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_SensitiveEntity.hxx
   SelectMgr_SensitiveEntitySet.cxx
   SelectMgr_SensitiveEntitySet.hxx
-  SelectMgr_SequenceOfOwner.hxx
 
   SelectMgr_SortCriterion.hxx
   SelectMgr_StateOfSelection.hxx

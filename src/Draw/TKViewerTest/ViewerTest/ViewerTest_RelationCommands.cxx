@@ -73,7 +73,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <V3d_View.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DoubleMap.hxx>
+class AIS_InteractiveObject;
 
 extern bool VDisplayAISObject(const TCollection_AsciiString&            theName,
                               const occ::handle<AIS_InteractiveObject>& theAISObj,

@@ -27,7 +27,8 @@
 #include <CDM_Document.hxx>
 #include <CDM_Application.hxx>
 #include <Standard_OStream.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
+#include <NCollection_DataMap.hxx>
+class CDM_MetaData;
 
 class CDM_MetaData : public Standard_Transient
 {

@@ -23,7 +23,6 @@
 #include <Expr_PolyExpression.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;

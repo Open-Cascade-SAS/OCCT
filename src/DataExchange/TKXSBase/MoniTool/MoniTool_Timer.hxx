@@ -24,7 +24,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
-#include <MoniTool_DataMapOfTimer.hxx>
+#include <Standard_CStringHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 //! Provides convenient service on global timers
 //! accessed by string name, mostly aimed for debugging purposes
@@ -122,5 +123,6 @@ private:
 };
 
 #include <MoniTool_Timer.lxx>
+class MoniTool_Timer;
 
 #endif // _MoniTool_Timer_HeaderFile

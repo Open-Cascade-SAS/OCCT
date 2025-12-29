@@ -48,12 +48,13 @@
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+class SelectMgr_EntityOwner;
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_Mesh, AIS_InteractiveObject)
 

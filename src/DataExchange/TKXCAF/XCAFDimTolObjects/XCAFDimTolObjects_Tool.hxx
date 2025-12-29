@@ -22,12 +22,15 @@
 #include <XCAFDoc_DimTolTool.hxx>
 #include <TDocStd_Document.hxx>
 #include <Standard_Boolean.hxx>
-#include <XCAFDimTolObjects_DimensionObjectSequence.hxx>
-#include <XCAFDimTolObjects_GeomToleranceObjectSequence.hxx>
-#include <XCAFDimTolObjects_DatumObjectSequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
+
+class XCAFDimTolObjects_GeomToleranceObject;
+class XCAFDimTolObjects_DimensionObject;
+
+class XCAFDimTolObjects_DatumObject;
 class TDocStd_Document;
 class TopoDS_Shape;
 

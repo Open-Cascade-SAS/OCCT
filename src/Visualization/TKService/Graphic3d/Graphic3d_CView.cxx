@@ -17,8 +17,9 @@
 #include <Aspect_OpenVRSession.hxx>
 #include <Graphic3d_CubeMapPacked.hxx>
 #include <Graphic3d_Layer.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_StructureManager.hxx>
+class Graphic3d_Structure;
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView, Graphic3d_DataStructureManager)
 

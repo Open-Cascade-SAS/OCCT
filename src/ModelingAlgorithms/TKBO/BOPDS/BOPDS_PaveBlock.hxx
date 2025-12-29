@@ -20,11 +20,12 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
+class BOPDS_PaveBlock;
 
 //! The class BOPDS_PaveBlock is to store
 //! the information about pave block on an edge.

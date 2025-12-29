@@ -22,7 +22,6 @@
 #include <Expr.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Array1.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_FunctionDerivative.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Expr_InvalidFunction.hxx>
@@ -32,6 +31,7 @@
 #include <Expr_UnaryFunction.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+class Expr_NamedUnknown;
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_UnaryFunction, Expr_UnaryExpression)
 

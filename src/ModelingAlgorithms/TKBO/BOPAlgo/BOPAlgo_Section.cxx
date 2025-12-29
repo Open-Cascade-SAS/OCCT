@@ -17,7 +17,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <NCollection_Vector.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -31,6 +31,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
+class BOPDS_PaveBlock;
 
 //=================================================================================================
 

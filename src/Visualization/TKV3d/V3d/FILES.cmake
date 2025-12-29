@@ -14,7 +14,6 @@ set(OCCT_V3d_FILES
   V3d_ImageDumpOptions.hxx
   V3d_Light.hxx
 
-  V3d_ListOfView.hxx
   V3d_Plane.cxx
   V3d_Plane.hxx
   V3d_PositionalLight.cxx

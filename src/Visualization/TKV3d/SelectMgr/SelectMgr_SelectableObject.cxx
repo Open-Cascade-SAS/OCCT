@@ -20,11 +20,13 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <SelectMgr_IndexedMapOfOwner.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Shared.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TopLoc_Location.hxx>
+class SelectMgr_EntityOwner;
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectableObject, PrsMgr_PresentableObject)
 

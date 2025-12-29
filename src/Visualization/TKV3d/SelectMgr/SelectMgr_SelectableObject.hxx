@@ -18,10 +18,10 @@
 #define _SelectMgr_SelectableObject_HeaderFile
 
 #include <PrsMgr_PresentableObject.hxx>
-#include <SelectMgr_IndexedMapOfOwner.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Shared.hxx>
 #include <NCollection_Sequence.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
 
 class SelectMgr_EntityOwner;
 

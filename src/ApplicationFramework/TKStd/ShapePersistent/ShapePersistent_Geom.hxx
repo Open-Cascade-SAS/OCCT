@@ -18,7 +18,7 @@
 #include <Standard_NullObject.hxx>
 
 #include <StdObjMgt_SharedObject.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <StdObject_gp_Curves.hxx>
 #include <StdObject_gp_Surfaces.hxx>
@@ -31,6 +31,8 @@
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Transformation.hxx>
 #include <Geom_Surface.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class ShapePersistent_Geom : public StdObjMgt_SharedObject
 {

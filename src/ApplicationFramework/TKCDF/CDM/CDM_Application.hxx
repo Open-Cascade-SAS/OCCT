@@ -21,7 +21,8 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Message_ProgressRange.hxx>
 
 class CDM_MetaData;

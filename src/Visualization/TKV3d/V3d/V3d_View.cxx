@@ -25,7 +25,7 @@
 #include <gp_Pln.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Image_AlienPixMap.hxx>
@@ -47,6 +47,7 @@
 #include <V3d_StereoDumpOptions.hxx>
 #include <V3d_UnMapped.hxx>
 #include <V3d_Viewer.hxx>
+class Graphic3d_Structure;
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_View, Standard_Transient)
 

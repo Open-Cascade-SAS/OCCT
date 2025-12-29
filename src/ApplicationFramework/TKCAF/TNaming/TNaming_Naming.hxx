@@ -25,7 +25,9 @@
 #include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_OStream.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+
+class TDF_Attribute;
 class Standard_GUID;
 class TDF_Label;
 class TNaming_NamedShape;

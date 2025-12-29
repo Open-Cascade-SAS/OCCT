@@ -15,8 +15,10 @@
 #define _ShapePersistent_Poly_HeaderFile
 
 #include <StdObjMgt_SharedObject.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 #include <ShapePersistent_HArray1.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class Poly_Polygon2D;
 class Poly_Polygon3D;

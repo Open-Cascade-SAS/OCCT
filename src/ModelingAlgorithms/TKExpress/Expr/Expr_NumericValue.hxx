@@ -22,7 +22,6 @@
 
 #include <Expr_GeneralExpression.hxx>
 #include <Standard_Integer.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 class Expr_NamedUnknown;
 class TCollection_AsciiString;
