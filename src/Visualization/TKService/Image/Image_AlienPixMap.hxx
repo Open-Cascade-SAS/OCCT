@@ -126,8 +126,8 @@ private:
   FIBITMAP* getImageToDump(const int theFormat);
 
 private:
-  FIBITMAP*    myLibImage;
-  IWICPalette* myPalette;
+  FIBITMAP*                     myLibImage;
+  [[maybe_unused]] IWICPalette* myPalette;
 };
 
 #endif // _Image_AlienPixMap_H__
