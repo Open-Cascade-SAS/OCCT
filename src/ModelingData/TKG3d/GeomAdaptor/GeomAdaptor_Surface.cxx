@@ -335,7 +335,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
   {
     GeomAdaptor_Surface::BSplineData aNewData;
     aNewData.Surface = aBSplineData->Surface;
-    // Cache is not copied - will be rebuilt on demand
+    // CacheGrid is not copied - will be rebuilt on demand
     aCopy->mySurfaceData = aNewData;
   }
 
@@ -938,31 +938,27 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
   }
   else if (mySurfaceType == GeomAbs_BSplineSurface)
   {
-    // Create cache for B-spline
+    // Create cache grid for B-spline (lazy initialization)
     auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
     const auto& aBSpl     = aBSplData.Surface;
-    if (aBSplData.Cache.IsNull())
-      aBSplData.Cache = new BSplSLib_Cache(aBSpl->UDegree(),
-                                           aBSpl->IsUPeriodic(),
-                                           aBSpl->UKnotSequence(),
-                                           aBSpl->VDegree(),
-                                           aBSpl->IsVPeriodic(),
-                                           aBSpl->VKnotSequence(),
-                                           aBSpl->Weights());
+    if (aBSplData.CacheGrid.IsNull())
+    {
+      aBSplData.CacheGrid = new BSplSLib_CacheGrid(aBSpl->UDegree(),
+                                                   aBSpl->IsUPeriodic(),
+                                                   aBSpl->UKnotSequence(),
+                                                   aBSpl->VDegree(),
+                                                   aBSpl->IsVPeriodic(),
+                                                   aBSpl->VKnotSequence(),
+                                                   aBSpl->Weights());
+    }
 
-    // Lazy allocator creation, reset on cache rebuild
-    if (aBSplData.Allocator.IsNull())
-      aBSplData.Allocator = new NCollection_IncAllocator();
-    else
-      aBSplData.Allocator->Reset(false); // Keep blocks, reset position
-
-    aBSplData.Cache->BuildCache(theU,
-                                theV,
-                                aBSpl->UKnotSequence(),
-                                aBSpl->VKnotSequence(),
-                                aBSpl->Poles(),
-                                aBSpl->Weights(),
-                                aBSplData.Allocator);
+    // Get (or create) cache for the span containing (theU, theV)
+    aBSplData.CacheGrid->Cache(theU,
+                               theV,
+                               aBSpl->UKnotSequence(),
+                               aBSpl->VKnotSequence(),
+                               aBSpl->Poles(),
+                               aBSpl->Weights());
   }
 }
 
@@ -989,10 +985,10 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
       break;
     }
     case GeomAbs_BSplineSurface: {
-      auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
+      auto& aBSplData = std::get<BSplineData>(mySurfaceData);
+      if (aBSplData.CacheGrid.IsNull() || !aBSplData.CacheGrid->IsCacheValid(U, V))
         RebuildCache(U, V);
-      aCache->D0(U, V, P);
+      aBSplData.CacheGrid->CurrentCache(U, V)->D0(U, V, P);
       break;
     }
 
@@ -1066,9 +1062,9 @@ void GeomAdaptor_Surface::D1(const double U,
         aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
+        if (aBSplData.CacheGrid.IsNull() || !aBSplData.CacheGrid->IsCacheValid(U, V))
           RebuildCache(U, V);
-        aBSplData.Cache->D1(U, V, P, D1U, D1V);
+        aBSplData.CacheGrid->CurrentCache(U, V)->D1(U, V, P, D1U, D1V);
       }
       break;
     }
@@ -1146,9 +1142,9 @@ void GeomAdaptor_Surface::D2(const double U,
         aBSpl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
+        if (aBSplData.CacheGrid.IsNull() || !aBSplData.CacheGrid->IsCacheValid(U, V))
           RebuildCache(U, V);
-        aBSplData.Cache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        aBSplData.CacheGrid->CurrentCache(U, V)->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
       }
       break;
     }

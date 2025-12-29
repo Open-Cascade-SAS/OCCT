@@ -23,6 +23,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
@@ -2568,138 +2569,204 @@ void BSplSLib::Unperiodize(const bool                        UDirection,
 //           stored in homogeneous form
 //=======================================================================
 
-//! Internal implementation of BuildCache that works with any container type.
-template <typename DataContainer>
-static void BuildCacheImpl1(const double                      U,
-                            const double                      V,
-                            const double                      USpanDomain,
-                            const double                      VSpanDomain,
-                            const bool                        UPeriodic,
-                            const bool                        VPeriodic,
-                            const int                         UDegree,
-                            const int                         VDegree,
-                            const int                         UIndex,
-                            const int                         VIndex,
-                            const NCollection_Array1<double>& UFlatKnots,
-                            const NCollection_Array1<double>& VFlatKnots,
-                            const NCollection_Array2<gp_Pnt>& Poles,
-                            const NCollection_Array2<double>* Weights,
-                            NCollection_Array2<gp_Pnt>&       CachePoles,
-                            NCollection_Array2<double>*       CacheWeights,
-                            DataContainer&                    dc)
+//! Unified internal implementation of BuildCache that works with any container and output writer.
+//! @tparam DataContainer type of temporary data container (stack or allocator based)
+//! @tparam OutputWriter functor type for writing results to cache
+//! @param theOutputWriter functor called as: writer(row, col, coeff, polesPtr, dimension, isRational)
+template <typename DataContainer, typename OutputWriter>
+static void BuildCacheImpl(const double                      theU,
+                           const double                      theV,
+                           const double                      theUSpanDomain,
+                           const double                      theVSpanDomain,
+                           const bool                        theUPeriodic,
+                           const bool                        theVPeriodic,
+                           const int                         theUDegree,
+                           const int                         theVDegree,
+                           const int                         theUIndex,
+                           const int                         theVIndex,
+                           const NCollection_Array1<double>& theUFlatKnots,
+                           const NCollection_Array1<double>& theVFlatKnots,
+                           const NCollection_Array2<gp_Pnt>& thePoles,
+                           const NCollection_Array2<double>* theWeights,
+                           DataContainer&                    theDC,
+                           OutputWriter&&                    theOutputWriter)
 {
-  bool   rational, rational_u, rational_v, flag_u_or_v;
-  int    kk, d1, d1p1, d2, d2p1, ii, jj, iii, jjj, Index;
-  double u1, min_degree_domain, max_degree_domain, f, factor[2], u2;
-  if (Weights != nullptr)
-    rational_u = rational_v = true;
-  else
-    rational_u = rational_v = false;
+  const bool isRationalOnParam = (theWeights != nullptr);
+  bool       isRational;
+  bool       flagUorV;
+  int        d1, d2;
+  double     u1, u2;
 
-  flag_u_or_v = PrepareEval(U, V, UIndex, VIndex, UDegree, VDegree,
-                            rational_u, rational_v, UPeriodic, VPeriodic,
-                            Poles, Weights, UFlatKnots, VFlatKnots,
-                            BSplCLib::NoMults(), BSplCLib::NoMults(),
-                            u1, u2, d1, d2, rational, dc);
-  d1p1        = d1 + 1;
-  d2p1        = d2 + 1;
-  if (rational)
+  flagUorV = PrepareEval(theU, theV, theUIndex, theVIndex, theUDegree, theVDegree,
+                         isRationalOnParam, isRationalOnParam, theUPeriodic, theVPeriodic,
+                         thePoles, theWeights, theUFlatKnots, theVFlatKnots,
+                         BSplCLib::NoMults(), BSplCLib::NoMults(),
+                         u1, u2, d1, d2, isRational, theDC);
+
+  const int d1p1       = d1 + 1;
+  const int d2p1       = d2 + 1;
+  const int aDimension = isRational ? 4 : 3;
+
+  // Compute domains based on parameter order
+  double aDomains[2];
+  if (flagUorV)
   {
-    BSplCLib::Bohm(u1, d1, d1, *dc.knots1, 4 * d2p1, *dc.poles);
-
-    for (kk = 0; kk <= d1; kk++)
-      BSplCLib::Bohm(u2, d2, d2, *dc.knots2, 4, *(dc.poles + kk * 4 * d2p1));
-    if (flag_u_or_v)
-    {
-      min_degree_domain = USpanDomain;
-      max_degree_domain = VSpanDomain;
-    }
-    else
-    {
-      min_degree_domain = VSpanDomain;
-      max_degree_domain = USpanDomain;
-    }
-    factor[0] = 1.0e0;
-
-    for (ii = 0; ii <= d2; ii++)
-    {
-      iii       = ii + 1;
-      factor[1] = 1.0e0;
-
-      for (jj = 0; jj <= d1; jj++)
-      {
-        jjj       = jj + 1;
-        Index     = jj * d2p1 + ii;
-        Index     = Index << 2;
-        gp_Pnt& P = CachePoles(iii, jjj);
-        f         = factor[0] * factor[1];
-        P.SetX(f * dc.poles[Index]);
-        Index++;
-        P.SetY(f * dc.poles[Index]);
-        Index++;
-        P.SetZ(f * dc.poles[Index]);
-        Index++;
-        (*CacheWeights)(iii, jjj) = f * dc.poles[Index];
-        factor[1] *= min_degree_domain / (double)(jjj);
-      }
-      factor[0] *= max_degree_domain / (double)(iii);
-    }
+    aDomains[0] = theUSpanDomain;
+    aDomains[1] = theVSpanDomain;
   }
   else
   {
-    BSplCLib::Bohm(u1, d1, d1, *dc.knots1, 3 * d2p1, *dc.poles);
+    aDomains[0] = theVSpanDomain;
+    aDomains[1] = theUSpanDomain;
+  }
 
-    for (kk = 0; kk <= d1; kk++)
-      BSplCLib::Bohm(u2, d2, d2, *dc.knots2, 3, *(dc.poles + kk * 3 * d2p1));
-    if (flag_u_or_v)
+  // Apply Bohm algorithm for spline-to-Bezier conversion
+  BSplCLib::Bohm(u1, d1, d1, *theDC.knots1, aDimension * d2p1, *theDC.poles);
+  for (int kk = 0; kk <= d1; ++kk)
+  {
+    BSplCLib::Bohm(u2, d2, d2, *theDC.knots2, aDimension,
+                   *(theDC.poles + kk * aDimension * d2p1));
+  }
+
+  // Write results to cache using the provided writer
+  double aFactors[2];
+  aFactors[1] = 1.0;
+  for (int aRow = 0; aRow <= d2; ++aRow)
+  {
+    aFactors[0] = 1.0;
+    for (int aCol = 0; aCol <= d1; ++aCol)
     {
-      min_degree_domain = USpanDomain;
-      max_degree_domain = VSpanDomain;
+      const double* aPolyCoeffs = theDC.poles + (aCol * d2p1 + aRow) * aDimension;
+      const double  aCoeff      = aFactors[0] * aFactors[1];
+
+      theOutputWriter(aRow, aCol, aCoeff, aPolyCoeffs, aDimension, isRational);
+
+      aFactors[0] *= aDomains[0] / (aCol + 1);
     }
-    else
+    aFactors[1] *= aDomains[1] / (aRow + 1);
+  }
+
+  // Post-processing for non-rational case with weights
+  theOutputWriter.Finalize(d1p1, d2p1, isRationalOnParam, isRational);
+}
+
+//! Output writer for gp_Pnt array format (legacy API).
+class BuildCacheWriterPnt
+{
+public:
+  BuildCacheWriterPnt(NCollection_Array2<gp_Pnt>& theCachePoles,
+                      NCollection_Array2<double>* theCacheWeights)
+      : myCachePoles(theCachePoles),
+        myCacheWeights(theCacheWeights)
+  {
+  }
+
+  void operator()(int           theRow,
+                  int           theCol,
+                  double        theCoeff,
+                  const double* thePoles,
+                  int           /*theDimension*/,
+                  bool          theIsRational) const
+  {
+    // 1-based indexing for NCollection_Array2
+    const int aRow = theRow + 1;
+    const int aCol = theCol + 1;
+
+    gp_Pnt& aP = myCachePoles(aRow, aCol);
+    aP.SetX(theCoeff * thePoles[0]);
+    aP.SetY(theCoeff * thePoles[1]);
+    aP.SetZ(theCoeff * thePoles[2]);
+
+    if (theIsRational && myCacheWeights != nullptr)
     {
-      min_degree_domain = VSpanDomain;
-      max_degree_domain = USpanDomain;
+      (*myCacheWeights)(aRow, aCol) = theCoeff * thePoles[3];
     }
-    factor[0] = 1.0e0;
+  }
 
-    for (ii = 0; ii <= d2; ii++)
+  void Finalize(int theD1p1, int theD2p1, bool theHasWeights, bool theIsRational) const
+  {
+    // For non-rational case with weights array, set constant weight polynomial
+    if (theHasWeights && !theIsRational && myCacheWeights != nullptr)
     {
-      iii       = ii + 1;
-      factor[1] = 1.0e0;
-
-      for (jj = 0; jj <= d1; jj++)
+      for (int ii = 1; ii <= theD2p1; ++ii)
       {
-        jjj       = jj + 1;
-        Index     = jj * d2p1 + ii;
-        Index     = (Index << 1) + Index;
-        gp_Pnt& P = CachePoles(iii, jjj);
-        f         = factor[0] * factor[1];
-        P.SetX(f * dc.poles[Index]);
-        Index++;
-        P.SetY(f * dc.poles[Index]);
-        Index++;
-        P.SetZ(f * dc.poles[Index]);
-        factor[1] *= min_degree_domain / (double)(jjj);
-      }
-      factor[0] *= max_degree_domain / (double)(iii);
-    }
-    if (Weights != nullptr)
-    {
-      // means that PrepareEval did found out that the surface was
-      // locally polynomial but since the surface is constructed
-      // with some weights we need to set the weight polynomial to constant
-      for (ii = 1; ii <= d2p1; ii++)
-      {
-        for (jj = 1; jj <= d1p1; jj++)
+        for (int jj = 1; jj <= theD1p1; ++jj)
         {
-          (*CacheWeights)(ii, jj) = 0.0e0;
+          (*myCacheWeights)(ii, jj) = 0.0;
         }
       }
-      (*CacheWeights)(1, 1) = 1.0e0;
+      (*myCacheWeights)(1, 1) = 1.0;
     }
   }
-}
+
+private:
+  NCollection_Array2<gp_Pnt>&  myCachePoles;
+  NCollection_Array2<double>*  myCacheWeights;
+};
+
+//! Output writer for flat double array format (modern API used by BSplSLib_Cache).
+class BuildCacheWriterArray
+{
+public:
+  BuildCacheWriterArray(NCollection_Array2<double>& theCacheArray, bool theHasWeights)
+      : myCacheArray(theCacheArray),
+        myHasWeights(theHasWeights),
+        myCachePtr(nullptr),
+        myCacheShift(0),
+        myDimension(0)
+  {
+  }
+
+  void operator()(int /*theRow*/,
+                  int /*theCol*/,
+                  double        theCoeff,
+                  const double* thePoles,
+                  int           theDimension,
+                  bool          theIsRational)
+  {
+    // Initialize on first call
+    if (myCachePtr == nullptr)
+    {
+      myDimension  = theDimension;
+      myCacheShift = (myHasWeights && !theIsRational) ? theDimension + 1 : theDimension;
+      myCachePtr   = &myCacheArray(myCacheArray.LowerRow(), myCacheArray.LowerCol());
+    }
+
+    for (int i = 0; i < theDimension; ++i)
+    {
+      myCachePtr[i] = thePoles[i] * theCoeff;
+    }
+    myCachePtr += myCacheShift;
+  }
+
+  void Finalize(int theD1p1, int theD2p1, bool theHasWeights, bool theIsRational)
+  {
+    // Fill weight placeholders for non-rational case with weights
+    if (theHasWeights && !theIsRational && myCacheShift > myDimension)
+    {
+      double* aCache = &myCacheArray(myCacheArray.LowerRow(), myCacheArray.LowerCol());
+      aCache += myCacheShift - 1;
+      for (int aRow = 0; aRow < theD2p1; ++aRow)
+      {
+        for (int aCol = 0; aCol < theD1p1; ++aCol)
+        {
+          *aCache = 0.0;
+          aCache += myCacheShift;
+        }
+      }
+      myCacheArray.SetValue(myCacheArray.LowerRow(),
+                            myCacheArray.LowerCol() + myCacheShift - 1,
+                            1.0);
+    }
+  }
+
+private:
+  NCollection_Array2<double>& myCacheArray;
+  bool                        myHasWeights;
+  double*                     myCachePtr;
+  int                         myCacheShift;
+  int                         myDimension;
+};
 
 void BSplSLib::BuildCache(const double                      U,
                           const double                      V,
@@ -2720,11 +2787,11 @@ void BSplSLib::BuildCache(const double                      U,
 {
   validateBSplineDegree(UDegree, VDegree);
 
-  // Stack-based allocation using NCollection_LocalArray
   BSplSLib_DataContainer dc(UDegree, VDegree, Weights != nullptr);
-  BuildCacheImpl1(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
-                  UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
-                  Poles, Weights, CachePoles, CacheWeights, dc);
+  BuildCacheWriterPnt    aWriter(CachePoles, CacheWeights);
+  BuildCacheImpl(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
+                 UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
+                 Poles, Weights, dc, aWriter);
 }
 
 //=================================================================================================
@@ -2749,101 +2816,14 @@ void BSplSLib::BuildCache(const double                             U,
 {
   validateBSplineDegree(UDegree, VDegree);
 
-  // Allocator-based allocation (no stack overhead)
   BSplSLib_DataContainerAlloc dc(UDegree, VDegree, Weights != nullptr, theAllocator);
-  BuildCacheImpl1(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
-                  UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
-                  Poles, Weights, CachePoles, CacheWeights, dc);
+  BuildCacheWriterPnt         aWriter(CachePoles, CacheWeights);
+  BuildCacheImpl(U, V, USpanDomain, VSpanDomain, UPeriodic, VPeriodic,
+                 UDegree, VDegree, UIndex, VIndex, UFlatKnots, VFlatKnots,
+                 Poles, Weights, dc, aWriter);
 }
 
-//! Internal implementation of BuildCache (theCacheArray variant) that works with any container type.
-template <typename DataContainer>
-static void BuildCacheImpl2(const double                      theU,
-                            const double                      theV,
-                            const double                      theUSpanDomain,
-                            const double                      theVSpanDomain,
-                            const bool                        theUPeriodicFlag,
-                            const bool                        theVPeriodicFlag,
-                            const int                         theUDegree,
-                            const int                         theVDegree,
-                            const int                         theUIndex,
-                            const int                         theVIndex,
-                            const NCollection_Array1<double>& theUFlatKnots,
-                            const NCollection_Array1<double>& theVFlatKnots,
-                            const NCollection_Array2<gp_Pnt>& thePoles,
-                            const NCollection_Array2<double>* theWeights,
-                            NCollection_Array2<double>&       theCacheArray,
-                            DataContainer&                    dc)
-{
-  bool   flag_u_or_v;
-  int    d1, d2;
-  double u1, u2;
-  bool   isRationalOnParam = (theWeights != nullptr);
-  bool   isRational;
-
-  flag_u_or_v = PrepareEval(theU, theV, theUIndex, theVIndex, theUDegree, theVDegree,
-                            isRationalOnParam, isRationalOnParam, theUPeriodicFlag, theVPeriodicFlag,
-                            thePoles, theWeights, theUFlatKnots, theVFlatKnots,
-                            BSplCLib::NoMults(), BSplCLib::NoMults(),
-                            u1, u2, d1, d2, isRational, dc);
-
-  int d2p1        = d2 + 1;
-  int aDimension  = isRational ? 4 : 3;
-  int aCacheShift = (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
-
-  double aDomains[2];
-  if (flag_u_or_v)
-  {
-    aDomains[0] = theUSpanDomain;
-    aDomains[1] = theVSpanDomain;
-  }
-  else
-  {
-    aDomains[0] = theVSpanDomain;
-    aDomains[1] = theUSpanDomain;
-  }
-
-  BSplCLib::Bohm(u1, d1, d1, *dc.knots1, aDimension * d2p1, *dc.poles);
-  for (int kk = 0; kk <= d1; kk++)
-    BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
-
-  double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
-
-  double aFactors[2];
-  aFactors[1] = 1.0;
-  int    aRow, aCol, i;
-  double aCoeff;
-  for (aRow = 0; aRow <= d2; aRow++)
-  {
-    aFactors[0] = 1.0;
-    for (aCol = 0; aCol <= d1; aCol++)
-    {
-      double* aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
-      aCoeff              = aFactors[0] * aFactors[1];
-      for (i = 0; i < aDimension; i++)
-        aCache[i] = aPolyCoeffs[i] * aCoeff;
-      aCache += aCacheShift;
-      aFactors[0] *= aDomains[0] / (aCol + 1);
-    }
-    aFactors[1] *= aDomains[1] / (aRow + 1);
-  }
-
-  // Fill the weights for the surface which is not locally polynomial
-  if (aCacheShift > aDimension)
-  {
-    aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
-    aCache += aCacheShift - 1;
-    for (aRow = 0; aRow <= d2; aRow++)
-      for (aCol = 0; aCol <= d1; aCol++)
-      {
-        *aCache = 0.0;
-        aCache += aCacheShift;
-      }
-    theCacheArray.SetValue(theCacheArray.LowerRow(),
-                           theCacheArray.LowerCol() + aCacheShift - 1,
-                           1.0);
-  }
-}
+//=================================================================================================
 
 void BSplSLib::BuildCache(const double                      theU,
                           const double                      theV,
@@ -2863,11 +2843,11 @@ void BSplSLib::BuildCache(const double                      theU,
 {
   validateBSplineDegree(theUDegree, theVDegree);
 
-  // Stack-based allocation using NCollection_LocalArray
-  BSplSLib_DataContainer dc(theUDegree, theVDegree, theWeights != nullptr);
-  BuildCacheImpl2(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
-                  theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
-                  thePoles, theWeights, theCacheArray, dc);
+  BSplSLib_DataContainer   dc(theUDegree, theVDegree, theWeights != nullptr);
+  BuildCacheWriterArray    aWriter(theCacheArray, theWeights != nullptr);
+  BuildCacheImpl(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
+                 theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
+                 thePoles, theWeights, dc, aWriter);
 }
 
 //=================================================================================================
@@ -2891,11 +2871,11 @@ void BSplSLib::BuildCache(const double                             theU,
 {
   validateBSplineDegree(theUDegree, theVDegree);
 
-  // Allocator-based allocation (no stack overhead)
   BSplSLib_DataContainerAlloc dc(theUDegree, theVDegree, theWeights != nullptr, theAllocator);
-  BuildCacheImpl2(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
-                  theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
-                  thePoles, theWeights, theCacheArray, dc);
+  BuildCacheWriterArray       aWriter(theCacheArray, theWeights != nullptr);
+  BuildCacheImpl(theU, theV, theUSpanDomain, theVSpanDomain, theUPeriodicFlag, theVPeriodicFlag,
+                 theUDegree, theVDegree, theUIndex, theVIndex, theUFlatKnots, theVFlatKnots,
+                 thePoles, theWeights, dc, aWriter);
 }
 
 //=======================================================================
