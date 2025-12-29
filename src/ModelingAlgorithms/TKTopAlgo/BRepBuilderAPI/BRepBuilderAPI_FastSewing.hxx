@@ -268,7 +268,6 @@ protected:
     gp_Pnt                               myPoint;
     double                               mySQToler;
     Target                               myResID;
-    bool                                 myIsFindingEnable;
   };
 
 private:
