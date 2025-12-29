@@ -355,7 +355,18 @@ def main():
         entities = extract_entities_from_file(hxx_file)
         all_entities.extend(entities)
     
-    print(f"\n共提取 {len(all_entities)} 个实体:")
+    print(f"\n共提取 {len(all_entities)} 个实体（去重前）")
+    
+    # 3.1. 去重：使用 (type, full_name) 作为唯一键
+    unique_entities = {}
+    for entity in all_entities:
+        key = (entity['type'], entity['full_name'])
+        if key not in unique_entities:
+            unique_entities[key] = entity
+    
+    all_entities = list(unique_entities.values())
+    
+    print(f"去重后剩余 {len(all_entities)} 个唯一实体:")
     entity_counts = defaultdict(int)
     for entity in all_entities:
         entity_counts[entity['type']] += 1
