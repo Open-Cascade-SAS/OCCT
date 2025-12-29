@@ -96,20 +96,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-// #define DRAW
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <stdio.h>
-static bool AffichGeom  = false;
-static bool AffichEdge  = false;
-static int  NbFACES     = 0;
-static int  NbTRIMFACES = 0;
-static int  NbVEVOS     = 0;
-static int  NbPROFILS   = 0;
-static int  NbEDGES     = 0;
-#endif
-
 static double BRepFill_Confusion()
 {
   double Tol = 1.e-6;
@@ -643,14 +629,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
                                          const GeomAbs_JoinType /*Join*/)
 {
 
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    char name[100];
-    Sprintf(name, "PROFIL_%d", ++NbPROFILS);
-    DBRep::Set(name, Pr);
-  }
-#endif
   TopoDS_Shape aLocalShape = Sp.Oriented(TopAbs_FORWARD);
   mySpine                  = TopoDS::Face(aLocalShape);
   //  mySpine   = TopoDS::Face(Sp.Oriented(TopAbs_FORWARD));
@@ -722,13 +700,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
       }
     }
   }
-
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End Construction of geometric primitives" << std::endl;
-  }
-#endif
 
   //---------------------------------------------------
   // Construction of edges associated to bissectrices.
@@ -964,14 +935,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
 
         myBuilder.Continuity(CurrentEdge, F[0], F[1], Continuity);
 
-#ifdef DRAW
-        if (AffichEdge)
-        {
-          char name[100];
-          Sprintf(name, "ARCEDGE_%d_%d_%d", i, vv, Ti);
-          DBRep::Set(name, CurrentEdge);
-        }
-#endif
         //-------------------------------------------
         // Storage of the edge for each of faces.
         //-------------------------------------------
@@ -1070,13 +1033,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
     }
   }
 
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End of Construction of edges and vertices on bissectrices" << std::endl;
-  }
-#endif
-
   //----------------------------------
   // Construction of parallel edges.
   //----------------------------------
@@ -1145,15 +1101,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
           for (k = 1; k <= aSeqOfShape.Length(); k++)
           {
             myMap(CurrentSpine)(VCF).Append(aSeqOfShape.Value(k));
-
-#ifdef DRAW
-            if (AffichEdge)
-            {
-              char name[100];
-              Sprintf(name, "PAREDGE_%d_%d", ++NbEDGES, k);
-              DBRep::Set(name, aSeqOfShape.Value(k));
-            }
-#endif
           }
         }
       }
@@ -1189,26 +1136,10 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
         for (k = 1; k <= aSeqOfShape.Length(); k++)
         {
           myMap(CurrentSpine)(VCL).Append(aSeqOfShape.Value(k));
-
-#ifdef DRAW
-          if (AffichEdge)
-          {
-            char name[100];
-            Sprintf(name, "PAREDGE_%d_%d", ++NbEDGES, k);
-            DBRep::Set(name, aSeqOfShape.Value(k));
-          }
-#endif
         }
       }
     }
   }
-
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End Construction of parallel edges " << std::endl;
-  }
-#endif
 
   //-------------------------------------------------------------------
   // Cut faces by edges.
@@ -1281,16 +1212,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
     }
   }
   myIsDone = true;
-
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End of construction of an elementary volevo." << std::endl;
-    char name[100];
-    Sprintf(name, "VEVO_%d", ++NbVEVOS);
-    DBRep::Set(name, myShape);
-  }
-#endif
 }
 
 //=================================================================================================
@@ -1393,19 +1314,6 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
         }
       }
     }
-#ifdef DRAW
-    if (AffichEdge)
-    {
-      NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator it(MapVP);
-      int                                                                                k = 0;
-      for (; it.More(); it.Next())
-      {
-        char name[100];
-        Sprintf(name, "PARALI_%d", ++k);
-        DBRep::Set(name, it.Value());
-      }
-    }
-#endif
 
     //----------------------------------------------------
     // Construction of faces limited by parallels.
@@ -1508,24 +1416,7 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
       First = false;
     }
 
-#ifdef DRAW
-    if (AffichEdge)
-    {
-      char name[100];
-      Sprintf(name, "PARALI_%d", ++NbVEVOS);
-      DBRep::Set(name, Base);
-    }
-#endif
-
     BRepSweep_Prism PS(Base, gp_Vec(0, 0, Alt2 - Alt1), false);
-#ifdef DRAW
-    if (AffichEdge)
-    {
-      char name[100];
-      Sprintf(name, "PRISM_%d", NbVEVOS);
-      DBRep::Set(name, PS.Shape());
-    }
-#endif
 
     Base = PS.LastShape();
 
@@ -1815,15 +1706,6 @@ void BRepFill_Evolved::PrepareSpine(
 
   // Construct curves 3D of the spine
   BRepLib::BuildCurves3d(WorkSpine);
-
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    char name[100];
-    Sprintf(name, "workspine");
-    DBRep::Set(name, WorkSpine);
-  }
-#endif
 }
 
 //=================================================================================================
@@ -2315,28 +2197,9 @@ void BRepFill_Evolved::MakePipe(const TopoDS_Edge& SE, const gp_Ax3& AxeRef)
 
   TopoDS_Wire GenProf = TopoDS::Wire(Modif.ModifiedShape(DummyProf));
 
-#ifdef DRAW
-  if (AffichGeom)
-  {
-    char name[100];
-    Sprintf(name, "EVOLBASE_%d", ++NbFACES);
-    DBRep::Set(name, SE);
-    Sprintf(name, "EVOLPROF_%d", NbFACES);
-    DBRep::Set(name, GenProf);
-  }
-#endif
-
   BRepFill_Pipe Pipe(BRepLib_MakeWire(SE), GenProf);
   // BRepFill_Pipe Pipe = BRepFill_Pipe(BRepLib_MakeWire(SE),GenProf);
 
-#ifdef DRAW
-  if (AffichGeom)
-  {
-    char name[100];
-    Sprintf(name, "EVOL_%d", ++NbFACES);
-    DBRep::Set(name, Pipe.Shape());
-  }
-#endif
   //---------------------------------------------
   // Arrangement of Tubes in myMap.
   //---------------------------------------------
@@ -2402,20 +2265,6 @@ void BRepFill_Evolved::MakeRevol(const TopoDS_Edge&   SE,
 
   BRepSweep_Revol Rev(GenProf, AxeRev, true);
 
-#ifdef DRAW
-  if (AffichGeom)
-  {
-    char name[100];
-    Sprintf(name, "EVOLBASE_%d", ++NbFACES);
-    DrawTrSurf::Set(name, new Geom_Line(AxeRev));
-    //    DrawTrSurf::Set(name,new Geom_Line(AxeRev));
-    Sprintf(name, "EVOLPROF_%d", NbFACES);
-    DBRep::Set(name, GenProf);
-
-    Sprintf(name, "EVOL_%d", NbFACES);
-    DBRep::Set(name, Rev.Shape());
-  }
-#endif
   //--------------------------------------------
   // Arrangement of revolutions in myMap.
   //---------------------------------------------
@@ -2497,19 +2346,6 @@ void BRepFill_Evolved::TransformInitWork(const TopLoc_Location& LS, const TopLoc
 {
   mySpine.Move(LS);
   myProfile.Move(LP);
-
-#ifdef DRAW
-  if (AffichEdge)
-  {
-    char name[100];
-    Sprintf(name, "movedspine");
-    TopoDS_Face SL = mySpine;
-    DBRep::Set(name, SL);
-    Sprintf(name, "movedprofile");
-    TopoDS_Wire PL = myProfile;
-    DBRep::Set(name, PL);
-  }
-#endif
 }
 
 //=======================================================================
@@ -2706,21 +2542,6 @@ void TrimFace(const TopoDS_Face&                  Face,
               NCollection_Sequence<TopoDS_Shape>& TheEdges,
               NCollection_Sequence<TopoDS_Shape>& S)
 {
-
-#ifdef DRAW
-  int NB = TheEdges.Length();
-  if (AffichEdge)
-  {
-    char name[100];
-    std::cout << " TrimFace " << ++NbTRIMFACES;
-    std::cout << " : " << NB << " edges within the restriction" << std::endl;
-    for (int j = 1; j <= NB; j++)
-    {
-      Sprintf(name, "TRIMEDGE_%d_%d", NbTRIMFACES, j);
-      DBRep::Set(name, TopoDS::Edge(TheEdges.Value(j)));
-    }
-  }
-#endif
 
   //--------------------------------------
   // Creation of wires limiting faces.

@@ -62,10 +62,6 @@
 // #include <GeomLib_CheckSameParameter.hxx>
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-    #include <Geom2d_Curve.hxx>
-  #endif
 // static int compteur = 0;
 #endif
 
@@ -2002,17 +1998,9 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
   }
   occ::handle<Geom2d_BSplineCurve> DummyC2d =
     new Geom2d_BSplineCurve(DummyPoles, DummyKnots, DummyMults, 1);
-  #ifdef DRAW
-  const char* Temp = "bs2d";
-  DrawTrSurf::Set(Temp, DummyC2d);
-  #endif
   //  DrawTrSurf::Set((const char* ) "bs2d",DummyC2d);
   occ::handle<Geom2dAdaptor_Curve> DDD = occ::down_cast<Geom2dAdaptor_Curve>(InitCurve2d);
 
-  #ifdef DRAW
-  Temp = "initc2d";
-  DrawTrSurf::Set(Temp, DDD->ChangeCurve2d().Curve());
-  #endif
 //  DrawTrSurf::Set((const char* ) "initc2d",DDD->ChangeCurve2d().Curve());
 #endif
 

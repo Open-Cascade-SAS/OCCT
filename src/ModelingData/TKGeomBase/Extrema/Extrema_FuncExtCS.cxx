@@ -168,12 +168,6 @@ int Extrema_FuncExtCS::GetStateNumber()
 {
   if (!myCinit || !mySinit)
     throw Standard_TypeMismatch();
-#if 0
-  math_Vector Sol(1, 3), UVSol(1, 3);
-  UVSol(1) = myt; UVSol(2) = myU; UVSol(3) = myV;
-  Value(UVSol, Sol);
-  std::cout <<"F(1)= "<<Sol(1)<<" F(2)= "<<Sol(2)<<" F(3)= "<<Sol(3)<<std::endl;
-#endif
   // comparison of solution with previous solutions
   constexpr double tol2d = Precision::SquarePConfusion();
   int              i = 1, nbSol = mySqDist.Length();

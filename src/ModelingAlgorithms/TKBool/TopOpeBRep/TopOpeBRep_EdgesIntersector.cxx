@@ -14,45 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DRAW
-static void CurveToString(const GeomAbs_CurveType t, TCollection_AsciiString& N)
-{
-  switch (t)
-  {
-    case GeomAbs_Line:
-      N = "LINE";
-      break;
-    case GeomAbs_Circle:
-      N = "CIRCLE";
-      break;
-    case GeomAbs_Ellipse:
-      N = "ELLIPSE";
-      break;
-    case GeomAbs_Hyperbola:
-      N = "HYPERBOLA";
-      break;
-    case GeomAbs_Parabola:
-      N = "PARABOLA";
-      break;
-    case GeomAbs_BezierCurve:
-      N = "BEZIER";
-      break;
-    case GeomAbs_BSplineCurve:
-      N = "BSPLINE";
-      break;
-    case GeomAbs_OffsetCurve:
-      N = "OFFSET";
-      break;
-    case GeomAbs_OtherCurve:
-      N = "OTHER";
-      break;
-    default:
-      N = "UNKNOWN";
-      break;
-  }
-}
-#endif
-
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Curve.hxx>
@@ -540,16 +501,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   if (TopOpeBRep_GettraceFITOL())
   {
     std::cout << "EdgesIntersector : Perform";
-  #ifdef DRAW
-    GeomAbs_CurveType       t1 = myCurve1.GetType();
-    GeomAbs_CurveType       t2 = myCurve2.GetType();
-    TCollection_AsciiString s1;
-    CurveToString(t1, s1);
-    std::cout << " " << s1;
-    TCollection_AsciiString s2;
-    CurveToString(t2, s2);
-    std::cout << " " << s2;
-  #endif
     std::cout << std::endl;
     std::cout << "                   tol1 = " << tol1 << std::endl;
     std::cout << "                   tol2 = " << tol2 << std::endl;

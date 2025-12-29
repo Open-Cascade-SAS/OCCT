@@ -2182,27 +2182,6 @@ static const double tinytens[] = {1e-16, 1e-32};
 #endif
 
 #ifdef Need_Hexdig /*{*/
-  #if 0
-static unsigned char hexdig[256];
-
- static void
-htinit(unsigned char *h, unsigned char *s, int inc)
-{
-	int i, j;
-	for(i = 0; (j = s[i]) !=0; i++)
-		h[j] = i + inc;
-	}
-
- static void
-hexdig_init(void)	/* Use of hexdig_init omitted 20121220 to avoid a */
-			/* race condition when multiple threads are used. */
-{
-    #define USC (unsigned char*)
-	htinit(hexdig, USC "0123456789", 0x10);
-	htinit(hexdig, USC "abcdef", 0x10 + 10);
-	htinit(hexdig, USC "ABCDEF", 0x10 + 10);
-	}
-  #else
 static unsigned char hexdig[256] = {
   0,  0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  16, 17, 18, 19,
@@ -2214,7 +2193,6 @@ static unsigned char hexdig[256] = {
   0,  0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0,  0,  0,  0,  0,  0,  0,  0,  0};
-  #endif
 #endif /* } Need_Hexdig */
 
 #ifdef INFNAN_CHECK
@@ -2761,11 +2739,6 @@ pcheck:
       x = b->x;
       if (denorm)
       {
-  #if 0
-				if (nbits == Nbits - 1
-				 && x[nbits >> kshift] & 1 << (nbits & kmask))
-					denorm = 0; /* not currently used */
-  #endif
       }
       else if (b->wds > k || ((n = nbits & kmask) != 0 && hi0bits(x[k - 1]) < 32 - n))
       {

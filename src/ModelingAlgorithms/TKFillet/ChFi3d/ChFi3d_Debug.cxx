@@ -32,10 +32,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
-
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 OSD_Chronometer simul, elspine, chemine;
@@ -262,9 +258,6 @@ Standard_EXPORT void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time)
 // purpose  : function allows to trace SurfData to check
 //            construction of all elements, namely pcurves
 //==============================================================
-#ifdef DRAW
-static int NbSD = 0;
-#endif
 void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure&   DStr,
                           const occ::handle<ChFiDS_SurfData>& Data)
 {
@@ -364,12 +357,5 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure&   DStr,
 
     W.Orientation(TopAbs_FORWARD);
     B.Add(F, W);
-
-#ifdef DRAW
-    //    char name[100];
-    char* name = new char[100];
-    Sprintf(name, "fillet_%d", NbSD++);
-    DBRep::Set(name, F);
-#endif
   }
 }

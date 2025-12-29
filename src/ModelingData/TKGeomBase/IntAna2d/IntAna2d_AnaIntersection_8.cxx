@@ -106,23 +106,12 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
         //--- (le point a ete obtenu par parametrage)
         //--- ??? la tolerance a ete fixee a 1e-10 ?????????????
 
-#if 0 
-          double ecart_sur_courbe2;
-          ecart_sur_courbe2=Conic.Value(tx,ty);
-          if(ecart_sur_courbe2<=1e-10 && ecart_sur_courbe2>=-1e-10) {
-	    nb_sol_valides++;
-	    Coord_Ancien_Repere(tx,ty,Axe_rep);
-	    lpnt[nb_sol_valides-1].SetValue(tx,ty,Log(S));
-          }
-#else
-
         nb_sol_valides++;
         Coord_Ancien_Repere(tx, ty, Axe_rep);
         S = std::log(S);
         if (!HIsDirect)
           S = -S;
         lpnt[nb_sol_valides - 1].SetValue(tx, ty, S);
-#endif
       }
     }
     nbp = nb_sol_valides;

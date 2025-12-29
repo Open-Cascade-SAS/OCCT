@@ -364,16 +364,6 @@ private:
         return false;
       }
     }
-#if 0
-    else if (GeomLib::NormEstim(aSurf, theMidPoint, Precision::Confusion(), aNorm1) != 0)
-    {
-      // It is better to consider the singular point as a node of triangulation.
-      // However, it leads to hangs up meshing some faces (including faces with
-      // degenerated edges). E.g. tests "mesh standard_incmesh Q6".
-      // So, this code fragment is better to implement in the future.
-      return false;
-    }
-#endif
 
     return true;
   }

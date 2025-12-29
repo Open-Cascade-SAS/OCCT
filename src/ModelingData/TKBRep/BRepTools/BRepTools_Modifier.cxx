@@ -30,12 +30,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-#if 0
-  #include <Poly_Triangulation.hxx>
-  #include <Poly_Polygon3D.hxx>
-  #include <BRepMesh_IncrementalMesh.hxx>
-#endif
-
 #include <Geom2d_Line.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>

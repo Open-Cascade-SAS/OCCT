@@ -47,17 +47,9 @@
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
-
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
   #include <Standard_Integer.hxx>
-  #ifdef DRAW
-    #include <Draw.hxx>
-    #include <DrawTrSurf_BSplineCurve.hxx>
-  #endif
   // POP pour NT
   #include <stdio.h>
 
@@ -109,16 +101,6 @@ static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
     IndexOfSection++;
     Sprintf(name, "%s_%d", "Section", IndexOfSection);
   }
-  #ifdef DRAW
-  occ::handle<DrawTrSurf_BSplineCurve> BS = new (DrawTrSurf_BSplineCurve)(sect);
-  BS->ClearPoles();
-  BS->ClearKnots();
-  if (State == Blend_StepTooLarge)
-    BS->SetColor(Draw_violet);
-  if (State == Blend_SamePoints)
-    BS->SetColor(Draw_rose);
-  Draw::Set(name, BS);
-  #endif
 }
 
 static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
@@ -2241,16 +2223,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           line->Prepend(previousP);
         }
-#ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
-        Sprintf(name, "pg%d", nbpts);
-        DrawTrSurf::Set(name, PtOnGuide);
-        Sprintf(name, "p1_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS1());
-        Sprintf(name, "p2_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS2());
-#endif
 
         parprec = param;
 
@@ -2317,16 +2289,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           line->Prepend(previousP);
         }
-#ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
-        Sprintf(name, "pg%d", nbpts);
-        DrawTrSurf::Set(name, PtOnGuide);
-        Sprintf(name, "p1_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS1());
-        Sprintf(name, "p2_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS2());
-#endif
 
         parprec = param;
 
@@ -2364,16 +2326,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           line->Prepend(previousP);
         }
-#ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
-        Sprintf(name, "pg%d", nbpts);
-        DrawTrSurf::Set(name, PtOnGuide);
-        Sprintf(name, "p1_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS1());
-        Sprintf(name, "p2_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS2());
-#endif
 
         MakeExtremity(Ext1, true, Index1, solrst1(1), Isvtx1, Vtx1);
         // On blinde le cas singulier ou un des recadrage a planter
@@ -2400,16 +2352,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           line->Prepend(previousP);
         }
-#ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
-        Sprintf(name, "pg%d", nbpts);
-        DrawTrSurf::Set(name, PtOnGuide);
-        Sprintf(name, "p1_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS1());
-        Sprintf(name, "p2_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS2());
-#endif
 
         // On blinde le cas singulier ou un des recadrage a plante
         if (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2.0 * tolpoint3d))
@@ -2436,16 +2378,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           line->Prepend(previousP);
         }
-#ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
-        Sprintf(name, "pg%d", nbpts);
-        DrawTrSurf::Set(name, PtOnGuide);
-        Sprintf(name, "p1_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS1());
-        Sprintf(name, "p2_%d", nbpts);
-        DrawTrSurf::Set(name, previousP.PointOnS2());
-#endif
 
         if ((Isvtx1 != Isvtx2)
             && (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2.0 * tolpoint3d)))

@@ -35,12 +35,6 @@
 #include <NCollection_Array1.hxx>
 
 #include <cstdio>
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <Geom_BSplineCurve.hxx>
-static bool Affich     = false;
-static int  NbSECTIONS = 0;
-#endif
 
 //=================================================================================================
 
@@ -556,14 +550,6 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       for (int i = 1; i <= Poles.Length(); i++)
         Poles(i).Transform(cumulTR);
     }
-#ifdef DRAW
-    if (Affich)
-    {
-      char name[256];
-      Sprintf(name, "SECTION_%d", ++NbSECTIONS);
-      DrawTrSurf::Set(name, myFirstSect->Transformed(cumulTR));
-    }
-#endif
   }
   else
   {
@@ -643,15 +629,6 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_Polynomial);
       else
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_QuasiAngular);
-
-#ifdef DRAW
-      if (Affich)
-      {
-        char name[256];
-        Sprintf(name, "SECTION_%d", ++NbSECTIONS);
-        DrawTrSurf::Set(name, BS);
-      }
-#endif
 
       BS->Poles(Poles);
       BS->Weights(Weigths);

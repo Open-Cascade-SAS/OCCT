@@ -313,39 +313,3 @@ void Coord_Ancien_Repere(double& x1, double& y1, const gp_Ax2d& Dir1)
   x1 = x0;
   y1 = y0;
 }
-
-#if 0      
-
-//-- A Placer dans les ressources de la classe Conic   ??
-//-----------------------------------------------------------------------------
-//--- Calcul des Coefficients A,..F dans le repere lie a  Dir1
-//--- A Partir des Coefficients dans le repere "Absolu"
-
-void Coeff_Nouveau_Repere(double& A,double& B,double& C
-			  ,double& D,double& E,double& F
-			  ,const gp_Ax2d Dir1)  {
-  double t11,t12,t13;                  // x = t11 X + t12 Y + t13
-  double t21,t22,t23;                  // y = t21 X + t22 Y + t23
-  double A1,B1,C1,D1,E1,F1;            
-
-  // On a P0(x,y)=A x x + B y y + ... + F =0    (x et y ds le repere "Absolu")
-  // et on cherche P1(X(x,y),Y(x,y))=P0(x,y)
-  // Avec P1(X,Y)= A1 X X + B1 Y Y + 2 C1 X Y + 2 D1 X + 2 E1 Y + F1
-  //             = A  x x + B  y y + 2 C  x y + 2 D  x + 2 E  y + f
-
-  Dir1.Direction().Coord(t11,t21);
-  Dir1.Location().Coord(t13,t23);
-
-  t22=t11;
-  t12=-t21;
-
-  A1=(t11*(A*t11 + 2*C*t21) + B*t21*t21);
-  B1=(t12*(A*t12 + 2*C*t22) + B*t22*t22);
-  C1=(t12*(A*t11 + C*t21) + t22*(C*t11 + B*t21));
-  D1=(t11*(D + A*t13) + t21*(E + C*t13) + t23*(C*t11 + B*t21));
-  E1=(t12*(D + A*t13) + t22*(E + C*t13) + t23*(C*t12 + B*t22));
-  F1=F + t13*(2.0*D + A*t13) + t23*(2.0*E + 2.0*C*t13 + B*t23);
-  
-  A=A1; B=B1; C=C1; D=D1; E=E1; F=F1;
-}
-#endif

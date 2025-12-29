@@ -16,10 +16,6 @@
 
 #include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

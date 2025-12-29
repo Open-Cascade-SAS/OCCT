@@ -32,12 +32,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-static int  NumSec = 0;
-static bool Affich = 0;
-#endif
-
 GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& C,
                                                  const double                   FirstParameter,
                                                  const double                   LastParameter)
@@ -55,15 +49,6 @@ GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& 
       myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
-
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    Sprintf(name, "UnifSect_%d", ++NumSec);
-    DrawTrSurf::Set(name, myCurve);
-  }
-#endif
 }
 
 //=======================================================

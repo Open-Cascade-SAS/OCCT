@@ -31,13 +31,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <Geom_BSplineCurve.hxx>
-static int  NumSec = 0;
-static bool Affich = 0;
-#endif
-
 GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>&   C,
                                                  const occ::handle<Law_Function>& L)
 {
@@ -55,15 +48,6 @@ GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>& 
       myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
-
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    Sprintf(name, "UnifSect_%d", ++NumSec);
-    DrawTrSurf::Set(name, myCurve);
-  }
-#endif
 }
 
 //=======================================================

@@ -38,11 +38,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-Standard_IMPORT void FUN_draw(const TopoDS_Shape& s);
-Standard_IMPORT void FUN_draw2de(const TopoDS_Shape& ed, const TopoDS_Shape& fa);
-#endif
-
 #ifdef OCCT_DEBUG
 extern void* GFABUMAKEFACEPWES_DEB;
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
@@ -698,16 +693,13 @@ void TopOpeBRepBuild_Builder::GFillWireWES(const TopoDS_Shape&                  
     GLOBAL_iexE++;
     if (tSPS)
     {
-  //      const TopoDS_Edge& ed = TopoDS::Edge(EOR);
-  //      bool isdegen = BRep_Tool::Degenerated(ed);
-  //      TopLoc_Location L;
-  //      occ::handle<Geom_Surface> S = BRep_Tool::Surface(myFaceToFill,L);
-  //      bool isclosed = BRep_Tool::IsClosed(ed,S,L);
-  //      TopAbs_Orientation oried = ed.Orientation();
-  //      bool trc = false;
-  #ifdef DRAW
-  //      if (trc) {FUN_draw(ed); FUN_draw2de(ed,myFaceReference);}
-  #endif
+      //      const TopoDS_Edge& ed = TopoDS::Edge(EOR);
+      //      bool isdegen = BRep_Tool::Degenerated(ed);
+      //      TopLoc_Location L;
+      //      occ::handle<Geom_Surface> S = BRep_Tool::Surface(myFaceToFill,L);
+      //      bool isclosed = BRep_Tool::IsClosed(ed,S,L);
+      //      TopAbs_Orientation oried = ed.Orientation();
+      //      bool trc = false;
     }
 #endif
 

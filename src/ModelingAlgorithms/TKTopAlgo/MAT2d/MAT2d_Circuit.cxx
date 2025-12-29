@@ -42,13 +42,6 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
   #include <Geom2d_Circle.hxx>
 #endif
 
-#ifdef DRAW
-  #include <Draw_Appli.hxx>
-  #include <DrawTrSurf_Curve2d.hxx>
-  #include <Draw_Marker2D.hxx>
-static occ::handle<DrawTrSurf_Curve2d> draw;
-Standard_EXPORT Draw_Viewer            dout;
-#endif
 #ifdef OCCT_DEBUG
 static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
 static bool AffichCircuit = 0;
@@ -290,20 +283,6 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     static bool Affich = 0;
     if (Affich)
     {
-  #ifdef DRAW
-      double DU1 = (OC1.LastParameter() - OC1.FirstParameter()) / 9.;
-      double DU2 = (OC2.LastParameter() - OC2.FirstParameter()) / 9.;
-      for (int ki = 0; ki <= 9; ki++)
-      {
-        gp_Pnt2d                   P1  = OC1.Value(OC1.FirstParameter() + ki * DU1);
-        gp_Pnt2d                   P2  = OC2.Value(OC2.FirstParameter() + ki * DU2);
-        occ::handle<Draw_Marker2D> dr1 = new Draw_Marker2D(P1, Draw_Plus, Draw_vert);
-        occ::handle<Draw_Marker2D> dr2 = new Draw_Marker2D(P2, Draw_Plus, Draw_rouge);
-        dout << dr1;
-        dout << dr2;
-      }
-      dout.Flush();
-  #endif
     }
 #endif
 
@@ -688,12 +667,6 @@ void MAT2d_Circuit::InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometr
       if (Insert)
       {
         Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(isuiv));
-  #ifdef DRAW
-        gp_Pnt2d                   P  = Curve->StartPoint();
-        occ::handle<Draw_Marker2D> dr = new Draw_Marker2D(P, Draw_Plus, Draw_vert);
-        dout << dr;
-        dout.Flush();
-  #endif
       }
     }
 #endif
@@ -885,10 +858,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
 {
   occ::handle<Standard_Type> type = aCurve->DynamicType();
   occ::handle<Geom2d_Curve>  curve, CurveDraw;
-  #ifdef DRAW
-  occ::handle<DrawTrSurf_Curve2d> dr;
-  Draw_Color                      Couleur;
-  #endif
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
@@ -937,27 +906,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
   {
     CurveDraw = aCurve;
   }
-
-  #ifdef DRAW
-  if (Indice == 1)
-    Couleur = Draw_jaune;
-  else if (Indice == 2)
-    Couleur = Draw_bleu;
-  else if (Indice == 3)
-    Couleur = Draw_rouge;
-  else if (Indice == 4)
-    Couleur = Draw_vert;
-
-  if (type == STANDARD_TYPE(Geom2d_Circle))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 30);
-  else if (type == STANDARD_TYPE(Geom2d_Line))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 2);
-  else
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 500);
-
-  dout << dr;
-  dout.Flush();
-  #endif
 }
 
 #endif

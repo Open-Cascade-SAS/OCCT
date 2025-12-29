@@ -75,18 +75,6 @@
 #include <NCollection_List.hxx>
 
 #include <cstdio>
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #include <Geom2d_BoundedCurve.hxx>
-  #include <Geom_BoundedSurface.hxx>
-  #include <Geom_BoundedCurve.hxx>
-  #include <BRep_CurveOnSurface.hxx>
-  #include <Geom_Surface.hxx>
-bool       Inter2dAffichInt2d;
-static int NbF2d         = 0;
-static int NbE2d         = 0;
-static int NbNewVertices = 0;
-#endif
 
 //=================================================================================================
 
@@ -412,16 +400,6 @@ static void EdgeInter(
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     aDMVV)
 {
-#ifdef DRAW
-  if (Inter2dAffichInt2d)
-  {
-    char name[256];
-    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
-    DBRep::Set(name, E1);
-    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
-    DBRep::Set(name, E2);
-  }
-#endif
 
   if (E1.IsSame(E2))
     return;
@@ -697,16 +675,6 @@ static void RefEdgeInter(
         aDMVV,
   bool& theCoincide)
 {
-#ifdef DRAW
-  if (Inter2dAffichInt2d)
-  {
-    char name[256];
-    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
-    DBRep::Set(name, E1);
-    Sprintf(name, "E2d_%d_%d", NbF2d, NbE2d++);
-    DBRep::Set(name, E2);
-  }
-#endif
   //
   theCoincide = false;
   //
@@ -1635,10 +1603,6 @@ void BRepOffset_Inter2d::Compute(
                                theDMVV,
   const Message_ProgressRange& theRange)
 {
-#ifdef DRAW
-  NbF2d++;
-  NbE2d = 0;
-#endif
 
   // Do not intersect the edges of face
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> EdgesOfFace;

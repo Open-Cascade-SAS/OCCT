@@ -37,15 +37,6 @@
 #include <BRepAdaptor_Curve.hxx>
 
 #ifdef OCCT_DEBUG
-  // #define DRAW
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-    #include <DBRep.hxx>
-    #include <Geom2d_Point.hxx>
-static bool Affich    = false;
-static bool AffichInt = false;
-static int  intind    = 0;
-  #endif
 #endif
 
 //=================================================================================================
@@ -93,15 +84,6 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&              
   else
   {
     myC1 = occ::down_cast<Geom2d_Curve>(S1);
-#ifdef DRAW
-    if (Affich)
-    {
-      // POP pour NT
-      char* myC1name = "myC1";
-      DrawTrSurf::Set(myC1name, myC1);
-      //      DrawTrSurf::Set("myC1",myC1);
-    }
-#endif
   }
   if (isPoint2)
   {
@@ -110,26 +92,11 @@ BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool(const Bisector_Bisec&              
   else
   {
     myC2 = occ::down_cast<Geom2d_Curve>(S2);
-#ifdef DRAW
-    if (Affich)
-    {
-      char* myC2name = "myC2";
-      DrawTrSurf::Set(myC2name, myC2);
-      //      DrawTrSurf::Set("myC2",myC2);
-    }
-#endif
   }
   // return the simple expression of the bissectrice
   occ::handle<Geom2d_Curve> Bis;
   SimpleExpression(myBisec, Bis);
   myBis = Geom2dAdaptor_Curve(Bis);
-#ifdef DRAW
-  if (Affich)
-  {
-    char* myBisname = "myBis";
-    DrawTrSurf::Set(myBisname, Bis);
-  }
-#endif
 }
 
 //=======================================================================
@@ -326,29 +293,6 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
   occ::handle<Geom2d_Curve> C2;
   BRep_Tool::CurveOnSurface(Edge2, C2, Surf, L, f, l);
   Geom2dAdaptor_Curve AC2(C2, f, l);
-
-#ifdef DRAW
-  if (AffichInt)
-  {
-    f = AC1.FirstParameter();
-    l = AC1.LastParameter();
-    char name[32];
-    Sprintf(name, "C1_%d", ++intind);
-    DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(C1, f, l));
-    f = AC2.FirstParameter();
-    l = AC2.LastParameter();
-    Sprintf(name, "C2_%d", intind);
-    DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(C2, f, l));
-    f = myBis.FirstParameter();
-    l = myBis.LastParameter();
-    Sprintf(name, "BIS%d", intind);
-    DrawTrSurf::Set(name, new Geom2d_TrimmedCurve(myBis.Curve(), f, l));
-    Sprintf(name, "E1_%d", intind);
-    DBRep::Set(name, Edge1);
-    Sprintf(name, "E2_%d", intind);
-    DBRep::Set(name, Edge2);
-  }
-#endif
 
   // Calculate intersection
   NCollection_Sequence<gp_Pnt> Points2;

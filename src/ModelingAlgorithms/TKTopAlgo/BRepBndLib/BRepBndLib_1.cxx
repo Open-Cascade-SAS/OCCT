@@ -306,16 +306,6 @@ static bool CheckPoints(const TopoDS_Shape& theS,
     theOBB.GetVertex(&anArrPnts(aNbPnts));
   }
 
-#if 0
-  for(int i = anArrPnts.Lower(); i <= anArrPnts.Upper(); i++)
-  {
-    const gp_Pnt &aP = anArrPnts(i);
-    std::cout << "point p" << i << " " << aP.X() << ", " << 
-                                          aP.Y() << ", " << 
-                                          aP.Z() << ", "<< std::endl;
-  }
-#endif
-
   theOBB.ReBuild(anArrPnts, aPtrArrTol, theIsOptimal);
 
   return (!theOBB.IsVoid());

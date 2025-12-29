@@ -19,10 +19,6 @@
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRep_DRAW.hxx>
-#endif
-
 #include <IntPatch_LineConstructor.hxx>
 #include <TopOpeBRep_TypeLineCurve.hxx>
 #include <TopoDS.hxx>
@@ -59,11 +55,6 @@ static void SAVFF(const TopoDS_Face& F1, const TopoDS_Face& F2)
     an2 = an2 + SAVFFi2;
   const char* n1 = an1.ToCString();
   const char* n2 = an2.ToCString();
-  #ifdef DRAW
-  std::cout << "FaceIntersector :   set " << n1 << "," << n2 << std::endl;
-  DBRep::Set(n1, F1);
-  DBRep::Set(n2, F2);
-  #endif
   std::cout << "FaceIntersector : write " << n1 << "," << n2 << std::endl;
   BRepTools::Write(F1, n1);
   BRepTools::Write(F2, n2);

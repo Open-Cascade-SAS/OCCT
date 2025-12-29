@@ -38,19 +38,11 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan, GeomFill_TrihedronWithGu
 
 // #include <gp_Trsf2d.hxx>
 // #include <Bnd_Box2d.hxx>
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
 
 #ifdef OCCT_DEBUG
 static void TracePlan(const occ::handle<Geom_Surface>& /*Plan*/)
 {
   std::cout << "Pas d'intersection Guide/Plan" << std::endl;
-  #if DRAW
-  char* Temp = "ThePlan";
-  DrawTrSurf::Set(Temp, Plan);
-  //  DrawTrSurf::Set("ThePlan", Plan);
-  #endif
 }
 #endif
 

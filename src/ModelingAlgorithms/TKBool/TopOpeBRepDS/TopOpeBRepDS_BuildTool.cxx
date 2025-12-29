@@ -56,9 +56,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 // includes especially needed by the static Project function
-#ifdef DRAW
-  #include <TopOpeBRepDS_DRAW.hxx>
-#endif
 
 Standard_EXPORT occ::handle<Geom2d_Curve> BASISCURVE2D(const occ::handle<Geom2d_Curve>& C);
 
@@ -1415,9 +1412,6 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
   if (comppc1) PC1new = myCurveTool.MakePCurveOnFace(F1,C3Dnew,tolreached2d1);
   if (comppc2) PC2new = myCurveTool.MakePCurveOnFace(F2,C3Dnew,tolreached2d2);
 
-#ifdef DRAW
-  if (tBUTO) {FUN_draw(F1); FUN_draw(F2); FUN_draw(E);}
-#endif
 
   double newtol,newparmin,newparmax;
   FUN_updateEDGECURVETOL

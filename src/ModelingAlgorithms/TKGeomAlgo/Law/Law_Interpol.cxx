@@ -25,71 +25,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(Law_Interpol, Law_BSpFunc)
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-
-    // Pour le dessin.
-    #include <Draw_Appli.hxx>
-    #include <Draw_Display.hxx>
-    #include <Draw.hxx>
-    #include <Draw_Segment3D.hxx>
-    #include <Draw_Segment2D.hxx>
-    #include <Draw_Marker2D.hxx>
-    #include <Draw_ColorKind.hxx>
-    #include <Draw_MarkerShape.hxx>
-
-static void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
-                            const gp_Vec2d&                 tra,
-                            const double                    scal)
-{
-  NCollection_Array1<double> pol(1, bs->NbPoles());
-  bs->Poles(pol);
-  NCollection_Array1<double> knots(1, bs->NbKnots());
-  bs->Knots(knots);
-  NCollection_Array1<int> mults(1, bs->NbKnots());
-  bs->Multiplicities(mults);
-  int deg = bs->Degree();
-  int nbk = knots.Length();
-
-  occ::handle<Draw_Marker2D> mar;
-  gp_Pnt2d                   pp(knots(1), scal * bs->Value(knots(1)));
-  pp.Translate(tra);
-  gp_Pnt2d qq;
-  mar = new Draw_Marker2D(pp, Draw_Square, Draw_cyan);
-  dout << mar;
-  occ::handle<Draw_Segment2D> seg;
-  for (int i = 1; i < nbk; i++)
-  {
-    double f = knots(i);
-    double l = knots(i + 1);
-    for (int iu = 1; iu <= 30; iu++)
-    {
-      double uu = iu / 30.;
-      uu        = f + uu * (l - f);
-      qq.SetCoord(uu, scal * bs->Value(uu));
-      qq.Translate(tra);
-      seg = new Draw_Segment2D(pp, qq, Draw_jaune);
-      dout << seg;
-      pp = qq;
-    }
-    mar = new Draw_Marker2D(pp, Draw_Square, Draw_cyan);
-    dout << mar;
-  }
-}
-
-static void Law_draw1dcurve(const NCollection_Array1<double>& pol,
-                            const NCollection_Array1<double>& knots,
-                            const NCollection_Array1<int>&    mults,
-                            const int                         deg,
-                            const gp_Vec2d&                   tra,
-                            const double                      scal)
-{
-  occ::handle<Law_BSpline> bs = new Law_BSpline(pol, knots, mults, deg);
-  Law_draw1dcurve(bs, tra, scal);
-}
-
-static bool Affich = 0;
-
-  #endif
 #endif
 
 //=================================================================================================
@@ -122,13 +57,6 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad, const bool
   inter.Perform();
   SetCurve(inter.Curve());
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (Affich)
-  {
-    gp_Vec2d veve(0., 0.);
-    Law_draw1dcurve(Curve(), veve, 1.);
-  }
-  #endif
 #endif
 }
 
@@ -161,13 +89,6 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
   inter.Perform();
   SetCurve(inter.Curve());
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (Affich)
-  {
-    gp_Vec2d veve(0., 0.);
-    Law_draw1dcurve(Curve(), veve, 1.);
-  }
-  #endif
 #endif
 }
 

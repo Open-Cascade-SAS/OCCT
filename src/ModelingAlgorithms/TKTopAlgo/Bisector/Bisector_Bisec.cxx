@@ -35,14 +35,6 @@
 #include <StdFail_NotDone.hxx>
 
 #ifdef OCCT_DEBUG
-  // #define DRAW
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-    #pragma comment(lib, "TKDraw.lib")
-static char name[100];
-static int  nbb    = 0;
-static bool Affich = false;
-  #endif
 #endif
 
 static bool IsMaxRC(const occ::handle<Geom2d_Curve>& C, double U, double& R);
@@ -249,19 +241,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   UFirst      = std::max(UFirst, Bis->FirstParameter());
   ULast       = std::min(ULast, Bis->LastParameter());
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
-#ifdef DRAW
-  if (Affich)
-  {
-    Sprintf(name, "c1_%d", ++nbb);
-    DrawTrSurf::Set(name, afirstcurve);
-    Sprintf(name, "c2_%d", nbb);
-    DrawTrSurf::Set(name, asecondcurve);
-    Sprintf(name, "p%d", nbb);
-    DrawTrSurf::Set(name, apoint);
-    Sprintf(name, "b%d", nbb);
-    DrawTrSurf::Set(name, thebisector);
-  }
-#endif
 }
 
 //===========================================================================
@@ -401,20 +380,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   if (ULast > Bis->LastParameter())
     ULast = Bis->LastParameter();
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
-
-#ifdef DRAW
-  if (Affich)
-  {
-    Sprintf(name, "c1_%d", ++nbb);
-    DrawTrSurf::Set(name, afirstcurve);
-    Sprintf(name, "c2_%d", nbb);
-    DrawTrSurf::Set(name, asecondpoint->Pnt2d());
-    Sprintf(name, "p%d", nbb);
-    DrawTrSurf::Set(name, apoint);
-    Sprintf(name, "b%d", nbb);
-    DrawTrSurf::Set(name, thebisector);
-  }
-#endif
 }
 
 //===========================================================================
@@ -551,20 +516,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
   UFirst      = std::max(UFirst, Bis->FirstParameter());
   ULast       = std::min(ULast, Bis->LastParameter());
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
-
-#ifdef DRAW
-  if (Affich)
-  {
-    Sprintf(name, "c1_%d", ++nbb);
-    DrawTrSurf::Set(name, afirstpoint->Pnt2d());
-    Sprintf(name, "c2_%d", nbb);
-    DrawTrSurf::Set(name, asecondcurve);
-    Sprintf(name, "p%d", nbb);
-    DrawTrSurf::Set(name, apoint);
-    Sprintf(name, "b%d", nbb);
-    DrawTrSurf::Set(name, thebisector);
-  }
-#endif
 }
 
 //===========================================================================
@@ -599,20 +550,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
                oncurve);
   thebisector =
     new Geom2d_TrimmedCurve(Bis, Bis->ParameterOfStartPoint(), Bis->ParameterOfEndPoint());
-
-#ifdef DRAW
-  if (Affich)
-  {
-    Sprintf(name, "c1_%d", ++nbb);
-    DrawTrSurf::Set(name, afirstpoint->Pnt2d());
-    Sprintf(name, "c2_%d", nbb);
-    DrawTrSurf::Set(name, asecondpoint->Pnt2d());
-    Sprintf(name, "p%d", nbb);
-    DrawTrSurf::Set(name, apoint);
-    Sprintf(name, "b%d", nbb);
-    DrawTrSurf::Set(name, thebisector);
-  }
-#endif
 }
 
 //=================================================================================================
