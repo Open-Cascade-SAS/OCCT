@@ -406,6 +406,5 @@ private:
 };
 
 #include <TDF_Attribute.lxx>
-class TDF_Attribute;
 
 #endif // _TDF_Attribute_HeaderFile
