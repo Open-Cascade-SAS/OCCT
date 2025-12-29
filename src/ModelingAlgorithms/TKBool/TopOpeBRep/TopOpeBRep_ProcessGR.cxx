@@ -20,9 +20,6 @@
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRep_DRAW.hxx>
-#endif
 
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -169,14 +166,6 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
   gp_Pnt             pmil   = BC.Value(parmil);
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  bool trc = TopOpeBRep_GettraceBIPS();
-  if (trc)
-  {
-    TCollection_AsciiString aa("pmil");
-    FUN_brep_draw(aa, pmil);
-  }
-  #endif
 #endif
   TopAbs_State st = FSC_StatePonFace(pmil, F, *myPShapeClassifier);
   return st;
@@ -252,15 +241,6 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
     return isone;
 
-#ifdef DRAW
-  bool trc = false;
-  if (trc)
-  {
-    occ::handle<Geom_Curve> C = L.Curve();
-    TCollection_AsciiString aa("line");
-    FUN_brep_draw(aa, C);
-  }
-#endif
 
   double f, l;
   TopOpeBRep_FacesFiller::Lminmax(L, f, l);

@@ -80,19 +80,6 @@
 
 #include <cstdio>
 
-// #define DRAW
-
-#ifdef DRAW
-  #include <Draw_Appli.hxx>
-  #include <Draw_Segment2D.hxx>
-  #include <Draw_Marker2D.hxx>
-  #include <Draw_Segment3D.hxx>
-  #include <Draw_Marker3D.hxx>
-  #include <Draw.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <BRepAdaptor_Surface.hxx>
-static int IndexOfConge = 0;
-#endif
 
 #ifdef OCCT_DEBUG
 extern bool ChFi3d_GettraceDRAWFIL();
@@ -103,49 +90,6 @@ extern void ChFi3d_SettraceDRAWWALK(const bool b);
 extern void ChFi3d_SetcontextNOOPT(const bool b);
 #endif
 
-#ifdef DRAW
-static void drawline(const occ::handle<BRepBlend_Line>& lin, const bool iscs)
-{
-  occ::handle<Draw_Marker3D>  p3d;
-  occ::handle<Draw_Marker2D>  p2d;
-  occ::handle<Draw_Segment3D> tg3d;
-  occ::handle<Draw_Segment2D> tg2d;
-
-  for (int i = 1; i <= lin->NbPoints(); i++)
-  {
-    const Blend_Point& pt    = lin->Point(i);
-    gp_Pnt             point = pt.PointOnS1();
-    gp_Pnt             extr  = point.Translated(pt.TangentOnS1());
-    p3d                      = new Draw_Marker3D(point, Draw_Square, Draw_rouge);
-    dout << p3d;
-    tg3d = new Draw_Segment3D(point, extr, Draw_rouge);
-    dout << tg3d;
-    point = pt.PointOnS2();
-    extr  = point.Translated(pt.TangentOnS2());
-    p3d   = new Draw_Marker3D(point, Draw_Plus, Draw_jaune);
-    dout << p3d;
-    tg3d = new Draw_Segment3D(point, extr, Draw_jaune);
-    dout << tg3d;
-
-    double u, v;
-    pt.ParametersOnS1(u, v);
-    gp_Pnt2d point2d(u, v);
-    gp_Pnt2d extr2d = point2d.Translated(pt.Tangent2dOnS1());
-    p2d             = new Draw_Marker2D(point2d, Draw_Square, Draw_rouge);
-    dout << p2d;
-    tg2d = new Draw_Segment2D(point2d, extr2d, Draw_rouge);
-    dout << tg2d;
-    pt.ParametersOnS2(u, v);
-    point2d.SetCoord(u, v);
-    extr2d = point2d.Translated(pt.Tangent2dOnS2());
-    p2d    = new Draw_Marker2D(point2d, Draw_Plus, Draw_jaune);
-    dout << p2d;
-    tg2d = new Draw_Segment2D(point2d, extr2d, Draw_jaune);
-    dout << tg2d;
-    dout.Flush();
-  }
-}
-#endif
 //=================================================================================================
 
 static int SearchIndex(const double Value, occ::handle<BRepBlend_Line>& Lin)
@@ -436,17 +380,6 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surfcoin, tolapp3d)));
-#ifdef DRAW
-  ChFi3d_SettraceDRAWFIL(true);
-  if (ChFi3d_GettraceDRAWFIL())
-  {
-    IndexOfConge++;
-    //    char name[100];
-    char* name = new char[100];
-    Sprintf(name, "%s_%d", "Surf", IndexOfConge);
-    DrawTrSurf::Set(name, Surfcoin);
-  }
-#endif
 
   double UFirst, ULast, VFirst, VLast;
   Surfcoin->Bounds(UFirst, ULast, VFirst, VLast);
@@ -749,17 +682,6 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 
   Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surf, tolget3d)));
 
-#ifdef DRAW
-  ChFi3d_SettraceDRAWFIL(true);
-  if (ChFi3d_GettraceDRAWFIL())
-  {
-    IndexOfConge++;
-    //    char name[100];
-    char* name = new char[100];
-    Sprintf(name, "%s_%d", "Surf", IndexOfConge);
-    DrawTrSurf::Set(name, Surf);
-  }
-#endif
   double UFirst, ULast, VFirst, VLast, pppdeb, pppfin;
   Surf->Bounds(UFirst, ULast, VFirst, VLast);
   BRepAdaptor_Curve2d              brc;
@@ -1153,11 +1075,6 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       again = 2;
     }
   }
-#ifdef DRAW
-  ChFi3d_SettraceDRAWWALK(true);
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, true);
-#endif
   if (Forward)
     Decroch = TheWalk.DecrochEnd();
   else
@@ -1321,11 +1238,6 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       again = 2;
     }
   }
-#ifdef DRAW
-  ChFi3d_SettraceDRAWWALK(true);
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, true);
-#endif
   if (Forward)
   {
     Decroch1 = TheWalk.Decroch1End();
@@ -1485,11 +1397,6 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
       again = 2;
     }
   }
-#ifdef DRAW
-  ChFi3d_SettraceDRAWWALK(true);
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, true);
-#endif
   if (Forward)
     Decroch = TheWalk.DecrochEnd();
   else
@@ -1649,10 +1556,6 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
       again = 2;
     }
   }
-#ifdef DRAW
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, true);
-#endif
   if (Forward)
   {
     Decroch1 = TheWalk.Decroch1End();
@@ -2292,10 +2195,6 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
   }
   Nbpnt = Lin->NbPoints();
-#ifdef DRAW
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, false);
-#endif
   First = Lin->Point(1).Parameter();
   Last  = Lin->Point(Nbpnt).Parameter();
 
@@ -2625,10 +2524,6 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
       again = 3;
     }
   }
-#ifdef DRAW
-  if (ChFi3d_GettraceDRAWWALK())
-    drawline(Lin, false);
-#endif
   First = Lin->Point(1).Parameter();
   Last  = Lin->Point(Nbpnt).Parameter();
   return true;

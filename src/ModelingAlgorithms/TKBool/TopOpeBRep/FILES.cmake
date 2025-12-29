@@ -10,7 +10,6 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_Bipoint.hxx
 
   TopOpeBRep_define.hxx
-  TopOpeBRep_DRAW.hxx
   TopOpeBRep_DSFiller.cxx
   TopOpeBRep_DSFiller.hxx
   TopOpeBRep_EdgesFiller.cxx

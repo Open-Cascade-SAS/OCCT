@@ -37,13 +37,6 @@
 #include <Precision.hxx>
 
 #ifdef OCCT_DEBUG
-  // #define DRAW
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-static char name[100];
-static bool Affich = false;
-static int  nbint  = 0;
-  #endif
 #endif
 
 //=================================================================================================
@@ -328,24 +321,6 @@ void Bisector_Inter::SinglePerform(const occ::handle<Geom2d_Curve>& CBis1,
            D2.LastParameter());
   }
 
-#ifdef DRAW
-  if (Affich)
-  {
-    Sprintf(name, "i1_%d", ++nbint);
-    DrawTrSurf::Set(name, Bis1);
-    Sprintf(name, "i2_%d", nbint);
-    DrawTrSurf::Set(name, Bis2);
-    if (IsDone() && !IsEmpty())
-    {
-      for (int k = 1; k <= NbPoints(); k++)
-      {
-        gp_Pnt2d P = Point(k).Value();
-        Sprintf(name, "ip_%d_%d", nbint, k);
-        DrawTrSurf::Set(name, P);
-      }
-    }
-  }
-#endif
 }
 
 //===================================================================================

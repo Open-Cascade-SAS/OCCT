@@ -34,10 +34,6 @@
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-  #include <Geom2d_Curve.hxx>
-#endif
 
 #ifdef OCCT_DEBUG
 void debc2dnull(void) {}
@@ -316,22 +312,6 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_MakeCurveOnSurface(const TopoDS_E
                                                                   double&            tol,
                                                                   const bool         trim3d)
 {
-#ifdef DRAW
-  if (TopOpeBRepTool_GettraceC2D())
-  {
-    std::cout << "\n#FC2D_MakeCurveOnSurface : " << std::endl;
-    TCollection_AsciiString fnam("c2df");
-    GLOBAL_C2D_i++;
-    fnam = fnam + GLOBAL_C2D_i;
-    FDRAW_DINS("", F, fnam, "");
-    TCollection_AsciiString enam("c2de");
-    GLOBAL_C2D_i++;
-    enam = enam + GLOBAL_C2D_i;
-    FDRAW_DINE(" ", E, enam, "\n");
-    std::cout.flush();
-    debc2dnull();
-  }
-#endif
 
   occ::handle<Geom2d_Curve> C2D = FC2D_make2d(E, F, f, l, tol, trim3d);
   FC2D_AddNewCurveOnSurface(C2D, E, F, f, l, tol);
@@ -534,22 +514,6 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&
     return C2D;
   }
 
-#ifdef DRAW
-  if (TopOpeBRepTool_GettraceC2D())
-  {
-    std::cout << "\n#FC2D_CurveOnSurface : " << std::endl;
-    TCollection_AsciiString fnam("c2df");
-    GLOBAL_C2D_i++;
-    fnam = fnam + GLOBAL_C2D_i;
-    FDRAW_DINS("", F, fnam, "");
-    TCollection_AsciiString enam("c2de");
-    GLOBAL_C2D_i++;
-    enam = enam + GLOBAL_C2D_i;
-    FDRAW_DINE(" ", E, enam, "\n");
-    std::cout.flush();
-    debc2dnull();
-  }
-#endif
 
   C2D = FC2D_make2d(E, F, EF, f2d, l2d, tol, trim3d);
   FC2D_AddNewCurveOnSurface(C2D, E, F, f2d, l2d, tol);

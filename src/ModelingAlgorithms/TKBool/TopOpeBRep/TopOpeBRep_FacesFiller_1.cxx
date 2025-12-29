@@ -45,9 +45,6 @@
 #include <TopOpeBRepTool_makeTransition.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRep_DRAW.hxx>
-#endif
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT void debrest(const int i)
@@ -65,41 +62,13 @@ extern bool GLOBAL_bvpr;
 extern void debvprmess(int f1, int f2, int il, int vp, int si);
 extern bool TopOpeBRep_GetcontextNOPUNK();
 
-  #ifdef DRAW
-static void FUN_traceRLine(const TopOpeBRep_LineInter& L)
-{
-
-  TCollection_AsciiString ee("Edofline");
-  ee.Cat(L.Index());
-  char* eee = ee.ToCString();
-  DBRep::Set(eee, L.Arc());
-}
-  #else
 static void FUN_traceRLine(const TopOpeBRep_LineInter&)
 {
   //
 }
-  #endif
 
-  #ifdef DRAW
-static void FUN_traceGLine(const TopOpeBRep_LineInter& L)
-  #else
 static void FUN_traceGLine(const TopOpeBRep_LineInter&)
-  #endif
 {
-  #ifdef DRAW
-  TCollection_AsciiString ll("Glineof");
-  ll.Cat(L.Index());
-  char*                   lll = ll.ToCString();
-  occ::handle<Geom_Curve> c   = L.Curve();
-  int                     iINON1, iINONn, nINON;
-  L.VPBounds(iINON1, iINONn, nINON);
-  double                         par1       = L.VPoint(iINON1).ParameterOnLine();
-  double                         parn       = L.VPoint(iINONn).ParameterOnLine();
-  bool                           isperiodic = L.IsPeriodic();
-  occ::handle<Geom_TrimmedCurve> tc         = new Geom_TrimmedCurve(c, par1, parn, true);
-  DrawTrSurf::Set(lll, tc);
-  #endif
 }
 #endif
 
@@ -1131,11 +1100,6 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   //----------------------------------------------------------------------
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  bool trcd = false;
-  if (trcd)
-    FUN_DrawMap(myDataforDegenEd);
-  #endif
 #endif
 
   TopOpeBRep_VPointInterIterator VPI;

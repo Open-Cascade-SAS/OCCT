@@ -263,11 +263,6 @@ TopAbs_Orientation TopOpeBRepDS_Transition::OrientationON(const TopAbs_State S,
 
   if (myStateBefore == TopAbs_ON && myStateAfter == TopAbs_ON)
   {
-#if 0
-    if      ( S == TopAbs_IN )  result = TopAbs_FORWARD;
-    else if ( S == TopAbs_OUT ) result = TopAbs_REVERSED;
-    else if ( S == TopAbs_ON )  result = TopAbs_INTERNAL;
-#endif
     if (S == TopAbs_IN)
       result = TopAbs_INTERNAL;
     else if (S == TopAbs_OUT)

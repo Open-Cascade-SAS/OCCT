@@ -125,60 +125,6 @@ static int strcmp_joker(const char* Mask, const char* Name)
   return 0;
 }
 
-  #if 0
-    // LD : ancienne version.
-
-    #define TRUE 1
-    #define FALSE 0
-    #define NO_MASK '*'
-
-static int strcmp_joker(char *fileMask,char *fileName)
-{
-    char *sauve_fileMask,*sauve_fileName;
-    int compare_result;
-    int beginning = 1;   // 0 if first character is a joker, otherwise 1
-
-    while (*fileName) {        // Test end of AsciiString
-
-     if (*fileMask == NO_MASK) {
-      beginning = 0;
-
-      while(*fileMask == NO_MASK) fileMask++;
-
-      if (*fileMask) {
-       while(*fileName && 
-             *fileName != *fileMask) 
-        fileName++;
-
-       sauve_fileMask = fileMask;  // Save strings
-       sauve_fileName = fileName;
-      }
-      else return(0);   // fileMask ends with a joker
-
-     }
-     else { // Compare two characters
-      compare_result = *fileMask++ - *fileName++;
-
-      if (compare_result != 0) 
-       if (beginning) 
-        return (compare_result); /* 1ere chaine pas de joker au debut */
-       else {  // Look ahead for same string
-        fileMask = sauve_fileMask;
-        fileName = ++sauve_fileName;
-        while(*fileName && 
-              *fileName != *fileMask)
-         fileName++;
-        sauve_fileName = fileName;
-       }
-
-    }    
-
-   }    
-
-   while(*fileMask == NO_MASK) fileMask++;
-   return(*fileMask - *fileName);
-}
-  #endif
 
 // Find next file entry in current directory
 

@@ -21,9 +21,6 @@
 #include <TopOpeBRepBuild_SolidBuilder.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
 
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -563,11 +560,6 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
           TopExp::Vertices(EE, VF, VR);
           if (!VF.IsNull() && !VR.IsNull() && !EE.IsNull())
           {
-  #ifdef DRAW
-            DBRep::Set(Enam.ToCString(), EE);
-            DBRep::Set(VFnam.ToCString(), VF);
-            DBRep::Set(VRnam.ToCString(), VR);
-  #endif
             std::cout << PRODINS << "-O -p 0.5 " << Enam;
             std::cout << "; ";
             //	    std::cout<<PRODINS<<VFnam; std::cout<<"; ";

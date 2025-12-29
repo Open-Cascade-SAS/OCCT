@@ -75,9 +75,6 @@ Standard_EXPORT void debspseon(const int i)
 extern bool TopOpeBRepTool_GettraceC2D();
 #endif
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 // Standard_IMPORT void FUN_tool_ttranslate(const gp_Vec2d& tvector, const TopoDS_Face& fF,
 // TopoDS_Edge& fyE);
@@ -409,19 +406,6 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       FUN_selLEE(LE1loc, E2, TopAbs_IN, LE1inE2);
       int nLE1inE2 = LE1inE2.Extent();
 
-#ifdef DRAW
-      if (tSPS)
-      {
-        std::cout << "# edges ON " << iE << " ";
-        TopAbs::Print(TopAbs_IN, std::cout);
-        std::cout << " / esd";
-        std::cout << " " << iESD;
-        std::cout << " : (" << nLE1inE2 << ")" << std::endl;
-        TCollection_AsciiString str("ON");
-        str = str + iE + "IN" + iESD;
-        FDRAW_DINLOE("   ", LE1inE2, str, "");
-      }
-#endif
 
       // edges E1 and E2 share LE1inE2
       if (nLE1inE2 != 0)
@@ -481,21 +465,6 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       } // 2.2
     }
 
-#ifdef DRAW
-    if (tSPS)
-    {
-      std::cout << std::endl << "# edges ON " << iE << " ";
-      TopAbs::Print(TopAbs_OUT, std::cout);
-      std::cout << " / lesd";
-      for (NCollection_List<TopoDS_Shape>::Iterator it(LESD); it.More(); it.Next())
-        std::cout << " " << myDataStructure->Shape(it.Value());
-      int n = LEoutLESD.Extent();
-      std::cout << " : (" << n << ")" << std::endl;
-      TCollection_AsciiString str("ON");
-      str = str + iE + "OUT";
-      FDRAW_DINLOE("   ", LEoutLESD, str, "");
-    }
-#endif
 
     if (!MEOUT.IsBound(E))
     {

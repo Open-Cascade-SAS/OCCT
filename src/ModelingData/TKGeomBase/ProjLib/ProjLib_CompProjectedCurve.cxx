@@ -238,39 +238,6 @@ static void d2(const double                          t,
 // purpose  : computes first derivative of the 3d projected curve
 //=======================================================================
 
-#if 0
-static void d1CurvOnSurf(const double t,
-  const double u,
-  const double v,
-  gp_Vec& V, 
-  const occ::handle<Adaptor3d_Curve>& Curve, 
-  const occ::handle<Adaptor3d_Surface>& Surface)
-{
-  gp_Pnt S, C;
-  gp_Vec2d V2d;
-  gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DC1_t;
-  Surface->D2(u, v, S, DS1_u, DS1_v, DS2_u, DS2_v, DS2_uv);
-  Curve->D1(t, C, DC1_t);
-  gp_Vec Ort(C, S);// Ort = S - C
-
-  gp_Vec2d dE_dt(-DC1_t*DS1_u, -DC1_t*DS1_v);
-  gp_XY dE_du(DS1_u*DS1_u + Ort*DS2_u, 
-    DS1_u*DS1_v + Ort*DS2_uv);
-  gp_XY dE_dv(DS1_v*DS1_u + Ort*DS2_uv, 
-    DS1_v*DS1_v + Ort*DS2_v);
-
-  double det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
-
-  gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
-    gp_XY(-dE_dv.X()/det, dE_du.X()/det));
-
-  V2d = - gp_Vec2d(gp_Vec2d(M.Row(1))*dE_dt, gp_Vec2d(M.Row(2))*dE_dt);
-
-  V = DS1_u * V2d.X() + DS1_v * V2d.Y();
-
-}
-#endif
 
 //=======================================================================
 // function : d2CurveOnSurf

@@ -92,11 +92,6 @@ double t_mkcurve;
 extern void ChFi3d_InitChron(OSD_Chronometer& ch);
 extern void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
 #endif
-#ifdef DRAW
-static bool Affich = false;
-static char name[100];
-  #include <DBRep.hxx>
-#endif
 
 //=================================================================================================
 
@@ -676,150 +671,6 @@ static TopoDS_Edge FindCreatedEdge(
   return E1;
 }
 
-#ifdef DRAW
-//=======================================================================
-// function : Bubble
-// purpose  : Sets in increasing order the sequence of vertices.
-//=======================================================================
-
-static void Bubble(const TopoDS_Edge& E, NCollection_Sequence<TopoDS_Shape>& Seq)
-{
-  bool          Invert   = true;
-  int           NbPoints = Seq.Length();
-  double        U1, U2;
-  TopoDS_Vertex V1, V2;
-
-  while (Invert)
-  {
-    Invert = false;
-    for (int i = 1; i < NbPoints; i++)
-    {
-      TopoDS_Shape aLocalShape = Seq.Value(i).Oriented(TopAbs_INTERNAL);
-      V1                       = TopoDS::Vertex(aLocalShape);
-      aLocalShape              = Seq.Value(i + 1).Oriented(TopAbs_INTERNAL);
-      V2                       = TopoDS::Vertex(aLocalShape);
-      //      V1 = TopoDS::Vertex(Seq.Value(i)  .Oriented(TopAbs_INTERNAL));
-      //      V2 = TopoDS::Vertex(Seq.Value(i+1).Oriented(TopAbs_INTERNAL));
-
-      U1 = BRep_Tool::Parameter(V1, E);
-      U2 = BRep_Tool::Parameter(V2, E);
-      if (U2 < U1)
-      {
-        Seq.Exchange(i, i + 1);
-        Invert = true;
-      }
-    }
-  }
-}
-
-//=================================================================================================
-
-static void CutEdge(const TopoDS_Edge&                    E,
-                    const NCollection_List<TopoDS_Shape>& VOnE,
-                    NCollection_List<TopoDS_Shape>&       NE)
-{
-  TopoDS_Shape aLocalShapeOrientedE = E.Oriented(TopAbs_FORWARD);
-  TopoDS_Edge  WE                   = TopoDS::Edge(aLocalShapeOrientedE);
-  //  TopoDS_Edge WE = TopoDS::Edge(E.Oriented(TopAbs_FORWARD));
-
-  double                                   U1, U2;
-  TopoDS_Vertex                            V1, V2;
-  NCollection_Sequence<TopoDS_Shape>       SV;
-  NCollection_List<TopoDS_Shape>::Iterator it(VOnE);
-  BRep_Builder                             B;
-
-  for (; it.More(); it.Next())
-  {
-    SV.Append(it.Value());
-  }
-  //--------------------------------
-  // Parse vertices on the edge.
-  //--------------------------------
-  Bubble(WE, SV);
-
-  int NbVer = SV.Length();
-  //----------------------------------------------------------------
-  // Construction of new edges.
-  // The vertices at the extremities of edges are not
-  // necessarily in the list of vertices
-  //----------------------------------------------------------------
-  if (SV.IsEmpty())
-  {
-    NE.Append(E);
-    return;
-  }
-  TopoDS_Vertex VF, VL;
-  double        f, l;
-  BRep_Tool::Range(WE, f, l);
-  TopExp::Vertices(WE, VF, VL);
-
-  if (NbVer == 2)
-  {
-    if (SV(1).IsEqual(VF) && SV(2).IsEqual(VL))
-    {
-      NE.Append(E);
-      return;
-    }
-  }
-  //----------------------------------------------------
-  // Processing of closed edges
-  // If a vertex of intersection is on the common vertex,
-  // it should appear at the beginning and the end of SV.
-  //----------------------------------------------------
-  TopoDS_Vertex VCEI;
-
-  if (!VF.IsNull() && !VF.IsSame(SV.First()))
-    SV.Prepend(VF);
-  if (!VL.IsNull() && !VL.IsSame(SV.Last()))
-    SV.Append(VL);
-
-  V1 = TopoDS::Vertex(SV.First());
-  SV.Remove(1);
-
-  while (!SV.IsEmpty())
-  {
-
-    V2 = TopoDS::Vertex(SV.First());
-    SV.Remove(1);
-
-    if (V1.IsSame(V2))
-    {
-      std::cout << "Vertex Confondus dans CutEdges" << std::endl;
-      continue;
-    }
-    //-------------------------------------------
-    // Copy the edge and restriction by V1 V2.
-    //-------------------------------------------
-    TopoDS_Shape aLocalShape = WE.EmptyCopied();
-    TopoDS_Edge  NewEdge     = TopoDS::Edge(aLocalShape);
-    //    TopoDS_Edge NewEdge = TopoDS::Edge(WE.EmptyCopied());
-    B.Add(NewEdge, V1.Oriented(TopAbs_FORWARD));
-    B.Add(NewEdge, V2.Oriented(TopAbs_REVERSED));
-    if (V1.IsSame(VF))
-      U1 = f;
-    else
-    {
-      aLocalShape = V1.Oriented(TopAbs_INTERNAL);
-      U1          = BRep_Tool::Parameter(TopoDS::Vertex(aLocalShape), WE);
-      //      U1 = BRep_Tool::Parameter
-      //	(TopoDS::Vertex(V1.Oriented(TopAbs_INTERNAL)),WE);
-    }
-    if (V2.IsSame(VL))
-      U2 = l;
-    else
-    {
-      aLocalShape = V2.Oriented(TopAbs_INTERNAL);
-      U2          = BRep_Tool::Parameter(TopoDS::Vertex(aLocalShape), WE);
-      //      U2 = BRep_Tool::Parameter
-      //	(TopoDS::Vertex(V2.Oriented(TopAbs_INTERNAL)),WE);
-    }
-    B.Range(NewEdge, U1, U2);
-    NE.Append(NewEdge.Oriented(E.Orientation()));
-
-    V1 = V2;
-  }
-}
-#endif
 
 //======================== END OF STATIC FUNCTIONS ============
 
@@ -1825,13 +1676,6 @@ void BiTgte_Blend::ComputeCenters()
   {
     std::cout << " No Lines of Generated Centers" << std::endl;
   }
-  #ifdef DRAW
-  else
-  {
-    if (Affich)
-      DBRep::Set("Unwind", myResult);
-  }
-  #endif
 #endif
 }
 
@@ -1846,9 +1690,6 @@ void BiTgte_Blend::ComputeSurfaces()
   // 1 - Tubes (True Fillets)
   // 2 - Spheres.
 
-#ifdef DRAW
-  int nbc = 1;
-#endif
 
   NCollection_List<TopoDS_Shape> Empty;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
@@ -2237,14 +2078,6 @@ void BiTgte_Blend::ComputeSurfaces()
         }
       }
 
-#ifdef DRAW
-      if (Affich)
-      {
-        Sprintf(name, "%s_%d", "SURF", nbc);
-        DBRep::Set(name, AnOffset.Face());
-        nbc++;
-      }
-#endif
     }
   }
 
@@ -2280,14 +2113,6 @@ void BiTgte_Blend::ComputeSurfaces()
 
     B.Add(myResult, OFT.Face());
 
-#ifdef DRAW
-    if (Affich)
-    {
-      Sprintf(name, "%s_%d", "SURF", nbc);
-      DBRep::Set(name, OFT.Face());
-      nbc++;
-    }
-#endif
   }
 }
 
@@ -2301,27 +2126,6 @@ void BiTgte_Blend::ComputeShape()
   //  - the faces neighbors of tubes that should be reconstructed preserving sharing.
 
   // For Debug : Visualize edges of the initial shape that should be reconstructed.
-#ifdef DRAW
-  if (Affich)
-  {
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-      Iterator itm(myCutEdges);
-    int        NbEdges = 0;
-    for (; itm.More(); itm.Next())
-    {
-      const TopoDS_Edge&                    E    = TopoDS::Edge(itm.Key());
-      const NCollection_List<TopoDS_Shape>& VonE = itm.Value();
-      NCollection_List<TopoDS_Shape>        NewE;
-
-      CutEdge(E, VonE, NewE);
-      for (NCollection_List<TopoDS_Shape>::Iterator it(NewE); it.More(); it.Next())
-      {
-        Sprintf(name, "%s_%d", "CUTE", ++NbEdges);
-        DBRep::Set(name, it.Value());
-      }
-    }
-  }
-#endif
   // end debug
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> Created;

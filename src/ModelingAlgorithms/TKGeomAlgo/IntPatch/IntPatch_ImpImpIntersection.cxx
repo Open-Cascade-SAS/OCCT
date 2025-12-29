@@ -488,14 +488,12 @@ void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>&                      
       goon = true;
       if (multpoint)
       {
-#if 1
         Normale          = QuadSurf.Normale(Psurf); // Normale a la surface au point
         currentarc       = currentpointonrst.Arc();
         currentparameter = currentpointonrst.Parameter();
         currentarc->D1(currentparameter, p2d, d2d);
         QuadSurf.D1(p2d.X(), p2d.Y(), ptbid, d1u, d1v);
         Vtgrst.SetLinearForm(d2d.X(), d1u, d2d.Y(), d1v);
-#endif
         goon = MultiplePoint(listpnt,
                              Domain,
                              QuadSurf,
@@ -564,14 +562,12 @@ void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>&                      
                                aVertTol);
           if (linefound)
           {
-#if 1
             Normale    = QuadSurf.Normale(Psurf); // Normale a la surface au point
             currentarc = currentpointonrst.Arc();
             //-- currentparameter = currentpointonrst.Parameter();
             currentarc->D1(currentparameter, p2d, d2d);
             QuadSurf.D1(p2d.X(), p2d.Y(), ptbid, d1u, d1v);
             Vtgrst.SetLinearForm(d2d.X(), d1u, d2d.Y(), d1v);
-#endif
 
             const occ::handle<IntPatch_Line>& lin = slin.Value(linenumber);
             TheType                               = lin->ArcType();
@@ -1183,18 +1179,6 @@ bool FindLine(gp_Pnt&                                                 Psurf,
       }
       break;
       case IntPatch_Parabola: {
-#if 0 	
-	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Parabola(),Psurf);
-	if (para <= upper && para >= lower) {
-	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Parabola());
-	  dist = Psurf.Distance(pt);
-	  if (dist< distmin) {
-	    distmin = dist;
-	    Paraint = para;
-	    Range = i;
-	  }
-	}
-#else
         //-- Le calcul du parametre sur une parabole est mal fait ds ElCLib. Il ne tient pas compte
         //-- de la meilleure facon de calculer (axe X ou axe Y). Bilan : Si la parabole est tres
         //-- pointue (focal de l'ordre de 1e-2 et si le point est a un parametre grand, ca foire. )
@@ -1241,7 +1225,6 @@ bool FindLine(gp_Pnt&                                                 Psurf,
           } while (++amelioration < 5);
         }
 
-#endif
       }
       break;
       case IntPatch_Hyperbola: {

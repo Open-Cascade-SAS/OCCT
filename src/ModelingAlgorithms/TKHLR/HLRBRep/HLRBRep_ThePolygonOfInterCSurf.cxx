@@ -110,28 +110,4 @@ double HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(const int    Index,
 
 void HLRBRep_ThePolygonOfInterCSurf::Dump() const
 {
-#if 0
-  static int Compteur=0;
-  char tamp[100];
-  Compteur++;
-  Sprintf(tamp,"Poly%d",Compteur);
-  std::cout<<"  @@@@@@@@@@@ F i c h i e r   :   "<<tamp<<" @@@@@@@@@@"<<std::endl;
-  FILE *fp;
-  fp=fopen(tamp,"w");
-  if(fp==NULL) {
-    std::cout<<"PolyGonGen::Erreur en Ouverture Fichier"<<tamp<<std::endl;
-    return;
-  }
-  fprintf(fp,"\n#Discretisation de : %f ---> %f \n",Binf,Bsup);
-  fprintf(fp,"\npol %d %d %f",Compteur,NbPntIn,TheDeflection);
-  gp_Pnt p1,p2;
-  for (int iObje=1; iObje<=NbSegments(); iObje++) {
-    p1=BeginOfSeg(iObje);
-    fprintf(fp,"\npnt %d %f %f",Compteur,p1.X(),p1.Y());
-  }
-  p1=EndOfSeg(NbSegments());
-  fprintf(fp,"\npnt %d %f %f",Compteur,p1.X(),p1.Y());
-  fprintf(fp,"\ndispol %d\n#\n",Compteur);
-  fclose(fp);
-#endif
 }

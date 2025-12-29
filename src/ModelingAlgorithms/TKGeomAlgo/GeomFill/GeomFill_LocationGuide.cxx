@@ -55,11 +55,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide, GeomFill_LocationLaw)
 
-#ifdef DRAW
-static int Affich = 0;
-  #include <Approx_Curve3d.hxx>
-  #include <DrawTrSurf.hxx>
-#endif
 
 //=======================================================================
 // function : TraceRevol
@@ -127,10 +122,6 @@ static void TraceRevol(const double                                    t,
   occ::handle<Geom_Surface> Revol = new (Geom_SurfaceOfRevolution)(S, Ax);
   std::cout << "Surf Revol at parameter t = " << t << std::endl;
 
-  #if DRAW
-  const char* aName = "TheRevol";
-  DrawTrSurf::Set(aName, Revol);
-  #endif
 }
 #endif
 
@@ -185,17 +176,6 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(
   Trans.SetIdentity();
   WithTrans = false;
 
-#ifdef DRAW
-  if (Affich)
-  {
-    Approx_Curve3d approx(myGuide, 1.e-4, GeomAbs_C1, 15 + myGuide->NbIntervals(GeomAbs_CN), 14);
-    if (approx.HasResult())
-    {
-      const char* aName = "TheGuide";
-      DrawTrSurf::Set(aName, approx.Curve());
-    }
-  }
-#endif
 }
 
 //==================================================================

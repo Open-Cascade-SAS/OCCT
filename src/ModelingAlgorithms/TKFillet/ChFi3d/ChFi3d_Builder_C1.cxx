@@ -99,10 +99,6 @@
 #include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <OSD_Chronometer.hxx>
-    #include <DrawTrSurf.hxx>
-  #endif // DRAW
 //  Modified by Sergey KHROMOV - Thu Apr 11 12:23:40 2002 Begin
 // The method
 // ChFi3d_Builder::PerformMoreSurfdata(const int Index)

@@ -42,9 +42,6 @@
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
   #include <Standard_Integer.hxx>
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-  #endif
   // POP pour NT
   #include <stdio.h>
 
@@ -84,9 +81,6 @@ static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf,
   // char name[100];
   char* name = new char[100];
   Sprintf(name, "%s_%d", "Section", IndexOfSection);
-  #ifdef DRAW
-  DrawTrSurf::Set(name, sect);
-  #endif
 }
 
 #endif

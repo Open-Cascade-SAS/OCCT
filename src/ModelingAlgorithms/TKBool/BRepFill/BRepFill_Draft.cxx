@@ -63,13 +63,6 @@
 #include <TopoDS_Wire.hxx>
 #include <NCollection_List.hxx>
 
-#ifdef DRAW
-  #include <Geom_Circle.hxx>
-  #include <gp.hxx>
-  #include <DBRep.hxx>
-  #include <DrawTrSurf.hxx>
-static bool Affich = 0;
-#endif
 
 //=================================================================================================
 
@@ -275,12 +268,6 @@ BRepFill_Draft::BRepFill_Draft(const TopoDS_Shape& S, const gp_Dir& Dir, const d
     if (Vf.IsSame(Vl))
       myWire.Closed(true);
   }
-#ifdef DRAW
-  if (Affich)
-  {
-    DBRep::Set("TheWire", myWire);
-  }
-#endif
 
   myAngle = std::abs(Angle);
   myDir   = Dir;
@@ -409,14 +396,6 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const bool KeepOutSi
   occ::handle<Geom_Plane> Plan = new (Geom_Plane)(Pt, myDir);
   Surf                         = new (Geom_RectangularTrimmedSurface)(Plan, -L, L, -L, L);
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char* Temp = "ThePlan";
-    DrawTrSurf::Set(Temp, Surf);
-    //    DrawTrSurf::Set("ThePlan", Surf);
-  }
-#endif
 
   // Sweeping and restriction
   Init(Plan, L * 1.01, WBox);
@@ -467,12 +446,6 @@ void BRepFill_Draft::Init(const occ::handle<Geom_Surface>&, const double Length,
 
   occ::handle<Geom_Curve> TC = new (Geom_TrimmedCurve)(L, 0, Length);
 
-#ifdef DRAW
-  if (Affich > 2)
-  {
-    TC = new (Geom_Circle)(gp::XOY(), Length);
-  }
-#endif
 
   BRepLib_MakeEdge ME(TC);
   TopoDS_Edge      EG = ME.Edge();

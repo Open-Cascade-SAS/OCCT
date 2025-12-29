@@ -446,23 +446,3 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
 
 //----------------------------------------------------------------------
 
-#if 0 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  #define Debug(q) std::cout << "IntRes2d_Intersectionq =" << q << std::endl;
-
-char *DebugPos(const IntRes2d_Position P);
-
-Debug(FirstParam1);
-Debug(LastParam1);
-Debug(FirstParam2);
-Debug(LastParam2);
-Debug(PParamOnFirst);
-Debug(PParamOnSecond);
-std::cout<<" ##### T1  <> Middle ###### "<<DebugPos(T1.PositionOnCurve())<<std::endl;
-char *DebugPos(const IntRes2d_Position P) {
-  if(P==IntRes2d_Middle) return(" Middle ");
-  if(P==IntRes2d_Head) return(" Head ");
-  if(P==IntRes2d_End) return(" End ");
-}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#endif

@@ -73,10 +73,6 @@ Standard_EXPORT void debcorriso(const int i)
 extern void* GFABUMAKEFACEPWES_DEB;
 #endif
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 Standard_EXPORT bool FUN_tool_ClosedW(const TopoDS_Wire& W);
 
@@ -122,38 +118,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
     topurge = false;
 #endif
 
-#ifdef DRAW
-  bool traceF = false;
-  if (traceF)
-  {
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapW;
-    for (FABU.InitFace(); FABU.MoreFace(); FABU.NextFace())
-    {
-      for (FABU.InitWire(); FABU.MoreWire(); FABU.NextWire())
-      {
-        TopoDS_Shape W;
-        bool         isold = FABU.IsOldWire();
-        if (isold)
-          W = FABU.OldWire();
-        else
-        {
-          BRep_Builder    BB;
-          TopoDS_Compound cmp;
-          BB.MakeCompound(cmp);
-          FABU.InitEdge();
-          for (; FABU.MoreEdge(); FABU.NextEdge())
-            FABU.AddEdgeWire(FABU.Edge(), cmp);
-          W = cmp;
-        }
-        if (W.IsNull())
-          continue;
-        int                     iiwi = mapW.Add(W);
-        TCollection_AsciiString aa("wii_");
-        FUN_tool_draw(aa, W, iiwi);
-      }
-    }
-  }
-#endif
 
   if (topurge)
   {
@@ -215,26 +179,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
   if (topurge)
   {
 
-#ifdef DRAW
-    if (tSPS)
-    {
-      std::cout << std::endl << "#<< AVANT PurgeClosingEdges " << std::endl;
-      GdumpFABU(FABU);
-      NCollection_List<TopoDS_Shape>                                  dLOF;
-      NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> dMWisOld;
-      GFABUMakeFaces(FF, FABU, dLOF, dMWisOld);
-      NCollection_List<TopoDS_Shape>::Iterator X(dLOF);
-      for (int i = 1; X.More(); X.Next(), i++)
-      {
-        TCollection_AsciiString ss("purclo");
-        ss = ss + i;
-        DBRep::Set(ss.ToCString(), X.Value());
-        std::cout << "... face " << ss << std::endl;
-      }
-      debpurclomess(iF);
-      DEBpurclo = true;
-    }
-#endif
 
     const TopoDS_Face& FA   = TopoDS::Face(FF);
     bool               puok = TopOpeBRepTool::PurgeClosingEdges(FA, LOF, MWisOld, MshNOK);

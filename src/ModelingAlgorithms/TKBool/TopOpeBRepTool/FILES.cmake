@@ -25,8 +25,6 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_CurveTool.hxx
 
   TopOpeBRepTool_defineG.hxx
-  TopOpeBRepTool_DRAW.cxx
-  TopOpeBRepTool_DRAW.hxx
 
   TopOpeBRepTool_face.cxx
   TopOpeBRepTool_face.hxx

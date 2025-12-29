@@ -570,13 +570,6 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& CC,
       {
         B.MakeVertex(V1, P, preci);
       }
-#if 0
-      // desctivate control (RLE) for speed in sketcher
-        else if (P.Distance(BRep_Tool::Pnt(V1)) > preci) {
-	myError = BRepLib_DifferentsPointAndParameter;
-	return;
-      }
-#endif
     }
 
     if (p2inf)
@@ -594,13 +587,6 @@ void BRepLib_MakeEdge2d::Init(const occ::handle<Geom2d_Curve>& CC,
       {
         B.MakeVertex(V2, P, preci);
       }
-#if 0
-      // desctivate control (RLE) for speed in sketcher
-        else if (P.Distance(BRep_Tool::Pnt(V2)) > preci){
-	myError = BRepLib_DifferentsPointAndParameter;
-	return;
-      }
-#endif
     }
   }
 

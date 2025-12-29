@@ -63,58 +63,6 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(const occ::handle<Adaptor
   theS1->D2(aU1, aV1, aPt, aDU1, aDV1, aDUU1, aDVV1, aDUV1);
   theS2->D2(aU2, aV2, aPt, aDU2, aDV2, aDUU2, aDVV2, aDUV2);
 
-#if 0
-  //The code in this block contains TEST CASES for
-  //this algorithm only. It is stupedly to create OCCT-test for
-  //the method, which will be changed possibly never.
-  //However, if we do something in this method we can check its
-  //functionality easily. For that:
-  //  1. Initialize aTestID variable by the correct value;
-  //  2. Compile this test code fragment.
-
-  int aTestID = 0;
-  double anExpectedSqRad = -1.0;
-  switch(aTestID)
-  {
-  case 1:
-    //Intersection between two spherical surfaces: O1(0.0, 0.0, 0.0), R1 = 3
-    //and O2(5.0, 0.0, 0.0), R2 = 5.0.
-    //Considered point has coordinates: (0.9, 0.0, 0.3*sqrt(91.0)).
-
-    aDU1.SetCoord(0.00000000000000000, 0.90000000000000002, 0.00000000000000000);
-    aDV1.SetCoord(-2.8618176042508372, 0.00000000000000000, 0.90000000000000002);
-    aDUU1.SetCoord(-0.90000000000000002, 0.00000000000000000, 0.00000000000000000);
-    aDUV1.SetCoord(0.00000000000000000, -2.8618176042508372, 0.00000000000000000);
-    aDVV1.SetCoord(-0.90000000000000002, 0.00000000000000000, -2.8618176042508372);
-    aDU2.SetCoord(0.00000000000000000, -4.0999999999999996, 0.00000000000000000);
-    aDV2.SetCoord(-2.8618176042508372, 0.00000000000000000, -4.0999999999999996);
-    aDUU2.SetCoord(4.0999999999999996, 0.00000000000000000, 0.00000000000000000);
-    aDUV2.SetCoord(0.00000000000000000, -2.8618176042508372, 0.00000000000000000);
-    aDVV2.SetCoord(4.0999999999999996, 0.00000000000000000, -2.8618176042508372);
-    anExpectedSqRad = 819.0/100.0;
-    break;
-  case 2:
-    //Intersection between spherical surfaces: O1(0.0, 0.0, 0.0), R1 = 10
-    //and the plane 3*x+4*y+z=26.
-    //Considered point has coordinates: (-1.68, 5.76, 8.0).
-
-    aDU1.SetCoord(-5.76, -1.68, 0.0);
-    aDV1.SetCoord(2.24, -7.68, 6.0);
-    aDUU1.SetCoord(1.68, -5.76, 0.0);
-    aDUV1.SetCoord(7.68, 2.24, 0.0);
-    aDVV1.SetCoord(1.68, -5.76, -8.0);
-    aDU2.SetCoord(1.0, 0.0, -3.0);
-    aDV2.SetCoord(0.0, 1.0, -4.0);
-    aDUU2.SetCoord(0.0, 0.0, 0.0);
-    aDUV2.SetCoord(0.0, 0.0, 0.0);
-    aDVV2.SetCoord(0.0, 0.0, 0.0);
-    anExpectedSqRad = 74.0;
-    break;
-  default:
-    aTestID = 0;
-    break;
-  }
-#endif
 
   const gp_Vec aN1(aDU1.Crossed(aDV1)), aN2(aDU2.Crossed(aDV2));
   // Tangent vector to the intersection curve
@@ -190,20 +138,6 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(const occ::handle<Adaptor
   // square of curvature radius
   const double aFactSqRad = aSqMagnFDer * aSqMagnFDer * aSqMagnFDer / aSqMagnSDer;
 
-#if 0
-  if(aTestID)
-  {
-    if(std::abs(aFactSqRad - anExpectedSqRad) < Precision::Confusion())
-    {
-      printf("OK: Curvature radius is equal to expected (%5.10g)", anExpectedSqRad);
-    }
-    else
-    {
-      printf("Error: Curvature radius is not equal to expected: %5.10g != %5.10g",
-              aFactSqRad, anExpectedSqRad);
-    }
-  }
-#endif
 
   return sqrt(aFactSqRad);
 }

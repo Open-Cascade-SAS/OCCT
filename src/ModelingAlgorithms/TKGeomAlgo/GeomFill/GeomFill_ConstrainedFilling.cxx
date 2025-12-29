@@ -35,19 +35,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-#ifdef DRAW
-  // Pour le dessin.
-  #include <Draw_Appli.hxx>
-  #include <Draw_Display.hxx>
-  #include <Draw.hxx>
-  #include <Draw_Segment3D.hxx>
-  #include <Draw_Segment2D.hxx>
-  #include <Draw_Marker2D.hxx>
-  #include <Draw_ColorKind.hxx>
-  #include <Draw_MarkerShape.hxx>
-static bool   dodraw  = 0;
-static double drawfac = 0.1;
-#endif
 #ifdef OCCT_DEBUG
 Standard_IMPORT void Law_draw1dcurve(const NCollection_Array1<double>& pol,
                                      const NCollection_Array1<double>& knots,
@@ -306,10 +293,6 @@ static void killcorners(const int                       nb,
       {
         occ::handle<Law_BSpline> bs = Law::ScaleCub(0., 1., fnul, lnul, fscal, lscal);
         tga[i]->Scale(bs);
-#ifdef DRAW
-        if (dodraw)
-          Law_draw1dcurve(bs, gp_Vec2d(1., 0.), 1.);
-#endif
       }
     }
   }
@@ -977,28 +960,6 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   pq[1] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), false, ind[1]);
   pq[3] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), true, ind[3]);
 
-#ifdef DRAW
-  if (dodraw)
-  {
-    gp_Vec2d tra(0., 0.);
-    double   scal = 1.;
-    Law_draw1dcurve(ab[0]->Array1(), nk[1]->Array1(), nm[1]->Array1(), degree[1], tra, scal);
-    tra.SetCoord(1., 0.);
-    Law_draw1dcurve(ab[1]->Array1(), nk[0]->Array1(), nm[0]->Array1(), degree[0], tra, scal);
-    tra.SetCoord(0., 1.);
-    Law_draw1dcurve(ab[2]->Array1(), nk[1]->Array1(), nm[1]->Array1(), degree[1], tra, scal);
-    tra.SetCoord(1., 1.);
-    Law_draw1dcurve(ab[3]->Array1(), nk[0]->Array1(), nm[0]->Array1(), degree[0], tra, scal);
-    tra.SetCoord(0., 0.);
-    Law_draw1dcurve(pq[0]->Array1(), nk[1]->Array1(), nm[1]->Array1(), degree[1], tra, scal);
-    tra.SetCoord(0., 1.);
-    Law_draw1dcurve(pq[2]->Array1(), nk[1]->Array1(), nm[1]->Array1(), degree[1], tra, scal);
-    tra.SetCoord(1., 0.);
-    Law_draw1dcurve(pq[1]->Array1(), nk[0]->Array1(), nm[0]->Array1(), degree[0], tra, scal);
-    tra.SetCoord(1., 1.);
-    Law_draw1dcurve(pq[3]->Array1(), nk[0]->Array1(), nm[0]->Array1(), degree[0], tra, scal);
-  }
-#endif
 }
 
 //=================================================================================================
@@ -1468,13 +1429,6 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const int I)
       vptch = ptch->D1U(uu, vv);
     else
       vptch = ptch->D1V(uu, vv);
-#ifdef DRAW
-    gp_Pnt                      pp;
-    occ::handle<Draw_Segment3D> seg;
-    pp  = pbound.Translated(vptch);
-    seg = new Draw_Segment3D(pbound, pp, Draw_jaune);
-    dout << seg;
-#endif
     uu += duu;
     vv += dvv;
     ww += dww;
@@ -1487,11 +1441,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
 {
   if (tgalg[I].IsNull())
     return;
-#ifdef DRAW
-  gp_Pnt p1, p2;
-#else
   gp_Pnt p1;
-#endif
   gp_Vec                         d1;
   bool                           caplisse = false;
   double                         maxang = 0., pmix = 0, pmixcur;
@@ -1512,18 +1462,6 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
       if (pmix * pmixcur < 0.)
         caplisse = true;
     }
-#ifdef DRAW
-    occ::handle<Draw_Segment3D> seg;
-    p2  = p1.Translated(vtg);
-    seg = new Draw_Segment3D(p1, p2, Draw_blanc);
-    dout << seg;
-    p2  = p1.Translated(vnor);
-    seg = new Draw_Segment3D(p1, p2, Draw_rouge);
-    dout << seg;
-    p2  = p1.Translated(vcros);
-    seg = new Draw_Segment3D(p1, p2, Draw_jaune);
-    dout << seg;
-#endif
     if (vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15)
     {
       double alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
@@ -1579,16 +1517,6 @@ void GeomFill_ConstrainedFilling::CheckApprox(const int I)
         if (std::abs(alpha) > maxang)
           maxang = std::abs(alpha);
       }
-#ifdef DRAW
-      occ::handle<Draw_Segment3D> seg;
-      gp_Pnt                      pp;
-      pp  = pbound.Translated(vbound);
-      seg = new Draw_Segment3D(pbound, pp, Draw_blanc);
-      dout << seg;
-      pp  = papp.Translated(vapp);
-      seg = new Draw_Segment3D(papp, pp, Draw_rouge);
-      dout << seg;
-#endif
     }
     if (papp.Distance(pbound) > maxdist)
       maxdist = papp.Distance(pbound);
@@ -1639,10 +1567,6 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
   }
   gp_Pnt pbound[31], pres[31];
   gp_Vec vbound[31], vres[31];
-#ifdef DRAW
-  double ang[31];
-  bool   hasang[31];
-#endif
   occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
   int                            k;
   for (k = 0; k <= 30; k++)
@@ -1662,15 +1586,7 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
         alpha        = std::min(alpha, std::abs(M_PI - alpha));
         if (alpha > maxang)
           maxang = alpha;
-#ifdef DRAW
-        ang[k]    = alpha;
-        hasang[k] = 1;
-#endif
       }
-#ifdef DRAW
-      else
-        hasang[k] = 0;
-#endif
     }
     if (pres[k].Distance(pbound[k]) > maxdist)
       maxdist = pres[k].Distance(pbound[k]);
@@ -1685,29 +1601,4 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
     double angdeg = maxang * 180. / M_PI;
     std::cout << "Angle max    : " << angdeg << " deg" << std::endl;
   }
-#ifdef DRAW
-  bool scale = maxang > 1.e-10;
-  for (k = 0; k <= 30; k++)
-  {
-    if (hasang[k])
-    {
-      gp_Pnt                      pp;
-      occ::handle<Draw_Segment3D> seg;
-      vbound[k].Normalize();
-      if (scale)
-        vbound[k].Multiply(1. + 3. * ang[k] / maxang);
-      vbound[k].Multiply(drawfac);
-      pp  = pbound[k].Translated(vbound[k]);
-      seg = new Draw_Segment3D(pbound[k], pp, Draw_blanc);
-      dout << seg;
-      vres[k].Normalize();
-      if (scale)
-        vres[k].Multiply(1. + 3. * ang[k] / maxang);
-      vres[k].Multiply(drawfac);
-      pp  = pres[k].Translated(vres[k]);
-      seg = new Draw_Segment3D(pres[k], pp, Draw_rouge);
-      dout << seg;
-    }
-  }
-#endif
 }

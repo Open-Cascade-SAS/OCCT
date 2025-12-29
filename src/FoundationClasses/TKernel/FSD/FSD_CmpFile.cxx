@@ -155,21 +155,6 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
 
 void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 {
-#if 0
-  const char16_t* extBuffer;
-  int   i, c, d;
-
-  extBuffer = buffer.ToExtString();
-
-  for (i = 0; i < buffer.Length(); i++) {
-    c = (extBuffer[i] & 0x0000FF00) >> 8;
-    d = extBuffer[i] & 0x000000FF;
-
-    myStream << (char)c << (char)d;
-  }
-
-  myStream << (char)0 << "\n";
-#endif
   const char16_t* extBuffer;
   int             i;
 

@@ -81,21 +81,6 @@
 
 #include <cstdio>
 #ifdef OCCT_DEBUG
-  // #define DRAW
-  #ifdef DRAW
-    #include <Draw.hxx>
-    #include <DrawTrSurf.hxx>
-    #include <DrawTrSurf_Curve2d.hxx>
-    #include <DBRep.hxx>
-    #include <Geom_Curve.hxx>
-static bool AffichGeom  = false;
-static bool Affich2d    = false;
-static bool AffichEdge  = false;
-static int  NbTRIMEDGES = 0;
-static int  NbOFFSET    = 0;
-static int  NbEDGES     = 0;
-static int  NbBISSEC    = 0;
-  #endif
 #endif
 
 //  Modified by Sergey KHROMOV - Thu Nov 16 17:24:39 2000 Begin
@@ -798,12 +783,6 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
   }
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End Construction of geometric primitives " << std::endl;
-  }
-  #endif
 #endif
 
   //---------------------------------------------------
@@ -826,15 +805,6 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     CurrentArc           = Locus.Graph()->Arc(i);
     Bisector_Bisec Bisec = Locus.GeomBis(CurrentArc, Reverse);
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-
-    if (AffichGeom)
-    {
-      char name[256];
-      Sprintf(name, "BISSEC_%d", NbBISSEC++);
-      DrawTrSurf::Set(name, Bisec.Value());
-    }
-  #endif
 #endif
 
     //-------------------------------------------------------------------
@@ -1009,12 +979,6 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
   }
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (AffichEdge)
-  {
-    std::cout << " End Construction of vertices on offsets" << std::endl;
-  }
-  #endif
 #endif
 
   //----------------------------------
@@ -1258,15 +1222,6 @@ void BRepFill_OffsetWire::PrepareSpine()
   }
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (AffichEdge)
-  {
-    DBRep::Set("WS", myWorkSpine);
-    DBRep::Set("MS", mySpine);
-    BRepTools::Write(myWorkSpine, "WS");
-    BRepTools::Write(mySpine, "MS");
-  }
-  #endif
 #endif
 }
 
@@ -2072,14 +2027,6 @@ void MakeCircle(const TopoDS_Edge&                                              
   Map.Add(V, LL);
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-  if (AffichGeom && !OE.IsNull())
-  {
-    char name[256];
-    Sprintf(name, "OFFSET_%d", ++NbOFFSET);
-    DBRep::Set(name, OE);
-  }
-  #endif
 #endif
 }
 
@@ -2202,15 +2149,6 @@ void MakeOffset(const TopoDS_Edge&                                              
     Map.Add(E, LL);
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    if (AffichGeom && !OE.IsNull())
-    {
-      char name[256];
-      Sprintf(name, "OFFSET_%d", ++NbOFFSET);
-      DBRep::Set(name, OE);
-      // double ii = 0;
-    }
-  #endif
 #endif
   }
 }
@@ -2465,28 +2403,6 @@ void TrimEdge(
       TheBuilder.Range(NewEdge, ThePar.Value(k), ThePar.Value(k + 1));
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-      if (AffichEdge)
-      {
-        char name[256];
-        Sprintf(name, "TRIMEDGE_%d", NbTRIMEDGES);
-        DBRep::Set(name, NewEdge);
-      }
-      if (Affich2d)
-      {
-        TopLoc_Location           L;
-        double                    f, l;
-        occ::handle<Geom_Surface> Surf;
-        occ::handle<Geom2d_Curve> C;
-        BRep_Tool::CurveOnSurface(NewEdge, C, Surf, L, f, l);
-        char name[256];
-        Sprintf(name, "OFFSET2d_%d", NbTRIMEDGES++);
-        occ::handle<Geom2d_TrimmedCurve> C2d = new Geom2d_TrimmedCurve(C, f, l);
-        occ::handle<DrawTrSurf_Curve2d>  dr  = new DrawTrSurf_Curve2d(C2d, false);
-        dr->SetColor(Draw_bleu);
-        Draw::Set(name, dr);
-      }
-  #endif
 #endif
       S.Append(NewEdge);
     }

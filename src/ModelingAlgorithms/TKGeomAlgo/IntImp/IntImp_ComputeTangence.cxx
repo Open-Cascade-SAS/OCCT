@@ -162,29 +162,6 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
       }
     } while (!triOk);
 
-#if 0     
-     // trier par ordre croissant le tableau NormDuv
-     int II;
-     for (j =0;j<=3;j++) Irang[j]=j;
-     for (j =0;j<=3;j++) {
-       Tampon = NormDuv[j];
-       II=j;
-       for (i =j+1;i<=3;i++) {
-         if (NormDuv[i] < Tampon) {
-	   Tampon = NormDuv[i];
-	   II = i;
-         }
-       }
-       Irang[j] = Irang[II];
-       Irang[II] = j;
-       NormDuv[II] = NormDuv[j];
-       NormDuv[j] = Tampon;
-     }
-     for (j=0; j<=3;j++)
-     {
-       TabIso[j] = staticChoixRef[Irang[j]];     
-     }
-#endif
   }
   return tangent;
 }

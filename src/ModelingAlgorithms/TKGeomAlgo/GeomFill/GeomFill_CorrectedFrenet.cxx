@@ -50,50 +50,6 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)
 static bool Affich = 0;
 #endif
 
-#ifdef DRAW
-static int CorrNumber = 0;
-  #include <Draw_Appli.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <Draw_Segment2D.hxx>
-  // #include <Draw.hxx>
-  #include <Standard_Integer.hxx>
-#endif
-
-#ifdef DRAW
-static void draw(const occ::handle<Law_Function>& law)
-{
-  double Step, u, v, tmin;
-  int    NbInt, i, j, jmax;
-  NbInt = law->NbIntervals(GeomAbs_C3);
-  NCollection_Array1<double> Int(1, NbInt + 1);
-  law->Intervals(Int, GeomAbs_C3);
-  gp_Pnt2d                    old;
-  occ::handle<Draw_Segment2D> tg2d;
-
-  for (i = 1; i <= NbInt; i++)
-  {
-    tmin = Int(i);
-    Step = (Int(i + 1) - Int(i)) / 4;
-    if (i == NbInt)
-      jmax = 4;
-    else
-      jmax = 3;
-    for (j = 1; j <= jmax; j++)
-    {
-      u = tmin + (j - 1) * Step;
-      v = law->Value(u);
-      gp_Pnt2d point2d(u, v);
-      if ((i > 1) || (j > 1))
-      {
-        tg2d = new Draw_Segment2D(old, point2d, Draw_kaki);
-        dout << tg2d;
-      }
-      old = point2d;
-    }
-  }
-  dout.Flush();
-}
-#endif
 
 static double ComputeTorsion(const double Param, const occ::handle<Adaptor3d_Curve>& aCurve)
 {
@@ -403,34 +359,6 @@ void GeomFill_CorrectedFrenet::Init()
   //  double StartAng = 0, AvStep, Step, t;
   double StartAng = 0, AvStep, Step;
 
-#ifdef DRAW
-  double t;
-
-  if (Affich)
-  { // Display the curve C'^C''(t)
-    GeomFill_SnglrFunc CS(myCurve);
-    NbStep = 99;
-    AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
-    NCollection_Array1<gp_Pnt> TabP(1, NbStep + 1);
-
-    NCollection_Array1<double> TI(1, NbStep + 1);
-    NCollection_Array1<int>    M(1, NbStep + 1);
-    M.Init(1);
-    M(1) = M(NbStep + 1) = 2;
-    for (i = 1; i <= NbStep + 1; i++)
-    {
-      t = (myTrimmed->FirstParameter() + (i - 1) * AvStep);
-      CS.D0(t, TabP(i));
-      TI(i) = t;
-    }
-    char        tname[100];
-    const char* name = tname;
-    Sprintf(name, "Binorm_%d", ++CorrNumber);
-    occ::handle<Geom_BSplineCurve> BS = new (Geom_BSplineCurve)(TabP, TI, M, 1);
-    //    DrawTrSurf::Set(&name[0], BS);
-    DrawTrSurf::Set(name, BS);
-  }
-#endif
 
   NbStep = 10;
   AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
@@ -478,12 +406,6 @@ void GeomFill_CorrectedFrenet::Init()
     };
   }
 
-#ifdef DRAW
-  if (Affich)
-  {
-    draw(EvolAroundT);
-  }
-#endif
 }
 
 //===============================================================

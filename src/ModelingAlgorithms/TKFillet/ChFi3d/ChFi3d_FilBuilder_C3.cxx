@@ -59,9 +59,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
 #ifdef OCCT_DEBUG
   #include <Geom_TrimmedCurve.hxx>
 extern bool ChFi3d_GettraceDRAWSPINE();

@@ -126,30 +126,6 @@ void TopOpeBRepBuild_BlockBuilder::MakeBlock(TopOpeBRepBuild_ShapeSet& SS)
   myBlocks.Append(Mextent + 1);
   myIsDone = true;
 
-#if 0
-// version seche
-  myOrientedShapeMap.Clear();
-  myOrientedShapeMapIsValid.Clear();
-  myBlocks.Clear();
-  while (SS.MoreStartElements()) {
-    int last = myOrientedShapeMap.Extent();
-    int index =AddElement(SS.StartElement());
-    if (index > last) {
-      myBlocks.Append(index);
-      while (index <= myOrientedShapeMap.Extent()) {
-	for (SS.InitNeighbours(myOrientedShapeMap(index));
-	     SS.MoreNeighbours();
-	     SS.NextNeighbour()) {
-	 AddElement(SS.Neighbour());
-	}
-	index++;
-      }
-    }
-    SS.NextStartElement();
-  }
-  myBlocks.Append(myOrientedShapeMap.Extent()+1);
-  myBlockIndex = 1;
-#endif
 }
 
 //=================================================================================================

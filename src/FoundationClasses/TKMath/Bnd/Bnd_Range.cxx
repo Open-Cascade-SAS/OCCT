@@ -110,14 +110,6 @@ int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
     return 2;
   }
 
-#if 0
-  // This check is excess because always myFirst <= myLast.
-  // So, this condition is never satisfied.
-  if (IsEqual(aVal2, static_cast<double>(aPar2)))
-  {//aVal2 is an integer number => myLast lies ON the "seam-edge"
-    return 2;
-  }
-#endif
 
   return 0;
 }

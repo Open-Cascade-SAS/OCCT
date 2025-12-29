@@ -64,20 +64,6 @@
 
 #include <cstdio>
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <Draw_Marker3D.hxx>
-  #include <Draw_Marker2D.hxx>
-  #include <Draw.hxx>
-// 0 : No display
-// 1 : Display of Geometries and intermediary control
-// 2 : Display of the number of constraints by curve + Intersection
-// 3 : Dump of constraints in Plate
-static int NbPlan = 0;
-// static int NbCurv2d = 0;
-static int NbMark = 0;
-static int NbProj = 0;
-#endif
 
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
@@ -294,14 +280,6 @@ occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(
 
     Curve2d = appr.Curve2d();
   }
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    Sprintf(name, "proj_%d", ++NbProj);
-    DrawTrSurf::Set(name, Curve2d);
-  }
-#endif
   return Curve2d;
 }
 
@@ -1688,14 +1666,6 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
   if (!myIsLinear)
   {
     myPlanarSurfInit = mySurfInit;
-#ifdef DRAW
-    if (Affich)
-    {
-      char name[256];
-      Sprintf(name, "planinit_%d", NbPlan + 1);
-      DrawTrSurf::Set(name, mySurfInit);
-    }
-#endif
     double u1, v1, u2, v2;
     mySurfInit->Bounds(u1, v1, u2, v2);
     GeomAdaptor_Surface Surf(mySurfInit);
@@ -1784,14 +1754,6 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
     }
   }
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    Sprintf(name, "surfinit_%d", ++NbPlan);
-    DrawTrSurf::Set(name, mySurfInit);
-  }
-#endif
 }
 
 //---------------------------------------------------------
@@ -2007,15 +1969,6 @@ void GeomPlate_BuildPlateSurface::Intersect(
 #ifdef OCCT_DEBUG
             std::cout << "Attention: Two points 3d have the same projection dist = " << Dist
                       << std::endl;
-#endif
-#ifdef DRAW
-            if (Affich > 1)
-            {
-              occ::handle<Draw_Marker3D> mark = new (Draw_Marker3D)(P1, Draw_X, Draw_vert);
-              char                       name[256];
-              Sprintf(name, "mark_%d", ++NbMark);
-              Draw::Set(name, mark);
-            }
 #endif
           }
         }
@@ -2506,30 +2459,6 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
             diffDistMax = diffDist;
           // SdiffDist+=diffDist;
           NdiffDist++;
-#ifdef DRAW
-          if ((Affich) && (NbBoucle == myNbIter))
-          {
-            gp_Pnt   P;
-            gp_Pnt2d P2d;
-            LinCont->D0(U, P);
-            occ::handle<Draw_Marker3D> mark = new (Draw_Marker3D)(P, Draw_X, Draw_orange);
-            char                       name[256];
-            Sprintf(name, "mark_%d", ++NbMark);
-            Draw::Set(name, mark);
-            if (!LinCont->ProjectedCurve().IsNull())
-              P2d = LinCont->ProjectedCurve()->Value(U);
-            else
-            {
-              if (!LinCont->Curve2dOnSurf().IsNull())
-                P2d = LinCont->Curve2dOnSurf()->Value(U);
-              else
-                P2d = ProjectPoint(P);
-            }
-            Sprintf(name, "mark2d_%d", ++NbMark);
-            occ::handle<Draw_Marker2D> mark2d = new (Draw_Marker2D)(P2d, Draw_X, Draw_orange);
-            Draw::Set(name, mark2d);
-          }
-#endif
         }
         else if ((diffAng > 0) && (LinCont->Order() == 1))
         {
@@ -2538,17 +2467,6 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
             diffAngMax = diffAng;
           // SdiffAng+=diffAng;
           NdiffAng++;
-#ifdef DRAW
-          if ((Affich) && (NbBoucle == myNbIter))
-          {
-            gp_Pnt P;
-            LinCont->D0(U, P);
-            occ::handle<Draw_Marker3D> mark = new Draw_Marker3D(P, Draw_X, Draw_or);
-            char                       name[256];
-            Sprintf(name, "mark_%d", ++NbMark);
-            Draw::Set(name, mark);
-          }
-#endif
         }
       }
 

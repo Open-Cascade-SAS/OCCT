@@ -48,11 +48,6 @@
 #include <ProjLib_ProjectOnPlane.hxx>
 
 #include <cstdio>
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-static bool Affich = false;
-static int  NBPROJ = 1;
-#endif
 
 //=================================================================================================
 
@@ -66,17 +61,6 @@ occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   
                                                const double                     VFin,
                                                double&                          Tolerance)
 {
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    Sprintf(name, "PROJCURV_%d", NBPROJ);
-    DrawTrSurf::Set(name, C);
-    Sprintf(name, "PROJSURF_%d", NBPROJ);
-    DrawTrSurf::Set(name, S);
-    NBPROJ++;
-  }
-#endif
 
   Tolerance = std::max(Precision::PConfusion(), Tolerance);
 
@@ -144,13 +128,6 @@ occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   
     G2dC = new Geom2d_TrimmedCurve(G2dC, U1, U2);
   }
 
-#ifdef DRAW
-  if (Affich)
-  {
-    static const char* aprojcurv = "projcurv";
-    DrawTrSurf::Set(aprojcurv, G2dC);
-  }
-#endif
   Tolerance = Proj.GetTolerance();
   return G2dC;
 }

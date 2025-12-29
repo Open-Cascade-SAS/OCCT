@@ -26,12 +26,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc, Approx_SweepFunction)
 
-#ifdef DRAW
-  #include <GeomAdaptor_Curve.hxx>
-  #include <Geom_BSplineCurve.hxx>
-  #include <DrawTrSurf.hxx>
-static int NbSections = 0;
-#endif
 
 static const double TolAng = 1.e-6;
 
@@ -293,12 +287,6 @@ bool GeomFill_CircularBlendFunc::D0(const double Param,
   // Section
   GeomFill::GetCircle(myTConv, ns1, ns2, nplan, P1, P2, myRadius, Center, Poles, Weigths);
 
-#ifdef DRAW
-//  occ::handle<Geom_BSplineCurve> BS =
-//    new Geom_BSplineCurve(Poles,Weights,Knots,Mults,Degree);
-//  Sprintf(name,"SECT_%d",NbSections++);
-//  DrawTrSurf::Set(name,BS);
-#endif
   return true;
 }
 

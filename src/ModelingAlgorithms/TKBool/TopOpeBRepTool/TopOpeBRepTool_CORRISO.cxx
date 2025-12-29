@@ -71,9 +71,6 @@ static void FUN_Raise()
 #endif
 }
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 #define M_FORWARD(sta) (sta == TopAbs_FORWARD)
 #define M_REVERSED(sta) (sta == TopAbs_REVERSED)
@@ -131,13 +128,6 @@ bool TopOpeBRepTool_CORRISO::Refclosed(const int x, double& xperiod) const
 
 bool TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
 {
-#ifdef DRAW
-  int  ie   = 0;
-  bool trc  = TopOpeBRepTool_GettraceCORRISO();
-  bool INIT = true;
-  if (INIT)
-    FUN_REINIT();
-#endif
 
   myERep2d.Clear();
   myEds.Clear();
@@ -154,13 +144,6 @@ bool TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
 #ifdef OCCT_DEBUG
     int iE = STATIC_PURGE_mapeds.Add(E);
     (void)iE; // avoid warning
-  #ifdef DRAW
-    if (trc)
-    {
-      TCollection_AsciiString aa = TCollection_AsciiString("e");
-      FUN_tool_draw(aa, E, iE);
-    }
-  #endif
 #endif
 
     // myEds :
@@ -187,13 +170,6 @@ bool TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
 #ifdef OCCT_DEBUG
       int aniE = STATIC_PURGE_mapeds.Add(E);
       (void)aniE; // avoid warning
-  #ifdef DRAW
-      if (trc)
-      {
-        TCollection_AsciiString bb = TCollection_AsciiString("v");
-        FUN_tool_draw(bb, v, iv);
-      }
-  #endif
 #endif
       bool isb = myVEds.IsBound(v);
       if (isb)
@@ -562,14 +538,6 @@ bool TopOpeBRepTool_CORRISO::PurgeFyClosingE(const NCollection_List<TopoDS_Shape
         std::cout << " connexity for v(" << ivce << ")=v" << ivmapv;
         FUN_tool_trace(UVvce);
       }
-  #ifdef DRAW
-      if (trc)
-      {
-        TCollection_AsciiString bb("uv_");
-        bb += TCollection_AsciiString(ivmapv);
-        FUN_tool_draw(bb, UVvce);
-      }
-  #endif
 #endif
       double tttolvce = BRep_Tool::Tolerance(vce);
       double tttuvvce = std::max(Tol(1, tttolvce), Tol(2, tttolvce));
@@ -894,14 +862,6 @@ bool TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, int& Ivfault
       std::cout << " connexity for v(" << ivE << ")=v" << ivmapv;
       FUN_tool_trace(UVvE);
     }
-  #ifdef DRAW
-    if (trc)
-    {
-      TCollection_AsciiString bb("uv_");
-      bb += TCollection_AsciiString(ivmapv);
-      FUN_tool_draw(bb, UVvE);
-    }
-  #endif
 #endif
 
     double tttolvE = BRep_Tool::Tolerance(vE);
@@ -1052,13 +1012,6 @@ bool TopOpeBRepTool_CORRISO::EdgesWithFaultyUV(const NCollection_List<TopoDS_Sha
     if (trc)
       std::cout << "e" << STATIC_PURGE_mapeds.FindIndex(Echk) << " has ifyv=" << Ivfaulty
                 << std::endl;
-  #ifdef DRAW
-    if (trc)
-    {
-      TCollection_AsciiString aa("fault");
-      FUN_tool_draw(aa, Echk, ifault);
-    }
-  #endif
 #endif
 
     bool found = false;

@@ -1056,182 +1056,6 @@ void BRepFill_AdvancedEvolved::RemoveExcessSolids(const NCollection_List<TopoDS_
   myResult = aCmpSol;
 }
 
-#if 0
-//=======================================================================
-//class : NormalFunc
-//purpose  : This function computes square modulus of the normal to the
-//            surface in every point of the curve myCOnS. It allows detecting
-//            whether the curve goes through the singular point(s).
-//            It will be useful in case(s) when the result after PipeShell
-//            algorithm contains only one face with single seam-edge. E.g.:
-//                Draw[]> ellipse cc 0 0 0 0 0 1 30 10
-//                Draw[]> mkedge ee cc
-//                Draw[]> wire ww ee
-//                Draw[]> polyline tw 0 25 -5 0 -20 10
-//                Draw[]> mksweep ww
-//                Draw[]> addsweep tw
-//                Draw[]> buildsweep r1 -R
-//
-//           It results in creation of shell with self-interfered face.
-//            However, "checkshape" does not detect any invalidities.
-//
-//           The algorithm "Evolved" must be improved to process such cases.
-//            Currently they are not processed and this function is useless.
-//=======================================================================
-class NormalFunc : public math_MultipleVarFunctionWithGradient
-{
-public:
-  NormalFunc(const Adaptor3d_CurveOnSurface& theCOS) :myCOnS(theCOS)
-  {
-  }
-
-  virtual int NbVariables() const override
-  {
-    return 1;
-  }
-
-  virtual bool Value(const math_Vector& X, double& F) override;
-  virtual bool Gradient(const math_Vector& X, math_Vector& G) override;
-  virtual bool Values(const math_Vector& theX,
-                                  double& theF,
-                                  math_Vector& theG) override
-  {
-    if (!Value(theX, theF))
-    return false;
-
-    if (!Gradient(theX, theG))
-      return false;
-
-    return true;
-  };
-
-  virtual bool Values(const math_Vector& theX,
-                                  double& theF,
-                                  math_Vector& theG,
-                                  math_Matrix& theH) override
-  {
-    if (!Values(theX, theF, theG))
-    return false;
-
-    theH(1, 1) = theG(1);
-    return true;
-  };
-
-  double FirstParameter() const
-  {
-    return myCOnS.FirstParameter();
-  }
-
-  double LastParameter() const
-  {
-    return myCOnS.LastParameter();
-  }
-
-  gp_Pnt GetPoint(const double theX)
-  {
-    const occ::handle<Adaptor2d_Curve2d> &aC = myCOnS.GetCurve();
-    const occ::handle<Adaptor3d_Surface> &aS = myCOnS.GetSurface();
-    const gp_Pnt2d aP2d(aC->Value(theX));
-    return aS->Value(aP2d.X(), aP2d.Y());
-  }
-
-protected:
-
-  NormalFunc& operator=(NormalFunc&);
-
-private:
-  const Adaptor3d_CurveOnSurface& myCOnS;
-};
-
-//=======================================================================
-//function : Value
-//purpose  : +aD1v_x^2*aD1u_y^2 + aD1v_x^2*aD1u_z^2 +
-//           +aD1v_y^2*aD1u_z^2 + aD1u_x^2*aD1v_y^2 + 
-//           +aD1u_x^2*aD1v_z^2 + aD1u_y^2*aD1v_z^2 -
-//           -  2*(+aD1u_x*aD1v_x*aD1u_y*aD1v_y + 
-//                 +aD1u_x*aD1v_x*aD1u_z*aD1v_z +
-//                 +aD1u_y*aD1v_y*aD1u_z*aD1v_z)
-//=======================================================================
-bool NormalFunc::Value(const math_Vector& theX, double& theF)
-{
-  const occ::handle<Adaptor2d_Curve2d> &aC = myCOnS.GetCurve();
-  const occ::handle<Adaptor3d_Surface> &aS = myCOnS.GetSurface();
-
-  const gp_Pnt2d aP2d(aC->Value(theX(1)));
-  gp_Pnt aP3d;
-  gp_Vec aD1u, aD1v;
-  aS->D1(aP2d.X(), aP2d.Y(), aP3d, aD1u, aD1v);
-
-  theF = aD1u.Crossed(aD1v).SquareMagnitude();
-  return true;
-}
-
-//=======================================================================
-//function : Gradient
-//purpose  :
-//2 * ((aD1v_x*aD1u_y)*(aD1u_y*(aD2uv_x*aDc_x + aD2v_x*aDc_y) + aD1v_x*(aD2u_y*aDc_x + aD2uv_y*aDc_y)) +
-//     (aD1v_x*aD1u_z)*(aD1u_z*(aD2uv_x*aDc_x + aD2v_x*aDc_y) + aD1v_x*(aD2u_z*aDc_x + aD2uv_z*aDc_y)) +
-//     (aD1v_y*aD1u_z)*(aD1u_z*(aD2uv_y*aDc_x + aD2v_y*aDc_y) + aD1v_y*(aD2u_z*aDc_x + aD2uv_z*aDc_y)) +
-//     (aD1u_x*aD1v_y)*(aD1u_x*(aD2uv_y*aDc_x + aD2v_y*aDc_y) + aD1v_y*(aD2u_x*aDc_x + aD2uv_x*aDc_y)) +
-//     (aD1u_x*aD1v_z)*(aD1u_x*(aD2uv_z*aDc_x + aD2v_z*aDc_y) + aD1v_z*(aD2u_x*aDc_x + aD2uv_x*aDc_y)) +
-//     (aD1u_y*aD1v_z)*(aD1u_y*(aD2uv_z*aDc_x + aD2v_z*aDc_y) + aD1v_z*(aD2u_y*aDc_x + aD2uv_y*aDc_y)) -
-//
-//     (aD2u_x*aDc_x + aD2uv_x*aDc_y)*aD1v_x*aD1u_y*aD1v_y -
-//     aD1u_x*(aD2uv_x*aDc_x + aD2v_x*aDc_y)*aD1u_y*aD1v_y -
-//     aD1u_x*aD1v_x*(aD2u_y*aDc_x + aD2uv_y*aDc_y)*aD1v_y -
-//     aD1u_x*aD1v_x*aD1u_y*(aD2uv_y*aDc_x + aD2v_y*aDc_y) -
-//
-//     (aD2u_x*aDc_x + aD2uv_x*aDc_y)*aD1v_x*aD1u_z*aD1v_z -
-//     aD1u_x*(aD2uv_x*aDc_x + aD2v_x*aDc_y)*aD1u_z*aD1v_z -
-//     aD1u_x*aD1v_x*(aD2u_z*aDc_x + aD2uv_z*aDc_y)*aD1v_z -
-//     aD1u_x*aD1v_x*aD1u_z*(aD2uv_z*aDc_x + aD2v_z*aDc_y) -
-//
-//     (aD2u_y*aDc_x + aD2uv_y*aDc_y)*aD1v_y*aD1u_z*aD1v_z -
-//     aD1u_y*(aD2uv_y*aDc_x + aD2v_y*aDc_y)*aD1u_z*aD1v_z -
-//     aD1u_y*aD1v_y*(aD2u_z*aDc_x + aD2uv_z*aDc_y)*aD1v_z -
-//     aD1u_y*aD1v_y*aD1u_z*(aD2uv_z*aDc_x + aD2v_z*aDc_y))
-//=======================================================================
-bool NormalFunc::Gradient(const math_Vector& theX, math_Vector& theG)
-{
-  const occ::handle<Adaptor2d_Curve2d> &aC = myCOnS.GetCurve();
-  const occ::handle<Adaptor3d_Surface> &aS = myCOnS.GetSurface();
-
-  gp_Pnt2d aP2d;
-  gp_Vec2d aDc;
-  aC->D1(theX(1), aP2d, aDc);
-
-  gp_Pnt aP3d;
-  gp_Vec aD1u, aD1v, aD2u, aD2v, aD2uv;
-  aS->D2(aP2d.X(), aP2d.Y(), aP3d, aD1u, aD1v, aD2u, aD2v, aD2uv);
-
-  theG(1) = (aD1v.X()*aD1u.Y())*(aD1u.Y()*(aD2uv.X()*aDc.X() + aD2v.X()*aDc.Y()) +
-            aD1v.X()*(aD2u.Y()*aDc.X() + aD2uv.Y()*aDc.Y())) + 
-            (aD1v.X()*aD1u.Z())*(aD1u.Z()*(aD2uv.X()*aDc.X() + 
-            aD2v.X()*aDc.Y()) + aD1v.X()*(aD2u.Z()*aDc.X() + aD2uv.Z()*aDc.Y())) +
-            (aD1v.Y()*aD1u.Z())*(aD1u.Z()*(aD2uv.Y()*aDc.X() + aD2v.Y()*aDc.Y()) + 
-            aD1v.Y()*(aD2u.Z()*aDc.X() + aD2uv.Z()*aDc.Y())) + (aD1u.X()*aD1v.Y())*
-            (aD1u.X()*(aD2uv.Y()*aDc.X() + aD2v.Y()*aDc.Y()) + aD1v.Y()*(aD2u.X()*
-            aDc.X() + aD2uv.X()*aDc.Y())) + (aD1u.X()*aD1v.Z())*(aD1u.X()*(aD2uv.Z()*
-            aDc.X() + aD2v.Z()*aDc.Y()) + aD1v.Z()*(aD2u.X()*aDc.X() + 
-            aD2uv.X()*aDc.Y())) + (aD1u.Y()*aD1v.Z())*(aD1u.Y()*(aD2uv.Z()*aDc.X() + 
-            aD2v.Z()*aDc.Y()) + aD1v.Z()*(aD2u.Y()*aDc.X() + aD2uv.Y()*aDc.Y())) -
-            (aD2u.X()*aDc.X() + aD2uv.X()*aDc.Y())*aD1v.X()*aD1u.Y()*aD1v.Y() - 
-            aD1u.X()*(aD2uv.X()*aDc.X() + aD2v.X()*aDc.Y())*aD1u.Y()*aD1v.Y() -
-            aD1u.X()*aD1v.X()*(aD2u.Y()*aDc.X() + aD2uv.Y()*aDc.Y())*aD1v.Y() - 
-            aD1u.X()*aD1v.X()*aD1u.Y()*(aD2uv.Y()*aDc.X() + aD2v.Y()*aDc.Y()) - 
-            (aD2u.X()*aDc.X() + aD2uv.X()*aDc.Y())*aD1v.X()*aD1u.Z()*aD1v.Z() - 
-            aD1u.X()*(aD2uv.X()*aDc.X() + aD2v.X()*aDc.Y())*aD1u.Z()*aD1v.Z() - 
-            aD1u.X()*aD1v.X()*(aD2u.Z()*aDc.X() + aD2uv.Z()*aDc.Y())*aD1v.Z() - 
-            aD1u.X()*aD1v.X()*aD1u.Z()*(aD2uv.Z()*aDc.X() + aD2v.Z()*aDc.Y()) - 
-            (aD2u.Y()*aDc.X() + aD2uv.Y()*aDc.Y())*aD1v.Y()*aD1u.Z()*aD1v.Z() - 
-            aD1u.Y()*(aD2uv.Y()*aDc.X() + aD2v.Y()*aDc.Y())*aD1u.Z()*aD1v.Z() - 
-            aD1u.Y()*aD1v.Y()*(aD2u.Z()*aDc.X() + aD2uv.Z()*aDc.Y())*aD1v.Z() -
-            aD1u.Y()*aD1v.Y()*aD1u.Z()*(aD2uv.Z()*aDc.X() + aD2v.Z()*aDc.Y());
-
-  return true;
-}
-
-#endif
 //=======================================================================
 // function : RebuildFaces
 // purpose  : Creates a wires from theEdges and puts it to the new face
@@ -1359,28 +1183,6 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
   aFirstEdge = anE1;
   anExp.Next();
 
-#if 0
-  if (!anExp.More())
-  {
-    // The wire contains only single edge.
-    // But this edge can be closed itself (e.g. circle).
-
-    TopoDS_Vertex aVf, aVl;
-    TopExp::Vertices(anE1, aVf, aVl);
-    if (!aVf.IsNull() && aVf.IsSame(aVl))
-    {
-      double aF, aL;
-      const occ::handle<Geom2d_Curve> aC = BRep_Tool::CurveOnSurface(anE1, theFace, aF, aL);
-      aF = BRep_Tool::Parameter(aVf, anE1);
-      aL = BRep_Tool::Parameter(aVl, anE1);
-      const gp_Pnt2d aPf(aC->Value(aF)), aPl(aC->Value(aL));
-
-      MakeEdgeDegenerated(aVf, theFace, aPf, aPl, theLEdges);
-    }
-
-    return;
-  }
-#endif
 
   // Map containing all vertices of degenerated edges
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapVofDE;
@@ -1406,14 +1208,6 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
   {
     const TopoDS_Edge& anE2 = anExp.Current();
     aLastEdge               = anE2;
-#if 0
-    if (anE1.IsSame(anE2))
-    {
-      //Exclude a gap between two seam-edges (e.g. cylinder without roofs).
-      anE1 = anE2;
-      continue;
-    }
-#endif
 
     const TopoDS_Vertex& aVertCurr = anExp.CurrentVertex();
 
@@ -1499,14 +1293,6 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
   if (aFirstEdge.IsNull() || aLastEdge.IsNull())
     return;
 
-#if 0
-  if (aFirstEdge.IsSame(aLastEdge))
-  {
-    //Exclude a gap between two seam-edges (e.g. cylinder without bottom-base).
-
-    return;
-  }
-#endif
 
   // TopExp::CommonVertex(...) does not work
   // if edges have more than one pair of common vertex
@@ -1709,19 +1495,6 @@ bool BRepFill_AdvancedEvolved::CheckSingularityAndAdd(
     }
 
     NCollection_List<TopoDS_Shape> aLE;
-#if 0
-    // This fragment requires fixing the issue #29656
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMM;
-    TopExp_Explorer anExpEB(aBAB.Shape(), TopAbs_EDGE);
-    for (; anExpEB.More(); anExpEB.Next())
-    {
-      const TopoDS_Edge anEE = TopoDS::Edge(anExpEB.Current());
-      if (!aMM.Add(anEE))
-        continue;
-
-      aLE.Append(anEE);
-    }
-#else
     NCollection_List<TopoDS_Shape>::Iterator aBItr(aLGF);
     for (; aBItr.More(); aBItr.Next())
     {
@@ -1740,7 +1513,6 @@ bool BRepFill_AdvancedEvolved::CheckSingularityAndAdd(
         aLE.Append(anEM);
       }
     }
-#endif
 
     isSplit = true;
     InsertEDegenerated(aFace, aLE);

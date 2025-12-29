@@ -38,10 +38,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-Standard_IMPORT void FUN_draw(const TopoDS_Shape& s);
-Standard_IMPORT void FUN_draw2de(const TopoDS_Shape& ed, const TopoDS_Shape& fa);
-#endif
 
 #ifdef OCCT_DEBUG
 extern void* GFABUMAKEFACEPWES_DEB;
@@ -705,9 +701,6 @@ void TopOpeBRepBuild_Builder::GFillWireWES(const TopoDS_Shape&                  
   //      bool isclosed = BRep_Tool::IsClosed(ed,S,L);
   //      TopAbs_Orientation oried = ed.Orientation();
   //      bool trc = false;
-  #ifdef DRAW
-  //      if (trc) {FUN_draw(ed); FUN_draw2de(ed,myFaceReference);}
-  #endif
     }
 #endif
 

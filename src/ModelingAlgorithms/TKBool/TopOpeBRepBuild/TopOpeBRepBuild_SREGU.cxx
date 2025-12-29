@@ -36,9 +36,6 @@ Standard_EXPORT void debreguso(const int iS)
 }
 #endif
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
 
 //=================================================================================================
 
@@ -324,16 +321,5 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
     } // explore(ssdSS,TopAbs_FACE)
   } // itlssdSS.More()
 
-#ifdef DRAW
-  if (tSPS)
-    debreguso(iS);
-  if (tSPS && savsregu)
-  {
-    TCollection_AsciiString str("sregu");
-    str = str + iS;
-    DBRep::Set(str.ToCString(), newSolid);
-    std::cout << "newSolid " << str << " built on Solid " << iS << " saved" << std::endl;
-  }
-#endif
 
 } // RegularizeSolid

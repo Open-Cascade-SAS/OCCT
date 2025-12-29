@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 #include <BRep_Tool.hxx>
 #include <TopOpeBRep_EdgesIntersector.hxx>
@@ -131,10 +128,6 @@ void TopOpeBRep_Point2d::Dump(const int E1index, const int E2index) const
   std::cout << std::endl;
 
   gp_Pnt P3D = Value();
-  #ifdef DRAW
-  std::cout << FUN_tool_PRODINP() << "P" << Index() << " " << P3D.X() << " " << P3D.Y() << " "
-            << P3D.Z() << "; # tol = " << tol << std::endl;
-  #endif
   std::cout << "     on (1) :";
   std::cout << " vertex(1) : ";
   std::cout << (isvertex1 ? 1 : 0);

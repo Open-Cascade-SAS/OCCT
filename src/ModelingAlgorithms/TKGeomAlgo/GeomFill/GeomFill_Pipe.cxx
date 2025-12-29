@@ -76,9 +76,6 @@ static bool Affich     = false;
 static int  NbSections = 0;
 #endif
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
 
 static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1,
                        NCollection_Sequence<occ::handle<Geom_Curve>>&       Seq2)
@@ -388,14 +385,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&      Path,
                                         myAdpPath->FirstParameter(),
                                         myAdpPath->LastParameter());
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char* Temp = "TheSect";
-    DrawTrSurf::Set(Temp, FirstSect);
-    //    DrawTrSurf::Set("TheSect", FirstSect );
-  }
-#endif
 
   if (rotat)
     TheLoc->Set(mySec, rotat, myAdpPath->FirstParameter(), myAdpPath->LastParameter(), 0., angle);
@@ -437,14 +426,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path, const double Radiu
   myLoc                                      = new (GeomFill_CurveAndTrihedron)(TLaw);
   myLoc->SetCurve(myAdpPath);
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char* Temp = "TheSect";
-    DrawTrSurf::Set(Temp, C);
-    //    DrawTrSurf::Set("TheSect", C);
-  }
-#endif
 }
 
 //=================================================================================================
@@ -554,14 +535,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
     param = Place.ParameterOnPath();
     Sect  = Place.Section(false);
 
-#ifdef DRAW
-    if (Affich)
-    {
-      char* Temp = "TheSect";
-      DrawTrSurf::Set(Temp, Sect);
-      //      DrawTrSurf::Set("TheSect",Sect);
-    }
-#endif
     mySec = new (GeomFill_UniformSection)(Sect, Path->FirstParameter(), Path->LastParameter());
   }
 }
@@ -586,14 +559,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom2d_Curve>& Path,
   Place.Perform(myAdpPath, Precision::Confusion());
   Sect = Place.Section(false);
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char* temp = "TheSect";
-    DrawTrSurf::Set(temp, Sect);
-    //    DrawTrSurf::Set("TheSect",Sect);
-  }
-#endif
   mySec =
     new (GeomFill_UniformSection)(Sect, myAdpPath->FirstParameter(), myAdpPath->LastParameter());
 }
@@ -618,14 +583,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
   Place.Perform(Precision::Confusion());
   Sect = Place.Section(false);
 
-#ifdef DRAW
-  if (Affich)
-  {
-    char* temp = "TheSect";
-    DrawTrSurf::Set(temp, Sect);
-    //    DrawTrSurf::Set("TheSect",Sect);
-  }
-#endif
   mySec = new (GeomFill_UniformSection)(Sect, Path->FirstParameter(), Path->LastParameter());
 }
 
@@ -1052,11 +1009,6 @@ void GeomFill_Pipe::ApproxSurf(const bool WithParameters)
       Section.Section(i, Poles, Poles2d, Weights);
       occ::handle<Geom_BSplineCurve> BS =
         new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
-  #ifdef DRAW
-      char name[256];
-      Sprintf(name, "SECT_%d", NbSections);
-      DrawTrSurf::Set(name, BS);
-  #endif
     }
   }
 #endif
@@ -1089,11 +1041,6 @@ void GeomFill_Pipe::ApproxSurf(const bool WithParameters)
       Section.Section(i, Poles, Poles2d, Weights);
       occ::handle<Geom_BSplineCurve> BS =
         new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
-  #ifdef DRAW
-      char name[256];
-      Sprintf(name, "sect_%d", i);
-      DrawTrSurf::Set(name, BS);
-  #endif
     }
 #endif
     // throw StdFail_NotDone("Pipe : App not done");

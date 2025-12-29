@@ -55,10 +55,6 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
 static bool Affich = 0;
 #endif
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <DBRep.hxx>
-#endif
 
 //=======================================================================
 // function : EdgeToBSpline
@@ -374,16 +370,6 @@ BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>&
 #ifdef OCCT_DEBUG
   if (Affich)
   {
-  #ifdef DRAW
-    int NBSECT = 0;
-    for (int i = 1; i <= S.Length(); i++)
-    {
-      NBSECT++;
-      char name[256];
-      Sprintf(name, "WIRE_%d", NBSECT);
-      DBRep::Set(name, TopoDS::Wire(S.Value(i)));
-    }
-  #endif
   }
 #endif
   bool ok = true;
@@ -558,14 +544,6 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
   {
     mySurface->IncreaseDegree(mySurface->UDegree(), 2);
   }
-#ifdef DRAW
-  if (Affich)
-  {
-    char* name = new char[100];
-    Sprintf(name, "Ref_Surf");
-    DrawTrSurf::Set(name, mySurface);
-  }
-#endif
 
   // Fill tables
   if (Build)

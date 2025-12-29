@@ -80,10 +80,6 @@
 static bool Affich   = false;
 static int  NbOFFSET = 0;
 #endif
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <DBRep.hxx>
-#endif
 #include <cstdio>
 #include <Geom_BSplineSurface.hxx>
 
@@ -1458,17 +1454,10 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
     NbOFFSET++;
 
     Sprintf(name, "VOnSph_%d", NbOFFSET);
-  #ifdef DRAW
-    DBRep::Set(name, Vertex);
-  #endif
     int NbEdges = 1;
     for (it.Initialize(LEdge); it.More(); it.Next())
     {
       Sprintf(name, "EOnSph_%d_%d", NbOFFSET, NbEdges++);
-  #ifdef DRAW
-      const TopoDS_Shape& CurE = it.Value();
-      DBRep::Set(name, CurE);
-  #endif
     }
   }
 #endif
@@ -1522,16 +1511,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
   TopoDS_Wire W;
   myBuilder.MakeWire(W);
 
-#ifdef DRAW
-  // POP pour NT
-  //  char name[100];
-  if (Affich)
-  {
-    Sprintf(name, "SPHERE_%d", NbOFFSET);
-    DrawTrSurf::Set(name, S);
-  }
-  int CO = 1;
-#endif
 
   for (it.Initialize(LEdge); it.More(); it.Next())
   {
@@ -1546,14 +1525,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
     C = new Geom_TrimmedCurve(C, f, l);
     C->Transform(Loc.Transformation());
 
-#ifdef DRAW
-    if (Affich)
-    {
-      Sprintf(name, "CURVE_%d_%d", NbOFFSET, CO);
-      DrawTrSurf::Set(name, C);
-      CO++;
-    }
-#endif
 
     occ::handle<Geom2d_Curve> PCurve = GeomProjLib::Curve2d(C, S);
     // check if the first point of PCurve in is the canonical boundaries

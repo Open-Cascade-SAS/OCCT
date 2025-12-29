@@ -36,9 +36,6 @@ extern void debedbu(const int i)
 }
 #endif
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 //=================================================================================================
 
@@ -207,15 +204,5 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
     }
   } // EDBU.InitEdge : loop on EDBU edges
 
-#ifdef DRAW
-  if (tSPS)
-  {
-    TCollection_AsciiString str1;
-    str1 = "e";
-    TCollection_AsciiString str2;
-    str2 = iE;
-    FDRAW_DINLOE("", LOE, str1, str2);
-  }
-#endif
 
 } // GEDBUMakeEdges

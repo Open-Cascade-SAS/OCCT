@@ -28,9 +28,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
@@ -73,11 +70,6 @@ static int FUN_adds(const TopoDS_Shape& s)
     aa = TCollection_AsciiString("e");
     is = STATIC_mape.Add(s);
   }
-  #ifdef DRAW
-  bool trc = TopOpeBRepTool_GettraceREGUSO();
-  if (trc)
-    FUN_tool_draw(aa, s, is);
-  #endif
   return is;
 }
 #endif

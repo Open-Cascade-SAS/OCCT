@@ -381,52 +381,6 @@ void IntPatch_ALineToWLine::MakeWLine(
     return;
   }
 
-#if 0
-  //To draw ALine as a wire DRAW-object use the following code.
-  {
-    static int ind = 0;
-    ind++;
-
-    bool flShow = true;
-
-    if (flShow)
-    {
-      std::cout << " +++ DUMP ALine (begin) +++++" << std::endl;
-      const int NbSamples = 20;
-      const double aStep = (theLPar - theFPar) / NbSamples;
-      char* name = new char[100];
-      
-      for (int ii = 0; ii <= NbSamples; ii++)
-      {
-        double aPrm = theFPar + ii * aStep;
-        const gp_Pnt aPP(theALine->Value(aPrm));
-        std::cout << "vertex v" << ii << " " << aPP.X() << " " << aPP.Y() << " " << aPP.Z() << std::endl;
-
-        Sprintf(name, "p%d_%d", ii, ind);
-        Draw::Set(name, aPP);
-      }
-      std::cout << " --- DUMP ALine (end) -----" << std::endl;
-    }
-  }
-
-  //Copy all output information and apply it as a TCL-code in DRAW.
-
-  //After that, use TCL-script below:
-
-  /* ********************************* Script (begin)
-  shape ww w
-  copy v1 vprev
-  for {set i 2} {$i <= 10000} {incr i} {
-    distmini dd vprev v$i;
-
-    if { [dval dd_val] > 1.0e-7} {
-      edge ee vprev v$i;
-      add ee ww;
-      copy v$i vprev;
-    }
-  }
-  ********************************** Script (end) */
-#endif
 
   // The same points can be marked by different vertices.
   // The code below unifies tolerances of all vertices
@@ -1022,18 +976,6 @@ bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& the
 
   const double aR = IntPatch_PointLine::CurvatureRadiusOfIntersLine(myS1, myS2, thePOn2S);
 
-#if 0
-  {
-    static int zzz = 0;
-    zzz++;
-    std::cout << "*** R" << zzz << " (begin)" << std::endl;
-    double aU1, aV1, aU2, aV2;
-    thePOn2S.Parameters(aU1, aV1, aU2, aV2);
-    std::cout << "Prms: " << aU1 << ", " << aV1 << ", " << aU2 << ", " << aV2 << std::endl;
-    std::cout << "Radius = " << aR << std::endl;
-    std::cout << "*** R" << zzz << " (end)" << std::endl;
-  }
-#endif
 
   if (aR < 0.0)
   {

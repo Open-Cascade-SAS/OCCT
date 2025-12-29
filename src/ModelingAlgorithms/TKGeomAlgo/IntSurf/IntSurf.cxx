@@ -68,32 +68,9 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
     }
     else
     {
-#if 0 
-      //-- MODIF XAB
-      gp_Vec V1(TgSecond.X() / NTgSecond,TgSecond.Y() / NTgSecond, TgSecond.Z() / NTgSecond);
-      gp_Vec V2(TgFirst.X() / NTgFirst,TgFirst.Y() / NTgFirst, TgFirst.Z() / NTgFirst);
-      
-      pvect = V1.Crossed(V2);
-      yu = pvect.Dot(Normale);
-
-      if (yu>0.0000001) {
-	TFirst.SetValue(false,IntSurf_In);
-	TSecond.SetValue(false,IntSurf_Out);
-      }
-      else if(yu<-0.0000001) {
-	TFirst.SetValue(false,IntSurf_Out);
-	TSecond.SetValue(false,IntSurf_In);
-      }
-      else { 
-	TFirst.SetValue(true,IntSurf_Undecided);
-	TSecond.SetValue(true,IntSurf_Undecided);
-      }
-
-#else
       TFirst.SetValue(true, IntSurf_Undecided);
       TSecond.SetValue(true, IntSurf_Undecided);
 
-#endif
     }
   }
 }

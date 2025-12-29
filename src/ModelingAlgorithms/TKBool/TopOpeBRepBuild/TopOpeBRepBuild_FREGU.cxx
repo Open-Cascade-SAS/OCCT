@@ -31,9 +31,6 @@ extern bool TopOpeBRepBuild_GettraceSAVFREGU();
 void debregufa(const int /*iF*/) {}
 #endif
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
 
 #define M_FORWARD(O) (O == TopAbs_FORWARD)
 #define M_REVERSED(O) (O == TopAbs_REVERSED)
@@ -359,16 +356,5 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
     } // explore(fsdFF,TopAbs_EDGE)
   } // itlfsdFF.More()
 
-#ifdef DRAW
-  if (tSPSFF)
-    debregufa(iF);
-  if (tSPSFF && savfregu)
-  {
-    TCollection_AsciiString str("fregu");
-    str = str + iF;
-    DBRep::Set(str.ToCString(), newFace);
-    std::cout << "newFace " << str << " built on face " << iF << " saved" << std::endl;
-  }
-#endif
 
 } // RegularizeFace

@@ -54,9 +54,6 @@ extern bool TopOpeBRepBuild_GettracePURGE();
 void debifb() {}
 #endif
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
 
 //=================================================================================================
 
@@ -125,11 +122,6 @@ int FUN_AnalyzemapVon1E(
   const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       mapVV)
 {
-#ifdef DRAW
-  bool trc = TopOpeBRepBuild_GettracePURGE();
-  if (trc)
-    std::cout << std::endl << "* DetectUnclosedWire :" << std::endl;
-#endif
 
   int res = ISUNKNOWN;
 
@@ -191,59 +183,6 @@ int FUN_AnalyzemapVon1E(
   return res;
 } // FUN_AnalyzemapVon1E
 
-#ifdef DRAW
-void FUN_AnalyzemapVon1EDRAW(
-  const int                                                                              res,
-  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
-  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVV,
-  const TopoDS_Shape&                                                                    W,
-  const int                                                                              iiwi,
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1EdgeDRAW,
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVsameGDRAW)
-{
-  bool trc = TopOpeBRepBuild_GettracePURGE();
-  if (!trc)
-    return;
-  std::cout << "wire " << iiwi;
-  if (res == ISVERTEX)
-  {
-    std::cout << " is vertex" << std::endl;
-  }
-  else if (res == CLOSEDW)
-  {
-    std::cout << " is closed" << std::endl;
-  }
-  else if (res == GCLOSEDW)
-  {
-    std::cout << " is Gclosed :" << std::endl;
-    TCollection_AsciiString aa("w_");
-    FUN_tool_draw(aa, W, iiwi);
-    int i;
-    for (i = 1; i <= mapVV.Extent(); i++)
-    {
-      int iV = mapVVsameGDRAW.Add(mapVV.FindKey(i), mapVV.FindFromIndex(i));
-      std::cout << " on vve_" << iV;
-      aa = "vve_";
-      FUN_tool_draw(aa, mapVVsameGDRAW.FindKey(iV), iV);
-    }
-    for (i = 1; i <= mapVon1E.Extent(); i++)
-    {
-      int iE = mapVon1EdgeDRAW.Add(mapVon1E.FindKey(i), mapVon1E.FindFromIndex(i));
-      std::cout << " on eed_" << iE;
-      aa = "eed_";
-      FUN_tool_draw(aa, mapVon1EdgeDRAW.FindFromIndex(iE), iE);
-    }
-    std::cout << std::endl;
-  }
-  else if (res == UNCLOSEDW)
-  {
-    std::cout << " is unclosed " << std::endl;
-    TCollection_AsciiString aa("w_");
-    FUN_tool_draw(aa, W, iiwi);
-  }
-  std::cout << std::endl;
-} // FUN_AnalyzemapVon1EDRAW
-#endif
 
 //=================================================================================================
 
@@ -265,14 +204,6 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
   //    the vertex is connected to only one unclosed,undegenerated edge.
   // * Else,if it is unclosed,we delete it (or it`s hanging edges).
 
-#ifdef DRAW
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> mapVon1EdgeDRAW,
-    mapVVsameGDRAW;
-  bool trc = TopOpeBRepBuild_GettracePURGE();
-  if (trc)
-    std::cout << std::endl << "* DetectUnclosedWire :" << std::endl << std::endl;
-  int iiwi = 0; // DEB
-#endif
 
   InitFace();
   for (; MoreFace(); NextFace())
@@ -281,11 +212,6 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
     for (; MoreWire(); NextWire())
     {
       bool isold = IsOldWire();
-#ifdef DRAW
-      iiwi++;
-      if (trc && isold)
-        std::cout << "wire " << iiwi << " is old wire => closed" << std::endl;
-#endif
       if (isold)
         continue;
 
@@ -303,9 +229,6 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
 
       NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> mapVV;
       int res = FUN_AnalyzemapVon1E(mapVon1E, mapVV);
-#ifdef DRAW
-      FUN_AnalyzemapVon1EDRAW(res, mapVon1E, mapVV, W, iiwi, mapVon1EdgeDRAW, mapVVsameGDRAW);
-#endif
 
       if (res == ISVERTEX)
       {

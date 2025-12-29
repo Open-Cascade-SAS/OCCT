@@ -24,9 +24,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepDS_DRAW.hxx>
-#endif
 
 #include <TopoDS.hxx>
 // #include <BRepAdaptor_Curve2d.hxx>
