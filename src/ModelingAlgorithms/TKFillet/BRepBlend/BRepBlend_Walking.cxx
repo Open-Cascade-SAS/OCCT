@@ -47,7 +47,6 @@
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
 
-
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
   #include <Standard_Integer.hxx>

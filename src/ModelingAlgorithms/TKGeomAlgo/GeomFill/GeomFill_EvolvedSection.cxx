@@ -31,7 +31,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 
-
 GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>&   C,
                                                  const occ::handle<Law_Function>& L)
 {
@@ -49,7 +48,6 @@ GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>& 
       myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
-
 }
 
 //=======================================================

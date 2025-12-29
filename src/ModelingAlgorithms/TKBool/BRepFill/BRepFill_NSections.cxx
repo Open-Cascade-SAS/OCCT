@@ -55,7 +55,6 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
 static bool Affich = 0;
 #endif
 
-
 //=======================================================================
 // function : EdgeToBSpline
 // purpose  : auxiliary -- get curve from edge and convert it to bspline

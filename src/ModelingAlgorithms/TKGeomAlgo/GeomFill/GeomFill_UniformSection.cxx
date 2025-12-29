@@ -32,7 +32,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
-
 GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& C,
                                                  const double                   FirstParameter,
                                                  const double                   LastParameter)
@@ -50,7 +49,6 @@ GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& 
       myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
-
 }
 
 //=======================================================

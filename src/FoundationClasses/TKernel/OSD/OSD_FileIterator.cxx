@@ -125,7 +125,6 @@ static int strcmp_joker(const char* Mask, const char* Name)
   return 0;
 }
 
-
 // Find next file entry in current directory
 
 void OSD_FileIterator::Next()

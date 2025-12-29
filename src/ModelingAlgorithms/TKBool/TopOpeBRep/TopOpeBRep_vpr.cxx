@@ -24,7 +24,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-
 #include <Standard_DomainError.hxx>
 #include <Geom_Surface.hxx>
 #include <Precision.hxx>

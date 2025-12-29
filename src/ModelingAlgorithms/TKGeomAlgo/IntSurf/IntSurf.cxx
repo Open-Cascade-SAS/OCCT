@@ -70,7 +70,6 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
     {
       TFirst.SetValue(true, IntSurf_Undecided);
       TSecond.SetValue(true, IntSurf_Undecided);
-
     }
   }
 }

@@ -1092,7 +1092,6 @@ void BRepFill_PipeShell::Prepare()
           break;
         }
 
-
     //  Calculate work sections
     NCollection_Sequence<TopoDS_Shape> WorkingSections;
     WorkingSections.Clear();

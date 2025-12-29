@@ -59,7 +59,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
-
 // ---------------------------------------------------------------------------------
 // static function: UpdateMap
 // purpose:
@@ -299,7 +298,6 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 
   RemLoc.Remove(myLast);
   myLast = RemLoc.GetResult();
-
 
   myShape = MakeShape(TheProf, myProfile, myFirst, myLast);
 }

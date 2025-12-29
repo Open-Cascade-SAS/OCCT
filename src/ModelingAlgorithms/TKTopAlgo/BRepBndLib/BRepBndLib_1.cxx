@@ -306,7 +306,6 @@ static bool CheckPoints(const TopoDS_Shape& theS,
     theOBB.GetVertex(&anArrPnts(aNbPnts));
   }
 
-
   theOBB.ReBuild(anArrPnts, aPtrArrTol, theIsOptimal);
 
   return (!theOBB.IsVoid());

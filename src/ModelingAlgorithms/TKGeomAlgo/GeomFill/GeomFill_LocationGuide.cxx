@@ -55,7 +55,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide, GeomFill_LocationLaw)
 
-
 //=======================================================================
 // function : TraceRevol
 // purpose  : Trace la surface de revolution (Debug)
@@ -121,7 +120,6 @@ static void TraceRevol(const double                                    t,
   // Surface de revolution
   occ::handle<Geom_Surface> Revol = new (Geom_SurfaceOfRevolution)(S, Ax);
   std::cout << "Surf Revol at parameter t = " << t << std::endl;
-
 }
 #endif
 
@@ -175,7 +173,6 @@ GeomFill_LocationGuide::GeomFill_LocationGuide(
   OrigParam2 = 1;     // et guide pas meme sens de parcourt
   Trans.SetIdentity();
   WithTrans = false;
-
 }
 
 //==================================================================

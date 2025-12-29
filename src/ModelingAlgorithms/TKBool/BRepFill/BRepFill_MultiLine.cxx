@@ -44,7 +44,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 
-
 // POP pour NT
 #include <cstdio>
 
@@ -493,7 +492,6 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
       new Geom_TrimmedCurve(Line, myBis.FirstParameter(), myBis.LastParameter());
     Curve = GeomProjLib::ProjectOnPlane(TLine, Plane, gp::DZ(), false);
 
-
     // eval PCurve1
     PCurve1 = GeomProjLib::Curve2d(Curve, Plane);
 
@@ -621,7 +619,6 @@ static gp_Pnt2d ValueOnFace(const double               U,
       Dist = -Dist;
 
     occ::handle<Geom2d_Line> Line = new Geom2d_Line(gp_Pnt2d(0., Dist), gp::DX2d());
-
 
     const Geom2dAdaptor_Curve& Cu1 = TheV;
     Geom2dAdaptor_Curve        Cu2(Line);

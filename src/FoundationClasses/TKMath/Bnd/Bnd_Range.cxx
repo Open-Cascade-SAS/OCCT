@@ -110,7 +110,6 @@ int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
     return 2;
   }
 
-
   return 0;
 }
 

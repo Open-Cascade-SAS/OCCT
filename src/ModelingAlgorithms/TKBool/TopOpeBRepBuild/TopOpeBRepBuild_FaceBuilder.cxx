@@ -54,7 +54,6 @@ extern bool TopOpeBRepBuild_GettracePURGE();
 void debifb() {}
 #endif
 
-
 //=================================================================================================
 
 TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder() = default;
@@ -183,7 +182,6 @@ int FUN_AnalyzemapVon1E(
   return res;
 } // FUN_AnalyzemapVon1E
 
-
 //=================================================================================================
 
 void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
@@ -203,7 +201,6 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
   //  - <mapVon1Edge> with (key = vertex,item = edge),
   //    the vertex is connected to only one unclosed,undegenerated edge.
   // * Else,if it is unclosed,we delete it (or it`s hanging edges).
-
 
   InitFace();
   for (; MoreFace(); NextFace())

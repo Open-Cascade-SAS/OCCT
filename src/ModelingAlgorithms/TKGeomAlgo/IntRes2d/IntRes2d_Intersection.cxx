@@ -445,4 +445,3 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
 }
 
 //----------------------------------------------------------------------
-

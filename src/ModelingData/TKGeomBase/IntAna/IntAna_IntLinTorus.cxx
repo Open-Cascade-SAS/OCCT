@@ -130,4 +130,3 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
     done = false;
   }
 }
-

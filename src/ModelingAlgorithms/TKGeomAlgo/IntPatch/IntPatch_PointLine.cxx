@@ -63,7 +63,6 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(const occ::handle<Adaptor
   theS1->D2(aU1, aV1, aPt, aDU1, aDV1, aDUU1, aDVV1, aDUV1);
   theS2->D2(aU2, aV2, aPt, aDU2, aDV2, aDUU2, aDVV2, aDUV2);
 
-
   const gp_Vec aN1(aDU1.Crossed(aDV1)), aN2(aDU2.Crossed(aDV2));
   // Tangent vector to the intersection curve
   const gp_Vec aCTan(aN1.Crossed(aN2));
@@ -137,7 +136,6 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(const occ::handle<Adaptor
 
   // square of curvature radius
   const double aFactSqRad = aSqMagnFDer * aSqMagnFDer * aSqMagnFDer / aSqMagnSDer;
-
 
   return sqrt(aFactSqRad);
 }

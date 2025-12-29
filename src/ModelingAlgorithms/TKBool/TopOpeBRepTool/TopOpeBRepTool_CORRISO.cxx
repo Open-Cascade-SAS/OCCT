@@ -71,7 +71,6 @@ static void FUN_Raise()
 #endif
 }
 
-
 #define M_FORWARD(sta) (sta == TopAbs_FORWARD)
 #define M_REVERSED(sta) (sta == TopAbs_REVERSED)
 #define M_INTERNAL(sta) (sta == TopAbs_INTERNAL)

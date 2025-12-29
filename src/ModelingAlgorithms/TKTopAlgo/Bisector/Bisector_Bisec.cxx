@@ -380,7 +380,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   if (ULast > Bis->LastParameter())
     ULast = Bis->LastParameter();
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
-
 }
 
 //===========================================================================
@@ -517,7 +516,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
   UFirst      = std::max(UFirst, Bis->FirstParameter());
   ULast       = std::min(ULast, Bis->LastParameter());
   thebisector = new Geom2d_TrimmedCurve(Bis, UFirst, ULast);
-
 }
 
 //===========================================================================
@@ -552,7 +550,6 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
                oncurve);
   thebisector =
     new Geom2d_TrimmedCurve(Bis, Bis->ParameterOfStartPoint(), Bis->ParameterOfEndPoint());
-
 }
 
 //=================================================================================================

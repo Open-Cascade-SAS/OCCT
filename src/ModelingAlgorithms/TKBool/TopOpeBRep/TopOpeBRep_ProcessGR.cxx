@@ -20,7 +20,6 @@
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 // #include <BRepAdaptor_Curve2d.hxx>
@@ -240,7 +239,6 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
   bool isone = false;
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
     return isone;
-
 
   double f, l;
   TopOpeBRep_FacesFiller::Lminmax(L, f, l);

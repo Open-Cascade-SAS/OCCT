@@ -1183,7 +1183,6 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
   aFirstEdge = anE1;
   anExp.Next();
 
-
   // Map containing all vertices of degenerated edges
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapVofDE;
 
@@ -1292,7 +1291,6 @@ static void InsertEDegenerated(const TopoDS_Face&              theFace,
 
   if (aFirstEdge.IsNull() || aLastEdge.IsNull())
     return;
-
 
   // TopExp::CommonVertex(...) does not work
   // if edges have more than one pair of common vertex
@@ -1494,7 +1492,7 @@ bool BRepFill_AdvancedEvolved::CheckSingularityAndAdd(
       continue;
     }
 
-    NCollection_List<TopoDS_Shape> aLE;
+    NCollection_List<TopoDS_Shape>           aLE;
     NCollection_List<TopoDS_Shape>::Iterator aBItr(aLGF);
     for (; aBItr.More(); aBItr.Next())
     {

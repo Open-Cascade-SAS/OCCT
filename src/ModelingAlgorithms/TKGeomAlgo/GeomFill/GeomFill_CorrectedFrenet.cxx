@@ -50,7 +50,6 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)
 static bool Affich = 0;
 #endif
 
-
 static double ComputeTorsion(const double Param, const occ::handle<Adaptor3d_Curve>& aCurve)
 {
   double Torsion;
@@ -359,7 +358,6 @@ void GeomFill_CorrectedFrenet::Init()
   //  double StartAng = 0, AvStep, Step, t;
   double StartAng = 0, AvStep, Step;
 
-
   NbStep = 10;
   AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
   for (i = 1; i <= NbI; i++)
@@ -405,7 +403,6 @@ void GeomFill_CorrectedFrenet::Init()
       HArrNormal->ChangeValue(i)  = SeqNormal(i);
     };
   }
-
 }
 
 //===============================================================

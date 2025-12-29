@@ -96,7 +96,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-
 static double BRepFill_Confusion()
 {
   double Tol = 1.e-6;
@@ -702,7 +701,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
     }
   }
 
-
   //---------------------------------------------------
   // Construction of edges associated to bissectrices.
   //---------------------------------------------------
@@ -1035,7 +1033,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
     }
   }
 
-
   //----------------------------------
   // Construction of parallel edges.
   //----------------------------------
@@ -1104,7 +1101,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
           for (k = 1; k <= aSeqOfShape.Length(); k++)
           {
             myMap(CurrentSpine)(VCF).Append(aSeqOfShape.Value(k));
-
           }
         }
       }
@@ -1140,12 +1136,10 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
         for (k = 1; k <= aSeqOfShape.Length(); k++)
         {
           myMap(CurrentSpine)(VCL).Append(aSeqOfShape.Value(k));
-
         }
       }
     }
   }
-
 
   //-------------------------------------------------------------------
   // Cut faces by edges.
@@ -1218,7 +1212,6 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
     }
   }
   myIsDone = true;
-
 }
 
 //=================================================================================================
@@ -1422,7 +1415,6 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
       }
       First = false;
     }
-
 
     BRepSweep_Prism PS(Base, gp_Vec(0, 0, Alt2 - Alt1), false);
 
@@ -1714,7 +1706,6 @@ void BRepFill_Evolved::PrepareSpine(
 
   // Construct curves 3D of the spine
   BRepLib::BuildCurves3d(WorkSpine);
-
 }
 
 //=================================================================================================
@@ -2206,7 +2197,6 @@ void BRepFill_Evolved::MakePipe(const TopoDS_Edge& SE, const gp_Ax3& AxeRef)
 
   TopoDS_Wire GenProf = TopoDS::Wire(Modif.ModifiedShape(DummyProf));
 
-
   BRepFill_Pipe Pipe(BRepLib_MakeWire(SE), GenProf);
   // BRepFill_Pipe Pipe = BRepFill_Pipe(BRepLib_MakeWire(SE),GenProf);
 
@@ -2356,7 +2346,6 @@ void BRepFill_Evolved::TransformInitWork(const TopLoc_Location& LS, const TopLoc
 {
   mySpine.Move(LS);
   myProfile.Move(LP);
-
 }
 
 //=======================================================================
@@ -2553,7 +2542,6 @@ void TrimFace(const TopoDS_Face&                  Face,
               NCollection_Sequence<TopoDS_Shape>& TheEdges,
               NCollection_Sequence<TopoDS_Shape>& S)
 {
-
 
   //--------------------------------------
   // Creation of wires limiting faces.

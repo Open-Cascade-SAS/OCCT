@@ -671,7 +671,6 @@ static TopoDS_Edge FindCreatedEdge(
   return E1;
 }
 
-
 //======================== END OF STATIC FUNCTIONS ============
 
 //=================================================================================================
@@ -1690,7 +1689,6 @@ void BiTgte_Blend::ComputeSurfaces()
   // 1 - Tubes (True Fillets)
   // 2 - Spheres.
 
-
   NCollection_List<TopoDS_Shape> Empty;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     EmptyMap;
@@ -2077,7 +2075,6 @@ void BiTgte_Blend::ComputeSurfaces()
           L2.Append(V2);
         }
       }
-
     }
   }
 
@@ -2112,7 +2109,6 @@ void BiTgte_Blend::ComputeSurfaces()
     myCenters.Add(V);
 
     B.Add(myResult, OFT.Face());
-
   }
 }
 

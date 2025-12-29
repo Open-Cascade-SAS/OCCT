@@ -320,7 +320,6 @@ void Bisector_Inter::SinglePerform(const occ::handle<Geom2d_Curve>& CBis1,
            D2.FirstParameter(),
            D2.LastParameter());
   }
-
 }
 
 //===================================================================================

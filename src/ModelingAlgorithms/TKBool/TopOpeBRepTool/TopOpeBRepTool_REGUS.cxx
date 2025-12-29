@@ -28,7 +28,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
 #define M_INTERNAL(ori) (ori == TopAbs_INTERNAL)

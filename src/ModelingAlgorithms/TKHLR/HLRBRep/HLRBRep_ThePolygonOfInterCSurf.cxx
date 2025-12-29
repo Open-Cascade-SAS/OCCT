@@ -108,6 +108,4 @@ double HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(const int    Index,
 
 //==================================================================================================
 
-void HLRBRep_ThePolygonOfInterCSurf::Dump() const
-{
-}
+void HLRBRep_ThePolygonOfInterCSurf::Dump() const {}

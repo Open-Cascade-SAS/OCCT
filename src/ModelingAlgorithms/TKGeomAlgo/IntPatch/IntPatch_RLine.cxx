@@ -415,7 +415,6 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
 
   SetFirstPoint(1);
   SetLastPoint(nbvtx);
-
 }
 
 void IntPatch_RLine::Dump(const int theMode) const

@@ -24,7 +24,6 @@
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
@@ -905,7 +904,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape&         
     }
     if (tSPS)
     {
-  //      bool trc = false;
+      //      bool trc = false;
     }
 #endif
   }

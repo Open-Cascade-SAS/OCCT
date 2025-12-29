@@ -672,4 +672,3 @@ bool TopOpeBRepTool_ShapeClassifier::HasAvLS() const
   bool hasavls = (myPAvLS) ? (!myPAvLS->IsEmpty()) : false;
   return hasavls;
 }
-

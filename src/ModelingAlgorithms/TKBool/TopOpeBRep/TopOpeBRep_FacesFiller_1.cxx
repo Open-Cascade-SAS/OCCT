@@ -45,7 +45,6 @@
 #include <TopOpeBRepTool_makeTransition.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-
 #ifdef OCCT_DEBUG
 Standard_EXPORT void debrest(const int i)
 {
@@ -67,9 +66,7 @@ static void FUN_traceRLine(const TopOpeBRep_LineInter&)
   //
 }
 
-static void FUN_traceGLine(const TopOpeBRep_LineInter&)
-{
-}
+static void FUN_traceGLine(const TopOpeBRep_LineInter&) {}
 #endif
 
 #define M_FORWARD(o) (o == TopAbs_FORWARD)

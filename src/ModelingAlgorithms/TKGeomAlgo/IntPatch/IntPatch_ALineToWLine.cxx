@@ -381,7 +381,6 @@ void IntPatch_ALineToWLine::MakeWLine(
     return;
   }
 
-
   // The same points can be marked by different vertices.
   // The code below unifies tolerances of all vertices
   // marking the same points.
@@ -975,7 +974,6 @@ bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& the
   }
 
   const double aR = IntPatch_PointLine::CurvatureRadiusOfIntersLine(myS1, myS2, thePOn2S);
-
 
   if (aR < 0.0)
   {

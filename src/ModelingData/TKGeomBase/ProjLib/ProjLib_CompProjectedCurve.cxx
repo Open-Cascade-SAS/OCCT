@@ -238,7 +238,6 @@ static void d2(const double                          t,
 // purpose  : computes first derivative of the 3d projected curve
 //=======================================================================
 
-
 //=======================================================================
 // function : d2CurveOnSurf
 // purpose  : computes second derivative of the 3D projected curve

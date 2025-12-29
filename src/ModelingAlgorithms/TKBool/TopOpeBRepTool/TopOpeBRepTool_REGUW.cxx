@@ -25,7 +25,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-
 #define FORWARD (1)
 #define REVERSED (2)
 #define INTERNAL (3)

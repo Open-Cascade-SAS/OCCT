@@ -34,7 +34,6 @@
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-
 #ifdef OCCT_DEBUG
 void debc2dnull(void) {}
 
@@ -513,7 +512,6 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&
     pc2df->SetPC(C2D, f2d, l2d, tol);
     return C2D;
   }
-
 
   C2D = FC2D_make2d(E, F, EF, f2d, l2d, tol, trim3d);
   FC2D_AddNewCurveOnSurface(C2D, E, F, f2d, l2d, tol);

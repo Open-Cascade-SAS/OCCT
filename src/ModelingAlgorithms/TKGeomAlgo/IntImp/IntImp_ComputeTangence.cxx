@@ -161,7 +161,6 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
         }
       }
     } while (!triOk);
-
   }
   return tangent;
 }

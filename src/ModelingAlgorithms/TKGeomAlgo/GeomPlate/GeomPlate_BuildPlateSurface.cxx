@@ -64,7 +64,6 @@
 
 #include <cstdio>
 
-
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 static int Affich = 0;
@@ -1753,7 +1752,6 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       myLinCont->ChangeValue(i)->SetCurve2dOnSurf(NullCurve);
     }
   }
-
 }
 
 //---------------------------------------------------------

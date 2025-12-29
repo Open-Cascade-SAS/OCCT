@@ -24,7 +24,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-
 #include <TopoDS.hxx>
 // #include <BRepAdaptor_Curve2d.hxx>
 #include <gp_Vec.hxx>

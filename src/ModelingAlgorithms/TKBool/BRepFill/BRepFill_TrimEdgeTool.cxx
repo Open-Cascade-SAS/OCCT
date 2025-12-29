@@ -294,7 +294,6 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
   BRep_Tool::CurveOnSurface(Edge2, C2, Surf, L, f, l);
   Geom2dAdaptor_Curve AC2(C2, f, l);
 
-
   // Calculate intersection
   NCollection_Sequence<gp_Pnt> Points2;
   gp_Pnt                       PSeq;

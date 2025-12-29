@@ -520,7 +520,6 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
 
   double dAngle1 = (Circle.XAxis().Direction()).Angle(Line.Direction());
 
-
   double a, b, c, d;
   Line.Coefficients(a, b, c);
 

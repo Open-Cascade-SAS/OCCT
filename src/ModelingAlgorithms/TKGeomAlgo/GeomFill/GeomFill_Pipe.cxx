@@ -76,7 +76,6 @@ static bool Affich     = false;
 static int  NbSections = 0;
 #endif
 
-
 static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1,
                        NCollection_Sequence<occ::handle<Geom_Curve>>&       Seq2)
 {
@@ -385,7 +384,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&      Path,
                                         myAdpPath->FirstParameter(),
                                         myAdpPath->LastParameter());
 
-
   if (rotat)
     TheLoc->Set(mySec, rotat, myAdpPath->FirstParameter(), myAdpPath->LastParameter(), 0., angle);
   myLoc = TheLoc;
@@ -425,7 +423,6 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path, const double Radiu
   occ::handle<GeomFill_CorrectedFrenet> TLaw = new (GeomFill_CorrectedFrenet)();
   myLoc                                      = new (GeomFill_CurveAndTrihedron)(TLaw);
   myLoc->SetCurve(myAdpPath);
-
 }
 
 //=================================================================================================

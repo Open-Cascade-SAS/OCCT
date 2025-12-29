@@ -80,7 +80,6 @@
 
 #include <cstdio>
 
-
 #ifdef OCCT_DEBUG
 extern bool ChFi3d_GettraceDRAWFIL();
 extern bool ChFi3d_GettraceDRAWWALK();

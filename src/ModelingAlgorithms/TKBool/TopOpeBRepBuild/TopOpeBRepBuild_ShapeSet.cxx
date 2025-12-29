@@ -21,7 +21,6 @@
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>
 
-
 #ifdef OCCT_DEBUG
 extern bool TopOpeBRepBuild_GettraceCHK();
 extern bool TopOpeBRepBuild_GettraceCHKOK();
@@ -412,15 +411,11 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_ShapeSet::DumpSS()
-{
-}
+void TopOpeBRepBuild_ShapeSet::DumpSS() {}
 
 //=================================================================================================
 
-void TopOpeBRepBuild_ShapeSet::DumpBB()
-{
-}
+void TopOpeBRepBuild_ShapeSet::DumpBB() {}
 
 //=================================================================================================
 

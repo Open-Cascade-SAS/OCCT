@@ -1488,7 +1488,6 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
 
         L1.Append(anEdge.Oriented(O1));
         L2.Append(anEdge.Oriented(O2));
-
       }
     }
   }
@@ -3965,7 +3964,6 @@ void BRepOffset_Tool::ExtentFace(
   }
   NF.Orientation(F.Orientation());
   BRepTools::Update(NF); // Maj des UVPoints
-
 }
 
 //=================================================================================================

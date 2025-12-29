@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Line.hxx>
@@ -53,7 +52,6 @@ TopOpeBRepBuild_WireEdgeSet::TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F, 
     : TopOpeBRepBuild_ShapeSet(TopAbs_VERTEX)
 {
   myFace = TopoDS::Face(F);
-
 }
 
 //=================================================================================================
@@ -73,7 +71,6 @@ void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
   bool chk = true;
   if (tocheck)
     chk = CheckShape(S);
-
 
   if (!chk)
     return;
@@ -124,7 +121,6 @@ const TopoDS_Face& TopOpeBRepBuild_WireEdgeSet::Face() const
 void TopOpeBRepBuild_WireEdgeSet::InitNeighbours(const TopoDS_Shape& E)
 {
 
-
   mySubShapeExplorer.Init(E, mySubShapeType);
   myCurrentShape = E;
   FindNeighbours();
@@ -169,7 +165,6 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
 
   int nclosing = NbClosingShapes(l);
 
-
   if (nclosing)
   {
     // build myCurrentShapeNeighbours =
@@ -183,7 +178,6 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
       if (k)
       {
         myCurrentShapeNeighbours.Append(curn);
-
       }
     }
 
@@ -246,7 +240,6 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
 
         bool t2 = ((cross > 0) && oVE == TopAbs_REVERSED) || ((cross < 0) && oVE == TopAbs_FORWARD);
 
-
         if (t2)
         { //-- t1
           // c'est la bonne IsClosed,on ne garde qu'elle parmi les IsClosed
@@ -258,7 +251,6 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_WireEdgeSet::MakeNeighbour
           myCurrentShapeNeighbours.Remove(lclo);
         }
       }
-
     }
     return myCurrentShapeNeighbours;
   }
@@ -337,7 +329,6 @@ bool TopOpeBRepBuild_WireEdgeSet::VertexConnectsEdgesClosing(const TopoDS_Shape&
   // SSCONNEX = True ==> on prend toute arete E2 qui partage V avec E1
   //                     et telle que orientation(V/E1) # orientation(V/E2)
   //                     ==> face de part et d'autre des coutures
-
 
   if ((c1 && c2))
   {
@@ -508,9 +499,7 @@ TCollection_AsciiString TopOpeBRepBuild_WireEdgeSet::SNameVEL(
 
 //=================================================================================================
 
-void TopOpeBRepBuild_WireEdgeSet::DumpSS()
-{
-}
+void TopOpeBRepBuild_WireEdgeSet::DumpSS() {}
 
 //=================================================================================================
 

@@ -313,4 +313,3 @@ void Coord_Ancien_Repere(double& x1, double& y1, const gp_Ax2d& Dir1)
   x1 = x0;
   y1 = y0;
 }
-

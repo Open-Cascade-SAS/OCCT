@@ -24,7 +24,6 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 
-
 #define SAME (-1)
 #define DIFF (-2)
 #define UNKNOWN (0)

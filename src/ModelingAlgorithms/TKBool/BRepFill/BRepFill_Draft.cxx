@@ -63,7 +63,6 @@
 #include <TopoDS_Wire.hxx>
 #include <NCollection_List.hxx>
 
-
 //=================================================================================================
 
 static void ComputeTrsf(const TopoDS_Wire& W, const gp_Dir& D, Bnd_Box& Box, gp_Trsf& Tf)
@@ -396,7 +395,6 @@ void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape, const bool KeepOutSi
   occ::handle<Geom_Plane> Plan = new (Geom_Plane)(Pt, myDir);
   Surf                         = new (Geom_RectangularTrimmedSurface)(Plan, -L, L, -L, L);
 
-
   // Sweeping and restriction
   Init(Plan, L * 1.01, WBox);
   BuildShell(Surf, false);
@@ -445,7 +443,6 @@ void BRepFill_Draft::Init(const occ::handle<Geom_Surface>&, const double Length,
   occ::handle<Geom_Line> L = new (Geom_Line)(P, D);
 
   occ::handle<Geom_Curve> TC = new (Geom_TrimmedCurve)(L, 0, Length);
-
 
   BRepLib_MakeEdge ME(TC);
   TopoDS_Edge      EG = ME.Edge();

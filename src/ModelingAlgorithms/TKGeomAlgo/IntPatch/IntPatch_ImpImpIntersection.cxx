@@ -1224,7 +1224,6 @@ bool FindLine(gp_Pnt&                                                 Psurf,
             }
           } while (++amelioration < 5);
         }
-
       }
       break;
       case IntPatch_Hyperbola: {

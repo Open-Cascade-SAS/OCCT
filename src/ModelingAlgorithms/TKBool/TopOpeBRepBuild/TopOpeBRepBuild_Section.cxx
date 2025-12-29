@@ -75,7 +75,6 @@ Standard_EXPORT void debspseon(const int i)
 extern bool TopOpeBRepTool_GettraceC2D();
 #endif
 
-
 // Standard_IMPORT void FUN_tool_ttranslate(const gp_Vec2d& tvector, const TopoDS_Face& fF,
 // TopoDS_Edge& fyE);
 
@@ -406,7 +405,6 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       FUN_selLEE(LE1loc, E2, TopAbs_IN, LE1inE2);
       int nLE1inE2 = LE1inE2.Extent();
 
-
       // edges E1 and E2 share LE1inE2
       if (nLE1inE2 != 0)
       { // 2.2
@@ -464,7 +462,6 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
         }
       } // 2.2
     }
-
 
     if (!MEOUT.IsBound(E))
     {

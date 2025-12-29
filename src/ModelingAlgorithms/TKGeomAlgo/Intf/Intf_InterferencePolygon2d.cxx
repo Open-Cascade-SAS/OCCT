@@ -740,7 +740,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
                           parTSP,
                           sinTeta));
 
-    int nbtz = myTZones.Length();
+    int                   nbtz = myTZones.Length();
     NCollection_List<int> LIndex;
     for (int ltz = 1; ltz <= nbtz; ltz++)
     {

@@ -36,7 +36,6 @@ Standard_EXPORT void debreguso(const int iS)
 }
 #endif
 
-
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::RegularizeSolids(const TopoDS_Shape&                   SO,
@@ -320,6 +319,5 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
       } // lspssdSSf.More()
     } // explore(ssdSS,TopAbs_FACE)
   } // itlssdSS.More()
-
 
 } // RegularizeSolid

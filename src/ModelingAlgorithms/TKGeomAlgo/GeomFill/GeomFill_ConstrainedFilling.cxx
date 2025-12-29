@@ -959,7 +959,6 @@ void GeomFill_ConstrainedFilling::MatchKnots()
 
   pq[1] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), false, ind[1]);
   pq[3] = Law::MixTgt(degree[0], nk[0]->Array1(), nm[0]->Array1(), true, ind[3]);
-
 }
 
 //=================================================================================================
@@ -1441,7 +1440,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
 {
   if (tgalg[I].IsNull())
     return;
-  gp_Pnt p1;
+  gp_Pnt                         p1;
   gp_Vec                         d1;
   bool                           caplisse = false;
   double                         maxang = 0., pmix = 0, pmixcur;
@@ -1565,8 +1564,8 @@ void GeomFill_ConstrainedFilling::CheckResult(const int I)
       duu       = 0.;
       break;
   }
-  gp_Pnt pbound[31], pres[31];
-  gp_Vec vbound[31], vres[31];
+  gp_Pnt                         pbound[31], pres[31];
+  gp_Vec                         vbound[31], vres[31];
   occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
   int                            k;
   for (k = 0; k <= 30; k++)

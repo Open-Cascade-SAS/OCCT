@@ -21,7 +21,6 @@
 #include <TopOpeBRepBuild_SolidBuilder.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TopOpeBRepBuild_GIter.hxx>

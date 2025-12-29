@@ -603,7 +603,6 @@ void BRepAlgo_Loop::Perform()
       StoreInMVE(myFace, E, MVE, YaCouture, myVerticesForSubstitute, myTolConf);
   }
 
-
   //-----------------------------------------------
   // Construction of wires and new faces.
   //----------------------------------------------
@@ -723,7 +722,6 @@ void BRepAlgo_Loop::Perform()
         std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
     }
 #endif
-
   }
 
   PurgeNewEdges(myCutEdges, UsedEdges);

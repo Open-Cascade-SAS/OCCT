@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Curve.hxx>

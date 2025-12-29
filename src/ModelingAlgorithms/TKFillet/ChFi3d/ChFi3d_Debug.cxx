@@ -32,7 +32,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 
-
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 OSD_Chronometer simul, elspine, chemine;
@@ -358,6 +357,5 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure&   DStr,
 
     W.Orientation(TopAbs_FORWARD);
     B.Add(F, W);
-
   }
 }

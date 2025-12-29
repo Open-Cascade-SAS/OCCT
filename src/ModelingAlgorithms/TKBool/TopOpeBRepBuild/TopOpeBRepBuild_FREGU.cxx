@@ -31,7 +31,6 @@ extern bool TopOpeBRepBuild_GettraceSAVFREGU();
 void debregufa(const int /*iF*/) {}
 #endif
 
-
 #define M_FORWARD(O) (O == TopAbs_FORWARD)
 #define M_REVERSED(O) (O == TopAbs_REVERSED)
 
@@ -355,6 +354,5 @@ void TopOpeBRepBuild_Builder::RegularizeFace(const TopoDS_Shape&             FF,
       } // iiista
     } // explore(fsdFF,TopAbs_EDGE)
   } // itlfsdFF.More()
-
 
 } // RegularizeFace

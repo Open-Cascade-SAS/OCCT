@@ -59,7 +59,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-
 #ifdef OCCT_DEBUG
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \

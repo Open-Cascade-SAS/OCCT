@@ -83,6 +83,7 @@
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
 #include <cstdio>
+
 // #include <BRepFill_TrimCorner.hxx>
 //  modified by NIZHNY-MKK  Wed Oct 22 12:25:45 2003
 // #include <GeomPlate_BuildPlateSurface.hxx>
@@ -865,7 +866,6 @@ static bool Filling(const TopoDS_Shape&                                         
     WithE4 = true;
   }
 
-
   // Construction of a surface of revolution
   occ::handle<Geom_Curve> Prof1, Prof2;
   // int ii, jj;//, Nb;
@@ -942,7 +942,6 @@ static bool Filling(const TopoDS_Shape&                                         
            (Rev, 0, Angle, f1, l1);
     */
   }
-
 
   occ::handle<Geom2d_Curve> C1, C2, C3, C4;
   /*
@@ -1257,7 +1256,6 @@ static bool Filling(const TopoDS_Shape&                                         
 
   if (ToReverseResult)
     Result.Reverse();
-
 
   return true;
 }
@@ -2098,7 +2096,7 @@ bool BRepFill_Sweep::BuildShell(
   const double                                            ExtendFirst,
   const double                                            ExtendLast)
 {
-  int ipath, isec, IPath;
+  int          ipath, isec, IPath;
   BRep_Builder B;
   int          NbPath = ILast - IFirst;
   int          NbLaw  = mySec->NbLaw();
@@ -2209,7 +2207,6 @@ bool BRepFill_Sweep::BuildShell(
         GeomLib::ExtendSurfByLength(BndS, ExtendLast, 1, Sweep.ExchangeUV(), true);
         TabS(isec, ipath) = BndS;
       }
-
     }
   }
 
@@ -2775,7 +2772,6 @@ bool BRepFill_Sweep::BuildShell(
 
   // (3) Construction of Faces
   TopoDS_Face face;
-
 
   for (ipath = 1, IPath = IFirst; ipath <= NbPath; ipath++, IPath++)
   {

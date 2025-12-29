@@ -113,6 +113,4 @@ double IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(const int    Index
 
 //==================================================================================================
 
-void IntCurveSurface_ThePolygonOfHInter::Dump() const
-{
-}
+void IntCurveSurface_ThePolygonOfHInter::Dump() const {}

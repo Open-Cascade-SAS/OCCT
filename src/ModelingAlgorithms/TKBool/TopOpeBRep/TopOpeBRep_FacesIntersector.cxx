@@ -19,7 +19,6 @@
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 
-
 #include <IntPatch_LineConstructor.hxx>
 #include <TopOpeBRep_TypeLineCurve.hxx>
 #include <TopoDS.hxx>

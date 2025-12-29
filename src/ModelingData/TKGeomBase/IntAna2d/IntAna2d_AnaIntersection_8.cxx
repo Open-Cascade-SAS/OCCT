@@ -106,7 +106,6 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
         //--- (le point a ete obtenu par parametrage)
         //--- ??? la tolerance a ete fixee a 1e-10 ?????????????
 
-
         nb_sol_valides++;
         Coord_Ancien_Repere(tx, ty, Axe_rep);
         S = std::log(S);

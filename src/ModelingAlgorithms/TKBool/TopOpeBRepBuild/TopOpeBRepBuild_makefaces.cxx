@@ -73,7 +73,6 @@ Standard_EXPORT void debcorriso(const int i)
 extern void* GFABUMAKEFACEPWES_DEB;
 #endif
 
-
 Standard_EXPORT bool FUN_tool_ClosedW(const TopoDS_Wire& W);
 
 // Unused :
@@ -117,7 +116,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
   if (TopOpeBRepBuild_GetcontextNOPURGE())
     topurge = false;
 #endif
-
 
   if (topurge)
   {
@@ -178,7 +176,6 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces(const TopoDS_Shape&             FF,
 
   if (topurge)
   {
-
 
     const TopoDS_Face& FA   = TopoDS::Face(FF);
     bool               puok = TopOpeBRepTool::PurgeClosingEdges(FA, LOF, MWisOld, MshNOK);

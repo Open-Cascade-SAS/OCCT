@@ -630,7 +630,6 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       else
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_QuasiAngular);
 
-
       BS->Poles(Poles);
       BS->Weights(Weigths);
     }

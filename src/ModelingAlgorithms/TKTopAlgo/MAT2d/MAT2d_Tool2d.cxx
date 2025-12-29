@@ -17,7 +17,6 @@
 #define Debug(expr) std::cout << " MAT2d_Tool2d.cxx  :  expr :" << expr << std::endl;
 // #define OCCT_DEBUG
 
-
 #include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
 #include <Bisector_BisecCC.hxx>
@@ -200,7 +199,7 @@ int MAT2d_Tool2d::TangentBefore(const int anitem, const bool IsOpenResult)
   }
   else
   {
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
+    curve        = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
     double param = (IsOpenResult && anitem == theCircuit->NumberOfItems())
                      ? curve->LastParameter()
                      : curve->FirstParameter();
@@ -232,7 +231,7 @@ int MAT2d_Tool2d::TangentAfter(const int anitem, const bool IsOpenResult)
   type = theCircuit->Value(anitem)->DynamicType();
   if (type != STANDARD_TYPE(Geom2d_CartesianPoint))
   {
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(anitem));
+    curve     = occ::down_cast<Geom2d_Curve>(theCircuit->Value(anitem));
     thevector = curve->DN(curve->FirstParameter(), 1);
   }
   else
@@ -242,7 +241,7 @@ int MAT2d_Tool2d::TangentAfter(const int anitem, const bool IsOpenResult)
     else
       item = (anitem == 1) ? 2 : (anitem - 1);
 
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
+    curve        = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
     double param = (IsOpenResult && anitem == 1) ? curve->FirstParameter() : curve->LastParameter();
     thevector    = curve->DN(param, 1);
   }
@@ -379,7 +378,6 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
 
   abisector->BisectorNumber(theNumberOfBisectors);
   abisector->Sense(1);
-
 
 #ifdef OCCT_DEBUG
   bool AffichDraw = false;
@@ -1404,7 +1402,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
   {
     CurveDraw = aCurve;
   }
-
 }
 
 #endif

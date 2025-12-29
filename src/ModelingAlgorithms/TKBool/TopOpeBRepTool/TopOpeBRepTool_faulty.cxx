@@ -22,7 +22,6 @@
 #define M_INTERNAL(sta) (sta == TopAbs_INTERNAL)
 #define M_EXTERNAL(sta) (sta == TopAbs_EXTERNAL)
 
-
 #ifdef OCCT_DEBUG
 extern NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_PURGE_mapv;
 extern NCollection_IndexedMap<TopoDS_Shape>                          STATIC_PURGE_mapeds;

@@ -90,7 +90,7 @@ occ::handle<Poly_Triangulation> ShapePersistent_Poly::pTriangulation::Import() c
 {
   occ::handle<Poly_Triangulation> aTriangulation;
 
-// Triangulation is not used
+  // Triangulation is not used
   if (myNodes && myTriangles)
   {
     if (myUVNodes)

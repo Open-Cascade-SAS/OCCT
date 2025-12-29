@@ -36,7 +36,6 @@ extern void debedbu(const int i)
 }
 #endif
 
-
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::GPVSMakeEdges(const TopoDS_Shape&             EF,
@@ -203,6 +202,5 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
         LOE.Append(newEdge);
     }
   } // EDBU.InitEdge : loop on EDBU edges
-
 
 } // GEDBUMakeEdges

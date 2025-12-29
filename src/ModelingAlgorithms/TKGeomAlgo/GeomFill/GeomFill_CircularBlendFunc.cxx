@@ -26,7 +26,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc, Approx_SweepFunction)
 
-
 static const double TolAng = 1.e-6;
 
 static GeomAbs_Shape GeomFillNextShape(const GeomAbs_Shape S)

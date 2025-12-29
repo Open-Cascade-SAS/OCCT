@@ -906,7 +906,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
   {
     CurveDraw = aCurve;
   }
-
 }
 
 #endif

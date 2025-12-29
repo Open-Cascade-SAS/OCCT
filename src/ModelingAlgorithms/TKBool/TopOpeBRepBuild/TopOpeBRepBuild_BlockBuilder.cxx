@@ -125,7 +125,6 @@ void TopOpeBRepBuild_BlockBuilder::MakeBlock(TopOpeBRepBuild_ShapeSet& SS)
   Mextent = myOrientedShapeMap.Extent();
   myBlocks.Append(Mextent + 1);
   myIsDone = true;
-
 }
 
 //=================================================================================================

@@ -45,7 +45,7 @@
 //! When a deprecated macro is used, a compile-time warning will be issued.
 //! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
 //! themselves.
-  #define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
+#define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
 
 //! @def Standard_HEADER_DEPRECATED(theMessage)
 //! Macro for marking header inclusions as deprecated; place near the top of a deprecated header

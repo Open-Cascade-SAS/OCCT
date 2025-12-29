@@ -1511,7 +1511,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
   TopoDS_Wire W;
   myBuilder.MakeWire(W);
 
-
   for (it.Initialize(LEdge); it.More(); it.Next())
   {
     TopoDS_Edge E = TopoDS::Edge(it.Value());
@@ -1524,7 +1523,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
     }
     C = new Geom_TrimmedCurve(C, f, l);
     C->Transform(Loc.Transformation());
-
 
     occ::handle<Geom2d_Curve> PCurve = GeomProjLib::Curve2d(C, S);
     // check if the first point of PCurve in is the canonical boundaries
