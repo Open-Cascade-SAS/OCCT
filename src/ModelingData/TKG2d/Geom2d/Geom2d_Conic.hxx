@@ -94,7 +94,7 @@ public:
 
   //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
-  Standard_EXPORT virtual double ReversedParameter(const double U) const override = 0;
+  Standard_EXPORT double ReversedParameter(const double U) const override = 0;
 
   //! Returns GeomAbs_CN which is the global continuity of any conic.
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
@@ -103,8 +103,7 @@ public:
   Standard_EXPORT bool IsCN(const int N) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Conic, Geom2d_Curve)
 

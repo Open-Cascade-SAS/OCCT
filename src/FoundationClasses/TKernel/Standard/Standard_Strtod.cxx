@@ -252,8 +252,8 @@ int dtoa_stats[7]; /* strtod_{64,96,bigcomp},dtoa_{exact,64,96,bigcomp} */
   #define Debug(x)  /*nothing*/
 #endif
 
-#include "stdlib.h"
-#include "string.h"
+#include <cstdlib>
+#include <cstring>
 
 #ifdef USE_LOCALE
   #include "locale.h"
@@ -316,7 +316,7 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
   #define NO_STRTOD_BIGCOMP
 #endif
 
-#include "errno.h"
+#include <cerrno>
 
 #ifdef NO_ERRNO /*{*/
   #undef Set_errno
@@ -357,11 +357,11 @@ static double private_mem[PRIVATE_mem], *pmem_next = private_mem;
   #endif
 
 #else /* ifndef Bad_float_h */
-  #include "float.h"
+  #include <cfloat>
 #endif /* Bad_float_h */
 
 #ifndef __MATH_H__
-  #include "math.h"
+  #include <cmath>
 #endif
 
 #ifdef __cplusplus
@@ -1604,7 +1604,7 @@ static Bigint* pow5mult(Bigint* b, int k MTd)
       FREE_DTOA_LOCK(1);
 #else
     p5 = p5s = i2b(625 MTa);
-    p5->next = 0;
+    p5->next = nullptr;
 #endif
   }
   for (;;)
@@ -1633,7 +1633,7 @@ static Bigint* pow5mult(Bigint* b, int k MTd)
         FREE_DTOA_LOCK(1);
 #else
       p51 = p5->next = mult(p5, p5);
-      p51->next      = 0;
+      p51->next      = nullptr;
 #endif
     }
     p5 = p51;
@@ -2477,7 +2477,7 @@ void gethex(const char** sp, U* rvp, int rounding, int sign MTd)
     havedig++;
   s0 += havedig;
   s     = s0;
-  decpt = 0;
+  decpt = nullptr;
   zret  = 0;
   e     = 0;
   if (hexdig[*s])
@@ -3204,7 +3204,8 @@ double Strtod(const char* s00, char** se)
   U           aadj2, adj, rv, rv0;
   ULong       y, z;
   BCinfo      bc;
-  Bigint *    bb = 0, *bb1 = 0, *bd = 0, *bd0 = 0, *bs = 0, *delta = 0;
+  Bigint *    bb = nullptr, *bb1 = nullptr, *bd = nullptr, *bd0 = nullptr, *bs = nullptr,
+         *delta = nullptr;
 #ifdef USE_BF96
   ULLong      bhi, blo, brv, t00, t01, t02, t10, t11, terv, tg, tlo, yz;
   const BF96* p10;
@@ -3494,7 +3495,7 @@ dig_done:
     dval(&rv) = tens[k - 9] * dval(&rv) + z;
   }
 #endif
-  bd0 = 0;
+  bd0 = nullptr;
   if (nd <= DBL_DIG
 #ifndef RND_PRODQUOT
   #ifndef Honor_FLT_ROUNDS
@@ -4741,7 +4742,7 @@ Bfree(delta MTb);
 #ifndef NO_STRTOD_BIGCOMP
 if (req_bigcomp)
 {
-  bd0 = 0;
+  bd0 = nullptr;
   bc.e0 += nz1;
   bigcomp(&rv, s0, &bc MTb);
   y = word0(&rv) & Exp_mask;

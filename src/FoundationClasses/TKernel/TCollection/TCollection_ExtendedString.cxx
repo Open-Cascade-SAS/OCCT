@@ -100,7 +100,7 @@ TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
                                                        const bool  isMultiByte)
 {
-  if (theString == NULL)
+  if (theString == nullptr)
   {
     throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }
@@ -129,7 +129,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
 
 TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* theString)
 {
-  if (theString == NULL)
+  if (theString == nullptr)
   {
     throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }
@@ -145,7 +145,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* theString
 
 TCollection_ExtendedString::TCollection_ExtendedString(const wchar_t* theStringUtf)
 {
-  if (theStringUtf == NULL)
+  if (theStringUtf == nullptr)
   {
     throw Standard_NullObject("TCollection_ExtendedString : null parameter ");
   }

@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRootComps, IFSelect_SelectExtract)
 
-IFSelect_SelectRootComps::IFSelect_SelectRootComps() {}
+IFSelect_SelectRootComps::IFSelect_SelectRootComps() = default;
 
 // Redone to work at once
 // WARNING, we must not be interested in ENTITIES but in COMPONENTS

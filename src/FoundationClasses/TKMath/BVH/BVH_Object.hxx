@@ -60,10 +60,10 @@ class BVH_Object : public BVH_ObjectTransient
 {
 public:
   //! Creates new abstract geometric object.
-  BVH_Object() {}
+  BVH_Object() = default;
 
   //! Releases resources of geometric object.
-  virtual ~BVH_Object() {}
+  ~BVH_Object() override = default;
 
 public:
   //! Returns AABB of the geometric object.

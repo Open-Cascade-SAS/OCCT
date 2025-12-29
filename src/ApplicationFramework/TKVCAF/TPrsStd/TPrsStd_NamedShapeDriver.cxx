@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver, TPrsStd_Driver)
 
 //=================================================================================================
 
-TPrsStd_NamedShapeDriver::TPrsStd_NamedShapeDriver() {}
+TPrsStd_NamedShapeDriver::TPrsStd_NamedShapeDriver() = default;
 
 //=================================================================================================
 

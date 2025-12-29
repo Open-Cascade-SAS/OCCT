@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_AngularityTolerance,
 
 //=================================================================================================
 
-StepDimTol_AngularityTolerance::StepDimTol_AngularityTolerance() {}
+StepDimTol_AngularityTolerance::StepDimTol_AngularityTolerance() = default;

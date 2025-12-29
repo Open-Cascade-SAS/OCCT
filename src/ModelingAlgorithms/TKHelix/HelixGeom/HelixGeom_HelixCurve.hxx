@@ -53,47 +53,47 @@ public:
                             const bool   aIsCW);
 
   //! Gets first parameter
-  Standard_EXPORT virtual double FirstParameter() const override;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Gets last parameter
-  Standard_EXPORT virtual double LastParameter() const override;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Gets continuity
-  Standard_EXPORT virtual GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Gets number of intervals
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Gets parametric intervals
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
+                                 const GeomAbs_Shape         S) const override;
 
   //! Gets parametric resolution
-  Standard_EXPORT virtual double Resolution(const double R3d) const override;
+  Standard_EXPORT double Resolution(const double R3d) const override;
 
   //! Returns False
-  Standard_EXPORT virtual bool IsClosed() const override;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! Returns False
-  Standard_EXPORT virtual bool IsPeriodic() const override;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! Returns 2*PI
-  Standard_EXPORT virtual double Period() const override;
+  Standard_EXPORT double Period() const override;
 
   //! Gets curve point for parameter U
-  Standard_EXPORT virtual gp_Pnt Value(const double U) const override;
+  Standard_EXPORT gp_Pnt Value(const double U) const override;
 
   //! Gets curve point for parameter U
-  Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Gets curve point and first derivatives for parameter U
-  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Gets curve point, first and second derivatives for parameter U
-  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Gets curve derivative of demanded order for parameter U
-  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
 protected:
   double myFirst;

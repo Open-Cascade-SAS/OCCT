@@ -24,9 +24,7 @@
 //=================================================================================================
 
 RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::
-  RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion()
-{
-}
+  RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion() = default;
 
 //=================================================================================================
 

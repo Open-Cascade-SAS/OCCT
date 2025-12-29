@@ -33,7 +33,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Vertex.
-  TopoDS_Vertex() {}
+  TopoDS_Vertex() = default;
 };
 
 namespace std

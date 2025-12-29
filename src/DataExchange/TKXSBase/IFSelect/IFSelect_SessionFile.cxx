@@ -35,7 +35,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static int deja = 0;
 
 IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS)
@@ -121,7 +121,7 @@ bool IFSelect_SessionFile::ReadFile(const char* filename)
   for (;;)
   {
     ligne[0] = '\0';
-    if (fgets(ligne, 200, lefic) == NULL || feof(lefic) != 0)
+    if (fgets(ligne, 200, lefic) == nullptr || feof(lefic) != 0)
     {
       break;
     }

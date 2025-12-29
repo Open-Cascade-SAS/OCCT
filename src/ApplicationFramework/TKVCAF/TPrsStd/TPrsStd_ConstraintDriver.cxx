@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_ConstraintDriver, TPrsStd_Driver)
 
 //=================================================================================================
 
-TPrsStd_ConstraintDriver::TPrsStd_ConstraintDriver() {}
+TPrsStd_ConstraintDriver::TPrsStd_ConstraintDriver() = default;
 
 //=================================================================================================
 

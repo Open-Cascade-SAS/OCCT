@@ -847,7 +847,7 @@ bool SelectMgr_RectangularFrustum::OverlapsCircle(const double                  
   const gp_Dir  aRayDir  = myViewRayDir.Transformed(aTrsfInv);
   if (!theIsFilled)
   {
-    if (!hasCircleOverlap(theRadius, theTrsf, theIsFilled, NULL))
+    if (!hasCircleOverlap(theRadius, theTrsf, theIsFilled, nullptr))
     {
       return false;
     }

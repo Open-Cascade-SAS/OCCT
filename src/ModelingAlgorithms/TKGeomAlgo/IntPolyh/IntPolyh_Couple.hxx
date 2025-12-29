@@ -38,7 +38,7 @@ public:
   IntPolyh_Couple()
       : myIndex1(-1),
         myIndex2(-1),
-        myAnalyzed(0),
+        myAnalyzed(false),
         myAngle(-2.0)
   {
   }

@@ -36,7 +36,7 @@ public:
                                                 const TCollection_AsciiString& theName);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWGltf_GltfLatePrimitiveArray();
+  Standard_EXPORT ~RWGltf_GltfLatePrimitiveArray() override;
 
   //! Entity id.
   const TCollection_AsciiString& Id() const { return myId; }
@@ -85,7 +85,7 @@ public:
 
   //! Return TRUE if there is deferred storage and some triangulation data
   //! that can be loaded using LoadDeferredData().
-  virtual bool HasDeferredData() const override
+  bool HasDeferredData() const override
   {
     return !myData.IsEmpty() && (NbDeferredTriangles() > 0 || NbDeferredNodes() > 0);
   }

@@ -17,7 +17,7 @@
 //=================================================================================================
 
 inline TNaming_RefShape::TNaming_RefShape()
-    : myFirstUse(0)
+    : myFirstUse(nullptr)
 {
 }
 
@@ -25,7 +25,7 @@ inline TNaming_RefShape::TNaming_RefShape()
 
 inline TNaming_RefShape::TNaming_RefShape(const TopoDS_Shape& S)
     : myShape(S),
-      myFirstUse(0)
+      myFirstUse(nullptr)
 {
 }
 

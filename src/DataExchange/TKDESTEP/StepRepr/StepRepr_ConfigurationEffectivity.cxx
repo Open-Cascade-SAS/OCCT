@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity,
 
 //=================================================================================================
 
-StepRepr_ConfigurationEffectivity::StepRepr_ConfigurationEffectivity() {}
+StepRepr_ConfigurationEffectivity::StepRepr_ConfigurationEffectivity() = default;
 
 //=================================================================================================
 

@@ -37,9 +37,9 @@ public: //! @name mesher API
     gp_Pnt2d*           Point2; // / using indices.
 
     Segment()
-        : EdgePtr(NULL),
-          Point1(NULL),
-          Point2(NULL)
+        : EdgePtr(nullptr),
+          Point1(nullptr),
+          Point2(nullptr)
     {
     }
 
@@ -62,7 +62,7 @@ public: //! @name mesher API
                                        const IMeshTools_Parameters&  theParameters);
 
   //! Destructor
-  Standard_EXPORT virtual ~BRepMesh_FaceChecker();
+  Standard_EXPORT ~BRepMesh_FaceChecker() override;
 
   //! Performs check wires of the face for intersections.
   //! @return True if there is no intersection, False elsewhere.
@@ -93,9 +93,9 @@ private:
   void perform(const int theWireIndex) const;
 
 private:
-  BRepMesh_FaceChecker(const BRepMesh_FaceChecker& theOther);
+  BRepMesh_FaceChecker(const BRepMesh_FaceChecker& theOther) = delete;
 
-  void operator=(const BRepMesh_FaceChecker& theOther);
+  void operator=(const BRepMesh_FaceChecker& theOther) = delete;
 
 private:
   IMeshData::IFaceHandle       myDFace;

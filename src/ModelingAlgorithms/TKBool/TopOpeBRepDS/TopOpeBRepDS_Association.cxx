@@ -28,14 +28,14 @@ static bool Contains(const NCollection_List<occ::handle<TopOpeBRepDS_Interferenc
        it.Next())
   {
     if (I->HasSameGeometry(it.Value()))
-      return 1;
+      return true;
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_Association::TopOpeBRepDS_Association() {}
+TopOpeBRepDS_Association::TopOpeBRepDS_Association() = default;
 
 //=================================================================================================
 

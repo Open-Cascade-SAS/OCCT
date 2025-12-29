@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage, Standard
 
 //=================================================================================================
 
-StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentationUsage() {}
+StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentationUsage() =
+  default;
 
 //=================================================================================================
 

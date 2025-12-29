@@ -66,10 +66,10 @@ public:
   //! Copies an Entity by calling the method Transferring from the
   //! TransferProcess. If this called produces a Null Binder, then
   //! the standard, inherited Copy is called
-  Standard_EXPORT virtual bool Copy(const occ::handle<Standard_Transient>& entfrom,
-                                    occ::handle<Standard_Transient>&       entto,
-                                    const bool                             mapped,
-                                    const bool                             errstat) override;
+  Standard_EXPORT bool Copy(const occ::handle<Standard_Transient>& entfrom,
+                            occ::handle<Standard_Transient>&       entto,
+                            const bool                             mapped,
+                            const bool                             errstat) override;
 };
 
 #endif // _Transfer_TransferDispatch_HeaderFile

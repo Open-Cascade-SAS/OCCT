@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedFaceSolid, StepShape_SweptFaceSolid)
 
-StepShape_RevolvedFaceSolid::StepShape_RevolvedFaceSolid() {}
+StepShape_RevolvedFaceSolid::StepShape_RevolvedFaceSolid() = default;
 
 void StepShape_RevolvedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepShape_FaceSurface>&    aSweptArea)

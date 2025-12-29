@@ -81,7 +81,7 @@ int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
 
 FILE* OSD_OpenFile(const char* theName, const char* theMode)
 {
-  FILE* aFile = 0;
+  FILE* aFile = nullptr;
 #if defined(_WIN32)
   // file name is treated as UTF-8 string and converted to UTF-16 one
   const TCollection_ExtendedString aFileNameW(theName, true);
@@ -97,7 +97,7 @@ FILE* OSD_OpenFile(const char* theName, const char* theMode)
 
 FILE* OSD_OpenFile(const TCollection_ExtendedString& theName, const char* theMode)
 {
-  FILE* aFile = 0;
+  FILE* aFile = nullptr;
 #if defined(_WIN32)
   const TCollection_ExtendedString aFileModeW(theMode, true);
   aFile = ::_wfopen(theName.ToWideString(), aFileModeW.ToWideString());

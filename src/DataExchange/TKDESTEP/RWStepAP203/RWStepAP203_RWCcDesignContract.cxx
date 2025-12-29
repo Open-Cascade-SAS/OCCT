@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepAP203_RWCcDesignContract::RWStepAP203_RWCcDesignContract() {}
+RWStepAP203_RWCcDesignContract::RWStepAP203_RWCcDesignContract() = default;
 
 //=================================================================================================
 

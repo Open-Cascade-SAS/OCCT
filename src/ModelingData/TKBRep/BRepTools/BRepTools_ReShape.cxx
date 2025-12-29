@@ -424,7 +424,7 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
     {
       if (myStatus & EncodeStatus(4)) // ShapeExtend::DecodeStatus ( myStatus, ShapeExtend_DONE4 ) )
         locStatus |= EncodeStatus(4); //|= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
-      modif = 1;
+      modif = true;
     }
     if (newsh.IsNull())
     {
@@ -548,7 +548,7 @@ occ::handle<BRepTools_History> BRepTools_ReShape::History() const
     {
       const TopoDS_Shape& aIntermediate = aIntermediates(aI);
       const TReplacement* aReplacement  = myShapeToReplacement.Seek(aIntermediate);
-      if (aReplacement == NULL)
+      if (aReplacement == nullptr)
       {
         Add(aModified, aIntermediate);
       }

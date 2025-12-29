@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPairValue, StepKinematics_Pai
 
 //=================================================================================================
 
-StepKinematics_SphericalPairValue::StepKinematics_SphericalPairValue() {}
+StepKinematics_SphericalPairValue::StepKinematics_SphericalPairValue() = default;
 
 //=================================================================================================
 

@@ -24,7 +24,7 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_GeneralLib.hxx>
 
-Interface_NodeOfGeneralLib::Interface_NodeOfGeneralLib() {}
+Interface_NodeOfGeneralLib::Interface_NodeOfGeneralLib() = default;
 
 void Interface_NodeOfGeneralLib::AddNode(const occ::handle<Interface_GlobalNodeOfGeneralLib>& anode)
 {

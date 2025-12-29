@@ -37,8 +37,7 @@ static void CollectMaterialBoundaries(
 //=================================================================================================
 
 BOPAlgo_CellsBuilder::BOPAlgo_CellsBuilder()
-    : BOPAlgo_Builder(),
-      myIndex(100, myAllocator),
+    : myIndex(100, myAllocator),
       myMaterials(100, myAllocator),
       myShapeMaterial(100, myAllocator),
       myMapModified(100, myAllocator)
@@ -1043,7 +1042,7 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_CellsBuilder::LocModified(const To
     // Check if the shape has been unified with other shapes
     const TopoDS_Shape* pSU = myMapModified.Seek(theS);
     if (!pSU)
-      return NULL;
+      return nullptr;
 
     myHistShapes.Append(*pSU);
   }

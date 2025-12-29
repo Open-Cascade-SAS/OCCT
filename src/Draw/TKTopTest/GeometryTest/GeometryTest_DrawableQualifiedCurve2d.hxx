@@ -55,11 +55,11 @@ public:
   Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT void Dump(Standard_OStream& S) const override;
 
   //! For variable whatis command. Set as a result the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(GeometryTest_DrawableQualifiedCurve2d, DrawTrSurf_Curve2d)
 

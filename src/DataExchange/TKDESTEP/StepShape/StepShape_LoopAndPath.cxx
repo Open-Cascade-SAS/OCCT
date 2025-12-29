@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_LoopAndPath, StepShape_TopologicalRepresentationItem)
 
-StepShape_LoopAndPath::StepShape_LoopAndPath() {}
+StepShape_LoopAndPath::StepShape_LoopAndPath() = default;
 
 void StepShape_LoopAndPath::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const occ::handle<StepShape_Loop>&           aLoop,

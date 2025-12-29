@@ -37,9 +37,9 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESDraw_ToolViewsVisibleWithAttr::IGESDraw_ToolViewsVisibleWithAttr() {}
+IGESDraw_ToolViewsVisibleWithAttr::IGESDraw_ToolViewsVisibleWithAttr() = default;
 
 void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,

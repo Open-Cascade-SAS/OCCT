@@ -41,7 +41,7 @@ public:
   //! Returns the Transfer Mode, modifiable
   Standard_EXPORT int& ModeTrans();
 
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transferring(
     const occ::handle<Transfer_Finder>&           start,
     const occ::handle<Transfer_ProcessForFinder>& TP,
     const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;

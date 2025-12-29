@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_NextAssemblyUsageOccurrence, StepRepr_Assemb
 
 //=================================================================================================
 
-StepRepr_NextAssemblyUsageOccurrence::StepRepr_NextAssemblyUsageOccurrence() {}
+StepRepr_NextAssemblyUsageOccurrence::StepRepr_NextAssemblyUsageOccurrence() = default;

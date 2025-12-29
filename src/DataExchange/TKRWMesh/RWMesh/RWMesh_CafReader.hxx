@@ -68,7 +68,7 @@ public:
   Standard_EXPORT RWMesh_CafReader();
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWMesh_CafReader();
+  Standard_EXPORT ~RWMesh_CafReader() override;
 
   //! Return target document.
   const occ::handle<TDocStd_Document>& Document() const { return myXdeDoc; }

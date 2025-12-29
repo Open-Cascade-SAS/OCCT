@@ -388,9 +388,9 @@ const OSD_WhoAmI Iam = OSD_WFile;
     #define SYSV
   #endif
 
-  #include <errno.h>
-  #include <stdlib.h>
-  #include <stdio.h>
+  #include <cerrno>
+  #include <cstdlib>
+  #include <cstdio>
   #include <fcntl.h>
   #include <unistd.h>
   #include <sys/stat.h>
@@ -406,7 +406,7 @@ OSD_File::OSD_File()
       myFileHandle(INVALID_HANDLE_VALUE),
 #else
       myFileChannel(-1),
-      myFILE(NULL),
+      myFILE(nullptr),
 #endif
       myIO(0),
       myLock(OSD_NoLock),
@@ -424,7 +424,7 @@ OSD_File::OSD_File(const OSD_Path& theName)
       myFileHandle(INVALID_HANDLE_VALUE),
 #else
       myFileChannel(-1),
-      myFILE(NULL),
+      myFILE(nullptr),
 #endif
       myIO(0),
       myLock(OSD_NoLock),
@@ -992,7 +992,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
 #else
   NCollection_Array1<char> aBuffer(0, theNbBytes);
   char*                    aBufferGets = fgets(&aBuffer.ChangeFirst(), theNbBytes, (FILE*)myFILE);
-  if (aBufferGets == NULL)
+  if (aBufferGets == nullptr)
   {
     if (!feof((FILE*)myFILE))
     {
@@ -1090,7 +1090,7 @@ void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadB
   {
     throw Standard_ProgramError("OSD_File::Read(): theNbBytes is 0");
   }
-  if (theBuffer == NULL)
+  if (theBuffer == nullptr)
   {
     throw Standard_ProgramError("OSD_File::Read(): theBuffer is NULL");
   }
@@ -1267,10 +1267,10 @@ void OSD_File::Close()
     myError.SetValue(errno, Iam, "Close");
   }
   myFileChannel = -1;
-  if (myFILE != NULL)
+  if (myFILE != nullptr)
   {
     (void)fclose((FILE*)myFILE);
-    myFILE = NULL;
+    myFILE = nullptr;
   }
 #endif
   myIO = 0;

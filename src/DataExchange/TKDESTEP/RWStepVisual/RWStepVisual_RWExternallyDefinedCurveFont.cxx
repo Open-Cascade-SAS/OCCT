@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWExternallyDefinedCurveFont::RWStepVisual_RWExternallyDefinedCurveFont() {}
+RWStepVisual_RWExternallyDefinedCurveFont::RWStepVisual_RWExternallyDefinedCurveFont() = default;
 
 //=================================================================================================
 

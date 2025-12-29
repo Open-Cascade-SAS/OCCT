@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis2Placement2d, StepGeom_Placement)
 
-StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d() {}
+StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d() = default;
 
 void StepGeom_Axis2Placement2d::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                      const occ::handle<StepGeom_CartesianPoint>&  aLocation,

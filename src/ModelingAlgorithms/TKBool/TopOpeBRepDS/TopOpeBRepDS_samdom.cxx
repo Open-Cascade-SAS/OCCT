@@ -22,10 +22,10 @@
 
 static NCollection_IndexedDataMap<TopoDS_Shape,
                                   NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>* Gps1 = NULL;
+                                  TopTools_ShapeMapHasher>* Gps1 = nullptr;
 static NCollection_IndexedDataMap<TopoDS_Shape,
                                   NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>* Gps2 = NULL;
+                                  TopTools_ShapeMapHasher>* Gps2 = nullptr;
 // modified by NIZNHY-PKV Sun Dec 15 17:57:12 2002 f
 // static occ::handle<TopOpeBRepDS_HDataStructure>      Ghds;
 static occ::handle<TopOpeBRepDS_HDataStructure>* Ghds;
@@ -40,13 +40,13 @@ void FDSSDM_Close()
   if (Gps1)
   {
     delete Gps1;
-    Gps1 = NULL;
+    Gps1 = nullptr;
   }
   //
   if (Gps2)
   {
     delete Gps2;
-    Gps2 = NULL;
+    Gps2 = nullptr;
   }
 }
 
@@ -55,7 +55,7 @@ void FDSSDM_Close()
 
 Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-  if (Gps1 == NULL)
+  if (Gps1 == nullptr)
   {
     Gps1 = (NCollection_IndexedDataMap<
             TopoDS_Shape,
@@ -64,7 +64,7 @@ Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructur
                                                                      NCollection_List<TopoDS_Shape>,
                                                                      TopTools_ShapeMapHasher>();
   }
-  if (Gps2 == NULL)
+  if (Gps2 == nullptr)
   {
     Gps2 = (NCollection_IndexedDataMap<
             TopoDS_Shape,

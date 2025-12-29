@@ -68,7 +68,7 @@ public:
   Standard_EXPORT const BRepFill_Pipe& Pipe() const;
 
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the TopoDS Shape of the bottom of the prism.
@@ -77,8 +77,7 @@ public:
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
 

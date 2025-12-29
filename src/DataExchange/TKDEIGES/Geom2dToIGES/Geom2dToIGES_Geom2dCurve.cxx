@@ -32,9 +32,8 @@
 //  Geom2dToIGES_Geom2dCurve
 //=============================================================================
 Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve()
-    : Geom2dToIGES_Geom2dEntity()
-{
-}
+
+  = default;
 
 //=============================================================================
 // Geom2dToIGES_Geom2dCurve

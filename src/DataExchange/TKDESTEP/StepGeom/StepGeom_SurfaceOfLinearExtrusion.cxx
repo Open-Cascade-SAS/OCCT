@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceOfLinearExtrusion, StepGeom_SweptSurface)
 
-StepGeom_SurfaceOfLinearExtrusion::StepGeom_SurfaceOfLinearExtrusion() {}
+StepGeom_SurfaceOfLinearExtrusion::StepGeom_SurfaceOfLinearExtrusion() = default;
 
 void StepGeom_SurfaceOfLinearExtrusion::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                              const occ::handle<StepGeom_Curve>&  aSweptCurve,

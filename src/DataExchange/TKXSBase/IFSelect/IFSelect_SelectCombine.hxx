@@ -71,7 +71,7 @@ protected:
   Standard_EXPORT IFSelect_SelectCombine();
 
   //! Returns always True, because RootResult gives a Unique list
-  Standard_EXPORT virtual bool HasUniqueResult() const override;
+  Standard_EXPORT bool HasUniqueResult() const override;
 
 private:
   NCollection_Sequence<occ::handle<IFSelect_Selection>> thelist;

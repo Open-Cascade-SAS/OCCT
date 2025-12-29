@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Curve3dElementRepresentation, StepFEA_Element
 
 //=================================================================================================
 
-StepFEA_Curve3dElementRepresentation::StepFEA_Curve3dElementRepresentation() {}
+StepFEA_Curve3dElementRepresentation::StepFEA_Curve3dElementRepresentation() = default;
 
 //=================================================================================================
 

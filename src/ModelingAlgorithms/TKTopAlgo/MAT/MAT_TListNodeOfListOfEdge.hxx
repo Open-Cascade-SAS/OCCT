@@ -58,7 +58,7 @@ private:
 // Inline implementations
 //=================================================================================================
 
-inline MAT_TListNodeOfListOfEdge::MAT_TListNodeOfListOfEdge() {}
+inline MAT_TListNodeOfListOfEdge::MAT_TListNodeOfListOfEdge() = default;
 
 //=================================================================================================
 

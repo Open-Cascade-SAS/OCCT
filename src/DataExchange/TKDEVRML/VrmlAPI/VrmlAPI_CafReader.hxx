@@ -28,10 +28,10 @@ protected:
   //! @param theProgress progress indicator
   //! @param theToProbe  flag for probing file without complete reading. Not supported.
   //! @return false when theToProbe is set to true or reading has completed with error.
-  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
-                                           const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe) override;
+  Standard_EXPORT bool performMesh(std::istream&                  theStream,
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe) override;
 };
 
 #endif // _VrmlAPI_Reader_HeaderFile

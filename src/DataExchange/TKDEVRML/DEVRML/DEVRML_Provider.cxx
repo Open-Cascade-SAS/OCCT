@@ -209,7 +209,7 @@ static bool ProcessVrmlScene(Standard_IStream&                            theStr
 
 //=================================================================================================
 
-DEVRML_Provider::DEVRML_Provider() {}
+DEVRML_Provider::DEVRML_Provider() = default;
 
 //=================================================================================================
 

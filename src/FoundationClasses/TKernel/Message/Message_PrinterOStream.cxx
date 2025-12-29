@@ -97,7 +97,7 @@ void Message_PrinterOStream::Close()
   if (!myStream)
     return;
   Standard_OStream* ostr = (Standard_OStream*)myStream;
-  myStream               = 0;
+  myStream               = nullptr;
 
   ostr->flush();
   if (myIsFile)
@@ -114,7 +114,7 @@ void Message_PrinterOStream::Close()
 void Message_PrinterOStream::send(const TCollection_AsciiString& theString,
                                   const Message_Gravity          theGravity) const
 {
-  if (theGravity < myTraceLevel || myStream == NULL)
+  if (theGravity < myTraceLevel || myStream == nullptr)
   {
     return;
   }
@@ -213,7 +213,7 @@ void Message_PrinterOStream::SetConsoleTextColor(Standard_OStream*    theOStream
   (void)theTextColor;
   (void)theIsIntenseText;
 #else
-  if (theOStream == NULL)
+  if (theOStream == nullptr)
   {
     return;
   }

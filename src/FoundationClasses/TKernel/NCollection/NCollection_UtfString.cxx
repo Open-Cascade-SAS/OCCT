@@ -31,10 +31,10 @@ NCollection_UtfStringTool::~NCollection_UtfStringTool()
 
 wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
 {
-  if (myWideBuffer != NULL)
+  if (myWideBuffer != nullptr)
   {
     delete[] myWideBuffer;
-    myWideBuffer = NULL;
+    myWideBuffer = nullptr;
   }
 
   #if defined(_WIN32)
@@ -54,7 +54,7 @@ wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
   int aMbLen = mblen(theString, MB_CUR_MAX);
   if (aMbLen <= 0)
   {
-    return NULL;
+    return nullptr;
   }
 
   myWideBuffer = new wchar_t[aMbLen + 1];

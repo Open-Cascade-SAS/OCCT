@@ -41,7 +41,7 @@ public:
   {
   }
 
-  ~Argument() {}
+  ~Argument() = default;
 
 public:
   Argument*           myNext;  //!< Next argument in the list for this record
@@ -61,7 +61,7 @@ public:
   {
   }
 
-  ~Record() {}
+  ~Record() = default;
 
 public:
   Record*   myNext;  //!< Next record in the list
@@ -124,9 +124,7 @@ private:
 //=================================================================================================
 
 StepFile_ReadData::StepFile_ReadData()
-    : myTextAlloc(),
-      myOtherAlloc(),
-      myModePrint(0),
+    : myModePrint(0),
       myNbRec(0),
       myNbHead(0),
       myNbPar(0),

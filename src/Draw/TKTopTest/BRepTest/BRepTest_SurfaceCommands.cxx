@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 #include <BRepTest.hxx>
 #include <GeometryTest.hxx>
 
@@ -51,7 +51,7 @@ static void suppressarg(int& na, const char** a, const int d)
   for (int i = d; i < na; i++)
   {
     a[i]     = a[i + 1];
-    a[i + 1] = NULL;
+    a[i + 1] = nullptr;
   }
   na--;
 }

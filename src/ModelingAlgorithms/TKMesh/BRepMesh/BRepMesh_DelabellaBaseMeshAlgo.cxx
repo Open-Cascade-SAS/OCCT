@@ -19,8 +19,8 @@
 #include <BRepMesh_Delaun.hxx>
 #include <Message.hxx>
 
-#include <string.h>
-#include <stdarg.h>
+#include <cstring>
+#include <cstdarg>
 
 #include "delabella.pxx"
 
@@ -59,11 +59,11 @@ static int logDelabella2Occ(void* theStream, const char* theFormat, ...)
 
 //=================================================================================================
 
-BRepMesh_DelabellaBaseMeshAlgo::BRepMesh_DelabellaBaseMeshAlgo() {}
+BRepMesh_DelabellaBaseMeshAlgo::BRepMesh_DelabellaBaseMeshAlgo() = default;
 
 //=================================================================================================
 
-BRepMesh_DelabellaBaseMeshAlgo::~BRepMesh_DelabellaBaseMeshAlgo() {}
+BRepMesh_DelabellaBaseMeshAlgo::~BRepMesh_DelabellaBaseMeshAlgo() = default;
 
 //=================================================================================================
 
@@ -118,13 +118,13 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
   }
 
   IDelaBella* aTriangulator = IDelaBella::Create();
-  if (aTriangulator == NULL) // should never happen
+  if (aTriangulator == nullptr) // should never happen
   {
     throw Standard_ProgramError("BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation: unable "
                                 "creating a triangulation algorithm");
   }
 
-  aTriangulator->SetErrLog(logDelabella2Occ, NULL);
+  aTriangulator->SetErrLog(logDelabella2Occ, nullptr);
   try
   {
     const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.size() / 2),
@@ -135,7 +135,7 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
     if (aVerticesNb > 0)
     {
       const DelaBella_Triangle* aTrianglePtr = aTriangulator->GetFirstDelaunayTriangle();
-      while (aTrianglePtr != NULL)
+      while (aTrianglePtr != nullptr)
       {
         int aNodes[3] = {aTrianglePtr->v[0]->i + 1,
                          aTrianglePtr->v[2]->i + 1,
@@ -160,24 +160,24 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
     }
 
     aTriangulator->Destroy();
-    aTriangulator = NULL;
+    aTriangulator = nullptr;
   }
   catch (Standard_Failure const& theException)
   {
-    if (aTriangulator != NULL)
+    if (aTriangulator != nullptr)
     {
       aTriangulator->Destroy();
-      aTriangulator = NULL;
+      aTriangulator = nullptr;
     }
 
     throw Standard_Failure(theException);
   }
   catch (...)
   {
-    if (aTriangulator != NULL)
+    if (aTriangulator != nullptr)
     {
       aTriangulator->Destroy();
-      aTriangulator = NULL;
+      aTriangulator = nullptr;
     }
 
     throw Standard_Failure("BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation: exception in "

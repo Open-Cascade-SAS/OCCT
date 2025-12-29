@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWDerivedUnitElement::RWStepBasic_RWDerivedUnitElement() {}
+RWStepBasic_RWDerivedUnitElement::RWStepBasic_RWDerivedUnitElement() = default;
 
 void RWStepBasic_RWDerivedUnitElement::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

@@ -41,7 +41,7 @@ IMPLEMENT_DOMSTRING(GeomCylinderString, "cylinder")
 
 XmlMDataXtd_GeometryDriver::XmlMDataXtd_GeometryDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

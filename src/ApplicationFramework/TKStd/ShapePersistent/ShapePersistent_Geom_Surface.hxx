@@ -75,7 +75,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     friend class ShapePersistent_Geom_Surface;
 
   public:
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
     inline const char* PName() const { return "PGeom_SurfaceOfLinearExtrusion"; }
   };
@@ -99,7 +99,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_SurfaceOfRevolution"; }
 
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
   private:
     gp_Pnt myLocation;
@@ -136,7 +136,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_BezierSurface"; }
 
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
   private:
     bool                                 myURational;
@@ -194,7 +194,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_BSplineSurface"; }
 
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
   private:
     bool                                    myURational;
@@ -243,7 +243,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_RectangularTrimmedSurface"; }
 
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
   private:
     occ::handle<Surface> myBasisSurface;
@@ -280,7 +280,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_OffsetSurface"; }
 
-    virtual occ::handle<Geom_Surface> Import() const;
+    occ::handle<Geom_Surface> Import() const override;
 
   private:
     occ::handle<Surface> myBasisSurface;

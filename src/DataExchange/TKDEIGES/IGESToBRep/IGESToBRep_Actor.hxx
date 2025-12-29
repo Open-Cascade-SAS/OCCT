@@ -50,9 +50,9 @@ public:
   //! Return "thecontinuity"
   Standard_EXPORT int GetContinuity() const;
 
-  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start) override;
+  Standard_EXPORT bool Recognize(const occ::handle<Standard_Transient>& start) override;
 
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Standard_Transient>&        start,
     const occ::handle<Transfer_TransientProcess>& TP,
     const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;

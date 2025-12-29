@@ -32,7 +32,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec() {}
+IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec() = default;
 
 void IGESAppli_ToolFlowLineSpec::ReadOwnParams(const occ::handle<IGESAppli_FlowLineSpec>& ent,
                                                const occ::handle<IGESData_IGESReaderData>& /* IR */,

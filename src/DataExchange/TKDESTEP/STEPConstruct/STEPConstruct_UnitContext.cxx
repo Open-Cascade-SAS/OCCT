@@ -74,7 +74,7 @@ void STEPConstruct_UnitContext::Init(const double                           Tol3
   // Units : LengthUnit and PlaneAngleUnit (no SolidAngleUnit applicable)
 
   occ::handle<StepBasic_NamedUnit> lengthUnit;
-  const char*                      uName   = 0;
+  const char*                      uName   = nullptr;
   bool                             hasPref = true;
   StepBasic_SiPrefix               siPref  = StepBasic_spMilli;
   double                           aScale  = 1.;

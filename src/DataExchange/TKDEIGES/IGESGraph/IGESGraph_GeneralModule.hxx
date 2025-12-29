@@ -68,9 +68,9 @@ public:
 
   //! Returns a category number which characterizes an entity
   //! Drawing for all
-  Standard_EXPORT virtual int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+  Standard_EXPORT int CategoryNumber(const int                              CN,
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_GeneralModule, IGESData_GeneralModule)
 };

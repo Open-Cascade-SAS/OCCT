@@ -243,9 +243,9 @@ static bool CompareInGeneration(const occ::handle<TNaming_NamedShape>& NS, const
   for (TNaming_Iterator it(NS); it.More(); it.Next())
   {
     if (!it.NewShape().IsSame(S))
-      return 0;
+      return false;
   }
-  return 1;
+  return true;
 }
 
 //=======================================================================
@@ -492,7 +492,7 @@ static bool TestSolution(const TNaming_Scope&                   MDF,
         aMS.Remove(exp.Current());
       }
       else
-        return 0;
+        return false;
     }
     return aMS.IsEmpty();
   }
@@ -517,7 +517,7 @@ static bool TestSolution(const TNaming_Scope&                   MDF,
     {
       MS.Remove(Res);
       if (MS.IsEmpty())
-        return 1;
+        return true;
     }
     if (Res.ShapeType() == TopAbs_SOLID || Res.ShapeType() == TopAbs_COMPSOLID
         || Res.ShapeType() == TopAbs_COMPOUND)
@@ -559,7 +559,7 @@ static bool TestSolution(const TNaming_Scope&                   MDF,
           MS.Remove(it.Value());
         }
         else
-          return 0;
+          return false;
       }
     }
     return MS.IsEmpty();
@@ -768,7 +768,7 @@ static bool Filter(const TDF_Label&                 F,
 #ifdef OCCT_DEBUG
     std::cout << "FindNeighbourg: impossible" << std::endl;
 #endif
-    return 0;
+    return false;
   }
   else
   {
@@ -779,7 +779,7 @@ static bool Filter(const TDF_Label&                 F,
     // std::cout <<"Filter: Lev = " << aLev << std::endl;
   }
   if (aLev > 3)
-    return 0;
+    return false;
 #ifdef ALLOW_CHILD_NBS
   occ::handle<TNaming_Naming> aFNaming;
   TopoDS_Shape                aFatherCandSh;
@@ -861,13 +861,13 @@ static bool Filter(const TDF_Label&                 F,
                   TNaming_Tool::NamedShape(Context, NS->Label());
                 occ::handle<TNaming_NamedShape> Stop = NextModif(Until);
                 if (Compare(NS, MDF, Stop, S))
-                  return 1;
+                  return true;
                 break;
               }
             }
           }
         }
-        return 0;
+        return false;
       }
   }
 #endif
@@ -901,7 +901,7 @@ static bool Filter(const TDF_Label&                 F,
   {
 #ifdef ALLOW_CHILD_NBS
     const TopoDS_Shape&             aS  = itN.Key();
-    occ::handle<TNaming_NamedShape> aNS = BuildName(NF->Label(), MDF, aS, Context, Stop, 1);
+    occ::handle<TNaming_NamedShape> aNS = BuildName(NF->Label(), MDF, aS, Context, Stop, true);
   #ifdef OCCT_DEBUG_NBS
     const TopoDS_Shape& aS2 = aNS->Get();
     if (!aS.IsNull())
@@ -964,11 +964,11 @@ static bool Filter(const TDF_Label&                 F,
   // Check du filtre.
   //-----------------
   if (Compare(NS, MDF, Stop, S))
-    return 1;
+    return true;
 #ifdef OCCT_DEBUG
   std::cout << "TNaming_Naming::Name Filter insufficient" << std::endl;
 #endif
-  return 0;
+  return false;
 }
 
 //=======================================================================
@@ -1440,7 +1440,7 @@ static occ::handle<TNaming_NamedShape> BuildNameWire(const TDF_Label&    F,
             if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current())))
               continue;
             theName.Append(
-              TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, 1, 0));
+              TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, true, false));
           }
         }
       }
@@ -1462,7 +1462,8 @@ static occ::handle<TNaming_NamedShape> BuildNameWire(const TDF_Label&    F,
             continue;
           if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current())))
             continue;
-          theName.Append(TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, 1, 0));
+          theName.Append(
+            TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, true, false));
         }
       }
     } //
@@ -1925,7 +1926,7 @@ occ::handle<TNaming_NamedShape> TNaming_Naming::Name(const TDF_Label&    F,
         theName.Orientation(S.Orientation());
 
         if (!TNaming_Selector::IsIdentified(F, S, aNamedShape, Geom))
-          aNamedShape = TNaming_Naming::Name(Naming->Label(), S, Context, Geom, 0);
+          aNamedShape = TNaming_Naming::Name(Naming->Label(), S, Context, Geom, false);
         theName.Append(aNamedShape);
 #ifdef MDTV_OR
         std::cout << " Sel Label ==> ";
@@ -1967,13 +1968,13 @@ occ::handle<TNaming_NamedShape> TNaming_Naming::Name(const TDF_Label&    F,
           for (int i = Arr->Lower(); i <= Arr->Upper(); i++)
           {
             aNamedShape =
-              TNaming_Naming::Name(Naming->Label(), Arr->Value(i), Context, Geom, 1, aBNproblem);
+              TNaming_Naming::Name(Naming->Label(), Arr->Value(i), Context, Geom, true, aBNproblem);
             theName.Append(aNamedShape);
           }
         }
         else
         {
-          aNamedShape = TNaming_Naming::Name(Naming->Label(), UC, Context, Geom, 1, aBNproblem);
+          aNamedShape = TNaming_Naming::Name(Naming->Label(), UC, Context, Geom, true, aBNproblem);
           theName.Append(aNamedShape);
 #ifdef MDTV_OR
           std::cout << " Cont Label ==> ";
@@ -2124,7 +2125,7 @@ occ::handle<TNaming_NamedShape> TNaming_Naming::Name(const TDF_Label&    F,
 
 //=================================================================================================
 
-TNaming_Naming::TNaming_Naming() {}
+TNaming_Naming::TNaming_Naming() = default;
 
 //=================================================================================================
 

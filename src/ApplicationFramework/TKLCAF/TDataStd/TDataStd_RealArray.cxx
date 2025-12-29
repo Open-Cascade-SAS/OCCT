@@ -127,7 +127,7 @@ double TDataStd_RealArray::Value(const int index) const
 
 //=================================================================================================
 
-int TDataStd_RealArray::Lower(void) const
+int TDataStd_RealArray::Lower() const
 {
   if (myValue.IsNull())
     return 0;
@@ -136,7 +136,7 @@ int TDataStd_RealArray::Lower(void) const
 
 //=================================================================================================
 
-int TDataStd_RealArray::Upper(void) const
+int TDataStd_RealArray::Upper() const
 {
   if (myValue.IsNull())
     return 0;
@@ -145,7 +145,7 @@ int TDataStd_RealArray::Upper(void) const
 
 //=================================================================================================
 
-int TDataStd_RealArray::Length(void) const
+int TDataStd_RealArray::Length() const
 {
   if (myValue.IsNull())
     return 0;

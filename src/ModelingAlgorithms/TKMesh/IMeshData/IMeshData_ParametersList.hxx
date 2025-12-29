@@ -24,7 +24,7 @@ class IMeshData_ParametersList : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_ParametersList() {}
+  ~IMeshData_ParametersList() override = default;
 
   //! Returns parameter with the given index.
   Standard_EXPORT virtual double& GetParameter(const int theIndex) = 0;

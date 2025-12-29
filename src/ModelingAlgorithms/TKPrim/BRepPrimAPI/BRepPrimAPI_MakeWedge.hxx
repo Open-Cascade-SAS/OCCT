@@ -73,7 +73,7 @@ public:
   Standard_EXPORT BRepPrim_Wedge& Wedge();
 
   //! Stores the solid in myShape.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the constructed box in the form of a shell.

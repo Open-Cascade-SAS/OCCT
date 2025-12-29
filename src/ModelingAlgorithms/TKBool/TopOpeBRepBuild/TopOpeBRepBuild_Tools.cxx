@@ -51,7 +51,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // define parameter division number as 10*e^(-PI) = 0.43213918
 const double PAR_T = 0.43213918;
 

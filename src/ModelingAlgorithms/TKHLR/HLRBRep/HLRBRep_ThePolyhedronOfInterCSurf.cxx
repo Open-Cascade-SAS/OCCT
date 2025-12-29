@@ -43,10 +43,10 @@ HLRBRep_ThePolyhedronOfInterCSurf::HLRBRep_ThePolyhedronOfInterCSurf(HLRBRep_Sur
     : nbdeltaU((nbdU < 3) ? 3 : nbdU),
       nbdeltaV((nbdV < 3) ? 3 : nbdV),
       TheDeflection(Epsilon(100.)),
-      C_MyPnts(NULL),
-      C_MyU(NULL),
-      C_MyV(NULL),
-      C_MyIsOnBounds(NULL)
+      C_MyPnts(nullptr),
+      C_MyU(nullptr),
+      C_MyV(nullptr),
+      C_MyIsOnBounds(nullptr)
 {
   PolyUtils::AllocateArrays(nbdeltaU, nbdeltaV, C_MyPnts, C_MyU, C_MyV, C_MyIsOnBounds);
   Init(Surface, u1, v1, u2, v2);
@@ -61,10 +61,10 @@ HLRBRep_ThePolyhedronOfInterCSurf::HLRBRep_ThePolyhedronOfInterCSurf(
     : nbdeltaU(Upars.Length() - 1),
       nbdeltaV(Vpars.Length() - 1),
       TheDeflection(Epsilon(100.)),
-      C_MyPnts(NULL),
-      C_MyU(NULL),
-      C_MyV(NULL),
-      C_MyIsOnBounds(NULL)
+      C_MyPnts(nullptr),
+      C_MyU(nullptr),
+      C_MyV(nullptr),
+      C_MyIsOnBounds(nullptr)
 {
   PolyUtils::AllocateArrays(nbdeltaU, nbdeltaV, C_MyPnts, C_MyU, C_MyV, C_MyIsOnBounds);
   Init(Surface, Upars, Vpars);

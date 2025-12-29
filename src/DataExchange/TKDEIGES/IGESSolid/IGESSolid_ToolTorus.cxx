@@ -34,7 +34,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolTorus::IGESSolid_ToolTorus() {}
+IGESSolid_ToolTorus::IGESSolid_ToolTorus() = default;
 
 void IGESSolid_ToolTorus::ReadOwnParams(const occ::handle<IGESSolid_Torus>& ent,
                                         const occ::handle<IGESData_IGESReaderData>& /* IR */,

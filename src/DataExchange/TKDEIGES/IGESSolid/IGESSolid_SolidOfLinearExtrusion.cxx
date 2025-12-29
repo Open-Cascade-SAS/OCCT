@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
 
-IGESSolid_SolidOfLinearExtrusion::IGESSolid_SolidOfLinearExtrusion() {}
+IGESSolid_SolidOfLinearExtrusion::IGESSolid_SolidOfLinearExtrusion() = default;
 
 void IGESSolid_SolidOfLinearExtrusion::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
                                             const double                            Length,

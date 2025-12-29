@@ -239,7 +239,7 @@ bool ChFi3d_FilBuilder::IsConstant(const int IC)
     occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Value(IC));
     return fsp->IsConstant();
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -329,7 +329,7 @@ bool ChFi3d_FilBuilder::IsConstant(const int IC, const TopoDS_Edge& E)
     occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Value(IC));
     return fsp->IsConstant(fsp->Index(E));
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -739,7 +739,7 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   }
   if (intl)
   {
-    bool                      ok  = 0;
+    bool                      ok  = false;
     const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
     if (cp1.IsOnArc())
     {
@@ -1725,7 +1725,7 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
       throw Standard_Failure("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS2->Face().Orientation();
-    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, 1);
+    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, true);
     if (!done)
       throw Standard_Failure("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance() <= 100 * tolapp3d);
@@ -1782,7 +1782,7 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
       throw Standard_Failure("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS2->Face().Orientation();
-    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, 1);
+    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, true);
     if (!done)
       throw Standard_Failure("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance() <= 100 * tolapp3d);
@@ -1882,7 +1882,7 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
       throw Standard_Failure("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->Face().Orientation();
-    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, 0);
+    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, false);
     if (!done)
       throw Standard_Failure("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance() <= 100 * tolapp3d);
@@ -1940,7 +1940,7 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
       throw Standard_Failure("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->Face().Orientation();
-    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, 0);
+    done                  = CompleteData(Data, func, lin, HS1, HS2, Or, false);
     if (!done)
       throw Standard_Failure("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance() <= 100 * tolapp3d);

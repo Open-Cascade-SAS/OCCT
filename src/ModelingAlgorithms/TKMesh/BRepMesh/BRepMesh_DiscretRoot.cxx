@@ -26,7 +26,7 @@ BRepMesh_DiscretRoot::BRepMesh_DiscretRoot()
 
 //=================================================================================================
 
-BRepMesh_DiscretRoot::~BRepMesh_DiscretRoot() {}
+BRepMesh_DiscretRoot::~BRepMesh_DiscretRoot() = default;
 
 //=================================================================================================
 

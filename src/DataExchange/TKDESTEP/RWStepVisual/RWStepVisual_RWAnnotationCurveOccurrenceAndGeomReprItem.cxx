@@ -23,9 +23,7 @@
 //=================================================================================================
 
 RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::
-  RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem()
-{
-}
+  RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem() = default;
 
 //=================================================================================================
 

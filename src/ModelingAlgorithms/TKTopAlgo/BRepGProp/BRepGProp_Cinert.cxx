@@ -19,7 +19,7 @@
 #include <math.hxx>
 #include <NCollection_Array1.hxx>
 
-BRepGProp_Cinert::BRepGProp_Cinert() {}
+BRepGProp_Cinert::BRepGProp_Cinert() = default;
 
 void BRepGProp_Cinert::SetLocation(const gp_Pnt& CLocation)
 {

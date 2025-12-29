@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESSolid_ToolCylindricalSurface::IGESSolid_ToolCylindricalSurface() {}
+IGESSolid_ToolCylindricalSurface::IGESSolid_ToolCylindricalSurface() = default;
 
 void IGESSolid_ToolCylindricalSurface::ReadOwnParams(
   const occ::handle<IGESSolid_CylindricalSurface>& ent,

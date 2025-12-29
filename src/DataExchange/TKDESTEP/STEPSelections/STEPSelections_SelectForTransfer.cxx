@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectForTransfer, XSControl_SelectFor
 
 //=================================================================================================
 
-STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer() {}
+STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer() = default;
 
 //=================================================================================================
 

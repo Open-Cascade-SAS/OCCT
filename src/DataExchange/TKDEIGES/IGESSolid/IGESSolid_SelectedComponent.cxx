@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SelectedComponent, IGESData_IGESEntity)
 
-IGESSolid_SelectedComponent::IGESSolid_SelectedComponent() {}
+IGESSolid_SelectedComponent::IGESSolid_SelectedComponent() = default;
 
 void IGESSolid_SelectedComponent::Init(const occ::handle<IGESSolid_BooleanTree>& anEntity,
                                        const gp_XYZ&                             SelectPnt)

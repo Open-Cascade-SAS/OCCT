@@ -57,7 +57,7 @@ public:
   void SetPriority(int thePriority) { mypriority = thePriority; }
 
   //! Returns true if there is a selectable object to serve as an owner.
-  bool HasSelectable() const { return mySelectable != NULL; }
+  bool HasSelectable() const { return mySelectable != nullptr; }
 
   //! Returns a selectable object detected in the working context.
   virtual occ::handle<SelectMgr_SelectableObject> Selectable() const { return mySelectable; }
@@ -94,7 +94,7 @@ public:
   virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                            const int                                      theMode = 0) const
   {
-    return mySelectable != NULL && thePrsMgr->IsHighlighted(mySelectable, theMode);
+    return mySelectable != nullptr && thePrsMgr->IsHighlighted(mySelectable, theMode);
   }
 
   //! Highlights selectable object's presentation with display mode in presentation manager with
@@ -114,7 +114,7 @@ public:
                          const int                                      theMode = 0)
   {
     (void)theMode;
-    if (mySelectable != NULL)
+    if (mySelectable != nullptr)
     {
       thePrsMgr->Unhighlight(mySelectable);
     }
@@ -132,13 +132,13 @@ public:
   //! Returns TRUE if selectable has transformation.
   virtual bool HasLocation() const
   {
-    return mySelectable != NULL && mySelectable->HasTransformation();
+    return mySelectable != nullptr && mySelectable->HasTransformation();
   }
 
   //! Returns transformation of selectable.
   virtual TopLoc_Location Location() const
   {
-    return mySelectable != NULL && mySelectable->HasTransformation()
+    return mySelectable != nullptr && mySelectable->HasTransformation()
              ? TopLoc_Location(mySelectable->Transformation())
              : TopLoc_Location();
   }
@@ -171,7 +171,7 @@ public:
   //! HilightSelected of SelectableObject
   virtual bool IsAutoHilight() const
   {
-    return mySelectable == NULL || mySelectable->IsAutoHilight();
+    return mySelectable == nullptr || mySelectable->IsAutoHilight();
   }
 
   //! if this method returns TRUE the owner will always call method Hilight for SelectableObject
@@ -187,7 +187,7 @@ public:
                                    const occ::handle<PrsMgr_PresentationManager>& theManager,
                                    const int                                      theDispMode)
   {
-    if (mySelectable != NULL)
+    if (mySelectable != nullptr)
     {
       theManager->UpdateHighlightTrsf(theViewer, mySelectable, theDispMode);
     }

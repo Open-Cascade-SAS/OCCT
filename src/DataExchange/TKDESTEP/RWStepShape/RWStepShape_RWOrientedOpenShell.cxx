@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_OrientedOpenShell.hxx>
 
-RWStepShape_RWOrientedOpenShell::RWStepShape_RWOrientedOpenShell() {}
+RWStepShape_RWOrientedOpenShell::RWStepShape_RWOrientedOpenShell() = default;
 
 void RWStepShape_RWOrientedOpenShell::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

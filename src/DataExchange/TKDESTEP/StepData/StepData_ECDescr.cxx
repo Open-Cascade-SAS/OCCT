@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ECDescr, StepData_EDescr)
 
-StepData_ECDescr::StepData_ECDescr() {}
+StepData_ECDescr::StepData_ECDescr() = default;
 
 void StepData_ECDescr::Add(const occ::handle<StepData_ESDescr>& member)
 {

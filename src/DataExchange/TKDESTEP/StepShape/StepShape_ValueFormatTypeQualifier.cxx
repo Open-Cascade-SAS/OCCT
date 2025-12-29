@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ValueFormatTypeQualifier, Standard_Transien
 
 //=================================================================================================
 
-StepShape_ValueFormatTypeQualifier::StepShape_ValueFormatTypeQualifier() {}
+StepShape_ValueFormatTypeQualifier::StepShape_ValueFormatTypeQualifier() = default;
 
 //=================================================================================================
 

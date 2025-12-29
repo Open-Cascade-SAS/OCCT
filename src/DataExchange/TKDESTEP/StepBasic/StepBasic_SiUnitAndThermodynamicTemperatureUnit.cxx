@@ -20,9 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndThermodynamicTemperatureUnit, Step
 
 //=================================================================================================
 
-StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynamicTemperatureUnit()
-{
-}
+StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynamicTemperatureUnit() =
+  default;
 
 //=================================================================================================
 

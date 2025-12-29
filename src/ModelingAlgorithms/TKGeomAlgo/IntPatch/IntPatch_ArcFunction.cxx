@@ -18,7 +18,7 @@
 #include <IntPatch_HInterTool.hxx>
 #include <IntSurf_Quadric.hxx>
 
-IntPatch_ArcFunction::IntPatch_ArcFunction() {}
+IntPatch_ArcFunction::IntPatch_ArcFunction() = default;
 
 bool IntPatch_ArcFunction::Value(const double X, double& F)
 {

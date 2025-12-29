@@ -49,7 +49,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_PerpendicularRelation, PrsDim_Relation)
 PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&            aFShape,
                                                            const TopoDS_Shape&            aSShape,
                                                            const occ::handle<Geom_Plane>& aPlane)
-    : PrsDim_Relation()
+
 {
   myFShape = aFShape;
   mySShape = aSShape;
@@ -60,7 +60,7 @@ PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&  
 
 PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape& aFShape,
                                                            const TopoDS_Shape& aSShape)
-    : PrsDim_Relation()
+
 {
   myFShape = aFShape;
   mySShape = aSShape;

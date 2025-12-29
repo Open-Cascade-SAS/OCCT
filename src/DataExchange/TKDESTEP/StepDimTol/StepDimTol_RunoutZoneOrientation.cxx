@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneOrientation, Standard_Transient)
 
 //=================================================================================================
 
-StepDimTol_RunoutZoneOrientation::StepDimTol_RunoutZoneOrientation() {}
+StepDimTol_RunoutZoneOrientation::StepDimTol_RunoutZoneOrientation() = default;
 
 //=================================================================================================
 

@@ -25,14 +25,13 @@ class LDOM_Comment : public LDOM_CharacterData
 public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_Comment() {}
+  LDOM_Comment() = default;
 
   // Empty constructor
 
   LDOM_Comment(const LDOM_Comment& theOther)
-      : LDOM_CharacterData(theOther)
-  {
-  }
+
+    = default;
 
   // Copy constructor
 

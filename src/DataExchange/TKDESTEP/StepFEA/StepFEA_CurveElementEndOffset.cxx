@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset() {}
+StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset() = default;
 
 //=================================================================================================
 

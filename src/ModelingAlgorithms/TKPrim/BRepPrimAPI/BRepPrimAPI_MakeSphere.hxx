@@ -131,7 +131,7 @@ public:
                                          const double  angle3);
 
   //! Returns the algorithm.
-  Standard_EXPORT void* OneAxis();
+  Standard_EXPORT void* OneAxis() override;
 
   //! Returns the algorithm.
   Standard_EXPORT BRepPrim_Sphere& Sphere();

@@ -32,10 +32,10 @@ class BSplSLib_EvaluatorFunction
 {
 public:
   //! Empty constructor
-  BSplSLib_EvaluatorFunction() {}
+  BSplSLib_EvaluatorFunction() = default;
 
   //! Destructor should be declared as virtual
-  virtual ~BSplSLib_EvaluatorFunction() {}
+  virtual ~BSplSLib_EvaluatorFunction() = default;
 
   //! Function evaluation method to be defined by descendant
   virtual void Evaluate(const int    theDerivativeRequest,
@@ -56,7 +56,7 @@ public:
 
 private:
   //! Copy constructor is declared private to forbid copying
-  BSplSLib_EvaluatorFunction(const BSplSLib_EvaluatorFunction&) {}
+  BSplSLib_EvaluatorFunction(const BSplSLib_EvaluatorFunction&) = default;
 
   //! Assignment operator is declared private to forbid copying
   void operator=(const BSplSLib_EvaluatorFunction&) {}

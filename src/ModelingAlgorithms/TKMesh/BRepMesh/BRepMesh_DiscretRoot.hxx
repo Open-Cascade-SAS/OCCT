@@ -25,7 +25,7 @@ class BRepMesh_DiscretRoot : public Standard_Transient
 {
 public:
   //! Destructor
-  Standard_EXPORT virtual ~BRepMesh_DiscretRoot();
+  Standard_EXPORT ~BRepMesh_DiscretRoot() override;
 
   //! Set the shape to triangulate.
   void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }

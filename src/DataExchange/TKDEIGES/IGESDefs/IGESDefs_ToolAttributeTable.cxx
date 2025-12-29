@@ -39,7 +39,7 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
-IGESDefs_ToolAttributeTable::IGESDefs_ToolAttributeTable() {}
+IGESDefs_ToolAttributeTable::IGESDefs_ToolAttributeTable() = default;
 
 void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_AttributeTable>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

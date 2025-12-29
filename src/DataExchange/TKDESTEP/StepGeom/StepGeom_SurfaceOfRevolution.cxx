@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceOfRevolution, StepGeom_SweptSurface)
 
-StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution() {}
+StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution() = default;
 
 void StepGeom_SurfaceOfRevolution::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                         const occ::handle<StepGeom_Curve>&           aSweptCurve,

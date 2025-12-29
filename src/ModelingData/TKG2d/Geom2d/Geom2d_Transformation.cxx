@@ -37,7 +37,7 @@ occ::handle<Geom2d_Transformation> Geom2d_Transformation::Copy() const
   return T;
 }
 
-Geom2d_Transformation::Geom2d_Transformation() {}
+Geom2d_Transformation::Geom2d_Transformation() = default;
 
 Geom2d_Transformation::Geom2d_Transformation(const gp_Trsf2d& T)
     : gpTrsf2d(T)

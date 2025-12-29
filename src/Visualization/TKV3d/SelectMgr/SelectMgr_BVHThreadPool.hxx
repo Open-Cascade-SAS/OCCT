@@ -32,7 +32,7 @@ public:
   Standard_EXPORT SelectMgr_BVHThreadPool(int theNbThreads);
 
   //! Destructor
-  Standard_EXPORT virtual ~SelectMgr_BVHThreadPool();
+  Standard_EXPORT ~SelectMgr_BVHThreadPool() override;
 
 public:
   //! Thread with back reference to thread pool and thread mutex in it.
@@ -42,9 +42,8 @@ public:
 
   public:
     BVHThread()
-        : OSD_Thread(),
-          myPool(nullptr),
-          myMutex(),
+        : myPool(nullptr),
+
           myToCatchFpe(false)
     {
     }
@@ -52,7 +51,7 @@ public:
     BVHThread(const BVHThread& theOther)
         : OSD_Thread(theOther),
           myPool(theOther.myPool),
-          myMutex(),
+
           myToCatchFpe(theOther.myToCatchFpe)
     {
     }

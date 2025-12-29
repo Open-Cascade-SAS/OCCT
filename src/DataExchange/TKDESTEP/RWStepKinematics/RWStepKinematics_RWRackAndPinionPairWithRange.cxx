@@ -28,7 +28,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRackAndPinionPairWithRange::RWStepKinematics_RWRackAndPinionPairWithRange() {}
+RWStepKinematics_RWRackAndPinionPairWithRange::RWStepKinematics_RWRackAndPinionPairWithRange() =
+  default;
 
 //=================================================================================================
 

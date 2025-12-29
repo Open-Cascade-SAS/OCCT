@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TCollection_HExtendedString, Standard_Transient)
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString() {}
+TCollection_HExtendedString::TCollection_HExtendedString() = default;
 
 //=================================================================================================
 

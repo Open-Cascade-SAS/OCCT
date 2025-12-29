@@ -22,7 +22,7 @@
 // #include <StepBasic_SizeMember.hxx>
 //=================================================================================================
 
-RWStepVisual_RWCurveStyle::RWStepVisual_RWCurveStyle() {}
+RWStepVisual_RWCurveStyle::RWStepVisual_RWCurveStyle() = default;
 
 //=================================================================================================
 

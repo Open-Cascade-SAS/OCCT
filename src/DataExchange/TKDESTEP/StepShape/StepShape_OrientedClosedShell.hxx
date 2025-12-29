@@ -49,15 +49,15 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetCfsFaces(
+  Standard_EXPORT void SetCfsFaces(
     const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces) override;
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces()
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces()
     const override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const override;
+  Standard_EXPORT occ::handle<StepShape_Face> CfsFacesValue(const int num) const override;
 
-  Standard_EXPORT virtual int NbCfsFaces() const override;
+  Standard_EXPORT int NbCfsFaces() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedClosedShell, StepShape_ClosedShell)
 

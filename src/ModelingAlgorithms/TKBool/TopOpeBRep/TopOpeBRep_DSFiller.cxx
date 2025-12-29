@@ -136,7 +136,7 @@ extern bool TopOpeBRep_GetcontextNONOG();
 //=================================================================================================
 
 TopOpeBRep_DSFiller::TopOpeBRep_DSFiller()
-    : myPShapeClassifier(NULL)
+    : myPShapeClassifier(nullptr)
 {
 }
 
@@ -419,7 +419,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
   FBOX_Prepare();
   FC2D_Prepare(aS1, aS2);
 
-  if (myPShapeClassifier == NULL)
+  if (myPShapeClassifier == nullptr)
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
   myFacesFiller.SetPShapeClassifier(myPShapeClassifier);
 
@@ -556,7 +556,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
 
     if (unfill)
     {
-      if (myPShapeClassifier == NULL)
+      if (myPShapeClassifier == nullptr)
         myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
       unfill = BREP_UnfillSameDomain(lFF1, lFF2, HDS, *myPShapeClassifier);
     }
@@ -646,7 +646,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape&                
 
   if (islFFsamdom && !isEE)
   {
-    if (myPShapeClassifier == NULL)
+    if (myPShapeClassifier == nullptr)
       myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
     unfill = BREP_UnfillSameDomain(lFF1, lFF2, HDS, *myPShapeClassifier);
   }
@@ -806,7 +806,7 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(
       unfill      = unfill && FUN_ds_sdm(BDS, S, Ssd) && FUN_ds_sdm(BDS, Ssd, S);
       if (unfill)
       {
-        if (myPShapeClassifier == NULL)
+        if (myPShapeClassifier == nullptr)
           myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
         unfill = BREP_UnfillSameDomain(S, Ssd, HDS, *myPShapeClassifier);
       }
@@ -848,7 +848,7 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
                                                const TopoDS_Shape&                             aS2,
                                                const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-  if (myPShapeClassifier == NULL)
+  if (myPShapeClassifier == nullptr)
   {
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
   }
@@ -883,7 +883,7 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
     bool unfill = (!isEE && isFFsamdom);
     if (unfill)
     {
-      if (myPShapeClassifier == NULL)
+      if (myPShapeClassifier == nullptr)
         myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
       // NYI : mettre en champs un ShapeClassifier commun a tous
       // NYI : les fillers

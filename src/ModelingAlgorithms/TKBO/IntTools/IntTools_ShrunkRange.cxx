@@ -35,7 +35,7 @@ IntTools_ShrunkRange::IntTools_ShrunkRange()
 
 //=================================================================================================
 
-IntTools_ShrunkRange::~IntTools_ShrunkRange() {}
+IntTools_ShrunkRange::~IntTools_ShrunkRange() = default;
 
 //=================================================================================================
 

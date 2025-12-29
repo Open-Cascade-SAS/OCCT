@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Interference, Standard_Transient)
 
 //=================================================================================================
 
-TopOpeBRepDS_Interference::TopOpeBRepDS_Interference() {}
+TopOpeBRepDS_Interference::TopOpeBRepDS_Interference() = default;
 
 //=================================================================================================
 

@@ -34,7 +34,7 @@ public:
 public:
   //! Empty constructor.
   NCollection_AliasedArray(int theStride)
-      : myData(NULL),
+      : myData(nullptr),
         myStride(theStride),
         mySize(0),
         myDeletable(false)
@@ -47,7 +47,7 @@ public:
 
   //! Constructor
   NCollection_AliasedArray(int theStride, int theLength)
-      : myData(NULL),
+      : myData(nullptr),
         myStride(theStride),
         mySize(theLength),
         myDeletable(true)
@@ -57,7 +57,7 @@ public:
       throw Standard_RangeError("NCollection_AliasedArray, stride and length should be positive");
     }
     myData = (uint8_t*)Standard::AllocateAligned(SizeBytes(), MyAlignSize);
-    if (myData == NULL)
+    if (myData == nullptr)
     {
       throw Standard_OutOfMemory("NCollection_AliasedArray, allocation failed");
     }
@@ -65,7 +65,7 @@ public:
 
   //! Copy constructor
   NCollection_AliasedArray(const NCollection_AliasedArray& theOther)
-      : myData(NULL),
+      : myData(nullptr),
         myStride(theOther.myStride),
         mySize(theOther.mySize),
         myDeletable(false)
@@ -74,7 +74,7 @@ public:
     {
       myDeletable = true;
       myData      = (uint8_t*)Standard::AllocateAligned(SizeBytes(), MyAlignSize);
-      if (myData == NULL)
+      if (myData == nullptr)
       {
         throw Standard_OutOfMemory("NCollection_AliasedArray, allocation failed");
       }
@@ -145,7 +145,7 @@ public:
         throw Standard_DimensionMismatch(
           "NCollection_AliasedArray::Assign(), arrays have different size");
       }
-      if (myData != NULL)
+      if (myData != nullptr)
       {
         memcpy(myData, theOther.myData, SizeBytes());
       }
@@ -210,7 +210,7 @@ public:
       Standard::FreeAligned(myData);
     }
     myData = (uint8_t*)Standard::AllocateAligned(SizeBytes(), MyAlignSize);
-    if (myData == NULL)
+    if (myData == nullptr)
     {
       throw Standard_OutOfMemory("NCollection_AliasedArray, allocation failed");
     }

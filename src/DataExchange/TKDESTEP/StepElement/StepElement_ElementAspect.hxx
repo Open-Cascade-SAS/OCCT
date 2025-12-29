@@ -52,10 +52,10 @@ public:
   //! 9 -> Surface2dEdge
   //! 10 -> CurveEdge
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
+  Standard_EXPORT int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type ElementAspectMember
-  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
+  Standard_EXPORT occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Set Value for ElementVolume
   Standard_EXPORT void SetElementVolume(const StepElement_ElementVolume aVal);

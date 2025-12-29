@@ -46,7 +46,7 @@ public:
   Standard_EXPORT BRepAdaptor_Curve2d(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! Initialize with the pcurve of <E> on <F>.
   Standard_EXPORT void Initialize(const TopoDS_Edge& E, const TopoDS_Face& F);

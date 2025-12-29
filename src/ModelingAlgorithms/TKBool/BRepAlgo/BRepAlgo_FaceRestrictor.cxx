@@ -36,7 +36,7 @@
 
 //=================================================================================================
 
-BRepAlgo_FaceRestrictor::BRepAlgo_FaceRestrictor() {}
+BRepAlgo_FaceRestrictor::BRepAlgo_FaceRestrictor() = default;
 
 //=================================================================================================
 
@@ -210,7 +210,7 @@ static bool IsClosed(const TopoDS_Wire& W)
 
 {
   if (W.Closed())
-    return 1;
+    return true;
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(W, V1, V2);
   return (V1.IsSame(V2));

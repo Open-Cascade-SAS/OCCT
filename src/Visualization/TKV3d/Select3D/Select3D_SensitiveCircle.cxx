@@ -58,7 +58,7 @@ bool Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeManager& theM
     }
     else
     {
-      return theMgr.OverlapsCircle(myRadius, myTrsf, aIsFilled, NULL);
+      return theMgr.OverlapsCircle(myRadius, myTrsf, aIsFilled, nullptr);
     }
   }
   if (!theMgr.OverlapsCircle(myRadius, myTrsf, aIsFilled, thePickResult))

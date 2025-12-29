@@ -134,7 +134,7 @@ static bool readVec3(const XmlObjMgt_Element&   theElement,
   NCollection_Vec3<float> aVec3;
   LDOMString              aString = theElement.getAttribute(theName);
   const char*             aPos    = aString.GetString();
-  char*                   aNext   = NULL;
+  char*                   aNext   = nullptr;
   aVec3[0]                        = (float)Strtod(aPos, &aNext);
   aPos                            = aNext;
   aVec3[1]                        = (float)Strtod(aPos, &aNext);
@@ -180,7 +180,7 @@ static bool readVec4(const XmlObjMgt_Element&   theElement,
   NCollection_Vec4<float> aVec4;
   LDOMString              aString = theElement.getAttribute(theName);
   const char*             aPos    = aString.GetString();
-  char*                   aNext   = NULL;
+  char*                   aNext   = nullptr;
   aVec4[0]                        = (float)Strtod(aPos, &aNext);
   aPos                            = aNext;
   aVec4[1]                        = (float)Strtod(aPos, &aNext);

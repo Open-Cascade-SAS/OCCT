@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_TypeQualifier.hxx>
 
-RWStepShape_RWTypeQualifier::RWStepShape_RWTypeQualifier() {}
+RWStepShape_RWTypeQualifier::RWStepShape_RWTypeQualifier() = default;
 
 void RWStepShape_RWTypeQualifier::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

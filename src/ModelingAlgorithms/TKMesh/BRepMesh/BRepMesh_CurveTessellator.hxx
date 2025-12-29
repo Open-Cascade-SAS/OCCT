@@ -43,19 +43,19 @@ public:
                                             const int                     theMinPointsNb = 2);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_CurveTessellator();
+  Standard_EXPORT ~BRepMesh_CurveTessellator() override;
 
   //! Returns number of tessellation points.
-  Standard_EXPORT virtual int PointsNb() const override;
+  Standard_EXPORT int PointsNb() const override;
 
   //! Returns parameters of solution with the given index.
   //! @param theIndex index of tessellation point.
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
-  Standard_EXPORT virtual bool Value(const int theIndex,
-                                     gp_Pnt&   thePoint,
-                                     double&   theParameter) const override;
+  Standard_EXPORT bool Value(const int theIndex,
+                             gp_Pnt&   thePoint,
+                             double&   theParameter) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_CurveTessellator, IMeshTools_CurveTessellator)
 
@@ -79,9 +79,9 @@ private:
   bool isInToleranceOfVertex(const gp_Pnt& thePoint, const TopoDS_Vertex& theVertex) const;
 
 private:
-  BRepMesh_CurveTessellator(const BRepMesh_CurveTessellator& theOther);
+  BRepMesh_CurveTessellator(const BRepMesh_CurveTessellator& theOther) = delete;
 
-  void operator=(const BRepMesh_CurveTessellator& theOther);
+  void operator=(const BRepMesh_CurveTessellator& theOther) = delete;
 
 private:
   const IMeshData::IEdgeHandle& myDEdge;

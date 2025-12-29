@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_PrecisionQualifier.hxx>
 
-RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier() {}
+RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier() = default;
 
 void RWStepShape_RWPrecisionQualifier::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PrismaticPairValue, StepKinematics_Pai
 
 //=================================================================================================
 
-StepKinematics_PrismaticPairValue::StepKinematics_PrismaticPairValue() {}
+StepKinematics_PrismaticPairValue::StepKinematics_PrismaticPairValue() = default;
 
 //=================================================================================================
 

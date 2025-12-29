@@ -77,7 +77,7 @@ const char* Units_Dimensions::Quantity() const
       return quantityName.ToCString();
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

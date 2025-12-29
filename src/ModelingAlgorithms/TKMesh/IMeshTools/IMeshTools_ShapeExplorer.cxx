@@ -62,7 +62,7 @@ IMeshTools_ShapeExplorer::IMeshTools_ShapeExplorer(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-IMeshTools_ShapeExplorer::~IMeshTools_ShapeExplorer() {}
+IMeshTools_ShapeExplorer::~IMeshTools_ShapeExplorer() = default;
 
 //=================================================================================================
 

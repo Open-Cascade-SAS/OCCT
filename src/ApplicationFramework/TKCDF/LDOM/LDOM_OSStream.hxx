@@ -67,15 +67,15 @@ public:
 
   // Methods of std::streambuf
 
-  Standard_EXPORT virtual int overflow(int c = EOF) override;
-  Standard_EXPORT virtual int underflow() override;
+  Standard_EXPORT int overflow(int c = EOF) override;
+  Standard_EXPORT int underflow() override;
   // virtual int uflow();
 
-  Standard_EXPORT virtual std::streamsize xsputn(const char* s, std::streamsize n) override;
+  Standard_EXPORT std::streamsize xsputn(const char* s, std::streamsize n) override;
   // virtual int xsgetn(char* s, int n);
   // virtual int sync();
 
-  Standard_EXPORT ~LDOM_SBuffer();
+  Standard_EXPORT ~LDOM_SBuffer() override;
   // Destructor
 
 private:
@@ -99,7 +99,7 @@ public:
   //! Constructor
   Standard_EXPORT LDOM_OSStream(const int theMaxBuf);
 
-  Standard_EXPORT virtual ~LDOM_OSStream();
+  Standard_EXPORT ~LDOM_OSStream() override;
 
   const char* str() const { return myBuffer.str(); }
 

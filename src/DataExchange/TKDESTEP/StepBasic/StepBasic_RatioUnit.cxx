@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_RatioUnit, StepBasic_NamedUnit)
 
-StepBasic_RatioUnit::StepBasic_RatioUnit() {}
+StepBasic_RatioUnit::StepBasic_RatioUnit() = default;

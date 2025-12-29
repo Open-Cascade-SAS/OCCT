@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Vector, StepGeom_GeometricRepresentationItem)
 
-StepGeom_Vector::StepGeom_Vector() {}
+StepGeom_Vector::StepGeom_Vector() = default;
 
 void StepGeom_Vector::Init(const occ::handle<TCollection_HAsciiString>& aName,
                            const occ::handle<StepGeom_Direction>&       aOrientation,

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWMeasureWithUnit::RWStepBasic_RWMeasureWithUnit() {}
+RWStepBasic_RWMeasureWithUnit::RWStepBasic_RWMeasureWithUnit() = default;
 
 //=================================================================================================
 

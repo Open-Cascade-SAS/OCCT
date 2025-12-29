@@ -42,8 +42,8 @@ public:
                                const int                               own) const override;
 
   //! ---Purpose
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
-    const override;
+  Standard_EXPORT bool OwnCorrect(const int                               CN,
+                                  const occ::handle<IGESData_IGESEntity>& ent) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_SpecificModule, IGESData_SpecificModule)
 };

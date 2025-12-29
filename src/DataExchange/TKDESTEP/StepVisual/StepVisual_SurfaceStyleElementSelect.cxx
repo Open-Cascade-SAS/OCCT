@@ -20,7 +20,7 @@
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 
-StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect() {}
+StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect() = default;
 
 int StepVisual_SurfaceStyleElementSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

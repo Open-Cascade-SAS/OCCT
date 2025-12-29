@@ -33,7 +33,7 @@ public:
 
 public:
   //! Default constructor.
-  NCollection_HSequence() {}
+  NCollection_HSequence() = default;
 
   //! Copy constructor from sequence.
   //! @param theOther the sequence to copy from
@@ -59,8 +59,9 @@ public:
   //! Append items from another HSequence.
   //! @param theOther handle to another HSequence
   template <class T>
-  void Append(const opencascade::handle<T>& theOther,
-              typename std::enable_if<std::is_base_of<NCollection_HSequence, T>::value>::type* = 0)
+  void Append(
+    const opencascade::handle<T>& theOther,
+    typename std::enable_if<std::is_base_of<NCollection_HSequence, T>::value>::type* = nullptr)
   {
     SequenceType::Append(theOther->ChangeSequence());
   }

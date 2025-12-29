@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeneralDatumReference, StepRepr_ShapeAspec
 
 //=================================================================================================
 
-StepDimTol_GeneralDatumReference::StepDimTol_GeneralDatumReference() {}
+StepDimTol_GeneralDatumReference::StepDimTol_GeneralDatumReference() = default;
 
 //=================================================================================================
 

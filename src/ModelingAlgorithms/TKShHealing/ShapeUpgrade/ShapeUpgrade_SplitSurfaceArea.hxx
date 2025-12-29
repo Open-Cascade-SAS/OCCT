@@ -44,7 +44,7 @@ public:
   //! Only for "Splitting Into Squares" mode
   void SetNumbersUVSplits(const int theNbUsplits, const int theNbVsplits);
 
-  Standard_EXPORT virtual void Compute(const bool Segment = true) override;
+  Standard_EXPORT void Compute(const bool Segment = true) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
 

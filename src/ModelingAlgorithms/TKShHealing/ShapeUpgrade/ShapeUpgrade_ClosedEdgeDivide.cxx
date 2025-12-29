@@ -34,9 +34,8 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ClosedEdgeDivide, ShapeUpgrade_EdgeDivid
 //=================================================================================================
 
 ShapeUpgrade_ClosedEdgeDivide::ShapeUpgrade_ClosedEdgeDivide()
-    : ShapeUpgrade_EdgeDivide()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

@@ -57,7 +57,7 @@ void BSplCLib::BuildEval(const int                         Degree,
   int    i;
   int    ip = PLower + Index - 1;
   double w, *pole = &LP;
-  if (Weights == NULL)
+  if (Weights == nullptr)
   {
 
     for (i = 0; i <= Degree; i++)
@@ -103,13 +103,13 @@ static void PrepareEval(double&                           u,
 
   // make the knots
   BSplCLib::BuildKnots(Degree, index, Periodic, Knots, Mults, *dc.knots);
-  if (Mults == NULL)
+  if (Mults == nullptr)
     index -= Knots.Lower() + Degree;
   else
     index = BSplCLib::PoleIndex(Degree, index, Periodic, *Mults);
 
   // check truly rational
-  rational = (Weights != NULL);
+  rational = (Weights != nullptr);
   if (rational)
   {
     int WLower = Weights->Lower() + index;
@@ -540,8 +540,8 @@ void BSplCLib::MovePointAndTangent(const double                      U,
     *delta_array, *derivatives_array, *weights_array;
 
   ErrorStatus   = 0;
-  weights_array = NULL;
-  if (Weights != NULL)
+  weights_array = nullptr;
+  if (Weights != nullptr)
   {
     weights_array = const_cast<double*>(&Weights->First());
   }
@@ -721,7 +721,7 @@ void BSplCLib::MovePointAndTangent(const double                      U,
 
       extrap_mode[0] = Degree;
       extrap_mode[1] = Degree;
-      if (Weights != NULL)
+      if (Weights != nullptr)
       {
         //
         // evaluate in homogenised form

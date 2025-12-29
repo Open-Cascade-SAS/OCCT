@@ -20,12 +20,12 @@
 #include <TopoDS.hxx>
 
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-  GLOBAL_elf1 = NULL; // NYI to CDLize as a tool of DS
+  GLOBAL_elf1 = nullptr; // NYI to CDLize as a tool of DS
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-  GLOBAL_elf2 = NULL; // NYI to CDLize as a tool of DS
+  GLOBAL_elf2 = nullptr; // NYI to CDLize as a tool of DS
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-                                       GLOBAL_fle = NULL; // NYI to CDLize as a tool of DS
-static NCollection_List<TopoDS_Shape>* GLOBAL_los = NULL; // NYI to CDLize as a tool of DS
+                                       GLOBAL_fle = nullptr; // NYI to CDLize as a tool of DS
+static NCollection_List<TopoDS_Shape>* GLOBAL_los = nullptr; // NYI to CDLize as a tool of DS
 static bool                            GLOBAL_FDSCNX_prepared = false;
 
 // modified by NIZNHY-PKV Sun Dec 15 17:41:43 2002 f
@@ -36,25 +36,25 @@ void FDSCNX_Close()
   if (GLOBAL_elf1)
   {
     delete GLOBAL_elf1;
-    GLOBAL_elf1 = NULL;
+    GLOBAL_elf1 = nullptr;
   }
   //
   if (GLOBAL_elf2)
   {
     delete GLOBAL_elf2;
-    GLOBAL_elf2 = NULL;
+    GLOBAL_elf2 = nullptr;
   }
   //
   if (GLOBAL_fle)
   {
     delete GLOBAL_fle;
-    GLOBAL_fle = NULL;
+    GLOBAL_fle = nullptr;
   }
   //
   if (GLOBAL_los)
   {
     delete GLOBAL_los;
-    GLOBAL_los = NULL;
+    GLOBAL_los = nullptr;
   }
   //
   GLOBAL_FDSCNX_prepared = false;
@@ -127,28 +127,28 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
     return;
   }
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
-  if (GLOBAL_elf1 == NULL)
+  if (GLOBAL_elf1 == nullptr)
     GLOBAL_elf1 = (NCollection_DataMap<
                    TopoDS_Shape,
                    NCollection_List<TopoDS_Shape>,
                    TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
                                                                      NCollection_List<TopoDS_Shape>,
                                                                      TopTools_ShapeMapHasher>();
-  if (GLOBAL_elf2 == NULL)
+  if (GLOBAL_elf2 == nullptr)
     GLOBAL_elf2 = (NCollection_DataMap<
                    TopoDS_Shape,
                    NCollection_List<TopoDS_Shape>,
                    TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
                                                                      NCollection_List<TopoDS_Shape>,
                                                                      TopTools_ShapeMapHasher>();
-  if (GLOBAL_fle == NULL)
+  if (GLOBAL_fle == nullptr)
     GLOBAL_fle = (NCollection_DataMap<
                   TopoDS_Shape,
                   NCollection_List<TopoDS_Shape>,
                   TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape,
                                                                     NCollection_List<TopoDS_Shape>,
                                                                     TopTools_ShapeMapHasher>();
-  if (GLOBAL_los == NULL)
+  if (GLOBAL_los == nullptr)
     GLOBAL_los = (NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>();
   GLOBAL_elf1->Clear();
   GLOBAL_elf2->Clear();
@@ -181,14 +181,14 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
         continue;
 
       NCollection_List<TopoDS_Shape>* aListFle = fle.ChangeSeek(f);
-      if (aListFle == NULL)
+      if (aListFle == nullptr)
       {
         aListFle = fle.Bound(f, NCollection_List<TopoDS_Shape>());
       }
       aListFle->Append(e);
 
       NCollection_List<TopoDS_Shape>* aListElf = elf.ChangeSeek(e);
-      if (aListElf == NULL)
+      if (aListElf == nullptr)
       {
         aListElf = elf.Bound(e, NCollection_List<TopoDS_Shape>());
       }
@@ -220,7 +220,7 @@ Standard_EXPORT bool FDSCNX_HasConnexFace(const TopoDS_Shape&                   
 
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* pelf =
     (rs == 1) ? GLOBAL_elf1 : GLOBAL_elf2;
-  if (pelf == NULL)
+  if (pelf == nullptr)
   {
     return false;
   }

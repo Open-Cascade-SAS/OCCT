@@ -37,7 +37,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 30/07/98
-IGESGeom_ToolSplineSurface::IGESGeom_ToolSplineSurface() {}
+IGESGeom_ToolSplineSurface::IGESGeom_ToolSplineSurface() = default;
 
 void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_SplineSurface>& ent,
                                                const occ::handle<IGESData_IGESReaderData>& /* IR */,

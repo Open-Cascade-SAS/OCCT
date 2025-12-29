@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDocStd_XLink, TDF_Attribute)
 //=================================================================================================
 
 TDocStd_XLink::TDocStd_XLink()
-    : myNext(NULL)
+    : myNext(nullptr)
 {
 }
 

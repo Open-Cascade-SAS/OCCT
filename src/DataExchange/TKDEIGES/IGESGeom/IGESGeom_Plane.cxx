@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Plane, IGESData_IGESEntity)
 
-IGESGeom_Plane::IGESGeom_Plane() {}
+IGESGeom_Plane::IGESGeom_Plane() = default;
 
 void IGESGeom_Plane::Init(const double                            A,
                           const double                            B,

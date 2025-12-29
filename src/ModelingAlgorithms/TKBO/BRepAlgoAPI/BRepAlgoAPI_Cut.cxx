@@ -21,7 +21,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Cut::BRepAlgoAPI_Cut()
-    : BRepAlgoAPI_BooleanOperation()
+
 {
   myOperation = BOPAlgo_CUT;
 }
@@ -36,7 +36,7 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const BOPAlgo_PaveFiller& aPF)
 
 //=================================================================================================
 
-BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut() {}
+BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut() = default;
 
 //=================================================================================================
 

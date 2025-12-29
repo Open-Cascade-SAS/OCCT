@@ -71,7 +71,7 @@ protected:
   Standard_EXPORT IntCurveSurface_Intersection();
 
   //! Destructor is protected, for safe inheritance
-  ~IntCurveSurface_Intersection() {}
+  ~IntCurveSurface_Intersection() = default;
 
   //! Internal method
   //! copy the <Inter> fields to <me>

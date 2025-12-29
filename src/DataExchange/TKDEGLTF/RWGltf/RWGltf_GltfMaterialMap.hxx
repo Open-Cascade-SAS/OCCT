@@ -29,7 +29,7 @@ public:
                                          const int                      theDefSamplerId);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWGltf_GltfMaterialMap();
+  Standard_EXPORT ~RWGltf_GltfMaterialMap() override;
 
 public:
   //! Add material images into GLB stream.
@@ -91,13 +91,12 @@ protected:
                                   bool&                             theIsStarted);
 
   //! Add material
-  Standard_EXPORT virtual TCollection_AsciiString AddMaterial(
-    const XCAFPrs_Style& theStyle) override;
+  Standard_EXPORT TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle) override;
 
   //! Virtual method actually defining the material (e.g. export to the file).
-  Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
-                                              const TCollection_AsciiString& theKey,
-                                              const TCollection_AsciiString& theName) override;
+  Standard_EXPORT void DefineMaterial(const XCAFPrs_Style&           theStyle,
+                                      const TCollection_AsciiString& theKey,
+                                      const TCollection_AsciiString& theName) override;
 
 protected:
   RWGltf_GltfOStreamWriter*                                                     myWriter;

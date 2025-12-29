@@ -682,7 +682,7 @@ occ::handle<TCollection_HExtendedString> TObj_Object::getExtString(const int the
 
   occ::handle<TDataStd_Name> aName;
   aLabel.FindAttribute(TDataStd_Name::GetID(), aName);
-  return aName.IsNull() ? 0 : new TCollection_HExtendedString(aName->Get());
+  return aName.IsNull() ? nullptr : new TCollection_HExtendedString(aName->Get());
 }
 
 //=================================================================================================
@@ -707,7 +707,7 @@ occ::handle<TCollection_HAsciiString> TObj_Object::getAsciiString(const int theR
 
   occ::handle<TDataStd_AsciiString> aStrAttr;
   aLabel.FindAttribute(TDataStd_AsciiString::GetID(), aStrAttr);
-  return aStrAttr.IsNull() ? 0 : new TCollection_HAsciiString(aStrAttr->Get());
+  return aStrAttr.IsNull() ? nullptr : new TCollection_HAsciiString(aStrAttr->Get());
 }
 
 //=================================================================================================
@@ -1096,7 +1096,7 @@ void TObj_Object::CopyChildren(TDF_Label&                              theTarget
   TDF_Label                        aSourceChildLabel = GetChildLabel();
   occ::handle<TObj_ObjectIterator> aChildren         = // GetChildren();
                                                        // clang-format off
-    new TObj_OcafObjectIterator (aSourceChildLabel, NULL, true); // to support children on sublabels of child label
+    new TObj_OcafObjectIterator (aSourceChildLabel, nullptr, true); // to support children on sublabels of child label
                                                        // clang-format on
   for (; aChildren->More(); aChildren->Next())
   {
@@ -1129,7 +1129,7 @@ void TObj_Object::CopyReferences(const occ::handle<TObj_Object>&         theTarg
   occ::handle<TObj_ObjectIterator>
     aSrcChildren = // GetChildren();
                    // to support childs on sublabels of sublabel of child label
-    new TObj_OcafObjectIterator(GetChildLabel(), NULL, true);
+    new TObj_OcafObjectIterator(GetChildLabel(), nullptr, true);
   for (; aSrcChildren->More(); aSrcChildren->Next())
   {
     occ::handle<TObj_Object> aSrcChild = aSrcChildren->Value();
@@ -1411,7 +1411,7 @@ occ::handle<TObj_TNameContainer> TObj_Object::GetDictionary() const
   occ::handle<TObj_Model> aModel = GetModel();
   if (!aModel.IsNull())
     return aModel->GetDictionary();
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

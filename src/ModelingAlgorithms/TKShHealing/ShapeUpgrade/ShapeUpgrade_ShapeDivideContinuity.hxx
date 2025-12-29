@@ -69,7 +69,7 @@ public:
 
 protected:
   //! Returns the tool for dividing faces.
-  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
+  Standard_EXPORT occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
 
 private:
   GeomAbs_Shape myCurve3dCriterion;

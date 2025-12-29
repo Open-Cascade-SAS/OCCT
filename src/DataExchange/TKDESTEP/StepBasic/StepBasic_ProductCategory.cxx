@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductCategory, Standard_Transient)
 
-StepBasic_ProductCategory::StepBasic_ProductCategory() {}
+StepBasic_ProductCategory::StepBasic_ProductCategory() = default;
 
 void StepBasic_ProductCategory::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                      const bool                                   hasAdescription,

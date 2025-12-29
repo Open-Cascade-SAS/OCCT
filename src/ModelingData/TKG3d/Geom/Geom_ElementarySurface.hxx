@@ -84,7 +84,7 @@ public:
   const gp_Ax3& Position() const { return pos; }
 
   //! Reverses the U parametric direction of the surface.
-  Standard_EXPORT virtual void UReverse() override;
+  Standard_EXPORT void UReverse() override;
 
   //! Return the parameter on the Ureversed surface for
   //! the point of parameter U on <me>.
@@ -92,10 +92,10 @@ public:
   //! me->UReversed()->Value(me->UReversedParameter(U),V)
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual double UReversedParameter(const double U) const override = 0;
+  Standard_EXPORT double UReversedParameter(const double U) const override = 0;
 
   //! Reverses the V parametric direction of the surface.
-  Standard_EXPORT virtual void VReverse() override;
+  Standard_EXPORT void VReverse() override;
 
   //! Return the parameter on the Vreversed surface for
   //! the point of parameter V on <me>.
@@ -103,7 +103,7 @@ public:
   //! me->VReversed()->Value(U,me->VReversedParameter(V))
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual double VReversedParameter(const double V) const override = 0;
+  Standard_EXPORT double VReversedParameter(const double V) const override = 0;
 
   //! Returns GeomAbs_CN, the global continuity of any elementary surface.
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
@@ -115,8 +115,7 @@ public:
   Standard_EXPORT bool IsCNv(const int N) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_ElementarySurface, Geom_Surface)
 

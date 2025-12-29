@@ -38,7 +38,7 @@ public:
                                          double                  theUpdateThreshold = 1.);
 
   //! Destructor; calls Reset()
-  Standard_EXPORT ~Draw_ProgressIndicator();
+  Standard_EXPORT ~Draw_ProgressIndicator() override;
 
   //! Sets tcl output mode (on/off).
   Standard_EXPORT void SetTclMode(const bool theTclMode);
@@ -61,14 +61,14 @@ public:
 
   //! Clears/erases opened TCL windows if any
   //! and sets myBreak to False
-  Standard_EXPORT virtual void Reset() override;
+  Standard_EXPORT void Reset() override;
 
   //! Defines method Show of Progress Indicator
-  Standard_EXPORT virtual void Show(const Message_ProgressScope& theScope,
-                                    const bool                   force = true) override;
+  Standard_EXPORT void Show(const Message_ProgressScope& theScope,
+                            const bool                   force = true) override;
 
   //! Redefines method UserBreak of Progress Indicator
-  Standard_EXPORT virtual bool UserBreak() override;
+  Standard_EXPORT bool UserBreak() override;
 
   //! Get/Set default value for tcl mode
   Standard_EXPORT static bool& DefaultTclMode();

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Hyperbola, StepGeom_Conic)
 
-StepGeom_Hyperbola::StepGeom_Hyperbola() {}
+StepGeom_Hyperbola::StepGeom_Hyperbola() = default;
 
 void StepGeom_Hyperbola::Init(const occ::handle<TCollection_HAsciiString>& aName,
                               const StepGeom_Axis2Placement&               aPosition,

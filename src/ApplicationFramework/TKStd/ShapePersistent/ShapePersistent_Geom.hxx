@@ -39,14 +39,14 @@ public:
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
     //! Write persistent data to a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
     //! Gets persistent objects
-    Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
+    Standard_EXPORT void PChildren(SequenceOfPersistent& theChildren) const override;
 
     //! Returns persistent type name
-    virtual const char* PName() const { return "PGeom_Geometry"; }
+    const char* PName() const override { return "PGeom_Geometry"; }
   };
 
 protected:
@@ -54,16 +54,16 @@ protected:
   struct geometryBase : public DelayedBase<Geometry, Transient>
   {
     //! Write persistent data to a file.
-    virtual void Write(StdObjMgt_WriteData&) const
+    void Write(StdObjMgt_WriteData&) const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::Write - not implemented");
     }
 
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const override {}
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::geometryBase::PName - not implemented");
       return "";
@@ -75,19 +75,19 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    virtual void Read(StdObjMgt_ReadData& theReadData) { PData().Read(theReadData); }
+    void Read(StdObjMgt_ReadData& theReadData) override { PData().Read(theReadData); }
 
     //! Write persistent data to a file.
-    virtual void Write(StdObjMgt_WriteData& theWriteData) const { PData().Write(theWriteData); }
+    void Write(StdObjMgt_WriteData& theWriteData) const override { PData().Write(theWriteData); }
 
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PChildren - not implemented");
     }
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase::PName - not implemented");
       return "";
@@ -99,16 +99,16 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    virtual void Read(StdObjMgt_ReadData&) {}
+    void Read(StdObjMgt_ReadData&) override {}
 
     //! Write persistent data to a file.
-    virtual void Write(StdObjMgt_WriteData&) const {}
+    void Write(StdObjMgt_WriteData&) const override {}
 
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const override {}
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::subBase_gp::PName - not implemented");
       return "";
@@ -119,7 +119,7 @@ protected:
   struct subBase_empty : Base
   {
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise(
         "ShapePersistent_Geom::subBase_empty::PName - not implemented");
@@ -132,7 +132,7 @@ protected:
   {
   public:
     //! Read persistent data from a file.
-    virtual void Read(StdObjMgt_ReadData& theReadData)
+    void Read(StdObjMgt_ReadData& theReadData) override
     {
       Data aData;
       theReadData >> aData;
@@ -140,16 +140,16 @@ protected:
     }
 
     //! Gets persistent child objects
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const override {}
 
     //! Write persistent data to a file.
-    virtual void Write(StdObjMgt_WriteData&) const
+    void Write(StdObjMgt_WriteData&) const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::Write - not implemented");
     }
 
     //! Returns persistent type name
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NotImplemented::Raise("ShapePersistent_Geom::instance::PName - not implemented");
       return "";

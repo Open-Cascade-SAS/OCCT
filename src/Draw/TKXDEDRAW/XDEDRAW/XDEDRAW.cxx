@@ -108,7 +108,7 @@
 #include <BinXCAFDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // Section: General commands
@@ -1604,7 +1604,7 @@ static int XDumpAssemblyGraph(Draw_Interpretor& di, int argc, const char** argv)
       aSS << theNode << " " << graphNodeTypename(aNodeType) << " " << aNodeEntry;
       const XCAFDoc_AssemblyGraph::AdjacencyMap& anAdjacencyMap = theGraph->GetLinks();
       const TColStd_PackedMapOfInteger*          aLinksPtr      = anAdjacencyMap.Seek(theNode);
-      if (aLinksPtr != NULL)
+      if (aLinksPtr != nullptr)
       {
         for (TColStd_MapIteratorOfPackedMapOfInteger anIt1(*aLinksPtr); anIt1.More(); anIt1.Next())
         {

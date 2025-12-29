@@ -31,7 +31,7 @@
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESGraph_ToolDrawingUnits::IGESGraph_ToolDrawingUnits() {}
+IGESGraph_ToolDrawingUnits::IGESGraph_ToolDrawingUnits() = default;
 
 void IGESGraph_ToolDrawingUnits::ReadOwnParams(const occ::handle<IGESGraph_DrawingUnits>& ent,
                                                const occ::handle<IGESData_IGESReaderData>& /*IR*/,

@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a zero vector.
-  constexpr gp_Vec() noexcept {}
+  constexpr gp_Vec() noexcept = default;
 
   //! Creates a unitary vector from a direction theV.
   constexpr gp_Vec(const gp_Dir& theV);

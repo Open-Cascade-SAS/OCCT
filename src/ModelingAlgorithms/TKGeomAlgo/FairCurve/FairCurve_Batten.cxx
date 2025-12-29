@@ -46,7 +46,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
       OldHeight(Height),
       OldSlope(Slope),
       OldSlidingFactor(1),
-      OldFreeSliding(0),
+      OldFreeSliding(false),
       OldConstraintOrder1(1),
       OldConstraintOrder2(1),
       NewP1(P1),
@@ -56,7 +56,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
       NewHeight(Height),
       NewSlope(Slope),
       NewSlidingFactor(1),
-      NewFreeSliding(0),
+      NewFreeSliding(false),
       NewConstraintOrder1(1),
       NewConstraintOrder2(1),
       Degree(9)
@@ -121,7 +121,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 }
 
 // ==================================================================
-FairCurve_Batten::~FairCurve_Batten() {}
+FairCurve_Batten::~FairCurve_Batten() = default;
 // ==================================================================
 void FairCurve_Batten::Angles(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 // ==================================================================

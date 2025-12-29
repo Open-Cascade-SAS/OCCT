@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_AngularLocation, StepShape_DimensionalLocat
 
 //=================================================================================================
 
-StepShape_AngularLocation::StepShape_AngularLocation() {}
+StepShape_AngularLocation::StepShape_AngularLocation() = default;
 
 //=================================================================================================
 

@@ -92,15 +92,15 @@ public:
     {
     }
 
-    virtual ~Element() {}
+    ~Element() override = default;
 
-    virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override
     {
       if (!myIObj.IsNull())
         myIObj->Render(theWorkspace);
     }
 
-    virtual void Release(OpenGl_Context*)
+    void Release(OpenGl_Context*) override
     {
       //
     }
@@ -111,12 +111,12 @@ public:
 
 private:
   // Virtual methods implementation
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                        const int                               theMode) override;
 
   // Called by VUserDrawElement
   void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
@@ -347,12 +347,12 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     }
   }
   OpenGl_Caps* aDefCaps = getDefaultCaps().get();
-  OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : NULL;
+  OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : nullptr;
 
   if (theArgNb < 2)
   {
     TCollection_AsciiString aDebActive, aSyncActive;
-    if (aCaps == NULL)
+    if (aCaps == nullptr)
     {
       aCaps = aDefCaps;
     }
@@ -399,7 +399,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->glslWarnings = toShowWarns;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->glslWarnings = toShowWarns;
       }
@@ -412,7 +412,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->suppressExtraMsg = !toShow;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->suppressExtraMsg = !toShow;
       }
@@ -426,7 +426,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->suppressExtraMsg = toSuppress;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->suppressExtraMsg = toSuppress;
       }
@@ -452,7 +452,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         --anArgIter;
       }
       aDefCaps->glslDumpLevel = aGslsDumpLevel;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->glslDumpLevel = aGslsDumpLevel;
       }
@@ -476,7 +476,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         aDefCaps->glslDumpLevel = OpenGl_ShaderProgramDumpLevel_Off;
       }
       aDefCaps->suppressExtraMsg = !toEnableDebug;
-      if (aCaps != NULL)
+      if (aCaps != nullptr)
       {
         aCaps->contextDebug     = toEnableDebug;
         aCaps->contextSyncDebug = toEnableDebug;
@@ -503,7 +503,7 @@ static int VGlDebug(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 static int VVbo(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   const bool toSet    = (theArgNb > 1);
-  const bool toUseVbo = toSet ? (Draw::Atoi(theArgVec[1]) == 0) : 1;
+  const bool toUseVbo = toSet ? (Draw::Atoi(theArgVec[1]) == 0) : true;
   if (toSet)
   {
     getDefaultCaps()->vboDisable = toUseVbo;

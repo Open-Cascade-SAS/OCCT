@@ -35,10 +35,10 @@ Plate_Plate::Plate_Plate()
     : order(0),
       n_el(0),
       n_dim(0),
-      solution(0),
-      points(0),
-      deru(0),
-      derv(0),
+      solution(nullptr),
+      points(nullptr),
+      deru(nullptr),
+      derv(nullptr),
       OK(false),
       maxConstraintOrder(0),
       Uold(1.e20),
@@ -58,10 +58,10 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
     : order(Ref.order),
       n_el(Ref.n_el),
       n_dim(Ref.n_dim),
-      solution(0),
-      points(0),
-      deru(0),
-      derv(0),
+      solution(nullptr),
+      points(nullptr),
+      deru(nullptr),
+      derv(nullptr),
       OK(Ref.OK),
       Uold(1.e20),
       Vold(1.e20),
@@ -72,7 +72,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
   int i;
   if (Ref.OK)
   {
-    if (n_dim > 0 && Ref.solution != 0)
+    if (n_dim > 0 && Ref.solution != nullptr)
     {
       solution = new gp_XYZ[n_dim];
       for (i = 0; i < n_dim; i++)
@@ -83,7 +83,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
 
     if (n_el > 0)
     {
-      if (Ref.points != 0)
+      if (Ref.points != nullptr)
       {
         points = new gp_XY[n_el];
         for (i = 0; i < n_el; i++)
@@ -92,7 +92,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
         }
       }
 
-      if (Ref.deru != 0)
+      if (Ref.deru != nullptr)
       {
         deru = new int[n_el];
         for (i = 0; i < n_el; i++)
@@ -101,7 +101,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
         }
       }
 
-      if (Ref.derv != 0)
+      if (Ref.derv != nullptr)
       {
         derv = new int[n_el];
         for (i = 0; i < n_el; i++)
@@ -136,7 +136,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
   int i;
   if (Ref.OK)
   {
-    if (n_dim > 0 && Ref.solution != 0)
+    if (n_dim > 0 && Ref.solution != nullptr)
     {
       solution = new gp_XYZ[n_dim];
       for (i = 0; i < n_dim; i++)
@@ -147,7 +147,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
 
     if (n_el > 0)
     {
-      if (Ref.points != 0)
+      if (Ref.points != nullptr)
       {
         points = new gp_XY[n_el];
         for (i = 0; i < n_el; i++)
@@ -156,7 +156,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
         }
       }
 
-      if (Ref.deru != 0)
+      if (Ref.deru != nullptr)
       {
         deru = new int[n_el];
         for (i = 0; i < n_el; i++)
@@ -165,7 +165,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
         }
       }
 
-      if (Ref.derv != 0)
+      if (Ref.derv != nullptr)
       {
         derv = new int[n_el];
         for (i = 0; i < n_el; i++)
@@ -1095,16 +1095,16 @@ void Plate_Plate::Init()
   myLScalarConstraints.Clear();
 
   delete[] (gp_XYZ*)solution;
-  solution = 0;
+  solution = nullptr;
 
   delete[] (gp_XY*)points;
-  points = 0;
+  points = nullptr;
 
   delete[] (int*)deru;
-  deru = 0;
+  deru = nullptr;
 
   delete[] (int*)derv;
-  derv = 0;
+  derv = nullptr;
 
   order              = 0;
   n_el               = 0;
@@ -1117,7 +1117,7 @@ void Plate_Plate::Init()
 
 gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
 {
-  if (solution == 0)
+  if (solution == nullptr)
     return gp_XYZ(0, 0, 0);
   if (!OK)
     return gp_XYZ(0, 0, 0);
@@ -1148,7 +1148,7 @@ gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
 
 gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const
 {
-  if (solution == 0)
+  if (solution == nullptr)
     return gp_XYZ(0, 0, 0);
   if (!OK)
     return gp_XYZ(0, 0, 0);

@@ -71,7 +71,7 @@ int IVtkTools_ShapeDataSource::RequestData(vtkInformation*        vtkNotUsed(the
                                            vtkInformationVector*  theOutputVector)
 {
   vtkSmartPointer<vtkPolyData> aPolyData = vtkPolyData::GetData(theOutputVector);
-  if (aPolyData.GetPointer() == NULL)
+  if (aPolyData.GetPointer() == nullptr)
   {
     return 1;
   }

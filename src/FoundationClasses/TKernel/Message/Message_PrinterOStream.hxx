@@ -57,7 +57,7 @@ public:
   //! file stream)
   Standard_EXPORT void Close();
 
-  ~Message_PrinterOStream() { Close(); }
+  ~Message_PrinterOStream() override { Close(); }
 
   //! Returns reference to the output stream
   Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
@@ -73,8 +73,8 @@ protected:
   //! Puts a message to the current stream
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
-  Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+  Standard_EXPORT void send(const TCollection_AsciiString& theString,
+                            const Message_Gravity          theGravity) const override;
 
 private:
   void* myStream;

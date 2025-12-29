@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWDerivedShapeAspect::RWStepRepr_RWDerivedShapeAspect() {}
+RWStepRepr_RWDerivedShapeAspect::RWStepRepr_RWDerivedShapeAspect() = default;
 
 //=================================================================================================
 

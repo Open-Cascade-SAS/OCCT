@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionUnits, IGESData_IGESEntity)
 
-IGESDimen_DimensionUnits::IGESDimen_DimensionUnits() {}
+IGESDimen_DimensionUnits::IGESDimen_DimensionUnits() = default;
 
 void IGESDimen_DimensionUnits::Init(const int                                    nbPropVal,
                                     const int                                    aSecondPos,

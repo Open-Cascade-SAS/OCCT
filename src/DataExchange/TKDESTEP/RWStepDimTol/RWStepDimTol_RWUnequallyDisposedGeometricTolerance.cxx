@@ -23,9 +23,7 @@
 //=================================================================================================
 
 RWStepDimTol_RWUnequallyDisposedGeometricTolerance::
-  RWStepDimTol_RWUnequallyDisposedGeometricTolerance()
-{
-}
+  RWStepDimTol_RWUnequallyDisposedGeometricTolerance() = default;
 
 //=================================================================================================
 

@@ -28,7 +28,7 @@ namespace
 constexpr double SQRT_3 = 1.7320508075688772935;
 } // namespace
 
-IGESGraph_Color::IGESGraph_Color() {}
+IGESGraph_Color::IGESGraph_Color() = default;
 
 // This class inherits from IGESData_ColorEntity
 

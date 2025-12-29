@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CubicBezierTriangulatedFace, StepVisual_Te
 
 //=================================================================================================
 
-StepVisual_CubicBezierTriangulatedFace::StepVisual_CubicBezierTriangulatedFace() {}
+StepVisual_CubicBezierTriangulatedFace::StepVisual_CubicBezierTriangulatedFace() = default;
 
 //=================================================================================================
 

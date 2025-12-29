@@ -86,7 +86,7 @@ public:
 
 public:
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_ArrayOfPrimitives();
+  Standard_EXPORT ~Graphic3d_ArrayOfPrimitives() override;
 
   //! Returns vertex attributes buffer (colors, normals, texture coordinates).
   const occ::handle<Graphic3d_Buffer>& Attributes() const { return myAttribs; }
@@ -98,13 +98,13 @@ public:
   Standard_EXPORT const char* StringType() const;
 
   //! Returns TRUE when vertex normals array is defined.
-  bool HasVertexNormals() const { return myNormData != NULL; }
+  bool HasVertexNormals() const { return myNormData != nullptr; }
 
   //! Returns TRUE when vertex colors array is defined.
-  bool HasVertexColors() const { return myColData != NULL; }
+  bool HasVertexColors() const { return myColData != nullptr; }
 
   //! Returns TRUE when vertex texels array is defined.
-  bool HasVertexTexels() const { return myTexData != NULL; }
+  bool HasVertexTexels() const { return myTexData != nullptr; }
 
   //! Returns the number of defined vertex
   int VertexNumber() const { return myAttribs->NbElements; }
@@ -396,7 +396,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
-    if (myColData != NULL)
+    if (myColData != nullptr)
     {
       NCollection_Vec4<uint8_t>* aColorPtr = reinterpret_cast<NCollection_Vec4<uint8_t>*>(
         myColData + myColStride * ((size_t)theIndex - 1));
@@ -415,7 +415,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
-    if (myColData != NULL)
+    if (myColData != nullptr)
     {
       NCollection_Vec4<uint8_t>* aColorPtr = reinterpret_cast<NCollection_Vec4<uint8_t>*>(
         myColData + myColStride * ((size_t)theIndex - 1));
@@ -434,7 +434,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
-    if (myColData != NULL)
+    if (myColData != nullptr)
     {
       *reinterpret_cast<int*>(myColData + myColStride * ((size_t)theIndex - 1)) = theColor32;
     }
@@ -460,7 +460,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
-    if (myNormData != NULL)
+    if (myNormData != nullptr)
     {
       NCollection_Vec3<float>& aVec = *reinterpret_cast<NCollection_Vec3<float>*>(
         myNormData + myNormStride * ((size_t)theIndex - 1));
@@ -487,7 +487,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
-    if (myTexData != NULL)
+    if (myTexData != nullptr)
     {
       NCollection_Vec2<float>& aVec = *reinterpret_cast<NCollection_Vec2<float>*>(
         myTexData + myTexStride * ((size_t)theIndex - 1));
@@ -539,7 +539,7 @@ public:
   //! @param[out] theColor node RGBA color values within [0, 255] range
   void VertexColor(const int theIndex, NCollection_Vec4<uint8_t>& theColor) const
   {
-    Standard_OutOfRange_Raise_if(myColData == NULL || theIndex < 1
+    Standard_OutOfRange_Raise_if(myColData == nullptr || theIndex < 1
                                    || theIndex > myAttribs->NbElements,
                                  "BAD VERTEX index");
     theColor = *reinterpret_cast<const NCollection_Vec4<uint8_t>*>(
@@ -556,7 +556,7 @@ public:
     theR = theG = theB = 0.0;
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > myAttribs->NbElements,
                                  "BAD VERTEX index");
-    if (myColData == NULL)
+    if (myColData == nullptr)
     {
       return;
     }
@@ -574,7 +574,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > myAttribs->NbElements,
                                  "BAD VERTEX index");
-    if (myColData != NULL)
+    if (myColData != nullptr)
     {
       theColor = *reinterpret_cast<const int*>(myColData + myColStride * ((size_t)theRank - 1));
     }
@@ -600,7 +600,7 @@ public:
     theNX = theNY = theNZ = 0.0;
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > myAttribs->NbElements,
                                  "BAD VERTEX index");
-    if (myNormData != NULL)
+    if (myNormData != nullptr)
     {
       const NCollection_Vec3<float>& aVec = *reinterpret_cast<const NCollection_Vec3<float>*>(
         myNormData + myNormStride * ((size_t)theRank - 1));
@@ -629,7 +629,7 @@ public:
     theTX = theTY = 0.0;
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > myAttribs->NbElements,
                                  "BAD VERTEX index");
-    if (myTexData != NULL)
+    if (myTexData != nullptr)
     {
       const NCollection_Vec2<float>& aVec = *reinterpret_cast<const NCollection_Vec2<float>*>(
         myTexData + myTexStride * ((size_t)theRank - 1));
@@ -790,7 +790,7 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
   const occ::handle<Graphic3d_BoundBuffer>& Bounds() const { return myBounds; }
 
   //! Returns TRUE when bound colors array is defined.
-  bool HasBoundColors() const { return !myBounds.IsNull() && myBounds->Colors != NULL; }
+  bool HasBoundColors() const { return !myBounds.IsNull() && myBounds->Colors != nullptr; }
 
   //! Returns the number of defined bounds
   int BoundNumber() const { return !myBounds.IsNull() ? myBounds->NbBounds : -1; }
@@ -817,7 +817,7 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
   //! Returns the bound color values at rank theRank from the bound table if defined.
   void BoundColor(const int theRank, double& theR, double& theG, double& theB) const
   {
-    Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->Colors == NULL || theRank < 1
+    Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->Colors == nullptr || theRank < 1
                                    || theRank > myBounds->NbBounds,
                                  "BAD BOUND index");
     const NCollection_Vec4<float>& aVec = myBounds->Colors[theRank - 1];
@@ -859,7 +859,7 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
     {
       return;
     }
-    Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->Colors == NULL || theIndex < 1
+    Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->Colors == nullptr || theIndex < 1
                                    || theIndex > myBounds->NbMaxBounds,
                                  "BAD BOUND index");
     NCollection_Vec4<float>& aVec = myBounds->Colors[theIndex - 1];
@@ -885,9 +885,9 @@ protected: //! @name protected constructors
                               int                            theMaxBounds,
                               int                            theMaxEdges,
                               Graphic3d_ArrayFlags           theArrayFlags)
-      : myNormData(NULL),
-        myTexData(NULL),
-        myColData(NULL),
+      : myNormData(nullptr),
+        myTexData(nullptr),
+        myColData(nullptr),
         myPosStride(0),
         myNormStride(0),
         myTexStride(0),

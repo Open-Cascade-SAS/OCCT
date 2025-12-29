@@ -161,7 +161,7 @@ static void SetNormals(const occ::handle<Poly_Triangulation>&          theMesh,
 // ============================================================================
 static void SetTriangles(
   const occ::handle<Poly_Triangulation>&                                   theMesh,
-  const occ::handle<NCollection_HArray2<int>>                              theTriangles,
+  const occ::handle<NCollection_HArray2<int>>&                             theTriangles,
   const int                                                                theTrianStripsNum,
   const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTrianStrips,
   const int                                                                theTrianFansNum,
@@ -231,7 +231,7 @@ static void SetTriangles(
 // Purpose : Get elements from simple face
 // ============================================================================
 template <class Type>
-static void GetSimpleFaceElements(Type                                      theFace,
+static void GetSimpleFaceElements(const Type&                               theFace,
                                   occ::handle<NCollection_HArray1<gp_XYZ>>& theNodes,
                                   occ::handle<NCollection_HArray2<double>>& theNormals,
                                   occ::handle<NCollection_HArray2<int>>&    theTriangles,
@@ -259,7 +259,7 @@ static void GetSimpleFaceElements(Type                                      theF
 // ============================================================================
 template <class Type>
 static void GetComplexFaceElements(
-  Type                                                               theFace,
+  const Type&                                                        theFace,
   occ::handle<NCollection_HArray1<gp_XYZ>>&                          theNodes,
   occ::handle<NCollection_HArray2<double>>&                          theNormals,
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips,

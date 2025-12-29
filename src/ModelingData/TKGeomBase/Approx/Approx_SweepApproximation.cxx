@@ -36,12 +36,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    Dimension,
-                        double  StartEnd[2],
-                        double* Parameter,
-                        int*    DerivativeRequest,
-                        double* Result, // [Dimension]
-                        int*    ErrorCode);
+  void Evaluate(int*    Dimension,
+                double  StartEnd[2],
+                double* Parameter,
+                int*    DerivativeRequest,
+                double* Result, // [Dimension]
+                int*    ErrorCode) override;
 
 private:
   Approx_SweepApproximation& Tool;

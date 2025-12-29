@@ -30,7 +30,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolExternalRefLibName::IGESBasic_ToolExternalRefLibName() {}
+IGESBasic_ToolExternalRefLibName::IGESBasic_ToolExternalRefLibName() = default;
 
 void IGESBasic_ToolExternalRefLibName::ReadOwnParams(
   const occ::handle<IGESBasic_ExternalRefLibName>& ent,

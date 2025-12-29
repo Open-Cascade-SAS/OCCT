@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities, IFSelect_SelectExtract)
 
-IFSelect_SelectErrorEntities::IFSelect_SelectErrorEntities() {}
+IFSelect_SelectErrorEntities::IFSelect_SelectErrorEntities() = default;
 
 bool IFSelect_SelectErrorEntities::Sort(const int,
                                         const occ::handle<Standard_Transient>&       ent,

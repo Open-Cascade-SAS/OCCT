@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWSphericalPairWithRange::RWStepKinematics_RWSphericalPairWithRange() {}
+RWStepKinematics_RWSphericalPairWithRange::RWStepKinematics_RWSphericalPairWithRange() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@
 #include <StepRepr_ExternallyDefinedRepresentation.hxx>
 #include <StepRepr_Representation.hxx>
 
-StepAP214_AutoDesignDateAndPersonItem::StepAP214_AutoDesignDateAndPersonItem() {}
+StepAP214_AutoDesignDateAndPersonItem::StepAP214_AutoDesignDateAndPersonItem() = default;
 
 int StepAP214_AutoDesignDateAndPersonItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

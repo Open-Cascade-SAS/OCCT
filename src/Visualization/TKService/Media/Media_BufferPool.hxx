@@ -30,7 +30,7 @@ public:
   Standard_EXPORT Media_BufferPool();
 
   //! Destructor
-  Standard_EXPORT ~Media_BufferPool();
+  Standard_EXPORT ~Media_BufferPool() override;
 
   //! Release the pool (reference-counted buffer will be released when needed).
   Standard_EXPORT void Release();
@@ -46,8 +46,8 @@ public:
 
 private:
   // prevent copies
-  Media_BufferPool(const Media_BufferPool& theCopy);
-  Media_BufferPool& operator=(const Media_BufferPool& theCopy);
+  Media_BufferPool(const Media_BufferPool& theCopy)            = delete;
+  Media_BufferPool& operator=(const Media_BufferPool& theCopy) = delete;
 
 protected:
   AVBufferPool* myPool;

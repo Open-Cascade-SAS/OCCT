@@ -61,7 +61,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_SpecificModule, IGESData_SpecificModule)
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESAppli_SpecificModule::IGESAppli_SpecificModule() {}
+IGESAppli_SpecificModule::IGESAppli_SpecificModule() = default;
 
 void IGESAppli_SpecificModule::OwnDump(const int                               CN,
                                        const occ::handle<IGESData_IGESEntity>& ent,

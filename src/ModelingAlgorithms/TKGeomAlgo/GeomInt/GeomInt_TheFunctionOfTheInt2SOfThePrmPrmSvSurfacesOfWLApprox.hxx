@@ -40,15 +40,15 @@ public:
     const occ::handle<Adaptor3d_Surface>& S1,
     const occ::handle<Adaptor3d_Surface>& S2);
 
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT int NbEquations() const;
+  Standard_EXPORT int NbEquations() const override;
 
-  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
   Standard_EXPORT void ComputeParameters(const IntImp_ConstIsoparametric   ChoixIso,
                                          const NCollection_Array1<double>& Param,

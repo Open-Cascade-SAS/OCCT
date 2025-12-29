@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaMoistureAbsorption,
 
 //=================================================================================================
 
-StepFEA_FeaMoistureAbsorption::StepFEA_FeaMoistureAbsorption() {}
+StepFEA_FeaMoistureAbsorption::StepFEA_FeaMoistureAbsorption() = default;
 
 //=================================================================================================
 

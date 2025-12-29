@@ -107,7 +107,7 @@ bool MeshVS_DeformedDataSource::Get3DGeom(
 void* MeshVS_DeformedDataSource::GetAddr(const int ID, const bool IsElement) const
 {
   if (myNonDeformedDataSource.IsNull())
-    return 0;
+    return nullptr;
   else
     return myNonDeformedDataSource->GetAddr(ID, IsElement);
 }

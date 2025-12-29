@@ -18,7 +18,7 @@
 #include <StepVisual_FillAreaStyle.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
 
-RWStepVisual_RWSurfaceStyleFillArea::RWStepVisual_RWSurfaceStyleFillArea() {}
+RWStepVisual_RWSurfaceStyleFillArea::RWStepVisual_RWSurfaceStyleFillArea() = default;
 
 void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,

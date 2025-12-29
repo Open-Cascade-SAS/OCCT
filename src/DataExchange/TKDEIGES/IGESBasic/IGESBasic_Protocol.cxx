@@ -34,7 +34,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_Protocol, IGESData_Protocol)
 
-IGESBasic_Protocol::IGESBasic_Protocol() {}
+IGESBasic_Protocol::IGESBasic_Protocol() = default;
 
 int IGESBasic_Protocol::NbResources() const
 {

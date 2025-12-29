@@ -45,10 +45,10 @@ public:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Returns KOI_Object
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
 
   //! Returns 0
-  virtual int Signature() const override { return 0; }
+  int Signature() const override { return 0; }
 
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
@@ -88,13 +88,13 @@ public:
 
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
-  virtual bool AcceptShapeDecomposition() const override
+  bool AcceptShapeDecomposition() const override
   {
     return !myReference.IsNull() && myReference->AcceptShapeDecomposition();
   }
 
   //! Return true if reference presentation accepts specified display mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override
+  bool AcceptDisplayMode(const int theMode) const override
   {
     return myReference.IsNull() || myReference->AcceptDisplayMode(theMode);
   }
@@ -109,21 +109,20 @@ protected:
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         theprs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         theprs,
+                               const int                                      theMode) override;
 
   //! Computes the presentation according to a point of view.
-  Standard_EXPORT virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
-                                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
-                                          const occ::handle<Prs3d_Presentation>& thePrs) override;
+  Standard_EXPORT void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                  const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                                  const occ::handle<Prs3d_Presentation>& thePrs) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference sub shapes selection, creates and sets an entity

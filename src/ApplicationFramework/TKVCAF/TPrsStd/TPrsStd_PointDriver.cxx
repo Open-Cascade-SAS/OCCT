@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PointDriver, TPrsStd_Driver)
 // #include <TDataStd_Datum.hxx>
 //=================================================================================================
 
-TPrsStd_PointDriver::TPrsStd_PointDriver() {}
+TPrsStd_PointDriver::TPrsStd_PointDriver() = default;
 
 //=================================================================================================
 

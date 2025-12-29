@@ -42,13 +42,13 @@ public:
   const occ::handle<BRepTools_History>& History() const { return myHistory; }
 
   //! Drawing is not available.
-  Standard_EXPORT virtual void DrawOn(Draw_Display&) const override;
+  Standard_EXPORT void DrawOn(Draw_Display&) const override;
 
   //! Dumps the history.
-  Standard_EXPORT virtual void Dump(Standard_OStream& theS) const override;
+  Standard_EXPORT void Dump(Standard_OStream& theS) const override;
 
   //! Prints the type of the history object.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& theDI) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& theDI) const override;
 
 private:
   occ::handle<BRepTools_History> myHistory; //!< Tool for tracking History of shape's modification

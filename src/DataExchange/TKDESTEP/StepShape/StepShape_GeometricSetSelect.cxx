@@ -19,7 +19,7 @@
 #include <StepGeom_Surface.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
 
-StepShape_GeometricSetSelect::StepShape_GeometricSetSelect() {}
+StepShape_GeometricSetSelect::StepShape_GeometricSetSelect() = default;
 
 int StepShape_GeometricSetSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

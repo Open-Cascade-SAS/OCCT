@@ -51,7 +51,7 @@ public:
                                const double       theTolerance,
                                const bool         theSolidReq = true);
 
-  bool IsDone(unsigned int* theErrorCode = 0) const
+  bool IsDone(unsigned int* theErrorCode = nullptr) const
   {
     if (theErrorCode)
       *theErrorCode = myErrorStatus;

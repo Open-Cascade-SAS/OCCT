@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointOnCurve, StepGeom_Point)
 
-StepGeom_PointOnCurve::StepGeom_PointOnCurve() {}
+StepGeom_PointOnCurve::StepGeom_PointOnCurve() = default;
 
 void StepGeom_PointOnCurve::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const occ::handle<StepGeom_Curve>&           aBasisCurve,

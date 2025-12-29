@@ -76,7 +76,7 @@ public:
   void SetVParam(const double theVParam);
 
   //! Returns a value of the function.
-  Standard_EXPORT virtual bool Value(const double X, double& F) override;
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
 private:
   //! Private method. Returns the value for volume computation.

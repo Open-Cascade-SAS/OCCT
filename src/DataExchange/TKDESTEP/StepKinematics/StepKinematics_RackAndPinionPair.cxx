@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPair,
 
 //=================================================================================================
 
-StepKinematics_RackAndPinionPair::StepKinematics_RackAndPinionPair() {}
+StepKinematics_RackAndPinionPair::StepKinematics_RackAndPinionPair() = default;
 
 //=================================================================================================
 

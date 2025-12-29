@@ -52,8 +52,8 @@
 //=================================================================================================
 
 Extrema_FuncExtSS::Extrema_FuncExtSS()
-    : myS1(NULL),
-      myS2(NULL),
+    : myS1(nullptr),
+      myS2(nullptr),
       myU1(0.0),
       myV1(0.0),
       myU2(0.0),

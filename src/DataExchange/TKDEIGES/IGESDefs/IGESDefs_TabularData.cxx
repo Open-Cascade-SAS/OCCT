@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_TabularData, IGESData_IGESEntity)
 
-IGESDefs_TabularData::IGESDefs_TabularData() {}
+IGESDefs_TabularData::IGESDefs_TabularData() = default;
 
 void IGESDefs_TabularData::Init(const int nbProps,
                                 const int propType,

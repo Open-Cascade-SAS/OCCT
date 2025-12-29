@@ -44,7 +44,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
   const vtkIdType aNbPts       = theSrc->GetNumberOfPoints();
   vtkDataArray*   anOldNormals = theSrc->GetPointData()->GetNormals();
 
-  if (theDst->GetPoints() == NULL)
+  if (theDst->GetPoints() == nullptr)
   {
     theDst->SetPoints(vtkSmartPointer<vtkPoints>::New());
   }
@@ -56,7 +56,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
   vtkCellData*                    aNewCellData = theDst->GetCellData();
   vtkPoints*                      aNewPoints   = theDst->GetPoints();
   vtkSmartPointer<vtkFloatArray>  aNewNormals;
-  if (anOldNormals != NULL)
+  if (anOldNormals != nullptr)
   {
     aNewNormals = vtkSmartPointer<vtkFloatArray>::New();
     aNewNormals->SetName("Normals");
@@ -91,7 +91,7 @@ static void copyCells(vtkPolyData* theDst, vtkPolyData* theSrc, vtkIdList* theId
         aPntMap->SetId(aPtId, aNewId);
         aNewPntData->CopyData(theSrc->GetPointData(), aPtId, aNewId);
 
-        if (anOldNormals != NULL)
+        if (anOldNormals != nullptr)
         {
           anOldNormals->GetTuple(aPtId, anXYZ.ChangeData());
           aNewNormals->InsertNextTuple(anXYZ.GetData());
@@ -121,7 +121,7 @@ vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 
 //=================================================================================================
 
-IVtkTools_SubPolyDataFilter::~IVtkTools_SubPolyDataFilter() {}
+IVtkTools_SubPolyDataFilter::~IVtkTools_SubPolyDataFilter() = default;
 
 //================================================================
 // Function : RequestData
@@ -154,7 +154,8 @@ int IVtkTools_SubPolyDataFilter::RequestData(vtkInformation*        vtkNotUsed(t
     vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
     anIdList->Allocate(myIdsSet.Extent()); // Allocate the list of ids
 
-    const vtkIdType aSize = aDataArray.GetPointer() != NULL ? aDataArray->GetNumberOfTuples() : 0;
+    const vtkIdType aSize =
+      aDataArray.GetPointer() != nullptr ? aDataArray->GetNumberOfTuples() : 0;
     if (aSize != 0)
     {
       anIdList->Allocate(aSize); // Allocate the list of ids
@@ -320,7 +321,7 @@ void IVtkTools_SubPolyDataFilter::Clear()
 // Function : SetData
 // Purpose  : Set ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType> theSet)
+void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType>& theSet)
 {
   myIdsSet = theSet;
 }
@@ -329,7 +330,7 @@ void IVtkTools_SubPolyDataFilter::SetData(const NCollection_Map<IVtk_IdType> the
 // Function : AddData
 // Purpose  : Add ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType> theSet)
+void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType>& theSet)
 {
   for (NCollection_Map<IVtk_IdType>::Iterator anIt(theSet); anIt.More(); anIt.Next())
   {
@@ -344,7 +345,7 @@ void IVtkTools_SubPolyDataFilter::AddData(const NCollection_Map<IVtk_IdType> the
 // Function : SetData
 // Purpose  : Set ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType> theIdList)
+void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType>& theIdList)
 {
   myIdsSet.Clear();
   AddData(theIdList);
@@ -354,7 +355,7 @@ void IVtkTools_SubPolyDataFilter::SetData(const NCollection_List<IVtk_IdType> th
 // Function : AddData
 // Purpose  : Add ids to be passed through this filter.
 //================================================================
-void IVtkTools_SubPolyDataFilter::AddData(const NCollection_List<IVtk_IdType> theIdList)
+void IVtkTools_SubPolyDataFilter::AddData(const NCollection_List<IVtk_IdType>& theIdList)
 {
   for (NCollection_List<IVtk_IdType>::Iterator anIt(theIdList); anIt.More(); anIt.Next())
   {

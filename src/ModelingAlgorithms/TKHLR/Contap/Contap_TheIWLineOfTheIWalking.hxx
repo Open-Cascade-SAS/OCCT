@@ -39,7 +39,7 @@ class Contap_TheIWLineOfTheIWalking : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Contap_TheIWLineOfTheIWalking(const IntSurf_Allocator& theAllocator = 0);
+  Standard_EXPORT Contap_TheIWLineOfTheIWalking(const IntSurf_Allocator& theAllocator = nullptr);
 
   //! reverse the points in the line. Hasfirst, HasLast are kept.
   Standard_EXPORT void Reverse();

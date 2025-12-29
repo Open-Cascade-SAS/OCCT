@@ -85,7 +85,7 @@ occ::handle<TDataXtd_Axis> TDataXtd_Axis::Set(const TDF_Label& L, const gp_Lin& 
 
 //=================================================================================================
 
-TDataXtd_Axis::TDataXtd_Axis() {}
+TDataXtd_Axis::TDataXtd_Axis() = default;
 
 //=================================================================================================
 

@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RoundnessTolerance, StepDimTol_GeometricTo
 
 //=================================================================================================
 
-StepDimTol_RoundnessTolerance::StepDimTol_RoundnessTolerance() {}
+StepDimTol_RoundnessTolerance::StepDimTol_RoundnessTolerance() = default;

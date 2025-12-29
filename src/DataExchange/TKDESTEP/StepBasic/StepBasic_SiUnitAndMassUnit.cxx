@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit, StepBasic_SiUnit)
 
 //=================================================================================================
 
-StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit() {}
+StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit() = default;
 
 //=================================================================================================
 

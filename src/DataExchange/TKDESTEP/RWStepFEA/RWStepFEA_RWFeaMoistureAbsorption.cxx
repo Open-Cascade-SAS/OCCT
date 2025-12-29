@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaMoistureAbsorption::RWStepFEA_RWFeaMoistureAbsorption() {}
+RWStepFEA_RWFeaMoistureAbsorption::RWStepFEA_RWFeaMoistureAbsorption() = default;
 
 //=================================================================================================
 

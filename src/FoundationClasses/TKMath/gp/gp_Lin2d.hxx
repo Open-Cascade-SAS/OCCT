@@ -42,7 +42,7 @@ public:
 
   //! Creates a Line corresponding to X axis of the
   //! reference coordinate system.
-  constexpr gp_Lin2d() noexcept {}
+  constexpr gp_Lin2d() noexcept = default;
 
   //! Creates a line located with theA.
   constexpr gp_Lin2d(const gp_Ax2d& theA) noexcept

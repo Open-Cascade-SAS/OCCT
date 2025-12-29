@@ -54,9 +54,9 @@ public:
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& DS) const override;
+  Standard_EXPORT void References(const occ::handle<TDF_DataSet>& DS) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 };

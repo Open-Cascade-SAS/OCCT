@@ -30,9 +30,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWLinearFlexibleLinkRepresentation::
-  RWStepKinematics_RWLinearFlexibleLinkRepresentation()
-{
-}
+  RWStepKinematics_RWLinearFlexibleLinkRepresentation() = default;
 
 //=================================================================================================
 

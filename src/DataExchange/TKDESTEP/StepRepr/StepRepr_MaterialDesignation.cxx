@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialDesignation, Standard_Transient)
 
-StepRepr_MaterialDesignation::StepRepr_MaterialDesignation() {}
+StepRepr_MaterialDesignation::StepRepr_MaterialDesignation() = default;
 
 void StepRepr_MaterialDesignation::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                         const StepRepr_CharacterizedDefinition&      aOfDefinition)

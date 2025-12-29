@@ -20,9 +20,8 @@
 
 //=================================================================================================
 
-StepVisual_CameraModelD3MultiClippingUnionSelect::StepVisual_CameraModelD3MultiClippingUnionSelect()
-{
-}
+StepVisual_CameraModelD3MultiClippingUnionSelect::
+  StepVisual_CameraModelD3MultiClippingUnionSelect() = default;
 
 //=================================================================================================
 

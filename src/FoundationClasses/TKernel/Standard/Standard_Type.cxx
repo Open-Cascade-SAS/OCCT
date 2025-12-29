@@ -155,5 +155,6 @@ Standard_Type::~Standard_Type()
   // remove descriptor from the registry
   registry_type& aRegistry = GetRegistry();
   Standard_ASSERT(aRegistry.UnBind(mySystemName),
-                  "Standard_Type::~Standard_Type() cannot find itself in registry", );
+                  "Standard_Type::~Standard_Type() cannot find itself in registry",
+                  Standard_VOID_RETURN);
 }

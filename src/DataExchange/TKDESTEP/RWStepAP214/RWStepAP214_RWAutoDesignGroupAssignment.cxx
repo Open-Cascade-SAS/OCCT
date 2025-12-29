@@ -22,7 +22,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAutoDesignGroupAssignment::RWStepAP214_RWAutoDesignGroupAssignment() {}
+RWStepAP214_RWAutoDesignGroupAssignment::RWStepAP214_RWAutoDesignGroupAssignment() = default;
 
 void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,

@@ -31,7 +31,7 @@
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESGraph_ToolNominalSize::IGESGraph_ToolNominalSize() {}
+IGESGraph_ToolNominalSize::IGESGraph_ToolNominalSize() = default;
 
 void IGESGraph_ToolNominalSize::ReadOwnParams(const occ::handle<IGESGraph_NominalSize>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /*IR*/,

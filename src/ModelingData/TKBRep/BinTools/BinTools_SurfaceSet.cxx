@@ -54,7 +54,7 @@
 
 //=================================================================================================
 
-BinTools_SurfaceSet::BinTools_SurfaceSet() {}
+BinTools_SurfaceSet::BinTools_SurfaceSet() = default;
 
 //=================================================================================================
 
@@ -210,8 +210,8 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BezierSurface>& S)
 {
   OS << (uint8_t)BEZIER;
-  bool urational = S->IsURational() ? 1 : 0;
-  bool vrational = S->IsVRational() ? 1 : 0;
+  bool urational = S->IsURational() ? true : false;
+  bool vrational = S->IsVRational() ? true : false;
   OS << urational; // rational
   OS << vrational;
 
@@ -243,10 +243,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BSplineSurface>& S)
 {
   OS << (uint8_t)BSPLINE;
-  bool urational = S->IsURational() ? 1 : 0;
-  bool vrational = S->IsVRational() ? 1 : 0;
-  bool uperiodic = S->IsUPeriodic() ? 1 : 0;
-  bool vperiodic = S->IsVPeriodic() ? 1 : 0;
+  bool urational = S->IsURational() ? true : false;
+  bool vrational = S->IsVRational() ? true : false;
+  bool uperiodic = S->IsUPeriodic() ? true : false;
+  bool vperiodic = S->IsVPeriodic() ? true : false;
   OS << urational;
   OS << vrational;
   OS << uperiodic;
@@ -792,7 +792,7 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
       break;
 
       default: {
-        S = NULL;
+        S = nullptr;
         throw Standard_Failure("UNKNOWN SURFACE TYPE");
       }
       break;
@@ -800,7 +800,7 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
   }
   catch (Standard_Failure const& anException)
   {
-    S = NULL;
+    S = nullptr;
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << std::endl;
     aMsg << anException << std::endl;

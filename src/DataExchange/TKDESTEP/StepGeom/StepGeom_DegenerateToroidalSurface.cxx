@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_DegenerateToroidalSurface, StepGeom_ToroidalSurface)
 
-StepGeom_DegenerateToroidalSurface::StepGeom_DegenerateToroidalSurface() {}
+StepGeom_DegenerateToroidalSurface::StepGeom_DegenerateToroidalSurface() = default;
 
 void StepGeom_DegenerateToroidalSurface::Init(
   const occ::handle<TCollection_HAsciiString>&  aName,

@@ -198,7 +198,7 @@ void TransferBRep_Reader::TransferList(
 
   if (theProc->TraceLevel() > 1)
     sout << "--  Transfer(Read-List) : " << nb << " Items" << std::endl;
-  Message_ProgressScope aPS(theProgress, NULL, nb);
+  Message_ProgressScope aPS(theProgress, nullptr, nb);
   for (i = 1; i <= nb && aPS.More(); i++)
   {
     Message_ProgressRange           aRange = aPS.Next();
@@ -310,4 +310,4 @@ occ::handle<Transfer_TransientProcess> TransferBRep_Reader::TransientProcess() c
   return theProc;
 }
 
-TransferBRep_Reader::~TransferBRep_Reader() {}
+TransferBRep_Reader::~TransferBRep_Reader() = default;

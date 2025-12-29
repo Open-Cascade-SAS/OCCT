@@ -69,7 +69,7 @@ TEST(NCollection_VectorTest, Append)
 
 TEST(NCollection_VectorTest, SetValue)
 {
-  NCollection_Vector<int> aVector(5, 0);
+  NCollection_Vector<int> aVector(5, nullptr);
 
   // Test SetValue method
   aVector.SetValue(2, 42);

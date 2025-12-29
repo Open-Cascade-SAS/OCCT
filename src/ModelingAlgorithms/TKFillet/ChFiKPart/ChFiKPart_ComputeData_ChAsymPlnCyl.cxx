@@ -290,9 +290,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   Pt.SetCoord(Or.X() + ConRad * Dx.X(), Or.Y() + ConRad * Dx.Y(), Or.Z() + ConRad * Dx.Z());
   ElSLib::Parameters(Cyl, Pt, u, v);
   double tol           = Precision::PConfusion();
-  bool   careaboutsens = 0;
+  bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
-    careaboutsens = 1;
+    careaboutsens = true;
   if (u >= fu - tol && u < fu)
     u = fu;
   if (u <= lu + tol && u > lu)

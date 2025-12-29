@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Direction, StepGeom_GeometricRepresentationItem)
 
-StepGeom_Direction::StepGeom_Direction() {}
+StepGeom_Direction::StepGeom_Direction() = default;
 
 void StepGeom_Direction::Init(const occ::handle<TCollection_HAsciiString>&    theName,
                               const occ::handle<NCollection_HArray1<double>>& theDirectionRatios)

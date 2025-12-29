@@ -38,7 +38,7 @@ OpenGl_PointSprite::OpenGl_PointSprite(const TCollection_AsciiString& theResourc
 
 OpenGl_PointSprite::~OpenGl_PointSprite()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -48,8 +48,9 @@ void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
   if (myBitmapList != 0)
   {
     Standard_ASSERT_RETURN(
-      theGlCtx != NULL,
-      "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...", );
+      theGlCtx != nullptr,
+      "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...",
+      Standard_VOID_RETURN);
 
     if (theGlCtx->IsValid())
     {

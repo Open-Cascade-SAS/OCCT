@@ -85,7 +85,7 @@ protected:
   Standard_EXPORT Intf_Interference(const bool Self);
 
   //! Destructor is protected, for safer inheritance
-  ~Intf_Interference() {}
+  ~Intf_Interference() = default;
 
   //! Only one argument for the intersection.
   Standard_EXPORT void SelfInterference(const bool Self);

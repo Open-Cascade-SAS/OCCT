@@ -49,22 +49,21 @@ public:
                                     const bool                       Build = true);
 
   //! Say if the input shape is a vertex.
-  Standard_EXPORT virtual bool IsVertex() const override;
+  Standard_EXPORT bool IsVertex() const override;
 
   //! Say if the Law is Constant.
-  Standard_EXPORT virtual bool IsConstant() const override;
+  Standard_EXPORT bool IsConstant() const override;
 
   //! Give the law build on a concatenated section
-  Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
+  Standard_EXPORT occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int    Index,
-                                                   const double TolAngular) const override;
+  Standard_EXPORT GeomAbs_Shape Continuity(const int Index, const double TolAngular) const override;
 
-  Standard_EXPORT virtual double VertexTol(const int Index, const double Param) const override;
+  Standard_EXPORT double VertexTol(const int Index, const double Param) const override;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index, const double Param) const override;
+  Standard_EXPORT TopoDS_Vertex Vertex(const int Index, const double Param) const override;
 
-  Standard_EXPORT virtual void D0(const double Param, TopoDS_Shape& S) override;
+  Standard_EXPORT void D0(const double Param, TopoDS_Shape& S) override;
 
   const TopoDS_Edge& Edge(const int Index) const;
 

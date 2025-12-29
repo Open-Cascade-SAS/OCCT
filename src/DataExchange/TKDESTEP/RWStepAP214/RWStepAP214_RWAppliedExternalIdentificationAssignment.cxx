@@ -30,9 +30,7 @@
 //=================================================================================================
 
 RWStepAP214_RWAppliedExternalIdentificationAssignment::
-  RWStepAP214_RWAppliedExternalIdentificationAssignment()
-{
-}
+  RWStepAP214_RWAppliedExternalIdentificationAssignment() = default;
 
 //=================================================================================================
 

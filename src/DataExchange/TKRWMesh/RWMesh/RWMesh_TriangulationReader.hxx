@@ -60,7 +60,7 @@ public:
   Standard_EXPORT RWMesh_TriangulationReader();
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWMesh_TriangulationReader();
+  Standard_EXPORT ~RWMesh_TriangulationReader() override;
 
   //! Returns file name for reporting issues.
   const TCollection_AsciiString& FileName() const { return myFileName; }
@@ -120,7 +120,7 @@ public:
     if (myLoadingStatistic)
     {
       delete myLoadingStatistic;
-      myLoadingStatistic = NULL;
+      myLoadingStatistic = nullptr;
     }
   }
 

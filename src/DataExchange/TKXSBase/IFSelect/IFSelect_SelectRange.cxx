@@ -18,10 +18,10 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRange, IFSelect_SelectExtract)
 
-IFSelect_SelectRange::IFSelect_SelectRange() {}
+IFSelect_SelectRange::IFSelect_SelectRange() = default;
 
 void IFSelect_SelectRange::SetRange(const occ::handle<IFSelect_IntParam>& rankfrom,
                                     const occ::handle<IFSelect_IntParam>& rankto)

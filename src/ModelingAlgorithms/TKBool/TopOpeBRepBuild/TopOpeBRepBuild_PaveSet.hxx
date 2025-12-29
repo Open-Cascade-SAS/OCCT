@@ -44,13 +44,13 @@ public:
   //! Add <PV> in the Pave set.
   Standard_EXPORT void Append(const occ::handle<TopOpeBRepBuild_Pave>& PV);
 
-  Standard_EXPORT virtual void InitLoop() override;
+  Standard_EXPORT void InitLoop() override;
 
-  Standard_EXPORT virtual bool MoreLoop() const override;
+  Standard_EXPORT bool MoreLoop() const override;
 
-  Standard_EXPORT virtual void NextLoop() override;
+  Standard_EXPORT void NextLoop() override;
 
-  Standard_EXPORT virtual occ::handle<TopOpeBRepBuild_Loop> Loop() const override;
+  Standard_EXPORT occ::handle<TopOpeBRepBuild_Loop> Loop() const override;
 
   Standard_EXPORT const TopoDS_Edge& Edge() const;
 

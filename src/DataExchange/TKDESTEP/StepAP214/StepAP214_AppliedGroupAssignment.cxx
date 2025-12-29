@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment, StepBasic_GroupAssi
 
 //=================================================================================================
 
-StepAP214_AppliedGroupAssignment::StepAP214_AppliedGroupAssignment() {}
+StepAP214_AppliedGroupAssignment::StepAP214_AppliedGroupAssignment() = default;
 
 //=================================================================================================
 

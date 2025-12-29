@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierSurface, StepGeom_BSplineSurface)
 
-StepGeom_BezierSurface::StepGeom_BezierSurface() {}
+StepGeom_BezierSurface::StepGeom_BezierSurface() = default;

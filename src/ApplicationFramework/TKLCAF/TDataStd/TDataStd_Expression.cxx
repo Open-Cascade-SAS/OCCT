@@ -52,7 +52,7 @@ occ::handle<TDataStd_Expression> TDataStd_Expression::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-TDataStd_Expression::TDataStd_Expression() {}
+TDataStd_Expression::TDataStd_Expression() = default;
 
 //=================================================================================================
 

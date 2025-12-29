@@ -30,10 +30,10 @@ class IMeshTools_Context : public IMeshData_Shape
 {
 public:
   //! Constructor.
-  IMeshTools_Context() {}
+  IMeshTools_Context() = default;
 
   //! Destructor.
-  virtual ~IMeshTools_Context() {}
+  ~IMeshTools_Context() override = default;
 
   //! Builds model using assigned model builder.
   //! @return True on success, False elsewhere.

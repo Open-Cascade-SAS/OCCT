@@ -22,7 +22,7 @@
 
 #include "RWStepVisual_RWCentralOrParallel.pxx"
 
-RWStepVisual_RWViewVolume::RWStepVisual_RWViewVolume() {}
+RWStepVisual_RWViewVolume::RWStepVisual_RWViewVolume() = default;
 
 void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

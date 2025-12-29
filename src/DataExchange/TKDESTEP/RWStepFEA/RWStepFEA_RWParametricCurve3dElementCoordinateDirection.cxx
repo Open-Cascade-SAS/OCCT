@@ -25,9 +25,7 @@
 //=================================================================================================
 
 RWStepFEA_RWParametricCurve3dElementCoordinateDirection::
-  RWStepFEA_RWParametricCurve3dElementCoordinateDirection()
-{
-}
+  RWStepFEA_RWParametricCurve3dElementCoordinateDirection() = default;
 
 //=================================================================================================
 

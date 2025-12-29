@@ -70,7 +70,7 @@ public:
   static void Set(const char*           Name,
                   const occ::handle<T>& Arg,
                   typename opencascade::std::enable_if<
-                    opencascade::std::is_base_of<Geom_Geometry, T>::value>::type* = 0)
+                    opencascade::std::is_base_of<Geom_Geometry, T>::value>::type* = nullptr)
   {
     Set(Name, (const occ::handle<Geom_Geometry>&)Arg);
   }
@@ -87,7 +87,7 @@ public:
   static void Set(const char*           Name,
                   const occ::handle<T>& Arg,
                   typename opencascade::std::enable_if<
-                    opencascade::std::is_base_of<Geom2d_Curve, T>::value>::type* = 0)
+                    opencascade::std::is_base_of<Geom2d_Curve, T>::value>::type* = nullptr)
   {
     Set(Name, (const occ::handle<Geom2d_Curve>&)Arg);
   }

@@ -58,19 +58,19 @@ public:
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
     //
     if (myBuilderDefault)
     {
       delete myBuilderDefault;
-      myBuilderDefault = NULL;
+      myBuilderDefault = nullptr;
     }
   };
 
   //
   // IsValid
-  bool IsValid() const { return (myPaveFiller != NULL); }
+  bool IsValid() const { return (myPaveFiller != nullptr); }
 
   // PaveFiller
   BOPAlgo_PaveFiller& PaveFiller() { return *myPaveFiller; };

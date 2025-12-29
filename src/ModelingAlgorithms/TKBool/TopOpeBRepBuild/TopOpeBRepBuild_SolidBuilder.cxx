@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_SolidBuilder::TopOpeBRepBuild_SolidBuilder() {}
+TopOpeBRepBuild_SolidBuilder::TopOpeBRepBuild_SolidBuilder() = default;
 
 //=================================================================================================
 

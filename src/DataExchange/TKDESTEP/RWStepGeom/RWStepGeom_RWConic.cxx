@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Conic.hxx>
 
-RWStepGeom_RWConic::RWStepGeom_RWConic() {}
+RWStepGeom_RWConic::RWStepGeom_RWConic() = default;
 
 void RWStepGeom_RWConic::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                   const int                                   num,

@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_TNameContainer, TDF_Attribute)
 
 //=================================================================================================
 
-TObj_TNameContainer::TObj_TNameContainer() {}
+TObj_TNameContainer::TObj_TNameContainer() = default;
 
 //=================================================================================================
 

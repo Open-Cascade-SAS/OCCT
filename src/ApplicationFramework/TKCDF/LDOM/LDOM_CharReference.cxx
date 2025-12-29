@@ -17,9 +17,9 @@
 
 #include <Standard_CString.hxx>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 //   Uncomment this line if you want that your XML files contain codes 0xc0-0xff
 //   as defined in Latin-1 code set. Otherwise these codes are written
@@ -63,7 +63,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
   for (;;)
   {
     char* aPtr = strchr(aSrcPtr, '&');
-    if (aPtr == NULL)
+    if (aPtr == nullptr)
     {
       //        End of the loop
       aPtr = strchr(aSrcPtr, '\0');
@@ -92,7 +92,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
         aChar = strtoul(&aSrcPtr[2], &aNewPtr, 10); // decimal encoding
       if (aNewPtr[0] != ';' || aChar == 0 || aChar > 255UL)
         //      Error reading an XML string
-        return NULL;
+        return nullptr;
       aDstPtr[-1] = (char)aChar;
       anIncrCount += (int)(aNewPtr - aSrcPtr);
       aSrcPtr = &aNewPtr[1];
@@ -154,7 +154,7 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
 char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isAttribute)
 {
   // Initialising the constants
-  static const struct entityRef entity_ref[6] = {entityRef(NULL, 0),
+  static const struct entityRef entity_ref[6] = {entityRef(nullptr, 0),
                                                  entityRef("&amp;", 5),
                                                  entityRef("&lt;", 4),
                                                  entityRef("&gt;", 4),

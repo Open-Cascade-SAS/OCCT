@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DEPLY_Provider, DE_Provider)
 
 //=================================================================================================
 
-DEPLY_Provider::DEPLY_Provider() {}
+DEPLY_Provider::DEPLY_Provider() = default;
 
 //=================================================================================================
 

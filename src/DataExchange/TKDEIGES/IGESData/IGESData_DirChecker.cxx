@@ -21,7 +21,7 @@
 #include <Interface_Check.hxx>
 #include <Message_Msg.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //  For Correct :
 // MGE 23/07/98

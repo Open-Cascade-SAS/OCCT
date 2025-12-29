@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined CompSolid.
-  TopoDS_CompSolid() {}
+  TopoDS_CompSolid() = default;
 };
 
 namespace std

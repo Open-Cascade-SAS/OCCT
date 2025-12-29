@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWSurfaceStyleRendering::RWStepVisual_RWSurfaceStyleRendering() {}
+RWStepVisual_RWSurfaceStyleRendering::RWStepVisual_RWSurfaceStyleRendering() = default;
 
 //=================================================================================================
 

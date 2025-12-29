@@ -47,14 +47,8 @@ Geom_OsculatingSurface::Geom_OsculatingSurface(const occ::handle<Geom_Surface>& 
 //=================================================================================================
 
 Geom_OsculatingSurface::Geom_OsculatingSurface(const Geom_OsculatingSurface& theOther)
-    : myBasisSurf(theOther.myBasisSurf),
-      myTol(theOther.myTol),
-      myOsculSurf1(theOther.myOsculSurf1),
-      myOsculSurf2(theOther.myOsculSurf2),
-      myKdeg(theOther.myKdeg),
-      myAlong(theOther.myAlong)
-{
-}
+
+  = default;
 
 //=================================================================================================
 
@@ -722,8 +716,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
                                       Data.VMultiplicities()->Array1(),
                                       Data.UDegree(),
                                       Data.VDegree(),
-                                      0,
-                                      0);
+                                      false,
+                                      false);
 #ifdef OCCT_DEBUG
     std::cout << "^====================================^" << std::endl << std::endl;
 #endif

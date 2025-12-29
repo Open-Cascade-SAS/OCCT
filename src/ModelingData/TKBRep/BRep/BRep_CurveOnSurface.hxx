@@ -46,28 +46,27 @@ public:
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Returns True.
-  Standard_EXPORT virtual bool IsCurveOnSurface() const override;
+  Standard_EXPORT bool IsCurveOnSurface() const override;
 
   //! A curve in the parametric space of a surface.
-  Standard_EXPORT virtual bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const override;
+  Standard_EXPORT bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
+                                        const TopLoc_Location&           L) const override;
 
-  Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface() const override;
+  Standard_EXPORT const occ::handle<Geom_Surface>& Surface() const override;
 
-  Standard_EXPORT virtual const occ::handle<Geom2d_Curve>& PCurve() const override;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve() const override;
 
-  Standard_EXPORT virtual void PCurve(const occ::handle<Geom2d_Curve>& C) override;
+  Standard_EXPORT void PCurve(const occ::handle<Geom2d_Curve>& C) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Recomputes any derived data after a modification.
   //! This is called when the range is modified.
-  Standard_EXPORT virtual void Update() override;
+  Standard_EXPORT void Update() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 

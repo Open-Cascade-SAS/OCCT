@@ -23,27 +23,25 @@
 //=================================================================================================
 
 BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
-    : BRepAlgoAPI_Algo(),
-      myNonDestructive(false),
+    : myNonDestructive(false),
       myGlue(BOPAlgo_GlueOff),
       myCheckInverted(true),
       myFillHistory(true),
       myIsIntersectionNeeded(true),
-      myDSFiller(NULL),
-      myBuilder(NULL)
+      myDSFiller(nullptr),
+      myBuilder(nullptr)
 {
 }
 
 //=================================================================================================
 
 BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& aPF)
-    : BRepAlgoAPI_Algo(),
-      myNonDestructive(false),
+    : myNonDestructive(false),
       myGlue(BOPAlgo_GlueOff),
       myCheckInverted(true),
       myFillHistory(true),
       myIsIntersectionNeeded(false),
-      myBuilder(NULL)
+      myBuilder(nullptr)
 {
   myDSFiller = (BOPAlgo_PaveFiller*)&aPF;
 }
@@ -63,12 +61,12 @@ void BRepAlgoAPI_BuilderAlgo::Clear()
   if (myDSFiller && myIsIntersectionNeeded)
   {
     delete myDSFiller;
-    myDSFiller = NULL;
+    myDSFiller = nullptr;
   }
   if (myBuilder)
   {
     delete myBuilder;
-    myBuilder = NULL;
+    myBuilder = nullptr;
   }
   if (myHistory)
     myHistory.Nullify();
@@ -244,7 +242,7 @@ bool BRepAlgoAPI_BuilderAlgo::HasDeleted() const
 const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_BuilderAlgo::SectionEdges()
 {
   myGenerated.Clear();
-  if (myBuilder == NULL)
+  if (myBuilder == nullptr)
     return myGenerated;
 
   // Fence map to avoid duplicated section edges in the result list

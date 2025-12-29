@@ -204,7 +204,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
       vperiodic(VPeriodic),
       udeg(UDegree),
       vdeg(VDegree),
-      maxderivinvok(0)
+      maxderivinvok(false)
 
 {
 
@@ -253,7 +253,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
       vperiodic(VPeriodic),
       udeg(UDegree),
       vdeg(VDegree),
-      maxderivinvok(0)
+      maxderivinvok(false)
 {
   // check weights
 
@@ -324,16 +324,16 @@ void Geom_BSplineSurface::ExchangeUV()
   }
 
   const NCollection_Array2<gp_Pnt>& spoles   = poles->Array2();
-  const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : NULL;
+  const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : nullptr;
 
   NCollection_Array2<gp_Pnt>& snpoles   = npoles->ChangeArray2();
-  NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : NULL;
+  NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : nullptr;
   for (int i = LC; i <= UC; i++)
   {
     for (int j = LR; j <= UR; j++)
     {
       snpoles(i, j) = spoles(j, i);
-      if (snweights != NULL)
+      if (snweights != nullptr)
       {
         snweights->ChangeValue(i, j) = sweights->Value(j, i);
       }
@@ -821,7 +821,7 @@ void Geom_BSplineSurface::segment(const double U1,
   else
     weights = new NCollection_HArray2<double>(1, poles->ColLength(), 1, poles->RowLength(), 1.0);
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateUKnots();
   UpdateVKnots();
 }
@@ -908,7 +908,7 @@ void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K)
   if (K != uknots->Value(NewIndex))
   {
     uknots->SetValue(NewIndex, K);
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateUKnots();
   }
 }
@@ -952,7 +952,7 @@ void Geom_BSplineSurface::SetUKnots(const NCollection_Array1<double>& UK)
     }
   }
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateUKnots();
 }
 
@@ -997,7 +997,7 @@ void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K)
   if (K != vknots->Value(NewIndex))
   {
     vknots->SetValue(NewIndex, K);
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateVKnots();
   }
 }
@@ -1041,7 +1041,7 @@ void Geom_BSplineSurface::SetVKnots(const NCollection_Array1<double>& VK)
     }
   }
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateVKnots();
 }
 

@@ -35,13 +35,13 @@ public:
   Standard_EXPORT BinMFunction_GraphNodeDriver(
     const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       Source,
-                                     const occ::handle<TDF_Attribute>& Target,
-                                     BinObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT virtual void Paste(
+  Standard_EXPORT void Paste(
     const occ::handle<TDF_Attribute>&                        Source,
     BinObjMgt_Persistent&                                    Target,
     NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;

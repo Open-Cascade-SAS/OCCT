@@ -24,4 +24,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,
 
 //=================================================================================================
 
-StepRepr_FeatureForDatumTargetRelationship::StepRepr_FeatureForDatumTargetRelationship() {}
+StepRepr_FeatureForDatumTargetRelationship::StepRepr_FeatureForDatumTargetRelationship() = default;

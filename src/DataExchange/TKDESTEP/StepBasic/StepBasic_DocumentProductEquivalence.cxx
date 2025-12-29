@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,
 
 //=================================================================================================
 
-StepBasic_DocumentProductEquivalence::StepBasic_DocumentProductEquivalence() {}
+StepBasic_DocumentProductEquivalence::StepBasic_DocumentProductEquivalence() = default;

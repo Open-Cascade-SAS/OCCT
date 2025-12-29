@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomAndCoefficient, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient() {}
+StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient() = default;
 
 //=================================================================================================
 

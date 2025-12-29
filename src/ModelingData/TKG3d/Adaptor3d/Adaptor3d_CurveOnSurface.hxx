@@ -44,7 +44,7 @@ public:
                                            const occ::handle<Adaptor3d_Surface>& S);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Changes the surface.
   Standard_EXPORT void Load(const occ::handle<Adaptor3d_Surface>& S);

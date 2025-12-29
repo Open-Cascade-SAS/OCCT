@@ -38,10 +38,10 @@
 #include <NCollection_List.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 //
 //
-static BOPAlgo_PaveFiller* pPF = NULL;
+static BOPAlgo_PaveFiller* pPF = nullptr;
 //
 
 static int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp);
@@ -142,10 +142,10 @@ int bop(Draw_Interpretor& di, int n, const char** a)
   aLC.Append(aS1);
   aLC.Append(aS2);
   //
-  if (pPF != NULL)
+  if (pPF != nullptr)
   {
     delete pPF;
-    pPF = NULL;
+    pPF = nullptr;
   }
   occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
   pPF                                        = new BOPAlgo_PaveFiller(aAL);

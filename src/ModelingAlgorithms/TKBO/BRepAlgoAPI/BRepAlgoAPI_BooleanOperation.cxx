@@ -27,7 +27,7 @@
 #include <OSD_File.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // class : BRepAlgoAPI_DumpOper
@@ -48,7 +48,7 @@ public:
   };
 
   //
-  virtual ~BRepAlgoAPI_DumpOper() {};
+  virtual ~BRepAlgoAPI_DumpOper() = default;
 
   //
   bool IsDump() const { return myIsDump; };
@@ -81,8 +81,7 @@ protected:
 //=================================================================================================
 
 BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation()
-    : BRepAlgoAPI_BuilderAlgo(),
-      myOperation(BOPAlgo_UNKNOWN)
+    : myOperation(BOPAlgo_UNKNOWN)
 {
 }
 
@@ -99,8 +98,7 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFil
 BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&     theS1,
                                                            const TopoDS_Shape&     theS2,
                                                            const BOPAlgo_Operation theOp)
-    : BRepAlgoAPI_BuilderAlgo(),
-      myOperation(theOp)
+    : myOperation(theOp)
 {
   myArguments.Append(theS1);
   myTools.Append(theS2);

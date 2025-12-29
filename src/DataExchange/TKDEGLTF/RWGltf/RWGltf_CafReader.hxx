@@ -91,13 +91,13 @@ public:
 
 protected:
   //! Read the mesh from specified file.
-  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
-                                           const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe) override;
+  Standard_EXPORT bool performMesh(std::istream&                  theStream,
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe) override;
 
   //! Fill document with new root shapes.
-  Standard_EXPORT virtual void fillDocument() override;
+  Standard_EXPORT void fillDocument() override;
 
   //! Append new shape into the document (recursively).
   Standard_EXPORT bool addShapeIntoDoc(CafDocumentTools&              theTools,

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndTimeUnit, StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndTimeUnit::StepBasic_ConversionBasedUnitAndTimeUnit() {}
+StepBasic_ConversionBasedUnitAndTimeUnit::StepBasic_ConversionBasedUnitAndTimeUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndTimeUnit::Init(
   const occ::handle<StepBasic_DimensionalExponents>& aDimensions,

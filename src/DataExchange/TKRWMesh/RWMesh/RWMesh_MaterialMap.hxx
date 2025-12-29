@@ -29,7 +29,7 @@ public:
   Standard_EXPORT RWMesh_MaterialMap(const TCollection_AsciiString& theFile);
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWMesh_MaterialMap();
+  Standard_EXPORT ~RWMesh_MaterialMap() override;
 
   //! Return default material definition to be used for nodes with only color defined.
   const XCAFPrs_Style& DefaultStyle() const { return myDefaultStyle; }

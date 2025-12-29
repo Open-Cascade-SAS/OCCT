@@ -48,7 +48,7 @@ double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& 
 {
   occ::handle<BRepAdaptor_Curve2d> brhc = occ::down_cast<BRepAdaptor_Curve2d>(C);
   const TopoDS_Face&               F    = brhc->Face();
-  BRepAdaptor_Surface              S(F, 0);
+  BRepAdaptor_Surface              S(F, false);
   double                           tv = BRep_Tool::Tolerance(myVtx);
   double                           pp, p = BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
   TopAbs_Orientation               Or = Orientation();

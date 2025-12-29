@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerFiles, IFSelect_Dispatch)
 
-IFSelect_DispPerFiles::IFSelect_DispPerFiles() {}
+IFSelect_DispPerFiles::IFSelect_DispPerFiles() = default;
 
 occ::handle<IFSelect_IntParam> IFSelect_DispPerFiles::Count() const
 {

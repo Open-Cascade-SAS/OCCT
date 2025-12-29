@@ -44,7 +44,7 @@ public:
                                           const double                          Deflection,
                                           const int                             DrawMode);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   Standard_EXPORT void DrawOn(Draw_Display& dis, const bool ShowPoles, const bool ShowKnots) const;
 
@@ -93,7 +93,7 @@ public:
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
   bool             drawPoles;

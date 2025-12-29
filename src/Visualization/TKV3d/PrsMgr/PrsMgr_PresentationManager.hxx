@@ -134,7 +134,7 @@ public:
     const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
     const occ::handle<Prs3d_Drawer>&             theStyle,
     const int                                    theMode   = 0,
-    const occ::handle<PrsMgr_PresentableObject>& theSelObj = NULL,
+    const occ::handle<PrsMgr_PresentableObject>& theSelObj = nullptr,
     const Graphic3d_ZLayerId theImmediateStructLayerId     = Graphic3d_ZLayerId_Topmost);
 
   Standard_EXPORT void Connect(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
@@ -169,7 +169,7 @@ public:
     const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
     const int                                    theMode     = 0,
     const bool                                   theToCreate = false,
-    const occ::handle<PrsMgr_PresentableObject>& theSelObj   = NULL) const;
+    const occ::handle<PrsMgr_PresentableObject>& theSelObj   = nullptr) const;
 
   //! Allows to apply location transformation to shadow highlight presentation immediately.
   //! @param theObj defines the base object, it local transformation will be applied to
@@ -181,7 +181,7 @@ public:
     const occ::handle<V3d_Viewer>&               theViewer,
     const occ::handle<PrsMgr_PresentableObject>& theObj,
     const int                                    theMode   = 0,
-    const occ::handle<PrsMgr_PresentableObject>& theSelObj = NULL);
+    const occ::handle<PrsMgr_PresentableObject>& theSelObj = nullptr);
 
 protected:
   //! Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject

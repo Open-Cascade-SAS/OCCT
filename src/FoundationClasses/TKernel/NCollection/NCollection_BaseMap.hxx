@@ -47,7 +47,7 @@ public:
   {
   protected:
     //! Empty constructor
-    Iterator(void) noexcept
+    Iterator() noexcept
         : myNbBuckets(0),
           myBuckets(nullptr),
           myBucket(0),
@@ -88,7 +88,7 @@ public:
     }
 
     //! Reset
-    void Reset(void) noexcept
+    void Reset() noexcept
     {
       myBucket = -1;
       myNode   = nullptr;
@@ -103,10 +103,10 @@ public:
 
   protected:
     //! PMore
-    bool PMore(void) const noexcept { return (myNode != nullptr); }
+    bool PMore() const noexcept { return (myNode != nullptr); }
 
     //! PNext
-    void PNext(void) noexcept
+    void PNext() noexcept
     {
       if (!myBuckets)
         return;
@@ -184,7 +184,7 @@ protected:
   }
 
   //! Destructor
-  virtual ~NCollection_BaseMap() {}
+  virtual ~NCollection_BaseMap() = default;
 
   //! BeginResize
   Standard_EXPORT bool BeginResize(const int               NbBuckets,

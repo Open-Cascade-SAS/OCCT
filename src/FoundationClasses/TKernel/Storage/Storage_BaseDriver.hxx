@@ -37,7 +37,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Storage_BaseDriver, Standard_Transient)
 
 public:
-  Standard_EXPORT virtual ~Storage_BaseDriver();
+  Standard_EXPORT ~Storage_BaseDriver() override;
 
   TCollection_AsciiString Name() const { return myName; }
 

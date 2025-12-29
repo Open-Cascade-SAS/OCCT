@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Virtual destructor, for safe inheritance
-  virtual ~math_Function() {}
+  virtual ~math_Function() = default;
 
   //! Computes the value of the function <F> for a given value of
   //! variable <X>.

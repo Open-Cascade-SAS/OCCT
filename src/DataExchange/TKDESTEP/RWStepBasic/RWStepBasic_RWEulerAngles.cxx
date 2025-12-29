@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWEulerAngles::RWStepBasic_RWEulerAngles() {}
+RWStepBasic_RWEulerAngles::RWStepBasic_RWEulerAngles() = default;
 
 //=================================================================================================
 

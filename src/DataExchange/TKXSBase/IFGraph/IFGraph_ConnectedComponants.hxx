@@ -36,7 +36,7 @@ public:
   Standard_EXPORT IFGraph_ConnectedComponants(const Interface_Graph& agraph, const bool whole);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 };
 
 #endif // _IFGraph_ConnectedComponants_HeaderFile

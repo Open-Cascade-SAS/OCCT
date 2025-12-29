@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_PrecisionQualifier, Standard_Transient)
 
-StepShape_PrecisionQualifier::StepShape_PrecisionQualifier() {}
+StepShape_PrecisionQualifier::StepShape_PrecisionQualifier() = default;
 
 void StepShape_PrecisionQualifier::Init(const int precision_value)
 {

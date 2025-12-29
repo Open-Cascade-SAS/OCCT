@@ -84,9 +84,9 @@ public:
   }
 
 private:
-  EdgeAmplifier(const EdgeAmplifier& theOther);
+  EdgeAmplifier(const EdgeAmplifier& theOther) = delete;
 
-  void operator=(const EdgeAmplifier& theOther);
+  void operator=(const EdgeAmplifier& theOther) = delete;
 
 private:
   const IMeshTools_Parameters& myParameters;
@@ -114,11 +114,11 @@ bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
 
 //=================================================================================================
 
-BRepMesh_ModelHealer::BRepMesh_ModelHealer() {}
+BRepMesh_ModelHealer::BRepMesh_ModelHealer() = default;
 
 //=================================================================================================
 
-BRepMesh_ModelHealer::~BRepMesh_ModelHealer() {}
+BRepMesh_ModelHealer::~BRepMesh_ModelHealer() = default;
 
 //=================================================================================================
 
@@ -455,11 +455,11 @@ bool BRepMesh_ModelHealer::connectClosestPoints(const IMeshData::IPCurveHandle& 
   gp_Pnt2d& aCurrFirstUV = theCurrDEdge->GetPoint(0);
   gp_Pnt2d& aCurrLastUV  = theCurrDEdge->GetPoint(theCurrDEdge->ParametersNb() - 1);
 
-  gp_Pnt2d *   aPrevUV = NULL, *aCurrPrevUV = NULL;
+  gp_Pnt2d *   aPrevUV = nullptr, *aCurrPrevUV = nullptr;
   const double aPrevSqDist =
     closestPoints(aPrevFirstUV, aPrevLastUV, aCurrFirstUV, aCurrLastUV, aPrevUV, aCurrPrevUV);
 
-  gp_Pnt2d *aNextUV = NULL, *aCurrNextUV = NULL;
+  gp_Pnt2d *aNextUV = nullptr, *aCurrNextUV = nullptr;
   if (thePrevDEdge == theNextDEdge)
   {
     // Wire consists of two edges. Connect both ends.

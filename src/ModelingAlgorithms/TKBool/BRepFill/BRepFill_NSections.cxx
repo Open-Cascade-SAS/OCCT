@@ -48,7 +48,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
 
 #ifdef OCCT_DEBUG

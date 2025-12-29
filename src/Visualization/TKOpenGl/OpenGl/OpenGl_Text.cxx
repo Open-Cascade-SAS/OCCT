@@ -39,7 +39,7 @@ struct BackPolygonOffsetSentry
   BackPolygonOffsetSentry(OpenGl_Context* theCtx)
       : myCtx(theCtx)
   {
-    if (theCtx != NULL)
+    if (theCtx != nullptr)
     {
       myOffsetBack                        = theCtx->PolygonOffset();
       Graphic3d_PolygonOffset aPolyOffset = myOffsetBack;
@@ -51,15 +51,15 @@ struct BackPolygonOffsetSentry
 
   ~BackPolygonOffsetSentry()
   {
-    if (myCtx != NULL)
+    if (myCtx != nullptr)
     {
       myCtx->SetPolygonOffset(myOffsetBack);
     }
   }
 
 private:
-  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&);
-  BackPolygonOffsetSentry& operator=(const BackPolygonOffsetSentry&);
+  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&)            = delete;
+  BackPolygonOffsetSentry& operator=(const BackPolygonOffsetSentry&) = delete;
 
 private:
   OpenGl_Context*         myCtx;
@@ -149,7 +149,7 @@ void OpenGl_Text::releaseVbos(OpenGl_Context* theCtx)
     occ::handle<OpenGl_VertexBuffer>& aVerts = myVertsVbo.ChangeValue(anIter);
     occ::handle<OpenGl_VertexBuffer>& aTCrds = myTCrdsVbo.ChangeValue(anIter);
 
-    if (theCtx != NULL)
+    if (theCtx != nullptr)
     {
       theCtx->DelayedRelease(aVerts);
       theCtx->DelayedRelease(aTCrds);
@@ -157,7 +157,7 @@ void OpenGl_Text::releaseVbos(OpenGl_Context* theCtx)
     aVerts.Nullify();
     aTCrds.Nullify();
   }
-  if (theCtx != NULL && !myBndVertsVbo.IsNull())
+  if (theCtx != nullptr && !myBndVertsVbo.IsNull())
   {
     theCtx->DelayedRelease(myBndVertsVbo);
   }
@@ -177,7 +177,7 @@ void OpenGl_Text::Release(OpenGl_Context* theCtx)
   {
     const TCollection_AsciiString aKey = myFont->ResourceKey();
     myFont.Nullify();
-    if (theCtx != NULL)
+    if (theCtx != nullptr)
     {
       theCtx->ReleaseResource(aKey, true);
     }
@@ -640,7 +640,7 @@ void OpenGl_Text::drawRect(const occ::handle<OpenGl_Context>& theCtx,
                                            false,
                                            occ::handle<OpenGl_ShaderProgram>());
 
-  if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
+  if (theCtx->core11ffp != nullptr && theCtx->ActiveProgram().IsNull())
   {
     theCtx->core11fwd->glBindTexture(GL_TEXTURE_2D, 0);
   }
@@ -767,7 +767,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
     }
   }
 
-  if (theCtx->core11ffp != NULL && theCtx->caps->ffpEnable)
+  if (theCtx->core11ffp != nullptr && theCtx->caps->ffpEnable)
   {
     theCtx->core11fwd->glDisable(GL_LIGHTING);
   }
@@ -780,13 +780,13 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
     theCtx->core11fwd->glDisable(GL_DEPTH_TEST);
   }
 
-  if (theCtx->core15fwd != NULL)
+  if (theCtx->core15fwd != nullptr)
   {
     theCtx->core15fwd->glActiveTexture(GL_TEXTURE0);
   }
 
   // activate texture unit
-  if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
+  if (theCtx->core11ffp != nullptr && theCtx->ActiveProgram().IsNull())
   {
     const occ::handle<OpenGl_Texture>& aTexture = myFont->Texture();
     OpenGl_Sampler::applyGlobalTextureParams(theCtx, *aTexture, aTexture->Sampler()->Parameters());
@@ -814,12 +814,12 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
       break;
     }
     case Aspect_TODT_SUBTITLE: {
-      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : NULL);
+      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : nullptr);
       drawRect(theCtx, theTextAspect, theColorSubs);
       break;
     }
     case Aspect_TODT_DEKALE: {
-      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : NULL);
+      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : nullptr);
       theCtx->SetColor4fv(theColorSubs);
       setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(+1.0f, +1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
@@ -832,7 +832,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
       break;
     }
     case Aspect_TODT_SHADOW: {
-      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : NULL);
+      BackPolygonOffsetSentry aPolygonOffsetTmp(hasDepthTest ? theCtx.get() : nullptr);
       theCtx->SetColor4fv(theColorSubs);
       setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(+1.0f, -1.0f, 0.0f));
       drawText(theCtx, theTextAspect);
@@ -855,7 +855,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
     theCtx->ApplyProjectionMatrix();
   }
 
-  if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
+  if (theCtx->core11ffp != nullptr && theCtx->ActiveProgram().IsNull())
   {
     const occ::handle<OpenGl_Texture>& aTexture = myFont->Texture();
     OpenGl_Sampler::resetGlobalTextureParams(theCtx, *aTexture, aTexture->Sampler()->Parameters());
@@ -871,7 +871,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
     {
       theCtx->core11fwd->glDisable(GL_DEPTH_TEST);
     }
-    if (theCtx->core11ffp != NULL)
+    if (theCtx->core11ffp != nullptr)
     {
       theCtx->core11fwd->glDisable(GL_TEXTURE_2D);
     }

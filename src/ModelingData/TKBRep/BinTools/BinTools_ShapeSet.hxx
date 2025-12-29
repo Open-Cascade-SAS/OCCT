@@ -39,10 +39,10 @@ public:
   //! @param[in] theWithTriangles  flag to write triangulation data
   Standard_EXPORT BinTools_ShapeSet();
 
-  Standard_EXPORT virtual ~BinTools_ShapeSet();
+  Standard_EXPORT ~BinTools_ShapeSet() override;
 
   //! Clears the content of the set.
-  Standard_EXPORT virtual void Clear();
+  Standard_EXPORT void Clear() override;
 
   //! Stores <S> and its sub-shape. Returns the index of <S>.
   //! The method AddGeometry is called on each sub-shape.
@@ -73,9 +73,9 @@ public:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     Standard_OStream&            OS,
-    const Message_ProgressRange& theRange = Message_ProgressRange());
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Reads the content of me from the binary stream <IS>. me
   //! is first cleared.
@@ -89,14 +89,14 @@ public:
   //! Reads the type.
   //! calls ReadGeometry(T,S).
   //! Reads the flag, the subshapes.
-  Standard_EXPORT virtual void Read(
+  Standard_EXPORT void Read(
     Standard_IStream&            IS,
-    const Message_ProgressRange& theRange = Message_ProgressRange());
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Writes on <OS> the shape <S>. Writes the
   //! orientation, the index of the TShape and the index
   //! of the Location.
-  Standard_EXPORT virtual void Write(const TopoDS_Shape& S, Standard_OStream& OS);
+  Standard_EXPORT void Write(const TopoDS_Shape& S, Standard_OStream& OS) override;
 
   //! Writes the geometry of me on the stream <OS> in a
   //! binary format that can be read back by Read.
@@ -120,7 +120,8 @@ public:
   Standard_EXPORT virtual void ReadSubs(TopoDS_Shape& S, Standard_IStream& IS, const int NbShapes);
 
   //! An empty virtual method for redefinition in shape-reader.
-  Standard_EXPORT virtual void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) {};
+  Standard_EXPORT void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) override {
+  };
 
   //! Writes the shape <S> on the stream <OS> in a
   //! binary format that can be read back by Read.

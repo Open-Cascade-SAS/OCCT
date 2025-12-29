@@ -28,7 +28,7 @@ public:
                           StepVisual_TessellatedGeometricSet)
 
   //! Default constructor
-  StepVisual_RepositionedTessellatedGeometricSet() {};
+  StepVisual_RepositionedTessellatedGeometricSet() = default;
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(

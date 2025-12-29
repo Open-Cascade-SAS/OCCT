@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWAnnotationOccurrence::RWStepVisual_RWAnnotationOccurrence() {}
+RWStepVisual_RWAnnotationOccurrence::RWStepVisual_RWAnnotationOccurrence() = default;
 
 //=================================================================================================
 

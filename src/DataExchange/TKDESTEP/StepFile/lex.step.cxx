@@ -1,10 +1,12 @@
 // This file is part of Open CASCADE Technology software library.
 // This file is generated, do not modify it directly; edit source file step.lex instead.
 
+// NOLINTBEGIN - Flex-generated file, do not modify with clang-tidy
+
 // Pre-include stdlib.h to avoid redefinition of integer type macros (INT8_MIN and similar in
 // generated code)
 #if !defined(_MSC_VER) || (_MSC_VER >= 1600) // Visual Studio 2010+
-  #include "stdint.h"
+  #include <cstdint>
 #endif
 
 #define YY_INT_ALIGNED short int
@@ -121,7 +123,7 @@ typedef unsigned int       flex_uint32_t;
 
 /* begin standard C++ headers. */
 #include <iostream>
-#include <errno.h>
+#include <cerrno>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -520,7 +522,6 @@ static const flex_int16_t yy_chk[373] = {
 #define YY_NO_INPUT 1
 
 #include <step.tab.hxx>
-#include "stdio.h"
 
 // Tell flex which function to define
 #ifdef YY_DECL
@@ -712,7 +713,7 @@ YY_DECL
 
   {
 
-    while (/*CONSTCOND*/ 1) /* loops until end-of-file is reached */
+    while (/*CONSTCOND*/ true) /* loops until end-of-file is reached */
     {
       (yy_more_len) = 0;
       if ((yy_more_flag))
@@ -1254,7 +1255,7 @@ yyFlexLexer::yyFlexLexer(std::istream& arg_yyin, std::ostream& arg_yyout)
  */
 void yyFlexLexer::ctor_common()
 {
-  yy_c_buf_p    = 0;
+  yy_c_buf_p    = nullptr;
   yy_init       = 0;
   yy_start      = 0;
   yy_flex_debug = 0;
@@ -1268,9 +1269,9 @@ void yyFlexLexer::ctor_common()
   yy_more_offset = yy_prev_more_offset = 0;
 
   yy_start_stack_ptr = yy_start_stack_depth = 0;
-  yy_start_stack                            = NULL;
+  yy_start_stack                            = nullptr;
 
-  yy_buffer_stack     = NULL;
+  yy_buffer_stack     = nullptr;
   yy_buffer_stack_top = 0;
   yy_buffer_stack_max = 0;
 
@@ -1741,7 +1742,7 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
     return;
 
   if (b == YY_CURRENT_BUFFER) /* Not sure if we should pop here. */
-    YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE)0;
+    YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) nullptr;
 
   if (b->yy_is_our_buffer)
     yyfree((void*)b->yy_ch_buf);
@@ -1812,7 +1813,7 @@ void yyFlexLexer::yy_flush_buffer(YY_BUFFER_STATE b)
  */
 void yyFlexLexer::yypush_buffer_state(YY_BUFFER_STATE new_buffer)
 {
-  if (new_buffer == NULL)
+  if (new_buffer == nullptr)
     return;
 
   yyensure_buffer_stack();
@@ -1840,13 +1841,13 @@ void yyFlexLexer::yypush_buffer_state(YY_BUFFER_STATE new_buffer)
  *  The next element becomes the new top.
  *
  */
-void yyFlexLexer::yypop_buffer_state(void)
+void yyFlexLexer::yypop_buffer_state()
 {
   if (!YY_CURRENT_BUFFER)
     return;
 
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  YY_CURRENT_BUFFER_LVALUE = NULL;
+  YY_CURRENT_BUFFER_LVALUE = nullptr;
   if ((yy_buffer_stack_top) > 0)
     --(yy_buffer_stack_top);
 
@@ -1860,7 +1861,7 @@ void yyFlexLexer::yypop_buffer_state(void)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-void yyFlexLexer::yyensure_buffer_stack(void)
+void yyFlexLexer::yyensure_buffer_stack()
 {
   yy_size_t num_to_alloc;
 
@@ -2019,3 +2020,5 @@ step::scanner::scanner(StepFile_ReadData* theDataModel, std::istream* in, std::o
       myDataModel(theDataModel)
 {
 }
+
+// NOLINTEND

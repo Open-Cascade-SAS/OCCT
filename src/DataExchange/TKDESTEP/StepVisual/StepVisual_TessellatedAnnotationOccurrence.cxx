@@ -17,4 +17,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedAnnotationOccurrence, StepVisual_StyledItem);
 
-StepVisual_TessellatedAnnotationOccurrence::StepVisual_TessellatedAnnotationOccurrence() {}
+StepVisual_TessellatedAnnotationOccurrence::StepVisual_TessellatedAnnotationOccurrence() = default;

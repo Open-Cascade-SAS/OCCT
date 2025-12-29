@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepShape_BoxDomain.hxx>
 
-RWStepShape_RWBoxDomain::RWStepShape_RWBoxDomain() {}
+RWStepShape_RWBoxDomain::RWStepShape_RWBoxDomain() = default;
 
 void RWStepShape_RWBoxDomain::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

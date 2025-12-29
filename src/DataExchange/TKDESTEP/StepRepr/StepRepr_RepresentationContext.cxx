@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationContext, Standard_Transient)
 
-StepRepr_RepresentationContext::StepRepr_RepresentationContext() {}
+StepRepr_RepresentationContext::StepRepr_RepresentationContext() = default;
 
 void StepRepr_RepresentationContext::Init(
   const occ::handle<TCollection_HAsciiString>& aContextIdentifier,

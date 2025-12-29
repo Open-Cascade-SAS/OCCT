@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon() {}
+BRepBuilderAPI_MakePolygon::BRepBuilderAPI_MakePolygon() = default;
 
 //=================================================================================================
 

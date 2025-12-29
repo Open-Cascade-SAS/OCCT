@@ -38,7 +38,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~Poly_TriangulationParameters() {}
+  ~Poly_TriangulationParameters() override = default;
 
   //! Returns true if linear deflection is defined.
   bool HasDeflection() const { return !(myDeflection < 0.); }

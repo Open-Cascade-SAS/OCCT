@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_EdgeDivide, ShapeUpgrade_Tool)
 //=================================================================================================
 
 ShapeUpgrade_EdgeDivide::ShapeUpgrade_EdgeDivide()
-    : ShapeUpgrade_Tool()
+
 {
   mySplitCurve3dTool = new ShapeUpgrade_SplitCurve3d;
   mySplitCurve2dTool = new ShapeUpgrade_SplitCurve2d;

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PreDefinedItem.hxx>
 
-RWStepVisual_RWPreDefinedItem::RWStepVisual_RWPreDefinedItem() {}
+RWStepVisual_RWPreDefinedItem::RWStepVisual_RWPreDefinedItem() = default;
 
 void RWStepVisual_RWPreDefinedItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

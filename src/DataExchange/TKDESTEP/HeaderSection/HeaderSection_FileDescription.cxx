@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileDescription, Standard_Transient)
 
-HeaderSection_FileDescription::HeaderSection_FileDescription() {}
+HeaderSection_FileDescription::HeaderSection_FileDescription() = default;
 
 void HeaderSection_FileDescription::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription,

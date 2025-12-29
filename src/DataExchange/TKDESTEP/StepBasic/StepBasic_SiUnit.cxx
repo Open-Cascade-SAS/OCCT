@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
-StepBasic_SiUnit::StepBasic_SiUnit() {}
+StepBasic_SiUnit::StepBasic_SiUnit() = default;
 
 void StepBasic_SiUnit::Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,

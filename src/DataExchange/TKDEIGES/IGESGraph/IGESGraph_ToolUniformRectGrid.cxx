@@ -33,7 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESGraph_ToolUniformRectGrid::IGESGraph_ToolUniformRectGrid() {}
+IGESGraph_ToolUniformRectGrid::IGESGraph_ToolUniformRectGrid() = default;
 
 void IGESGraph_ToolUniformRectGrid::ReadOwnParams(
   const occ::handle<IGESGraph_UniformRectGrid>& ent,

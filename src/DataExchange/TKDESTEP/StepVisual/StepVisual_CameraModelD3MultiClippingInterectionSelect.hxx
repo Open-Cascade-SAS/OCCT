@@ -38,7 +38,7 @@ public:
   //! 1 -> Plane
   //! 2 -> CameraModelD3MultiClippingUnion
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Plane (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Plane> Plane() const;

@@ -17,7 +17,7 @@
 #include <StepBasic_Document.hxx>
 #include <StepBasic_PhysicallyModeledProductDefinition.hxx>
 
-StepAP214_AutoDesignOrganizationItem::StepAP214_AutoDesignOrganizationItem() {}
+StepAP214_AutoDesignOrganizationItem::StepAP214_AutoDesignOrganizationItem() = default;
 
 int StepAP214_AutoDesignOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

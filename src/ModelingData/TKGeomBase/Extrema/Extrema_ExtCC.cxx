@@ -48,8 +48,8 @@ Extrema_ExtCC::Extrema_ExtCC(const double TolC1, const double TolC2)
       myDone(false),
       myIsParallel(false)
 {
-  myC[0]   = 0;
-  myC[1]   = 0;
+  myC[0]   = nullptr;
+  myC[1]   = nullptr;
   myInf[0] = myInf[1] = -Precision::Infinite();
   mySup[0] = mySup[1] = Precision::Infinite();
   myTol[0]            = TolC1;

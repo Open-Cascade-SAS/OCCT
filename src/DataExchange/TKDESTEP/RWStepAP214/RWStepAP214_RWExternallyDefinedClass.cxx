@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepAP214_RWExternallyDefinedClass::RWStepAP214_RWExternallyDefinedClass() {}
+RWStepAP214_RWExternallyDefinedClass::RWStepAP214_RWExternallyDefinedClass() = default;
 
 //=================================================================================================
 

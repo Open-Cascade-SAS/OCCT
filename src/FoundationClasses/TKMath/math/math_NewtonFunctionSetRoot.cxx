@@ -70,7 +70,7 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDeriv
 
 //=================================================================================================
 
-math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot() {}
+math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot() = default;
 
 //=================================================================================================
 

@@ -90,7 +90,7 @@ class BRepTools_History : public Standard_Transient
 {
 public: //! @name Constructors for History creation
   //! Empty constructor
-  BRepTools_History() {}
+  BRepTools_History() = default;
 
   //! Template constructor for History creation from the algorithm having
   //! standard history methods such as IsDeleted(), Modified() and Generated().

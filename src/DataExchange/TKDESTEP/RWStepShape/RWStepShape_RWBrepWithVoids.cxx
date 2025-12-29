@@ -25,7 +25,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWBrepWithVoids::RWStepShape_RWBrepWithVoids() {}
+RWStepShape_RWBrepWithVoids::RWStepShape_RWBrepWithVoids() = default;
 
 void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

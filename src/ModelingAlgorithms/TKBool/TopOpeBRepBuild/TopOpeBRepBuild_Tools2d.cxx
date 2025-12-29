@@ -23,7 +23,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static void BuildPath(
   const TopoDS_Vertex& myVertex0,
   const TopoDS_Edge&   myEdge,

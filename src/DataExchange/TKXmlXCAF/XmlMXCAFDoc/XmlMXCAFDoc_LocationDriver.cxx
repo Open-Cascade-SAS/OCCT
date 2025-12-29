@@ -38,7 +38,7 @@ IMPLEMENT_DOMSTRING(LocIdString, "locId")
 XmlMXCAFDoc_LocationDriver::XmlMXCAFDoc_LocationDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Location"),
-      myLocations(0)
+      myLocations(nullptr)
 {
 }
 
@@ -89,7 +89,7 @@ void XmlMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
   }
 
   // The location is not identity
-  if (myLocations == 0)
+  if (myLocations == nullptr)
   {
 #ifdef OCCT_DEBUG
     std::cout << "Pointer to LocationSet is NULL\n";
@@ -130,11 +130,11 @@ bool XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element&    theParent
                                            XmlObjMgt_RRelocationTable& theMap) const
 {
   XmlObjMgt_Element aLocElem = XmlObjMgt::FindChildByName(theParent, ::LocationString());
-  if (aLocElem == NULL)
+  if (aLocElem == nullptr)
     return false;
 
   int aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
-  if (aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == 0)
+  if (aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == nullptr)
   {
     return false;
   }

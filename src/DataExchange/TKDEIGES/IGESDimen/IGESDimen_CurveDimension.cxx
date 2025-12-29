@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CurveDimension, IGESData_IGESEntity)
 
-IGESDimen_CurveDimension::IGESDimen_CurveDimension() {}
+IGESDimen_CurveDimension::IGESDimen_CurveDimension() = default;
 
 void IGESDimen_CurveDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                     const occ::handle<IGESData_IGESEntity>&   aCurve,

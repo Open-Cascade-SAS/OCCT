@@ -25,7 +25,7 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepVisual_TemplateInstance.hxx>
 
-StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem() {}
+StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem() = default;
 
 int StepAP214_AutoDesignGroupedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

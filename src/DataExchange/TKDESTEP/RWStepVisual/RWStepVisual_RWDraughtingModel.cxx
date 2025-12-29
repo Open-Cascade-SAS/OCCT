@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWDraughtingModel::RWStepVisual_RWDraughtingModel() {}
+RWStepVisual_RWDraughtingModel::RWStepVisual_RWDraughtingModel() = default;
 
 //=================================================================================================
 

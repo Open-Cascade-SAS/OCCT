@@ -18,4 +18,5 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConstructiveGeometryRepresentation, StepRepr_Representation)
 
-StepRepr_ConstructiveGeometryRepresentation::StepRepr_ConstructiveGeometryRepresentation() {}
+StepRepr_ConstructiveGeometryRepresentation::StepRepr_ConstructiveGeometryRepresentation() =
+  default;

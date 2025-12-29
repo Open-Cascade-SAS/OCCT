@@ -43,7 +43,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_Sequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // #define OCCT_DEBUG_ALGO
 // #define DRAW
 #ifdef DRAW
@@ -165,7 +165,7 @@ static TopoDS_Vertex UpdateClosedEdge(const TopoDS_Edge& E, NCollection_Sequence
 {
   TopoDS_Vertex VB[2], V1, V2, VRes;
   gp_Pnt        P, PC;
-  bool          OnStart = 0, OnEnd = 0;
+  bool          OnStart = false, OnEnd = false;
   //// modified by jgv, 13.04.04 for OCC5634 ////
   TopExp::Vertices(E, V1, V2);
   double Tol = BRep_Tool::Tolerance(V1);

@@ -172,7 +172,7 @@ bool RWGltf_TriangulationReader::readFileData(
     aFileSystem->OpenIStream(theGltfData.StreamUri,
                              std::ios::in | std::ios::binary,
                              theGltfData.StreamOffset);
-  if (aSharedStream.get() == NULL)
+  if (aSharedStream.get() == nullptr)
   {
     reportError(TCollection_AsciiString("Buffer '") + theSourceGltfMesh->Id()
                 + "' refers to invalid file '" + theGltfData.StreamUri + "'.");
@@ -242,7 +242,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
     aFileSystem->OpenIStream(theGltfData.StreamUri,
                              std::ios::in | std::ios::binary,
                              theGltfData.StreamOffset);
-  if (aSharedStream.get() == NULL)
+  if (aSharedStream.get() == nullptr)
   {
     reportError(TCollection_AsciiString("Buffer '") + aName + "' refers to invalid file '"
                 + theGltfData.StreamUri + "'.");
@@ -266,7 +266,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
   draco::Decoder                                aDracoDecoder;
   draco::StatusOr<std::unique_ptr<draco::Mesh>> aDracoStat =
     aDracoDecoder.DecodeMeshFromBuffer(&aDracoBuf);
-  if (!aDracoStat.ok() || aDracoStat.value().get() == NULL)
+  if (!aDracoStat.ok() || aDracoStat.value().get() == nullptr)
   {
     reportError(TCollection_AsciiString("Buffer '") + aName
                 + "' refers to Draco data that cannot be decoded '" + theGltfData.StreamUri + "'.");
@@ -317,7 +317,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
         {
           const NCollection_Vec3<float>* aVec3 = reinterpret_cast<const NCollection_Vec3<float>*>(
             anAttrib->GetAddressOfMappedIndex(draco::PointIndex(aVertIter)));
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -349,7 +349,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
         {
           const NCollection_Vec3<float>* aVec3 = reinterpret_cast<const NCollection_Vec3<float>*>(
             anAttrib->GetAddressOfMappedIndex(draco::PointIndex(aVertIter)));
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -389,7 +389,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
         {
           const NCollection_Vec2<float>* aVec2 = reinterpret_cast<const NCollection_Vec2<float>*>(
             anAttrib->GetAddressOfMappedIndex(draco::PointIndex(aVertIter)));
-          if (aVec2 == NULL)
+          if (aVec2 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -437,7 +437,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer(
       return false;
     }
     theSourceGltfMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-    if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+    if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
     {
       Message::SendTrace(
         TCollection_AsciiString() + aNbDegenerate
@@ -665,7 +665,7 @@ bool RWGltf_TriangulationReader::ReadStream(
             return false;
           }
           theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if ((myLoadingStatistic == NULL) && myToPrintDebugMessages)
+          if ((myLoadingStatistic == nullptr) && myToPrintDebugMessages)
           {
             Message::SendTrace(
               TCollection_AsciiString() + aNbDegenerate
@@ -736,7 +736,7 @@ bool RWGltf_TriangulationReader::ReadStream(
             return false;
           }
           theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+          if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
           {
             Message::SendTrace(
               TCollection_AsciiString() + aNbDegenerate
@@ -807,7 +807,7 @@ bool RWGltf_TriangulationReader::ReadStream(
             return false;
           }
           theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+          if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
           {
             Message::SendTrace(
               TCollection_AsciiString() + aNbDegenerate
@@ -857,7 +857,7 @@ bool RWGltf_TriangulationReader::ReadStream(
         {
           const NCollection_Vec3<float>* aVec3 =
             aBuffer.ReadChunk<NCollection_Vec3<float>>(theStream);
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -874,7 +874,7 @@ bool RWGltf_TriangulationReader::ReadStream(
         {
           const NCollection_Vec3<float>* aVec3 =
             aBuffer.ReadChunk<NCollection_Vec3<float>>(theStream);
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -914,7 +914,7 @@ bool RWGltf_TriangulationReader::ReadStream(
         for (int aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
         {
           NCollection_Vec3<float>* aVec3 = aBuffer.ReadChunk<NCollection_Vec3<float>>(theStream);
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -938,7 +938,7 @@ bool RWGltf_TriangulationReader::ReadStream(
         {
           const NCollection_Vec3<float>* aVec3 =
             aBuffer.ReadChunk<NCollection_Vec3<float>>(theStream);
-          if (aVec3 == NULL)
+          if (aVec3 == nullptr)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
             return false;
@@ -984,7 +984,7 @@ bool RWGltf_TriangulationReader::ReadStream(
       for (int aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
       {
         NCollection_Vec2<float>* aVec2 = aBuffer.ReadChunk<NCollection_Vec2<float>>(theStream);
-        if (aVec2 == NULL)
+        if (aVec2 == nullptr)
         {
           reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
           return false;

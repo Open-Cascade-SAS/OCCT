@@ -44,9 +44,9 @@ class BRepCheck_HSC : public Standard_Transient
 {
 public:
   //
-  Standard_EXPORT BRepCheck_HSC() {};
+  Standard_EXPORT BRepCheck_HSC() = default;
   //
-  Standard_EXPORT virtual ~BRepCheck_HSC(){};
+  Standard_EXPORT ~BRepCheck_HSC() override = default;
 
   //
   Standard_EXPORT BRepClass3d_SolidClassifier& SolidClassifier() { return mySC; };
@@ -74,7 +74,7 @@ public:
     myPnt.SetCoord(-1., -1., -1.);
   };
 
-  virtual ~BRepCheck_ToolSolid() {};
+  virtual ~BRepCheck_ToolSolid() = default;
 
   //
   void SetSolid(const TopoDS_Solid& aZ) { mySolid = aZ; };

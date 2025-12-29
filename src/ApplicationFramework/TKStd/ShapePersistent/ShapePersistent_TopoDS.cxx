@@ -134,7 +134,7 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
   }
   else
   {
-    pTShape* aPTShape = 0;
+    pTShape* aPTShape = nullptr;
     switch (theShape.ShapeType())
     {
       case TopAbs_VERTEX: {

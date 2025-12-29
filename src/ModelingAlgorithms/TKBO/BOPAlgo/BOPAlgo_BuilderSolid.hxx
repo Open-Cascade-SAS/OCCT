@@ -88,14 +88,14 @@ public:
 public: //! @name Constructors
   //! Empty constructor
   Standard_EXPORT BOPAlgo_BuilderSolid();
-  Standard_EXPORT virtual ~BOPAlgo_BuilderSolid();
+  Standard_EXPORT ~BOPAlgo_BuilderSolid() override;
 
   //! Constructor with allocator
   Standard_EXPORT BOPAlgo_BuilderSolid(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
 public: //! @name Performing the operation
   //! Performs the construction of the solids from the given faces
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name Getting the bounding boxes of the created solids
@@ -112,24 +112,23 @@ protected: //! @name Protected methods performing the operation
   //! - that are alone but given twice with different orientation.
   //! These faces will be put into the map *myShapesToAvoid* and will be
   //! avoided in shells construction, but will be classified later on.
-  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformShapesToAvoid(const Message_ProgressRange& theRange) override;
 
   //! Build all possible closed shells from the given faces.
   //! The method fills the following maps:
   //! - myLoops - Created closed shells;
   //! - myLoopsInternal - The shells created from unused faces.
-  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformLoops(const Message_ProgressRange& theRange) override;
 
   //! Classifies the created shells on the Holes and Growths.
   //! Creates the solids from the Growths shells.
   //! Puts the Hole shells into the closest Growths solids.
-  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformAreas(const Message_ProgressRange& theRange) override;
 
   //! Classifies the unused faces relatively the created solids.
   //! Puts the classified faces into the closest solids as internal shells.
   //! Warns the user about unclassified faces if any.
-  Standard_EXPORT virtual void PerformInternalShapes(
-    const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformInternalShapes(const Message_ProgressRange& theRange) override;
 
 private:
   NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>

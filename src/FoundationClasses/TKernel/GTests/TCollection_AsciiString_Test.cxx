@@ -286,7 +286,7 @@ TEST(TCollection_AsciiStringTest, NumericalConstructors)
   // Test real constructor
   TCollection_AsciiString aRealString(3.14);
   const char*             aRealCStr = aRealString.ToCString();
-  EXPECT_TRUE(strstr(aRealCStr, "3.14") != NULL);
+  EXPECT_TRUE(strstr(aRealCStr, "3.14") != nullptr);
 }
 
 TEST(TCollection_AsciiStringTest, FillerConstructor)
@@ -435,7 +435,7 @@ TEST(TCollection_AsciiStringTest, AssignCat_IntegerAndReal)
   // AssignCat with real
   TCollection_AsciiString aString2("Pi is approximately ");
   aString2.AssignCat(3.14159);
-  EXPECT_TRUE(strstr(aString2.ToCString(), "3.14159") != NULL);
+  EXPECT_TRUE(strstr(aString2.ToCString(), "3.14159") != nullptr);
 }
 
 TEST(TCollection_AsciiStringTest, AssignCat_LargeStrings)
@@ -720,7 +720,7 @@ TEST(TCollection_AsciiStringTest, Cat_IntegerAndReal)
   // Cat with real
   TCollection_AsciiString aString2("Value: ");
   TCollection_AsciiString aResult3 = aString2.Cat(3.14);
-  EXPECT_TRUE(strstr(aResult3.ToCString(), "3.14") != NULL);
+  EXPECT_TRUE(strstr(aResult3.ToCString(), "3.14") != nullptr);
 
   // Cat with zero
   TCollection_AsciiString aResult4 = aString.Cat(0);

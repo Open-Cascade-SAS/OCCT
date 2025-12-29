@@ -17,4 +17,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrence, StepVisual_AnnotationOccurrence)
 
-StepVisual_AnnotationCurveOccurrence::StepVisual_AnnotationCurveOccurrence() {}
+StepVisual_AnnotationCurveOccurrence::StepVisual_AnnotationCurveOccurrence() = default;

@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESSolid_ToolConicalSurface::IGESSolid_ToolConicalSurface() {}
+IGESSolid_ToolConicalSurface::IGESSolid_ToolConicalSurface() = default;
 
 void IGESSolid_ToolConicalSurface::ReadOwnParams(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,

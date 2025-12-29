@@ -42,7 +42,7 @@ public:
 
 public:
   //! Destructor.
-  Standard_EXPORT ~Graphic3d_TextureRoot();
+  Standard_EXPORT ~Graphic3d_TextureRoot() override;
 
   //! Checks if a texture class is valid or not.
   //! @return true if the construction of the class is correct

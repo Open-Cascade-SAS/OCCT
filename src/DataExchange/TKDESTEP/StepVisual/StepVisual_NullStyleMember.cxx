@@ -23,7 +23,7 @@ static StepData_EnumTool tool(".NULL.");
 
 //=================================================================================================
 
-StepVisual_NullStyleMember::StepVisual_NullStyleMember() {}
+StepVisual_NullStyleMember::StepVisual_NullStyleMember() = default;
 
 //=================================================================================================
 

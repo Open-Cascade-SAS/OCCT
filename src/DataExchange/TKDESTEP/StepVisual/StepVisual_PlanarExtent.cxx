@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PlanarExtent, StepGeom_GeometricRepresentationItem)
 
-StepVisual_PlanarExtent::StepVisual_PlanarExtent() {}
+StepVisual_PlanarExtent::StepVisual_PlanarExtent() = default;
 
 void StepVisual_PlanarExtent::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const double                                 aSizeInX,

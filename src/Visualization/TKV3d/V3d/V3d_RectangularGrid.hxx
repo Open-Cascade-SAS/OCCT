@@ -35,16 +35,16 @@ public:
                                       const Quantity_Color&    aColor,
                                       const Quantity_Color&    aTenthColor);
 
-  Standard_EXPORT virtual ~V3d_RectangularGrid();
+  Standard_EXPORT ~V3d_RectangularGrid() override;
 
-  Standard_EXPORT virtual void SetColors(const Quantity_Color& aColor,
-                                         const Quantity_Color& aTenthColor) override;
+  Standard_EXPORT void SetColors(const Quantity_Color& aColor,
+                                 const Quantity_Color& aTenthColor) override;
 
-  Standard_EXPORT virtual void Display() override;
+  Standard_EXPORT void Display() override;
 
-  Standard_EXPORT virtual void Erase() const override;
+  Standard_EXPORT void Erase() const override;
 
-  Standard_EXPORT virtual bool IsDisplayed() const override;
+  Standard_EXPORT bool IsDisplayed() const override;
 
   Standard_EXPORT void GraphicValues(double& XSize, double& YSize, double& OffSet) const;
 
@@ -53,11 +53,10 @@ public:
                                         const double OffSet);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
-  Standard_EXPORT virtual void UpdateDisplay() override;
+  Standard_EXPORT void UpdateDisplay() override;
 
 private:
   Standard_EXPORT void DefineLines();

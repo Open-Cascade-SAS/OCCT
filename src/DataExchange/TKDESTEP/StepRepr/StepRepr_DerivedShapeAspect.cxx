@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_DerivedShapeAspect, StepRepr_ShapeAspect)
 
-StepRepr_DerivedShapeAspect::StepRepr_DerivedShapeAspect() {}
+StepRepr_DerivedShapeAspect::StepRepr_DerivedShapeAspect() = default;

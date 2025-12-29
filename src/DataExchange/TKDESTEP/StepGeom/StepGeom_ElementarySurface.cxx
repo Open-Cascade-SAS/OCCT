@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ElementarySurface, StepGeom_Surface)
 
-StepGeom_ElementarySurface::StepGeom_ElementarySurface() {}
+StepGeom_ElementarySurface::StepGeom_ElementarySurface() = default;
 
 void StepGeom_ElementarySurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                       const occ::handle<StepGeom_Axis2Placement3d>& aPosition)

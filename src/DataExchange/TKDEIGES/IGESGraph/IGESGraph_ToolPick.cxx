@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESGraph_ToolPick::IGESGraph_ToolPick() {}
+IGESGraph_ToolPick::IGESGraph_ToolPick() = default;
 
 void IGESGraph_ToolPick::ReadOwnParams(const occ::handle<IGESGraph_Pick>& ent,
                                        const occ::handle<IGESData_IGESReaderData>& /*IR*/,

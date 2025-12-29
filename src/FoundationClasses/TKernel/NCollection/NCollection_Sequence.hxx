@@ -69,7 +69,7 @@ public:
   {
   public:
     //! Empty constructor - for later Init
-    Iterator(void) {}
+    Iterator() = default;
 
     //! Constructor with initialisation
     Iterator(const NCollection_Sequence& theSeq, const bool isStart = true)
@@ -78,10 +78,10 @@ public:
     }
 
     //! Check end
-    bool More(void) const noexcept { return (myCurrent != NULL); }
+    bool More() const noexcept { return (myCurrent != nullptr); }
 
     //! Make step
-    void Next(void) noexcept
+    void Next() noexcept
     {
       if (myCurrent)
       {
@@ -91,10 +91,10 @@ public:
     }
 
     //! Constant value access
-    const TheItemType& Value(void) const noexcept { return ((const Node*)myCurrent)->Value(); }
+    const TheItemType& Value() const noexcept { return ((const Node*)myCurrent)->Value(); }
 
     //! Variable value access
-    TheItemType& ChangeValue(void) const noexcept { return ((Node*)myCurrent)->ChangeValue(); }
+    TheItemType& ChangeValue() const noexcept { return ((Node*)myCurrent)->ChangeValue(); }
 
     //! Performs comparison of two iterators.
     bool IsEqual(const Iterator& theOther) const noexcept
@@ -163,10 +163,10 @@ public:
   }
 
   //! Number of items
-  int Size(void) const noexcept { return mySize; }
+  int Size() const noexcept { return mySize; }
 
   //! Number of items
-  int Length(void) const noexcept { return mySize; }
+  int Length() const noexcept { return mySize; }
 
   //! Method for consistency with other collections.
   //! @return Lower bound (inclusive) for iteration.
@@ -177,10 +177,10 @@ public:
   int Upper() const noexcept { return mySize; }
 
   //! Empty query
-  bool IsEmpty(void) const noexcept { return (mySize == 0); }
+  bool IsEmpty() const noexcept { return (mySize == 0); }
 
   //! Reverse sequence
-  void Reverse(void) { PReverse(); }
+  void Reverse() { PReverse(); }
 
   //! Exchange two members
   void Exchange(const int I, const int J) { PExchange(I, J); }
@@ -193,7 +193,7 @@ public:
   }
 
   //! Clear the items out, take a new allocator if non null
-  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
     ClearSeq(delNode);
     if (!theAllocator.IsNull())
@@ -437,7 +437,7 @@ public:
   void SetValue(const int theIndex, const TheItemType& theItem) { ChangeValue(theIndex) = theItem; }
 
   // ******** Destructor - clears the Sequence
-  virtual ~NCollection_Sequence(void) { Clear(); }
+  ~NCollection_Sequence() override { Clear(); }
 
 private:
   // ---------- FRIEND CLASSES ------------

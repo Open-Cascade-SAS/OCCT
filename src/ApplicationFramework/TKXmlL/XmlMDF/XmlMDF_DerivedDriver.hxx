@@ -36,7 +36,7 @@ public:
   }
 
   //! Creates a new instance of the derivative attribute
-  virtual occ::handle<TDF_Attribute> NewEmpty() const override { return myDerivative->NewEmpty(); }
+  occ::handle<TDF_Attribute> NewEmpty() const override { return myDerivative->NewEmpty(); }
 
   //! Returns the full XML tag name (including NS prefix)
   const TCollection_AsciiString& TypeName() const
@@ -51,9 +51,9 @@ public:
   }
 
   //! Reuses the base driver to read the base fields
-  virtual bool Paste(const XmlObjMgt_Persistent&       theSource,
-                     const occ::handle<TDF_Attribute>& theTarget,
-                     XmlObjMgt_RRelocationTable&       theRelocTable) const override
+  bool Paste(const XmlObjMgt_Persistent&       theSource,
+             const occ::handle<TDF_Attribute>& theTarget,
+             XmlObjMgt_RRelocationTable&       theRelocTable) const override
   {
     bool aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
     // clang-format off
@@ -63,9 +63,9 @@ public:
   }
 
   //! Reuses the base driver to store the base fields
-  virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
-                     XmlObjMgt_Persistent&             theTarget,
-                     XmlObjMgt_SRelocationTable&       theRelocTable) const override
+  void Paste(const occ::handle<TDF_Attribute>& theSource,
+             XmlObjMgt_Persistent&             theTarget,
+             XmlObjMgt_SRelocationTable&       theRelocTable) const override
   {
     myBaseDirver->Paste(theSource, theTarget, theRelocTable);
   }

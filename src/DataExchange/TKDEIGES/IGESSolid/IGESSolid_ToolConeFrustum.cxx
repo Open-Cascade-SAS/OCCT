@@ -34,7 +34,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolConeFrustum::IGESSolid_ToolConeFrustum() {}
+IGESSolid_ToolConeFrustum::IGESSolid_ToolConeFrustum() = default;
 
 void IGESSolid_ToolConeFrustum::ReadOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                               const occ::handle<IGESData_IGESReaderData>& /* IR */,

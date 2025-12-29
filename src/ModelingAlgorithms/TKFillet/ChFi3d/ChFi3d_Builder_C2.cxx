@@ -108,7 +108,7 @@ static void Reduce(const double& p1, const double& p2, occ::handle<GeomAdaptor_C
 bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
 
 {
-  done                             = 0;
+  done                             = false;
   const TopoDS_Vertex&        Vtx  = myVDataMap.FindKey(Index);
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
@@ -200,7 +200,7 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
                                  Okvisavis,
                                  Vtx,
                                  true,
-                                 1);
+                                 true);
   }
 
   if (!Okvisavis)
@@ -771,7 +771,7 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     ChFi3d_SetPointTolerance(DStr, bmil, SmaCD->IndexPoint(isfirstSma, IFaArcSma));
     ChFi3d_SetPointTolerance(DStr, barc, BigCD->IndexPoint(isfirstBig, IFaArcBig));
   }
-  done = 1;
+  done = true;
 
   return done;
 }

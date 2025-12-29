@@ -32,7 +32,7 @@ public:
   Standard_EXPORT Graphic3d_FrameStats();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_FrameStats();
+  Standard_EXPORT ~Graphic3d_FrameStats() override;
 
   //! Returns interval in seconds for updating meters across several frames; 1 second by default.
   double UpdateInterval() const { return myUpdateInterval; }

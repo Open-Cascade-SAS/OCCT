@@ -96,7 +96,7 @@ public:
                             const bool                       Segment = false);
 
   //! Returns true if the shell is built.
-  Standard_EXPORT virtual bool IsDone() const override;
+  Standard_EXPORT bool IsDone() const override;
 
   //! Returns the construction status:
   //! -   BRepBuilderAPI_ShellDone if the shell is built, or

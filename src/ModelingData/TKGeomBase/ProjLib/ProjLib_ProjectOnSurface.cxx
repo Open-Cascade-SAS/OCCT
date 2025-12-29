@@ -93,15 +93,15 @@ public:
     myExtPS              = new Extrema_ExtPS(P, *S, Tol, Tol);
   }
 
-  ~ProjLib_OnSurface() { delete myExtPS; }
+  ~ProjLib_OnSurface() override { delete myExtPS; }
 
-  double FirstParameter() const { return myCurve->FirstParameter(); }
+  double FirstParameter() const override { return myCurve->FirstParameter(); }
 
-  double LastParameter() const { return myCurve->LastParameter(); }
+  double LastParameter() const override { return myCurve->LastParameter(); }
 
   bool Value(const double theT,
              NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-             NCollection_Array1<gp_Pnt>& thePnt) const
+             NCollection_Array1<gp_Pnt>& thePnt) const override
   {
     thePnt(1) = OnSurface_Value(theT, myCurve, myExtPS);
     return true;
@@ -109,15 +109,15 @@ public:
 
   bool D1(const double theT,
           NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-          NCollection_Array1<gp_Vec>& theVec) const
+          NCollection_Array1<gp_Vec>& theVec) const override
   {
     gp_Pnt aPnt;
     return OnSurface_D1(theT, aPnt, theVec(1), myCurve, myExtPS);
   }
 
 private:
-  ProjLib_OnSurface(const ProjLib_OnSurface&);
-  ProjLib_OnSurface& operator=(const ProjLib_OnSurface&);
+  ProjLib_OnSurface(const ProjLib_OnSurface&)            = delete;
+  ProjLib_OnSurface& operator=(const ProjLib_OnSurface&) = delete;
 
 private:
   occ::handle<Adaptor3d_Curve> myCurve;
@@ -254,7 +254,7 @@ void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Curve>& C, const
 
 //=================================================================================================
 
-ProjLib_ProjectOnSurface::~ProjLib_ProjectOnSurface() {}
+ProjLib_ProjectOnSurface::~ProjLib_ProjectOnSurface() = default;
 
 //=================================================================================================
 

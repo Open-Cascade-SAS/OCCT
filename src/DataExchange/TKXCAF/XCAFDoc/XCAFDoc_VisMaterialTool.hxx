@@ -119,20 +119,17 @@ public:
 
 public:
   //! Returns GUID of this attribute type.
-  virtual const Standard_GUID& ID() const override { return GetID(); }
+  const Standard_GUID& ID() const override { return GetID(); }
 
   //! Does nothing.
-  virtual void Restore(const occ::handle<TDF_Attribute>&) override {}
+  void Restore(const occ::handle<TDF_Attribute>&) override {}
 
   //! Creates new instance of this tool.
-  virtual occ::handle<TDF_Attribute> NewEmpty() const override
-  {
-    return new XCAFDoc_VisMaterialTool();
-  }
+  occ::handle<TDF_Attribute> NewEmpty() const override { return new XCAFDoc_VisMaterialTool(); }
 
   //! Does nothing.
-  virtual void Paste(const occ::handle<TDF_Attribute>&,
-                     const occ::handle<TDF_RelocationTable>&) const override
+  void Paste(const occ::handle<TDF_Attribute>&,
+             const occ::handle<TDF_RelocationTable>&) const override
   {
   }
 

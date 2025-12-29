@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentedItemRepresentation, Standard_Transient)
 
-StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation() {}
+StepVisual_PresentedItemRepresentation::StepVisual_PresentedItemRepresentation() = default;
 
 void StepVisual_PresentedItemRepresentation::Init(
   const StepVisual_PresentationRepresentationSelect& aPresentation,

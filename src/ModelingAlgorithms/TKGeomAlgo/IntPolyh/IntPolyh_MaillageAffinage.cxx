@@ -147,20 +147,20 @@ public:
 
 public:
   //! Constructor
-  IntPolyh_BoxBndTreeSelector() {}
+  IntPolyh_BoxBndTreeSelector() = default;
 
   //! Rejects the node
-  virtual bool RejectNode(const BVH_Vec3d& theCMin1,
-                          const BVH_Vec3d& theCMax1,
-                          const BVH_Vec3d& theCMin2,
-                          const BVH_Vec3d& theCMax2,
-                          double&) const override
+  bool RejectNode(const BVH_Vec3d& theCMin1,
+                  const BVH_Vec3d& theCMax1,
+                  const BVH_Vec3d& theCMin2,
+                  const BVH_Vec3d& theCMax2,
+                  double&) const override
   {
     return BVH_Box<double, 3>(theCMin1, theCMax1).IsOut(theCMin2, theCMax2);
   }
 
   //! Accepts the element
-  virtual bool Accept(const int theID1, const int theID2) override
+  bool Accept(const int theID1, const int theID2) override
   {
     if (!myBVHSet1->Box(theID1).IsOut(myBVHSet2->Box(theID2)))
     {
@@ -475,7 +475,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt(const int                        
   occ::handle<Adaptor3d_Surface> aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
   // Compute the tolerance
   double aTol =
-    theDeflTol != NULL ? *theDeflTol : IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
+    theDeflTol != nullptr ? *theDeflTol : IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
   // Fill array of point normal
   IntPolyh_ArrayOfPointNormal aPoints;
   IntPolyh_Tools::FillArrayOfPointNormal(aS, Upars, Vpars, aPoints);

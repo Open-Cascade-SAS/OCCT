@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndAreaUnit, StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndAreaUnit::StepBasic_ConversionBasedUnitAndAreaUnit() {}
+StepBasic_ConversionBasedUnitAndAreaUnit::StepBasic_ConversionBasedUnitAndAreaUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndAreaUnit::SetAreaUnit(
   const occ::handle<StepBasic_AreaUnit>& anAreaUnit)

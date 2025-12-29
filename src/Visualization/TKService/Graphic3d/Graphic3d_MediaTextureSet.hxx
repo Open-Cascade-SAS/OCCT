@@ -84,10 +84,10 @@ public:
   //! @name Media_IFrameQueue interface
 private:
   //! Lock the frame for decoding into.
-  Standard_EXPORT virtual occ::handle<Media_Frame> LockFrame() override;
+  Standard_EXPORT occ::handle<Media_Frame> LockFrame() override;
 
   //! Release the frame to present decoding results.
-  Standard_EXPORT virtual void ReleaseFrame(const occ::handle<Media_Frame>& theFrame) override;
+  Standard_EXPORT void ReleaseFrame(const occ::handle<Media_Frame>& theFrame) override;
 
 protected:
   occ::handle<Media_PlayerContext>     myPlayerCtx;        //!< player context

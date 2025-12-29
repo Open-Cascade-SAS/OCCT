@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSize, Standard_Transient)
 
 //=================================================================================================
 
-StepShape_DimensionalSize::StepShape_DimensionalSize() {}
+StepShape_DimensionalSize::StepShape_DimensionalSize() = default;
 
 //=================================================================================================
 

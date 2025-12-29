@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepShape_ShapeDimensionRepresentationItem::StepShape_ShapeDimensionRepresentationItem() {}
+StepShape_ShapeDimensionRepresentationItem::StepShape_ShapeDimensionRepresentationItem() = default;
 
 //=================================================================================================
 

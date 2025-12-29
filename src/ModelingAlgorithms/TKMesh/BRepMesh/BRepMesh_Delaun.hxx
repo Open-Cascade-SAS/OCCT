@@ -176,7 +176,7 @@ private:
   //! Find left polygon of the given edge and call meshPolygon.
   bool meshLeftPolygonOf(const int                       theEdgeIndex,
                          const bool                      isForward,
-                         Handle(IMeshData::MapOfInteger) theSkipped = NULL);
+                         Handle(IMeshData::MapOfInteger) theSkipped = nullptr);
 
   //! Find next link starting from the given node and has maximum
   //! angle respect the given reference link.
@@ -212,7 +212,7 @@ private:
   //! (negative index means reversed edge)
   void meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
                    IMeshData::SequenceOfBndB2d&    thePolyBoxes,
-                   Handle(IMeshData::MapOfInteger) theSkipped = NULL);
+                   Handle(IMeshData::MapOfInteger) theSkipped = nullptr);
 
   //! Decomposes the given closed simple polygon (polygon without glued edges
   //! and loops) on two simpler ones by adding new link at the most thin part

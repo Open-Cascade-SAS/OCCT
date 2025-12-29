@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceCurve, StepGeom_Curve)
 
-StepGeom_SurfaceCurve::StepGeom_SurfaceCurve() {}
+StepGeom_SurfaceCurve::StepGeom_SurfaceCurve() = default;
 
 void StepGeom_SurfaceCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                      aName,

@@ -120,7 +120,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // S4054: ShapeTool_MakeWire -> ShapeExtend_WireData //:g8: BRepLib_MakeWire -> ShapeTool_MakeWire
 //: e3
@@ -130,9 +130,8 @@
 //=================================================================================================
 
 IGESToBRep_TopoSurface::IGESToBRep_TopoSurface()
-    : IGESToBRep_CurveAndSurface()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

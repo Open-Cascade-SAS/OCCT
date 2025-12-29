@@ -24,8 +24,8 @@
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <OSD_Thread.hxx>
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 
 //=================================================================================================
@@ -303,6 +303,6 @@ bool& Draw_ProgressIndicator::DefaultGraphMode()
 
 void*& Draw_ProgressIndicator::StopIndicator()
 {
-  static void* stopIndicator = 0;
+  static void* stopIndicator = nullptr;
   return stopIndicator;
 }

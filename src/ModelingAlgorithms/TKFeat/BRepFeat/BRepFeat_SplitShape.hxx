@@ -107,7 +107,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns true if the shape has been deleted.
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns the list of generated Faces.
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;

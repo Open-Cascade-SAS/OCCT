@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWUncertaintyMeasureWithUnit::RWStepBasic_RWUncertaintyMeasureWithUnit() {}
+RWStepBasic_RWUncertaintyMeasureWithUnit::RWStepBasic_RWUncertaintyMeasureWithUnit() = default;
 
 //=================================================================================================
 

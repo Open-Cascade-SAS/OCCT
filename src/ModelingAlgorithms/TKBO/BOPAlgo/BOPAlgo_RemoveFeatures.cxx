@@ -65,7 +65,7 @@ static void MakeRemoved(
 static void FindInternals(const TopoDS_Shape& theS, NCollection_List<TopoDS_Shape>& theLInt);
 
 static void RemoveInternalWires(const NCollection_List<TopoDS_Shape>& theShapes,
-                                NCollection_List<TopoDS_Shape>*       theRemoved = NULL);
+                                NCollection_List<TopoDS_Shape>*       theRemoved = nullptr);
 
 static void GetOriginalFaces(
   const TopoDS_Shape&                                                  theShape,
@@ -102,7 +102,7 @@ static void FindExtraShapes(
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapesToCheckOri,
   BOPAlgo_Builder&                                              theBuilder,
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&       theShapesToAvoid,
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes = NULL);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes = nullptr);
 
 static void AvoidExtraSharedFaces(NCollection_List<TopoDS_Shape>&       theLSolids,
                                   const NCollection_List<TopoDS_Shape>& theLFSharedToAvoid,
@@ -406,7 +406,7 @@ public: //! @name Perform the operation
 
     try
     {
-      Message_ProgressScope aPS(myRange, NULL, 3);
+      Message_ProgressScope aPS(myRange, nullptr, 3);
 
       myHistory = new BRepTools_History();
 
@@ -477,7 +477,7 @@ private: //! @name Private methods performing the operation
     TopoDS_Iterator aIt(myFeature);
     for (; aIt.More(); aIt.Next())
       myFeatureFacesMap.Add(aIt.Value());
-    Message_ProgressScope aPSOuter(theRange, NULL, 2);
+    Message_ProgressScope aPSOuter(theRange, nullptr, 2);
     // Find faces adjacent to the feature using the connection map
     aIt.Initialize(myFeature);
     Message_ProgressScope aPSF(aPSOuter.Next(), "Looking for adjacent faces", 1, true);
@@ -591,7 +591,7 @@ private: //! @name Private methods performing the operation
 
     // Intersection result
     TopoDS_Shape          anIntResult;
-    Message_ProgressScope aPSOuter(theRange, NULL, (aGFInter.Arguments().Extent() > 1) ? 2 : 1);
+    Message_ProgressScope aPSOuter(theRange, nullptr, (aGFInter.Arguments().Extent() > 1) ? 2 : 1);
     if (aGFInter.Arguments().Extent() > 1)
     {
       aGFInter.Perform(aPSOuter.Next());
@@ -960,7 +960,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
     bFuseShapes = false;
   }
 
-  Message_ProgressScope aPS(theRange, NULL, 100);
+  Message_ProgressScope aPS(theRange, nullptr, 100);
   // Rebuild the shape using MakerVolume algorithm avoiding the faces of the
   // feature and replacing the adjacent faces with their images
 
@@ -1262,7 +1262,7 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
     TopExp::MapShapes(myShape, myMapShape);
 
   const int             aNbS = myInputsMap.Extent();
-  Message_ProgressScope aPS(aPSOuter.Next(), NULL, aNbS);
+  Message_ProgressScope aPS(aPSOuter.Next(), nullptr, aNbS);
   for (int i = 1; i <= aNbS; ++i, aPS.Next())
   {
     if (UserBreak(aPS))

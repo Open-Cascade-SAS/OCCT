@@ -38,7 +38,7 @@ public:
   Standard_EXPORT OpenGl_CappingPlaneResource(const occ::handle<Graphic3d_ClipPlane>& thePlane);
 
   //! Destroy object.
-  Standard_EXPORT virtual ~OpenGl_CappingPlaneResource();
+  Standard_EXPORT ~OpenGl_CappingPlaneResource() override;
 
   //! Update resource data in the passed context.
   //! @param[in] theContext    the context
@@ -48,10 +48,10 @@ public:
 
   //! Release associated OpenGl resources.
   //! @param[in] theContext  the resource context.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual size_t EstimatedDataSize() const override { return 0; }
+  size_t EstimatedDataSize() const override { return 0; }
 
   //! Return parent clipping plane structure.
   const occ::handle<Graphic3d_ClipPlane>& Plane() const { return myPlaneRoot; }

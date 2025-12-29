@@ -37,7 +37,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UnitsAPI.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

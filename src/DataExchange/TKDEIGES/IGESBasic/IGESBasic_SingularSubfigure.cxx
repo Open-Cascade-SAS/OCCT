@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingularSubfigure, IGESData_IGESEntity)
 
-IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure() {}
+IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure() = default;
 
 void IGESBasic_SingularSubfigure::Init(const occ::handle<IGESBasic_SubfigureDef>& aSubfigureDef,
                                        const gp_XYZ&                              aTranslation,

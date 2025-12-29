@@ -17,7 +17,7 @@
 #include <StepVisual_PresentationArea.hxx>
 #include <StepVisual_PresentationView.hxx>
 
-StepVisual_AreaOrView::StepVisual_AreaOrView() {}
+StepVisual_AreaOrView::StepVisual_AreaOrView() = default;
 
 int StepVisual_AreaOrView::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

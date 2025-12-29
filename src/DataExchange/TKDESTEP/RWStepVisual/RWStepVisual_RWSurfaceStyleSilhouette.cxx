@@ -18,7 +18,7 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleSilhouette.hxx>
 
-RWStepVisual_RWSurfaceStyleSilhouette::RWStepVisual_RWSurfaceStyleSilhouette() {}
+RWStepVisual_RWSurfaceStyleSilhouette::RWStepVisual_RWSurfaceStyleSilhouette() = default;
 
 void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,

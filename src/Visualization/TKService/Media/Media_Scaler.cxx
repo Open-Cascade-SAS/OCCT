@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_Scaler, Standard_Transient)
 //=================================================================================================
 
 Media_Scaler::Media_Scaler()
-    : mySwsContext(NULL),
+    : mySwsContext(nullptr),
       mySrcFormat(0),
       myResFormat(0)
 {
@@ -56,12 +56,12 @@ Media_Scaler::~Media_Scaler()
 
 void Media_Scaler::Release()
 {
-  if (mySwsContext != NULL)
+  if (mySwsContext != nullptr)
   {
 #ifdef HAVE_FFMPEG
     sws_freeContext(mySwsContext);
 #endif
-    mySwsContext = NULL;
+    mySwsContext = nullptr;
   }
 }
 
@@ -82,7 +82,7 @@ bool Media_Scaler::Init(const NCollection_Vec2<int>& theSrcDims,
   else if (mySrcDims == theSrcDims && myResDims == theResDims && mySrcFormat == theSrcFormat
            && myResFormat == theResFormat)
   {
-    return mySwsContext != NULL;
+    return mySwsContext != nullptr;
   }
 
   Release();
@@ -97,10 +97,10 @@ bool Media_Scaler::Init(const NCollection_Vec2<int>& theSrcDims,
                                 theResDims.y(),
                                 (AVPixelFormat)theResFormat,
                                 SWS_BICUBIC,
-                                NULL,
-                                NULL,
-                                NULL);
-  return mySwsContext != NULL;
+                                nullptr,
+                                nullptr,
+                                nullptr);
+  return mySwsContext != nullptr;
 #else
   (void)theSrcDims;
   (void)theSrcFormat;

@@ -34,9 +34,9 @@ private:
   //! @param theNewEntity the new vector to replace the old one.
   //! @param theSharing the StepGeom_Line entity to update.
   //! @return true if the vector was replaced, false otherwise.
-  static bool replaceLine(const occ::handle<StepGeom_Vector>& theOldEntity,
-                          const occ::handle<StepGeom_Vector>& theNewEntity,
-                          occ::handle<Standard_Transient>     theSharing);
+  static bool replaceLine(const occ::handle<StepGeom_Vector>&    theOldEntity,
+                          const occ::handle<StepGeom_Vector>&    theNewEntity,
+                          const occ::handle<Standard_Transient>& theSharing);
 };
 
 #endif // _StepTidy_VectorReducer_HeaderFile

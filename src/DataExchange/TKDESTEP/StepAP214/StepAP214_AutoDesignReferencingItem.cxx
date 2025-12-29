@@ -29,7 +29,7 @@
 #include <StepVisual_PresentationArea.hxx>
 #include <StepVisual_PresentationView.hxx>
 
-StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem() {}
+StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem() = default;
 
 int StepAP214_AutoDesignReferencingItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

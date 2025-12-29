@@ -18,7 +18,7 @@
 #include <StepVisual_CameraModelD2.hxx>
 #include <StepVisual_PlanarBox.hxx>
 
-RWStepVisual_RWCameraModelD2::RWStepVisual_RWCameraModelD2() {}
+RWStepVisual_RWCameraModelD2::RWStepVisual_RWCameraModelD2() = default;
 
 void RWStepVisual_RWCameraModelD2::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

@@ -55,7 +55,7 @@ StepTidy_CartesianPointReducer::StepTidy_CartesianPointReducer(
 bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_Axis2Placement3d> aSharing =
     occ::down_cast<StepGeom_Axis2Placement3d>(theSharing);
@@ -72,7 +72,7 @@ bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
 bool StepTidy_CartesianPointReducer::replaceVertexPoint(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepShape_VertexPoint> aSharing = occ::down_cast<StepShape_VertexPoint>(theSharing);
   if (aSharing->VertexGeometry() == theOldEntity)
@@ -88,7 +88,7 @@ bool StepTidy_CartesianPointReducer::replaceVertexPoint(
 bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepShape_GeometricSet> aSharing = occ::down_cast<StepShape_GeometricSet>(theSharing);
   bool                                isReplaced = false;
@@ -109,7 +109,7 @@ bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
 bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepVisual_PresentationLayerAssignment> aSharing =
     occ::down_cast<StepVisual_PresentationLayerAssignment>(theSharing);
@@ -131,7 +131,7 @@ bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
 bool StepTidy_CartesianPointReducer::replaceStyledItem(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepVisual_StyledItem> aSharing = occ::down_cast<StepVisual_StyledItem>(theSharing);
   if (aSharing->Item() == theOldEntity)
@@ -147,7 +147,7 @@ bool StepTidy_CartesianPointReducer::replaceStyledItem(
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_BSplineCurveWithKnots> aSharing =
     occ::down_cast<StepGeom_BSplineCurveWithKnots>(theSharing);
@@ -170,7 +170,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
 bool StepTidy_CartesianPointReducer::replaceLine(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_Line> aSharing = occ::down_cast<StepGeom_Line>(theSharing);
   if (aSharing->Pnt() == theOldEntity)
@@ -186,7 +186,7 @@ bool StepTidy_CartesianPointReducer::replaceLine(
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_BSplineSurfaceWithKnots> aSharing =
     occ::down_cast<StepGeom_BSplineSurfaceWithKnots>(theSharing);
@@ -214,7 +214,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
 bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_Axis1Placement> aSharing =
     occ::down_cast<StepGeom_Axis1Placement>(theSharing);
@@ -231,7 +231,7 @@ bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
 bool StepTidy_CartesianPointReducer::replaceRepresentation(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepRepr_Representation> aSharing =
     occ::down_cast<StepRepr_Representation>(theSharing);
@@ -255,7 +255,7 @@ bool StepTidy_CartesianPointReducer::replaceRepresentation(
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSplineCurve(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> aSharing =
     occ::down_cast<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>(theSharing);
@@ -278,7 +278,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSpl
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnotsAndRationalBSplineSurface(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
-  occ::handle<Standard_Transient>             theSharing)
+  const occ::handle<Standard_Transient>&      theSharing)
 {
   occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface> aSharing =
     occ::down_cast<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>(theSharing);

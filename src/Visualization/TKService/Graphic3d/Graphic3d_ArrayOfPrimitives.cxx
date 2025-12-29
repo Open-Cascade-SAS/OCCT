@@ -28,8 +28,8 @@
 
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPrimitives, Standard_Transient)
 
@@ -99,9 +99,9 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
                                        Graphic3d_ArrayFlags           theArrayOptions)
 {
   myType     = theType;
-  myNormData = NULL;
-  myTexData  = NULL;
-  myColData  = NULL;
+  myNormData = nullptr;
+  myTexData  = nullptr;
+  myColData  = nullptr;
   myAttribs.Nullify();
   myIndices.Nullify();
   myBounds.Nullify();

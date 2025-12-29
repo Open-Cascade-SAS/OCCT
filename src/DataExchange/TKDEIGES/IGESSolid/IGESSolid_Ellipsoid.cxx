@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Ellipsoid, IGESData_IGESEntity)
 
-IGESSolid_Ellipsoid::IGESSolid_Ellipsoid() {}
+IGESSolid_Ellipsoid::IGESSolid_Ellipsoid() = default;
 
 void IGESSolid_Ellipsoid::Init(const gp_XYZ& aSize,
                                const gp_XYZ& aCenter,

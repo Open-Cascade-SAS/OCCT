@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaAreaDensity::RWStepFEA_RWFeaAreaDensity() {}
+RWStepFEA_RWFeaAreaDensity::RWStepFEA_RWFeaAreaDensity() = default;
 
 //=================================================================================================
 

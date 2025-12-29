@@ -65,7 +65,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SpecificModule, IGESData_SpecificModule)
 //  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-IGESGeom_SpecificModule::IGESGeom_SpecificModule() {}
+IGESGeom_SpecificModule::IGESGeom_SpecificModule() = default;
 
 void IGESGeom_SpecificModule::OwnDump(const int                               CN,
                                       const occ::handle<IGESData_IGESEntity>& ent,

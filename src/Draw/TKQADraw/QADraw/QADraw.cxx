@@ -32,7 +32,7 @@
 #include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

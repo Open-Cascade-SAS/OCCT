@@ -32,7 +32,7 @@ BRepAlgoAPI_Algo::BRepAlgoAPI_Algo(const occ::handle<NCollection_BaseAllocator>&
 
 //=================================================================================================
 
-BRepAlgoAPI_Algo::~BRepAlgoAPI_Algo() {}
+BRepAlgoAPI_Algo::~BRepAlgoAPI_Algo() = default;
 
 //=================================================================================================
 

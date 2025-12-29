@@ -125,7 +125,7 @@ void Extrema_ExtPS::TreatSolution(const Extrema_POnSurf& PS, const double Val)
 //=================================================================================================
 
 Extrema_ExtPS::Extrema_ExtPS()
-    : myS(NULL),
+    : myS(nullptr),
       myDone(false),
       myuinf(0.0),
       myusup(0.0),

@@ -180,9 +180,9 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver(const occ::handle<Aspect_DisplayConne
                                            const bool theToInitialize)
     : Graphic3d_GraphicDriver(theDisp),
       myIsOwnContext(false),
-      myEglDisplay(NULL),
-      myEglContext(NULL),
-      myEglConfig(NULL),
+      myEglDisplay(nullptr),
+      myEglContext(nullptr),
+      myEglConfig(nullptr),
       myCaps(new OpenGl_Caps()),
       myMapOfView(1, NCollection_BaseAllocator::CommonBaseAllocator()),
       myMapOfStructure(1, NCollection_BaseAllocator::CommonBaseAllocator())
@@ -204,7 +204,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver(const occ::handle<Aspect_DisplayConne
   }
 
   Display* aDisplay = (Display*)myDisplayConnection->GetDisplayAspect();
-  Bool     toSync   = ::getenv("CSF_GraphicSync") != NULL || ::getenv("CALL_SYNCHRO_X") != NULL;
+  Bool     toSync = ::getenv("CSF_GraphicSync") != nullptr || ::getenv("CALL_SYNCHRO_X") != nullptr;
   XSynchronize(aDisplay, toSync);
 #endif
   if (theToInitialize && !InitContext())
@@ -448,8 +448,8 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
 #if defined(HAVE_XLIB)
   Display* aDisp = (Display*)myDisplayConnection->GetDisplayAspect();
 
-  XVisualInfo*    aVisInfo   = NULL;
-  Aspect_FBConfig anFBConfig = NULL;
+  XVisualInfo*    aVisInfo   = nullptr;
+  Aspect_FBConfig anFBConfig = nullptr;
   #if defined(HAVE_EGL)
   XVisualInfo aVisInfoTmp;
   memset(&aVisInfoTmp, 0, sizeof(aVisInfoTmp));
@@ -480,12 +480,12 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
   if (hasFBCfg)
   {
     int          aFBCount   = 0;
-    GLXFBConfig* aFBCfgList = NULL;
+    GLXFBConfig* aFBCfgList = nullptr;
     if (hasFBCfg)
     {
       aFBCfgList = glXChooseFBConfig(aDisp, aScreen, TheDoubleBuffFBConfig, &aFBCount);
     }
-    if (aFBCfgList != NULL && aFBCount >= 1)
+    if (aFBCfgList != nullptr && aFBCount >= 1)
     {
       anFBConfig = aFBCfgList[0];
       aVisInfo   = glXGetVisualFromFBConfig(aDisp, anFBConfig);
@@ -500,12 +500,12 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
     XFree(aFBCfgList);
   }
 
-  if (aVisInfo == NULL)
+  if (aVisInfo == nullptr)
   {
     aVisInfo = glXChooseVisual(aDisp, aScreen, TheDoubleBuffVisual);
   }
   #endif
-  if (aVisInfo != NULL)
+  if (aVisInfo != nullptr)
   {
     myDisplayConnection->SetDefaultVisualInfo((Aspect_XVisualInfo*)aVisInfo, anFBConfig);
   }
@@ -768,7 +768,7 @@ occ::handle<Graphic3d_CStructure> OpenGl_GraphicDriver::CreateStructure(
 
 void OpenGl_GraphicDriver::RemoveStructure(occ::handle<Graphic3d_CStructure>& theCStructure)
 {
-  OpenGl_Structure* aStructure = NULL;
+  OpenGl_Structure* aStructure = nullptr;
   if (!myMapOfStructure.Find(theCStructure->Identification(), aStructure))
   {
     return;

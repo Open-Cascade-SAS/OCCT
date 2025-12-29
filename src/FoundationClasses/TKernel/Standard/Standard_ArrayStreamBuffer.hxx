@@ -55,7 +55,7 @@ public:
   Standard_EXPORT Standard_ArrayStreamBuffer(const char* theBegin, const size_t theSize);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Standard_ArrayStreamBuffer();
+  Standard_EXPORT ~Standard_ArrayStreamBuffer() override;
 
   //! (Re)-initialize the stream.
   //! Passed pointer is stored as is (memory is NOT copied nor released with destructor).
@@ -67,41 +67,40 @@ protected:
   //! Get character on underflow.
   //! Virtual function called by other member functions to get the current character
   //! in the controlled input sequence without changing the current position.
-  Standard_EXPORT virtual int_type underflow() override;
+  Standard_EXPORT int_type underflow() override;
 
   //! Get character on underflow and advance position.
   //! Virtual function called by other member functions to get the current character
   //! in the controlled input sequence and then advance the position indicator to the next
   //! character.
-  Standard_EXPORT virtual int_type uflow() override;
+  Standard_EXPORT int_type uflow() override;
 
   //! Put character back in the case of backup underflow.
   //! Virtual function called by other member functions to put a character back
   //! into the controlled input sequence and decrease the position indicator.
-  Standard_EXPORT virtual int_type pbackfail(int_type ch) override;
+  Standard_EXPORT int_type pbackfail(int_type ch) override;
 
   //! Get number of characters available.
   //! Virtual function (to be read s-how-many-c) called by other member functions
   //! to get an estimate on the number of characters available in the associated input sequence.
-  Standard_EXPORT virtual std::streamsize showmanyc() override;
+  Standard_EXPORT std::streamsize showmanyc() override;
 
   //! Seek to specified position.
-  Standard_EXPORT virtual pos_type seekoff(off_type                theOff,
-                                           std::ios_base::seekdir  theWay,
-                                           std::ios_base::openmode theWhich) override;
+  Standard_EXPORT pos_type seekoff(off_type                theOff,
+                                   std::ios_base::seekdir  theWay,
+                                   std::ios_base::openmode theWhich) override;
 
   //! Change to specified position, according to mode.
-  Standard_EXPORT virtual pos_type seekpos(pos_type                thePosition,
-                                           std::ios_base::openmode theWhich) override;
+  Standard_EXPORT pos_type seekpos(pos_type thePosition, std::ios_base::openmode theWhich) override;
 
 public:
   //! Read a bunch of bytes at once.
-  Standard_EXPORT virtual std::streamsize xsgetn(char* thePtr, std::streamsize theCount) override;
+  Standard_EXPORT std::streamsize xsgetn(char* thePtr, std::streamsize theCount) override;
 
 private:
   // copying is not allowed
-  Standard_ArrayStreamBuffer(const Standard_ArrayStreamBuffer&);
-  Standard_ArrayStreamBuffer& operator=(const Standard_ArrayStreamBuffer&);
+  Standard_ArrayStreamBuffer(const Standard_ArrayStreamBuffer&)            = delete;
+  Standard_ArrayStreamBuffer& operator=(const Standard_ArrayStreamBuffer&) = delete;
 
 protected:
   const char* myBegin;

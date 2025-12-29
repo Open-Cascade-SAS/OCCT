@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationContextElement, Standard_Transient)
 
-StepBasic_ApplicationContextElement::StepBasic_ApplicationContextElement() {}
+StepBasic_ApplicationContextElement::StepBasic_ApplicationContextElement() = default;
 
 void StepBasic_ApplicationContextElement::Init(
   const occ::handle<TCollection_HAsciiString>&     aName,

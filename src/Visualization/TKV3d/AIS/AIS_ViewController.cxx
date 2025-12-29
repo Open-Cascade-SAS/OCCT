@@ -1507,7 +1507,7 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
   AbortViewAnimation();
 
   const occ::handle<Graphic3d_Camera>& aCam = theView->Camera();
-  if (thePnt != NULL)
+  if (thePnt != nullptr)
   {
     const double aViewDist =
       std::max(myMinCamDistance, (thePnt->XYZ() - aCam->Eye().XYZ()).Modulus());
@@ -1569,7 +1569,7 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
 
   // pan back to the point
   aDxy = aZoomAtPointXYv - aDxy;
-  if (thePnt != NULL)
+  if (thePnt != nullptr)
   {
     // zoom at 3D point with perspective projection
     const gp_XYZ anEyeToPnt = thePnt->XYZ() - aCam->Eye().XYZ();
@@ -2218,7 +2218,7 @@ AIS_WalkDelta AIS_ViewController::handleNavigationKeys(const occ::handle<AIS_Int
         {
           const double aZoomDelta = aWalk[AIS_WalkTranslation_Forward].Value
                                     * aWalk[AIS_WalkTranslation_Forward].Pressure * aWalkSpeedCoef;
-          handleZoom(theView, Aspect_ScrollDelta(aZoomDelta * 100.0), NULL);
+          handleZoom(theView, Aspect_ScrollDelta(aZoomDelta * 100.0), nullptr);
         }
       }
 
@@ -2471,7 +2471,7 @@ void AIS_ViewController::handleCameraActions(const occ::handle<AIS_InteractiveCo
           continue;
         }
       }
-      handleZoom(theView, aZoomParams, NULL);
+      handleZoom(theView, aZoomParams, nullptr);
     }
     myGL.ZoomActions.Clear();
   }

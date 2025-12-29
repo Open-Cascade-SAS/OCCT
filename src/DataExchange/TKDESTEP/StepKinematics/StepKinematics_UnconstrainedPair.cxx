@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_UnconstrainedPair, StepKinematics_LowO
 
 //=================================================================================================
 
-StepKinematics_UnconstrainedPair::StepKinematics_UnconstrainedPair() {}
+StepKinematics_UnconstrainedPair::StepKinematics_UnconstrainedPair() = default;

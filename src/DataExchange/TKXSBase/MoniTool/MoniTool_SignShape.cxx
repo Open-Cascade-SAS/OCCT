@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_SignShape, MoniTool_SignText)
 
-MoniTool_SignShape::MoniTool_SignShape() {}
+MoniTool_SignShape::MoniTool_SignShape() = default;
 
 const char* MoniTool_SignShape::Name() const
 {

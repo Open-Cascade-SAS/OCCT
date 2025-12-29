@@ -16,7 +16,7 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>
 
-Interface_GraphContent::Interface_GraphContent() {}
+Interface_GraphContent::Interface_GraphContent() = default;
 
 Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph)
 {

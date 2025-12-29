@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Effectivity, Standard_Transient)
 
-StepBasic_Effectivity::StepBasic_Effectivity() {}
+StepBasic_Effectivity::StepBasic_Effectivity() = default;
 
 void StepBasic_Effectivity::Init(const occ::handle<TCollection_HAsciiString>& aid)
 {

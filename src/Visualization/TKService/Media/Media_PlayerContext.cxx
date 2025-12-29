@@ -413,7 +413,7 @@ bool Media_PlayerContext::receiveFrame(const occ::handle<Media_Frame>&        th
 
 #ifdef HAVE_FFMPEG
     aFrame->buf[0] = myBufferPools[0]->GetBuffer();
-    if (aFrame->buf[0] == NULL)
+    if (aFrame->buf[0] == nullptr)
     {
       theFrame->Unref();
       Message::SendFail("FFmpeg: unable to allocate RGB24 frame buffer");
@@ -454,7 +454,7 @@ bool Media_PlayerContext::receiveFrame(const occ::handle<Media_Frame>&        th
     aFrame->buf[0] = myBufferPools[0]->GetBuffer();
     aFrame->buf[1] = myBufferPools[1]->GetBuffer();
     aFrame->buf[2] = myBufferPools[2]->GetBuffer();
-    if (aFrame->buf[0] == NULL || aFrame->buf[1] == NULL || aFrame->buf[2] == NULL)
+    if (aFrame->buf[0] == nullptr || aFrame->buf[1] == nullptr || aFrame->buf[2] == nullptr)
     {
       theFrame->Unref();
       Message::SendFail("FFmpeg: unable to allocate YUV420P frame buffers");

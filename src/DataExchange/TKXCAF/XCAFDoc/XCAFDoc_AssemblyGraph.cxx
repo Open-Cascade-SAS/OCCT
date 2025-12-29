@@ -72,7 +72,7 @@ bool XCAFDoc_AssemblyGraph::IsDirectLink(const int theNode1, const int theNode2)
 XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(const int theNode) const
 {
   const NodeType* typePtr = myNodeTypes.Seek(theNode);
-  if (typePtr == NULL)
+  if (typePtr == nullptr)
     return NodeType_UNDEFINED;
 
   return (*typePtr);
@@ -98,7 +98,7 @@ int XCAFDoc_AssemblyGraph::NbLinks() const
 int XCAFDoc_AssemblyGraph::NbOccurrences(const int theNode) const
 {
   const int* aUsageOQPtr = myUsages.Seek(theNode);
-  if (aUsageOQPtr == NULL)
+  if (aUsageOQPtr == nullptr)
     return 0;
 
   return (*aUsageOQPtr);
@@ -236,7 +236,7 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
   {
     // Bind usage occurrences.
     int* aUsageOQPtr = myUsages.ChangeSeek(aChildId);
-    if (aUsageOQPtr == NULL)
+    if (aUsageOQPtr == nullptr)
       aUsageOQPtr = myUsages.Bound(aChildId, 1);
     else
       ++(*aUsageOQPtr);
@@ -246,7 +246,7 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParen
   {
     // Add link
     TColStd_PackedMapOfInteger* aMapPtr = myAdjacencyMap.ChangeSeek(theParentId);
-    if (aMapPtr == NULL)
+    if (aMapPtr == nullptr)
       aMapPtr = myAdjacencyMap.Bound(theParentId, TColStd_PackedMapOfInteger());
 
     (*aMapPtr).Add(aChildId);

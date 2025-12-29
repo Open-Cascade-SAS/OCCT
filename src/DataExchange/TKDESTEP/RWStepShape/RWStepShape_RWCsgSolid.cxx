@@ -18,7 +18,7 @@
 #include <StepShape_BooleanResult.hxx>
 #include <StepShape_CsgSolid.hxx>
 
-RWStepShape_RWCsgSolid::RWStepShape_RWCsgSolid() {}
+RWStepShape_RWCsgSolid::RWStepShape_RWCsgSolid() = default;
 
 void RWStepShape_RWCsgSolid::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

@@ -34,10 +34,10 @@
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 28/07/98
-IGESGeom_ToolCircularArc::IGESGeom_ToolCircularArc() {}
+IGESGeom_ToolCircularArc::IGESGeom_ToolCircularArc() = default;
 
 void IGESGeom_ToolCircularArc::ReadOwnParams(const occ::handle<IGESGeom_CircularArc>& ent,
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,

@@ -31,7 +31,7 @@ BRepMeshData_Face::BRepMeshData_Face(const TopoDS_Face&                         
 
 //=================================================================================================
 
-BRepMeshData_Face::~BRepMeshData_Face() {}
+BRepMeshData_Face::~BRepMeshData_Face() = default;
 
 //=================================================================================================
 

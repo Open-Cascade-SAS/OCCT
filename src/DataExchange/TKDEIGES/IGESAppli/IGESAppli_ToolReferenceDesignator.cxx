@@ -31,7 +31,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolReferenceDesignator::IGESAppli_ToolReferenceDesignator() {}
+IGESAppli_ToolReferenceDesignator::IGESAppli_ToolReferenceDesignator() = default;
 
 void IGESAppli_ToolReferenceDesignator::ReadOwnParams(
   const occ::handle<IGESAppli_ReferenceDesignator>& ent,

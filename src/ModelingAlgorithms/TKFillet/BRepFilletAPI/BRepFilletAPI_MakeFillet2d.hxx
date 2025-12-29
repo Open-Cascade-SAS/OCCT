@@ -262,8 +262,7 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S) override;
 
   //! returns the number of new curves
   //! after the shape creation.
@@ -292,7 +291,7 @@ public:
   ChFi2d_ConstructionError Status() const;
 
   //! Update the result and set the Done flag
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 private:

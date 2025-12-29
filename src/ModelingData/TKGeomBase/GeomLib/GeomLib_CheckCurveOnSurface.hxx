@@ -29,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
-  Standard_EXPORT GeomLib_CheckCurveOnSurface(void);
+  Standard_EXPORT GeomLib_CheckCurveOnSurface();
 
   //! Constructor
   Standard_EXPORT GeomLib_CheckCurveOnSurface(const occ::handle<Adaptor3d_Curve>& theCurve,

@@ -20,7 +20,7 @@
 
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 
-RWStepGeom_RWUniformSurface::RWStepGeom_RWUniformSurface() {}
+RWStepGeom_RWUniformSurface::RWStepGeom_RWUniformSurface() = default;
 
 void RWStepGeom_RWUniformSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

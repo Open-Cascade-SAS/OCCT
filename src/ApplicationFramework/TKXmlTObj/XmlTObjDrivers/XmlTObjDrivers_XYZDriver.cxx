@@ -34,7 +34,7 @@ IMPLEMENT_DOMSTRING(CoordZ, "Z")
 
 XmlTObjDrivers_XYZDriver::XmlTObjDrivers_XYZDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : XmlMDF_ADriver(theMessageDriver, NULL)
+    : XmlMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 

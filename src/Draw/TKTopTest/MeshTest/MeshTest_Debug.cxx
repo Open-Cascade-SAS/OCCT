@@ -29,7 +29,7 @@
 //=======================================================================
 Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* theDataStruct)
 {
-  if (theNameStr == 0 || theDataStruct == 0)
+  if (theNameStr == nullptr || theDataStruct == nullptr)
   {
     return "Error: name or face attribute is null";
   }
@@ -71,7 +71,7 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
 //=======================================================================
 Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void* theDataStruct)
 {
-  if (theNameStr == 0 || theDataStruct == 0)
+  if (theNameStr == nullptr || theDataStruct == nullptr)
   {
     return "Error: name or face attribute is null";
   }

@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_EdgeInterferenceTool::TopOpeBRepDS_EdgeInterferenceTool() {}
+TopOpeBRepDS_EdgeInterferenceTool::TopOpeBRepDS_EdgeInterferenceTool() = default;
 
 static double Parameter(const occ::handle<TopOpeBRepDS_Interference>& I)
 {

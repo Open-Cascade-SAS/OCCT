@@ -57,10 +57,9 @@ public:
   DEFINE_STANDARD_ALLOC
   //
   BOPAlgo_EdgeEdge()
-      : IntTools_EdgeEdge(),
-        BOPAlgo_ParallelAlgo() {};
+      : BOPAlgo_ParallelAlgo() {};
   //
-  virtual ~BOPAlgo_EdgeEdge() {};
+  ~BOPAlgo_EdgeEdge() override = default;
 
   //
   void SetPaveBlock1(const occ::handle<BOPDS_PaveBlock>& aPB) { myPB1 = aPB; }
@@ -85,9 +84,9 @@ public:
   void SetFuzzyValue(const double theFuzz) { IntTools_EdgeEdge::SetFuzzyValue(theFuzz); }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -149,7 +148,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_EDGE);
   int                   iSize = myIterator->ExpectedLength();
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   if (!iSize)
   {
     return;
@@ -613,9 +612,9 @@ void BOPAlgo_PaveFiller::PerformNewVertices(
   NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   //
   // 4. Compute Extra Paves and split Pave blocks by the Extra paves
-  Message_ProgressScope aPS(theRange, NULL, 2);
+  Message_ProgressScope aPS(theRange, nullptr, 2);
   int                   i, aNb = aImages.Extent();
-  Message_ProgressScope aPS1(aPS.Next(), NULL, aNb + aNbV);
+  Message_ProgressScope aPS1(aPS.Next(), nullptr, aNb + aNbV);
   for (i = 1; i <= aNb; ++i, aPS1.Next())
   {
     if (UserBreak(aPS))
@@ -985,7 +984,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
   // those pairs of pave blocks with the same bounding vertices.
 
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator;
-  Message_ProgressScope                 aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope                 aPSOuter(theRange, nullptr, 10);
   // Initialize pave blocks for all vertices which participated in intersections
   const int aNbS = myDS->NbSourceShapes();
   for (int i = 0; i < aNbS; ++i)

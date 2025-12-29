@@ -44,30 +44,30 @@ public:
   Standard_EXPORT MeshVS_DeformedDataSource(const occ::handle<MeshVS_DataSource>& theNonDeformDS,
                                             const double                          theMagnify);
 
-  Standard_EXPORT virtual bool GetGeom(const int                   ID,
-                                       const bool                  IsElement,
-                                       NCollection_Array1<double>& Coords,
-                                       int&                        NbNodes,
-                                       MeshVS_EntityType&          Type) const override;
+  Standard_EXPORT bool GetGeom(const int                   ID,
+                               const bool                  IsElement,
+                               NCollection_Array1<double>& Coords,
+                               int&                        NbNodes,
+                               MeshVS_EntityType&          Type) const override;
 
-  Standard_EXPORT virtual bool GetGeomType(const int          ID,
-                                           const bool         IsElement,
-                                           MeshVS_EntityType& Type) const override;
+  Standard_EXPORT bool GetGeomType(const int          ID,
+                                   const bool         IsElement,
+                                   MeshVS_EntityType& Type) const override;
 
-  Standard_EXPORT virtual bool Get3DGeom(
+  Standard_EXPORT bool Get3DGeom(
     const int                                                    ID,
     int&                                                         NbNodes,
     occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Data) const override;
 
-  Standard_EXPORT virtual void* GetAddr(const int ID, const bool IsElement) const override;
+  Standard_EXPORT void* GetAddr(const int ID, const bool IsElement) const override;
 
-  Standard_EXPORT virtual bool GetNodesByElement(const int                ID,
-                                                 NCollection_Array1<int>& NodeIDs,
-                                                 int&                     NbNodes) const override;
+  Standard_EXPORT bool GetNodesByElement(const int                ID,
+                                         NCollection_Array1<int>& NodeIDs,
+                                         int&                     NbNodes) const override;
 
-  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllNodes() const override;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const override;
 
-  Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllElements() const override;
+  Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllElements() const override;
 
   //! This method returns map of nodal displacement vectors
   Standard_EXPORT const NCollection_DataMap<int, gp_Vec>& GetVectors() const;

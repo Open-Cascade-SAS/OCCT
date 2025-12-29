@@ -49,11 +49,11 @@ struct DeflectionControlMeshAlgo
 
 //=================================================================================================
 
-BRepMesh_MeshAlgoFactory::BRepMesh_MeshAlgoFactory() {}
+BRepMesh_MeshAlgoFactory::BRepMesh_MeshAlgoFactory() = default;
 
 //=================================================================================================
 
-BRepMesh_MeshAlgoFactory::~BRepMesh_MeshAlgoFactory() {}
+BRepMesh_MeshAlgoFactory::~BRepMesh_MeshAlgoFactory() = default;
 
 //=================================================================================================
 

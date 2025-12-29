@@ -28,7 +28,7 @@ public:
   {
   public:
     //! Empty constructor.
-    Iterator() {}
+    Iterator() = default;
 
     //! Constructor.
     Iterator(const occ::handle<Graphic3d_TextureSet>& theSet)
@@ -42,7 +42,7 @@ public:
 
 public:
   //! Empty constructor.
-  Graphic3d_TextureSet() {}
+  Graphic3d_TextureSet() = default;
 
   //! Constructor.
   Graphic3d_TextureSet(int theNbTextures)

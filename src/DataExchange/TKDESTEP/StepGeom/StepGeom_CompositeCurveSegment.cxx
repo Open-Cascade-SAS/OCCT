@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment, Standard_Transient)
 
-StepGeom_CompositeCurveSegment::StepGeom_CompositeCurveSegment() {}
+StepGeom_CompositeCurveSegment::StepGeom_CompositeCurveSegment() = default;
 
 void StepGeom_CompositeCurveSegment::Init(const StepGeom_TransitionCode      aTransition,
                                           const bool                         aSameSense,

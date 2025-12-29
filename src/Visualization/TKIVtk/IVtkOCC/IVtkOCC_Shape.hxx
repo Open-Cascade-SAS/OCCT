@@ -37,7 +37,7 @@ public:
     const occ::handle<Prs3d_Drawer>& theDrawerLink = occ::handle<Prs3d_Drawer>());
 
   //! Destructor
-  Standard_EXPORT virtual ~IVtkOCC_Shape();
+  Standard_EXPORT ~IVtkOCC_Shape() override;
 
   //! Returns unique ID of the given sub-shape within the top-level shape.
   Standard_EXPORT IVtk_IdType GetSubShapeId(const IVtk_IShape::Handle&) const;

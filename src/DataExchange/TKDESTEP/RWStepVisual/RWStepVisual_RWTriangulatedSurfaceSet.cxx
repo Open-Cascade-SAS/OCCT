@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTriangulatedSurfaceSet::RWStepVisual_RWTriangulatedSurfaceSet() {}
+RWStepVisual_RWTriangulatedSurfaceSet::RWStepVisual_RWTriangulatedSurfaceSet() = default;
 
 //=================================================================================================
 

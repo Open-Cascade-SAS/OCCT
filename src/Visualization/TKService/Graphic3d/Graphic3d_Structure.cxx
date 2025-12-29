@@ -26,7 +26,7 @@
 
 #include <Standard_Dump.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure, Standard_Transient)
 
@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure, Standard_Transient)
 Graphic3d_Structure::Graphic3d_Structure(const occ::handle<Graphic3d_StructureManager>& theManager,
                                          const occ::handle<Graphic3d_Structure>&        theLinkPrs)
     : myStructureManager(theManager.get()),
-      myOwner(NULL),
+      myOwner(nullptr),
       myVisual(Graphic3d_TOS_ALL),
       myComputeVisual(Graphic3d_TOS_ALL)
 {
@@ -61,7 +61,7 @@ Graphic3d_Structure::~Graphic3d_Structure()
 {
   // as myStructureManager can be already destroyed,
   // avoid attempts to access it
-  myStructureManager = NULL;
+  myStructureManager = nullptr;
   Remove();
 }
 
@@ -685,7 +685,7 @@ void Graphic3d_Structure::Remove(const occ::handle<Graphic3d_Group>& theGroup)
   }
 
   myCStructure->RemoveGroup(theGroup);
-  theGroup->myStructure = NULL;
+  theGroup->myStructure = nullptr;
 }
 
 //=================================================================================================

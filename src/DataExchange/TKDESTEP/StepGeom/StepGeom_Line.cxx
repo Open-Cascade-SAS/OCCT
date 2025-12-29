@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Line, StepGeom_Curve)
 
-StepGeom_Line::StepGeom_Line() {}
+StepGeom_Line::StepGeom_Line() = default;
 
 void StepGeom_Line::Init(const occ::handle<TCollection_HAsciiString>& aName,
                          const occ::handle<StepGeom_CartesianPoint>&  aPnt,

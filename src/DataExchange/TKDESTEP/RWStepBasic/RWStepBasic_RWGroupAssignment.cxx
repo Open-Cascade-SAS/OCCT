@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWGroupAssignment::RWStepBasic_RWGroupAssignment() {}
+RWStepBasic_RWGroupAssignment::RWStepBasic_RWGroupAssignment() = default;
 
 //=================================================================================================
 

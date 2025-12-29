@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta, Standard_Transient)
 
 //=================================================================================================
 
-TDocStd_ApplicationDelta::TDocStd_ApplicationDelta() {}
+TDocStd_ApplicationDelta::TDocStd_ApplicationDelta() = default;
 
 //=================================================================================================
 

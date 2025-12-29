@@ -31,7 +31,7 @@ public:
    * Empty constructor
    */
   inline VrmlData_TextureCoordinate()
-      : myPoints(0L),
+      : myPoints(nullptr),
         myLength(0)
   {
   }
@@ -42,7 +42,7 @@ public:
   inline VrmlData_TextureCoordinate(const VrmlData_Scene& theScene,
                                     const char*           theName,
                                     const size_t          nPoints   = 0,
-                                    const gp_XY*          arrPoints = 0L)
+                                    const gp_XY*          arrPoints = nullptr)
       : VrmlData_Node(theScene, theName),
         myPoints(arrPoints),
         myLength(nPoints)
@@ -80,13 +80,13 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+  Standard_EXPORT occ::handle<VrmlData_Node> Clone(
     const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
 private:
   // ---------- PRIVATE FIELDS ----------

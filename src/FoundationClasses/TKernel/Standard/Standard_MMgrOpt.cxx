@@ -21,8 +21,8 @@
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Assert.hxx>
 
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
 
 #ifndef _WIN32
   #include <unistd.h>
@@ -150,11 +150,11 @@ Standard_MMgrOpt::Standard_MMgrOpt(const bool   aClear,
 
   // clear buffer fields
   myFreeListMax = 0;
-  myFreeList    = NULL;
+  myFreeList    = nullptr;
   myPageSize    = 0;
-  myAllocList   = NULL;
-  myNextAddr    = NULL;
-  myEndBlock    = NULL;
+  myAllocList   = nullptr;
+  myNextAddr    = nullptr;
+  myEndBlock    = nullptr;
 
   // initialize parameters
   myClear     = aClear;
@@ -273,7 +273,7 @@ void Standard_MMgrOpt::Initialize()
 // purpose  : Sets a callback function to be called on each alloc/free
 //=======================================================================
 
-static Standard_MMgrOpt::TPCallBackFunc MyPCallBackFunc = NULL;
+static Standard_MMgrOpt::TPCallBackFunc MyPCallBackFunc = nullptr;
 
 Standard_EXPORT void Standard_MMgrOpt::SetCallBackFunction(TPCallBackFunc pFunc)
 {
@@ -293,7 +293,7 @@ inline void callBack(const bool   isAlloc,
 
 void* Standard_MMgrOpt::Allocate(const size_t aSize)
 {
-  size_t* aStorage = NULL;
+  size_t* aStorage = nullptr;
 
   // round up size according to allocation granularity
   // The keyword 'volatile' is only used here for GCC 64-bit compilations
@@ -499,7 +499,7 @@ int Standard_MMgrOpt::Purge(bool)
       free(anOther);
       nbFreed++;
     }
-    myFreeList[i] = NULL;
+    myFreeList[i] = nullptr;
   }
 
   // Lock access to critical data by mutex
@@ -525,7 +525,7 @@ int Standard_MMgrOpt::Purge(bool)
   static int       aFreePools[NB_POOLS_WIN];
 
   size_t*      aNextPool = myAllocList;
-  size_t*      aPrevPool = NULL;
+  size_t*      aPrevPool = nullptr;
   const size_t nCells    = INDEX_CELL(myCellSize);
   int          nPool = 0, nPoolFreed = 0;
 
@@ -585,7 +585,7 @@ int Standard_MMgrOpt::Purge(bool)
     for (i = 0; i <= nCells; i++)
     {
       size_t* aFree     = myFreeList[i];
-      size_t* aPrevFree = NULL;
+      size_t* aPrevFree = nullptr;
       while (aFree)
       {
         for (j = 0; j <= iLastFree; j++)
@@ -659,7 +659,7 @@ void Standard_MMgrOpt::FreePools()
 
   // last pool is remembered in myAllocList
   size_t* aFree = myAllocList;
-  myAllocList   = 0;
+  myAllocList   = nullptr;
   while (aFree)
   {
     size_t* aBlock = aFree;
@@ -681,7 +681,7 @@ void* Standard_MMgrOpt::Reallocate(void* theStorage, const size_t theNewSize)
   }
 
   size_t* aBlock     = GET_BLOCK(theStorage);
-  void*   newStorage = NULL;
+  void*   newStorage = nullptr;
 
   // get current size of the memory block from its header
   size_t OldSize = aBlock[0];
@@ -715,7 +715,7 @@ size_t* Standard_MMgrOpt::AllocMemory(size_t& Size)
   // goto is used as efficient method for a possibility to retry allocation
 retry:
 
-  size_t* aBlock = NULL;
+  size_t* aBlock = nullptr;
 
   // if MMap option is ON, allocate using memory mapped files
   if (myMMap)

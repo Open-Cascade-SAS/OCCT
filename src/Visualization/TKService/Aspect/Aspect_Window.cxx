@@ -36,9 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_Window, Standard_Transient)
 //-Destructors
 //-Constructors
 Aspect_Window::Aspect_Window()
-    : MyBackground(),
-      MyGradientBackground(),
-      MyBackgroundFillMethod(Aspect_FM_NONE)
+    : MyBackgroundFillMethod(Aspect_FM_NONE)
 {
 }
 

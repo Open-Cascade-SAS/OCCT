@@ -79,7 +79,7 @@ public:
                                  const double                    Confusion) const;
 
   //! Dump of the point.
-  Standard_EXPORT void Dump(const int Index = 0) const;
+  Standard_EXPORT void Dump(const int Index = 0) const override;
 
 protected:
   NCollection_Sequence<HatchGen_PointOnElement> myPoints;

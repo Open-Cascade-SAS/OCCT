@@ -37,7 +37,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~BRepMesh_DelaunayNodeInsertionMeshAlgo() {}
+  ~BRepMesh_DelaunayNodeInsertionMeshAlgo() override = default;
 
   //! Returns PreProcessSurfaceNodes flag.
   bool IsPreProcessSurfaceNodes() const { return myIsPreProcessSurfaceNodes; }
@@ -52,7 +52,7 @@ public:
 
 protected:
   //! Performs initialization of data structure using existing model data.
-  virtual bool initDataStructure() override
+  bool initDataStructure() override
   {
     if (!InsertionBaseClass::initDataStructure())
     {
@@ -71,7 +71,7 @@ protected:
   }
 
   //! Returns size of cell to be used by acceleration circles grid structure.
-  virtual std::pair<int, int> getCellsCount(const int theVerticesNb) override
+  std::pair<int, int> getCellsCount(const int theVerticesNb) override
   {
     return BRepMesh_GeomTool::CellsCount(this->getDFace()->GetSurface(),
                                          theVerticesNb,
@@ -81,8 +81,7 @@ protected:
 
   //! Performs processing of generated mesh. Generates surface nodes and inserts them into
   //! structure.
-  virtual void postProcessMesh(BRepMesh_Delaun&             theMesher,
-                               const Message_ProgressRange& theRange) override
+  void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange) override
   {
     if (!theRange.More())
     {

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Pcurve, StepGeom_Curve)
 
-StepGeom_Pcurve::StepGeom_Pcurve() {}
+StepGeom_Pcurve::StepGeom_Pcurve() = default;
 
 void StepGeom_Pcurve::Init(
   const occ::handle<TCollection_HAsciiString>&            aName,

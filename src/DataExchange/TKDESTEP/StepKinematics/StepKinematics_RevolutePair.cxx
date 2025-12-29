@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RevolutePair, StepKinematics_LowOrderK
 
 //=================================================================================================
 
-StepKinematics_RevolutePair::StepKinematics_RevolutePair() {}
+StepKinematics_RevolutePair::StepKinematics_RevolutePair() = default;

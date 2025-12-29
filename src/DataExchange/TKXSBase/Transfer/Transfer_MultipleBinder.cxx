@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Transfer_MultipleBinder, Transfer_Binder)
 // Possibility to define a Multiple Result : several objects resulting
 //  from a Transfer, without being able to distinguish them
 //  N.B. : For now, all Transients (may evolve)
-Transfer_MultipleBinder::Transfer_MultipleBinder() {}
+Transfer_MultipleBinder::Transfer_MultipleBinder() = default;
 
 bool Transfer_MultipleBinder::IsMultiple() const
 {

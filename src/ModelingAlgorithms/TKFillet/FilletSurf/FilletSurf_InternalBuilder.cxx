@@ -62,9 +62,9 @@ static bool isinlist(const TopoDS_Shape& E, const NCollection_List<TopoDS_Shape>
   for (It.Initialize(L); It.More(); It.Next())
   {
     if (E.IsSame(It.Value()))
-      return 1;
+      return true;
   }
-  return 0;
+  return false;
 }
 
 static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
@@ -72,7 +72,7 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
                         double&                         w,
                         const double                    tol3d)
 {
-  bool                             done = 0;
+  bool                             done = false;
   double                           f    = Ed->FirstParameter();
   double                           l    = Ed->LastParameter();
   gp_Pnt                           Or   = P.Location();
@@ -96,7 +96,7 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
       double d    = pint.Distance(Or);
       if (d < dist)
       {
-        done = 1;
+        done = true;
         w    = IP.W();
         dist = d;
       }
@@ -114,7 +114,7 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
     double d = pdeb.Distance(Or);
     if (d < dist)
     {
-      done = 1;
+      done = true;
       w    = f;
       dist = d;
     }
@@ -127,7 +127,7 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
     double d = pfin.Distance(Or);
     if (d < dist)
     {
-      done = 1;
+      done = true;
       w    = l;
       dist = d;
     }
@@ -230,7 +230,7 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
   }
 
   occ::handle<ChFiDS_FilSpine> newsp              = new ChFiDS_FilSpine();
-  bool                         debut              = 0;
+  bool                         debut              = false;
   int                          premierquinyestpas = 0;
   int                          yatrou             = 0;
   for (int i = 1; i <= sp->NbEdges(); i++)
@@ -238,7 +238,7 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
     TopoDS_Edge cured = sp->Edges(i);
     if (isinlist(cured, E))
     {
-      debut = 1;
+      debut = true;
       if (premierquinyestpas)
       {
         yatrou = 1;
@@ -253,7 +253,7 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
     return 2;
   if (periodic && yatrou)
   {
-    bool vraitrou = 0, aLocalDebut = 0;
+    bool vraitrou = false, aLocalDebut = false;
     for (int i = sp->NbEdges(); i > yatrou; i--)
     {
       TopoDS_Edge cured = sp->Edges(i);
@@ -264,8 +264,8 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
         newsp->PutInFirst(cured);
       }
       else if (aLocalDebut)
-        vraitrou = 1;
-      aLocalDebut = 1;
+        vraitrou = true;
+      aLocalDebut = true;
     }
   }
 
@@ -309,7 +309,7 @@ void FilletSurf_InternalBuilder::Perform()
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
   Stripe->Choix(RefChoix);
-  PerformSetOfKGen(Stripe, 0);
+  PerformSetOfKGen(Stripe, false);
 }
 
 //=================================================================================================
@@ -422,7 +422,7 @@ bool FilletSurf_InternalBuilder::PerformSurf(
                           Data->ChangeVertexLastOnS2(),
                           tolapp3d);
   }
-  done = CompleteData(Data, Func, lin, S1, S2, Or, 0, 0, 0, 0);
+  done = CompleteData(Data, Func, lin, S1, S2, Or, false, false, false, false);
   if (!done)
     throw Standard_Failure("PerformSurf : Failed approximation!");
   //  maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d);
@@ -803,7 +803,7 @@ void FilletSurf_InternalBuilder::Simulate()
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
   Stripe->Choix(RefChoix);
-  PerformSetOfKGen(Stripe, 1);
+  PerformSetOfKGen(Stripe, true);
 }
 
 //=======================================================================

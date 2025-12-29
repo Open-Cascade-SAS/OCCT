@@ -56,7 +56,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Evaluates the list of Articulation points
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 
 private:
   //! basic routine of computation

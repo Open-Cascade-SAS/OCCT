@@ -57,15 +57,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns true if F a TopoDS_Shape of type edge or face has been deleted.
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& F) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& F) override;
 
   //! Returns the list of generated Faces F. This list may be empty.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
   //! Returns a list NCollection_List<TopoDS_Shape> of the faces S created in the shape.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes created at the bottom of
   //! the created form. It may be an empty list.

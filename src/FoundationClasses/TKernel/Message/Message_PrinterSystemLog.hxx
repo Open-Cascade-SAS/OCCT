@@ -31,12 +31,12 @@ public:
                                            const Message_Gravity theTraceLevel = Message_Info);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Message_PrinterSystemLog();
+  Standard_EXPORT ~Message_PrinterSystemLog() override;
 
 protected:
   //! Puts a message to the system log.
-  Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+  Standard_EXPORT void send(const TCollection_AsciiString& theString,
+                            const Message_Gravity          theGravity) const override;
 
 private:
   TCollection_AsciiString myEventSourceName;

@@ -41,7 +41,7 @@ public:
   //! 2 -> Organization
   //! 3 -> PersonAndOrganization
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Person (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Person> Person() const;

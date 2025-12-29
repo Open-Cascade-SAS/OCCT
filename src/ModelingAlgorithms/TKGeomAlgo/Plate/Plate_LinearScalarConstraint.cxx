@@ -19,7 +19,7 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <Standard_DimensionMismatch.hxx>
 
-Plate_LinearScalarConstraint::Plate_LinearScalarConstraint() {}
+Plate_LinearScalarConstraint::Plate_LinearScalarConstraint() = default;
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint(const Plate_PinpointConstraint& PPC1,
                                                            const gp_XYZ&                   coeff)

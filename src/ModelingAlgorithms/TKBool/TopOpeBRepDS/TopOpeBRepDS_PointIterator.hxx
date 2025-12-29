@@ -42,7 +42,7 @@ public:
   //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_POINT or TopOpeBRepDS_VERTEX
   //! returns False else.
-  Standard_EXPORT virtual bool MatchInterference(
+  Standard_EXPORT bool MatchInterference(
     const occ::handle<TopOpeBRepDS_Interference>& I) const override;
 
   //! Index of the point in the data structure.

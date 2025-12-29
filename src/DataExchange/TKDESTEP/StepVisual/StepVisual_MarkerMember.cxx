@@ -25,7 +25,7 @@ static StepData_EnumTool tool(".DOT.",
                               ".SQUARE.",
                               ".TRIANGLE.");
 
-StepVisual_MarkerMember::StepVisual_MarkerMember() {}
+StepVisual_MarkerMember::StepVisual_MarkerMember() = default;
 
 bool StepVisual_MarkerMember::HasName() const
 {

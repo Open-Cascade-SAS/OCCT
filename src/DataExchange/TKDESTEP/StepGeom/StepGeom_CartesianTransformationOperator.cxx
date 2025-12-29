@@ -19,7 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator,
                            StepGeom_GeometricRepresentationItem)
 
-StepGeom_CartesianTransformationOperator::StepGeom_CartesianTransformationOperator() {}
+StepGeom_CartesianTransformationOperator::StepGeom_CartesianTransformationOperator() = default;
 
 void StepGeom_CartesianTransformationOperator::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

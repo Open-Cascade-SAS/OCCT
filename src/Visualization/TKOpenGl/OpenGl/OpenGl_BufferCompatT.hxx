@@ -46,26 +46,26 @@ public:
   }
 
   //! Destroy object.
-  virtual ~OpenGl_BufferCompatT() { Release(NULL); }
+  ~OpenGl_BufferCompatT() override { Release(nullptr); }
 
   //! Return TRUE.
-  virtual bool IsVirtual() const override { return true; }
+  bool IsVirtual() const override { return true; }
 
   //! Creates VBO name (id) if not yet generated.
   //! Data should be initialized by another method.
   inline bool Create(const occ::handle<OpenGl_Context>& theGlCtx) override;
 
   //! Destroy object - will release memory if any.
-  inline virtual void Release(OpenGl_Context* theGlCtx) override;
+  inline void Release(OpenGl_Context* theGlCtx) override;
 
   //! Bind this VBO.
-  virtual void Bind(const occ::handle<OpenGl_Context>&) const override
+  void Bind(const occ::handle<OpenGl_Context>&) const override
   {
     //
   }
 
   //! Unbind this VBO.
-  virtual void Unbind(const occ::handle<OpenGl_Context>&) const override
+  void Unbind(const occ::handle<OpenGl_Context>&) const override
   {
     //
   }
@@ -79,26 +79,26 @@ public: //! @name advanced methods
                        const unsigned int                     theDataType);
 
   //! Initialize buffer with new data (data will be copied).
-  inline virtual bool init(const occ::handle<OpenGl_Context>& theGlCtx,
-                           const unsigned int                 theComponentsNb,
-                           const int                          theElemsNb,
-                           const void*                        theData,
-                           const unsigned int                 theDataType,
-                           const int                          theStride) override;
+  inline bool init(const occ::handle<OpenGl_Context>& theGlCtx,
+                   const unsigned int                 theComponentsNb,
+                   const int                          theElemsNb,
+                   const void*                        theData,
+                   const unsigned int                 theDataType,
+                   const int                          theStride) override;
 
   //! Update part of the buffer with new data.
-  inline virtual bool subData(const occ::handle<OpenGl_Context>& theGlCtx,
-                              const int                          theElemFrom,
-                              const int                          theElemsNb,
-                              const void*                        theData,
-                              const unsigned int                 theDataType) override;
+  inline bool subData(const occ::handle<OpenGl_Context>& theGlCtx,
+                      const int                          theElemFrom,
+                      const int                          theElemsNb,
+                      const void*                        theData,
+                      const unsigned int                 theDataType) override;
 
   //! Read back buffer sub-range.
-  inline virtual bool getSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                 const int                          theElemFrom,
-                                 const int                          theElemsNb,
-                                 void*                              theData,
-                                 const unsigned int                 theDataType) override;
+  inline bool getSubData(const occ::handle<OpenGl_Context>& theGlCtx,
+                         const int                          theElemFrom,
+                         const int                          theElemsNb,
+                         void*                              theData,
+                         const unsigned int                 theDataType) override;
 
 protected:
   occ::handle<NCollection_Buffer> myData; //!< buffer data
@@ -127,7 +127,7 @@ void OpenGl_BufferCompatT<BaseBufferT>::Release(OpenGl_Context*)
     return;
   }
 
-  BaseBufferT::myOffset   = NULL;
+  BaseBufferT::myOffset   = nullptr;
   BaseBufferT::myBufferId = OpenGl_Buffer::NO_BUFFER;
   myData.Nullify();
 }
@@ -142,7 +142,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::initLink(const occ::handle<NCollection_B
 {
   if (theData.IsNull())
   {
-    BaseBufferT::myOffset = NULL;
+    BaseBufferT::myOffset = nullptr;
     return false;
   }
 
@@ -170,7 +170,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::init(const occ::handle<OpenGl_Context>& 
 {
   if (!Create(theCtx))
   {
-    BaseBufferT::myOffset = NULL;
+    BaseBufferT::myOffset = nullptr;
     return false;
   }
 
@@ -181,12 +181,12 @@ bool OpenGl_BufferCompatT<BaseBufferT>::init(const occ::handle<OpenGl_Context>& 
   const size_t aNbBytes = size_t(BaseBufferT::myElemsNb) * theStride;
   if (!myData->Allocate(aNbBytes))
   {
-    BaseBufferT::myOffset = NULL;
+    BaseBufferT::myOffset = nullptr;
     return false;
   }
 
   BaseBufferT::myOffset = myData->ChangeData();
-  if (theData != NULL)
+  if (theData != nullptr)
   {
     memcpy(myData->ChangeData(), theData, aNbBytes);
   }
@@ -207,7 +207,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::subData(const occ::handle<OpenGl_Context
   {
     return false;
   }
-  else if (theData == NULL)
+  else if (theData == nullptr)
   {
     return true;
   }
@@ -229,7 +229,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::getSubData(const occ::handle<OpenGl_Cont
                                                    const unsigned int theDataType)
 {
   if (!BaseBufferT::IsValid() || BaseBufferT::myDataType != theDataType || theElemFrom < 0
-      || ((theElemFrom + theElemsNb) > BaseBufferT::myElemsNb) || theData == NULL)
+      || ((theElemFrom + theElemsNb) > BaseBufferT::myElemsNb) || theData == nullptr)
   {
     return false;
   }

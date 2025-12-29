@@ -25,7 +25,7 @@ extern bool TopOpeBRepBuild_GettraceAREA();
 
 //=================================================================================================
 
-TopOpeBRepBuild_Area2dBuilder::TopOpeBRepBuild_Area2dBuilder() {}
+TopOpeBRepBuild_Area2dBuilder::TopOpeBRepBuild_Area2dBuilder() = default;
 
 //=================================================================================================
 

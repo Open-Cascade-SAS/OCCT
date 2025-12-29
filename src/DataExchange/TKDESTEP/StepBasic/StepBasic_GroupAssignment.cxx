@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GroupAssignment, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_GroupAssignment::StepBasic_GroupAssignment() {}
+StepBasic_GroupAssignment::StepBasic_GroupAssignment() = default;
 
 //=================================================================================================
 

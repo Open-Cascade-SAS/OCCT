@@ -17,7 +17,8 @@
 #include <StepVisual_PresentationRepresentationSelect.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
-StepVisual_PresentationRepresentationSelect::StepVisual_PresentationRepresentationSelect() {}
+StepVisual_PresentationRepresentationSelect::StepVisual_PresentationRepresentationSelect() =
+  default;
 
 int StepVisual_PresentationRepresentationSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const

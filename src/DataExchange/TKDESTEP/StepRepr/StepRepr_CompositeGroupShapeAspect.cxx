@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CompositeGroupShapeAspect, StepRepr_CompositeShapeAspect)
 
-StepRepr_CompositeGroupShapeAspect::StepRepr_CompositeGroupShapeAspect() {}
+StepRepr_CompositeGroupShapeAspect::StepRepr_CompositeGroupShapeAspect() = default;

@@ -1005,12 +1005,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    Dimension,
-                        double  StartEnd[2],
-                        double* Parameter,
-                        int*    DerivativeRequest,
-                        double* Result, // [Dimension]
-                        int*    ErrorCode);
+  void Evaluate(int*    Dimension,
+                double  StartEnd[2],
+                double* Parameter,
+                int*    DerivativeRequest,
+                double* Result, // [Dimension]
+                int*    ErrorCode) override;
 
 private:
   Adaptor3d_CurveOnSurface& CurveOnSurface;
@@ -1536,7 +1536,7 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
   int                                      Cdeg = 0, Cdim = 0, NbP = 0, Ksize = 0, Psize = 1;
   int                                      ii, jj, ipole, Kount;
   double                                   Tbord, lambmin = Length;
-  double*                                  Padr = NULL;
+  double*                                  Padr = nullptr;
   bool                                     Ok;
   occ::handle<NCollection_HArray1<double>> FKnots, Point, lambda, Tgte, Poles;
 
@@ -2131,13 +2131,13 @@ public:
   {
   }
 
-  virtual void Evaluate(const int    theDerivativeRequest,
-                        const double theUParameter,
-                        const double theVParameter,
-                        double&      theResult,
-                        int&         theErrorCode) const
+  void Evaluate(const int    theDerivativeRequest,
+                const double theUParameter,
+                const double theVParameter,
+                double&      theResult,
+                int&         theErrorCode) const override
   {
-    if ((myDenominator != NULL) && (theDerivativeRequest == 0))
+    if ((myDenominator != nullptr) && (theDerivativeRequest == 0))
     {
       theResult    = myDenominator->Value(theUParameter, theVParameter);
       theErrorCode = 0;
@@ -2876,7 +2876,7 @@ bool GeomLib::IsBzUClosed(const occ::handle<Geom_BezierSurface>& S,
   const NCollection_Array1<gp_Pnt>& aPF  = aBzF->Poles();
   const NCollection_Array1<gp_Pnt>& aPL  = aBzL->Poles();
   //
-  return CompareWeightPoles(aPF, 0, aPL, 0, Tol2);
+  return CompareWeightPoles(aPF, nullptr, aPL, nullptr, Tol2);
 }
 
 //=================================================================================================
@@ -2896,7 +2896,7 @@ bool GeomLib::IsBzVClosed(const occ::handle<Geom_BezierSurface>& S,
   const NCollection_Array1<gp_Pnt>& aPF  = aBzF->Poles();
   const NCollection_Array1<gp_Pnt>& aPL  = aBzL->Poles();
   //
-  return CompareWeightPoles(aPF, 0, aPL, 0, Tol2);
+  return CompareWeightPoles(aPF, nullptr, aPL, nullptr, Tol2);
 }
 
 //=======================================================================
@@ -2920,8 +2920,8 @@ static bool CompareWeightPoles(const NCollection_Array1<gp_Pnt>&       thePoles1
   int i = 1;
   for (i = 1; i <= thePoles1.Length(); i++)
   {
-    const double aW1 = (theW1 == 0) ? 1.0 : theW1->Value(i);
-    const double aW2 = (theW2 == 0) ? 1.0 : theW2->Value(i);
+    const double aW1 = (theW1 == nullptr) ? 1.0 : theW1->Value(i);
+    const double aW2 = (theW2 == nullptr) ? 1.0 : theW2->Value(i);
 
     gp_XYZ aPole1 = thePoles1.Value(i).XYZ() * aW1;
     gp_XYZ aPole2 = thePoles2.Value(i).XYZ() * aW2;

@@ -31,7 +31,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~IMeshData_ParametersListArrayAdaptor() {}
+  ~IMeshData_ParametersListArrayAdaptor() override = default;
 
   //! Returns lower index in parameters array.
   int Lower() const { return 0; }
@@ -44,9 +44,10 @@ public:
 
 private:
   IMeshData_ParametersListArrayAdaptor(
-    const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther);
+    const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther) = delete;
 
-  void operator=(const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther);
+  void operator=(const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther) =
+    delete;
 
   const ParametersListPtrType myParameters;
 };

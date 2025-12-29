@@ -48,7 +48,7 @@ class Standard_OutOfMemory : public Standard_ProgramError
 
 public:
   //! Constructor is kept public for backward compatibility
-  Standard_EXPORT Standard_OutOfMemory(const char* theMessage = 0);
+  Standard_EXPORT Standard_OutOfMemory(const char* theMessage = nullptr);
 
   //! Returns error message
   Standard_EXPORT const char* GetMessageString() const override;

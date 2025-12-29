@@ -111,7 +111,7 @@ public:
     /**
      * Destructor
      */
-    virtual ~Selector() {}
+    virtual ~Selector() = default;
 
   protected:
     /**
@@ -138,8 +138,8 @@ public:
     TreeNode(const TheObjType& theObj, const TheBndType& theBnd)
         : myBnd(theBnd),
           myObject(theObj),
-          myChildren(0),
-          myParent(0)
+          myChildren(nullptr),
+          myParent(nullptr)
     {
     }
 
@@ -224,7 +224,7 @@ public:
     }
 
     //  ~TreeNode () { if (myChildren) delete [] myChildren; }
-    ~TreeNode() { myChildren = 0L; }
+    ~TreeNode() { myChildren = nullptr; }
 
     /**
      * Deleter of tree node. The whole hierarchy of its children also deleted.
@@ -246,8 +246,8 @@ public:
 
   private:
     TreeNode()
-        : myChildren(0L),
-          myParent(0L)
+        : myChildren(nullptr),
+          myParent(nullptr)
     {
     }
 
@@ -263,8 +263,8 @@ public:
    * Empty constructor.
    */
   NCollection_UBTree()
-      : myRoot(0L),
-        myLastNode(0L),
+      : myRoot(nullptr),
+        myLastNode(nullptr),
         myAlloc(NCollection_BaseAllocator::CommonBaseAllocator())
   {
   }
@@ -273,8 +273,8 @@ public:
    * Constructor.
    */
   explicit NCollection_UBTree(const occ::handle<NCollection_BaseAllocator>& theAllocator)
-      : myRoot(0L),
-        myLastNode(0L),
+      : myRoot(nullptr),
+        myLastNode(nullptr),
         myAlloc(!theAllocator.IsNull() ? theAllocator
                                        : NCollection_BaseAllocator::CommonBaseAllocator())
   {
@@ -309,14 +309,14 @@ public:
    *   (like NCollection_IncAllocator).  By default the previous allocator is
    *   kept.
    */
-  virtual void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = 0L)
+  virtual void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = nullptr)
   //      { if (myRoot) delete myRoot; myRoot = 0L; }
   {
     if (myRoot)
     {
       TreeNode::delNode(myRoot, this->myAlloc);
       this->myAlloc->Free(myRoot);
-      myRoot = 0L;
+      myRoot = nullptr;
     }
     if (aNewAlloc.IsNull() == false)
       myAlloc = aNewAlloc;
@@ -362,10 +362,10 @@ private:
   // ---------- PRIVATE METHODS ----------
 
   /// Copy constructor (prohibited).
-  NCollection_UBTree(const NCollection_UBTree&);
+  NCollection_UBTree(const NCollection_UBTree&) = delete;
 
   /// Assignment operator (prohibited).
-  NCollection_UBTree& operator=(const NCollection_UBTree&);
+  NCollection_UBTree& operator=(const NCollection_UBTree&) = delete;
 
   // ---------- PRIVATE FIELDS ----------
 

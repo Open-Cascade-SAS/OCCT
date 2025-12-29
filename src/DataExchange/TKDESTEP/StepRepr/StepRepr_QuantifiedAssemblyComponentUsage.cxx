@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_QuantifiedAssemblyComponentUsage,
 
 //=================================================================================================
 
-StepRepr_QuantifiedAssemblyComponentUsage::StepRepr_QuantifiedAssemblyComponentUsage() {}
+StepRepr_QuantifiedAssemblyComponentUsage::StepRepr_QuantifiedAssemblyComponentUsage() = default;
 
 //=================================================================================================
 

@@ -31,12 +31,12 @@ public:
   //! @param theData  buffer data allocated by theAlloc
   NCollection_Buffer(const occ::handle<NCollection_BaseAllocator>& theAlloc,
                      const size_t                                  theSize = 0,
-                     uint8_t*                                      theData = NULL)
-      : myData(NULL),
+                     uint8_t*                                      theData = nullptr)
+      : myData(nullptr),
         mySize(0),
         myAllocator(theAlloc)
   {
-    if (theData != NULL)
+    if (theData != nullptr)
     {
       myData = theData;
       mySize = theSize;
@@ -48,7 +48,7 @@ public:
   }
 
   //! Destructor.
-  ~NCollection_Buffer() { Free(); }
+  ~NCollection_Buffer() override { Free(); }
 
   //! @return buffer data
   const uint8_t* Data() const noexcept { return myData; }
@@ -57,7 +57,7 @@ public:
   uint8_t* ChangeData() noexcept { return myData; }
 
   //! @return true if buffer is not allocated
-  bool IsEmpty() const noexcept { return myData == NULL; }
+  bool IsEmpty() const noexcept { return myData == nullptr; }
 
   //! Return buffer length in bytes.
   size_t Size() const noexcept { return mySize; }
@@ -83,7 +83,7 @@ public:
       myData = (uint8_t*)myAllocator->Allocate(theSize);
     }
 
-    if (myData == NULL)
+    if (myData == nullptr)
     {
       mySize = 0;
       return false;
@@ -98,7 +98,7 @@ public:
     {
       myAllocator->Free(myData);
     }
-    myData = NULL;
+    myData = nullptr;
     mySize = 0;
   }
 

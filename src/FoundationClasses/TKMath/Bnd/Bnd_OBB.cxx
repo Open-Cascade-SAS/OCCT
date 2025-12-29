@@ -41,8 +41,7 @@ class OBB_ExtremePointsSelector
 public:
   //! Constructor
   OBB_ExtremePointsSelector()
-      : BVH_Traverse<double, 3, BVH_BoxSet<double, 3, gp_XYZ>, Bnd_Range>(),
-        myPrmMin(RealLast()),
+      : myPrmMin(RealLast()),
         myPrmMax(RealFirst())
   {
   }
@@ -74,9 +73,9 @@ public: //! @name Getting the results
 
 public: //! @name Definition of rejection/acceptance rules
   //! Defines the rules for node rejection
-  virtual bool RejectNode(const BVH_Vec3d& theCMin,
-                          const BVH_Vec3d& theCMax,
-                          Bnd_Range&       theMetric) const override
+  bool RejectNode(const BVH_Vec3d& theCMin,
+                  const BVH_Vec3d& theCMax,
+                  Bnd_Range&       theMetric) const override
   {
     if (myPrmMin > myPrmMax)
       // No parameters computed yet
@@ -117,7 +116,7 @@ public: //! @name Definition of rejection/acceptance rules
   }
 
   //! Rules for node rejection by the metric
-  virtual bool RejectMetric(const Bnd_Range& theMetric) const override
+  bool RejectMetric(const Bnd_Range& theMetric) const override
   {
     if (myPrmMin > myPrmMax)
       // no parameters computed
@@ -133,7 +132,7 @@ public: //! @name Definition of rejection/acceptance rules
   }
 
   //! Defines the rules for leaf acceptance
-  virtual bool Accept(const int theIndex, const Bnd_Range&) override
+  bool Accept(const int theIndex, const Bnd_Range&) override
   {
     const gp_XYZ& theLeaf = myBVHSet->Element(theIndex);
     double        aPrm    = myAxis.Dot(theLeaf);
@@ -152,7 +151,7 @@ public: //! @name Definition of rejection/acceptance rules
 
 public: //! @name Choosing the best branch
   //! Returns true if the metric of the left branch is better than the metric of the right
-  virtual bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
+  bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
   {
     if (myPrmMin > myPrmMax)
       // no parameters computed
@@ -196,7 +195,7 @@ public:
   //! must be available during all time of OBB creation
   //! (i.e. while the object of OBBTool exists).
   OBBTool(const NCollection_Array1<gp_Pnt>& theL,
-          const NCollection_Array1<double>* theLT        = 0,
+          const NCollection_Array1<double>* theLT        = nullptr,
           bool                              theIsOptimal = false);
 
   //! DiTO algorithm for OBB construction
@@ -301,8 +300,8 @@ private:
   void Project(const gp_XYZ& theAxis,
                double&       theMin,
                double&       theMax,
-               gp_XYZ*       thePntMin = 0,
-               gp_XYZ*       thePntMax = 0)
+               gp_XYZ*       thePntMin = nullptr,
+               gp_XYZ*       thePntMax = nullptr)
   {
     theMin = RealLast(), theMax = RealFirst();
 
@@ -702,7 +701,7 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
   aParams[2] = aParams[3] = aFCurrPoint.Dot(aYDir.XYZ());
   aParams[4] = aParams[5] = aFCurrPoint.Dot(aZDir.XYZ());
 
-  if (myListOfTolers != 0)
+  if (myListOfTolers != nullptr)
   {
     const double aTol = myListOfTolers->First();
     aParams[0] -= aTol;
@@ -719,7 +718,7 @@ void OBBTool::BuildBox(Bnd_OBB& theBox)
     const double  aDx = aCurrPoint.Dot(aXDir.XYZ()), aDy = aCurrPoint.Dot(aYDir.XYZ()),
                  aDz = aCurrPoint.Dot(aZDir.XYZ());
 
-    if (myListOfTolers == 0)
+    if (myListOfTolers == nullptr)
     {
       SetMinMax(&aParams[0], aDx);
       SetMinMax(&aParams[2], aDy);
@@ -770,9 +769,9 @@ void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
         Enlarge(theListOfTolerances->First());
       return;
     case 2: {
-      const double aTol1 = (theListOfTolerances == 0) ? 0.0 : theListOfTolerances->First();
+      const double aTol1 = (theListOfTolerances == nullptr) ? 0.0 : theListOfTolerances->First();
 
-      const double aTol2 = (theListOfTolerances == 0) ? 0.0 : theListOfTolerances->Last();
+      const double aTol2 = (theListOfTolerances == nullptr) ? 0.0 : theListOfTolerances->Last();
 
       const gp_XYZ &aP1 = theListOfPoints.First().XYZ(), &aP2 = theListOfPoints.Last().XYZ();
       const gp_XYZ  aDP  = aP2 - aP1;

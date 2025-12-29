@@ -36,12 +36,12 @@
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 30/07/98
 //=================================================================================================
 
-IGESGeom_ToolPlane::IGESGeom_ToolPlane() {}
+IGESGeom_ToolPlane::IGESGeom_ToolPlane() = default;
 
 //=================================================================================================
 

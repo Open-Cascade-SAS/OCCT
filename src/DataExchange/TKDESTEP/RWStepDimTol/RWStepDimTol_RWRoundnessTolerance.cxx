@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWRoundnessTolerance::RWStepDimTol_RWRoundnessTolerance() {}
+RWStepDimTol_RWRoundnessTolerance::RWStepDimTol_RWRoundnessTolerance() = default;
 
 //=================================================================================================
 

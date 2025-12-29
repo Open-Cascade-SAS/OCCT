@@ -441,9 +441,9 @@ static int VtkClose(Draw_Interpretor&, int theNbArgs, const char**)
     GetInteractor()->TerminateApp();
   }
 
-  GetInteractor() = NULL;
-  GetRenderer()   = NULL;
-  GetPicker()     = NULL;
+  GetInteractor() = nullptr;
+  GetRenderer()   = nullptr;
+  GetPicker()     = nullptr;
   return 0;
 }
 
@@ -502,7 +502,7 @@ vtkActor* CreateActor(const int theId, const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
   {
-    return NULL;
+    return nullptr;
   }
 
   occ::handle<PipelinePtr> aPL = new PipelinePtr(theShape, theId, GetDefaultDrawer());
@@ -737,7 +737,7 @@ static int VtkRemove(Draw_Interpretor&, int theArgNum, const char** theArgs)
     {
       vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc =
         IVtkTools_ShapeObject::GetShapeSource(anIterator.Key1());
-      if (aSrc.GetPointer() != NULL && !aSrc->GetShape().IsNull())
+      if (aSrc.GetPointer() != nullptr && !aSrc->GetShape().IsNull())
       {
         GetPicker()->RemoveSelectableObject(aSrc->GetShape());
       }
@@ -773,7 +773,7 @@ static int VtkRemove(Draw_Interpretor&, int theArgNum, const char** theArgs)
       // Remove the actor and its pipeline (if found) from the renderer
       vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc =
         IVtkTools_ShapeObject::GetShapeSource(anActor);
-      if (aSrc.GetPointer() != NULL && !aSrc->GetShape().IsNull())
+      if (aSrc.GetPointer() != nullptr && !aSrc->GetShape().IsNull())
       {
         IVtk_IdType aShapeID = aSrc->GetShape()->GetId();
         GetPicker()->RemoveSelectableObject(aSrc->GetShape());
@@ -892,7 +892,7 @@ static int VtkSetDisplayMode(Draw_Interpretor& theDI, int theArgNum, const char*
   {
     vtkSmartPointer<vtkActor>  anActor = anActorIter.Value();
     IVtkTools_ShapeDataSource* aSrc    = IVtkTools_ShapeObject::GetShapeSource(anActor);
-    if (aSrc == NULL)
+    if (aSrc == nullptr)
     {
       continue;
     }

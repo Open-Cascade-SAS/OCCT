@@ -38,18 +38,17 @@ public:
                                               const TopLoc_Location&             L);
 
   //! returns True.
-  Standard_EXPORT virtual bool IsPolygonOnClosedSurface() const override;
+  Standard_EXPORT bool IsPolygonOnClosedSurface() const override;
 
-  Standard_EXPORT virtual const occ::handle<Poly_Polygon2D>& Polygon2() const override;
+  Standard_EXPORT const occ::handle<Poly_Polygon2D>& Polygon2() const override;
 
-  Standard_EXPORT virtual void Polygon2(const occ::handle<Poly_Polygon2D>& P) override;
+  Standard_EXPORT void Polygon2(const occ::handle<Poly_Polygon2D>& P) override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
+  Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 

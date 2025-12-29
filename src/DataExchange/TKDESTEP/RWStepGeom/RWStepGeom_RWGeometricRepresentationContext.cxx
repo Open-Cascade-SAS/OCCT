@@ -16,7 +16,8 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>
 
-RWStepGeom_RWGeometricRepresentationContext::RWStepGeom_RWGeometricRepresentationContext() {}
+RWStepGeom_RWGeometricRepresentationContext::RWStepGeom_RWGeometricRepresentationContext() =
+  default;
 
 void RWStepGeom_RWGeometricRepresentationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,

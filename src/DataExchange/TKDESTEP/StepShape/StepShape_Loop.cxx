@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Loop, StepShape_TopologicalRepresentationItem)
 
-StepShape_Loop::StepShape_Loop() {}
+StepShape_Loop::StepShape_Loop() = default;

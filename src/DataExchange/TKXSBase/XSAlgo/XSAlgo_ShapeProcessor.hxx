@@ -169,9 +169,9 @@ public:
   Standard_EXPORT static void MergeShapeTransferInfo(
     const occ::handle<Transfer_TransientProcess>& theFinderProcess,
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-                                            theModifiedShapesMap,
-    const int                               theFirstTPItemIndex,
-    occ::handle<ShapeExtend_MsgRegistrator> theMessages);
+                                                   theModifiedShapesMap,
+    const int                                      theFirstTPItemIndex,
+    const occ::handle<ShapeExtend_MsgRegistrator>& theMessages);
 
   //! Merge the results of the shape processing with the transfer process.
   //! @param theTransientProcess Transfer process to merge with.
@@ -181,8 +181,8 @@ public:
   Standard_EXPORT static void MergeShapeTransferInfo(
     const occ::handle<Transfer_FinderProcess>& theTransientProcess,
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-                                            theModifiedShapesMap,
-    occ::handle<ShapeExtend_MsgRegistrator> theMessages);
+                                                   theModifiedShapesMap,
+    const occ::handle<ShapeExtend_MsgRegistrator>& theMessages);
 
 private:
   //! Initialize the context with the specified shape.

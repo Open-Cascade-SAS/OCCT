@@ -72,7 +72,7 @@ bool TDataStd_Current::Has(const TDF_Label& access)
 
 //=================================================================================================
 
-TDataStd_Current::TDataStd_Current() {}
+TDataStd_Current::TDataStd_Current() = default;
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 #include <StepVisual_FontSelect.hxx>
 #include <StepVisual_PreDefinedTextFont.hxx>
 
-StepVisual_FontSelect::StepVisual_FontSelect() {}
+StepVisual_FontSelect::StepVisual_FontSelect() = default;
 
 int StepVisual_FontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

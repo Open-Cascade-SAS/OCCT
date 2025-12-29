@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition, StepDimTol_Tolera
 
 //=================================================================================================
 
-StepDimTol_ProjectedZoneDefinition::StepDimTol_ProjectedZoneDefinition() {}
+StepDimTol_ProjectedZoneDefinition::StepDimTol_ProjectedZoneDefinition() = default;
 
 //=================================================================================================
 

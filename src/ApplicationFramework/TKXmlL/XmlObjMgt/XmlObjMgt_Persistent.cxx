@@ -32,7 +32,7 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element& theElement)
     : myElement(theElement),
       myID(0)
 {
-  if (theElement != NULL)
+  if (theElement != nullptr)
     theElement.getAttribute(XmlObjMgt::IdString()).GetInteger(myID);
 }
 
@@ -42,13 +42,13 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement
                                            const XmlObjMgt_DOMString& theRef)
     : myID(0)
 {
-  if (theElement != NULL)
+  if (theElement != nullptr)
   {
     int aRefID;
     if (theElement.getAttribute(theRef).GetInteger(aRefID))
     {
       myElement = XmlObjMgt::FindChildElement(theElement, aRefID);
-      if (myElement != NULL)
+      if (myElement != nullptr)
         myElement.getAttribute(XmlObjMgt::IdString()).GetInteger(myID);
     }
   }

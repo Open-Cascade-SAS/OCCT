@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ElementResults, IGESData_IGESEntity)
 
-IGESAppli_ElementResults::IGESAppli_ElementResults() {}
+IGESAppli_ElementResults::IGESAppli_ElementResults() = default;
 
 void IGESAppli_ElementResults::Init(
   const occ::handle<IGESDimen_GeneralNote>&                                     aNote,

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedStructuredItem::RWStepVisual_RWTessellatedStructuredItem() {}
+RWStepVisual_RWTessellatedStructuredItem::RWStepVisual_RWTessellatedStructuredItem() = default;
 
 //=================================================================================================
 

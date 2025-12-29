@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectRoots, IFSelect_SelectExtract)
 
-IFSelect_SelectRoots::IFSelect_SelectRoots() {}
+IFSelect_SelectRoots::IFSelect_SelectRoots() = default;
 
 // Redone to work at once
 

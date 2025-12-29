@@ -18,9 +18,7 @@
 #include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
 
 RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::
-  RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext()
-{
-}
+  RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext() = default;
 
 void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>& data,

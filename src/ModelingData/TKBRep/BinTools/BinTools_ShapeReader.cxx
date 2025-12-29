@@ -25,11 +25,11 @@
 
 //=================================================================================================
 
-BinTools_ShapeReader::BinTools_ShapeReader() {}
+BinTools_ShapeReader::BinTools_ShapeReader() = default;
 
 //=================================================================================================
 
-BinTools_ShapeReader::~BinTools_ShapeReader() {}
+BinTools_ShapeReader::~BinTools_ShapeReader() = default;
 
 //=================================================================================================
 

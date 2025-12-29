@@ -137,16 +137,15 @@ private:
   public:
     BRepLib_BndBoxVertexSelector(
       const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
-        : BRepLib_BndBoxVertexSelector::Selector(),
-          myMapOfShape(theMapOfShape),
+        : myMapOfShape(theMapOfShape),
           myTolP(0.0),
           myVInd(0)
     {
     }
 
-    bool Reject(const Bnd_Box& theBox) const { return theBox.IsOut(myVBox); }
+    bool Reject(const Bnd_Box& theBox) const override { return theBox.IsOut(myVBox); }
 
-    bool Accept(const int& theObj);
+    bool Accept(const int& theObj) override;
 
     void SetCurrentVertex(const gp_Pnt& theP, double theTol, int theVInd);
 
@@ -155,8 +154,8 @@ private:
     void ClearResInds() { myResultInd.Clear(); }
 
   private:
-    BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector&);
-    BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector&);
+    BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector&)            = delete;
+    BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector&) = delete;
 
     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& myMapOfShape; // vertices
     gp_Pnt                                                               myP;

@@ -38,7 +38,7 @@ public:
   //! setShape() should be called later.
   IVtkOCC_SelectableObject();
 
-  virtual ~IVtkOCC_SelectableObject();
+  ~IVtkOCC_SelectableObject() override;
 
   //! Sets the selectable shape
   //! @param[in]  theShape Selectable shape
@@ -47,7 +47,7 @@ public:
   const IVtkOCC_Shape::Handle& GetShape() const { return myShape; };
 
   //! Returns bounding box of object
-  Standard_EXPORT virtual void BoundingBox(Bnd_Box& theBndBox) override;
+  Standard_EXPORT void BoundingBox(Bnd_Box& theBndBox) override;
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_SelectableObject, SelectMgr_SelectableObject)
 
@@ -56,13 +56,13 @@ private:
   //! Inspired by AIS_Shape::ComputeSelection() from OCCT 6.5.1
   //! @param[in]  selection container for sensitive primitives
   //! @param[in]  mode Selection mode
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                        const int                               theMode) override;
 
   //! Dummy.
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,
-                       const occ::handle<Prs3d_Presentation>&,
-                       const int) override
+  void Compute(const occ::handle<PrsMgr_PresentationManager>&,
+               const occ::handle<Prs3d_Presentation>&,
+               const int) override
   {
   }
 

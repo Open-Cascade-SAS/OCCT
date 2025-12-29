@@ -29,11 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeDiscret, IMeshTools_ModelAlgo)
 
 //=================================================================================================
 
-BRepMesh_EdgeDiscret::BRepMesh_EdgeDiscret() {}
+BRepMesh_EdgeDiscret::BRepMesh_EdgeDiscret() = default;
 
 //=================================================================================================
 
-BRepMesh_EdgeDiscret::~BRepMesh_EdgeDiscret() {}
+BRepMesh_EdgeDiscret::~BRepMesh_EdgeDiscret() = default;
 
 //=================================================================================================
 

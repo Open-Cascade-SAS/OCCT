@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWVersionedActionRequest::RWStepBasic_RWVersionedActionRequest() {}
+RWStepBasic_RWVersionedActionRequest::RWStepBasic_RWVersionedActionRequest() = default;
 
 //=================================================================================================
 

@@ -416,7 +416,7 @@ void CDM_Document::Comments(NCollection_Sequence<TCollection_ExtendedString>& aC
 const char16_t* CDM_Document::Comment() const
 {
   if (myComments.Length() < 1)
-    return 0;
+    return nullptr;
   return myComments(1).ToExtString();
 }
 

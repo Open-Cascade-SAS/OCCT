@@ -842,7 +842,7 @@ void TopOpeBRepBuild_Builder::GSplitFaceSFS(const TopoDS_Shape&                 
     {
       TopoDS_Shape newF = it.Value();
 
-      if (GLOBAL_SplitAnc != NULL)
+      if (GLOBAL_SplitAnc != nullptr)
       {
         bool hasoridef = GLOBAL_SplitAnc->IsBound(newF); // xpu260598
 
@@ -1036,7 +1036,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS(const TopoDS_Shape&           FOR,
 #endif
 
   bool                           performcom = false;
-  NCollection_List<TopoDS_Shape>*PtrLF1 = NULL, *PtrLF2 = NULL;
+  NCollection_List<TopoDS_Shape>*PtrLF1 = nullptr, *PtrLF2 = nullptr;
   int                            n1 = 0, n2 = 0;
   if (makecomsam)
   {

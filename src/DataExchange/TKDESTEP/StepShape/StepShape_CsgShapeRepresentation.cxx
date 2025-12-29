@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_CsgShapeRepresentation, StepShape_ShapeRepresentation)
 
-StepShape_CsgShapeRepresentation::StepShape_CsgShapeRepresentation() {}
+StepShape_CsgShapeRepresentation::StepShape_CsgShapeRepresentation() = default;

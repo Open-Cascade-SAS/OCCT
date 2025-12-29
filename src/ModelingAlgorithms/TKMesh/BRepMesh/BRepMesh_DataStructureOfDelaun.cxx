@@ -438,7 +438,7 @@ void BRepMesh_DataStructureOfDelaun::Statistics(Standard_OStream& theStream) con
 //=======================================================================
 const char* BRepMesh_Dump(void* theMeshHandlePtr, const char* theFileNameStr)
 {
-  if (theMeshHandlePtr == 0 || theFileNameStr == 0)
+  if (theMeshHandlePtr == nullptr || theFileNameStr == nullptr)
   {
     return "Error: file name or mesh data is null";
   }

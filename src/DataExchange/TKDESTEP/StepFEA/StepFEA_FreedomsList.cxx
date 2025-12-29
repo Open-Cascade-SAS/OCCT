@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FreedomsList, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_FreedomsList::StepFEA_FreedomsList() {}
+StepFEA_FreedomsList::StepFEA_FreedomsList() = default;
 
 //=================================================================================================
 

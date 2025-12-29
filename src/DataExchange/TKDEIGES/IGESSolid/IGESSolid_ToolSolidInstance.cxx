@@ -29,7 +29,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESSolid_ToolSolidInstance::IGESSolid_ToolSolidInstance() {}
+IGESSolid_ToolSolidInstance::IGESSolid_ToolSolidInstance() = default;
 
 void IGESSolid_ToolSolidInstance::ReadOwnParams(const occ::handle<IGESSolid_SolidInstance>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

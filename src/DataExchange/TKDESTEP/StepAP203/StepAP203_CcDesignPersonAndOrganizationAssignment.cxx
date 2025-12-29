@@ -26,9 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,
 //=================================================================================================
 
 StepAP203_CcDesignPersonAndOrganizationAssignment::
-  StepAP203_CcDesignPersonAndOrganizationAssignment()
-{
-}
+  StepAP203_CcDesignPersonAndOrganizationAssignment() = default;
 
 //=================================================================================================
 

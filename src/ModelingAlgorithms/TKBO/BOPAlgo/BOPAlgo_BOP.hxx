@@ -67,29 +67,29 @@ public:
 
   //! Empty constructor
   Standard_EXPORT BOPAlgo_BOP();
-  Standard_EXPORT virtual ~BOPAlgo_BOP();
+  Standard_EXPORT ~BOPAlgo_BOP() override;
 
   Standard_EXPORT BOPAlgo_BOP(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears internal fields and arguments
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   Standard_EXPORT void SetOperation(const BOPAlgo_Operation theOperation);
 
   Standard_EXPORT BOPAlgo_Operation Operation() const;
 
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   //! Performs calculations using prepared Filler
   //! object <thePF>
-  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
+                                        const Message_ProgressRange& theRange) override;
 
-  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) override;
+  Standard_EXPORT void BuildResult(const TopAbs_ShapeEnum theType) override;
 
   Standard_EXPORT void BuildShape(const Message_ProgressRange& theRange);
 
@@ -117,8 +117,8 @@ protected:
   };
 
   //! Fill PI steps
-  Standard_EXPORT virtual void fillPIConstants(const double     theWhole,
-                                               BOPAlgo_PISteps& theSteps) const override;
+  Standard_EXPORT void fillPIConstants(const double     theWhole,
+                                       BOPAlgo_PISteps& theSteps) const override;
 
 protected:
   BOPAlgo_Operation myOperation;

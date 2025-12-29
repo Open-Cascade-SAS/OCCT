@@ -40,7 +40,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT BOPAlgo_WireSplitter();
-  Standard_EXPORT virtual ~BOPAlgo_WireSplitter();
+  Standard_EXPORT ~BOPAlgo_WireSplitter() override;
 
   Standard_EXPORT BOPAlgo_WireSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
@@ -54,7 +54,7 @@ public:
   //! Returns the context
   Standard_EXPORT const occ::handle<IntTools_Context>& Context();
 
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   static void MakeWire(NCollection_List<TopoDS_Shape>& theLE, TopoDS_Wire& theW);
@@ -64,7 +64,7 @@ public:
                                          const occ::handle<IntTools_Context>& theContext);
 
 protected:
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 

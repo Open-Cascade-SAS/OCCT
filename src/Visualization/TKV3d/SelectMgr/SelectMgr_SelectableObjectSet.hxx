@@ -74,7 +74,7 @@ public:
   public:
     //! Default constructor without initialization.
     Iterator()
-        : mySet(NULL),
+        : mySet(nullptr),
           mySubsetIdx(BVHSubsetNb)
     {
     }
@@ -98,7 +98,7 @@ public:
       {
         return true;
       }
-      else if ((mySubsetIdx == BVHSubsetNb - 1) || mySet == NULL)
+      else if ((mySubsetIdx == BVHSubsetNb - 1) || mySet == nullptr)
       {
         return false;
       }
@@ -123,7 +123,7 @@ public:
   Standard_EXPORT SelectMgr_SelectableObjectSet();
 
   //! Releases resources of selectable object set.
-  virtual ~SelectMgr_SelectableObjectSet() {}
+  virtual ~SelectMgr_SelectableObjectSet() = default;
 
   //! Adds the new selectable object to the set. The selectable object is placed into one of the
   //! predefined subsets depending on its persistence type. After adding an object, this method

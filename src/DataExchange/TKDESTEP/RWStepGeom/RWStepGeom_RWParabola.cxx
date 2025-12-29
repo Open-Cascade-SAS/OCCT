@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Parabola.hxx>
 
-RWStepGeom_RWParabola::RWStepGeom_RWParabola() {}
+RWStepGeom_RWParabola::RWStepGeom_RWParabola() = default;
 
 void RWStepGeom_RWParabola::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                      const int                                   num,

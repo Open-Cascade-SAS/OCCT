@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
-RWStepVisual_RWPresentationSet::RWStepVisual_RWPresentationSet() {}
+RWStepVisual_RWPresentationSet::RWStepVisual_RWPresentationSet() = default;
 
 void RWStepVisual_RWPresentationSet::ReadStep(
   const occ::handle<StepData_StepReaderData>& data,

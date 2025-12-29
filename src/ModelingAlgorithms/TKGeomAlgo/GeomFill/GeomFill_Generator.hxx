@@ -40,7 +40,7 @@ public:
   //! Set them to the common profile.
   //! Compute the surface (degv = 1).
   //! <PTol> is used to compare 2 knots.
-  Standard_EXPORT virtual void Perform(const double PTol) override;
+  Standard_EXPORT void Perform(const double PTol) override;
 
   const occ::handle<Geom_Surface>& Surface() const;
 

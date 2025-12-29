@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_FacetedBrepAndBrepWithVoids, StepShape_ManifoldSolidBrep)
 
-StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids() {}
+StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids() = default;
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

@@ -30,7 +30,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolAssocGroupType::IGESBasic_ToolAssocGroupType() {}
+IGESBasic_ToolAssocGroupType::IGESBasic_ToolAssocGroupType() = default;
 
 void IGESBasic_ToolAssocGroupType::ReadOwnParams(
   const occ::handle<IGESBasic_AssocGroupType>& ent,

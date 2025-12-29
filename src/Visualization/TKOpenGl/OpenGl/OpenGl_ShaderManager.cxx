@@ -372,7 +372,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
   theProgram->UpdateState(OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == NULL)
+    if (myContext->core11ffp == nullptr)
     {
       return;
     }
@@ -622,7 +622,7 @@ void OpenGl_ShaderManager::pushProjectionState(
   theProgram->UpdateState(OpenGl_PROJECTION_STATE, myProjectionState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != NULL)
+    if (myContext->core11ffp != nullptr)
     {
       myContext->core11ffp->glMatrixMode(GL_PROJECTION);
       myContext->core11ffp->glLoadMatrixf(myProjectionState.ProjectionMatrix().GetData());
@@ -660,7 +660,7 @@ void OpenGl_ShaderManager::pushModelWorldState(
   theProgram->UpdateState(OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != NULL)
+    if (myContext->core11ffp != nullptr)
     {
       const NCollection_Mat4<float> aModelView =
         myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
@@ -706,7 +706,7 @@ void OpenGl_ShaderManager::pushWorldViewState(
   theProgram->UpdateState(OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp != NULL)
+    if (myContext->core11ffp != nullptr)
     {
       const NCollection_Mat4<float> aModelView =
         myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
@@ -765,7 +765,7 @@ void OpenGl_ShaderManager::pushClippingState(
   theProgram->UpdateState(OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == NULL)
+    if (myContext->core11ffp == nullptr)
     {
       return;
     }
@@ -880,7 +880,7 @@ void OpenGl_ShaderManager::pushClippingState(
       }
 
       int aSubPlaneIndex = 1;
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aCappedChain.get(); aSubPlaneIter != NULL;
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aCappedChain.get(); aSubPlaneIter != nullptr;
            aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
       {
         if (aSubPlaneIndex == myContext->Clipping().CappedSubPlane())
@@ -906,7 +906,7 @@ void OpenGl_ShaderManager::pushClippingState(
       }
 
       int aSubPlaneIndex = 1;
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL;
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != nullptr;
            aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
       {
         if (aSubPlaneIndex != -myContext->Clipping().CappedSubPlane())
@@ -928,7 +928,7 @@ void OpenGl_ShaderManager::pushClippingState(
                                  + aNbClipPlanesMax + ") has been exceeded.");
         break;
       }
-      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != NULL;
+      for (const Graphic3d_ClipPlane* aSubPlaneIter = aPlane.get(); aSubPlaneIter != nullptr;
            aSubPlaneIter                            = aSubPlaneIter->ChainNextPlane().get())
       {
         addClippingPlane(aPlaneId,
@@ -958,7 +958,7 @@ void OpenGl_ShaderManager::pushMaterialState(
   theProgram->UpdateState(OpenGl_MATERIAL_STATE, myMaterialState.Index());
   if (theProgram == myFfpProgram)
   {
-    if (myContext->core11ffp == NULL)
+    if (myContext->core11ffp == nullptr)
     {
       return;
     }
@@ -1111,7 +1111,7 @@ void OpenGl_ShaderManager::PushState(const occ::handle<OpenGl_ShaderProgram>& th
                                                      (float)myContext->Viewport()[3]));
     }
   }
-  else if (myContext->core11ffp != NULL)
+  else if (myContext->core11ffp != nullptr)
   {
     // manage FFP lighting
     myContext->SetShadeModel(theShadingModel);
@@ -1437,7 +1437,7 @@ bool OpenGl_ShaderManager::preparePBREnvBakingProgram(int theIndex)
       myPBREnvBakingProgram[theIndex]->GetUniformLocation(myContext, "aSHCosCoeffs"),
       9,
       aSHCosCoeffs);
-    myContext->BindProgram(NULL);
+    myContext->BindProgram(nullptr);
   }
 
   return true;

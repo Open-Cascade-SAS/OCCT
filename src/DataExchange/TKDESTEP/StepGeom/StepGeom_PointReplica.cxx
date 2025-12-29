@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_PointReplica, StepGeom_Point)
 
-StepGeom_PointReplica::StepGeom_PointReplica() {}
+StepGeom_PointReplica::StepGeom_PointReplica() = default;
 
 void StepGeom_PointReplica::Init(
   const occ::handle<TCollection_HAsciiString>&                 aName,

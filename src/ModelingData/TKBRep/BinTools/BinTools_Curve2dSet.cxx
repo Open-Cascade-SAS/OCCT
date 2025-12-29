@@ -53,7 +53,7 @@
 
 //=================================================================================================
 
-BinTools_Curve2dSet::BinTools_Curve2dSet() {}
+BinTools_Curve2dSet::BinTools_Curve2dSet() = default;
 
 //=================================================================================================
 
@@ -172,7 +172,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BezierCurve>& B)
 {
   OS << (uint8_t)BEZIER;
-  bool aRational = B->IsRational() ? 1 : 0;
+  bool aRational = B->IsRational() ? true : false;
   OS << aRational; // rational
   // poles and weights
   int i, aDegree = B->Degree();
@@ -194,9 +194,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BSplineCurve>& B)
 {
   OS << (uint8_t)BSPLINE;
-  bool aRational = B->IsRational() ? 1 : 0;
+  bool aRational = B->IsRational() ? true : false;
   OS << aRational; // rational
-  bool aPeriodic = B->IsPeriodic() ? 1 : 0;
+  bool aPeriodic = B->IsPeriodic() ? true : false;
   OS << aPeriodic; // periodic
   // poles and weights
   int i, aDegree, aNbPoles, aNbKnots;
@@ -587,7 +587,7 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream&          IS
       break;
 
       default: {
-        C = NULL;
+        C = nullptr;
         throw Standard_Failure("UNKNOWN CURVE2d TYPE");
       }
       break;
@@ -595,7 +595,7 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream&          IS
   }
   catch (Standard_Failure const& anException)
   {
-    C = NULL;
+    C = nullptr;
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_Curve2dSet::ReadCurve2d(...)" << std::endl;
     aMsg << anException << std::endl;

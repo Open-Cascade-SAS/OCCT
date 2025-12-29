@@ -55,13 +55,13 @@ namespace
 // Function : ProcessFace
 // Purpose  : Fill array with triangles for the face
 //================================================================
-static void ProcessFace(const NCollection_Sequence<int>&         theFaceNodes,
-                        const NCollection_Array1<double>&        theNodes,
-                        const double*                            theCenter,
-                        const double                             theShrinkCoef,
-                        const bool                               theIsShrinked,
-                        const bool                               theIsShaded,
-                        occ::handle<Graphic3d_ArrayOfPrimitives> theArray)
+static void ProcessFace(const NCollection_Sequence<int>&                theFaceNodes,
+                        const NCollection_Array1<double>&               theNodes,
+                        const double*                                   theCenter,
+                        const double                                    theShrinkCoef,
+                        const bool                                      theIsShrinked,
+                        const bool                                      theIsShaded,
+                        const occ::handle<Graphic3d_ArrayOfPrimitives>& theArray)
 {
   const int aNbPolyNodes = theFaceNodes.Length();
 

@@ -63,7 +63,7 @@ public:
                                       const int                   SignatureInType,
                                       const bool                  ExclusionFlagOn = true);
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const override;
 
   //! Adds the type TypeToExclude to the list of types.
   Standard_EXPORT bool Add(const AIS_KindOfInteractive TypeToExclude);

@@ -38,7 +38,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDraw_ToolDrawing::IGESDraw_ToolDrawing() {}
+IGESDraw_ToolDrawing::IGESDraw_ToolDrawing() = default;
 
 void IGESDraw_ToolDrawing::ReadOwnParams(const occ::handle<IGESDraw_Drawing>&        ent,
                                          const occ::handle<IGESData_IGESReaderData>& IR,

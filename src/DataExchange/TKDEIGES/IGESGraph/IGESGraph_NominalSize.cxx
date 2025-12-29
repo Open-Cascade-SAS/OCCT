@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_NominalSize, IGESData_IGESEntity)
 
-IGESGraph_NominalSize::IGESGraph_NominalSize() {}
+IGESGraph_NominalSize::IGESGraph_NominalSize() = default;
 
 void IGESGraph_NominalSize::Init(const int                                    nbProps,
                                  const double                                 aNominalSizeValue,

@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Node, StepFEA_NodeRepresentation)
 
 //=================================================================================================
 
-StepFEA_Node::StepFEA_Node() {}
+StepFEA_Node::StepFEA_Node() = default;

@@ -42,7 +42,7 @@ public:
 
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Section();
-  Standard_EXPORT virtual ~BRepAlgoAPI_Section();
+  Standard_EXPORT ~BRepAlgoAPI_Section() override;
 
   //! Empty constructor
   //! <PF> - PaveFiller object that is carried out
@@ -165,7 +165,7 @@ public:
   //! Performs the algorithm
   //! Filling interference Data Structure (if it is necessary)
   //! Building the result of the operation.
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! get the face of the first part giving section edge <E>.
@@ -202,7 +202,7 @@ public:
 protected:
   Standard_EXPORT void Init(const bool PerformNow);
 
-  Standard_EXPORT virtual void SetAttributes() override;
+  Standard_EXPORT void SetAttributes() override;
 
 private:
   bool myApprox;

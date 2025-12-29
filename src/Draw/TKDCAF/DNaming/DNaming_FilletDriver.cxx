@@ -41,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_FilletDriver, TFunction_Driver)
 
 //=================================================================================================
 
-DNaming_FilletDriver::DNaming_FilletDriver() {}
+DNaming_FilletDriver::DNaming_FilletDriver() = default;
 
 //=======================================================================
 // function : Validate

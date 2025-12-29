@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingUnion,
 
 //=================================================================================================
 
-StepVisual_CameraModelD3MultiClippingUnion::StepVisual_CameraModelD3MultiClippingUnion() {}
+StepVisual_CameraModelD3MultiClippingUnion::StepVisual_CameraModelD3MultiClippingUnion() = default;
 
 //=================================================================================================
 

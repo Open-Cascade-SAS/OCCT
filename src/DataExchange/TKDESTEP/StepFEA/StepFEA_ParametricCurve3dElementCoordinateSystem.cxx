@@ -24,9 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateSystem,
 
 //=================================================================================================
 
-StepFEA_ParametricCurve3dElementCoordinateSystem::StepFEA_ParametricCurve3dElementCoordinateSystem()
-{
-}
+StepFEA_ParametricCurve3dElementCoordinateSystem::
+  StepFEA_ParametricCurve3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

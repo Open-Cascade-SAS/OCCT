@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementDescriptor, Standard_Transient)
 
 //=================================================================================================
 
-StepElement_ElementDescriptor::StepElement_ElementDescriptor() {}
+StepElement_ElementDescriptor::StepElement_ElementDescriptor() = default;
 
 //=================================================================================================
 

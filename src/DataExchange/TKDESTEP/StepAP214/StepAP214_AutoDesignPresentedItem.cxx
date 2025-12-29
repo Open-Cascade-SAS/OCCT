@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignPresentedItem, StepVisual_PresentedItem)
 
-StepAP214_AutoDesignPresentedItem::StepAP214_AutoDesignPresentedItem() {}
+StepAP214_AutoDesignPresentedItem::StepAP214_AutoDesignPresentedItem() = default;
 
 void StepAP214_AutoDesignPresentedItem::Init(
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>>& aItems)

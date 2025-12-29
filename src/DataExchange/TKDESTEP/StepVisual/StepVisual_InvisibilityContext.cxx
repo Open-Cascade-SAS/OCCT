@@ -18,7 +18,7 @@
 #include <StepVisual_PresentationRepresentation.hxx>
 #include <StepVisual_PresentationSet.hxx>
 
-StepVisual_InvisibilityContext::StepVisual_InvisibilityContext() {}
+StepVisual_InvisibilityContext::StepVisual_InvisibilityContext() = default;
 
 int StepVisual_InvisibilityContext::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

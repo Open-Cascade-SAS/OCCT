@@ -35,7 +35,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESBasic_ToolOrderedGroup::IGESBasic_ToolOrderedGroup() {}
+IGESBasic_ToolOrderedGroup::IGESBasic_ToolOrderedGroup() = default;
 
 void IGESBasic_ToolOrderedGroup::ReadOwnParams(const occ::handle<IGESBasic_OrderedGroup>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

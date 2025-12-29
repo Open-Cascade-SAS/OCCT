@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWFlatnessTolerance::RWStepDimTol_RWFlatnessTolerance() {}
+RWStepDimTol_RWFlatnessTolerance::RWStepDimTol_RWFlatnessTolerance() = default;
 
 //=================================================================================================
 

@@ -113,7 +113,7 @@ int Media_Frame::FormatOcct2FFmpeg(Image_Format theFormat)
 //=================================================================================================
 
 Media_Frame::Media_Frame()
-    : myFrame(NULL),
+    : myFrame(nullptr),
       myFramePts(0.0),
       myPixelRatio(1.0f),
       myIsLocked(false)
@@ -213,7 +213,7 @@ uint8_t* Media_Frame::Plane(int thePlaneId) const
   return myFrame->data[thePlaneId];
 #else
   (void)thePlaneId;
-  return NULL;
+  return nullptr;
 #endif
 }
 
@@ -263,7 +263,7 @@ bool Media_Frame::InitWrapper(const occ::handle<Image_PixMap>& thePixMap)
   myFrame->linesize[0] = (int)thePixMap->SizeRowBytes();
   for (int aPlaneIter = 1; aPlaneIter < AV_NUM_DATA_POINTERS; ++aPlaneIter)
   {
-    myFrame->data[aPlaneIter]     = NULL;
+    myFrame->data[aPlaneIter]     = nullptr;
     myFrame->linesize[aPlaneIter] = 0;
   }
   return true;

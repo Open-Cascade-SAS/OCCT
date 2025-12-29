@@ -839,7 +839,7 @@ void BRepClass3d_SolidExplorer::Destroy()
     if (ptr)
     {
       delete (IntCurvesFace_Intersector*)ptr;
-      myMapOfInter.ChangeFind(iter.Key()) = NULL;
+      myMapOfInter.ChangeFind(iter.Key()) = nullptr;
     }
   }
   myMapOfInter.Clear();
@@ -864,7 +864,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
     if (ptr)
     {
       delete (IntCurvesFace_Intersector*)ptr;
-      myMapOfInter.ChangeFind(iter.Key()) = NULL;
+      myMapOfInter.ChangeFind(iter.Key()) = nullptr;
     }
   }
 

@@ -27,7 +27,7 @@ public:
   //! Empty constructor.
   Image_PixMapData()
       : NCollection_Buffer(occ::handle<NCollection_BaseAllocator>()),
-        myTopRowPtr(NULL),
+        myTopRowPtr(nullptr),
         SizeBPP(0),
         SizeX(0),
         SizeY(0),
@@ -64,7 +64,7 @@ public:
     SetAllocator(theAlloc); // will free old data as well
 
     myData         = theDataPtr;
-    myTopRowPtr    = NULL;
+    myTopRowPtr    = nullptr;
     SizeBPP        = theSizeBPP;
     SizeX          = theSizeXYZ.x();
     SizeY          = theSizeXYZ.y();
@@ -72,7 +72,7 @@ public:
     SizeRowBytes   = theSizeRowBytes != 0 ? theSizeRowBytes : (SizeX * theSizeBPP);
     SizeSliceBytes = SizeRowBytes * SizeY;
     mySize         = SizeSliceBytes * SizeZ;
-    if (myData == NULL)
+    if (myData == nullptr)
     {
       Allocate(mySize);
     }
@@ -83,7 +83,7 @@ public:
   //! Reset all values to zeros.
   void ZeroData()
   {
-    if (myData != NULL)
+    if (myData != nullptr)
     {
       memset(myData, 0, mySize);
     }
@@ -185,7 +185,7 @@ public:
   {
     TopToDown = (theIsTopDown ? 1 : size_t(-1));
     myTopRowPtr =
-      ((TopToDown == 1 || myData == NULL) ? myData : (myData + SizeRowBytes * (SizeY - 1)));
+      ((TopToDown == 1 || myData == nullptr) ? myData : (myData + SizeRowBytes * (SizeY - 1)));
   }
 
 protected:

@@ -18,7 +18,7 @@
 #include <StepVisual_PresentedItem.hxx>
 #include <StepVisual_PresentedItemRepresentation.hxx>
 
-RWStepVisual_RWPresentedItemRepresentation::RWStepVisual_RWPresentedItemRepresentation() {}
+RWStepVisual_RWPresentedItemRepresentation::RWStepVisual_RWPresentedItemRepresentation() = default;
 
 void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,

@@ -47,19 +47,16 @@ public:
   // ---------- PUBLIC METHODS ----------
 
   LDOM_Node()
-      : myOrigin(NULL),
-        myLastChild(NULL)
+      : myOrigin(nullptr),
+        myLastChild(nullptr)
   {
   }
 
   //    Empty constructor
 
   LDOM_Node(const LDOM_Node& anOther)
-      : myDocument(anOther.myDocument),
-        myOrigin(anOther.myOrigin),
-        myLastChild(anOther.myLastChild)
-  {
-  }
+
+    = default;
 
   //    Copy constructor
 
@@ -114,7 +111,7 @@ protected:
   LDOM_Node(const LDOM_BasicNode& anOrig, const occ::handle<LDOM_MemManager>& aDoc)
       : myDocument(aDoc),
         myOrigin((LDOM_BasicNode*)&anOrig),
-        myLastChild(NULL)
+        myLastChild(nullptr)
   {
   }
 

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWNameAssignment::RWStepBasic_RWNameAssignment() {}
+RWStepBasic_RWNameAssignment::RWStepBasic_RWNameAssignment() = default;
 
 //=================================================================================================
 

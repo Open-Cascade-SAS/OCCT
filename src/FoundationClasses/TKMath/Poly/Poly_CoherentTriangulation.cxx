@@ -420,7 +420,7 @@ bool Poly_CoherentTriangulation::RemoveTriangle(Poly_CoherentTriangle& theTriang
       {
         const Poly_CoherentTriangle* pTriOpp = theTriangle.GetConnectedTri(i);
         bool                         toRemoveLink(true);
-        if (pTriOpp != 0L)
+        if (pTriOpp != nullptr)
         {
           // A neighbour is detected. If a Link exists on it, update it,
           // otherwise remove this link
@@ -462,7 +462,7 @@ Poly_CoherentTriangle* Poly_CoherentTriangulation::AddTriangle(const int iNode0,
                                                                const int iNode1,
                                                                const int iNode2)
 {
-  Poly_CoherentTriangle* pTriangle = 0L;
+  Poly_CoherentTriangle* pTriangle = nullptr;
   if (iNode0 >= 0 && iNode1 >= 0 && iNode2 >= 0)
   {
     pTriangle = &myTriangles.Append(Poly_CoherentTriangle());
@@ -501,7 +501,7 @@ bool Poly_CoherentTriangulation::ReplaceNodes(Poly_CoherentTriangle& theTriangle
       {
         const Poly_CoherentTriangle* pTriOpp = theTriangle.GetConnectedTri(i);
         bool                         toAddLink(true);
-        if (pTriOpp != 0L)
+        if (pTriOpp != nullptr)
         {
           // A neighbour is detected. If a Link exists on it, update it,
           // otherwise create a new link.
@@ -510,7 +510,7 @@ bool Poly_CoherentTriangulation::ReplaceNodes(Poly_CoherentTriangle& theTriangle
             if (theTriangle.Node(i) == pTriOpp->GetConnectedNode(j))
             {
               Poly_CoherentLink* aLink = const_cast<Poly_CoherentLink*>(pTriOpp->GetLink(j));
-              if (aLink != 0L)
+              if (aLink != nullptr)
               {
                 if (aLink->OppositeNode(0) == pTriOpp->Node(j))
                 {
@@ -542,20 +542,20 @@ bool Poly_CoherentTriangulation::ReplaceNodes(Poly_CoherentTriangle& theTriangle
 
 void Poly_CoherentTriangulation::RemoveLink(Poly_CoherentLink& theLink)
 {
-  const Poly_CoherentTriangle* pTri[2] = {0L, 0L};
+  const Poly_CoherentTriangle* pTri[2] = {nullptr, nullptr};
   if (FindTriangle(theLink, pTri))
   {
     for (int i = 0; i < 2; i++)
     {
       const int iNode = theLink.OppositeNode(i);
-      if (iNode >= 0 && pTri[i] != 0L)
+      if (iNode >= 0 && pTri[i] != nullptr)
       {
         if (iNode == pTri[i]->Node(0))
-          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[0] = 0L;
+          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[0] = nullptr;
         else if (iNode == pTri[i]->Node(1))
-          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[1] = 0L;
+          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[1] = nullptr;
         else if (iNode == pTri[i]->Node(2))
-          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[2] = 0L;
+          const_cast<Poly_CoherentTriangle*>(pTri[i])->mypLink[2] = nullptr;
         else
           throw Standard_ProgramError("Poly_CoherentTriangulation::RemoveLink: "
                                       " wrong connectivity between triangles");
@@ -570,7 +570,7 @@ void Poly_CoherentTriangulation::RemoveLink(Poly_CoherentLink& theLink)
 Poly_CoherentLink* Poly_CoherentTriangulation::AddLink(const Poly_CoherentTriangle& theTri,
                                                        const int                    theConn)
 {
-  Poly_CoherentLink* pLink = 0L;
+  Poly_CoherentLink* pLink = nullptr;
   if (theTri.IsEmpty() == false)
   {
     pLink = &myLinks.Append(Poly_CoherentLink(theTri, theConn));
@@ -603,8 +603,8 @@ Poly_CoherentLink* Poly_CoherentTriangulation::AddLink(const Poly_CoherentTriang
 bool Poly_CoherentTriangulation::FindTriangle(const Poly_CoherentLink&     theLink,
                                               const Poly_CoherentTriangle* pTri[2]) const
 {
-  pTri[0]          = 0L;
-  pTri[1]          = 0L;
+  pTri[0]          = nullptr;
+  pTri[1]          = nullptr;
   const int iNode0 = theLink.Node(0);
   if (theLink.IsEmpty() == false && iNode0 < myNodes.Length() && theLink.Node(1) < myNodes.Length())
   {
@@ -640,7 +640,7 @@ bool Poly_CoherentTriangulation::FindTriangle(const Poly_CoherentLink&     theLi
         break;
     }
   }
-  return (pTri[0] != 0L || pTri[1] != 0L);
+  return (pTri[0] != nullptr || pTri[1] != nullptr);
 }
 
 //=================================================================================================
@@ -676,7 +676,7 @@ int Poly_CoherentTriangulation::ComputeLinks()
 
     for (i = 0; i < 3; ++i)
     {
-      if (aTriangle.mypLink[i] == 0L)
+      if (aTriangle.mypLink[i] == nullptr)
       {
         AddLink(aTriangle, i);
       }
@@ -694,9 +694,9 @@ void Poly_CoherentTriangulation::ClearLinks()
   for (; anIter.More(); anIter.Next())
   {
     Poly_CoherentTriangle& aTriangle = anIter.ChangeValue();
-    aTriangle.mypLink[0]             = 0L;
-    aTriangle.mypLink[1]             = 0L;
-    aTriangle.mypLink[2]             = 0L;
+    aTriangle.mypLink[0]             = nullptr;
+    aTriangle.mypLink[1]             = nullptr;
+    aTriangle.mypLink[2]             = nullptr;
   }
 }
 

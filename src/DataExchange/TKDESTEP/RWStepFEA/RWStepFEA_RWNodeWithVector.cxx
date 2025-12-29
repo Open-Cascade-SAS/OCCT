@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWNodeWithVector::RWStepFEA_RWNodeWithVector() {}
+RWStepFEA_RWNodeWithVector::RWStepFEA_RWNodeWithVector() = default;
 
 //=================================================================================================
 

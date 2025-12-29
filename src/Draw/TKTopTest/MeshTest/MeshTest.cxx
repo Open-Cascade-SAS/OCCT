@@ -16,7 +16,7 @@
 
 #include <MeshTest.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -779,7 +779,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
            anIter.Next(), ++aTriangIndex)
       {
         TriangulationStat* aStats = aLODsStat.ChangeSeek(aTriangIndex);
-        if (aStats == NULL)
+        if (aStats == nullptr)
         {
           int aNewIndex = aLODsStat.Add(aTriangIndex, TriangulationStat());
           aStats        = &aLODsStat.ChangeFromIndex(aNewIndex);
@@ -792,7 +792,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
           continue;
         }
         int* aDynTypeCounter = aStats->TypeMap.ChangeSeek(aLOD->DynamicType());
-        if (aDynTypeCounter == NULL)
+        if (aDynTypeCounter == nullptr)
         {
           int aNewIndex   = aStats->TypeMap.Add(aLOD->DynamicType(), 0);
           aDynTypeCounter = &aStats->TypeMap.ChangeFromIndex(aNewIndex);
@@ -1063,9 +1063,9 @@ static int veriftriangles(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  bool quiet = 1;
+  bool quiet = true;
   if (n == 3)
-    quiet = 0;
+    quiet = false;
   TopoDS_Shape Sh = DBRep::Get(a[1]);
   if (Sh.IsNull())
     return 1;

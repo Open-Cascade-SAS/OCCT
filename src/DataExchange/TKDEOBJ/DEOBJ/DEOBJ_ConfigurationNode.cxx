@@ -31,9 +31,8 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode()
-    : DE_ConfigurationNode()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

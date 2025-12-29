@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentRepresentationType, Standard_Transi
 
 //=================================================================================================
 
-StepBasic_DocumentRepresentationType::StepBasic_DocumentRepresentationType() {}
+StepBasic_DocumentRepresentationType::StepBasic_DocumentRepresentationType() = default;
 
 //=================================================================================================
 

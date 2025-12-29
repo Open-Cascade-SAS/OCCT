@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING(ChildrenString, "children")
 
 XmlMDataStd_TreeNodeDriver::XmlMDataStd_TreeNodeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -64,7 +64,7 @@ bool XmlMDataStd_TreeNodeDriver::Paste(const XmlObjMgt_Persistent&       theSour
   occ::handle<TDataStd_TreeNode> aTChild;
 
   XmlObjMgt_DOMString aChildrenStr = anElement.getAttribute(::ChildrenString());
-  if (aChildrenStr != NULL) // void list is allowed
+  if (aChildrenStr != nullptr) // void list is allowed
   {
     const char* aChildren = static_cast<const char*>(aChildrenStr.GetString());
     int         aNb       = 0;

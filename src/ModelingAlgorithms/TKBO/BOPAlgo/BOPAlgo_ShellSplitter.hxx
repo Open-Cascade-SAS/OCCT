@@ -35,7 +35,7 @@ public:
 
   //! empty constructor
   Standard_EXPORT BOPAlgo_ShellSplitter();
-  Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
+  Standard_EXPORT ~BOPAlgo_ShellSplitter() override;
 
   //! constructor
   Standard_EXPORT BOPAlgo_ShellSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator);
@@ -47,7 +47,7 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& StartElements() const;
 
   //! performs the algorithm
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! returns the loops

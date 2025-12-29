@@ -47,7 +47,7 @@ public:
 
   using Blend_FuncInv::Set;
 
-  Standard_EXPORT virtual void Set(const double theThroat, const double, const int Choix) override;
+  Standard_EXPORT void Set(const double theThroat, const double, const int Choix) override;
 
 protected:
   double Throat;

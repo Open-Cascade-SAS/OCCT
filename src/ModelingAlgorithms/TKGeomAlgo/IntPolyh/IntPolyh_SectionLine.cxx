@@ -21,11 +21,11 @@
 #include <IntPolyh_StartPoint.hxx>
 #include <IntPolyh_Triangle.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 
-IntPolyh_SectionLine::IntPolyh_SectionLine() /*: n(0),nbstartpoints(0),ptr(0)*/ {}
+IntPolyh_SectionLine::IntPolyh_SectionLine() /*: n(0),nbstartpoints(0),ptr(0)*/ = default;
 
 //=================================================================================================
 

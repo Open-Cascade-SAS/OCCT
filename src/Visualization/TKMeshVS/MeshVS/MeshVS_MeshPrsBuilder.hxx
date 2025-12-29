@@ -41,16 +41,16 @@ public:
   //! Creates builder with certain display mode flags, data source, ID and priority
   Standard_EXPORT MeshVS_MeshPrsBuilder(const occ::handle<MeshVS_Mesh>& Parent,
                                         const MeshVS_DisplayModeFlags&  Flags = MeshVS_DMF_OCCMask,
-                                        const occ::handle<MeshVS_DataSource>& DS = 0,
+                                        const occ::handle<MeshVS_DataSource>& DS = nullptr,
                                         const int                             Id = -1,
                                         const MeshVS_BuilderPriority& Priority   = MeshVS_BP_Mesh);
 
   //! Builds base mesh presentation by calling the methods below
-  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int DisplayMode) const override;
+  Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              DisplayMode) const override;
 
   //! Builds nodes presentation
   Standard_EXPORT virtual void BuildNodes(const occ::handle<Prs3d_Presentation>& Prs,

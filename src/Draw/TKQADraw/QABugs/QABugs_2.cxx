@@ -32,7 +32,7 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

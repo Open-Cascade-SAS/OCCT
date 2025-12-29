@@ -37,7 +37,7 @@ occ::handle<TFunction_DriverTable> TFunction_DriverTable::Get()
 
 //=================================================================================================
 
-TFunction_DriverTable::TFunction_DriverTable() {}
+TFunction_DriverTable::TFunction_DriverTable() = default;
 
 //=======================================================================
 // function : AddDriver

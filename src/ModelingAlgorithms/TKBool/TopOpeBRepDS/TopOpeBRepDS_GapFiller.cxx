@@ -92,9 +92,9 @@ bool Contains(const TopoDS_Shape& F, const TopoDS_Shape& E)
   {
     //  for (TopExp_Explorer exp(F,E.ShapeType()); exp.More(); exp.Next()){
     if (exp.Current().IsSame(E))
-      return 1;
+      return true;
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -198,7 +198,7 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(
 bool TopOpeBRepDS_GapFiller::CheckConnexity(
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&)
 {
-  return 1;
+  return true;
 }
 
 //=================================================================================================
@@ -261,11 +261,11 @@ bool TopOpeBRepDS_GapFiller::IsOnFace(const occ::handle<TopOpeBRepDS_Interferenc
     TopoDS_Shape S1, S2;
     C.GetShapes(S1, S2);
     if (S1.IsSame(F))
-      return 1;
+      return true;
     if (S2.IsSame(F))
-      return 1;
+      return true;
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -305,10 +305,10 @@ bool TopOpeBRepDS_GapFiller::IsOnEdge(const occ::handle<TopOpeBRepDS_Interferenc
     {
       const TopoDS_Shape& S1 = myHDS->Shape(IC->Support());
       if (S1.IsSame(E))
-        return 1;
+        return true;
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -330,7 +330,7 @@ static bool Normal(const occ::handle<TopOpeBRepDS_GapTool>&        A,
   if (S.GetType() == GeomAbs_Plane)
   {
     D = S.Plane().Axis().Direction();
-    return 1;
+    return true;
   }
 
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = A->SameInterferences(I);
@@ -349,13 +349,13 @@ static bool Normal(const occ::handle<TopOpeBRepDS_GapTool>&        A,
       if (F.IsSame(S1))
       {
         if (C.Curve1().IsNull())
-          return 0;
+          return false;
         P2d = C.Curve1()->Value(P);
       }
       else
       {
         if (C.Curve2().IsNull())
-          return 0;
+          return false;
         P2d = C.Curve2()->Value(P);
       }
 
@@ -367,13 +367,13 @@ static bool Normal(const occ::handle<TopOpeBRepDS_GapTool>&        A,
         if (N.SquareMagnitude() >= gp::Resolution())
         {
           D = gp_Dir(N);
-          return 1;
+          return true;
         }
       }
-      return 0;
+      return false;
     }
   }
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -389,7 +389,7 @@ void TopOpeBRepDS_GapFiller::FilterByIncidentDistance(
   const TopOpeBRepDS_Point& PI1 = myHDS->Point(I->Geometry());
   const gp_Pnt              GPI = PI1.Point();
 
-  BRepAdaptor_Surface S(F, 0);
+  BRepAdaptor_Surface S(F, false);
 
   double TolDef  = 0.94; // cos(20degre);
   double TolDist = 20 * PI1.Tolerance();

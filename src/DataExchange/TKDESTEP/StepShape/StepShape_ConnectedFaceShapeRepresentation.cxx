@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation, StepRepr_
 
 //=================================================================================================
 
-StepShape_ConnectedFaceShapeRepresentation::StepShape_ConnectedFaceShapeRepresentation() {}
+StepShape_ConnectedFaceShapeRepresentation::StepShape_ConnectedFaceShapeRepresentation() = default;

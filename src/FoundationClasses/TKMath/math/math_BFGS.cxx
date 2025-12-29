@@ -66,7 +66,7 @@ public:
 
   void TheGradient(math_Vector& Grad) { Grad = *G; }
 
-  virtual bool Value(const double x, double& fval)
+  bool Value(const double x, double& fval) override
   {
     *P = *Dir;
     P->Multiply(x);
@@ -75,7 +75,7 @@ public:
     return F->Value(*P, fval);
   }
 
-  virtual bool Values(const double x, double& fval, double& D)
+  bool Values(const double x, double& fval, double& D) override
   {
     *P = *Dir;
     P->Multiply(x);
@@ -90,7 +90,7 @@ public:
     return false;
   }
 
-  virtual bool Derivative(const double x, double& D)
+  bool Derivative(const double x, double& D) override
   {
     *P = *Dir;
     P->Multiply(x);
@@ -446,7 +446,7 @@ math_BFGS::math_BFGS(const int    NbVariables,
 
 //=================================================================================================
 
-math_BFGS::~math_BFGS() {}
+math_BFGS::~math_BFGS() = default;
 
 //=================================================================================================
 

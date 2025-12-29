@@ -21,7 +21,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse()
-    : BRepAlgoAPI_BooleanOperation()
+
 {
   myOperation = BOPAlgo_FUSE;
 }
@@ -36,7 +36,7 @@ BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const BOPAlgo_PaveFiller& aPF)
 
 //=================================================================================================
 
-BRepAlgoAPI_Fuse::~BRepAlgoAPI_Fuse() {}
+BRepAlgoAPI_Fuse::~BRepAlgoAPI_Fuse() = default;
 
 //=================================================================================================
 

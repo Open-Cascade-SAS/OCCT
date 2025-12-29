@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Circle, StepGeom_Conic)
 
-StepGeom_Circle::StepGeom_Circle() {}
+StepGeom_Circle::StepGeom_Circle() = default;
 
 void StepGeom_Circle::Init(const occ::handle<TCollection_HAsciiString>& aName,
                            const StepGeom_Axis2Placement&               aPosition,

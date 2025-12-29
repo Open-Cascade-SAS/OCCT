@@ -19,7 +19,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedOrganizationAssignment,
                            StepBasic_OrganizationAssignment)
 
-StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment() {}
+StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment() = default;
 
 void StepAP214_AppliedOrganizationAssignment::Init(
   const occ::handle<StepBasic_Organization>&                          aAssignedOrganization,

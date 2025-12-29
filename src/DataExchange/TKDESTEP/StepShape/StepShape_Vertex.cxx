@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Vertex, StepShape_TopologicalRepresentationItem)
 
-StepShape_Vertex::StepShape_Vertex() {}
+StepShape_Vertex::StepShape_Vertex() = default;

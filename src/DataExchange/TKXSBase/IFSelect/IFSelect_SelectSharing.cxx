@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSharing, IFSelect_SelectDeduct)
 
-IFSelect_SelectSharing::IFSelect_SelectSharing() {}
+IFSelect_SelectSharing::IFSelect_SelectSharing() = default;
 
 // Entities sharing others (at 1 level and in Strict sense)
 

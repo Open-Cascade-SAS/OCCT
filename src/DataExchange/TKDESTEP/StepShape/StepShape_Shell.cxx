@@ -17,7 +17,7 @@
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_Shell.hxx>
 
-StepShape_Shell::StepShape_Shell() {}
+StepShape_Shell::StepShape_Shell() = default;
 
 int StepShape_Shell::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

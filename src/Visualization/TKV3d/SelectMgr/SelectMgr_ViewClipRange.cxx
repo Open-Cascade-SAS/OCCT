@@ -34,7 +34,7 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
     }
 
     Bnd_Range aSubRange(RealFirst(), RealLast());
-    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipPlane.get(); aSubPlaneIter != NULL;
+    for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipPlane.get(); aSubPlaneIter != nullptr;
          aSubPlaneIter                            = aSubPlaneIter->ChainNextPlane().get())
     {
       const gp_Pln aGeomPlane = aSubPlaneIter->ToPlane();

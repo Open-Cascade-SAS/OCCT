@@ -51,7 +51,7 @@ static const double TwoPI = M_PI + M_PI;
 class GeomInt_Vertex
 {
 public:
-  GeomInt_Vertex() {};
+  GeomInt_Vertex() = default;
 
   //! Initializes this class by IntPatch_Point
   void SetVertex(const IntPatch_Point& theOther)

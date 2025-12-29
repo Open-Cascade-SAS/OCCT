@@ -18,4 +18,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_Driver, Standard_Transient)
 
-TPrsStd_Driver::TPrsStd_Driver() {}
+TPrsStd_Driver::TPrsStd_Driver() = default;

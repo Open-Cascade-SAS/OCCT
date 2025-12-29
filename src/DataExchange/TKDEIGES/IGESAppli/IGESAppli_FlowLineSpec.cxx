@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FlowLineSpec, IGESData_IGESEntity)
 
-IGESAppli_FlowLineSpec::IGESAppli_FlowLineSpec() {}
+IGESAppli_FlowLineSpec::IGESAppli_FlowLineSpec() = default;
 
 void IGESAppli_FlowLineSpec::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties)

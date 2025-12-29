@@ -36,7 +36,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 31/07/98
-IGESGeom_ToolOffsetSurface::IGESGeom_ToolOffsetSurface() {}
+IGESGeom_ToolOffsetSurface::IGESGeom_ToolOffsetSurface() = default;
 
 void IGESGeom_ToolOffsetSurface::ReadOwnParams(const occ::handle<IGESGeom_OffsetSurface>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

@@ -41,13 +41,13 @@ public:
                                      const gp_Vec2d&                  T1);
 
   //! Computes the values of the Functions for the variable <X>.
-  Standard_EXPORT bool Value(const double X, double& F);
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
-  Standard_EXPORT bool Derivative(const double X, double& D);
+  Standard_EXPORT bool Derivative(const double X, double& D) override;
 
   //! Returns the values of the functions and the derivatives
   //! for the variable <X>.
-  Standard_EXPORT bool Values(const double X, double& F, double& D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
 private:
   occ::handle<Geom2d_Curve> curve2;

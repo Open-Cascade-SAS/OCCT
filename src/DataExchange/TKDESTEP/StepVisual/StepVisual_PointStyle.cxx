@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle, Standard_Transient)
 
-StepVisual_PointStyle::StepVisual_PointStyle() {}
+StepVisual_PointStyle::StepVisual_PointStyle() = default;
 
 void StepVisual_PointStyle::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const StepVisual_MarkerSelect&               aMarker,

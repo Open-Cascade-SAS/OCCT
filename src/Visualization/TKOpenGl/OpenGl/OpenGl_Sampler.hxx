@@ -38,13 +38,13 @@ public:
   Standard_EXPORT OpenGl_Sampler(const occ::handle<Graphic3d_TextureParams>& theParams);
 
   //! Releases resources of sampler object.
-  Standard_EXPORT virtual ~OpenGl_Sampler();
+  Standard_EXPORT ~OpenGl_Sampler() override;
 
   //! Destroys object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual size_t EstimatedDataSize() const override { return 0; }
+  size_t EstimatedDataSize() const override { return 0; }
 
   //! Creates an uninitialized sampler object.
   Standard_EXPORT bool Create(const occ::handle<OpenGl_Context>& theContext);

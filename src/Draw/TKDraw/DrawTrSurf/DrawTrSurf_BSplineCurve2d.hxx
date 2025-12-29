@@ -41,7 +41,7 @@ public:
                                             const bool                              ShowKnots,
                                             const int                               Discret);
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   void ShowPoles() { drawPoles = true; }
 
@@ -81,7 +81,7 @@ public:
   Draw_Color PolesColor() const { return polesLook; }
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
   bool             drawPoles;

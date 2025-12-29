@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_UniversalPairValue, StepKinematics_Pai
 
 //=================================================================================================
 
-StepKinematics_UniversalPairValue::StepKinematics_UniversalPairValue() {}
+StepKinematics_UniversalPairValue::StepKinematics_UniversalPairValue() = default;
 
 //=================================================================================================
 

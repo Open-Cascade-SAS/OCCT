@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_OuterBoundaryCurve.hxx>
 
-RWStepGeom_RWOuterBoundaryCurve::RWStepGeom_RWOuterBoundaryCurve() {}
+RWStepGeom_RWOuterBoundaryCurve::RWStepGeom_RWOuterBoundaryCurve() = default;
 
 void RWStepGeom_RWOuterBoundaryCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

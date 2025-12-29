@@ -39,7 +39,7 @@
 // MGE 31/07/98
 //=================================================================================================
 
-IGESGeom_ToolBSplineSurface::IGESGeom_ToolBSplineSurface() {}
+IGESGeom_ToolBSplineSurface::IGESGeom_ToolBSplineSurface() = default;
 
 //=================================================================================================
 

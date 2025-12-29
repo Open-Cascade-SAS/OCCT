@@ -21,11 +21,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBa
 
 //=================================================================================================
 
-BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo() {}
+BRepMesh_DelaunayBaseMeshAlgo::BRepMesh_DelaunayBaseMeshAlgo() = default;
 
 //=================================================================================================
 
-BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo() {}
+BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo() = default;
 
 //=================================================================================================
 

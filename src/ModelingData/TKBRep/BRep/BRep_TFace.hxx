@@ -102,11 +102,10 @@ public:
 
   //! Returns a copy of the TShape with no sub-shapes.
   //! The new Face has no triangulation.
-  Standard_EXPORT virtual occ::handle<TopoDS_TShape> EmptyCopy() const override;
+  Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public:
   //! Returns the list of available face triangulations.

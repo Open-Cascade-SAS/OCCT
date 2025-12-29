@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_FileProtocol, IGESData_Protocol)
 
-IGESData_FileProtocol::IGESData_FileProtocol() {}
+IGESData_FileProtocol::IGESData_FileProtocol() = default;
 
 void IGESData_FileProtocol::Add(const occ::handle<IGESData_Protocol>& protocol)
 {

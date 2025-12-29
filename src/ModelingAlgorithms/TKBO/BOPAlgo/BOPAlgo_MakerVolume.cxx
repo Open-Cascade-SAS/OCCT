@@ -56,7 +56,7 @@ void BOPAlgo_MakerVolume::Perform(const Message_ProgressRange& theRange)
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
   //

@@ -22,7 +22,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWEdgeLoop::RWStepShape_RWEdgeLoop() {}
+RWStepShape_RWEdgeLoop::RWStepShape_RWEdgeLoop() = default;
 
 void RWStepShape_RWEdgeLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

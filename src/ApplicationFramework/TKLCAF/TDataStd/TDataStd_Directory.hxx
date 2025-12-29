@@ -63,7 +63,7 @@ public:
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Directory, TDataStd_GenericEmpty)
 };

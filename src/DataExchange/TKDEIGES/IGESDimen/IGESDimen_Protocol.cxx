@@ -45,7 +45,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Protocol, IGESData_Protocol)
 
-IGESDimen_Protocol::IGESDimen_Protocol() {}
+IGESDimen_Protocol::IGESDimen_Protocol() = default;
 
 int IGESDimen_Protocol::NbResources() const
 {

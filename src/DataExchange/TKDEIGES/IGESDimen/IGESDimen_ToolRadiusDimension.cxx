@@ -36,7 +36,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolRadiusDimension::IGESDimen_ToolRadiusDimension() {}
+IGESDimen_ToolRadiusDimension::IGESDimen_ToolRadiusDimension() = default;
 
 void IGESDimen_ToolRadiusDimension::ReadOwnParams(const occ::handle<IGESDimen_RadiusDimension>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,

@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepVisual_RWCurveStyleFont::RWStepVisual_RWCurveStyleFont() {}
+RWStepVisual_RWCurveStyleFont::RWStepVisual_RWCurveStyleFont() = default;
 
 void RWStepVisual_RWCurveStyleFont::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

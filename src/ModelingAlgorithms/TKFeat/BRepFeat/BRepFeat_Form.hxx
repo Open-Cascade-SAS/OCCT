@@ -69,15 +69,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the list of generated Faces.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
   //! returns a list of the created faces
   //! from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
-  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
+  Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes created at the bottom of
   //! the created form. It may be an empty list.

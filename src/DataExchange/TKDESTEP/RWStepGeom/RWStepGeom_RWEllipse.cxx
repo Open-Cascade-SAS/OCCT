@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Ellipse.hxx>
 
-RWStepGeom_RWEllipse::RWStepGeom_RWEllipse() {}
+RWStepGeom_RWEllipse::RWStepGeom_RWEllipse() = default;
 
 void RWStepGeom_RWEllipse::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                     const int                                   num,

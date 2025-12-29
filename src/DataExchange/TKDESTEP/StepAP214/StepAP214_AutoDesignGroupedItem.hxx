@@ -57,7 +57,7 @@ public:
   //! 10 -> ShapeRepresentation
   //! 11 -> TemplateInstance
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a AdvancedBrepShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_AdvancedBrepShapeRepresentation>

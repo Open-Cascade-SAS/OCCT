@@ -38,7 +38,7 @@ struct hash<TDF_Label>
 } // namespace std
 
 inline TDF_Label::TDF_Label()
-    : myLabelNode(NULL)
+    : myLabelNode(nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ inline TDF_Label::TDF_Label(const TDF_LabelNodePtr& aNode)
 
 inline void TDF_Label::Nullify()
 {
-  myLabelNode = NULL;
+  myLabelNode = nullptr;
 }
 
 inline bool TDF_Label::IsRoot() const
@@ -59,7 +59,7 @@ inline bool TDF_Label::IsRoot() const
 
 inline bool TDF_Label::IsNull() const
 {
-  return (myLabelNode == NULL);
+  return (myLabelNode == nullptr);
 }
 
 inline bool TDF_Label::IsImported() const
@@ -89,7 +89,7 @@ inline const TDF_Label TDF_Label::Father() const
 
 inline bool TDF_Label::HasChild() const
 {
-  return (myLabelNode->FirstChild() != NULL);
+  return (myLabelNode->FirstChild() != nullptr);
 }
 
 inline bool TDF_Label::AttributesModified() const

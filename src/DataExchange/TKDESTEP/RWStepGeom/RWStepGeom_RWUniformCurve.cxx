@@ -20,7 +20,7 @@
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 
-RWStepGeom_RWUniformCurve::RWStepGeom_RWUniformCurve() {}
+RWStepGeom_RWUniformCurve::RWStepGeom_RWUniformCurve() = default;
 
 void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

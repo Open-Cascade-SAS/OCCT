@@ -56,9 +56,8 @@ static void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopToo
 //=================================================================================================
 
 BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid()
-    : BOPAlgo_BuilderArea()
-{
-}
+
+  = default;
 
 //=================================================================================================
 
@@ -70,13 +69,13 @@ BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid(
 
 //=================================================================================================
 
-BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid() {}
+BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid() = default;
 
 //=================================================================================================
 
 void BOPAlgo_BuilderSolid::Perform(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 100);
+  Message_ProgressScope aPS(theRange, nullptr, 100);
 
   GetReport()->Clear();
   //
@@ -136,7 +135,7 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid(const Message_ProgressRange& the
   //
   myShapesToAvoid.Clear();
   //
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
   //
   for (;;)
   {
@@ -543,7 +542,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   }
 
   // Add Holes to Solids and add them to myAreas
-  Message_ProgressScope aPSU(aMainScope.Next(), NULL, aNewSolids.Size());
+  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewSolids.Size());
   aItLS.Initialize(aNewSolids);
   for (; aItLS.More(); aItLS.Next(), aPSU.Next())
   {
@@ -670,7 +669,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFDone;
 
   int                   aNbS = aMSLF.Extent();
-  Message_ProgressScope aPSLoop(aMainScope.Next(), NULL, aNbS);
+  Message_ProgressScope aPSLoop(aMainScope.Next(), nullptr, aNbS);
   for (i = 1; i <= aNbS; ++i, aPSLoop.Next())
   {
     if (UserBreak(aPSLoop))

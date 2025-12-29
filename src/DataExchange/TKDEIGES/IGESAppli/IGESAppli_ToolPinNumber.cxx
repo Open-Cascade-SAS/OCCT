@@ -31,7 +31,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolPinNumber::IGESAppli_ToolPinNumber() {}
+IGESAppli_ToolPinNumber::IGESAppli_ToolPinNumber() = default;
 
 void IGESAppli_ToolPinNumber::ReadOwnParams(const occ::handle<IGESAppli_PinNumber>& ent,
                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,

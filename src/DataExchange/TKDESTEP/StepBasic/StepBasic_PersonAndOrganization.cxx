@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonAndOrganization, Standard_Transient)
 
-StepBasic_PersonAndOrganization::StepBasic_PersonAndOrganization() {}
+StepBasic_PersonAndOrganization::StepBasic_PersonAndOrganization() = default;
 
 void StepBasic_PersonAndOrganization::Init(
   const occ::handle<StepBasic_Person>&       aThePerson,

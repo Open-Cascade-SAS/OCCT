@@ -34,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_SelectionDriver, TFunction_Driver)
 #endif
 //=================================================================================================
 
-DNaming_SelectionDriver::DNaming_SelectionDriver() {}
+DNaming_SelectionDriver::DNaming_SelectionDriver() = default;
 
 //=======================================================================
 // function : Validate

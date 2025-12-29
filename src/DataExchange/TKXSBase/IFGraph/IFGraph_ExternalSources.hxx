@@ -47,7 +47,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Evaluates external sources of a set of entities
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 
   //! Returns True if no External Source are found
   //! It means that we have a "root" set

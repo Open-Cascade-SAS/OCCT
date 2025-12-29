@@ -99,7 +99,7 @@ void PCDM_ReaderFilter::StartIteration()
   myCurrent      = &myTree;
   myCurrentDepth = 0;
   ClearTree();
-  myTree.Bind(-1, NULL);
+  myTree.Bind(-1, nullptr);
   if (mySubTrees.IsEmpty())
     return;
   // create an iteration-tree by the mySubTrees entries
@@ -126,7 +126,7 @@ void PCDM_ReaderFilter::StartIteration()
         aMap = aNewMap;
       }
     }
-    aMap->Bind(-2, NULL); // identifier that this node is in subtrees definition
+    aMap->Bind(-2, nullptr); // identifier that this node is in subtrees definition
   }
 }
 

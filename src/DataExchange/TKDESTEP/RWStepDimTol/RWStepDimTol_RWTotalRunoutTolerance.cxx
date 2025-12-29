@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWTotalRunoutTolerance::RWStepDimTol_RWTotalRunoutTolerance() {}
+RWStepDimTol_RWTotalRunoutTolerance::RWStepDimTol_RWTotalRunoutTolerance() = default;
 
 //=================================================================================================
 

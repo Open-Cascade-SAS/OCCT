@@ -21,7 +21,7 @@
 #include <StepRepr_ValueRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWValueRepresentationItem::RWStepRepr_RWValueRepresentationItem() {}
+RWStepRepr_RWValueRepresentationItem::RWStepRepr_RWValueRepresentationItem() = default;
 
 void RWStepRepr_RWValueRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

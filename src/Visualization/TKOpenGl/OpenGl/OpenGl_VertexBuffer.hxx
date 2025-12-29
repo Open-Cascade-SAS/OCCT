@@ -27,10 +27,10 @@ public:
   Standard_EXPORT OpenGl_VertexBuffer();
 
   //! Destroy object.
-  Standard_EXPORT virtual ~OpenGl_VertexBuffer();
+  Standard_EXPORT ~OpenGl_VertexBuffer() override;
 
   //! Return buffer target GL_ARRAY_BUFFER.
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT unsigned int GetTarget() const override;
 
   //! Bind this VBO to active GLSL program.
   Standard_EXPORT void BindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,

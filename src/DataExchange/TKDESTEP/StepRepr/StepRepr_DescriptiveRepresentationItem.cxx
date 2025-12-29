@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_DescriptiveRepresentationItem, StepRepr_RepresentationItem)
 
-StepRepr_DescriptiveRepresentationItem::StepRepr_DescriptiveRepresentationItem() {}
+StepRepr_DescriptiveRepresentationItem::StepRepr_DescriptiveRepresentationItem() = default;
 
 void StepRepr_DescriptiveRepresentationItem::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

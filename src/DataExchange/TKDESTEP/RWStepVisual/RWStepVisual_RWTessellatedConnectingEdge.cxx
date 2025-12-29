@@ -30,7 +30,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedConnectingEdge::RWStepVisual_RWTessellatedConnectingEdge() {}
+RWStepVisual_RWTessellatedConnectingEdge::RWStepVisual_RWTessellatedConnectingEdge() = default;
 
 //=================================================================================================
 

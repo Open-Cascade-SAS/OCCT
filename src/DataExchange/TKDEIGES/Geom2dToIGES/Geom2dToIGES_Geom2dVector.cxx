@@ -26,9 +26,8 @@
 // Geom2dToIGES_Geom2dVector
 //=============================================================================
 Geom2dToIGES_Geom2dVector::Geom2dToIGES_Geom2dVector()
-    : Geom2dToIGES_Geom2dEntity()
-{
-}
+
+  = default;
 
 //=============================================================================
 // Geom2dToIGES_Geom2dVector

@@ -20,7 +20,7 @@
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
 
-RWStepGeom_RWEvaluatedDegeneratePcurve::RWStepGeom_RWEvaluatedDegeneratePcurve() {}
+RWStepGeom_RWEvaluatedDegeneratePcurve::RWStepGeom_RWEvaluatedDegeneratePcurve() = default;
 
 void RWStepGeom_RWEvaluatedDegeneratePcurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWEdgeBasedWireframeModel::RWStepShape_RWEdgeBasedWireframeModel() {}
+RWStepShape_RWEdgeBasedWireframeModel::RWStepShape_RWEdgeBasedWireframeModel() = default;
 
 //=================================================================================================
 

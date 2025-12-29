@@ -47,7 +47,7 @@ public:
     }
 
     //! Destructor
-    virtual ~CallBackData() {}
+    virtual ~CallBackData() = default;
 
     //! Invoke function
     virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec) = 0;
@@ -69,9 +69,9 @@ protected:
     {
     }
 
-    virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+    int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec) override
     {
-      return myFunc != NULL ? myFunc(theDI, theArgNb, theArgVec) : 1;
+      return myFunc != nullptr ? myFunc(theDI, theArgNb, theArgVec) : 1;
     }
 
     Draw_Interpretor::CommandFunction myFunc;
@@ -91,9 +91,9 @@ protected:
     {
     }
 
-    virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+    int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec) override
     {
-      return myMethod != NULL && !myObjPtr.IsNull()
+      return myMethod != nullptr && !myObjPtr.IsNull()
                ? (myObjPtr.operator->()->*myMethod)(theDI, theArgNb, theArgVec)
                : 1;
     }

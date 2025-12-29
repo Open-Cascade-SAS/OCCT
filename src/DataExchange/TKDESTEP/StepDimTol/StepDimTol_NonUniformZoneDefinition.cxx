@@ -19,4 +19,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_NonUniformZoneDefinition, StepDimTol_Toler
 
 //=================================================================================================
 
-StepDimTol_NonUniformZoneDefinition::StepDimTol_NonUniformZoneDefinition() {}
+StepDimTol_NonUniformZoneDefinition::StepDimTol_NonUniformZoneDefinition() = default;

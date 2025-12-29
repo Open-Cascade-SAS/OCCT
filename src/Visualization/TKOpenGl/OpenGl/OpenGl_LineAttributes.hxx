@@ -33,13 +33,13 @@ public:
   Standard_EXPORT OpenGl_LineAttributes();
 
   //! Default destructor.
-  Standard_EXPORT virtual ~OpenGl_LineAttributes();
+  Standard_EXPORT ~OpenGl_LineAttributes() override;
 
   //! Release GL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theGlCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theGlCtx) override;
 
   //! Returns estimated GPU memory usage - not implemented.
-  virtual size_t EstimatedDataSize() const override { return 0; }
+  size_t EstimatedDataSize() const override { return 0; }
 
   //! Sets type of the hatch.
   Standard_EXPORT bool SetTypeOfHatch(const OpenGl_Context*                    theGlCtx,

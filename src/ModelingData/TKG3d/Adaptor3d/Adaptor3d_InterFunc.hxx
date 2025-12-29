@@ -40,19 +40,19 @@ public:
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Value(const double X, double& F);
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
   //! computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Derivative(const double X, double& D);
+  Standard_EXPORT bool Derivative(const double X, double& D) override;
 
   //! computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X, double& F, double& D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
 private:
   occ::handle<Adaptor2d_Curve2d> myCurve2d;

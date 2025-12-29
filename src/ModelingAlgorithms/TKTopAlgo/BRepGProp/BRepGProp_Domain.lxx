@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-inline BRepGProp_Domain::BRepGProp_Domain() {}
+inline BRepGProp_Domain::BRepGProp_Domain() = default;
 
 //=======================================================================
 // function : BRepGProp_Domain

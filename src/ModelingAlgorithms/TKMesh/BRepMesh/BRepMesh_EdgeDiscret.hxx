@@ -33,7 +33,7 @@ public:
   Standard_EXPORT BRepMesh_EdgeDiscret();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_EdgeDiscret();
+  Standard_EXPORT ~BRepMesh_EdgeDiscret() override;
 
   //! Creates instance of free edge tessellator.
   Standard_EXPORT static occ::handle<IMeshTools_CurveTessellator> CreateEdgeTessellator(
@@ -71,9 +71,9 @@ public:
 
 protected:
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                               const IMeshTools_Parameters&        theParameters,
-                                               const Message_ProgressRange& theRange) override;
+  Standard_EXPORT bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                       const IMeshTools_Parameters&        theParameters,
+                                       const Message_ProgressRange&        theRange) override;
 
 private:
   //! Checks existing discretization of the edge and updates data model.

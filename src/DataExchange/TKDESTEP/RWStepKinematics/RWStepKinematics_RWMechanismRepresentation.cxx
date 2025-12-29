@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWMechanismRepresentation::RWStepKinematics_RWMechanismRepresentation() {}
+RWStepKinematics_RWMechanismRepresentation::RWStepKinematics_RWMechanismRepresentation() = default;
 
 //=================================================================================================
 

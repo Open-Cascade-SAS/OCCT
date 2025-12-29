@@ -19,7 +19,7 @@
 #endif
 
 #include <Draw_Main.hxx>
-#include <stdlib.h>
+#include <cstdlib>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
 

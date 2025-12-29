@@ -357,7 +357,7 @@ public:
              NCollection_Mat4<T>&                 theWorldView,
              const int                            theViewportWidth,
              const int                            theViewportHeight,
-             const gp_Pnt*                        theAnchor          = NULL,
+             const gp_Pnt*                        theAnchor          = nullptr,
              const bool                           theToApplyProjPers = true) const;
 
   //! Perform computations for applying transformation persistence on specified matrices.
@@ -368,7 +368,7 @@ public:
   virtual NCollection_Mat4<double> ComputeApply(occ::handle<Graphic3d_Camera>& theCamera,
                                                 const int                      theViewportWidth,
                                                 const int                      theViewportHeight,
-                                                const gp_Pnt* theAnchor = NULL) const
+                                                const gp_Pnt* theAnchor = nullptr) const
   {
     (void)theViewportWidth;
     occ::handle<Graphic3d_Camera> aProxyCamera = theCamera;
@@ -483,7 +483,7 @@ public:
     else
     {
       // Compute reference point for transformation in untransformed projection space.
-      if (theAnchor != NULL)
+      if (theAnchor != nullptr)
       {
         Graphic3d_TransformUtils::Translate(aWorldView,
                                             theAnchor->X(),
@@ -718,7 +718,7 @@ NCollection_Mat4<T> Graphic3d_TransformPers::Compute(const occ::handle<Graphic3d
         aWorldView,
         theViewportWidth,
         theViewportHeight,
-        NULL,
+        nullptr,
         theToApplyProjPers);
   return anUnviewMat * aWorldView;
 }

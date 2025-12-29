@@ -47,7 +47,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute, Standard_Transient)
 //=================================================================================================
 
 TDF_Attribute::TDF_Attribute()
-    : myLabelNode(NULL),
+    : myLabelNode(nullptr),
       myTransaction(0),
       mySavedTransaction(0),
       myFlags(1)
@@ -192,7 +192,7 @@ void TDF_Attribute::BeforeCommitTransaction() {}
 void TDF_Attribute::Backup()
 {
   // The attribute must be valid and attached to a label.
-  if (IsValid() && (myLabelNode != NULL))
+  if (IsValid() && (myLabelNode != nullptr))
   {
     occ::handle<TDF_Data> aData = myLabelNode->Data();
 
@@ -246,8 +246,8 @@ void TDF_Attribute::RemoveBackup()
     throw Standard_DomainError("Impossible to remove a nonexistent backup.");
 #endif
   myBackup->BeforeRemoval();
-  myBackup->myLabelNode = NULL; // Absolutely necessary!
-  myBackup->myNext.Nullify();   // Absolutely necessary!
+  myBackup->myLabelNode = nullptr; // Absolutely necessary!
+  myBackup->myNext.Nullify();      // Absolutely necessary!
   myBackup = myBackup->myBackup;
   if (!myBackup.IsNull())
     myBackup->myNext = this; // New back reference.

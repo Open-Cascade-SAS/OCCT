@@ -95,12 +95,12 @@ class BOPTools_CPC
 public:
   BOPTools_CPC()
       : myMaxTol(1.e-7),
-        mypMapToAvoid(0L)
+        mypMapToAvoid(nullptr)
   {
   }
 
   //
-  ~BOPTools_CPC() {}
+  ~BOPTools_CPC() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -144,12 +144,12 @@ class BOPTools_CWT
 {
 public:
   BOPTools_CWT()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 
   //
-  ~BOPTools_CWT() {}
+  ~BOPTools_CWT() = default;
 
   //
   void SetFace(const TopoDS_Face& aF) { myFace = aF; }
@@ -184,12 +184,12 @@ class BOPTools_CDT
 public:
   BOPTools_CDT()
       : myMaxTol(1.e-7),
-        mypMapToAvoid(0L)
+        mypMapToAvoid(nullptr)
   {
   }
 
   //
-  ~BOPTools_CDT() {}
+  ~BOPTools_CDT() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -231,12 +231,12 @@ class BOPTools_CVT
 {
 public:
   BOPTools_CVT()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 
   //
-  ~BOPTools_CVT() {}
+  ~BOPTools_CVT() = default;
 
   //
   void SetEdge(const TopoDS_Edge& aE) { myEdge = aE; }
@@ -271,12 +271,12 @@ class BOPTools_CET
 {
 public:
   BOPTools_CET()
-      : mypMapToAvoid(0L)
+      : mypMapToAvoid(nullptr)
   {
   }
 
   //
-  ~BOPTools_CET() {}
+  ~BOPTools_CET() = default;
 
   //
   void SetFace(const TopoDS_Face& aF) { myFace = aF; }

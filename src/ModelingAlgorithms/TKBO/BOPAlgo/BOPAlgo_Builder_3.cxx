@@ -98,7 +98,7 @@ void BOPAlgo_Builder::FillIn3DParts(
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
   const Message_ProgressRange&                                              theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, 2);
+  Message_ProgressScope aPS(theRange, nullptr, 2);
 
   occ::handle<NCollection_BaseAllocator> anAlloc = new NCollection_IncAllocator;
 
@@ -374,7 +374,7 @@ public:
   // New perform method, using own progress range
   void Perform()
   {
-    Message_ProgressScope aPS(myRange, NULL, 1);
+    Message_ProgressScope aPS(myRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -384,7 +384,7 @@ public:
 
 private:
   //! Disable the range enabled method
-  virtual void Perform(const Message_ProgressRange& /* theRange*/) {}
+  void Perform(const Message_ProgressRange& /* theRange*/) override {}
 
 private:
   TopoDS_Solid          mySolid; //!< Solid to split
@@ -413,7 +413,7 @@ void BOPAlgo_Builder::BuildSplitSolids(
   NCollection_Map<BOPTools_Set>                          aMST(100, aAlr0);
   BOPAlgo_VectorOfBuilderSolid                           aVBS;
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   // 0. Find same domain solids for non-interfered solids
   aNbS = myDS->NbSourceShapes();
   for (i = 0; i < aNbS; ++i)
@@ -623,7 +623,7 @@ void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
   NCollection_List<TopoDS_Shape>                                aLSC(aAllocator);
   NCollection_List<TopoDS_Shape>                                aLSI(aAllocator);
 
-  Message_ProgressScope aPS(theRange, NULL, 10);
+  Message_ProgressScope aPS(theRange, nullptr, 10);
   //
   // 1. Shapes to process
   //

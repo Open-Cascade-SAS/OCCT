@@ -31,7 +31,7 @@ TEST(Bnd_OBB_Test, OCC33009_ReBuildWithPoints)
   aPoints.ChangeValue(5) = gp_Pnt(2, 1, 3);
 
   // Should not throw exception when rebuilding with points
-  EXPECT_NO_THROW(aBndBox.ReBuild(aPoints, (const NCollection_Array1<double>*)0, true));
+  EXPECT_NO_THROW(aBndBox.ReBuild(aPoints, (const NCollection_Array1<double>*)nullptr, true));
 }
 
 TEST(Bnd_OBB_Test, OCC30704_AddBoundingBoxToVoidBox)

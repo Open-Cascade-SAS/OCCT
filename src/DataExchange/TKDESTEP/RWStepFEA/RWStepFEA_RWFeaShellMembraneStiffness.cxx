@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaShellMembraneStiffness::RWStepFEA_RWFeaShellMembraneStiffness() {}
+RWStepFEA_RWFeaShellMembraneStiffness::RWStepFEA_RWFeaShellMembraneStiffness() = default;
 
 //=================================================================================================
 

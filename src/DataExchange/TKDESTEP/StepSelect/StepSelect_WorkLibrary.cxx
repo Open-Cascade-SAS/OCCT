@@ -31,7 +31,7 @@
 #include <StepSelect_FileModifier.hxx>
 #include <StepSelect_WorkLibrary.hxx>
 
-#include <errno.h>
+#include <cerrno>
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 
 StepSelect_WorkLibrary::StepSelect_WorkLibrary(const bool copymode)
@@ -58,7 +58,7 @@ int StepSelect_WorkLibrary::ReadFile(const char*                            name
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
     return 1;
-  int aStatus = StepFile_Read(name, 0, occ::down_cast<StepData_StepModel>(model), stepro);
+  int aStatus = StepFile_Read(name, nullptr, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
 }
 
@@ -88,11 +88,11 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
 
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     ctx.CCheck(0)->AddFail("Step File could not be created");
     sout << " Step File could not be created : " << ctx.FileName() << std::endl;
-    return 0;
+    return false;
   }
   sout << " Step File Name : " << ctx.FileName();
   StepData_StepWriter SW(stepmodel);

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ToroidalSurface, StepGeom_ElementarySurface)
 
-StepGeom_ToroidalSurface::StepGeom_ToroidalSurface() {}
+StepGeom_ToroidalSurface::StepGeom_ToroidalSurface() = default;
 
 void StepGeom_ToroidalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                     const occ::handle<StepGeom_Axis2Placement3d>& aPosition,

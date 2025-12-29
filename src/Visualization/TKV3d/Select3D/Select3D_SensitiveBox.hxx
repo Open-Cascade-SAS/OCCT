@@ -44,13 +44,13 @@ public:
                                         const double                              theZMax);
 
   //! Returns the amount of sub-entities in sensitive
-  Standard_EXPORT virtual int NbSubElements() const override;
+  Standard_EXPORT int NbSubElements() const override;
 
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Checks whether the box overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                               SelectBasics_PickResult&             thePickResult) override;
 
   Bnd_Box Box() const
   {
@@ -67,18 +67,17 @@ public:
 
   //! Returns center of the box. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! Returns coordinates of the box. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   Select3D_BndBox3d myBox;      //!< 3d coordinates of box corners

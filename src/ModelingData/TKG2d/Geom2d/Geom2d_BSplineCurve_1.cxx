@@ -735,7 +735,7 @@ void Geom2d_BSplineCurve::Resolution(const double ToleranceUV, double& UToleranc
                            1.,
                            maxderivinv);
     }
-    maxderivinvok = 1;
+    maxderivinvok = true;
   }
   UTolerance = ToleranceUV * maxderivinv;
 }

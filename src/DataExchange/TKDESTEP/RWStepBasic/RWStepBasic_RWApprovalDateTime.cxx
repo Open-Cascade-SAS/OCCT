@@ -19,7 +19,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApprovalDateTime::RWStepBasic_RWApprovalDateTime() {}
+RWStepBasic_RWApprovalDateTime::RWStepBasic_RWApprovalDateTime() = default;
 
 void RWStepBasic_RWApprovalDateTime::ReadStep(
   const occ::handle<StepData_StepReaderData>&    data,

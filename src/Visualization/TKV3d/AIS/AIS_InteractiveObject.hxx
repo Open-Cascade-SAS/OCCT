@@ -71,7 +71,7 @@ public:
   Standard_EXPORT void Redisplay(const bool AllModes = false);
 
   //! Indicates whether the Interactive Object has a pointer to an interactive context.
-  bool HasInteractiveContext() const { return myCTXPtr != NULL; }
+  bool HasInteractiveContext() const { return myCTXPtr != nullptr; }
 
   //! Returns the context pointer to the interactive context.
   AIS_InteractiveContext* InteractiveContext() const { return myCTXPtr; }
@@ -139,8 +139,7 @@ public:
   Standard_EXPORT void SetAspect(const occ::handle<Prs3d_BasicAspect>& anAspect);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! The TypeOfPresention3d means that the interactive object

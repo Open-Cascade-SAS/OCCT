@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepDimTol_DatumOrCommonDatum::StepDimTol_DatumOrCommonDatum() {}
+StepDimTol_DatumOrCommonDatum::StepDimTol_DatumOrCommonDatum() = default;
 
 //=================================================================================================
 

@@ -73,26 +73,26 @@ public:
   //! Returns true if the display mode selected, aMode, is valid.
   Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
-  virtual int Signature() const override { return 4; }
+  int Signature() const override { return 4; }
 
   //! Returns datum as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Allows you to provide settings for the color aColor.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   void SetXLabel(const TCollection_AsciiString& theLabel) { myXLabel = theLabel; }
 
   void SetYLabel(const TCollection_AsciiString& theLabel) { myYLabel = theLabel; }
 
 protected:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
 private:
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
 private:
   occ::handle<Geom_Plane>            myPlane;

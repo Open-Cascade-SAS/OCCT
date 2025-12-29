@@ -90,7 +90,7 @@ public:
     Sentry(Standard_Mutex* theMutex)
         : myMutex(theMutex)
     {
-      if (myMutex != NULL)
+      if (myMutex != nullptr)
       {
         Lock();
       }
@@ -99,7 +99,7 @@ public:
     //! Destructor - unlocks the mutex if already locked.
     ~Sentry()
     {
-      if (myMutex != NULL)
+      if (myMutex != nullptr)
       {
         Unlock();
       }
@@ -121,9 +121,9 @@ public:
     }
 
     //! This method should not be called (prohibited).
-    Sentry(const Sentry&);
+    Sentry(const Sentry&) = delete;
     //! This method should not be called (prohibited).
-    Sentry& operator=(const Sentry&);
+    Sentry& operator=(const Sentry&) = delete;
 
   private:
     Standard_Mutex* myMutex;
@@ -136,7 +136,7 @@ public:
   Standard_EXPORT Standard_Mutex();
 
   //! Destructor: destroys the mutex object
-  Standard_EXPORT ~Standard_Mutex();
+  Standard_EXPORT ~Standard_Mutex() override;
 
   //! Method to lock the mutex; waits until the mutex is released
   //! by other threads, locks it and then returns
@@ -152,12 +152,12 @@ public:
 
 private:
   //! Callback method to unlock the mutex if OCC exception or signal is raised
-  Standard_EXPORT virtual void DestroyCallback() override;
+  Standard_EXPORT void DestroyCallback() override;
 
   //! This method should not be called (prohibited).
-  Standard_Mutex(const Standard_Mutex&);
+  Standard_Mutex(const Standard_Mutex&) = delete;
   //! This method should not be called (prohibited).
-  Standard_Mutex& operator=(const Standard_Mutex&);
+  Standard_Mutex& operator=(const Standard_Mutex&) = delete;
 
 private:
 #if (defined(_WIN32) || defined(__WIN32__))

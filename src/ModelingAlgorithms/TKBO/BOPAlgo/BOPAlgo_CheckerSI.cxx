@@ -46,15 +46,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceSelfIntersect()
-      : IntTools_FaceFace(),
-        BOPAlgo_ParallelAlgo(),
+      : BOPAlgo_ParallelAlgo(),
         myIF(-1),
         myTolF(1.e-7)
   {
   }
 
   //
-  virtual ~BOPAlgo_FaceSelfIntersect() {}
+  ~BOPAlgo_FaceSelfIntersect() override = default;
 
   //
   void SetIndex(const int nF) { myIF = nF; }
@@ -75,9 +74,9 @@ public:
   double TolF() const { return myTolF; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -101,7 +100,7 @@ typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIn
 //=================================================================================================
 
 BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
-    : BOPAlgo_PaveFiller()
+
 {
   myLevelOfCheck   = BOPDS_DS::NbInterfTypes() - 1;
   myNonDestructive = true;
@@ -110,7 +109,7 @@ BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 
 //=================================================================================================
 
-BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI() {}
+BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI() = default;
 
 //=================================================================================================
 
@@ -172,7 +171,7 @@ void BOPAlgo_CheckerSI::Perform(const Message_ProgressRange& theRange)
     //
     CheckFaceSelfIntersection(aPS.Next());
 
-    Message_ProgressScope aPSZZ(aPS.Next(), NULL, 4);
+    Message_ProgressScope aPSZZ(aPS.Next(), nullptr, 4);
     // Perform intersection with solids
     if (!HasErrors())
       PerformVZ(aPSZZ.Next());
@@ -415,7 +414,7 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
 
   int aNbS = myDS->NbSourceShapes();
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   //
   for (int i = 0; i < aNbS; i++)

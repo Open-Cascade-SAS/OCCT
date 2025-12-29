@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaLinearElasticity,
 
 //=================================================================================================
 
-StepFEA_FeaLinearElasticity::StepFEA_FeaLinearElasticity() {}
+StepFEA_FeaLinearElasticity::StepFEA_FeaLinearElasticity() = default;
 
 //=================================================================================================
 

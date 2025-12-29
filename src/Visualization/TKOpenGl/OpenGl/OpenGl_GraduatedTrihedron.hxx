@@ -37,14 +37,13 @@ public:
   Standard_EXPORT OpenGl_GraduatedTrihedron();
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_GraduatedTrihedron();
+  Standard_EXPORT ~OpenGl_GraduatedTrihedron() override;
 
   //! Draw the element.
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Setup configuration.
   Standard_EXPORT void SetValues(const Graphic3d_GraduatedTrihedron& theData);
@@ -56,8 +55,7 @@ public:
                                  const NCollection_Vec3<float>& theMax);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   //! Axis of trihedron. It incapsulates geometry and style.

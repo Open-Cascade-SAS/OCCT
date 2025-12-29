@@ -36,7 +36,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 
-IGESDefs_ToolGenericData::IGESDefs_ToolGenericData() {}
+IGESDefs_ToolGenericData::IGESDefs_ToolGenericData() = default;
 
 void IGESDefs_ToolGenericData::ReadOwnParams(const occ::handle<IGESDefs_GenericData>&    ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,

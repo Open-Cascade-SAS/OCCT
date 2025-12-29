@@ -25,7 +25,7 @@ class IMeshData_Shape : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Shape() {}
+  ~IMeshData_Shape() override = default;
 
   //! Assigns shape to discrete shape.
   void SetShape(const TopoDS_Shape& theShape) { myShape = theShape; }

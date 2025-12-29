@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Centroid, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFDoc_Centroid::XCAFDoc_Centroid() {}
+XCAFDoc_Centroid::XCAFDoc_Centroid() = default;
 
 //=================================================================================================
 

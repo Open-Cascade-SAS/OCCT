@@ -26,7 +26,7 @@ class IMeshTools_CurveTessellator : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_CurveTessellator() {}
+  ~IMeshTools_CurveTessellator() override = default;
 
   //! Returns number of tessellation points.
   Standard_EXPORT virtual int PointsNb() const = 0;

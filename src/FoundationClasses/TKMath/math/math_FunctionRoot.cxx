@@ -33,11 +33,11 @@ private:
 public:
   math_MyFunctionSetWithDerivatives(math_FunctionWithDerivative& F);
 
-  int  NbVariables() const;
-  int  NbEquations() const;
-  bool Value(const math_Vector& X, math_Vector& F);
-  bool Derivatives(const math_Vector& X, math_Matrix& D);
-  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  int  NbVariables() const override;
+  int  NbEquations() const override;
+  bool Value(const math_Vector& X, math_Vector& F) override;
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 };
 
 math_MyFunctionSetWithDerivatives::math_MyFunctionSetWithDerivatives(math_FunctionWithDerivative& F)

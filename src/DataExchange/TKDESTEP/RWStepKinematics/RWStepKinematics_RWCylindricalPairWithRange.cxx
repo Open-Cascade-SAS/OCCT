@@ -28,7 +28,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWCylindricalPairWithRange::RWStepKinematics_RWCylindricalPairWithRange() {}
+RWStepKinematics_RWCylindricalPairWithRange::RWStepKinematics_RWCylindricalPairWithRange() =
+  default;
 
 //=================================================================================================
 

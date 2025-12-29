@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateTimeRole, Standard_Transient)
 
-StepBasic_DateTimeRole::StepBasic_DateTimeRole() {}
+StepBasic_DateTimeRole::StepBasic_DateTimeRole() = default;
 
 void StepBasic_DateTimeRole::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {

@@ -118,7 +118,7 @@ const uint8_t* Graphic3d_HatchStyle::Pattern() const
   return !myPattern.IsNull()
            ? myPattern->Data()
            : (myHatchType < Aspect_HS_NB ? (const uint8_t*)myPredefinedPatterns[myHatchType]
-                                         : NULL);
+                                         : nullptr);
 }
 
 //=================================================================================================

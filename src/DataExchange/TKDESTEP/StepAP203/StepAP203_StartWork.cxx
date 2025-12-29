@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_StartWork, StepBasic_ActionAssignment)
 
 //=================================================================================================
 
-StepAP203_StartWork::StepAP203_StartWork() {}
+StepAP203_StartWork::StepAP203_StartWork() = default;
 
 //=================================================================================================
 

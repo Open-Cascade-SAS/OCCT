@@ -37,18 +37,17 @@ public:
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
   //! Returns True.
-  Standard_EXPORT virtual bool IsCurve3D() const override;
+  Standard_EXPORT bool IsCurve3D() const override;
 
-  Standard_EXPORT virtual const occ::handle<Geom_Curve>& Curve3D() const override;
+  Standard_EXPORT const occ::handle<Geom_Curve>& Curve3D() const override;
 
-  Standard_EXPORT virtual void Curve3D(const occ::handle<Geom_Curve>& C) override;
+  Standard_EXPORT void Curve3D(const occ::handle<Geom_Curve>& C) override;
 
   //! Return a copy of this representation.
   Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_Curve3D, BRep_GCurve)
 

@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_MaterialDesignation.hxx>
 
-RWStepRepr_RWMaterialDesignation::RWStepRepr_RWMaterialDesignation() {}
+RWStepRepr_RWMaterialDesignation::RWStepRepr_RWMaterialDesignation() = default;
 
 void RWStepRepr_RWMaterialDesignation::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

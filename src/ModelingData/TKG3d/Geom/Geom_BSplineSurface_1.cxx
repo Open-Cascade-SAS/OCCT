@@ -941,7 +941,7 @@ void Geom_BSplineSurface::SetUPeriodic()
 
   uperiodic = true;
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateUKnots();
 }
 
@@ -998,7 +998,7 @@ void Geom_BSplineSurface::SetVPeriodic()
 
   vperiodic = true;
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateVKnots();
 }
 
@@ -1263,7 +1263,7 @@ void Geom_BSplineSurface::SetUNotPeriodic()
     uknots    = nknots;
     uperiodic = false;
 
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateUKnots();
   }
 }
@@ -1321,7 +1321,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
     vknots    = nknots;
     vperiodic = false;
 
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateVKnots();
   }
 }
@@ -1713,7 +1713,7 @@ void Geom_BSplineSurface::MovePoint(const double  U,
   {
     poles->ChangeArray2() = npoles;
   }
-  maxderivinvok = 0;
+  maxderivinvok = false;
 }
 
 //=================================================================================================
@@ -2058,7 +2058,7 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
   uknots  = nknots;
   umults  = nmults;
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateUKnots();
   return true;
 }
@@ -2147,7 +2147,7 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
   vknots        = nknots;
   vmults        = nmults;
   weights       = nweights;
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateVKnots();
   return true;
 }
@@ -2175,7 +2175,7 @@ void Geom_BSplineSurface::Resolution(const double Tolerance3D,
                          1.,
                          umaxderivinv,
                          vmaxderivinv);
-    maxderivinvok = 1;
+    maxderivinvok = true;
   }
   UTolerance = Tolerance3D * umaxderivinv;
   VTolerance = Tolerance3D * vmaxderivinv;

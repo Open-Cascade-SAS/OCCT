@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReadWriter_1, PCDM_ReadWriter)
 
 //=================================================================================================
 
-PCDM_ReadWriter_1::PCDM_ReadWriter_1() {}
+PCDM_ReadWriter_1::PCDM_ReadWriter_1() = default;
 
 static int RemoveExtraSeparator(TCollection_AsciiString& aString)
 {

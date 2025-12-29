@@ -51,11 +51,11 @@ public:
 
   //! Restores the contents from <anAttribute> into this
   //! one. It is used when aborting a transaction.
-  Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& anAttribute) override;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -64,7 +64,7 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(
+  Standard_EXPORT void Paste(
     const occ::handle<TDF_Attribute>&       intoAttribute,
     const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
 

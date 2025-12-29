@@ -40,7 +40,7 @@ public:
                                  const int&                        theDegreeV,
                                  const bool&                       thePeriodicV,
                                  const NCollection_Array1<double>& theFlatKnotsV,
-                                 const NCollection_Array2<double>* theWeights = NULL);
+                                 const NCollection_Array2<double>* theWeights = nullptr);
 
   //! Verifies validity of the cache using parameters of the point
   //! \param theParameterU  first parameter of the point placed in the span
@@ -63,7 +63,7 @@ public:
                                   const NCollection_Array1<double>& theFlatKnotsU,
                                   const NCollection_Array1<double>& theFlatKnotsV,
                                   const NCollection_Array2<gp_Pnt>& thePoles,
-                                  const NCollection_Array2<double>* theWeights = NULL);
+                                  const NCollection_Array2<double>* theWeights = nullptr);
 
   //! Calculates the point on the surface for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value

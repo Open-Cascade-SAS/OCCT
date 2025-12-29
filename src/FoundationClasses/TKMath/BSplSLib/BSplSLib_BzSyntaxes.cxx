@@ -54,8 +54,8 @@ void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                          0.,
                          1.,
                          1.,
-                         0,
-                         0,
+                         false,
+                         false,
                          uclas - 1,
                          vclas - 1,
                          0,
@@ -77,8 +77,8 @@ void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                          0.,
                          1.,
                          1.,
-                         0,
-                         0,
+                         false,
+                         false,
                          uclas - 1,
                          vclas - 1,
                          0,
@@ -89,7 +89,7 @@ void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                          Weights,
                          CPoles,
                          &CWeights);
-    if (Weights == NULL)
+    if (Weights == nullptr)
     {
 
       for (ii = 1; ii <= uclas; ii++)

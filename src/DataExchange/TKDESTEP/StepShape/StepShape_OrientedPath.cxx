@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedPath, StepShape_Path)
 
-StepShape_OrientedPath::StepShape_OrientedPath() {}
+StepShape_OrientedPath::StepShape_OrientedPath() = default;
 
 void StepShape_OrientedPath::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_EdgeLoop>&       aPathElement,

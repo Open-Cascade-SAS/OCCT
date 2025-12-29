@@ -3412,7 +3412,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_(integer*    ndimen,
   /* Local variables */
   integer     ilong;
   intptr_t    iofwr;
-  doublereal* wrkar = 0;
+  doublereal* wrkar = nullptr;
   doublereal* wrkar_off;
   integer     iszwr;
   integer     ibb, ier = 0;
@@ -3766,7 +3766,7 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(integer*    numdec,
   /* Local variables */
   logical     ldbg;
   intptr_t    iofwr;
-  doublereal* wrkar = 0;
+  doublereal* wrkar = nullptr;
   doublereal* wrkar_off;
   integer     iszwr;
   integer     ier;
@@ -6674,7 +6674,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
   integer     ideb;
   doublereal  tmil;
   integer     ideb1, ibid1, ibid2, ncfja, ndgre, ilong, ndwrk;
-  doublereal* wrkar = 0;
+  doublereal* wrkar = nullptr;
   doublereal* wrkar_off;
   integer     nupil;
   intptr_t    iofwr;

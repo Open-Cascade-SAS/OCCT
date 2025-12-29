@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_NodeSet, StepGeom_GeometricRepresentationItem
 
 //=================================================================================================
 
-StepFEA_NodeSet::StepFEA_NodeSet() {}
+StepFEA_NodeSet::StepFEA_NodeSet() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWContinuosShapeAspect::RWStepRepr_RWContinuosShapeAspect() {}
+RWStepRepr_RWContinuosShapeAspect::RWStepRepr_RWContinuosShapeAspect() = default;
 
 //=================================================================================================
 

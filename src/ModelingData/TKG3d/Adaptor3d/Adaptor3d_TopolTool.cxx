@@ -967,7 +967,7 @@ bool Adaptor3d_TopolTool::DomainIsInfinite()
 
 void* Adaptor3d_TopolTool::Edge() const
 {
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

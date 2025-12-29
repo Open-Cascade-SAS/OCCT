@@ -26,9 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedExternalIdentificationAssignment,
 //=================================================================================================
 
 StepAP214_AppliedExternalIdentificationAssignment::
-  StepAP214_AppliedExternalIdentificationAssignment()
-{
-}
+  StepAP214_AppliedExternalIdentificationAssignment() = default;
 
 //=================================================================================================
 

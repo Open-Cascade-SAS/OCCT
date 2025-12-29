@@ -19,7 +19,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationMap.hxx>
 
-RWStepRepr_RWMappedItem::RWStepRepr_RWMappedItem() {}
+RWStepRepr_RWMappedItem::RWStepRepr_RWMappedItem() = default;
 
 void RWStepRepr_RWMappedItem::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                        const int                                   num,

@@ -170,7 +170,7 @@ occ::handle<StepBasic_PersonAndOrganization> STEPConstruct_AP203Context::
     if (!user.IsEmpty())
     {
       struct passwd* aPwd = getpwnam(user.ToCString());
-      if (aPwd != NULL)
+      if (aPwd != nullptr)
       {
         user = aPwd->pw_gecos;
       }
@@ -529,7 +529,7 @@ void STEPConstruct_AP203Context::InitPart(const STEPConstruct_Part& SDRTool)
   {
     occ::handle<StepBasic_ProductCategory> PC     = new StepBasic_ProductCategory;
     occ::handle<TCollection_HAsciiString>  PCName = new TCollection_HAsciiString("part");
-    PC->Init(PCName, false, 0);
+    PC->Init(PCName, false, nullptr);
 
     myProductCategoryRelationship                  = new StepBasic_ProductCategoryRelationship;
     occ::handle<TCollection_HAsciiString> PCRName  = new TCollection_HAsciiString("");

@@ -54,7 +54,7 @@
 // ied_modif_for_compil_Nov-19-1998
 //=================================================================================================
 
-ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds() {}
+ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds() = default;
 
 //=================================================================================================
 
@@ -374,7 +374,7 @@ void ShapeAnalysis_FreeBounds::ConnectWiresToWires(
       }
 
       if (lwire == -1)
-        done = 1;
+        done = true;
     }
   }
 

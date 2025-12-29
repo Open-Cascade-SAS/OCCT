@@ -53,7 +53,7 @@ void NCollection_BaseSequence::PAppend(NCollection_SeqNode* theItem)
   {
     myLastItem->SetNext(theItem);
     theItem->SetPrevious(myLastItem);
-    theItem->SetNext(NULL);
+    theItem->SetNext(nullptr);
     myLastItem = theItem;
     ++mySize;
   }
@@ -105,7 +105,7 @@ void NCollection_BaseSequence::PPrepend(NCollection_SeqNode* theItem)
   {
     myFirstItem->SetPrevious(theItem);
     theItem->SetNext(myFirstItem);
-    theItem->SetPrevious(NULL);
+    theItem->SetPrevious(nullptr);
     theItem->SetNext(myFirstItem);
     myFirstItem = theItem;
     ++mySize;
@@ -170,13 +170,13 @@ void NCollection_BaseSequence::PInsertAfter(NCollection_BaseSequence::Iterator& 
                                             NCollection_SeqNode*                theItem)
 {
   NCollection_SeqNode* aPos = thePosition.myCurrent;
-  if (aPos == NULL)
+  if (aPos == nullptr)
     PPrepend(theItem);
   else
   {
     theItem->SetNext(aPos->Next());
     theItem->SetPrevious(aPos);
-    if (aPos->Next() == NULL)
+    if (aPos->Next() == nullptr)
       myLastItem = theItem;
     else
       aPos->Next()->SetPrevious(theItem);
@@ -313,7 +313,7 @@ void NCollection_BaseSequence::PSplit(const int theIndex, NCollection_BaseSequen
   myLastItem = p->Previous();
   if (myLastItem)
   {
-    myLastItem->SetNext(NULL);
+    myLastItem->SetNext(nullptr);
     mySize = theIndex - 1;
     if (myCurrentIndex >= theIndex)
     {
@@ -323,12 +323,12 @@ void NCollection_BaseSequence::PSplit(const int theIndex, NCollection_BaseSequen
   }
   else
   {
-    myFirstItem = myCurrentItem = NULL;
+    myFirstItem = myCurrentItem = nullptr;
     mySize = myCurrentIndex = 0;
   }
 
   Sub.myFirstItem = Sub.myCurrentItem = p;
-  p->SetPrevious(NULL);
+  p->SetPrevious(nullptr);
   Sub.myCurrentIndex = 1;
 }
 
@@ -338,7 +338,7 @@ void NCollection_BaseSequence::RemoveSeq(NCollection_BaseSequence::Iterator& the
                                          NCollection_DelSeqNode              fDel)
 {
   NCollection_SeqNode* aPos = thePosition.myCurrent;
-  if (aPos == NULL)
+  if (aPos == nullptr)
     return;
   thePosition.myCurrent = aPos->Next();
 

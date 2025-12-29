@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_PolyExpression, Expr_GeneralExpression)
 
-Expr_PolyExpression::Expr_PolyExpression() {}
+Expr_PolyExpression::Expr_PolyExpression() = default;
 
 int Expr_PolyExpression::NbOperands() const
 {

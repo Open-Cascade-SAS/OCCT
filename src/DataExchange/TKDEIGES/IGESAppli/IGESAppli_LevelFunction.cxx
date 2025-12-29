@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
-IGESAppli_LevelFunction::IGESAppli_LevelFunction() {}
+IGESAppli_LevelFunction::IGESAppli_LevelFunction() = default;
 
 void IGESAppli_LevelFunction::Init(const int                                    nbPropVal,
                                    const int                                    aCode,

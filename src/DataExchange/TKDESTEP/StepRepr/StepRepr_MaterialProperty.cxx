@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_MaterialProperty, StepRepr_PropertyDefinitio
 
 //=================================================================================================
 
-StepRepr_MaterialProperty::StepRepr_MaterialProperty() {}
+StepRepr_MaterialProperty::StepRepr_MaterialProperty() = default;

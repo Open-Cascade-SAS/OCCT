@@ -24,9 +24,7 @@
 #include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::
-  RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment()
-{
-}
+  RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment() = default;
 
 void RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                             data,

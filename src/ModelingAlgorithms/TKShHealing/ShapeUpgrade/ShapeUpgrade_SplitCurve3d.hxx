@@ -46,7 +46,7 @@ public:
   //! segments of the curve bounded by the SplitValues. If
   //! Segment is False, the result is composed with trimmed
   //! Curves all based on the same complete curve.
-  Standard_EXPORT virtual void Build(const bool Segment) override;
+  Standard_EXPORT void Build(const bool Segment) override;
 
   Standard_EXPORT const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& GetCurves()
     const;

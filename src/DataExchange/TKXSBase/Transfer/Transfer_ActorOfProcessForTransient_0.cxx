@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient() {}
+Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient() = default;
 
 //=================================================================================================
 

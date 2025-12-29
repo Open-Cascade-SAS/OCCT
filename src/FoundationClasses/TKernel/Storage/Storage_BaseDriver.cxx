@@ -24,7 +24,7 @@ Storage_BaseDriver::Storage_BaseDriver()
 {
 }
 
-Storage_BaseDriver::~Storage_BaseDriver() {}
+Storage_BaseDriver::~Storage_BaseDriver() = default;
 
 TCollection_AsciiString Storage_BaseDriver::ReadMagicNumber(Standard_IStream& theIStream)
 {

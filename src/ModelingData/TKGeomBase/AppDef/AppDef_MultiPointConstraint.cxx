@@ -23,7 +23,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint() {}
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint() = default;
 
 AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const int NbPoles, const int NbPoles2d)
     : AppParCurves_MultiPoint(NbPoles, NbPoles2d)

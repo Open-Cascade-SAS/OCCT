@@ -29,10 +29,10 @@
   #include <OSD_WhoAmI.hxx>
   #include <Standard_NullObject.hxx>
 
-  #include <errno.h>
+  #include <cerrno>
   #include <fcntl.h>
-  #include <stdio.h>
-  #include <stdlib.h>
+  #include <cstdio>
+  #include <cstdlib>
   #include <sys/stat.h>
   #include <unistd.h>
 // For "system"
@@ -40,7 +40,7 @@ const OSD_WhoAmI Iam = OSD_WFileNode;
 
 // Create a file/directory object
 
-OSD_FileNode::OSD_FileNode() {}
+OSD_FileNode::OSD_FileNode() = default;
 
 // Create and initialize a file/directory object
 

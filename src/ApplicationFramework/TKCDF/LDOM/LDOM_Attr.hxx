@@ -28,14 +28,13 @@ class LDOM_Attr : public LDOM_Node
 public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_Attr() {}
+  LDOM_Attr() = default;
 
   //    Empty constructor
 
   LDOM_Attr(const LDOM_Attr& anOther)
-      : LDOM_Node(anOther)
-  {
-  }
+
+    = default;
 
   //    Copy constructor
 

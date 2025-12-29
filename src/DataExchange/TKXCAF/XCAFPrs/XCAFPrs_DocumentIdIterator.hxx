@@ -40,7 +40,7 @@ public:
 
 private:
   // Disable assignment operator.
-  XCAFPrs_DocumentIdIterator& operator=(const XCAFPrs_DocumentIdIterator&);
+  XCAFPrs_DocumentIdIterator& operator=(const XCAFPrs_DocumentIdIterator&) = delete;
 
 private:
   const TCollection_AsciiString& myPath;     //!< full path

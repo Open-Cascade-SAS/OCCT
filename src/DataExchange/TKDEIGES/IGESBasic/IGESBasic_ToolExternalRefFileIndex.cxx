@@ -36,7 +36,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESBasic_ToolExternalRefFileIndex::IGESBasic_ToolExternalRefFileIndex() {}
+IGESBasic_ToolExternalRefFileIndex::IGESBasic_ToolExternalRefFileIndex() = default;
 
 void IGESBasic_ToolExternalRefFileIndex::ReadOwnParams(
   const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,

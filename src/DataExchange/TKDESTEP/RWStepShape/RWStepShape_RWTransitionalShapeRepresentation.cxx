@@ -20,7 +20,8 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_TransitionalShapeRepresentation.hxx>
 
-RWStepShape_RWTransitionalShapeRepresentation::RWStepShape_RWTransitionalShapeRepresentation() {}
+RWStepShape_RWTransitionalShapeRepresentation::RWStepShape_RWTransitionalShapeRepresentation() =
+  default;
 
 void RWStepShape_RWTransitionalShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,

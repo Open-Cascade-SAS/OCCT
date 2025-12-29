@@ -133,7 +133,7 @@ bool RWStl_Reader::Read(const char* theFile, const Message_ProgressRange& thePro
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     Message::SendFail(TCollection_AsciiString("Error: file '") + theFile + "' is not found");
     return false;
@@ -156,7 +156,7 @@ bool RWStl_Reader::Read(const char* theFile, const Message_ProgressRange& thePro
   // running translation in cycle.
   // For this reason use infinite (logarithmic) progress scale,
   // but in special mode so that the first cycle will take ~ 70% of it
-  Message_ProgressScope aPS(theProgress, NULL, 1, true);
+  Message_ProgressScope aPS(theProgress, nullptr, 1, true);
   while (aStream->good())
   {
     if (isAscii)
@@ -296,7 +296,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
   {
     aLine = theBuffer.ReadLine(theStream, aLineLen);
   }
-  if (aLine == NULL)
+  if (aLine == nullptr)
   {
     Message::SendFail("Error: premature end of file");
     return false;
@@ -326,7 +326,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
     }
 
     aLine = theBuffer.ReadLine(theStream, aLineLen); // "facet normal nx ny nz"
-    if (aLine == NULL)
+    if (aLine == nullptr)
     {
       Message::SendFail("Error: premature end of file");
       return false;
@@ -344,7 +344,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
     }
 
     aLine = theBuffer.ReadLine(theStream, aLineLen); // "outer loop"
-    if (aLine == NULL || !str_starts_with(aLine, "outer", 5))
+    if (aLine == nullptr || !str_starts_with(aLine, "outer", 5))
     {
       Message::SendFail(TCollection_AsciiString("Error: unexpected format of facet at line ")
                         + (aNbLine + 1));
@@ -356,7 +356,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
     for (int i = 0; i < 3; i++)
     {
       aLine = theBuffer.ReadLine(theStream, aLineLen);
-      if (aLine == NULL)
+      if (aLine == nullptr)
       {
         isEOF = true;
         break;

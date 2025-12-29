@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_AccAllocator, NCollection_BaseAllocator)
 
 NCollection_AccAllocator::NCollection_AccAllocator(const size_t theBlockSize)
     : myBlockSize(theBlockSize),
-      mypLastBlock(0L)
+      mypLastBlock(nullptr)
 {
   allocateNewBlock(myBlockSize);
 }
@@ -58,13 +58,13 @@ void* NCollection_AccAllocator::Allocate(const size_t theSize)
   {
     // Search for a block in the list with enough free space
     int aBlocksRest = MaxLookupBlocks;
-    for (aBlock = mypLastBlock->prevBlock; aBlock != 0L && --aBlocksRest;
+    for (aBlock = mypLastBlock->prevBlock; aBlock != nullptr && --aBlocksRest;
          aBlock = aBlock->prevBlock)
     {
       if (aSize <= aBlock->FreeSize())
         break;
     }
-    if (aBlock == 0L || !aBlocksRest)
+    if (aBlock == nullptr || !aBlocksRest)
       // There is no available block with enough free space, create a new one
       aBlock = allocateNewBlock(myBlockSize);
   }
@@ -88,7 +88,7 @@ void NCollection_AccAllocator::Free(void* theAddress)
   Block* aBlock = findBlock(theAddress, aKey);
 
 #if !defined No_Exception && !defined No_Standard_ProgramError
-  if (aBlock == 0L || aBlock->IsEmpty())
+  if (aBlock == nullptr || aBlock->IsEmpty())
   {
     throw Standard_ProgramError("NCollection_AccAllocator::Free: \
                                 Trying to free an invalid address");
@@ -105,7 +105,7 @@ void NCollection_AccAllocator::Free(void* theAddress)
     {
       Standard::Free(anAddress);
       Block** appBlock;
-      for (appBlock = &mypLastBlock; *appBlock != 0L; appBlock = &(*appBlock)->prevBlock)
+      for (appBlock = &mypLastBlock; *appBlock != nullptr; appBlock = &(*appBlock)->prevBlock)
       {
         if (*appBlock == aBlock)
         {
@@ -175,7 +175,7 @@ NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(void* const
     return aBlock;
   }
 
-  return 0L;
+  return nullptr;
 }
 
 //=======================================================================

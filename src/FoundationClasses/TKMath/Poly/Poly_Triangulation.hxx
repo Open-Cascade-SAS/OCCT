@@ -94,7 +94,7 @@ public:
                                      const NCollection_Array1<Poly_Triangle>& Triangles);
 
   //! Destructor
-  Standard_EXPORT virtual ~Poly_Triangulation();
+  Standard_EXPORT ~Poly_Triangulation() override;
 
   //! Creates full copy of current triangulation
   Standard_EXPORT virtual occ::handle<Poly_Triangulation> Copy() const;
@@ -222,7 +222,7 @@ public:
   Standard_EXPORT void SetCachedMinMax(const Bnd_Box& theBox);
 
   //! Returns TRUE if there is some cached min - max range of this triangulation.
-  Standard_EXPORT bool HasCachedMinMax() const { return myCachedMinMax != NULL; }
+  Standard_EXPORT bool HasCachedMinMax() const { return myCachedMinMax != nullptr; }
 
   //! Updates cached min - max range of this triangulation with bounding box of nodal data.
   void UpdateCachedMinMax()

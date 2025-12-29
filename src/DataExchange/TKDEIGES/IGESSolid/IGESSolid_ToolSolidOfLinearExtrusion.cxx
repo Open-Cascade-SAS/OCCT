@@ -33,7 +33,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSolidOfLinearExtrusion::IGESSolid_ToolSolidOfLinearExtrusion() {}
+IGESSolid_ToolSolidOfLinearExtrusion::IGESSolid_ToolSolidOfLinearExtrusion() = default;
 
 void IGESSolid_ToolSolidOfLinearExtrusion::ReadOwnParams(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,

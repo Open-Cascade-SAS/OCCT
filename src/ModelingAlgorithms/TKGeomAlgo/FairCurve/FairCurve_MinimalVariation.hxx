@@ -89,9 +89,9 @@ public:
   //! NbIterations and Tolerance. The tolerance setting
   //! allows you to control the precision of computation, and
   //! the maximum number of iterations allows you to set a limit on computation time.
-  Standard_EXPORT virtual bool Compute(FairCurve_AnalysisCode& ACode,
-                                       const int               NbIterations = 50,
-                                       const double            Tolerance    = 1.0e-3) override;
+  Standard_EXPORT bool Compute(FairCurve_AnalysisCode& ACode,
+                               const int               NbIterations = 50,
+                               const double            Tolerance    = 1.0e-3) override;
 
   //! Returns the first established curvature.
   double GetCurvature1() const;
@@ -105,7 +105,7 @@ public:
   //! Prints on the stream o information on the current state
   //! of the object.
   //! Is used to redefine the operator <<.
-  Standard_EXPORT virtual void Dump(Standard_OStream& o) const override;
+  Standard_EXPORT void Dump(Standard_OStream& o) const override;
 
 private:
   //! compute the curve with respect of the delta-constraints.

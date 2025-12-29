@@ -44,7 +44,7 @@ public:
                                                   const bool withlist = false);
 
   //! Resets already memorized information : also numeric data
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Adds an entity by considering its lrvrl number(s)
   //! A level is added both in numeric and alphanumeric form,
@@ -52,8 +52,8 @@ public:
   //! positive level) displays level number on 7 digits (C : %7d)
   //! Remark : an entity attached to a Level List is added for
   //! " LEVEL LIST", and for each of its constituent levels
-  Standard_EXPORT virtual void AddSign(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model) override;
+  Standard_EXPORT void AddSign(const occ::handle<Standard_Transient>&       ent,
+                               const occ::handle<Interface_InterfaceModel>& model) override;
 
   //! The internal action to record a new level number, positive,
   //! null (no level) or negative (level list)
@@ -74,13 +74,13 @@ public:
   //! Determines and returns the value of the signature for an
   //! entity as an HAsciiString. Redefined, gives the same result
   //! as AddSign, see this method ("LEVEL LIST" or "nnnnnnn")
-  Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> Sign(
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Sign(
     const occ::handle<Standard_Transient>&       ent,
     const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Prints the counts of items (not the list) then the Highest
   //! Level Number recorded
-  Standard_EXPORT virtual void PrintCount(Standard_OStream& S) const override;
+  Standard_EXPORT void PrintCount(Standard_OStream& S) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
 

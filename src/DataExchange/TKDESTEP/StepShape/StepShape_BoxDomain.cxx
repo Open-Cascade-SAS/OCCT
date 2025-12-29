@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxDomain, Standard_Transient)
 
-StepShape_BoxDomain::StepShape_BoxDomain() {}
+StepShape_BoxDomain::StepShape_BoxDomain() = default;
 
 void StepShape_BoxDomain::Init(const occ::handle<StepGeom_CartesianPoint>& aCorner,
                                const double                                aXlength,

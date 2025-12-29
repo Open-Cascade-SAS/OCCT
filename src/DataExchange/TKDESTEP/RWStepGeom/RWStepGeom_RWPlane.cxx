@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Plane.hxx>
 
-RWStepGeom_RWPlane::RWStepGeom_RWPlane() {}
+RWStepGeom_RWPlane::RWStepGeom_RWPlane() = default;
 
 void RWStepGeom_RWPlane::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                   const int                                   num,

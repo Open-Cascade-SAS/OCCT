@@ -37,7 +37,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 03/08/98
-IGESBasic_ToolGroupWithoutBackP::IGESBasic_ToolGroupWithoutBackP() {}
+IGESBasic_ToolGroupWithoutBackP::IGESBasic_ToolGroupWithoutBackP() = default;
 
 void IGESBasic_ToolGroupWithoutBackP::ReadOwnParams(
   const occ::handle<IGESBasic_GroupWithoutBackP>& ent,

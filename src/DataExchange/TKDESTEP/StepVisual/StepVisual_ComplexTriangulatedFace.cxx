@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ComplexTriangulatedFace, StepVisual_Tessel
 
 //=================================================================================================
 
-StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace() {}
+StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace() = default;
 
 //=================================================================================================
 

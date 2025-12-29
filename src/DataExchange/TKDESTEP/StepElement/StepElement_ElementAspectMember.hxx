@@ -31,16 +31,16 @@ public:
   Standard_EXPORT StepElement_ElementAspectMember();
 
   //! Returns True if has name
-  Standard_EXPORT virtual bool HasName() const override;
+  Standard_EXPORT bool HasName() const override;
 
   //! Returns set name
-  Standard_EXPORT virtual const char* Name() const override;
+  Standard_EXPORT const char* Name() const override;
 
   //! Set name
-  Standard_EXPORT virtual bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* name) override;
 
   //! Tells if the name of a SelectMember matches a given one;
-  Standard_EXPORT virtual bool Matches(const char* name) const override;
+  Standard_EXPORT bool Matches(const char* name) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepElement_ElementAspectMember, StepData_SelectNamed)
 

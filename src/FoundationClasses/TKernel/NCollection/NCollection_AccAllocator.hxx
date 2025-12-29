@@ -57,17 +57,17 @@ public:
   Standard_EXPORT NCollection_AccAllocator(const size_t theBlockSize = DefaultBlockSize);
 
   //! Destructor
-  Standard_EXPORT ~NCollection_AccAllocator();
+  Standard_EXPORT ~NCollection_AccAllocator() override;
 
   //! Allocate memory with given size
-  Standard_EXPORT virtual void* Allocate(const size_t theSize) override;
+  Standard_EXPORT void* Allocate(const size_t theSize) override;
 
   //! Allocate memory with given size
   void* AllocateOptimal(const size_t theSize) override { return Allocate(theSize); }
 
   //! Free a previously allocated memory;
   //! memory is returned to the OS when all allocations in some block are freed
-  Standard_EXPORT virtual void Free(void* theAddress) override;
+  Standard_EXPORT void Free(void* theAddress) override;
 
   // --------- PROTECTED TYPES ---------
 protected:
@@ -97,7 +97,7 @@ protected:
 
   public:
     constexpr AlignedPtr() noexcept
-        : myValue(0)
+        : myValue(nullptr)
     {
     }
 
@@ -148,7 +148,7 @@ protected:
     Block*     prevBlock;
     int        allocCount;
 
-    Block(void* const theAddress, const size_t theSize, Block* thePrevBlock = 0L) noexcept
+    Block(void* const theAddress, const size_t theSize, Block* thePrevBlock = nullptr) noexcept
         : address(theAddress),
           prevBlock(thePrevBlock),
           allocCount(0)

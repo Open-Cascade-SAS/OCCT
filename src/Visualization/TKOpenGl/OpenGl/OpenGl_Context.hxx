@@ -194,10 +194,10 @@ public:
 
 public:
   //! Empty constructor. You should call Init() to perform initialization with bound GL context.
-  Standard_EXPORT OpenGl_Context(const occ::handle<OpenGl_Caps>& theCaps = NULL);
+  Standard_EXPORT OpenGl_Context(const occ::handle<OpenGl_Caps>& theCaps = nullptr);
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_Context();
+  Standard_EXPORT ~OpenGl_Context() override;
 
   //! Release all resources, including shared ones
   Standard_EXPORT void forcedRelease();
@@ -318,7 +318,7 @@ public:
                        FuncType_t&  theFuncPtr)
   {
     theFuncPtr = (FuncType_t)findProc(theFuncName);
-    if (theFuncPtr == NULL)
+    if (theFuncPtr == nullptr)
     {
       theLastFailFuncName = theFuncName;
       return false;
@@ -332,7 +332,7 @@ public:
   bool FindProc(const char* theFuncName, FuncType_t& theFuncPtr)
   {
     theFuncPtr = (FuncType_t)findProc(theFuncName);
-    return (theFuncPtr != NULL);
+    return (theFuncPtr != nullptr);
   }
 
   //! Return active graphics library.
@@ -627,7 +627,7 @@ public:
   }
 
   //! Returns true if VBO is supported and permitted.
-  inline bool ToUseVbo() const { return core15fwd != NULL && !caps->vboDisable; }
+  inline bool ToUseVbo() const { return core15fwd != nullptr && !caps->vboDisable; }
 
   //! @return cached state of GL_NORMALIZE.
   bool IsGlNormalizeEnabled() const { return myIsGlNormalizeEnabled; }
@@ -1204,8 +1204,8 @@ private:                                                //! @name fields trackin
 
 private:
   //! Copying allowed only within Handles
-  OpenGl_Context(const OpenGl_Context&);
-  OpenGl_Context& operator=(const OpenGl_Context&);
+  OpenGl_Context(const OpenGl_Context&)            = delete;
+  OpenGl_Context& operator=(const OpenGl_Context&) = delete;
 };
 
 #endif // _OpenGl_Context_H__

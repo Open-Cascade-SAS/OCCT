@@ -35,7 +35,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent() {}
+IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent() = default;
 
 void IGESSolid_ToolSelectedComponent::ReadOwnParams(
   const occ::handle<IGESSolid_SelectedComponent>& ent,

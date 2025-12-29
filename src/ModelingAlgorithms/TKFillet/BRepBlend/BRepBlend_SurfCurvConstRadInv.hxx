@@ -46,43 +46,43 @@ public:
   Standard_EXPORT void Set(const double R, const int Choix);
 
   //! returns 3.
-  Standard_EXPORT int NbEquations() const;
+  Standard_EXPORT int NbEquations() const override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
   //! Set the restriction on which a solution has to be found.
-  Standard_EXPORT void Set(const occ::handle<Adaptor2d_Curve2d>& Rst);
+  Standard_EXPORT void Set(const occ::handle<Adaptor2d_Curve2d>& Rst) override;
 
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const;
+  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 3 variables.
   //! Returns in the vector SupBound the greatest values allowed
   //! for each of the 3 variables.
-  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const;
+  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const override;
 
   //! Returns true if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol);
+  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
 
 private:
   occ::handle<Adaptor3d_Surface> surf;

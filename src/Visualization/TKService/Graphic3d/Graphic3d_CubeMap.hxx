@@ -85,7 +85,7 @@ public:
   }
 
   //! Empty destructor.
-  Standard_EXPORT virtual ~Graphic3d_CubeMap();
+  Standard_EXPORT ~Graphic3d_CubeMap() override;
 
 protected:
   Graphic3d_CubeMapSide myCurrentSide; //!< Iterator state

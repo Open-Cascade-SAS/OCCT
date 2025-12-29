@@ -39,7 +39,7 @@ public:
   {
   }
 
-  ~BOPDS_Pair() {}
+  ~BOPDS_Pair() = default;
 
   //
   //! Sets the indices

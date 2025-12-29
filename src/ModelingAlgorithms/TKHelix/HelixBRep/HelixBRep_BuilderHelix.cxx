@@ -71,7 +71,7 @@ HelixBRep_BuilderHelix::HelixBRep_BuilderHelix()
 
 //=================================================================================================
 
-HelixBRep_BuilderHelix::~HelixBRep_BuilderHelix() {}
+HelixBRep_BuilderHelix::~HelixBRep_BuilderHelix() = default;
 
 //=================================================================================================
 

@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_BoxDriver, TFunction_Driver)
 
 //=================================================================================================
 
-DNaming_BoxDriver::DNaming_BoxDriver() {}
+DNaming_BoxDriver::DNaming_BoxDriver() = default;
 
 //=======================================================================
 // function : Validate

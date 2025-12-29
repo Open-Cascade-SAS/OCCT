@@ -214,7 +214,7 @@ bool Image_PixMap::InitTrash3D(Image_Format                    thePixelFormat,
               Image_PixMap::SizePixelBytes(thePixelFormat),
               theSizeXYZ,
               aSizeRowBytes,
-              NULL);
+              nullptr);
   return !myData.IsEmpty();
 }
 

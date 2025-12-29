@@ -54,7 +54,7 @@
 #include <TopoDS_Vertex.hxx>
 
 // #define DRAW
-#include <stdio.h>
+#include <cstdio>
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
   #include <DBRep.hxx>

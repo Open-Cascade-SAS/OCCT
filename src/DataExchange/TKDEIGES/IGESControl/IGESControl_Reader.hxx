@@ -87,7 +87,7 @@ public:
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
   //! <theReadOnlyVisible> is taken into account to define roots
-  Standard_EXPORT virtual int NbRootsForTransfer() override;
+  Standard_EXPORT int NbRootsForTransfer() override;
 
   //! Prints Statistics and check list for Transfer
   Standard_EXPORT void PrintTransferInfo(const IFSelect_PrintFail  failwarn,
@@ -96,12 +96,11 @@ public:
 protected:
   //! Returns default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
+  Standard_EXPORT DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const override;
 
 private:
   bool theReadOnlyVisible;

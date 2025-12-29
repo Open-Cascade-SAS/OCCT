@@ -206,4 +206,4 @@ void IntCurvesFace_ShapeIntersector::SortResult()
   } while (!isOK);
 }
 
-IntCurvesFace_ShapeIntersector::~IntCurvesFace_ShapeIntersector() {}
+IntCurvesFace_ShapeIntersector::~IntCurvesFace_ShapeIntersector() = default;

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_RepItemGroup, StepBasic_Group)
 
 //=================================================================================================
 
-StepAP214_RepItemGroup::StepAP214_RepItemGroup() {}
+StepAP214_RepItemGroup::StepAP214_RepItemGroup() = default;
 
 //=================================================================================================
 

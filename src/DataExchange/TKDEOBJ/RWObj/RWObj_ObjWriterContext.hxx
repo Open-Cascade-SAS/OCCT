@@ -37,7 +37,7 @@ public:
   Standard_EXPORT ~RWObj_ObjWriterContext();
 
   //! Return true if file has been opened.
-  bool IsOpened() const { return myFile != NULL; }
+  bool IsOpened() const { return myFile != nullptr; }
 
   //! Correctly close the file.
   Standard_EXPORT bool Close();

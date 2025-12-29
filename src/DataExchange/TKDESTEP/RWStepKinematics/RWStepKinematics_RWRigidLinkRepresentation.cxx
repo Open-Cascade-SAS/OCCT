@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRigidLinkRepresentation::RWStepKinematics_RWRigidLinkRepresentation() {}
+RWStepKinematics_RWRigidLinkRepresentation::RWStepKinematics_RWRigidLinkRepresentation() = default;
 
 //=================================================================================================
 

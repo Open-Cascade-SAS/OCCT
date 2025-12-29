@@ -498,7 +498,7 @@ public: //! @name Edge flags and fixed-function vertex processing (removed since
   glPolygonMode_t glPolygonMode;
 
 public: //! @name OpenGL ES 3.2
-  typedef void(APIENTRYP glBlendBarrier_t)(void);
+  typedef void(APIENTRYP glBlendBarrier_t)();
   glBlendBarrier_t glBlendBarrier;
 
   typedef void(APIENTRYP glPrimitiveBoundingBox_t)(GLfloat minX,

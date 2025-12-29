@@ -98,16 +98,16 @@ public:
   Standard_EXPORT void DisplayHiddenLines(Draw_Display& dis);
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
+  Standard_EXPORT void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& I) const override;
 
   //! Returns the subshape touched by the last pick.
   //! u,v are the parameters of the closest point.

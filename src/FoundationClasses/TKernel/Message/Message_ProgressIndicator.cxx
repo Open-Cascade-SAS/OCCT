@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_ProgressIndicator, Standard_Transient)
 
 Message_ProgressIndicator::Message_ProgressIndicator()
     : myPosition(0.),
-      myRootScope(NULL)
+      myRootScope(nullptr)
 {
   myRootScope = new Message_ProgressScope(this);
 }
@@ -29,7 +29,7 @@ Message_ProgressIndicator::Message_ProgressIndicator()
 Message_ProgressIndicator::~Message_ProgressIndicator()
 {
   // Avoid calling Increment() from myRootScope.Close()
-  myRootScope->myProgress = 0;
+  myRootScope->myProgress = nullptr;
   myRootScope->myIsActive = false;
   delete myRootScope;
 }

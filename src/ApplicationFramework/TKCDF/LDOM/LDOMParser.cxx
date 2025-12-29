@@ -160,7 +160,7 @@ bool LDOMParser::parse(const char* const aFileName)
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream(aFileName, std::ios::in);
 
-  if (aFileStream.get() != NULL && aFileStream->good())
+  if (aFileStream.get() != nullptr && aFileStream->good())
   {
     return parse(*aFileStream);
   }
@@ -295,7 +295,7 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
 {
   bool                     isError    = false;
   const LDOM_BasicElement* aParent    = &myReader->GetElement();
-  const LDOM_BasicNode*    aLastChild = NULL;
+  const LDOM_BasicNode*    aLastChild = nullptr;
   for (;;)
   {
     LDOM_Node::NodeType        aLocType;

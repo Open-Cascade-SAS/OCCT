@@ -43,7 +43,7 @@ public:
   Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Calculates points for correction/splitting of the curve
-  Standard_EXPORT virtual void Compute() override;
+  Standard_EXPORT void Compute() override;
 
   Standard_EXPORT const occ::handle<Geom_Curve>& GetCurve() const;
 

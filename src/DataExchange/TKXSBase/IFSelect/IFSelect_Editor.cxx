@@ -23,7 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <string.h>
+#include <cstring>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Editor, Standard_Transient)
 
 IFSelect_Editor::IFSelect_Editor(const int nbval)

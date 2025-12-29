@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_PolyLoop, StepShape_Loop)
 
-StepShape_PolyLoop::StepShape_PolyLoop() {}
+StepShape_PolyLoop::StepShape_PolyLoop() = default;
 
 void StepShape_PolyLoop::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

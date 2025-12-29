@@ -42,9 +42,9 @@ public:
 
   Standard_EXPORT void Last(const gp_Pnt2d& P);
 
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT void Dump(Standard_OStream& S) const override;
 
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Segment2D, Draw_Drawable2D)
 

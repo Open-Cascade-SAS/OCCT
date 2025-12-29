@@ -80,7 +80,7 @@ public:
   Standard_EXPORT AIS_Animation(const TCollection_AsciiString& theAnimationName);
 
   //! Destruct object, clear arguments
-  Standard_EXPORT virtual ~AIS_Animation();
+  Standard_EXPORT ~AIS_Animation() override;
 
   //! Animation name.
   const TCollection_AsciiString& Name() const { return myName; }

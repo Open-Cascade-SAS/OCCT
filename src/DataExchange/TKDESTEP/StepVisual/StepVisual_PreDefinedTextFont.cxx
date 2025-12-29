@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PreDefinedTextFont, StepVisual_PreDefinedItem)
 
-StepVisual_PreDefinedTextFont::StepVisual_PreDefinedTextFont() {}
+StepVisual_PreDefinedTextFont::StepVisual_PreDefinedTextFont() = default;

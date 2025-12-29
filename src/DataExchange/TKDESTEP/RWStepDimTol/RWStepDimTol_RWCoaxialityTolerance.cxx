@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWCoaxialityTolerance::RWStepDimTol_RWCoaxialityTolerance() {}
+RWStepDimTol_RWCoaxialityTolerance::RWStepDimTol_RWCoaxialityTolerance() = default;
 
 //=================================================================================================
 

@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf3dDimension, PrsDim_Relation)
 PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
                                                  const double                      aVal,
                                                  const TCollection_ExtendedString& aText)
-    : PrsDim_Relation()
+
 {
   myFShape            = aFShape;
   myVal               = aVal;
@@ -62,7 +62,7 @@ PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&            
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
                                                  const double                      anArrowSize)
-    : PrsDim_Relation()
+
 {
   myFShape    = aFShape;
   myVal       = aVal;

@@ -38,12 +38,12 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 30/07/98
 //=================================================================================================
 
-IGESGeom_ToolBoundary::IGESGeom_ToolBoundary() {}
+IGESGeom_ToolBoundary::IGESGeom_ToolBoundary() = default;
 
 //=================================================================================================
 

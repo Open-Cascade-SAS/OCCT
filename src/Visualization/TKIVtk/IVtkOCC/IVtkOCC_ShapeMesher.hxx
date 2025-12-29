@@ -43,7 +43,7 @@ public:
   Standard_EXPORT IVtkOCC_ShapeMesher();
 
   //! Destructor.
-  Standard_EXPORT virtual ~IVtkOCC_ShapeMesher();
+  Standard_EXPORT ~IVtkOCC_ShapeMesher() override;
 
   //! Returns absolute deflection used by this algorithm.
   //! This value is calculated on the basis of the shape's bounding box.
@@ -65,7 +65,7 @@ public:
 
 protected:
   //! Executes the mesh generation algorithms. To be defined in implementation class.
-  Standard_EXPORT virtual void internalBuild() override;
+  Standard_EXPORT void internalBuild() override;
 
 private:
   //! Extracts free vertices from the shape (i.e. those not belonging to any edge)

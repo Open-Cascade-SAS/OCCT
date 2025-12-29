@@ -637,7 +637,7 @@ occ::handle<IGESSolid_Shell> BRepToIGESBRep_Entity ::TransferShell(
   int nbf = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
     nbf++;
-  Message_ProgressScope aPS(theProgress, NULL, nbf);
+  Message_ProgressScope aPS(theProgress, nullptr, nbf);
   for (Ex.Init(start, TopAbs_FACE); Ex.More() && aPS.More(); Ex.Next(), aPS.Next())
   {
     TopoDS_Face F = TopoDS::Face(Ex.Current());
@@ -704,7 +704,7 @@ occ::handle<IGESSolid_ManifoldSolid> BRepToIGESBRep_Entity ::TransferSolid(
   int nbs = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
     nbs++;
-  Message_ProgressScope aPS(theProgress, NULL, nbs);
+  Message_ProgressScope aPS(theProgress, nullptr, nbs);
   for (Ex.Init(start, TopAbs_SHELL); Ex.More() && aPS.More(); Ex.Next())
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -792,7 +792,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompSolid(
   int nbs = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbs++;
-  Message_ProgressScope aPS(theProgress, NULL, nbs);
+  Message_ProgressScope aPS(theProgress, nullptr, nbs);
   for (Ex.Init(start, TopAbs_SOLID); Ex.More() && aPS.More(); Ex.Next())
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -869,7 +869,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompound(
     nbshapes++;
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next())
     nbshapes++;
-  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
 
   // take all Solids
   for (Ex.Init(start, TopAbs_SOLID); Ex.More() && aPS.More(); Ex.Next())

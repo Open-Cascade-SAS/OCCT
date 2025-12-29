@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_GenericData, IGESData_IGESEntity)
 
-IGESDefs_GenericData::IGESDefs_GenericData() {}
+IGESDefs_GenericData::IGESDefs_GenericData() = default;
 
 void IGESDefs_GenericData::Init(
   const int                                                                nbPropVal,

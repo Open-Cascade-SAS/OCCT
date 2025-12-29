@@ -19,7 +19,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWConversionBasedUnit::RWStepBasic_RWConversionBasedUnit() {}
+RWStepBasic_RWConversionBasedUnit::RWStepBasic_RWConversionBasedUnit() = default;
 
 void RWStepBasic_RWConversionBasedUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,

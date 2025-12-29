@@ -15,7 +15,7 @@
 
 #include <Standard_OutOfMemory.hxx>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #if (defined(_WIN32) || defined(__WIN32__))
   #include <windows.h>
@@ -478,7 +478,7 @@ void* Standard::AllocateAligned(const size_t theSize, const size_t theAlign)
   void* aPtr;
   if (posix_memalign(&aPtr, theAlign, theSize))
   {
-    return NULL;
+    return nullptr;
   }
   return aPtr;
   #endif

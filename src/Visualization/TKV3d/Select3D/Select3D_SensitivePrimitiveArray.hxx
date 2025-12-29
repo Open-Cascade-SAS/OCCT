@@ -232,55 +232,54 @@ public:
   int LastDetectedEdgeNode2() const { return myDetectedEdgeNode2; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public:
   //! Checks whether the sensitive entity is overlapped by current selecting volume.
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                               SelectBasics_PickResult&             thePickResult) override;
 
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns the length of array of triangles or edges
-  Standard_EXPORT virtual int Size() const override;
+  Standard_EXPORT int Size() const override;
 
   //! Returns the amount of nodes in triangulation
-  virtual int NbSubElements() const override
+  int NbSubElements() const override
   {
     return !myGroups.IsNull() ? myGroups->Size() : myBvhIndices.NbElements;
   }
 
   //! Returns bounding box of triangle/edge with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
+  Standard_EXPORT Select3D_BndBox3d Box(const int theIdx) const override;
 
   //! Returns geometry center of triangle/edge with index theIdx
   //! in array along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
+  Standard_EXPORT double Center(const int theIdx, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in array
-  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
+  Standard_EXPORT void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Returns bounding box of the triangulation. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of triangulation. If location transformation
   //! is set, it will be applied
-  virtual gp_Pnt CenterOfGeometry() const override { return myCDG3D; }
+  gp_Pnt CenterOfGeometry() const override { return myCDG3D; }
 
   //! Returns true if the shape corresponding to the entity has init location
-  virtual bool HasInitLocation() const override { return !myInitLocation.IsIdentity(); }
+  bool HasInitLocation() const override { return !myInitLocation.IsIdentity(); }
 
   //! Returns inversed location transformation matrix if the shape corresponding
   //! to this entity has init location set. Otherwise, returns identity matrix.
-  virtual gp_GTrsf InvInitLocation() const override { return myInvInitLocation; }
+  gp_GTrsf InvInitLocation() const override { return myInvInitLocation; }
 
   //! Sets the owner for all entities in group
-  Standard_EXPORT virtual void Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId) override;
+  Standard_EXPORT void Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId) override;
 
   //! Builds BVH tree for sensitive set.
-  Standard_EXPORT virtual void BVH() override;
+  Standard_EXPORT void BVH() override;
 
 protected:
   //! Compute bounding box.
@@ -303,20 +302,19 @@ protected:
   }
 
   //! Checks whether the element with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                               SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT bool overlapsElement(SelectBasics_PickResult&             thePickResult,
+                                       SelectBasics_SelectingVolumeManager& theMgr,
+                                       int                                  theElemIdx,
+                                       bool theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT virtual double distanceToCOG(
-    SelectBasics_SelectingVolumeManager& theMgr) override;
+  Standard_EXPORT double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
+                                       int                                  theElemIdx,
+                                       bool theIsFullInside) override;
 
 private:
   typedef NCollection_Shared<NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>>

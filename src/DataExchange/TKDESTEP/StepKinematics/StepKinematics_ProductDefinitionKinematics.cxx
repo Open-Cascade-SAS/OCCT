@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionKinematics, StepRepr_
 
 //=================================================================================================
 
-StepKinematics_ProductDefinitionKinematics::StepKinematics_ProductDefinitionKinematics() {}
+StepKinematics_ProductDefinitionKinematics::StepKinematics_ProductDefinitionKinematics() = default;

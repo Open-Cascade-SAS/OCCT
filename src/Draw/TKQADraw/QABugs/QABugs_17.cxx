@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <QABugs.hxx>
 
@@ -543,7 +543,7 @@ static double        fl         = 1.e-3;
 static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
-static BRepFilletAPI_MakeFillet* Rake = 0;
+static BRepFilletAPI_MakeFillet* Rake = nullptr;
 static char                      name[100];
 
 static void printtolblend(Draw_Interpretor& di)
@@ -558,10 +558,10 @@ static void printtolblend(Draw_Interpretor& di)
 
 static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   printtolblend(di);
   if (narg < 3)
@@ -589,7 +589,7 @@ static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     di << "MakeFillet non initialise\n";
     return 1;
@@ -623,7 +623,7 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     di << "MakeFillet non initialise\n";
     return 1;
@@ -633,17 +633,17 @@ static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
   {
     TopoDS_Shape result = Rake->Shape();
     DBRep::Set(name, result);
-    if (Rake != 0)
+    if (Rake != nullptr)
     {
       delete Rake;
-      Rake = 0;
+      Rake = nullptr;
     }
     return 0;
   }
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   return 1;
 }
@@ -952,8 +952,8 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
   di << "Info: Precision is set to " << sfw->Precision() << "\n";
   di << "Info: MaxTolerance is set to " << sfw->MaxTolerance() << "\n";
 
-  sfw->ModifyTopologyMode()          = 1;
-  sfw->ModifyGeometryMode()          = 1;
+  sfw->ModifyTopologyMode()          = true;
+  sfw->ModifyGeometryMode()          = true;
   sfw->FixSelfIntersectingEdgeMode() = 1;
   // printf("Info: FixSelfIntersection = %d\n",sfw->FixSelfIntersection());
   di << "Info: FixSelfIntersection = " << (int)sfw->FixSelfIntersection() << "\n";
@@ -1225,11 +1225,11 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
   sfw->SetPrecision(Precision::Confusion());
 
   sfw->FixReorderMode()                      = 1;
-  sfw->ClosedWireMode()                      = 1;
+  sfw->ClosedWireMode()                      = true;
   sfw->FixDegeneratedMode()                  = 1;
   sfw->FixConnectedMode()                    = 1;
-  sfw->ModifyTopologyMode()                  = 1;
-  sfw->ModifyGeometryMode()                  = 1;
+  sfw->ModifyTopologyMode()                  = true;
+  sfw->ModifyGeometryMode()                  = true;
   sfw->FixSelfIntersectionMode()             = 1;
   sfw->FixSelfIntersectingEdgeMode()         = 1;
   sfw->FixIntersectingEdgesMode()            = 1;

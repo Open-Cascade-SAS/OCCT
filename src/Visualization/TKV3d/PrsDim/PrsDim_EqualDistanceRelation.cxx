@@ -52,7 +52,7 @@ PrsDim_EqualDistanceRelation::PrsDim_EqualDistanceRelation(const TopoDS_Shape&  
                                                            const TopoDS_Shape&            aShape3,
                                                            const TopoDS_Shape&            aShape4,
                                                            const occ::handle<Geom_Plane>& aPlane)
-    : PrsDim_Relation()
+
 {
   myFShape = aShape1;
   mySShape = aShape2;

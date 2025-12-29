@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_VertexList, IGESData_IGESEntity)
 
-IGESSolid_VertexList::IGESSolid_VertexList() {}
+IGESSolid_VertexList::IGESSolid_VertexList() = default;
 
 void IGESSolid_VertexList::Init(const occ::handle<NCollection_HArray1<gp_XYZ>>& Vertices)
 {

@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESGraph_ToolIntercharacterSpacing::IGESGraph_ToolIntercharacterSpacing() {}
+IGESGraph_ToolIntercharacterSpacing::IGESGraph_ToolIntercharacterSpacing() = default;
 
 void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
   const occ::handle<IGESGraph_IntercharacterSpacing>& ent,

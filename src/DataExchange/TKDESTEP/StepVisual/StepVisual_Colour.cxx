@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Colour, Standard_Transient)
 
-StepVisual_Colour::StepVisual_Colour() {}
+StepVisual_Colour::StepVisual_Colour() = default;

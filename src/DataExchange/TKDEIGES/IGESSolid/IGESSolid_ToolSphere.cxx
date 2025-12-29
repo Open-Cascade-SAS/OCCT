@@ -33,7 +33,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSphere::IGESSolid_ToolSphere() {}
+IGESSolid_ToolSphere::IGESSolid_ToolSphere() = default;
 
 void IGESSolid_ToolSphere::ReadOwnParams(const occ::handle<IGESSolid_Sphere>& ent,
                                          const occ::handle<IGESData_IGESReaderData>& /* IR */,

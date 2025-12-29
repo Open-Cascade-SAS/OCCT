@@ -261,12 +261,12 @@ bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>&
        anIter.More();
        anIter.Next())
   {
-    if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, NULL))
+    if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
     {
       continue;
     }
 
-    if (myToAllowOverlap || theInside == NULL)
+    if (myToAllowOverlap || theInside == nullptr)
     {
       return true;
     }
@@ -452,7 +452,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsSphere(const gp_Pnt& theCenter,
        anIter.More();
        anIter.Next())
   {
-    if (anIter.Value()->OverlapsSphere(theCenter, theRadius, NULL))
+    if (anIter.Value()->OverlapsSphere(theCenter, theRadius, nullptr))
     {
       // select 3 points of the frustum and build a plane on them
       double aMaxDist1 = 0.0, aMaxDist2 = 0.0;
@@ -665,7 +665,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCylinder(const double   theBottomRa
     }
     isCylInsideTriangSet &= isInside;
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= isCylInsideTriangSet;
   }
@@ -752,7 +752,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCircle(const double   theRadius,
 
       if (isIntersectBoundary(theRadius, theTrsf, theIsFilled))
       {
-        if (theInside != NULL)
+        if (theInside != nullptr)
         {
           *theInside &= false;
         }
@@ -785,7 +785,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCircle(const double   theRadius,
     }
   }
 
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= false;
   }

@@ -27,13 +27,13 @@ public:
   Standard_EXPORT BRepMesh_DelabellaBaseMeshAlgo();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelabellaBaseMeshAlgo();
+  Standard_EXPORT ~BRepMesh_DelabellaBaseMeshAlgo() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_DelabellaBaseMeshAlgo, BRepMesh_CustomBaseMeshAlgo)
 
 protected:
   //! Builds base triangulation using Delabella project.
-  Standard_EXPORT virtual void buildBaseTriangulation() override;
+  Standard_EXPORT void buildBaseTriangulation() override;
 };
 
 #endif

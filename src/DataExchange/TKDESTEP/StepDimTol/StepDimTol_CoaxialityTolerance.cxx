@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_CoaxialityTolerance,
 
 //=================================================================================================
 
-StepDimTol_CoaxialityTolerance::StepDimTol_CoaxialityTolerance() {}
+StepDimTol_CoaxialityTolerance::StepDimTol_CoaxialityTolerance() = default;

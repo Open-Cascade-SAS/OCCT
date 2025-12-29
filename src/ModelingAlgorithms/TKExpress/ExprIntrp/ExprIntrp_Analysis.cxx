@@ -21,7 +21,7 @@
 #include <ExprIntrp_Generator.hxx>
 #include <TCollection_AsciiString.hxx>
 
-ExprIntrp_Analysis::ExprIntrp_Analysis() {}
+ExprIntrp_Analysis::ExprIntrp_Analysis() = default;
 
 void ExprIntrp_Analysis::Push(const occ::handle<Expr_GeneralExpression>& exp)
 {

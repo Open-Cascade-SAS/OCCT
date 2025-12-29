@@ -135,7 +135,7 @@ TColStd_PackedMapOfInteger& TColStd_PackedMapOfInteger::Assign(
       const int nBuckets    = myNbBuckets;
       for (int i = 0; i <= nBucketsSrc; i++)
       {
-        for (const TColStd_intMapNode* p = theOther.myData1[i]; p != NULL;)
+        for (const TColStd_intMapNode* p = theOther.myData1[i]; p != nullptr;)
         {
           const size_t aHashCode = p->HashCode(nBuckets);
           myData1[aHashCode]     = new TColStd_intMapNode(p->Mask(), p->Data(), myData1[aHashCode]);
@@ -169,12 +169,12 @@ void TColStd_PackedMapOfInteger::ReSize(const int theNbBuckets)
   TColStd_intMapNode** aNewData =
     (TColStd_intMapNode**)Standard::AllocateOptimal((aNewBuck + 1) * sizeof(TColStd_intMapNode*));
   memset(aNewData, 0, (aNewBuck + 1) * sizeof(TColStd_intMapNode*));
-  if (myData1 != NULL)
+  if (myData1 != nullptr)
   {
     TColStd_intMapNode** anOldData = myData1;
     for (int i = 0; i <= myNbBuckets; ++i)
     {
-      for (TColStd_intMapNode* p = anOldData[i]; p != NULL;)
+      for (TColStd_intMapNode* p = anOldData[i]; p != nullptr;)
       {
         size_t              k = p->HashCode(aNewBuck);
         TColStd_intMapNode* q = p->Next();
@@ -200,7 +200,7 @@ void TColStd_PackedMapOfInteger::Clear()
     {
       if (myData1[aBucketIter])
       {
-        for (TColStd_intMapNode* aSubNodeIter = myData1[aBucketIter]; aSubNodeIter != NULL;)
+        for (TColStd_intMapNode* aSubNodeIter = myData1[aBucketIter]; aSubNodeIter != nullptr;)
         {
           TColStd_intMapNode* q = aSubNodeIter->Next();
           delete aSubNodeIter;
@@ -212,7 +212,7 @@ void TColStd_PackedMapOfInteger::Clear()
 
   myNbPackedMapNodes = 0;
   Standard::Free(myData1);
-  myData1  = NULL;
+  myData1  = nullptr;
   myExtent = 0;
 }
 
@@ -228,7 +228,7 @@ bool TColStd_PackedMapOfInteger::Add(const int aKey)
   const int           aKeyInt     = packedKeyIndex(aKey);
   const size_t        aHashCode   = HashCode(aKeyInt, myNbBuckets);
   TColStd_intMapNode* aBucketHead = myData1[aHashCode];
-  for (TColStd_intMapNode* p = aBucketHead; p != NULL; p = p->Next())
+  for (TColStd_intMapNode* p = aBucketHead; p != nullptr; p = p->Next())
   {
     if (p->IsEqual(aKeyInt))
     {
@@ -258,7 +258,7 @@ bool TColStd_PackedMapOfInteger::Contains(const int aKey) const
 
   bool      aResult = false;
   const int aKeyInt = packedKeyIndex(aKey);
-  for (TColStd_intMapNode* p = myData1[HashCode(aKeyInt, myNbBuckets)]; p != NULL;)
+  for (TColStd_intMapNode* p = myData1[HashCode(aKeyInt, myNbBuckets)]; p != nullptr;)
   {
     if (p->IsEqual(aKeyInt))
     {
@@ -283,7 +283,7 @@ bool TColStd_PackedMapOfInteger::Remove(const int aKey)
   const int            aKeyInt     = packedKeyIndex(aKey);
   TColStd_intMapNode*& aBucketHead = myData1[HashCode(aKeyInt, myNbBuckets)];
   TColStd_intMapNode*  p           = aBucketHead;
-  TColStd_intMapNode*  q           = 0L;
+  TColStd_intMapNode*  q           = nullptr;
   while (p)
   {
     if (p->IsEqual(aKeyInt))
@@ -295,7 +295,7 @@ bool TColStd_PackedMapOfInteger::Remove(const int aKey)
         if (!p->HasValues())
         {
           --myNbPackedMapNodes;
-          if (q != NULL)
+          if (q != nullptr)
           {
             q->SetNext(p->Next());
           }
@@ -327,10 +327,10 @@ int TColStd_PackedMapOfInteger::GetMinimalMapped() const
   }
 
   int                       aResult(IntegerLast());
-  const TColStd_intMapNode* pFoundNode = 0L;
+  const TColStd_intMapNode* pFoundNode = nullptr;
   for (int i = 0; i <= myNbBuckets; i++)
   {
-    for (const TColStd_intMapNode* p = myData1[i]; p != 0L; p = p->Next())
+    for (const TColStd_intMapNode* p = myData1[i]; p != nullptr; p = p->Next())
     {
       const int aKey = p->Key();
       if (aResult > aKey)
@@ -361,10 +361,10 @@ int TColStd_PackedMapOfInteger::GetMaximalMapped() const
   }
 
   int                       aResult(IntegerFirst());
-  const TColStd_intMapNode* pFoundNode = 0L;
+  const TColStd_intMapNode* pFoundNode = nullptr;
   for (int i = 0; i <= myNbBuckets; i++)
   {
-    for (const TColStd_intMapNode* p = myData1[i]; p != 0L; p = p->Next())
+    for (const TColStd_intMapNode* p = myData1[i]; p != nullptr; p = p->Next())
     {
       const int aKey = p->Key();
       if (aResult < aKey)
@@ -407,7 +407,7 @@ void TColStd_PackedMapOfInteger::Union(const TColStd_PackedMapOfInteger& theMap1
     for (int i = 0; i <= nBuckets1; i++)
     {
       const TColStd_intMapNode* p1 = theMap1.myData1[i];
-      while (p1 != 0L)
+      while (p1 != nullptr)
       {
         // Find aKey - the base address of currently iterated block
         const int    aKey     = p1->Key();
@@ -443,7 +443,7 @@ void TColStd_PackedMapOfInteger::Union(const TColStd_PackedMapOfInteger& theMap1
     for (int i = 0; i <= nBuckets2; i++)
     {
       const TColStd_intMapNode* p2 = theMap2.myData1[i];
-      while (p2 != 0L)
+      while (p2 != nullptr)
       {
         // Find aKey - the base address of currently iterated block
         const int aKey    = p2->Key();
@@ -458,7 +458,7 @@ void TColStd_PackedMapOfInteger::Union(const TColStd_PackedMapOfInteger& theMap1
         }
         // Add the block from the 2nd map only in the case when the similar
         // block has not been found in the 1st map
-        if (p1 == 0L)
+        if (p1 == nullptr)
         {
           if (Resizable())
           {
@@ -497,7 +497,7 @@ bool TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInteger& theMap)
   for (int i = 0; i <= nBuckets2; i++)
   {
     const TColStd_intMapNode* p2 = theMap.myData1[i];
-    while (p2 != 0L)
+    while (p2 != nullptr)
     {
       // Find aKey - the base address of currently iterated block of integers
       const int aKey    = p2->Key();
@@ -521,7 +521,7 @@ bool TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInteger& theMap)
         p1 = p1->Next();
       }
       // If the block is not found in the 1st map, add it to the 1st map
-      if (p1 == 0L)
+      if (p1 == nullptr)
       {
         if (Resizable())
         {
@@ -579,7 +579,7 @@ void TColStd_PackedMapOfInteger::Intersection(const TColStd_PackedMapOfInteger& 
     for (int i = 0; i <= nBuckets1; i++)
     {
       const TColStd_intMapNode* p1 = aData1[i];
-      while (p1 != 0L)
+      while (p1 != nullptr)
       {
         // Find aKey - the base address of currently iterated block
         const int aKey    = p1->Key();
@@ -637,9 +637,9 @@ bool TColStd_PackedMapOfInteger::Intersect(const TColStd_PackedMapOfInteger& the
   // Iteration of this map.
   for (int i = 0; i <= myNbBuckets; i++)
   {
-    TColStd_intMapNode* q  = 0L;
+    TColStd_intMapNode* q  = nullptr;
     TColStd_intMapNode* p1 = myData1[i];
-    while (p1 != 0L)
+    while (p1 != nullptr)
     {
       // Find aKey - the base address of currently iterated block of integers
       const int aKey    = p1->Key();
@@ -653,7 +653,7 @@ bool TColStd_PackedMapOfInteger::Intersect(const TColStd_PackedMapOfInteger& the
           const unsigned int aNewData = p1->Data() & p2->Data();
           // Store the block - result of operation
           if (aNewData == 0)
-            p2 = 0L; // no match - the block has to be removed
+            p2 = nullptr; // no match - the block has to be removed
           else
           {
             if (aNewData != p1->Data())
@@ -718,7 +718,7 @@ void TColStd_PackedMapOfInteger::Subtraction(const TColStd_PackedMapOfInteger& t
     for (int i = 0; i <= nBuckets1; i++)
     {
       const TColStd_intMapNode* p1 = theMap1.myData1[i];
-      while (p1 != 0L)
+      while (p1 != nullptr)
       {
         // Find aKey - the base address of currently iterated block of integers
         const int    aKey     = p1->Key();
@@ -777,9 +777,9 @@ bool TColStd_PackedMapOfInteger::Subtract(const TColStd_PackedMapOfInteger& theM
     // Iteration of this map.
     for (int i = 0; i <= myNbBuckets; i++)
     {
-      TColStd_intMapNode* q  = 0L;
+      TColStd_intMapNode* q  = nullptr;
       TColStd_intMapNode* p1 = myData1[i];
-      while (p1 != 0L)
+      while (p1 != nullptr)
       {
         // Find aKey - the base address of currently iterated block of integers
         const int           aKey    = p1->Key();
@@ -818,7 +818,7 @@ bool TColStd_PackedMapOfInteger::Subtract(const TColStd_PackedMapOfInteger& theM
           }
           p2 = p2->Next();
         }
-        if (p2 == 0L)
+        if (p2 == nullptr)
         {
           aNewExtent += p1->NbValues();
           q = p1;
@@ -856,7 +856,7 @@ void TColStd_PackedMapOfInteger::Difference(const TColStd_PackedMapOfInteger& th
     for (i = 0; i <= nBuckets1; i++)
     {
       const TColStd_intMapNode* p1 = theMap1.myData1[i];
-      while (p1 != 0L)
+      while (p1 != nullptr)
       {
         // Find aKey - the base address of currently iterated block of integers
         const int    aKey     = p1->Key();
@@ -896,7 +896,7 @@ void TColStd_PackedMapOfInteger::Difference(const TColStd_PackedMapOfInteger& th
     for (i = 0; i <= nBuckets2; i++)
     {
       const TColStd_intMapNode* p2 = theMap2.myData1[i];
-      while (p2 != 0L)
+      while (p2 != nullptr)
       {
         // Find aKey - the base address of currently iterated block
         const int aKey    = p2->Key();
@@ -911,7 +911,7 @@ void TColStd_PackedMapOfInteger::Difference(const TColStd_PackedMapOfInteger& th
         }
         // Add the block from the 2nd map only in the case when the similar
         // block has not been found in the 1st map
-        if (p1 == 0L)
+        if (p1 == nullptr)
         {
           if (Resizable())
           {
@@ -951,9 +951,9 @@ bool TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInteger& theMap
   // Iteration by other map
   for (int i = 0; i <= nBuckets2; i++)
   {
-    TColStd_intMapNode*       q  = 0L;
+    TColStd_intMapNode*       q  = nullptr;
     const TColStd_intMapNode* p2 = theMap.myData1[i];
-    while (p2 != 0L)
+    while (p2 != nullptr)
     {
       // Find aKey - the base address of currently iterated block
       const int aKey    = p2->Key();
@@ -991,7 +991,7 @@ bool TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInteger& theMap
       }
       // Add the block from the 2nd map only in the case when the similar
       // block has not been found in the 1st map
-      if (p1 == 0L)
+      if (p1 == nullptr)
       {
         if (Resizable())
         {
@@ -1029,7 +1029,7 @@ bool TColStd_PackedMapOfInteger::IsEqual(const TColStd_PackedMapOfInteger& theMa
   for (int i = 0; i <= myNbBuckets; i++)
   {
     const TColStd_intMapNode* p1 = myData1[i];
-    while (p1 != 0L)
+    while (p1 != nullptr)
     {
       // Find aKey - the base address of currently iterated block of integers
       const int           aKey    = p1->Key();
@@ -1048,7 +1048,7 @@ bool TColStd_PackedMapOfInteger::IsEqual(const TColStd_PackedMapOfInteger& theMa
         p2 = p2->Next();
       }
       // if the same block not found, maps are different
-      if (p2 == 0L)
+      if (p2 == nullptr)
         return false;
 
       p1 = pNext;
@@ -1078,7 +1078,7 @@ bool TColStd_PackedMapOfInteger::IsSubset(const TColStd_PackedMapOfInteger& theM
   for (int i = 0; i <= myNbBuckets; i++)
   {
     const TColStd_intMapNode* p1 = myData1[i];
-    while (p1 != 0L)
+    while (p1 != nullptr)
     {
       // Find aKey - the base address of currently iterated block of integers
       const int           aKey    = p1->Key();
@@ -1122,7 +1122,7 @@ bool TColStd_PackedMapOfInteger::HasIntersection(const TColStd_PackedMapOfIntege
   for (int i = 0; i <= myNbBuckets; i++)
   {
     const TColStd_intMapNode* p1 = myData1[i];
-    while (p1 != 0L)
+    while (p1 != nullptr)
     {
       // Find aKey - the base address of currently iterated block of integers
       const int           aKey    = p1->Key();
@@ -1166,13 +1166,13 @@ void TColStd_PackedMapOfInteger::Statistics(Standard_OStream& theStream) const
   for (int aBucketIter = 0; aBucketIter <= myNbBuckets; ++aBucketIter)
   {
     TColStd_intMapNode* aSubNodeIter = myData1[aBucketIter];
-    if (aSubNodeIter != NULL)
+    if (aSubNodeIter != nullptr)
     {
       ++aNbNonEmpty;
     }
 
     int aNbMapSubNodes = 0;
-    for (; aSubNodeIter != NULL; aSubNodeIter = aSubNodeIter->Next())
+    for (; aSubNodeIter != nullptr; aSubNodeIter = aSubNodeIter->Next())
     {
       ++aNbMapSubNodes;
     }

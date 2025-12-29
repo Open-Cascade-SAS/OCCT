@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() {}
+StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() = default;
 
 //=================================================================================================
 
@@ -132,13 +132,13 @@ occ::handle<TCollection_HAsciiString> StepElement_SurfaceElementPurpose::
   occ::handle<StepElement_SurfaceElementPurposeMember> SelMem =
     occ::down_cast<StepElement_SurfaceElementPurposeMember>(Value());
   if (SelMem.IsNull())
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   if (name->IsDifferent(nameitem))
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;

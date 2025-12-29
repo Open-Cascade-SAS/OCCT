@@ -76,7 +76,7 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   std::shared_ptr<std::istream>      aFile =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
   char aHeader[128] = {};
-  if (aFile.get() == NULL || !aFile->good())
+  if (aFile.get() == nullptr || !aFile->good())
   {
     return occ::handle<Image_CompressedPixMap>();
   }

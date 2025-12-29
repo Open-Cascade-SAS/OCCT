@@ -57,7 +57,7 @@ public:
                                         const double                          WLast);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! Changes the curve. The Offset is reset to 0.
   Standard_EXPORT void Load(const occ::handle<Adaptor2d_Curve2d>& S);
@@ -72,9 +72,9 @@ public:
 
   double Offset() const { return myOffset; }
 
-  virtual double FirstParameter() const override { return myFirst; }
+  double FirstParameter() const override { return myFirst; }
 
-  virtual double LastParameter() const override { return myLast; }
+  double LastParameter() const override { return myLast; }
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 

@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_CurveElementInterval, Standard_Transient)
 
 //=================================================================================================
 
-StepFEA_CurveElementInterval::StepFEA_CurveElementInterval() {}
+StepFEA_CurveElementInterval::StepFEA_CurveElementInterval() = default;
 
 //=================================================================================================
 

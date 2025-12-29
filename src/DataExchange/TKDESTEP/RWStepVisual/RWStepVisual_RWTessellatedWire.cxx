@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() {}
+RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() = default;
 
 //=================================================================================================
 

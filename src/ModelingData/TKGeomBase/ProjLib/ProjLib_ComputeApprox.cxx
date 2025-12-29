@@ -1007,19 +1007,19 @@ public:
       myPeriod[1] = 0.0;
   }
 
-  void PeriodInformation(const int theDimIdx, bool& IsPeriodic, double& thePeriod) const
+  void PeriodInformation(const int theDimIdx, bool& IsPeriodic, double& thePeriod) const override
   {
     IsPeriodic = myIsPeriodic[theDimIdx - 1];
     thePeriod  = myPeriod[theDimIdx - 1];
   }
 
-  double FirstParameter() const { return (myCurve->FirstParameter()); }
+  double FirstParameter() const override { return (myCurve->FirstParameter()); }
 
-  double LastParameter() const { return (myCurve->LastParameter()); }
+  double LastParameter() const override { return (myCurve->LastParameter()); }
 
   bool Value(const double                  theT,
              NCollection_Array1<gp_Pnt2d>& thePnt2d,
-             NCollection_Array1<gp_Pnt>& /*thePnt*/) const
+             NCollection_Array1<gp_Pnt>& /*thePnt*/) const override
   {
     thePnt2d(1) =
       Function_Value(theT, myCurve, mySurface, myU1, myU2, myV1, myV2, UCouture, VCouture);
@@ -1033,7 +1033,7 @@ public:
 
   bool D1(const double                  theT,
           NCollection_Array1<gp_Vec2d>& theVec2d,
-          NCollection_Array1<gp_Vec>& /*theVec*/) const
+          NCollection_Array1<gp_Vec>& /*theVec*/) const override
   {
     gp_Pnt2d aPnt2d;
     gp_Vec2d aVec2d;

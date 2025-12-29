@@ -69,7 +69,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_BezierCurve"; }
 
-    virtual occ::handle<Geom_Curve> Import() const;
+    occ::handle<Geom_Curve> Import() const override;
 
   private:
     bool                                 myRational;
@@ -111,7 +111,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_BSplineCurve"; }
 
-    virtual occ::handle<Geom_Curve> Import() const;
+    occ::handle<Geom_Curve> Import() const override;
 
   private:
     bool                                    myRational;
@@ -151,7 +151,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_TrimmedCurve"; }
 
-    virtual occ::handle<Geom_Curve> Import() const;
+    occ::handle<Geom_Curve> Import() const override;
 
   private:
     occ::handle<Curve> myBasisCurve;
@@ -186,7 +186,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
     inline const char* PName() const { return "PGeom_OffsetCurve"; }
 
-    virtual occ::handle<Geom_Curve> Import() const;
+    occ::handle<Geom_Curve> Import() const override;
 
   private:
     occ::handle<Curve> myBasisCurve;

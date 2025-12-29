@@ -47,7 +47,7 @@ public:
   //! 5 -> RightCircularCone
   //! 6 -> RightCircularCylinder
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Sphere (Null if another type)
   Standard_EXPORT occ::handle<StepShape_Sphere> Sphere() const;

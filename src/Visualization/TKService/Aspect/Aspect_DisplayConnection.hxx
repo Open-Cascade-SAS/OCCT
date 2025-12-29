@@ -37,7 +37,7 @@ public:
   Standard_EXPORT Aspect_DisplayConnection();
 
   //! Destructor. Close opened connection.
-  Standard_EXPORT virtual ~Aspect_DisplayConnection();
+  Standard_EXPORT ~Aspect_DisplayConnection() override;
 
   //! Constructor. Creates connection with display specified in theDisplayName.
   //! Display name should be in format "hostname:number" or "hostname:number.screen_number", where:
@@ -126,8 +126,8 @@ private:
 
 private:
   //! To protect the connection from closing copying allowed only through the handles.
-  Aspect_DisplayConnection(const Aspect_DisplayConnection&);
-  Aspect_DisplayConnection& operator=(const Aspect_DisplayConnection&);
+  Aspect_DisplayConnection(const Aspect_DisplayConnection&)            = delete;
+  Aspect_DisplayConnection& operator=(const Aspect_DisplayConnection&) = delete;
 };
 
 #endif // _Aspect_DisplayConnection_H__

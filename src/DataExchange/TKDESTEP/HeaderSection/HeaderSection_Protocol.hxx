@@ -32,9 +32,9 @@ public:
   Standard_EXPORT HeaderSection_Protocol();
 
   //! Returns a Case Number for each of the HeaderSection Entities
-  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
+  Standard_EXPORT int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
 
-  Standard_EXPORT virtual const char* SchemaName(
+  Standard_EXPORT const char* SchemaName(
     const occ::handle<Interface_InterfaceModel>&) const override;
 
   DEFINE_STANDARD_RTTIEXT(HeaderSection_Protocol, StepData_Protocol)

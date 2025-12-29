@@ -126,8 +126,7 @@ public:
   Standard_EXPORT void CopyAspectsFrom(const occ::handle<Prs3d_DatumAspect>& theOther);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public:
   //! Returns type of arrow for a type of axis

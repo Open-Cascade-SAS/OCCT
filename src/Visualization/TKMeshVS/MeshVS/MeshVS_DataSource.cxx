@@ -222,7 +222,7 @@ bool MeshVS_DataSource::GetGroup(const int /*Id*/,
 
 void* MeshVS_DataSource::GetGroupAddr(const int /*ID*/) const
 {
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

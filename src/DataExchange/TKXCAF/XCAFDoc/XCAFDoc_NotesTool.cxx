@@ -69,7 +69,7 @@ occ::handle<XCAFDoc_NotesTool> XCAFDoc_NotesTool::Set(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-XCAFDoc_NotesTool::XCAFDoc_NotesTool() {}
+XCAFDoc_NotesTool::XCAFDoc_NotesTool() = default;
 
 //=================================================================================================
 

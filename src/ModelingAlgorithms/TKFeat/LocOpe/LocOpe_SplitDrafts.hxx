@@ -41,7 +41,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Empty constructor.
-  LocOpe_SplitDrafts() {}
+  LocOpe_SplitDrafts() = default;
 
   //! Creates the algorithm on the shape <S>.
   LocOpe_SplitDrafts(const TopoDS_Shape& S)

@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NameAssignment, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_NameAssignment::StepBasic_NameAssignment() {}
+StepBasic_NameAssignment::StepBasic_NameAssignment() = default;
 
 //=================================================================================================
 

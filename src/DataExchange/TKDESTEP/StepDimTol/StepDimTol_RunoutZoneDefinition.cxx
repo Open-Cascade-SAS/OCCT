@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition, StepDimTol_Tolerance
 
 //=================================================================================================
 
-StepDimTol_RunoutZoneDefinition::StepDimTol_RunoutZoneDefinition() {}
+StepDimTol_RunoutZoneDefinition::StepDimTol_RunoutZoneDefinition() = default;
 
 //=================================================================================================
 

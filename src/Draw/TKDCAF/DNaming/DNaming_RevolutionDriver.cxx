@@ -53,7 +53,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_RevolutionDriver, TFunction_Driver)
 // OCAF
 //=================================================================================================
 
-DNaming_RevolutionDriver::DNaming_RevolutionDriver() {}
+DNaming_RevolutionDriver::DNaming_RevolutionDriver() = default;
 
 //=======================================================================
 // function : Validate

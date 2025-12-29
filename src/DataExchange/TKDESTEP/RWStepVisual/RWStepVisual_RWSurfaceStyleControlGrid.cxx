@@ -18,7 +18,7 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleControlGrid.hxx>
 
-RWStepVisual_RWSurfaceStyleControlGrid::RWStepVisual_RWSurfaceStyleControlGrid() {}
+RWStepVisual_RWSurfaceStyleControlGrid::RWStepVisual_RWSurfaceStyleControlGrid() = default;
 
 void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

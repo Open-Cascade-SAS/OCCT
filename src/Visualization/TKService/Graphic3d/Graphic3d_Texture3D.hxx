@@ -32,7 +32,7 @@ public:
   Standard_EXPORT Graphic3d_Texture3D(const NCollection_Array1<TCollection_AsciiString>& theFiles);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_Texture3D();
+  Standard_EXPORT ~Graphic3d_Texture3D() override;
 
   //! Assign new image to the texture.
   //! Note that this method does not invalidate already uploaded resources - consider calling
@@ -40,7 +40,7 @@ public:
   Standard_EXPORT void SetImage(const occ::handle<Image_PixMap>& thePixMap);
 
   //! Load and return image.
-  Standard_EXPORT virtual occ::handle<Image_PixMap> GetImage(
+  Standard_EXPORT occ::handle<Image_PixMap> GetImage(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
 protected:

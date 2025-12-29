@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_SpecifiedHigherUsageOccurrence, StepRepr_Ass
 
 //=================================================================================================
 
-StepRepr_SpecifiedHigherUsageOccurrence::StepRepr_SpecifiedHigherUsageOccurrence() {}
+StepRepr_SpecifiedHigherUsageOccurrence::StepRepr_SpecifiedHigherUsageOccurrence() = default;
 
 //=================================================================================================
 

@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement() {}
+StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement() = default;
 
 //=================================================================================================
 

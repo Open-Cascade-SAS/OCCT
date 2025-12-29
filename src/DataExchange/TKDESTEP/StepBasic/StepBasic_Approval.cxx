@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Approval, Standard_Transient)
 
-StepBasic_Approval::StepBasic_Approval() {}
+StepBasic_Approval::StepBasic_Approval() = default;
 
 void StepBasic_Approval::Init(const occ::handle<StepBasic_ApprovalStatus>& aStatus,
                               const occ::handle<TCollection_HAsciiString>& aLevel)

@@ -39,9 +39,9 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESDimen_ToolGeneralNote::IGESDimen_ToolGeneralNote() {}
+IGESDimen_ToolGeneralNote::IGESDimen_ToolGeneralNote() = default;
 
 void IGESDimen_ToolGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_GeneralNote>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

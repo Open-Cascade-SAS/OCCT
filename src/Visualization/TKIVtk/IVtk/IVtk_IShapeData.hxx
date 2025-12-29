@@ -28,7 +28,7 @@ class IVtk_IShapeData : public IVtk_Interface
 public:
   typedef occ::handle<IVtk_IShapeData> Handle;
 
-  virtual ~IVtk_IShapeData() {}
+  ~IVtk_IShapeData() override = default;
 
   DEFINE_STANDARD_RTTIEXT(IVtk_IShapeData, IVtk_Interface)
 

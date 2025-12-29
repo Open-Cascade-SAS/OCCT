@@ -49,21 +49,20 @@ public:
   Standard_EXPORT bool IsGroup() const;
 
   //! Returns true if owner is hilighted
-  Standard_EXPORT virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& PM,
-                                           const int Mode = 0) const override;
+  Standard_EXPORT bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& PM,
+                                   const int Mode = 0) const override;
 
   //! Hilights owner with the certain color
-  Standard_EXPORT virtual void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int theMode) override;
 
   //! Strip hilight of owner
-  Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
-                                         const int Mode = 0) override;
+  Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
+                                 const int                                      Mode = 0) override;
 
-  Standard_EXPORT virtual void Clear(const occ::handle<PrsMgr_PresentationManager>& PM,
-                                     const int Mode = 0) override;
+  Standard_EXPORT void Clear(const occ::handle<PrsMgr_PresentationManager>& PM,
+                             const int                                      Mode = 0) override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner, SelectMgr_EntityOwner)
 

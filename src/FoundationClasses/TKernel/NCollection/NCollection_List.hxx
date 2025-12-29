@@ -86,7 +86,7 @@ public:
   }
 
   //! Size - Number of items
-  int Size(void) const noexcept { return Extent(); }
+  int Size() const noexcept { return Extent(); }
 
   //! Replace this list by the items of another list (theOther parameter).
   //! This method does not change the internal allocator.
@@ -120,7 +120,7 @@ public:
   }
 
   //! Clear this list
-  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
     PClear(ListNode::delNode);
     if (!theAllocator.IsNull())
@@ -128,28 +128,28 @@ public:
   }
 
   //! First item
-  const TheItemType& First(void) const
+  const TheItemType& First() const
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::First");
     return ((const ListNode*)PFirst())->Value();
   }
 
   //! First item (non-const)
-  TheItemType& First(void)
+  TheItemType& First()
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::First");
     return ((ListNode*)PFirst())->ChangeValue();
   }
 
   //! Last item
-  const TheItemType& Last(void) const
+  const TheItemType& Last() const
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::Last");
     return ((const ListNode*)PLast())->Value();
   }
 
   //! Last item (non-const)
-  TheItemType& Last(void)
+  TheItemType& Last()
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::Last");
     return ((ListNode*)PLast())->ChangeValue();
@@ -244,7 +244,7 @@ public:
   }
 
   //! RemoveFirst item
-  void RemoveFirst(void) { PRemoveFirst(ListNode::delNode); }
+  void RemoveFirst() { PRemoveFirst(ListNode::delNode); }
 
   //! Remove item pointed by iterator theIter;
   //! theIter is then set to the next item
@@ -362,7 +362,7 @@ public:
   }
 
   //! Destructor - clears the List
-  virtual ~NCollection_List(void) { Clear(); }
+  ~NCollection_List() override { Clear(); }
 
 private:
   // ----------- PRIVATE METHODS -----------

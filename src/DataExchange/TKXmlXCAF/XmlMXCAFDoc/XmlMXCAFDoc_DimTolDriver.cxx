@@ -65,7 +65,7 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
   const XmlObjMgt_Element& anElement = theSource;
   XmlObjMgt_DOMString      aNameStr  = anElement.getAttribute(::NameIndexString());
   XmlObjMgt_DOMString      aDescrStr = anElement.getAttribute(::DescrIndexString());
-  if (aNameStr == NULL || aDescrStr == NULL)
+  if (aNameStr == nullptr || aDescrStr == nullptr)
   {
     TCollection_ExtendedString aMessageString(
       "Cannot retrieve DimTol attribute name or description");
@@ -79,7 +79,7 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
 
   int                 aFirstInd, aLastInd;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
@@ -89,7 +89,7 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
     return false;
   }
   XmlObjMgt_DOMString aLastIndex = anElement.getAttribute(::LastIndexString());
-  if (aLastIndex == NULL)
+  if (aLastIndex == nullptr)
     aLastInd = 0;
   else if (!aLastIndex.GetInteger(aLastInd))
   {

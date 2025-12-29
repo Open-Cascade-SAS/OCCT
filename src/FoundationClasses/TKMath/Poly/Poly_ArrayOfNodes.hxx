@@ -64,7 +64,7 @@ public:
   //! Raises exception if array was already allocated.
   void SetDoublePrecision(bool theIsDouble)
   {
-    if (myData != NULL)
+    if (myData != nullptr)
     {
       throw Standard_ProgramError(
         "Poly_ArrayOfNodes::SetDoublePrecision() should be called before allocation");

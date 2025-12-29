@@ -45,9 +45,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 //=================================================================================================
 
 IGESControl_IGESBoundary::IGESControl_IGESBoundary()
-    : IGESToBRep_IGESBoundary()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

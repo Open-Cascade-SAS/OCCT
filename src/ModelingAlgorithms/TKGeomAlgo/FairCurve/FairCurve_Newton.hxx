@@ -48,7 +48,7 @@ public:
   //! || Xi+1 - Xi || < SpatialTolerance and
   //! |F(Xi+1) - F(Xi)| < CriteriumTolerance * |F(xi)|
   //! It can be redefined in a sub-class to implement a specific test.
-  Standard_EXPORT virtual bool IsConverged() const override;
+  Standard_EXPORT bool IsConverged() const override;
 
 private:
   double mySpTol;

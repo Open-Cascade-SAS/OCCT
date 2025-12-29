@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWSurfaceSectionFieldVarying::RWStepElement_RWSurfaceSectionFieldVarying() {}
+RWStepElement_RWSurfaceSectionFieldVarying::RWStepElement_RWSurfaceSectionFieldVarying() = default;
 
 //=================================================================================================
 

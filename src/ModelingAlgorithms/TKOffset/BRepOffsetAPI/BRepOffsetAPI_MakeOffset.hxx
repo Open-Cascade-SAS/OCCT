@@ -83,13 +83,12 @@ public:
   Standard_EXPORT void Perform(const double Offset, const double Alt = 0.0);
 
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! returns a list of the created shapes
   //! from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Converts each wire of the face into contour consisting only of
   //! arcs and segments. New 3D curves are built too.

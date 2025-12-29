@@ -111,8 +111,7 @@ public:
   Font_FontAspect GetTextFontAspect() const { return myTextFontAspect; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 };
 
 #endif // _Graphic3d_AspectText3d_HeaderFile

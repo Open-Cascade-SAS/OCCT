@@ -3036,7 +3036,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
           ctrim     = new Geom_TrimmedCurve(curve, ufirst, p.Value(ic, icmoins));
           ctrim2d   = new Geom2d_TrimmedCurve(curve2d, ufirst, p.Value(ic, icmoins));
           indpoint1 = DStr.AddShape(V1);
-          isvt1     = 1;
+          isvt1     = true;
           indpoint2 = indpoint(ic, 1);
         }
         else
@@ -3044,7 +3044,7 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
           ctrim     = new Geom_TrimmedCurve(curve, p.Value(ic, icmoins), ulast);
           ctrim2d   = new Geom2d_TrimmedCurve(curve2d, p.Value(ic, icmoins), ulast);
           indpoint2 = DStr.AddShape(V1);
-          isvt2     = 1;
+          isvt2     = true;
           indpoint1 = indpoint(ic, 1);
         }
         if (libre.Value(ic))
@@ -3054,8 +3054,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
             ctrim->Reverse();
             ctrim2d->Reverse();
             indpoint2 = DStr.AddShape(V1);
-            isvt2     = 1;
-            isvt1     = 0;
+            isvt2     = true;
+            isvt1     = false;
             indpoint1 = indpoint(ic, 1);
           }
         }
@@ -3066,8 +3066,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
             ctrim->Reverse();
             ctrim2d->Reverse();
             indpoint1 = DStr.AddShape(V1);
-            isvt1     = 1;
-            isvt2     = 0;
+            isvt1     = true;
+            isvt2     = false;
             indpoint2 = indpoint(ic, 1);
           }
         }

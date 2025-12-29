@@ -28,10 +28,10 @@ public:
   Standard_EXPORT BRepMesh_DelabellaMeshAlgoFactory();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_DelabellaMeshAlgoFactory();
+  Standard_EXPORT ~BRepMesh_DelabellaMeshAlgoFactory() override;
 
   //! Creates instance of meshing algorithm for the given type of surface.
-  Standard_EXPORT virtual occ::handle<IMeshTools_MeshAlgo> GetAlgo(
+  Standard_EXPORT occ::handle<IMeshTools_MeshAlgo> GetAlgo(
     const GeomAbs_SurfaceType    theSurfaceType,
     const IMeshTools_Parameters& theParameters) const override;
 

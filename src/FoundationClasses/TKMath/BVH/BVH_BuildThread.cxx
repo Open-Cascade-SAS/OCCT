@@ -61,5 +61,5 @@ void* BVH_BuildThread::threadFunction(void* theData)
 {
   static_cast<BVH_BuildThread*>(theData)->execute();
 
-  return NULL;
+  return nullptr;
 }

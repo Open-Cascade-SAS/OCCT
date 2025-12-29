@@ -456,7 +456,7 @@ Standard_EXPORT bool FDS_HasSameDomain3d(const TopOpeBRepDS_DataStructure& BDS,
 {
   const NCollection_List<TopoDS_Shape>& lssd = BDS.ShapeSameDomain(E);
   bool                                  hsd  = (!lssd.IsEmpty());
-  if (PLSD != NULL)
+  if (PLSD != nullptr)
     PLSD->Clear();
   if (!hsd)
     return false;
@@ -472,7 +472,7 @@ Standard_EXPORT bool FDS_HasSameDomain3d(const TopOpeBRepDS_DataStructure& BDS,
     if (ok)
     {
       hsd3d = true;
-      if (PLSD != NULL)
+      if (PLSD != nullptr)
         PLSD->Append(esd);
       else
         break;
@@ -521,7 +521,7 @@ Standard_EXPORT bool FDS_HasSameDomain2d(const TopOpeBRepDS_DataStructure& BDS,
 {
   const NCollection_List<TopoDS_Shape>& lssd = BDS.ShapeSameDomain(E);
   bool                                  hsd  = (!lssd.IsEmpty());
-  if (PLSD != NULL)
+  if (PLSD != nullptr)
     PLSD->Clear();
   if (!hsd)
     return false;
@@ -536,7 +536,7 @@ Standard_EXPORT bool FDS_HasSameDomain2d(const TopOpeBRepDS_DataStructure& BDS,
     if (ok)
     {
       hsd2d = true;
-      if (PLSD != NULL)
+      if (PLSD != nullptr)
         PLSD->Append(esd);
       else
         break;

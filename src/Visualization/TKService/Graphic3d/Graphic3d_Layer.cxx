@@ -47,7 +47,7 @@ void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
 {
   const int anIndex = std::min(std::max(thePriority, Graphic3d_DisplayPriority_Bottom),
                                Graphic3d_DisplayPriority_Topmost);
-  if (theStruct == NULL)
+  if (theStruct == nullptr)
   {
     return;
   }
@@ -81,7 +81,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
                              Graphic3d_DisplayPriority&  thePriority,
                              bool                        isForChangePriority)
 {
-  if (theStruct == NULL)
+  if (theStruct == nullptr)
   {
     thePriority = Graphic3d_DisplayPriority_INVALID;
     return false;
@@ -604,7 +604,7 @@ void Graphic3d_Layer::UpdateCulling(
     if (theSelector.IsCulled(aCullCtx,
                              aBVHTree->MinPoint(0),
                              aBVHTree->MaxPoint(0),
-                             toCheckFullInside ? &aNode.IsFullInside : NULL))
+                             toCheckFullInside ? &aNode.IsFullInside : nullptr))
     {
       continue;
     }
@@ -633,16 +633,17 @@ void Graphic3d_Layer::UpdateCulling(
           isLeftChildIn = !theSelector.IsCulled(aCullCtx,
                                                 aBVHTree->MinPoint(aLeft.Id),
                                                 aBVHTree->MaxPoint(aLeft.Id),
-                                                toCheckFullInside ? &aLeft.IsFullInside : NULL);
+                                                toCheckFullInside ? &aLeft.IsFullInside : nullptr);
           if (!isLeftChildIn)
           {
             aLeft.IsFullInside = false;
           }
 
-          isRightChildIn = !theSelector.IsCulled(aCullCtx,
-                                                 aBVHTree->MinPoint(aRight.Id),
-                                                 aBVHTree->MaxPoint(aRight.Id),
-                                                 toCheckFullInside ? &aRight.IsFullInside : NULL);
+          isRightChildIn =
+            !theSelector.IsCulled(aCullCtx,
+                                  aBVHTree->MinPoint(aRight.Id),
+                                  aBVHTree->MaxPoint(aRight.Id),
+                                  toCheckFullInside ? &aRight.IsFullInside : nullptr);
           if (!isRightChildIn)
           {
             aRight.IsFullInside = false;

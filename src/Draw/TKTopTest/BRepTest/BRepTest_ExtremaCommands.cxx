@@ -31,7 +31,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Precision.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

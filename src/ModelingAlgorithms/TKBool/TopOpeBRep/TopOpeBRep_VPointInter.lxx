@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline TopOpeBRep_VPointInter::TopOpeBRep_VPointInter()
-    : myPPOI(NULL),
+    : myPPOI(nullptr),
       myShapeIndex(0),
       myState1(TopAbs_UNKNOWN),
       myState2(TopAbs_UNKNOWN),

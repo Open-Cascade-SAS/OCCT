@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWExternallyDefinedItem::RWStepBasic_RWExternallyDefinedItem() {}
+RWStepBasic_RWExternallyDefinedItem::RWStepBasic_RWExternallyDefinedItem() = default;
 
 //=================================================================================================
 

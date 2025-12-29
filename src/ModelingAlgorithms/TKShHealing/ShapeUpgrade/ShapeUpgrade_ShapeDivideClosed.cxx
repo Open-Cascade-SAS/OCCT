@@ -33,6 +33,6 @@ void ShapeUpgrade_ShapeDivideClosed::SetNbSplitPoints(const int num)
 {
   occ::handle<ShapeUpgrade_ClosedFaceDivide> tool = new ShapeUpgrade_ClosedFaceDivide;
   tool->SetNbSplitPoints(num);
-  tool->SetWireDivideTool(0); // no splitting of wire
+  tool->SetWireDivideTool(nullptr); // no splitting of wire
   SetSplitFaceTool(tool);
 }

@@ -53,7 +53,7 @@ static bool AddSplitPoint(const occ::handle<BOPDS_PaveBlock>& thePBD,
 
 void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
   //
   // 1. Find degenerated edges
   //-----------------------------------------------------scope f

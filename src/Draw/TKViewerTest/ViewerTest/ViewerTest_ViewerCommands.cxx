@@ -543,7 +543,7 @@ TCollection_AsciiString ViewerTest::ViewerInit(const ViewerTest_VinitParams& the
     }
     else
     {
-      Aspect_XDisplay* aDispX = NULL;
+      Aspect_XDisplay* aDispX = nullptr;
       // create dedicated display connection instead of reusing Tk connection
       // so that to proceed events independently through VProcessEvents()/ViewerMainLoop() callbacks
       /*Draw_Interpretor& aCommands = Draw::GetInterpretor();
@@ -2382,7 +2382,7 @@ static void VProcessEvents(ClientData theDispX, int)
   int aNbRemain = 0;
   for (int aNbEventsMax = XPending(aDispX), anEventIter(0);;)
   {
-    const int anEventResult = ViewerMainLoop(0, NULL);
+    const int anEventResult = ViewerMainLoop(0, nullptr);
     if (anEventResult == 0)
     {
       return;
@@ -4863,11 +4863,11 @@ public:
                                double            theTransp = 1.0);
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int) override {}
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int) override {}
 
 private:
   double            myX1, myY1, myX2, myY2;
@@ -5682,7 +5682,7 @@ static int VReadPixel(Draw_Interpretor& theDI, int theArgNb, const char** theArg
   // into the Tcl interpreter (via DefaultMessenger) to cout, so that they do not
   // contaminate result of the command
   const char* aWarnLog = theDI.Result();
-  if (aWarnLog != NULL && aWarnLog[0] != '\0')
+  if (aWarnLog != nullptr && aWarnLog[0] != '\0')
   {
     std::cout << aWarnLog << std::endl;
   }
@@ -5812,15 +5812,12 @@ public:
   }
 
   //! Returns TRUE for accepted display modes.
-  virtual bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode == 0 || theMode == 1;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0 || theMode == 1; }
 
   //! Compute presentation.
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,
-                       const occ::handle<Prs3d_Presentation>& thePrs,
-                       const int                              theMode) override
+  void Compute(const occ::handle<PrsMgr_PresentationManager>&,
+               const occ::handle<Prs3d_Presentation>& thePrs,
+               const int                              theMode) override
   {
     switch (theMode)
     {
@@ -5846,8 +5843,7 @@ public:
   }
 
   //! Compute selection.
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override
   {
     if (theMode == 0)
     {
@@ -6559,7 +6555,7 @@ public:
 
 protected:
   //! Evaluate the command.
-  virtual void update(const AIS_AnimationProgress& theProgress) override
+  void update(const AIS_AnimationProgress& theProgress) override
   {
     TCollection_AsciiString aCmd = myCommand;
     replace(aCmd, "%pts", TCollection_AsciiString(theProgress.Pts));
@@ -6629,10 +6625,10 @@ public:
   }
 
   //! Start playback.
-  virtual void StartTimer(const double theStartPts,
-                          const double thePlaySpeed,
-                          const bool   theToUpdate,
-                          const bool   theToStopTimer) override
+  void StartTimer(const double theStartPts,
+                  const double thePlaySpeed,
+                  const bool   theToUpdate,
+                  const bool   theToStopTimer) override
   {
     base_type::StartTimer(theStartPts, thePlaySpeed, theToUpdate, theToStopTimer);
     if (theToStopTimer)
@@ -6642,7 +6638,7 @@ public:
   }
 
   //! Pause animation.
-  virtual void Pause() override
+  void Pause() override
   {
     myState = AnimationState_Paused;
     // default implementation would stop all children,
@@ -6652,7 +6648,7 @@ public:
   }
 
   //! Stop animation.
-  virtual void Stop() override
+  void Stop() override
   {
     base_type::Stop();
     abortPlayback();
@@ -6660,7 +6656,7 @@ public:
 
   //! Process one step of the animation according to the input time progress, including all
   //! children.
-  virtual void updateWithChildren(const AIS_AnimationProgress& thePosition) override
+  void updateWithChildren(const AIS_AnimationProgress& thePosition) override
   {
     occ::handle<V3d_View> aView = myView;
     if (!aView.IsNull() && !myCamStart.IsNull())
@@ -8552,7 +8548,7 @@ static int VClipPlane(Draw_Interpretor& theDi, int theArgsNb, const char** theAr
       occ::handle<Graphic3d_Texture2D> aTexture = new Graphic3d_Texture2D(aTextureName);
       if (!aTexture->IsDone())
       {
-        aClipPlane->SetCappingTexture(NULL);
+        aClipPlane->SetCappingTexture(nullptr);
       }
       else
       {
@@ -8907,8 +8903,8 @@ static int VCamera(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVe
     }
     else if (anArgCase == "-dist" || anArgCase == "-distance")
     {
-      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
-      if (anArgValue != NULL && *anArgValue != '-')
+      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : nullptr;
+      if (anArgValue != nullptr && *anArgValue != '-')
       {
         ++anArgIter;
         aCamera->SetDistance(Draw::Atof(anArgValue));
@@ -8918,8 +8914,8 @@ static int VCamera(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVe
     }
     else if (anArgCase == "-iod")
     {
-      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
-      if (anArgValue != NULL && *anArgValue != '-')
+      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : nullptr;
+      if (anArgValue != nullptr && *anArgValue != '-')
       {
         ++anArgIter;
         aCamera->SetIOD(aCamera->GetIODType(), Draw::Atof(anArgValue));
@@ -8961,8 +8957,8 @@ static int VCamera(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVe
     }
     else if (anArgCase == "-zfocus")
     {
-      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
-      if (anArgValue != NULL && *anArgValue != '-')
+      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : nullptr;
+      if (anArgValue != nullptr && *anArgValue != '-')
       {
         ++anArgIter;
         aCamera->SetZFocus(aCamera->ZFocusType(), Draw::Atof(anArgValue));
@@ -9086,8 +9082,8 @@ static int VCamera(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVe
     else if (anArgCase == "-fov" || anArgCase == "-fovy" || anArgCase == "-fovx"
              || anArgCase == "-fov2d")
     {
-      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
-      if (anArgValue != NULL && *anArgValue != '-')
+      const char* anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : nullptr;
+      if (anArgValue != nullptr && *anArgValue != '-')
       {
         ++anArgIter;
         if (anArgCase == "-fov2d")
@@ -12225,12 +12221,12 @@ static int VManipulator(Draw_Interpretor& theDi, int theArgsNb, const char** the
     else if (anArg == "-adjustsize" || anArg == "-noadjustsize")
     {
       anAttachOptions.SetAdjustSize(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
     }
     else if (anArg == "-enablemodes")
     {
       anAttachOptions.SetEnableModes(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
     }
     //
     else if (anArg == "-starttransform" && anArgIter + 2 < theArgsNb
@@ -13638,7 +13634,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 
   TheIsInitialized = true;
   // define destruction callback to destroy views in a well-defined order
-  Tcl_CreateExitHandler(ViewerTest_ExitProc, 0);
+  Tcl_CreateExitHandler(ViewerTest_ExitProc, nullptr);
 
   const char* aGroup    = "AIS Viewer";
   const char* aFileName = __FILE__;

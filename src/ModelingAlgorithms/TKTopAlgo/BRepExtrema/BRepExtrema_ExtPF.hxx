@@ -29,7 +29,7 @@ class BRepExtrema_ExtPF
 public:
   DEFINE_STANDARD_ALLOC
 
-  BRepExtrema_ExtPF() {}
+  BRepExtrema_ExtPF() = default;
 
   //! It calculates all the distances.
   Standard_EXPORT BRepExtrema_ExtPF(const TopoDS_Vertex&  TheVertex,

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ExtrudedAreaSolid, StepShape_SweptAreaSolid)
 
-StepShape_ExtrudedAreaSolid::StepShape_ExtrudedAreaSolid() {}
+StepShape_ExtrudedAreaSolid::StepShape_ExtrudedAreaSolid() = default;
 
 void StepShape_ExtrudedAreaSolid::Init(const occ::handle<TCollection_HAsciiString>&     aName,
                                        const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,

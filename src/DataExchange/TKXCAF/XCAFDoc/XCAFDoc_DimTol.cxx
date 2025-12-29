@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DimTol, TDF_Attribute)
 
 //=================================================================================================
 
-XCAFDoc_DimTol::XCAFDoc_DimTol() {}
+XCAFDoc_DimTol::XCAFDoc_DimTol() = default;
 
 //=================================================================================================
 

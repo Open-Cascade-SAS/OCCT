@@ -31,7 +31,7 @@
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESDimen_ToolDimensionUnits::IGESDimen_ToolDimensionUnits() {}
+IGESDimen_ToolDimensionUnits::IGESDimen_ToolDimensionUnits() = default;
 
 void IGESDimen_ToolDimensionUnits::ReadOwnParams(
   const occ::handle<IGESDimen_DimensionUnits>& ent,

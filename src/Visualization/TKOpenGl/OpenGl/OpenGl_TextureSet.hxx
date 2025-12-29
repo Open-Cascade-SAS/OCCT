@@ -46,7 +46,7 @@ public:
   {
   public:
     //! Empty constructor.
-    Iterator() {}
+    Iterator() = default;
 
     //! Constructor.
     Iterator(const occ::handle<OpenGl_TextureSet>& theSet)

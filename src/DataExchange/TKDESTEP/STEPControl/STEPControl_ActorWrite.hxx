@@ -43,9 +43,9 @@ class STEPControl_ActorWrite : public Transfer_ActorOfFinderProcess
 public:
   Standard_EXPORT STEPControl_ActorWrite();
 
-  Standard_EXPORT virtual bool Recognize(const occ::handle<Transfer_Finder>& start) override;
+  Standard_EXPORT bool Recognize(const occ::handle<Transfer_Finder>& start) override;
 
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Transfer_Finder>&        start,
     const occ::handle<Transfer_FinderProcess>& FP,
     const Message_ProgressRange&               theProgress = Message_ProgressRange()) override;
@@ -56,7 +56,7 @@ public:
     occ::handle<StepGeom_GeometricRepresentationItem>&          AX1,
     const occ::handle<Transfer_FinderProcess>&                  FP,
     const StepData_Factors&                                 theLocalFactors = StepData_Factors(),
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = NULL,
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = nullptr,
     const bool                                              isManifold      = true,
     const Message_ProgressRange&                            theProgress = Message_ProgressRange());
 
@@ -65,7 +65,7 @@ public:
     const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR,
     const occ::handle<Transfer_FinderProcess>&                  FP,
     const StepData_Factors&                                 theLocalFactors = StepData_Factors(),
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = NULL,
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = nullptr,
     const bool                                              isManifold      = true,
     const Message_ProgressRange&                            theProgress = Message_ProgressRange());
 

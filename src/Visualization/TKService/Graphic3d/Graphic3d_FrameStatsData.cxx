@@ -31,16 +31,8 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
 //=================================================================================================
 
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(const Graphic3d_FrameStatsData& theOther)
-    : myCounters(theOther.myCounters),
-      myTimers(theOther.myTimers),
-      myTimersMin(theOther.myTimersMin),
-      myTimersMax(theOther.myTimersMax),
-      myFps(theOther.myFps),
-      myFpsCpu(theOther.myFpsCpu),
-      myFpsImmediate(theOther.myFpsImmediate),
-      myFpsCpuImmediate(theOther.myFpsCpuImmediate)
-{
-}
+
+  = default;
 
 //=================================================================================================
 

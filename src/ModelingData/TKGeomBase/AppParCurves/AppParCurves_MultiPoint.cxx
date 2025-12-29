@@ -99,7 +99,7 @@ AppParCurves_MultiPoint::AppParCurves_MultiPoint(const NCollection_Array1<gp_Pnt
   }
 }
 
-AppParCurves_MultiPoint::~AppParCurves_MultiPoint() {}
+AppParCurves_MultiPoint::~AppParCurves_MultiPoint() = default;
 
 void AppParCurves_MultiPoint::Transform(const int    CuIndex,
                                         const double x,

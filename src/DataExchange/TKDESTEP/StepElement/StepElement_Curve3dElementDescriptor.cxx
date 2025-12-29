@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_Ele
 
 //=================================================================================================
 
-StepElement_Curve3dElementDescriptor::StepElement_Curve3dElementDescriptor() {}
+StepElement_Curve3dElementDescriptor::StepElement_Curve3dElementDescriptor() = default;
 
 //=================================================================================================
 

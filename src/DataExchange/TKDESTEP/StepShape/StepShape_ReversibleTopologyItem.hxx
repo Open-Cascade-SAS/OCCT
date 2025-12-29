@@ -47,7 +47,7 @@ public:
   //! 5 -> ClosedShell
   //! 6 -> OpenShell
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Edge (Null if another type)
   Standard_EXPORT occ::handle<StepShape_Edge> Edge() const;

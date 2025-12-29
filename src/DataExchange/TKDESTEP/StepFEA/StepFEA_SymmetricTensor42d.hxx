@@ -38,7 +38,7 @@ public:
   //! Recognizes a kind of SymmetricTensor42d select type
   //! 1 -> HArray1OfReal from TColStd
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as AnisotropicSymmetricTensor42d (or Null if another type)
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor42d() const;

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeLoop, StepShape_Loop)
 
-StepShape_EdgeLoop::StepShape_EdgeLoop() {}
+StepShape_EdgeLoop::StepShape_EdgeLoop() = default;
 
 void StepShape_EdgeLoop::Init(
   const occ::handle<TCollection_HAsciiString>&                                 aName,

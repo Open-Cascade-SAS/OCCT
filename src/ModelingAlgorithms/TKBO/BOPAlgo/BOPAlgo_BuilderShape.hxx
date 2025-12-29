@@ -106,7 +106,7 @@ public: //! @name History methods
     // If the History has not been requested to be filled, return the NULL
     // explicitly as the History may be partially filled for the algorithm's
     // internal needs.
-    return NULL;
+    return nullptr;
   }
 
 public: //! @name Enabling/Disabling the history collection.
@@ -119,8 +119,7 @@ public: //! @name Enabling/Disabling the history collection.
 protected: //! @name Constructors
   //! Empty constructor
   BOPAlgo_BuilderShape()
-      : BOPAlgo_Algo(),
-        myFillHistory(true)
+      : myFillHistory(true)
   {
   }
 
@@ -133,7 +132,7 @@ protected: //! @name Constructors
 
 protected: //! @name Clearing
   //! Clears the content of the algorithm.
-  virtual void Clear() override
+  void Clear() override
   {
     BOPAlgo_Algo::Clear();
     myHistory.Nullify();

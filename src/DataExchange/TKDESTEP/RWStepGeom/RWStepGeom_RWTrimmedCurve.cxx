@@ -24,7 +24,7 @@
 
 #include "RWStepGeom_RWTrimmingPreference.pxx"
 
-RWStepGeom_RWTrimmedCurve::RWStepGeom_RWTrimmedCurve() {}
+RWStepGeom_RWTrimmedCurve::RWStepGeom_RWTrimmedCurve() = default;
 
 void RWStepGeom_RWTrimmedCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

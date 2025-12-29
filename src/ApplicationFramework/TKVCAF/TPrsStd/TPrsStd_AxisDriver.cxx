@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AxisDriver, TPrsStd_Driver)
 
 //=================================================================================================
 
-TPrsStd_AxisDriver::TPrsStd_AxisDriver() {}
+TPrsStd_AxisDriver::TPrsStd_AxisDriver() = default;
 
 //=================================================================================================
 

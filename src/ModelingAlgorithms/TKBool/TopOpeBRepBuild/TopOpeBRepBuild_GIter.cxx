@@ -21,13 +21,13 @@
 
 TopOpeBRepBuild_GIter::TopOpeBRepBuild_GIter()
     : myII(0),
-      mypG(NULL)
+      mypG(nullptr)
 {
 }
 
 TopOpeBRepBuild_GIter::TopOpeBRepBuild_GIter(const TopOpeBRepBuild_GTopo& G)
     : myII(0),
-      mypG(NULL)
+      mypG(nullptr)
 {
   Init(G);
 }

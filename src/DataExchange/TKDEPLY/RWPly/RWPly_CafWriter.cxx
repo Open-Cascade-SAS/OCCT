@@ -66,7 +66,7 @@ bool RWPly_CafWriter::Perform(
   NCollection_Sequence<TDF_Label> aRoots;
   occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRoots);
-  return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
+  return Perform(theDocument, aRoots, nullptr, theFileInfo, theProgress);
 }
 
 //=================================================================================================
@@ -88,7 +88,7 @@ bool RWPly_CafWriter::Perform(
     myCSTrsf.SetInputLengthUnit(aLengthUnit);
   }
 
-  if (theRootLabels.IsEmpty() || (theLabelFilter != NULL && theLabelFilter->IsEmpty()))
+  if (theRootLabels.IsEmpty() || (theLabelFilter != nullptr && theLabelFilter->IsEmpty()))
   {
     Message::SendFail("Nothing to export into PLY file");
     return false;
@@ -103,7 +103,7 @@ bool RWPly_CafWriter::Perform(
        aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-    if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+    if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
     {
       continue;
     }
@@ -154,7 +154,7 @@ bool RWPly_CafWriter::Perform(
          aDocExplorer.Next())
     {
       const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-      if (theLabelFilter != NULL && !theLabelFilter->Contains(aDocNode.Id))
+      if (theLabelFilter != nullptr && !theLabelFilter->Contains(aDocNode.Id))
       {
         continue;
       }

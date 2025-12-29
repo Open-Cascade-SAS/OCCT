@@ -140,7 +140,7 @@ const Graphic3d_ZLayerSettings& Graphic3d_GraphicDriver::ZLayerSettings(
   const Graphic3d_ZLayerId theLayerId) const
 {
   const occ::handle<Graphic3d_Layer>* aLayer = myLayerIds.Seek(theLayerId);
-  if (aLayer == NULL)
+  if (aLayer == nullptr)
   {
     throw Standard_OutOfRange(
       "Graphic3d_GraphicDriver::ZLayerSettings, Layer with theLayerId does not exist");

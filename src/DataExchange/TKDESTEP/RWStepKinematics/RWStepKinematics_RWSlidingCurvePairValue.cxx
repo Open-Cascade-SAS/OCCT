@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWSlidingCurvePairValue::RWStepKinematics_RWSlidingCurvePairValue() {}
+RWStepKinematics_RWSlidingCurvePairValue::RWStepKinematics_RWSlidingCurvePairValue() = default;
 
 //=================================================================================================
 

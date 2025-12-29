@@ -50,7 +50,7 @@ public:
   Standard_EXPORT Graphic3d_ShaderManager(Aspect_GraphicsLibrary theGapi);
 
   //! Releases resources of shader manager.
-  Standard_EXPORT virtual ~Graphic3d_ShaderManager();
+  Standard_EXPORT ~Graphic3d_ShaderManager() override;
 
   //! @return true if detected GL version is greater or equal to requested one.
   bool IsGapiGreaterEqual(int theVerMajor, int theVerMinor) const

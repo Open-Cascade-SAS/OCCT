@@ -28,8 +28,8 @@
 #include <TopoDS_Shape.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 //
 //
 static int bfillds(Draw_Interpretor&, int, const char**);
@@ -347,7 +347,7 @@ int bbop(Draw_Interpretor& di, int n, const char** a)
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
-  BOPAlgo_Builder* pBuilder = NULL;
+  BOPAlgo_Builder* pBuilder = nullptr;
 
   if (anOp != BOPAlgo_SECTION)
   {

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWRatioMeasureWithUnit::RWStepBasic_RWRatioMeasureWithUnit() {}
+RWStepBasic_RWRatioMeasureWithUnit::RWStepBasic_RWRatioMeasureWithUnit() = default;
 
 //=================================================================================================
 

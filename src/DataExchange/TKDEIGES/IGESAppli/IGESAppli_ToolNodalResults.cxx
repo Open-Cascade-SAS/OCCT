@@ -36,7 +36,7 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
-IGESAppli_ToolNodalResults::IGESAppli_ToolNodalResults() {}
+IGESAppli_ToolNodalResults::IGESAppli_ToolNodalResults() = default;
 
 void IGESAppli_ToolNodalResults::ReadOwnParams(const occ::handle<IGESAppli_NodalResults>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

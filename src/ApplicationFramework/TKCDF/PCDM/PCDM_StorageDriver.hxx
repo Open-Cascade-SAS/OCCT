@@ -61,13 +61,13 @@ public:
   //!
   //! by default Write will use Make method to build a persistent
   //! document and the Schema method to write the persistent document.
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>&  aDocument,
     const TCollection_ExtendedString& aFileName,
     const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   //! Write <theDocument> to theOStream
-  Standard_EXPORT virtual void Write(
+  Standard_EXPORT void Write(
     const occ::handle<CDM_Document>& theDocument,
     Standard_OStream&                theOStream,
     const Message_ProgressRange&     theRange = Message_ProgressRange()) override;

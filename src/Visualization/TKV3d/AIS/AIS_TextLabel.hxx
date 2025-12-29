@@ -34,19 +34,19 @@ public:
   Standard_EXPORT AIS_TextLabel();
 
   //! Return TRUE for supported display mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Setup color of entire text.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Setup transparency within [0, 1] range.
-  Standard_EXPORT virtual void SetTransparency(const double theValue) override;
+  Standard_EXPORT void SetTransparency(const double theValue) override;
 
   //! Removes the transparency setting.
-  virtual void UnsetTransparency() override { SetTransparency(0.0); }
+  void UnsetTransparency() override { SetTransparency(0.0); }
 
   //! Material has no effect for text label.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect&) override {}
+  void SetMaterial(const Graphic3d_MaterialAspect&) override {}
 
   //! Setup text.
   Standard_EXPORT void SetText(const TCollection_ExtendedString& theText);
@@ -134,14 +134,13 @@ public:
 
 protected:
   //! Compute
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Calculate label center, width and height
   Standard_EXPORT bool calculateLabelParams(const gp_Pnt& thePosition,

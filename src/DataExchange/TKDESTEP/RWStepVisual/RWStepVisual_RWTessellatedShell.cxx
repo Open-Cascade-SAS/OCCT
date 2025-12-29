@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedShell::RWStepVisual_RWTessellatedShell() {}
+RWStepVisual_RWTessellatedShell::RWStepVisual_RWTessellatedShell() = default;
 
 //=================================================================================================
 

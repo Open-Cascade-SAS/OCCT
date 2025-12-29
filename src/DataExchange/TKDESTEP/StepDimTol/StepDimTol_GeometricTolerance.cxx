@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricTolerance, Standard_Transient)
 
 //=================================================================================================
 
-StepDimTol_GeometricTolerance::StepDimTol_GeometricTolerance() {}
+StepDimTol_GeometricTolerance::StepDimTol_GeometricTolerance() = default;
 
 //=================================================================================================
 

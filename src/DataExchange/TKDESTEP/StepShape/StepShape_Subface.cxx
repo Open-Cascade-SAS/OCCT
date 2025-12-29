@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Subface, StepShape_Face)
 
 //=================================================================================================
 
-StepShape_Subface::StepShape_Subface() {}
+StepShape_Subface::StepShape_Subface() = default;
 
 //=================================================================================================
 

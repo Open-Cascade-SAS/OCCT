@@ -172,7 +172,7 @@ static int TranslateFrom(const BinObjMgt_Persistent& theSource,
 BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()),
-      myShapeSet(NULL),
+      myShapeSet(nullptr),
       myWithTriangles(false),
       myWithNormals(false),
       myIsQuickPart(false)
@@ -213,7 +213,7 @@ bool BinMNaming_NamedShapeDriver::Paste(const BinObjMgt_Persistent&       theSou
   aTAtt->SetVersion(anEvol);
 
   BinTools_ShapeSetBase* aShapeSet = const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet(true);
-  Standard_IStream*      aDirectStream = NULL;
+  Standard_IStream*      aDirectStream = nullptr;
   if (myIsQuickPart) // enables direct reading of shapes from the stream
     aDirectStream = const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream();
 
@@ -302,7 +302,7 @@ void BinMNaming_NamedShapeDriver::Paste(
   theTarget << aSAtt->Version();
   theTarget << EvolutionToChar(anEvol);
 
-  Standard_OStream* aDirectStream = NULL;
+  Standard_OStream* aDirectStream = nullptr;
   if (myIsQuickPart) // enables direct writing of shapes to the stream
     aDirectStream = theTarget.GetOStream();
 
@@ -357,7 +357,7 @@ void BinMNaming_NamedShapeDriver::Clear()
   {
     myShapeSet->Clear();
     delete myShapeSet;
-    myShapeSet = NULL;
+    myShapeSet = nullptr;
   }
 }
 

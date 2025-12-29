@@ -200,16 +200,15 @@ public:
                           const GeomAbs_Shape Order);
 
   //! Builds the resulting faces
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Tests whether computation of the filling plate has been completed.
-  Standard_EXPORT virtual bool IsDone() const override;
+  Standard_EXPORT bool IsDone() const override;
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the maximum distance between the result and
   //! the constraints. This is set at construction time.

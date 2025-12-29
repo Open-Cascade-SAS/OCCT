@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepKinematics_RigidPlacement::StepKinematics_RigidPlacement() {}
+StepKinematics_RigidPlacement::StepKinematics_RigidPlacement() = default;
 
 //=================================================================================================
 

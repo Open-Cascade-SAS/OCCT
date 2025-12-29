@@ -43,7 +43,7 @@ occ::handle<TDataStd_Tick> TDataStd_Tick::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-TDataStd_Tick::TDataStd_Tick() {}
+TDataStd_Tick::TDataStd_Tick() = default;
 
 //=================================================================================================
 

@@ -45,7 +45,7 @@ public:
 
 protected:
   //! Returns always True, because RootResult gives a Unique list
-  Standard_EXPORT virtual bool HasUniqueResult() const override;
+  Standard_EXPORT bool HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectDiff_HeaderFile

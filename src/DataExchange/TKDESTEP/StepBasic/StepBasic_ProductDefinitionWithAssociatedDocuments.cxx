@@ -20,9 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionWithAssociatedDocuments,
                            StepBasic_ProductDefinition)
 
 StepBasic_ProductDefinitionWithAssociatedDocuments::
-  StepBasic_ProductDefinitionWithAssociatedDocuments()
-{
-}
+  StepBasic_ProductDefinitionWithAssociatedDocuments() = default;
 
 void StepBasic_ProductDefinitionWithAssociatedDocuments::Init(
   const occ::handle<TCollection_HAsciiString>&                             aId,

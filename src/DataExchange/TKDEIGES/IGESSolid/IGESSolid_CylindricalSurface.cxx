@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_CylindricalSurface, IGESData_IGESEntity)
 
-IGESSolid_CylindricalSurface::IGESSolid_CylindricalSurface() {}
+IGESSolid_CylindricalSurface::IGESSolid_CylindricalSurface() = default;
 
 void IGESSolid_CylindricalSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
                                         const occ::handle<IGESGeom_Direction>& anAxis,

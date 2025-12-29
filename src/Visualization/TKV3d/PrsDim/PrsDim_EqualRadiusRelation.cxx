@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EqualRadiusRelation, PrsDim_Relation)
 PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&             aFirstEdge,
                                                        const TopoDS_Edge&             aSecondEdge,
                                                        const occ::handle<Geom_Plane>& aPlane)
-    : PrsDim_Relation()
+
 {
   myFShape = aFirstEdge;
   mySShape = aSecondEdge;

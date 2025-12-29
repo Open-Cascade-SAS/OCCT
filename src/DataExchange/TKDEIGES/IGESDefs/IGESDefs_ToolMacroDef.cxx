@@ -33,7 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESDefs_ToolMacroDef::IGESDefs_ToolMacroDef() {}
+IGESDefs_ToolMacroDef::IGESDefs_ToolMacroDef() = default;
 
 void IGESDefs_ToolMacroDef::ReadOwnParams(const occ::handle<IGESDefs_MacroDef>& ent,
                                           const occ::handle<IGESData_IGESReaderData>& /* IR */,

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d() {}
+StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d() = default;
 
 //=================================================================================================
 
@@ -110,13 +110,13 @@ occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::Orthotropic
   occ::handle<StepFEA_SymmetricTensor23dMember> SelMem =
     occ::down_cast<StepFEA_SymmetricTensor23dMember>(Value());
   if (SelMem.IsNull())
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ORTHOTROPIC_SYMMETRIC_TENSOR2_3D");
   if (name->IsDifferent(nameitem))
-    return 0;
+    return nullptr;
   occ::handle<NCollection_HArray1<double>> val /* = SelMem->HArray1OfReal()*/;
   return val;
 }
@@ -144,13 +144,13 @@ occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::Anisotropic
   occ::handle<StepFEA_SymmetricTensor23dMember> SelMem =
     occ::down_cast<StepFEA_SymmetricTensor23dMember>(Value());
   if (SelMem.IsNull())
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ANISOTROPIC_SYMMETRIC_TENSOR2_3D");
   if (name->IsDifferent(nameitem))
-    return 0;
+    return nullptr;
   occ::handle<NCollection_HArray1<double>> val /*= SelMem->HArray1OfReal()*/;
   return val;
 }

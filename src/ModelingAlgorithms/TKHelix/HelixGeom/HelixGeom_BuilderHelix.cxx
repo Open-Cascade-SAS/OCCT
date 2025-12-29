@@ -22,13 +22,12 @@
 //=================================================================================================
 
 HelixGeom_BuilderHelix::HelixGeom_BuilderHelix()
-    : HelixGeom_BuilderHelixGen()
-{
-}
+
+  = default;
 
 //=================================================================================================
 
-HelixGeom_BuilderHelix::~HelixGeom_BuilderHelix() {}
+HelixGeom_BuilderHelix::~HelixGeom_BuilderHelix() = default;
 
 //=================================================================================================
 

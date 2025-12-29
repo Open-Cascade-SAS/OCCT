@@ -79,12 +79,12 @@ public:
 
   //! Empty constructor.
   Standard_EXPORT BOPAlgo_Builder();
-  Standard_EXPORT virtual ~BOPAlgo_Builder();
+  Standard_EXPORT ~BOPAlgo_Builder() override;
 
   Standard_EXPORT BOPAlgo_Builder(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears the content of the algorithm.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Returns the PaveFiller, algorithm for sub-shapes intersection.
   BOPAlgo_PPaveFiller PPaveFiller() { return myPaveFiller; }
@@ -135,7 +135,7 @@ public: //! @name Options
 public: //! @name Performing the operation
   //! Performs the operation.
   //! The intersection will be performed also.
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Performs the operation with the prepared filler.
@@ -189,7 +189,7 @@ public: //! @name BOPs on open solids
                                         const NCollection_List<TopoDS_Shape>& theTools,
                                         const TopAbs_State                    theToolsState,
                                         const Message_ProgressRange&          theRange,
-                                        occ::handle<Message_Report>           theReport = NULL);
+                                        occ::handle<Message_Report>           theReport = nullptr);
 
   //! Builds the result of Boolean operation of given type
   //! basing on the result of Builder operation (GF or any other).
@@ -215,7 +215,7 @@ public: //! @name BOPs on open solids
                 const NCollection_List<TopoDS_Shape>& theTools,
                 const BOPAlgo_Operation               theOperation,
                 const Message_ProgressRange&          theRange,
-                occ::handle<Message_Report>           theReport = NULL)
+                occ::handle<Message_Report>           theReport = nullptr)
   {
     TopAbs_State anObjState, aToolsState;
     switch (theOperation)
@@ -397,7 +397,7 @@ protected: //! @name Methods for building the result
 
 protected: //! @name Checking input arguments
   //! Checks the input data.
-  Standard_EXPORT virtual void CheckData() override;
+  Standard_EXPORT void CheckData() override;
 
   //! Checks if the intersection algorithm has Errors/Warnings.
   Standard_EXPORT void CheckFiller();

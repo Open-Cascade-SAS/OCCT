@@ -36,7 +36,7 @@ BOPAlgo_Algo::BOPAlgo_Algo(const occ::handle<NCollection_BaseAllocator>& theAllo
 
 //=================================================================================================
 
-BOPAlgo_Algo::~BOPAlgo_Algo() {}
+BOPAlgo_Algo::~BOPAlgo_Algo() = default;
 
 //=================================================================================================
 

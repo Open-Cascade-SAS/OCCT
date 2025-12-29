@@ -62,9 +62,9 @@ public:
     }
 
   private:
-    NodeClassifier(const NodeClassifier& theOther);
+    NodeClassifier(const NodeClassifier& theOther) = delete;
 
-    void operator=(const NodeClassifier& theOther);
+    void operator=(const NodeClassifier& theOther) = delete;
 
   private:
     const occ::handle<BRepMesh_DataStructureOfDelaun>& myStructure;
@@ -78,7 +78,7 @@ public:
     const occ::handle<BRepMesh_DataStructureOfDelaun>& theStructure);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_MeshTool();
+  Standard_EXPORT ~BRepMesh_MeshTool() override;
 
   //! Returns data structure manipulated by this tool.
   const occ::handle<BRepMesh_DataStructureOfDelaun>& GetStructure() const { return myStructure; }

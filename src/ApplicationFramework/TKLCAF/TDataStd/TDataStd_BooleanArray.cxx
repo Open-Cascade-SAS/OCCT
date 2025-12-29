@@ -165,21 +165,21 @@ bool TDataStd_BooleanArray::Value(const int index) const
 
 //=================================================================================================
 
-int TDataStd_BooleanArray::Lower(void) const
+int TDataStd_BooleanArray::Lower() const
 {
   return myLower;
 }
 
 //=================================================================================================
 
-int TDataStd_BooleanArray::Upper(void) const
+int TDataStd_BooleanArray::Upper() const
 {
   return myUpper;
 }
 
 //=================================================================================================
 
-int TDataStd_BooleanArray::Length(void) const
+int TDataStd_BooleanArray::Length() const
 {
   return myUpper - myLower + 1;
 }

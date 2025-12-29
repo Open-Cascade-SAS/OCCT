@@ -97,11 +97,11 @@ public:
 
   //! Releases all OpenGL resources.
   //! It must be called before destruction.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  virtual size_t EstimatedDataSize() const override
+  size_t EstimatedDataSize() const override
   {
     unsigned int aDiffIBLMapSidePixelsCount = 1 << myPow2Size;
     aDiffIBLMapSidePixelsCount *= aDiffIBLMapSidePixelsCount;
@@ -122,7 +122,7 @@ public:
   //! Destructor.
   //! Warning! 'Release' method must be called before destruction.
   //! Otherwise unhandled critical error will be generated.
-  Standard_EXPORT virtual ~OpenGl_PBREnvironment();
+  Standard_EXPORT ~OpenGl_PBREnvironment() override;
 
 private:
   //! Creates new PBR environment.

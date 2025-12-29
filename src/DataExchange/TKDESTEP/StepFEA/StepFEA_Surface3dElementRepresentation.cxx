@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_Surface3dElementRepresentation, StepFEA_Eleme
 
 //=================================================================================================
 
-StepFEA_Surface3dElementRepresentation::StepFEA_Surface3dElementRepresentation() {}
+StepFEA_Surface3dElementRepresentation::StepFEA_Surface3dElementRepresentation() = default;
 
 //=================================================================================================
 

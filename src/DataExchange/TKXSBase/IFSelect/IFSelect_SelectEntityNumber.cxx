@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
 
-IFSelect_SelectEntityNumber::IFSelect_SelectEntityNumber() {}
+IFSelect_SelectEntityNumber::IFSelect_SelectEntityNumber() = default;
 
 void IFSelect_SelectEntityNumber::SetNumber(const occ::handle<IFSelect_IntParam>& num)
 {

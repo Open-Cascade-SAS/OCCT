@@ -135,7 +135,7 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
 
   // iterate on operators in the sequence
   bool                  isDone = false;
-  Message_ProgressScope aPS(theProgress, NULL, sequenceOfOperators.Length());
+  Message_ProgressScope aPS(theProgress, nullptr, sequenceOfOperators.Length());
   for (i = 1; i <= sequenceOfOperators.Length() && aPS.More(); i++)
   {
     oper                         = sequenceOfOperators.Value(i);

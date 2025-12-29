@@ -194,7 +194,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
 
   DataMapNode** aData = (DataMapNode**)myData1;
   const size_t  aHash = hashCode(thePos, theNorm, NbBuckets());
-  for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != NULL;
+  for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != nullptr;
        aNodeIter              = (DataMapNode*)aNodeIter->Next())
   {
     if (isEqual(aNodeIter->Key(), thePos, theNorm, theIsOpposite))
@@ -218,7 +218,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
     {
       const CellVec3i anIndex = anIndexCnt + THE_NEIGHBRS[aNeigIter];
       const size_t    aHashEx = vec3iHashCode(anIndex, NbBuckets());
-      for (DataMapNode* aNodeIter = aData[aHashEx]; aNodeIter != NULL;
+      for (DataMapNode* aNodeIter = aData[aHashEx]; aNodeIter != nullptr;
            aNodeIter              = (DataMapNode*)aNodeIter->Next())
       {
         if (isEqual(aNodeIter->Key(), thePos, theNorm, theIsOpposite))
@@ -239,8 +239,8 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
 
 inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
 {
-  NCollection_ListNode** aNewData   = NULL;
-  NCollection_ListNode** aDummy     = NULL;
+  NCollection_ListNode** aNewData   = nullptr;
+  NCollection_ListNode** aDummy     = nullptr;
   int                    aNbNewBuck = 0;
   if (BeginResize(theSize, aNbNewBuck, aNewData, aDummy))
   {
@@ -248,7 +248,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
     {
       for (int anOldBuckIter = 0; anOldBuckIter <= NbBuckets(); ++anOldBuckIter)
       {
-        for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != NULL;)
+        for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != nullptr;)
         {
           const size_t aNewHash  = hashCode(anOldNodeIter->Key(), aNbNewBuck);
           DataMapNode* aNextNode = (DataMapNode*)anOldNodeIter->Next();

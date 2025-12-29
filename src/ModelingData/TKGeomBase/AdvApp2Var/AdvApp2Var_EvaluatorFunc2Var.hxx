@@ -41,10 +41,10 @@ class AdvApp2Var_EvaluatorFunc2Var
 {
 public:
   //! Empty constructor
-  AdvApp2Var_EvaluatorFunc2Var() {}
+  AdvApp2Var_EvaluatorFunc2Var() = default;
 
   //! Destructor should be declared as virtual
-  virtual ~AdvApp2Var_EvaluatorFunc2Var() {}
+  virtual ~AdvApp2Var_EvaluatorFunc2Var() = default;
 
   //! Function evaluation method to be defined by descendant
   virtual void Evaluate(int*    theDimension,
@@ -87,7 +87,7 @@ public:
 
 private:
   //! Copy constructor is declared private to forbid copying
-  AdvApp2Var_EvaluatorFunc2Var(const AdvApp2Var_EvaluatorFunc2Var&) {}
+  AdvApp2Var_EvaluatorFunc2Var(const AdvApp2Var_EvaluatorFunc2Var&) = default;
 
   //! Assignment operator is declared private to forbid copying
   void operator=(const AdvApp2Var_EvaluatorFunc2Var&) {}

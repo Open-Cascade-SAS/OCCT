@@ -21,7 +21,7 @@
 
 const LDOM_BasicNode& LDOM_Node::Origin() const
 {
-  if (myOrigin == NULL)
+  if (myOrigin == nullptr)
   {
     static LDOM_BasicNode aNullNode;
     return aNullNode;
@@ -41,13 +41,7 @@ const LDOM_MemManager& LDOM_Node::getOwnerDocument() const
 // purpose  : Assignment
 //=======================================================================
 
-LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther)
-{
-  myDocument  = theOther.myDocument;
-  myOrigin    = theOther.myOrigin;
-  myLastChild = theOther.myLastChild;
-  return *this;
-}
+LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther) = default;
 
 //=======================================================================
 // function : operator =
@@ -57,8 +51,8 @@ LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther)
 LDOM_Node& LDOM_Node::operator=(const LDOM_NullPtr* /*aNull*/)
 {
   myDocument.Nullify();
-  myOrigin    = NULL;
-  myLastChild = NULL;
+  myOrigin    = nullptr;
+  myLastChild = nullptr;
   return *this;
 }
 
@@ -66,7 +60,7 @@ LDOM_Node& LDOM_Node::operator=(const LDOM_NullPtr* /*aNull*/)
 
 bool LDOM_Node::isNull() const
 {
-  return myOrigin == NULL || myOrigin->isNull();
+  return myOrigin == nullptr || myOrigin->isNull();
 }
 
 //=======================================================================
@@ -97,7 +91,7 @@ bool LDOM_Node::operator!=(const LDOM_Node& anOther) const
 
 LDOM_Node::NodeType LDOM_Node::getNodeType() const
 {
-  return myOrigin == NULL ? UNKNOWN : myOrigin->getNodeType();
+  return myOrigin == nullptr ? UNKNOWN : myOrigin->getNodeType();
 }
 
 //=================================================================================================
@@ -163,7 +157,7 @@ LDOM_Node LDOM_Node::getLastChild() const
   const NodeType aType = getNodeType();
   if (aType == ELEMENT_NODE)
   {
-    if (myLastChild == NULL)
+    if (myLastChild == nullptr)
     {
       const LDOM_BasicElement& anElement  = *(const LDOM_BasicElement*)myOrigin;
       (const LDOM_BasicNode*&)myLastChild = anElement.GetLastChild();
@@ -192,11 +186,11 @@ void LDOM_Node::removeChild(const LDOM_Node& aChild)
   if (aType == ELEMENT_NODE)
   {
     const LDOM_BasicElement& anElement = *(LDOM_BasicElement*)myOrigin;
-    if (aChild != NULL)
+    if (aChild != nullptr)
       anElement.RemoveChild(aChild.myOrigin);
     if (aChild.myOrigin == myLastChild)
       //      myLastChild = anElement.GetLastChild();
-      myLastChild = NULL;
+      myLastChild = nullptr;
   }
 }
 
@@ -205,7 +199,7 @@ void LDOM_Node::removeChild(const LDOM_Node& aChild)
 void LDOM_Node::appendChild(const LDOM_Node& aChild)
 {
   const NodeType aType = getNodeType();
-  if (aType == ELEMENT_NODE && aChild != NULL)
+  if (aType == ELEMENT_NODE && aChild != nullptr)
   {
     if (myLastChild)
     {
@@ -240,7 +234,7 @@ bool LDOM_Node::hasChildNodes() const
 
 void LDOM_Node::SetValueClear() const
 {
-  LDOMBasicString* aValue = NULL;
+  LDOMBasicString* aValue = nullptr;
   switch (getNodeType())
   {
     case ATTRIBUTE_NODE: {

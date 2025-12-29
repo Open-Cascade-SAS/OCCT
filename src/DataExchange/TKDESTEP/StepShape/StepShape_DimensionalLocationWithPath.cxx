@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalLocationWithPath, StepShape_Dime
 
 //=================================================================================================
 
-StepShape_DimensionalLocationWithPath::StepShape_DimensionalLocationWithPath() {}
+StepShape_DimensionalLocationWithPath::StepShape_DimensionalLocationWithPath() = default;
 
 //=================================================================================================
 

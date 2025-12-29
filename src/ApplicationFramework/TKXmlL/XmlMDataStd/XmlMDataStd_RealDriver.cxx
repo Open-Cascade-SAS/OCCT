@@ -23,14 +23,14 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealDriver, XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING(AttributeIDString, "realattguid")
 
 //=================================================================================================
 
 XmlMDataStd_RealDriver::XmlMDataStd_RealDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

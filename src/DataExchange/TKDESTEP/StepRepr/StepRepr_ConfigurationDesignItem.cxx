@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem() {}
+StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem() = default;
 
 //=================================================================================================
 

@@ -81,7 +81,7 @@ void RWMesh_TriangulationReader::LoadingStatistic::PrintStatistic(
 //=================================================================================================
 
 RWMesh_TriangulationReader::RWMesh_TriangulationReader()
-    : myLoadingStatistic(NULL),
+    : myLoadingStatistic(nullptr),
       myIsDoublePrecision(false),
       myToSkipDegenerateTris(false),
       myToPrintDebugMessages(false)

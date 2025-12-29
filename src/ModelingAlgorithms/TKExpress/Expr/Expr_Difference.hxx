@@ -55,7 +55,7 @@ public:
 
   //! Returns the <N>-th derivative on <X> unknown of <me>.
   //! Raises OutOfRange if <N> <= 0
-  Standard_EXPORT virtual occ::handle<Expr_GeneralExpression> NDerivative(
+  Standard_EXPORT occ::handle<Expr_GeneralExpression> NDerivative(
     const occ::handle<Expr_NamedUnknown>& X,
     const int                             N) const override;
 

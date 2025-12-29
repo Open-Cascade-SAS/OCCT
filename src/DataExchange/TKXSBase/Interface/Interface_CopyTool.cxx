@@ -375,4 +375,4 @@ Interface_EntityIterator Interface_CopyTool::RootResult(const bool withreports) 
 
 //=================================================================================================
 
-Interface_CopyTool::~Interface_CopyTool() {}
+Interface_CopyTool::~Interface_CopyTool() = default;

@@ -37,28 +37,27 @@ class XSDRAW_Vars : public XSControl_Vars
 public:
   Standard_EXPORT XSDRAW_Vars();
 
-  Standard_EXPORT virtual void Set(const char*                            name,
-                                   const occ::handle<Standard_Transient>& val) override;
+  Standard_EXPORT void Set(const char* name, const occ::handle<Standard_Transient>& val) override;
 
-  Standard_EXPORT virtual occ::handle<Geom_Geometry> GetGeom(const char*& name) const override;
+  Standard_EXPORT occ::handle<Geom_Geometry> GetGeom(const char*& name) const override;
 
-  Standard_EXPORT virtual occ::handle<Geom2d_Curve> GetCurve2d(const char*& name) const override;
+  Standard_EXPORT occ::handle<Geom2d_Curve> GetCurve2d(const char*& name) const override;
 
-  Standard_EXPORT virtual occ::handle<Geom_Curve> GetCurve(const char*& name) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> GetCurve(const char*& name) const override;
 
-  Standard_EXPORT virtual occ::handle<Geom_Surface> GetSurface(const char*& name) const override;
+  Standard_EXPORT occ::handle<Geom_Surface> GetSurface(const char*& name) const override;
 
-  Standard_EXPORT virtual void SetPoint(const char* name, const gp_Pnt& val) override;
+  Standard_EXPORT void SetPoint(const char* name, const gp_Pnt& val) override;
 
-  Standard_EXPORT virtual void SetPoint2d(const char* name, const gp_Pnt2d& val) override;
+  Standard_EXPORT void SetPoint2d(const char* name, const gp_Pnt2d& val) override;
 
-  Standard_EXPORT virtual bool GetPoint(const char*& name, gp_Pnt& pnt) const override;
+  Standard_EXPORT bool GetPoint(const char*& name, gp_Pnt& pnt) const override;
 
-  Standard_EXPORT virtual bool GetPoint2d(const char*& name, gp_Pnt2d& pnt) const override;
+  Standard_EXPORT bool GetPoint2d(const char*& name, gp_Pnt2d& pnt) const override;
 
-  Standard_EXPORT virtual void SetShape(const char* name, const TopoDS_Shape& val) override;
+  Standard_EXPORT void SetShape(const char* name, const TopoDS_Shape& val) override;
 
-  Standard_EXPORT virtual TopoDS_Shape GetShape(const char*& name) const override;
+  Standard_EXPORT TopoDS_Shape GetShape(const char*& name) const override;
 
   DEFINE_STANDARD_RTTIEXT(XSDRAW_Vars, XSControl_Vars)
 };

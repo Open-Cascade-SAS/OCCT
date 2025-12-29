@@ -24,7 +24,7 @@
 #include <Precision.hxx>
 
 #ifndef _WIN32
-  #include <string.h>
+  #include <cstring>
 #endif
 
 namespace
@@ -707,9 +707,9 @@ void OpenGl_GraduatedTrihedron::SetMinMax(const NCollection_Vec3<float>& theMin,
 OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAspect& theAspect,
                                       const NCollection_Vec3<float>&                  theDirection)
     : Direction(theDirection),
-      Tickmark(NULL),
-      Line(NULL),
-      Arrow(NULL)
+      Tickmark(nullptr),
+      Line(nullptr),
+      Arrow(nullptr)
 {
   occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(THE_LABEL_HEIGHT);
   aText->SetText((char16_t*)theAspect.Name().ToExtString());
@@ -741,17 +741,17 @@ OpenGl_GraduatedTrihedron::Axis& OpenGl_GraduatedTrihedron::Axis::operator=(cons
   LineAspect = theOther.LineAspect;
   Label      = theOther.Label;
 
-  Line.InitBuffers(NULL,
+  Line.InitBuffers(nullptr,
                    Graphic3d_TOPA_SEGMENTS,
                    theOther.Line.Indices(),
                    theOther.Line.Attributes(),
                    theOther.Line.Bounds());
-  Tickmark.InitBuffers(NULL,
+  Tickmark.InitBuffers(nullptr,
                        Graphic3d_TOPA_SEGMENTS,
                        theOther.Tickmark.Indices(),
                        theOther.Tickmark.Attributes(),
                        theOther.Tickmark.Bounds());
-  Arrow.InitBuffers(NULL,
+  Arrow.InitBuffers(nullptr,
                     Graphic3d_TOPA_POLYLINES,
                     theOther.Arrow.Indices(),
                     theOther.Arrow.Attributes(),

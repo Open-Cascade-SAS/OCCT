@@ -64,7 +64,7 @@ public:
 
   //! Suppresses the structure <me>.
   //! It will be erased at the next screen update.
-  Standard_EXPORT virtual ~Graphic3d_Structure();
+  Standard_EXPORT ~Graphic3d_Structure() override;
 
   //! Displays the structure <me> in all the views of the visualiser.
   Standard_EXPORT virtual void Display();
@@ -366,7 +366,7 @@ public:
   //! Hidden parts stored in this structure are valid if:
   //! 1) the owner is defined.
   //! 2) they are not invalid.
-  bool HLRValidation() const { return myOwner != NULL && myCStructure->HLRValidation != 0; }
+  bool HLRValidation() const { return myOwner != nullptr && myCStructure->HLRValidation != 0; }
 
   //! Return local transformation.
   const occ::handle<TopLoc_Datum3D>& Transformation() const

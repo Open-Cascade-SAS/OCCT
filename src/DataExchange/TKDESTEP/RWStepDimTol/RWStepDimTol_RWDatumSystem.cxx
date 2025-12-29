@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWDatumSystem::RWStepDimTol_RWDatumSystem() {}
+RWStepDimTol_RWDatumSystem::RWStepDimTol_RWDatumSystem() = default;
 
 //=================================================================================================
 

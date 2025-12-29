@@ -30,15 +30,14 @@ class TopoDS_TFace : public TopoDS_TShape
 public:
   //! Creates an empty TFace.
   TopoDS_TFace()
-      : TopoDS_TShape()
-  {
-  }
+
+    = default;
 
   //! returns FACE.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
 
   //! Returns an empty TFace.
-  Standard_EXPORT virtual occ::handle<TopoDS_TShape> EmptyCopy() const override;
+  Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
 };

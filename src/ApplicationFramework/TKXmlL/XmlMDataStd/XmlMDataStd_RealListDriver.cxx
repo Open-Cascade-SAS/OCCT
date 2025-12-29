@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "reallistattguid")
 
 XmlMDataStd_RealListDriver::XmlMDataStd_RealListDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -65,7 +65,7 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
   // Read the FirstIndex; if the attribute is absent initialize to 1
   int                 aFirstInd, aLastInd, ind;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {

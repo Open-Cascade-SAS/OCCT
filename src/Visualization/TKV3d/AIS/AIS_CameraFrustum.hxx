@@ -42,27 +42,26 @@ public:
   Standard_EXPORT void SetCameraFrustum(const occ::handle<Graphic3d_Camera>& theCamera);
 
   //! Setup custom color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Restore default color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Restore transparency setting.
-  Standard_EXPORT virtual void UnsetTransparency() override;
+  Standard_EXPORT void UnsetTransparency() override;
 
   //! Return true if specified display mode is supported.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const override;
+  Standard_EXPORT bool AcceptDisplayMode(const int theMode) const override;
 
 protected:
   //! Computes presentation of camera frustum.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
 private:
   //! Fills triangles primitive array for camera frustum filling.

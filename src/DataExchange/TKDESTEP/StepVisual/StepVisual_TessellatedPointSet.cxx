@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedPointSet, StepVisual_Tessellate
 
 //=================================================================================================
 
-StepVisual_TessellatedPointSet::StepVisual_TessellatedPointSet() {}
+StepVisual_TessellatedPointSet::StepVisual_TessellatedPointSet() = default;
 
 //=================================================================================================
 

@@ -242,7 +242,7 @@ void V3d_View::SetWindow(const occ::handle<V3d_View>&    theParentView,
   myView->SetSubviewMargins(theMargins);
 
   MyWindow = aWindow;
-  myView->SetWindow(aParentView->View(), aWindow, 0);
+  myView->SetWindow(aParentView->View(), aWindow, nullptr);
   MyViewer->SetViewOn(this);
   SetRatio();
 }

@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_GeometryData::TopOpeBRepDS_GeometryData() {}
+TopOpeBRepDS_GeometryData::TopOpeBRepDS_GeometryData() = default;
 
 // modified by NIZNHY-PKV Tue Oct 30 09:25:59 2001 f
 //=================================================================================================

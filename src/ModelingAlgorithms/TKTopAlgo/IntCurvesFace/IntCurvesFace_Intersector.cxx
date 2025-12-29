@@ -524,4 +524,4 @@ bool IntCurvesFace_Intersector::GetUseBoundToler() const
   return myUseBoundTol;
 }
 
-IntCurvesFace_Intersector::~IntCurvesFace_Intersector() {}
+IntCurvesFace_Intersector::~IntCurvesFace_Intersector() = default;

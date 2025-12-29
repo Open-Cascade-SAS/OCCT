@@ -18,7 +18,7 @@
 #include <StepVisual_TextStyle.hxx>
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 
-RWStepVisual_RWTextStyle::RWStepVisual_RWTextStyle() {}
+RWStepVisual_RWTextStyle::RWStepVisual_RWTextStyle() = default;
 
 void RWStepVisual_RWTextStyle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

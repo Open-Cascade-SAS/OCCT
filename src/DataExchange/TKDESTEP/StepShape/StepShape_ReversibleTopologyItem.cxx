@@ -20,7 +20,7 @@
 #include <StepShape_Path.hxx>
 #include <StepShape_ReversibleTopologyItem.hxx>
 
-StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem() {}
+StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem() = default;
 
 int StepShape_ReversibleTopologyItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

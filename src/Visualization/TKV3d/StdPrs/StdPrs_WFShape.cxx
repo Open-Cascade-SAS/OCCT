@@ -75,7 +75,7 @@ public:
   }
 
 private:
-  StdPrs_WFShape_IsoFunctor operator=(StdPrs_WFShape_IsoFunctor&);
+  StdPrs_WFShape_IsoFunctor operator=(StdPrs_WFShape_IsoFunctor&) = delete;
 
 private:
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& myPolylinesU;
@@ -197,7 +197,7 @@ void StdPrs_WFShape::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* aFreePtr    = &aFree;
     if (!theDrawer->UnFreeBoundaryDraw())
     {
-      anUnfreePtr = NULL;
+      anUnfreePtr = nullptr;
     }
     else if (theDrawer->UnFreeBoundaryAspect()->Aspect()->IsEqual(*aWireAspect->Aspect()))
     {
@@ -206,7 +206,7 @@ void StdPrs_WFShape::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
 
     if (!theDrawer->FreeBoundaryDraw())
     {
-      aFreePtr = NULL;
+      aFreePtr = nullptr;
     }
     else if (theDrawer->FreeBoundaryAspect()->Aspect()->IsEqual(*aWireAspect->Aspect()))
     {
@@ -216,7 +216,7 @@ void StdPrs_WFShape::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
     addEdges(theShape,
              theDrawer,
              aShapeDeflection,
-             theDrawer->WireDraw() ? &aCommonPolylines : NULL,
+             theDrawer->WireDraw() ? &aCommonPolylines : nullptr,
              aFreePtr,
              anUnfreePtr);
     Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->UnFreeBoundaryAspect(), anUnfree);
@@ -276,14 +276,14 @@ void StdPrs_WFShape::addEdges(
     switch (aNbNeighbours)
     {
       case 0: {
-        if (theWire != NULL)
+        if (theWire != nullptr)
         {
           aLWire.Append(anEdge);
         }
         break;
       }
       case 1: {
-        if (theFree != NULL)
+        if (theFree != nullptr)
         {
           aLFree.Append(anEdge);
         }

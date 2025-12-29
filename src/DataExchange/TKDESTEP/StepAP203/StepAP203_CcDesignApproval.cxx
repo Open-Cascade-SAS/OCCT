@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignApproval, StepBasic_ApprovalAssignm
 
 //=================================================================================================
 
-StepAP203_CcDesignApproval::StepAP203_CcDesignApproval() {}
+StepAP203_CcDesignApproval::StepAP203_CcDesignApproval() = default;
 
 //=================================================================================================
 

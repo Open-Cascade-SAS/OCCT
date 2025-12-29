@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductDefinitionContext::RWStepBasic_RWProductDefinitionContext() {}
+RWStepBasic_RWProductDefinitionContext::RWStepBasic_RWProductDefinitionContext() = default;
 
 void RWStepBasic_RWProductDefinitionContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Curve, Standard_Transient)
 
 //=================================================================================================
 
-Adaptor3d_Curve::~Adaptor3d_Curve() {}
+Adaptor3d_Curve::~Adaptor3d_Curve() = default;
 
 //=================================================================================================
 

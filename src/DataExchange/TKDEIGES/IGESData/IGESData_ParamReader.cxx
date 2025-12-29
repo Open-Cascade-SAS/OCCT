@@ -29,7 +29,7 @@
 #include <Message_Msg.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // MGE 03/08/98
 static int testconv = -1; // see session parameter
 

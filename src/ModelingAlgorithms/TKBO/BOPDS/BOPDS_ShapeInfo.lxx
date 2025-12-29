@@ -39,7 +39,7 @@ inline BOPDS_ShapeInfo::BOPDS_ShapeInfo(const occ::handle<NCollection_BaseAlloca
 // function : ~
 // purpose  :
 //=======================================================================
-inline BOPDS_ShapeInfo::~BOPDS_ShapeInfo() {}
+inline BOPDS_ShapeInfo::~BOPDS_ShapeInfo() = default;
 
 //=================================================================================================
 

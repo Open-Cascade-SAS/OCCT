@@ -31,7 +31,7 @@ math_BissecNewton::math_BissecNewton(const double theXTolerance)
 
 //=================================================================================================
 
-math_BissecNewton::~math_BissecNewton() {}
+math_BissecNewton::~math_BissecNewton() = default;
 
 //=================================================================================================
 

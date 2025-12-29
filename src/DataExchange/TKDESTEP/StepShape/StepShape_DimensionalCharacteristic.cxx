@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic() {}
+StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic() = default;
 
 //=================================================================================================
 

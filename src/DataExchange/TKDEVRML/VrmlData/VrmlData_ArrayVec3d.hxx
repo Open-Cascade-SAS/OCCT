@@ -32,7 +32,7 @@ public:
    * Empty constructor
    */
   inline VrmlData_ArrayVec3d()
-      : myArray(0L),
+      : myArray(nullptr),
         myLength(0)
   {
   }
@@ -99,7 +99,7 @@ public:
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual bool IsDefault() const override;
+  Standard_EXPORT bool IsDefault() const override;
 
 protected:
   // ---------- PROTECTED METHODS ----------

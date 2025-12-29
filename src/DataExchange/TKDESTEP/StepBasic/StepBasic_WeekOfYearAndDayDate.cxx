@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_WeekOfYearAndDayDate, StepBasic_Date)
 
-StepBasic_WeekOfYearAndDayDate::StepBasic_WeekOfYearAndDayDate() {}
+StepBasic_WeekOfYearAndDayDate::StepBasic_WeekOfYearAndDayDate() = default;
 
 void StepBasic_WeekOfYearAndDayDate::Init(const int  aYearComponent,
                                           const int  aWeekComponent,

@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Torus, IGESData_IGESEntity)
 
-IGESSolid_Torus::IGESSolid_Torus() {}
+IGESSolid_Torus::IGESSolid_Torus() = default;
 
 void IGESSolid_Torus::Init(const double  R1,
                            const double  R2,

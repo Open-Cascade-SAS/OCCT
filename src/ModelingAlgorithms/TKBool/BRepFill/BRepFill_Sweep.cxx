@@ -82,7 +82,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 // #include <BRepFill_TrimCorner.hxx>
 //  modified by NIZHNY-MKK  Wed Oct 22 12:25:45 2003
 // #include <GeomPlate_BuildPlateSurface.hxx>

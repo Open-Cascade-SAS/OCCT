@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface, IGESData_IGESEntity)
 
-IGESGeom_TrimmedSurface::IGESGeom_TrimmedSurface() {}
+IGESGeom_TrimmedSurface::IGESGeom_TrimmedSurface() = default;
 
 void IGESGeom_TrimmedSurface::Init(
   const occ::handle<IGESData_IGESEntity>&                                       aSurface,

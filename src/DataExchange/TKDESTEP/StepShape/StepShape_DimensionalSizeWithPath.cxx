@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalSizeWithPath, StepShape_Dimensio
 
 //=================================================================================================
 
-StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath() {}
+StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath() = default;
 
 //=================================================================================================
 

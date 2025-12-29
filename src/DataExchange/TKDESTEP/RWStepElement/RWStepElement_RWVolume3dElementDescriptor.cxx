@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWVolume3dElementDescriptor::RWStepElement_RWVolume3dElementDescriptor() {}
+RWStepElement_RWVolume3dElementDescriptor::RWStepElement_RWVolume3dElementDescriptor() = default;
 
 //=================================================================================================
 

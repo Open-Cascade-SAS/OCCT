@@ -27,11 +27,7 @@ class TopoDS_TCompound : public TopoDS_TShape
 {
 public:
   //! Creates an empty TCompound.
-  TopoDS_TCompound()
-      : TopoDS_TShape()
-  {
-    Orientable(false);
-  }
+  TopoDS_TCompound() { Orientable(false); }
 
   //! Returns COMPOUND.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;

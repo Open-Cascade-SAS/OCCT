@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementEndReleasePacket, Standard_Tr
 
 //=================================================================================================
 
-StepElement_CurveElementEndReleasePacket::StepElement_CurveElementEndReleasePacket() {}
+StepElement_CurveElementEndReleasePacket::StepElement_CurveElementEndReleasePacket() = default;
 
 //=================================================================================================
 

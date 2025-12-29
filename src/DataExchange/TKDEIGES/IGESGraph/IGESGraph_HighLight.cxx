@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_HighLight, IGESData_IGESEntity)
 
-IGESGraph_HighLight::IGESGraph_HighLight() {}
+IGESGraph_HighLight::IGESGraph_HighLight() = default;
 
 void IGESGraph_HighLight::Init(const int nbProps, const int aHighLightStatus)
 {

@@ -36,7 +36,7 @@
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESDraw_ToolConnectPoint::IGESDraw_ToolConnectPoint() {}
+IGESDraw_ToolConnectPoint::IGESDraw_ToolConnectPoint() = default;
 
 void IGESDraw_ToolConnectPoint::ReadOwnParams(const occ::handle<IGESDraw_ConnectPoint>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

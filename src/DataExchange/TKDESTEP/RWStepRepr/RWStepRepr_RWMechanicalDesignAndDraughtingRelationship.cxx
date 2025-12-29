@@ -20,9 +20,7 @@
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 
 RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::
-  RWStepRepr_RWMechanicalDesignAndDraughtingRelationship()
-{
-}
+  RWStepRepr_RWMechanicalDesignAndDraughtingRelationship() = default;
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                            theData,

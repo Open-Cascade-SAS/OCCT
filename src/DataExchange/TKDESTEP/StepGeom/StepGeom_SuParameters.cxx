@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SuParameters, StepGeom_GeometricRepresentati
 
 //=================================================================================================
 
-StepGeom_SuParameters::StepGeom_SuParameters() {}
+StepGeom_SuParameters::StepGeom_SuParameters() = default;
 
 //=================================================================================================
 

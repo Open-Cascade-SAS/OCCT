@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer, Standard_Transient)
 
 //=================================================================================================
 
-ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer() {}
+ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer() = default;
 
 //=================================================================================================
 

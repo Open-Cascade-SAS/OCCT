@@ -27,7 +27,7 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_RealArrayDriver, XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING(FirstIndexString, "first")
 IMPLEMENT_DOMSTRING(LastIndexString, "last")
@@ -38,7 +38,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "realarrattguid")
 
 XmlMDataStd_RealArrayDriver::XmlMDataStd_RealArrayDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -74,7 +74,7 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {

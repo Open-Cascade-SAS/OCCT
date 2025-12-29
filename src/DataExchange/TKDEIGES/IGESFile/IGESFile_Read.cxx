@@ -13,7 +13,7 @@
 
 // dce 21.01.99 : move of general message to IGESToBRep_Reader
 
-#include <stdio.h>
+#include <cstdio>
 // declarations of basic C programs:
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESReaderTool.hxx>

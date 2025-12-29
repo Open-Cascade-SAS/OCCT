@@ -36,8 +36,8 @@
   #include <lmcons.h> // for UNLEN - maximum user name length GetUserName()
 #else
 const OSD_WhoAmI Iam = OSD_WProcess;
-  #include <errno.h>
-  #include <stdlib.h>
+  #include <cerrno>
+  #include <cstdlib>
   #include <sys/param.h>
   #include <sys/time.h>
   #if !defined(__EMSCRIPTEN__)
@@ -52,7 +52,7 @@ const OSD_WhoAmI Iam = OSD_WProcess;
 
 #ifndef _WIN32
 
-OSD_Process::OSD_Process() {}
+OSD_Process::OSD_Process() = default;
 
 void OSD_Process::TerminalType(TCollection_AsciiString& Name)
 {
@@ -407,7 +407,7 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
 #elif defined(__APPLE__)
   // determine buffer size
   uint32_t aNbBytes = 0;
-  _NSGetExecutablePath(NULL, &aNbBytes);
+  _NSGetExecutablePath(nullptr, &aNbBytes);
   if (aNbBytes == 0)
   {
     return TCollection_AsciiString();
@@ -419,8 +419,8 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
   aBuff[aNbBytes] = '\0';
 
   // retrieve real path to executable (resolve links and normalize)
-  char* aResultBuf = realpath(&aBuff.First(), NULL);
-  if (aResultBuf == NULL)
+  char* aResultBuf = realpath(&aBuff.First(), nullptr);
+  if (aResultBuf == nullptr)
   {
     return TCollection_AsciiString();
   }

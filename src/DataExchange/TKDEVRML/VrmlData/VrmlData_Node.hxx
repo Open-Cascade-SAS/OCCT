@@ -45,7 +45,7 @@ public:
   /**
    * Destructor
    */
-  virtual ~VrmlData_Node() {}
+  ~VrmlData_Node() override = default;
 
   /**
    * Query the Scene that contains this Node
@@ -70,7 +70,7 @@ public:
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadNode(VrmlData_InBuffer&                theBuffer,
                                                 occ::handle<VrmlData_Node>&       theNode,
-                                                const occ::handle<Standard_Type>& Type = NULL);
+                                                const occ::handle<Standard_Type>& Type = nullptr);
 
   /**
    * Read the Node from input stream.
@@ -160,7 +160,7 @@ private:
    * Method called from VrmlData_Scene when a name should be assigned
    * automatically.
    */
-  Standard_EXPORT void setName(const char* theName, const char* theSuffix = 0L);
+  Standard_EXPORT void setName(const char* theName, const char* theSuffix = nullptr);
 
 private:
   // ---------- PRIVATE FIELDS ----------

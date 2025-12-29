@@ -16,4 +16,4 @@
 
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 
-TopOpeBRepBuild_LoopClassifier::~TopOpeBRepBuild_LoopClassifier() {}
+TopOpeBRepBuild_LoopClassifier::~TopOpeBRepBuild_LoopClassifier() = default;

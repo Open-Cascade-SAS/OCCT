@@ -324,7 +324,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  visavis,
                                  Vtx,
                                  false,
-                                 1);
+                                 true);
   }
   else if (oksea[2] && oksea[0] && !sameside[2] && !sameside[0])
   {
@@ -348,7 +348,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  visavis,
                                  Vtx,
                                  false,
-                                 1);
+                                 true);
   }
   else if (oksea[1] && oksea[0] && !sameside[1] && !sameside[0])
   {
@@ -372,7 +372,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  visavis,
                                  Vtx,
                                  false,
-                                 1);
+                                 true);
   }
   else if (oksea[0] && oksea[1] && oksea[2])
   {
@@ -830,11 +830,11 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                         Surf,
                         PCurveOnPiv,
                         fdpiv->Orientation(),
-                        0,
-                        0,
-                        0,
-                        0,
-                        0);
+                        false,
+                        false,
+                        false,
+                        false,
+                        false);
   }
   double P1deb, P2deb, P1fin, P2fin;
 
@@ -899,8 +899,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     }
 
     regdeb.SetCurve(Icf);
-    regdeb.SetS1(coin->Surf(), 0);
-    regdeb.SetS2(fddeb->Surf(), 0);
+    regdeb.SetS1(coin->Surf(), false);
+    regdeb.SetS2(fddeb->Surf(), false);
     myRegul.Append(regdeb);
     corner->ChangeFirstCurve(Icf);
     corner->ChangeFirstParameters(P1deb, P2deb);
@@ -938,8 +938,8 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
       Icl = DStr.AddCurve(Tcurv);
     }
     regfin.SetCurve(Icl);
-    regfin.SetS1(coin->Surf(), 0);
-    regfin.SetS2(fdfin->Surf(), 0);
+    regfin.SetS1(coin->Surf(), false);
+    regfin.SetS2(fdfin->Surf(), false);
     myRegul.Append(regfin);
     corner->ChangeLastCurve(Icl);
     corner->ChangeLastParameters(P1fin, P2fin);

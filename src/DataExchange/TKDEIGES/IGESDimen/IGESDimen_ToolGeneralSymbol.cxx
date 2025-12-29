@@ -35,7 +35,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
-IGESDimen_ToolGeneralSymbol::IGESDimen_ToolGeneralSymbol() {}
+IGESDimen_ToolGeneralSymbol::IGESDimen_ToolGeneralSymbol() = default;
 
 void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

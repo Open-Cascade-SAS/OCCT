@@ -69,22 +69,22 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void AfterAddition() override;
+  Standard_EXPORT void AfterAddition() override;
 
-  Standard_EXPORT virtual void BeforeRemoval() override;
+  Standard_EXPORT void BeforeRemoval() override;
 
-  Standard_EXPORT virtual void BeforeForget() override;
+  Standard_EXPORT void BeforeForget() override;
 
-  Standard_EXPORT virtual void AfterResume() override;
+  Standard_EXPORT void AfterResume() override;
 
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+  Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                  const bool                             forceIt = false) override;
 
   //! update draw viewer according to delta
   //! private methods
   //! ===============
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                 const bool                             forceIt = false) override;
 
   DEFINE_STANDARD_RTTIEXT(DDataStd_DrawPresentation, TDF_Attribute)
 

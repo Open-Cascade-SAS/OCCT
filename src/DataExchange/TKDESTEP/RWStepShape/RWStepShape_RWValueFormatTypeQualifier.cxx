@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWValueFormatTypeQualifier::RWStepShape_RWValueFormatTypeQualifier() {}
+RWStepShape_RWValueFormatTypeQualifier::RWStepShape_RWValueFormatTypeQualifier() = default;
 
 //=================================================================================================
 

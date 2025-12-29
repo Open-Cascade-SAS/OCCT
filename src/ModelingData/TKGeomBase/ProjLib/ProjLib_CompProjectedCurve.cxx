@@ -90,9 +90,9 @@ struct SplitDS
         myPerMinParam(0.0),
         myPerMaxParam(0.0),
         myPeriodicDir(0),
-        myExtCCCurve1(NULL),
+        myExtCCCurve1(nullptr),
         myExtCCLast2DParam(0.0),
-        myExtPS(NULL)
+        myExtPS(nullptr)
   {
   }
 
@@ -111,7 +111,7 @@ struct SplitDS
 
 private:
   // Assignment operator is forbidden.
-  void operator=(const SplitDS& theSplitDS);
+  void operator=(const SplitDS& theSplitDS) = delete;
 };
 
 //! Compute split points in the parameter space of the curve.
@@ -1809,7 +1809,8 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
   double Tl, Tr, Ul, Ur, Vl, Vr, Tol;
 
-  occ::handle<NCollection_HArray1<double>> BArr = NULL, CArr = NULL, UArr = NULL, VArr = NULL;
+  occ::handle<NCollection_HArray1<double>> BArr = nullptr, CArr = nullptr, UArr = nullptr,
+                                           VArr = nullptr;
 
   // processing projection bounds
   BArr = new NCollection_HArray1<double>(1, 2 * myNbCurves);

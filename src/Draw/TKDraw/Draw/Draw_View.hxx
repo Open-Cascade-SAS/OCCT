@@ -35,7 +35,7 @@ public:
   Draw_View(int theId, Draw_Viewer* theViewer, const char* theTitle);
 
   //! Destructor.
-  ~Draw_View();
+  ~Draw_View() override;
 
 public: // @name getters and setters
   //! Gets horizontal offset.
@@ -91,7 +91,7 @@ public: //! @name view API
   void GetFrame(int& theX0, int& theY0, int& theX1, int& theY1);
 
   //! Perform window exposing.
-  virtual void WExpose() override;
+  void WExpose() override;
 
 protected:
   int          myId;

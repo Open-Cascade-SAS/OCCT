@@ -34,7 +34,7 @@
 #else
   #include <OSD_Signal.hxx>
 #endif
-#include <stdio.h>
+#include <cstdio>
 
 static int errh = 1;
 

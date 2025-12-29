@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CharacterizedRepresentation, StepRepr_Repres
 
 //=================================================================================================
 
-StepRepr_CharacterizedRepresentation::StepRepr_CharacterizedRepresentation() {}
+StepRepr_CharacterizedRepresentation::StepRepr_CharacterizedRepresentation() = default;
 
 //=================================================================================================
 

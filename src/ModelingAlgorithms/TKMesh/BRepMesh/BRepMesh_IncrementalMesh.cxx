@@ -70,7 +70,7 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape&          
 
 //=================================================================================================
 
-BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh() {}
+BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh() = default;
 
 //=================================================================================================
 

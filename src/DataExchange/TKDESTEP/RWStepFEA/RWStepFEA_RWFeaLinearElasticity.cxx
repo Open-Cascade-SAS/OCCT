@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaLinearElasticity::RWStepFEA_RWFeaLinearElasticity() {}
+RWStepFEA_RWFeaLinearElasticity::RWStepFEA_RWFeaLinearElasticity() = default;
 
 //=================================================================================================
 

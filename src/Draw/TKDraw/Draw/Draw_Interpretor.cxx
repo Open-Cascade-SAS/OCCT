@@ -27,7 +27,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <string.h>
+#include <cstring>
 #include <tcl.h>
 #include <fcntl.h>
 #ifndef _WIN32
@@ -158,7 +158,7 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
   {
     // fail if Draw_ExitOnCatch is set
     const char* toExitOnCatch = Tcl_GetVar(interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
-    if (toExitOnCatch != NULL && Draw::Atoi(toExitOnCatch))
+    if (toExitOnCatch != nullptr && Draw::Atoi(toExitOnCatch))
     {
       Message::SendFail() << "An exception was caught " << anException;
 #ifdef _WIN32
@@ -176,7 +176,7 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
   catch (std::exception const& theStdException)
   {
     const char* toExitOnCatch = Tcl_GetVar(interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
-    if (toExitOnCatch != NULL && Draw::Atoi(toExitOnCatch))
+    if (toExitOnCatch != nullptr && Draw::Atoi(toExitOnCatch))
     {
       Message::SendFail() << "An exception was caught " << theStdException.what() << " ["
                           << typeid(theStdException).name() << "]";
@@ -196,7 +196,7 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
   catch (...)
   {
     const char* toExitOnCatch = Tcl_GetVar(interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
-    if (toExitOnCatch != NULL && Draw::Atoi(toExitOnCatch))
+    if (toExitOnCatch != nullptr && Draw::Atoi(toExitOnCatch))
     {
       Message::SendFail() << "UNKNOWN exception was caught ";
 #ifdef _WIN32
@@ -216,7 +216,7 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
   if (doLog || doEcho)
   {
     const char* aResultStr = Tcl_GetStringResult(interp);
-    if (aResultStr != 0 && aResultStr[0] != '\0')
+    if (aResultStr != nullptr && aResultStr[0] != '\0')
     {
       std::cout << aResultStr << std::endl;
     }
@@ -246,7 +246,7 @@ static void CommandDelete(ClientData theClientData)
 Draw_Interpretor::Draw_Interpretor()
     : // the tcl interpreter is not created immediately as it is kept
       // by a global variable and created and deleted before the main()
-      myInterp(NULL),
+      myInterp(nullptr),
       isAllocated(false),
       myDoLog(false),
       myDoEcho(false),
@@ -308,7 +308,7 @@ void Draw_Interpretor::add(const char*                     theCommandName,
                            Draw_Interpretor::CallBackData* theCallback,
                            const char*                     theGroup)
 {
-  Standard_ASSERT_RAISE(myInterp != NULL, "Attempt to add command to Null interpreter");
+  Standard_ASSERT_RAISE(myInterp != nullptr, "Attempt to add command to Null interpreter");
 
   Tcl_CreateCommand(myInterp, theCommandName, CommandCmd, (ClientData)theCallback, CommandDelete);
 
@@ -321,7 +321,7 @@ void Draw_Interpretor::add(const char*                     theCommandName,
               TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
 
   // add path to source file (keep not more than two last subdirectories)
-  if (theFileName == NULL || *theFileName == '\0')
+  if (theFileName == nullptr || *theFileName == '\0')
   {
     return;
   }
@@ -377,7 +377,7 @@ void Draw_Interpretor::Reset()
 
 Draw_Interpretor& Draw_Interpretor::Append(const char* s)
 {
-  Tcl_AppendResult(myInterp, s, (const char*)0);
+  Tcl_AppendResult(myInterp, s, (const char*)nullptr);
   return *this;
 }
 
@@ -396,7 +396,7 @@ Draw_Interpretor& Draw_Interpretor::Append(const TCollection_ExtendedString& the
   // Convert string to UTF-8 format for Tcl
   char* str = new char[theString.LengthOfCString() + 1];
   theString.ToUTF8CString(str);
-  Tcl_AppendResult(myInterp, str, (const char*)0);
+  Tcl_AppendResult(myInterp, str, (const char*)nullptr);
   delete[] str;
 #else
   // put as ascii string, replacing non-ascii characters by '?'
@@ -412,7 +412,7 @@ Draw_Interpretor& Draw_Interpretor::Append(const int i)
 {
   char c[100];
   Sprintf(c, "%d", i);
-  Tcl_AppendResult(myInterp, c, (const char*)0);
+  Tcl_AppendResult(myInterp, c, (const char*)nullptr);
   return *this;
 }
 
@@ -422,7 +422,7 @@ Draw_Interpretor& Draw_Interpretor::Append(const double r)
 {
   char s[100];
   Sprintf(s, "%.17g", r);
-  Tcl_AppendResult(myInterp, s, (const char*)0);
+  Tcl_AppendResult(myInterp, s, (const char*)nullptr);
   return *this;
 }
 
@@ -515,7 +515,7 @@ Draw_Interpretor::~Draw_Interpretor()
 
 Draw_PInterp Draw_Interpretor::Interp() const
 {
-  Standard_DomainError_Raise_if(myInterp == NULL, "No call for  Draw_Interpretor::Init()");
+  Standard_DomainError_Raise_if(myInterp == nullptr, "No call for  Draw_Interpretor::Init()");
   return myInterp;
 }
 

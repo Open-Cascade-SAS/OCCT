@@ -42,7 +42,7 @@ public:
   Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Calculates points for correction/splitting of the curve
-  Standard_EXPORT virtual void Compute() override;
+  Standard_EXPORT void Compute() override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 

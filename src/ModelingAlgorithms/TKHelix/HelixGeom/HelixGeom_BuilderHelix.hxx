@@ -31,7 +31,7 @@ public:
 
   //! Empty constructor
   Standard_EXPORT HelixGeom_BuilderHelix();
-  Standard_EXPORT virtual ~HelixGeom_BuilderHelix();
+  Standard_EXPORT ~HelixGeom_BuilderHelix() override;
 
   //! Sets coordinate axes for helix
   Standard_EXPORT void SetPosition(const gp_Ax2& aAx2);
@@ -40,7 +40,7 @@ public:
   Standard_EXPORT const gp_Ax2& Position() const;
 
   //! Performs calculations
-  Standard_EXPORT virtual void Perform() override;
+  Standard_EXPORT void Perform() override;
 
 protected:
   gp_Ax2 myPosition;

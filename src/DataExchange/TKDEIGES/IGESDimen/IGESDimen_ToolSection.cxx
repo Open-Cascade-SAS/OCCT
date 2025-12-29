@@ -36,7 +36,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDimen_ToolSection::IGESDimen_ToolSection() {}
+IGESDimen_ToolSection::IGESDimen_ToolSection() = default;
 
 void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& ent,
                                           const occ::handle<IGESData_IGESReaderData>& /* IR */,

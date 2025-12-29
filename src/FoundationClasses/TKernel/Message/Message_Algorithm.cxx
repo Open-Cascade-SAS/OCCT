@@ -318,12 +318,12 @@ occ::handle<TColStd_HPackedMapOfInteger> Message_Algorithm::GetMessageNumbers(
   const Message_Status& theStatus) const
 {
   if (myReportIntegers.IsNull())
-    return 0;
+    return nullptr;
 
   // Find index of bit corresponding to that flag
   int aFlagIndex = Message_ExecStatus::StatusIndex(theStatus);
   if (!aFlagIndex)
-    return 0;
+    return nullptr;
 
   return occ::down_cast<TColStd_HPackedMapOfInteger>(myReportIntegers->Value(aFlagIndex));
 }
@@ -334,12 +334,12 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> Mes
   GetMessageStrings(const Message_Status& theStatus) const
 {
   if (myReportStrings.IsNull())
-    return 0;
+    return nullptr;
 
   // Find index of bit corresponding to that flag
   int aFlagIndex = Message_ExecStatus::StatusIndex(theStatus);
   if (!aFlagIndex)
-    return 0;
+    return nullptr;
 
   return occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>(
     myReportStrings->Value(aFlagIndex));

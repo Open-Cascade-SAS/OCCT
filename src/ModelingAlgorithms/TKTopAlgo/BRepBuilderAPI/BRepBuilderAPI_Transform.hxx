@@ -81,12 +81,11 @@ public:
                                const bool          theCopyMesh = false);
 
   //! Returns the modified shape corresponding to <S>.
-  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
+  Standard_EXPORT TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S) override;
 
 private:
   gp_Trsf         myTrsf;

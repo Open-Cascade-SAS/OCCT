@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepShape_Block.hxx>
 
-RWStepShape_RWBlock::RWStepShape_RWBlock() {}
+RWStepShape_RWBlock::RWStepShape_RWBlock() = default;
 
 void RWStepShape_RWBlock::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                    const int                                   num,

@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_RegionRestriction, IGESData_IGESEntity)
 
-IGESAppli_RegionRestriction::IGESAppli_RegionRestriction() {}
+IGESAppli_RegionRestriction::IGESAppli_RegionRestriction() = default;
 
 void IGESAppli_RegionRestriction::Init(const int nbPropVal,
                                        const int aViasRest,

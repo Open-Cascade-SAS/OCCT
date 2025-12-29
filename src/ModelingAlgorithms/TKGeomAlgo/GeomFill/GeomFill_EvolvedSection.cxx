@@ -28,7 +28,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 
 #ifdef DRAW

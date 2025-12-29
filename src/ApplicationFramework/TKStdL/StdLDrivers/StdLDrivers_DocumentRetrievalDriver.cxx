@@ -74,7 +74,7 @@ occ::handle<StdObjMgt_Persistent> StdLDrivers_DocumentRetrievalDriver::read(
   if (PCDM::FileDriverType(TCollection_AsciiString(theFileName), aFileDriver) == PCDM_TOFD_Unknown)
   {
     myReaderStatus = PCDM_RS_UnknownFileDriver;
-    return NULL;
+    return nullptr;
   }
 
   // Try to open the file

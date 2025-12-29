@@ -136,7 +136,7 @@ double BRepGProp_VinertGK::Perform(BRepGProp_Face& theSurface,
 {
   double aShift[] = {0., 0., 0.};
 
-  return PrivatePerform(theSurface, NULL, true, aShift, theTolerance, theCGFlag, theIFlag);
+  return PrivatePerform(theSurface, nullptr, true, aShift, theTolerance, theCGFlag, theIFlag);
 }
 
 //==========================================================================
@@ -156,7 +156,7 @@ double BRepGProp_VinertGK::Perform(BRepGProp_Face& theSurface,
 
   aXYZ.Coord(aShift[0], aShift[1], aShift[2]);
 
-  return PrivatePerform(theSurface, NULL, true, aShift, theTolerance, theCGFlag, theIFlag);
+  return PrivatePerform(theSurface, nullptr, true, aShift, theTolerance, theCGFlag, theIFlag);
 }
 
 //==========================================================================
@@ -218,7 +218,7 @@ double BRepGProp_VinertGK::Perform(BRepGProp_Face& theSurface,
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
   aCoeff[3] = aCoeff[3] - aCoeff[0] * aXLoc - aCoeff[1] * aYLoc - aCoeff[2] * aZLoc;
 
-  return PrivatePerform(theSurface, NULL, false, aCoeff, theTolerance, theCGFlag, theIFlag);
+  return PrivatePerform(theSurface, nullptr, false, aCoeff, theTolerance, theCGFlag, theIFlag);
 }
 
 //==========================================================================
@@ -265,12 +265,12 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
   const double* aCoeffs = theCoeffs;
 
   // Compute the number of 2d bounding curves of the face.
-  BRepGProp_Domain* aPDomain  = NULL;
+  BRepGProp_Domain* aPDomain  = nullptr;
   int               aNbCurves = 0;
 
   // If the pointer to the domain is NULL, there is only one curve to treat:
   // U isoline with the UMax parameter.
-  if (thePtrDomain == NULL)
+  if (thePtrDomain == nullptr)
     aNbCurves = 1;
   else
   {
@@ -332,7 +332,7 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
 
   theSurface.Bounds(aUMin, aUMax, aTMin, aTMax);
 
-  if (thePtrDomain == NULL)
+  if (thePtrDomain == nullptr)
     isMore = true;
   else
   {
@@ -345,7 +345,7 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
     // If the pointer to the domain is NULL, there is only one curve to treat:
     // U isoline with the UMax parameter.
 
-    if (thePtrDomain == NULL)
+    if (thePtrDomain == nullptr)
       theSurface.Load(false, GeomAbs_IsoU);
     else
       theSurface.Load(aPDomain->Value());
@@ -459,7 +459,7 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
 
     // If the pointer to the domain is NULL, there is only one curve to treat:
     // U isoline with the UMax parameter.
-    if (thePtrDomain == NULL)
+    if (thePtrDomain == nullptr)
       isMore = false;
     else
     {

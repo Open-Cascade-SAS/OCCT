@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SweptSurface, StepGeom_Surface)
 
-StepGeom_SweptSurface::StepGeom_SweptSurface() {}
+StepGeom_SweptSurface::StepGeom_SweptSurface() = default;
 
 void StepGeom_SweptSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const occ::handle<StepGeom_Curve>&           aSweptCurve)

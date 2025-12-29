@@ -30,7 +30,7 @@ public:
   }
 
   //! Releases resources of BVH sorter.
-  virtual ~BVH_Sorter() {}
+  virtual ~BVH_Sorter() = default;
 
   //! Sorts the set.
   virtual void Perform(BVH_Set<T, N>* theSet) = 0;

@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ConicalSurface.hxx>
 
-RWStepGeom_RWConicalSurface::RWStepGeom_RWConicalSurface() {}
+RWStepGeom_RWConicalSurface::RWStepGeom_RWConicalSurface() = default;
 
 void RWStepGeom_RWConicalSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

@@ -29,9 +29,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWPairRepresentationRelationship::
-  RWStepKinematics_RWPairRepresentationRelationship()
-{
-}
+  RWStepKinematics_RWPairRepresentationRelationship() = default;
 
 //=================================================================================================
 

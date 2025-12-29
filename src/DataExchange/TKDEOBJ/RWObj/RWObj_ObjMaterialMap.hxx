@@ -26,16 +26,15 @@ public:
   Standard_EXPORT RWObj_ObjMaterialMap(const TCollection_AsciiString& theFile);
 
   //! Destructor, will emit error message if file was not closed.
-  Standard_EXPORT virtual ~RWObj_ObjMaterialMap();
+  Standard_EXPORT ~RWObj_ObjMaterialMap() override;
 
   //! Add material
-  Standard_EXPORT virtual TCollection_AsciiString AddMaterial(
-    const XCAFPrs_Style& theStyle) override;
+  Standard_EXPORT TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle) override;
 
   //! Virtual method actually defining the material (e.g. export to the file).
-  Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
-                                              const TCollection_AsciiString& theKey,
-                                              const TCollection_AsciiString& theName) override;
+  Standard_EXPORT void DefineMaterial(const XCAFPrs_Style&           theStyle,
+                                      const TCollection_AsciiString& theKey,
+                                      const TCollection_AsciiString& theName) override;
 
 private:
   FILE*                                                                    myFile;

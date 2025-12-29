@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Curve, Adaptor3d_Curve)
 
 //=================================================================================================
 
-BRepAdaptor_Curve::BRepAdaptor_Curve() {}
+BRepAdaptor_Curve::BRepAdaptor_Curve() = default;
 
 //=================================================================================================
 

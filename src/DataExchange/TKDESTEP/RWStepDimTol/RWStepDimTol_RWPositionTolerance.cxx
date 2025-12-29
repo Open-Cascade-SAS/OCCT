@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWPositionTolerance::RWStepDimTol_RWPositionTolerance() {}
+RWStepDimTol_RWPositionTolerance::RWStepDimTol_RWPositionTolerance() = default;
 
 //=================================================================================================
 

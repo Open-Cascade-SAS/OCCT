@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Loop, IGESData_IGESEntity)
 
-IGESSolid_Loop::IGESSolid_Loop() {}
+IGESSolid_Loop::IGESSolid_Loop() = default;
 
 void IGESSolid_Loop::Init(
   const occ::handle<NCollection_HArray1<int>>&                              Types,

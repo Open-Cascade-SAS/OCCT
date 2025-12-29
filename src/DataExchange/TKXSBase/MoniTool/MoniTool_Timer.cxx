@@ -17,7 +17,7 @@
 #include <OSD_Timer.hxx>
 #include <Standard_Type.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Timer, Standard_Transient)
 
 //=================================================================================================
@@ -104,7 +104,7 @@ void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
   for (i = 0; i < NbTimers; i++)
   {
     int         ntmp = 0;
-    const char* stmp = 0;
+    const char* stmp = nullptr;
     for (int j = 0; j < NbTimers; j++)
     {
       if (keys[j] && (!stmp || strcmp(stmp, keys[j]) > 0))
@@ -119,7 +119,7 @@ void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
     ostr << "TIMER: " << buff;
     // iter.Value()->Dump ( ostr );
     Timer(stmp)->Dump(ostr);
-    keys[ntmp] = 0;
+    keys[ntmp] = nullptr;
     if (Timer(stmp)->IsRunning())
       std::cerr << "Warning: timer " << stmp << " is running" << std::endl;
   }
@@ -269,5 +269,5 @@ void MoniTool_Timer::AmendStop()
   if (!myNext.IsNull())
     myNext->myPrev = myPrev;
 
-  myNext = myPrev = 0;
+  myNext = myPrev = nullptr;
 }

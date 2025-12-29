@@ -44,8 +44,7 @@ public:
     const double                          Eps,
     const int                             NbIterations = 200);
 
-  Standard_EXPORT virtual bool IsSolutionReached(
-    math_MultipleVarFunctionWithGradient& F) const override;
+  Standard_EXPORT bool IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const override;
 
 private:
   double myTol3d;

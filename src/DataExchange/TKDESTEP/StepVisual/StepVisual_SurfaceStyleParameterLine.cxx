@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
-StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine() {}
+StepVisual_SurfaceStyleParameterLine::StepVisual_SurfaceStyleParameterLine() = default;
 
 void StepVisual_SurfaceStyleParameterLine::Init(
   const occ::handle<StepVisual_CurveStyle>&                                aStyleOfParameterLines,

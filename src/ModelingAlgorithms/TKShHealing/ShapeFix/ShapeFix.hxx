@@ -57,7 +57,7 @@ public:
     const bool                                          enforce,
     const double                                        preci       = 0.0,
     const Message_ProgressRange&                        theProgress = Message_ProgressRange(),
-    const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg   = 0);
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg   = nullptr);
 
   //! Runs EncodeRegularity from BRepLib taking into account
   //! shared components of assemblies, so that each component

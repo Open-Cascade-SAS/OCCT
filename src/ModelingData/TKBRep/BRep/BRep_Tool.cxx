@@ -1232,7 +1232,7 @@ gp_Pnt BRep_Tool::Pnt(const TopoDS_Vertex& V)
 {
   const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(V.TShape().get());
 
-  if (TV == 0)
+  if (TV == nullptr)
   {
     throw Standard_NullObject("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
   }
@@ -1255,7 +1255,7 @@ double BRep_Tool::Tolerance(const TopoDS_Vertex& V)
 {
   const BRep_TVertex* aTVert = static_cast<const BRep_TVertex*>(V.TShape().get());
 
-  if (aTVert == 0)
+  if (aTVert == nullptr)
   {
     throw Standard_NullObject("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
   }

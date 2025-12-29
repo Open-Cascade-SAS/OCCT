@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_EvaluatedDegeneratePcurve, StepGeom_DegeneratePcurve)
 
-StepGeom_EvaluatedDegeneratePcurve::StepGeom_EvaluatedDegeneratePcurve() {}
+StepGeom_EvaluatedDegeneratePcurve::StepGeom_EvaluatedDegeneratePcurve() = default;
 
 void StepGeom_EvaluatedDegeneratePcurve::Init(
   const occ::handle<TCollection_HAsciiString>&            aName,

@@ -49,9 +49,9 @@ static const GLfloat THE_CAPPING_PLN_VERTS[12 * (4 + 4 + 4)] = {
 
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
   const occ::handle<Graphic3d_ClipPlane>& thePlane)
-    : myPrimitives(NULL),
+    : myPrimitives(nullptr),
       myOrientation(NCollection_Mat4<float>::Identity()),
-      myAspect(NULL),
+      myAspect(nullptr),
       myPlaneRoot(thePlane),
       myEquationMod((unsigned int)-1),
       myAspectMod((unsigned int)-1)
@@ -64,7 +64,7 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
   if (anAttribs->Init(12, anAttribInfo, 3))
   {
     memcpy(anAttribs->ChangeData(), THE_CAPPING_PLN_VERTS, sizeof(THE_CAPPING_PLN_VERTS));
-    myPrimitives.InitBuffers(NULL, Graphic3d_TOPA_TRIANGLES, NULL, anAttribs, NULL);
+    myPrimitives.InitBuffers(nullptr, Graphic3d_TOPA_TRIANGLES, nullptr, anAttribs, nullptr);
   }
 }
 
@@ -72,7 +72,7 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
 
 OpenGl_CappingPlaneResource::~OpenGl_CappingPlaneResource()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -98,7 +98,7 @@ void OpenGl_CappingPlaneResource::Release(OpenGl_Context* theContext)
 
 void OpenGl_CappingPlaneResource::updateAspect(const occ::handle<Graphic3d_Aspects>& theObjAspect)
 {
-  if (myAspect == NULL)
+  if (myAspect == nullptr)
   {
     myAspect    = new OpenGl_Aspects();
     myAspectMod = myPlaneRoot->MCountAspect() - 1; // mark out of sync

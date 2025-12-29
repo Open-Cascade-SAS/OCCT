@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWProductDefinitionShape::RWStepRepr_RWProductDefinitionShape() {}
+RWStepRepr_RWProductDefinitionShape::RWStepRepr_RWProductDefinitionShape() = default;
 
 //=================================================================================================
 

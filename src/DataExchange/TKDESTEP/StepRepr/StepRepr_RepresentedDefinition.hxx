@@ -45,7 +45,7 @@ public:
   //! 4 -> ShapeAspect from StepRepr
   //! 5 -> ShapeAspectRelationship from StepRepr
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as GeneralProperty (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;

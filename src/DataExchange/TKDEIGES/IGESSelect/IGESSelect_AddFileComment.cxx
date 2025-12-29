@@ -21,7 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 
 IGESSelect_AddFileComment::IGESSelect_AddFileComment()

@@ -16,7 +16,7 @@
 
 #include <AdvApp2Var_Criterion.hxx>
 
-AdvApp2Var_Criterion::~AdvApp2Var_Criterion() {}
+AdvApp2Var_Criterion::~AdvApp2Var_Criterion() = default;
 
 //=================================================================================================
 

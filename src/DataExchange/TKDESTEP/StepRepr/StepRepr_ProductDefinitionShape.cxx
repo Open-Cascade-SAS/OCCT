@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape, StepRepr_PropertyDef
 
 //=================================================================================================
 
-StepRepr_ProductDefinitionShape::StepRepr_ProductDefinitionShape() {}
+StepRepr_ProductDefinitionShape::StepRepr_ProductDefinitionShape() = default;

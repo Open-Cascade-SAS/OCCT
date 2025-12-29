@@ -20,7 +20,8 @@
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
 
-RWStepRepr_RWAssemblyComponentUsageSubstitute::RWStepRepr_RWAssemblyComponentUsageSubstitute() {}
+RWStepRepr_RWAssemblyComponentUsageSubstitute::RWStepRepr_RWAssemblyComponentUsageSubstitute() =
+  default;
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,

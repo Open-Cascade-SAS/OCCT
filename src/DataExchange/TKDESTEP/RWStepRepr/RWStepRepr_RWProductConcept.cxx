@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWProductConcept::RWStepRepr_RWProductConcept() {}
+RWStepRepr_RWProductConcept::RWStepRepr_RWProductConcept() = default;
 
 //=================================================================================================
 

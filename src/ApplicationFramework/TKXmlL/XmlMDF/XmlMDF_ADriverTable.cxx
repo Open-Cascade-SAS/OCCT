@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriverTable, Standard_Transient)
 
 //=================================================================================================
 
-XmlMDF_ADriverTable::XmlMDF_ADriverTable() {}
+XmlMDF_ADriverTable::XmlMDF_ADriverTable() = default;
 
 //=================================================================================================
 

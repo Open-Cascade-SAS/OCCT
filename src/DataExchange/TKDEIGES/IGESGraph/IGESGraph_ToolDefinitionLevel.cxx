@@ -33,7 +33,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESGraph_ToolDefinitionLevel::IGESGraph_ToolDefinitionLevel() {}
+IGESGraph_ToolDefinitionLevel::IGESGraph_ToolDefinitionLevel() = default;
 
 void IGESGraph_ToolDefinitionLevel::ReadOwnParams(
   const occ::handle<IGESGraph_DefinitionLevel>& ent,

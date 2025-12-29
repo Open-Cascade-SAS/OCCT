@@ -34,7 +34,7 @@ class Transfer_ActorOfTransientProcess : public Transfer_ActorOfProcessForTransi
 public:
   Standard_EXPORT Transfer_ActorOfTransientProcess();
 
-  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
+  Standard_EXPORT occ::handle<Transfer_Binder> Transferring(
     const occ::handle<Standard_Transient>&           start,
     const occ::handle<Transfer_ProcessForTransient>& TP,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) override;

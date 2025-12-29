@@ -22,7 +22,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepAP214_RWAppliedApprovalAssignment::RWStepAP214_RWAppliedApprovalAssignment() {}
+RWStepAP214_RWAppliedApprovalAssignment::RWStepAP214_RWAppliedApprovalAssignment() = default;
 
 void RWStepAP214_RWAppliedApprovalAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,

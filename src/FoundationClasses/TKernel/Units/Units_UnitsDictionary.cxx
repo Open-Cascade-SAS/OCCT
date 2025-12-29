@@ -41,13 +41,13 @@
 
 #include "../UnitsAPI/UnitsAPI_Units_dat.pxx"
 
-#include <stdio.h>
+#include <cstdio>
 
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsDictionary, Standard_Transient)
 
 //=================================================================================================
 
-Units_UnitsDictionary::Units_UnitsDictionary() {}
+Units_UnitsDictionary::Units_UnitsDictionary() = default;
 
 //=================================================================================================
 
@@ -68,16 +68,16 @@ static bool strrightadjust(char* str)
 static const char* readLine(TCollection_AsciiString& theLine, const char* theString)
 {
   theLine.Clear();
-  if (theString == NULL)
+  if (theString == nullptr)
   {
-    return NULL;
+    return nullptr;
   }
 
   for (const char* aCharIter = theString;; ++aCharIter)
   {
     if (*aCharIter == '\0')
     {
-      return NULL;
+      return nullptr;
     }
 
     if (*aCharIter == '\n')
@@ -111,7 +111,7 @@ void Units_UnitsDictionary::Creates()
   // read file line by line
   int                     numberofunits = 0;
   TCollection_AsciiString aLine;
-  for (const char* aLineIter = readLine(aLine, UnitsAPI_Units_dat); aLineIter != NULL;
+  for (const char* aLineIter = readLine(aLine, UnitsAPI_Units_dat); aLineIter != nullptr;
        aLineIter             = readLine(aLine, aLineIter))
   {
     // trim trailing spaces

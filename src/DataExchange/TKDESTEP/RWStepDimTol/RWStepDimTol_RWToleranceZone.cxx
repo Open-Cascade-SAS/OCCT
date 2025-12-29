@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWToleranceZone::RWStepDimTol_RWToleranceZone() {}
+RWStepDimTol_RWToleranceZone::RWStepDimTol_RWToleranceZone() = default;
 
 //=================================================================================================
 

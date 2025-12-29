@@ -3469,13 +3469,13 @@ public:
     myNbPnt2d = 0;
   }
 
-  double FirstParameter() const { return myCurve->FirstParameter(); }
+  double FirstParameter() const override { return myCurve->FirstParameter(); }
 
-  double LastParameter() const { return myCurve->LastParameter(); }
+  double LastParameter() const override { return myCurve->LastParameter(); }
 
   bool Value(const double theT,
              NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-             NCollection_Array1<gp_Pnt>& thePnt) const
+             NCollection_Array1<gp_Pnt>& thePnt) const override
   {
     thePnt(1) = myCurve->Value(theT);
     return true;
@@ -3483,7 +3483,7 @@ public:
 
   bool D1(const double theT,
           NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-          NCollection_Array1<gp_Vec>& theVec) const
+          NCollection_Array1<gp_Vec>& theVec) const override
   {
     gp_Pnt aDummyPnt;
     myCurve->D1(theT, aDummyPnt, theVec(1));
@@ -3990,9 +3990,9 @@ private:
     catch (Standard_Failure const& theExcep)
     {
       Message::SendFail() << "Error: unexpected exception " << theExcep;
-      return 0;
+      return nullptr;
     }
-    return 0;
+    return nullptr;
   }
 
 private:

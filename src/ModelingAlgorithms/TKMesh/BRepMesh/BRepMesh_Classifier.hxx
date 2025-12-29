@@ -33,7 +33,7 @@ public:
   Standard_EXPORT BRepMesh_Classifier();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_Classifier();
+  Standard_EXPORT ~BRepMesh_Classifier() override;
 
   //! Performs classification of the given point regarding to face internals.
   //! @param thePoint Point in parametric space to be classified.

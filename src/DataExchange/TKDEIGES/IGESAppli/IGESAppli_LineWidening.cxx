@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LineWidening, IGESData_IGESEntity)
 
-IGESAppli_LineWidening::IGESAppli_LineWidening() {}
+IGESAppli_LineWidening::IGESAppli_LineWidening() = default;
 
 void IGESAppli_LineWidening::Init(const int    nbPropVal,
                                   const double aWidth,

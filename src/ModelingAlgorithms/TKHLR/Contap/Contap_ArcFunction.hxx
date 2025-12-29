@@ -53,7 +53,7 @@ public:
 
   Standard_EXPORT int NbSamples() const;
 
-  Standard_EXPORT virtual int GetStateNumber() override;
+  Standard_EXPORT int GetStateNumber() override;
 
   const gp_Pnt& Valpoint(const int Index) const;
 

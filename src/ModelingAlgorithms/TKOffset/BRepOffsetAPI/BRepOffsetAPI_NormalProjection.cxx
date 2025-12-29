@@ -17,7 +17,7 @@
 #include <BRepOffsetAPI_NormalProjection.hxx>
 #include <TopoDS_Shape.hxx>
 
-BRepOffsetAPI_NormalProjection::BRepOffsetAPI_NormalProjection() {}
+BRepOffsetAPI_NormalProjection::BRepOffsetAPI_NormalProjection() = default;
 
 BRepOffsetAPI_NormalProjection::BRepOffsetAPI_NormalProjection(const TopoDS_Shape& S)
 {

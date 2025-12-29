@@ -111,7 +111,7 @@ void GeomPlate_Surface::Bounds(double& U1, double& U2, double& V1, double& V2) c
 bool GeomPlate_Surface::IsUClosed() const
 { // throw Standard_Failure("IsUClosed(");
   // return 1;
-  return 0;
+  return false;
 }
 
 //=================================================================================================
@@ -119,7 +119,7 @@ bool GeomPlate_Surface::IsUClosed() const
 bool GeomPlate_Surface::IsVClosed() const
 { // throw Standard_Failure("IsVClosed(");
   // return 1;
-  return 0;
+  return false;
 }
 
 //=================================================================================================

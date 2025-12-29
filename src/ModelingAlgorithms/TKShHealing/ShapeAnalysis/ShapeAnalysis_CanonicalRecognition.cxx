@@ -679,7 +679,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   if (aSurfs.Size() == 0)
   {
     theStatus = 1;
-    return NULL;
+    return nullptr;
   }
 
   gp_Ax3                     aPos;
@@ -714,7 +714,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   else
   {
     theStatus = 1;
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -739,7 +739,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   {
     // Empty wire
     theStatus = 1;
-    return NULL;
+    return nullptr;
   }
   // First edge
   const TopoDS_Edge&         anEdge1 = TopoDS::Edge(anIter.Value());
@@ -756,7 +756,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
     GetSurface(anEdge1, theTol, theType, theTarget, aPos1, aParams1, aGap1, theStatus);
   if (theStatus != 0 || anElemSurf1.IsNull())
   {
-    return NULL;
+    return nullptr;
   }
   anIter.Next();
   for (; anIter.More(); anIter.Next())
@@ -774,12 +774,12 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
       GetSurface(anEdge, theTol, theType, theTarget, aPos, aParams, aGap, theStatus);
     if (theStatus != 0 || anElemSurf.IsNull())
     {
-      return NULL;
+      return nullptr;
     }
     bool isOK = CompareSurfParams(theTarget, theTol, aPos1, aParams1, aPos, aParams);
     if (!isOK)
     {
-      return NULL;
+      return nullptr;
     }
   }
 
@@ -849,7 +849,7 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
     aPFunc = (math_MultipleVarFunction*)&aFuncCon;
   }
   else
-    aPFunc = NULL;
+    aPFunc = nullptr;
   //
   math_Vector aSteps(1, aNbVar);
   int         aNbInt = 10;

@@ -26,7 +26,7 @@ static const NCollection_List<TopoDS_Shape> anEmptyList;
 
 //=================================================================================================
 
-BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved() {}
+BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved() = default;
 
 //=================================================================================================
 

@@ -23,9 +23,7 @@
 #include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAppliedSecurityClassificationAssignment::
-  RWStepAP214_RWAppliedSecurityClassificationAssignment()
-{
-}
+  RWStepAP214_RWAppliedSecurityClassificationAssignment() = default;
 
 void RWStepAP214_RWAppliedSecurityClassificationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,

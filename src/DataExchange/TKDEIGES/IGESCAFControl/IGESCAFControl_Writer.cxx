@@ -444,7 +444,7 @@ static void AttachLayer(const occ::handle<Transfer_FinderProcess>& FP,
     occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(FP, localShape);
     if (FP->FindTypedTransient(mapper, STANDARD_TYPE(IGESData_IGESEntity), Igesent))
     {
-      Igesent->InitLevel(0, localIntName);
+      Igesent->InitLevel(nullptr, localIntName);
     }
 #ifdef OCCT_DEBUG
     else

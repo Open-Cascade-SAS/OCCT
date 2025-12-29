@@ -29,7 +29,8 @@
 
 //=================================================================================================
 
-RWStepAP203_RWCcDesignSpecificationReference::RWStepAP203_RWCcDesignSpecificationReference() {}
+RWStepAP203_RWCcDesignSpecificationReference::RWStepAP203_RWCcDesignSpecificationReference() =
+  default;
 
 //=================================================================================================
 

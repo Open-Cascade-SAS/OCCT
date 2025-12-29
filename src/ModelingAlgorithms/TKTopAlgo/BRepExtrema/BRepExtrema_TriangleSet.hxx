@@ -37,7 +37,7 @@ public:
   Standard_EXPORT BRepExtrema_TriangleSet(const NCollection_Vector<TopoDS_Shape>& theFaces);
 
   //! Releases resources of triangle set.
-  Standard_EXPORT ~BRepExtrema_TriangleSet();
+  Standard_EXPORT ~BRepExtrema_TriangleSet() override;
 
 public: //! @name methods implementing BVH set interface
   //! Returns total number of triangles.

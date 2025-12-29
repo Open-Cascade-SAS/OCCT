@@ -21,10 +21,10 @@
 GeomFill_CornerState::GeomFill_CornerState()
     : gap(RealLast()),
       tgtang(0.0),
-      isconstrained(0),
+      isconstrained(false),
       norang(0.0),
       scal(1.),
-      coonscnd(1)
+      coonscnd(true)
 {
 }
 
@@ -67,7 +67,7 @@ bool GeomFill_CornerState::HasConstraint() const
 
 void GeomFill_CornerState::Constraint()
 {
-  isconstrained = 1;
+  isconstrained = true;
 }
 
 //=================================================================================================
@@ -90,7 +90,7 @@ bool GeomFill_CornerState::IsToKill(double& Scal) const
 {
   Scal = scal;
   if (!isconstrained)
-    return 0;
+    return false;
   return !coonscnd;
 }
 
@@ -99,5 +99,5 @@ bool GeomFill_CornerState::IsToKill(double& Scal) const
 void GeomFill_CornerState::DoKill(const double Scal)
 {
   scal     = Scal;
-  coonscnd = 0;
+  coonscnd = false;
 }

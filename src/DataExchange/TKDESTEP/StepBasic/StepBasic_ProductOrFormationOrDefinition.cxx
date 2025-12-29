@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-StepBasic_ProductOrFormationOrDefinition::StepBasic_ProductOrFormationOrDefinition() {}
+StepBasic_ProductOrFormationOrDefinition::StepBasic_ProductOrFormationOrDefinition() = default;
 
 //=================================================================================================
 

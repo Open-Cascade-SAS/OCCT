@@ -16,7 +16,7 @@
 
 #include <AdvApp2Var_SysBase.hxx>
 
-static int init_STBAS(void)
+static int init_STBAS()
 {
   int ICODE = 0;
   // allocation tables are now local, so no global initialization is required

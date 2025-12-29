@@ -68,21 +68,21 @@ public:
   //! one. Works according <copymode> :
   //! if True, standard copy is run
   //! else nothing is done and returned value is False
-  Standard_EXPORT virtual bool CopyModel(const occ::handle<Interface_InterfaceModel>& original,
-                                         const occ::handle<Interface_InterfaceModel>& newmodel,
-                                         const Interface_EntityIterator&              list,
-                                         Interface_CopyTool& TC) const override;
+  Standard_EXPORT bool CopyModel(const occ::handle<Interface_InterfaceModel>& original,
+                                 const occ::handle<Interface_InterfaceModel>& newmodel,
+                                 const Interface_EntityIterator&              list,
+                                 Interface_CopyTool&                          TC) const override;
 
   //! Dumps an entity under STEP form, i.e. as a part of a Step file
   //! Works with a StepDumper.
   //! Level 0 just displays type; level 1 displays the entity itself
   //! and level 2 displays the entity plus its shared ones (one
   //! sub-level : immediately shared entities)
-  Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
-                                          const occ::handle<Interface_Protocol>&       protocol,
-                                          const occ::handle<Standard_Transient>&       entity,
-                                          Standard_OStream&                            S,
-                                          const int level) const override;
+  Standard_EXPORT void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                  const occ::handle<Interface_Protocol>&       protocol,
+                                  const occ::handle<Standard_Transient>&       entity,
+                                  Standard_OStream&                            S,
+                                  const int level) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
 

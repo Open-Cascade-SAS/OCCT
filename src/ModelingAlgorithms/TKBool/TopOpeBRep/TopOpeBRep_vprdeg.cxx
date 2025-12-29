@@ -50,7 +50,7 @@
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:23 2000.BEGIN
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                              aMapOfTreatedVertexListOfEdge;
-static TopOpeBRep_PLineInter localCurrentLine = NULL;
+static TopOpeBRep_PLineInter localCurrentLine = nullptr;
 
 static bool local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
                                           const TopoDS_Vertex& theVertex);
@@ -782,7 +782,7 @@ static bool local_FindVertex(
 static void local_ReduceMapOfTreatedVertices(const TopOpeBRep_PLineInter& theCurrentLine)
 {
 
-  if (localCurrentLine == NULL)
+  if (localCurrentLine == nullptr)
   {
     localCurrentLine = theCurrentLine;
     aMapOfTreatedVertexListOfEdge.Clear();

@@ -17,7 +17,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-MoniTool_AttrList::MoniTool_AttrList() {}
+MoniTool_AttrList::MoniTool_AttrList() = default;
 
 MoniTool_AttrList::MoniTool_AttrList(const MoniTool_AttrList& other)
     : theattrib(other.AttrList())

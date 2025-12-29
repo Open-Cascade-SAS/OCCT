@@ -62,7 +62,7 @@ public:
                                    const double                   Confusion) const;
 
   //! Dump of the point on element.
-  Standard_EXPORT void Dump(const int Index = 0) const;
+  Standard_EXPORT void Dump(const int Index = 0) const override;
 
 protected:
   HatchGen_IntersectionType myType;

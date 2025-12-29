@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PipingFlow, IGESData_IGESEntity)
 
-IGESAppli_PipingFlow::IGESAppli_PipingFlow() {}
+IGESAppli_PipingFlow::IGESAppli_PipingFlow() = default;
 
 void IGESAppli_PipingFlow::Init(
   const int                                                                      nbContextFlags,

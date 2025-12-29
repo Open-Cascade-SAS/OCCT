@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWCompositeGroupShapeAspect::RWStepRepr_RWCompositeGroupShapeAspect() {}
+RWStepRepr_RWCompositeGroupShapeAspect::RWStepRepr_RWCompositeGroupShapeAspect() = default;
 
 //=================================================================================================
 

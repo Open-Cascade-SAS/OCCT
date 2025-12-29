@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESGraph_ToolLineFontPredefined::IGESGraph_ToolLineFontPredefined() {}
+IGESGraph_ToolLineFontPredefined::IGESGraph_ToolLineFontPredefined() = default;
 
 void IGESGraph_ToolLineFontPredefined::ReadOwnParams(
   const occ::handle<IGESGraph_LineFontPredefined>& ent,

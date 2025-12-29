@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_FunctionallyDefinedTransformation, Standard_Transient)
 
-StepRepr_FunctionallyDefinedTransformation::StepRepr_FunctionallyDefinedTransformation() {}
+StepRepr_FunctionallyDefinedTransformation::StepRepr_FunctionallyDefinedTransformation() = default;
 
 void StepRepr_FunctionallyDefinedTransformation::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

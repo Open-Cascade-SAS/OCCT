@@ -73,7 +73,7 @@ std::filebuf Draw_Spyfile;
 
 static std::ostream spystream(&Draw_Spyfile);
 
-static occ::handle<Draw_ProgressIndicator> global_Progress = NULL;
+static occ::handle<Draw_ProgressIndicator> global_Progress = nullptr;
 
 Standard_EXPORT bool Draw_Interprete(const char* command);
 
@@ -441,7 +441,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   Draw_InitAppli(theCommands);
 
 #ifndef _WIN32
-  Tcl_CreateExitHandler(exitProc, 0);
+  Tcl_CreateExitHandler(exitProc, nullptr);
 #endif
 
   // *****************************************************************
@@ -575,8 +575,8 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 // #endif
 
 // User functions called before and after each command
-void (*Draw_BeforeCommand)()   = NULL;
-void (*Draw_AfterCommand)(int) = NULL;
+void (*Draw_BeforeCommand)()   = nullptr;
+void (*Draw_AfterCommand)(int) = nullptr;
 
 bool Draw_Interprete(const char* com)
 {
@@ -595,7 +595,7 @@ bool Draw_Interprete(const char* com)
   Tcl_DStringAppend(&command, com, -1);
 #elif ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 1)))
   // OCC63: Since Tcl 8.1 it uses UTF-8 encoding for internal representation of strings
-  Tcl_ExternalToUtfDString(NULL, com, -1, &command);
+  Tcl_ExternalToUtfDString(nullptr, com, -1, &command);
 #else
   Tcl_DStringAppend(&command, com, -1);
 #endif
@@ -692,7 +692,7 @@ void Draw::Load(Draw_Interpretor&              theDI,
                 const bool                     theIsVerbose)
 {
   static NCollection_DataMap<TCollection_AsciiString, OSD_Function> theMapOfFunctions;
-  OSD_Function                                                      aFunc = NULL;
+  OSD_Function                                                      aFunc = nullptr;
   if (!theMapOfFunctions.Find(theKey, aFunc))
   {
     TCollection_AsciiString       aPluginLibrary;
@@ -733,7 +733,7 @@ void Draw::Load(Draw_Interpretor&              theDI,
     }
 
     aFunc = aSharedLibrary.DlSymb("PLUGINFACTORY");
-    if (aFunc == NULL)
+    if (aFunc == nullptr)
     {
       const TCollection_AsciiString anError(aSharedLibrary.DlError());
       Standard_SStream              aMsg;

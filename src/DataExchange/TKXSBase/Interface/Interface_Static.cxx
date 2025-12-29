@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(Interface_Static, Interface_TypedValue)
 
 static char defmess[31];

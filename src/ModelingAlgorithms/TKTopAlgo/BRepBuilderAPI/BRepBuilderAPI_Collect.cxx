@@ -201,7 +201,7 @@ static void DEBControl(
 #endif
 //=================================================================================================
 
-BRepBuilderAPI_Collect::BRepBuilderAPI_Collect() {}
+BRepBuilderAPI_Collect::BRepBuilderAPI_Collect() = default;
 
 //=================================================================================================
 

@@ -30,7 +30,7 @@
 static inline void AddPointIntoLine(occ::handle<IntSurf_LineOn2S>& theLine,
                                     const double* const            theArrPeriods,
                                     IntSurf_PntOn2S&               thePoint,
-                                    IntPatch_Point*                theVertex = 0)
+                                    IntPatch_Point*                theVertex = nullptr)
 {
   if (theLine->NbPoints() > 0)
   {
@@ -648,8 +648,10 @@ void IntPatch_ALineToWLine::MakeWLine(
           IntSurf_PntOn2S aPOn2SNext;
           aPOn2SNext.SetValue(aPnt3dNext, anU1, aV1, anU2, aV2);
 
-          if (aPOn2SNext.ValueOnSurface(0).SquareDistance(aRPT.ValueOnSurface(0)) > M_PI * M_PI
-              || aPOn2SNext.ValueOnSurface(1).SquareDistance(aRPT.ValueOnSurface(1)) > M_PI * M_PI)
+          if (aPOn2SNext.ValueOnSurface(false).SquareDistance(aRPT.ValueOnSurface(false))
+                > M_PI * M_PI
+              || aPOn2SNext.ValueOnSurface(true).SquareDistance(aRPT.ValueOnSurface(true))
+                   > M_PI * M_PI)
           {
             aPrevLPoint = aRPT;
             aPrevParam  = aParameter;

@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWActionAssignment::RWStepBasic_RWActionAssignment() {}
+RWStepBasic_RWActionAssignment::RWStepBasic_RWActionAssignment() = default;
 
 //=================================================================================================
 

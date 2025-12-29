@@ -40,7 +40,7 @@ protected:
 
   LDOM_BasicNode()
       : myNodeType(LDOM_Node::UNKNOWN),
-        mySibling(NULL)
+        mySibling(nullptr)
   {
   }
 
@@ -48,7 +48,7 @@ protected:
 
   LDOM_BasicNode(LDOM_Node::NodeType aType)
       : myNodeType(aType),
-        mySibling(NULL)
+        mySibling(nullptr)
   {
   }
 

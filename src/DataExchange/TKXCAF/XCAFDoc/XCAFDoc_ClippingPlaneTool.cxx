@@ -281,4 +281,4 @@ const Standard_GUID& XCAFDoc_ClippingPlaneTool::ID() const
 
 //=================================================================================================
 
-XCAFDoc_ClippingPlaneTool::XCAFDoc_ClippingPlaneTool() {}
+XCAFDoc_ClippingPlaneTool::XCAFDoc_ClippingPlaneTool() = default;

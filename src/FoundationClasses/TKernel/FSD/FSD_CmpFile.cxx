@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
 
 //=================================================================================================
 
-FSD_CmpFile::FSD_CmpFile() {}
+FSD_CmpFile::FSD_CmpFile() = default;
 
 //=======================================================================
 // function : IsGoodFileType

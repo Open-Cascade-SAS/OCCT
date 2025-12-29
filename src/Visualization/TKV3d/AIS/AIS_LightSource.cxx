@@ -51,7 +51,7 @@ bool AIS_LightSourceOwner::HandleMouseClick(const NCollection_Vec2<int>&,
                                             bool)
 {
   AIS_LightSource* aLightSource = dynamic_cast<AIS_LightSource*>(mySelectable);
-  if (aLightSource != NULL && aLightSource->ToSwitchOnClick()
+  if (aLightSource != nullptr && aLightSource->ToSwitchOnClick()
       && theKey == Aspect_VKeyMouse_LeftButton && theFlags == Aspect_VKeyFlags_NONE)
   {
     aLightSource->Light()->SetEnabled(!aLightSource->Light()->IsEnabled());

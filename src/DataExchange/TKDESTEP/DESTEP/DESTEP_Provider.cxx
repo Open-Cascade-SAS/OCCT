@@ -142,7 +142,7 @@ bool checkStreamWritability(Standard_OStream& theStream, const TCollection_Ascii
 
 //=================================================================================================
 
-DESTEP_Provider::DESTEP_Provider() {}
+DESTEP_Provider::DESTEP_Provider() = default;
 
 //=================================================================================================
 
@@ -231,7 +231,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&       thePath,
   aParams.WriteUnit = aTargetUnit;
   aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   TDF_Label aLabel;
-  if (!aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress))
+  if (!aWriter.Transfer(theDocument, aParams, aMode, nullptr, theProgress))
   {
     Message::SendFail() << "Error in the DESTEP_Provider during writing the file " << thePath
                         << "\t: The document cannot be translated or gives no result";
@@ -492,7 +492,7 @@ bool DESTEP_Provider::Write(WriteStreamList&                     theStreams,
   aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
-  bool isOk = aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress);
+  bool isOk = aWriter.Transfer(theDocument, aParams, aMode, nullptr, theProgress);
   if (!isOk)
   {
     Message::SendFail() << "Error: DESTEP_Provider failed to transfer document for stream "

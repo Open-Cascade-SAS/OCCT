@@ -86,7 +86,7 @@ occ::handle<XCAFDoc_GraphNode> XCAFDoc_GraphNode::Set(const TDF_Label&     L,
 
 //=================================================================================================
 
-XCAFDoc_GraphNode::XCAFDoc_GraphNode() {}
+XCAFDoc_GraphNode::XCAFDoc_GraphNode() = default;
 
 //=================================================================================================
 

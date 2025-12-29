@@ -46,8 +46,8 @@ BinObjMgt_Persistent::BinObjMgt_Persistent()
       myOffset(BP_HEADSIZE),
       mySize(BP_HEADSIZE),
       myIsError(false),
-      myOStream(NULL),
-      myIStream(NULL),
+      myOStream(nullptr),
+      myIStream(nullptr),
       myDirectWritingIsEnabled(false)
 {
   Init();
@@ -1074,7 +1074,7 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
     int*    aIntData;
   } aWrapUnion;
 
-  void* aPrevPtr = 0;
+  void* aPrevPtr = nullptr;
   while (aLen > 0)
   {
     int aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
@@ -1088,7 +1088,7 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
       *(int*)aPrevPtr      = FSD_BinaryFile::InverseInt(*aWrapUnion.aIntData);
       *aWrapUnion.aIntData = aTmp;
       aWrapUnion.aIntData++;
-      aPrevPtr = 0;
+      aPrevPtr = nullptr;
     }
     for (int i = 0; i < aLenInPiece / BP_REALSIZE; i++)
       aWrapUnion.aRealData[i] = FSD_BinaryFile::InverseReal(aWrapUnion.aRealData[i]);

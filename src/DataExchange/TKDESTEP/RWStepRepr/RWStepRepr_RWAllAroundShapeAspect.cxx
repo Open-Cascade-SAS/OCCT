@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWAllAroundShapeAspect::RWStepRepr_RWAllAroundShapeAspect() {}
+RWStepRepr_RWAllAroundShapeAspect::RWStepRepr_RWAllAroundShapeAspect() = default;
 
 //=================================================================================================
 

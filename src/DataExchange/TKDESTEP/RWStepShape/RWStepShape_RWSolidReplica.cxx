@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepShape_SolidReplica.hxx>
 
-RWStepShape_RWSolidReplica::RWStepShape_RWSolidReplica() {}
+RWStepShape_RWSolidReplica::RWStepShape_RWSolidReplica() = default;
 
 void RWStepShape_RWSolidReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

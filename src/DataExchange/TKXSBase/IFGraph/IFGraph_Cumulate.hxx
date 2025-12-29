@@ -50,7 +50,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Evaluates the result of cumulation
-  Standard_EXPORT virtual void Evaluate() override;
+  Standard_EXPORT void Evaluate() override;
 
   //! returns entities which are taken several times
   Standard_EXPORT Interface_EntityIterator Overlapped() const;

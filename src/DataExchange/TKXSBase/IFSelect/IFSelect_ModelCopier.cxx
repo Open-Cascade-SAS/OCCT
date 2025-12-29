@@ -35,11 +35,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModelCopier, Standard_Transient)
 
 // #define MISOPOINT
-IFSelect_ModelCopier::IFSelect_ModelCopier() {}
+IFSelect_ModelCopier::IFSelect_ModelCopier() = default;
 
 void IFSelect_ModelCopier::SetShareOut(const occ::handle<IFSelect_ShareOut>& sho)
 {

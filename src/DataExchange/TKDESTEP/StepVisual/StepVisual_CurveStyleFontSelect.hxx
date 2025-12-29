@@ -41,7 +41,7 @@ public:
   //! 2 -> PreDefinedCurveFont
   //! 3 -> ExternallyDefinedCurveFont
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a CurveStyleFont (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_CurveStyleFont> CurveStyleFont() const;

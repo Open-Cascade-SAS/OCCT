@@ -100,8 +100,8 @@ public:
   }
 
   //! Checks whether the circle overlaps current selecting volume
-  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+  bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+               SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveCircle::Matches(theMgr, thePickResult);
   }
@@ -120,8 +120,8 @@ public:
   }
 
   //! Checks whether the circle overlaps current selecting volume
-  virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+  bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+               SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveTriangulation::Matches(theMgr, thePickResult);
   }
@@ -466,7 +466,7 @@ void AIS_Manipulator::Detach()
     aContext->Remove(this, false);
   }
 
-  SetOwner(NULL);
+  SetOwner(nullptr);
 }
 
 //=================================================================================================
@@ -489,7 +489,7 @@ occ::handle<AIS_InteractiveObject> AIS_Manipulator::Object(const int theIndex) c
 
   if (anOwner.IsNull() || anOwner->IsEmpty())
   {
-    return NULL;
+    return nullptr;
   }
 
   return anOwner->Value(theIndex);
@@ -1211,7 +1211,8 @@ void AIS_Manipulator::SetTransformPersistence(
 {
   Standard_ASSERT_RETURN(!myIsZoomPersistentMode,
                          "AIS_Manipulator::SetTransformPersistence: "
-                         "Custom settings are not allowed by this class in ZoomPersistence mode", );
+                         "Custom settings are not allowed by this class in ZoomPersistence mode",
+                         Standard_VOID_RETURN);
 
   setTransformPersistence(theTrsfPers);
 }

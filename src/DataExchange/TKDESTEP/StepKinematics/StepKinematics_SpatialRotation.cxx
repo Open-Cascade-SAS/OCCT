@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() {}
+StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() = default;
 
 //=================================================================================================
 

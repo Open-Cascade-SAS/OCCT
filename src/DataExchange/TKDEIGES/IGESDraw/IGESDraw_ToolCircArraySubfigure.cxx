@@ -35,7 +35,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-IGESDraw_ToolCircArraySubfigure::IGESDraw_ToolCircArraySubfigure() {}
+IGESDraw_ToolCircArraySubfigure::IGESDraw_ToolCircArraySubfigure() = default;
 
 void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(
   const occ::handle<IGESDraw_CircArraySubfigure>& ent,

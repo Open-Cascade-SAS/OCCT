@@ -100,12 +100,12 @@ occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
   int                      aBackMatI = (int)Graphic3d_NameOfMaterial_Brass;
 
   if (!theDr->GetInteger(MeshVS_DA_FrontMaterial, aFrMatI) && !UseDefaults)
-    return 0;
+    return nullptr;
   else
     aFrMat = (Graphic3d_MaterialAspect)(Graphic3d_NameOfMaterial)aFrMatI;
 
   if (!theDr->GetInteger(MeshVS_DA_BackMaterial, aBackMatI) && !UseDefaults)
-    return 0;
+    return nullptr;
   else
     aBackMat = (Graphic3d_MaterialAspect)(Graphic3d_NameOfMaterial)aBackMatI;
 

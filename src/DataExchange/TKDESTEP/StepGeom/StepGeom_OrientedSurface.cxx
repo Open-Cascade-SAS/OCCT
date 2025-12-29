@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OrientedSurface, StepGeom_Surface)
 
 //=================================================================================================
 
-StepGeom_OrientedSurface::StepGeom_OrientedSurface() {}
+StepGeom_OrientedSurface::StepGeom_OrientedSurface() = default;
 
 //=================================================================================================
 

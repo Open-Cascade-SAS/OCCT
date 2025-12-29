@@ -201,7 +201,7 @@ void SelectMgr_SensitiveEntitySet::addOwner(const occ::handle<SelectMgr_EntityOw
 
 void SelectMgr_SensitiveEntitySet::removeOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner)
 {
-  if (int* aNumber = !theOwner.IsNull() ? myOwnersMap.ChangeSeek(theOwner) : NULL)
+  if (int* aNumber = !theOwner.IsNull() ? myOwnersMap.ChangeSeek(theOwner) : nullptr)
   {
     if (--(*aNumber) == 0)
     {

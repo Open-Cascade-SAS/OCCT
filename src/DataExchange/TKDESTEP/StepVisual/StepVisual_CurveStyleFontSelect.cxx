@@ -18,7 +18,7 @@
 #include <StepVisual_ExternallyDefinedCurveFont.hxx>
 #include <StepVisual_PreDefinedCurveFont.hxx>
 
-StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect() {}
+StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect() = default;
 
 int StepVisual_CurveStyleFontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

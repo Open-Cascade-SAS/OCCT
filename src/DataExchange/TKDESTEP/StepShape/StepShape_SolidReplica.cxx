@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_SolidReplica, StepShape_SolidModel)
 
-StepShape_SolidReplica::StepShape_SolidReplica() {}
+StepShape_SolidReplica::StepShape_SolidReplica() = default;
 
 void StepShape_SolidReplica::Init(
   const occ::handle<TCollection_HAsciiString>&                   aName,

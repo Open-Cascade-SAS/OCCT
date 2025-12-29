@@ -31,14 +31,14 @@ OpenGl_LineAttributes::OpenGl_LineAttributes()
 
 OpenGl_LineAttributes::~OpenGl_LineAttributes()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
 
 void OpenGl_LineAttributes::Release(OpenGl_Context* theGlCtx)
 {
-  if (theGlCtx != NULL && theGlCtx->IsValid())
+  if (theGlCtx != nullptr && theGlCtx->IsValid())
   {
     for (NCollection_DataMap<occ::handle<Graphic3d_HatchStyle>, unsigned int>::Iterator anIter(
            myStyles);
@@ -68,7 +68,8 @@ unsigned int OpenGl_LineAttributes::init(const OpenGl_Context*                  
 bool OpenGl_LineAttributes::SetTypeOfHatch(const OpenGl_Context*                    theGlCtx,
                                            const occ::handle<Graphic3d_HatchStyle>& theStyle)
 {
-  if (theStyle.IsNull() || theStyle->HatchType() == Aspect_HS_SOLID || theGlCtx->core11ffp == NULL)
+  if (theStyle.IsNull() || theStyle->HatchType() == Aspect_HS_SOLID
+      || theGlCtx->core11ffp == nullptr)
   {
     return false;
   }

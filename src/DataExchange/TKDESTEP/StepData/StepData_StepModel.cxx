@@ -26,12 +26,12 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 
 // File header: list of entities
 // Default constructor for STEP data model
-StepData_StepModel::StepData_StepModel() {}
+StepData_StepModel::StepData_StepModel() = default;
 
 occ::handle<Standard_Transient> StepData_StepModel::Entity(const int num) const
 {

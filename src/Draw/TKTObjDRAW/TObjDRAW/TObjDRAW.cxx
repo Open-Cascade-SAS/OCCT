@@ -32,7 +32,7 @@
 #include <XmlTObjDrivers.hxx>
 #include <OSD_FileSystem.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // Section: General commands
@@ -43,14 +43,10 @@ class TObjDRAW_Model : public TObj_Model
 {
 public:
   Standard_EXPORT TObjDRAW_Model()
-      : TObj_Model()
-  {
-  }
 
-  virtual Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override
-  {
-    return new TObjDRAW_Model();
-  }
+    = default;
+
+  Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override { return new TObjDRAW_Model(); }
 
 public:
   //! CASCADE RTTI
@@ -500,7 +496,7 @@ static int getChildren(Draw_Interpretor& di, int argc, const char** argv)
 
   bool                             aGetSubs = (argc > 3 && !strcasecmp(argv[3], "-all"));
   occ::handle<TObj_ObjectIterator> anItr =
-    aGetSubs ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), NULL, true, true)
+    aGetSubs ? new TObj_OcafObjectIterator(tObj->GetChildLabel(), nullptr, true, true)
              : tObj->GetChildren();
 
   int i = 0;

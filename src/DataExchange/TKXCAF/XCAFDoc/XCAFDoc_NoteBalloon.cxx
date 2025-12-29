@@ -56,7 +56,7 @@ occ::handle<XCAFDoc_NoteBalloon> XCAFDoc_NoteBalloon::Set(
 
 //=================================================================================================
 
-XCAFDoc_NoteBalloon::XCAFDoc_NoteBalloon() {}
+XCAFDoc_NoteBalloon::XCAFDoc_NoteBalloon() = default;
 
 //=================================================================================================
 

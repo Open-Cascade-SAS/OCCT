@@ -21,7 +21,7 @@
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
-StepAP214_AutoDesignPresentedItemSelect::StepAP214_AutoDesignPresentedItemSelect() {}
+StepAP214_AutoDesignPresentedItemSelect::StepAP214_AutoDesignPresentedItemSelect() = default;
 
 int StepAP214_AutoDesignPresentedItemSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const

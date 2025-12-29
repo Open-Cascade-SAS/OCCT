@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExpressionDriver, BinMDF_ADriver)
 
 BinMDataStd_ExpressionDriver::BinMDataStd_ExpressionDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : BinMDF_ADriver(theMsgDriver, NULL)
+    : BinMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

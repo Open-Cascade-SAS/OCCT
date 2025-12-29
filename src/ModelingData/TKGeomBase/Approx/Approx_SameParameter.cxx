@@ -46,12 +46,12 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    Dimension,
-                        double  StartEnd[2],
-                        double* Parameter,
-                        int*    DerivativeRequest,
-                        double* Result, // [Dimension]
-                        int*    ErrorCode);
+  void Evaluate(int*    Dimension,
+                double  StartEnd[2],
+                double* Parameter,
+                int*    DerivativeRequest,
+                double* Result, // [Dimension]
+                int*    ErrorCode) override;
 
 private:
   const NCollection_Array1<double>& FlatKnots;
@@ -892,7 +892,7 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
         double dist_2 = Projector.SquareDistance();
         if (dist_2 > theBestSqTol)
           theBestSqTol = dist_2;
-        projok = 1;
+        projok = true;
       }
       else
       {
@@ -942,7 +942,7 @@ bool Approx_SameParameter::IncreaseNbPoles(const NCollection_Array1<double>& the
       double dist_2 = Projector.SquareDistance();
       if (dist_2 > theBestSqTol)
         theBestSqTol = dist_2;
-      projok = 1;
+      projok = true;
     }
     else
     {

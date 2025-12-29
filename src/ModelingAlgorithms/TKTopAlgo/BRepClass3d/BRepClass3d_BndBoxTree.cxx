@@ -45,7 +45,7 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
       for (int i = 1; i <= ExtPC.NbExt(); i++)
         if (ExtPC.SquareDistance(i) < EdgeTSq)
         {
-          myStop = 1; // exit from selector
+          myStop = true; // exit from selector
           return true;
         }
     }
@@ -59,7 +59,7 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
     // Vertex-Point interference.
     if (VPnt.SquareDistance(myP) < VertTSq)
     {
-      myStop = 1;
+      myStop = true;
       return true;
     }
   }

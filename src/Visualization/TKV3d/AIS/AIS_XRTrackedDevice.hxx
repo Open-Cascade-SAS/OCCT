@@ -58,16 +58,16 @@ public:
 
 protected:
   //! Returns true for 0 mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Compute presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
   //! Compute laser ray presentation.
   Standard_EXPORT void computeLaserRay();

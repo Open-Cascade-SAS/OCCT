@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity() {}
+RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity() = default;
 
 void RWStepBasic_RWEffectivity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

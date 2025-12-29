@@ -23,7 +23,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWFacetedBrepAndBrepWithVoids::RWStepShape_RWFacetedBrepAndBrepWithVoids() {}
+RWStepShape_RWFacetedBrepAndBrepWithVoids::RWStepShape_RWFacetedBrepAndBrepWithVoids() = default;
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,

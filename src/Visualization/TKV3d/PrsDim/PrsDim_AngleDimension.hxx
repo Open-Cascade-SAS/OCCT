@@ -165,14 +165,14 @@ public:
                                            const gp_Pnt&      thePoint);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
   //! Principle of horizontal text alignment settings:
   //! - divide circle into two halves according to attachment points
@@ -180,9 +180,9 @@ public:
   //! - if aTextPos is not between attach points but in this half -> Left or Right + positive flyout
   //! - if aTextPos is between reflections of attach points -> Center + negative flyout
   //! - if aTextPos is not between reflections of attach points -> Left or Right + negative flyout
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT gp_Pnt GetTextPosition() const override;
 
   //! Sets angle type.
   //! @param[in] theType  the type value.
@@ -280,15 +280,15 @@ protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if the plane includes three angle points to build dimension.
-  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
+  Standard_EXPORT bool CheckPlane(const gp_Pln& thePlane) const override;
 
-  Standard_EXPORT virtual double ComputeValue() const override;
+  Standard_EXPORT double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode = 0) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                               const occ::handle<Prs3d_Presentation>&         thePresentation,
+                               const int                                      theMode = 0) override;
 
-  Standard_EXPORT virtual void ComputeFlyoutSelection(
+  Standard_EXPORT void ComputeFlyoutSelection(
     const occ::handle<SelectMgr_Selection>&   theSelection,
     const occ::handle<SelectMgr_EntityOwner>& theOwner) override;
 

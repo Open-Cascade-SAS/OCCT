@@ -132,7 +132,7 @@ public:
   //! Returns the boundary tolerance flag
   Standard_EXPORT bool GetUseBoundToler() const;
 
-  Standard_EXPORT virtual ~IntCurvesFace_Intersector();
+  Standard_EXPORT ~IntCurvesFace_Intersector() override;
 
 private:
   Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,

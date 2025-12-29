@@ -39,7 +39,7 @@ static VrmlData_Scene MyDefaultScene;
 bool IsEqual(const occ::handle<VrmlData_Node>& theOne, const occ::handle<VrmlData_Node>& theTwo)
 {
   bool aResult(false);
-  if (theOne->Name() != 0L && theTwo->Name() != 0L)
+  if (theOne->Name() != nullptr && theTwo->Name() != nullptr)
     aResult = (strcmp(theOne->Name(), theTwo->Name()) == 0);
   return aResult;
 }
@@ -48,7 +48,7 @@ bool IsEqual(const occ::handle<VrmlData_Node>& theOne, const occ::handle<VrmlDat
 
 VrmlData_Node::VrmlData_Node()
     : myScene(&MyDefaultScene),
-      myName(0L)
+      myName(nullptr)
 {
 }
 
@@ -57,7 +57,7 @@ VrmlData_Node::VrmlData_Node()
 VrmlData_Node::VrmlData_Node(const VrmlData_Scene& theScene, const char* theName)
     : myScene(&theScene)
 {
-  if (theName == 0L)
+  if (theName == nullptr)
     theName = "";
   setName(theName);
 }
@@ -72,7 +72,7 @@ occ::handle<VrmlData_Node> VrmlData_Node::Clone(const occ::handle<VrmlData_Node>
   if (theOther.IsNull() == false)
   {
     if (theOther->IsKind(DynamicType()) == false)
-      return NULL;
+      return nullptr;
     if (&theOther->Scene() == myScene)
       theOther->myName = myName;
     else
@@ -115,7 +115,7 @@ VrmlData_ErrorStatus VrmlData_Node::WriteClosing() const
 {
   VrmlData_ErrorStatus aResult = Scene().Status();
   if (aResult == VrmlData_StatusOK || aResult == VrmlData_NotImplemented)
-    aResult = Scene().WriteLine("}", 0L, -GlobalIndent());
+    aResult = Scene().WriteLine("}", nullptr, -GlobalIndent());
   return aResult;
 }
 

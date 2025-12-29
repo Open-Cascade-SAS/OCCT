@@ -38,7 +38,7 @@ public:
 protected:
   //! Construct a vertex.
   TopoDS_TVertex()
-      : TopoDS_TShape()
+
   {
     Closed(true);
     Convex(true);

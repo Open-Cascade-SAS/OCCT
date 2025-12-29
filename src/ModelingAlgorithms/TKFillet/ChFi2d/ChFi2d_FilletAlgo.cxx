@@ -333,7 +333,7 @@ bool ChFi2d_FilletAlgo::Perform(const double theRadius)
   int aCycle;
   for (aCycle = 2, myStartSide = false; aCycle; myStartSide = !myStartSide, aCycle--)
   {
-    FilletPoint *aLeft = NULL, *aRight;
+    FilletPoint *aLeft = nullptr, *aRight;
 
     for (aParam = myStart1 + aStep;
          aParam < myEnd1 || std::abs(myEnd1 - aParam) < Precision::Confusion();
@@ -545,7 +545,7 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint,
   FilletPoint*                       aNearest;
   int                                a, iSol = 1;
   NCollection_List<double>::Iterator anIter(myResultParams);
-  for (aNearest = NULL, a = 1; anIter.More(); anIter.Next(), a++)
+  for (aNearest = nullptr, a = 1; anIter.More(); anIter.Next(), a++)
   {
     myStartSide         = (myResultOrientation.Value(a)) ? true : false;
     FilletPoint* aPoint = new FilletPoint(anIter.Value());

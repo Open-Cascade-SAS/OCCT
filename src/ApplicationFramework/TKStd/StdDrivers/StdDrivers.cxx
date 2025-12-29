@@ -58,7 +58,7 @@ void StdDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
                        "Standard OCAF Document",
                        "std",
                        new StdDrivers_DocumentRetrievalDriver,
-                       0);
+                       nullptr);
 }
 
 //=================================================================================================

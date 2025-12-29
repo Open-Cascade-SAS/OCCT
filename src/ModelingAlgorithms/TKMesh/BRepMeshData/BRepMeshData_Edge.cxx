@@ -33,7 +33,7 @@ BRepMeshData_Edge::BRepMeshData_Edge(const TopoDS_Edge&                         
 
 //=================================================================================================
 
-BRepMeshData_Edge::~BRepMeshData_Edge() {}
+BRepMeshData_Edge::~BRepMeshData_Edge() = default;
 
 //=================================================================================================
 

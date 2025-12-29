@@ -275,7 +275,7 @@ public:
   Graphic3d_ClipState ProbePoint(const NCollection_Vec4<double>& thePoint) const
   {
     Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != nullptr;
          aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
       Graphic3d_ClipState aPlnState = aPlaneIter->ProbePointHalfspace(thePoint);
@@ -295,7 +295,7 @@ public:
   Graphic3d_ClipState ProbeBox(const Graphic3d_BndBox3d& theBox) const
   {
     Graphic3d_ClipState aState = Graphic3d_ClipState_Out;
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != nullptr;
          aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
       if (aPlaneIter->IsBoxFullInHalfspace(theBox))
@@ -316,7 +316,7 @@ public:
   //! Check if the given bounding box is In and touch the clipping planes
   bool ProbeBoxTouch(const Graphic3d_BndBox3d& theBox) const
   {
-    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL;
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != nullptr;
          aPlaneIter                            = aPlaneIter->myNextInChain.get())
     {
       if (aPlaneIter->IsBoxFullInHalfspace(theBox))

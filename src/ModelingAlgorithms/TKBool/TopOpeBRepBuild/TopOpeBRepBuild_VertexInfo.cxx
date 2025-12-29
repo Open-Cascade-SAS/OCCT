@@ -16,7 +16,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 

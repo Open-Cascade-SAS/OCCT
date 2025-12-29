@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface, IGESData_IGESEntity)
 
-IGESGeom_CurveOnSurface::IGESGeom_CurveOnSurface() {}
+IGESGeom_CurveOnSurface::IGESGeom_CurveOnSurface() = default;
 
 void IGESGeom_CurveOnSurface::Init(const int                               aMode,
                                    const occ::handle<IGESData_IGESEntity>& aSurface,

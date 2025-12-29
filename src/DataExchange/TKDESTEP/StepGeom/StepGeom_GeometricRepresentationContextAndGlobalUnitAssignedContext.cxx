@@ -21,9 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndGlobalUnitA
                            StepRepr_RepresentationContext)
 
 StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
-  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext()
-{
-}
+  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext() = default;
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
   const occ::handle<TCollection_HAsciiString>&                aContextIdentifier,

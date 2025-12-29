@@ -37,7 +37,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;

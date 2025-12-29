@@ -43,7 +43,7 @@ void OSD_ThreadPool::EnumeratedThread::WakeUp(JobInterface* theJob, bool theToCa
   myToCatchFpe = theToCatchFpe;
   if (myIsSelfThread)
   {
-    if (theJob != NULL)
+    if (theJob != nullptr)
     {
       OSD_ThreadPool::performJob(myFailure, myJob, myThreadIndex);
     }
@@ -51,7 +51,7 @@ void OSD_ThreadPool::EnumeratedThread::WakeUp(JobInterface* theJob, bool theToCa
   }
 
   myWakeEvent.Set();
-  if (theJob != NULL && !myIsStarted)
+  if (theJob != nullptr && !myIsStarted)
   {
     myIsStarted = true;
     Run(this);
@@ -119,7 +119,7 @@ void OSD_ThreadPool::Init(int theNbThreads)
   if (!myThreads.IsEmpty())
   {
     NCollection_Array1<EnumeratedThread*> aLockThreads(myThreads.Lower(), myThreads.Upper());
-    aLockThreads.Init(NULL);
+    aLockThreads.Init(nullptr);
     int aThreadIndex = myThreads.Lower();
     for (NCollection_Array1<EnumeratedThread>::Iterator aThreadIter(myThreads); aThreadIter.More();
          aThreadIter.Next())
@@ -128,7 +128,7 @@ void OSD_ThreadPool::Init(int theNbThreads)
       if (!aThread.Lock())
       {
         for (NCollection_Array1<EnumeratedThread*>::Iterator aLockThreadIter(aLockThreads);
-             aLockThreadIter.More() && aLockThreadIter.Value() != NULL;
+             aLockThreadIter.More() && aLockThreadIter.Value() != nullptr;
              aLockThreadIter.Next())
         {
           aLockThreadIter.ChangeValue()->Free();
@@ -181,7 +181,7 @@ void OSD_ThreadPool::release()
   for (NCollection_Array1<EnumeratedThread>::Iterator aThreadIter(myThreads); aThreadIter.More();
        aThreadIter.Next())
   {
-    aThreadIter.ChangeValue().WakeUp(NULL, false);
+    aThreadIter.ChangeValue().WakeUp(nullptr, false);
     aThreadIter.ChangeValue().Wait();
   }
 }
@@ -200,7 +200,7 @@ void OSD_ThreadPool::Launcher::run(JobInterface& theJob)
 {
   bool toCatchFpe = OSD::ToCatchFloatingSignals();
   for (NCollection_Array1<EnumeratedThread*>::Iterator aThreadIter(myThreads);
-       aThreadIter.More() && aThreadIter.Value() != NULL;
+       aThreadIter.More() && aThreadIter.Value() != nullptr;
        aThreadIter.Next())
   {
     aThreadIter.ChangeValue()->WakeUp(&theJob, toCatchFpe);
@@ -213,7 +213,7 @@ void OSD_ThreadPool::Launcher::wait()
 {
   int aNbFailures = 0;
   for (NCollection_Array1<EnumeratedThread*>::Iterator aThreadIter(myThreads);
-       aThreadIter.More() && aThreadIter.Value() != NULL;
+       aThreadIter.More() && aThreadIter.Value() != nullptr;
        aThreadIter.Next())
   {
     aThreadIter.ChangeValue()->WaitIdle();
@@ -229,7 +229,7 @@ void OSD_ThreadPool::Launcher::wait()
 
   TCollection_AsciiString aFailures;
   for (NCollection_Array1<EnumeratedThread*>::Iterator aThreadIter(myThreads);
-       aThreadIter.More() && aThreadIter.Value() != NULL;
+       aThreadIter.More() && aThreadIter.Value() != nullptr;
        aThreadIter.Next())
   {
     if (!aThreadIter.Value()->myFailure.IsNull())
@@ -248,7 +248,7 @@ void OSD_ThreadPool::Launcher::wait()
   }
 
   aFailures = TCollection_AsciiString("Multiple exceptions:\n") + aFailures;
-  throw Standard_ProgramError(aFailures.ToCString(), NULL);
+  throw Standard_ProgramError(aFailures.ToCString(), nullptr);
 }
 
 //=================================================================================================
@@ -272,11 +272,11 @@ void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>& theFailure,
   {
     TCollection_AsciiString aMsg =
       TCollection_AsciiString(typeid(anStdException).name()) + ": " + anStdException.what();
-    theFailure = new Standard_ProgramError(aMsg.ToCString(), NULL);
+    theFailure = new Standard_ProgramError(aMsg.ToCString(), nullptr);
   }
   catch (...)
   {
-    theFailure = new Standard_ProgramError("Error: Unknown exception", NULL);
+    theFailure = new Standard_ProgramError("Error: Unknown exception", nullptr);
   }
 }
 
@@ -295,11 +295,11 @@ void OSD_ThreadPool::EnumeratedThread::performThread()
     }
 
     myFailure.Nullify();
-    if (myJob != NULL)
+    if (myJob != nullptr)
     {
       OSD::SetThreadLocalSignal(OSD::SignalMode(), myToCatchFpe);
       OSD_ThreadPool::performJob(myFailure, myJob, myThreadIndex);
-      myJob = NULL;
+      myJob = nullptr;
     }
     myIdleEvent.Set();
   }
@@ -311,7 +311,7 @@ void* OSD_ThreadPool::EnumeratedThread::runThread(void* theTask)
 {
   EnumeratedThread* aThread = static_cast<EnumeratedThread*>(theTask);
   aThread->performThread();
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================
@@ -324,7 +324,7 @@ OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, int theMaxThreads)
     theMaxThreads > 0 ? std::min(theMaxThreads, thePool.NbThreads())
                       : (theMaxThreads < 0 ? std::max(thePool.NbDefaultThreadsToLaunch(), 1) : 1);
   myThreads.Resize(0, aNbThreads - 1, false);
-  myThreads.Init(NULL);
+  myThreads.Init(nullptr);
   if (aNbThreads > 1)
   {
     for (NCollection_Array1<EnumeratedThread>::Iterator aThreadIter(thePool.myThreads);
@@ -355,7 +355,7 @@ OSD_ThreadPool::Launcher::Launcher(OSD_ThreadPool& thePool, int theMaxThreads)
 void OSD_ThreadPool::Launcher::Release()
 {
   for (NCollection_Array1<EnumeratedThread*>::Iterator aThreadIter(myThreads);
-       aThreadIter.More() && aThreadIter.Value() != NULL;
+       aThreadIter.More() && aThreadIter.Value() != nullptr;
        aThreadIter.Next())
   {
     if (aThreadIter.Value() != &mySelfThread)

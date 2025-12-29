@@ -20,9 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDefinedAreaUnit,
 
 //=================================================================================================
 
-StepDimTol_GeometricToleranceWithDefinedAreaUnit::StepDimTol_GeometricToleranceWithDefinedAreaUnit()
-{
-}
+StepDimTol_GeometricToleranceWithDefinedAreaUnit::
+  StepDimTol_GeometricToleranceWithDefinedAreaUnit() = default;
 
 //=================================================================================================
 

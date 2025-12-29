@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWUnconstrainedPair::RWStepKinematics_RWUnconstrainedPair() {}
+RWStepKinematics_RWUnconstrainedPair::RWStepKinematics_RWUnconstrainedPair() = default;
 
 //=================================================================================================
 

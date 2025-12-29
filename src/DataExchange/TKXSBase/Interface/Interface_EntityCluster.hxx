@@ -84,7 +84,7 @@ public:
 
   //! Destructor
   //! If Next exists, destroy from the last entity in reverse order.
-  Standard_EXPORT virtual ~Interface_EntityCluster();
+  Standard_EXPORT ~Interface_EntityCluster() override;
 
   friend class Interface_EntityList;
 

@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWPropertyDefinitionRepresentation::RWStepRepr_RWPropertyDefinitionRepresentation() {}
+RWStepRepr_RWPropertyDefinitionRepresentation::RWStepRepr_RWPropertyDefinitionRepresentation() =
+  default;
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileName, Standard_Transient)
 
-HeaderSection_FileName::HeaderSection_FileName() {}
+HeaderSection_FileName::HeaderSection_FileName() = default;
 
 void HeaderSection_FileName::Init(
   const occ::handle<TCollection_HAsciiString>&                                   aName,

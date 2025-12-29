@@ -81,22 +81,19 @@ public: //! @name Necessary overrides for BVH construction
   using BVH_PrimitiveSet<NumType, Dimension>::Box;
 
   //! Returns the bounding box with the given index.
-  virtual BVH_Box<NumType, Dimension> Box(const int theIndex) const override
-  {
-    return myBoxes[theIndex];
-  }
+  BVH_Box<NumType, Dimension> Box(const int theIndex) const override { return myBoxes[theIndex]; }
 
   //! Returns centroid position along specified axis.
-  virtual double Center(const int theIndex, const int theAxis) const override
+  double Center(const int theIndex, const int theAxis) const override
   {
     return Box(theIndex).Center(theAxis);
   }
 
   //! Returns the number of boxes.
-  virtual int Size() const override { return static_cast<int>(myBoxes.size()); }
+  int Size() const override { return static_cast<int>(myBoxes.size()); }
 
   //! Swaps indices of two specified boxes.
-  virtual void Swap(const int theIndex1, const int theIndex2) override
+  void Swap(const int theIndex1, const int theIndex2) override
   {
     std::swap(myElements[theIndex1], myElements[theIndex2]);
     std::swap(myBoxes[theIndex1], myBoxes[theIndex2]);

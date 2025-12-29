@@ -19,7 +19,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_CameraUsage.hxx>
 
-RWStepVisual_RWCameraUsage::RWStepVisual_RWCameraUsage() {}
+RWStepVisual_RWCameraUsage::RWStepVisual_RWCameraUsage() = default;
 
 void RWStepVisual_RWCameraUsage::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

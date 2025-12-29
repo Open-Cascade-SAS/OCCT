@@ -33,7 +33,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWSurface3dElementRepresentation::RWStepFEA_RWSurface3dElementRepresentation() {}
+RWStepFEA_RWSurface3dElementRepresentation::RWStepFEA_RWSurface3dElementRepresentation() = default;
 
 //=================================================================================================
 

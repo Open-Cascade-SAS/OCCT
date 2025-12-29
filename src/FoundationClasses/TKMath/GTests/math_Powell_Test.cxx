@@ -34,7 +34,7 @@ namespace
 class QuadraticFunction : public math_MultipleVarFunction
 {
 public:
-  QuadraticFunction() {}
+  QuadraticFunction() = default;
 
   int NbVariables() const override { return 2; }
 
@@ -52,7 +52,7 @@ public:
 class RosenbrockFunction : public math_MultipleVarFunction
 {
 public:
-  RosenbrockFunction() {}
+  RosenbrockFunction() = default;
 
   int NbVariables() const override { return 2; }
 
@@ -72,7 +72,7 @@ public:
 class Simple1DFunction : public math_MultipleVarFunction
 {
 public:
-  Simple1DFunction() {}
+  Simple1DFunction() = default;
 
   int NbVariables() const override { return 1; }
 

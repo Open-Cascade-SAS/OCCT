@@ -23,9 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation, St
 //=================================================================================================
 
 StepShape_DimensionalCharacteristicRepresentation::
-  StepShape_DimensionalCharacteristicRepresentation()
-{
-}
+  StepShape_DimensionalCharacteristicRepresentation() = default;
 
 //=================================================================================================
 

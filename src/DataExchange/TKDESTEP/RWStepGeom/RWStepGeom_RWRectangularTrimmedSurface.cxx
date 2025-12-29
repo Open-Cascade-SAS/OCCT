@@ -18,7 +18,7 @@
 #include <StepGeom_RectangularTrimmedSurface.hxx>
 #include <StepGeom_Surface.hxx>
 
-RWStepGeom_RWRectangularTrimmedSurface::RWStepGeom_RWRectangularTrimmedSurface() {}
+RWStepGeom_RWRectangularTrimmedSurface::RWStepGeom_RWRectangularTrimmedSurface() = default;
 
 void RWStepGeom_RWRectangularTrimmedSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

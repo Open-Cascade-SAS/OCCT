@@ -31,7 +31,7 @@
 #include <NCollection_Array1.hxx>
 
 #include <algorithm>
-#include <errno.h>
+#include <cerrno>
 
 IMPLEMENT_STANDARD_RTTIEXT(Resource_Manager, Standard_Transient)
 

@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWCubicBezierTessellatedEdge::RWStepVisual_RWCubicBezierTessellatedEdge() {}
+RWStepVisual_RWCubicBezierTessellatedEdge::RWStepVisual_RWCubicBezierTessellatedEdge() = default;
 
 //=================================================================================================
 

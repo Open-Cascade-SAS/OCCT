@@ -24,9 +24,7 @@
 //=================================================================================================
 
 RWStepFEA_RWConstantSurface3dElementCoordinateSystem::
-  RWStepFEA_RWConstantSurface3dElementCoordinateSystem()
-{
-}
+  RWStepFEA_RWConstantSurface3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

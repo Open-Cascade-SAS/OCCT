@@ -275,7 +275,7 @@ Extrema_GGenExtCC<TheCurve1, TheCurveTool1, TheCurve2, TheCurveTool2, ThePOnC, T
       myUppBorder(1, 2),
       myDone(false)
 {
-  myC[0] = myC[1] = 0;
+  myC[0] = myC[1] = nullptr;
 }
 
 //==================================================================================================

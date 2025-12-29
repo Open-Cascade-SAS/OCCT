@@ -63,13 +63,13 @@ public:
   void SetTolerance(const double theTol) { myTol = theTol; }
 
   //! Returns the number of variables (2).
-  virtual int NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
   //! Returns the number of equations (2).
-  virtual int NbEquations() const override { return 2; }
+  int NbEquations() const override { return 2; }
 
   //! Calculate Fi(U,V).
-  virtual bool Value(const math_Vector& theUV, math_Vector& theF) override;
+  bool Value(const math_Vector& theUV, math_Vector& theF) override;
 
   //! Calculate Fi'(U,V).
   bool Derivatives(const math_Vector& theUV, math_Matrix& theDF) override;
@@ -78,7 +78,7 @@ public:
   bool Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theDF) override;
 
   //! Save the found extremum.
-  virtual int GetStateNumber() override;
+  int GetStateNumber() override;
 
   //! Return the number of found extrema.
   int NbExt() const { return mySqDist.Length(); }
@@ -213,8 +213,8 @@ Extrema_GFuncExtCC<TheCurve1,
                    ThePoint,
                    TheVector,
                    TheSequenceOfPOnC>::Extrema_GFuncExtCC(const double theTol)
-    : myC1(0),
-      myC2(0),
+    : myC1(nullptr),
+      myC2(nullptr),
       myTol(theTol)
 {
   math_Vector V1(1, 2), V2(1, 2);

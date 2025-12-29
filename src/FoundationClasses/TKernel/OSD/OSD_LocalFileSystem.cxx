@@ -31,12 +31,12 @@ bool OSD_LocalFileSystem::IsOpenIStream(const std::shared_ptr<std::istream>& the
 {
   std::shared_ptr<OSD_IStreamBuffer> aFileStream =
     std::dynamic_pointer_cast<OSD_IStreamBuffer>(theStream);
-  if (aFileStream.get() == NULL)
+  if (aFileStream.get() == nullptr)
   {
     return false;
   }
   const std::filebuf* aFileBuf = dynamic_cast<const std::filebuf*>(aFileStream->rdbuf());
-  return (aFileBuf != NULL) ? aFileBuf->is_open() : false;
+  return (aFileBuf != nullptr) ? aFileBuf->is_open() : false;
 }
 
 //=================================================================================================
@@ -45,12 +45,12 @@ bool OSD_LocalFileSystem::IsOpenOStream(const std::shared_ptr<std::ostream>& the
 {
   std::shared_ptr<OSD_OStreamBuffer> aFileStream =
     std::dynamic_pointer_cast<OSD_OStreamBuffer>(theStream);
-  if (aFileStream.get() == NULL)
+  if (aFileStream.get() == nullptr)
   {
     return false;
   }
   const std::filebuf* aFileBuf = dynamic_cast<const std::filebuf*>(aFileStream->rdbuf());
-  return (aFileBuf != NULL) ? aFileBuf->is_open() : false;
+  return (aFileBuf != nullptr) ? aFileBuf->is_open() : false;
 }
 
 //=================================================================================================

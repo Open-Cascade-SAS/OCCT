@@ -29,7 +29,7 @@
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-StepAP214_GroupItem::StepAP214_GroupItem() {}
+StepAP214_GroupItem::StepAP214_GroupItem() = default;
 
 int StepAP214_GroupItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

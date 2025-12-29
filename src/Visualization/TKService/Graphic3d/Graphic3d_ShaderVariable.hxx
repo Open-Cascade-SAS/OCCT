@@ -112,7 +112,7 @@ struct Graphic3d_UniformValue : public Graphic3d_ValueInterface
   }
 
   //! Returns unique identifier of value type.
-  virtual size_t TypeID() const;
+  size_t TypeID() const override;
 
   //! Value of custom uniform variable.
   T Value;
@@ -147,7 +147,7 @@ class Graphic3d_ShaderVariable : public Standard_Transient
 {
 public:
   //! Releases resources of shader variable.
-  Standard_EXPORT virtual ~Graphic3d_ShaderVariable();
+  Standard_EXPORT ~Graphic3d_ShaderVariable() override;
 
   //! Returns name of shader variable.
   Standard_EXPORT const TCollection_AsciiString& Name() const;

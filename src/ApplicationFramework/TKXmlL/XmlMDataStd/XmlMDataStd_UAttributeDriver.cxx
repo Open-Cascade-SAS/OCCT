@@ -27,7 +27,7 @@ IMPLEMENT_DOMSTRING(GuidString, "guid")
 
 XmlMDataStd_UAttributeDriver::XmlMDataStd_UAttributeDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

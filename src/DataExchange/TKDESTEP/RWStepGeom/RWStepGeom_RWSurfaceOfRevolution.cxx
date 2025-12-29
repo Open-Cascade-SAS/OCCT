@@ -19,7 +19,7 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
 
-RWStepGeom_RWSurfaceOfRevolution::RWStepGeom_RWSurfaceOfRevolution() {}
+RWStepGeom_RWSurfaceOfRevolution::RWStepGeom_RWSurfaceOfRevolution() = default;
 
 void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

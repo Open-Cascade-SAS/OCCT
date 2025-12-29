@@ -29,7 +29,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolLineWidening::IGESAppli_ToolLineWidening() {}
+IGESAppli_ToolLineWidening::IGESAppli_ToolLineWidening() = default;
 
 void IGESAppli_ToolLineWidening::ReadOwnParams(const occ::handle<IGESAppli_LineWidening>& ent,
                                                const occ::handle<IGESData_IGESReaderData>& /*IR*/,

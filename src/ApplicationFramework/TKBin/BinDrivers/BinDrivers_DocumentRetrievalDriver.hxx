@@ -33,23 +33,23 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentRetrievalDriver();
 
-  Standard_EXPORT virtual occ::handle<BinMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<BinMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
-  Standard_EXPORT virtual void ReadShapeSection(
+  Standard_EXPORT void ReadShapeSection(
     BinLDrivers_DocumentSection& theSection,
     Standard_IStream&            theIS,
     const bool                   isMess   = false,
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void CheckShapeSection(const Storage_Position& thePos,
-                                                 Standard_IStream&       theIS) override;
+  Standard_EXPORT void CheckShapeSection(const Storage_Position& thePos,
+                                         Standard_IStream&       theIS) override;
 
   //! Clears the NamedShape driver
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Enables reading in the quick part access mode.
-  Standard_EXPORT virtual void EnableQuickPartReading(
+  Standard_EXPORT void EnableQuickPartReading(
     const occ::handle<Message_Messenger>& theMessageDriver,
     bool                                  theValue) override;
 

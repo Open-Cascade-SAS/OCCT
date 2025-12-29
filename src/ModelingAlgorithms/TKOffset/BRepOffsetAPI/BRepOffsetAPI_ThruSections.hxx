@@ -133,7 +133,7 @@ public:
   //! the optimization.
   Standard_EXPORT void CriteriumWeight(double& W1, double& W2, double& W3) const;
 
-  Standard_EXPORT virtual void Build(
+  Standard_EXPORT void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the TopoDS Shape of the bottom of the loft if solid
@@ -158,8 +158,7 @@ public:
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepBuilderAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the list of original wires
   const NCollection_List<TopoDS_Shape>& Wires() const { return myInputWires; }

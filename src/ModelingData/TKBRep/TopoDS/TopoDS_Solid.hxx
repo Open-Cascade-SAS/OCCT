@@ -33,7 +33,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined Solid.
-  TopoDS_Solid() {}
+  TopoDS_Solid() = default;
 };
 
 namespace std

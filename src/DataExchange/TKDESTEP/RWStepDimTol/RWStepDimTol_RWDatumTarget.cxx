@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWDatumTarget::RWStepDimTol_RWDatumTarget() {}
+RWStepDimTol_RWDatumTarget::RWStepDimTol_RWDatumTarget() = default;
 
 //=================================================================================================
 

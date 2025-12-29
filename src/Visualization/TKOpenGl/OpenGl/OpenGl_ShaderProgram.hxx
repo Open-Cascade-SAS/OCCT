@@ -103,7 +103,7 @@ struct OpenGl_SetterInterface
                    OpenGl_ShaderProgram*                        theProgram) = 0;
 
   //! Destructor
-  virtual ~OpenGl_SetterInterface() {}
+  virtual ~OpenGl_SetterInterface() = default;
 };
 
 //! List of OpenGL shader objects.
@@ -215,24 +215,25 @@ public:
   //! This constructor has been made public to provide more flexibility to re-use OCCT OpenGL
   //! classes without OCCT Viewer itself. If this is not the case - create the program using shared
   //! OpenGl_ShaderManager instance instead.
-  Standard_EXPORT OpenGl_ShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProxy = NULL,
-                                       const TCollection_AsciiString&              theId    = "");
+  Standard_EXPORT OpenGl_ShaderProgram(
+    const occ::handle<Graphic3d_ShaderProgram>& theProxy = nullptr,
+    const TCollection_AsciiString&              theId    = "");
 
 protected:
   static OpenGl_VariableSetterSelector mySetterSelector;
 
 public:
   //! Releases resources of shader program.
-  Standard_EXPORT virtual ~OpenGl_ShaderProgram();
+  Standard_EXPORT ~OpenGl_ShaderProgram() override;
 
   //! Creates new empty shader program of specified type.
   Standard_EXPORT bool Create(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Destroys shader program.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage - cannot be easily estimated.
-  virtual size_t EstimatedDataSize() const override { return 0; }
+  size_t EstimatedDataSize() const override { return 0; }
 
   //! Attaches shader object to the program object.
   Standard_EXPORT bool AttachShader(const occ::handle<OpenGl_Context>&      theCtx,
@@ -648,9 +649,9 @@ protected:
 template <class T>
 struct OpenGl_VariableSetter : public OpenGl_SetterInterface
 {
-  virtual void Set(const occ::handle<OpenGl_Context>&           theCtx,
-                   const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-                   OpenGl_ShaderProgram*                        theProgram)
+  void Set(const occ::handle<OpenGl_Context>&           theCtx,
+           const occ::handle<Graphic3d_ShaderVariable>& theVariable,
+           OpenGl_ShaderProgram*                        theProgram) override
   {
     theProgram->SetUniform(theCtx, theVariable->Name().ToCString(), theVariable->Value()->As<T>());
   }

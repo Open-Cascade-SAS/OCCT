@@ -34,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
 
 //=================================================================================================
 
-Adaptor3d_Surface::~Adaptor3d_Surface() {}
+Adaptor3d_Surface::~Adaptor3d_Surface() = default;
 
 //=================================================================================================
 

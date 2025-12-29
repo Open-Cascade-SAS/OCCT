@@ -29,10 +29,10 @@ class BSplCLib_EvaluatorFunction
 {
 public:
   //! Empty constructor
-  BSplCLib_EvaluatorFunction() {}
+  BSplCLib_EvaluatorFunction() = default;
 
   //! Destructor should be declared as virtual
-  virtual ~BSplCLib_EvaluatorFunction() {}
+  virtual ~BSplCLib_EvaluatorFunction() = default;
 
   //! Function evaluation method to be defined by descendant
   virtual void Evaluate(const int     theDerivativeRequest,

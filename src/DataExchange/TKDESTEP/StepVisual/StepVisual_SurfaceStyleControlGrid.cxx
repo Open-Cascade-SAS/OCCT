@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleControlGrid, Standard_Transient)
 
-StepVisual_SurfaceStyleControlGrid::StepVisual_SurfaceStyleControlGrid() {}
+StepVisual_SurfaceStyleControlGrid::StepVisual_SurfaceStyleControlGrid() = default;
 
 void StepVisual_SurfaceStyleControlGrid::Init(
   const occ::handle<StepVisual_CurveStyle>& aStyleOfControlGrid)

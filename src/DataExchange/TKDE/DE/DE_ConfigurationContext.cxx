@@ -147,7 +147,7 @@ static TCollection_AsciiString MakeName(const TCollection_AsciiString& theScope,
 
 //=================================================================================================
 
-DE_ConfigurationContext::DE_ConfigurationContext() {}
+DE_ConfigurationContext::DE_ConfigurationContext() = default;
 
 //=================================================================================================
 

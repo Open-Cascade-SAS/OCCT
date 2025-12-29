@@ -46,18 +46,17 @@
 #include <TopoDS_Vertex.hxx>
 #include <Message_ProgressRange.hxx>
 
-#include <string.h>
+#include <cstring>
 
 //=================================================================================================
 
 BinTools_ShapeSet::BinTools_ShapeSet()
-    : BinTools_ShapeSetBase()
-{
-}
+
+  = default;
 
 //=================================================================================================
 
-BinTools_ShapeSet::~BinTools_ShapeSet() {}
+BinTools_ShapeSet::~BinTools_ShapeSet() = default;
 
 //=================================================================================================
 
@@ -321,13 +320,13 @@ void BinTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
     WriteShape(S, OS);
 
     // Flags
-    BinTools::PutBool(OS, S.Free() ? 1 : 0);
-    BinTools::PutBool(OS, S.Modified() ? 1 : 0);
-    BinTools::PutBool(OS, S.Checked() ? 1 : 0);
-    BinTools::PutBool(OS, S.Orientable() ? 1 : 0);
-    BinTools::PutBool(OS, S.Closed() ? 1 : 0);
-    BinTools::PutBool(OS, S.Infinite() ? 1 : 0);
-    BinTools::PutBool(OS, S.Convex() ? 1 : 0);
+    BinTools::PutBool(OS, S.Free() ? true : false);
+    BinTools::PutBool(OS, S.Modified() ? true : false);
+    BinTools::PutBool(OS, S.Checked() ? true : false);
+    BinTools::PutBool(OS, S.Orientable() ? true : false);
+    BinTools::PutBool(OS, S.Closed() ? true : false);
+    BinTools::PutBool(OS, S.Infinite() ? true : false);
+    BinTools::PutBool(OS, S.Convex() ? true : false);
 
     // sub-shapes
 
@@ -1243,7 +1242,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&            
 {
   char aHeader[255];
   IS >> aHeader;
-  if (IS.fail() || (strstr(aHeader, "PolygonOnTriangulations") == NULL))
+  if (IS.fail() || (strstr(aHeader, "PolygonOnTriangulations") == nullptr))
   {
     throw Standard_Failure(
       "BinTools_ShapeSet::ReadPolygonOnTriangulation: Not a PolygonOnTriangulation section");
@@ -1352,7 +1351,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS, const Message_Progre
   char aHeader[255];
   IS >> aHeader;
 
-  if (IS.fail() || strstr(aHeader, "Polygon3D") == NULL)
+  if (IS.fail() || strstr(aHeader, "Polygon3D") == nullptr)
   {
 #ifdef OCCT_DEBUG
     std::cout << "Buffer: " << aHeader << std::endl;
@@ -1429,10 +1428,10 @@ void BinTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
       const int aNbTriangles       = aTriangulation->NbTriangles();
       BinTools::PutInteger(OS, aNbNodes);
       BinTools::PutInteger(OS, aNbTriangles);
-      BinTools::PutBool(OS, aTriangulation->HasUVNodes() ? 1 : 0);
+      BinTools::PutBool(OS, aTriangulation->HasUVNodes() ? true : false);
       if (FormatNb() >= BinTools_FormatVersion_VERSION_4)
       {
-        BinTools::PutBool(OS, (aTriangulation->HasNormals() && NeedToWriteNormals) ? 1 : 0);
+        BinTools::PutBool(OS, (aTriangulation->HasNormals() && NeedToWriteNormals) ? true : false);
       }
       BinTools::PutReal(OS, aTriangulation->Deflection());
 
@@ -1495,7 +1494,7 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
 {
   char aHeader[255];
   IS >> aHeader;
-  if (IS.fail() || (strstr(aHeader, "Triangulations") == NULL))
+  if (IS.fail() || (strstr(aHeader, "Triangulations") == nullptr))
   {
     throw Standard_Failure("BinTools_ShapeSet::Triangulation: Not a Triangulation section");
   }

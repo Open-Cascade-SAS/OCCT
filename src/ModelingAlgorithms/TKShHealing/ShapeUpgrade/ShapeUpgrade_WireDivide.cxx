@@ -64,8 +64,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
 //=================================================================================================
 
 ShapeUpgrade_WireDivide::ShapeUpgrade_WireDivide()
-    : ShapeUpgrade_Tool(),
-      myStatus(0)
+    : myStatus(0)
 {
   //  if (ShapeUpgrade::Debug()) std::cout <<"ShapeUpgrade_WireDivide"<<std::endl;
   mySplitCurve3dTool  = new ShapeUpgrade_SplitCurve3d;
@@ -143,8 +142,8 @@ void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S,
 
 static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>& orig3d,
                                const occ::handle<NCollection_HSequence<double>>& orig2d,
-                               occ::handle<NCollection_HSequence<double>>        new2d,
-                               occ::handle<NCollection_HSequence<double>>        new3d)
+                               const occ::handle<NCollection_HSequence<double>>& new2d,
+                               const occ::handle<NCollection_HSequence<double>>& new3d)
 {
   constexpr double         preci = Precision::PConfusion();
   int                      len3d = orig3d->Length();

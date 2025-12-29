@@ -85,11 +85,11 @@ public:
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* filename) override;
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* filename) override;
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char*   theName,
-                                                           std::istream& theIStream) override;
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*   theName,
+                                                   std::istream& theIStream) override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
@@ -111,7 +111,7 @@ public:
 
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
-  Standard_EXPORT virtual int NbRootsForTransfer() override;
+  Standard_EXPORT int NbRootsForTransfer() override;
 
   //! Returns sequence of all unit names for shape representations
   //! found in file
@@ -132,12 +132,11 @@ protected:
   //! Returns default parameters for shape fixing.
   //! This method is used by the base class to get default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
+  Standard_EXPORT DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const override;
 
 private:
   //! Returns units for length, angle and solidangle for shape representations

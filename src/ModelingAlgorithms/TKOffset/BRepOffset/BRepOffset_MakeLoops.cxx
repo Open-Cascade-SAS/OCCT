@@ -32,14 +32,14 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef DRAW
   #include <DBRep.hxx>
 int         NbF    = 1;
 static bool Affich = false;
 #endif
 
-BRepOffset_MakeLoops::BRepOffset_MakeLoops() {}
+BRepOffset_MakeLoops::BRepOffset_MakeLoops() = default;
 
 //=================================================================================================
 
@@ -54,7 +54,7 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
   BRepAlgo_Loop                            Loops;
   Loops.VerticesForSubstitute(myVerVerMap);
   Loops.SetImageVV(theImageVV);
-  Message_ProgressScope aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 2);
   Message_ProgressScope aPS1(aPSOuter.Next(), "Init loops", LF.Size());
   for (; it.More(); it.Next(), aPS1.Next())
   {
@@ -184,26 +184,26 @@ static bool IsBetweenCorks(const TopoDS_Shape&                   E,
                            const NCollection_List<TopoDS_Shape>& LContext)
 {
   if (!AsDes->HasAscendant(E))
-    return 1;
+    return true;
   const NCollection_List<TopoDS_Shape>&    LF = AsDes->Ascendant(E);
   NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(LF); it.More(); it.Next())
   {
     const TopoDS_Shape&                      S     = it.Value();
-    bool                                     found = 0;
+    bool                                     found = false;
     NCollection_List<TopoDS_Shape>::Iterator it2;
     for (it2.Initialize(LContext); it2.More(); it2.Next())
     {
       if (S.IsSame(it2.Value()))
       {
-        found = 1;
+        found = true;
         break;
       }
     }
     if (!found)
-      return 0;
+      return false;
   }
-  return 1;
+  return true;
 }
 
 //=================================================================================================

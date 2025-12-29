@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
 
-RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssignment() {}
+RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssignment() = default;
 
 void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,

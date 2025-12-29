@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_SphericalSurface.hxx>
 
-RWStepGeom_RWSphericalSurface::RWStepGeom_RWSphericalSurface() {}
+RWStepGeom_RWSphericalSurface::RWStepGeom_RWSphericalSurface() = default;
 
 void RWStepGeom_RWSphericalSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

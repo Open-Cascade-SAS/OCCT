@@ -41,7 +41,7 @@ extern Draw_Viewer dout;
 #endif
 
 #include <tcl.h>
-#include <errno.h>
+#include <cerrno>
 
 #include <OSD_Environment.hxx>
 #include <OSD_FileSystem.hxx>
@@ -93,7 +93,7 @@ static int save(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(aName, std::ios::out | std::ios::binary);
   aStream->precision(15);
-  if (aStream.get() == NULL || !aStream->good())
+  if (aStream.get() == nullptr || !aStream->good())
   {
     theDI << "Error: cannot open file for writing " << aName;
     return 1;
@@ -143,7 +143,7 @@ static int restore(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream = aFileSystem->OpenIStream(aFileName, std::ios::in);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     theDI << "Error: cannot open file for reading: '" << aFileName << "'";
     return 1;
@@ -680,7 +680,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
   // protect if the map was destroyed before the interpreter
   if (Draw::Drawables().IsEmpty())
   {
-    return NULL;
+    return nullptr;
   }
 
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
@@ -690,7 +690,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
   if (D.IsNull())
   {
     Tcl_UntraceVar(aCommands.Interp(), name, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, CD);
-    return NULL;
+    return nullptr;
   }
   if (D->Protected())
   {
@@ -709,7 +709,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
     }
     Tcl_UntraceVar(aCommands.Interp(), name, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, CD);
     Draw_changeDrawables().Remove(D);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -735,7 +735,7 @@ void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D, const bo
                                       name,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
-                                      NULL);
+                                      nullptr);
     occ::handle<Draw_Drawable3D> anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
     if (!anOldD.IsNull())
     {
@@ -797,7 +797,7 @@ occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToA
                                       theName,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
-                                      NULL);
+                                      nullptr);
     occ::handle<Draw_Drawable3D> aDrawable = reinterpret_cast<Draw_Drawable3D*>(aCD);
     return Draw::Drawables().Contains(aDrawable) ? aDrawable : occ::handle<Draw_Drawable3D>();
   }
@@ -810,7 +810,7 @@ occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToA
   occ::handle<Draw_Drawable3D> aDrawable;
   dout.Select(p_id, p_X, p_Y, p_b);
   dout.Pick(p_id, p_X, p_Y, 5, aDrawable, 0);
-  if (!aDrawable.IsNull() && aDrawable->Name() != NULL)
+  if (!aDrawable.IsNull() && aDrawable->Name() != nullptr)
   {
     theName = p_Name = aDrawable->Name();
   }

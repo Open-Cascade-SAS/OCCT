@@ -27,7 +27,7 @@
 //=================================================================================================
 
 Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const bool withstarts)
-    : Transfer_TransferIterator()
+
 {
   if (withstarts)
     thestarts = new NCollection_HSequence<occ::handle<Transfer_Finder>>();

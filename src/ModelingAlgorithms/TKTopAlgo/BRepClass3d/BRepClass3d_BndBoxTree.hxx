@@ -36,21 +36,21 @@ class BRepClass3d_BndBoxTreeSelectorPoint : public NCollection_UBTree<int, Bnd_B
 public:
   BRepClass3d_BndBoxTreeSelectorPoint(
     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
-      : BRepClass3d_BndBoxTreeSelectorPoint::Selector(),
-        myMapOfShape(theMapOfShape)
+      : myMapOfShape(theMapOfShape)
   {
   }
 
-  bool Reject(const Bnd_Box& theBox) const { return (theBox.IsOut(myP)); }
+  bool Reject(const Bnd_Box& theBox) const override { return (theBox.IsOut(myP)); }
 
-  bool Accept(const int& theObj);
+  bool Accept(const int& theObj) override;
 
   // Sets current point for boxes-point collisions.
   void SetCurrentPoint(const gp_Pnt& theP) { myP = theP; }
 
 private:
-  BRepClass3d_BndBoxTreeSelectorPoint(const BRepClass3d_BndBoxTreeSelectorPoint&);
-  BRepClass3d_BndBoxTreeSelectorPoint& operator=(const BRepClass3d_BndBoxTreeSelectorPoint&);
+  BRepClass3d_BndBoxTreeSelectorPoint(const BRepClass3d_BndBoxTreeSelectorPoint&) = delete;
+  BRepClass3d_BndBoxTreeSelectorPoint& operator=(const BRepClass3d_BndBoxTreeSelectorPoint&) =
+    delete;
 
 private:
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
@@ -78,15 +78,14 @@ public:
 public:
   BRepClass3d_BndBoxTreeSelectorLine(
     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
-      : BRepClass3d_BndBoxTreeSelectorLine::Selector(),
-        myMapOfShape(theMapOfShape),
+      : myMapOfShape(theMapOfShape),
         myIsValid(true)
   {
   }
 
-  bool Reject(const Bnd_Box& theBox) const { return (theBox.IsOut(myL)); }
+  bool Reject(const Bnd_Box& theBox) const override { return (theBox.IsOut(myL)); }
 
-  bool Accept(const int& theObj);
+  bool Accept(const int& theObj) override;
 
   // Sets current line for boxes-line collisions
   void SetCurrentLine(const gp_Lin& theL, const double theMaxParam)
@@ -125,8 +124,8 @@ public:
   bool IsCorrect() const { return myIsValid; }
 
 private:
-  BRepClass3d_BndBoxTreeSelectorLine(const BRepClass3d_BndBoxTreeSelectorLine&);
-  BRepClass3d_BndBoxTreeSelectorLine& operator=(const BRepClass3d_BndBoxTreeSelectorLine&);
+  BRepClass3d_BndBoxTreeSelectorLine(const BRepClass3d_BndBoxTreeSelectorLine&)            = delete;
+  BRepClass3d_BndBoxTreeSelectorLine& operator=(const BRepClass3d_BndBoxTreeSelectorLine&) = delete;
 
 private:
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&

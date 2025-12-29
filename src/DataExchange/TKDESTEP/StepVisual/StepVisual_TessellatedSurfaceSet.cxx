@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedSurfaceSet, StepVisual_Tessella
 
 //=================================================================================================
 
-StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet() {}
+StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet() = default;
 
 //=================================================================================================
 

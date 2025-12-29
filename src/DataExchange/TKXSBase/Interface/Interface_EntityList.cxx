@@ -24,7 +24,7 @@
 // If it is an Entity, the list includes this entity and nothing else
 // If it is an EntityCluster, it defines (with its possible Next) the content
 // of the list
-Interface_EntityList::Interface_EntityList() {}
+Interface_EntityList::Interface_EntityList() = default;
 
 void Interface_EntityList::Clear()
 {

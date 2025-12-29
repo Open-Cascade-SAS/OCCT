@@ -86,9 +86,9 @@ public:
   //! which to stop generation of the revolved shell feature.
   Standard_EXPORT void PerformUntilAngle(const TopoDS_Shape& Until, const double Angle);
 
-  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S) override;
 
-  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() override;
 
 private:
   TopoDS_Shape myPbase;

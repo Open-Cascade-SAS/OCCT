@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Parabola, StepGeom_Conic)
 
-StepGeom_Parabola::StepGeom_Parabola() {}
+StepGeom_Parabola::StepGeom_Parabola() = default;
 
 void StepGeom_Parabola::Init(const occ::handle<TCollection_HAsciiString>& aName,
                              const StepGeom_Axis2Placement&               aPosition,

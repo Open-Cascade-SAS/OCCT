@@ -101,7 +101,7 @@ void StdLPersistent_Data::Write(StdObjMgt_WriteData& theWriteData) const
 occ::handle<TDF_Data> StdLPersistent_Data::Import() const
 {
   if (myLabels.IsNull() || myAttributes.IsNull())
-    return NULL;
+    return nullptr;
 
   // Create tree of labels and add empty transient attributes to them
   occ::handle<TDF_Data> aData = new TDF_Data;

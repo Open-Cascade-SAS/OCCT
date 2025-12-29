@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
-IGESBasic_SingleParent::IGESBasic_SingleParent() {}
+IGESBasic_SingleParent::IGESBasic_SingleParent() = default;
 
 void IGESBasic_SingleParent::Init(
   const int                                                                 nbParentEntities,

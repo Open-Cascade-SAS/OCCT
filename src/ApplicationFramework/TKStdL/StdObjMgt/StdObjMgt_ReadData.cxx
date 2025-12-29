@@ -40,7 +40,7 @@ occ::handle<StdObjMgt_Persistent> StdObjMgt_ReadData::ReadReference()
 {
   int aRef;
   myDriver->GetReference(aRef);
-  return aRef ? PersistentObject(aRef) : NULL;
+  return aRef ? PersistentObject(aRef) : nullptr;
 }
 
 //=======================================================================

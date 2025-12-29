@@ -18,7 +18,7 @@
 #include <StepGeom_Point.hxx>
 #include <StepShape_VertexPoint.hxx>
 
-RWStepShape_RWVertexPoint::RWStepShape_RWVertexPoint() {}
+RWStepShape_RWVertexPoint::RWStepShape_RWVertexPoint() = default;
 
 void RWStepShape_RWVertexPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

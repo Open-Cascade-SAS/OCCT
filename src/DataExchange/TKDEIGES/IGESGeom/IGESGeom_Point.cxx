@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Point, IGESData_IGESEntity)
 
-IGESGeom_Point::IGESGeom_Point() {}
+IGESGeom_Point::IGESGeom_Point() = default;
 
 void IGESGeom_Point::Init(const gp_XYZ& aPoint, const occ::handle<IGESBasic_SubfigureDef>& aSymbol)
 {

@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <Standard_Macro.hxx>
 
@@ -342,7 +342,7 @@ public:
 // function : IntAna_IntQuadQuad::IntAna_IntQuadQuad
 // purpose  : C o n s t r u c t e u r    v i d e
 //=======================================================================
-IntAna_IntQuadQuad::IntAna_IntQuadQuad(void)
+IntAna_IntQuadQuad::IntAna_IntQuadQuad()
 {
   done                   = false;
   identical              = false;

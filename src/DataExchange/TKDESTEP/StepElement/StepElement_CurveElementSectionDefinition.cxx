@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementSectionDefinition, Standard_T
 
 //=================================================================================================
 
-StepElement_CurveElementSectionDefinition::StepElement_CurveElementSectionDefinition() {}
+StepElement_CurveElementSectionDefinition::StepElement_CurveElementSectionDefinition() = default;
 
 //=================================================================================================
 

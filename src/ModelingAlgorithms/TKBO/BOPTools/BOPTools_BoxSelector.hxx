@@ -31,7 +31,7 @@ public:
 
 public: //! @name Constructor
   //! Empty constructor
-  BOPTools_BoxSelector() {};
+  BOPTools_BoxSelector() = default;
 
 public: //! @name public interfaces
   //! Clears the indices
@@ -45,9 +45,9 @@ public: //! @name public interfaces
 
 public: //! @name Rejection/Acceptance rules
   //! Checks if the box should be rejected
-  virtual bool RejectNode(const BVH_VecNd& theCMin,
-                          const BVH_VecNd& theCMax,
-                          bool&            theIsInside) const override
+  bool RejectNode(const BVH_VecNd& theCMin,
+                  const BVH_VecNd& theCMax,
+                  bool&            theIsInside) const override
   {
     bool hasOverlap;
     theIsInside = myBox.Contains(theCMin, theCMax, hasOverlap);
@@ -58,10 +58,10 @@ public: //! @name Rejection/Acceptance rules
   bool RejectElement(const int theIndex) { return myBox.IsOut(this->myBVHSet->Box(theIndex)); }
 
   //! Checks if the metric of the node may be accepted
-  virtual bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
+  bool AcceptMetric(const bool& theIsInside) const override { return theIsInside; }
 
   //! Accepts the element with the index <theIndex> in BVH tree
-  virtual bool Accept(const int theIndex, const bool& theIsInside) override
+  bool Accept(const int theIndex, const bool& theIsInside) override
   {
     if (theIsInside || !RejectElement(theIndex))
     {

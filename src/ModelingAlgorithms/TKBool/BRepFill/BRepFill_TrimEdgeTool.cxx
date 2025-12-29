@@ -70,7 +70,7 @@ static void SimpleExpression(const Bisector_Bisec& B, occ::handle<Geom2d_Curve>&
 
 //=================================================================================================
 
-BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool() {}
+BRepFill_TrimEdgeTool::BRepFill_TrimEdgeTool() = default;
 
 //=================================================================================================
 

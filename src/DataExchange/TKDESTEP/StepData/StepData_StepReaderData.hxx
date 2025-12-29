@@ -416,7 +416,7 @@ public:
                                     const bool                    errstat = false) const;
 
   //! Returns total count of Entities (including Header)
-  Standard_EXPORT virtual int NbEntities() const override;
+  Standard_EXPORT int NbEntities() const override;
 
   //! determines the first suitable record following a given one
   //! that is, skips SCOPE,ENDSCOPE and SUBLIST records

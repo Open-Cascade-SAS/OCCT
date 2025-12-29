@@ -42,7 +42,7 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
     myTrsfPers.IsNull() && !aLayer.OriginTransformation().IsNull()
        ? -NCollection_Vec3<double>(aLayer.Origin().X(), aLayer.Origin().Y(), aLayer.Origin().Z())
        : NCollection_Vec3<double>(0.0, 0.0, 0.0);
-  if (aCtx->core20fwd != NULL && aCtx->ShaderManager()->BindBoundBoxProgram())
+  if (aCtx->core20fwd != nullptr && aCtx->ShaderManager()->BindBoundBoxProgram())
   {
     const NCollection_Vec3<double> aCenter = myBndBox.Center() + aMoveVec;
     const NCollection_Vec3<double> aSize   = myBndBox.Size();
@@ -62,7 +62,7 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
     aCtx->core20fwd->glDrawArrays(GL_LINES, 0, aBoundBoxVertBuffer->GetElemsNb());
     aBoundBoxVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
   }
-  else if (aCtx->core11ffp != NULL)
+  else if (aCtx->core11ffp != nullptr)
   {
     const NCollection_Vec3<double> aMind = myBndBox.CornerMin() + aMoveVec;
     const NCollection_Vec3<double> aMaxd = myBndBox.CornerMax() + aMoveVec;
@@ -106,7 +106,7 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
 
 OpenGl_Structure::OpenGl_Structure(const occ::handle<Graphic3d_StructureManager>& theManager)
     : Graphic3d_CStructure(theManager),
-      myInstancedStructure(NULL),
+      myInstancedStructure(nullptr),
       myIsRaytracable(false),
       myModificationState(0),
       myIsMirrored(false)
@@ -223,7 +223,7 @@ bool OpenGl_Structure::IsRaytracable() const
     return true;
   }
 
-  return myInstancedStructure != NULL && myInstancedStructure->IsRaytracable();
+  return myInstancedStructure != nullptr && myInstancedStructure->IsRaytracable();
 }
 
 //=================================================================================================
@@ -255,7 +255,7 @@ void OpenGl_Structure::Connect(Graphic3d_CStructure& theStructure)
 {
   OpenGl_Structure* aStruct = static_cast<OpenGl_Structure*>(&theStructure);
 
-  Standard_ASSERT_RAISE(myInstancedStructure == NULL || myInstancedStructure == aStruct,
+  Standard_ASSERT_RAISE(myInstancedStructure == nullptr || myInstancedStructure == aStruct,
                         "Error! Instanced structure is already defined");
 
   myInstancedStructure = aStruct;
@@ -274,7 +274,7 @@ void OpenGl_Structure::Disconnect(Graphic3d_CStructure& theStructure)
 
   if (myInstancedStructure == aStruct)
   {
-    myInstancedStructure = NULL;
+    myInstancedStructure = nullptr;
 
     if (aStruct->IsRaytracable())
     {
@@ -361,7 +361,7 @@ void OpenGl_Structure::Clear(const occ::handle<OpenGl_Context>& theGlCtx)
 void OpenGl_Structure::renderGeometry(const occ::handle<OpenGl_Workspace>& theWorkspace,
                                       bool&                                theHasClosed) const
 {
-  if (myInstancedStructure != NULL)
+  if (myInstancedStructure != nullptr)
   {
     myInstancedStructure->renderGeometry(theWorkspace, theHasClosed);
   }
@@ -449,7 +449,7 @@ void OpenGl_Structure::Render(const occ::handle<OpenGl_Workspace>& theWorkspace)
   const bool anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
   // detect scale transform
-  if (aCtx->core11ffp != NULL && !myTrsf.IsNull())
+  if (aCtx->core11ffp != nullptr && !myTrsf.IsNull())
   {
     const double aScale = myTrsf->Trsf().ScaleFactor();
     if (std::abs(aScale - 1.0) > Precision::Confusion())
@@ -703,7 +703,7 @@ void OpenGl_Structure::applyPersistence(const occ::handle<OpenGl_Context>&      
                        theCtx->VirtualViewport()[3]);
   }
 
-  if (!theCtx->IsGlNormalizeEnabled() && theCtx->core11ffp != NULL)
+  if (!theCtx->IsGlNormalizeEnabled() && theCtx->core11ffp != nullptr)
   {
     const double aScale = Graphic3d_TransformUtils::ScaleFactor(aWorldView);
     if (std::abs(aScale - 1.0) > Precision::Confusion())

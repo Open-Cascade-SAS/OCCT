@@ -45,10 +45,10 @@ public:
                                      const double RotationAngle);
 
   //! returns the point of the grid the closest to the point X,Y
-  Standard_EXPORT virtual void Compute(const double X,
-                                       const double Y,
-                                       double&      gridX,
-                                       double&      gridY) const override;
+  Standard_EXPORT void Compute(const double X,
+                               const double Y,
+                               double&      gridX,
+                               double&      gridY) const override;
 
   //! returns the x step of the grid.
   Standard_EXPORT double RadiusStep() const;
@@ -56,11 +56,10 @@ public:
   //! returns the x step of the grid.
   Standard_EXPORT int DivisionNumber() const;
 
-  Standard_EXPORT virtual void Init() override;
+  Standard_EXPORT void Init() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   double myRadiusStep;

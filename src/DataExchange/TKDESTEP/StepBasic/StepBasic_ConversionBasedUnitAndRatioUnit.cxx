@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndRatioUnit, StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndRatioUnit::StepBasic_ConversionBasedUnitAndRatioUnit() {}
+StepBasic_ConversionBasedUnitAndRatioUnit::StepBasic_ConversionBasedUnitAndRatioUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndRatioUnit::Init(
   const occ::handle<StepBasic_DimensionalExponents>& aDimensions,

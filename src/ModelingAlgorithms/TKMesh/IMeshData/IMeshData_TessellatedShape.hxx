@@ -25,7 +25,7 @@ class IMeshData_TessellatedShape : public IMeshData_Shape
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_TessellatedShape() {}
+  ~IMeshData_TessellatedShape() override = default;
 
   //! Gets deflection value for the discrete model.
   double GetDeflection() const { return myDeflection; }

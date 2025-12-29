@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_XYZDriver, BinMDF_ADriver)
 
 BinTObjDrivers_XYZDriver::BinTObjDrivers_XYZDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : BinMDF_ADriver(theMessageDriver, NULL)
+    : BinMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 

@@ -35,15 +35,15 @@ class XmlMNaming_NamedShapeDriver : public XmlMDF_ADriver
 public:
   Standard_EXPORT XmlMNaming_NamedShapeDriver(const occ::handle<Message_Messenger>& aMessageDriver);
 
-  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const XmlObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     XmlObjMgt_RRelocationTable& theRelocTable) const override;
+  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       theSource,
+                             const occ::handle<TDF_Attribute>& theTarget,
+                             XmlObjMgt_RRelocationTable&       theRelocTable) const override;
 
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
-                                     XmlObjMgt_Persistent&             theTarget,
-                                     XmlObjMgt_SRelocationTable& theRelocTable) const override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
+                             XmlObjMgt_Persistent&             theTarget,
+                             XmlObjMgt_SRelocationTable&       theRelocTable) const override;
 
   //! Input the shapes from DOM element
   Standard_EXPORT void ReadShapeSection(

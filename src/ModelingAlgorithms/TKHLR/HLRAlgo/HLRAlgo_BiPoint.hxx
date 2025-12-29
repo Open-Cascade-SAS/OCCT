@@ -71,7 +71,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  HLRAlgo_BiPoint() {}
+  HLRAlgo_BiPoint() = default;
 
   Standard_EXPORT HLRAlgo_BiPoint(const double X1,
                                   const double Y1,

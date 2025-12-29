@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_TReference, TDF_Attribute)
 
 //=================================================================================================
 
-TObj_TReference::TObj_TReference() {}
+TObj_TReference::TObj_TReference() = default;
 
 //=================================================================================================
 

@@ -150,7 +150,7 @@ public:
   void Send(const occ::handle<T>& val,
             bool                  negative = false,
             typename opencascade::std::enable_if<
-              opencascade::std::is_base_of<IGESData_IGESEntity, T>::value>::type* = 0)
+              opencascade::std::is_base_of<IGESData_IGESEntity, T>::value>::type* = nullptr)
   {
     Send((const occ::handle<IGESData_IGESEntity>&)val, negative);
   }

@@ -30,8 +30,8 @@ public:
 
 protected:
   //! Send a string message with specified trace level.
-  Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+  Standard_EXPORT void send(const TCollection_AsciiString& theString,
+                            const Message_Gravity          theGravity) const override;
 
 private:
   Draw_Interpretor* myTcl;

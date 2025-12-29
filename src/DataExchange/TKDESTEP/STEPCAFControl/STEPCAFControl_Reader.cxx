@@ -538,7 +538,7 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
   if (num <= 0)
     return false;
 
-  Message_ProgressScope aPSRoot(theProgress, NULL, 2);
+  Message_ProgressScope aPSRoot(theProgress, nullptr, 2);
 
   if (nroot)
   {
@@ -548,7 +548,7 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
   }
   else
   {
-    Message_ProgressScope aPS(aPSRoot.Next(), NULL, num);
+    Message_ProgressScope aPS(aPSRoot.Next(), nullptr, num);
     for (i = 1; i <= num && aPS.More(); i++)
       reader.TransferOneRoot(i, aPS.Next());
   }
@@ -634,7 +634,7 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
   // and fill map SDR -> extern file
   STEPConstruct_ExternRefs ExtRefs(reader.WS());
   ExtRefs.LoadExternRefs();
-  Message_ProgressScope aPSE(aPSRoot.Next(), NULL, ExtRefs.NbExternRefs());
+  Message_ProgressScope aPSE(aPSRoot.Next(), nullptr, ExtRefs.NbExternRefs());
   for (i = 1; i <= ExtRefs.NbExternRefs() && aPSE.More(); i++)
   {
     Message_ProgressRange aRange = aPSE.Next();
@@ -1572,7 +1572,7 @@ bool STEPCAFControl_Reader::ReadNames(
       if (PD.IsNull())
         continue;
       occ::handle<StepBasic_Product> Prod =
-        (!PD->Formation().IsNull() ? PD->Formation()->OfProduct() : NULL);
+        (!PD->Formation().IsNull() ? PD->Formation()->OfProduct() : nullptr);
       if (Prod.IsNull())
         name = new TCollection_HAsciiString;
       else if (!Prod->Name().IsNull() && Prod->Name()->UsefullLength() > 0)
@@ -2511,7 +2511,7 @@ void readAnnotation(const occ::handle<XSControl_TransferReader>& theTR,
     aName->LowerCase();
     if (!aName->Search(new TCollection_HAsciiString("pmi representation to presentation link")))
     {
-      aDMIA = NULL;
+      aDMIA = nullptr;
     }
   }
   if (aDMIA.IsNull() || aDMIA->NbIdentifiedItem() == 0)
@@ -2672,7 +2672,7 @@ void readConnectionPoints(const occ::handle<XSControl_TransferReader>&          
 
   double aFact = 1.;
 
-  occ::handle<StepShape_ShapeDimensionRepresentation> aSDR = NULL;
+  occ::handle<StepShape_ShapeDimensionRepresentation> aSDR = nullptr;
   for (Interface_EntityIterator anIt = aGraph.Sharings(theGDT); aSDR.IsNull() && anIt.More();
        anIt.Next())
   {
@@ -2700,7 +2700,7 @@ void readConnectionPoints(const occ::handle<XSControl_TransferReader>&          
       occ::down_cast<StepRepr_DerivedShapeAspect>(aDim->AppliesTo());
     if (aDSA.IsNull())
       return;
-    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU = NULL;
+    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU = nullptr;
     for (Interface_EntityIterator anIt = aGraph.Sharings(aDSA); aGISU.IsNull() && anIt.More();
          anIt.Next())
     {
@@ -2729,8 +2729,8 @@ void readConnectionPoints(const occ::handle<XSControl_TransferReader>&          
       occ::down_cast<StepRepr_DerivedShapeAspect>(aDim->RelatedShapeAspect());
     if (aDSA1.IsNull() && aDSA2.IsNull())
       return;
-    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU1 = NULL;
-    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU2 = NULL;
+    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU1 = nullptr;
+    occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU2 = nullptr;
     if (!aDSA1.IsNull())
     {
       for (Interface_EntityIterator anIt = aGraph.Sharings(aDSA1); aGISU1.IsNull() && anIt.More();
@@ -2918,7 +2918,7 @@ static void collectShapeAspect(const occ::handle<StepRepr_ShapeAspect>&         
   if (theSA->IsKind(STANDARD_TYPE(StepRepr_DerivedShapeAspect)))
   {
     Interface_EntityIterator                              anIter = aGraph.Sharings(theSA);
-    occ::handle<StepRepr_ShapeAspectDerivingRelationship> aSADR  = NULL;
+    occ::handle<StepRepr_ShapeAspectDerivingRelationship> aSADR  = nullptr;
     for (; aSADR.IsNull() && anIter.More(); anIter.Next())
     {
       aSADR = occ::down_cast<StepRepr_ShapeAspectDerivingRelationship>(anIter.Value());

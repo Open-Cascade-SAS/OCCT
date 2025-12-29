@@ -30,7 +30,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESBasic_ToolName::IGESBasic_ToolName() {}
+IGESBasic_ToolName::IGESBasic_ToolName() = default;
 
 void IGESBasic_ToolName::ReadOwnParams(const occ::handle<IGESBasic_Name>& ent,
                                        const occ::handle<IGESData_IGESReaderData>& /* IR */,

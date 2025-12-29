@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Flow, IGESData_IGESEntity)
 
-IGESAppli_Flow::IGESAppli_Flow() {}
+IGESAppli_Flow::IGESAppli_Flow() = default;
 
 void IGESAppli_Flow::Init(
   const int                                                                      nbContextFlags,

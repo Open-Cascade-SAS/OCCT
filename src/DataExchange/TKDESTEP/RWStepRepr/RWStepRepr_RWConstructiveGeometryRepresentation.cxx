@@ -24,9 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWConstructiveGeometryRepresentation::RWStepRepr_RWConstructiveGeometryRepresentation()
-{
-}
+RWStepRepr_RWConstructiveGeometryRepresentation::RWStepRepr_RWConstructiveGeometryRepresentation() =
+  default;
 
 //=================================================================================================
 

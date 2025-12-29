@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FiniteElement, IGESData_IGESEntity)
 
-IGESAppli_FiniteElement::IGESAppli_FiniteElement() {}
+IGESAppli_FiniteElement::IGESAppli_FiniteElement() = default;
 
 void IGESAppli_FiniteElement::Init(
   const int                                                            aType,

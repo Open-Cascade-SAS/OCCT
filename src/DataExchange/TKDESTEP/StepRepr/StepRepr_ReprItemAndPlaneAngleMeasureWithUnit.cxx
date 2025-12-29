@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,
 //=================================================================================================
 
 StepRepr_ReprItemAndPlaneAngleMeasureWithUnit::StepRepr_ReprItemAndPlaneAngleMeasureWithUnit()
-    : StepRepr_ReprItemAndMeasureWithUnit()
+
 {
   myPlaneAngleMeasureWithUnit = new StepBasic_PlaneAngleMeasureWithUnit();
 }

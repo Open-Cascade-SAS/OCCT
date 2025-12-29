@@ -300,13 +300,13 @@ static void* GeomConvertTest(void* data)
   if (!aGAS.IsDone())
   {
     std::cout << "Error: ApproxSurface is not done!" << std::endl;
-    return 0;
+    return nullptr;
   }
   const occ::handle<Geom_BSplineSurface>& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull())
   {
     std::cout << "Error: BSplineSurface is not created!" << std::endl;
-    return 0;
+    return nullptr;
   }
   std::cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)
@@ -317,7 +317,7 @@ static void* GeomConvertTest(void* data)
   else
   {
     std::cout << ": Error, must be " << info->nbupoles << std::endl;
-    return 0;
+    return nullptr;
   }
 }
 
@@ -351,7 +351,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   // check results
   for (int i = 0; i < NBTHREADS; i++)
   {
-    void* aResult = 0;
+    void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
       di << "Error: Failed waiting for thread << " << i << "\n";
     if (!aResult)
@@ -380,7 +380,7 @@ static void* GeomIntSSTest(void* data)
   if (!anInter.IsDone())
   {
     std::cout << "An intersection is not done!" << std::endl;
-    return 0;
+    return nullptr;
   }
 
   std::cout << "Number of Lines:" << anInter.NbLines();
@@ -392,7 +392,7 @@ static void* GeomIntSSTest(void* data)
   else
   {
     std::cout << ": Error, must be " << info->nbsol << std::endl;
-    return 0;
+    return nullptr;
   }
 }
 
@@ -428,7 +428,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   // check results
   for (int i = 0; i < NBTHREADS; i++)
   {
-    void* aResult = 0;
+    void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
       di << "Error: Failed waiting for thread << " << i << "\n";
     if (!aResult)
@@ -961,7 +961,7 @@ static int OCC23951(Draw_Interpretor& di, int argc, const char** argv)
 
   Quantity_Color yellow(Quantity_NOC_YELLOW);
   XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetColor(lab1, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, 0);
+  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, false);
 
   STEPControl_StepModelType mode = STEPControl_AsIs;
   STEPCAFControl_Writer     writer;
@@ -1012,7 +1012,7 @@ static int OCC23950(Draw_Interpretor& di, int argc, const char** argv)
 
   Quantity_Color yellow(Quantity_NOC_YELLOW);
   XCAFDoc_DocumentTool::ColorTool(labelA0)->SetColor(component01, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetVisibility(component01, 0);
+  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetVisibility(component01, false);
 
   STEPControl_StepModelType mode = STEPControl_AsIs;
   STEPCAFControl_Writer     writer;
@@ -1160,7 +1160,7 @@ static int OCC24931(Draw_Interpretor& di, int argc, const char** argv)
 struct MyStubObject
 {
   MyStubObject()
-      : ptr(0L)
+      : ptr(nullptr)
   {
   }
 
@@ -1261,9 +1261,9 @@ public:
     t = 1.0 / (8.0 * M_PI);
   }
 
-  virtual int NbVariables() const { return 2; }
+  int NbVariables() const override { return 2; }
 
-  virtual bool Value(const math_Vector& X, double& F)
+  bool Value(const math_Vector& X, double& F) override
   {
     double u = X(1);
     double v = X(2);
@@ -1274,7 +1274,7 @@ public:
     return true;
   }
 
-  virtual bool Gradient(const math_Vector& X, math_Vector& G)
+  bool Gradient(const math_Vector& X, math_Vector& G) override
   {
     double u = X(1);
     double v = X(2);
@@ -1286,7 +1286,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, double& F, math_Vector& G)
+  bool Values(const math_Vector& X, double& F, math_Vector& G) override
   {
     Value(X, F);
     Gradient(X, G);
@@ -1294,7 +1294,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X, double& F, math_Vector& G, math_Matrix& H)
+  bool Values(const math_Vector& X, double& F, math_Vector& G, math_Matrix& H) override
   {
     Value(X, F);
     Gradient(X, G);
@@ -1410,18 +1410,17 @@ public:
     myResources->SetResource(THE_QATEST_DOC_FORMAT ".FileExtension", "xml");
   }
 
-  virtual occ::handle<PCDM_Reader> ReaderFromFormat(const TCollection_ExtendedString&) override
+  occ::handle<PCDM_Reader> ReaderFromFormat(const TCollection_ExtendedString&) override
   {
     return new XmlDrivers_DocumentRetrievalDriver();
   }
 
-  virtual occ::handle<PCDM_StorageDriver> WriterFromFormat(
-    const TCollection_ExtendedString&) override
+  occ::handle<PCDM_StorageDriver> WriterFromFormat(const TCollection_ExtendedString&) override
   {
     return new XmlDrivers_DocumentStorageDriver("Test");
   }
 
-  virtual const char* ResourcesName() override { return ""; }
+  const char* ResourcesName() override { return ""; }
 
   //! Dumps the content of me into the stream
   void DumpJson(Standard_OStream& theOStream, int theDepth) const
@@ -1712,8 +1711,8 @@ public:
   }
 
 private:
-  ParallelTest_Saxpy(const ParallelTest_Saxpy&);
-  ParallelTest_Saxpy& operator=(ParallelTest_Saxpy&);
+  ParallelTest_Saxpy(const ParallelTest_Saxpy&)      = delete;
+  ParallelTest_Saxpy& operator=(ParallelTest_Saxpy&) = delete;
 
 protected:
   const NCollection_Array1<double>& myX;
@@ -1801,7 +1800,7 @@ static int OCC24826(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
     NCollection_Array1<double> anY2 = anY;
     OSD_Timer                  aTimer;
     aTimer.Start();
-    const char*                   aModeDesc = NULL;
+    const char*                   aModeDesc = nullptr;
     const ParallelTest_Saxpy      aFunctor1(aX, anY2, 1e-6);
     const ParallelTest_SaxpyBatch aFunctor2(aX, anY2, 1e-6);
     switch (aMode)
@@ -1908,8 +1907,8 @@ public:
   }
 
 private:
-  ParallelTest_MatMult(const ParallelTest_MatMult&);
-  ParallelTest_MatMult& operator=(ParallelTest_MatMult&);
+  ParallelTest_MatMult(const ParallelTest_MatMult&)      = delete;
+  ParallelTest_MatMult& operator=(ParallelTest_MatMult&) = delete;
 
 protected:
   const NCollection_Array2<double>& myMat1;
@@ -1962,7 +1961,7 @@ static int OCC29935(Draw_Interpretor&, int theArgc, const char** theArgv)
 
     OSD_Timer aTimer;
     aTimer.Start();
-    const char*          aModeDesc = NULL;
+    const char*          aModeDesc = nullptr;
     ParallelTest_MatMult aFunctor1(aMat1, aMat2, aMatRes, aSize);
     switch (aMode)
     {
@@ -2144,7 +2143,7 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
     return 1;
   }
   //
-  BRepAlgoAPI_BooleanOperation* pBuilder = NULL;
+  BRepAlgoAPI_BooleanOperation* pBuilder = nullptr;
   //
   switch (aOp)
   {
@@ -2564,7 +2563,7 @@ static bool inspect_point(const gp_XY& thePoint, const gp_XY& theCenter, const d
 
 static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
 {
-  srand(static_cast<unsigned int>(time(NULL)));
+  srand(static_cast<unsigned int>(time(nullptr)));
 
   const double  aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
   const int     aPointsNb     = 10000000;
@@ -3987,9 +3986,9 @@ class OCC27700_Text : public AIS_InteractiveObject
 public:
   DEFINE_STANDARD_RTTI_INLINE(OCC27700_Text, AIS_InteractiveObject)
 
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,
-                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                       const int) override
+  void Compute(const occ::handle<PrsMgr_PresentationManager>&,
+               const occ::handle<Prs3d_Presentation>& thePresentation,
+               const int) override
   {
     occ::handle<Graphic3d_ArrayOfTriangles> aFrame = new Graphic3d_ArrayOfTriangles(6, 6);
     aFrame->AddVertex(gp_Pnt(-1, 0, 0));
@@ -4020,8 +4019,8 @@ public:
     Prs3d_Text::Draw(aTextGroup, myDrawer->TextAspect(), aString, gp_Ax2(gp::Origin(), gp::DZ()));
   }
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*theSelection*/,
-                                const int /*theMode*/) override
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*theSelection*/,
+                        const int /*theMode*/) override
   {
   }
 };

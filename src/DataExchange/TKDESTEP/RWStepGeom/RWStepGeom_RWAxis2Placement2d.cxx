@@ -19,7 +19,7 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Direction.hxx>
 
-RWStepGeom_RWAxis2Placement2d::RWStepGeom_RWAxis2Placement2d() {}
+RWStepGeom_RWAxis2Placement2d::RWStepGeom_RWAxis2Placement2d() = default;
 
 void RWStepGeom_RWAxis2Placement2d::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

@@ -173,7 +173,7 @@ OSD_Chronometer::OSD_Chronometer(bool theThisThreadOnly)
 
 //=================================================================================================
 
-OSD_Chronometer::~OSD_Chronometer() {}
+OSD_Chronometer::~OSD_Chronometer() = default;
 
 //=================================================================================================
 

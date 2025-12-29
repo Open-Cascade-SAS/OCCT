@@ -38,7 +38,7 @@ IMPLEMENT_DOMSTRING(ReferredModelEntry, "modelentry")
 
 XmlTObjDrivers_ReferenceDriver::XmlTObjDrivers_ReferenceDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : XmlMDF_ADriver(theMessageDriver, NULL)
+    : XmlMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 

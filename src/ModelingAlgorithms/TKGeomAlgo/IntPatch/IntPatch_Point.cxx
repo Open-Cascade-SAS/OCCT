@@ -20,7 +20,7 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_Transition.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 void IntPatch_Point::SetValue(const gp_Pnt& Pt, const double Tol, const bool Tangent)
 {

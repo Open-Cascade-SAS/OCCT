@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectSingleViewFrom, IFSelect_SelectDeduct)
 
-IGESSelect_SelectSingleViewFrom::IGESSelect_SelectSingleViewFrom() {}
+IGESSelect_SelectSingleViewFrom::IGESSelect_SelectSingleViewFrom() = default;
 
 bool IGESSelect_SelectSingleViewFrom::HasUniqueResult() const
 {

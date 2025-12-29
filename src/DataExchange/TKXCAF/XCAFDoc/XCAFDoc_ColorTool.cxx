@@ -406,7 +406,7 @@ const Standard_GUID& XCAFDoc_ColorTool::ID() const
 
 //=================================================================================================
 
-XCAFDoc_ColorTool::XCAFDoc_ColorTool() {}
+XCAFDoc_ColorTool::XCAFDoc_ColorTool() = default;
 
 // PTV 23.01.2003 add visibility flag for objects (CAX-IF TRJ11)
 //=================================================================================================

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship, Standard_Transient)
 
-StepRepr_RepresentationRelationship::StepRepr_RepresentationRelationship() {}
+StepRepr_RepresentationRelationship::StepRepr_RepresentationRelationship() = default;
 
 void StepRepr_RepresentationRelationship::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

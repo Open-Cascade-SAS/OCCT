@@ -27,7 +27,7 @@
 
 Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(
   const bool withstarts)
-    : Transfer_TransferIterator()
+
 {
   if (withstarts)
     thestarts = new NCollection_HSequence<occ::handle<Standard_Transient>>();

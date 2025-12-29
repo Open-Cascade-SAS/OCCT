@@ -61,23 +61,23 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // Number of BRepCheck_Statuses in BRepCheck_Status.hxx file
 //(BRepCheck_NoError is not considered, i.e. general status
 // is smaller by one specified in file)
 static const int NumberOfStatus = 36;
 
-static char* checkfaultyname = NULL;
+static char* checkfaultyname = nullptr;
 
 Standard_EXPORT void BRepTest_CheckCommands_SetFaultyName(const char* name)
 {
-  if (checkfaultyname != NULL)
+  if (checkfaultyname != nullptr)
   {
     free(checkfaultyname);
-    checkfaultyname = NULL;
+    checkfaultyname = nullptr;
   }
-  if (name == NULL)
+  if (name == nullptr)
   {
     checkfaultyname = (char*)malloc(strlen("faulty_") + 1);
     strcpy(checkfaultyname, "faulty_");
@@ -979,7 +979,7 @@ static int checkshape(Draw_Interpretor& theCommands, int narg, const char** a)
   bool        IsContextDump = true;
   bool        IsParallel    = false;
   bool        IsExact       = false;
-  const char* aPref(NULL);
+  const char* aPref(nullptr);
   if (aCurInd < narg && strncmp(a[aCurInd], "-", 1))
   {
     IsContextDump = false;

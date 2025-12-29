@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectShared, IFSelect_SelectDeduct)
 
-IFSelect_SelectShared::IFSelect_SelectShared() {}
+IFSelect_SelectShared::IFSelect_SelectShared() = default;
 
 // Entities shared by others (at 1 level and in Strict sense)
 

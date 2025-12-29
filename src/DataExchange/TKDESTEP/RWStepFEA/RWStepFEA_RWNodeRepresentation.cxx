@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepFEA_RWNodeRepresentation::RWStepFEA_RWNodeRepresentation() {}
+RWStepFEA_RWNodeRepresentation::RWStepFEA_RWNodeRepresentation() = default;
 
 //=================================================================================================
 

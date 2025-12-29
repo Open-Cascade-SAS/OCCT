@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ExternalIdentificationAssignment,
 
 //=================================================================================================
 
-StepBasic_ExternalIdentificationAssignment::StepBasic_ExternalIdentificationAssignment() {}
+StepBasic_ExternalIdentificationAssignment::StepBasic_ExternalIdentificationAssignment() = default;
 
 //=================================================================================================
 

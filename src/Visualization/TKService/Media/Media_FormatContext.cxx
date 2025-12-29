@@ -174,7 +174,7 @@ int64_t Media_FormatContext::StreamSecondsToUnits(const AVStream& theStream, dou
 //=================================================================================================
 
 Media_FormatContext::Media_FormatContext()
-    : myFormatCtx(NULL),
+    : myFormatCtx(nullptr),
       myPtsStartBase(0.0),
       myDuration(0.0)
 {
@@ -216,7 +216,7 @@ const AVStream& Media_FormatContext::Stream(unsigned int theIndex) const
 bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
 {
 #ifdef HAVE_FFMPEG
-  const int avErrCode = avformat_open_input(&myFormatCtx, theInput.ToCString(), NULL, NULL);
+  const int avErrCode = avformat_open_input(&myFormatCtx, theInput.ToCString(), nullptr, nullptr);
   if (avErrCode != 0)
   {
     Message::SendFail(TCollection_AsciiString("FFmpeg: Couldn't open video file '") + theInput
@@ -226,7 +226,7 @@ bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
   }
 
   // retrieve stream information
-  if (avformat_find_stream_info(myFormatCtx, NULL) < 0)
+  if (avformat_find_stream_info(myFormatCtx, nullptr) < 0)
   {
     Message::SendFail(TCollection_AsciiString("FFmpeg: Couldn't find stream information in '")
                       + theInput + "'");
@@ -275,7 +275,7 @@ bool Media_FormatContext::OpenInput(const TCollection_AsciiString& theInput)
 
 void Media_FormatContext::Close()
 {
-  if (myFormatCtx != NULL)
+  if (myFormatCtx != nullptr)
   {
 #ifdef HAVE_FFMPEG
     avformat_close_input(&myFormatCtx);
@@ -364,15 +364,15 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
   const AVStream& aStream = *myFormatCtx->streams[theIndex];
 
   AVCodecContext* aCodecCtx = theCodecCtx;
-  if (aCodecCtx == NULL)
+  if (aCodecCtx == nullptr)
   {
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
     // For new API, need to allocate context and copy parameters
-    aCodecCtx = avcodec_alloc_context3(NULL);
-    if (aCodecCtx != NULL && avcodec_parameters_to_context(aCodecCtx, aStream.codecpar) < 0)
+    aCodecCtx = avcodec_alloc_context3(nullptr);
+    if (aCodecCtx != nullptr && avcodec_parameters_to_context(aCodecCtx, aStream.codecpar) < 0)
     {
       avcodec_free_context(&aCodecCtx);
-      aCodecCtx = NULL;
+      aCodecCtx = nullptr;
     }
   #else
     Standard_DISABLE_DEPRECATION_WARNINGS aCodecCtx = aStream.codec;
@@ -383,7 +383,7 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
   char aFrmtBuff[4096] = {};
   #if FFMPEG_NEW_API
   // avcodec_string was removed in newer FFmpeg versions
-  if (aCodecCtx != NULL)
+  if (aCodecCtx != nullptr)
   {
     Sprintf(aFrmtBuff,
             "Stream #%d: %s",
@@ -401,7 +401,7 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
 
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   // Clean up allocated context if we created it
-  if (theCodecCtx == NULL && aCodecCtx != NULL)
+  if (theCodecCtx == nullptr && aCodecCtx != nullptr)
   {
     avcodec_free_context(&aCodecCtx);
   }

@@ -84,7 +84,7 @@ public:
                                            const double  Angle);
 
   //! Returns the algorithm.
-  Standard_EXPORT void* OneAxis();
+  Standard_EXPORT void* OneAxis() override;
 
   //! Returns the algorithm.
   Standard_EXPORT BRepPrim_Cylinder& Cylinder();

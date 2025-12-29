@@ -38,7 +38,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 03/08/98
-IGESBasic_ToolSingleParent::IGESBasic_ToolSingleParent() {}
+IGESBasic_ToolSingleParent::IGESBasic_ToolSingleParent() = default;
 
 void IGESBasic_ToolSingleParent::ReadOwnParams(const occ::handle<IGESBasic_SingleParent>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,

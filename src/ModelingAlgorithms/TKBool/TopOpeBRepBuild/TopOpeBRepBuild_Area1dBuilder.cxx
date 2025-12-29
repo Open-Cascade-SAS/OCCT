@@ -51,7 +51,7 @@ void TopOpeBRepBuild_Area1dBuilder::DumpList(
 
 //=================================================================================================
 
-TopOpeBRepBuild_Area1dBuilder::TopOpeBRepBuild_Area1dBuilder() {}
+TopOpeBRepBuild_Area1dBuilder::TopOpeBRepBuild_Area1dBuilder() = default;
 
 //=================================================================================================
 

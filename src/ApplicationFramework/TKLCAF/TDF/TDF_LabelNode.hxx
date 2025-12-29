@@ -69,7 +69,7 @@ public:
   inline int Depth() const { return (myFlags & ~TDF_LabelNodeFlagsMsk); }
 
   // IsRoot
-  inline bool IsRoot() const { return myFather == NULL; }
+  inline bool IsRoot() const { return myFather == nullptr; }
 
   // Data
   Standard_EXPORT TDF_Data* Data() const;

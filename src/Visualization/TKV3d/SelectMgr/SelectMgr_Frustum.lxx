@@ -53,7 +53,7 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
 
     if (aMinF <= aMaxB && aMaxF >= aMinB)
     {
-      if (theInside == NULL || !(*theInside)) // only overlap test
+      if (theInside == nullptr || !(*theInside)) // only overlap test
       {
         return false;
       }
@@ -64,7 +64,7 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
   {
     return true; // fully separated
   }
-  else if (theInside != NULL) // to check for inclusion?
+  else if (theInside != nullptr) // to check for inclusion?
   {
     *theInside &= aMinB >= aMinF && aMaxB <= aMaxF;
   }
@@ -139,7 +139,7 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
     {
       return false; // fully separated
     }
-    else if (theInside != NULL) // to check for inclusion?
+    else if (theInside != nullptr) // to check for inclusion?
     {
       *theInside &= theMinPnt[anAxis] >= myMinOrthoVertsProjections[anAxis]
                     && theMaxPnt[anAxis] <= myMaxOrthoVertsProjections[anAxis];
@@ -166,7 +166,7 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
     {
       return false; // fully separated
     }
-    else if (theInside != NULL) // to check for inclusion?
+    else if (theInside != nullptr) // to check for inclusion?
     {
       *theInside &= aBoxProjMin >= myMinVertsProjections[aPlaneIdx]
                     && aBoxProjMax <= myMaxVertsProjections[aPlaneIdx];
@@ -710,7 +710,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
   if (theIsHollow
       && isInsideCylinderEndFace(theBottomRad, theTopRad, theHeight, theTrsf, aVertices))
   {
-    if (theInside != NULL)
+    if (theInside != nullptr)
     {
       *theInside = false;
     }
@@ -763,7 +763,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
          && aVertices.Value(anIdx).Distance(aPoints[0]) <= std::max(theTopRad, theBottomRad))
         || isDotInside(aVertices.Value(anIdx), aPointsArr))
     {
-      if (theInside != NULL)
+      if (theInside != nullptr)
       {
         *theInside = false;
       }
@@ -781,7 +781,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
         || isSegmentsIntersect(aPoints[4], aPoints[2], aPnt1Seg, aPnt2Seg)
         || isSegmentsIntersect(aPoints[1], aPoints[5], aPnt1Seg, aPnt2Seg))
     {
-      if (theInside != NULL)
+      if (theInside != nullptr)
       {
         *theInside = false;
       }
@@ -793,7 +793,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
       && (isIntersectCircle(theBottomRad, gp_Pnt(0, 0, 0), theTrsf, aVertices)
           || isIntersectCircle(theTopRad, gp_Pnt(0, 0, theHeight), theTrsf, aVertices)))
   {
-    if (theInside != NULL)
+    if (theInside != nullptr)
     {
       *theInside = false;
     }
@@ -804,7 +804,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
   {
     isCylInsideRec &= isDotInside(aPoints[i], aVertices);
   }
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside &= isCylInsideRec;
   }
@@ -840,7 +840,7 @@ bool SelectMgr_Frustum<N>::hasCircleOverlap(const double   theRadius,
 
   if (isIntersectCircle(theRadius, gp_Pnt(0, 0, 0), theTrsf, aVertices))
   {
-    if (theInside != NULL)
+    if (theInside != nullptr)
     {
       *theInside = false;
     }
@@ -868,7 +868,7 @@ bool SelectMgr_Frustum<N>::hasCircleOverlap(const double   theRadius,
     }
   }
 
-  if (theInside != NULL)
+  if (theInside != nullptr)
   {
     *theInside = isInside && isCenterInside;
   }

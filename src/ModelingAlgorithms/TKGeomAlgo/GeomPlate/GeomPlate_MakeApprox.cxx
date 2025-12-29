@@ -43,17 +43,17 @@ public:
   {
   }
 
-  virtual void Evaluate(int*    theDimension,
-                        double* theUStartEnd,
-                        double* theVStartEnd,
-                        int*    theFavorIso,
-                        double* theConstParam,
-                        int*    theNbParams,
-                        double* theParameters,
-                        int*    theUOrder,
-                        int*    theVOrder,
-                        double* theResult,
-                        int*    theErrorCode) const;
+  void Evaluate(int*    theDimension,
+                double* theUStartEnd,
+                double* theVStartEnd,
+                int*    theFavorIso,
+                double* theConstParam,
+                int*    theNbParams,
+                double* theParameters,
+                int*    theUOrder,
+                int*    theVOrder,
+                double* theResult,
+                int*    theErrorCode) const override;
 
 private:
   occ::handle<Geom_Surface> mySurf;

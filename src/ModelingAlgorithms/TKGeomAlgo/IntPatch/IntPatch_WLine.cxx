@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine, IntPatch_PointLine)
 #define DEBUGV 0
 
 #include <Precision.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
                                const bool                           Tang,

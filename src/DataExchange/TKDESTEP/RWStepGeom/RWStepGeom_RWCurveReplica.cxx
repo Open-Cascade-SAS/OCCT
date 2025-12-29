@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianTransformationOperator.hxx>
 #include <StepGeom_CurveReplica.hxx>
 
-RWStepGeom_RWCurveReplica::RWStepGeom_RWCurveReplica() {}
+RWStepGeom_RWCurveReplica::RWStepGeom_RWCurveReplica() = default;
 
 void RWStepGeom_RWCurveReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

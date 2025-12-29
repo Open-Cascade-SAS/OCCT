@@ -37,14 +37,13 @@ public:
   //! Parameter <theWithTriangles> is added for XML Persistence
   Standard_EXPORT BinTools_ShapeWriter();
 
-  Standard_EXPORT virtual ~BinTools_ShapeWriter();
+  Standard_EXPORT ~BinTools_ShapeWriter() override;
 
   //! Clears the content of the set.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Writes the shape to stream using previously stored shapes and objects to refer them.
-  Standard_EXPORT virtual void Write(const TopoDS_Shape& theShape,
-                                     Standard_OStream&   theStream) override;
+  Standard_EXPORT void Write(const TopoDS_Shape& theShape, Standard_OStream& theStream) override;
 
   //! Writes location to the stream (all the needed sub-information or reference if it is already
   //! used).

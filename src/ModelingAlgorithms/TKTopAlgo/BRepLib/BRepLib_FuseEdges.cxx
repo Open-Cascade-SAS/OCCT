@@ -525,8 +525,8 @@ void BRepLib_FuseEdges::BuildListResultEdges()
         {
           gp_Pnt PF = BRep_Tool::Pnt(VF);
           gp_Pnt PL = BRep_Tool::Pnt(VL);
-          GeomLib::ExtendCurveToPoint(ExtC, PF, 1, 0);
-          GeomLib::ExtendCurveToPoint(ExtC, PL, 1, 1);
+          GeomLib::ExtendCurveToPoint(ExtC, PF, 1, false);
+          GeomLib::ExtendCurveToPoint(ExtC, PL, 1, true);
 
           ME.Init(ExtC, VF, VL);
           if (!ME.IsDone())

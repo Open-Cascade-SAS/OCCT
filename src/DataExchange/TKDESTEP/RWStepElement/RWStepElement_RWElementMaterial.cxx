@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWElementMaterial::RWStepElement_RWElementMaterial() {}
+RWStepElement_RWElementMaterial::RWStepElement_RWElementMaterial() = default;
 
 //=================================================================================================
 

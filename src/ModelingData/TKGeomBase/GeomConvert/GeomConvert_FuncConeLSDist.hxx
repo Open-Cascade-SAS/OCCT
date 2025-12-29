@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT GeomConvert_FuncConeLSDist() {};
+  Standard_EXPORT GeomConvert_FuncConeLSDist() = default;
 
   Standard_EXPORT GeomConvert_FuncConeLSDist(
     const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,

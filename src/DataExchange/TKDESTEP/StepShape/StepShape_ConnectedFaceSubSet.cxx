@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSubSet, StepShape_ConnectedFac
 
 //=================================================================================================
 
-StepShape_ConnectedFaceSubSet::StepShape_ConnectedFaceSubSet() {}
+StepShape_ConnectedFaceSubSet::StepShape_ConnectedFaceSubSet() = default;
 
 //=================================================================================================
 

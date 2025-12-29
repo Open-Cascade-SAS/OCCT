@@ -31,10 +31,10 @@ class StdLPersistent_HArray2
   {
   public:
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
 
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
+    Standard_EXPORT void Write(StdObjMgt_WriteData& theWriteData) const override;
 
   protected:
     virtual void lowerBound(int& theRow, int& theCol) const = 0;
@@ -64,44 +64,44 @@ protected:
     const occ::handle<ArrayClass>& Array() const { return myArray; }
 
   protected:
-    virtual void lowerBound(int& theRow, int& theCol) const
+    void lowerBound(int& theRow, int& theCol) const override
     {
       theRow = myArray->LowerRow();
       theCol = myArray->LowerCol();
     }
 
-    virtual void upperBound(int& theRow, int& theCol) const
+    void upperBound(int& theRow, int& theCol) const override
     {
       theRow = myArray->UpperRow();
       theCol = myArray->UpperCol();
     }
 
-    virtual void createArray(const int theLowerRow,
-                             const int theLowerCol,
-                             const int theUpperRow,
-                             const int theUpperCol)
+    void createArray(const int theLowerRow,
+                     const int theLowerCol,
+                     const int theUpperRow,
+                     const int theUpperCol) override
     {
       myArray = new ArrayClass(theLowerRow, theUpperRow, theLowerCol, theUpperCol);
     }
 
-    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theRow, const int theCol)
+    void readValue(StdObjMgt_ReadData& theReadData, const int theRow, const int theCol) override
     {
       theReadData >> myArray->ChangeValue(theRow, theCol);
     }
 
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData,
-                            const int            theRow,
-                            const int            theCol) const
+    void writeValue(StdObjMgt_WriteData& theWriteData,
+                    const int            theRow,
+                    const int            theCol) const override
     {
       theWriteData << myArray->Value(theRow, theCol);
     }
 
-    virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+    void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const override
     {
       return PChildrenT(theChildren);
     }
 
-    virtual const char* PName() const { return PNameT(); }
+    const char* PName() const override { return PNameT(); }
 
     const char* PNameT() const
     {
@@ -121,7 +121,7 @@ protected:
     friend class StdLPersistent_HArray2;
 
   public:
-    virtual const char* PName() const
+    const char* PName() const override
     {
       Standard_NullValue_Raise_if(!myPName,
                                   "StdLPersistent_HArray2::named_instance::PName - name not set");

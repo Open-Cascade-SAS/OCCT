@@ -36,7 +36,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 17/06/98
 // To use Msg class

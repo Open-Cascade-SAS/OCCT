@@ -18,7 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_MechanismStateRepresentation, StepRepr_Representation)
 
-StepKinematics_MechanismStateRepresentation::StepKinematics_MechanismStateRepresentation() {}
+StepKinematics_MechanismStateRepresentation::StepKinematics_MechanismStateRepresentation() =
+  default;
 
 void StepKinematics_MechanismStateRepresentation::Init(
   const occ::handle<TCollection_HAsciiString>&                                      theName,

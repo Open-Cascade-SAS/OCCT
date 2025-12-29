@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWHomokineticPair::RWStepKinematics_RWHomokineticPair() {}
+RWStepKinematics_RWHomokineticPair::RWStepKinematics_RWHomokineticPair() = default;
 
 //=================================================================================================
 

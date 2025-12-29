@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TemplateInstance, StepRepr_MappedItem)
 
-StepVisual_TemplateInstance::StepVisual_TemplateInstance() {}
+StepVisual_TemplateInstance::StepVisual_TemplateInstance() = default;

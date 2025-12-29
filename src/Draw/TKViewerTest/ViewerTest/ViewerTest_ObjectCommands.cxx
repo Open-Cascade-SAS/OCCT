@@ -298,9 +298,9 @@ static bool convertToDatumAxes(const TCollection_AsciiString& theValue,
   return true;
 }
 
-static bool setTrihedronParams(int                        theArgsNb,
-                               const char**               theArgVec,
-                               occ::handle<AIS_Trihedron> theTrihedron)
+static bool setTrihedronParams(int                               theArgsNb,
+                               const char**                      theArgVec,
+                               const occ::handle<AIS_Trihedron>& theTrihedron)
 {
   NCollection_DataMap<TCollection_AsciiString,
                       occ::handle<NCollection_HSequence<TCollection_AsciiString>>>
@@ -1734,7 +1734,7 @@ static int VChangePlane(Draw_Interpretor& /*theDi*/, int theArgsNb, const char**
   TCollection_AsciiString aName(theArgVec[1]);
 
   occ::handle<AIS_Plane> aPlane =
-    GetMapOfAIS().IsBound2(aName) ? occ::down_cast<AIS_Plane>(GetMapOfAIS().Find2(aName)) : NULL;
+    GetMapOfAIS().IsBound2(aName) ? occ::down_cast<AIS_Plane>(GetMapOfAIS().Find2(aName)) : nullptr;
 
   if (aPlane.IsNull())
   {
@@ -1972,12 +1972,11 @@ private:
   TopoDS_Face ComputeFace();
 
   // Virtual methods implementation
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
 protected:
   occ::handle<Geom_Circle> myCircle;
@@ -2706,7 +2705,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
   return 0;
 }
 
-#include <math.h>
+#include <cmath>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Poly_Triangle.hxx>
@@ -2724,6 +2723,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 #include <Graphic3d_AspectFillArea3d.hxx>
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <utility>
 
 //===============================================================================================
 // function : CalculationOfSphere
@@ -3340,19 +3340,18 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject, AIS_InteractiveObject);
 
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Sets color to this interactive object
   //! @param theColor the color to be set
-  virtual void SetColor(const Quantity_Color& theColor) override;
+  void SetColor(const Quantity_Color& theColor) override;
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
   bool CheckInputCommand(
     const TCollection_AsciiString&                                   theCommand,
@@ -4987,7 +4986,7 @@ static int VTriangle(Draw_Interpretor& /*di*/, int argc, const char** argv)
   {
     const TCollection_AsciiString aName(argv[2 + aPntIter]);
     if (occ::handle<AIS_Point> aPntPrs = occ::down_cast<AIS_Point>(
-          GetMapOfAIS().IsBound2(aName) ? GetMapOfAIS().Find2(aName) : NULL))
+          GetMapOfAIS().IsBound2(aName) ? GetMapOfAIS().Find2(aName) : nullptr))
     {
       aPnts[aPntIter] = aPntPrs->Component()->Pnt();
     }
@@ -5453,22 +5452,21 @@ class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
 public:
   ViewerTest_MarkersArrayObject(const gp_XYZ&                         theStartPoint,
                                 const int&                            thePointsOnSide,
-                                occ::handle<Graphic3d_AspectMarker3d> theMarkerAspect = NULL)
+                                occ::handle<Graphic3d_AspectMarker3d> theMarkerAspect = nullptr)
   {
     myStartPoint   = theStartPoint;
     myPointsOnSide = thePointsOnSide;
-    myMarkerAspect = theMarkerAspect;
+    myMarkerAspect = std::move(theMarkerAspect);
   }
 
   DEFINE_STANDARD_RTTI_INLINE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject);
 
 private:
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
 protected:
   gp_XYZ                                myStartPoint;
@@ -6371,10 +6369,10 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
       }
 
     protected:
-      virtual void addPoint(const gp_Pnt&   thePoint,
-                            const gp_Vec&   theNorm,
-                            const gp_Pnt2d& theUV,
-                            const TopoDS_Shape&) override
+      void addPoint(const gp_Pnt&   thePoint,
+                    const gp_Vec&   theNorm,
+                    const gp_Pnt2d& theUV,
+                    const TopoDS_Shape&) override
       {
         const int aPntIndex = myPoints->AddVertex(thePoint, theUV);
         if (theNorm.SquareMagnitude() > gp::Resolution())
@@ -6564,9 +6562,9 @@ public:
 
 protected:
   //! Compute presentation.
-  virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override
+  void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 

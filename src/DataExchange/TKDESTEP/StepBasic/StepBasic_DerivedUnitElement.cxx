@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnitElement, Standard_Transient)
 
-StepBasic_DerivedUnitElement::StepBasic_DerivedUnitElement() {}
+StepBasic_DerivedUnitElement::StepBasic_DerivedUnitElement() = default;
 
 void StepBasic_DerivedUnitElement::Init(const occ::handle<StepBasic_NamedUnit>& aUnit,
                                         const double                            aExponent)

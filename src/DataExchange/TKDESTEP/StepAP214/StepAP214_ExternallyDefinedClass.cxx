@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_ExternallyDefinedClass, StepAP214_Class)
 
 //=================================================================================================
 
-StepAP214_ExternallyDefinedClass::StepAP214_ExternallyDefinedClass() {}
+StepAP214_ExternallyDefinedClass::StepAP214_ExternallyDefinedClass() = default;
 
 //=================================================================================================
 

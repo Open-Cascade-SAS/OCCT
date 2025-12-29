@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
 //=================================================================================================
 
-ShapeBuild_ReShape::ShapeBuild_ReShape() {}
+ShapeBuild_ReShape::ShapeBuild_ReShape() = default;
 
 //=================================================================================================
 
@@ -211,7 +211,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
     {
       if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
         locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
-      modif = 1;
+      modif = true;
     }
     if (newsh.IsNull())
     {

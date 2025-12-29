@@ -34,9 +34,7 @@ public:
 
   Standard_EXPORT AdvApprox_PrefCutting(const NCollection_Array1<double>& CutPnts);
 
-  Standard_EXPORT virtual bool Value(const double a,
-                                     const double b,
-                                     double&      cuttingvalue) const override;
+  Standard_EXPORT bool Value(const double a, const double b, double& cuttingvalue) const override;
 
 private:
   NCollection_Array1<double> myPntOfCutting;

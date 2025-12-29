@@ -19,7 +19,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder() {}
+BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder() = default;
 
 BRepFill_EdgeFaceAndOrder::BRepFill_EdgeFaceAndOrder(const TopoDS_Edge&  anEdge,
                                                      const TopoDS_Face&  aFace,

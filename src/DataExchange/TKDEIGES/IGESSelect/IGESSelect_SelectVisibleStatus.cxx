@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtract)
 
-IGESSelect_SelectVisibleStatus::IGESSelect_SelectVisibleStatus() {}
+IGESSelect_SelectVisibleStatus::IGESSelect_SelectVisibleStatus() = default;
 
 bool IGESSelect_SelectVisibleStatus::Sort(
   const int /*rank*/,

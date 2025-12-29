@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_MassUnit, StepBasic_NamedUnit)
 
 //=================================================================================================
 
-StepBasic_MassUnit::StepBasic_MassUnit() {}
+StepBasic_MassUnit::StepBasic_MassUnit() = default;

@@ -43,6 +43,8 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// NOLINTBEGIN - Bison-generated file, do not modify with clang-tidy
+
 /**
  ** \file StepFile/step.tab.hxx
  ** Define the step::parser class.
@@ -817,7 +819,9 @@ namespace step
 class scanner : public stepFlexLexer
 {
 public:
-  explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
+  explicit scanner(StepFile_ReadData* theDataModel,
+                   std::istream*      in  = nullptr,
+                   std::ostream*      out = nullptr);
 
   int lex(step::parser::semantic_type* yylval);
 
@@ -825,5 +829,7 @@ public:
 };
 
 }; // namespace step
+
+// NOLINTEND
 
 #endif // !YY_STEP_STEPFILE_STEP_TAB_HXX_INCLUDED

@@ -32,9 +32,8 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEPLY_ConfigurationNode::DEPLY_ConfigurationNode()
-    : DE_ConfigurationNode()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

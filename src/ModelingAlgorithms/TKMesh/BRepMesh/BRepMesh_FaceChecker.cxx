@@ -85,9 +85,9 @@ public:
   }
 
 private:
-  SegmentsFiller(const SegmentsFiller& theOther);
+  SegmentsFiller(const SegmentsFiller& theOther) = delete;
 
-  void operator=(const SegmentsFiller& theOther);
+  void operator=(const SegmentsFiller& theOther) = delete;
 
 private:
   const IMeshData::IFaceHandle&                    myDFace;
@@ -104,7 +104,7 @@ public:
   BndBox2dTreeSelector(const double theTolerance)
       : myMaxLoopSize(M_PI * theTolerance * theTolerance),
         mySelfSegmentIndex(-1),
-        mySegment(0),
+        mySegment(nullptr),
         myIndices(256, new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE))
   {
   }
@@ -130,10 +130,10 @@ public:
   }
 
   //! Indicates should the given box be rejected or not.
-  virtual bool Reject(const Bnd_Box2d& theBox) const { return myBox.IsOut(theBox); }
+  bool Reject(const Bnd_Box2d& theBox) const override { return myBox.IsOut(theBox); }
 
   //! Accepts segment with the given index in case if it fits conditions.
-  virtual bool Accept(const int& theSegmentIndex)
+  bool Accept(const int& theSegmentIndex) override
   {
     const BRepMesh_FaceChecker::Segment& aSegment = mySegments->Value(theSegmentIndex);
 
@@ -213,7 +213,7 @@ BRepMesh_FaceChecker::BRepMesh_FaceChecker(const IMeshData::IFaceHandle& theFace
 
 //=================================================================================================
 
-BRepMesh_FaceChecker::~BRepMesh_FaceChecker() {}
+BRepMesh_FaceChecker::~BRepMesh_FaceChecker() = default;
 
 //=================================================================================================
 

@@ -212,7 +212,7 @@ public:
   //! Returns the period of this patch in the u
   //! parametric direction.
   //! raises if the surface is not uperiodic.
-  Standard_EXPORT virtual double UPeriod() const override;
+  Standard_EXPORT double UPeriod() const override;
 
   //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
@@ -222,7 +222,7 @@ public:
   //! parametric direction.
   //! raises if the surface is not vperiodic.
   //! value and derivatives
-  Standard_EXPORT virtual double VPeriod() const override;
+  Standard_EXPORT double VPeriod() const override;
 
   //! computes the U isoparametric curve.
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
@@ -304,9 +304,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual void TransformParameters(double&        U,
-                                                   double&        V,
-                                                   const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -323,14 +321,13 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this patch.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 

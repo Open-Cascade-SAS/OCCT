@@ -20,8 +20,7 @@
 //=================================================================================================
 
 BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
-    : BOPAlgo_Algo(),
-      myShapes(myAllocator),
+    : myShapes(myAllocator),
       myLoops(myAllocator),
       myLoopsInternal(myAllocator),
       myAreas(myAllocator),
@@ -45,4 +44,4 @@ BOPAlgo_BuilderArea::BOPAlgo_BuilderArea(const occ::handle<NCollection_BaseAlloc
 
 //=================================================================================================
 
-BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea() {}
+BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea() = default;

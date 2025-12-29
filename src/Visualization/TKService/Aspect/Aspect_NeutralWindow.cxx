@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_NeutralWindow, Aspect_Window)
 Aspect_NeutralWindow::Aspect_NeutralWindow()
     : myHandle(0),
       myParentHandle(0),
-      myFBConfig(0),
+      myFBConfig(nullptr),
       myPosX(0),
       myPosY(0),
       myWidth(0),

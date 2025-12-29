@@ -37,7 +37,7 @@ public:
   //! Tests if <me> can be shared by one or more expressions
   //! or must be copied. This method redefines to a True
   //! value the GeneralExpression method.
-  Standard_EXPORT virtual bool IsShareable() const override;
+  Standard_EXPORT bool IsShareable() const override;
 
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before

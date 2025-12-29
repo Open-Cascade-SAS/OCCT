@@ -91,7 +91,7 @@ private:
 
 public:
   //! Releases resources of shader object.
-  Standard_EXPORT virtual ~Graphic3d_ShaderObject();
+  Standard_EXPORT ~Graphic3d_ShaderObject() override;
 
   //! Checks if the shader object is valid or not.
   Standard_EXPORT virtual bool IsDone() const;

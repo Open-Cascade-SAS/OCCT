@@ -29,7 +29,7 @@ class IMeshData_Model : public IMeshData_Shape
 {
 public:
   //! Destructor.
-  virtual ~IMeshData_Model() {}
+  ~IMeshData_Model() override = default;
 
   //! Returns maximum size of shape model.
   Standard_EXPORT virtual double GetMaxSize() const = 0;

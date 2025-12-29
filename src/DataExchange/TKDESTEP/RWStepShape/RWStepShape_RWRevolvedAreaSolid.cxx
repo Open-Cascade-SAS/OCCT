@@ -19,7 +19,7 @@
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepShape_RevolvedAreaSolid.hxx>
 
-RWStepShape_RWRevolvedAreaSolid::RWStepShape_RWRevolvedAreaSolid() {}
+RWStepShape_RWRevolvedAreaSolid::RWStepShape_RWRevolvedAreaSolid() = default;
 
 void RWStepShape_RWRevolvedAreaSolid::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

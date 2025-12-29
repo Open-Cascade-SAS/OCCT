@@ -33,7 +33,7 @@ class StepVisual_StyledItem : public StepRepr_RepresentationItem
 
 public:
   //! Returns a StyledItem
-  StepVisual_StyledItem() {}
+  StepVisual_StyledItem() = default;
 
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>& aName,

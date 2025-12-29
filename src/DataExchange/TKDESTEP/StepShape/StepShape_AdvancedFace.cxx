@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_AdvancedFace, StepShape_FaceSurface)
 
-StepShape_AdvancedFace::StepShape_AdvancedFace() {}
+StepShape_AdvancedFace::StepShape_AdvancedFace() = default;

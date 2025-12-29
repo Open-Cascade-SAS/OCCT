@@ -64,7 +64,7 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // fathers
   aDOMStr = anElement.getAttribute(::FathersString());
-  if (aDOMStr != NULL) // void list is allowed
+  if (aDOMStr != nullptr) // void list is allowed
   {
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
     int         aNb       = 0;
@@ -98,7 +98,7 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   // children
   aDOMStr = anElement.getAttribute(::ChildrenString());
-  if (aDOMStr != NULL) // void list is allowed
+  if (aDOMStr != nullptr) // void list is allowed
   {
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
     int         aNb       = 0;

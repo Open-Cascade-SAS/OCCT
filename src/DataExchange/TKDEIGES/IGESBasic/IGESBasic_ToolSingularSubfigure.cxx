@@ -35,7 +35,7 @@
 #include <Message_Msg.hxx>
 
 // MGE 03/08/98
-IGESBasic_ToolSingularSubfigure::IGESBasic_ToolSingularSubfigure() {}
+IGESBasic_ToolSingularSubfigure::IGESBasic_ToolSingularSubfigure() = default;
 
 void IGESBasic_ToolSingularSubfigure::ReadOwnParams(
   const occ::handle<IGESBasic_SingularSubfigure>& ent,

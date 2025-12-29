@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaMaterialPropertyRepresentation,
 
 //=================================================================================================
 
-StepFEA_FeaMaterialPropertyRepresentation::StepFEA_FeaMaterialPropertyRepresentation() {}
+StepFEA_FeaMaterialPropertyRepresentation::StepFEA_FeaMaterialPropertyRepresentation() = default;

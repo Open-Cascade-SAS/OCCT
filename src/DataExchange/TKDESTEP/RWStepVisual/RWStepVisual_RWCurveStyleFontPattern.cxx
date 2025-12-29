@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CurveStyleFontPattern.hxx>
 
-RWStepVisual_RWCurveStyleFontPattern::RWStepVisual_RWCurveStyleFontPattern() {}
+RWStepVisual_RWCurveStyleFontPattern::RWStepVisual_RWCurveStyleFontPattern() = default;
 
 void RWStepVisual_RWCurveStyleFontPattern::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,

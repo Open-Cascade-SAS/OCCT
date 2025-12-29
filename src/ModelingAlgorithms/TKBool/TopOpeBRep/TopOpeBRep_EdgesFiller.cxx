@@ -58,8 +58,8 @@ Standard_EXPORT void debeeff() {}
 //=================================================================================================
 
 TopOpeBRep_EdgesFiller::TopOpeBRep_EdgesFiller()
-    : myPDS(NULL),
-      myPEI(NULL)
+    : myPDS(nullptr),
+      myPEI(nullptr)
 {
 }
 

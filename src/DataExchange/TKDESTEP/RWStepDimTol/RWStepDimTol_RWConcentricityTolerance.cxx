@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWConcentricityTolerance::RWStepDimTol_RWConcentricityTolerance() {}
+RWStepDimTol_RWConcentricityTolerance::RWStepDimTol_RWConcentricityTolerance() = default;
 
 //=================================================================================================
 

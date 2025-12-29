@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWPlaneAngleMeasureWithUnit::RWStepBasic_RWPlaneAngleMeasureWithUnit() {}
+RWStepBasic_RWPlaneAngleMeasureWithUnit::RWStepBasic_RWPlaneAngleMeasureWithUnit() = default;
 
 //=================================================================================================
 

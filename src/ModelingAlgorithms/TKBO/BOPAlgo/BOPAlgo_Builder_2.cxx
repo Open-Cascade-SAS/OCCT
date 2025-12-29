@@ -72,7 +72,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_PairOfShapeBoolean() {}
+  ~BOPAlgo_PairOfShapeBoolean() override = default;
 
   //
   TopoDS_Shape& Shape1() { return myShape1; }
@@ -90,9 +90,9 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -127,7 +127,7 @@ public:
   // New perform method, using own progress range
   void Perform()
   {
-    Message_ProgressScope aPS(myRange, NULL, 1);
+    Message_ProgressScope aPS(myRange, nullptr, 1);
     if (!aPS.More())
     {
       return;
@@ -137,7 +137,7 @@ public:
 
 private:
   //! Disable the range enabled method
-  virtual void Perform(const Message_ProgressRange& /*theRange*/) {};
+  void Perform(const Message_ProgressRange& /*theRange*/) override {};
 
 private:
   Message_ProgressRange myRange;
@@ -160,7 +160,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_VFI() {}
+  ~BOPAlgo_VFI() override = default;
 
   //
   void SetVertex(const TopoDS_Vertex& aV) { myV = aV; }
@@ -184,9 +184,9 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -249,7 +249,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
   NCollection_List<TopoDS_Shape>                         aLE(aAllocator);
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMDE(100, aAllocator);
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   // Build temporary map of faces images to avoid rebuilding
   // of the faces without any IN or section edges
   NCollection_IndexedDataMap<int, NCollection_List<TopoDS_Shape>> aFacesIm;
@@ -577,7 +577,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   if (!aNbFFs)
     return;
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
 
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
 
@@ -755,7 +755,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     // If there are no original faces in the group, the first face from
     // the group will be used as the SD face.
     // Such SD face will be representative of the whole group in the result.
-    TopoDS_Face*                             pFSD  = NULL;
+    TopoDS_Face*                             pFSD  = nullptr;
     int                                      nFMin = ::IntegerLast();
     NCollection_List<TopoDS_Shape>::Iterator aItLF(aLSD);
     for (; aItLF.More(); aItLF.Next())
@@ -835,7 +835,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 
 void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   // Vector of pairs of Vertex/Face for classification of the vertices
   // relatively faces, and adding them as internal into the faces

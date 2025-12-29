@@ -259,7 +259,7 @@ bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape, const char* aFile, const 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      anOutStream =
     aFileSystem->OpenOStream(aFile, std::ios::out | std::ios::binary);
-  if (anOutStream.get() == NULL)
+  if (anOutStream.get() == nullptr)
   {
     return false;
   }
@@ -274,7 +274,7 @@ bool VrmlAPI_Writer::WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      anOutStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
-  if (anOutStream.get() == NULL)
+  if (anOutStream.get() == nullptr)
   {
     return false;
   }

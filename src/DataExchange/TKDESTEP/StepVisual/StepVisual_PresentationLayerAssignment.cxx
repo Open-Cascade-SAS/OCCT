@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment, Standard_Transient)
 
-StepVisual_PresentationLayerAssignment::StepVisual_PresentationLayerAssignment() {}
+StepVisual_PresentationLayerAssignment::StepVisual_PresentationLayerAssignment() = default;
 
 void StepVisual_PresentationLayerAssignment::Init(
   const occ::handle<TCollection_HAsciiString>&                    aName,

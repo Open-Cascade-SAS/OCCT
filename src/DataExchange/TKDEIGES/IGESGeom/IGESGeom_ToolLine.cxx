@@ -34,7 +34,7 @@
 #include <Standard_DomainError.hxx>
 
 // MGE 29/07/98
-IGESGeom_ToolLine::IGESGeom_ToolLine() {}
+IGESGeom_ToolLine::IGESGeom_ToolLine() = default;
 
 void IGESGeom_ToolLine::ReadOwnParams(const occ::handle<IGESGeom_Line>& ent,
                                       const occ::handle<IGESData_IGESReaderData>& /* IR */,

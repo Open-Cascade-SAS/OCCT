@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_AngularSize, StepShape_DimensionalSize)
 
 //=================================================================================================
 
-StepShape_AngularSize::StepShape_AngularSize() {}
+StepShape_AngularSize::StepShape_AngularSize() = default;
 
 //=================================================================================================
 

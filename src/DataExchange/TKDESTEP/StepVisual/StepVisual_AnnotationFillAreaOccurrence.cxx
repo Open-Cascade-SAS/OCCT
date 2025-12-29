@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationFillAreaOccurrence, StepVisual_A
 
 //=================================================================================================
 
-StepVisual_AnnotationFillAreaOccurrence::StepVisual_AnnotationFillAreaOccurrence() {}
+StepVisual_AnnotationFillAreaOccurrence::StepVisual_AnnotationFillAreaOccurrence() = default;
 
 //=================================================================================================
 

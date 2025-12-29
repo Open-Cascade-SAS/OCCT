@@ -202,11 +202,11 @@ private:
 
 //=================================================================================================
 
-BRepMesh_ModelPostProcessor::BRepMesh_ModelPostProcessor() {}
+BRepMesh_ModelPostProcessor::BRepMesh_ModelPostProcessor() = default;
 
 //=================================================================================================
 
-BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor() {}
+BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor() = default;
 
 //=================================================================================================
 

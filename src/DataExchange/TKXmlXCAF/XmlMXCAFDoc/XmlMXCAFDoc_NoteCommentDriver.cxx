@@ -48,7 +48,7 @@ bool XmlMXCAFDoc_NoteCommentDriver::Paste(const XmlObjMgt_Persistent&       theS
   const XmlObjMgt_Element& anElement = theSource;
 
   XmlObjMgt_DOMString aComment = anElement.getAttribute(::Comment());
-  if (aComment == NULL)
+  if (aComment == nullptr)
     return false;
 
   occ::handle<XCAFDoc_NoteComment> aNote = occ::down_cast<XCAFDoc_NoteComment>(theTarget);

@@ -512,9 +512,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   occ::handle<Geom2d_Line> GLin2dFil2 = new Geom2d_Line(lin2dFil);
   ElSLib::Parameters(Cyl, P, u, v);
   double tol           = Precision::PConfusion();
-  bool   careaboutsens = 0;
+  bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
-    careaboutsens = 1;
+    careaboutsens = true;
   if (u >= fu - tol && u < fu)
     u = fu;
   if (u <= lu + tol && u > lu)

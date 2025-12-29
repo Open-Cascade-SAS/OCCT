@@ -18,7 +18,7 @@
 #include <StepVisual_PresentationSet.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 
-StepVisual_StyleContextSelect::StepVisual_StyleContextSelect() {}
+StepVisual_StyleContextSelect::StepVisual_StyleContextSelect() = default;
 
 int StepVisual_StyleContextSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

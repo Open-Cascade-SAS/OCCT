@@ -365,21 +365,21 @@ void SelectMgr_ViewerSelector::computeFrustum(
   const bool toTransform = aTrsfMtr.Form() != gp_Identity;
   if (toScale && toTransform)
   {
-    theResMgr = theMgrGlobal.ScaleAndTransform(aScale, aTrsfMtr, NULL);
+    theResMgr = theMgrGlobal.ScaleAndTransform(aScale, aTrsfMtr, nullptr);
     theResMgr.SetViewClipping(theMgrObject);
   }
   else if (toScale)
   {
     if (!theCachedMgrs.Find(aScale, theResMgr))
     {
-      theResMgr = theMgrGlobal.ScaleAndTransform(aScale, gp_Trsf(), NULL);
+      theResMgr = theMgrGlobal.ScaleAndTransform(aScale, gp_Trsf(), nullptr);
       theCachedMgrs.Bind(aScale, theResMgr);
     }
     theResMgr.SetViewClipping(theMgrObject);
   }
   else if (toTransform)
   {
-    theResMgr = theMgrGlobal.ScaleAndTransform(1, aTrsfMtr, NULL);
+    theResMgr = theMgrGlobal.ScaleAndTransform(1, aTrsfMtr, nullptr);
     theResMgr.SetViewClipping(theMgrObject);
   }
   else
@@ -437,8 +437,9 @@ void SelectMgr_ViewerSelector::traverseObject(
     }
   }
 
-  SelectMgr_SelectingVolumeManager aMgr =
-    aInversedTrsf.Form() != gp_Identity ? theMgr.ScaleAndTransform(1, aInversedTrsf, NULL) : theMgr;
+  SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
+                                            ? theMgr.ScaleAndTransform(1, aInversedTrsf, nullptr)
+                                            : theMgr;
   if (!hasEntityTrsfPers
       && !aMgr.OverlapsBox(aSensitivesTree->MinPoint(0), aSensitivesTree->MaxPoint(0)))
   {
@@ -1244,7 +1245,7 @@ void SelectMgr_ViewerSelector::Pick(const int                    theXPix,
   mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping(theView->ClipPlanes(),
                                        occ::handle<Graphic3d_SequenceOfHClipPlane>(),
-                                       NULL);
+                                       nullptr);
 
   TraverseSensitives(theView->View()->Identification());
 }
@@ -1271,7 +1272,7 @@ void SelectMgr_ViewerSelector::Pick(const int                    theXPMin,
   mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping(theView->ClipPlanes(),
                                        occ::handle<Graphic3d_SequenceOfHClipPlane>(),
-                                       NULL);
+                                       nullptr);
   TraverseSensitives(theView->View()->Identification());
 }
 
@@ -1292,7 +1293,7 @@ void SelectMgr_ViewerSelector::Pick(const NCollection_Array1<gp_Pnt2d>& thePolyl
   mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping(theView->ClipPlanes(),
                                        occ::handle<Graphic3d_SequenceOfHClipPlane>(),
-                                       NULL);
+                                       nullptr);
 
   TraverseSensitives(theView->View()->Identification());
 }
@@ -1307,7 +1308,7 @@ void SelectMgr_ViewerSelector::Pick(const gp_Ax1& theAxis, const occ::handle<V3d
   mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping(theView->ClipPlanes(),
                                        occ::handle<Graphic3d_SequenceOfHClipPlane>(),
-                                       NULL);
+                                       nullptr);
 
   TraverseSensitives(theView->View()->Identification());
 }

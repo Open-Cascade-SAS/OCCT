@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndRatioUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndRatioUnit::StepBasic_SiUnitAndRatioUnit() {}
+StepBasic_SiUnitAndRatioUnit::StepBasic_SiUnitAndRatioUnit() = default;
 
 void StepBasic_SiUnitAndRatioUnit::Init(const bool                 hasAprefix,
                                         const StepBasic_SiPrefix   aPrefix,

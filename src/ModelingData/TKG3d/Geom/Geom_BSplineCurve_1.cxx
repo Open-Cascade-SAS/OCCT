@@ -621,7 +621,7 @@ void Geom_BSplineCurve::Transform(const gp_Trsf& T)
   NCollection_Array1<gp_Pnt>& CPoles = poles->ChangeArray1();
   for (int I = 1; I <= CPoles.Length(); I++)
     CPoles(I).Transform(T);
-  maxderivinvok = 0;
+  maxderivinvok = false;
 }
 
 //=======================================================================
@@ -729,7 +729,7 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
                            1.,
                            maxderivinv);
     }
-    maxderivinvok = 1;
+    maxderivinvok = true;
   }
   UTolerance = Tolerance3D * maxderivinv;
 }

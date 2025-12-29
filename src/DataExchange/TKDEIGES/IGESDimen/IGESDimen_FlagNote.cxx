@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_FlagNote, IGESData_IGESEntity)
 
-IGESDimen_FlagNote::IGESDimen_FlagNote() {}
+IGESDimen_FlagNote::IGESDimen_FlagNote() = default;
 
 void IGESDimen_FlagNote::Init(
   const gp_XYZ&                                                               leftCorner,

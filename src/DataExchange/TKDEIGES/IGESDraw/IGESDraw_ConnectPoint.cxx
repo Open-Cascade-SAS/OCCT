@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ConnectPoint, IGESData_IGESEntity)
 
-IGESDraw_ConnectPoint::IGESDraw_ConnectPoint() {}
+IGESDraw_ConnectPoint::IGESDraw_ConnectPoint() = default;
 
 void IGESDraw_ConnectPoint::Init(
   const gp_XYZ&                                     aPoint,

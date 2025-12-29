@@ -59,7 +59,7 @@ void SelectMgr_ToleranceMap::Add(const int& theTolerance)
 void SelectMgr_ToleranceMap::Decrement(const int& theTolerance)
 {
   int* aFreq = myTolerances.ChangeSeek(theTolerance);
-  if (aFreq == NULL)
+  if (aFreq == nullptr)
   {
     return;
   }

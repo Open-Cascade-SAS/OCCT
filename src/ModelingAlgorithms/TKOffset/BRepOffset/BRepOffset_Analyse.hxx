@@ -134,7 +134,7 @@ public: //! @name Results
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& theS) const;
 
   //! Checks if the edge has generated a new face.
-  bool HasGenerated(const TopoDS_Shape& theS) const { return myGenerated.Seek(theS) != NULL; }
+  bool HasGenerated(const TopoDS_Shape& theS) const { return myGenerated.Seek(theS) != nullptr; }
 
   //! Returns the replacement of the edge in the face.
   //! If no replacement exists, returns the edge

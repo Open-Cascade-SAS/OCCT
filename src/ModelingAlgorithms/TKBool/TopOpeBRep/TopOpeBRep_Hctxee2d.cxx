@@ -40,7 +40,7 @@ Standard_EXPORT bool TopOpeBRep_GettracePROEDG();
 
 //=================================================================================================
 
-TopOpeBRep_Hctxee2d::TopOpeBRep_Hctxee2d() {}
+TopOpeBRep_Hctxee2d::TopOpeBRep_Hctxee2d() = default;
 
 //=================================================================================================
 

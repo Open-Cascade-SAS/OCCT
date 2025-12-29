@@ -31,7 +31,7 @@ public:
   /**
    * Empty constructor
    */
-  inline VrmlData_Appearance() {}
+  inline VrmlData_Appearance() = default;
 
   /**
    * Constructor
@@ -85,22 +85,22 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.<p>
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+  Standard_EXPORT occ::handle<VrmlData_Node> Clone(
     const occ::handle<VrmlData_Node>&) const override;
   /**
    * Read the node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual bool IsDefault() const override;
+  Standard_EXPORT bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------

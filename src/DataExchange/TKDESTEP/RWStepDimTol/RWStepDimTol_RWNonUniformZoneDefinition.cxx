@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWNonUniformZoneDefinition::RWStepDimTol_RWNonUniformZoneDefinition() {}
+RWStepDimTol_RWNonUniformZoneDefinition::RWStepDimTol_RWNonUniformZoneDefinition() = default;
 
 //=================================================================================================
 

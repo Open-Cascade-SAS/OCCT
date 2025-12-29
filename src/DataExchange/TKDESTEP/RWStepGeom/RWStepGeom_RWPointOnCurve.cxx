@@ -18,7 +18,7 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_PointOnCurve.hxx>
 
-RWStepGeom_RWPointOnCurve::RWStepGeom_RWPointOnCurve() {}
+RWStepGeom_RWPointOnCurve::RWStepGeom_RWPointOnCurve() = default;
 
 void RWStepGeom_RWPointOnCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

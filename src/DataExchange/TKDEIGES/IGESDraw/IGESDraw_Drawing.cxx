@@ -30,7 +30,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Drawing, IGESData_IGESEntity)
 
-IGESDraw_Drawing::IGESDraw_Drawing() {}
+IGESDraw_Drawing::IGESDraw_Drawing() = default;
 
 void IGESDraw_Drawing::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_SolidModel.hxx>
 
-RWStepShape_RWSolidModel::RWStepShape_RWSolidModel() {}
+RWStepShape_RWSolidModel::RWStepShape_RWSolidModel() = default;
 
 void RWStepShape_RWSolidModel::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

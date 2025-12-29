@@ -45,24 +45,24 @@ public:
   const gp_Pnt& EndPoint() const { return myEnd; }
 
   //! Returns the amount of points
-  Standard_EXPORT virtual int NbSubElements() const override;
+  Standard_EXPORT int NbSubElements() const override;
 
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Checks whether the segment overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns center of the segment. If location transformation
   //! is set, it will be applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! Returns bounding box of the segment. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Returns TRUE if BVH tree is in invalidated state
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
 public:
   //! changes the start Point of the Segment;
@@ -72,8 +72,7 @@ public:
   void EndPoint(const gp_Pnt& thePnt) { myEnd = thePnt; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   gp_Pnt myStart; //!< Start point

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 
-RWStepGeom_RWBoundedCurve::RWStepGeom_RWBoundedCurve() {}
+RWStepGeom_RWBoundedCurve::RWStepGeom_RWBoundedCurve() = default;
 
 void RWStepGeom_RWBoundedCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

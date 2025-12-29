@@ -126,7 +126,7 @@ public:
                                                                   const TopoDS_Face& F,
                                                                   double&            First,
                                                                   double&            Last,
-                                                                  bool* theIsStored = NULL);
+                                                                  bool* theIsStored = nullptr);
 
   //! Returns the curve associated to the edge in the
   //! parametric space of the surface. Returns a NULL
@@ -141,7 +141,7 @@ public:
     const TopLoc_Location&           L,
     double&                          First,
     double&                          Last,
-    bool*                            theIsStored = NULL);
+    bool*                            theIsStored = nullptr);
 
   //! For the planar surface builds the 2d curve for the edge
   //! by projection of the edge on plane.

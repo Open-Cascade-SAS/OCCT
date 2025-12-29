@@ -81,7 +81,7 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier(
 
       else
       {
-        res = ApplyModifier(shape, context, M, map, 0, theMutableInput);
+        res = ApplyModifier(shape, context, M, map, nullptr, theMutableInput);
         map.Bind(shape, res);
       }
       if (!res.IsSame(shape))
@@ -770,7 +770,7 @@ static bool fixshape(const occ::handle<ShapeProcess_Context>& context,
   sfw->FixIntersectingEdgesMode()    = ctx->IntegerVal("FixIntersectingEdgesMode", -1);
   sfw->FixNonAdjacentIntersectingEdgesMode() =
     ctx->IntegerVal("FixNonAdjacentIntersectingEdgesMode", -1);
-  Message_ProgressScope aPS(theProgress, NULL, 2);
+  Message_ProgressScope aPS(theProgress, nullptr, 2);
   if (sfw->FixTailMode() == 1)
   {
     sfw->FixTailMode() = 0;

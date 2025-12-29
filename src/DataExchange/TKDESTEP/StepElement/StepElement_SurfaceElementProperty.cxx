@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceElementProperty, Standard_Transien
 
 //=================================================================================================
 
-StepElement_SurfaceElementProperty::StepElement_SurfaceElementProperty() {}
+StepElement_SurfaceElementProperty::StepElement_SurfaceElementProperty() = default;
 
 //=================================================================================================
 

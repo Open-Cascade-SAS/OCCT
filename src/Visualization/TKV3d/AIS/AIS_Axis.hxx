@@ -90,9 +90,9 @@ public:
   //! Returns true if the interactive object accepts the display mode aMode.
   Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
-  virtual int Signature() const override { return 2; }
+  int Signature() const override { return 2; }
 
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
@@ -106,12 +106,12 @@ public:
   Standard_EXPORT void UnsetWidth() override;
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void ComputeFields();
 

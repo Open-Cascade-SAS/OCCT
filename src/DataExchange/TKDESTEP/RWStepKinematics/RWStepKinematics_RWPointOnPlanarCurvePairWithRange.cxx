@@ -31,9 +31,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWPointOnPlanarCurvePairWithRange::
-  RWStepKinematics_RWPointOnPlanarCurvePairWithRange()
-{
-}
+  RWStepKinematics_RWPointOnPlanarCurvePairWithRange() = default;
 
 //=================================================================================================
 

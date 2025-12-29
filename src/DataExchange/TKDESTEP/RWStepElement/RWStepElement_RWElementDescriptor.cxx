@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor() {}
+RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor() = default;
 
 //=================================================================================================
 

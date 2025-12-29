@@ -24,7 +24,7 @@ class OSD_FileSystemSelector : public OSD_FileSystem
   DEFINE_STANDARD_RTTIEXT(OSD_FileSystemSelector, OSD_FileSystem)
 public:
   //! Constructor.
-  OSD_FileSystemSelector() {}
+  OSD_FileSystemSelector() = default;
 
   //! Registers file system within this selector.
   //! @param[in] theFileSystem   file system to register
@@ -38,35 +38,32 @@ public:
 
 public:
   //! Returns TRUE if URL defines a supported protocol.
-  Standard_EXPORT virtual bool IsSupportedPath(
-    const TCollection_AsciiString& theUrl) const override;
+  Standard_EXPORT bool IsSupportedPath(const TCollection_AsciiString& theUrl) const override;
 
   //! Returns TRUE if current input stream is opened for reading operations.
-  Standard_EXPORT virtual bool IsOpenIStream(
-    const std::shared_ptr<std::istream>& theStream) const override;
+  Standard_EXPORT bool IsOpenIStream(const std::shared_ptr<std::istream>& theStream) const override;
 
   //! Returns TRUE if current output stream is opened for writing operations.
-  Standard_EXPORT virtual bool IsOpenOStream(
-    const std::shared_ptr<std::ostream>& theStream) const override;
+  Standard_EXPORT bool IsOpenOStream(const std::shared_ptr<std::ostream>& theStream) const override;
 
   //! Opens input stream using one of registered protocols.
-  Standard_EXPORT virtual std::shared_ptr<std::istream> OpenIStream(
+  Standard_EXPORT std::shared_ptr<std::istream> OpenIStream(
     const TCollection_AsciiString&       theUrl,
     const std::ios_base::openmode        theMode,
     const int64_t                        theOffset    = 0,
     const std::shared_ptr<std::istream>& theOldStream = std::shared_ptr<std::istream>()) override;
 
   //! Opens output stream using one of registered protocols.
-  Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream(
+  Standard_EXPORT std::shared_ptr<std::ostream> OpenOStream(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode) override;
 
   //! Opens stream buffer using one of registered protocols.
-  Standard_EXPORT virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(
+  Standard_EXPORT std::shared_ptr<std::streambuf> OpenStreamBuffer(
     const TCollection_AsciiString& theUrl,
     const std::ios_base::openmode  theMode,
     const int64_t                  theOffset     = 0,
-    int64_t*                       theOutBufSize = NULL) override;
+    int64_t*                       theOutBufSize = nullptr) override;
 
 protected:
   NCollection_List<occ::handle<OSD_FileSystem>> myProtocols;

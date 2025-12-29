@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaShellBendingStiffness,
 
 //=================================================================================================
 
-StepFEA_FeaShellBendingStiffness::StepFEA_FeaShellBendingStiffness() {}
+StepFEA_FeaShellBendingStiffness::StepFEA_FeaShellBendingStiffness() = default;
 
 //=================================================================================================
 

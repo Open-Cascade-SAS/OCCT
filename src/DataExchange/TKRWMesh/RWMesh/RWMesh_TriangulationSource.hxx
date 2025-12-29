@@ -30,7 +30,7 @@ public:
   Standard_EXPORT RWMesh_TriangulationSource();
 
   //! Destructor.
-  Standard_EXPORT virtual ~RWMesh_TriangulationSource();
+  Standard_EXPORT ~RWMesh_TriangulationSource() override;
 
   //! Returns reader allowing to read data from the buffer.
   const occ::handle<RWMesh_TriangulationReader>& Reader() const { return myReader; }
@@ -46,7 +46,7 @@ public:
   int& ChangeDegeneratedTriNb() { return myStatisticOfDegeneratedTriNb; }
 
   //! Returns TRUE if triangulation has some geometry.
-  virtual bool HasGeometry() const override
+  bool HasGeometry() const override
   {
     return !myNodes.IsEmpty() && (!myTriangles.IsEmpty() || !myEdges.IsEmpty());
   }
@@ -69,7 +69,7 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from
   //! actually loaded values (due to broken header or extra mesh processing). Always check
   //! triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual int NbDeferredNodes() const override { return myNbDefNodes; }
+  int NbDeferredNodes() const override { return myNbDefNodes; }
 
   //! Sets number of nodes for deferred loading.
   void SetNbDeferredNodes(const int theNbNodes) { myNbDefNodes = theNbNodes; }
@@ -78,7 +78,7 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from
   //! actually loaded values (due to broken header or extra mesh processing). Always check
   //! triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual int NbDeferredTriangles() const override { return myNbDefTriangles; }
+  int NbDeferredTriangles() const override { return myNbDefTriangles; }
 
   //! Sets number of triangles for deferred loading.
   void SetNbDeferredTriangles(const int theNbTris) { myNbDefTriangles = theNbTris; }
@@ -94,7 +94,7 @@ public: //! @name late-load deferred data interface
 
 protected:
   //! Loads triangulation data from deferred storage using specified shared input file system.
-  Standard_EXPORT virtual bool loadDeferredData(
+  Standard_EXPORT bool loadDeferredData(
     const occ::handle<OSD_FileSystem>&     theFileSystem,
     const occ::handle<Poly_Triangulation>& theDestTriangulation) const override;
 

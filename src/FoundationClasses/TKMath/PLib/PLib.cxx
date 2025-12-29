@@ -1514,7 +1514,7 @@ void PLib::CoefficientsPoles(const int                         dim,
                              NCollection_Array1<double>&       Poles,
                              NCollection_Array1<double>*       Weights)
 {
-  bool rat    = WCoefs != NULL;
+  bool rat    = WCoefs != nullptr;
   int  loc    = Coefs.Lower();
   int  lop    = Poles.Lower();
   int  lowc   = 0;
@@ -1640,7 +1640,7 @@ void PLib::Trimming(const double                U1,
   int    indc, indw = 0;
   int    upc = Coefs.Upper() - dim + 1, upw = 0;
   int    len = Coefs.Length() / dim;
-  bool   rat = WCoefs != NULL;
+  bool   rat = WCoefs != nullptr;
 
   if (rat)
   {
@@ -1706,7 +1706,7 @@ void PLib::CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
                              NCollection_Array2<gp_Pnt>&       Poles,
                              NCollection_Array2<double>*       Weights)
 {
-  bool rat       = (WCoefs != NULL);
+  bool rat       = (WCoefs != nullptr);
   int  LowerRow  = Poles.LowerRow();
   int  UpperRow  = Poles.UpperRow();
   int  LowerCol  = Poles.LowerCol();
@@ -1812,7 +1812,7 @@ void PLib::UTrimming(const double                U1,
                      NCollection_Array2<gp_Pnt>& Coeffs,
                      NCollection_Array2<double>* WCoeffs)
 {
-  bool                       rat = WCoeffs != NULL;
+  bool                       rat = WCoeffs != nullptr;
   int                        lr  = Coeffs.LowerRow();
   int                        ur  = Coeffs.UpperRow();
   int                        lc  = Coeffs.LowerCol();
@@ -1850,7 +1850,7 @@ void PLib::VTrimming(const double                V1,
                      NCollection_Array2<gp_Pnt>& Coeffs,
                      NCollection_Array2<double>* WCoeffs)
 {
-  bool                       rat = WCoeffs != NULL;
+  bool                       rat = WCoeffs != nullptr;
   int                        lr  = Coeffs.LowerRow();
   int                        ur  = Coeffs.UpperRow();
   int                        lc  = Coeffs.LowerCol();

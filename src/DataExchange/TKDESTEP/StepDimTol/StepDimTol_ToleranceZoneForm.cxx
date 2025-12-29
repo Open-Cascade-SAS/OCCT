@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ToleranceZoneForm, Standard_Transient)
 
 //=================================================================================================
 
-StepDimTol_ToleranceZoneForm::StepDimTol_ToleranceZoneForm() {}
+StepDimTol_ToleranceZoneForm::StepDimTol_ToleranceZoneForm() = default;
 
 //=================================================================================================
 

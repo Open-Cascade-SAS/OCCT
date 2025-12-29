@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ValueRepresentationItem, StepRepr_RepresentationItem)
 
-StepRepr_ValueRepresentationItem::StepRepr_ValueRepresentationItem() {}
+StepRepr_ValueRepresentationItem::StepRepr_ValueRepresentationItem() = default;
 
 void StepRepr_ValueRepresentationItem::Init(
   const occ::handle<TCollection_HAsciiString>&     theName,

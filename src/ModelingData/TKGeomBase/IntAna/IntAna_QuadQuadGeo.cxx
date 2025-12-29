@@ -78,17 +78,17 @@ public:
 
   gp_Pnt PtIntersect() { return ptintersect; }
 
-  bool Coplanar(void) { return thecoplanar; }
+  bool Coplanar() { return thecoplanar; }
 
-  bool Same(void) { return theparallel && (thedistance < myEPSILON_DISTANCE); }
+  bool Same() { return theparallel && (thedistance < myEPSILON_DISTANCE); }
 
-  double Distance(void) { return thedistance; }
+  double Distance() { return thedistance; }
 
-  bool Intersect(void) { return (thecoplanar && (!theparallel)); }
+  bool Intersect() { return (thecoplanar && (!theparallel)); }
 
-  bool Parallel(void) { return theparallel; }
+  bool Parallel() { return theparallel; }
 
-  bool Normal(void) { return thenormal; }
+  bool Normal() { return thenormal; }
 
 protected:
   double Det33(const double a11,
@@ -324,7 +324,7 @@ double EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2)
 
 //=================================================================================================
 
-IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(void)
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo()
     : done(false),
       nbint(0),
       typeres(IntAna_Empty),

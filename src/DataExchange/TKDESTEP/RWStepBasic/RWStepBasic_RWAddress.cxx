@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWAddress::RWStepBasic_RWAddress() {}
+RWStepBasic_RWAddress::RWStepBasic_RWAddress() = default;
 
 void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                      const int                                   num,

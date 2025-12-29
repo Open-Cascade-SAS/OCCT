@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectMember, Standard_Transient)
 #define KindReal 5
 #define KindString 6
 
-StepData_SelectMember::StepData_SelectMember() {}
+StepData_SelectMember::StepData_SelectMember() = default;
 
 bool StepData_SelectMember::HasName() const
 {

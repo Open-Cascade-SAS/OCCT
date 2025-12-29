@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Curve2d, Geom2dAdaptor_Curve)
 
 //=================================================================================================
 
-BRepAdaptor_Curve2d::BRepAdaptor_Curve2d() {}
+BRepAdaptor_Curve2d::BRepAdaptor_Curve2d() = default;
 
 //=================================================================================================
 

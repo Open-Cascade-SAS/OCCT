@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ViewSorter, Standard_Transient)
 
 #define PourDrawing 404
 
-IGESSelect_ViewSorter::IGESSelect_ViewSorter() {}
+IGESSelect_ViewSorter::IGESSelect_ViewSorter() = default;
 
 void IGESSelect_ViewSorter::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {

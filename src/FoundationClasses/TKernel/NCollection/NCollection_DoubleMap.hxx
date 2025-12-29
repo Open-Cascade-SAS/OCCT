@@ -60,13 +60,13 @@ public:
     }
 
     //! Key1
-    const TheKey1Type& Key1(void) noexcept { return myKey1; }
+    const TheKey1Type& Key1() noexcept { return myKey1; }
 
     //! Key2
-    const TheKey2Type& Key2(void) noexcept { return this->myValue; }
+    const TheKey2Type& Key2() noexcept { return this->myValue; }
 
     //! Next2
-    DoubleMapNode*& Next2(void) noexcept { return myNext2; }
+    DoubleMapNode*& Next2() noexcept { return myNext2; }
 
     //! Static deleter to be passed to BaseList
     static void delNode(NCollection_ListNode*                   theNode,
@@ -87,7 +87,7 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void) {}
+    Iterator() = default;
 
     //! Constructor
     Iterator(const NCollection_DoubleMap& theMap)
@@ -96,27 +96,27 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept { return PMore(); }
+    bool More() const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) noexcept { PNext(); }
+    void Next() noexcept { PNext(); }
 
     //! Key1 inquiry
-    const TheKey1Type& Key1(void) const
+    const TheKey1Type& Key1() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DoubleMap::Iterator::Key1");
       return ((DoubleMapNode*)myNode)->Key1();
     }
 
     //! Key2 inquiry
-    const TheKey2Type& Key2(void) const
+    const TheKey2Type& Key2() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DoubleMap::Iterator::Key2");
       return ((DoubleMapNode*)myNode)->Key2();
     }
 
     //! Value access
-    const TheKey2Type& Value(void) const
+    const TheKey2Type& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DoubleMap::Iterator::Value");
       return ((DoubleMapNode*)myNode)->Value();
@@ -133,8 +133,9 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_DoubleMap(const int                                     theNbBuckets,
-                                 const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  explicit NCollection_DoubleMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, false, theAllocator)
   {
   }
@@ -188,8 +189,8 @@ public:
   //! ReSize
   void ReSize(const int N)
   {
-    NCollection_ListNode** ppNewData1 = NULL;
-    NCollection_ListNode** ppNewData2 = NULL;
+    NCollection_ListNode** ppNewData1 = nullptr;
+    NCollection_ListNode** ppNewData2 = nullptr;
     int                    newBuck;
     if (BeginResize(N, newBuck, ppNewData1, ppNewData2))
     {
@@ -318,7 +319,7 @@ public:
       return false;
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
-    q1 = q2 = NULL;
+    q1 = q2 = nullptr;
     p1      = (DoubleMapNode*)myData1[iK1];
     while (p1)
     {
@@ -363,7 +364,7 @@ public:
       return false;
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
-    q1 = q2 = NULL;
+    q1 = q2 = nullptr;
     p2      = (DoubleMapNode*)myData2[iK2];
     while (p2)
     {
@@ -434,8 +435,8 @@ public:
   const TheKey2Type* Seek1(const TheKey1Type& theKey1) const
   {
     for (DoubleMapNode* aNode1 =
-           !IsEmpty() ? (DoubleMapNode*)myData1[HashCode1(theKey1, NbBuckets())] : NULL;
-         aNode1 != NULL;
+           !IsEmpty() ? (DoubleMapNode*)myData1[HashCode1(theKey1, NbBuckets())] : nullptr;
+         aNode1 != nullptr;
          aNode1 = (DoubleMapNode*)aNode1->Next())
     {
       if (IsEqual1(aNode1->Key1(), theKey1))
@@ -443,7 +444,7 @@ public:
         return &aNode1->Key2();
       }
     }
-    return NULL;
+    return nullptr;
   }
 
   //! Find the Key2 and return Key1 value.
@@ -477,8 +478,8 @@ public:
   const TheKey1Type* Seek2(const TheKey2Type& theKey2) const
   {
     for (DoubleMapNode* aNode2 =
-           !IsEmpty() ? (DoubleMapNode*)myData2[HashCode2(theKey2, NbBuckets())] : NULL;
-         aNode2 != NULL;
+           !IsEmpty() ? (DoubleMapNode*)myData2[HashCode2(theKey2, NbBuckets())] : nullptr;
+         aNode2 != nullptr;
          aNode2 = (DoubleMapNode*)aNode2->Next2())
     {
       if (IsEqual2(aNode2->Key2(), theKey2))
@@ -486,7 +487,7 @@ public:
         return &aNode2->Key1();
       }
     }
-    return NULL;
+    return nullptr;
   }
 
   //! Clear data. If doReleaseMemory is false then the table of
@@ -505,10 +506,10 @@ public:
   }
 
   //! Destructor
-  ~NCollection_DoubleMap(void) { Clear(true); }
+  ~NCollection_DoubleMap() override { Clear(true); }
 
   //! Size
-  int Size(void) const noexcept { return Extent(); }
+  int Size() const noexcept { return Extent(); }
 
 protected:
   bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const

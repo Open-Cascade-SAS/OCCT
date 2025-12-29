@@ -28,7 +28,7 @@
 #include <XSAlgo_ShapeProcessor.hxx>
 #include <UnitsMethods.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //  Local routines copying a string [the ideal would be : astr = astr->Copy()]
 //    and transforming a CString (Hollerith or not) to non-Hollerith HAsciiString.
@@ -99,7 +99,7 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::TranslatedFromHoll
   }
   if (n > 1 && n < astr->Length())
     res = astr->SubString(n + 1, astr->Length());
-  else if (astr->ToCString() == NULL)
+  else if (astr->ToCString() == nullptr)
     res = new TCollection_HAsciiString;
   else
     res = new TCollection_HAsciiString(astr->ToCString());

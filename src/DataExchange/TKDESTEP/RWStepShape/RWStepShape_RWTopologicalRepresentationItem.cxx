@@ -16,7 +16,8 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 
-RWStepShape_RWTopologicalRepresentationItem::RWStepShape_RWTopologicalRepresentationItem() {}
+RWStepShape_RWTopologicalRepresentationItem::RWStepShape_RWTopologicalRepresentationItem() =
+  default;
 
 void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,

@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-RWStepVisual_RWStyledItem::RWStepVisual_RWStyledItem() {}
+RWStepVisual_RWStyledItem::RWStepVisual_RWStyledItem() = default;
 
 void RWStepVisual_RWStyledItem::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

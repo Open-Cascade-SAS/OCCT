@@ -34,7 +34,7 @@ public:
   Standard_EXPORT V3d_Trihedron();
 
   //! Destructor.
-  Standard_EXPORT virtual ~V3d_Trihedron();
+  Standard_EXPORT ~V3d_Trihedron() override;
 
   //! Return TRUE if wireframe presentation is set; FALSE by default.
   bool IsWireframe() const { return myIsWireframe; }

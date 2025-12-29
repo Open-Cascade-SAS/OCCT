@@ -885,8 +885,7 @@ public:
                                        bool                         theToOverrideDefaults = false);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public: //! @name deprecated methods
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")

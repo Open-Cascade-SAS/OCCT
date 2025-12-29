@@ -56,7 +56,7 @@ public:
   //! 16 -> AppliedSecurityClassificationAssignment
   //! 17 -> Document
   //! 0 else
-  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a ApprovalPersonOrganization (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> ApprovalPersonOrganization()

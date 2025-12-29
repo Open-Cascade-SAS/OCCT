@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleRendering, Standard_Transient)
 
 //=================================================================================================
 
-StepVisual_SurfaceStyleRendering::StepVisual_SurfaceStyleRendering() {}
+StepVisual_SurfaceStyleRendering::StepVisual_SurfaceStyleRendering() = default;
 
 //=================================================================================================
 

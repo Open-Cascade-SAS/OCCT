@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriver, Standard_Transient)
 
 //=================================================================================================
 
-CDF_MetaDataDriver::CDF_MetaDataDriver() {}
+CDF_MetaDataDriver::CDF_MetaDataDriver() = default;
 
 //=================================================================================================
 

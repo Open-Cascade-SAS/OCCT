@@ -33,7 +33,7 @@ class IntSurf_LineOn2S : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT IntSurf_LineOn2S(const IntSurf_Allocator& theAllocator = 0);
+  Standard_EXPORT IntSurf_LineOn2S(const IntSurf_Allocator& theAllocator = nullptr);
 
   //! Adds a point in the line.
   Standard_EXPORT void Add(const IntSurf_PntOn2S& P);

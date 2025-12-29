@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit, Standard_Transient)
 
-StepBasic_NamedUnit::StepBasic_NamedUnit() {}
+StepBasic_NamedUnit::StepBasic_NamedUnit() = default;
 
 void StepBasic_NamedUnit::Init(const occ::handle<StepBasic_DimensionalExponents>& aDimensions)
 {

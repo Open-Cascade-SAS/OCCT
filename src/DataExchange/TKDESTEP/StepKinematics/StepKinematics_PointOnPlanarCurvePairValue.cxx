@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinem
 
 //=================================================================================================
 
-StepKinematics_PointOnPlanarCurvePairValue::StepKinematics_PointOnPlanarCurvePairValue() {}
+StepKinematics_PointOnPlanarCurvePairValue::StepKinematics_PointOnPlanarCurvePairValue() = default;
 
 //=================================================================================================
 

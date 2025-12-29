@@ -15,7 +15,7 @@
 
 Vrml_Group::Vrml_Group()
 {
-  myFlagPrint = 0;
+  myFlagPrint = false;
 }
 
 Standard_OStream& Vrml_Group::Print(Standard_OStream& anOStream)
@@ -23,12 +23,12 @@ Standard_OStream& Vrml_Group::Print(Standard_OStream& anOStream)
   if (myFlagPrint == 0)
   {
     anOStream << "Group {\n";
-    myFlagPrint = 1;
+    myFlagPrint = true;
   } // End of if
   else
   {
     anOStream << "}\n";
-    myFlagPrint = 0;
+    myFlagPrint = false;
   }
   return anOStream;
 }

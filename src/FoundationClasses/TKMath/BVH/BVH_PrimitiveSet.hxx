@@ -57,7 +57,7 @@ public:
   }
 
   //! Releases resources of set of abstract primitives.
-  virtual ~BVH_PrimitiveSet()
+  ~BVH_PrimitiveSet() override
   {
     myBVH.Nullify();
     myBuilder.Nullify();
@@ -65,7 +65,7 @@ public:
 
 public:
   //! Returns AABB of primitive set.
-  virtual BVH_Box<T, N> Box() const override
+  BVH_Box<T, N> Box() const override
   {
     if (BVH_Object<T, N>::myIsDirty)
     {

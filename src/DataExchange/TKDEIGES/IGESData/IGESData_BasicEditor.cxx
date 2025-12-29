@@ -44,7 +44,7 @@ IGESData_BasicEditor::IGESData_BasicEditor(const occ::handle<IGESData_IGESModel>
   Init(model, protocol);
 }
 
-IGESData_BasicEditor::IGESData_BasicEditor() {}
+IGESData_BasicEditor::IGESData_BasicEditor() = default;
 
 void IGESData_BasicEditor::Init(const occ::handle<IGESData_Protocol>& protocol)
 {

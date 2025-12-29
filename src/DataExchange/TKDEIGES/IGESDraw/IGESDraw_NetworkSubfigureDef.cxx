@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
-IGESDraw_NetworkSubfigureDef::IGESDraw_NetworkSubfigureDef() {}
+IGESDraw_NetworkSubfigureDef::IGESDraw_NetworkSubfigureDef() = default;
 
 void IGESDraw_NetworkSubfigureDef::Init(
   const int                                                                   aDepth,

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PropertyDefinitionRepresentation, Standard_T
 
 //=================================================================================================
 
-StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresentation() {}
+StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresentation() = default;
 
 //=================================================================================================
 

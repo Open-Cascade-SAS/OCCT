@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWDataEnvironment::RWStepRepr_RWDataEnvironment() {}
+RWStepRepr_RWDataEnvironment::RWStepRepr_RWDataEnvironment() = default;
 
 //=================================================================================================
 

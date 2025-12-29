@@ -252,7 +252,7 @@ bool BRepBuilderAPI_FastSewing::Add(const occ::handle<Geom_Surface>& theSurface)
 
 //=================================================================================================
 
-void BRepBuilderAPI_FastSewing::Perform(void)
+void BRepBuilderAPI_FastSewing::Perform()
 {
   if (myFaceVec.IsEmpty())
   {
@@ -544,8 +544,7 @@ BRepBuilderAPI_FastSewing::NodeInspector::NodeInspector(const NCollection_Vector
                                                         const double                         theTol)
     : myVecOfVertexes(theVec),
       myPoint(thePnt),
-      myResID(-1),
-      myIsFindingEnable(false)
+      myResID(-1)
 {
   mySQToler = theTol * theTol;
 }

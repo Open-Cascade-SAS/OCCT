@@ -27,7 +27,7 @@ class IMeshTools_ShapeVisitor : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_ShapeVisitor() {}
+  ~IMeshTools_ShapeVisitor() override = default;
 
   //! Handles TopoDS_Face object.
   Standard_EXPORT virtual void Visit(const TopoDS_Face& theFace) = 0;

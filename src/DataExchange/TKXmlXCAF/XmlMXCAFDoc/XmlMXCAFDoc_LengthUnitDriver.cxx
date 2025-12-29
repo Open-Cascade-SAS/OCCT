@@ -47,7 +47,7 @@ bool XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&       theSo
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (aNameStr == NULL)
+  if (aNameStr == nullptr)
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve LengthUnit attribute");
@@ -56,7 +56,7 @@ bool XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&       theSo
   }
   const XmlObjMgt_Element& anElement       = theSource;
   XmlObjMgt_DOMString      aUnitScaleValue = anElement.getAttribute(::UnitScaleValue());
-  if (aUnitScaleValue == NULL)
+  if (aUnitScaleValue == nullptr)
   {
     TCollection_ExtendedString aMessageString("Cannot retrieve LengthUnit scale factor");
     myMessageDriver->Send(aMessageString, Message_Fail);

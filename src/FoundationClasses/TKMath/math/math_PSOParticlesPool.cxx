@@ -44,7 +44,7 @@ math_PSOParticlesPool::math_PSOParticlesPool(const int theParticlesCount,
 
 //=================================================================================================
 
-math_PSOParticlesPool::~math_PSOParticlesPool() {}
+math_PSOParticlesPool::~math_PSOParticlesPool() = default;
 
 //=================================================================================================
 

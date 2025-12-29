@@ -68,19 +68,16 @@ public:
   Standard_EXPORT AIS_Shape(const TopoDS_Shape& shap);
 
   //! Returns index 0. This value refers to SHAPE from TopAbs_ShapeEnum
-  virtual int Signature() const override { return 0; }
+  int Signature() const override { return 0; }
 
   //! Returns Object as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Shape; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Shape; }
 
   //! Returns true if the Interactive Object accepts shape decomposition.
-  virtual bool AcceptShapeDecomposition() const override { return true; }
+  bool AcceptShapeDecomposition() const override { return true; }
 
   //! Return true if specified display mode is supported.
-  virtual bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode >= 0 && theMode <= 2;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode >= 0 && theMode <= 2; }
 
   //! Returns this shape object.
   const TopoDS_Shape& Shape() const { return myshape; }
@@ -145,30 +142,30 @@ public:
   //! Prs3d_Drawer_SeenLineAspect
   //! -   hidden line color in hidden line mode:
   //! Prs3d_Drawer_HiddenLineAspect.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Removes settings for color in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Sets the value aValue for line width in the reconstructed compound shape.
   //! Changes line aspects for lines presentation.
-  Standard_EXPORT virtual void SetWidth(const double aValue) override;
+  Standard_EXPORT void SetWidth(const double aValue) override;
 
   //! Removes the setting for line width in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetWidth() override;
+  Standard_EXPORT void UnsetWidth() override;
 
   //! Allows you to provide settings for the material aName
   //! in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& aName) override;
+  Standard_EXPORT void SetMaterial(const Graphic3d_MaterialAspect& aName) override;
 
   //! Removes settings for material in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetMaterial() override;
+  Standard_EXPORT void UnsetMaterial() override;
 
   //! Sets the value aValue for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void SetTransparency(const double aValue = 0.6) override;
+  Standard_EXPORT void SetTransparency(const double aValue = 0.6) override;
 
   //! Removes the setting for transparency in the reconstructed compound shape.
-  Standard_EXPORT virtual void UnsetTransparency() override;
+  Standard_EXPORT void UnsetTransparency() override;
 
   //! Constructs a bounding box with which to reconstruct
   //! compound topological shapes for presentation.
@@ -180,15 +177,15 @@ public:
 
   //! Returns the Color attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual void Color(Quantity_Color& aColor) const override;
+  Standard_EXPORT void Color(Quantity_Color& aColor) const override;
 
   //! Returns the NameOfMaterial attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual Graphic3d_NameOfMaterial Material() const override;
+  Standard_EXPORT Graphic3d_NameOfMaterial Material() const override;
 
   //! Returns the transparency attributes of the shape accordingly to
   //! the current facing model;
-  Standard_EXPORT virtual double Transparency() const override;
+  Standard_EXPORT double Transparency() const override;
 
   //! Return shape type for specified selection mode.
   static TopAbs_ShapeEnum SelectionType(const int theSelMode)
@@ -271,14 +268,14 @@ public: //! @name methods to alter texture mapping properties
 
 protected:
   //! Compute normal presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute projected presentation.
-  virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
-                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
-                          const occ::handle<Prs3d_Presentation>& thePrs) override
+  void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                  const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                  const occ::handle<Prs3d_Presentation>& thePrs) override
   {
     if (!theTrsf.IsNull() && theTrsf->Form() != gp_Identity)
     {
@@ -293,9 +290,8 @@ protected:
   }
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
@@ -327,8 +323,7 @@ public:
     const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   TopoDS_Shape myshape;    //!< shape to display

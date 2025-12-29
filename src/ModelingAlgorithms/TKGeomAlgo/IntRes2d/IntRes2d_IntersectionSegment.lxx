@@ -44,9 +44,8 @@ inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
   const bool                        ReverseFlag)
     :
 
-      oppos(Oppos),
-      ptfirst(),
-      ptlast()
+      oppos(Oppos)
+
 {
   if (ReverseFlag && Oppos)
   {
@@ -83,9 +82,8 @@ inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
 inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(const bool Oppos)
     : oppos(Oppos),
       first(false),
-      last(false),
-      ptfirst(),
-      ptlast()
+      last(false)
+
 {
 }
 

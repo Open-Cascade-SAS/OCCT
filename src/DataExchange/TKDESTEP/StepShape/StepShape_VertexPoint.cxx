@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_VertexPoint, StepShape_Vertex)
 
-StepShape_VertexPoint::StepShape_VertexPoint() {}
+StepShape_VertexPoint::StepShape_VertexPoint() = default;
 
 void StepShape_VertexPoint::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const occ::handle<StepGeom_Point>&           aVertexGeometry)

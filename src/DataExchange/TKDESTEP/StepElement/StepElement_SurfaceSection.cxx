@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSection, Standard_Transient)
 
 //=================================================================================================
 
-StepElement_SurfaceSection::StepElement_SurfaceSection() {}
+StepElement_SurfaceSection::StepElement_SurfaceSection() = default;
 
 //=================================================================================================
 

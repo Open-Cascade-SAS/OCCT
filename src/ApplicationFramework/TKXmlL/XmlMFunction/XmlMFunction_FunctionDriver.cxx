@@ -29,7 +29,7 @@ IMPLEMENT_DOMSTRING(FailureString, "failure")
 
 XmlMFunction_FunctionDriver::XmlMFunction_FunctionDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 

@@ -100,16 +100,16 @@ public: //! @name methods to alter texture mapping properties
   Standard_EXPORT void UpdateAttributes();
 
   //! Sets the color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
+  Standard_EXPORT void SetColor(const Quantity_Color& theColor) override;
 
   //! Removes settings for the color.
-  Standard_EXPORT virtual void UnsetColor() override;
+  Standard_EXPORT void UnsetColor() override;
 
   //! Sets the material aspect.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect) override;
+  Standard_EXPORT void SetMaterial(const Graphic3d_MaterialAspect& theAspect) override;
 
   //! Removes settings for material aspect.
-  Standard_EXPORT virtual void UnsetMaterial() override;
+  Standard_EXPORT void UnsetMaterial() override;
 
   //! Enables texture modulation
   Standard_EXPORT void EnableTextureModulate();
@@ -176,16 +176,13 @@ public: //! @name methods to alter texture mapping properties
   bool TextureModulate() const { return myModulate; }
 
   //! Return true if specified display mode is supported (extends AIS_Shape with Display Mode 3).
-  virtual bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode >= 0 && theMode <= 3;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode >= 0 && theMode <= 3; }
 
 protected: //! @name overridden methods
   //! Compute presentation with texture mapping support.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void updateAttributes(const occ::handle<Prs3d_Presentation>& thePrs);
 

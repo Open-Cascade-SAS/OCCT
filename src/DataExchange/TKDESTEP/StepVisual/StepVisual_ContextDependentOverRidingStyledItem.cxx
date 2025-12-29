@@ -19,9 +19,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ContextDependentOverRidingStyledItem,
                            StepVisual_OverRidingStyledItem)
 
-StepVisual_ContextDependentOverRidingStyledItem::StepVisual_ContextDependentOverRidingStyledItem()
-{
-}
+StepVisual_ContextDependentOverRidingStyledItem::StepVisual_ContextDependentOverRidingStyledItem() =
+  default;
 
 void StepVisual_ContextDependentOverRidingStyledItem::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

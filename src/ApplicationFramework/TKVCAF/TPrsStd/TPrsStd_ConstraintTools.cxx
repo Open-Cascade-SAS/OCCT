@@ -83,7 +83,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <UnitsAPI.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static bool CheckShapesPair(const TopoDS_Shape&, const TopoDS_Shape&); // ota
 
 //=================================================================================================

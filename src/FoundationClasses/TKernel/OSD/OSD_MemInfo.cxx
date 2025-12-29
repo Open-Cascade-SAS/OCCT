@@ -254,7 +254,7 @@ void OSD_MemInfo::Update()
 
       // Getting malloc statistics
       malloc_statistics_t aStats;
-      malloc_zone_statistics(NULL, &aStats);
+      malloc_zone_statistics(nullptr, &aStats);
 
       myCounters[MemHeapUsage] = aStats.size_in_use;
     }

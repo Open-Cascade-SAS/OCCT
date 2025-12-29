@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Face.
-  TopoDS_Face() {}
+  TopoDS_Face() = default;
 };
 
 namespace std

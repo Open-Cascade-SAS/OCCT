@@ -21,7 +21,7 @@
 #include <StepVisual_PresentationStyleSelect.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 
-RWStepVisual_RWPresentationStyleByContext::RWStepVisual_RWPresentationStyleByContext() {}
+RWStepVisual_RWPresentationStyleByContext::RWStepVisual_RWPresentationStyleByContext() = default;
 
 void RWStepVisual_RWPresentationStyleByContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,

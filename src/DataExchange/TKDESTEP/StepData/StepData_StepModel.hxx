@@ -68,7 +68,7 @@ public:
   Standard_EXPORT void AddHeaderEntity(const occ::handle<Standard_Transient>& ent);
 
   //! Specific Check, checks Header Items with HeaderProtocol
-  Standard_EXPORT virtual void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
+  Standard_EXPORT void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
 
   //! Dumps the Header, with the Header Protocol of StepData.
   //! If the Header Protocol is not defined, for each Header Entity,

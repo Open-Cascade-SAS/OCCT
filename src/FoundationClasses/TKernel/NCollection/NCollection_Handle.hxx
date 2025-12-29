@@ -44,11 +44,11 @@ private:
     }
 
     //! Destructor deletes the object
-    ~Ptr()
+    ~Ptr() override
     {
       if (myPtr)
         delete myPtr;
-      myPtr = 0;
+      myPtr = nullptr;
     }
 
   protected:
@@ -74,11 +74,11 @@ public:
   typedef T element_type;
 
   //! Default constructor; creates null handle
-  NCollection_Handle() {}
+  NCollection_Handle() = default;
 
   //! Constructor of handle from pointer on newly allocated object
   NCollection_Handle(T* theObject)
-      : opencascade::handle<Standard_Transient>(theObject ? new Ptr(theObject) : 0)
+      : opencascade::handle<Standard_Transient>(theObject ? new Ptr(theObject) : nullptr)
   {
   }
 

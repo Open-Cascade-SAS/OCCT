@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewGeneralNote, IGESData_IGESEntity)
 
-IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote() {}
+IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote() = default;
 
 void IGESDimen_NewGeneralNote::Init(
   const double                                    width,

@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndAreaUnit, StepBasic_SiUnit)
 
-StepBasic_SiUnitAndAreaUnit::StepBasic_SiUnitAndAreaUnit() {}
+StepBasic_SiUnitAndAreaUnit::StepBasic_SiUnitAndAreaUnit() = default;
 
 void StepBasic_SiUnitAndAreaUnit::SetAreaUnit(const occ::handle<StepBasic_AreaUnit>& anAreaUnit)
 {

@@ -22,7 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_Array1.hxx>
 
-AppParCurves_MultiCurve::AppParCurves_MultiCurve() {}
+AppParCurves_MultiCurve::AppParCurves_MultiCurve() = default;
 
 AppParCurves_MultiCurve::AppParCurves_MultiCurve(const int NbPol)
 {
@@ -40,7 +40,7 @@ AppParCurves_MultiCurve::AppParCurves_MultiCurve(
   }
 }
 
-AppParCurves_MultiCurve::~AppParCurves_MultiCurve() {}
+AppParCurves_MultiCurve::~AppParCurves_MultiCurve() = default;
 
 int AppParCurves_MultiCurve::Dimension(const int Index) const
 {

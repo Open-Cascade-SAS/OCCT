@@ -88,7 +88,7 @@ Standard_EXPORT bool FUN_HDS_FACESINTERFER(const TopoDS_Shape&                  
 
 //=================================================================================================
 
-TopOpeBRepDS_HDataStructure::TopOpeBRepDS_HDataStructure() {}
+TopOpeBRepDS_HDataStructure::TopOpeBRepDS_HDataStructure() = default;
 
 //=================================================================================================
 

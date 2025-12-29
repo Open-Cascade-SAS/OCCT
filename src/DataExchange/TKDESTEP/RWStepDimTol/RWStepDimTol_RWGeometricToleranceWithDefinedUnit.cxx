@@ -24,9 +24,8 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWGeometricToleranceWithDefinedUnit::RWStepDimTol_RWGeometricToleranceWithDefinedUnit()
-{
-}
+RWStepDimTol_RWGeometricToleranceWithDefinedUnit::
+  RWStepDimTol_RWGeometricToleranceWithDefinedUnit() = default;
 
 //=================================================================================================
 

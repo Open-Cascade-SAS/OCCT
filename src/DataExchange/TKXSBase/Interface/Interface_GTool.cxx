@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_GTool, Standard_Transient)
 
-Interface_GTool::Interface_GTool() {}
+Interface_GTool::Interface_GTool() = default;
 
 Interface_GTool::Interface_GTool(const occ::handle<Interface_Protocol>& proto, const int nb)
     : theproto(proto),

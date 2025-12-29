@@ -129,7 +129,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
   double                                   TABDEC[2];
   occ::handle<NCollection_HArray1<double>> HUROOT = Conditions.URoots();
   occ::handle<NCollection_HArray1<double>> HVROOT = Conditions.VRoots();
-  double*                                  ROOTLG = NULL;
+  double*                                  ROOTLG = nullptr;
   switch (myType)
   {
     case GeomAbs_IsoV:

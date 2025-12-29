@@ -60,7 +60,7 @@ public:
    */
 
   //! Sets name of the object. partition does not check unique of own name
-  virtual Standard_EXPORT bool SetName(
+  Standard_EXPORT bool SetName(
     const occ::handle<TCollection_HExtendedString>& theName) const override;
 
 public:
@@ -70,7 +70,7 @@ public:
 
   //! Performs updating the links and dependencies of the object which are not
   //! stored in persistence. Does not register the partition name
-  virtual Standard_EXPORT void AfterRetrieval() override;
+  Standard_EXPORT void AfterRetrieval() override;
 
 public:
   /**
@@ -123,7 +123,7 @@ protected:
 
   //! Coping the data of me to Target object.
   //! return false is Target object is different type
-  Standard_EXPORT virtual bool copyData(const occ::handle<TObj_Object>& theTargetObject) override;
+  Standard_EXPORT bool copyData(const occ::handle<TObj_Object>& theTargetObject) override;
 
 private:
   /**

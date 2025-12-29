@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWAngularSize::RWStepShape_RWAngularSize() {}
+RWStepShape_RWAngularSize::RWStepShape_RWAngularSize() = default;
 
 //=================================================================================================
 

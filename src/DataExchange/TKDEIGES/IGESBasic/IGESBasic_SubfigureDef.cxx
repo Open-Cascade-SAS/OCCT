@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
-IGESBasic_SubfigureDef::IGESBasic_SubfigureDef() {}
+IGESBasic_SubfigureDef::IGESBasic_SubfigureDef() = default;
 
 void IGESBasic_SubfigureDef::Init(
   const int                                                                 aDepth,

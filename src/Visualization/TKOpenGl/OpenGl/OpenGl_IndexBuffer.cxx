@@ -22,9 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_Buffer)
 //=================================================================================================
 
 OpenGl_IndexBuffer::OpenGl_IndexBuffer()
-    : OpenGl_Buffer()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

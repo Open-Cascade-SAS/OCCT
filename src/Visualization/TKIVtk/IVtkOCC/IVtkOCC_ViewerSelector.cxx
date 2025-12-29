@@ -25,15 +25,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 //=================================================================================================
 
 IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
-    : SelectMgr_ViewerSelector(),
-      myPixTol(2),
+    : myPixTol(2),
       myToUpdateTol(true)
 {
 }
 
 //=================================================================================================
 
-IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector() {}
+IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector() = default;
 
 //=================================================================================================
 

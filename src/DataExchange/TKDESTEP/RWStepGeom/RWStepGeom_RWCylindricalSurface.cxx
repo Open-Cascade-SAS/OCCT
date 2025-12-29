@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CylindricalSurface.hxx>
 
-RWStepGeom_RWCylindricalSurface::RWStepGeom_RWCylindricalSurface() {}
+RWStepGeom_RWCylindricalSurface::RWStepGeom_RWCylindricalSurface() = default;
 
 void RWStepGeom_RWCylindricalSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

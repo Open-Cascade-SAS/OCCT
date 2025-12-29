@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
 
-StepShape_OrientedEdge::StepShape_OrientedEdge() {}
+StepShape_OrientedEdge::StepShape_OrientedEdge() = default;
 
 void StepShape_OrientedEdge::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_Edge>&           aEdgeElement,
@@ -66,7 +66,7 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
-    return NULL;
+    return nullptr;
   if (Orientation())
   {
     return edgeElement->EdgeStart();
@@ -89,7 +89,7 @@ occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
   if (edgeElement.IsNull())
-    return NULL;
+    return nullptr;
   if (Orientation())
   {
     return edgeElement->EdgeEnd();

@@ -47,14 +47,14 @@ public:
   {
   public:
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
   };
 
   class Position : public StdObjMgt_Attribute<TDataXtd_Position>::Simple<gp_Pnt>
   {
   public:
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
   };
 };
 

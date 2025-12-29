@@ -45,14 +45,14 @@ public:
   Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT void Dump(Standard_OStream& S) const override;
 
   //! For variable whatis command. Set as a result the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation2D, Draw_Drawable2D)
 

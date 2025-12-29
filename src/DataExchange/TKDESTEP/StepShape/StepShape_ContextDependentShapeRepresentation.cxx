@@ -17,7 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_ContextDependentShapeRepresentation, Standard_Transient)
 
-StepShape_ContextDependentShapeRepresentation::StepShape_ContextDependentShapeRepresentation() {}
+StepShape_ContextDependentShapeRepresentation::StepShape_ContextDependentShapeRepresentation() =
+  default;
 
 void StepShape_ContextDependentShapeRepresentation::Init(
   const occ::handle<StepRepr_ShapeRepresentationRelationship>& aRepRel,

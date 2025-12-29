@@ -86,8 +86,8 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void)
-        : myMap(NULL),
+    Iterator()
+        : myMap(nullptr),
           myIndex(0)
     {
     }
@@ -100,13 +100,13 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
+    bool More() const noexcept { return (myMap != nullptr) && (myIndex <= myMap->Extent()); }
 
     //! Make a step along the collection
-    void Next(void) noexcept { myIndex++; }
+    void Next() noexcept { myIndex++; }
 
     //! Value access
-    const TheKeyType& Value(void) const
+    const TheKeyType& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedMap::Iterator::Value");
       return myMap->FindKey(myIndex);
@@ -143,8 +143,9 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_IndexedMap(const int                                     theNbBuckets,
-                                  const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  explicit NCollection_IndexedMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
   }
@@ -210,8 +211,8 @@ public:
   //! ReSize
   void ReSize(const int theExtent)
   {
-    NCollection_ListNode** ppNewData1 = NULL;
-    NCollection_ListNode** ppNewData2 = NULL;
+    NCollection_ListNode** ppNewData1 = nullptr;
+    NCollection_ListNode** ppNewData2 = nullptr;
     int                    newBuck;
     if (BeginResize(theExtent, newBuck, ppNewData1, ppNewData2))
     {
@@ -350,14 +351,14 @@ public:
   }
 
   //! RemoveLast
-  void RemoveLast(void)
+  void RemoveLast()
   {
     const int aLastIndex = Extent();
     Standard_OutOfRange_Raise_if(aLastIndex == 0, "NCollection_IndexedMap::RemoveLast");
 
     // Find the node for the last index and remove it
     IndexedMapNode* p       = (IndexedMapNode*)myData2[aLastIndex - 1];
-    myData2[aLastIndex - 1] = NULL;
+    myData2[aLastIndex - 1] = nullptr;
 
     // remove the key
     const size_t    iK1 = HashCode(p->Key1(), NbBuckets());
@@ -442,10 +443,10 @@ public:
   }
 
   //! Destructor
-  virtual ~NCollection_IndexedMap(void) { Clear(true); }
+  ~NCollection_IndexedMap() override { Clear(true); }
 
   //! Size
-  int Size(void) const noexcept { return Extent(); }
+  int Size() const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.

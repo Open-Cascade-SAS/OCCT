@@ -42,7 +42,7 @@ Graphic3d_ValueInterface::~Graphic3d_ValueInterface()
 // =======================================================================
 Graphic3d_ShaderVariable::Graphic3d_ShaderVariable(const TCollection_AsciiString& theName)
     : myName(theName),
-      myValue(NULL)
+      myValue(nullptr)
 {
   //
 }
@@ -62,7 +62,7 @@ Graphic3d_ShaderVariable::~Graphic3d_ShaderVariable()
 // =======================================================================
 bool Graphic3d_ShaderVariable::IsDone() const
 {
-  return !myName.IsEmpty() && (myValue != NULL);
+  return !myName.IsEmpty() && (myValue != nullptr);
 }
 
 // =======================================================================

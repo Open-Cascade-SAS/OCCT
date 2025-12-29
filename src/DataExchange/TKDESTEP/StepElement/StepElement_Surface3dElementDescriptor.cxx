@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor, StepElement_E
 
 //=================================================================================================
 
-StepElement_Surface3dElementDescriptor::StepElement_Surface3dElementDescriptor() {}
+StepElement_Surface3dElementDescriptor::StepElement_Surface3dElementDescriptor() = default;
 
 //=================================================================================================
 

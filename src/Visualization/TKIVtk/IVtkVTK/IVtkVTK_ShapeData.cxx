@@ -54,7 +54,7 @@ IVtkVTK_ShapeData::IVtkVTK_ShapeData()
 
 //=================================================================================================
 
-IVtkVTK_ShapeData::~IVtkVTK_ShapeData() {}
+IVtkVTK_ShapeData::~IVtkVTK_ShapeData() = default;
 
 //=================================================================================================
 
@@ -63,7 +63,7 @@ IVtk_PointId IVtkVTK_ShapeData::InsertPoint(const gp_Pnt&                  thePn
 {
   IVtk_PointId aPointId =
     myPolyData->GetPoints()->InsertNextPoint(thePnt.X(), thePnt.Y(), thePnt.Z());
-  if (myNormals.GetPointer() != NULL)
+  if (myNormals.GetPointer() != nullptr)
   {
     myNormals->InsertNextTuple(theNorm.GetData());
   }

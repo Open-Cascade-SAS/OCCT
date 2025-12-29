@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ParametricRepresentationContext, StepRepr_RepresentationContext)
 
-StepRepr_ParametricRepresentationContext::StepRepr_ParametricRepresentationContext() {}
+StepRepr_ParametricRepresentationContext::StepRepr_ParametricRepresentationContext() = default;

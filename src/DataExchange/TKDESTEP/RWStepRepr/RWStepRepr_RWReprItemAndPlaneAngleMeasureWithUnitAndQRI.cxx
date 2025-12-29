@@ -27,9 +27,7 @@
 //=================================================================================================
 
 RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI::
-  RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI()
-{
-}
+  RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnitAndQRI() = default;
 
 //=================================================================================================
 

@@ -24,9 +24,9 @@ static std::ostream& formatCounter(std::ostream& theStream,
                                    int           theWidth,
                                    const char*   thePrefix,
                                    size_t        theValue,
-                                   const char*   thePostfix = NULL)
+                                   const char*   thePostfix = nullptr)
 {
-  if (thePrefix != NULL)
+  if (thePrefix != nullptr)
   {
     theStream << thePrefix;
   }
@@ -49,12 +49,12 @@ static std::ostream& formatCounter(std::ostream& theStream,
   else
   {
     theStream << theValue;
-    if (thePostfix == NULL)
+    if (thePostfix == nullptr)
     {
       theStream << " ";
     }
   }
-  if (thePostfix != NULL)
+  if (thePostfix != nullptr)
   {
     theStream << thePostfix;
   }
@@ -69,7 +69,7 @@ static std::ostream& formatCounterPair(std::ostream& theStream,
                                        size_t        theImmValue,
                                        bool          theToShowImmediate)
 {
-  formatCounter(theStream, theWidth, thePrefix, theValue, NULL);
+  formatCounter(theStream, theWidth, thePrefix, theValue, nullptr);
   if (theToShowImmediate)
   {
     formatCounter(theStream, 1, "(", theImmValue, ")");
@@ -83,9 +83,9 @@ static std::ostream& formatBytes(std::ostream& theStream,
                                  int           theWidth,
                                  const char*   thePrefix,
                                  size_t        theValue,
-                                 const char*   thePostfix = NULL)
+                                 const char*   thePostfix = nullptr)
 {
-  if (thePrefix != NULL)
+  if (thePrefix != nullptr)
   {
     theStream << thePrefix;
   }
@@ -109,7 +109,7 @@ static std::ostream& formatBytes(std::ostream& theStream,
   {
     theStream << theValue << " B";
   }
-  if (thePostfix != NULL)
+  if (thePostfix != nullptr)
   {
     theStream << thePostfix;
   }
@@ -129,9 +129,9 @@ static std::ostream& formatTime(std::ostream& theStream,
                                 int           theWidth,
                                 const char*   thePrefix,
                                 double        theSeconds,
-                                const char*   thePostfix = NULL)
+                                const char*   thePostfix = nullptr)
 {
-  if (thePrefix != NULL)
+  if (thePrefix != nullptr)
   {
     theStream << thePrefix;
   }
@@ -167,7 +167,7 @@ static std::ostream& formatTime(std::ostream& theStream,
     theStream << std::fixed << std::setprecision(1) << aMilliSeconds << " ms";
   }
 
-  if (thePostfix != NULL)
+  if (thePostfix != nullptr)
   {
     theStream << thePostfix;
   }
@@ -180,7 +180,7 @@ static void addInfo(
   const TCollection_AsciiString&                                                theKey,
   const char*                                                                   theValue)
 {
-  TCollection_AsciiString aValue(theValue != NULL ? theValue : "");
+  TCollection_AsciiString aValue(theValue != nullptr ? theValue : "");
   theDict.ChangeFromIndex(theDict.Add(theKey, aValue)) = aValue;
 }
 

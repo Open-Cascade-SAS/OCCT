@@ -37,10 +37,10 @@ public:
   //! Initializes a shape reader.
   Standard_EXPORT BinTools_ShapeReader();
 
-  Standard_EXPORT virtual ~BinTools_ShapeReader();
+  Standard_EXPORT ~BinTools_ShapeReader() override;
 
   //! Clears the content of the set.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Reads the shape from stream using previously restored shapes and objects by references.
   Standard_EXPORT void Read(Standard_IStream& theStream, TopoDS_Shape& theShape) override;

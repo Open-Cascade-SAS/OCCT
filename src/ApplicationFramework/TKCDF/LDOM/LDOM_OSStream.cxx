@@ -17,7 +17,7 @@
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_Assert.hxx>
 
-#include <string.h>
+#include <cstring>
 
 //=================================================================================================
 
@@ -26,7 +26,7 @@ LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem(
   const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : buf(reinterpret_cast<char*>(theAlloc->Allocate(theLength))),
       len(0),
-      next(0)
+      next(nullptr)
 {
 }
 
@@ -155,4 +155,4 @@ LDOM_OSStream::LDOM_OSStream(const int theMaxBuf)
 // function : ~LDOM_OSStream()
 // purpose  : Destructor - for g++ vtable generation in *this* translation unit
 //=======================================================================
-LDOM_OSStream::~LDOM_OSStream() {}
+LDOM_OSStream::~LDOM_OSStream() = default;

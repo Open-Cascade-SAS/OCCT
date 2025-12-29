@@ -18,7 +18,7 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Type.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 
 IFSelect_GraphCounter::IFSelect_GraphCounter(const bool withmap, const bool withlist)

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Storage_DefaultCallBack, Storage_CallBack)
 
-Storage_DefaultCallBack::Storage_DefaultCallBack() {}
+Storage_DefaultCallBack::Storage_DefaultCallBack() = default;
 
 occ::handle<Standard_Persistent> Storage_DefaultCallBack::New() const
 {

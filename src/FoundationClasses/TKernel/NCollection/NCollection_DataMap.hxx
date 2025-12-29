@@ -88,7 +88,7 @@ public:
     }
 
     //! Key
-    const TheKeyType& Key(void) const noexcept { return myKey; }
+    const TheKeyType& Key() const noexcept { return myKey; }
 
     //! Static deleter to be passed to BaseMap
     static void delNode(NCollection_ListNode*                   theNode,
@@ -108,7 +108,7 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void)
+    Iterator()
         : NCollection_BaseMap::Iterator()
     {
     }
@@ -120,27 +120,27 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept { return PMore(); }
+    bool More() const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) noexcept { PNext(); }
+    void Next() noexcept { PNext(); }
 
     //! Value inquiry
-    const TheItemType& Value(void) const
+    const TheItemType& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::Value");
       return ((DataMapNode*)myNode)->Value();
     }
 
     //! Value change access
-    TheItemType& ChangeValue(void) const
+    TheItemType& ChangeValue() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::ChangeValue");
       return ((DataMapNode*)myNode)->ChangeValue();
     }
 
     //! Key
-    const TheKeyType& Key(void) const
+    const TheKeyType& Key() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::Key");
       return ((DataMapNode*)myNode)->Key();
@@ -177,7 +177,7 @@ public:
 
   //! Constructor
   explicit NCollection_DataMap(const int                                     theNbBuckets,
-                               const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+                               const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
   }
@@ -238,8 +238,8 @@ public:
   //! ReSize
   void ReSize(const int N)
   {
-    NCollection_ListNode** newdata = NULL;
-    NCollection_ListNode** dummy   = NULL;
+    NCollection_ListNode** newdata = nullptr;
+    NCollection_ListNode** dummy   = nullptr;
     int                    newBuck;
     if (BeginResize(N, newBuck, newdata, dummy))
     {
@@ -458,7 +458,7 @@ public:
     DataMapNode** data = (DataMapNode**)myData1;
     const size_t  k    = HashCode(theKey, NbBuckets());
     DataMapNode*  p    = data[k];
-    DataMapNode*  q    = NULL;
+    DataMapNode*  q    = nullptr;
     while (p)
     {
       if (IsEqual(p->Key(), theKey))
@@ -482,16 +482,16 @@ public:
   //! NULL is Key was not bound.
   const TheItemType* Seek(const TheKeyType& theKey) const
   {
-    DataMapNode* p = 0;
+    DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
-      return 0L;
+      return nullptr;
     return &p->Value();
   }
 
   //! Find returns the Item for Key. Raises if Key was not bound
   const TheItemType& Find(const TheKeyType& theKey) const
   {
-    DataMapNode* p = 0;
+    DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
       throw Standard_NoSuchObject("NCollection_DataMap::Find");
     return p->Value();
@@ -501,7 +501,7 @@ public:
   //! @return true if key was found
   bool Find(const TheKeyType& theKey, TheItemType& theValue) const
   {
-    DataMapNode* p = 0;
+    DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
       return false;
 
@@ -516,16 +516,16 @@ public:
   //! NULL is Key was not bound.
   TheItemType* ChangeSeek(const TheKeyType& theKey)
   {
-    DataMapNode* p = 0;
+    DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
-      return 0L;
+      return nullptr;
     return &p->ChangeValue();
   }
 
   //! ChangeFind returns mofifiable Item by Key. Raises if Key was not bound
   TheItemType& ChangeFind(const TheKeyType& theKey)
   {
-    DataMapNode* p = 0;
+    DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
       throw Standard_NoSuchObject("NCollection_DataMap::Find");
     return p->ChangeValue();
@@ -547,10 +547,10 @@ public:
   }
 
   //! Destructor
-  virtual ~NCollection_DataMap(void) { Clear(true); }
+  ~NCollection_DataMap() override { Clear(true); }
 
   //! Size
-  int Size(void) const noexcept { return Extent(); }
+  int Size() const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.

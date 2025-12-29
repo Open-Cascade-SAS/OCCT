@@ -35,7 +35,7 @@
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolFiniteElement::IGESAppli_ToolFiniteElement() {}
+IGESAppli_ToolFiniteElement::IGESAppli_ToolFiniteElement() = default;
 
 void IGESAppli_ToolFiniteElement::ReadOwnParams(const occ::handle<IGESAppli_FiniteElement>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,

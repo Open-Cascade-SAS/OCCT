@@ -50,11 +50,11 @@ public:
   Standard_EXPORT ChFiDS_ElSpine();
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
-  Standard_EXPORT virtual double FirstParameter() const override;
+  Standard_EXPORT double FirstParameter() const override;
 
-  Standard_EXPORT virtual double LastParameter() const override;
+  Standard_EXPORT double LastParameter() const override;
 
   Standard_EXPORT double GetSavedFirstParameter() const;
 
@@ -70,36 +70,33 @@ public:
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
-  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                                            const double Last,
-                                                            const double Tol) const override;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
+                                                    const double Last,
+                                                    const double Tol) const override;
 
-  Standard_EXPORT virtual double Resolution(const double R3d) const override;
+  Standard_EXPORT double Resolution(const double R3d) const override;
 
-  Standard_EXPORT virtual GeomAbs_CurveType GetType() const override;
+  Standard_EXPORT GeomAbs_CurveType GetType() const override;
 
-  Standard_EXPORT virtual bool IsPeriodic() const override;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   Standard_EXPORT void SetPeriodic(const bool I);
 
-  Standard_EXPORT virtual double Period() const override;
+  Standard_EXPORT double Period() const override;
 
-  Standard_EXPORT virtual gp_Pnt Value(const double AbsC) const override;
+  Standard_EXPORT gp_Pnt Value(const double AbsC) const override;
 
-  Standard_EXPORT virtual void D0(const double AbsC, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double AbsC, gp_Pnt& P) const override;
 
-  Standard_EXPORT virtual void D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT void D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const override;
 
-  Standard_EXPORT virtual void D2(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2) const override;
+  Standard_EXPORT void D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
-  Standard_EXPORT virtual void D3(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const override;
+  Standard_EXPORT void D3(const double AbsC,
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   Standard_EXPORT void FirstParameter(const double P);
 

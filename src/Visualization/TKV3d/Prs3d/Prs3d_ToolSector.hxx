@@ -44,10 +44,10 @@ public:
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
+  Standard_EXPORT gp_Pnt Vertex(const double theU, const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal(const double, const double) const override { return gp_Dir(gp_Dir::D::NZ); }
+  gp_Dir Normal(const double, const double) const override { return gp_Dir(gp_Dir::D::NZ); }
 
 protected:
   double myRadius; //!< sector radius

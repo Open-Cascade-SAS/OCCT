@@ -54,11 +54,11 @@ public:
 
   //! Dumps an IGES Entity with an IGES Dumper. <level> is the one
   //! used by IGESDumper.
-  Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
-                                          const occ::handle<Interface_Protocol>&       protocol,
-                                          const occ::handle<Standard_Transient>&       entity,
-                                          Standard_OStream&                            S,
-                                          const int level) const override;
+  Standard_EXPORT void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                  const occ::handle<Interface_Protocol>&       protocol,
+                                  const occ::handle<Standard_Transient>&       entity,
+                                  Standard_OStream&                            S,
+                                  const int level) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_WorkLibrary, IFSelect_WorkLibrary)
 

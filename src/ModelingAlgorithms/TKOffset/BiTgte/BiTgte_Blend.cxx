@@ -82,7 +82,7 @@
   #include <OSD_Chronometer.hxx>
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 // include - all hxx,
 //         - all small static functions.
 //======================== START STATIC FUNCTIONS ============
@@ -210,9 +210,9 @@ static bool IsInFace(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-static void KPartCurve3d(const TopoDS_Edge&        Edge,
-                         occ::handle<Geom2d_Curve> Curve,
-                         occ::handle<Geom_Surface> Surf)
+static void KPartCurve3d(const TopoDS_Edge&               Edge,
+                         const occ::handle<Geom2d_Curve>& Curve,
+                         const occ::handle<Geom_Surface>& Surf)
 {
   // try to find the particular case
   // if not found call BRepLib::BuildCurve3d
@@ -376,13 +376,13 @@ public:
     myNbPnt2d = 0;
   }
 
-  double FirstParameter() const { return myCurve.FirstParameter(); }
+  double FirstParameter() const override { return myCurve.FirstParameter(); }
 
-  double LastParameter() const { return myCurve.LastParameter(); }
+  double LastParameter() const override { return myCurve.LastParameter(); }
 
   bool Value(const double theT,
              NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-             NCollection_Array1<gp_Pnt>& thePnt) const
+             NCollection_Array1<gp_Pnt>& thePnt) const override
   {
     thePnt(1) = myCurve.Value(theT);
     return true;
@@ -390,7 +390,7 @@ public:
 
   bool D1(const double /*theT*/,
           NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-          NCollection_Array1<gp_Vec>& /*theVec*/) const
+          NCollection_Array1<gp_Vec>& /*theVec*/) const override
   {
     return false;
   }

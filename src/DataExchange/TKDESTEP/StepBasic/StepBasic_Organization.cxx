@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Organization, Standard_Transient)
 
-StepBasic_Organization::StepBasic_Organization() {}
+StepBasic_Organization::StepBasic_Organization() = default;
 
 void StepBasic_Organization::Init(const bool                                   hasAid,
                                   const occ::handle<TCollection_HAsciiString>& aId,

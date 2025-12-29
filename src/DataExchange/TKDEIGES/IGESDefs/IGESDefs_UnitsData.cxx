@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_UnitsData, IGESData_IGESEntity)
 
-IGESDefs_UnitsData::IGESDefs_UnitsData() {}
+IGESDefs_UnitsData::IGESDefs_UnitsData() = default;
 
 void IGESDefs_UnitsData::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,

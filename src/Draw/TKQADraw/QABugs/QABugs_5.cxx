@@ -29,8 +29,8 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 static int OCC6001(Draw_Interpretor& di, int argc, const char** argv)
 {

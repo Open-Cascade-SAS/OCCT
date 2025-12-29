@@ -106,7 +106,7 @@ public:
   }
 
   //
-  ~BOPTest_Interf() {}
+  ~BOPTest_Interf() = default;
 
   //
   void SetIndices(const int theIndex1, const int theIndex2)

@@ -61,9 +61,9 @@ public:
 
   Bnd_Sphere& Sphere() const { return mySol; }
 
-  virtual bool Reject(const Bnd_Sphere& theBnd) const = 0;
+  bool Reject(const Bnd_Sphere& theBnd) const override = 0;
 
-  virtual bool Accept(const int& theObj) = 0;
+  bool Accept(const int& theObj) override = 0;
 
 protected:
   gp_Pnt                                              myXYZ;
@@ -71,7 +71,7 @@ protected:
   Bnd_Sphere&                                         mySol;
 
 private:
-  void operator=(const Bnd_SphereUBTreeSelector&);
+  void operator=(const Bnd_SphereUBTreeSelector&) = delete;
 };
 
 class Bnd_SphereUBTreeSelectorMin : public Bnd_SphereUBTreeSelector
@@ -88,14 +88,14 @@ public:
 
   double MinDist() const { return myMinDist; }
 
-  bool Reject(const Bnd_Sphere& theBnd) const
+  bool Reject(const Bnd_Sphere& theBnd) const override
   {
     Bnd_SphereUBTreeSelectorMin* me = const_cast<Bnd_SphereUBTreeSelectorMin*>(this);
     // myMinDist is decreased each time a nearer object is found
     return theBnd.IsOut(myXYZ.XYZ(), me->myMinDist);
   }
 
-  bool Accept(const int&);
+  bool Accept(const int&) override;
 
 private:
   double myMinDist;
@@ -133,14 +133,14 @@ public:
 
   double MaxDist() const { return myMaxDist; }
 
-  bool Reject(const Bnd_Sphere& theBnd) const
+  bool Reject(const Bnd_Sphere& theBnd) const override
   {
     Bnd_SphereUBTreeSelectorMax* me = const_cast<Bnd_SphereUBTreeSelectorMax*>(this);
     // myMaxDist is decreased each time a nearer object is found
     return theBnd.IsOut(myXYZ.XYZ(), me->myMaxDist);
   }
 
-  bool Accept(const int&);
+  bool Accept(const int&) override;
 
 private:
   double myMaxDist;
@@ -218,7 +218,7 @@ Extrema_GenExtPS::Extrema_GenExtPS()
       myvsample(0),
       mytolu(0.0),
       mytolv(0.0),
-      myS(NULL)
+      myS(nullptr)
 {
   myDone = false;
   myInit = false;

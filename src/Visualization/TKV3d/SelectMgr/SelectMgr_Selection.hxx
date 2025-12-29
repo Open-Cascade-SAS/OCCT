@@ -67,7 +67,7 @@ public:
   //! The default setting 0 is the selection mode for a shape in its entirety.
   Standard_EXPORT SelectMgr_Selection(const int theModeIdx = 0);
 
-  Standard_EXPORT ~SelectMgr_Selection();
+  Standard_EXPORT ~SelectMgr_Selection() override;
 
   Standard_EXPORT void Destroy();
 

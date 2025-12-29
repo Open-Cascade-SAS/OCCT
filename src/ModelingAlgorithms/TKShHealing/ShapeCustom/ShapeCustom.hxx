@@ -60,7 +60,7 @@ public:
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& context,
     BRepTools_Modifier&                                                       MD,
     const Message_ProgressRange&           theProgress = Message_ProgressRange(),
-    const occ::handle<ShapeBuild_ReShape>& aReShape    = NULL);
+    const occ::handle<ShapeBuild_ReShape>& aReShape    = nullptr);
 
   //! Returns a new shape without indirect surfaces.
   Standard_EXPORT static TopoDS_Shape DirectFaces(const TopoDS_Shape& S);

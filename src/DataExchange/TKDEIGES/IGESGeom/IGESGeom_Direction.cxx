@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Direction, IGESData_IGESEntity)
 
-IGESGeom_Direction::IGESGeom_Direction() {}
+IGESGeom_Direction::IGESGeom_Direction() = default;
 
 void IGESGeom_Direction::Init(const gp_XYZ& aDirection)
 {

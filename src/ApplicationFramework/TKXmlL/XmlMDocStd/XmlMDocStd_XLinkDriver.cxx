@@ -28,7 +28,7 @@ IMPLEMENT_DOMSTRING(DocEntryString, "documentEntry")
 //=================================================================================================
 
 XmlMDocStd_XLinkDriver::XmlMDocStd_XLinkDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ bool XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
-  if (anXPath == NULL)
+  if (anXPath == nullptr)
   {
     myMessageDriver->Send("XLink: Cannot retrieve reference string from element", Message_Fail);
     return false;

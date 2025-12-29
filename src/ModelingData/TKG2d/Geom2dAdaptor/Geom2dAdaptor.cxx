@@ -78,7 +78,7 @@ occ::handle<Geom2d_Curve> Geom2dAdaptor::MakeCurve(const Adaptor2d_Curve2d& HC)
 
     case GeomAbs_OffsetCurve: {
       const Geom2dAdaptor_Curve* pGAC = dynamic_cast<const Geom2dAdaptor_Curve*>(&HC);
-      if (pGAC != 0)
+      if (pGAC != nullptr)
       {
         C2D = pGAC->Curve();
       }

@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer, IFSelect_SelectExtract)
 
-XSControl_SelectForTransfer::XSControl_SelectForTransfer() {}
+XSControl_SelectForTransfer::XSControl_SelectForTransfer() = default;
 
 XSControl_SelectForTransfer::XSControl_SelectForTransfer(
   const occ::handle<XSControl_TransferReader>& TR)

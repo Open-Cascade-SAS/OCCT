@@ -79,11 +79,11 @@ public:
 
 protected:
   IVtkTools_ShapeObject();
-  virtual ~IVtkTools_ShapeObject();
+  ~IVtkTools_ShapeObject() override;
 
 private: // not copyable
-  IVtkTools_ShapeObject(const IVtkTools_ShapeObject&);
-  IVtkTools_ShapeObject& operator=(const IVtkTools_ShapeObject&);
+  IVtkTools_ShapeObject(const IVtkTools_ShapeObject&)            = delete;
+  IVtkTools_ShapeObject& operator=(const IVtkTools_ShapeObject&) = delete;
 
 private: // OCC
   vtkWeakPointer<IVtkTools_ShapeDataSource> myShapeSource;

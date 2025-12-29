@@ -36,10 +36,10 @@ public:
    * Empty constructor
    */
   inline VrmlData_IndexedFaceSet()
-      : myArrPolygons(0L),
-        myArrNormalInd(0L),
-        myArrColorInd(0L),
-        myArrTextureInd(0L),
+      : myArrPolygons(nullptr),
+        myArrNormalInd(nullptr),
+        myArrColorInd(nullptr),
+        myArrTextureInd(nullptr),
         myNbPolygons(0),
         myNbNormals(0),
         myNbColors(0),
@@ -59,10 +59,10 @@ public:
                                  const bool            isConvex       = true,
                                  const double          theCreaseAngle = 0.)
       : VrmlData_Faceted(theScene, theName, isCCW, isSolid, isConvex, theCreaseAngle),
-        myArrPolygons(0L),
-        myArrNormalInd(0L),
-        myArrColorInd(0L),
-        myArrTextureInd(0L),
+        myArrPolygons(nullptr),
+        myArrNormalInd(nullptr),
+        myArrColorInd(nullptr),
+        myArrTextureInd(nullptr),
         myNbPolygons(0),
         myNbNormals(0),
         myNbColors(0),
@@ -290,30 +290,30 @@ public:
    * Query the shape. This method checks the flag myIsModified; if True it
    * should rebuild the shape presentation.
    */
-  Standard_EXPORT virtual const occ::handle<TopoDS_TShape>& TShape() override;
+  Standard_EXPORT const occ::handle<TopoDS_TShape>& TShape() override;
 
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+  Standard_EXPORT occ::handle<VrmlData_Node> Clone(
     const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Returns True if the node is default, so that it should not be written.
    */
-  Standard_EXPORT virtual bool IsDefault() const override;
+  Standard_EXPORT bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------

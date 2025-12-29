@@ -53,11 +53,11 @@ public:
 
   //! Converts curve into a list of beziers, and stores the
   //! splitting parameters on original curve.
-  Standard_EXPORT virtual void Compute() override;
+  Standard_EXPORT void Compute() override;
 
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
-  Standard_EXPORT virtual void Build(const bool Segment) override;
+  Standard_EXPORT void Build(const bool Segment) override;
 
   //! Returns the list of split parameters in original curve parametrisation.
   Standard_EXPORT occ::handle<NCollection_HSequence<double>> SplitParams() const;

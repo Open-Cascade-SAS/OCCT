@@ -20,7 +20,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWProductDefinitionFormation::RWStepBasic_RWProductDefinitionFormation() {}
+RWStepBasic_RWProductDefinitionFormation::RWStepBasic_RWProductDefinitionFormation() = default;
 
 void RWStepBasic_RWProductDefinitionFormation::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

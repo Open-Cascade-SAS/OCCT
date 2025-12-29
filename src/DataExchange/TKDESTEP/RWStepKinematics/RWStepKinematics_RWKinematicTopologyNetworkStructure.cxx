@@ -30,9 +30,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWKinematicTopologyNetworkStructure::
-  RWStepKinematics_RWKinematicTopologyNetworkStructure()
-{
-}
+  RWStepKinematics_RWKinematicTopologyNetworkStructure() = default;
 
 //=================================================================================================
 

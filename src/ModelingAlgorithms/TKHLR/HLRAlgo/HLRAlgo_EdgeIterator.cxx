@@ -26,8 +26,8 @@
 HLRAlgo_EdgeIterator::HLRAlgo_EdgeIterator()
     : myNbVis(0),
       myNbHid(0),
-      EVis(NULL),
-      EHid(NULL),
+      EVis(nullptr),
+      EHid(nullptr),
       iVis(0),
       iHid(0),
       myHidStart(0.0),

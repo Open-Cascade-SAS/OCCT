@@ -90,7 +90,7 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
   // We first build an array of the list of edges connected to the nodes
   // create an array to store the edges starting from the vertices
   NCollection_Array1<polyedge*> anEdges(1, aNbNodes);
-  anEdges.Init(NULL);
+  anEdges.Init(nullptr);
   // use incremental allocator for small allocations
   occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
 
@@ -125,7 +125,7 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
       // edge from node 0 to node 1 with node 0 < node 1
       // insert in the list of node 0
       polyedge* ced = anEdges[anEdgeNodes[0]];
-      for (; ced != NULL; ced = ced->next)
+      for (; ced != nullptr; ced = ced->next)
       {
         // the edge already exists
         if (ced->nd == anEdgeNodes[1])
@@ -137,7 +137,7 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
         }
       }
 
-      if (ced == NULL)
+      if (ced == nullptr)
       {
         // create the edge if not found
         ced                     = (polyedge*)anIncAlloc->Allocate(sizeof(polyedge));

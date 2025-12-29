@@ -64,7 +64,7 @@ private:
   class IteratorInterface
   {
   public:
-    virtual ~IteratorInterface() {}
+    virtual ~IteratorInterface() = default;
 
     //! Returns true if iterators wrapped by this and theOther are equal
     virtual bool IsEqual(const IteratorInterface& theOther) const = 0;
@@ -84,21 +84,21 @@ private:
   class IteratorWrapper : public IteratorInterface
   {
   public:
-    IteratorWrapper() {}
+    IteratorWrapper() = default;
 
     IteratorWrapper(const Type& theValue)
         : myValue(theValue)
     {
     }
 
-    virtual bool IsEqual(const IteratorInterface& theOther) const override
+    bool IsEqual(const IteratorInterface& theOther) const override
     {
       return myValue == dynamic_cast<const IteratorWrapper<Type>&>(theOther).myValue;
     }
 
-    virtual void Increment() override { ++myValue; }
+    void Increment() override { ++myValue; }
 
-    virtual IteratorInterface* Clone() const override { return new IteratorWrapper<Type>(myValue); }
+    IteratorInterface* Clone() const override { return new IteratorWrapper<Type>(myValue); }
 
     const Type& Value() const { return myValue; }
 
@@ -127,7 +127,7 @@ protected:
     using pointer           = value_type;
     using reference         = value_type;
 
-    UniversalIterator() {}
+    UniversalIterator() = default;
 
     UniversalIterator(IteratorInterface* theOther)
         : myPtr(theOther)
@@ -182,7 +182,7 @@ protected:
   class FunctorInterface
   {
   public:
-    virtual ~FunctorInterface() {}
+    virtual ~FunctorInterface() = default;
 
     virtual void operator()(IteratorInterface* theIterator) const = 0;
 
@@ -205,15 +205,15 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const override
+    void operator()(IteratorInterface* theIterator) const override
     {
       const Iterator& anIt = DownCast<Iterator>(theIterator);
       myFunctor(*anIt);
     }
 
   private:
-    FunctorWrapperIter(const FunctorWrapperIter&);
-    void           operator=(const FunctorWrapperIter&);
+    FunctorWrapperIter(const FunctorWrapperIter&)       = delete;
+    void           operator=(const FunctorWrapperIter&) = delete;
     const Functor& myFunctor;
   };
 
@@ -227,15 +227,15 @@ private:
     {
     }
 
-    virtual void operator()(IteratorInterface* theIterator) const override
+    void operator()(IteratorInterface* theIterator) const override
     {
       int anIndex = DownCast<int>(theIterator);
       myFunctor(anIndex);
     }
 
   private:
-    FunctorWrapperInt(const FunctorWrapperInt&);
-    void           operator=(const FunctorWrapperInt&);
+    FunctorWrapperInt(const FunctorWrapperInt&)        = delete;
+    void           operator=(const FunctorWrapperInt&) = delete;
     const Functor& myFunctor;
   };
 
@@ -256,8 +256,8 @@ private:
     }
 
   private:
-    FunctorWrapperForThreadPool(const FunctorWrapperForThreadPool&);
-    void           operator=(const FunctorWrapperForThreadPool&);
+    FunctorWrapperForThreadPool(const FunctorWrapperForThreadPool&) = delete;
+    void           operator=(const FunctorWrapperForThreadPool&)    = delete;
     const Functor& myFunctor;
   };
 

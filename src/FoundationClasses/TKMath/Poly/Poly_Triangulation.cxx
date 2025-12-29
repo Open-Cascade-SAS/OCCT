@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
 //=================================================================================================
 
 Poly_Triangulation::Poly_Triangulation()
-    : myCachedMinMax(NULL),
+    : myCachedMinMax(nullptr),
       myDeflection(0),
       myPurpose(Poly_MeshPurpose_NONE)
 {
@@ -40,7 +40,7 @@ Poly_Triangulation::Poly_Triangulation(const int  theNbNodes,
                                        const int  theNbTriangles,
                                        const bool theHasUVNodes,
                                        const bool theHasNormals)
-    : myCachedMinMax(NULL),
+    : myCachedMinMax(nullptr),
       myDeflection(0),
       myNodes(theNbNodes),
       myTriangles(1, theNbTriangles),
@@ -60,7 +60,7 @@ Poly_Triangulation::Poly_Triangulation(const int  theNbNodes,
 
 Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
                                        const NCollection_Array1<Poly_Triangle>& theTriangles)
-    : myCachedMinMax(NULL),
+    : myCachedMinMax(nullptr),
       myDeflection(0),
       myNodes(theNodes.Length()),
       myTriangles(1, theTriangles.Length()),
@@ -76,7 +76,7 @@ Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        
 Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
                                        const NCollection_Array1<gp_Pnt2d>&      theUVNodes,
                                        const NCollection_Array1<Poly_Triangle>& theTriangles)
-    : myCachedMinMax(NULL),
+    : myCachedMinMax(nullptr),
       myDeflection(0),
       myNodes(theNodes.Length()),
       myTriangles(1, theTriangles.Length()),
@@ -107,7 +107,7 @@ occ::handle<Poly_Triangulation> Poly_Triangulation::Copy() const
 //=================================================================================================
 
 Poly_Triangulation::Poly_Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation)
-    : myCachedMinMax(NULL),
+    : myCachedMinMax(nullptr),
       myDeflection(theTriangulation->myDeflection),
       myNodes(theTriangulation->myNodes),
       myTriangles(theTriangulation->myTriangles),
@@ -343,7 +343,7 @@ void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, int) const
 const Bnd_Box& Poly_Triangulation::CachedMinMax() const
 {
   static const Bnd_Box anEmptyBox;
-  return (myCachedMinMax == NULL) ? anEmptyBox : *myCachedMinMax;
+  return (myCachedMinMax == nullptr) ? anEmptyBox : *myCachedMinMax;
 }
 
 //=================================================================================================
@@ -355,7 +355,7 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
     unsetCachedMinMax();
     return;
   }
-  if (myCachedMinMax == NULL)
+  if (myCachedMinMax == nullptr)
   {
     myCachedMinMax = new Bnd_Box();
   }
@@ -366,10 +366,10 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
 
 void Poly_Triangulation::unsetCachedMinMax()
 {
-  if (myCachedMinMax != NULL)
+  if (myCachedMinMax != nullptr)
   {
     delete myCachedMinMax;
-    myCachedMinMax = NULL;
+    myCachedMinMax = nullptr;
   }
 }
 

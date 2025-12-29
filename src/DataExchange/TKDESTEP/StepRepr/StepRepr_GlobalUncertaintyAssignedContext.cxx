@@ -17,7 +17,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUncertaintyAssignedContext,
                            StepRepr_RepresentationContext)
 
-StepRepr_GlobalUncertaintyAssignedContext::StepRepr_GlobalUncertaintyAssignedContext() {}
+StepRepr_GlobalUncertaintyAssignedContext::StepRepr_GlobalUncertaintyAssignedContext() = default;
 
 void StepRepr_GlobalUncertaintyAssignedContext::Init(
   const occ::handle<TCollection_HAsciiString>& aContextIdentifier,

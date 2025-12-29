@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedEdgeSet, StepShape_TopologicalRepr
 
 //=================================================================================================
 
-StepShape_ConnectedEdgeSet::StepShape_ConnectedEdgeSet() {}
+StepShape_ConnectedEdgeSet::StepShape_ConnectedEdgeSet() = default;
 
 //=================================================================================================
 

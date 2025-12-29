@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyleFontPattern, Standard_Transient)
 
-StepVisual_CurveStyleFontPattern::StepVisual_CurveStyleFontPattern() {}
+StepVisual_CurveStyleFontPattern::StepVisual_CurveStyleFontPattern() = default;
 
 void StepVisual_CurveStyleFontPattern::Init(const double aVisibleSegmentLength,
                                             const double aInvisibleSegmentLength)

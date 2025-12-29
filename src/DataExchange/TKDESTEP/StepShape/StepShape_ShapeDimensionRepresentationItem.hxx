@@ -43,7 +43,7 @@ public:
   //! 3 -> MeasureRepresentationItem
   //! 4 -> Placement
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a CompoundRepresentationItem (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_CompoundRepresentationItem> CompoundRepresentationItem()

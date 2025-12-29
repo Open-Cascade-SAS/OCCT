@@ -142,7 +142,7 @@ static occ::handle<BRepTools_History> GetHistory(Draw_Interpretor& theDI, const 
   if (aHistory.IsNull() || aHistory->History().IsNull())
   {
     theDI << "History with the name " << theName << " does not exist.";
-    return NULL;
+    return nullptr;
   }
 
   return aHistory->History();

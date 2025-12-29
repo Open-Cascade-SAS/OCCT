@@ -45,7 +45,7 @@ public:
   Standard_EXPORT SelectMgr_BaseIntersector();
 
   //! Destructor
-  Standard_EXPORT virtual ~SelectMgr_BaseIntersector();
+  Standard_EXPORT ~SelectMgr_BaseIntersector() override;
 
   //! Builds intersector according to internal parameters
   virtual void Build() = 0;
@@ -141,7 +141,7 @@ public:
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   virtual bool OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
                            const NCollection_Vec3<double>& theBoxMax,
-                           bool*                           theInside = NULL) const = 0;
+                           bool*                           theInside = nullptr) const = 0;
 
   //! Intersection test between defined volume and given point
   virtual bool OverlapsPoint(const gp_Pnt&                  thePnt,
@@ -182,7 +182,7 @@ public:
   //! and radius theRadius
   Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt& theCenter,
                                               const double  theRadius,
-                                              bool*         theInside = NULL) const = 0;
+                                              bool*         theInside = nullptr) const = 0;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
@@ -208,7 +208,7 @@ public:
                                 const double   theHeight,
                                 const gp_Trsf& theTrsf,
                                 const bool     theIsHollow,
-                                bool*          theInside = NULL) const = 0;
+                                bool*          theInside = nullptr) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
@@ -227,7 +227,7 @@ public:
   virtual bool OverlapsCircle(const double   theBottomRad,
                               const gp_Trsf& theTrsf,
                               const bool     theIsFilled,
-                              bool*          theInside = NULL) const = 0;
+                              bool*          theInside = nullptr) const = 0;
 
 public:
   //! Measures distance between 3d projection of user-picked

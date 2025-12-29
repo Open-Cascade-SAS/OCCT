@@ -97,10 +97,10 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
+  void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override;
+  void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override;
 
   //! Returns Morton codes assigned to BVH primitives.
   const NCollection_Array1<BVH_EncodedLink>& EncodedLinks() const { return *myEncodedLinks; }
@@ -186,7 +186,7 @@ private:
     }
 
   private:
-    void operator=(const Functor&);
+    void operator=(const Functor&) = delete;
 
   private:
     const SortRange (&mySplits)[2];

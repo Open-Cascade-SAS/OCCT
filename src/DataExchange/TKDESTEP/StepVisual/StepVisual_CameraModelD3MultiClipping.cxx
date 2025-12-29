@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClipping, StepVisual_Cam
 
 //=================================================================================================
 
-StepVisual_CameraModelD3MultiClipping::StepVisual_CameraModelD3MultiClipping() {}
+StepVisual_CameraModelD3MultiClipping::StepVisual_CameraModelD3MultiClipping() = default;
 
 //=================================================================================================
 

@@ -54,7 +54,7 @@ public:
   Standard_EXPORT StepAP214_DocumentReferenceItem();
 
   //! Recognizes a DocumentReferenceItem Kind Entity that is :
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Approval (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;

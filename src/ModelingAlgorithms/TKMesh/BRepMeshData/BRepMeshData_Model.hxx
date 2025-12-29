@@ -30,10 +30,10 @@ public:
   Standard_EXPORT BRepMeshData_Model(const TopoDS_Shape& theShape);
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMeshData_Model();
+  Standard_EXPORT ~BRepMeshData_Model() override;
 
   //! Returns maximum size of shape's bounding box.
-  virtual double GetMaxSize() const override { return myMaxSize; }
+  double GetMaxSize() const override { return myMaxSize; }
 
   //! Sets maximum size of shape's bounding box.
   void SetMaxSize(const double theValue) { myMaxSize = theValue; }
@@ -42,25 +42,23 @@ public:
 
 public: //! @name discrete faces
   //! Returns number of faces in discrete model.
-  Standard_EXPORT virtual int FacesNb() const override;
+  Standard_EXPORT int FacesNb() const override;
 
   //! Adds new face to shape model.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& AddFace(
-    const TopoDS_Face& theFace) override;
+  Standard_EXPORT const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace) override;
 
   //! Gets model's face with the given index.
-  Standard_EXPORT virtual const IMeshData::IFaceHandle& GetFace(const int theIndex) const override;
+  Standard_EXPORT const IMeshData::IFaceHandle& GetFace(const int theIndex) const override;
 
 public: //! @name discrete edges
   //! Returns number of edges in discrete model.
-  Standard_EXPORT virtual int EdgesNb() const override;
+  Standard_EXPORT int EdgesNb() const override;
 
   //! Adds new edge to shape model.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& AddEdge(
-    const TopoDS_Edge& theEdge) override;
+  Standard_EXPORT const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge) override;
 
   //! Gets model's edge with the given index.
-  Standard_EXPORT virtual const IMeshData::IEdgeHandle& GetEdge(const int theIndex) const override;
+  Standard_EXPORT const IMeshData::IEdgeHandle& GetEdge(const int theIndex) const override;
 
 private:
   double                                myMaxSize;

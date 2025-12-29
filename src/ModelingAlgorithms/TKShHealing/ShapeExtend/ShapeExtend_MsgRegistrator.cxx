@@ -24,9 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeExtend_MsgRegistrator, ShapeExtend_BasicMsgRegis
 //=================================================================================================
 
 ShapeExtend_MsgRegistrator::ShapeExtend_MsgRegistrator()
-    : ShapeExtend_BasicMsgRegistrator()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

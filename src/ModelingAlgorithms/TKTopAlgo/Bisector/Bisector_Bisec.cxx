@@ -54,7 +54,7 @@ static void ReplaceByLineIfIsToSmall(occ::handle<Bisector_Curve>& Bis,
 //=============================================================================
 // function : Empty Constructor
 //=============================================================================
-Bisector_Bisec::Bisector_Bisec() {}
+Bisector_Bisec::Bisector_Bisec() = default;
 
 //===========================================================================
 //    calculate the bissectrice between two curves coming from a point.

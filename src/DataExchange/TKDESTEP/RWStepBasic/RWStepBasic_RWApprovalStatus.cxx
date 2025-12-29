@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApprovalStatus::RWStepBasic_RWApprovalStatus() {}
+RWStepBasic_RWApprovalStatus::RWStepBasic_RWApprovalStatus() = default;
 
 void RWStepBasic_RWApprovalStatus::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

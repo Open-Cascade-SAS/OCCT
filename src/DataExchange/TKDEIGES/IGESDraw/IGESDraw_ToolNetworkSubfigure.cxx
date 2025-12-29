@@ -36,7 +36,7 @@
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESDraw_ToolNetworkSubfigure::IGESDraw_ToolNetworkSubfigure() {}
+IGESDraw_ToolNetworkSubfigure::IGESDraw_ToolNetworkSubfigure() = default;
 
 void IGESDraw_ToolNetworkSubfigure::ReadOwnParams(const occ::handle<IGESDraw_NetworkSubfigure>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,

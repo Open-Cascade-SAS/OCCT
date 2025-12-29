@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleFillArea, Standard_Transient)
 
-StepVisual_SurfaceStyleFillArea::StepVisual_SurfaceStyleFillArea() {}
+StepVisual_SurfaceStyleFillArea::StepVisual_SurfaceStyleFillArea() = default;
 
 void StepVisual_SurfaceStyleFillArea::Init(const occ::handle<StepVisual_FillAreaStyle>& aFillArea)
 {

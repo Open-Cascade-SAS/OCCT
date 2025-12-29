@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DimensionalExponents, Standard_Transient)
 
-StepBasic_DimensionalExponents::StepBasic_DimensionalExponents() {}
+StepBasic_DimensionalExponents::StepBasic_DimensionalExponents() = default;
 
 void StepBasic_DimensionalExponents::Init(const double aLengthExponent,
                                           const double aMassExponent,

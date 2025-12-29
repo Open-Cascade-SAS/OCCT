@@ -67,7 +67,7 @@ public:
                                          const double                          Tol);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! Changes the tolerance used to project
   //! the curve on the surface

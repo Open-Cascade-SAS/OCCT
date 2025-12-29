@@ -19,7 +19,7 @@
   #include <OSD_OSDError.hxx>
   #include <TCollection_AsciiString.hxx>
 
-  #include <stdio.h>
+  #include <cstdio>
 
 /* Created by Stephan GARNAUD (ARM) 1992 for Matra Datavision */
 OSD_Error::OSD_Error()

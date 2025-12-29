@@ -24,8 +24,8 @@ public:
   //! Empty constructor.
   Graphic3d_BoundBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : NCollection_Buffer(theAlloc),
-        Colors(NULL),
-        Bounds(NULL),
+        Colors(nullptr),
+        Bounds(nullptr),
         NbBounds(0),
         NbMaxBounds(0)
   {
@@ -34,8 +34,8 @@ public:
   //! Allocates new empty array
   bool Init(const int theNbBounds, const bool theHasColors)
   {
-    Colors      = NULL;
-    Bounds      = NULL;
+    Colors      = nullptr;
+    Bounds      = nullptr;
     NbBounds    = 0;
     NbMaxBounds = 0;
     Free();
@@ -54,13 +54,13 @@ public:
 
     NbBounds    = theNbBounds;
     NbMaxBounds = theNbBounds;
-    Colors      = theHasColors ? reinterpret_cast<NCollection_Vec4<float>*>(myData) : NULL;
+    Colors      = theHasColors ? reinterpret_cast<NCollection_Vec4<float>*>(myData) : nullptr;
     Bounds      = reinterpret_cast<int*>(theHasColors ? (myData + aColorsSize) : myData);
     return true;
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, NCollection_Buffer)

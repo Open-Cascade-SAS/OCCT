@@ -29,9 +29,7 @@
 //=================================================================================================
 
 RWStepDimTol_RWGeometricToleranceWithDatumReference::
-  RWStepDimTol_RWGeometricToleranceWithDatumReference()
-{
-}
+  RWStepDimTol_RWGeometricToleranceWithDatumReference() = default;
 
 //=================================================================================================
 

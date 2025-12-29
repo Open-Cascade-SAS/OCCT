@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleForDefinedFont, Standard_Transient)
 
-StepVisual_TextStyleForDefinedFont::StepVisual_TextStyleForDefinedFont() {}
+StepVisual_TextStyleForDefinedFont::StepVisual_TextStyleForDefinedFont() = default;
 
 void StepVisual_TextStyleForDefinedFont::Init(const occ::handle<StepVisual_Colour>& aTextColour)
 {

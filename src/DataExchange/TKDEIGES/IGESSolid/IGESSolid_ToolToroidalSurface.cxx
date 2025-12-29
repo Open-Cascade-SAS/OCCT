@@ -31,7 +31,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESSolid_ToolToroidalSurface::IGESSolid_ToolToroidalSurface() {}
+IGESSolid_ToolToroidalSurface::IGESSolid_ToolToroidalSurface() = default;
 
 void IGESSolid_ToolToroidalSurface::ReadOwnParams(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,

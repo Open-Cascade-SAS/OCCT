@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepGeom_RWSuParameters::RWStepGeom_RWSuParameters() {}
+RWStepGeom_RWSuParameters::RWStepGeom_RWSuParameters() = default;
 
 //=================================================================================================
 

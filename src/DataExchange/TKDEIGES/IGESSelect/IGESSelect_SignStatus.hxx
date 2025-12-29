@@ -52,10 +52,10 @@ public:
     const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Performs the match rule (see above)
-  Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model,
-                                       const TCollection_AsciiString&               text,
-                                       const bool exact) const override;
+  Standard_EXPORT bool Matches(const occ::handle<Standard_Transient>&       ent,
+                               const occ::handle<Interface_InterfaceModel>& model,
+                               const TCollection_AsciiString&               text,
+                               const bool                                   exact) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignStatus, IFSelect_Signature)
 };

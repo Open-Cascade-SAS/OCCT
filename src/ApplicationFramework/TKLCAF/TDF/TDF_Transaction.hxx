@@ -90,8 +90,8 @@ public:
 
 private:
   //! Private to avoid copy.
-  TDF_Transaction(const TDF_Transaction& aTrans);
-  TDF_Transaction& operator=(const TDF_Transaction& theOther);
+  TDF_Transaction(const TDF_Transaction& aTrans)              = delete;
+  TDF_Transaction& operator=(const TDF_Transaction& theOther) = delete;
 
 private:
   occ::handle<TDF_Data>   myDF;

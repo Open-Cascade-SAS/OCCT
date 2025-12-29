@@ -30,9 +30,7 @@
 //=================================================================================================
 
 RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::
-  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol()
-{
-}
+  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol() = default;
 
 //=================================================================================================
 

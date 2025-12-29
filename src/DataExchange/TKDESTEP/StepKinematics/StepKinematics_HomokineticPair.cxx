@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_HomokineticPair, StepKinematics_Univer
 
 //=================================================================================================
 
-StepKinematics_HomokineticPair::StepKinematics_HomokineticPair() {}
+StepKinematics_HomokineticPair::StepKinematics_HomokineticPair() = default;

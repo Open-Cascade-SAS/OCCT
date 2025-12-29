@@ -52,10 +52,10 @@ public:
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
+  Standard_EXPORT gp_Pnt Vertex(const double theU, const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Dir Normal(const double theU, const double theV) const override;
+  Standard_EXPORT gp_Dir Normal(const double theU, const double theV) const override;
 
 protected:
   double myBottomRadius; //!< cylinder bottom radius

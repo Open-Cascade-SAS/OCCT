@@ -186,7 +186,7 @@ protected:
   }
 
   //
-  virtual ~BOPDS_Interf() {}
+  virtual ~BOPDS_Interf() = default;
 
 protected:
   int                                    myIndex1;
@@ -209,9 +209,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfVV()
-      : BOPDS_Interf()
-  {
-  }
+
+    = default;
 
   //
   /**
@@ -228,7 +227,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfVV() {}
+  ~BOPDS_InterfVV() override = default;
 
   //
 };
@@ -247,8 +246,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfVE()
-      : BOPDS_Interf(),
-        myParameter(0.)
+      : myParameter(0.)
   {
   }
 
@@ -268,7 +266,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfVE() {}
+  ~BOPDS_InterfVE() override = default;
 
   //
   /**
@@ -310,8 +308,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfVF()
-      : BOPDS_Interf(),
-        myU(0.),
+      : myU(0.),
         myV(0.)
   {
   }
@@ -333,7 +330,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfVF() {}
+  ~BOPDS_InterfVF() override = default;
 
   //
   /**
@@ -388,9 +385,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfEE()
-      : BOPDS_Interf()
-  {
-  }
+
+    = default;
 
   //
   /**
@@ -407,7 +403,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfEE() {}
+  ~BOPDS_InterfEE() override = default;
 
   //
   /**
@@ -445,9 +441,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfEF()
-      : BOPDS_Interf()
-  {
-  }
+
+    = default;
 
   //
   /**
@@ -469,7 +464,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfEF() {}
+  ~BOPDS_InterfEF() override = default;
 
   //
   /**
@@ -509,8 +504,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfFF()
-      : BOPDS_Interf(),
-        myTangentFaces(false),
+      : myTangentFaces(false),
         myCurves(0, myAllocator),
         myPoints(0, myAllocator)
   {
@@ -520,7 +514,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfFF() {}
+  ~BOPDS_InterfFF() override = default;
 
   //
   /**
@@ -615,8 +609,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfVZ()
-      : BOPDS_Interf() {};
+  BOPDS_InterfVZ() = default;
   //
   /**
    *  Constructor
@@ -629,7 +622,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfVZ() {};
+  ~BOPDS_InterfVZ() override = default;
   //
 };
 
@@ -646,8 +639,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfEZ()
-      : BOPDS_Interf() {};
+  BOPDS_InterfEZ() = default;
   //
   /**
    *  Constructor
@@ -660,7 +652,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfEZ() {};
+  ~BOPDS_InterfEZ() override = default;
   //
 };
 
@@ -677,8 +669,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfFZ()
-      : BOPDS_Interf() {};
+  BOPDS_InterfFZ() = default;
   //
   /**
    *  Constructor
@@ -691,7 +682,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfFZ() {};
+  ~BOPDS_InterfFZ() override = default;
   //
 };
 
@@ -708,8 +699,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfZZ()
-      : BOPDS_Interf() {};
+  BOPDS_InterfZZ() = default;
   //
   /**
    *  Constructor
@@ -722,7 +712,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~BOPDS_InterfZZ() {};
+  ~BOPDS_InterfZZ() override = default;
   //
 };
 

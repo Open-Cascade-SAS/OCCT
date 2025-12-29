@@ -30,7 +30,7 @@ class CLocalePtr
 public:
   CLocalePtr()
   #ifdef OCCT_CLOCALE_POSIX2008
-      : myLocale(newlocale(LC_ALL_MASK, "C", NULL))
+      : myLocale(newlocale(LC_ALL_MASK, "C", nullptr))
   #elif defined(_MSC_VER)
       : myLocale(_create_locale(LC_ALL, "C"))
   #else

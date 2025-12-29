@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AISPresentation, TDF_Attribute)
 
 //=================================================================================================
 
-TPrsStd_AISPresentation::TPrsStd_AISPresentation() {}
+TPrsStd_AISPresentation::TPrsStd_AISPresentation() = default;
 
 //=================================================================================================
 

@@ -60,7 +60,7 @@ public:
   /**
    * Destructor
    */
-  ~BOPDS_CoupleOfPaveBlocks() {}
+  ~BOPDS_CoupleOfPaveBlocks() = default;
 
   //
   /**

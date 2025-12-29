@@ -28,7 +28,7 @@
 #include <Transfer_TransientProcess.hxx>
 #include <Transfer_VoidBinder.hxx>
 
-Transfer_TransferInput::Transfer_TransferInput() {}
+Transfer_TransferInput::Transfer_TransferInput() = default;
 
 //  Results : For the Model ...
 

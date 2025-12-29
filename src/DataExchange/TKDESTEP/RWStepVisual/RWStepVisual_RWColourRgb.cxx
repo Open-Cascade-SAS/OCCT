@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_ColourRgb.hxx>
 
-RWStepVisual_RWColourRgb::RWStepVisual_RWColourRgb() {}
+RWStepVisual_RWColourRgb::RWStepVisual_RWColourRgb() = default;
 
 void RWStepVisual_RWColourRgb::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                         const int                                   num,

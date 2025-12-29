@@ -315,7 +315,7 @@ bool FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 
 //=================================================================================================
 
-Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = NULL;
+Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = nullptr;
 
 //=================================================================================================
 
@@ -325,7 +325,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
 {
   if (LF1.IsEmpty())
     return;
-  if (GLOBAL_DS2d == NULL)
+  if (GLOBAL_DS2d == nullptr)
     GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
   GLOBAL_DS2d->Init();
 
@@ -1134,7 +1134,7 @@ void TopOpeBRepBuild_Builder::GSplitEdgeWES(const TopoDS_Shape&                 
 
 Standard_IMPORT bool                         FUN_ismotheropedef();
 Standard_IMPORT const TopOpeBRepBuild_GTopo& FUN_motherope();
-Standard_EXPORT bool                         GLOBAL_IEtoMERGE = 0; // xpu240498
+Standard_EXPORT bool                         GLOBAL_IEtoMERGE = false; // xpu240498
 
 #ifdef OCCT_DEBUG
 void debmergee(const int /*i*/) {}

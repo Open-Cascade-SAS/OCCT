@@ -22,7 +22,7 @@
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 
-RWStepRepr_RWDefinitionalRepresentation::RWStepRepr_RWDefinitionalRepresentation() {}
+RWStepRepr_RWDefinitionalRepresentation::RWStepRepr_RWDefinitionalRepresentation() = default;
 
 void RWStepRepr_RWDefinitionalRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,

@@ -229,21 +229,21 @@ void TNaming_Identifier::AncestorIdentification(TNaming_Localizer&  Localizer,
   if (Context.IsNull())
   {
     myType = TNaming_UNKNOWN;
-    myDone = 0;
+    myDone = false;
     return;
   }
   Localizer.FindFeaturesInAncestors(myShape, Context, AncInFeature);
 
   if (AncInFeature.IsEmpty())
   {
-    myDone = 0;
+    myDone = false;
     return;
   }
   myType = TNaming_INTERSECTION;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itS(AncInFeature);
   for (; itS.More(); itS.Next())
     myShapeArgs.Append(itS.Key());
-  myDone = 1;
+  myDone = true;
 }
 
 //=================================================================================================
@@ -255,20 +255,20 @@ bool IsImported(const occ::handle<TNaming_NamedShape>& NS)
   for (TDF_ChildIterator cit(Father); cit.More(); cit.Next())
   {
     if (cit.Value() != Lab)
-      return 0;
+      return false;
   }
 
   TNaming_Iterator it(NS);
   if (!it.More())
-    return 0;
+    return false;
   it.Next();
   if (!it.More())
-    return 0;
+    return false;
   // plus d un shape.
 #ifdef OCCT_DEBUG
   std::cout << "WARNING IMPORTED" << std::endl;
 #endif
-  return 1;
+  return true;
 }
 
 //=================================================================================================
@@ -285,7 +285,7 @@ void TNaming_Identifier::PrimitiveIdentification(TNaming_Localizer& /*L*/,
     myType      = TNaming_CONSTSHAPE;
     myIsFeature = false;
   }
-  myDone = 1;
+  myDone = true;
 }
 
 //=======================================================================
@@ -303,7 +303,7 @@ void TNaming_Identifier::GeneratedIdentification(TNaming_Localizer& /*Localizer*
   myShapeArgs.Append(aListOfGenerators);
   myNSContext = NS;
   myType      = TNaming_GENERATION;
-  myDone      = 1;
+  myDone      = true;
 }
 
 //=================================================================================================
@@ -319,7 +319,7 @@ void TNaming_Identifier::Identification(TNaming_Localizer&                     L
 
   if (Primitives.IsEmpty() && Shapes.IsEmpty())
   {
-    myDone = 0;
+    myDone = false;
     return;
   }
   myType = TNaming_INTERSECTION;
@@ -341,5 +341,5 @@ void TNaming_Identifier::Identification(TNaming_Localizer&                     L
       myIsFeature = false;
     }
   }
-  myDone = 1;
+  myDone = true;
 }

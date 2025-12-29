@@ -35,7 +35,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "reflistattguid")
 
 XmlMDataStd_ReferenceListDriver::XmlMDataStd_ReferenceListDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -59,7 +59,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
@@ -109,7 +109,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
     while (*aCurElement != anElement.getLastChild())
     {
       aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
-      if (aValueStr == NULL)
+      if (aValueStr == nullptr)
       {
         myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
         return false;
@@ -134,7 +134,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
 
     // Last reference
     aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
-    if (aValueStr == NULL)
+    if (aValueStr == nullptr)
     {
       myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
       return false;

@@ -45,7 +45,7 @@ public:
   Standard_EXPORT void Start(const occ::handle<V3d_View>& theView, double theTargetFps);
 
   //! Stop thread.
-  Standard_EXPORT void Stop(const occ::handle<V3d_View>& theView = NULL);
+  Standard_EXPORT void Stop(const occ::handle<V3d_View>& theView = nullptr);
 
   //! Return TRUE if redrawer thread is in paused state.
   bool IsPaused() const { return myToPause; }
@@ -62,7 +62,7 @@ private:
   {
     ViewerTest_ContinuousRedrawer* aThis = (ViewerTest_ContinuousRedrawer*)theData;
     aThis->doThreadLoop();
-    return 0;
+    return nullptr;
   }
 
   //! Empty constructor.

@@ -392,7 +392,7 @@ protected: //! @name interface methods
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Destructor.
-  Standard_EXPORT virtual ~PrsMgr_PresentableObject();
+  Standard_EXPORT ~PrsMgr_PresentableObject() override;
 
   //! Fills the given 3D view presentation for specified display mode using Compute() method.
   //! In addition, configures other properties of presentation (transformation, clipping planes).

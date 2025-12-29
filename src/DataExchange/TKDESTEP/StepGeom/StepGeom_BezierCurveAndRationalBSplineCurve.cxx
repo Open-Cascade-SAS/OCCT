@@ -19,7 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BezierCurveAndRationalBSplineCurve, StepGeom_BSplineCurve)
 
-StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve() {}
+StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve() =
+  default;
 
 void StepGeom_BezierCurveAndRationalBSplineCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

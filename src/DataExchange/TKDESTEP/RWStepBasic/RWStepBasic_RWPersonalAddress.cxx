@@ -21,7 +21,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWPersonalAddress::RWStepBasic_RWPersonalAddress() {}
+RWStepBasic_RWPersonalAddress::RWStepBasic_RWPersonalAddress() = default;
 
 void RWStepBasic_RWPersonalAddress::ReadStep(
   const occ::handle<StepData_StepReaderData>&   data,

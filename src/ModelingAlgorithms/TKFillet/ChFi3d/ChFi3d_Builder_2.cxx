@@ -206,13 +206,13 @@ static bool BonVoisin(const gp_Pnt&                     Point,
                       const ChFiDS_Map&                 EFMap,
                       const double                      tol3d)
 {
-  bool                           bonvoisin = 1;
+  bool                           bonvoisin = true;
   double                         winter;
   gp_Pnt                         papp = HS->Value(XDep, YDep);
   double                         dist = RealLast();
   occ::handle<BRepAdaptor_Curve> hc   = new BRepAdaptor_Curve();
   occ::handle<Geom2d_Curve>      PC;
-  bool                           found = 0;
+  bool                           found = false;
 
   TopExp_Explorer Ex;
   for (Ex.Init(F, TopAbs_EDGE); Ex.More(); Ex.Next())
@@ -222,7 +222,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
     {
       hc->Initialize(ecur);
       double tolc = hc->Resolution(tol3d);
-      if (ChFi3d_InterPlaneEdge(plane, hc, winter, 1, tolc))
+      if (ChFi3d_InterPlaneEdge(plane, hc, winter, true, tolc))
       {
         gp_Pnt np    = hc->Value(winter);
         double ndist = np.SquareDistance(papp);
@@ -243,7 +243,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
             //  Modified by Sergey KHROMOV - Fri Dec 21 17:12:51 2001 End
             if ((!issame || (issame && isreallyclosed)) && istg)
             {
-              found            = 1;
+              found            = true;
               TopoDS_Edge newe = ecur;
               newe.Orientation(TopAbs_FORWARD);
               dist = ndist;
@@ -293,7 +293,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
     }
   }
   if (!found)
-    bonvoisin = 0;
+    bonvoisin = false;
   return bonvoisin;
 }
 
@@ -944,14 +944,14 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
       ResV = AS.VResolution(TolE);
       derive *= 2 * (std::abs(derive.X()) * ResU + std::abs(derive.Y()) * ResV);
       P2d = P1.Translated(derive);
-      if (I1->Classify(P2d, std::min(ResU, ResV), 0) == TopAbs_IN)
+      if (I1->Classify(P2d, std::min(ResU, ResV), false) == TopAbs_IN)
       {
         P1 = P2d;
       }
       else
       {
         P2d = P1.Translated(-derive);
-        if (I1->Classify(P2d, std::min(ResU, ResV), 0) == TopAbs_IN)
+        if (I1->Classify(P2d, std::min(ResU, ResV), false) == TopAbs_IN)
         {
           P1 = P2d;
         }
@@ -1027,7 +1027,7 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
       occ::handle<Geom_Plane>          pl    = new Geom_Plane(P, V);
       occ::handle<GeomAdaptor_Surface> plane = new GeomAdaptor_Surface(pl);
 
-      bool bonvoisin = 1, found = 0;
+      bool bonvoisin = true, found = false;
       int  NbChangement;
       for (NbChangement = 1; bonvoisin && (!found) && (NbChangement < 5); NbChangement++)
       {
@@ -1695,7 +1695,7 @@ static void ChFi3d_SingularExtremity(occ::handle<ChFiDS_Stripe>& stripe,
 static bool IsFree(const TopoDS_Shape& E, const ChFiDS_Map& EFMap)
 {
   if (!EFMap.Contains(E))
-    return 0;
+    return false;
   NCollection_List<TopoDS_Shape>::Iterator It;
   TopoDS_Shape                             Fref;
   for (It.Initialize(EFMap(E)); It.More(); It.Next())
@@ -1703,9 +1703,9 @@ static bool IsFree(const TopoDS_Shape& E, const ChFiDS_Map& EFMap)
     if (Fref.IsNull())
       Fref = It.Value();
     else if (!Fref.IsSame(It.Value()))
-      return 0;
+      return false;
   }
-  return 1;
+  return true;
 }
 
 static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
@@ -1774,8 +1774,8 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       {
         ChFi3d_EnlargeBox(CV2.Arc(), EFMap(CV2.Arc()), CV2.ParameterOnArc(), b2);
       }
-      ChFi3d_EnlargeBox(DStr, Stripe, SDF, b1, b2, 1);
-      ChFi3d_EnlargeBox(DStr, Stripe, SDL, b1, b2, 0);
+      ChFi3d_EnlargeBox(DStr, Stripe, SDF, b1, b2, true);
+      ChFi3d_EnlargeBox(DStr, Stripe, SDL, b1, b2, false);
       if (!CV1.IsVertex())
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexFirstPointOnS1());
       if (!CV2.IsVertex())
@@ -1864,7 +1864,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       {
         ChFi3d_EnlargeBox(cpdeb2.Arc(), EFMap(cpdeb2.Arc()), cpdeb2.ParameterOnArc(), b2);
       }
-      ChFi3d_EnlargeBox(DStr, Stripe, SDdeb, b1, b2, 1);
+      ChFi3d_EnlargeBox(DStr, Stripe, SDdeb, b1, b2, true);
       if (!cpdeb1.IsVertex())
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexFirstPointOnS1());
       if (!cpdeb2.IsVertex())
@@ -1949,7 +1949,7 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       {
         ChFi3d_EnlargeBox(cpfin2.Arc(), EFMap(cpfin2.Arc()), cpfin2.ParameterOnArc(), b2);
       }
-      ChFi3d_EnlargeBox(DStr, Stripe, SDfin, b1, b2, 0);
+      ChFi3d_EnlargeBox(DStr, Stripe, SDfin, b1, b2, false);
       if (!cpfin1.IsVertex())
         ChFi3d_SetPointTolerance(DStr, b1, Stripe->IndexLastPointOnS1());
       if (!cpfin2.IsVertex())
@@ -2176,7 +2176,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
   bool   Inside  = false;
   double First   = wf;
   double Last    = wl;
-  bool   Ok1 = 1, Ok2 = 1;
+  bool   Ok1 = true, Ok2 = true;
   // Restore the next KPart if it exists
   TopoDS_Vertex Vref;
   if (ref.IsNull() && raf.IsNull())
@@ -2281,7 +2281,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
   if (!Guide.IsPeriodic())
   {
     int indf = Spine->Index(wf);
-    int indl = Spine->Index(wl, 0);
+    int indl = Spine->Index(wl, false);
     if (Spine->IsPeriodic() && (indl < indf))
       indl += nbed;
     nbed = indl - indf + 1;
@@ -2307,7 +2307,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
   while (!fini)
   {
     // are these the ends (no extension on periodic).
-    Ok1 = 1, Ok2 = 1;
+    Ok1 = true, Ok2 = true;
     if (!Spine->IsPeriodic())
     {
       if (wf < tolesp && (complete == Inside))
@@ -2586,7 +2586,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
-      decroch2 = 0;
+      decroch2 = false;
     }
     else if (obstacleon2)
     {
@@ -2657,7 +2657,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->Face()));
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->Face()));
-      decroch1 = 0;
+      decroch1 = false;
     }
     else
     {
@@ -2694,7 +2694,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine(const occ::handle<ChFiDS_ElSpine>
                       intl,
                       HS1,
                       HS2);
-      decroch1 = decroch2 = 0;
+      decroch1 = decroch2 = false;
     }
 
     if (!done)
@@ -2963,8 +2963,8 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
           if (WLast <= WFirst + tolesp)
             WLast += Spine->Period();
         }
-        TgtKP(LSD.Value(j), Spine, iedge, 1, PFirst, TFirst);
-        TgtKP(LSD.Value(j), Spine, iedge, 0, PLast, TLast);
+        TgtKP(LSD.Value(j), Spine, iedge, true, PFirst, TFirst);
+        TgtKP(LSD.Value(j), Spine, iedge, false, PLast, TLast);
 
         // Determine the sections to approximate
         if (!YaKPart)
@@ -3182,8 +3182,8 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       }
 
       // It is checked if there are presentable neighbors
-      bool yaprevon1 = 0, yaprevon2 = 0;
-      bool samesurfon1 = 0, samesurfon2 = 0;
+      bool yaprevon1 = false, yaprevon2 = false;
+      bool samesurfon1 = false, samesurfon2 = false;
       if (iprev)
       {
         prevsd      = SeqSurf.ChangeValue(iprev);
@@ -3192,7 +3192,7 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         yaprevon2   = !prevsd->TwistOnS2();
         samesurfon2 = (prevsd->IndexOfS2() == cursurf2);
       }
-      bool yanexton1 = 0, yanexton2 = 0;
+      bool yanexton1 = false, yanexton2 = false;
       if (inext)
       {
         nextsd    = SeqSurf.ChangeValue(inext);
@@ -3213,7 +3213,7 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       TopoDS_Face                      F2 = TopoDS::Face(DStr.Shape(cursurf2));
       S2->Initialize(F2);
       occ::handle<GeomFill_Boundary> Bdeb, Bfin, Bon1, Bon2;
-      bool                           pointuon1 = 0, pointuon2 = 0;
+      bool                           pointuon1 = false, pointuon2 = false;
       if (tw1)
       {
         if (!yaprevon1 || !yanexton1)
@@ -3253,7 +3253,7 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
             //  Modified by Sergey KHROMOV - Wed Feb  5 12:03:17 2003 End
             previntf1.SetLastParameter(nprevpar1);
             nextintf1.SetFirstParameter(nnextpar1);
-            pointuon1 = 1;
+            pointuon1 = true;
             PC1.Nullify();
           }
           else
@@ -3324,7 +3324,7 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
             //  Modified by Sergey KHROMOV - Wed Feb  5 12:03:17 2003 End
             previntf2.SetLastParameter(nprevpar2);
             nextintf2.SetFirstParameter(nnextpar2);
-            pointuon2 = 1;
+            pointuon2 = true;
             PC2.Nullify();
           }
           else
@@ -3382,11 +3382,11 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
 
       GeomFill_ConstrainedFilling fil(11, 20);
       if (pointuon1)
-        fil.Init(Bon2, Bfin, Bdeb, 1);
+        fil.Init(Bon2, Bfin, Bdeb, true);
       else if (pointuon2)
-        fil.Init(Bon1, Bfin, Bdeb, 1);
+        fil.Init(Bon1, Bfin, Bdeb, true);
       else
-        fil.Init(Bon1, Bfin, Bon2, Bdeb, 1);
+        fil.Init(Bon1, Bfin, Bon2, Bdeb, true);
 
       ChFi3d_ReparamPcurv(0., 1., PC1);
       ChFi3d_ReparamPcurv(0., 1., PC2);
@@ -3394,12 +3394,34 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       if (pointuon1)
       {
         newsurf->VReverse(); // we return to direction 1 from  2;
-        done = CompleteData(cursd, newsurf, S1, PC1, S2, PC2, F2.Orientation(), 0, 0, 0, 0, 0);
+        done = CompleteData(cursd,
+                            newsurf,
+                            S1,
+                            PC1,
+                            S2,
+                            PC2,
+                            F2.Orientation(),
+                            false,
+                            false,
+                            false,
+                            false,
+                            false);
         cursd->ChangeIndexOfS1(0);
       }
       else
       {
-        done = CompleteData(cursd, newsurf, S1, PC1, S2, PC2, F1.Orientation(), 1, 0, 0, 0, 0);
+        done = CompleteData(cursd,
+                            newsurf,
+                            S1,
+                            PC1,
+                            S2,
+                            PC2,
+                            F1.Orientation(),
+                            true,
+                            false,
+                            false,
+                            false,
+                            false);
         if (pointuon2)
           cursd->ChangeIndexOfS2(0);
       }
@@ -3487,8 +3509,8 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
         ChFi3d_EnlargeBox(curp2.Arc(), myEFMap(curp2.Arc()), curp2.ParameterOnArc(), b2);
       }
       occ::handle<ChFiDS_Stripe> bidst;
-      ChFi3d_EnlargeBox(DStr, bidst, cursd, b1, b2, 0);
-      ChFi3d_EnlargeBox(DStr, bidst, nextsd, b1, b2, 1);
+      ChFi3d_EnlargeBox(DStr, bidst, cursd, b1, b2, false);
+      ChFi3d_EnlargeBox(DStr, bidst, nextsd, b1, b2, true);
       tol1 = ChFi3d_BoxDiag(b1);
       tol2 = ChFi3d_BoxDiag(b2);
       curp1.SetTolerance(tol1);
@@ -3510,16 +3532,16 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       {
         period = Spine->Period();
         nwf    = ElCLib::InPeriod(WF, -tolesp, period - tolesp);
-        IF     = Spine->Index(nwf, 1);
+        IF     = Spine->Index(nwf, true);
         nwl    = ElCLib::InPeriod(WL, tolesp, period + tolesp);
-        IL     = Spine->Index(nwl, 0);
+        IL     = Spine->Index(nwl, false);
         if (nwl < nwf + tolesp)
           IL += nbed;
       }
       else
       {
-        IF = Spine->Index(WF, 1);
-        IL = Spine->Index(WL, 0);
+        IF = Spine->Index(WF, true);
+        IL = Spine->Index(WL, false);
       }
       if (IF == IL)
       {

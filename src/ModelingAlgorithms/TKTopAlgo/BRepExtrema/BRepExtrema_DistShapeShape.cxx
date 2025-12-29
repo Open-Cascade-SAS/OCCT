@@ -151,8 +151,8 @@ struct VertexFunctor
   VertexFunctor(NCollection_Array1<IndexBand>* theBandArray, const Message_ProgressRange& theRange)
       : BandArray(theBandArray),
         Solution(theBandArray->Size()),
-        Map1(NULL),
-        Map2(NULL),
+        Map1(nullptr),
+        Map2(nullptr),
         Scope(theRange, "Vertices distances calculating", theBandArray->Size()),
         Ranges(0, theBandArray->Size() - 1),
         Eps(Precision::Confusion()),
@@ -171,7 +171,7 @@ struct VertexFunctor
     const int aLast         = BandArray->Value(theIndex).Last;
     Solution.Dist[theIndex] = StartDist;
 
-    Message_ProgressScope aScope(Ranges[theIndex], NULL, (double)aLast - aFirst);
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, (double)aLast - aFirst);
 
     for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
@@ -249,7 +249,7 @@ bool BRepExtrema_DistShapeShape::DistanceVertVert(
 
   int                           aFirstIndex(1);
   NCollection_Array1<IndexBand> aBandArray(0, aNbTasks - 1);
-  Message_ProgressScope         aDistScope(theRange, NULL, 1);
+  Message_ProgressScope         aDistScope(theRange, nullptr, 1);
 
   for (int anI = 0; anI < aBandArray.Size(); ++anI)
   {
@@ -301,10 +301,10 @@ struct DistanceFunctor
                   const Message_ProgressRange&                                   theRange)
       : ArrayOfArrays(theArrayOfArrays),
         Solution(ArrayOfArrays->Size()),
-        Map1(NULL),
-        Map2(NULL),
-        LBox1(NULL),
-        LBox2(NULL),
+        Map1(nullptr),
+        Map2(nullptr),
+        LBox1(nullptr),
+        LBox2(nullptr),
         Scope(theRange, "Shapes distances calculating", theArrayOfArrays->Size()),
         Ranges(0, theArrayOfArrays->Size() - 1),
         Eps(Precision::Confusion()),
@@ -318,7 +318,7 @@ struct DistanceFunctor
 
   void operator()(const int theIndex) const
   {
-    Message_ProgressScope aScope(Ranges[theIndex], NULL, ArrayOfArrays->Value(theIndex).Size());
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Size());
     Solution.Dist[theIndex] = StartDist;
     for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
     {
@@ -394,8 +394,8 @@ struct DistancePairFunctor
                       const Message_ProgressRange&   theRange)
       : BandArray(theBandArray),
         PairList(0, theBandArray->Size() - 1),
-        LBox1(NULL),
-        LBox2(NULL),
+        LBox1(nullptr),
+        LBox2(nullptr),
         Scope(theRange, "Boxes distances calculating", theBandArray->Size()),
         Ranges(0, theBandArray->Size() - 1),
         DistRef(0),
@@ -412,7 +412,7 @@ struct DistancePairFunctor
     const int aFirst = BandArray->Value(theIndex).First;
     const int aLast  = BandArray->Value(theIndex).Last;
 
-    Message_ProgressScope aScope(Ranges[theIndex], NULL, (double)aLast - aFirst);
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, (double)aLast - aFirst);
 
     for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
@@ -477,7 +477,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
     return true;
   }
 
-  Message_ProgressScope aTwinScope(theRange, NULL, 1.0);
+  Message_ProgressScope aTwinScope(theRange, nullptr, 1.0);
 
   const occ::handle<OSD_ThreadPool>& aThreadPool      = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads       = aThreadPool->NbThreads();
@@ -692,14 +692,14 @@ struct TreatmentFunctor
   TreatmentFunctor(NCollection_Array1<NCollection_Array1<TopoDS_Shape>>* theArrayOfArrays,
                    const Message_ProgressRange&                          theRange)
       : ArrayOfArrays(theArrayOfArrays),
-        SolutionsShape1(NULL),
-        SolutionsShape2(NULL),
+        SolutionsShape1(nullptr),
+        SolutionsShape2(nullptr),
         Scope(theRange, "Search for the inner solid", theArrayOfArrays->Size()),
         Ranges(0, theArrayOfArrays->Size() - 1),
-        DistRef(0),
-        InnerSol(NULL),
-        IsDone(NULL),
-        Mutex()
+        DistRef(nullptr),
+        InnerSol(nullptr),
+        IsDone(nullptr)
+
   {
     for (int i = 0; i < theArrayOfArrays->Size(); ++i)
     {
@@ -710,7 +710,7 @@ struct TreatmentFunctor
   void operator()(const int theIndex) const
   {
     const double          aTolerance = 0.001;
-    Message_ProgressScope aScope(Ranges[theIndex], NULL, ArrayOfArrays->Value(theIndex).Size());
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Size());
     BRepClass3d_SolidClassifier aClassifier(Shape);
 
     for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)

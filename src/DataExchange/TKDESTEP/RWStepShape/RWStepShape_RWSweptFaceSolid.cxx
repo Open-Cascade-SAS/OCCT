@@ -18,7 +18,7 @@
 #include <StepShape_FaceSurface.hxx>
 #include <StepShape_SweptFaceSolid.hxx>
 
-RWStepShape_RWSweptFaceSolid::RWStepShape_RWSweptFaceSolid() {}
+RWStepShape_RWSweptFaceSolid::RWStepShape_RWSweptFaceSolid() = default;
 
 void RWStepShape_RWSweptFaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
                                             const int                                    num,

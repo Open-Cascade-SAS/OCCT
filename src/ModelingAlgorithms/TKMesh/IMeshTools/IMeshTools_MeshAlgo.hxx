@@ -27,7 +27,7 @@ class IMeshTools_MeshAlgo : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_MeshAlgo() {}
+  ~IMeshTools_MeshAlgo() override = default;
 
   //! Performs processing of the given face.
   Standard_EXPORT virtual void Perform(const IMeshData::IFaceHandle& theDFace,

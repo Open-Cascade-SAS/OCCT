@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_Vertex.hxx>
 
-RWStepShape_RWVertex::RWStepShape_RWVertex() {}
+RWStepShape_RWVertex::RWStepShape_RWVertex() = default;
 
 void RWStepShape_RWVertex::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                     const int                                   num,

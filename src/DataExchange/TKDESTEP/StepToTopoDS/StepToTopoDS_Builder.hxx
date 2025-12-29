@@ -86,7 +86,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<StepShape_GeometricSet>&    S,
                             const occ::handle<Transfer_TransientProcess>& TP,
                             const StepData_Factors& theLocalFactors = StepData_Factors(),
-                            const occ::handle<Transfer_ActorOfTransientProcess>& RA         = NULL,
+                            const occ::handle<Transfer_ActorOfTransientProcess>& RA = nullptr,
                             const bool                                           isManifold = false,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 

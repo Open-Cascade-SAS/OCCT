@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWFeatureForDatumTargetRelationship::RWStepRepr_RWFeatureForDatumTargetRelationship() {}
+RWStepRepr_RWFeatureForDatumTargetRelationship::RWStepRepr_RWFeatureForDatumTargetRelationship() =
+  default;
 
 //=================================================================================================
 

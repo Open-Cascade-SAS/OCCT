@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_LineProfileTolerance, StepDimTol_Geometric
 
 //=================================================================================================
 
-StepDimTol_LineProfileTolerance::StepDimTol_LineProfileTolerance() {}
+StepDimTol_LineProfileTolerance::StepDimTol_LineProfileTolerance() = default;

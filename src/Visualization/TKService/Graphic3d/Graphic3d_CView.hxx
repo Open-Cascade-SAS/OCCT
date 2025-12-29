@@ -62,7 +62,7 @@ public:
   Standard_EXPORT Graphic3d_CView(const occ::handle<Graphic3d_StructureManager>& theMgr);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_CView();
+  Standard_EXPORT ~Graphic3d_CView() override;
 
   //! Returns the identification number of the view.
   int Identification() const { return myId; }
@@ -85,7 +85,7 @@ public:
   bool IsRemoved() const { return myIsRemoved; }
 
   //! Returns camera object of the view.
-  virtual const occ::handle<Graphic3d_Camera>& Camera() const override { return myCamera; }
+  const occ::handle<Graphic3d_Camera>& Camera() const override { return myCamera; }
 
   //! Sets camera used by the view.
   virtual void SetCamera(const occ::handle<Graphic3d_Camera>& theCamera) { myCamera = theCamera; }
@@ -593,8 +593,7 @@ public: //! @name obsolete Graduated Trihedron functionality
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public: //! @name subview properties
   //! Return TRUE if this is a subview of another view.

@@ -76,7 +76,7 @@ void TopOpeBRepBuild_BuilderON::Perform2d(const TopOpeBRepBuild_PBuilder&     PB
   myPWES     = PWES;
 
   const TopOpeBRepDS_DataStructure& BDS = myPB->DataStructure()->DS();
-  if (GLOBAL_DS2d == NULL)
+  if (GLOBAL_DS2d == nullptr)
     GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFEI =
     GLOBAL_DS2d->ShapeInterferences(FOR);

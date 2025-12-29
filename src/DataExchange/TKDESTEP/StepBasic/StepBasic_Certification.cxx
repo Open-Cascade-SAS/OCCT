@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Certification, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_Certification::StepBasic_Certification() {}
+StepBasic_Certification::StepBasic_Certification() = default;
 
 //=================================================================================================
 

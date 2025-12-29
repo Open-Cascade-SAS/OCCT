@@ -218,7 +218,7 @@ void BRepFeat_RibSlot::LFPerform()
     bool                                     bFlag;
     NCollection_List<TopoDS_Shape>::Iterator aIt;
 
-    bFlag = (myPerfSelection == BRepFeat_NoSelection) ? 0 : 1;
+    bFlag = (myPerfSelection == BRepFeat_NoSelection) ? false : true;
     //
     theBuilder.Init(mySbase, myGShape);
     theBuilder.SetOperation(myFuse, bFlag);

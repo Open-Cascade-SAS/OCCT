@@ -19,7 +19,7 @@
 #include <StepRepr_IntegerRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWIntegerRepresentationItem::RWStepRepr_RWIntegerRepresentationItem() {}
+RWStepRepr_RWIntegerRepresentationItem::RWStepRepr_RWIntegerRepresentationItem() = default;
 
 void RWStepRepr_RWIntegerRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

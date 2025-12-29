@@ -34,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveObject, SelectMgr_SelectableObject)
 AIS_InteractiveObject::AIS_InteractiveObject(
   const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
     : SelectMgr_SelectableObject(aTypeOfPresentation3d),
-      myCTXPtr(NULL)
+      myCTXPtr(nullptr)
 {
   //
 }
@@ -43,7 +43,7 @@ AIS_InteractiveObject::AIS_InteractiveObject(
 
 void AIS_InteractiveObject::Redisplay(const bool AllModes)
 {
-  if (myCTXPtr == NULL)
+  if (myCTXPtr == nullptr)
     return;
 
   myCTXPtr->Redisplay(this, false, AllModes);

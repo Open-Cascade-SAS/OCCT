@@ -45,9 +45,9 @@ public:
 
   Standard_EXPORT void ResetError();
 
-  Standard_EXPORT int NbPoints() const;
+  Standard_EXPORT int NbPoints() const override;
 
-  Standard_EXPORT gp_Pnt2d Point(const int Index) const;
+  Standard_EXPORT gp_Pnt2d Point(const int Index) const override;
 
 private:
   Standard_EXPORT void Prepare();

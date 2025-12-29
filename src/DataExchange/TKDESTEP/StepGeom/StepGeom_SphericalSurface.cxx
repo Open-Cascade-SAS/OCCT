@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SphericalSurface, StepGeom_ElementarySurface)
 
-StepGeom_SphericalSurface::StepGeom_SphericalSurface() {}
+StepGeom_SphericalSurface::StepGeom_SphericalSurface() = default;
 
 void StepGeom_SphericalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                      const occ::handle<StepGeom_Axis2Placement3d>& aPosition,

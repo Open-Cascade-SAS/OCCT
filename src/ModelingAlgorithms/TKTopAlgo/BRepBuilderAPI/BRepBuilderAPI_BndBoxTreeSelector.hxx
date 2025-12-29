@@ -34,21 +34,20 @@ class BRepBuilderAPI_BndBoxTreeSelector : public NCollection_UBTree<int, Bnd_Box
 public:
   //! Constructor; calls the base class constructor
   BRepBuilderAPI_BndBoxTreeSelector()
-      : NCollection_UBTree<int, Bnd_Box>::Selector()
-  {
-  }
+
+    = default;
 
   //! Implementation of rejection method
   //! @return
   //!   True if the bounding box does not intersect with the current
-  bool Reject(const Bnd_Box& theBox) const { return (myBox.IsOut(theBox)); }
+  bool Reject(const Bnd_Box& theBox) const override { return (myBox.IsOut(theBox)); }
 
   //! Implementation of acceptance method
   //!   This method is called when the bounding box intersect with the current.
   //!   It stores the object - the index of box in the list of accepted objects.
   //! @return
   //!   True, because the object is accepted
-  bool Accept(const int& theObj)
+  bool Accept(const int& theObj) override
   {
     myResInd.Append(theObj);
     return true;

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship, Standard_Transient)
 
-StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship() {}
+StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship() = default;
 
 void StepBasic_ApprovalRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                           const occ::handle<TCollection_HAsciiString>& aDescription,

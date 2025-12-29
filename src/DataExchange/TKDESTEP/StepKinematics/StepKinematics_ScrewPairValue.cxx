@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ScrewPairValue, StepKinematics_PairVal
 
 //=================================================================================================
 
-StepKinematics_ScrewPairValue::StepKinematics_ScrewPairValue() {}
+StepKinematics_ScrewPairValue::StepKinematics_ScrewPairValue() = default;
 
 //=================================================================================================
 

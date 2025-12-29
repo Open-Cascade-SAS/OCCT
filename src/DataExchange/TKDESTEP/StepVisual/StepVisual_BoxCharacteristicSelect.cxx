@@ -16,7 +16,7 @@
 
 #include <StepVisual_BoxCharacteristicSelect.hxx>
 
-StepVisual_BoxCharacteristicSelect::StepVisual_BoxCharacteristicSelect() {}
+StepVisual_BoxCharacteristicSelect::StepVisual_BoxCharacteristicSelect() = default;
 
 void StepVisual_BoxCharacteristicSelect::SetTypeOfContent(const int aType)
 {

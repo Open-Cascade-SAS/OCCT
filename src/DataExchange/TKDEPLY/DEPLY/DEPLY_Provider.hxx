@@ -46,7 +46,7 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual bool Write(
+  Standard_EXPORT bool Write(
     const TCollection_AsciiString&       thePath,
     const occ::handle<TDocStd_Document>& theDocument,
     occ::handle<XSControl_WorkSession>&  theWS,
@@ -57,7 +57,7 @@ public:
   //! @param[out] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual bool Write(
+  Standard_EXPORT bool Write(
     const TCollection_AsciiString&       thePath,
     const occ::handle<TDocStd_Document>& theDocument,
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
@@ -68,7 +68,7 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual bool Write(
+  Standard_EXPORT bool Write(
     const TCollection_AsciiString&      thePath,
     const TopoDS_Shape&                 theShape,
     occ::handle<XSControl_WorkSession>& theWS,
@@ -79,7 +79,7 @@ public:
   //! @param[out] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual bool Write(
+  Standard_EXPORT bool Write(
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
@@ -87,11 +87,11 @@ public:
 public:
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
-  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const override;
+  Standard_EXPORT TCollection_AsciiString GetFormat() const override;
 
   //! Gets provider's vendor name of associated provider
   //! @return provider's vendor name
-  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const override;
+  Standard_EXPORT TCollection_AsciiString GetVendor() const override;
 };
 
 #endif // _DEPLY_Provider_HeaderFile

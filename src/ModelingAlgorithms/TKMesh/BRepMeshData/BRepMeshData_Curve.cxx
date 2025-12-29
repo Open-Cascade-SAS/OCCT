@@ -29,7 +29,7 @@ BRepMeshData_Curve::BRepMeshData_Curve(const occ::handle<NCollection_IncAllocato
 
 //=================================================================================================
 
-BRepMeshData_Curve::~BRepMeshData_Curve() {}
+BRepMeshData_Curve::~BRepMeshData_Curve() = default;
 
 //=================================================================================================
 

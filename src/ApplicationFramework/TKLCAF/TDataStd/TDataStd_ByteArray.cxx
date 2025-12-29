@@ -123,7 +123,7 @@ uint8_t TDataStd_ByteArray::Value(const int index) const
 
 //=================================================================================================
 
-int TDataStd_ByteArray::Lower(void) const
+int TDataStd_ByteArray::Lower() const
 {
   if (myValue.IsNull())
     return 0;
@@ -132,7 +132,7 @@ int TDataStd_ByteArray::Lower(void) const
 
 //=================================================================================================
 
-int TDataStd_ByteArray::Upper(void) const
+int TDataStd_ByteArray::Upper() const
 {
   if (myValue.IsNull())
     return -1;
@@ -141,7 +141,7 @@ int TDataStd_ByteArray::Upper(void) const
 
 //=================================================================================================
 
-int TDataStd_ByteArray::Length(void) const
+int TDataStd_ByteArray::Length() const
 {
   if (myValue.IsNull())
     return 0;

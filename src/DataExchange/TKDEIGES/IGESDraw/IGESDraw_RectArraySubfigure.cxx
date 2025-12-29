@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_RectArraySubfigure, IGESData_IGESEntity)
 
-IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure() {}
+IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure() = default;
 
 void IGESDraw_RectArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
                                        const double                                 aScale,

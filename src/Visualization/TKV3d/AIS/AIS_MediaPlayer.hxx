@@ -29,7 +29,7 @@ public:
   Standard_EXPORT AIS_MediaPlayer();
 
   //! Destructor.
-  Standard_EXPORT virtual ~AIS_MediaPlayer();
+  Standard_EXPORT ~AIS_MediaPlayer() override;
 
   //! Setup callback to be called on queue progress (e.g. when new frame should be displayed).
   void SetCallback(Graphic3d_MediaTextureSet::CallbackOnUpdate_t theCallbackFunction,
@@ -67,16 +67,16 @@ public:
   //! @name AIS_InteractiveObject interface
 protected:
   //! Accept only display mode 0.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Compute presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
 protected:
   //! Update frame size.

@@ -142,7 +142,7 @@ static void AddToMap(
   const TopoDS_Shape& theItem)
 {
   NCollection_List<TopoDS_Shape>* aListPtr = theMap.ChangeSeek(theKey);
-  if (aListPtr == NULL)
+  if (aListPtr == nullptr)
   {
     NCollection_List<TopoDS_Shape> aList;
     aList.Append(theItem);
@@ -165,7 +165,7 @@ static void AddToMap(
     return;
 
   NCollection_List<TopoDS_Shape>* aListPtr = theMap.ChangeSeek(theKey);
-  if (aListPtr == NULL)
+  if (aListPtr == nullptr)
     theMap.Bind(theKey, theItems);
   else
     aListPtr->Append(theItems);
@@ -213,8 +213,8 @@ static bool FindMostSharedShell(
 {
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aSharedAreas;
   double                                                             aMaxSharedArea = 0.0;
-  const TopoDS_Shape* aMostSharedOuterShellPtr                                      = NULL;
-  const TopoDS_Shape* aMostSharedSolidShellPtr                                      = NULL;
+  const TopoDS_Shape* aMostSharedOuterShellPtr                                      = nullptr;
+  const TopoDS_Shape* aMostSharedSolidShellPtr                                      = nullptr;
 
   // check every shell in the solid for faces shared with outer shells
   TopoDS_Iterator aShellIter(theSolid);
@@ -235,14 +235,14 @@ static bool FindMostSharedShell(
 
       // find an outer shell that shares the current face
       const TopoDS_Shape* anOuterShellPtr = theMapFacesToOuterShells.Seek(aFace);
-      if (anOuterShellPtr == NULL)
+      if (anOuterShellPtr == nullptr)
         continue;
       const TopoDS_Shape& anOuterShell = *anOuterShellPtr;
 
       // add the face area to the sum shared area for the outer shell
       double  anArea         = ShapeArea(aFace);
       double* aSharedAreaPtr = aSharedAreas.ChangeSeek(anOuterShell);
-      if (aSharedAreaPtr == NULL)
+      if (aSharedAreaPtr == nullptr)
         aSharedAreas.Bind(anOuterShell, anArea);
       else
         anArea = (*aSharedAreaPtr) += anArea;
@@ -259,7 +259,7 @@ static bool FindMostSharedShell(
   }
 
   // return nothing if no adjanced outer shells were found
-  if (aMostSharedSolidShellPtr == NULL)
+  if (aMostSharedSolidShellPtr == nullptr)
     return false;
 
   // compose return values
@@ -317,7 +317,7 @@ static TopoDS_Shape MergeShells(
 
       // classify the face
       const TopoDS_Shape* anOuterShellPtr = theMapFacesToOuterShells.Seek(aFace);
-      if (anOuterShellPtr != NULL)
+      if (anOuterShellPtr != nullptr)
       {
         if (anOuterShellPtr->IsSame(theBaseShell))
           aRemoveFaces.Add(aFace); // face shared with the base shell
@@ -476,7 +476,7 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
         MergeShells(aBaseShell, aShellsToBeMerged, *aMapFacesToShellsPtr, *aNewMapFacesToShellsPtr);
 
       // add new shells if needed
-      if (aShellsToBeAddedPtr != NULL)
+      if (aShellsToBeAddedPtr != nullptr)
         aNewShell = AddShells(aNewShell, *aShellsToBeAddedPtr);
 
       // replace the current non-small solid's shell with the new one(s)

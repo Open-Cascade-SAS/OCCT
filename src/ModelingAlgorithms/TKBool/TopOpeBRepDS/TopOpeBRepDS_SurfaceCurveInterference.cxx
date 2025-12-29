@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_SurfaceCurveInterference, TopOpeBRepDS_I
 
 //=================================================================================================
 
-TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference() {}
+TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference() = default;
 
 //=================================================================================================
 

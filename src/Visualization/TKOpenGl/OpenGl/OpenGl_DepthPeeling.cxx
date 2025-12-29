@@ -36,7 +36,7 @@ OpenGl_DepthPeeling::OpenGl_DepthPeeling()
 
 OpenGl_DepthPeeling::~OpenGl_DepthPeeling()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================

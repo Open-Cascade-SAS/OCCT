@@ -28,9 +28,7 @@
 //=================================================================================================
 
 RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters::
-  RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters()
-{
-}
+  RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters() = default;
 
 //=================================================================================================
 

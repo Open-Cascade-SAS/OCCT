@@ -55,7 +55,7 @@ public:
   //! current opened one.
   Standard_EXPORT void Abort();
 
-  ~DDF_Transaction() { Abort(); }
+  ~DDF_Transaction() override { Abort(); }
 
   //! Returns the Data from TDF.
   Standard_EXPORT occ::handle<TDF_Data> Data() const;

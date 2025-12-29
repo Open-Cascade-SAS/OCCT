@@ -253,7 +253,7 @@ static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
 
 //=================================================================================================
 
-GeomFill_BSplineCurves::GeomFill_BSplineCurves() {}
+GeomFill_BSplineCurves::GeomFill_BSplineCurves() = default;
 
 //=================================================================================================
 

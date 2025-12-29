@@ -57,7 +57,7 @@ IMPLEMENT_DOMSTRING(EvolReplaceString, "replace")
 
 XmlMNaming_NamedShapeDriver::XmlMNaming_NamedShapeDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : XmlMDF_ADriver(theMessageDriver, NULL),
+    : XmlMDF_ADriver(theMessageDriver, nullptr),
       myShapeSet(false) // triangles mode
 {
 }
@@ -86,7 +86,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSou
   int                      aVersion   = 0;
   const XmlObjMgt_Element& anElement  = theSource;
   XmlObjMgt_DOMString      aVerString = anElement.getAttribute(::VersionString());
-  if (aVerString != NULL)
+  if (aVerString != nullptr)
     aVerString.GetInteger(aVersion);
 
   //    Get Evolution status
@@ -117,7 +117,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSou
     const XmlMNaming_Shape1 aNewPShape  = NewPShapes.Value(i);
     const XmlMNaming_Shape1 anOldPShape = OldPShapes.Value(i);
 
-    if (evol != TNaming_PRIMITIVE && anOldPShape.Element() != NULL)
+    if (evol != TNaming_PRIMITIVE && anOldPShape.Element() != nullptr)
     {
       if (::doTranslate(anOldPShape, anOldShape, aShapeSet))
       {
@@ -126,7 +126,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSou
       }
     }
 
-    if (evol != TNaming_DELETE && aNewPShape.Element() != NULL)
+    if (evol != TNaming_DELETE && aNewPShape.Element() != nullptr)
     {
       if (::doTranslate(aNewPShape, aNewShape, aShapeSet))
       {
@@ -326,9 +326,9 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection(const XmlObjMgt_Element&     
                                                    const Message_ProgressRange& theRange)
 {
   XmlObjMgt_Element anElement = XmlObjMgt::FindChildByName(theElement, ::ShapesString());
-  if (anElement != NULL)
+  if (anElement != nullptr)
   {
-    for (LDOM_Node aNode = anElement.getFirstChild(); aNode != NULL;
+    for (LDOM_Node aNode = anElement.getFirstChild(); aNode != nullptr;
          aNode           = anElement.getNextSibling())
     {
       if (aNode.getNodeType() == LDOM_Node::TEXT_NODE)

@@ -17,7 +17,7 @@
 #include <StepRepr_RealRepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem() {}
+RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem() = default;
 
 void RWStepRepr_RWRealRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&         theData,

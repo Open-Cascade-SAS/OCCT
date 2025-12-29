@@ -18,7 +18,7 @@
 #include <Standard_Assert.hxx>
 
 #include <mutex>
-#include <signal.h>
+#include <csignal>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
@@ -724,7 +724,7 @@ LONG _osd_debug(void)
 
 //---------- All Systems except Windows NT : ----------------------------------
 
-  #include <stdio.h>
+  #include <cstdio>
 
   #include <OSD_WhoAmI.hxx>
   #include <OSD_SIGHUP.hxx>
@@ -752,11 +752,11 @@ static bool fCtrlBrk;
 
 // const OSD_WhoAmI Iam = OSD_WPackage;
 
-typedef void(ACT_SIGIO_HANDLER)(void);
-ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = NULL;
+typedef void(ACT_SIGIO_HANDLER)();
+ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = nullptr;
 
   #ifdef __GNUC__
-    #include <stdlib.h>
+    #include <cstdlib>
   #else
     #ifdef SA_SIGINFO
       #include <sys/siginfo.h>
@@ -797,7 +797,7 @@ static void Handler(const int theSignal)
 {
   struct sigaction oldact, act;
   // re-install the signal
-  if (!sigaction(theSignal, NULL, &oldact))
+  if (!sigaction(theSignal, nullptr, &oldact))
   {
     // std::cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << std::endl;
     if (sigaction(theSignal, &oldact, &act))
@@ -810,7 +810,7 @@ static void Handler(const int theSignal)
 
   // std::cout << "OSD::Handler: signal " << (int) theSignal << " occurred inside a try block " <<
   // std::endl ;
-  if (ADR_ACT_SIGIO_HANDLER != NULL)
+  if (ADR_ACT_SIGIO_HANDLER != nullptr)
     (*ADR_ACT_SIGIO_HANDLER)();
 
   sigset_t set;
@@ -842,7 +842,7 @@ static void Handler(const int theSignal)
       break;
     case SIGBUS:
       sigaddset(&set, SIGBUS);
-      sigprocmask(SIG_UNBLOCK, &set, NULL);
+      sigprocmask(SIG_UNBLOCK, &set, nullptr);
       OSD_SIGBUS::NewInstance("SIGBUS 'bus error' detected.")->Jump();
       exit(SIGBUS);
       break;
@@ -858,7 +858,7 @@ static void Handler(const int theSignal)
   #endif
     case SIGFPE:
       sigaddset(&set, SIGFPE);
-      sigprocmask(SIG_UNBLOCK, &set, NULL);
+      sigprocmask(SIG_UNBLOCK, &set, nullptr);
   #ifdef __linux__
       OSD::SetFloatingSignal(true);
   #endif
@@ -920,12 +920,12 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
 {
   (void)theSignal;
   (void)theContext;
-  if (theSigInfo != NULL)
+  if (theSigInfo != nullptr)
   {
     sigset_t set;
     sigemptyset(&set);
     sigaddset(&set, SIGSEGV);
-    sigprocmask(SIG_UNBLOCK, &set, NULL);
+    sigprocmask(SIG_UNBLOCK, &set, nullptr);
     void* anAddress = theSigInfo->si_addr;
     {
       char aMsg[100];
@@ -933,8 +933,8 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
 
       const int aStackLength = OSD_SignalStackTraceLength;
       const int aStackBufLen = std::max(aStackLength * 200, 2048);
-      char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : NULL;
-      if (aStackBuffer != NULL)
+      char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : nullptr;
+      if (aStackBuffer != nullptr)
       {
         memset(aStackBuffer, 0, aStackBufLen);
         Standard::StackTrace(aStackBuffer, aStackBufLen, aStackLength);

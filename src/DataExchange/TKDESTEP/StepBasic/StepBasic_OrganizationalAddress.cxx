@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationalAddress, StepBasic_Address)
 
-StepBasic_OrganizationalAddress::StepBasic_OrganizationalAddress() {}
+StepBasic_OrganizationalAddress::StepBasic_OrganizationalAddress() = default;
 
 void StepBasic_OrganizationalAddress::Init(
   const bool                                   hasAinternalLocation,

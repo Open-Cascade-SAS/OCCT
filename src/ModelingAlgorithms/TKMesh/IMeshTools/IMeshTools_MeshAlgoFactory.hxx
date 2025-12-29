@@ -28,7 +28,7 @@ class IMeshTools_MeshAlgoFactory : public Standard_Transient
 {
 public:
   //! Destructor.
-  virtual ~IMeshTools_MeshAlgoFactory() {}
+  ~IMeshTools_MeshAlgoFactory() override = default;
 
   //! Creates instance of meshing algorithm for the given type of surface.
   Standard_EXPORT virtual occ::handle<IMeshTools_MeshAlgo> GetAlgo(

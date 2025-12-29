@@ -36,7 +36,7 @@ public:
   Standard_EXPORT OpenGl_Resource();
 
   //! Destructor. Inheritors should call Clean (NULL) within it.
-  Standard_EXPORT virtual ~OpenGl_Resource();
+  Standard_EXPORT ~OpenGl_Resource() override;
 
   //! Release GPU resources.
   //! Notice that implementation should be SAFE for several consecutive calls
@@ -57,8 +57,8 @@ public:
 
 private:
   //! Copy should be performed only within Handles!
-  OpenGl_Resource(const OpenGl_Resource&);
-  OpenGl_Resource& operator=(const OpenGl_Resource&);
+  OpenGl_Resource(const OpenGl_Resource&)            = delete;
+  OpenGl_Resource& operator=(const OpenGl_Resource&) = delete;
 
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_Resource, Standard_Transient) // Type definition

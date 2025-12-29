@@ -41,7 +41,7 @@ public:
   Standard_EXPORT Graphic3d_Text(const float theHeight);
 
   //! Destructor.
-  virtual ~Graphic3d_Text() {}
+  ~Graphic3d_Text() override = default;
 
   //! Returns text value.
   const NCollection_String& Text() const { return myText; }

@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_EntityOwner, Standard_Transient)
 //=================================================================================================
 
 SelectMgr_EntityOwner::SelectMgr_EntityOwner(const int thePriority)
-    : mySelectable(NULL),
+    : mySelectable(nullptr),
       mypriority(thePriority),
       myIsSelected(false),
       myFromDecomposition(false)
@@ -60,7 +60,7 @@ void SelectMgr_EntityOwner::HilightWithColor(const occ::handle<PrsMgr_Presentati
                                              const occ::handle<Prs3d_Drawer>& theStyle,
                                              const int                        theMode)
 {
-  if (mySelectable == NULL)
+  if (mySelectable == nullptr)
   {
     return;
   }
@@ -70,7 +70,7 @@ void SelectMgr_EntityOwner::HilightWithColor(const occ::handle<PrsMgr_Presentati
     const Graphic3d_ZLayerId aHiLayer = theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN
                                           ? theStyle->ZLayer()
                                           : mySelectable->ZLayer();
-    thePM->Color(mySelectable, theStyle, theMode, NULL, aHiLayer);
+    thePM->Color(mySelectable, theStyle, theMode, nullptr, aHiLayer);
   }
   else
   {

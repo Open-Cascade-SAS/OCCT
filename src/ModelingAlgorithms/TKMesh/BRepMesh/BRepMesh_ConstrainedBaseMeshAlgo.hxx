@@ -26,10 +26,10 @@ class BRepMesh_ConstrainedBaseMeshAlgo : public BRepMesh_BaseMeshAlgo
 {
 public:
   //! Constructor.
-  BRepMesh_ConstrainedBaseMeshAlgo() {}
+  BRepMesh_ConstrainedBaseMeshAlgo() = default;
 
   //! Destructor.
-  virtual ~BRepMesh_ConstrainedBaseMeshAlgo() {}
+  ~BRepMesh_ConstrainedBaseMeshAlgo() override = default;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ConstrainedBaseMeshAlgo, BRepMesh_BaseMeshAlgo)
 

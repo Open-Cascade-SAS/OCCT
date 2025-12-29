@@ -34,7 +34,7 @@
 #include <Standard_RangeError.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
   #include <Geom_BSplineCurve.hxx>

@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_PerpendicularityTolerance,
 
 //=================================================================================================
 
-StepDimTol_PerpendicularityTolerance::StepDimTol_PerpendicularityTolerance() {}
+StepDimTol_PerpendicularityTolerance::StepDimTol_PerpendicularityTolerance() = default;

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PlanarExtent.hxx>
 
-RWStepVisual_RWPlanarExtent::RWStepVisual_RWPlanarExtent() {}
+RWStepVisual_RWPlanarExtent::RWStepVisual_RWPlanarExtent() = default;
 
 void RWStepVisual_RWPlanarExtent::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

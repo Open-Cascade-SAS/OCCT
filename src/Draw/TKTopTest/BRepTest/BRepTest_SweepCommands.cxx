@@ -42,10 +42,10 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
-static BRepOffsetAPI_MakePipeShell* Sweep     = 0;
-static BRepOffsetAPI_ThruSections*  Generator = 0;
+static BRepOffsetAPI_MakePipeShell* Sweep     = nullptr;
+static BRepOffsetAPI_ThruSections*  Generator = nullptr;
 
-#include <stdio.h>
+#include <cstdio>
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_Pipe.hxx>
@@ -467,10 +467,10 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
   bool issolid = (Draw::Atoi(a[index]) == 1);
   bool isruled = (Draw::Atoi(a[index + 1]) == 1);
 
-  if (Generator != 0)
+  if (Generator != nullptr)
   {
     delete Generator;
-    Generator = 0;
+    Generator = nullptr;
   }
   Generator           = new BRepOffsetAPI_ThruSections(issolid, isruled);
   bool IsMutableInput = true;
@@ -571,10 +571,10 @@ static int mksweep(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape Spine = DBRep::Get(a[1], TopAbs_WIRE);
   if (Spine.IsNull())
     return 1;
-  if (Sweep != 0)
+  if (Sweep != nullptr)
   {
     delete Sweep;
-    Sweep = 0;
+    Sweep = nullptr;
   }
 
   if (n > 2 && n <= 5)
@@ -637,7 +637,7 @@ static int setsweep(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
 
-  if (Sweep == 0)
+  if (Sweep == nullptr)
   {
     di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
@@ -777,7 +777,7 @@ static int addsweep(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
 
-  if (Sweep == 0)
+  if (Sweep == nullptr)
   {
     di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
@@ -907,7 +907,7 @@ static int buildsweep(Draw_Interpretor& di, int n, const char** a)
   }
 
   bool mksolid = false;
-  if (Sweep == 0)
+  if (Sweep == nullptr)
   {
     di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;
@@ -1007,7 +1007,7 @@ static int simulsweep(Draw_Interpretor& di, int n, const char** a)
   if ((n != 3) && (n != 4))
     return 1;
 
-  if (Sweep == 0)
+  if (Sweep == nullptr)
   {
     di << "You have forgotten the <<mksweep>> command  !\n";
     return 1;

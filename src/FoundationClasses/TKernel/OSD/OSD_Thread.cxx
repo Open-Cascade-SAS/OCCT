@@ -19,8 +19,8 @@
 // OSD_Thread::OSD_Thread
 //=============================================
 OSD_Thread::OSD_Thread()
-    : myFunc(0),
-      myThread(0),
+    : myFunc(nullptr),
+      myThread(OSD_PTHREAD_NULL),
       myThreadId(0),
       myPriority(0)
 {
@@ -32,7 +32,7 @@ OSD_Thread::OSD_Thread()
 
 OSD_Thread::OSD_Thread(const OSD_ThreadFunction& func)
     : myFunc(func),
-      myThread(0),
+      myThread(OSD_PTHREAD_NULL),
       myThreadId(0),
       myPriority(0)
 {
@@ -44,7 +44,7 @@ OSD_Thread::OSD_Thread(const OSD_ThreadFunction& func)
 
 OSD_Thread::OSD_Thread(const OSD_Thread& other)
     : myFunc(other.myFunc),
-      myThread(0),
+      myThread(OSD_PTHREAD_NULL),
       myThreadId(0)
 {
   Assign(other);
@@ -175,16 +175,16 @@ bool OSD_Thread::Run(void* const data,
 
 #else
 
-  if (pthread_create(&myThread, 0, myFunc, data) != 0)
+  if (pthread_create(&myThread, nullptr, myFunc, data) != 0)
   {
-    myThread = 0;
+    myThread = OSD_PTHREAD_NULL;
   }
   else
   {
     myThreadId = (Standard_ThreadId)myThread;
   }
 #endif
-  return myThread != 0;
+  return myThread != OSD_PTHREAD_NULL;
 }
 
 //=============================================
@@ -207,7 +207,7 @@ void OSD_Thread::Detach()
 
 #endif
 
-  myThread   = 0;
+  myThread   = OSD_PTHREAD_NULL;
   myThreadId = 0;
 }
 
@@ -218,7 +218,7 @@ void OSD_Thread::Detach()
 bool OSD_Thread::Wait(void*& theResult)
 {
   // check that thread handle is not null
-  theResult = 0;
+  theResult = nullptr;
   if (!myThread)
   {
     return false;
@@ -239,7 +239,7 @@ bool OSD_Thread::Wait(void*& theResult)
   }
 
   CloseHandle(myThread);
-  myThread   = 0;
+  myThread   = OSD_PTHREAD_NULL;
   myThreadId = 0;
   return true;
 #else
@@ -249,7 +249,7 @@ bool OSD_Thread::Wait(void*& theResult)
     return false;
   }
 
-  myThread   = 0;
+  myThread   = OSD_PTHREAD_NULL;
   myThreadId = 0;
   return true;
 #endif
@@ -262,7 +262,7 @@ bool OSD_Thread::Wait(void*& theResult)
 bool OSD_Thread::Wait(const int theTimeMs, void*& theResult)
 {
   // check that thread handle is not null
-  theResult = 0;
+  theResult = nullptr;
   if (!myThread)
   {
     return false;
@@ -280,7 +280,7 @@ bool OSD_Thread::Wait(const int theTimeMs, void*& theResult)
     }
 
     CloseHandle(myThread);
-    myThread   = 0;
+    myThread   = OSD_PTHREAD_NULL;
     myThreadId = 0;
     return true;
   }
@@ -322,7 +322,7 @@ bool OSD_Thread::Wait(const int theTimeMs, void*& theResult)
     return false;
   }
   #endif
-  myThread   = 0;
+  myThread   = OSD_PTHREAD_NULL;
   myThreadId = 0;
   return true;
 #endif

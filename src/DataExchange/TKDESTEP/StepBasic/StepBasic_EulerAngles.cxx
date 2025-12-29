@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EulerAngles, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_EulerAngles::StepBasic_EulerAngles() {}
+StepBasic_EulerAngles::StepBasic_EulerAngles() = default;
 
 //=================================================================================================
 

@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepVisual_RenderingPropertiesSelect::StepVisual_RenderingPropertiesSelect() {}
+StepVisual_RenderingPropertiesSelect::StepVisual_RenderingPropertiesSelect() = default;
 
 //=================================================================================================
 

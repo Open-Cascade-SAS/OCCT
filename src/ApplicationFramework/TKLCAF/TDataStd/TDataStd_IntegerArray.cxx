@@ -131,7 +131,7 @@ int TDataStd_IntegerArray::Value(const int index) const
 
 //=================================================================================================
 
-int TDataStd_IntegerArray::Lower(void) const
+int TDataStd_IntegerArray::Lower() const
 {
   if (myValue.IsNull())
     return 0;
@@ -140,7 +140,7 @@ int TDataStd_IntegerArray::Lower(void) const
 
 //=================================================================================================
 
-int TDataStd_IntegerArray::Upper(void) const
+int TDataStd_IntegerArray::Upper() const
 {
   if (myValue.IsNull())
     return 0;
@@ -149,7 +149,7 @@ int TDataStd_IntegerArray::Upper(void) const
 
 //=================================================================================================
 
-int TDataStd_IntegerArray::Length(void) const
+int TDataStd_IntegerArray::Length() const
 {
   if (myValue.IsNull())
     return 0;

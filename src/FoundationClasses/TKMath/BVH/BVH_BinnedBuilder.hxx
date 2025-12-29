@@ -76,14 +76,13 @@ public:
   }
 
   //! Releases resources of binned SAH BVH builder.
-  virtual ~BVH_BinnedBuilder() {}
+  ~BVH_BinnedBuilder() override = default;
 
 protected:
   //! Performs splitting of the given BVH node.
-  virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(
-    BVH_Set<T, N>*  theSet,
-    BVH_Tree<T, N>* theBVH,
-    const int       theNode) const override;
+  typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(BVH_Set<T, N>*  theSet,
+                                                            BVH_Tree<T, N>* theBVH,
+                                                            const int       theNode) const override;
 
   //! Arranges node primitives into bins.
   virtual void getSubVolumes(BVH_Set<T, N>*  theSet,

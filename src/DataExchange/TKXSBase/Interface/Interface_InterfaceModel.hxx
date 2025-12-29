@@ -69,7 +69,7 @@ public:
   //! Clears the list of entities (service WhenDelete)
   Standard_EXPORT void Destroy();
 
-  ~Interface_InterfaceModel() { Destroy(); }
+  ~Interface_InterfaceModel() override { Destroy(); }
 
   //! Sets a Protocol for this Model
   //! It is also set by a call to AddWithRefs with Protocol

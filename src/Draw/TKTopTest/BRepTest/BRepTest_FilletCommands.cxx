@@ -45,7 +45,7 @@
 #include <Message.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 static double        tesp       = 1.0e-4;
 static double        t3d        = 1.e-4;
@@ -55,8 +55,8 @@ static double        fl         = 1.e-3;
 static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
-static BRepFilletAPI_MakeFillet* Rakk = 0;
-static BRepFilletAPI_MakeFillet* Rake = 0;
+static BRepFilletAPI_MakeFillet* Rakk = nullptr;
+static BRepFilletAPI_MakeFillet* Rake = nullptr;
 static char                      name[100];
 
 static int contblend(Draw_Interpretor& di, int narg, const char** a)
@@ -147,10 +147,10 @@ static int tolblend(Draw_Interpretor& di, int narg, const char** a)
 
 static int BLEND(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rakk != 0)
+  if (Rakk != nullptr)
   {
     delete Rakk;
-    Rakk = 0;
+    Rakk = nullptr;
   }
   printtolblend(di);
   if (narg < 5)
@@ -237,7 +237,7 @@ static void PrintHist(const TopoDS_Shape&                       S,
 
 static int CheckHist(Draw_Interpretor& di, int, const char**)
 {
-  if (Rakk == 0)
+  if (Rakk == nullptr)
   {
     // std::cout<<"No active Builder"<<std::endl;
     di << "No active Builder\n";
@@ -276,10 +276,10 @@ static int CheckHist(Draw_Interpretor& di, int, const char**)
 
 static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   printtolblend(di);
   if (narg < 3)
@@ -307,7 +307,7 @@ static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     // std::cout << "MakeFillet not initialized"<<std::endl;
     di << "MakeFillet not initialized\n";
@@ -332,7 +332,7 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 
 static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
 {
-  if (Rake == 0)
+  if (Rake == nullptr)
   {
     // std::cout << "MakeFillet not initialized"<<std::endl;
     di << "MakeFillet not initialized\n";
@@ -343,17 +343,17 @@ static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
   {
     TopoDS_Shape result = Rake->Shape();
     DBRep::Set(name, result);
-    if (Rake != 0)
+    if (Rake != nullptr)
     {
       delete Rake;
-      Rake = 0;
+      Rake = nullptr;
     }
     return 0;
   }
-  if (Rake != 0)
+  if (Rake != nullptr)
   {
     delete Rake;
-    Rake = 0;
+    Rake = nullptr;
   }
   return 1;
 }
@@ -392,7 +392,7 @@ int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
 
   BOPAlgo_PaveFiller                  theDSFiller;
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
-  Message_ProgressScope               aPS(aProgress->Start(), NULL, 10);
+  Message_ProgressScope               aPS(aProgress->Start(), nullptr, 10);
   NCollection_List<TopoDS_Shape>      aLS;
   aLS.Append(S1);
   aLS.Append(S2);
@@ -405,7 +405,7 @@ int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
     return 1;
   }
 
-  BRepAlgoAPI_BooleanOperation* pBuilder = NULL;
+  BRepAlgoAPI_BooleanOperation* pBuilder = nullptr;
   if (fuse)
     pBuilder = new BRepAlgoAPI_Fuse(S1, S2, theDSFiller, aPS.Next(2));
   else

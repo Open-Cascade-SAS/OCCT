@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformCurve, StepGeom_BSplineCurve)
 
-StepGeom_UniformCurve::StepGeom_UniformCurve() {}
+StepGeom_UniformCurve::StepGeom_UniformCurve() = default;

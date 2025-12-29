@@ -32,7 +32,7 @@ XmlObjMgt_Array1::XmlObjMgt_Array1(const XmlObjMgt_Element&   theParent,
       myFirst(1),
       myLast(0)
 {
-  if (myElement != NULL)
+  if (myElement != nullptr)
   {
     if (!myElement.getAttribute(::LowerString()).GetInteger(myFirst))
       myFirst = 1;

@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWCurve3dElementDescriptor::RWStepElement_RWCurve3dElementDescriptor() {}
+RWStepElement_RWCurve3dElementDescriptor::RWStepElement_RWCurve3dElementDescriptor() = default;
 
 //=================================================================================================
 

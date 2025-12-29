@@ -51,7 +51,7 @@ public:
         myT(-1.),
         myTolVNew(-1.) {};
   //
-  virtual ~BOPAlgo_VertexEdge() {};
+  ~BOPAlgo_VertexEdge() override = default;
 
   //
   void SetIndices(const int nV, const int nE)
@@ -101,9 +101,9 @@ public:
   const occ::handle<BOPDS_PaveBlock>& PaveBlock() const { return myPB; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -143,7 +143,7 @@ void BOPAlgo_PaveFiller::PerformVE(const Message_ProgressRange& theRange)
   FillShrunkData(TopAbs_VERTEX, TopAbs_EDGE);
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_EDGE);
-  Message_ProgressScope aPS(theRange, NULL, 1);
+  Message_ProgressScope aPS(theRange, nullptr, 1);
 
   int iSize = myIterator->ExpectedLength();
   if (!iSize)
@@ -232,7 +232,7 @@ void BOPAlgo_PaveFiller::IntersectVE(
   // intersection of the same SD vertex with edge
   NCollection_DataMap<BOPDS_Pair, NCollection_List<int>> aDMVSD;
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   for (i = 1; i <= aNbVE; ++i)
   {
     if (UserBreak(aPSOuter))

@@ -70,7 +70,7 @@ public:
     memcpy(Attribs, theAttribs.AttributesArray(), sizeof(Graphic3d_Attribute) * NbAttributes);
   }
 
-  virtual bool HasColorAttribute() const
+  bool HasColorAttribute() const override
   {
     for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
@@ -83,7 +83,7 @@ public:
     return false;
   }
 
-  virtual bool HasNormalAttribute() const
+  bool HasNormalAttribute() const override
   {
     for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
@@ -96,7 +96,7 @@ public:
     return false;
   }
 
-  virtual void BindPositionAttribute(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void BindPositionAttribute(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {
@@ -126,7 +126,7 @@ public:
     }
   }
 
-  virtual void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void BindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {
@@ -149,7 +149,7 @@ public:
     }
   }
 
-  virtual void UnbindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const
+  void UnbindAllAttributes(const occ::handle<OpenGl_Context>& theGlCtx) const override
   {
     if (!TheBaseClass::IsValid())
     {
@@ -452,7 +452,7 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
   const occ::handle<OpenGl_Context>& aGlContext = theWorkspace->GetGlContext();
   if (myVboAttribs.IsNull())
   {
-    if (myDrawMode == GL_POINTS && aGlContext->core11ffp != NULL)
+    if (myDrawMode == GL_POINTS && aGlContext->core11ffp != nullptr)
     {
       // extreme compatibility mode - without sprites but with markers
       drawMarkers(theWorkspace);
@@ -484,7 +484,7 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
       for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-        if (theFaceColors != NULL)
+        if (theFaceColors != nullptr)
           aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
         aGlContext->core11fwd->glDrawElements(aDrawMode,
                                               aNbElemsInGroup,
@@ -509,7 +509,7 @@ void OpenGl_PrimitiveArray::drawArray(const occ::handle<OpenGl_Workspace>& theWo
     for (int aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-      if (theFaceColors != NULL)
+      if (theFaceColors != nullptr)
         aGlContext->SetColor4fv(theFaceColors[aGroupIter]);
       aGlContext->core11fwd->glDrawArrays(aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
@@ -544,7 +544,7 @@ void OpenGl_PrimitiveArray::drawEdges(const occ::handle<OpenGl_Workspace>& theWo
   const OpenGl_Aspects* anAspect     = theWorkspace->Aspects();
   const int             aPolyModeOld = aGlContext->SetPolygonMode(GL_LINE);
 
-  if (aGlContext->core20fwd != NULL)
+  if (aGlContext->core20fwd != nullptr)
   {
     aGlContext->ShaderManager()->BindLineProgram(occ::handle<OpenGl_TextureSet>(),
                                                  anAspect->Aspect()->EdgeLineType(),
@@ -559,7 +559,7 @@ void OpenGl_PrimitiveArray::drawEdges(const occ::handle<OpenGl_Workspace>& theWo
     !aGlContext->ActiveProgram().IsNull() && aGlContext->ActiveProgram()->HasTessellationStage()
       ? GL_PATCHES
       : myDrawMode;
-  if (aGlContext->ActiveProgram().IsNull() && aGlContext->core11ffp != NULL)
+  if (aGlContext->ActiveProgram().IsNull() && aGlContext->core11ffp != nullptr)
   {
     aGlContext->core11fwd->glDisable(GL_LIGHTING);
   }
@@ -653,7 +653,7 @@ void OpenGl_PrimitiveArray::drawMarkers(const occ::handle<OpenGl_Workspace>& the
     return;
   }
 
-  if (aCtx->core11ffp != NULL)
+  if (aCtx->core11ffp != nullptr)
   {
     aCtx->core11fwd->glEnable(GL_ALPHA_TEST);
     aCtx->core11fwd->glAlphaFunc(GL_GEQUAL, 0.1f);
@@ -687,7 +687,7 @@ void OpenGl_PrimitiveArray::drawMarkers(const occ::handle<OpenGl_Workspace>& the
   }
 
   aCtx->core11fwd->glDisable(GL_BLEND);
-  if (aCtx->core11ffp != NULL)
+  if (aCtx->core11ffp != nullptr)
   {
     if (aCtx->ShaderManager()->MaterialState().AlphaCutoff() >= ShortRealLast())
     {
@@ -708,7 +708,7 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriv
       myIsFillType(false),
       myIsVboInit(false)
 {
-  if (theDriver != NULL)
+  if (theDriver != nullptr)
   {
     myUID = theDriver->GetNextPrimitiveArrayUID();
   }
@@ -735,7 +735,7 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*        
     myIndices.Nullify();
   }
 
-  if (theDriver != NULL)
+  if (theDriver != nullptr)
   {
     myUID                                   = theDriver->GetNextPrimitiveArrayUID();
     const occ::handle<OpenGl_Context>& aCtx = theDriver->GetSharedContext();
@@ -1035,7 +1035,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
       !myBounds.IsNull() && !toHilight
           && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
         ? myBounds->Colors
-        : NULL;
+        : nullptr;
     const NCollection_Vec4<float>& anInteriorColor = theWorkspace->InteriorColor();
     aCtx->SetColor4fv(anInteriorColor);
     if (!myIsFillType)
@@ -1079,7 +1079,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
       aCtx->SetColor4fv(anAspectFace->Aspect()->EdgeColorRGBA());
 
       aCtx->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_FrontCulled);
-      drawArray(theWorkspace, NULL, false);
+      drawArray(theWorkspace, nullptr, false);
       aCtx->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_BackCulled);
     }
 

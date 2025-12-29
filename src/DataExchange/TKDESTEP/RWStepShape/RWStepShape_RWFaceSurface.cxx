@@ -22,7 +22,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWFaceSurface::RWStepShape_RWFaceSurface() {}
+RWStepShape_RWFaceSurface::RWStepShape_RWFaceSurface() = default;
 
 void RWStepShape_RWFaceSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

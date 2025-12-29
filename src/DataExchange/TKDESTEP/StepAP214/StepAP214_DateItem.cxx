@@ -31,7 +31,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
 
-StepAP214_DateItem::StepAP214_DateItem() {}
+StepAP214_DateItem::StepAP214_DateItem() = default;
 
 int StepAP214_DateItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

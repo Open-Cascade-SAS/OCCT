@@ -26,8 +26,8 @@
 #include <LDOM_CharReference.hxx>
 #include <LDOM_OSStream.hxx>
 
-#include <string.h>
-#include <errno.h>
+#include <cstring>
+#include <cerrno>
 #ifdef _MSC_VER
   #include <io.h>
 #else
@@ -69,8 +69,8 @@ LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
     : myEOF(false),
       myError(theErrorString),
       myDocument(theDocument),
-      myElement(NULL),
-      myLastChild(NULL),
+      myElement(nullptr),
+      myLastChild(nullptr),
       myPtr(&myBuffer[0]),
       myEndPtr(&myBuffer[0]),
       myTagPerStep(theTagPerStep),
@@ -90,7 +90,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
   theData.Clear();
   myError.Clear();
   ParserState     aState     = STATE_WAITING;
-  const char *    aStartData = NULL, *aNameEnd = NULL, *aPtr;
+  const char *    aStartData = nullptr, *aNameEnd = nullptr, *aPtr;
   LDOMBasicString anAttrName, anAttrValue;
   char            anAttDelimiter = '\0';
   bool            aHasRead       = false;
@@ -316,9 +316,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   {
                     myElement =
                       &LDOM_BasicElement::Create(aStartData, (int)(myPtr - aStartData), myDocument);
-                    myLastChild = NULL;
+                    myLastChild = nullptr;
                     aState      = STATE_ATTRIBUTE_NAME;
-                    aStartData  = NULL;
+                    aStartData  = nullptr;
                   }
                   else
                     aState = STATE_ELEMENT;
@@ -421,7 +421,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         for (;;)
         {
           aPtr = (const char*)memchr(aPtr, '-', (myEndPtr - 2) - aPtr);
-          if (aPtr == NULL)
+          if (aPtr == nullptr)
             break;
           if (aPtr[1] != '-')
             ++aPtr;
@@ -463,7 +463,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         for (;;)
         {
           aPtr = (const char*)memchr(aPtr, ']', (myEndPtr - 1) - aStartData);
-          if (aPtr == NULL)
+          if (aPtr == nullptr)
             break;
           if (aPtr[1] != ']')
           { // ERROR
@@ -492,10 +492,10 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           char* aDataString = (char*)theData.str();
           myElement         = &LDOM_BasicElement::Create(aDataString, theData.Length(), myDocument);
           theData.Clear();
-          myLastChild = NULL;
+          myLastChild = nullptr;
           delete[] aDataString;
           aState     = STATE_ATTRIBUTE_NAME;
-          aStartData = NULL;
+          aStartData = nullptr;
           myPtr      = aNameEnd;
           continue;
         }
@@ -561,7 +561,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                 anAttrName = LDOMBasicString(aDataString, myDocument);
                 delete[] aDataString;
               }
-              aStartData = NULL;
+              aStartData = nullptr;
               aState     = STATE_ATTRIBUTE_EQUAL;
             }
             myPtr = aNameEnd;
@@ -591,7 +591,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           case '\t':
           case '\n':
           case '\r':
-            if (aStartData == NULL)
+            if (aStartData == nullptr)
             {
               ++myPtr;
               continue;
@@ -602,7 +602,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   return XML_UNKNOWN;
                   case '\"':
                   case '\'':
-                    if (aStartData == NULL)
+                    if (aStartData == nullptr)
                     {
                       aStartData     = &myPtr[1];
                       anAttDelimiter = myPtr[0];
@@ -646,7 +646,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
               myLastChild =
                 myElement->AddAttribute(anAttrName, anAttrValue, myDocument, myLastChild);
               myPtr      = aPtr + 1;
-              aStartData = NULL;
+              aStartData = nullptr;
               aState     = STATE_ATTRIBUTE_NAME;
             }
             else

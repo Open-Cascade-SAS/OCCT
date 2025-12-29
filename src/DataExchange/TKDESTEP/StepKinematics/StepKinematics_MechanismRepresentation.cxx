@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_MechanismRepresentation, StepRepr_Repr
 
 //=================================================================================================
 
-StepKinematics_MechanismRepresentation::StepKinematics_MechanismRepresentation() {}
+StepKinematics_MechanismRepresentation::StepKinematics_MechanismRepresentation() = default;
 
 //=================================================================================================
 

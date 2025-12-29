@@ -39,9 +39,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT BOPAlgo_CheckerSI();
-  Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
+  Standard_EXPORT ~BOPAlgo_CheckerSI() override;
 
-  Standard_EXPORT virtual void Perform(
+  Standard_EXPORT void Perform(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Sets the level of checking shape on self-interference.
@@ -59,7 +59,7 @@ public:
   Standard_EXPORT void SetLevelOfCheck(const int theLevel);
 
 protected:
-  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void Init(const Message_ProgressRange& theRange) override;
 
   //! Treats the intersection results
   Standard_EXPORT void PostTreat();

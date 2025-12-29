@@ -19,8 +19,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <XmlObjMgt_Document.hxx>
 
-#include <errno.h>
-#include <stdio.h>
+#include <cerrno>
+#include <cstdio>
 #include <limits>
 
 static const char aRefPrefix[] = "/document/label";
@@ -64,7 +64,8 @@ void XmlObjMgt::SetStringValue(XmlObjMgt_Element&         theElement,
 XmlObjMgt_DOMString XmlObjMgt::GetStringValue(const XmlObjMgt_Element& theElement)
 {
   XmlObjMgt_DOMString aString;
-  for (LDOM_Node aNode = theElement.getFirstChild(); aNode != NULL; aNode = aNode.getNextSibling())
+  for (LDOM_Node aNode = theElement.getFirstChild(); aNode != nullptr;
+       aNode           = aNode.getNextSibling())
   {
     if (aNode.getNodeType() == LDOM_Node::TEXT_NODE)
     {
@@ -244,7 +245,7 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
   {
     //  Check for the end-of-string; find the delimiter ':'
     aPtr = strchr(aTagEntry, ':');
-    if (aPtr == NULL)
+    if (aPtr == nullptr)
       break;
     aTagEntry = aPtr + 1;
 

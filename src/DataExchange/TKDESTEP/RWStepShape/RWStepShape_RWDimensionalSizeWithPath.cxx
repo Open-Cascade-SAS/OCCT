@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWDimensionalSizeWithPath::RWStepShape_RWDimensionalSizeWithPath() {}
+RWStepShape_RWDimensionalSizeWithPath::RWStepShape_RWDimensionalSizeWithPath() = default;
 
 //=================================================================================================
 

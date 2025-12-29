@@ -196,7 +196,7 @@ IntTools_Context::~IntTools_Context()
 
 Bnd_Box& IntTools_Context::BndBox(const TopoDS_Shape& aS)
 {
-  Bnd_Box* pBox = NULL;
+  Bnd_Box* pBox = nullptr;
   if (!myBndBoxDataMap.Find(aS, pBox))
   {
     //
@@ -224,7 +224,7 @@ bool IntTools_Context::IsInfiniteFace(const TopoDS_Face& aFace)
 
 IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
 {
-  IntTools_FClass2d* pFClass2d = NULL;
+  IntTools_FClass2d* pFClass2d = nullptr;
   if (!myFClass2dMap.Find(aF, pFClass2d))
   {
     double      aTolF;
@@ -246,7 +246,7 @@ IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
 
 GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
 {
-  GeomAPI_ProjectPointOnSurf* pProjPS = NULL;
+  GeomAPI_ProjectPointOnSurf* pProjPS = nullptr;
   if (!myProjPSMap.Find(aF, pProjPS))
   {
     double Umin, Usup, Vmin, Vsup;
@@ -268,7 +268,7 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
 
 GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
 {
-  GeomAPI_ProjectPointOnCurve* pProjPC = NULL;
+  GeomAPI_ProjectPointOnCurve* pProjPC = nullptr;
   if (!myProjPCMap.Find(aE, pProjPC))
   {
     double f, l;
@@ -290,7 +290,7 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
 GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const occ::handle<Geom_Curve>& aC3D)
 
 {
-  GeomAPI_ProjectPointOnCurve* pProjPT = NULL;
+  GeomAPI_ProjectPointOnCurve* pProjPT = nullptr;
   if (!myProjPTMap.Find(aC3D, pProjPT))
   {
     double f, l;
@@ -311,7 +311,7 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const occ::handle<Geom_Cur
 
 BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Solid& aSolid)
 {
-  BRepClass3d_SolidClassifier* pSC = NULL;
+  BRepClass3d_SolidClassifier* pSC = nullptr;
   if (!mySClassMap.Find(aSolid, pSC))
   {
     pSC = (BRepClass3d_SolidClassifier*)myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier));
@@ -326,7 +326,7 @@ BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Soli
 
 BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor(const TopoDS_Face& theFace)
 {
-  BRepAdaptor_Surface* pBAS = NULL;
+  BRepAdaptor_Surface* pBAS = nullptr;
   if (!mySurfAdaptorMap.Find(theFace, pBAS))
   {
     //
@@ -342,7 +342,7 @@ BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor(const TopoDS_Face& theFace
 
 Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
 {
-  Geom2dHatch_Hatcher* pHatcher = NULL;
+  Geom2dHatch_Hatcher* pHatcher = nullptr;
   if (!myHatcherMap.Find(aF, pHatcher))
   {
     double                           aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
@@ -398,7 +398,7 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
 
 Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS, const double theGap)
 {
-  Bnd_OBB* pBox = NULL;
+  Bnd_OBB* pBox = nullptr;
   if (!myOBBMap.Find(aS, pBox))
   {
     pBox = (Bnd_OBB*)myAllocator->Allocate(sizeof(Bnd_OBB));
@@ -417,7 +417,7 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS, const double theGap)
 
 IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Face& aF)
 {
-  IntTools_SurfaceRangeLocalizeData* pSData = NULL;
+  IntTools_SurfaceRangeLocalizeData* pSData = nullptr;
   if (!myProjSDataMap.Find(aF, pSData))
   {
     pSData = (IntTools_SurfaceRangeLocalizeData*)myAllocator->Allocate(

@@ -24,7 +24,7 @@ public:
 
 protected:
   //! Register types.
-  Standard_EXPORT virtual void bindTypes(StdObjMgt_MapOfInstantiators& theMap) override;
+  Standard_EXPORT void bindTypes(StdObjMgt_MapOfInstantiators& theMap) override;
 };
 
 #endif // _StdDrivers_DocumentRetrievalDriver_HeaderFile

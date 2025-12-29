@@ -65,8 +65,8 @@ public:
                                         const double             theV0);
 
 private:
-  const Extrema_GenLocateExtPS& operator=(const Extrema_GenLocateExtPS&);
-  Extrema_GenLocateExtPS(const Extrema_GenLocateExtPS&);
+  const Extrema_GenLocateExtPS& operator=(const Extrema_GenLocateExtPS&) = delete;
+  Extrema_GenLocateExtPS(const Extrema_GenLocateExtPS&)                  = delete;
 
   // Input.
   const Adaptor3d_Surface& mySurf;

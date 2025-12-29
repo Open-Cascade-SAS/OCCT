@@ -155,12 +155,13 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
                aGroupIter.Next())
           {
             // Extract OpenGL elements from the group (primitives arrays)
-            for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL;
-                 aNode                           = aNode->next)
+            for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode();
+                 aNode != nullptr;
+                 aNode = aNode->next)
             {
               OpenGl_PrimitiveArray* aPrimArray = dynamic_cast<OpenGl_PrimitiveArray*>(aNode->elem);
 
-              if (aPrimArray != NULL)
+              if (aPrimArray != nullptr)
               {
                 anArrayIDs.insert(aPrimArray->GetUID());
               }
@@ -193,7 +194,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
       OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*>(
         myRaytraceGeometry.Objects().ChangeValue(anObjIdx).operator->());
 
-      if (aTriangleSet == NULL)
+      if (aTriangleSet == nullptr)
       {
         continue;
       }
@@ -295,7 +296,7 @@ bool OpenGl_View::toUpdateStructure(const OpenGl_Structure* theStructure)
   {
     return true;
   }
-  else if (theStructure->InstancedStructure() != NULL)
+  else if (theStructure->InstancedStructure() != nullptr)
   {
     return aStructState->second.InstancedState
            != theStructure->InstancedStructure()->ModificationState();
@@ -504,7 +505,7 @@ bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*            theStr
   // Process all connected OpenGL structures
   const OpenGl_Structure* anInstanced = theStructure->InstancedStructure();
 
-  if (anInstanced != NULL && anInstanced->IsRaytracable())
+  if (anInstanced != nullptr && anInstanced->IsRaytracable())
   {
     aResult &= addRaytraceGroups(anInstanced,
                                  aDefaultMaterial,
@@ -532,7 +533,7 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
   {
     // Get group material
     OpenGl_RaytraceMaterial aGroupMaterial;
-    if (aGroupIter.Value()->GlAspects() != NULL)
+    if (aGroupIter.Value()->GlAspects() != nullptr)
     {
       aGroupMaterial = convertMaterial(aGroupIter.Value()->GlAspects(), theGlContext);
     }
@@ -540,16 +541,16 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
     int aMatID = static_cast<int>(myRaytraceGeometry.Materials.size());
 
     // Use group material if available, otherwise use structure material
-    myRaytraceGeometry.Materials.push_back(aGroupIter.Value()->GlAspects() != NULL ? aGroupMaterial
-                                                                                   : theStructMat);
+    myRaytraceGeometry.Materials.push_back(
+      aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
-    for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL;
+    for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != nullptr;
          aNode                           = aNode->next)
     {
       OpenGl_Aspects* anAspect = dynamic_cast<OpenGl_Aspects*>(aNode->elem);
 
-      if (anAspect != NULL)
+      if (anAspect != nullptr)
       {
         aMatID = static_cast<int>(myRaytraceGeometry.Materials.size());
 
@@ -561,7 +562,7 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
       {
         OpenGl_PrimitiveArray* aPrimArray = dynamic_cast<OpenGl_PrimitiveArray*>(aNode->elem);
 
-        if (aPrimArray != NULL)
+        if (aPrimArray != nullptr)
         {
           std::map<size_t, OpenGl_TriangleSet*>::iterator aSetIter =
             myArrayToTrianglesMap.find(aPrimArray->GetUID());
@@ -586,7 +587,7 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
           else
           {
             if (occ::handle<OpenGl_TriangleSet> aSet =
-                  addRaytracePrimitiveArray(aPrimArray, aMatID, 0))
+                  addRaytracePrimitiveArray(aPrimArray, aMatID, nullptr))
             {
               opencascade::handle<BVH_Transform<float, 4>> aTransform =
                 new BVH_Transform<float, 4>();
@@ -628,11 +629,11 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
   }
 
   NCollection_Mat4<float> aNormalMatrix;
-  if (theTransform != NULL)
+  if (theTransform != nullptr)
   {
     Standard_ASSERT_RETURN(theTransform->Inverted(aNormalMatrix),
                            "Error: Failed to compute normal transformation matrix",
-                           NULL);
+                           nullptr);
 
     aNormalMatrix.Transpose();
   }
@@ -709,7 +710,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       }
     }
 
-    if (theTransform != NULL)
+    if (theTransform != nullptr)
     {
       for (size_t aVertIter = aVertFrom; aVertIter < aSet->Vertices.size(); ++aVertIter)
       {
@@ -1178,7 +1179,7 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix(
 
   // If OpenGL driver supports bindless textures and texturing
   // is actually used, activate texturing in ray-tracing mode
-  if (myRaytraceParameters.UseBindlessTextures && theGlContext->arbTexBindless != NULL)
+  if (myRaytraceParameters.UseBindlessTextures && theGlContext->arbTexBindless != nullptr)
   {
     aPrefixString += TCollection_AsciiString("\n#define USE_TEXTURES")
                      + TCollection_AsciiString("\n#define MAX_TEX_NUMBER ")
@@ -1862,7 +1863,7 @@ bool OpenGl_View::initRaytraceResources(const int                          theSi
 
     myOutImageProgram->SetSampler(theGlContext, "uDepthTexture", OpenGl_RT_RaytraceDepthTexture);
 
-    theGlContext->BindProgram(NULL);
+    theGlContext->BindProgram(nullptr);
   }
 
   if (myRaytraceInitStatus != OpenGl_RT_NONE)
@@ -2243,7 +2244,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   /////////////////////////////////////////////////////////////////////////////
   // Prepare OpenGL textures
 
-  if (theGlContext->arbTexBindless != NULL)
+  if (theGlContext->arbTexBindless != nullptr)
   {
     // If OpenGL driver supports bindless textures we need
     // to get unique 64- bit handles for using on the GPU
@@ -2315,7 +2316,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
 
     const BVH_Transform<float, 4>* aTransform =
       dynamic_cast<const BVH_Transform<float, 4>*>(aTriangleSet->Properties().get());
-    Standard_ASSERT_RETURN(aTransform != NULL,
+    Standard_ASSERT_RETURN(aTransform != nullptr,
                            "OpenGl_TriangleSet does not contain transform",
                            false);
 
@@ -2341,7 +2342,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*>(
       myRaytraceGeometry.Objects().ChangeValue(anElemIndex).operator->());
 
-    Standard_ASSERT_RETURN(aTriangleSet != NULL,
+    Standard_ASSERT_RETURN(aTriangleSet != nullptr,
                            "Error: Failed to get triangulation of OpenGL element",
                            false);
 
@@ -2362,15 +2363,15 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     aResult &= mySceneNodeInfoTexture->Init(theGlContext,
                                             4,
                                             GLsizei(aTotalBVHNodesNb),
-                                            static_cast<const GLuint*>(NULL));
+                                            static_cast<const GLuint*>(nullptr));
     aResult &= mySceneMinPointTexture->Init(theGlContext,
                                             3,
                                             GLsizei(aTotalBVHNodesNb),
-                                            static_cast<const GLfloat*>(NULL));
+                                            static_cast<const GLfloat*>(nullptr));
     aResult &= mySceneMaxPointTexture->Init(theGlContext,
                                             3,
                                             GLsizei(aTotalBVHNodesNb),
-                                            static_cast<const GLfloat*>(NULL));
+                                            static_cast<const GLfloat*>(nullptr));
   }
 
   if (!aResult)
@@ -2384,7 +2385,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     aResult &= myGeometryTriangTexture->Init(theGlContext,
                                              4,
                                              GLsizei(aTotalElementsNb),
-                                             static_cast<const GLuint*>(NULL));
+                                             static_cast<const GLuint*>(nullptr));
   }
 
   if (aTotalVerticesNb != 0)
@@ -2392,15 +2393,15 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     aResult &= myGeometryVertexTexture->Init(theGlContext,
                                              3,
                                              GLsizei(aTotalVerticesNb),
-                                             static_cast<const GLfloat*>(NULL));
+                                             static_cast<const GLfloat*>(nullptr));
     aResult &= myGeometryNormalTexture->Init(theGlContext,
                                              3,
                                              GLsizei(aTotalVerticesNb),
-                                             static_cast<const GLfloat*>(NULL));
+                                             static_cast<const GLfloat*>(nullptr));
     aResult &= myGeometryTexCrdTexture->Init(theGlContext,
                                              2,
                                              GLsizei(aTotalVerticesNb),
-                                             static_cast<const GLfloat*>(NULL));
+                                             static_cast<const GLfloat*>(nullptr));
   }
 
   if (!aResult)
@@ -2437,7 +2438,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
 
     OpenGl_TriangleSet* aTriangleSet = myRaytraceGeometry.TriangleSet(aNodeIdx);
 
-    Standard_ASSERT_RETURN(aTriangleSet != NULL,
+    Standard_ASSERT_RETURN(aTriangleSet != nullptr,
                            "Error: Failed to get triangulation of OpenGL element",
                            false);
 
@@ -2833,7 +2834,7 @@ bool OpenGl_View::setUniformState(const int                          theProgramI
                          aLightSourceBufferSize);
 
   // Set array of 64-bit texture handles
-  if (theGlContext->arbTexBindless != NULL && myRaytraceGeometry.HasTextures())
+  if (theGlContext->arbTexBindless != nullptr && myRaytraceGeometry.HasTextures())
   {
     const std::vector<GLuint64>& aTextures = myRaytraceGeometry.TextureHandles();
 
@@ -2846,7 +2847,7 @@ bool OpenGl_View::setUniformState(const int                          theProgramI
 
   // Set background colors (only vertical gradient background supported)
   NCollection_Vec4<float> aBackColorTop = myBgColor, aBackColorBot = myBgColor;
-  if (myBackgrounds[Graphic3d_TOB_GRADIENT] != NULL
+  if (myBackgrounds[Graphic3d_TOB_GRADIENT] != nullptr
       && myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined())
   {
     aBackColorTop = myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor(0);
@@ -3135,7 +3136,7 @@ bool OpenGl_View::runRaytrace(const int                          theSizeX,
     // Display filtered image
     theGlContext->BindProgram(myOutImageProgram);
 
-    if (theReadDrawFbo != NULL)
+    if (theReadDrawFbo != nullptr)
     {
       theReadDrawFbo->BindBuffer(theGlContext);
     }
@@ -3158,7 +3159,7 @@ bool OpenGl_View::runRaytrace(const int                          theSizeX,
 
   unbindRaytraceTextures(theGlContext);
 
-  theGlContext->BindProgram(NULL);
+  theGlContext->BindProgram(nullptr);
 
   return aResult;
 }
@@ -3174,7 +3175,7 @@ bool OpenGl_View::runPathtrace(const int                          theSizeX,
 {
   if (myToUpdateEnvironmentMap) // check whether the map was changed
   {
-    myAccumFrames = myToUpdateEnvironmentMap = 0;
+    myAccumFrames = myToUpdateEnvironmentMap = false;
   }
 
   if (myRenderParams.CameraApertureRadius != myPrevCameraApertureRadius
@@ -3208,7 +3209,7 @@ bool OpenGl_View::runPathtrace(const int                          theSizeX,
                                             0,
                                             GL_RED,
                                             GL_FLOAT,
-                                            NULL);
+                                            nullptr);
     }
 
     // Clear adaptive screen sampling images
@@ -3216,7 +3217,7 @@ bool OpenGl_View::runPathtrace(const int                          theSizeX,
                                           0,
                                           GL_RED_INTEGER,
                                           GL_INT,
-                                          NULL);
+                                          nullptr);
   }
 
   bindRaytraceTextures(theGlContext, aFBOIdx);
@@ -3351,7 +3352,7 @@ bool OpenGl_View::runPathtraceOut(const Graphic3d_Camera::Projection theProjecti
     }
   }
 
-  if (theReadDrawFbo != NULL)
+  if (theReadDrawFbo != nullptr)
   {
     theReadDrawFbo->BindBuffer(theGlContext);
   }
@@ -3386,7 +3387,7 @@ bool OpenGl_View::runPathtraceOut(const Graphic3d_Camera::Projection theProjecti
   }
 
   unbindRaytraceTextures(theGlContext);
-  theGlContext->BindProgram(NULL);
+  theGlContext->BindProgram(nullptr);
   return true;
 }
 

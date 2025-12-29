@@ -38,10 +38,10 @@ public:
                            const occ::handle<Geom_Point>& aEndPoint);
 
   //! Returns the signature 5.
-  virtual int Signature() const override { return 5; }
+  int Signature() const override { return 5; }
 
   //! Returns the type Datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Constructs an infinite line.
   const occ::handle<Geom_Line>& Line() const { return myComponent; }
@@ -83,12 +83,12 @@ public:
   Standard_EXPORT void UnsetWidth() override;
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void ComputeInfiniteLine(const occ::handle<Prs3d_Presentation>& aPresentation);
 

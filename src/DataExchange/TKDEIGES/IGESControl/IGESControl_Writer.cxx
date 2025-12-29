@@ -47,7 +47,7 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_ShapeProcessor.hxx>
 
-#include <errno.h>
+#include <cerrno>
 
 //=============================================================================
 
@@ -101,7 +101,7 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
 
   InitializeMissingParameters();
 
-  Message_ProgressScope aPS(theProgress, NULL, 2);
+  Message_ProgressScope aPS(theProgress, nullptr, 2);
 
   XSAlgo_ShapeProcessor aShapeProcessor(myShapeProcParams);
   TopoDS_Shape Shape = aShapeProcessor.ProcessShape(theShape, myShapeProcFlags.first, aPS.Next());
@@ -271,7 +271,7 @@ bool IGESControl_Writer::Write(const char* file, const bool fnes)
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(file, std::ios::out | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     return false;
   }

@@ -22,9 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyDirectedStructure,
 //=================================================================================================
 
 StepKinematics_KinematicTopologyDirectedStructure::
-  StepKinematics_KinematicTopologyDirectedStructure()
-{
-}
+  StepKinematics_KinematicTopologyDirectedStructure() = default;
 
 //=================================================================================================
 

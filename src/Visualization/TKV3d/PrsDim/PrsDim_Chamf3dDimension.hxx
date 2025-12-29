@@ -49,18 +49,18 @@ public:
                                           const double                      anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 3d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_LENGTH; }
+  PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_LENGTH; }
 
   //! Returns true if the 3d chamfer dimension is movable.
-  virtual bool IsMovable() const override { return true; }
+  bool IsMovable() const override { return true; }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
 private:
   gp_Pnt myPntAttach;

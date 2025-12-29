@@ -32,7 +32,7 @@ BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(
 
 //=================================================================================================
 
-BRepMesh_FaceDiscret::~BRepMesh_FaceDiscret() {}
+BRepMesh_FaceDiscret::~BRepMesh_FaceDiscret() = default;
 
 //! Auxiliary functor for parallel processing of Faces.
 class BRepMesh_FaceDiscret::FaceListFunctor
@@ -55,7 +55,7 @@ public:
     {
       return;
     }
-    Message_ProgressScope aFaceScope(myRanges[theFaceIndex], NULL, 1);
+    Message_ProgressScope aFaceScope(myRanges[theFaceIndex], nullptr, 1);
     myAlgo->process(theFaceIndex, aFaceScope.Next());
   }
 

@@ -82,12 +82,11 @@ public:
     return myResSprite.Sprite(theCtx, myAspect, theIsAlphaSprite);
   }
 
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
-  Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Update presentation aspects parameters after their modification.
-  virtual void SynchronizeAspects() override { SetAspect(myAspect); }
+  void SynchronizeAspects() override { SetAspect(myAspect); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;

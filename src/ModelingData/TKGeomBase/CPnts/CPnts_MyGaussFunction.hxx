@@ -38,7 +38,7 @@ public:
   //! Each value is computed with F(D)
   Standard_EXPORT void Init(const CPnts_RealFunction& F, void* const D);
 
-  Standard_EXPORT bool Value(const double X, double& F);
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
 private:
   CPnts_RealFunction myFunction;

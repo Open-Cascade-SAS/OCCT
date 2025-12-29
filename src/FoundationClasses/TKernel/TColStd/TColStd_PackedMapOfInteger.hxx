@@ -49,7 +49,7 @@ private:
   class TColStd_intMapNode
   {
   public:
-    TColStd_intMapNode(TColStd_intMapNode* thePtr = NULL)
+    TColStd_intMapNode(TColStd_intMapNode* thePtr = nullptr)
         : myNext(thePtr),
           myMask(0),
           myData(0)
@@ -148,8 +148,8 @@ public:
   public:
     /// Empty Constructor.
     Iterator()
-        : myBuckets(NULL),
-          myNode(NULL),
+        : myBuckets(nullptr),
+          myNode(nullptr),
           myNbBuckets(-1),
           myBucket(-1),
           myIntMask(~0U),
@@ -160,13 +160,13 @@ public:
     /// Constructor.
     Iterator(const TColStd_PackedMapOfInteger& theMap)
         : myBuckets(theMap.myData1),
-          myNode(NULL),
-          myNbBuckets(theMap.myData1 != NULL ? theMap.myNbBuckets : -1),
+          myNode(nullptr),
+          myNbBuckets(theMap.myData1 != nullptr ? theMap.myNbBuckets : -1),
           myBucket(-1),
           myIntMask(~0U)
     {
       next();
-      myKey = myNode != NULL ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
+      myKey = myNode != nullptr ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
     }
 
     //! Re-initialize with the same or another Map instance.
@@ -174,23 +174,23 @@ public:
     {
       myBuckets   = theMap.myData1;
       myBucket    = -1;
-      myNode      = NULL;
-      myNbBuckets = theMap.myData1 != NULL ? theMap.myNbBuckets : -1;
+      myNode      = nullptr;
+      myNbBuckets = theMap.myData1 != nullptr ? theMap.myNbBuckets : -1;
       next();
 
       myIntMask = ~0U;
-      myKey     = myNode != NULL ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
+      myKey     = myNode != nullptr ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
     }
 
     //! Restart the iteration
     void Reset()
     {
       myBucket = -1;
-      myNode   = NULL;
+      myNode   = nullptr;
       next();
 
       myIntMask = ~0U;
-      myKey     = myNode != NULL ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
+      myKey     = myNode != nullptr ? TColStd_intMapNode_findNext(myNode, myIntMask) : 0;
     }
 
     //! Query the iterated key.
@@ -202,12 +202,12 @@ public:
     }
 
     //! Return TRUE if iterator points to the node.
-    bool More() const { return myNode != NULL; }
+    bool More() const { return myNode != nullptr; }
 
     //! Increment the iterator
     void Next()
     {
-      for (; myNode != NULL; next())
+      for (; myNode != nullptr; next())
       {
         myKey = TColStd_intMapNode_findNext(myNode, myIntMask);
         if (myIntMask != ~0u)
@@ -221,17 +221,17 @@ public:
     //! Go to the next bucket in the map.
     void next()
     {
-      if (myBuckets == NULL)
+      if (myBuckets == nullptr)
       {
         return;
       }
 
-      if (myNode != NULL)
+      if (myNode != nullptr)
       {
         myNode = myNode->Next();
       }
 
-      while (myNode == NULL)
+      while (myNode == nullptr)
       {
         ++myBucket;
         if (myBucket > myNbBuckets)
@@ -255,7 +255,7 @@ public:
 public:
   //! Constructor
   TColStd_PackedMapOfInteger(const int theNbBuckets = 1)
-      : myData1(NULL),
+      : myData1(nullptr),
         myNbBuckets(theNbBuckets),
         myNbPackedMapNodes(0),
         myExtent(0)
@@ -264,7 +264,7 @@ public:
 
   //! Copy constructor
   TColStd_PackedMapOfInteger(const TColStd_PackedMapOfInteger& theOther)
-      : myData1(NULL),
+      : myData1(nullptr),
         myNbBuckets(1),
         myNbPackedMapNodes(0),
         myExtent(0)

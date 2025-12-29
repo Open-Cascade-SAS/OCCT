@@ -399,16 +399,16 @@ public:
 
 public:
   //! Return true if specified display mode is supported.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Compute presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePresentation,
+                               const int                                      theMode) override;
 
   //! Compute selection - not implemented for color scale.
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
-                                const int /*aMode*/) override
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
+                        const int /*aMode*/) override
   {
   }
 

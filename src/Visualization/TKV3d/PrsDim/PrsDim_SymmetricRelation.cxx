@@ -49,8 +49,7 @@ PrsDim_SymmetricRelation::PrsDim_SymmetricRelation(const TopoDS_Shape&          
                                                    const TopoDS_Shape&            FirstShape,
                                                    const TopoDS_Shape&            SecondShape,
                                                    const occ::handle<Geom_Plane>& aPlane)
-    : PrsDim_Relation(),
-      myTool(aSymmTool)
+    : myTool(aSymmTool)
 {
   SetFirstShape(FirstShape);
   SetSecondShape(SecondShape);

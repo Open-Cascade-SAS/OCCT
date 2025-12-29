@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_ConicArc, IGESData_IGESEntity)
 
-IGESGeom_ConicArc::IGESGeom_ConicArc() {}
+IGESGeom_ConicArc::IGESGeom_ConicArc() = default;
 
 void IGESGeom_ConicArc::Init(const double A,
                              const double B,

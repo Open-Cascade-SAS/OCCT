@@ -35,7 +35,7 @@ struct VrmlData_InBuffer
         LineCount(0) {};
 
 private:
-  void operator=(const VrmlData_InBuffer&);
+  void operator=(const VrmlData_InBuffer&) = delete;
 };
 
 #endif

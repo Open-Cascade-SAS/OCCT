@@ -32,7 +32,7 @@
 #include <NCollection_HSequence.hxx>
 #include <Units_Operators.hxx>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 static occ::handle<Units_Dimensions>      nulldimensions;
 static occ::handle<Units_UnitsLexicon>    lexiconunits;
@@ -144,7 +144,7 @@ const char* Units::FirstQuantity(const char* aunit)
 #ifdef OCCT_DEBUG
   std::cout << "Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << std::endl;
 #endif
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

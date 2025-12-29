@@ -20,7 +20,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-AppDef_MultiLine::AppDef_MultiLine() {}
+AppDef_MultiLine::AppDef_MultiLine() = default;
 
 AppDef_MultiLine::AppDef_MultiLine(const int NbMult)
 {

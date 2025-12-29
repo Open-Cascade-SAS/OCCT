@@ -24,7 +24,7 @@
 #include <IGESData_Protocol.hxx>
 #include <IGESData_WriterLib.hxx>
 
-IGESData_NodeOfWriterLib::IGESData_NodeOfWriterLib() {}
+IGESData_NodeOfWriterLib::IGESData_NodeOfWriterLib() = default;
 
 void IGESData_NodeOfWriterLib::AddNode(const occ::handle<IGESData_GlobalNodeOfWriterLib>& anode)
 {

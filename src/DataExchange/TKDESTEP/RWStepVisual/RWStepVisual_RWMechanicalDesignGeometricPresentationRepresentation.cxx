@@ -20,9 +20,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 
 RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::
-  RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation()
-{
-}
+  RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation() = default;
 
 void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                        data,

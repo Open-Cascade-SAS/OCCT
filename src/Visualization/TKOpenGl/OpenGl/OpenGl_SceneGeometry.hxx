@@ -81,7 +81,7 @@ struct OpenGl_RaytraceLight
 
 public:
   //! Creates new light source.
-  OpenGl_RaytraceLight() {}
+  OpenGl_RaytraceLight() = default;
 
   //! Creates new light source.
   Standard_EXPORT OpenGl_RaytraceLight(const BVH_Vec4f& theEmission, const BVH_Vec4f& thePosition);
@@ -131,13 +131,13 @@ public:
   }
 
   //! Returns AABB of primitive set.
-  virtual BVH_BoxNt Box() const override;
+  BVH_BoxNt Box() const override;
 
   //! Returns AABB of the given object.
   using BVH_Triangulation<float, 3>::Box;
 
   //! Returns centroid position along the given axis.
-  Standard_EXPORT virtual float Center(const int theIndex, const int theAxis) const override;
+  Standard_EXPORT float Center(const int theIndex, const int theAxis) const override;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   Standard_EXPORT const QuadBvhHandle& QuadBVH();
@@ -178,15 +178,14 @@ public:
 public:
   //! Creates uninitialized ray-tracing geometry.
   OpenGl_RaytraceGeometry()
-      : BVH_Geometry<float, 3>(),
-        myTopLevelTreeDepth(0),
+      : myTopLevelTreeDepth(0),
         myBotLevelTreeDepth(0)
   {
     //
   }
 
   //! Releases resources of ray-tracing geometry.
-  ~OpenGl_RaytraceGeometry()
+  ~OpenGl_RaytraceGeometry() override
   {
     //
   }
@@ -203,7 +202,7 @@ public:
   }
 
   //! Clears ray-tracing geometry.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
 public: //! @name methods related to acceleration structure
   //! Performs post-processing of high-level scene BVH.

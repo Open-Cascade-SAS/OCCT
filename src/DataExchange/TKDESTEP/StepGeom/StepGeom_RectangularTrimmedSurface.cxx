@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularTrimmedSurface, StepGeom_BoundedSurface)
 
-StepGeom_RectangularTrimmedSurface::StepGeom_RectangularTrimmedSurface() {}
+StepGeom_RectangularTrimmedSurface::StepGeom_RectangularTrimmedSurface() = default;
 
 void StepGeom_RectangularTrimmedSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                               const occ::handle<StepGeom_Surface>& aBasisSurface,

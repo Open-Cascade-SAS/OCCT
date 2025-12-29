@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentType, Standard_Transient)
 
-StepBasic_DocumentType::StepBasic_DocumentType() {}
+StepBasic_DocumentType::StepBasic_DocumentType() = default;
 
 void StepBasic_DocumentType::Init(const occ::handle<TCollection_HAsciiString>& apdt)
 {

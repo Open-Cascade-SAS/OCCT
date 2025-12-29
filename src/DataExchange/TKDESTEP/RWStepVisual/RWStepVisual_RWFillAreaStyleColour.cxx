@@ -18,7 +18,7 @@
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_FillAreaStyleColour.hxx>
 
-RWStepVisual_RWFillAreaStyleColour::RWStepVisual_RWFillAreaStyleColour() {}
+RWStepVisual_RWFillAreaStyleColour::RWStepVisual_RWFillAreaStyleColour() = default;
 
 void RWStepVisual_RWFillAreaStyleColour::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

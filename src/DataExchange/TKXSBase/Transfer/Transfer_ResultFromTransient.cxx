@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Transfer_ResultFromTransient, Standard_Transient)
 
 static occ::handle<Interface_Check> voidcheck = new Interface_Check;
 
-Transfer_ResultFromTransient::Transfer_ResultFromTransient() {}
+Transfer_ResultFromTransient::Transfer_ResultFromTransient() = default;
 
 void Transfer_ResultFromTransient::SetStart(const occ::handle<Standard_Transient>& start)
 {

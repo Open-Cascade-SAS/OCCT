@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionDisplayData, IGESData_IGESEntity)
 
-IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData() {}
+IGESDimen_DimensionDisplayData::IGESDimen_DimensionDisplayData() = default;
 
 void IGESDimen_DimensionDisplayData::Init(const int                                    numProps,
                                           const int                                    aDimType,

@@ -54,7 +54,7 @@ public:
 
   //! Returns True if a starting object is bound with SEVERAL
   //! results : Here, returns always True
-  Standard_EXPORT virtual bool IsMultiple() const override;
+  Standard_EXPORT bool IsMultiple() const override;
 
   //! Returns the Type permitted for Results, i.e. here Transient
   Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;

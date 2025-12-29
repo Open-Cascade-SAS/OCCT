@@ -1262,7 +1262,7 @@ void DBRep_DrawableShape::addMeshNormals(
   {
     const TopoDS_Face&                             aFace        = TopoDS::Face(aFaceIt.Current());
     NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals = theNormals.ChangeSeek(aFace);
-    if (aFaceNormals == NULL)
+    if (aFaceNormals == nullptr)
     {
       aFaceNormals = theNormals.Bound(aFace, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>());
     }
@@ -1340,7 +1340,7 @@ void DBRep_DrawableShape::addSurfaceNormals(
   {
     const TopoDS_Face&                             aFace        = TopoDS::Face(aFaceIt.Current());
     NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals = theNormals.ChangeSeek(aFace);
-    if (aFaceNormals == NULL)
+    if (aFaceNormals == nullptr)
     {
       aFaceNormals = theNormals.Bound(aFace, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>());
     }

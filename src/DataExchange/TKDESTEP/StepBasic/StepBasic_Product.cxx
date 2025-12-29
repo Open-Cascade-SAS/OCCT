@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
-StepBasic_Product::StepBasic_Product() {}
+StepBasic_Product::StepBasic_Product() = default;
 
 void StepBasic_Product::Init(
   const occ::handle<TCollection_HAsciiString>&                                   aId,

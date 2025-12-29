@@ -80,9 +80,9 @@ public:
   //! Returns True for an Entity (model->Value(num)) of which the
   //! signature matches the text given as creation time
   //! May also work with a Counter from the Graph
-  Standard_EXPORT virtual bool SortInGraph(const int                              rank,
-                                           const occ::handle<Standard_Transient>& ent,
-                                           const Interface_Graph&                 G) const override;
+  Standard_EXPORT bool SortInGraph(const int                              rank,
+                                   const occ::handle<Standard_Transient>& ent,
+                                   const Interface_Graph&                 G) const override;
 
   //! Not called, defined only to remove a deferred method here
   Standard_EXPORT bool Sort(const int                                    rank,

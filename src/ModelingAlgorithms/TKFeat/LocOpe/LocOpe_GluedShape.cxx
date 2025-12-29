@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GluedShape, LocOpe_GeneratedShape)
 
 //=================================================================================================
 
-LocOpe_GluedShape::LocOpe_GluedShape() {}
+LocOpe_GluedShape::LocOpe_GluedShape() = default;
 
 //=================================================================================================
 

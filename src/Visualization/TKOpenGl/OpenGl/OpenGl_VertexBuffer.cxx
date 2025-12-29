@@ -113,7 +113,7 @@ void OpenGl_VertexBuffer::bindAttribute(const occ::handle<OpenGl_Context>& theCt
 {
   if (theCtx->ActiveProgram().IsNull())
   {
-    if (theCtx->core11ffp != NULL)
+    if (theCtx->core11ffp != nullptr)
     {
       bindFixed(theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
     }
@@ -144,7 +144,7 @@ void OpenGl_VertexBuffer::unbindAttribute(const occ::handle<OpenGl_Context>& the
 {
   if (theCtx->ActiveProgram().IsNull())
   {
-    if (theCtx->core11ffp != NULL)
+    if (theCtx->core11ffp != nullptr)
     {
       unbindFixed(theCtx, theAttribute);
     }

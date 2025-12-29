@@ -30,7 +30,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolDimensionedGeometry::IGESDimen_ToolDimensionedGeometry() {}
+IGESDimen_ToolDimensionedGeometry::IGESDimen_ToolDimensionedGeometry() = default;
 
 void IGESDimen_ToolDimensionedGeometry::ReadOwnParams(
   const occ::handle<IGESDimen_DimensionedGeometry>& ent,

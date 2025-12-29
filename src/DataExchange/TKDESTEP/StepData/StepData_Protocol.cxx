@@ -24,14 +24,14 @@
 #include <StepData_StepModel.hxx>
 #include <StepData_UndefinedEntity.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_Protocol, Interface_Protocol)
 
 //  The base Protocol recognizes UnknownEntity
 // static TCollection_AsciiString  thename("(DEFAULT)");
 static const char* thename = "(DEFAULT)";
 
-StepData_Protocol::StepData_Protocol() {}
+StepData_Protocol::StepData_Protocol() = default;
 
 int StepData_Protocol::NbResources() const
 {

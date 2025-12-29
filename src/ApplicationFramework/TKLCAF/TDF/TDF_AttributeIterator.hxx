@@ -76,7 +76,7 @@ private:
 
 inline bool TDF_AttributeIterator::More() const
 {
-  return (myValue != 0L);
+  return (myValue != nullptr);
 }
 
 inline occ::handle<TDF_Attribute> TDF_AttributeIterator::Value() const

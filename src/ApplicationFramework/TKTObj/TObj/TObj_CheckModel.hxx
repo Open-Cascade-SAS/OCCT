@@ -49,7 +49,7 @@ public:
   const occ::handle<TObj_Model>& GetModel() const { return myModel; }
 
   //! Empty virtual destructor
-  virtual ~TObj_CheckModel() {}
+  ~TObj_CheckModel() override = default;
 
   //! Performs all checks. Descendants should call parent method before
   //! doing own checks.

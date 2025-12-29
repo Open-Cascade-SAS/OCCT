@@ -42,7 +42,7 @@ const Standard_GUID& TNaming_UsedShapes::GetID()
 
 //=================================================================================================
 
-TNaming_UsedShapes::TNaming_UsedShapes() {}
+TNaming_UsedShapes::TNaming_UsedShapes() = default;
 
 //=================================================================================================
 

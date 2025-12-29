@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver, BinLDrivers_Documen
 
 //=================================================================================================
 
-BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver() {}
+BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver() = default;
 
 //=================================================================================================
 

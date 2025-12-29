@@ -31,7 +31,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "intlistattguid")
 
 XmlMDataStd_IntegerListDriver::XmlMDataStd_IntegerListDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -55,7 +55,7 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
-  if (aFirstIndex == NULL)
+  if (aFirstIndex == nullptr)
     aFirstInd = 1;
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {

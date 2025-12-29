@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWDimensionalLocation::RWStepShape_RWDimensionalLocation() {}
+RWStepShape_RWDimensionalLocation::RWStepShape_RWDimensionalLocation() = default;
 
 //=================================================================================================
 

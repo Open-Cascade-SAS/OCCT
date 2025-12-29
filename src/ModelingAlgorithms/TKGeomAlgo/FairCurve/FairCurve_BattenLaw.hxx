@@ -50,7 +50,7 @@ public:
 
   //! computes the value of the heigth for the parameter T
   //! on the neutral fibber
-  virtual bool Value(const double T, double& THeigth) override;
+  bool Value(const double T, double& THeigth) override;
 
 private:
   double MiddleHeigth;

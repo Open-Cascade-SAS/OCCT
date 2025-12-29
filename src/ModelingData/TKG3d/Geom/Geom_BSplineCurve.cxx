@@ -449,7 +449,7 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
   mults   = nmults;
 
   UpdateKnots();
-  maxderivinvok = 0;
+  maxderivinvok = false;
   return true;
 }
 
@@ -659,7 +659,7 @@ void Geom_BSplineCurve::Segment(const double U1, const double U2, const double t
   if (rational)
     weights = nweights;
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateKnots();
 }
 
@@ -692,7 +692,7 @@ void Geom_BSplineCurve::SetKnot(const int Index, const double K)
   if (K != knots->Value(Index))
   {
     knots->SetValue(Index, K);
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateKnots();
   }
 }
@@ -703,7 +703,7 @@ void Geom_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(poles->Array1(), K, mults->Array1(), deg, periodic);
   knots->ChangeArray1() = K;
-  maxderivinvok         = 0;
+  maxderivinvok         = false;
   UpdateKnots();
 }
 
@@ -751,7 +751,7 @@ void Geom_BSplineCurve::SetPeriodic()
 
   periodic = true;
 
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateKnots();
 }
 
@@ -841,7 +841,7 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
   mults = nmults;
   if (rational)
     weights = nweights;
-  maxderivinvok = 0;
+  maxderivinvok = false;
   UpdateKnots();
 }
 
@@ -933,7 +933,7 @@ void Geom_BSplineCurve::SetNotPeriodic()
     knots    = nknots;
     periodic = false;
 
-    maxderivinvok = 0;
+    maxderivinvok = false;
     UpdateKnots();
   }
 }
@@ -945,7 +945,7 @@ void Geom_BSplineCurve::SetPole(const int Index, const gp_Pnt& P)
   if (Index < 1 || Index > poles->Length())
     throw Standard_OutOfRange("BSpline curve: SetPole: index and #pole mismatch");
   poles->SetValue(Index, P);
-  maxderivinvok = 0;
+  maxderivinvok = false;
 }
 
 //=================================================================================================
@@ -987,7 +987,7 @@ void Geom_BSplineCurve::SetWeight(const int Index, const double W)
 
     rational = !weights.IsNull();
   }
-  maxderivinvok = 0;
+  maxderivinvok = false;
 }
 
 //=================================================================================================
@@ -1022,7 +1022,7 @@ void Geom_BSplineCurve::MovePoint(const double  U,
   if (FirstModifiedPole)
   {
     poles->ChangeArray1() = npoles;
-    maxderivinvok         = 0;
+    maxderivinvok         = false;
   }
 }
 
@@ -1069,7 +1069,7 @@ void Geom_BSplineCurve::MovePointAndTangent(const double  U,
   if (!ErrorStatus)
   {
     poles->ChangeArray1() = new_poles;
-    maxderivinvok         = 0;
+    maxderivinvok         = false;
   }
 }
 

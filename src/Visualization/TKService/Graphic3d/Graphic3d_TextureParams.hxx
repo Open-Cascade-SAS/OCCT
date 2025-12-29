@@ -35,7 +35,7 @@ public:
   Standard_EXPORT Graphic3d_TextureParams();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_TextureParams();
+  Standard_EXPORT ~Graphic3d_TextureParams() override;
 
   //! Default texture unit to be used, default is Graphic3d_TextureUnit_BaseColor.
   Graphic3d_TextureUnit TextureUnit() const { return myTextureUnit; }

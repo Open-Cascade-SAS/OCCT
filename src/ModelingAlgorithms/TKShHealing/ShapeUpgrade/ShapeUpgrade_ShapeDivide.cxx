@@ -76,7 +76,7 @@ void ShapeUpgrade_ShapeDivide::Init(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-ShapeUpgrade_ShapeDivide::~ShapeUpgrade_ShapeDivide() {}
+ShapeUpgrade_ShapeDivide::~ShapeUpgrade_ShapeDivide() = default;
 
 //=================================================================================================
 

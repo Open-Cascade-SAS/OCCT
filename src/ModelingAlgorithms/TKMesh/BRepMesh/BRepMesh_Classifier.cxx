@@ -24,11 +24,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
 
 //=================================================================================================
 
-BRepMesh_Classifier::BRepMesh_Classifier() {}
+BRepMesh_Classifier::BRepMesh_Classifier() = default;
 
 //=================================================================================================
 
-BRepMesh_Classifier::~BRepMesh_Classifier() {}
+BRepMesh_Classifier::~BRepMesh_Classifier() = default;
 
 //=================================================================================================
 

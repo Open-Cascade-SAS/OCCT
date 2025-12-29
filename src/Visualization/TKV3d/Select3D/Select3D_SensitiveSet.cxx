@@ -183,7 +183,7 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
         {
           toCheckLft = theMgr.OverlapsBox(aBVH->MinPoint(aLeft.Id),
                                           aBVH->MaxPoint(aLeft.Id),
-                                          toCheckFullInside ? &aLeft.IsFullInside : NULL);
+                                          toCheckFullInside ? &aLeft.IsFullInside : nullptr);
           if (!toCheckLft)
           {
             aLeft.IsFullInside = false;
@@ -191,7 +191,7 @@ bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
 
           toCheckRgh = theMgr.OverlapsBox(aBVH->MinPoint(aRight.Id),
                                           aBVH->MaxPoint(aRight.Id),
-                                          toCheckFullInside ? &aRight.IsFullInside : NULL);
+                                          toCheckFullInside ? &aRight.IsFullInside : nullptr);
           if (!toCheckRgh)
           {
             aRight.IsFullInside = false;

@@ -278,7 +278,7 @@ NCollection_SparseArrayBase::Iterator::Iterator(const NCollection_SparseArrayBas
       myHasMore(false),
       myIBlock(0),
       myInd(0),
-      myBlock(0, 0, 0)
+      myBlock(nullptr, 0, 0)
 {
   init(theArray);
 }

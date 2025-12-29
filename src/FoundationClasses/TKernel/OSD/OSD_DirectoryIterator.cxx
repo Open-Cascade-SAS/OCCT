@@ -22,13 +22,13 @@
   #include <TCollection_AsciiString.hxx>
 
   #include <dirent.h>
-  #include <stdio.h>
+  #include <cstdio>
   #include <sys/stat.h>
 
 OSD_DirectoryIterator::OSD_DirectoryIterator()
     : myFlag(false),
-      myDescr(0),
-      myEntry(0),
+      myDescr(nullptr),
+      myEntry(nullptr),
       myInit(0)
 {
 }
@@ -36,8 +36,8 @@ OSD_DirectoryIterator::OSD_DirectoryIterator()
 OSD_DirectoryIterator::OSD_DirectoryIterator(const OSD_Path&                where,
                                              const TCollection_AsciiString& Mask)
     : myFlag(false),
-      myDescr(0),
-      myEntry(0),
+      myDescr(nullptr),
+      myEntry(nullptr),
       myInit(0)
 {
   Initialize(where, Mask);
@@ -59,7 +59,7 @@ void OSD_DirectoryIterator::Initialize(const OSD_Path& where, const TCollection_
   if (myDescr)
   {
     closedir((DIR*)myDescr);
-    myDescr = NULL;
+    myDescr = nullptr;
   }
   myInit = 1;
 }
@@ -118,10 +118,10 @@ void OSD_DirectoryIterator::Next()
 
     if (!myEntry)
     {                          // No file found
-      myEntry = NULL;          // Keep pointer clean
+      myEntry = nullptr;       // Keep pointer clean
       myFlag  = false;         // No more files/directory
       closedir((DIR*)myDescr); // so close directory
-      myDescr = NULL;
+      myDescr = nullptr;
       again   = 0;
     }
     else

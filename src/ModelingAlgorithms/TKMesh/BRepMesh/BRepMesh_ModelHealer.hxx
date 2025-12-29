@@ -40,7 +40,7 @@ public:
   Standard_EXPORT BRepMesh_ModelHealer();
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_ModelHealer();
+  Standard_EXPORT ~BRepMesh_ModelHealer() override;
 
   //! Functor API to discretize the given edge.
   void operator()(const int theEdgeIndex) const { process(theEdgeIndex); }
@@ -52,9 +52,9 @@ public:
 
 protected:
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                               const IMeshTools_Parameters&        theParameters,
-                                               const Message_ProgressRange& theRange) override;
+  Standard_EXPORT bool performInternal(const occ::handle<IMeshData_Model>& theModel,
+                                       const IMeshTools_Parameters&        theParameters,
+                                       const Message_ProgressRange&        theRange) override;
 
 private:
   //! Checks existing discretization of the face and updates data model.
@@ -113,7 +113,7 @@ private:
                        gp_Pnt2d*& theClosestPnt1,
                        gp_Pnt2d*& theClosestPnt2) const
   {
-    gp_Pnt2d *   aCurrPrevUV1 = NULL, *aCurrPrevUV2 = NULL;
+    gp_Pnt2d *   aCurrPrevUV1 = nullptr, *aCurrPrevUV2 = nullptr;
     const double aSqDist1 = closestPoint(theFirstPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV1);
     const double aSqDist2 = closestPoint(theSecondPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV2);
     if (aSqDist1 - aSqDist2 < gp::Resolution())

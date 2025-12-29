@@ -44,7 +44,7 @@ public:
                                   const occ::handle<BVH_Builder3d>& theBuilder);
 
   //! Destructor.
-  Standard_EXPORT virtual ~Graphic3d_Layer();
+  Standard_EXPORT ~Graphic3d_Layer() override;
 
   //! Return layer id.
   Graphic3d_ZLayerId LayerId() const { return myLayerId; }

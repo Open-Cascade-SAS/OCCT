@@ -18,7 +18,7 @@
 #include <StepBasic_DateTimeSelect.hxx>
 #include <StepBasic_LocalTime.hxx>
 
-StepBasic_DateTimeSelect::StepBasic_DateTimeSelect() {}
+StepBasic_DateTimeSelect::StepBasic_DateTimeSelect() = default;
 
 int StepBasic_DateTimeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

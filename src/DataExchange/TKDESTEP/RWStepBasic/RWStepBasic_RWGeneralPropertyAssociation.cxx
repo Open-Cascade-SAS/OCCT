@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWGeneralPropertyAssociation::RWStepBasic_RWGeneralPropertyAssociation() {}
+RWStepBasic_RWGeneralPropertyAssociation::RWStepBasic_RWGeneralPropertyAssociation() = default;
 
 //=================================================================================================
 

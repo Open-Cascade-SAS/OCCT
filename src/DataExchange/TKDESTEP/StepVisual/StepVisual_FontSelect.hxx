@@ -39,7 +39,7 @@ public:
   //! 1 -> PreDefinedTextFont
   //! 2 -> ExternallyDefinedTextFont
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a PreDefinedTextFont (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PreDefinedTextFont> PreDefinedTextFont() const;

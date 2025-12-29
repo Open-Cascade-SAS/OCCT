@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::RWStepDimTol_RWGeoTolAndGeoTolWthDatRef() {}
+RWStepDimTol_RWGeoTolAndGeoTolWthDatRef::RWStepDimTol_RWGeoTolAndGeoTolWthDatRef() = default;
 
 //=================================================================================================
 

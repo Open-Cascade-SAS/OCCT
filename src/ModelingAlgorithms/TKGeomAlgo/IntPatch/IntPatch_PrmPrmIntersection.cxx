@@ -2370,7 +2370,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       SLin.Clear();
     }
     //
-    IntPolyh_Intersection* pInterference = NULL;
+    IntPolyh_Intersection* pInterference = nullptr;
 
     if (D1->IsUniformSampling() || D2->IsUniformSampling())
     {
@@ -2395,7 +2395,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       if (pInterference)
       {
         delete pInterference;
-        pInterference = NULL;
+        pInterference = nullptr;
       }
 
       return;
@@ -2991,7 +2991,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     if (pInterference)
     {
       delete pInterference;
-      pInterference = NULL;
+      pInterference = nullptr;
     }
 
     return;
@@ -3263,8 +3263,8 @@ public:
   gp_Pnt& xP2(const int i, const int j) { return myP2[Index(i, j)]; };
 
 private:
-  IntPatch_InfoPD(const IntPatch_InfoPD&);
-  IntPatch_InfoPD& operator=(const IntPatch_InfoPD&);
+  IntPatch_InfoPD(const IntPatch_InfoPD&)            = delete;
+  IntPatch_InfoPD& operator=(const IntPatch_InfoPD&) = delete;
 
 private:
   int     myNBI;

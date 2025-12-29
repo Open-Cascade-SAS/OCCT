@@ -31,16 +31,15 @@ class XmlDrivers_DocumentRetrievalDriver : public XmlLDrivers_DocumentRetrievalD
 public:
   Standard_EXPORT XmlDrivers_DocumentRetrievalDriver();
 
-  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
-  Standard_EXPORT virtual occ::handle<XmlMDF_ADriver> ReadShapeSection(
+  Standard_EXPORT occ::handle<XmlMDF_ADriver> ReadShapeSection(
     const XmlObjMgt_Element&              thePDoc,
     const occ::handle<Message_Messenger>& theMsgDriver,
     const Message_ProgressRange&          theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void ShapeSetCleaning(
-    const occ::handle<XmlMDF_ADriver>& theDriver) override;
+  Standard_EXPORT void ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver) override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
 };

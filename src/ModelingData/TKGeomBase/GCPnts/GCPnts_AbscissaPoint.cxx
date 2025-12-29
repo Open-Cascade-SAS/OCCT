@@ -337,7 +337,7 @@ double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC,
                                     const double           theU1,
                                     const double           theU2)
 {
-  return length(theC, theU1, theU2, NULL);
+  return length(theC, theU1, theU2, nullptr);
 }
 
 //=================================================================================================
@@ -346,7 +346,7 @@ double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
                                     const double             theU1,
                                     const double             theU2)
 {
-  return length(theC, theU1, theU2, NULL);
+  return length(theC, theU1, theU2, nullptr);
 }
 
 //=================================================================================================
@@ -385,8 +385,8 @@ double GCPnts_AbscissaPoint::length(const TheCurve& theC,
       return std::abs(theU2 - theU1) * aRatio;
     }
     case GCPnts_Parametrized: {
-      return theTol != NULL ? CPnts_AbscissaPoint::Length(theC, theU1, theU2, *theTol)
-                            : CPnts_AbscissaPoint::Length(theC, theU1, theU2);
+      return theTol != nullptr ? CPnts_AbscissaPoint::Length(theC, theU1, theU2, *theTol)
+                               : CPnts_AbscissaPoint::Length(theC, theU1, theU2);
     }
     case GCPnts_AbsComposite: {
       const int                  aNbIntervals = theC.NbIntervals(GeomAbs_CN);
@@ -405,7 +405,7 @@ double GCPnts_AbscissaPoint::length(const TheCurve& theC,
         {
           continue;
         }
-        if (theTol != NULL)
+        if (theTol != nullptr)
         {
           aL += CPnts_AbscissaPoint::Length(theC,
                                             std::max(aTI(anIndex), aUU1),

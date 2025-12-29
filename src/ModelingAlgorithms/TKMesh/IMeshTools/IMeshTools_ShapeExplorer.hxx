@@ -29,7 +29,7 @@ public:
   Standard_EXPORT IMeshTools_ShapeExplorer(const TopoDS_Shape& theShape);
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_ShapeExplorer();
+  Standard_EXPORT ~IMeshTools_ShapeExplorer() override;
 
   //! Starts exploring of a shape.
   Standard_EXPORT virtual void Accept(const occ::handle<IMeshTools_ShapeVisitor>& theVisitor);

@@ -21,9 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSur
                            StepGeom_BSplineSurface)
 
 StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
-  StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface()
-{
-}
+  StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface() = default;
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

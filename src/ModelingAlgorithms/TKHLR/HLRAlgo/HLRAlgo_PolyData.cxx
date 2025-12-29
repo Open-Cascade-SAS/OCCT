@@ -28,7 +28,7 @@ static int HLRAlgo_PolyData_ERROR = false;
 #endif
 //=================================================================================================
 
-HLRAlgo_PolyData::HLRAlgo_PolyData() {}
+HLRAlgo_PolyData::HLRAlgo_PolyData() = default;
 
 //=================================================================================================
 

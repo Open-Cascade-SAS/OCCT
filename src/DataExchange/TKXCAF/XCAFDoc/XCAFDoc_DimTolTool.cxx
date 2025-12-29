@@ -43,7 +43,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DimTolTool,
 
 //=================================================================================================
 
-XCAFDoc_DimTolTool::XCAFDoc_DimTolTool() {}
+XCAFDoc_DimTolTool::XCAFDoc_DimTolTool() = default;
 
 //=================================================================================================
 

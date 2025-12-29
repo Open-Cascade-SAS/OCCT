@@ -63,7 +63,7 @@ public:
   //! 13     RepresentationRelationship from StepRepr,
   //! 14     ShapeAspect from StepRepr
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
 

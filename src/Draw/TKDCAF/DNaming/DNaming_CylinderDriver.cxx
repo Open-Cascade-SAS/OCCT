@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_CylinderDriver, TFunction_Driver)
 
 //=================================================================================================
 
-DNaming_CylinderDriver::DNaming_CylinderDriver() {}
+DNaming_CylinderDriver::DNaming_CylinderDriver() = default;
 
 //=======================================================================
 // function : Validate

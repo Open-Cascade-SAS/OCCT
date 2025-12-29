@@ -18,7 +18,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApplicationProtocolDefinition::RWStepBasic_RWApplicationProtocolDefinition() {}
+RWStepBasic_RWApplicationProtocolDefinition::RWStepBasic_RWApplicationProtocolDefinition() =
+  default;
 
 void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,

@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedClosedShell, StepShape_ClosedShell)
 
-StepShape_OrientedClosedShell::StepShape_OrientedClosedShell() {}
+StepShape_OrientedClosedShell::StepShape_OrientedClosedShell() = default;
 
 void StepShape_OrientedClosedShell::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

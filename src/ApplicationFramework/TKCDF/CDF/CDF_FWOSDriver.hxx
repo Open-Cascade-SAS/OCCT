@@ -52,9 +52,9 @@ public:
   Standard_EXPORT TCollection_ExtendedString
     BuildFileName(const occ::handle<CDM_Document>& aDocument) override;
 
-  Standard_EXPORT virtual TCollection_ExtendedString SetName(
-    const occ::handle<CDM_Document>&  aDocument,
-    const TCollection_ExtendedString& aName) override;
+  Standard_EXPORT TCollection_ExtendedString
+    SetName(const occ::handle<CDM_Document>&  aDocument,
+            const TCollection_ExtendedString& aName) override;
 
   DEFINE_STANDARD_RTTIEXT(CDF_FWOSDriver, CDF_MetaDataDriver)
 

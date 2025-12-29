@@ -31,7 +31,7 @@ public:
   Standard_EXPORT Media_CodecContext();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Media_CodecContext();
+  Standard_EXPORT ~Media_CodecContext() override;
 
   //! Return context.
   AVCodecContext* Context() const { return myCodecCtx; }

@@ -38,22 +38,22 @@ public:
                                          const TCollection_ExtendedString& aText);
 
   //! Indicates that the dimension we are concerned with is an offset.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_OFFSET; }
+  PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_OFFSET; }
 
   //! Returns true if the offset datum is movable.
-  virtual bool IsMovable() const override { return true; }
+  bool IsMovable() const override { return true; }
 
   //! Sets a transformation aTrsf for presentation and
   //! selection to a relative position.
   void SetRelativePos(const gp_Trsf& aTrsf) { myRelativePos = aTrsf; }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
                                              const gp_Trsf&                         aTrsf);

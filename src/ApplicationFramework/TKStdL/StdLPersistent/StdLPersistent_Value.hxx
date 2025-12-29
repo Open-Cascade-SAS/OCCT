@@ -32,7 +32,7 @@ class StdLPersistent_Value
   {
   public:
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
   };
 
   template <class AttribClass, class HStringClass = StdLPersistent_HString::Extended>
@@ -40,62 +40,62 @@ class StdLPersistent_Value
   {
   public:
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
   };
 
 public:
   class TagSource : public integer<TDF_TagSource>
   {
   public:
-    const char* PName() const { return "PDF_TagSource"; }
+    const char* PName() const override { return "PDF_TagSource"; }
   };
 
   class Reference : public string<TDF_Reference>
   {
   public:
-    const char* PName() const { return "PDF_Reference"; }
+    const char* PName() const override { return "PDF_Reference"; }
   };
 
   class Comment : public string<TDataStd_Comment>
   {
   public:
-    const char* PName() const { return "PDF_Comment"; }
+    const char* PName() const override { return "PDF_Comment"; }
   };
 
   class UAttribute : public string<TDataStd_UAttribute>
   {
   public:
     //! Create an empty transient attribute
-    Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
+    Standard_EXPORT occ::handle<TDF_Attribute> CreateAttribute() override;
 
-    const char* PName() const { return "PDataStd_UAttribute"; }
+    const char* PName() const override { return "PDataStd_UAttribute"; }
   };
 
   class Integer : public integer<TDataStd_Integer>
   {
   public:
     //! Create an empty transient attribute
-    Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
+    Standard_EXPORT occ::handle<TDF_Attribute> CreateAttribute() override;
 
-    const char* PName() const { return "PDataStd_Integer"; }
+    const char* PName() const override { return "PDataStd_Integer"; }
   };
 
   class Name : public string<TDataStd_Name>
   {
   public:
     //! Create an empty transient attribute
-    Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
+    Standard_EXPORT occ::handle<TDF_Attribute> CreateAttribute() override;
 
-    const char* PName() const { return "PDataStd_Name"; }
+    const char* PName() const override { return "PDataStd_Name"; }
   };
 
   class AsciiString : public string<TDataStd_AsciiString, StdLPersistent_HString::Ascii>
   {
   public:
     //! Create an empty transient attribute
-    Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
+    Standard_EXPORT occ::handle<TDF_Attribute> CreateAttribute() override;
 
-    const char* PName() const { return "PDataStd_AsciiString"; }
+    const char* PName() const override { return "PDataStd_AsciiString"; }
   };
 };
 

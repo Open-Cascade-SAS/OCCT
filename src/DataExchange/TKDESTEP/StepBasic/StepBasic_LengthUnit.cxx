@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LengthUnit, StepBasic_NamedUnit)
 
-StepBasic_LengthUnit::StepBasic_LengthUnit() {}
+StepBasic_LengthUnit::StepBasic_LengthUnit() = default;

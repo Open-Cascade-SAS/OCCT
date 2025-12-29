@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWAssemblyComponentUsage::RWStepRepr_RWAssemblyComponentUsage() {}
+RWStepRepr_RWAssemblyComponentUsage::RWStepRepr_RWAssemblyComponentUsage() = default;
 
 //=================================================================================================
 

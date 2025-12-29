@@ -144,7 +144,7 @@ static const char gEndComment[]   = {chDash, chDash, chCloseAngle, chNull};
 static char* getEncodingName(const char* theEncodingName)
 {
   const char* anEncoding = theEncodingName;
-  if (theEncodingName == NULL)
+  if (theEncodingName == nullptr)
   {
     static const char anUTFEncoding[] = {chLatin_U, chLatin_T, chLatin_F, chDash, chEight, chNull};
     anEncoding                        = anUTFEncoding;
@@ -166,7 +166,7 @@ LDOM_XmlWriter::LDOM_XmlWriter(const char* theEncoding)
     : myEncodingName(::getEncodingName(theEncoding)),
       myIndent(0),
       myCurIndent(0),
-      myABuffer(NULL),
+      myABuffer(nullptr),
       myABufferLen(0)
 {
   ;
@@ -178,7 +178,7 @@ LDOM_XmlWriter::~LDOM_XmlWriter()
 {
   delete[] myEncodingName;
 
-  if (myABuffer != NULL)
+  if (myABuffer != nullptr)
   {
     delete[] myABuffer;
   }
@@ -245,7 +245,7 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
 
       //  Test for the presence of children
       LDOM_Node aChild = theNode.getFirstChild();
-      if (aChild != 0)
+      if (aChild != nullptr)
       {
         // There are children. Close start-tag, and output children.
         Write(theOStream, chCloseAngle);
@@ -255,7 +255,7 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
         }
 
         bool isChildElem = false;
-        while (aChild != 0)
+        while (aChild != nullptr)
         {
           isChildElem = (aChild.getNodeType() == LDOM_Node::ELEMENT_NODE);
           if (isChildElem)
@@ -417,7 +417,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
     aLength = (int)(20 + strlen(aName));
     if (aLength > myABufferLen)
     {
-      if (myABuffer != NULL)
+      if (myABuffer != nullptr)
       {
         delete[] myABuffer;
       }
@@ -452,7 +452,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
 
     if (aLength > myABufferLen)
     {
-      if (myABuffer != NULL)
+      if (myABuffer != nullptr)
       {
         delete[] myABuffer;
       }

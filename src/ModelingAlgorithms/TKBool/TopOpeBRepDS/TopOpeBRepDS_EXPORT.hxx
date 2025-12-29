@@ -114,13 +114,13 @@ Standard_EXPORT double FDS_Parameter(const occ::handle<TopOpeBRepDS_Interference
 Standard_EXPORT bool   FDS_Parameter(const occ::handle<TopOpeBRepDS_Interference>& I, double& par);
 Standard_EXPORT bool   FDS_HasSameDomain3d(const TopOpeBRepDS_DataStructure& BDS,
                                            const TopoDS_Shape&               E,
-                                           NCollection_List<TopoDS_Shape>*   PLSD = NULL);
+                                           NCollection_List<TopoDS_Shape>*   PLSD = nullptr);
 Standard_EXPORT bool   FDS_Config3d(const TopoDS_Shape&  E1,
                                     const TopoDS_Shape&  E2,
                                     TopOpeBRepDS_Config& c);
 Standard_EXPORT bool   FDS_HasSameDomain2d(const TopOpeBRepDS_DataStructure& BDS,
                                            const TopoDS_Shape&               E,
-                                           NCollection_List<TopoDS_Shape>*   PLSD = NULL);
+                                           NCollection_List<TopoDS_Shape>*   PLSD = nullptr);
 Standard_EXPORT void   FDS_getupperlower(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                          const int                                       edgeIndex,
                                          const double                                    paredge,

@@ -50,7 +50,7 @@ public:
 
   //! Creates a plane coincident with OXY plane of the
   //! reference coordinate system.
-  constexpr gp_Pln() noexcept {}
+  constexpr gp_Pln() noexcept = default;
 
   //! The coordinate system of the plane is defined with the axis
   //! placement theA3.

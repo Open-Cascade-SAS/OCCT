@@ -33,7 +33,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension() {}
+IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension() = default;
 
 void IGESDimen_ToolCurveDimension::ReadOwnParams(const occ::handle<IGESDimen_CurveDimension>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,

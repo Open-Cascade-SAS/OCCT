@@ -73,10 +73,10 @@ public:
 
 private:
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
-  LDOM_XmlReader(const LDOM_XmlReader& theOther);
+  LDOM_XmlReader(const LDOM_XmlReader& theOther) = delete;
   // Copy constructor
 
-  LDOM_XmlReader& operator=(const LDOM_XmlReader& theOther);
+  LDOM_XmlReader& operator=(const LDOM_XmlReader& theOther) = delete;
   // Assignment
 
 private:

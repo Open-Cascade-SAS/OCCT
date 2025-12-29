@@ -60,7 +60,7 @@
 
 //=================================================================================================
 
-STEPConstruct_ExternRefs::STEPConstruct_ExternRefs() {}
+STEPConstruct_ExternRefs::STEPConstruct_ExternRefs() = default;
 
 //=================================================================================================
 
@@ -305,7 +305,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
 {
   occ::handle<StepBasic_DocumentFile>                            DocFile;
   occ::handle<StepAP214_AppliedExternalIdentificationAssignment> AEIA;
-  const char*                                                    aCStringFileName = 0;
+  const char*                                                    aCStringFileName = nullptr;
   if (myDocFiles.Length() >= num && !myDocFiles.Value(num).IsNull())
     DocFile = occ::down_cast<StepBasic_DocumentFile>(myDocFiles.Value(num));
   else if (myIsAP214(num) == 1)
@@ -379,7 +379,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
       aCStringFileName = aFilename->ToCString();
       // ptv 29.01.2003 file trj4_xr1-tc-214.stp entity #71 have id "#71"
       if (aCStringFileName && aCStringFileName[0] == '#')
-        aCStringFileName = 0;
+        aCStringFileName = nullptr;
     }
     if (!aCStringFileName || !aCStringFileName[0])
     {
@@ -402,7 +402,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
       }
     }
   }
-  const char* oldFileName = 0;
+  const char* oldFileName = nullptr;
   // compute true path to the extern file
   OSD_Path mainfile(WS()->LoadedFile());
   mainfile.SetName("");
@@ -417,7 +417,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
     if (!OSD_File(fullname).Exists())
     {
       oldFileName      = aCStringFileName;
-      aCStringFileName = 0;
+      aCStringFileName = nullptr;
     }
   }
   if (!aCStringFileName || !aCStringFileName[0])
@@ -949,7 +949,7 @@ void STEPConstruct_ExternRefs::checkAP214Shared()
     // create new ProductRelatedProductCategory for all extern files.
     occ::handle<TCollection_HAsciiString> PRPCname = new TCollection_HAsciiString("document");
     mySharedPRPC                                   = new StepBasic_ProductRelatedProductCategory;
-    mySharedPRPC->Init(PRPCname, false, EmptyString, 0);
+    mySharedPRPC->Init(PRPCname, false, EmptyString, nullptr);
   }
   if (mySharedDocType.IsNull())
   {

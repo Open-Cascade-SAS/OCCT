@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() {}
+StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() = default;
 
 //=================================================================================================
 

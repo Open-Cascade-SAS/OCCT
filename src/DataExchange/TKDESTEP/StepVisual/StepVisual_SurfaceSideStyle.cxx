@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle, Standard_Transient)
 
-StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle() {}
+StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle() = default;
 
 void StepVisual_SurfaceSideStyle::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

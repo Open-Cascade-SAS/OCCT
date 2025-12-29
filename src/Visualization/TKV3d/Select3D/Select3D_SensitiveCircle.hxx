@@ -45,24 +45,24 @@ public:
   }
 
   //! Checks whether the circle overlaps current selecting volume
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns a copy of this sensitive circle
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the circle.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
   //! Always returns false
-  virtual bool ToBuildBVH() const override { return false; }
+  bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual int NbSubElements() const override { return 1; }
+  int NbSubElements() const override { return 1; }
 
   //! Returns center of the circle with transformation applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   //! The transformation for gp::XOY() with center in gp::Origin(),
   //! it specifies the position and orientation of the circle.

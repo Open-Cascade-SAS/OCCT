@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_BasicDimension, IGESData_IGESEntity)
 
-IGESDimen_BasicDimension::IGESDimen_BasicDimension() {}
+IGESDimen_BasicDimension::IGESDimen_BasicDimension() = default;
 
 void IGESDimen_BasicDimension::Init(const int    nbPropVal,
                                     const gp_XY& thell,

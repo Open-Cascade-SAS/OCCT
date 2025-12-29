@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_RuledSurface, IGESData_IGESEntity)
 
-IGESGeom_RuledSurface::IGESGeom_RuledSurface() {}
+IGESGeom_RuledSurface::IGESGeom_RuledSurface() = default;
 
 void IGESGeom_RuledSurface::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
                                  const occ::handle<IGESData_IGESEntity>& anotherCurve,

@@ -139,7 +139,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_InitFu
 
 private:
   Select3D_SensitivePrimitiveArray_InitFunctor operator=(
-    Select3D_SensitivePrimitiveArray_InitFunctor&);
+    Select3D_SensitivePrimitiveArray_InitFunctor&) = delete;
 
 private:
   Select3D_SensitivePrimitiveArray& myPrimArray;
@@ -162,7 +162,7 @@ struct Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray_BVHFun
 
 private:
   Select3D_SensitivePrimitiveArray_BVHFunctor operator=(
-    Select3D_SensitivePrimitiveArray_BVHFunctor&);
+    Select3D_SensitivePrimitiveArray_BVHFunctor&) = delete;
 
 private:
   NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>& myGroups;
@@ -173,7 +173,7 @@ private:
 Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : Select3D_SensitiveSet(theOwnerId),
-      myPosData(NULL),
+      myPosData(nullptr),
       myPosStride(size_t(-1)),
       myPrimType(Graphic3d_TOPA_UNDEFINED),
       myIndexLower(0),
@@ -255,7 +255,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   myIndices.Nullify();
   myIndexLower = 0;
   myIndexUpper = 0;
-  myPosData    = NULL;
+  myPosData    = nullptr;
   myPosStride  = size_t(-1);
   myBvhIndices.release();
   myIs3d         = false;
@@ -268,7 +268,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
 
   int aPosAttribIndex = 0;
   myPosData           = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
-  if (myPosData == NULL)
+  if (myPosData == nullptr)
   {
     return false;
   }
@@ -277,7 +277,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   myIs3d = anAttrib.DataType == Graphic3d_TOD_VEC3 || anAttrib.DataType == Graphic3d_TOD_VEC4;
   if (!myIs3d && anAttrib.DataType != Graphic3d_TOD_VEC2)
   {
-    myPosData = NULL;
+    myPosData = nullptr;
     return false;
   }
 
@@ -420,7 +420,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
   myIndices.Nullify();
   myIndexLower = 0;
   myIndexUpper = 0;
-  myPosData    = NULL;
+  myPosData    = nullptr;
   myPosStride  = size_t(-1);
   myBvhIndices.release();
   myIs3d         = false;
@@ -432,7 +432,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
 
   int aPosAttribIndex = 0;
   myPosData           = theVerts->AttributeData(Graphic3d_TOA_POS, aPosAttribIndex, myPosStride);
-  if (myPosData == NULL)
+  if (myPosData == nullptr)
   {
     return false;
   }
@@ -441,7 +441,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
   myIs3d = anAttrib.DataType == Graphic3d_TOD_VEC3 || anAttrib.DataType == Graphic3d_TOD_VEC4;
   if (!myIs3d && anAttrib.DataType != Graphic3d_TOD_VEC2)
   {
-    myPosData = NULL;
+    myPosData = nullptr;
     return false;
   }
 
@@ -510,10 +510,10 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
   }
   const float aPatchSize2 =
     myPatchDistance < ShortRealLast() ? myPatchDistance * myPatchDistance : myPatchDistance;
-  const NCollection_Vec3<float>* aPnt3dPrev = NULL;
-  const NCollection_Vec3<float>* aPnt3d     = NULL;
-  const NCollection_Vec2<float>* aPnt2dPrev = NULL;
-  const NCollection_Vec2<float>* aPnt2d     = NULL;
+  const NCollection_Vec3<float>* aPnt3dPrev = nullptr;
+  const NCollection_Vec3<float>* aPnt3d     = nullptr;
+  const NCollection_Vec2<float>* aPnt2dPrev = nullptr;
+  const NCollection_Vec2<float>* aPnt2d     = nullptr;
   for (int aPointIter = 0; aPointIter < aNbPoints; ++aPointIter)
   {
     const int anIndexOffset = (theIndexLower + aPointIter);
@@ -534,7 +534,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
       if (myIs3d)
       {
         std::swap(aPnt3d, aPnt3dPrev);
-        if (aPatchSize < myPatchSizeMax && aPnt3d != NULL
+        if (aPatchSize < myPatchSizeMax && aPnt3d != nullptr
             && (*aPnt3dPrev - *aPnt3d).SquareModulus() < aPatchSize2)
         {
           ++aPatchSize;
@@ -544,7 +544,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
       else
       {
         std::swap(aPnt2d, aPnt2dPrev);
-        if (aPatchSize < myPatchSizeMax && aPnt2d != NULL
+        if (aPatchSize < myPatchSizeMax && aPnt2d != nullptr
             && (*aPnt2dPrev - *aPnt2d).SquareModulus() < aPatchSize2)
         {
           ++aPatchSize;

@@ -88,7 +88,7 @@ public:
    */
 
   //! Return name of resource (i.e. "TObj")
-  virtual Standard_EXPORT const char* ResourcesName() override;
+  Standard_EXPORT const char* ResourcesName() override;
 
 protected:
   /**

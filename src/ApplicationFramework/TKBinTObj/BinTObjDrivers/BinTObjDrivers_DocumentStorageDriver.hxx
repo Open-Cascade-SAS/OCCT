@@ -32,7 +32,7 @@ public:
   Standard_EXPORT BinTObjDrivers_DocumentStorageDriver();
   // Constructor
 
-  Standard_EXPORT virtual occ::handle<BinMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<BinMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
 public:

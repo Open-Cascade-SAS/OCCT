@@ -16,7 +16,7 @@
 #include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
 
-StepVisual_LayeredItem::StepVisual_LayeredItem() {}
+StepVisual_LayeredItem::StepVisual_LayeredItem() = default;
 
 int StepVisual_LayeredItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

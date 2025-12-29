@@ -29,9 +29,7 @@
 //=================================================================================================
 
 RWStepElement_RWCurveElementSectionDerivedDefinitions::
-  RWStepElement_RWCurveElementSectionDerivedDefinitions()
-{
-}
+  RWStepElement_RWCurveElementSectionDerivedDefinitions() = default;
 
 //=================================================================================================
 

@@ -33,19 +33,19 @@ public:
                                           const TopoDS_Shape&            SecondShape,
                                           const occ::handle<Geom_Plane>& aPlane);
 
-  virtual bool IsMovable() const override { return true; }
+  bool IsMovable() const override { return true; }
 
   void SetTool(const TopoDS_Shape& aMidPointTool) { myTool = aMidPointTool; }
 
   const TopoDS_Shape& GetTool() const { return myTool; }
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void ComputeFaceFromPnt(const occ::handle<Prs3d_Presentation>& aprs,
                                           const bool                             first);

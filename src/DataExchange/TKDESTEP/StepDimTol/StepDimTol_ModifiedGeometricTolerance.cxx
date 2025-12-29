@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ModifiedGeometricTolerance, StepDimTol_Geo
 
 //=================================================================================================
 
-StepDimTol_ModifiedGeometricTolerance::StepDimTol_ModifiedGeometricTolerance() {}
+StepDimTol_ModifiedGeometricTolerance::StepDimTol_ModifiedGeometricTolerance() = default;
 
 //=================================================================================================
 

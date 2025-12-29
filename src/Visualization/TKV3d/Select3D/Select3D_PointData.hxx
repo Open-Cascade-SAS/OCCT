@@ -75,8 +75,8 @@ public:
   int Size() const { return mynbpoints; }
 
 private:
-  Select3D_PointData(const Select3D_PointData&);
-  Select3D_PointData& operator=(const Select3D_PointData&);
+  Select3D_PointData(const Select3D_PointData&)            = delete;
+  Select3D_PointData& operator=(const Select3D_PointData&) = delete;
 
 private:
   Select3D_Pnt* mypolyg3d;

@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP242_IdAttribute, Standard_Transient)
 
 //=================================================================================================
 
-StepAP242_IdAttribute::StepAP242_IdAttribute() {}
+StepAP242_IdAttribute::StepAP242_IdAttribute() = default;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWMaterialProperty::RWStepRepr_RWMaterialProperty() {}
+RWStepRepr_RWMaterialProperty::RWStepRepr_RWMaterialProperty() = default;
 
 //=================================================================================================
 

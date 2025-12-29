@@ -33,7 +33,7 @@ public:
 
   //! Checks the solid in context of
   //! the shape <theContextShape>
-  Standard_EXPORT virtual void InContext(const TopoDS_Shape& theContextShape) override;
+  Standard_EXPORT void InContext(const TopoDS_Shape& theContextShape) override;
 
   //! Checks the solid per se.
   //!
@@ -53,10 +53,10 @@ public:
   //! 3.2 Shells that encloses other Shells
   //! (for non-holes)
   //! Status:  BRepCheck_EnclosedRegion
-  Standard_EXPORT virtual void Minimum() override;
+  Standard_EXPORT void Minimum() override;
 
   //! see the parent class for more details
-  Standard_EXPORT virtual void Blind() override;
+  Standard_EXPORT void Blind() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Solid, BRepCheck_Result)
 };

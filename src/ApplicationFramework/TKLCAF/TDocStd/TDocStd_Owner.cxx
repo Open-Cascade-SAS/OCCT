@@ -83,7 +83,7 @@ occ::handle<TDocStd_Document> TDocStd_Owner::GetDocument(const occ::handle<TDF_D
 
 //=================================================================================================
 
-TDocStd_Owner::TDocStd_Owner() {}
+TDocStd_Owner::TDocStd_Owner() = default;
 
 //=================================================================================================
 

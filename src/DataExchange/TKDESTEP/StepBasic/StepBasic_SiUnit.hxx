@@ -48,10 +48,10 @@ public:
 
   Standard_EXPORT StepBasic_SiUnitName Name() const;
 
-  Standard_EXPORT virtual void SetDimensions(
+  Standard_EXPORT void SetDimensions(
     const occ::handle<StepBasic_DimensionalExponents>& aDimensions) override;
 
-  Standard_EXPORT virtual occ::handle<StepBasic_DimensionalExponents> Dimensions() const override;
+  Standard_EXPORT occ::handle<StepBasic_DimensionalExponents> Dimensions() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 

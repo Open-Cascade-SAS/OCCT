@@ -35,7 +35,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution() {}
+IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution() = default;
 
 void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(
   const occ::handle<IGESSolid_SolidOfRevolution>& ent,

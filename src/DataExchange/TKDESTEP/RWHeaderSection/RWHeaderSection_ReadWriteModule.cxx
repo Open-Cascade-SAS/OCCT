@@ -34,7 +34,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 
 // -- General Declarations (Recognize, StepType) ---
-static constexpr std::string_view PasReco(""); // neutralise StartEntity de SW
+static constexpr std::string_view PasReco; // neutralise StartEntity de SW
 static constexpr std::string_view Reco_FileName("FILE_NAME");
 static constexpr std::string_view Reco_FileDescription("FILE_DESCRIPTION");
 static constexpr std::string_view Reco_FileSchema("FILE_SCHEMA");

@@ -62,7 +62,7 @@
 #include <TopOpeBRep_Point2d.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif

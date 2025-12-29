@@ -32,13 +32,13 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
+  bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
   {
     theMetric = 0.0; // All nodes have same metric
     return false;    // Never reject
   }
 
-  virtual bool Accept(const int, const double&) override
+  bool Accept(const int, const double&) override
   {
     ++myAcceptedCount;
     return true;
@@ -62,16 +62,16 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+  bool RejectNode(const BVH_VecNt& theMin,
+                  const BVH_VecNt& theMax,
+                  double&          theMetric) const override
   {
     // Reject if box doesn't intersect with selection box
     theMetric = 0.0;
     return myBox.IsOut(theMin, theMax);
   }
 
-  virtual bool Accept(const int, const double&) override
+  bool Accept(const int, const double&) override
   {
     ++myAcceptedCount;
     return true;
@@ -99,16 +99,16 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+  bool RejectNode(const BVH_VecNt& theMin,
+                  const BVH_VecNt& theMax,
+                  double&          theMetric) const override
   {
     // Compute squared distance from point to box
     theMetric = PointBoxSquareDistance(myPoint, theMin, theMax);
     return theMetric > myMaxDistSq;
   }
 
-  virtual bool Accept(const int theIndex, const double& theMetric) override
+  bool Accept(const int theIndex, const double& theMetric) override
   {
     ++myAcceptedCount;
     if (theMetric < myMinDistSq)
@@ -119,15 +119,12 @@ public:
     return true;
   }
 
-  virtual bool IsMetricBetter(const double& theLeft, const double& theRight) const override
+  bool IsMetricBetter(const double& theLeft, const double& theRight) const override
   {
     return theLeft < theRight; // Closer is better
   }
 
-  virtual bool RejectMetric(const double& theMetric) const override
-  {
-    return theMetric > myMaxDistSq;
-  }
+  bool RejectMetric(const double& theMetric) const override { return theMetric > myMaxDistSq; }
 
   int AcceptedCount() const { return myAcceptedCount; }
 
@@ -174,19 +171,19 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
+  bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
   {
     theMetric = 0.0;
     return false;
   }
 
-  virtual bool Accept(const int, const double&) override
+  bool Accept(const int, const double&) override
   {
     ++myAcceptedCount;
     return true;
   }
 
-  virtual bool Stop() const override { return myAcceptedCount >= myMaxCount; }
+  bool Stop() const override { return myAcceptedCount >= myMaxCount; }
 
   int AcceptedCount() const { return myAcceptedCount; }
 
@@ -208,17 +205,17 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          double& theMetric) const override
+  bool RejectNode(const BVH_VecNt&,
+                  const BVH_VecNt&,
+                  const BVH_VecNt&,
+                  const BVH_VecNt&,
+                  double& theMetric) const override
   {
     theMetric = 0.0;
     return false; // Never reject
   }
 
-  virtual bool Accept(const int, const int) override
+  bool Accept(const int, const int) override
   {
     ++myAcceptedCount;
     return true;
@@ -240,11 +237,11 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt& theMin1,
-                          const BVH_VecNt& theMax1,
-                          const BVH_VecNt& theMin2,
-                          const BVH_VecNt& theMax2,
-                          double&          theMetric) const override
+  bool RejectNode(const BVH_VecNt& theMin1,
+                  const BVH_VecNt& theMax1,
+                  const BVH_VecNt& theMin2,
+                  const BVH_VecNt& theMax2,
+                  double&          theMetric) const override
   {
     ++myRejectCount;
     theMetric = 0.0;
@@ -254,7 +251,7 @@ public:
     return isOut;
   }
 
-  virtual bool Accept(const int, const int) override
+  bool Accept(const int, const int) override
   {
     // For this test, if we reach Accept, it means the bounding boxes overlap.
     // In a real implementation, you would check actual triangle-triangle intersection here.

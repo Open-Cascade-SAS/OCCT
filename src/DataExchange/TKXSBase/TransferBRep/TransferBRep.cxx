@@ -31,7 +31,7 @@
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #include <TransferBRep_Analyzer.hxx>
 static void ShapeAppend(const occ::handle<Transfer_Binder>&                     binder,

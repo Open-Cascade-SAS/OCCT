@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_CircArraySubfigure, IGESData_IGESEntity)
 
-IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure() {}
+IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure() = default;
 
 void IGESDraw_CircArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
                                        const int                                    aNumLocs,

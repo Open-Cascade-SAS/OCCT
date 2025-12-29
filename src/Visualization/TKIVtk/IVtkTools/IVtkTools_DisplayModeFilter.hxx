@@ -68,10 +68,10 @@ public:
 
 protected:
   //! Filter cells according to the given set of ids.
-  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
+  int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
 
   IVtkTools_DisplayModeFilter();
-  virtual ~IVtkTools_DisplayModeFilter();
+  ~IVtkTools_DisplayModeFilter() override;
 
 protected:
   // clang-format off

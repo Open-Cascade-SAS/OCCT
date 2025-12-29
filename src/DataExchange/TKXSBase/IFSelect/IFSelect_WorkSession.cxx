@@ -295,9 +295,9 @@ occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::EntityLabel(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull() || ent.IsNull())
-    return 0;
+    return nullptr;
   if (!myModel->Contains(ent))
-    return 0;
+    return nullptr;
   return myModel->StringLabel(ent);
 }
 
@@ -307,13 +307,13 @@ occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::EntityName(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull() || ent.IsNull())
-    return 0;
+    return nullptr;
   Interface_ShareTool sht(thegraph->Graph());
 
   int                                  CN;
   occ::handle<Interface_GeneralModule> module;
   if (!thegtool->Select(ent, module, CN))
-    return 0;
+    return nullptr;
   return module->Name(CN, ent, sht);
 }
 

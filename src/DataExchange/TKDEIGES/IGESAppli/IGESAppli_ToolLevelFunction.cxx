@@ -30,7 +30,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolLevelFunction::IGESAppli_ToolLevelFunction() {}
+IGESAppli_ToolLevelFunction::IGESAppli_ToolLevelFunction() = default;
 
 void IGESAppli_ToolLevelFunction::ReadOwnParams(
   const occ::handle<IGESAppli_LevelFunction>& ent,

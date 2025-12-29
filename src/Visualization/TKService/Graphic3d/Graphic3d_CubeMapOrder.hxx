@@ -134,9 +134,8 @@ public:
 
   //! Copy constructor.
   Graphic3d_ValidatedCubeMapOrder(const Graphic3d_ValidatedCubeMapOrder& theOther)
-      : Order(theOther.Order)
-  {
-  }
+
+    = default;
 
 public:
   const Graphic3d_CubeMapOrder Order; //!< Completely valid order
@@ -150,7 +149,7 @@ private:
   }
 
   //! Deleted 'operator='
-  Graphic3d_ValidatedCubeMapOrder& operator=(const Graphic3d_ValidatedCubeMapOrder&);
+  Graphic3d_ValidatedCubeMapOrder& operator=(const Graphic3d_ValidatedCubeMapOrder&) = delete;
 };
 
 #endif // _Graphic3d_CubeMapOrder_HeaderFile

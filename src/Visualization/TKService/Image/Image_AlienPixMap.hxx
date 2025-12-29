@@ -46,10 +46,10 @@ public:
   Standard_EXPORT Image_AlienPixMap();
 
   //! Destructor
-  Standard_EXPORT virtual ~Image_AlienPixMap();
+  Standard_EXPORT ~Image_AlienPixMap() override;
 
   //! Read image data from file.
-  bool Load(const TCollection_AsciiString& theFileName) { return Load(NULL, 0, theFileName); }
+  bool Load(const TCollection_AsciiString& theFileName) { return Load(nullptr, 0, theFileName); }
 
   //! Read image data from stream.
   Standard_EXPORT bool Load(std::istream& theStream, const TCollection_AsciiString& theFileName);
@@ -65,7 +65,7 @@ public:
 
   //! Write image data to file.
   //! @param[in] theFileName file name to save
-  bool Save(const TCollection_AsciiString& theFileName) { return Save(NULL, 0, theFileName); }
+  bool Save(const TCollection_AsciiString& theFileName) { return Save(nullptr, 0, theFileName); }
 
   //! Write image data to stream.
   //! @param[out] theStream   stream where to write
@@ -87,16 +87,16 @@ public:
   //!                            than nearest supported will be used instead!
   //! @param[in] theSizeRowBytes may be ignored by this class and required alignment will be used
   //! instead!
-  Standard_EXPORT virtual bool InitTrash(Image_Format thePixelFormat,
-                                         const size_t theSizeX,
-                                         const size_t theSizeY,
-                                         const size_t theSizeRowBytes = 0) override;
+  Standard_EXPORT bool InitTrash(Image_Format thePixelFormat,
+                                 const size_t theSizeX,
+                                 const size_t theSizeY,
+                                 const size_t theSizeRowBytes = 0) override;
 
   //! Initialize by copying data.
-  Standard_EXPORT virtual bool InitCopy(const Image_PixMap& theCopy) override;
+  Standard_EXPORT bool InitCopy(const Image_PixMap& theCopy) override;
 
   //! Method correctly deallocate internal buffer.
-  Standard_EXPORT virtual void Clear() override;
+  Standard_EXPORT void Clear() override;
 
   //! Performs gamma correction on image.
   //! @param[in] theGamma - gamma value to use; a value of 1.0 leaves the image alone
@@ -109,16 +109,16 @@ public:
 
 private:
   //! Copying allowed only within Handles
-  Image_AlienPixMap(const Image_AlienPixMap&);
-  Image_AlienPixMap& operator=(const Image_AlienPixMap&);
+  Image_AlienPixMap(const Image_AlienPixMap&)            = delete;
+  Image_AlienPixMap& operator=(const Image_AlienPixMap&) = delete;
 
   //! Wrapper initialization is disallowed for this class (will return false in any case)!
   //! Use only copying and allocation initializers.
-  Standard_EXPORT virtual bool InitWrapper(Image_Format thePixelFormat,
-                                           uint8_t*     theDataPtr,
-                                           const size_t theSizeX,
-                                           const size_t theSizeY,
-                                           const size_t theSizeRowBytes) override;
+  Standard_EXPORT bool InitWrapper(Image_Format thePixelFormat,
+                                   uint8_t*     theDataPtr,
+                                   const size_t theSizeX,
+                                   const size_t theSizeY,
+                                   const size_t theSizeRowBytes) override;
 
   //! Built-in PPM export
   Standard_EXPORT bool savePPM(const TCollection_AsciiString& theFileName) const;
@@ -126,8 +126,8 @@ private:
   FIBITMAP* getImageToDump(const int theFormat);
 
 private:
-  FIBITMAP*    myLibImage;
-  IWICPalette* myPalette;
+  FIBITMAP*                     myLibImage;
+  [[maybe_unused]] IWICPalette* myPalette;
 };
 
 #endif // _Image_AlienPixMap_H__

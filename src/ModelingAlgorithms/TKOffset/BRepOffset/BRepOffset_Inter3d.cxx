@@ -263,7 +263,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const NCollection_List<TopoDS_Shape>& /*
   TopoDS_Face                    F1, F2;
   TopoDS_Edge                    NullEdge;
   TopoDS_Face                    NullFace;
-  Message_ProgressScope          aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope          aPSOuter(theRange, nullptr, 2);
   Message_ProgressScope          aPSIntF(aPSOuter.Next(), "Intersecting offset faces", 1, true);
   //---------------------------------------------------------------------
   // etape 1 : Intersection of faces // corresponding to the initial faces
@@ -453,7 +453,7 @@ void BRepOffset_Inter3d::ConnexIntByInt(
   //
   TopExp::MapShapes(SI, TopAbs_EDGE, VEmap);
   // Take the vertices for treatment
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   if (bIsPlanar)
   {
     aNb = VEmap.Extent();
@@ -1028,7 +1028,7 @@ void BRepOffset_Inter3d::ContextIntByInt(
     myTouched.Add(CF);
     if (ExtentContext)
     {
-      BRepOffset_Tool::EnLargeFace(CF, NF, 0, 0);
+      BRepOffset_Tool::EnLargeFace(CF, NF, false, false);
       MES.Bind(CF, NF);
     }
   }
@@ -1173,7 +1173,7 @@ void BRepOffset_Inter3d::ContextIntByInt(
         //      OE = TopoDS::Edge(MapSF(F).Generated(E));
         if (!MES.IsBound(OF))
         {
-          BRepOffset_Tool::EnLargeFace(OF, NF, 1, 1);
+          BRepOffset_Tool::EnLargeFace(OF, NF, true, true);
           MES.Bind(OF, NF);
         }
         else

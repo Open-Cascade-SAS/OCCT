@@ -73,7 +73,7 @@ static int NbCalls = 0;
 #endif
 //=================================================================================================
 
-TopOpeBRepTool_CurveTool::TopOpeBRepTool_CurveTool() {}
+TopOpeBRepTool_CurveTool::TopOpeBRepTool_CurveTool() = default;
 
 //=================================================================================================
 

@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference, StepBasic_D
 
 //=================================================================================================
 
-StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReference() {}
+StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReference() = default;
 
 //=================================================================================================
 

@@ -35,14 +35,14 @@ public:
   OpenGl_ShadowMap();
 
   //! Releases all OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
+  Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
   //! allocation alignment rules.
-  Standard_EXPORT virtual size_t EstimatedDataSize() const override;
+  Standard_EXPORT size_t EstimatedDataSize() const override;
 
   //! Destructor.
-  Standard_EXPORT virtual ~OpenGl_ShadowMap();
+  Standard_EXPORT ~OpenGl_ShadowMap() override;
 
   //! Return TRUE if defined.
   Standard_EXPORT bool IsValid() const;
@@ -77,7 +77,8 @@ public:
   //! Compute camera.
   //! @param[in] theView    active view
   //! @param[in] theOrigin  when not-NULL - displace shadow map camera to specified Z-Layer origin
-  Standard_EXPORT bool UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ* theOrigin = NULL);
+  Standard_EXPORT bool UpdateCamera(const Graphic3d_CView& theView,
+                                    const gp_XYZ*          theOrigin = nullptr);
 
 private:
   occ::handle<OpenGl_FrameBuffer> myShadowMapFbo;  //!< frame buffer for rendering shadow map
@@ -93,7 +94,7 @@ class OpenGl_ShadowMapArray : public Standard_Transient,
 {
 public:
   //! Empty constructor.
-  OpenGl_ShadowMapArray() {}
+  OpenGl_ShadowMapArray() = default;
 
   //! Releases all OpenGL resources.
   Standard_EXPORT void Release(OpenGl_Context* theCtx);

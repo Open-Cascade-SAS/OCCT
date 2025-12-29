@@ -70,9 +70,9 @@ public:
   //! Structure for Groups, Figures & Co
   //! Description for External Refs
   //! Auxiliary for other
-  Standard_EXPORT virtual int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+  Standard_EXPORT int CategoryNumber(const int                              CN,
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_GeneralModule, IGESData_GeneralModule)
 };

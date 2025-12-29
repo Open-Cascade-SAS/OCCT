@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_OffsetCurve3d, StepGeom_Curve)
 
-StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d() {}
+StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d() = default;
 
 void StepGeom_OffsetCurve3d::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepGeom_Curve>&           aBasisCurve,

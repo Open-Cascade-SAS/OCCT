@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
-IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol() {}
+IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol() = default;
 
 void IGESDimen_GeneralSymbol::Init(
   const occ::handle<IGESDimen_GeneralNote>&                                   aNote,

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 
-StepAP214_AppliedDateAndTimeAssignment::StepAP214_AppliedDateAndTimeAssignment() {}
+StepAP214_AppliedDateAndTimeAssignment::StepAP214_AppliedDateAndTimeAssignment() = default;
 
 void StepAP214_AppliedDateAndTimeAssignment::Init(
   const occ::handle<StepBasic_DateAndTime>&                          aAssignedDateAndTime,

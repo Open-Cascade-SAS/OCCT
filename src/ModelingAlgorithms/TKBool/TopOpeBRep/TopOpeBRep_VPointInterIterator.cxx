@@ -21,7 +21,7 @@
 //=================================================================================================
 
 TopOpeBRep_VPointInterIterator::TopOpeBRep_VPointInterIterator()
-    : myLineInter(NULL),
+    : myLineInter(nullptr),
       myVPointIndex(0),
       myVPointNb(0),
       mycheckkeep(false)

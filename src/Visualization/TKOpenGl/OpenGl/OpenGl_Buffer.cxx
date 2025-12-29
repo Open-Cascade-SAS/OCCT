@@ -91,8 +91,7 @@ TCollection_AsciiString OpenGl_Buffer::FormatTarget(unsigned int theTarget)
 //=================================================================================================
 
 OpenGl_Buffer::OpenGl_Buffer()
-    : OpenGl_Resource(),
-      myOffset(NULL),
+    : myOffset(nullptr),
       myBufferId(NO_BUFFER),
       myComponentsNb(4),
       myElemsNb(0),
@@ -105,14 +104,14 @@ OpenGl_Buffer::OpenGl_Buffer()
 
 OpenGl_Buffer::~OpenGl_Buffer()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
 
 bool OpenGl_Buffer::Create(const occ::handle<OpenGl_Context>& theGlCtx)
 {
-  if (myBufferId == NO_BUFFER && theGlCtx->core15fwd != NULL)
+  if (myBufferId == NO_BUFFER && theGlCtx->core15fwd != nullptr)
   {
     theGlCtx->core15fwd->glGenBuffers(1, &myBufferId);
   }
@@ -130,14 +129,15 @@ void OpenGl_Buffer::Release(OpenGl_Context* theGlCtx)
 
   // application can not handle this case by exception - this is bug in code
   Standard_ASSERT_RETURN(
-    theGlCtx != NULL,
-    "OpenGl_Buffer destroyed without GL context! Possible GPU memory leakage...", );
+    theGlCtx != nullptr,
+    "OpenGl_Buffer destroyed without GL context! Possible GPU memory leakage...",
+    Standard_VOID_RETURN);
 
   if (theGlCtx->IsValid())
   {
     theGlCtx->core15fwd->glDeleteBuffers(1, &myBufferId);
   }
-  myOffset   = NULL;
+  myOffset   = nullptr;
   myBufferId = NO_BUFFER;
 }
 

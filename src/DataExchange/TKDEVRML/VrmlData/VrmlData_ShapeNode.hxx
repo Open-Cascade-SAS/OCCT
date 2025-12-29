@@ -30,7 +30,7 @@ public:
   /**
    * Empty constructor
    */
-  inline VrmlData_ShapeNode() {}
+  inline VrmlData_ShapeNode() = default;
 
   /**
    * Constructor
@@ -71,23 +71,23 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+  Standard_EXPORT occ::handle<VrmlData_Node> Clone(
     const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
+  Standard_EXPORT VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to output stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
+  Standard_EXPORT VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Check if the Shape Node is writeable.
    */
-  Standard_EXPORT virtual bool IsDefault() const override;
+  Standard_EXPORT bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------

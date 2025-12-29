@@ -21,7 +21,7 @@
 
 #include "RWStepVisual_RWSurfaceSide.pxx"
 
-RWStepVisual_RWSurfaceStyleUsage::RWStepVisual_RWSurfaceStyleUsage() {}
+RWStepVisual_RWSurfaceStyleUsage::RWStepVisual_RWSurfaceStyleUsage() = default;
 
 void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,

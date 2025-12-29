@@ -41,7 +41,7 @@ class RWObj_TriangulationReader : public RWObj_Reader
 public:
   //! Constructor.
   RWObj_TriangulationReader()
-      : myShapeReceiver(NULL),
+      : myShapeReceiver(nullptr),
         myToCreateShapes(true)
   {
   }
@@ -60,33 +60,33 @@ public:
 
 protected:
   //! Flush active sub-mesh.
-  Standard_EXPORT virtual bool addMesh(const RWObj_SubMesh&      theMesh,
-                                       const RWObj_SubMeshReason theReason) override;
+  Standard_EXPORT bool addMesh(const RWObj_SubMesh&      theMesh,
+                               const RWObj_SubMeshReason theReason) override;
 
   //! Retrieve sub-mesh node position.
-  virtual gp_Pnt getNode(int theIndex) const override { return myNodes.Value(theIndex - 1); }
+  gp_Pnt getNode(int theIndex) const override { return myNodes.Value(theIndex - 1); }
 
   //! Add new node.
-  virtual int addNode(const gp_Pnt& thePnt) override
+  int addNode(const gp_Pnt& thePnt) override
   {
     myNodes.Append(thePnt);
     return myNodes.Size();
   }
 
   //! Ignore normal.
-  virtual void setNodeNormal(const int theIndex, const NCollection_Vec3<float>& theNormal) override
+  void setNodeNormal(const int theIndex, const NCollection_Vec3<float>& theNormal) override
   {
     myNormals.SetValue(theIndex - 1, theNormal);
   }
 
   //! Ignore texture coordinates.
-  virtual void setNodeUV(const int theIndex, const NCollection_Vec2<float>& theUV) override
+  void setNodeUV(const int theIndex, const NCollection_Vec2<float>& theUV) override
   {
     myNodesUV.SetValue(theIndex - 1, theUV);
   }
 
   //! Add element.
-  virtual void addElement(int theN1, int theN2, int theN3, int theN4) override
+  void addElement(int theN1, int theN2, int theN3, int theN4) override
   {
     myTriangles.Append(Poly_Triangle(theN1, theN2, theN3));
     if (theN4 != -1)

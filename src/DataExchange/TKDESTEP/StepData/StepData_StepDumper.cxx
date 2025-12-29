@@ -25,7 +25,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // Constructor: Initialize STEP dumper with model, protocol, and output mode
 // mode > 0 sets label mode to 2 for enhanced entity labeling

@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfacePatch, Standard_Transient)
 
-StepGeom_SurfacePatch::StepGeom_SurfacePatch() {}
+StepGeom_SurfacePatch::StepGeom_SurfacePatch() = default;
 
 void StepGeom_SurfacePatch::Init(const occ::handle<StepGeom_BoundedSurface>& aParentSurface,
                                  const StepGeom_TransitionCode               aUTransition,

@@ -21,9 +21,7 @@
 //=================================================================================================
 
 RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::
-  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse()
-{
-}
+  RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse() = default;
 
 //=================================================================================================
 

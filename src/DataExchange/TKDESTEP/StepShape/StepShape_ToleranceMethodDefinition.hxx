@@ -37,7 +37,7 @@ public:
   //! Recognizes a kind of ValueQualifier Select Type :
   //! 1 -> ToleranceValue from StepShape
   //! 2 -> LimitsAndFits from StepShape
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as ToleranceValue
   Standard_EXPORT occ::handle<StepShape_ToleranceValue> ToleranceValue() const;

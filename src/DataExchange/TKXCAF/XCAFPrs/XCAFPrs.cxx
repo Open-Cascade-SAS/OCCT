@@ -282,7 +282,7 @@ void XCAFPrs::CollectStyleSettings(
         {
           const TopoDS_Shape& aShuoShape = aShuoShapeIter.Value();
           XCAFPrs_Style*      aMapStyle  = theSettings.ChangeSeek(aShuoShape);
-          if (aMapStyle == NULL)
+          if (aMapStyle == nullptr)
             theSettings.Add(aShuoShape, aShuoStyle);
           else
             *aMapStyle = aShuoStyle;
@@ -306,7 +306,7 @@ void XCAFPrs::CollectStyleSettings(
     }
     aSubshape.Move(theLoc, false);
     XCAFPrs_Style* aMapStyle = theSettings.ChangeSeek(aSubshape);
-    if (aMapStyle == NULL)
+    if (aMapStyle == nullptr)
       theSettings.Add(aSubshape, aStyle);
     else
       *aMapStyle = aStyle;

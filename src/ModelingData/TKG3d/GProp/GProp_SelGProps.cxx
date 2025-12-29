@@ -23,7 +23,7 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
-GProp_SelGProps::GProp_SelGProps() {}
+GProp_SelGProps::GProp_SelGProps() = default;
 
 void GProp_SelGProps::SetLocation(const gp_Pnt& SLocation)
 {

@@ -60,14 +60,14 @@
 #ifdef AIX
   #include <strings.h>
 #endif
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 
 static int edgesameparam(Draw_Interpretor& di, int argc, const char** argv)
 {
   //  const char* arg1 = argv[1];
-  const char* arg2(argc > 2 ? argv[2] : NULL);
+  const char* arg2(argc > 2 ? argv[2] : nullptr);
   //        ****    Edge:SameParameter         ****
   if (argc < 2)
   {
@@ -552,7 +552,7 @@ static int fixshape(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<ShapeFix_Shape>             sfs = new ShapeFix_Shape;
   sfs->SetMsgRegistrator(msg);
 
-  const char* res = 0;
+  const char* res = nullptr;
   int         par = 0, mess = 0;
   for (int i = 1; i < argc; i++)
   {

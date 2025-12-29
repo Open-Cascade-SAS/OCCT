@@ -42,7 +42,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-#include <errno.h>
+#include <cerrno>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_WorkLibrary, IFSelect_WorkLibrary)
 
 static int                                deja = 0;
@@ -104,11 +104,11 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     ctx.CCheck(0)->AddFail("IGES File could not be created");
     sout << " - IGES File could not be created : " << ctx.FileName() << std::endl;
-    return 0;
+    return false;
   }
   sout << " IGES File Name : " << ctx.FileName();
   IGESData_IGESWriter VW(igesmod);

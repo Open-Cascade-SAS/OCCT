@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <DDF.hxx>
 #include <DDF_Browser.hxx>

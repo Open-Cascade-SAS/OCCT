@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedStructuredItem, StepVisual_Tess
 
 //=================================================================================================
 
-StepVisual_TessellatedStructuredItem::StepVisual_TessellatedStructuredItem() {}
+StepVisual_TessellatedStructuredItem::StepVisual_TessellatedStructuredItem() = default;

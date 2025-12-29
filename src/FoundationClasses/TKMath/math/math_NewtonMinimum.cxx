@@ -58,7 +58,7 @@ math_NewtonMinimum::math_NewtonMinimum(const math_MultipleVarFunctionWithHessian
 
 //=================================================================================================
 
-math_NewtonMinimum::~math_NewtonMinimum() {}
+math_NewtonMinimum::~math_NewtonMinimum() = default;
 
 //=======================================================================
 // function : SetBoundary

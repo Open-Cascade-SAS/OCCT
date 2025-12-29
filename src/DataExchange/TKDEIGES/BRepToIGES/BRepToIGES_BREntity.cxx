@@ -314,4 +314,4 @@ bool BRepToIGES_BREntity::GetPCurveMode() const
 
 //=================================================================================================
 
-BRepToIGES_BREntity::~BRepToIGES_BREntity() {}
+BRepToIGES_BREntity::~BRepToIGES_BREntity() = default;

@@ -180,7 +180,7 @@ bool BinTools::Write(const TopoDS_Shape&          theShape,
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
   aStream->precision(15);
-  if (aStream.get() == NULL || !aStream->good())
+  if (aStream.get() == nullptr || !aStream->good())
     return false;
 
   Write(theShape, *aStream, theWithTriangles, theWithNormals, theVersion, theRange);
@@ -197,7 +197,7 @@ bool BinTools::Read(TopoDS_Shape&                theShape,
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
-  if (aStream.get() == NULL)
+  if (aStream.get() == nullptr)
   {
     return false;
   }

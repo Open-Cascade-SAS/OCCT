@@ -42,8 +42,8 @@ public:
   private:
     StdObjMgt_ReadData* myReadData;
 
-    ObjectSentry(const ObjectSentry&);
-    ObjectSentry& operator=(const ObjectSentry&);
+    ObjectSentry(const ObjectSentry&)            = delete;
+    ObjectSentry& operator=(const ObjectSentry&) = delete;
   };
 
   Standard_EXPORT StdObjMgt_ReadData(const occ::handle<Storage_BaseDriver>& theDriver,

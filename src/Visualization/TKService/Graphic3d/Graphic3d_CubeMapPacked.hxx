@@ -41,18 +41,18 @@ public:
     const Graphic3d_ValidatedCubeMapOrder& theOrder = Graphic3d_CubeMapOrder::Default());
 
   //! Returns current cubemap side as compressed PixMap.
-  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> CompressedValue(
+  Standard_EXPORT occ::handle<Image_CompressedPixMap> CompressedValue(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns current cubemap side as PixMap.
   //! Resulting PixMap is memory wrapper over original image.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! Origin image has to contain six quad tiles having one sizes without any gaps to be valid.
-  Standard_EXPORT virtual occ::handle<Image_PixMap> Value(
+  Standard_EXPORT occ::handle<Image_PixMap> Value(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Empty destructor.
-  ~Graphic3d_CubeMapPacked() {}
+  ~Graphic3d_CubeMapPacked() override = default;
 
 private:
   //! Checks whether given tiles order is valid.

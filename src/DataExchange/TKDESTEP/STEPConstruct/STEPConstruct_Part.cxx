@@ -170,7 +170,7 @@ void STEPConstruct_Part::MakeSDR(const occ::handle<StepShape_ShapeRepresentation
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> PRPCproducts =
     new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, 1);
   PRPCproducts->SetValue(1, P);
-  myPRPC->Init(PRPCName, false, 0, PRPCproducts);
+  myPRPC->Init(PRPCName, false, nullptr, PRPCproducts);
 
   myDone = true;
 }
@@ -202,7 +202,7 @@ occ::handle<StepShape_ShapeDefinitionRepresentation> STEPConstruct_Part::SDRValu
 occ::handle<StepShape_ShapeRepresentation> STEPConstruct_Part::SRValue() const
 {
   if (!myDone)
-    return 0;
+    return nullptr;
   return occ::down_cast<StepShape_ShapeRepresentation>(mySDR->UsedRepresentation());
 }
 

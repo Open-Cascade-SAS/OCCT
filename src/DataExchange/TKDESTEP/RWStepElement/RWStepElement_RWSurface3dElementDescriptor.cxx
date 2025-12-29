@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepElement_RWSurface3dElementDescriptor::RWStepElement_RWSurface3dElementDescriptor() {}
+RWStepElement_RWSurface3dElementDescriptor::RWStepElement_RWSurface3dElementDescriptor() = default;
 
 //=================================================================================================
 

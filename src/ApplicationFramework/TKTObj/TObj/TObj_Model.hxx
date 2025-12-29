@@ -56,7 +56,7 @@ protected:
   Standard_EXPORT TObj_Model();
 
   //! Destructor closes the model
-  Standard_EXPORT ~TObj_Model();
+  Standard_EXPORT ~TObj_Model() override;
 
   //! Check whether the document contains the OCAF data.
   Standard_EXPORT virtual bool checkDocumentEmpty(const TCollection_ExtendedString& theFile);
@@ -326,7 +326,7 @@ public:
   //! references will not be copied if theRelocTable is not 0
   //! if theRelocTable is not NULL theRelocTable is filled by objects
   virtual Standard_EXPORT bool Paste(occ::handle<TObj_Model>          theModel,
-                                     occ::handle<TDF_RelocationTable> theRelocTable = 0);
+                                     occ::handle<TDF_RelocationTable> theRelocTable = nullptr);
 
   //! This function have to create a new model with type like me
   virtual Standard_EXPORT occ::handle<TObj_Model> NewEmpty() = 0;

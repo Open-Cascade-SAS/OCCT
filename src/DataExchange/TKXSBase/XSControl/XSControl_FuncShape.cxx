@@ -43,7 +43,7 @@
 #include <XSControl_Vars.hxx>
 #include <XSControl_WorkSession.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #include <TransferBRep_Analyzer.hxx>
 //   ######################################################################

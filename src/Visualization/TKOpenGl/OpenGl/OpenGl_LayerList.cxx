@@ -176,7 +176,7 @@ OpenGl_LayerList::OpenGl_LayerList()
 
 //=================================================================================================
 
-OpenGl_LayerList::~OpenGl_LayerList() {}
+OpenGl_LayerList::~OpenGl_LayerList() = default;
 
 //=================================================================================================
 
@@ -296,7 +296,7 @@ void OpenGl_LayerList::AddStructure(const OpenGl_Structure*         theStruct,
   // if layer doesn't exists, display structure in default layer
   const occ::handle<Graphic3d_Layer>* aLayerPtr = myLayerIds.Seek(theLayerId);
   const occ::handle<Graphic3d_Layer>& aLayer =
-    aLayerPtr != NULL ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
+    aLayerPtr != nullptr ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
   aLayer->Add(theStruct, thePriority, isForChangePriority);
   ++myNbStructures;
   if (aLayer->IsImmediate())
@@ -316,7 +316,7 @@ void OpenGl_LayerList::RemoveStructure(const OpenGl_Structure* theStructure)
   const Graphic3d_ZLayerId            aLayerId  = theStructure->ZLayer();
   const occ::handle<Graphic3d_Layer>* aLayerPtr = myLayerIds.Seek(aLayerId);
   const occ::handle<Graphic3d_Layer>& aLayer =
-    aLayerPtr != NULL ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
+    aLayerPtr != nullptr ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
 
   Graphic3d_DisplayPriority aPriority = Graphic3d_DisplayPriority_INVALID;
 
@@ -373,7 +373,7 @@ void OpenGl_LayerList::InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
 {
   const occ::handle<Graphic3d_Layer>* aLayerPtr = myLayerIds.Seek(theLayerId);
   const occ::handle<Graphic3d_Layer>& aLayer =
-    aLayerPtr != NULL ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
+    aLayerPtr != nullptr ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
   aLayer->InvalidateBVHData();
 }
 
@@ -385,7 +385,7 @@ void OpenGl_LayerList::ChangeLayer(const OpenGl_Structure*  theStructure,
 {
   const occ::handle<Graphic3d_Layer>* aLayerPtr = myLayerIds.Seek(theOldLayerId);
   const occ::handle<Graphic3d_Layer>& aLayer =
-    aLayerPtr != NULL ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
+    aLayerPtr != nullptr ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
 
   Graphic3d_DisplayPriority aPriority = Graphic3d_DisplayPriority_INVALID;
 
@@ -453,7 +453,7 @@ void OpenGl_LayerList::ChangePriority(const OpenGl_Structure*         theStructu
 {
   const occ::handle<Graphic3d_Layer>* aLayerPtr = myLayerIds.Seek(theLayerId);
   const occ::handle<Graphic3d_Layer>& aLayer =
-    aLayerPtr != NULL ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
+    aLayerPtr != nullptr ? *aLayerPtr : myLayerIds.Find(Graphic3d_ZLayerId_Default);
 
   Graphic3d_DisplayPriority anOldPriority = Graphic3d_DisplayPriority_INVALID;
   if (aLayer->Remove(theStructure, anOldPriority, true))
@@ -739,7 +739,7 @@ void OpenGl_LayerList::Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
   aCtx->core11fwd->glGetIntegerv(GL_DEPTH_FUNC, &aPrevSettings.DepthFunc);
   aCtx->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &aPrevSettings.DepthMask);
   OpenGl_GlobalLayerSettings aDefaultSettings = aPrevSettings;
-  const bool isShadowMapPass = theReadDrawFbo != NULL && !theReadDrawFbo->HasColor();
+  const bool isShadowMapPass = theReadDrawFbo != nullptr && !theReadDrawFbo->HasColor();
 
   // Two render filters are used to support transparency draw. Opaque filter accepts
   // only non-transparent OpenGl elements of a layer and counts number of skipped
@@ -922,7 +922,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
   OpenGl_View*                             aView      = theWorkspace->View();
 
   Graphic3d_RenderTransparentMethod anOitMode =
-    aView != NULL ? aView->RenderingParams().TransparencyMethod : Graphic3d_RTM_BLEND_UNORDERED;
+    aView != nullptr ? aView->RenderingParams().TransparencyMethod : Graphic3d_RTM_BLEND_UNORDERED;
 
   const int aPrevFilter =
     theWorkspace->RenderFilter()
@@ -945,7 +945,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
   // available).
   if (anOitMode == Graphic3d_RTM_BLEND_OIT)
   {
-    if (theOitAccumFbo == NULL || theOitAccumFbo->NbColorBuffers() < 2
+    if (theOitAccumFbo == nullptr || theOitAccumFbo->NbColorBuffers() < 2
         || !theOitAccumFbo->ColorTexture(0)->IsValid()
         || !theOitAccumFbo->ColorTexture(1)->IsValid())
     {
@@ -1128,7 +1128,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
           aQuadVerts->UnbindVertexAttrib(aCtx, Graphic3d_TOA_POS);
           aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture(2)->Unbind(aCtx,
                                                                          Graphic3d_TextureUnit_0);
-          aCtx->BindProgram(NULL);
+          aCtx->BindProgram(nullptr);
 
           if (!aTextureBack.IsNull())
           {
@@ -1146,7 +1146,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
             GL_DEBUG_SEVERITY_HIGH,
             "Initialization of OIT compositing pass has failed.\n"
             "  Depth Peeling order-independent transparency will not be available.\n");
-          if (aView != NULL)
+          if (aView != nullptr)
           {
             bool& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
             aOITFlag       = true;
@@ -1193,7 +1193,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
         aVerts->UnbindVertexAttrib(aCtx, Graphic3d_TOA_POS);
         theOitAccumFbo->ColorTexture(1)->Unbind(aCtx, Graphic3d_TextureUnit_1);
         theOitAccumFbo->ColorTexture(0)->Unbind(aCtx, Graphic3d_TextureUnit_0);
-        aCtx->BindProgram(NULL);
+        aCtx->BindProgram(nullptr);
 
         if (!aTextureBack.IsNull())
         {
@@ -1208,7 +1208,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
                           GL_DEBUG_SEVERITY_HIGH,
                           "Initialization of OIT compositing pass has failed.\n"
                           "  Blended order-independent transparency will not be available.\n");
-        if (aView != NULL)
+        if (aView != nullptr)
         {
           bool& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
           aOITFlag       = true;
@@ -1237,7 +1237,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
         aGlBlendBackFBO->ColorTexture(0)->Unbind(aCtx, Graphic3d_TextureUnit_1);
         aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture(1)->Unbind(aCtx,
                                                                        Graphic3d_TextureUnit_0);
-        aCtx->BindProgram(NULL);
+        aCtx->BindProgram(nullptr);
 
         if (!aTextureBack.IsNull())
         {
@@ -1255,7 +1255,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
           GL_DEBUG_SEVERITY_HIGH,
           "Initialization of OIT compositing pass has failed.\n"
           "  Depth Peeling order-independent transparency will not be available.\n");
-        if (aView != NULL)
+        if (aView != nullptr)
         {
           bool& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
           aOITFlag       = true;

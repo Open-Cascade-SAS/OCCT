@@ -24,7 +24,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<TCollection_HAsciiString>> thedic;
 static NCollection_DataMap<TCollection_AsciiString, int>                                   thelist;
 static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>           thedup;
@@ -39,13 +39,13 @@ static int maxblank = (int)strlen(blank);
 
 Interface_MSG::Interface_MSG(const char* key)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
 }
 
 Interface_MSG::Interface_MSG(const char* key, const int i1)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
   char mess[300];
   Sprintf(mess, Interface_MSG::Translated(thekey), i1);
@@ -55,7 +55,7 @@ Interface_MSG::Interface_MSG(const char* key, const int i1)
 
 Interface_MSG::Interface_MSG(const char* key, const int i1, const int i2)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
   char mess[300];
   Sprintf(mess, Interface_MSG::Translated(thekey), i1, i2);
@@ -65,7 +65,7 @@ Interface_MSG::Interface_MSG(const char* key, const int i1, const int i2)
 
 Interface_MSG::Interface_MSG(const char* key, const double r1, const int intervals)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
   char mess[300];
   Sprintf(mess,
@@ -77,7 +77,7 @@ Interface_MSG::Interface_MSG(const char* key, const double r1, const int interva
 
 Interface_MSG::Interface_MSG(const char* key, const char* str)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
   char mess[300];
   Sprintf(mess, Interface_MSG::Translated(thekey), str);
@@ -87,7 +87,7 @@ Interface_MSG::Interface_MSG(const char* key, const char* str)
 
 Interface_MSG::Interface_MSG(const char* key, const int val, const char* str)
     : thekey(key),
-      theval(NULL)
+      theval(nullptr)
 {
   char mess[300];
   Sprintf(mess, Interface_MSG::Translated(thekey), val, str);
@@ -105,7 +105,7 @@ void Interface_MSG::Destroy()
   if (theval)
   {
     delete[] theval;
-    theval = NULL;
+    theval = nullptr;
   }
 }
 

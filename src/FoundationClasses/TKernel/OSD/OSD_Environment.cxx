@@ -22,10 +22,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_UtfString.hxx>
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <mutex>
 
 #ifndef _WIN32
@@ -43,7 +43,7 @@ static const OSD_WhoAmI Iam = OSD_WEnvironment;
 // ----------------------------------------------------------------------
 // Create object
 
-OSD_Environment::OSD_Environment() {}
+OSD_Environment::OSD_Environment() = default;
 
 //=================================================================================================
 
@@ -104,7 +104,7 @@ void OSD_Environment::SetValue(const TCollection_AsciiString& Value)
 TCollection_AsciiString OSD_Environment::Value()
 {
   char* result = getenv(myName.ToCString());
-  if (result == NULL)
+  if (result == nullptr)
     myValue.Clear();
   else
     myValue = result;
@@ -118,8 +118,8 @@ void OSD_Environment::Build()
   // Static buffer to hold definitions of new variables for the environment.
   // Note that they need to be static since putenv does not make a copy
   // of the string, but just adds its pointer to the environment.
-  static char** buffer  = 0; // JPT:
-  static int    Ibuffer = 0; // Tout ca pour putenv,getenv
+  static char** buffer  = nullptr; // JPT:
+  static int    Ibuffer = 0;       // Tout ca pour putenv,getenv
 
   // Use mutex to avoid concurrent access to the buffer
   static std::mutex           aMutex;
@@ -137,7 +137,7 @@ void OSD_Environment::Build()
   }
 
   // and either add a new entry, or remember the old entry for a while
-  char* old_value = 0;
+  char* old_value = nullptr;
   if (index >= 0)
   {
     old_value = buffer[index];
@@ -170,7 +170,7 @@ void OSD_Environment::Build()
 
   // check the result
   char* result = getenv(myName.ToCString());
-  if (result == NULL)
+  if (result == nullptr)
     myError.SetValue(errno, Iam, "Set Environment");
 }
 

@@ -52,7 +52,7 @@ class StdLPersistent_Collection
     }
 
     //! Read persistent data from a file.
-    virtual void Read(StdObjMgt_ReadData& theReadData)
+    void Read(StdObjMgt_ReadData& theReadData) override
     {
       Base::Read(theReadData);
       theReadData >> myLower >> myUpper;
@@ -105,7 +105,7 @@ class StdLPersistent_Collection
   {
   public:
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
   };
 
   template <class Instance>
@@ -119,10 +119,10 @@ class StdLPersistent_Collection
     }
 
     //! Read persistent data from a file.
-    Standard_EXPORT virtual void Read(StdObjMgt_ReadData& theReadData);
+    Standard_EXPORT void Read(StdObjMgt_ReadData& theReadData) override;
 
     //! Import transient attribute from the persistent data.
-    Standard_EXPORT virtual void ImportAttribute();
+    Standard_EXPORT void ImportAttribute() override;
 
   private:
     bool myDelta;

@@ -187,12 +187,12 @@ public:
   //! @param[in] theDragTo    drag end point
   //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
-  Standard_EXPORT virtual bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                               const occ::handle<V3d_View>&               theView,
-                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
-                                               const NCollection_Vec2<int>& theDragFrom,
-                                               const NCollection_Vec2<int>& theDragTo,
-                                               const AIS_DragAction         theAction) override;
+  Standard_EXPORT bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                       const occ::handle<V3d_View>&               theView,
+                                       const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                       const NCollection_Vec2<int>&               theDragFrom,
+                                       const NCollection_Vec2<int>&               theDragTo,
+                                       const AIS_DragAction theAction) override;
 
   //! Init start (reference) transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
@@ -304,7 +304,7 @@ public: //! @name Configuration of graphical transformations
   //! ZoomPersistence mode, silently does nothing in release mode.
   //! @warning revise use of AdjustSize argument of of \sa AttachToObjects method
   //! when enabling zoom persistence.
-  Standard_EXPORT virtual void SetTransformPersistence(
+  Standard_EXPORT void SetTransformPersistence(
     const occ::handle<Graphic3d_TransformPers>& theTrsfPers) override;
 
 public: //! @name Setters for parameters
@@ -392,32 +392,31 @@ public: //! @name Presentation computation
   //! Fills presentation.
   //! @note Manipulator presentation does not use display mode and for all modes has the same
   //! presentation.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode = 0) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode = 0) override;
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
   //! @param[in] theNode  Selection mode that is treated as transformation mode.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
-  virtual bool IsAutoHilight() const override { return false; }
+  bool IsAutoHilight() const override { return false; }
 
   //! Method which clear all selected owners belonging
   //! to this selectable object (for fast presentation draw).
-  Standard_EXPORT virtual void ClearSelected() override;
+  Standard_EXPORT void ClearSelected() override;
 
   //! Method which draws selected owners (for fast presentation draw).
-  Standard_EXPORT virtual void HilightSelected(
+  Standard_EXPORT void HilightSelected(
     const occ::handle<PrsMgr_PresentationManager>&                  thePM,
     const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theSeq) override;
 
   //! Method which hilight an owner belonging to
   //! this selectable object (for fast presentation draw).
-  Standard_EXPORT virtual void HilightOwnerWithColor(
+  Standard_EXPORT void HilightOwnerWithColor(
     const occ::handle<PrsMgr_PresentationManager>& thePM,
     const occ::handle<Prs3d_Drawer>&               theStyle,
     const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
@@ -448,8 +447,7 @@ protected:
   //! without need for recomputing presentation.
   //! @warning Invokes debug assertion in debug to catch incompatible usage of the
   //! method, silently does nothing in release mode.
-  Standard_EXPORT virtual void setLocalTransformation(
-    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
+  Standard_EXPORT void setLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf) override;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxiliary classes to fill presentation with proper primitives
@@ -481,7 +479,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     {
     }
 
-    ~Disk() {}
+    ~Disk() override = default;
 
     void Init(const float   theInnerRadius,
               const float   theOuterRadius,
@@ -519,9 +517,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   class Cube
   {
   public:
-    Cube() {}
+    Cube() = default;
 
-    ~Cube() {}
+    ~Cube() = default;
 
     void Init(const gp_Ax1& thePosition, const float myBoxSize, const ManipulatorSkin theSkinMode);
 
@@ -550,7 +548,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     {
     }
 
-    ~Sector() {}
+    ~Sector() override = default;
 
     void Init(const float           theRadius,
               const gp_Ax1&         thePosition,

@@ -18,7 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_FloatFormat, IGESSelect_FileModifier)
 
 IGESSelect_FloatFormat::IGESSelect_FloatFormat()

@@ -24,7 +24,7 @@ BRepLib_Command::BRepLib_Command()
 {
 }
 
-BRepLib_Command::~BRepLib_Command() {}
+BRepLib_Command::~BRepLib_Command() = default;
 
 //=================================================================================================
 

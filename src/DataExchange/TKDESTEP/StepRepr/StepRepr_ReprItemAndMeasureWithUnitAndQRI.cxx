@@ -34,7 +34,7 @@ void StepRepr_ReprItemAndMeasureWithUnitAndQRI::Init(
 //=================================================================================================
 
 StepRepr_ReprItemAndMeasureWithUnitAndQRI::StepRepr_ReprItemAndMeasureWithUnitAndQRI()
-    : StepRepr_ReprItemAndMeasureWithUnit()
+
 {
   myQualifiedRepresentationItem = new StepShape_QualifiedRepresentationItem();
 }

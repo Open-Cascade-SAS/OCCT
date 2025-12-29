@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RotationAboutDirection,
 
 //=================================================================================================
 
-StepKinematics_RotationAboutDirection::StepKinematics_RotationAboutDirection() {}
+StepKinematics_RotationAboutDirection::StepKinematics_RotationAboutDirection() = default;
 
 //=================================================================================================
 

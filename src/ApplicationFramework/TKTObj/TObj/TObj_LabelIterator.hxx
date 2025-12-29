@@ -54,13 +54,13 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual bool More() const override { return !myNode.IsNull(); }
+  bool More() const override { return !myNode.IsNull(); }
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() override;
+  Standard_EXPORT void Next() override;
 
   //! Returns the current item
-  virtual occ::handle<TObj_Object> Value() const override { return myObject; }
+  occ::handle<TObj_Object> Value() const override { return myObject; }
 
   //! Returns the label of the current item
   inline const TDF_Label& LabelValue() const { return myNode; }

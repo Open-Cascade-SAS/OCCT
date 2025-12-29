@@ -34,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs an Undefined Compound.
-  TopoDS_Compound() {}
+  TopoDS_Compound() = default;
 };
 
 namespace std

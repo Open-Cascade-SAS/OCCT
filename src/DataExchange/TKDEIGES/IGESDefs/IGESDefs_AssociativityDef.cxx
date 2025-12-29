@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AssociativityDef, IGESData_IGESEntity)
 
-IGESDefs_AssociativityDef::IGESDefs_AssociativityDef() {}
+IGESDefs_AssociativityDef::IGESDefs_AssociativityDef() = default;
 
 void IGESDefs_AssociativityDef::Init(const occ::handle<NCollection_HArray1<int>>& requirements,
                                      const occ::handle<NCollection_HArray1<int>>& orders,

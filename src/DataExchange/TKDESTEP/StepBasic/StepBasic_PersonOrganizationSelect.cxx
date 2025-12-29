@@ -18,7 +18,7 @@
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonOrganizationSelect.hxx>
 
-StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect() {}
+StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect() = default;
 
 int StepBasic_PersonOrganizationSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

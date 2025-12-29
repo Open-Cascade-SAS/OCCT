@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PlanarPair, StepKinematics_LowOrderKin
 
 //=================================================================================================
 
-StepKinematics_PlanarPair::StepKinematics_PlanarPair() {}
+StepKinematics_PlanarPair::StepKinematics_PlanarPair() = default;

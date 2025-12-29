@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry, IGESData_IGESEntity)
 
-IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry() {}
+IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry() = default;
 
 void IGESDimen_DimensionedGeometry::Init(
   const int                                                                 nbDims,

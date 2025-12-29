@@ -62,7 +62,7 @@
 #include <Standard_Integer.hxx>
 #include <Message_ProgressScope.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
@@ -107,7 +107,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(
     : myAnisotropie(Anisotropie),
       myDegree(Degree),
       myNbIter(NbIter),
-      myProj(),
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),
@@ -165,7 +165,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const occ::handle<Geom_
       myDegree(Degree),
       myNbPtsOnCur(NbPtsOnCur),
       myNbIter(NbIter),
-      myProj(),
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),
@@ -198,7 +198,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const int    Degree,
       myDegree(Degree),
       myNbPtsOnCur(NbPtsOnCur),
       myNbIter(NbIter),
-      myProj(),
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),

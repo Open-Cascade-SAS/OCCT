@@ -124,7 +124,7 @@ static double                    ta         = 1.e-2;
 static double                    fl         = 1.e-3;
 static double                    tapp_angle = 1.e-2;
 static GeomAbs_Shape             blend_cont = GeomAbs_C1;
-static BRepFilletAPI_MakeFillet* Rakk       = 0;
+static BRepFilletAPI_MakeFillet* Rakk       = nullptr;
 
 static void Print(Draw_Interpretor& di, const BRepFeat_Status St)
 {
@@ -1041,7 +1041,7 @@ int thickshell(Draw_Interpretor& theCommands, int n, const char** a)
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theCommands, 1);
 
   BRepOffset_MakeOffset B;
-  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, 0, JT, true);
+  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, false, JT, true);
 
   B.MakeOffsetShape(aProgress->Start());
 
@@ -1158,7 +1158,7 @@ int offsetshape(Draw_Interpretor& theCommands, int n, const char** a)
       Tol = Draw::Atof(a[4]);
     }
   }
-  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, 0, JT);
+  B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, false, JT);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------
@@ -1275,8 +1275,15 @@ int offsetload(Draw_Interpretor&, int n, const char** a)
   TheRadius = Of;
   //  bool Inter = true;
 
-  TheOffset
-    .Initialize(S, Of, TheTolerance, BRepOffset_Skin, TheInter, 0, TheJoin, false, RemoveIntEdges);
+  TheOffset.Initialize(S,
+                       Of,
+                       TheTolerance,
+                       BRepOffset_Skin,
+                       TheInter,
+                       false,
+                       TheJoin,
+                       false,
+                       RemoveIntEdges);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------

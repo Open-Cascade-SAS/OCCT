@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset, Standard_Transient)
 
-StepBasic_CoordinatedUniversalTimeOffset::StepBasic_CoordinatedUniversalTimeOffset() {}
+StepBasic_CoordinatedUniversalTimeOffset::StepBasic_CoordinatedUniversalTimeOffset() = default;
 
 void StepBasic_CoordinatedUniversalTimeOffset::Init(const int                     aHourOffset,
                                                     const bool                    hasAminuteOffset,

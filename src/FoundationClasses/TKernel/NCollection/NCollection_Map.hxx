@@ -79,7 +79,7 @@ public:
     }
 
     //! Key
-    const TheKeyType& Key(void) noexcept { return this->Value(); }
+    const TheKeyType& Key() noexcept { return this->Value(); }
   };
 
 public:
@@ -88,7 +88,7 @@ public:
   {
   public:
     //! Empty constructor
-    Iterator(void)
+    Iterator()
         : NCollection_BaseMap::Iterator()
     {
     }
@@ -100,20 +100,20 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept { return PMore(); }
+    bool More() const noexcept { return PMore(); }
 
     //! Make a step along the collection
-    void Next(void) noexcept { PNext(); }
+    void Next() noexcept { PNext(); }
 
     //! Value inquiry
-    const TheKeyType& Value(void) const
+    const TheKeyType& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Value");
       return ((MapNode*)myNode)->Value();
     }
 
     //! Key
-    const TheKeyType& Key(void) const
+    const TheKeyType& Key() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Key");
       return ((MapNode*)myNode)->Value();
@@ -141,7 +141,7 @@ public:
 
   //! Constructor
   explicit NCollection_Map(const int                                     theNbBuckets,
-                           const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
   }
@@ -202,8 +202,8 @@ public:
   //! ReSize
   void ReSize(const int N)
   {
-    NCollection_ListNode** newdata = 0L;
-    NCollection_ListNode** dummy   = 0L;
+    NCollection_ListNode** newdata = nullptr;
+    NCollection_ListNode** dummy   = nullptr;
     int                    newBuck;
     if (BeginResize(N, newBuck, newdata, dummy))
     {
@@ -316,7 +316,7 @@ public:
     MapNode**    data = (MapNode**)myData1;
     const size_t k    = HashCode(K, NbBuckets());
     MapNode*     p    = data[k];
-    MapNode*     q    = NULL;
+    MapNode*     q    = nullptr;
     while (p)
     {
       if (IsEqual(p->Key(), K))
@@ -349,10 +349,10 @@ public:
   }
 
   //! Destructor
-  virtual ~NCollection_Map(void) { Clear(true); }
+  ~NCollection_Map() override { Clear(true); }
 
   //! Size
-  int Size(void) const noexcept { return Extent(); }
+  int Size() const noexcept { return Extent(); }
 
 public:
   //! Checks if two maps contain exactly the same keys.

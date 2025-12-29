@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ViewVolume, Standard_Transient)
 
-StepVisual_ViewVolume::StepVisual_ViewVolume() {}
+StepVisual_ViewVolume::StepVisual_ViewVolume() = default;
 
 void StepVisual_ViewVolume::Init(const StepVisual_CentralOrParallel          aProjectionType,
                                  const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint,

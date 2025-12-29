@@ -28,13 +28,13 @@ class NCollection_TListNode : public NCollection_ListNode
 {
 public:
   //! Constructor
-  NCollection_TListNode(const TheItemType& theItem, NCollection_ListNode* theNext = NULL)
+  NCollection_TListNode(const TheItemType& theItem, NCollection_ListNode* theNext = nullptr)
       : NCollection_ListNode(theNext),
         myValue(theItem)
   {
   }
 
-  NCollection_TListNode(TheItemType&& theItem, NCollection_ListNode* theNext = NULL)
+  NCollection_TListNode(TheItemType&& theItem, NCollection_ListNode* theNext = nullptr)
       : NCollection_ListNode(theNext),
         myValue(std::forward<TheItemType>(theItem))
   {

@@ -33,7 +33,7 @@ public:
   Standard_EXPORT Media_Scaler();
 
   //! Destructor.
-  Standard_EXPORT virtual ~Media_Scaler();
+  Standard_EXPORT ~Media_Scaler() override;
 
   //! sws_freeContext() wrapper.
   Standard_EXPORT void Release();
@@ -53,7 +53,7 @@ public:
                                const occ::handle<Media_Frame>& theRes);
 
   //! Return TRUE if context was initialized.
-  bool IsValid() const { return mySwsContext != NULL; }
+  bool IsValid() const { return mySwsContext != nullptr; }
 
 protected:
   SwsContext*           mySwsContext; //!< conversion context

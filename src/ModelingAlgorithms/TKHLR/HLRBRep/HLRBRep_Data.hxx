@@ -199,7 +199,7 @@ public:
 
   Standard_EXPORT void Destroy();
 
-  ~HLRBRep_Data() { Destroy(); }
+  ~HLRBRep_Data() override { Destroy(); }
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_Data, Standard_Transient)
 

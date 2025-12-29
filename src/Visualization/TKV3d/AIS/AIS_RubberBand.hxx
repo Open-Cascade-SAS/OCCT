@@ -63,7 +63,7 @@ public:
                                  const double            theLineWidth       = 1.0,
                                  const bool              theIsPolygonClosed = true);
 
-  Standard_EXPORT virtual ~AIS_RubberBand();
+  Standard_EXPORT ~AIS_RubberBand() override;
 
   //! Sets rectangle bounds.
   Standard_EXPORT void SetRectangle(const int theMinX,
@@ -139,13 +139,13 @@ protected:
   bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   //! Computes presentation of rubber band.
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Does not fill selection primitives for rubber band.
-  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
-                                const int /*aMode*/) override {};
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
+                        const int /*aMode*/) override {};
 
   //! Fills triangles primitive array for rubber band filling.
   //! It uses Delaunay triangulation.

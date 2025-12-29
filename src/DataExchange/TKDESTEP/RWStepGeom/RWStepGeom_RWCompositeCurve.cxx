@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepGeom_RWCompositeCurve::RWStepGeom_RWCompositeCurve() {}
+RWStepGeom_RWCompositeCurve::RWStepGeom_RWCompositeCurve() = default;
 
 void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

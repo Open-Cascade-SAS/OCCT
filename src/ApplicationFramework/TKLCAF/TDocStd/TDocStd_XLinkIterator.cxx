@@ -28,14 +28,14 @@
 //=================================================================================================
 
 TDocStd_XLinkIterator::TDocStd_XLinkIterator()
-    : myValue(NULL)
+    : myValue(nullptr)
 {
 }
 
 //=================================================================================================
 
 TDocStd_XLinkIterator::TDocStd_XLinkIterator(const occ::handle<TDocStd_Document>& DOC)
-    : myValue(NULL)
+    : myValue(nullptr)
 {
   Init(DOC);
 }
@@ -44,7 +44,7 @@ TDocStd_XLinkIterator::TDocStd_XLinkIterator(const occ::handle<TDocStd_Document>
 
 void TDocStd_XLinkIterator::Initialize(const occ::handle<TDocStd_Document>& DOC)
 {
-  myValue = NULL;
+  myValue = nullptr;
   Init(DOC);
 }
 
@@ -52,7 +52,7 @@ void TDocStd_XLinkIterator::Initialize(const occ::handle<TDocStd_Document>& DOC)
 
 void TDocStd_XLinkIterator::Next()
 {
-  if (myValue == NULL)
+  if (myValue == nullptr)
     throw Standard_NoMoreObject("TDocStd_XLinkIterator::Next() - no more values available");
   else
     myValue = myValue->Next();

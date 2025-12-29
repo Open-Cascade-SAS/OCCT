@@ -18,9 +18,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignNominalDateAndTimeAssignment,
                            StepBasic_DateAndTimeAssignment)
 
-StepAP214_AutoDesignNominalDateAndTimeAssignment::StepAP214_AutoDesignNominalDateAndTimeAssignment()
-{
-}
+StepAP214_AutoDesignNominalDateAndTimeAssignment::
+  StepAP214_AutoDesignNominalDateAndTimeAssignment() = default;
 
 void StepAP214_AutoDesignNominalDateAndTimeAssignment::Init(
   const occ::handle<StepBasic_DateAndTime>&                                    aAssignedDateAndTime,

@@ -30,11 +30,11 @@ class StepGeom_TrimmingMember : public StepData_SelectReal
 public:
   Standard_EXPORT StepGeom_TrimmingMember();
 
-  Standard_EXPORT virtual bool HasName() const override;
+  Standard_EXPORT bool HasName() const override;
 
-  Standard_EXPORT virtual const char* Name() const override;
+  Standard_EXPORT const char* Name() const override;
 
-  Standard_EXPORT virtual bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* name) override;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_TrimmingMember, StepData_SelectReal)
 };

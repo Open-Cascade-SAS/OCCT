@@ -94,7 +94,7 @@ protected:
   Standard_EXPORT OSD_FileNode(const OSD_Path& Name);
 
   //! Destructor is protected for safer inheritance
-  ~OSD_FileNode() {}
+  ~OSD_FileNode() = default;
 
 protected:
   OSD_Path  myPath;

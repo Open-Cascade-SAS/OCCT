@@ -658,11 +658,11 @@ public:
                                              const double             p,
                                              const gp_Pnt&            Pnt);
 
-  Standard_EXPORT void GdumpSHA(const TopoDS_Shape& S, void* const str = NULL) const;
+  Standard_EXPORT void GdumpSHA(const TopoDS_Shape& S, void* const str = nullptr) const;
 
-  Standard_EXPORT void GdumpSHAORI(const TopoDS_Shape& S, void* const str = NULL) const;
+  Standard_EXPORT void GdumpSHAORI(const TopoDS_Shape& S, void* const str = nullptr) const;
 
-  Standard_EXPORT void GdumpSHAORIGEO(const TopoDS_Shape& S, void* const str = NULL) const;
+  Standard_EXPORT void GdumpSHAORIGEO(const TopoDS_Shape& S, void* const str = nullptr) const;
 
   Standard_EXPORT void GdumpSHASTA(const int                      iS,
                                    const TopAbs_State             T,
@@ -681,14 +681,14 @@ public:
                                    const TCollection_AsciiString&  b = "",
                                    const TCollection_AsciiString&  c = "\n") const;
 
-  Standard_EXPORT void GdumpEDG(const TopoDS_Shape& S, void* const str = NULL) const;
+  Standard_EXPORT void GdumpEDG(const TopoDS_Shape& S, void* const str = nullptr) const;
 
   Standard_EXPORT void GdumpEDGVER(const TopoDS_Shape& E,
                                    const TopoDS_Shape& V,
-                                   void* const         str = NULL) const;
+                                   void* const         str = nullptr) const;
 
   Standard_EXPORT void GdumpSAMDOM(const NCollection_List<TopoDS_Shape>& L,
-                                   void* const                           str = NULL) const;
+                                   void* const                           str = nullptr) const;
 
   Standard_EXPORT void GdumpEXP(const TopOpeBRepTool_ShapeExplorer& E) const;
 

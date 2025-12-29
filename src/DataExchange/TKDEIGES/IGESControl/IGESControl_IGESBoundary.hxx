@@ -49,15 +49,15 @@ public:
   //! Checks the closure of resulting wire and if it is not closed,
   //! checks 2D and 3D representation and updates the resulting
   //! wire to contain only closed representation.
-  Standard_EXPORT virtual void Check(const bool result,
-                                     const bool checkclosure,
-                                     const bool okCurve3d,
-                                     const bool okCurve2d) override;
+  Standard_EXPORT void Check(const bool result,
+                             const bool checkclosure,
+                             const bool okCurve3d,
+                             const bool okCurve2d) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 
 protected:
-  Standard_EXPORT virtual bool Transfer(
+  Standard_EXPORT bool Transfer(
     bool&                                                                     okCurve,
     bool&                                                                     okCurve3d,
     bool&                                                                     okCurve2d,

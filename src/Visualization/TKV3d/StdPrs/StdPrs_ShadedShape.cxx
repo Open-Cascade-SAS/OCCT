@@ -278,7 +278,7 @@ static bool shadeFromShape(const TopoDS_Shape&                    theShape,
                            const gp_Pnt2d&                        theUVRepeat,
                            const gp_Pnt2d&                        theUVScale,
                            const bool                             theIsClosed,
-                           const occ::handle<Graphic3d_Group>&    theGroup = NULL)
+                           const occ::handle<Graphic3d_Group>&    theGroup = nullptr)
 {
   occ::handle<Graphic3d_ArrayOfTriangles> aPArray =
     fillTriangles(theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);

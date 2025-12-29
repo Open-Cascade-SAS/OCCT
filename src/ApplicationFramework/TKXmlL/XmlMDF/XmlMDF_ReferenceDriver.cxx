@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ReferenceDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlMDF_ReferenceDriver::XmlMDF_ReferenceDriver(const occ::handle<Message_Messenger>& theMsgDriver)
-    : XmlMDF_ADriver(theMsgDriver, NULL)
+    : XmlMDF_ADriver(theMsgDriver, nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
-  if (anXPath == NULL)
+  if (anXPath == nullptr)
   {
     myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
     return false;

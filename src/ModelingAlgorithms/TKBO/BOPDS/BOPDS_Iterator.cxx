@@ -36,14 +36,13 @@ class BOPDS_TSR : public BOPTools_BoxTreeSelector
 {
 public:
   BOPDS_TSR()
-      : BOPTools_BoxTreeSelector(),
-        myHasBRep(false),
+      : myHasBRep(false),
         myIndex(-1)
   {
   }
 
   //
-  virtual ~BOPDS_TSR() {}
+  ~BOPDS_TSR() override = default;
 
   //
   void SetHasBRep(const bool bFlag) { myHasBRep = bFlag; }
@@ -84,7 +83,7 @@ BOPDS_Iterator::BOPDS_Iterator()
 {
   int i, aNb;
   //
-  myDS     = NULL;
+  myDS     = nullptr;
   myLength = 0;
   //
   aNb = BOPDS_DS::NbInterfTypes();
@@ -113,7 +112,7 @@ BOPDS_Iterator::BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& the
 {
   int i, aNb;
   //
-  myDS     = NULL;
+  myDS     = nullptr;
   myLength = 0;
   //
   aNb = BOPDS_DS::NbInterfTypes();
@@ -133,7 +132,7 @@ BOPDS_Iterator::BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& the
 
 //=================================================================================================
 
-BOPDS_Iterator::~BOPDS_Iterator() {}
+BOPDS_Iterator::~BOPDS_Iterator() = default;
 
 //=================================================================================================
 
@@ -258,7 +257,7 @@ void BOPDS_Iterator::Prepare(const occ::handle<IntTools_Context>& theCtx,
     myLists(i).Clear();
   }
   //
-  if (myDS == NULL)
+  if (myDS == nullptr)
   {
     return;
   }

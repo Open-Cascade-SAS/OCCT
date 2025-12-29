@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
-IGESGeom_SplineSurface::IGESGeom_SplineSurface() {}
+IGESGeom_SplineSurface::IGESGeom_SplineSurface() = default;
 
 void IGESGeom_SplineSurface::Init(
   const int                                                                         aBoundaryType,

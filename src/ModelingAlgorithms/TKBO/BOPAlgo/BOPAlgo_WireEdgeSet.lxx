@@ -17,7 +17,7 @@
 
 //=================================================================================================
 
-inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet() {}
+inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet() = default;
 
 //=================================================================================================
 
@@ -32,7 +32,7 @@ inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet(
 // function : ~
 // purpose  :
 //=======================================================================
-inline BOPAlgo_WireEdgeSet::~BOPAlgo_WireEdgeSet() {}
+inline BOPAlgo_WireEdgeSet::~BOPAlgo_WireEdgeSet() = default;
 
 //=================================================================================================
 

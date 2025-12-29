@@ -45,8 +45,7 @@
 //=================================================================================================
 
 BOPAlgo_ArgumentAnalyzer::BOPAlgo_ArgumentAnalyzer()
-    : BOPAlgo_Algo(),
-      myStopOnFirst(false),
+    : myStopOnFirst(false),
       myOperation(BOPAlgo_UNKNOWN),
       myArgumentTypeMode(false),
       mySelfInterMode(false),
@@ -340,7 +339,7 @@ void BOPAlgo_ArgumentAnalyzer::TestTypes()
 
 void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, NULL, (!myShape1.IsNull() && !myShape2.IsNull() ? 2 : 1));
+  Message_ProgressScope aPS(theRange, nullptr, (!myShape1.IsNull() && !myShape2.IsNull() ? 2 : 1));
   int                   ii;
   //
   for (ii = 0; ii < 2; ii++)

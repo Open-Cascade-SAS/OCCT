@@ -16,7 +16,8 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_ParametricRepresentationContext.hxx>
 
-RWStepRepr_RWParametricRepresentationContext::RWStepRepr_RWParametricRepresentationContext() {}
+RWStepRepr_RWParametricRepresentationContext::RWStepRepr_RWParametricRepresentationContext() =
+  default;
 
 void RWStepRepr_RWParametricRepresentationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

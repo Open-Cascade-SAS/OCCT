@@ -26,7 +26,7 @@ static const char* anApp  = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
-StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() {}
+StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() = default;
 
 //=================================================================================================
 
@@ -144,13 +144,13 @@ occ::handle<TCollection_HAsciiString> StepElement_CurveElementFreedom::
   occ::handle<StepElement_CurveElementFreedomMember> SelMem =
     occ::down_cast<StepElement_CurveElementFreedomMember>(Value());
   if (SelMem.IsNull())
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
-    return 0;
+    return nullptr;
   occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;

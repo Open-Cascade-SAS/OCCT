@@ -124,7 +124,7 @@ public:
   Standard_EXPORT IGESData_IGESType DirType(const int num) const;
 
   //! Returns count of recorded Entities (i.e. size of Directory)
-  Standard_EXPORT virtual int NbEntities() const override;
+  Standard_EXPORT int NbEntities() const override;
 
   //! determines next suitable record from num; that is num+1 except
   //! for last one which gives 0

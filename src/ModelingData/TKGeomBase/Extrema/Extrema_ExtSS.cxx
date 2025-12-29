@@ -24,7 +24,7 @@
 #include <StdFail_NotDone.hxx>
 
 Extrema_ExtSS::Extrema_ExtSS()
-    : myS2(NULL),
+    : myS2(nullptr),
       myDone(false),
       myIsPar(false),
       myuinf1(0.0),

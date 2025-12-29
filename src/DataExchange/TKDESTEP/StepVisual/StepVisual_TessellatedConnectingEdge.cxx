@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedConnectingEdge, StepVisual_Tess
 
 //=================================================================================================
 
-StepVisual_TessellatedConnectingEdge::StepVisual_TessellatedConnectingEdge() {}
+StepVisual_TessellatedConnectingEdge::StepVisual_TessellatedConnectingEdge() = default;
 
 //=================================================================================================
 

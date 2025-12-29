@@ -90,7 +90,7 @@ public:
 
   //! Returns the minimal Distance between two
   //! extremities of calculated sections.
-  Standard_EXPORT virtual double GetMinimalDistance() const override;
+  Standard_EXPORT double GetMinimalDistance() const override;
 
   Standard_EXPORT const gp_Pnt& PointOnS() const override;
 

@@ -31,7 +31,7 @@
 
 #include "RWStepGeom_RWPreferredSurfaceCurveRepresentation.pxx"
 
-RWStepGeom_RWSurfaceCurveAndBoundedCurve::RWStepGeom_RWSurfaceCurveAndBoundedCurve() {}
+RWStepGeom_RWSurfaceCurveAndBoundedCurve::RWStepGeom_RWSurfaceCurveAndBoundedCurve() = default;
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

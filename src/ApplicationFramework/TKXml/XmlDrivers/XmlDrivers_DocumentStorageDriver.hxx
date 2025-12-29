@@ -30,10 +30,10 @@ class XmlDrivers_DocumentStorageDriver : public XmlLDrivers_DocumentStorageDrive
 public:
   Standard_EXPORT XmlDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
-  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+  Standard_EXPORT occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
-  Standard_EXPORT virtual bool WriteShapeSection(
+  Standard_EXPORT bool WriteShapeSection(
     XmlObjMgt_Element&           thePDoc,
     const TDocStd_FormatVersion  theStorageFormatVersion,
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;

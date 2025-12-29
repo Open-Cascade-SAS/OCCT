@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModel, StepGeom_GeometricRepresentationItem)
 
-StepVisual_CameraModel::StepVisual_CameraModel() {}
+StepVisual_CameraModel::StepVisual_CameraModel() = default;

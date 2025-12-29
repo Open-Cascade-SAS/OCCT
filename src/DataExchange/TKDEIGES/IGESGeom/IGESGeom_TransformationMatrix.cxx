@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TransformationMatrix, IGESData_TransfEntity)
 
-IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix() {}
+IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix() = default;
 
 void IGESGeom_TransformationMatrix::Init(const occ::handle<NCollection_HArray2<double>>& aMatrix)
 {

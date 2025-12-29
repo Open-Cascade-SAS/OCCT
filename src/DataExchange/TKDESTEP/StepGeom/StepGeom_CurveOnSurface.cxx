@@ -18,7 +18,7 @@
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 
-StepGeom_CurveOnSurface::StepGeom_CurveOnSurface() {}
+StepGeom_CurveOnSurface::StepGeom_CurveOnSurface() = default;
 
 int StepGeom_CurveOnSurface::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

@@ -19,9 +19,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedPersonAndOrganizationAssignment,
                            StepBasic_PersonAndOrganizationAssignment)
 
-StepAP214_AppliedPersonAndOrganizationAssignment::StepAP214_AppliedPersonAndOrganizationAssignment()
-{
-}
+StepAP214_AppliedPersonAndOrganizationAssignment::
+  StepAP214_AppliedPersonAndOrganizationAssignment() = default;
 
 void StepAP214_AppliedPersonAndOrganizationAssignment::Init(
   const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,

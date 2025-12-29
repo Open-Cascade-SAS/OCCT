@@ -16,7 +16,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(Interface_TypedValue, MoniTool_TypedValue)
 
 // static  char defmess[30]; svv #2

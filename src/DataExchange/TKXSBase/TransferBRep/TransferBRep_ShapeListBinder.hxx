@@ -49,7 +49,7 @@ public:
   Standard_EXPORT TransferBRep_ShapeListBinder(
     const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list);
 
-  Standard_EXPORT virtual bool IsMultiple() const override;
+  Standard_EXPORT bool IsMultiple() const override;
 
   Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 

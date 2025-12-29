@@ -200,13 +200,13 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
   done               = false;
   iscomplete         = false;
   comptra            = false;
-  bool doextremities = 1;
+  bool doextremities = true;
   if (line.IsNull())
     line = new BRepBlend_Line();
   else
   {
     line->Clear();
-    doextremities = 0;
+    doextremities = false;
   }
   tolpoint3d = Tol3d;
   tolgui     = std::abs(TolGuide);
@@ -244,11 +244,13 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
     rsnld.Root(sol);
 
     if (clasonS1)
-      situ1 = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
+      situ1 =
+        domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
     else
       situ1 = TopAbs_IN;
     if (clasonS2)
-      situ2 = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
+      situ2 =
+        domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
     else
       situ2 = TopAbs_IN;
 
@@ -340,8 +342,8 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function& Func,
   }
   rsnld.Root(sol);
   ParDep = sol;
-  Pos1   = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
-  Pos2   = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
+  Pos1   = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
+  Pos2   = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
   if (Pos1 != TopAbs_IN || Pos2 != TopAbs_IN)
   {
     return false;
@@ -1118,7 +1120,7 @@ int BRepBlend_Walking::ArcToRecadre(const bool         OnFirst,
 {
   int                              IndexSol = 0, nbarc = 0;
   bool                             ok      = false;
-  bool                             byinter = (line->NbPoints() != 0), okinter = 0;
+  bool                             byinter = (line->NbPoints() != 0), okinter = false;
   double                           distmin = RealLast();
   double                           uprev = 0., vprev = 0., prm = 0., dist = 0.;
   occ::handle<Adaptor3d_TopolTool> Iter;
@@ -1142,7 +1144,7 @@ int BRepBlend_Walking::ArcToRecadre(const bool         OnFirst,
   while (Iter->More())
   {
     nbarc++;
-    ok = 0;
+    ok = false;
     if (OnFirst)
     {
       if (byinter)
@@ -1533,7 +1535,7 @@ void BRepBlend_Walking::Transition(const bool                            OnFirst
                                    IntSurf_Transition&                   TLine,
                                    IntSurf_Transition&                   TArc)
 {
-  bool        computetranstionaveclacorde = 0;
+  bool        computetranstionaveclacorde = false;
   gp_Vec      tgline;
   Blend_Point prevprev;
 
@@ -1541,7 +1543,7 @@ void BRepBlend_Walking::Transition(const bool                            OnFirst
   {
     if (line->NbPoints() < 2)
       return;
-    computetranstionaveclacorde = 1;
+    computetranstionaveclacorde = true;
     if (sens < 0)
     {
       prevprev = line->Point(2);
@@ -1885,14 +1887,14 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
     PrevTgOnGuide = TgOnGuide;
     //////////////////////////
 
-    bool bonpoint = 1;
+    bool bonpoint = true;
     Func.Set(param);
     rsnld.Perform(Func, parinit, infbound, supbound);
 
     if (!rsnld.IsDone())
     {
       State    = Blend_StepTooLarge;
-      bonpoint = 0;
+      bonpoint = false;
     }
     else
     {
@@ -1900,19 +1902,19 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
 
       if (clasonS1)
         situ1 =
-          domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), 0);
+          domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
       else
         situ1 = TopAbs_IN;
       if (clasonS2)
         situ2 =
-          domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), 0);
+          domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
       else
         situ2 = TopAbs_IN;
     }
     if (bonpoint && line->NbPoints() == 1 && (situ1 != TopAbs_IN || situ2 != TopAbs_IN))
     {
       State    = Blend_StepTooLarge;
-      bonpoint = 0;
+      bonpoint = false;
     }
     if (bonpoint)
     {
@@ -1943,7 +1945,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
             echecrecad = true;
             recad1     = false;
             State      = Blend_StepTooLarge;
-            bonpoint   = 0;
+            bonpoint   = false;
             stepw      = stepw / 2.;
           }
         }
@@ -1973,7 +1975,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
             echecrecad = true;
             recad2     = false;
             State      = Blend_StepTooLarge;
-            bonpoint   = 0;
+            bonpoint   = false;
             stepw      = stepw / 2.;
           }
         }
@@ -2189,7 +2191,7 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           State = Blend_OK;
         }
 
-        bool testdefl = 1;
+        bool testdefl = true;
 #ifdef OCCT_DEBUG
         testdefl = !Blend_GetcontextNOTESTDEFL();
 #endif

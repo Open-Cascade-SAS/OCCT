@@ -45,7 +45,7 @@ static int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
                             const double                          theFirst,
                             const double                          theLast,
                             int&                                  theNbParticles,
-                            NCollection_Array1<double>* const     theSubIntervals = 0);
+                            NCollection_Array1<double>* const     theSubIntervals = nullptr);
 
 //=======================================================================
 // class   : GeomLib_CheckCurveOnSurface_TargetFunc
@@ -67,10 +67,10 @@ public:
 
   // returns the number of parameters of the function
   // (the function is one-dimension).
-  virtual int NbVariables() const { return 1; }
+  int NbVariables() const override { return 1; }
 
   // returns value of the function when parameters are equal to theX
-  virtual bool Value(const math_Vector& theX, double& theFVal) { return Value(theX(1), theFVal); }
+  bool Value(const math_Vector& theX, double& theFVal) override { return Value(theX(1), theFVal); }
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
@@ -94,18 +94,18 @@ public:
   }
 
   // see analogical method for abstract owner class math_MultipleVarFunction
-  virtual int GetStateNumber() { return 0; }
+  int GetStateNumber() override { return 0; }
 
   // returns the gradient of the function when parameters are
   // equal to theX
-  virtual bool Gradient(const math_Vector& theX, math_Vector& theGrad)
+  bool Gradient(const math_Vector& theX, math_Vector& theGrad) override
   {
     return Derive(theX(1), theGrad(1));
   }
 
   // returns 1st derivative of the one-dimension-function when
   // parameter is equal to theX
-  bool Derive(const double theX, double& theDeriv1, double* const theDeriv2 = 0) const
+  bool Derive(const double theX, double& theDeriv1, double* const theDeriv2 = nullptr) const
   {
     try
     {
@@ -148,7 +148,7 @@ public:
   }
 
   // returns value and gradient
-  virtual bool Values(const math_Vector& theX, double& theVal, math_Vector& theGrad)
+  bool Values(const math_Vector& theX, double& theVal, math_Vector& theGrad) override
   {
     if (!Value(theX, theVal))
     {
@@ -164,10 +164,10 @@ public:
   }
 
   // returns value, gradient and hessian
-  virtual bool Values(const math_Vector& theX,
-                      double&            theVal,
-                      math_Vector&       theGrad,
-                      math_Matrix&       theHessian)
+  bool Values(const math_Vector& theX,
+              double&            theVal,
+              math_Vector&       theGrad,
+              math_Matrix&       theHessian) override
   {
     if (!Value(theX, theVal))
     {

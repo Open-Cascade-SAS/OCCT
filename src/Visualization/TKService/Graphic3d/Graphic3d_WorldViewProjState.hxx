@@ -34,7 +34,7 @@ public:
   //!                       world view matrices (camera).
   Graphic3d_WorldViewProjState(const size_t              theProjectionState,
                                const size_t              theWorldViewState,
-                               const Standard_Transient* theCamera = NULL)
+                               const Standard_Transient* theCamera = nullptr)
   {
     Initialize(theProjectionState, theWorldViewState, theCamera);
   }
@@ -48,7 +48,7 @@ public:
   void Reset()
   {
     myIsValid         = false;
-    myCamera          = NULL;
+    myCamera          = nullptr;
     myProjectionState = 0;
     myWorldViewState  = 0;
   }
@@ -56,7 +56,7 @@ public:
   //! Initialize world view projection state.
   void Initialize(const size_t              theProjectionState,
                   const size_t              theWorldViewState,
-                  const Standard_Transient* theCamera = NULL)
+                  const Standard_Transient* theCamera = nullptr)
   {
     myIsValid         = true;
     myCamera          = const_cast<Standard_Transient*>(theCamera);
@@ -65,7 +65,7 @@ public:
   }
 
   //! Initialize world view projection state.
-  void Initialize(const Standard_Transient* theCamera = NULL)
+  void Initialize(const Standard_Transient* theCamera = nullptr)
   {
     myIsValid         = true;
     myCamera          = const_cast<Standard_Transient*>(theCamera);

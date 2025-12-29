@@ -71,7 +71,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <V3d_Viewer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -483,7 +483,7 @@ static void GetTypeAndSignfromString(const char*            theName,
   }
 }
 
-#include <string.h>
+#include <cstring>
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
 
@@ -2254,8 +2254,8 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 
   // parse syntax of legacy commands
   bool toParseAliasArgs = false;
-  bool toDump           = 0;
-  bool toCompactDump    = 0;
+  bool toDump           = false;
+  bool toCompactDump    = false;
   int  aDumpDepth       = -1;
   if (aCmdName == "vsetwidth")
   {
@@ -5459,7 +5459,7 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
         continue;
       }
 
-      const char* aShapeName = NULL;
+      const char* aShapeName = nullptr;
       switch (aSubShape.ShapeType())
       {
         case TopAbs_COMPOUND:

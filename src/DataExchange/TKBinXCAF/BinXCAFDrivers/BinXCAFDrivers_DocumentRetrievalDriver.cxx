@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,
 
 //=================================================================================================
 
-BinXCAFDrivers_DocumentRetrievalDriver::BinXCAFDrivers_DocumentRetrievalDriver() {}
+BinXCAFDrivers_DocumentRetrievalDriver::BinXCAFDrivers_DocumentRetrievalDriver() = default;
 
 //=================================================================================================
 

@@ -32,9 +32,8 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DEBREP_ConfigurationNode::DEBREP_ConfigurationNode()
-    : DE_ConfigurationNode()
-{
-}
+
+  = default;
 
 //=================================================================================================
 

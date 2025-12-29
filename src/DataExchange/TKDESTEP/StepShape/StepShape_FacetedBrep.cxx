@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_FacetedBrep, StepShape_ManifoldSolidBrep)
 
-StepShape_FacetedBrep::StepShape_FacetedBrep() {}
+StepShape_FacetedBrep::StepShape_FacetedBrep() = default;

@@ -42,7 +42,7 @@ void ShapeUpgrade_ShapeDivideAngle::InitTool(const double MaxAngle)
 {
   occ::handle<ShapeUpgrade_FaceDivide> tool = GetSplitFaceTool();
   tool->SetSplitSurfaceTool(new ShapeUpgrade_SplitSurfaceAngle(MaxAngle));
-  tool->SetWireDivideTool(0); // no splitting of wire
+  tool->SetWireDivideTool(nullptr); // no splitting of wire
   SetSplitFaceTool(tool);
 }
 

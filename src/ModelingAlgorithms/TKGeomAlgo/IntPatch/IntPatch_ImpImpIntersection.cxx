@@ -1881,12 +1881,12 @@ void ProcessSegments(const NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBound
   }
 }
 
-inline const gp_Pnt& PointValue(const occ::handle<IntPatch_RLine> theRLine, const int theIndex)
+inline const gp_Pnt& PointValue(const occ::handle<IntPatch_RLine>& theRLine, const int theIndex)
 {
   return theRLine->Point(theIndex).Value();
 }
 
-inline const gp_Pnt& VertexValue(const occ::handle<IntPatch_RLine> theRLine, const int theIndex)
+inline const gp_Pnt& VertexValue(const occ::handle<IntPatch_RLine>& theRLine, const int theIndex)
 {
   return theRLine->Vertex(theIndex).Value();
 }
@@ -1927,17 +1927,17 @@ static double SquareDistance(const occ::handle<IntPatch_GLine>& theGLine,
   return aSQDist;
 }
 
-static bool IsRLineGood(const IntSurf_Quadric&            Quad1,
-                        const IntSurf_Quadric&            Quad2,
-                        const occ::handle<IntPatch_GLine> theGLine,
-                        const occ::handle<IntPatch_RLine> theRLine,
-                        const double                      theTol)
+static bool IsRLineGood(const IntSurf_Quadric&             Quad1,
+                        const IntSurf_Quadric&             Quad2,
+                        const occ::handle<IntPatch_GLine>& theGLine,
+                        const occ::handle<IntPatch_RLine>& theRLine,
+                        const double                       theTol)
 {
   const double         aSQTol    = theTol * theTol;
   const IntPatch_IType aGType    = theGLine->ArcType();
   int                  aNbPntsM1 = 0;
 
-  const gp_Pnt& (*Value)(const occ::handle<IntPatch_RLine>, const int);
+  const gp_Pnt& (*Value)(const occ::handle<IntPatch_RLine>&, const int);
 
   if (theRLine->HasPolygon())
   {
@@ -4024,7 +4024,7 @@ public:
                                       const int            theWLIndex,
                                       const stCoeffsValue& theCoeffs,
                                       double&              theU2,
-                                      double* const        theDelta = 0);
+                                      double* const        theDelta = nullptr);
 
   static bool CylCylComputeParameters(const double         theU1,
                                       const double         theU2,

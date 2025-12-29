@@ -35,7 +35,7 @@ public:
   //! Creates the iterator on references in partition
   //! theType narrows a variety of iterated objects
   Standard_EXPORT TObj_ReferenceIterator(const TDF_Label&                  theLabel,
-                                         const occ::handle<Standard_Type>& theType      = NULL,
+                                         const occ::handle<Standard_Type>& theType      = nullptr,
                                          const bool                        theRecursive = true);
 
 protected:
@@ -44,7 +44,7 @@ protected:
    */
 
   //! Shift iterator to the next object
-  virtual Standard_EXPORT void MakeStep() override;
+  Standard_EXPORT void MakeStep() override;
 
   occ::handle<Standard_Type> myType; //!< Type of objects to iterate on
 

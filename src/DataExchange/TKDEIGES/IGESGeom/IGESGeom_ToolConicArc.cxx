@@ -36,12 +36,12 @@
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // MGE 28/07/98
 //=================================================================================================
 
-IGESGeom_ToolConicArc::IGESGeom_ToolConicArc() {}
+IGESGeom_ToolConicArc::IGESGeom_ToolConicArc() = default;
 
 //=================================================================================================
 

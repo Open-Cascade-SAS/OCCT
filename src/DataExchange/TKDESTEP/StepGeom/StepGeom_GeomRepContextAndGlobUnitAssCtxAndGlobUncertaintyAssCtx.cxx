@@ -27,9 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncert
 //=================================================================================================
 
 StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
-  StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx()
-{
-}
+  StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx() = default;
 
 //=================================================================================================
 

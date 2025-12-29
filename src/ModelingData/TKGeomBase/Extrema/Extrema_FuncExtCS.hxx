@@ -60,7 +60,7 @@ public:
   Standard_EXPORT bool Values(const math_Vector& UV, math_Vector& F, math_Matrix& DF) override;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual int GetStateNumber() override;
+  Standard_EXPORT int GetStateNumber() override;
 
   //! Return the number of found extrema.
   Standard_EXPORT int NbExt() const;

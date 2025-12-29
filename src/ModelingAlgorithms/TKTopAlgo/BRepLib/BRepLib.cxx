@@ -1264,7 +1264,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
   double Prec_C3d = BRepCheck::PrecCurve(GAC);
 
-  bool   IsSameP = 1;
+  bool   IsSameP = true;
   double maxdist = 0.;
 
   //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
@@ -1305,7 +1305,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
       for (int i = 0; i < 2; i++)
       {
         occ::handle<Geom2d_Curve> curPC    = PC[i];
-        bool                      updatepc = 0;
+        bool                      updatepc = false;
         if (curPC.IsNull())
           break;
         if (!SameRange)
@@ -1314,7 +1314,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
           updatepc = (curPC != PC[i]);
         }
-        bool goodpc = 1;
+        bool goodpc = true;
         GAC2d.Load(curPC, f3d, l3d);
 
         double error = ComputeTol(HC, HC2d, HS, NCONTROL);
@@ -1418,13 +1418,13 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
               if (bs2d->Continuity() == GeomAbs_C0)
               {
-                goodpc = 1;
+                goodpc = true;
                 bs2d   = bs2dsov;
                 repar  = false;
               }
             }
             else
-              goodpc = 0;
+              goodpc = false;
           }
 
           if (goodpc)
@@ -1594,11 +1594,11 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
             else
               GCurve->PCurve2(curPC);
 
-            IsSameP = 0;
+            IsSameP = false;
           }
         }
         else
-          IsSameP = 0;
+          IsSameP = false;
 
         //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
         if (!IsSameP)

@@ -28,7 +28,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESGraph_ToolHighLight::IGESGraph_ToolHighLight() {}
+IGESGraph_ToolHighLight::IGESGraph_ToolHighLight() = default;
 
 void IGESGraph_ToolHighLight::ReadOwnParams(const occ::handle<IGESGraph_HighLight>& ent,
                                             const occ::handle<IGESData_IGESReaderData>& /*IR*/,

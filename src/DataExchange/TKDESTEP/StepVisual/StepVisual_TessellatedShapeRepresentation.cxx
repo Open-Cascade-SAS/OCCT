@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShapeRepresentation, StepShape_
 
 //=================================================================================================
 
-StepVisual_TessellatedShapeRepresentation::StepVisual_TessellatedShapeRepresentation() {}
+StepVisual_TessellatedShapeRepresentation::StepVisual_TessellatedShapeRepresentation() = default;

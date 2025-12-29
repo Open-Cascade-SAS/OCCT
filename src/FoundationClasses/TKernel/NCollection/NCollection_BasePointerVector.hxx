@@ -35,7 +35,7 @@ public:
 
 public:
   //! Default constructor
-  NCollection_BasePointerVector() noexcept {}
+  NCollection_BasePointerVector() noexcept = default;
 
   //! Copy data from another vector
   Standard_EXPORT NCollection_BasePointerVector(const NCollection_BasePointerVector& theOther);

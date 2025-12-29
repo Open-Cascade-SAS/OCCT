@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation() {}
+RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation() = default;
 
 //=================================================================================================
 

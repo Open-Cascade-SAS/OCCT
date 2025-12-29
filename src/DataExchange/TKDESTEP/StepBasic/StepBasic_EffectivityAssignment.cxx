@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_EffectivityAssignment, Standard_Transient)
 
 //=================================================================================================
 
-StepBasic_EffectivityAssignment::StepBasic_EffectivityAssignment() {}
+StepBasic_EffectivityAssignment::StepBasic_EffectivityAssignment() = default;
 
 //=================================================================================================
 

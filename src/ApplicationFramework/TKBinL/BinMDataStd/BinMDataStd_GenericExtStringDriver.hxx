@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual const occ::handle<Standard_Type>& SourceType() const override;
+  Standard_EXPORT const occ::handle<Standard_Type>& SourceType() const override;
 
   //! persistent -> transient (retrieve)
   Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,

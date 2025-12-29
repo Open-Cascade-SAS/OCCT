@@ -30,7 +30,7 @@
 //! Dump content of the geometric object to cout
 const char* GeomTools_Dump(void* theHandlePtr)
 {
-  if (theHandlePtr == 0)
+  if (theHandlePtr == nullptr)
   {
     return "Error: argument is null";
   }

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectModelEntities, IFSelect_SelectBase)
 
-IFSelect_SelectModelEntities::IFSelect_SelectModelEntities() {}
+IFSelect_SelectModelEntities::IFSelect_SelectModelEntities() = default;
 
 Interface_EntityIterator IFSelect_SelectModelEntities::RootResult(const Interface_Graph& G) const
 {

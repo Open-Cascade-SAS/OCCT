@@ -17,7 +17,7 @@
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 
-StepAP214_PresentedItemSelect::StepAP214_PresentedItemSelect() {}
+StepAP214_PresentedItemSelect::StepAP214_PresentedItemSelect() = default;
 
 int StepAP214_PresentedItemSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

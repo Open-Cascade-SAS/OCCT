@@ -82,7 +82,7 @@ static void FUN_Raise()
 
 //=================================================================================================
 
-TopOpeBRepTool_CORRISO::TopOpeBRepTool_CORRISO() {}
+TopOpeBRepTool_CORRISO::TopOpeBRepTool_CORRISO() = default;
 
 //=================================================================================================
 

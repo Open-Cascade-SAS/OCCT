@@ -41,7 +41,7 @@ public:
   //! 2 -> ProductDefinitionFormation from StepBasic
   //! 3 -> ProductDefinition from StepBasic
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Product (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Product> Product() const;

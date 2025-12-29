@@ -270,7 +270,7 @@ static int CollectMetricMessages(Draw_Interpretor& theDI, int theArgNb, const ch
       return 1;
     }
     MyLevel.Nullify();
-    MyLevel = 0;
+    MyLevel = nullptr;
   }
   return 0;
 }

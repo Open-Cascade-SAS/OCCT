@@ -68,7 +68,7 @@ public:
   //! 16 -> ShapeAspect
   //! 17 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a AppliedApprovalAssignment (Null if another type)
   Standard_EXPORT occ::handle<StepAP214_AppliedApprovalAssignment> AppliedApprovalAssignment()

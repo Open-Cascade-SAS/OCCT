@@ -20,7 +20,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApprovalRelationship::RWStepBasic_RWApprovalRelationship() {}
+RWStepBasic_RWApprovalRelationship::RWStepBasic_RWApprovalRelationship() = default;
 
 void RWStepBasic_RWApprovalRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,

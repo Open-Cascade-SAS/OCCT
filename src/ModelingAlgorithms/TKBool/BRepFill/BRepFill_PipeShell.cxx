@@ -74,7 +74,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_PipeShell, Standard_Transient)
 
 // Specification Guide

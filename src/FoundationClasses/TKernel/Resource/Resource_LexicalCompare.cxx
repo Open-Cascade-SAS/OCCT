@@ -19,7 +19,7 @@
 // Create :
 // -----------
 
-Resource_LexicalCompare::Resource_LexicalCompare() {}
+Resource_LexicalCompare::Resource_LexicalCompare() = default;
 
 // -----------
 // IsLower :

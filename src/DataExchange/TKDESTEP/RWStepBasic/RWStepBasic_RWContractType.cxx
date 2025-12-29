@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWContractType::RWStepBasic_RWContractType() {}
+RWStepBasic_RWContractType::RWStepBasic_RWContractType() = default;
 
 //=================================================================================================
 

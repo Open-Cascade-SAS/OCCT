@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_SurfaceProfileTolerance, StepDimTol_Geomet
 
 //=================================================================================================
 
-StepDimTol_SurfaceProfileTolerance::StepDimTol_SurfaceProfileTolerance() {}
+StepDimTol_SurfaceProfileTolerance::StepDimTol_SurfaceProfileTolerance() = default;

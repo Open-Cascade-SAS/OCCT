@@ -50,7 +50,7 @@ static void MakeLibName(const TCollection_AsciiString& theDefaultName,
 //=================================================================================================
 
 BRepMesh_DiscretFactory::BRepMesh_DiscretFactory()
-    : myPluginEntry(NULL),
+    : myPluginEntry(nullptr),
       myErrorStatus(BRepMesh_FE_NOERROR),
       myDefaultName(THE_FAST_DISCRET_MESH),
       myFunctionName("DISCRETALGO")
@@ -91,7 +91,7 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
   if (theName == THE_FAST_DISCRET_MESH)
   {
     // built-in, nothing to do
-    myPluginEntry  = NULL;
+    myPluginEntry  = nullptr;
     myDefaultName  = theName;
     myFunctionName = theFuncName;
     return true;
@@ -99,11 +99,11 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
   else if (theName == myDefaultName && theFuncName == myFunctionName)
   {
     // already active
-    return myPluginEntry != NULL;
+    return myPluginEntry != nullptr;
   }
 
   TCollection_AsciiString  aMeshAlgoId = theName + "_" + theFuncName;
-  BRepMesh_PluginEntryType aFunc       = NULL;
+  BRepMesh_PluginEntryType aFunc       = nullptr;
   if (myFactoryMethods.IsBound(aMeshAlgoId))
   {
     // retrieve from cache
@@ -126,7 +126,7 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
     myFactoryMethods.Bind(aMeshAlgoId, (OSD_Function)aFunc);
   }
 
-  if (aFunc == NULL)
+  if (aFunc == nullptr)
   {
     // function is not found - invalid plugin?
     myErrorStatus = BRepMesh_FE_FUNCTIONNOTFOUND;
@@ -134,9 +134,9 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
   }
 
   // try to create dummy tool
-  BRepMesh_DiscretRoot* anInstancePtr = NULL;
+  BRepMesh_DiscretRoot* anInstancePtr = nullptr;
   int                   anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
-  if (anErr != 0 || anInstancePtr == NULL)
+  if (anErr != 0 || anInstancePtr == nullptr)
   {
     // can not create the algo specified
     myErrorStatus = BRepMesh_FE_CANNOTCREATEALGO;
@@ -160,13 +160,13 @@ occ::handle<BRepMesh_DiscretRoot> BRepMesh_DiscretFactory::Discret(const TopoDS_
                                                                    const double theAngle)
 {
   occ::handle<BRepMesh_DiscretRoot> aDiscretRoot;
-  BRepMesh_DiscretRoot*             anInstancePtr = NULL;
-  if (myPluginEntry != NULL)
+  BRepMesh_DiscretRoot*             anInstancePtr = nullptr;
+  if (myPluginEntry != nullptr)
   {
     // use plugin
     int anErr = myPluginEntry(theShape, theDeflection, theAngle, anInstancePtr);
 
-    if (anErr != 0 || anInstancePtr == NULL)
+    if (anErr != 0 || anInstancePtr == nullptr)
     {
       // can not create the algo specified - should never happens here
       myErrorStatus = BRepMesh_FE_CANNOTCREATEALGO;

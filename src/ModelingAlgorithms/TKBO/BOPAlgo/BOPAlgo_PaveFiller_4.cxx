@@ -51,7 +51,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_VertexFace() {}
+  ~BOPAlgo_VertexFace() override = default;
 
   //
   void SetIndices(const int nV, const int nF)
@@ -99,9 +99,9 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -143,7 +143,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
   //
   int nV, nF;
   //
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
   if (myGlue == BOPAlgo_GlueFull)
   {
     // there is no need to intersect vertices with faces in this mode

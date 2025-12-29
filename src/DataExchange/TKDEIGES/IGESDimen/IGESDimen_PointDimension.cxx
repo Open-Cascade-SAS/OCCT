@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_PointDimension, IGESData_IGESEntity)
 
-IGESDimen_PointDimension::IGESDimen_PointDimension() {}
+IGESDimen_PointDimension::IGESDimen_PointDimension() = default;
 
 void IGESDimen_PointDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                     const occ::handle<IGESDimen_LeaderArrow>& anArrow,

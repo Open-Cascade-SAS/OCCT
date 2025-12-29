@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
 
-SelectMgr_AndFilter::SelectMgr_AndFilter() {}
+SelectMgr_AndFilter::SelectMgr_AndFilter() = default;
 
 bool SelectMgr_AndFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
 {

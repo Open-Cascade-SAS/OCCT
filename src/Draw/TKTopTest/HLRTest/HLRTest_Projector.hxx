@@ -32,20 +32,20 @@ public:
   const HLRAlgo_Projector& Projector() const { return myProjector; }
 
   //! Does nothing,
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
+  Standard_EXPORT void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
+  Standard_EXPORT void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command. Set as a result the
   //! type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
+  Standard_EXPORT void Whatis(Draw_Interpretor& I) const override;
 
 private:
   HLRAlgo_Projector myProjector;

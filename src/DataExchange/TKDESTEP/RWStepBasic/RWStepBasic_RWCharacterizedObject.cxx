@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWCharacterizedObject::RWStepBasic_RWCharacterizedObject() {}
+RWStepBasic_RWCharacterizedObject::RWStepBasic_RWCharacterizedObject() = default;
 
 //=================================================================================================
 

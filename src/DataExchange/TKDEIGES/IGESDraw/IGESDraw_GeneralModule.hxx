@@ -47,9 +47,9 @@ public:
 
   //! Specific list of Entities implied by an IGESEntity <ent> (in
   //! addition to Associativities). Redefined for ViewsVisible ...
-  Standard_EXPORT virtual void OwnImpliedCase(const int                               CN,
-                                              const occ::handle<IGESData_IGESEntity>& ent,
-                                              Interface_EntityIterator& iter) const override;
+  Standard_EXPORT void OwnImpliedCase(const int                               CN,
+                                      const occ::handle<IGESData_IGESEntity>& ent,
+                                      Interface_EntityIterator&               iter) const override;
 
   //! Returns a DirChecker, specific for each type of Entity
   //! (identified by its Case Number) : this DirChecker defines
@@ -75,24 +75,23 @@ public:
   //! Renews parameters which are specific of each Type of Entity :
   //! redefined for ViewsVisible ... (takes only the implied ref.s
   //! which have also been copied)
-  Standard_EXPORT virtual void OwnRenewCase(const int                               CN,
-                                            const occ::handle<IGESData_IGESEntity>& entfrom,
-                                            const occ::handle<IGESData_IGESEntity>& entto,
-                                            const Interface_CopyTool& TC) const override;
+  Standard_EXPORT void OwnRenewCase(const int                               CN,
+                                    const occ::handle<IGESData_IGESEntity>& entfrom,
+                                    const occ::handle<IGESData_IGESEntity>& entto,
+                                    const Interface_CopyTool&               TC) const override;
 
   //! Clears parameters with can cause looping structures :
   //! redefined for ViewsVisible ... (clears the implied ref.s)
-  Standard_EXPORT virtual void OwnDeleteCase(
-    const int                               CN,
-    const occ::handle<IGESData_IGESEntity>& ent) const override;
+  Standard_EXPORT void OwnDeleteCase(const int                               CN,
+                                     const occ::handle<IGESData_IGESEntity>& ent) const override;
 
   //! Returns a category number which characterizes an entity
   //! Planar : Auxiliary
   //! Subfigures and ConnectPoint : Structure
   //! others : Drawing
-  Standard_EXPORT virtual int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+  Standard_EXPORT int CategoryNumber(const int                              CN,
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_GeneralModule, IGESData_GeneralModule)
 };

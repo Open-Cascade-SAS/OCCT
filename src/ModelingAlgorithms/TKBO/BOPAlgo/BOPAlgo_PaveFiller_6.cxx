@@ -141,8 +141,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceFace()
-      : IntTools_FaceFace(),
-        BOPAlgo_ParallelAlgo(),
+      : BOPAlgo_ParallelAlgo(),
         myIF1(-1),
         myIF2(-1),
         myTolFF(1.e-7)
@@ -150,7 +149,7 @@ public:
   }
 
   //
-  virtual ~BOPAlgo_FaceFace() {}
+  ~BOPAlgo_FaceFace() override = default;
 
   //
   void SetIndices(const int nF1, const int nF2)
@@ -199,9 +198,9 @@ public:
   const gp_Trsf& Trsf() const { return myTrsf; }
 
   //
-  virtual void Perform()
+  void Perform() override
   {
-    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
     if (UserBreak(aPS))
     {
       return;
@@ -318,7 +317,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
     return;
   }
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
   aFFs.SetIncrement(iSize);
@@ -646,7 +645,7 @@ static void UpdateSavedTolerance(const BOPDS_PDS&                  theDS,
 
 void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPSOuter(theRange, NULL, 4);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 4);
   if (myGlue != BOPAlgo_GlueOff)
   {
     return;
@@ -4131,7 +4130,7 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces(const Message_ProgressRange& theRange
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
   const int                           aNbFF = aFFs.Length();
-  Message_ProgressScope               aPS(theRange, NULL, 1);
+  Message_ProgressScope               aPS(theRange, nullptr, 1);
   for (int i = 0; i < aNbFF; ++i)
   {
     const NCollection_Vector<BOPDS_Curve>& aVNC = aFFs(i).Curves();

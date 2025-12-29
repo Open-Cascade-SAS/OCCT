@@ -19,14 +19,14 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 
 #define MYDS (*((TopOpeBRepDS_DataStructure*)myDS))
-static TopOpeBRepDS_Curve* CEX_PEMPTY = NULL;
+static TopOpeBRepDS_Curve* CEX_PEMPTY = nullptr;
 
 //=================================================================================================
 
 TopOpeBRepDS_CurveExplorer::TopOpeBRepDS_CurveExplorer()
     : myIndex(1),
       myMax(0),
-      myDS(NULL),
+      myDS(nullptr),
       myFound(false),
       myFindKeep(false)
 {
@@ -98,7 +98,7 @@ const TopOpeBRepDS_Curve& TopOpeBRepDS_CurveExplorer::Curve() const
   }
   else
   {
-    if (CEX_PEMPTY == NULL)
+    if (CEX_PEMPTY == nullptr)
     {
       CEX_PEMPTY = new TopOpeBRepDS_Curve();
     }
@@ -134,7 +134,7 @@ const TopOpeBRepDS_Curve& TopOpeBRepDS_CurveExplorer::Curve(const int I) const
     return C;
   }
 
-  if (CEX_PEMPTY == NULL)
+  if (CEX_PEMPTY == nullptr)
   {
     CEX_PEMPTY = new TopOpeBRepDS_Curve();
   }

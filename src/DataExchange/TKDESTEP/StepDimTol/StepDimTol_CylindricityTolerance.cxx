@@ -21,4 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_CylindricityTolerance, StepDimTol_Geometri
 
 //=================================================================================================
 
-StepDimTol_CylindricityTolerance::StepDimTol_CylindricityTolerance() {}
+StepDimTol_CylindricityTolerance::StepDimTol_CylindricityTolerance() = default;

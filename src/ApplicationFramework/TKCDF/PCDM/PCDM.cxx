@@ -47,7 +47,7 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType(const TCollection_AsciiString&   aFil
   }
   else
   {
-    aBaseDriver = NULL;
+    aBaseDriver = nullptr;
     return PCDM_TOFD_Unknown;
   }
 }
@@ -92,6 +92,6 @@ PCDM_TypeOfFileDriver PCDM::FileDriverType(Standard_IStream&                theI
     return PCDM_TOFD_XmlFile;
   }
 
-  theBaseDriver = NULL;
+  theBaseDriver = nullptr;
   return PCDM_TOFD_Unknown;
 }

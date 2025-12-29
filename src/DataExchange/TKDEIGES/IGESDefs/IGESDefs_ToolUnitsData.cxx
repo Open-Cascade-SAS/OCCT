@@ -32,7 +32,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESDefs_ToolUnitsData::IGESDefs_ToolUnitsData() {}
+IGESDefs_ToolUnitsData::IGESDefs_ToolUnitsData() = default;
 
 void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>& ent,
                                            const occ::handle<IGESData_IGESReaderData>& /* IR */,

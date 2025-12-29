@@ -24,7 +24,7 @@
 // #include <StepRepr_RepresentedDefinition.hxx>
 //=================================================================================================
 
-RWStepRepr_RWStructuralResponseProperty::RWStepRepr_RWStructuralResponseProperty() {}
+RWStepRepr_RWStructuralResponseProperty::RWStepRepr_RWStructuralResponseProperty() = default;
 
 //=================================================================================================
 

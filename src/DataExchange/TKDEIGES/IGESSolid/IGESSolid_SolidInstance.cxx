@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidInstance, IGESData_IGESEntity)
 
-IGESSolid_SolidInstance::IGESSolid_SolidInstance() {}
+IGESSolid_SolidInstance::IGESSolid_SolidInstance() = default;
 
 void IGESSolid_SolidInstance::Init(const occ::handle<IGESData_IGESEntity>& anEntity)
 {

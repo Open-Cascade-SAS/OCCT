@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepRepr_RWCentreOfSymmetry::RWStepRepr_RWCentreOfSymmetry() {}
+RWStepRepr_RWCentreOfSymmetry::RWStepRepr_RWCentreOfSymmetry() = default;
 
 //=================================================================================================
 

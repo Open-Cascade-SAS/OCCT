@@ -193,7 +193,7 @@ private:
   // Compute initial solution
   void ComputeInitSol();
 
-  math_GlobOptMin& operator=(const math_GlobOptMin& theOther);
+  math_GlobOptMin& operator=(const math_GlobOptMin& theOther) = delete;
 
   bool computeLocalExtremum(const math_Vector& thePnt, double& theVal, math_Vector& theOutPnt);
 

@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWProductConceptContext::RWStepBasic_RWProductConceptContext() {}
+RWStepBasic_RWProductConceptContext::RWStepBasic_RWProductConceptContext() = default;
 
 //=================================================================================================
 

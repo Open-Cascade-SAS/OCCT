@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_BooleanResult, StepGeom_GeometricRepresentationItem)
 
-StepShape_BooleanResult::StepShape_BooleanResult() {}
+StepShape_BooleanResult::StepShape_BooleanResult() = default;
 
 void StepShape_BooleanResult::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const StepShape_BooleanOperator              aOperator,

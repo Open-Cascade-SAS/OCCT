@@ -17,7 +17,7 @@
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_SurfaceModel.hxx>
 
-StepShape_SurfaceModel::StepShape_SurfaceModel() {}
+StepShape_SurfaceModel::StepShape_SurfaceModel() = default;
 
 int StepShape_SurfaceModel::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

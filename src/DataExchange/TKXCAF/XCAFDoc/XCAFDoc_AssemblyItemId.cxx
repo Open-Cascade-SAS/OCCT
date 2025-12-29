@@ -17,7 +17,7 @@
 
 #include <Standard_Dump.hxx>
 
-XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId() {}
+XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId() = default;
 
 XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId(
   const NCollection_List<TCollection_AsciiString>& thePath)

@@ -82,9 +82,9 @@ public:
   //! Returns true if transform persistence for zoom is set
   Standard_EXPORT bool HasMinimumSize() const;
 
-  virtual int Signature() const override { return 7; }
+  int Signature() const override { return 7; }
 
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the component specified in SetComponent.
   const occ::handle<Geom_Plane>& Component() { return myComponent; }
@@ -144,10 +144,10 @@ public:
   void SetCurrentMode(const bool theCurrentMode) { myCurrentMode = theCurrentMode; }
 
   //! Returns true if the display mode selected, aMode, is valid for planes.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int aMode) const override;
+  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
 
   //! connection to <aCtx> default drawer implies a recomputation of Frame values.
-  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx) override;
+  Standard_EXPORT void SetContext(const occ::handle<AIS_InteractiveContext>& aCtx) override;
 
   //! Returns the type of sensitivity for the plane;
   Select3D_TypeOfSensitivity TypeOfSensitivity() const { return myTypeOfSensitivity; }
@@ -158,18 +158,17 @@ public:
     myTypeOfSensitivity = theTypeOfSensitivity;
   }
 
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
   Standard_EXPORT void UnsetColor() override;
 
 private:
-  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+  Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void ComputeFrame();
 

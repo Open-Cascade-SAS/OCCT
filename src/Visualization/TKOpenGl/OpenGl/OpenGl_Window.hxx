@@ -56,7 +56,7 @@ public:
                             const occ::handle<OpenGl_Context>&       theShareCtx);
 
   //! Destructor
-  Standard_EXPORT virtual ~OpenGl_Window();
+  Standard_EXPORT ~OpenGl_Window() override;
 
   //! Resizes the window.
   Standard_EXPORT virtual void Resize();

@@ -301,7 +301,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
 
 //=================================================================================================
 
-STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() {}
+STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() = default;
 
 //=================================================================================================
 
@@ -1316,7 +1316,7 @@ occ::handle<StepDimTol_GeometricTolerance> STEPCAFControl_GDTProperty::GetGeomTo
     case XCAFDimTolObjects_GeomToleranceType_Straightness:
       return new StepDimTol_StraightnessTolerance();
     default:
-      return NULL;
+      return nullptr;
   }
 }
 
@@ -1374,7 +1374,7 @@ occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFContr
 {
   if ((theModifiers.Length() == 0)
       && (theModifWithVal == XCAFDimTolObjects_DatumModifWithValue_None))
-    return NULL;
+    return nullptr;
   int aModifNb = theModifiers.Length();
   if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
     aModifNb++;

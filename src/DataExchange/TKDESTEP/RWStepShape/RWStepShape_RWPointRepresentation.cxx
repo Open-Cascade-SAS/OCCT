@@ -26,7 +26,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWPointRepresentation::RWStepShape_RWPointRepresentation() {}
+RWStepShape_RWPointRepresentation::RWStepShape_RWPointRepresentation() = default;
 
 //=================================================================================================
 

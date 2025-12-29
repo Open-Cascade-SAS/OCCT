@@ -136,7 +136,8 @@ void Message_CompositeAlerts::Clear(Message_Gravity theGravity)
 {
   Standard_ASSERT_RETURN(theGravity >= 0
                            && size_t(theGravity) < sizeof(myAlerts) / sizeof(myAlerts[0]),
-                         "Requesting alerts for gravity not in valid range", );
+                         "Requesting alerts for gravity not in valid range",
+                         Standard_VOID_RETURN);
   myAlerts[theGravity].Clear();
 }
 

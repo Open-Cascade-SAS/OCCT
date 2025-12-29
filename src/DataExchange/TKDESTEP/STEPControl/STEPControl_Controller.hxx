@@ -45,7 +45,7 @@ public:
   Standard_EXPORT occ::handle<Transfer_ActorOfTransientProcess> ActorRead(
     const occ::handle<Interface_InterfaceModel>& theModel) const override;
 
-  Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS) override;
+  Standard_EXPORT void Customise(occ::handle<XSControl_WorkSession>& WS) override;
 
   //! Takes one Shape and transfers it to the InterfaceModel
   //! (already created by NewModel for instance)
@@ -53,7 +53,7 @@ public:
   //! Returns a status : 0 OK  1 No result  2 Fail  -1 bad modeshape
   //! -2 bad model (requires a StepModel)
   //! modeshape : 1 Facetted BRep, 2 Shell, 3 Manifold Solid
-  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
+  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape(
     const TopoDS_Shape&                          shape,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,

@@ -35,7 +35,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~Standard_ReadLineBuffer() {}
+  virtual ~Standard_ReadLineBuffer() = default;
 
   //! Clear buffer and cached values.
   void Clear()
@@ -76,12 +76,12 @@ public:
   template <typename Stream_T>
   const char* ReadLine(Stream_T& theStream, size_t& theLineLength, int64_t& theReadData)
   {
-    char* aResultLine = NULL;
+    char* aResultLine = nullptr;
     bool  isMultiline = false;
     theLineLength     = 0;
     theReadData       = 0;
 
-    while (aResultLine == NULL)
+    while (aResultLine == nullptr)
     {
       if (myBufferPos == 0 || myBufferPos >= (myBytesLastRead))
       {

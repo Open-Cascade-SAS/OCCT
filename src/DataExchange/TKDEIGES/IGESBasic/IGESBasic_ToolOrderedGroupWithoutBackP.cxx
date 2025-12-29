@@ -35,7 +35,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESBasic_ToolOrderedGroupWithoutBackP::IGESBasic_ToolOrderedGroupWithoutBackP() {}
+IGESBasic_ToolOrderedGroupWithoutBackP::IGESBasic_ToolOrderedGroupWithoutBackP() = default;
 
 void IGESBasic_ToolOrderedGroupWithoutBackP::ReadOwnParams(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,

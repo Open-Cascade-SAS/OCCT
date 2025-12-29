@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_Edge, StepShape_TopologicalRepresentationItem)
 
-StepShape_Edge::StepShape_Edge() {}
+StepShape_Edge::StepShape_Edge() = default;
 
 void StepShape_Edge::Init(const occ::handle<TCollection_HAsciiString>& aName,
                           const occ::handle<StepShape_Vertex>&         aEdgeStart,

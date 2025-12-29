@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileSchema, Standard_Transient)
 
-HeaderSection_FileSchema::HeaderSection_FileSchema() {}
+HeaderSection_FileSchema::HeaderSection_FileSchema() = default;
 
 void HeaderSection_FileSchema::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSchemaIdentifiers)

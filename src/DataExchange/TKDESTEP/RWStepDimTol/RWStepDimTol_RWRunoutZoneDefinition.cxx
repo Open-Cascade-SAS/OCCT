@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWRunoutZoneDefinition::RWStepDimTol_RWRunoutZoneDefinition() {}
+RWStepDimTol_RWRunoutZoneDefinition::RWStepDimTol_RWRunoutZoneDefinition() = default;
 
 //=================================================================================================
 

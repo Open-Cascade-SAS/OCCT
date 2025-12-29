@@ -33,16 +33,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT virtual int NbVariables() const = 0;
+  Standard_EXPORT int NbVariables() const override = 0;
 
   //! Returns the number of equations of the function.
-  Standard_EXPORT virtual int NbEquations() const = 0;
+  Standard_EXPORT int NbEquations() const override = 0;
 
   //! Computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) = 0;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override = 0;
 
   //! Returns the values <D> of the derivatives for the
   //! variable <X>.

@@ -23,4 +23,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ShapeDefinitionRepresentation,
 
 //=================================================================================================
 
-StepShape_ShapeDefinitionRepresentation::StepShape_ShapeDefinitionRepresentation() {}
+StepShape_ShapeDefinitionRepresentation::StepShape_ShapeDefinitionRepresentation() = default;

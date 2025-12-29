@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-RWStepVisual_RWCameraModelD3MultiClipping::RWStepVisual_RWCameraModelD3MultiClipping() {}
+RWStepVisual_RWCameraModelD3MultiClipping::RWStepVisual_RWCameraModelD3MultiClipping() = default;
 
 //=================================================================================================
 

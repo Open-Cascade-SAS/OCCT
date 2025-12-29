@@ -35,9 +35,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing entity in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceEdgeCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                               const occ::handle<StepGeom_Line>& theNewEntity,
-                               occ::handle<Standard_Transient>   theSharing);
+  static bool replaceEdgeCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                               const occ::handle<StepGeom_Line>&      theNewEntity,
+                               const occ::handle<Standard_Transient>& theSharing);
 
   //! Replacer function for StepGeom_TrimmedCurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -45,9 +45,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing entity in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceTrimmedCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                  const occ::handle<StepGeom_Line>& theNewEntity,
-                                  occ::handle<Standard_Transient>   theSharing);
+  static bool replaceTrimmedCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                  const occ::handle<StepGeom_Line>&      theNewEntity,
+                                  const occ::handle<Standard_Transient>& theSharing);
 
   //! Replacer function for StepGeom_SurfaceCurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -55,9 +55,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing entity in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceSurfaceCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                  const occ::handle<StepGeom_Line>& theNewEntity,
-                                  occ::handle<Standard_Transient>   theSharing);
+  static bool replaceSurfaceCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                  const occ::handle<StepGeom_Line>&      theNewEntity,
+                                  const occ::handle<Standard_Transient>& theSharing);
 
   //! Replacer function for StepRepr_DefinitionalRepresentation entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -65,9 +65,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing entity in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceDefinitionalRepresentation(const occ::handle<StepGeom_Line>& theOldEntity,
-                                                const occ::handle<StepGeom_Line>& theNewEntity,
-                                                occ::handle<Standard_Transient>   theSharing);
+  static bool replaceDefinitionalRepresentation(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                                const occ::handle<StepGeom_Line>&      theNewEntity,
+                                                const occ::handle<Standard_Transient>& theSharing);
 
   //! Replacer function for StepGeom_SeamCurve entities.
   //! Replaces the old entity with the new one in the sharing entity.
@@ -75,9 +75,9 @@ private:
   //! @param theNewEntity the new entity to replace with.
   //! @param theSharing the sharing entity in which to replace the old entity.
   //! @return true if the entity was replaced, false otherwise.
-  static bool replaceSeamCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                               const occ::handle<StepGeom_Line>& theNewEntity,
-                               occ::handle<Standard_Transient>   theSharing);
+  static bool replaceSeamCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                               const occ::handle<StepGeom_Line>&      theNewEntity,
+                               const occ::handle<Standard_Transient>& theSharing);
 };
 
 #endif // _StepTidy_LineReducer_HeaderFile

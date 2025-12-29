@@ -19,7 +19,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 
 IFSelect_SelectSent::IFSelect_SelectSent(const int sentcount, const bool atleast)

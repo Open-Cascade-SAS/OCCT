@@ -30,7 +30,7 @@ HelixGeom_BuilderApproxCurve::HelixGeom_BuilderApproxCurve()
 
 //=================================================================================================
 
-HelixGeom_BuilderApproxCurve::~HelixGeom_BuilderApproxCurve() {}
+HelixGeom_BuilderApproxCurve::~HelixGeom_BuilderApproxCurve() = default;
 
 //=================================================================================================
 

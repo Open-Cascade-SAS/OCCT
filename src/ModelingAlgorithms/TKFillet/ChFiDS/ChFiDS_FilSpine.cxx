@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_FilSpine, ChFiDS_Spine)
 
 //=================================================================================================
 
-ChFiDS_FilSpine::ChFiDS_FilSpine() {}
+ChFiDS_FilSpine::ChFiDS_FilSpine() = default;
 
 ChFiDS_FilSpine::ChFiDS_FilSpine(const double Tol)
     : ChFiDS_Spine(Tol)

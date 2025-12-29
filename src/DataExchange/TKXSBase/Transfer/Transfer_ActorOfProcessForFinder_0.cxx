@@ -30,7 +30,7 @@
 
 //=================================================================================================
 
-Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() {}
+Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() = default;
 
 //=================================================================================================
 

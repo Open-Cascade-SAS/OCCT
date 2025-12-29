@@ -17,7 +17,7 @@
 #include <StepGeom_Vector.hxx>
 #include <StepGeom_VectorOrDirection.hxx>
 
-StepGeom_VectorOrDirection::StepGeom_VectorOrDirection() {}
+StepGeom_VectorOrDirection::StepGeom_VectorOrDirection() = default;
 
 int StepGeom_VectorOrDirection::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_PointRepresentation, StepShape_ShapeReprese
 
 //=================================================================================================
 
-StepShape_PointRepresentation::StepShape_PointRepresentation() {}
+StepShape_PointRepresentation::StepShape_PointRepresentation() = default;

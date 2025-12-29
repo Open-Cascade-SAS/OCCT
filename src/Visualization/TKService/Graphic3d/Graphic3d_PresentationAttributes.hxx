@@ -39,7 +39,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~Graphic3d_PresentationAttributes() {}
+  ~Graphic3d_PresentationAttributes() override = default;
 
   //! Returns highlight method, Aspect_TOHM_COLOR by default.
   Aspect_TypeOfHighlightMethod Method() const { return myHiMethod; }

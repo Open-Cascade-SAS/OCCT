@@ -31,7 +31,7 @@
 
 #include <BRep_TFace.hxx>
 
-#include <string.h>
+#include <cstring>
 
 const char* TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] = {
   "",
@@ -46,7 +46,7 @@ TopTools_ShapeSet::TopTools_ShapeSet()
 {
 }
 
-TopTools_ShapeSet::~TopTools_ShapeSet() {}
+TopTools_ShapeSet::~TopTools_ShapeSet() = default;
 
 //=================================================================================================
 
@@ -54,7 +54,8 @@ void TopTools_ShapeSet::SetFormatNb(const int theFormatNb)
 {
   Standard_ASSERT_RETURN(theFormatNb >= TopTools_FormatVersion_LOWER
                            && theFormatNb <= TopTools_FormatVersion_UPPER,
-                         "Error: unsupported TopTools version.", );
+                         "Error: unsupported TopTools version.",
+                         Standard_VOID_RETURN);
 
   myFormatNb = theFormatNb;
 }

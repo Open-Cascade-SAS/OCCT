@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepBasic_RWIdentificationRole::RWStepBasic_RWIdentificationRole() {}
+RWStepBasic_RWIdentificationRole::RWStepBasic_RWIdentificationRole() = default;
 
 //=================================================================================================
 

@@ -87,7 +87,7 @@
 // GeomToIGES_GeomSurface
 //=============================================================================
 GeomToIGES_GeomSurface::GeomToIGES_GeomSurface()
-    : GeomToIGES_GeomEntity()
+
 {
   myBRepMode = false;
   myAnalytic = false;
@@ -585,7 +585,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
     start->Coefficients(A, B, C, D);
     D               = -D; // because of difference in Geom_Plane class and Type 108
     gp_XYZ anAttach = start->Location().XYZ().Divided(GetUnit());
-    aPlane->Init(A, B, C, D / GetUnit(), 0, anAttach, 0);
+    aPlane->Init(A, B, C, D / GetUnit(), nullptr, anAttach, 0);
     res = aPlane;
     return res;
   }

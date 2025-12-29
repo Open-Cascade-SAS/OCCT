@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver, PCDM_StorageDriver
 
 //=================================================================================================
 
-BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver() {}
+BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver() = default;
 
 //=================================================================================================
 
@@ -61,7 +61,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
   std::shared_ptr<std::ostream>      aFileStream =
     aFileSystem->OpenOStream(theFileName, std::ios::out | std::ios::binary);
 
-  if (aFileStream.get() != NULL && aFileStream->good())
+  if (aFileStream.get() != nullptr && aFileStream->good())
   {
     Write(theDocument, *aFileStream, theRange);
   }
@@ -115,7 +115,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
       anIterS.ChangeValue().WriteTOC(theOStream, aDocVer);
 
     EnableQuickPartWriting(myMsgDriver, IsQuickPart(aDocVer));
-    BinLDrivers_DocumentSection* aShapesSection = 0;
+    BinLDrivers_DocumentSection* aShapesSection = nullptr;
     bool                         aQuickPart     = IsQuickPart(aDocVer);
     if (!aQuickPart)
     {

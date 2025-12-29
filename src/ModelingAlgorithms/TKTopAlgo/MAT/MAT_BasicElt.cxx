@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_BasicElt, Standard_Transient)
 //=================================================================================================
 
 MAT_BasicElt::MAT_BasicElt(const int anInteger)
-    : startLeftArc(0),
-      endLeftArc(0),
+    : startLeftArc(nullptr),
+      endLeftArc(nullptr),
       index(anInteger),
       geomIndex(0)
 {

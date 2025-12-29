@@ -46,7 +46,7 @@ void Draw_Drawable3D::RegisterFactory(const char* theType, const FactoryFunction
 occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char*       theType,
                                                       Standard_IStream& theStream)
 {
-  FactoryFunction_t aFactory = NULL;
+  FactoryFunction_t aFactory = nullptr;
   if (getFactoryMap().Find(theType, aFactory))
   {
     return aFactory(theStream);
@@ -61,7 +61,7 @@ Draw_Drawable3D::Draw_Drawable3D()
       myXmax(0.0),
       myYmin(0.0),
       myYmax(0.0),
-      myName(NULL),
+      myName(nullptr),
       isVisible(false),
       isProtected(false)
 {

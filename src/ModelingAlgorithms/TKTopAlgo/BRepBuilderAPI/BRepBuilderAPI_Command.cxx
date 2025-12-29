@@ -26,7 +26,7 @@ BRepBuilderAPI_Command::BRepBuilderAPI_Command()
 
 //=================================================================================================
 
-BRepBuilderAPI_Command::~BRepBuilderAPI_Command() {}
+BRepBuilderAPI_Command::~BRepBuilderAPI_Command() = default;
 
 //=================================================================================================
 

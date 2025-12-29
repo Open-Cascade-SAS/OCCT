@@ -45,17 +45,17 @@ public:
 
   Standard_EXPORT ShapeAnalysis_TransferParametersProj(const TopoDS_Edge& E, const TopoDS_Face& F);
 
-  Standard_EXPORT virtual void Init(const TopoDS_Edge& E, const TopoDS_Face& F) override;
+  Standard_EXPORT void Init(const TopoDS_Edge& E, const TopoDS_Face& F) override;
 
   //! Transfers parameters given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual occ::handle<NCollection_HSequence<double>> Perform(
+  Standard_EXPORT occ::handle<NCollection_HSequence<double>> Perform(
     const occ::handle<NCollection_HSequence<double>>& Papams,
     const bool                                        To2d) override;
 
   //! Transfers parameter given by Param from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual double Perform(const double Param, const bool To2d) override;
+  Standard_EXPORT double Perform(const double Param, const bool To2d) override;
 
   //! Returns modifiable flag forcing projection
   //! If it is False (default), projection is done only
@@ -65,13 +65,13 @@ public:
 
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
-  Standard_EXPORT virtual void TransferRange(TopoDS_Edge& newEdge,
-                                             const double prevPar,
-                                             const double currPar,
-                                             const bool   Is2d) override;
+  Standard_EXPORT void TransferRange(TopoDS_Edge& newEdge,
+                                     const double prevPar,
+                                     const double currPar,
+                                     const bool   Is2d) override;
 
   //! Returns False;
-  Standard_EXPORT virtual bool IsSameRange() const override;
+  Standard_EXPORT bool IsSameRange() const override;
 
   //! Make a copy of non-manifold vertex theVert
   //! (i.e. create new TVertex and replace PointRepresentations for this vertex

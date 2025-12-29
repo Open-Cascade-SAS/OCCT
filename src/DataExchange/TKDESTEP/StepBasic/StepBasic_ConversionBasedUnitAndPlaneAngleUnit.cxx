@@ -21,7 +21,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndPlaneAngleUnit,
                            StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndPlaneAngleUnit::StepBasic_ConversionBasedUnitAndPlaneAngleUnit() {}
+StepBasic_ConversionBasedUnitAndPlaneAngleUnit::StepBasic_ConversionBasedUnitAndPlaneAngleUnit() =
+  default;
 
 void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::Init(
   const occ::handle<StepBasic_DimensionalExponents>& aDimensions,

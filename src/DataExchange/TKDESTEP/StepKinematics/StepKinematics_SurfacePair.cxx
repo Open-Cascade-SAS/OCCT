@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SurfacePair, StepKinematics_HighOrderK
 
 //=================================================================================================
 
-StepKinematics_SurfacePair::StepKinematics_SurfacePair() {}
+StepKinematics_SurfacePair::StepKinematics_SurfacePair() = default;
 
 //=================================================================================================
 

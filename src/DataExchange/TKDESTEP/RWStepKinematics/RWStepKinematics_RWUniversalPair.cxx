@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWUniversalPair::RWStepKinematics_RWUniversalPair() {}
+RWStepKinematics_RWUniversalPair::RWStepKinematics_RWUniversalPair() = default;
 
 //=================================================================================================
 

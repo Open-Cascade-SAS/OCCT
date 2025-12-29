@@ -73,7 +73,7 @@ math_BrentMinimum::math_BrentMinimum(const double theTolX,
 
 //=================================================================================================
 
-math_BrentMinimum::~math_BrentMinimum() {}
+math_BrentMinimum::~math_BrentMinimum() = default;
 
 //=================================================================================================
 

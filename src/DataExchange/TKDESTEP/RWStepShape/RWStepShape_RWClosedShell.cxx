@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepShape_RWClosedShell::RWStepShape_RWClosedShell() {}
+RWStepShape_RWClosedShell::RWStepShape_RWClosedShell() = default;
 
 void RWStepShape_RWClosedShell::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

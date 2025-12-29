@@ -16,7 +16,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWCalendarDate::RWStepBasic_RWCalendarDate() {}
+RWStepBasic_RWCalendarDate::RWStepBasic_RWCalendarDate() = default;
 
 void RWStepBasic_RWCalendarDate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

@@ -19,7 +19,7 @@
 #include <StepVisual_PresentationSize.hxx>
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 
-RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize() {}
+RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize() = default;
 
 void RWStepVisual_RWPresentationSize::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

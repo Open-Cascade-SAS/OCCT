@@ -35,17 +35,17 @@ public:
     const NCollection_Array1<occ::handle<Image_PixMap>>& theImages);
 
   //! Returns current cubemap side as compressed PixMap.
-  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> CompressedValue(
+  Standard_EXPORT occ::handle<Image_CompressedPixMap> CompressedValue(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns current side of cubemap as PixMap.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! All origin images have to have the same sizes, format and quad shapes to form valid cubemap.
-  Standard_EXPORT virtual occ::handle<Image_PixMap> Value(
+  Standard_EXPORT occ::handle<Image_PixMap> Value(
     const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns NULL.
-  virtual occ::handle<Image_PixMap> GetImage(const occ::handle<Image_SupportedFormats>&) override
+  occ::handle<Image_PixMap> GetImage(const occ::handle<Image_SupportedFormats>&) override
   {
     return occ::handle<Image_PixMap>();
   }
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT bool IsDone() const override;
 
   //! Empty destructor.
-  ~Graphic3d_CubeMapSeparate() {}
+  ~Graphic3d_CubeMapSeparate() override = default;
 
 protected:
   OSD_Path                  myPaths[6];  //!< array of paths to cubemap images

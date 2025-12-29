@@ -48,12 +48,12 @@ public:
   Standard_EXPORT void Init(const double X0, const double L, const double Tol);
 
   //! This is Integral(X0,X,F(X,D)) - L
-  Standard_EXPORT bool Value(const double X, double& F);
+  Standard_EXPORT bool Value(const double X, double& F) override;
 
   //! This is F(X,D)
-  Standard_EXPORT bool Derivative(const double X, double& Df);
+  Standard_EXPORT bool Derivative(const double X, double& Df) override;
 
-  Standard_EXPORT bool Values(const double X, double& F, double& Df);
+  Standard_EXPORT bool Values(const double X, double& F, double& Df) override;
 
 private:
   CPnts_MyGaussFunction myFunction;

@@ -22,7 +22,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispGlobal, IFSelect_Dispatch)
 
 // Generates a single packet with the final output
-IFSelect_DispGlobal::IFSelect_DispGlobal() {}
+IFSelect_DispGlobal::IFSelect_DispGlobal() = default;
 
 TCollection_AsciiString IFSelect_DispGlobal::Label() const
 {

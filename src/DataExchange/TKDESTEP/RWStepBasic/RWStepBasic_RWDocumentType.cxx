@@ -18,7 +18,7 @@
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType() {}
+RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType() = default;
 
 void RWStepBasic_RWDocumentType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

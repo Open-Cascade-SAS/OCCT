@@ -41,7 +41,7 @@ bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 
   XmlObjMgt_DOMString aUserName  = anElement.getAttribute(::UserName());
   XmlObjMgt_DOMString aTimeStamp = anElement.getAttribute(::TimeStamp());
-  if (aUserName == NULL || aTimeStamp == NULL)
+  if (aUserName == nullptr || aTimeStamp == nullptr)
     return false;
 
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theTarget);

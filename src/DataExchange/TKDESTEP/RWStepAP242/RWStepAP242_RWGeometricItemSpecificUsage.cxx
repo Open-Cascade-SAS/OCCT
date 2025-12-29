@@ -23,7 +23,7 @@
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_Representation.hxx>
 
-RWStepAP242_RWGeometricItemSpecificUsage::RWStepAP242_RWGeometricItemSpecificUsage() {}
+RWStepAP242_RWGeometricItemSpecificUsage::RWStepAP242_RWGeometricItemSpecificUsage() = default;
 
 void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

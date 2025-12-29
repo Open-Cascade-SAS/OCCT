@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_PlaneDriver, TPrsStd_Driver)
 // #include <TDataStd_Datum.hxx>
 //=================================================================================================
 
-TPrsStd_PlaneDriver::TPrsStd_PlaneDriver() {}
+TPrsStd_PlaneDriver::TPrsStd_PlaneDriver() = default;
 
 //=================================================================================================
 

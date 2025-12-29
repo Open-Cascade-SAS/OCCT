@@ -38,7 +38,7 @@ public:
                                    const occ::handle<OpenGl_Window>& theWindow);
 
   //! Destructor
-  virtual ~OpenGl_Workspace() {}
+  ~OpenGl_Workspace() override = default;
 
   //! Activate rendering context.
   Standard_EXPORT bool Activate();

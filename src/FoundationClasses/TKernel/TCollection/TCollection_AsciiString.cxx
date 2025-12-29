@@ -72,7 +72,7 @@ TCollection_AsciiString::TCollection_AsciiString() noexcept
 
 TCollection_AsciiString::TCollection_AsciiString(const char* theString, const int theLen)
 {
-  if (theString == NULL)
+  if (theString == nullptr)
   {
     throw Standard_NullObject("TCollection_AsciiString(): NULL pointer passed to constructor");
   }

@@ -21,7 +21,7 @@
 
 #include "RWStepShape_RWBooleanOperator.pxx"
 
-RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() {}
+RWStepShape_RWBooleanResult::RWStepShape_RWBooleanResult() = default;
 
 void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

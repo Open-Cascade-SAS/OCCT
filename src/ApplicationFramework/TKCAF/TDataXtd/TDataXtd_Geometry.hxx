@@ -131,7 +131,7 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataXtd_Geometry, TDF_Attribute)
 

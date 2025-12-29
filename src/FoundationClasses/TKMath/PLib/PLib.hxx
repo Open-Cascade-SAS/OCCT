@@ -41,10 +41,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Used as argument for a non rational functions
-  inline static NCollection_Array1<double>* NoWeights() { return NULL; }
+  inline static NCollection_Array1<double>* NoWeights() { return nullptr; }
 
   //! Used as argument for a non rational functions
-  inline static NCollection_Array2<double>* NoWeights2() { return NULL; }
+  inline static NCollection_Array2<double>* NoWeights2() { return nullptr; }
 
   //! Copy in FP the coordinates of the poles.
   Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt>& Poles,

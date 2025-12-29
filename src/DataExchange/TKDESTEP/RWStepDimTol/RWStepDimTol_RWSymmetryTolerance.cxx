@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWSymmetryTolerance::RWStepDimTol_RWSymmetryTolerance() {}
+RWStepDimTol_RWSymmetryTolerance::RWStepDimTol_RWSymmetryTolerance() = default;
 
 //=================================================================================================
 

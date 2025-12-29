@@ -18,7 +18,8 @@
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
 
-RWStepVisual_RWSurfaceStyleSegmentationCurve::RWStepVisual_RWSurfaceStyleSegmentationCurve() {}
+RWStepVisual_RWSurfaceStyleSegmentationCurve::RWStepVisual_RWSurfaceStyleSegmentationCurve() =
+  default;
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,

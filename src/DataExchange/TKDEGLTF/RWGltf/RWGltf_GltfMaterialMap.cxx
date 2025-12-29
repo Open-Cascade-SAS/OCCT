@@ -50,7 +50,7 @@ const occ::handle<Image_Texture>& RWGltf_GltfMaterialMap::baseColorTexture(
 RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap(const TCollection_AsciiString& theFile,
                                                const int                      theDefSamplerId)
     : RWMesh_MaterialMap(theFile),
-      myWriter(NULL),
+      myWriter(nullptr),
       myDefSamplerId(theDefSamplerId)
 {
   myMatNameAsKey = false;
@@ -69,7 +69,7 @@ void RWGltf_GltfMaterialMap::AddImages(RWGltf_GltfOStreamWriter* theWriter,
                                        const XCAFPrs_Style&      theStyle,
                                        bool&                     theIsStarted)
 {
-  if (theWriter == NULL || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
+  if (theWriter == nullptr || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
   {
     return;
   }
@@ -267,7 +267,7 @@ void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
                                          bool&                     theIsStarted)
 {
 #ifdef HAVE_RAPIDJSON
-  if (theWriter == NULL
+  if (theWriter == nullptr
       || ((theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
           && !theStyle.IsSetColorSurf() && !theStyle.IsSetColorCurv()))
   {
@@ -282,7 +282,7 @@ void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
   }
   myWriter = theWriter;
   AddMaterial(theStyle);
-  myWriter = NULL;
+  myWriter = nullptr;
 #else
   (void)theWriter;
   (void)theStyle;
@@ -296,7 +296,7 @@ void RWGltf_GltfMaterialMap::AddTextures(RWGltf_GltfOStreamWriter* theWriter,
                                          const XCAFPrs_Style&      theStyle,
                                          bool&                     theIsStarted)
 {
-  if (theWriter == NULL || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
+  if (theWriter == nullptr || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
   {
     return;
   }
@@ -361,7 +361,7 @@ void RWGltf_GltfMaterialMap::DefineMaterial(const XCAFPrs_Style& theStyle,
                                             const TCollection_AsciiString& theName)
 {
 #ifdef HAVE_RAPIDJSON
-  if (myWriter == NULL)
+  if (myWriter == nullptr)
   {
     Standard_ProgramError::Raise(
       "RWGltf_GltfMaterialMap::DefineMaterial() should be called with JSON Writer");

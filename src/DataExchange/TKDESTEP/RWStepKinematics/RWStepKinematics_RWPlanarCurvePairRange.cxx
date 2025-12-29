@@ -29,7 +29,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPlanarCurvePairRange::RWStepKinematics_RWPlanarCurvePairRange() {}
+RWStepKinematics_RWPlanarCurvePairRange::RWStepKinematics_RWPlanarCurvePairRange() = default;
 
 //=================================================================================================
 

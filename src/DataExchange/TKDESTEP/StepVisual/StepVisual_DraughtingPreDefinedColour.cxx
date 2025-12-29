@@ -16,4 +16,4 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedColour, StepVisual_PreDefinedColour)
 
-StepVisual_DraughtingPreDefinedColour::StepVisual_DraughtingPreDefinedColour() {}
+StepVisual_DraughtingPreDefinedColour::StepVisual_DraughtingPreDefinedColour() = default;

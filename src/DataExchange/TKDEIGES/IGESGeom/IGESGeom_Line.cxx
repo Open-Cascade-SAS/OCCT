@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Line, IGESData_IGESEntity)
 
-IGESGeom_Line::IGESGeom_Line() {}
+IGESGeom_Line::IGESGeom_Line() = default;
 
 void IGESGeom_Line::Init(const gp_XYZ& aStart, const gp_XYZ& anEnd)
 {

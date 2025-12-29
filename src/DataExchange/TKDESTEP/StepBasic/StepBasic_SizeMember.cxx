@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SizeMember, StepData_SelectReal)
 
-StepBasic_SizeMember::StepBasic_SizeMember() {}
+StepBasic_SizeMember::StepBasic_SizeMember() = default;
 
 bool StepBasic_SizeMember::HasName() const
 {

@@ -93,7 +93,7 @@ extern "C"
     #include <sys/statvfs.h>
   #endif
 }
-  #include <errno.h>
+  #include <cerrno>
 #endif
 
 //=================================================================================================

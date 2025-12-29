@@ -20,7 +20,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-RWStepGeom_RWDirection::RWStepGeom_RWDirection() {}
+RWStepGeom_RWDirection::RWStepGeom_RWDirection() = default;
 
 void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

@@ -41,7 +41,7 @@ public:
   //! 2 -> ShapeAspect
   //! 3 -> ShapeAspectRelationship
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a ProductDefinitionShape (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ProductDefinitionShape> ProductDefinitionShape() const;

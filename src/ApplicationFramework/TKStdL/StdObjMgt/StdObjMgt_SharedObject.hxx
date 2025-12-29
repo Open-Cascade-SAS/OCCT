@@ -17,6 +17,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <StdObjMgt_Persistent.hxx>
 
+// NOLINTBEGIN(modernize-use-override)
 class StdObjMgt_SharedObject
 {
 public:
@@ -81,7 +82,7 @@ public:
     virtual const char* PName() const { return PersistentData().PName(); }
 
     //! Import transient object from the persistent data.
-    virtual occ::handle<Transient> Import() { return NULL; }
+    virtual occ::handle<Transient> Import() { return nullptr; }
   };
 
 private:
@@ -169,4 +170,5 @@ public:
   };
 };
 
+// NOLINTEND(modernize-use-override)
 #endif

@@ -18,7 +18,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_Representation, Standard_Transient)
 
-StepRepr_Representation::StepRepr_Representation() {}
+StepRepr_Representation::StepRepr_Representation() = default;
 
 void StepRepr_Representation::Init(
   const occ::handle<TCollection_HAsciiString>&                                      aName,

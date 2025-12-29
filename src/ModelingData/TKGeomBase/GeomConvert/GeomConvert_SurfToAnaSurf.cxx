@@ -1012,7 +1012,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
         if (myConvType == GeomConvert_Target && (myTarget != aSTypes[isurf]))
         {
           myGap = RealLast();
-          return NULL;
+          return nullptr;
         }
       }
       else
@@ -1035,7 +1035,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
         if (myConvType == GeomConvert_Target && (myTarget != aSTypes[isurf]))
         {
           myGap = RealLast();
-          return NULL;
+          return nullptr;
         }
         newSurf[isurf] = anObject;
       }
@@ -1097,7 +1097,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
     return newSurf[imin];
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //=================================================================================================

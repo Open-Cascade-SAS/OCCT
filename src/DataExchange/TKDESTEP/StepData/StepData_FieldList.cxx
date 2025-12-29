@@ -18,9 +18,9 @@
 
 static StepData_Field nulfild;
 
-StepData_FieldList::~StepData_FieldList() {}
+StepData_FieldList::~StepData_FieldList() = default;
 
-StepData_FieldList::StepData_FieldList() {}
+StepData_FieldList::StepData_FieldList() = default;
 
 int StepData_FieldList::NbFields() const
 {

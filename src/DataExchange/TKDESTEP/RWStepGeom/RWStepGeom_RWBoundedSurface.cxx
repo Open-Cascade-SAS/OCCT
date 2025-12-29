@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BoundedSurface.hxx>
 
-RWStepGeom_RWBoundedSurface::RWStepGeom_RWBoundedSurface() {}
+RWStepGeom_RWBoundedSurface::RWStepGeom_RWBoundedSurface() = default;
 
 void RWStepGeom_RWBoundedSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

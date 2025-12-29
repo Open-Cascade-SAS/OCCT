@@ -34,7 +34,7 @@
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
 #include <StepVisual_PresentationArea.hxx>
 
-StepAP214_ApprovalItem::StepAP214_ApprovalItem() {}
+StepAP214_ApprovalItem::StepAP214_ApprovalItem() = default;
 
 int StepAP214_ApprovalItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

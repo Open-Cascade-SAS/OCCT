@@ -21,9 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve
                            StepGeom_BSplineCurve)
 
 StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
-  StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve()
-{
-}
+  StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve() = default;
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

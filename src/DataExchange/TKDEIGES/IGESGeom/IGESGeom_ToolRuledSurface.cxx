@@ -32,7 +32,7 @@
 #include <Message_Msg.hxx>
 
 // MGE 31/07/98
-IGESGeom_ToolRuledSurface::IGESGeom_ToolRuledSurface() {}
+IGESGeom_ToolRuledSurface::IGESGeom_ToolRuledSurface() = default;
 
 void IGESGeom_ToolRuledSurface::ReadOwnParams(const occ::handle<IGESGeom_RuledSurface>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

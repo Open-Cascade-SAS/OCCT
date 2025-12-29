@@ -24,10 +24,10 @@
 #include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerSignature, IFSelect_Dispatch)
 
-IFSelect_DispPerSignature::IFSelect_DispPerSignature() {}
+IFSelect_DispPerSignature::IFSelect_DispPerSignature() = default;
 
 occ::handle<IFSelect_SignCounter> IFSelect_DispPerSignature::SignCounter() const
 {

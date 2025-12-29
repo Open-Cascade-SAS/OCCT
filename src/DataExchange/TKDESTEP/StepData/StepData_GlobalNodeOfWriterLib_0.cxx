@@ -24,7 +24,7 @@
 #include <StepData_WriterLib.hxx>
 #include <StepData_NodeOfWriterLib.hxx>
 
-StepData_GlobalNodeOfWriterLib::StepData_GlobalNodeOfWriterLib() {}
+StepData_GlobalNodeOfWriterLib::StepData_GlobalNodeOfWriterLib() = default;
 
 void StepData_GlobalNodeOfWriterLib::Add(const occ::handle<StepData_ReadWriteModule>& amodule,
                                          const occ::handle<StepData_Protocol>&        aprotocol)

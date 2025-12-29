@@ -62,10 +62,10 @@ public:
 
   private: //! @name private methods
     //! Empty copy constructor
-    Range(const Range& theCopy);
+    Range(const Range& theCopy) = delete;
 
     //! Empty copy operator.
-    Range& operator=(const Range& theCopy);
+    Range& operator=(const Range& theCopy) = delete;
 
   private:                                          //! @name private fields
     const OSD_Parallel::UniversalIterator& myBegin; //!< First element of range.
@@ -89,7 +89,7 @@ public:
 
     //! Method is executed in the context of thread,
     //! so this method defines the main calculations.
-    virtual void Perform(int) override
+    void Perform(int) override
     {
       for (OSD_Parallel::UniversalIterator anIter = myRange.It(); anIter != myRange.End();
            anIter                                 = myRange.It())
@@ -100,10 +100,10 @@ public:
 
   private: //! @name private methods
     //! Empty copy constructor.
-    Task(const Task& theCopy);
+    Task(const Task& theCopy) = delete;
 
     //! Empty copy operator.
-    Task& operator=(const Task& theCopy);
+    Task& operator=(const Task& theCopy) = delete;
 
   private:                               //! @name private fields
     const FunctorInterface& myPerformer; //!< Link on functor

@@ -31,8 +31,8 @@ public:
                                         const occ::handle<Adaptor3d_Surface>& S2,
                                         const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT virtual void Set(const bool                            OnFirst,
-                                   const occ::handle<Adaptor2d_Curve2d>& COnSurf) override;
+  Standard_EXPORT void Set(const bool                            OnFirst,
+                           const occ::handle<Adaptor2d_Curve2d>& COnSurf) override;
 
   Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override;
 

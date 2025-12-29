@@ -32,15 +32,15 @@ class StepVisual_MarkerMember : public StepData_SelectInt
 public:
   Standard_EXPORT StepVisual_MarkerMember();
 
-  Standard_EXPORT virtual bool HasName() const override;
+  Standard_EXPORT bool HasName() const override;
 
-  Standard_EXPORT virtual const char* Name() const override;
+  Standard_EXPORT const char* Name() const override;
 
-  Standard_EXPORT virtual bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* name) override;
 
-  Standard_EXPORT virtual const char* EnumText() const override;
+  Standard_EXPORT const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int val, const char* text) override;
+  Standard_EXPORT void SetEnumText(const int val, const char* text) override;
 
   Standard_EXPORT void SetValue(const StepVisual_MarkerType val);
 

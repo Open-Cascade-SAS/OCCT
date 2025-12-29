@@ -21,9 +21,8 @@
 //=================================================================================================
 
 BOPAlgo_Splitter::BOPAlgo_Splitter()
-    : BOPAlgo_ToolsProvider()
-{
-}
+
+  = default;
 
 //=================================================================================================
 
@@ -34,7 +33,7 @@ BOPAlgo_Splitter::BOPAlgo_Splitter(const occ::handle<NCollection_BaseAllocator>&
 
 //=================================================================================================
 
-BOPAlgo_Splitter::~BOPAlgo_Splitter() {}
+BOPAlgo_Splitter::~BOPAlgo_Splitter() = default;
 
 //=================================================================================================
 
@@ -61,7 +60,7 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
     if (myPaveFiller)
     {
       delete myPaveFiller;
-      myPaveFiller = NULL;
+      myPaveFiller = nullptr;
     }
   }
   //

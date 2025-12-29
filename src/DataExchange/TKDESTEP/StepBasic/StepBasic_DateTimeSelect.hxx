@@ -41,7 +41,7 @@ public:
   //! 2 -> LocalTime
   //! 3 -> DateAndTime
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! returns Value as a Date (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Date> Date() const;

@@ -25,7 +25,7 @@ public:
   Standard_EXPORT OpenGl_UniformBuffer();
 
   //! Return buffer object target (GL_UNIFORM_BUFFER).
-  Standard_EXPORT virtual unsigned int GetTarget() const override;
+  Standard_EXPORT unsigned int GetTarget() const override;
 
   using OpenGl_Buffer::BindBufferBase;
   using OpenGl_Buffer::BindBufferRange;

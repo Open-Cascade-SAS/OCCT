@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_GeneralPropertyRelationship, Standard_Trans
 
 //=================================================================================================
 
-StepBasic_GeneralPropertyRelationship::StepBasic_GeneralPropertyRelationship() {}
+StepBasic_GeneralPropertyRelationship::StepBasic_GeneralPropertyRelationship() = default;
 
 //=================================================================================================
 

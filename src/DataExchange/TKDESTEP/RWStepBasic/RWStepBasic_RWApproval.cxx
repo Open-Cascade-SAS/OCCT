@@ -18,7 +18,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApproval::RWStepBasic_RWApproval() {}
+RWStepBasic_RWApproval::RWStepBasic_RWApproval() = default;
 
 void RWStepBasic_RWApproval::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

@@ -18,7 +18,7 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SweptSurface.hxx>
 
-RWStepGeom_RWSweptSurface::RWStepGeom_RWSweptSurface() {}
+RWStepGeom_RWSweptSurface::RWStepGeom_RWSweptSurface() = default;
 
 void RWStepGeom_RWSweptSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                          const int                                   num,

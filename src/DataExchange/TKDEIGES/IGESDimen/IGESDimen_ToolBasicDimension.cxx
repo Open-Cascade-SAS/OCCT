@@ -33,7 +33,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
-IGESDimen_ToolBasicDimension::IGESDimen_ToolBasicDimension() {}
+IGESDimen_ToolBasicDimension::IGESDimen_ToolBasicDimension() = default;
 
 void IGESDimen_ToolBasicDimension::ReadOwnParams(
   const occ::handle<IGESDimen_BasicDimension>& ent,

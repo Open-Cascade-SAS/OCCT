@@ -1038,7 +1038,7 @@ class BOPAlgo_PairVerticesSelector : public BOPTools_BoxPairSelector
 {
 public:
   BOPAlgo_PairVerticesSelector()
-      : myVertices(NULL),
+      : myVertices(nullptr),
         myFuzzyValue(Precision::Confusion())
   {
   }
@@ -1054,7 +1054,7 @@ public:
   void SetFuzzyValue(const double theFuzzyValue) { myFuzzyValue = theFuzzyValue; }
 
   //! Checks and accepts the pair of elements.
-  virtual bool Accept(const int theID1, const int theID2) override
+  bool Accept(const int theID1, const int theID2) override
   {
     if (!RejectElement(theID1, theID2))
     {
@@ -1193,7 +1193,7 @@ class BOPAlgo_ShapeBox
 {
 public:
   //! Empty constructor
-  BOPAlgo_ShapeBox() {};
+  BOPAlgo_ShapeBox() = default;
 
   //! Sets the shape
   void SetShape(const TopoDS_Shape& theS) { myShape = theS; };
@@ -1227,12 +1227,12 @@ public:
   //! Constructor
   BOPAlgo_FillIn3DParts()
   {
-    myBBTree    = NULL;
-    myVShapeBox = NULL;
+    myBBTree    = nullptr;
+    myVShapeBox = nullptr;
   };
 
   //! Destructor
-  virtual ~BOPAlgo_FillIn3DParts() {};
+  ~BOPAlgo_FillIn3DParts() override = default;
 
   //! Sets the solid
   void SetSolid(const TopoDS_Solid& theSolid) { mySolid = theSolid; };
@@ -1268,7 +1268,7 @@ public:
   const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //! Performs the classification
-  virtual void Perform();
+  void Perform() override;
 
   //! Returns the faces classified as IN for solid
   const NCollection_List<TopoDS_Shape>& InFaces() const { return myInFaces; };
@@ -1310,7 +1310,7 @@ private:
 
 void BOPAlgo_FillIn3DParts::Perform()
 {
-  Message_ProgressScope aPSOuter(myProgressRange, NULL, 2);
+  Message_ProgressScope aPSOuter(myProgressRange, nullptr, 2);
   if (UserBreak(aPSOuter))
   {
     return;
@@ -1405,7 +1405,7 @@ void BOPAlgo_FillIn3DParts::Perform()
   // Per-iteration list for connexity block faces (uses temporary allocator)
   NCollection_List<TopoDS_Shape> aLCBF(aTmpAlloc);
 
-  Message_ProgressScope aPSLoop(aPSOuter.Next(), NULL, aNbFP);
+  Message_ProgressScope aPSLoop(aPSOuter.Next(), nullptr, aNbFP);
   for (k = 0; k < aNbFP; ++k, aPSLoop.Next())
   {
     if (UserBreak(aPSLoop))
@@ -1574,7 +1574,7 @@ void BOPAlgo_Tools::ClassifyFaces(
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = new NCollection_IncAllocator;
 
-  Message_ProgressScope aPSOuter(theRange, NULL, 10);
+  Message_ProgressScope aPSOuter(theRange, nullptr, 10);
 
   // Fill the vector of shape box with faces and its bounding boxes
   BOPAlgo_VectorOfShapeBox aVSB(256, anAlloc);

@@ -34,7 +34,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
 
 //=================================================================================================

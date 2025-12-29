@@ -543,7 +543,7 @@ static void IsInversed(const TopoDS_Shape& S,
                        bool*               Inverse)
 {
 
-  Inverse[0] = Inverse[1] = 0;
+  Inverse[0] = Inverse[1] = false;
   if (S.ShapeType() != TopAbs_EDGE)
     return;
 
@@ -575,7 +575,7 @@ static void IsInversed(const TopoDS_Shape& S,
     Inverse[0] = (DS.Dot(DC1) < 0.);
   }
   else
-    Inverse[0] = 1;
+    Inverse[0] = true;
 
   if (!BRep_Tool::Degenerated(E2))
   {
@@ -592,7 +592,7 @@ static void IsInversed(const TopoDS_Shape& S,
     Inverse[1] = (DS.Dot(DC2) < 0.);
   }
   else
-    Inverse[1] = 1;
+    Inverse[1] = true;
 }
 
 //=================================================================================================
@@ -789,7 +789,7 @@ void BRepFill_Evolved::ElementaryPerform(const TopoDS_Face&              Sp,
       bool Inv0[2];
       bool Inv1[2];
 
-      Inv0[0] = Inv0[1] = Inv1[0] = Inv1[1] = 0;
+      Inv0[0] = Inv0[1] = Inv1[0] = Inv1[1] = false;
       if (Concave0)
         IsInversed(S[0], E[0], E[1], Inv0);
       if (Concave1)
@@ -2141,7 +2141,7 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
     {
       const TopoDS_Edge&                    ES                 = TopoDS::Edge(ExpSpine.Current());
       const NCollection_List<TopoDS_Shape>& L                  = GeneratedShapes(ES, V[i]);
-      bool                                  ComputeOrientation = 0;
+      bool                                  ComputeOrientation = false;
 
       for (itL.Initialize(L); itL.More(); itL.Next())
       {
@@ -2161,7 +2161,7 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
           C1.D1(us, P, V1);
           C2.D1(u, P, V2);
           ToReverse          = (V1.Dot(V2) < 0.);
-          ComputeOrientation = 1;
+          ComputeOrientation = true;
         }
 
         TopAbs_Orientation Or = ES.Orientation();

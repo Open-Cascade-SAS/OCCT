@@ -62,7 +62,7 @@ class XSControl_TransferReader : public Standard_Transient
 {
 public:
   //! Creates a TransferReader, empty
-  XSControl_TransferReader() {}
+  XSControl_TransferReader() = default;
 
   //! Sets a Controller. It is required to generate the Actor.
   //! Elsewhere, the Actor must be provided directly

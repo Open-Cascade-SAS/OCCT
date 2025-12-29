@@ -28,7 +28,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWRollingCurvePair::RWStepKinematics_RWRollingCurvePair() {}
+RWStepKinematics_RWRollingCurvePair::RWStepKinematics_RWRollingCurvePair() = default;
 
 //=================================================================================================
 

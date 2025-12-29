@@ -21,9 +21,7 @@
 #include <StepShape_GeometricallyBoundedSurfaceShapeRepresentation.hxx>
 
 RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::
-  RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation()
-{
-}
+  RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation() = default;
 
 void RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                  data,

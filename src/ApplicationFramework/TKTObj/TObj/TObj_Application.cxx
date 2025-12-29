@@ -23,7 +23,7 @@
 #include <Message_Msg.hxx>
 #include <Message_MsgFile.hxx>
 #include <Resource_Manager.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 #include "TObj_TObj_msg.pxx"
 

@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
-IGESAppli_ReferenceDesignator::IGESAppli_ReferenceDesignator() {}
+IGESAppli_ReferenceDesignator::IGESAppli_ReferenceDesignator() = default;
 
 void IGESAppli_ReferenceDesignator::Init(const int                                    nbPropVal,
                                          const occ::handle<TCollection_HAsciiString>& aText)

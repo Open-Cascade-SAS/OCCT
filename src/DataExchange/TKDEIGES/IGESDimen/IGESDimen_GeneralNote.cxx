@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralNote, IGESData_IGESEntity)
 
-IGESDimen_GeneralNote::IGESDimen_GeneralNote() {}
+IGESDimen_GeneralNote::IGESDimen_GeneralNote() = default;
 
 void IGESDimen_GeneralNote::Init(
   const occ::handle<NCollection_HArray1<int>>&                                   nbChars,

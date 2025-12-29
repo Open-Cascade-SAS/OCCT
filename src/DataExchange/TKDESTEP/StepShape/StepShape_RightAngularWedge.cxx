@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightAngularWedge, StepGeom_GeometricRepresentationItem)
 
-StepShape_RightAngularWedge::StepShape_RightAngularWedge() {}
+StepShape_RightAngularWedge::StepShape_RightAngularWedge() = default;
 
 void StepShape_RightAngularWedge::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                        const occ::handle<StepGeom_Axis2Placement3d>& aPosition,

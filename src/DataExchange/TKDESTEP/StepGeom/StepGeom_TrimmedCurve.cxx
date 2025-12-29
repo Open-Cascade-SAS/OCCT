@@ -17,7 +17,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_TrimmedCurve, StepGeom_BoundedCurve)
 
-StepGeom_TrimmedCurve::StepGeom_TrimmedCurve() {}
+StepGeom_TrimmedCurve::StepGeom_TrimmedCurve() = default;
 
 void StepGeom_TrimmedCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                     aName,

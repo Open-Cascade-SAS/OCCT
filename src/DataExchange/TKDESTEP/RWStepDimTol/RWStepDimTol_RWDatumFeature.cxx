@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWDatumFeature::RWStepDimTol_RWDatumFeature() {}
+RWStepDimTol_RWDatumFeature::RWStepDimTol_RWDatumFeature() = default;
 
 //=================================================================================================
 

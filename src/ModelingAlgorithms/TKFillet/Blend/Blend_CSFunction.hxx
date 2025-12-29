@@ -49,64 +49,60 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns 3 (default value). Can be redefined.
-  Standard_EXPORT virtual int NbVariables() const override;
+  Standard_EXPORT int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual int NbEquations() const override = 0;
+  Standard_EXPORT int NbEquations() const override = 0;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) override = 0;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override = 0;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override = 0;
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override = 0;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                      math_Vector&       F,
-                                      math_Matrix&       D) override = 0;
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override = 0;
 
   //! Sets the value of the parameter along the guide line.
   //! This determines the plane in which the solution has
   //! to be found.
-  Standard_EXPORT virtual void Set(const double Param) override = 0;
+  Standard_EXPORT void Set(const double Param) override = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the guide line.
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void Set(const double First, const double Last) override = 0;
+  Standard_EXPORT void Set(const double First, const double Last) override = 0;
 
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual void GetTolerance(math_Vector& Tolerance,
-                                            const double Tol) const override = 0;
+  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 3 variables.
   //! Returns in the vector SupBound the greatest values allowed
   //! for each of the 3 variables.
-  Standard_EXPORT virtual void GetBounds(math_Vector& InfBound,
-                                         math_Vector& SupBound) const override = 0;
+  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const override = 0;
 
   //! Returns true if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
   //! The computation is made at the current value of
   //! the parameter on the guide line.
-  Standard_EXPORT virtual bool IsSolution(const math_Vector& Sol, const double Tol) override = 0;
+  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override = 0;
 
   //! Returns the minimal Distance between two
   //! extremities of calculated sections.
-  Standard_EXPORT virtual double GetMinimalDistance() const override;
+  Standard_EXPORT double GetMinimalDistance() const override;
 
   //! Returns the point on the first support.
   Standard_EXPORT const gp_Pnt& Pnt1() const override;
@@ -149,55 +145,55 @@ public:
                                        gp_Vec&      TgS,
                                        gp_Vec&      NormS) const = 0;
 
-  Standard_EXPORT virtual void GetShape(int& NbPoles,
-                                        int& NbKnots,
-                                        int& Degree,
-                                        int& NbPoles2d) override = 0;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) override = 0;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.
-  Standard_EXPORT virtual void GetTolerance(const double BoundTol,
-                                            const double SurfTol,
-                                            const double AngleTol,
-                                            math_Vector& Tol3d,
-                                            math_Vector& Tol1D) const override = 0;
+  Standard_EXPORT void GetTolerance(const double BoundTol,
+                                    const double SurfTol,
+                                    const double AngleTol,
+                                    math_Vector& Tol3d,
+                                    math_Vector& Tol1D) const override = 0;
 
-  Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) override = 0;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) override = 0;
 
-  Standard_EXPORT virtual void Mults(NCollection_Array1<int>& TMults) override = 0;
-
-  //! Used for the first and last section
-  //! The method returns true if the derivatives
-  //! are computed, otherwise it returns false.
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths) override = 0;
-
-  Standard_EXPORT virtual void Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>&   Weigths) override = 0;
+  Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) override = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Vec>&   D2Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths,
-                                       NCollection_Array1<double>&   D2Weigths) override;
+  Standard_EXPORT bool Section(const Blend_Point&            P,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths) override = 0;
+
+  Standard_EXPORT void Section(const Blend_Point&            P,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>&   Weigths) override = 0;
+
+  //! Used for the first and last section
+  //! The method returns true if the derivatives
+  //! are computed, otherwise it returns false.
+  Standard_EXPORT bool Section(const Blend_Point&            P,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths) override;
 };
 
 #endif // _Blend_CSFunction_HeaderFile

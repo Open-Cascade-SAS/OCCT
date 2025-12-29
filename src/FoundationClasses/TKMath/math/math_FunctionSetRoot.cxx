@@ -94,7 +94,7 @@ public:
   //     bool MyDirFunction::Value(const math_Vector& Sol, math_Vector& FF,
   //					   math_Matrix& DF, math_Vector& GH,
   //					   double& F2, double& Gnr1);
-  bool Value(const double x, double& fval);
+  bool Value(const double x, double& fval) override;
 };
 
 MyDirFunction::MyDirFunction(math_Vector&                     V1,
@@ -720,7 +720,7 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
 
 //=================================================================================================
 
-math_FunctionSetRoot::~math_FunctionSetRoot() {}
+math_FunctionSetRoot::~math_FunctionSetRoot() = default;
 
 //=================================================================================================
 

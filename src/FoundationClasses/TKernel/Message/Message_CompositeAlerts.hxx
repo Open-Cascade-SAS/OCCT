@@ -25,7 +25,7 @@ class Message_CompositeAlerts : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Message_CompositeAlerts, Standard_Transient)
 public:
   //! Empty constructor
-  Message_CompositeAlerts() {}
+  Message_CompositeAlerts() = default;
 
   //! Returns list of collected alerts with specified gravity
   Standard_EXPORT const NCollection_List<occ::handle<Message_Alert>>& Alerts(

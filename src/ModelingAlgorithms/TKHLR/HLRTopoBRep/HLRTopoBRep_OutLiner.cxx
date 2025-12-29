@@ -41,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner, Standard_Transient)
 
 //=================================================================================================
 
-HLRTopoBRep_OutLiner::HLRTopoBRep_OutLiner() {}
+HLRTopoBRep_OutLiner::HLRTopoBRep_OutLiner() = default;
 
 //=================================================================================================
 

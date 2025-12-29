@@ -18,7 +18,7 @@
 #include <StepRepr_RepresentationMap.hxx>
 #include <StepVisual_CameraImage.hxx>
 
-RWStepVisual_RWCameraImage::RWStepVisual_RWCameraImage() {}
+RWStepVisual_RWCameraImage::RWStepVisual_RWCameraImage() = default;
 
 void RWStepVisual_RWCameraImage::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                           const int                                   num,

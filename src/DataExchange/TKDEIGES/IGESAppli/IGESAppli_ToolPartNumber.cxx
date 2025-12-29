@@ -30,7 +30,7 @@
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESAppli_ToolPartNumber::IGESAppli_ToolPartNumber() {}
+IGESAppli_ToolPartNumber::IGESAppli_ToolPartNumber() = default;
 
 void IGESAppli_ToolPartNumber::ReadOwnParams(const occ::handle<IGESAppli_PartNumber>& ent,
                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,

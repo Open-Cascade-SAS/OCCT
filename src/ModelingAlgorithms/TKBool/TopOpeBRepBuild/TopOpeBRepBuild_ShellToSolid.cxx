@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-TopOpeBRepBuild_ShellToSolid::TopOpeBRepBuild_ShellToSolid() {}
+TopOpeBRepBuild_ShellToSolid::TopOpeBRepBuild_ShellToSolid() = default;
 
 //=================================================================================================
 

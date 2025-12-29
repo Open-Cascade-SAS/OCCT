@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceSectionFieldConstant, StepElement_
 
 //=================================================================================================
 
-StepElement_SurfaceSectionFieldConstant::StepElement_SurfaceSectionFieldConstant() {}
+StepElement_SurfaceSectionFieldConstant::StepElement_SurfaceSectionFieldConstant() = default;
 
 //=================================================================================================
 

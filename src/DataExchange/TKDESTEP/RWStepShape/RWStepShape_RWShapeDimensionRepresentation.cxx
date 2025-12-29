@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-RWStepShape_RWShapeDimensionRepresentation::RWStepShape_RWShapeDimensionRepresentation() {}
+RWStepShape_RWShapeDimensionRepresentation::RWStepShape_RWShapeDimensionRepresentation() = default;
 
 //=================================================================================================
 

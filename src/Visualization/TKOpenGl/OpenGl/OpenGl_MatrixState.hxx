@@ -50,7 +50,8 @@ public:
   void Pop()
   {
     Standard_ASSERT_RETURN(myStackHead != -1,
-                           "Matrix stack already empty when MatrixState.Pop() called.", );
+                           "Matrix stack already empty when MatrixState.Pop() called.",
+                           Standard_VOID_RETURN);
     myCurrent = myStack.Value(myStackHead--);
   }
 

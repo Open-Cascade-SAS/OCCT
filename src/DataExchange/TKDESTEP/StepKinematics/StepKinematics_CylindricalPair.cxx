@@ -20,4 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_CylindricalPair, StepKinematics_LowOrd
 
 //=================================================================================================
 
-StepKinematics_CylindricalPair::StepKinematics_CylindricalPair() {}
+StepKinematics_CylindricalPair::StepKinematics_CylindricalPair() = default;

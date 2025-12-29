@@ -590,12 +590,12 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::Transfer(
   aLocalFactors.InitializeFactors(aLFactor, (anglemode <= 1 ? 1. : M_PI / 180.), 1.);
   // create SDR
   STEPConstruct_Part SDRTool;
-  SDRTool.MakeSDR(0, myContext.GetProductName(), myContext.GetAPD()->Application(), model);
+  SDRTool.MakeSDR(nullptr, myContext.GetProductName(), myContext.GetAPD()->Application(), model);
   occ::handle<StepShape_ShapeDefinitionRepresentation> sdr = SDRTool.SDRValue();
   // transfer shape
 
   occ::handle<Transfer_Binder> resbind =
-    TransferShape(mapper, sdr, FP, aLocalFactors, 0L, true, theProgress);
+    TransferShape(mapper, sdr, FP, aLocalFactors, nullptr, true, theProgress);
 
   //  occ::handle<StepShape_ShapeRepresentation> resultat;
   //  FP->GetTypedTransient (resbind,STANDARD_TYPE(StepShape_ShapeRepresentation),resultat);
@@ -760,7 +760,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferShape(
   if (IsAssembly(aStepModel, theShape))
     return TransferCompound(start, SDR0, FP, theLocalFactors, theProgress);
 
-  Message_ProgressScope aPSRoot(theProgress, NULL, 2);
+  Message_ProgressScope aPSRoot(theProgress, nullptr, 2);
 
   // [BEGIN] Separate manifold topology from non-manifold in group mode 0 (ssv; 18.11.2010)
   bool                         isNMMode = aStepModel->InternalParameters.WriteNonmanifold != 0;
@@ -869,7 +869,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferShape(
       else
       {
         STEPConstruct_Part SDRTool;
-        SDRTool.MakeSDR(0,
+        SDRTool.MakeSDR(nullptr,
                         myContext.GetProductName(),
                         myContext.GetAPD()->Application(),
                         aStepModel);
@@ -881,7 +881,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferShape(
       // Complete SDR with shape representations.
       // NOTE: aNMBinder is connected now with this SDR. It will be added to the resulting
       //       binder in the end of this invocation of TransferShape
-      Message_ProgressScope aPS(aPSRoot.Next(), NULL, aNMItemsNb);
+      Message_ProgressScope aPS(aPSRoot.Next(), nullptr, aNMItemsNb);
       for (int i = 1; i <= aNMItemsNb && aPS.More(); i++)
       {
         occ::handle<TransferBRep_ShapeMapper> aMapper =
@@ -1025,7 +1025,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferShape(
   // ptv 10.11.00: allow to write empty Compound:  if (GroupMode() >0)
   ItemSeq->Append(myContext.GetDefaultAxis());
   STEPControl_StepModelType trmode = mymode;
-  Message_ProgressScope     aPS(aPSRoot.Next(), NULL, nbs);
+  Message_ProgressScope     aPS(aPSRoot.Next(), nullptr, nbs);
   for (int i = 1; i <= nbs && aPS.More(); i++)
   {
     TopoDS_Shape xShape = RepItemSeq->Value(i);
@@ -1049,7 +1049,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferShape(
       }
     }
 
-    Message_ProgressScope aPS1(aPS.Next(), NULL, 2);
+    Message_ProgressScope aPS1(aPS.Next(), nullptr, 2);
 
     TopoDS_Shape aShape = xShape;
 
@@ -1665,7 +1665,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferCompound(
     new NCollection_HSequence<occ::handle<Standard_Transient>>();
   ItemSeq->Append(myContext.GetDefaultAxis());
   myContext.NextLevel();
-  Message_ProgressScope aPS(theProgress, NULL, nbs);
+  Message_ProgressScope aPS(theProgress, nullptr, nbs);
   for (i = 1; i <= nbs && aPS.More(); i++)
   {
     occ::handle<TransferBRep_ShapeMapper> subs =
@@ -1766,7 +1766,10 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferSubShape(
     SDRTool.ReadSDR(sdr);
   else
   {
-    SDRTool.MakeSDR(0, myContext.GetProductName(), myContext.GetAPD()->Application(), aStepModel);
+    SDRTool.MakeSDR(nullptr,
+                    myContext.GetProductName(),
+                    myContext.GetAPD()->Application(),
+                    aStepModel);
     sdr = SDRTool.SDRValue();
   }
   //  resultat = GetCasted(StepShape_ShapeRepresentation,sdr->UsedRepresentation());

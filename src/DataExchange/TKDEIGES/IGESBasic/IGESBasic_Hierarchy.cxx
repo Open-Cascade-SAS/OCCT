@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_Hierarchy, IGESData_IGESEntity)
 
-IGESBasic_Hierarchy::IGESBasic_Hierarchy() {}
+IGESBasic_Hierarchy::IGESBasic_Hierarchy() = default;
 
 void IGESBasic_Hierarchy::Init(const int nbPropVal,
                                const int aLineFont,

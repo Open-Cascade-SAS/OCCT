@@ -30,17 +30,20 @@ public:
   Standard_EXPORT Aspect_NeutralWindow();
 
   //! Return native handle of this drawable.
-  virtual Aspect_Drawable NativeHandle() const override { return myHandle; }
+  Aspect_Drawable NativeHandle() const override { return myHandle; }
 
   //! Return native handle of the parent drawable.
-  virtual Aspect_Drawable NativeParentHandle() const override { return myParentHandle; }
+  Aspect_Drawable NativeParentHandle() const override { return myParentHandle; }
 
   //! Return FBConfig.
-  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
+  Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
 
   //! Set native handle.
   //! @return true if definition has been changed
-  bool SetNativeHandle(Aspect_Drawable theWindow) { return SetNativeHandles(theWindow, 0, 0); }
+  bool SetNativeHandle(Aspect_Drawable theWindow)
+  {
+    return SetNativeHandles(theWindow, 0, nullptr);
+  }
 
   //! Set native handles.
   //! @return true if definition has been changed
@@ -49,28 +52,28 @@ public:
                                         Aspect_FBConfig theFbConfig);
 
   //! Return true if window is not hidden.
-  virtual bool IsMapped() const override { return myIsMapped; }
+  bool IsMapped() const override { return myIsMapped; }
 
   //! Change window mapped flag to TRUE.
-  virtual void Map() const override { myIsMapped = true; }
+  void Map() const override { myIsMapped = true; }
 
   //! Change window mapped flag to FALSE.
-  virtual void Unmap() const override { myIsMapped = false; }
+  void Unmap() const override { myIsMapped = false; }
 
   //! Resize window - do nothing.
-  virtual Aspect_TypeOfResize DoResize() override { return Aspect_TOR_UNKNOWN; }
+  Aspect_TypeOfResize DoResize() override { return Aspect_TOR_UNKNOWN; }
 
   //! Map window - do nothing.
-  virtual bool DoMapping() const override { return true; }
+  bool DoMapping() const override { return true; }
 
   //! Returns window ratio equal to the physical width/height dimensions.
-  virtual double Ratio() const override
+  double Ratio() const override
   {
     return (myWidth != 0 && myHeight != 0) ? double(myWidth) / double(myHeight) : 1.0;
   }
 
   //! Return the window position.
-  virtual void Position(int& theX1, int& theY1, int& theX2, int& theY2) const override
+  void Position(int& theX1, int& theY1, int& theX2, int& theY2) const override
   {
     theX1 = myPosX;
     theX2 = myPosX + myWidth;
@@ -87,7 +90,7 @@ public:
   Standard_EXPORT bool SetPosition(int theX1, int theY1, int theX2, int theY2);
 
   //! Return the window size.
-  virtual void Size(int& theWidth, int& theHeight) const override
+  void Size(int& theWidth, int& theHeight) const override
   {
     theWidth  = myWidth;
     theHeight = myHeight;

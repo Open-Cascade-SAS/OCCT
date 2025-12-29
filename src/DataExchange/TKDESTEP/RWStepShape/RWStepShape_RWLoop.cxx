@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_Loop.hxx>
 
-RWStepShape_RWLoop::RWStepShape_RWLoop() {}
+RWStepShape_RWLoop::RWStepShape_RWLoop() = default;
 
 void RWStepShape_RWLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                   const int                                   num,

@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_Packet, Standard_Transient)
 //=================================================================================================
 
 Media_Packet::Media_Packet()
-    : myPacket(NULL)
+    : myPacket(nullptr)
 {
 #ifdef HAVE_FFMPEG
   myPacket = av_packet_alloc();
@@ -65,7 +65,7 @@ const uint8_t* Media_Packet::Data() const
 #ifdef HAVE_FFMPEG
   return myPacket->data;
 #else
-  return NULL;
+  return nullptr;
 #endif
 }
 
@@ -76,7 +76,7 @@ uint8_t* Media_Packet::ChangeData()
 #ifdef HAVE_FFMPEG
   return myPacket->data;
 #else
-  return NULL;
+  return nullptr;
 #endif
 }
 

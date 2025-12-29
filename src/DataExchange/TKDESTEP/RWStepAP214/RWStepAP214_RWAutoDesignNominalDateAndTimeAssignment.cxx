@@ -24,9 +24,7 @@
 #include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment::
-  RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment()
-{
-}
+  RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment() = default;
 
 void RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,

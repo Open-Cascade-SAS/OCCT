@@ -42,7 +42,7 @@
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // S3767 dce 18/01/1999
 // Transfer_Iterator.hxx>

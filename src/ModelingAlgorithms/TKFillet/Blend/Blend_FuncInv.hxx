@@ -45,28 +45,28 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns 4.
-  Standard_EXPORT int NbVariables() const;
+  Standard_EXPORT int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual int NbEquations() const = 0;
+  Standard_EXPORT int NbEquations() const override = 0;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) = 0;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override = 0;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Derivatives(const math_Vector& X, math_Matrix& D) = 0;
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override = 0;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) = 0;
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override = 0;
 
   //! Sets the CurveOnSurface on which a solution has
   //! to be found. If <OnFirst> is set to true,

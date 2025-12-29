@@ -26,7 +26,7 @@ public:
   Standard_EXPORT OpenGl_GraphicDriverFactory();
 
   //! Creates new empty graphic driver.
-  Standard_EXPORT virtual occ::handle<Graphic3d_GraphicDriver> CreateDriver(
+  Standard_EXPORT occ::handle<Graphic3d_GraphicDriver> CreateDriver(
     const occ::handle<Aspect_DisplayConnection>& theDisp) override;
 
   //! Return default driver options.

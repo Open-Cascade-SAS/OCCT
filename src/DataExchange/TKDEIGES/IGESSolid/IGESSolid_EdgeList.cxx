@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_EdgeList, IGESData_IGESEntity)
 
-IGESSolid_EdgeList::IGESSolid_EdgeList() {}
+IGESSolid_EdgeList::IGESSolid_EdgeList() = default;
 
 void IGESSolid_EdgeList::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  Curves,

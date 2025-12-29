@@ -136,18 +136,18 @@ public:
                                          const TopoDS_Shape& theSecondShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
+  Standard_EXPORT const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT void SetModelUnits(const TCollection_AsciiString& theUnits) override;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
+  Standard_EXPORT void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
+  Standard_EXPORT gp_Pnt GetTextPosition() const override;
 
   //! Set custom direction for dimension. If it is not set, the direction is obtained
   //! from the measured geometry (e.g. line between points of dimension)
@@ -158,7 +158,7 @@ public:
 
 protected:
   //! Checks if the plane includes first and second points to build dimension.
-  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
+  Standard_EXPORT bool CheckPlane(const gp_Pln& thePlane) const override;
 
   Standard_EXPORT virtual gp_Pln ComputePlane(const gp_Dir& theAttachDir) const;
 
@@ -167,7 +167,7 @@ protected:
   //! @return dimension value
   Standard_EXPORT double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(
+  Standard_EXPORT void Compute(
     const occ::handle<PrsMgr_PresentationManager>& thePresentationManager,
     const occ::handle<Prs3d_Presentation>&         thePresentation,
     const int                                      theMode = 0) override;
@@ -179,12 +179,12 @@ protected:
   //! @param[in] theSecondPoint  the second attach point of linear dimension.
   //! @param[out] theLineBegPoint  the first attach point of linear dimension.
   //! @param[out] theLineEndPoint  the second attach point of linear dimension.
-  Standard_EXPORT virtual void ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
-                                                       const gp_Pnt& theSecondPoint,
-                                                       gp_Pnt&       theLineBegPoint,
-                                                       gp_Pnt&       theLineEndPoint) override;
+  Standard_EXPORT void ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
+                                               const gp_Pnt& theSecondPoint,
+                                               gp_Pnt&       theLineBegPoint,
+                                               gp_Pnt&       theLineEndPoint) override;
 
-  Standard_EXPORT virtual void ComputeFlyoutSelection(
+  Standard_EXPORT void ComputeFlyoutSelection(
     const occ::handle<SelectMgr_Selection>&   theSelection,
     const occ::handle<SelectMgr_EntityOwner>& theEntityOwner) override;
 

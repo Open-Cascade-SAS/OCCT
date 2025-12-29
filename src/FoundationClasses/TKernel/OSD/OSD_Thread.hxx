@@ -67,7 +67,7 @@ public:
   //! specifies size of the stack to be allocated for the thread
   //! (by default - the same as for the current executable).
   //! Returns True if thread started successfully
-  Standard_EXPORT bool Run(void* const data = 0, const int WNTStackSize = 0);
+  Standard_EXPORT bool Run(void* const data = nullptr, const int WNTStackSize = 0);
 
   //! Detaches the execution thread from this Thread object,
   //! so that it cannot be waited.
@@ -81,7 +81,7 @@ public:
   //! Waits till the thread finishes execution.
   bool Wait()
   {
-    void* aRes = 0;
+    void* aRes = nullptr;
     return Wait(aRes);
   }
 

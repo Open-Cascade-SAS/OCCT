@@ -23,12 +23,12 @@
 
 const OSD_WhoAmI Iam = OSD_WHost;
 
-  #include <errno.h>
+  #include <cerrno>
 
   #include <sys/utsname.h> // For 'uname'
   #include <netdb.h>       // This is for 'gethostbyname'
   #include <unistd.h>
-  #include <stdio.h>
+  #include <cstdio>
 
   #if defined(__osf__) || defined(DECOSF1)
     #include <sys/types.h>
@@ -49,7 +49,7 @@ extern "C"
 
 // =========================================================================
 
-OSD_Host::OSD_Host() {}
+OSD_Host::OSD_Host() = default;
 
 // =========================================================================
 

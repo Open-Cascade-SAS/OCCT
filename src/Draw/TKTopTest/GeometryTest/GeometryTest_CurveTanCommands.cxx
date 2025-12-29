@@ -28,7 +28,7 @@
 #include <Message.hxx>
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <stdio.h>
+#include <cstdio>
 
 //=======================================================================
 // function : qcircle

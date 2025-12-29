@@ -45,7 +45,7 @@ public:
   {
   }
 
-  virtual bool Value(const double theX, double& theFval) { return myF->Derivative(theX, theFval); }
+  bool Value(const double theX, double& theFval) override { return myF->Derivative(theX, theFval); }
 };
 
 static void AppendRoot(NCollection_Sequence<double>& Sol,

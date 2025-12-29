@@ -74,7 +74,7 @@ int Interface_FileParameter::EntityNumber() const
 
 void Interface_FileParameter::Clear()
 {
-  theval = NULL;
+  theval = nullptr;
 } // delete theval; not if managed by ParamSet
 
 //=================================================================================================

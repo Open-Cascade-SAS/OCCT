@@ -44,10 +44,10 @@ public:
   //! 1 -> EnumeratedCurveElementFreedom
   //! 2 -> ApplicationDefinedDegreeOfFreedom
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
+  Standard_EXPORT int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type CurveElementFreedomMember
-  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
+  Standard_EXPORT occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Returns Value as EnumeratedDegreeOfFreedom (or Null if another type)
   Standard_EXPORT void SetEnumeratedDegreeOfFreedom(const StepFEA_EnumeratedDegreeOfFreedom aVal);

@@ -181,7 +181,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                          const occ::handle<OpenGl_Context>&       theShareCtx)
 {
   myGlContext      = new OpenGl_Context(theCaps);
-  myOwnGContext    = (theGContext == 0);
+  myOwnGContext    = (theGContext == nullptr);
   myPlatformWindow = thePlatformWindow;
   mySizeWindow     = theSizeWindow;
   mySwapInterval   = theCaps->swapInterval;
@@ -605,7 +605,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   Window     aWindow   = (Window)myPlatformWindow->NativeHandle();
   Display*   aDisp     = (Display*)theDriver->GetDisplayConnection()->GetDisplayAspect();
   GLXContext aGContext = (GLXContext)theGContext;
-  GLXContext aSlaveCtx = !theShareCtx.IsNull() ? (GLXContext)theShareCtx->myGContext : NULL;
+  GLXContext aSlaveCtx = !theShareCtx.IsNull() ? (GLXContext)theShareCtx->myGContext : nullptr;
 
   XWindowAttributes aWinAttribs;
   XGetWindowAttributes(aDisp, aWindow, &aWinAttribs);
@@ -617,7 +617,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     XGetVisualInfo(aDisp, VisualIDMask | VisualScreenMask, &aVisInfo, &aNbItems),
     &XFree);
   int isGl = 0;
-  if (aVis.get() == NULL)
+  if (aVis.get() == nullptr)
   {
     throw Aspect_GraphicDeviceDefinitionError(
       "OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in "
@@ -632,7 +632,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   // create new context
   GLXFBConfig anFBConfig = myPlatformWindow->NativeFBConfig();
   const char* aGlxExts   = glXQueryExtensionsString(aDisp, aVisInfo.screen);
-  if (myOwnGContext && anFBConfig != NULL
+  if (myOwnGContext && anFBConfig != nullptr
       && OpenGl_Context::CheckExtension(aGlxExts, "GLX_ARB_create_context_profile"))
   {
     // Replace default XError handler to ignore errors.
@@ -661,22 +661,22 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                                0};
 
       // try to create the core profile of highest OpenGL version supported by OCCT
-      for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
+      for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == nullptr; --aLowVer4)
       {
         aCoreCtxAttribs[1] = 4;
         aCoreCtxAttribs[3] = aLowVer4;
         aGContext          = aCreateCtxProc(aDisp, anFBConfig, aSlaveCtx, True, aCoreCtxAttribs);
       }
-      for (int aLowVer3 = 3; aLowVer3 >= 2 && aGContext == NULL; --aLowVer3)
+      for (int aLowVer3 = 3; aLowVer3 >= 2 && aGContext == nullptr; --aLowVer3)
       {
         aCoreCtxAttribs[1] = 3;
         aCoreCtxAttribs[3] = aLowVer3;
         aGContext          = aCreateCtxProc(aDisp, anFBConfig, aSlaveCtx, True, aCoreCtxAttribs);
       }
-      isCoreProfile = aGContext != NULL;
+      isCoreProfile = aGContext != nullptr;
     }
 
-    if (aGContext == NULL)
+    if (aGContext == nullptr)
     {
       int aCtxAttribs[] = {GLX_CONTEXT_FLAGS_ARB,
                            theCaps->contextDebug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0,
@@ -685,7 +685,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
       isCoreProfile     = false;
       aGContext         = aCreateCtxProc(aDisp, anFBConfig, aSlaveCtx, True, aCtxAttribs);
 
-      if (aGContext != NULL && !theCaps->contextCompatible)
+      if (aGContext != nullptr && !theCaps->contextCompatible)
       {
         TCollection_ExtendedString aMsg(
           "OpenGl_Window::CreateWindow: core profile creation failed.");
@@ -699,10 +699,10 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     XSetErrorHandler(anOldHandler);
   }
 
-  if (myOwnGContext && aGContext == NULL)
+  if (myOwnGContext && aGContext == nullptr)
   {
     aGContext = glXCreateContext(aDisp, aVis.get(), aSlaveCtx, GL_TRUE);
-    if (aGContext == NULL)
+    if (aGContext == nullptr)
     {
       throw Aspect_GraphicDeviceDefinitionError(
         "OpenGl_Window::CreateWindow: glXCreateContext failed.");
@@ -800,11 +800,11 @@ OpenGl_Window::~OpenGl_Window()
   GLXContext aThreadGContext = glXGetCurrentContext();
   myGlContext.Nullify();
 
-  if (aDisplay != NULL)
+  if (aDisplay != nullptr)
   {
     if (aThreadGContext == aWindowGContext)
     {
-      glXMakeCurrent(aDisplay, None, NULL);
+      glXMakeCurrent(aDisplay, None, nullptr);
     }
 
     // FSXXX sync necessary if non-direct rendering
@@ -900,7 +900,7 @@ void OpenGl_Window::init()
   const int aViewport[4] = {0, 0, mySize.x(), mySize.y()};
   myGlContext->ResizeViewport(aViewport);
   myGlContext->SetDrawBuffer(GL_BACK);
-  if (myGlContext->core11ffp != NULL)
+  if (myGlContext->core11ffp != nullptr)
   {
     myGlContext->core11ffp->glMatrixMode(GL_MODELVIEW);
   }

@@ -85,7 +85,7 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
       throw Plugin_Failure(aMsg.str().c_str());
     }
     f = theSharedLibrary.DlSymb("PLUGINFACTORY");
-    if (f == NULL)
+    if (f == nullptr)
     {
       TCollection_AsciiString error(theSharedLibrary.DlError());
       Standard_SStream        aMsg;

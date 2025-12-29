@@ -18,7 +18,7 @@
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepGeom_SurfaceReplica.hxx>
 
-RWStepGeom_RWSurfaceReplica::RWStepGeom_RWSurfaceReplica() {}
+RWStepGeom_RWSurfaceReplica::RWStepGeom_RWSurfaceReplica() = default;
 
 void RWStepGeom_RWSurfaceReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                            const int                                   num,

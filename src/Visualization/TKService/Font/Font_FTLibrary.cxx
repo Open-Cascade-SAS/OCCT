@@ -25,12 +25,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary, Standard_Transient)
 //=================================================================================================
 
 Font_FTLibrary::Font_FTLibrary()
-    : myFTLib(NULL)
+    : myFTLib(nullptr)
 {
 #ifdef HAVE_FREETYPE
   if (FT_Init_FreeType(&myFTLib) != 0)
   {
-    myFTLib = NULL;
+    myFTLib = nullptr;
   }
 #endif
 }

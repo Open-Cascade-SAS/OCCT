@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_Vars, Standard_Transient)
 
-XSControl_Vars::XSControl_Vars() {}
+XSControl_Vars::XSControl_Vars() = default;
 
 void XSControl_Vars::Set(const char* name, const occ::handle<Standard_Transient>& val)
 {

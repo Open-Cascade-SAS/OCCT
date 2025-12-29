@@ -39,16 +39,16 @@ public:
   Standard_EXPORT MeshVS_ElementalColorPrsBuilder(
     const occ::handle<MeshVS_Mesh>&       Parent,
     const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_ElementalColorDataPrs,
-    const occ::handle<MeshVS_DataSource>& DS       = 0,
+    const occ::handle<MeshVS_DataSource>& DS       = nullptr,
     const int                             Id       = -1,
     const MeshVS_BuilderPriority&         Priority = MeshVS_BP_ElemColor);
 
   //! Builds presentation of elements with assigned colors.
-  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int DisplayMode) const override;
+  Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              DisplayMode) const override;
 
   //! Returns map of colors same for front and back side of face.
   Standard_EXPORT const NCollection_DataMap<int, Quantity_Color>& GetColors1() const;

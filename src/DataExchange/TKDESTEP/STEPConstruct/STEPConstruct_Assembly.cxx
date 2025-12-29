@@ -38,7 +38,7 @@
 //  Relationship
 //=================================================================================================
 
-STEPConstruct_Assembly::STEPConstruct_Assembly() {}
+STEPConstruct_Assembly::STEPConstruct_Assembly() = default;
 
 //=================================================================================================
 
@@ -170,7 +170,7 @@ occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPConstruct_Assembly::GetNAU
       CDSR->RepresentedProductRelation()->Definition().ProductDefinitionRelationship();
     return occ::down_cast<StepRepr_NextAssemblyUsageOccurrence>(PDR);
   }
-  return 0;
+  return nullptr;
 }
 
 //=================================================================================================

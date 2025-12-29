@@ -46,7 +46,7 @@ static bool HasAncestorFace(const BOPAlgo_PPaveFiller&, int, const TopoDS_Shape&
 //=================================================================================================
 
 BRepAlgoAPI_Section::BRepAlgoAPI_Section()
-    : BRepAlgoAPI_BooleanOperation()
+
 {
   Init(false);
 }
@@ -122,7 +122,7 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf1,
 
 //=================================================================================================
 
-BRepAlgoAPI_Section::~BRepAlgoAPI_Section() {}
+BRepAlgoAPI_Section::~BRepAlgoAPI_Section() = default;
 
 //=================================================================================================
 

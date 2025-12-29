@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface() {}
+RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface() = default;
 
 //=================================================================================================
 

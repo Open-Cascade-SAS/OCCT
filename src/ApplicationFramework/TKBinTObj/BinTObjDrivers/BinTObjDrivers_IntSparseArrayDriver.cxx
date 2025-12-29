@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_IntSparseArrayDriver, BinMDF_ADriver)
 
 BinTObjDrivers_IntSparseArrayDriver::BinTObjDrivers_IntSparseArrayDriver(
   const occ::handle<Message_Messenger>& theMessageDriver)
-    : BinMDF_ADriver(theMessageDriver, NULL)
+    : BinMDF_ADriver(theMessageDriver, nullptr)
 {
 }
 

@@ -35,7 +35,7 @@
 //=================================================================================================
 
 BOPAlgo_Section::BOPAlgo_Section()
-    : BOPAlgo_Builder()
+
 {
   Clear();
 }
@@ -50,7 +50,7 @@ BOPAlgo_Section::BOPAlgo_Section(const occ::handle<NCollection_BaseAllocator>& t
 
 //=================================================================================================
 
-BOPAlgo_Section::~BOPAlgo_Section() {}
+BOPAlgo_Section::~BOPAlgo_Section() = default;
 
 //=================================================================================================
 

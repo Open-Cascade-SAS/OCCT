@@ -34,9 +34,9 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESSolid_ToolBooleanTree::IGESSolid_ToolBooleanTree() {}
+IGESSolid_ToolBooleanTree::IGESSolid_ToolBooleanTree() = default;
 
 void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_BooleanTree>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,

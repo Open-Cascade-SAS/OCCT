@@ -84,9 +84,9 @@ public:
 
 protected:
   //! Filter out correct adjacent mesh elements.
-  Standard_EXPORT virtual BRepExtrema_ElementFilter::FilterResult PreCheckElements(
+  Standard_EXPORT BRepExtrema_ElementFilter::FilterResult PreCheckElements(
     const int theIndex1,
-    const int theIndex2);
+    const int theIndex2) override;
 
   //! Checks if the given triangles have only single common vertex.
   Standard_EXPORT BRepExtrema_ElementFilter::FilterResult isRegularSharedVertex(

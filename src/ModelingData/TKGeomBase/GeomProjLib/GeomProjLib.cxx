@@ -47,7 +47,7 @@
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
 static bool Affich = false;

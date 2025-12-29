@@ -40,7 +40,7 @@ public:
 
 protected:
   //! Update the progress.
-  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) override;
+  Standard_EXPORT void update(const AIS_AnimationProgress& theProgress) override;
 
 private:
   NCollection_Lerp<gp_Trsf> myTrsfLerp; //!< interpolation tool

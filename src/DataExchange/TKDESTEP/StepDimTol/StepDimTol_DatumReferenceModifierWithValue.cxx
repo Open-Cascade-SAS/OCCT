@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue, Standard_
 
 //=================================================================================================
 
-StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWithValue() {}
+StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWithValue() = default;
 
 //=================================================================================================
 

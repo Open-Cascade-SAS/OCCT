@@ -33,7 +33,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Undefined Edge.
-  TopoDS_Edge() {}
+  TopoDS_Edge() = default;
 };
 
 namespace std

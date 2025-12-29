@@ -154,7 +154,7 @@ static bool SearchFD(TopOpeBRepDS_DataStructure&       DStr,
                            visavis,
                            Vtx,
                            false,
-                           0))
+                           false))
       {
         i1    = i;
         i2    = if2;
@@ -189,7 +189,7 @@ static bool SearchFD(TopOpeBRepDS_DataStructure&       DStr,
                            visavis,
                            Vtx,
                            false,
-                           0))
+                           false))
       {
         i1    = if1;
         i2    = i;
@@ -268,7 +268,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   int    sens[3];
   double p[3][3];
 
-  bool filling = 0;
+  bool filling = false;
 
   for (It.Initialize(myVDataMap(Jndex)), ii = 0; It.More() && ii < 3; It.Next(), ii++)
   {
@@ -509,9 +509,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                           bidr);
     double distest = ptestdeb.Distance(ptestfin);
     if (distest < (Rdp + Rfp) * 0.05)
-      filling = 1;
+      filling = true;
     if (distest < (Rdp + Rfp) * 0.005)
-      c1pointu = 1;
+      c1pointu = true;
   }
 
   if (!c1pointu)
@@ -720,7 +720,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   }
   else if (c1pointu)
   {
-    filling = 1;
+    filling = true;
   }
   if (!done)
   {
@@ -804,9 +804,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            TolGuide,
                            ffi,
                            lla,
-                           0,
-                           0,
-                           1,
+                           false,
+                           false,
+                           true,
                            Soldep,
                            intf,
                            intl,
@@ -814,19 +814,19 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            Gd2,
                            Gf1,
                            Gf2,
-                           0,
-                           1);
+                           false,
+                           true);
 #ifdef OCCT_DEBUG
         if (ChFi3d_GetcontextFORCEFILLING())
           done = 0;
 #endif
         if (done && Gf2)
         {
-          done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, 0, Gf1, 0);
+          done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, false, Gf1, false);
           filling = !done;
         }
         else
-          filling = 1;
+          filling = true;
       }
       else
       {
@@ -855,9 +855,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            TolGuide,
                            ffi,
                            lla,
-                           0,
-                           0,
-                           1,
+                           false,
+                           false,
+                           true,
                            Soldep,
                            intf,
                            intl,
@@ -865,19 +865,19 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            Gd2,
                            Gf1,
                            Gf2,
-                           0,
-                           1);
+                           false,
+                           true);
 #ifdef OCCT_DEBUG
         if (ChFi3d_GetcontextFORCEFILLING())
           done = 0;
 #endif
         if (done && Gf2)
         {
-          done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, 0, Gf1, 0);
+          done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, false, Gf1, false);
           filling = !done;
         }
         else
-          filling = 1;
+          filling = true;
       }
 
 #ifdef OCCT_DEBUG
@@ -920,7 +920,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
       occ::handle<Geom2d_Curve> PCurveOnPiv;
       //      Bpiv = ChFi3d_mkbound(Surf,PCurveOnPiv,sens[deb],psurf1,vp1,
       //			    sens[fin],psurf2,vp2,tolesp,2.e-4);
-      Bpiv           = ChFi3d_mkbound(Surf, PCurveOnPiv, psurf1, psurf2, tolapp3d, 2.e-4, 0);
+      Bpiv           = ChFi3d_mkbound(Surf, PCurveOnPiv, psurf1, psurf2, tolapp3d, 2.e-4, false);
       double pardeb2 = p[deb][pivot];
       double parfin2 = p[fin][pivot];
       if (c1pointu)
@@ -962,9 +962,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
 
       GeomFill_ConstrainedFilling fil(11, 20);
       if (c1pointu)
-        fil.Init(Bpiv, Bfin, Bdeb, 1);
+        fil.Init(Bpiv, Bfin, Bdeb, true);
       else
-        fil.Init(Bpiv, Bfin, Bfac, Bdeb, 1);
+        fil.Init(Bpiv, Bfin, Bfac, Bdeb, true);
 
       occ::handle<Geom_Surface> Surfcoin = fil.Surface();
       Surfcoin->VReverse(); // revert to direction face surface;
@@ -975,11 +975,11 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                           Surf,
                           PCurveOnPiv,
                           fdpiv->Orientation(),
-                          0,
-                          0,
-                          0,
-                          0,
-                          0);
+                          false,
+                          false,
+                          false,
+                          false,
+                          false);
 
 #ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch, t_filling); // result perf filling
@@ -1057,14 +1057,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     TopOpeBRepDS_Curve Tcurv1(C3d, tolreached);
     Icf = DStr.AddCurve(Tcurv1);
     regdeb.SetCurve(Icf);
-    regdeb.SetS1(coin->Surf(), 0);
-    regdeb.SetS2(fddeb->Surf(), 0);
+    regdeb.SetS1(coin->Surf(), false);
+    regdeb.SetS2(fddeb->Surf(), false);
     myRegul.Append(regdeb);
     corner->ChangeFirstCurve(Icf);
     corner->ChangeFirstParameters(P1deb, P2deb);
     corner->ChangeIndexFirstPointOnS1(If1);
     corner->ChangeIndexFirstPointOnS2(If2);
-    ChFi3d_EnlargeBox(DStr, corner, coin, *pbf1, *pbf2, 1);
+    ChFi3d_EnlargeBox(DStr, corner, coin, *pbf1, *pbf2, true);
 
     pp1 = coin->InterferenceOnS1().PCurveOnSurf()->Value(coin->InterferenceOnS1().LastParameter());
     pp2 = coin->InterferenceOnS2().PCurveOnSurf()->Value(coin->InterferenceOnS2().LastParameter());
@@ -1084,14 +1084,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
     TopOpeBRepDS_Curve Tcurv2(C3d, tolreached);
     Icl = DStr.AddCurve(Tcurv2);
     regfin.SetCurve(Icl);
-    regfin.SetS1(coin->Surf(), 0);
-    regfin.SetS2(fdfin->Surf(), 0);
+    regfin.SetS1(coin->Surf(), false);
+    regfin.SetS2(fdfin->Surf(), false);
     myRegul.Append(regfin);
     corner->ChangeLastCurve(Icl);
     corner->ChangeLastParameters(P1fin, P2fin);
     corner->ChangeIndexLastPointOnS1(Il1);
     corner->ChangeIndexLastPointOnS2(Il2);
-    ChFi3d_EnlargeBox(DStr, corner, coin, *pbl1, *pbl2, 0);
+    ChFi3d_EnlargeBox(DStr, corner, coin, *pbl1, *pbl2, false);
 
     // then CornerData of the beginning,
     // --------------------------------

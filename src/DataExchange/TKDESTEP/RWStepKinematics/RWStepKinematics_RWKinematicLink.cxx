@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWKinematicLink::RWStepKinematics_RWKinematicLink() {}
+RWStepKinematics_RWKinematicLink::RWStepKinematics_RWKinematicLink() = default;
 
 //=================================================================================================
 

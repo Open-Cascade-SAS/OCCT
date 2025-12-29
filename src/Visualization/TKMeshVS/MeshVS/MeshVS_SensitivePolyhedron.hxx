@@ -38,17 +38,17 @@ public:
     const NCollection_Array1<gp_Pnt>&                                  theNodes,
     const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo);
 
-  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
+  Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
-  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+  Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the amount of nodes of polyhedron
-  Standard_EXPORT virtual int NbSubElements() const override;
+  Standard_EXPORT int NbSubElements() const override;
 
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
+  Standard_EXPORT Select3D_BndBox3d BoundingBox() override;
 
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
+  Standard_EXPORT gp_Pnt CenterOfGeometry() const override;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 

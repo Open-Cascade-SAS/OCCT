@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BSplineCurve, IGESData_IGESEntity)
 
-IGESGeom_BSplineCurve::IGESGeom_BSplineCurve() {}
+IGESGeom_BSplineCurve::IGESGeom_BSplineCurve() = default;
 
 void IGESGeom_BSplineCurve::Init(const int                                       anIndex,
                                  const int                                       aDegree,

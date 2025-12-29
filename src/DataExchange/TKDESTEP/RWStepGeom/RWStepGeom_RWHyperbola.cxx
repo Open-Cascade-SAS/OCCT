@@ -17,7 +17,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Hyperbola.hxx>
 
-RWStepGeom_RWHyperbola::RWStepGeom_RWHyperbola() {}
+RWStepGeom_RWHyperbola::RWStepGeom_RWHyperbola() = default;
 
 void RWStepGeom_RWHyperbola::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

@@ -16,7 +16,7 @@
 #include <StepShape_ToleranceMethodDefinition.hxx>
 #include <StepShape_ToleranceValue.hxx>
 
-StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition() {}
+StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition() = default;
 
 int StepShape_ToleranceMethodDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {

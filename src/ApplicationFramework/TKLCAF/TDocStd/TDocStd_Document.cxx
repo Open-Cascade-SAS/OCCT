@@ -75,7 +75,7 @@ TDocStd_Document::TDocStd_Document(const TCollection_ExtendedString& aStorageFor
       myUndoLimit(0),
       myUndoTransaction("UNDO"),
       mySaveTime(0),
-      myIsNestedTransactionMode(0),
+      myIsNestedTransactionMode(false),
       mySaveEmptyLabels(false),
       myStorageFormatVersion(TDocStd_FormatVersion_CURRENT)
 {

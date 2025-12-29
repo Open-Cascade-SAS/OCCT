@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_CompoundShapeRepresentation, StepShape_Shap
 
 //=================================================================================================
 
-StepShape_CompoundShapeRepresentation::StepShape_CompoundShapeRepresentation() {}
+StepShape_CompoundShapeRepresentation::StepShape_CompoundShapeRepresentation() = default;

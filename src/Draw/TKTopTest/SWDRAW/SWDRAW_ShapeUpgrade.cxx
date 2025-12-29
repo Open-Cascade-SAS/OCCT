@@ -65,7 +65,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 // #include <SWDRAW_ShapeUpgrade.hxx>
 // #include <ShapeUpgrade_SupportModification.hxx>
@@ -1259,10 +1259,10 @@ static int converttobspline(Draw_Interpretor& di, int argc, const char** argv)
   }
   TopoDS_Shape revsh = ShapeCustom::ConvertToRevolution(inputShape);
   TopoDS_Shape res   = ShapeCustom::ConvertToBSpline(revsh,
-                                                   strchr(options, 'e') != 0,
-                                                   strchr(options, 'r') != 0,
-                                                   strchr(options, 'o') != 0,
-                                                   strchr(options, 'p') != 0);
+                                                   strchr(options, 'e') != nullptr,
+                                                   strchr(options, 'r') != nullptr,
+                                                   strchr(options, 'o') != nullptr,
+                                                   strchr(options, 'p') != nullptr);
   ShapeFix::SameParameter(res, false);
   DBRep::Set(argv[1], res);
   return 0;

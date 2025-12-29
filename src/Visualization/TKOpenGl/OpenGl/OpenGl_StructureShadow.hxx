@@ -29,10 +29,10 @@ public:
 
 public:
   //! Raise exception on API misuse.
-  Standard_EXPORT virtual void Connect(Graphic3d_CStructure&) override;
+  Standard_EXPORT void Connect(Graphic3d_CStructure&) override;
 
   //! Raise exception on API misuse.
-  Standard_EXPORT virtual void Disconnect(Graphic3d_CStructure&) override;
+  Standard_EXPORT void Disconnect(Graphic3d_CStructure&) override;
 
 private:
   occ::handle<OpenGl_Structure> myParent;

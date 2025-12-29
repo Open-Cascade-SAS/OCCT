@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign, Standard_Transient)
 
 //=================================================================================================
 
-StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign() {}
+StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign() = default;
 
 //=================================================================================================
 

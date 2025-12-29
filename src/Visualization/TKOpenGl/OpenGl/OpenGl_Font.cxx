@@ -41,7 +41,7 @@ OpenGl_Font::OpenGl_Font(const occ::handle<Font_FTFont>& theFont,
 
 OpenGl_Font::~OpenGl_Font()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
@@ -60,8 +60,9 @@ void OpenGl_Font::Release(OpenGl_Context* theCtx)
     {
       // application can not handle this case by exception - this is bug in code
       Standard_ASSERT_RETURN(
-        theCtx != NULL,
-        "OpenGl_Font destroyed without GL context! Possible GPU memory leakage...", );
+        theCtx != nullptr,
+        "OpenGl_Font destroyed without GL context! Possible GPU memory leakage...",
+        Standard_VOID_RETURN);
     }
 
     aTexture->Release(theCtx);

@@ -20,7 +20,7 @@
 
 #include "RWStepGeom_RWPreferredSurfaceCurveRepresentation.pxx"
 
-RWStepGeom_RWSeamCurve::RWStepGeom_RWSeamCurve() {}
+RWStepGeom_RWSeamCurve::RWStepGeom_RWSeamCurve() = default;
 
 void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                       const int                                   num,

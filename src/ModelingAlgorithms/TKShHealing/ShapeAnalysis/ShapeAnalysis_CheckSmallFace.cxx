@@ -238,7 +238,7 @@ bool ShapeAnalysis_CheckSmallFace::IsStripSupport(const TopoDS_Face& F, const do
   TopLoc_Location           loc;
   occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F, loc);
   if (surf.IsNull())
-    return 0;
+    return false;
 
   //  Checking on poles for bezier-bspline
   //  A more general way is to check Values by scanning ISOS (slower)
@@ -479,7 +479,7 @@ bool ShapeAnalysis_CheckSmallFace::CheckSingleStrip(const TopoDS_Face& F,
     else if (V2.IsSame(V))
       continue;
     else
-      return 0;
+      return false;
   }
 
   // Checking edges

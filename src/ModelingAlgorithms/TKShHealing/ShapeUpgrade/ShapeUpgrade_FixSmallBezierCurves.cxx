@@ -43,7 +43,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSmallCurves)
 
-ShapeUpgrade_FixSmallBezierCurves::ShapeUpgrade_FixSmallBezierCurves() {}
+ShapeUpgrade_FixSmallBezierCurves::ShapeUpgrade_FixSmallBezierCurves() = default;
 
 bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3d,
                                                occ::handle<Geom2d_Curve>& Curve2d,

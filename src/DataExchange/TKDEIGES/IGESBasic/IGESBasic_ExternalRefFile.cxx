@@ -22,7 +22,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFile, IGESData_IGESEntity)
 
-IGESBasic_ExternalRefFile::IGESBasic_ExternalRefFile() {}
+IGESBasic_ExternalRefFile::IGESBasic_ExternalRefFile() = default;
 
 void IGESBasic_ExternalRefFile::Init(const occ::handle<TCollection_HAsciiString>& aFileIdent)
 {

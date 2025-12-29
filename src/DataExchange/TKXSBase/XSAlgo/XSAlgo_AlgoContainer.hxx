@@ -35,7 +35,7 @@ class XSAlgo_AlgoContainer : public Standard_Transient
 {
 public:
   //! Empty constructor
-  XSAlgo_AlgoContainer() {};
+  XSAlgo_AlgoContainer() = default;
 
   //! Performs actions necessary for preparing environment
   //! for transfer. Empty in Open version.

@@ -1545,7 +1545,7 @@ static bool FilterByNeighbourgs(const TDF_Label&                                
 
     NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(Args);
     it.Next();
-    bool Keep = 1;
+    bool Keep = true;
 #ifdef OCCT_DEBUG_FNB
     std::cout << "Args number = " << Args.Extent() << std::endl;
     i    = 1;
@@ -1593,7 +1593,7 @@ static bool FilterByNeighbourgs(const TDF_Label&                                
       } // 6
       if (!Connected)
       {
-        Keep = 0;
+        Keep = false;
         break;
       }
     } // 2
@@ -2280,7 +2280,7 @@ static const char* NameTypeToString(const TNaming_NameType Type)
 
 bool TNaming_Name::Solve(const TDF_Label& aLab, const NCollection_Map<TDF_Label>& Valid) const
 {
-  bool Done = 0;
+  bool Done = false;
 #ifdef OCCT_DEBUG_WIN
   PrintEntry(aLab);
 #endif

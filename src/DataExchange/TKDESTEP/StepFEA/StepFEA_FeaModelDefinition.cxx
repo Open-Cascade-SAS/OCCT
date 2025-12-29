@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaModelDefinition, StepRepr_ShapeAspect)
 
 //=================================================================================================
 
-StepFEA_FeaModelDefinition::StepFEA_FeaModelDefinition() {}
+StepFEA_FeaModelDefinition::StepFEA_FeaModelDefinition() = default;

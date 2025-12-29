@@ -79,12 +79,12 @@ public:
   Standard_EXPORT void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>.
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+  Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                  const bool                             forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+  Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                 const bool                             forceIt = false) override;
 
   //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.

@@ -22,4 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_ConcentricityTolerance,
 
 //=================================================================================================
 
-StepDimTol_ConcentricityTolerance::StepDimTol_ConcentricityTolerance() {}
+StepDimTol_ConcentricityTolerance::StepDimTol_ConcentricityTolerance() = default;

@@ -20,10 +20,10 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectLevelNumber, IFSelect_SelectExtract)
 
-IGESSelect_SelectLevelNumber::IGESSelect_SelectLevelNumber() {}
+IGESSelect_SelectLevelNumber::IGESSelect_SelectLevelNumber() = default;
 
 void IGESSelect_SelectLevelNumber::SetLevelNumber(const occ::handle<IFSelect_IntParam>& levnum)
 {

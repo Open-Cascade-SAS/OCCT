@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_OrFilter, SelectMgr_CompositionFilter)
 
 //=================================================================================================
 
-SelectMgr_OrFilter::SelectMgr_OrFilter() {}
+SelectMgr_OrFilter::SelectMgr_OrFilter() = default;
 
 //=================================================================================================
 

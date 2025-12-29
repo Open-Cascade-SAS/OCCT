@@ -22,7 +22,7 @@
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_PlanarExtent.hxx>
 
-RWStepVisual_RWCompositeTextWithExtent::RWStepVisual_RWCompositeTextWithExtent() {}
+RWStepVisual_RWCompositeTextWithExtent::RWStepVisual_RWCompositeTextWithExtent() = default;
 
 void RWStepVisual_RWCompositeTextWithExtent::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,

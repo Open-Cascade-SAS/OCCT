@@ -44,7 +44,7 @@ public:
   {
   }
 
-  bool Value(const double X, double& F)
+  bool Value(const double X, double& F) override
   {
     double CN = cos(X), SN = sin(X);
     //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
@@ -52,7 +52,7 @@ public:
     return true;
   }
 
-  bool Derivative(const double X, double& D)
+  bool Derivative(const double X, double& D) override
   {
     double CN = std::cos(X), SN = std::sin(X);
     //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
@@ -62,7 +62,7 @@ public:
     return true;
   }
 
-  bool Values(const double X, double& F, double& D)
+  bool Values(const double X, double& F, double& D) override
   {
     double CN = std::cos(X), SN = std::sin(X);
     //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;

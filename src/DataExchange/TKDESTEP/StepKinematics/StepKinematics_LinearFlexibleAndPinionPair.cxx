@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleAndPinionPair,
 
 //=================================================================================================
 
-StepKinematics_LinearFlexibleAndPinionPair::StepKinematics_LinearFlexibleAndPinionPair() {}
+StepKinematics_LinearFlexibleAndPinionPair::StepKinematics_LinearFlexibleAndPinionPair() = default;
 
 //=================================================================================================
 

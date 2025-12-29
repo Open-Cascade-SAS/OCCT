@@ -19,7 +19,7 @@
 
 #include <Standard_ProgramError.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
 //=================================================================================================
 
@@ -36,14 +36,14 @@ LDOMString LDOM_Element::getAttribute(const LDOMString& aName) const
   const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
   if (anElem.isNull())
     return LDOMString();
-  if (myLastChild == NULL)
+  if (myLastChild == nullptr)
   {
     const LDOM_BasicNode* aNode = anElem.GetFirstChild();
     if (aNode && aNode->getNodeType() != LDOM_Node::ATTRIBUTE_NODE)
       for (;;)
       {
         const LDOM_BasicNode* aSibling = aNode->GetSibling();
-        if (aSibling == NULL)
+        if (aSibling == nullptr)
           return LDOMString();
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
@@ -66,14 +66,14 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
   const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
   if (anElem.isNull())
     return LDOM_Attr();
-  if (myLastChild == NULL)
+  if (myLastChild == nullptr)
   {
     const LDOM_BasicNode* aNode = anElem.GetFirstChild();
     if (aNode && aNode->getNodeType() != LDOM_Node::ATTRIBUTE_NODE)
       for (;;)
       {
         const LDOM_BasicNode* aSibling = aNode->GetSibling();
-        if (aSibling == NULL)
+        if (aSibling == nullptr)
           return LDOM_Attr();
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
@@ -137,12 +137,12 @@ LDOM_Element LDOM_Element::GetChildByTagName(const LDOMString& aTagName) const
 {
   // Verify preconditions
   LDOM_Element aVoidElement;
-  if (isNull() || aTagName == NULL)
+  if (isNull() || aTagName == nullptr)
     return aVoidElement;
 
   // Take the first child. If it doesn't match look for other ones in a loop
   LDOM_Node aChildNode = getFirstChild();
-  while (aChildNode != NULL)
+  while (aChildNode != nullptr)
   {
     const LDOM_Node::NodeType aNodeType = aChildNode.getNodeType();
     if (aNodeType == LDOM_Node::ATTRIBUTE_NODE)
@@ -176,7 +176,7 @@ LDOM_Element LDOM_Element::GetSiblingByTagName() const
 
   // Take the first child. If it doesn't match look for other ones in a loop
   LDOM_Node aNextNode = getNextSibling();
-  while (aNextNode != NULL)
+  while (aNextNode != nullptr)
   {
     const LDOM_Node::NodeType aNodeType = aNextNode.getNodeType();
     if (aNodeType == LDOM_Node::ATTRIBUTE_NODE)
@@ -214,7 +214,7 @@ void LDOM_Element::ReplaceElement(const LDOM_Element& anOther)
   else
   {
     anElem.ReplaceElement(anOtherElem, myDocument);
-    (const LDOM_BasicNode*&)myLastChild = NULL;
+    (const LDOM_BasicNode*&)myLastChild = nullptr;
   }
 }
 

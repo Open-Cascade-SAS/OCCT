@@ -143,7 +143,7 @@ void BRepMesh_CurveTessellator::init()
 
 //=================================================================================================
 
-BRepMesh_CurveTessellator::~BRepMesh_CurveTessellator() {}
+BRepMesh_CurveTessellator::~BRepMesh_CurveTessellator() = default;
 
 //=================================================================================================
 

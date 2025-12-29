@@ -36,7 +36,7 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
-IGESAppli_ToolFlow::IGESAppli_ToolFlow() {}
+IGESAppli_ToolFlow::IGESAppli_ToolFlow() = default;
 
 void IGESAppli_ToolFlow::ReadOwnParams(const occ::handle<IGESAppli_Flow>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,

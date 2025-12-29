@@ -56,7 +56,7 @@ public:
   //! 9 -> Contract from StepBasic
   //! 10 -> SecurityClassification from StepBasic
   //! 0 else
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Change (or Null if another type)
   Standard_EXPORT occ::handle<StepAP203_Change> Change() const;

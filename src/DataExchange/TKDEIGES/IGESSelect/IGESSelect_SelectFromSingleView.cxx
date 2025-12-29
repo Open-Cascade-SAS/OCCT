@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectFromSingleView, IFSelect_SelectDeduct)
 
-IGESSelect_SelectFromSingleView::IGESSelect_SelectFromSingleView() {}
+IGESSelect_SelectFromSingleView::IGESSelect_SelectFromSingleView() = default;
 
 Interface_EntityIterator IGESSelect_SelectFromSingleView::RootResult(const Interface_Graph& G) const
 {

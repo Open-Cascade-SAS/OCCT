@@ -56,7 +56,7 @@ public:
   //! lines representing the relation between the two shapes.
   Standard_EXPORT void UnsetColor() override;
 
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Relation; }
+  AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Relation; }
 
   //! Indicates that the type of dimension is unknown.
   virtual PrsDim_KindOfDimension KindOfDimension() const { return PrsDim_KOD_NONE; }
@@ -170,7 +170,7 @@ public:
   //! aWidth   : Real                 from Standard = 2;
   //! aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
   //! aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
 
   void SetAutomaticPosition(const bool theStatus) { myAutomaticPosition = theStatus; }
 

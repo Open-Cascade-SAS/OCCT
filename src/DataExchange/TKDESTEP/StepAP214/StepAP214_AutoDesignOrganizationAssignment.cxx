@@ -18,7 +18,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,
                            StepBasic_OrganizationAssignment)
 
-StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment() {}
+StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment() = default;
 
 void StepAP214_AutoDesignOrganizationAssignment::Init(
   const occ::handle<StepBasic_Organization>&                                  aAssignedOrganization,

@@ -16,5 +16,5 @@
 
 inline bool TNaming_Iterator::More() const
 {
-  return (myNode != 0L);
+  return (myNode != nullptr);
 }

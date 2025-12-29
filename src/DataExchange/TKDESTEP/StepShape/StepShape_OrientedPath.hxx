@@ -48,17 +48,16 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetEdgeList(
+  Standard_EXPORT void SetEdgeList(
     const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
     override;
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>
-    EdgeList() const override;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList()
+    const override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_OrientedEdge> EdgeListValue(
-    const int num) const override;
+  Standard_EXPORT occ::handle<StepShape_OrientedEdge> EdgeListValue(const int num) const override;
 
-  Standard_EXPORT virtual int NbEdgeList() const override;
+  Standard_EXPORT int NbEdgeList() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedPath, StepShape_Path)
 

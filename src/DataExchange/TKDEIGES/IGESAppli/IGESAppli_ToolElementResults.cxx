@@ -38,9 +38,9 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
 
-#include <stdio.h>
+#include <cstdio>
 
-IGESAppli_ToolElementResults::IGESAppli_ToolElementResults() {}
+IGESAppli_ToolElementResults::IGESAppli_ToolElementResults() = default;
 
 void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_ElementResults>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,

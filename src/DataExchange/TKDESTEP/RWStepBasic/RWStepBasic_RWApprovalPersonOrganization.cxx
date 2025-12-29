@@ -20,7 +20,7 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWApprovalPersonOrganization::RWStepBasic_RWApprovalPersonOrganization() {}
+RWStepBasic_RWApprovalPersonOrganization::RWStepBasic_RWApprovalPersonOrganization() = default;
 
 void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,

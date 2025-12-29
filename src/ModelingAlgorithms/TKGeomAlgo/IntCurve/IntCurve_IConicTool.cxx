@@ -51,7 +51,7 @@
 #define Parab_2p prm2
 
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(void)
+IntCurve_IConicTool::IntCurve_IConicTool()
     : prm1(0.0),
       prm2(0.0),
       prm3(0.0),

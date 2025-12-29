@@ -16,4 +16,4 @@
 
 //=================================================================================================
 
-ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces() {}
+ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces() = default;

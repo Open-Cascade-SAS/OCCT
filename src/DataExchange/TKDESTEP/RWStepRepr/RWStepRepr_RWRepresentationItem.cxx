@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 
-RWStepRepr_RWRepresentationItem::RWStepRepr_RWRepresentationItem() {}
+RWStepRepr_RWRepresentationItem::RWStepRepr_RWRepresentationItem() = default;
 
 void RWStepRepr_RWRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

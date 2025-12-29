@@ -16,7 +16,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_LimitsAndFits, Standard_Transient)
 
-StepShape_LimitsAndFits::StepShape_LimitsAndFits() {}
+StepShape_LimitsAndFits::StepShape_LimitsAndFits() = default;
 
 void StepShape_LimitsAndFits::Init(const occ::handle<TCollection_HAsciiString>& form_variance,
                                    const occ::handle<TCollection_HAsciiString>& zone_variance,

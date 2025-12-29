@@ -365,8 +365,8 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       NCollection_List<TopoDS_Shape> dummylos;
       FUN_selLEE(LEoutLESD, ESD, TopAbs_IN, dummylos);
 
-      const TopoDS_Edge *                  pE1 = NULL, *pE2 = NULL;
-      const NCollection_List<TopoDS_Shape>*plos1 = NULL, *plos2 = NULL;
+      const TopoDS_Edge *                  pE1 = nullptr, *pE2 = nullptr;
+      const NCollection_List<TopoDS_Shape>*plos1 = nullptr, *plos2 = nullptr;
       int                                  nLEspon   = LEspon.Extent();
       int                                  nLESDspon = LESDspon.Extent();
 
@@ -393,9 +393,9 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
         plos2 = &LEspon;
       }
 
-      if (pE1 == NULL || pE2 == NULL)
+      if (pE1 == nullptr || pE2 == nullptr)
         continue;
-      if (plos1 == NULL || plos2 == NULL)
+      if (plos1 == nullptr || plos2 == nullptr)
         continue;
 
       const TopoDS_Edge&                    E1  = *pE1;

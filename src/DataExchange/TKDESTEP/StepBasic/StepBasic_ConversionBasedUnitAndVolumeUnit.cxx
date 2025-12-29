@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndVolumeUnit,
                            StepBasic_ConversionBasedUnit)
 
-StepBasic_ConversionBasedUnitAndVolumeUnit::StepBasic_ConversionBasedUnitAndVolumeUnit() {}
+StepBasic_ConversionBasedUnitAndVolumeUnit::StepBasic_ConversionBasedUnitAndVolumeUnit() = default;
 
 void StepBasic_ConversionBasedUnitAndVolumeUnit::SetVolumeUnit(
   const occ::handle<StepBasic_VolumeUnit>& aVolumeUnit)

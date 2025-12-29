@@ -165,7 +165,7 @@ protected: //! @name Constructors
   BVH_BaseTraverse() {}
 
   //! Destructor
-  virtual ~BVH_BaseTraverse() {}
+  virtual ~BVH_BaseTraverse() = default;
 };
 
 //! Abstract class implementing the traverse of the single binary tree.
@@ -187,7 +187,7 @@ public: //! @name Constructor
   //! Constructor
   BVH_Traverse()
       : BVH_BaseTraverse<MetricType>(),
-        myBVHSet(NULL)
+        myBVHSet(nullptr)
   {
   }
 
@@ -278,8 +278,8 @@ public: //! @name Constructor
   //! Constructor
   BVH_PairTraverse()
       : BVH_BaseTraverse<MetricType>(),
-        myBVHSet1(NULL),
-        myBVHSet2(NULL)
+        myBVHSet1(nullptr),
+        myBVHSet2(nullptr)
   {
   }
 

@@ -16,7 +16,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Surface.hxx>
 
-RWStepGeom_RWSurface::RWStepGeom_RWSurface() {}
+RWStepGeom_RWSurface::RWStepGeom_RWSurface() = default;
 
 void RWStepGeom_RWSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
                                     const int                                   num,

@@ -30,7 +30,7 @@
   #pragma warning(pop)
 #endif
 
-IVtkTools_ShapeObject::KeyPtr IVtkTools_ShapeObject::myKey = 0;
+IVtkTools_ShapeObject::KeyPtr IVtkTools_ShapeObject::myKey = nullptr;
 
 //============================================================================
 //  Method: getKey
@@ -56,7 +56,7 @@ IVtkOCC_Shape::Handle IVtkTools_ShapeObject::GetOccShape(vtkActor* theActor)
 {
   IVtkOCC_Shape::Handle                      anOccShape;
   vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource(theActor);
-  if (aSrc.GetPointer() != NULL)
+  if (aSrc.GetPointer() != nullptr)
   {
     anOccShape = aSrc->GetShape();
   }
@@ -73,7 +73,7 @@ vtkSmartPointer<IVtkTools_ShapeDataSource> IVtkTools_ShapeObject ::GetShapeSourc
 {
   vtkSmartPointer<IVtkTools_ShapeDataSource> anOccShapeSource;
   vtkSmartPointer<vtkInformation>            anInfo = theActor->GetPropertyKeys();
-  if (anInfo.GetPointer() != NULL)
+  if (anInfo.GetPointer() != nullptr)
   {
     KeyPtr aKey = getKey();
     if (aKey->Has(anInfo))
@@ -133,13 +133,11 @@ vtkStandardNewMacro(IVtkTools_ShapeObject)
   //  Method: Constructor
   // Purpose: Protected constructor.
   //============================================================================
-  IVtkTools_ShapeObject::IVtkTools_ShapeObject()
-{
-}
+  IVtkTools_ShapeObject::IVtkTools_ShapeObject() = default;
 
 //=================================================================================================
 
-IVtkTools_ShapeObject::~IVtkTools_ShapeObject() {}
+IVtkTools_ShapeObject::~IVtkTools_ShapeObject() = default;
 
 //=================================================================================================
 

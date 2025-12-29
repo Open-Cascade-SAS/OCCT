@@ -19,7 +19,7 @@
 #include <StepVisual_SurfaceSideStyle.hxx>
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 
-RWStepVisual_RWSurfaceSideStyle::RWStepVisual_RWSurfaceSideStyle() {}
+RWStepVisual_RWSurfaceSideStyle::RWStepVisual_RWSurfaceSideStyle() = default;
 
 void RWStepVisual_RWSurfaceSideStyle::ReadStep(
   const occ::handle<StepData_StepReaderData>&     data,

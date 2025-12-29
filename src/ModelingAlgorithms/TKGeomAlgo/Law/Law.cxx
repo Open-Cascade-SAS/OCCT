@@ -229,20 +229,20 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
     param->SetValue(i, ((NbPoints - i) * First + (i - 1) * Last) * fac);
     Corde = i * DCorde;
   }
-  Law_Interpolate inter(point, param, 0, 1.e-9);
+  Law_Interpolate inter(point, param, false, 1.e-9);
   if (HasDF || HasDL)
   {
     NCollection_Array1<double>             tgt(1, NbPoints);
     occ::handle<NCollection_HArray1<bool>> flag = new NCollection_HArray1<bool>(1, NbPoints);
-    flag->ChangeArray1().Init(0);
+    flag->ChangeArray1().Init(false);
     if (HasDF)
     {
-      flag->SetValue(1, 1);
+      flag->SetValue(1, true);
       tgt.SetValue(1, DDFirst);
     }
     if (HasDL)
     {
-      flag->SetValue(NbPoints, 1);
+      flag->SetValue(NbPoints, true);
       tgt.SetValue(NbPoints, DDLast);
     }
     inter.Load(tgt, flag);

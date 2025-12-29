@@ -601,14 +601,14 @@ bool TopOpeBRepBuild_Builder::IsMerged(const TopoDS_Shape& S, const TopAbs_State
 {
   const NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>* p = NULL;
+                            TopTools_ShapeMapHasher>* p = nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &myMergedOUT;
   else if (ToBuild == TopAbs_IN)
     p = &myMergedIN;
   else if (ToBuild == TopAbs_ON)
     p = &myMergedON;
-  if (p == NULL)
+  if (p == nullptr)
     return false;
 
   bool notbound = !(*p).IsBound(S);
@@ -632,14 +632,14 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Merged(
 {
   const NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>* p = NULL;
+                            TopTools_ShapeMapHasher>* p = nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &myMergedOUT;
   else if (ToBuild == TopAbs_IN)
     p = &myMergedIN;
   else if (ToBuild == TopAbs_ON)
     p = &myMergedON;
-  if (p == NULL)
+  if (p == nullptr)
     return myEmptyShapeList;
 
   if (!(*p).IsBound(S))
@@ -659,14 +659,14 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeMerged(const Topo
                                                                       const TopAbs_State  ToBuild)
 {
   NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
-    NULL;
+    nullptr;
   if (ToBuild == TopAbs_OUT)
     p = &myMergedOUT;
   else if (ToBuild == TopAbs_IN)
     p = &myMergedIN;
   else if (ToBuild == TopAbs_ON)
     p = &myMergedON;
-  if (p == NULL)
+  if (p == nullptr)
     return myEmptyShapeList;
 
   if (!(*p).IsBound(S))

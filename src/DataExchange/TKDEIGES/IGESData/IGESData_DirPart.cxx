@@ -15,7 +15,7 @@
 #include <IGESData_IGESType.hxx>
 #include <Standard_PCharacter.hxx>
 
-IGESData_DirPart::IGESData_DirPart() {}
+IGESData_DirPart::IGESData_DirPart() = default;
 
 void IGESData_DirPart::Init(const int   i1,
                             const int   i2,

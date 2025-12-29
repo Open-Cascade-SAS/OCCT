@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Node, IGESData_IGESEntity)
 
-IGESAppli_Node::IGESAppli_Node() {}
+IGESAppli_Node::IGESAppli_Node() = default;
 
 void IGESAppli_Node::Init(const gp_XYZ&                                     aCoord,
                           const occ::handle<IGESGeom_TransformationMatrix>& aCoordSystem)

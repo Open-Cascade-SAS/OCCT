@@ -127,7 +127,7 @@ public:
   //! - the "main Direction" of the local coordinate system
   //! is reversed, and
   //! - the half-angle at the apex is inverted.
-  Standard_EXPORT virtual void VReverse() override;
+  Standard_EXPORT void VReverse() override;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -143,9 +143,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies V by T.ScaleFactor()
-  Standard_EXPORT virtual void TransformParameters(double&        U,
-                                                   double&        V,
-                                                   const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -161,7 +159,7 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method returns a scale centered on the U axis with T.ScaleFactor
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Computes the apex of this cone. It is on the negative
   //! side of the axis of revolution of this cone if the
@@ -295,8 +293,7 @@ public:
   //! Creates a new object which is a copy of this cone.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_ConicalSurface, Geom_ElementarySurface)
 

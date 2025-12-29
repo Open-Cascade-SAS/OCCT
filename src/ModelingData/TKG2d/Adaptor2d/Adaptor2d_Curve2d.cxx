@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_Curve2d, Standard_Transient)
 
 //=================================================================================================
 
-Adaptor2d_Curve2d::~Adaptor2d_Curve2d() {}
+Adaptor2d_Curve2d::~Adaptor2d_Curve2d() = default;
 
 //=================================================================================================
 
