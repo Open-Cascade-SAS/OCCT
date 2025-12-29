@@ -60,7 +60,7 @@ private:
 #if (defined(_WIN32) || defined(__WIN32__))
   void* myHeapH;
 #endif
-  bool myToZeroMemory;
+  [[maybe_unused]] bool myToZeroMemory;
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
