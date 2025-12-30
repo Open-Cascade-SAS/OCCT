@@ -42,6 +42,13 @@ struct SpanRange
   double SpanMid;   //!< Midpoint of span (for cache convention)
 };
 
+//! Result of prepareParams containing both parameter and span data.
+struct PreparedParams
+{
+  NCollection_Array1<ParamWithSpan> Params;
+  NCollection_Array1<SpanRange>     Ranges;
+};
+
 //! Find span index for a parameter value.
 int locateSpan(double                            theParam,
                int                               theDegree,
@@ -97,15 +104,19 @@ int locateSpanWithHint(double                            theParam,
 }
 
 //! Prepare parameters with span data.
-void prepareParams(const NCollection_Array1<double>&  theParams,
-                   int                                theDegree,
-                   bool                               theIsPeriodic,
-                   const NCollection_Array1<double>&  theFlatKnots,
-                   NCollection_Array1<ParamWithSpan>& theParamsWithSpan,
-                   NCollection_Array1<SpanRange>&     theSpanRanges)
+//! @param theParams array of parameter values
+//! @param theDegree curve degree
+//! @param theIsPeriodic true if curve is periodic
+//! @param theFlatKnots flat knots array
+//! @return prepared parameters with span information
+[[nodiscard]] PreparedParams prepareParams(const NCollection_Array1<double>& theParams,
+                                           int                               theDegree,
+                                           bool                              theIsPeriodic,
+                                           const NCollection_Array1<double>& theFlatKnots)
 {
-  const int aNbParams = theParams.Size();
-  theParamsWithSpan.Resize(0, aNbParams - 1, false);
+  PreparedParams aResult;
+  const int      aNbParams = theParams.Size();
+  aResult.Params.Resize(0, aNbParams - 1, false);
 
   // Use hint-based span location for efficiency on sorted parameters
   int aPrevSpan = theFlatKnots.Lower() + theDegree;
@@ -123,38 +134,38 @@ void prepareParams(const NCollection_Array1<double>&  theParams,
     const double aLocalParam = (aSpanLength > 0.0) ? (aParam - aSpanStart) / aSpanLength : 0.0;
 
     const int aIdx = i - theParams.Lower();
-    theParamsWithSpan.SetValue(aIdx, ParamWithSpan{aParam, aLocalParam, aSpanIdx, aIdx});
+    aResult.Params.SetValue(aIdx, ParamWithSpan{aParam, aLocalParam, aSpanIdx, aIdx});
   }
 
   // Count distinct spans
   int aNbSpans     = 1;
-  int aCurrentSpan = theParamsWithSpan.Value(0).SpanIndex;
+  int aCurrentSpan = aResult.Params.Value(0).SpanIndex;
   for (int i = 1; i < aNbParams; ++i)
   {
-    if (theParamsWithSpan.Value(i).SpanIndex != aCurrentSpan)
+    if (aResult.Params.Value(i).SpanIndex != aCurrentSpan)
     {
       ++aNbSpans;
-      aCurrentSpan = theParamsWithSpan.Value(i).SpanIndex;
+      aCurrentSpan = aResult.Params.Value(i).SpanIndex;
     }
   }
 
-  theSpanRanges.Resize(0, aNbSpans - 1, false);
+  aResult.Ranges.Resize(0, aNbSpans - 1, false);
 
   // Fill span ranges
-  aCurrentSpan    = theParamsWithSpan.Value(0).SpanIndex;
+  aCurrentSpan    = aResult.Params.Value(0).SpanIndex;
   int aRangeStart = 0;
   int aRangeIdx   = 0;
 
   for (int i = 1; i < aNbParams; ++i)
   {
-    const int aSpan = theParamsWithSpan.Value(i).SpanIndex;
+    const int aSpan = aResult.Params.Value(i).SpanIndex;
     if (aSpan != aCurrentSpan)
     {
       const double aSpanStart  = theFlatKnots.Value(aCurrentSpan);
       const double aSpanLength = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
       const double aSpanMid    = aSpanStart + aSpanLength * 0.5;
 
-      theSpanRanges.SetValue(aRangeIdx, SpanRange{aCurrentSpan, aRangeStart, i, aSpanMid});
+      aResult.Ranges.SetValue(aRangeIdx, SpanRange{aCurrentSpan, aRangeStart, i, aSpanMid});
       ++aRangeIdx;
       aCurrentSpan = aSpan;
       aRangeStart  = i;
@@ -166,7 +177,9 @@ void prepareParams(const NCollection_Array1<double>&  theParams,
   const double aSpanLength = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
   const double aSpanMid    = aSpanStart + aSpanLength * 0.5;
 
-  theSpanRanges.SetValue(aRangeIdx, SpanRange{aCurrentSpan, aRangeStart, aNbParams, aSpanMid});
+  aResult.Ranges.SetValue(aRangeIdx, SpanRange{aCurrentSpan, aRangeStart, aNbParams, aSpanMid});
+
+  return aResult;
 }
 
 //! Iterate over span blocks and dispatch to cache or direct evaluation functors.
@@ -246,9 +259,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
   const bool isPeriodic = myGeom->IsPeriodic();
 
   // Prepare parameters with span data
-  NCollection_Array1<ParamWithSpan> aParamsWithSpan;
-  NCollection_Array1<SpanRange>     aSpanRanges;
-  prepareParams(theParams, aDegree, isPeriodic, aFlatKnots, aParamsWithSpan, aSpanRanges);
+  PreparedParams aPrepared = prepareParams(theParams, aDegree, isPeriodic, aFlatKnots);
 
   const int                  aNbParams = theParams.Size();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
@@ -257,8 +268,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
-    aSpanRanges,
-    aParamsWithSpan,
+    aPrepared.Ranges,
+    aPrepared.Params,
     [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
     // Cache evaluation (local parameter)
     [&](int theIdx, double theLocalParam) {
@@ -317,9 +328,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
 
-  NCollection_Array1<ParamWithSpan> aParamsWithSpan;
-  NCollection_Array1<SpanRange>     aSpanRanges;
-  prepareParams(theParams, aDegree, isPeriodic, aFlatKnots, aParamsWithSpan, aSpanRanges);
+  PreparedParams aPrepared = prepareParams(theParams, aDegree, isPeriodic, aFlatKnots);
 
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResults(1, aNbParams);
@@ -328,8 +337,8 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
-    aSpanRanges,
-    aParamsWithSpan,
+    aPrepared.Ranges,
+    aPrepared.Params,
     [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
     [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
@@ -391,9 +400,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
 
-  NCollection_Array1<ParamWithSpan> aParamsWithSpan;
-  NCollection_Array1<SpanRange>     aSpanRanges;
-  prepareParams(theParams, aDegree, isPeriodic, aFlatKnots, aParamsWithSpan, aSpanRanges);
+  PreparedParams aPrepared = prepareParams(theParams, aDegree, isPeriodic, aFlatKnots);
 
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResults(1, aNbParams);
@@ -402,8 +409,8 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
-    aSpanRanges,
-    aParamsWithSpan,
+    aPrepared.Ranges,
+    aPrepared.Params,
     [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
     [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
@@ -466,9 +473,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
   const int  aDegree    = myGeom->Degree();
   const bool isPeriodic = myGeom->IsPeriodic();
 
-  NCollection_Array1<ParamWithSpan> aParamsWithSpan;
-  NCollection_Array1<SpanRange>     aSpanRanges;
-  prepareParams(theParams, aDegree, isPeriodic, aFlatKnots, aParamsWithSpan, aSpanRanges);
+  PreparedParams aPrepared = prepareParams(theParams, aDegree, isPeriodic, aFlatKnots);
 
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResults(1, aNbParams);
@@ -477,8 +482,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
     new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
 
   iterateSpanBlocks(
-    aSpanRanges,
-    aParamsWithSpan,
+    aPrepared.Ranges,
+    aPrepared.Params,
     [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
     [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
@@ -557,21 +562,19 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(
   const NCollection_Array1<int>&    aMults     = myGeom->Multiplicities();
   const bool                        isPeriodic = myGeom->IsPeriodic();
 
-  NCollection_Array1<ParamWithSpan> aParamsWithSpan;
-  NCollection_Array1<SpanRange>     aSpanRanges;
-  prepareParams(theParams, aDegree, isPeriodic, aFlatKnots, aParamsWithSpan, aSpanRanges);
+  PreparedParams aPrepared = prepareParams(theParams, aDegree, isPeriodic, aFlatKnots);
 
   // Use BSplCLib::DN directly with pre-computed span indices
-  const int aNbRanges = aSpanRanges.Size();
+  const int aNbRanges = aPrepared.Ranges.Size();
   for (int iRange = 0; iRange < aNbRanges; ++iRange)
   {
-    const auto& aRange   = aSpanRanges.Value(iRange);
-    const int   aSpanIdx = aRange.SpanIndex;
+    const SpanRange& aRange   = aPrepared.Ranges.Value(iRange);
+    const int        aSpanIdx = aRange.SpanIndex;
 
     for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
-      const auto& aP = aParamsWithSpan.Value(i);
-      gp_Vec      aDN;
+      const ParamWithSpan& aP = aPrepared.Params.Value(i);
+      gp_Vec               aDN;
       BSplCLib::DN(aP.Param,
                    theN,
                    aSpanIdx,

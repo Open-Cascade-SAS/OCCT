@@ -153,33 +153,6 @@ public:
     int                                 theNV) const;
 
 private:
-  //! Find span index for a parameter value.
-  //! @param[in,out] theParam parameter value (may be adjusted for periodicity)
-  //! @param[in] theUDir true for U direction, false for V direction
-  //! @param[in] theFlatKnots flat knots array
-  //! @return span index in flat knots array
-  int locateSpan(double&                           theParam,
-                 bool                              theUDir,
-                 const NCollection_Array1<double>& theFlatKnots) const;
-
-  //! Prepare UV points from grid parameters and sort for cache-optimal evaluation.
-  //! @param theUParams array of U parameter values
-  //! @param theVParams array of V parameter values
-  //! @param theUVPoints output array of UV points with span info
-  void prepareGridPoints(const NCollection_Array1<double>&                  theUParams,
-                         const NCollection_Array1<double>&                  theVParams,
-                         NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const;
-
-  //! Prepare UV points from pairs and sort for cache-optimal evaluation.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @param theUVPoints output array of UV points with span info
-  void preparePairPoints(const NCollection_Array1<gp_Pnt2d>&                theUVPairs,
-                         NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const;
-
-  //! Compute span indices and local parameters, then sort by span.
-  //! @param theUVPoints array of UV points to process (modified in place)
-  void computeSpansAndSort(NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const;
-
   // Private helper overloads for grid -> linear evaluation
   NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
     const NCollection_Array1<double>& theUParams,
