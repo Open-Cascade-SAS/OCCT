@@ -23,6 +23,8 @@
 #include <ExtremaPS_OtherSurface.hxx>
 #include <ExtremaPS_Plane.hxx>
 #include <ExtremaPS_Sphere.hxx>
+#include <ExtremaPS_SurfaceOfExtrusion.hxx>
+#include <ExtremaPS_SurfaceOfRevolution.hxx>
 #include <ExtremaPS_Torus.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -46,6 +48,8 @@
 //! - BezierSurface (grid-based)
 //! - BSplineSurface (knot-aware grid)
 //! - OffsetSurface (grid via basis surface)
+//! - SurfaceOfRevolution (1D curve search optimization)
+//! - SurfaceOfExtrusion (1D curve search optimization)
 //! - Other surfaces (general grid fallback)
 //!
 //! @section API Design
@@ -136,6 +140,8 @@ private:
                                         ExtremaPS_BezierSurface,
                                         ExtremaPS_BSplineSurface,
                                         ExtremaPS_OffsetSurface,
+                                        ExtremaPS_SurfaceOfRevolution,
+                                        ExtremaPS_SurfaceOfExtrusion,
                                         ExtremaPS_OtherSurface>;
 
   //! Initialize evaluator from adaptor with specified domain.

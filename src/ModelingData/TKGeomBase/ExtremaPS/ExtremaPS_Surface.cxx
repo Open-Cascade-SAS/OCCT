@@ -251,8 +251,37 @@ void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&    
     return;
   }
 
-  // For all other surfaces (SurfaceOfRevolution, SurfaceOfExtrusion, etc.),
-  // store adaptor and use OtherSurface evaluator
+  occ::handle<Geom_SurfaceOfRevolution> aRevolution =
+    occ::down_cast<Geom_SurfaceOfRevolution>(theSurface);
+  if (!aRevolution.IsNull())
+  {
+    if (theDomain.has_value())
+    {
+      myEvaluator = ExtremaPS_SurfaceOfRevolution(aRevolution, theDomain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPS_SurfaceOfRevolution(aRevolution);
+    }
+    return;
+  }
+
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtrusion =
+    occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface);
+  if (!anExtrusion.IsNull())
+  {
+    if (theDomain.has_value())
+    {
+      myEvaluator = ExtremaPS_SurfaceOfExtrusion(anExtrusion, theDomain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPS_SurfaceOfExtrusion(anExtrusion);
+    }
+    return;
+  }
+
+  // For all other surfaces, store adaptor and use OtherSurface evaluator
   if (theDomain.has_value())
   {
     myAdaptor = new GeomAdaptor_Surface(theSurface,
@@ -330,9 +359,53 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       break;
     }
 
+    case GeomAbs_SurfaceOfRevolution:
+    {
+      const GeomAdaptor_Surface* aGeomAdaptor =
+        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
+      if (aGeomAdaptor != nullptr)
+      {
+        occ::handle<Geom_SurfaceOfRevolution> aRevSurf =
+          occ::down_cast<Geom_SurfaceOfRevolution>(aGeomAdaptor->Surface());
+        if (!aRevSurf.IsNull())
+        {
+          myEvaluator = ExtremaPS_SurfaceOfRevolution(aRevSurf, theDomain);
+          break;
+        }
+      }
+      // Fallback to OtherSurface
+      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
+      {
+        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
+      }
+      break;
+    }
+
+    case GeomAbs_SurfaceOfExtrusion:
+    {
+      const GeomAdaptor_Surface* aGeomAdaptor =
+        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
+      if (aGeomAdaptor != nullptr)
+      {
+        occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
+          occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGeomAdaptor->Surface());
+        if (!anExtSurf.IsNull())
+        {
+          myEvaluator = ExtremaPS_SurfaceOfExtrusion(anExtSurf, theDomain);
+          break;
+        }
+      }
+      // Fallback to OtherSurface
+      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
+      {
+        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
+      }
+      break;
+    }
+
     default:
     {
-      // For SurfaceOfRevolution, SurfaceOfExtrusion, and other types
+      // For other surface types
       const GeomAdaptor_Surface* aGeomAdaptor =
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
       if (aGeomAdaptor != nullptr && !aGeomAdaptor->Surface().IsNull())

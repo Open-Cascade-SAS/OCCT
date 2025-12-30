@@ -17,6 +17,10 @@ set(OCCT_ExtremaPS_FILES
   ExtremaPS_OffsetSurface.cxx
   ExtremaPS_OtherSurface.hxx
   ExtremaPS_OtherSurface.cxx
+  ExtremaPS_SurfaceOfRevolution.hxx
+  ExtremaPS_SurfaceOfRevolution.cxx
+  ExtremaPS_SurfaceOfExtrusion.hxx
+  ExtremaPS_SurfaceOfExtrusion.cxx
   ExtremaPS_Surface.hxx
   ExtremaPS_Surface.cxx
 )
