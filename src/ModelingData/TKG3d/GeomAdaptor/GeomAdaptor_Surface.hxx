@@ -20,6 +20,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplSLib_Cache.hxx>
+#include <BSplSLib_CacheGrid.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
@@ -28,6 +29,7 @@
 #include <Standard_NullObject.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <memory>
 #include <variant>
 
 class GeomAdaptor_Curve;
@@ -79,8 +81,8 @@ public:
   //! Internal structure for BSpline surface cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineSurface>    Surface; //!< BSpline surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache;   //!< Cached data for evaluation
+    occ::handle<Geom_BSplineSurface>            Surface;   //!< BSpline surface to prevent downcasts
+    mutable std::shared_ptr<BSplSLib_CacheGrid> CacheGrid; //!< Cached data for all spans
   };
 
   //! Variant type for surface-specific evaluation data.

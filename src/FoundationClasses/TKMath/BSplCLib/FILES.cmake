@@ -11,6 +11,8 @@ set(OCCT_BSplCLib_FILES
   BSplCLib_BzSyntaxes.cxx
   BSplCLib_Cache.cxx
   BSplCLib_Cache.hxx
+  BSplCLib_CacheGrid.cxx
+  BSplCLib_CacheGrid.hxx
   BSplCLib_CacheParams.hxx
   BSplCLib_CurveComputation.pxx
   BSplCLib_EvaluatorFunction.hxx

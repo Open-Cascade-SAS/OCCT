@@ -335,8 +335,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
   {
     GeomAdaptor_Surface::BSplineData aNewData;
     aNewData.Surface = aBSplineData->Surface;
-    // Cache is not copied - will be rebuilt on demand
-    aCopy->mySurfaceData = aNewData;
+    // CacheGrid is not copied - will be rebuilt on demand
+    aCopy->mySurfaceData = std::move(aNewData);
   }
 
   return aCopy;
@@ -415,7 +415,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
       mySurfaceType = GeomAbs_BSplineSurface;
       GeomAdaptor_Surface::BSplineData aBSplineData;
       aBSplineData.Surface = occ::down_cast<Geom_BSplineSurface>(mySurface);
-      mySurfaceData        = aBSplineData;
+      mySurfaceData        = std::move(aBSplineData);
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
     {
@@ -924,26 +924,6 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
     aBezData.Cache
       ->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
   }
-  else if (mySurfaceType == GeomAbs_BSplineSurface)
-  {
-    // Create cache for B-spline
-    auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
-    const auto& aBSpl     = aBSplData.Surface;
-    if (aBSplData.Cache.IsNull())
-      aBSplData.Cache = new BSplSLib_Cache(aBSpl->UDegree(),
-                                           aBSpl->IsUPeriodic(),
-                                           aBSpl->UKnotSequence(),
-                                           aBSpl->VDegree(),
-                                           aBSpl->IsVPeriodic(),
-                                           aBSpl->VKnotSequence(),
-                                           aBSpl->Weights());
-    aBSplData.Cache->BuildCache(theU,
-                                theV,
-                                aBSpl->UKnotSequence(),
-                                aBSpl->VKnotSequence(),
-                                aBSpl->Poles(),
-                                aBSpl->Weights());
-  }
 }
 
 //=================================================================================================
@@ -969,9 +949,24 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
       break;
     }
     case GeomAbs_BSplineSurface: {
-      auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
+      auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
+      const auto& aBSpl     = aBSplData.Surface;
+      // use cached data from grid - Cache() handles validity internally
+      if (!aBSplData.CacheGrid)
+      {
+        aBSplData.CacheGrid = std::make_shared<BSplSLib_CacheGrid>(aBSpl->UDegree(),
+                                                                   aBSpl->IsUPeriodic(),
+                                                                   aBSpl->UKnotSequence(),
+                                                                   aBSpl->VDegree(),
+                                                                   aBSpl->IsVPeriodic(),
+                                                                   aBSpl->VKnotSequence());
+      }
+      const auto& aCache = aBSplData.CacheGrid->Cache(U,
+                                                      V,
+                                                      aBSpl->UKnotSequence(),
+                                                      aBSpl->VKnotSequence(),
+                                                      aBSpl->Poles(),
+                                                      aBSpl->Weights());
       aCache->D0(U, V, P);
       break;
     }
@@ -1046,9 +1041,23 @@ void GeomAdaptor_Surface::D1(const double U,
         aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        aBSplData.Cache->D1(U, V, P, D1U, D1V);
+        // use cached data from grid - Cache() handles validity internally
+        if (!aBSplData.CacheGrid)
+        {
+          aBSplData.CacheGrid = std::make_shared<BSplSLib_CacheGrid>(aBSpl->UDegree(),
+                                                                     aBSpl->IsUPeriodic(),
+                                                                     aBSpl->UKnotSequence(),
+                                                                     aBSpl->VDegree(),
+                                                                     aBSpl->IsVPeriodic(),
+                                                                     aBSpl->VKnotSequence());
+        }
+        const auto& aCache = aBSplData.CacheGrid->Cache(U,
+                                                        V,
+                                                        aBSpl->UKnotSequence(),
+                                                        aBSpl->VKnotSequence(),
+                                                        aBSpl->Poles(),
+                                                        aBSpl->Weights());
+        aCache->D1(U, V, P, D1U, D1V);
       }
       break;
     }
@@ -1126,9 +1135,23 @@ void GeomAdaptor_Surface::D2(const double U,
         aBSpl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        aBSplData.Cache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        // use cached data from grid - Cache() handles validity internally
+        if (!aBSplData.CacheGrid)
+        {
+          aBSplData.CacheGrid = std::make_shared<BSplSLib_CacheGrid>(aBSpl->UDegree(),
+                                                                     aBSpl->IsUPeriodic(),
+                                                                     aBSpl->UKnotSequence(),
+                                                                     aBSpl->VDegree(),
+                                                                     aBSpl->IsVPeriodic(),
+                                                                     aBSpl->VKnotSequence());
+        }
+        const auto& aCache = aBSplData.CacheGrid->Cache(U,
+                                                        V,
+                                                        aBSpl->UKnotSequence(),
+                                                        aBSpl->VKnotSequence(),
+                                                        aBSpl->Poles(),
+                                                        aBSpl->Weights());
+        aCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
       }
       break;
     }
