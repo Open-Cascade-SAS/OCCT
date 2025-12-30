@@ -83,12 +83,22 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
   {
     BSplineData aCopyData;
     aCopyData.Curve = aBSplineData->Curve;
-    // CacheGrid is not copied - will be rebuilt on demand
+    // Deep copy of CacheGrid if it exists
+    if (aBSplineData->CacheGrid)
+    {
+      aCopyData.CacheGrid = std::make_shared<BSplCLib_CacheGrid>(*aBSplineData->CacheGrid);
+    }
     aCopy->myCurveData = std::move(aCopyData);
   }
-  else if (std::holds_alternative<BezierData>(myCurveData))
+  else if (const auto* aBezierData = std::get_if<BezierData>(&myCurveData))
   {
-    aCopy->myCurveData = BezierData{};
+    BezierData aCopyData;
+    // Deep copy of Cache if it exists
+    if (!aBezierData->Cache.IsNull())
+    {
+      aCopyData.Cache = new BSplCLib_Cache(*aBezierData->Cache);
+    }
+    aCopy->myCurveData = std::move(aCopyData);
   }
 
   return aCopy;

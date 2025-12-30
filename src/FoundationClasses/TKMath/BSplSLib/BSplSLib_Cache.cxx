@@ -249,6 +249,32 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
 
 //==================================================================================================
 
+BSplSLib_Cache::BSplSLib_Cache(const BSplSLib_Cache& theOther)
+    : myIsRational(theOther.myIsRational),
+      myParamsU(theOther.myParamsU),
+      myParamsV(theOther.myParamsV)
+{
+  // Deep copy the poles/weights array
+  if (!theOther.myPolesWeights.IsNull())
+  {
+    const NCollection_Array2<double>& aSrc = theOther.myPolesWeights->Array2();
+    myPolesWeights                         = new NCollection_HArray2<double>(aSrc.LowerRow(),
+                                                     aSrc.UpperRow(),
+                                                     aSrc.LowerCol(),
+                                                     aSrc.UpperCol());
+    NCollection_Array2<double>& aDst       = myPolesWeights->ChangeArray2();
+    for (int i = aSrc.LowerRow(); i <= aSrc.UpperRow(); ++i)
+    {
+      for (int j = aSrc.LowerCol(); j <= aSrc.UpperCol(); ++j)
+      {
+        aDst.SetValue(i, j, aSrc.Value(i, j));
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
 bool BSplSLib_Cache::IsCacheValid(double theParameterU, double theParameterV) const
 {
   return myParamsU.IsCacheValid(theParameterU) && myParamsV.IsCacheValid(theParameterV);

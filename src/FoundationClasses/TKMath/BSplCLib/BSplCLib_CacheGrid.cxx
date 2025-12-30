@@ -47,6 +47,29 @@ BSplCLib_CacheGrid::BSplCLib_CacheGrid(int                               theDegr
 
 //==================================================================================================
 
+BSplCLib_CacheGrid::BSplCLib_CacheGrid(const BSplCLib_CacheGrid& theOther)
+    : myDegree(theOther.myDegree),
+      myPeriodic(theOther.myPeriodic),
+      myNbSpans(theOther.myNbSpans),
+      mySpanIndexMin(theOther.mySpanIndexMin),
+      myFirst(theOther.myFirst),
+      myLast(theOther.myLast),
+      myCacheGrid(theOther.myCacheGrid.Lower(), theOther.myCacheGrid.Upper()),
+      myCurrentSpan(theOther.myCurrentSpan)
+{
+  // Deep copy all cache handles
+  for (int i = theOther.myCacheGrid.Lower(); i <= theOther.myCacheGrid.Upper(); ++i)
+  {
+    const occ::handle<BSplCLib_Cache>& aSrcCache = theOther.myCacheGrid.Value(i);
+    if (!aSrcCache.IsNull())
+    {
+      myCacheGrid.SetValue(i, new BSplCLib_Cache(*aSrcCache));
+    }
+  }
+}
+
+//==================================================================================================
+
 double BSplCLib_CacheGrid::periodicNormalization(double theParam) const
 {
   if (myPeriodic)

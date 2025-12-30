@@ -48,6 +48,9 @@ public:
                                      bool                              thePeriodicV,
                                      const NCollection_Array1<double>& theFlatKnotsV);
 
+  //! Copy constructor - performs deep copy of all cached data.
+  Standard_EXPORT BSplSLib_CacheGrid(const BSplSLib_CacheGrid& theOther);
+
   //! Gets the cache for the specified parameter values.
   //! If the cache for this span doesn't exist, it will be created.
   //! @param theU           U parameter

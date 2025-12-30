@@ -118,8 +118,21 @@ struct BSplCLib_CacheParams
     SpanLength = theFlatKnots.Value(SpanIndex + 1) - SpanStart;
   }
 
-  // copying is prohibited
-  BSplCLib_CacheParams(const BSplCLib_CacheParams&)            = delete;
+  //! Copy constructor - performs deep copy of cache parameters.
+  BSplCLib_CacheParams(const BSplCLib_CacheParams& theOther)
+      : Degree(theOther.Degree),
+        IsPeriodic(theOther.IsPeriodic),
+        FirstParameter(theOther.FirstParameter),
+        LastParameter(theOther.LastParameter),
+        SpanIndexMin(theOther.SpanIndexMin),
+        SpanIndexMax(theOther.SpanIndexMax),
+        SpanStart(theOther.SpanStart),
+        SpanLength(theOther.SpanLength),
+        SpanIndex(theOther.SpanIndex)
+  {
+  }
+
+  // assignment is prohibited (const members)
   BSplCLib_CacheParams& operator=(const BSplCLib_CacheParams&) = delete;
 };
 

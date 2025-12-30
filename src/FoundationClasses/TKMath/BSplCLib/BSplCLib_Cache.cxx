@@ -53,6 +53,19 @@ BSplCLib_Cache::BSplCLib_Cache(
 
 //==================================================================================================
 
+BSplCLib_Cache::BSplCLib_Cache(const BSplCLib_Cache& theOther)
+    : myIsRational(theOther.myIsRational),
+      myParams(theOther.myParams),
+      myRowLength(theOther.myRowLength)
+{
+  // Copy the poles/weights buffer
+  std::copy(std::begin(theOther.myPolesWeightsBuffer),
+            std::end(theOther.myPolesWeightsBuffer),
+            std::begin(myPolesWeightsBuffer));
+}
+
+//==================================================================================================
+
 bool BSplCLib_Cache::IsCacheValid(double theParameter) const
 {
   return myParams.IsCacheValid(theParameter);

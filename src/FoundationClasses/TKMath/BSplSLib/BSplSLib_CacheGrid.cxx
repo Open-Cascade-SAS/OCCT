@@ -60,6 +60,42 @@ BSplSLib_CacheGrid::BSplSLib_CacheGrid(int                               theDegr
 
 //==================================================================================================
 
+BSplSLib_CacheGrid::BSplSLib_CacheGrid(const BSplSLib_CacheGrid& theOther)
+    : myDegreeU(theOther.myDegreeU),
+      myDegreeV(theOther.myDegreeV),
+      myPeriodicU(theOther.myPeriodicU),
+      myPeriodicV(theOther.myPeriodicV),
+      myNbUSpans(theOther.myNbUSpans),
+      myNbVSpans(theOther.myNbVSpans),
+      mySpanIndexMinU(theOther.mySpanIndexMinU),
+      mySpanIndexMinV(theOther.mySpanIndexMinV),
+      myFirstU(theOther.myFirstU),
+      myLastU(theOther.myLastU),
+      myFirstV(theOther.myFirstV),
+      myLastV(theOther.myLastV),
+      myCacheGrid(theOther.myCacheGrid.LowerRow(),
+                  theOther.myCacheGrid.UpperRow(),
+                  theOther.myCacheGrid.LowerCol(),
+                  theOther.myCacheGrid.UpperCol()),
+      myCurrentUSpan(theOther.myCurrentUSpan),
+      myCurrentVSpan(theOther.myCurrentVSpan)
+{
+  // Deep copy all cache handles
+  for (int i = theOther.myCacheGrid.LowerRow(); i <= theOther.myCacheGrid.UpperRow(); ++i)
+  {
+    for (int j = theOther.myCacheGrid.LowerCol(); j <= theOther.myCacheGrid.UpperCol(); ++j)
+    {
+      const occ::handle<BSplSLib_Cache>& aSrcCache = theOther.myCacheGrid.Value(i, j);
+      if (!aSrcCache.IsNull())
+      {
+        myCacheGrid.SetValue(i, j, new BSplSLib_Cache(*aSrcCache));
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
 double BSplSLib_CacheGrid::periodicNormalization(double theParam,
                                                  double theFirst,
                                                  double theLast,

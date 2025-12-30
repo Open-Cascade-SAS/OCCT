@@ -42,6 +42,9 @@ public:
                                      bool                              thePeriodic,
                                      const NCollection_Array1<double>& theFlatKnots);
 
+  //! Copy constructor - performs deep copy of all cached data.
+  Standard_EXPORT BSplCLib_CacheGrid(const BSplCLib_CacheGrid& theOther);
+
   //! Gets the cache for the specified parameter value (3D curves).
   //! If the cache for this span doesn't exist, it will be created.
   //! @param theParameter parameter value

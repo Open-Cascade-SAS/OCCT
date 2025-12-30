@@ -335,7 +335,21 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
   {
     GeomAdaptor_Surface::BSplineData aNewData;
     aNewData.Surface = aBSplineData->Surface;
-    // CacheGrid is not copied - will be rebuilt on demand
+    // Deep copy of CacheGrid if it exists
+    if (aBSplineData->CacheGrid)
+    {
+      aNewData.CacheGrid = std::make_shared<BSplSLib_CacheGrid>(*aBSplineData->CacheGrid);
+    }
+    aCopy->mySurfaceData = std::move(aNewData);
+  }
+  else if (auto* aBezierData = std::get_if<GeomAdaptor_Surface::BezierData>(&mySurfaceData))
+  {
+    GeomAdaptor_Surface::BezierData aNewData;
+    // Deep copy of Cache if it exists
+    if (!aBezierData->Cache.IsNull())
+    {
+      aNewData.Cache = new BSplSLib_Cache(*aBezierData->Cache);
+    }
     aCopy->mySurfaceData = std::move(aNewData);
   }
 
