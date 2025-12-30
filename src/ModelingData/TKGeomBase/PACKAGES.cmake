@@ -9,6 +9,8 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   FEmTool
   AppCont
   Extrema
+  ExtremaPC
+  ExtremaPS
   IntAna
   IntAna2d
   GeomConvert
