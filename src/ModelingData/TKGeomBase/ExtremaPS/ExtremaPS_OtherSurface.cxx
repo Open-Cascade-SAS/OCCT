@@ -15,13 +15,6 @@
 
 #include <math_Vector.hxx>
 
-namespace
-{
-// Default grid density for general surfaces
-constexpr int THE_NB_U_SAMPLES = 32;
-constexpr int THE_NB_V_SAMPLES = 32;
-} // namespace
-
 //==================================================================================================
 
 ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface)
@@ -50,11 +43,18 @@ ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& 
 
 void ExtremaPS_OtherSurface::buildGrid()
 {
-  // Build the grid for the current domain
+  if (mySurface.IsNull())
+  {
+    return;
+  }
+
+  // Build the grid for the current domain using default sample count for general surfaces
   math_Vector aUParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax, THE_NB_U_SAMPLES);
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax,
+                                                ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
   math_Vector aVParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin, myDomain.VMax, THE_NB_V_SAMPLES);
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin, myDomain.VMax,
+                                                ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
 
   GeomGridEval_OtherSurface anEval(&myAdaptor);
   myEvaluator.BuildGrid(anEval, aUParams, aVParams);

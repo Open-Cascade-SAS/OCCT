@@ -22,11 +22,13 @@ ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSu
       myAdaptor(theSurface),
       myDomain{0.0, 1.0, 0.0, 1.0}  // Bezier surfaces always have domain [0,1]x[0,1]
 {
-  // Grid density based on surface degree - use 6*(deg+1) for robust extrema detection
-  myNbUSamples = 6 * (mySurface->UDegree() + 1);
-  myNbVSamples = 6 * (mySurface->VDegree() + 1);
-  myNbUSamples = std::max(16, std::min(128, myNbUSamples));
-  myNbVSamples = std::max(16, std::min(128, myNbVSamples));
+  // Grid density based on surface degree: multiplier*(deg+1), clamped to [min, max]
+  myNbUSamples = ExtremaPS::THE_BEZIER_DEGREE_MULTIPLIER * (mySurface->UDegree() + 1);
+  myNbVSamples = ExtremaPS::THE_BEZIER_DEGREE_MULTIPLIER * (mySurface->VDegree() + 1);
+  myNbUSamples = std::max(ExtremaPS::THE_BEZIER_MIN_SAMPLES,
+                          std::min(ExtremaPS::THE_BEZIER_MAX_SAMPLES, myNbUSamples));
+  myNbVSamples = std::max(ExtremaPS::THE_BEZIER_MIN_SAMPLES,
+                          std::min(ExtremaPS::THE_BEZIER_MAX_SAMPLES, myNbVSamples));
 
   // Build grid eagerly at construction time
   buildGrid();
@@ -40,11 +42,13 @@ ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSu
       myAdaptor(theSurface),
       myDomain(theDomain)
 {
-  // Grid density based on surface degree - use 6*(deg+1) for robust extrema detection
-  myNbUSamples = 6 * (mySurface->UDegree() + 1);
-  myNbVSamples = 6 * (mySurface->VDegree() + 1);
-  myNbUSamples = std::max(16, std::min(128, myNbUSamples));
-  myNbVSamples = std::max(16, std::min(128, myNbVSamples));
+  // Grid density based on surface degree: multiplier*(deg+1), clamped to [min, max]
+  myNbUSamples = ExtremaPS::THE_BEZIER_DEGREE_MULTIPLIER * (mySurface->UDegree() + 1);
+  myNbVSamples = ExtremaPS::THE_BEZIER_DEGREE_MULTIPLIER * (mySurface->VDegree() + 1);
+  myNbUSamples = std::max(ExtremaPS::THE_BEZIER_MIN_SAMPLES,
+                          std::min(ExtremaPS::THE_BEZIER_MAX_SAMPLES, myNbUSamples));
+  myNbVSamples = std::max(ExtremaPS::THE_BEZIER_MIN_SAMPLES,
+                          std::min(ExtremaPS::THE_BEZIER_MAX_SAMPLES, myNbVSamples));
 
   // Build grid eagerly at construction time
   buildGrid();
@@ -54,6 +58,11 @@ ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSu
 
 void ExtremaPS_BezierSurface::buildGrid()
 {
+  if (mySurface.IsNull())
+  {
+    return;
+  }
+
   // Build the grid for the current domain
   math_Vector aUParams =
     ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax, myNbUSamples);

@@ -200,7 +200,7 @@ private:
       }
 
       // Check for near-zero F (direct hit on extremum)
-      if (std::abs(aF) < theTol * 10.0 && !myProcessed[i])
+      if (std::abs(aF) < theTol * ExtremaPC::THE_NEAR_ZERO_F_FACTOR && !myProcessed[i])
       {
         Candidate aCand;
         aCand.Type   = CandidateType::NearZero;
@@ -267,7 +267,7 @@ private:
     MathUtils::Config aConfig;
     aConfig.XTolerance    = theTol * ExtremaPC::THE_NEWTON_XTOL_FACTOR;
     aConfig.FTolerance    = theTol * ExtremaPC::THE_NEWTON_FTOL_FACTOR;
-    aConfig.MaxIterations = 20;
+    aConfig.MaxIterations = ExtremaPC::THE_MAX_NEWTON_ITERATIONS;
 
     // Build sorted indices by estimated distance
     for (int c = 0; c < myCandidates.Length(); ++c)
@@ -301,7 +301,9 @@ private:
       double           anEstDist = mySortedIndices.Value(s).second;
       const Candidate& aCand     = myCandidates.Value(c);
 
-      // Early termination
+      // Early termination: skip candidates that are clearly worse than the best found.
+      // For Min mode: skip if estimated distance > best * (2.0 - threshold), i.e., ~1.1x best.
+      // For Max mode: skip if estimated distance < best * threshold, i.e., ~0.9x best.
       constexpr double aMinSkipThreshold = 2.0 - ExtremaPC::THE_MAX_SKIP_THRESHOLD;
       if (theMode == ExtremaPC::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
       {
@@ -360,9 +362,9 @@ private:
         double aRefUMin  = aULo;
         double aRefUMax  = aUHi;
 
-        for (int aPass = 0; aPass < 3; ++aPass)
+        for (int aPass = 0; aPass < ExtremaPC::THE_REFINEMENT_NB_PASSES; ++aPass)
         {
-          const int    aNbSamples = 20;
+          const int    aNbSamples = ExtremaPC::THE_REFINEMENT_NB_SAMPLES;
           const double aStep      = (aRefUMax - aRefUMin) / (aNbSamples - 1);
 
           for (int i = 0; i < aNbSamples; ++i)
@@ -402,7 +404,7 @@ private:
           gp_Vec aVec(theP, aPt);
           double aF = aVec.Dot(aD1);
 
-          if (std::abs(aF) < theTol * 100.0)
+          if (std::abs(aF) < theTol * ExtremaPC::THE_FALLBACK_F_FACTOR)
           {
             aRootU     = aBestU;
             aConverged = true;

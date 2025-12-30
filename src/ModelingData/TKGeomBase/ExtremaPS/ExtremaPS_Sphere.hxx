@@ -18,6 +18,7 @@
 #include <ExtremaPS.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
+#include <Precision.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
@@ -75,8 +76,8 @@ private:
   static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
   {
     return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) &&
-           theDomain.VMin <= -ExtremaPS::THE_HALF_PI + 1e-10 &&
-           theDomain.VMax >= ExtremaPS::THE_HALF_PI - 1e-10;
+           theDomain.VMin <= -ExtremaPS::THE_HALF_PI + Precision::PConfusion() &&
+           theDomain.VMax >= ExtremaPS::THE_HALF_PI - Precision::PConfusion();
   }
 
 private:

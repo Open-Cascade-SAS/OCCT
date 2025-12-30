@@ -14,23 +14,27 @@
 #include <ExtremaPS_BSplineSurface.hxx>
 
 #include <math_Vector.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 
 namespace
 {
 //! Build knot-aware parameter array (like Extrema_GenExtPS::fillParams).
 //! Ensures samples are placed at knot boundaries plus intermediate points.
+//! Uses single-pass algorithm with dynamic vector for efficiency.
 //! @return math_Vector with 1-based indexing
 math_Vector BuildKnotAwareParams(const NCollection_Array1<double>& theKnots,
-                                  int                         theDegree,
-                                  double                      theParMin,
-                                  double                      theParMax)
+                                 int                               theDegree,
+                                 double                            theParMin,
+                                 double                            theParMax)
 {
-  // First pass: count parameters to allocate exact size
-  int    aCount   = 1; // Start with theParMin
-  double aPrevPar = theParMin;
-  // Samples per knot span: degree + 2 ensures accuracy for all surface types.
-  int aSamplesPerSpan = theDegree + 2;
+  // Samples per knot span: degree + offset ensures accuracy for all surface types.
+  const int aSamplesPerSpan = theDegree + ExtremaPS::THE_BSPLINE_SPAN_OFFSET;
+
+  // Single-pass algorithm using dynamic vector
+  NCollection_Vector<double> aParams;
+  double                     aPrevPar = theParMin;
+  aParams.Append(theParMin);
 
   for (int i = theKnots.Lower(); i < theKnots.Upper(); ++i)
   {
@@ -53,48 +57,20 @@ math_Vector BuildKnotAwareParams(const NCollection_Array1<double>& theKnots,
         break;
       if (aPar > aPrevPar + Precision::PConfusion())
       {
-        ++aCount;
+        aParams.Append(aPar);
         aPrevPar = aPar;
       }
     }
   }
   if (theParMax > aPrevPar + Precision::PConfusion())
-    ++aCount;
+    aParams.Append(theParMax);
 
-  // Second pass: fill math_Vector
-  math_Vector aResult(1, aCount);
-  int         aIdx    = 1;
-  aPrevPar            = theParMin;
-  aResult(aIdx++)     = theParMin;
-
-  for (int i = theKnots.Lower(); i < theKnots.Upper(); ++i)
+  // Convert to math_Vector (required by BuildGrid interface)
+  math_Vector aResult(1, aParams.Length());
+  for (int i = 0; i < aParams.Length(); ++i)
   {
-    double aKnotLo = theKnots.Value(i);
-    double aKnotHi = theKnots.Value(i + 1);
-
-    if (aKnotHi < theParMin + Precision::PConfusion())
-      continue;
-    if (aKnotLo > theParMax - Precision::PConfusion())
-      break;
-
-    aKnotLo = std::max(aKnotLo, theParMin);
-    aKnotHi = std::min(aKnotHi, theParMax);
-
-    double aStep = (aKnotHi - aKnotLo) / aSamplesPerSpan;
-    for (int k = 0; k <= aSamplesPerSpan; ++k)
-    {
-      double aPar = aKnotLo + k * aStep;
-      if (aPar > theParMax - Precision::PConfusion())
-        break;
-      if (aPar > aPrevPar + Precision::PConfusion())
-      {
-        aResult(aIdx++) = aPar;
-        aPrevPar        = aPar;
-      }
-    }
+    aResult(i + 1) = aParams.Value(i);
   }
-  if (theParMax > aPrevPar + Precision::PConfusion())
-    aResult(aIdx) = theParMax;
 
   return aResult;
 }
@@ -149,6 +125,11 @@ ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplin
 
 void ExtremaPS_BSplineSurface::buildGrid()
 {
+  if (mySurface.IsNull())
+  {
+    return;
+  }
+
   // Build knot-aware parameter arrays (ensures sampling at knot boundaries)
   math_Vector aUParams = BuildKnotAwareParams(myUKnots, myUDegree, myDomain.UMin, myDomain.UMax);
   math_Vector aVParams = BuildKnotAwareParams(myVKnots, myVDegree, myDomain.VMin, myDomain.VMax);

@@ -85,6 +85,45 @@ constexpr double THE_REFINED_DIST_THRESHOLD = 0.99;
 //! Multiplied with tolerance for more robust extremum detection.
 constexpr double THE_GRADIENT_TOL_FACTOR = 1000.0;
 
+//! Multiplier for Newton retry tolerance when initial Newton fails.
+constexpr double THE_NEWTON_RETRY_TOL_FACTOR = 10.0;
+
+//! Squared threshold for spatial coherence optimization.
+//! Query points within this squared distance use cached solution.
+constexpr double THE_COHERENCE_THRESHOLD_SQ = 100.0;
+
+//! Minimum ratio for trajectory prediction (step magnitude ratio).
+constexpr double THE_TRAJECTORY_MIN_RATIO = 0.5;
+
+//! Maximum ratio for trajectory prediction (step magnitude ratio).
+constexpr double THE_TRAJECTORY_MAX_RATIO = 2.0;
+
+//! Minimum cosine for trajectory prediction (direction alignment).
+//! Values above this indicate roughly same direction (< ~45 degrees).
+constexpr double THE_TRAJECTORY_MIN_COS = 0.7;
+
+//! Maximum number of Newton iterations for grid optimization.
+constexpr int THE_MAX_GOLDEN_ITERATIONS = 50;
+
+//! Minimum number of samples for Bezier surfaces (per direction).
+constexpr int THE_BEZIER_MIN_SAMPLES = 16;
+
+//! Maximum number of samples for Bezier surfaces (per direction).
+constexpr int THE_BEZIER_MAX_SAMPLES = 128;
+
+//! Multiplier for Bezier samples: samples = multiplier * (degree + 1).
+constexpr int THE_BEZIER_DEGREE_MULTIPLIER = 6;
+
+//! Default number of samples for general surfaces (per direction).
+constexpr int THE_OTHER_SURFACE_NB_SAMPLES = 32;
+
+//! Offset added to degree for BSpline surface samples per knot span: samples = degree + offset.
+//! For a degree 3 surface: 3+2 = 5 samples per span in each direction.
+//! This results in 5x5 = 25 samples per cell, providing adequate coverage.
+//! This is lower than the curve counterpart (2*(degree+1)) because surfaces are 2D
+//! and the grid already provides N^2 samples per cell.
+constexpr int THE_BSPLINE_SPAN_OFFSET = 2;
+
 //! Bring Domain2D into ExtremaPS namespace for convenience.
 using MathUtils::Domain2D;
 
@@ -400,7 +439,7 @@ inline void AddEdgeExtrema(Result&                 theResult,
 
     MathUtils::Config aConfig;
     aConfig.XTolerance    = theTol;
-    aConfig.MaxIterations = 50;
+    aConfig.MaxIterations = THE_MAX_GOLDEN_ITERATIONS;
 
     auto aResult = MathOpt::Golden(aFunc, theParamMin, theParamMax, aConfig);
     return aResult.IsDone() ? *aResult.Root : (theParamMin + theParamMax) * 0.5;

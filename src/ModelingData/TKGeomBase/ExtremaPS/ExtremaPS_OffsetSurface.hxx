@@ -29,6 +29,11 @@
 //! The domain is fixed at construction time and the grid is built eagerly
 //! for optimal performance with multiple queries.
 //!
+//! @note This class is intentionally separate from ExtremaPS_OtherSurface despite
+//! similar structure. They use different grid evaluators (GeomGridEval_OffsetSurface
+//! vs GeomGridEval_OtherSurface) optimized for their respective surface types.
+//! The shared ExtremaPS_GridEvaluator provides the common algorithm implementation.
+//!
 //! @section API Design
 //!
 //! Two methods are provided:

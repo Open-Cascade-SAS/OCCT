@@ -21,7 +21,8 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain{theCurve->FirstParameter(), theCurve->LastParameter()},
-      myNbSamples(std::max(24, 3 * (theCurve->Degree() + 1)))
+      myNbSamples(std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
+                           ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER * (theCurve->Degree() + 1)))
 {
   buildGrid();
 }
@@ -33,7 +34,8 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain(theDomain),
-      myNbSamples(std::max(24, 3 * (theCurve->Degree() + 1)))
+      myNbSamples(std::max(ExtremaPC::THE_BEZIER_MIN_SAMPLES,
+                           ExtremaPC::THE_BEZIER_DEGREE_MULTIPLIER * (theCurve->Degree() + 1)))
 {
   buildGrid();
 }

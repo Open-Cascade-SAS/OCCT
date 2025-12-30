@@ -74,6 +74,42 @@ constexpr double THE_RANGE_NARROWING_FACTOR = 0.25;
 //! If estimated distance < best * threshold, skip candidate.
 constexpr double THE_MAX_SKIP_THRESHOLD = 0.9;
 
+//! Multiplier for near-zero F detection during grid scan.
+//! F values smaller than tolerance * this factor are considered near-zero.
+constexpr double THE_NEAR_ZERO_F_FACTOR = 10.0;
+
+//! Multiplier for fallback F tolerance when Newton fails.
+//! Used to accept grid points as approximate solutions.
+constexpr double THE_FALLBACK_F_FACTOR = 100.0;
+
+//! Maximum number of Newton iterations for refinement.
+constexpr int THE_MAX_NEWTON_ITERATIONS = 20;
+
+//! Number of samples for iterative grid refinement fallback.
+constexpr int THE_REFINEMENT_NB_SAMPLES = 20;
+
+//! Number of refinement passes when Newton fails.
+constexpr int THE_REFINEMENT_NB_PASSES = 3;
+
+//! Minimum number of samples for Bezier curves.
+constexpr int THE_BEZIER_MIN_SAMPLES = 24;
+
+//! Multiplier for degree to compute Bezier samples: samples = max(min, multiplier * (degree + 1)).
+constexpr int THE_BEZIER_DEGREE_MULTIPLIER = 3;
+
+//! Default number of samples for general (other) curves.
+constexpr int THE_OTHER_CURVE_NB_SAMPLES = 64;
+
+//! Fallback number of samples for BSpline curves when curve is null.
+constexpr int THE_BSPLINE_FALLBACK_SAMPLES = 32;
+
+//! Multiplier for BSpline curve samples per knot span: samples = multiplier * (degree + 1).
+//! For a degree 3 curve: 2*4 = 8 samples per span.
+//! This is higher than the surface counterpart because curves are 1D and require
+//! finer sampling to detect extrema reliably. Surfaces use degree+2 per direction,
+//! resulting in (degree+2)^2 samples per cell, which provides adequate coverage.
+constexpr int THE_BSPLINE_SPAN_MULTIPLIER = 2;
+
 //! 1D parameter domain for curves (alias for MathUtils::Domain1D).
 using Domain1D = MathUtils::Domain1D;
 
