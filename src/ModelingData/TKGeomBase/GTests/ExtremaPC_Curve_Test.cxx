@@ -31,9 +31,6 @@
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 
 #include <cmath>
 
@@ -182,7 +179,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointAtCenter_Degenerate)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -201,7 +198,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_Circle)
 {
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -222,21 +219,21 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Circle)
 TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
 {
   // Create a simple cubic BSpline
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 2, 0);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve anAdaptor(aBSpline);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -253,7 +250,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 {
-  Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(
+  occ::handle<Geom_Ellipse> aGeomEllipse = new Geom_Ellipse(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -275,7 +272,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 TEST_F(ExtremaPC_CurveTest, Aggregator_Parabola)
 {
   // y^2 = 4*p*x with p = 2, so y^2 = 8x
-  Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(
+  occ::handle<Geom_Parabola> aGeomParabola = new Geom_Parabola(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -10.0, 10.0);
 
@@ -299,7 +296,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
 {
   // Hyperbola with major radius 10, minor radius 5
   // x = a*cosh(u), y = b*sinh(u)
-  Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(
+  occ::handle<Geom_Hyperbola> aGeomHyperbola = new Geom_Hyperbola(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
@@ -325,13 +322,13 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
 TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
 {
   // Create a cubic Bezier curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(3, 3, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve anAdaptor(aBezier);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -356,9 +353,9 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
 TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 {
   // Create a circle and its offset
-  Handle(Geom_Circle) aCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -379,9 +376,9 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
 {
   // Create a trimmed circle (quarter arc)
-  Handle(Geom_Circle) aCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  Handle(Geom_TrimmedCurve) aTrimmedCurve = new Geom_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
+  occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
   GeomAdaptor_Curve anAdaptor(aTrimmedCurve);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -408,7 +405,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
 {
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -428,7 +425,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_IsInitialized)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, 0.0, 100.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
@@ -533,7 +530,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Max)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Min)
 {
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -550,7 +547,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Max)
 {
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
     gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -568,21 +565,21 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Max)
 TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline_SearchMode_Min)
 {
   // Create a simple cubic BSpline
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 2, 0);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve anAdaptor(aBSpline);
 
   ExtremaPC_Curve anExtPC(anAdaptor);

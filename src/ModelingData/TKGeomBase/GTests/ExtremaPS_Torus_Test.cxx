@@ -401,7 +401,7 @@ TEST_F(ExtremaPS_TorusTest, Boundary_ExtremumOutsideRange)
 
 TEST_F(ExtremaPS_TorusTest, Aggregator_ToroidalSurface)
 {
-  Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(myTorus);
+  occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(myTorus);
   GeomAdaptor_Surface          anAdaptor(aGeomTorus);
   ExtremaPS_Surface            anExtPS(anAdaptor);
 
@@ -417,7 +417,7 @@ TEST_F(ExtremaPS_TorusTest, Aggregator_ToroidalSurface)
 
 TEST_F(ExtremaPS_TorusTest, Aggregator_WithSearchMode)
 {
-  Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(myTorus);
+  occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(myTorus);
   GeomAdaptor_Surface          anAdaptor(aGeomTorus);
   ExtremaPS_Surface            anExtPS(anAdaptor);
 

@@ -34,10 +34,6 @@
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
 #include <chrono>
 #include <cmath>
 #include <iomanip>
@@ -168,7 +164,7 @@ protected:
 
 TEST_F(ExtremaPC_ComparisonTest, Line_PointOnLine)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(5.0, 0.0, 0.0);
@@ -185,7 +181,7 @@ TEST_F(ExtremaPC_ComparisonTest, Line_PointOnLine)
 
 TEST_F(ExtremaPC_ComparisonTest, Line_PointOffLine)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(5.0, 3.0, 4.0);
@@ -204,7 +200,7 @@ TEST_F(ExtremaPC_ComparisonTest, Line_PointOffLine)
 
 TEST_F(ExtremaPC_ComparisonTest, Circle_PointOutside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -220,7 +216,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOutside)
 
 TEST_F(ExtremaPC_ComparisonTest, Circle_PointInside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -236,7 +232,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointInside)
 
 TEST_F(ExtremaPC_ComparisonTest, Circle_PointOffPlane)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -256,7 +252,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOffPlane)
 
 TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointOnMajorAxis)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -272,7 +268,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointOnMajorAxis)
 
 TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointGeneral)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -292,7 +288,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointGeneral)
 
 TEST_F(ExtremaPC_ComparisonTest, Parabola_PointNearVertex)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -10.0, 10.0);
 
@@ -312,7 +308,7 @@ TEST_F(ExtremaPC_ComparisonTest, Parabola_PointNearVertex)
 
 TEST_F(ExtremaPC_ComparisonTest, Hyperbola_PointNearBranch)
 {
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
@@ -332,21 +328,21 @@ TEST_F(ExtremaPC_ComparisonTest, Hyperbola_PointNearBranch)
 
 TEST_F(ExtremaPC_ComparisonTest, BSpline_CubicCurve)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 2, 0);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(1.5, 3.0, 0.0);
@@ -363,7 +359,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
 {
   // For degree 2, sum(mults) = n_poles + degree + 1 = 6 + 2 + 1 = 9
   // Using 4 knots with mults = 3,1,2,3 = 9
-  TColgp_Array1OfPnt aPoles(1, 6);
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(2, 0, 0);
@@ -371,19 +367,19 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
   aPoles(5) = gp_Pnt(4, 0, 0);
   aPoles(6) = gp_Pnt(5, 3, 0);
 
-  TColStd_Array1OfReal aKnots(1, 4);
+  NCollection_Array1<double> aKnots(1, 4);
   aKnots(1) = 0.0;
   aKnots(2) = 0.33;
   aKnots(3) = 0.67;
   aKnots(4) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 4);
+  NCollection_Array1<int> aMults(1, 4);
   aMults(1) = 3;
   aMults(2) = 1;
   aMults(3) = 2;
   aMults(4) = 3;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(3.0, 4.0, 0.0);
@@ -435,13 +431,13 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
 
 TEST_F(ExtremaPC_ComparisonTest, Bezier_CubicCurve)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(3, 3, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(2.0, 4.0, 0.0);
@@ -460,8 +456,8 @@ TEST_F(ExtremaPC_ComparisonTest, Bezier_CubicCurve)
 
 TEST_F(ExtremaPC_ComparisonTest, OffsetCircle)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve        anAdaptor(anOffsetCurve);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
@@ -480,7 +476,7 @@ TEST_F(ExtremaPC_ComparisonTest, OffsetCircle)
 
 TEST_F(ExtremaPC_ComparisonTest, Circle_RandomPoints)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -524,26 +520,26 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_RandomPoints)
 {
   // For degree 2, sum(mults) = n_poles + degree + 1 = 5 + 2 + 1 = 8
   // Using 4 knots with mults = 3,1,1,3 = 8
-  TColgp_Array1OfPnt aPoles(1, 5);
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 1);
   aPoles(3) = gp_Pnt(2, 1, 2);
   aPoles(4) = gp_Pnt(3, 3, 1);
   aPoles(5) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 4);
+  NCollection_Array1<double> aKnots(1, 4);
   aKnots(1) = 0.0;
   aKnots(2) = 0.33;
   aKnots(3) = 0.67;
   aKnots(4) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 4);
+  NCollection_Array1<int> aMults(1, 4);
   aMults(1) = 3;
   aMults(2) = 1;
   aMults(3) = 1;
   aMults(4) = 3;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   std::mt19937                          aGen(54321);
@@ -587,7 +583,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_RandomPoints)
 
 TEST_F(ExtremaPC_ComparisonTest, Performance_Circle)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -647,7 +643,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   constexpr int aDegree  = 3;
   constexpr int aNbKnots = aNbPoles - aDegree + 1; // 18 knots
 
-  TColgp_Array1OfPnt aPoles(1, aNbPoles);
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
     double t = (i - 1.0) / (aNbPoles - 1.0);
@@ -656,8 +652,8 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
                        std::cos(t * M_PI * 3) * 2.0);
   }
 
-  TColStd_Array1OfReal aKnots(1, aNbKnots);
-  TColStd_Array1OfInteger aMults(1, aNbKnots);
+  NCollection_Array1<double> aKnots(1, aNbKnots);
+  NCollection_Array1<int> aMults(1, aNbKnots);
   for (int i = 1; i <= aNbKnots; ++i)
   {
     aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
@@ -665,7 +661,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
     aMults(i) = (i == 1 || i == aNbKnots) ? aDegree + 1 : 1;
   }
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   std::mt19937                          aGen(22222);
@@ -744,7 +740,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
 
 TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -795,7 +791,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
 TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
 {
   // Create a high-degree Bezier curve (degree 15)
-  TColgp_Array1OfPnt aPoles(1, 16);
+  NCollection_Array1<gp_Pnt> aPoles(1, 16);
   for (int i = 1; i <= 16; ++i)
   {
     double t = (i - 1.0) / 15.0;
@@ -804,7 +800,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
                        std::cos(t * M_PI * 2) * 3.0);
   }
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   std::mt19937                          aGen(44444);
@@ -887,7 +883,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
 
 TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_Circle)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -907,21 +903,21 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_Circle)
 
 TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_BSpline)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 2, 0);
   aPoles(4) = gp_Pnt(3, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   // Point on curve at u=0.5
@@ -948,7 +944,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
   constexpr int aDegree  = 3;
   constexpr int aNbKnots = aNbPoles - aDegree + 1; // 8 knots
 
-  TColgp_Array1OfPnt aPoles(1, aNbPoles);
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
     double t = (i - 1.0) / (aNbPoles - 1.0);
@@ -957,18 +953,18 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
                        0.0); // Planar curve for offset
   }
 
-  TColStd_Array1OfReal aKnots(1, aNbKnots);
-  TColStd_Array1OfInteger aMults(1, aNbKnots);
+  NCollection_Array1<double> aKnots(1, aNbKnots);
+  NCollection_Array1<int> aMults(1, aNbKnots);
   for (int i = 1; i <= aNbKnots; ++i)
   {
     aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
     aMults(i) = (i == 1 || i == aNbKnots) ? aDegree + 1 : 1;
   }
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
 
   // Create offset curve with offset = 2.0
-  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aBSpline, 2.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aBSpline, 2.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   std::mt19937                     aGen(55555);

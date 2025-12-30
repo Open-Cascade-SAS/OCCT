@@ -92,7 +92,7 @@ protected:
     myAdaptor.Load(myTorus);
   }
 
-  Handle(Geom_ToroidalSurface) myTorus;
+  occ::handle<Geom_ToroidalSurface> myTorus;
   GeomAdaptor_Surface          myAdaptor;
 };
 
@@ -145,7 +145,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, PointDiagonal)
 TEST_F(ExtremaPS_TorusComparisonTest, LargeTorus_PointOutside)
 {
   gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 10.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(80.0, 0.0, 0.0);
@@ -156,7 +156,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, ThinTorus_PointNear)
 {
   // Major radius 10, minor radius 1 (thin ring)
   gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 1.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(12.0, 0.0, 0.0);
@@ -167,7 +167,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, ThickTorus_PointInside)
 {
   // Major radius 10, minor radius 8 (almost sphere-like, thick tube)
   gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 8.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(5.0, 0.0, 3.0);
@@ -181,7 +181,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, ThickTorus_PointInside)
 TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_XAxis)
 {
   gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0, 3.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(5.0, 15.0, 0.0);
@@ -192,7 +192,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_Diagonal)
 {
   gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
   gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 10.0, 3.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);
@@ -206,7 +206,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_Diagonal)
 TEST_F(ExtremaPS_TorusComparisonTest, TranslatedTorus_PointNear)
 {
   gp_Torus aTorus(gp_Ax3(gp_Pnt(50, 50, 20), gp_Dir(0, 0, 1)), 10.0, 3.0);
-  Handle(Geom_ToroidalSurface) aSurf = new Geom_ToroidalSurface(aTorus);
+  occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
   GeomAdaptor_Surface          anAdaptor(aSurf);
 
   gp_Pnt aP(60.0, 50.0, 20.0);

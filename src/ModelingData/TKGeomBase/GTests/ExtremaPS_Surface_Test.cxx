@@ -38,9 +38,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 
 #include <cmath>
 #include <vector>
@@ -284,7 +281,7 @@ TEST_F(ExtremaPS_SurfaceTest, Torus_PointOnAxis_Degenerate)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_Plane)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane, -100.0, 100.0, -100.0, 100.0);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -302,7 +299,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_Plane)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_Cylinder)
 {
-  Handle(Geom_CylindricalSurface) aGeomCylinder = new Geom_CylindricalSurface(
+  occ::handle<Geom_CylindricalSurface> aGeomCylinder = new Geom_CylindricalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomCylinder, 0.0, 2.0 * M_PI, 0.0, 20.0);
 
@@ -321,7 +318,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_Cylinder)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_Sphere)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
+  occ::handle<Geom_SphericalSurface> aGeomSphere = new Geom_SphericalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
 
@@ -339,7 +336,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_Sphere)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_Cone)
 {
-  Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(
+  occ::handle<Geom_ConicalSurface> aGeomCone = new Geom_ConicalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0, 0.0);
   GeomAdaptor_Surface anAdaptor(aGeomCone, 0.0, 2.0 * M_PI, 0.0, 20.0);
 
@@ -355,7 +352,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_Cone)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_Torus)
 {
-  Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(
+  occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 5.0);
   GeomAdaptor_Surface anAdaptor(aGeomTorus);
 
@@ -375,7 +372,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_Torus)
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_BezierSurface)
 {
   // Create a simple 3x3 Bezier surface (degree 2 x 2)
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
   aPoles(1, 2) = gp_Pnt(0, 5, 0);
   aPoles(1, 3) = gp_Pnt(0, 10, 0);
@@ -386,7 +383,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_BezierSurface)
   aPoles(3, 2) = gp_Pnt(10, 5, 0);
   aPoles(3, 3) = gp_Pnt(10, 10, 0);
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomAdaptor_Surface anAdaptor(aBezier);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -411,7 +408,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_BezierSurface)
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_BSplineSurface)
 {
   // Create a simple 4x4 BSpline surface (degree 3 x 3)
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -421,23 +418,23 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_BSplineSurface)
     }
   }
 
-  TColStd_Array1OfReal aUKnots(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2);
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
 
-  TColStd_Array1OfReal aVKnots(1, 2);
+  NCollection_Array1<double> aVKnots(1, 2);
   aVKnots(1) = 0.0;
   aVKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aUMults(1, 2);
+  NCollection_Array1<int> aUMults(1, 2);
   aUMults(1) = 4;
   aUMults(2) = 4;
 
-  TColStd_Array1OfInteger aVMults(1, 2);
+  NCollection_Array1<int> aVMults(1, 2);
   aVMults(1) = 4;
   aVMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(
     aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
@@ -466,7 +463,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_BSplineSurface)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_ConstructWithDomain)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   // Construct with explicit domain
@@ -518,7 +515,7 @@ TEST_F(ExtremaPS_SurfaceTest, Sphere_SearchMode_Max)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Min)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere =
+  occ::handle<Geom_SphericalSurface> aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
   ExtremaPS_Surface   anExtPS(anAdaptor);
@@ -535,7 +532,7 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Max)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere =
+  occ::handle<Geom_SphericalSurface> aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
   ExtremaPS_Surface   anExtPS(anAdaptor);
@@ -821,7 +818,7 @@ TEST_F(ExtremaPS_SurfaceTest, Plane_VerySmallRange)
 TEST_F(ExtremaPS_SurfaceTest, BSpline_SmallPatch)
 {
   // Create a simple 4x4 BSpline surface
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -830,19 +827,19 @@ TEST_F(ExtremaPS_SurfaceTest, BSpline_SmallPatch)
     }
   }
 
-  TColStd_Array1OfReal aUKnots(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2);
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
 
-  TColStd_Array1OfReal aVKnots(1, 2);
+  NCollection_Array1<double> aVKnots(1, 2);
   aVKnots(1) = 0.0;
   aVKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aMults, aMults, 3, 3);
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aMults, aMults, 3, 3);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -997,7 +994,7 @@ TEST_F(ExtremaPS_SurfaceTest, Torus_SymmetricPoint)
 TEST_F(ExtremaPS_SurfaceTest, BezierSurface_SaddlePoint)
 {
   // Create a saddle-shaped Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   aPoles(1, 1) = gp_Pnt(0, 0, 1);
   aPoles(1, 2) = gp_Pnt(0, 5, 0);
   aPoles(1, 3) = gp_Pnt(0, 10, 1);
@@ -1008,7 +1005,7 @@ TEST_F(ExtremaPS_SurfaceTest, BezierSurface_SaddlePoint)
   aPoles(3, 2) = gp_Pnt(10, 5, 0);
   aPoles(3, 3) = gp_Pnt(10, 10, 1);
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomAdaptor_Surface anAdaptor(aBezier);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1028,7 +1025,7 @@ TEST_F(ExtremaPS_SurfaceTest, BezierSurface_SaddlePoint)
 TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_MultiplePeaks)
 {
   // Create a wavy BSpline surface with multiple local extrema
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -1039,15 +1036,15 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_MultiplePeaks)
     }
   }
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1114,8 +1111,8 @@ TEST_F(ExtremaPS_SurfaceTest, Cylinder_PartialDomain)
 TEST_F(ExtremaPS_SurfaceTest, OffsetSurface_FromPlane)
 {
   // Create offset surface from a plane
-  Handle(Geom_Plane) aBasePlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aBasePlane, 5.0);
+  occ::handle<Geom_Plane> aBasePlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aBasePlane, 5.0);
   GeomAdaptor_Surface anAdaptor(anOffset, -10.0, 10.0, -10.0, 10.0);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1138,7 +1135,7 @@ TEST_F(ExtremaPS_SurfaceTest, OffsetSurface_FromPlane)
 TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_MultipleQueries)
 {
   // Create a BSpline surface
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -1148,15 +1145,15 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_MultipleQueries)
     }
   }
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1228,7 +1225,7 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_HighDegree)
   // Create a degree 5 BSpline surface (requires 6x6 poles minimum)
   const int aDegree = 5;
   const int aNbPoles = aDegree + 1;
-  TColgp_Array2OfPnt aPoles(1, aNbPoles, 1, aNbPoles);
+  NCollection_Array2<gp_Pnt> aPoles(1, aNbPoles, 1, aNbPoles);
 
   for (int i = 1; i <= aNbPoles; ++i)
   {
@@ -1239,15 +1236,15 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_HighDegree)
     }
   }
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = aNbPoles;
   aMults(2) = aNbPoles;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, aDegree, aDegree);
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, aDegree, aDegree);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1273,7 +1270,7 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_HighDegree)
 TEST_F(ExtremaPS_SurfaceTest, BezierSurface_AlmostFlatRegion)
 {
   // Create a nearly flat Bezier surface with slight bump in corner
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
   aPoles(1, 2) = gp_Pnt(0, 5, 0);
   aPoles(1, 3) = gp_Pnt(0, 10, 0);
@@ -1284,7 +1281,7 @@ TEST_F(ExtremaPS_SurfaceTest, BezierSurface_AlmostFlatRegion)
   aPoles(3, 2) = gp_Pnt(10, 5, 0);
   aPoles(3, 3) = gp_Pnt(10, 10, 0);
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomAdaptor_Surface anAdaptor(aBezier);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -1302,7 +1299,7 @@ TEST_F(ExtremaPS_SurfaceTest, BezierSurface_AlmostFlatRegion)
 TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_NarrowValley)
 {
   // Create a BSpline surface with a narrow valley
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -1317,15 +1314,15 @@ TEST_F(ExtremaPS_SurfaceTest, BSplineSurface_NarrowValley)
     }
   }
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineSurface) aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
+  occ::handle<Geom_BSplineSurface> aBSpline = new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 3, 3);
   GeomAdaptor_Surface anAdaptor(aBSpline);
 
   ExtremaPS_Surface anExtPS(anAdaptor);

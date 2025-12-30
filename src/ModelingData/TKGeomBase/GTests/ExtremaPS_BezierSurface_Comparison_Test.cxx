@@ -20,7 +20,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 
 #include <cmath>
 
@@ -60,9 +59,9 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
 }
 
 //! Create a flat Bezier surface (planar-like)
-Handle(Geom_BezierSurface) MakeFlatBezier()
+occ::handle<Geom_BezierSurface> MakeFlatBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
   {
     for (int j = 1; j <= 3; ++j)
@@ -74,9 +73,9 @@ Handle(Geom_BezierSurface) MakeFlatBezier()
 }
 
 //! Create a dome-like Bezier surface
-Handle(Geom_BezierSurface) MakeDomeBezier()
+occ::handle<Geom_BezierSurface> MakeDomeBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   // Create a 3x3 grid with center raised
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
   aPoles(1, 2) = gp_Pnt(0, 5, 2);
@@ -94,9 +93,9 @@ Handle(Geom_BezierSurface) MakeDomeBezier()
 }
 
 //! Create a saddle-like Bezier surface
-Handle(Geom_BezierSurface) MakeSaddleBezier()
+occ::handle<Geom_BezierSurface> MakeSaddleBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   // Create saddle: corners up, sides down, center at origin level
   aPoles(1, 1) = gp_Pnt(0, 0, 5);
   aPoles(1, 2) = gp_Pnt(0, 5, -2);
@@ -114,9 +113,9 @@ Handle(Geom_BezierSurface) MakeSaddleBezier()
 }
 
 //! Create a wavy Bezier surface (higher degree)
-Handle(Geom_BezierSurface) MakeWavyBezier()
+occ::handle<Geom_BezierSurface> MakeWavyBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -145,10 +144,10 @@ protected:
     myWavySurface   = MakeWavyBezier();
   }
 
-  Handle(Geom_BezierSurface) myFlatSurface;
-  Handle(Geom_BezierSurface) myDomeSurface;
-  Handle(Geom_BezierSurface) mySaddleSurface;
-  Handle(Geom_BezierSurface) myWavySurface;
+  occ::handle<Geom_BezierSurface> myFlatSurface;
+  occ::handle<Geom_BezierSurface> myDomeSurface;
+  occ::handle<Geom_BezierSurface> mySaddleSurface;
+  occ::handle<Geom_BezierSurface> myWavySurface;
 };
 
 //==================================================================================================

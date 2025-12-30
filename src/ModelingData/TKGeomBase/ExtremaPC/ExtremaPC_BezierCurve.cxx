@@ -17,7 +17,7 @@
 
 //==================================================================================================
 
-ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve)
+ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve)
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain{theCurve->FirstParameter(), theCurve->LastParameter()},
@@ -28,7 +28,7 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& the
 
 //==================================================================================================
 
-ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve,
+ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve,
                                              const ExtremaPC::Domain1D&      theDomain)
     : myCurve(theCurve),
       myAdaptor(theCurve),

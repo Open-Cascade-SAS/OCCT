@@ -379,7 +379,7 @@ TEST_F(ExtremaPS_SphereTest, LargeTolerance)
 
 TEST_F(ExtremaPS_SphereTest, Aggregator_Basic)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
+  occ::handle<Geom_SphericalSurface> aGeomSphere = new Geom_SphericalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
 
@@ -397,7 +397,7 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_Basic)
 
 TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Min)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere =
+  occ::handle<Geom_SphericalSurface> aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
   ExtremaPS_Surface   anExtPS(anAdaptor);
@@ -413,7 +413,7 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Max)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere =
+  occ::handle<Geom_SphericalSurface> aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
   ExtremaPS_Surface   anExtPS(anAdaptor);

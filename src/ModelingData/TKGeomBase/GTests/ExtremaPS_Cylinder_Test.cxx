@@ -403,7 +403,7 @@ TEST_F(ExtremaPS_CylinderTest, ModesConsistency)
 
 TEST_F(ExtremaPS_CylinderTest, Aggregator_Basic)
 {
-  Handle(Geom_CylindricalSurface) aGeomCylinder = new Geom_CylindricalSurface(
+  occ::handle<Geom_CylindricalSurface> aGeomCylinder = new Geom_CylindricalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomCylinder, 0.0, 2.0 * M_PI, 0.0, 20.0);
 

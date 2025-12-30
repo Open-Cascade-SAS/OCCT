@@ -18,7 +18,7 @@
 
 //==================================================================================================
 
-ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve)
+ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve)
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain{theCurve->FirstParameter(), theCurve->LastParameter()}
@@ -28,7 +28,7 @@ ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& 
 
 //==================================================================================================
 
-ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve,
+ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve,
                                                const ExtremaPC::Domain1D&       theDomain)
     : myCurve(theCurve),
       myAdaptor(theCurve),
@@ -51,7 +51,7 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
   const double theUMax = myDomain.Max;
 
   const int                   aDegree = myCurve->Degree();
-  const TColStd_Array1OfReal& aKnots  = myCurve->Knots();
+  const NCollection_Array1<double>& aKnots  = myCurve->Knots();
 
   // First pass: count parameters
   int aCount = 1; // Start with theUMin

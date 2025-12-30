@@ -49,13 +49,13 @@ public:
   //! Constructor with Bezier curve (uses full curve domain).
   //! Grid is built eagerly at construction time.
   //! @param[in] theCurve Bezier curve handle
-  Standard_EXPORT explicit ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve);
+  Standard_EXPORT explicit ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve);
 
   //! Constructor with Bezier curve and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theCurve Bezier curve handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
-  Standard_EXPORT ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve,
+  Standard_EXPORT ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve,
                                         const ExtremaPC::Domain1D&      theDomain);
 
   //! Copy constructor is deleted.
@@ -104,13 +104,13 @@ public:
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
   //! Returns the Bezier curve.
-  const Handle(Geom_BezierCurve)& Curve() const { return myCurve; }
+  const occ::handle<Geom_BezierCurve>& Curve() const { return myCurve; }
 
 private:
   //! Build grid for the curve.
   void buildGrid();
 
-  Handle(Geom_BezierCurve) myCurve;     //!< Bezier curve
+  occ::handle<Geom_BezierCurve> myCurve;     //!< Bezier curve
   GeomAdaptor_Curve        myAdaptor;   //!< Curve adaptor
   ExtremaPC::Domain1D      myDomain;    //!< Parameter domain (fixed)
   int                      myNbSamples; //!< Number of samples

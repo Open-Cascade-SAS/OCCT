@@ -50,13 +50,13 @@ public:
   //! Constructor with BSpline curve (uses full curve domain).
   //! Grid is built eagerly at construction time.
   //! @param[in] theCurve BSpline curve handle
-  Standard_EXPORT explicit ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve);
+  Standard_EXPORT explicit ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve);
 
   //! Constructor with BSpline curve and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theCurve BSpline curve handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
-  Standard_EXPORT ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve,
+  Standard_EXPORT ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve,
                                          const ExtremaPC::Domain1D&       theDomain);
 
   //! Copy constructor is deleted.
@@ -105,7 +105,7 @@ public:
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
   //! Returns the BSpline curve.
-  const Handle(Geom_BSplineCurve)& Curve() const { return myCurve; }
+  const occ::handle<Geom_BSplineCurve>& Curve() const { return myCurve; }
 
 private:
   //! Build knot-aware parameter array for grid sampling.
@@ -116,7 +116,7 @@ private:
   //! Build grid for the curve.
   void buildGrid();
 
-  Handle(Geom_BSplineCurve) myCurve;   //!< BSpline curve
+  occ::handle<Geom_BSplineCurve> myCurve;   //!< BSpline curve
   GeomAdaptor_Curve         myAdaptor; //!< Curve adaptor
   ExtremaPC::Domain1D       myDomain;  //!< Parameter domain (fixed)
 

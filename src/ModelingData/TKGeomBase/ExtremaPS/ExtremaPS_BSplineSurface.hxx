@@ -42,13 +42,13 @@ public:
   //! Constructor from BSpline surface handle (uses full surface domain).
   //! Grid is built eagerly at construction time.
   //! @param[in] theSurface BSpline surface handle
-  Standard_EXPORT explicit ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface);
+  Standard_EXPORT explicit ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface);
 
   //! Constructor with BSpline surface and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theSurface BSpline surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
-  Standard_EXPORT ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface,
+  Standard_EXPORT ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface,
                                            const ExtremaPS::Domain2D&         theDomain);
 
   //! @name Surface Evaluation
@@ -93,7 +93,7 @@ public:
   //! @}
 
   //! Returns the surface handle.
-  const Handle(Geom_BSplineSurface)& Surface() const { return mySurface; }
+  const occ::handle<Geom_BSplineSurface>& Surface() const { return mySurface; }
 
   //! Returns the parameter domain.
   const ExtremaPS::Domain2D& Domain() const { return myDomain; }
@@ -103,13 +103,13 @@ private:
   void buildGrid();
 
 private:
-  Handle(Geom_BSplineSurface) mySurface; //!< Surface geometry
+  occ::handle<Geom_BSplineSurface> mySurface; //!< Surface geometry
   GeomAdaptor_Surface         myAdaptor; //!< Surface adaptor (cached)
   ExtremaPS::Domain2D         myDomain;  //!< Parameter domain (fixed at construction)
 
   // Knot vectors for knot-aware sampling
-  TColStd_Array1OfReal myUKnots; //!< U knot vector
-  TColStd_Array1OfReal myVKnots; //!< V knot vector
+  NCollection_Array1<double> myUKnots; //!< U knot vector
+  NCollection_Array1<double> myVKnots; //!< V knot vector
   int                  myUDegree = 0; //!< U degree
   int                  myVDegree = 0; //!< V degree
 

@@ -93,14 +93,14 @@ public:
   //! For non-trimmed curves, does NOT set domain (uses natural/unbounded behavior).
   //! For trimmed curves, uses the trimmed bounds as domain.
   //! @param[in] theCurve geometric curve handle
-  Standard_EXPORT explicit ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve);
+  Standard_EXPORT explicit ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve);
 
   //! Constructor with Geom_Curve and parameter range.
   //! For trimmed curves, intersects input bounds with trimmed bounds.
   //! @param[in] theCurve geometric curve handle
   //! @param[in] theUMin lower parameter bound
   //! @param[in] theUMax upper parameter bound
-  Standard_EXPORT ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theUMin, double theUMax);
+  Standard_EXPORT ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve, double theUMin, double theUMax);
 
   //! Copy constructor is deleted.
   ExtremaPC_Curve(const ExtremaPC_Curve&) = delete;
@@ -144,11 +144,11 @@ private:
   //! Handles all curve type detection and evaluator creation.
   //! @param[in] theCurve the curve to initialize from (must not be null)
   //! @param[in] theDomain optional domain to use
-  void initFromGeomCurve(const Handle(Geom_Curve)&                theCurve,
+  void initFromGeomCurve(const occ::handle<Geom_Curve>&                theCurve,
                          const std::optional<ExtremaPC::Domain1D>& theDomain);
 
   EvaluatorVariant          myEvaluator; //!< Specialized evaluator
-  Handle(GeomAdaptor_Curve) myAdaptor;   //!< Stored adaptor for Geom-based construction
+  occ::handle<GeomAdaptor_Curve> myAdaptor;   //!< Stored adaptor for Geom-based construction
 };
 
 #endif // _ExtremaPC_Curve_HeaderFile

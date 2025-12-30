@@ -93,7 +93,7 @@ protected:
     myAdaptor.Load(myCylinder);
   }
 
-  Handle(Geom_CylindricalSurface) myCylinder;
+  occ::handle<Geom_CylindricalSurface> myCylinder;
   GeomAdaptor_Surface             myAdaptor;
 };
 
@@ -138,7 +138,7 @@ TEST_F(ExtremaPS_CylinderComparisonTest, PointDiagonal)
 TEST_F(ExtremaPS_CylinderComparisonTest, LargeRadius_PointOutside)
 {
   gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
-  Handle(Geom_CylindricalSurface) aSurf = new Geom_CylindricalSurface(aCyl);
+  occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
   GeomAdaptor_Surface anAdaptor(aSurf);
 
   gp_Pnt aP(100.0, 0.0, 0.0);
@@ -148,7 +148,7 @@ TEST_F(ExtremaPS_CylinderComparisonTest, LargeRadius_PointOutside)
 TEST_F(ExtremaPS_CylinderComparisonTest, SmallRadius_PointNear)
 {
   gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
-  Handle(Geom_CylindricalSurface) aSurf = new Geom_CylindricalSurface(aCyl);
+  occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
   GeomAdaptor_Surface anAdaptor(aSurf);
 
   gp_Pnt aP(1.0, 0.0, 0.0);
@@ -162,7 +162,7 @@ TEST_F(ExtremaPS_CylinderComparisonTest, SmallRadius_PointNear)
 TEST_F(ExtremaPS_CylinderComparisonTest, TiltedCylinder_XAxis)
 {
   gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0);
-  Handle(Geom_CylindricalSurface) aSurf = new Geom_CylindricalSurface(aCyl);
+  occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
   GeomAdaptor_Surface anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 0.0);
@@ -173,7 +173,7 @@ TEST_F(ExtremaPS_CylinderComparisonTest, TiltedCylinder_Diagonal)
 {
   gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
   gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 5.0);
-  Handle(Geom_CylindricalSurface) aSurf = new Geom_CylindricalSurface(aCyl);
+  occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
   GeomAdaptor_Surface anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);

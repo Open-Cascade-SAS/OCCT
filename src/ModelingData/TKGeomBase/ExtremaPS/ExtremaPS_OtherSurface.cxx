@@ -24,7 +24,7 @@ constexpr int THE_NB_V_SAMPLES = 32;
 
 //==================================================================================================
 
-ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface)
+ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain{myAdaptor.FirstUParameter(), myAdaptor.LastUParameter(),
@@ -36,7 +36,7 @@ ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSu
 
 //==================================================================================================
 
-ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface,
+ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface,
                                                const ExtremaPS::Domain2D&  theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),

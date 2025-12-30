@@ -37,9 +37,6 @@
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <cmath>
 #include <random>
@@ -133,7 +130,7 @@ protected:
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Translated)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1)), 25.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -151,7 +148,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XY_Plane)
 {
   // Circle in XY plane, rotated 45 degrees
   gp_Dir aNormal(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0);
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 15.0);
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 15.0);
   GeomAdaptor_Curve   anAdaptor(aGeomCircle);
 
   gp_Pnt aPoint(20.0, 20.0, 5.0);
@@ -167,7 +164,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XY_Plane)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XZ_Plane)
 {
   // Circle in XZ plane
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -184,7 +181,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XZ_Plane)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_YZ_Plane)
 {
   // Circle in YZ plane
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -202,7 +199,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Arbitrary_Orientation)
 {
   // Circle with arbitrary orientation
   gp_Dir aNormal(1, 1, 1);
-  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(10, 20, 30), aNormal), 8.0);
+  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(10, 20, 30), aNormal), 8.0);
   GeomAdaptor_Curve   anAdaptor(aGeomCircle);
 
   gp_Pnt aPoint(15.0, 25.0, 35.0);
@@ -217,7 +214,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Arbitrary_Orientation)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VerySmall)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.001);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -233,7 +230,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VerySmall)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VeryLarge)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1000.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -253,7 +250,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VeryLarge)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Translated)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(50, 100, 25), gp_Dir(0, 0, 1)), 30.0, 15.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -270,7 +267,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Translated)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Rotated)
 {
   gp_Dir aNormal(0, 1, 0); // In XZ plane
-  Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 20.0, 8.0);
+  occ::handle<Geom_Ellipse> aGeomEllipse = new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 20.0, 8.0);
   GeomAdaptor_Curve    anAdaptor(aGeomEllipse);
 
   gp_Pnt aPoint(25.0, 10.0, 5.0);
@@ -286,7 +283,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Rotated)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_HighEccentricity)
 {
   // Very elongated ellipse (major = 50, minor = 2)
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -303,7 +300,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_HighEccentricity)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_NearlyCircular)
 {
   // Nearly circular ellipse (major = 10.1, minor = 10.0)
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.1, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -323,7 +320,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_NearlyCircular)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Diagonal)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(10.0, 0.0, 0.0);
@@ -338,7 +335,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Diagonal)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Arbitrary)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(10, 20, 30), gp_Dir(2, 3, 1));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(10, 20, 30), gp_Dir(2, 3, 1));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -50.0, 50.0);
 
   gp_Pnt aPoint(25.0, 35.0, 40.0);
@@ -353,7 +350,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Arbitrary)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_PointOnLine)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(50.0, 0.0, 0.0); // Exactly on line
@@ -373,7 +370,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Line_PointOnLine)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_Translated)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(10, 20, 0), gp_Dir(0, 0, 1)), 3.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -15.0, 15.0);
 
@@ -389,7 +386,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_Translated)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_InXZPlane)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -10.0, 10.0);
 
@@ -405,7 +402,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_InXZPlane)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_SmallFocalLength)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -5.0, 5.0);
 
@@ -421,7 +418,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_SmallFocalLength)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_LargeFocalLength)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -100.0, 100.0);
 
@@ -441,7 +438,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_LargeFocalLength)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_Translated)
 {
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(50, 50, 0), gp_Dir(0, 0, 1)), 15.0, 8.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -1.5, 1.5);
 
@@ -457,7 +454,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_Translated)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_InXZPlane)
 {
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
@@ -474,7 +471,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_InXZPlane)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_HighEccentricity)
 {
   // Hyperbola with high eccentricity (a >> b)
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 30.0, 3.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -1.0, 1.0);
 
@@ -503,25 +500,25 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_HighEccentricity)
 TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Linear)
 {
   // Degree 1 BSpline (linear segments)
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 1, 0);
   aPoles(3) = gp_Pnt(2, 0, 0);
   aPoles(4) = gp_Pnt(3, 1, 0);
 
-  TColStd_Array1OfReal aKnots(1, 4);
+  NCollection_Array1<double> aKnots(1, 4);
   aKnots(1) = 0.0;
   aKnots(2) = 0.33;
   aKnots(3) = 0.67;
   aKnots(4) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 4);
+  NCollection_Array1<int> aMults(1, 4);
   aMults(1) = 2;
   aMults(2) = 1;
   aMults(3) = 1;
   aMults(4) = 2;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(1.5, 1.5, 0.0);
@@ -537,24 +534,24 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Linear)
 TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Quadratic)
 {
   // Degree 2 BSpline
-  TColgp_Array1OfPnt aPoles(1, 5);
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(2, 0, 0);
   aPoles(4) = gp_Pnt(3, 2, 0);
   aPoles(5) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 3);
+  NCollection_Array1<double> aKnots(1, 3);
   aKnots(1) = 0.0;
   aKnots(2) = 0.5;
   aKnots(3) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 3);
+  NCollection_Array1<int> aMults(1, 3);
   aMults(1) = 3;
   aMults(2) = 2;
   aMults(3) = 3;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 2.5, 0.0);
@@ -570,7 +567,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Quadratic)
 TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_3D_Helix)
 {
   // 3D helix-like BSpline
-  TColgp_Array1OfPnt aPoles(1, 7);
+  NCollection_Array1<gp_Pnt> aPoles(1, 7);
   aPoles(1) = gp_Pnt(10, 0, 0);
   aPoles(2) = gp_Pnt(7, 7, 5);
   aPoles(3) = gp_Pnt(0, 10, 10);
@@ -579,15 +576,15 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_3D_Helix)
   aPoles(6) = gp_Pnt(-7, -7, 25);
   aPoles(7) = gp_Pnt(0, -10, 30);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 7;
   aMults(2) = 7;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 6);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 6);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(0.0, 0.0, 15.0);
@@ -606,12 +603,12 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_3D_Helix)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_Quadratic)
 {
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(5, 10, 0);
   aPoles(3) = gp_Pnt(10, 0, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(5.0, 8.0, 0.0);
@@ -627,7 +624,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_Quadratic)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_HighDegree)
 {
   // Degree 6 Bezier
-  TColgp_Array1OfPnt aPoles(1, 7);
+  NCollection_Array1<gp_Pnt> aPoles(1, 7);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(2, -1, 0);
@@ -636,7 +633,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_HighDegree)
   aPoles(6) = gp_Pnt(5, 2, 0);
   aPoles(7) = gp_Pnt(6, 1, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(3.0, 3.0, 0.0);
@@ -652,13 +649,13 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_HighDegree)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_3D_SCurve)
 {
   // 3D S-curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(3, 5, 2);
   aPoles(3) = gp_Pnt(6, 0, 4);
   aPoles(4) = gp_Pnt(9, 5, 6);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(4.5, 3.0, 3.0);
@@ -677,9 +674,9 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_3D_SCurve)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetEllipse)
 {
-  Handle(Geom_Ellipse) aBaseEllipse =
+  occ::handle<Geom_Ellipse> aBaseEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve =
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
     new Geom_OffsetCurve(aBaseEllipse, 3.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
@@ -695,14 +692,14 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetEllipse)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetBezier)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(2, 4, 0);
   aPoles(3) = gp_Pnt(4, 4, 0);
   aPoles(4) = gp_Pnt(6, 0, 0);
 
-  Handle(Geom_BezierCurve) aBaseBezier = new Geom_BezierCurve(aPoles);
-  Handle(Geom_OffsetCurve) anOffsetCurve =
+  occ::handle<Geom_BezierCurve> aBaseBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
     new Geom_OffsetCurve(aBaseBezier, 1.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
@@ -719,9 +716,9 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetBezier)
 TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetNegative)
 {
   // Offset with negative distance (inside)
-  Handle(Geom_Circle) aBaseCircle =
+  occ::handle<Geom_Circle> aBaseCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 15.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve =
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
     new Geom_OffsetCurve(aBaseCircle, -5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
@@ -742,7 +739,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetNegative)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_FirstQuadrant)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle, 0.0, M_PI / 2.0);
 
@@ -760,7 +757,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_FirstQuadrant)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_ThirdQuadrant)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle, M_PI, 3.0 * M_PI / 2.0);
 
@@ -778,7 +775,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_ThirdQuadrant)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, EllipseArc_SemiEllipse)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse, 0.0, M_PI);
 
@@ -799,7 +796,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, EllipseArc_SemiEllipse)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_Circle)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -814,21 +811,21 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_Circle)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_BSpline)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   // Point exactly on curve at t=0.5
@@ -843,7 +840,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_BSpline)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryFar)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -859,7 +856,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryFar)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryClose)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -880,7 +877,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryClose)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -924,7 +921,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -968,7 +965,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Parabola_100Points)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -20.0, 20.0);
 

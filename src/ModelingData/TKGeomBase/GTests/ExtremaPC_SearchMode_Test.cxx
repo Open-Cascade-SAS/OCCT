@@ -32,9 +32,6 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <cmath>
 #include <random>
@@ -134,7 +131,7 @@ protected:
 
 TEST_F(ExtremaPC_SearchModeTest, Line_MinMode)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(25.0, 10.0, 0.0);
@@ -158,7 +155,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MaxMode)
 {
   // For bounded lines, Max mode with endpoints includes endpoint maxima.
   // The maximum distance is at the farthest endpoint, not the perpendicular projection.
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -50.0, 50.0);
 
   gp_Pnt aPoint(0.0, 10.0, 0.0);
@@ -180,7 +177,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Line_MinMaxMode)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -50.0, 50.0);
 
   gp_Pnt aPoint(10.0, 5.0, 0.0);
@@ -206,7 +203,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MinMaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointOutside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -229,7 +226,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointOutside)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointOutside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -252,7 +249,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointOutside)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointInside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -270,7 +267,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointInside)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointInside)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -288,7 +285,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointInside)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_MinMaxMode)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -315,7 +312,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_PartialArc_MinMode)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   // Only first quadrant: 0 to PI/2
   GeomAdaptor_Curve anAdaptor(aGeomCircle, 0.0, M_PI / 2.0);
@@ -340,7 +337,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_PartialArc_MaxMode)
   // NOTE: Max mode for partial arcs may not find extrema if the max is at an
   // endpoint (which is not a true extremum in the mathematical sense).
   // This test verifies the implementation completes successfully.
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   // Only first quadrant: 0 to PI/2
   GeomAdaptor_Curve anAdaptor(aGeomCircle, 0.0, M_PI / 2.0);
@@ -371,7 +368,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_PartialArc_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_OnMajorAxis)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -394,7 +391,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_OnMajorAxis)
 
 TEST_F(ExtremaPC_SearchModeTest, Ellipse_MaxMode_OnMajorAxis)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -417,7 +414,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MaxMode_OnMajorAxis)
 
 TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_General)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -438,7 +435,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_General)
 
 TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMaxMode)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -467,7 +464,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_AtVertex)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -20.0, 20.0);
 
@@ -488,7 +485,7 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_AtVertex)
 
 TEST_F(ExtremaPC_SearchModeTest, Parabola_MaxMode)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -20.0, 20.0);
 
@@ -515,7 +512,7 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_OffAxis)
 {
-  Handle(Geom_Parabola) aGeomParabola =
+  occ::handle<Geom_Parabola> aGeomParabola =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -20.0, 20.0);
 
@@ -540,7 +537,7 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_OffAxis)
 
 TEST_F(ExtremaPC_SearchModeTest, Hyperbola_MinMode)
 {
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
@@ -563,7 +560,7 @@ TEST_F(ExtremaPC_SearchModeTest, Hyperbola_MaxMode)
 {
   // NOTE: Max mode for bounded curves may not find extrema if the max is at
   // an endpoint (which is not a true extremum in the mathematical sense).
-  Handle(Geom_Hyperbola) aGeomHyperbola =
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
@@ -591,21 +588,21 @@ TEST_F(ExtremaPC_SearchModeTest, Hyperbola_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMode)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 3.0, 0.0);
@@ -627,21 +624,21 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMode)
 TEST_F(ExtremaPC_SearchModeTest, BSpline_MaxMode)
 {
   // NOTE: Max mode for BSpline may not find extrema if the max is at an endpoint.
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 1.0, 0.0);
@@ -664,21 +661,21 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMaxMode)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 1.5, 0.0);
@@ -715,13 +712,13 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Bezier_MinMode)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(3, 3, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(2.0, 4.0, 0.0);
@@ -741,13 +738,13 @@ TEST_F(ExtremaPC_SearchModeTest, Bezier_MinMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Bezier_MaxMode)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 3, 0);
   aPoles(3) = gp_Pnt(3, 3, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   gp_Pnt aPoint(2.0, 1.0, 0.0);
@@ -772,9 +769,9 @@ TEST_F(ExtremaPC_SearchModeTest, Bezier_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, OffsetCircle_MinMode)
 {
-  Handle(Geom_Circle) aBaseCircle =
+  occ::handle<Geom_Circle> aBaseCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aBaseCircle, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aBaseCircle, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve        anAdaptor(anOffsetCurve);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
@@ -797,9 +794,9 @@ TEST_F(ExtremaPC_SearchModeTest, OffsetCircle_MaxMode)
 {
   // NOTE: Max mode for offset curves may not find extrema depending on the
   // BVH subdivision strategy.
-  Handle(Geom_Circle) aBaseCircle =
+  occ::handle<Geom_Circle> aBaseCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aBaseCircle, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aBaseCircle, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve        anAdaptor(anOffsetCurve);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
@@ -828,7 +825,7 @@ TEST_F(ExtremaPC_SearchModeTest, OffsetCircle_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MinMode)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -858,7 +855,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MinMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MaxMode)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -888,7 +885,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MaxMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Ellipse_RandomPoints_MinMode)
 {
-  Handle(Geom_Ellipse) aGeomEllipse =
+  occ::handle<Geom_Ellipse> aGeomEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
@@ -918,21 +915,21 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_RandomPoints_MinMode)
 
 TEST_F(ExtremaPC_SearchModeTest, BSpline_RandomPoints_MinMode)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   std::mt19937                          aGen(11111);
@@ -983,7 +980,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_RandomPoints_MinMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
 {
-  Handle(Geom_Circle) aGeomCircle =
+  occ::handle<Geom_Circle> aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
@@ -1025,21 +1022,21 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
 
 TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_BSpline)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 0, 0);
   aPoles(2) = gp_Pnt(1, 2, 0);
   aPoles(3) = gp_Pnt(3, 2, 0);
   aPoles(4) = gp_Pnt(4, 0, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 1.5, 0.0);
@@ -1086,7 +1083,7 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
 {
   // Create a high-degree Bezier curve to test early termination benefit
   constexpr int aNbPoles = 10;
-  TColgp_Array1OfPnt aPoles(1, aNbPoles);
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
 
   // Create a wavy curve with multiple local extrema
   for (int i = 1; i <= aNbPoles; ++i)
@@ -1097,7 +1094,7 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
     aPoles(i) = gp_Pnt(x, y, 0);
   }
 
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   GeomAdaptor_Curve        anAdaptor(aBezier);
 
   // Test point that will have multiple candidate extrema
