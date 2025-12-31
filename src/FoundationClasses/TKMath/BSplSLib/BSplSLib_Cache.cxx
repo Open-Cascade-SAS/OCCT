@@ -237,6 +237,7 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const NCollection_Array1<double>& theFlatKnotsV,
                                const NCollection_Array2<double>* theWeights)
     : myIsRational(theWeights != nullptr),
+      myCacheLevel(CacheLevel::D0), // Will be set properly on first BuildCache
       myParamsU(theDegreeU, thePeriodicU, theFlatKnotsU),
       myParamsV(theDegreeV, thePeriodicV, theFlatKnotsV)
 {
@@ -256,12 +257,47 @@ bool BSplSLib_Cache::IsCacheValid(double theParameterU, double theParameterV) co
 
 //==================================================================================================
 
+bool BSplSLib_Cache::IsCacheValid(double     theParameterU,
+                                  double     theParameterV,
+                                  CacheLevel theRequiredLevel) const
+{
+  // Check if point is in the cached span
+  if (!myParamsU.IsCacheValid(theParameterU) || !myParamsV.IsCacheValid(theParameterV))
+  {
+    return false;
+  }
+  // Check if cache level is sufficient for the requested operation
+  return static_cast<int>(myCacheLevel) >= static_cast<int>(theRequiredLevel);
+}
+
+//==================================================================================================
+
 void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
                                 const double&                     theParameterV,
                                 const NCollection_Array1<double>& theFlatKnotsU,
                                 const NCollection_Array1<double>& theFlatKnotsV,
                                 const NCollection_Array2<gp_Pnt>& thePoles,
                                 const NCollection_Array2<double>* theWeights)
+{
+  // Default to full cache (D2) for backward compatibility
+  BuildCache(theParameterU,
+             theParameterV,
+             theFlatKnotsU,
+             theFlatKnotsV,
+             thePoles,
+             theWeights,
+             CacheLevel::D2);
+}
+
+//==================================================================================================
+
+void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
+                                const double&                     theParameterV,
+                                const NCollection_Array1<double>& theFlatKnotsU,
+                                const NCollection_Array1<double>& theFlatKnotsV,
+                                const NCollection_Array2<gp_Pnt>& thePoles,
+                                const NCollection_Array2<double>* theWeights,
+                                CacheLevel                        theLevel)
 {
   // Normalize the parameters for periodical B-splines
   double aNewParamU = myParamsU.PeriodicNormalization(theParameterU);
@@ -278,7 +314,7 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
   double aSpanLengthV = 0.5 * myParamsV.SpanLength;
   double aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
 
-  // Calculate new cache data
+  // Calculate new cache data with specified derivative level
   BSplSLib::BuildCache(aSpanStartU,
                        aSpanStartV,
                        aSpanLengthU,
@@ -293,7 +329,10 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
                        theFlatKnotsV,
                        thePoles,
                        theWeights,
-                       myPolesWeights->ChangeArray2());
+                       myPolesWeights->ChangeArray2(),
+                       static_cast<int>(theLevel));
+
+  myCacheLevel = theLevel;
 }
 
 //==================================================================================================

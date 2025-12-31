@@ -2445,6 +2445,149 @@ void BSplSLib::BuildCache(const double                      theU,
   }
 }
 
+//==================================================================================================
+// function : BuildCache (with derivative level)
+// purpose  : Optimized cache building with specified derivative level.
+//            For D0-only (theDerivativeLevel=0), uses simplified Bohm algorithm
+//            that computes only point value without derivative coefficients.
+//==================================================================================================
+
+void BSplSLib::BuildCache(const double                      theU,
+                          const double                      theV,
+                          const double                      theUSpanDomain,
+                          const double                      theVSpanDomain,
+                          const bool                        theUPeriodicFlag,
+                          const bool                        theVPeriodicFlag,
+                          const int                         theUDegree,
+                          const int                         theVDegree,
+                          const int                         theUIndex,
+                          const int                         theVIndex,
+                          const NCollection_Array1<double>& theUFlatKnots,
+                          const NCollection_Array1<double>& theVFlatKnots,
+                          const NCollection_Array2<gp_Pnt>& thePoles,
+                          const NCollection_Array2<double>* theWeights,
+                          NCollection_Array2<double>&       theCacheArray,
+                          const int                         theDerivativeLevel)
+{
+  bool   flag_u_or_v;
+  int    d1, d2;
+  double u1, u2;
+  bool   isRationalOnParam = (theWeights != nullptr);
+  bool   isRational;
+
+  validateBSplineDegree(theUDegree, theVDegree);
+  BSplSLib_DataContainer dc;
+  flag_u_or_v = PrepareEval(theU,
+                            theV,
+                            theUIndex,
+                            theVIndex,
+                            theUDegree,
+                            theVDegree,
+                            isRationalOnParam,
+                            isRationalOnParam,
+                            theUPeriodicFlag,
+                            theVPeriodicFlag,
+                            thePoles,
+                            theWeights,
+                            theUFlatKnots,
+                            theVFlatKnots,
+                            (BSplCLib::NoMults()),
+                            (BSplCLib::NoMults()),
+                            u1,
+                            u2,
+                            d1,
+                            d2,
+                            isRational,
+                            dc);
+
+  int d2p1        = d2 + 1;
+  int aDimension  = isRational ? 4 : 3;
+  int aCacheShift = (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
+
+  double aDomains[2];
+  if (flag_u_or_v)
+  {
+    aDomains[0] = theUSpanDomain;
+    aDomains[1] = theVSpanDomain;
+  }
+  else
+  {
+    aDomains[0] = theVSpanDomain;
+    aDomains[1] = theUSpanDomain;
+  }
+
+  // Key optimization: limit derivative computation based on theDerivativeLevel
+  // For D0 (level 0): N1=0, N2=0 - only compute point, no derivative coefficients
+  // For D1 (level 1): N1=min(1,d1), N2=min(1,d2)
+  // For D2 (level 2): N1=d1, N2=d2 - full computation (original behavior)
+  const int N1 = (theDerivativeLevel >= 2) ? d1 : std::min(theDerivativeLevel, d1);
+  const int N2 = (theDerivativeLevel >= 2) ? d2 : std::min(theDerivativeLevel, d2);
+
+  // Optimized Bohm calls with reduced derivative computation
+  BSplCLib::Bohm(u1, d1, N1, *dc.knots1, aDimension * d2p1, *dc.poles);
+  for (int kk = 0; kk <= N1; kk++)
+    BSplCLib::Bohm(u2, d2, N2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
+
+  double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+
+  double aFactors[2];
+  aFactors[1] = 1.0;
+  int    aRow, aCol, i;
+  double aCoeff;
+
+  // Only iterate up to the computed derivative levels
+  const int aRowMax = (theDerivativeLevel >= 2) ? d2 : std::min(theDerivativeLevel, d2);
+  const int aColMax = (theDerivativeLevel >= 2) ? d1 : std::min(theDerivativeLevel, d1);
+
+  for (aRow = 0; aRow <= aRowMax; aRow++)
+  {
+    aFactors[0] = 1.0;
+    for (aCol = 0; aCol <= aColMax; aCol++)
+    {
+      double* aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
+      aCoeff              = aFactors[0] * aFactors[1];
+      for (i = 0; i < aDimension; i++)
+        aCache[i] = aPolyCoeffs[i] * aCoeff;
+      aCache += aCacheShift;
+      aFactors[0] *= aDomains[0] / (aCol + 1);
+    }
+    // For partial cache, fill remaining columns with zeros
+    for (aCol = aColMax + 1; aCol <= d1; aCol++)
+    {
+      for (i = 0; i < aDimension; i++)
+        aCache[i] = 0.0;
+      aCache += aCacheShift;
+    }
+    aFactors[1] *= aDomains[1] / (aRow + 1);
+  }
+  // For partial cache, fill remaining rows with zeros
+  for (aRow = aRowMax + 1; aRow <= d2; aRow++)
+  {
+    for (aCol = 0; aCol <= d1; aCol++)
+    {
+      for (i = 0; i < aDimension; i++)
+        aCache[i] = 0.0;
+      aCache += aCacheShift;
+    }
+  }
+
+  // Fill the weights for the surface which is not locally polynomial
+  if (aCacheShift > aDimension)
+  {
+    aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+    aCache += aCacheShift - 1;
+    for (aRow = 0; aRow <= d2; aRow++)
+      for (aCol = 0; aCol <= d1; aCol++)
+      {
+        *aCache = 0.0;
+        aCache += aCacheShift;
+      }
+    theCacheArray.SetValue(theCacheArray.LowerRow(),
+                           theCacheArray.LowerCol() + aCacheShift - 1,
+                           1.0);
+  }
+}
+
 //=======================================================================
 // function : CacheD0
 // purpose  : Evaluates the polynomial cache of the Bspline Curve

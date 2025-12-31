@@ -904,6 +904,16 @@ double GeomAdaptor_Surface::VPeriod() const
 
 void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) const
 {
+  // Default to full cache (D2) for backward compatibility
+  RebuildCache(theU, theV, BSplSLib_Cache::CacheLevel::D2);
+}
+
+//==================================================================================================
+
+void GeomAdaptor_Surface::RebuildCache(const double               theU,
+                                       const double               theV,
+                                       BSplSLib_Cache::CacheLevel theLevel) const
+{
   if (mySurfaceType == GeomAbs_BezierSurface)
   {
     // Create cache for Bezier
@@ -921,8 +931,13 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                           aBezier->IsVPeriodic(),
                                           aFlatKnotsV,
                                           aBezier->Weights());
-    aBezData.Cache
-      ->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
+    aBezData.Cache->BuildCache(theU,
+                               theV,
+                               aFlatKnotsU,
+                               aFlatKnotsV,
+                               aBezier->Poles(),
+                               aBezier->Weights(),
+                               theLevel);
   }
   else if (mySurfaceType == GeomAbs_BSplineSurface)
   {
@@ -942,7 +957,8 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
                                 aBSpl->UKnotSequence(),
                                 aBSpl->VKnotSequence(),
                                 aBSpl->Poles(),
-                                aBSpl->Weights());
+                                aBSpl->Weights(),
+                                theLevel);
   }
 }
 
@@ -963,6 +979,8 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
   {
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
+      // Always build full cache (D2) for D0 to ensure derivative cache is available
+      // when D1/D2 are called later on the same span
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       aCache->D0(U, V, P);
@@ -970,6 +988,8 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
     }
     case GeomAbs_BSplineSurface: {
       auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
+      // Always build full cache (D2) for D0 to ensure derivative cache is available
+      // when D1/D2 are called later on the same span
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       aCache->D0(U, V, P);
@@ -1034,8 +1054,9 @@ void GeomAdaptor_Surface::D1(const double U,
   {
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
+      // Use D1 cache level for first derivative evaluation
+      if (aCache.IsNull() || !aCache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D1))
+        RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D1);
       aCache->D1(U, V, P, D1U, D1V);
       break;
     }
@@ -1046,8 +1067,10 @@ void GeomAdaptor_Surface::D1(const double U,
         aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
+        // Use D1 cache level for first derivative evaluation
+        if (aBSplData.Cache.IsNull()
+            || !aBSplData.Cache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D1))
+          RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D1);
         aBSplData.Cache->D1(U, V, P, D1U, D1V);
       }
       break;
@@ -1114,8 +1137,9 @@ void GeomAdaptor_Surface::D2(const double U,
   {
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
+      // Use D2 cache level for second derivative evaluation
+      if (aCache.IsNull() || !aCache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D2))
+        RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D2);
       aCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
       break;
     }
@@ -1126,8 +1150,10 @@ void GeomAdaptor_Surface::D2(const double U,
         aBSpl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
       else
       {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
+        // Use D2 cache level for second derivative evaluation
+        if (aBSplData.Cache.IsNull()
+            || !aBSplData.Cache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D2))
+          RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D2);
         aBSplData.Cache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
       }
       break;

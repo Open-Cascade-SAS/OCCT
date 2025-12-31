@@ -26,6 +26,16 @@
 class BSplSLib_Cache : public Standard_Transient
 {
 public:
+  //! Defines the level of cached data.
+  //! Higher levels include all data from lower levels.
+  enum class CacheLevel
+  {
+    D0 = 0, //!< Cache only for point evaluation (fastest build)
+    D1 = 1, //!< Cache for point and first derivatives
+    D2 = 2  //!< Cache for point, first and second derivatives (full cache)
+  };
+
+public:
   //! Constructor for caching of the span for the surface
   //! \param theDegreeU    degree along the first parameter (U) of the surface
   //! \param thePeriodicU  identify the surface is periodical along U axis
@@ -47,14 +57,22 @@ public:
   //! \param theParameterV  second parameter of the point placed in the span
   Standard_EXPORT bool IsCacheValid(double theParameterU, double theParameterV) const;
 
-  //! Recomputes the cache data. Does not verify validity of the cache
+  //! Verifies validity of the cache using parameters and required derivative level.
+  //! The cache is valid if the point is in the cached span AND the cache level
+  //! is sufficient for the requested derivative order.
+  //! \param theParameterU     first parameter of the point placed in the span
+  //! \param theParameterV     second parameter of the point placed in the span
+  //! \param theRequiredLevel  minimum cache level required for the operation
+  //! \return true if cache is valid for the requested operation
+  Standard_EXPORT bool IsCacheValid(double     theParameterU,
+                                    double     theParameterV,
+                                    CacheLevel theRequiredLevel) const;
+
+  //! Recomputes the cache data for full derivative support (D2 level).
+  //! Does not verify validity of the cache.
   //! \param theParameterU  the parametric value on the U axis to identify the span
   //! \param theParameterV  the parametric value on the V axis to identify the span
-  //! \param theDegreeU     degree along U axis
-  //! \param thePeriodicU   identify whether the surface is periodic along U axis
   //! \param theFlatKnotsU  flat knots of the surface along U axis
-  //! \param theDegreeV     degree along V axis
-  //! \param thePeriodicV   identify whether the surface is periodic along V axis
   //! \param theFlatKnotsV  flat knots of the surface along V axis
   //! \param thePoles       array of poles of the surface
   //! \param theWeights     array of weights of corresponding poles
@@ -64,6 +82,27 @@ public:
                                   const NCollection_Array1<double>& theFlatKnotsV,
                                   const NCollection_Array2<gp_Pnt>& thePoles,
                                   const NCollection_Array2<double>* theWeights = nullptr);
+
+  //! Recomputes the cache data with specified derivative level.
+  //! Using CacheLevel::D0 provides faster cache building when only point
+  //! evaluation is needed. The cache can be upgraded to higher levels later.
+  //! \param theParameterU  the parametric value on the U axis to identify the span
+  //! \param theParameterV  the parametric value on the V axis to identify the span
+  //! \param theFlatKnotsU  flat knots of the surface along U axis
+  //! \param theFlatKnotsV  flat knots of the surface along V axis
+  //! \param thePoles       array of poles of the surface
+  //! \param theWeights     array of weights of corresponding poles
+  //! \param theLevel       cache level (D0, D1, or D2)
+  Standard_EXPORT void BuildCache(const double&                     theParameterU,
+                                  const double&                     theParameterV,
+                                  const NCollection_Array1<double>& theFlatKnotsU,
+                                  const NCollection_Array1<double>& theFlatKnotsV,
+                                  const NCollection_Array2<gp_Pnt>& thePoles,
+                                  const NCollection_Array2<double>* theWeights,
+                                  CacheLevel                        theLevel);
+
+  //! Returns the current cache level.
+  CacheLevel GetCacheLevel() const { return myCacheLevel; }
 
   //! Calculates the point on the surface for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value
@@ -150,6 +189,7 @@ private:
 private:
   // clang-format off
   bool myIsRational;                //!< identifies the rationality of Bezier/B-spline surface
+  CacheLevel myCacheLevel;          //!< current level of cached derivatives
   BSplCLib_CacheParams myParamsU, myParamsV;    //!< cache parameters by U and V directions
   occ::handle<NCollection_HArray2<double>> myPolesWeights; //!< array of poles and weights of calculated cache
                                                 // the array has following structure:

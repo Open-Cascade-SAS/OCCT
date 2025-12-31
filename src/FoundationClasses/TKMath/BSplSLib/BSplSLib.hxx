@@ -530,6 +530,28 @@ public:
                                          const NCollection_Array2<double>* theWeights,
                                          NCollection_Array2<double>&       theCacheArray);
 
+  //! Perform the evaluation of the Taylor expansion of the Bspline
+  //! normalized between 0 and 1, with optimized derivative level.
+  //! @param theDerivativeLevel 0 = D0 only (fastest), 1 = D0+D1, 2 = full (D0+D1+D2)
+  //! Using theDerivativeLevel=0 skips computation of derivative coefficients,
+  //! providing significant speedup when only point evaluation is needed.
+  Standard_EXPORT static void BuildCache(const double                      theU,
+                                         const double                      theV,
+                                         const double                      theUSpanDomain,
+                                         const double                      theVSpanDomain,
+                                         const bool                        theUPeriodic,
+                                         const bool                        theVPeriodic,
+                                         const int                         theUDegree,
+                                         const int                         theVDegree,
+                                         const int                         theUIndex,
+                                         const int                         theVIndex,
+                                         const NCollection_Array1<double>& theUFlatKnots,
+                                         const NCollection_Array1<double>& theVFlatKnots,
+                                         const NCollection_Array2<gp_Pnt>& thePoles,
+                                         const NCollection_Array2<double>* theWeights,
+                                         NCollection_Array2<double>&       theCacheArray,
+                                         const int                         theDerivativeLevel);
+
   //! Perform the evaluation of the of the cache
   //! the parameter must be normalized between
   //! the 0 and 1 for the span.

@@ -383,10 +383,20 @@ private:
                             const double                     TolU = 0.0,
                             const double                     TolV = 0.0);
 
-  //! Rebuilds B-spline cache
+  //! Rebuilds B-spline cache with full derivative support (D2 level).
   //! \param theU first parameter to identify the span for caching
   //! \param theV second parameter to identify the span for caching
   Standard_EXPORT void RebuildCache(const double theU, const double theV) const;
+
+  //! Rebuilds B-spline cache with specified derivative level.
+  //! Using CacheLevel::D0 provides faster cache building when only point
+  //! evaluation is needed.
+  //! \param theU     first parameter to identify the span for caching
+  //! \param theV     second parameter to identify the span for caching
+  //! \param theLevel cache level (D0, D1, or D2)
+  Standard_EXPORT void RebuildCache(const double               theU,
+                                    const double               theV,
+                                    BSplSLib_Cache::CacheLevel theLevel) const;
 
 protected:
   occ::handle<Geom_Surface> mySurface;
