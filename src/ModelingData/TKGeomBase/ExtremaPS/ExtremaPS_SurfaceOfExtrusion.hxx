@@ -20,6 +20,7 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <optional>
@@ -127,6 +128,14 @@ private:
   //! Initialize cached components from surface geometry.
   void initCache();
 
+  //! Sample point data for curve sampling.
+  struct Sample
+  {
+    double U;       //!< Curve parameter
+    double V;       //!< Optimal V parameter
+    double SqDist;  //!< Squared distance to query point
+  };
+
   occ::handle<Geom_SurfaceOfLinearExtrusion> mySurface;       //!< Surface geometry
   std::optional<ExtremaPS::Domain2D>         myDomain;        //!< Parameter domain
   mutable ExtremaPS::Result                  myResult;        //!< Reusable result storage
@@ -135,6 +144,10 @@ private:
 
   // Cached extrusion direction for fast computation
   double myDirX, myDirY, myDirZ;  //!< Extrusion direction (normalized)
+
+  // Reusable sample vectors (avoid allocation per query)
+  mutable NCollection_Vector<Sample> mySamples;     //!< Cached sample points
+  mutable NCollection_Vector<Sample> myCandidates;  //!< Cached candidate extrema
 };
 
 #endif // _ExtremaPS_SurfaceOfExtrusion_HeaderFile

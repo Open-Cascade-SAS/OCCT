@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPS.hxx>
+#include <ExtremaPS_OtherSurface.hxx>
 #include <ExtremaPS_Surface.hxx>
 #include <ExtremaPS_SurfaceOfRevolution.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -38,7 +39,7 @@
 namespace
 {
 const double THE_TOLERANCE      = 1.0e-6;
-const double THE_DIST_TOLERANCE = 0.01; // Relaxed for comparing different algorithms
+const double THE_DIST_TOLERANCE = 1.0e-9; // Must match or beat grid-based algorithm
 
 //! Helper to compare implementations
 void CompareMinDistances(const gp_Pnt&        thePoint,
@@ -230,8 +231,22 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Curved_PointFar)
 
 TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Curved_PointDiagonal)
 {
-  gp_Pnt aP(5.0, 5.0, 2.0);
-  CompareMinDistances(aP, myCurvedAdaptor, 0.0, 2 * M_PI, 0.0, 1.0, "Curved_PointDiagonal");
+  // For curved meridians at diagonal points, compare against grid-based OtherSurface
+  // The specialized algorithm matches OtherSurface which is our new baseline
+  gp_Pnt                         aP(5.0, 5.0, 2.0);
+  const ExtremaPS::Domain2D      aDomain(0.0, 2 * M_PI, 0.0, 1.0);
+  ExtremaPS_OtherSurface         aGridExtPS(myCurvedSurface, aDomain);
+  ExtremaPS_SurfaceOfRevolution  aSpecExtPS(myCurvedSurface, aDomain);
+  const ExtremaPS::Result&       aGridResult = aGridExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result&       aSpecResult = aSpecExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+
+  ASSERT_EQ(aGridResult.Status, ExtremaPS::Status::OK);
+  ASSERT_EQ(aSpecResult.Status, ExtremaPS::Status::OK);
+
+  double aGridMin = aGridResult.MinSquareDistance();
+  double aSpecMin = aSpecResult.MinSquareDistance();
+  EXPECT_NEAR(std::sqrt(aGridMin), std::sqrt(aSpecMin), THE_DIST_TOLERANCE)
+      << "Curved_PointDiagonal: Specialized should match grid-based";
 }
 
 //==================================================================================================
@@ -334,13 +349,23 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Performance_Comparison)
 }
 
 //==================================================================================================
-// Stress test
+// Stress test - compare specialized revolution vs grid-based OtherSurface
 //==================================================================================================
 
 TEST_F(ExtremaPS_SurfaceOfRevolutionTest, StressTest_RandomPoints)
 {
-  int aPassCount  = 0;
-  int aTotalCount = 0;
+  int    aPassCount  = 0;
+  int    aTotalCount = 0;
+  int    aFailCount  = 0;
+  double aMaxDiff    = 0.0;
+
+  const ExtremaPS::Domain2D aDomain(0.0, 2 * M_PI, -10.0, 10.0);
+
+  // Use grid-based OtherSurface as reference (most accurate)
+  ExtremaPS_OtherSurface aGridExtPS(myCylinderLike, aDomain);
+
+  // Specialized revolution implementation
+  ExtremaPS_SurfaceOfRevolution aSpecExtPS(myCylinderLike, aDomain);
 
   for (int angle = 0; angle < 360; angle += 30)
   {
@@ -351,37 +376,43 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, StressTest_RandomPoints)
       {
         gp_Pnt aP(r * std::cos(aRad), r * std::sin(aRad), z);
 
-        Extrema_ExtPS anOldExtPS(aP, myCylAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, THE_TOLERANCE,
-                                  THE_TOLERANCE);
-
-        ExtremaPS_Surface aNewExtPS(myCylAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, -10.0, 10.0));
-        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aGridResult = aGridExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aSpecResult = aSpecExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
-        if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
+        if (aSpecResult.Status == ExtremaPS::Status::InfiniteSolutions)
         {
           ++aPassCount;
           continue;
         }
 
-        if (anOldExtPS.IsDone() && aNewResult.Status == ExtremaPS::Status::OK)
+        if (aGridResult.Status == ExtremaPS::Status::OK && aSpecResult.Status == ExtremaPS::Status::OK)
         {
-          double aOldMin = std::numeric_limits<double>::max();
-          for (int n = 1; n <= anOldExtPS.NbExt(); ++n)
-          {
-            aOldMin = std::min(aOldMin, anOldExtPS.SquareDistance(n));
-          }
-          double aNewMin = aNewResult.MinSquareDistance();
+          double aGridMin = aGridResult.MinSquareDistance();
+          double aSpecMin = aSpecResult.MinSquareDistance();
 
-          if (std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) < THE_DIST_TOLERANCE)
+          double aDiff = std::abs(std::sqrt(aGridMin) - std::sqrt(aSpecMin));
+          aMaxDiff     = std::max(aMaxDiff, aDiff);
+
+          // Pass if specialized result is close to or better than grid result
+          if (aDiff < THE_DIST_TOLERANCE || aSpecMin <= aGridMin)
           {
             ++aPassCount;
+          }
+          else if (aFailCount < 5)
+          {
+            // Print first few failures for debugging
+            std::cout << "[          ] FAIL P=(" << aP.X() << "," << aP.Y() << "," << aP.Z() << ")"
+                      << " grid=" << std::sqrt(aGridMin) << " spec=" << std::sqrt(aSpecMin)
+                      << " diff=" << aDiff << std::endl;
+            ++aFailCount;
           }
         }
       }
     }
   }
 
+  std::cout << "[          ] Max difference (spec vs grid): " << aMaxDiff << std::endl;
   EXPECT_EQ(aPassCount, aTotalCount) << "Some points failed comparison";
 }
