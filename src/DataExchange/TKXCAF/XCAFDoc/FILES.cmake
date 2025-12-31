@@ -44,7 +44,6 @@ set(OCCT_XCAFDoc_FILES
   XCAFDoc_Editor.hxx
   XCAFDoc_GraphNode.cxx
   XCAFDoc_GraphNode.hxx
-  XCAFDoc_GraphNodeSequence.hxx
   XCAFDoc_LayerTool.cxx
   XCAFDoc_LayerTool.hxx
   XCAFDoc_LengthUnit.cxx

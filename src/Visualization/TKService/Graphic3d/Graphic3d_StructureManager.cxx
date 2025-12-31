@@ -21,8 +21,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_StructureManager, Standard_Transient)
 
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_CView.hxx>
+class Graphic3d_Structure;
 
 //=================================================================================================
 

@@ -415,29 +415,6 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
 
   SetFirstPoint(1);
   SetLastPoint(nbvtx);
-
-#if 0 
-  bool SortIsOK;
-  int nbvtx = NbVertex();
-  do { 
-    SortIsOK = true;
-    for(int i=2; i<=nbvtx; i++) { 
-      if(svtx.Value(i-1).ParameterOnLine()  > svtx.Value(i).ParameterOnLine()) { 
-	SortIsOK = false;
-	svtx.Exchange(i,i-1);
-	if(fipt) {
-	  if(indf == i)           indf = i-1;
-	  else if(indf == (i-1))  indf = i;
-	}
-	if(lapt) {
-	  if(indl == i)           indl = i-1;
-	  else if(indl == (i-1))  indl = i;
-	}
-      }
-    }
-  }
-  while(!SortIsOK);
-#endif
 }
 
 void IntPatch_RLine::Dump(const int theMode) const

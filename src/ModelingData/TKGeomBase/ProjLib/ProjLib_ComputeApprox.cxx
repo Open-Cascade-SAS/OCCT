@@ -43,10 +43,6 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
-// #define DRAW
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
 #ifdef OCCT_DEBUG
 // static bool AffichValue = false;
 #endif

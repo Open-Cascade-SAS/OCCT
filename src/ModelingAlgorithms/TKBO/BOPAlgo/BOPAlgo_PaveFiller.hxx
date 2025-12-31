@@ -27,7 +27,6 @@
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>

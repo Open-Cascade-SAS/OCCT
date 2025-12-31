@@ -44,12 +44,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-static bool AffichCurve = false;
-static int  NbProj      = 1;
-#endif
-
 // POP pour NT
 #include <cstdio>
 
@@ -498,20 +492,6 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
       new Geom_TrimmedCurve(Line, myBis.FirstParameter(), myBis.LastParameter());
     Curve = GeomProjLib::ProjectOnPlane(TLine, Plane, gp::DZ(), false);
 
-#ifdef DRAW
-    if (AffichCurve)
-    {
-      char name[100];
-      Sprintf(name, "C2_%d", NbProj);
-      DrawTrSurf::Set(name, TLine);
-      Sprintf(name, "C3_%d", NbProj);
-      DrawTrSurf::Set(name, Curve);
-      Sprintf(name, "SS_%d", NbProj);
-      DrawTrSurf::Set(name, Plane);
-      NbProj++;
-    }
-#endif
-
     // eval PCurve1
     PCurve1 = GeomProjLib::Curve2d(Curve, Plane);
 
@@ -568,17 +548,6 @@ static gp_Pnt2d ValueOnFace(const double               U,
   gp_Pnt2d P = TheBis.Value(U);
 
   Geom2dAPI_ProjectPointOnCurve Ext(P, TheU.Curve(), TheU.FirstParameter(), TheU.LastParameter());
-#ifdef DRAW
-  if (AffichCurve)
-  {
-    char* TheUname = "TheU";
-    char* PP1name  = "PP1";
-    DrawTrSurf::Set(TheUname, TheU.Curve());
-    DrawTrSurf::Set(PP1name, P);
-    //    DrawTrSurf::Set("TheU",TheU.Curve());
-    //    DrawTrSurf::Set("PP1",P);
-  }
-#endif
   //
   constexpr double mult = 5.;
   constexpr double eps  = mult * Precision::Confusion();
@@ -650,16 +619,6 @@ static gp_Pnt2d ValueOnFace(const double               U,
       Dist = -Dist;
 
     occ::handle<Geom2d_Line> Line = new Geom2d_Line(gp_Pnt2d(0., Dist), gp::DX2d());
-
-#ifdef DRAW
-    if (AffichCurve)
-    {
-      static const char* aTheV = "TheV";
-      DrawTrSurf::Set(aTheV, TheV.Curve());
-      static const char* aLINF1 = "LINF1";
-      DrawTrSurf::Set(aLINF1, Line);
-    }
-#endif
 
     const Geom2dAdaptor_Curve& Cu1 = TheV;
     Geom2dAdaptor_Curve        Cu2(Line);

@@ -64,9 +64,6 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-#endif
 #ifdef OCCT_DEBUG
   #include <Geom_TrimmedCurve.hxx>
 extern bool ChFi3d_GettraceDRAWSPINE();
@@ -934,15 +931,6 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       Bfac = ChFi3d_mkbound(HBRFopsam, pcFopsam, tolapp3d, 2.e-4);
       GeomFill_ConstrainedFilling fil(8, 20);
       fil.Init(Bsam, Bdif, Bfac, true);
-#if 0
-      for(int ib = 0; ib < 4; ib++){
-	if(ib == 2) continue;
-	fil.CheckCoonsAlgPatch(ib);
-	fil.CheckTgteField(ib);
-	fil.CheckApprox(ib);
-	fil.CheckResult(ib);
-      }
-#endif
       occ::handle<Geom_Surface> Surfcoin = fil.Surface();
       TopAbs_Orientation        Osurfsam = sdsam->Orientation();
       occ::handle<Geom2d_Curve> pcnul;

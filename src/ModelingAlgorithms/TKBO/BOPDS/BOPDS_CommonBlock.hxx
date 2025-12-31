@@ -18,7 +18,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>

@@ -30,8 +30,6 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_DataStructure.hxx
   TopOpeBRepDS_define.hxx
 
-  TopOpeBRepDS_DRAW.cxx
-  TopOpeBRepDS_DRAW.hxx
   TopOpeBRepDS_Dumper.cxx
   TopOpeBRepDS_Dumper.hxx
   TopOpeBRepDS_Edge3dInterferenceTool.cxx

@@ -397,22 +397,8 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d&       Circle,
     LInterAndDomain.Binf = Linf;
     LInterAndDomain.Bsup = Lsup;
 
-#if 0     
-    double Cinf = 
-      ElCLib::CircleParameter(Circle.Axis()					       
-			      ,ElCLib::LineValue(LInterAndDomain.Binf,
-					Line.Position()));
-    double Csup = 
-      ElCLib::CircleParameter(Circle.Axis()
-			      ,ElCLib::LineValue(LInterAndDomain.Bsup
-					,Line.Position()));
-
-    if(Cinf<CDomainAndRes.Binf) Cinf = CDomainAndRes.Binf;
-    if(Csup>CDomainAndRes.Bsup) Csup = CDomainAndRes.Bsup;
-#else
     double Cinf = CDomainAndRes.Binf;
     double Csup = CDomainAndRes.Bsup;
-#endif
     if (Cinf >= Csup)
     {
       Cinf = CDomainAndRes.Binf;
@@ -533,16 +519,6 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
   //--    On se ramene au repere propre a C1
 
   double dAngle1 = (Circle.XAxis().Direction()).Angle(Line.Direction());
-
-#if 0 
-  //---------------------------------------------
-  //-- Si le cercle est indirect alors l origine
-  //-- est vue en -dAngle1. 
-  //--
-  if(Circle.IsDirect() == false) { 
-    dAngle1 = -dAngle1;
-  }
-#endif
 
   double a, b, c, d;
   Line.Coefficients(a, b, c);
@@ -2334,19 +2310,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
       SolutionLine[i].Binf = SolutionLine[i].Bsup = t;
     }
   }
-#if 0 
-  if(NbSolTotal == 2) { 
-    if(SolutionLine[0].Binf==SolutionLine[0].BSup) { 
-      if(SolutionLine[1].Binf==SolutionLine[1].BSup) {
-	if(std::abs(SolutionLine[0].Binf-SolutionLine[1].Binf)<TolConf) { 
-	  SolutionLine[0].Binf=0.5*(SolutionLine[0].BSup+SolutionLine[1].BSup);
-	  SolutionLine[0].BSup=SolutionLine[0].Binf;
-	  NbSolTotal = 1;
-	}
-      }
-    }
-  }
-#endif
   //----------------------------------------------------------------------
   //-- Traitement des intervalles (ou des points obtenus)
   //--
@@ -2400,12 +2363,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
         p2 = q2;
       }
 
-#if 0
-      if(SolutionCircle[i].Binf!=p1 || SolutionCircle[i].Bsup!=p2) { 
-	printf("\n IntCurve_IntConicConic_1.cxx : (%g , %g) --> (%g , %g)\n",
-	       SolutionCircle[i].Binf,SolutionCircle[i].Bsup,p1,p2); 
-      }
-#endif
       SolutionCircle[i].Binf = p1;
       SolutionCircle[i].Bsup = p2;
 

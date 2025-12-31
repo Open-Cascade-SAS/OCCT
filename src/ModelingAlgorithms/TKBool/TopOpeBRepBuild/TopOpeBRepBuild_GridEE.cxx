@@ -24,10 +24,6 @@
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepDS_DRAW.hxx>
-#endif
-
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
@@ -908,16 +904,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape&         
     }
     if (tSPS)
     {
-  //      bool trc = false;
-  #ifdef DRAW
-      if (trc)
-      {
-        FUN_draw2d(par, TopoDS::Edge(E), myEdgeReference, myFaceReference);
-        FUN_draw(VPV);
-        FUN_draw(E);
-        FUN_draw(myFaceReference);
-      }
-  #endif
+      //      bool trc = false;
     }
 #endif
   }

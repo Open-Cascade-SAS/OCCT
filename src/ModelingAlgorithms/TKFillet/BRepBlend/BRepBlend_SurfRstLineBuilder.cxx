@@ -37,9 +37,6 @@
   #include <Standard_Integer.hxx>
   #include <NCollection_Array1.hxx>
   #include <Geom_BSplineCurve.hxx>
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-  #endif
 static int  IndexOfSection = 0;
 extern bool Blend_GettraceDRAWSECT();
   #ifdef OCCT_DEBUG_BBPP_N_TRDERIV
@@ -132,12 +129,6 @@ static void Drawsect(const double param, Blend_SurfRstFunction& Func)
   Func.Section(BP, TP, TP2d, TW);
   occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
   IndexOfSection++;
-  #ifdef DRAW
-  char        tname[100];
-  const char* name = tname;
-  Sprintf(name, "%s_%d", "Section", IndexOfSection);
-  DrawTrSurf::Set(name, sect);
-  #endif
 }
 #endif
 

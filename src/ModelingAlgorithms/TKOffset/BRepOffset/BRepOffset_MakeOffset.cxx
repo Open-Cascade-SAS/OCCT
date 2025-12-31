@@ -99,10 +99,6 @@
 
 #include <cstdio>
 // POP for NT
-#ifdef DRAW
-
-  #include <DBRep.hxx>
-#endif
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
 // #define DEB_VERB
@@ -139,34 +135,13 @@ static void DEBVerticesControl(
         {
           LVP.Append(it1LE.Value());
           std::cout << "Vertex on at least 3 edges." << std::endl;
-  #ifdef DRAW
-          if (AffichInt2d)
-          {
-            Sprintf(name, "VP_%d", NVP++);
-            DBRep::Set(name, it1LE.Value());
-          }
-  #endif
         }
         else if (AsDes->Ascendant(it1LE.Value()).Extent() > 3)
         {
           std::cout << "Vertex on more than 3 edges." << std::endl;
-  #ifdef DRAW
-          if (AffichInt2d)
-          {
-            Sprintf(name, "VM_%d", NVM++);
-            DBRep::Set(name, it1LE.Value());
-          }
-  #endif
         }
         else
         {
-  #ifdef DRAW
-          if (AffichInt2d)
-          {
-            Sprintf(name, "VN_%d", NVN++);
-            DBRep::Set(name, it1LE.Value());
-          }
-  #endif
         }
       }
     }
@@ -746,10 +721,6 @@ static void RemoveCorks(TopoDS_Shape&                                           
     }
   }
   S = SS;
-#ifdef DRAW
-  if (AffichOffC)
-    DBRep::Set("myInit", SS);
-#endif
 }
 
 //=================================================================================================
@@ -1563,27 +1534,12 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
         {
           const TopoDS_Shape& OFE = itLF.Value();
           myImageOffset.SetRoot(OFE);
-#ifdef DRAW
-          if (AffichInt2d)
-          {
-            Sprintf(name, "AF_%d", NbAF++);
-            DBRep::Set(name, OFE);
-          }
-#endif
           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
           for (Exp2.Init(OFE.Oriented(TopAbs_FORWARD), TopAbs_EDGE); Exp2.More(); Exp2.Next())
           {
             const TopoDS_Edge& COE = TopoDS::Edge(Exp2.Current());
 
             myAsDes->Add(OFE, COE);
-#ifdef DRAW
-            if (AffichInt2d)
-            {
-              Sprintf(name, "AE_%d", NbAE++);
-              DBRep::Set(name, COE);
-              COES.Add(COE);
-            }
-#endif
             if (View.Add(COE))
             {
               if (!myAsDes->HasDescendant(COE))
@@ -1608,13 +1564,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
         //
         myInitOffsetFace.Bind(FI, OF);
         myImageOffset.SetRoot(OF);
-#ifdef DRAW
-        if (AffichInt2d)
-        {
-          Sprintf(name, "AF_%d", NbAF++);
-          DBRep::Set(name, OF);
-        }
-#endif
         const NCollection_List<TopoDS_Shape>& LE = AsDes->Descendant(OF);
         for (itLF.Initialize(LE); itLF.More(); itLF.Next())
         {
@@ -1630,14 +1579,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
               //              const TopoDS_Edge& COE =
               //              TopoDS::Edge(itLOE.Value().Oriented(OE.Orientation()));
               myAsDes->Add(OF, COE);
-#ifdef DRAW
-              if (AffichInt2d)
-              {
-                Sprintf(name, "AE_%d", NbAE++);
-                DBRep::Set(name, COE);
-                COES.Add(COE);
-              }
-#endif
 
               if (!myAsDes->HasDescendant(COE))
               {
@@ -1653,14 +1594,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
           else
           {
             myAsDes->Add(OF, OE);
-#ifdef DRAW
-            if (AffichInt2d)
-            {
-              Sprintf(name, "AE_%d", NbAE++);
-              DBRep::Set(name, OE);
-              COES.Add(OE);
-            }
-#endif
 
             const NCollection_List<TopoDS_Shape>& LV = AsDes->Descendant(OE);
             myAsDes->Add(OE, LV);
@@ -1678,14 +1611,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 
         const TopoDS_Edge& COE = TopoDS::Edge(Exp2.Current());
         myAsDes->Add(OF, COE);
-#ifdef DRAW
-        if (AffichInt2d)
-        {
-          Sprintf(name, "AE_%d", NbAE++);
-          DBRep::Set(name, COE);
-          COES.Add(COE);
-        }
-#endif
 
         if (View.Add(Exp2.Current()))
         {
@@ -1804,14 +1729,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
         {
           const TopoDS_Edge& COE = TopoDS::Edge(itLOE.Value());
           myAsDes->Add(Cork, COE.Oriented(OE.Orientation()));
-#ifdef DRAW
-          if (AffichInt2d)
-          {
-            Sprintf(name, "AE_%d", NbAE++);
-            DBRep::Set(name, COE);
-            COES.Add(COE);
-          }
-#endif
 
           if (!myAsDes->HasDescendant(COE))
           {
@@ -1831,14 +1748,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
         {
           myAsDes->Add(OE, AsDes->Descendant(OE));
         }
-#ifdef DRAW
-        if (AffichInt2d)
-        {
-          Sprintf(name, "AE_%d", NbAE++);
-          DBRep::Set(name, OE);
-          COES.Add(OE);
-        }
-#endif
       }
     }
   }

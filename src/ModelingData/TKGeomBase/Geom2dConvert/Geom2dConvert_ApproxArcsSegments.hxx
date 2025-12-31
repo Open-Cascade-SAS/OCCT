@@ -20,8 +20,8 @@
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom2dConvert_PPoint.hxx>
-#include <Geom2dConvert_SequenceOfPPoint.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+class Geom2dConvert_PPoint;
 
 //! Approximation of a free-form curve by a sequence of arcs+segments.
 class Geom2dConvert_ApproxArcsSegments

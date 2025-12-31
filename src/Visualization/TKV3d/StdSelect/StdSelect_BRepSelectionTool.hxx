@@ -26,10 +26,12 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Select3D_EntitySequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+
+class Select3D_SensitiveEntity;
 class SelectMgr_SelectableObject;
 class TopoDS_Face;
 

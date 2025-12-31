@@ -24,7 +24,7 @@
 #include <BOPDS_Curve.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_Interf.hxx>
@@ -75,6 +75,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+class BOPDS_PaveBlock;
 
 static double ToleranceFF(const BRepAdaptor_Surface& aBAS1, const BRepAdaptor_Surface& aBAS2);
 

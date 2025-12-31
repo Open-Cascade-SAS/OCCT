@@ -21,7 +21,7 @@
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
+#include <NCollection_Map.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Standard_Transient.hxx>

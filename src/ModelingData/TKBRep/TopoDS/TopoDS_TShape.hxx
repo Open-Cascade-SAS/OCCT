@@ -19,7 +19,8 @@
 
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_ListOfShape.hxx>
+#include <NCollection_List.hxx>
+class TopoDS_Shape;
 
 // resolve name collisions with X11 headers
 #ifdef Convex

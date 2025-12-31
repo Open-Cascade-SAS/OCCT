@@ -121,17 +121,6 @@
 const double TheInfini = 1.e+7;
 
 // tma: for new boolean operation
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #include <Geom2d_Conic.hxx>
-  #include <Geom_BoundedCurve.hxx>
-bool       AffichInter = false;
-static int NbNewEdges  = 1;
-static int NbFaces     = 1;
-static int NbFOB       = 1;
-static int NbFTE       = 1;
-static int NbExtE      = 1;
-#endif
 
 #ifdef OCCT_DEBUG
 static bool AffichExtent = false;
@@ -713,16 +702,6 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&              F1,
                                 NCollection_List<TopoDS_Shape>& L2,
                                 const TopAbs_State              Side)
 {
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F1);
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F2);
-  }
-#endif
 
   occ::handle<Geom_Curve> CI;
   TopAbs_Orientation      O1, O2;
@@ -770,14 +749,6 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face&              F1,
       }
       L1.Append(E.Oriented(O1));
       L2.Append(E.Oriented(O2));
-#ifdef DRAW
-      if (AffichInter)
-      {
-        char name[256];
-        Sprintf(name, "EI_%d", NbNewEdges++);
-        DBRep::Set(name, E.Oriented(O1));
-      }
-#endif
     }
   }
 }
@@ -1384,16 +1355,6 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
                               const TopoDS_Face&              theRefFace1,
                               const TopoDS_Face&              theRefFace2)
 {
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F1);
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F2);
-  }
-#endif
 
   // Check if the faces are planar and not trimmed - in this case
   // the IntTools_FaceFace intersection algorithm will be used directly.
@@ -1527,15 +1488,6 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
 
         L1.Append(anEdge.Oriented(O1));
         L2.Append(anEdge.Oriented(O2));
-
-#ifdef DRAW
-        if (AffichInter)
-        {
-          char name[256];
-          Sprintf(name, "EI_%d", NbNewEdges++);
-          DBRep::Set(name, anEdge.Oriented(O1));
-        }
-#endif
       }
     }
   }
@@ -1862,16 +1814,6 @@ bool BRepOffset_Tool::TryProject(const TopoDS_Face&                    F1,
                                  const TopAbs_State                    Side,
                                  const double                          TolConf)
 {
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F1);
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F2);
-  }
-#endif
 
   // try to find if the edges <Edges> are laying on the face F1.
   LInt1.Clear();
@@ -1916,14 +1858,6 @@ bool BRepOffset_Tool::TryProject(const TopoDS_Face&                    F1,
       }
       LInt1.Append(CurE.Oriented(O1));
       LInt2.Append(CurE.Oriented(O2));
-#ifdef DRAW
-      if (AffichInter)
-      {
-        char name[256];
-        Sprintf(name, "EI_%d", NbNewEdges++);
-        DBRep::Set(name, CurE.Oriented(O1));
-      }
-#endif
     }
     else
       Ok = false;
@@ -1939,16 +1873,6 @@ void BRepOffset_Tool::InterOrExtent(const TopoDS_Face&              F1,
                                     NCollection_List<TopoDS_Shape>& L2,
                                     const TopAbs_State              Side)
 {
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F1);
-    Sprintf(name, "FF_%d", NbFaces++);
-    DBRep::Set(name, F2);
-  }
-#endif
 
   occ::handle<Geom_Curve> CI;
   TopAbs_Orientation      O1, O2;
@@ -1997,14 +1921,6 @@ void BRepOffset_Tool::InterOrExtent(const TopoDS_Face&              F1,
       }
       L1.Append(E.Oriented(O1));
       L2.Append(E.Oriented(O2));
-#ifdef DRAW
-      if (AffichInter)
-      {
-        char name[256];
-        Sprintf(name, "EI_%d", NbNewEdges++);
-        DBRep::Set(name, E.Oriented(O1));
-      }
-#endif
     }
   }
 }
@@ -2086,31 +2002,12 @@ static void ExtentEdge(const TopoDS_Face& F,
   B.UpdateEdge(NE, CNE2d, EF, BRep_Tool::Tolerance(E));
   B.Range(NE, CNE2d->FirstParameter(), CNE2d->LastParameter());
   NE.Orientation(E.Orientation());
-#ifdef DRAW
-  if (AffichExtent)
-  {
-    char name[256];
-    Sprintf(name, "F_%d", NbExtE);
-    DBRep::Set(name, EF);
-    Sprintf(name, "OE_%d", NbExtE);
-    DBRep::Set(name, E);
-    Sprintf(name, "ExtE_%d", NbExtE++);
-    DBRep::Set(name, NE);
-  }
-#endif
 }
 
 //=================================================================================================
 
 static bool ProjectVertexOnEdge(TopoDS_Vertex& V, const TopoDS_Edge& E, double TolConf)
 {
-#ifdef DRAW
-  if (AffichExtent)
-  {
-    DBRep::Set("V", V);
-    DBRep::Set("E", E);
-  }
-#endif
   BRep_Builder    B;
   double          f, l;
   double          U = 0.;
@@ -2185,9 +2082,6 @@ static bool ProjectVertexOnEdge(TopoDS_Vertex& V, const TopoDS_Edge& E, double T
     std::cout << "BRepOffset_Tool::ProjectVertexOnEdge Parameter no found" << std::endl;
     if (std::abs(f) < Precision::Infinite() && std::abs(l) < Precision::Infinite())
     {
-  #ifdef DRAW
-      DBRep::Set("E", E);
-  #endif
     }
   }
 #endif
@@ -2210,14 +2104,6 @@ void BRepOffset_Tool::Inter2d(const TopoDS_Face&              F,
                               NCollection_List<TopoDS_Shape>& LV,
                               const double                    TolConf)
 {
-#ifdef DRAW
-  if (AffichExtent)
-  {
-    DBRep::Set("E1", E1);
-    DBRep::Set("E2", E2);
-    DBRep::Set("F", F);
-  }
-#endif
   BRep_Builder B;
   double       fl1[2], fl2[2];
   LV.Clear();
@@ -2278,11 +2164,6 @@ void BRepOffset_Tool::Inter2d(const TopoDS_Face&              F,
         if (C1.IsNull() || C2.IsNull())
         {
           std::cout << "Inter2d : Pas de pcurve" << std::endl;
-  #ifdef DRAW
-          DBRep::Set("E1", E1);
-          DBRep::Set("E2", E2);
-          DBRep::Set("F", F);
-  #endif
           return;
         }
 #endif
@@ -2478,11 +2359,6 @@ void BRepOffset_Tool::Inter2d(const TopoDS_Face&              F,
   if (!YaSol)
   {
     std::cout << "Inter2d : Pas de solution" << std::endl;
-  #ifdef DRAW
-    DBRep::Set("E1", E1);
-    DBRep::Set("E2", E2);
-    DBRep::Set("F", F);
-  #endif
   }
 #endif
 }
@@ -3598,14 +3474,6 @@ void BRepOffset_Tool::ExtentFace(
   const double                                                              TolConf,
   TopoDS_Face&                                                              NF)
 {
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FTE_%d", NbFTE++);
-    DBRep::Set(name, F);
-  }
-#endif
 
   TopExp_Explorer                                                          exp, exp2;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> Build;
@@ -4096,15 +3964,6 @@ void BRepOffset_Tool::ExtentFace(
   }
   NF.Orientation(F.Orientation());
   BRepTools::Update(NF); // Maj des UVPoints
-
-#ifdef DRAW
-  if (AffichInter)
-  {
-    char name[256];
-    Sprintf(name, "FOB_%d", NbFOB++);
-    DBRep::Set(name, NF);
-  }
-#endif
 }
 
 //=================================================================================================

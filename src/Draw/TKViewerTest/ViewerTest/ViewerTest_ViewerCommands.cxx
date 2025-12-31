@@ -80,7 +80,8 @@
 #include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_EventManager.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DoubleMap.hxx>
 #include <ViewerTest_CmdParser.hxx>
 #include <ViewerTest_V3dView.hxx>
 #include <V3d_AmbientLight.hxx>
@@ -107,6 +108,8 @@
   #include <emscripten/emscripten.h>
 #else
   #include <Aspect_NeutralWindow.hxx>
+
+class AIS_InteractiveObject;
 #endif
 
 //==============================================================================

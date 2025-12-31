@@ -19,9 +19,10 @@
 
 #include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_ListOfShape.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
+class TopoDS_Shape;
 
 //! Iterates on the underlying shape underlying a given
 //! TopoDS_Shape object, providing access to its

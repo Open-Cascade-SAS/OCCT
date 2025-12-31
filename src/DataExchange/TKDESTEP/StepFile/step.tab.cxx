@@ -1044,7 +1044,6 @@ const signed char parser::yyr2_[] = {0, 2, 1, 2, 1, 2, 8, 7, 6, 1, 1, 1, 1, 2, 3
                                      1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 3, 1, 3, 1, 2, 4,
                                      7, 6, 1, 2, 3, 2, 3, 1, 1, 1, 3, 1, 1, 4, 1, 1};
 
-#if YYDEBUG || 1
 // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
 // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
 const char* const parser::yytname_[] = {"\"end of file\"",
@@ -1102,7 +1101,6 @@ const char* const parser::yytname_[] = {"\"end of file\"",
                                         "entlab",
                                         "enttype",
                                         YY_NULLPTR};
-#endif
 
 #if YYDEBUG
 const unsigned char parser::yyrline_[] = {

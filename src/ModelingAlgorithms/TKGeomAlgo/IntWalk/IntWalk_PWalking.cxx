@@ -3121,12 +3121,6 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
       tgfirst         = tglast;
       tglast          = false;
       ChoixIso        = choixIsoSav;
-#if 0
-      pasuv[0]=pasSav[0];
-      pasuv[1]=pasSav[1];
-      pasuv[2]=pasSav[2];
-      pasuv[3]=pasSav[3];
-#else
       double u1, v1, u2, v2;
       double U1, V1, U2, V2;
       int    nn = line->NbPoints();
@@ -3139,7 +3133,6 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
         pasuv[2] = std::abs(u2 - U2);
         pasuv[3] = std::abs(v2 - V2);
       }
-#endif
     }
   }
   else
@@ -3171,12 +3164,6 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
         tglast          = false;
         ChoixIso        = choixIsoSav;
 
-#if 0 
-          pasuv[0]=pasSav[0];
-          pasuv[1]=pasSav[1];
-          pasuv[2]=pasSav[2];
-          pasuv[3]=pasSav[3];
-#else
         double u1, v1, u2, v2;
         double U1, V1, U2, V2;
         int    nn = line->NbPoints();
@@ -3189,7 +3176,6 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
           pasuv[2] = std::abs(u2 - U2);
           pasuv[3] = std::abs(v2 - V2);
         }
-#endif
       }
       else
         Arrive = true;

@@ -14,7 +14,7 @@
 #ifndef _ShapePersistent_Geom_Curve_HeaderFile
 #define _ShapePersistent_Geom_Curve_HeaderFile
 
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_HArray1.hxx>
@@ -34,6 +34,8 @@
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 {

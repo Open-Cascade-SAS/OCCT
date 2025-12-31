@@ -83,19 +83,13 @@
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
 #include <cstdio>
+
 // #include <BRepFill_TrimCorner.hxx>
 //  modified by NIZHNY-MKK  Wed Oct 22 12:25:45 2003
 // #include <GeomPlate_BuildPlateSurface.hxx>
 // #include <GeomPlate_Surface.hxx>
 // #include <GeomPlate_PointConstraint.hxx>
 // OCC500(apo)
-#ifdef DRAW
-  #include <Draw.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <DBRep.hxx>
-  #include <Geom_BoundedSurface.hxx>
-static bool Affich = 0;
-#endif
 
 //=================================================================================================
 
@@ -650,10 +644,6 @@ static void BuildFace(
   }
 
   WW = B.Wire();
-#ifdef DRAW
-  if (Affich)
-    DBRep::Set("wire-on-face", WW);
-#endif
 
   // Construction of the face.
   if (IsPlan)
@@ -792,18 +782,6 @@ static TopoDS_Edge BuildEdge(occ::handle<Geom_Curve>&   C3d,
   BRepLib_MakeEdge MkE(C3d, VF, VL, f, l);
   if (!MkE.IsDone())
   { // Error of construction !!
-#ifdef DRAW
-    char name[100];
-    Sprintf(name, "firstvertex_error");
-    DBRep::Set(name, VF);
-    Sprintf(name, "lastvertex_error");
-    DBRep::Set(name, VL);
-    Sprintf(name, "curve3d_error");
-    char* Temp = name;
-    DrawTrSurf::Set(Temp, C3d);
-    //    DrawTrSurf::Set(name, C3d);
-    throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
-#endif
   }
 
   E = MkE.Edge();
@@ -888,18 +866,6 @@ static bool Filling(const TopoDS_Shape&                                         
     WithE4 = true;
   }
 
-#ifdef DRAW
-  if (Affich)
-  {
-    DBRep::Set("Fill_Edge1", E1);
-    DBRep::Set("Fill_Edge2", E2);
-    if (!E3.IsNull())
-      DBRep::Set("Fill_Edge3", E3);
-    if (!E4.IsNull())
-      DBRep::Set("Fill_Edge4", E4);
-  }
-#endif
-
   // Construction of a surface of revolution
   occ::handle<Geom_Curve> Prof1, Prof2;
   // int ii, jj;//, Nb;
@@ -976,14 +942,6 @@ static bool Filling(const TopoDS_Shape&                                         
            (Rev, 0, Angle, f1, l1);
     */
   }
-
-#ifdef DRAW
-  if (Affich)
-  {
-    char* Temp = "Surf_Init";
-    DrawTrSurf::Set(Temp, Surf);
-  }
-#endif
 
   occ::handle<Geom2d_Curve> C1, C2, C3, C4;
   /*
@@ -1299,11 +1257,6 @@ static bool Filling(const TopoDS_Shape&                                         
   if (ToReverseResult)
     Result.Reverse();
 
-#ifdef DRAW
-  if (Affich)
-    DBRep::Set("BoucheTrou", Result);
-#endif
-
   return true;
 }
 
@@ -1567,17 +1520,6 @@ static TopoDS_Edge BuildEdge(const occ::handle<Geom_Surface>& S,
 
     if (!MkE.IsDone())
     { // Erreur de construction !!
-#ifdef DRAW
-      char name[100];
-      Sprintf(name, "firstvertex_error");
-      DBRep::Set(name, VFirst);
-      Sprintf(name, "lastvertex_error");
-      DBRep::Set(name, VLast);
-      Sprintf(name, "curve3d_error");
-      char* Temp = name;
-      DrawTrSurf::Set(Temp, Iso);
-//      DrawTrSurf::Set(name,Iso);
-#endif
       throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
     }
 
@@ -2125,32 +2067,9 @@ bool BRepFill_Sweep::BuildWire(const BRepFill_TransitionStyle /*Transition*/)
              Iso->LastParameter());
     if (!MkE.IsDone())
     { // Error of construction !!
-#ifdef DRAW
-      char name[100];
-      Sprintf(name, "firstvertex_error");
-      DBRep::Set(name, myVEdges->Value(1, ipath));
-      Sprintf(name, "lastvertex_error");
-      DBRep::Set(name, myVEdges->Value(1, ipath + 1));
-      Sprintf(name, "curve3d_error");
-      char* Temp = name;
-      DrawTrSurf::Set(Temp, Iso);
-      //       DrawTrSurf::Set(name,Iso);
-      throw Standard_ConstructionError("BRepFill_Sweep::BuildEdge");
-#endif
       return false;
     }
     E = MkE.Edge();
-#ifdef DRAW
-    if (Affich)
-    {
-      Sprintf(name, "Surf_%d", ipath);
-      char* Temp = name;
-      DrawTrSurf::Set(Temp, S);
-      //      DrawTrSurf::Set(name, S);
-      Sprintf(name, "Edge_%d", ipath);
-      DBRep::Set(name, E);
-    }
-#endif
     B.UpdateEdge(E, Sweep.ErrorOnSurface());
     B.Add(wire, E);
     myFaces->SetValue(1, ipath, E);
@@ -2177,10 +2096,7 @@ bool BRepFill_Sweep::BuildShell(
   const double                                            ExtendFirst,
   const double                                            ExtendLast)
 {
-  int ipath, isec, IPath;
-#ifdef DRAW
-  char name[100];
-#endif
+  int          ipath, isec, IPath;
   BRep_Builder B;
   int          NbPath = ILast - IFirst;
   int          NbLaw  = mySec->NbLaw();
@@ -2291,15 +2207,6 @@ bool BRepFill_Sweep::BuildShell(
         GeomLib::ExtendSurfByLength(BndS, ExtendLast, 1, Sweep.ExchangeUV(), true);
         TabS(isec, ipath) = BndS;
       }
-
-#ifdef DRAW
-      if (Affich)
-      {
-        Sprintf(name, "Surf_%d_%d", isec, IPath);
-        char* Temp = name;
-        DrawTrSurf::Set(Temp, TabS(isec, ipath));
-      }
-#endif
     }
   }
 
@@ -2865,35 +2772,6 @@ bool BRepFill_Sweep::BuildShell(
 
   // (3) Construction of Faces
   TopoDS_Face face;
-
-#ifdef DRAW
-  if (Affich)
-  {
-    for (ipath = 1, IPath = IFirst; ipath <= NbPath; ipath++, IPath++)
-    {
-      for (isec = 1; isec <= NbLaw + 1; isec++)
-      {
-        Sprintf(name, "uedge_%d_%d", isec, IPath);
-        DBRep::Set(name, UEdge(isec, ipath));
-      }
-    }
-
-    for (ipath = 1, IPath = IFirst; ipath <= NbPath + 1; ipath++, IPath++)
-    {
-      for (isec = 1; isec <= NbLaw; isec++)
-      {
-        Sprintf(name, "vedge_%d_%d", isec, IPath);
-        DBRep::Set(name, VEdge(isec, ipath));
-      }
-
-      for (isec = 1; isec <= NbLaw + 1; isec++)
-      {
-        Sprintf(name, "vertex_%d_%d", isec, IPath);
-        DBRep::Set(name, Vertex(isec, ipath));
-      }
-    }
-  }
-#endif
 
   for (ipath = 1, IPath = IFirst; ipath <= NbPath; ipath++, IPath++)
   {

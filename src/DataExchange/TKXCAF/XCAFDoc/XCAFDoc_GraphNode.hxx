@@ -18,11 +18,13 @@
 
 #include <Standard.hxx>
 
-#include <XCAFDoc_GraphNodeSequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+
+class XCAFDoc_GraphNode;
 class TDF_Label;
 class TDF_RelocationTable;
 class TDF_DataSet;

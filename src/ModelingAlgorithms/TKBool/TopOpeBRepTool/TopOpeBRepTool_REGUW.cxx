@@ -25,10 +25,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
-
 #define FORWARD (1)
 #define REVERSED (2)
 #define INTERNAL (3)
@@ -85,11 +81,6 @@ Standard_EXPORT int FUN_adds(const TopoDS_Shape& s)
     aa = TCollection_AsciiString("f");
     is = STATIC_mapf.Add(s);
   }
-  #ifdef DRAW
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    FUN_tool_draw(aa, s, is);
-  #endif
   return is;
 }
 #endif

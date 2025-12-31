@@ -521,21 +521,6 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
       }
       double x0, y0, z0, x1, y1, z1, pmin, pmax; //,pp;
       myPolyhedron->Bounding().Get(x0, y0, z0, x1, y1, z1);
-#if 0
-      pmax = pmin = ElCLib::Parameter(L, gp_Pnt((x1+x0)*0.5,
-						(y1+y0)*0.5,
-						(z1+z0)*0.5));
-      double d = (x1-x0) + (y1-y0) + (z1-z0);
-      pmin -= d;
-      pmax += d;
-      if (pmin > P) pmin = P - d;
-      if (pmax > P) pmax = P;
-      HLRBRep_ThePolygonOfInterCSurf Polygon(L,pmin,pmax,3);
-      myCSIntersector.Perform(L,Polygon,mySurface,
-			      *((HLRBRep_ThePolyhedronOfInterCSurf*)
-				myPolyhedron));
-      break;
-#else
       //-- On va rejeter tous les points de parametres > P
       double p;
       p    = ElCLib::Parameter(L, gp_Pnt(x0, y0, z0));
@@ -598,7 +583,6 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
                               *((HLRBRep_ThePolyhedronOfInterCSurf*)myPolyhedron));
 
       break;
-#endif
     }
   }
 #ifdef PERF

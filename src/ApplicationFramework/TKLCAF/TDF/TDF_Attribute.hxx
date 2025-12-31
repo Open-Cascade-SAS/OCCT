@@ -23,7 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 class TDF_Label;
 class TDF_DeltaOnForget;
 class Standard_GUID;

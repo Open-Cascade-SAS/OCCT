@@ -18,9 +18,10 @@
 #include <Prs3d_PresentationShadow.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_Presentations.hxx>
+#include <NCollection_Sequence.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
+class PrsMgr_Presentation;
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager, Standard_Transient)
 

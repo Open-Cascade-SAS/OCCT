@@ -53,12 +53,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
-// #define DRAW
 #include <cstdio>
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-  #include <DBRep.hxx>
-#endif
 #ifdef OCCT_DEBUG
 static bool Affich = false;
 static int  NBCALL = 0;
@@ -94,24 +89,6 @@ BRepFill_TrimSurfaceTool::BRepFill_TrimSurfaceTool(const occ::handle<Geom2d_Curv
   {
     NBCALL++;
     std::cout << " ---------->TrimSurfaceTool : NBCALL = " << NBCALL << std::endl;
-  #ifdef DRAW
-    char name[256];
-
-    Sprintf(name, "FACE1_%d", NBCALL);
-    DBRep::Set(name, myFace1);
-
-    Sprintf(name, "FACE2_%d", NBCALL);
-    DBRep::Set(name, myFace2);
-
-    Sprintf(name, "EDGE1_%d", NBCALL);
-    DBRep::Set(name, myEdge1);
-
-    Sprintf(name, "EDGE2_%d", NBCALL);
-    DBRep::Set(name, myEdge2);
-
-    Sprintf(name, "BISSEC_%d", NBCALL);
-    DrawTrSurf::Set(name, myBis);
-  #endif
   }
 #endif
 }
@@ -396,19 +373,6 @@ void BRepFill_TrimSurfaceTool::IntersectWith(const TopoDS_Edge&            EdgeO
                                              const TopoDS_Edge&            EdgeOnF2,
                                              NCollection_Sequence<gp_Pnt>& Points) const
 {
-#ifdef DRAW
-  if (Affich)
-  {
-    char name[256];
-    int  i1 = 0, i2 = 2;
-    Sprintf(name, "EdgeOnF1_%d_%d", i1, NBCALL);
-    DBRep::Set(name, EdgeOnF1);
-
-    Sprintf(name, "EdgeOnF2_%d_%d", i2, NBCALL);
-    DBRep::Set(name, EdgeOnF2);
-  }
-
-#endif
   Points.Clear();
   NCollection_Sequence<gp_Pnt> Points2;
 

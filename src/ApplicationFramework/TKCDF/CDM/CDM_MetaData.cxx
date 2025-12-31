@@ -17,13 +17,14 @@
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Dump.hxx>
 #include <CDF_Application.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Thread.hxx>
+class CDM_MetaData;
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_MetaData, Standard_Transient)
 

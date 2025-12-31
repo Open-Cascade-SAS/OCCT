@@ -19,7 +19,7 @@
 
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_MapOfAspectsToAspects.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_TextPath.hxx>
@@ -31,6 +31,7 @@
 #include <Graphic3d_BoundBuffer.hxx>
 #include <gp_Ax2.hxx>
 #include <TCollection_ExtendedString.hxx>
+class Graphic3d_Aspects;
 
 class Graphic3d_Structure;
 class Graphic3d_ArrayOfPrimitives;

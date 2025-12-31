@@ -64,13 +64,8 @@ extern bool TopOpeBRepTool_GettraceKRO();
 extern bool TopOpeBRepTool_GettracePCURV();
 extern bool TopOpeBRepTool_GettraceCHKBSPL();
 #endif
-// #define DRAW
 // #define IFV
 #define CurveImprovement
-#ifdef DRAW
-  #include <DrawTrSurf.hxx>
-static int NbCalls = 0;
-#endif
 //=================================================================================================
 
 TopOpeBRepTool_CurveTool::TopOpeBRepTool_CurveTool() = default;

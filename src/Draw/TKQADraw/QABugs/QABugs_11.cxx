@@ -73,7 +73,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <AIS_ColorScale.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DoubleMap.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <gp_GTrsf.hxx>
 #include <Poly_Triangulation.hxx>
@@ -4649,6 +4650,7 @@ int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 #include <NCollection_DataMap.hxx>
+class AIS_InteractiveObject;
 
 int OCC22744(Draw_Interpretor& di, int argc, const char** argv)
 {

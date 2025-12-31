@@ -106,20 +106,6 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
         }
       }
       break;
-#if 0 
-	NCollection_Array1<gp_Pnt2d> TP(1,Projc.NbPoles());
-	if (Projc.IsRational()) {
-	  NCollection_Array1<double> TW(1,Projc.NbPoles());
-	  Projc.PolesAndWeights(TP,TW);
-	  Pcurv = new Geom2d_BezierCurve(TP,TW);
-	}
-	else {
-	  Projc.Poles(TP);
-	  Pcurv = new Geom2d_BezierCurve(TP);
-	}
-      }
-      break;
-#endif
       case GeomAbs_BSplineCurve: {
         occ::handle<Geom2d_BSplineCurve> BspProjc = Projc.BSpline();
         NCollection_Array1<gp_Pnt2d>     TP(1, BspProjc->NbPoles());
@@ -142,23 +128,6 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
         }
       }
       break;
-#if 0 
-	NCollection_Array1<gp_Pnt2d> TP(1,Projc.NbPoles());
-	NCollection_Array1<double> TK(1,Projc.NbKnots());
-	NCollection_Array1<int> TM(1,Projc.NbKnots());
-	Projc.KnotsAndMultiplicities(TK,TM);
-	if (Projc.IsRational()) {
-	  NCollection_Array1<double> TW(1,Projc.NbPoles());
-	  Projc.PolesAndWeights(TP,TW);
-	  Pcurv = new Geom2d_BSplineCurve(TP,TW,TK,TM,Projc.Degree());
-	}
-	else {
-	  Projc.Poles(TP);
-	  Pcurv = new Geom2d_BSplineCurve(TP,TK,TM,Projc.Degree());
-	}
-      }
-      break;
-#endif
       default:
         throw Standard_NotImplemented("failed approximation of the pcurve ");
     }

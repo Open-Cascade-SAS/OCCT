@@ -45,11 +45,6 @@
 
 #include <cstdio>
 // #define OCCT_DEBUG_ALGO
-// #define DRAW
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #pragma comment(lib, "TKDraw")
-#endif
 #ifdef OCCT_DEBUG_ALGO
 bool         AffichLoop = true;
 int          NbLoops    = 0;
@@ -408,13 +403,6 @@ static bool SelectEdge(const TopoDS_Face&              F,
   {
     return false;
   }
-#ifdef DRAW
-  if (AffichLoop)
-  {
-    DBRep::Set("Selected", NE);
-  }
-
-#endif
   return true;
 }
 
@@ -557,26 +545,13 @@ void BRepAlgo_Loop::Perform()
   {
     std::cout << "NewLoop" << std::endl;
     NbLoops++;
-  #ifdef DRAW
-    Sprintf(name, "FLoop_%d", NbLoops);
-    DBRep::Set(name, myFace);
-    int NbEdges = 1;
-  #endif
     for (itl.Initialize(myEdges); itl.More(); itl.Next())
     {
       const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-  #ifdef DRAW
-      Sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
-      DBRep::Set(name, E);
-  #endif
     }
     for (itl.Initialize(myConstEdges); itl.More(); itl.Next())
     {
       const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-  #ifdef DRAW
-      Sprintf(name, "EEE_%d_%d", NbLoops, NbEdges++);
-      DBRep::Set(name, E);
-  #endif
     }
   }
 #endif
@@ -627,27 +602,6 @@ void BRepAlgo_Loop::Perform()
     if (DejaVu.Add(E))
       StoreInMVE(myFace, E, MVE, YaCouture, myVerticesForSubstitute, myTolConf);
   }
-
-#ifdef DRAW
-  if (AffichLoop)
-  {
-    std::cout << "NewLoop" << std::endl;
-    int                                                    NbEdges = 1;
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Done;
-    for (int iV = 1; iV <= MVE.Extent(); iV++)
-    {
-      for (itl.Initialize(MVE(iV)); itl.More(); itl.Next())
-      {
-        TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-        if (Done.Add(E))
-        {
-          Sprintf(name, "EEC_%d_%d", NbLoops, NbEdges++);
-          DBRep::Set(name, E);
-        }
-      }
-    }
-  }
-#endif
 
   //-----------------------------------------------
   // Construction of wires and new faces.
@@ -768,14 +722,6 @@ void BRepAlgo_Loop::Perform()
         std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
     }
 #endif
-
-#ifdef DRAW
-    if (AffichLoop)
-    {
-      Sprintf(name, "NW_%d_%d", NbLoops, NbWires++);
-      DBRep::Set(name, NW);
-    }
-#endif
   }
 
   PurgeNewEdges(myCutEdges, UsedEdges);
@@ -826,12 +772,6 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
     if (SV(1).IsEqual(VF) && SV(2).IsEqual(VL))
     {
       NE.Append(E);
-#ifdef DRAW
-      if (AffichLoop)
-      {
-        DBRep::Set("ECOpied", E);
-      }
-#endif
       return;
     }
   }
@@ -904,12 +844,6 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
         U2                   = BRep_Tool::Parameter(TopoDS::Vertex(aLocalV), WE);
       }
       B.Range(TopoDS::Edge(NewEdge), U1, U2);
-#ifdef DRAW
-      if (AffichLoop)
-      {
-        DBRep::Set("Cut", NewEdge);
-      }
-#endif
       NE.Append(NewEdge.Oriented(E.Orientation()));
     }
   }

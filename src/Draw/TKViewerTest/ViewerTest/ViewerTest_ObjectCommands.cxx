@@ -44,7 +44,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DoubleMap.hxx>
 #include <ViewerTest_EventManager.hxx>
 
 #include <TopoDS_Solid.hxx>
@@ -2724,6 +2725,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <utility>
+class AIS_InteractiveObject;
 
 //===============================================================================================
 // function : CalculationOfSphere

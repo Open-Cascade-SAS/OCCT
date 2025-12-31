@@ -33,11 +33,6 @@
 #include <NCollection_Map.hxx>
 
 #include <cstdio>
-#ifdef DRAW
-  #include <DBRep.hxx>
-int         NbF    = 1;
-static bool Affich = false;
-#endif
 
 BRepOffset_MakeLoops::BRepOffset_MakeLoops() = default;
 
@@ -496,14 +491,6 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
       }
       if (ToRebuild)
       {
-#ifdef DRAW
-        if (Affich)
-        {
-          char name[256];
-          Sprintf(name, "CF_%d", NbF++);
-          DBRep::Set(name, F);
-        }
-#endif
 
         //-----------------------------------------------------------
         // Non-reconstructed edges on other faces are added.

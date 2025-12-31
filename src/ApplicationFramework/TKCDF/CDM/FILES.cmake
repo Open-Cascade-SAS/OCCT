@@ -12,7 +12,6 @@ set(OCCT_CDM_FILES
 
   CDM_MetaData.cxx
   CDM_MetaData.hxx
-  CDM_MetaDataLookUpTable.hxx
 
   CDM_Reference.cxx
   CDM_Reference.hxx

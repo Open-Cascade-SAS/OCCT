@@ -188,12 +188,6 @@ int Extrema_FuncExtSS::GetStateNumber()
 {
   if (!myS1init || !myS2init)
     throw Standard_TypeMismatch();
-#if 0
-  math_Vector Sol(1, 4), UVSol(1, 4);
-  UVSol(1) = myU1; UVSol(2) = myV1; UVSol(3) = myU2; UVSol(4) = myV2;
-  Value(UVSol, Sol);
-  std::cout <<"F(1)= "<<Sol(1)<<" F(2)= "<<Sol(2)<<" F(3)= "<<Sol(3)<<" F(4)= "<<Sol(4)<<std::endl;
-#endif
 
   mySqDist.Append(myP1.SquareDistance(myP2));
   myPoint1.Append(Extrema_POnSurf(myU1, myV1, myP1));

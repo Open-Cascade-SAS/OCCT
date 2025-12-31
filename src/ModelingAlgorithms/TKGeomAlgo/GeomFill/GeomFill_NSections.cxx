@@ -46,9 +46,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_NSections, GeomFill_SectionLaw)
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-  #endif
 static bool Affich = 0;
 static int  NbSurf = 0;
 #endif
@@ -676,14 +673,6 @@ void GeomFill_NSections::ComputeSurface()
   NbSurf++;
   if (Affich)
   {
-  #ifdef DRAW
-    char name[256];
-    Sprintf(name, "NS_Surf_%d", NbSurf);
-    DrawTrSurf::Set(name, BS);
-    std::cout << std::endl
-              << "RESULTAT de ComputeSurface : NS_Surf_" << NbSurf << std::endl
-              << std::endl;
-  #endif
   }
 #endif
 }

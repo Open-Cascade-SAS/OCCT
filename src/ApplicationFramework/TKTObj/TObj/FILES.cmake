@@ -33,7 +33,6 @@ set(OCCT_TObj_FILES
   TObj_SequenceIterator.cxx
   TObj_SequenceIterator.hxx
 
-  TObj_SequenceOfObject.hxx
   TObj_TIntSparseArray.cxx
   TObj_TIntSparseArray.hxx
   TObj_TModel.cxx

@@ -78,12 +78,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_PipeShell, Standard_Transient)
 
 // Specification Guide
-#ifdef DRAW
-  #include <Draw.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <DBRep.hxx>
-static bool Affich = 0;
-#endif
 
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -380,10 +374,6 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
     BRepFill::SearchOrigin(TheGuide, SpOr, Dir, 100 * myTol3d);
   }
 
-#ifdef DRAW
-  if (Affich)
-    DBRep::Set("theguide", TheGuide);
-#endif
   // transform the guide in a single curve
   occ::handle<BRepAdaptor_CompCurve> Guide = new (BRepAdaptor_CompCurve)(TheGuide);
 
@@ -719,13 +709,6 @@ bool BRepFill_PipeShell::Build()
     }
     // eap 5 Jun 2002 occ332, end modif
   }
-#ifdef DRAW
-  if (Affich)
-  {
-    DBRep::Set("PipeFirst", myFirst);
-    DBRep::Set("PipeLast", myLast);
-  }
-#endif
 
   // 3) Construction
   BRepFill_Sweep MkSw(mySection, myLocation, true);
@@ -1108,20 +1091,6 @@ void BRepFill_PipeShell::Prepare()
           myIndOfSec.Append(jj);
           break;
         }
-
-#ifdef DRAW
-    if (Affich)
-    {
-      char* name   = new char[100];
-      int   NBSECT = 0;
-      for (int i = 1; i <= WSeq.Length(); i++)
-      {
-        NBSECT++;
-        Sprintf(name, "WSeq_%d", NBSECT);
-        DBRep::Set(name, TopoDS::Wire(WSeq.Value(i)));
-      }
-    }
-#endif
 
     //  Calculate work sections
     NCollection_Sequence<TopoDS_Shape> WorkingSections;

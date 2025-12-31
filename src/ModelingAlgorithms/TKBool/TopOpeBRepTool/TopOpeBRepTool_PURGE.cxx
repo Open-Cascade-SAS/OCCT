@@ -842,12 +842,6 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     continue;
       }
 
-#ifdef DRAW
-      if (trc) {
-    std::cout<<"TopOpeBRepTool correctONUVISO : faulty iso edge"<<std::endl;
-    FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fyisoe",fyisoe);
-      }
-#endif
 
       bool ok = ::FUN_correctClosingE(fyisoe,Fsp);
       if (!ok) {
@@ -867,12 +861,6 @@ TopTools_ShapeMapHasher> mve; TopExp::MapShapesAndAncestors(Fsp,TopAbs_VERTEX,To
     for (NCollection_List<TopoDS_Shape>::Iterator itdeg(lfydege);itdeg.More();itdeg.Next()) {
       TopoDS_Edge& fydege = TopoDS::Edge(itdeg.Value());
 
-#ifdef DRAW
-      if (trc) {
-    std::cout<<"TopOpeBRepTool correctONUVISO : faulty deg edge"<<std::endl;
-    FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fydege",fydege);
-      }
-#endif
 
       bool ok = ::FUN_correctDegeneratedE(mve,fydege,Fsp);
       if (!ok) {

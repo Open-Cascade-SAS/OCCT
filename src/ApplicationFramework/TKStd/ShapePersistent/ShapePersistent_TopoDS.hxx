@@ -19,13 +19,15 @@
 #include <StdPersistent_HArray1.hxx>
 #include <StdLPersistent_HArray1.hxx>
 #include <StdObject_Shape.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_TShell.hxx>
 #include <TopoDS_TSolid.hxx>
 #include <TopoDS_TCompSolid.hxx>
 #include <TopoDS_TCompound.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class ShapePersistent_TopoDS : public StdPersistent_TopoDS
 {

@@ -227,11 +227,6 @@ void Geom2dHatch_Elements::CurrentEdge(Geom2dAdaptor_Curve& E, TopAbs_Orientatio
 
   E  = Item.ChangeCurve();
   Or = Item.Orientation();
-#if 0 
-  E.Edge() = TopoDS::Edge(myEExplorer.Current());
-  E.Face() = myFace;
-  Or = E.Edge().Orientation();
-#endif
 }
 
 //=================================================================================================

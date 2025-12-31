@@ -9,7 +9,6 @@ set(OCCT_MoniTool_FILES
   MoniTool_DataInfo.cxx
   MoniTool_DataInfo.hxx
 
-  MoniTool_DataMapOfTimer.hxx
   MoniTool_Element.cxx
   MoniTool_Element.hxx
 

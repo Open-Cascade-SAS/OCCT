@@ -11,5 +11,4 @@ set(OCCT_StdObjMgt_FILES
   StdObjMgt_WriteData.hxx
   StdObjMgt_WriteData.cxx
   StdObjMgt_SharedObject.hxx
-  StdObjMgt_TransientPersistentMap.hxx
 )

@@ -15,7 +15,8 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -26,6 +27,7 @@
 #include <NCollection_Map.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
+class BOPDS_PaveBlock;
 
 //
 //=================================================================================================

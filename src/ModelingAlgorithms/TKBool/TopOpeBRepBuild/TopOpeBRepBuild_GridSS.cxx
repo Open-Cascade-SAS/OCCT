@@ -59,12 +59,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-  #include <TopOpeBRepDS_DRAW.hxx>
-  #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#endif
-
 #ifdef OCCT_DEBUG
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \
@@ -225,10 +219,6 @@ NCollection_List<TopoDS_Shape>& losplits)
 
 #ifdef OCCT_DEBUG
   bool trc = false;
-#ifdef DRAW
-  if (trc) {TCollection_AsciiString aa("PCinf");FUN_tool_draw(aa,Einf2pi,F,0);}
-  if (trc) {TCollection_AsciiString aa("PCsup");FUN_tool_draw(aa,Esup2pi,F,0);}
-#endif
 #endif
   losplits.Append(Einf2pi); losplits.Append(Esup2pi);
 }*/

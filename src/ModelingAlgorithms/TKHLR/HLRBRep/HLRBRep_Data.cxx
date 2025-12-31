@@ -1394,9 +1394,6 @@ void HLRBRep_Data::NextInterference()
           }
           else
           {
-#if 0
-	    printf("\n Rejection myFE:%5d   myLE:%5d\n",myFE,myLE);
-#endif
           }
         }
         else
