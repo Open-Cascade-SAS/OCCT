@@ -40,7 +40,7 @@ static ExtremaPC::Result THE_NOT_DONE_RESULT = [] {
 ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
     : myEvaluator(std::monostate{})
 {
-  ExtremaPC::Domain1D      aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
+  ExtremaPC::Domain1D     aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
   const GeomAbs_CurveType aCurveType = theCurve.GetType();
 
   switch (aCurveType)
@@ -88,7 +88,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
 ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax)
     : myEvaluator(std::monostate{})
 {
-  ExtremaPC::Domain1D      aDomain(theUMin, theUMax);
+  ExtremaPC::Domain1D     aDomain(theUMin, theUMax);
   const GeomAbs_CurveType aCurveType = theCurve.GetType();
 
   switch (aCurveType)
@@ -133,8 +133,8 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin
 
 //==================================================================================================
 
-void ExtremaPC_Curve::initFromGeomCurve(const occ::handle<Geom_Curve>&                 theCurve,
-                                         const std::optional<ExtremaPC::Domain1D>& theDomain)
+void ExtremaPC_Curve::initFromGeomCurve(const occ::handle<Geom_Curve>&            theCurve,
+                                        const std::optional<ExtremaPC::Domain1D>& theDomain)
 {
   // Try specific curve types for direct initialization
   occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(theCurve);
@@ -296,7 +296,9 @@ ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve)
 
 //==================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve, double theUMin, double theUMax)
+ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve,
+                                 double                         theUMin,
+                                 double                         theUMax)
     : myEvaluator(std::monostate{})
 {
   if (theCurve.IsNull())
@@ -306,8 +308,8 @@ ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve, double
 
   // Get base curve and effective bounds
   occ::handle<Geom_Curve> aBaseCurve     = theCurve;
-  double             aEffectiveUMin = theUMin;
-  double             aEffectiveUMax = theUMax;
+  double                  aEffectiveUMin = theUMin;
+  double                  aEffectiveUMax = theUMax;
 
   // For trimmed curve, intersect input bounds with trimmed bounds
   occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(theCurve);
@@ -327,8 +329,8 @@ ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve, double
 //==================================================================================================
 
 const ExtremaPC::Result& ExtremaPC_Curve::Perform(const gp_Pnt&         theP,
-                                                   double                theTol,
-                                                   ExtremaPC::SearchMode theMode) const
+                                                  double                theTol,
+                                                  ExtremaPC::SearchMode theMode) const
 {
   const ExtremaPC::Result* aResultPtr = &THE_NOT_DONE_RESULT;
   std::visit(
@@ -346,8 +348,8 @@ const ExtremaPC::Result& ExtremaPC_Curve::Perform(const gp_Pnt&         theP,
 //==================================================================================================
 
 const ExtremaPC::Result& ExtremaPC_Curve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                                double                theTol,
-                                                                ExtremaPC::SearchMode theMode) const
+                                                               double                theTol,
+                                                               ExtremaPC::SearchMode theMode) const
 {
   const ExtremaPC::Result* aResultPtr = &THE_NOT_DONE_RESULT;
   std::visit(

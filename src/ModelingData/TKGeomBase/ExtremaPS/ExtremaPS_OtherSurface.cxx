@@ -20,8 +20,10 @@
 ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface),
-      myDomain{myAdaptor.FirstUParameter(), myAdaptor.LastUParameter(),
-               myAdaptor.FirstVParameter(), myAdaptor.LastVParameter()}
+      myDomain{myAdaptor.FirstUParameter(),
+               myAdaptor.LastUParameter(),
+               myAdaptor.FirstVParameter(),
+               myAdaptor.LastVParameter()}
 {
   // Build grid eagerly at construction time
   buildGrid();
@@ -30,7 +32,7 @@ ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& 
 //==================================================================================================
 
 ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface,
-                                               const ExtremaPS::Domain2D&  theDomain)
+                                               const ExtremaPS::Domain2D&       theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain(theDomain)
@@ -50,10 +52,12 @@ void ExtremaPS_OtherSurface::buildGrid()
 
   // Build the grid for the current domain using default sample count for general surfaces
   math_Vector aUParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax,
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin,
+                                                myDomain.UMax,
                                                 ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
   math_Vector aVParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin, myDomain.VMax,
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin,
+                                                myDomain.VMax,
                                                 ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
 
   GeomGridEval_OtherSurface anEval(&myAdaptor);
@@ -78,9 +82,10 @@ const ExtremaPS::Result& ExtremaPS_OtherSurface::Perform(const gp_Pnt&         t
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_OtherSurface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                                      double                theTol,
-                                                                      ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_OtherSurface::PerformWithBoundary(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPS::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

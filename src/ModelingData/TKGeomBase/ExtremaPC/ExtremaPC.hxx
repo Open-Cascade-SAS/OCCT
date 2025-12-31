@@ -135,10 +135,10 @@ enum class SearchMode
 //! Result of a single extremum computation.
 struct ExtremumResult
 {
-  double Parameter     = 0.0;  //!< Parameter value on curve
-  gp_Pnt Point;                //!< Point on curve at parameter
-  double SquareDistance = 0.0; //!< Square of the distance from query point to curve point
-  bool   IsMinimum     = true; //!< True if this is a local minimum, false if maximum
+  double Parameter = 0.0;       //!< Parameter value on curve
+  gp_Pnt Point;                 //!< Point on curve at parameter
+  double SquareDistance = 0.0;  //!< Square of the distance from query point to curve point
+  bool   IsMinimum      = true; //!< True if this is a local minimum, false if maximum
 };
 
 //! Result of extrema computation containing all found extrema.
@@ -272,11 +272,11 @@ struct Result
 //! Configuration for extrema computation.
 struct Config
 {
-  double                  Tolerance        = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
-  std::optional<Domain1D> Domain;                    //!< Parameter domain (nullopt = use natural/unbounded)
-  int                     NbSamples        = 32;     //!< Number of samples for numerical methods
-  SearchMode              Mode             = SearchMode::MinMax; //!< Search mode (MinMax, Min, or Max)
-  bool                    IncludeEndpoints = true;   //!< Include endpoints as potential extrema
+  double                  Tolerance = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
+  std::optional<Domain1D> Domain;         //!< Parameter domain (nullopt = use natural/unbounded)
+  int                     NbSamples = 32; //!< Number of samples for numerical methods
+  SearchMode              Mode      = SearchMode::MinMax; //!< Search mode (MinMax, Min, or Max)
+  bool                    IncludeEndpoints = true; //!< Include endpoints as potential extrema
 };
 
 //! @brief Adds endpoint extrema to result for bounded curves.
@@ -349,16 +349,16 @@ inline void AddEndpointExtrema(Result&               theResult,
   }
 
   // Check if UMin is a local extremum by comparing to neighbor
-  gp_Pnt  aNeighborMin    = theEval.Value(theUMin + aStep);
-  double  aNeighborDistMin = theP.SquareDistance(aNeighborMin);
-  bool    aIsMinAtUMin    = (aSqDistMin <= aNeighborDistMin);
-  bool    aIsMaxAtUMin    = (aSqDistMin >= aNeighborDistMin);
+  gp_Pnt aNeighborMin     = theEval.Value(theUMin + aStep);
+  double aNeighborDistMin = theP.SquareDistance(aNeighborMin);
+  bool   aIsMinAtUMin     = (aSqDistMin <= aNeighborDistMin);
+  bool   aIsMaxAtUMin     = (aSqDistMin >= aNeighborDistMin);
 
   // Check if UMax is a local extremum by comparing to neighbor
-  gp_Pnt  aNeighborMax    = theEval.Value(theUMax - aStep);
-  double  aNeighborDistMax = theP.SquareDistance(aNeighborMax);
-  bool    aIsMinAtUMax    = (aSqDistMax <= aNeighborDistMax);
-  bool    aIsMaxAtUMax    = (aSqDistMax >= aNeighborDistMax);
+  gp_Pnt aNeighborMax     = theEval.Value(theUMax - aStep);
+  double aNeighborDistMax = theP.SquareDistance(aNeighborMax);
+  bool   aIsMinAtUMax     = (aSqDistMax <= aNeighborDistMax);
+  bool   aIsMaxAtUMax     = (aSqDistMax >= aNeighborDistMax);
 
   // Also check if endpoints themselves are duplicates (for periodic curves)
   bool aEndpointsAreSame = aPtMin.SquareDistance(aPtMax) < theTol * theTol;

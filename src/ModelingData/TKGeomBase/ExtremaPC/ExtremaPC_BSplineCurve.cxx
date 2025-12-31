@@ -30,7 +30,7 @@ ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCur
 //==================================================================================================
 
 ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve,
-                                               const ExtremaPC::Domain1D&       theDomain)
+                                               const ExtremaPC::Domain1D&            theDomain)
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain(theDomain)
@@ -45,7 +45,8 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
   if (myCurve.IsNull())
   {
     // Fallback to uniform sampling
-    return ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max,
+    return ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min,
+                                                       myDomain.Max,
                                                        ExtremaPC::THE_BSPLINE_FALLBACK_SAMPLES);
   }
 
@@ -135,9 +136,10 @@ const ExtremaPC::Result& ExtremaPC_BSplineCurve::Perform(const gp_Pnt&         t
 
 //==================================================================================================
 
-const ExtremaPC::Result& ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                                       double                theTol,
-                                                                       ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_BSplineCurve::PerformWithEndpoints(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPC::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

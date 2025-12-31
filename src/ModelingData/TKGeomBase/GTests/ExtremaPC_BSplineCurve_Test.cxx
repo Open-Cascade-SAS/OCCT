@@ -106,7 +106,7 @@ protected:
     aKnots(4) = 1.0;
 
     NCollection_Array1<int> aMults(1, 4);
-    aMults(1) = 3;  // sum = 3 + 1 + 1 + 3 = 8 ✓
+    aMults(1) = 3; // sum = 3 + 1 + 1 + 3 = 8 ✓
     aMults(2) = 1;
     aMults(3) = 1;
     aMults(4) = 3;
@@ -142,11 +142,11 @@ protected:
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Start)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(0.0, 0.0, 0.0);
+  gp_Pnt                         aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -158,11 +158,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Start)
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_End)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(3.0, 0.0, 0.0);
+  gp_Pnt                         aPoint(3.0, 0.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -174,11 +174,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_End)
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Middle)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint   = aBSpline->Value(0.5);
+  gp_Pnt                         aPoint   = aBSpline->Value(0.5);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -194,11 +194,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Middle)
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Above)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(1.5, 3.0, 0.0);
+  gp_Pnt                         aPoint(1.5, 3.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -212,11 +212,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Above)
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Below)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(1.5, -1.0, 0.0);
+  gp_Pnt                         aPoint(1.5, -1.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -233,11 +233,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Below)
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_OutOfPlane)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(1.5, 2.0, 5.0);
+  gp_Pnt                         aPoint(1.5, 2.0, 5.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -254,11 +254,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_OutOfPlane)
 TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOnLine)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createLinearBSpline();
-  gp_Pnt                    aPoint(5.0, 0.0, 0.0);
+  gp_Pnt                         aPoint(5.0, 0.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -270,11 +270,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOnLine)
 TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOffLine)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createLinearBSpline();
-  gp_Pnt                    aPoint(5.0, 3.0, 4.0);
+  gp_Pnt                         aPoint(5.0, 3.0, 4.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -290,11 +290,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOffLine)
 TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointNear)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createQuadraticBSpline();
-  gp_Pnt                    aPoint(5.0, 8.0, 0.0);
+  gp_Pnt                         aPoint(5.0, 8.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -312,9 +312,9 @@ TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointOnApex)
   // Apex is approximately at middle
   gp_Pnt aPoint = aBSpline->Value(0.5);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -329,11 +329,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointOnApex)
 TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createMultiSpanBSpline();
-  gp_Pnt                    aPoint(2.5, 3.0, 0.0);
+  gp_Pnt                         aPoint(2.5, 3.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -350,11 +350,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
 TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_MultipleExtrema)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createMultiSpanBSpline();
-  gp_Pnt                    aPoint(2.5, 1.0, 0.0);
+  gp_Pnt                         aPoint(2.5, 1.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // With oscillating curve, might find multiple local extrema
@@ -375,11 +375,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_MultipleExtrema)
 TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointOn)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = create3DBSpline();
-  gp_Pnt                    aPoint   = aBSpline->Value(0.5);
+  gp_Pnt                         aPoint   = aBSpline->Value(0.5);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -390,11 +390,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointOn)
 TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointNear)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = create3DBSpline();
-  gp_Pnt                    aPoint(1.5, 2.0, 1.5);
+  gp_Pnt                         aPoint(1.5, 2.0, 1.5);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -413,11 +413,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointNear)
 TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_FirstHalf)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(2.5, 1.0, 0.0);
+  gp_Pnt                         aPoint(2.5, 1.0, 0.0);
 
   // Create evaluator with domain restricted to first half [0, 0.5]
-  ExtremaPC_BSplineCurve anEval(aBSpline, ExtremaPC::Domain1D{0.0, 0.5});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline, ExtremaPC::Domain1D{0.0, 0.5});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -433,11 +433,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_FirstHalf)
 TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_SecondHalf)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(0.5, 1.0, 0.0);
+  gp_Pnt                         aPoint(0.5, 1.0, 0.0);
 
   // Create evaluator with domain restricted to second half [0.5, 1.0]
-  ExtremaPC_BSplineCurve anEval(aBSpline, ExtremaPC::Domain1D{0.5, 1.0});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline, ExtremaPC::Domain1D{0.5, 1.0});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -457,11 +457,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_SecondHalf)
 TEST_F(ExtremaPC_BSplineCurveTest, VerifyProjectedPoint)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(1.5, 3.0, 0.0);
+  gp_Pnt                         aPoint(1.5, 3.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -477,11 +477,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, VerifyProjectedPoint)
 TEST_F(ExtremaPC_BSplineCurveTest, VerifyDistanceConsistency)
 {
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  gp_Pnt                    aPoint(2.0, 2.5, 1.0);
+  gp_Pnt                         aPoint(2.0, 2.5, 1.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  GeomAdaptor_Curve      anAdaptor(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  GeomAdaptor_Curve        anAdaptor(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -500,11 +500,11 @@ TEST_F(ExtremaPC_BSplineCurveTest, RefinementConfig_DisableRefinement)
 {
   // Test that disabling refinement works
   occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
-  gp_Pnt                    aPoint(1.5, 2.0, 0.0);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
+  gp_Pnt                         aPoint(1.5, 2.0, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Should work normally even with default refinement enabled
   ASSERT_TRUE(aResult.IsDone());
@@ -524,21 +524,21 @@ TEST_F(ExtremaPC_BSplineCurveTest, HighDegreeSpline_RefinementHelps)
   aPoles(7) = gp_Pnt(3.0, -0.5, 0.0);
   aPoles(8) = gp_Pnt(3.5, 0.5, 0.0);
 
-  NCollection_Array1<double>    aKnots(1, 2);
-  NCollection_Array1<int> aMults(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
   aMults(1) = 8;
   aMults(2) = 8;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 7);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   // Point that requires accurate projection
   gp_Pnt aPoint(1.75, 0.8, 0.0);
 
-  ExtremaPC_BSplineCurve anEval(aBSpline);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_BSplineCurve   anEval(aBSpline);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -552,5 +552,3 @@ TEST_F(ExtremaPC_BSplineCurveTest, HighDegreeSpline_RefinementHelps)
   double aDist = std::sqrt(aResult.MinSquareDistance());
   EXPECT_LT(aDist, 2.0);
 }
-
-

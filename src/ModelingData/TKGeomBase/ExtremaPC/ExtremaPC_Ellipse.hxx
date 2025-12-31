@@ -95,9 +95,10 @@ public:
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing extrema or InfiniteSolutions status
-  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     // Use stored domain or full parameter range [0, 2*PI]
     ExtremaPC::Domain1D aDomain = myDomain.value_or(ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
@@ -110,10 +111,12 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return const reference to result containing interior + endpoint extrema or InfiniteSolutions status
-  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing interior + endpoint extrema or InfiniteSolutions
+  //! status
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)Perform(theP, theTol, theMode);
 
@@ -225,7 +228,8 @@ private:
 
       // Determine if this is a minimum or maximum by checking neighboring points
       // Use step relative to parameter range
-      double aStep      = std::max(ExtremaPC::THE_NEIGHBOR_STEP_RATIO, (theUMax - theUMin) * ExtremaPC::THE_NEIGHBOR_STEP_RATIO);
+      double aStep      = std::max(ExtremaPC::THE_NEIGHBOR_STEP_RATIO,
+                              (theUMax - theUMin) * ExtremaPC::THE_NEIGHBOR_STEP_RATIO);
       gp_Pnt aPtPlus    = ElCLib::Value(aU + aStep, myEllipse);
       gp_Pnt aPtMinus   = ElCLib::Value(aU - aStep, myEllipse);
       double aDistPlus  = theP.SquareDistance(aPtPlus);

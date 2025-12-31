@@ -129,7 +129,7 @@ protected:
 TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointAbove)
 {
   gp_Pnt                   aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -142,7 +142,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointAbove)
 TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointOnSurface)
 {
   gp_Pnt                   aP(5.0, 5.0, 0.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -155,7 +155,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointOnSurface)
 TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointBelow)
 {
   gp_Pnt                   aP(5.0, 5.0, -5.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -168,7 +168,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointBelow)
 TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointAtCorner)
 {
   gp_Pnt                   aP(0.0, 0.0, 3.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -182,7 +182,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointOutsideDomain)
 {
   // Point projects outside the [0,10]x[0,10] domain
   gp_Pnt                   aP(-5.0, 5.0, 0.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -200,25 +200,25 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointOutsideDomain)
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointAboveCenter)
 {
   occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
-  gp_Pnt                     aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(5.0, 5.0, 10.0);
+  ExtremaPS_BezierSurface         anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
 
   // Minimum distance should be reasonable for point 10 units above a saddle
   double aMinDist = aResult.MinSquareDistance();
-  EXPECT_GT(std::sqrt(aMinDist), 5.0);   // At least 5 units
-  EXPECT_LT(std::sqrt(aMinDist), 12.0);  // At most 12 units
+  EXPECT_GT(std::sqrt(aMinDist), 5.0);  // At least 5 units
+  EXPECT_LT(std::sqrt(aMinDist), 12.0); // At most 12 units
 }
 
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointBelowCenter)
 {
   occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
-  gp_Pnt                     aP(5.0, 5.0, -5.0);
-  ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(5.0, 5.0, -5.0);
+  ExtremaPS_BezierSurface         anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -227,9 +227,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointBelowCenter)
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_MultipleExtrema)
 {
   occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
-  gp_Pnt                     aP(5.0, 5.0, 0.0);
-  ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult =
+  gp_Pnt                          aP(5.0, 5.0, 0.0);
+  ExtremaPS_BezierSurface         anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -244,15 +244,15 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_MultipleExtrema)
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAbovePeak)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  gp_Pnt                     aP(5.0, 5.0, 15.0);
-  ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(5.0, 5.0, 15.0);
+  ExtremaPS_BezierSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
 
   // Minimum should be at the dome peak
-  int aMinIdx = aResult.MinIndex();
+  int                              aMinIdx = aResult.MinIndex();
   const ExtremaPS::ExtremumResult& aMinExt = aResult.Extrema.Value(aMinIdx);
   EXPECT_NEAR(aMinExt.U, 0.5, 0.1);
   EXPECT_NEAR(aMinExt.V, 0.5, 0.1);
@@ -261,9 +261,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAbovePeak)
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAtCorner)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  gp_Pnt                     aP(0.0, 0.0, 10.0);
-  ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(0.0, 0.0, 10.0);
+  ExtremaPS_BezierSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -271,16 +271,16 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAtCorner)
   // Distance from corner to point at (0, 0, 10) - corner is at (0, 0, 0)
   // The actual surface passes through the corner, so distance should be ~10
   double aMinDist = aResult.MinSquareDistance();
-  EXPECT_GT(std::sqrt(aMinDist), 8.0);   // At least 8 units
-  EXPECT_LT(std::sqrt(aMinDist), 11.0);  // At most 11 units
+  EXPECT_GT(std::sqrt(aMinDist), 8.0);  // At least 8 units
+  EXPECT_LT(std::sqrt(aMinDist), 11.0); // At most 11 units
 }
 
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointUnderDome)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  gp_Pnt                     aP(5.0, 5.0, 0.0);
-  ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(5.0, 5.0, 0.0);
+  ExtremaPS_BezierSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -293,9 +293,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointUnderDome)
 TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_BasicProjection)
 {
   occ::handle<Geom_BezierSurface> aHighDeg = MakeHighDegreeBezier();
-  gp_Pnt                     aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(5.0, 5.0, 10.0);
+  ExtremaPS_BezierSurface         anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -304,14 +304,16 @@ TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_BasicProjection)
 TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_MultiplePoints)
 {
   occ::handle<Geom_BezierSurface> aHighDeg = MakeHighDegreeBezier();
-  ExtremaPS_BezierSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface         anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
 
   // Test multiple points
-  std::vector<gp_Pnt> aPoints = {gp_Pnt(2.0, 2.0, 5.0), gp_Pnt(7.0, 3.0, 3.0), gp_Pnt(5.0, 8.0, -2.0)};
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(2.0, 2.0, 5.0),
+                                 gp_Pnt(7.0, 3.0, 3.0),
+                                 gp_Pnt(5.0, 8.0, -2.0)};
 
   for (const auto& aP : aPoints)
   {
-    const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+    const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
     EXPECT_EQ(aResult.Status, ExtremaPS::Status::OK);
     EXPECT_GE(aResult.Extrema.Length(), 1);
   }
@@ -324,9 +326,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_MultiplePoints)
 TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointAbovePeak)
 {
   occ::handle<Geom_BezierSurface> aWavy = MakeWavyBezier();
-  gp_Pnt                     aP(M_PI / 2.0, M_PI / 2.0, 5.0);
-  ExtremaPS_BezierSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(M_PI / 2.0, M_PI / 2.0, 5.0);
+  ExtremaPS_BezierSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -335,9 +337,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointAbovePeak)
 TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointInValley)
 {
   occ::handle<Geom_BezierSurface> aWavy = MakeWavyBezier();
-  gp_Pnt                     aP(0.0, 0.0, -5.0);
-  ExtremaPS_BezierSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(0.0, 0.0, -5.0);
+  ExtremaPS_BezierSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -350,7 +352,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointInValley)
 TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_HalfU)
 {
   gp_Pnt                   aP(2.5, 5.0, 5.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 0.5, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 0.5, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -366,7 +368,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_HalfU)
 TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_HalfV)
 {
   gp_Pnt                   aP(5.0, 2.5, 5.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 0.5));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 0.5));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -382,7 +384,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_HalfV)
 TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_SmallPatch)
 {
   gp_Pnt                   aP(5.0, 5.0, 5.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.4, 0.6, 0.4, 0.6));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.4, 0.6, 0.4, 0.6));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -396,7 +398,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, PartialDomain_SmallPatch)
 TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_MinOnly)
 {
   gp_Pnt                   aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
 
@@ -412,7 +414,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_MinOnly)
 TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_MaxOnly)
 {
   gp_Pnt                   aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Max);
 
@@ -423,9 +425,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_MaxOnly)
 TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_DomeMinMax)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  gp_Pnt                     aP(5.0, 5.0, 10.0);
-  ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult =
+  gp_Pnt                          aP(5.0, 5.0, 10.0);
+  ExtremaPS_BezierSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -441,8 +443,8 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_FlatSurface)
   GeomAdaptor_Surface anAdaptor(myFlatSurface);
   ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  gp_Pnt            aP(5.0, 5.0, 7.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 5.0, 7.0);
+  const ExtremaPS::Result& aResult = anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -454,11 +456,11 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_FlatSurface)
 TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_DomeSurface)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  GeomAdaptor_Surface        anAdaptor(aDome);
-  ExtremaPS_Surface          anExtPS(anAdaptor);
+  GeomAdaptor_Surface             anAdaptor(aDome);
+  ExtremaPS_Surface               anExtPS(anAdaptor);
 
-  gp_Pnt            aP(5.0, 5.0, 12.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 5.0, 12.0);
+  const ExtremaPS::Result& aResult = anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -466,8 +468,8 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_DomeSurface)
   // Minimum distance from point at Z=12 above dome center
   // Due to Bezier interpolation, the actual dome peak may not reach Z=5
   double aMinDist = aResult.MinSquareDistance();
-  EXPECT_GT(std::sqrt(aMinDist), 5.0);   // At least 5 units
-  EXPECT_LT(std::sqrt(aMinDist), 12.0);  // At most 12 units (to corners)
+  EXPECT_GT(std::sqrt(aMinDist), 5.0);  // At least 5 units
+  EXPECT_LT(std::sqrt(aMinDist), 12.0); // At most 12 units (to corners)
 }
 
 TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_WithSearchMode)
@@ -493,7 +495,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_WithSearchMode)
 TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_VeryClosePoint)
 {
   gp_Pnt                   aP(5.0, 5.0, 1.0e-8);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -506,7 +508,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_VeryClosePoint)
 TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_VeryFarPoint)
 {
   gp_Pnt                   aP(5.0, 5.0, 1000.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -519,7 +521,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_VeryFarPoint)
 TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_PointOnEdge)
 {
   gp_Pnt                   aP(5.0, 0.0, 3.0); // On bottom edge
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -532,7 +534,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_PointOnEdge)
 TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_DiagonalPoint)
 {
   gp_Pnt                   aP(15.0, 15.0, 0.0); // Far diagonal
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -550,9 +552,9 @@ TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_DiagonalPoint)
 TEST_F(ExtremaPS_BezierSurfaceTest, Verify_PointOnSurface)
 {
   occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
-  gp_Pnt                     aP(3.0, 7.0, 8.0);
-  ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                          aP(3.0, 7.0, 8.0);
+  ExtremaPS_BezierSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&        aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -569,7 +571,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Verify_PointOnSurface)
 TEST_F(ExtremaPS_BezierSurfaceTest, Verify_SquareDistanceConsistent)
 {
   gp_Pnt                   aP(7.0, 3.0, 4.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -577,7 +579,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Verify_SquareDistanceConsistent)
 
   for (int i = 0; i < aResult.Extrema.Length(); ++i)
   {
-    const ExtremaPS::ExtremumResult& anExt        = aResult.Extrema.Value(i);
+    const ExtremaPS::ExtremumResult& anExt         = aResult.Extrema.Value(i);
     double                           aActualSqDist = aP.SquareDistance(anExt.Point);
     EXPECT_NEAR(anExt.SquareDistance, aActualSqDist, THE_TOLERANCE);
   }
@@ -586,7 +588,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Verify_SquareDistanceConsistent)
 TEST_F(ExtremaPS_BezierSurfaceTest, Verify_ParametersInRange)
 {
   gp_Pnt                   aP(5.0, 5.0, 5.0);
-  ExtremaPS_BezierSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.2, 0.8, 0.3, 0.7));
+  ExtremaPS_BezierSurface  anEval(myFlatSurface, ExtremaPS::Domain2D(0.2, 0.8, 0.3, 0.7));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);

@@ -133,11 +133,11 @@ namespace ExtremaPS_Newton
 //! Result of Newton iteration (wrapper around MathSys::Newton2DResult).
 struct Result
 {
-  bool   IsDone = false;   //!< True if converged
-  double U      = 0.0;     //!< Solution U parameter
-  double V      = 0.0;     //!< Solution V parameter
-  int    NbIter = 0;       //!< Number of iterations performed
-  double FNorm  = 0.0;     //!< Final |F| norm
+  bool   IsDone = false; //!< True if converged
+  double U      = 0.0;   //!< Solution U parameter
+  double V      = 0.0;   //!< Solution V parameter
+  int    NbIter = 0;     //!< Number of iterations performed
+  double FNorm  = 0.0;   //!< Final |F| norm
 };
 
 //! Perform 2D Newton iteration.
@@ -162,9 +162,15 @@ inline Result Solve(const ExtremaPS_DistanceFunction& theFunc,
                     int                               theMaxIter = 12)
 {
   // Use MathSys::Newton2DSymmetric for the core algorithm
-  auto aMathResult = MathSys::Newton2DSymmetric(theFunc, theU0, theV0,
-                                                 theUMin, theUMax, theVMin, theVMax,
-                                                 theTol, static_cast<size_t>(theMaxIter));
+  auto aMathResult = MathSys::Newton2DSymmetric(theFunc,
+                                                theU0,
+                                                theV0,
+                                                theUMin,
+                                                theUMax,
+                                                theVMin,
+                                                theVMax,
+                                                theTol,
+                                                static_cast<size_t>(theMaxIter));
 
   // Convert to local Result type
   Result aRes;

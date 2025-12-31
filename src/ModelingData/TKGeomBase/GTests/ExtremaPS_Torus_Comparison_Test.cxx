@@ -41,21 +41,29 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // Handle infinite solutions case (e.g., point on torus axis)
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
   {
-    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0) << theTestName << ": Infinite distance should be non-negative";
+    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0)
+      << theTestName << ": Infinite distance should be non-negative";
     return;
   }
 
   // New implementation must succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -73,8 +81,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 } // namespace
 
@@ -93,7 +101,7 @@ protected:
   }
 
   occ::handle<Geom_ToroidalSurface> myTorus;
-  GeomAdaptor_Surface          myAdaptor;
+  GeomAdaptor_Surface               myAdaptor;
 };
 
 //==================================================================================================
@@ -144,9 +152,9 @@ TEST_F(ExtremaPS_TorusComparisonTest, PointDiagonal)
 
 TEST_F(ExtremaPS_TorusComparisonTest, LargeTorus_PointOutside)
 {
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 10.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 10.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(80.0, 0.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "LargeTorus_PointOutside");
@@ -155,9 +163,9 @@ TEST_F(ExtremaPS_TorusComparisonTest, LargeTorus_PointOutside)
 TEST_F(ExtremaPS_TorusComparisonTest, ThinTorus_PointNear)
 {
   // Major radius 10, minor radius 1 (thin ring)
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 1.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 1.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(12.0, 0.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "ThinTorus_PointNear");
@@ -166,9 +174,9 @@ TEST_F(ExtremaPS_TorusComparisonTest, ThinTorus_PointNear)
 TEST_F(ExtremaPS_TorusComparisonTest, ThickTorus_PointInside)
 {
   // Major radius 10, minor radius 8 (almost sphere-like, thick tube)
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 8.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 8.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(5.0, 0.0, 3.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "ThickTorus_PointInside");
@@ -180,9 +188,9 @@ TEST_F(ExtremaPS_TorusComparisonTest, ThickTorus_PointInside)
 
 TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_XAxis)
 {
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0, 3.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0, 3.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(5.0, 15.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "TiltedTorus_XAxis");
@@ -190,10 +198,10 @@ TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_XAxis)
 
 TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_Diagonal)
 {
-  gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 10.0, 3.0);
+  gp_Dir                            aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 10.0, 3.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "TiltedTorus_Diagonal");
@@ -205,9 +213,9 @@ TEST_F(ExtremaPS_TorusComparisonTest, TiltedTorus_Diagonal)
 
 TEST_F(ExtremaPS_TorusComparisonTest, TranslatedTorus_PointNear)
 {
-  gp_Torus aTorus(gp_Ax3(gp_Pnt(50, 50, 20), gp_Dir(0, 0, 1)), 10.0, 3.0);
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(50, 50, 20), gp_Dir(0, 0, 1)), 10.0, 3.0);
   occ::handle<Geom_ToroidalSurface> aSurf = new Geom_ToroidalSurface(aTorus);
-  GeomAdaptor_Surface          anAdaptor(aSurf);
+  GeomAdaptor_Surface               anAdaptor(aSurf);
 
   gp_Pnt aP(60.0, 50.0, 20.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, "TranslatedTorus_PointNear");
@@ -260,11 +268,11 @@ TEST_F(ExtremaPS_TorusComparisonTest, StressTest_ToroidalPoints)
         double z  = 3.0 * rScale * std::sin(aV);
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS
+          anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, 0.0, 2 * M_PI, THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, 0.0, 2 * M_PI));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -288,4 +296,3 @@ TEST_F(ExtremaPS_TorusComparisonTest, StressTest_ToroidalPoints)
 
   EXPECT_EQ(aPassCount, aTotalCount);
 }
-

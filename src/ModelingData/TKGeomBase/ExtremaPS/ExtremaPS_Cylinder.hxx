@@ -88,15 +88,22 @@ private:
     const gp_Dir& aXDir = aPos.XDirection();
     const gp_Dir& aYDir = aPos.YDirection();
 
-    myLocX = aLoc.X(); myLocY = aLoc.Y(); myLocZ = aLoc.Z();
-    myAxisX = aAxis.X(); myAxisY = aAxis.Y(); myAxisZ = aAxis.Z();
-    myXDirX = aXDir.X(); myXDirY = aXDir.Y(); myXDirZ = aXDir.Z();
-    myYDirX = aYDir.X(); myYDirY = aYDir.Y(); myYDirZ = aYDir.Z();
+    myLocX   = aLoc.X();
+    myLocY   = aLoc.Y();
+    myLocZ   = aLoc.Z();
+    myAxisX  = aAxis.X();
+    myAxisY  = aAxis.Y();
+    myAxisZ  = aAxis.Z();
+    myXDirX  = aXDir.X();
+    myXDirY  = aXDir.Y();
+    myXDirZ  = aXDir.Z();
+    myYDirX  = aYDir.X();
+    myYDirY  = aYDir.Y();
+    myYDirZ  = aYDir.Z();
     myRadius = myCylinder.Radius();
   }
 
 public:
-
   //! @name Surface Evaluation
   //! @{
 
@@ -109,11 +116,9 @@ public:
   {
     const double aCos = std::cos(theU);
     const double aSin = std::sin(theU);
-    return gp_Pnt(
-      myLocX + theV * myAxisX + myRadius * (aCos * myXDirX + aSin * myYDirX),
-      myLocY + theV * myAxisY + myRadius * (aCos * myXDirY + aSin * myYDirY),
-      myLocZ + theV * myAxisZ + myRadius * (aCos * myXDirZ + aSin * myYDirZ)
-    );
+    return gp_Pnt(myLocX + theV * myAxisX + myRadius * (aCos * myXDirX + aSin * myYDirX),
+                  myLocY + theV * myAxisY + myRadius * (aCos * myXDirY + aSin * myYDirY),
+                  myLocZ + theV * myAxisZ + myRadius * (aCos * myXDirZ + aSin * myYDirZ));
   }
 
   //! @}
@@ -132,9 +137,10 @@ public:
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return const reference to result with interior extrema only
-  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
@@ -148,9 +154,9 @@ public:
     const double aV = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
 
     // Radial components (point relative to axis at V)
-    const double aRadX = aDx - aV * myAxisX;
-    const double aRadY = aDy - aV * myAxisY;
-    const double aRadZ = aDz - aV * myAxisZ;
+    const double aRadX         = aDx - aV * myAxisX;
+    const double aRadY         = aDy - aV * myAxisY;
+    const double aRadZ         = aDz - aV * myAxisZ;
     const double aRadialDistSq = aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ;
 
     // Check for degenerate case: point on axis
@@ -162,7 +168,7 @@ public:
     }
 
     const double aRadialDist = std::sqrt(aRadialDistSq);
-    const double aInvRad = 1.0 / aRadialDist;
+    const double aInvRad     = 1.0 / aRadialDist;
 
     // Normalized radial direction
     const double aRadNormX = aRadX * aInvRad;
@@ -172,8 +178,9 @@ public:
     // U parameter from radial direction
     const double aCosU = aRadNormX * myXDirX + aRadNormY * myXDirY + aRadNormZ * myXDirZ;
     const double aSinU = aRadNormX * myYDirX + aRadNormY * myYDirY + aRadNormZ * myYDirZ;
-    double aU = std::atan2(aSinU, aCosU);
-    if (aU < 0.0) aU += aTwoPi;
+    double       aU    = std::atan2(aSinU, aCosU);
+    if (aU < 0.0)
+      aU += aTwoPi;
 
     // FAST PATH: Natural domain (full U, infinite V) - most common case
     if (!myDomain.has_value())
@@ -191,9 +198,7 @@ public:
       // Minimum extremum (closest point): AxisPoint + R * radialDir
       if (theMode != ExtremaPS::SearchMode::Max)
       {
-        const gp_Pnt aSurfPt(aAxisOffX + aRadCompX,
-                             aAxisOffY + aRadCompY,
-                             aAxisOffZ + aRadCompZ);
+        const gp_Pnt aSurfPt(aAxisOffX + aRadCompX, aAxisOffY + aRadCompY, aAxisOffZ + aRadCompZ);
         const double aDistMinSq = (aRadialDist - myRadius) * (aRadialDist - myRadius);
 
         ExtremaPS::ExtremumResult anExt;
@@ -208,13 +213,12 @@ public:
       // Maximum extremum (antipodal point): AxisPoint - R * radialDir
       if (theMode != ExtremaPS::SearchMode::Min)
       {
-        const gp_Pnt aSurfPt(aAxisOffX - aRadCompX,
-                             aAxisOffY - aRadCompY,
-                             aAxisOffZ - aRadCompZ);
+        const gp_Pnt aSurfPt(aAxisOffX - aRadCompX, aAxisOffY - aRadCompY, aAxisOffZ - aRadCompZ);
         const double aDistMaxSq = (aRadialDist + myRadius) * (aRadialDist + myRadius);
 
         double aUOpp = aU + M_PI;
-        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+        if (aUOpp >= aTwoPi)
+          aUOpp -= aTwoPi;
 
         ExtremaPS::ExtremumResult anExt;
         anExt.U              = aUOpp;
@@ -256,11 +260,9 @@ public:
       // Minimum extremum (closest point): AxisPoint + R * radialDir
       if (theMode != ExtremaPS::SearchMode::Max)
       {
-        const gp_Pnt aSurfPt(aAxisOffX + aRadCompX,
-                             aAxisOffY + aRadCompY,
-                             aAxisOffZ + aRadCompZ);
-        const double aDistMinSq = (aRadialDist - myRadius) * (aRadialDist - myRadius) +
-                                  (aV - aClampedV) * (aV - aClampedV);
+        const gp_Pnt aSurfPt(aAxisOffX + aRadCompX, aAxisOffY + aRadCompY, aAxisOffZ + aRadCompZ);
+        const double aDistMinSq =
+          (aRadialDist - myRadius) * (aRadialDist - myRadius) + (aV - aClampedV) * (aV - aClampedV);
 
         ExtremaPS::ExtremumResult anExt;
         anExt.U              = aU;
@@ -274,14 +276,13 @@ public:
       // Maximum extremum (antipodal point): AxisPoint - R * radialDir
       if (theMode != ExtremaPS::SearchMode::Min)
       {
-        const gp_Pnt aSurfPt(aAxisOffX - aRadCompX,
-                             aAxisOffY - aRadCompY,
-                             aAxisOffZ - aRadCompZ);
-        const double aDistMaxSq = (aRadialDist + myRadius) * (aRadialDist + myRadius) +
-                                  (aV - aClampedV) * (aV - aClampedV);
+        const gp_Pnt aSurfPt(aAxisOffX - aRadCompX, aAxisOffY - aRadCompY, aAxisOffZ - aRadCompZ);
+        const double aDistMaxSq =
+          (aRadialDist + myRadius) * (aRadialDist + myRadius) + (aV - aClampedV) * (aV - aClampedV);
 
         double aUOpp = aU + M_PI;
-        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+        if (aUOpp >= aTwoPi)
+          aUOpp -= aTwoPi;
 
         ExtremaPS::ExtremumResult anExt;
         anExt.U              = aUOpp;
@@ -302,8 +303,10 @@ public:
     // Helper: Check if U is in range (with periodicity handling)
     auto checkUInRange = [&](double aTestU) -> bool {
       // Normalize to [UMin, UMin + 2*PI)
-      while (aTestU < theDomain.UMin) aTestU += aTwoPi;
-      while (aTestU >= theDomain.UMin + aTwoPi) aTestU -= aTwoPi;
+      while (aTestU < theDomain.UMin)
+        aTestU += aTwoPi;
+      while (aTestU >= theDomain.UMin + aTwoPi)
+        aTestU -= aTwoPi;
       return (aTestU >= theDomain.UMin - theTol && aTestU <= theDomain.UMax + theTol);
     };
 
@@ -311,8 +314,10 @@ public:
     if (theMode != ExtremaPS::SearchMode::Max && checkUInRange(aU) && aVInRange)
     {
       double aClampedU = aU;
-      while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-      while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+      while (aClampedU < theDomain.UMin)
+        aClampedU += aTwoPi;
+      while (aClampedU > theDomain.UMax)
+        aClampedU -= aTwoPi;
       aClampedU = theDomain.U().Clamp(aClampedU);
 
       const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
@@ -329,14 +334,17 @@ public:
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+    if (aUOpp >= aTwoPi)
+      aUOpp -= aTwoPi;
 
     // Add maximum extremum (farthest point on opposite side)
     if (theMode != ExtremaPS::SearchMode::Min && checkUInRange(aUOpp) && aVInRange)
     {
       double aClampedU = aUOpp;
-      while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-      while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+      while (aClampedU < theDomain.UMin)
+        aClampedU += aTwoPi;
+      while (aClampedU > theDomain.UMax)
+        aClampedU -= aTwoPi;
       aClampedU = theDomain.U().Clamp(aClampedU);
 
       const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
@@ -351,7 +359,8 @@ public:
       myResult.Extrema.Append(anExt);
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
     return myResult;
   }
 
@@ -365,9 +374,10 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return const reference to result with interior + boundary extrema
-  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
-                                                              double                theTol,
-                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
     (void)Perform(theP, theTol, theMode);
@@ -381,15 +391,15 @@ public:
     const ExtremaPS::Domain2D& theDomain = *myDomain;
 
     // Check if boundary extrema are needed
-    constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
-    const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
+    constexpr double aTwoPi   = ExtremaPS::THE_TWO_PI;
+    const bool       aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
 
     // Compute V to check if out of range
-    const double aDx = theP.X() - myLocX;
-    const double aDy = theP.Y() - myLocY;
-    const double aDz = theP.Z() - myLocZ;
-    const double aV = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
-    const bool aVOutOfRange = !theDomain.V().Contains(aV, theTol);
+    const double aDx          = theP.X() - myLocX;
+    const double aDy          = theP.Y() - myLocY;
+    const double aDz          = theP.Z() - myLocZ;
+    const double aV           = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+    const bool   aVOutOfRange = !theDomain.V().Contains(aV, theTol);
 
     // Add boundary if U is bounded or V is out of range
     if (!aIsFullU || aVOutOfRange)
@@ -427,11 +437,11 @@ private:
   mutable ExtremaPS::Result          myResult;   //!< Reusable result storage
 
   // Cached components for fast computation
-  double myLocX, myLocY, myLocZ;       //!< Cylinder axis location
-  double myAxisX, myAxisY, myAxisZ;    //!< Cylinder axis direction
-  double myXDirX, myXDirY, myXDirZ;    //!< Cylinder X direction
-  double myYDirX, myYDirY, myYDirZ;    //!< Cylinder Y direction
-  double myRadius;                     //!< Cylinder radius
+  double myLocX, myLocY, myLocZ;    //!< Cylinder axis location
+  double myAxisX, myAxisY, myAxisZ; //!< Cylinder axis direction
+  double myXDirX, myXDirY, myXDirZ; //!< Cylinder X direction
+  double myYDirX, myYDirY, myYDirZ; //!< Cylinder Y direction
+  double myRadius;                  //!< Cylinder radius
 };
 
 #endif // _ExtremaPS_Cylinder_HeaderFile

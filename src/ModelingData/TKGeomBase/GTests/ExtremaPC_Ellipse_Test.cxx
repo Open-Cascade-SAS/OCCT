@@ -41,8 +41,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMajorAxis_Outside)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(30.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -57,8 +57,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMajorAxis_Inside)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(10.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -76,8 +76,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMajorAxis_NegativeSide)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(-30.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -96,8 +96,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMinorAxis_Outside)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(0.0, 20.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -112,8 +112,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMinorAxis_Inside)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(0.0, 5.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -132,8 +132,8 @@ TEST_F(ExtremaPC_EllipseTest, PointInFirstQuadrant)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(15.0, 15.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -143,7 +143,7 @@ TEST_F(ExtremaPC_EllipseTest, PointInFirstQuadrant)
   EXPECT_GT(aMinSqDist, 0.0);
 
   // Verify the closest point is actually on the ellipse
-  int aMinIdx = aResult.MinIndex();
+  int    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -153,14 +153,14 @@ TEST_F(ExtremaPC_EllipseTest, PointInSecondQuadrant)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(-15.0, 8.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
 
   // Verify the point on ellipse
-  int aMinIdx = aResult.MinIndex();
+  int    aMinIdx      = aResult.MinIndex();
   gp_Pnt aPtOnEllipse = ElCLib::Value(aResult[aMinIdx].Parameter, anEllipse);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnEllipse), 0.0, THE_TOL);
 }
@@ -170,8 +170,8 @@ TEST_F(ExtremaPC_EllipseTest, PointInThirdQuadrant)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(-12.0, -7.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -191,8 +191,8 @@ TEST_F(ExtremaPC_EllipseTest, PointInFourthQuadrant)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(18.0, -5.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -216,8 +216,8 @@ TEST_F(ExtremaPC_EllipseTest, PointAtCenter_Degenerate)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // For a non-circular ellipse (a ≠ b) with point at center:
   // We get 4 extrema: 2 minima at minor axis vertices (±b), 2 maxima at major axis vertices (±a)
@@ -249,8 +249,8 @@ TEST_F(ExtremaPC_EllipseTest, PointAbovePlane)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(30.0, 0.0, 5.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -265,8 +265,8 @@ TEST_F(ExtremaPC_EllipseTest, PointBelowPlane)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(0.0, 20.0, -8.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -285,8 +285,8 @@ TEST_F(ExtremaPC_EllipseTest, PartialArc_FirstQuadrant)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(30.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -301,8 +301,8 @@ TEST_F(ExtremaPC_EllipseTest, PartialArc_SecondHalf)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(-30.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -321,8 +321,8 @@ TEST_F(ExtremaPC_EllipseTest, EllipseWithOffset)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(130.0, 200.0, 50.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -337,8 +337,8 @@ TEST_F(ExtremaPC_EllipseTest, EllipseInYZPlane)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 20.0, 10.0);
   gp_Pnt   aPoint(5.0, 30.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -350,8 +350,8 @@ TEST_F(ExtremaPC_EllipseTest, EllipseInYZPlane)
   // Verify extremum point is on the ellipse (project back and check)
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
-    const ExtremaPC::ExtremumResult& anExt = aResult[i];
-    gp_Pnt aCheck = ElCLib::Value(anExt.Parameter, anEllipse);
+    const ExtremaPC::ExtremumResult& anExt  = aResult[i];
+    gp_Pnt                           aCheck = ElCLib::Value(anExt.Parameter, anEllipse);
     EXPECT_NEAR(aCheck.Distance(anExt.Point), 0.0, 1e-7);
   }
 }
@@ -361,8 +361,8 @@ TEST_F(ExtremaPC_EllipseTest, NearlyCircularEllipse)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 9.9);
   gp_Pnt   aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -377,8 +377,8 @@ TEST_F(ExtremaPC_EllipseTest, VeryFlatEllipse)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 2.0);
   gp_Pnt   aPoint(0.0, 10.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 2);
@@ -397,8 +397,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnEllipse_MajorVertex)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -411,8 +411,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnEllipse_MinorVertex)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(0.0, 10.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -426,8 +426,8 @@ TEST_F(ExtremaPC_EllipseTest, PointOnEllipse_General)
   // Point at u = PI/4
   gp_Pnt aPoint = ElCLib::Value(THE_PI / 4.0, anEllipse);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -444,8 +444,8 @@ TEST_F(ExtremaPC_EllipseTest, FourExtrema_PointInsideEllipse)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(5.0, 3.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // For a point inside an ellipse, there should be at least 4 extrema
@@ -458,8 +458,8 @@ TEST_F(ExtremaPC_EllipseTest, TwoExtrema_PointOnAxis)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(30.0, 0.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // For a point on the major axis outside, there should be 2 extrema
@@ -480,8 +480,8 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_VerySmall)
   double aUMax = 0.05; // Very small range
 
   // Create evaluator with restricted domain
-  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find at least the endpoint extremum
@@ -505,8 +505,8 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_MediumSmall)
   double aUMax = THE_PI / 6.0 + 0.1;
 
   // Create evaluator with restricted domain
-  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -530,8 +530,8 @@ TEST_F(ExtremaPC_EllipseTest, NarrowRange_TinyArc)
   double aUMax = 0.001; // Extremely narrow
 
   // Create evaluator with restricted domain
-  ExtremaPC_Ellipse anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse, ExtremaPC::Domain1D{aUMin, aUMax});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Should complete without error
   ASSERT_TRUE(aResult.IsDone() || aResult.NbExt() >= 0);
@@ -543,8 +543,8 @@ TEST_F(ExtremaPC_EllipseTest, LargeRange_FullCircle)
   gp_Elips anEllipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt   aPoint(5.0, 3.0, 0.0);
 
-  ExtremaPC_Ellipse anEval(anEllipse);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Ellipse        anEval(anEllipse);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // For point inside ellipse, expect 4 extrema
@@ -556,4 +556,3 @@ TEST_F(ExtremaPC_EllipseTest, LargeRange_FullCircle)
     EXPECT_GT(aResult[i].SquareDistance, 0.0);
   }
 }
-

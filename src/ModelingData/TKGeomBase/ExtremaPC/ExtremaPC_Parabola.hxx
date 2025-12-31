@@ -60,7 +60,8 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPC_Parabola(const gp_Parab& theParabola, const ExtremaPC::Domain1D& theDomain)
       : myParabola(theParabola),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain)
+                                      : std::nullopt)
   {
     cacheGeometry();
   }
@@ -101,9 +102,10 @@ public:
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing extrema
-  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     performCore(theP, myDomain, theTol, theMode);
     return myResult;
@@ -115,9 +117,10 @@ public:
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)Perform(theP, theTol, theMode);
 
@@ -138,28 +141,28 @@ private:
   void cacheGeometry()
   {
     const gp_Pnt& aVertex = myParabola.Location();
-    myVertexX = aVertex.X();
-    myVertexY = aVertex.Y();
-    myVertexZ = aVertex.Z();
+    myVertexX             = aVertex.X();
+    myVertexY             = aVertex.Y();
+    myVertexZ             = aVertex.Z();
 
     const gp_Dir& aXDir = myParabola.XAxis().Direction();
-    myXDirX = aXDir.X();
-    myXDirY = aXDir.Y();
-    myXDirZ = aXDir.Z();
+    myXDirX             = aXDir.X();
+    myXDirY             = aXDir.Y();
+    myXDirZ             = aXDir.Z();
 
     const gp_Dir& aYDir = myParabola.YAxis().Direction();
-    myYDirX = aYDir.X();
-    myYDirY = aYDir.Y();
-    myYDirZ = aYDir.Z();
+    myYDirX             = aYDir.X();
+    myYDirY             = aYDir.Y();
+    myYDirZ             = aYDir.Z();
 
     const gp_Dir& aAxis = myParabola.Axis().Direction();
-    myAxisX = aAxis.X();
-    myAxisY = aAxis.Y();
-    myAxisZ = aAxis.Z();
+    myAxisX             = aAxis.X();
+    myAxisY             = aAxis.Y();
+    myAxisZ             = aAxis.Z();
 
-    myFocal = myParabola.Focal();
+    myFocal   = myParabola.Focal();
     my1Over4F = 1.0 / (4.0 * myFocal);
-    my2F = 2.0 * myFocal;
+    my2F      = 2.0 * myFocal;
   }
 
   //! Solve the cubic equation and return polynomial result using cached geometry.
@@ -198,10 +201,10 @@ private:
   //! @param theDomain optional parameter domain (nullopt for unbounded)
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode
-  void performCore(const gp_Pnt&                              theP,
+  void performCore(const gp_Pnt&                             theP,
                    const std::optional<ExtremaPC::Domain1D>& theDomain,
-                   double                                     theTol,
-                   ExtremaPC::SearchMode                      theMode) const
+                   double                                    theTol,
+                   ExtremaPC::SearchMode                     theMode) const
   {
     (void)theTol; // Tolerance used for endpoint detection
 

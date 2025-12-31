@@ -221,7 +221,8 @@ private:
         // Local maximum: distance increases then decreases
         bool aIsLocalMax = (aDist >= aPrevDist && aDist >= aNextDist);
 
-        if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMin)
+        if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax)
+            && aIsLocalMin)
         {
           Candidate aCand;
           aCand.Type   = CandidateType::NearZero;
@@ -231,8 +232,8 @@ private:
           myCandidates.Append(aCand);
           myProcessed[i] = true;
         }
-        else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMax
-                 && !aIsLocalMin)
+        else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax)
+                 && aIsLocalMax && !aIsLocalMin)
         {
           Candidate aCand;
           aCand.Type   = CandidateType::NearZero;
@@ -272,7 +273,7 @@ private:
     // Build sorted indices by estimated distance
     for (int c = 0; c < myCandidates.Length(); ++c)
     {
-      const Candidate& aCand    = myCandidates.Value(c);
+      const Candidate& aCand     = myCandidates.Value(c);
       double           anEstDist = theP.SquareDistance(myGrid[aCand.IdxLo].Point);
       mySortedIndices.Append(std::make_pair(c, anEstDist));
     }
@@ -282,18 +283,23 @@ private:
     {
       std::sort(mySortedIndices.begin(),
                 mySortedIndices.end(),
-                [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second < b.second; });
+                [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+                  return a.second < b.second;
+                });
     }
     else if (theMode == ExtremaPC::SearchMode::Max)
     {
       std::sort(mySortedIndices.begin(),
                 mySortedIndices.end(),
-                [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second > b.second; });
+                [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
+                  return a.second > b.second;
+                });
     }
 
     // Best distance found so far (for early termination)
-    double aBestSqDist = (theMode == ExtremaPC::SearchMode::Min) ? std::numeric_limits<double>::max()
-                                                                 : -std::numeric_limits<double>::max();
+    double aBestSqDist = (theMode == ExtremaPC::SearchMode::Min)
+                           ? std::numeric_limits<double>::max()
+                           : -std::numeric_limits<double>::max();
 
     for (int s = 0; s < mySortedIndices.Length(); ++s)
     {
@@ -309,7 +315,8 @@ private:
       {
         break;
       }
-      if (theMode == ExtremaPC::SearchMode::Max && anEstDist < aBestSqDist * ExtremaPC::THE_MAX_SKIP_THRESHOLD)
+      if (theMode == ExtremaPC::SearchMode::Max
+          && anEstDist < aBestSqDist * ExtremaPC::THE_MAX_SKIP_THRESHOLD)
       {
         break;
       }
@@ -344,7 +351,8 @@ private:
       }
 
       // Try Newton refinement
-      MathUtils::ScalarResult aNewtonRes = MathRoot::NewtonBounded(aFunc, aCand.StartU, aULo, aUHi, aConfig);
+      MathUtils::ScalarResult aNewtonRes =
+        MathRoot::NewtonBounded(aFunc, aCand.StartU, aULo, aUHi, aConfig);
 
       double aRootU     = 0.0;
       bool   aConverged = false;
@@ -386,7 +394,8 @@ private:
           aRefUMax          = std::min(theDomain.Max, aBestU + aRangeHalf);
 
           // Try Newton with refined point
-          MathUtils::ScalarResult aRetryRes = MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, aConfig);
+          MathUtils::ScalarResult aRetryRes =
+            MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, aConfig);
           if (aRetryRes.IsDone())
           {
             aRootU     = std::max(theDomain.Min, std::min(theDomain.Max, *aRetryRes.Root));
@@ -433,9 +442,11 @@ private:
 
       // Classify as min/max using neighbor sampling
       double aStep = (theDomain.Max - theDomain.Min) * ExtremaPC::THE_REFINEMENT_STEP_RATIO;
-      double aDistPlus  = theP.SquareDistance(theCurve.Value(std::min(theDomain.Max, aRootU + aStep)));
-      double aDistMinus = theP.SquareDistance(theCurve.Value(std::max(theDomain.Min, aRootU - aStep)));
-      bool   aIsMin     = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
+      double aDistPlus =
+        theP.SquareDistance(theCurve.Value(std::min(theDomain.Max, aRootU + aStep)));
+      double aDistMinus =
+        theP.SquareDistance(theCurve.Value(std::max(theDomain.Min, aRootU - aStep)));
+      bool aIsMin = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
 
       // Filter by mode
       bool aKeep = false;
@@ -485,11 +496,11 @@ private:
   NCollection_Array1<GridPoint> myGrid; //!< Cached grid
 
   // Mutable cached temporaries (reused via Clear())
-  mutable ExtremaPC::Result                        myResult;        //!< Reusable result
-  mutable NCollection_Vector<Candidate>            myCandidates;    //!< Candidates from grid scan
-  mutable NCollection_Vector<double>               myFoundRoots;    //!< Found roots for dedup
+  mutable ExtremaPC::Result                          myResult;        //!< Reusable result
+  mutable NCollection_Vector<Candidate>              myCandidates;    //!< Candidates from grid scan
+  mutable NCollection_Vector<double>                 myFoundRoots;    //!< Found roots for dedup
   mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
-  mutable NCollection_Array1<bool>                 myProcessed;     //!< Processed flags for grid scan
+  mutable NCollection_Array1<bool>                   myProcessed; //!< Processed flags for grid scan
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

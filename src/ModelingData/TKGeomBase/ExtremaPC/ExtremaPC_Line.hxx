@@ -53,7 +53,8 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPC_Line(const gp_Lin& theLine, const ExtremaPC::Domain1D& theDomain)
       : myLine(theLine),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain)
+                                      : std::nullopt)
   {
   }
 
@@ -89,9 +90,10 @@ public:
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (unused for lines - always returns minimum)
   //! @return const reference to result containing the extremum
-  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)theMode; // Lines always have exactly one extremum (minimum)
 
@@ -137,9 +139,10 @@ public:
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)Perform(theP, theTol, theMode);
 

@@ -79,9 +79,10 @@ const ExtremaPC::Result& ExtremaPC_OffsetCurve::Perform(const gp_Pnt&         th
 
 //==================================================================================================
 
-const ExtremaPC::Result& ExtremaPC_OffsetCurve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                                      double                theTol,
-                                                                      ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_OffsetCurve::PerformWithEndpoints(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPC::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(*myCurve, theP, myDomain, theTol, theMode);

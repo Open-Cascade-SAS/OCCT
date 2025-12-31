@@ -30,7 +30,7 @@ ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>
 //==================================================================================================
 
 ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve,
-                                             const ExtremaPC::Domain1D&      theDomain)
+                                             const ExtremaPC::Domain1D&           theDomain)
     : myCurve(theCurve),
       myAdaptor(theCurve),
       myDomain(theDomain),
@@ -81,9 +81,10 @@ const ExtremaPC::Result& ExtremaPC_BezierCurve::Perform(const gp_Pnt&         th
 
 //==================================================================================================
 
-const ExtremaPC::Result& ExtremaPC_BezierCurve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                                      double                theTol,
-                                                                      ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_BezierCurve::PerformWithEndpoints(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPC::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

@@ -131,17 +131,17 @@ private:
   //! Initialize cached components from surface geometry.
   void initCache();
 
-  occ::handle<Geom_SurfaceOfRevolution> mySurface;       //!< Surface geometry
-  std::optional<ExtremaPS::Domain2D>    myDomain;        //!< Parameter domain
-  mutable ExtremaPS::Result             myResult;        //!< Reusable result storage
-  GeomAdaptor_Surface                   myAdaptor;       //!< Surface adaptor for Value()
-  ExtremaPC_Curve                       myCurveExtrema;  //!< Curve extrema evaluator
+  occ::handle<Geom_SurfaceOfRevolution> mySurface;      //!< Surface geometry
+  std::optional<ExtremaPS::Domain2D>    myDomain;       //!< Parameter domain
+  mutable ExtremaPS::Result             myResult;       //!< Reusable result storage
+  GeomAdaptor_Surface                   myAdaptor;      //!< Surface adaptor for Value()
+  ExtremaPC_Curve                       myCurveExtrema; //!< Curve extrema evaluator
 
   // Cached axis components for fast computation
-  double myLocX, myLocY, myLocZ;     //!< Axis location
-  double myAxisX, myAxisY, myAxisZ;  //!< Axis direction
-  double myXDirX, myXDirY, myXDirZ;  //!< X direction (perpendicular to axis)
-  double myYDirX, myYDirY, myYDirZ;  //!< Y direction (perpendicular to axis and X)
+  double myLocX, myLocY, myLocZ;    //!< Axis location
+  double myAxisX, myAxisY, myAxisZ; //!< Axis direction
+  double myXDirX, myXDirY, myXDirZ; //!< X direction (perpendicular to axis)
+  double myYDirX, myYDirY, myYDirZ; //!< Y direction (perpendicular to axis and X)
 };
 
 #endif // _ExtremaPS_SurfaceOfRevolution_HeaderFile

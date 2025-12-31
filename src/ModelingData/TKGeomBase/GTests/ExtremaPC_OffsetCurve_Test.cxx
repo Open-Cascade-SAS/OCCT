@@ -31,9 +31,9 @@
 class ExtremaPC_OffsetCurveTest : public testing::Test
 {
 protected:
-  static constexpr double THE_TOL  = 1.0e-6;
-  static constexpr double THE_2PI  = 2.0 * M_PI;
-  static constexpr double THE_PI   = M_PI;
+  static constexpr double THE_TOL = 1.0e-6;
+  static constexpr double THE_2PI = 2.0 * M_PI;
+  static constexpr double THE_PI  = M_PI;
 };
 
 //==================================================================================================
@@ -43,18 +43,18 @@ protected:
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutside)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5 (outer circle of radius 15)
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point outside the offset circle
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -67,18 +67,18 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutside)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointInside)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5 (outer circle of radius 15)
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point inside the offset circle but outside original
   gp_Pnt aPoint(12.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -91,18 +91,19 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointInside)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_NegativeOffset)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with negative offset (inner circle of radius 5)
-  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, -5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
+    new Geom_OffsetCurve(aCircle, -5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   // Point outside the inner circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -115,18 +116,18 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_NegativeOffset)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOnOffsetCurve)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5 (outer circle of radius 15)
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point exactly on the offset curve
   gp_Pnt aPoint(15.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -143,18 +144,19 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOnOffsetCurve)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetEllipse_PointOutside)
 {
   // Create an ellipse with major radius 20, minor radius 10
-  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  occ::handle<Geom_Ellipse> anEllipse =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
 
   // Create offset curve with offset 5
-  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(anEllipse, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
+    new Geom_OffsetCurve(anEllipse, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   // Point on major axis outside
   gp_Pnt aPoint(40.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -168,18 +170,19 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetEllipse_PointOutside)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetEllipse_PointOnMinorAxis)
 {
   // Create an ellipse with major radius 20, minor radius 10
-  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  occ::handle<Geom_Ellipse> anEllipse =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
 
   // Create offset curve with offset 5
-  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(anEllipse, 5.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
+    new Geom_OffsetCurve(anEllipse, 5.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   // Point on minor axis
   gp_Pnt aPoint(0.0, 25.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -202,7 +205,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetLine_PointNear)
   // Create offset curve with offset 5 in Y direction
   // For a line in XY plane with reference direction Z, offset is in +Y
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aLine, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve, 0.0, 100.0);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve, 0.0, 100.0);
 
   // Query where the offset curve actually is
   gp_Pnt aOffsetPt = anAdaptor.Value(50.0);
@@ -210,8 +213,8 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetLine_PointNear)
   // Point near the offset line
   gp_Pnt aPoint(50.0, aOffsetPt.Y() + 5.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -228,19 +231,19 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetLine_PointNear)
 TEST_F(ExtremaPC_OffsetCurveTest, PartialRange_FirstQuadrant)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point in first quadrant
   gp_Pnt aPoint(20.0, 20.0, 0.0);
 
   // Create evaluator with domain limited to first quadrant [0, PI/2]
-  ExtremaPC_OffsetCurve anEval(anAdaptor, ExtremaPC::Domain1D{0.0, THE_PI / 2.0});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor, ExtremaPC::Domain1D{0.0, THE_PI / 2.0});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -260,17 +263,17 @@ TEST_F(ExtremaPC_OffsetCurveTest, PartialRange_FirstQuadrant)
 TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutOfPlane)
 {
   // Create a circle of radius 10 in XY plane
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point above the plane
   gp_Pnt aPoint(15.0, 0.0, 10.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -289,17 +292,17 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutOfPlane)
 TEST_F(ExtremaPC_OffsetCurveTest, VerifyExtremumCondition)
 {
   // Create a circle of radius 10
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   // Point on the X axis - simple case with known extremum
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -308,7 +311,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyExtremumCondition)
   // Verify that stored distance matches computed distance
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
-    double aStoredSqDist = aResult[i].SquareDistance;
+    double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
     EXPECT_NEAR(aStoredSqDist, aComputedSqDist, THE_TOL);
   }
@@ -317,16 +320,16 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyExtremumCondition)
 TEST_F(ExtremaPC_OffsetCurveTest, VerifyDistanceConsistency)
 {
   // Create a circle of radius 10
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // Create offset curve with offset 5
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   gp_Pnt aPoint(18.0, 12.0, 3.0);
 
-  ExtremaPC_OffsetCurve anEval(anAdaptor);
+  ExtremaPC_OffsetCurve    anEval(anAdaptor);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -335,11 +338,9 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyDistanceConsistency)
   // Verify that stored distance matches computed distance
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
-    double aStoredSqDist = aResult[i].SquareDistance;
+    double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
 
-    EXPECT_NEAR(aStoredSqDist, aComputedSqDist, THE_TOL)
-      << "Distance mismatch at extremum " << i;
+    EXPECT_NEAR(aStoredSqDist, aComputedSqDist, THE_TOL) << "Distance mismatch at extremum " << i;
   }
 }
-

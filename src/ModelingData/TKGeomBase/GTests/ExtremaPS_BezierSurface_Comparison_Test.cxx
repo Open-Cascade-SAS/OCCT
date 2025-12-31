@@ -36,14 +36,21 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   ASSERT_TRUE(anOldExtPS.IsDone()) << theTestName << ": Old implementation failed";
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   double aOldMinSqDist = std::numeric_limits<double>::max();
   for (int i = 1; i <= anOldExtPS.NbExt(); ++i)
@@ -54,8 +61,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 
 //! Create a flat Bezier surface (planar-like)
@@ -82,7 +89,7 @@ occ::handle<Geom_BezierSurface> MakeDomeBezier()
   aPoles(1, 3) = gp_Pnt(0, 10, 0);
 
   aPoles(2, 1) = gp_Pnt(5, 0, 2);
-  aPoles(2, 2) = gp_Pnt(5, 5, 8);  // Peak
+  aPoles(2, 2) = gp_Pnt(5, 5, 8); // Peak
   aPoles(2, 3) = gp_Pnt(5, 10, 2);
 
   aPoles(3, 1) = gp_Pnt(10, 0, 0);
@@ -120,9 +127,9 @@ occ::handle<Geom_BezierSurface> MakeWavyBezier()
   {
     for (int j = 1; j <= 4; ++j)
     {
-      double x = (i - 1) * 10.0 / 3.0;
-      double y = (j - 1) * 10.0 / 3.0;
-      double z = 2.0 * std::sin(x * 0.5) * std::cos(y * 0.5);
+      double x     = (i - 1) * 10.0 / 3.0;
+      double y     = (j - 1) * 10.0 / 3.0;
+      double z     = 2.0 * std::sin(x * 0.5) * std::cos(y * 0.5);
       aPoles(i, j) = gp_Pnt(x, y, z);
     }
   }
@@ -273,11 +280,10 @@ TEST_F(ExtremaPS_BezierSurfaceComparisonTest, StressTest_DomeSurface)
       {
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -291,8 +297,8 @@ TEST_F(ExtremaPS_BezierSurfaceComparisonTest, StressTest_DomeSurface)
           double aNewMin = aNewResult.MinSquareDistance();
 
           // Use relative tolerance (5%) for numerical surfaces
-          double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
-                            std::max(std::sqrt(aOldMin), 1.0);
+          double aRelDiff =
+            std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) / std::max(std::sqrt(aOldMin), 1.0);
           if (aRelDiff < 0.05) // 5% relative tolerance
           {
             ++aPassCount;
@@ -320,11 +326,10 @@ TEST_F(ExtremaPS_BezierSurfaceComparisonTest, StressTest_SaddleSurface)
       {
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -338,8 +343,8 @@ TEST_F(ExtremaPS_BezierSurfaceComparisonTest, StressTest_SaddleSurface)
           double aNewMin = aNewResult.MinSquareDistance();
 
           // Use relative tolerance (5%) for numerical surfaces
-          double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
-                            std::max(std::sqrt(aOldMin), 1.0);
+          double aRelDiff =
+            std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) / std::max(std::sqrt(aOldMin), 1.0);
           if (aRelDiff < 0.05)
           {
             ++aPassCount;
@@ -352,4 +357,3 @@ TEST_F(ExtremaPS_BezierSurfaceComparisonTest, StressTest_SaddleSurface)
   // Allow some failures due to numerical differences
   EXPECT_GE(aPassCount, aTotalCount * 0.80) << "At least 80% should match";
 }
-

@@ -51,7 +51,13 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax, THE_TOLERANCE,
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
                            THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
@@ -61,12 +67,13 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
   {
     EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0)
-        << theTestName << ": Infinite distance should be non-negative";
+      << theTestName << ": Infinite distance should be non-negative";
     return;
   }
 
   // New implementation must succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -84,8 +91,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 
 //! Create a line basis curve (creates a plane-like surface)
@@ -159,7 +166,7 @@ protected:
 
     // Create an elliptic cylinder surface
     occ::handle<Geom_Curve> anEllipseCurve = MakeEllipseBasisCurve();
-    myEllipticCylinder                     = new Geom_SurfaceOfLinearExtrusion(anEllipseCurve, aDir);
+    myEllipticCylinder = new Geom_SurfaceOfLinearExtrusion(anEllipseCurve, aDir);
     myEllipticAdaptor.Load(myEllipticCylinder);
 
     // Create a curved extrusion surface
@@ -217,7 +224,13 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, CylinderLike_PointDiagonal)
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, CylinderLike_PointAboveDomain)
 {
   gp_Pnt aP(5.0, 0.0, 15.0);
-  CompareMinDistances(aP, myCylAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "CylinderLike_PointAboveDomain");
+  CompareMinDistances(aP,
+                      myCylAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -10.0,
+                      10.0,
+                      "CylinderLike_PointAboveDomain");
 }
 
 //==================================================================================================
@@ -227,19 +240,37 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, CylinderLike_PointAboveDomain)
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, EllipticCylinder_PointOnMajorAxis)
 {
   gp_Pnt aP(10.0, 0.0, 0.0);
-  CompareMinDistances(aP, myEllipticAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "EllipticCylinder_PointOnMajorAxis");
+  CompareMinDistances(aP,
+                      myEllipticAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -10.0,
+                      10.0,
+                      "EllipticCylinder_PointOnMajorAxis");
 }
 
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, EllipticCylinder_PointOnMinorAxis)
 {
   gp_Pnt aP(0.0, 8.0, 0.0);
-  CompareMinDistances(aP, myEllipticAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "EllipticCylinder_PointOnMinorAxis");
+  CompareMinDistances(aP,
+                      myEllipticAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -10.0,
+                      10.0,
+                      "EllipticCylinder_PointOnMinorAxis");
 }
 
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, EllipticCylinder_PointDiagonal)
 {
   gp_Pnt aP(6.0, 6.0, 5.0);
-  CompareMinDistances(aP, myEllipticAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "EllipticCylinder_PointDiagonal");
+  CompareMinDistances(aP,
+                      myEllipticAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -10.0,
+                      10.0,
+                      "EllipticCylinder_PointDiagonal");
 }
 
 //==================================================================================================
@@ -277,7 +308,13 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DiagonalExtrusion_PointNear)
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DiagonalExtrusion_PointAlong)
 {
   gp_Pnt aP(5.0, 5.0, 5.0);
-  CompareMinDistances(aP, myDiagAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "DiagonalExtrusion_PointAlong");
+  CompareMinDistances(aP,
+                      myDiagAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -10.0,
+                      10.0,
+                      "DiagonalExtrusion_PointAlong");
 }
 
 //==================================================================================================
@@ -310,7 +347,7 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DirectAPI_Basic)
 {
   ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike);
 
-  gp_Pnt                       aP(10.0, 0.0, 0.0);
+  gp_Pnt                   aP(10.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -323,9 +360,10 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DirectAPI_Basic)
 
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DirectAPI_WithDomain)
 {
-  ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike, ExtremaPS::Domain2D(0.0, 2 * M_PI, -5.0, 5.0));
+  ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike,
+                                       ExtremaPS::Domain2D(0.0, 2 * M_PI, -5.0, 5.0));
 
-  gp_Pnt                       aP(10.0, 0.0, 0.0);
+  gp_Pnt                   aP(10.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -345,7 +383,7 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, DirectAPI_PointOnSurface)
   ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike);
 
   // Point exactly on the surface
-  gp_Pnt                       aP(5.0, 0.0, 0.0);
+  gp_Pnt                   aP(5.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -380,7 +418,7 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, Performance_Comparison)
   }
   auto aOldEnd = std::chrono::high_resolution_clock::now();
   auto aOldDuration =
-      std::chrono::duration_cast<std::chrono::microseconds>(aOldEnd - aOldStart).count();
+    std::chrono::duration_cast<std::chrono::microseconds>(aOldEnd - aOldStart).count();
 
   // Time new implementation
   ExtremaPS_Surface aNewExtPS(myCurvedAdaptor, ExtremaPS::Domain2D(0.0, 1.0, -10.0, 10.0));
@@ -391,11 +429,12 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, Performance_Comparison)
   }
   auto aNewEnd = std::chrono::high_resolution_clock::now();
   auto aNewDuration =
-      std::chrono::duration_cast<std::chrono::microseconds>(aNewEnd - aNewStart).count();
+    std::chrono::duration_cast<std::chrono::microseconds>(aNewEnd - aNewStart).count();
 
   double aSpeedup = static_cast<double>(aOldDuration) / aNewDuration;
 
-  std::cout << "[          ] SurfaceOfExtrusion Performance (" << aNumIterations << " iterations):\n";
+  std::cout << "[          ] SurfaceOfExtrusion Performance (" << aNumIterations
+            << " iterations):\n";
   std::cout << "[          ]   Old: " << aOldDuration << " us\n";
   std::cout << "[          ]   New: " << aNewDuration << " us\n";
   std::cout << "[          ]   Speedup: " << aSpeedup << "x\n";
@@ -443,7 +482,8 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, StressTest_RandomPoints)
           continue;
         }
 
-        if (aGridResult.Status == ExtremaPS::Status::OK && aSpecResult.Status == ExtremaPS::Status::OK)
+        if (aGridResult.Status == ExtremaPS::Status::OK
+            && aSpecResult.Status == ExtremaPS::Status::OK)
         {
           double aGridMin = aGridResult.MinSquareDistance();
           double aSpecMin = aSpecResult.MinSquareDistance();
@@ -480,9 +520,10 @@ TEST_F(ExtremaPS_SurfaceOfExtrusionTest, StressTest_RandomPoints)
 TEST_F(ExtremaPS_SurfaceOfExtrusionTest, EdgeCase_PointOnExtrusionLine)
 {
   // Point directly along the extrusion direction from a surface point
-  ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike, ExtremaPS::Domain2D(0.0, 2 * M_PI, -10.0, 10.0));
+  ExtremaPS_SurfaceOfExtrusion anExtPS(myCylinderLike,
+                                       ExtremaPS::Domain2D(0.0, 2 * M_PI, -10.0, 10.0));
 
-  gp_Pnt                       aP(5.0, 0.0, 20.0); // On the surface axis extension, outside V domain
+  gp_Pnt                   aP(5.0, 0.0, 20.0); // On the surface axis extension, outside V domain
   const ExtremaPS::Result& aResult = anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);

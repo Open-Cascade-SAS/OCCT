@@ -38,8 +38,8 @@ protected:
 
   //! Create a quadratic Bezier curve (degree 2).
   occ::handle<Geom_BezierCurve> createQuadraticBezier(const gp_Pnt& theP0,
-                                                  const gp_Pnt& theP1,
-                                                  const gp_Pnt& theP2) const
+                                                      const gp_Pnt& theP1,
+                                                      const gp_Pnt& theP2) const
   {
     NCollection_Array1<gp_Pnt> aPoles(1, 3);
     aPoles(1) = theP0;
@@ -50,9 +50,9 @@ protected:
 
   //! Create a cubic Bezier curve (degree 3).
   occ::handle<Geom_BezierCurve> createCubicBezier(const gp_Pnt& theP0,
-                                              const gp_Pnt& theP1,
-                                              const gp_Pnt& theP2,
-                                              const gp_Pnt& theP3) const
+                                                  const gp_Pnt& theP1,
+                                                  const gp_Pnt& theP2,
+                                                  const gp_Pnt& theP3) const
   {
     NCollection_Array1<gp_Pnt> aPoles(1, 4);
     aPoles(1) = theP0;
@@ -64,10 +64,10 @@ protected:
 
   //! Create a quartic Bezier curve (degree 4).
   occ::handle<Geom_BezierCurve> createQuarticBezier(const gp_Pnt& theP0,
-                                                const gp_Pnt& theP1,
-                                                const gp_Pnt& theP2,
-                                                const gp_Pnt& theP3,
-                                                const gp_Pnt& theP4) const
+                                                    const gp_Pnt& theP1,
+                                                    const gp_Pnt& theP2,
+                                                    const gp_Pnt& theP3,
+                                                    const gp_Pnt& theP4) const
   {
     NCollection_Array1<gp_Pnt> aPoles(1, 5);
     aPoles(1) = theP0;
@@ -80,15 +80,15 @@ protected:
 
   //! Create a rational quadratic Bezier curve.
   occ::handle<Geom_BezierCurve> createRationalQuadraticBezier(const gp_Pnt& theP0,
-                                                          const gp_Pnt& theP1,
-                                                          const gp_Pnt& theP2,
-                                                          double        theW1) const
+                                                              const gp_Pnt& theP1,
+                                                              const gp_Pnt& theP2,
+                                                              double        theW1) const
   {
-    NCollection_Array1<gp_Pnt>   aPoles(1, 3);
+    NCollection_Array1<gp_Pnt> aPoles(1, 3);
     NCollection_Array1<double> aWeights(1, 3);
-    aPoles(1) = theP0;
-    aPoles(2) = theP1;
-    aPoles(3) = theP2;
+    aPoles(1)   = theP0;
+    aPoles(2)   = theP1;
+    aPoles(3)   = theP2;
     aWeights(1) = 1.0;
     aWeights(2) = theW1;
     aWeights(3) = 1.0;
@@ -117,7 +117,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtStart)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 2, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint = aBezier->Value(0.0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -133,7 +133,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtEnd)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 2, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint = aBezier->Value(1.0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -149,7 +149,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtMiddle)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 2, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint = aBezier->Value(0.5);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -166,9 +166,9 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtMiddle)
 TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointProjection)
 {
   occ::handle<Geom_BezierCurve> aBezier = createLinearBezier(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  gp_Pnt                   aPoint(5, 3, 0);
+  gp_Pnt                        aPoint(5, 3, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -181,9 +181,9 @@ TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointProjection)
 TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointAtPole)
 {
   occ::handle<Geom_BezierCurve> aBezier = createLinearBezier(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  gp_Pnt                   aPoint(0, 0, 0);
+  gp_Pnt                        aPoint(0, 0, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -194,9 +194,9 @@ TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointAtPole)
 TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointBeforeStart)
 {
   occ::handle<Geom_BezierCurve> aBezier = createLinearBezier(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
-  gp_Pnt                   aPoint(-5, 0, 0);
+  gp_Pnt                        aPoint(-5, 0, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -218,7 +218,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_SymmetricArc)
   // Point on axis of symmetry above the curve
   gp_Pnt aPoint(0, 3, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -244,7 +244,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_PointBelowApex)
     createQuadraticBezier(gp_Pnt(-2, 0, 0), gp_Pnt(0, 2, 0), gp_Pnt(2, 0, 0));
   gp_Pnt aPoint(0, 0, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -266,7 +266,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_AsymmetricArc)
     createQuadraticBezier(gp_Pnt(0, 0, 0), gp_Pnt(2, 4, 0), gp_Pnt(6, 0, 0));
   gp_Pnt aPoint(3, 3, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -290,7 +290,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_SCurve)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(0, 4, 0), gp_Pnt(4, -4, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint(2, 0, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -309,7 +309,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_LoopedCurve)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(4, 3, 0), gp_Pnt(-2, 3, 0), gp_Pnt(2, 0, 0));
   gp_Pnt aPoint(1, 1.5, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -329,7 +329,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_MultipleExtrema)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 3, 0), gp_Pnt(3, 3, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint(2, -1, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -350,13 +350,13 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_MultipleExtrema)
 TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_WavyCurve)
 {
   occ::handle<Geom_BezierCurve> aBezier = createQuarticBezier(gp_Pnt(0, 0, 0),
-                                                          gp_Pnt(1, 2, 0),
-                                                          gp_Pnt(2, -1, 0),
-                                                          gp_Pnt(3, 2, 0),
-                                                          gp_Pnt(4, 0, 0));
-  gp_Pnt aPoint(2, 1, 0);
+                                                              gp_Pnt(1, 2, 0),
+                                                              gp_Pnt(2, -1, 0),
+                                                              gp_Pnt(3, 2, 0),
+                                                              gp_Pnt(4, 0, 0));
+  gp_Pnt                        aPoint(2, 1, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -373,13 +373,13 @@ TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_WavyCurve)
 TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_PointOnCurve)
 {
   occ::handle<Geom_BezierCurve> aBezier = createQuarticBezier(gp_Pnt(0, 0, 0),
-                                                          gp_Pnt(1, 2, 0),
-                                                          gp_Pnt(2, -1, 0),
-                                                          gp_Pnt(3, 2, 0),
-                                                          gp_Pnt(4, 0, 0));
-  gp_Pnt aPoint = aBezier->Value(0.25);
+                                                              gp_Pnt(1, 2, 0),
+                                                              gp_Pnt(2, -1, 0),
+                                                              gp_Pnt(3, 2, 0),
+                                                              gp_Pnt(4, 0, 0));
+  gp_Pnt                        aPoint  = aBezier->Value(0.25);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -394,12 +394,12 @@ TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_PointOnCurve)
 TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_CircularArc)
 {
   // Rational quadratic can represent a circular arc
-  double                   aW = 1.0 / std::sqrt(2.0);
+  double                        aW = 1.0 / std::sqrt(2.0);
   occ::handle<Geom_BezierCurve> aBezier =
     createRationalQuadraticBezier(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), gp_Pnt(0, 1, 0), aW);
   gp_Pnt aPoint(0, 0, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -416,7 +416,7 @@ TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_HighWeight)
     createRationalQuadraticBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(2, 0, 0), 3.0);
   gp_Pnt aPoint(1, 1.5, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -439,7 +439,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_HelixLike)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1), gp_Pnt(2, 1, 2), gp_Pnt(3, 0, 3));
   gp_Pnt aPoint(1.5, 0.5, 1.5);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -455,9 +455,9 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_HelixLike)
 TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_PointOnCurve)
 {
   occ::handle<Geom_BezierCurve> aBezier = create3DCubicBezier();
-  gp_Pnt                   aPoint  = aBezier->Value(0.3);
+  gp_Pnt                        aPoint  = aBezier->Value(0.3);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -475,7 +475,7 @@ TEST_F(ExtremaPC_BezierCurveTest, BoundedRange_ExtremumInside)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 2, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint = aBezier->Value(0.5);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -491,7 +491,7 @@ TEST_F(ExtremaPC_BezierCurveTest, BoundedRange_ExtremumAtBound)
   gp_Pnt aPoint = aBezier->Value(0.5);
 
   // Create evaluator with restricted domain [0, 0.3]
-  ExtremaPC_BezierCurve anEval(aBezier, ExtremaPC::Domain1D{0.0, 0.3});
+  ExtremaPC_BezierCurve    anEval(aBezier, ExtremaPC::Domain1D{0.0, 0.3});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -517,7 +517,7 @@ TEST_F(ExtremaPC_BezierCurveTest, DegenerateBezier_AllPolesSame)
     createCubicBezier(gp_Pnt(1, 1, 1), gp_Pnt(1, 1, 1), gp_Pnt(1, 1, 1), gp_Pnt(1, 1, 1));
   gp_Pnt aPoint(2, 1, 1);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -534,7 +534,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointFarFromCurve)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 0), gp_Pnt(2, 1, 0), gp_Pnt(3, 0, 0));
   gp_Pnt aPoint(100, 100, 100);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -557,7 +557,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointVeryCloseButNotOn)
   gp_Pnt aOnCurve = aBezier->Value(0.5);
   gp_Pnt aPoint(aOnCurve.X(), aOnCurve.Y() + 1e-8, aOnCurve.Z());
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -577,13 +577,13 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 2, 0), gp_Pnt(4, 0, 0));
   gp_Pnt aPoint(2, 3, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
   // Count how many interior extrema satisfy the condition
-  int aInteriorCount = 0;
+  int aInteriorCount  = 0;
   int aSatisfiedCount = 0;
 
   // Verify that (C(u) - P) · C'(u) ≈ 0 at interior extrema
@@ -605,7 +605,7 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
     gp_Vec aVec(aCurvePnt, aPoint);
     double aDot = aVec.Dot(aTangent);
 
-    if (std::abs(aDot) < 0.1)  // Relaxed tolerance for numerical methods
+    if (std::abs(aDot) < 0.1) // Relaxed tolerance for numerical methods
     {
       aSatisfiedCount++;
     }
@@ -624,7 +624,7 @@ TEST_F(ExtremaPC_BezierCurveTest, ConsistentDistanceCalculation)
     createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 0), gp_Pnt(2, 1, 0), gp_Pnt(3, 0, 0));
   gp_Pnt aPoint(1.5, 2, 0);
 
-  ExtremaPC_BezierCurve anEval(aBezier);
+  ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());

@@ -41,22 +41,30 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // Handle infinite solutions case (e.g., point on cylinder axis)
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
   {
     // This is valid - just verify the infinite distance is reasonable
-    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0) << theTestName << ": Infinite distance should be non-negative";
+    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0)
+      << theTestName << ": Infinite distance should be non-negative";
     return;
   }
 
   // New implementation must succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -74,8 +82,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 } // namespace
 
@@ -94,7 +102,7 @@ protected:
   }
 
   occ::handle<Geom_CylindricalSurface> myCylinder;
-  GeomAdaptor_Surface             myAdaptor;
+  GeomAdaptor_Surface                  myAdaptor;
 };
 
 //==================================================================================================
@@ -137,9 +145,9 @@ TEST_F(ExtremaPS_CylinderComparisonTest, PointDiagonal)
 
 TEST_F(ExtremaPS_CylinderComparisonTest, LargeRadius_PointOutside)
 {
-  gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
+  gp_Cylinder                          aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
   occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  GeomAdaptor_Surface                  anAdaptor(aSurf);
 
   gp_Pnt aP(100.0, 0.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -100.0, 100.0, "LargeRadius_PointOutside");
@@ -147,9 +155,9 @@ TEST_F(ExtremaPS_CylinderComparisonTest, LargeRadius_PointOutside)
 
 TEST_F(ExtremaPS_CylinderComparisonTest, SmallRadius_PointNear)
 {
-  gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
+  gp_Cylinder                          aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
   occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  GeomAdaptor_Surface                  anAdaptor(aSurf);
 
   gp_Pnt aP(1.0, 0.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -10.0, 10.0, "SmallRadius_PointNear");
@@ -161,9 +169,9 @@ TEST_F(ExtremaPS_CylinderComparisonTest, SmallRadius_PointNear)
 
 TEST_F(ExtremaPS_CylinderComparisonTest, TiltedCylinder_XAxis)
 {
-  gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0);
+  gp_Cylinder                          aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0);
   occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  GeomAdaptor_Surface                  anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -50.0, 50.0, "TiltedCylinder_XAxis");
@@ -171,10 +179,10 @@ TEST_F(ExtremaPS_CylinderComparisonTest, TiltedCylinder_XAxis)
 
 TEST_F(ExtremaPS_CylinderComparisonTest, TiltedCylinder_Diagonal)
 {
-  gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
-  gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 5.0);
+  gp_Dir                               aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
+  gp_Cylinder                          aCyl(gp_Ax3(gp_Pnt(0, 0, 0), aDir), 5.0);
   occ::handle<Geom_CylindricalSurface> aSurf = new Geom_CylindricalSurface(aCyl);
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  GeomAdaptor_Surface                  anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -50.0, 50.0, "TiltedCylinder_Diagonal");
@@ -221,11 +229,11 @@ TEST_F(ExtremaPS_CylinderComparisonTest, StressTest_CircularPoints)
       {
         gp_Pnt aP(r * std::cos(aRad), r * std::sin(aRad), z);
 
-        Extrema_ExtPS anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, -50.0, 50.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS
+          anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, -50.0, 50.0, THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, -50.0, 50.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 

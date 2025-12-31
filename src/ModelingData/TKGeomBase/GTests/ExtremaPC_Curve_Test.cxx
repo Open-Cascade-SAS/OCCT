@@ -53,8 +53,8 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOnLine)
   // Point on line
   gp_Pnt aPoint(5.0, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Line           anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -73,8 +73,8 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOffLine)
   // Point off line
   gp_Pnt aPoint(5.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Line           anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -93,8 +93,8 @@ TEST_F(ExtremaPC_CurveTest, Line_ProjectionOutsideBounds)
   // Point that projects outside bounds
   gp_Pnt aPoint(-50.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Line           anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 0, max at 100
@@ -116,8 +116,8 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointOutside)
   // Point outside circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle, ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle, ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -143,15 +143,15 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointInside)
   // Point inside circle
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
 
   // Find min distance
-  double aMinDist = std::min(std::sqrt(aResult[0].SquareDistance),
-                             std::sqrt(aResult[1].SquareDistance));
+  double aMinDist =
+    std::min(std::sqrt(aResult[0].SquareDistance), std::sqrt(aResult[1].SquareDistance));
 
   // Minimum distance should be 10 - 3 = 7
   EXPECT_NEAR(aMinDist, 7.0, THE_TOL);
@@ -165,8 +165,8 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointAtCenter_Degenerate)
   // Point at center - degenerate case
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Should return infinite solutions
   EXPECT_TRUE(aResult.IsInfinite());
@@ -180,12 +180,12 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointAtCenter_Degenerate)
 TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -100.0, 100.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
-  gp_Pnt aPoint(5.0, 3.0, 4.0);
+  gp_Pnt                   aPoint(5.0, 3.0, 4.0);
   const ExtremaPC::Result& aResult = anExtPC.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -198,14 +198,14 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_Circle)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
-  gp_Pnt aPoint(20.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(20.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -234,13 +234,13 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point near the curve
-  gp_Pnt aPoint(1.5, 3.0, 0.0);
+  gp_Pnt                   aPoint(1.5, 3.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -250,15 +250,15 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 {
-  occ::handle<Geom_Ellipse> aGeomEllipse = new Geom_Ellipse(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  occ::handle<Geom_Ellipse> aGeomEllipse =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point on major axis
-  gp_Pnt aPoint(30.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(30.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -272,15 +272,15 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 TEST_F(ExtremaPC_CurveTest, Aggregator_Parabola)
 {
   // y^2 = 4*p*x with p = 2, so y^2 = 8x
-  occ::handle<Geom_Parabola> aGeomParabola = new Geom_Parabola(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Parabola> aGeomParabola =
+    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -10.0, 10.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point on X axis at focus
-  gp_Pnt aPoint(2.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(2.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -296,15 +296,15 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
 {
   // Hyperbola with major radius 10, minor radius 5
   // x = a*cosh(u), y = b*sinh(u)
-  occ::handle<Geom_Hyperbola> aGeomHyperbola = new Geom_Hyperbola(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
+  occ::handle<Geom_Hyperbola> aGeomHyperbola =
+    new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomHyperbola, -2.0, 2.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point near the vertex
-  gp_Pnt aPoint(10.0, 5.0, 0.0);
+  gp_Pnt                   aPoint(10.0, 5.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -313,7 +313,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
   // Verify that stored distance matches computed distance
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
-    double aStoredSqDist = aResult[i].SquareDistance;
+    double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
     EXPECT_NEAR(aStoredSqDist, aComputedSqDist, THE_TOL);
   }
@@ -329,13 +329,13 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
   aPoles(4) = gp_Pnt(4, 0, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point above the curve's peak
-  gp_Pnt aPoint(2.0, 5.0, 0.0);
+  gp_Pnt                   aPoint(2.0, 5.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -344,7 +344,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
   // Verify that stored distance matches computed distance
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
-    double aStoredSqDist = aResult[i].SquareDistance;
+    double aStoredSqDist   = aResult[i].SquareDistance;
     double aComputedSqDist = aPoint.SquareDistance(aResult[i].Point);
     EXPECT_NEAR(aStoredSqDist, aComputedSqDist, THE_TOL);
   }
@@ -353,16 +353,16 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
 TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 {
   // Create a circle and its offset
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point outside the offset circle
-  gp_Pnt aPoint(25.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(25.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -376,16 +376,16 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
 {
   // Create a trimmed circle (quarter arc)
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
-  GeomAdaptor_Curve anAdaptor(aTrimmedCurve);
+  GeomAdaptor_Curve              anAdaptor(aTrimmedCurve);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   // Point in first quadrant
-  gp_Pnt aPoint(15.0, 15.0, 0.0);
+  gp_Pnt                   aPoint(15.0, 15.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -405,14 +405,14 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
 
   // Point exactly on the circle
-  gp_Pnt aPoint(10.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(10.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -426,12 +426,12 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
 TEST_F(ExtremaPC_CurveTest, Aggregator_IsInitialized)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, 0.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, 0.0, 100.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
-  gp_Pnt aPoint(50.0, 5.0, 0.0);
+  gp_Pnt                   aPoint(50.0, 5.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -487,8 +487,9 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_MinMax)
   // Point outside circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult =
+    anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 2); // Both min and max
@@ -502,8 +503,9 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Min)
   // Point outside circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult =
+    anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only min
@@ -519,8 +521,9 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Max)
   // Point outside circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult =
+    anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only max
@@ -530,13 +533,13 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Max)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Min)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
 
-  gp_Pnt aPoint(20.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(20.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -547,13 +550,13 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Max)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(
-    gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
 
-  gp_Pnt aPoint(20.0, 0.0, 0.0);
+  gp_Pnt                   aPoint(20.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -580,12 +583,12 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline_SearchMode_Min)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
 
   // Point near the curve
-  gp_Pnt aPoint(1.5, 3.0, 0.0);
+  gp_Pnt                   aPoint(1.5, 3.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -604,17 +607,17 @@ TEST_F(ExtremaPC_CurveTest, Result_MaxSquareDistance)
   // Add some extrema
   ExtremaPC::ExtremumResult anExt1;
   anExt1.SquareDistance = 100.0;
-  anExt1.IsMinimum = false;
+  anExt1.IsMinimum      = false;
   aResult.Extrema.Append(anExt1);
 
   ExtremaPC::ExtremumResult anExt2;
   anExt2.SquareDistance = 50.0;
-  anExt2.IsMinimum = true;
+  anExt2.IsMinimum      = true;
   aResult.Extrema.Append(anExt2);
 
   ExtremaPC::ExtremumResult anExt3;
   anExt3.SquareDistance = 75.0;
-  anExt3.IsMinimum = false;
+  anExt3.IsMinimum      = false;
   aResult.Extrema.Append(anExt3);
 
   EXPECT_NEAR(aResult.MinSquareDistance(), 50.0, THE_TOL);

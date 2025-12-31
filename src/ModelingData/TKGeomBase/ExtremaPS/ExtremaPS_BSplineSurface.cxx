@@ -78,7 +78,8 @@ math_Vector BuildKnotAwareParams(const NCollection_Array1<double>& theKnots,
 
 //==================================================================================================
 
-ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface)
+ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(
+  const occ::handle<Geom_BSplineSurface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface)
 {
@@ -102,8 +103,9 @@ ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplin
 
 //==================================================================================================
 
-ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface,
-                                                   const ExtremaPS::Domain2D&         theDomain)
+ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(
+  const occ::handle<Geom_BSplineSurface>& theSurface,
+  const ExtremaPS::Domain2D&              theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain(theDomain)
@@ -141,17 +143,18 @@ void ExtremaPS_BSplineSurface::buildGrid()
 //==================================================================================================
 
 const ExtremaPS::Result& ExtremaPS_BSplineSurface::Perform(const gp_Pnt&         theP,
-                                                            double                theTol,
-                                                            ExtremaPS::SearchMode theMode) const
+                                                           double                theTol,
+                                                           ExtremaPS::SearchMode theMode) const
 {
   return myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_BSplineSurface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                                        double                theTol,
-                                                                        ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_BSplineSurface::PerformWithBoundary(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPS::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

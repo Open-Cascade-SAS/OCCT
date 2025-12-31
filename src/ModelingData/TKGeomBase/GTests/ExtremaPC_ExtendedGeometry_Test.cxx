@@ -136,7 +136,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Translated)
 
   gp_Pnt aPoint(150.0, 200.0, 50.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -147,13 +147,13 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Translated)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XY_Plane)
 {
   // Circle in XY plane, rotated 45 degrees
-  gp_Dir aNormal(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0);
+  gp_Dir                   aNormal(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0);
   occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 15.0);
-  GeomAdaptor_Curve   anAdaptor(aGeomCircle);
+  GeomAdaptor_Curve        anAdaptor(aGeomCircle);
 
   gp_Pnt aPoint(20.0, 20.0, 5.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -170,7 +170,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_XZ_Plane)
 
   gp_Pnt aPoint(15.0, 5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -187,7 +187,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_YZ_Plane)
 
   gp_Pnt aPoint(5.0, 15.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -198,13 +198,13 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Rotated_YZ_Plane)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_Arbitrary_Orientation)
 {
   // Circle with arbitrary orientation
-  gp_Dir aNormal(1, 1, 1);
+  gp_Dir                   aNormal(1, 1, 1);
   occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(10, 20, 30), aNormal), 8.0);
-  GeomAdaptor_Curve   anAdaptor(aGeomCircle);
+  GeomAdaptor_Curve        anAdaptor(aGeomCircle);
 
   gp_Pnt aPoint(15.0, 25.0, 35.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -220,7 +220,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VerySmall)
 
   gp_Pnt aPoint(0.002, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -236,7 +236,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Circle_VeryLarge)
 
   gp_Pnt aPoint(1500.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -256,7 +256,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Translated)
 
   gp_Pnt aPoint(90.0, 100.0, 25.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -266,13 +266,14 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Translated)
 
 TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_Rotated)
 {
-  gp_Dir aNormal(0, 1, 0); // In XZ plane
-  occ::handle<Geom_Ellipse> aGeomEllipse = new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 20.0, 8.0);
-  GeomAdaptor_Curve    anAdaptor(aGeomEllipse);
+  gp_Dir                    aNormal(0, 1, 0); // In XZ plane
+  occ::handle<Geom_Ellipse> aGeomEllipse =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), aNormal), 20.0, 8.0);
+  GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
   gp_Pnt aPoint(25.0, 10.0, 5.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -289,7 +290,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_HighEccentricity)
 
   gp_Pnt aPoint(40.0, 5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -306,7 +307,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_NearlyCircular)
 
   gp_Pnt aPoint(15.0, 8.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -321,11 +322,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Ellipse_NearlyCircular)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Diagonal)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(10.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -336,11 +337,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Diagonal)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Arbitrary)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(10, 20, 30), gp_Dir(2, 3, 1));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -50.0, 50.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -50.0, 50.0);
 
   gp_Pnt aPoint(25.0, 35.0, 40.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -351,11 +352,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Line_Arbitrary)
 TEST_F(ExtremaPC_ExtendedGeometryTest, Line_PointOnLine)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(50.0, 0.0, 0.0); // Exactly on line
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -376,7 +377,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_Translated)
 
   gp_Pnt aPoint(20.0, 30.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -392,7 +393,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_InXZPlane)
 
   gp_Pnt aPoint(5.0, 5.0, 10.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -408,7 +409,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_SmallFocalLength)
 
   gp_Pnt aPoint(2.0, 3.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -424,7 +425,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Parabola_LargeFocalLength)
 
   gp_Pnt aPoint(50.0, 25.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -444,7 +445,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_Translated)
 
   gp_Pnt aPoint(80.0, 50.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -460,7 +461,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_InXZPlane)
 
   gp_Pnt aPoint(20.0, 5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -477,7 +478,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Hyperbola_HighEccentricity)
 
   gp_Pnt aPoint(50.0, 10.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aNewResult.IsDone());
@@ -519,11 +520,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Linear)
   aMults(4) = 2;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   gp_Pnt aPoint(1.5, 1.5, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -552,11 +553,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_Quadratic)
   aMults(3) = 3;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   gp_Pnt aPoint(2.0, 2.5, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -585,11 +586,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, BSpline_3D_Helix)
   aMults(2) = 7;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 6);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   gp_Pnt aPoint(0.0, 0.0, 15.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -609,11 +610,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_Quadratic)
   aPoles(3) = gp_Pnt(10, 0, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   gp_Pnt aPoint(5.0, 8.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -634,11 +635,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_HighDegree)
   aPoles(7) = gp_Pnt(6, 1, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   gp_Pnt aPoint(3.0, 3.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -656,11 +657,11 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Bezier_3D_SCurve)
   aPoles(4) = gp_Pnt(9, 5, 6);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   gp_Pnt aPoint(4.5, 3.0, 3.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -682,7 +683,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetEllipse)
 
   gp_Pnt aPoint(30.0, 5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -705,7 +706,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetBezier)
 
   gp_Pnt aPoint(3.0, 5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -724,7 +725,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, OffsetNegative)
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -745,7 +746,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_FirstQuadrant)
 
   gp_Pnt aPoint(15.0, 15.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -763,7 +764,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, CircleArc_ThirdQuadrant)
 
   gp_Pnt aPoint(-15.0, -5.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -781,7 +782,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, EllipseArc_SemiEllipse)
 
   gp_Pnt aPoint(0.0, 20.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -802,7 +803,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_Circle)
 
   gp_Pnt aPoint(10.0, 0.0, 0.0); // Exactly on circle
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aNewResult.IsDone());
@@ -826,12 +827,12 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_ExactlyOnCurve_BSpline)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   // Point exactly on curve at t=0.5
   gp_Pnt aPoint = anAdaptor.Value(0.5);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aNewResult.IsDone());
@@ -846,7 +847,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryFar)
 
   gp_Pnt aPoint(10000.0, 10000.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -862,7 +863,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Point_VeryClose)
 
   gp_Pnt aPoint(10.0001, 0.0, 0.0); // Very close to curve
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -881,7 +882,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
-  std::mt19937                          aGen(12345);
+  std::mt19937                           aGen(12345);
   std::uniform_real_distribution<double> aDist(-100.0, 100.0);
 
   int aPassCount = 0;
@@ -889,7 +890,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
   {
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -899,7 +900,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
 
     if (aNewResult.IsDone() && aNewResult.NbExt() > 0)
     {
-      double aNewMin = std::sqrt(aNewResult.MinSquareDistance());
+      double aNewMin   = std::sqrt(aNewResult.MinSquareDistance());
       double aOldMinSq = RealLast();
       for (int j = 1; j <= anOldExtPC.NbExt(); ++j)
       {
@@ -925,7 +926,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
-  std::mt19937                          aGen(54321);
+  std::mt19937                           aGen(54321);
   std::uniform_real_distribution<double> aDist(-100.0, 100.0);
 
   int aPassCount = 0;
@@ -933,7 +934,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
   {
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -943,7 +944,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
 
     if (aNewResult.IsDone() && aNewResult.NbExt() > 0)
     {
-      double aNewMin = std::sqrt(aNewResult.MinSquareDistance());
+      double aNewMin   = std::sqrt(aNewResult.MinSquareDistance());
       double aOldMinSq = RealLast();
       for (int j = 1; j <= anOldExtPC.NbExt(); ++j)
       {
@@ -969,7 +970,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Parabola_100Points)
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomAdaptor_Curve anAdaptor(aGeomParabola, -20.0, 20.0);
 
-  std::mt19937                          aGen(11111);
+  std::mt19937                           aGen(11111);
   std::uniform_real_distribution<double> aDist(-50.0, 50.0);
 
   int aPassCount  = 0;
@@ -978,7 +979,7 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Parabola_100Points)
   {
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);

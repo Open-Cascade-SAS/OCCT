@@ -32,16 +32,16 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface& theSurface)
     : myEvaluator(std::monostate{})
 {
   ExtremaPS::Domain2D aDomain(theSurface.FirstUParameter(),
-                               theSurface.LastUParameter(),
-                               theSurface.FirstVParameter(),
-                               theSurface.LastVParameter());
+                              theSurface.LastUParameter(),
+                              theSurface.FirstVParameter(),
+                              theSurface.LastVParameter());
   initializeEvaluator(theSurface, aDomain);
 }
 
 //==================================================================================================
 
 ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface&   theSurface,
-                                      const ExtremaPS::Domain2D& theDomain)
+                                     const ExtremaPS::Domain2D& theDomain)
     : myEvaluator(std::monostate{})
 {
   initializeEvaluator(theSurface, theDomain);
@@ -53,16 +53,16 @@ ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface)
     : myEvaluator(std::monostate{})
 {
   ExtremaPS::Domain2D aDomain(theSurface.FirstUParameter(),
-                               theSurface.LastUParameter(),
-                               theSurface.FirstVParameter(),
-                               theSurface.LastVParameter());
+                              theSurface.LastUParameter(),
+                              theSurface.FirstVParameter(),
+                              theSurface.LastVParameter());
   initializeEvaluator(theSurface, aDomain);
 }
 
 //==================================================================================================
 
 ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
-                                      const ExtremaPS::Domain2D& theDomain)
+                                     const ExtremaPS::Domain2D& theDomain)
     : myEvaluator(std::monostate{})
 {
   initializeEvaluator(theSurface, theDomain);
@@ -97,7 +97,7 @@ ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface
 //==================================================================================================
 
 ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface,
-                                      const ExtremaPS::Domain2D&  theDomain)
+                                     const ExtremaPS::Domain2D&       theDomain)
     : myEvaluator(std::monostate{})
 {
   if (theSurface.IsNull())
@@ -107,10 +107,10 @@ ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface
 
   // Get base surface and effective bounds
   occ::handle<Geom_Surface> aBaseSurface = theSurface;
-  double               aEffectiveU1 = theDomain.UMin;
-  double               aEffectiveU2 = theDomain.UMax;
-  double               aEffectiveV1 = theDomain.VMin;
-  double               aEffectiveV2 = theDomain.VMax;
+  double                    aEffectiveU1 = theDomain.UMin;
+  double                    aEffectiveU2 = theDomain.UMax;
+  double                    aEffectiveV1 = theDomain.VMin;
+  double                    aEffectiveV2 = theDomain.VMax;
 
   // For trimmed surface, intersect input bounds with trimmed bounds
   occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
@@ -134,8 +134,8 @@ ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface
 
 //==================================================================================================
 
-void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&                theSurface,
-                                             const std::optional<ExtremaPS::Domain2D>& theDomain)
+void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&          theSurface,
+                                            const std::optional<ExtremaPS::Domain2D>& theDomain)
 {
   // Try specific surface types for direct initialization
   occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(theSurface);
@@ -284,16 +284,16 @@ void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&    
   // For all other surfaces, store adaptor and use OtherSurface evaluator
   if (theDomain.has_value())
   {
-    myAdaptor = new GeomAdaptor_Surface(theSurface,
-                                         theDomain->UMin,
-                                         theDomain->UMax,
-                                         theDomain->VMin,
-                                         theDomain->VMax);
+    myAdaptor   = new GeomAdaptor_Surface(theSurface,
+                                        theDomain->UMin,
+                                        theDomain->UMax,
+                                        theDomain->VMin,
+                                        theDomain->VMax);
     myEvaluator = ExtremaPS_OtherSurface(theSurface, theDomain.value());
   }
   else
   {
-    myAdaptor = new GeomAdaptor_Surface(theSurface);
+    myAdaptor   = new GeomAdaptor_Surface(theSurface);
     myEvaluator = ExtremaPS_OtherSurface(theSurface);
   }
 }
@@ -301,7 +301,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&    
 //==================================================================================================
 
 void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurface,
-                                             const ExtremaPS::Domain2D& theDomain)
+                                            const ExtremaPS::Domain2D& theDomain)
 {
   const GeomAbs_SurfaceType aSurfType = theSurface.GetType();
 
@@ -335,8 +335,7 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       myEvaluator = ExtremaPS_BSplineSurface(theSurface.BSpline(), theDomain);
       break;
 
-    case GeomAbs_OffsetSurface:
-    {
+    case GeomAbs_OffsetSurface: {
       // For offset surfaces, we need to extract the underlying Geom_OffsetSurface
       // Try downcasting from GeomAdaptor_Surface
       const GeomAdaptor_Surface* aGeomAdaptor =
@@ -359,8 +358,7 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       break;
     }
 
-    case GeomAbs_SurfaceOfRevolution:
-    {
+    case GeomAbs_SurfaceOfRevolution: {
       const GeomAdaptor_Surface* aGeomAdaptor =
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
       if (aGeomAdaptor != nullptr)
@@ -381,8 +379,7 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       break;
     }
 
-    case GeomAbs_SurfaceOfExtrusion:
-    {
+    case GeomAbs_SurfaceOfExtrusion: {
       const GeomAdaptor_Surface* aGeomAdaptor =
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
       if (aGeomAdaptor != nullptr)
@@ -403,8 +400,7 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       break;
     }
 
-    default:
-    {
+    default: {
       // For other surface types
       const GeomAdaptor_Surface* aGeomAdaptor =
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
@@ -421,17 +417,17 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
 
 namespace
 {
-  //! Static result for uninitialized evaluator.
-  static ExtremaPS::Result THE_NOT_DONE_RESULT = [] {
-    ExtremaPS::Result aResult;
-    aResult.Status = ExtremaPS::Status::NotDone;
-    return aResult;
-  }();
+//! Static result for uninitialized evaluator.
+static ExtremaPS::Result THE_NOT_DONE_RESULT = [] {
+  ExtremaPS::Result aResult;
+  aResult.Status = ExtremaPS::Status::NotDone;
+  return aResult;
+}();
 } // namespace
 
 const ExtremaPS::Result& ExtremaPS_Surface::Perform(const gp_Pnt&         theP,
-                                                     double                theTol,
-                                                     ExtremaPS::SearchMode theMode) const
+                                                    double                theTol,
+                                                    ExtremaPS::SearchMode theMode) const
 {
   const ExtremaPS::Result* aResultPtr = &THE_NOT_DONE_RESULT;
   std::visit(
@@ -449,8 +445,8 @@ const ExtremaPS::Result& ExtremaPS_Surface::Perform(const gp_Pnt&         theP,
 //==================================================================================================
 
 const ExtremaPS::Result& ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                                 double                theTol,
-                                                                 ExtremaPS::SearchMode theMode) const
+                                                                double                theTol,
+                                                                ExtremaPS::SearchMode theMode) const
 {
   const ExtremaPS::Result* aResultPtr = &THE_NOT_DONE_RESULT;
   std::visit(

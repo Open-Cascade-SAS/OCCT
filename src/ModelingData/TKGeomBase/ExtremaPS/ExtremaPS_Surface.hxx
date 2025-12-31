@@ -95,7 +95,7 @@ public:
   //! @param[in] theSurface geometric surface handle
   //! @param[in] theDomain parameter domain
   Standard_EXPORT ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface,
-                                    const ExtremaPS::Domain2D&  theDomain);
+                                    const ExtremaPS::Domain2D&       theDomain);
 
   //! @name Extrema Computation
   //! @{
@@ -152,10 +152,10 @@ private:
   //! Handles all surface type detection and evaluator creation.
   //! @param[in] theSurface the surface to initialize from (must not be null)
   //! @param[in] theDomain optional domain to use
-  void initFromGeomSurface(const occ::handle<Geom_Surface>&                theSurface,
+  void initFromGeomSurface(const occ::handle<Geom_Surface>&          theSurface,
                            const std::optional<ExtremaPS::Domain2D>& theDomain);
 
-  EvaluatorVariant           myEvaluator; //!< Specialized evaluator
+  EvaluatorVariant                 myEvaluator; //!< Specialized evaluator
   occ::handle<GeomAdaptor_Surface> myAdaptor;   //!< Stored adaptor for Geom-based construction
 };
 

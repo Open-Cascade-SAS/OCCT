@@ -39,7 +39,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnMajorAxis_Outside)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(50.0, 0.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -57,7 +57,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnMajorAxis_AtVertex)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -71,7 +71,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnMajorAxis_BetweenBranches)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(0.0, 0.0, 0.0); // Center
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -90,7 +90,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOffAxis_FirstQuadrant)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(30.0, 15.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -108,7 +108,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOffAxis_FourthQuadrant)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(30.0, -15.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -129,7 +129,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointInsideAsymptotes)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(25.0, 5.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -153,7 +153,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointAbovePlane)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(30.0, 0.0, 5.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -169,7 +169,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointBelowPlane)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(20.0, 0.0, -8.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -189,7 +189,7 @@ TEST_F(ExtremaPC_HyperbolaTest, BoundsPositive)
   gp_Pnt  aPoint(30.0, -20.0, 0.0);
 
   // Create evaluator with positive parameter domain [0, 10]
-  ExtremaPC_Hyperbola anEval(aHyperbola, ExtremaPC::Domain1D{0.0, 10.0});
+  ExtremaPC_Hyperbola      anEval(aHyperbola, ExtremaPC::Domain1D{0.0, 10.0});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -208,7 +208,7 @@ TEST_F(ExtremaPC_HyperbolaTest, BoundsNegative)
   gp_Pnt  aPoint(30.0, 20.0, 0.0);
 
   // Create evaluator with negative parameter domain [-10, 0]
-  ExtremaPC_Hyperbola anEval(aHyperbola, ExtremaPC::Domain1D{-10.0, 0.0});
+  ExtremaPC_Hyperbola      anEval(aHyperbola, ExtremaPC::Domain1D{-10.0, 0.0});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -227,7 +227,7 @@ TEST_F(ExtremaPC_HyperbolaTest, NarrowBounds)
   gp_Pnt  aPoint(30.0, 10.0, 0.0);
 
   // Create evaluator with narrow domain [0.5, 1.5]
-  ExtremaPC_Hyperbola anEval(aHyperbola, ExtremaPC::Domain1D{0.5, 1.5});
+  ExtremaPC_Hyperbola      anEval(aHyperbola, ExtremaPC::Domain1D{0.5, 1.5});
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -250,7 +250,7 @@ TEST_F(ExtremaPC_HyperbolaTest, SmallSemiAxes)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0, 1.0);
   gp_Pnt  aPoint(5.0, 2.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -268,7 +268,7 @@ TEST_F(ExtremaPC_HyperbolaTest, LargeSemiAxes)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 200.0, 100.0);
   gp_Pnt  aPoint(300.0, 100.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -285,7 +285,7 @@ TEST_F(ExtremaPC_HyperbolaTest, NearlyRectangular)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 10.0);
   gp_Pnt  aPoint(20.0, 15.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -307,7 +307,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnHyperbola_AtVertex)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint = ElCLib::Value(0.0, aHyperbola);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -321,7 +321,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnHyperbola_Positive)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint = ElCLib::Value(1.5, aHyperbola);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -335,7 +335,7 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnHyperbola_Negative)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint = ElCLib::Value(-2.0, aHyperbola);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -353,7 +353,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaWithOffset)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(120.0, 200.0, 50.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -368,7 +368,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaWithOffset_PointOff)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(150.0, 210.0, 50.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -390,7 +390,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaInYZPlane)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 20.0, 10.0);
   gp_Pnt  aPoint(5.0, 30.0, 10.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -410,7 +410,7 @@ TEST_F(ExtremaPC_HyperbolaTest, HyperbolaInXZPlane)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 20.0, 10.0);
   gp_Pnt  aPoint(30.0, 5.0, 10.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -434,7 +434,7 @@ TEST_F(ExtremaPC_HyperbolaTest, VerifyProjectedPoint)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(35.0, 20.0, 0.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -453,7 +453,7 @@ TEST_F(ExtremaPC_HyperbolaTest, VerifyDistanceConsistency)
   gp_Hypr aHyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   gp_Pnt  aPoint(40.0, 25.0, 3.0);
 
-  ExtremaPC_Hyperbola anEval(aHyperbola);
+  ExtremaPC_Hyperbola      anEval(aHyperbola);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -464,4 +464,3 @@ TEST_F(ExtremaPC_HyperbolaTest, VerifyDistanceConsistency)
   double aComputedSq = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedSq, THE_TOL);
 }
-

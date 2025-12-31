@@ -54,7 +54,7 @@ public:
   //! @param[in] theSurface surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface,
-                                         const ExtremaPS::Domain2D&  theDomain);
+                                         const ExtremaPS::Domain2D&       theDomain);
 
   //! @name Surface Evaluation
   //! @{
@@ -108,9 +108,9 @@ private:
   void buildGrid();
 
 private:
-  occ::handle<Geom_Surface>  mySurface;  //!< Surface geometry
-  GeomAdaptor_Surface   myAdaptor;  //!< Surface adaptor (cached)
-  ExtremaPS::Domain2D   myDomain;   //!< Parameter domain (fixed at construction)
+  occ::handle<Geom_Surface> mySurface; //!< Surface geometry
+  GeomAdaptor_Surface       myAdaptor; //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D       myDomain;  //!< Parameter domain (fixed at construction)
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPS_GridEvaluator myEvaluator;

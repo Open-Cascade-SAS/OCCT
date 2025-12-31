@@ -41,14 +41,21 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // New implementation must always succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -66,8 +73,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 } // namespace
 
@@ -85,7 +92,7 @@ protected:
   }
 
   occ::handle<Geom_Plane> myPlane;
-  GeomAdaptor_Surface myAdaptor;
+  GeomAdaptor_Surface     myAdaptor;
 };
 
 //==================================================================================================
@@ -129,9 +136,9 @@ TEST_F(ExtremaPS_PlaneComparisonTest, PointFarAway)
 TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointAbove)
 {
   // Create tilted plane (45 degrees around X axis)
-  gp_Dir aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
+  gp_Dir                  aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
   occ::handle<Geom_Plane> aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
-  GeomAdaptor_Surface anAdaptor(aTiltedPlane);
+  GeomAdaptor_Surface     anAdaptor(aTiltedPlane);
 
   gp_Pnt aP(5.0, 5.0, 5.0);
   CompareMinDistances(aP, anAdaptor, -100.0, 100.0, -100.0, 100.0, "TiltedPlane_PointAbove");
@@ -139,9 +146,9 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointAbove)
 
 TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointBelow)
 {
-  gp_Dir aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
+  gp_Dir                  aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
   occ::handle<Geom_Plane> aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
-  GeomAdaptor_Surface anAdaptor(aTiltedPlane);
+  GeomAdaptor_Surface     anAdaptor(aTiltedPlane);
 
   gp_Pnt aP(5.0, -5.0, -5.0);
   CompareMinDistances(aP, anAdaptor, -100.0, 100.0, -100.0, 100.0, "TiltedPlane_PointBelow");
@@ -153,7 +160,8 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointBelow)
 
 TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointNear)
 {
-  occ::handle<Geom_Plane> aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
+  occ::handle<Geom_Plane> aTransPlane =
+    new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
   GeomAdaptor_Surface anAdaptor(aTransPlane);
 
   gp_Pnt aP(105.0, 205.0, 60.0);
@@ -162,7 +170,8 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointNear)
 
 TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointFar)
 {
-  occ::handle<Geom_Plane> aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
+  occ::handle<Geom_Plane> aTransPlane =
+    new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
   GeomAdaptor_Surface anAdaptor(aTransPlane);
 
   gp_Pnt aP(500.0, 600.0, 150.0);
@@ -176,18 +185,16 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointFar)
 TEST_F(ExtremaPS_PlaneComparisonTest, RandomPoints_10Tests)
 {
   // Test with various random-like points
-  std::vector<gp_Pnt> aPoints = {
-    gp_Pnt(1.5, 2.3, 4.7),
-    gp_Pnt(-3.2, 5.1, -2.8),
-    gp_Pnt(10.0, -10.0, 7.5),
-    gp_Pnt(0.0, 0.0, 0.001),
-    gp_Pnt(50.0, 50.0, 0.0),
-    gp_Pnt(-25.0, 75.0, 15.0),
-    gp_Pnt(0.1, 0.1, 100.0),
-    gp_Pnt(100.0, 0.0, 0.5),
-    gp_Pnt(0.0, 100.0, -0.5),
-    gp_Pnt(-50.0, -50.0, 25.0)
-  };
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(1.5, 2.3, 4.7),
+                                 gp_Pnt(-3.2, 5.1, -2.8),
+                                 gp_Pnt(10.0, -10.0, 7.5),
+                                 gp_Pnt(0.0, 0.0, 0.001),
+                                 gp_Pnt(50.0, 50.0, 0.0),
+                                 gp_Pnt(-25.0, 75.0, 15.0),
+                                 gp_Pnt(0.1, 0.1, 100.0),
+                                 gp_Pnt(100.0, 0.0, 0.5),
+                                 gp_Pnt(0.0, 100.0, -0.5),
+                                 gp_Pnt(-50.0, -50.0, 25.0)};
 
   for (size_t i = 0; i < aPoints.size(); ++i)
   {
@@ -225,7 +232,7 @@ TEST_F(ExtremaPS_PlaneComparisonTest, BoundedDomain_PointNearCorner)
 TEST_F(ExtremaPS_PlaneComparisonTest, StressTest_100Points)
 {
   // Generate grid of test points
-  int aPassCount = 0;
+  int aPassCount  = 0;
   int aTotalCount = 0;
 
   for (int i = -5; i <= 5; i += 2)
@@ -234,17 +241,18 @@ TEST_F(ExtremaPS_PlaneComparisonTest, StressTest_100Points)
     {
       for (int k = -5; k <= 5; k += 2)
       {
-        if (k == 0) continue;  // Skip points on plane
+        if (k == 0)
+          continue; // Skip points on plane
 
         gp_Pnt aP(i * 10.0, j * 10.0, k * 10.0);
 
         // Old implementation
-        Extrema_ExtPS anOldExtPS(aP, myAdaptor, -100.0, 100.0, -100.0, 100.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS
+          anOldExtPS(aP, myAdaptor, -100.0, 100.0, -100.0, 100.0, THE_TOLERANCE, THE_TOLERANCE);
 
         // New implementation
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 

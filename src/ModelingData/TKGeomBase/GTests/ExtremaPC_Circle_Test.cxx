@@ -25,10 +25,10 @@
 class ExtremaPC_CircleTest : public testing::Test
 {
 protected:
-  static constexpr double THE_TOL   = 1.0e-10;
-  static constexpr double THE_2PI   = 2.0 * M_PI;
-  static constexpr double THE_PI    = M_PI;
-  static constexpr double THE_PI_2  = M_PI / 2.0;
+  static constexpr double THE_TOL  = 1.0e-10;
+  static constexpr double THE_2PI  = 2.0 * M_PI;
+  static constexpr double THE_PI   = M_PI;
+  static constexpr double THE_PI_2 = M_PI / 2.0;
 };
 
 //==================================================================================================
@@ -40,8 +40,8 @@ TEST_F(ExtremaPC_CircleTest, PointOutside_OnXAxis)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle, ExtremaPC::Domain1D{0.0, THE_2PI});
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle, ExtremaPC::Domain1D{0.0, THE_2PI});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -66,8 +66,8 @@ TEST_F(ExtremaPC_CircleTest, PointOutside_OnYAxis)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.0, 25.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -88,8 +88,8 @@ TEST_F(ExtremaPC_CircleTest, PointOutside_Diagonal)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(20.0, 20.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -111,8 +111,8 @@ TEST_F(ExtremaPC_CircleTest, PointInside_OnXAxis)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(3.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -132,8 +132,8 @@ TEST_F(ExtremaPC_CircleTest, PointInside_OnYAxis)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.0, 5.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -153,14 +153,14 @@ TEST_F(ExtremaPC_CircleTest, PointInside_NearCenter)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.1, 0.1, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
 
   double aDistToCenter = std::sqrt(0.02);
-  int aMinIdx = aResult[0].SquareDistance < aResult[1].SquareDistance ? 0 : 1;
+  int    aMinIdx       = aResult[0].SquareDistance < aResult[1].SquareDistance ? 0 : 1;
 
   // Minimum distance ≈ 10 - 0.14
   EXPECT_NEAR(std::sqrt(aResult[aMinIdx].SquareDistance), 10.0 - aDistToCenter, THE_TOL);
@@ -175,8 +175,8 @@ TEST_F(ExtremaPC_CircleTest, PointAtCenter_Degenerate)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Should return infinite solutions
   EXPECT_TRUE(aResult.IsInfinite());
@@ -188,8 +188,8 @@ TEST_F(ExtremaPC_CircleTest, PointNearCenter_NotDegenerate)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(1e-8, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, 1e-12);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, 1e-12);
 
   // Should still find 2 extrema (not degenerate with smaller tolerance)
   ASSERT_TRUE(aResult.IsDone());
@@ -219,8 +219,8 @@ TEST_F(ExtremaPC_CircleTest, PointAbovePlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(20.0, 0.0, 5.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -237,8 +237,8 @@ TEST_F(ExtremaPC_CircleTest, PointBelowPlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.0, 15.0, -7.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -255,8 +255,8 @@ TEST_F(ExtremaPC_CircleTest, PointOnAxis_Degenerate)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(0.0, 0.0, 15.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Point on axis = infinite solutions (all points equidistant)
   EXPECT_TRUE(aResult.IsInfinite());
@@ -273,8 +273,8 @@ TEST_F(ExtremaPC_CircleTest, PartialArc_FirstQuadrant)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -289,8 +289,8 @@ TEST_F(ExtremaPC_CircleTest, PartialArc_SecondQuadrant)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(-20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -307,7 +307,7 @@ TEST_F(ExtremaPC_CircleTest, PartialArc_ExtremaOutsideRange)
 
   ExtremaPC_Circle anEval(aCircle);
   // Arc from PI/2 to 3*PI/2 (left half of circle)
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -335,8 +335,8 @@ TEST_F(ExtremaPC_CircleTest, CircleWithOffset)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1)), 15.0);
   gp_Pnt  aPoint(130.0, 200.0, 50.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -353,8 +353,8 @@ TEST_F(ExtremaPC_CircleTest, CircleInYZPlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0);
   gp_Pnt  aPoint(5.0, 20.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -371,8 +371,8 @@ TEST_F(ExtremaPC_CircleTest, CircleInXZPlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 10.0);
   gp_Pnt  aPoint(20.0, 3.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -389,8 +389,8 @@ TEST_F(ExtremaPC_CircleTest, SmallRadius)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.001);
   gp_Pnt  aPoint(0.01, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -406,8 +406,8 @@ TEST_F(ExtremaPC_CircleTest, LargeRadius)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1000.0);
   gp_Pnt  aPoint(1500.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -427,8 +427,8 @@ TEST_F(ExtremaPC_CircleTest, PointOnCircle)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(10.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -445,8 +445,8 @@ TEST_F(ExtremaPC_CircleTest, PointOnCircle_AtPi)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt  aPoint(-10.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  ExtremaPC_Circle         anEval(aCircle);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -457,4 +457,3 @@ TEST_F(ExtremaPC_CircleTest, PointOnCircle_AtPi)
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Parameter, THE_PI, THE_TOL);
 }
-

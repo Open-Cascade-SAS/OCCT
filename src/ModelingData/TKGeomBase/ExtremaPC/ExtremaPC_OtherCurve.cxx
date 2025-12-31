@@ -46,7 +46,8 @@ void ExtremaPC_OtherCurve::buildGrid()
 
   // Use higher number of samples for general curves
   math_Vector aParams =
-    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max,
+    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min,
+                                                myDomain.Max,
                                                 ExtremaPC::THE_OTHER_CURVE_NB_SAMPLES);
 
   GeomGridEval_OtherCurve aGridEval(*myCurve);
@@ -78,9 +79,10 @@ const ExtremaPC::Result& ExtremaPC_OtherCurve::Perform(const gp_Pnt&         the
 
 //==================================================================================================
 
-const ExtremaPC::Result& ExtremaPC_OtherCurve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                                     double                theTol,
-                                                                     ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_OtherCurve::PerformWithEndpoints(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPC::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(*myCurve, theP, myDomain, theTol, theMode);
