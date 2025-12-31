@@ -288,13 +288,13 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
   ExtremaCC_Circle aEval2(myCircle2, aDom2);
   ExtremaCC_DistanceFunction<ExtremaCC_Circle, ExtremaCC_Circle> aDistFunc(aEval1, aEval2);
 
-  // Newton refinement for minimum using modern solver
-  ExtremaCC_Newton::Result aMinResult = ExtremaCC_Newton::Solve(
+  // Newton refinement for minimum using MathSys solver directly
+  MathSys::Newton2DResult aMinResult = MathSys::Newton2DSymmetric(
     aDistFunc, aMinU1, aMinU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
 
-  if (aMinResult.IsDone)
+  if (aMinResult.IsDone())
   {
-    addSolution(aMinResult.U1, aMinResult.U2, theTol);
+    addSolution(aMinResult.U, aMinResult.V, theTol);
   }
   else
   {
@@ -302,12 +302,12 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
   }
 
   // Newton refinement for maximum
-  ExtremaCC_Newton::Result aMaxResult = ExtremaCC_Newton::Solve(
+  MathSys::Newton2DResult aMaxResult = MathSys::Newton2DSymmetric(
     aDistFunc, aMaxU1, aMaxU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
 
-  if (aMaxResult.IsDone)
+  if (aMaxResult.IsDone())
   {
-    addSolution(aMaxResult.U1, aMaxResult.U2, theTol);
+    addSolution(aMaxResult.U, aMaxResult.V, theTol);
   }
   else
   {
