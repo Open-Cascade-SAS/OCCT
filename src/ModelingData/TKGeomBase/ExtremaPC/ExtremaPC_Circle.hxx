@@ -39,7 +39,7 @@
 //!
 //! @note Degenerate case: When P projects to the circle center,
 //!       all points on the circle are equidistant (infinite solutions).
-//!       Returns Status::InfiniteSolutions with InfiniteSquareDistance = R² + h²
+//!       Returns Status::InfiniteSolutions with InfiniteSquareDistance = R^2 + h^2
 //!       where h is the height above the circle plane.
 //!
 //! @note A circle always has exactly 2 extrema: one minimum (closest)

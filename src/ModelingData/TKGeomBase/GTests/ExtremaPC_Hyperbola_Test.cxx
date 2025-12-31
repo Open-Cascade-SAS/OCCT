@@ -46,8 +46,8 @@ TEST_F(ExtremaPC_HyperbolaTest, PointOnMajorAxis_Outside)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // For point (50, 0) on major axis, the closest point is NOT the vertex!
-  // The extremum condition gives cosh(u) = 2 (u ≈ 1.317), yielding
-  // closest point at (40, ~17.3, 0) with distance ≈ 20.
+  // The extremum condition gives cosh(u) = 2 (u ~= 1.317), yielding
+  // closest point at (40, ~17.3, 0) with distance ~= 20.
   double aMinSqDist = aResult.MinSquareDistance();
   EXPECT_NEAR(aMinSqDist, 400.0, 1.0);
 }

@@ -88,7 +88,7 @@ occ::handle<Geom_BSplineSurface> MakeFlatBSpline()
 
   // For 4 poles, deg 3: need 4+3+1 = 8 total multiplicity
   aUMults(1) = 4;
-  aUMults(2) = 4; // 4+4 = 8 ✓
+  aUMults(2) = 4; // 4+4 = 8 OK
   aVMults(1) = 4;
   aVMults(2) = 4;
 
@@ -127,7 +127,7 @@ occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
   // For 5 poles, deg 2: need 5+2+1 = 8 total multiplicity
   aUMults(1) = 3; // degree + 1 at start
   aUMults(2) = 2; // 8 - 3 - 3 = 2
-  aUMults(3) = 3; // degree + 1 at end  -> 3+2+3 = 8 ✓
+  aUMults(3) = 3; // degree + 1 at end  -> 3+2+3 = 8 OK
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -165,7 +165,7 @@ occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
   // For 5 poles, deg 2: need 8 total multiplicity
   aUMults(1) = 3;
   aUMults(2) = 2;
-  aUMults(3) = 3; // 3+2+3 = 8 ✓
+  aUMults(3) = 3; // 3+2+3 = 8 OK
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -205,7 +205,7 @@ occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
   aUMults(1) = 4; // degree + 1 at start
   aUMults(2) = 2;
   aUMults(3) = 1;
-  aUMults(4) = 4; // degree + 1 at end  -> 4+2+1+4 = 11 ✓
+  aUMults(4) = 4; // degree + 1 at end  -> 4+2+1+4 = 11 OK
   aVMults(1) = 4;
   aVMults(2) = 2;
   aVMults(3) = 1;

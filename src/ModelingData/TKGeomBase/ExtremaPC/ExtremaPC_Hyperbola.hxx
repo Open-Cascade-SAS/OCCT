@@ -315,7 +315,7 @@ private:
   double myAxisX, myAxisY, myAxisZ;       //!< Main axis direction
   double myMajorR;                        //!< Major radius
   double myMinorR;                        //!< Minor radius
-  double myR2PlusR2Over4;                 //!< Precomputed (R² + r²)/4
+  double myR2PlusR2Over4;                 //!< Precomputed (R^2 + r^2)/4
 };
 
 #endif // _ExtremaPC_Hyperbola_HeaderFile

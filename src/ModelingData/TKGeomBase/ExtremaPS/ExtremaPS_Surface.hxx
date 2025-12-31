@@ -127,7 +127,7 @@ public:
   //! @}
 
   //! Returns true if surface evaluator is initialized.
-  bool IsInitialized() const;
+  Standard_EXPORT bool IsInitialized() const;
 
 private:
   //! Variant type for surface evaluators.

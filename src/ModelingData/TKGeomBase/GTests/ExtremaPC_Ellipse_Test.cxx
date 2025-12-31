@@ -66,7 +66,7 @@ TEST_F(ExtremaPC_EllipseTest, PointOnMajorAxis_Inside)
   // For a point inside an ellipse on the major axis, the closest point is NOT at the
   // major vertex. For ellipse a=20, b=10 and point (10,0,0):
   // The extremum condition gives cos(u) = 2/3, yielding:
-  //   closest point at (40/3, ±10*sqrt(5)/3, 0) with distance = sqrt(600/9) ≈ 8.165
+  //   closest point at (40/3, +/-10*sqrt(5)/3, 0) with distance = sqrt(600/9) ~= 8.165
   double aMinSqDist = aResult.MinSquareDistance();
   EXPECT_NEAR(aMinSqDist, 600.0 / 9.0, 0.01);
 }
@@ -219,8 +219,8 @@ TEST_F(ExtremaPC_EllipseTest, PointAtCenter_Degenerate)
   ExtremaPC_Ellipse        anEval(anEllipse);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
-  // For a non-circular ellipse (a ≠ b) with point at center:
-  // We get 4 extrema: 2 minima at minor axis vertices (±b), 2 maxima at major axis vertices (±a)
+  // For a non-circular ellipse (a != b) with point at center:
+  // We get 4 extrema: 2 minima at minor axis vertices (+/-b), 2 maxima at major axis vertices (+/-a)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 4);
 

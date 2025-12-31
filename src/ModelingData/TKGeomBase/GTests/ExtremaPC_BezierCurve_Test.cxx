@@ -546,7 +546,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointFarFromCurve)
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
   // Distance should be large (curve is near origin, point is at (100,100,100))
-  // Minimum distance should be at least sqrt(100^2+99^2+100^2) ≈ 172
+  // Minimum distance should be at least sqrt(100^2+99^2+100^2) ~= 172
   EXPECT_GT(std::sqrt(aResult.MinSquareDistance()), 170.0);
 }
 
@@ -586,7 +586,7 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
   int aInteriorCount  = 0;
   int aSatisfiedCount = 0;
 
-  // Verify that (C(u) - P) · C'(u) ≈ 0 at interior extrema
+  // Verify that (C(u) - P) . C'(u) ~= 0 at interior extrema
   for (int i = 0; i < aResult.NbExt(); ++i)
   {
     double aU = aResult[i].Parameter;

@@ -162,7 +162,7 @@ TEST_F(ExtremaPC_CircleTest, PointInside_NearCenter)
   double aDistToCenter = std::sqrt(0.02);
   int    aMinIdx       = aResult[0].SquareDistance < aResult[1].SquareDistance ? 0 : 1;
 
-  // Minimum distance ≈ 10 - 0.14
+  // Minimum distance ~= 10 - 0.14
   EXPECT_NEAR(std::sqrt(aResult[aMinIdx].SquareDistance), 10.0 - aDistToCenter, THE_TOL);
 }
 

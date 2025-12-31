@@ -81,7 +81,7 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOffLine)
 
   int aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
-  EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3² + 4² = 25
+  EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
   EXPECT_TRUE(aResult[aMinIdx].IsMinimum);
 }
 
