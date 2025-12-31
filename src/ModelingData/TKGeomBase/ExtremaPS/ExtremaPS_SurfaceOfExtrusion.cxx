@@ -185,10 +185,7 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(const gp_Pnt&    
   // Find local minima and maxima from samples
   // Add endpoints as candidates
   myCandidates.Append(mySamples.First());
-  if (aNSamples > 0)
-  {
-    myCandidates.Append(mySamples.Last());
-  }
+  myCandidates.Append(mySamples.Last());
 
   // Find interior local extrema
   for (int i = 1; i < aNSamples; ++i)

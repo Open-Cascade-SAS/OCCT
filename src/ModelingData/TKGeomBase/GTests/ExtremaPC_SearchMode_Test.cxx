@@ -1023,7 +1023,7 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
+    (void)anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1035,7 +1035,7 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
+    (void)anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
@@ -1078,7 +1078,7 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_BSpline)
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
+    (void)anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1090,7 +1090,7 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_BSpline)
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
+    (void)anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
@@ -1137,7 +1137,7 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
+    (void)anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1149,7 +1149,7 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
+    (void)anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
