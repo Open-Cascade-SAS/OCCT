@@ -16,7 +16,7 @@
 
 #include <ExtremaSS.hxx>
 #include <gp_Cone.hxx>
-#include <MathOpt_Powell.hxx>
+#include <MathSys_Newton4D.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
@@ -540,7 +540,100 @@ private:
     }
   }
 
-  //! Refine an extremum using Powell's method (gradient-free optimization).
+  //! Compute point and first derivatives on cone 1.
+  //! @param theU U parameter
+  //! @param theV V parameter
+  //! @param theP output point
+  //! @param theDU output dP/dU
+  //! @param theDV output dP/dV
+  void D1_1(double theU, double theV, gp_Pnt& theP, gp_Vec& theDU, gp_Vec& theDV) const
+  {
+    const double aCosU   = std::cos(theU);
+    const double aSinU   = std::sin(theU);
+    const double aRadius = myRefRadius1 + theV * myTan1;
+
+    theP = gp_Pnt(myLocation1.X() + theV * myAxis1.X()
+                      + aRadius * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
+                  myLocation1.Y() + theV * myAxis1.Y()
+                      + aRadius * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
+                  myLocation1.Z() + theV * myAxis1.Z()
+                      + aRadius * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
+
+    // dP/dU = R * (-sin(U)*XDir + cos(U)*YDir)
+    theDU = gp_Vec(aRadius * (-aSinU * myXDir1.X() + aCosU * myYDir1.X()),
+                   aRadius * (-aSinU * myXDir1.Y() + aCosU * myYDir1.Y()),
+                   aRadius * (-aSinU * myXDir1.Z() + aCosU * myYDir1.Z()));
+
+    // dP/dV = Axis + tan(α) * (cos(U)*XDir + sin(U)*YDir)
+    theDV = gp_Vec(myAxis1.X() + myTan1 * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
+                   myAxis1.Y() + myTan1 * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
+                   myAxis1.Z() + myTan1 * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
+  }
+
+  //! Compute point and first derivatives on cone 2.
+  void D1_2(double theU, double theV, gp_Pnt& theP, gp_Vec& theDU, gp_Vec& theDV) const
+  {
+    const double aCosU   = std::cos(theU);
+    const double aSinU   = std::sin(theU);
+    const double aRadius = myRefRadius2 + theV * myTan2;
+
+    theP = gp_Pnt(myLocation2.X() + theV * myAxis2.X()
+                      + aRadius * (aCosU * myXDir2.X() + aSinU * myYDir2.X()),
+                  myLocation2.Y() + theV * myAxis2.Y()
+                      + aRadius * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y()),
+                  myLocation2.Z() + theV * myAxis2.Z()
+                      + aRadius * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z()));
+
+    theDU = gp_Vec(aRadius * (-aSinU * myXDir2.X() + aCosU * myYDir2.X()),
+                   aRadius * (-aSinU * myXDir2.Y() + aCosU * myYDir2.Y()),
+                   aRadius * (-aSinU * myXDir2.Z() + aCosU * myYDir2.Z()));
+
+    theDV = gp_Vec(myAxis2.X() + myTan2 * (aCosU * myXDir2.X() + aSinU * myYDir2.X()),
+                   myAxis2.Y() + myTan2 * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y()),
+                   myAxis2.Z() + myTan2 * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z()));
+  }
+
+  //! Compute second derivatives on cone 1.
+  void D2_1(double theU, double theV, gp_Vec& theDUU, gp_Vec& theDUV, gp_Vec& theDVV) const
+  {
+    const double aCosU   = std::cos(theU);
+    const double aSinU   = std::sin(theU);
+    const double aRadius = myRefRadius1 + theV * myTan1;
+
+    // d²P/dU² = R * (-cos(U)*XDir - sin(U)*YDir) = -R * (cos(U)*XDir + sin(U)*YDir)
+    theDUU = gp_Vec(-aRadius * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
+                    -aRadius * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
+                    -aRadius * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
+
+    // d²P/dUdV = tan(α) * (-sin(U)*XDir + cos(U)*YDir)
+    theDUV = gp_Vec(myTan1 * (-aSinU * myXDir1.X() + aCosU * myYDir1.X()),
+                    myTan1 * (-aSinU * myXDir1.Y() + aCosU * myYDir1.Y()),
+                    myTan1 * (-aSinU * myXDir1.Z() + aCosU * myYDir1.Z()));
+
+    // d²P/dV² = 0
+    theDVV = gp_Vec(0, 0, 0);
+  }
+
+  //! Compute second derivatives on cone 2.
+  void D2_2(double theU, double theV, gp_Vec& theDUU, gp_Vec& theDUV, gp_Vec& theDVV) const
+  {
+    const double aCosU   = std::cos(theU);
+    const double aSinU   = std::sin(theU);
+    const double aRadius = myRefRadius2 + theV * myTan2;
+
+    theDUU = gp_Vec(-aRadius * (aCosU * myXDir2.X() + aSinU * myYDir2.X()),
+                    -aRadius * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y()),
+                    -aRadius * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z()));
+
+    theDUV = gp_Vec(myTan2 * (-aSinU * myXDir2.X() + aCosU * myYDir2.X()),
+                    myTan2 * (-aSinU * myXDir2.Y() + aCosU * myYDir2.Y()),
+                    myTan2 * (-aSinU * myXDir2.Z() + aCosU * myYDir2.Z()));
+
+    theDVV = gp_Vec(0, 0, 0);
+  }
+
+  //! Refine an extremum using Newton4D (4D Newton-Raphson).
+  //! This is significantly faster than Powell's gradient-free method.
   void refineExtremum(double theU1,
                       double theV1,
                       double theU2,
@@ -548,53 +641,102 @@ private:
                       bool   theIsMin,
                       double theTol) const
   {
-    // Functor for squared distance between surfaces
-    struct DistanceFunc
-    {
-      const ExtremaSS_ConeCone* myEval;
-      bool                      myIsMin;
+    // Sign for gradient: +1 for minimum (gradient should be zero), -1 for maximum
+    const double aSign = theIsMin ? 1.0 : -1.0;
 
-      DistanceFunc(const ExtremaSS_ConeCone* theEval, bool theIsMin)
-          : myEval(theEval),
-            myIsMin(theIsMin)
-      {
-      }
+    // Functor for gradient of D² and its Jacobian (Hessian of D²)
+    auto aFunc = [this, aSign](double aU1, double aV1, double aU2, double aV2,
+                                double aF[4], double aJ[4][4]) -> bool {
+      // Compute points and derivatives on both cones
+      gp_Pnt aP1, aP2;
+      gp_Vec aDU1, aDV1, aDU2, aDV2;
+      D1_1(aU1, aV1, aP1, aDU1, aDV1);
+      D1_2(aU2, aV2, aP2, aDU2, aDV2);
 
-      bool Value(const math_Vector& theX, double& theF) const
-      {
-        const gp_Pnt aP1     = myEval->Value1(theX(1), theX(2));
-        const gp_Pnt aP2     = myEval->Value2(theX(3), theX(4));
-        const double aSqDist = aP1.SquareDistance(aP2);
-        theF                 = myIsMin ? aSqDist : -aSqDist;
-        return true;
-      }
+      // Delta = P1 - P2
+      const gp_Vec aDelta(aP2, aP1);
+
+      // Gradient of D² (to be zeroed):
+      // F0 = ∂D²/∂U1 = 2 * Delta · dP1/dU1
+      // F1 = ∂D²/∂V1 = 2 * Delta · dP1/dV1
+      // F2 = ∂D²/∂U2 = -2 * Delta · dP2/dU2
+      // F3 = ∂D²/∂V2 = -2 * Delta · dP2/dV2
+      aF[0] = aSign * 2.0 * aDelta.Dot(aDU1);
+      aF[1] = aSign * 2.0 * aDelta.Dot(aDV1);
+      aF[2] = aSign * (-2.0) * aDelta.Dot(aDU2);
+      aF[3] = aSign * (-2.0) * aDelta.Dot(aDV2);
+
+      // Second derivatives for Jacobian (Hessian of D²)
+      gp_Vec aDUU1, aDUV1, aDVV1;
+      gp_Vec aDUU2, aDUV2, aDVV2;
+      D2_1(aU1, aV1, aDUU1, aDUV1, aDVV1);
+      D2_2(aU2, aV2, aDUU2, aDUV2, aDVV2);
+
+      // Jacobian J[i][j] = ∂F[i]/∂x[j]
+      // J[0][0] = ∂²D²/∂U1² = 2*(dP1/dU1 · dP1/dU1 + Delta · d²P1/dU1²)
+      aJ[0][0] = aSign * 2.0 * (aDU1.Dot(aDU1) + aDelta.Dot(aDUU1));
+      // J[0][1] = ∂²D²/∂U1∂V1 = 2*(dP1/dU1 · dP1/dV1 + Delta · d²P1/dU1dV1)
+      aJ[0][1] = aSign * 2.0 * (aDU1.Dot(aDV1) + aDelta.Dot(aDUV1));
+      // J[0][2] = ∂²D²/∂U1∂U2 = -2*(dP1/dU1 · dP2/dU2)
+      aJ[0][2] = aSign * (-2.0) * aDU1.Dot(aDU2);
+      // J[0][3] = ∂²D²/∂U1∂V2 = -2*(dP1/dU1 · dP2/dV2)
+      aJ[0][3] = aSign * (-2.0) * aDU1.Dot(aDV2);
+
+      // J[1][0] = J[0][1] (symmetric)
+      aJ[1][0] = aJ[0][1];
+      // J[1][1] = ∂²D²/∂V1² = 2*(dP1/dV1 · dP1/dV1 + Delta · d²P1/dV1²)
+      aJ[1][1] = aSign * 2.0 * (aDV1.Dot(aDV1) + aDelta.Dot(aDVV1));
+      // J[1][2] = ∂²D²/∂V1∂U2 = -2*(dP1/dV1 · dP2/dU2)
+      aJ[1][2] = aSign * (-2.0) * aDV1.Dot(aDU2);
+      // J[1][3] = ∂²D²/∂V1∂V2 = -2*(dP1/dV1 · dP2/dV2)
+      aJ[1][3] = aSign * (-2.0) * aDV1.Dot(aDV2);
+
+      // J[2][0] = J[0][2] (symmetric)
+      aJ[2][0] = aJ[0][2];
+      // J[2][1] = J[1][2] (symmetric)
+      aJ[2][1] = aJ[1][2];
+      // J[2][2] = ∂²D²/∂U2² = 2*(dP2/dU2 · dP2/dU2 + (-Delta) · d²P2/dU2²)
+      aJ[2][2] = aSign * 2.0 * (aDU2.Dot(aDU2) - aDelta.Dot(aDUU2));
+      // J[2][3] = ∂²D²/∂U2∂V2 = 2*(dP2/dU2 · dP2/dV2 + (-Delta) · d²P2/dU2dV2)
+      aJ[2][3] = aSign * 2.0 * (aDU2.Dot(aDV2) - aDelta.Dot(aDUV2));
+
+      // J[3][0] = J[0][3] (symmetric)
+      aJ[3][0] = aJ[0][3];
+      // J[3][1] = J[1][3] (symmetric)
+      aJ[3][1] = aJ[1][3];
+      // J[3][2] = J[2][3] (symmetric)
+      aJ[3][2] = aJ[2][3];
+      // J[3][3] = ∂²D²/∂V2² = 2*(dP2/dV2 · dP2/dV2 + (-Delta) · d²P2/dV2²)
+      aJ[3][3] = aSign * 2.0 * (aDV2.Dot(aDV2) - aDelta.Dot(aDVV2));
+
+      return true;
     };
 
-    math_Vector aStartPt(1, 4);
-    aStartPt(1) = theU1;
-    aStartPt(2) = theV1;
-    aStartPt(3) = theU2;
-    aStartPt(4) = theV2;
+    // Bounds for Newton4D (use wide bounds for unbounded case)
+    constexpr double aUMin = -2.0 * M_PI;
+    constexpr double aUMax = 4.0 * M_PI;
+    constexpr double aVMin = -100.0;
+    constexpr double aVMax = 200.0;
 
-    MathUtils::Config  aConfig(theTol, 50);
-    DistanceFunc       aFunc(this, theIsMin);
-    MathUtils::VectorResult aOptResult = MathOpt::Powell(aFunc, aStartPt, aConfig);
+    // Use Newton4D for fast convergence
+    MathSys::Newton4DResult aNewtonRes = MathSys::Newton4D(
+      aFunc, theU1, theV1, theU2, theV2,
+      aUMin, aUMax, aVMin, aVMax, aUMin, aUMax, aVMin, aVMax,
+      theTol * 0.01, 15);
 
     double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
-    double aSqDist = 0.0;
 
-    if (aOptResult.IsDone() && aOptResult.Solution.has_value())
+    if (aNewtonRes.IsDone())
     {
-      const math_Vector& aSol = *aOptResult.Solution;
-      aU1                     = aSol(1);
-      aV1                     = aSol(2);
-      aU2                     = aSol(3);
-      aV2                     = aSol(4);
+      aU1 = aNewtonRes.X1;
+      aV1 = aNewtonRes.X2;
+      aU2 = aNewtonRes.X3;
+      aV2 = aNewtonRes.X4;
     }
 
-    const gp_Pnt aP1 = Value1(aU1, aV1);
-    const gp_Pnt aP2 = Value2(aU2, aV2);
-    aSqDist          = aP1.SquareDistance(aP2);
+    const gp_Pnt aP1     = Value1(aU1, aV1);
+    const gp_Pnt aP2     = Value2(aU2, aV2);
+    const double aSqDist = aP1.SquareDistance(aP2);
 
     addExtremum(aU1, aV1, aU2, aV2, aSqDist, theIsMin, theTol);
   }
