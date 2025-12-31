@@ -979,19 +979,19 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
   {
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      // Always build full cache (D2) for D0 to ensure derivative cache is available
-      // when D1/D2 are called later on the same span
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
+      if (aCache.IsNull() || !aCache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D0))
+      {
+        RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D0);
+      }
       aCache->D0(U, V, P);
       break;
     }
     case GeomAbs_BSplineSurface: {
       auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
-      // Always build full cache (D2) for D0 to ensure derivative cache is available
-      // when D1/D2 are called later on the same span
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
+      if (aCache.IsNull() || !aCache->IsCacheValid(U, V, BSplSLib_Cache::CacheLevel::D0))
+      {
+        RebuildCache(U, V, BSplSLib_Cache::CacheLevel::D0);
+      }
       aCache->D0(U, V, P);
       break;
     }

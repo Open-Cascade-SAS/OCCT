@@ -2446,11 +2446,6 @@ void BSplSLib::BuildCache(const double                      theU,
 }
 
 //==================================================================================================
-// function : BuildCache (with derivative level)
-// purpose  : Optimized cache building with specified derivative level.
-//            For D0-only (theDerivativeLevel=0), uses simplified Bohm algorithm
-//            that computes only point value without derivative coefficients.
-//==================================================================================================
 
 void BSplSLib::BuildCache(const double                      theU,
                           const double                      theV,
@@ -2469,7 +2464,29 @@ void BSplSLib::BuildCache(const double                      theU,
                           NCollection_Array2<double>&       theCacheArray,
                           const int                         theDerivativeLevel)
 {
-  bool   flag_u_or_v;
+  // For full derivative computation, delegate to the original function
+  if (theDerivativeLevel >= 2)
+  {
+    BuildCache(theU,
+               theV,
+               theUSpanDomain,
+               theVSpanDomain,
+               theUPeriodicFlag,
+               theVPeriodicFlag,
+               theUDegree,
+               theVDegree,
+               theUIndex,
+               theVIndex,
+               theUFlatKnots,
+               theVFlatKnots,
+               thePoles,
+               theWeights,
+               theCacheArray);
+    return;
+  }
+
+  // Optimized path for D0/D1 - reduced Bohm algorithm computation
+  bool   aFlagUOrV;
   int    d1, d2;
   double u1, u2;
   bool   isRationalOnParam = (theWeights != nullptr);
@@ -2477,35 +2494,35 @@ void BSplSLib::BuildCache(const double                      theU,
 
   validateBSplineDegree(theUDegree, theVDegree);
   BSplSLib_DataContainer dc;
-  flag_u_or_v = PrepareEval(theU,
-                            theV,
-                            theUIndex,
-                            theVIndex,
-                            theUDegree,
-                            theVDegree,
-                            isRationalOnParam,
-                            isRationalOnParam,
-                            theUPeriodicFlag,
-                            theVPeriodicFlag,
-                            thePoles,
-                            theWeights,
-                            theUFlatKnots,
-                            theVFlatKnots,
-                            (BSplCLib::NoMults()),
-                            (BSplCLib::NoMults()),
-                            u1,
-                            u2,
-                            d1,
-                            d2,
-                            isRational,
-                            dc);
+  aFlagUOrV = PrepareEval(theU,
+                          theV,
+                          theUIndex,
+                          theVIndex,
+                          theUDegree,
+                          theVDegree,
+                          isRationalOnParam,
+                          isRationalOnParam,
+                          theUPeriodicFlag,
+                          theVPeriodicFlag,
+                          thePoles,
+                          theWeights,
+                          theUFlatKnots,
+                          theVFlatKnots,
+                          (BSplCLib::NoMults()),
+                          (BSplCLib::NoMults()),
+                          u1,
+                          u2,
+                          d1,
+                          d2,
+                          isRational,
+                          dc);
 
   int d2p1        = d2 + 1;
   int aDimension  = isRational ? 4 : 3;
   int aCacheShift = (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
 
   double aDomains[2];
-  if (flag_u_or_v)
+  if (aFlagUOrV)
   {
     aDomains[0] = theUSpanDomain;
     aDomains[1] = theVSpanDomain;
@@ -2516,17 +2533,16 @@ void BSplSLib::BuildCache(const double                      theU,
     aDomains[1] = theUSpanDomain;
   }
 
-  // Key optimization: limit derivative computation based on theDerivativeLevel
-  // For D0 (level 0): N1=0, N2=0 - only compute point, no derivative coefficients
-  // For D1 (level 1): N1=min(1,d1), N2=min(1,d2)
-  // For D2 (level 2): N1=d1, N2=d2 - full computation (original behavior)
-  const int N1 = (theDerivativeLevel >= 2) ? d1 : std::min(theDerivativeLevel, d1);
-  const int N2 = (theDerivativeLevel >= 2) ? d2 : std::min(theDerivativeLevel, d2);
+  // Limit derivative computation: N1, N2 control how many derivatives Bohm computes
+  const int N1 = std::min(theDerivativeLevel, d1);
+  const int N2 = std::min(theDerivativeLevel, d2);
 
-  // Optimized Bohm calls with reduced derivative computation
+  // Bohm algorithm with reduced derivative computation
   BSplCLib::Bohm(u1, d1, N1, *dc.knots1, aDimension * d2p1, *dc.poles);
   for (int kk = 0; kk <= N1; kk++)
+  {
     BSplCLib::Bohm(u2, d2, N2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
+  }
 
   double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
 
@@ -2535,9 +2551,8 @@ void BSplSLib::BuildCache(const double                      theU,
   int    aRow, aCol, i;
   double aCoeff;
 
-  // Only iterate up to the computed derivative levels
-  const int aRowMax = (theDerivativeLevel >= 2) ? d2 : std::min(theDerivativeLevel, d2);
-  const int aColMax = (theDerivativeLevel >= 2) ? d1 : std::min(theDerivativeLevel, d1);
+  const int aRowMax = std::min(theDerivativeLevel, d2);
+  const int aColMax = std::min(theDerivativeLevel, d1);
 
   for (aRow = 0; aRow <= aRowMax; aRow++)
   {
@@ -2547,26 +2562,32 @@ void BSplSLib::BuildCache(const double                      theU,
       double* aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
       aCoeff              = aFactors[0] * aFactors[1];
       for (i = 0; i < aDimension; i++)
+      {
         aCache[i] = aPolyCoeffs[i] * aCoeff;
+      }
       aCache += aCacheShift;
       aFactors[0] *= aDomains[0] / (aCol + 1);
     }
-    // For partial cache, fill remaining columns with zeros
+    // Fill remaining columns with zeros
     for (aCol = aColMax + 1; aCol <= d1; aCol++)
     {
       for (i = 0; i < aDimension; i++)
+      {
         aCache[i] = 0.0;
+      }
       aCache += aCacheShift;
     }
     aFactors[1] *= aDomains[1] / (aRow + 1);
   }
-  // For partial cache, fill remaining rows with zeros
+  // Fill remaining rows with zeros
   for (aRow = aRowMax + 1; aRow <= d2; aRow++)
   {
     for (aCol = 0; aCol <= d1; aCol++)
     {
       for (i = 0; i < aDimension; i++)
+      {
         aCache[i] = 0.0;
+      }
       aCache += aCacheShift;
     }
   }
@@ -2577,11 +2598,13 @@ void BSplSLib::BuildCache(const double                      theU,
     aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
     aCache += aCacheShift - 1;
     for (aRow = 0; aRow <= d2; aRow++)
+    {
       for (aCol = 0; aCol <= d1; aCol++)
       {
         *aCache = 0.0;
         aCache += aCacheShift;
       }
+    }
     theCacheArray.SetValue(theCacheArray.LowerRow(),
                            theCacheArray.LowerCol() + aCacheShift - 1,
                            1.0);
