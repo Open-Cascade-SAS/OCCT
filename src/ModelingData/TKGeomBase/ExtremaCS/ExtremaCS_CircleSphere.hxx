@@ -96,7 +96,10 @@ public:
     if (aDistInPlane < Precision::Confusion())
     {
       // Infinite solutions - all points on circle are equidistant from sphere center
-      const double aDistToCenter = std::sqrt(aDistToPlane * aDistToPlane);
+      // Distance from any circle point to sphere center:
+      // sqrt(circleRadius^2 + aDistToPlane^2)
+      const double aCircleRadius = myCircle.Radius();
+      const double aDistToCenter = std::sqrt(aCircleRadius * aCircleRadius + aDistToPlane * aDistToPlane);
       const double aDistToSurface = std::abs(aDistToCenter - aSphRadius);
       myResult.Status = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aDistToSurface * aDistToSurface;

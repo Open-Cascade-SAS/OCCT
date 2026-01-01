@@ -17,6 +17,7 @@
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <ExtremaCS.hxx>
+#include <MathRoot_Trig.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
@@ -169,35 +170,34 @@ public:
     // and max of (aXdotN * cos(t) + aYdotN * sin(t)) is sqrt(aXdotN² + aYdotN²)
     const double aAmplitude = aRadius * std::sqrt(aXdotN * aXdotN + aYdotN * aYdotN);
 
+    // Use MathRoot::TrigonometricCDE to solve intersection equation:
+    // A * cos(t) + B * sin(t) + d = 0
+    // where A = R * aXdotN, B = R * aYdotN, d = aCenterDist
+    const double aA = aRadius * aXdotN;
+    const double aB = aRadius * aYdotN;
+
+    // Get domain bounds for filtering
+    double aInfBound = 0.0;
+    double aSupBound = ExtremaCS::THE_TWO_PI;
+    if (myDomain.has_value())
+    {
+      aInfBound = myDomain->Curve.Min;
+      aSupBound = myDomain->Curve.Max;
+    }
+
     // Check if circle intersects the plane
     if (std::abs(aCenterDist) <= aAmplitude + theTol)
     {
-      // Circle intersects the plane - find intersection parameters
-      // z(t) = d + R * (aXdotN * cos(t) + aYdotN * sin(t)) = 0
-      // Let A = R * aXdotN, B = R * aYdotN
-      // A * cos(t) + B * sin(t) = -d
-      // sqrt(A² + B²) * sin(t + phi) = -d where tan(phi) = A/B
-      const double aA = aRadius * aXdotN;
-      const double aB = aRadius * aYdotN;
-      const double aAmp = std::sqrt(aA * aA + aB * aB);
-
-      if (aAmp > theTol)
+      // Circle intersects the plane - find intersection parameters using TrigonometricCDE
+      if (theMode != ExtremaCS::SearchMode::Max)
       {
-        const double aSinAlpha = -aCenterDist / aAmp;
-        const double aClampedSinAlpha = std::max(-1.0, std::min(1.0, aSinAlpha));
-        const double aAlpha = std::asin(aClampedSinAlpha);
-        const double aPhi = std::atan2(aA, aB);
-
-        // Two solutions: t = aAlpha - aPhi and t = PI - aAlpha - aPhi
-        const double aT1 = aAlpha - aPhi;
-        const double aT2 = M_PI - aAlpha - aPhi;
-
-        if (theMode != ExtremaCS::SearchMode::Max)
+        MathRoot::TrigResult aTrigResult = MathRoot::TrigonometricCDE(aA, aB, aCenterDist,
+                                                                      aInfBound, aSupBound);
+        if (aTrigResult.IsDone())
         {
-          addExtremum(aT1, true);
-          if (std::abs(ExtremaCS::NormalizeAngle(aT2) - ExtremaCS::NormalizeAngle(aT1)) > theTol)
+          for (int i = 0; i < aTrigResult.NbRoots; ++i)
           {
-            addExtremum(aT2, true);
+            addExtremum(aTrigResult.Roots[i], true);
           }
         }
       }

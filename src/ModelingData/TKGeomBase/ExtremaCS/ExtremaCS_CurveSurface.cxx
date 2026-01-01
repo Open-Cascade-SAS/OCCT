@@ -42,6 +42,7 @@
 #include <ExtremaCS_CirclePlane.hxx>
 #include <ExtremaCS_CircleSphere.hxx>
 #include <ExtremaCS_EllipsePlane.hxx>
+#include <ExtremaCS_EllipseSphere.hxx>
 #include <ExtremaCS_LineCone.hxx>
 #include <ExtremaCS_LineCylinder.hxx>
 #include <ExtremaCS_LinePlane.hxx>
@@ -140,7 +141,8 @@ struct ExtremaCS_CurveSurface::Impl
                                           std::unique_ptr<ExtremaCS_CirclePlane>,
                                           std::unique_ptr<ExtremaCS_CircleSphere>,
                                           std::unique_ptr<ExtremaCS_CircleCylinder>,
-                                          std::unique_ptr<ExtremaCS_EllipsePlane>>;
+                                          std::unique_ptr<ExtremaCS_EllipsePlane>,
+                                          std::unique_ptr<ExtremaCS_EllipseSphere>>;
 
   AnalyticalVariant myAnalytical;
 
@@ -317,6 +319,12 @@ void ExtremaCS_CurveSurface::initPair(const Adaptor3d_Curve&   theCurve,
     {
       myImpl->myAnalytical =
         std::make_unique<ExtremaCS_EllipsePlane>(theCurve.Ellipse(), theSurface.Plane(), myDomain);
+      hasAnalytical = true;
+    }
+    else if (aSurfaceCat == SurfaceCategory::Sphere)
+    {
+      myImpl->myAnalytical =
+        std::make_unique<ExtremaCS_EllipseSphere>(theCurve.Ellipse(), theSurface.Sphere(), myDomain);
       hasAnalytical = true;
     }
   }
