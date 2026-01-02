@@ -220,7 +220,8 @@ TEST_F(ExtremaPC_EllipseTest, PointAtCenter_Degenerate)
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // For a non-circular ellipse (a != b) with point at center:
-  // We get 4 extrema: 2 minima at minor axis vertices (+/-b), 2 maxima at major axis vertices (+/-a)
+  // We get 4 extrema: 2 minima at minor axis vertices (+/-b), 2 maxima at major axis vertices
+  // (+/-a)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 4);
 

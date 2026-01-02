@@ -86,15 +86,24 @@ CurveCategory getCategory(GeomAbs_CurveType theType)
 {
   switch (theType)
   {
-    case GeomAbs_Line: return CurveCategory::Line;
-    case GeomAbs_Circle: return CurveCategory::Circle;
-    case GeomAbs_Ellipse: return CurveCategory::Ellipse;
-    case GeomAbs_Hyperbola: return CurveCategory::Hyperbola;
-    case GeomAbs_Parabola: return CurveCategory::Parabola;
-    case GeomAbs_BezierCurve: return CurveCategory::BezierCurve;
-    case GeomAbs_BSplineCurve: return CurveCategory::BSplineCurve;
-    case GeomAbs_OffsetCurve: return CurveCategory::OffsetCurve;
-    default: return CurveCategory::OtherCurve;
+    case GeomAbs_Line:
+      return CurveCategory::Line;
+    case GeomAbs_Circle:
+      return CurveCategory::Circle;
+    case GeomAbs_Ellipse:
+      return CurveCategory::Ellipse;
+    case GeomAbs_Hyperbola:
+      return CurveCategory::Hyperbola;
+    case GeomAbs_Parabola:
+      return CurveCategory::Parabola;
+    case GeomAbs_BezierCurve:
+      return CurveCategory::BezierCurve;
+    case GeomAbs_BSplineCurve:
+      return CurveCategory::BSplineCurve;
+    case GeomAbs_OffsetCurve:
+      return CurveCategory::OffsetCurve;
+    default:
+      return CurveCategory::OtherCurve;
   }
 }
 
@@ -103,17 +112,28 @@ SurfaceCategory getCategory(GeomAbs_SurfaceType theType)
 {
   switch (theType)
   {
-    case GeomAbs_Plane: return SurfaceCategory::Plane;
-    case GeomAbs_Cylinder: return SurfaceCategory::Cylinder;
-    case GeomAbs_Cone: return SurfaceCategory::Cone;
-    case GeomAbs_Sphere: return SurfaceCategory::Sphere;
-    case GeomAbs_Torus: return SurfaceCategory::Torus;
-    case GeomAbs_BezierSurface: return SurfaceCategory::BezierSurface;
-    case GeomAbs_BSplineSurface: return SurfaceCategory::BSplineSurface;
-    case GeomAbs_OffsetSurface: return SurfaceCategory::OffsetSurface;
-    case GeomAbs_SurfaceOfRevolution: return SurfaceCategory::SurfaceOfRevolution;
-    case GeomAbs_SurfaceOfExtrusion: return SurfaceCategory::SurfaceOfExtrusion;
-    default: return SurfaceCategory::OtherSurface;
+    case GeomAbs_Plane:
+      return SurfaceCategory::Plane;
+    case GeomAbs_Cylinder:
+      return SurfaceCategory::Cylinder;
+    case GeomAbs_Cone:
+      return SurfaceCategory::Cone;
+    case GeomAbs_Sphere:
+      return SurfaceCategory::Sphere;
+    case GeomAbs_Torus:
+      return SurfaceCategory::Torus;
+    case GeomAbs_BezierSurface:
+      return SurfaceCategory::BezierSurface;
+    case GeomAbs_BSplineSurface:
+      return SurfaceCategory::BSplineSurface;
+    case GeomAbs_OffsetSurface:
+      return SurfaceCategory::OffsetSurface;
+    case GeomAbs_SurfaceOfRevolution:
+      return SurfaceCategory::SurfaceOfRevolution;
+    case GeomAbs_SurfaceOfExtrusion:
+      return SurfaceCategory::SurfaceOfExtrusion;
+    default:
+      return SurfaceCategory::OtherSurface;
   }
 }
 
@@ -125,27 +145,27 @@ SurfaceCategory getCategory(GeomAbs_SurfaceType theType)
 struct ExtremaCS_CurveSurface::Impl
 {
   using AnalyticalVariant = std::variant<std::monostate,
-                                          std::unique_ptr<ExtremaCS_LinePlane>,
-                                          std::unique_ptr<ExtremaCS_LineSphere>,
-                                          std::unique_ptr<ExtremaCS_LineCylinder>,
-                                          std::unique_ptr<ExtremaCS_LineCone>,
-                                          std::unique_ptr<ExtremaCS_CirclePlane>,
-                                          std::unique_ptr<ExtremaCS_CircleSphere>,
-                                          std::unique_ptr<ExtremaCS_CircleCylinder>,
-                                          std::unique_ptr<ExtremaCS_EllipsePlane>,
-                                          std::unique_ptr<ExtremaCS_EllipseSphere>>;
+                                         std::unique_ptr<ExtremaCS_LinePlane>,
+                                         std::unique_ptr<ExtremaCS_LineSphere>,
+                                         std::unique_ptr<ExtremaCS_LineCylinder>,
+                                         std::unique_ptr<ExtremaCS_LineCone>,
+                                         std::unique_ptr<ExtremaCS_CirclePlane>,
+                                         std::unique_ptr<ExtremaCS_CircleSphere>,
+                                         std::unique_ptr<ExtremaCS_CircleCylinder>,
+                                         std::unique_ptr<ExtremaCS_EllipsePlane>,
+                                         std::unique_ptr<ExtremaCS_EllipseSphere>>;
 
   AnalyticalVariant myAnalytical;
 
   // For numerical pairs, store adaptor references
-  const GeomAdaptor_Curve*   myCurve   = nullptr;
-  const GeomAdaptor_Surface* mySurface = nullptr;
+  const GeomAdaptor_Curve*   myCurve       = nullptr;
+  const GeomAdaptor_Surface* mySurface     = nullptr;
   bool                       myIsNumerical = false;
 
-  const ExtremaCS::Result& performAnalytical(double                       theTol,
-                                              ExtremaCS::SearchMode       theMode,
-                                              ExtremaCS::Result&           theResult,
-                                              const ExtremaCS::Domain3D& /*theDomain*/) const
+  const ExtremaCS::Result& performAnalytical(double                theTol,
+                                             ExtremaCS::SearchMode theMode,
+                                             ExtremaCS::Result&    theResult,
+                                             const ExtremaCS::Domain3D& /*theDomain*/) const
   {
     return std::visit(
       [&](const auto& aPair) -> const ExtremaCS::Result& {
@@ -163,9 +183,9 @@ struct ExtremaCS_CurveSurface::Impl
   }
 
   const ExtremaCS::Result& performNumerical(double                     theTol,
-                                             ExtremaCS::SearchMode     theMode,
-                                             ExtremaCS::Result&         theResult,
-                                             const ExtremaCS::Domain3D& theDomain) const
+                                            ExtremaCS::SearchMode      theMode,
+                                            ExtremaCS::Result&         theResult,
+                                            const ExtremaCS::Domain3D& theDomain) const
   {
     theResult.Clear();
 
@@ -178,9 +198,10 @@ struct ExtremaCS_CurveSurface::Impl
     ExtremaCS_CurveAdapter   aCurveEval(*myCurve, theDomain.Curve);
     ExtremaCS_SurfaceAdapter aSurfaceEval(*mySurface, theDomain.Surface);
 
-    ExtremaCS_GridEvaluator3D<ExtremaCS_CurveAdapter, ExtremaCS_SurfaceAdapter> aGridEval(aCurveEval,
-                                                                                           aSurfaceEval,
-                                                                                           theDomain);
+    ExtremaCS_GridEvaluator3D<ExtremaCS_CurveAdapter, ExtremaCS_SurfaceAdapter> aGridEval(
+      aCurveEval,
+      aSurfaceEval,
+      theDomain);
     aGridEval.Perform(theResult, theTol, theMode);
 
     return theResult;
@@ -257,7 +278,8 @@ ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(ExtremaCS_CurveSurface&& theOther
 
 //==================================================================================================
 
-ExtremaCS_CurveSurface& ExtremaCS_CurveSurface::operator=(ExtremaCS_CurveSurface&& theOther) noexcept
+ExtremaCS_CurveSurface& ExtremaCS_CurveSurface::operator=(
+  ExtremaCS_CurveSurface&& theOther) noexcept
 {
   if (this != &theOther)
   {
@@ -325,9 +347,10 @@ void ExtremaCS_CurveSurface::initPair(const GeomAdaptor_Curve&   theCurve,
     }
     else if (aSurfaceCat == SurfaceCategory::Cylinder)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCS_CircleCylinder>(theCurve.Circle(), theSurface.Cylinder(), myDomain);
-      hasAnalytical = true;
+      myImpl->myAnalytical = std::make_unique<ExtremaCS_CircleCylinder>(theCurve.Circle(),
+                                                                        theSurface.Cylinder(),
+                                                                        myDomain);
+      hasAnalytical        = true;
     }
   }
   // Ellipse-Surface pairs
@@ -341,9 +364,10 @@ void ExtremaCS_CurveSurface::initPair(const GeomAdaptor_Curve&   theCurve,
     }
     else if (aSurfaceCat == SurfaceCategory::Sphere)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCS_EllipseSphere>(theCurve.Ellipse(), theSurface.Sphere(), myDomain);
-      hasAnalytical = true;
+      myImpl->myAnalytical = std::make_unique<ExtremaCS_EllipseSphere>(theCurve.Ellipse(),
+                                                                       theSurface.Sphere(),
+                                                                       myDomain);
+      hasAnalytical        = true;
     }
   }
 
@@ -359,7 +383,7 @@ void ExtremaCS_CurveSurface::initPair(const GeomAdaptor_Curve&   theCurve,
 //==================================================================================================
 
 const ExtremaCS::Result& ExtremaCS_CurveSurface::Perform(double                theTol,
-                                                          ExtremaCS::SearchMode theMode) const
+                                                         ExtremaCS::SearchMode theMode) const
 {
   if (myImpl->myIsNumerical)
   {

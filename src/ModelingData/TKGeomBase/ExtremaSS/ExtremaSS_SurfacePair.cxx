@@ -65,12 +65,14 @@ ExtremaSS_SurfacePair::ExtremaSS_SurfacePair(const GeomAdaptor_Surface& theSurfa
 {
   // Create domain from surface bounds
   ExtremaSS::Domain4D aDomain;
-  aDomain.Domain1 =
-    ExtremaSS::Domain2D(theSurface1.FirstUParameter(), theSurface1.LastUParameter(),
-                        theSurface1.FirstVParameter(), theSurface1.LastVParameter());
-  aDomain.Domain2 =
-    ExtremaSS::Domain2D(theSurface2.FirstUParameter(), theSurface2.LastUParameter(),
-                        theSurface2.FirstVParameter(), theSurface2.LastVParameter());
+  aDomain.Domain1 = ExtremaSS::Domain2D(theSurface1.FirstUParameter(),
+                                        theSurface1.LastUParameter(),
+                                        theSurface1.FirstVParameter(),
+                                        theSurface1.LastVParameter());
+  aDomain.Domain2 = ExtremaSS::Domain2D(theSurface2.FirstUParameter(),
+                                        theSurface2.LastUParameter(),
+                                        theSurface2.FirstVParameter(),
+                                        theSurface2.LastVParameter());
 
   initializeEvaluator(theSurface1, theSurface2, aDomain);
 }
@@ -93,12 +95,14 @@ ExtremaSS_SurfacePair::ExtremaSS_SurfacePair(const GeomAdaptor_Surface&         
 {
   // Create domain from surface bounds
   ExtremaSS::Domain4D aDomain;
-  aDomain.Domain1 =
-    ExtremaSS::Domain2D(theSurface1.FirstUParameter(), theSurface1.LastUParameter(),
-                        theSurface1.FirstVParameter(), theSurface1.LastVParameter());
-  aDomain.Domain2 =
-    ExtremaSS::Domain2D(theSurface2.FirstUParameter(), theSurface2.LastUParameter(),
-                        theSurface2.FirstVParameter(), theSurface2.LastVParameter());
+  aDomain.Domain1 = ExtremaSS::Domain2D(theSurface1.FirstUParameter(),
+                                        theSurface1.LastUParameter(),
+                                        theSurface1.FirstVParameter(),
+                                        theSurface1.LastVParameter());
+  aDomain.Domain2 = ExtremaSS::Domain2D(theSurface2.FirstUParameter(),
+                                        theSurface2.LastUParameter(),
+                                        theSurface2.FirstVParameter(),
+                                        theSurface2.LastVParameter());
 
   // Use the underlying surface from TransformedSurface
   initializeEvaluator(theSurface1, theSurface2.Surface(), aDomain);
@@ -122,12 +126,14 @@ ExtremaSS_SurfacePair::ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurfac
 {
   // Create domain from surface bounds
   ExtremaSS::Domain4D aDomain;
-  aDomain.Domain1 =
-    ExtremaSS::Domain2D(theSurface1.FirstUParameter(), theSurface1.LastUParameter(),
-                        theSurface1.FirstVParameter(), theSurface1.LastVParameter());
-  aDomain.Domain2 =
-    ExtremaSS::Domain2D(theSurface2.FirstUParameter(), theSurface2.LastUParameter(),
-                        theSurface2.FirstVParameter(), theSurface2.LastVParameter());
+  aDomain.Domain1 = ExtremaSS::Domain2D(theSurface1.FirstUParameter(),
+                                        theSurface1.LastUParameter(),
+                                        theSurface1.FirstVParameter(),
+                                        theSurface1.LastVParameter());
+  aDomain.Domain2 = ExtremaSS::Domain2D(theSurface2.FirstUParameter(),
+                                        theSurface2.LastUParameter(),
+                                        theSurface2.FirstVParameter(),
+                                        theSurface2.LastVParameter());
 
   // Use the underlying surface from TransformedSurface
   initializeEvaluator(theSurface1.Surface(), theSurface2, aDomain);
@@ -151,12 +157,14 @@ ExtremaSS_SurfacePair::ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurfac
 {
   // Create domain from surface bounds
   ExtremaSS::Domain4D aDomain;
-  aDomain.Domain1 =
-    ExtremaSS::Domain2D(theSurface1.FirstUParameter(), theSurface1.LastUParameter(),
-                        theSurface1.FirstVParameter(), theSurface1.LastVParameter());
-  aDomain.Domain2 =
-    ExtremaSS::Domain2D(theSurface2.FirstUParameter(), theSurface2.LastUParameter(),
-                        theSurface2.FirstVParameter(), theSurface2.LastVParameter());
+  aDomain.Domain1 = ExtremaSS::Domain2D(theSurface1.FirstUParameter(),
+                                        theSurface1.LastUParameter(),
+                                        theSurface1.FirstVParameter(),
+                                        theSurface1.LastVParameter());
+  aDomain.Domain2 = ExtremaSS::Domain2D(theSurface2.FirstUParameter(),
+                                        theSurface2.LastUParameter(),
+                                        theSurface2.FirstVParameter(),
+                                        theSurface2.LastVParameter());
 
   // Use the underlying surfaces from TransformedSurfaces
   initializeEvaluator(theSurface1.Surface(), theSurface2.Surface(), aDomain);
@@ -182,12 +190,12 @@ void ExtremaSS_SurfacePair::initializeEvaluator(const GeomAdaptor_Surface& theSu
   const SurfaceTypeIndex aType2 = getSurfaceTypeIndex(theSurface2);
 
   // Ensure canonical ordering: lower type index first
-  const bool aNeedSwap                = static_cast<int>(aType1) > static_cast<int>(aType2);
-  mySwapped                           = aNeedSwap;
-  const Adaptor3d_Surface& aSurf1     = aNeedSwap ? theSurface2 : theSurface1;
-  const Adaptor3d_Surface& aSurf2     = aNeedSwap ? theSurface1 : theSurface2;
-  const SurfaceTypeIndex   aTypeFirst = aNeedSwap ? aType2 : aType1;
-  const SurfaceTypeIndex   aTypeSecond = aNeedSwap ? aType1 : aType2;
+  const bool aNeedSwap                  = static_cast<int>(aType1) > static_cast<int>(aType2);
+  mySwapped                             = aNeedSwap;
+  const Adaptor3d_Surface&  aSurf1      = aNeedSwap ? theSurface2 : theSurface1;
+  const Adaptor3d_Surface&  aSurf2      = aNeedSwap ? theSurface1 : theSurface2;
+  const SurfaceTypeIndex    aTypeFirst  = aNeedSwap ? aType2 : aType1;
+  const SurfaceTypeIndex    aTypeSecond = aNeedSwap ? aType1 : aType2;
   const ExtremaSS::Domain4D aDomain =
     aNeedSwap ? ExtremaSS::Domain4D(theDomain.Domain2, theDomain.Domain1) : theDomain;
 
@@ -222,7 +230,8 @@ void ExtremaSS_SurfacePair::initializeEvaluator(const GeomAdaptor_Surface& theSu
       switch (aTypeSecond)
       {
         case SurfaceTypeIndex::Cylinder:
-          // myEvaluator = ExtremaSS_CylinderCylinder(aSurf1.Cylinder(), aSurf2.Cylinder(), aDomain);
+          // myEvaluator = ExtremaSS_CylinderCylinder(aSurf1.Cylinder(), aSurf2.Cylinder(),
+          // aDomain);
           myEvaluator = ExtremaSS_GenericPair(aSurf1, aSurf2, aDomain);
           return;
         case SurfaceTypeIndex::Cone:

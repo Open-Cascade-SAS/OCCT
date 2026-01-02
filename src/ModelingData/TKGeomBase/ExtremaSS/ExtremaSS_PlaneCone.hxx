@@ -143,19 +143,23 @@ private:
     myRefRadius    = myCone.RefRadius();
 
     // Compute key dot products
-    myAxisDotNorm = myConeAxisX * myPlaneNormX + myConeAxisY * myPlaneNormY + myConeAxisZ * myPlaneNormZ;
-    myXDirDotNorm = myConeXDirX * myPlaneNormX + myConeXDirY * myPlaneNormY + myConeXDirZ * myPlaneNormZ;
-    myYDirDotNorm = myConeYDirX * myPlaneNormX + myConeYDirY * myPlaneNormY + myConeYDirZ * myPlaneNormZ;
+    myAxisDotNorm =
+      myConeAxisX * myPlaneNormX + myConeAxisY * myPlaneNormY + myConeAxisZ * myPlaneNormZ;
+    myXDirDotNorm =
+      myConeXDirX * myPlaneNormX + myConeXDirY * myPlaneNormY + myConeXDirZ * myPlaneNormZ;
+    myYDirDotNorm =
+      myConeYDirX * myPlaneNormX + myConeYDirY * myPlaneNormY + myConeYDirZ * myPlaneNormZ;
 
     // Signed distance from apex to plane
-    myApexDistToPlane = (myApexX - myPlaneOrigX) * myPlaneNormX + (myApexY - myPlaneOrigY) * myPlaneNormY
-                      + (myApexZ - myPlaneOrigZ) * myPlaneNormZ;
+    myApexDistToPlane = (myApexX - myPlaneOrigX) * myPlaneNormX
+                        + (myApexY - myPlaneOrigY) * myPlaneNormY
+                        + (myApexZ - myPlaneOrigZ) * myPlaneNormZ;
 
     // Coefficients for distance formula: d(U, V) = d0 + V * (c1 + c2*cos(U) + c3*sin(U))
-    myC1         = myCosSemiAngle * myAxisDotNorm;
-    myC2         = mySinSemiAngle * myXDirDotNorm;
-    myC3         = mySinSemiAngle * myYDirDotNorm;
-    myC2C3Norm   = std::sqrt(myC2 * myC2 + myC3 * myC3);
+    myC1       = myCosSemiAngle * myAxisDotNorm;
+    myC2       = mySinSemiAngle * myXDirDotNorm;
+    myC3       = mySinSemiAngle * myYDirDotNorm;
+    myC2C3Norm = std::sqrt(myC2 * myC2 + myC3 * myC3);
   }
 
 public:
@@ -172,13 +176,14 @@ public:
     // The cone in OCCT is defined with axis at reference radius from apex
     // Position = ConeOrigin + V*Axis + (RefRadius + V*tan(SemiAngle)) * (cos(U)*XDir + sin(U)*YDir)
     // where ConeOrigin is at distance RefRadius/tan(SemiAngle) from apex along axis
-    const double aCosU   = std::cos(theU);
-    const double aSinU   = std::sin(theU);
-    const double aRadius = myRefRadius + theV * std::tan(mySemiAngle);
+    const double aCosU     = std::cos(theU);
+    const double aSinU     = std::sin(theU);
+    const double aRadius   = myRefRadius + theV * std::tan(mySemiAngle);
     const gp_Pnt aConeOrig = myCone.Location();
-    return gp_Pnt(aConeOrig.X() + theV * myConeAxisX + aRadius * (aCosU * myConeXDirX + aSinU * myConeYDirX),
-                  aConeOrig.Y() + theV * myConeAxisY + aRadius * (aCosU * myConeXDirY + aSinU * myConeYDirY),
-                  aConeOrig.Z() + theV * myConeAxisZ + aRadius * (aCosU * myConeXDirZ + aSinU * myConeYDirZ));
+    return gp_Pnt(
+      aConeOrig.X() + theV * myConeAxisX + aRadius * (aCosU * myConeXDirX + aSinU * myConeYDirX),
+      aConeOrig.Y() + theV * myConeAxisY + aRadius * (aCosU * myConeXDirY + aSinU * myConeYDirY),
+      aConeOrig.Z() + theV * myConeAxisZ + aRadius * (aCosU * myConeXDirZ + aSinU * myConeYDirZ));
   }
 
   [[nodiscard]] const ExtremaSS::Result& Perform(
@@ -210,7 +215,8 @@ public:
   }
 
 private:
-  const ExtremaSS::Result& performAxisPerpendicular(double theTol, ExtremaSS::SearchMode theMode) const
+  const ExtremaSS::Result& performAxisPerpendicular(double                theTol,
+                                                    ExtremaSS::SearchMode theMode) const
   {
     // Axis perpendicular to plane means c1 = cos(alpha) * (axis . norm) = +/- cos(alpha)
     // and c2, c3 are small. The cone opens perpendicular to the plane.
@@ -223,9 +229,9 @@ private:
     // d(V) = apexDist + V * cos(alpha) * sign(axis.norm)
     // The radius at V is: R(V) = refRadius + V * tan(alpha)
 
-    // The closest point on the cone to plane is where the surface is tangent to plane-parallel planes.
-    // For axis perpendicular to plane, the cone surface at each height V is a circle
-    // at constant distance from the plane.
+    // The closest point on the cone to plane is where the surface is tangent to plane-parallel
+    // planes. For axis perpendicular to plane, the cone surface at each height V is a circle at
+    // constant distance from the plane.
 
     // If apex is on one side of plane and cone opens toward plane, it may intersect.
     const double aSign        = myAxisDotNorm > 0 ? 1.0 : -1.0;
@@ -245,16 +251,17 @@ private:
       // For OCCT parameterization: d(V) = locDist + V * (Axis.N)
       // where locDist = (Location - PlaneOrig).N
       // For axis perpendicular, X.N = Y.N = 0, so the formula simplifies
-      const gp_Pnt& aLoc = myCone.Location();
-      const double aLocDistToPlane = (aLoc.X() - myPlaneOrigX) * myPlaneNormX
-                                   + (aLoc.Y() - myPlaneOrigY) * myPlaneNormY
-                                   + (aLoc.Z() - myPlaneOrigZ) * myPlaneNormZ;
+      const gp_Pnt& aLoc            = myCone.Location();
+      const double  aLocDistToPlane = (aLoc.X() - myPlaneOrigX) * myPlaneNormX
+                                     + (aLoc.Y() - myPlaneOrigY) * myPlaneNormY
+                                     + (aLoc.Z() - myPlaneOrigZ) * myPlaneNormZ;
       const double aVIntersect = -aLocDistToPlane / myAxisDotNorm;
 
       // V can be negative (toward apex) or positive (away from apex)
       // Check if the intersection point is on the valid part of the cone
       // For refRadius > 0, V can be negative down to -refRadius/tan(alpha)
-      const double aVApex = (std::abs(mySinSemiAngle) > theTol) ? -myRefRadius / std::tan(mySemiAngle) : -1e10;
+      const double aVApex =
+        (std::abs(mySinSemiAngle) > theTol) ? -myRefRadius / std::tan(mySemiAngle) : -1e10;
       const bool aValidIntersection = (aVIntersect > aVApex) || std::abs(aLocDistToPlane) < theTol;
 
       if (aValidIntersection)
@@ -300,7 +307,8 @@ private:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -396,7 +404,8 @@ private:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -487,7 +496,8 @@ private:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -500,11 +510,11 @@ private:
 
     // Compute plane UV parameters
     const double aPlaneU = (aPlanePt.X() - myPlaneOrigX) * myPlaneXDirX
-                         + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
-                         + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
+                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
     const double aPlaneV = (aPlanePt.X() - myPlaneOrigX) * myPlaneYDirX
-                         + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
-                         + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
+                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
     // Cone parameters at apex: U is arbitrary (0), V such that we're at apex
     // For OCCT cone, V=0 is at the reference circle, not at apex
@@ -520,13 +530,29 @@ private:
 
     if (mySwapped)
     {
-      ExtremaSS::AddExtremum(myResult, aConeU, aConeV, aPlaneU, aPlaneV, myApex, aPlanePt, aSqDist,
-                             theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aConeU,
+                             aConeV,
+                             aPlaneU,
+                             aPlaneV,
+                             myApex,
+                             aPlanePt,
+                             aSqDist,
+                             theIsMin,
+                             theTol);
     }
     else
     {
-      ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, aConeU, aConeV, aPlanePt, myApex, aSqDist,
-                             theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aPlaneU,
+                             aPlaneV,
+                             aConeU,
+                             aConeV,
+                             aPlanePt,
+                             myApex,
+                             aSqDist,
+                             theIsMin,
+                             theTol);
     }
   }
 
@@ -553,8 +579,8 @@ private:
 
     // Compute distance to plane
     const double aDistToPlane = (aConePt.X() - myPlaneOrigX) * myPlaneNormX
-                              + (aConePt.Y() - myPlaneOrigY) * myPlaneNormY
-                              + (aConePt.Z() - myPlaneOrigZ) * myPlaneNormZ;
+                                + (aConePt.Y() - myPlaneOrigY) * myPlaneNormY
+                                + (aConePt.Z() - myPlaneOrigZ) * myPlaneNormZ;
 
     // Project onto plane
     const gp_Pnt aPlanePt(aConePt.X() - aDistToPlane * myPlaneNormX,
@@ -563,23 +589,39 @@ private:
 
     // Compute plane UV parameters
     const double aPlaneU = (aPlanePt.X() - myPlaneOrigX) * myPlaneXDirX
-                         + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
-                         + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
+                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
     const double aPlaneV = (aPlanePt.X() - myPlaneOrigX) * myPlaneYDirX
-                         + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
-                         + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
+                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
     const double aSqDist = aDistToPlane * aDistToPlane;
 
     if (mySwapped)
     {
-      ExtremaSS::AddExtremum(myResult, theU, theV, aPlaneU, aPlaneV, aConePt, aPlanePt, aSqDist,
-                             theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theU,
+                             theV,
+                             aPlaneU,
+                             aPlaneV,
+                             aConePt,
+                             aPlanePt,
+                             aSqDist,
+                             theIsMin,
+                             theTol);
     }
     else
     {
-      ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, theU, theV, aPlanePt, aConePt, aSqDist,
-                             theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aPlaneU,
+                             aPlaneV,
+                             theU,
+                             theV,
+                             aPlanePt,
+                             aConePt,
+                             aSqDist,
+                             theIsMin,
+                             theTol);
     }
   }
 
@@ -618,7 +660,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    const ExtremaSS::Domain4D& aDom       = myDomain.value();
     constexpr int              aNbSamples = 20;
 
     // Sample plane boundary edges (Domain1)
@@ -663,16 +705,18 @@ private:
   }
 
   //! Check a plane boundary point against the cone.
-  void checkPlanePointAgainstCone(double thePlaneU, double thePlaneV, double theTol,
+  void checkPlanePointAgainstCone(double                thePlaneU,
+                                  double                thePlaneV,
+                                  double                theTol,
                                   ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aPlanePt = Value1(thePlaneU, thePlaneV);
 
     // Find closest point on cone axis to this plane point
     const gp_Pnt& aConeOrig = myCone.Location();
-    const double aDx = aPlanePt.X() - aConeOrig.X();
-    const double aDy = aPlanePt.Y() - aConeOrig.Y();
-    const double aDz = aPlanePt.Z() - aConeOrig.Z();
+    const double  aDx       = aPlanePt.X() - aConeOrig.X();
+    const double  aDy       = aPlanePt.Y() - aConeOrig.Y();
+    const double  aDz       = aPlanePt.Z() - aConeOrig.Z();
 
     // V parameter along axis (from cone origin)
     const double aConeV = aDx * myConeAxisX + aDy * myConeAxisY + aDz * myConeAxisZ;
@@ -683,9 +727,9 @@ private:
     const double aAxisPtZ = aConeOrig.Z() + aConeV * myConeAxisZ;
 
     // Radial direction from axis to point
-    const double aRadX = aPlanePt.X() - aAxisPtX;
-    const double aRadY = aPlanePt.Y() - aAxisPtY;
-    const double aRadZ = aPlanePt.Z() - aAxisPtZ;
+    const double aRadX    = aPlanePt.X() - aAxisPtX;
+    const double aRadY    = aPlanePt.Y() - aAxisPtY;
+    const double aRadZ    = aPlanePt.Z() - aAxisPtZ;
     const double aRadDist = std::sqrt(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
 
     if (aRadDist < theTol)
@@ -699,8 +743,9 @@ private:
     const double aRadDirY = aRadY / aRadDist;
     const double aRadDirZ = aRadZ / aRadDist;
 
-    double aConeU = std::atan2(aRadDirX * myConeYDirX + aRadDirY * myConeYDirY + aRadDirZ * myConeYDirZ,
-                               aRadDirX * myConeXDirX + aRadDirY * myConeXDirY + aRadDirZ * myConeXDirZ);
+    double aConeU =
+      std::atan2(aRadDirX * myConeYDirX + aRadDirY * myConeYDirY + aRadDirZ * myConeYDirZ,
+                 aRadDirX * myConeXDirX + aRadDirY * myConeXDirY + aRadDirZ * myConeXDirZ);
     if (aConeU < 0)
       aConeU += ExtremaSS::THE_TWO_PI;
 
@@ -711,18 +756,34 @@ private:
     {
       const double aClampedU = std::clamp(aConeU, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aConeV, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aConePt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aPlanePt.SquareDistance(aConePt);
+      const gp_Pnt aConePt   = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aPlanePt.SquareDistance(aConePt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aConePt, aPlanePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               thePlaneU,
+                               thePlaneV,
+                               aConePt,
+                               aPlanePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aConePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               thePlaneU,
+                               thePlaneV,
+                               aClampedU,
+                               aClampedV,
+                               aPlanePt,
+                               aConePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -735,32 +796,50 @@ private:
 
       const double aClampedU = std::clamp(aConeUFar, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aConeV, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aConePt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aPlanePt.SquareDistance(aConePt);
+      const gp_Pnt aConePt   = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aPlanePt.SquareDistance(aConePt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aConePt, aPlanePt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               thePlaneU,
+                               thePlaneV,
+                               aConePt,
+                               aPlanePt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aConePt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               thePlaneU,
+                               thePlaneV,
+                               aClampedU,
+                               aClampedV,
+                               aPlanePt,
+                               aConePt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
     }
   }
 
   //! Check a cone boundary point against the plane.
-  void checkConePointAgainstPlane(double theConeU, double theConeV, double theTol,
+  void checkConePointAgainstPlane(double                theConeU,
+                                  double                theConeV,
+                                  double                theTol,
                                   ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aConePt = Value2(theConeU, theConeV);
 
     // Project cone point onto plane
     const double aDistToPlane = (aConePt.X() - myPlaneOrigX) * myPlaneNormX
-                              + (aConePt.Y() - myPlaneOrigY) * myPlaneNormY
-                              + (aConePt.Z() - myPlaneOrigZ) * myPlaneNormZ;
+                                + (aConePt.Y() - myPlaneOrigY) * myPlaneNormY
+                                + (aConePt.Z() - myPlaneOrigZ) * myPlaneNormZ;
 
     const gp_Pnt aProjPt(aConePt.X() - aDistToPlane * myPlaneNormX,
                          aConePt.Y() - aDistToPlane * myPlaneNormY,
@@ -768,41 +847,60 @@ private:
 
     // Compute plane UV parameters
     double aPlaneU = (aProjPt.X() - myPlaneOrigX) * myPlaneXDirX
-                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
-                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                     + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                     + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
     double aPlaneV = (aProjPt.X() - myPlaneOrigX) * myPlaneYDirX
-                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
-                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                     + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                     + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
     const ExtremaSS::Domain4D& aDom = myDomain.value();
 
     // Clamp to plane domain
     const double aClampedU = std::clamp(aPlaneU, aDom.Domain1.UMin, aDom.Domain1.UMax);
     const double aClampedV = std::clamp(aPlaneV, aDom.Domain1.VMin, aDom.Domain1.VMax);
-    const gp_Pnt aPlanePt = Value1(aClampedU, aClampedV);
-    const double aSqDist = aConePt.SquareDistance(aPlanePt);
+    const gp_Pnt aPlanePt  = Value1(aClampedU, aClampedV);
+    const double aSqDist   = aConePt.SquareDistance(aPlanePt);
 
     // Only minimum makes sense for fixed cone point
     if (theMode != ExtremaSS::SearchMode::Max)
     {
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, theConeU, theConeV, aClampedU, aClampedV, aConePt, aPlanePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theConeU,
+                               theConeV,
+                               aClampedU,
+                               aClampedV,
+                               aConePt,
+                               aPlanePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theConeU, theConeV, aPlanePt, aConePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theConeU,
+                               theConeV,
+                               aPlanePt,
+                               aConePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
   }
 
 public:
-  const gp_Pln&  Plane() const { return myPlane; }
+  const gp_Pln& Plane() const { return myPlane; }
+
   const gp_Cone& Cone() const { return myCone; }
-  bool           IsSwapped() const { return mySwapped; }
-  bool           IsBounded() const { return myDomain.has_value(); }
+
+  bool IsSwapped() const { return mySwapped; }
+
+  bool IsBounded() const { return myDomain.has_value(); }
 
 private:
   gp_Pln                             myPlane;

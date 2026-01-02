@@ -47,8 +47,8 @@ public:
   //! @param[in] theCircle1 first circle
   //! @param[in] theCircle2 second circle
   //! @param[in] theDomain parameter domains for both circles
-  ExtremaCC_CircleCircle(const gp_Circ&              theCircle1,
-                         const gp_Circ&              theCircle2,
+  ExtremaCC_CircleCircle(const gp_Circ&             theCircle1,
+                         const gp_Circ&             theCircle2,
                          const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
@@ -101,8 +101,8 @@ private:
   //! @param[in] theTol tolerance for domain check
   void addSolution(double theU1, double theU2, double theTol) const;
 
-  gp_Circ                             myCircle1; //!< First circle geometry
-  gp_Circ                             myCircle2; //!< Second circle geometry
+  gp_Circ                            myCircle1; //!< First circle geometry
+  gp_Circ                            myCircle2; //!< Second circle geometry
   std::optional<ExtremaCC::Domain2D> myDomain;  //!< Parameter domains
   mutable ExtremaCC::Result          myResult;  //!< Reusable result storage
 };

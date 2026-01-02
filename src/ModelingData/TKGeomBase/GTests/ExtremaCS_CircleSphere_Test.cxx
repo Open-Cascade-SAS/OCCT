@@ -37,11 +37,11 @@ protected:
 TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleInsideSphere)
 {
   // Circle in XY plane at Z=0, radius 3, sphere at origin radius 5
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 3.0);
+  gp_Ax2    aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 3.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   // Circle center on sphere axis - infinite solutions
@@ -53,11 +53,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleInsideSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleOnSphere)
 {
   // Circle in XY plane at Z=0, radius 5, sphere at origin radius 5
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 5.0);
+  gp_Ax2    aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 5.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   // Circle lies exactly on sphere equator
@@ -68,11 +68,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleOnSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleOutsideSphere)
 {
   // Circle in XY plane at Z=0, radius 8, sphere at origin radius 5
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 8.0);
+  gp_Ax2    aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 8.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   // Circle center on sphere axis - infinite solutions
@@ -88,11 +88,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Concentric_CircleOutsideSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleInXYPlane)
 {
   // Circle in XY plane, center offset from sphere
-  gp_Ax2 aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Ax2    aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -113,11 +113,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleInXYPlane)
 TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleIntersectsSphere)
 {
   // Circle overlaps with sphere
-  gp_Ax2 aCircleAx(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 3.0);
+  gp_Ax2    aCircleAx(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 3.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -132,11 +132,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleIntersectsSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleInsideSphere)
 {
   // Small circle entirely inside sphere
-  gp_Ax2 aCircleAx(gp_Pnt(2, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 1.0);
+  gp_Ax2    aCircleAx(gp_Pnt(2, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 1.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -159,12 +159,12 @@ TEST_F(ExtremaCS_CircleSphereTest, Offset_CircleInsideSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Tilted_CircleAboveSphere)
 {
   // Circle tilted and above sphere
-  gp_Dir aTiltedNormal(0, 1, 1); // 45 degree tilt
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 10), aTiltedNormal);
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Dir    aTiltedNormal(0, 1, 1); // 45 degree tilt
+  gp_Ax2    aCircleAx(gp_Pnt(0, 0, 10), aTiltedNormal);
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -174,7 +174,7 @@ TEST_F(ExtremaCS_CircleSphereTest, Tilted_CircleAboveSphere)
   // (circle doesn't intersect sphere)
   EXPECT_GT(aResult.MinSquareDistance(), 0.0);
   // The minimum should be less than the distance from circle center (10) minus radius (5)
-  EXPECT_LT(aResult.MinSquareDistance(), 25.0);  // < (10-5)^2
+  EXPECT_LT(aResult.MinSquareDistance(), 25.0); // < (10-5)^2
 }
 
 //==================================================================================================
@@ -184,11 +184,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Tilted_CircleAboveSphere)
 TEST_F(ExtremaCS_CircleSphereTest, Touching_CircleTangentToSphere)
 {
   // Circle positioned so it just touches the sphere
-  gp_Ax2 aCircleAx(gp_Pnt(7, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Ax2    aCircleAx(gp_Pnt(7, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -204,11 +204,11 @@ TEST_F(ExtremaCS_CircleSphereTest, Touching_CircleTangentToSphere)
 
 TEST_F(ExtremaCS_CircleSphereTest, SearchMode_MinOnly)
 {
-  gp_Ax2 aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Ax2    aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -218,11 +218,11 @@ TEST_F(ExtremaCS_CircleSphereTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaCS_CircleSphereTest, SearchMode_MaxOnly)
 {
-  gp_Ax2 aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Ax2    aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -236,11 +236,11 @@ TEST_F(ExtremaCS_CircleSphereTest, SearchMode_MaxOnly)
 
 TEST_F(ExtremaCS_CircleSphereTest, Parameters_Verify)
 {
-  gp_Ax2 aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
-  gp_Circ aCircle(aCircleAx, 2.0);
+  gp_Ax2    aCircleAx(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
+  gp_Circ   aCircle(aCircleAx, 2.0);
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_CircleSphere anExtrema(aCircle, aSphere);
+  ExtremaCS_CircleSphere   anExtrema(aCircle, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -254,7 +254,7 @@ TEST_F(ExtremaCS_CircleSphereTest, Parameters_Verify)
   EXPECT_NEAR(anExt.PointOnCurve.Distance(aExpectedCircPt), 0.0, THE_TOL);
 
   // Point on sphere should be at parameters (u, v)
-  gp_Pnt aExpectedSphPt = ElSLib::Value(anExt.ParameterOnSurfaceU,
-                                         anExt.ParameterOnSurfaceV, aSphere);
+  gp_Pnt aExpectedSphPt =
+    ElSLib::Value(anExt.ParameterOnSurfaceU, anExt.ParameterOnSurfaceV, aSphere);
   EXPECT_NEAR(anExt.PointOnSurface.Distance(aExpectedSphPt), 0.0, THE_TOL);
 }

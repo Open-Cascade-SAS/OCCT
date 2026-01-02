@@ -41,7 +41,7 @@ TEST_F(ExtremaSS_CylinderConeTest, SeparatedCylinderAndCone_FindsMinimum)
   const gp_Ax3  aConeAxis(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -59,12 +59,12 @@ TEST_F(ExtremaSS_CylinderConeTest, CoaxialCylinderAndCone_FindsMinimum)
   const gp_Ax3      aConeAxis(gp_Pnt(0, 0, 10), gp_Dir(0, 0, -1));
   const gp_Cone     aCone(aConeAxis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find solutions
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_CylinderConeTest, ParallelAxes_Separated)
@@ -76,7 +76,7 @@ TEST_F(ExtremaSS_CylinderConeTest, ParallelAxes_Separated)
   const gp_Ax3  aConeAxis(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -92,7 +92,7 @@ TEST_F(ExtremaSS_CylinderConeTest, SkewAxes_FindsMinimum)
   const gp_Ax3  aConeAxis(gp_Pnt(10, 5, 0), gp_Dir(0, 1, 0));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -108,7 +108,7 @@ TEST_F(ExtremaSS_CylinderConeTest, IntersectingCylinderAndCone_MinDistanceZero)
   const gp_Ax3  aConeAxis(gp_Pnt(3, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -152,7 +152,7 @@ TEST_F(ExtremaSS_CylinderConeTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Ax3      aConeAxis(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone     aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -174,7 +174,7 @@ TEST_F(ExtremaSS_CylinderConeTest, SmallConeAngle_NearCylinder)
   const gp_Ax3      aConeAxis(gp_Pnt(10, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone     aCone(aConeAxis, 0.01, 0.0); // Very small angle
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -187,7 +187,7 @@ TEST_F(ExtremaSS_CylinderConeTest, LargeConeAngle_WideOpening)
   const gp_Ax3      aConeAxis(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone     aCone(aConeAxis, M_PI / 3.0, 0.0); // 60 degrees
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -200,7 +200,7 @@ TEST_F(ExtremaSS_CylinderConeTest, PerpendicularAxes_MeetingAtPoint)
   const gp_Ax3      aConeAxis(gp_Pnt(5, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone     aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -217,7 +217,7 @@ TEST_F(ExtremaSS_CylinderConeTest, ConeWithNonZeroRefRadius)
   const gp_Ax3      aConeAxis(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone     aCone(aConeAxis, M_PI / 4.0, 3.0); // Non-zero ref radius
 
-  ExtremaSS_CylinderCone anEval(aCyl, aCone);
+  ExtremaSS_CylinderCone   anEval(aCyl, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

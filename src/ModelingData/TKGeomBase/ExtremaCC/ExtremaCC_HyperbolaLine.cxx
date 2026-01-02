@@ -23,8 +23,7 @@
 
 //==================================================================================================
 
-ExtremaCC_HyperbolaLine::ExtremaCC_HyperbolaLine(const gp_Hypr& theHyperbola,
-                                                 const gp_Lin&  theLine)
+ExtremaCC_HyperbolaLine::ExtremaCC_HyperbolaLine(const gp_Hypr& theHyperbola, const gp_Lin& theLine)
     : myHyperbola(theHyperbola),
       myLine(theLine),
       myDomain(std::nullopt)
@@ -33,8 +32,8 @@ ExtremaCC_HyperbolaLine::ExtremaCC_HyperbolaLine(const gp_Hypr& theHyperbola,
 
 //==================================================================================================
 
-ExtremaCC_HyperbolaLine::ExtremaCC_HyperbolaLine(const gp_Hypr&              theHyperbola,
-                                                 const gp_Lin&               theLine,
+ExtremaCC_HyperbolaLine::ExtremaCC_HyperbolaLine(const gp_Hypr&             theHyperbola,
+                                                 const gp_Lin&              theLine,
                                                  const ExtremaCC::Domain2D& theDomain)
     : myHyperbola(theHyperbola),
       myLine(theLine),
@@ -146,10 +145,10 @@ void ExtremaCC_HyperbolaLine::addSolution(double theU1, double theU2, double the
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -170,8 +169,8 @@ void ExtremaCC_HyperbolaLine::addSolution(double theU1, double theU2, double the
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

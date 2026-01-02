@@ -45,9 +45,9 @@ public:
   }
 
   //! Constructor with curve and surface evaluators and domain.
-  ExtremaCS_Numerical(const CurveEval&                           theCurveEval,
-                      const SurfaceEval&                         theSurfaceEval,
-                      const std::optional<ExtremaCS::Domain3D>&  theDomain)
+  ExtremaCS_Numerical(const CurveEval&                          theCurveEval,
+                      const SurfaceEval&                        theSurfaceEval,
+                      const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myCurveEval(theCurveEval),
         mySurfaceEval(theSurfaceEval),
         myDomain(theDomain)
@@ -78,8 +78,8 @@ public:
 
     // Use grid-based numerical approach
     ExtremaCS_GridEvaluator3D<CurveEval, SurfaceEval> aGridEval(myCurveEval,
-                                                                 mySurfaceEval,
-                                                                 aDomain);
+                                                                mySurfaceEval,
+                                                                aDomain);
     aGridEval.Perform(myResult, theTol, theMode);
 
     return myResult;

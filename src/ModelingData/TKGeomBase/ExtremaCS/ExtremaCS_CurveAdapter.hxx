@@ -37,8 +37,7 @@ public:
   //! Constructor with curve adaptor and domain.
   //! @param[in] theCurve curve adaptor (must outlive this object)
   //! @param[in] theDomain parameter domain
-  ExtremaCS_CurveAdapter(const GeomAdaptor_Curve&   theCurve,
-                         const ExtremaCS::Domain1D& theDomain)
+  ExtremaCS_CurveAdapter(const GeomAdaptor_Curve& theCurve, const ExtremaCS::Domain1D& theDomain)
       : myCurve(&theCurve),
         myDomain(theDomain)
   {

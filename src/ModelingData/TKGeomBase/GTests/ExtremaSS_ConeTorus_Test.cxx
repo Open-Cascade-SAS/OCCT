@@ -41,7 +41,7 @@ TEST_F(ExtremaSS_ConeTorusTest, SeparatedConeAndTorus_FindsMinimum)
   // Torus at (25, 0, 0)
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(25, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -64,11 +64,11 @@ TEST_F(ExtremaSS_ConeTorusTest, CoaxialConeAndTorus_FindsMinimum)
 
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeTorusTest, PerpendicularAxes_FindsMinimum)
@@ -80,7 +80,7 @@ TEST_F(ExtremaSS_ConeTorusTest, PerpendicularAxes_FindsMinimum)
   // Torus with axis along X
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0)), 3.0, 0.5);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -96,13 +96,13 @@ TEST_F(ExtremaSS_ConeTorusTest, ConeApexInTorusHole_FindsMinimum)
   // Torus around cone
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Cone apex at origin, torus inner edge at 10-2=8 from axis
   // This depends on whether cone surface reaches the torus
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeTorusTest, TouchingConeAndTorus_MinDistanceZero)
@@ -114,7 +114,7 @@ TEST_F(ExtremaSS_ConeTorusTest, TouchingConeAndTorus_MinDistanceZero)
   // Torus positioned to touch cone
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // At Z=5, cone has radius 5 (45 degree angle), torus has inner edge at 5-1=4
@@ -160,7 +160,7 @@ TEST_F(ExtremaSS_ConeTorusTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Cone  aCone(aConeAxis, M_PI / 4.0, 0.0);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(25, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -185,11 +185,11 @@ TEST_F(ExtremaSS_ConeTorusTest, TiltedAxes_GeneralOrientation)
   const gp_Dir   aTorusDir(1, 0, 1);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(20, 0, 0), aTorusDir), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeTorusTest, SmallConeAngle_NearCylinder)
@@ -198,7 +198,7 @@ TEST_F(ExtremaSS_ConeTorusTest, SmallConeAngle_NearCylinder)
   const gp_Cone  aCone(aConeAxis, 0.01, 2.0);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -211,7 +211,7 @@ TEST_F(ExtremaSS_ConeTorusTest, SmallMinorRadius_ThinTorus)
   const gp_Cone  aCone(aConeAxis, M_PI / 4.0, 0.0);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 0.1);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -231,7 +231,7 @@ TEST_F(ExtremaSS_ConeTorusTest, LargeConeAngle_WideOpening)
   const gp_Cone  aCone(aConeAxis, M_PI / 3.0, 0.0); // 60 degrees
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(25, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -244,7 +244,7 @@ TEST_F(ExtremaSS_ConeTorusTest, ConeWithNonZeroRefRadius)
   const gp_Cone  aCone(aConeAxis, M_PI / 4.0, 3.0);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_ConeTorus anEval(aCone, aTorus);
+  ExtremaSS_ConeTorus      anEval(aCone, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

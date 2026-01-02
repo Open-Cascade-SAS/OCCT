@@ -41,7 +41,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SphereSeparatedFromCone_FindsMinimum)
   // Sphere at (10, 0, 0) with radius 2
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -61,7 +61,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SphereCenterOnConeAxis_InfiniteSolutions)
   // Sphere centered on cone axis at (0, 0, 10)
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should be infinite solutions (circle of extrema)
@@ -77,7 +77,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SphereIntersectsCone_MinDistanceZero)
   // Large sphere that intersects cone
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(5, 0, 5), gp_Dir(0, 0, 1)), 4.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -100,7 +100,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SphereTouchingApex_MinDistanceZero)
   // Sphere touching apex
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(3, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -117,7 +117,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SphereNearConeGenerator_CorrectMinimum)
   // Sphere at (5, 0, 10) with radius 1
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(5, 0, 10), gp_Dir(0, 0, 1)), 1.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -163,7 +163,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Cone   aCone(aConeAxis, M_PI / 4.0, 0.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 5), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -181,7 +181,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Cone   aCone(aConeAxis, M_PI / 4.0, 0.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 5), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -205,7 +205,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SmallSemiAngle_NearCylinder)
 
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -220,7 +220,7 @@ TEST_F(ExtremaSS_ConeSphereTest, LargeSemiAngle_WideOpening)
 
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -236,12 +236,12 @@ TEST_F(ExtremaSS_ConeSphereTest, TiltedCone_GeneralOrientation)
 
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find some extrema
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeSphereTest, SmallSphere_FarFromCone)
@@ -250,7 +250,7 @@ TEST_F(ExtremaSS_ConeSphereTest, SmallSphere_FarFromCone)
   const gp_Cone   aCone(aConeAxis, M_PI / 4.0, 0.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(100, 0, 0), gp_Dir(0, 0, 1)), 0.5);
 
-  ExtremaSS_ConeSphere anEval(aCone, aSphere);
+  ExtremaSS_ConeSphere     anEval(aCone, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

@@ -33,8 +33,8 @@ ExtremaCC_EllipseEllipse::ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1,
 
 //==================================================================================================
 
-ExtremaCC_EllipseEllipse::ExtremaCC_EllipseEllipse(const gp_Elips&             theEllipse1,
-                                                   const gp_Elips&             theEllipse2,
+ExtremaCC_EllipseEllipse::ExtremaCC_EllipseEllipse(const gp_Elips&            theEllipse1,
+                                                   const gp_Elips&            theEllipse2,
                                                    const ExtremaCC::Domain2D& theDomain)
     : myEllipse1(theEllipse1),
       myEllipse2(theEllipse2),
@@ -104,17 +104,17 @@ bool ExtremaCC_EllipseEllipse::performCoplanar(double theTol) const
   const double aTolD  = theTol;
   const double aTolD2 = aTolD * aTolD;
 
-  const gp_Pnt& aP1  = myEllipse1.Location();
-  const gp_Dir& aD1  = myEllipse1.Axis().Direction();
-  const gp_Pnt& aP2  = myEllipse2.Location();
-  const gp_Dir& aD2  = myEllipse2.Axis().Direction();
-  const gp_Dir& aX1  = myEllipse1.XAxis().Direction();
-  const gp_Dir& aX2  = myEllipse2.XAxis().Direction();
+  const gp_Pnt& aP1 = myEllipse1.Location();
+  const gp_Dir& aD1 = myEllipse1.Axis().Direction();
+  const gp_Pnt& aP2 = myEllipse2.Location();
+  const gp_Dir& aD2 = myEllipse2.Axis().Direction();
+  const gp_Dir& aX1 = myEllipse1.XAxis().Direction();
+  const gp_Dir& aX2 = myEllipse2.XAxis().Direction();
 
   // Check if ellipses are in the same plane
-  gp_Pln        aPln1(aP1, aD1);
-  const double  aD22          = aPln1.SquareDistance(aP2);
-  const bool    bIsSamePlane  = aD1.IsParallel(aD2, aTolA) && aD22 < aTolD2;
+  gp_Pln       aPln1(aP1, aD1);
+  const double aD22         = aPln1.SquareDistance(aP2);
+  const bool   bIsSamePlane = aD1.IsParallel(aD2, aTolA) && aD22 < aTolD2;
 
   if (!bIsSamePlane)
   {
@@ -122,7 +122,7 @@ bool ExtremaCC_EllipseEllipse::performCoplanar(double theTol) const
   }
 
   // Check if ellipses are concentric
-  const double aDC2       = aP1.SquareDistance(aP2);
+  const double aDC2        = aP1.SquareDistance(aP2);
   const bool   bConcentric = aDC2 < aTolD2;
 
   if (!bConcentric)
@@ -167,10 +167,10 @@ void ExtremaCC_EllipseEllipse::addSolution(double theU1, double theU2, double th
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -191,8 +191,8 @@ void ExtremaCC_EllipseEllipse::addSolution(double theU1, double theU2, double th
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

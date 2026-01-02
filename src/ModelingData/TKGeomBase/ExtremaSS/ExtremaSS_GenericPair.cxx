@@ -67,12 +67,12 @@ public:
       for (int j = 0; j < theNbV; ++j)
       {
         const gp_Pnt& aPt = theGrid(i, j).Point;
-        myMinX = std::min(myMinX, aPt.X());
-        myMaxX = std::max(myMaxX, aPt.X());
-        myMinY = std::min(myMinY, aPt.Y());
-        myMaxY = std::max(myMaxY, aPt.Y());
-        myMinZ = std::min(myMinZ, aPt.Z());
-        myMaxZ = std::max(myMaxZ, aPt.Z());
+        myMinX            = std::min(myMinX, aPt.X());
+        myMaxX            = std::max(myMaxX, aPt.X());
+        myMinY            = std::min(myMinY, aPt.Y());
+        myMaxY            = std::max(myMaxY, aPt.Y());
+        myMinZ            = std::min(myMinZ, aPt.Z());
+        myMaxZ            = std::max(myMaxZ, aPt.Z());
       }
     }
 
@@ -175,9 +175,9 @@ public:
 
               if (aSqDist < theBestSqDist)
               {
-                theBestSqDist = aSqDist;
-                theBestI      = aEntry.I;
-                theBestJ      = aEntry.J;
+                theBestSqDist  = aSqDist;
+                theBestI       = aEntry.I;
+                theBestJ       = aEntry.J;
                 aFoundInRadius = true;
               }
             }
@@ -215,8 +215,8 @@ private:
   }
 
 private:
-  double myMinX, myMaxX, myMinY, myMaxY, myMinZ, myMaxZ;
-  double myCellSizeX, myCellSizeY, myCellSizeZ;
+  double                              myMinX, myMaxX, myMinY, myMaxY, myMinZ, myMaxZ;
+  double                              myCellSizeX, myCellSizeY, myCellSizeZ;
   std::vector<std::vector<HashEntry>> myCells;
 };
 
@@ -546,11 +546,11 @@ void ExtremaSS_GenericPair::scanGrids(double theTol, ExtremaSS::SearchMode theMo
       }
 
       const SurfaceGridPoint& aGP2 = myGrid2(aBestI2, aBestJ2);
-      GradientData aGrad = computeGradient(aGP1.Point, aGP1.DU, aGP1.DV,
-                                           aGP2.Point, aGP2.DU, aGP2.DV);
+      GradientData            aGrad =
+        computeGradient(aGP1.Point, aGP1.DU, aGP1.DV, aGP2.Point, aGP2.DU, aGP2.DV);
 
-      double aGradNormSq = aGrad.F1 * aGrad.F1 + aGrad.F2 * aGrad.F2
-                         + aGrad.F3 * aGrad.F3 + aGrad.F4 * aGrad.F4;
+      double aGradNormSq =
+        aGrad.F1 * aGrad.F1 + aGrad.F2 * aGrad.F2 + aGrad.F3 * aGrad.F3 + aGrad.F4 * aGrad.F4;
 
       if (aGradNormSq < aTolGradSq || aGradNormSq < aBestDist * 1.0e-6)
       {
@@ -602,8 +602,7 @@ void ExtremaSS_GenericPair::scanGrids(double theTol, ExtremaSS::SearchMode theMo
 
 //==================================================================================================
 
-void ExtremaSS_GenericPair::refineCandidates(double                theTol,
-                                             ExtremaSS::SearchMode theMode) const
+void ExtremaSS_GenericPair::refineCandidates(double theTol, ExtremaSS::SearchMode theMode) const
 {
   const Bounds4D aBounds = extractBounds(true);
 
@@ -657,8 +656,7 @@ void ExtremaSS_GenericPair::refineCandidates(double                theTol,
     for (int r = 0; r < myFoundRoots.Length(); ++r)
     {
       const auto& aRoot = myFoundRoots.Value(r);
-      if (std::abs(aU1 - std::get<0>(aRoot)) < theTol
-          && std::abs(aV1 - std::get<1>(aRoot)) < theTol
+      if (std::abs(aU1 - std::get<0>(aRoot)) < theTol && std::abs(aV1 - std::get<1>(aRoot)) < theTol
           && std::abs(aU2 - std::get<2>(aRoot)) < theTol
           && std::abs(aV2 - std::get<3>(aRoot)) < theTol)
       {
@@ -692,7 +690,15 @@ void ExtremaSS_GenericPair::refineCandidates(double                theTol,
     double             aSqDist = aPt1.SquareDistance(aPt2);
     bool               aIsMin  = (theMode != ExtremaSS::SearchMode::Max);
 
-    ExtremaSS::AddExtremum(myResult, aCand.U1, aCand.V1, aCand.U2, aCand.V2,
-                           aPt1, aPt2, aSqDist, aIsMin, theTol);
+    ExtremaSS::AddExtremum(myResult,
+                           aCand.U1,
+                           aCand.V1,
+                           aCand.U2,
+                           aCand.V2,
+                           aPt1,
+                           aPt2,
+                           aSqDist,
+                           aIsMin,
+                           theTol);
   }
 }

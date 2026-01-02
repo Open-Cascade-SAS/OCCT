@@ -55,8 +55,8 @@ public:
   }
 
   //! Constructor with ellipse and plane geometry and domain.
-  ExtremaCS_EllipsePlane(const gp_Elips&                      theEllipse,
-                         const gp_Pln&                        thePlane,
+  ExtremaCS_EllipsePlane(const gp_Elips&                           theEllipse,
+                         const gp_Pln&                             thePlane,
                          const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myEllipse(theEllipse),
         myPlane(thePlane),
@@ -74,11 +74,11 @@ public:
   {
     myResult.Clear();
 
-    const gp_Pnt& aCenter = myEllipse.Location();
+    const gp_Pnt& aCenter   = myEllipse.Location();
     const gp_Dir& aEllipseX = myEllipse.XAxis().Direction();
     const gp_Dir& aEllipseY = myEllipse.YAxis().Direction();
-    const double aMajor = myEllipse.MajorRadius();
-    const double aMinor = myEllipse.MinorRadius();
+    const double  aMajor    = myEllipse.MajorRadius();
+    const double  aMinor    = myEllipse.MinorRadius();
 
     const gp_Dir& aPlaneN = myPlane.Axis().Direction();
     const gp_Pnt& aPlaneP = myPlane.Location();
@@ -91,8 +91,8 @@ public:
         && std::abs(aYdotN) < ExtremaCS::THE_PARALLEL_TOLERANCE)
     {
       // Ellipse is parallel to plane - infinite solutions
-      const double aDist = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
-      myResult.Status = ExtremaCS::Status::InfiniteSolutions;
+      const double aDist              = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
+      myResult.Status                 = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aDist * aDist;
       return myResult;
     }
@@ -107,13 +107,14 @@ public:
       {
         if (aT < myDomain->Curve.Min - theTol || aT > myDomain->Curve.Max + theTol)
         {
-          double aTplus = aT + ExtremaCS::THE_TWO_PI;
+          double aTplus  = aT + ExtremaCS::THE_TWO_PI;
           double aTminus = aT - ExtremaCS::THE_TWO_PI;
           if (aTplus >= myDomain->Curve.Min - theTol && aTplus <= myDomain->Curve.Max + theTol)
           {
             aT = aTplus;
           }
-          else if (aTminus >= myDomain->Curve.Min - theTol && aTminus <= myDomain->Curve.Max + theTol)
+          else if (aTminus >= myDomain->Curve.Min - theTol
+                   && aTminus <= myDomain->Curve.Max + theTol)
           {
             aT = aTminus;
           }
@@ -129,7 +130,7 @@ public:
 
       // Compute projection on plane
       const double aSignedDist = gp_Vec(myPlane.Location(), aElliPt).Dot(gp_Vec(aPlaneN));
-      const gp_Pnt aPlanePt = aElliPt.Translated(-aSignedDist * gp_Vec(aPlaneN));
+      const gp_Pnt aPlanePt    = aElliPt.Translated(-aSignedDist * gp_Vec(aPlaneN));
 
       // Get UV on plane
       double aU, aV;
@@ -163,8 +164,8 @@ public:
     // z(t) = d + a*cos(t)*(X.N) + b*sin(t)*(Y.N)
     // Let A = a*(X.N), B = b*(Y.N)
     // max of (A*cos(t) + B*sin(t)) is sqrt(A^2 + B^2)
-    const double aA = aMajor * aXdotN;
-    const double aB = aMinor * aYdotN;
+    const double aA         = aMajor * aXdotN;
+    const double aB         = aMinor * aYdotN;
     const double aAmplitude = std::sqrt(aA * aA + aB * aB);
 
     // Get domain bounds for filtering
@@ -183,8 +184,8 @@ public:
       // A*cos(t) + B*sin(t) + d = 0
       if (theMode != ExtremaCS::SearchMode::Max)
       {
-        MathRoot::TrigResult aTrigResult = MathRoot::TrigonometricCDE(aA, aB, aCenterDist,
-                                                                      aInfBound, aSupBound);
+        MathRoot::TrigResult aTrigResult =
+          MathRoot::TrigonometricCDE(aA, aB, aCenterDist, aInfBound, aSupBound);
         if (aTrigResult.IsDone())
         {
           for (int i = 0; i < aTrigResult.NbRoots; ++i)
@@ -202,8 +203,8 @@ public:
         const double aTmax1 = std::atan2(aMinor * aYdotN, aMajor * aXdotN);
         const double aTmax2 = aTmax1 + M_PI;
 
-        gp_Pnt aPt1 = ElCLib::Value(aTmax1, myEllipse);
-        gp_Pnt aPt2 = ElCLib::Value(aTmax2, myEllipse);
+        gp_Pnt aPt1   = ElCLib::Value(aTmax1, myEllipse);
+        gp_Pnt aPt2   = ElCLib::Value(aTmax2, myEllipse);
         double aDist1 = std::abs(gp_Vec(aPlaneP, aPt1).Dot(gp_Vec(aPlaneN)));
         double aDist2 = std::abs(gp_Vec(aPlaneP, aPt2).Dot(gp_Vec(aPlaneN)));
 
@@ -216,8 +217,8 @@ public:
       const double aT1 = std::atan2(aMinor * aYdotN, aMajor * aXdotN);
       const double aT2 = aT1 + M_PI;
 
-      gp_Pnt aPt1 = ElCLib::Value(aT1, myEllipse);
-      gp_Pnt aPt2 = ElCLib::Value(aT2, myEllipse);
+      gp_Pnt aPt1   = ElCLib::Value(aT1, myEllipse);
+      gp_Pnt aPt2   = ElCLib::Value(aT2, myEllipse);
       double aDist1 = std::abs(gp_Vec(aPlaneP, aPt1).Dot(gp_Vec(aPlaneN)));
       double aDist2 = std::abs(gp_Vec(aPlaneP, aPt2).Dot(gp_Vec(aPlaneN)));
 
@@ -234,8 +235,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

@@ -53,8 +53,8 @@ public:
   }
 
   //! Constructor with circle and sphere geometry and domain.
-  ExtremaCS_CircleSphere(const gp_Circ&                       theCircle,
-                         const gp_Sphere&                     theSphere,
+  ExtremaCS_CircleSphere(const gp_Circ&                            theCircle,
+                         const gp_Sphere&                          theSphere,
                          const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myCircle(theCircle),
         mySphere(theSphere),
@@ -73,14 +73,14 @@ public:
     myResult.Clear();
 
     const gp_Pnt& aCircCenter = myCircle.Location();
-    const gp_Dir& aCircleX = myCircle.XAxis().Direction();
-    const gp_Dir& aCircleY = myCircle.YAxis().Direction();
-    const gp_Pnt& aSphCenter = mySphere.Location();
-    const double aSphRadius = mySphere.Radius();
+    const gp_Dir& aCircleX    = myCircle.XAxis().Direction();
+    const gp_Dir& aCircleY    = myCircle.YAxis().Direction();
+    const gp_Pnt& aSphCenter  = mySphere.Location();
+    const double  aSphRadius  = mySphere.Radius();
 
     // Project sphere center onto circle plane
     const gp_Dir& aN = myCircle.Axis().Direction();
-    gp_Vec aCS(aCircCenter, aSphCenter);
+    gp_Vec        aCS(aCircCenter, aSphCenter);
 
     // Distance from sphere center to circle plane
     const double aDistToPlane = aCS.Dot(gp_Vec(aN));
@@ -89,7 +89,7 @@ public:
     gp_Pnt aProjCenter = aSphCenter.Translated(-aDistToPlane * gp_Vec(aN));
 
     // Vector from circle center to projected sphere center
-    gp_Vec aCP(aCircCenter, aProjCenter);
+    gp_Vec       aCP(aCircCenter, aProjCenter);
     const double aDistInPlane = aCP.Magnitude();
 
     // Check for concentric circles (sphere center on circle axis)
@@ -99,9 +99,10 @@ public:
       // Distance from any circle point to sphere center:
       // sqrt(circleRadius^2 + aDistToPlane^2)
       const double aCircleRadius = myCircle.Radius();
-      const double aDistToCenter = std::sqrt(aCircleRadius * aCircleRadius + aDistToPlane * aDistToPlane);
-      const double aDistToSurface = std::abs(aDistToCenter - aSphRadius);
-      myResult.Status = ExtremaCS::Status::InfiniteSolutions;
+      const double aDistToCenter =
+        std::sqrt(aCircleRadius * aCircleRadius + aDistToPlane * aDistToPlane);
+      const double aDistToSurface     = std::abs(aDistToCenter - aSphRadius);
+      myResult.Status                 = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aDistToSurface * aDistToSurface;
       return myResult;
     }
@@ -114,8 +115,8 @@ public:
     // We want t such that C(t) - CircCenter points toward ProjCenter
     const double aCosT = aCP.Dot(gp_Vec(aCircleX));
     const double aSinT = aCP.Dot(gp_Vec(aCircleY));
-    const double aT1 = std::atan2(aSinT, aCosT);
-    const double aT2 = aT1 + M_PI;
+    const double aT1   = std::atan2(aSinT, aCosT);
+    const double aT2   = aT1 + M_PI;
 
     // Helper to add extremum
     auto addExtremum = [this, &theTol, &aSphCenter, &aSphRadius](double theT, bool theIsMin) {
@@ -148,7 +149,7 @@ public:
       const gp_Pnt aCircPt = ElCLib::Value(aT, myCircle);
 
       // Direction from sphere center to circle point
-      gp_Vec aDir(aSphCenter, aCircPt);
+      gp_Vec       aDir(aSphCenter, aCircPt);
       const double aDist = aDir.Magnitude();
 
       gp_Pnt aSphPt;
@@ -199,8 +200,8 @@ public:
     // T1 is closest to projected center, T2 is farthest
     // But we need to check which gives min/max distance to sphere surface
 
-    gp_Pnt aPt1 = ElCLib::Value(aT1, myCircle);
-    gp_Pnt aPt2 = ElCLib::Value(aT2, myCircle);
+    gp_Pnt aPt1   = ElCLib::Value(aT1, myCircle);
+    gp_Pnt aPt2   = ElCLib::Value(aT2, myCircle);
     double aDist1 = aPt1.Distance(aSphCenter);
     double aDist2 = aPt2.Distance(aSphCenter);
 
@@ -232,8 +233,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

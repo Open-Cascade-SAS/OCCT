@@ -74,8 +74,8 @@ public:
   };
 
   //! Constructor with two curve evaluators and domain.
-  ExtremaCC_GridEvaluator2D(const Curve1Eval&           theCurve1,
-                            const Curve2Eval&           theCurve2,
+  ExtremaCC_GridEvaluator2D(const Curve1Eval&          theCurve1,
+                            const Curve2Eval&          theCurve2,
                             const ExtremaCC::Domain2D& theDomain)
       : myCurve1(theCurve1),
         myCurve2(theCurve2),
@@ -89,10 +89,10 @@ public:
   //! @param theCurve2 second curve evaluator
   //! @param theDomain parameter domain
   //! @param theGridSize number of samples per curve (clamped to [16, 256])
-  ExtremaCC_GridEvaluator2D(const Curve1Eval&           theCurve1,
-                            const Curve2Eval&           theCurve2,
+  ExtremaCC_GridEvaluator2D(const Curve1Eval&          theCurve1,
+                            const Curve2Eval&          theCurve2,
                             const ExtremaCC::Domain2D& theDomain,
-                            int                         theGridSize)
+                            int                        theGridSize)
       : myCurve1(theCurve1),
         myCurve2(theCurve2),
         myDomain(theDomain),
@@ -104,9 +104,7 @@ public:
   //! @param theResult result storage
   //! @param theTol tolerance
   //! @param theMode search mode
-  void Perform(ExtremaCC::Result&    theResult,
-               double                theTol,
-               ExtremaCC::SearchMode theMode) const
+  void Perform(ExtremaCC::Result& theResult, double theTol, ExtremaCC::SearchMode theMode) const
   {
     theResult.Clear();
 
@@ -147,12 +145,12 @@ private:
     // Use configurable grid size
     const int aNbSamples = myGridSize;
 
-    const double aU1Min  = myDomain.Curve1.Min;
-    const double aU1Max  = myDomain.Curve1.Max;
-    const double aU2Min  = myDomain.Curve2.Min;
-    const double aU2Max  = myDomain.Curve2.Max;
-    const double aStep1  = (aU1Max - aU1Min) / (aNbSamples - 1);
-    const double aStep2  = (aU2Max - aU2Min) / (aNbSamples - 1);
+    const double aU1Min = myDomain.Curve1.Min;
+    const double aU1Max = myDomain.Curve1.Max;
+    const double aU2Min = myDomain.Curve2.Min;
+    const double aU2Max = myDomain.Curve2.Max;
+    const double aStep1 = (aU1Max - aU1Min) / (aNbSamples - 1);
+    const double aStep2 = (aU2Max - aU2Min) / (aNbSamples - 1);
 
     myGrid1.Resize(0, aNbSamples - 1, false);
     myGrid2.Resize(0, aNbSamples - 1, false);
@@ -161,7 +159,8 @@ private:
     for (int i = 0; i < aNbSamples; ++i)
     {
       double aU = aU1Min + i * aStep1;
-      if (i == aNbSamples - 1) aU = aU1Max;
+      if (i == aNbSamples - 1)
+        aU = aU1Max;
 
       gp_Pnt aPt;
       gp_Vec aD1;
@@ -176,7 +175,8 @@ private:
     for (int i = 0; i < aNbSamples; ++i)
     {
       double aU = aU2Min + i * aStep2;
-      if (i == aNbSamples - 1) aU = aU2Max;
+      if (i == aNbSamples - 1)
+        aU = aU2Max;
 
       gp_Pnt aPt;
       gp_Vec aD1;
@@ -212,7 +212,7 @@ private:
     myMinDist = std::numeric_limits<double>::max();
     myMaxDist = -std::numeric_limits<double>::max();
     myMinI = myMinJ = myMaxI = myMaxJ = 0;
-    myHasZeroDist = false;
+    myHasZeroDist                     = false;
 
     // Tolerance for zero-distance detection (intersection)
     const double aZeroDistTol = theTol * theTol;
@@ -303,8 +303,8 @@ private:
         const double aTolRelSq = std::max(aTolFSq, aMinDist * 1.0e-4);
 
         // Check for near-zero gradient
-        bool aNearZero =
-          (aGrad00 < aTolRelSq) || (aGrad10 < aTolRelSq) || (aGrad01 < aTolRelSq) || (aGrad11 < aTolRelSq);
+        bool aNearZero = (aGrad00 < aTolRelSq) || (aGrad10 < aTolRelSq) || (aGrad01 < aTolRelSq)
+                         || (aGrad11 < aTolRelSq);
 
         bool aAddCandidate = aNearZero;
 
@@ -349,13 +349,13 @@ private:
           const double aDist = myGridData(i, j).Dist;
 
           // Check if this is a local minimum in distance (8-neighbor check)
-          const bool aIsLocalMin = aDist < myGridData(i - 1, j).Dist     // left
-                                   && aDist < myGridData(i + 1, j).Dist  // right
-                                   && aDist < myGridData(i, j - 1).Dist  // down
-                                   && aDist < myGridData(i, j + 1).Dist  // up
-                                   && aDist < myGridData(i - 1, j - 1).Dist  // bottom-left diagonal
-                                   && aDist < myGridData(i + 1, j - 1).Dist  // bottom-right diagonal
-                                   && aDist < myGridData(i - 1, j + 1).Dist  // top-left diagonal
+          const bool aIsLocalMin = aDist < myGridData(i - 1, j).Dist        // left
+                                   && aDist < myGridData(i + 1, j).Dist     // right
+                                   && aDist < myGridData(i, j - 1).Dist     // down
+                                   && aDist < myGridData(i, j + 1).Dist     // up
+                                   && aDist < myGridData(i - 1, j - 1).Dist // bottom-left diagonal
+                                   && aDist < myGridData(i + 1, j - 1).Dist // bottom-right diagonal
+                                   && aDist < myGridData(i - 1, j + 1).Dist // top-left diagonal
                                    && aDist < myGridData(i + 1, j + 1).Dist; // top-right diagonal
 
           if (aIsLocalMin)
@@ -457,7 +457,7 @@ private:
 
     for (int s = 0; s < mySortedEntries.Length(); ++s)
     {
-      const SortEntry&  anEntry = mySortedEntries.Value(s);
+      const SortEntry& anEntry = mySortedEntries.Value(s);
       const Candidate& aCand   = myCandidates.Value(anEntry.Idx);
 
       // Newton bounds from grid cell (with small expansion)
@@ -475,13 +475,13 @@ private:
 
       // Newton iteration using MathSys::Newton2DSymmetric directly
       MathSys::Newton2DResult aNewtonRes = MathSys::Newton2DSymmetric(aFunc,
-                                                                       aCand.StartU1,
-                                                                       aCand.StartU2,
-                                                                       aCellU1Min,
-                                                                       aCellU1Max,
-                                                                       aCellU2Min,
-                                                                       aCellU2Max,
-                                                                       theTol);
+                                                                      aCand.StartU1,
+                                                                      aCand.StartU2,
+                                                                      aCellU1Min,
+                                                                      aCellU1Max,
+                                                                      aCellU2Min,
+                                                                      aCellU2Max,
+                                                                      theTol);
 
       double aRootU1    = 0.0;
       double aRootU2    = 0.0;
@@ -671,13 +671,14 @@ private:
     // Run Powell optimization
     MathUtils::VectorResult aResult = MathOpt::Powell(aWrapper, aStart, aConfig);
 
-    if ((aResult.Status == MathUtils::Status::OK || aResult.Status == MathUtils::Status::MaxIterations)
+    if ((aResult.Status == MathUtils::Status::OK
+         || aResult.Status == MathUtils::Status::MaxIterations)
         && aResult.Solution.has_value())
     {
       // Clamp result to bounds
       const math_Vector& aSol = aResult.Solution.value();
-      theRootU1 = std::max(theU1Min, std::min(theU1Max, aSol(1)));
-      theRootU2 = std::max(theU2Min, std::min(theU2Max, aSol(2)));
+      theRootU1               = std::max(theU1Min, std::min(theU1Max, aSol(1)));
+      theRootU2               = std::max(theU2Min, std::min(theU2Max, aSol(2)));
 
       // Verify that we found a valid extremum by checking gradient
       double aF1, aF2;
@@ -710,13 +711,13 @@ private:
     // Try Newton refinement from the best grid point
     ExtremaCC_DistanceFunction<Curve1Eval, Curve2Eval> aFunc(myCurve1, myCurve2);
     MathSys::Newton2DResult aNewtonRes = MathSys::Newton2DSymmetric(aFunc,
-                                                                     aGridMinU1,
-                                                                     aGridMinU2,
-                                                                     myDomain.Curve1.Min,
-                                                                     myDomain.Curve1.Max,
-                                                                     myDomain.Curve2.Min,
-                                                                     myDomain.Curve2.Max,
-                                                                     theTol);
+                                                                    aGridMinU1,
+                                                                    aGridMinU2,
+                                                                    myDomain.Curve1.Min,
+                                                                    myDomain.Curve1.Max,
+                                                                    myDomain.Curve2.Min,
+                                                                    myDomain.Curve2.Max,
+                                                                    theTol);
 
     double aRefinedU1   = aGridMinU1;
     double aRefinedU2   = aGridMinU2;
@@ -765,24 +766,24 @@ private:
   }
 
 private:
-  const Curve1Eval&   myCurve1;  //!< First curve evaluator
-  const Curve2Eval&   myCurve2;  //!< Second curve evaluator
-  ExtremaCC::Domain2D myDomain;  //!< Parameter domain
+  const Curve1Eval&   myCurve1;   //!< First curve evaluator
+  const Curve2Eval&   myCurve2;   //!< Second curve evaluator
+  ExtremaCC::Domain2D myDomain;   //!< Parameter domain
   int                 myGridSize; //!< Grid resolution (samples per curve)
 
   // Mutable cached temporaries
-  mutable NCollection_Array1<CurvePoint>              myGrid1;         //!< Cached grid for first curve
-  mutable NCollection_Array1<CurvePoint>              myGrid2;         //!< Cached grid for second curve
-  mutable NCollection_Vector<Candidate>               myCandidates;    //!< Candidates from grid
-  mutable NCollection_Vector<std::pair<double, double>> myFoundRoots;  //!< Found roots for dedup
-  mutable NCollection_Vector<SortEntry>               mySortedEntries; //!< Sorted candidates
-  mutable NCollection_Array2<GridCellData>            myGridData;      //!< Pre-computed F1/F2/Dist
+  mutable NCollection_Array1<CurvePoint>                myGrid1; //!< Cached grid for first curve
+  mutable NCollection_Array1<CurvePoint>                myGrid2; //!< Cached grid for second curve
+  mutable NCollection_Vector<Candidate>                 myCandidates;    //!< Candidates from grid
+  mutable NCollection_Vector<std::pair<double, double>> myFoundRoots;    //!< Found roots for dedup
+  mutable NCollection_Vector<SortEntry>                 mySortedEntries; //!< Sorted candidates
+  mutable NCollection_Array2<GridCellData>              myGridData; //!< Pre-computed F1/F2/Dist
 
   // Cached global min/max indices from last scanGrid
   mutable int    myMinI = 0, myMinJ = 0;
   mutable int    myMaxI = 0, myMaxJ = 0;
-  mutable double myMinDist = 0.0;
-  mutable double myMaxDist = 0.0;
+  mutable double myMinDist     = 0.0;
+  mutable double myMaxDist     = 0.0;
   mutable bool   myHasZeroDist = false; //!< True if intersection found during grid scan
 };
 

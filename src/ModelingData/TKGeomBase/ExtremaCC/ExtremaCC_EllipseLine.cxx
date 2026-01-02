@@ -32,8 +32,8 @@ ExtremaCC_EllipseLine::ExtremaCC_EllipseLine(const gp_Elips& theEllipse, const g
 
 //==================================================================================================
 
-ExtremaCC_EllipseLine::ExtremaCC_EllipseLine(const gp_Elips&             theEllipse,
-                                             const gp_Lin&               theLine,
+ExtremaCC_EllipseLine::ExtremaCC_EllipseLine(const gp_Elips&            theEllipse,
+                                             const gp_Lin&              theLine,
                                              const ExtremaCC::Domain2D& theDomain)
     : myEllipse(theEllipse),
       myLine(theLine),
@@ -86,21 +86,27 @@ const ExtremaCC::Result& ExtremaCC_EllipseLine::Perform(double                th
   double aA4 = -aMajR * aVxyz.X();
 
   // Clean up near-zero coefficients
-  if (std::abs(aA1) <= aCoefTol) aA1 = 0.0;
-  if (std::abs(aA2) <= aCoefTol) aA2 = 0.0;
-  if (std::abs(aA3) <= aCoefTol) aA3 = 0.0;
-  if (std::abs(aA4) <= aCoefTol) aA4 = 0.0;
-  if (std::abs(aA5) <= aCoefTol) aA5 = 0.0;
+  if (std::abs(aA1) <= aCoefTol)
+    aA1 = 0.0;
+  if (std::abs(aA2) <= aCoefTol)
+    aA2 = 0.0;
+  if (std::abs(aA3) <= aCoefTol)
+    aA3 = 0.0;
+  if (std::abs(aA4) <= aCoefTol)
+    aA4 = 0.0;
+  if (std::abs(aA5) <= aCoefTol)
+    aA5 = 0.0;
 
   // Solve using MathRoot::Trigonometric (modern solver)
-  MathRoot::TrigResult aSolverResult = MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
+  MathRoot::TrigResult aSolverResult =
+    MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
 
   if (!aSolverResult.IsDone())
   {
     if (aSolverResult.InfiniteRoots)
     {
-      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
-      const gp_Pnt aP = ElCLib::Value(0.0, myEllipse);
+      myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
+      const gp_Pnt aP                 = ElCLib::Value(0.0, myEllipse);
       myResult.InfiniteSquareDistance = myLine.SquareDistance(aP);
       return myResult;
     }
@@ -111,8 +117,8 @@ const ExtremaCC::Result& ExtremaCC_EllipseLine::Perform(double                th
   if (aSolverResult.InfiniteRoots)
   {
     // Parallel case - infinite solutions
-    myResult.Status = ExtremaCC::Status::InfiniteSolutions;
-    const gp_Pnt aP = ElCLib::Value(0.0, myEllipse);
+    myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
+    const gp_Pnt aP                 = ElCLib::Value(0.0, myEllipse);
     myResult.InfiniteSquareDistance = myLine.SquareDistance(aP);
     return myResult;
   }
@@ -158,10 +164,10 @@ void ExtremaCC_EllipseLine::addSolution(double theU1, double theU2, double theTo
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -182,8 +188,8 @@ void ExtremaCC_EllipseLine::addSolution(double theU1, double theU2, double theTo
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

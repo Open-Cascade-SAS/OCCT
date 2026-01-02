@@ -241,7 +241,7 @@ TEST_F(ExtremaCC_CircleCircleTest, PartialArcs_BothQuarter)
   gp_Circ aCircle2(gp_Ax2(gp_Pnt(30, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
   // First quadrant arcs only
-  ExtremaCC::Domain2D aDomain{{0.0, THE_PI / 2.0}, {THE_PI / 2.0, THE_PI}};
+  ExtremaCC::Domain2D    aDomain{{0.0, THE_PI / 2.0}, {THE_PI / 2.0, THE_PI}};
   ExtremaCC_CircleCircle anExtrema(aCircle1, aCircle2, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -310,4 +310,3 @@ TEST_F(ExtremaCC_CircleCircleTest, VerifyDistanceConsistency)
   EXPECT_NEAR(aResult.MinSquareDistance(), aResult[aMinIdx].SquareDistance, THE_TOL);
   EXPECT_NEAR(aResult.MaxSquareDistance(), aResult[aMaxIdx].SquareDistance, THE_TOL);
 }
-

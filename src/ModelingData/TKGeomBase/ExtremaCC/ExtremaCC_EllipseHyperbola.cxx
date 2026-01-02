@@ -31,8 +31,8 @@ ExtremaCC_EllipseHyperbola::ExtremaCC_EllipseHyperbola(const gp_Elips& theEllips
 
 //==================================================================================================
 
-ExtremaCC_EllipseHyperbola::ExtremaCC_EllipseHyperbola(const gp_Elips&             theEllipse,
-                                                       const gp_Hypr&              theHyperbola,
+ExtremaCC_EllipseHyperbola::ExtremaCC_EllipseHyperbola(const gp_Elips&            theEllipse,
+                                                       const gp_Hypr&             theHyperbola,
                                                        const ExtremaCC::Domain2D& theDomain)
     : myEllipse(theEllipse),
       myHyperbola(theHyperbola),

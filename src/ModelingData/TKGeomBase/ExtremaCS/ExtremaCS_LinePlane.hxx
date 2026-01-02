@@ -52,8 +52,8 @@ public:
   }
 
   //! Constructor with line and plane geometry and domain.
-  ExtremaCS_LinePlane(const gp_Lin&                        theLine,
-                      const gp_Pln&                        thePlane,
+  ExtremaCS_LinePlane(const gp_Lin&                             theLine,
+                      const gp_Pln&                             thePlane,
                       const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myLine(theLine),
         myPlane(thePlane),
@@ -80,17 +80,17 @@ public:
     if (std::abs(aDotDN) < ExtremaCS::THE_PARALLEL_TOLERANCE)
     {
       // Line parallel to plane - infinite solutions at constant distance
-      const gp_Pnt& aLineP = myLine.Location();
+      const gp_Pnt& aLineP  = myLine.Location();
       const gp_Pnt& aPlaneP = myPlane.Location();
 
-      const double aSignedDist = gp_Vec(aPlaneP, aLineP).Dot(gp_Vec(aPlaneNor));
-      myResult.Status = ExtremaCS::Status::InfiniteSolutions;
+      const double aSignedDist        = gp_Vec(aPlaneP, aLineP).Dot(gp_Vec(aPlaneNor));
+      myResult.Status                 = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aSignedDist * aSignedDist;
       return myResult;
     }
 
     // Line intersects plane - find intersection point
-    const gp_Pnt& aLineP = myLine.Location();
+    const gp_Pnt& aLineP  = myLine.Location();
     const gp_Pnt& aPlaneP = myPlane.Location();
 
     // t = (PlaneP - LineP) . N / (D . N)

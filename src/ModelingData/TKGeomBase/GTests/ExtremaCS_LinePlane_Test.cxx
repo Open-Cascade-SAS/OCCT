@@ -37,7 +37,7 @@ TEST_F(ExtremaCS_LinePlaneTest, Intersection_AtOrigin)
   gp_Lin aLine(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -56,7 +56,7 @@ TEST_F(ExtremaCS_LinePlaneTest, Intersection_OffOrigin)
   gp_Lin aLine(gp_Pnt(5, 3, -10), gp_Dir(0, 0, 1));
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -75,7 +75,7 @@ TEST_F(ExtremaCS_LinePlaneTest, Intersection_Oblique)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 1));
   gp_Pln aPlane(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1)); // Plane at Z=5
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -93,10 +93,10 @@ TEST_F(ExtremaCS_LinePlaneTest, Intersection_Oblique)
 
 TEST_F(ExtremaCS_LinePlaneTest, Parallel_AbovePlane)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0)); // Line at Z=5
+  gp_Lin aLine(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0));  // Line at Z=5
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -109,7 +109,7 @@ TEST_F(ExtremaCS_LinePlaneTest, Parallel_BelowPlane)
   gp_Lin aLine(gp_Pnt(0, 0, -3), gp_Dir(1, 1, 0)); // Line at Z=-3
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -118,10 +118,10 @@ TEST_F(ExtremaCS_LinePlaneTest, Parallel_BelowPlane)
 
 TEST_F(ExtremaCS_LinePlaneTest, Parallel_InPlane)
 {
-  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // Line in XY plane
+  gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));  // Line in XY plane
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -138,10 +138,10 @@ TEST_F(ExtremaCS_LinePlaneTest, Domain_IntersectionInside)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 10.0};
+  aDomain.Curve   = {0.0, 10.0};
   aDomain.Surface = {-10.0, 10.0, -10.0, 10.0};
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane, aDomain);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -156,10 +156,10 @@ TEST_F(ExtremaCS_LinePlaneTest, Domain_IntersectionOutside)
 
   // Domain excludes intersection point (t=5 is outside [0,3])
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 3.0};
+  aDomain.Curve   = {0.0, 3.0};
   aDomain.Surface = {-10.0, 10.0, -10.0, 10.0};
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane, aDomain);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   // No solution within domain
@@ -175,7 +175,7 @@ TEST_F(ExtremaCS_LinePlaneTest, SurfaceParameters_Verify)
   gp_Lin aLine(gp_Pnt(3, 4, -5), gp_Dir(0, 0, 1));
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -195,7 +195,7 @@ TEST_F(ExtremaCS_LinePlaneTest, SearchMode_MinOnly)
   gp_Lin aLine(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_LinePlane anExtrema(aLine, aPlane);
+  ExtremaCS_LinePlane      anExtrema(aLine, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());

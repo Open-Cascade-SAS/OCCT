@@ -137,12 +137,12 @@ enum class SearchMode
 //! Result of a single extremum computation between two curves.
 struct ExtremumResult
 {
-  double Parameter1      = 0.0;  //!< Parameter value on first curve
-  double Parameter2      = 0.0;  //!< Parameter value on second curve
-  gp_Pnt Point1;                 //!< Point on first curve at Parameter1
-  gp_Pnt Point2;                 //!< Point on second curve at Parameter2
-  double SquareDistance  = 0.0;  //!< Square of the distance between Point1 and Point2
-  bool   IsMinimum       = true; //!< True if this is a local minimum, false if maximum
+  double Parameter1 = 0.0;      //!< Parameter value on first curve
+  double Parameter2 = 0.0;      //!< Parameter value on second curve
+  gp_Pnt Point1;                //!< Point on first curve at Parameter1
+  gp_Pnt Point2;                //!< Point on second curve at Parameter2
+  double SquareDistance = 0.0;  //!< Square of the distance between Point1 and Point2
+  bool   IsMinimum      = true; //!< True if this is a local minimum, false if maximum
 };
 
 //! Result of extrema computation containing all found extrema.
@@ -271,11 +271,11 @@ struct Result
 //! Configuration for extrema computation.
 struct Config
 {
-  double                  Tolerance   = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
-  std::optional<Domain2D> Domain;           //!< Parameter domain (nullopt = use natural bounds)
-  int                     NbSamples1  = 32; //!< Number of samples for first curve
-  int                     NbSamples2  = 32; //!< Number of samples for second curve
-  SearchMode              Mode        = SearchMode::MinMax; //!< Search mode
+  double                  Tolerance = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
+  std::optional<Domain2D> Domain; //!< Parameter domain (nullopt = use natural bounds)
+  int                     NbSamples1       = 32; //!< Number of samples for first curve
+  int                     NbSamples2       = 32; //!< Number of samples for second curve
+  SearchMode              Mode             = SearchMode::MinMax; //!< Search mode
   bool                    IncludeEndpoints = true; //!< Include endpoints as potential extrema
 };
 
@@ -301,12 +301,12 @@ struct Config
 //! @param theTol tolerance for duplicate detection
 //! @param theMode search mode
 template <typename Curve1Eval, typename Curve2Eval>
-inline void AddEndpointExtrema(Result&          theResult,
-                               const Domain2D&  theDomain,
+inline void AddEndpointExtrema(Result&           theResult,
+                               const Domain2D&   theDomain,
                                const Curve1Eval& theEval1,
                                const Curve2Eval& theEval2,
-                               double           theTol,
-                               SearchMode       theMode)
+                               double            theTol,
+                               SearchMode        theMode)
 {
   if (!theDomain.IsFinite())
   {
@@ -323,8 +323,8 @@ inline void AddEndpointExtrema(Result&          theResult,
     for (int i = 0; i < theResult.Extrema.Length(); ++i)
     {
       const ExtremumResult& anExt = theResult.Extrema.Value(i);
-      if (std::abs(anExt.Parameter1 - theU1) < theTol &&
-          std::abs(anExt.Parameter2 - theU2) < theTol)
+      if (std::abs(anExt.Parameter1 - theU1) < theTol
+          && std::abs(anExt.Parameter2 - theU2) < theTol)
       {
         return true;
       }
@@ -360,15 +360,15 @@ inline void AddEndpointExtrema(Result&          theResult,
   // Check corners of the domain rectangle
   // Corner: (u1_min, u2_min)
   {
-    gp_Pnt aP1 = theEval1.Value(aU1Min);
-    gp_Pnt aP2 = theEval2.Value(aU2Min);
+    gp_Pnt aP1     = theEval1.Value(aU1Min);
+    gp_Pnt aP2     = theEval2.Value(aU2Min);
     double aSqDist = aP1.SquareDistance(aP2);
 
     // Compare with neighbors to determine if this is min/max
-    double aStep1 = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
-    double aStep2 = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
-    gp_Pnt aNeighbor1 = theEval1.Value(aU1Min + aStep1);
-    gp_Pnt aNeighbor2 = theEval2.Value(aU2Min + aStep2);
+    double aStep1        = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
+    double aStep2        = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
+    gp_Pnt aNeighbor1    = theEval1.Value(aU1Min + aStep1);
+    gp_Pnt aNeighbor2    = theEval2.Value(aU2Min + aStep2);
     double aNeighborDist = aNeighbor1.SquareDistance(aNeighbor2);
 
     if (aSqDist <= aNeighborDist)
@@ -383,14 +383,14 @@ inline void AddEndpointExtrema(Result&          theResult,
 
   // Corner: (u1_min, u2_max)
   {
-    gp_Pnt aP1 = theEval1.Value(aU1Min);
-    gp_Pnt aP2 = theEval2.Value(aU2Max);
+    gp_Pnt aP1     = theEval1.Value(aU1Min);
+    gp_Pnt aP2     = theEval2.Value(aU2Max);
     double aSqDist = aP1.SquareDistance(aP2);
 
-    double aStep1 = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
-    double aStep2 = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
-    gp_Pnt aNeighbor1 = theEval1.Value(aU1Min + aStep1);
-    gp_Pnt aNeighbor2 = theEval2.Value(aU2Max - aStep2);
+    double aStep1        = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
+    double aStep2        = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
+    gp_Pnt aNeighbor1    = theEval1.Value(aU1Min + aStep1);
+    gp_Pnt aNeighbor2    = theEval2.Value(aU2Max - aStep2);
     double aNeighborDist = aNeighbor1.SquareDistance(aNeighbor2);
 
     if (aSqDist <= aNeighborDist)
@@ -405,14 +405,14 @@ inline void AddEndpointExtrema(Result&          theResult,
 
   // Corner: (u1_max, u2_min)
   {
-    gp_Pnt aP1 = theEval1.Value(aU1Max);
-    gp_Pnt aP2 = theEval2.Value(aU2Min);
+    gp_Pnt aP1     = theEval1.Value(aU1Max);
+    gp_Pnt aP2     = theEval2.Value(aU2Min);
     double aSqDist = aP1.SquareDistance(aP2);
 
-    double aStep1 = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
-    double aStep2 = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
-    gp_Pnt aNeighbor1 = theEval1.Value(aU1Max - aStep1);
-    gp_Pnt aNeighbor2 = theEval2.Value(aU2Min + aStep2);
+    double aStep1        = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
+    double aStep2        = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
+    gp_Pnt aNeighbor1    = theEval1.Value(aU1Max - aStep1);
+    gp_Pnt aNeighbor2    = theEval2.Value(aU2Min + aStep2);
     double aNeighborDist = aNeighbor1.SquareDistance(aNeighbor2);
 
     if (aSqDist <= aNeighborDist)
@@ -427,14 +427,14 @@ inline void AddEndpointExtrema(Result&          theResult,
 
   // Corner: (u1_max, u2_max)
   {
-    gp_Pnt aP1 = theEval1.Value(aU1Max);
-    gp_Pnt aP2 = theEval2.Value(aU2Max);
+    gp_Pnt aP1     = theEval1.Value(aU1Max);
+    gp_Pnt aP2     = theEval2.Value(aU2Max);
     double aSqDist = aP1.SquareDistance(aP2);
 
-    double aStep1 = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
-    double aStep2 = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
-    gp_Pnt aNeighbor1 = theEval1.Value(aU1Max - aStep1);
-    gp_Pnt aNeighbor2 = theEval2.Value(aU2Max - aStep2);
+    double aStep1        = (aU1Max - aU1Min) * THE_NEIGHBOR_STEP_RATIO;
+    double aStep2        = (aU2Max - aU2Min) * THE_NEIGHBOR_STEP_RATIO;
+    gp_Pnt aNeighbor1    = theEval1.Value(aU1Max - aStep1);
+    gp_Pnt aNeighbor2    = theEval2.Value(aU2Max - aStep2);
     double aNeighborDist = aNeighbor1.SquareDistance(aNeighbor2);
 
     if (aSqDist <= aNeighborDist)
@@ -464,21 +464,21 @@ inline void AddEndpointExtrema(Result&          theResult,
 //! @param theTol tolerance for bounds and duplicate detection
 //! @return true if solution was added, false if outside domain or duplicate
 template <typename Curve1Eval, typename Curve2Eval>
-inline bool AddSolutionIfValid(Result&                             theResult,
-                               double                              theU1,
-                               double                              theU2,
-                               const Curve1Eval&                   theEval1,
-                               const Curve2Eval&                   theEval2,
-                               const std::optional<Domain2D>&      theDomain,
-                               double                              theTol)
+inline bool AddSolutionIfValid(Result&                        theResult,
+                               double                         theU1,
+                               double                         theU2,
+                               const Curve1Eval&              theEval1,
+                               const Curve2Eval&              theEval2,
+                               const std::optional<Domain2D>& theDomain,
+                               double                         theTol)
 {
   // Check bounds if domain is specified
   if (theDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < theDomain->Curve1.Min - theTol) ||
-                           (theU1 > theDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < theDomain->Curve2.Min - theTol) ||
-                           (theU2 > theDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < theDomain->Curve1.Min - theTol) || (theU1 > theDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < theDomain->Curve2.Min - theTol) || (theU2 > theDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -499,8 +499,8 @@ inline bool AddSolutionIfValid(Result&                             theResult,
   for (int i = 0; i < theResult.Extrema.Length(); ++i)
   {
     const ExtremumResult& anExt = theResult.Extrema.Value(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return false; // Duplicate
     }

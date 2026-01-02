@@ -52,8 +52,8 @@ public:
   }
 
   //! Constructor with line and cylinder geometry and domain.
-  ExtremaCS_LineCylinder(const gp_Lin&                        theLine,
-                         const gp_Cylinder&                   theCylinder,
+  ExtremaCS_LineCylinder(const gp_Lin&                             theLine,
+                         const gp_Cylinder&                        theCylinder,
                          const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myLine(theLine),
         myCylinder(theCylinder),
@@ -71,12 +71,12 @@ public:
   {
     myResult.Clear();
 
-    const gp_Pnt& aLineP = myLine.Location();
-    const gp_Dir& aLineD = myLine.Direction();
+    const gp_Pnt& aLineP   = myLine.Location();
+    const gp_Dir& aLineD   = myLine.Direction();
     const gp_Ax3& aCylAxis = myCylinder.Position();
-    const gp_Pnt& aCylP = aCylAxis.Location();
-    const gp_Dir& aCylD = aCylAxis.Direction();
-    const double aRadius = myCylinder.Radius();
+    const gp_Pnt& aCylP    = aCylAxis.Location();
+    const gp_Dir& aCylD    = aCylAxis.Direction();
+    const double  aRadius  = myCylinder.Radius();
 
     // Compute line-axis relationship
     const double aDotDD = aLineD.Dot(aCylD);
@@ -87,10 +87,10 @@ public:
     {
       // Line parallel to axis - infinite solutions at constant distance
       // Project line onto plane perpendicular to axis
-      const double aDistToAxis = aPC.Crossed(gp_Vec(aCylD)).Magnitude();
+      const double aDistToAxis    = aPC.Crossed(gp_Vec(aCylD)).Magnitude();
       const double aDistToSurface = std::abs(aDistToAxis - aRadius);
 
-      myResult.Status = ExtremaCS::Status::InfiniteSolutions;
+      myResult.Status                 = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aDistToSurface * aDistToSurface;
       return myResult;
     }
@@ -103,12 +103,12 @@ public:
     // From the system of equations:
     // t - s*(D.E) = (Q-P).D
     // s - t*(D.E) = (P-Q).E
-    const double aA = 1.0;
-    const double aB = -aDotDD;
-    const double aC = -aDotDD;
+    const double aA      = 1.0;
+    const double aB      = -aDotDD;
+    const double aC      = -aDotDD;
     const double aD_coef = 1.0;
-    const double aE1 = aPC.Dot(gp_Vec(aLineD));
-    const double aE2 = -aPC.Dot(gp_Vec(aCylD));
+    const double aE1     = aPC.Dot(gp_Vec(aLineD));
+    const double aE2     = -aPC.Dot(gp_Vec(aCylD));
 
     const double aDet = aA * aD_coef - aB * aC;
     if (std::abs(aDet) < 1.0e-15)
@@ -138,7 +138,7 @@ public:
     const gp_Pnt aAxisPt = aCylP.Translated(aS * gp_Vec(aCylD));
 
     // Direction from axis to line point (radial direction)
-    gp_Vec aRadialDir(aAxisPt, aLinePt);
+    gp_Vec       aRadialDir(aAxisPt, aLinePt);
     const double aDistToAxis = aRadialDir.Magnitude();
 
     if (aDistToAxis < Precision::Confusion())
@@ -154,11 +154,12 @@ public:
 
     // Helper to add extremum
     auto addExtremum = [this, &aCylP, &aCylD, &aS, &theTol](const gp_Pnt& theLinePt,
-                                                             double theT,
-                                                             const gp_Vec& theRadialDir,
-                                                             bool theIsMin) {
+                                                            double        theT,
+                                                            const gp_Vec& theRadialDir,
+                                                            bool          theIsMin) {
       // Point on cylinder surface
-      const gp_Pnt aCylPt = aCylP.Translated(aS * gp_Vec(aCylD) + myCylinder.Radius() * theRadialDir);
+      const gp_Pnt aCylPt =
+        aCylP.Translated(aS * gp_Vec(aCylD) + myCylinder.Radius() * theRadialDir);
 
       // Get UV on cylinder
       double aU, aV;
@@ -215,8 +216,8 @@ public:
       addExtremum(aLinePt, aT, -aRadialDir, false);
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

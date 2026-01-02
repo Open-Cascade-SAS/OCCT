@@ -32,8 +32,8 @@ ExtremaCC_LineParabola::ExtremaCC_LineParabola(const gp_Lin& theLine, const gp_P
 
 //==================================================================================================
 
-ExtremaCC_LineParabola::ExtremaCC_LineParabola(const gp_Lin&               theLine,
-                                               const gp_Parab&             theParabola,
+ExtremaCC_LineParabola::ExtremaCC_LineParabola(const gp_Lin&              theLine,
+                                               const gp_Parab&            theParabola,
                                                const ExtremaCC::Domain2D& theDomain)
     : myLine(theLine),
       myParabola(theParabola),
@@ -135,10 +135,10 @@ void ExtremaCC_LineParabola::addSolution(double theU1, double theU2, double theT
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -159,8 +159,8 @@ void ExtremaCC_LineParabola::addSolution(double theU1, double theU2, double theT
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

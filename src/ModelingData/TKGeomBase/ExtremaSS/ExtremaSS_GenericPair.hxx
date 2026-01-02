@@ -132,9 +132,9 @@ private:
   bool                               mySwapped;
 
   // Mutable cached data for grid-based computation
-  mutable NCollection_Array2<SurfaceGridPoint>                    myGrid1;
-  mutable NCollection_Array2<SurfaceGridPoint>                    myGrid2;
-  mutable NCollection_Vector<Candidate4D>                         myCandidates;
+  mutable NCollection_Array2<SurfaceGridPoint>                           myGrid1;
+  mutable NCollection_Array2<SurfaceGridPoint>                           myGrid2;
+  mutable NCollection_Vector<Candidate4D>                                myCandidates;
   mutable NCollection_Vector<std::tuple<double, double, double, double>> myFoundRoots;
 };
 

@@ -208,7 +208,8 @@ Newton3DResult Newton3D(const Function& theFunc,
     else
     {
       // Limit step size to prevent wild oscillations
-      const double aStepNormSq = aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1] + aDelta[2] * aDelta[2];
+      const double aStepNormSq =
+        aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1] + aDelta[2] * aDelta[2];
       if (aStepNormSq > aMaxStep * aMaxStep)
       {
         const double aScale = aMaxStep / std::sqrt(aStepNormSq);
@@ -266,7 +267,18 @@ Newton3DResult Newton3D(const Function& theFunc,
                         size_t          theMaxIter = 20)
 {
   constexpr double aInf = 1.0e100;
-  return Newton3D(theFunc, theX1_0, theX2_0, theX3_0, -aInf, aInf, -aInf, aInf, -aInf, aInf, theTol, theMaxIter);
+  return Newton3D(theFunc,
+                  theX1_0,
+                  theX2_0,
+                  theX3_0,
+                  -aInf,
+                  aInf,
+                  -aInf,
+                  aInf,
+                  -aInf,
+                  aInf,
+                  theTol,
+                  theMaxIter);
 }
 
 //! Optimized 3D Newton solver for Curve-Surface extrema.
@@ -310,10 +322,10 @@ Newton3DResult Newton3DCurveSurface(const CurveEvaluator&   theCurve,
 {
   // Lambda that computes F and J for curve-surface extrema
   auto aFunc = [&theCurve, &theSurface](double theT,
-                                         double theU,
-                                         double theV,
-                                         double theF[3],
-                                         double theJ[3][3]) -> bool {
+                                        double theU,
+                                        double theV,
+                                        double theF[3],
+                                        double theJ[3][3]) -> bool {
     gp_Pnt aPtC, aPtS;
     gp_Vec aD1C, aD2C;
     gp_Vec aD1U, aD1V, aD2UU, aD2VV, aD2UV;

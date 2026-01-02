@@ -36,10 +36,10 @@ protected:
 TEST_F(ExtremaCS_LineSphereTest, ThroughCenter_XAxis)
 {
   // Line passing through sphere center along X axis
-  gp_Lin aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -52,10 +52,10 @@ TEST_F(ExtremaCS_LineSphereTest, ThroughCenter_XAxis)
 TEST_F(ExtremaCS_LineSphereTest, ThroughCenter_Oblique)
 {
   // Line passing through sphere center at 45 degrees
-  gp_Lin aLine(gp_Pnt(-10, -10, 0), gp_Dir(1, 1, 0));
+  gp_Lin    aLine(gp_Pnt(-10, -10, 0), gp_Dir(1, 1, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -72,10 +72,10 @@ TEST_F(ExtremaCS_LineSphereTest, ThroughCenter_Oblique)
 TEST_F(ExtremaCS_LineSphereTest, Tangent_AtEquator)
 {
   // Line tangent to sphere at (5, 0, 0)
-  gp_Lin aLine(gp_Pnt(5, -10, 0), gp_Dir(0, 1, 0));
+  gp_Lin    aLine(gp_Pnt(5, -10, 0), gp_Dir(0, 1, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -88,10 +88,10 @@ TEST_F(ExtremaCS_LineSphereTest, Tangent_AtEquator)
 TEST_F(ExtremaCS_LineSphereTest, Tangent_AtPole)
 {
   // Line tangent to sphere at north pole (0, 0, 5)
-  gp_Lin aLine(gp_Pnt(-10, 0, 5), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 5), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -108,10 +108,10 @@ TEST_F(ExtremaCS_LineSphereTest, Tangent_AtPole)
 TEST_F(ExtremaCS_LineSphereTest, External_ParallelToAxis)
 {
   // Line at Y=8, parallel to X axis, sphere radius 5
-  gp_Lin aLine(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -124,10 +124,10 @@ TEST_F(ExtremaCS_LineSphereTest, External_ParallelToAxis)
 TEST_F(ExtremaCS_LineSphereTest, External_AboveSphere)
 {
   // Line at Z=10, parallel to X axis, sphere radius 5
-  gp_Lin aLine(gp_Pnt(-10, 0, 10), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 10), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -140,10 +140,10 @@ TEST_F(ExtremaCS_LineSphereTest, External_AboveSphere)
 TEST_F(ExtremaCS_LineSphereTest, External_Oblique)
 {
   // Line at distance from sphere
-  gp_Lin aLine(gp_Pnt(10, 10, 0), gp_Dir(0, 0, 1));
+  gp_Lin    aLine(gp_Pnt(10, 10, 0), gp_Dir(0, 0, 1));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -162,10 +162,10 @@ TEST_F(ExtremaCS_LineSphereTest, External_Oblique)
 TEST_F(ExtremaCS_LineSphereTest, Intersection_TwoPoints)
 {
   // Line passing through sphere, not through center
-  gp_Lin aLine(gp_Pnt(-10, 3, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 3, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -180,8 +180,8 @@ TEST_F(ExtremaCS_LineSphereTest, Intersection_TwoPoints)
   // t values should be 10-4=6 and 10+4=14 (line starts at x=-10)
   double aT1 = aResult[0].ParameterOnCurve;
   double aT2 = aResult[1].ParameterOnCurve;
-  EXPECT_TRUE((std::abs(aT1 - 6.0) < THE_TOL && std::abs(aT2 - 14.0) < THE_TOL) ||
-              (std::abs(aT1 - 14.0) < THE_TOL && std::abs(aT2 - 6.0) < THE_TOL));
+  EXPECT_TRUE((std::abs(aT1 - 6.0) < THE_TOL && std::abs(aT2 - 14.0) < THE_TOL)
+              || (std::abs(aT1 - 14.0) < THE_TOL && std::abs(aT2 - 6.0) < THE_TOL));
 }
 
 //==================================================================================================
@@ -190,14 +190,14 @@ TEST_F(ExtremaCS_LineSphereTest, Intersection_TwoPoints)
 
 TEST_F(ExtremaCS_LineSphereTest, Domain_IntersectionInside)
 {
-  gp_Lin aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 20.0};
+  aDomain.Curve   = {0.0, 20.0};
   aDomain.Surface = {0.0, ExtremaCS::THE_TWO_PI, -M_PI / 2.0, M_PI / 2.0};
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere, aDomain);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -207,15 +207,15 @@ TEST_F(ExtremaCS_LineSphereTest, Domain_IntersectionInside)
 
 TEST_F(ExtremaCS_LineSphereTest, Domain_IntersectionOutside)
 {
-  gp_Lin aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   // Curve domain excludes intersection (t=5 and t=15 are outside [0, 3])
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 3.0};
+  aDomain.Curve   = {0.0, 3.0};
   aDomain.Surface = {0.0, ExtremaCS::THE_TWO_PI, -M_PI / 2.0, M_PI / 2.0};
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere, aDomain);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   // Intersection at t=5 is outside [0,3], so minimum is not at intersection
@@ -236,10 +236,10 @@ TEST_F(ExtremaCS_LineSphereTest, Domain_IntersectionOutside)
 
 TEST_F(ExtremaCS_LineSphereTest, SearchMode_MinOnly)
 {
-  gp_Lin aLine(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -249,15 +249,15 @@ TEST_F(ExtremaCS_LineSphereTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaCS_LineSphereTest, SearchMode_MaxOnly_Bounded)
 {
-  gp_Lin aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
+  gp_Lin    aLine(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
   gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   // Need bounded domain for max on line-sphere
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 20.0};
+  aDomain.Curve   = {0.0, 20.0};
   aDomain.Surface = {0.0, ExtremaCS::THE_TWO_PI, -M_PI / 2.0, M_PI / 2.0};
 
-  ExtremaCS_LineSphere anExtrema(aLine, aSphere, aDomain);
+  ExtremaCS_LineSphere     anExtrema(aLine, aSphere, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());

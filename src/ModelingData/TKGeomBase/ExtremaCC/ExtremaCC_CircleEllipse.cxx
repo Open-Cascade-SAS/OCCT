@@ -34,8 +34,8 @@ ExtremaCC_CircleEllipse::ExtremaCC_CircleEllipse(const gp_Circ&  theCircle,
 
 //==================================================================================================
 
-ExtremaCC_CircleEllipse::ExtremaCC_CircleEllipse(const gp_Circ&              theCircle,
-                                                 const gp_Elips&             theEllipse,
+ExtremaCC_CircleEllipse::ExtremaCC_CircleEllipse(const gp_Circ&             theCircle,
+                                                 const gp_Elips&            theEllipse,
                                                  const ExtremaCC::Domain2D& theDomain)
     : myCircle(theCircle),
       myEllipse(theEllipse),
@@ -73,9 +73,7 @@ const ExtremaCC::Result& ExtremaCC_CircleEllipse::Perform(double                
   ExtremaCC_Ellipse aEval2(myEllipse, aDomain.Curve2);
 
   // Use grid-based algorithm
-  ExtremaCC_GridEvaluator2D<ExtremaCC_Circle, ExtremaCC_Ellipse> aGridEval(aEval1,
-                                                                           aEval2,
-                                                                           aDomain);
+  ExtremaCC_GridEvaluator2D<ExtremaCC_Circle, ExtremaCC_Ellipse> aGridEval(aEval1, aEval2, aDomain);
   aGridEval.Perform(myResult, theTol, theMode);
 
   return myResult;
@@ -108,17 +106,17 @@ bool ExtremaCC_CircleEllipse::performCoplanar(double theTol) const
   const double aTolD  = theTol;
   const double aTolD2 = aTolD * aTolD;
 
-  const gp_Pnt& aPc  = myCircle.Location();
-  const gp_Dir& aDc  = myCircle.Axis().Direction();
-  const gp_Pnt& aPe  = myEllipse.Location();
-  const gp_Dir& aDe  = myEllipse.Axis().Direction();
-  const gp_Dir& aXc  = myCircle.XAxis().Direction();
-  const gp_Dir& aXe  = myEllipse.XAxis().Direction();
+  const gp_Pnt& aPc = myCircle.Location();
+  const gp_Dir& aDc = myCircle.Axis().Direction();
+  const gp_Pnt& aPe = myEllipse.Location();
+  const gp_Dir& aDe = myEllipse.Axis().Direction();
+  const gp_Dir& aXc = myCircle.XAxis().Direction();
+  const gp_Dir& aXe = myEllipse.XAxis().Direction();
 
   // Check if circle and ellipse are in the same plane
-  gp_Pln        aPlnC(aPc, aDc);
-  const double  aD2e         = aPlnC.SquareDistance(aPe);
-  const bool    bIsSamePlane = aDc.IsParallel(aDe, aTolA) && aD2e < aTolD2;
+  gp_Pln       aPlnC(aPc, aDc);
+  const double aD2e         = aPlnC.SquareDistance(aPe);
+  const bool   bIsSamePlane = aDc.IsParallel(aDe, aTolA) && aD2e < aTolD2;
 
   if (!bIsSamePlane)
   {
@@ -172,10 +170,10 @@ void ExtremaCC_CircleEllipse::addSolution(double theU1, double theU2, double the
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -196,8 +194,8 @@ void ExtremaCC_CircleEllipse::addSolution(double theU1, double theU2, double the
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

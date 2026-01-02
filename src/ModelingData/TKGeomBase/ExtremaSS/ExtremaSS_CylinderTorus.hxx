@@ -105,8 +105,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& Perform(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -132,8 +132,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& PerformWithBoundary(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -163,11 +163,11 @@ public:
     const double aCosU = std::cos(theU);
     const double aSinU = std::sin(theU);
     return gp_Pnt(myCylCenter.X() + myCylRadius * (aCosU * myCylXDir.X() + aSinU * myCylYDir.X())
-                      + theV * myCylAxis.X(),
+                    + theV * myCylAxis.X(),
                   myCylCenter.Y() + myCylRadius * (aCosU * myCylXDir.Y() + aSinU * myCylYDir.Y())
-                      + theV * myCylAxis.Y(),
+                    + theV * myCylAxis.Y(),
                   myCylCenter.Z() + myCylRadius * (aCosU * myCylXDir.Z() + aSinU * myCylYDir.Z())
-                      + theV * myCylAxis.Z());
+                    + theV * myCylAxis.Z());
   }
 
   //! Evaluate point on torus (surface 2).
@@ -182,11 +182,11 @@ public:
     const double aSinV   = std::sin(theV);
     const double aRadius = myMajorRadius + myMinorRadius * aCosV;
     return gp_Pnt(myTorusCenter.X() + aRadius * (aCosU * myTorusXDir.X() + aSinU * myTorusYDir.X())
-                      + myMinorRadius * aSinV * myTorusAxis.X(),
+                    + myMinorRadius * aSinV * myTorusAxis.X(),
                   myTorusCenter.Y() + aRadius * (aCosU * myTorusXDir.Y() + aSinU * myTorusYDir.Y())
-                      + myMinorRadius * aSinV * myTorusAxis.Y(),
+                    + myMinorRadius * aSinV * myTorusAxis.Y(),
                   myTorusCenter.Z() + aRadius * (aCosU * myTorusXDir.Z() + aSinU * myTorusYDir.Z())
-                      + myMinorRadius * aSinV * myTorusAxis.Z());
+                    + myMinorRadius * aSinV * myTorusAxis.Z());
   }
 
   //! Check if surfaces were swapped.
@@ -221,13 +221,12 @@ private:
     // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
     const gp_Vec aCrossVec = gp_Vec(myCylAxis).Crossed(gp_Vec(myTorusAxis));
     const double aCrossMag = aCrossVec.Magnitude();
-    myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
+    myAxesParallel         = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
-      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
-                              aCrossVec.Y() / aCrossMag,
-                              aCrossVec.Z() / aCrossMag);
+      myCrossProduct =
+        gp_Dir(aCrossVec.X() / aCrossMag, aCrossVec.Y() / aCrossMag, aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from cylinder center to torus center
@@ -269,9 +268,11 @@ private:
 
     // Find U_torus where torus points toward/away from cylinder
     const gp_Dir aDirFromTorus(-aDirToTorus.X(), -aDirToTorus.Y(), -aDirToTorus.Z());
-    const double aTorusDotX = aDirFromTorus.X() * myTorusXDir.X() + aDirFromTorus.Y() * myTorusXDir.Y()
+    const double aTorusDotX = aDirFromTorus.X() * myTorusXDir.X()
+                              + aDirFromTorus.Y() * myTorusXDir.Y()
                               + aDirFromTorus.Z() * myTorusXDir.Z();
-    const double aTorusDotY = aDirFromTorus.X() * myTorusYDir.X() + aDirFromTorus.Y() * myTorusYDir.Y()
+    const double aTorusDotY = aDirFromTorus.X() * myTorusYDir.X()
+                              + aDirFromTorus.Y() * myTorusYDir.Y()
                               + aDirFromTorus.Z() * myTorusYDir.Z();
     const double aUTorusToward = std::atan2(aTorusDotY, aTorusDotX);
     const double aUTorusAway   = aUTorusToward + M_PI;
@@ -297,17 +298,13 @@ private:
       // with radius myMinorRadius in the plane perpendicular to torus axis
 
       // V_torus = 0 (pointing toward cylinder axis)
-      const double aMinDist1 =
-          std::abs(aCircleCenterDist - myCylRadius) - myMinorRadius;
-      addExtremum(aUCylToward, aVCyl, aUTorusToward, 0.0,
-                  aMinDist1 * aMinDist1, true, theTol);
+      const double aMinDist1 = std::abs(aCircleCenterDist - myCylRadius) - myMinorRadius;
+      addExtremum(aUCylToward, aVCyl, aUTorusToward, 0.0, aMinDist1 * aMinDist1, true, theTol);
 
       // Also check the generating circle away from cylinder
       const double aCircleCenterDistAway = aAxisDist + myMajorRadius;
-      const double aMinDistAway =
-          aCircleCenterDistAway - myCylRadius - myMinorRadius;
-      addExtremum(aUCylToward, aVCyl, aUTorusAway, 0.0,
-                  aMinDistAway * aMinDistAway, true, theTol);
+      const double aMinDistAway          = aCircleCenterDistAway - myCylRadius - myMinorRadius;
+      addExtremum(aUCylToward, aVCyl, aUTorusAway, 0.0, aMinDistAway * aMinDistAway, true, theTol);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
@@ -378,7 +375,7 @@ private:
     // Compute InfiniteSquareDistance - minimum distance for coaxial cylinder-torus
     const double aOuterRadius = myMajorRadius + myMinorRadius;
     const double aInnerRadius = myMajorRadius - myMinorRadius;
-    double aMinDist = 0.0;
+    double       aMinDist     = 0.0;
 
     if (myCylRadius >= aOuterRadius)
     {
@@ -414,11 +411,12 @@ private:
       const double aUTorus = 2.0 * M_PI * i / aNbSamples;
 
       // Generating circle center
-      const double aCosU  = std::cos(aUTorus);
-      const double aSinU  = std::sin(aUTorus);
-      const gp_Pnt aCircleCenter(myTorusCenter.X() + myMajorRadius * (aCosU * myTorusXDir.X() + aSinU * myTorusYDir.X()),
-                                 myTorusCenter.Y() + myMajorRadius * (aCosU * myTorusXDir.Y() + aSinU * myTorusYDir.Y()),
-                                 myTorusCenter.Z() + myMajorRadius * (aCosU * myTorusXDir.Z() + aSinU * myTorusYDir.Z()));
+      const double aCosU = std::cos(aUTorus);
+      const double aSinU = std::sin(aUTorus);
+      const gp_Pnt aCircleCenter(
+        myTorusCenter.X() + myMajorRadius * (aCosU * myTorusXDir.X() + aSinU * myTorusYDir.X()),
+        myTorusCenter.Y() + myMajorRadius * (aCosU * myTorusXDir.Y() + aSinU * myTorusYDir.Y()),
+        myTorusCenter.Z() + myMajorRadius * (aCosU * myTorusXDir.Z() + aSinU * myTorusYDir.Z()));
 
       // Direction from torus center to circle center (radial direction)
       const gp_Dir aRadialDir(aCosU * myTorusXDir.X() + aSinU * myTorusYDir.X(),
@@ -467,8 +465,8 @@ private:
         aDirToTorusPt.Divide(aDistToAxis);
 
         // U_cyl for minimum (pointing toward torus point)
-        const double aUCylX = aDirToTorusPt.Dot(gp_Vec(myCylXDir));
-        const double aUCylY = aDirToTorusPt.Dot(gp_Vec(myCylYDir));
+        const double aUCylX   = aDirToTorusPt.Dot(gp_Vec(myCylXDir));
+        const double aUCylY   = aDirToTorusPt.Dot(gp_Vec(myCylYDir));
         const double aUCylMin = std::atan2(aUCylY, aUCylX);
         const double aUCylMax = aUCylMin + M_PI;
 
@@ -573,7 +571,7 @@ private:
     if (!myDomain.has_value())
       return;
 
-    const ExtremaSS::Domain4D&  aDom  = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1;
     const MathUtils::Domain2D& aDom2 = aDom.Domain2;
 
@@ -611,7 +609,10 @@ private:
   }
 
   //! Check a point on cylinder against torus.
-  void checkPointAgainstTorus(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstTorus(double                theU1,
+                              double                theV1,
+                              double                theTol,
+                              ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
@@ -659,7 +660,10 @@ private:
   }
 
   //! Check a point on torus against cylinder.
-  void checkPointAgainstCylinder(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstCylinder(double                theU2,
+                                 double                theV2,
+                                 double                theTol,
+                                 ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
@@ -678,7 +682,7 @@ private:
                           myCylCenter.Z() + aVCylClamped * myCylAxis.Z());
 
     gp_Vec aDirToP2(aPOnAxis, aP2);
-    aDirToP2 = aDirToP2 - gp_Vec(myCylAxis) * aDirToP2.Dot(gp_Vec(myCylAxis));
+    aDirToP2                 = aDirToP2 - gp_Vec(myCylAxis) * aDirToP2.Dot(gp_Vec(myCylAxis));
     const double aDistToAxis = aDirToP2.Magnitude();
 
     if (aDistToAxis < theTol)
@@ -730,9 +734,9 @@ private:
         const double aDV1 = std::abs(anExisting.V1 - theV1);
         const double aDV2 = std::abs(anExisting.V2 - aV2);
 
-        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol) &&
-            (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol &&
-            (aDV2 < theTol || std::abs(aDV2 - 2 * M_PI) < theTol))
+        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol)
+            && (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol
+            && (aDV2 < theTol || std::abs(aDV2 - 2 * M_PI) < theTol))
         {
           return;
         }
@@ -775,7 +779,7 @@ private:
   gp_Cylinder myCylinder; //!< The cylinder
   gp_Torus    myTorus;    //!< The torus
 
-  std::optional<ExtremaSS::Domain4D> myDomain; //!< Optional bounded domain
+  std::optional<ExtremaSS::Domain4D> myDomain;  //!< Optional bounded domain
   bool                               mySwapped; //!< True if torus was provided first
 
   // Cached cylinder geometry

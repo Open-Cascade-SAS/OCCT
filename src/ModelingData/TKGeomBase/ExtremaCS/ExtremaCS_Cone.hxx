@@ -56,9 +56,14 @@ public:
   }
 
   //! Evaluates point and first two derivatives at parameters.
-  void D2(double theU, double theV, gp_Pnt& thePt,
-          gp_Vec& theD1U, gp_Vec& theD1V,
-          gp_Vec& theD2UU, gp_Vec& theD2VV, gp_Vec& theD2UV) const
+  void D2(double  theU,
+          double  theV,
+          gp_Pnt& thePt,
+          gp_Vec& theD1U,
+          gp_Vec& theD1V,
+          gp_Vec& theD2UU,
+          gp_Vec& theD2VV,
+          gp_Vec& theD2UV) const
   {
     ElSLib::D2(theU, theV, myCone, thePt, theD1U, theD1V, theD2UU, theD2VV, theD2UV);
   }

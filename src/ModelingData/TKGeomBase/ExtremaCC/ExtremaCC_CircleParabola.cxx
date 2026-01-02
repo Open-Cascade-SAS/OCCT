@@ -21,7 +21,7 @@
 
 //==================================================================================================
 
-ExtremaCC_CircleParabola::ExtremaCC_CircleParabola(const gp_Circ&   theCircle,
+ExtremaCC_CircleParabola::ExtremaCC_CircleParabola(const gp_Circ&  theCircle,
                                                    const gp_Parab& theParabola)
     : myCircle(theCircle),
       myParabola(theParabola),
@@ -31,8 +31,8 @@ ExtremaCC_CircleParabola::ExtremaCC_CircleParabola(const gp_Circ&   theCircle,
 
 //==================================================================================================
 
-ExtremaCC_CircleParabola::ExtremaCC_CircleParabola(const gp_Circ&              theCircle,
-                                                   const gp_Parab&             theParabola,
+ExtremaCC_CircleParabola::ExtremaCC_CircleParabola(const gp_Circ&             theCircle,
+                                                   const gp_Parab&            theParabola,
                                                    const ExtremaCC::Domain2D& theDomain)
     : myCircle(theCircle),
       myParabola(theParabola),

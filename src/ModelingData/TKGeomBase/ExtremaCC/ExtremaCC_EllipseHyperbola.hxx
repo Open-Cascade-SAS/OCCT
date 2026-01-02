@@ -32,14 +32,14 @@ public:
 
   ExtremaCC_EllipseHyperbola(const gp_Elips& theEllipse, const gp_Hypr& theHyperbola);
 
-  ExtremaCC_EllipseHyperbola(const gp_Elips&             theEllipse,
-                             const gp_Hypr&              theHyperbola,
+  ExtremaCC_EllipseHyperbola(const gp_Elips&            theEllipse,
+                             const gp_Hypr&             theHyperbola,
                              const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_EllipseHyperbola(const ExtremaCC_EllipseHyperbola&) = delete;
+  ExtremaCC_EllipseHyperbola(const ExtremaCC_EllipseHyperbola&)            = delete;
   ExtremaCC_EllipseHyperbola& operator=(const ExtremaCC_EllipseHyperbola&) = delete;
-  ExtremaCC_EllipseHyperbola(ExtremaCC_EllipseHyperbola&&) = default;
-  ExtremaCC_EllipseHyperbola& operator=(ExtremaCC_EllipseHyperbola&&) = default;
+  ExtremaCC_EllipseHyperbola(ExtremaCC_EllipseHyperbola&&)                 = default;
+  ExtremaCC_EllipseHyperbola& operator=(ExtremaCC_EllipseHyperbola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -50,11 +50,12 @@ public:
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
   const gp_Elips& Ellipse() const { return myEllipse; }
-  const gp_Hypr&  Hyperbola() const { return myHyperbola; }
+
+  const gp_Hypr& Hyperbola() const { return myHyperbola; }
 
 private:
-  gp_Elips                            myEllipse;
-  gp_Hypr                             myHyperbola;
+  gp_Elips                           myEllipse;
+  gp_Hypr                            myHyperbola;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

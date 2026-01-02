@@ -46,8 +46,8 @@ public:
   //! @param[in] theHyperbola the hyperbola
   //! @param[in] theLine the line
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_HyperbolaLine(const gp_Hypr&              theHyperbola,
-                          const gp_Lin&               theLine,
+  ExtremaCC_HyperbolaLine(const gp_Hypr&             theHyperbola,
+                          const gp_Lin&              theLine,
                           const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
@@ -91,8 +91,8 @@ private:
   //! @param[in] theTol tolerance for domain check
   void addSolution(double theU1, double theU2, double theTol) const;
 
-  gp_Hypr                             myHyperbola; //!< Hyperbola geometry
-  gp_Lin                              myLine;      //!< Line geometry
+  gp_Hypr                            myHyperbola; //!< Hyperbola geometry
+  gp_Lin                             myLine;      //!< Line geometry
   std::optional<ExtremaCC::Domain2D> myDomain;    //!< Parameter domains
   mutable ExtremaCC::Result          myResult;    //!< Reusable result storage
 };

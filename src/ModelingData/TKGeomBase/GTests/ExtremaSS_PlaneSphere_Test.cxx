@@ -38,7 +38,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereSeparatedFromPlane_FindsMinAndMax)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -59,7 +59,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereTouchingPlane_MinDistanceZero)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 3), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -77,7 +77,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereIntersectingPlane_MinDistanceZero)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 2), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -95,7 +95,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereBelowPlane_FindsMinAndMax)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, -10), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -113,10 +113,10 @@ TEST_F(ExtremaSS_PlaneSphereTest, SwappedOrder_SameResult)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval1(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval1(aPlane, aSphere);
   const ExtremaSS::Result& aResult1 = anEval1.Perform(THE_TOL);
 
-  ExtremaSS_PlaneSphere anEval2(aSphere, aPlane);
+  ExtremaSS_PlaneSphere    anEval2(aSphere, aPlane);
   const ExtremaSS::Result& aResult2 = anEval2.Perform(THE_TOL);
 
   ASSERT_EQ(aResult1.Status, ExtremaSS::Status::OK);
@@ -131,7 +131,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -146,7 +146,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -163,7 +163,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, TiltedPlane_SphereAbove)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), aTiltedNormal);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 10, 10), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -181,7 +181,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SmallSphere_FarFromPlane)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 100), gp_Dir(0, 0, 1)), 0.5);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -199,7 +199,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereOnDiagonal_CorrectExtrema)
   const gp_Pln    aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 10, 5), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_PlaneSphere anEval(aPlane, aSphere);
+  ExtremaSS_PlaneSphere    anEval(aPlane, aSphere);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

@@ -57,8 +57,8 @@ public:
   }
 
   //! Constructor with circle and plane geometry and domain.
-  ExtremaCS_CirclePlane(const gp_Circ&                       theCircle,
-                        const gp_Pln&                        thePlane,
+  ExtremaCS_CirclePlane(const gp_Circ&                            theCircle,
+                        const gp_Pln&                             thePlane,
                         const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myCircle(theCircle),
         myPlane(thePlane),
@@ -76,7 +76,7 @@ public:
   {
     myResult.Clear();
 
-    const gp_Pnt& aCenter = myCircle.Location();
+    const gp_Pnt& aCenter  = myCircle.Location();
     const gp_Dir& aCircleX = myCircle.XAxis().Direction();
     const gp_Dir& aCircleY = myCircle.YAxis().Direction();
 
@@ -91,8 +91,8 @@ public:
         && std::abs(aYdotN) < ExtremaCS::THE_PARALLEL_TOLERANCE)
     {
       // Circle is parallel to plane - infinite solutions
-      const double aDist = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
-      myResult.Status = ExtremaCS::Status::InfiniteSolutions;
+      const double aDist              = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
+      myResult.Status                 = ExtremaCS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aDist * aDist;
       return myResult;
     }
@@ -110,13 +110,14 @@ public:
         if (aT < myDomain->Curve.Min - theTol || aT > myDomain->Curve.Max + theTol)
         {
           // Also check aT + 2*PI and aT - 2*PI
-          double aTplus = aT + ExtremaCS::THE_TWO_PI;
+          double aTplus  = aT + ExtremaCS::THE_TWO_PI;
           double aTminus = aT - ExtremaCS::THE_TWO_PI;
           if (aTplus >= myDomain->Curve.Min - theTol && aTplus <= myDomain->Curve.Max + theTol)
           {
             aT = aTplus;
           }
-          else if (aTminus >= myDomain->Curve.Min - theTol && aTminus <= myDomain->Curve.Max + theTol)
+          else if (aTminus >= myDomain->Curve.Min - theTol
+                   && aTminus <= myDomain->Curve.Max + theTol)
           {
             aT = aTminus;
           }
@@ -132,7 +133,7 @@ public:
 
       // Compute projection on plane
       const double aSignedDist = gp_Vec(myPlane.Location(), aCircPt).Dot(gp_Vec(aPlaneN));
-      const gp_Pnt aPlanePt = aCircPt.Translated(-aSignedDist * gp_Vec(aPlaneN));
+      const gp_Pnt aPlanePt    = aCircPt.Translated(-aSignedDist * gp_Vec(aPlaneN));
 
       // Get UV on plane
       double aU, aV;
@@ -191,8 +192,8 @@ public:
       // Circle intersects the plane - find intersection parameters using TrigonometricCDE
       if (theMode != ExtremaCS::SearchMode::Max)
       {
-        MathRoot::TrigResult aTrigResult = MathRoot::TrigonometricCDE(aA, aB, aCenterDist,
-                                                                      aInfBound, aSupBound);
+        MathRoot::TrigResult aTrigResult =
+          MathRoot::TrigonometricCDE(aA, aB, aCenterDist, aInfBound, aSupBound);
         if (aTrigResult.IsDone())
         {
           for (int i = 0; i < aTrigResult.NbRoots; ++i)
@@ -210,8 +211,8 @@ public:
         const double aTmax1 = std::atan2(aYdotN, aXdotN);
         const double aTmax2 = aTmax1 + M_PI;
 
-        gp_Pnt aPt1 = ElCLib::Value(aTmax1, myCircle);
-        gp_Pnt aPt2 = ElCLib::Value(aTmax2, myCircle);
+        gp_Pnt aPt1   = ElCLib::Value(aTmax1, myCircle);
+        gp_Pnt aPt2   = ElCLib::Value(aTmax2, myCircle);
         double aDist1 = std::abs(gp_Vec(aPlaneP, aPt1).Dot(gp_Vec(aPlaneN)));
         double aDist2 = std::abs(gp_Vec(aPlaneP, aPt2).Dot(gp_Vec(aPlaneN)));
 
@@ -224,8 +225,8 @@ public:
       const double aT1 = std::atan2(aYdotN, aXdotN);
       const double aT2 = aT1 + M_PI;
 
-      gp_Pnt aPt1 = ElCLib::Value(aT1, myCircle);
-      gp_Pnt aPt2 = ElCLib::Value(aT2, myCircle);
+      gp_Pnt aPt1   = ElCLib::Value(aT1, myCircle);
+      gp_Pnt aPt2   = ElCLib::Value(aT2, myCircle);
       double aDist1 = std::abs(gp_Vec(aPlaneP, aPt1).Dot(gp_Vec(aPlaneN)));
       double aDist2 = std::abs(gp_Vec(aPlaneP, aPt2).Dot(gp_Vec(aPlaneN)));
 
@@ -242,8 +243,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

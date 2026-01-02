@@ -327,4 +327,3 @@ TEST_F(ExtremaCC_LineLineTest, SearchMode_MinOnly)
     EXPECT_TRUE(aResult[i].IsMinimum);
   }
 }
-

@@ -31,8 +31,8 @@ ExtremaCC_HyperbolaParabola::ExtremaCC_HyperbolaParabola(const gp_Hypr&  theHype
 
 //==================================================================================================
 
-ExtremaCC_HyperbolaParabola::ExtremaCC_HyperbolaParabola(const gp_Hypr&              theHyperbola,
-                                                         const gp_Parab&             theParabola,
+ExtremaCC_HyperbolaParabola::ExtremaCC_HyperbolaParabola(const gp_Hypr&             theHyperbola,
+                                                         const gp_Parab&            theParabola,
                                                          const ExtremaCC::Domain2D& theDomain)
     : myHyperbola(theHyperbola),
       myParabola(theParabola),

@@ -46,13 +46,13 @@ protected:
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LinePlane_Intersection)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
+  Handle(Geom_Line)  aLine  = new Geom_Line(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aPlane);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -63,13 +63,13 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LinePlane_Intersection)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LinePlane_Parallel)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0));
+  Handle(Geom_Line)  aLine  = new Geom_Line(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0));
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aPlane);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -82,14 +82,14 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LinePlane_Parallel)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_ThroughCenter)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_Line)             aLine = new Geom_Line(gp_Pnt(-10, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aSphere);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -101,14 +101,14 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_ThroughCenter)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_TangentLine)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(-10, 5, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_Line)             aLine = new Geom_Line(gp_Pnt(-10, 5, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aSphere);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -118,14 +118,14 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_TangentLine)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_External)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_Line)             aLine = new Geom_Line(gp_Pnt(-10, 8, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aSphere);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -139,14 +139,14 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LineSphere_External)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, CirclePlane_Parallel)
 {
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
+  gp_Ax2              aCircleAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 3.0);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane)  aPlane  = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(aCircle);
+  GeomAdaptor_Curve   aCurveAdaptor(aCircle);
   GeomAdaptor_Surface aSurfAdaptor(aPlane);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -155,15 +155,15 @@ TEST_F(ExtremaCS_CurveSurfaceTest, CirclePlane_Parallel)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, CirclePlane_Tilted)
 {
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), aTiltedNormal);
+  gp_Dir              aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2              aCircleAx(gp_Pnt(0, 0, 0), aTiltedNormal);
   Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 2.0);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane)  aPlane  = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(aCircle);
+  GeomAdaptor_Curve   aCurveAdaptor(aCircle);
   GeomAdaptor_Surface aSurfAdaptor(aPlane);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -177,15 +177,15 @@ TEST_F(ExtremaCS_CurveSurfaceTest, CirclePlane_Tilted)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, EllipsePlane_Tilted)
 {
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 0), aTiltedNormal);
+  gp_Dir               aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2               anEllipseAx(gp_Pnt(0, 0, 0), aTiltedNormal);
   Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(anEllipseAx, 4.0, 2.0);
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane)   aPlane    = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(anEllipse);
+  GeomAdaptor_Curve   aCurveAdaptor(anEllipse);
   GeomAdaptor_Surface aSurfAdaptor(aPlane);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -200,14 +200,14 @@ TEST_F(ExtremaCS_CurveSurfaceTest, EllipsePlane_Tilted)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, LineCylinder_Parallel)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(8, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_CylindricalSurface) aCylinder = new Geom_CylindricalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_Line)               aLine = new Geom_Line(gp_Pnt(8, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_CylindricalSurface) aCylinder =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine);
   GeomAdaptor_Surface aSurfAdaptor(aCylinder);
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone() || aResult.IsInfinite());
@@ -229,17 +229,17 @@ TEST_F(ExtremaCS_CurveSurfaceTest, LineCylinder_Parallel)
 
 TEST_F(ExtremaCS_CurveSurfaceTest, Domain_LinePlane)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
+  Handle(Geom_Line)  aLine  = new Geom_Line(gp_Pnt(0, 0, -5), gp_Dir(0, 0, 1));
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomAdaptor_Curve aCurveAdaptor(aLine, -10.0, 10.0);
+  GeomAdaptor_Curve   aCurveAdaptor(aLine, -10.0, 10.0);
   GeomAdaptor_Surface aSurfAdaptor(aPlane, -100.0, 100.0, -100.0, 100.0);
 
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, 10.0};
+  aDomain.Curve   = {0.0, 10.0};
   aDomain.Surface = {-10.0, 10.0, -10.0, 10.0};
 
-  ExtremaCS_CurveSurface anExtrema(aCurveAdaptor, aSurfAdaptor, aDomain);
+  ExtremaCS_CurveSurface   anExtrema(aCurveAdaptor, aSurfAdaptor, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());

@@ -192,7 +192,7 @@ TEST_F(ExtremaCC_CurvesTest, EllipseLine_Intersecting)
 
 TEST_F(ExtremaCC_CurvesTest, LineEllipse_SwappedOrder)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_Line)    aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
 
@@ -396,4 +396,3 @@ TEST_F(ExtremaCC_CurvesTest, MoveAssignment)
   ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
 }
-
