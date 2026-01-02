@@ -2191,8 +2191,7 @@ void ProcessRLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& slin,
                             // printf("\n ImpImpIntersection_0.gxx CAS1 \n");
                           }
                         }
-                        else if (!OnFirst
-                                 && occ::down_cast<IntPatch_RLine>(slinri)->IsArcOnS2())
+                        else if (!OnFirst && occ::down_cast<IntPatch_RLine>(slinri)->IsArcOnS2())
                         {
                           if (arcref == occ::down_cast<IntPatch_RLine>(slinri)->ArcOnS2())
                           {

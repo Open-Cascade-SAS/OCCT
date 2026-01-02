@@ -108,7 +108,7 @@ bool BlendFunc_RuledInv::IsSolution(const math_Vector& Sol, const double Tol)
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
   return std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol
-      && std::abs(valsol(4)) <= Tol;
+         && std::abs(valsol(4)) <= Tol;
 }
 
 bool BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)

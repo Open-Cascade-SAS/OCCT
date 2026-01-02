@@ -263,7 +263,7 @@ bool Intf_TangentZone::RangeContains(const Intf_SectionPoint& ThePI) const
   ParamOnFirst(a, b);
   ParamOnSecond(c, d);
   return a <= ThePI.ParamOnFirst() && ThePI.ParamOnFirst() <= b && c <= ThePI.ParamOnSecond()
-      && ThePI.ParamOnSecond() <= d;
+         && ThePI.ParamOnSecond() <= d;
 }
 
 //=================================================================================================
@@ -278,7 +278,7 @@ bool Intf_TangentZone::HasCommonRange(const Intf_TangentZone& Other) const
   Other.ParamOnSecond(c2, d2);
 
   return ((c1 <= a1 && a1 <= d1) || (c1 <= b1 && b1 <= d1) || (a1 <= c1 && c1 <= b1))
-      && ((c2 <= a2 && a2 <= d2) || (c2 <= b2 && b2 <= d2) || (a2 <= c2 && c2 <= b2));
+         && ((c2 <= a2 && a2 <= d2) || (c2 <= b2 && b2 <= d2) || (a2 <= c2 && c2 <= b2));
 }
 
 //=================================================================================================

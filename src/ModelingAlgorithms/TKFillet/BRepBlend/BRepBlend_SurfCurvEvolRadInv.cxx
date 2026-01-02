@@ -299,5 +299,5 @@ bool BRepBlend_SurfCurvEvolRadInv::IsSolution(const math_Vector& Sol, const doub
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
   return std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
-      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray);
+         && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray);
 }

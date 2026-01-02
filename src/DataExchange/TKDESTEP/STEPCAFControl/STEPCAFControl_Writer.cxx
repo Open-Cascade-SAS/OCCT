@@ -1242,7 +1242,7 @@ static void MakeSTEPStyles(
   {
     Quantity_ColorRGBA aSurfCol = aStyle.GetColorSurfRGBA();
     aRenderTransp               = 1.0 - aSurfCol.Alpha();
-    aSurfColor                  = STEPConstruct_Styles::EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
+    aSurfColor = STEPConstruct_Styles::EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
   }
   if (aStyle.IsSetColorCurv())
     aCurvColor = STEPConstruct_Styles::EncodeColor(aStyle.GetColorCurv(), theDPDCs, theColRGBs);
@@ -1290,9 +1290,10 @@ static void MakeSTEPStyles(
         else
         {
           // default white color
-          aSurfColor =
-            STEPConstruct_Styles::EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
-          aPSA = theStyles.MakeColorPSA(anItem,
+          aSurfColor = STEPConstruct_Styles::EncodeColor(Quantity_Color(Quantity_NOC_WHITE),
+                                                         theDPDCs,
+                                                         theColRGBs);
+          aPSA       = theStyles.MakeColorPSA(anItem,
                                         aSurfColor,
                                         aCurvColor,
                                         STEPConstruct_RenderingProperties(),
@@ -4553,9 +4554,9 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
   Interface_Graph aGraph = aHGraph->Graph();
 
   // Common entities for presentation
-  STEPConstruct_Styles                     aStyles(theWS);
-  occ::handle<StepVisual_Colour>           aCurvColor = STEPConstruct_Styles::EncodeColor(Quantity_NOC_WHITE);
-  occ::handle<StepRepr_RepresentationItem> anItem     = nullptr;
+  STEPConstruct_Styles           aStyles(theWS);
+  occ::handle<StepVisual_Colour> aCurvColor = STEPConstruct_Styles::EncodeColor(Quantity_NOC_WHITE);
+  occ::handle<StepRepr_RepresentationItem> anItem = nullptr;
   myGDTPrsCurveStyle->SetValue(
     1,
     aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor, STEPConstruct_RenderingProperties()));

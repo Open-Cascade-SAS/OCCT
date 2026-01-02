@@ -826,7 +826,7 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   if (std::abs(Direc) < Tolang)
   {
     parallel = true;
-    inplane = std::abs(Dis) < myCriteria;
+    inplane  = std::abs(Dis) < myCriteria;
   }
   else
   {

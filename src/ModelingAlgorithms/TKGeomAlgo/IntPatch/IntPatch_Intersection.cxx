@@ -1210,7 +1210,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1480,7 +1481,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1893,7 +1895,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
     }
   }
 
-  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 

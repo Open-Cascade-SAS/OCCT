@@ -554,7 +554,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape&          
   NCollection_List<TopoDS_Shape>& LOFS = ChangeSplit(FF, TB1);
 
   // orientate new faces by the right way
-  bool OrigRev = (FOR.Orientation() != TopAbs_FORWARD);
+  bool                                     OrigRev = (FOR.Orientation() != TopAbs_FORWARD);
   NCollection_List<TopoDS_Shape>::Iterator LOFit(LOF);
   for (; LOFit.More(); LOFit.Next())
   {

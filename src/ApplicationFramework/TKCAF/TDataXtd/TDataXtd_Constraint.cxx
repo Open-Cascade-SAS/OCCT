@@ -91,8 +91,7 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
   {
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
-    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
-        && !G2.IsNull())
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get())
         return;
   }
@@ -116,8 +115,8 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
-    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
-        && !G2.IsNull() && !aShape3.IsNull() && !G3.IsNull())
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull() && !aShape3.IsNull()
+        && !G3.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get())
         return;
   }
@@ -144,9 +143,8 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
     occ::handle<TNaming_NamedShape> aShape4 = occ::down_cast<TNaming_NamedShape>(myGeometries[3]);
-    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
-        && !G2.IsNull() && !aShape3.IsNull() && !G3.IsNull()
-        && !aShape4.IsNull() && !G4.IsNull())
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull() && !G2.IsNull() && !aShape3.IsNull()
+        && !G3.IsNull() && !aShape4.IsNull() && !G4.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get()
           && aShape3->Get() == G4->Get())
         return;

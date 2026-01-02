@@ -52,8 +52,8 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
   WellDone             = false;
   constexpr double Tol = Precision::Confusion();
 
-  double R1 = Circ1.Radius();
-  double R2 = Circ2.Radius();
+  double R1  = Circ1.Radius();
+  double R2  = Circ2.Radius();
   sameradius = std::abs(R1 - R2) <= Tol;
   if (R1 < R2)
   {

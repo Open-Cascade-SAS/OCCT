@@ -83,7 +83,7 @@ struct BSplCLib_CacheParams
     const double aNewParam = PeriodicNormalization(theParameter);
     const double aDelta    = aNewParam - SpanStart;
     if ((aDelta < 0.0 && SpanIndex != SpanIndexMin)
-          || (aDelta >= SpanLength && SpanIndex != SpanIndexMax))
+        || (aDelta >= SpanLength && SpanIndex != SpanIndexMax))
     {
       return false;
     }

@@ -509,8 +509,8 @@ void IntAna_IntConicQuad::Perform(const gp_Circ& C,
   {
     parallel       = true;
     double distmax = P.Distance(C.Location()) + C.Radius() * Tolang;
-    inquadric = distmax < Tol;
-    done = true;
+    inquadric      = distmax < Tol;
+    done           = true;
   }
   else if (IntP.TypeInter() == IntAna_Same)
   {

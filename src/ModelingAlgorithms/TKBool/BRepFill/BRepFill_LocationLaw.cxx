@@ -671,8 +671,8 @@ double BRepFill_LocationLaw::Abscissa(const int Index, const double Param)
   }
 
   Length += GCPnts_AbscissaPoint::Length(*myLaws->Value(Index)->GetCurve(),
-                        myLaws->Value(Index)->GetCurve()->FirstParameter(),
-                        Param,
-                        myTol);
+                                         myLaws->Value(Index)->GetCurve()->FirstParameter(),
+                                         Param,
+                                         myTol);
   return Length;
 }

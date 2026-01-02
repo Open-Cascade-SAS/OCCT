@@ -637,7 +637,7 @@ static void RelocatePCurvesToNewUorigin(
         gp_Pnt2d aPoint   = aPCurve->Value(aParam);
         double   anOffset = CurPoint.Coord(theIndCoord) - aPoint.Coord(theIndCoord);
         if (std::abs(anOffset) >= theCoordTol
-              && std::abs(std::abs(anOffset) - thePeriod) >= theCoordTol)
+            && std::abs(std::abs(anOffset) - thePeriod) >= theCoordTol)
         {
           continue; // may be if CurVertex is deg.vertex
         }
@@ -3583,9 +3583,9 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
 
               if (NewCoordMax - NewCoordMin < aPeriods[ii] - CoordTol
                   && (-Precision::Confusion() >= NewCoordMin
-                       || NewCoordMin >= aPeriods[ii] + Precision::Confusion()
-                       || -Precision::Confusion() >= NewCoordMax
-                       || NewCoordMax >= aPeriods[ii] + Precision::Confusion()))
+                      || NewCoordMin >= aPeriods[ii] + Precision::Confusion()
+                      || -Precision::Confusion() >= NewCoordMax
+                      || NewCoordMax >= aPeriods[ii] + Precision::Confusion()))
               {
                 // we can build a face without seam edge:
                 // update the edges with earlier computed relocated pcurves

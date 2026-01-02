@@ -2940,8 +2940,8 @@ static int DDataStd_GetExtStringList(Draw_Interpretor& di, int nb, const char** 
       return 1;
     }
 
-    const NCollection_List<TCollection_ExtendedString>& aList = A->List();
-    bool isEmpty                                              = aList.Extent() <= 0;
+    const NCollection_List<TCollection_ExtendedString>& aList   = A->List();
+    bool                                                isEmpty = aList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<TCollection_ExtendedString>::Iterator itr(aList);

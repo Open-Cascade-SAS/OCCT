@@ -59,10 +59,10 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
   bool   Box1OK, Box2OK;
 
   Box1OK = !B1.IsOpenXmin() && !B1.IsOpenXmax() && !B1.IsOpenYmin() && !B1.IsOpenYmax()
-      && !B1.IsOpenZmin() && !B1.IsOpenZmax() && !B1.IsVoid();
+           && !B1.IsOpenZmin() && !B1.IsOpenZmax() && !B1.IsVoid();
 
   Box2OK = !B2.IsOpenXmin() && !B2.IsOpenXmax() && !B2.IsOpenYmin() && !B2.IsOpenYmax()
-      && !B2.IsOpenZmin() && !B2.IsOpenZmax() && !B2.IsVoid();
+           && !B2.IsOpenZmin() && !B2.IsOpenZmax() && !B2.IsVoid();
 
   if (Box1OK)
   {

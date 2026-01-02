@@ -95,7 +95,8 @@ bool Extrema_GlobOptFuncCS::checkInputData(const math_Vector& X, double& cu, dou
   sv              = X(aStartIndex + 2);
 
   return !(cu < myC->FirstParameter() || cu > myC->LastParameter() || su < myS->FirstUParameter()
-      || su > myS->LastUParameter() || sv < myS->FirstVParameter() || sv > myS->LastVParameter());
+           || su > myS->LastUParameter() || sv < myS->FirstVParameter()
+           || sv > myS->LastVParameter());
 }
 
 //=================================================================================================

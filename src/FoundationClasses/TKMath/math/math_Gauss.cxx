@@ -31,7 +31,7 @@ math_Gauss::math_Gauss(const math_Matrix&           A,
   math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");
   LU        = A;
   int Error = LU_Decompose(LU, Index, D, MinPivot, theProgress);
-  Done = Error == 0;
+  Done      = Error == 0;
 }
 
 void math_Gauss::Solve(const math_Vector& B, math_Vector& X) const

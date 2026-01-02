@@ -1236,8 +1236,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
 
       // If B is not an AIS_Point
-      if (aShapeB.IsNull()
-          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
+      if (aShapeB.IsNull() || aShapeB->Type() != AIS_KindOfInteractive_Datum
+          || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2nd object is expected to be an AIS_Point");
         return 1;
@@ -1252,8 +1252,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
 
       // If C is not an AIS_Point
-      if (aShapeC.IsNull()
-          || aShapeC->Type() != AIS_KindOfInteractive_Datum || aShapeC->Signature() != 1)
+      if (aShapeC.IsNull() || aShapeC->Type() != AIS_KindOfInteractive_Datum
+          || aShapeC->Signature() != 1)
       {
         Message::SendFail("Syntax error: 3d object is expected to be an AIS_Point");
         return 1;
@@ -1337,8 +1337,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         return 1;
       }
       // If B is not an AIS_Point
-      if (aShapeB.IsNull()
-          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
+      if (aShapeB.IsNull() || aShapeB->Type() != AIS_KindOfInteractive_Datum
+          || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;
@@ -1392,8 +1392,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         return 1;
       }
       // B should be an AIS_Point
-      if (aShapeB.IsNull()
-          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
+      if (aShapeB.IsNull() || aShapeB->Type() != AIS_KindOfInteractive_Datum
+          || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;

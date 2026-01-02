@@ -946,8 +946,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   IntRes2d_Transition T1a, T1b, T2a, T2b;
   IntRes2d_Position   Pos1a, Pos1b, Pos2a, Pos2b;
 
-  bool isOpposite =
-    (Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2);
+  bool isOpposite = (Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2);
 
   // if(Circle1.IsDirect()) { std::cout<<" C1 Direct"<<std::endl; } else { std::cout<<" C1
   // INDirect"<<std::endl; } if(Circle2.IsDirect()) { std::cout<<" C2 Direct"<<std::endl; } else {

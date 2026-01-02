@@ -172,7 +172,9 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
           if (!aModif.IsEmpty())
           {
             di << ",";
-            for (int k = NCollection_Sequence<XCAFDimTolObjects_DimensionModif>::Lower(); k <= aModif.Upper(); k++)
+            for (int k = NCollection_Sequence<XCAFDimTolObjects_DimensionModif>::Lower();
+                 k <= aModif.Upper();
+                 k++)
             {
               di << " M " << aModif.Value(k);
             }
@@ -249,7 +251,9 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
           if (!aModif.IsEmpty())
           {
             di << ",";
-            for (int k = NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>::Lower(); k <= aModif.Upper(); k++)
+            for (int k = NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>::Lower();
+                 k <= aModif.Upper();
+                 k++)
             {
               di << " M " << aModif.Value(k);
             }
@@ -299,7 +303,10 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
                 if (!aModif.IsEmpty())
                 {
                   di << ",";
-                  for (int iModif = NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>::Lower(); iModif <= aModif.Upper(); iModif++)
+                  for (int iModif =
+                         NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>::Lower();
+                       iModif <= aModif.Upper();
+                       iModif++)
                   {
                     di << " M " << aModif.Value(iModif);
                   }

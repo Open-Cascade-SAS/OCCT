@@ -149,8 +149,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write(const char* thePrefix) const
   VrmlData_ErrorStatus  aStatus(VrmlData_StatusOK);
   const VrmlData_Scene& aScene   = Scene();
   static char           header[] = "WorldInfo {";
-  if (!aScene.IsDummyWrite()
-      && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
+  if (!aScene.IsDummyWrite() && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     char buf[4096];
     if (myTitle)

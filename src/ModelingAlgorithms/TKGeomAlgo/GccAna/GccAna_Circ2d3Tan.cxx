@@ -200,17 +200,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Verification do two circles touch each other or not
   //   if at least one circle touches other one IsTouch become Standard_Standard_True
 
-  IsTouch = std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 - R2) * (R1 - R2)) <= Tolerance
-      || std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 + R2) * (R1 + R2))
-           <= Tolerance
-      || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 - R3) * (R1 - R3))
-           <= Tolerance
-      || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 + R3) * (R1 + R3))
-           <= Tolerance
-      || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 - R3) * (R2 - R3))
-           <= Tolerance
-      || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 + R3) * (R2 + R3))
-           <= Tolerance;
+  IsTouch =
+    std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 - R2) * (R1 - R2)) <= Tolerance
+    || std::abs((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2) - (R1 + R2) * (R1 + R2)) <= Tolerance
+    || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 - R3) * (R1 - R3)) <= Tolerance
+    || std::abs((X1 - X3) * (X1 - X3) + (Y1 - Y3) * (Y1 - Y3) - (R1 + R3) * (R1 + R3)) <= Tolerance
+    || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 - R3) * (R2 - R3)) <= Tolerance
+    || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 + R3) * (R2 + R3)) <= Tolerance;
 
   //   First step:
   //     We are searching for Beta, Gamma and Delta coefficients

@@ -36,7 +36,7 @@ math_Jacobi::math_Jacobi(const math_Matrix& A)
 
   AA        = A;
   int Error = Jacobi(AA, EigenValues, EigenVectors, NbRotations);
-  Done = Error == 0;
+  Done      = Error == 0;
 }
 
 void math_Jacobi::Dump(Standard_OStream& o) const

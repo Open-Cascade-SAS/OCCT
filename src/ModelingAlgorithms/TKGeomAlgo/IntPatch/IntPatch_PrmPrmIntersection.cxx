@@ -668,7 +668,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         } // TabPtDep[nbps2]==0
       } while (nbp > 5
                && (((NombreDePointsDeDepartDuCheminement < 3) || !lignetrouvee)
-                     && ((NombreDePointsDeDepartDuCheminement - 3 < nbp) || lignetrouvee)));
+                   && ((NombreDePointsDeDepartDuCheminement - 3 < nbp) || lignetrouvee)));
 
       delete[] TabPtDep;
     } // for( ls ...
@@ -2753,7 +2753,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         } while (
           nbp > 5
           && (NombreDePointsDeDepartDuCheminement < NbDePointsDeDepartDuChmLimit || !lignetrouvee)
-               && (NombreDePointsDeDepartDuCheminement - 3 < nbp || !(!lignetrouvee)));
+          && (NombreDePointsDeDepartDuCheminement - 3 < nbp || !(!lignetrouvee)));
         delete[] TabPtDep;
       } // for( ls ...
 
@@ -3791,8 +3791,7 @@ bool IsPointOnLine(const IntSurf_PntOn2S&             thePOn2S,
   thePOn2S.Parameters(pu1, pv1, pu2, pv2);
 
   if ((!theWLine->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)))
-      && (!theWLine->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)))
-      && (!theWLine->IsOutBox(thePOn2S.Value())))
+      && (!theWLine->IsOutSurf2Box(gp_Pnt2d(pu2, pv2))) && (!theWLine->IsOutBox(thePOn2S.Value())))
   {
     const int NbPntOn2SOnLine = theWLine->NbPnts();
     int       ll;

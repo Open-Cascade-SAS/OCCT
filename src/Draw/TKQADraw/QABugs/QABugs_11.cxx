@@ -2918,7 +2918,7 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
 static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
 {
   bool IsEvenArgc = true;
-  IsEvenArgc = argc % 2 == 0;
+  IsEvenArgc      = argc % 2 == 0;
 
   if (argc < 3 || IsEvenArgc)
   {

@@ -495,7 +495,8 @@ public: //! @name iteration through detected entities
   //! @sa DetectedCurrentOwner(), InitDetected(), NextDetected().
   bool MoreDetected() const
   {
-    return myCurDetected >= NCollection_Sequence<int>::Lower() && myCurDetected <= myDetectedSeq.Upper();
+    return myCurDetected >= NCollection_Sequence<int>::Lower()
+           && myCurDetected <= myDetectedSeq.Upper();
   }
 
   //! Gets next current object during iteration through mouse-detected interactive objects.

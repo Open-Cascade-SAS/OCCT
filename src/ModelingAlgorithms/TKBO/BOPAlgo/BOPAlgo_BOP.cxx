@@ -109,7 +109,7 @@ void BOPAlgo_BOP::CheckData()
   NCollection_List<TopoDS_Shape>::Iterator aItLS;
   //
   if (myOperation != BOPAlgo_COMMON && myOperation != BOPAlgo_FUSE && myOperation != BOPAlgo_CUT
-        && myOperation != BOPAlgo_CUT21)
+      && myOperation != BOPAlgo_CUT21)
   {
     // non-licit operation
     AddError(new BOPAlgo_AlertBOPNotSet);

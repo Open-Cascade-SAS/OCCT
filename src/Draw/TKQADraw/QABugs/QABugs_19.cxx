@@ -2191,7 +2191,7 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
     const TopoDS_Shape& aS = aIt.Value();
     aType                  = aS.ShapeType();
     if (aType != TopAbs_EDGE && aType != TopAbs_FACE && aType != TopAbs_VERTEX
-          && aType != TopAbs_SOLID)
+        && aType != TopAbs_SOLID)
     {
       continue;
     }

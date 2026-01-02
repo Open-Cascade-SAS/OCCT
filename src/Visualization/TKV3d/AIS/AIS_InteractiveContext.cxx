@@ -3130,7 +3130,8 @@ void AIS_InteractiveContext::ClearSelected(const bool theToUpdateViewer)
 
 bool AIS_InteractiveContext::isDetected(const occ::handle<AIS_InteractiveObject>& theObject)
 {
-  for (int aDetIter = NCollection_Sequence<int>::Lower(); aDetIter <= myDetectedSeq.Upper(); aDetIter++)
+  for (int aDetIter = NCollection_Sequence<int>::Lower(); aDetIter <= myDetectedSeq.Upper();
+       aDetIter++)
   {
     occ::handle<SelectMgr_EntityOwner> aPicked = MainSelector()->Picked(myDetectedSeq(aDetIter));
     occ::handle<AIS_InteractiveObject> anObj;

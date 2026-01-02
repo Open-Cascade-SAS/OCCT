@@ -151,7 +151,11 @@ bool RWGltf_TriangulationReader::readStreamData(
                                            theGltfData.StreamData->Size());
   std::istream               aStream(&aStreamBuffer);
   aStream.seekg((std::streamoff)theGltfData.StreamOffset, std::ios_base::beg);
-  return readBuffer(theSourceGltfMesh, theDestMesh, aStream, theGltfData.Accessor, theGltfData.Type);
+  return readBuffer(theSourceGltfMesh,
+                    theDestMesh,
+                    aStream,
+                    theGltfData.Accessor,
+                    theGltfData.Type);
 }
 
 //=================================================================================================

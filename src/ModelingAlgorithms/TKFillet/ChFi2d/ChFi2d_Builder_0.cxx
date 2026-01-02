@@ -786,5 +786,5 @@ bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
     basisC = C;
 
   return basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
-      || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line); // else ...
+         || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line); // else ...
 } // IsLineOrCircle

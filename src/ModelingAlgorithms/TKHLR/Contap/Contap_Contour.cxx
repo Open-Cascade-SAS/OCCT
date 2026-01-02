@@ -588,8 +588,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
       //-- lbr le 15 mai 97
       //-- On elimine les points qui sont egalement present sur une restriction solution
       bool SurUneRestrictionSolution = false;
-      for (int restriction = 1;
-           !SurUneRestrictionSolution && restriction <= solrst.NbSegments();
+      for (int restriction = 1; !SurUneRestrictionSolution && restriction <= solrst.NbSegments();
            restriction++)
       {
         const occ::handle<Adaptor2d_Curve2d>& thearcsol = solrst.Segment(restriction).Curve();

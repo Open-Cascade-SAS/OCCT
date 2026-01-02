@@ -921,7 +921,7 @@ void Draft_Modification::Perform()
             else
             {
               gp_Dir AxofCirc = aCirc->Position().Direction();
-              KPart = AxofCirc.IsParallel(Axis.Direction(), Precision::Angular());
+              KPart           = AxofCirc.IsParallel(Axis.Direction(), Precision::Angular());
             }
           }
 

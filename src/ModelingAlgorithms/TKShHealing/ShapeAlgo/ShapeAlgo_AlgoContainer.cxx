@@ -618,18 +618,18 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     if (iterCook)
     {
       Cook.Next();
-      edge1 = TopoDS::Edge(Cook.Value());
+      edge1        = TopoDS::Edge(Cook.Value());
       IsToReverse1 = edge1.Orientation() == TopAbs_REVERSED;
-      crv1   = BRep_Tool::Curve(edge1, loc1, first1, last1);
-      delta1 = last1 - first1;
+      crv1         = BRep_Tool::Curve(edge1, loc1, first1, last1);
+      delta1       = last1 - first1;
     }
     if (iterPerry)
     {
       Perry.Next();
-      edge2 = TopoDS::Edge(Perry.Value());
+      edge2        = TopoDS::Edge(Perry.Value());
       IsToReverse2 = edge2.Orientation() == TopAbs_REVERSED;
-      crv2   = BRep_Tool::Curve(edge2, loc2, first2, last2);
-      delta2 = last2 - first2;
+      crv2         = BRep_Tool::Curve(edge2, loc2, first2, last2);
+      delta2       = last2 - first2;
     }
   }
   return false; // szv#4:S4163:12Mar99 `res=` not needed

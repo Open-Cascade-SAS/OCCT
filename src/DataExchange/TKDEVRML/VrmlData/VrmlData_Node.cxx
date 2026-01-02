@@ -575,8 +575,7 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Write(const char* thePrefix) const
   VrmlData_ErrorStatus  aStatus  = VrmlData_StatusOK;
   const VrmlData_Scene& aScene   = Scene();
   static char           header[] = "ImageTexture {";
-  if (!aScene.IsDummyWrite()
-      && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
+  if (!aScene.IsDummyWrite() && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     TCollection_AsciiString url = "\"";
     url += URL().First();

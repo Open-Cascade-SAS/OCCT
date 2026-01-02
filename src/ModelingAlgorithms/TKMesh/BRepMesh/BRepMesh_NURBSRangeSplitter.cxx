@@ -302,7 +302,7 @@ void BRepMesh_NURBSRangeSplitter::AdjustRange()
     const std::pair<double, double>& aRangeV = GetRangeV();
 
     myIsValid = aRangeU.first >= -0.5 && aRangeU.second <= 1.5 && aRangeV.first >= -0.5
-                  && aRangeV.second <= 1.5;
+                && aRangeV.second <= 1.5;
   }
 }
 

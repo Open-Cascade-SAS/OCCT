@@ -452,7 +452,7 @@ bool CanUseEdges(const Adaptor3d_Surface& BS)
   {
     occ::handle<Geom_BSplineSurface> aBSpl = BS.BSpline();
     return (aBSpl->UDegree() == 1 && aBSpl->NbUKnots() == 2)
-        || (aBSpl->VDegree() == 1 && aBSpl->NbVKnots() == 2);
+           || (aBSpl->VDegree() == 1 && aBSpl->NbVKnots() == 2);
   }
   else if (aST == GeomAbs_BezierSurface)
   {

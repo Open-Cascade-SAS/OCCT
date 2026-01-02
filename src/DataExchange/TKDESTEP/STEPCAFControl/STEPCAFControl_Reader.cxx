@@ -3571,7 +3571,9 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
     {
       // get representation items
       NCollection_Sequence<occ::handle<Standard_Transient>> aSeqRI;
-      for (int i = NCollection_Sequence<opencascade::handle<StepRepr_ShapeAspect>>::Lower(); i <= aSAs.Upper(); i++)
+      for (int i = NCollection_Sequence<opencascade::handle<StepRepr_ShapeAspect>>::Lower();
+           i <= aSAs.Upper();
+           i++)
       {
         Interface_EntityIterator                          anIterSA = aGraph.Sharings(aSAs.Value(i));
         occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU;
@@ -3862,7 +3864,9 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
   NCollection_Sequence<TDF_Label> aShLS1, aShLS2;
 
   // Collect shapes
-  for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower(); i <= aSeqRI1.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower();
+       i <= aSeqRI1.Upper();
+       i++)
   {
     int          anIndex = FindShapeIndexForDGT(aSeqRI1.Value(i), theWS);
     TopoDS_Shape aSh;
@@ -3894,7 +3898,9 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
   if (!aSeqRI2.IsEmpty())
   {
     // for dimensional location
-    for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower(); i <= aSeqRI2.Upper(); i++)
+    for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower();
+         i <= aSeqRI2.Upper();
+         i++)
     {
       int          anIndex = FindShapeIndexForDGT(aSeqRI2.Value(i), theWS);
       TopoDS_Shape aSh;

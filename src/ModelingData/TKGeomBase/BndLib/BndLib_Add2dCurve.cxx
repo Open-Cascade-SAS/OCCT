@@ -143,10 +143,7 @@ public:
 private:
   Curv2dMaxMinCoordMVar& operator=(const Curv2dMaxMinCoordMVar&) = delete;
 
-  bool CheckInputData(double theParam)
-  {
-    return !(theParam < myUMin || theParam > myUMax);
-  }
+  bool CheckInputData(double theParam) { return !(theParam < myUMin || theParam > myUMax); }
 
   const occ::handle<Geom2d_Curve>& myCurve;
   double                           myUMin;
@@ -188,10 +185,7 @@ public:
 private:
   Curv2dMaxMinCoord& operator=(const Curv2dMaxMinCoord&) = delete;
 
-  bool CheckInputData(double theParam)
-  {
-    return !(theParam < myUMin || theParam > myUMax);
-  }
+  bool CheckInputData(double theParam) { return !(theParam < myUMin || theParam > myUMax); }
 
   const occ::handle<Geom2d_Curve>& myCurve;
   double                           myUMin;

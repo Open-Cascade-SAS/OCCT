@@ -312,8 +312,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
       BRepLib_MakeEdge  ee2(myLastPnt, p2);
       BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : curves and surfaces
       Sliding = ext2.NbExt() == 1
-          && ext2.SquareDistance(1)
-               <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
+                && ext2.SquareDistance(1)
+                     <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
     }
     else
     {
@@ -340,8 +340,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
         BRepLib_MakeEdge  ee2(myLastPnt, p2);
         BRepExtrema_ExtCF ext2(ee2, LastFace);
         Sliding = ext2.NbExt() == 1
-            && ext2.SquareDistance(1)
-                 <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
+                  && ext2.SquareDistance(1)
+                       <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
       }
       else
       {

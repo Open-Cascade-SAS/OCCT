@@ -409,10 +409,10 @@ static void Function_SetUVBounds(double&                               myU1,
           } // for(double par = W1 + Step; par <= W2; par += Step)
 
           if (std::abs(pmin - W1) > Precision::PConfusion()
-                && std::abs(pmin - W2) > Precision::PConfusion())
+              && std::abs(pmin - W2) > Precision::PConfusion())
             myU1 -= dmax * .5;
           if (std::abs(pmax - W1) > Precision::PConfusion()
-                && std::abs(pmax - W2) > Precision::PConfusion())
+              && std::abs(pmax - W2) > Precision::PConfusion())
             myU2 += dmax * .5;
 
           if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -535,10 +535,10 @@ static void Function_SetUVBounds(double&                               myU1,
         }
 
         if (std::abs(pmin - W1) > Precision::PConfusion()
-              && std::abs(pmin - W2) > Precision::PConfusion())
+            && std::abs(pmin - W2) > Precision::PConfusion())
           myU1 -= dmax * .5;
         if (std::abs(pmax - W1) > Precision::PConfusion()
-              && std::abs(pmax - W2) > Precision::PConfusion())
+            && std::abs(pmax - W2) > Precision::PConfusion())
           myU2 += dmax * .5;
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -812,10 +812,10 @@ static void Function_SetUVBounds(double&                               myU1,
         }
 
         if (std::abs(pmin - W1) > Precision::PConfusion()
-              && std::abs(pmin - W2) > Precision::PConfusion())
+            && std::abs(pmin - W2) > Precision::PConfusion())
           myU1 -= dmax * .5;
         if (std::abs(pmax - W1) > Precision::PConfusion()
-              && std::abs(pmax - W2) > Precision::PConfusion())
+            && std::abs(pmax - W2) > Precision::PConfusion())
           myU2 += dmax * .5;
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
@@ -913,16 +913,16 @@ static void Function_SetUVBounds(double&                               myU1,
       }
 
       if (std::abs(pminU - W1) > Precision::PConfusion()
-            && std::abs(pminU - W2) > Precision::PConfusion())
+          && std::abs(pminU - W2) > Precision::PConfusion())
         myU1 -= dmaxU * .5;
       if (std::abs(pmaxU - W1) > Precision::PConfusion()
-            && std::abs(pmaxU - W2) > Precision::PConfusion())
+          && std::abs(pmaxU - W2) > Precision::PConfusion())
         myU2 += dmaxU * .5;
       if (std::abs(pminV - W1) > Precision::PConfusion()
-            && std::abs(pminV - W2) > Precision::PConfusion())
+          && std::abs(pminV - W2) > Precision::PConfusion())
         myV1 -= dmaxV * .5;
       if (std::abs(pmaxV - W1) > Precision::PConfusion()
-            && std::abs(pmaxV - W2) > Precision::PConfusion())
+          && std::abs(pmaxV - W2) > Precision::PConfusion())
         myV2 += dmaxV * .5;
 
       if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))

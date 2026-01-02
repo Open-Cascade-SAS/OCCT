@@ -879,10 +879,7 @@ const TopoDS_Edge& BRepPrim_OneAxis::AxisEdge()
       if (!VMaxInfinite())
         myBuilder.AddEdgeVertex(myEdges[EAXIS], AxisTopVertex(), yMax, isInverted);
       if (!VMinInfinite())
-        myBuilder.AddEdgeVertex(myEdges[EAXIS],
-                                AxisBottomVertex(),
-                                yMin,
-                                !isInverted);
+        myBuilder.AddEdgeVertex(myEdges[EAXIS], AxisBottomVertex(), yMin, !isInverted);
     }
 
     myBuilder.CompleteEdge(myEdges[EAXIS]);

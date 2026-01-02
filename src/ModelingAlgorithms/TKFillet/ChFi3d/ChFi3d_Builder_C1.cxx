@@ -1651,7 +1651,7 @@ static bool IsShrink(const Geom2dAdaptor_Curve& PC,
       gp_Pnt2d P1 = PC.Value(Pf);
       gp_Pnt2d P2 = PC.Value(Pl);
       return std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
-          && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol;
+             && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol;
     }
     case GeomAbs_BezierCurve:
     case GeomAbs_BSplineCurve: {

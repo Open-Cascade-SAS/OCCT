@@ -12223,13 +12223,11 @@ static int VManipulator(Draw_Interpretor& theDi, int theArgsNb, const char** the
     }
     else if (anArg == "-adjustsize" || anArg == "-noadjustsize")
     {
-      anAttachOptions.SetAdjustSize(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
+      anAttachOptions.SetAdjustSize(Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
     }
     else if (anArg == "-enablemodes")
     {
-      anAttachOptions.SetEnableModes(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
+      anAttachOptions.SetEnableModes(Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
     }
     //
     else if (anArg == "-starttransform" && anArgIter + 2 < theArgsNb

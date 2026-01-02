@@ -137,7 +137,8 @@ TCollection_ExtendedString AIS_ColorScale::GetLabel(const int theIndex) const
 {
   if (myLabelType == Aspect_TOCSD_USER)
   {
-    if (theIndex >= NCollection_Sequence<TCollection_ExtendedString>::Lower() || theIndex <= myLabels.Upper())
+    if (theIndex >= NCollection_Sequence<TCollection_ExtendedString>::Lower()
+        || theIndex <= myLabels.Upper())
     {
       return myLabels.Value(theIndex);
     }

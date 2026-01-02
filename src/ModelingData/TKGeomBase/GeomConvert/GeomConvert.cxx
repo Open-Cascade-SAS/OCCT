@@ -616,14 +616,14 @@ static bool NeedToBeTreated(const occ::handle<Geom_BSplineCurve>& BS)
   {
     BS->Weights(tabWeights);
     return (BSplCLib::IsRational(tabWeights, 1, BS->NbPoles()))
-        && ((BS->Weight(1) < (1 - Precision::Confusion()))
-            || (BS->Weight(1) > (1 + Precision::Confusion()))
-            || (BS->Weight(2) < (1 - Precision::Confusion()))
-            || (BS->Weight(2) > (1 + Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles() - 1) < (1 - Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles() - 1) > (1 + Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles()) < (1 - Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles()) > (1 + Precision::Confusion())));
+           && ((BS->Weight(1) < (1 - Precision::Confusion()))
+               || (BS->Weight(1) > (1 + Precision::Confusion()))
+               || (BS->Weight(2) < (1 - Precision::Confusion()))
+               || (BS->Weight(2) > (1 + Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles() - 1) < (1 - Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles() - 1) > (1 + Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles()) < (1 - Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles()) > (1 + Precision::Confusion())));
   }
   else
     return false;
@@ -650,7 +650,7 @@ static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom_BSplineCurv
     Rapport = Rapport * Vec2.Magnitude() / Vec1.Magnitude();
   }
   return !((Rapport <= (1.0e0 + Precision::Confusion()))
-      && (Rapport >= (1.0e0 - Precision::Confusion())));
+           && (Rapport >= (1.0e0 - Precision::Confusion())));
 }
 
 //=======================================================================

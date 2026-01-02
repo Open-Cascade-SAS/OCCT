@@ -1304,7 +1304,7 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
     return 1;
   TopAbs_ShapeEnum aShType = sh.ShapeType();
   if (aShType != TopAbs_SHELL && aShType != TopAbs_FACE && aShType != TopAbs_EDGE
-        && aShType != TopAbs_WIRE)
+      && aShType != TopAbs_WIRE)
   {
     di << "Wrong shape type, shape can be shell or face or edge or wire\n";
     return 1;
