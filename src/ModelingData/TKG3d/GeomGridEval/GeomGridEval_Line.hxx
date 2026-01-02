@@ -220,8 +220,8 @@ public:
     if (theN == 1)
     {
       // D1 is constant for a line (the direction)
-      const gp_Dir& aDir = myGeom->Lin().Direction();
-      const gp_Vec  aD1(aDir.X(), aDir.Y(), aDir.Z());
+      const gp_Dir aDir = myGeom->Lin().Direction();
+      const gp_Vec aD1(aDir.X(), aDir.Y(), aDir.Z());
       for (int i = 1; i <= theParams.Size(); ++i)
       {
         aResult.SetValue(i, aD1);

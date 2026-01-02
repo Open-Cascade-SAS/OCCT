@@ -128,7 +128,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
   gp_Vec                     DPUV[4];
   gp_Pnt                     P1, P2;
   double                     Epsuv[4];
-  double                     DuvBuf[4];
+  double                     DuvBuf[4] = {};
   NCollection_Array1<double> Duv(DuvBuf[0], 1, 4);
   double                     UVd[4], UVf[4];
   IntImp_ConstIsoparametric  ChoixIso[4];
