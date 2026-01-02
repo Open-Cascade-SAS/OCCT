@@ -44,9 +44,7 @@ DrawTrSurf_Curve::DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C, const bool 
       dispcurvradius(false),
       radiusmax(1.0e3),
       radiusratio(0.1)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -66,9 +64,7 @@ DrawTrSurf_Curve::DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C,
       dispcurvradius(DispCurvRadius),
       radiusmax(RadiusMax),
       radiusratio(RadiusRatio)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

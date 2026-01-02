@@ -252,11 +252,7 @@ bool TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face&                    Fanc
   }
 
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(Fanc, mapWlow, nFs);
-  if (!facesbuilt)
-  {
-    return false;
-  }
-  return true;
+  return facesbuilt;
 }
 
 //=================================================================================================

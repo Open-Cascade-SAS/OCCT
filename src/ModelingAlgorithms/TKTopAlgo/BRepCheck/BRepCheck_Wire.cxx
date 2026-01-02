@@ -426,11 +426,7 @@ bool IsDistanceIn3DTolerance(const gp_Pnt& thePnt_f, const gp_Pnt& thePnt_l, con
 {
   double Dist = thePnt_f.Distance(thePnt_l);
 
-  if (Dist < aTol3d)
-    return true;
-
-
-  return false;
+  return Dist < aTol3d;
 }
 
 //=================================================================================================
@@ -511,11 +507,7 @@ static bool IsDistanceIn2DTolerance(const BRepAdaptor_Surface& aFaceSurface,
 
   double Dist = std::max(dumin, dvmin);
 
-  if (Dist < aTol2d)
-    return true;
-
-
-  return false;
+  return Dist < aTol2d;
 }
 
 //=================================================================================================

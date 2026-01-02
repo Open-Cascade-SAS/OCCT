@@ -26,9 +26,7 @@ Graphic3d_CullingTool::Graphic3d_CullingTool()
       myIsProjectionParallel(true),
       myCamScale(1.0),
       myPixelSize(1.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

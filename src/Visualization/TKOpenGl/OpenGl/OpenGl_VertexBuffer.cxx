@@ -21,16 +21,12 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Buffer)
 //=================================================================================================
 
 OpenGl_VertexBuffer::OpenGl_VertexBuffer()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 
 OpenGl_VertexBuffer::~OpenGl_VertexBuffer()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 
@@ -70,23 +66,17 @@ void OpenGl_VertexBuffer::UnbindVertexAttrib(const occ::handle<OpenGl_Context>& 
 //=================================================================================================
 
 void OpenGl_VertexBuffer::BindAllAttributes(const occ::handle<OpenGl_Context>&) const
-{
-  //
-}
+{}
 
 //=================================================================================================
 
 void OpenGl_VertexBuffer::BindPositionAttribute(const occ::handle<OpenGl_Context>&) const
-{
-  //
-}
+{}
 
 //=================================================================================================
 
 void OpenGl_VertexBuffer::UnbindAllAttributes(const occ::handle<OpenGl_Context>&) const
-{
-  //
-}
+{}
 
 //=================================================================================================
 

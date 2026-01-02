@@ -75,9 +75,7 @@ static TCollection_AsciiString getShaderTypeString(GLenum theType)
 OpenGl_ShaderObject::OpenGl_ShaderObject(GLenum theType)
     : myType(theType),
       myShaderID(NO_SHADER)
-{
-  //
-}
+{}
 
 // =======================================================================
 // function : ~OpenGl_ShaderObject

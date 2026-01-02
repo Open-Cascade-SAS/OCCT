@@ -196,10 +196,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   mySkface.Nullify();
   myPbase.Nullify();
 
-  if (Mode == 0)
-    myFuse = false;
-  else
-    myFuse = true;
+  myFuse = Mode != 0;
 #ifdef OCCT_DEBUG
   if (trc)
   {

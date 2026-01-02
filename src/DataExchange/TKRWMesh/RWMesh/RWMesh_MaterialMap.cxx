@@ -45,9 +45,7 @@ RWMesh_MaterialMap::RWMesh_MaterialMap(const TCollection_AsciiString& theFile)
 //=================================================================================================
 
 RWMesh_MaterialMap::~RWMesh_MaterialMap()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

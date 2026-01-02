@@ -26,9 +26,7 @@ AIS_Animation::AIS_Animation(const TCollection_AsciiString& theAnimationName)
       myPtsStart(0.0),
       myOwnDuration(0.0),
       myChildrenDuration(0.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

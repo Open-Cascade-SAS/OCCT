@@ -32,16 +32,12 @@ Graphic3d_TextureParams::Graphic3d_TextureParams()
       myRotAngle(0.0f),
       myToModulate(false),
       myToRepeat(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
 Graphic3d_TextureParams::~Graphic3d_TextureParams()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

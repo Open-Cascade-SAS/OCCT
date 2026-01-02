@@ -31,9 +31,7 @@ PrsMgr_PresentationManager::PrsMgr_PresentationManager(
   const occ::handle<Graphic3d_StructureManager>& theStructureManager)
     : myStructureManager(theStructureManager),
       myImmediateModeOn(0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

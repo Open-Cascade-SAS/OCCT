@@ -1179,9 +1179,7 @@ bool TopOpeBRepTool_REGUW::RemoveOldConnexity(const TopoDS_Vertex& v,
 
   TopOpeBRepTool_connexity& co = mymapvEds.ChangeFromKey(v);
   ok                           = co.RemoveItem(OriKey, e);
-  if (!ok)
-    return false;
-  return true;
+  return ok;
 }
 
 //=================================================================================================

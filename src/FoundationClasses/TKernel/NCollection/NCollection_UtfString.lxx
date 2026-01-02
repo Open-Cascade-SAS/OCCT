@@ -65,9 +65,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString()
     : myString(strAlloc(0)),
       mySize(0),
       myLength(0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

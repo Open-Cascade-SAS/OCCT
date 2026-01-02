@@ -52,9 +52,7 @@ V3d_Viewer::V3d_Viewer(const occ::handle<Graphic3d_GraphicDriver>& theDriver)
       myGridType(Aspect_GT_Rectangular),
       myGridEcho(true),
       myGridEchoLastVert(ShortRealLast(), ShortRealLast(), ShortRealLast())
-{
-  //
-}
+{}
 
 //=================================================================================================
 

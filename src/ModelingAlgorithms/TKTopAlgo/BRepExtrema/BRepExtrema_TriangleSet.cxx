@@ -51,9 +51,7 @@ BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(const NCollection_Vector<TopoDS
 // purpose  : Releases resources of triangle set
 //=======================================================================
 BRepExtrema_TriangleSet::~BRepExtrema_TriangleSet()
-{
-  //
-}
+= default;
 
 //=======================================================================
 // function : Size

@@ -26,9 +26,7 @@ SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity(
   const occ::handle<Select3D_SensitiveEntity>& theEntity)
     : mySensitive(theEntity),
       myIsActiveForSelection(false)
-{
-  //
-}
+{}
 
 //=======================================================================
 // function : Clear

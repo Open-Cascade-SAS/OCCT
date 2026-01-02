@@ -62,9 +62,7 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const TCollection_AsciiString& theFileN
                                          const Graphic3d_TypeOfTexture  theType)
     : Graphic3d_TextureMap(theFileName, theType),
       myName(Graphic3d_NOT_2D_UNKNOWN)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -110,9 +108,7 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>& thePix
                                          const Graphic3d_TypeOfTexture    theType)
     : Graphic3d_TextureMap(thePixMap, theType),
       myName(Graphic3d_NOT_2D_UNKNOWN)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -28,9 +28,7 @@ AIS_AnimationAxisRotation::AIS_AnimationAxisRotation(
       myRotAxis(theAxis),
       myAngleStart(theAngleStart),
       myAngleEnd(theAngleEnd)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

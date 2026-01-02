@@ -70,9 +70,7 @@ RWPly_PlyWriterContext::RWPly_PlyWriterContext()
       myHasColors(false),
       myHasTexCoords(false),
       myHasSurfId(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

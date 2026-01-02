@@ -27,9 +27,7 @@ OpenGl_ShadowMap::OpenGl_ShadowMap()
       myShadowMapFbo(new OpenGl_FrameBuffer(myResourceId + ":fbo")),
       myShadowCamera(new Graphic3d_Camera()),
       myShadowMapBias(0.0f)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

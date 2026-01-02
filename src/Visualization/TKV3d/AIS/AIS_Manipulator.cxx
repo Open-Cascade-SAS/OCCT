@@ -1801,9 +1801,7 @@ AIS_Manipulator::Axis::Axis(const gp_Ax1&         theAxis,
       myHasDragging(true),
       myFacettesNumber(20),
       myCircleRadius(myLength + myBoxSize + myBoxSize * 0.5f * 0.5f)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

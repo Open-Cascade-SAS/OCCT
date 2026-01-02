@@ -680,11 +680,7 @@ static bool IsMultipleCase(
 
   // number of unique faces (to have single solution)
     // should be at least no less than (Nb of Neighbourgs) +1
-  if (isCommon && aM.Extent() < aNbs.Extent())
-  {
-    return true;
-  }
-  return false;
+  return isCommon && aM.Extent() < aNbs.Extent();
 }
 
 //=======================================================================
@@ -965,9 +961,7 @@ static bool Filter(const TDF_Label&                 F,
   //-----------------
   // Check du filtre.
   //-----------------
-  if (Compare(NS, MDF, Stop, S))
-    return true;
-  return false;
+  return Compare(NS, MDF, Stop, S);
 }
 
 //=======================================================================

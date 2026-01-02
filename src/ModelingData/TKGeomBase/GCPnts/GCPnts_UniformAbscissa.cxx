@@ -224,9 +224,7 @@ GCPnts_UniformAbscissa::GCPnts_UniformAbscissa()
     : myDone(false),
       myNbPoints(0),
       myAbscissa(0.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -26,9 +26,7 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : myOwnerId(theOwnerId),
       mySFactor(2)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

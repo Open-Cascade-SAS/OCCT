@@ -25,9 +25,7 @@
 GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa()
     : myDone(false),
       myNbPoints(0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

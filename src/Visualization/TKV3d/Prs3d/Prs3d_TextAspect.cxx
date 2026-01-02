@@ -30,9 +30,7 @@ Prs3d_TextAspect::Prs3d_TextAspect()
       myHorizontalJustification(Graphic3d_HTA_LEFT),
       myVerticalJustification(Graphic3d_VTA_BOTTOM),
       myOrientation(Graphic3d_TP_RIGHT)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -42,9 +40,7 @@ Prs3d_TextAspect::Prs3d_TextAspect(const occ::handle<Graphic3d_AspectText3d>& th
       myHorizontalJustification(Graphic3d_HTA_LEFT),
       myVerticalJustification(Graphic3d_VTA_BOTTOM),
       myOrientation(Graphic3d_TP_RIGHT)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

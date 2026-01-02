@@ -23,9 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_ObjMaterialMap, RWMesh_MaterialMap)
 RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFile)
     : RWMesh_MaterialMap(theFile),
       myFile(nullptr)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

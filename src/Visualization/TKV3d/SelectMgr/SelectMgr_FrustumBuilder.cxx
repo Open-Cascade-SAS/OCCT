@@ -28,9 +28,7 @@ SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
     : myWidth(INT_MAX),
       myHeight(INT_MAX),
       myIsViewportSet(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

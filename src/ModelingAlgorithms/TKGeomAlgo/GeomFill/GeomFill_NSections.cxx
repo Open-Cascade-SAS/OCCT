@@ -380,9 +380,7 @@ bool GeomFill_NSections::D1(const double                V,
     }
     indice += gap;
   }
-  if (NullWeight)
-    return false;
-  return true;
+  return !NullWeight;
 }
 
 //=======================================================
@@ -462,10 +460,7 @@ bool GeomFill_NSections::D2(const double                V,
     }
     indice += gap;
   }
-  if (NullWeight)
-    return false;
-
-  return true;
+  return !NullWeight;
 }
 
 //=======================================================

@@ -577,10 +577,7 @@ bool ShapeAnalysis_CheckSmallFace::CheckStripFace(const TopoDS_Face& F,
   //      but direction is known (1:U  2:V)
   // TopoDS_Edge E1,E2;
   double dmax;
-  if (FindStripEdges(F, E1, E2, tol, dmax))
-    return true;
-
-  return false;
+  return FindStripEdges(F, E1, E2, tol, dmax);
 }
 
 //=================================================================================================

@@ -122,9 +122,7 @@ inline static gp_XYZ readStlFloatVec3(const char* theData)
 RWStl_Reader::RWStl_Reader()
     : myMergeAngle(M_PI / 2.0),
       myMergeTolearance(0.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -39,9 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_LightSourceOwner, SelectMgr_EntityOwner)
 AIS_LightSourceOwner::AIS_LightSourceOwner(const occ::handle<AIS_LightSource>& theObject,
                                            int                                 thePriority)
     : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject, thePriority)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -32,9 +32,7 @@ Graphic3d_StructureManager::Graphic3d_StructureManager(
     : myViewGenId(0, 31),
       myGraphicDriver(theDriver),
       myDeviceLostFlag(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

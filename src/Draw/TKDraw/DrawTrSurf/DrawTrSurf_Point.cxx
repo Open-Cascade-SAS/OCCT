@@ -34,9 +34,7 @@ DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt&          P,
       is3D(true),
       myShape(Shape),
       myColor(Col)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -47,9 +45,7 @@ DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt2d&        P,
       is3D(false),
       myShape(Shape),
       myColor(Col)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

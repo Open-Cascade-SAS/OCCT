@@ -221,9 +221,7 @@ Graphic3d_ShaderManager::Graphic3d_ShaderManager(Aspect_GraphicsLibrary theGapi)
 //=================================================================================================
 
 Graphic3d_ShaderManager::~Graphic3d_ShaderManager()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

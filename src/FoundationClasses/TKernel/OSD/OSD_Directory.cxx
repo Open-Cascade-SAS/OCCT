@@ -46,9 +46,7 @@ OSD_Directory::OSD_Directory() = default;
 
 OSD_Directory::OSD_Directory(const OSD_Path& theName)
     : OSD_FileNode(theName)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

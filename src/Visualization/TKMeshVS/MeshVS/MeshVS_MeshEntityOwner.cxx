@@ -38,9 +38,7 @@ MeshVS_MeshEntityOwner::MeshVS_MeshEntityOwner(const SelectMgr_SelectableObject*
       myType(Type),
       myID(ID),
       myIsGroup(IsGroup)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

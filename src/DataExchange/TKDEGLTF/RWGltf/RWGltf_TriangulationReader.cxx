@@ -103,8 +103,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReade
 //=================================================================================================
 
 RWGltf_TriangulationReader::RWGltf_TriangulationReader()
-{
-}
+= default;
 
 //=================================================================================================
 

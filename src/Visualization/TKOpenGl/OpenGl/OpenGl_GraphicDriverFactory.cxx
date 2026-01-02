@@ -28,9 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriverFactory, Graphic3d_GraphicDriverF
 OpenGl_GraphicDriverFactory::OpenGl_GraphicDriverFactory()
     : Graphic3d_GraphicDriverFactory(OpenGl_DRIVER_NAME),
       myDefaultCaps(new OpenGl_Caps())
-{
-  //
-}
+{}
 
 //=================================================================================================
 

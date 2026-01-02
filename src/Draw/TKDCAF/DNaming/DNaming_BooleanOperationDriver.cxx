@@ -202,9 +202,7 @@ static bool IsValidSurfType(const TopoDS_Face& theFace)
   BRepAdaptor_Surface          anAdapt(theFace);
   occ::handle<Adaptor3d_Curve> aBasisCurve;
   const GeomAbs_SurfaceType&   aType = anAdapt.GetType();
-  if (aType == GeomAbs_Sphere)
-    return true;
-  return false;
+  return aType == GeomAbs_Sphere;
 }
 
 //=================================================================================================

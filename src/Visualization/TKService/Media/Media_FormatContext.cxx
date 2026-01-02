@@ -177,9 +177,7 @@ Media_FormatContext::Media_FormatContext()
     : myFormatCtx(nullptr),
       myPtsStartBase(0.0),
       myDuration(0.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

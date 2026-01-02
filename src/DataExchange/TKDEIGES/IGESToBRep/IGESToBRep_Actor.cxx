@@ -123,11 +123,9 @@ bool IGESToBRep_Actor::Recognize(const occ::handle<Standard_Transient>& start)
   //   Cas reconnus
   int typnum = ent->TypeNumber();
   int fornum = ent->FormNumber();
-  if (IGESToBRep::IsCurveAndSurface(ent)
+  return IGESToBRep::IsCurveAndSurface(ent)
       || ((typnum == 402 && (fornum == 1 || fornum == 7 || fornum == 14 || fornum == 15))
-          || (typnum == 408) || (typnum == 308)))
-    return true;
-  return false;
+          || (typnum == 408) || (typnum == 308));
 }
 
 //=======================================================================

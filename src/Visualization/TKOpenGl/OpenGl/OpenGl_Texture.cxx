@@ -108,9 +108,7 @@ OpenGl_Texture::OpenGl_Texture(const TCollection_AsciiString&              theRe
       myMaxMipLevel(0),
       myIsAlpha(false),
       myIsTopDown(true)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -129,12 +127,7 @@ bool OpenGl_Texture::Create(const occ::handle<OpenGl_Context>& theCtx)
   }
 
   theCtx->core11fwd->glGenTextures(1, &myTextureId);
-  if (myTextureId == NO_TEXTURE)
-  {
-    return false;
-  }
-
-  return true;
+  return myTextureId != NO_TEXTURE;
 }
 
 //=================================================================================================

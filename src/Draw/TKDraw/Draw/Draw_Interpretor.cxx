@@ -252,9 +252,7 @@ Draw_Interpretor::Draw_Interpretor()
       myDoEcho(false),
       myToColorize(true),
       myFDLog(-1)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -265,9 +263,7 @@ Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& theInterp)
       myDoEcho(false),
       myToColorize(true),
       myFDLog(-1)
-{
-  //
-}
+{}
 
 //=======================================================================
 // function : Init

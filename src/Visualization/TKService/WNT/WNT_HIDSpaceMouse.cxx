@@ -155,9 +155,7 @@ WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long  theProductId,
       mySize(theSize),
       myProductId(theProductId),
       myValueRange(THE_RAW_RANGE_350)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

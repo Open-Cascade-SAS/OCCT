@@ -1033,14 +1033,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
       OnLastFace = p2.Distance(lastpoint) <= Precision::Confusion();
     }
 
-    if (FirstFace.IsNull() || LastFace.IsNull())
-    {
-      Data = false;
-    }
-    else
-    {
-      Data = true;
-    }
+    Data = !(FirstFace.IsNull() || LastFace.IsNull());
 
     return Data;
   }

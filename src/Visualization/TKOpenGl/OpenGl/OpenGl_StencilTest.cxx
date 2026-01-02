@@ -20,9 +20,7 @@
 #include <Standard_Dump.hxx>
 
 OpenGl_StencilTest::OpenGl_StencilTest()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 
@@ -43,9 +41,7 @@ void OpenGl_StencilTest::Render(const occ::handle<OpenGl_Workspace>& theWorkspac
 //=================================================================================================
 
 void OpenGl_StencilTest::Release(OpenGl_Context*)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -57,9 +53,7 @@ void OpenGl_StencilTest::SetOptions(const bool theIsEnabled)
 //=================================================================================================
 
 OpenGl_StencilTest::~OpenGl_StencilTest()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

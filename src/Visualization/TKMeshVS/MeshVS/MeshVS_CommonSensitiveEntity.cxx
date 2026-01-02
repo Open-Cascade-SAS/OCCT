@@ -101,9 +101,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
       myMaxFaceNodes(theOther.myMaxFaceNodes),
       myCOG(theOther.myCOG),
       myBndBox(theOther.myBndBox)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

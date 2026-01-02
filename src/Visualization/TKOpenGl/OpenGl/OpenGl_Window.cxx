@@ -167,9 +167,7 @@ static void addMsgToList(TCollection_ExtendedString&       theList,
 OpenGl_Window::OpenGl_Window()
     : myOwnGContext(false),
       mySwapInterval(0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

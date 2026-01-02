@@ -40,9 +40,7 @@ void computeFrustumNormals(const gp_Vec* theEdges, gp_Vec* theNormals)
 //=================================================================================================
 
 SelectMgr_TriangularFrustum::SelectMgr_TriangularFrustum()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

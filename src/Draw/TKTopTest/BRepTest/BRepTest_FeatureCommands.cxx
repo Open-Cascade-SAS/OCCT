@@ -1295,10 +1295,7 @@ int offsetload(Draw_Interpretor&, int n, const char** a)
       TheOffset.AddFace(TopoDS::Face(SF));
     }
   }
-  if (n < 4)
-    theYaBouchon = false;
-  else
-    theYaBouchon = true;
+  theYaBouchon = n >= 4;
 
   return 0;
 }

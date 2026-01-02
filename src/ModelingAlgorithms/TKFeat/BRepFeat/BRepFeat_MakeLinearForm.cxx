@@ -123,10 +123,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
   myDir1 = Direc1;
   myPln  = Plane;
 
-  if (Mode == 0)
-    myFuse = false;
-  else
-    myFuse = true;
+  myFuse = Mode != 0;
 #ifdef OCCT_DEBUG
   if (trc)
   {

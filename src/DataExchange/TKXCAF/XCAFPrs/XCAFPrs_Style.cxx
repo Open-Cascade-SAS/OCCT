@@ -23,9 +23,7 @@ XCAFPrs_Style::XCAFPrs_Style()
     : myHasColorSurf(false),
       myHasColorCurv(false),
       myIsVisible(true)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -35,9 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Group, Standard_Transient)
 Graphic3d_Group::Graphic3d_Group(const occ::handle<Graphic3d_Structure>& theStruct)
     : myStructure(theStruct.operator->()),
       myIsClosed(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

@@ -39,12 +39,9 @@ TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const occ::handle<Geom_Surface>& theS
 //=================================================================================================
 
 TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const TopOpeBRepDS_Surface& theOther)
-    : mySurface(theOther.mySurface),
-      myTolerance(theOther.myTolerance),
-      myKeep(theOther.myKeep)
-{
-  //
-}
+    
+      
+= default;
 
 //=================================================================================================
 

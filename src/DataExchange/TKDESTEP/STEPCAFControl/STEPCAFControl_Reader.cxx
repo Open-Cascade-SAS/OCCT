@@ -316,9 +316,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const occ::handle<XSControl_WorkSes
 //=================================================================================================
 
 STEPCAFControl_Reader::~STEPCAFControl_Reader()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

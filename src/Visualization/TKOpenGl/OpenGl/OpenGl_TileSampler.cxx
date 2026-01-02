@@ -27,9 +27,7 @@ OpenGl_TileSampler::OpenGl_TileSampler()
       myScaleFactor(1.0f),
       myTileSize(0),
       myViewSize(0, 0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

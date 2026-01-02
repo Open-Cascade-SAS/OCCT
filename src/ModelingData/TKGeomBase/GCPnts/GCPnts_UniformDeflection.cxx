@@ -39,9 +39,7 @@ static gp_Pnt Value(const Adaptor2d_Curve2d& theC, const double theParameter)
 GCPnts_UniformDeflection::GCPnts_UniformDeflection()
     : myDone(false),
       myDeflection(0.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

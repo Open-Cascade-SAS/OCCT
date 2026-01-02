@@ -29,9 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectionManager, Standard_Transient)
 SelectMgr_SelectionManager::SelectMgr_SelectionManager(
   const occ::handle<SelectMgr_ViewerSelector>& theSelector)
     : mySelector(theSelector)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

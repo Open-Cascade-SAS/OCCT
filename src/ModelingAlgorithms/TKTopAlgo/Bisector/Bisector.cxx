@@ -29,8 +29,5 @@ bool Bisector::IsConvex(const occ::handle<Geom2d_Curve>& Cu, const double Sign)
   gp_Vec2d V1, V2;
   Cu->D2(U1, P1, V1, V2);
   double Tol = 1.e-5;
-  if (Sign * (V1 ^ V2) < Tol)
-    return true;
-  else
-    return false;
+  return Sign * (V1 ^ V2) < Tol;
 }

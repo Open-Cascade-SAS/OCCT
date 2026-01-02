@@ -27,9 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Result, Standard_Transient)
 BRepCheck_Result::BRepCheck_Result()
     : myMin(false),
       myBlind(false)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

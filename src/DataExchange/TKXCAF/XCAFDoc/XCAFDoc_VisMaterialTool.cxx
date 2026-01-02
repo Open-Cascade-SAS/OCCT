@@ -51,9 +51,7 @@ occ::handle<XCAFDoc_VisMaterialTool> XCAFDoc_VisMaterialTool::Set(const TDF_Labe
 //=================================================================================================
 
 XCAFDoc_VisMaterialTool::XCAFDoc_VisMaterialTool()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

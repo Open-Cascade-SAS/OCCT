@@ -284,9 +284,7 @@ gp_Pnt Select3D_SensitiveSet::CenterOfGeometry() const
 // purpose  : Destroys cross-reference to avoid memory leak
 //=======================================================================
 void Select3D_SensitiveSet::Clear()
-{
-  //
-}
+{}
 
 //=================================================================================================
 

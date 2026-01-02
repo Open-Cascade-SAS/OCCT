@@ -35,9 +35,7 @@ AIS_InteractiveObject::AIS_InteractiveObject(
   const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
     : SelectMgr_SelectableObject(aTypeOfPresentation3d),
       myCTXPtr(nullptr)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

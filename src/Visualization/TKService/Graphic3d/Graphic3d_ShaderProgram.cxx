@@ -96,9 +96,7 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
 // purpose  : Releases resources of program object
 // =======================================================================
 Graphic3d_ShaderProgram::~Graphic3d_ShaderProgram()
-{
-  //
-}
+= default;
 
 // =======================================================================
 // function : IsDone

@@ -24,9 +24,7 @@ AIS_AnimationCamera::AIS_AnimationCamera(const TCollection_AsciiString& theAnima
                                          const occ::handle<V3d_View>&   theView)
     : AIS_Animation(theAnimationName),
       myView(theView)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

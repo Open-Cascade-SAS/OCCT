@@ -27,9 +27,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect()
       myAngle(M_PI / 180.0 * 10.0),
       myLength(1.0),
       myIsZoomable(true)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -38,9 +36,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const double theAngle, const double theLeng
         new Graphic3d_AspectLine3d(Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
       myAngle(theAngle),
       myLength(theLength)
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -48,9 +44,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const occ::handle<Graphic3d_AspectLine3d>& 
     : myArrowAspect(theAspect),
       myAngle(M_PI / 180.0 * 10.0),
       myLength(1.0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

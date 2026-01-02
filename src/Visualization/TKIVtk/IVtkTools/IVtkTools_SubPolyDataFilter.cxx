@@ -115,9 +115,7 @@ vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
     : myIdsArrayName(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS()),
       myDoFiltering(true),
       myToCopyNormals(true)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

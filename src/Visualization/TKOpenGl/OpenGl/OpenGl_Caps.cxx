@@ -91,6 +91,4 @@ OpenGl_Caps& OpenGl_Caps::operator=(const OpenGl_Caps& theCopy)
 //=================================================================================================
 
 OpenGl_Caps::~OpenGl_Caps()
-{
-  //
-}
+= default;

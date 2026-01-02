@@ -16,16 +16,12 @@
 //=================================================================================================
 
 SelectBasics_SelectingVolumeManager::SelectBasics_SelectingVolumeManager()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 
 SelectBasics_SelectingVolumeManager::~SelectBasics_SelectingVolumeManager()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

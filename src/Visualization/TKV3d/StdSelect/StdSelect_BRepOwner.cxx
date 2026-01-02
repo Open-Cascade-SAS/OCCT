@@ -33,9 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StdSelect_BRepOwner, SelectMgr_EntityOwner)
 StdSelect_BRepOwner::StdSelect_BRepOwner(const int thePriority)
     : SelectMgr_EntityOwner(thePriority),
       myCurMode(0)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

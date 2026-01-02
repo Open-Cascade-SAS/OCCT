@@ -39,9 +39,7 @@ SelectMgr_TriangularFrustumSet::SelectMgr_TriangularFrustumSet()
 //=================================================================================================
 
 SelectMgr_TriangularFrustumSet::~SelectMgr_TriangularFrustumSet()
-{
-  //
-}
+= default;
 
 //=================================================================================================
 

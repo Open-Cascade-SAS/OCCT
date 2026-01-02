@@ -738,9 +738,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     if (!ok)
       continue;
     ok = CORRISO.GetnewS(Fsp);
-    if (!ok)
-      return false;
-    return true;
+    return ok;
   }
 
   // 2. x-2drep(edges) are in [xfirst,xfirst+xperiod]
@@ -764,9 +762,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     if (!ok)
       continue;
     ok = CORRISO.GetnewS(Fsp);
-    if (!ok)
-      return false;
-    return true;
+    return ok;
   }
   return false;
 

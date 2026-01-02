@@ -84,9 +84,7 @@ AIS_XRTrackedDevice::AIS_XRTrackedDevice()
       myUnitFactor(1.0f),
       myRole(Aspect_XRTrackedDeviceRole_Other),
       myToShowAxes(true)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

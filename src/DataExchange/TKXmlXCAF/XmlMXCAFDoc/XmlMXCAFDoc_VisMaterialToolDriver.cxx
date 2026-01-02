@@ -24,9 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_VisMaterialToolDriver, XmlMDF_ADriver)
 XmlMXCAFDoc_VisMaterialToolDriver::XmlMXCAFDoc_VisMaterialToolDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "VisMaterialTool")
-{
-  //
-}
+{}
 
 //=================================================================================================
 
@@ -49,6 +47,4 @@ bool XmlMXCAFDoc_VisMaterialToolDriver::Paste(const XmlObjMgt_Persistent&,
 void XmlMXCAFDoc_VisMaterialToolDriver::Paste(const occ::handle<TDF_Attribute>&,
                                               XmlObjMgt_Persistent&,
                                               XmlObjMgt_SRelocationTable&) const
-{
-  //
-}
+{}

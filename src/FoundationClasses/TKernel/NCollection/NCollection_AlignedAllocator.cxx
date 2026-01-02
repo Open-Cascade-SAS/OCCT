@@ -22,9 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_AlignedAllocator, NCollection_BaseAllocat
 
 NCollection_AlignedAllocator::NCollection_AlignedAllocator(const size_t theAlignment) noexcept
     : myAlignment(theAlignment)
-{
-  //
-}
+{}
 
 //=================================================================================================
 

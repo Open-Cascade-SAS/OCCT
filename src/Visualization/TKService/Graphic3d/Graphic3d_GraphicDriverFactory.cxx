@@ -93,6 +93,4 @@ occ::handle<Graphic3d_GraphicDriverFactory> Graphic3d_GraphicDriverFactory::Defa
 Graphic3d_GraphicDriverFactory::Graphic3d_GraphicDriverFactory(
   const TCollection_AsciiString& theName)
     : myName(theName)
-{
-  //
-}
+{}
