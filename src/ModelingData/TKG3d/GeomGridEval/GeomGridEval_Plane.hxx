@@ -297,13 +297,13 @@ public:
     if (theNU == 1 && theNV == 0)
     {
       // D1U = XDir
-      const gp_Dir& aXDir = myGeom->Pln().Position().XDirection();
+      const gp_Dir aXDir = myGeom->Pln().Position().XDirection();
       aDerivative         = gp_Vec(aXDir.X(), aXDir.Y(), aXDir.Z());
     }
     else if (theNU == 0 && theNV == 1)
     {
       // D1V = YDir
-      const gp_Dir& aYDir = myGeom->Pln().Position().YDirection();
+      const gp_Dir aYDir = myGeom->Pln().Position().YDirection();
       aDerivative         = gp_Vec(aYDir.X(), aYDir.Y(), aYDir.Z());
     }
     // All other derivatives are zero
@@ -530,12 +530,12 @@ public:
 
     if (theNU == 1 && theNV == 0)
     {
-      const gp_Dir& aXDir = myGeom->Pln().Position().XDirection();
+      const gp_Dir aXDir = myGeom->Pln().Position().XDirection();
       aDerivative         = gp_Vec(aXDir.X(), aXDir.Y(), aXDir.Z());
     }
     else if (theNU == 0 && theNV == 1)
     {
-      const gp_Dir& aYDir = myGeom->Pln().Position().YDirection();
+      const gp_Dir aYDir = myGeom->Pln().Position().YDirection();
       aDerivative         = gp_Vec(aYDir.X(), aYDir.Y(), aYDir.Z());
     }
 

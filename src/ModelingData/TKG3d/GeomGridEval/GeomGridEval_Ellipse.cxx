@@ -32,8 +32,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid(
 
   const gp_Elips& anElips = myGeom->Elips();
   const gp_Pnt&   aCenter = anElips.Location();
-  const gp_Dir&   aXDir   = anElips.XAxis().Direction();
-  const gp_Dir&   aYDir   = anElips.YAxis().Direction();
+  const gp_Dir aXDir = anElips.XAxis().Direction();
+  const gp_Dir aYDir = anElips.YAxis().Direction();
   const double    aMajR   = anElips.MajorRadius();
   const double    aMinR   = anElips.MinorRadius();
 
@@ -77,8 +77,8 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1(
 
   const gp_Elips& anElips = myGeom->Elips();
   const gp_Pnt&   aCenter = anElips.Location();
-  const gp_Dir&   aXDir   = anElips.XAxis().Direction();
-  const gp_Dir&   aYDir   = anElips.YAxis().Direction();
+  const gp_Dir aXDir = anElips.XAxis().Direction();
+  const gp_Dir aYDir = anElips.YAxis().Direction();
   const double    aMajR   = anElips.MajorRadius();
   const double    aMinR   = anElips.MinorRadius();
 
@@ -127,8 +127,8 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2(
 
   const gp_Elips& anElips = myGeom->Elips();
   const gp_Pnt&   aCenter = anElips.Location();
-  const gp_Dir&   aXDir   = anElips.XAxis().Direction();
-  const gp_Dir&   aYDir   = anElips.YAxis().Direction();
+  const gp_Dir aXDir = anElips.XAxis().Direction();
+  const gp_Dir aYDir = anElips.YAxis().Direction();
   const double    aMajR   = anElips.MajorRadius();
   const double    aMinR   = anElips.MinorRadius();
 
@@ -181,8 +181,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3(
 
   const gp_Elips& anElips = myGeom->Elips();
   const gp_Pnt&   aCenter = anElips.Location();
-  const gp_Dir&   aXDir   = anElips.XAxis().Direction();
-  const gp_Dir&   aYDir   = anElips.YAxis().Direction();
+  const gp_Dir aXDir = anElips.XAxis().Direction();
+  const gp_Dir aYDir = anElips.YAxis().Direction();
   const double    aMajR   = anElips.MajorRadius();
   const double    aMinR   = anElips.MinorRadius();
 
@@ -239,8 +239,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
-  const gp_Dir&   aXDir   = anElips.XAxis().Direction();
-  const gp_Dir&   aYDir   = anElips.YAxis().Direction();
+  const gp_Dir aXDir = anElips.XAxis().Direction();
+  const gp_Dir aYDir = anElips.YAxis().Direction();
   const double    aMajR   = anElips.MajorRadius();
   const double    aMinR   = anElips.MinorRadius();
 
