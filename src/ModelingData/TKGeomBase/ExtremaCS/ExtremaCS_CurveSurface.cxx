@@ -147,9 +147,9 @@ struct ExtremaCS_CurveSurface::Impl
   AnalyticalVariant myAnalytical;
 
   // For numerical pairs, store adaptor references
-  const Adaptor3d_Curve*   myCurve   = nullptr;
-  const Adaptor3d_Surface* mySurface = nullptr;
-  bool                     myIsNumerical = false;
+  const GeomAdaptor_Curve*   myCurve   = nullptr;
+  const GeomAdaptor_Surface* mySurface = nullptr;
+  bool                       myIsNumerical = false;
 
   const ExtremaCS::Result& performAnalytical(double                       theTol,
                                               ExtremaCS::SearchMode       theMode,
@@ -198,8 +198,8 @@ struct ExtremaCS_CurveSurface::Impl
 
 //==================================================================================================
 
-ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const Adaptor3d_Curve&   theCurve,
-                                                const Adaptor3d_Surface& theSurface)
+ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const GeomAdaptor_Curve&   theCurve,
+                                               const GeomAdaptor_Surface& theSurface)
     : myImpl(new Impl())
 {
   myDomain.Curve   = {theCurve.FirstParameter(), theCurve.LastParameter()};
@@ -212,13 +212,40 @@ ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const Adaptor3d_Curve&   theCurve
 
 //==================================================================================================
 
-ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const Adaptor3d_Curve&       theCurve,
-                                                const Adaptor3d_Surface&     theSurface,
-                                                const ExtremaCS::Domain3D&  theDomain)
+ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const GeomAdaptor_Curve&   theCurve,
+                                               const GeomAdaptor_Surface& theSurface,
+                                               const ExtremaCS::Domain3D& theDomain)
     : myDomain(theDomain),
       myImpl(new Impl())
 {
   initPair(theCurve, theSurface);
+}
+
+//==================================================================================================
+
+ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const GeomAdaptor_Curve&              theCurve,
+                                               const GeomAdaptor_TransformedSurface& theSurface)
+    : myImpl(new Impl())
+{
+  myDomain.Curve   = {theCurve.FirstParameter(), theCurve.LastParameter()};
+  myDomain.Surface = {theSurface.FirstUParameter(),
+                      theSurface.LastUParameter(),
+                      theSurface.FirstVParameter(),
+                      theSurface.LastVParameter()};
+  // Use the underlying surface from TransformedSurface
+  initPair(theCurve, theSurface.Surface());
+}
+
+//==================================================================================================
+
+ExtremaCS_CurveSurface::ExtremaCS_CurveSurface(const GeomAdaptor_Curve&              theCurve,
+                                               const GeomAdaptor_TransformedSurface& theSurface,
+                                               const ExtremaCS::Domain3D&            theDomain)
+    : myDomain(theDomain),
+      myImpl(new Impl())
+{
+  // Use the underlying surface from TransformedSurface
+  initPair(theCurve, theSurface.Surface());
 }
 
 //==================================================================================================
@@ -253,8 +280,8 @@ ExtremaCS_CurveSurface& ExtremaCS_CurveSurface::operator=(ExtremaCS_CurveSurface
 
 //==================================================================================================
 
-void ExtremaCS_CurveSurface::initPair(const Adaptor3d_Curve&   theCurve,
-                                       const Adaptor3d_Surface& theSurface)
+void ExtremaCS_CurveSurface::initPair(const GeomAdaptor_Curve&   theCurve,
+                                      const GeomAdaptor_Surface& theSurface)
 {
   const CurveCategory   aCurveCat   = getCategory(theCurve.GetType());
   const SurfaceCategory aSurfaceCat = getCategory(theSurface.GetType());

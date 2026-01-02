@@ -26,8 +26,8 @@
 #include <ExtremaPS_SurfaceOfExtrusion.hxx>
 #include <ExtremaPS_SurfaceOfRevolution.hxx>
 #include <ExtremaPS_Torus.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -64,16 +64,6 @@ class ExtremaPS_Surface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor from Adaptor3d_Surface (uses adaptor bounds as domain).
-  //! @param[in] theSurface surface adaptor
-  Standard_EXPORT ExtremaPS_Surface(const Adaptor3d_Surface& theSurface);
-
-  //! Constructor from Adaptor3d_Surface with specified domain.
-  //! @param[in] theSurface surface adaptor
-  //! @param[in] theDomain parameter domain (fixed for all queries)
-  Standard_EXPORT ExtremaPS_Surface(const Adaptor3d_Surface&   theSurface,
-                                    const ExtremaPS::Domain2D& theDomain);
-
   //! Constructor from GeomAdaptor_Surface (uses adaptor bounds as domain).
   //! @param[in] theSurface surface adaptor
   Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface);
@@ -83,6 +73,16 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
                                     const ExtremaPS::Domain2D& theDomain);
+
+  //! Constructor from GeomAdaptor_TransformedSurface (uses adaptor bounds as domain).
+  //! @param[in] theSurface transformed surface adaptor
+  Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_TransformedSurface& theSurface);
+
+  //! Constructor from GeomAdaptor_TransformedSurface with specified domain.
+  //! @param[in] theSurface transformed surface adaptor
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_TransformedSurface& theSurface,
+                                    const ExtremaPS::Domain2D&            theDomain);
 
   //! Constructor from Geom_Surface.
   //! For non-trimmed surfaces, does NOT set domain (uses natural/unbounded behavior).
@@ -144,9 +144,13 @@ private:
                                         ExtremaPS_SurfaceOfExtrusion,
                                         ExtremaPS_OtherSurface>;
 
-  //! Initialize evaluator from adaptor with specified domain.
-  void initializeEvaluator(const Adaptor3d_Surface&   theSurface,
+  //! Initialize evaluator from GeomAdaptor_Surface with specified domain.
+  void initializeEvaluator(const GeomAdaptor_Surface& theSurface,
                            const ExtremaPS::Domain2D& theDomain);
+
+  //! Initialize evaluator from GeomAdaptor_TransformedSurface with specified domain.
+  void initializeEvaluator(const GeomAdaptor_TransformedSurface& theSurface,
+                           const ExtremaPS::Domain2D&            theDomain);
 
   //! Helper method to initialize evaluator from a Geom_Surface.
   //! Handles all surface type detection and evaluator creation.

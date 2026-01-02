@@ -108,9 +108,9 @@ struct ExtremaCC_Curves::Impl
   AnalyticalVariant myAnalytical;
 
   // For numerical pairs, we store the curve references
-  const Adaptor3d_Curve* myCurve1 = nullptr;
-  const Adaptor3d_Curve* myCurve2 = nullptr;
-  bool                   myIsNumerical = false;
+  const GeomAdaptor_Curve* myCurve1 = nullptr;
+  const GeomAdaptor_Curve* myCurve2 = nullptr;
+  bool                     myIsNumerical = false;
 
   const ExtremaCC::Result& performAnalytical(double                     theTol,
                                              ExtremaCC::SearchMode     theMode,
@@ -181,8 +181,8 @@ struct ExtremaCC_Curves::Impl
 
 //==================================================================================================
 
-ExtremaCC_Curves::ExtremaCC_Curves(const Adaptor3d_Curve& theCurve1,
-                                   const Adaptor3d_Curve& theCurve2)
+ExtremaCC_Curves::ExtremaCC_Curves(const GeomAdaptor_Curve& theCurve1,
+                                   const GeomAdaptor_Curve& theCurve2)
     : mySwapped(false),
       myImpl(new Impl())
 {
@@ -193,8 +193,8 @@ ExtremaCC_Curves::ExtremaCC_Curves(const Adaptor3d_Curve& theCurve1,
 
 //==================================================================================================
 
-ExtremaCC_Curves::ExtremaCC_Curves(const Adaptor3d_Curve&      theCurve1,
-                                   const Adaptor3d_Curve&      theCurve2,
+ExtremaCC_Curves::ExtremaCC_Curves(const GeomAdaptor_Curve&   theCurve1,
+                                   const GeomAdaptor_Curve&   theCurve2,
                                    const ExtremaCC::Domain2D& theDomain)
     : myDomain(theDomain),
       mySwapped(false),
@@ -237,7 +237,7 @@ ExtremaCC_Curves& ExtremaCC_Curves::operator=(ExtremaCC_Curves&& theOther) noexc
 
 //==================================================================================================
 
-void ExtremaCC_Curves::initPair(const Adaptor3d_Curve& theCurve1, const Adaptor3d_Curve& theCurve2)
+void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1, const GeomAdaptor_Curve& theCurve2)
 {
   const CurveCategory aCat1 = getCategory(theCurve1.GetType());
   const CurveCategory aCat2 = getCategory(theCurve2.GetType());
