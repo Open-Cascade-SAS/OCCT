@@ -138,19 +138,19 @@ bool ExtremaCC_EllipseEllipse::performCoplanar(double theTol) const
     return false; // Concentric but rotated - use numerical algorithm
   }
 
-  // Concentric ellipses with aligned axes: extrema at 0, π/2, π, 3π/2
+  // Concentric ellipses with aligned axes: extrema at 0, pi/2, pi, 3pi/2
   // For aligned ellipses, the same parameter gives corresponding axis points
   // If X-axes are opposite, we need to adjust the second parameter
 
   const bool bSameDirection = aX1.Dot(aX2) > 0.0;
 
-  // Extrema occur at the axes: 0 (major), π/2 (minor), π (-major), 3π/2 (-minor)
+  // Extrema occur at the axes: 0 (major), pi/2 (minor), pi (-major), 3pi/2 (-minor)
   constexpr double aParams[4] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
 
   for (int i = 0; i < 4; ++i)
   {
     const double aU1 = aParams[i];
-    // If X-axes are opposite, parameter on second ellipse is shifted by π
+    // If X-axes are opposite, parameter on second ellipse is shifted by pi
     const double aU2 = bSameDirection ? aParams[i] : std::fmod(aParams[i] + M_PI, 2.0 * M_PI);
 
     addSolution(aU1, aU2, theTol);

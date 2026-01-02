@@ -44,8 +44,8 @@
 //!
 //! **Parameterization:**
 //! - Cylinder: P(U, V) = Center + R*(cos(U)*XDir + sin(U)*YDir) + V*Axis
-//! - Cone: P(U, V) = Apex + V*cos(α)*Axis + V*sin(α)*(cos(U)*XDir + sin(U)*YDir)
-//!   where α is the semi-angle
+//! - Cone: P(U, V) = Apex + V*cos(alpha)*Axis + V*sin(alpha)*(cos(U)*XDir + sin(U)*YDir)
+//!   where alpha is the semi-angle
 class ExtremaSS_CylinderCone
 {
 public:
@@ -263,13 +263,13 @@ private:
       aDirToCyl = myCylXDir;
     }
 
-    // For parallel axes, at each V_cone, the cone has radius R_cone = V_cone * sin(α)
+    // For parallel axes, at each V_cone, the cone has radius R_cone = V_cone * sin(alpha)
     // The distance between surfaces at optimal U values is:
-    // d_min = |aAxisDist - R_cyl - R_cone| = |aAxisDist - R_cyl - V*sin(α)|
+    // d_min = |aAxisDist - R_cyl - R_cone| = |aAxisDist - R_cyl - V*sin(alpha)|
     // d_max = aAxisDist + R_cyl + R_cone
 
     // For minimum: we want R_cone = aAxisDist - R_cyl (if positive)
-    // V_cone = (aAxisDist - R_cyl) / sin(α)
+    // V_cone = (aAxisDist - R_cyl) / sin(alpha)
 
     // For maximum: larger V gives larger cone radius, but we need bounded cone
 
@@ -304,8 +304,8 @@ private:
     const double aUCylAway   = aUCylToward + M_PI;
 
     // For minimum distance with parallel axes:
-    // Distance = |aAxisDist - R_cyl - V*sin(α)| where V is cone parameter
-    // Optimal when R_cone = aAxisDist - R_cyl => V_opt = (aAxisDist - R_cyl) / sin(α)
+    // Distance = |aAxisDist - R_cyl - V*sin(alpha)| where V is cone parameter
+    // Optimal when R_cone = aAxisDist - R_cyl => V_opt = (aAxisDist - R_cyl) / sin(alpha)
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
@@ -876,7 +876,7 @@ private:
   void refineExtremum(double theU1, double theV1, double theU2, double theV2, bool theIsMin, double theTol) const
   {
     // Functor for squared distance between surfaces
-    // For maximum, we minimize -distance²
+    // For maximum, we minimize -distance^2
     struct DistanceFunc
     {
       const ExtremaSS_CylinderCone* myEval;
@@ -899,7 +899,7 @@ private:
         const gp_Pnt aP2     = myEval->Value2(aU2, aV2);
         const double aSqDist = aP1.SquareDistance(aP2);
 
-        // For minimization return distance², for maximization return -distance²
+        // For minimization return distance^2, for maximization return -distance^2
         theF = myIsMin ? aSqDist : -aSqDist;
         return true;
       }

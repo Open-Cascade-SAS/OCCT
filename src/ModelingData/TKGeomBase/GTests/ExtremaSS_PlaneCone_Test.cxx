@@ -223,7 +223,7 @@ TEST_F(ExtremaSS_PlaneConeTest, VerySmallSemiAngle_NearCylinder)
 {
   // Cone with very small semi-angle (almost a cylinder)
   // With refRadius = 2 and semi-angle = 0.01, apex is very far below the location
-  // Apex = Location - refRadius/tan(0.01) * Axis ≈ (0,0,5) - 200*(0,0,1) = (0,0,-195)
+  // Apex = Location - refRadius/tan(0.01) * Axis ~ (0,0,5) - 200*(0,0,1) = (0,0,-195)
   // The cone surface extends from apex upward, crossing Z=0 plane
   const gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));

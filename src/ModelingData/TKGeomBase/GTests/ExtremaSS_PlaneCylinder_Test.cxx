@@ -71,7 +71,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisParallelToPlane_Touching_InfiniteSolutio
   ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  // Axis parallel to plane but touching → InfiniteSolutions with distance 0
+  // Axis parallel to plane but touching -> InfiniteSolutions with distance 0
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 0.0, THE_TOL);
 }
@@ -85,7 +85,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisParallelToPlane_Intersecting_InfiniteSol
   ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  // Axis parallel to plane and intersecting → InfiniteSolutions with distance 0
+  // Axis parallel to plane and intersecting -> InfiniteSolutions with distance 0
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 0.0, THE_TOL);
 }
@@ -129,7 +129,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, TiltedCylinder_PredictableMinDistance)
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
 
-  // Minimum distance = R * sin(45°) = R / sqrt(2) ≈ 1.414
+  // Minimum distance = R * sin(45 deg) = R / sqrt(2) ~ 1.414
   const double aExpectedMinDist = aRadius / std::sqrt(2.0);
   EXPECT_NEAR(std::sqrt(aResult.MinSquareDistance()), aExpectedMinDist, THE_TOL);
 }
@@ -222,7 +222,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SmallTiltedCylinder_MinDistanceFormula)
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
 
-  // Minimum distance = R * sin(45°) = R / sqrt(2) ≈ 0.354
+  // Minimum distance = R * sin(45 deg) = R / sqrt(2) ~ 0.354
   const double aExpectedMinDist = aRadius / std::sqrt(2.0);
   EXPECT_NEAR(std::sqrt(aResult.MinSquareDistance()), aExpectedMinDist, THE_TOL);
 }

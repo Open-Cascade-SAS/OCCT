@@ -39,13 +39,13 @@
 //!
 //! **Case 3: Skew (non-parallel, non-intersecting) axes**
 //! The minimum distance occurs along the common perpendicular to both axes.
-//! Let N = Axis1 × Axis2 be the direction of the common perpendicular.
-//! The distance between the axes is |(P2 - P1) · N| / |N|.
+//! Let N = Axis1 x Axis2 be the direction of the common perpendicular.
+//! The distance between the axes is |(P2 - P1) . N| / |N|.
 //! Extrema on the surfaces consider radii offsets in directions perpendicular to N.
 //!
 //! **Parameterization:**
 //! - Cylinder: P(U, V) = Center + R*(cos(U)*XDir + sin(U)*YDir) + V*Axis
-//! - U ∈ [0, 2π), V ∈ (-∞, +∞) or bounded domain
+//! - U in [0, 2*pi), V in (-inf, +inf) or bounded domain
 class ExtremaSS_CylinderCylinder
 {
 public:
@@ -319,12 +319,12 @@ private:
   void computeSkewCase(double theTol, ExtremaSS::SearchMode theMode) const
   {
     // For skew lines, find the common perpendicular
-    // The common perpendicular direction is myCrossProduct = Axis1 × Axis2 (already normalized)
-    // Distance between axes = |(C2 - C1) · N| where N is the common perpendicular
+    // The common perpendicular direction is myCrossProduct = Axis1 x Axis2 (already normalized)
+    // Distance between axes = |(C2 - C1) . N| where N is the common perpendicular
 
     // Find the closest points on each axis
     // Parameterize: P1(t) = C1 + t*A1, P2(s) = C2 + s*A2
-    // Closest approach: (P2(s) - P1(t)) · A1 = 0 and (P2(s) - P1(t)) · A2 = 0
+    // Closest approach: (P2(s) - P1(t)) . A1 = 0 and (P2(s) - P1(t)) . A2 = 0
 
     const double aA1DotA1 = 1.0; // Axis is unit vector
     const double aA2DotA2 = 1.0;
@@ -334,8 +334,8 @@ private:
     const double aDeltaDotA2 =
         myDeltaCenter.X() * myAxis2.X() + myDeltaCenter.Y() * myAxis2.Y() + myDeltaCenter.Z() * myAxis2.Z();
 
-    // Solve: t - s*cos(θ) = (C2-C1)·A1, -t*cos(θ) + s = (C2-C1)·A2
-    // where cos(θ) = A1·A2
+    // Solve: t - s*cos(theta) = (C2-C1).A1, -t*cos(theta) + s = (C2-C1).A2
+    // where cos(theta) = A1.A2
     const double aDenom = aA1DotA1 * aA2DotA2 - aA1DotA2 * aA1DotA2;
 
     double aT = 0.0;
@@ -418,14 +418,14 @@ private:
     // The problem is more complex for skew cylinders
 
     // Approach: The distance function is:
-    // d²(U1, V1, U2, V2) = |P1(U1,V1) - P2(U2,V2)|²
-    // For the closest points along the common perpendicular, V1 ≈ t, V2 ≈ s
+    // d^2(U1, V1, U2, V2) = |P1(U1,V1) - P2(U2,V2)|^2
+    // For the closest points along the common perpendicular, V1 ~ t, V2 ~ s
 
     // At these V values, we need to find optimal U1, U2
     // The offset from axis in direction aDirBetween is what matters
 
     // For cylinder 1 at U1: radial direction is cos(U1)*XDir1 + sin(U1)*YDir1
-    // Projection onto aDirBetween: R1 * (cos(U1)*(XDir1·D) + sin(U1)*(YDir1·D))
+    // Projection onto aDirBetween: R1 * (cos(U1)*(XDir1.D) + sin(U1)*(YDir1.D))
 
     const double aX1DotD = myXDir1.X() * aDirBetween.X() + myXDir1.Y() * aDirBetween.Y() + myXDir1.Z() * aDirBetween.Z();
     const double aY1DotD = myYDir1.X() * aDirBetween.X() + myYDir1.Y() * aDirBetween.Y() + myYDir1.Z() * aDirBetween.Z();
@@ -433,7 +433,7 @@ private:
     const double aX2DotD = myXDir2.X() * aDirBetween.X() + myXDir2.Y() * aDirBetween.Y() + myXDir2.Z() * aDirBetween.Z();
     const double aY2DotD = myYDir2.X() * aDirBetween.X() + myYDir2.Y() * aDirBetween.Y() + myYDir2.Z() * aDirBetween.Z();
 
-    // Maximum projection for cylinder 1 in direction D: at U1 = atan2(Y1·D, X1·D)
+    // Maximum projection for cylinder 1 in direction D: at U1 = atan2(Y1.D, X1.D)
     const double aU1Toward = std::atan2(aY1DotD, aX1DotD);
     const double aU1Away = aU1Toward + M_PI;
 
@@ -495,7 +495,7 @@ private:
 
     myResult.Status = ExtremaSS::Status::OK;
 
-    // Four candidate extrema pairs: combinations of ±cross direction for each cylinder
+    // Four candidate extrema pairs: combinations of +/- cross direction for each cylinder
     const double aU1Vals[2] = {aU1Cross, aU1Cross + M_PI};
     const double aU2Vals[2] = {aU2Cross, aU2Cross + M_PI};
 
@@ -698,7 +698,7 @@ private:
                    bool   theIsMin,
                    double theTol) const
   {
-    // Normalize U angles to [0, 2π)
+    // Normalize U angles to [0, 2*pi)
     const double aU1 = ExtremaSS::NormalizeAngle(theU1);
     const double aU2 = ExtremaSS::NormalizeAngle(theU2);
 

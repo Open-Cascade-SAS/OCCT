@@ -101,7 +101,7 @@ TEST_F(ExtremaSS_PlaneSphereTest, SphereBelowPlane_FindsMinAndMax)
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_EQ(aResult.NbExt(), 2);
 
-  // Minimum distance: |−10| - 3 = 7
+  // Minimum distance: |-10| - 3 = 7
   EXPECT_NEAR(std::sqrt(aResult.MinSquareDistance()), 7.0, THE_TOL);
 
   // Maximum distance: 10 + 3 = 13

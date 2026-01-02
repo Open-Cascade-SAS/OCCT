@@ -222,7 +222,7 @@ TEST_F(ExtremaSS_GenericPairTest, SaddleSurface_VsPlane)
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // Bezier surface from saddle-shaped poles approximates z=x²-y² but doesn't interpolate exactly.
+  // Bezier surface from saddle-shaped poles approximates z=x^2-y^2 but doesn't interpolate exactly.
   // The minimum distance between surfaces should be positive and reasonable.
   double aMinDist = std::sqrt(aResult.MinSquareDistance());
   EXPECT_GT(aMinDist, 0.0); // Should be positive distance

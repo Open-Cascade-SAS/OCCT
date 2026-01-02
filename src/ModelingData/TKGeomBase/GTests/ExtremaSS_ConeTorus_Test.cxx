@@ -47,9 +47,9 @@ TEST_F(ExtremaSS_ConeTorusTest, SeparatedConeAndTorus_FindsMinimum)
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // The cone surface at 45° forms line (r, 0, r) for U=0.
+  // The cone surface at 45 deg forms line (r, 0, r) for U=0.
   // Torus inner edge at (19, 0, 0). Distance from cone line to this point:
-  // d² = (r-19)² + r² minimized at r=9.5, giving d ≈ 13.44
+  // d^2 = (r-19)^2 + r^2 minimized at r=9.5, giving d ~ 13.44
   // The actual minimum considering the full torus surface is around 13.
   const double aMinSqDist = aResult.MinSquareDistance();
   EXPECT_LT(std::sqrt(aMinSqDist), 14.0);
@@ -217,9 +217,9 @@ TEST_F(ExtremaSS_ConeTorusTest, SmallMinorRadius_ThinTorus)
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // The cone surface at 45° forms line (r, 0, r) for U=0.
+  // The cone surface at 45 deg forms line (r, 0, r) for U=0.
   // Torus inner edge at (14.9, 0, 0). Distance from cone line to this point:
-  // d² = (r-14.9)² + r² minimized at r=7.45, giving d ≈ 10.54
+  // d^2 = (r-14.9)^2 + r^2 minimized at r=7.45, giving d ~ 10.54
   const double aMinSqDist = aResult.MinSquareDistance();
   EXPECT_LT(std::sqrt(aMinSqDist), 11.5);
   EXPECT_GT(std::sqrt(aMinSqDist), 9.5);

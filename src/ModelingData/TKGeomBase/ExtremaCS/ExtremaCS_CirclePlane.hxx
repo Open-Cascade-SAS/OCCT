@@ -165,9 +165,9 @@ public:
     const double aCenterDist = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
 
     // Maximum amplitude of circle's deviation from center in plane normal direction
-    // This is R * sqrt(aXdotN² + aYdotN²) since:
+    // This is R * sqrt(aXdotN^2 + aYdotN^2) since:
     // z(t) = d + R * (aXdotN * cos(t) + aYdotN * sin(t))
-    // and max of (aXdotN * cos(t) + aYdotN * sin(t)) is sqrt(aXdotN² + aYdotN²)
+    // and max of (aXdotN * cos(t) + aYdotN * sin(t)) is sqrt(aXdotN^2 + aYdotN^2)
     const double aAmplitude = aRadius * std::sqrt(aXdotN * aXdotN + aYdotN * aYdotN);
 
     // Use MathRoot::TrigonometricCDE to solve intersection equation:

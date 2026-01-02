@@ -369,7 +369,7 @@ private:
 
     if (theMode != ExtremaSS::SearchMode::Min)
     {
-      // Maximum at V_torus = 0 (outer) or V_torus = π (inner) depending on cylinder radius
+      // Maximum at V_torus = 0 (outer) or V_torus = pi (inner) depending on cylinder radius
       const double aMaxDist1 = myCylRadius + myMajorRadius + myMinorRadius;
 
       addExtremum(0.0, aVCyl, M_PI, 0.0, aMaxDist1 * aMaxDist1, false, theTol);

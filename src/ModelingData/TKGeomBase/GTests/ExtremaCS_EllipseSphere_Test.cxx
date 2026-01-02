@@ -125,10 +125,10 @@ TEST_F(ExtremaCS_EllipseSphereTest, Offset_AboveSphere)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Ellipse points: (a*cos(t), b*sin(t), 10) = (3*cos(t), 2*sin(t), 10)
-  // Distance to sphere center: sqrt(9*cos²(t) + 4*sin²(t) + 100)
-  // Minimum at t=PI/2: sqrt(4 + 100) = sqrt(104) ≈ 10.2
-  // Distance to sphere surface = sqrt(104) - 5 ≈ 5.2
-  // Squared distance ≈ 27
+  // Distance to sphere center: sqrt(9*cos^2(t) + 4*sin^2(t) + 100)
+  // Minimum at t=PI/2: sqrt(4 + 100) = sqrt(104) ~ 10.2
+  // Distance to sphere surface = sqrt(104) - 5 ~ 5.2
+  // Squared distance ~ 27
   double aExpectedMinDist = std::sqrt(104.0) - 5.0;
   EXPECT_NEAR(aResult.MinSquareDistance(), aExpectedMinDist * aExpectedMinDist, 0.5);
 }
@@ -193,7 +193,7 @@ TEST_F(ExtremaCS_EllipseSphereTest, Tangent_EllipseJustTouchesSphere)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // Ellipse point at t=π: (7-2, 0, 0) = (5, 0, 0)
+  // Ellipse point at t=pi: (7-2, 0, 0) = (5, 0, 0)
   // Distance to sphere center = 5, which equals sphere radius
   // So the ellipse is tangent to the sphere at (5, 0, 0)
   // Minimum distance should be close to 0 (tangent case)

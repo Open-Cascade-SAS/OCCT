@@ -160,9 +160,9 @@ public:
     const double aCenterDist = gp_Vec(aPlaneP, aCenter).Dot(gp_Vec(aPlaneN));
 
     // Maximum amplitude of ellipse's deviation from center in plane normal direction
-    // z(t) = d + a*cos(t)*(X·N) + b*sin(t)*(Y·N)
-    // Let A = a*(X·N), B = b*(Y·N)
-    // max of (A*cos(t) + B*sin(t)) is sqrt(A² + B²)
+    // z(t) = d + a*cos(t)*(X.N) + b*sin(t)*(Y.N)
+    // Let A = a*(X.N), B = b*(Y.N)
+    // max of (A*cos(t) + B*sin(t)) is sqrt(A^2 + B^2)
     const double aA = aMajor * aXdotN;
     const double aB = aMinor * aYdotN;
     const double aAmplitude = std::sqrt(aA * aA + aB * aB);
