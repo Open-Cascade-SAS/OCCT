@@ -143,7 +143,7 @@ protected:
   public:
     //! Copy constructor.
     EnumeratedThread(const EnumeratedThread& theCopy)
-        : OSD_Thread(),
+        : OSD_Thread(theCopy),
           myPool(nullptr),
           myJob(nullptr),
           myWakeEvent(false),
