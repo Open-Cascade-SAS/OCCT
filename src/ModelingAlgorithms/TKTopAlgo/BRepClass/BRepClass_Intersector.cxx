@@ -262,8 +262,8 @@ void CheckSkip(Geom2dInt_GInter&                theInter,
   double aPar1 = ElCLib::Parameter(theL, aP1);
   double aPar2 = ElCLib::Parameter(theL, aP2);
 
-  if (!(aPar1 > theDL.FirstParameter() && aPar1 < theDL.LastParameter())
-      || !(aPar2 > theDL.FirstParameter() && aPar2 < theDL.LastParameter()))
+  if (aPar1 <= theDL.FirstParameter() || aPar1 >= theDL.LastParameter()
+      || aPar2 <= theDL.FirstParameter() || aPar2 >= theDL.LastParameter())
   {
     return;
   }

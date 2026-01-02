@@ -144,14 +144,7 @@ void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const doub
   }
   X = BestX;
 
-  if (It <= Itermax)
-  {
-    Done = true;
-  }
-  else
-  {
-    Done = false;
-  }
+  Done = It <= Itermax;
 }
 
 void math_NewtonFunctionRoot::Dump(Standard_OStream& o) const

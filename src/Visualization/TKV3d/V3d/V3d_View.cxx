@@ -319,7 +319,7 @@ occ::handle<V3d_View> V3d_View::PickSubview(const NCollection_Vec2<int>& thePnt)
   }
 
   // iterate in opposite direction - from front to bottom views
-  for (int aSubviewIter = mySubviews.Upper(); aSubviewIter >= mySubviews.Lower(); --aSubviewIter)
+  for (int aSubviewIter = mySubviews.Upper(); aSubviewIter >= NCollection_Sequence<opencascade::handle<V3d_View>>::Lower(); --aSubviewIter)
   {
     const occ::handle<V3d_View>& aSubview = mySubviews.Value(aSubviewIter);
     if (aSubview->View()->IsActive() && thePnt.x() >= aSubview->View()->SubviewTopLeft().x()

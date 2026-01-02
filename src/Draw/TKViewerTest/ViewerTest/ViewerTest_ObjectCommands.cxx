@@ -921,10 +921,7 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
     di << " Syntaxe error\n";
     return 1;
   }
-  if (argc == 8)
-    HasArg = true;
-  else
-    HasArg = false;
+  HasArg = argc == 8;
 
   name = argv[1];
 
@@ -1017,7 +1014,7 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
 
       const TopoDS_Shape& aShapeA = aShapes.First();
       const TopoDS_Shape& aShapeB = aShapes.Last();
-      if (!(aShapeA.ShapeType() == TopAbs_EDGE && aShapeB.ShapeType() == TopAbs_VERTEX))
+      if (aShapeA.ShapeType() != TopAbs_EDGE || aShapeB.ShapeType() != TopAbs_VERTEX)
       {
         Message::SendFail("Syntax error: You should select face and then vertex.");
         return 1;
@@ -1048,7 +1045,7 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
 
       const TopoDS_Shape& aShapeA = aShapes.First();
       const TopoDS_Shape& aShapeB = aShapes.Last();
-      if (!(aShapeA.ShapeType() == TopAbs_EDGE && aShapeB.ShapeType() == TopAbs_VERTEX))
+      if (aShapeA.ShapeType() != TopAbs_EDGE || aShapeB.ShapeType() != TopAbs_VERTEX)
       {
         Message::SendFail("Syntax error: You should select face and then vertex.");
         return 1;
@@ -1212,10 +1209,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
     Message::SendFail("Syntax error: wrong number of arguments");
     return 1;
   }
-  if (argc == 6 || argc == 5 || argc == 4)
-    hasArg = true;
-  else
-    hasArg = false;
+  hasArg = argc == 6 || argc == 5 || argc == 4;
 
   aName = argv[1];
 
@@ -1243,7 +1237,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
 
       // If B is not an AIS_Point
       if (aShapeB.IsNull()
-          || !(aShapeB->Type() == AIS_KindOfInteractive_Datum && aShapeB->Signature() == 1))
+          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2nd object is expected to be an AIS_Point");
         return 1;
@@ -1259,7 +1253,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
 
       // If C is not an AIS_Point
       if (aShapeC.IsNull()
-          || !(aShapeC->Type() == AIS_KindOfInteractive_Datum && aShapeC->Signature() == 1))
+          || aShapeC->Type() != AIS_KindOfInteractive_Datum || aShapeC->Signature() != 1)
       {
         Message::SendFail("Syntax error: 3d object is expected to be an AIS_Point");
         return 1;
@@ -1344,7 +1338,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
       // If B is not an AIS_Point
       if (aShapeB.IsNull()
-          || !(aShapeB->Type() == AIS_KindOfInteractive_Datum && aShapeB->Signature() == 1))
+          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;
@@ -1399,7 +1393,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
       // B should be an AIS_Point
       if (aShapeB.IsNull()
-          || !(aShapeB->Type() == AIS_KindOfInteractive_Datum && aShapeB->Signature() == 1))
+          || aShapeB->Type() != AIS_KindOfInteractive_Datum || aShapeB->Signature() != 1)
       {
         Message::SendFail("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;
@@ -1509,7 +1503,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
           anIter.Next();
           const TopoDS_Shape& aShapeC = anIter.Value();
 
-          if (!(aShapeB.ShapeType() == TopAbs_VERTEX && aShapeC.ShapeType() == TopAbs_VERTEX))
+          if (aShapeB.ShapeType() != TopAbs_VERTEX || aShapeC.ShapeType() != TopAbs_VERTEX)
           {
             Message::SendFail(
               "Syntax error: You should one of variant: face, edge and vertex or three vertices.");
@@ -1614,7 +1608,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         std::swap(aShapeA, aShapeB);
       }
 
-      if (!(aShapeA->ShapeType() == TopAbs_VERTEX && aShapeB->ShapeType() == TopAbs_FACE))
+      if (aShapeA->ShapeType() != TopAbs_VERTEX || aShapeB->ShapeType() != TopAbs_FACE)
       {
         Message::SendFail("Syntax error: you should select face and vertex.");
         return 1;
@@ -1660,7 +1654,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         std::swap(aShapeA, aShapeB);
       }
 
-      if (!(aShapeA->ShapeType() == TopAbs_EDGE && aShapeB->ShapeType() == TopAbs_FACE))
+      if (aShapeA->ShapeType() != TopAbs_EDGE || aShapeB->ShapeType() != TopAbs_FACE)
       {
         Message::SendFail("Error: you should select edge and face.");
         return 1;
@@ -5340,7 +5334,7 @@ static int VObjZLayer(Draw_Interpretor& di, int argc, const char** argv)
     aOperation = TCollection_AsciiString(argv[1]);
 
   // check for correct arguments
-  if (!(argc == 4 && aOperation.IsEqual("set")) && !(argc == 3 && aOperation.IsEqual("get")))
+  if ((argc != 4 || !aOperation.IsEqual("set")) && (argc != 3 || !aOperation.IsEqual("get")))
   {
     di << "Usage : " << argv[0] << " set/get object [layerid]\n";
     di << " set - set layer id for interactive object, layerid - z layer id\n";

@@ -469,7 +469,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               }
             }
             //-- -------------- Estimation a partir de Xip1
-            if (Rediscr == false)
+            if (!Rediscr)
             {
               xp1 = xm + dx;
               if (xp1 > XN)
@@ -507,7 +507,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               }
             }
             //-- -------------- Estimation a partir de Xim1
-            if (Rediscr == false)
+            if (!Rediscr)
             {
               xm1 = xm - dx;
               if (xm1 < X0)

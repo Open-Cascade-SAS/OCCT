@@ -850,7 +850,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   {
     if (param3 > param4)
     {
-      if (Sens1 == true)
+      if (Sens1)
       {
         Qual1 = GccEnt_enclosed;
       }
@@ -861,7 +861,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     }
     else
     {
-      if (Sens1 == true)
+      if (Sens1)
       {
         Qual1 = GccEnt_outside;
       }
@@ -872,14 +872,14 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     }
     if (param1 > param2)
     {
-      if (Sens2 == true)
+      if (Sens2)
         Qual2 = GccEnt_outside;
       else
         Qual2 = GccEnt_enclosed;
     }
     else
     {
-      if (Sens2 == true)
+      if (Sens2)
         Qual2 = GccEnt_enclosed;
       else
         Qual2 = GccEnt_outside;
@@ -889,28 +889,28 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   {
     if (param3 > param4)
     {
-      if (Sens1 == true)
+      if (Sens1)
         Qual1 = GccEnt_outside;
       else
         Qual1 = GccEnt_enclosed;
     }
     else
     {
-      if (Sens1 == true)
+      if (Sens1)
         Qual1 = GccEnt_enclosed;
       else
         Qual1 = GccEnt_outside;
     }
     if (param1 > param2)
     {
-      if (Sens2 == true)
+      if (Sens2)
         Qual2 = GccEnt_enclosed;
       else
         Qual2 = GccEnt_outside;
     }
     else
     {
-      if (Sens2 == true)
+      if (Sens2)
         Qual2 = GccEnt_outside;
       else
         Qual2 = GccEnt_enclosed;
@@ -1182,13 +1182,6 @@ bool IsLineOrCircle(const TopoDS_Edge& E, const TopoDS_Face& F)
   else
     basisC = C;
 
-  if (basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
-      || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  } // else ...
+  return basisC->DynamicType() == STANDARD_TYPE(Geom2d_Circle)
+      || basisC->DynamicType() == STANDARD_TYPE(Geom2d_Line); // else ...
 } // IsLineOrCircle

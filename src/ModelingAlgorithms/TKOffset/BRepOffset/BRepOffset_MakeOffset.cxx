@@ -733,10 +733,7 @@ static bool IsConnectedShell(const TopoDS_Shape& S)
   TopoDS_Shape    SS = Glue.Shells();
   TopExp_Explorer Explo(SS, TopAbs_SHELL);
   Explo.Next();
-  if (Explo.More())
-    return false;
-
-  return true;
+  return !Explo.More();
 }
 
 //=================================================================================================

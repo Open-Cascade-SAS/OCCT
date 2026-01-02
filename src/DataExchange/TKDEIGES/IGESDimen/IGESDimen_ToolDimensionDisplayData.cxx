@@ -282,8 +282,8 @@ void IGESDimen_ToolDimensionDisplayData::OwnCheck(
     ach->AddFail("Incorrect Dimension Type");
   if (ent->LabelPosition() < 0 || ent->LabelPosition() > 4)
     ach->AddFail("Incorrect Preferred Label Position");
-  if (!(ent->CharacterSet() == 1 || ent->CharacterSet() == 1001 || ent->CharacterSet() == 1002
-        || ent->CharacterSet() == 1003))
+  if (ent->CharacterSet() != 1 && ent->CharacterSet() != 1001 && ent->CharacterSet() != 1002
+        && ent->CharacterSet() != 1003)
     ach->AddFail("Incorrect Character Set");
   if (ent->DecimalSymbol() != 0 && ent->DecimalSymbol() != 1)
     ach->AddFail("Incorrect Decimal Symbol");

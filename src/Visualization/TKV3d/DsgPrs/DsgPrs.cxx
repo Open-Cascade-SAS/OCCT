@@ -421,11 +421,8 @@ void DsgPrs::ComputeFilletRadiusPresentation(const double /*ArrowLength*/,
   gp_Dir dir1(gp_Vec(Center, FirstPoint));
   gp_Dir dir2(gp_Vec(Center, SecondPoint));
   double Angle = dir1.Angle(dir2);
-  if (Angle <= Precision::Angular() || (M_PI - Angle) <= Precision::Angular()
-      || Value <= Precision::Confusion())
-    SpecCase = true;
-  else
-    SpecCase = false;
+  SpecCase = Angle <= Precision::Angular() || (M_PI - Angle) <= Precision::Angular()
+      || Value <= Precision::Confusion();
   if (!SpecCase)
   {
     // Computing presentation of fillet's arc

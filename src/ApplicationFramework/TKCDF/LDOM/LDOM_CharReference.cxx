@@ -197,7 +197,7 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
         ptrDest += 6;
       }
       else // predefined entity reference
-        if (isAttribute == false && aCode == ENTI_QUOT)
+        if (!isAttribute && aCode == ENTI_QUOT)
           *ptrDest++ = *ptrSrc;
         else
         {

@@ -1242,10 +1242,10 @@ static void MakeSTEPStyles(
   {
     Quantity_ColorRGBA aSurfCol = aStyle.GetColorSurfRGBA();
     aRenderTransp               = 1.0 - aSurfCol.Alpha();
-    aSurfColor                  = theStyles.EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
+    aSurfColor                  = STEPConstruct_Styles::EncodeColor(aSurfCol.GetRGB(), theDPDCs, theColRGBs);
   }
   if (aStyle.IsSetColorCurv())
-    aCurvColor = theStyles.EncodeColor(aStyle.GetColorCurv(), theDPDCs, theColRGBs);
+    aCurvColor = STEPConstruct_Styles::EncodeColor(aStyle.GetColorCurv(), theDPDCs, theColRGBs);
 
   bool aHasOwn = (!aSurfColor.IsNull() || !aCurvColor.IsNull() || !aStyle.IsVisible());
 
@@ -1291,7 +1291,7 @@ static void MakeSTEPStyles(
         {
           // default white color
           aSurfColor =
-            theStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
+            STEPConstruct_Styles::EncodeColor(Quantity_Color(Quantity_NOC_WHITE), theDPDCs, theColRGBs);
           aPSA = theStyles.MakeColorPSA(anItem,
                                         aSurfColor,
                                         aCurvColor,
@@ -2260,17 +2260,17 @@ static bool createSHUOStyledItem(
   {
     Quantity_ColorRGBA aSurfCol = theStyle.GetColorSurfRGBA();
     aRenderTransp               = 1.0 - aSurfCol.Alpha();
-    aSurfColor                  = aStyles.EncodeColor(aSurfCol.GetRGB());
+    aSurfColor                  = STEPConstruct_Styles::EncodeColor(aSurfCol.GetRGB());
   }
   if (theStyle.IsSetColorCurv())
-    aCurvColor = aStyles.EncodeColor(theStyle.GetColorCurv());
+    aCurvColor = STEPConstruct_Styles::EncodeColor(theStyle.GetColorCurv());
   bool                                     isComponent = true; // cause need to get PSBC
   occ::handle<StepRepr_RepresentationItem> anItem;
   // set default color for invisible SHUO.
   bool isSetDefaultColor = false;
   if (aSurfColor.IsNull() && aCurvColor.IsNull() && !theStyle.IsVisible())
   {
-    aSurfColor        = aStyles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE));
+    aSurfColor        = STEPConstruct_Styles::EncodeColor(Quantity_Color(Quantity_NOC_WHITE));
     isSetDefaultColor = true;
   }
   STEPConstruct_RenderingProperties aRenderProps;
@@ -4554,7 +4554,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
 
   // Common entities for presentation
   STEPConstruct_Styles                     aStyles(theWS);
-  occ::handle<StepVisual_Colour>           aCurvColor = aStyles.EncodeColor(Quantity_NOC_WHITE);
+  occ::handle<StepVisual_Colour>           aCurvColor = STEPConstruct_Styles::EncodeColor(Quantity_NOC_WHITE);
   occ::handle<StepRepr_RepresentationItem> anItem     = nullptr;
   myGDTPrsCurveStyle->SetValue(
     1,

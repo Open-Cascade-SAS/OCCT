@@ -137,16 +137,14 @@ bool Units_Dimensions::IsEqual(const occ::handle<Units_Dimensions>& adimensions)
         && thethermodynamictemperature == adimensions->ThermodynamicTemperature()
         && theamountofsubstance == adimensions->AmountOfSubstance()
         && theluminousintensity == adimensions->LuminousIntensity()
-        && theplaneangle == adimensions->PlaneAngle() && thesolidangle == adimensions->SolidAngle()
-      ? true
-      : false);
+        && theplaneangle == adimensions->PlaneAngle() && thesolidangle == adimensions->SolidAngle());
 }
 
 //=================================================================================================
 
 bool Units_Dimensions::IsNotEqual(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  return !(IsEqual(adimensions)) ? true : false;
+  return !(IsEqual(adimensions));
 }
 
 //=================================================================================================

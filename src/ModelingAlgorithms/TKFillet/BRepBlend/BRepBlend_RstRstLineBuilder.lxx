@@ -38,38 +38,26 @@ inline const occ::handle<BRepBlend_Line>& BRepBlend_RstRstLineBuilder::Line() co
 
 inline bool BRepBlend_RstRstLineBuilder::Decroch1Start() const
 {
-  if (decrochdeb == Blend_DecrochRst1 || decrochdeb == Blend_DecrochBoth)
-    return true;
-
-  return false;
+  return decrochdeb == Blend_DecrochRst1 || decrochdeb == Blend_DecrochBoth;
 }
 
 //=================================================================================================
 
 inline bool BRepBlend_RstRstLineBuilder::Decroch1End() const
 {
-  if (decrochfin == Blend_DecrochRst1 || decrochfin == Blend_DecrochBoth)
-    return true;
-
-  return false;
+  return decrochfin == Blend_DecrochRst1 || decrochfin == Blend_DecrochBoth;
 }
 
 //=================================================================================================
 
 inline bool BRepBlend_RstRstLineBuilder::Decroch2Start() const
 {
-  if (decrochdeb == Blend_DecrochRst2 || decrochdeb == Blend_DecrochBoth)
-    return true;
-
-  return false;
+  return decrochdeb == Blend_DecrochRst2 || decrochdeb == Blend_DecrochBoth;
 }
 
 //=================================================================================================
 
 inline bool BRepBlend_RstRstLineBuilder::Decroch2End() const
 {
-  if (decrochfin == Blend_DecrochRst2 || decrochfin == Blend_DecrochBoth)
-    return true;
-
-  return false;
+  return decrochfin == Blend_DecrochRst2 || decrochfin == Blend_DecrochBoth;
 }

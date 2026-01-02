@@ -516,7 +516,7 @@ int ChFi2d_FilletAlgo::NbResults(const gp_Pnt& thePoint)
   NCollection_List<double>::Iterator anIter(myResultParams);
   for (; anIter.More(); anIter.Next(), i++)
   {
-    myStartSide         = (myResultOrientation.Value(i)) ? true : false;
+    myStartSide         = (myResultOrientation.Value(i)) != 0;
     FilletPoint* aPoint = new FilletPoint(anIter.Value());
     FillPoint(aPoint, anIter.Value() + 1.);
     if (aPoint->hasSolution(myRadius))
@@ -547,7 +547,7 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint,
   NCollection_List<double>::Iterator anIter(myResultParams);
   for (aNearest = nullptr, a = 1; anIter.More(); anIter.Next(), a++)
   {
-    myStartSide         = (myResultOrientation.Value(a)) ? true : false;
+    myStartSide         = (myResultOrientation.Value(a)) != 0;
     FilletPoint* aPoint = new FilletPoint(anIter.Value());
     FillPoint(aPoint, anIter.Value() + 1.);
     if (!aPoint->hasSolution(myRadius))

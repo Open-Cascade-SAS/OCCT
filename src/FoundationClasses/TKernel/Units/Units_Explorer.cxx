@@ -151,7 +151,7 @@ void Units_Explorer::Init(const occ::handle<Units_UnitsDictionary>& aunitsdictio
 
 bool Units_Explorer::MoreQuantity() const
 {
-  return thecurrentquantity <= thequantitiessequence->Length() ? true : false;
+  return thecurrentquantity <= thequantitiessequence->Length();
 }
 
 //=================================================================================================
@@ -175,7 +175,7 @@ TCollection_AsciiString Units_Explorer::Quantity() const
 
 bool Units_Explorer::MoreUnit() const
 {
-  return thecurrentunit <= theunitssequence->Length() ? true : false;
+  return thecurrentunit <= theunitssequence->Length();
 }
 
 //=================================================================================================
@@ -196,5 +196,5 @@ TCollection_AsciiString Units_Explorer::Unit() const
 
 bool Units_Explorer::IsActive() const
 {
-  return theactiveunitssequence->Value(thecurrentquantity) == thecurrentunit ? true : false;
+  return theactiveunitssequence->Value(thecurrentquantity) == thecurrentunit;
 }

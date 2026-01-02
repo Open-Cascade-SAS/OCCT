@@ -505,8 +505,8 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       // if isUClosed = true and U trim does not coincide with first period of torus,
       // method CheckAndSegment shifts position of U seam boundary of surface.
       // probably bug? So, for this case we must build not periodic surface.
-      bool isUFirstPeriod = !(UFirst < 0. || ULast > 2. * M_PI);
-      bool isVFirstPeriod = !(VFirst < 0. || VLast > 2. * M_PI);
+      bool isUFirstPeriod = UFirst >= 0. && ULast <= 2. * M_PI;
+      bool isVFirstPeriod = VFirst >= 0. && VLast <= 2. * M_PI;
       if (isUClosed && isUFirstPeriod)
       {
         Convert_TorusToBSplineSurface Convert(Tr, VFirst, VLast, false);

@@ -1249,12 +1249,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
     gp_Lin li1(occ::down_cast<Geom_Line>(C1)->Lin());
     gp_Lin li2(occ::down_cast<Geom_Line>(C2)->Lin());
 
-    if (std::abs(li1.Angle(li2)) <= tolang
-        && li1.Location().SquareDistance(li2.Location()) <= tollin * tollin)
-    {
-      return true;
-    }
-    return false;
+    return std::abs(li1.Angle(li2)) <= tolang
+        && li1.Location().SquareDistance(li2.Location()) <= tollin * tollin;
   }
   else if (typC1 == STANDARD_TYPE(Geom_Circle))
   {

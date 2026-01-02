@@ -219,7 +219,7 @@ void TopOpeBRepBuild_Builder1::GFillSolidSFS(const TopoDS_Shape&                
     {
       // shell SH is not in DS : Get its state (to the LS02) from map and define to keep or not
       TopAbs_State shSt = myDataStructure->DS().GetShapeWithState(SH).State();
-      bool         keep = (shSt == TB1) ? true : false;
+      bool         keep = shSt == TB1;
       if (keep)
       {
         TopAbs_Orientation oriSH    = SH.Orientation();
@@ -267,7 +267,7 @@ void TopOpeBRepBuild_Builder1::GFillShellSFS(const TopoDS_Shape&                
     {
       // DS doesn't contain FACE , get its state and define to keep or not
       TopAbs_State shSt = myDataStructure->DS().GetShapeWithState(FOR).State();
-      bool         keep = (shSt == TB1) ? true : false;
+      bool         keep = shSt == TB1;
       if (keep)
       {
         TopAbs_Orientation oriF    = FOR.Orientation();
@@ -390,7 +390,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceNotSameDomWES(const TopoDS_Shape&       
     {
       // wire W is not in DS : get its state and define to keep or not
       TopAbs_State shSt = myDataStructure->DS().GetShapeWithState(W).State();
-      bool         keep = (shSt == TB1) ? true : false;
+      bool         keep = shSt == TB1;
       if (keep || (myProcessON && shSt == TopAbs_ON))
       {
         TopAbs_Orientation oriW    = W.Orientation();
@@ -434,7 +434,7 @@ void TopOpeBRepBuild_Builder1::GFillWireNotSameDomWES(const TopoDS_Shape&       
     {
       // edge EOR is not in DS : get its state and define to keep or not
       TopAbs_State shSt = myDataStructure->DS().GetShapeWithState(EOR).State();
-      bool         keep = (shSt == TB1) ? true : false;
+      bool         keep = shSt == TB1;
       if (keep || (myProcessON && shSt == TopAbs_ON))
       {
         TopAbs_Orientation oriE    = EOR.Orientation();
@@ -554,7 +554,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape&          
   NCollection_List<TopoDS_Shape>& LOFS = ChangeSplit(FF, TB1);
 
   // orientate new faces by the right way
-  bool OrigRev = (FOR.Orientation() == TopAbs_FORWARD ? false : true);
+  bool OrigRev = (FOR.Orientation() != TopAbs_FORWARD);
   NCollection_List<TopoDS_Shape>::Iterator LOFit(LOF);
   for (; LOFit.More(); LOFit.Next())
   {
@@ -658,7 +658,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomWES(
       if (!hasshape && (shSt != TopAbs_ON))
       {
         // wire W is not in DS : get its state and define to keep or not
-        bool keep = (shSt == TB) ? true : false;
+        bool keep = shSt == TB;
         if (keep)
         {
           TopAbs_Orientation oriW    = W.Orientation();
@@ -750,7 +750,7 @@ void TopOpeBRepBuild_Builder1::GFillWireSameDomWES(const TopoDS_Shape&          
     {
       // edge EOR is not in DS : get its state and define to keep or not
       TopAbs_State shSt = myDataStructure->DS().GetShapeWithState(EOR).State();
-      bool         keep = (shSt == TB) ? true : false;
+      bool         keep = shSt == TB;
       if (keep)
       {
         TopAbs_Orientation oriE = EOR.Orientation();
@@ -1034,7 +1034,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape&          
 
         TopAbs_State aPartState = (scalarPr > 0) ? TopAbs_IN : TopAbs_OUT;
 
-        keep = (aPartState == TB) ? true : false;
+        keep = aPartState == TB;
       }
       else
       { // if aAdjFace.IsNull() - it must not happen
@@ -1185,7 +1185,7 @@ void TopOpeBRepBuild_Builder1::PerformONParts(
       TopAbs_State aState   = TopAbs_UNKNOWN;
 
       aState = ClassifyEdgeToFaceByOnePoint(TopoDS::Edge(newE), TopoDS::Face(FOR1));
-      if (!(aState == TopAbs_IN || aState == TopAbs_ON))
+      if (aState != TopAbs_IN && aState != TopAbs_ON)
         continue;
 
       bool        keep    = false;
@@ -1244,7 +1244,7 @@ void TopOpeBRepBuild_Builder1::PerformONParts(
             continue;
         }
         TopAbs_State aPartState = (scalarPr > 0) ? TopAbs_IN : TopAbs_OUT;
-        keep                    = (aPartState == ETB) ? true : false;
+        keep                    = aPartState == ETB;
         if (keep)
           break;
       }
@@ -1408,7 +1408,7 @@ void TopOpeBRepBuild_Builder1::PerformPieceIn2D(const TopoDS_Edge&           Edg
         }
 
         TopAbs_State aPartState = (scalarPr > 0) ? TopAbs_IN : TopAbs_OUT;
-        keep                    = (aPartState == TB) ? true : false;
+        keep                    = aPartState == TB;
         if (keep)
           break;
       }
@@ -2063,7 +2063,7 @@ int TopOpeBRepBuild_Builder1::IsSame2d(const NCollection_Sequence<TopoDS_Shape>&
     gp_Vec2d aOVec(aOFuv, aOLuv);
     if (anEObj.Orientation() == TopAbs_REVERSED)
       aOVec.Reverse();
-    IsTrFirst = (aTrVec * aOVec > 0) ? false : true;
+    IsTrFirst = aTrVec * aOVec <= 0;
 
     BRep_Builder BB;
     double       tolE = BRep_Tool::Tolerance(aPTool);

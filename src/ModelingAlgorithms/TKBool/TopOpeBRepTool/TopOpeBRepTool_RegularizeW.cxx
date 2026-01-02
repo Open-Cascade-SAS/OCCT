@@ -660,9 +660,7 @@ Standard_EXPORT bool FUN_tool_ClassifW(
   {
     const NCollection_List<TopoDS_Shape>& low = itm.Value();
     bool                                  ok  = CLASSI.Classilist(low, mapWlow);
-    if (!ok)
-      return false;
-    return true;
+    return ok;
   }
 
   // noldW > 1
@@ -855,7 +853,5 @@ bool TopOpeBRepTool::RegularizeFace(
   // <aListOfFaces>
   // -------------
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(theFace, mapWlow, newFaces);
-  if (!facesbuilt)
-    return false;
-  return true;
+  return facesbuilt;
 }

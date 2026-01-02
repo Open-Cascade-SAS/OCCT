@@ -101,8 +101,5 @@ bool IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
   aP1.SetCoord(u2, v2);
   aP2.SetCoord(aU2, aV2);
 
-  if (!aP1.IsEqual(aP2, theTol2D))
-    return false;
-
-  return true;
+  return aP1.IsEqual(aP2, theTol2D);
 }

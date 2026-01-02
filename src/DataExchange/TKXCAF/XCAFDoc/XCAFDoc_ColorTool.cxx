@@ -162,7 +162,7 @@ TDF_Label XCAFDoc_ColorTool::AddColor(const Quantity_ColorRGBA& theColor) const
 
   // create a new color entry
   TDF_TagSource aTag;
-  aLab = aTag.NewChild(Label());
+  aLab = TDF_TagSource::NewChild(Label());
   XCAFDoc_Color::Set(aLab, theColor);
 
   if (XCAFDoc_ColorTool_AutoNaming)

@@ -195,7 +195,7 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
   if (isSeekgAvailable)
   {
     // get back to the beginning
-    theStream.seekg(0, theStream.beg);
+    theStream.seekg(0, Standard_IStream::beg);
   }
   else
   {

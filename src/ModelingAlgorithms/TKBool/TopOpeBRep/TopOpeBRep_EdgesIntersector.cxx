@@ -565,7 +565,7 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
         }
         //  Modified by Sergey KHROMOV - Fri Jan 11 10:31:39 2002 End
       }
-    } while (fin == false);
+    } while (!fin);
   }
   //-- End filter
 

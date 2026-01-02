@@ -1210,7 +1210,7 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1480,7 +1480,7 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1893,7 +1893,7 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
     }
   }
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper(); i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -2128,10 +2128,7 @@ bool IntPatch_Intersection::CheckSingularPoints(const occ::handle<Adaptor3d_Surf
     gp_Pnt2d aP1;
     gp_Vec2d aDir;
     aBnd->D1((pinf + psup) / 2., aP1, aDir);
-    if (std::abs(aDir.X()) > std::abs(aDir.Y()))
-      isU = true;
-    else
-      isU = false;
+    isU = std::abs(aDir.X()) > std::abs(aDir.Y());
     gp_Pnt aPP1;
     gp_Vec aDU, aDV;
     double aD1NormMax = 0.;

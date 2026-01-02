@@ -70,8 +70,8 @@ RWGltf_GltfPrimArrayData& RWGltf_GltfLatePrimitiveArray::AddPrimArrayData(
     // make sure indexes go after vertex positions but before any other vertex attributes
     if (myData.First().Type == RWGltf_GltfArrayType_Position)
     {
-      myData.InsertAfter(myData.Lower(), RWGltf_GltfPrimArrayData(theType));
-      return myData.ChangeValue(myData.Lower() + 1);
+      myData.InsertAfter(NCollection_Sequence<RWGltf_GltfPrimArrayData>::Lower(), RWGltf_GltfPrimArrayData(theType));
+      return myData.ChangeValue(NCollection_Sequence<RWGltf_GltfPrimArrayData>::Lower() + 1);
     }
     else
     {

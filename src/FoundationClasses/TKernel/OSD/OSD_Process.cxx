@@ -111,14 +111,7 @@ TCollection_AsciiString OSD_Process::UserName()
 
 bool OSD_Process::IsSuperUser()
 {
-  if (getuid())
-  {
-    return false;
-  }
-  else
-  {
-    return true;
-  }
+  return getuid() == 0;
 }
 
 OSD_Path OSD_Process::CurrentDirectory()

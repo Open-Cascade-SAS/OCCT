@@ -721,9 +721,7 @@ static bool Intersect(const TopoDS_Wire&         wir1,
                   }
                 }
               }
-              if (NbCoinc == Inter.NbSegments())
-                return false;
-              return true;
+              return NbCoinc != Inter.NbSegments();
             }
           }
           if (Inter.NbPoints() > 0)
@@ -749,9 +747,7 @@ static bool Intersect(const TopoDS_Wire&         wir1,
                   }
                 }
               }
-              if (NbCoinc == Inter.NbPoints())
-                return false;
-              return true;
+              return NbCoinc != Inter.NbPoints();
             }
           }
         }
@@ -900,8 +896,5 @@ bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
   gp_Vec2d vc1(p1f, p1l);
   gp_Vec2d vc2(p2f, p2l);
 
-  if ((vc1 * vc2) >= 0. && e1or == e2or)
-    return false;
-
-  return true;
+  return !((vc1 * vc2) >= 0. && e1or == e2or);
 }

@@ -85,7 +85,7 @@ Standard_OStream& Vrml_PointLight::Print(Standard_OStream& anOStream) const
 {
   anOStream << "PointLight {\n";
 
-  if (myOnOff != true)
+  if (!myOnOff)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";

@@ -148,17 +148,17 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
+      if ((VTXi.IsOnDomS1()) && (!VTXi.IsOnDomS2()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
+            if ((VTXj.IsOnDomS1()) && (!VTXj.IsOnDomS2()))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -187,22 +187,22 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS2() == true) && (VTXi.IsOnDomS1() == false))
+      if ((VTXi.IsOnDomS2()) && (!VTXi.IsOnDomS1()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS2() == true) && (VTXj.IsOnDomS1() == false))
+            if ((VTXj.IsOnDomS2()) && (!VTXj.IsOnDomS1()))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -231,7 +231,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   nbvtx = NbVertex();
 
@@ -255,10 +255,10 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
   {
     APointDeleted = false;
     bool restrdiff;
-    for (i = 1; i <= nbvtx && (APointDeleted == false); i++)
+    for (i = 1; i <= nbvtx && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTX = svtx.Value(i);
-      for (j = 1; j <= nbvtx && (APointDeleted == false); j++)
+      for (j = 1; j <= nbvtx && (!APointDeleted); j++)
       {
         if (i != j)
         {
@@ -278,7 +278,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
                 {
                   if (VTXM1.IsOnDomS2())
                   { //-- OnS1 == OnS1  OnS2
-                    if (VTX.IsOnDomS2() == false)
+                    if (!VTX.IsOnDomS2())
                     { //-- OnS1 == OnS1  OnS2 PasOnS2
                       kill = true;
                     }
@@ -308,7 +308,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
               }
             }
 
-            if ((restrdiff == false) && (!(kill || killm1)))
+            if ((!restrdiff) && (!(kill || killm1)))
             {
               if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2())
               { //-- OnS2    OnS2
@@ -318,7 +318,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
                   {
                     if (VTXM1.IsOnDomS1())
                     { //-- OnS2 == OnS2  OnS1
-                      if (VTX.IsOnDomS1() == false)
+                      if (!VTX.IsOnDomS1())
                       { //-- OnS2 == OnS2  OnS1 PasOnS1
                         kill = true;
                       }
@@ -348,7 +348,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
                 }
               }
             }
-            if (restrdiff == false)
+            if (!restrdiff)
             {
               if (kill)
               {
@@ -367,7 +367,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   do
   {
@@ -378,7 +378,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
       const IntPatch_Point& Pii  = svtx.Value(i);
       if (Pim1.ParameterOnLine() == Pii.ParameterOnLine())
       {
-        if ((Pii.IsOnDomS1() == false) && (Pii.IsOnDomS2() == false))
+        if ((!Pii.IsOnDomS1()) && (!Pii.IsOnDomS2()))
         {
           SortIsOK = false;
           svtx.Remove(i);
@@ -386,7 +386,7 @@ void IntPatch_RLine::ComputeVertexParameters(const double)
         }
         else
         {
-          if ((Pim1.IsOnDomS1() == false) && (Pim1.IsOnDomS2() == false))
+          if ((!Pim1.IsOnDomS1()) && (!Pim1.IsOnDomS2()))
           {
             SortIsOK = false;
             svtx.Remove(i - 1);

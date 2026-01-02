@@ -70,7 +70,7 @@ bool IntTools_Curve::Bounds(double& theFirst,
 
 bool IntTools_Curve::D0(const double& thePar, gp_Pnt& thePnt) const
 {
-  bool bInside = !(thePar < my3dCurve->FirstParameter() && thePar > my3dCurve->LastParameter());
+  bool bInside = thePar >= my3dCurve->FirstParameter() || thePar <= my3dCurve->LastParameter();
   if (bInside)
   {
     my3dCurve->D0(thePar, thePnt);

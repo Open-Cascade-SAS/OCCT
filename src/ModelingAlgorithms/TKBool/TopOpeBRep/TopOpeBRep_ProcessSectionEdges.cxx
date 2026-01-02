@@ -230,14 +230,7 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
       else
         bfl = bf && bl;
 
-      if (bfl)
-      {
-        out = false;
-      }
-      else
-      {
-        out = true;
-      }
+      out = !bfl;
     }
     else
     {

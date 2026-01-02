@@ -893,7 +893,7 @@ static int BUC60847(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<TNaming_NamedShape> NS = new TNaming_NamedShape;
 
   TNaming_Naming aNN;
-  NS = aNN.Name(L, s, s);
+  NS = TNaming_Naming::Name(L, s, s);
   //  if (!NS->IsEmpty()) {di<<3;return 0;}
   if (NS->IsEmpty())
   {
@@ -935,7 +935,7 @@ static int BUC60862(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<TNaming_NamedShape> NS = new TNaming_NamedShape;
 
   TNaming_Naming aNN;
-  NS = aNN.Name(L, s, s);
+  NS = TNaming_Naming::Name(L, s, s);
   if (NS->IsEmpty())
   {
     di << 4;

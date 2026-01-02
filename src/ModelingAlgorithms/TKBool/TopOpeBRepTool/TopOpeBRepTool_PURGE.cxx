@@ -285,7 +285,7 @@ bool TopOpeBRepTool::PurgeClosingEdges(
   bool                   vclosed = CORRISO.Refclosed(2, vperiod);
   if (!uclosed && !vclosed)
     return false;
-  bool   inU  = uclosed ? true : false;
+  bool   inU  = uclosed;
   double xmin = inU ? (CORRISO.GASref().FirstUParameter()) : (CORRISO.GASref().FirstVParameter());
   double xper = inU ? uperiod : vperiod;
   double tolx = inU ? (CORRISO.Tol(1, tolF)) : (CORRISO.Tol(2, tolF));
@@ -725,7 +725,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
   int i;
   for (i = 1; i <= 2; i++)
   {
-    bool                                   onU     = (i == 1) ? true : false;
+    bool                                   onU     = i == 1;
     const NCollection_List<TopoDS_Shape>&  Tocheck = CORRISO.Eds();
     NCollection_DataMap<TopoDS_Shape, int> fyEds;
     ok = ::FUN_connexX(onU, CORRISO, Tocheck, fyEds);

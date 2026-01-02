@@ -395,7 +395,7 @@ bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge& theEdge,
   const double aDist11 = aPV1.Distance(aCurve3DPoint1);
   const double aDist22 = aPV2.Distance(aCurve3DPoint2);
 
-  if (!((aDist11 <= thePrecision) && (aDist22 <= thePrecision)))
+  if ((aDist11 > thePrecision) || (aDist22 > thePrecision))
   {
     ShapeBuild_Edge().RemovePCurve(theEdge, theFace);
     return false;

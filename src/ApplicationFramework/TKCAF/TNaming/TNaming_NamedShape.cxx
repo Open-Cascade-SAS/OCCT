@@ -119,11 +119,7 @@ TDF_Label TNaming_Node::Label()
 
 bool TNaming_Node::IsValidInTrans(int Trans)
 {
-  if (myAtt->Transaction() <= Trans && Trans <= myAtt->UntilTransaction())
-  {
-    return true;
-  }
-  return false;
+  return myAtt->Transaction() <= Trans && Trans <= myAtt->UntilTransaction();
 }
 
 //=================================================================================================
@@ -1410,7 +1406,7 @@ TDF_Label TNaming_Tool::Label(const occ::handle<TNaming_UsedShapes>& Shapes,
   TNaming_RefShape* prs = Shapes->Map().Find(S);
   TNaming_Node*     pdn = prs->FirstUse();
 
-  while (pdn != nullptr && !(pdn->myNew == prs && pdn->myAtt->Evolution() != TNaming_SELECTED))
+  while (pdn != nullptr && (pdn->myNew != prs || pdn->myAtt->Evolution() == TNaming_SELECTED))
   {
     pdn = pdn->NextSameShape(prs);
   }

@@ -230,10 +230,10 @@ void IGESData::Init()
   occ::handle<TCollection_HAsciiString> datestr;
   if (year < 2000)
     // #65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000)
-    datestr = GS.NewDateString(0, 0, 0, 0, 0, 0, 0);
+    datestr = IGESData_GlobalSection::NewDateString(0, 0, 0, 0, 0, 0, 0);
   else
     // #65 rln 12.02.99 S4151 (explicitly force YYYYMMDD.HHMMSS after Y2000)
-    datestr = GS.NewDateString(0, 0, 0, 0, 0, 0, -1);
+    datestr = IGESData_GlobalSection::NewDateString(0, 0, 0, 0, 0, 0, -1);
   GS.SetSeparator(',');
   GS.SetEndMark(';');
   GS.SetSendName(new TCollection_HAsciiString(Interface_Static::CVal("write.iges.header.product")));

@@ -145,9 +145,7 @@ private:
 
   bool CheckInputData(double theParam)
   {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
+    return !(theParam < myUMin || theParam > myUMax);
   }
 
   const occ::handle<Geom2d_Curve>& myCurve;
@@ -192,9 +190,7 @@ private:
 
   bool CheckInputData(double theParam)
   {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
+    return !(theParam < myUMin || theParam > myUMax);
   }
 
   const occ::handle<Geom2d_Curve>& myCurve;

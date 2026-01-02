@@ -336,11 +336,8 @@ const NCollection_List<TopoDS_Shape>& BRepFilletAPI_MakeChamfer::Modified(const 
 
 bool BRepFilletAPI_MakeChamfer::IsDeleted(const TopoDS_Shape& F)
 {
-  if (myMap.Contains(F) || myBuilder.Builder()->IsSplit(F, TopAbs_OUT)
-      || myBuilder.Builder()->IsSplit(F, TopAbs_IN) || myBuilder.Builder()->IsSplit(F, TopAbs_ON))
-    return false;
-
-  return true;
+  return !(myMap.Contains(F) || myBuilder.Builder()->IsSplit(F, TopAbs_OUT)
+      || myBuilder.Builder()->IsSplit(F, TopAbs_IN) || myBuilder.Builder()->IsSplit(F, TopAbs_ON));
 }
 
 //=================================================================================================

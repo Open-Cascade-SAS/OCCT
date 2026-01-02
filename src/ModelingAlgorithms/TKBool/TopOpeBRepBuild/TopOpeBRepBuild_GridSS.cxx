@@ -748,14 +748,14 @@ Standard_EXPORT void FUNBUILD_ORIENTLOFS(TopOpeBRepBuild_Builder&        B,
     bool          of1, of2;
     FUNBUILD_ANCESTORRANKGET(B, f, of1, of2);
     TopAbs_Orientation orif = f.Orientation();
-    bool               r12  = B.Reverse(TB1, TB2);
-    bool               r21  = B.Reverse(TB2, TB1);
+    bool               r12  = TopOpeBRepBuild_Builder::Reverse(TB1, TB2);
+    bool               r21  = TopOpeBRepBuild_Builder::Reverse(TB2, TB1);
     bool               rf   = false;
     if (of1 && !of2)
       rf = r12;
     else if (of2 && !of1)
       rf = r21;
-    TopAbs_Orientation neworif = B.Orient(orif, rf);
+    TopAbs_Orientation neworif = TopOpeBRepBuild_Builder::Orient(orif, rf);
     f.Orientation(neworif);
   }
 }

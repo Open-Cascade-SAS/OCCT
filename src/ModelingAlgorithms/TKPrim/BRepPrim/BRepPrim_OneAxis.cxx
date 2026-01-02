@@ -561,7 +561,7 @@ const TopoDS_Face& BRepPrim_OneAxis::EndFace()
     // For equal heights with open meridian (not closed), AxisEdge is skipped.
     // Note: For closed meridian, areHeightsEqual() may be true but we don't change
     // the wire structure, so don't apply equal heights reversal.
-    if (!isHeightInverted() && !(areHeightsEqual() && !MeridianClosed()))
+    if (!isHeightInverted() && (!areHeightsEqual() || MeridianClosed()))
     {
       myBuilder.ReverseFace(myFaces[FEND]);
     }
@@ -737,7 +737,7 @@ const TopoDS_Wire& BRepPrim_OneAxis::StartWire()
     if (!MeridianClosed() && !heightsEqual)
     {
       if (!VMaxInfinite() || !VMinInfinite())
-        myBuilder.AddWireEdge(myWires[WSTART], AxisEdge(), isInverted ? true : false);
+        myBuilder.AddWireEdge(myWires[WSTART], AxisEdge(), isInverted);
     }
 
     if (HasTop())
@@ -803,7 +803,7 @@ const TopoDS_Wire& BRepPrim_OneAxis::EndWire()
     {
       if (!VMaxInfinite() || !VMinInfinite())
       {
-        myBuilder.AddWireEdge(myWires[WEND], AxisEdge(), isInverted ? false : true);
+        myBuilder.AddWireEdge(myWires[WEND], AxisEdge(), !isInverted);
       }
     }
     if (HasBottom())
@@ -877,12 +877,12 @@ const TopoDS_Edge& BRepPrim_OneAxis::AxisEdge()
       const double yMin       = MeridianValue(myVMin).Y();
 
       if (!VMaxInfinite())
-        myBuilder.AddEdgeVertex(myEdges[EAXIS], AxisTopVertex(), yMax, isInverted ? true : false);
+        myBuilder.AddEdgeVertex(myEdges[EAXIS], AxisTopVertex(), yMax, isInverted);
       if (!VMinInfinite())
         myBuilder.AddEdgeVertex(myEdges[EAXIS],
                                 AxisBottomVertex(),
                                 yMin,
-                                isInverted ? false : true);
+                                !isInverted);
     }
 
     myBuilder.CompleteEdge(myEdges[EAXIS]);

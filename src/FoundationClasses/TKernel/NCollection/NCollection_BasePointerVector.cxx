@@ -33,9 +33,9 @@ NCollection_BasePointerVector::NCollection_BasePointerVector(
 
 NCollection_BasePointerVector::NCollection_BasePointerVector(
   NCollection_BasePointerVector&& theOther) noexcept
-    : mySize(std::move(theOther.mySize)),
-      myCapacity(std::move(theOther.myCapacity)),
-      myArray(std::move(theOther.myArray))
+    : mySize(theOther.mySize),
+      myCapacity(theOther.myCapacity),
+      myArray(theOther.myArray)
 {
   theOther.myCapacity = 0;
   theOther.mySize     = 0;
@@ -128,9 +128,9 @@ NCollection_BasePointerVector& NCollection_BasePointerVector::operator=(
     return *this;
   }
   clear();
-  mySize              = std::move(theOther.mySize);
-  myCapacity          = std::move(theOther.myCapacity);
-  myArray             = std::move(theOther.myArray);
+  mySize              = theOther.mySize;
+  myCapacity          = theOther.myCapacity;
+  myArray             = theOther.myArray;
   theOther.myCapacity = 0;
   theOther.mySize     = 0;
   theOther.myArray    = nullptr;

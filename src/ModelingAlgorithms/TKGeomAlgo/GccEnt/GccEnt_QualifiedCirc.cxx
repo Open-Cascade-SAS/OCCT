@@ -27,50 +27,22 @@ GccEnt_Position GccEnt_QualifiedCirc::Qualifier() const
 
 bool GccEnt_QualifiedCirc::IsUnqualified() const
 {
-  if (TheQualifier == GccEnt_unqualified)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_unqualified;
 }
 
 bool GccEnt_QualifiedCirc::IsEnclosing() const
 {
-  if (TheQualifier == GccEnt_enclosing)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosing;
 }
 
 bool GccEnt_QualifiedCirc::IsEnclosed() const
 {
-  if (TheQualifier == GccEnt_enclosed)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosed;
 }
 
 bool GccEnt_QualifiedCirc::IsOutside() const
 {
-  if (TheQualifier == GccEnt_outside)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_outside;
 }
 
 GccEnt_QualifiedCirc::GccEnt_QualifiedCirc(const gp_Circ2d&      theQualified,

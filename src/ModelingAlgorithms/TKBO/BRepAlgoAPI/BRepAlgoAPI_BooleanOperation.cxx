@@ -43,7 +43,7 @@ public:
   {
     OSD_Environment         env("CSF_DEBUG_BOP");
     TCollection_AsciiString pathdump = env.Value();
-    myIsDump                         = (!pathdump.IsEmpty() ? true : false);
+    myIsDump                         = (!pathdump.IsEmpty());
     myPath                           = pathdump.ToCString();
   };
 

@@ -124,12 +124,5 @@ bool Geom2dLProp_FuncCurExt::IsMinKC(const double X) const
   }
   KP = CPV1V2 / V13;
 
-  if (std::abs(KC) > std::abs(KP))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return std::abs(KC) > std::abs(KP);
 }

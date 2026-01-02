@@ -2611,7 +2611,7 @@ void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>
   const IntTools_Curve& aIC = aNC.Curve();
   GeomAbs_CurveType     aTypeC;
   aTypeC = aIC.Type();
-  if (!(aTypeC == GeomAbs_BezierCurve || aTypeC == GeomAbs_BSplineCurve))
+  if (aTypeC != GeomAbs_BezierCurve && aTypeC != GeomAbs_BSplineCurve)
   {
     return;
   }

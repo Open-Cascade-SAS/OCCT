@@ -200,7 +200,7 @@ static int mtmNestedMode(Draw_Interpretor& di, int n, const char** a)
   bool aMode = false;
   if (n > 1)
   {
-    aMode = Draw::Atoi(a[1]) ? true : false;
+    aMode = Draw::Atoi(a[1]) != 0;
   }
   sMultiTransactionManager->SetNestedTransactionMode(aMode);
   return 0;

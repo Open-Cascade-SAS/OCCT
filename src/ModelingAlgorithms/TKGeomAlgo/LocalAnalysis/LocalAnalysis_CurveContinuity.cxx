@@ -268,10 +268,7 @@ bool LocalAnalysis_CurveContinuity::IsC0() const
   {
     throw StdFail_NotDone();
   }
-  if (myContC0 <= myepsC0)
-    return true;
-  else
-    return false;
+  return myContC0 <= myepsC0;
 }
 
 /*********************************************************************************/
@@ -282,10 +279,7 @@ bool LocalAnalysis_CurveContinuity::IsC1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && ((myContC1 <= myepsC1) || (std::abs(myContC1 - M_PI) <= myepsC1)))
-    return true;
-  else
-    return false;
+  return IsC0() && ((myContC1 <= myepsC1) || (std::abs(myContC1 - M_PI) <= myepsC1));
 }
 
 /*********************************************************************************/
@@ -321,10 +315,7 @@ bool LocalAnalysis_CurveContinuity::IsG1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && ((myContG1 <= myepsG1 || (std::abs(myContG1 - M_PI) <= myepsG1))))
-    return true;
-  else
-    return false;
+  return IsC0() && ((myContG1 <= myepsG1 || (std::abs(myContG1 - M_PI) <= myepsG1)));
 }
 
 /*********************************************************************************/
@@ -365,10 +356,7 @@ bool LocalAnalysis_CurveContinuity::IsG2() const
         double eps = RealPart((myContG2 + myepsG2) / M_PI) * M_PI;
         if (std::abs(eps - myepsG2) < myepsG2)
         {
-          if (myG2Variation < myperce)
-            return true;
-          else
-            return false;
+          return myG2Variation < myperce;
         }
         else
           return false;

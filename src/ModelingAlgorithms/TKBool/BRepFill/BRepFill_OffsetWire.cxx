@@ -2455,10 +2455,7 @@ bool DoubleOrNotInside(const NCollection_List<TopoDS_Shape>& LV, const TopoDS_Ve
         Vu = true;
     }
   }
-  if (Vu)
-    return false;
-  else
-    return true;
+  return !Vu;
 }
 
 bool IsSmallClosedEdge(const TopoDS_Edge& anEdge, const TopoDS_Vertex& aVertex)
@@ -2485,10 +2482,7 @@ bool IsSmallClosedEdge(const TopoDS_Edge& anEdge, const TopoDS_Vertex& aVertex)
   double dist2 = Plast.Distance(PV2d);
   double dist3 = Pmid.Distance(PV2d);
 
-  if (dist1 <= theTol && dist2 <= theTol && dist3 <= theTol)
-    return true;
-
-  return false;
+  return dist1 <= theTol && dist2 <= theTol && dist3 <= theTol;
 }
 
 static void CheckBadEdges(const TopoDS_Face&              Spine,

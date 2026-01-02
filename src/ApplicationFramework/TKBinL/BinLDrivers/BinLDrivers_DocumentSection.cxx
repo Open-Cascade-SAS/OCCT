@@ -86,7 +86,7 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
 {
   char aBuf[512];
 
-  if (myName.IsEmpty() == false)
+  if (!myName.IsEmpty())
   {
     int*         aBufSz     = reinterpret_cast<int*>(&aBuf[0]);
     const size_t aBufSzSize = sizeof(aBuf) / sizeof(int);

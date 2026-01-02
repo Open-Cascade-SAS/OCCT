@@ -198,8 +198,8 @@ void IGESSolid_ToolEllipsoid::OwnCheck(const occ::handle<IGESSolid_Ellipsoid>& e
   double prosca = ent->XAxis().Dot(ent->ZAxis());
   if (prosca < -eps || prosca > eps)
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
-  if (!(ent->Size().X() >= ent->Size().Y() && ent->Size().Y() >= ent->Size().Z()
-        && ent->Size().Z() > 0))
+  if (ent->Size().X() < ent->Size().Y() || ent->Size().Y() < ent->Size().Z()
+        || ent->Size().Z() <= 0)
     ach->AddFail("Size : The values does not satisfy LX >= LY >= LZ > 0");
 }
 

@@ -1748,7 +1748,7 @@ static bool IsDegen(const occ::handle<Geom_Surface>& S, const double Tol)
     t   = Umin + ii * dt;
     Iso = S->UIso(t);
     GeomAdaptor_Curve AC(Iso);
-    l = GC.Length(AC, Tol / 4);
+    l = GCPnts_AbscissaPoint::Length(AC, Tol / 4);
     B = (l <= Tol);
   }
 
@@ -1767,7 +1767,7 @@ static bool IsDegen(const occ::handle<Geom_Surface>& S, const double Tol)
     t   = Vmin + ii * dt;
     Iso = S->VIso(t);
     GeomAdaptor_Curve AC(Iso);
-    l = GC.Length(AC, Tol / 4);
+    l = GCPnts_AbscissaPoint::Length(AC, Tol / 4);
     B = (l <= Tol);
   }
 

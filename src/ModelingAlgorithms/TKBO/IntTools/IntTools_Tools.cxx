@@ -301,11 +301,7 @@ bool IntTools_Tools::IsVertex(const IntTools_CommonPrt& aCmnPrt)
   const IntTools_Range&                       aR2  = aRs2(1);
   aParam                                           = 0.5 * (aR2.First() + aR2.Last());
   anIsVertex                                       = IntTools_Tools::IsVertex(aE2, aParam);
-  if (anIsVertex)
-  {
-    return true;
-  }
-  return false;
+  return anIsVertex;
 }
 
 //=================================================================================================
@@ -322,11 +318,7 @@ bool IntTools_Tools::IsVertex(const TopoDS_Edge& aE, const TopoDS_Vertex& aV, co
   aTolV2 = aTolV * aTolV;
   aPv    = BRep_Tool::Pnt(aV);
   d2     = aPv.SquareDistance(aPt);
-  if (d2 < aTolV2)
-  {
-    return true;
-  }
-  return false;
+  return d2 < aTolV2;
 }
 
 //=================================================================================================

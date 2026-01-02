@@ -494,9 +494,9 @@ occ::handle<Poly_Triangulation> RWStl::ReadAsciiStream(Standard_IStream&        
   aReader.SetMergeAngle(theMergeAngle);
 
   // get length of stream to feed progress indicator
-  theStream.seekg(0, theStream.end);
+  theStream.seekg(0, Standard_IStream::end);
   std::streampos theEnd = theStream.tellg();
-  theStream.seekg(0, theStream.beg);
+  theStream.seekg(0, Standard_IStream::beg);
 
   Standard_ReadLineBuffer aBuffer(THE_BUFFER_SIZE);
   if (!aReader.ReadAscii(theStream, aBuffer, theEnd, theProgress))

@@ -85,7 +85,7 @@ Standard_OStream& Vrml_DirectionalLight::Print(Standard_OStream& anOStream) cons
 {
   anOStream << "DirectionalLight {\n";
 
-  if (myOnOff != true)
+  if (!myOnOff)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";

@@ -4407,7 +4407,7 @@ static int VTile(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
         Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
         return 1;
       }
-      aTile.IsTopDown  = (anArg == "-upperleft") == true;
+      aTile.IsTopDown  = anArg == "-upperleft";
       aTile.Offset.x() = Draw::Atoi(theArgVec[anArgIter + 1]);
       aTile.Offset.y() = Draw::Atoi(theArgVec[anArgIter + 2]);
     }
@@ -8438,7 +8438,7 @@ static int VClipPlane(Draw_Interpretor& theDi, int theArgsNb, const char** theAr
 
       if (Draw::ParseOnOff(aChangeArgs[1], toEnable))
       {
-        aClipPlane->SetUseObjectMaterial(toEnable == true);
+        aClipPlane->SetUseObjectMaterial(toEnable);
         anArgIter += 1;
       }
     }
@@ -8453,7 +8453,7 @@ static int VClipPlane(Draw_Interpretor& theDi, int theArgsNb, const char** theAr
 
       if (Draw::ParseOnOff(aChangeArgs[1], toEnable))
       {
-        aClipPlane->SetUseObjectTexture(toEnable == true);
+        aClipPlane->SetUseObjectTexture(toEnable);
         anArgIter += 1;
       }
     }
@@ -8467,7 +8467,7 @@ static int VClipPlane(Draw_Interpretor& theDi, int theArgsNb, const char** theAr
 
       if (Draw::ParseOnOff(aChangeArgs[1], toEnable))
       {
-        aClipPlane->SetUseObjectShader(toEnable == true);
+        aClipPlane->SetUseObjectShader(toEnable);
         anArgIter += 1;
       }
     }
@@ -12224,12 +12224,12 @@ static int VManipulator(Draw_Interpretor& theDi, int theArgsNb, const char** the
     else if (anArg == "-adjustsize" || anArg == "-noadjustsize")
     {
       anAttachOptions.SetAdjustSize(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
     }
     else if (anArg == "-enablemodes")
     {
       anAttachOptions.SetEnableModes(
-        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? true : false);
+        Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter));
     }
     //
     else if (anArg == "-starttransform" && anArgIter + 2 < theArgsNb

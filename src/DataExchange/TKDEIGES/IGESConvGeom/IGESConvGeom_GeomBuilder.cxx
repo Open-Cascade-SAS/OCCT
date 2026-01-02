@@ -178,9 +178,7 @@ bool IGESConvGeom_GeomBuilder::IsZOnly() const
     return false;
   gp_XYZ t = thepos.TranslationPart();
   t.SetZ(0.0);
-  if (!t.IsEqual(gp_XYZ(0., 0., 0.), epsl))
-    return false;
-  return true;
+  return t.IsEqual(gp_XYZ(0., 0., 0.), epsl);
 }
 
 void IGESConvGeom_GeomBuilder::EvalXYZ(const gp_XYZ& val, double& X, double& Y, double& Z) const

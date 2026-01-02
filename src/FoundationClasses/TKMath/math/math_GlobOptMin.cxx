@@ -501,7 +501,7 @@ bool math_GlobOptMin::isStored(const math_Vector& thePnt)
           break;
         }
       }
-      if (isSame == true)
+      if (isSame)
         return true;
     }
   }
@@ -566,10 +566,7 @@ void math_GlobOptMin::initCellSize()
 bool math_GlobOptMin::CheckFunctionalStopCriteria()
 {
   // Search single solution and current solution in its neighborhood.
-  if (myIsFindSingleSolution && std::abs(myF - myFunctionalMinimalValue) < mySameTol * 0.01)
-    return true;
-
-  return false;
+  return myIsFindSingleSolution && std::abs(myF - myFunctionalMinimalValue) < mySameTol * 0.01;
 }
 
 //=================================================================================================

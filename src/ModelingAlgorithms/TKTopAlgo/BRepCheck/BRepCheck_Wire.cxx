@@ -1192,7 +1192,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
           }
           //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 End
           TopExp_Explorer ExplVtx;
-          for (ExplVtx.Init(E1, TopAbs_VERTEX); localok == false && ExplVtx.More(); ExplVtx.Next())
+          for (ExplVtx.Init(E1, TopAbs_VERTEX); !localok && ExplVtx.More(); ExplVtx.Next())
           {
             gp_Pnt p3dvtt;
             double tolvtt, p3dvttDistanceP3d;
@@ -1207,7 +1207,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               localok = true;
             }
           }
-          if (localok == false)
+          if (!localok)
           {
             retE1 = E1;
             if (Update)
@@ -1394,7 +1394,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
             //--
             //-- Check distance from edges to the curve joining
             //-- the point of intersection with vertex (if exists)
-            if (localok == false && !CommonVertices.IsEmpty())
+            if (!localok && !CommonVertices.IsEmpty())
             {
 #ifdef OCCT_DEBUG
               std::cout << "\n------------------------------------------------------\n"
@@ -1545,7 +1545,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               } // end of else (construction of the line Lig)
             } // end of if (localok == false && !CommonVertices.IsEmpty())
             //
-            if (localok == false)
+            if (!localok)
             {
               retE1 = E1;
               retE2 = E2;
@@ -1689,13 +1689,13 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
                   break;
                 }
               }
-              if (localok == true)
+              if (localok)
               {
                 break;
               }
             } // end of for (k = 0; k < 2; k++)
             //
-            if (localok == false)
+            if (!localok)
             {
               retE1 = E1;
               retE2 = E2;

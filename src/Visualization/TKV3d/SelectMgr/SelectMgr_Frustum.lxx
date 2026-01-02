@@ -521,11 +521,7 @@ bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&                     thePnt,
     const gp_Vec aVec2(thePnt, aVert2);
     anAngle += aVec1.Angle(aVec2);
   }
-  if (std::abs(anAngle - 2.0 * M_PI) < Precision::Angular())
-  {
-    return true;
-  }
-  return false;
+  return std::abs(anAngle - 2.0 * M_PI) < Precision::Angular();
 }
 
 //=================================================================================================
@@ -581,11 +577,7 @@ bool SelectMgr_Frustum<N>::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
 
   const double anU = aMatU.Determinant() / aMat.Determinant();
   const double aV  = aMatV.Determinant() / aMat.Determinant();
-  if (anU >= 0.0 && anU <= 1.0 && aV >= 0.0 && aV <= 1.0)
-  {
-    return true;
-  }
-  return false;
+  return anU >= 0.0 && anU <= 1.0 && aV >= 0.0 && aV <= 1.0;
 }
 
 //=================================================================================================

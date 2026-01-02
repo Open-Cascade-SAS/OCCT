@@ -827,9 +827,7 @@ static bool FUN_vectors(const TopoDS_Face& f,
     nt.Reverse();
   // <xx> :
   bool ok = FUN_tool_getxx(f, e, pare, xx);
-  if (!ok)
-    return false;
-  return true;
+  return ok;
 }
 
 //=================================================================================================

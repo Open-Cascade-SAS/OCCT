@@ -172,7 +172,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BezierCurve>& B)
 {
   OS << (uint8_t)BEZIER;
-  bool aRational = B->IsRational() ? true : false;
+  bool aRational = B->IsRational();
   OS << aRational; // rational
   // poles and weights
   int i, aDegree = B->Degree();
@@ -194,9 +194,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BSplineCurve>& B)
 {
   OS << (uint8_t)BSPLINE;
-  bool aRational = B->IsRational() ? true : false;
+  bool aRational = B->IsRational();
   OS << aRational; // rational
-  bool aPeriodic = B->IsPeriodic() ? true : false;
+  bool aPeriodic = B->IsPeriodic();
   OS << aPeriodic; // periodic
   // poles and weights
   int i, aDegree, aNbPoles, aNbKnots;

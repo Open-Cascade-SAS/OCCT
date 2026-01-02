@@ -138,7 +138,7 @@ bool Draft_Modification::InternalAdd(const TopoDS_Face& F,
   occ::handle<Geom_Surface> NewS;
   occ::handle<Geom_Circle>  theCircle;
 
-  bool postponed = (Flag == false);
+  bool postponed = (!Flag);
   if (postponed)
   {
     occ::handle<Standard_Type> typS = S->DynamicType();
@@ -397,7 +397,7 @@ bool Draft_Modification::InternalAdd(const TopoDS_Face& F,
           {
             if (myFMap.Contains(F))
             {
-              if (Flag == false && !postponed)
+              if (!Flag && !postponed)
               {
                 myFMap.RemoveKey(F);
                 NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(MapOfE);
@@ -921,10 +921,7 @@ void Draft_Modification::Perform()
             else
             {
               gp_Dir AxofCirc = aCirc->Position().Direction();
-              if (AxofCirc.IsParallel(Axis.Direction(), Precision::Angular()))
-                KPart = true;
-              else
-                KPart = false;
+              KPart = AxofCirc.IsParallel(Axis.Direction(), Precision::Angular());
             }
           }
 

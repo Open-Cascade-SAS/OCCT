@@ -389,7 +389,7 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
             triok      = false;
           }
         }
-      } while (triok == false);
+      } while (!triok);
 
       for (i = 1; i < NZer; i++)
       {

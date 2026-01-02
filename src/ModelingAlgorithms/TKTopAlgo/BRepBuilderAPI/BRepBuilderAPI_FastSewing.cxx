@@ -582,7 +582,7 @@ void BRepBuilderAPI_FastSewing::FS_Edge::CreateTopologicalEdge(
   occ::handle<Geom_Curve> a3dCurv;
   TopLoc_Location         aLocation;
 
-  const FS_Face& aFace = theFaceVec.Value(myFaces.Value(myFaces.Lower()));
+  const FS_Face& aFace = theFaceVec.Value(myFaces.Value(NCollection_Sequence<int>::Lower()));
 
   // 3D-curves in 1st and 2nd faces are considered to be in same-range
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(aFace.mySrcFace, aLocation);

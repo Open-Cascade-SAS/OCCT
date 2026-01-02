@@ -114,11 +114,7 @@ static bool convertStringToInteger(const char* const theString,
     return false;
   }
   aConversionStringStream >> theNumber;
-  if (aConversionStringStream.fail())
-  {
-    return false;
-  }
-  return true;
+  return !aConversionStringStream.fail();
 }
 
 //! Checks if the character is a hexadecimal digit (0 .. 9, a .. f, A .. F)

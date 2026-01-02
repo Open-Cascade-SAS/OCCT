@@ -1478,26 +1478,16 @@ static void __fastcall _remove_dup(TCollection_AsciiString& str)
 
 static bool Analyse_VMS(const TCollection_AsciiString& theName)
 {
-  if (theName.Search("/") != -1 || theName.Search("@") != -1 || theName.Search("\\") != -1)
-  {
-    return false;
-  }
-
-  return true;
+  return !(theName.Search("/") != -1 || theName.Search("@") != -1 || theName.Search("\\") != -1);
 }
 
 //=================================================================================================
 
 static bool Analyse_DOS(const TCollection_AsciiString& theName)
 {
-  if (theName.Search("/") != -1 || theName.Search(":") != -1 || theName.Search("*") != -1
+  return !(theName.Search("/") != -1 || theName.Search(":") != -1 || theName.Search("*") != -1
       || theName.Search("?") != -1 || theName.Search("\"") != -1 || theName.Search("<") != -1
-      || theName.Search(">") != -1 || theName.Search("|") != -1)
-  {
-    return false;
-  }
-
-  return true;
+      || theName.Search(">") != -1 || theName.Search("|") != -1);
 }
 
 //=================================================================================================

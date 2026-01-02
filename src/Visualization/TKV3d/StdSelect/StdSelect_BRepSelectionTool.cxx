@@ -168,7 +168,7 @@ void StdSelect_BRepSelectionTool::Load(const occ::handle<SelectMgr_Selection>& t
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSubShapes;
       TopExp::MapShapes(theShape, theType, aSubShapes);
 
-      bool isComesFromDecomposition = !((aSubShapes.Extent() == 1) && (theShape == aSubShapes(1)));
+      bool isComesFromDecomposition = (aSubShapes.Extent() != 1) || !(theShape == aSubShapes(1));
       for (int aShIndex = 1; aShIndex <= aSubShapes.Extent(); ++aShIndex)
       {
         const TopoDS_Shape& aSubShape = aSubShapes(aShIndex);

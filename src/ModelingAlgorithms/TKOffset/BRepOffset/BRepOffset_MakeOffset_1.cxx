@@ -2926,7 +2926,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidFaces(
     }
     //
     if (bHasReallyInvalid
-        || (bAllInvalid && !(bHasValid || bAllValid) && !(bAllInvNeutral && (aNbChecked == 1))))
+        || (bAllInvalid && !(bHasValid || bAllValid) && (!bAllInvNeutral || (aNbChecked != 1))))
     {
       theInvFaces.Append(aFIm);
       if (theMFHoles.Contains(aFIm))

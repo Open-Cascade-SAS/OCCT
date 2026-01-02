@@ -190,9 +190,7 @@ static bool FUN_supponF(const TopOpeBRepDS_PDataStructure                       
       lIsupponF.Append(I);
     }
   }
-  if (losupp.Extent() < 1)
-    return false;
-  return true;
+  return losupp.Extent() >= 1;
 }
 
 static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure                         pDS,

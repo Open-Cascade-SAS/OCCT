@@ -458,9 +458,7 @@ private:
 
   bool CheckInputData(double theParam)
   {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
+    return !(theParam < myUMin || theParam > myUMax);
   }
 
   const Adaptor3d_Curve& myCurve;
@@ -505,9 +503,7 @@ private:
 
   bool CheckInputData(double theParam)
   {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
+    return !(theParam < myUMin || theParam > myUMax);
   }
 
   const Adaptor3d_Curve& myCurve;

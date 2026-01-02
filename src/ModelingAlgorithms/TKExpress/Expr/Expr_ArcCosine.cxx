@@ -67,11 +67,7 @@ bool Expr_ArcCosine::IsIdentical(const occ::handle<Expr_GeneralExpression>& Othe
 
 bool Expr_ArcCosine::IsLinear() const
 {
-  if (ContainsUnknowns())
-  {
-    return false;
-  }
-  return true;
+  return !ContainsUnknowns();
 }
 
 occ::handle<Expr_GeneralExpression> Expr_ArcCosine::Derivative(

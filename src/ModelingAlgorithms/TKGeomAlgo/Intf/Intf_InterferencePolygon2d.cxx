@@ -639,7 +639,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
   do
   {
     suppr = false;
-    for (int i = 2; suppr == false && i <= nbpi; i++)
+    for (int i = 2; !suppr && i <= nbpi; i++)
     {
       const gp_Pnt& Pim1 = thePi(i - 1).Pnt();
       const gp_Pnt& Pi   = thePi(i).Pnt();
@@ -655,7 +655,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
         suppr = true;
       }
     }
-  } while (suppr == true);
+  } while (suppr);
 
   if (nbpi == 1)
   {

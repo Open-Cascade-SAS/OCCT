@@ -479,11 +479,11 @@ static inline void GetReversedParameters(const HPoint& p11,
   double Dmin2 = std::min(d12, d22);
   if (fabs(Dmin1 - Dmin2) <= Precision::Confusion() || Dmin2 > Dmin1)
   {
-    isRev1 = (d11 < d21 ? true : false);
+    isRev1 = (d11 < d21);
   }
   else if (Dmin2 < Dmin1)
   {
-    isRev1 = (d12 < d22 ? true : false);
+    isRev1 = (d12 < d22);
     isRev2 = true;
   }
 }

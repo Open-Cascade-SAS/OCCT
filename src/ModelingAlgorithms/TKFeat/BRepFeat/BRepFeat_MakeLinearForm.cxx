@@ -311,16 +311,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
       gp_Pnt p2(myLastPnt.X() + myDir.X(), myLastPnt.Y() + myDir.Y(), myLastPnt.Z() + myDir.Z());
       BRepLib_MakeEdge  ee2(myLastPnt, p2);
       BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : curves and surfaces
-      if (ext2.NbExt() == 1
+      Sliding = ext2.NbExt() == 1
           && ext2.SquareDistance(1)
-               <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace))
-      {
-        Sliding = true;
-      }
-      else
-      {
-        Sliding = false;
-      }
+               <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
     }
     else
     {
@@ -346,16 +339,9 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
                   myLastPnt.Z() + myDir1.Z());
         BRepLib_MakeEdge  ee2(myLastPnt, p2);
         BRepExtrema_ExtCF ext2(ee2, LastFace);
-        if (ext2.NbExt() == 1
+        Sliding = ext2.NbExt() == 1
             && ext2.SquareDistance(1)
-                 <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace))
-        {
-          Sliding = true;
-        }
-        else
-        {
-          Sliding = false;
-        }
+                 <= BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace);
       }
       else
       {
@@ -411,7 +397,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
     bool falseside = true;
     Sliding        = Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
     // Control if there is everything required to have the material at the proper side
-    if (falseside == false)
+    if (!falseside)
     {
 #ifdef OCCT_DEBUG
       std::cout << "Verify plane and wire orientation" << std::endl;
@@ -810,7 +796,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape&            Sbase,
     bool falseside = true;
     Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
     // Control if there is everything required to have the material at the proper side
-    if (falseside == false)
+    if (!falseside)
     {
 #ifdef OCCT_DEBUG
       std::cout << "Verify plane and wire orientation" << std::endl;

@@ -40,10 +40,7 @@ public:
     double aRes =
       myPlane.x() * thePnt.X() + myPlane.y() * thePnt.Y() + myPlane.z() * thePnt.Z() + myPlane.w();
 
-    if (aRes < Precision::Confusion())
-      return true;
-
-    return false;
+    return aRes < Precision::Confusion();
   }
 
   void MakePlane(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2, const gp_Pnt& thePnt3)

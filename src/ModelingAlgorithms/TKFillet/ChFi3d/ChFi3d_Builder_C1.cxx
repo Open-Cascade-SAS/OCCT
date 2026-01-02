@@ -1108,7 +1108,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
         pfac1   = Hc->Value(CV[i].ParameterOnArc());
         PcF     = Pc->Value(Udeb);
         PcL     = Pc->Value(Ufin);
-        onfirst = (pfac1.Distance(PcF) < pfac1.Distance(PcL)) ? true : false;
+        onfirst = pfac1.Distance(PcF) < pfac1.Distance(PcL);
         if (onfirst)
           Pc->D1(Udeb, PcF, DerPc);
         else
@@ -1650,11 +1650,8 @@ static bool IsShrink(const Geom2dAdaptor_Curve& PC,
     case GeomAbs_Line: {
       gp_Pnt2d P1 = PC.Value(Pf);
       gp_Pnt2d P2 = PC.Value(Pl);
-      if (std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
-          && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol)
-        return true;
-      else
-        return false;
+      return std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
+          && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol;
     }
     case GeomAbs_BezierCurve:
     case GeomAbs_BSplineCurve: {

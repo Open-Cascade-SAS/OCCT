@@ -398,7 +398,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
     for (int i = 1; i < nbvtx || novtx; i++)
     {
       double firstp = 0, lastp = M_PI + M_PI;
-      if (novtx == false)
+      if (!novtx)
       {
         firstp = L.Vertex(i).ParameterOnLine();
         lastp  = L.Vertex(i + 1).ParameterOnLine();
@@ -435,7 +435,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
           // Vtx:"<<i<<","<<i+1<<std::endl;
           Contap_Line Line;
           Line.SetValue(L.Circle());
-          if (novtx == false)
+          if (!novtx)
           {
             Contap_Point pvtx = L.Vertex(i);
             Line.Add(pvtx);
@@ -589,7 +589,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
       //-- On elimine les points qui sont egalement present sur une restriction solution
       bool SurUneRestrictionSolution = false;
       for (int restriction = 1;
-           SurUneRestrictionSolution == false && restriction <= solrst.NbSegments();
+           !SurUneRestrictionSolution && restriction <= solrst.NbSegments();
            restriction++)
       {
         const occ::handle<Adaptor2d_Curve2d>& thearcsol = solrst.Segment(restriction).Curve();
@@ -608,7 +608,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
           }
         }
       }
-      if (SurUneRestrictionSolution == false)
+      if (!SurUneRestrictionSolution)
       {
         arcorien  = Domain->Orientation(thearc);
         ispassing = (arcorien == TopAbs_INTERNAL || arcorien == TopAbs_EXTERNAL);
@@ -1996,14 +1996,7 @@ static bool FindLine(Contap_Line&                          Line,
     ptmin   = pt;
     Tgmin   = tg;
   }
-  if (ptmin.SquareDistance(Ptref) <= Tolpetit)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return ptmin.SquareDistance(Ptref) <= Tolpetit;
 }
 
 static void PutPointsOnLine(const Contap_TheSearch&               solrst,

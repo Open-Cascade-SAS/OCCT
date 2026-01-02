@@ -626,7 +626,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::TransferOffsetCurve(
   IGESToBRep_TopoCurve TC(*this);
   TopoDS_Shape         Sh = TC.TransferTopoCurve(BaseCrv);
 
-  if (Sh.IsNull() || !((Sh.ShapeType() == TopAbs_EDGE) || (Sh.ShapeType() == TopAbs_WIRE)))
+  if (Sh.IsNull() || ((Sh.ShapeType() != TopAbs_EDGE) && (Sh.ShapeType() != TopAbs_WIRE)))
   {
     Message_Msg                           Msg1156("IGES_1156");
     occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(BaseCrv);
@@ -767,7 +767,7 @@ TopoDS_Shape IGESToBRep_TopoCurve::Transfer2dOffsetCurve(
     IGESToBRep_TopoCurve TC(*this);
     TC.SetModeTransfer(false);
     TopoDS_Shape Sh = TC.Transfer2dTopoCurve(BaseCrv, face, trans, uFact);
-    if (Sh.IsNull() || !((Sh.ShapeType() == TopAbs_EDGE) || (Sh.ShapeType() == TopAbs_WIRE)))
+    if (Sh.IsNull() || ((Sh.ShapeType() != TopAbs_EDGE) && (Sh.ShapeType() != TopAbs_WIRE)))
     {
       Message_Msg Msg1156("IGES_1156"); //"Edge or wire expected from TransferTopoCurve"
       occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(BaseCrv);

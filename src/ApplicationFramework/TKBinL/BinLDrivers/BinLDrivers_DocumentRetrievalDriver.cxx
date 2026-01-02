@@ -262,7 +262,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       for (; anIterS.More(); anIterS.Next())
       {
         BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
-        if (aCurSection.IsPostRead() == false)
+        if (!aCurSection.IsPostRead())
         {
           theIStream.seekg((std::streampos)aCurSection.Offset());
           if (aCurSection.Name().IsEqual(SHAPESECTION_POS))

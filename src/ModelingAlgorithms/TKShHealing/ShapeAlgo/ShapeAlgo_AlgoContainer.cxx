@@ -619,10 +619,7 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     {
       Cook.Next();
       edge1 = TopoDS::Edge(Cook.Value());
-      if (edge1.Orientation() == TopAbs_REVERSED)
-        IsToReverse1 = true;
-      else
-        IsToReverse1 = false;
+      IsToReverse1 = edge1.Orientation() == TopAbs_REVERSED;
       crv1   = BRep_Tool::Curve(edge1, loc1, first1, last1);
       delta1 = last1 - first1;
     }
@@ -630,10 +627,7 @@ bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     {
       Perry.Next();
       edge2 = TopoDS::Edge(Perry.Value());
-      if (edge2.Orientation() == TopAbs_REVERSED)
-        IsToReverse2 = true;
-      else
-        IsToReverse2 = false;
+      IsToReverse2 = edge2.Orientation() == TopAbs_REVERSED;
       crv2   = BRep_Tool::Curve(edge2, loc2, first2, last2);
       delta2 = last2 - first2;
     }

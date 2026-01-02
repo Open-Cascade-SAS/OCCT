@@ -172,7 +172,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
           if (!aModif.IsEmpty())
           {
             di << ",";
-            for (int k = aModif.Lower(); k <= aModif.Upper(); k++)
+            for (int k = NCollection_Sequence<XCAFDimTolObjects_DimensionModif>::Lower(); k <= aModif.Upper(); k++)
             {
               di << " M " << aModif.Value(k);
             }
@@ -249,7 +249,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
           if (!aModif.IsEmpty())
           {
             di << ",";
-            for (int k = aModif.Lower(); k <= aModif.Upper(); k++)
+            for (int k = NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>::Lower(); k <= aModif.Upper(); k++)
             {
               di << " M " << aModif.Value(k);
             }
@@ -299,7 +299,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
                 if (!aModif.IsEmpty())
                 {
                   di << ",";
-                  for (int iModif = aModif.Lower(); iModif <= aModif.Upper(); iModif++)
+                  for (int iModif = NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>::Lower(); iModif <= aModif.Upper(); iModif++)
                   {
                     di << " M " << aModif.Value(iModif);
                   }
@@ -321,7 +321,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
     NCollection_Sequence<TDF_Label> aDatumL;
     if (aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatumL))
     {
-      for (int j = aDatumL.Lower(); j <= aDatumL.Upper(); j++)
+      for (int j = NCollection_Sequence<TDF_Label>::Lower(); j <= aDatumL.Upper(); j++)
       {
         occ::handle<XCAFDoc_Datum> aDatum;
         if (aDatumL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDatum)
@@ -519,7 +519,7 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
     NCollection_Sequence<TDF_Label> aDatL;
     if (aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatL))
     {
-      for (int j = aDatL.Lower(); j <= aDatL.Upper(); j++)
+      for (int j = NCollection_Sequence<TDF_Label>::Lower(); j <= aDatL.Upper(); j++)
       {
         occ::handle<XCAFDoc_Datum> aDat;
         if (aDatL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDat))
@@ -850,7 +850,7 @@ static int getDatum(Draw_Interpretor& di, int argc, const char** argv)
   {
     aDimTolTool->GetDatumOfTolerLabels(aLabel, aD);
   }
-  for (int i = aD.Lower(); i <= aD.Upper(); i++)
+  for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= aD.Upper(); i++)
   {
     if (i > 1)
       di << ", ";

@@ -137,7 +137,7 @@ TCollection_ExtendedString AIS_ColorScale::GetLabel(const int theIndex) const
 {
   if (myLabelType == Aspect_TOCSD_USER)
   {
-    if (theIndex >= myLabels.Lower() || theIndex <= myLabels.Upper())
+    if (theIndex >= NCollection_Sequence<TCollection_ExtendedString>::Lower() || theIndex <= myLabels.Upper())
     {
       return myLabels.Value(theIndex);
     }
@@ -432,7 +432,7 @@ bool AIS_ColorScale::FindColor(const double theValue, Quantity_Color& theColor) 
   if (myColorType == Aspect_TOCSD_USER)
   {
     const int anInterval = colorDiscreteInterval(theValue, myMin, myMax, myNbIntervals);
-    if (anInterval < myColors.Lower() || anInterval > myColors.Upper())
+    if (anInterval < NCollection_Sequence<Quantity_Color>::Lower() || anInterval > myColors.Upper())
     {
       theColor = Quantity_Color();
       return false;

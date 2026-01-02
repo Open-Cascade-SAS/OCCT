@@ -80,7 +80,7 @@ static bool SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
       tolsup = domain.LastTolerance();
     }
   }
-  bool result = (bsup <= binf) ? false : true;
+  bool result = bsup > binf;
   //   if(bsup<=binf) return(false);
   //   return(true);
   return result;

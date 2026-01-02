@@ -78,11 +78,7 @@ const occ::handle<XCAFDoc_ShapeTool>& XCAFDoc_MaterialTool::ShapeTool()
 bool XCAFDoc_MaterialTool::IsMaterial(const TDF_Label& lab) const
 {
   occ::handle<XCAFDoc_Material> MatAttr;
-  if (lab.FindAttribute(XCAFDoc_Material::GetID(), MatAttr))
-  {
-    return true;
-  }
-  return false;
+  return lab.FindAttribute(XCAFDoc_Material::GetID(), MatAttr);
 }
 
 //=================================================================================================
@@ -110,7 +106,7 @@ TDF_Label XCAFDoc_MaterialTool::AddMaterial(
 {
   TDF_Label     MatL;
   TDF_TagSource aTag;
-  MatL = aTag.NewChild(Label());
+  MatL = TDF_TagSource::NewChild(Label());
   XCAFDoc_Material::Set(MatL, aName, aDescription, aDensity, aDensName, aDensValType);
   TDataStd_Name::Set(MatL, TCollection_AsciiString(aName->ToCString()));
   return MatL;

@@ -177,9 +177,7 @@ static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell
   }
 
   TopAbs_Orientation Or2 = theEdge.Orientation();
-  if (Or1 == Or2)
-    return false;
-  return true;
+  return Or1 != Or2;
 }
 
 //=================================================================================================

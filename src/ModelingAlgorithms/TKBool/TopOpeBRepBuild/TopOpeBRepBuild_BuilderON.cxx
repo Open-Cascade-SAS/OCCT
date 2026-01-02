@@ -233,10 +233,7 @@ bool TopOpeBRepBuild_BuilderON::GFillONCheckI(const occ::handle<TopOpeBRepDS_Int
 #endif
   int rankFS  = myPB->GShapeRank(FS);
   int rankFOR = myPB->GShapeRank(myFace);
-  if (rankFS == 0 || rankFOR == 0)
-    return false;
-
-  return true;
+  return !(rankFS == 0 || rankFOR == 0);
 } // GFillONCheckI
 
 //=================================================================================================
@@ -1737,8 +1734,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     if (FCXisref && !EGBoundFOR)
     {
       FUN_tool_orientEinFFORWARD(EG, FCX, neworiE);
-      bool rev = myPB->Reverse(staFCX, staFOR);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFCX, staFOR);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
     //    xpu280798 : never occurs as yap1 -> !EGBoundFOR
     //    else if (FORisref && EGBoundFOR) {
@@ -1753,8 +1750,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
       bool reverse = (M_FORWARD(neworiE) || M_REVERSED(neworiE)) && (!eONsoEsd);
       if (reverse)
         neworiE = TopAbs::Complement(neworiE);
-      bool rev = myPB->Reverse(staFOR, staFCX);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFOR, staFCX);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
     else if (!EGBoundFOR)
     { // xpu210898
@@ -1769,8 +1766,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
         if (reverse)
           neworiE = TopAbs::Complement(neworiE);
       }
-      bool rev = myPB->Reverse(staFOR, staFCX);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFOR, staFCX);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
 
     TopoDS_Shape newE = EspON;
@@ -2296,8 +2293,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
     if (FCXisref && !EGBoundFOR)
     {
       FUN_tool_orientEinFFORWARD(EG, FCX, neworiE);
-      bool rev = myPB->Reverse(staFCX, staFOR);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFCX, staFOR);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
     else if (FORisref && !EGBoundFOR)
     {
@@ -2308,8 +2305,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
       bool reverse = (M_FORWARD(neworiE) || M_REVERSED(neworiE)) && (!eONsoEsd);
       if (reverse)
         neworiE = TopAbs::Complement(neworiE);
-      bool rev = myPB->Reverse(staFOR, staFCX);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFOR, staFCX);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
     else if (!EGBoundFOR)
     {
@@ -2325,8 +2322,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const occ::handle<TopOpeBRepDS_
         if (reverse)
           neworiE = TopAbs::Complement(neworiE);
       }
-      bool rev = myPB->Reverse(staFOR, staFCX);
-      neworiE  = myPB->Orient(neworiE, rev);
+      bool rev = TopOpeBRepBuild_Builder::Reverse(staFOR, staFCX);
+      neworiE  = TopOpeBRepBuild_Builder::Orient(neworiE, rev);
     }
 
     TopoDS_Shape newE = EspON;

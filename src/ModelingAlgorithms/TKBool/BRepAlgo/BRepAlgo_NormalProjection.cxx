@@ -312,7 +312,7 @@ void BRepAlgo_NormalProjection::Build()
           else
             HPCur = HProjector;
 
-          if ((myWith3d == false || Elementary) && (HProjector->MaxDistance(k) <= myTol3d))
+          if ((!myWith3d || Elementary) && (HProjector->MaxDistance(k) <= myTol3d))
             Only2d = true;
 
           if (Only2d && Only3d)

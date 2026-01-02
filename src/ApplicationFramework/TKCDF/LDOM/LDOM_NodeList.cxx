@@ -101,7 +101,7 @@ bool LDOM_NodeList::operator==(const LDOM_NullPtr*) const
 
 bool LDOM_NodeList::operator!=(const LDOM_NullPtr*) const
 {
-  return !(myDoc.IsNull() || mySeq->Length() == 0);
+  return !myDoc.IsNull() && mySeq->Length() != 0;
 }
 
 //=================================================================================================

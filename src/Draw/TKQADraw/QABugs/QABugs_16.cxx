@@ -650,7 +650,7 @@ static int OCC710(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString in(argv[1]);
   OSD_File*               aFile    = new OSD_File(in);
   bool                    anExists = aFile->Exists();
-  if (anExists == true)
+  if (anExists)
     di << "1\n";
   else
     di << "0\n";

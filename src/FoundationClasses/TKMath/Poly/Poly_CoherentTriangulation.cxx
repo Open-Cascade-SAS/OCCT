@@ -39,7 +39,7 @@ Poly_CoherentTriangulation::Poly_CoherentTriangulation(
   const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : myAlloc(theAlloc.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAlloc)
 {
-  if (theTriangulation.IsNull() == false)
+  if (!theTriangulation.IsNull())
   {
     const int nNodes = theTriangulation->NbNodes();
     int       i;
@@ -267,7 +267,7 @@ Poly_CoherentTriangulation::IteratorOfTriangle::IteratorOfTriangle(
     while (More())
     {
       const Poly_CoherentTriangle& aTri = Value();
-      if (aTri.IsEmpty() == false)
+      if (!aTri.IsEmpty())
         break;
       NCollection_Vector<Poly_CoherentTriangle>::Iterator::Next();
     }
@@ -282,7 +282,7 @@ void Poly_CoherentTriangulation::IteratorOfTriangle::Next() noexcept
   while (More())
   {
     const Poly_CoherentTriangle& aTri = Value();
-    if (aTri.IsEmpty() == false)
+    if (!aTri.IsEmpty())
       break;
     NCollection_Vector<Poly_CoherentTriangle>::Iterator::Next();
   }
@@ -298,7 +298,7 @@ Poly_CoherentTriangulation::IteratorOfNode::IteratorOfNode(
     Init(theTri->myNodes);
     while (More())
     {
-      if (Value().IsFreeNode() == false)
+      if (!Value().IsFreeNode())
         break;
       NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
     }
@@ -312,7 +312,7 @@ void Poly_CoherentTriangulation::IteratorOfNode::Next() noexcept
   NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
   while (More())
   {
-    if (Value().IsFreeNode() == false)
+    if (!Value().IsFreeNode())
       break;
     NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
   }
@@ -328,7 +328,7 @@ Poly_CoherentTriangulation::IteratorOfLink::IteratorOfLink(
     Init(theTri->myLinks);
     while (More())
     {
-      if (Value().IsEmpty() == false)
+      if (!Value().IsEmpty())
         break;
       NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
     }
@@ -342,7 +342,7 @@ void Poly_CoherentTriangulation::IteratorOfLink::Next() noexcept
   NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
   while (More())
   {
-    if (Value().IsEmpty() == false)
+    if (!Value().IsEmpty())
       break;
     NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
   }
@@ -355,7 +355,7 @@ int Poly_CoherentTriangulation::NNodes() const
   int                                             aCount(0);
   NCollection_Vector<Poly_CoherentNode>::Iterator anIter(myNodes);
   for (; anIter.More(); anIter.Next())
-    if (anIter.Value().IsFreeNode() == false)
+    if (!anIter.Value().IsFreeNode())
       aCount++;
   return aCount;
 }
@@ -369,7 +369,7 @@ int Poly_CoherentTriangulation::NTriangles() const
   for (; anIter.More(); anIter.Next())
   {
     const Poly_CoherentTriangle& aTri = anIter.Value();
-    if (aTri.IsEmpty() == false)
+    if (!aTri.IsEmpty())
       aCount++;
   }
   return aCount;
@@ -383,7 +383,7 @@ int Poly_CoherentTriangulation::NLinks() const
   NCollection_Vector<Poly_CoherentLink>::Iterator anIter(myLinks);
   for (; anIter.More(); anIter.Next())
   {
-    if (anIter.Value().IsEmpty() == false)
+    if (!anIter.Value().IsEmpty())
       aCount++;
   }
   return aCount;
@@ -571,7 +571,7 @@ Poly_CoherentLink* Poly_CoherentTriangulation::AddLink(const Poly_CoherentTriang
                                                        const int                    theConn)
 {
   Poly_CoherentLink* pLink = nullptr;
-  if (theTri.IsEmpty() == false)
+  if (!theTri.IsEmpty())
   {
     pLink = &myLinks.Append(Poly_CoherentLink(theTri, theConn));
     const_cast<Poly_CoherentTriangle&>(theTri).mypLink[theConn] = pLink;
@@ -606,7 +606,7 @@ bool Poly_CoherentTriangulation::FindTriangle(const Poly_CoherentLink&     theLi
   pTri[0]          = nullptr;
   pTri[1]          = nullptr;
   const int iNode0 = theLink.Node(0);
-  if (theLink.IsEmpty() == false && iNode0 < myNodes.Length() && theLink.Node(1) < myNodes.Length())
+  if (!theLink.IsEmpty() && iNode0 < myNodes.Length() && theLink.Node(1) < myNodes.Length())
   {
     Poly_CoherentTriPtr::Iterator anIter0 = myNodes(iNode0).TriangleIterator();
     for (; anIter0.More(); anIter0.Next())

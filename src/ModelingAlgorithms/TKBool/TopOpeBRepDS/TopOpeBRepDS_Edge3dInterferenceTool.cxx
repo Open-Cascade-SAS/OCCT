@@ -129,9 +129,7 @@ static bool FUN_keepIonF(const gp_Vec&      tgref,
   if (!ok)
     return false;
   prod = std::abs((tgref ^ tgE).Dot(ngF));
-  if (std::abs(1 - prod) < tola)
-    return false;
-  return true;
+  return std::abs(1 - prod) >= tola;
 }
 
 // ----------------------------------------------------------------------

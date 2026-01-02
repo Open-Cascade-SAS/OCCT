@@ -81,7 +81,7 @@ TDF_Label XCAFDoc_VisMaterialTool::AddMaterial(const occ::handle<XCAFDoc_VisMate
                                                const TCollection_AsciiString& theName) const
 {
   TDF_TagSource aTag;
-  TDF_Label     aLab = aTag.NewChild(Label());
+  TDF_Label     aLab = TDF_TagSource::NewChild(Label());
   aLab.AddAttribute(theMat);
   if (!theName.IsEmpty())
   {
@@ -96,7 +96,7 @@ TDF_Label XCAFDoc_VisMaterialTool::AddMaterial(const TCollection_AsciiString& th
 {
   occ::handle<XCAFDoc_VisMaterial> aNewMat = new XCAFDoc_VisMaterial();
   TDF_TagSource                    aTag;
-  TDF_Label                        aLab = aTag.NewChild(Label());
+  TDF_Label                        aLab = TDF_TagSource::NewChild(Label());
   aLab.AddAttribute(aNewMat);
   if (!theName.IsEmpty())
   {

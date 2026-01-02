@@ -1330,11 +1330,7 @@ bool LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
   NCollection_List<TopoDS_Shape>::Iterator itr(myMap(S));
   if (itr.More())
   {
-    if (itr.Value().IsSame(S))
-    {
-      return false;
-    }
-    return true;
+    return !itr.Value().IsSame(S);
   }
   bool            rebuild = false;
   TopoDS_Iterator it;

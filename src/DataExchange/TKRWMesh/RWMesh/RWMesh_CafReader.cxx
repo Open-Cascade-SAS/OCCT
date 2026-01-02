@@ -540,7 +540,7 @@ void RWMesh_CafReader::generateNames(const TCollection_AsciiString& theFile,
 
   // replace empty names
   occ::handle<TDataStd_Name>      aNodeName;
-  int                             aRootIndex = aRootLabels.Lower();
+  int                             aRootIndex = NCollection_Sequence<TDF_Label>::Lower();
   NCollection_Sequence<TDF_Label> aNewRootLabels;
   for (NCollection_Sequence<TDF_Label>::Iterator aRootIter(aRootLabels); aRootIter.More();
        ++aRootIndex, aRootIter.Next())

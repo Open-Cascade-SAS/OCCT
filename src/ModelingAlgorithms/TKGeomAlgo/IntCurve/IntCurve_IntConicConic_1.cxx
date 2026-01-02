@@ -302,7 +302,7 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
   else
     dAngle1 = Axe1.Angle(AxeO1O2);
 
-  if (C1.IsDirect() == false)
+  if (!C1.IsDirect())
   {
     dAngle1 = -dAngle1;
   }
@@ -541,7 +541,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
   //-- par construction aucun des segments ne peut exceder PI
   //-- (permet de ne pas gerer trop de cas differents)
 
-  if (Circle.IsDirect() == false)
+  if (!Circle.IsDirect())
   {
     double t = binf1;
     binf1    = bsup1;
@@ -559,7 +559,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
     binf2 += dAngle1;
     bsup2 += dAngle1;
 
-    if (Circle.IsDirect() == false)
+    if (!Circle.IsDirect())
     {
       double t = binf2;
       binf2    = bsup2;
@@ -947,7 +947,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   IntRes2d_Position   Pos1a, Pos1b, Pos2a, Pos2b;
 
   bool isOpposite =
-    ((Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2)) ? true : false;
+    (Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2);
 
   // if(Circle1.IsDirect()) { std::cout<<" C1 Direct"<<std::endl; } else { std::cout<<" C1
   // INDirect"<<std::endl; } if(Circle2.IsDirect()) { std::cout<<" C2 Direct"<<std::endl; } else {
@@ -1328,7 +1328,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
   gp_Vec2d Tan2 = L2.Direction();
 
   double aCosT1T2   = Tan1.Dot(Tan2);
-  bool   isOpposite = (aCosT1T2 < 0.0) ? true : false;
+  bool   isOpposite = aCosT1T2 < 0.0;
 
   done = true;
 

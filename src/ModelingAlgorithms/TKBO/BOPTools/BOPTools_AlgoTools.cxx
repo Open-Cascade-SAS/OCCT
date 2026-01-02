@@ -1500,7 +1500,7 @@ bool BOPTools_AlgoTools::IsHole(const TopoDS_Shape& aW, const TopoDS_Shape& aFac
   {
     const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aItW.Value()));
     aOr                   = aE.Orientation();
-    if (!(aOr == TopAbs_FORWARD || aOr == TopAbs_REVERSED))
+    if (aOr != TopAbs_FORWARD && aOr != TopAbs_REVERSED)
     {
       continue;
     }

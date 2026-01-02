@@ -421,10 +421,7 @@ bool TopOpeBRepBuild_WireEdgeSet::IsClosed(const TopoDS_Shape& E) const
 
   const TopoDS_Edge& EE     = TopoDS::Edge(E);
   bool               closed = BRep_Tool::IsClosed(EE, myFace);
-  if (closed)
-    return true;
-
-  return false;
+  return closed;
 }
 
 //=================================================================================================

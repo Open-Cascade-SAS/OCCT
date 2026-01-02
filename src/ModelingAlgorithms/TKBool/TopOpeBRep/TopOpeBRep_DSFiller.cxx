@@ -1015,9 +1015,7 @@ bool TopOpeBRep_DSFiller::IsContext1d(const TopoDS_Shape& aS) const
   if (is1d)
     std::cout << "TopOpeBRep_DSFiller : 1d" << std::endl;
 #endif
-  if (!is1d)
-    return false;
-  return true;
+  return is1d;
 }
 
 //=================================================================================================

@@ -815,11 +815,7 @@ bool BRepExtrema_DistShapeShape::SolidTreatment(
   myInnerSol = anAtomicInnerSol.load(std::memory_order_acquire);
   myIsDone   = anAtomicIsDone.load(std::memory_order_acquire);
 
-  if (!aScope.More())
-  {
-    return false;
-  }
-  return true;
+  return aScope.More();
 }
 
 //=================================================================================================

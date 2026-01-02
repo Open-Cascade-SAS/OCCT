@@ -1083,10 +1083,7 @@ static int OCC22(Draw_Interpretor& di, int argc, const char** argv)
     }
 
     bool aConsiderLocation;
-    if (strcmp(argv[4], "0") == 0)
-      aConsiderLocation = false;
-    else
-      aConsiderLocation = true;
+    aConsiderLocation = strcmp(argv[4], "0") != 0;
 
     // 2. Iniitialize aShapeUpgrade
     ShapeUpgrade_ShapeDivideAngle aShapeUpgrade(M_PI / 2.);
@@ -2921,14 +2918,7 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
 static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
 {
   bool IsEvenArgc = true;
-  if (argc % 2 == 0)
-  {
-    IsEvenArgc = true;
-  }
-  else
-  {
-    IsEvenArgc = false;
-  }
+  IsEvenArgc = argc % 2 == 0;
 
   if (argc < 3 || IsEvenArgc)
   {
@@ -3003,7 +2993,7 @@ static int OCC8797(Draw_Interpretor& di, int argc, const char** argv)
   double               l_abcissa, l_gprop;
   GeomAdaptor_Curve    adaptor_spline(spline);
   GCPnts_AbscissaPoint temp;
-  l_abcissa = temp.Length(adaptor_spline);
+  l_abcissa = GCPnts_AbscissaPoint::Length(adaptor_spline);
   std::cout << "Length Spline(abcissa_Pnt): " << l_abcissa << std::endl;
 
   // length!! 2.
@@ -3346,9 +3336,9 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   occ::handle<TDataStd_BooleanList> getboollist;
   if (!doc->Main().FindAttribute(TDataStd_BooleanList::GetID(), getboollist))
     return 1;
-  if (getboollist->First() != false)
+  if (getboollist->First())
     return 2;
-  if (getboollist->Last() != true)
+  if (!getboollist->Last())
     return 3;
   const NCollection_List<uint8_t>& boollist = getboollist->List();
   for (NCollection_List<uint8_t>::Iterator itr_boollist(boollist); itr_boollist.More();
@@ -3408,15 +3398,15 @@ int TestSetGet(const occ::handle<TDocStd_Document>& doc)
   occ::handle<TDataStd_BooleanArray> getboolarr;
   if (!doc->Main().FindAttribute(TDataStd_BooleanArray::GetID(), getboolarr))
     return 1;
-  if (getboolarr->Value(12) != true)
+  if (!getboolarr->Value(12))
     return 2;
-  if (getboolarr->Value(13) != false)
+  if (getboolarr->Value(13))
     return 2;
-  if (getboolarr->Value(14) != true)
+  if (!getboolarr->Value(14))
     return 2;
-  if (getboolarr->Value(15) != false)
+  if (getboolarr->Value(15))
     return 2;
-  if (getboolarr->Value(16) != true)
+  if (!getboolarr->Value(16))
     return 2;
 
   // TDataStd_ReferenceArray:
@@ -3583,9 +3573,9 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   doc->Redo();
   if (!boollist->Extent())
     return 3;
-  if (boollist->First() != false)
+  if (boollist->First())
     return 4;
-  if (boollist->Last() != true)
+  if (!boollist->Last())
     return 5;
   boollist->Clear();
 
@@ -3627,18 +3617,18 @@ int TestUndoRedo(const occ::handle<TDocStd_Document>& doc)
   boolarr->SetValue(250, true);
   doc->CommitCommand();
   doc->Undo();
-  if (boolarr->Value(23) != true)
+  if (!boolarr->Value(23))
     return 2;
-  if (boolarr->Value(24) != false)
+  if (boolarr->Value(24))
     return 2;
-  if (boolarr->Value(25) != true)
+  if (!boolarr->Value(25))
     return 2;
   doc->Redo();
-  if (boolarr->Value(230) != true)
+  if (!boolarr->Value(230))
     return 3;
-  if (boolarr->Value(240) != false)
+  if (boolarr->Value(240))
     return 3;
-  if (boolarr->Value(250) != true)
+  if (!boolarr->Value(250))
     return 3;
 
   // TDataStd_ReferenceArray:
@@ -3805,9 +3795,9 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   boollist.Nullify();
   if (!L2.FindAttribute(TDataStd_BooleanList::GetID(), boollist))
     return 2;
-  if (boollist->First() != false)
+  if (boollist->First())
     return 3;
-  if (boollist->Last() != true)
+  if (!boollist->Last())
     return 4;
   boollist->Clear();
 
@@ -3840,11 +3830,11 @@ int TestCopyPaste(const occ::handle<TDocStd_Document>& doc)
   boolarr.Nullify();
   if (!L2.FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
     return 2;
-  if (boolarr->Value(4) != true)
+  if (!boolarr->Value(4))
     return 3;
-  if (boolarr->Value(5) != false)
+  if (boolarr->Value(5))
     return 3;
-  if (boolarr->Value(6) != true)
+  if (!boolarr->Value(6))
     return 3;
 
   // TDataStd_ReferenceArray:
@@ -4027,9 +4017,9 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
     return 4;
-  if (boollist->First() != false)
+  if (boollist->First())
     return 5;
-  if (boollist->Last() != true)
+  if (!boollist->Last())
     return 6;
   if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
     return 4;
@@ -4041,13 +4031,13 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_std_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
     return 4;
-  if (boolarr->Value(15) != false)
+  if (boolarr->Value(15))
     return 5;
-  if (boolarr->Value(16) != true)
+  if (!boolarr->Value(16))
     return 5;
-  if (boolarr->Value(17) != true)
+  if (!boolarr->Value(17))
     return 5;
-  if (boolarr->Value(18) != true)
+  if (!boolarr->Value(18))
     return 5;
   if (!doc_std_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
     return 4;
@@ -4168,9 +4158,9 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
     return 4;
-  if (boollist->First() != false)
+  if (boollist->First())
     return 5;
-  if (boollist->Last() != true)
+  if (!boollist->Last())
     return 6;
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
     return 4;
@@ -4182,25 +4172,25 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_xml_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
     return 4;
-  if (boolarr->Value(15) != false)
+  if (boolarr->Value(15))
     return 5;
-  if (boolarr->Value(16) != true)
+  if (!boolarr->Value(16))
     return 5;
-  if (boolarr->Value(17) != true)
+  if (!boolarr->Value(17))
     return 5;
-  if (boolarr->Value(18) != true)
+  if (!boolarr->Value(18))
     return 5;
-  if (boolarr->Value(19) != true)
+  if (!boolarr->Value(19))
     return 5;
-  if (boolarr->Value(20) != true)
+  if (!boolarr->Value(20))
     return 5;
-  if (boolarr->Value(21) != false)
+  if (boolarr->Value(21))
     return 5;
-  if (boolarr->Value(22) != true)
+  if (!boolarr->Value(22))
     return 5;
-  if (boolarr->Value(23) != true)
+  if (!boolarr->Value(23))
     return 5;
-  if (boolarr->Value(24) != true)
+  if (!boolarr->Value(24))
     return 5;
   if (!doc_xml_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
     return 4;
@@ -4329,9 +4319,9 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanList::GetID(), boollist))
     return 4;
-  if (boollist->First() != false)
+  if (boollist->First())
     return 5;
-  if (boollist->Last() != true)
+  if (!boollist->Last())
     return 6;
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceList::GetID(), reflist))
     return 4;
@@ -4343,25 +4333,25 @@ int TestOpenSave(const TCollection_ExtendedString& aFile1,
     return 6;
   if (!doc_bin_open->Main().FindAttribute(TDataStd_BooleanArray::GetID(), boolarr))
     return 4;
-  if (boolarr->Value(15) != false)
+  if (boolarr->Value(15))
     return 5;
-  if (boolarr->Value(16) != true)
+  if (!boolarr->Value(16))
     return 5;
-  if (boolarr->Value(17) != true)
+  if (!boolarr->Value(17))
     return 5;
-  if (boolarr->Value(18) != true)
+  if (!boolarr->Value(18))
     return 5;
-  if (boolarr->Value(19) != true)
+  if (!boolarr->Value(19))
     return 5;
-  if (boolarr->Value(20) != true)
+  if (!boolarr->Value(20))
     return 5;
-  if (boolarr->Value(21) != false)
+  if (boolarr->Value(21))
     return 5;
-  if (boolarr->Value(22) != true)
+  if (!boolarr->Value(22))
     return 5;
-  if (boolarr->Value(23) != true)
+  if (!boolarr->Value(23))
     return 5;
-  if (boolarr->Value(24) != true)
+  if (!boolarr->Value(24))
     return 5;
   if (!doc_bin_open->Main().FindAttribute(TDataStd_ReferenceArray::GetID(), refarr))
     return 4;

@@ -45,9 +45,7 @@ bool XCAFDoc_ClippingPlaneTool::IsClippingPlane(const TDF_Label& theLabel) const
     return false;
 
   occ::handle<TDataXtd_Plane> aPlaneAttribute;
-  if (!theLabel.FindAttribute(TDataXtd_Plane::GetID(), aPlaneAttribute))
-    return false;
-  return true;
+  return theLabel.FindAttribute(TDataXtd_Plane::GetID(), aPlaneAttribute);
 }
 
 //=================================================================================================
@@ -118,7 +116,7 @@ TDF_Label XCAFDoc_ClippingPlaneTool::AddClippingPlane(
 
   // create a new clipping plane entry
   TDF_TagSource aTag;
-  aLabel = aTag.NewChild(Label());
+  aLabel = TDF_TagSource::NewChild(Label());
 
   TDataXtd_Plane::Set(aLabel, thePlane);
   if (!theName.IsEmpty())

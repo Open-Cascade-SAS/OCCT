@@ -1650,7 +1650,7 @@ void ProcessSegments(const NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBound
             ptvtx = occ::down_cast<IntPatch_GLine>(slinj)->Vertex(k);
           }
 
-          if (EdgeDegenere == false && dofirst)
+          if (!EdgeDegenere && dofirst)
           {
             if (ptvtx.Value().Distance(PStartf.Value()) <= TolArc)
             {
@@ -1727,7 +1727,7 @@ void ProcessSegments(const NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBound
               }
             }
           }
-          if (EdgeDegenere == false && dolast)
+          if (!EdgeDegenere && dolast)
           {
             if (ptvtx.Value().Distance(PStartl.Value()) <= TolArc)
             {
@@ -2117,7 +2117,7 @@ void ProcessRLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& slin,
             }
           }
 
-          for (k = 1; EdgeDegenere == false && k <= Nbvtx; k++)
+          for (k = 1; !EdgeDegenere && k <= Nbvtx; k++)
           {
             if (typ2 == IntPatch_Analytic)
             {
@@ -2191,7 +2191,7 @@ void ProcessRLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& slin,
                             // printf("\n ImpImpIntersection_0.gxx CAS1 \n");
                           }
                         }
-                        else if (OnFirst == false
+                        else if (!OnFirst
                                  && occ::down_cast<IntPatch_RLine>(slinri)->IsArcOnS2())
                         {
                           if (arcref == occ::down_cast<IntPatch_RLine>(slinri)->ArcOnS2())

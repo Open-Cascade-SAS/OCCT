@@ -589,11 +589,7 @@ bool BOPAlgo_PaveFiller::CheckFacePaves(const int                   nVx,
                                         const NCollection_Map<int>& aMIFOn,
                                         const NCollection_Map<int>& aMIFIn)
 {
-  if (aMIFOn.Contains(nVx) || aMIFIn.Contains(nVx))
-  {
-    return true;
-  }
-  return false;
+  return aMIFOn.Contains(nVx) || aMIFIn.Contains(nVx);
 }
 
 //=================================================================================================

@@ -1203,13 +1203,13 @@ void ProjLib_CompProjectedCurve::Perform()
   occ::handle<Geom2d_Curve>      PCur2d;                        // Only for isoparametric projection
   occ::handle<Geom_Curve>        PCur3d;
 
-  if (myProj2d == true)
+  if (myProj2d)
   {
     myResult2dPoint = new NCollection_HArray1<gp_Pnt2d>(1, myNbCurves);
     myResult2dCurve = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, myNbCurves);
   }
 
-  if (myProj3d == true)
+  if (myProj3d)
   {
     myResult3dPoint = new NCollection_HArray1<gp_Pnt>(1, myNbCurves);
     myResult3dCurve = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, myNbCurves);
@@ -1232,11 +1232,11 @@ void ProjLib_CompProjectedCurve::Perform()
     if (IsSinglePnt(k, P2d)) // Part k of the projection is punctual
     {
       GetSurface()->D0(P2d.X(), P2d.Y(), P);
-      if (myProj2d == true)
+      if (myProj2d)
       {
         myResult2dPoint->SetValue(k, P2d);
       }
-      if (myProj3d == true)
+      if (myProj3d)
       {
         myResult3dPoint->SetValue(k, P);
       }
@@ -1350,12 +1350,12 @@ void ProjLib_CompProjectedCurve::Perform()
         }
       }
 
-      if (myProj2d == true)
+      if (myProj2d)
       {
         myResult2dCurve->SetValue(k, PCur2d);
       }
 
-      if (myProj3d == true)
+      if (myProj3d)
       {
         myResult3dCurve->SetValue(k, PCur3d);
       }

@@ -1109,12 +1109,7 @@ void TPrsStd_ConstraintTools::ComputeAngle(const occ::handle<TDataXtd_Constraint
   if (!anAIS.IsNull())
   {
     ais = occ::down_cast<PrsDim_AngleDimension>(anAIS);
-    if (ais.IsNull())
-    {
-      toCreate = true;
-    }
-    else
-      toCreate = false;
+    toCreate = ais.IsNull();
   }
 
   int ExtShape(0);

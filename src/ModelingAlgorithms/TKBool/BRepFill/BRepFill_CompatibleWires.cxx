@@ -2430,7 +2430,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
       };
       gp_Vec VDebFin0(P1o, P2o), VDebFin(P1, P2);
       double AStraight = VDebFin0.Angle(VDebFin);
-      parcours         = (AStraight < M_PI / 2.0 ? true : false);
+      parcours         = (AStraight < M_PI / 2.0);
     }
 
     // reconstruction of the wire

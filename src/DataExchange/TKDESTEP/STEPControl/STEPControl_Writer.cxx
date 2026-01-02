@@ -293,7 +293,7 @@ void STEPControl_Writer::InitializeMissingParameters()
   {
     SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }
-  if (GetShapeProcessFlags().second == false)
+  if (!GetShapeProcessFlags().second)
   {
     ShapeProcess::OperationsFlags aFlags;
     aFlags.set(ShapeProcess::Operation::SplitCommonVertex);

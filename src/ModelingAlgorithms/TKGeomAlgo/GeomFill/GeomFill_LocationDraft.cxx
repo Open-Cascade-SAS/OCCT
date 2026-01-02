@@ -241,7 +241,7 @@ bool GeomFill_LocationDraft::D0(const double                  Param,
     M *= Trans;
   }
 
-  if (Intersec == true)
+  if (Intersec)
   {
     // la generatrice intersecte la surface d'arret
     // la generatrice
@@ -357,7 +357,7 @@ bool GeomFill_LocationDraft::D1(const double                  Param,
     DM *= Trans;
   }
 
-  if (Intersec == true)
+  if (Intersec)
   { // la generatrice intersecte la surface d'arret
     // la generatrice
     D = std::cos(myAngle) * B + std::sin(myAngle) * N;
@@ -493,7 +493,7 @@ bool GeomFill_LocationDraft::D2(const double                  Param,
     DM *= Trans;
     D2M *= Trans;
   }
-  if (Intersec == true)
+  if (Intersec)
   { // la generatrice intersecte la surface d'arret
 
     // la generatrice
@@ -632,17 +632,14 @@ bool GeomFill_LocationDraft::HasFirstRestriction() const
 bool GeomFill_LocationDraft::HasLastRestriction() const
 {
 
-  if (Intersec == true)
-    return true;
-  else
-    return false;
+  return Intersec == true;
 }
 
 //=================================================================================================
 
 int GeomFill_LocationDraft::TraceNumber() const
 {
-  if (Intersec == true)
+  if (Intersec)
     return 1;
   else
     return 0;

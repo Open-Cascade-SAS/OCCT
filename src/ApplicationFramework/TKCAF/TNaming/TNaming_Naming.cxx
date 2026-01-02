@@ -1365,10 +1365,7 @@ static bool HasAncFace(const TopoDS_Shape& Context,
           TopoDS_Wire       anOuterW;
           if (TNaming::OuterWire(aFace, anOuterW))
           {
-            if (!anOuterW.IsNull() && anOuterW.IsEqual(W))
-              isOuter = true;
-            else
-              isOuter = false;
+            isOuter = !anOuterW.IsNull() && anOuterW.IsEqual(W);
           }
           break;
         }
@@ -1621,10 +1618,7 @@ static bool HasAncSolid(const TopoDS_Shape& Context,
 #ifdef OCCT_DEBUG_TSOL
             Write(anOuterShell, "OuterShell.brep");
 #endif
-            if (!anOuterShell.IsNull() && anOuterShell.IsEqual(Sh))
-              isOuter = true;
-            else
-              isOuter = false;
+            isOuter = !anOuterShell.IsNull() && anOuterShell.IsEqual(Sh);
           }
           break;
         }

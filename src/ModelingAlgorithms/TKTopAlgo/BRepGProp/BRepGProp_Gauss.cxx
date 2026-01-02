@@ -222,7 +222,7 @@ int BRepGProp_Gauss::FillIntervalBounds(const double                      theA,
     theParam2 = new math_Vector(1, aSize);
     theError  = new math_Vector(1, aSize, 0.0);
 
-    if (theCommonError.IsNull() == false)
+    if (!theCommonError.IsNull())
       theCommonError = new math_Vector(1, aSize, 0.0);
   }
 
@@ -458,7 +458,7 @@ void BRepGProp_Gauss::convert(const BRepGProp_Gauss::Inertia& theInertia,
   if (std::abs(theInertia.Mass) >= EPS_DIM && theIsByPoint)
   {
     const double anInvMass = 1.0 / theInertia.Mass;
-    if (theIsByPoint == true)
+    if (theIsByPoint)
     {
       theOutGravityCenter.SetX(theCoeff[0] + theInertia.Ix * anInvMass);
       theOutGravityCenter.SetY(theCoeff[1] + theInertia.Iy * anInvMass);
@@ -496,8 +496,8 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
                                 gp_Pnt&           theOutGravityCenter,
                                 gp_Mat&           theOutInertia)
 {
-  const bool isErrorCalculation  = (0.0 > theEps || theEps < 0.001) ? true : false;
-  const bool isVerifyComputation = (0.0 < theEps && theEps < 0.001) ? true : false;
+  const bool isErrorCalculation  = 0.0 > theEps || theEps < 0.001;
+  const bool isVerifyComputation = 0.0 < theEps && theEps < 0.001;
 
   double anEpsilon = std::abs(theEps);
 

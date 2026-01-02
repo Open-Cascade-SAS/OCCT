@@ -35,7 +35,7 @@ math_SVD::math_SVD(const math_Matrix& A)
   RowA = A.RowNumber();
   U.Set(1, A.RowNumber(), 1, A.ColNumber(), A);
   int Error = SVD_Decompose(U, Diag, V);
-  Done      = (!Error) ? true : false;
+  Done      = Error == 0;
 }
 
 void math_SVD::Solve(const math_Vector& B, math_Vector& X, const double Eps)

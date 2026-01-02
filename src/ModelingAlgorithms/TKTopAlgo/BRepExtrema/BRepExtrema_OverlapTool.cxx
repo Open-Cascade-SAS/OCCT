@@ -471,12 +471,12 @@ inline bool overlapBoxes(const BVH_Vec3d& theBoxMin1,
                          const double     theTolerance)
 {
   // Check for overlap
-  return !(theBoxMin1.x() > theBoxMax2.x() + theTolerance
-           || theBoxMax1.x() < theBoxMin2.x() - theTolerance
-           || theBoxMin1.y() > theBoxMax2.y() + theTolerance
-           || theBoxMax1.y() < theBoxMin2.y() - theTolerance
-           || theBoxMin1.z() > theBoxMax2.z() + theTolerance
-           || theBoxMax1.z() < theBoxMin2.z() - theTolerance);
+  return theBoxMin1.x() <= theBoxMax2.x() + theTolerance
+           && theBoxMax1.x() >= theBoxMin2.x() - theTolerance
+           && theBoxMin1.y() <= theBoxMax2.y() + theTolerance
+           && theBoxMax1.y() >= theBoxMin2.y() - theTolerance
+           && theBoxMin1.z() <= theBoxMax2.z() + theTolerance
+           && theBoxMax1.z() >= theBoxMin2.z() - theTolerance;
 }
 
 //=================================================================================================

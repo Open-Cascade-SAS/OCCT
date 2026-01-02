@@ -325,10 +325,7 @@ Standard_EXPORT bool FUN_interfhassupport
   bool                h     = true;
   const int           index = I->Support();
   const TopoDS_Shape& SofI  = DS.Shape(index);
-  if (SofI.IsSame(S))
-    h = true;
-  else
-    h = false;
+  h = SofI.IsSame(S);
   return h;
 }
 

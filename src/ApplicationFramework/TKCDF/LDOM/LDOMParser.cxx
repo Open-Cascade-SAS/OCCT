@@ -213,7 +213,7 @@ bool LDOMParser::ParseDocument(std::istream& theIStream, const bool theWithoutRo
       case LDOM_XmlReader::XML_COMMENT:
         continue;
       case LDOM_XmlReader::XML_FULL_ELEMENT:
-        if (isElement == false)
+        if (!isElement)
         {
           isElement                 = true;
           myDocument->myRootElement = &myReader->GetElement();
@@ -235,7 +235,7 @@ bool LDOMParser::ParseDocument(std::istream& theIStream, const bool theWithoutRo
         myError = "Expected comment or end-of-file";
         break;
       case LDOM_XmlReader::XML_START_ELEMENT:
-        if (isElement == false)
+        if (!isElement)
         {
           isElement = true;
 

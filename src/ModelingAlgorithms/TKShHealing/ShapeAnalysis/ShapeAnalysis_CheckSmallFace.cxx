@@ -111,10 +111,8 @@ static bool MinMaxSmall(const double minx,
   double dy = maxy - miny;
   double dz = maxz - minz;
 
-  if ((dx > toler && !Precision::IsInfinite(dx)) || (dy > toler && !Precision::IsInfinite(dy))
-      || (dz > toler && !Precision::IsInfinite(dz)))
-    return false;
-  return true;
+  return !((dx > toler && !Precision::IsInfinite(dx)) || (dy > toler && !Precision::IsInfinite(dy))
+      || (dz > toler && !Precision::IsInfinite(dz)));
 }
 
 //=================================================================================================
@@ -1143,11 +1141,8 @@ bool ShapeAnalysis_CheckSmallFace::CheckPinEdges(const TopoDS_Edge& theFirstEdge
     }
     //       std::cout << "angle1 "   << angle1<< std::endl;
     //       std::cout << "angle2 "   << angle2<< std::endl;
-    if ((angle1 <= 0.001 && angle2 <= 0.01)
-        || ((M_PI - angle2) <= 0.001 && (M_PI - angle2) <= 0.01))
-      return true;
-    else
-      return false;
+    return (angle1 <= 0.001 && angle2 <= 0.01)
+        || ((M_PI - angle2) <= 0.001 && (M_PI - angle2) <= 0.01);
   }
 
   return false;

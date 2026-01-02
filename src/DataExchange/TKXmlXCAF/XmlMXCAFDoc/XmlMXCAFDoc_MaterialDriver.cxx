@@ -53,7 +53,7 @@ bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&       theSour
   double              aDensity;
   XmlObjMgt_DOMString aRealStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (XmlObjMgt::GetReal(aRealStr, aDensity) == false)
+  if (!XmlObjMgt::GetReal(aRealStr, aDensity))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Material attribute density from \"") + aRealStr

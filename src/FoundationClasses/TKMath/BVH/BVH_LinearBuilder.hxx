@@ -82,10 +82,7 @@ BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const int theLeafNodeSize, const int 
 // purpose  :
 // =======================================================================
 template <class T, int N>
-BVH_LinearBuilder<T, N>::~BVH_LinearBuilder()
-{
-  //
-}
+BVH_LinearBuilder<T, N>::~BVH_LinearBuilder() = default;
 
 // =======================================================================
 // function : lowerBound

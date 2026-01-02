@@ -645,9 +645,9 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
     double tolreached2d1 = Precision::Confusion(), tolreached2d2 = Precision::Confusion(),
            tol = Precision::Confusion();
     if (comppc1)
-      PC1new = myCurveTool.MakePCurveOnFace(F1, C3D, tolreached2d1);
+      PC1new = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F1, C3D, tolreached2d1);
     if (comppc2)
-      PC2new = myCurveTool.MakePCurveOnFace(F2, C3D, tolreached2d2);
+      PC2new = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F2, C3D, tolreached2d2);
 
     double r1 = TopOpeBRepTool_ShapeTool::Resolution3d(F1, tolreached2d1);
     double r2 = TopOpeBRepTool_ShapeTool::Resolution3d(F2, tolreached2d2);
@@ -692,9 +692,9 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
   double tolreached2d2 = C.Tolerance();
 
   if (comppc1)
-    PC1new = myCurveTool.MakePCurveOnFace(F1, C3Dnew, tolreached2d1);
+    PC1new = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F1, C3Dnew, tolreached2d1);
   if (comppc2)
-    PC2new = myCurveTool.MakePCurveOnFace(F2, C3Dnew, tolreached2d2);
+    PC2new = TopOpeBRepTool_CurveTool::MakePCurveOnFace(F2, C3Dnew, tolreached2d2);
 
   double newtol, newparmin, newparmax;
   UpdateEdgeCurveTol(F1,

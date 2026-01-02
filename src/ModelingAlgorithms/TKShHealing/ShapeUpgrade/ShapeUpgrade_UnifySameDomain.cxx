@@ -636,8 +636,8 @@ static void RelocatePCurvesToNewUorigin(
         double   aParam   = (anOrientation == TopAbs_FORWARD) ? anEdgeStartParam : anEdgeEndParam;
         gp_Pnt2d aPoint   = aPCurve->Value(aParam);
         double   anOffset = CurPoint.Coord(theIndCoord) - aPoint.Coord(theIndCoord);
-        if (!(std::abs(anOffset) < theCoordTol
-              || std::abs(std::abs(anOffset) - thePeriod) < theCoordTol))
+        if (std::abs(anOffset) >= theCoordTol
+              && std::abs(std::abs(anOffset) - thePeriod) >= theCoordTol)
         {
           continue; // may be if CurVertex is deg.vertex
         }
@@ -1917,7 +1917,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const NCollection_Sequence<TopoD
       }
       if (isSameCurve)
       {
-        if (aForwardsSeq.Last() == true)
+        if (aForwardsSeq.Last())
           aLastsSeq.ChangeLast() = aNewL;
         else
           aFirstsSeq.ChangeLast() = aNewF;
@@ -1948,7 +1948,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const NCollection_Sequence<TopoD
       aResPCurve = aPCurveSeq.Last();
       aResFirst  = aFirstsSeq.Last();
       aResLast   = aLastsSeq.Last();
-      if (aForwardsSeq.Last() == false)
+      if (!aForwardsSeq.Last())
       {
         double aNewLast  = aResPCurve->ReversedParameter(aResFirst);
         double aNewFirst = aResPCurve->ReversedParameter(aResLast);
@@ -1965,7 +1965,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const NCollection_Sequence<TopoD
       {
         occ::handle<Geom2d_TrimmedCurve> aTrPCurve =
           new Geom2d_TrimmedCurve(aPCurveSeq(i), aFirstsSeq(i), aLastsSeq(i));
-        if (aForwardsSeq(i) == false)
+        if (!aForwardsSeq(i))
         {
           aTrPCurve->Reverse();
         }
@@ -3582,10 +3582,10 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
               }
 
               if (NewCoordMax - NewCoordMin < aPeriods[ii] - CoordTol
-                  && !(-Precision::Confusion() < NewCoordMin
-                       && NewCoordMin < aPeriods[ii] + Precision::Confusion()
-                       && -Precision::Confusion() < NewCoordMax
-                       && NewCoordMax < aPeriods[ii] + Precision::Confusion()))
+                  && (-Precision::Confusion() >= NewCoordMin
+                       || NewCoordMin >= aPeriods[ii] + Precision::Confusion()
+                       || -Precision::Confusion() >= NewCoordMax
+                       || NewCoordMax >= aPeriods[ii] + Precision::Confusion()))
               {
                 // we can build a face without seam edge:
                 // update the edges with earlier computed relocated pcurves

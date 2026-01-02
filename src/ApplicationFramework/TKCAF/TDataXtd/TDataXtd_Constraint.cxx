@@ -70,7 +70,7 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
   if (myType == type)
   {
     occ::handle<TNaming_NamedShape> aShape = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
-    if (aShape.IsNull() == false && G1.IsNull() == false)
+    if (!aShape.IsNull() && !G1.IsNull())
       if (aShape->Get() == G1->Get())
         return;
   }
@@ -91,8 +91,8 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
   {
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false)
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
+        && !G2.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get())
         return;
   }
@@ -116,8 +116,8 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false && aShape3.IsNull() == false && G3.IsNull() == false)
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
+        && !G2.IsNull() && !aShape3.IsNull() && !G3.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get())
         return;
   }
@@ -144,9 +144,9 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
     occ::handle<TNaming_NamedShape> aShape4 = occ::down_cast<TNaming_NamedShape>(myGeometries[3]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false && aShape3.IsNull() == false && G3.IsNull() == false
-        && aShape4.IsNull() == false && G4.IsNull() == false)
+    if (!aShape1.IsNull() && !G1.IsNull() && !aShape2.IsNull()
+        && !G2.IsNull() && !aShape3.IsNull() && !G3.IsNull()
+        && !aShape4.IsNull() && !G4.IsNull())
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get()
           && aShape3->Get() == G4->Get())
         return;
@@ -221,7 +221,7 @@ void TDataXtd_Constraint::SetGeometry(const int Index, const occ::handle<TNaming
   // OCC2932 correction
   occ::handle<TNaming_NamedShape> aGeom =
     occ::down_cast<TNaming_NamedShape>(myGeometries[Index - 1]);
-  if (aGeom.IsNull() == false && G.IsNull() == false)
+  if (!aGeom.IsNull() && !G.IsNull())
     if (aGeom->Get() == G->Get())
       return;
 
@@ -267,7 +267,7 @@ bool TDataXtd_Constraint::IsPlanar() const
 void TDataXtd_Constraint::SetValue(const occ::handle<TDataStd_Real>& V)
 {
   // OCC2932 correction
-  if (myValue.IsNull() == false && V.IsNull() == false)
+  if (!myValue.IsNull() && !V.IsNull())
     if (myValue->Get() == V->Get())
       return;
 

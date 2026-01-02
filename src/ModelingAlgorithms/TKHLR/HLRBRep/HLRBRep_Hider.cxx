@@ -140,14 +140,14 @@ void HLRBRep_Hider::Hide(
       {
         Modif = false;
         NCollection_List<HLRAlgo_Interference>::Iterator ItSegHidden1(ILHidden);
-        while (ItSegHidden1.More() && Modif == false)
+        while (ItSegHidden1.More() && !Modif)
         {
           HLRAlgo_Interference& Int1    = ItSegHidden1.ChangeValue();
           int                   numseg1 = Int1.Intersection().SegIndex();
           if (numseg1 != 0)
           {
             NCollection_List<HLRAlgo_Interference>::Iterator ItSegHidden2(ILHidden);
-            while (ItSegHidden2.More() && Modif == false)
+            while (ItSegHidden2.More() && !Modif)
             {
               HLRAlgo_Interference& Int2    = ItSegHidden2.ChangeValue();
               int                   numseg2 = Int2.Intersection().SegIndex();
@@ -206,13 +206,13 @@ void HLRBRep_Hider::Hide(
                   }
                 }
               }
-              if (Modif == false)
+              if (!Modif)
               {
                 ItSegHidden2.Next();
               }
             }
           }
-          if (Modif == false)
+          if (!Modif)
           {
             ItSegHidden1.Next();
           }

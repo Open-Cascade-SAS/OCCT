@@ -63,7 +63,7 @@ bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   double                     aValue(0.);
   const XmlObjMgt_DOMString& aRealStr  = XmlObjMgt::GetStringValue(theSource);
   const char*                aValueStr = static_cast<const char*>(aRealStr.GetString());
-  if (XmlObjMgt::GetReal(aRealStr, aValue) == false)
+  if (!XmlObjMgt::GetReal(aRealStr, aValue))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Real attribute from \"") + aValueStr + "\"";

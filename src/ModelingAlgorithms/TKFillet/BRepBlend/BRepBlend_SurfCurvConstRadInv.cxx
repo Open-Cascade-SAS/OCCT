@@ -279,10 +279,6 @@ bool BRepBlend_SurfCurvConstRadInv::IsSolution(const math_Vector& Sol, const dou
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);
-  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
-      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray))
-  {
-    return true;
-  }
-  return false;
+  return std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol
+      && std::abs(valsol(3)) <= 2 * Tol * std::abs(ray);
 }

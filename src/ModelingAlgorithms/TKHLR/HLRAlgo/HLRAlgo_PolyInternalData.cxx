@@ -642,7 +642,7 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
         n2                               = aTriangle2.Node2;
         n3                               = aTriangle2.Node3;
 
-        if (!((n1 == ip3 && n2 == ip4) || (n2 == ip3 && n1 == ip4)))
+        if ((n1 != ip3 || n2 != ip4) && (n2 != ip3 || n1 != ip4))
         {
           bool found   = false;
           aNodIndices1 = &PINod1->ChangeValue(n1)->Indices();
@@ -680,7 +680,7 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
           }
         }
 
-        if (!((n2 == ip3 && n3 == ip4) || (n3 == ip3 && n2 == ip4)))
+        if ((n2 != ip3 || n3 != ip4) && (n3 != ip3 || n2 != ip4))
         {
           bool found   = false;
           aNodIndices1 = &PINod1->ChangeValue(n2)->Indices();
@@ -718,7 +718,7 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
           }
         }
 
-        if (!((n3 == ip3 && n1 == ip4) || (n1 == ip3 && n3 == ip4)))
+        if ((n3 != ip3 || n1 != ip4) && (n1 != ip3 || n3 != ip4))
         {
           bool found   = false;
           aNodIndices1 = &PINod1->ChangeValue(n3)->Indices();

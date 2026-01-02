@@ -531,7 +531,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     bool falseside = true;
     Sliding        = Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
     // Control if there is everything required to have the material at the proper side
-    if (falseside == false)
+    if (!falseside)
     {
 #ifdef OCCT_DEBUG
       std::cout << " Verify plane and wire orientation" << std::endl;
@@ -1033,7 +1033,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     bool falseside = true;
     Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
     // Control if there is everything required to have the material at the proper side
-    if (falseside == false)
+    if (!falseside)
     {
 #ifdef OCCT_DEBUG
       std::cout << " Verify plane and wire orientation" << std::endl;

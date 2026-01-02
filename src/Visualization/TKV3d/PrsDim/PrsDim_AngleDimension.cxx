@@ -495,14 +495,9 @@ void PrsDim_AngleDimension::DrawArcWithText(const occ::handle<Prs3d_Presentation
 
 bool PrsDim_AngleDimension::CheckPlane(const gp_Pln& thePlane) const
 {
-  if (!thePlane.Contains(myFirstPoint, Precision::Confusion())
+  return !(!thePlane.Contains(myFirstPoint, Precision::Confusion())
       && !thePlane.Contains(mySecondPoint, Precision::Confusion())
-      && !thePlane.Contains(myCenterPoint, Precision::Confusion()))
-  {
-    return false;
-  }
-
-  return true;
+      && !thePlane.Contains(myCenterPoint, Precision::Confusion()));
 }
 
 //=================================================================================================

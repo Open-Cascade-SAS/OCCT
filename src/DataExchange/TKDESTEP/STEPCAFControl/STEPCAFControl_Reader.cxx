@@ -1109,13 +1109,13 @@ static void SetAssemblyComponentStyle(
     Quantity_ColorRGBA aFullSCol;
     if (!aSurfCol.IsNull())
     {
-      theStyles.DecodeColor(aSurfCol, aSCol);
+      STEPConstruct_Styles::DecodeColor(aSurfCol, aSCol);
       aFullSCol = Quantity_ColorRGBA(aSCol);
     }
     if (!aBoundCol.IsNull())
-      theStyles.DecodeColor(aBoundCol, aBCol);
+      STEPConstruct_Styles::DecodeColor(aBoundCol, aBCol);
     if (!aCurveCol.IsNull())
-      theStyles.DecodeColor(aCurveCol, aCCol);
+      STEPConstruct_Styles::DecodeColor(aCurveCol, aCCol);
     if (aRenderProps.IsDefined())
     {
       aFullSCol = aRenderProps.GetRGBAColor();
@@ -1278,13 +1278,13 @@ static void SetStyle(
         Quantity_ColorRGBA aFullSCol;
         if (!aSurfCol.IsNull())
         {
-          theStyles.DecodeColor(aSurfCol, aSCol);
+          STEPConstruct_Styles::DecodeColor(aSurfCol, aSCol);
           aFullSCol = Quantity_ColorRGBA(aSCol);
         }
         if (!aBoundCol.IsNull())
-          theStyles.DecodeColor(aBoundCol, aBCol);
+          STEPConstruct_Styles::DecodeColor(aBoundCol, aBCol);
         if (!aCurveCol.IsNull())
-          theStyles.DecodeColor(aCurveCol, aCCol);
+          STEPConstruct_Styles::DecodeColor(aCurveCol, aCCol);
         if (aRenderProps.IsDefined())
         {
           aFullSCol = aRenderProps.GetRGBAColor();
@@ -2070,7 +2070,7 @@ bool STEPCAFControl_Reader::ReadSHUOs(
         Quantity_ColorRGBA colRGBA;
         if (!SurfCol.IsNull())
         {
-          Styles.DecodeColor(SurfCol, col);
+          STEPConstruct_Styles::DecodeColor(SurfCol, col);
           colRGBA = Quantity_ColorRGBA(col);
         }
         if (aRenderProps.IsDefined())
@@ -2082,13 +2082,13 @@ bool STEPCAFControl_Reader::ReadSHUOs(
       if (!BoundCol.IsNull())
       {
         Quantity_Color col;
-        Styles.DecodeColor(BoundCol, col);
+        STEPConstruct_Styles::DecodeColor(BoundCol, col);
         CTool->SetColor(aLabelForStyle, col, XCAFDoc_ColorCurv);
       }
       if (!CurveCol.IsNull())
       {
         Quantity_Color col;
-        Styles.DecodeColor(CurveCol, col);
+        STEPConstruct_Styles::DecodeColor(CurveCol, col);
         CTool->SetColor(aLabelForStyle, col, XCAFDoc_ColorCurv);
       }
       if (!IsVisible)
@@ -3571,7 +3571,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
     {
       // get representation items
       NCollection_Sequence<occ::handle<Standard_Transient>> aSeqRI;
-      for (int i = aSAs.Lower(); i <= aSAs.Upper(); i++)
+      for (int i = NCollection_Sequence<opencascade::handle<StepRepr_ShapeAspect>>::Lower(); i <= aSAs.Upper(); i++)
       {
         Interface_EntityIterator                          anIterSA = aGraph.Sharings(aSAs.Value(i));
         occ::handle<StepAP242_GeometricItemSpecificUsage> aGISU;
@@ -3862,7 +3862,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
   NCollection_Sequence<TDF_Label> aShLS1, aShLS2;
 
   // Collect shapes
-  for (int i = aSeqRI1.Lower(); i <= aSeqRI1.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower(); i <= aSeqRI1.Upper(); i++)
   {
     int          anIndex = FindShapeIndexForDGT(aSeqRI1.Value(i), theWS);
     TopoDS_Shape aSh;
@@ -3894,7 +3894,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(
   if (!aSeqRI2.IsEmpty())
   {
     // for dimensional location
-    for (int i = aSeqRI2.Lower(); i <= aSeqRI2.Upper(); i++)
+    for (int i = NCollection_Sequence<opencascade::handle<Standard_Transient>>::Lower(); i <= aSeqRI2.Upper(); i++)
     {
       int          anIndex = FindShapeIndexForDGT(aSeqRI2.Value(i), theWS);
       TopoDS_Shape aSh;

@@ -661,22 +661,22 @@ void ShapeAnalysis_WireOrder::Perform(const bool /*closed*/)
     {
       aFirstIdx  = aMainLoop->Value(i);
       aSecondIdx = aMainLoop->Value(i + 1);
-      if (!(aSecondIdx - aFirstIdx == 1 || (aFirstIdx == aLength && aSecondIdx == 1)))
+      if (aSecondIdx - aFirstIdx != 1 && (aFirstIdx != aLength || aSecondIdx != 1))
       {
         isShiftForward = false;
       }
-      if (!(aFirstIdx - aSecondIdx == 1 || (aSecondIdx == aLength && aFirstIdx == 1)))
+      if (aFirstIdx - aSecondIdx != 1 && (aSecondIdx != aLength || aFirstIdx != 1))
       {
         isShiftReverse = false;
       }
     }
     aFirstIdx  = aMainLoop->Value(aLength);
     aSecondIdx = aMainLoop->Value(1);
-    if (!(aSecondIdx - aFirstIdx == 1 || (aFirstIdx == aLength && aSecondIdx == 1)))
+    if (aSecondIdx - aFirstIdx != 1 && (aFirstIdx != aLength || aSecondIdx != 1))
     {
       isShiftForward = false;
     }
-    if (!(aFirstIdx - aSecondIdx == 1 || (aSecondIdx == aLength && aFirstIdx == 1)))
+    if (aFirstIdx - aSecondIdx != 1 && (aSecondIdx != aLength || aFirstIdx != 1))
     {
       isShiftReverse = false;
     }

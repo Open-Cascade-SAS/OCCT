@@ -80,11 +80,8 @@ bool BlendFunc_ConstThroatInv::IsSolution(const math_Vector& Sol, const double T
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
 
-  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol
-      && std::abs(valsol(4)) <= Tol * Tol)
-    return true;
-
-  return false;
+  return std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol * Tol
+      && std::abs(valsol(4)) <= Tol * Tol;
 }
 
 //=================================================================================================

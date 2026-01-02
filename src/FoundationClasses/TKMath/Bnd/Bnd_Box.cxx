@@ -593,10 +593,7 @@ bool Bnd_Box::IsOut(const gp_Pln& P) const
       return false;
     if (plus != ((A * (Xmax + Gap) + B * (Ymax + Gap) + C * (Zmin - Gap) + D) > 0))
       return false;
-    if (plus != ((A * (Xmax + Gap) + B * (Ymax + Gap) + C * (Zmax + Gap) + D) > 0))
-      return false;
-    else
-      return true;
+    return plus == ((A * (Xmax + Gap) + B * (Ymax + Gap) + C * (Zmax + Gap) + D) > 0);
   }
 }
 
