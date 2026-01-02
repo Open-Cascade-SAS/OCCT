@@ -91,6 +91,6 @@ bool Extrema_FuncPSDist::Values(const math_Vector& X, double& F, math_Vector& G)
 
 bool Extrema_FuncPSDist::IsInside(const math_Vector& X)
 {
-  return !(X(1) < mySurf.FirstUParameter() || X(1) > mySurf.LastUParameter()
-      || X(2) < mySurf.FirstVParameter() || X(2) > mySurf.LastVParameter());
+  return X(1) >= mySurf.FirstUParameter() && X(1) <= mySurf.LastUParameter()
+      && X(2) >= mySurf.FirstVParameter() && X(2) <= mySurf.LastVParameter();
 }
