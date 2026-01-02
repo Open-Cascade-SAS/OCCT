@@ -58,10 +58,7 @@ RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap(const TCollection_AsciiString& th
 
 //=================================================================================================
 
-RWGltf_GltfMaterialMap::~RWGltf_GltfMaterialMap()
-{
-  //
-}
+RWGltf_GltfMaterialMap::~RWGltf_GltfMaterialMap() = default;
 
 //=================================================================================================
 

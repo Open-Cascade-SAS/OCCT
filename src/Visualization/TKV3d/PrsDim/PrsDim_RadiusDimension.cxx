@@ -112,8 +112,8 @@ void PrsDim_RadiusDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape,
 bool PrsDim_RadiusDimension::CheckPlane(const gp_Pln& thePlane) const
 {
   // Check if anchor point and circle center point belong to plane.
-  return !(!thePlane.Contains(myAnchorPoint, Precision::Confusion())
-           && !thePlane.Contains(myCircle.Location(), Precision::Confusion()));
+  return thePlane.Contains(myAnchorPoint, Precision::Confusion())
+           || thePlane.Contains(myCircle.Location(), Precision::Confusion());
 }
 
 //=================================================================================================

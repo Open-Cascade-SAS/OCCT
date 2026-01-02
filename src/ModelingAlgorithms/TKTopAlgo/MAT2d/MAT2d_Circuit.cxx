@@ -286,7 +286,7 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     }
 #endif
 
-    return !(Intersect.IsDone() && !Intersect.IsEmpty());
+    return !Intersect.IsDone() || Intersect.IsEmpty();
   } // end of if (myJoinType == GeomAbs_Arc)
   else if (myJoinType == GeomAbs_Intersection)
   {

@@ -896,5 +896,5 @@ bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
   gp_Vec2d vc1(p1f, p1l);
   gp_Vec2d vc2(p2f, p2l);
 
-  return !((vc1 * vc2) >= 0. && e1or == e2or);
+  return (vc1 * vc2) < 0. || e1or != e2or;
 }

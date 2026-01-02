@@ -111,8 +111,8 @@ static bool MinMaxSmall(const double minx,
   double dy = maxy - miny;
   double dz = maxz - minz;
 
-  return !((dx > toler && !Precision::IsInfinite(dx)) || (dy > toler && !Precision::IsInfinite(dy))
-           || (dz > toler && !Precision::IsInfinite(dz)));
+  return (dx <= toler || Precision::IsInfinite(dx)) && (dy <= toler || Precision::IsInfinite(dy))
+           && (dz <= toler || Precision::IsInfinite(dz));
 }
 
 //=================================================================================================

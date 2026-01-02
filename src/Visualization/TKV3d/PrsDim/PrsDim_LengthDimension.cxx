@@ -194,9 +194,9 @@ bool PrsDim_LengthDimension::CheckPlane(const gp_Pln& thePlane) const
     thePlane.Axis().Direction().IsParallel(gce_MakeDir(myFirstPoint, mySecondPoint),
                                            Precision::Angular());
 
-  return !((!thePlane.Contains(myFirstPoint, Precision::Confusion())
-            && !thePlane.Contains(mySecondPoint, Precision::Confusion()))
-           || anIsFaultyNormal);
+  return (thePlane.Contains(myFirstPoint, Precision::Confusion())
+            || thePlane.Contains(mySecondPoint, Precision::Confusion()))
+           && !anIsFaultyNormal;
 }
 
 //=================================================================================================

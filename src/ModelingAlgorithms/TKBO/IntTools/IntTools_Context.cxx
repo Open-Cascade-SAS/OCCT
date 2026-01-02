@@ -604,7 +604,7 @@ TopAbs_State IntTools_Context::StatePointFace(const TopoDS_Face& aF, const gp_Pn
 bool IntTools_Context::IsPointInFace(const TopoDS_Face& aF, const gp_Pnt2d& aP2d)
 {
   TopAbs_State aState = StatePointFace(aF, aP2d);
-  return !(aState == TopAbs_OUT || aState == TopAbs_ON);
+  return aState != TopAbs_OUT && aState != TopAbs_ON;
 }
 
 //=================================================================================================

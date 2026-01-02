@@ -398,7 +398,7 @@ void TObj_Object::ClearBackReferences()
 bool TObj_Object::HasBackReferences() const
 {
   occ::handle<TObj_ObjectIterator> anItr = GetBackReferences();
-  return !(anItr.IsNull() || !anItr->More());
+  return !anItr.IsNull() && anItr->More();
 }
 
 //=================================================================================================

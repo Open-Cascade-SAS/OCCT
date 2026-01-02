@@ -80,7 +80,7 @@ bool Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X, double& c
 {
   ct = X(X.Lower());
 
-  return !(ct < myTf || ct > myTl);
+  return ct >= myTf && ct <= myTl;
 }
 
 //=================================================================================================

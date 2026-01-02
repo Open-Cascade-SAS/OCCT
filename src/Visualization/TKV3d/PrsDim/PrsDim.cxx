@@ -126,8 +126,8 @@ bool PrsDim::Nearest(const occ::handle<Geom_Curve>& theCurve,
   theNearestPoint = theCurve->Value(aPointProj.LowerDistanceParameter());
 
   double aLength = theFirstPoint.Distance(theLastPoint);
-  return !(theNearestPoint.Distance(theFirstPoint) > aLength
-           || theNearestPoint.Distance(theLastPoint) > aLength);
+  return theNearestPoint.Distance(theFirstPoint) <= aLength
+           && theNearestPoint.Distance(theLastPoint) <= aLength;
 }
 
 //=================================================================================================

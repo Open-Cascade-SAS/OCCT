@@ -671,12 +671,8 @@ void BinLDrivers_DocumentRetrievalDriver::Clear()
 bool BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(const int theFileVersion,
                                                                const int theCurVersion)
 {
-  if (theFileVersion < TDocStd_FormatVersion_LOWER || theFileVersion > theCurVersion)
-  {
-    // file was written with another version
-    return false;
-  }
-  return true;
+  // file was written with another version
+  return theFileVersion >= TDocStd_FormatVersion_LOWER && theFileVersion <= theCurVersion;
 }
 
 //=================================================================================================

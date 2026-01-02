@@ -632,7 +632,7 @@ bool GeomFill_LocationDraft::HasFirstRestriction() const
 bool GeomFill_LocationDraft::HasLastRestriction() const
 {
 
-  return Intersec == true;
+  return Intersec;
 }
 
 //=================================================================================================

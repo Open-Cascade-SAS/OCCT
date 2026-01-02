@@ -830,7 +830,7 @@ bool SelectMgr_TriangularFrustumSet::pointInTriangle(const gp_Pnt& thePnt,
   gp_Vec v = c.Crossed(a);
   gp_Vec w = a.Crossed(b);
 
-  return !(u.Dot(v) < 0.0 || u.Dot(w) < 0.0);
+  return u.Dot(v) >= 0.0 && u.Dot(w) >= 0.0;
 }
 
 //=================================================================================================
@@ -855,7 +855,7 @@ bool SelectMgr_TriangularFrustumSet::segmentSegmentIntersection(const gp_Pnt& th
     aVec21.Crossed(aVec2).Dot(aVec1.Crossed(aVec2)) / aVec1.Crossed(aVec2).SquareModulus();
   double aValue2 =
     aVec12.Crossed(aVec1).Dot(aVec2.Crossed(aVec1)) / aVec2.Crossed(aVec1).SquareModulus();
-  return !(aValue1 < 0.0 || aValue1 > 1.0 || aValue2 < 0.0 || aValue2 > 1.0);
+  return aValue1 >= 0.0 && aValue1 <= 1.0 && aValue2 >= 0.0 && aValue2 <= 1.0;
 }
 
 //=================================================================================================
@@ -990,7 +990,7 @@ bool SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(const gp_Pnt& t
   }
 
   aT = aInvD * anEdge2.Dot(aQVec);
-  return !(aT < 0 || aT > 1);
+  return aT >= 0 && aT <= 1;
 }
 
 //=================================================================================================

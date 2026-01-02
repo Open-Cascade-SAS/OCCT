@@ -843,7 +843,7 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
       gp_Pnt pl1 = BRep_Tool::Pnt(TopExp::LastVertex(E1, true));
       gp_Pnt pf2 = BRep_Tool::Pnt(TopExp::FirstVertex(E2, true));
       gp_Pnt pl2 = BRep_Tool::Pnt(TopExp::LastVertex(E2, true));
-      return !(pl1.Distance(pf2) < tollin && pl2.Distance(pf1) < tollin);
+      return pl1.Distance(pf2) >= tollin || pl2.Distance(pf1) >= tollin;
     }
     return false;
   }

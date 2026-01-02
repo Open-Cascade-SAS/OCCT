@@ -233,7 +233,7 @@ bool TopOpeBRepBuild_BuilderON::GFillONCheckI(const occ::handle<TopOpeBRepDS_Int
 #endif
   int rankFS  = myPB->GShapeRank(FS);
   int rankFOR = myPB->GShapeRank(myFace);
-  return !(rankFS == 0 || rankFOR == 0);
+  return rankFS != 0 && rankFOR != 0;
 } // GFillONCheckI
 
 //=================================================================================================

@@ -271,7 +271,7 @@ bool Media_CodecContext::SendPacket(const occ::handle<Media_Packet>& thePacket)
 #ifdef HAVE_FFMPEG
   #if FFMPEG_HAVE_NEW_DECODE_API
   const int aRes = avcodec_send_packet(myCodecCtx, thePacket->Packet());
-  return !(aRes < 0 && aRes != AVERROR_EOF);
+  return aRes >= 0 || aRes == AVERROR_EOF;
   #else
   // For older FFmpeg versions, fallback to older decode API if needed
   const int aRes = avcodec_send_packet(myCodecCtx, thePacket->Packet());

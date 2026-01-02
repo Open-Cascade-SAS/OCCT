@@ -71,7 +71,7 @@ bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X, double& su,
   su              = X(aStartIndex);
   sv              = X(aStartIndex + 1);
 
-  return !(su < myUf || su > myUl || sv < myVf || sv > myVl);
+  return su >= myUf && su <= myUl && sv >= myVf && sv <= myVl;
 }
 
 //=================================================================================================

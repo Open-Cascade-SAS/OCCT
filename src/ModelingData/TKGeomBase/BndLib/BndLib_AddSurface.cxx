@@ -810,8 +810,8 @@ private:
 
   bool CheckInputData(const math_Vector& theParams)
   {
-    return !(theParams(1) < myUMin || theParams(1) > myUMax || theParams(2) < myVMin
-             || theParams(2) > myVMax);
+    return theParams(1) >= myUMin && theParams(1) <= myUMax && theParams(2) >= myVMin
+             && theParams(2) <= myVMax;
   }
 
   const Adaptor3d_Surface& mySurf;
