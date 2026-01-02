@@ -134,7 +134,6 @@ bool OpenGl_Texture::Create(const occ::handle<OpenGl_Context>& theCtx)
     return false;
   }
 
-  // mySampler->Create (theCtx); // do not create sampler object by default
   return true;
 }
 

@@ -1035,18 +1035,10 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 
     if (FirstFace.IsNull() || LastFace.IsNull())
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " First or Last Faces still null" << std::endl;
-#endif
       Data = false;
     }
     else
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " FirstFace and LastFace OK" << std::endl;
-#endif
       Data = true;
     }
 

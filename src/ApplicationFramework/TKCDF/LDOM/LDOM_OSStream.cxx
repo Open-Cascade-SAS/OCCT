@@ -43,9 +43,9 @@ LDOM_SBuffer::LDOM_SBuffer(const int theMaxBuf)
 
 //=================================================================================================
 
+// no destruction is required as IncAllocator is used
 LDOM_SBuffer::~LDOM_SBuffer()
 {
-  // no destruction is required as IncAllocator is used
 }
 
 //=================================================================================================

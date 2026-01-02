@@ -382,34 +382,6 @@ bool GeomFill_NSections::D1(const double                V,
   }
   if (NullWeight)
     return false;
-
-  // verif par diff finies sous debug sauf pour les surfaces periodiques
-#ifdef OCCT_DEBUG
-  if (!mySurface->IsVPeriodic())
-  {
-    double                     pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
-    double                     V1, V2;
-    bool                       ok1, ok2;
-    NCollection_Array1<double> W1(1, L), W2(1, L);
-    NCollection_Array1<gp_Pnt> P1(1, L), P2(1, L);
-    gp_Pnt                     nul(0., 0., 0.);
-    W1.Init(0.);
-    W2.Init(0.);
-    P1.Init(nul);
-    P2.Init(nul);
-
-    V1  = V;
-    V2  = V + pas;
-    ok1 = D0(V1, P1, W1);
-    ok2 = D0(V2, P2, W2);
-    if (!ok1 || !ok2)
-      std::cout << "probleme en D0" << std::endl;
-    bool check = verifD1(P1, W1, P2, W2, DPoles, DWeights, pTol, wTol, pas);
-    if (!check)
-      std::cout << "D1 incorrecte en V = " << V << std::endl;
-  }
-#endif
-
   return true;
 }
 
@@ -492,39 +464,6 @@ bool GeomFill_NSections::D2(const double                V,
   }
   if (NullWeight)
     return false;
-
-  // verif par diff finies sous debug sauf pour les surfaces periodiques
-#ifdef OCCT_DEBUG
-  if (!mySurface->IsVPeriodic())
-  {
-    double                     V1, V2;
-    bool                       ok1, ok2;
-    double                     pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
-    NCollection_Array1<double> W1(1, L), W2(1, L), DW1(1, L), DW2(1, L);
-    NCollection_Array1<gp_Pnt> P1(1, L), P2(1, L);
-    NCollection_Array1<gp_Vec> DP1(1, L), DP2(1, L);
-    gp_Pnt                     nul(0., 0., 0.);
-    gp_Vec                     Vnul(0., 0., 0.);
-    W1.Init(0.);
-    W2.Init(0.);
-    DW1.Init(0.);
-    DW2.Init(0.);
-    P1.Init(nul);
-    P2.Init(nul);
-    DP1.Init(Vnul);
-    DP2.Init(Vnul);
-
-    V1  = V;
-    V2  = V + pas;
-    ok1 = D1(V1, P1, DP1, W1, DW1);
-    ok2 = D1(V2, P2, DP2, W2, DW2);
-    if (!ok1 || !ok2)
-      std::cout << "probleme en D0 ou en D1" << std::endl;
-    bool check = verifD2(DP1, DW1, DP2, DW2, D2Poles, D2Weights, pTol, wTol, pas);
-    if (!check)
-      std::cout << "D2 incorrecte en V = " << V << std::endl;
-  }
-#endif
 
   return true;
 }

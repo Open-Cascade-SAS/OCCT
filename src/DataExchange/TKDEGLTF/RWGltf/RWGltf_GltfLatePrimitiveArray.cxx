@@ -35,7 +35,6 @@ RWGltf_GltfLatePrimitiveArray::RWGltf_GltfLatePrimitiveArray(const TCollection_A
 
 RWGltf_GltfLatePrimitiveArray::~RWGltf_GltfLatePrimitiveArray()
 {
-  //
 }
 
 //=================================================================================================

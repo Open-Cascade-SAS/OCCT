@@ -1296,9 +1296,9 @@ int offsetload(Draw_Interpretor&, int n, const char** a)
     }
   }
   if (n < 4)
-    theYaBouchon = false; // B.MakeOffsetShape();
+    theYaBouchon = false;
   else
-    theYaBouchon = true; // B.MakeThickSolid ();
+    theYaBouchon = true;
 
   return 0;
 }

@@ -2282,7 +2282,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
   const RWGltf_JsonValue* anUriVal = findObjectMember(theBuffer, "uri");
 
   int64_t       anOffset    = theView.ByteOffset + theAccessor.ByteOffset;
-  const int32_t aByteStride = theAccessor.ByteStride != 0 ? theView.ByteStride : theView.ByteStride;
+  const int32_t aByteStride = theView.ByteStride;
   bool          isBinary    = false;
   if (myIsBinary)
   {

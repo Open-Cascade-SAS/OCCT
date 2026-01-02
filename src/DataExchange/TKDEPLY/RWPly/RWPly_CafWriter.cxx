@@ -46,7 +46,6 @@ RWPly_CafWriter::RWPly_CafWriter(const TCollection_AsciiString& theFile)
 
 RWPly_CafWriter::~RWPly_CafWriter()
 {
-  //
 }
 
 //=================================================================================================

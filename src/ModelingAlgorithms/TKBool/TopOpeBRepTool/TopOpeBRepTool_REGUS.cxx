@@ -254,10 +254,6 @@ bool TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face&                    Fanc
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(Fanc, mapWlow, nFs);
   if (!facesbuilt)
   {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << "** facesbuilt fails" << std::endl;
-#endif
     return false;
   }
   return true;

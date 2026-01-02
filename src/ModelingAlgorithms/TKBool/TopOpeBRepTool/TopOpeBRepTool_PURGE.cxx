@@ -739,7 +739,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
       continue;
     ok = CORRISO.GetnewS(Fsp);
     if (!ok)
-      return false; // NYIRAISE
+      return false;
     return true;
   }
 
@@ -765,7 +765,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
       continue;
     ok = CORRISO.GetnewS(Fsp);
     if (!ok)
-      return false; // NYIRAISE
+      return false;
     return true;
   }
   return false;

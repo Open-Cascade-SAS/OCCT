@@ -677,9 +677,11 @@ static bool IsMultipleCase(
     if (isCommon)
       break; // common single face found
   }
-  if (isCommon && aM.Extent() < aNbs.Extent())
-  { // number of unique faces (to have single solution)
+
+  // number of unique faces (to have single solution)
     // should be at least no less than (Nb of Neighbourgs) +1
+  if (isCommon && aM.Extent() < aNbs.Extent())
+  {
     return true;
   }
   return false;
@@ -965,9 +967,6 @@ static bool Filter(const TDF_Label&                 F,
   //-----------------
   if (Compare(NS, MDF, Stop, S))
     return true;
-#ifdef OCCT_DEBUG
-  std::cout << "TNaming_Naming::Name Filter insufficient" << std::endl;
-#endif
   return false;
 }
 

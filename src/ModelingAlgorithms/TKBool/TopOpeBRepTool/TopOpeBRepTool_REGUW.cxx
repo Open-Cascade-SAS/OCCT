@@ -1181,23 +1181,6 @@ bool TopOpeBRepTool_REGUW::RemoveOldConnexity(const TopoDS_Vertex& v,
   ok                           = co.RemoveItem(OriKey, e);
   if (!ok)
     return false;
-
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-  {
-    std::cout << "** removing old connexity : v" << FUN_adds(v) << " for e" << FUN_adds(e);
-    FUN_tool_tori(e.Orientation());
-    TopoDS_Vertex vclo;
-    bool          cloE = TopOpeBRepTool_TOOL::ClosedE(e, vclo);
-    if (cloE)
-      std::cout << " closed";
-    bool dgE = BRep_Tool::Degenerated(e);
-    if (dgE)
-      std::cout << " degenerated";
-    std::cout << std::endl;
-  }
-#endif
   return true;
 }
 

@@ -429,17 +429,6 @@ bool IsDistanceIn3DTolerance(const gp_Pnt& thePnt_f, const gp_Pnt& thePnt_l, con
   if (Dist < aTol3d)
     return true;
 
-#ifdef OCCT_DEBUG
-  std::cout << std::endl;
-  std::cout << "--------Function IsDistanceIn3DTolerance(...)----------" << std::endl;
-  std::cout << "--- BRepCheck Wire: Closed3d -> Error" << std::endl;
-  std::cout << "--- Dist (" << Dist << ") > Tol3d (" << aTol3d << ")" << std::endl;
-  std::cout << "Pnt1(" << thePnt_f.X() << "; " << thePnt_f.Y() << "; " << thePnt_f.Z() << ")"
-            << std::endl;
-  std::cout << "Pnt2(" << thePnt_l.X() << "; " << thePnt_l.Y() << "; " << thePnt_l.Z() << ")"
-            << std::endl;
-  std::cout << "------------------------------------------------------" << std::endl;
-#endif
 
   return false;
 }
@@ -525,20 +514,6 @@ static bool IsDistanceIn2DTolerance(const BRepAdaptor_Surface& aFaceSurface,
   if (Dist < aTol2d)
     return true;
 
-#ifdef OCCT_DEBUG
-  if (PrintWarnings)
-  {
-    std::cout << std::endl;
-    std::cout << "--------Function IsDistanceIn2DTolerance(...)----------" << std::endl;
-    std::cout << "--- BRepCheck Wire: Not closed in 2d" << std::endl;
-    std::cout << "*****************************************************" << std::endl;
-    std::cout << "* Dist = " << Dist << " > Tol2d = " << aTol2d << std::endl;
-    std::cout << "*****************************************************" << std::endl;
-    std::cout << "aTol3d = " << aTol3d << "; URes = " << dumax << "; VRes = " << dvmax << std::endl;
-    std::cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")" << std::endl;
-    std::cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")" << std::endl;
-  }
-#endif
 
   return false;
 }

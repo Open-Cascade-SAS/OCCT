@@ -127,8 +127,6 @@ bool IGESToBRep_Actor::Recognize(const occ::handle<Standard_Transient>& start)
       || ((typnum == 402 && (fornum == 1 || fornum == 7 || fornum == 14 || fornum == 15))
           || (typnum == 408) || (typnum == 308)))
     return true;
-
-  //  Cas restants : non reconnus
   return false;
 }
 

@@ -855,7 +855,6 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
         && ci1.Axis().IsParallel(ci2.Axis(), tolang))
     {
-      // Point debut, calage dans periode, et detection meme sens
       return true;
     }
     return false;
@@ -870,7 +869,6 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
         && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
         && ci1.Axis().IsParallel(ci2.Axis(), tolang))
     {
-      // Point debut, calage dans periode, et detection meme sens
       return true;
     }
     return false;

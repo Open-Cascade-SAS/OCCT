@@ -580,10 +580,6 @@ bool ShapeAnalysis_CheckSmallFace::CheckStripFace(const TopoDS_Face& F,
   if (FindStripEdges(F, E1, E2, tol, dmax))
     return true;
 
-  //  Now, trying edges : if there are 2 and only 2 edges greater than tolerance
-  //   (given or sum of vertex tolerances), do they define a strip
-  //  Warning : if yes, they bring different vertices ...
-
   return false;
 }
 
