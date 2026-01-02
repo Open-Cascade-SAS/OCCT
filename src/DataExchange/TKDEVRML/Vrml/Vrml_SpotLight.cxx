@@ -21,7 +21,8 @@ Vrml_SpotLight::Vrml_SpotLight()
       myDirection(0, 0, -1),
       myDropOffRate(0),
       myCutOffAngle(0.785398)
-{}
+{
+}
 
 Vrml_SpotLight::Vrml_SpotLight(const bool            aOnOff,
                                const double          aIntensity,

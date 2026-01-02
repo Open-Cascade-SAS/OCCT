@@ -195,8 +195,8 @@ bool PrsDim_LengthDimension::CheckPlane(const gp_Pln& thePlane) const
                                            Precision::Angular());
 
   return (thePlane.Contains(myFirstPoint, Precision::Confusion())
-            || thePlane.Contains(mySecondPoint, Precision::Confusion()))
-           && !anIsFaultyNormal;
+          || thePlane.Contains(mySecondPoint, Precision::Confusion()))
+         && !anIsFaultyNormal;
 }
 
 //=================================================================================================

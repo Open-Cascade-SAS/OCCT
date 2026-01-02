@@ -637,7 +637,7 @@ static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom2d_BSplineCu
     Rapport = Rapport * Vec2.Magnitude() / Vec1.Magnitude();
   }
   return (Rapport > (1.0e0 + Precision::Confusion()))
-           || (Rapport < (1.0e0 - Precision::Confusion()));
+         || (Rapport < (1.0e0 - Precision::Confusion()));
 }
 
 //=======================================================================

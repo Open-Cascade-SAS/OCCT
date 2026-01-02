@@ -18,7 +18,8 @@
 SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
     : myLargestKey(-1),
       myCustomTolerance(-1)
-{}
+{
+}
 
 //=================================================================================================
 

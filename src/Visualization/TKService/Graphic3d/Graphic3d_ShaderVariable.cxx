@@ -31,8 +31,7 @@ template struct Graphic3d_UniformValue<NCollection_Vec4<int>>;
 // function : ~Graphic3d_ValueInterface
 // purpose  : Releases memory resources of variable value
 // =======================================================================
-Graphic3d_ValueInterface::~Graphic3d_ValueInterface()
-= default;
+Graphic3d_ValueInterface::~Graphic3d_ValueInterface() = default;
 
 // =======================================================================
 // function : Graphic3d_ShaderVariable
@@ -41,7 +40,8 @@ Graphic3d_ValueInterface::~Graphic3d_ValueInterface()
 Graphic3d_ShaderVariable::Graphic3d_ShaderVariable(const TCollection_AsciiString& theName)
     : myName(theName),
       myValue(nullptr)
-{}
+{
+}
 
 // =======================================================================
 // function : ~Graphic3d_ShaderVariableBase

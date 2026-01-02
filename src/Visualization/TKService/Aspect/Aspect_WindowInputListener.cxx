@@ -33,8 +33,7 @@ Aspect_WindowInputListener::Aspect_WindowInputListener()
 
 //=================================================================================================
 
-Aspect_WindowInputListener::~Aspect_WindowInputListener()
-= default;
+Aspect_WindowInputListener::~Aspect_WindowInputListener() = default;
 
 //=================================================================================================
 

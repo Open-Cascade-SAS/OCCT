@@ -73,7 +73,8 @@ protected:
 template <class T, int N>
 BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const int theLeafNodeSize, const int theMaxTreeDepth)
     : BVH_Builder<T, N>(theLeafNodeSize, theMaxTreeDepth)
-{}
+{
+}
 
 // =======================================================================
 // function : ~BVH_LinearBuilder

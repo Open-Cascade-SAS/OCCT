@@ -228,8 +228,7 @@ Extrema_GenExtPS::Extrema_GenExtPS()
 
 //=================================================================================================
 
-Extrema_GenExtPS::~Extrema_GenExtPS()
-= default;
+Extrema_GenExtPS::~Extrema_GenExtPS() = default;
 
 //=================================================================================================
 

@@ -16,13 +16,12 @@
 //=================================================================================================
 
 Poly_ArrayOfUVNodes::Poly_ArrayOfUVNodes(const Poly_ArrayOfUVNodes& theOther)
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 
-Poly_ArrayOfUVNodes::~Poly_ArrayOfUVNodes()
-= default;
+Poly_ArrayOfUVNodes::~Poly_ArrayOfUVNodes() = default;
 
 //=================================================================================================
 

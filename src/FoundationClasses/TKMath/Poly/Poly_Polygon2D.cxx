@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_Polygon2D, Standard_Transient)
 Poly_Polygon2D::Poly_Polygon2D(const int theNbNodes)
     : myDeflection(0.0),
       myNodes(1, theNbNodes)
-{}
+{
+}
 
 //=================================================================================================
 

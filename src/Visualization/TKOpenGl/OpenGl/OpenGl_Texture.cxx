@@ -108,7 +108,8 @@ OpenGl_Texture::OpenGl_Texture(const TCollection_AsciiString&              theRe
       myMaxMipLevel(0),
       myIsAlpha(false),
       myIsTopDown(true)
-{}
+{
+}
 
 //=================================================================================================
 

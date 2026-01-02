@@ -167,7 +167,8 @@ OSD_Chronometer::OSD_Chronometer(bool theThisThreadOnly)
       myCumulCpuSys(0.0),
       myIsStopped(true),
       myIsThreadOnly(theThisThreadOnly)
-{}
+{
+}
 
 //=================================================================================================
 

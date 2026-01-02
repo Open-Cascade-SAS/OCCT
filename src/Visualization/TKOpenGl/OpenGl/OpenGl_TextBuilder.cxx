@@ -34,8 +34,7 @@ inline NCollection_Vec2<float>& floor(NCollection_Vec2<float>& theVec)
 
 //=================================================================================================
 
-OpenGl_TextBuilder::OpenGl_TextBuilder()
-= default;
+OpenGl_TextBuilder::OpenGl_TextBuilder() = default;
 
 //=================================================================================================
 

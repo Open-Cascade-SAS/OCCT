@@ -159,7 +159,6 @@ public:
   Standard_EXPORT void Format();
 
   Standard_DEPRECATED("BottomLeft should be used instead")
-
   const NCollection_Vec2<float>& TopLeft(const int theIndex) const { return BottomLeft(theIndex); }
 
   //! Returns specific glyph rectangle.

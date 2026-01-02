@@ -44,12 +44,12 @@ IVtkOCC_SelectableObject::IVtkOCC_SelectableObject(const IVtkOCC_Shape::Handle& 
 
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject()
     : SelectMgr_SelectableObject(PrsMgr_TOP_AllView)
-{}
+{
+}
 
 //=================================================================================================
 
-IVtkOCC_SelectableObject::~IVtkOCC_SelectableObject()
-= default;
+IVtkOCC_SelectableObject::~IVtkOCC_SelectableObject() = default;
 
 //=================================================================================================
 

@@ -2861,8 +2861,7 @@ void OpenGl_Context::ApplyProjectionMatrix()
 
 //=================================================================================================
 
-void OpenGl_Context::EnableFeatures() const
-{}
+void OpenGl_Context::EnableFeatures() const {}
 
 //=================================================================================================
 

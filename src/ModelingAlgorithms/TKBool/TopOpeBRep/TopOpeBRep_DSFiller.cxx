@@ -271,8 +271,8 @@ bool BREP_UnfillSameDomain(const TopoDS_Shape&                             F1,
   int          samdom = 1;
   st1                 = SC.StateShapeShape(F1, F2, samdom);
   st2                 = SC.StateShapeShape(F2, F1, samdom);
-  unfill = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
-      || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
+  unfill              = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
+           || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
   if (unfill)
   {
     TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
@@ -884,8 +884,8 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
       int          samdom = 1;
       st1                 = myPShapeClassifier->StateShapeShape(lFF1, lFF2, samdom);
       st2                 = myPShapeClassifier->StateShapeShape(lFF2, lFF1, samdom);
-      unfill = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
-          || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
+      unfill              = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
+               || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
       if (unfill)
       {
         TopOpeBRepDS_DataStructure& BDS2 = HDS->ChangeDS();

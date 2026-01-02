@@ -41,12 +41,12 @@ OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
                    (float)theReferenceSystem.Axis().Direction().Z(),
                    1.0f),
       myIsEnabled(true)
-{}
+{
+}
 
 //=================================================================================================
 
-void OpenGl_Flipper::Release(OpenGl_Context*)
-{}
+void OpenGl_Flipper::Release(OpenGl_Context*) {}
 
 //=================================================================================================
 

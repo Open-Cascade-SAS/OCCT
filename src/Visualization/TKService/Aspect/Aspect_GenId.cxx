@@ -26,7 +26,8 @@ Aspect_GenId::Aspect_GenId()
       myLength(INT_MAX / 2 + 1),
       myLowerBound(0),
       myUpperBound(INT_MAX / 2)
-{}
+{
+}
 
 //=================================================================================================
 

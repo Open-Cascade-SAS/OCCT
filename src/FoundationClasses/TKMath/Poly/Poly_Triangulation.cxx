@@ -30,7 +30,8 @@ Poly_Triangulation::Poly_Triangulation()
     : myCachedMinMax(nullptr),
       myDeflection(0),
       myPurpose(Poly_MeshPurpose_NONE)
-{}
+{
+}
 
 //=================================================================================================
 

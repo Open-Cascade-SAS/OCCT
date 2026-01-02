@@ -42,12 +42,12 @@ RWMesh_CafReader::RWMesh_CafReader()
       myToFillIncomplete(true),
       myMemoryLimitMiB(-1),
       myExtraStatus(RWMesh_CafReaderStatusEx_NONE)
-{}
+{
+}
 
 //=================================================================================================
 
-RWMesh_CafReader::~RWMesh_CafReader()
-= default;
+RWMesh_CafReader::~RWMesh_CafReader() = default;
 
 void RWMesh_CafReader::SetDocument(const occ::handle<TDocStd_Document>& theDoc)
 {

@@ -112,8 +112,7 @@ Extrema_GenExtSS::Extrema_GenExtSS()
 
 //=================================================================================================
 
-Extrema_GenExtSS::~Extrema_GenExtSS()
-= default;
+Extrema_GenExtSS::~Extrema_GenExtSS() = default;
 
 //=================================================================================================
 

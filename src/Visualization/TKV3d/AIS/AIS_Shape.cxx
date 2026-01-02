@@ -91,7 +91,8 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
       myUVScale(1.0, 1.0),
       myInitAng(0.0),
       myCompBB(true)
-{}
+{
+}
 
 //=================================================================================================
 

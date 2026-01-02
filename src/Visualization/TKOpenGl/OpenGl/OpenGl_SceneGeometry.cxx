@@ -56,7 +56,8 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight(const BVH_Vec4f& theEmission,
                                            const BVH_Vec4f& thePosition)
     : Emission(theEmission),
       Position(thePosition)
-{}
+{
+}
 
 // =======================================================================
 // function : QuadBVH
@@ -140,7 +141,8 @@ OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                             
                                        const opencascade::handle<BVH_Builder<float, 3>>& theBuilder)
     : BVH_Triangulation<float, 3>(theBuilder),
       myArrayID(theArrayID)
-{}
+{
+}
 
 // =======================================================================
 // function : Clear

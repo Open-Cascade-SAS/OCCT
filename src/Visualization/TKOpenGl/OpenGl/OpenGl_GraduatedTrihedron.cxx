@@ -40,7 +40,8 @@ OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
     : myMin(0.0f, 0.0f, 0.0f),
       myMax(100.0f, 100.0f, 100.0f),
       myIsInitialized(false)
-{}
+{
+}
 
 //=================================================================================================
 
@@ -52,8 +53,7 @@ void OpenGl_GraduatedTrihedron::SetValues(const Graphic3d_GraduatedTrihedron& th
 
 //=================================================================================================
 
-OpenGl_GraduatedTrihedron::~OpenGl_GraduatedTrihedron()
-= default;
+OpenGl_GraduatedTrihedron::~OpenGl_GraduatedTrihedron() = default;
 
 //=================================================================================================
 
@@ -721,8 +721,7 @@ OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAs
 // method  : OpenGl_GraduatedTrihedron::Axis::~Axis
 // purpose :
 // =======================================================================
-OpenGl_GraduatedTrihedron::Axis::~Axis()
-= default;
+OpenGl_GraduatedTrihedron::Axis::~Axis() = default;
 
 // =======================================================================
 // method  : OpenGl_GraduatedTrihedron::Axis operator=

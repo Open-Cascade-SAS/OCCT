@@ -74,7 +74,8 @@ RWObj_Reader::RWObj_Reader()
       myNbProbeElems(0),
       myNbElemsBig(0),
       myToAbort(false)
-{}
+{
+}
 
 //=================================================================================================
 

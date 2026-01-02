@@ -21,7 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OSD_CachedFileSystem, OSD_FileSystem)
 OSD_CachedFileSystem::OSD_CachedFileSystem(const occ::handle<OSD_FileSystem>& theLinkedFileSystem)
     : myLinkedFS(!theLinkedFileSystem.IsNull() ? theLinkedFileSystem
                                                : OSD_FileSystem::DefaultFileSystem())
-{}
+{
+}
 
 //=================================================================================================
 

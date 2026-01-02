@@ -43,7 +43,8 @@ Graphic3d_Aspects::Graphic3d_Aspects()
       myToDrawSilhouette(false),
       myToMapTexture(false),
       myIsTextZoomable(false)
-{}
+{
+}
 
 //=================================================================================================
 

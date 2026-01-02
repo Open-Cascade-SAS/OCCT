@@ -24,7 +24,8 @@ Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
     : myIsDirty(false),
       myBVH(new BVH_Tree<double, 3>()),
       myBuilder(theBuilder)
-{}
+{
+}
 
 //=================================================================================================
 

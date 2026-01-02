@@ -74,7 +74,8 @@ Font_TextFormatter::Font_TextFormatter()
       myBndTop(0.0f),
       myBndWidth(0.0f),
       myMoveVec(0.0f, 0.0f)
-{}
+{
+}
 
 //=================================================================================================
 

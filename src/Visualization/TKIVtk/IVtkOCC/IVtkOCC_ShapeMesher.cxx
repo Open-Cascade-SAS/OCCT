@@ -39,13 +39,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapeMesher, IVtk_IShapeMesher)
 
 //=================================================================================================
 
-IVtkOCC_ShapeMesher::IVtkOCC_ShapeMesher()
-= default;
+IVtkOCC_ShapeMesher::IVtkOCC_ShapeMesher() = default;
 
 //=================================================================================================
 
-IVtkOCC_ShapeMesher::~IVtkOCC_ShapeMesher()
-= default;
+IVtkOCC_ShapeMesher::~IVtkOCC_ShapeMesher() = default;
 
 //=================================================================================================
 

@@ -165,7 +165,8 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer()
     : myTop(-1),
       myHasMore(false),
       myFlags(XCAFPrs_DocumentExplorerFlags_None)
-{}
+{
+}
 
 //=================================================================================================
 

@@ -170,7 +170,8 @@ OpenGl_LayerList::OpenGl_LayerList()
       myNbStructures(0),
       myImmediateNbStructures(0),
       myModifStateOfRaytraceable(0)
-{}
+{
+}
 
 //=================================================================================================
 

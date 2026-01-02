@@ -61,8 +61,7 @@ extern bool GLOBAL_bvpr;
 extern void debvprmess(int f1, int f2, int il, int vp, int si);
 extern bool TopOpeBRep_GetcontextNOPUNK();
 
-static void FUN_traceRLine(const TopOpeBRep_LineInter&)
-{}
+static void FUN_traceRLine(const TopOpeBRep_LineInter&) {}
 
 static void FUN_traceGLine(const TopOpeBRep_LineInter&) {}
 #endif

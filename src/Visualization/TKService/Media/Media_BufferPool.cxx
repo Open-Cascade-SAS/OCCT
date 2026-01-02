@@ -38,7 +38,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_BufferPool, Standard_Transient)
 Media_BufferPool::Media_BufferPool()
     : myPool(nullptr),
       myBufferSize(0)
-{}
+{
+}
 
 //=================================================================================================
 

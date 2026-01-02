@@ -32,13 +32,11 @@ static size_t estimatedDataSize(const occ::handle<OpenGl_Resource>& theRes)
 
 //=================================================================================================
 
-OpenGl_FrameStats::OpenGl_FrameStats()
-= default;
+OpenGl_FrameStats::OpenGl_FrameStats() = default;
 
 //=================================================================================================
 
-OpenGl_FrameStats::~OpenGl_FrameStats()
-= default;
+OpenGl_FrameStats::~OpenGl_FrameStats() = default;
 
 //=================================================================================================
 

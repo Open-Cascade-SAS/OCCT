@@ -34,8 +34,7 @@ Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId                theId,
 
 //=================================================================================================
 
-Graphic3d_Layer::~Graphic3d_Layer()
-= default;
+Graphic3d_Layer::~Graphic3d_Layer() = default;
 
 //=================================================================================================
 

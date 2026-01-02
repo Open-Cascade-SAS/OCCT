@@ -16,13 +16,12 @@
 //=================================================================================================
 
 Poly_ArrayOfNodes::Poly_ArrayOfNodes(const Poly_ArrayOfNodes& theOther)
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 
-Poly_ArrayOfNodes::~Poly_ArrayOfNodes()
-= default;
+Poly_ArrayOfNodes::~Poly_ArrayOfNodes() = default;
 
 //=================================================================================================
 

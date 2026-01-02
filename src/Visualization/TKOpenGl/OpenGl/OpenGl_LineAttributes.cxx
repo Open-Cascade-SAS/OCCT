@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 
 //=================================================================================================
 
-OpenGl_LineAttributes::OpenGl_LineAttributes()
-= default;
+OpenGl_LineAttributes::OpenGl_LineAttributes() = default;
 
 //=================================================================================================
 

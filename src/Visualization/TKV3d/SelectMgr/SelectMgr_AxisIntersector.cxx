@@ -20,13 +20,11 @@
 
 //=================================================================================================
 
-SelectMgr_AxisIntersector::SelectMgr_AxisIntersector()
-= default;
+SelectMgr_AxisIntersector::SelectMgr_AxisIntersector() = default;
 
 //=================================================================================================
 
-SelectMgr_AxisIntersector::~SelectMgr_AxisIntersector()
-= default;
+SelectMgr_AxisIntersector::~SelectMgr_AxisIntersector() = default;
 
 //=================================================================================================
 

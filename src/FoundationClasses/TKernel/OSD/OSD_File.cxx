@@ -412,7 +412,8 @@ OSD_File::OSD_File()
       myLock(OSD_NoLock),
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
-{}
+{
+}
 
 //=================================================================================================
 
@@ -428,7 +429,8 @@ OSD_File::OSD_File(const OSD_Path& theName)
       myLock(OSD_NoLock),
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
-{}
+{
+}
 
 //=================================================================================================
 

@@ -750,8 +750,7 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*        
 
 //=================================================================================================
 
-OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
-= default;
+OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray() = default;
 
 //=================================================================================================
 

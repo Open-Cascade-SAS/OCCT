@@ -27,7 +27,8 @@ AIS_ManipulatorOwner::AIS_ManipulatorOwner(
     : SelectMgr_EntityOwner(theSelObject, thePriority),
       myIndex(theIndex),
       myMode(theMode)
-{}
+{
+}
 
 //=================================================================================================
 

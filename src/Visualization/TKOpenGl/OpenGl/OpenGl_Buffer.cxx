@@ -96,7 +96,8 @@ OpenGl_Buffer::OpenGl_Buffer()
       myComponentsNb(4),
       myElemsNb(0),
       myDataType(GL_FLOAT)
-{}
+{
+}
 
 //=================================================================================================
 

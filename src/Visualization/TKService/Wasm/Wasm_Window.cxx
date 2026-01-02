@@ -55,8 +55,7 @@ Wasm_Window::Wasm_Window(const TCollection_AsciiString& theCanvasId, const bool 
 
 //=================================================================================================
 
-Wasm_Window::~Wasm_Window()
-= default;
+Wasm_Window::~Wasm_Window() = default;
 
 //=================================================================================================
 
@@ -173,8 +172,7 @@ void Wasm_Window::SetSizeBacking(const NCollection_Vec2<int>& theSize)
 
 //=================================================================================================
 
-void Wasm_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>&)
-{}
+void Wasm_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>&) {}
 
 //=================================================================================================
 

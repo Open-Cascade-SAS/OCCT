@@ -37,12 +37,12 @@ BRepLib_PointCloudShape::BRepLib_PointCloudShape(const TopoDS_Shape& theShape, c
       myDist(0.0),
       myTol(theTol),
       myNbPoints(0)
-{}
+{
+}
 
 //=================================================================================================
 
-BRepLib_PointCloudShape::~BRepLib_PointCloudShape()
-= default;
+BRepLib_PointCloudShape::~BRepLib_PointCloudShape() = default;
 
 //=================================================================================================
 

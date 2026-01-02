@@ -48,8 +48,7 @@ Graphic3d_Texture3D::Graphic3d_Texture3D(
 
 //=================================================================================================
 
-Graphic3d_Texture3D::~Graphic3d_Texture3D()
-= default;
+Graphic3d_Texture3D::~Graphic3d_Texture3D() = default;
 
 //=================================================================================================
 

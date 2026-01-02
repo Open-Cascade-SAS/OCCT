@@ -83,7 +83,8 @@ RWObj_MtlReader::RWObj_MtlReader(
     : myFile(nullptr),
       myMaterials(&theMaterials),
       myNbLines(0)
-{}
+{
+}
 
 //=================================================================================================
 

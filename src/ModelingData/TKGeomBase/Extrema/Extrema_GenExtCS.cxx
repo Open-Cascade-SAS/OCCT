@@ -131,8 +131,7 @@ Extrema_GenExtCS::Extrema_GenExtCS()
 
 //=================================================================================================
 
-Extrema_GenExtCS::~Extrema_GenExtCS()
-= default;
+Extrema_GenExtCS::~Extrema_GenExtCS() = default;
 
 //=================================================================================================
 

@@ -255,12 +255,12 @@ Graphic3d_FrameStats::Graphic3d_FrameStats()
       myCounters(0, 0),
       myLastFrameIndex(0),
       myIsLongLineFormat(false)
-{}
+{
+}
 
 //=================================================================================================
 
-Graphic3d_FrameStats::~Graphic3d_FrameStats()
-= default;
+Graphic3d_FrameStats::~Graphic3d_FrameStats() = default;
 
 //=================================================================================================
 

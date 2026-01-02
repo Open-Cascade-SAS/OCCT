@@ -18,7 +18,8 @@ Vrml_PointLight::Vrml_PointLight()
       myIntensity(1),
       myColor(Quantity_NOC_WHITE),
       myLocation(0, 0, 1)
-{}
+{
+}
 
 Vrml_PointLight::Vrml_PointLight(const bool            aOnOff,
                                  const double          aIntensity,

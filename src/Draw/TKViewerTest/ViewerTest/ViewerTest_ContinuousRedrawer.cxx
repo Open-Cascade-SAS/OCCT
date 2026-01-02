@@ -34,7 +34,8 @@ ViewerTest_ContinuousRedrawer::ViewerTest_ContinuousRedrawer()
       myTargetFps(0.0),
       myToStop(false),
       myToPause(false)
-{}
+{
+}
 
 //=================================================================================================
 

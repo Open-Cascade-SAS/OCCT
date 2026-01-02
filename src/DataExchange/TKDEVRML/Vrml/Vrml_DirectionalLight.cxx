@@ -18,7 +18,8 @@ Vrml_DirectionalLight::Vrml_DirectionalLight()
       myIntensity(1),
       myColor(Quantity_NOC_WHITE),
       myDirection(0, 0, -1)
-{}
+{
+}
 
 Vrml_DirectionalLight::Vrml_DirectionalLight(const bool            aOnOff,
                                              const double          aIntensity,

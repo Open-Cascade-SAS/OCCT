@@ -28,8 +28,7 @@ RWMesh_TriangulationSource::RWMesh_TriangulationSource()
 
 //=================================================================================================
 
-RWMesh_TriangulationSource::~RWMesh_TriangulationSource()
-= default;
+RWMesh_TriangulationSource::~RWMesh_TriangulationSource() = default;
 
 //=================================================================================================
 

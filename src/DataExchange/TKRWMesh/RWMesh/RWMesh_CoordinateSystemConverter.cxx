@@ -27,7 +27,8 @@ RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
       myUnitFactor(1),
       myHasScale(false),
       myIsEmpty(true)
-{}
+{
+}
 
 //=================================================================================================
 

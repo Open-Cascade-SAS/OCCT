@@ -852,8 +852,8 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
     gp_Circ ci1 = occ::down_cast<Geom_Circle>(C1)->Circ();
     gp_Circ ci2 = occ::down_cast<Geom_Circle>(C2)->Circ();
     return std::abs(ci1.Radius() - ci2.Radius()) <= tollin
-        && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
-        && ci1.Axis().IsParallel(ci2.Axis(), tolang);
+           && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
+           && ci1.Axis().IsParallel(ci2.Axis(), tolang);
   }
   else if (typC1 == STANDARD_TYPE(Geom_Ellipse))
   {
@@ -861,9 +861,9 @@ bool BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2
     gp_Elips ci2 = occ::down_cast<Geom_Ellipse>(C2)->Elips();
 
     return std::abs(ci1.MajorRadius() - ci2.MajorRadius()) <= tollin
-        && std::abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
-        && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
-        && ci1.Axis().IsParallel(ci2.Axis(), tolang);
+           && std::abs(ci1.MinorRadius() - ci2.MinorRadius()) <= tollin
+           && ci1.Location().SquareDistance(ci2.Location()) <= tollin * tollin
+           && ci1.Axis().IsParallel(ci2.Axis(), tolang);
   }
   else if (typC1 == STANDARD_TYPE(Geom_BSplineCurve))
   {

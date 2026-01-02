@@ -679,7 +679,7 @@ static bool IsMultipleCase(
   }
 
   // number of unique faces (to have single solution)
-    // should be at least no less than (Nb of Neighbourgs) +1
+  // should be at least no less than (Nb of Neighbourgs) +1
   return isCommon && aM.Extent() < aNbs.Extent();
 }
 

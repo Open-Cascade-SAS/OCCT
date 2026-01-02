@@ -38,12 +38,12 @@ RWPly_CafWriter::RWPly_CafWriter(const TCollection_AsciiString& theFile)
       myHasTexCoords(false),
       myHasPartId(true),
       myHasFaceId(false)
-{}
+{
+}
 
 //=================================================================================================
 
-RWPly_CafWriter::~RWPly_CafWriter()
-= default;
+RWPly_CafWriter::~RWPly_CafWriter() = default;
 
 //=================================================================================================
 

@@ -1486,8 +1486,8 @@ static bool Analyse_VMS(const TCollection_AsciiString& theName)
 static bool Analyse_DOS(const TCollection_AsciiString& theName)
 {
   return theName.Search("/") == -1 && theName.Search(":") == -1 && theName.Search("*") == -1
-           && theName.Search("?") == -1 && theName.Search("\"") == -1 && theName.Search("<") == -1
-           && theName.Search(">") == -1 && theName.Search("|") == -1;
+         && theName.Search("?") == -1 && theName.Search("\"") == -1 && theName.Search("<") == -1
+         && theName.Search(">") == -1 && theName.Search("|") == -1;
 }
 
 //=================================================================================================

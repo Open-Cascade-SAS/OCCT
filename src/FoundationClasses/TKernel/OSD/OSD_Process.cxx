@@ -197,8 +197,7 @@ void _osd_wnt_set_error(OSD_Error&, int, ...);
 
 //=================================================================================================
 
-OSD_Process::OSD_Process()
-{}
+OSD_Process::OSD_Process() {}
 
 void OSD_Process ::TerminalType(TCollection_AsciiString& Name)
 {

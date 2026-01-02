@@ -121,7 +121,8 @@ const char* Image_PixMap::ImageFormatToString(Image_CompressedFormat theFormat)
 
 Image_PixMap::Image_PixMap()
     : myImgFormat(Image_Format_Gray)
-{}
+{
+}
 
 //=================================================================================================
 

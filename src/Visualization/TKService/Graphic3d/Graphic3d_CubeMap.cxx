@@ -42,5 +42,4 @@ Graphic3d_CubeMap::Graphic3d_CubeMap(const occ::handle<Image_PixMap>& thePixmap,
 
 //=================================================================================================
 
-Graphic3d_CubeMap::~Graphic3d_CubeMap()
-= default;
+Graphic3d_CubeMap::~Graphic3d_CubeMap() = default;

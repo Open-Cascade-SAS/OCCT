@@ -43,7 +43,8 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject(
     : PrsMgr_PresentableObject(aTypeOfPresentation3d),
       myGlobalSelMode(0),
       myAutoHilight(true)
-{}
+{
+}
 
 //==================================================
 // Function: Destructor

@@ -67,7 +67,8 @@ static bool isBlackPixel(const Image_PixMap& theData, size_t theY, size_t theX)
 Image_Diff::Image_Diff()
     : myColorTolerance(0.0),
       myIsBorderFilterOn(false)
-{}
+{
+}
 
 //=================================================================================================
 

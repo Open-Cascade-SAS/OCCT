@@ -24,12 +24,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Number, Draw_Drawable3D)
 
 Draw_Number::Draw_Number(const double theV)
     : myValue(theV)
-{}
+{
+}
 
 //=================================================================================================
 
-void Draw_Number::DrawOn(Draw_Display&) const
-{}
+void Draw_Number::DrawOn(Draw_Display&) const {}
 
 //=================================================================================================
 
