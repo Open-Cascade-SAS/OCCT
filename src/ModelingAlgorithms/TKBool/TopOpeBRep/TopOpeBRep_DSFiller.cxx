@@ -271,15 +271,8 @@ bool BREP_UnfillSameDomain(const TopoDS_Shape&                             F1,
   int          samdom = 1;
   st1                 = SC.StateShapeShape(F1, F2, samdom);
   st2                 = SC.StateShapeShape(F2, F1, samdom);
-  if (((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
-      || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN)))
-  {
-    unfill = true; // NYI IN IN aussi
-  }
-  else
-  {
-    unfill = false;
-  }
+  unfill = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
+      || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
   if (unfill)
   {
     TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
@@ -891,15 +884,8 @@ void TopOpeBRep_DSFiller::InsertIntersection2d(const TopoDS_Shape&              
       int          samdom = 1;
       st1                 = myPShapeClassifier->StateShapeShape(lFF1, lFF2, samdom);
       st2                 = myPShapeClassifier->StateShapeShape(lFF2, lFF1, samdom);
-      if (((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
-          || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN)))
-      {
-        unfill = true; // NYI IN IN aussi
-      }
-      else
-      {
-        unfill = false;
-      }
+      unfill = ((st1 == TopAbs_OUT) && (st2 == TopAbs_OUT))
+          || ((st1 == TopAbs_UNKNOWN) && (st2 == TopAbs_UNKNOWN));
       if (unfill)
       {
         TopOpeBRepDS_DataStructure& BDS2 = HDS->ChangeDS();
@@ -1069,14 +1055,7 @@ void TopOpeBRep_DSFiller::Insert1d(const TopoDS_Shape&                          
 
 bool TopOpeBRep_DSFiller::CheckInsert(const TopoDS_Shape& aS1, const TopoDS_Shape& aS2) const
 {
-  if (aS1.IsEqual(aS2))
-  {
-#ifdef OCCT_DEBUG
-    std::cout << "TopOpeBRep_DSFiller : CheckInsert : S1 == S2" << std::endl;
-#endif
-    return false;
-  }
-  return true;
+  return !aS1.IsEqual(aS2);
 }
 
 //=================================================================================================

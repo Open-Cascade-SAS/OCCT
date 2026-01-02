@@ -1906,11 +1906,7 @@ void ChoixUV(const TopoDS_Vertex&            theVertex,
         gp_Pnt            pEdg    = bcEdg.Value(aParPiv);
         gp_Pnt            pEFound = bcEvois.Value(aParam);
 
-        if (!IsDistanceIn3DTolerance(pEdg, pEFound, aTol3d))
-          IsFound = false;
-        else
-          // angle was not defined but points are close
-          IsFound = true; // all right
+        IsFound = IsDistanceIn3DTolerance(pEdg, pEFound, aTol3d);
       }
 
       if (!IsFound)
