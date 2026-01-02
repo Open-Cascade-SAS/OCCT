@@ -32,8 +32,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Hyperbola::EvaluateGrid(
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
   const gp_Pnt&  aCenter = aHypr.Location();
-  const gp_Dir aXDir = aHypr.XAxis().Direction();
-  const gp_Dir aYDir = aHypr.YAxis().Direction();
+  const gp_Dir   aXDir   = aHypr.XAxis().Direction();
+  const gp_Dir   aYDir   = aHypr.YAxis().Direction();
   const double   aMajR   = aHypr.MajorRadius();
   const double   aMinR   = aHypr.MinorRadius();
 
@@ -77,8 +77,8 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
   const gp_Pnt&  aCenter = aHypr.Location();
-  const gp_Dir aXDir = aHypr.XAxis().Direction();
-  const gp_Dir aYDir = aHypr.YAxis().Direction();
+  const gp_Dir   aXDir   = aHypr.XAxis().Direction();
+  const gp_Dir   aYDir   = aHypr.YAxis().Direction();
   const double   aMajR   = aHypr.MajorRadius();
   const double   aMinR   = aHypr.MinorRadius();
 
@@ -127,8 +127,8 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
   const gp_Pnt&  aCenter = aHypr.Location();
-  const gp_Dir aXDir = aHypr.XAxis().Direction();
-  const gp_Dir aYDir = aHypr.YAxis().Direction();
+  const gp_Dir   aXDir   = aHypr.XAxis().Direction();
+  const gp_Dir   aYDir   = aHypr.YAxis().Direction();
   const double   aMajR   = aHypr.MajorRadius();
   const double   aMinR   = aHypr.MinorRadius();
 
@@ -181,8 +181,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
   const gp_Pnt&  aCenter = aHypr.Location();
-  const gp_Dir aXDir = aHypr.XAxis().Direction();
-  const gp_Dir aYDir = aHypr.YAxis().Direction();
+  const gp_Dir   aXDir   = aHypr.XAxis().Direction();
+  const gp_Dir   aYDir   = aHypr.YAxis().Direction();
   const double   aMajR   = aHypr.MajorRadius();
   const double   aMinR   = aHypr.MinorRadius();
 
@@ -239,8 +239,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Hypr& aHypr = myGeom->Hypr();
-  const gp_Dir aXDir = aHypr.XAxis().Direction();
-  const gp_Dir aYDir = aHypr.YAxis().Direction();
+  const gp_Dir   aXDir = aHypr.XAxis().Direction();
+  const gp_Dir   aYDir = aHypr.YAxis().Direction();
   const double   aMajR = aHypr.MajorRadius();
   const double   aMinR = aHypr.MinorRadius();
 

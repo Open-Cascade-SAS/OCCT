@@ -32,8 +32,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid(
 
   const gp_Parab& aParab  = myGeom->Parab();
   const gp_Pnt&   aCenter = aParab.Location();
-  const gp_Dir aXDir = aParab.XAxis().Direction();
-  const gp_Dir aYDir = aParab.YAxis().Direction();
+  const gp_Dir    aXDir   = aParab.XAxis().Direction();
+  const gp_Dir    aYDir   = aParab.YAxis().Direction();
   const double    aFocal  = aParab.Focal();
 
   const double aCX = aCenter.X();
@@ -78,8 +78,8 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
 
   const gp_Parab& aParab  = myGeom->Parab();
   const gp_Pnt&   aCenter = aParab.Location();
-  const gp_Dir aXDir = aParab.XAxis().Direction();
-  const gp_Dir aYDir = aParab.YAxis().Direction();
+  const gp_Dir    aXDir   = aParab.XAxis().Direction();
+  const gp_Dir    aYDir   = aParab.YAxis().Direction();
   const double    aFocal  = aParab.Focal();
 
   const double aCX = aCenter.X();
@@ -129,8 +129,8 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
 
   const gp_Parab& aParab  = myGeom->Parab();
   const gp_Pnt&   aCenter = aParab.Location();
-  const gp_Dir aXDir = aParab.XAxis().Direction();
-  const gp_Dir aYDir = aParab.YAxis().Direction();
+  const gp_Dir    aXDir   = aParab.XAxis().Direction();
+  const gp_Dir    aYDir   = aParab.YAxis().Direction();
   const double    aFocal  = aParab.Focal();
 
   const double aCX = aCenter.X();
@@ -186,8 +186,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
 
   const gp_Parab& aParab  = myGeom->Parab();
   const gp_Pnt&   aCenter = aParab.Location();
-  const gp_Dir aXDir = aParab.XAxis().Direction();
-  const gp_Dir aYDir = aParab.YAxis().Direction();
+  const gp_Dir    aXDir   = aParab.XAxis().Direction();
+  const gp_Dir    aYDir   = aParab.YAxis().Direction();
   const double    aFocal  = aParab.Focal();
 
   const double aCX = aCenter.X();
