@@ -8,33 +8,23 @@ set(OCCT_ExtremaCS_FILES
   # Grid evaluator for 3D parameter space (t, u, v)
   ExtremaCS_GridEvaluator3D.hxx
 
-  # Elementary curve wrappers (header-only)
+  # Adapters for numerical evaluation
+  ExtremaCS_CurveAdapter.hxx
+  ExtremaCS_SurfaceAdapter.hxx
+
+  # Elementary curve wrappers (header-only, for analytical pairs)
   ExtremaCS_Line.hxx
   ExtremaCS_Circle.hxx
   ExtremaCS_Ellipse.hxx
   ExtremaCS_Hyperbola.hxx
   ExtremaCS_Parabola.hxx
 
-  # Numerical curve evaluators
-  ExtremaCS_BezierCurve.hxx
-  ExtremaCS_BSplineCurve.hxx
-  ExtremaCS_OffsetCurve.hxx
-  ExtremaCS_OtherCurve.hxx
-
-  # Elementary surface wrappers (header-only)
+  # Elementary surface wrappers (header-only, for analytical pairs)
   ExtremaCS_Plane.hxx
   ExtremaCS_Cylinder.hxx
   ExtremaCS_Cone.hxx
   ExtremaCS_Sphere.hxx
   ExtremaCS_Torus.hxx
-
-  # Numerical surface evaluators
-  ExtremaCS_BezierSurface.hxx
-  ExtremaCS_BSplineSurface.hxx
-  ExtremaCS_OffsetSurface.hxx
-  ExtremaCS_SurfaceOfRevolution.hxx
-  ExtremaCS_SurfaceOfExtrusion.hxx
-  ExtremaCS_OtherSurface.hxx
 
   # Analytical pair classes (closed-form solutions)
   ExtremaCS_LinePlane.hxx

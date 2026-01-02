@@ -50,15 +50,8 @@ set(OCCT_ExtremaCC_FILES
   ExtremaCC_ParabolaParabola.hxx
   ExtremaCC_ParabolaParabola.cxx
 
-  # Numerical curve evaluators
-  ExtremaCC_BezierCurve.hxx
-  ExtremaCC_BezierCurve.cxx
-  ExtremaCC_BSplineCurve.hxx
-  ExtremaCC_BSplineCurve.cxx
-  ExtremaCC_OffsetCurve.hxx
-  ExtremaCC_OffsetCurve.cxx
-  ExtremaCC_OtherCurve.hxx
-  ExtremaCC_OtherCurve.cxx
+  # Curve adapter for numerical evaluation
+  ExtremaCC_CurveAdapter.hxx
 
   # Numerical template for grid-based pairs
   ExtremaCC_Numerical.hxx
