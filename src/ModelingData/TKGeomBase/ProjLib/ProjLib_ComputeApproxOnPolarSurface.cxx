@@ -1254,7 +1254,8 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
                   int indExt = 0;
                   for (i = 1; i <= aExtPS.NbExt(); i++)
                   {
-                    if (aExtPS.SquareDistance(i) < DistTol3d2 && aExtPS.SquareDistance(i) < Dist2Min)
+                    if (aExtPS.SquareDistance(i) < DistTol3d2
+                        && aExtPS.SquareDistance(i) < Dist2Min)
                     {
                       Dist2Min = aExtPS.SquareDistance(i);
                       indExt   = i;
