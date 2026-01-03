@@ -117,6 +117,110 @@ constexpr int THE_BEZIER_DEGREE_MULTIPLIER = 6;
 //! Default number of samples for general surfaces (per direction).
 constexpr int THE_OTHER_SURFACE_NB_SAMPLES = 32;
 
+//==================================================================================================
+//! @name Periodic Parameter Normalization Helpers
+//! These functions normalize periodic parameters to a specified domain range.
+//==================================================================================================
+
+//! @brief Normalize a periodic parameter to domain range [theMin, theMin + thePeriod).
+//!
+//! Shifts theParam by adding/subtracting thePeriod until it falls within the range.
+//! This is more efficient than using fmod for parameters close to the range.
+//!
+//! @param[in,out] theParam parameter value to normalize (modified in place)
+//! @param[in] theMin minimum of the target range
+//! @param[in] thePeriod period of the parameter (default 2*PI)
+inline void NormalizePeriodic(double& theParam, double theMin, double thePeriod = THE_TWO_PI)
+{
+  while (theParam < theMin)
+    theParam += thePeriod;
+  while (theParam >= theMin + thePeriod)
+    theParam -= thePeriod;
+}
+
+//! @brief Normalize U parameter to domain range.
+//!
+//! Convenience function for normalizing U parameter of a surface.
+//!
+//! @param[in,out] theU U parameter to normalize
+//! @param[in] theDomain 2D domain containing UMin
+inline void NormalizeU(double& theU, const MathUtils::Domain2D& theDomain)
+{
+  NormalizePeriodic(theU, theDomain.UMin, THE_TWO_PI);
+}
+
+//! @brief Normalize V parameter to domain range.
+//!
+//! Convenience function for normalizing V parameter of a surface.
+//!
+//! @param[in,out] theV V parameter to normalize
+//! @param[in] theDomain 2D domain containing VMin
+inline void NormalizeV(double& theV, const MathUtils::Domain2D& theDomain)
+{
+  NormalizePeriodic(theV, theDomain.VMin, THE_TWO_PI);
+}
+
+//! @brief Normalize both U and V parameters to domain range.
+//!
+//! @param[in,out] theU U parameter to normalize
+//! @param[in,out] theV V parameter to normalize
+//! @param[in] theDomain 2D domain containing UMin and VMin
+inline void NormalizeUV(double& theU, double& theV, const MathUtils::Domain2D& theDomain)
+{
+  NormalizeU(theU, theDomain);
+  NormalizeV(theV, theDomain);
+}
+
+//! @brief Check if a periodic parameter is within range after normalization.
+//!
+//! Normalizes theParam to [theMin, theMin + thePeriod) then checks if it falls
+//! within [theMin - theTol, theMax + theTol].
+//!
+//! @param theParam parameter value to check (not modified)
+//! @param theMin minimum of the domain range
+//! @param theMax maximum of the domain range
+//! @param theTol tolerance for range check
+//! @param thePeriod period of the parameter (default 2*PI)
+//! @return true if parameter is within range after normalization
+inline bool IsInPeriodicRange(double theParam,
+                              double theMin,
+                              double theMax,
+                              double theTol,
+                              double thePeriod = THE_TWO_PI)
+{
+  NormalizePeriodic(theParam, theMin, thePeriod);
+  return theParam >= theMin - theTol && theParam <= theMax + theTol;
+}
+
+//! @brief Shift a periodic parameter to be within partial domain range.
+//!
+//! Shifts theParam by adding/subtracting thePeriod to bring it into [theMin, theMax].
+//! After shifting, clamps to ensure the value is within bounds.
+//! This is used for partial (non-full-period) domains.
+//!
+//! @note Only call this for parameters that are known to be valid (i.e., after
+//!       IsInPeriodicRange returned true), otherwise it may loop excessively.
+//!
+//! @param[in,out] theParam parameter value to shift and clamp
+//! @param theMin minimum of the domain range
+//! @param theMax maximum of the domain range
+//! @param thePeriod period of the parameter (default 2*PI)
+inline void ClampToPeriodicRange(double& theParam,
+                                 double  theMin,
+                                 double  theMax,
+                                 double  thePeriod = THE_TWO_PI)
+{
+  while (theParam < theMin)
+    theParam += thePeriod;
+  while (theParam > theMax)
+    theParam -= thePeriod;
+  // Final clamp for numerical safety
+  if (theParam < theMin)
+    theParam = theMin;
+  if (theParam > theMax)
+    theParam = theMax;
+}
+
 //! Offset added to degree for BSpline surface samples per knot span: samples = degree + offset.
 //! For a degree 3 surface: 3+2 = 5 samples per span in each direction.
 //! This results in 5x5 = 25 samples per cell, providing adequate coverage.

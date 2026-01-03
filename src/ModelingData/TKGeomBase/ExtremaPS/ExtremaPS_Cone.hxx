@@ -220,6 +220,12 @@ public:
     if (aU < 0.0)
       aU += aTwoPi;
 
+    // Normalize U to domain range for periodic parameter
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeU(aU, *myDomain);
+    }
+
     // Compute closest V on the generator
     const double aLocalZ   = aZ - myApexV;
     const double aGenDist  = aLocalZ * myCosAngle + aRho * mySinAngle;
@@ -227,8 +233,14 @@ public:
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi)
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeU(aUOpp, *myDomain);
+    }
+    else if (aUOpp >= aTwoPi)
+    {
       aUOpp -= aTwoPi;
+    }
 
     // For maximum, project onto opposite generator
     const double aGenDistMax  = aLocalZ * myCosAngle - aRho * mySinAngle;
@@ -277,31 +289,16 @@ public:
     // Check if U domain is full circle
     const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
 
-    // Helper: Check U in range (with periodicity handling)
-    auto checkUInRange = [&](double aTestU) -> bool {
-      if (aIsFullU)
-        return true;
-      while (aTestU < theDomain.UMin)
-        aTestU += aTwoPi;
-      while (aTestU >= theDomain.UMin + aTwoPi)
-        aTestU -= aTwoPi;
-      return theDomain.U().Contains(aTestU, theTol);
-    };
-
     // Add minimum extremum
     if (theMode != ExtremaPS::SearchMode::Max)
     {
-      if (checkUInRange(aU))
+      if (aIsFullU || ExtremaPS::IsInPeriodicRange(aU, theDomain.UMin, theDomain.UMax, theTol))
       {
         double aClampedV = theDomain.V().Clamp(aClosestV);
         double aClampedU = aU;
         if (!aIsFullU)
         {
-          while (aClampedU < theDomain.UMin)
-            aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax)
-            aClampedU -= aTwoPi;
-          aClampedU = theDomain.U().Clamp(aClampedU);
+          ExtremaPS::ClampToPeriodicRange(aClampedU, theDomain.UMin, theDomain.UMax);
         }
 
         const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
@@ -320,17 +317,13 @@ public:
     // Add maximum extremum
     if (theMode != ExtremaPS::SearchMode::Min)
     {
-      if (checkUInRange(aUOpp))
+      if (aIsFullU || ExtremaPS::IsInPeriodicRange(aUOpp, theDomain.UMin, theDomain.UMax, theTol))
       {
         double aClampedV = theDomain.V().Clamp(aClosestVMax);
         double aClampedU = aUOpp;
         if (!aIsFullU)
         {
-          while (aClampedU < theDomain.UMin)
-            aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax)
-            aClampedU -= aTwoPi;
-          aClampedU = theDomain.U().Clamp(aClampedU);
+          ExtremaPS::ClampToPeriodicRange(aClampedU, theDomain.UMin, theDomain.UMax);
         }
 
         const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
