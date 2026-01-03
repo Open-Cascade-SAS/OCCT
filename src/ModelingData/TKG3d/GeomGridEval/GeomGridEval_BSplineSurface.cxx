@@ -280,6 +280,20 @@ void computeSpansAndSort(NCollection_Array1<GeomGridEval::UVPointWithSpan>& theU
 
 //==================================================================================================
 
+void GeomGridEval_BSplineSurface::prepareAllocator() const
+{
+  if (myAllocator.IsNull())
+  {
+    myAllocator = new NCollection_IncAllocator();
+  }
+  else
+  {
+    myAllocator->Reset(false); // Keep blocks, reset position
+  }
+}
+
+//==================================================================================================
+
 NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
@@ -334,6 +348,9 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   const int                  aNbPoints = aNbU * aNbV;
   NCollection_Array1<gp_Pnt> aLinearResult(1, aNbPoints);
 
+  // Prepare allocator for batch evaluation
+  prepareAllocator();
+
   // Create local cache for cache-based evaluation (only used for large span groups)
   occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                           isUPeriodic,
@@ -347,7 +364,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights, myAllocator);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
@@ -372,7 +389,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
                    isVRational,
                    isUPeriodic,
                    isVPeriodic,
-                   aPnt);
+                   aPnt,
+                   myAllocator);
       aLinearResult.SetValue(thePt.OutputIdx + 1, aPnt);
     });
 
@@ -440,6 +458,9 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   // Allocate result buffer (1-based indexing)
   NCollection_Array1<gp_Pnt> aPoints(1, aNbPoints);
 
+  // Prepare allocator for batch evaluation
+  prepareAllocator();
+
   // Create local cache for cache-based evaluation (only used for large span groups)
   occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
                                                           isUPeriodic,
@@ -453,7 +474,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights, myAllocator);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
@@ -478,7 +499,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
                    isVRational,
                    isUPeriodic,
                    isVPeriodic,
-                   aPnt);
+                   aPnt,
+                   myAllocator);
       aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
     });
 

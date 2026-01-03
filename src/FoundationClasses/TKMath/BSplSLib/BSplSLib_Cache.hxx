@@ -15,6 +15,7 @@
 #define _BSplSLib_Cache_Headerfile
 
 #include <NCollection_Array2.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <NCollection_HArray2.hxx>
 
 #include <BSplCLib_CacheParams.hxx>
@@ -64,6 +65,23 @@ public:
                                   const NCollection_Array1<double>& theFlatKnotsV,
                                   const NCollection_Array2<gp_Pnt>& thePoles,
                                   const NCollection_Array2<double>* theWeights = nullptr);
+
+  //! Recomputes the cache data with optional allocator for memory management.
+  //! Does not verify validity of the cache.
+  //! @param theParameterU  the parametric value on the U axis to identify the span
+  //! @param theParameterV  the parametric value on the V axis to identify the span
+  //! @param theFlatKnotsU  flat knots of the surface along U axis
+  //! @param theFlatKnotsV  flat knots of the surface along V axis
+  //! @param thePoles       array of poles of the surface
+  //! @param theWeights     array of weights of corresponding poles
+  //! @param theAllocator   optional allocator for internal temporary arrays
+  Standard_EXPORT void BuildCache(const double&                            theParameterU,
+                                  const double&                            theParameterV,
+                                  const NCollection_Array1<double>&        theFlatKnotsU,
+                                  const NCollection_Array1<double>&        theFlatKnotsV,
+                                  const NCollection_Array2<gp_Pnt>&        thePoles,
+                                  const NCollection_Array2<double>*        theWeights,
+                                  const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Calculates the point on the surface for specified parameters
   //! \param[in]  theU      first parameter for calculation of the value

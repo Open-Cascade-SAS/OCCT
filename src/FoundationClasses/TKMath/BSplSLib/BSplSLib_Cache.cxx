@@ -298,6 +298,50 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
 
 //==================================================================================================
 
+void BSplSLib_Cache::BuildCache(const double&                            theParameterU,
+                                const double&                            theParameterV,
+                                const NCollection_Array1<double>&        theFlatKnotsU,
+                                const NCollection_Array1<double>&        theFlatKnotsV,
+                                const NCollection_Array2<gp_Pnt>&        thePoles,
+                                const NCollection_Array2<double>*        theWeights,
+                                const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  // Normalize the parameters for periodical B-splines
+  double aNewParamU = myParamsU.PeriodicNormalization(theParameterU);
+  double aNewParamV = myParamsV.PeriodicNormalization(theParameterV);
+
+  myParamsU.LocateParameter(aNewParamU, theFlatKnotsU);
+  myParamsV.LocateParameter(aNewParamV, theFlatKnotsV);
+
+  // BSplSLib uses different convention for span parameters than BSplCLib
+  // (Start is in the middle of the span and length is half-span),
+  // thus we need to amend them here
+  double aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  double aSpanStartU  = myParamsU.SpanStart + aSpanLengthU;
+  double aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  double aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
+
+  // Calculate new cache data using allocator for internal temporary arrays
+  BSplSLib::BuildCache(aSpanStartU,
+                       aSpanStartV,
+                       aSpanLengthU,
+                       aSpanLengthV,
+                       myParamsU.IsPeriodic,
+                       myParamsV.IsPeriodic,
+                       myParamsU.Degree,
+                       myParamsV.Degree,
+                       myParamsU.SpanIndex,
+                       myParamsV.SpanIndex,
+                       theFlatKnotsU,
+                       theFlatKnotsV,
+                       thePoles,
+                       theWeights,
+                       myPolesWeights->ChangeArray2(),
+                       theAllocator);
+}
+
+//==================================================================================================
+
 void BSplSLib_Cache::D0(const double& theU, const double& theV, gp_Pnt& thePoint) const
 {
   const auto [aLocalU, aLocalV] = toLocalParamsD0(theU, theV, myParamsU, myParamsV);

@@ -8,5 +8,7 @@ set(OCCT_BSplSLib_FILES
   BSplSLib_BzSyntaxes.cxx
   BSplSLib_Cache.cxx
   BSplSLib_Cache.hxx
+  BSplSLib_CacheGrid.cxx
+  BSplSLib_CacheGrid.hxx
   BSplSLib_EvaluatorFunction.hxx
 )

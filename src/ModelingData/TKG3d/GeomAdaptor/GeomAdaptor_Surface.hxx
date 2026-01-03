@@ -20,6 +20,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplSLib_Cache.hxx>
+#include <BSplSLib_CacheGrid.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
@@ -27,6 +28,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_NullObject.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #include <variant>
 
@@ -73,14 +75,15 @@ public:
   //! Internal structure for Bezier surface cache data.
   struct BezierData
   {
-    mutable occ::handle<BSplSLib_Cache> Cache; //!< Cached data for evaluation
+    mutable occ::handle<BSplSLib_Cache>       Cache;     //!< Cached data for evaluation
+    mutable occ::handle<NCollection_IncAllocator> Allocator; //!< Allocator for cache building
   };
 
   //! Internal structure for BSpline surface cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineSurface>    Surface; //!< BSpline surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache;   //!< Cached data for evaluation
+    occ::handle<Geom_BSplineSurface>    Surface;   //!< BSpline surface to prevent downcasts
+    mutable occ::handle<BSplSLib_CacheGrid> CacheGrid; //!< Grid of cached spans for evaluation
   };
 
   //! Variant type for surface-specific evaluation data.

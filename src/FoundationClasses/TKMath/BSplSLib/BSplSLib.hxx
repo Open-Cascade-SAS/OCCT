@@ -18,12 +18,13 @@
 #define _BSplSLib_HeaderFile
 
 #include <BSplSLib_EvaluatorFunction.hxx>
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
 #include <Standard_Integer.hxx>
+#include <gp_Pnt.hxx>
 
 class gp_Pnt;
 class gp_Vec;
@@ -194,6 +195,27 @@ public:
                                  const bool                        VPer,
                                  gp_Pnt&                           P);
 
+  //! Computes a point with optional allocator for memory pooling.
+  //! @param theAllocator optional allocator for efficient repeated evaluations
+  Standard_EXPORT static void D0(const double                             U,
+                                 const double                             V,
+                                 const int                                UIndex,
+                                 const int                                VIndex,
+                                 const NCollection_Array2<gp_Pnt>&        Poles,
+                                 const NCollection_Array2<double>*        Weights,
+                                 const NCollection_Array1<double>&        UKnots,
+                                 const NCollection_Array1<double>&        VKnots,
+                                 const NCollection_Array1<int>*           UMults,
+                                 const NCollection_Array1<int>*           VMults,
+                                 const int                                UDegree,
+                                 const int                                VDegree,
+                                 const bool                               URat,
+                                 const bool                               VRat,
+                                 const bool                               UPer,
+                                 const bool                               VPer,
+                                 gp_Pnt&                                  P,
+                                 const Handle(NCollection_BaseAllocator)& theAllocator);
+
   Standard_EXPORT static void D1(const double                      U,
                                  const double                      V,
                                  const int                         UIndex,
@@ -213,6 +235,29 @@ public:
                                  gp_Pnt&                           P,
                                  gp_Vec&                           Vu,
                                  gp_Vec&                           Vv);
+
+  //! Computes the point and first derivatives with optional allocator.
+  //! @param theAllocator optional allocator for efficient repeated evaluations
+  Standard_EXPORT static void D1(const double                             U,
+                                 const double                             V,
+                                 const int                                UIndex,
+                                 const int                                VIndex,
+                                 const NCollection_Array2<gp_Pnt>&        Poles,
+                                 const NCollection_Array2<double>*        Weights,
+                                 const NCollection_Array1<double>&        UKnots,
+                                 const NCollection_Array1<double>&        VKnots,
+                                 const NCollection_Array1<int>*           UMults,
+                                 const NCollection_Array1<int>*           VMults,
+                                 const int                                UDegree,
+                                 const int                                VDegree,
+                                 const bool                               URat,
+                                 const bool                               VRat,
+                                 const bool                               UPer,
+                                 const bool                               VPer,
+                                 gp_Pnt&                                  P,
+                                 gp_Vec&                                  Vu,
+                                 gp_Vec&                                  Vv,
+                                 const Handle(NCollection_BaseAllocator)& theAllocator);
 
   Standard_EXPORT static void D2(const double                      U,
                                  const double                      V,
@@ -236,6 +281,32 @@ public:
                                  gp_Vec&                           Vuu,
                                  gp_Vec&                           Vvv,
                                  gp_Vec&                           Vuv);
+
+  //! Computes the point, first and second derivatives with optional allocator.
+  //! @param theAllocator optional allocator for efficient repeated evaluations
+  Standard_EXPORT static void D2(const double                             U,
+                                 const double                             V,
+                                 const int                                UIndex,
+                                 const int                                VIndex,
+                                 const NCollection_Array2<gp_Pnt>&        Poles,
+                                 const NCollection_Array2<double>*        Weights,
+                                 const NCollection_Array1<double>&        UKnots,
+                                 const NCollection_Array1<double>&        VKnots,
+                                 const NCollection_Array1<int>*           UMults,
+                                 const NCollection_Array1<int>*           VMults,
+                                 const int                                UDegree,
+                                 const int                                VDegree,
+                                 const bool                               URat,
+                                 const bool                               VRat,
+                                 const bool                               UPer,
+                                 const bool                               VPer,
+                                 gp_Pnt&                                  P,
+                                 gp_Vec&                                  Vu,
+                                 gp_Vec&                                  Vv,
+                                 gp_Vec&                                  Vuu,
+                                 gp_Vec&                                  Vvv,
+                                 gp_Vec&                                  Vuv,
+                                 const Handle(NCollection_BaseAllocator)& theAllocator);
 
   Standard_EXPORT static void D3(const double                      U,
                                  const double                      V,
@@ -264,6 +335,36 @@ public:
                                  gp_Vec&                           Vuuv,
                                  gp_Vec&                           Vuvv);
 
+  //! Computes the point, first, second and third derivatives with optional allocator.
+  //! @param theAllocator optional allocator for efficient repeated evaluations
+  Standard_EXPORT static void D3(const double                             U,
+                                 const double                             V,
+                                 const int                                UIndex,
+                                 const int                                VIndex,
+                                 const NCollection_Array2<gp_Pnt>&        Poles,
+                                 const NCollection_Array2<double>*        Weights,
+                                 const NCollection_Array1<double>&        UKnots,
+                                 const NCollection_Array1<double>&        VKnots,
+                                 const NCollection_Array1<int>*           UMults,
+                                 const NCollection_Array1<int>*           VMults,
+                                 const int                                UDegree,
+                                 const int                                VDegree,
+                                 const bool                               URat,
+                                 const bool                               VRat,
+                                 const bool                               UPer,
+                                 const bool                               VPer,
+                                 gp_Pnt&                                  P,
+                                 gp_Vec&                                  Vu,
+                                 gp_Vec&                                  Vv,
+                                 gp_Vec&                                  Vuu,
+                                 gp_Vec&                                  Vvv,
+                                 gp_Vec&                                  Vuv,
+                                 gp_Vec&                                  Vuuu,
+                                 gp_Vec&                                  Vvvv,
+                                 gp_Vec&                                  Vuuv,
+                                 gp_Vec&                                  Vuvv,
+                                 const Handle(NCollection_BaseAllocator)& theAllocator);
+
   Standard_EXPORT static void DN(const double                      U,
                                  const double                      V,
                                  const int                         Nu,
@@ -283,6 +384,29 @@ public:
                                  const bool                        UPer,
                                  const bool                        VPer,
                                  gp_Vec&                           Vn);
+
+  //! Computes the N-th derivative with optional allocator.
+  //! @param theAllocator optional allocator for efficient repeated evaluations
+  Standard_EXPORT static void DN(const double                             U,
+                                 const double                             V,
+                                 const int                                Nu,
+                                 const int                                Nv,
+                                 const int                                UIndex,
+                                 const int                                VIndex,
+                                 const NCollection_Array2<gp_Pnt>&        Poles,
+                                 const NCollection_Array2<double>*        Weights,
+                                 const NCollection_Array1<double>&        UKnots,
+                                 const NCollection_Array1<double>&        VKnots,
+                                 const NCollection_Array1<int>*           UMults,
+                                 const NCollection_Array1<int>*           VMults,
+                                 const int                                UDegree,
+                                 const int                                VDegree,
+                                 const bool                               URat,
+                                 const bool                               VRat,
+                                 const bool                               UPer,
+                                 const bool                               VPer,
+                                 gp_Vec&                                  Vn,
+                                 const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Computes the poles and weights of an isoparametric
   //! curve at parameter <Param> (UIso if <IsU> is True,
@@ -338,6 +462,33 @@ public:
   //! any and returns in P the Numerator value and
   //! in W the Denominator value if Weights are present
   //! otherwise returns 1.0e0
+  //! @param theAllocator optional allocator for memory pooling; when provided,
+  //!        temporary buffers are allocated from the pool instead of stack,
+  //!        enabling efficient memory reuse for repeated evaluations.
+  Standard_EXPORT static void HomogeneousD0(const double                             U,
+                                            const double                             V,
+                                            const int                                UIndex,
+                                            const int                                VIndex,
+                                            const NCollection_Array2<gp_Pnt>&        Poles,
+                                            const NCollection_Array2<double>*        Weights,
+                                            const NCollection_Array1<double>&        UKnots,
+                                            const NCollection_Array1<double>&        VKnots,
+                                            const NCollection_Array1<int>*           UMults,
+                                            const NCollection_Array1<int>*           VMults,
+                                            const int                                UDegree,
+                                            const int                                VDegree,
+                                            const bool                               URat,
+                                            const bool                               VRat,
+                                            const bool                               UPer,
+                                            const bool                               VPer,
+                                            double&                                  W,
+                                            gp_Pnt&                                  P,
+                                            const Handle(NCollection_BaseAllocator)& theAllocator);
+
+  //! Makes an homogeneous evaluation of Poles and Weights
+  //! any and returns in P the Numerator value and
+  //! in W the Denominator value if Weights are present
+  //! otherwise returns 1.0e0
   Standard_EXPORT static void HomogeneousD1(const double                      U,
                                             const double                      V,
                                             const int                         UIndex,
@@ -360,6 +511,37 @@ public:
                                             double&                           D,
                                             double&                           Du,
                                             double&                           Dv);
+
+  //! Makes an homogeneous evaluation of Poles and Weights
+  //! any and returns in P the Numerator value and
+  //! in W the Denominator value if Weights are present
+  //! otherwise returns 1.0e0
+  //! @param theAllocator optional allocator for memory pooling; when provided,
+  //!        temporary buffers are allocated from the pool instead of stack,
+  //!        enabling efficient memory reuse for repeated evaluations.
+  Standard_EXPORT static void HomogeneousD1(const double                             U,
+                                            const double                             V,
+                                            const int                                UIndex,
+                                            const int                                VIndex,
+                                            const NCollection_Array2<gp_Pnt>&        Poles,
+                                            const NCollection_Array2<double>*        Weights,
+                                            const NCollection_Array1<double>&        UKnots,
+                                            const NCollection_Array1<double>&        VKnots,
+                                            const NCollection_Array1<int>*           UMults,
+                                            const NCollection_Array1<int>*           VMults,
+                                            const int                                UDegree,
+                                            const int                                VDegree,
+                                            const bool                               URat,
+                                            const bool                               VRat,
+                                            const bool                               UPer,
+                                            const bool                               VPer,
+                                            gp_Pnt&                                  N,
+                                            gp_Vec&                                  Nu,
+                                            gp_Vec&                                  Nv,
+                                            double&                                  D,
+                                            double&                                  Du,
+                                            double&                                  Dv,
+                                            const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Reverses the array of weights.
   Standard_EXPORT static void Reverse(NCollection_Array2<double>& Weights,
@@ -529,6 +711,52 @@ public:
                                          const NCollection_Array2<gp_Pnt>& thePoles,
                                          const NCollection_Array2<double>* theWeights,
                                          NCollection_Array2<double>&       theCacheArray);
+
+  //! Perform the evaluation of the Taylor expansion
+  //! of the Bspline normalized between 0 and 1.
+  //! If rational computes the homogeneous Taylor expansion
+  //! for the numerator and stores it in CachePoles.
+  //! Version with optional allocator for memory management.
+  //! @param theAllocator optional allocator for internal temporary arrays
+  Standard_EXPORT static void BuildCache(const double                             U,
+                                         const double                             V,
+                                         const double                             USpanDomain,
+                                         const double                             VSpanDomain,
+                                         const bool                               UPeriodicFlag,
+                                         const bool                               VPeriodicFlag,
+                                         const int                                UDegree,
+                                         const int                                VDegree,
+                                         const int                                UIndex,
+                                         const int                                VIndex,
+                                         const NCollection_Array1<double>&        UFlatKnots,
+                                         const NCollection_Array1<double>&        VFlatKnots,
+                                         const NCollection_Array2<gp_Pnt>&        Poles,
+                                         const NCollection_Array2<double>*        Weights,
+                                         NCollection_Array2<gp_Pnt>&              CachePoles,
+                                         NCollection_Array2<double>*              CacheWeights,
+                                         const Handle(NCollection_BaseAllocator)& theAllocator);
+
+  //! Perform the evaluation of the Taylor expansion
+  //! of the Bspline normalized between 0 and 1.
+  //! Structure of result optimized for BSplSLib_Cache.
+  //! Version with optional allocator for memory management.
+  //! @param theAllocator optional allocator for internal temporary arrays
+  Standard_EXPORT static void BuildCache(const double                             theU,
+                                         const double                             theV,
+                                         const double                             theUSpanDomain,
+                                         const double                             theVSpanDomain,
+                                         const bool                               theUPeriodic,
+                                         const bool                               theVPeriodic,
+                                         const int                                theUDegree,
+                                         const int                                theVDegree,
+                                         const int                                theUIndex,
+                                         const int                                theVIndex,
+                                         const NCollection_Array1<double>&        theUFlatKnots,
+                                         const NCollection_Array1<double>&        theVFlatKnots,
+                                         const NCollection_Array2<gp_Pnt>&        thePoles,
+                                         const NCollection_Array2<double>*        theWeights,
+                                         NCollection_Array2<double>&              theCacheArray,
+                                         const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Perform the evaluation of the of the cache
   //! the parameter must be normalized between
