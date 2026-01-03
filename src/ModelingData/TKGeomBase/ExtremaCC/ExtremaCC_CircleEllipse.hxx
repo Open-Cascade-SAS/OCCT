@@ -41,13 +41,13 @@ public:
   //! Constructor with circle and ellipse geometries (full curves).
   //! @param[in] theCircle the circle
   //! @param[in] theEllipse the ellipse
-  ExtremaCC_CircleEllipse(const gp_Circ& theCircle, const gp_Elips& theEllipse);
+  Standard_EXPORT ExtremaCC_CircleEllipse(const gp_Circ& theCircle, const gp_Elips& theEllipse);
 
   //! Constructor with circle and ellipse geometries and parameter domains.
   //! @param[in] theCircle the circle
   //! @param[in] theEllipse the ellipse
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_CircleEllipse(const gp_Circ&             theCircle,
+  Standard_EXPORT ExtremaCC_CircleEllipse(const gp_Circ&             theCircle,
                           const gp_Elips&            theEllipse,
                           const ExtremaCC::Domain2D& theDomain);
 
@@ -67,7 +67,7 @@ public:
   //! @param[in] theTol tolerance for comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing the extrema
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
@@ -75,7 +75,7 @@ public:
   //! @param[in] theTol tolerance
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

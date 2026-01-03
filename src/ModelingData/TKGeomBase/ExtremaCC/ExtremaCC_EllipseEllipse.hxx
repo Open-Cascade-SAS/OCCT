@@ -29,9 +29,9 @@ class ExtremaCC_EllipseEllipse
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1, const gp_Elips& theEllipse2);
+  Standard_EXPORT ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1, const gp_Elips& theEllipse2);
 
-  ExtremaCC_EllipseEllipse(const gp_Elips&            theEllipse1,
+  Standard_EXPORT ExtremaCC_EllipseEllipse(const gp_Elips&            theEllipse1,
                            const gp_Elips&            theEllipse2,
                            const ExtremaCC::Domain2D& theDomain);
 
@@ -40,11 +40,11 @@ public:
   ExtremaCC_EllipseEllipse(ExtremaCC_EllipseEllipse&&)                 = default;
   ExtremaCC_EllipseEllipse& operator=(ExtremaCC_EllipseEllipse&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

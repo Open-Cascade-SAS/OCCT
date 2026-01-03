@@ -17,6 +17,9 @@
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Types.hxx>
 
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+
 #include <algorithm>
 #include <cmath>
 

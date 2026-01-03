@@ -338,10 +338,10 @@ Newton4DResult Newton4D(const Function& theFunc,
 //!
 //! Specialized version for the common case of finding extrema between two surfaces.
 //! The function values are the gradient components of the squared distance:
-//! - F1 = (S1-S2) · dS1/dU1
-//! - F2 = (S1-S2) · dS1/dV1
-//! - F3 = (S2-S1) · dS2/dU2
-//! - F4 = (S2-S1) · dS2/dV2
+//! - F1 = (S1-S2) * dS1/dU1
+//! - F2 = (S1-S2) * dS1/dV1
+//! - F3 = (S2-S1) * dS2/dU2
+//! - F4 = (S2-S1) * dS2/dV2
 //!
 //! The Jacobian has a special structure with 2x2 blocks.
 //!

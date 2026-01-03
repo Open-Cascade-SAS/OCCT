@@ -41,15 +41,15 @@ public:
   //! Constructor with two circle geometries (full circles).
   //! @param[in] theCircle1 first circle
   //! @param[in] theCircle2 second circle
-  ExtremaCC_CircleCircle(const gp_Circ& theCircle1, const gp_Circ& theCircle2);
+  Standard_EXPORT ExtremaCC_CircleCircle(const gp_Circ& theCircle1, const gp_Circ& theCircle2);
 
   //! Constructor with two circle geometries and parameter domains.
   //! @param[in] theCircle1 first circle
   //! @param[in] theCircle2 second circle
   //! @param[in] theDomain parameter domains for both circles
-  ExtremaCC_CircleCircle(const gp_Circ&             theCircle1,
-                         const gp_Circ&             theCircle2,
-                         const ExtremaCC::Domain2D& theDomain);
+  Standard_EXPORT ExtremaCC_CircleCircle(const gp_Circ&             theCircle1,
+                                         const gp_Circ&             theCircle2,
+                                         const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
   ExtremaCC_CircleCircle(const ExtremaCC_CircleCircle&) = delete;
@@ -67,7 +67,7 @@ public:
   //! @param[in] theTol tolerance for coplanarity and distance comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing the extrema
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
@@ -75,7 +75,7 @@ public:
   //! @param[in] theTol tolerance
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

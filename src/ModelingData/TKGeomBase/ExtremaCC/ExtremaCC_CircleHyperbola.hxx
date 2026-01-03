@@ -30,9 +30,9 @@ class ExtremaCC_CircleHyperbola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_CircleHyperbola(const gp_Circ& theCircle, const gp_Hypr& theHyperbola);
+  Standard_EXPORT ExtremaCC_CircleHyperbola(const gp_Circ& theCircle, const gp_Hypr& theHyperbola);
 
-  ExtremaCC_CircleHyperbola(const gp_Circ&             theCircle,
+  Standard_EXPORT ExtremaCC_CircleHyperbola(const gp_Circ&             theCircle,
                             const gp_Hypr&             theHyperbola,
                             const ExtremaCC::Domain2D& theDomain);
 
@@ -41,11 +41,11 @@ public:
   ExtremaCC_CircleHyperbola(ExtremaCC_CircleHyperbola&&)                 = default;
   ExtremaCC_CircleHyperbola& operator=(ExtremaCC_CircleHyperbola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
