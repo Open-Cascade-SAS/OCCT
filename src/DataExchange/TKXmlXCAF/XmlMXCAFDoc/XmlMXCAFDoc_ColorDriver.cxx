@@ -47,7 +47,7 @@ bool XmlMXCAFDoc_ColorDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   int                 aValue;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (anIntStr.GetInteger(aValue) == false)
+  if (!anIntStr.GetInteger(aValue))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Color attribute from \"") + anIntStr + "\"";

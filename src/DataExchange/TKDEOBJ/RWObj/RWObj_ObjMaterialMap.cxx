@@ -24,7 +24,6 @@ RWObj_ObjMaterialMap::RWObj_ObjMaterialMap(const TCollection_AsciiString& theFil
     : RWMesh_MaterialMap(theFile),
       myFile(nullptr)
 {
-  //
 }
 
 //=================================================================================================

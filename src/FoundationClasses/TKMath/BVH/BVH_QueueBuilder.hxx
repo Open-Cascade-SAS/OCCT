@@ -86,10 +86,7 @@ protected:
     BVH_PrimitiveRange Ranges[2];
 
     //! Creates new parameters of BVH child nodes.
-    BVH_ChildNodes()
-    {
-      //
-    }
+    BVH_ChildNodes() = default;
 
     //! Creates new parameters of BVH child nodes.
     BVH_ChildNodes(const BVH_Box<T, N>&      theLftBox,

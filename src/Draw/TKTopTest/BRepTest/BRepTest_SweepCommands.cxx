@@ -488,10 +488,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
     if (!Shape.IsNull())
     {
       Generator->AddWire(TopoDS::Wire(Shape));
-      if (!IsFirstWire)
-        IsFirstWire = true;
-      else
-        IsFirstWire = false;
+      IsFirstWire = !IsFirstWire;
     }
     else
     {

@@ -286,7 +286,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   if (ResoV2 > 0.0001 * pasuv[3])
     ResoV2 = 0.00001 * pasuv[3];
 
-  if (Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1) == false)
+  if (!Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1))
   {
     // UM1+=KELARG*pasuv[0];  Um1-=KELARG*pasuv[0];
   }
@@ -302,7 +302,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
 
-  if (Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1) == false)
+  if (!Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1))
   {
     // VM1+=KELARG*pasuv[1];  Vm1-=KELARG*pasuv[1];
   }
@@ -318,7 +318,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
 
-  if (Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2) == false)
+  if (!Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2))
   {
     // UM2+=KELARG*pasuv[2];  Um2-=KELARG*pasuv[2];
   }
@@ -334,7 +334,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
 
-  if (Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2) == false)
+  if (!Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2))
   {
     // VM2+=KELARG*pasuv[3];  Vm2-=KELARG*pasuv[3];
   }
@@ -464,7 +464,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
   pasuv[2] = pasMax * std::abs(UM2 - Um2);
   pasuv[3] = pasMax * std::abs(VM2 - Vm2);
   //
-  if (Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1) == false)
+  if (!Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1))
   {
     UM1 += KELARG * pasuv[0];
     Um1 -= KELARG * pasuv[0];
@@ -481,7 +481,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
   //
-  if (Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1) == false)
+  if (!Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1))
   {
     VM1 += KELARG * pasuv[1];
     Vm1 -= KELARG * pasuv[1];
@@ -498,7 +498,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
   //
-  if (Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2) == false)
+  if (!Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2))
   {
     UM2 += KELARG * pasuv[2];
     Um2 -= KELARG * pasuv[2];
@@ -515,7 +515,7 @@ IntWalk_PWalking::IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
     }
   }
 
-  if (Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2) == false)
+  if (!Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2))
   {
     VM2 += KELARG * pasuv[3];
     Vm2 -= KELARG * pasuv[3];
@@ -1250,7 +1250,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
             // JMB 30th December 1999.
             // Some statement below should not be put in comment because they are useful.
             // See grid CTO 909 A1 which infinitely loops
-            if (Arrive == false && aStatus == IntWalk_ArretSurPoint)
+            if (!Arrive && aStatus == IntWalk_ArretSurPoint)
             {
               Arrive = true;
 #ifdef OCCT_DEBUG

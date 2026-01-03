@@ -33,7 +33,7 @@ void TDocStd_PathParser::Parse()
   else
     return;
   temp.Trunc(PointPosition - 1);
-  bool isFileName = (temp.Length()) ? true : false;
+  bool isFileName = (temp.Length()) != 0;
   bool isTrek     = true;
 #ifdef _WIN32
   PointPosition = temp.SearchFromEnd(TCollection_ExtendedString("\\"));

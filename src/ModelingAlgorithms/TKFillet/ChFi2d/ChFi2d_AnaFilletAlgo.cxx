@@ -60,7 +60,7 @@ static bool isCW(const BRepAdaptor_Curve& AC)
   while (enda < 0.0)
     enda += 2.0 * M_PI;
 
-  bool is_cw = middlea > enda ? true : false;
+  bool is_cw = middlea > enda;
   return is_cw;
 }
 
@@ -319,7 +319,7 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
       {
         const TopoDS_Face& F = mkFace.Face();
         ShapeAnalysis_Wire analyzer(W, F, Precision::Confusion());
-        if (analyzer.CheckSelfIntersection() == true)
+        if (analyzer.CheckSelfIntersection())
         {
           // Cut the edges at the point of intersection.
           isCut = true;
@@ -355,7 +355,7 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
     return false;
 
   // Invert the fillet for left-handed plane.
-  if (plane.Position().Direct() == false)
+  if (!plane.Position().Direct())
     cw = !cw;
 
   // Construct a fillet.
@@ -395,7 +395,7 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
       if (bRet)
       {
         // Invert the fillet for left-handed planes.
-        if (plane.Position().Direct() == false)
+        if (!plane.Position().Direct())
           cw = !cw;
 
         // Make the circle again.

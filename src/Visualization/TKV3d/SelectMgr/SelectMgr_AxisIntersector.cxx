@@ -20,17 +20,11 @@
 
 //=================================================================================================
 
-SelectMgr_AxisIntersector::SelectMgr_AxisIntersector()
-{
-  //
-}
+SelectMgr_AxisIntersector::SelectMgr_AxisIntersector() = default;
 
 //=================================================================================================
 
-SelectMgr_AxisIntersector::~SelectMgr_AxisIntersector()
-{
-  //
-}
+SelectMgr_AxisIntersector::~SelectMgr_AxisIntersector() = default;
 
 //=================================================================================================
 
@@ -110,15 +104,11 @@ bool SelectMgr_AxisIntersector::hasIntersection(const NCollection_Vec3<double>& 
   const gp_Dir&      anAxisDir = myAxis.Direction();
   BVH_Ray<double, 3> aRay(NCollection_Vec3<double>(anAxisLoc.X(), anAxisLoc.Y(), anAxisLoc.Z()),
                           NCollection_Vec3<double>(anAxisDir.X(), anAxisDir.Y(), anAxisDir.Z()));
-  if (!BVH_Tools<double, 3>::RayBoxIntersection(aRay,
-                                                theBoxMin,
-                                                theBoxMax,
-                                                theTimeEnter,
-                                                theTimeLeave))
-  {
-    return false;
-  }
-  return true;
+  return BVH_Tools<double, 3>::RayBoxIntersection(aRay,
+                                                  theBoxMin,
+                                                  theBoxMax,
+                                                  theTimeEnter,
+                                                  theTimeLeave);
 }
 
 //=================================================================================================

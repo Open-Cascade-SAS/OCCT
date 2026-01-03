@@ -123,7 +123,6 @@ RWStl_Reader::RWStl_Reader()
     : myMergeAngle(M_PI / 2.0),
       myMergeTolearance(0.0)
 {
-  //
 }
 
 //=================================================================================================
@@ -195,7 +194,7 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
   if (isSeekgAvailable)
   {
     // get back to the beginning
-    theStream.seekg(0, theStream.beg);
+    theStream.seekg(0, Standard_IStream::beg);
   }
   else
   {

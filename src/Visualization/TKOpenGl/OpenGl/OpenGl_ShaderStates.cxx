@@ -20,7 +20,6 @@
 OpenGl_StateInterface::OpenGl_StateInterface()
     : myIndex(0)
 {
-  //
 }
 
 // =======================================================================
@@ -30,7 +29,6 @@ OpenGl_StateInterface::OpenGl_StateInterface()
 OpenGl_ProjectionState::OpenGl_ProjectionState()
     : myInverseNeedUpdate(false)
 {
-  //
 }
 
 // =======================================================================
@@ -64,7 +62,6 @@ const NCollection_Mat4<float>& OpenGl_ProjectionState::ProjectionMatrixInverse()
 OpenGl_ModelWorldState::OpenGl_ModelWorldState()
     : myInverseNeedUpdate(false)
 {
-  //
 }
 
 // =======================================================================
@@ -98,7 +95,6 @@ const NCollection_Mat4<float>& OpenGl_ModelWorldState::ModelWorldMatrixInverse()
 OpenGl_WorldViewState::OpenGl_WorldViewState()
     : myInverseNeedUpdate(false)
 {
-  //
 }
 
 // =======================================================================
@@ -133,7 +129,6 @@ OpenGl_ClippingState::OpenGl_ClippingState()
     : myIndex(0),
       myNextIndex(1)
 {
-  //
 }
 
 //=================================================================================================

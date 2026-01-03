@@ -38,15 +38,11 @@ AIS_PointCloudOwner::AIS_PointCloudOwner(const occ::handle<AIS_PointCloud>& theO
       myDetPoints(new TColStd_HPackedMapOfInteger()),
       mySelPoints(new TColStd_HPackedMapOfInteger())
 {
-  //
 }
 
 //=================================================================================================
 
-AIS_PointCloudOwner::~AIS_PointCloudOwner()
-{
-  //
-}
+AIS_PointCloudOwner::~AIS_PointCloudOwner() = default;
 
 //=================================================================================================
 

@@ -170,7 +170,7 @@ void HLRBRep_HLRToShape::DrawFace(const bool                 visible,
       else if (typ == 4)
         todraw = edf.RgNLine() && !Itf.OutLine();
       else
-        todraw = !(Itf.IsoLine() || Itf.Internal() || (edf.Rg1Line() && !Itf.OutLine()));
+        todraw = !Itf.IsoLine() && !Itf.Internal() && (!edf.Rg1Line() || Itf.OutLine());
 
       if (todraw)
       {

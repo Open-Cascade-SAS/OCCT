@@ -31,7 +31,6 @@ Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
     : myTol(Precision::Confusion()),
       myType(theParameterisation)
 {
-  //
 }
 
 //=================================================================================================

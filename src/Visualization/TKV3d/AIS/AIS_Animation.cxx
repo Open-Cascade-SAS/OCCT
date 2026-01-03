@@ -27,7 +27,6 @@ AIS_Animation::AIS_Animation(const TCollection_AsciiString& theAnimationName)
       myOwnDuration(0.0),
       myChildrenDuration(0.0)
 {
-  //
 }
 
 //=================================================================================================

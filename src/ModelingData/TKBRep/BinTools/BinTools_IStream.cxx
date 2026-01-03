@@ -124,7 +124,7 @@ TopAbs_Orientation BinTools_IStream::ShapeOrientation()
 
 BinTools_IStream::operator bool() const
 {
-  return *myStream ? true : false;
+  return static_cast<bool>(*myStream);
 }
 
 //=======================================================================

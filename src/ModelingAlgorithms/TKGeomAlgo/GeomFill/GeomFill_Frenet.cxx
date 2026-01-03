@@ -518,18 +518,18 @@ bool GeomFill_Frenet::D0(const double theParam, gp_Vec& Tangent, gp_Vec& Normal,
     // point, which is near to given.
     if (theParam - anUinfium < dPar)
     {
-      if (D0(aParam + dPar, Tangent, Normal, BiNormal) == false)
+      if (!D0(aParam + dPar, Tangent, Normal, BiNormal))
         return false;
     }
     else
     {
-      if (D0(aParam - dPar, Tangent, Normal, BiNormal) == false)
+      if (!D0(aParam - dPar, Tangent, Normal, BiNormal))
         return false;
     }
 
     P = Pt;
 
-    if (RotateTrihedron(Tangent, Normal, BiNormal, aTn) == false)
+    if (!RotateTrihedron(Tangent, Normal, BiNormal, aTn))
     {
 #ifdef OCCT_DEBUG
       std::cout << "Cannot coincide two tangents." << std::endl;

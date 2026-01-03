@@ -133,7 +133,7 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
       IntCurveSurface_TransitionOnCurve aTransition = IntCurveSurface_Tangent;
 
       aParam = 0.1 + 0.8 * aRandomGenerator.NextReal(); // random number in range [0.1, 0.9]
-      bFound = aSE.FindAPointInTheFace(aF, aPoint, aU, aV, aParam);
+      bFound = BRepClass3d_SolidExplorer::FindAPointInTheFace(aF, aPoint, aU, aV, aParam);
       if (!bFound || !FaceNormal(aF, aU, aV, aDN))
         continue;
 
@@ -141,11 +141,11 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
       double parmin = RealLast();
       for (aSE.InitShell(); aSE.MoreShell(); aSE.NextShell())
       {
-        if (aSE.RejectShell(aLin) == false)
+        if (!aSE.RejectShell(aLin))
         {
           for (aSE.InitFace(); aSE.MoreFace(); aSE.NextFace())
           {
-            if (aSE.RejectFace(aLin) == false)
+            if (!aSE.RejectFace(aLin))
             {
               TopoDS_Shape               aLocalShape   = aSE.CurrentFace();
               TopoDS_Face                CurFace       = TopoDS::Face(aLocalShape);
@@ -342,12 +342,12 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     for (SolidExplorer.InitShell(); SolidExplorer.MoreShell() && !isFaultyLine;
          SolidExplorer.NextShell())
     {
-      if (SolidExplorer.RejectShell(L) == false)
+      if (!SolidExplorer.RejectShell(L))
       {
         for (SolidExplorer.InitFace(); SolidExplorer.MoreFace() && !isFaultyLine;
              SolidExplorer.NextFace())
         {
-          if (SolidExplorer.RejectFace(L) == false)
+          if (!SolidExplorer.RejectFace(L))
           {
             TopoDS_Shape               aLocalShape   = SolidExplorer.CurrentFace();
             TopoDS_Face                f             = TopoDS::Face(aLocalShape);
@@ -601,9 +601,7 @@ static bool GetNormalOnFaceBound(const TopoDS_Edge& E,
   if (param < f || param > l)
     return false;
   c2d->D0(param, P2d);
-  if (!FaceNormal(F, P2d.X(), P2d.Y(), OutDir))
-    return false;
-  return true;
+  return FaceNormal(F, P2d.X(), P2d.Y(), OutDir);
 }
 
 //=================================================================================================

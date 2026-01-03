@@ -94,10 +94,7 @@ static bool HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S)
 
   P = C->Value(C->LastParameter());
 
-  if (L.SquareDistance(P) < Precision::SquareConfusion())
-    return true;
-
-  return false;
+  return L.SquareDistance(P) < Precision::SquareConfusion();
 }
 
 //=============================================================================
@@ -154,9 +151,7 @@ static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
   double aThreshold = Precision::Angular() * Precision::Angular() * dist2;
   gp_Pnt p2         = AxeOfRevolution.Location().XYZ() + dist * AxeOfRevolution.Direction().XYZ();
 
-  if ((pl.SquareDistance(p1) < aThreshold) && (pl.SquareDistance(p2) < aThreshold))
-    return true;
-  return false;
+  return (pl.SquareDistance(p1) < aThreshold) && (pl.SquareDistance(p2) < aThreshold);
   //   gp_Vec V (AxeOfRevolution.Location(),theCurvePos.Location());
   //   if (std::abs( V * theCurvePos.Direction()) <= gp::Resolution())
   //     return true;

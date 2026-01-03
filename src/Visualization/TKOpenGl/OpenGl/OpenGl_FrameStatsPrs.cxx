@@ -54,15 +54,11 @@ OpenGl_FrameStatsPrs::OpenGl_FrameStatsPrs()
       myChartIndices(new OpenGl_IndexBuffer()),
       myChartLines(new OpenGl_VertexBuffer())
 {
-  //
 }
 
 //=================================================================================================
 
-OpenGl_FrameStatsPrs::~OpenGl_FrameStatsPrs()
-{
-  //
-}
+OpenGl_FrameStatsPrs::~OpenGl_FrameStatsPrs() = default;
 
 //=================================================================================================
 

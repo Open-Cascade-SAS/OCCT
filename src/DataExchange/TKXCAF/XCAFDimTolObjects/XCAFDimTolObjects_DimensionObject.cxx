@@ -191,9 +191,7 @@ void XCAFDimTolObjects_DimensionObject::SetValues(
 
 bool XCAFDimTolObjects_DimensionObject::IsDimWithRange() const
 {
-  if (!myVal.IsNull() && myVal->Length() == 2)
-    return true;
-  return false;
+  return !myVal.IsNull() && myVal->Length() == 2;
 }
 
 //=================================================================================================
@@ -453,20 +451,18 @@ void XCAFDimTolObjects_DimensionObject::RemoveDescription(const int theNumber)
 bool XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
   const XCAFDimTolObjects_DimensionType theType)
 {
-  if (theType == XCAFDimTolObjects_DimensionType_Location_None
-      || theType == XCAFDimTolObjects_DimensionType_Location_CurvedDistance
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToOuter
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToInner
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToCenter
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToOuter
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToInner
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToCenter
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter
-      || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner
-      || theType == XCAFDimTolObjects_DimensionType_Location_Oriented)
-    return true;
-  return false;
+  return theType == XCAFDimTolObjects_DimensionType_Location_None
+         || theType == XCAFDimTolObjects_DimensionType_Location_CurvedDistance
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToOuter
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromCenterToInner
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToCenter
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToOuter
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromOuterToInner
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToCenter
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter
+         || theType == XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner
+         || theType == XCAFDimTolObjects_DimensionType_Location_Oriented;
 }
 
 //=================================================================================================
@@ -474,22 +470,20 @@ bool XCAFDimTolObjects_DimensionObject::IsDimensionalLocation(
 bool XCAFDimTolObjects_DimensionObject::IsDimensionalSize(
   const XCAFDimTolObjects_DimensionType theType)
 {
-  if (theType == XCAFDimTolObjects_DimensionType_Size_CurveLength
-      || theType == XCAFDimTolObjects_DimensionType_Size_Diameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_SphericalDiameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_Radius
-      || theType == XCAFDimTolObjects_DimensionType_Size_SphericalRadius
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorDiameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorDiameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorRadius
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorRadius
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorDiameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorDiameter
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius
-      || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius
-      || theType == XCAFDimTolObjects_DimensionType_Size_Thickness)
-    return true;
-  return false;
+  return theType == XCAFDimTolObjects_DimensionType_Size_CurveLength
+         || theType == XCAFDimTolObjects_DimensionType_Size_Diameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_SphericalDiameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_Radius
+         || theType == XCAFDimTolObjects_DimensionType_Size_SphericalRadius
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorDiameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorDiameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMinorRadius
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalMajorRadius
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorDiameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorDiameter
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalHighMajorRadius
+         || theType == XCAFDimTolObjects_DimensionType_Size_ToroidalLowMajorRadius
+         || theType == XCAFDimTolObjects_DimensionType_Size_Thickness;
 }
 
 //=================================================================================================

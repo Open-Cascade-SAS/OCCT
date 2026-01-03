@@ -1019,7 +1019,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         wline->Dump(0);
 #endif
 
-        if (iwline->HasFirstPoint() && iwline->IsTangentAtBegining() == false)
+        if (iwline->HasFirstPoint() && !iwline->IsTangentAtBegining())
         {
           indfirst    = iwline->FirstPointIndex();
           PPoint      = seqpdep(indfirst);
@@ -1117,7 +1117,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           wline->SetFirstPoint(wline->NbVertex());
         }
 
-        if (iwline->HasLastPoint() && iwline->IsTangentAtEnd() == false)
+        if (iwline->HasLastPoint() && !iwline->IsTangentAtEnd())
         {
           indlast     = iwline->LastPointIndex();
           PPoint      = seqpdep(indlast);
@@ -1389,7 +1389,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 
         gp_Pnt2d                       _p2d = thesegm.Curve()->Value(paramf);
         occ::handle<Adaptor3d_HVertex> _vtx;
-        if (PStartf.IsNew() == false)
+        if (!PStartf.IsNew())
           _vtx = PStartf.Vertex();
         const gp_Pnt& _Pp = PStartf.Value();
         _thepointAtBeg.SetValue(_Pp, PStartf.Tolerance(), false);
@@ -1407,7 +1407,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         }
         _thepointAtBeg.SetParameters(_u1, _v1, _u2, _v2);
         _thepointAtBeg.SetParameter(paramf);
-        if (PStartf.IsNew() == false)
+        if (!PStartf.IsNew())
           _thepointAtBeg.SetVertex(reversed, _vtx);
         _thepointAtBeg.SetArc(reversed, thesegm.Curve(), paramf, TLineUnk, TArcUnk);
 
@@ -1454,7 +1454,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 
         gp_Pnt2d                       _p2d = thesegm.Curve()->Value(paraml);
         occ::handle<Adaptor3d_HVertex> _vtx;
-        if (PStartl.IsNew() == false)
+        if (!PStartl.IsNew())
           _vtx = PStartl.Vertex();
         const gp_Pnt&  _Pp = PStartl.Value();
         IntPatch_Point _thepoint;
@@ -1473,7 +1473,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         }
         _thepointAtEnd.SetParameters(_u1, _v1, _u2, _v2);
         _thepointAtEnd.SetParameter(paraml);
-        if (PStartl.IsNew() == false)
+        if (!PStartl.IsNew())
           _thepointAtEnd.SetVertex(reversed, _vtx);
         _thepointAtEnd.SetArc(reversed, thesegm.Curve(), paraml, TLineUnk, TArcUnk);
 
@@ -1510,7 +1510,7 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           TransitionOK = false;
         }
       }
-      if (TransitionOK == false)
+      if (!TransitionOK)
       {
         //-- rline = new IntPatch_RLine (thesegm.Curve(),reversed,false);
         rline = new IntPatch_RLine(false);
@@ -2157,8 +2157,8 @@ static bool InsertSeamVertices(occ::handle<IntSurf_LineOn2S>& Line,
           }
           U1             = AdjustU(U1);
           U2             = AdjustU(U2);
-          bool pnearZero = (fabs(U1) < fabs(2. * M_PI - U1)) ? true : false;
-          bool cnearZero = (fabs(U) < fabs(2. * M_PI - U)) ? true : false;
+          bool pnearZero = fabs(U1) < fabs(2. * M_PI - U1);
+          bool cnearZero = fabs(U) < fabs(2. * M_PI - U);
           if (pnearZero == cnearZero)
           {
             if (!IsSeamParameter(U2, TOL2D) && !IsSeamParameter(U1, TOL2D))

@@ -71,9 +71,9 @@ static bool FUN_keepEinterference
     const TopOpeBRepDS_Transition& T    = I->Transition();
     TopAbs_ShapeEnum               shab = T.ShapeBefore(), shaa = T.ShapeAfter();
     TopAbs_State                   stab = T.Before(), staa = T.After();
-    bool                           k2 = !(((shab == TopAbs_EDGE) && (stab == TopAbs_ON))
-                || ((shaa == TopAbs_EDGE) && (staa == TopAbs_ON)));
-    res                               = res && k2;
+    bool                           k2 = ((shab != TopAbs_EDGE) || (stab != TopAbs_ON))
+              && ((shaa != TopAbs_EDGE) || (staa != TopAbs_ON));
+    res = res && k2;
 
     const TopoDS_Shape& VG = DS.Shape(I->Geometry());
 

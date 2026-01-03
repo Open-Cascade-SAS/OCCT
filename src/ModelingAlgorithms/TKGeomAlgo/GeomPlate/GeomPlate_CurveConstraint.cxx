@@ -149,7 +149,7 @@ double GeomPlate_CurveConstraint ::Length() const
     //   A(myFrontiere->Curve(),AP.Length(myFrontiere->Curve())/2,myFrontiere->FirstParameter());
     //  double toto=A.Parameter();
     // std::cout<<toto<<std::endl;
-    return AP.Length(*myFrontiere);
+    return GCPnts_AbscissaPoint::Length(*myFrontiere);
   }
   else
   { //  GCPnts_AbscissaPoint
@@ -157,7 +157,7 @@ double GeomPlate_CurveConstraint ::Length() const
     //  double toto=A.Parameter();
     // std::cout<<toto<<std::endl;
 
-    return AP.Length(*my3dCurve);
+    return GCPnts_AbscissaPoint::Length(*my3dCurve);
   }
 }
 

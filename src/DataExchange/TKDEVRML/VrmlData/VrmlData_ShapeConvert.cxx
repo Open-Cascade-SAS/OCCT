@@ -108,7 +108,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
   {
     case TopAbs_FACE: {
       const TopoDS_Face& aFace = TopoDS::Face(theShape);
-      if (aFace.IsNull() == false)
+      if (!aFace.IsNull())
       {
         occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, theLoc);
 
@@ -118,7 +118,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
           break;
         }
 
-        if (aTri.IsNull() == false)
+        if (!aTri.IsNull())
         {
           TopoDS_Shape aTestedShapeRev = aTestedShape;
           aTestedShapeRev.Orientation(isReverse ? TopAbs_FORWARD : TopAbs_REVERSED);
@@ -127,7 +127,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
             aFaceSetToReuse = occ::down_cast<VrmlData_IndexedFaceSet>(myRelMap(aTestedShapeRev));
 
           occ::handle<VrmlData_Coordinate> aCoordToReuse;
-          if (aFaceSetToReuse.IsNull() == false)
+          if (!aFaceSetToReuse.IsNull())
             aCoordToReuse = aFaceSetToReuse->Coordinates();
 
           aTShapeNode = triToIndexedFaceSet(aTri, aFace, aCoordToReuse);
@@ -140,14 +140,14 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
     break;
     case TopAbs_WIRE: {
       const TopoDS_Wire& aWire = TopoDS::Wire(theShape);
-      if (aWire.IsNull() == false)
+      if (!aWire.IsNull())
       {
       }
     }
     break;
     case TopAbs_EDGE: {
       const TopoDS_Edge& aEdge = TopoDS::Edge(theShape);
-      if (aEdge.IsNull() == false)
+      if (!aEdge.IsNull())
       {
         if (myRelMap.IsBound(aTestedShape))
         {
@@ -374,7 +374,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
   }
 
   // Create the Coordinates node
-  if (theCoord.IsNull() == false)
+  if (!theCoord.IsNull())
     aFaceSet->SetCoordinates(theCoord);
   else
   {
@@ -417,7 +417,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
   TopLoc_Location                 aLoc;
   constexpr double                aConf2   = Precision::SquareConfusion();
   const occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(theFace, aLoc);
-  if (theTri->HasUVNodes() && aSurface.IsNull() == false)
+  if (theTri->HasUVNodes() && !aSurface.IsNull())
   {
     if (aSurface->IsCNu(1) && aSurface->IsCNv(1))
     {

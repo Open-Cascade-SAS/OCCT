@@ -95,7 +95,7 @@ occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node
     for (; anIter.More(); anIter.Next())
     {
       const occ::handle<VrmlData_Node>& aNode = anIter.Value();
-      if (aNode.IsNull() == false)
+      if (!aNode.IsNull())
         aResult->myNodes.Append(aNode->Clone(aDummyNode));
     }
   }
@@ -115,7 +115,7 @@ occ::handle<VrmlData_Node> VrmlData_Group::FindNode(const char* theName, gp_Trsf
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<VrmlData_Node>& aNode = anIter.Value();
-    if (aNode.IsNull() == false)
+    if (!aNode.IsNull())
     {
       if (strcmp(aNode->Name(), theName) == 0)
       {
@@ -127,10 +127,10 @@ occ::handle<VrmlData_Node> VrmlData_Group::FindNode(const char* theName, gp_Trsf
       if (aNode->IsKind(STANDARD_TYPE(VrmlData_Group)))
       {
         const occ::handle<VrmlData_Group> aGroup = occ::down_cast<VrmlData_Group>(aNode);
-        if (aGroup.IsNull() == false)
+        if (!aGroup.IsNull())
         {
           aResult = aGroup->FindNode(theName, theLocation);
-          if (aResult.IsNull() == false)
+          if (!aResult.IsNull())
           {
             // theLocation *= myTrsf;
             theLocation.PreMultiply(myTrsf);
@@ -189,7 +189,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         if (!OK(aStatus, ReadNode(theBuffer, aChildNode)))
           break;
         AddNode(aChildNode);
-        if (isBracketed == false)
+        if (!isBracketed)
           break;
       }
     }
@@ -229,7 +229,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
           break;
 
         AddNode(aChildNode);
-        if (isBracketed == false)
+        if (!isBracketed)
           break;
       }
     }
@@ -265,7 +265,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
           break;
 
         aGroupNode->AddNode(aChildNode);
-        if (isBracketed == false)
+        if (!isBracketed)
           break;
       }
 
@@ -561,7 +561,7 @@ VrmlData_ErrorStatus VrmlData_Group::openFile(Standard_IStream&              the
 VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
 {
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
-  if (myNodes.IsEmpty() == false)
+  if (!myNodes.IsEmpty())
   {
     const VrmlData_Scene& aScene      = Scene();
     bool                  isTransform = myIsTransform;
@@ -571,7 +571,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
     if (OK(aStatus, aScene.WriteLine(thePrefix, header[isTransform ? 1 : 0], GlobalIndent())))
     {
       char buf[240];
-      if (OK(aStatus) && aScene.IsDummyWrite() == false)
+      if (OK(aStatus) && !aScene.IsDummyWrite())
       {
         const gp_XYZ aBoxCorner[2] = {myBox.CornerMin(), myBox.CornerMax()};
         // Check that the box is not void
@@ -594,7 +594,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
           }
         }
       }
-      if (OK(aStatus) && isTransform && aScene.IsDummyWrite() == false)
+      if (OK(aStatus) && isTransform && !aScene.IsDummyWrite())
       {
         // Output the Scale
         const double aScaleFactor = myTrsf.ScaleFactor();

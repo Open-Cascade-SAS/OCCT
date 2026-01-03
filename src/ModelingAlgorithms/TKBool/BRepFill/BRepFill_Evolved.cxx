@@ -2945,10 +2945,7 @@ bool DoubleOrNotInFace(const NCollection_Sequence<TopoDS_Shape>& EC, const TopoD
         Vu = true;
     }
   }
-  if (Vu)
-    return false;
-  else
-    return true;
+  return !Vu;
 }
 
 //=================================================================================================

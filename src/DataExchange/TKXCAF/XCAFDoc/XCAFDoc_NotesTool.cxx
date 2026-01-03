@@ -235,7 +235,7 @@ occ::handle<XCAFDoc_Note> XCAFDoc_NotesTool::CreateComment(
 {
   TDF_Label     aNoteLabel;
   TDF_TagSource aTag;
-  aNoteLabel = aTag.NewChild(GetNotesLabel());
+  aNoteLabel = TDF_TagSource::NewChild(GetNotesLabel());
   return XCAFDoc_NoteComment::Set(aNoteLabel, theUserName, theTimeStamp, theComment);
 }
 
@@ -248,7 +248,7 @@ occ::handle<XCAFDoc_Note> XCAFDoc_NotesTool::CreateBalloon(
 {
   TDF_Label     aNoteLabel;
   TDF_TagSource aTag;
-  aNoteLabel = aTag.NewChild(GetNotesLabel());
+  aNoteLabel = TDF_TagSource::NewChild(GetNotesLabel());
   return XCAFDoc_NoteBalloon::Set(aNoteLabel, theUserName, theTimeStamp, theComment);
 }
 
@@ -263,7 +263,7 @@ occ::handle<XCAFDoc_Note> XCAFDoc_NotesTool::CreateBinData(
 {
   TDF_Label     aNoteLabel;
   TDF_TagSource aTag;
-  aNoteLabel = aTag.NewChild(GetNotesLabel());
+  aNoteLabel = TDF_TagSource::NewChild(GetNotesLabel());
   return XCAFDoc_NoteBinData::Set(aNoteLabel,
                                   theUserName,
                                   theTimeStamp,
@@ -283,7 +283,7 @@ occ::handle<XCAFDoc_Note> XCAFDoc_NotesTool::CreateBinData(
 {
   TDF_Label     aNoteLabel;
   TDF_TagSource aTag;
-  aNoteLabel = aTag.NewChild(GetNotesLabel());
+  aNoteLabel = TDF_TagSource::NewChild(GetNotesLabel());
   return XCAFDoc_NoteBinData::Set(aNoteLabel,
                                   theUserName,
                                   theTimeStamp,
@@ -396,7 +396,7 @@ occ::handle<XCAFDoc_AssemblyItemRef> XCAFDoc_NotesTool::AddNote(
   if (anAnnotatedItem.IsNull())
   {
     TDF_TagSource aTag;
-    anAnnotatedItem = aTag.NewChild(GetAnnotatedItemsLabel());
+    anAnnotatedItem = TDF_TagSource::NewChild(GetAnnotatedItemsLabel());
     if (anAnnotatedItem.IsNull())
       return anItemRef;
   }
@@ -454,7 +454,7 @@ occ::handle<XCAFDoc_AssemblyItemRef> XCAFDoc_NotesTool::AddNoteToAttr(
   if (anAnnotatedItem.IsNull())
   {
     TDF_TagSource aTag;
-    anAnnotatedItem = aTag.NewChild(GetAnnotatedItemsLabel());
+    anAnnotatedItem = TDF_TagSource::NewChild(GetAnnotatedItemsLabel());
     if (anAnnotatedItem.IsNull())
       return anItemRef;
   }
@@ -515,7 +515,7 @@ occ::handle<XCAFDoc_AssemblyItemRef> XCAFDoc_NotesTool::AddNoteToSubshape(
   if (anAnnotatedItem.IsNull())
   {
     TDF_TagSource aTag;
-    anAnnotatedItem = aTag.NewChild(GetAnnotatedItemsLabel());
+    anAnnotatedItem = TDF_TagSource::NewChild(GetAnnotatedItemsLabel());
     if (anAnnotatedItem.IsNull())
       return anItemRef;
   }

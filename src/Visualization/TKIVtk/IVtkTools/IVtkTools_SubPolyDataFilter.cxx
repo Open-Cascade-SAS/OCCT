@@ -116,7 +116,6 @@ vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
       myDoFiltering(true),
       myToCopyNormals(true)
 {
-  //
 }
 
 //=================================================================================================

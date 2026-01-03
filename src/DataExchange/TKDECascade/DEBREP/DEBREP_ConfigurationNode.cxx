@@ -177,10 +177,6 @@ bool DEBREP_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
     return false;
   }
   const char* aBytes = (const char*)theBuffer->Data();
-  if (::strstr(aBytes, "DBRep_DrawableShape") || ::strstr(aBytes, "CASCADE Topology V1")
-      || ::strstr(aBytes, "CASCADE Topology V3"))
-  {
-    return true;
-  }
-  return false;
+  return ::strstr(aBytes, "DBRep_DrawableShape") || ::strstr(aBytes, "CASCADE Topology V1")
+         || ::strstr(aBytes, "CASCADE Topology V3");
 }

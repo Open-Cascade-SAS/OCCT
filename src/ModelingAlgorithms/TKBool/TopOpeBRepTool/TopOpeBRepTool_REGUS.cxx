@@ -252,15 +252,7 @@ bool TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face&                    Fanc
   }
 
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(Fanc, mapWlow, nFs);
-  if (!facesbuilt)
-  {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << "** facesbuilt fails" << std::endl;
-#endif
-    return false;
-  }
-  return true;
+  return facesbuilt;
 }
 
 //=================================================================================================
@@ -827,9 +819,7 @@ static bool FUN_vectors(const TopoDS_Face& f,
     nt.Reverse();
   // <xx> :
   bool ok = FUN_tool_getxx(f, e, pare, xx);
-  if (!ok)
-    return false;
-  return true;
+  return ok;
 }
 
 //=================================================================================================

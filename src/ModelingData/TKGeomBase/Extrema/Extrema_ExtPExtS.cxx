@@ -562,10 +562,7 @@ static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
       return false;
   }
   // check if it is a plane
-  if (std::abs(theCurvePos.Direction() * theSurfaceDirection) <= gp::Resolution())
-    return false;
-  else
-    return true;
+  return std::abs(theCurvePos.Direction() * theSurfaceDirection) > gp::Resolution();
 }
 
 //=================================================================================================

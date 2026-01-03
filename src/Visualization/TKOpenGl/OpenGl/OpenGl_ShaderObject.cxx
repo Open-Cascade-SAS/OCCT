@@ -76,7 +76,6 @@ OpenGl_ShaderObject::OpenGl_ShaderObject(GLenum theType)
     : myType(theType),
       myShaderID(NO_SHADER)
 {
-  //
 }
 
 // =======================================================================

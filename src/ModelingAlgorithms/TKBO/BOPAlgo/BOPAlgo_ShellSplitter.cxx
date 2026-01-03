@@ -202,7 +202,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     for (i = 1; i <= aNbE; ++i)
     {
       const TopoDS_Edge& aE = TopoDS::Edge(aEFMap.FindKey(i));
-      if (!(BRep_Tool::Degenerated(aE) || aE.Orientation() == TopAbs_INTERNAL))
+      if (!BRep_Tool::Degenerated(aE) && aE.Orientation() != TopAbs_INTERNAL)
       {
         const NCollection_List<TopoDS_Shape>& aLF = aEFMap(i);
         if (aLF.Extent() == 1)

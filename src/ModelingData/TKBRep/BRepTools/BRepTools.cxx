@@ -540,9 +540,7 @@ bool BRepTools::Compare(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2)
 
 bool BRepTools::Compare(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 {
-  if (E1.IsSame(E2))
-    return true;
-  return false;
+  return E1.IsSame(E2);
 }
 
 //=================================================================================================

@@ -19,7 +19,6 @@ Vrml_PointLight::Vrml_PointLight()
       myColor(Quantity_NOC_WHITE),
       myLocation(0, 0, 1)
 {
-  //
 }
 
 Vrml_PointLight::Vrml_PointLight(const bool            aOnOff,
@@ -85,7 +84,7 @@ Standard_OStream& Vrml_PointLight::Print(Standard_OStream& anOStream) const
 {
   anOStream << "PointLight {\n";
 
-  if (myOnOff != true)
+  if (!myOnOff)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";

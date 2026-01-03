@@ -1063,12 +1063,12 @@ void BRepFill_Generator::Perform()
       TopoDS_Wire aWire;
       B.MakeWire(aWire);
 
-      if (!(degen1 && IType == 4))
+      if (!degen1 || IType != 4)
       {
         B.Add(aWire, Edge1);
       }
       B.Add(aWire, Edge4);
-      if (!(degen2 && IType == 4))
+      if (!degen2 || IType != 4)
       {
         B.Add(aWire, Edge2.Reversed());
       }
@@ -1078,7 +1078,7 @@ void BRepFill_Generator::Perform()
       B.Add(myShell, Face);
 
       // complete myMap for edge1
-      if (!(degen1 && IType == 4))
+      if (!degen1 || IType != 4)
       {
         TopoDS_Edge aREd = anOrEdge1;
         if (degen1)

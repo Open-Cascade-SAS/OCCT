@@ -1330,12 +1330,12 @@ bool GeomPlate_BuildPlateSurface::CourbeJointive(const double tolerance)
   myLinCont->Value(1)->D0(Uinit2, P2);
   if ((mySense->Value(myNbBounds) == 0) && (P1.Distance(P2) < tolerance))
   {
-    return ((true) && (result));
+    return ((result));
   }
   myLinCont->Value(myNbBounds)->D0(Uinit1, P1);
   if ((mySense->Value(myNbBounds) == 1) && (P1.Distance(P2) < tolerance))
   {
-    return ((true) && (result));
+    return ((result));
   }
   else
     return false;

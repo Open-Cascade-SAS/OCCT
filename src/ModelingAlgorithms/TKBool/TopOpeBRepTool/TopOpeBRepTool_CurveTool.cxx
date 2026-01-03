@@ -1038,8 +1038,8 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
   if (BAHS->IsUPeriodic())
   {
     // modified by NIZHNY-MZV  Thu Mar 30 10:03:15 2000
-    bool mincond = (UMin - u2 > 1e-7) ? true : false;
-    bool maxcond = (u2 - UMax > 1e-7) ? true : false;
+    bool mincond = UMin - u2 > 1e-7;
+    bool maxcond = u2 - UMax > 1e-7;
     bool decalu  = mincond || maxcond;
     if (decalu)
       du = (mincond) ? BAHS->UPeriod() : -BAHS->UPeriod();
@@ -1050,8 +1050,8 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(
   if (BAHS->IsVPeriodic())
   {
     // modified by NIZHNY-MZV  Thu Mar 30 10:06:24 2000
-    bool mincond = (VMin - v2 > 1e-7) ? true : false;
-    bool maxcond = (v2 - VMax > 1e-7) ? true : false;
+    bool mincond = VMin - v2 > 1e-7;
+    bool maxcond = v2 - VMax > 1e-7;
     bool decalv  = mincond || maxcond;
     if (decalv)
       dv = (mincond) ? BAHS->VPeriod() : -BAHS->VPeriod();

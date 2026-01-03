@@ -255,9 +255,7 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
   TopOpeBRepTool_TOOL::Nt(uv1, theFace1, normal1);
   TopOpeBRepTool_TOOL::Nt(uv2, theFace2, normal2);
   double dot = normal1.Dot(normal2);
-  if (dot < 0.)
-    return false;
-  return true;
+  return dot >= 0.;
 }
 
 //=======================================================================

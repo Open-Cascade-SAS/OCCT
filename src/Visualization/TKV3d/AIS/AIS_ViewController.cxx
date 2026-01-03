@@ -173,10 +173,7 @@ AIS_ViewController::AIS_ViewController()
 
 //=================================================================================================
 
-AIS_ViewController::~AIS_ViewController()
-{
-  //
-}
+AIS_ViewController::~AIS_ViewController() = default;
 
 //=================================================================================================
 
@@ -2725,7 +2722,6 @@ void AIS_ViewController::handleXRPicking(const occ::handle<AIS_InteractiveContex
 void AIS_ViewController::OnSelectionChanged(const occ::handle<AIS_InteractiveContext>&,
                                             const occ::handle<V3d_View>&)
 {
-  //
 }
 
 //=================================================================================================
@@ -2734,7 +2730,6 @@ void AIS_ViewController::OnSubviewChanged(const occ::handle<AIS_InteractiveConte
                                           const occ::handle<V3d_View>&,
                                           const occ::handle<V3d_View>&)
 {
-  //
 }
 
 //=================================================================================================

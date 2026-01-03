@@ -29,9 +29,7 @@
 
 Cocoa_LocalPool::Cocoa_LocalPool()
 : myPoolObj ([[NSAutoreleasePool alloc] init])
-{
-  //
-}
+{}
 
 // =======================================================================
 // function : ~Cocoa_LocalPool

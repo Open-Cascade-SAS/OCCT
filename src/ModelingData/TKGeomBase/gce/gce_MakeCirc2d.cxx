@@ -108,7 +108,7 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
         double Alpha1 = ElCLib::Parameter(TheCirc2d, P1);
         double Alpha2 = ElCLib::Parameter(TheCirc2d, P2);
         double Alpha3 = ElCLib::Parameter(TheCirc2d, P3);
-        if (!((Alpha1 <= Alpha2) && (Alpha2 <= Alpha3)))
+        if ((Alpha1 > Alpha2) || (Alpha2 > Alpha3))
         {
           TheCirc2d.Reverse();
         }

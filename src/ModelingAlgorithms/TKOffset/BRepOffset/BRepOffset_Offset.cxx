@@ -497,7 +497,7 @@ void BRepOffset_Offset::Init(
   bool   HasSingularity = false;
   double uf1, uf2, vf1, vf2, fpar, lpar;
   BRepTools::UVBounds(Face, uf1, uf2, vf1, vf2);
-  if (!(OffsetOutside && JoinType == GeomAbs_Arc)
+  if ((!OffsetOutside || JoinType != GeomAbs_Arc)
       && (TheSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface)
           || TheSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface)))
   {

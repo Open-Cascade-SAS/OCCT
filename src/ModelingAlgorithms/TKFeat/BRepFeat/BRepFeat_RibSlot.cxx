@@ -218,7 +218,7 @@ void BRepFeat_RibSlot::LFPerform()
     bool                                     bFlag;
     NCollection_List<TopoDS_Shape>::Iterator aIt;
 
-    bFlag = (myPerfSelection == BRepFeat_NoSelection) ? false : true;
+    bFlag = myPerfSelection != BRepFeat_NoSelection;
     //
     theBuilder.Init(mySbase, myGShape);
     theBuilder.SetOperation(myFuse, bFlag);
@@ -239,7 +239,7 @@ void BRepFeat_RibSlot::LFPerform()
           TopAbs_State sp1 = oussa.State();
           oussa.Perform(myLastPnt, toler);
           TopAbs_State sp2 = oussa.State();
-          if (!(sp1 == TopAbs_OUT || sp2 == TopAbs_OUT))
+          if (sp1 != TopAbs_OUT && sp2 != TopAbs_OUT)
           {
             const TopoDS_Shape& S = aIt.Value();
             theBuilder.KeepPart(S);
@@ -1025,36 +1025,15 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 
     if (!OnFirstFace)
     {
-      if (p1.Distance(firstpoint) <= Precision::Confusion())
-        OnFirstFace = true;
-      else
-        OnFirstFace = false;
+      OnFirstFace = p1.Distance(firstpoint) <= Precision::Confusion();
     }
 
     if (!OnLastFace)
     {
-      if (p2.Distance(lastpoint) <= Precision::Confusion())
-        OnLastFace = true;
-      else
-        OnLastFace = false;
+      OnLastFace = p2.Distance(lastpoint) <= Precision::Confusion();
     }
 
-    if (FirstFace.IsNull() || LastFace.IsNull())
-    {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " First or Last Faces still null" << std::endl;
-#endif
-      Data = false;
-    }
-    else
-    {
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << " FirstFace and LastFace OK" << std::endl;
-#endif
-      Data = true;
-    }
+    Data = !(FirstFace.IsNull() || LastFace.IsNull());
 
     return Data;
   }

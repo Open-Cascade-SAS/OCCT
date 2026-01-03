@@ -1199,7 +1199,7 @@ static int checkselfintersection(Draw_Interpretor& di, int argc, const char** ar
   ShapeAnalysis_Wire analyser(TopoDS::Wire(wire), TopoDS::Face(face), Precision::Confusion());
   bool               result = analyser.CheckSelfIntersection();
 
-  if (result == true)
+  if (result)
     di << "A self-intersecting wire.\n";
   else
     di << "Not self-intersecting wire.\n";
@@ -1303,8 +1303,8 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
   if (sh.IsNull())
     return 1;
   TopAbs_ShapeEnum aShType = sh.ShapeType();
-  if (!(aShType == TopAbs_SHELL || aShType == TopAbs_FACE || aShType == TopAbs_EDGE
-        || aShType == TopAbs_WIRE))
+  if (aShType != TopAbs_SHELL && aShType != TopAbs_FACE && aShType != TopAbs_EDGE
+      && aShType != TopAbs_WIRE)
   {
     di << "Wrong shape type, shape can be shell or face or edge or wire\n";
     return 1;
@@ -1414,7 +1414,7 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
   if (sh.IsNull())
     return 1;
   TopAbs_ShapeEnum aShType = sh.ShapeType();
-  if (!(aShType == TopAbs_WIRE || aShType == TopAbs_EDGE))
+  if (aShType != TopAbs_WIRE && aShType != TopAbs_EDGE)
   {
     di << "Wrong shape type, shape can be wire or an edge \n";
     return 1;

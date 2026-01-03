@@ -21,7 +21,6 @@ Aspect_VKeySet::Aspect_VKeySet()
     : myKeys(0, Aspect_VKey_MAX),
       myModifiers(Aspect_VKeyFlags_NONE)
 {
-  //
 }
 
 //=================================================================================================

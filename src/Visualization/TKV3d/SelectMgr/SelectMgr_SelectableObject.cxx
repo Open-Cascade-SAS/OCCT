@@ -44,7 +44,6 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject(
       myGlobalSelMode(0),
       myAutoHilight(true)
 {
-  //
 }
 
 //==================================================

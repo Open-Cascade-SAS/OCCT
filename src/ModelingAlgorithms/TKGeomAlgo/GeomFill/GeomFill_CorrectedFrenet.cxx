@@ -622,7 +622,7 @@ double GeomFill_CorrectedFrenet::GetAngleAT(const double Param) const
     iC = iE;
   if (iC < iE)
   {
-    while (!(HArrPoles->Value(iC) <= Param && Param <= HArrPoles->Value(iC + 1)))
+    while (HArrPoles->Value(iC) > Param || Param > HArrPoles->Value(iC + 1))
     {
       if (HArrPoles->Value(iC) < Param)
         iB = iC;

@@ -173,7 +173,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
     if (aDomEntry != nullptr)
     {
       TCollection_AsciiString anEntry;
-      if (XmlObjMgt::GetTagEntryString(aDomEntry, anEntry) == false)
+      if (!XmlObjMgt::GetTagEntryString(aDomEntry, anEntry))
       {
         TCollection_ExtendedString aMessage =
           TCollection_ExtendedString("Cannot retrieve Entry from \"") + aDomEntry + '\"';

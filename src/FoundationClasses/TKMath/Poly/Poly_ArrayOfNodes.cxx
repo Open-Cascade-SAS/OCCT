@@ -16,17 +16,12 @@
 //=================================================================================================
 
 Poly_ArrayOfNodes::Poly_ArrayOfNodes(const Poly_ArrayOfNodes& theOther)
-    : NCollection_AliasedArray(theOther)
-{
-  //
-}
+
+  = default;
 
 //=================================================================================================
 
-Poly_ArrayOfNodes::~Poly_ArrayOfNodes()
-{
-  //
-}
+Poly_ArrayOfNodes::~Poly_ArrayOfNodes() = default;
 
 //=================================================================================================
 

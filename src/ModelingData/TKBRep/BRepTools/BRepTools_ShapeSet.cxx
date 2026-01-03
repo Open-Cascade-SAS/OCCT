@@ -85,10 +85,7 @@ BRepTools_ShapeSet::BRepTools_ShapeSet(const BRep_Builder& theBuilder,
 
 //=================================================================================================
 
-BRepTools_ShapeSet::~BRepTools_ShapeSet()
-{
-  //
-}
+BRepTools_ShapeSet::~BRepTools_ShapeSet() = default;
 
 //=================================================================================================
 

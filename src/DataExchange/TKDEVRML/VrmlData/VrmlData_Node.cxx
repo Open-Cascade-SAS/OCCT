@@ -69,9 +69,9 @@ VrmlData_Node::VrmlData_Node(const VrmlData_Scene& theScene, const char* theName
 
 occ::handle<VrmlData_Node> VrmlData_Node::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  if (theOther.IsNull() == false)
+  if (!theOther.IsNull())
   {
-    if (theOther->IsKind(DynamicType()) == false)
+    if (!theOther->IsKind(DynamicType()))
       return nullptr;
     if (&theOther->Scene() == myScene)
       theOther->myName = myName;
@@ -227,7 +227,7 @@ VrmlData_ErrorStatus VrmlData_Node::ReadMultiString(
       if (!OK(aStatus, ReadString(theBuffer, aString)))
         break;
       theResult.Append(aString);
-      if (isBracketed == false || !OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      if (!isBracketed || !OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
         break;
       if (theBuffer.LinePtr[0] == ',')
       {
@@ -272,7 +272,7 @@ VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&                t
     // We create a relevant node using the line with the type ID
     else if (OK(aStatus,
                 const_cast<VrmlData_Scene*>(myScene)->createNode(theBuffer, aNode, theType)))
-      if (aNode.IsNull() == false)
+      if (!aNode.IsNull())
         // The node data are read here, including the final closing brace
         aStatus = aNode->Read(theBuffer);
 
@@ -300,9 +300,9 @@ occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    if (myAppearance.IsNull() == false)
+    if (!myAppearance.IsNull())
       aResult->SetAppearance(occ::down_cast<VrmlData_Appearance>(myAppearance->Clone(aDummyNode)));
-    if (myGeometry.IsNull() == false)
+    if (!myGeometry.IsNull())
       aResult->SetGeometry(occ::down_cast<VrmlData_Geometry>(myGeometry->Clone(aDummyNode)));
   }
   return aResult;
@@ -352,9 +352,9 @@ VrmlData_ErrorStatus VrmlData_ShapeNode::Write(const char* thePrefix) const
   static char           header[] = "Shape {";
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
-    if (myAppearance.IsNull() == false)
+    if (!myAppearance.IsNull())
       aStatus = aScene.WriteNode("appearance", myAppearance);
-    if (myGeometry.IsNull() == false && OK(aStatus))
+    if (!myGeometry.IsNull() && OK(aStatus))
       aStatus = aScene.WriteNode("geometry", myGeometry);
 
     aStatus = WriteClosing();
@@ -367,7 +367,7 @@ VrmlData_ErrorStatus VrmlData_ShapeNode::Write(const char* thePrefix) const
 bool VrmlData_ShapeNode::IsDefault() const
 {
   bool aResult(true);
-  if (myGeometry.IsNull() == false)
+  if (!myGeometry.IsNull())
     aResult = myGeometry->IsDefault();
   return aResult;
 }
@@ -428,11 +428,11 @@ occ::handle<VrmlData_Node> VrmlData_Appearance::Clone(
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    if (myMaterial.IsNull() == false)
+    if (!myMaterial.IsNull())
       aResult->SetMaterial(occ::down_cast<VrmlData_Material>(myMaterial->Clone(aDummyNode)));
-    if (myTexture.IsNull() == false)
+    if (!myTexture.IsNull())
       aResult->SetTexture(occ::down_cast<VrmlData_Texture>(myTexture->Clone(aDummyNode)));
-    if (myTTransform.IsNull() == false)
+    if (!myTTransform.IsNull())
       aResult->SetTextureTransform(
         occ::down_cast<VrmlData_TextureTransform>(myTTransform->Clone(aDummyNode)));
   }
@@ -487,11 +487,11 @@ VrmlData_ErrorStatus VrmlData_Appearance::Write(const char* thePrefix) const
   const VrmlData_Scene& aScene = Scene();
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
-    if (myMaterial.IsNull() == false)
+    if (!myMaterial.IsNull())
       aStatus = aScene.WriteNode("material", myMaterial);
-    if (myTexture.IsNull() == false && OK(aStatus))
+    if (!myTexture.IsNull() && OK(aStatus))
       aStatus = aScene.WriteNode("texture", myTexture);
-    if (myTTransform.IsNull() == false && OK(aStatus))
+    if (!myTTransform.IsNull() && OK(aStatus))
       aStatus = aScene.WriteNode("textureTransform", myTTransform);
 
     aStatus = WriteClosing();
@@ -504,11 +504,11 @@ VrmlData_ErrorStatus VrmlData_Appearance::Write(const char* thePrefix) const
 bool VrmlData_Appearance::IsDefault() const
 {
   bool aResult(true);
-  if (myMaterial.IsNull() == false)
+  if (!myMaterial.IsNull())
     aResult = myMaterial->IsDefault();
-  if (aResult && myTexture.IsNull() == false)
+  if (aResult && !myTexture.IsNull())
     aResult = myTexture->IsDefault();
-  if (aResult && myTTransform.IsNull() == false)
+  if (aResult && !myTTransform.IsNull())
     aResult = myTTransform->IsDefault();
   return aResult;
 }
@@ -575,8 +575,7 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Write(const char* thePrefix) const
   VrmlData_ErrorStatus  aStatus  = VrmlData_StatusOK;
   const VrmlData_Scene& aScene   = Scene();
   static char           header[] = "ImageTexture {";
-  if (aScene.IsDummyWrite() == false
-      && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
+  if (!aScene.IsDummyWrite() && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     TCollection_AsciiString url = "\"";
     url += URL().First();

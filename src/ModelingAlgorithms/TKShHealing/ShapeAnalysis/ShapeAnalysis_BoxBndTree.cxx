@@ -30,9 +30,7 @@ bool ShapeAnalysis_BoxBndTreeSelector::Reject(const Bnd_Box& theBnd) const
 {
   bool fch = myFBox.IsOut(theBnd);
   bool lch = myLBox.IsOut(theBnd);
-  if (fch == false || lch == false)
-    return false;
-  return true;
+  return fch && lch;
 }
 
 //=================================================================================================

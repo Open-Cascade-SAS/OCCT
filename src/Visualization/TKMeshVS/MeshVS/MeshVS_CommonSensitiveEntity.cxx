@@ -102,7 +102,6 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
       myCOG(theOther.myCOG),
       myBndBox(theOther.myBndBox)
 {
-  //
 }
 
 //=================================================================================================

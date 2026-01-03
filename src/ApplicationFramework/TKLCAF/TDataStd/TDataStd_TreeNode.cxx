@@ -363,9 +363,7 @@ occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Father() const
 
 bool TDataStd_TreeNode::IsRoot() const
 {
-  if (myFather == nullptr && myPrevious == nullptr && myNext == nullptr)
-    return true;
-  return false;
+  return myFather == nullptr && myPrevious == nullptr && myNext == nullptr;
 }
 
 //=======================================================================

@@ -431,7 +431,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(
 
       // Record merged section orientation
       if (!Orientation && whichSec != 1)
-        isForward = isForward ? false : true;
+        isForward = !isForward;
       Edge1 = NewEdge;
     }
 
@@ -2168,14 +2168,7 @@ const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_Sewing::ContigousEdgeCouple
 
 bool BRepBuilderAPI_Sewing::IsSectionBound(const TopoDS_Edge& section) const
 {
-  if (myContigSecBound.IsBound(section))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return myContigSecBound.IsBound(section);
 }
 
 //=================================================================================================
@@ -2270,9 +2263,7 @@ const TopoDS_Shape& BRepBuilderAPI_Sewing::Modified(const TopoDS_Shape& aShape) 
 bool BRepBuilderAPI_Sewing::IsModifiedSubShape(const TopoDS_Shape& aShape) const
 {
   TopoDS_Shape NewShape = myReShape->Apply(aShape);
-  if (!NewShape.IsSame(aShape))
-    return true;
-  return false;
+  return !NewShape.IsSame(aShape);
 }
 
 //=================================================================================================
@@ -4296,9 +4287,7 @@ static bool IsDegeneratedWire(const TopoDS_Shape& wire)
   // clang-format off
   double tol = BRep_Tool::Tolerance(V1)+BRep_Tool::Tolerance(V2);//Max(BRep_Tool::Tolerance(V1),BRep_Tool::Tolerance(V2));
   // clang-format on
-  if (wireLength > tol)
-    return false;
-  return true;
+  return wireLength <= tol;
 }
 
 //=======================================================================

@@ -377,8 +377,7 @@ int STEPControl_Reader::NbRootsForTransfer()
               continue;
             const char* str2 = PDC->LifeCycleStage()->String().ToCString();
             const char* str3 = PDC->Name()->String().ToCString();
-            if (!(strcasecmp(str1.ToCString(), str2) == 0
-                  || strcasecmp(str1.ToCString(), str3) == 0))
+            if (strcasecmp(str1.ToCString(), str2) != 0 && strcasecmp(str1.ToCString(), str3) != 0)
               IsRoot = false;
           }
         }

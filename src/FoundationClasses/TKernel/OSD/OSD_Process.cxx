@@ -111,14 +111,7 @@ TCollection_AsciiString OSD_Process::UserName()
 
 bool OSD_Process::IsSuperUser()
 {
-  if (getuid())
-  {
-    return false;
-  }
-  else
-  {
-    return true;
-  }
+  return getuid() == 0;
 }
 
 OSD_Path OSD_Process::CurrentDirectory()
@@ -204,10 +197,7 @@ void _osd_wnt_set_error(OSD_Error&, int, ...);
 
 //=================================================================================================
 
-OSD_Process::OSD_Process()
-{
-  //
-}
+OSD_Process::OSD_Process() {}
 
 void OSD_Process ::TerminalType(TCollection_AsciiString& Name)
 {

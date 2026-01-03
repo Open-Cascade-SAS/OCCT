@@ -121,7 +121,7 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
       else if (typ == 3)
         todraw = regn && !outl;
       else
-        todraw = !(intl || (reg1 && !outl));
+        todraw = !intl && (!reg1 || outl);
       if (todraw)
         if (!S.IsNull())
           todraw = Map.Contains(BP.Shape());
@@ -152,7 +152,7 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
       else if (typ == 3)
         todraw = regn && !outl;
       else
-        todraw = !(intl || (reg1 && !outl));
+        todraw = !intl && (!reg1 || outl);
       if (todraw)
         if (!S.IsNull())
           todraw = Map.Contains(SBP);

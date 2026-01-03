@@ -62,7 +62,7 @@ bool XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&       theSour
 
   XmlObjMgt_DOMString   aType = theSource.Element().getAttribute(::TypeString());
   TDataXtd_GeometryEnum aTypeEnum;
-  if (GeometryTypeEnum(aType, aTypeEnum) == false)
+  if (!GeometryTypeEnum(aType, aTypeEnum))
   {
     myMessageDriver->Send("TDataXtd_GeometryEnum; "
                           "string value without enum term equivalence",

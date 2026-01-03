@@ -452,7 +452,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
   parf1 = curv1->LastParameter();
   parf2 = curv2->LastParameter();
 
-  if (!(((U <= parf1) && (U >= pard1)) && ((U <= parf2) && (U >= pard2))))
+  if ((U > parf1) || (U < pard1) || (U > parf2) || (U < pard2))
     myIsDone = false;
   else
   {
@@ -513,10 +513,7 @@ bool LocalAnalysis_SurfaceContinuity::IsC0() const
   {
     throw StdFail_NotDone();
   }
-  if (myContC0 <= myepsC0)
-    return true;
-  else
-    return false;
+  return myContC0 <= myepsC0;
 }
 
 /*********************************************************************************/
@@ -527,10 +524,7 @@ bool LocalAnalysis_SurfaceContinuity::IsC1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && (myContC1U <= myepsC1) && (myContC1V <= myepsC1))
-    return true;
-  else
-    return false;
+  return IsC0() && (myContC1U <= myepsC1) && (myContC1V <= myepsC1);
 }
 
 /*********************************************************************************/
@@ -574,10 +568,7 @@ bool LocalAnalysis_SurfaceContinuity::IsG1() const
   {
     throw StdFail_NotDone();
   }
-  if (IsC0() && (myContG1 <= myepsG1))
-    return true;
-  else
-    return false;
+  return IsC0() && (myContG1 <= myepsG1);
 }
 
 /*********************************************************************************/
@@ -614,10 +605,7 @@ bool LocalAnalysis_SurfaceContinuity::IsG2() const
         return true;
       if ((myZETA >= myETA) && (myGap <= (myperce * myZETA)))
         return true;
-      if ((myZETA <= myETA) && (myETA <= (2 * myZETA)) && (myGap <= (myperce * myETA)))
-        return true;
-      else
-        return false;
+      return (myZETA <= myETA) && (myETA <= (2 * myZETA)) && (myGap <= (myperce * myETA));
     }
     else
       return false;

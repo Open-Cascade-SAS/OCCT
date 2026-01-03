@@ -27,7 +27,6 @@ SelectMgr_SensitiveEntity::SelectMgr_SensitiveEntity(
     : mySensitive(theEntity),
       myIsActiveForSelection(false)
 {
-  //
 }
 
 //=======================================================================

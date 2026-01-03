@@ -75,7 +75,6 @@ RWObj_Reader::RWObj_Reader()
       myNbElemsBig(0),
       myToAbort(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -113,9 +112,9 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   }
 
   // determine length of file
-  theStream.seekg(0, theStream.end);
+  theStream.seekg(0, std::istream::end);
   const int64_t aFileLen = theStream.tellg();
-  theStream.seekg(0, theStream.beg);
+  theStream.seekg(0, std::istream::beg);
   if (aFileLen <= 0L)
   {
     Message::SendFail(TCollection_AsciiString("Error: file '") + theFile + "' is empty");

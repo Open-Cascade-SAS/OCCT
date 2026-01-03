@@ -491,13 +491,8 @@ static bool IsG1(const ChFiDS_Map&  TheMap,
       {
         FVoi = FRef;
         //  Modified by Sergey KHROMOV - Fri Dec 21 17:15:12 2001 Begin
-        // 	if (BRep_Tool::Continuity(E,FRef,FRef) >= GeomAbs_G1) {
-        if (ChFi3d::IsTangentFaces(E, FRef, FRef))
-        {
-          //  Modified by Sergey KHROMOV - Fri Dec 21 17:15:16 2001 End
-          return true;
-        }
-        return false;
+        //  if (BRep_Tool::Continuity(E,FRef,FRef) >= GeomAbs_G1)
+        return ChFi3d::IsTangentFaces(E, FRef, FRef);
       }
     }
   }

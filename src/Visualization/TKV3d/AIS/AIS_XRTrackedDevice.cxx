@@ -85,7 +85,6 @@ AIS_XRTrackedDevice::AIS_XRTrackedDevice()
       myRole(Aspect_XRTrackedDeviceRole_Other),
       myToShowAxes(true)
 {
-  //
 }
 
 //=================================================================================================

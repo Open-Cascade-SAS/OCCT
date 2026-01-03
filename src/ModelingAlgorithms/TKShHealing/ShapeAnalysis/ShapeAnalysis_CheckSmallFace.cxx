@@ -111,10 +111,8 @@ static bool MinMaxSmall(const double minx,
   double dy = maxy - miny;
   double dz = maxz - minz;
 
-  if ((dx > toler && !Precision::IsInfinite(dx)) || (dy > toler && !Precision::IsInfinite(dy))
-      || (dz > toler && !Precision::IsInfinite(dz)))
-    return false;
-  return true;
+  return (dx <= toler || Precision::IsInfinite(dx)) && (dy <= toler || Precision::IsInfinite(dy))
+         && (dz <= toler || Precision::IsInfinite(dz));
 }
 
 //=================================================================================================
@@ -579,14 +577,7 @@ bool ShapeAnalysis_CheckSmallFace::CheckStripFace(const TopoDS_Face& F,
   //      but direction is known (1:U  2:V)
   // TopoDS_Edge E1,E2;
   double dmax;
-  if (FindStripEdges(F, E1, E2, tol, dmax))
-    return true;
-
-  //  Now, trying edges : if there are 2 and only 2 edges greater than tolerance
-  //   (given or sum of vertex tolerances), do they define a strip
-  //  Warning : if yes, they bring different vertices ...
-
-  return false;
+  return FindStripEdges(F, E1, E2, tol, dmax);
 }
 
 //=================================================================================================
@@ -1143,11 +1134,8 @@ bool ShapeAnalysis_CheckSmallFace::CheckPinEdges(const TopoDS_Edge& theFirstEdge
     }
     //       std::cout << "angle1 "   << angle1<< std::endl;
     //       std::cout << "angle2 "   << angle2<< std::endl;
-    if ((angle1 <= 0.001 && angle2 <= 0.01)
-        || ((M_PI - angle2) <= 0.001 && (M_PI - angle2) <= 0.01))
-      return true;
-    else
-      return false;
+    return (angle1 <= 0.001 && angle2 <= 0.01)
+           || ((M_PI - angle2) <= 0.001 && (M_PI - angle2) <= 0.01);
   }
 
   return false;

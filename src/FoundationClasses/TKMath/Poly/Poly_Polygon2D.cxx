@@ -24,7 +24,6 @@ Poly_Polygon2D::Poly_Polygon2D(const int theNbNodes)
     : myDeflection(0.0),
       myNodes(1, theNbNodes)
 {
-  //
 }
 
 //=================================================================================================

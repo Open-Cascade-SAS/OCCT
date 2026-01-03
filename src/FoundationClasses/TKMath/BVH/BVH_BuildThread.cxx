@@ -26,7 +26,6 @@ BVH_BuildThread::BVH_BuildThread(BVH_BuildTool& theBuildTool, BVH_BuildQueue& th
       myBuildQueue(theBuildQueue),
       myWorkThread(threadFunction)
 {
-  //
 }
 
 // =======================================================================

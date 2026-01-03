@@ -31,7 +31,6 @@ Poly_Triangulation::Poly_Triangulation()
       myDeflection(0),
       myPurpose(Poly_MeshPurpose_NONE)
 {
-  //
 }
 
 //=================================================================================================

@@ -438,7 +438,7 @@ bool Approx_SweepApproximation::D0(const double Param,
     myFunc->SetInterval(First, Last);
   }
 
-  if (!((Param == myParam) && (myOrder >= 0) && (first == First) && (Last == last)))
+  if ((Param != myParam) || (myOrder < 0) || (first != First) || (Last != last))
   {
     // Positioning in case when the last operation is not repeated.
     Ok = myFunc->D0(Param,
@@ -507,7 +507,7 @@ bool Approx_SweepApproximation::D1(const double Param,
     myFunc->SetInterval(First, Last);
   }
 
-  if (!((Param == myParam) && (myOrder >= 1) && (first == First) && (Last == last)))
+  if ((Param != myParam) || (myOrder < 1) || (first != First) || (Last != last))
   {
 
     // Positioning
@@ -590,7 +590,7 @@ bool Approx_SweepApproximation::D2(const double Param,
     myFunc->SetInterval(First, Last);
   }
 
-  if (!((Param == myParam) && (myOrder >= 2) && (first == First) && (Last == last)))
+  if ((Param != myParam) || (myOrder < 2) || (first != First) || (Last != last))
   {
     // Positioning in case when the last operation is not repeated
     Ok = myFunc->D2(Param,

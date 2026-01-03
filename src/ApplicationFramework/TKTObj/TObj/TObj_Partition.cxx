@@ -47,7 +47,7 @@ TDF_Label TObj_Partition::NewLabel() const
 {
   TDF_Label     aLabel;
   TDF_TagSource aTag;
-  aLabel = aTag.NewChild(GetChildLabel());
+  aLabel = TDF_TagSource::NewChild(GetChildLabel());
   return aLabel;
 }
 
@@ -124,7 +124,7 @@ bool TObj_Partition::copyData(const occ::handle<TObj_Object>& theTargetObject)
 {
   bool                        IsDone;
   occ::handle<TObj_Partition> aTargetPartition = occ::down_cast<TObj_Partition>(theTargetObject);
-  IsDone                                       = aTargetPartition.IsNull() ? false : true;
+  IsDone                                       = !aTargetPartition.IsNull();
   if (IsDone)
   {
     IsDone = TObj_Object::copyData(theTargetObject);

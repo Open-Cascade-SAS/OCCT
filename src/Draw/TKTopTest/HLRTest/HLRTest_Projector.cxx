@@ -27,15 +27,11 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRTest_Projector, Draw_Drawable3D)
 HLRTest_Projector::HLRTest_Projector(const HLRAlgo_Projector& P)
     : myProjector(P)
 {
-  //
 }
 
 //=================================================================================================
 
-void HLRTest_Projector::DrawOn(Draw_Display&) const
-{
-  //
-}
+void HLRTest_Projector::DrawOn(Draw_Display&) const {}
 
 //=================================================================================================
 

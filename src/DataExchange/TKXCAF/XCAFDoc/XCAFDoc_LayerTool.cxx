@@ -141,7 +141,7 @@ TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer
   if (FindLayer(theLayer, lab))
     return lab;
   TDF_TagSource              aTag;
-  TDF_Label                  aLabel = aTag.NewChild(Label());
+  TDF_Label                  aLabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Name> aName  = new TDataStd_Name;
   aName->Set(aLabel, theLayer);
   return aLabel;
@@ -156,7 +156,7 @@ TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer
   if (!lab.IsNull())
     return lab;
   TDF_TagSource              aTag;
-  TDF_Label                  aLabel = aTag.NewChild(Label());
+  TDF_Label                  aLabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Name> aName  = new TDataStd_Name;
   aName->Set(aLabel, theLayer);
   return aLabel;

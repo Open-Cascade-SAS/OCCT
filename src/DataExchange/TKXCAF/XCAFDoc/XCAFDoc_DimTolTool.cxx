@@ -88,11 +88,7 @@ const occ::handle<XCAFDoc_ShapeTool>& XCAFDoc_DimTolTool::ShapeTool()
 bool XCAFDoc_DimTolTool::IsDimTol(const TDF_Label& theDimTolL) const
 {
   occ::handle<XCAFDoc_DimTol> aDimTolAttr;
-  if (theDimTolL.FindAttribute(XCAFDoc_DimTol::GetID(), aDimTolAttr))
-  {
-    return true;
-  }
-  return false;
+  return theDimTolL.FindAttribute(XCAFDoc_DimTol::GetID(), aDimTolAttr);
 }
 
 //=================================================================================================
@@ -100,11 +96,7 @@ bool XCAFDoc_DimTolTool::IsDimTol(const TDF_Label& theDimTolL) const
 bool XCAFDoc_DimTolTool::IsDimension(const TDF_Label& theDimTolL) const
 {
   occ::handle<XCAFDoc_Dimension> aDimTolAttr;
-  if (theDimTolL.FindAttribute(XCAFDoc_Dimension::GetID(), aDimTolAttr))
-  {
-    return true;
-  }
-  return false;
+  return theDimTolL.FindAttribute(XCAFDoc_Dimension::GetID(), aDimTolAttr);
 }
 
 //=================================================================================================
@@ -112,11 +104,7 @@ bool XCAFDoc_DimTolTool::IsDimension(const TDF_Label& theDimTolL) const
 bool XCAFDoc_DimTolTool::IsGeomTolerance(const TDF_Label& theDimTolL) const
 {
   occ::handle<XCAFDoc_GeomTolerance> aDimTolAttr;
-  if (theDimTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aDimTolAttr))
-  {
-    return true;
-  }
-  return false;
+  return theDimTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aDimTolAttr);
 }
 
 //=================================================================================================
@@ -232,7 +220,7 @@ TDF_Label XCAFDoc_DimTolTool::AddDimTol(
 {
   TDF_Label     DimTolL;
   TDF_TagSource aTag;
-  DimTolL = aTag.NewChild(Label());
+  DimTolL = TDF_TagSource::NewChild(Label());
   XCAFDoc_DimTol::Set(DimTolL, kind, aVal, aName, aDescription);
   TCollection_AsciiString str = "DGT:";
   if (kind < 20)
@@ -249,7 +237,7 @@ TDF_Label XCAFDoc_DimTolTool::AddDimension()
 {
   TDF_Label     aDimTolL;
   TDF_TagSource aTag;
-  aDimTolL                            = aTag.NewChild(Label());
+  aDimTolL                            = TDF_TagSource::NewChild(Label());
   occ::handle<XCAFDoc_Dimension> aDim = XCAFDoc_Dimension::Set(aDimTolL);
   TCollection_AsciiString        aStr = "DGT:Dimension";
   TDataStd_Name::Set(aDimTolL, aStr);
@@ -262,7 +250,7 @@ TDF_Label XCAFDoc_DimTolTool::AddGeomTolerance()
 {
   TDF_Label     aDimTolL;
   TDF_TagSource aTag;
-  aDimTolL                                = aTag.NewChild(Label());
+  aDimTolL                                = TDF_TagSource::NewChild(Label());
   occ::handle<XCAFDoc_GeomTolerance> aTol = XCAFDoc_GeomTolerance::Set(aDimTolL);
   TCollection_AsciiString            aStr = "DGT:Tolerance";
   TDataStd_Name::Set(aDimTolL, aStr);
@@ -335,7 +323,7 @@ void XCAFDoc_DimTolTool::SetDimension(const NCollection_Sequence<TDF_Label>& the
     aChGNode = XCAFDoc_GraphNode::Set(theDimTolL);
     aChGNode->SetGraphID(XCAFDoc::DimensionRefFirstGUID());
   }
-  for (int i = theFirstL.Lower(); i <= theFirstL.Upper(); i++)
+  for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= theFirstL.Upper(); i++)
   {
     if (!theFirstL.Value(i).FindAttribute(XCAFDoc::DimensionRefFirstGUID(), aFGNode))
     {
@@ -354,7 +342,7 @@ void XCAFDoc_DimTolTool::SetDimension(const NCollection_Sequence<TDF_Label>& the
     aChGNode = XCAFDoc_GraphNode::Set(theDimTolL);
     aChGNode->SetGraphID(XCAFDoc::DimensionRefSecondGUID());
   }
-  for (int i = theSecondL.Lower(); i <= theSecondL.Upper(); i++)
+  for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= theSecondL.Upper(); i++)
   {
     if (!theSecondL.Value(i).FindAttribute(XCAFDoc::DimensionRefSecondGUID(), aSecondFGNode))
     {
@@ -414,7 +402,7 @@ void XCAFDoc_DimTolTool::SetGeomTolerance(const NCollection_Sequence<TDF_Label>&
     aChGNode = XCAFDoc_GraphNode::Set(theGeomTolL);
     aChGNode->SetGraphID(XCAFDoc::GeomToleranceRefGUID());
   }
-  for (int i = theL.Lower(); i <= theL.Upper(); i++)
+  for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= theL.Upper(); i++)
   {
     if (!theL.Value(i).FindAttribute(XCAFDoc::GeomToleranceRefGUID(), aFGNode))
     {
@@ -600,11 +588,7 @@ bool XCAFDoc_DimTolTool::GetDimTol(const TDF_Label&                          Dim
 bool XCAFDoc_DimTolTool::IsDatum(const TDF_Label& theDimTolL) const
 {
   occ::handle<XCAFDoc_Datum> aDatumAttr;
-  if (theDimTolL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
-  {
-    return true;
-  }
-  return false;
+  return theDimTolL.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr);
 }
 
 //=================================================================================================
@@ -656,7 +640,7 @@ TDF_Label XCAFDoc_DimTolTool::AddDatum(
 {
   TDF_Label     DatumL;
   TDF_TagSource aTag;
-  DatumL = aTag.NewChild(Label());
+  DatumL = TDF_TagSource::NewChild(Label());
   XCAFDoc_Datum::Set(DatumL, aName, aDescription, anIdentification);
   TDataStd_Name::Set(DatumL, "DGT:Datum");
   return DatumL;
@@ -668,7 +652,7 @@ TDF_Label XCAFDoc_DimTolTool::AddDatum()
 {
   TDF_Label     aDatumL;
   TDF_TagSource aTag;
-  aDatumL                         = aTag.NewChild(Label());
+  aDatumL                         = TDF_TagSource::NewChild(Label());
   occ::handle<XCAFDoc_Datum> aDat = XCAFDoc_Datum::Set(aDatumL);
   TDataStd_Name::Set(aDatumL, "DGT:Datum");
   return aDatumL;
@@ -705,7 +689,7 @@ void XCAFDoc_DimTolTool::SetDatum(const NCollection_Sequence<TDF_Label>& theL,
     aChGNode = XCAFDoc_GraphNode::Set(theDatumL);
     aChGNode->SetGraphID(XCAFDoc::DatumRefGUID());
   }
-  for (int i = theL.Lower(); i <= theL.Upper(); i++)
+  for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= theL.Upper(); i++)
   {
     if (!theL.Value(i).FindAttribute(XCAFDoc::DatumRefGUID(), aFGNode))
     {

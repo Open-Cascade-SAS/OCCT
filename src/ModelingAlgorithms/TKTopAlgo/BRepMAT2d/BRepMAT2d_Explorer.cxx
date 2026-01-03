@@ -119,7 +119,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   // This method is totally rewroted to include check
   // of connection and creation of a new spine.
   NewContour();
-  myIsClosed(currentContour) = (Spine.Closed()) ? true : false;
+  myIsClosed(currentContour) = Spine.Closed();
 
   TopoDS_Edge                      aFirstEdge = anExp.Current();
   TopoDS_Edge                      aPrevEdge  = aFirstEdge;

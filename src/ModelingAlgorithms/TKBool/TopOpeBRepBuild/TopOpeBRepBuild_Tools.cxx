@@ -752,7 +752,7 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
 
   gp_Vec2d aux(gp_Pnt2d(0., 0.), gp_Pnt2d(1., 1.));
   double   scalar = aux * aTrV;
-  bool     dir    = (scalar >= 0.) ? true : false;
+  bool     dir    = scalar >= 0.;
 
   // compute right order of pcurves
   gp_Vec2d aYVec(gp_Pnt2d(0., 0.), gp_Pnt2d(0., 1.));
@@ -767,10 +767,10 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   { // compute along X axe
     gp_Vec2d aXVec(gp_Pnt2d(0., 0.), gp_Pnt2d(1., 0.));
     scalar     = aXVec * C2DVec;
-    firstOrder = (scalar >= 0.) ? true : false;
+    firstOrder = scalar >= 0.;
   }
   else
-    firstOrder = (scalar > 0.) ? false : true;
+    firstOrder = scalar <= 0.;
 
   occ::handle<Geom2d_Curve> aTrC = occ::down_cast<Geom2d_Curve>(C2D->Copy());
   aTrC->Translate(aTrV);
@@ -802,10 +802,7 @@ bool TopOpeBRepBuild_Tools::IsDegEdgesTheSame(const TopoDS_Shape& anE1, const To
   if (!aVMap1.Extent() || !aVMap2.Extent())
     return false;
 
-  if (aVMap1(1).IsSame(aVMap2(1)))
-    return true;
-  else
-    return false;
+  return aVMap1(1).IsSame(aVMap2(1));
 }
 
 //=======================================================================

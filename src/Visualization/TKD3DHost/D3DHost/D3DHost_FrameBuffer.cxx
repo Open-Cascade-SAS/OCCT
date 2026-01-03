@@ -36,7 +36,6 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
       myD3dFallback(false),
       myIsSRGBReady(false)
 {
-  //
 }
 
 //=================================================================================================

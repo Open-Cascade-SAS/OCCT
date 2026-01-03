@@ -320,13 +320,13 @@ void BinTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
     WriteShape(S, OS);
 
     // Flags
-    BinTools::PutBool(OS, S.Free() ? true : false);
-    BinTools::PutBool(OS, S.Modified() ? true : false);
-    BinTools::PutBool(OS, S.Checked() ? true : false);
-    BinTools::PutBool(OS, S.Orientable() ? true : false);
-    BinTools::PutBool(OS, S.Closed() ? true : false);
-    BinTools::PutBool(OS, S.Infinite() ? true : false);
-    BinTools::PutBool(OS, S.Convex() ? true : false);
+    BinTools::PutBool(OS, S.Free());
+    BinTools::PutBool(OS, S.Modified());
+    BinTools::PutBool(OS, S.Checked());
+    BinTools::PutBool(OS, S.Orientable());
+    BinTools::PutBool(OS, S.Closed());
+    BinTools::PutBool(OS, S.Infinite());
+    BinTools::PutBool(OS, S.Convex());
 
     // sub-shapes
 
@@ -609,11 +609,11 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
 
       BinTools::PutReal(OS, TE->Tolerance());
 
-      bool aVal = (TE->SameParameter()) ? true : false;
+      bool aVal = TE->SameParameter();
       BinTools::PutBool(OS, aVal);
-      aVal = (TE->SameRange()) ? true : false;
+      aVal = TE->SameRange();
       BinTools::PutBool(OS, aVal);
-      aVal = (TE->Degenerated()) ? true : false;
+      aVal = TE->Degenerated();
       BinTools::PutBool(OS, aVal);
 
       double                                                            first, last;
@@ -1428,10 +1428,10 @@ void BinTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
       const int aNbTriangles       = aTriangulation->NbTriangles();
       BinTools::PutInteger(OS, aNbNodes);
       BinTools::PutInteger(OS, aNbTriangles);
-      BinTools::PutBool(OS, aTriangulation->HasUVNodes() ? true : false);
+      BinTools::PutBool(OS, aTriangulation->HasUVNodes());
       if (FormatNb() >= BinTools_FormatVersion_VERSION_4)
       {
-        BinTools::PutBool(OS, (aTriangulation->HasNormals() && NeedToWriteNormals) ? true : false);
+        BinTools::PutBool(OS, aTriangulation->HasNormals() && NeedToWriteNormals);
       }
       BinTools::PutReal(OS, aTriangulation->Deflection());
 

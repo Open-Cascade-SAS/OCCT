@@ -27,7 +27,6 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity(
     : myOwnerId(theOwnerId),
       mySFactor(2)
 {
-  //
 }
 
 //=================================================================================================

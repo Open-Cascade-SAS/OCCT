@@ -113,7 +113,7 @@ void AIS_TextLabel::SetAngle(const double theAngle)
 
 void AIS_TextLabel::SetZoomable(const bool theIsZoomable)
 {
-  myDrawer->TextAspect()->Aspect()->SetTextZoomable(theIsZoomable == true);
+  myDrawer->TextAspect()->Aspect()->SetTextZoomable(theIsZoomable);
 }
 
 //=================================================================================================
@@ -230,7 +230,7 @@ void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
       const bool isTextZoomable = anAsp->Aspect()->GetTextZoomable();
       if (myHasOrientation3D)
       {
-        anAsp->Aspect()->SetTextZoomable(myHasFlipping ? true : false);
+        anAsp->Aspect()->SetTextZoomable(myHasFlipping);
         SetTransformPersistence(new Graphic3d_TransformPers(Graphic3d_TMF_ZoomPers, aPosition));
         aPosition = gp::Origin();
       }

@@ -57,7 +57,6 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight(const BVH_Vec4f& theEmission,
     : Emission(theEmission),
       Position(thePosition)
 {
-  //
 }
 
 // =======================================================================
@@ -143,7 +142,6 @@ OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                             
     : BVH_Triangulation<float, 3>(theBuilder),
       myArrayID(theArrayID)
 {
-  //
 }
 
 // =======================================================================

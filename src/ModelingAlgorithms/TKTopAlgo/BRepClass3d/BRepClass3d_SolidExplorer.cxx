@@ -670,7 +670,7 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
       IndexPoint = 0;
 
       bool encoreuneface = faceexplorer.More();
-      if (ptfound == false && encoreuneface == false)
+      if (!ptfound && !encoreuneface)
       {
         if (myParamOnEdge < 0.0001)
         {

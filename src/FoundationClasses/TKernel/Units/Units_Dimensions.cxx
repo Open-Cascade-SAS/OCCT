@@ -131,22 +131,20 @@ occ::handle<Units_Dimensions> Units_Dimensions::Power(const double anexponent) c
 
 bool Units_Dimensions::IsEqual(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  return (
-    themass == adimensions->Mass() && thelength == adimensions->Length()
-        && thetime == adimensions->Time() && theelectriccurrent == adimensions->ElectricCurrent()
-        && thethermodynamictemperature == adimensions->ThermodynamicTemperature()
-        && theamountofsubstance == adimensions->AmountOfSubstance()
-        && theluminousintensity == adimensions->LuminousIntensity()
-        && theplaneangle == adimensions->PlaneAngle() && thesolidangle == adimensions->SolidAngle()
-      ? true
-      : false);
+  return (themass == adimensions->Mass() && thelength == adimensions->Length()
+          && thetime == adimensions->Time() && theelectriccurrent == adimensions->ElectricCurrent()
+          && thethermodynamictemperature == adimensions->ThermodynamicTemperature()
+          && theamountofsubstance == adimensions->AmountOfSubstance()
+          && theluminousintensity == adimensions->LuminousIntensity()
+          && theplaneangle == adimensions->PlaneAngle()
+          && thesolidangle == adimensions->SolidAngle());
 }
 
 //=================================================================================================
 
 bool Units_Dimensions::IsNotEqual(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  return !(IsEqual(adimensions)) ? true : false;
+  return !(IsEqual(adimensions));
 }
 
 //=================================================================================================

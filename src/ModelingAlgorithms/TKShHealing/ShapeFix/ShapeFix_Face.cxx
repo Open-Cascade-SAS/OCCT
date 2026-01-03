@@ -2758,7 +2758,7 @@ static bool IsPeriodicConicalLoop(const occ::handle<Geom_ConicalSurface>& theSur
   theMaxU     = aMaxU;
   theMinV     = aMinV;
   theMaxV     = aMaxV;
-  isUDecrease = (aCumulDeltaU < 0 ? true : false);
+  isUDecrease = (aCumulDeltaU < 0);
 
   bool is2PIDelta   = std::abs(aCumulDeltaUAbs - 2 * M_PI) <= theTolerance;
   bool isAroundApex = std::abs(theMaxU - theMinU) > 2 * M_PI - theTolerance;

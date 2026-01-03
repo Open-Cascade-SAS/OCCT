@@ -328,7 +328,7 @@ void IGESCAFControl_Writer::MakeColors(
       else
       {
         occ::handle<TCollection_HAsciiString> str =
-          new TCollection_HAsciiString(col.StringName(col.Name()));
+          new TCollection_HAsciiString(Quantity_Color::StringName(col.Name()));
         colent = new IGESGraph_Color;
         NCollection_Vec3<double> aColor_sRGB;
         col.Values(aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);

@@ -2012,7 +2012,7 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
     NCollection_Sequence<TDF_Label> aDatL;
     if (aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatL))
     {
-      for (int j = aDatL.Lower(); j <= aDatL.Upper(); j++)
+      for (int j = NCollection_Sequence<TDF_Label>::Lower(); j <= aDatL.Upper(); j++)
       {
         occ::handle<XCAFDoc_Datum> aDat;
         if (!aDatL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDat))
@@ -3509,14 +3509,7 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   bool   inverse = true;
 
   int inv = atoi(a[3]);
-  if (inv > 0)
-  {
-    inverse = true;
-  }
-  else
-  {
-    inverse = false;
-  }
+  inverse = inv > 0;
 
   int maxit = atoi(a[4]);
 

@@ -146,7 +146,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
       continue;
     }
     TCollection_AsciiString anEntry;
-    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
+    if (!XmlObjMgt::GetTagEntryString(aValueStr, anEntry))
     {
       TCollection_ExtendedString aMessage =
         TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
@@ -172,7 +172,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
     return false;
   }
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
+  if (!XmlObjMgt::GetTagEntryString(aValueStr, anEntry))
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';

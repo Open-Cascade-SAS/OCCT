@@ -52,9 +52,7 @@ bool OSD::CStringToReal(const char* aString, double& aReal)
 {
   char* endptr;
   aReal = Strtod(aString, &endptr);
-  if (*endptr)
-    return false;
-  return true;
+  return *endptr == 0;
 }
 
 #ifdef _WIN32

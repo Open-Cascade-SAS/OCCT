@@ -346,14 +346,7 @@ bool TopOpeBRepBuild_ShapeSet::CheckShape(const TopoDS_Shape& S, const bool chec
 
   BRepCheck_Analyzer ana(S, checkgeom);
   bool               val = ana.IsValid();
-  if (val)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return val;
 }
 
 //=================================================================================================

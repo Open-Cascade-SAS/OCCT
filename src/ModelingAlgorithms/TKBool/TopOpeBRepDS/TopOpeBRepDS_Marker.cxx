@@ -36,7 +36,7 @@ void TopOpeBRepDS_Marker::Reset()
 void TopOpeBRepDS_Marker::Set(const int ie, const bool b)
 {
   Allocate(ie);
-  if (!(ie >= 1 && ie <= myne))
+  if (ie < 1 || ie > myne)
     return;
   myhe->SetValue(ie, b);
 }
@@ -57,7 +57,7 @@ bool TopOpeBRepDS_Marker::GetI(const int ie) const
 {
   if (myhe.IsNull())
     return false;
-  if (!(ie >= 1 && ie <= myne))
+  if (ie < 1 || ie > myne)
     return false;
   return myhe->Value(ie);
 }

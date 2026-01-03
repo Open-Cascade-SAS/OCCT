@@ -636,7 +636,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 
       occ::handle<NCollection_HArray2<TopoDS_Shape>> aSections = MkSw.Sections();
 
-      if (aSections.IsNull() == false)
+      if (!aSections.IsNull())
       {
         const int aVLast = aSections->UpperCol();
 

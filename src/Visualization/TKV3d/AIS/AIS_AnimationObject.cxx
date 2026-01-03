@@ -26,7 +26,6 @@ AIS_AnimationObject::AIS_AnimationObject(const TCollection_AsciiString& theAnima
     : AIS_BaseAnimationObject(theAnimationName, theContext, theObject),
       myTrsfLerp(theTrsfStart, theTrsfEnd)
 {
-  //
 }
 
 //=================================================================================================

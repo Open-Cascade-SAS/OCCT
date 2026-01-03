@@ -114,10 +114,7 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot(const occ::handle<Image_PixMap>& th
 
 //=================================================================================================
 
-Graphic3d_TextureRoot::~Graphic3d_TextureRoot()
-{
-  //
-}
+Graphic3d_TextureRoot::~Graphic3d_TextureRoot() = default;
 
 //=================================================================================================
 

@@ -131,7 +131,7 @@ static bool FUN_islook(const TopoDS_Edge& e)
   gp_Pnt p1     = BRep_Tool::Pnt(v1);
   gp_Pnt p2     = BRep_Tool::Pnt(v2);
   double dp1p2  = p1.Distance(p2);
-  bool   islook = (std::abs(dp1p2) > 1.e-8) ? true : false;
+  bool   islook = std::abs(dp1p2) > 1.e-8;
   return islook;
 }
 
@@ -249,7 +249,7 @@ void TopOpeBRepBuild_PaveSet::Prepare()
           }
           // ofv:
           // addVE = false;
-          addVE = (!add) ? false : true;
+          addVE = add;
           break;
         }
       }

@@ -103,7 +103,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
     int aBytesRest = (int)(myEndPtr - myPtr);
     if (aBytesRest < XML_MIN_BUFFER)
     {
-      if (myEOF == true)
+      if (myEOF)
       {
         if (aBytesRest <= 0)
           break; // END of processing
@@ -329,7 +329,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             myError += TCollection_AsciiString(myPtr, XML_MIN_BUFFER);
             return XML_UNKNOWN;
           case '\0':
-            if (myEOF == true)
+            if (myEOF)
               continue;
             [[fallthrough]];
           default:
@@ -481,7 +481,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         // Checking the characters in STATE_ELEMENT, seek the end of TagName
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_ELEMENT:
-        if (::isName(myPtr, myEndPtr, aNameEnd) == false)
+        if (!::isName(myPtr, myEndPtr, aNameEnd))
           if (theData.Length() == 0 || aNameEnd != myPtr)
           {
             myError = "Invalid tag name";
@@ -540,7 +540,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 #endif
             return XML_START_ELEMENT;
           default:
-            if (::isName(myPtr, myEndPtr, aNameEnd) == false)
+            if (!::isName(myPtr, myEndPtr, aNameEnd))
               if (theData.Length() == 0 || aNameEnd != myPtr)
               {
                 myError = "Invalid attribute name";

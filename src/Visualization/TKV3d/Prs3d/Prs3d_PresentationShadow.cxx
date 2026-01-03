@@ -26,15 +26,11 @@ Prs3d_PresentationShadow::Prs3d_PresentationShadow(
       myParentAffinity(thePrs->CStructure()->ViewAffinity),
       myParentStructId(thePrs->Identification())
 {
-  //
 }
 
 //=================================================================================================
 
-void Prs3d_PresentationShadow::CalculateBoundBox()
-{
-  //
-}
+void Prs3d_PresentationShadow::CalculateBoundBox() {}
 
 //=================================================================================================
 

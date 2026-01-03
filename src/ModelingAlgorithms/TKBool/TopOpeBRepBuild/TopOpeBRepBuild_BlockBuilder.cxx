@@ -204,7 +204,7 @@ bool TopOpeBRepBuild_BlockBuilder::ElementIsValid(const TopOpeBRepBuild_BlockIte
 
   int  Sindex  = BI.Value();
   int  isb     = myOrientedShapeMapIsValid.Find(Sindex);
-  bool isvalid = (isb == 1) ? true : false;
+  bool isvalid = isb == 1;
 
   return isvalid;
 }
@@ -216,7 +216,7 @@ bool TopOpeBRepBuild_BlockBuilder::ElementIsValid(const int Sindex) const
     return false;
 
   int  isb     = myOrientedShapeMapIsValid.Find(Sindex);
-  bool isvalid = (isb == 1) ? true : false;
+  bool isvalid = isb == 1;
 
   return isvalid;
 }

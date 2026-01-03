@@ -1018,8 +1018,5 @@ bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& the
     theStep = 0.5 * (aMinStep + aMaxStep);
   } while (((aMaxStep - aMinStep) > Precision::PConfusion()) && (aNbIter <= aNbIterMax));
 
-  if (aNbIter > aNbIterMax)
-    return false;
-
-  return true;
+  return aNbIter <= aNbIterMax;
 }

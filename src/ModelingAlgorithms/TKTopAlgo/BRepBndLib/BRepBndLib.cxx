@@ -441,14 +441,7 @@ bool CanUseEdges(const Adaptor3d_Surface& BS)
   else if (aST == GeomAbs_SurfaceOfRevolution)
   {
     const occ::handle<Adaptor3d_Curve>& aBC = BS.BasisCurve();
-    if (aBC->GetType() == GeomAbs_Line)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return aBC->GetType() == GeomAbs_Line;
   }
   else if (aST == GeomAbs_OffsetSurface)
   {
@@ -458,27 +451,13 @@ bool CanUseEdges(const Adaptor3d_Surface& BS)
   else if (aST == GeomAbs_BSplineSurface)
   {
     occ::handle<Geom_BSplineSurface> aBSpl = BS.BSpline();
-    if ((aBSpl->UDegree() == 1 && aBSpl->NbUKnots() == 2)
-        || (aBSpl->VDegree() == 1 && aBSpl->NbVKnots() == 2))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return (aBSpl->UDegree() == 1 && aBSpl->NbUKnots() == 2)
+           || (aBSpl->VDegree() == 1 && aBSpl->NbVKnots() == 2);
   }
   else if (aST == GeomAbs_BezierSurface)
   {
     occ::handle<Geom_BezierSurface> aBz = BS.Bezier();
-    if ((aBz->UDegree() == 1) || (aBz->VDegree() == 1))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return (aBz->UDegree() == 1) || (aBz->VDegree() == 1);
   }
   return false;
 }

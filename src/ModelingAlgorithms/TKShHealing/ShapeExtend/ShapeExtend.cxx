@@ -101,5 +101,5 @@ bool ShapeExtend::DecodeStatus(const int flag, const ShapeExtend_Status status)
 {
   if (status == ShapeExtend_OK)
     return (flag == 0);
-  return (flag & ShapeExtend::EncodeStatus(status) ? true : false);
+  return ((flag & ShapeExtend::EncodeStatus(status)) != 0);
 }

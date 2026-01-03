@@ -80,11 +80,7 @@ bool Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X, double& c
 {
   ct = X(X.Lower());
 
-  if (ct < myTf || ct > myTl)
-  {
-    return false;
-  }
-  return true;
+  return ct >= myTf && ct <= myTl;
 }
 
 //=================================================================================================
@@ -201,11 +197,7 @@ bool Extrema_GlobOptFuncCQuadric::Value(const math_Vector& X, double& F)
     return false;
 
   value(ct, F);
-  if (Precision::IsInfinite(F))
-  {
-    return false;
-  }
-  return true;
+  return !Precision::IsInfinite(F);
 }
 
 //=================================================================================================

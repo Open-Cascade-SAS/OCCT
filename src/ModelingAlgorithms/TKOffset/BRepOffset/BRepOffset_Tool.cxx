@@ -869,10 +869,7 @@ static bool AreConnex(const TopoDS_Wire& W1, const TopoDS_Wire& W2)
   TopExp::Vertices(W1, V11, V12);
   TopExp::Vertices(W2, V21, V22);
 
-  if (V11.IsSame(V21) || V11.IsSame(V22) || V12.IsSame(V21) || V12.IsSame(V22))
-    return true;
-
-  return false;
+  return V11.IsSame(V21) || V11.IsSame(V22) || V12.IsSame(V21) || V12.IsSame(V22);
 }
 
 //=======================================================================
@@ -886,10 +883,7 @@ static bool AreClosed(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
   TopExp::Vertices(E1, V11, V12);
   TopExp::Vertices(E2, V21, V22);
 
-  if ((V11.IsSame(V21) && V12.IsSame(V22)) || (V11.IsSame(V22) && V12.IsSame(V21)))
-    return true;
-
-  return false;
+  return (V11.IsSame(V21) && V12.IsSame(V22)) || (V11.IsSame(V22) && V12.IsSame(V21));
 }
 
 //=================================================================================================

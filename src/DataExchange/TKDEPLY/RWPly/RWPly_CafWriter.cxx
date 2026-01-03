@@ -39,15 +39,11 @@ RWPly_CafWriter::RWPly_CafWriter(const TCollection_AsciiString& theFile)
       myHasPartId(true),
       myHasFaceId(false)
 {
-  //
 }
 
 //=================================================================================================
 
-RWPly_CafWriter::~RWPly_CafWriter()
-{
-  //
-}
+RWPly_CafWriter::~RWPly_CafWriter() = default;
 
 //=================================================================================================
 

@@ -206,10 +206,7 @@ static bool FUN_EstaEE(const TopoDS_Edge& E, const TopAbs_State sta, const TopoD
 
   if (BRep_Tool::Degenerated(E))
   {
-    if (sta == TopAbs_IN)
-      return false;
-    else
-      return true;
+    return sta != TopAbs_IN;
   }
   // modified by NIZNHY-PKV Wed Nov  3 11:40:19 1999 to
 

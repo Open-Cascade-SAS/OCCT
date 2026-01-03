@@ -413,7 +413,6 @@ OSD_File::OSD_File()
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -431,7 +430,6 @@ OSD_File::OSD_File(const OSD_Path& theName)
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
 {
-  //
 }
 
 //=================================================================================================

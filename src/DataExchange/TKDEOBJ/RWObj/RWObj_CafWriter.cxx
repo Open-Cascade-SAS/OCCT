@@ -67,10 +67,7 @@ RWObj_CafWriter::RWObj_CafWriter(const TCollection_AsciiString& theFile)
 
 //=================================================================================================
 
-RWObj_CafWriter::~RWObj_CafWriter()
-{
-  //
-}
+RWObj_CafWriter::~RWObj_CafWriter() = default;
 
 //=================================================================================================
 

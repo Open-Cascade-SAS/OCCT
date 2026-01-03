@@ -1774,14 +1774,7 @@ static int fitcurve(Draw_Interpretor& di, int n, const char** a)
   if (n > 5)
   {
     int inv = atoi(a[5]);
-    if (inv > 0)
-    {
-      inverse = true;
-    }
-    else
-    {
-      inverse = false;
-    }
+    inverse = inv > 0;
   }
 
   occ::handle<GeomAdaptor_Curve> aGAC = new GeomAdaptor_Curve(GC);

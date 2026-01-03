@@ -25,7 +25,6 @@ XmlMXCAFDoc_VisMaterialToolDriver::XmlMXCAFDoc_VisMaterialToolDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "VisMaterialTool")
 {
-  //
 }
 
 //=================================================================================================
@@ -50,5 +49,4 @@ void XmlMXCAFDoc_VisMaterialToolDriver::Paste(const occ::handle<TDF_Attribute>&,
                                               XmlObjMgt_Persistent&,
                                               XmlObjMgt_SRelocationTable&) const
 {
-  //
 }

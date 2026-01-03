@@ -34,7 +34,6 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const int thePriority)
     : SelectMgr_EntityOwner(thePriority),
       myCurMode(0)
 {
-  //
 }
 
 //=================================================================================================

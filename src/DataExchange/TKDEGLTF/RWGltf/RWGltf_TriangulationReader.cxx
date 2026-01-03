@@ -102,10 +102,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReade
 
 //=================================================================================================
 
-RWGltf_TriangulationReader::RWGltf_TriangulationReader()
-{
-  //
-}
+RWGltf_TriangulationReader::RWGltf_TriangulationReader() = default;
 
 //=================================================================================================
 
@@ -151,11 +148,11 @@ bool RWGltf_TriangulationReader::readStreamData(
                                            theGltfData.StreamData->Size());
   std::istream               aStream(&aStreamBuffer);
   aStream.seekg((std::streamoff)theGltfData.StreamOffset, std::ios_base::beg);
-  if (!readBuffer(theSourceGltfMesh, theDestMesh, aStream, theGltfData.Accessor, theGltfData.Type))
-  {
-    return false;
-  }
-  return true;
+  return readBuffer(theSourceGltfMesh,
+                    theDestMesh,
+                    aStream,
+                    theGltfData.Accessor,
+                    theGltfData.Type);
 }
 
 //=================================================================================================

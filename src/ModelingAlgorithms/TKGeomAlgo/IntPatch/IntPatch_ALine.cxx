@@ -164,17 +164,17 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
+      if ((VTXi.IsOnDomS1()) && (!VTXi.IsOnDomS2()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
+            if ((VTXj.IsOnDomS1()) && (!VTXj.IsOnDomS2()))
             {
               if (std::abs(VTXi.ParameterOnArc1() - VTXj.ParameterOnArc1()) <= PCONFUSION)
               {
@@ -203,22 +203,22 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS2() == true) && (VTXi.IsOnDomS1() == false))
+      if ((VTXi.IsOnDomS2()) && (!VTXi.IsOnDomS1()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS2() == true) && (VTXj.IsOnDomS1() == false))
+            if ((VTXj.IsOnDomS2()) && (!VTXj.IsOnDomS1()))
             {
               if (std::abs(VTXi.ParameterOnArc2() - VTXj.ParameterOnArc2()) <= PCONFUSION)
               {
@@ -247,7 +247,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   //----------------------------------------------------------
   //-- Tri des vertex et suppression des Vtx superflus
@@ -302,7 +302,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
             { //-- OnS1 == OnS1
               if (VTXM1.IsOnDomS2())
               { //-- OnS1 == OnS1  OnS2
-                if (VTX.IsOnDomS2() == false)
+                if (!VTX.IsOnDomS2())
                 { //-- OnS1 == OnS1  OnS2 PasOnS2
                   kill = true;
                 }
@@ -325,13 +325,13 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
           }
           else
           { //-- Pas OnS1  et  OnS1
-            if (VTXM1.IsOnDomS2() == false && VTX.IsOnDomS2() == false)
+            if (!VTXM1.IsOnDomS2() && !VTX.IsOnDomS2())
             {
-              if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1() == false)
+              if (VTXM1.IsOnDomS1() && !VTX.IsOnDomS1())
               {
                 kill = true;
               }
-              else if (VTX.IsOnDomS1() && VTXM1.IsOnDomS1() == false)
+              else if (VTX.IsOnDomS1() && !VTXM1.IsOnDomS1())
               {
                 killm1 = true;
               }
@@ -346,7 +346,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
               { //-- OnS2 == OnS2
                 if (VTXM1.IsOnDomS1())
                 { //-- OnS2 == OnS2  OnS1
-                  if (VTX.IsOnDomS1() == false)
+                  if (!VTX.IsOnDomS1())
                   { //-- OnS2 == OnS2  OnS1 PasOnS1
                     kill = true;
                   }
@@ -369,13 +369,13 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
             }
             else
             { //-- Pas OnS2  et  OnS2
-              if (VTXM1.IsOnDomS1() == false && VTX.IsOnDomS1() == false)
+              if (!VTXM1.IsOnDomS1() && !VTX.IsOnDomS1())
               {
-                if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2() == false)
+                if (VTXM1.IsOnDomS2() && !VTX.IsOnDomS2())
                 {
                   kill = true;
                 }
-                else if (VTX.IsOnDomS2() && VTXM1.IsOnDomS2() == false)
+                else if (VTX.IsOnDomS2() && !VTXM1.IsOnDomS2())
                 {
                   killm1 = true;
                 }
@@ -431,7 +431,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   //----------------------------------------------------------
   //--   Traitement des lignes periodiques                  --
   //----------------------------------------------------------
-  if (OpenFirst == false && OpenLast == false)
+  if (!OpenFirst && !OpenLast)
   {
     nbvtx = NbVertex();
 
@@ -476,7 +476,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   if (nbvtx > 1)
   {
     IntPatch_Point& VTX0 = svtx.ChangeValue(1);
-    if ((VTX0.IsOnDomS1() == false) && (VTX0.IsOnDomS2() == false))
+    if ((!VTX0.IsOnDomS1()) && (!VTX0.IsOnDomS2()))
     {
       svtx.Remove(1);
       nbvtx--;
@@ -489,7 +489,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   if (nbvtx > 1)
   {
     IntPatch_Point& VTX0 = svtx.ChangeValue(nbvtx);
-    if ((VTX0.IsOnDomS1() == false) && (VTX0.IsOnDomS2() == false))
+    if ((!VTX0.IsOnDomS1()) && (!VTX0.IsOnDomS2()))
     {
       svtx.Remove(nbvtx);
       if (lapt)
@@ -510,7 +510,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
       IntPatch_Point& VTXm1 = svtx.ChangeValue(i - 1);
       if (std::abs(VTX.ParameterOnLine() - VTXm1.ParameterOnLine()) < PCONFUSION)
       {
-        if (VTX.IsOnDomS1() && VTXm1.IsOnDomS1() == false)
+        if (VTX.IsOnDomS1() && !VTXm1.IsOnDomS1())
         {
           VTXm1.SetArc(true,
                        VTX.ArcOnS1(),
@@ -518,7 +518,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                        VTX.TransitionLineArc1(),
                        VTX.TransitionOnS1());
         }
-        else if (VTXm1.IsOnDomS1() && VTX.IsOnDomS1() == false)
+        else if (VTXm1.IsOnDomS1() && !VTX.IsOnDomS1())
         {
           VTX.SetArc(true,
                      VTXm1.ArcOnS1(),
@@ -526,7 +526,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                      VTXm1.TransitionLineArc1(),
                      VTXm1.TransitionOnS1());
         }
-        if (VTX.IsVertexOnS1() && VTXm1.IsVertexOnS1() == false)
+        if (VTX.IsVertexOnS1() && !VTXm1.IsVertexOnS1())
         {
           VTXm1.SetVertex(true, VTX.VertexOnS1());
           VTXm1.SetArc(true,
@@ -535,7 +535,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                        VTX.TransitionLineArc1(),
                        VTX.TransitionOnS1());
         }
-        else if (VTXm1.IsVertexOnS1() && VTX.IsVertexOnS1() == false)
+        else if (VTXm1.IsVertexOnS1() && !VTX.IsVertexOnS1())
         {
           VTX.SetVertex(true, VTXm1.VertexOnS1());
           VTX.SetArc(true,
@@ -545,7 +545,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                      VTXm1.TransitionOnS1());
         }
 
-        if (VTX.IsOnDomS2() && VTXm1.IsOnDomS2() == false)
+        if (VTX.IsOnDomS2() && !VTXm1.IsOnDomS2())
         {
           VTXm1.SetArc(false,
                        VTX.ArcOnS2(),
@@ -553,7 +553,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                        VTX.TransitionLineArc2(),
                        VTX.TransitionOnS2());
         }
-        else if (VTXm1.IsOnDomS2() && VTX.IsOnDomS2() == false)
+        else if (VTXm1.IsOnDomS2() && !VTX.IsOnDomS2())
         {
           VTX.SetArc(false,
                      VTXm1.ArcOnS2(),
@@ -561,7 +561,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                      VTXm1.TransitionLineArc2(),
                      VTXm1.TransitionOnS2());
         }
-        if (VTX.IsVertexOnS2() && VTXm1.IsVertexOnS2() == false)
+        if (VTX.IsVertexOnS2() && !VTXm1.IsVertexOnS2())
         {
           VTXm1.SetVertex(false, VTX.VertexOnS2());
           VTXm1.SetArc(false,
@@ -570,7 +570,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                        VTX.TransitionLineArc2(),
                        VTX.TransitionOnS2());
         }
-        else if (VTXm1.IsVertexOnS2() && VTX.IsVertexOnS2() == false)
+        else if (VTXm1.IsVertexOnS2() && !VTX.IsVertexOnS2())
         {
           VTX.SetVertex(false, VTXm1.VertexOnS2());
           VTX.SetArc(false,

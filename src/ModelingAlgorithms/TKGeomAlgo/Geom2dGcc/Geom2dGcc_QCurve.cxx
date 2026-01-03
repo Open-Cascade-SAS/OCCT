@@ -27,50 +27,22 @@ GccEnt_Position Geom2dGcc_QCurve::Qualifier() const
 
 bool Geom2dGcc_QCurve::IsUnqualified() const
 {
-  if (TheQualifier == GccEnt_unqualified)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_unqualified;
 }
 
 bool Geom2dGcc_QCurve::IsEnclosing() const
 {
-  if (TheQualifier == GccEnt_enclosing)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosing;
 }
 
 bool Geom2dGcc_QCurve::IsEnclosed() const
 {
-  if (TheQualifier == GccEnt_enclosed)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosed;
 }
 
 bool Geom2dGcc_QCurve::IsOutside() const
 {
-  if (TheQualifier == GccEnt_outside)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_outside;
 }
 
 Geom2dGcc_QCurve::Geom2dGcc_QCurve(const Geom2dAdaptor_Curve& Curve,

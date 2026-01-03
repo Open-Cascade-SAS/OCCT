@@ -309,7 +309,7 @@ public:
           UV[i0][im1]    = t;
         }
       }
-    } while (TriOk == false);
+    } while (!TriOk);
   }
 
   //-- ============================================================
@@ -1211,7 +1211,7 @@ void HLRBRep_Data::NextInterference()
     if (myFEOri == TopAbs_FORWARD || myFEOri == TopAbs_REVERSED)
     {
       // Edge from the boundary
-      if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && !(myFEDouble && !myFEOutLine))
+      if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && (!myFEDouble || myFEOutLine))
       {
         // not a vertical edge and not a double Edge
         HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxFEdg = &((HLRBRep_EdgeData*)myFEData)->MinMax();
@@ -1228,7 +1228,7 @@ void HLRBRep_Data::NextInterference()
         //--     LE Min ....   LE Max
         //-- ----------------------------------------------------------------------
 
-        if (((TableauRejection*)myReject)->NoIntersection(myLE, myFE) == false)
+        if (!((TableauRejection*)myReject)->NoIntersection(myLE, myFE))
         {
 
           if (((MinMaxFEdg->Max[0] - myLEMinMax->Min[0]) & 0x80008000) == 0

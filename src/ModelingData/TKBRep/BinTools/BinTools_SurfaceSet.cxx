@@ -210,8 +210,8 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BezierSurface>& S)
 {
   OS << (uint8_t)BEZIER;
-  bool urational = S->IsURational() ? true : false;
-  bool vrational = S->IsVRational() ? true : false;
+  bool urational = S->IsURational();
+  bool vrational = S->IsVRational();
   OS << urational; // rational
   OS << vrational;
 
@@ -243,10 +243,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BSplineSurface>& S)
 {
   OS << (uint8_t)BSPLINE;
-  bool urational = S->IsURational() ? true : false;
-  bool vrational = S->IsVRational() ? true : false;
-  bool uperiodic = S->IsUPeriodic() ? true : false;
-  bool vperiodic = S->IsVPeriodic() ? true : false;
+  bool urational = S->IsURational();
+  bool vrational = S->IsVRational();
+  bool uperiodic = S->IsUPeriodic();
+  bool vperiodic = S->IsVPeriodic();
   OS << urational;
   OS << vrational;
   OS << uperiodic;

@@ -1387,7 +1387,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
 
   myNbSamplesU = 0;
   for (i = 1; i <= nbsu; i++)
-    if (anUFlg(i) == true)
+    if (anUFlg(i))
       myNbSamplesU++;
 
   if (myNbSamplesU < myMinPnts)
@@ -1485,7 +1485,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
 
   myNbSamplesV = 0;
   for (i = 1; i <= nbsv; i++)
-    if (aVFlg(i) == true)
+    if (aVFlg(i))
       myNbSamplesV++;
 
   if (myNbSamplesV < myMinPnts)
@@ -1596,9 +1596,7 @@ bool Adaptor3d_TopolTool::IsUniformSampling() const
 {
   GeomAbs_SurfaceType typS = myS->GetType();
 
-  if (typS == GeomAbs_BSplineSurface)
-    return false;
-  return true;
+  return typS != GeomAbs_BSplineSurface;
 }
 
 //=======================================================================

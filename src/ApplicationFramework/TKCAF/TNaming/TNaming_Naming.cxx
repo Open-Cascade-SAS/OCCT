@@ -677,12 +677,10 @@ static bool IsMultipleCase(
     if (isCommon)
       break; // common single face found
   }
-  if (isCommon && aM.Extent() < aNbs.Extent())
-  { // number of unique faces (to have single solution)
-    // should be at least no less than (Nb of Neighbourgs) +1
-    return true;
-  }
-  return false;
+
+  // number of unique faces (to have single solution)
+  // should be at least no less than (Nb of Neighbourgs) +1
+  return isCommon && aM.Extent() < aNbs.Extent();
 }
 
 //=======================================================================
@@ -963,12 +961,7 @@ static bool Filter(const TDF_Label&                 F,
   //-----------------
   // Check du filtre.
   //-----------------
-  if (Compare(NS, MDF, Stop, S))
-    return true;
-#ifdef OCCT_DEBUG
-  std::cout << "TNaming_Naming::Name Filter insufficient" << std::endl;
-#endif
-  return false;
+  return Compare(NS, MDF, Stop, S);
 }
 
 //=======================================================================
@@ -1365,10 +1358,7 @@ static bool HasAncFace(const TopoDS_Shape& Context,
           TopoDS_Wire       anOuterW;
           if (TNaming::OuterWire(aFace, anOuterW))
           {
-            if (!anOuterW.IsNull() && anOuterW.IsEqual(W))
-              isOuter = true;
-            else
-              isOuter = false;
+            isOuter = !anOuterW.IsNull() && anOuterW.IsEqual(W);
           }
           break;
         }
@@ -1621,10 +1611,7 @@ static bool HasAncSolid(const TopoDS_Shape& Context,
 #ifdef OCCT_DEBUG_TSOL
             Write(anOuterShell, "OuterShell.brep");
 #endif
-            if (!anOuterShell.IsNull() && anOuterShell.IsEqual(Sh))
-              isOuter = true;
-            else
-              isOuter = false;
+            isOuter = !anOuterShell.IsNull() && anOuterShell.IsEqual(Sh);
           }
           break;
         }

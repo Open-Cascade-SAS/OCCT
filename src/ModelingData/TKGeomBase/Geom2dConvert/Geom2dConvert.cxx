@@ -602,18 +602,15 @@ static bool NeedToBeTreated(const occ::handle<Geom2d_BSplineCurve>& BS)
   if (BS->IsRational())
   {
     BS->Weights(tabWeights);
-    if ((BSplCLib::IsRational(tabWeights, 1, BS->NbPoles()))
-        && ((BS->Weight(1) < (1 - Precision::Confusion()))
-            || (BS->Weight(1) > (1 + Precision::Confusion()))
-            || (BS->Weight(2) < (1 - Precision::Confusion()))
-            || (BS->Weight(2) > (1 + Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles() - 1) < (1 - Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles() - 1) > (1 + Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles()) < (1 - Precision::Confusion()))
-            || (BS->Weight(BS->NbPoles()) > (1 + Precision::Confusion()))))
-      return true;
-    else
-      return false;
+    return (BSplCLib::IsRational(tabWeights, 1, BS->NbPoles()))
+           && ((BS->Weight(1) < (1 - Precision::Confusion()))
+               || (BS->Weight(1) > (1 + Precision::Confusion()))
+               || (BS->Weight(2) < (1 - Precision::Confusion()))
+               || (BS->Weight(2) > (1 + Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles() - 1) < (1 - Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles() - 1) > (1 + Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles()) < (1 - Precision::Confusion()))
+               || (BS->Weight(BS->NbPoles()) > (1 + Precision::Confusion())));
   }
   else
     return false;
@@ -639,11 +636,8 @@ static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom2d_BSplineCu
     tab(i)->D1(tab(i)->LastParameter(), Pint, Vec2);
     Rapport = Rapport * Vec2.Magnitude() / Vec1.Magnitude();
   }
-  if ((Rapport <= (1.0e0 + Precision::Confusion()))
-      && (Rapport >= (1.0e0 - Precision::Confusion())))
-    return false;
-  else
-    return true;
+  return (Rapport > (1.0e0 + Precision::Confusion()))
+         || (Rapport < (1.0e0 - Precision::Confusion()));
 }
 
 //=======================================================================
@@ -948,7 +942,7 @@ void Geom2dConvert::ConcatG1(
   while (index <= nb_curve - 1)
   { // determination des caracteristiques du Wire
     nb_vertexG1 = 0;
-    while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1) == true))
+    while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1)))
       nb_vertexG1++;
     nb_group++;
     if (index == 0)
@@ -1082,7 +1076,7 @@ void Geom2dConvert::ConcatG1(
       Geom2dConvert_CompCurveToBSplineCurve C(Curve2);
       fusion = C.Add(Curve1,
                      local_tolerance(j - 1)); // fusion de deux courbes adjacentes
-      if (fusion == false)
+      if (!fusion)
         throw Standard_ConstructionError("Geom2dConvert Concatenation Error");
       Curve2 = C.BSplineCurve();
     }
@@ -1098,7 +1092,7 @@ void Geom2dConvert::ConcatG1(
    for (i=0;i<=nb_group-1;i++){                             //boucle principale sur chaque groupe de 
      nb_vertexG1=0;                                         //continuite interne G1
      
-     while (((index+nb_vertexG1)<=nb_curve-2)&&(tabG1(index+nb_vertexG1)==true))
+     while (((index+nb_vertexG1)<=nb_curve-2)&&(tabG1(index+nb_vertexG1)))
        nb_vertexG1++;
       
      for (j=index;j<=index+nb_vertexG1;j++){                //boucle secondaire a l'interieur de chaque groupe
@@ -1110,7 +1104,7 @@ void Geom2dConvert::ConcatG1(
 	 Geom2dConvert_CompCurveToBSplineCurve  C(ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes
           // clang-format on
-          if (fusion == false)
+          if (!fusion)
             throw Standard_ConstructionError("Geom2dConvert Concatenation Error");
           ArrayOfConcatenated->SetValue(i, C.BSplineCurve());
         }
@@ -1203,7 +1197,7 @@ void Geom2dConvert::ConcatC1(
   while (index <= nb_curve - 1)
   { // determination des caracteristiques du Wire
     nb_vertexG1 = 0;
-    while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1) == true))
+    while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1)))
       nb_vertexG1++;
     nb_group++;
     if (index == 0)
@@ -1332,7 +1326,7 @@ void Geom2dConvert::ConcatC1(
         Geom2dConvert_CompCurveToBSplineCurve C(Curve2);
         fusion = C.Add(Curve1,
                        local_tolerance(j - 1)); // fusion de deux courbes adjacentes
-        if (fusion == false)
+        if (!fusion)
           throw Standard_ConstructionError("Geom2dConvert Concatenation Error");
         Curve2 = C.BSplineCurve();
       }
@@ -1350,7 +1344,7 @@ void Geom2dConvert::ConcatC1(
       // clang-format on
       nb_vertexG1 = 0; // continuite interne G1
 
-      while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1) == true))
+      while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1)))
         nb_vertexG1++;
 
       if ((!ClosedFlag) || (nb_group == 1))
@@ -1384,7 +1378,7 @@ void Geom2dConvert::ConcatC1(
           // clang-format off
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes
           // clang-format on
-          if (fusion == false)
+          if (!fusion)
             throw Standard_ConstructionError("Geom2dConvert Concatenation Error");
           ArrayOfConcatenated->SetValue(i, C.BSplineCurve());
         }
@@ -1467,7 +1461,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(occ::handle<Geom2d_BSplineCurve>& 
       for (i = 1; i < ArrayOfConcatenated->Length(); i++)
       {
         fusion = C.Add(ArrayOfConcatenated->Value(i), tolerance, true);
-        if (fusion == false)
+        if (!fusion)
           throw Standard_ConstructionError("Geom2dConvert Concatenation Error");
       }
     }

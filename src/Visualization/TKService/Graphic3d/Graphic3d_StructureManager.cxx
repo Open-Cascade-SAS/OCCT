@@ -33,7 +33,6 @@ Graphic3d_StructureManager::Graphic3d_StructureManager(
       myGraphicDriver(theDriver),
       myDeviceLostFlag(false)
 {
-  //
 }
 
 //=================================================================================================

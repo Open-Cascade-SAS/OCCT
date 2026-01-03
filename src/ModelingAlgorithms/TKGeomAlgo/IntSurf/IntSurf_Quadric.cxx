@@ -247,7 +247,7 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
       gp_Vec D1u, D1v;
       ElSLib::ConeD1(U, V, ax3, prm1, prm2, Pp, D1u, D1v);
       grad = D1u.Crossed(D1v);
-      if (ax3direc == false)
+      if (!ax3direc)
       {
         grad.Reverse();
       }
@@ -337,7 +337,7 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, double& Dist, gp_Vec& Grad) co
       dist         = (dist - distp) / prm3;
       Dist         = dist;
       Grad         = D1u.Crossed(D1v);
-      if (ax3direc == false)
+      if (!ax3direc)
       {
         Grad.Reverse();
       }

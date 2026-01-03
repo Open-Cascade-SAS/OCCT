@@ -80,10 +80,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
 // function : ~Graphic3d_ShaderObject
 // purpose  : Releases resources of shader object
 // =======================================================================
-Graphic3d_ShaderObject::~Graphic3d_ShaderObject()
-{
-  //
-}
+Graphic3d_ShaderObject::~Graphic3d_ShaderObject() = default;
 
 // =======================================================================
 // function : IsDone

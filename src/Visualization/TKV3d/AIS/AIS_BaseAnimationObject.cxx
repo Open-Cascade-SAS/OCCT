@@ -27,7 +27,6 @@ AIS_BaseAnimationObject::AIS_BaseAnimationObject(
       myContext(theContext),
       myObject(theObject)
 {
-  //
 }
 
 //=================================================================================================

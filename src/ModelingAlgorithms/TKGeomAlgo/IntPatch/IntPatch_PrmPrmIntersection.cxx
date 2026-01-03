@@ -407,7 +407,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           triok       = false;
         }
       }
-    } while (triok == false);
+    } while (!triok);
 
     for (ls = 1; ls <= nbLigSec; ls++)
     {
@@ -667,8 +667,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           } // HasStartPoint
         } // TabPtDep[nbps2]==0
       } while (nbp > 5
-               && (!(((NombreDePointsDeDepartDuCheminement >= 3) && lignetrouvee)
-                     || ((NombreDePointsDeDepartDuCheminement - 3 >= nbp) && !lignetrouvee))));
+               && (((NombreDePointsDeDepartDuCheminement < 3) || !lignetrouvee)
+                   && ((NombreDePointsDeDepartDuCheminement - 3 < nbp) || lignetrouvee)));
 
       delete[] TabPtDep;
     } // for( ls ...
@@ -978,9 +978,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             {
               const occ::handle<IntPatch_WLine>& testwline =
                 *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
-              if ((testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == false)
-                  && (testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == false)
-                  && (testwline->IsOutBox(StartPOn2S.Value()) == false))
+              if ((!testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)))
+                  && (!testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)))
+                  && (!testwline->IsOutBox(StartPOn2S.Value())))
               {
                 NbPntOn2SOnLine = testwline->NbPnts();
                 int ll;
@@ -1183,9 +1183,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           {
             const occ::handle<IntPatch_WLine>& testwline =
               *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
-            if ((testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == false)
-                && (testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == false)
-                && (testwline->IsOutBox(StartPOn2S.Value()) == false))
+            if ((!testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)))
+                && (!testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)))
+                && (!testwline->IsOutBox(StartPOn2S.Value())))
             {
               NbPntOn2SOnLine = testwline->NbPnts();
               int ll;
@@ -2441,7 +2441,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               triok       = false;
             }
           }
-        } while (triok == false);
+        } while (!triok);
       }
 
       //----------------------------------------
@@ -2752,8 +2752,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           } // if TabPtDep[nbps2] == 0
         } while (
           nbp > 5
-          && !((NombreDePointsDeDepartDuCheminement >= NbDePointsDeDepartDuChmLimit && lignetrouvee)
-               || (NombreDePointsDeDepartDuCheminement - 3 >= nbp && (!lignetrouvee))));
+          && (NombreDePointsDeDepartDuCheminement < NbDePointsDeDepartDuChmLimit || !lignetrouvee)
+          && (NombreDePointsDeDepartDuCheminement - 3 < nbp || !(!lignetrouvee)));
         delete[] TabPtDep;
       } // for( ls ...
 
@@ -3790,9 +3790,8 @@ bool IsPointOnLine(const IntSurf_PntOn2S&             thePOn2S,
 
   thePOn2S.Parameters(pu1, pv1, pu2, pv2);
 
-  if ((theWLine->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == false)
-      && (theWLine->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == false)
-      && (theWLine->IsOutBox(thePOn2S.Value()) == false))
+  if ((!theWLine->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)))
+      && (!theWLine->IsOutSurf2Box(gp_Pnt2d(pu2, pv2))) && (!theWLine->IsOutBox(thePOn2S.Value())))
   {
     const int NbPntOn2SOnLine = theWLine->NbPnts();
     int       ll;
@@ -3888,7 +3887,7 @@ void AddWLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& theLines,
 
     isToRemove = false;
 
-    if (aWLine.IsNull() == false)
+    if (!aWLine.IsNull())
     {
       // Check the middle point.
       int aMidIndex = (aWLine->NbPnts() + 1) / 2;

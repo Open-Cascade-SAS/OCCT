@@ -32,7 +32,6 @@ PrsMgr_PresentationManager::PrsMgr_PresentationManager(
     : myStructureManager(theStructureManager),
       myImmediateModeOn(0)
 {
-  //
 }
 
 //=================================================================================================

@@ -126,13 +126,8 @@ bool PrsDim::Nearest(const occ::handle<Geom_Curve>& theCurve,
   theNearestPoint = theCurve->Value(aPointProj.LowerDistanceParameter());
 
   double aLength = theFirstPoint.Distance(theLastPoint);
-  if (theNearestPoint.Distance(theFirstPoint) > aLength
-      || theNearestPoint.Distance(theLastPoint) > aLength)
-  {
-    return false;
-  }
-
-  return true;
+  return theNearestPoint.Distance(theFirstPoint) <= aLength
+         && theNearestPoint.Distance(theLastPoint) <= aLength;
 }
 
 //=================================================================================================
@@ -786,12 +781,12 @@ bool PrsDim::GetPlaneFromFace(const TopoDS_Face&         aFace,
     }
   }
 
-  if (Result == true && isOffset)
+  if (Result && isOffset)
   {
     aSurf  = (occ::down_cast<Geom_OffsetSurface>(aSurf))->Surface();
     aPlane = (occ::down_cast<Geom_Plane>(aSurf))->Pln();
   }
-  if (Result == false)
+  if (!Result)
   {
     if (isOffset)
     {

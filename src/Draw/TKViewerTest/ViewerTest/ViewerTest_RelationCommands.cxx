@@ -1071,7 +1071,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = aShapes.Last();
 
-      if (!(aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_EDGE))
+      if (aShape1.ShapeType() != TopAbs_EDGE || aShape2.ShapeType() != TopAbs_EDGE)
       {
         Message::SendFail("Syntax error: selected shapes are not edges");
         return 1;
@@ -1168,7 +1168,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
 
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = (aShapes.Extent() == 2) ? aShapes.Last() : aShape1;
-      if (!(aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_EDGE))
+      if (aShape1.ShapeType() != TopAbs_EDGE || aShape2.ShapeType() != TopAbs_EDGE)
       {
         Message::SendFail("Syntax error: selected shapes are not edges");
         return 1;
@@ -1288,7 +1288,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
 
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = aShapes.Last();
-      if (!(aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_FACE))
+      if (aShape1.ShapeType() != TopAbs_FACE || aShape2.ShapeType() != TopAbs_FACE)
       {
         Message::SendFail("Syntax error: selected shapes are not faces");
         return 1;

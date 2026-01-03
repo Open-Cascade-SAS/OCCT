@@ -64,7 +64,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
     TheCirc = gp_Circ(gp_Ax2(P1, Dirx, Dirz), 0.);
     return;
   }
-  if (!(dist1 >= aResolution && dist2 >= aResolution))
+  if (dist1 < aResolution || dist2 < aResolution)
   {
     TheError = gce_ConfusedPoints;
     return;

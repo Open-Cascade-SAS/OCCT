@@ -109,9 +109,7 @@ static bool ToricRotule(const BRepAdaptor_Surface&        fac,
     return false;
   double r1 = sp1->Radius();
   double r2 = sp2->Radius();
-  if (std::abs(r1 - r2) >= tolesp)
-    return false;
-  return true;
+  return std::abs(r1 - r2) < tolesp;
 }
 
 static void RemoveSD(occ::handle<ChFiDS_Stripe>& Stripe, const int num1, const int num2)

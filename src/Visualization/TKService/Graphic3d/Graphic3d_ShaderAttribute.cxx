@@ -24,12 +24,8 @@ Graphic3d_ShaderAttribute::Graphic3d_ShaderAttribute(const TCollection_AsciiStri
     : myName(theName),
       myLocation(theLocation)
 {
-  //
 }
 
 //=================================================================================================
 
-Graphic3d_ShaderAttribute::~Graphic3d_ShaderAttribute()
-{
-  //
-}
+Graphic3d_ShaderAttribute::~Graphic3d_ShaderAttribute() = default;

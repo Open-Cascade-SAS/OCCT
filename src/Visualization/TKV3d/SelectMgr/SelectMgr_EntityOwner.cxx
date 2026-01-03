@@ -26,7 +26,6 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(const int thePriority)
       myIsSelected(false),
       myFromDecomposition(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -39,7 +38,6 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(
       myIsSelected(false),
       myFromDecomposition(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -51,7 +49,6 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_EntityO
       myIsSelected(false),
       myFromDecomposition(false)
 {
-  //
 }
 
 //=================================================================================================

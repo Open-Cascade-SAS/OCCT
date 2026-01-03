@@ -16,17 +16,12 @@
 //=================================================================================================
 
 Poly_ArrayOfUVNodes::Poly_ArrayOfUVNodes(const Poly_ArrayOfUVNodes& theOther)
-    : NCollection_AliasedArray(theOther)
-{
-  //
-}
+
+  = default;
 
 //=================================================================================================
 
-Poly_ArrayOfUVNodes::~Poly_ArrayOfUVNodes()
-{
-  //
-}
+Poly_ArrayOfUVNodes::~Poly_ArrayOfUVNodes() = default;
 
 //=================================================================================================
 

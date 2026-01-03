@@ -600,7 +600,7 @@ bool Draw_Interprete(const char* com)
   Tcl_DStringAppend(&command, com, -1);
 #endif
 
-  if (!theCommands.Complete(Tcl_DStringValue(&command)))
+  if (!Draw_Interpretor::Complete(Tcl_DStringValue(&command)))
     return false;
 
   // *******************************************************************

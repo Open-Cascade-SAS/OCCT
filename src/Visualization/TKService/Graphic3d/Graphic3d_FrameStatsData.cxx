@@ -41,10 +41,10 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(Graphic3d_FrameStatsData&& th
       myTimers(std::move(theOther.myTimers)),
       myTimersMin(std::move(theOther.myTimersMin)),
       myTimersMax(std::move(theOther.myTimersMax)),
-      myFps(std::move(theOther.myFps)),
-      myFpsCpu(std::move(theOther.myFpsCpu)),
-      myFpsImmediate(std::move(theOther.myFpsImmediate)),
-      myFpsCpuImmediate(std::move(theOther.myFpsCpuImmediate))
+      myFps(theOther.myFps),
+      myFpsCpu(theOther.myFpsCpu),
+      myFpsImmediate(theOther.myFpsImmediate),
+      myFpsCpuImmediate(theOther.myFpsCpuImmediate)
 {
 }
 
@@ -81,10 +81,10 @@ Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(
   {
     return *this;
   }
-  myFps             = std::move(theOther.myFps);
-  myFpsCpu          = std::move(theOther.myFpsCpu);
-  myFpsImmediate    = std::move(theOther.myFpsImmediate);
-  myFpsCpuImmediate = std::move(theOther.myFpsCpuImmediate);
+  myFps             = theOther.myFps;
+  myFpsCpu          = theOther.myFpsCpu;
+  myFpsImmediate    = theOther.myFpsImmediate;
+  myFpsCpuImmediate = theOther.myFpsCpuImmediate;
   myCounters        = std::move(theOther.myCounters);
   myTimers          = std::move(theOther.myTimers);
   myTimersMin       = std::move(theOther.myTimersMin);

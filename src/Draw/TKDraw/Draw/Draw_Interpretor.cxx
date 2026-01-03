@@ -253,7 +253,6 @@ Draw_Interpretor::Draw_Interpretor()
       myToColorize(true),
       myFDLog(-1)
 {
-  //
 }
 
 //=================================================================================================
@@ -266,7 +265,6 @@ Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& theInterp)
       myToColorize(true),
       myFDLog(-1)
 {
-  //
 }
 
 //=======================================================================

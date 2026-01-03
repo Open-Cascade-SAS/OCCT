@@ -423,11 +423,7 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
   {
     if (!(PARAMEQUAL(PParamOnFirst, FirstParam1) || PARAMEQUAL(PParamOnFirst, LastParam1)))
     {
-      //-- Middle on the Curve 1
-
-      // modified by NIZHNY-MKK  Tue Nov 26 14:23:24 2002.BEGIN
       if ((PParamOnFirst > FirstParam1) && (PParamOnFirst < LastParam1))
-        // modified by NIZHNY-MKK  Tue Nov 26 14:23:27 2002.END
         T1.SetPosition(IntRes2d_Middle);
     }
   }
@@ -435,10 +431,7 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
   {
     if (!(PARAMEQUAL(PParamOnSecond, FirstParam2) || PARAMEQUAL(PParamOnSecond, LastParam2)))
     {
-
-      // modified by NIZHNY-MKK  Tue Nov 26 14:24:15 2002.BEGIN
       if ((PParamOnSecond > FirstParam2) && (PParamOnSecond < LastParam2))
-        // modified by NIZHNY-MKK  Tue Nov 26 14:24:19 2002.END
         T2.SetPosition(IntRes2d_Middle);
     }
   }

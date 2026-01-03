@@ -298,10 +298,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
 
 //=================================================================================================
 
-GCPnts_AbscissaPoint::GCPnts_AbscissaPoint()
-{
-  //
-}
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint() = default;
 
 //=================================================================================================
 

@@ -290,7 +290,7 @@ int XmlMDF::ReadSubTree(
                                             + "failure reading attribute " + aName,
                                           Message_Warning);
           }
-          else if (isBound == false)
+          else if (!isBound)
             theRelocTable.Bind(anID, tAtt);
         }
 #ifdef OCCT_DEBUG

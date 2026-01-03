@@ -309,7 +309,7 @@ void Quantity_Color::ChangeContrast(const double theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
   aHls[2] += aHls[2] * float(theDelta) / 100.0f; // saturation
-  if (!((aHls[2] > 1.0f) || (aHls[2] < 0.0f)))
+  if ((aHls[2] <= 1.0f) && (aHls[2] >= 0.0f))
   {
     myRgb = Convert_HLS_To_LinearRGB(aHls);
   }
@@ -321,7 +321,7 @@ void Quantity_Color::ChangeIntensity(const double theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
   aHls[1] += aHls[1] * float(theDelta) / 100.0f; // light
-  if (!((aHls[1] > 1.0f) || (aHls[1] < 0.0f)))
+  if ((aHls[1] <= 1.0f) && (aHls[1] >= 0.0f))
   {
     myRgb = Convert_HLS_To_LinearRGB(aHls);
   }

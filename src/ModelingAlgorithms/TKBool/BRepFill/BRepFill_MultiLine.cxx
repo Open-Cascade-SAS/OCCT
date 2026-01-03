@@ -63,10 +63,7 @@ static bool isIsoU(const TopoDS_Face& Face, const TopoDS_Edge& Edge)
 
   gp_Dir2d D = C->DN(f, 1);
 
-  if (std::abs(D.Dot(gp::DX2d())) < std::abs(D.Dot(gp::DY2d())))
-    return true;
-  else
-    return false;
+  return std::abs(D.Dot(gp::DX2d())) < std::abs(D.Dot(gp::DY2d()));
 }
 
 //=================================================================================================

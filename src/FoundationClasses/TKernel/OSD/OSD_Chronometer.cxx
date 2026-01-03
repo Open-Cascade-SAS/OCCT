@@ -168,7 +168,6 @@ OSD_Chronometer::OSD_Chronometer(bool theThisThreadOnly)
       myIsStopped(true),
       myIsThreadOnly(theThisThreadOnly)
 {
-  //
 }
 
 //=================================================================================================

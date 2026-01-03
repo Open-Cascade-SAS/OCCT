@@ -1429,7 +1429,7 @@ occ::handle<Geom_BSplineCurve> IGESToBRep_BasicCurve::TransferCopiousData(
   }
 
   int FormNb = start->FormNumber();
-  if (!(FormNb == 11 || FormNb == 12 || FormNb == 63))
+  if (FormNb != 11 && FormNb != 12 && FormNb != 63)
   {
     Message_Msg msg1240("IGES_1240");
     SendWarning(start, msg1240);
@@ -1539,7 +1539,7 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
   }
 
   int FormNb = start->FormNumber();
-  if (!(FormNb == 11 || FormNb == 12 || FormNb == 63))
+  if (FormNb != 11 && FormNb != 12 && FormNb != 63)
   {
     Message_Msg msg1240("IGES_1240");
     SendWarning(start, msg1240);

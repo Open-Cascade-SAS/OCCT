@@ -20,15 +20,11 @@ Standard_ArrayStreamBuffer::Standard_ArrayStreamBuffer(const char* theBegin, con
       myEnd(theBegin + theSize),
       myCurrent(theBegin)
 {
-  //
 }
 
 //=================================================================================================
 
-Standard_ArrayStreamBuffer::~Standard_ArrayStreamBuffer()
-{
-  //
-}
+Standard_ArrayStreamBuffer::~Standard_ArrayStreamBuffer() = default;
 
 //=================================================================================================
 

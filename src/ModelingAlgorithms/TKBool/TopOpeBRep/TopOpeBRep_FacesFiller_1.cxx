@@ -61,10 +61,7 @@ extern bool GLOBAL_bvpr;
 extern void debvprmess(int f1, int f2, int il, int vp, int si);
 extern bool TopOpeBRep_GetcontextNOPUNK();
 
-static void FUN_traceRLine(const TopOpeBRep_LineInter&)
-{
-  //
-}
+static void FUN_traceRLine(const TopOpeBRep_LineInter&) {}
 
 static void FUN_traceGLine(const TopOpeBRep_LineInter&) {}
 #endif
@@ -190,9 +187,7 @@ static bool FUN_supponF(const TopOpeBRepDS_PDataStructure                       
       lIsupponF.Append(I);
     }
   }
-  if (losupp.Extent() < 1)
-    return false;
-  return true;
+  return losupp.Extent() >= 1;
 }
 
 static bool FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure                         pDS,
