@@ -1476,6 +1476,16 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
     BRepAdaptor_Surface                         anAdF(aCurF, false);
     NCollection_Handle<BRepTopAdaptor_FClass2d> aCheckStateTool;
 
+    // Initialize extrema projector once per face
+    Extrema_ExtPS anExtr;
+    anExtr.Initialize(anAdF,
+                      anAdF.FirstUParameter(),
+                      anAdF.LastUParameter(),
+                      anAdF.FirstVParameter(),
+                      anAdF.LastVParameter(),
+                      Precision::Confusion(),
+                      Precision::Confusion());
+
     i  = 1;
     nb = anEdgeBoxes.Length();
     for (; i <= nb; i++)
@@ -1495,8 +1505,8 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
         anUsedEdges.Add(i);
         continue;
       }
-      gp_Pnt        aP = aC->Value((aF + aL) * 0.5);
-      Extrema_ExtPS anExtr(aP, anAdF, Precision::Confusion(), Precision::Confusion());
+      gp_Pnt aP = aC->Value((aF + aL) * 0.5);
+      anExtr.Perform(aP);
 
       if (!anExtr.IsDone() || !anExtr.NbExt())
         continue;

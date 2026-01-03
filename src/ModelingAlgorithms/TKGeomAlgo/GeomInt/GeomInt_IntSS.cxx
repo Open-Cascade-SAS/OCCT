@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Extrema_ExtPS.hxx>
 
 //=================================================================================================
 

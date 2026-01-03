@@ -20,7 +20,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Approx_CurveOnSurface.hxx>
-#include <Extrema_ExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_BezierCurve.hxx>
