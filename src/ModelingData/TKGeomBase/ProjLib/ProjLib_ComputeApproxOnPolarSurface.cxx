@@ -1214,18 +1214,18 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
               int indExt  = 0;
               int iT      = 1 + (NbOfPnts - 1) / 5 * i;
               pntproj     = Pts(iT);
-              aExtPS.Perform(pntproj);
+              Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV);
               Dist2Min = 1.e+200;
-              if (aExtPS.IsDone() && aExtPS.NbExt() >= 1)
+              if (aTPS.IsDone() && aTPS.NbExt() >= 1)
               {
-                for (j = 1; j <= aExtPS.NbExt(); j++)
+                for (j = 1; j <= aTPS.NbExt(); j++)
                 {
-                  if (aExtPS.SquareDistance(j) < DistTol3d2)
+                  if (aTPS.SquareDistance(j) < DistTol3d2)
                   {
                     nbExtOk++;
-                    if (aExtPS.SquareDistance(j) < Dist2Min)
+                    if (aTPS.SquareDistance(j) < Dist2Min)
                     {
-                      Dist2Min = aExtPS.SquareDistance(j);
+                      Dist2Min = aTPS.SquareDistance(j);
                       indExt   = j;
                     }
                   }
@@ -1234,7 +1234,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
               if (nbExtOk == 1)
               {
                 tPp = iT;
-                aExtPS.Point(indExt).Parameter(u, v);
+                aTPS.Point(indExt).Parameter(u, v);
                 break;
               }
             }
@@ -1247,23 +1247,22 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
               for (j = tPp + 1; j <= NbOfPnts; ++j)
               {
                 pntproj = Pts(j);
-                aExtPS.Perform(pntproj);
+                Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV);
                 Dist2Min = RealLast();
-                if (aExtPS.IsDone() && aExtPS.NbExt() >= 1)
+                if (aTPS.IsDone() && aTPS.NbExt() >= 1)
                 {
                   int indExt = 0;
-                  for (i = 1; i <= aExtPS.NbExt(); i++)
+                  for (i = 1; i <= aTPS.NbExt(); i++)
                   {
-                    if (aExtPS.SquareDistance(i) < DistTol3d2
-                        && aExtPS.SquareDistance(i) < Dist2Min)
+                    if (aTPS.SquareDistance(i) < DistTol3d2 && aTPS.SquareDistance(i) < Dist2Min)
                     {
-                      Dist2Min = aExtPS.SquareDistance(i);
+                      Dist2Min = aTPS.SquareDistance(i);
                       indExt   = i;
                     }
                   }
                   if (indExt > 0)
                   {
-                    aExtPS.Point(indExt).Parameter(u, v);
+                    aTPS.Point(indExt).Parameter(u, v);
                     aPn     = gp_Pnt2d(u, v);
                     isFound = true;
                     break;
@@ -1354,14 +1353,14 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
             }
             else
             {
-              aExtPS.Perform(pntproj);
-              if (aExtPS.IsDone())
+              Extrema_ExtPS aGlobalExtr(pntproj, *Surf, TolU, TolV);
+              if (aGlobalExtr.IsDone())
               {
                 double LocalMinSqDist = RealLast();
                 int    imin           = 0;
-                for (int isol = 1; isol <= aExtPS.NbExt(); isol++)
+                for (int isol = 1; isol <= aGlobalExtr.NbExt(); isol++)
                 {
-                  double aSqDist = aExtPS.SquareDistance(isol);
+                  double aSqDist = aGlobalExtr.SquareDistance(isol);
                   if (aSqDist < LocalMinSqDist)
                   {
                     LocalMinSqDist = aSqDist;
@@ -1375,7 +1374,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
                     myDist = LocalMinSqDist;
                   }
                   double LocalU, LocalV;
-                  aExtPS.Point(imin).Parameter(LocalU, LocalV);
+                  aGlobalExtr.Point(imin).Parameter(LocalU, LocalV);
                   if (uperiod > 0. && std::abs(U0 - LocalU) >= uperiod / 2.)
                   {
                     if (LocalU > U0)
@@ -1542,15 +1541,15 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
           }
           if (!myProjIsDone)
           {
-            aExtPS.Perform(pntproj);
-            if (aExtPS.IsDone())
+            Extrema_ExtPS ext(pntproj, *Surf, TolU, TolV);
+            if (ext.IsDone())
             {
-              Dist2Min       = aExtPS.SquareDistance(1);
+              Dist2Min       = ext.SquareDistance(1);
               int aGoodValue = 1;
-              for (j = 2; j <= aExtPS.NbExt(); j++)
-                if (Dist2Min > aExtPS.SquareDistance(j))
+              for (j = 2; j <= ext.NbExt(); j++)
+                if (Dist2Min > ext.SquareDistance(j))
                 {
-                  Dist2Min   = aExtPS.SquareDistance(j);
+                  Dist2Min   = ext.SquareDistance(j);
                   aGoodValue = j;
                 }
               if (Dist2Min < DistTol3d2)
@@ -1560,7 +1559,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
                 {
                   myDist = Dist2Min;
                 }
-                (aExtPS.Point(aGoodValue)).Parameter(u, v);
+                (ext.Point(aGoodValue)).Parameter(u, v);
                 if (uperiod)
                 {
                   if ((U0 - u) > (2 * uperiod / 3))
