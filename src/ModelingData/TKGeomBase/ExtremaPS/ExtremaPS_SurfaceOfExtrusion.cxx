@@ -203,13 +203,20 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(const gp_Pnt&    
     }
   }
 
-  // Refine each candidate using Brent's method with very tight tolerance
-  // Use squared tolerance for parameter refinement to achieve theTol accuracy in distance
-  MathUtils::Config aBrentConfig(theTol * theTol, ExtremaPS::THE_MAX_GOLDEN_ITERATIONS);
+  // Refine each candidate using Brent's method with parametric tolerance
+  MathUtils::Config aBrentConfig(ExtremaPS::THE_PARAM_TOLERANCE, ExtremaPS::THE_MAX_GOLDEN_ITERATIONS);
 
   for (int iCand = 0; iCand < myCandidates.Length(); ++iCand)
   {
     Sample& aCand = myCandidates.ChangeValue(iCand);
+
+    // For endpoint candidates, skip Brent (can't refine beyond domain boundary)
+    const bool aIsAtUMin = std::abs(aCand.U - aUMin) < theTol;
+    const bool aIsAtUMax = std::abs(aCand.U - aUMax) < theTol;
+    if (aIsAtUMin || aIsAtUMax)
+    {
+      continue;
+    }
 
     // Determine search interval
     const double aLeft  = std::max(aUMin, aCand.U - aDU);
