@@ -30,11 +30,12 @@ class ExtremaCC_HyperbolaParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ExtremaCC_HyperbolaParabola(const gp_Hypr& theHyperbola, const gp_Parab& theParabola);
+  Standard_EXPORT ExtremaCC_HyperbolaParabola(const gp_Hypr&  theHyperbola,
+                                              const gp_Parab& theParabola);
 
   Standard_EXPORT ExtremaCC_HyperbolaParabola(const gp_Hypr&             theHyperbola,
-                              const gp_Parab&            theParabola,
-                              const ExtremaCC::Domain2D& theDomain);
+                                              const gp_Parab&            theParabola,
+                                              const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_HyperbolaParabola(const ExtremaCC_HyperbolaParabola&)            = delete;
   ExtremaCC_HyperbolaParabola& operator=(const ExtremaCC_HyperbolaParabola&) = delete;

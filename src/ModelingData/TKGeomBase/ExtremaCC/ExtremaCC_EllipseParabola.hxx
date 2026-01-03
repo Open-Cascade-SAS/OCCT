@@ -30,11 +30,12 @@ class ExtremaCC_EllipseParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ExtremaCC_EllipseParabola(const gp_Elips& theEllipse, const gp_Parab& theParabola);
+  Standard_EXPORT ExtremaCC_EllipseParabola(const gp_Elips& theEllipse,
+                                            const gp_Parab& theParabola);
 
   Standard_EXPORT ExtremaCC_EllipseParabola(const gp_Elips&            theEllipse,
-                            const gp_Parab&            theParabola,
-                            const ExtremaCC::Domain2D& theDomain);
+                                            const gp_Parab&            theParabola,
+                                            const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_EllipseParabola(const ExtremaCC_EllipseParabola&)            = delete;
   ExtremaCC_EllipseParabola& operator=(const ExtremaCC_EllipseParabola&) = delete;

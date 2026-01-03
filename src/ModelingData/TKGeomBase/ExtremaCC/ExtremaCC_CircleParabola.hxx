@@ -33,8 +33,8 @@ public:
   Standard_EXPORT ExtremaCC_CircleParabola(const gp_Circ& theCircle, const gp_Parab& theParabola);
 
   Standard_EXPORT ExtremaCC_CircleParabola(const gp_Circ&             theCircle,
-                           const gp_Parab&            theParabola,
-                           const ExtremaCC::Domain2D& theDomain);
+                                           const gp_Parab&            theParabola,
+                                           const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_CircleParabola(const ExtremaCC_CircleParabola&)            = delete;
   ExtremaCC_CircleParabola& operator=(const ExtremaCC_CircleParabola&) = delete;

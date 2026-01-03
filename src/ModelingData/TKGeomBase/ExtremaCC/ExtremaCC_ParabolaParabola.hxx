@@ -29,11 +29,12 @@ class ExtremaCC_ParabolaParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ExtremaCC_ParabolaParabola(const gp_Parab& theParabola1, const gp_Parab& theParabola2);
+  Standard_EXPORT ExtremaCC_ParabolaParabola(const gp_Parab& theParabola1,
+                                             const gp_Parab& theParabola2);
 
   Standard_EXPORT ExtremaCC_ParabolaParabola(const gp_Parab&            theParabola1,
-                             const gp_Parab&            theParabola2,
-                             const ExtremaCC::Domain2D& theDomain);
+                                             const gp_Parab&            theParabola2,
+                                             const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_ParabolaParabola(const ExtremaCC_ParabolaParabola&)            = delete;
   ExtremaCC_ParabolaParabola& operator=(const ExtremaCC_ParabolaParabola&) = delete;

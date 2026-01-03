@@ -33,8 +33,8 @@ public:
   Standard_EXPORT ExtremaCC_CircleHyperbola(const gp_Circ& theCircle, const gp_Hypr& theHyperbola);
 
   Standard_EXPORT ExtremaCC_CircleHyperbola(const gp_Circ&             theCircle,
-                            const gp_Hypr&             theHyperbola,
-                            const ExtremaCC::Domain2D& theDomain);
+                                            const gp_Hypr&             theHyperbola,
+                                            const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_CircleHyperbola(const ExtremaCC_CircleHyperbola&)            = delete;
   ExtremaCC_CircleHyperbola& operator=(const ExtremaCC_CircleHyperbola&) = delete;

@@ -29,11 +29,12 @@ class ExtremaCC_HyperbolaHyperbola
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ExtremaCC_HyperbolaHyperbola(const gp_Hypr& theHyperbola1, const gp_Hypr& theHyperbola2);
+  Standard_EXPORT ExtremaCC_HyperbolaHyperbola(const gp_Hypr& theHyperbola1,
+                                               const gp_Hypr& theHyperbola2);
 
   Standard_EXPORT ExtremaCC_HyperbolaHyperbola(const gp_Hypr&             theHyperbola1,
-                               const gp_Hypr&             theHyperbola2,
-                               const ExtremaCC::Domain2D& theDomain);
+                                               const gp_Hypr&             theHyperbola2,
+                                               const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_HyperbolaHyperbola(const ExtremaCC_HyperbolaHyperbola&)            = delete;
   ExtremaCC_HyperbolaHyperbola& operator=(const ExtremaCC_HyperbolaHyperbola&) = delete;

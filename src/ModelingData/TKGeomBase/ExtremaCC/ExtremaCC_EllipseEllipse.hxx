@@ -29,11 +29,12 @@ class ExtremaCC_EllipseEllipse
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1, const gp_Elips& theEllipse2);
+  Standard_EXPORT ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1,
+                                           const gp_Elips& theEllipse2);
 
   Standard_EXPORT ExtremaCC_EllipseEllipse(const gp_Elips&            theEllipse1,
-                           const gp_Elips&            theEllipse2,
-                           const ExtremaCC::Domain2D& theDomain);
+                                           const gp_Elips&            theEllipse2,
+                                           const ExtremaCC::Domain2D& theDomain);
 
   ExtremaCC_EllipseEllipse(const ExtremaCC_EllipseEllipse&)            = delete;
   ExtremaCC_EllipseEllipse& operator=(const ExtremaCC_EllipseEllipse&) = delete;

@@ -48,8 +48,8 @@ public:
   //! @param[in] theEllipse the ellipse
   //! @param[in] theDomain parameter domains for both curves
   Standard_EXPORT ExtremaCC_CircleEllipse(const gp_Circ&             theCircle,
-                          const gp_Elips&            theEllipse,
-                          const ExtremaCC::Domain2D& theDomain);
+                                          const gp_Elips&            theEllipse,
+                                          const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
   ExtremaCC_CircleEllipse(const ExtremaCC_CircleEllipse&) = delete;

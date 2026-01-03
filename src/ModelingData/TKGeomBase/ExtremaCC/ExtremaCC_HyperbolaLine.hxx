@@ -47,8 +47,8 @@ public:
   //! @param[in] theLine the line
   //! @param[in] theDomain parameter domains for both curves
   Standard_EXPORT ExtremaCC_HyperbolaLine(const gp_Hypr&             theHyperbola,
-                          const gp_Lin&              theLine,
-                          const ExtremaCC::Domain2D& theDomain);
+                                          const gp_Lin&              theLine,
+                                          const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
   ExtremaCC_HyperbolaLine(const ExtremaCC_HyperbolaLine&) = delete;
