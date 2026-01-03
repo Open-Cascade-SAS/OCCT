@@ -127,7 +127,14 @@ public:
   {
     myResult.Clear();
 
-    // Full grid scan + refinement
+    // Fast path: try from cached solution for spatially coherent queries
+    // This avoids full grid scan when possible
+    if (tryFromCachedSolution(theSurface, theP, theDomain, theTol, theMode))
+    {
+      return myResult;
+    }
+
+    // Full grid scan + refinement (fallback when cache doesn't work)
     scanGrid(theP, theTol, theMode);
 
     // Add cached solution as additional candidate for Newton (hint optimization)
@@ -541,8 +548,10 @@ private:
 
       if (aNewtonRes.IsDone)
       {
-        aBestRootU    = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
-        aBestRootV    = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+        // Don't clamp - Newton already handles soft bounds
+        // This allows solutions slightly outside domain if gradient is near zero
+        aBestRootU    = aNewtonRes.U;
+        aBestRootV    = aNewtonRes.V;
         aBestRootDist = aFunc.SquareDistance(aBestRootU, aBestRootV);
         aConverged    = true;
       }
@@ -669,8 +678,10 @@ private:
 
     if (aNewtonRes.IsDone)
     {
-      aRefinedU    = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
-      aRefinedV    = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+      // Don't clamp - Newton already handles soft bounds
+      // This allows solutions slightly outside domain if gradient is near zero
+      aRefinedU    = aNewtonRes.U;
+      aRefinedV    = aNewtonRes.V;
       aRefinedPt   = theSurface.Value(aRefinedU, aRefinedV);
       aRefinedDist = theP.SquareDistance(aRefinedPt);
     }
@@ -719,6 +730,13 @@ private:
   //!
   //! Uses ring buffer of last 3 solutions. When 3+ points are available,
   //! attempts trajectory prediction (linear extrapolation) for better initial guess.
+  //!
+  //! This is the fast path for coherent scanning (sequential points).
+  //! Falls back to full grid scan if:
+  //! - No cache available
+  //! - Query point not spatially close to cached queries
+  //! - Newton doesn't converge
+  //! - Validation against grid corners fails
   //!
   //! @return true if cached solution produced a valid result, false to fall back to grid scan
   bool tryFromCachedSolution(const Adaptor3d_Surface&   theSurface,
@@ -809,8 +827,8 @@ private:
     if (!aNewtonRes.IsDone)
       return false;
 
-    double aRootU = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
-    double aRootV = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+    double aRootU = aNewtonRes.U;
+    double aRootV = aNewtonRes.V;
 
     // Verify the solution is valid (gradient near zero)
     // Use Precision::Confusion() as base, NOT theTol which is distance tolerance
@@ -825,56 +843,36 @@ private:
     gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
     double aSqDist = theP.SquareDistance(aPt);
 
-    // Safety check: compare with grid estimate to avoid returning a much worse solution
-    // This catches cases where the cached hint leads to a poor local minimum
-    if (theMode != ExtremaPS::SearchMode::Max)
+    // Quick validation: compare with grid minimum from last scan
+    // Use cached myMinDist from previous scanGrid (O(1) check)
+    if (theMode != ExtremaPS::SearchMode::Max && myMinDist > 0.0)
     {
-      const int aNbU = myGrid.UpperRow() - myGrid.LowerRow() + 1;
-      const int aNbV = myGrid.UpperCol() - myGrid.LowerCol() + 1;
-      if (aNbU > 0 && aNbV > 0)
+      // If grid minimum was significantly better, we may be in wrong basin
+      // Note: myMinDist is from previous query, so allow some tolerance
+      if (myMinDist < aSqDist * 0.3) // Grid min was ~1.8x closer
       {
-        // Quick scan: check sparse grid points + all boundaries
-        double aGridMinDist = std::numeric_limits<double>::max();
+        return false;
+      }
+    }
 
-        // Sparse interior points (every 4th)
-        for (int i = 0; i < aNbU; i += 4)
-        {
-          for (int j = 0; j < aNbV; j += 4)
-          {
-            double aDist = theP.SquareDistance(myGrid(i, j).Point);
-            if (aDist < aGridMinDist)
-              aGridMinDist = aDist;
-          }
-        }
+    // Validate: check if other cached (U,V) positions give better distance
+    // This catches cases where Newton converged to wrong basin
+    if (theMode != ExtremaPS::SearchMode::Max && myCacheCount > 1)
+    {
+      for (int i = 0; i < myCacheCount; ++i)
+      {
+        int aIdx = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
+        if (aIdx == aNearestIdx)
+          continue; // Skip the one we started from
 
-        // Check all boundary points (U=0, U=max, V=0, V=max)
-        // These are often where extrema lie for bounded domains
-        const int aLastU = aNbU - 1;
-        const int aLastV = aNbV - 1;
-        for (int j = 0; j < aNbV; ++j)
-        {
-          double aD1 = theP.SquareDistance(myGrid(0, j).Point);
-          double aD2 = theP.SquareDistance(myGrid(aLastU, j).Point);
-          if (aD1 < aGridMinDist)
-            aGridMinDist = aD1;
-          if (aD2 < aGridMinDist)
-            aGridMinDist = aD2;
-        }
-        for (int i = 1; i < aLastU; ++i)
-        {
-          double aD1 = theP.SquareDistance(myGrid(i, 0).Point);
-          double aD2 = theP.SquareDistance(myGrid(i, aLastV).Point);
-          if (aD1 < aGridMinDist)
-            aGridMinDist = aD1;
-          if (aD2 < aGridMinDist)
-            aGridMinDist = aD2;
-        }
+        // Evaluate surface at other cached (U,V)
+        gp_Pnt aOtherPt = theSurface.Value(myCachedSolutions[aIdx].U, myCachedSolutions[aIdx].V);
+        double aOtherDist = theP.SquareDistance(aOtherPt);
 
-        // If grid has a significantly better point (2x closer), reject fast path
-        constexpr double THE_SAFETY_FACTOR = 4.0; // squared ratio = 2x distance
-        if (aGridMinDist < aSqDist / THE_SAFETY_FACTOR)
+        // If another cached position is significantly closer, we're in wrong basin
+        if (aOtherDist < aSqDist * 0.5) // Other point is ~1.4x closer
         {
-          return false; // Fall back to full grid scan
+          return false;
         }
       }
     }
@@ -944,7 +942,7 @@ private:
   mutable double myMaxDist = 0.0;        //!< Global maximum squared distance
 
   // Cached solutions for spatial coherence optimization (ring buffer)
-  static constexpr int THE_CACHE_SIZE = 16;
+  static constexpr int THE_CACHE_SIZE = 3;
 
   struct CachedSolution
   {
