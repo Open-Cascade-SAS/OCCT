@@ -63,6 +63,7 @@ set(OCCT_TKMath_GTests_FILES
   # MathPoly tests
   MathPoly_Test.cxx
   MathPoly_Comparison_Test.cxx
+  MathPoly_Laguerre_Test.cxx
   # MathLin tests
   MathLin_Test.cxx
   MathLin_Comparison_Test.cxx
@@ -86,6 +87,7 @@ set(OCCT_TKMath_GTests_FILES
   MathInteg_Comparison_Test.cxx
   # MathSys tests
   MathSys_LM_Test.cxx
+  MathSys_Newton3D_Test.cxx
   MathSys_Comparison_Test.cxx
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx

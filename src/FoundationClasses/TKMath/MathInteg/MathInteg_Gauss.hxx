@@ -202,7 +202,7 @@ IntegResult GaussComposite(Function& theFunc,
 
   const double aH           = (theUpper - theLower) / theNbIntervals;
   double       aSum         = 0.0;
-  int          aTotalPoints = 0;
+  size_t       aTotalPoints = 0;
 
   for (int i = 0; i < theNbIntervals; ++i)
   {

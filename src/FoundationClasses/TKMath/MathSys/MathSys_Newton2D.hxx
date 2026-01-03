@@ -27,13 +27,6 @@
 //! - Point-surface extrema (find u,v where gradient is zero)
 //! - Curve intersection (find t1,t2 where curves meet)
 //! - Surface intersection curves
-//!
-//! Optimizations compared to general Newton:
-//! - No math_Vector/math_Matrix allocation overhead
-//! - Cramer's rule for 2x2 system (faster than LU decomposition)
-//! - Squared norm comparisons (avoid sqrt in convergence check)
-//! - Step limiting to prevent wild oscillations
-//! - Gradient descent fallback for singular Jacobian
 
 namespace MathSys
 {
@@ -203,16 +196,24 @@ Newton2DResult Newton2D(const Function& theFunc,
   return Newton2D(theFunc, theU0, theV0, -aInf, aInf, -aInf, aInf, theTol, theMaxIter);
 }
 
-//! Optimized 2D Newton solver for symmetric Jacobian.
+//! Robust 2D Newton solver for symmetric Jacobian (point-surface extrema).
 //!
-//! Many 2D problems have symmetric Jacobians (e.g., gradient of scalar function).
-//! This variant is optimized for the symmetric case where J12 = J21.
+//! This solver is designed for finding extrema of the squared distance function
+//! from a point to a surface. It uses unconstrained Newton iteration internally
+//! and only applies bounds at the final result.
 //!
-//! The function type must provide a method:
+//! Key features matching math_FunctionSetRoot behavior:
+//! - Convergence based on FUNCTION VALUE (gradient norm), not step size
+//! - Allows solutions slightly outside domain if gradient is small
+//! - Stagnation detection to avoid infinite loops
+//! - Adaptive step limiting
+//!
+//! The function type must provide methods:
 //! @code
 //!   bool ValueAndJacobian(double theU, double theV,
 //!                         double& theF1, double& theF2,
 //!                         double& theJ11, double& theJ12, double& theJ22) const;
+//!   bool Value(double theU, double theV, double& theF1, double& theF2) const;
 //! @endcode
 //! where J = [[J11, J12], [J12, J22]] (symmetric).
 //!
@@ -220,12 +221,12 @@ Newton2DResult Newton2D(const Function& theFunc,
 //! @param theFunc function to solve
 //! @param theU0 initial U guess
 //! @param theV0 initial V guess
-//! @param theUMin U lower bound
-//! @param theUMax U upper bound
-//! @param theVMin V lower bound
-//! @param theVMax V upper bound
-//! @param theTol tolerance for convergence
-//! @param theMaxIter maximum iterations (default 20)
+//! @param theUMin U lower bound (soft constraint)
+//! @param theUMax U upper bound (soft constraint)
+//! @param theVMin V lower bound (soft constraint)
+//! @param theVMax V upper bound (soft constraint)
+//! @param theTol tolerance for gradient convergence
+//! @param theMaxIter maximum iterations
 //! @return Newton2DResult containing solution if converged
 template <typename Function>
 Newton2DResult Newton2DSymmetric(const Function& theFunc,
@@ -236,15 +237,33 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
                                  double          theVMin,
                                  double          theVMax,
                                  double          theTol,
-                                 size_t          theMaxIter = 20)
+                                 size_t          theMaxIter = THE_NEWTON_MAX_ITER)
 {
   Newton2DResult aRes;
   aRes.U = theU0;
   aRes.V = theV0;
 
-  // Pre-compute max step limit once
-  const double aMaxStep = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
-  const double aTolSq   = theTol * theTol;
+  // Domain size for step limiting
+  const double aDomainU = theUMax - theUMin;
+  const double aDomainV = theVMax - theVMin;
+  const double aMaxStep = 0.5 * std::max(aDomainU, aDomainV);
+
+  // Convergence tolerances
+  // Use user tolerance for gradient, not hardcoded value
+  const double aGradTolSq = theTol * theTol;
+
+  // Small extension beyond domain (matching OLD behavior)
+  // OLD allows solutions slightly outside domain if gradient is near zero
+  const double aExtU = 0.01 * aDomainU;
+  const double aExtV = 0.01 * aDomainV;
+  const double aExtUMin = theUMin - aExtU;
+  const double aExtUMax = theUMax + aExtU;
+  const double aExtVMin = theVMin - aExtV;
+  const double aExtVMax = theVMax + aExtV;
+
+  // Track function value for stagnation detection
+  double aPrevFNormSq = 1.0e100;
+  int    aStagnationCount = 0;
 
   for (size_t i = 0; i < theMaxIter; ++i)
   {
@@ -257,63 +276,139 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
       return aRes;
     }
 
-    // Check convergence using squared norm (avoid sqrt)
     const double aFNormSq = aF1 * aF1 + aF2 * aF2;
 
-    if (aFNormSq < aTolSq)
+    // PRIMARY CONVERGENCE: gradient is small enough
+    if (aFNormSq < aGradTolSq)
     {
       aRes.FNorm  = std::sqrt(aFNormSq);
       aRes.Status = Status::OK;
       return aRes;
     }
 
+    // Stagnation detection: if function not improving, may be stuck
+    if (aFNormSq >= aPrevFNormSq * 0.99) // Less than 1% improvement
+    {
+      aStagnationCount++;
+      if (aStagnationCount >= 5)
+      {
+        // Stagnated - accept current position if gradient is reasonably small
+        aRes.FNorm = std::sqrt(aFNormSq);
+        if (aRes.FNorm < theTol * 100.0) // Relaxed tolerance for stagnation
+        {
+          aRes.Status = Status::OK;
+        }
+        else
+        {
+          aRes.Status = Status::MaxIterations;
+        }
+        return aRes;
+      }
+    }
+    else
+    {
+      aStagnationCount = 0;
+    }
+    aPrevFNormSq = aFNormSq;
+
     // Solve 2x2 symmetric linear system: J * [dU, dV]^T = -[F1, F2]^T
-    // J = [[J11, J12], [J12, J22]] (symmetric)
     const double aDet = aJ11 * aJ22 - aJ12 * aJ12;
 
     double aDU, aDV;
-    if (std::abs(aDet) < 1.0e-30)
+
+    if (std::abs(aDet) < 1.0e-20) // More relaxed threshold than before
     {
-      // Singular Jacobian - try gradient descent step
-      const double aNormSq = aJ11 * aJ11 + 2.0 * aJ12 * aJ12 + aJ22 * aJ22;
-      if (aNormSq < 1.0e-60)
+      // Singular/ill-conditioned Jacobian - use gradient descent
+      // For merit function phi = 0.5*(F1^2 + F2^2), gradient is [J11*F1 + J12*F2, J12*F1 + J22*F2]
+      const double aGradU  = aJ11 * aF1 + aJ12 * aF2;
+      const double aGradV  = aJ12 * aF1 + aJ22 * aF2;
+      const double aGradSq = aGradU * aGradU + aGradV * aGradV;
+
+      if (aGradSq < 1.0e-60)
       {
+        // Gradient is essentially zero - we're at a critical point
         aRes.FNorm  = std::sqrt(aFNormSq);
-        aRes.Status = Status::Singular;
+        aRes.Status = (aRes.FNorm < theTol * 10.0) ? Status::OK : Status::Singular;
         return aRes;
       }
-      const double aStep = std::sqrt(aFNormSq / aNormSq) * 0.1;
-      aDU                = -aStep * aF1;
-      aDV                = -aStep * aF2;
+
+      // Steepest descent with adaptive step size
+      // Use Barzilai-Borwein-like step: alpha = |F|^2 / |grad|^2
+      double aAlpha = aFNormSq / aGradSq;
+      aAlpha = std::min(aAlpha, aMaxStep / std::sqrt(aGradSq)); // Limit step
+      aDU = -aAlpha * aGradU;
+      aDV = -aAlpha * aGradV;
     }
     else
     {
       // Cramer's rule for symmetric matrix
       const double aInvDet = 1.0 / aDet;
-      aDU                  = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
-      aDV                  = (-aF2 * aJ11 + aF1 * aJ12) * aInvDet;
+      aDU = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
+      aDV = (-aF2 * aJ11 + aF1 * aJ12) * aInvDet;
 
-      // Limit step size
-      const double aStepNormSq = aDU * aDU + aDV * aDV;
-      if (aStepNormSq > aMaxStep * aMaxStep)
+      // Limit step size to prevent wild jumps
+      const double aStepNorm = std::sqrt(aDU * aDU + aDV * aDV);
+      if (aStepNorm > aMaxStep)
       {
-        const double aScale = aMaxStep / std::sqrt(aStepNormSq);
+        const double aScale = aMaxStep / aStepNorm;
         aDU *= aScale;
         aDV *= aScale;
       }
     }
 
-    // Update and clamp to bounds
-    aRes.U = std::max(theUMin, std::min(theUMax, aRes.U + aDU));
-    aRes.V = std::max(theVMin, std::min(theVMax, aRes.V + aDV));
+    // Update position - allow slight overshoot beyond domain
+    double aNewU = aRes.U + aDU;
+    double aNewV = aRes.V + aDV;
+
+    // Soft clamping: allow small extension beyond domain
+    aNewU = std::max(aExtUMin, std::min(aExtUMax, aNewU));
+    aNewV = std::max(aExtVMin, std::min(aExtVMax, aNewV));
+
+    // Line search if step increases function value significantly
+    double aNewF1, aNewF2;
+    if (theFunc.Value(aNewU, aNewV, aNewF1, aNewF2))
+    {
+      double aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
+
+      // Backtrack if function increased too much
+      if (aNewFNormSq > aFNormSq * 2.0)
+      {
+        double aAlpha = 0.5;
+        for (int k = 0; k < 8; ++k)
+        {
+          double aTryU = aRes.U + aAlpha * aDU;
+          double aTryV = aRes.V + aAlpha * aDV;
+          aTryU = std::max(aExtUMin, std::min(aExtUMax, aTryU));
+          aTryV = std::max(aExtVMin, std::min(aExtVMax, aTryV));
+
+          double aTryF1, aTryF2;
+          if (theFunc.Value(aTryU, aTryV, aTryF1, aTryF2))
+          {
+            double aTryFNormSq = aTryF1 * aTryF1 + aTryF2 * aTryF2;
+            if (aTryFNormSq < aFNormSq * 1.5)
+            {
+              aNewU = aTryU;
+              aNewV = aTryV;
+              break;
+            }
+          }
+          aAlpha *= 0.5;
+        }
+      }
+    }
+
+    aRes.U = aNewU;
+    aRes.V = aNewV;
   }
 
-  // Final convergence check (only at max iterations)
+  // Final evaluation
   double aF1, aF2, aJ11, aJ12, aJ22;
   if (theFunc.ValueAndJacobian(aRes.U, aRes.V, aF1, aF2, aJ11, aJ12, aJ22))
   {
     aRes.FNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
-    if (aRes.FNorm < theTol)
+
+    // Accept if gradient is reasonably small (relaxed for max iterations)
+    if (aRes.FNorm < theTol * 10.0)
     {
       aRes.Status = Status::OK;
     }
