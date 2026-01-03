@@ -234,10 +234,10 @@ public:
     // Compute closest V on the generator
     // In OCCT cone parametrization: Z = V * cos(SemiAngle), R = RefRadius + V * sin(SemiAngle)
     // The apex is at V = myApexV, but its AXIAL position is myApexV * cos(α)
-    const double aApexZ    = myApexV * myCosAngle; // Axial position of apex
-    const double aLocalZ   = aZ - aApexZ;          // Point's axial distance from apex
-    const double aGenDist  = aLocalZ * myCosAngle + aRho * mySinAngle;
-    const double aClosestV = myApexV + aGenDist;
+    const double aApexZ   = myApexV * myCosAngle; // Axial position of apex
+    const double aLocalZ  = aZ - aApexZ;          // Point's axial distance from apex
+    const double aGenDist = aLocalZ * myCosAngle + aRho * mySinAngle;
+    double       aClosestV = myApexV + aGenDist;
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
@@ -251,8 +251,64 @@ public:
     }
 
     // For maximum, project onto opposite generator (antipodal direction)
-    const double aGenDistMax  = aLocalZ * myCosAngle - aRho * mySinAngle;
-    const double aClosestVMax = myApexV + aGenDistMax;
+    const double aGenDistOpp = aLocalZ * myCosAngle - aRho * mySinAngle;
+    double       aClosestVOpp = myApexV + aGenDistOpp;
+
+    // Check if projections go past the apex (R < 0 means other nappe of cone)
+    // When a query point is on the nappe with R < 0, its radial direction is flipped by π.
+    // So aU (computed from radial direction) is U_true + π, and the correct V is aClosestVOpp.
+    const double aR    = myRefRadius + aClosestV * mySinAngle;
+    const double aROpp = myRefRadius + aClosestVOpp * mySinAngle;
+
+    // The correct minimum is at whichever (U, V) pair gives smaller distance.
+    // When R < 0, the surface point is valid but on the "other nappe" past the apex.
+    // We need to swap if the opposite generator gives the closer point.
+    if (aR >= 0.0 && aROpp < 0.0)
+    {
+      // The opposite generator (with R < 0) may be the correct solution.
+      // This happens when query point is on the nappe past the apex.
+      // Compare actual distances to decide.
+      const gp_Pnt aPt1   = Value(aU, aClosestV);
+      const gp_Pnt aPt2   = Value(aUOpp, aClosestVOpp);
+      const double aDist1 = theP.SquareDistance(aPt1);
+      const double aDist2 = theP.SquareDistance(aPt2);
+      if (aDist2 < aDist1)
+      {
+        std::swap(aU, aUOpp);
+        std::swap(aClosestV, aClosestVOpp);
+      }
+    }
+    else if (aR < 0.0 && aROpp >= 0.0)
+    {
+      // Current projection went past apex, opposite has valid R.
+      // Compare distances to decide.
+      const gp_Pnt aPt1   = Value(aU, aClosestV);
+      const gp_Pnt aPt2   = Value(aUOpp, aClosestVOpp);
+      const double aDist1 = theP.SquareDistance(aPt1);
+      const double aDist2 = theP.SquareDistance(aPt2);
+      if (aDist2 < aDist1)
+      {
+        std::swap(aU, aUOpp);
+        std::swap(aClosestV, aClosestVOpp);
+      }
+    }
+    else if (aR < 0.0 && aROpp < 0.0)
+    {
+      // Both past apex - pick based on distance
+      const gp_Pnt aPt1   = Value(aU, aClosestV);
+      const gp_Pnt aPt2   = Value(aUOpp, aClosestVOpp);
+      const double aDist1 = theP.SquareDistance(aPt1);
+      const double aDist2 = theP.SquareDistance(aPt2);
+      if (aDist2 < aDist1)
+      {
+        std::swap(aU, aUOpp);
+        std::swap(aClosestV, aClosestVOpp);
+      }
+    }
+    // else both R >= 0, keep current (smaller distance by construction)
+
+    // Rename for clarity after potential swap
+    const double aClosestVMax = aClosestVOpp;
 
     // FAST PATH: Natural domain (full U, infinite V) - most common case
     if (!myDomain.has_value())

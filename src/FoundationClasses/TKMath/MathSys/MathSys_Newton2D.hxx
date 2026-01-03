@@ -207,6 +207,7 @@ Newton2DResult Newton2D(const Function& theFunc,
 //!
 //! Many 2D problems have symmetric Jacobians (e.g., gradient of scalar function).
 //! This variant is optimized for the symmetric case where J12 = J21.
+//! Convergence tolerances match math_FunctionSetRoot for high precision.
 //!
 //! The function type must provide a method:
 //! @code
@@ -224,8 +225,8 @@ Newton2DResult Newton2D(const Function& theFunc,
 //! @param theUMax U upper bound
 //! @param theVMin V lower bound
 //! @param theVMax V upper bound
-//! @param theTol tolerance for convergence
-//! @param theMaxIter maximum iterations (default 20)
+//! @param theTol tolerance for final convergence check
+//! @param theMaxIter maximum iterations
 //! @return Newton2DResult containing solution if converged
 template <typename Function>
 Newton2DResult Newton2DSymmetric(const Function& theFunc,
@@ -236,15 +237,16 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
                                  double          theVMin,
                                  double          theVMax,
                                  double          theTol,
-                                 size_t          theMaxIter = 20)
+                                 size_t          theMaxIter = THE_NEWTON_MAX_ITER)
 {
   Newton2DResult aRes;
   aRes.U = theU0;
   aRes.V = theV0;
 
-  // Pre-compute max step limit once
-  const double aMaxStep = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
-  const double aTolSq   = theTol * theTol;
+  const double aMaxStep   = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
+  const double aStepTolU  = THE_NEWTON_STEP_TOL_FACTOR * (theUMax - theUMin);
+  const double aStepTolV  = THE_NEWTON_STEP_TOL_FACTOR * (theVMax - theVMin);
+  const double aFTolSq    = THE_NEWTON_FTOL_SQ;
 
   for (size_t i = 0; i < theMaxIter; ++i)
   {
@@ -257,10 +259,8 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
       return aRes;
     }
 
-    // Check convergence using squared norm (avoid sqrt)
     const double aFNormSq = aF1 * aF1 + aF2 * aF2;
-
-    if (aFNormSq < aTolSq)
+    if (aFNormSq < aFTolSq)
     {
       aRes.FNorm  = std::sqrt(aFNormSq);
       aRes.Status = Status::OK;
@@ -268,7 +268,6 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     }
 
     // Solve 2x2 symmetric linear system: J * [dU, dV]^T = -[F1, F2]^T
-    // J = [[J11, J12], [J12, J22]] (symmetric)
     const double aDet = aJ11 * aJ22 - aJ12 * aJ12;
 
     double aDU, aDV;
@@ -303,12 +302,32 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
       }
     }
 
-    // Update and clamp to bounds
-    aRes.U = std::max(theUMin, std::min(theUMax, aRes.U + aDU));
-    aRes.V = std::max(theVMin, std::min(theVMax, aRes.V + aDV));
+    // Update with clamping to bounds
+    const double aOldU = aRes.U;
+    const double aOldV = aRes.V;
+    double       aNewU = aRes.U + aDU;
+    double       aNewV = aRes.V + aDV;
+
+    // Clamp to bounds
+    aNewU  = std::max(theUMin, std::min(theUMax, aNewU));
+    aNewV  = std::max(theVMin, std::min(theVMax, aNewV));
+    aRes.U = aNewU;
+    aRes.V = aNewV;
+
+    // Compute actual step taken (after clamping)
+    const double aActualDU = aRes.U - aOldU;
+    const double aActualDV = aRes.V - aOldV;
+
+    // Parametric convergence: step is negligible (matching math_FunctionSetRoot)
+    if (std::abs(aActualDU) < aStepTolU && std::abs(aActualDV) < aStepTolV)
+    {
+      aRes.FNorm  = std::sqrt(aFNormSq);
+      aRes.Status = Status::OK;
+      return aRes;
+    }
   }
 
-  // Final convergence check (only at max iterations)
+  // Final convergence check using user tolerance
   double aF1, aF2, aJ11, aJ12, aJ22;
   if (theFunc.ValueAndJacobian(aRes.U, aRes.V, aF1, aF2, aJ11, aJ12, aJ22))
   {
