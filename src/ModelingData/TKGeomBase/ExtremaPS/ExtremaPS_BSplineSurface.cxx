@@ -19,17 +19,40 @@
 
 namespace
 {
+//! Minimum samples per direction to ensure adequate grid coverage.
+//! This prevents degraded performance when BSpline has very few knots.
+//! Value of 32 matches THE_OTHER_SURFACE_NB_SAMPLES for consistency.
+constexpr int THE_MIN_BSPLINE_SAMPLES = 32;
+
 //! Build knot-aware parameter array (like Extrema_GenExtPS::fillParams).
 //! Ensures samples are placed at knot boundaries plus intermediate points.
 //! Uses single-pass algorithm with dynamic vector for efficiency.
+//! Guarantees at least THE_MIN_BSPLINE_SAMPLES samples for robust extrema finding.
 //! @return math_Vector with 1-based indexing
 math_Vector BuildKnotAwareParams(const NCollection_Array1<double>& theKnots,
                                  int                               theDegree,
                                  double                            theParMin,
                                  double                            theParMax)
 {
-  // Samples per knot span: degree + offset ensures accuracy for all surface types.
-  const int aSamplesPerSpan = theDegree + ExtremaPS::THE_BSPLINE_SPAN_OFFSET;
+  // Count active knot spans in the domain
+  int aNbSpans = 0;
+  for (int i = theKnots.Lower(); i < theKnots.Upper(); ++i)
+  {
+    double aKnotLo = theKnots.Value(i);
+    double aKnotHi = theKnots.Value(i + 1);
+    if (aKnotHi >= theParMin + Precision::PConfusion()
+        && aKnotLo <= theParMax - Precision::PConfusion())
+    {
+      ++aNbSpans;
+    }
+  }
+  aNbSpans = std::max(1, aNbSpans);
+
+  // Samples per knot span: ensure minimum total samples across all spans
+  // Use max of (degree + offset) and (minSamples / nSpans) to guarantee coverage
+  const int aBasePerSpan  = theDegree + ExtremaPS::THE_BSPLINE_SPAN_OFFSET;
+  const int aMinPerSpan   = (THE_MIN_BSPLINE_SAMPLES + aNbSpans - 1) / aNbSpans;
+  const int aSamplesPerSpan = std::max(aBasePerSpan, aMinPerSpan);
 
   // Single-pass algorithm using dynamic vector
   NCollection_Vector<double> aParams;
