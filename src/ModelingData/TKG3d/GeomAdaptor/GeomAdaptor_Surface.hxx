@@ -19,7 +19,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <BSplSLib_Cache.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
@@ -70,17 +69,15 @@ public:
     double Offset = 0.0;  //!< Offset distance
   };
 
-  //! Internal structure for Bezier surface cache data.
+  //! Internal structure for Bezier surface type marker.
   struct BezierData
   {
-    mutable occ::handle<BSplSLib_Cache> Cache; //!< Cached data for evaluation
   };
 
-  //! Internal structure for BSpline surface cache data.
+  //! Internal structure for BSpline surface data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineSurface>    Surface; //!< BSpline surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache;   //!< Cached data for evaluation
+    occ::handle<Geom_BSplineSurface> Surface; //!< BSpline surface to prevent downcasts
   };
 
   //! Variant type for surface-specific evaluation data.
@@ -358,23 +355,6 @@ public:
   Standard_EXPORT double OffsetValue() const override;
 
 private:
-  Standard_EXPORT void Span(const int Side,
-                            const int Ideb,
-                            const int Ifin,
-                            int&      OutIdeb,
-                            int&      OutIfin,
-                            const int FKIndx,
-                            const int LKIndx) const;
-
-  Standard_EXPORT bool IfUVBound(const double U,
-                                 const double V,
-                                 int&         Ideb,
-                                 int&         Ifin,
-                                 int&         IVdeb,
-                                 int&         IVfin,
-                                 const int    USide,
-                                 const int    VSide) const;
-
   Standard_EXPORT void load(const occ::handle<Geom_Surface>& S,
                             const double                     UFirst,
                             const double                     ULast,
@@ -382,11 +362,6 @@ private:
                             const double                     VLast,
                             const double                     TolU = 0.0,
                             const double                     TolV = 0.0);
-
-  //! Rebuilds B-spline cache
-  //! \param theU first parameter to identify the span for caching
-  //! \param theV second parameter to identify the span for caching
-  Standard_EXPORT void RebuildCache(const double theU, const double theV) const;
 
 protected:
   occ::handle<Geom_Surface> mySurface;

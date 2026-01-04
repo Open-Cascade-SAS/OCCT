@@ -14,7 +14,6 @@
 #ifndef _GeomGridEval_BSplineSurface_HeaderFile
 #define _GeomGridEval_BSplineSurface_HeaderFile
 
-#include <BSplSLib_Cache.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomGridEval.hxx>
 #include <gp_Pnt2d.hxx>
@@ -151,22 +150,6 @@ public:
     const NCollection_Array1<gp_Pnt2d>& theUVPairs,
     int                                 theNU,
     int                                 theNV) const;
-
-private:
-  // Private helper overloads for grid -> linear evaluation
-  NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-  NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-  NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-  NCollection_Array1<gp_Vec> EvaluatePointsDN(const NCollection_Array1<double>& theUParams,
-                                              const NCollection_Array1<double>& theVParams,
-                                              int                               theNU,
-                                              int                               theNV) const;
 
 private:
   occ::handle<Geom_BSplineSurface> myGeom;

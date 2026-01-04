@@ -14,7 +14,6 @@
 #ifndef _GeomGridEval_BezierCurve_HeaderFile
 #define _GeomGridEval_BezierCurve_HeaderFile
 
-#include <BSplCLib_Cache.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>

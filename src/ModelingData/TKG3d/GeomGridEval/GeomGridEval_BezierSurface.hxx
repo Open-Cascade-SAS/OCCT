@@ -14,7 +14,6 @@
 #ifndef _GeomGridEval_BezierSurface_HeaderFile
 #define _GeomGridEval_BezierSurface_HeaderFile
 
-#include <BSplSLib_Cache.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <GeomGridEval.hxx>
 #include <gp_Pnt2d.hxx>

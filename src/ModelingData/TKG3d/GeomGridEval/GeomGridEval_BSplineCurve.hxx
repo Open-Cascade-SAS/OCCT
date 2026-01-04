@@ -14,7 +14,6 @@
 #ifndef _GeomGridEval_BSplineCurve_HeaderFile
 #define _GeomGridEval_BSplineCurve_HeaderFile
 
-#include <BSplCLib_Cache.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>

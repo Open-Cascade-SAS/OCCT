@@ -30,7 +30,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
-#include <BSplSLib_Cache.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -66,8 +65,6 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-
-static const double PosTol = Precision::PConfusion() * 0.5;
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 
@@ -333,10 +330,11 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
   }
   else if (auto* aBSplineData = std::get_if<GeomAdaptor_Surface::BSplineData>(&mySurfaceData))
   {
-    GeomAdaptor_Surface::BSplineData aNewData;
-    aNewData.Surface = aBSplineData->Surface;
-    // Cache is not copied - will be rebuilt on demand
-    aCopy->mySurfaceData = aNewData;
+    aCopy->mySurfaceData = *aBSplineData;
+  }
+  else if (std::holds_alternative<BezierData>(mySurfaceData))
+  {
+    aCopy->mySurfaceData = BezierData{};
   }
 
   return aCopy;
@@ -902,52 +900,6 @@ double GeomAdaptor_Surface::VPeriod() const
 
 //=================================================================================================
 
-void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) const
-{
-  if (mySurfaceType == GeomAbs_BezierSurface)
-  {
-    // Create cache for Bezier
-    auto&                           aBezData = std::get<BezierData>(mySurfaceData);
-    occ::handle<Geom_BezierSurface> aBezier  = occ::down_cast<Geom_BezierSurface>(mySurface);
-    int                             aDegU    = aBezier->UDegree();
-    int                             aDegV    = aBezier->VDegree();
-    NCollection_Array1<double> aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
-    NCollection_Array1<double> aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
-    if (aBezData.Cache.IsNull())
-      aBezData.Cache = new BSplSLib_Cache(aDegU,
-                                          aBezier->IsUPeriodic(),
-                                          aFlatKnotsU,
-                                          aDegV,
-                                          aBezier->IsVPeriodic(),
-                                          aFlatKnotsV,
-                                          aBezier->Weights());
-    aBezData.Cache
-      ->BuildCache(theU, theV, aFlatKnotsU, aFlatKnotsV, aBezier->Poles(), aBezier->Weights());
-  }
-  else if (mySurfaceType == GeomAbs_BSplineSurface)
-  {
-    // Create cache for B-spline
-    auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
-    const auto& aBSpl     = aBSplData.Surface;
-    if (aBSplData.Cache.IsNull())
-      aBSplData.Cache = new BSplSLib_Cache(aBSpl->UDegree(),
-                                           aBSpl->IsUPeriodic(),
-                                           aBSpl->UKnotSequence(),
-                                           aBSpl->VDegree(),
-                                           aBSpl->IsVPeriodic(),
-                                           aBSpl->VKnotSequence(),
-                                           aBSpl->Weights());
-    aBSplData.Cache->BuildCache(theU,
-                                theV,
-                                aBSpl->UKnotSequence(),
-                                aBSpl->VKnotSequence(),
-                                aBSpl->Poles(),
-                                aBSpl->Weights());
-  }
-}
-
-//=================================================================================================
-
 gp_Pnt GeomAdaptor_Surface::Value(const double U, const double V) const
 {
   gp_Pnt aValue;
@@ -961,21 +913,6 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
 {
   switch (mySurfaceType)
   {
-    case GeomAbs_BezierSurface: {
-      auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      aCache->D0(U, V, P);
-      break;
-    }
-    case GeomAbs_BSplineSurface: {
-      auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      aCache->D0(U, V, P);
-      break;
-    }
-
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P);
@@ -1007,51 +944,26 @@ void GeomAdaptor_Surface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
-    USide = 1;
-    u     = myUFirst;
+    u = myUFirst;
   }
   else if (std::abs(U - myULast) <= myTolU)
   {
-    USide = -1;
-    u     = myULast;
+    u = myULast;
   }
   if (std::abs(V - myVFirst) <= myTolV)
   {
-    VSide = 1;
-    v     = myVFirst;
+    v = myVFirst;
   }
   else if (std::abs(V - myVLast) <= myTolV)
   {
-    VSide = -1;
-    v     = myVLast;
+    v = myVLast;
   }
 
   switch (mySurfaceType)
   {
-    case GeomAbs_BezierSurface: {
-      auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      aCache->D1(U, V, P, D1U, D1V);
-      break;
-    }
-    case GeomAbs_BSplineSurface: {
-      auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
-      const auto& aBSpl     = aBSplData.Surface;
-      if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-        aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
-      else
-      {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        aBSplData.Cache->D1(U, V, P, D1U, D1V);
-      }
-      break;
-    }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
@@ -1087,52 +999,26 @@ void GeomAdaptor_Surface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
-    USide = 1;
-    u     = myUFirst;
+    u = myUFirst;
   }
   else if (std::abs(U - myULast) <= myTolU)
   {
-    USide = -1;
-    u     = myULast;
+    u = myULast;
   }
   if (std::abs(V - myVFirst) <= myTolV)
   {
-    VSide = 1;
-    v     = myVFirst;
+    v = myVFirst;
   }
   else if (std::abs(V - myVLast) <= myTolV)
   {
-    VSide = -1;
-    v     = myVLast;
+    v = myVLast;
   }
 
   switch (mySurfaceType)
   {
-    case GeomAbs_BezierSurface: {
-      auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
-        RebuildCache(U, V);
-      aCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
-      break;
-    }
-    case GeomAbs_BSplineSurface: {
-      auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
-      const auto& aBSpl     = aBSplData.Surface;
-      if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-        aBSpl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
-      else
-      {
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
-          RebuildCache(U, V);
-        aBSplData.Cache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
-      }
-      break;
-    }
-
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       Geom_ExtrusionUtils::D2(u,
@@ -1191,60 +1077,26 @@ void GeomAdaptor_Surface::D3(const double U,
                              gp_Vec&      D3UUV,
                              gp_Vec&      D3UVV) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
-    USide = 1;
-    u     = myUFirst;
+    u = myUFirst;
   }
   else if (std::abs(U - myULast) <= myTolU)
   {
-    USide = -1;
-    u     = myULast;
+    u = myULast;
   }
   if (std::abs(V - myVFirst) <= myTolV)
   {
-    VSide = 1;
-    v     = myVFirst;
+    v = myVFirst;
   }
   else if (std::abs(V - myVLast) <= myTolV)
   {
-    VSide = -1;
-    v     = myVLast;
+    v = myVLast;
   }
 
   switch (mySurfaceType)
   {
-    case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      if ((USide == 0) && (VSide == 0))
-        aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
-      else
-      {
-        if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-          aBSpl->LocalD3(u,
-                         v,
-                         Ideb,
-                         Ifin,
-                         IVdeb,
-                         IVfin,
-                         P,
-                         D1U,
-                         D1V,
-                         D2U,
-                         D2V,
-                         D2UV,
-                         D3U,
-                         D3V,
-                         D3UUV,
-                         D3UVV);
-        else
-          aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
-      }
-      break;
-    }
-
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       Geom_ExtrusionUtils::D3(u,
@@ -1300,44 +1152,26 @@ void GeomAdaptor_Surface::D3(const double U,
 
 gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
-    USide = 1;
-    u     = myUFirst;
+    u = myUFirst;
   }
   else if (std::abs(U - myULast) <= myTolU)
   {
-    USide = -1;
-    u     = myULast;
+    u = myULast;
   }
   if (std::abs(V - myVFirst) <= myTolV)
   {
-    VSide = 1;
-    v     = myVFirst;
+    v = myVFirst;
   }
   else if (std::abs(V - myVLast) <= myTolV)
   {
-    VSide = -1;
-    v     = myVLast;
+    v = myVLast;
   }
 
   switch (mySurfaceType)
   {
-    case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      if ((USide == 0) && (VSide == 0))
-        return aBSpl->DN(u, v, Nu, Nv);
-      else
-      {
-        if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-          return aBSpl->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
-        else
-          return aBSpl->DN(u, v, Nu, Nv);
-      }
-    }
-
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       return Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv);
@@ -1353,18 +1187,9 @@ gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, con
       return offsetDN(u, v, anOffData, Nu, Nv);
     }
 
-    case GeomAbs_Plane:
-    case GeomAbs_Cylinder:
-    case GeomAbs_Cone:
-    case GeomAbs_Sphere:
-    case GeomAbs_Torus:
-    case GeomAbs_BezierSurface:
-    case GeomAbs_OtherSurface:
     default:
-      break;
+      return mySurface->DN(u, v, Nu, Nv);
   }
-
-  return mySurface->DN(u, v, Nu, Nv);
 }
 
 //=================================================================================================
@@ -1746,117 +1571,4 @@ double GeomAdaptor_Surface::OffsetValue() const
   if (mySurfaceType != GeomAbs_OffsetSurface)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisSurface");
   return occ::down_cast<Geom_OffsetSurface>(mySurface)->Offset();
-}
-
-//=======================================================================
-// function : IfUVBound <private>
-// purpose  :  locates U,V parameters if U,V =First, Last,
-//	      processes the finding span and returns the
-//	      parameters for LocalDi
-//=======================================================================
-
-bool GeomAdaptor_Surface::IfUVBound(const double U,
-                                    const double V,
-                                    int&         IOutDeb,
-                                    int&         IOutFin,
-                                    int&         IOutVDeb,
-                                    int&         IOutVFin,
-                                    const int    USide,
-                                    const int    VSide) const
-{
-  const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-  int         Ideb, Ifin;
-  int         anUFKIndx = aBSpl->FirstUKnotIndex(), anULKIndx = aBSpl->LastUKnotIndex(),
-      aVFKIndx = aBSpl->FirstVKnotIndex(), aVLKIndx = aBSpl->LastVKnotIndex();
-  aBSpl->LocateU(U, PosTol, Ideb, Ifin, false);
-  bool Local = (Ideb == Ifin);
-  Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);
-  int IVdeb, IVfin;
-  aBSpl->LocateV(V, PosTol, IVdeb, IVfin, false);
-  if (IVdeb == IVfin)
-    Local = true;
-  Span(VSide, IVdeb, IVfin, IVdeb, IVfin, aVFKIndx, aVLKIndx);
-
-  IOutDeb  = Ideb;
-  IOutFin  = Ifin;
-  IOutVDeb = IVdeb;
-  IOutVFin = IVfin;
-
-  return Local;
-}
-
-//=======================================================================
-// function : Span <private>
-// purpose  : locates U,V parameters if U=UFirst or U=ULast,
-//	     processes the finding span and returns the
-//	     parameters for LocalDi
-//=======================================================================
-
-void GeomAdaptor_Surface::Span(const int Side,
-                               const int Ideb,
-                               const int Ifin,
-                               int&      OutIdeb,
-                               int&      OutIfin,
-                               const int theFKIndx,
-                               const int theLKIndx) const
-{
-  if (Ideb != Ifin) // not a knot
-  {
-    if (Ideb < theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ifin > theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ideb >= (theLKIndx - 1))
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ifin <= theFKIndx + 1)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ideb > Ifin)
-    {
-      OutIdeb = Ifin - 1;
-      OutIfin = Ifin;
-    }
-    else
-    {
-      OutIdeb = Ideb;
-      OutIfin = Ifin;
-    }
-  }
-  else
-  {
-    if (Ideb <= theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    } // first knot
-    else if (Ifin >= theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    } // last knot
-    else
-    {
-      if (Side == -1)
-      {
-        OutIdeb = Ideb - 1;
-        OutIfin = Ifin;
-      }
-      else
-      {
-        OutIdeb = Ideb;
-        OutIfin = Ifin + 1;
-      }
-    }
-  }
 }

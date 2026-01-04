@@ -25,7 +25,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <BSplCLib.hxx>
-#include <BSplCLib_Cache.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -53,9 +52,6 @@
 
 #include "../Geom/Geom_OffsetCurveUtils.pxx"
 
-// #include <GeomConvert_BSplineCurveKnotSplitting.hxx>
-static const double PosTol = Precision::PConfusion() / 2;
-
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Curve, Adaptor3d_Curve)
 
 //=================================================================================================
@@ -81,9 +77,7 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
   }
   else if (const auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
   {
-    BSplineData aCopyData;
-    aCopyData.Curve    = aBSplineData->Curve;
-    aCopy->myCurveData = std::move(aCopyData);
+    aCopy->myCurveData = *aBSplineData;
   }
   else if (std::holds_alternative<BezierData>(myCurveData))
   {
@@ -252,18 +246,6 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
     else
     {
       myTypeCurve = GeomAbs_OtherCurve;
-    }
-  }
-  else
-  {
-    // Same curve, but need to invalidate cache if bounds changed
-    if (auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
-    {
-      aBSplineData->Cache.Nullify();
-    }
-    else if (auto* aBezierData = std::get_if<BezierData>(&myCurveData))
-    {
-      aBezierData->Cache.Nullify();
     }
   }
 }
@@ -534,70 +516,6 @@ double GeomAdaptor_Curve::Period() const
 
 //=================================================================================================
 
-void GeomAdaptor_Curve::RebuildCache(const double theParameter) const
-{
-  if (myTypeCurve == GeomAbs_BezierCurve)
-  {
-    // Create cache for Bezier
-    auto&                         aCache  = std::get<BezierData>(myCurveData).Cache;
-    occ::handle<Geom_BezierCurve> aBezier = occ::down_cast<Geom_BezierCurve>(myCurve);
-    int                           aDeg    = aBezier->Degree();
-    NCollection_Array1<double>    aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
-    if (aCache.IsNull())
-      aCache = new BSplCLib_Cache(aDeg,
-                                  aBezier->IsPeriodic(),
-                                  aFlatKnots,
-                                  aBezier->Poles(),
-                                  aBezier->Weights());
-    aCache->BuildCache(theParameter, aFlatKnots, aBezier->Poles(), aBezier->Weights());
-  }
-  else if (myTypeCurve == GeomAbs_BSplineCurve)
-  {
-    // Create cache for B-spline
-    auto&       aBSplData = std::get<BSplineData>(myCurveData);
-    const auto& aBSpl     = aBSplData.Curve;
-    auto&       aCache    = aBSplData.Cache;
-    if (aCache.IsNull())
-      aCache = new BSplCLib_Cache(aBSpl->Degree(),
-                                  aBSpl->IsPeriodic(),
-                                  aBSpl->KnotSequence(),
-                                  aBSpl->Poles(),
-                                  aBSpl->Weights());
-    aCache->BuildCache(theParameter, aBSpl->KnotSequence(), aBSpl->Poles(), aBSpl->Weights());
-  }
-}
-
-//=================================================================================================
-
-bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& theSpanFinish) const
-{
-  const auto* aBSplData = std::get_if<BSplineData>(&myCurveData);
-  if (aBSplData != nullptr && (theU == myFirst || theU == myLast))
-  {
-    const auto& aBSpl = aBSplData->Curve;
-    if (theU == myFirst)
-    {
-      aBSpl->LocateU(myFirst, PosTol, theSpanStart, theSpanFinish);
-      if (theSpanStart < 1)
-        theSpanStart = 1;
-      if (theSpanStart >= theSpanFinish)
-        theSpanFinish = theSpanStart + 1;
-    }
-    else if (theU == myLast)
-    {
-      aBSpl->LocateU(myLast, PosTol, theSpanStart, theSpanFinish);
-      if (theSpanFinish > aBSpl->NbKnots())
-        theSpanFinish = aBSpl->NbKnots();
-      if (theSpanStart >= theSpanFinish)
-        theSpanStart = theSpanFinish - 1;
-    }
-    return true;
-  }
-  return false;
-}
-
-//=================================================================================================
-
 gp_Pnt GeomAdaptor_Curve::Value(const double U) const
 {
   gp_Pnt aValue;
@@ -611,30 +529,10 @@ void GeomAdaptor_Curve::D0(const double U, gp_Pnt& P) const
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve: {
-      auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
-        RebuildCache(U);
-      aCache->D0(U, P);
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+      myCurve->D0(U, P);
       break;
-    }
-
-    case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplData = std::get<BSplineData>(myCurveData);
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        aBSplData.Curve->LocalD0(U, aStart, aFinish, P);
-      }
-      else
-      {
-        // use cached data
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
-          RebuildCache(U);
-        aBSplData.Cache->D0(U, P);
-      }
-      break;
-    }
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
@@ -660,30 +558,10 @@ void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve: {
-      auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
-        RebuildCache(U);
-      aCache->D1(U, P, V);
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+      myCurve->D1(U, P, V);
       break;
-    }
-
-    case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplData = std::get<BSplineData>(myCurveData);
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        aBSplData.Curve->LocalD1(U, aStart, aFinish, P, V);
-      }
-      else
-      {
-        // use cached data
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
-          RebuildCache(U);
-        aBSplData.Cache->D1(U, P, V);
-      }
-      break;
-    }
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
@@ -710,30 +588,10 @@ void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve: {
-      auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
-        RebuildCache(U);
-      aCache->D2(U, P, V1, V2);
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+      myCurve->D2(U, P, V1, V2);
       break;
-    }
-
-    case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplData = std::get<BSplineData>(myCurveData);
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        aBSplData.Curve->LocalD2(U, aStart, aFinish, P, V1, V2);
-      }
-      else
-      {
-        // use cached data
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
-          RebuildCache(U);
-        aBSplData.Cache->D2(U, P, V1, V2);
-      }
-      break;
-    }
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
@@ -761,30 +619,10 @@ void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
 {
   switch (myTypeCurve)
   {
-    case GeomAbs_BezierCurve: {
-      auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
-        RebuildCache(U);
-      aCache->D3(U, P, V1, V2, V3);
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+      myCurve->D3(U, P, V1, V2, V3);
       break;
-    }
-
-    case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplData = std::get<BSplineData>(myCurveData);
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        aBSplData.Curve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
-      }
-      else
-      {
-        // use cached data
-        if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U))
-          RebuildCache(U);
-        aBSplData.Cache->D3(U, P, V1, V2, V3);
-      }
-      break;
-    }
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
@@ -814,17 +652,8 @@ gp_Vec GeomAdaptor_Curve::DN(const double U, const int N) const
   switch (myTypeCurve)
   {
     case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
       return myCurve->DN(U, N);
-
-    case GeomAbs_BSplineCurve: {
-      int aStart = 0, aFinish = 0;
-      if (IsBoundary(U, aStart, aFinish))
-      {
-        return std::get<BSplineData>(myCurveData).Curve->LocalDN(U, aStart, aFinish, N);
-      }
-      else
-        return myCurve->DN(U, N);
-    }
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);

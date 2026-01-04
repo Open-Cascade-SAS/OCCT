@@ -18,7 +18,6 @@
 #define _GeomAdaptor_Curve_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
-#include <BSplCLib_Cache.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Dir.hxx>
@@ -49,17 +48,15 @@ public:
     gp_Dir                         Direction;    //!< Offset direction
   };
 
-  //! Internal structure for Bezier curve cache data.
+  //! Internal structure for Bezier curve type marker.
   struct BezierData
   {
-    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
   };
 
-  //! Internal structure for BSpline curve cache data.
+  //! Internal structure for BSpline curve data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineCurve>      Curve; //!< BSpline curve to prevent downcasts
-    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_BSplineCurve> Curve; //!< BSpline curve to prevent downcasts
   };
 
   //! Variant type for curve-specific evaluation data.
@@ -253,14 +250,6 @@ private:
   Standard_EXPORT void load(const occ::handle<Geom_Curve>& C,
                             const double                   UFirst,
                             const double                   ULast);
-
-  //! Check theU relates to start or finish point of B-spline curve and return indices of span the
-  //! point is located
-  bool IsBoundary(const double theU, int& theSpanStart, int& theSpanFinish) const;
-
-  //! Rebuilds B-spline cache
-  //! \param theParameter the value on the knot axis which identifies the caching span
-  void RebuildCache(const double theParameter) const;
 
 private:
   occ::handle<Geom_Curve> myCurve;
