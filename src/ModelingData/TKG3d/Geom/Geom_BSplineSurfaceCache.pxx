@@ -105,37 +105,31 @@ public:
         myLastUSpanIdx(0),
         myLastVSpanIdx(0)
   {
-    // Compute U first/last parameters
     myUFirstParam = theUKnots.Value(theUKnots.Lower());
     myULastParam  = theUKnots.Value(theUKnots.Upper());
-
-    // Compute V first/last parameters
     myVFirstParam = theVKnots.Value(theVKnots.Lower());
     myVLastParam  = theVKnots.Value(theVKnots.Upper());
 
-    // Build U span lookup tables
     for (int i = 1; i <= myNbUSpans; ++i)
     {
       const double aStart   = theUKnots.Value(theUKnots.Lower() + i - 1);
       const double aEnd     = theUKnots.Value(theUKnots.Lower() + i);
       const double aHalfLen = 0.5 * (aEnd - aStart);
-      myUSpanStart.ChangeValue(i)    = aStart + aHalfLen; // midpoint (surface convention)
+      myUSpanStart.ChangeValue(i)    = aStart + aHalfLen;
       myUSpanHalfLen.ChangeValue(i)  = aHalfLen;
       myUFlatKnotIdx.ChangeValue(i)  = BSplCLib::FlatIndex(theUDegree, i, theUMults, theUPeriodic);
     }
 
-    // Build V span lookup tables
     for (int i = 1; i <= myNbVSpans; ++i)
     {
       const double aStart   = theVKnots.Value(theVKnots.Lower() + i - 1);
       const double aEnd     = theVKnots.Value(theVKnots.Lower() + i);
       const double aHalfLen = 0.5 * (aEnd - aStart);
-      myVSpanStart.ChangeValue(i)    = aStart + aHalfLen; // midpoint (surface convention)
+      myVSpanStart.ChangeValue(i)    = aStart + aHalfLen;
       myVSpanHalfLen.ChangeValue(i)  = aHalfLen;
       myVFlatKnotIdx.ChangeValue(i)  = BSplCLib::FlatIndex(theVDegree, i, theVMults, theVPeriodic);
     }
 
-    // Initialize all validity flags to false
     for (int i = 1; i <= myNbUSpans * myNbVSpans; ++i)
     {
       mySpanValid.ChangeValue(i) = false;
@@ -168,39 +162,28 @@ public:
         myLastUSpanIdx(0),
         myLastVSpanIdx(0)
   {
-    // Acquire read lock on source
     std::shared_lock<std::shared_mutex> aLock(theOther.myMutex);
-
-    // Copy coefficients
     for (int i = 1; i <= myCoeffs.Length(); ++i)
     {
       myCoeffs.ChangeValue(i) = theOther.myCoeffs.Value(i);
     }
-
-    // Copy U span tables
     for (int i = 1; i <= myNbUSpans; ++i)
     {
       myUSpanStart.ChangeValue(i)    = theOther.myUSpanStart.Value(i);
       myUSpanHalfLen.ChangeValue(i)  = theOther.myUSpanHalfLen.Value(i);
       myUFlatKnotIdx.ChangeValue(i)  = theOther.myUFlatKnotIdx.Value(i);
     }
-
-    // Copy V span tables
     for (int i = 1; i <= myNbVSpans; ++i)
     {
       myVSpanStart.ChangeValue(i)    = theOther.myVSpanStart.Value(i);
       myVSpanHalfLen.ChangeValue(i)  = theOther.myVSpanHalfLen.Value(i);
       myVFlatKnotIdx.ChangeValue(i)  = theOther.myVFlatKnotIdx.Value(i);
     }
-
-    // Copy validity flags
     const int aNbCells = myNbUSpans * myNbVSpans;
     for (int i = 1; i <= aNbCells; ++i)
     {
       mySpanValid.ChangeValue(i) = theOther.mySpanValid.Value(i);
     }
-
-    // Copy last span hints
     myLastUSpanIdx.store(theOther.myLastUSpanIdx.load(std::memory_order_relaxed),
                          std::memory_order_relaxed);
     myLastVSpanIdx.store(theOther.myLastVSpanIdx.load(std::memory_order_relaxed),
@@ -234,8 +217,6 @@ public:
                  const NCollection_Array2<double>* theWeights)
   {
     const int aCellIdx = theUSpanIdx * myNbVSpans + theVSpanIdx + 1;
-
-    // Fast path: already valid
     {
       std::shared_lock<std::shared_mutex> aReadLock(myMutex);
       if (mySpanValid.Value(aCellIdx))
@@ -244,28 +225,22 @@ public:
       }
     }
 
-    // Need to build - acquire exclusive lock
     std::unique_lock<std::shared_mutex> aWriteLock(myMutex);
-
-    // Double-check under lock
     if (mySpanValid.Value(aCellIdx))
     {
       return;
     }
 
-    // Get span parameters (midpoint and half-length for surface convention)
     const double aUMid     = myUSpanStart.Value(theUSpanIdx + 1);
     const double aUHalfLen = myUSpanHalfLen.Value(theUSpanIdx + 1);
     const double aVMid     = myVSpanStart.Value(theVSpanIdx + 1);
     const double aVHalfLen = myVSpanHalfLen.Value(theVSpanIdx + 1);
 
-    // Create temporary storage for BuildCache output
     const int aMaxDeg = std::max(myUDegree, myVDegree);
     const int aMinDeg = std::min(myUDegree, myVDegree);
     occ::handle<NCollection_HArray2<double>> aTempCache =
       new NCollection_HArray2<double>(1, aMaxDeg + 1, 1, myRowLength * (aMinDeg + 1));
 
-    // Build cache using BSplSLib
     BSplSLib::BuildCache(aUMid,
                          aVMid,
                          aUHalfLen,
@@ -282,16 +257,13 @@ public:
                          theWeights,
                          aTempCache->ChangeArray2());
 
-    // Copy to our contiguous storage
-    const int    aOffset    = (theUSpanIdx * myNbVSpans + theVSpanIdx) * myCoeffsPerSpan;
-    const double* aSrc      = &aTempCache->Value(1, 1);
-    double*       aDst      = &myCoeffs.ChangeValue(1) + aOffset;
+    const int     aOffset = (theUSpanIdx * myNbVSpans + theVSpanIdx) * myCoeffsPerSpan;
+    const double* aSrc    = &aTempCache->Value(1, 1);
+    double*       aDst    = &myCoeffs.ChangeValue(1) + aOffset;
     for (int i = 0; i < myCoeffsPerSpan; ++i)
     {
       aDst[i] = aSrc[i];
     }
-
-    // Mark span as valid
     mySpanValid.ChangeValue(aCellIdx) = true;
   }
 
@@ -344,19 +316,15 @@ public:
     const double aMinParam = isMaxU ? theLocalV : theLocalU;
     const double aMaxParam = isMaxU ? theLocalU : theLocalV;
 
-    // Array for intermediate results
     NCollection_LocalArray<double> aTransientCoeffs(aCacheCols);
     double                         aPoint[4] = {};
 
-    // Calculate intermediate value along variable with maximal degree
     PLib::NoDerivativeEvalPolynomial(aMaxParam,
                                      aMaxDeg,
                                      aCacheCols,
                                      aMaxDeg * aCacheCols,
                                      const_cast<double&>(aCoeffs[0]),
                                      aTransientCoeffs[0]);
-
-    // Calculate total value along variable with minimal degree
     PLib::NoDerivativeEvalPolynomial(aMinParam,
                                      aMinDeg,
                                      aDimension,
@@ -518,8 +486,6 @@ private:
                           std::atomic<int>&                 theLastSpanIdx) const
   {
     double aParam = theParam;
-
-    // Periodic normalization
     if (thePeriodic)
     {
       const double aPeriod = theLastParam - theFirstParam;
@@ -535,7 +501,6 @@ private:
       }
     }
 
-    // Fast path: check last used span first (O(1) for sequential access)
     int aHintIdx = theLastSpanIdx.load(std::memory_order_relaxed);
     if (aHintIdx >= 0 && aHintIdx < theNbSpans)
     {
@@ -544,7 +509,6 @@ private:
       const double aStart   = aMid - aHalfLen;
       const double aEnd     = aMid + aHalfLen;
 
-      // Check if parameter is in this span
       if (aParam >= aStart && (aParam < aEnd || (aHintIdx == theNbSpans - 1 && aParam <= aEnd)))
       {
         return {aHintIdx,
@@ -552,8 +516,6 @@ private:
                 (aParam - aMid) / aHalfLen,
                 aHalfLen};
       }
-
-      // Check next span (common for forward iteration)
       if (aHintIdx < theNbSpans - 1)
       {
         const double aNextMid     = theSpanStart.Value(aHintIdx + 2);
@@ -571,8 +533,6 @@ private:
                   aNextHalfLen};
         }
       }
-
-      // Check previous span (common for backward iteration)
       if (aHintIdx > 0)
       {
         const double aPrevMid     = theSpanStart.Value(aHintIdx);
@@ -591,7 +551,6 @@ private:
       }
     }
 
-    // Binary search fallback (O(log N))
     int aLow = 0, aHigh = theNbSpans - 1;
     while (aLow <= aHigh)
     {
@@ -617,7 +576,6 @@ private:
       }
     }
 
-    // Edge cases: clamp to first or last span
     if (aParam <= theFirstParam)
     {
       theLastSpanIdx.store(0, std::memory_order_relaxed);
@@ -657,15 +615,12 @@ private:
     NCollection_LocalArray<double> aTransientCoeffs(
       std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
 
-    // Calculate intermediate values and derivatives along variable with maximal degree
     PLib::EvalPolynomial(aMaxParam,
                          aMaxDeriv,
                          isMaxU ? myUDegree : myVDegree,
                          aCacheCols,
                          const_cast<double&>(aCoeffs[0]),
                          aTransientCoeffs[0]);
-
-    // Block 0: Evaluate derivatives along variable with minimal degree for D0_max
     PLib::EvalPolynomial(aMinParam,
                          aMinDeriv,
                          isMaxU ? myVDegree : myUDegree,
@@ -675,7 +630,6 @@ private:
 
     if (aMaxDeriv > 0)
     {
-      // Block 1: Evaluate derivatives for D1_max
       const int aDeriv = myIsRational ? aMinDeriv : std::min(aMinDeriv, 1);
       PLib::EvalPolynomial(aMinParam,
                            aDeriv,
@@ -686,7 +640,6 @@ private:
 
       if (aMaxDeriv > 1)
       {
-        // Block 2: Evaluate derivatives for D2_max
         const int aDeriv2 = myIsRational ? aMinDeriv : 0;
         if (aDeriv2 == 0)
         {

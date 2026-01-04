@@ -1436,66 +1436,9 @@ void Geom_BezierSurface::D2(const double U,
                             gp_Vec&      D2V,
                             gp_Vec&      D2UV) const
 {
-  double                     array_u[2] = {0.0, 1.0};
-  double                     array_v[2] = {0.0, 1.0};
-  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
-  if (urational || vrational)
-  {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
-    BSplSLib::D2(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 &weights->Array2(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV);
-  }
-  else
-  {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
-    BSplSLib::D2(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 BSplSLib::NoWeights(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV);
-  }
+  Geom_BezierSurfaceCache& aCache = ensureCache();
+  aCache.Build(poles->Array2(), Weights());
+  aCache.D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================

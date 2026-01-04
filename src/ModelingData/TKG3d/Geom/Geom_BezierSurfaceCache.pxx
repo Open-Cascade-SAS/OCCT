@@ -63,8 +63,6 @@ public:
         myIsRational(theOther.myIsRational),
         myIsValid(false)
   {
-    // Cache will be rebuilt lazily in Build() - don't copy the internal cache
-    // This is intentional: copied surfaces should rebuild their own cache
   }
 
   //! Check if coefficients are computed
@@ -76,22 +74,18 @@ public:
   //! @param theWeights optional weights for rational surfaces
   void Build(const NCollection_Array2<gp_Pnt>& thePoles, const NCollection_Array2<double>* theWeights)
   {
-    // Fast path: check if already valid (lock-free)
     if (IsValid())
     {
       return;
     }
 
-    // Acquire exclusive lock for building
     std::lock_guard<std::mutex> aLock(myMutex);
 
-    // Double-check under lock
     if (myIsValid.load(std::memory_order_relaxed))
     {
       return;
     }
 
-    // Build flat knots for Bezier in U and V directions
     NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(myUDegree),
                                            1,
                                            2 * (myUDegree + 1));
@@ -99,23 +93,18 @@ public:
                                            1,
                                            2 * (myVDegree + 1));
 
-    // Create BSplSLib_Cache if not yet created (lazy initialization)
     if (myCache.IsNull())
     {
       myCache = new BSplSLib_Cache(myUDegree,
-                                   false, // not periodic
+                                   false,
                                    aUFlatKnots,
                                    myVDegree,
-                                   false, // not periodic
+                                   false,
                                    aVFlatKnots,
-                                   theWeights); // actual weights pointer (or nullptr)
+                                   theWeights);
     }
 
-    // Build cache at parameter 0.5 (middle of single span)
-    // This is exactly how GeomGridEval_BezierSurface does it
     myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, thePoles, theWeights);
-
-    // Mark as valid
     myIsValid.store(true, std::memory_order_release);
   }
 

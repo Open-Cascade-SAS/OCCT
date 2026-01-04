@@ -117,11 +117,8 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  // Use span cache for efficient evaluation
   Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
   const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-
-  // Build span if not valid (thread-safe, internally checks validity)
   aCache.BuildSpan(aSpanInfo.U.SpanIdx,
                    aSpanInfo.V.SpanIdx,
                    aSpanInfo.U.FlatKnotIdx,
@@ -130,8 +127,6 @@ void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
                    VFKNOTS,
                    POLES,
                    Weights());
-
-  // Evaluate using cached coefficients
   aCache.D0(aSpanInfo.U.SpanIdx,
             aSpanInfo.V.SpanIdx,
             aSpanInfo.U.LocalParam,
@@ -147,11 +142,8 @@ void Geom_BSplineSurface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  // Use span cache for efficient evaluation
   Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
   const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-
-  // Build span if not valid (thread-safe, internally checks validity)
   aCache.BuildSpan(aSpanInfo.U.SpanIdx,
                    aSpanInfo.V.SpanIdx,
                    aSpanInfo.U.FlatKnotIdx,
@@ -160,8 +152,6 @@ void Geom_BSplineSurface::D1(const double U,
                    VFKNOTS,
                    POLES,
                    Weights());
-
-  // Evaluate using cached coefficients
   aCache.D1(aSpanInfo.U.SpanIdx,
             aSpanInfo.V.SpanIdx,
             aSpanInfo.U.LocalParam,
@@ -184,11 +174,8 @@ void Geom_BSplineSurface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  // Use span cache for efficient evaluation
   Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
   const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-
-  // Build span if not valid (thread-safe, internally checks validity)
   aCache.BuildSpan(aSpanInfo.U.SpanIdx,
                    aSpanInfo.V.SpanIdx,
                    aSpanInfo.U.FlatKnotIdx,
@@ -197,8 +184,6 @@ void Geom_BSplineSurface::D2(const double U,
                    VFKNOTS,
                    POLES,
                    Weights());
-
-  // Evaluate using cached coefficients
   aCache.D2(aSpanInfo.U.SpanIdx,
             aSpanInfo.V.SpanIdx,
             aSpanInfo.U.LocalParam,
