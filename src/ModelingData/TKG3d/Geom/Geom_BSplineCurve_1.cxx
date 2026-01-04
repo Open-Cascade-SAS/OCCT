@@ -324,20 +324,7 @@ gp_Pnt Geom_BSplineCurve::LocalValue(const double U, const int FromK1, const int
 void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2, gp_Pnt& P) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalValue");
-
-  double u     = U;
-  int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
-  BSplCLib::D0(u,
-               index,
-               deg,
-               periodic,
-               POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               FKNOTS,
-               FMULTS,
-               P);
+  D0(U, P);
 }
 
 //=================================================================================================
@@ -349,21 +336,7 @@ void Geom_BSplineCurve::LocalD1(const double U,
                                 gp_Vec&      V1) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD1");
-
-  double u     = U;
-  int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
-  BSplCLib::D1(u,
-               index,
-               deg,
-               periodic,
-               POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1);
+  D1(U, P, V1);
 }
 
 //=================================================================================================
@@ -376,22 +349,7 @@ void Geom_BSplineCurve::LocalD2(const double U,
                                 gp_Vec&      V2) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD2");
-
-  double u     = U;
-  int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
-  BSplCLib::D2(u,
-               index,
-               deg,
-               periodic,
-               POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1,
-               V2);
+  D2(U, P, V1, V2);
 }
 
 //=================================================================================================
@@ -405,23 +363,7 @@ void Geom_BSplineCurve::LocalD3(const double U,
                                 gp_Vec&      V3) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD3");
-
-  double u     = U;
-  int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
-  BSplCLib::D3(u,
-               index,
-               deg,
-               periodic,
-               POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1,
-               V2,
-               V3);
+  D3(U, P, V1, V2, V3);
 }
 
 //=================================================================================================
@@ -431,7 +373,7 @@ gp_Vec Geom_BSplineCurve::LocalDN(const double U,
                                   const int    ToK2,
                                   const int    N) const
 {
-  Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD3");
+  Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalDN");
 
   double u     = U;
   int    index = 0;

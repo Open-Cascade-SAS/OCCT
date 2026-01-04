@@ -309,34 +309,7 @@ void Geom_BSplineSurface::LocalD0(const double U,
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD0");
-
-  double u = U, v = V;
-  int    uindex = 0, vindex = 0;
-
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  //  BSplSLib::D0(U,V,uindex,vindex,POLES,WEIGHTS,UFKNOTS,VFKNOTS,FMULTS,FMULTS,
-  BSplSLib::D0(u,
-               v,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P);
+  D0(U, V, P);
 }
 
 //=================================================================================================
@@ -353,35 +326,7 @@ void Geom_BSplineSurface::LocalD1(const double U,
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD1");
-
-  double u = U, v = V;
-  int    uindex = 0, vindex = 0;
-
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  BSplSLib::D1(u,
-               v,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P,
-               D1U,
-               D1V);
+  D1(U, V, P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -401,38 +346,7 @@ void Geom_BSplineSurface::LocalD2(const double U,
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD2");
-
-  double u = U, v = V;
-  int    uindex = 0, vindex = 0;
-
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  BSplSLib::D2(u,
-               v,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P,
-               D1U,
-               D1V,
-               D2U,
-               D2V,
-               D2UV);
+  D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
@@ -456,42 +370,7 @@ void Geom_BSplineSurface::LocalD3(const double U,
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD3");
-
-  double u = U, v = V;
-  int    uindex = 0, vindex = 0;
-
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  BSplSLib::D3(u,
-               v,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P,
-               D1U,
-               D1V,
-               D2U,
-               D2V,
-               D2UV,
-               D3U,
-               D3V,
-               D3UUV,
-               D3UVV);
+  D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
