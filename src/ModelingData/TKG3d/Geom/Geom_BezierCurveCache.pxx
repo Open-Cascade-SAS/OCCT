@@ -1,0 +1,304 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_BezierCurveCache_pxx_HeaderFile
+#define _Geom_BezierCurveCache_pxx_HeaderFile
+
+#include <BSplCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <PLib.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+#include <atomic>
+#include <mutex>
+
+//! Private cache class for Bezier curve coefficients.
+//! Stores Taylor expansion coefficients for the single span [0, 1].
+//! NOT a Standard_Transient - owned by Geom_BezierCurve via unique_ptr.
+//!
+//! Thread-safety:
+//! - Uses std::mutex for exclusive access during build
+//! - Atomic validity flag for lock-free validity check
+//!
+//! Key optimizations:
+//! - Single span, simple validity check
+//! - Coefficients stored in NCollection_Array1<double>
+//! - Lazy building on first evaluation
+class Geom_BezierCurveCache
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Constructor - allocates storage for coefficients
+  //! @param theDegree curve degree
+  //! @param theIsRational whether curve is rational
+  Geom_BezierCurveCache(int theDegree, bool theIsRational)
+      : myDegree(theDegree),
+        myIsRational(theIsRational),
+        myRowLength(theIsRational ? 4 : 3),
+        myCoeffs(1, (theDegree + 1) * (theIsRational ? 4 : 3)),
+        myIsValid(false)
+  {
+  }
+
+  //! Copy constructor - deep copies coefficients and validity state
+  //! @param theOther cache to copy from
+  Geom_BezierCurveCache(const Geom_BezierCurveCache& theOther)
+      : myDegree(theOther.myDegree),
+        myIsRational(theOther.myIsRational),
+        myRowLength(theOther.myRowLength),
+        myCoeffs(1, theOther.myCoeffs.Length()),
+        myIsValid(false)
+  {
+    std::lock_guard<std::mutex> aLock(theOther.myMutex);
+
+    // Copy coefficients
+    for (int i = myCoeffs.Lower(); i <= myCoeffs.Upper(); ++i)
+    {
+      myCoeffs.ChangeValue(i) = theOther.myCoeffs.Value(i);
+    }
+
+    // Copy validity
+    myIsValid.store(theOther.myIsValid.load(std::memory_order_relaxed), std::memory_order_relaxed);
+  }
+
+  //! Check if coefficients are computed
+  bool IsValid() const noexcept { return myIsValid.load(std::memory_order_acquire); }
+
+  //! Get pointer to coefficients
+  //! Layout: [x0, y0, z0, [w0], x1, y1, z1, [w1], ...] for (degree+1) poles
+  double* Coeffs() noexcept { return &myCoeffs.ChangeFirst(); }
+
+  //! Get pointer to coefficients (const version)
+  const double* Coeffs() const noexcept { return &myCoeffs.First(); }
+
+  //! Build coefficients (thread-safe)
+  //! Uses BSplCLib::BuildCache to compute Taylor expansion.
+  //! @param thePoles poles array
+  //! @param theWeights optional weights for rational curves
+  void Build(const NCollection_Array1<gp_Pnt>& thePoles, const NCollection_Array1<double>* theWeights)
+  {
+    // Fast path: check if already valid (lock-free)
+    if (IsValid())
+    {
+      return;
+    }
+
+    // Acquire exclusive lock for building
+    std::lock_guard<std::mutex> aLock(myMutex);
+
+    // Double-check under lock
+    if (myIsValid.load(std::memory_order_relaxed))
+    {
+      return;
+    }
+
+    // Build flat knots for Bezier: 0 repeated (deg+1) times, 1 repeated (deg+1) times
+    NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(myDegree), 1, 2 * (myDegree + 1));
+
+    // Get pointer to our buffer
+    double* aCoeffsPtr = Coeffs();
+
+    // Create array wrapper referencing our buffer
+    NCollection_Array2<double> aCacheArray(aCoeffsPtr[0], 1, myDegree + 1, 1, myRowLength);
+
+    // Build cache: span starts at 0.0, length is 1.0
+    // Span index for Bezier is myDegree (first valid knot index in flat knots array)
+    BSplCLib::BuildCache(0.0,
+                         1.0,
+                         false,
+                         myDegree,
+                         myDegree,
+                         aFlatKnots,
+                         thePoles,
+                         theWeights,
+                         aCacheArray);
+
+    // Mark as valid
+    myIsValid.store(true, std::memory_order_release);
+  }
+
+  //! Evaluate D0 using cached coefficients
+  //! @param theU parameter in [0, 1] range
+  //! @param thePoint output point
+  void D0(double theU, gp_Pnt& thePoint) const
+  {
+    const double* aCoeffs = Coeffs();
+    double        aResult[4];
+
+    PLib::NoDerivativeEvalPolynomial(theU,
+                                     myDegree,
+                                     myRowLength,
+                                     myDegree * myRowLength,
+                                     const_cast<double&>(aCoeffs[0]),
+                                     aResult[0]);
+
+    thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
+    if (myIsRational)
+    {
+      thePoint.ChangeCoord().Divide(aResult[3]);
+    }
+  }
+
+  //! Evaluate D1 using cached coefficients
+  //! @param theU parameter in [0, 1] range
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  void D1(double theU, gp_Pnt& thePoint, gp_Vec& theTangent) const
+  {
+    const double* aCoeffs = Coeffs();
+    double        aDerivArray[8]; // point + 1st derivative, 4 components max each
+
+    PLib::EvalPolynomial(theU,
+                         1,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // No unnormalization needed - span length is 1.0
+
+    if (myIsRational)
+    {
+      double aRationalResult[6];
+      PLib::RationalDerivative(1, 1, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+    }
+  }
+
+  //! Evaluate D2 using cached coefficients
+  //! @param theU parameter in [0, 1] range
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  //! @param theCurvature output curvature vector (second derivative)
+  void D2(double theU, gp_Pnt& thePoint, gp_Vec& theTangent, gp_Vec& theCurvature) const
+  {
+    const double* aCoeffs = Coeffs();
+    double        aDerivArray[12]; // point + 1st + 2nd derivative
+
+    PLib::EvalPolynomial(theU,
+                         2,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // No unnormalization needed - span length is 1.0
+
+    if (myIsRational)
+    {
+      double aRationalResult[9];
+      PLib::RationalDerivative(2, 2, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+      theCurvature.SetCoord(aRationalResult[6], aRationalResult[7], aRationalResult[8]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+      theCurvature.SetCoord(aDerivArray[6], aDerivArray[7], aDerivArray[8]);
+    }
+  }
+
+  //! Evaluate D3 using cached coefficients
+  //! @param theU parameter in [0, 1] range
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  //! @param theCurvature output curvature vector (second derivative)
+  //! @param theTorsion output torsion vector (third derivative)
+  void D3(double  theU,
+          gp_Pnt& thePoint,
+          gp_Vec& theTangent,
+          gp_Vec& theCurvature,
+          gp_Vec& theTorsion) const
+  {
+    const double* aCoeffs = Coeffs();
+    double        aDerivArray[16]; // point + 1st + 2nd + 3rd derivative
+
+    int aDerivOrder = 3;
+    if (!myIsRational && myDegree < 3)
+    {
+      aDerivOrder = myDegree;
+      // Zero out higher derivatives
+      for (int i = myDegree * myRowLength; i < 4 * myRowLength; ++i)
+      {
+        aDerivArray[i] = 0.0;
+      }
+    }
+
+    PLib::EvalPolynomial(theU,
+                         aDerivOrder,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // No unnormalization needed - span length is 1.0
+
+    if (myIsRational)
+    {
+      double aRationalResult[12];
+      PLib::RationalDerivative(3, 3, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+      theCurvature.SetCoord(aRationalResult[6], aRationalResult[7], aRationalResult[8]);
+      theTorsion.SetCoord(aRationalResult[9], aRationalResult[10], aRationalResult[11]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+      theCurvature.SetCoord(aDerivArray[6], aDerivArray[7], aDerivArray[8]);
+      theTorsion.SetCoord(aDerivArray[9], aDerivArray[10], aDerivArray[11]);
+    }
+  }
+
+  //! Invalidate the cache (for geometry modification)
+  void Invalidate() { myIsValid.store(false, std::memory_order_release); }
+
+  //! Returns curve degree
+  int Degree() const noexcept { return myDegree; }
+
+  //! Returns whether cache is for rational curve
+  bool IsRational() const noexcept { return myIsRational; }
+
+private:
+  // Assignment is prohibited (mutex is not movable)
+  Geom_BezierCurveCache& operator=(const Geom_BezierCurveCache&) = delete;
+
+private:
+  int  myDegree;     //!< curve degree
+  bool myIsRational; //!< whether curve is rational
+  int  myRowLength;  //!< 3 for 3D non-rational, 4 for 3D rational
+
+  //! Storage for coefficients (OCCT container)
+  NCollection_Array1<double> myCoeffs;
+
+  //! Validity flag (atomic for lock-free checking)
+  std::atomic<bool> myIsValid;
+
+  //! Mutex for building (only needed during build, not read)
+  mutable std::mutex myMutex;
+};
+
+#endif // _Geom_BezierCurveCache_pxx_HeaderFile

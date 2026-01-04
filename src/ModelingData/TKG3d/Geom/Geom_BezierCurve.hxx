@@ -19,6 +19,8 @@
 
 #include <Standard.hxx>
 
+#include <memory>
+
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -32,6 +34,7 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
+class Geom_BezierCurveCache;
 
 //! Describes a rational or non-rational Bezier curve
 //! - a non-rational Bezier curve is defined by a table of
@@ -335,12 +338,22 @@ private:
   void Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Poles,
             const occ::handle<NCollection_HArray1<double>>& Weights);
 
+  //! Ensures the span cache exists and returns a reference to it.
+  //! Creates the cache lazily on first access.
+  Geom_BezierCurveCache& ensureCache() const;
+
+  //! Invalidates the span cache. Call when geometry changes.
+  void invalidateCache() const;
+
   bool                                     rational;
   bool                                     closed;
   occ::handle<NCollection_HArray1<gp_Pnt>> poles;
   occ::handle<NCollection_HArray1<double>> weights;
   double                                   maxderivinv;
   bool                                     maxderivinvok;
+
+  //! Lazy-loaded cache for Taylor expansion coefficients
+  mutable std::unique_ptr<Geom_BezierCurveCache> myCache;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

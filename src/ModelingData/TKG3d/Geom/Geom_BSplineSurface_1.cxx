@@ -27,6 +27,7 @@
 #include <BSplSLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include "Geom_BSplineSurfaceCache.pxx"
 #include <Geom_Curve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp_Pnt.hxx>
@@ -116,27 +117,26 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  double aNewU = U;
-  double aNewV = V;
-  PeriodicNormalization(aNewU, aNewV);
+  // Use span cache for efficient evaluation
+  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
+  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
 
-  BSplSLib::D0(aNewU,
-               aNewV,
-               0,
-               0,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P);
+  // Build span if not valid (thread-safe, internally checks validity)
+  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
+                   aSpanInfo.V.SpanIdx,
+                   aSpanInfo.U.FlatKnotIdx,
+                   aSpanInfo.V.FlatKnotIdx,
+                   UFKNOTS,
+                   VFKNOTS,
+                   POLES,
+                   Weights());
+
+  // Evaluate using cached coefficients
+  aCache.D0(aSpanInfo.U.SpanIdx,
+            aSpanInfo.V.SpanIdx,
+            aSpanInfo.U.LocalParam,
+            aSpanInfo.V.LocalParam,
+            P);
 }
 
 //=================================================================================================
@@ -147,37 +147,30 @@ void Geom_BSplineSurface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  double aNewU = U;
-  double aNewV = V;
-  PeriodicNormalization(aNewU, aNewV);
+  // Use span cache for efficient evaluation
+  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
+  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
 
-  int uindex = 0, vindex = 0;
+  // Build span if not valid (thread-safe, internally checks validity)
+  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
+                   aSpanInfo.V.SpanIdx,
+                   aSpanInfo.U.FlatKnotIdx,
+                   aSpanInfo.V.FlatKnotIdx,
+                   UFKNOTS,
+                   VFKNOTS,
+                   POLES,
+                   Weights());
 
-  BSplCLib::LocateParameter(udeg, uknots->Array1(), &umults->Array1(), U, uperiodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, vknots->Array1(), &vmults->Array1(), V, vperiodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  BSplSLib::D1(aNewU,
-               aNewV,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P,
-               D1U,
-               D1V);
+  // Evaluate using cached coefficients
+  aCache.D1(aSpanInfo.U.SpanIdx,
+            aSpanInfo.V.SpanIdx,
+            aSpanInfo.U.LocalParam,
+            aSpanInfo.V.LocalParam,
+            aSpanInfo.U.SpanHalfLen,
+            aSpanInfo.V.SpanHalfLen,
+            P,
+            D1U,
+            D1V);
 }
 
 //=================================================================================================
@@ -191,40 +184,33 @@ void Geom_BSplineSurface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  double aNewU = U;
-  double aNewV = V;
-  PeriodicNormalization(aNewU, aNewV);
+  // Use span cache for efficient evaluation
+  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
+  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
 
-  int uindex = 0, vindex = 0;
+  // Build span if not valid (thread-safe, internally checks validity)
+  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
+                   aSpanInfo.V.SpanIdx,
+                   aSpanInfo.U.FlatKnotIdx,
+                   aSpanInfo.V.FlatKnotIdx,
+                   UFKNOTS,
+                   VFKNOTS,
+                   POLES,
+                   Weights());
 
-  BSplCLib::LocateParameter(udeg, uknots->Array1(), &umults->Array1(), U, uperiodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
-
-  BSplCLib::LocateParameter(vdeg, vknots->Array1(), &vmults->Array1(), V, vperiodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
-
-  BSplSLib::D2(aNewU,
-               aNewV,
-               uindex,
-               vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
-               P,
-               D1U,
-               D1V,
-               D2U,
-               D2V,
-               D2UV);
+  // Evaluate using cached coefficients
+  aCache.D2(aSpanInfo.U.SpanIdx,
+            aSpanInfo.V.SpanIdx,
+            aSpanInfo.U.LocalParam,
+            aSpanInfo.V.LocalParam,
+            aSpanInfo.U.SpanHalfLen,
+            aSpanInfo.V.SpanHalfLen,
+            P,
+            D1U,
+            D1V,
+            D2U,
+            D2V,
+            D2UV);
 }
 
 //=================================================================================================
@@ -876,6 +862,7 @@ void Geom_BSplineSurface::Transform(const gp_Trsf& T)
       VPoles(i, j).Transform(T);
     }
   }
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1602,6 +1589,7 @@ void Geom_BSplineSurface::SetPoleCol(const int VIndex, const NCollection_Array1<
   {
     Poles(I + Poles.LowerRow() - 1, VIndex + Poles.LowerCol() - 1) = CPoles(I);
   }
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1634,6 +1622,7 @@ void Geom_BSplineSurface::SetPoleRow(const int UIndex, const NCollection_Array1<
   {
     Poles(UIndex + Poles.LowerRow() - 1, I + Poles.LowerCol() - 1) = CPoles(I);
   }
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1651,6 +1640,7 @@ void Geom_BSplineSurface::SetPoleRow(const int                         UIndex,
 void Geom_BSplineSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
   poles->SetValue(UIndex + poles->LowerRow() - 1, VIndex + poles->LowerCol() - 1, P);
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1712,6 +1702,7 @@ void Geom_BSplineSurface::MovePoint(const double  U,
   if (UFirstModifiedPole)
   {
     poles->ChangeArray2() = npoles;
+    invalidateSpanCache();
   }
   maxderivinvok = false;
 }

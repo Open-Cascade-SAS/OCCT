@@ -25,6 +25,7 @@
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include "Geom_BSplineSurfaceCache.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -1109,6 +1110,7 @@ void Geom_BSplineSurface::IncrementVMultiplicity(const int FromI1, const int ToI
 
 void Geom_BSplineSurface::UpdateUKnots()
 {
+  invalidateSpanCache();
 
   int MaxKnotMult = 0;
   BSplCLib::KnotAnalysis(udeg,
@@ -1164,6 +1166,8 @@ void Geom_BSplineSurface::UpdateUKnots()
 
 void Geom_BSplineSurface::UpdateVKnots()
 {
+  invalidateSpanCache();
+
   int MaxKnotMult = 0;
   BSplCLib::KnotAnalysis(vdeg,
                          vperiodic,
@@ -1282,6 +1286,7 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
   }
   Weights(UIndex + Weights.LowerRow() - 1, VIndex + Weights.LowerCol() - 1) = Weight;
   Rational(Weights, urational, vrational);
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1311,6 +1316,7 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   }
   // Verifie si c'est rationnel
   Rational(Weights, urational, vrational);
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1342,6 +1348,7 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
   }
   // Verifie si c'est rationnel
   Rational(Weights, urational, vrational);
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1384,4 +1391,30 @@ void Geom_BSplineSurface::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, umaxderivinv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, vmaxderivinv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, maxderivinvok)
+}
+
+//=================================================================================================
+
+Geom_BSplineSurfaceCache& Geom_BSplineSurface::ensureSpanCache() const
+{
+  if (!mySpanCache)
+  {
+    mySpanCache = std::make_unique<Geom_BSplineSurfaceCache>(udeg,
+                                                             vdeg,
+                                                             urational || vrational,
+                                                             uperiodic,
+                                                             vperiodic,
+                                                             uknots->Array1(),
+                                                             umults->Array1(),
+                                                             vknots->Array1(),
+                                                             vmults->Array1());
+  }
+  return *mySpanCache;
+}
+
+//=================================================================================================
+
+void Geom_BSplineSurface::invalidateSpanCache() const
+{
+  mySpanCache.reset();
 }

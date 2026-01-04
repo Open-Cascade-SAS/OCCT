@@ -29,6 +29,7 @@
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
+#include "Geom_BezierSurfaceCache.pxx"
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
@@ -544,6 +545,8 @@ void Geom_BezierSurface::ExchangeUV()
   weights = nweights;
 
   std::swap(urational, vrational);
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1039,6 +1042,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                             poles->ChangeArray2(),
                             PLib::NoWeights2());
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1050,6 +1055,8 @@ void Geom_BezierSurface::SetPole(const int UIndex, const int VIndex, const gp_Pn
     throw Standard_OutOfRange();
 
   Poles(UIndex, VIndex) = P;
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1112,6 +1119,8 @@ void Geom_BezierSurface::SetPoleCol(const int VIndex, const NCollection_Array1<g
   {
     Poles(I, VIndex) = CPoles(I);
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1130,6 +1139,8 @@ void Geom_BezierSurface::SetPoleRow(const int UIndex, const NCollection_Array1<g
   {
     Poles(UIndex, I) = CPoles(I);
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1191,6 +1202,8 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
   // is it turning into non rational
   if (wasrat && !(urational || vrational))
     weights.Nullify();
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1232,6 +1245,8 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
   // is it turning into non rational
   if (wasrat && !(urational || vrational))
     weights.Nullify();
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1273,6 +1288,8 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
   // is it turning into non rational
   if (wasrat && !(urational || vrational))
     weights.Nullify();
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1311,6 +1328,8 @@ void Geom_BezierSurface::UReverse()
       }
     }
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1356,6 +1375,8 @@ void Geom_BezierSurface::VReverse()
       }
     }
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -1386,55 +1407,9 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  double                     array_u[2] = {0.0, 1.0};
-  double                     array_v[2] = {0.0, 1.0};
-  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
-  if (urational || vrational)
-  {
-    BSplSLib::D0(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 &weights->Array2(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P);
-  }
-  else
-  {
-
-    BSplSLib::D0(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 BSplSLib::NoWeights(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P);
-  }
+  Geom_BezierSurfaceCache& aCache = ensureCache();
+  aCache.Build(poles->Array2(), Weights());
+  aCache.D0(U, V, P);
 }
 
 //=================================================================================================
@@ -1445,58 +1420,9 @@ void Geom_BezierSurface::D1(const double U,
                             gp_Vec&      D1U,
                             gp_Vec&      D1V) const
 {
-  double                     array_u[2] = {0.0, 1.0};
-  double                     array_v[2] = {0.0, 1.0};
-  int                        mult_u[2]  = {UDegree() + 1, UDegree() + 1};
-  int                        mult_v[2]  = {VDegree() + 1, VDegree() + 1};
-  NCollection_Array1<double> biduknots(array_u[0], 1, 2);
-  NCollection_Array1<int>    bidumults(mult_u[0], 1, 2);
-  NCollection_Array1<double> bidvknots(array_v[0], 1, 2);
-  NCollection_Array1<int>    bidvmults(mult_v[0], 1, 2);
-  if (urational || vrational)
-  {
-    BSplSLib::D1(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 &weights->Array2(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P,
-                 D1U,
-                 D1V);
-  }
-  else
-  {
-    BSplSLib::D1(U,
-                 V,
-                 1,
-                 1,
-                 poles->Array2(),
-                 BSplSLib::NoWeights(),
-                 biduknots,
-                 bidvknots,
-                 &bidumults,
-                 &bidvmults,
-                 UDegree(),
-                 VDegree(),
-                 urational,
-                 vrational,
-                 false,
-                 false,
-                 P,
-                 D1U,
-                 D1V);
-  }
+  Geom_BezierSurfaceCache& aCache = ensureCache();
+  aCache.Build(poles->Array2(), Weights());
+  aCache.D1(U, V, P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -1935,6 +1861,8 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
       Poles(I, J).Transform(T);
     }
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -2066,6 +1994,27 @@ void Geom_BezierSurface::Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Po
     weights = Weights;
   else
     weights.Nullify();
+
+  // Invalidate cache since structure changed
+  invalidateCache();
+}
+
+//=================================================================================================
+
+Geom_BezierSurfaceCache& Geom_BezierSurface::ensureCache() const
+{
+  if (!myCache)
+  {
+    myCache = std::make_unique<Geom_BezierSurfaceCache>(UDegree(), VDegree(), urational || vrational);
+  }
+  return *myCache;
+}
+
+//=================================================================================================
+
+void Geom_BezierSurface::invalidateCache() const
+{
+  myCache.reset();
 }
 
 //=================================================================================================

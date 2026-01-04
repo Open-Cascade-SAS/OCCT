@@ -20,6 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <memory>
+
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
@@ -34,6 +36,7 @@ class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
+class Geom_BezierSurfaceCache;
 
 //! Describes a rational or non-rational Bezier surface.
 //! - A non-rational Bezier surface is defined by a table
@@ -617,6 +620,13 @@ private:
   void Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles,
             const occ::handle<NCollection_HArray2<double>>& Weights);
 
+  //! Ensures the span cache exists and returns a reference to it.
+  //! Creates the cache lazily on first access.
+  Geom_BezierSurfaceCache& ensureCache() const;
+
+  //! Invalidates the span cache. Call when geometry changes.
+  void invalidateCache() const;
+
   bool                                     urational;
   bool                                     vrational;
   occ::handle<NCollection_HArray2<gp_Pnt>> poles;
@@ -624,6 +634,9 @@ private:
   double                                   umaxderivinv;
   double                                   vmaxderivinv;
   bool                                     maxderivinvok;
+
+  //! Lazy-loaded cache for Taylor expansion coefficients
+  mutable std::unique_ptr<Geom_BezierSurfaceCache> myCache;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

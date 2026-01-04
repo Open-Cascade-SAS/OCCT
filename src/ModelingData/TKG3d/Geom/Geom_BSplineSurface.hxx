@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <memory>
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -35,6 +36,7 @@ class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
+class Geom_BSplineSurfaceCache;
 
 //! Describes a BSpline surface.
 //! In each parametric direction, a BSpline surface can be:
@@ -1319,6 +1321,16 @@ private:
   double                                   umaxderivinv;
   double                                   vmaxderivinv;
   bool                                     maxderivinvok;
+
+  //! Lazy-loaded global span cache for efficient evaluation
+  mutable std::unique_ptr<Geom_BSplineSurfaceCache> mySpanCache;
+
+  //! Ensures span cache is allocated (lazy initialization)
+  //! @return reference to the span cache
+  Geom_BSplineSurfaceCache& ensureSpanCache() const;
+
+  //! Invalidates the span cache (called when geometry changes)
+  void invalidateSpanCache() const;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

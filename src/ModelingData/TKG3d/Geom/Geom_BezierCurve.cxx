@@ -27,6 +27,7 @@
 #define No_Standard_DimensionError
 
 #include <Geom_BezierCurve.hxx>
+#include "Geom_BezierCurveCache.pxx"
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -349,6 +350,8 @@ void Geom_BezierCurve::Reverse()
       cweights(nbpoles - i + 1) = w;
     }
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -397,6 +400,8 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
     PLib::Trimming(U1, U2, coeffs, PLib::NoWeights());
     PLib::CoefficientsPoles(coeffs, PLib::NoWeights(), poles->ChangeArray1(), PLib::NoWeights());
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -413,6 +418,8 @@ void Geom_BezierCurve::SetPole(const int Index, const gp_Pnt& P)
   {
     closed = (cpoles(1).Distance(cpoles(NbPoles())) <= Precision::Confusion());
   }
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -453,6 +460,8 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
   // is it turning into non rational
   if (wasrat && !Rational(cweights))
     weights.Nullify();
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -499,30 +508,56 @@ int Geom_BezierCurve::Degree() const
 
 //=================================================================================================
 
+Geom_BezierCurveCache& Geom_BezierCurve::ensureCache() const
+{
+  if (!myCache)
+  {
+    myCache = std::make_unique<Geom_BezierCurveCache>(Degree(), IsRational());
+  }
+  return *myCache;
+}
+
+//=================================================================================================
+
+void Geom_BezierCurve::invalidateCache() const
+{
+  myCache.reset();
+}
+
+//=================================================================================================
+
 void Geom_BezierCurve::D0(const double U, gp_Pnt& P) const
 {
-  BSplCLib::D0(U, Poles(), Weights(), P);
+  Geom_BezierCurveCache& aCache = ensureCache();
+  aCache.Build(poles->Array1(), Weights());
+  aCache.D0(U, P);
 }
 
 //=================================================================================================
 
 void Geom_BezierCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  BSplCLib::D1(U, Poles(), Weights(), P, V1);
+  Geom_BezierCurveCache& aCache = ensureCache();
+  aCache.Build(poles->Array1(), Weights());
+  aCache.D1(U, P, V1);
 }
 
 //=================================================================================================
 
 void Geom_BezierCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  BSplCLib::D2(U, Poles(), Weights(), P, V1, V2);
+  Geom_BezierCurveCache& aCache = ensureCache();
+  aCache.Build(poles->Array1(), Weights());
+  aCache.D2(U, P, V1, V2);
 }
 
 //=================================================================================================
 
 void Geom_BezierCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  BSplCLib::D3(U, Poles(), Weights(), P, V1, V2, V3);
+  Geom_BezierCurveCache& aCache = ensureCache();
+  aCache.Build(poles->Array1(), Weights());
+  aCache.D3(U, P, V1, V2, V3);
 }
 
 //=================================================================================================
@@ -665,6 +700,8 @@ void Geom_BezierCurve::Transform(const gp_Trsf& T)
 
   for (int i = 1; i <= nbpoles; i++)
     cpoles(i).Transform(T);
+
+  invalidateCache();
 }
 
 //=================================================================================================
@@ -729,6 +766,9 @@ void Geom_BezierCurve::Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Pole
     weights = Weights;
   else
     weights.Nullify();
+
+  // Invalidate cache since structure changed
+  invalidateCache();
 }
 
 //=================================================================================================
