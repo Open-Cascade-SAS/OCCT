@@ -24,48 +24,136 @@
 #include <Standard_OutOfRange.hxx>
 
 #include <atomic>
-#include <memory>
-#include <mutex>
+#include <cmath>
+#include <shared_mutex>
 
 //! Private cache class for BSpline curve span coefficients.
 //! Stores Taylor expansion coefficients for ALL spans in contiguous memory.
 //! NOT a Standard_Transient - owned by Geom_BSplineCurve via unique_ptr.
 //!
+//! Thread-safety:
+//! - Uses std::shared_mutex for concurrent read access
+//! - Multiple threads can read different (or same) spans concurrently
+//! - Span building acquires exclusive lock only for that operation
+//!
 //! Key optimizations:
 //! - All span coefficients in ONE NCollection_Array1<double> for cache locality
 //! - O(1) access to any span's coefficients by span index
-//! - Atomic validity flags for lock-free read checks
-//! - On-demand span building with mutex protection
+//! - On-demand span building with shared_mutex protection
+//! - Fast span location: O(1) for sequential access, O(log N) worst case
+//! - Stores span boundaries and flat knot indices for quick lookup
 class Geom_BSplineCurveCache
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor - allocates storage for all spans
+  //! Result of span location operation
+  struct SpanInfo
+  {
+    int    SpanIdx;      //!< Span index (0-based)
+    int    FlatKnotIdx;  //!< Flat knot index for BuildSpan
+    double LocalParam;   //!< Local parameter in [0, 1] range within span
+    double SpanLength;   //!< Length of the span (for derivative scaling)
+  };
+
+  //! Constructor - allocates storage for all spans and builds span lookup tables
   //! @param theDegree curve degree
   //! @param theIsRational whether curve is rational
-  //! @param theNbSpans number of spans (NbKnots - 1)
-  Geom_BSplineCurveCache(int theDegree, bool theIsRational, int theNbSpans)
+  //! @param theIsPeriodic whether curve is periodic
+  //! @param theKnots unique knot values
+  //! @param theMults knot multiplicities
+  Geom_BSplineCurveCache(int                            theDegree,
+                         bool                           theIsRational,
+                         bool                           theIsPeriodic,
+                         const NCollection_Array1<double>& theKnots,
+                         const NCollection_Array1<int>&    theMults)
       : myDegree(theDegree),
         myIsRational(theIsRational),
-        myNbSpans(theNbSpans),
+        myIsPeriodic(theIsPeriodic),
+        myNbSpans(theKnots.Length() - 1),
         myRowLength(theIsRational ? 4 : 3),
         myCoeffsPerSpan((theDegree + 1) * (theIsRational ? 4 : 3)),
-        myCoeffs(1, theNbSpans * (theDegree + 1) * (theIsRational ? 4 : 3)),
-        mySpanValid(new std::atomic<bool>[theNbSpans])
+        myCoeffs(1, (theKnots.Length() - 1) * (theDegree + 1) * (theIsRational ? 4 : 3)),
+        mySpanValid(1, theKnots.Length() - 1),
+        mySpanStart(1, theKnots.Length() - 1),
+        mySpanLength(1, theKnots.Length() - 1),
+        myFlatKnotIdx(1, theKnots.Length() - 1),
+        myLastSpanIdx(0)
   {
     // Initialize all validity flags to false
-    for (int i = 0; i < theNbSpans; ++i)
+    for (int i = 1; i <= myNbSpans; ++i)
     {
-      mySpanValid[i].store(false, std::memory_order_relaxed);
+      mySpanValid.ChangeValue(i) = false;
     }
+
+    // Build span lookup tables
+    const int aKnotsLower = theKnots.Lower();
+    for (int i = 0; i < myNbSpans; ++i)
+    {
+      const int aKnotIdx = aKnotsLower + i;
+      mySpanStart.ChangeValue(i + 1)  = theKnots.Value(aKnotIdx);
+      mySpanLength.ChangeValue(i + 1) = theKnots.Value(aKnotIdx + 1) - theKnots.Value(aKnotIdx);
+      myFlatKnotIdx.ChangeValue(i + 1) =
+        BSplCLib::FlatIndex(theDegree, aKnotIdx, theMults, theIsPeriodic);
+    }
+
+    // Store first and last parameters for periodic normalization
+    myFirstParam = theKnots.Value(theKnots.Lower());
+    myLastParam  = theKnots.Value(theKnots.Upper());
   }
 
-  //! Check if span coefficients are computed (lock-free)
+  //! Copy constructor - deep copies coefficients and validity state
+  //! Uses shared lock to safely read from source
+  //! @param theOther cache to copy from
+  Geom_BSplineCurveCache(const Geom_BSplineCurveCache& theOther)
+      : myDegree(theOther.myDegree),
+        myIsRational(theOther.myIsRational),
+        myIsPeriodic(theOther.myIsPeriodic),
+        myNbSpans(theOther.myNbSpans),
+        myRowLength(theOther.myRowLength),
+        myCoeffsPerSpan(theOther.myCoeffsPerSpan),
+        myFirstParam(theOther.myFirstParam),
+        myLastParam(theOther.myLastParam),
+        myCoeffs(1, theOther.myNbSpans * theOther.myCoeffsPerSpan), // Allocate without copying
+        mySpanValid(1, theOther.myNbSpans),
+        mySpanStart(1, theOther.myNbSpans),
+        mySpanLength(1, theOther.myNbSpans),
+        myFlatKnotIdx(1, theOther.myNbSpans),
+        myLastSpanIdx(0)
+  {
+    // Acquire shared lock to read from source safely
+    std::shared_lock<std::shared_mutex> aLock(theOther.myMutex);
+
+    // Copy coefficients under lock
+    for (int i = myCoeffs.Lower(); i <= myCoeffs.Upper(); ++i)
+    {
+      myCoeffs.ChangeValue(i) = theOther.myCoeffs.Value(i);
+    }
+
+    // Copy span lookup tables
+    for (int i = 1; i <= myNbSpans; ++i)
+    {
+      mySpanStart.ChangeValue(i)   = theOther.mySpanStart.Value(i);
+      mySpanLength.ChangeValue(i)  = theOther.mySpanLength.Value(i);
+      myFlatKnotIdx.ChangeValue(i) = theOther.myFlatKnotIdx.Value(i);
+    }
+
+    // Copy validity flags
+    for (int i = 1; i <= myNbSpans; ++i)
+    {
+      mySpanValid.ChangeValue(i) = theOther.mySpanValid.Value(i);
+    }
+
+    // Copy last span hint
+    myLastSpanIdx.store(theOther.myLastSpanIdx.load(std::memory_order_relaxed),
+                        std::memory_order_relaxed);
+  }
+
+  //! Check if span coefficients are computed
   //! @param theSpanIdx span index (0-based)
   bool IsSpanValid(int theSpanIdx) const noexcept
   {
-    return mySpanValid[theSpanIdx].load(std::memory_order_acquire);
+    return mySpanValid.Value(theSpanIdx + 1);
   }
 
   //! Get pointer to span coefficients (assumes span is valid)
@@ -83,8 +171,9 @@ public:
   }
 
   //! Build coefficients for span (thread-safe)
-  //! Uses BSplCLib::BuildCache to compute Taylor expansion at span
-  //! @param theSpanIdx span index (0-based, corresponds to flat knot index - degree)
+  //! Uses BSplCLib::BuildCache to compute Taylor expansion at span.
+  //! Uses shared_mutex - multiple builds of different spans can proceed concurrently.
+  //! @param theSpanIdx span index (0-based)
   //! @param theFlatKnotIdx flat knot index where span starts
   //! @param theFlatKnots flat knot sequence
   //! @param thePoles poles array
@@ -97,16 +186,17 @@ public:
                  const NCollection_Array1<double>* theWeights,
                  bool                              theIsPeriodic)
   {
-    // Double-checked locking pattern for thread safety
+    // Fast path: check if already valid (lock-free)
     if (IsSpanValid(theSpanIdx))
     {
       return;
     }
 
-    std::lock_guard<std::mutex> aLock(myBuildMutex);
+    // Acquire exclusive lock for building
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
 
-    // Check again under lock
-    if (mySpanValid[theSpanIdx].load(std::memory_order_relaxed))
+    // Double-check under lock
+    if (mySpanValid.Value(theSpanIdx + 1))
     {
       return;
     }
@@ -138,17 +228,19 @@ public:
                          theWeights,
                          aCacheArray);
 
-    // Mark span as valid (with release semantics to ensure writes are visible)
-    mySpanValid[theSpanIdx].store(true, std::memory_order_release);
+    // Mark span as valid
+    mySpanValid.ChangeValue(theSpanIdx + 1) = true;
   }
 
   //! Evaluate D0 using cached span coefficients
   //! @param theSpanIdx span index (0-based)
   //! @param theLocalParam local parameter in [0, 1] range within span
-  //! @param theSpanLength length of the span (for derivative scaling, unused for D0)
   //! @param thePoint output point
   void D0(int theSpanIdx, double theLocalParam, gp_Pnt& thePoint) const
   {
+    // Acquire shared lock for reading
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aResult[4];
 
@@ -178,6 +270,9 @@ public:
           gp_Pnt& thePoint,
           gp_Vec& theTangent) const
   {
+    // Acquire shared lock for reading
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[8]; // point + 1st derivative, 4 components max each
 
@@ -223,6 +318,9 @@ public:
           gp_Vec& theTangent,
           gp_Vec& theCurvature) const
   {
+    // Acquire shared lock for reading
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[12]; // point + 1st + 2nd derivative
 
@@ -277,6 +375,9 @@ public:
           gp_Vec& theCurvature,
           gp_Vec& theTorsion) const
   {
+    // Acquire shared lock for reading
+    std::shared_lock<std::shared_mutex> aLock(myMutex);
+
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[16]; // point + 1st + 2nd + 3rd derivative
 
@@ -330,27 +431,128 @@ public:
   //! Invalidate all spans (for geometry modification)
   void Invalidate()
   {
-    for (int i = 0; i < myNbSpans; ++i)
+    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    for (int i = 1; i <= myNbSpans; ++i)
     {
-      mySpanValid[i].store(false, std::memory_order_relaxed);
+      mySpanValid.ChangeValue(i) = false;
     }
-    // Ensure all stores are visible
-    std::atomic_thread_fence(std::memory_order_release);
   }
 
-  //! Get span parameters from flat knots (computed on demand)
-  //! @param theFlatKnotIdx flat knot index where span starts
-  //! @param theFlatKnots flat knot sequence
-  //! @param theSpanStart output: start parameter of span
-  //! @param theSpanLength output: length of span
-  static void SpanParams(int                               theFlatKnotIdx,
-                         const NCollection_Array1<double>& theFlatKnots,
-                         double&                           theSpanStart,
-                         double&                           theSpanLength) noexcept
+  //! Locate span containing the given parameter using optimized search.
+  //! Uses cached span boundaries with O(1) fast path for sequential access.
+  //! @param theU parameter value (will be normalized if periodic)
+  //! @return SpanInfo with span index, flat knot index, local parameter, and span length
+  SpanInfo LocateSpan(double theU) const
   {
-    theSpanStart  = theFlatKnots.Value(theFlatKnotIdx);
-    theSpanLength = theFlatKnots.Value(theFlatKnotIdx + 1) - theSpanStart;
+    // Periodic normalization
+    double aU = theU;
+    if (myIsPeriodic)
+    {
+      const double aPeriod = myLastParam - myFirstParam;
+      if (aU < myFirstParam)
+      {
+        const double aScale = std::trunc((myFirstParam - aU) / aPeriod);
+        aU += aPeriod * (aScale + 1.0);
+      }
+      else if (aU > myLastParam)
+      {
+        const double aScale = std::trunc((aU - myLastParam) / aPeriod);
+        aU -= aPeriod * (aScale + 1.0);
+      }
+    }
+
+    // Fast path: check last used span first (O(1) for sequential access)
+    int aHintIdx = myLastSpanIdx.load(std::memory_order_relaxed);
+    if (aHintIdx >= 0 && aHintIdx < myNbSpans)
+    {
+      const double aStart = mySpanStart.Value(aHintIdx + 1);
+      const double aLen   = mySpanLength.Value(aHintIdx + 1);
+      const double aEnd   = aStart + aLen;
+
+      // Check if in this span (with tolerance for last span)
+      if (aU >= aStart && (aU < aEnd || (aHintIdx == myNbSpans - 1 && aU <= aEnd)))
+      {
+        return {aHintIdx, myFlatKnotIdx.Value(aHintIdx + 1), (aU - aStart) / aLen, aLen};
+      }
+
+      // Check next span (common for forward iteration)
+      if (aHintIdx + 1 < myNbSpans)
+      {
+        const double aNextStart = mySpanStart.Value(aHintIdx + 2);
+        const double aNextLen   = mySpanLength.Value(aHintIdx + 2);
+        const double aNextEnd   = aNextStart + aNextLen;
+        if (aU >= aNextStart && (aU < aNextEnd || (aHintIdx + 1 == myNbSpans - 1 && aU <= aNextEnd)))
+        {
+          const int aSpanIdx = aHintIdx + 1;
+          myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
+          return {aSpanIdx, myFlatKnotIdx.Value(aSpanIdx + 1), (aU - aNextStart) / aNextLen, aNextLen};
+        }
+      }
+
+      // Check previous span (common for backward iteration)
+      if (aHintIdx > 0)
+      {
+        const double aPrevStart = mySpanStart.Value(aHintIdx);
+        const double aPrevLen   = mySpanLength.Value(aHintIdx);
+        if (aU >= aPrevStart && aU < aPrevStart + aPrevLen)
+        {
+          const int aSpanIdx = aHintIdx - 1;
+          myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
+          return {aSpanIdx, myFlatKnotIdx.Value(aSpanIdx + 1), (aU - aPrevStart) / aPrevLen, aPrevLen};
+        }
+      }
+    }
+
+    // Binary search fallback (O(log N))
+    int aLow = 0, aHigh = myNbSpans - 1;
+    while (aLow <= aHigh)
+    {
+      const int    aMid   = (aLow + aHigh) / 2;
+      const double aStart = mySpanStart.Value(aMid + 1);
+      const double aLen   = mySpanLength.Value(aMid + 1);
+      const double aEnd   = aStart + aLen;
+
+      if (aU < aStart)
+      {
+        aHigh = aMid - 1;
+      }
+      else if (aU >= aEnd && aMid < myNbSpans - 1)
+      {
+        aLow = aMid + 1;
+      }
+      else
+      {
+        // Found the span
+        myLastSpanIdx.store(aMid, std::memory_order_relaxed);
+        return {aMid, myFlatKnotIdx.Value(aMid + 1), (aU - aStart) / aLen, aLen};
+      }
+    }
+
+    // Edge cases: clamp to first or last span
+    if (aU <= myFirstParam)
+    {
+      myLastSpanIdx.store(0, std::memory_order_relaxed);
+      return {0, myFlatKnotIdx.Value(1), 0.0, mySpanLength.Value(1)};
+    }
+    else
+    {
+      const int aLastIdx = myNbSpans - 1;
+      myLastSpanIdx.store(aLastIdx, std::memory_order_relaxed);
+      return {aLastIdx, myFlatKnotIdx.Value(myNbSpans), 1.0, mySpanLength.Value(myNbSpans)};
+    }
   }
+
+  //! Get stored span start parameter
+  //! @param theSpanIdx span index (0-based)
+  double SpanStart(int theSpanIdx) const noexcept { return mySpanStart.Value(theSpanIdx + 1); }
+
+  //! Get stored span length
+  //! @param theSpanIdx span index (0-based)
+  double SpanLength(int theSpanIdx) const noexcept { return mySpanLength.Value(theSpanIdx + 1); }
+
+  //! Get stored flat knot index for span
+  //! @param theSpanIdx span index (0-based)
+  int FlatKnotIndex(int theSpanIdx) const noexcept { return myFlatKnotIdx.Value(theSpanIdx + 1); }
 
   //! Returns number of spans
   int NbSpans() const noexcept { return myNbSpans; }
@@ -361,26 +563,46 @@ public:
   //! Returns whether cache is for rational curve
   bool IsRational() const noexcept { return myIsRational; }
 
+  //! Returns whether cache is for periodic curve
+  bool IsPeriodic() const noexcept { return myIsPeriodic; }
+
+  //! Returns first valid parameter
+  double FirstParameter() const noexcept { return myFirstParam; }
+
+  //! Returns last valid parameter
+  double LastParameter() const noexcept { return myLastParam; }
+
 private:
-  // Non-copyable
-  Geom_BSplineCurveCache(const Geom_BSplineCurveCache&)            = delete;
+  // Assignment is prohibited (mutex is not movable)
   Geom_BSplineCurveCache& operator=(const Geom_BSplineCurveCache&) = delete;
 
 private:
   int  myDegree;        //!< curve degree
   bool myIsRational;    //!< whether curve is rational
+  bool myIsPeriodic;    //!< whether curve is periodic
   int  myNbSpans;       //!< number of spans
   int  myRowLength;     //!< 3 for 3D non-rational, 4 for 3D rational
   int  myCoeffsPerSpan; //!< (degree+1) * rowLength
 
+  double myFirstParam; //!< first valid parameter (for periodic normalization)
+  double myLastParam;  //!< last valid parameter (for periodic normalization)
+
   //! Contiguous storage for ALL span coefficients (OCCT container)
   NCollection_Array1<double> myCoeffs;
 
-  //! Per-span validity flags (atomic for lock-free checking)
-  std::unique_ptr<std::atomic<bool>[]> mySpanValid;
+  //! Per-span validity flags (1-based indexing)
+  NCollection_Array1<bool> mySpanValid;
 
-  //! Mutex for building spans
-  mutable std::mutex myBuildMutex;
+  //! Span lookup tables for fast parameter location
+  NCollection_Array1<double> mySpanStart;   //!< start parameter for each span (1-based indexing)
+  NCollection_Array1<double> mySpanLength;  //!< length of each span (1-based indexing)
+  NCollection_Array1<int>    myFlatKnotIdx; //!< flat knot index for each span (1-based indexing)
+
+  //! Last used span index for O(1) fast path (atomic for thread-safe hint)
+  mutable std::atomic<int> myLastSpanIdx;
+
+  //! Shared mutex for thread-safe access (readers don't block each other)
+  mutable std::shared_mutex myMutex;
 };
 
 #endif // _Geom_BSplineCurveCache_pxx_HeaderFile

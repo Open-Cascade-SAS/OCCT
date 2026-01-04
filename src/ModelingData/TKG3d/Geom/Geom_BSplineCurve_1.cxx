@@ -167,152 +167,40 @@ int Geom_BSplineCurve::Degree() const
 
 void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 {
-  double aNewU(U);
-  PeriodicNormalization(aNewU);
-
-  // Locate span using knots+mults (returns unique knot index)
-  int aKnotIdx = 0;
-  BSplCLib::LocateParameter(deg, KNOTS, &mults->Array1(), aNewU, periodic, aKnotIdx, aNewU);
-
-  // Span index is 0-based from knot index
-  const int aSpanIdx = aKnotIdx - knots->Lower();
-
-  // Get flat knot index for cache building
-  const int aFlatKnotIdx = BSplCLib::FlatIndex(deg, aKnotIdx, mults->Array1(), periodic);
-
-  // Get cache and build span if needed
-  const Geom_BSplineCurveCache& aCache = ensureSpanCache();
-  if (!aCache.IsSpanValid(aSpanIdx))
-  {
-    const_cast<Geom_BSplineCurveCache&>(aCache).BuildSpan(aSpanIdx,
-                                                          aFlatKnotIdx,
-                                                          FKNOTS,
-                                                          POLES,
-                                                          rational ? &weights->Array1() : nullptr,
-                                                          periodic);
-  }
-
-  // Compute local parameter in [0, 1] range within span
-  double aSpanStart, aSpanLength;
-  Geom_BSplineCurveCache::SpanParams(aFlatKnotIdx, FKNOTS, aSpanStart, aSpanLength);
-  const double aLocalParam = (aNewU - aSpanStart) / aSpanLength;
-
-  // Evaluate using cache
-  aCache.D0(aSpanIdx, aLocalParam, P);
+  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
+  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
+  aCache.D0(aSpan.SpanIdx, aSpan.LocalParam, P);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  double aNewU(U);
-  PeriodicNormalization(aNewU);
-
-  // Locate span using knots+mults (returns unique knot index)
-  int aKnotIdx = 0;
-  BSplCLib::LocateParameter(deg, KNOTS, &mults->Array1(), aNewU, periodic, aKnotIdx, aNewU);
-
-  // Span index is 0-based from knot index
-  const int aSpanIdx = aKnotIdx - knots->Lower();
-
-  // Get flat knot index for cache building
-  const int aFlatKnotIdx = BSplCLib::FlatIndex(deg, aKnotIdx, mults->Array1(), periodic);
-
-  // Get cache and build span if needed
-  const Geom_BSplineCurveCache& aCache = ensureSpanCache();
-  if (!aCache.IsSpanValid(aSpanIdx))
-  {
-    const_cast<Geom_BSplineCurveCache&>(aCache).BuildSpan(aSpanIdx,
-                                                          aFlatKnotIdx,
-                                                          FKNOTS,
-                                                          POLES,
-                                                          rational ? &weights->Array1() : nullptr,
-                                                          periodic);
-  }
-
-  // Compute local parameter in [0, 1] range within span
-  double aSpanStart, aSpanLength;
-  Geom_BSplineCurveCache::SpanParams(aFlatKnotIdx, FKNOTS, aSpanStart, aSpanLength);
-  const double aLocalParam = (aNewU - aSpanStart) / aSpanLength;
-
-  // Evaluate using cache
-  aCache.D1(aSpanIdx, aLocalParam, aSpanLength, P, V1);
+  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
+  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
+  aCache.D1(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  double aNewU(U);
-  PeriodicNormalization(aNewU);
-
-  // Locate span using knots+mults (returns unique knot index)
-  int aKnotIdx = 0;
-  BSplCLib::LocateParameter(deg, KNOTS, &mults->Array1(), aNewU, periodic, aKnotIdx, aNewU);
-
-  // Span index is 0-based from knot index
-  const int aSpanIdx = aKnotIdx - knots->Lower();
-
-  // Get flat knot index for cache building
-  const int aFlatKnotIdx = BSplCLib::FlatIndex(deg, aKnotIdx, mults->Array1(), periodic);
-
-  // Get cache and build span if needed
-  const Geom_BSplineCurveCache& aCache = ensureSpanCache();
-  if (!aCache.IsSpanValid(aSpanIdx))
-  {
-    const_cast<Geom_BSplineCurveCache&>(aCache).BuildSpan(aSpanIdx,
-                                                          aFlatKnotIdx,
-                                                          FKNOTS,
-                                                          POLES,
-                                                          rational ? &weights->Array1() : nullptr,
-                                                          periodic);
-  }
-
-  // Compute local parameter in [0, 1] range within span
-  double aSpanStart, aSpanLength;
-  Geom_BSplineCurveCache::SpanParams(aFlatKnotIdx, FKNOTS, aSpanStart, aSpanLength);
-  const double aLocalParam = (aNewU - aSpanStart) / aSpanLength;
-
-  // Evaluate using cache
-  aCache.D2(aSpanIdx, aLocalParam, aSpanLength, P, V1, V2);
+  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
+  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
+  aCache.D2(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  double aNewU(U);
-  PeriodicNormalization(aNewU);
-
-  // Locate span using knots+mults (returns unique knot index)
-  int aKnotIdx = 0;
-  BSplCLib::LocateParameter(deg, KNOTS, &mults->Array1(), aNewU, periodic, aKnotIdx, aNewU);
-
-  // Span index is 0-based from knot index
-  const int aSpanIdx = aKnotIdx - knots->Lower();
-
-  // Get flat knot index for cache building
-  const int aFlatKnotIdx = BSplCLib::FlatIndex(deg, aKnotIdx, mults->Array1(), periodic);
-
-  // Get cache and build span if needed
-  const Geom_BSplineCurveCache& aCache = ensureSpanCache();
-  if (!aCache.IsSpanValid(aSpanIdx))
-  {
-    const_cast<Geom_BSplineCurveCache&>(aCache).BuildSpan(aSpanIdx,
-                                                          aFlatKnotIdx,
-                                                          FKNOTS,
-                                                          POLES,
-                                                          rational ? &weights->Array1() : nullptr,
-                                                          periodic);
-  }
-
-  // Compute local parameter in [0, 1] range within span
-  double aSpanStart, aSpanLength;
-  Geom_BSplineCurveCache::SpanParams(aFlatKnotIdx, FKNOTS, aSpanStart, aSpanLength);
-  const double aLocalParam = (aNewU - aSpanStart) / aSpanLength;
-
-  // Evaluate using cache
-  aCache.D3(aSpanIdx, aLocalParam, aSpanLength, P, V1, V2, V3);
+  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
+  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
+  aCache.D3(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2, V3);
 }
 
 //=================================================================================================

@@ -826,7 +826,7 @@ private:
 
   //! Ensures the span cache is allocated, returns reference to it.
   //! Thread-safe: uses double-checked locking for lazy initialization.
-  const Geom_BSplineCurveCache& ensureSpanCache() const;
+  Geom_BSplineCurveCache& ensureSpanCache() const;
 
   //! Invalidates the span cache (called by modifying methods).
   void invalidateSpanCache() const;

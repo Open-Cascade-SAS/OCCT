@@ -101,13 +101,16 @@ occ::handle<Geom_Geometry> Geom_BSplineCurve::Copy() const
 
 //=================================================================================================
 
-const Geom_BSplineCurveCache& Geom_BSplineCurve::ensureSpanCache() const
+Geom_BSplineCurveCache& Geom_BSplineCurve::ensureSpanCache() const
 {
   if (!mySpanCache)
   {
-    // Number of spans = NbKnots - 1
-    const int aNbSpans = knots->Length() - 1;
-    mySpanCache = std::make_unique<Geom_BSplineCurveCache>(deg, rational, aNbSpans);
+    // Build cache with span lookup tables for fast parameter location
+    mySpanCache = std::make_unique<Geom_BSplineCurveCache>(deg,
+                                                           rational,
+                                                           periodic,
+                                                           knots->Array1(),
+                                                           mults->Array1());
   }
   return *mySpanCache;
 }
