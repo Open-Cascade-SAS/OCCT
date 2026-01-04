@@ -1524,7 +1524,7 @@ void IntPatch_LineConstructor::Perform(
               LignetropPetite = true;
             }
           }
-          if (LignetropPetite == false)
+          if (!LignetropPetite)
           {
             //-- std::cout<<"WLine      : firtsp="<<firstp<<" lastp="<<lastp<<"
             // Vtx:"<<i<<","<<i+1<<std::endl;

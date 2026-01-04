@@ -25,7 +25,6 @@ AIS_AnimationCamera::AIS_AnimationCamera(const TCollection_AsciiString& theAnima
     : AIS_Animation(theAnimationName),
       myView(theView)
 {
-  //
 }
 
 //=================================================================================================

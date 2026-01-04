@@ -464,19 +464,19 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
     bool                UP = BAS.IsUPeriodic();
     bool                VP = BAS.IsVPeriodic();
 
-    bool nonPU = (fabs(U) < 1e-7) ? true : false;
-    bool nonPV = (fabs(V) < 1e-7) ? true : false;
+    bool nonPU = fabs(U) < 1e-7;
+    bool nonPV = fabs(V) < 1e-7;
 
     if (!nonPU && UP)
     {
       double dU = fmod(fabs(U), 2 * M_PI);
-      nonPU     = (dU > 1e-7 && (2 * M_PI - dU > 1e-7)) ? true : false;
+      nonPU     = dU > 1e-7 && (2 * M_PI - dU > 1e-7);
     }
 
     if (!nonPV && VP)
     {
       double dV = fmod(fabs(V), 2 * M_PI);
-      nonPV     = (dV > 1e-7 && (2 * M_PI - dV > 1e-7)) ? true : false;
+      nonPV     = dV > 1e-7 && (2 * M_PI - dV > 1e-7);
     }
 
     //    printf("(fmod(fabs(U), 2*M_PI) =%lf\n", (fmod(fabs(U), 2*M_PI)));

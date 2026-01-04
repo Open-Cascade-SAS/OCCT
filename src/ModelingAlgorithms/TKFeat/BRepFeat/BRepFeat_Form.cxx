@@ -212,7 +212,7 @@ void BRepFeat_Form::GlobalPerform()
         if (!scur(jj)->IsPeriodic())
         {
           int ku, kf;
-          if (!(mu > Mf || mf > Mu))
+          if (mu <= Mf && mf <= Mu)
           { // overlapping intervals
             sens = 1;
             kf   = 1;
@@ -778,7 +778,7 @@ void BRepFeat_Form::GlobalPerform()
     //
 
     //--- generation of "just feature" for assembly = Parts of tool
-    bool             bFlag = (myPerfSelection == BRepFeat_NoSelection) ? false : true;
+    bool             bFlag = myPerfSelection != BRepFeat_NoSelection;
     BRepFeat_Builder theBuilder;
     theBuilder.Init(mySbase, theGShape);
     theBuilder.SetOperation(myFuse, bFlag);
@@ -1116,7 +1116,7 @@ void BRepFeat_Form::GlobalPerform()
           {
             BRepFeat::ParametricMinMax(it.Value(), C, prmin1, prmax1, prbmin1, prbmax1, flag2);
           }
-          if (flag2 == false || flag1 == false)
+          if (!flag2 || !flag1)
           {
             pmin = pbmin;
             pmax = pbmax;
@@ -1130,7 +1130,7 @@ void BRepFeat_Form::GlobalPerform()
             min  = prmin1;
             max  = prmax1;
           }
-          if (!((min > pmax - delta) || (max < pmin + delta)))
+          if ((min <= pmax - delta) && (max >= pmin + delta))
           {
             KeepParts             = true;
             const TopoDS_Shape& S = it.Value();
@@ -1161,7 +1161,7 @@ void BRepFeat_Form::GlobalPerform()
         for (it.Initialize(lshape); it.More(); it.Next())
         {
           BRepFeat::ParametricMinMax(it.Value(), C, prmin1, prmax1, prbmin1, prbmax1, flag2);
-          if (flag2 == false || flag1 == false)
+          if (!flag2 || !flag1)
           {
             pmin = pbmin;
             pmax = pbmax;

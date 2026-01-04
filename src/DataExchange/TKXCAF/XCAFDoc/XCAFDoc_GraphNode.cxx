@@ -240,18 +240,14 @@ int XCAFDoc_GraphNode::ChildIndex(const occ::handle<XCAFDoc_GraphNode>& Ch) cons
 
 bool XCAFDoc_GraphNode::IsFather(const occ::handle<XCAFDoc_GraphNode>& Ch) const
 {
-  if (ChildIndex(Ch))
-    return true;
-  return false;
+  return ChildIndex(Ch) != 0;
 }
 
 //=================================================================================================
 
 bool XCAFDoc_GraphNode::IsChild(const occ::handle<XCAFDoc_GraphNode>& F) const
 {
-  if (FatherIndex(F))
-    return true;
-  return false;
+  return FatherIndex(F) != 0;
 }
 
 //=================================================================================================

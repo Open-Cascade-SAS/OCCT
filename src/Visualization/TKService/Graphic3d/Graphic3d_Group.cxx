@@ -36,7 +36,6 @@ Graphic3d_Group::Graphic3d_Group(const occ::handle<Graphic3d_Structure>& theStru
     : myStructure(theStruct.operator->()),
       myIsClosed(false)
 {
-  //
 }
 
 //=================================================================================================

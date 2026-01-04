@@ -22,7 +22,6 @@
 
 #include <Expr_NamedExpression.hxx>
 #include <Standard_Integer.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 class Expr_GeneralExpression;
 class TCollection_AsciiString;
@@ -101,5 +100,6 @@ private:
 };
 
 #include <Expr_NamedUnknown.lxx>
+class Expr_NamedUnknown;
 
 #endif // _Expr_NamedUnknown_HeaderFile

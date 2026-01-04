@@ -19,7 +19,6 @@ Vrml_DirectionalLight::Vrml_DirectionalLight()
       myColor(Quantity_NOC_WHITE),
       myDirection(0, 0, -1)
 {
-  //
 }
 
 Vrml_DirectionalLight::Vrml_DirectionalLight(const bool            aOnOff,
@@ -85,7 +84,7 @@ Standard_OStream& Vrml_DirectionalLight::Print(Standard_OStream& anOStream) cons
 {
   anOStream << "DirectionalLight {\n";
 
-  if (myOnOff != true)
+  if (!myOnOff)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";

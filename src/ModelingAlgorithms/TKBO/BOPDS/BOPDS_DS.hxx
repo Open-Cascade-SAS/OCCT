@@ -21,7 +21,6 @@
 
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_CommonBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_PaveBlock.hxx>

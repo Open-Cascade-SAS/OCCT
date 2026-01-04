@@ -40,7 +40,6 @@ AIS_LightSourceOwner::AIS_LightSourceOwner(const occ::handle<AIS_LightSource>& t
                                            int                                 thePriority)
     : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject, thePriority)
 {
-  //
 }
 
 //=================================================================================================

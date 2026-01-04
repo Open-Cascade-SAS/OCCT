@@ -16,18 +16,6 @@
 
 #define Debug(expr) std::cout << " MAT2d_Tool2d.cxx  :  expr :" << expr << std::endl;
 // #define OCCT_DEBUG
-// #define DRAW
-#ifdef DRAW
-  #include <DBRep.hxx>
-  #include <DrawTrSurf.hxx>
-  #include <stdio.h>
-#endif
-
-#ifdef DRAW
-  #include <Draw_Appli.hxx>
-  #include <DrawTrSurf_Curve2d.hxx>
-  #include <GCE2d_MakeSegment.hxx>
-#endif
 
 #include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
@@ -66,10 +54,6 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 
-#ifdef DRAW
-static occ::handle<DrawTrSurf_Curve2d> draw;
-static int                             AffichBis = false;
-#endif
 #ifdef OCCT_DEBUG
 static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
 static bool Store      = false;
@@ -211,23 +195,11 @@ int MAT2d_Tool2d::TangentBefore(const int anitem, const bool IsOpenResult)
   if (type != STANDARD_TYPE(Geom2d_CartesianPoint))
   {
     curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(anitem));
-#ifdef DRAW
-    char* name = new char[100];
-    Sprintf(name, "c%d", anitem);
-    DrawTrSurf::Set(name, curve);
-    delete[] name;
-#endif
     theGeomVecs.Bind(theNumberOfVecs, curve->DN(curve->LastParameter(), 1));
   }
   else
   {
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
-#ifdef DRAW
-    char* name = new char[100];
-    Sprintf(name, "c%d", item);
-    DrawTrSurf::Set(name, curve);
-    delete[] name;
-#endif
+    curve        = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
     double param = (IsOpenResult && anitem == theCircuit->NumberOfItems())
                      ? curve->LastParameter()
                      : curve->FirstParameter();
@@ -259,13 +231,7 @@ int MAT2d_Tool2d::TangentAfter(const int anitem, const bool IsOpenResult)
   type = theCircuit->Value(anitem)->DynamicType();
   if (type != STANDARD_TYPE(Geom2d_CartesianPoint))
   {
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(anitem));
-#ifdef DRAW
-    char* name = new char[100];
-    Sprintf(name, "c%d", anitem);
-    DrawTrSurf::Set(name, curve);
-    delete[] name;
-#endif
+    curve     = occ::down_cast<Geom2d_Curve>(theCircuit->Value(anitem));
     thevector = curve->DN(curve->FirstParameter(), 1);
   }
   else
@@ -275,13 +241,7 @@ int MAT2d_Tool2d::TangentAfter(const int anitem, const bool IsOpenResult)
     else
       item = (anitem == 1) ? 2 : (anitem - 1);
 
-    curve = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
-#ifdef DRAW
-    char* name = new char[100];
-    Sprintf(name, "c%d", item);
-    DrawTrSurf::Set(name, curve);
-    delete[] name;
-#endif
+    curve        = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
     double param = (IsOpenResult && anitem == 1) ? curve->FirstParameter() : curve->LastParameter();
     thevector    = curve->DN(param, 1);
   }
@@ -419,14 +379,6 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
   abisector->BisectorNumber(theNumberOfBisectors);
   abisector->Sense(1);
 
-#ifdef DRAW
-  char* name = new char[100];
-  Sprintf(name, "b%d", theNumberOfBisectors);
-  DrawTrSurf::Set(name, bisector.Value());
-  Dump(abisector->BisectorNumber(), 1);
-  delete[] name;
-#endif
-
 #ifdef OCCT_DEBUG
   bool AffichDraw = false;
   if (AffichDraw)
@@ -438,12 +390,6 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
     if (Type1 == STANDARD_TYPE(Bisector_BisecAna))
     {
       BasisCurve = occ::down_cast<Bisector_BisecAna>(bisector.Value()->BasisCurve())->Geom2dCurve();
-  #ifdef DRAW
-      char* name = new char[100];
-      Sprintf(name, "BISSEC_%d", abisector->BisectorNumber());
-      DrawTrSurf::Set(name, BasisCurve);
-      delete[] name;
-  #endif
     }
   }
 #endif
@@ -1060,25 +1006,11 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   {
     if (Bisector1->StartPoint().Distance(PointSolution) < Tolerance)
     {
-#ifdef DRAW
-      if (AffichBis)
-      {
-        DrawTrSurf::Set("Bis1", Bisector1);
-        DrawTrSurf::Set("Bis2", Bisector2);
-      }
-#endif
       return Precision::Infinite();
     }
     if (Bisector2->StartPoint().Distance(PointSolution) < Tolerance)
     {
 
-#ifdef DRAW
-      if (AffichBis)
-      {
-        DrawTrSurf::Set("Bis1", Bisector1);
-        DrawTrSurf::Set("Bis2", Bisector2);
-      }
-#endif
       return Precision::Infinite();
     }
   }
@@ -1422,10 +1354,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
 {
   occ::handle<Standard_Type> type = aCurve->DynamicType();
   occ::handle<Geom2d_Curve>  curve, CurveDraw;
-  #ifdef DRAW
-  occ::handle<DrawTrSurf_Curve2d> dr;
-  Draw_Color                      Couleur;
-  #endif
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
@@ -1474,28 +1402,6 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
   {
     CurveDraw = aCurve;
   }
-
-  #ifdef DRAW
-  int Indice = 1;
-  if (Indice == 1)
-    Couleur = Draw_jaune;
-  else if (Indice == 2)
-    Couleur = Draw_bleu;
-  else if (Indice == 3)
-    Couleur = Draw_rouge;
-  else if (Indice == 4)
-    Couleur = Draw_vert;
-
-  if (type == STANDARD_TYPE(Geom2d_Circle))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 30);
-  else if (type == STANDARD_TYPE(Geom2d_Line))
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 2);
-  else
-    dr = new DrawTrSurf_Curve2d(CurveDraw, Couleur, 500);
-
-    // dout << dr;
-    // dout.Flush();
-  #endif
 }
 
 #endif

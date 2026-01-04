@@ -184,7 +184,7 @@ public:
   Standard_EXPORT void Destroy();
 
 private:
-  Standard_EXPORT BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth) = delete;
+  BRepClass3d_SolidExplorer(const BRepClass3d_SolidExplorer& Oth) = delete;
 
 protected:
   Standard_EXPORT TopAbs_State ClassifyUVPoint(const IntCurvesFace_Intersector& theIntersector,

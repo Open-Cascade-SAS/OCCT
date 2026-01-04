@@ -33,48 +33,20 @@ GccEnt_Position Geom2dGcc_QualifiedCurve::Qualifier() const
 
 bool Geom2dGcc_QualifiedCurve::IsUnqualified() const
 {
-  if (TheQualifier == GccEnt_unqualified)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_unqualified;
 }
 
 bool Geom2dGcc_QualifiedCurve::IsEnclosing() const
 {
-  if (TheQualifier == GccEnt_enclosing)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosing;
 }
 
 bool Geom2dGcc_QualifiedCurve::IsEnclosed() const
 {
-  if (TheQualifier == GccEnt_enclosed)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_enclosed;
 }
 
 bool Geom2dGcc_QualifiedCurve::IsOutside() const
 {
-  if (TheQualifier == GccEnt_outside)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_outside;
 }

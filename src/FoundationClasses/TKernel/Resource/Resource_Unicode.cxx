@@ -156,7 +156,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* fromstr, TCollection_Exte
   {
     if (gb3 != 0x00)
     {
-      if (!(*currentch >= 0x30 && *currentch <= 0x39))
+      if (*currentch < 0x30 || *currentch > 0x39)
       {
         TCollection_ExtendedString curext3(((char)*currentch));
         TCollection_ExtendedString curext2(((char)gb3));

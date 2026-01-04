@@ -20,7 +20,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
 #include <IntTools_Curve.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>

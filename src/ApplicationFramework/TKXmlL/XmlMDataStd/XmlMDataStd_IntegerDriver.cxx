@@ -50,7 +50,7 @@ bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&       theSourc
   int                 aValue;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (anIntStr.GetInteger(aValue) == false)
+  if (!anIntStr.GetInteger(aValue))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Integer attribute from \"") + anIntStr + "\"";

@@ -44,7 +44,6 @@ Graphic3d_Aspects::Graphic3d_Aspects()
       myToMapTexture(false),
       myIsTextZoomable(false)
 {
-  //
 }
 
 //=================================================================================================

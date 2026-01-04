@@ -25,7 +25,6 @@ Prs3d_PointAspect::Prs3d_PointAspect(const Aspect_TypeOfMarker theType,
                                      const double              theScale)
     : myAspect(new Graphic3d_AspectMarker3d(theType, theColor, theScale))
 {
-  //
 }
 
 //=================================================================================================
@@ -36,7 +35,6 @@ Prs3d_PointAspect::Prs3d_PointAspect(const Quantity_Color&                      
                                      const occ::handle<NCollection_HArray1<uint8_t>>& theTexture)
     : myAspect(new Graphic3d_AspectMarker3d(theColor, theWidth, theHeight, theTexture))
 {
-  //
 }
 
 //=================================================================================================

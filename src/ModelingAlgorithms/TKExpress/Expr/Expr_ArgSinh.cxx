@@ -66,11 +66,7 @@ bool Expr_ArgSinh::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
 
 bool Expr_ArgSinh::IsLinear() const
 {
-  if (ContainsUnknowns())
-  {
-    return false;
-  }
-  return true;
+  return !ContainsUnknowns();
 }
 
 occ::handle<Expr_GeneralExpression> Expr_ArgSinh::Derivative(

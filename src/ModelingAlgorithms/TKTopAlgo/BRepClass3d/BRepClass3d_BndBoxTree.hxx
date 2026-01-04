@@ -28,7 +28,6 @@
 #include <Precision.hxx>
 
 // Typedef to reduce code complexity.
-typedef NCollection_UBTree<int, Bnd_Box> BRepClass3d_BndBoxTree;
 
 // Class representing tree selector for point object.
 class BRepClass3d_BndBoxTreeSelectorPoint : public NCollection_UBTree<int, Bnd_Box>::Selector

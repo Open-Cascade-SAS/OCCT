@@ -285,7 +285,7 @@ bool TopOpeBRepTool::PurgeClosingEdges(
   bool                   vclosed = CORRISO.Refclosed(2, vperiod);
   if (!uclosed && !vclosed)
     return false;
-  bool   inU  = uclosed ? true : false;
+  bool   inU  = uclosed;
   double xmin = inU ? (CORRISO.GASref().FirstUParameter()) : (CORRISO.GASref().FirstVParameter());
   double xper = inU ? uperiod : vperiod;
   double tolx = inU ? (CORRISO.Tol(1, tolF)) : (CORRISO.Tol(2, tolF));
@@ -725,7 +725,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
   int i;
   for (i = 1; i <= 2; i++)
   {
-    bool                                   onU     = (i == 1) ? true : false;
+    bool                                   onU     = i == 1;
     const NCollection_List<TopoDS_Shape>&  Tocheck = CORRISO.Eds();
     NCollection_DataMap<TopoDS_Shape, int> fyEds;
     ok = ::FUN_connexX(onU, CORRISO, Tocheck, fyEds);
@@ -738,9 +738,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     if (!ok)
       continue;
     ok = CORRISO.GetnewS(Fsp);
-    if (!ok)
-      return false; // NYIRAISE
-    return true;
+    return ok;
   }
 
   // 2. x-2drep(edges) are in [xfirst,xfirst+xperiod]
@@ -764,9 +762,7 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     if (!ok)
       continue;
     ok = CORRISO.GetnewS(Fsp);
-    if (!ok)
-      return false; // NYIRAISE
-    return true;
+    return ok;
   }
   return false;
 
@@ -842,12 +838,6 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
     continue;
       }
 
-#ifdef DRAW
-      if (trc) {
-    std::cout<<"TopOpeBRepTool correctONUVISO : faulty iso edge"<<std::endl;
-    FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fyisoe",fyisoe);
-      }
-#endif
 
       bool ok = ::FUN_correctClosingE(fyisoe,Fsp);
       if (!ok) {
@@ -867,12 +857,6 @@ TopTools_ShapeMapHasher> mve; TopExp::MapShapesAndAncestors(Fsp,TopAbs_VERTEX,To
     for (NCollection_List<TopoDS_Shape>::Iterator itdeg(lfydege);itdeg.More();itdeg.Next()) {
       TopoDS_Edge& fydege = TopoDS::Edge(itdeg.Value());
 
-#ifdef DRAW
-      if (trc) {
-    std::cout<<"TopOpeBRepTool correctONUVISO : faulty deg edge"<<std::endl;
-    FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fydege",fydege);
-      }
-#endif
 
       bool ok = ::FUN_correctDegeneratedE(mve,fydege,Fsp);
       if (!ok) {

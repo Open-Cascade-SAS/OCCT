@@ -251,10 +251,7 @@ static bool isDegenerated(const occ::handle<GeomAdaptor_Surface>& theGAHS,
   theAHC2d->D0(0.5 * (theFirstPar + theLastPar), aP2d);
   theGAHS->D0(aP2d.X(), aP2d.Y(), aP2);
 
-  if (aP1.SquareDistance(aP2) > aSqTol)
-    return false;
-
-  return true;
+  return aP1.SquareDistance(aP2) <= aSqTol;
 }
 
 //=================================================================================================
@@ -846,7 +843,7 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
 
                 NCollection_Array1<gp_Pnt2d> tpoles2d(1, nbpoles);
                 NCollection_Array1<gp_Pnt>   tpoles(1, nbpoles);
-                mbspc.Curve((myApprox1 == true) ? 2 : 1, tpoles2d);
+                mbspc.Curve((myApprox1) ? 2 : 1, tpoles2d);
                 const gp_Pln& Pln = myHS2->Plane();
                 //
                 int ik;
@@ -964,7 +961,7 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
                 if (myApprox2)
                 {
                   NCollection_Array1<gp_Pnt2d> tpoles2d(1, nbpoles);
-                  mbspc.Curve((myApprox1 == true) ? 3 : 2, tpoles2d);
+                  mbspc.Curve((myApprox1) ? 3 : 2, tpoles2d);
                   occ::handle<Geom2d_BSplineCurve> BS2 =
                     new Geom2d_BSplineCurve(tpoles2d,
                                             mbspc.Knots(),

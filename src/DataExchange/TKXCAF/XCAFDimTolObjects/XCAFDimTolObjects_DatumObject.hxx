@@ -18,7 +18,6 @@
 
 #include <Standard.hxx>
 
-#include <XCAFDimTolObjects_DatumObjectSequence.hxx>
 #include <XCAFDimTolObjects_DatumTargetType.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
@@ -28,6 +27,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
 #include <gp_Ax2.hxx>
+class XCAFDimTolObjects_DatumObject;
 
 //! Access object to store datum
 class XCAFDimTolObjects_DatumObject : public Standard_Transient

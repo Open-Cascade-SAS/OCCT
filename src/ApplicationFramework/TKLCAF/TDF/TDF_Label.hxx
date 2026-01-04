@@ -24,7 +24,7 @@
 #include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 class TDF_Attribute;
 class TDF_Data;
 class Standard_GUID;

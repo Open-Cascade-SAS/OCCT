@@ -256,15 +256,11 @@ Graphic3d_FrameStats::Graphic3d_FrameStats()
       myLastFrameIndex(0),
       myIsLongLineFormat(false)
 {
-  //
 }
 
 //=================================================================================================
 
-Graphic3d_FrameStats::~Graphic3d_FrameStats()
-{
-  //
-}
+Graphic3d_FrameStats::~Graphic3d_FrameStats() = default;
 
 //=================================================================================================
 

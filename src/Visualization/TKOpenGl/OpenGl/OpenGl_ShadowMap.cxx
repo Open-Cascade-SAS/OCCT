@@ -28,7 +28,6 @@ OpenGl_ShadowMap::OpenGl_ShadowMap()
       myShadowCamera(new Graphic3d_Camera()),
       myShadowMapBias(0.0f)
 {
-  //
 }
 
 //=================================================================================================

@@ -253,7 +253,7 @@ bool AIS_RubberBand::fillTriangles()
     new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
   occ::handle<BRepMesh_DataStructureOfDelaun> aMeshStructure =
     new BRepMesh_DataStructureOfDelaun(anAllocator);
-  int                        aPtsLower = myPoints.Lower();
+  int                        aPtsLower = NCollection_Sequence<NCollection_Vec2<int>>::Lower();
   int                        aPtsUpper = myPoints.Upper();
   IMeshData::VectorOfInteger anIndexes(myPoints.Length(), anAllocator);
   for (int aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)

@@ -58,7 +58,7 @@ Standard_OStream& Vrml_LOD::Print(Standard_OStream& anOStream) const
   int i;
   anOStream << "LOD {\n";
 
-  if (myRangeFlag == true)
+  if (myRangeFlag)
   {
     anOStream << "    range [\n\t";
     for (i = myRange->Lower(); i <= myRange->Upper(); i++)

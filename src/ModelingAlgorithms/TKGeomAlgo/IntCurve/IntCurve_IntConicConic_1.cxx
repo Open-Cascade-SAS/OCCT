@@ -302,7 +302,7 @@ void CircleCircleGeometricIntersection(const gp_Circ2d&  C1,
   else
     dAngle1 = Axe1.Angle(AxeO1O2);
 
-  if (C1.IsDirect() == false)
+  if (!C1.IsDirect())
   {
     dAngle1 = -dAngle1;
   }
@@ -397,22 +397,8 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d&       Circle,
     LInterAndDomain.Binf = Linf;
     LInterAndDomain.Bsup = Lsup;
 
-#if 0     
-    double Cinf = 
-      ElCLib::CircleParameter(Circle.Axis()					       
-			      ,ElCLib::LineValue(LInterAndDomain.Binf,
-					Line.Position()));
-    double Csup = 
-      ElCLib::CircleParameter(Circle.Axis()
-			      ,ElCLib::LineValue(LInterAndDomain.Bsup
-					,Line.Position()));
-
-    if(Cinf<CDomainAndRes.Binf) Cinf = CDomainAndRes.Binf;
-    if(Csup>CDomainAndRes.Bsup) Csup = CDomainAndRes.Bsup;
-#else
     double Cinf = CDomainAndRes.Binf;
     double Csup = CDomainAndRes.Bsup;
-#endif
     if (Cinf >= Csup)
     {
       Cinf = CDomainAndRes.Binf;
@@ -534,16 +520,6 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
 
   double dAngle1 = (Circle.XAxis().Direction()).Angle(Line.Direction());
 
-#if 0 
-  //---------------------------------------------
-  //-- Si le cercle est indirect alors l origine
-  //-- est vue en -dAngle1. 
-  //--
-  if(Circle.IsDirect() == false) { 
-    dAngle1 = -dAngle1;
-  }
-#endif
-
   double a, b, c, d;
   Line.Coefficients(a, b, c);
 
@@ -565,7 +541,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
   //-- par construction aucun des segments ne peut exceder PI
   //-- (permet de ne pas gerer trop de cas differents)
 
-  if (Circle.IsDirect() == false)
+  if (!Circle.IsDirect())
   {
     double t = binf1;
     binf1    = bsup1;
@@ -583,7 +559,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d&   Line,
     binf2 += dAngle1;
     bsup2 += dAngle1;
 
-    if (Circle.IsDirect() == false)
+    if (!Circle.IsDirect())
     {
       double t = binf2;
       binf2    = bsup2;
@@ -970,8 +946,7 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       Circle1,
   IntRes2d_Transition T1a, T1b, T2a, T2b;
   IntRes2d_Position   Pos1a, Pos1b, Pos2a, Pos2b;
 
-  bool isOpposite =
-    ((Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2)) ? true : false;
+  bool isOpposite = (Circle1.Location().SquareDistance(Circle2.Location())) > (R1 * R1 + R2 * R2);
 
   // if(Circle1.IsDirect()) { std::cout<<" C1 Direct"<<std::endl; } else { std::cout<<" C1
   // INDirect"<<std::endl; } if(Circle2.IsDirect()) { std::cout<<" C2 Direct"<<std::endl; } else {
@@ -1352,7 +1327,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L1,
   gp_Vec2d Tan2 = L2.Direction();
 
   double aCosT1T2   = Tan1.Dot(Tan2);
-  bool   isOpposite = (aCosT1T2 < 0.0) ? true : false;
+  bool   isOpposite = aCosT1T2 < 0.0;
 
   done = true;
 
@@ -2334,19 +2309,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
       SolutionLine[i].Binf = SolutionLine[i].Bsup = t;
     }
   }
-#if 0 
-  if(NbSolTotal == 2) { 
-    if(SolutionLine[0].Binf==SolutionLine[0].BSup) { 
-      if(SolutionLine[1].Binf==SolutionLine[1].BSup) {
-	if(std::abs(SolutionLine[0].Binf-SolutionLine[1].Binf)<TolConf) { 
-	  SolutionLine[0].Binf=0.5*(SolutionLine[0].BSup+SolutionLine[1].BSup);
-	  SolutionLine[0].BSup=SolutionLine[0].Binf;
-	  NbSolTotal = 1;
-	}
-      }
-    }
-  }
-#endif
   //----------------------------------------------------------------------
   //-- Traitement des intervalles (ou des points obtenus)
   //--
@@ -2400,12 +2362,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        Line,
         p2 = q2;
       }
 
-#if 0
-      if(SolutionCircle[i].Binf!=p1 || SolutionCircle[i].Bsup!=p2) { 
-	printf("\n IntCurve_IntConicConic_1.cxx : (%g , %g) --> (%g , %g)\n",
-	       SolutionCircle[i].Binf,SolutionCircle[i].Bsup,p1,p2); 
-      }
-#endif
       SolutionCircle[i].Binf = p1;
       SolutionCircle[i].Bsup = p2;
 

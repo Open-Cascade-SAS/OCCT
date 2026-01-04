@@ -24,7 +24,6 @@ XCAFPrs_Style::XCAFPrs_Style()
       myHasColorCurv(false),
       myIsVisible(true)
 {
-  //
 }
 
 //=================================================================================================

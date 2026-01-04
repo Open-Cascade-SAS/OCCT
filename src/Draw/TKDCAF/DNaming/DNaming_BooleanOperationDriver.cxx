@@ -202,25 +202,7 @@ static bool IsValidSurfType(const TopoDS_Face& theFace)
   BRepAdaptor_Surface          anAdapt(theFace);
   occ::handle<Adaptor3d_Curve> aBasisCurve;
   const GeomAbs_SurfaceType&   aType = anAdapt.GetType();
-  if (aType == GeomAbs_Sphere)
-    return true;
-/*  if(aType == GeomAbs_Cylinder || aType == GeomAbs_Cone || Type == GeomAbs_Sphere)
-    return true;
-  else if(aType == GeomAbs_SurfaceOfRevolution){
-    aBasisCurve = anAdapt.BasisCurve();
-    if (aBasisCurve->GetType() == GeomAbs_Line)
-      return true;
-  }
-  else if(aType == GeomAbs_SurfaceOfExtrusion) {
-    aBasisCurve = anAdapt.BasisCurve();
-    if (aBasisCurve->GetType() == GeomAbs_Circle || aBasisCurve->GetType() == GeomAbs_Ellipse)
-      return true;
-  }
-*/
-#ifdef OCCT_DEBUG
-  // ModDbgTools_Write(theFace, "Surf");
-#endif
-  return false;
+  return aType == GeomAbs_Sphere;
 }
 
 //=================================================================================================

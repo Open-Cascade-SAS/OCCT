@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 
 #include <Expr_UnaryExpression.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;

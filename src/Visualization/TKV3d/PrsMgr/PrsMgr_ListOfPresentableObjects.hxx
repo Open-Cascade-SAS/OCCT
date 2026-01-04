@@ -21,6 +21,5 @@
 // clang-format off
 class PrsMgr_PresentableObject; // use forward declaration since PrsMgr_PresentableObject.hxx uses NCollection_List<occ::handle<PrsMgr_PresentableObject>>
 // clang-format on
-typedef NCollection_List<occ::handle<PrsMgr_PresentableObject>> PrsMgr_ListOfPresentableObjects;
 
 #endif // _PrsMgr_ListOfPresentableObjects_HeaderFile

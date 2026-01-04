@@ -28,7 +28,6 @@ Aspect_Grid::Aspect_Grid(const double          theXOrigin,
       myIsActive(false),
       myDrawMode(Aspect_GDM_Lines)
 {
-  //
 }
 
 void Aspect_Grid::SetXOrigin(const double theOrigin)

@@ -21,7 +21,9 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DoubleMap.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
@@ -381,6 +383,7 @@ static int OCC74bug_get(Draw_Interpretor& di, int argc, const char** argv)
 #include <Image_AlienPixMap.hxx>
 #include <OSD_FileSystem.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+class AIS_InteractiveObject;
 
 //=======================================================================
 // function : OCC30182

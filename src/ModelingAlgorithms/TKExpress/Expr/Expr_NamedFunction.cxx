@@ -111,11 +111,7 @@ bool Expr_NamedFunction::IsIdentical(const occ::handle<Expr_GeneralFunction>& fu
       return false;
     }
   }
-  if (!Expression()->IsIdentical(occ::down_cast<Expr_NamedFunction>(func)->Expression()))
-  {
-    return false;
-  }
-  return true;
+  return Expression()->IsIdentical(occ::down_cast<Expr_NamedFunction>(func)->Expression());
 }
 
 bool Expr_NamedFunction::IsLinearOnVariable(const int) const

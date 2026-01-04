@@ -286,43 +286,58 @@ static void FUN_TrimInfSurf(const gp_Pnt&                         Pmin,
                             occ::handle<Adaptor3d_Surface>&       TrimS)
 {
   double        TP = AlternativeTrimPrm;
-  Extrema_ExtPS ext1(Pmin, *InfSurf, 1.e-7, 1.e-7);
-  Extrema_ExtPS ext2(Pmax, *InfSurf, 1.e-7, 1.e-7);
-  if (ext1.IsDone() || ext2.IsDone())
+  Extrema_ExtPS anExtPS;
+  anExtPS.Initialize(*InfSurf,
+                     InfSurf->FirstUParameter(),
+                     InfSurf->LastUParameter(),
+                     InfSurf->FirstVParameter(),
+                     InfSurf->LastVParameter(),
+                     1.e-7,
+                     1.e-7);
+
+  // Process Pmin
+  anExtPS.Perform(Pmin);
+  const bool isDone1 = anExtPS.IsDone();
+  double     Umax = -1.e+100, Umin = 1.e+100, Vmax = -1.e+100, Vmin = 1.e+100, cU, cV;
+  if (isDone1)
   {
-    double Umax = -1.e+100, Umin = 1.e+100, Vmax = -1.e+100, Vmin = 1.e+100, cU, cV;
-    if (ext1.IsDone())
+    for (int i = 1; i <= anExtPS.NbExt(); i++)
     {
-      for (int i = 1; i <= ext1.NbExt(); i++)
-      {
-        const Extrema_POnSurf& pons = ext1.Point(i);
-        pons.Parameter(cU, cV);
-        if (cU > Umax)
-          Umax = cU;
-        if (cU < Umin)
-          Umin = cU;
-        if (cV > Vmax)
-          Vmax = cV;
-        if (cV < Vmin)
-          Vmin = cV;
-      }
+      const Extrema_POnSurf& pons = anExtPS.Point(i);
+      pons.Parameter(cU, cV);
+      if (cU > Umax)
+        Umax = cU;
+      if (cU < Umin)
+        Umin = cU;
+      if (cV > Vmax)
+        Vmax = cV;
+      if (cV < Vmin)
+        Vmin = cV;
     }
-    if (ext2.IsDone())
+  }
+
+  // Process Pmax
+  anExtPS.Perform(Pmax);
+  const bool isDone2 = anExtPS.IsDone();
+  if (isDone2)
+  {
+    for (int i = 1; i <= anExtPS.NbExt(); i++)
     {
-      for (int i = 1; i <= ext2.NbExt(); i++)
-      {
-        const Extrema_POnSurf& pons = ext2.Point(i);
-        pons.Parameter(cU, cV);
-        if (cU > Umax)
-          Umax = cU;
-        if (cU < Umin)
-          Umin = cU;
-        if (cV > Vmax)
-          Vmax = cV;
-        if (cV < Vmin)
-          Vmin = cV;
-      }
+      const Extrema_POnSurf& pons = anExtPS.Point(i);
+      pons.Parameter(cU, cV);
+      if (cU > Umax)
+        Umax = cU;
+      if (cU < Umin)
+        Umin = cU;
+      if (cV > Vmax)
+        Vmax = cV;
+      if (cV < Vmin)
+        Vmin = cV;
     }
+  }
+
+  if (isDone1 || isDone2)
+  {
     TP =
       std::max(std::abs(Umin), std::max(std::abs(Umax), std::max(std::abs(Vmin), std::abs(Vmax))));
   }
@@ -1210,7 +1225,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1480,7 +1496,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   if (!theIsReqToPostWLProc)
     return;
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -1893,7 +1910,8 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
     }
   }
 
-  for (int i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = NCollection_Sequence<opencascade::handle<IntPatch_Line>>::Lower(); i <= slin.Upper();
+       i++)
   {
     occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
@@ -2128,10 +2146,7 @@ bool IntPatch_Intersection::CheckSingularPoints(const occ::handle<Adaptor3d_Surf
     gp_Pnt2d aP1;
     gp_Vec2d aDir;
     aBnd->D1((pinf + psup) / 2., aP1, aDir);
-    if (std::abs(aDir.X()) > std::abs(aDir.Y()))
-      isU = true;
-    else
-      isU = false;
+    isU = std::abs(aDir.X()) > std::abs(aDir.Y());
     gp_Pnt aPP1;
     gp_Vec aDU, aDV;
     double aD1NormMax = 0.;

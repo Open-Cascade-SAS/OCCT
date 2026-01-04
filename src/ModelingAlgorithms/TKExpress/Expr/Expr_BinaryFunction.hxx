@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Expr_BinaryExpression.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 class Expr_GeneralFunction;
 class Expr_GeneralExpression;

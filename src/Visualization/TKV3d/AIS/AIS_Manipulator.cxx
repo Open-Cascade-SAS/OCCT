@@ -31,10 +31,11 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <V3d_View.hxx>
+class SelectMgr_EntityOwner;
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
@@ -1801,7 +1802,6 @@ AIS_Manipulator::Axis::Axis(const gp_Ax1&         theAxis,
       myFacettesNumber(20),
       myCircleRadius(myLength + myBoxSize + myBoxSize * 0.5f * 0.5f)
 {
-  //
 }
 
 //=================================================================================================

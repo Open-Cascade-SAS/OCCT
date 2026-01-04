@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Extrema_ExtPS.hxx>
 
 //=================================================================================================
 
@@ -97,7 +96,7 @@ void GeomInt_IntSS::InternalPerform(const double Tol,
   }
   else
   {
-    myIntersector.PrepareSurfaces(myHS1, dom1, myHS2, dom2, Tol, aVecHS1, aVecHS2);
+    IntPatch_Intersection::PrepareSurfaces(myHS1, dom1, myHS2, dom2, Tol, aVecHS1, aVecHS2);
   }
 
   for (int aNumOfHS1 = 0; aNumOfHS1 < aVecHS1.Length(); aNumOfHS1++)

@@ -110,7 +110,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
     // theFile is empty, create new TDocStd_Document for this model
     aStatus = anApplication->CreateNewDocument(aDoc, GetFormat());
 
-    if (aStatus == true)
+    if (aStatus)
     {
       // Put model in a new attribute on root label
       TDF_Label                aLabel = aDoc->Main();
@@ -127,7 +127,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
     Messenger()->Send(Message_Msg("TObj_M_LoadDocument") << theFile, Message_Info);
     aStatus = anApplication->LoadDocument(theFile, aDoc);
 
-    if (aStatus == true)
+    if (aStatus)
     {
       // Check for validity of the model read:
       // if it had wrong type, it has not been not properly restored
@@ -162,7 +162,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
     }
   }
   //    initialise the new model
-  if (aStatus == true)
+  if (aStatus)
   {
     bool isInitOk = false;
     {

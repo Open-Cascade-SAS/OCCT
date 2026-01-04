@@ -5,8 +5,6 @@ set(OCCT_Select3D_FILES
   Select3D_BndBox3d.hxx
   Select3D_BVHBuilder3d.hxx
   Select3D_BVHIndexBuffer.hxx
-  Select3D_EntitySequence.hxx
-  Select3D_IndexedMapOfEntity.hxx
   Select3D_InteriorSensitivePointSet.cxx
   Select3D_InteriorSensitivePointSet.hxx
   Select3D_Pnt.hxx

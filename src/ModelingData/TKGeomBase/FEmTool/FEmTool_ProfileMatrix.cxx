@@ -251,10 +251,7 @@ bool FEmTool_ProfileMatrix::IsInProfile(const int i, const int j) const
 {
   if (j <= i)
   {
-    if ((i - j) <= profile(1, i))
-      return true;
-    else
-      return false;
+    return (i - j) <= profile(1, i);
   }
   else if ((j - i) <= profile(1, j))
     return true;

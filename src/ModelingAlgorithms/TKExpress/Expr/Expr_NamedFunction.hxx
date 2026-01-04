@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>

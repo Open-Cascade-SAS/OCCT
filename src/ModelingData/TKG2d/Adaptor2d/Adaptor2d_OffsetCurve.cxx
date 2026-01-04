@@ -245,11 +245,8 @@ bool Adaptor2d_OffsetCurve::IsClosed() const
         gp_Pnt2d P;
         myCurve->D1(myCurve->FirstParameter(), P, Dummy[0]);
         myCurve->D1(myCurve->LastParameter(), P, Dummy[1]);
-        if (Dummy[0].IsParallel(Dummy[1], Precision::Angular())
-            && !(Dummy[0].IsOpposite(Dummy[1], Precision::Angular())))
-          return true;
-        else
-          return false;
+        return Dummy[0].IsParallel(Dummy[1], Precision::Angular())
+               && !(Dummy[0].IsOpposite(Dummy[1], Precision::Angular()));
       }
       else
         return false;

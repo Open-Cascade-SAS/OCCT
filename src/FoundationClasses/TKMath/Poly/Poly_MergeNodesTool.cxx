@@ -69,7 +69,6 @@ Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
       myAngleCos(0.0f),
       myToMergeOpposite(false)
 {
-  //
 }
 
 //=================================================================================================

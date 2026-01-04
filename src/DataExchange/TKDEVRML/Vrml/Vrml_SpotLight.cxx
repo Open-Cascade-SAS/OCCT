@@ -22,7 +22,6 @@ Vrml_SpotLight::Vrml_SpotLight()
       myDropOffRate(0),
       myCutOffAngle(0.785398)
 {
-  //
 }
 
 Vrml_SpotLight::Vrml_SpotLight(const bool            aOnOff,
@@ -124,7 +123,7 @@ Standard_OStream& Vrml_SpotLight::Print(Standard_OStream& anOStream) const
 {
   anOStream << "SpotLight {\n";
 
-  if (myOnOff != true)
+  if (!myOnOff)
   {
     anOStream << "    on\t\tFALSE\n";
     //    anOStream << myOnOff << "\n";

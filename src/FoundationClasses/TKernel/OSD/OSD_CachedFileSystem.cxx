@@ -22,7 +22,6 @@ OSD_CachedFileSystem::OSD_CachedFileSystem(const occ::handle<OSD_FileSystem>& th
     : myLinkedFS(!theLinkedFileSystem.IsNull() ? theLinkedFileSystem
                                                : OSD_FileSystem::DefaultFileSystem())
 {
-  //
 }
 
 //=================================================================================================

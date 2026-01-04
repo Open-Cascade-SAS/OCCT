@@ -29,15 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_GraphicDriver, OpenGl_GraphicDriver)
 D3DHost_GraphicDriver::D3DHost_GraphicDriver()
     : OpenGl_GraphicDriver(occ::handle<Aspect_DisplayConnection>(), true)
 {
-  //
 }
 
 //=================================================================================================
 
-D3DHost_GraphicDriver::~D3DHost_GraphicDriver()
-{
-  //
-}
+D3DHost_GraphicDriver::~D3DHost_GraphicDriver() {}
 
 //=================================================================================================
 

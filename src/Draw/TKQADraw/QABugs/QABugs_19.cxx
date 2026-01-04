@@ -2190,8 +2190,8 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
   {
     const TopoDS_Shape& aS = aIt.Value();
     aType                  = aS.ShapeType();
-    if (!(aType == TopAbs_EDGE || aType == TopAbs_FACE || aType == TopAbs_VERTEX
-          || aType == TopAbs_SOLID))
+    if (aType != TopAbs_EDGE && aType != TopAbs_FACE && aType != TopAbs_VERTEX
+        && aType != TopAbs_SOLID)
     {
       continue;
     }
@@ -2555,10 +2555,7 @@ static bool inspect_point(const gp_XY& thePoint, const gp_XY& theCenter, const d
   static double aPrecision   = Precision::PConfusion();
   static double aSqPrecision = aPrecision * aPrecision;
   const gp_XY   aDistVec     = thePoint - theCenter;
-  if (aDistVec.SquareModulus() - (theRadius * theRadius) < aSqPrecision)
-    return true;
-  else
-    return false;
+  return aDistVec.SquareModulus() - (theRadius * theRadius) < aSqPrecision;
 }
 
 static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)

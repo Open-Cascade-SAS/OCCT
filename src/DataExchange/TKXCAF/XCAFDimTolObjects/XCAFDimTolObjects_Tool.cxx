@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <XCAFDimTolObjects_Tool.hxx>
-#include <XCAFDimTolObjects_DimensionObjectSequence.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_Dimension.hxx>
-#include <XCAFDimTolObjects_GeomToleranceObjectSequence.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
-#include <XCAFDimTolObjects_DatumObjectSequence.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <TDF_Label.hxx>
@@ -28,6 +25,10 @@
 #include <NCollection_DataMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
+class XCAFDimTolObjects_GeomToleranceObject;
+
+class XCAFDimTolObjects_DimensionObject;
+class XCAFDimTolObjects_DatumObject;
 
 //=================================================================================================
 

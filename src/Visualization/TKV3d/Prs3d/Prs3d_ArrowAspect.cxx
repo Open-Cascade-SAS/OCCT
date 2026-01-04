@@ -28,7 +28,6 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect()
       myLength(1.0),
       myIsZoomable(true)
 {
-  //
 }
 
 //=================================================================================================
@@ -39,7 +38,6 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const double theAngle, const double theLeng
       myAngle(theAngle),
       myLength(theLength)
 {
-  //
 }
 
 //=================================================================================================
@@ -49,7 +47,6 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect(const occ::handle<Graphic3d_AspectLine3d>& 
       myAngle(M_PI / 180.0 * 10.0),
       myLength(1.0)
 {
-  //
 }
 
 //=================================================================================================

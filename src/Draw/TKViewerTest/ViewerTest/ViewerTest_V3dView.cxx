@@ -25,7 +25,6 @@ ViewerTest_V3dView::ViewerTest_V3dView(const occ::handle<V3d_Viewer>& theViewer,
     : V3d_View(theViewer, theType),
       myIs2dMode(theIs2dMode)
 {
-  //
 }
 
 //=================================================================================================

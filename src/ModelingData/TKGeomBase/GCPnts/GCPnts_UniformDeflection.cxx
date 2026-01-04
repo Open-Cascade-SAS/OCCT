@@ -40,7 +40,6 @@ GCPnts_UniformDeflection::GCPnts_UniformDeflection()
     : myDone(false),
       myDeflection(0.0)
 {
-  //
 }
 
 //=================================================================================================

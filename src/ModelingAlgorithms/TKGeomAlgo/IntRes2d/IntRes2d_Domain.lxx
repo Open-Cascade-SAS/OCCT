@@ -35,7 +35,7 @@ inline void IntRes2d_Domain::SetEquivalentParameters(const double p_first, const
 
 inline bool IntRes2d_Domain::HasFirstPoint() const
 {
-  return (status & 1) ? true : false;
+  return (status & 1) != 0;
 }
 
 inline double IntRes2d_Domain::FirstParameter() const
@@ -67,7 +67,7 @@ inline double IntRes2d_Domain::FirstTolerance() const
 
 inline bool IntRes2d_Domain::HasLastPoint() const
 {
-  return (status & 2) ? true : false;
+  return (status & 2) != 0;
 }
 
 inline double IntRes2d_Domain::LastParameter() const
@@ -99,7 +99,7 @@ inline double IntRes2d_Domain::LastTolerance() const
 
 inline bool IntRes2d_Domain::IsClosed() const
 {
-  return (status & 4) ? true : false;
+  return (status & 4) != 0;
 }
 
 inline void IntRes2d_Domain::EquivalentParameters(double& p_first, double& p_last) const

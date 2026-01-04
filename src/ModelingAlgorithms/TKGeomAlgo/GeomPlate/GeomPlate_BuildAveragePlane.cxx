@@ -465,10 +465,7 @@ occ::handle<Geom_Line> GeomPlate_BuildAveragePlane::Line() const
 bool GeomPlate_BuildAveragePlane::IsPlane() const
 {
   gp_Vec OZ = myOX ^ myOY;
-  if (OZ.SquareMagnitude() == 0)
-    return false;
-  else
-    return true;
+  return OZ.SquareMagnitude() != 0;
 }
 
 //=================================================================================================
@@ -476,10 +473,7 @@ bool GeomPlate_BuildAveragePlane::IsPlane() const
 bool GeomPlate_BuildAveragePlane::IsLine() const
 {
   gp_Vec OZ = myOX ^ myOY;
-  if (OZ.SquareMagnitude() == 0)
-    return true;
-  else
-    return false;
+  return OZ.SquareMagnitude() == 0;
 }
 
 bool GeomPlate_BuildAveragePlane::HalfSpace(const NCollection_Sequence<gp_Vec>&  NewNormals,

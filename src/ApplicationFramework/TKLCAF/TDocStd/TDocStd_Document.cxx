@@ -277,7 +277,7 @@ bool TDocStd_Document::CommitTransaction()
     // deny modifications if the transaction is not opened
     if (myOnlyTransactionModification)
     {
-      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
     }
   }
   else
@@ -321,7 +321,7 @@ bool TDocStd_Document::CommitTransaction()
     // deny or allow modifications according to transaction state
     if (myOnlyTransactionModification)
     {
-      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
     }
   }
   // Notify CDM_Application of the successful commit
@@ -356,7 +356,7 @@ void TDocStd_Document::AbortTransaction()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
   }
   // Notify CDM_Application of the event
   if (IsOpened())
@@ -399,7 +399,7 @@ void TDocStd_Document::OpenTransaction()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
   }
   // Notify CDM_Application of the event
   if (IsOpened())
@@ -431,7 +431,7 @@ void TDocStd_Document::SetUndoLimit(const int L)
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
   }
   // OpenTransaction(); dp 15/10/99
 }
@@ -528,7 +528,7 @@ bool TDocStd_Document::Undo()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
   }
 
   return undoDone;
@@ -585,7 +585,7 @@ bool TDocStd_Document::Redo()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit);
   }
 
   return undoDone;

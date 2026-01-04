@@ -66,6 +66,6 @@ void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(
 {
   occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
     occ::down_cast<XmlMNaming_NamedShapeDriver>(theDriver);
-  if (aNamedShapeDriver.IsNull() == false)
+  if (!aNamedShapeDriver.IsNull())
     aNamedShapeDriver->Clear();
 }

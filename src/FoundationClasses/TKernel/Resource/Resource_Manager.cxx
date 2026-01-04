@@ -530,9 +530,7 @@ void Resource_Manager::SetResource(const char* aResource, const char* aValue)
 bool Resource_Manager::Find(const char* aResource) const
 {
   TCollection_AsciiString Resource(aResource);
-  if (myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource))
-    return true;
-  return false;
+  return myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource);
 }
 
 //=================================================================================================

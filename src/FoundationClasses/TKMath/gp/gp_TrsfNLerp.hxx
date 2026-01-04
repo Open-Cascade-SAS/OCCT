@@ -86,6 +86,4 @@ private:
   gp_Trsf                  myTrsfEnd;
 };
 
-typedef NCollection_Lerp<gp_Trsf> gp_TrsfNLerp;
-
 #endif // _gp_TrsfNLerp_HeaderFile

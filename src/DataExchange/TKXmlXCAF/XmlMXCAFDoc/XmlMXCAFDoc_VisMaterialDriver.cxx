@@ -282,7 +282,6 @@ XmlMXCAFDoc_VisMaterialDriver::XmlMXCAFDoc_VisMaterialDriver(
   const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "VisMaterial")
 {
-  //
 }
 
 //=================================================================================================

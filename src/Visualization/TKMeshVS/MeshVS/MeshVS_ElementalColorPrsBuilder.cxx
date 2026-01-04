@@ -263,7 +263,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
                                      aMaterial[1]);
     aGGroup = Prs->NewGroup();
     aLGroup = Prs->NewGroup();
-    aGGroup->SetClosed(toSupressBackFaces == true);
+    aGGroup->SetClosed(toSupressBackFaces);
     aGGroup->SetGroupPrimitivesAspect(aGroupFillAspect);
   }
 
@@ -494,7 +494,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     {
       aGGroup->SetPrimitivesAspect(aFillAspect);
       aGGroup->AddPrimitiveArray(aFaceTriangles);
-      aGGroup->SetClosed(toSupressBackFaces == true);
+      aGGroup->SetClosed(toSupressBackFaces);
 
       if (anEdgeOn)
       {

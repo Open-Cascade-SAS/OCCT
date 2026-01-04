@@ -226,9 +226,5 @@ bool DEPLY_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>
     return false;
   }
   const char* aBytes = (const char*)theBuffer->Data();
-  if (!::strncmp(aBytes, "ply", 3) && ::isspace(aBytes[3]))
-  {
-    return true;
-  }
-  return false;
+  return !::strncmp(aBytes, "ply", 3) && ::isspace(aBytes[3]);
 }

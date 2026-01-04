@@ -410,11 +410,7 @@ public:
   bool Contains(const TheKeyType& theKey1) const
   {
     IndexedDataMapNode* aNode;
-    if (lookup(theKey1, aNode))
-    {
-      return true;
-    }
-    return false;
+    return static_cast<bool>(lookup(theKey1, aNode));
   }
 
   //! Substitute

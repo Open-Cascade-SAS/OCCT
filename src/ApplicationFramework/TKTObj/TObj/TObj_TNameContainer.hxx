@@ -22,8 +22,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TDF_Label.hxx>
-#include <TObj_SequenceOfObject.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TDF_Attribute.hxx>
+class TObj_Object;
 
 /**
  * This class provides OCAF Attribute to storing the unique names of object in

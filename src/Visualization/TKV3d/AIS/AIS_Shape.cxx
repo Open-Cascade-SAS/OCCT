@@ -92,7 +92,6 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
       myInitAng(0.0),
       myCompBB(true)
 {
-  //
 }
 
 //=================================================================================================

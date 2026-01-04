@@ -166,7 +166,6 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer()
       myHasMore(false),
       myFlags(XCAFPrs_DocumentExplorerFlags_None)
 {
-  //
 }
 
 //=================================================================================================

@@ -27,14 +27,7 @@ GccEnt_Position GccEnt_QualifiedLin::Qualifier() const
 
 bool GccEnt_QualifiedLin::IsUnqualified() const
 {
-  if (TheQualifier == GccEnt_unqualified)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_unqualified;
 }
 
 bool GccEnt_QualifiedLin::IsEnclosed() const
@@ -44,14 +37,7 @@ bool GccEnt_QualifiedLin::IsEnclosed() const
 
 bool GccEnt_QualifiedLin::IsOutside() const
 {
-  if (TheQualifier == GccEnt_outside)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return TheQualifier == GccEnt_outside;
 }
 
 GccEnt_QualifiedLin::GccEnt_QualifiedLin(const gp_Lin2d& Qualified, const GccEnt_Position Qualifier)

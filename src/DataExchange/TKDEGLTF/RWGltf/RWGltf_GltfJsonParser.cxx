@@ -2282,7 +2282,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
   const RWGltf_JsonValue* anUriVal = findObjectMember(theBuffer, "uri");
 
   int64_t       anOffset    = theView.ByteOffset + theAccessor.ByteOffset;
-  const int32_t aByteStride = theAccessor.ByteStride != 0 ? theView.ByteStride : theView.ByteStride;
+  const int32_t aByteStride = theView.ByteStride;
   bool          isBinary    = false;
   if (myIsBinary)
   {
@@ -2566,11 +2566,7 @@ bool RWGltf_GltfJsonParser::Parse(const Message_ProgressRange& theProgress)
       return false;
     }
   }
-  if (!aPS.More())
-  {
-    return false;
-  }
-  return true;
+  return aPS.More();
 #else
   Message::SendFail("Error: glTF reader is unavailable - OCCT has been built without RapidJSON "
                     "support [HAVE_RAPIDJSON undefined]");

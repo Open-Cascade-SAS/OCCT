@@ -509,9 +509,7 @@ void Geom_RectangularTrimmedSurface::Transform(const Trsf& T)
 
 bool Geom_RectangularTrimmedSurface::IsUPeriodic() const
 {
-  if (basisSurf->IsUPeriodic() && !isutrimmed)
-    return true;
-  return false;
+  return basisSurf->IsUPeriodic() && !isutrimmed;
 }
 
 //=================================================================================================
@@ -525,9 +523,7 @@ double Geom_RectangularTrimmedSurface::UPeriod() const
 
 bool Geom_RectangularTrimmedSurface::IsVPeriodic() const
 {
-  if (basisSurf->IsVPeriodic() && !isvtrimmed)
-    return true;
-  return false;
+  return basisSurf->IsVPeriodic() && !isvtrimmed;
 }
 
 //=================================================================================================

@@ -20,17 +20,11 @@
 
 //=================================================================================================
 
-OpenGl_Element::OpenGl_Element()
-{
-  //
-}
+OpenGl_Element::OpenGl_Element() = default;
 
 //=================================================================================================
 
-OpenGl_Element::~OpenGl_Element()
-{
-  //
-}
+OpenGl_Element::~OpenGl_Element() = default;
 
 //=================================================================================================
 
@@ -41,10 +35,7 @@ void OpenGl_Element::UpdateMemStats(Graphic3d_FrameStatsDataTmp& theStats) const
 
 //=================================================================================================
 
-void OpenGl_Element::UpdateDrawStats(Graphic3d_FrameStatsDataTmp&, bool) const
-{
-  //
-}
+void OpenGl_Element::UpdateDrawStats(Graphic3d_FrameStatsDataTmp&, bool) const {}
 
 //=================================================================================================
 

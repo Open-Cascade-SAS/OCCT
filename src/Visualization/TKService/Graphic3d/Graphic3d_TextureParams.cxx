@@ -33,15 +33,11 @@ Graphic3d_TextureParams::Graphic3d_TextureParams()
       myToModulate(false),
       myToRepeat(false)
 {
-  //
 }
 
 //=================================================================================================
 
-Graphic3d_TextureParams::~Graphic3d_TextureParams()
-{
-  //
-}
+Graphic3d_TextureParams::~Graphic3d_TextureParams() = default;
 
 //=================================================================================================
 

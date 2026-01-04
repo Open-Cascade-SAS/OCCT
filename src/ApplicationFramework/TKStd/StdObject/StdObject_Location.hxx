@@ -17,9 +17,11 @@
 #include <StdObjMgt_ReadData.hxx>
 #include <StdObjMgt_WriteData.hxx>
 #include <StdObjMgt_Persistent.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <TopLoc_Location.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class StdObject_Location
 {

@@ -16,5 +16,4 @@ set(OCCT_Geom2dConvert_FILES
   Geom2dConvert_CompCurveToBSplineCurve.hxx
   Geom2dConvert_PPoint.cxx
   Geom2dConvert_PPoint.hxx
-  Geom2dConvert_SequenceOfPPoint.hxx
 )

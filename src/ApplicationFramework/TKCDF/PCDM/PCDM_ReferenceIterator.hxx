@@ -22,7 +22,8 @@
 
 #include <PCDM_Reference.hxx>
 #include <NCollection_Sequence.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 
 class Message_Messenger;
 class CDM_Document;

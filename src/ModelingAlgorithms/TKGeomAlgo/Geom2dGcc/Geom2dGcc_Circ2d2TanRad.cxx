@@ -611,25 +611,11 @@ bool Geom2dGcc_Circ2d2TanRad::IsTheSame1(const int Index) const
   }
   if (Invert)
   {
-    if (TheSame2(Index) == 0)
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return TheSame2(Index) != 0;
   }
   else
   {
-    if (TheSame1(Index) == 0)
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return TheSame1(Index) != 0;
   }
 }
 
@@ -645,25 +631,11 @@ bool Geom2dGcc_Circ2d2TanRad::IsTheSame2(const int Index) const
   }
   if (!Invert)
   {
-    if (TheSame2(Index) == 0)
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return TheSame2(Index) != 0;
   }
   else
   {
-    if (TheSame1(Index) == 0)
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return TheSame1(Index) != 0;
   }
   //  return true;
 }

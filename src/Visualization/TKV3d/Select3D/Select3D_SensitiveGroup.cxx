@@ -330,12 +330,7 @@ bool Select3D_SensitiveGroup::overlapsElement(SelectBasics_PickResult&          
                                               bool)
 {
   const int aSensitiveIdx = myBVHPrimIndexes.Value(theElemIdx);
-  if (myEntities.FindKey(aSensitiveIdx)->Matches(theMgr, thePickResult))
-  {
-    return true;
-  }
-
-  return false;
+  return myEntities.FindKey(aSensitiveIdx)->Matches(theMgr, thePickResult);
 }
 
 //=================================================================================================

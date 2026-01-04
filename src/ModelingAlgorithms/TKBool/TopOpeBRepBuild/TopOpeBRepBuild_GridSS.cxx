@@ -59,12 +59,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-  #include <TopOpeBRepDS_DRAW.hxx>
-  #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#endif
-
 #ifdef OCCT_DEBUG
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \
@@ -225,10 +219,6 @@ NCollection_List<TopoDS_Shape>& losplits)
 
 #ifdef OCCT_DEBUG
   bool trc = false;
-#ifdef DRAW
-  if (trc) {TCollection_AsciiString aa("PCinf");FUN_tool_draw(aa,Einf2pi,F,0);}
-  if (trc) {TCollection_AsciiString aa("PCsup");FUN_tool_draw(aa,Esup2pi,F,0);}
-#endif
 #endif
   losplits.Append(Einf2pi); losplits.Append(Esup2pi);
 }*/
@@ -758,14 +748,14 @@ Standard_EXPORT void FUNBUILD_ORIENTLOFS(TopOpeBRepBuild_Builder&        B,
     bool          of1, of2;
     FUNBUILD_ANCESTORRANKGET(B, f, of1, of2);
     TopAbs_Orientation orif = f.Orientation();
-    bool               r12  = B.Reverse(TB1, TB2);
-    bool               r21  = B.Reverse(TB2, TB1);
+    bool               r12  = TopOpeBRepBuild_Builder::Reverse(TB1, TB2);
+    bool               r21  = TopOpeBRepBuild_Builder::Reverse(TB2, TB1);
     bool               rf   = false;
     if (of1 && !of2)
       rf = r12;
     else if (of2 && !of1)
       rf = r21;
-    TopAbs_Orientation neworif = B.Orient(orif, rf);
+    TopAbs_Orientation neworif = TopOpeBRepBuild_Builder::Orient(orif, rf);
     f.Orientation(neworif);
   }
 }

@@ -222,7 +222,7 @@ void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
       continue;
     }
     //
-    bool InUp = !i ? false : true;
+    bool InUp = i != 0;
     BackReplace(OldS, NewS, *pLSOld, InUp);
     //
     NCollection_List<TopoDS_Shape>* pLSNew = aMap.ChangeSeek(NewS);

@@ -17,7 +17,6 @@
 // Modified by rmi, Tue Nov 18 08:17:41 1997
 
 #include <CDM_Application.hxx>
-#include <CDM_MetaDataLookUpTable.hxx>
 #include <CDM_Document.hxx>
 #include <NCollection_List.hxx>
 #include <CDM_MetaData.hxx>
@@ -33,6 +32,7 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <UTL.hxx>
+class CDM_MetaData;
 
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Document, Standard_Transient)
 

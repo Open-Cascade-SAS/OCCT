@@ -764,8 +764,5 @@ bool Approx_CurveOnSurface::buildC3dOnIsoLine(const occ::handle<Adaptor2d_Curve2
   // OCCT is unable to convert it keeping original parameterization, while the geometric
   // form of the result is entirely identical. In that case, it is better to utilize
   // a general-purpose approach.
-  if (myError3d > myTol)
-    return false;
-
-  return true;
+  return myError3d <= myTol;
 }

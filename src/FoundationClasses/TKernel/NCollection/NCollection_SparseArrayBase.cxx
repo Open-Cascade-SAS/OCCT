@@ -242,7 +242,7 @@ bool NCollection_SparseArrayBase::HasValue(const size_t theIndex) const
   size_t iBlock = theIndex / myBlockSize;
   if (iBlock >= myNbBlocks || !myData[iBlock])
     return false;
-  return getBlock(myData[iBlock]).IsSet(theIndex % myBlockSize) ? true : false;
+  return getBlock(myData[iBlock]).IsSet(theIndex % myBlockSize) != 0;
 }
 
 //=================================================================================================

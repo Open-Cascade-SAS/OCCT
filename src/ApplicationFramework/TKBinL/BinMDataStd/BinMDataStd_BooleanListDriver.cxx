@@ -63,7 +63,7 @@ bool BinMDataStd_BooleanListDriver::Paste(const BinObjMgt_Persistent&       theS
       theSource.GetByteArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)
       {
-        anAtt->Append(aTargetArray.Value(aIndex) ? true : false);
+        anAtt->Append(aTargetArray.Value(aIndex) != 0);
       }
     }
   }

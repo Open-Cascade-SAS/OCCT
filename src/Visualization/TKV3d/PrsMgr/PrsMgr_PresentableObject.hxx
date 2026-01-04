@@ -23,11 +23,12 @@
 #include <Prs3d_Drawer.hxx>
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_Presentations.hxx>
+#include <NCollection_Sequence.hxx>
 #include <PrsMgr_DisplayStatus.hxx>
 #include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
+class PrsMgr_Presentation;
 
 class PrsMgr_PresentationManager;
 

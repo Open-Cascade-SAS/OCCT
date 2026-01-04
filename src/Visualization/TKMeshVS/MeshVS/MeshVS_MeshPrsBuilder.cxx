@@ -1083,7 +1083,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays(
   if (IsPolygons && theFillAsp->FrontMaterial().Transparency() < 0.01)
   {
     occ::handle<Graphic3d_Group> aGroup = Prs->NewGroup();
-    aGroup->SetClosed(isSupressBackFaces == true);
+    aGroup->SetClosed(isSupressBackFaces);
     occ::handle<Graphic3d_AspectFillArea3d> aFillAsp = new Graphic3d_AspectFillArea3d(*theFillAsp);
     // if ( IsPolygonsEdgesOff )
     aFillAsp->SetEdgeOff();
@@ -1135,7 +1135,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays(
   if (IsPolygons && theFillAsp->FrontMaterial().Transparency() >= 0.01)
   {
     occ::handle<Graphic3d_Group> aGroup = Prs->NewGroup();
-    aGroup->SetClosed(isSupressBackFaces == true);
+    aGroup->SetClosed(isSupressBackFaces);
     occ::handle<Graphic3d_AspectFillArea3d> aFillAsp = new Graphic3d_AspectFillArea3d(*theFillAsp);
     // if ( IsPolygonsEdgesOff )
     aFillAsp->SetEdgeOff();

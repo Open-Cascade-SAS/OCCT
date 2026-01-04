@@ -300,9 +300,7 @@ bool STEPControl_ActorRead::Recognize(const occ::handle<Standard_Transient>& sta
 
     //  On prend son contenu
 
-    if (Recognize(und->Rep1()) || Recognize(und->Rep2()))
-      return true;
-    return false;
+    return Recognize(und->Rep1()) || Recognize(und->Rep2());
   }
 
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))

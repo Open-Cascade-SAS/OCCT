@@ -398,5 +398,5 @@ void Units_UnitsSystem::Dump() const
 
 bool Units_UnitsSystem::IsEmpty() const
 {
-  return (thequantitiessequence->Length() > 0) ? false : true;
+  return thequantitiessequence->Length() <= 0;
 }

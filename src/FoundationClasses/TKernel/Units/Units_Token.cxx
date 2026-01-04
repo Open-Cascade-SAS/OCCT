@@ -275,7 +275,7 @@ bool Units_Token::IsEqual(const char* astring) const
   unsigned int length = string.Length();
 #endif
   if (strlen(astring) == length)
-    return (strncmp(string.ToCString(), astring, unsigned(length)) == 0) ? true : false;
+    return strncmp(string.ToCString(), astring, unsigned(length)) == 0;
   else
     return false;
 }
@@ -288,7 +288,7 @@ bool Units_Token::IsEqual(const occ::handle<Units_Token>& atoken) const
   TCollection_AsciiString string2 = atoken->Word();
   int                     length  = string1.Length();
   if (length == atoken->Length())
-    return (strcmp(string1.ToCString(), string2.ToCString()) == 0) ? true : false;
+    return strcmp(string1.ToCString(), string2.ToCString()) == 0;
   else
     return false;
 }

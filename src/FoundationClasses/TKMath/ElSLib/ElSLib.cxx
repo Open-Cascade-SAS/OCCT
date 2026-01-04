@@ -290,7 +290,7 @@ gp_Vec ElSLib::SphereDN(const double  U,
     X = A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y();
     Z = A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z();
-    if (!((Nv + 2) % 4 == 0 || (Nv + 3) % 4 == 0))
+    if ((Nv + 2) % 4 != 0 && (Nv + 3) % 4 != 0)
     {
       X = -X;
       Y = -Y;
@@ -339,8 +339,8 @@ gp_Vec ElSLib::SphereDN(const double  U,
     X = (A1 * XDir.X() + A2 * YDir.X()) * A3;
     Y = (A1 * XDir.Y() + A2 * YDir.Y()) * A3;
     Z = (A1 * XDir.Z() + A2 * YDir.Z()) * A3;
-    if ((!((Nu + 2) % 4 == 0 || (Nu + 3) % 4 == 0) && ((Nv + 2) % 4 == 0 || (Nv + 3) % 4 == 0))
-        || (((Nu + 2) % 4 == 0 || (Nu + 3) % 4 == 0) && !((Nv + 2) % 4 == 0 || (Nv + 3) % 4 == 0)))
+    if (((Nu + 2) % 4 != 0 && (Nu + 3) % 4 != 0 && ((Nv + 2) % 4 == 0 || (Nv + 3) % 4 == 0))
+        || (((Nu + 2) % 4 == 0 || (Nu + 3) % 4 == 0) && (Nv + 2) % 4 != 0 && (Nv + 3) % 4 != 0))
     {
       X = -X;
       Y = -Y;
@@ -394,7 +394,7 @@ gp_Vec ElSLib::TorusDN(const double  U,
     X = A1 * XDir.X() + A2 * YDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y();
     Z = A1 * XDir.Z() + A2 * YDir.Z();
-    if (!((Nu + 2) % 4 == 0 || (Nu + 3) % 4 == 0))
+    if ((Nu + 2) % 4 != 0 && (Nu + 3) % 4 != 0)
     {
       X = -X;
       Y = -Y;
@@ -430,7 +430,7 @@ gp_Vec ElSLib::TorusDN(const double  U,
     X = A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y();
     Z = A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z();
-    if (!((Nv + 2) % 4 == 0 || (Nv + 3) % 4 == 0))
+    if ((Nv + 2) % 4 != 0 && (Nv + 3) % 4 != 0)
     {
       X = -X;
       Y = -Y;

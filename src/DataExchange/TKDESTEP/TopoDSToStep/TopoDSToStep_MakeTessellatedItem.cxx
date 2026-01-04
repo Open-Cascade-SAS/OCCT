@@ -243,7 +243,10 @@ void TopoDSToStep_MakeTessellatedItem::Init(const TopoDS_Shell&                 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
     new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1,
                                                                                aTessFaces.Size());
-  for (int anIndx = aTessFaces.Lower(); anIndx <= aTessFaces.Upper(); ++anIndx)
+  for (int anIndx =
+         NCollection_Sequence<opencascade::handle<StepVisual_TessellatedStructuredItem>>::Lower();
+       anIndx <= aTessFaces.Upper();
+       ++anIndx)
   {
     anItems->SetValue(anIndx, aTessFaces.Value(anIndx));
   }

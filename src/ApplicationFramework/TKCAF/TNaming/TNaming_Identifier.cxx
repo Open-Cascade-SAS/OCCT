@@ -262,13 +262,7 @@ bool IsImported(const occ::handle<TNaming_NamedShape>& NS)
   if (!it.More())
     return false;
   it.Next();
-  if (!it.More())
-    return false;
-  // plus d un shape.
-#ifdef OCCT_DEBUG
-  std::cout << "WARNING IMPORTED" << std::endl;
-#endif
-  return true;
+  return it.More();
 }
 
 //=================================================================================================

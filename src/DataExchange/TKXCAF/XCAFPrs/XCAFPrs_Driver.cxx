@@ -35,7 +35,7 @@ bool XCAFPrs_Driver::Update(const TDF_Label& L, occ::handle<AIS_InteractiveObjec
   //  occ::handle<TDocStd_Document> DOC = TDocStd_Document::Get(L);
 
   XCAFDoc_ShapeTool shapes;
-  if (!shapes.IsShape(L))
+  if (!XCAFDoc_ShapeTool::IsShape(L))
     return false;
 
   ais = new XCAFPrs_AISObject(L);

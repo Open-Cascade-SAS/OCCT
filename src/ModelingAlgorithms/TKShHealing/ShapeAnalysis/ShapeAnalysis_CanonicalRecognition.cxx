@@ -1056,11 +1056,7 @@ bool CompareConicParams(const GeomAbs_CurveType           theTarget,
   const gp_Ax1& anAx1    = thePos.Axis();
   gp_Ax1        anAx1Rev = anAx1.Reversed();
 
-  if (aRef.IsCoaxial(anAx1, anAngTol, aTol) || aRef.IsCoaxial(anAx1Rev, anAngTol, aTol))
-  {
-    return true;
-  }
-  return false;
+  return aRef.IsCoaxial(anAx1, anAngTol, aTol) || aRef.IsCoaxial(anAx1Rev, anAngTol, aTol);
 }
 
 //=================================================================================================
@@ -1132,11 +1128,7 @@ bool CompareSurfParams(const GeomAbs_SurfaceType         theTarget,
   if (theTarget == GeomAbs_Sphere)
   {
     gp_Pnt aRefLoc = theRefPos.Location(), aLoc = thePos.Location();
-    if (aRefLoc.SquareDistance(aLoc) <= theTol * theTol)
-    {
-      return true;
-    }
-    return false;
+    return aRefLoc.SquareDistance(aLoc) <= theTol * theTol;
   }
   //
   double anAngTol = theTol / (2. * M_PI);
@@ -1160,11 +1152,7 @@ bool CompareSurfParams(const GeomAbs_SurfaceType         theTarget,
     gp_Cone aCone(thePos, theParams(1), theParams(2));
     gp_Pnt  aRefApex = aRefCone.Apex();
     gp_Pnt  anApex   = aCone.Apex();
-    if (aRefApex.SquareDistance(anApex) <= theTol * theTol)
-    {
-      return true;
-    }
-    return false;
+    return aRefApex.SquareDistance(anApex) <= theTol * theTol;
   }
 
   return true;

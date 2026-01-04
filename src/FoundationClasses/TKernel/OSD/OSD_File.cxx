@@ -413,7 +413,6 @@ OSD_File::OSD_File()
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -431,7 +430,6 @@ OSD_File::OSD_File(const OSD_Path& theName)
       myMode(OSD_ReadWrite),
       ImperativeFlag(false)
 {
-  //
 }
 
 //=================================================================================================
@@ -490,8 +488,8 @@ void OSD_File::Build(const OSD_OpenMode theMode, const OSD_Protection& theProtec
     throw Standard_ProgramError("OSD_File::Build(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = O_CREAT | O_TRUNC;
+  const char* anFDOpenMode = nullptr;
+  int         anOpenMode   = O_CREAT | O_TRUNC;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -572,8 +570,8 @@ void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProte
     throw Standard_ProgramError("OSD_File::Append(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = O_APPEND;
+  const char* anFDOpenMode = nullptr;
+  int         anOpenMode   = O_APPEND;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -647,8 +645,8 @@ void OSD_File::Open(const OSD_OpenMode theMode, const OSD_Protection& theProtect
     throw Standard_ProgramError("OSD_File::Open(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = 0;
+  const char* anFDOpenMode = nullptr;
+  int         anOpenMode   = 0;
   switch (theMode)
   {
     case OSD_ReadOnly:

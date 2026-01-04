@@ -144,12 +144,7 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape)
 bool PrsDim_DiameterDimension::CheckPlane(const gp_Pln& thePlane) const
 {
   // Check if the circle center point belongs to plane.
-  if (!thePlane.Contains(myCircle.Location(), Precision::Confusion()))
-  {
-    return false;
-  }
-
-  return true;
+  return thePlane.Contains(myCircle.Location(), Precision::Confusion());
 }
 
 //=================================================================================================

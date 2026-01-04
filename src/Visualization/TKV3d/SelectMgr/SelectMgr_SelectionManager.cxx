@@ -30,7 +30,6 @@ SelectMgr_SelectionManager::SelectMgr_SelectionManager(
   const occ::handle<SelectMgr_ViewerSelector>& theSelector)
     : mySelector(theSelector)
 {
-  //
 }
 
 //=================================================================================================

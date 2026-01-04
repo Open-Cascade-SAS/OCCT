@@ -84,11 +84,11 @@ Geom2dConvert_ApproxArcsSegments::Geom2dConvert_ApproxArcsSegments(
       // Create a couple of arcs of equal size.
       const Geom2dConvert_PPoint aPP(.5 * (myExt[0].Parameter() + myExt[1].Parameter()), myCurve);
       occ::handle<Geom2d_Curve>  aCurve = makeCircle(myExt[0], aPP);
-      if (aCurve.IsNull() == false)
+      if (!aCurve.IsNull())
       {
         mySeqCurves.Append(aCurve);
         aCurve = makeCircle(aPP, myExt[1]);
-        if (aCurve.IsNull() == false)
+        if (!aCurve.IsNull())
           mySeqCurves.Append(aCurve);
       }
     }
@@ -100,7 +100,7 @@ Geom2dConvert_ApproxArcsSegments::Geom2dConvert_ApproxArcsSegments(
   // Check status of the calculation
   if (myStatus == StatusNotDone)
   {
-    if (mySeqCurves.IsEmpty() == false)
+    if (!mySeqCurves.IsEmpty())
       myStatus = StatusOK;
     else
     {
@@ -327,7 +327,7 @@ bool Geom2dConvert_ApproxArcsSegments::makeFreeform()
     }
 
     const occ::handle<Geom2d_Curve>& aCurve = aSeqLinearParts.Value((i + 1) / 2);
-    if (aCurve.IsNull() == false)
+    if (!aCurve.IsNull())
       mySeqCurves.Append(aCurve);
     else
     {
@@ -454,7 +454,7 @@ void Geom2dConvert_ApproxArcsSegments::getLinearParts(
       if (isInflectionPoint(aCurParam.Parameter(), aFirstInflParam, myCurve, myAngleTolerance))
       {
         aLastInflParam = mySeqParams(i);
-        while (isStillInflectionFirst == false)
+        while (!isStillInflectionFirst)
         {
           if (++indStartLinear >= i)
           {

@@ -238,40 +238,6 @@ static void d2(const double                          t,
 // purpose  : computes first derivative of the 3d projected curve
 //=======================================================================
 
-#if 0
-static void d1CurvOnSurf(const double t,
-  const double u,
-  const double v,
-  gp_Vec& V, 
-  const occ::handle<Adaptor3d_Curve>& Curve, 
-  const occ::handle<Adaptor3d_Surface>& Surface)
-{
-  gp_Pnt S, C;
-  gp_Vec2d V2d;
-  gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DC1_t;
-  Surface->D2(u, v, S, DS1_u, DS1_v, DS2_u, DS2_v, DS2_uv);
-  Curve->D1(t, C, DC1_t);
-  gp_Vec Ort(C, S);// Ort = S - C
-
-  gp_Vec2d dE_dt(-DC1_t*DS1_u, -DC1_t*DS1_v);
-  gp_XY dE_du(DS1_u*DS1_u + Ort*DS2_u, 
-    DS1_u*DS1_v + Ort*DS2_uv);
-  gp_XY dE_dv(DS1_v*DS1_u + Ort*DS2_uv, 
-    DS1_v*DS1_v + Ort*DS2_v);
-
-  double det = dE_du.X()*dE_dv.Y() - dE_du.Y()*dE_dv.X();
-  if (fabs(det) < gp::Resolution()) throw Standard_ConstructionError();
-
-  gp_Mat2d M(gp_XY(dE_dv.Y()/det, -dE_du.Y()/det), 
-    gp_XY(-dE_dv.X()/det, dE_du.X()/det));
-
-  V2d = - gp_Vec2d(gp_Vec2d(M.Row(1))*dE_dt, gp_Vec2d(M.Row(2))*dE_dt);
-
-  V = DS1_u * V2d.X() + DS1_v * V2d.Y();
-
-}
-#endif
-
 //=======================================================================
 // function : d2CurveOnSurf
 // purpose  : computes second derivative of the 3D projected curve
@@ -528,18 +494,17 @@ static bool InitialPoint(const gp_Pnt&                         Point,
 
   ProjLib_PrjResolve aPrjPS(*C, *S, 1);
   double             ParU, ParV;
-  Extrema_ExtPS      aExtPS;
-  aExtPS.Initialize(*S,
-                    S->FirstUParameter(),
-                    S->LastUParameter(),
-                    S->FirstVParameter(),
-                    S->LastVParameter(),
-                    TolU,
-                    TolV);
-
-  aExtPS.Perform(Point);
-  int    argmin   = 0;
-  double aMaxDist = theMaxDist;
+  Extrema_ExtPS      aExtPS(Point,
+                       *S,
+                       S->FirstUParameter(),
+                       S->LastUParameter(),
+                       S->FirstVParameter(),
+                       S->LastVParameter(),
+                       TolU,
+                       TolV,
+                       Extrema_ExtFlag_MIN);
+  int                argmin   = 0;
+  double             aMaxDist = theMaxDist;
   if (aMaxDist > 0.)
   {
     aMaxDist *= aMaxDist;
@@ -1237,13 +1202,13 @@ void ProjLib_CompProjectedCurve::Perform()
   occ::handle<Geom2d_Curve>      PCur2d;                        // Only for isoparametric projection
   occ::handle<Geom_Curve>        PCur3d;
 
-  if (myProj2d == true)
+  if (myProj2d)
   {
     myResult2dPoint = new NCollection_HArray1<gp_Pnt2d>(1, myNbCurves);
     myResult2dCurve = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, myNbCurves);
   }
 
-  if (myProj3d == true)
+  if (myProj3d)
   {
     myResult3dPoint = new NCollection_HArray1<gp_Pnt>(1, myNbCurves);
     myResult3dCurve = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, myNbCurves);
@@ -1266,11 +1231,11 @@ void ProjLib_CompProjectedCurve::Perform()
     if (IsSinglePnt(k, P2d)) // Part k of the projection is punctual
     {
       GetSurface()->D0(P2d.X(), P2d.Y(), P);
-      if (myProj2d == true)
+      if (myProj2d)
       {
         myResult2dPoint->SetValue(k, P2d);
       }
-      if (myProj3d == true)
+      if (myProj3d)
       {
         myResult3dPoint->SetValue(k, P);
       }
@@ -1384,12 +1349,12 @@ void ProjLib_CompProjectedCurve::Perform()
         }
       }
 
-      if (myProj2d == true)
+      if (myProj2d)
       {
         myResult2dCurve->SetValue(k, PCur2d);
       }
 
-      if (myProj3d == true)
+      if (myProj3d)
       {
         myResult3dCurve->SetValue(k, PCur3d);
       }
@@ -1638,7 +1603,7 @@ void ProjLib_CompProjectedCurve::D0(const double U, gp_Pnt2d& P) const
   else
   {
     gp_Pnt        thePoint = myCurve->Value(U);
-    Extrema_ExtPS aExtPS(thePoint, *mySurface, myTolU, myTolV);
+    Extrema_ExtPS aExtPS(thePoint, *mySurface, myTolU, myTolV, Extrema_ExtFlag_MIN);
     if (aExtPS.IsDone() && aExtPS.NbExt())
     {
       int k, Nend, imin = 1;
@@ -2177,6 +2142,7 @@ void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                      theSurface->LastVParameter(),
                      theTolU,
                      theTolV);
+  anExtPS.SetFlag(Extrema_ExtFlag_MIN);
   aDS.myExtPS = &anExtPS;
 
   if (theSurface->IsUPeriodic())

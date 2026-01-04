@@ -22,7 +22,9 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TDF_Label.hxx>
-#include <TObj_SequenceOfObject.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+class TObj_Object;
 
 class TDF_Label;
 

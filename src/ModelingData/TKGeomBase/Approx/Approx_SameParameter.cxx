@@ -829,12 +829,7 @@ bool Approx_SameParameter::Interpolate(const Approx_SameParameter_Data& theData,
                         1,
                         thePoles(1),
                         inversion_problem);
-  if (inversion_problem)
-  {
-    return false;
-  }
-
-  return true;
+  return inversion_problem == 0;
 }
 
 //=================================================================================================

@@ -219,10 +219,7 @@ void BRepClass3d_SolidClassifier::PerformInfinitePoint(const double Tol)
   if (aSolidLoaded)
   {
     BRepClass3d_SClassifier::PerformInfinitePoint(explorer, Tol);
-    if (State() == TopAbs_OUT)
-      isaholeinspace = false;
-    else
-      isaholeinspace = true;
+    isaholeinspace = State() != TopAbs_OUT;
   }
 }
 

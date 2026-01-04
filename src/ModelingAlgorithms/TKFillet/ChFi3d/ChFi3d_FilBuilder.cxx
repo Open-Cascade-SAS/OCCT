@@ -2426,7 +2426,7 @@ void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex&                  
     double dU = Spine->LastParameter(Spine->NbEdges());
     if (Sens == 1)
     {
-      if (!(Spine->GetTypeOfConcavity() == ChFiDS_Convex && Spine->FirstStatus() == ChFiDS_OnSame))
+      if (Spine->GetTypeOfConcavity() != ChFiDS_Convex || Spine->FirstStatus() != ChFiDS_OnSame)
       {
         Spine->SetFirstParameter(-dU * Coeff);
         Spine->SetFirstTgt(0.);
@@ -2434,7 +2434,7 @@ void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex&                  
     }
     else
     {
-      if (!(Spine->GetTypeOfConcavity() == ChFiDS_Convex && Spine->LastStatus() == ChFiDS_OnSame))
+      if (Spine->GetTypeOfConcavity() != ChFiDS_Convex || Spine->LastStatus() != ChFiDS_OnSame)
       {
         Spine->SetLastParameter(dU * (1. + Coeff));
         Spine->SetLastTgt(dU);

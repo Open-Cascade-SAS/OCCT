@@ -54,7 +54,7 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
   int                 aKind;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (anIntStr.GetInteger(aKind) == false)
+  if (!anIntStr.GetInteger(aKind))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve DimTol attribute kind from \"") + anIntStr + "\"";

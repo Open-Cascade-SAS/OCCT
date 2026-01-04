@@ -79,25 +79,11 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   {
     if (Qualified1.IsEnclosed())
     {
-      if (Dloc.Dot(XYnor1) <= 0.)
-      {
-        ok = true;
-      }
-      else
-      {
-        ok = false;
-      }
+      ok = Dloc.Dot(XYnor1) <= 0.;
     }
     else if (Qualified1.IsOutside())
     {
-      if (Dloc.Dot(XYnor1) >= 0.)
-      {
-        ok = true;
-      }
-      else
-      {
-        ok = false;
-      }
+      ok = Dloc.Dot(XYnor1) >= 0.;
     }
     else
     {
@@ -105,25 +91,11 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     }
     if (Qualified2.IsEnclosed())
     {
-      if (Dloc.Dot(XYnor2) >= 0.)
-      {
-        ok = true;
-      }
-      else
-      {
-        ok = false;
-      }
+      ok = Dloc.Dot(XYnor2) >= 0.;
     }
     else if (Qualified2.IsOutside())
     {
-      if (Dloc.Dot(XYnor2) <= 0.)
-      {
-        ok = true;
-      }
-      else
-      {
-        ok = false;
-      }
+      ok = Dloc.Dot(XYnor2) <= 0.;
     }
     else
     {

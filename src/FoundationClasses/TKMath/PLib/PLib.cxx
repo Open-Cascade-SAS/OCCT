@@ -1976,7 +1976,7 @@ bool PLib::HermiteInterpolate(const int                         Dimension,
     Equations.Solve(B);
     //  std::cout << "After Solving" << std::endl << "B=" << B << std::endl;
 
-    if (Equations.IsDone() == false)
+    if (!Equations.IsDone())
       return false;
 
     //  the filling of the Coefficients

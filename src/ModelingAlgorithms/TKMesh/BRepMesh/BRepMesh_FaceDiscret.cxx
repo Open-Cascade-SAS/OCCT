@@ -82,7 +82,7 @@ bool BRepMesh_FaceDiscret::performInternal(const occ::handle<IMeshData_Model>& t
   OSD_Parallel::For(0,
                     myModel->FacesNb(),
                     aFunctor,
-                    !(myParameters.InParallel && myModel->FacesNb() > 1));
+                    !myParameters.InParallel || myModel->FacesNb() <= 1);
   if (!theRange.More())
   {
     return false;

@@ -44,14 +44,14 @@ double Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
   defaultparam = POnC.Parameter();
   Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter Loc(P, C, defaultparam, theEpsX);
 
-  if (Loc.IsDone() == false)
+  if (!Loc.IsDone())
   {
     //-- cout<<"\n Erreur dans LocateExtPC "<<endl;
     theparam = defaultparam;
   }
   else
   {
-    if (Loc.IsMin() == false)
+    if (!Loc.IsMin())
     {
       //-- cout<<"\n Erreur dans LocateExtPC (Maximum trouve) "<<endl;
       theparam = defaultparam;

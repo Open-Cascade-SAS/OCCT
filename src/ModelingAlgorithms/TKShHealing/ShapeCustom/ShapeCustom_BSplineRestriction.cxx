@@ -150,10 +150,7 @@ static bool IsConvertCurve3d(const occ::handle<Geom_Curve>&                     
     occ::handle<Geom_BSplineCurve> BsC = occ::down_cast<Geom_BSplineCurve>(aCurve);
     if (BsC->Degree() > Degree || ((BsC->NbKnots() - 1) >= NbSeg))
       return true;
-    if (myRational && BsC->IsRational())
-      return true;
-    else
-      return false;
+    return myRational && BsC->IsRational();
   }
   if (aCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve))
       && (occ::down_cast<Geom_BezierCurve>(aCurve)->Degree() > Degree

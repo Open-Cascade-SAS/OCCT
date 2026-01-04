@@ -833,7 +833,7 @@ static bool AddMultiConexityFaces(
       }
       else if (NonManifold)
       {
-        bool isReversed = !((!(isRev) && !FirstRev) || ((isRev) && FirstRev));
+        bool isReversed = ((isRev) || FirstRev) && (!(isRev) || !FirstRev);
         aShell          = SeqShells.Value(FirstInd);
         for (TopoDS_Iterator aItF(SeqShells.Value(l), false); aItF.More(); aItF.Next())
         {

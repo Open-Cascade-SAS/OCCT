@@ -26,7 +26,6 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground()
       myFogginess(0.0f),
       mySize(512)
 {
-  //
 }
 
 //=================================================================================================
@@ -55,10 +54,7 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir& theSunDirection
 
 //=================================================================================================
 
-Aspect_SkydomeBackground::~Aspect_SkydomeBackground()
-{
-  //
-}
+Aspect_SkydomeBackground::~Aspect_SkydomeBackground() = default;
 
 //=================================================================================================
 

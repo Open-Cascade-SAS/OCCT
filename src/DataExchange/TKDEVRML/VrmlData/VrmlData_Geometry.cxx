@@ -214,9 +214,9 @@ VrmlData_ErrorStatus VrmlData_Cone::Write(const char* thePrefix) const
       Sprintf(buf, "height       %.12g", myHeight);
       aStatus = Scene().WriteLine(buf);
     }
-    if (OK(aStatus) && myHasBottom == false)
+    if (OK(aStatus) && !myHasBottom)
       aStatus = Scene().WriteLine("bottom   FALSE");
-    if (OK(aStatus) && myHasSide == false)
+    if (OK(aStatus) && !myHasSide)
       aStatus = Scene().WriteLine("side     FALSE");
 
     aStatus = WriteClosing();
@@ -340,11 +340,11 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Write(const char* thePrefix) const
       Sprintf(buf, "height   %.12g", myHeight);
       aStatus = Scene().WriteLine(buf);
     }
-    if (OK(aStatus) && myHasBottom == false)
+    if (OK(aStatus) && !myHasBottom)
       aStatus = Scene().WriteLine("bottom   FALSE");
-    if (OK(aStatus) && myHasSide == false)
+    if (OK(aStatus) && !myHasSide)
       aStatus = Scene().WriteLine("side     FALSE");
-    if (OK(aStatus) && myHasTop == false)
+    if (OK(aStatus) && !myHasTop)
       aStatus = Scene().WriteLine("top      FALSE");
 
     aStatus = WriteClosing();

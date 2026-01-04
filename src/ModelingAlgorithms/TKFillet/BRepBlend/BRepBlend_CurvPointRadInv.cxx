@@ -126,9 +126,5 @@ bool BRepBlend_CurvPointRadInv::IsSolution(const math_Vector& Sol, const double 
 {
   math_Vector valsol(1, 2);
   Value(Sol, valsol);
-  if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol)
-  {
-    return true;
-  }
-  return false;
+  return std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol;
 }

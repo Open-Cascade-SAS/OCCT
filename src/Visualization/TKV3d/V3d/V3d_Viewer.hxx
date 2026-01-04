@@ -27,7 +27,7 @@
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <V3d_Light.hxx>
-#include <V3d_ListOfView.hxx>
+#include <NCollection_List.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>

@@ -71,11 +71,7 @@ bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X, double& su,
   su              = X(aStartIndex);
   sv              = X(aStartIndex + 1);
 
-  if (su < myUf || su > myUl || sv < myVf || sv > myVl)
-  {
-    return false;
-  }
-  return true;
+  return su >= myUf && su <= myUl && sv >= myVf && sv <= myVl;
 }
 
 //=================================================================================================
@@ -181,11 +177,7 @@ bool Extrema_GlobOptFuncConicS::Value(const math_Vector& X, double& F)
     return false;
 
   value(su, sv, F);
-  if (Precision::IsInfinite(F))
-  {
-    return false;
-  }
-  return true;
+  return !Precision::IsInfinite(F);
 }
 
 //=================================================================================================

@@ -29,9 +29,6 @@
 bool Affich;
 #endif
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-#endif
 //=================================================================================================
 
 static void BuildBack(
@@ -184,17 +181,11 @@ static void DEBControl(
   {
     const TopoDS_Shape& OS = it.Key();
     Sprintf(name, "SK_%d", ++IK);
-  #ifdef DRAW
-    DBRep::Set(name, OS);
-  #endif
     NCollection_List<TopoDS_Shape>::Iterator itl(MG(OS));
     int                                      IV = 1;
     for (; itl.More(); itl.Next())
     {
       Sprintf(name, "SV_%d_%d", IK, IV++);
-  #ifdef DRAW
-      DBRep::Set(name, NS);
-  #endif
     }
   }
 }

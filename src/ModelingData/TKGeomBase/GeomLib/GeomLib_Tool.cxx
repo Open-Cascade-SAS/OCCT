@@ -105,7 +105,7 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
   GeomAdaptor_Surface aGAS(Surface);
   double              aTolU = PARTOLERANCE, aTolV = PARTOLERANCE;
   //
-  Extrema_ExtPS extrema(Point, aGAS, aTolU, aTolV);
+  Extrema_ExtPS extrema(Point, aGAS, aTolU, aTolV, Extrema_ExtFlag_MIN);
   //
   if (!extrema.IsDone())
     return false;

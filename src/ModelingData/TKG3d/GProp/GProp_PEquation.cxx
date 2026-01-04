@@ -121,36 +121,24 @@ GProp_PEquation::GProp_PEquation(const NCollection_Array1<gp_Pnt>& Pnts, const d
 bool GProp_PEquation::IsPlanar() const
 {
 
-  if (type == GProp_Plane)
-    return true;
-  else
-    return false;
+  return type == GProp_Plane;
 }
 
 bool GProp_PEquation::IsLinear() const
 {
 
-  if (type == GProp_Line)
-    return true;
-  else
-    return false;
+  return type == GProp_Line;
 }
 
 bool GProp_PEquation::IsPoint() const
 {
 
-  if (type == GProp_Point)
-    return true;
-  else
-    return false;
+  return type == GProp_Point;
 }
 
 bool GProp_PEquation::IsSpace() const
 {
-  if (type == GProp_Space)
-    return true;
-  else
-    return false;
+  return type == GProp_Space;
 }
 
 gp_Pln GProp_PEquation::Plane() const

@@ -186,7 +186,7 @@ void BRepMesh_ModelHealer::amplifyEdges()
     OSD_Parallel::ForEach(aEdgesToUpdate.cbegin(),
                           aEdgesToUpdate.cend(),
                           anEdgeAmplifier,
-                          !(myParameters.InParallel && aEdgesToUpdate.Size() > 1),
+                          !myParameters.InParallel || aEdgesToUpdate.Size() <= 1,
                           aEdgesToUpdate.Size());
 
     IMeshData::MapOfIFacePtr           aFacesToCheck(1, aTmpAlloc);
@@ -203,7 +203,7 @@ void BRepMesh_ModelHealer::amplifyEdges()
     OSD_Parallel::ForEach(aFacesToCheck.cbegin(),
                           aFacesToCheck.cend(),
                           *this,
-                          !(myParameters.InParallel && aFacesToCheck.Size() > 1),
+                          !myParameters.InParallel || aFacesToCheck.Size() <= 1,
                           aFacesToCheck.Size());
 
     aEdgesToUpdate.Clear();

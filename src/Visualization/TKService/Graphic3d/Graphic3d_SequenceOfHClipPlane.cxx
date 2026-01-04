@@ -20,7 +20,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_SequenceOfHClipPlane, Standard_Transient)
 Graphic3d_SequenceOfHClipPlane::Graphic3d_SequenceOfHClipPlane()
     : myToOverrideGlobal(false)
 {
-  //
 }
 
 //=================================================================================================

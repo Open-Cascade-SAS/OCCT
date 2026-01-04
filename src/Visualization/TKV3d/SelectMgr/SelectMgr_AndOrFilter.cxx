@@ -59,9 +59,5 @@ bool SelectMgr_AndOrFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& theOb
     }
   }
 
-  if (myFilterType == SelectMgr_FilterType_OR && !myFilters.IsEmpty())
-  {
-    return false;
-  }
-  return true;
+  return myFilterType != SelectMgr_FilterType_OR || myFilters.IsEmpty();
 }

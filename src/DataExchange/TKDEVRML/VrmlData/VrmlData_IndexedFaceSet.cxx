@@ -297,11 +297,11 @@ occ::handle<VrmlData_Node> VrmlData_IndexedFaceSet::Clone(
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    if (myCoords.IsNull() == false)
+    if (!myCoords.IsNull())
       aResult->SetCoordinates(occ::down_cast<VrmlData_Coordinate>(myCoords->Clone(aDummyNode)));
-    if (myNormals.IsNull() == false)
+    if (!myNormals.IsNull())
       aResult->SetNormals(occ::down_cast<VrmlData_Normal>(myNormals->Clone(aDummyNode)));
-    if (myColors.IsNull() == false)
+    if (!myColors.IsNull())
       aResult->SetColors(occ::down_cast<VrmlData_Color>(myColors->Clone(aDummyNode)));
     // TODO: Replace the following lines with the relevant copying
     aResult->SetPolygons(myNbPolygons, myArrPolygons);
@@ -428,7 +428,7 @@ bool VrmlData_IndexedFaceSet::IsDefault() const
   bool aResult(true);
   if (myNbPolygons)
     aResult = false;
-  else if (myCoords.IsNull() == false)
+  else if (!myCoords.IsNull())
     aResult = myCoords->IsDefault();
   return aResult;
 }
@@ -444,11 +444,11 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Write(const char* thePrefix) const
   {
 
     // Write the attributes of interface "VrmlData_Faceted"
-    if (IsCCW() == false)
+    if (!IsCCW())
       aStatus = aScene.WriteLine("ccw         FALSE");
-    if (OK(aStatus) && IsSolid() == false)
+    if (OK(aStatus) && !IsSolid())
       aStatus = aScene.WriteLine("solid       FALSE");
-    if (OK(aStatus) && IsConvex() == false)
+    if (OK(aStatus) && !IsConvex())
       aStatus = aScene.WriteLine("convex      FALSE");
     if (OK(aStatus) && CreaseAngle() > Precision::Confusion())
     {
@@ -457,26 +457,26 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Write(const char* thePrefix) const
       aStatus = aScene.WriteLine("creaseAngle", buf);
     }
 
-    if (OK(aStatus) && myCoords.IsNull() == false)
+    if (OK(aStatus) && !myCoords.IsNull())
       aStatus = aScene.WriteNode("coord", myCoords);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("coordIndex", myArrPolygons, myNbPolygons);
 
-    if (OK(aStatus) && myNormalPerVertex == false)
+    if (OK(aStatus) && !myNormalPerVertex)
       aStatus = aScene.WriteLine("normalPerVertex FALSE");
-    if (OK(aStatus) && myNormals.IsNull() == false)
+    if (OK(aStatus) && !myNormals.IsNull())
       aStatus = aScene.WriteNode("normal", myNormals);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("normalIndex", myArrNormalInd, myNbNormals);
 
-    if (OK(aStatus) && myColorPerVertex == false)
+    if (OK(aStatus) && !myColorPerVertex)
       aStatus = aScene.WriteLine("colorPerVertex  FALSE");
-    if (OK(aStatus) && myColors.IsNull() == false)
+    if (OK(aStatus) && !myColors.IsNull())
       aStatus = aScene.WriteNode("color", myColors);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("colorIndex", myArrColorInd, myNbColors);
 
-    if (OK(aStatus) && myTxCoords.IsNull() == false)
+    if (OK(aStatus) && !myTxCoords.IsNull())
       aStatus = aScene.WriteNode("texCoord", myTxCoords);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("texCoordIndex", myArrTextureInd, myNbTextures);

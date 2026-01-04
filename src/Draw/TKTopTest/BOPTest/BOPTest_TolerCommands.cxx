@@ -320,7 +320,7 @@ void ProcessVertex(const TopoDS_Vertex&                  aV,
       }
       //
       anOrV = aVx.Orientation();
-      if (!(anOrV == TopAbs_FORWARD || anOrV == TopAbs_REVERSED))
+      if (anOrV != TopAbs_FORWARD && anOrV != TopAbs_REVERSED)
       {
         continue;
       }

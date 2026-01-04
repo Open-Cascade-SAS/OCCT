@@ -414,7 +414,7 @@ void AIS_InteractiveContext::SetViewAffinity(const occ::handle<AIS_InteractiveOb
 
   occ::handle<Graphic3d_ViewAffinity> anAffinity = theIObj->ViewAffinity();
   occ::handle<Graphic3d_CView>        aViewImpl  = theView->View();
-  anAffinity->SetVisible(aViewImpl->Identification(), theIsVisible == true);
+  anAffinity->SetVisible(aViewImpl->Identification(), theIsVisible);
 }
 
 //=================================================================================================
@@ -1795,7 +1795,7 @@ void AIS_InteractiveContext::ClearGlobal(const occ::handle<AIS_InteractiveObject
   theIObj->ErasePresentations(true); // make sure highlighting presentations are properly erased
 
   // Object removes from Detected sequence
-  for (int aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper();)
+  for (int aDetIter = NCollection_Sequence<int>::Lower(); aDetIter <= myDetectedSeq.Upper();)
   {
     occ::handle<SelectMgr_EntityOwner> aPicked = MainSelector()->Picked(myDetectedSeq(aDetIter));
     occ::handle<AIS_InteractiveObject> anObj;
@@ -2618,7 +2618,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::moveTo(const occ::handle<V3d_View>
 
   if (aNewDetected >= 1)
   {
-    myCurHighlighted = myDetectedSeq.Lower();
+    myCurHighlighted = NCollection_Sequence<int>::Lower();
 
     // Does nothing if previously detected object is equal to the current one.
     // However in advanced selection modes the owners comparison
@@ -3130,7 +3130,8 @@ void AIS_InteractiveContext::ClearSelected(const bool theToUpdateViewer)
 
 bool AIS_InteractiveContext::isDetected(const occ::handle<AIS_InteractiveObject>& theObject)
 {
-  for (int aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper(); aDetIter++)
+  for (int aDetIter = NCollection_Sequence<int>::Lower(); aDetIter <= myDetectedSeq.Upper();
+       aDetIter++)
   {
     occ::handle<SelectMgr_EntityOwner> aPicked = MainSelector()->Picked(myDetectedSeq(aDetIter));
     occ::handle<AIS_InteractiveObject> anObj;
@@ -3559,7 +3560,7 @@ int AIS_InteractiveContext::HilightNextDetected(const occ::handle<V3d_View>& the
 
   if (++myCurHighlighted > myDetectedSeq.Upper())
   {
-    myCurHighlighted = myDetectedSeq.Lower();
+    myCurHighlighted = NCollection_Sequence<int>::Lower();
   }
   const occ::handle<SelectMgr_EntityOwner>& anOwner =
     MainSelector()->Picked(myDetectedSeq(myCurHighlighted));
@@ -3591,7 +3592,7 @@ int AIS_InteractiveContext::HilightPreviousDetected(const occ::handle<V3d_View>&
     return 0;
   }
 
-  if (--myCurHighlighted < myDetectedSeq.Lower())
+  if (--myCurHighlighted < NCollection_Sequence<int>::Lower())
   {
     myCurHighlighted = myDetectedSeq.Upper();
   }

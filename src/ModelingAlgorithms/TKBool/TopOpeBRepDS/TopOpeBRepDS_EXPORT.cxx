@@ -349,9 +349,7 @@ Standard_EXPORT bool FDS_EdgeIsConnexToSameDomainFaces(
     if (samdom)
       break;
   }
-  if (samdom)
-    return true;
-  return false;
+  return samdom;
 } // not used
 
 // T si ShapeIndex SI est la GeometrieIndex d'une Interference

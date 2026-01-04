@@ -59,11 +59,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
 
-#ifdef DRAW
-  #include <DBRep.hxx>
-static bool Affich = 0;
-#endif
-
 // ---------------------------------------------------------------------------------
 // static function: UpdateMap
 // purpose:
@@ -303,15 +298,6 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 
   RemLoc.Remove(myLast);
   myLast = RemLoc.GetResult();
-
-#ifdef DRAW
-  if (Affich)
-  {
-    DBRep::Set("theprof", TheProf);
-    DBRep::Set("thefirst", myFirst);
-    DBRep::Set("thelast", myLast);
-  }
-#endif
 
   myShape = MakeShape(TheProf, myProfile, myFirst, myLast);
 }
@@ -650,7 +636,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 
       occ::handle<NCollection_HArray2<TopoDS_Shape>> aSections = MkSw.Sections();
 
-      if (aSections.IsNull() == false)
+      if (!aSections.IsNull())
       {
         const int aVLast = aSections->UpperCol();
 

@@ -40,7 +40,9 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <GC_MakePlane.hxx>
 #include <AIS_PlaneTrihedron.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DoubleMap.hxx>
 
 #include <BRep_Tool.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -648,7 +650,7 @@ static int OCC710(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString in(argv[1]);
   OSD_File*               aFile    = new OSD_File(in);
   bool                    anExists = aFile->Exists();
-  if (anExists == true)
+  if (anExists)
     di << "1\n";
   else
     di << "0\n";
@@ -657,6 +659,7 @@ static int OCC710(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <ShapeFix_Shell.hxx>
 #include <AIS_InteractiveObject.hxx>
+class AIS_InteractiveObject;
 
 static int OCC904(Draw_Interpretor& di, int argc, const char** argv)
 {

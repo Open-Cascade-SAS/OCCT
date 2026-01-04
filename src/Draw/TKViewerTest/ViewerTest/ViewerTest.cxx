@@ -492,7 +492,7 @@ static void GetTypeAndSignfromString(const char*            theName,
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_DisplayMode.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <NCollection_DoubleMap.hxx>
 #include <ViewerTest_EventManager.hxx>
 
 #include <BRep_Builder.hxx>
@@ -501,6 +501,7 @@ static void GetTypeAndSignfromString(const char*            theName,
 #include <BRep_Tool.hxx>
 
 #include <Draw_Window.hxx>
+class AIS_InteractiveObject;
 
 //==============================================================================
 //  VIEWER OBJECT MANAGEMENT GLOBAL VARIABLES

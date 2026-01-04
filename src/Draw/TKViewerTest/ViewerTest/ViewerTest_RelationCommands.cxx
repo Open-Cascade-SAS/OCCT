@@ -73,7 +73,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <V3d_View.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DoubleMap.hxx>
+class AIS_InteractiveObject;
 
 extern bool VDisplayAISObject(const TCollection_AsciiString&            theName,
                               const occ::handle<AIS_InteractiveObject>& theAISObj,
@@ -1069,7 +1071,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = aShapes.Last();
 
-      if (!(aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_EDGE))
+      if (aShape1.ShapeType() != TopAbs_EDGE || aShape2.ShapeType() != TopAbs_EDGE)
       {
         Message::SendFail("Syntax error: selected shapes are not edges");
         return 1;
@@ -1166,7 +1168,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
 
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = (aShapes.Extent() == 2) ? aShapes.Last() : aShape1;
-      if (!(aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_EDGE))
+      if (aShape1.ShapeType() != TopAbs_EDGE || aShape2.ShapeType() != TopAbs_EDGE)
       {
         Message::SendFail("Syntax error: selected shapes are not edges");
         return 1;
@@ -1286,7 +1288,7 @@ static int VRelationBuilder(Draw_Interpretor& /*theDi*/, int theArgsNb, const ch
 
       const TopoDS_Shape& aShape1 = aShapes.First();
       const TopoDS_Shape& aShape2 = aShapes.Last();
-      if (!(aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_FACE))
+      if (aShape1.ShapeType() != TopAbs_FACE || aShape2.ShapeType() != TopAbs_FACE)
       {
         Message::SendFail("Syntax error: selected shapes are not faces");
         return 1;

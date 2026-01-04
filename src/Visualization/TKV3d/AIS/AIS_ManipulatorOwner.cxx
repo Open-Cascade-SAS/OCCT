@@ -28,7 +28,6 @@ AIS_ManipulatorOwner::AIS_ManipulatorOwner(
       myIndex(theIndex),
       myMode(theMode)
 {
-  //
 }
 
 //=================================================================================================

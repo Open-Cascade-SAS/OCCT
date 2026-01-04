@@ -639,7 +639,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
   do
   {
     suppr = false;
-    for (int i = 2; suppr == false && i <= nbpi; i++)
+    for (int i = 2; !suppr && i <= nbpi; i++)
     {
       const gp_Pnt& Pim1 = thePi(i - 1).Pnt();
       const gp_Pnt& Pi   = thePi(i).Pnt();
@@ -655,7 +655,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
         suppr = true;
       }
     }
-  } while (suppr == true);
+  } while (suppr);
 
   if (nbpi == 1)
   {
@@ -740,18 +740,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
                           parTSP,
                           sinTeta));
 
-    int nbtz = myTZones.Length();
-#if 0 
-    int decaltz=0;
-    for (int ltz=1; ltz<=nbtz; ltz++) {
-      if (TheTZ.HasCommonRange(myTZones(ltz-decaltz))) {
-	TheTZ.Append(myTZones(ltz-decaltz));
-	myTZones.Remove(ltz-decaltz);
-	decaltz++;
-      }
-    }
-    myTZones.Append(TheTZ);
-#else
+    int                   nbtz = myTZones.Length();
     NCollection_List<int> LIndex;
     for (int ltz = 1; ltz <= nbtz; ltz++)
     {
@@ -782,6 +771,5 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
         decal++;
       }
     }
-#endif
   }
 }

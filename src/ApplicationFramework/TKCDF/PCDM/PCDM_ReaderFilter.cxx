@@ -91,7 +91,7 @@ bool PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& theEntry) con
 
 bool PCDM_ReaderFilter::IsPartTree()
 {
-  return !(mySubTrees.IsEmpty() || (mySubTrees.Size() == 1 && mySubTrees.First().Length() < 3));
+  return !mySubTrees.IsEmpty() && (mySubTrees.Size() != 1 || mySubTrees.First().Length() >= 3);
 }
 
 void PCDM_ReaderFilter::StartIteration()

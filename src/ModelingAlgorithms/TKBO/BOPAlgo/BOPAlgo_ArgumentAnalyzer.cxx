@@ -164,7 +164,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 4. Test small edges
     if (mySmallEdgeMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestSmallEdge();
       if (UserBreak(aPS))
       {
@@ -175,7 +175,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 5. Test possibility to rebuild faces
     if (myRebuildFaceMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestRebuildFace();
       if (UserBreak(aPS))
       {
@@ -186,7 +186,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 6. Test tangent
     if (myTangentMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
       {
         TestTangent();
         if (UserBreak(aPS))
@@ -199,7 +199,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 7. Test merge vertices
     if (myMergeVertexMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestMergeVertex();
       if (UserBreak(aPS))
       {
@@ -210,7 +210,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 8. Test merge edges
     if (myMergeEdgeMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestMergeEdge();
       if (UserBreak(aPS))
       {
@@ -221,7 +221,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 9. Test shapes continuity
     if (myContinuityMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestContinuity();
       if (UserBreak(aPS))
       {
@@ -232,7 +232,7 @@ void BOPAlgo_ArgumentAnalyzer::Perform(const Message_ProgressRange& theRange)
     // 10. Test validity of the curves on the surfaces
     if (myCurveOnSurfaceMode)
     {
-      if (!(!myResult.IsEmpty() && myStopOnFirst))
+      if (myResult.IsEmpty() || !myStopOnFirst)
         TestCurveOnSurface();
     }
   }

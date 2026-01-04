@@ -476,7 +476,6 @@ GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection()
       myDeflection(0.0),
       myCont(GeomAbs_C1)
 {
-  //
 }
 
 //=================================================================================================

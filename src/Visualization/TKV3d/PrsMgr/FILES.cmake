@@ -13,6 +13,5 @@ set(OCCT_PrsMgr_FILES
   PrsMgr_PresentationManager.cxx
   PrsMgr_PresentationManager.hxx
 
-  PrsMgr_Presentations.hxx
   PrsMgr_TypeOfPresentation3d.hxx
 )

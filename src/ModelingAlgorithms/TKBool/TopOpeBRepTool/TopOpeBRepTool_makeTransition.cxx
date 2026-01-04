@@ -616,9 +616,7 @@ bool TopOpeBRepTool_makeTransition::MkT3dproj(TopAbs_State& Stb, TopAbs_State& S
   if (!okb)
     return false;
   bool oka = FUN_staproj(myE, mypb, mypa, mypE, myfactor, AFTER, myFS, Sta);
-  if (!oka)
-    return false;
-  return true;
+  return oka;
 }
 
 //=======================================================================

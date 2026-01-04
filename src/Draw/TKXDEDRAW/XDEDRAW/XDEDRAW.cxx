@@ -567,7 +567,7 @@ static int statdoc(Draw_Interpretor& di, int argc, const char** argv)
       TDF_Label      aLabel = CLabels.Value(i);
       Quantity_Color col;
       CTool->GetColor(aLabel, col);
-      di << col.StringName(col.Name()) << " ";
+      di << Quantity_Color::StringName(col.Name()) << " ";
     }
     di << "\n";
   }

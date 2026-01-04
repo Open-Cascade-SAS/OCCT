@@ -2116,14 +2116,7 @@ static bool RemoveLoop(TopoDS_Edge&                      E,
   double dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
   double dist3 = pcurPnt.Distance(crv->Value(Seq3d->Value(3)));
   double ftrim, ltrim;
-  if (dist3 > std::max(dist1, dist2))
-  {
-    loopRemoved3d = false;
-  }
-  else
-  {
-    loopRemoved3d = true;
-  }
+  loopRemoved3d = dist3 <= std::max(dist1, dist2);
 
   occ::handle<Geom_Curve> bs1;
 

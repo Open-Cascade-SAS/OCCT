@@ -426,22 +426,7 @@ bool IsDistanceIn3DTolerance(const gp_Pnt& thePnt_f, const gp_Pnt& thePnt_l, con
 {
   double Dist = thePnt_f.Distance(thePnt_l);
 
-  if (Dist < aTol3d)
-    return true;
-
-#ifdef OCCT_DEBUG
-  std::cout << std::endl;
-  std::cout << "--------Function IsDistanceIn3DTolerance(...)----------" << std::endl;
-  std::cout << "--- BRepCheck Wire: Closed3d -> Error" << std::endl;
-  std::cout << "--- Dist (" << Dist << ") > Tol3d (" << aTol3d << ")" << std::endl;
-  std::cout << "Pnt1(" << thePnt_f.X() << "; " << thePnt_f.Y() << "; " << thePnt_f.Z() << ")"
-            << std::endl;
-  std::cout << "Pnt2(" << thePnt_l.X() << "; " << thePnt_l.Y() << "; " << thePnt_l.Z() << ")"
-            << std::endl;
-  std::cout << "------------------------------------------------------" << std::endl;
-#endif
-
-  return false;
+  return Dist < aTol3d;
 }
 
 //=================================================================================================
@@ -522,25 +507,7 @@ static bool IsDistanceIn2DTolerance(const BRepAdaptor_Surface& aFaceSurface,
 
   double Dist = std::max(dumin, dvmin);
 
-  if (Dist < aTol2d)
-    return true;
-
-#ifdef OCCT_DEBUG
-  if (PrintWarnings)
-  {
-    std::cout << std::endl;
-    std::cout << "--------Function IsDistanceIn2DTolerance(...)----------" << std::endl;
-    std::cout << "--- BRepCheck Wire: Not closed in 2d" << std::endl;
-    std::cout << "*****************************************************" << std::endl;
-    std::cout << "* Dist = " << Dist << " > Tol2d = " << aTol2d << std::endl;
-    std::cout << "*****************************************************" << std::endl;
-    std::cout << "aTol3d = " << aTol3d << "; URes = " << dumax << "; VRes = " << dvmax << std::endl;
-    std::cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")" << std::endl;
-    std::cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")" << std::endl;
-  }
-#endif
-
-  return false;
+  return Dist < aTol2d;
 }
 
 //=================================================================================================
@@ -1192,7 +1159,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
           }
           //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 End
           TopExp_Explorer ExplVtx;
-          for (ExplVtx.Init(E1, TopAbs_VERTEX); localok == false && ExplVtx.More(); ExplVtx.Next())
+          for (ExplVtx.Init(E1, TopAbs_VERTEX); !localok && ExplVtx.More(); ExplVtx.Next())
           {
             gp_Pnt p3dvtt;
             double tolvtt, p3dvttDistanceP3d;
@@ -1207,7 +1174,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               localok = true;
             }
           }
-          if (localok == false)
+          if (!localok)
           {
             retE1 = E1;
             if (Update)
@@ -1394,7 +1361,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
             //--
             //-- Check distance from edges to the curve joining
             //-- the point of intersection with vertex (if exists)
-            if (localok == false && !CommonVertices.IsEmpty())
+            if (!localok && !CommonVertices.IsEmpty())
             {
 #ifdef OCCT_DEBUG
               std::cout << "\n------------------------------------------------------\n"
@@ -1545,7 +1512,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               } // end of else (construction of the line Lig)
             } // end of if (localok == false && !CommonVertices.IsEmpty())
             //
-            if (localok == false)
+            if (!localok)
             {
               retE1 = E1;
               retE2 = E2;
@@ -1689,13 +1656,13 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
                   break;
                 }
               }
-              if (localok == true)
+              if (localok)
               {
                 break;
               }
             } // end of for (k = 0; k < 2; k++)
             //
-            if (localok == false)
+            if (!localok)
             {
               retE1 = E1;
               retE2 = E2;
@@ -1939,11 +1906,7 @@ void ChoixUV(const TopoDS_Vertex&            theVertex,
         gp_Pnt            pEdg    = bcEdg.Value(aParPiv);
         gp_Pnt            pEFound = bcEvois.Value(aParam);
 
-        if (!IsDistanceIn3DTolerance(pEdg, pEFound, aTol3d))
-          IsFound = false;
-        else
-          // angle was not defined but points are close
-          IsFound = true; // all right
+        IsFound = IsDistanceIn3DTolerance(pEdg, pEFound, aTol3d);
       }
 
       if (!IsFound)

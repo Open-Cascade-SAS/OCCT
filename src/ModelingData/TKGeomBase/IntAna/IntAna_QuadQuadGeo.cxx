@@ -757,7 +757,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
   dist = A * X + B * Y + C * Z + D; // distance signee sommet du cone/ Plan
 
   gp_XYZ normp = P.Axis().Direction().XYZ();
-  if (P.Direct() == false)
+  if (!P.Direct())
   { //-- lbr le 14 jan 97
     normp.Reverse();
   }
@@ -994,7 +994,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& P, const gp_Sphere& S)
     typeres = IntAna_Circle;
     pt1.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);
     dir1 = P.Axis().Direction();
-    if (P.Direct() == false)
+    if (!P.Direct())
       dir1.Reverse();
     dir2   = P.Position().XDirection();
     param1 = std::sqrt(radius * radius - dist * dist);

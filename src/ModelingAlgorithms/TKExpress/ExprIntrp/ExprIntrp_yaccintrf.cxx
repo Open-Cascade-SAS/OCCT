@@ -48,8 +48,8 @@
 #include <NCollection_Sequence.hxx>
 #include <Expr_Operators.hxx>
 #include <ExprIntrp_SyntaxError.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
+class Expr_NamedUnknown;
 
 static TCollection_AsciiString ExprIntrp_assname;
 static TCollection_AsciiString ExprIntrp_funcdefname;

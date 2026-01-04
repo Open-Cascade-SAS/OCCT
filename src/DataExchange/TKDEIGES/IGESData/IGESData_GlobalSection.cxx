@@ -80,7 +80,6 @@ IGESData_GlobalSection::IGESData_GlobalSection()
       theIGESVersion(11), // IGES 5.3 by default
       theDraftingStandard(0)
 {
-  //
 }
 
 //=================================================================================================

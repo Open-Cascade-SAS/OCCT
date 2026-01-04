@@ -544,7 +544,7 @@ void AdvApprox_ApproxAFunction::Approximation(
       }
     }
 
-    if (MaxMaxErr == true)
+    if (MaxMaxErr)
     {
       NumCurves++;
       //            NumCoeffPerCurveArray(NumCurves) = Approx.Degree()+1;

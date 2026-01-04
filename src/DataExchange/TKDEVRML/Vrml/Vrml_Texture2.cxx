@@ -118,7 +118,7 @@ Standard_OStream& Vrml_Texture2::Print(Standard_OStream& anOStream) const
         break;
     }
 
-    if (myImage->ArrayFlag() == true)
+    if (myImage->ArrayFlag())
     {
       for (i = myImage->Array()->Lower(); i <= myImage->Array()->Upper(); i++)
       {

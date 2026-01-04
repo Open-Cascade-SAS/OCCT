@@ -85,7 +85,6 @@ OSD_Timer::OSD_Timer(bool theThisThreadOnly)
       myTimeStart(0.0),
       myTimeCumul(0.0)
 {
-  //
 }
 
 //=================================================================================================

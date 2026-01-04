@@ -768,7 +768,7 @@ void BOPAlgo_PaveFiller::AnalyzeShrunkData(const occ::handle<BOPDS_PaveBlock>& t
     double aEFirst, aELast, aPBFirst, aPBLast;
     BRep_Tool::Range(theSR.Edge(), aEFirst, aELast);
     thePB->Range(aPBFirst, aPBLast);
-    bWholeEdge = !(aPBFirst > aEFirst || aPBLast < aELast);
+    bWholeEdge = aPBFirst <= aEFirst && aPBLast >= aELast;
     if (bWholeEdge && thePB->OriginalEdge() >= 0)
     {
       aWarnShape = theSR.Edge();

@@ -127,7 +127,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
       for (int i = 1; i <= nbsol1; i++)
       {
         WellDone = true;
-        if (!(i == 1 && SameCenter))
+        if (i != 1 || !SameCenter)
         {
           NbrSol++;
           cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(pinterm, dirx), Radius(i));

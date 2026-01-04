@@ -79,7 +79,7 @@ bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSour
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? false : true;
+  return !myIsError;
 }
 
 //=======================================================================
@@ -97,7 +97,7 @@ bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSour
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? false : true;
+  return !myIsError;
 }
 
 //=======================================================================
@@ -128,7 +128,7 @@ bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceF
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? false : true;
+  return !myIsError;
 }
 
 //=======================================================================
@@ -159,7 +159,7 @@ bool TObj_Application::LoadDocument(Standard_IStream&              theIStream,
 
   // Release free memory
   Standard::Purge();
-  return myIsError ? false : true;
+  return !myIsError;
 }
 
 //=================================================================================================
@@ -172,7 +172,7 @@ bool TObj_Application::CreateNewDocument(occ::handle<TDocStd_Document>&    theDo
   // Create the Document
   NewDocument(theFormat, theDoc);
 
-  return myIsError ? false : true;
+  return !myIsError;
 }
 
 //=================================================================================================

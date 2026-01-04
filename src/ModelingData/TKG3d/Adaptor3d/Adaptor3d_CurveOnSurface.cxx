@@ -308,7 +308,7 @@ static void Locate1Coord(const int                             Index,
     FindBounds(Arr, cur, DComp1, Bnd1, Bnd2, DIsNull);
     ReverseParam(Bnd1, Bnd2, Bnd1, Bnd2);
 
-    if (DIsNull == false)
+    if (!DIsNull)
     {
       if (Index == 1)
       {
@@ -321,7 +321,7 @@ static void Locate1Coord(const int                             Index,
         RightTop.SetY(BSplC->Knot(Bnd2));
       }
     }
-    else if (DIsNull == true)
+    else if (DIsNull)
     {
       if (std::abs(Comp1 - (f = BSplC->Knot(Lo))) <= Tol)
       {
@@ -508,7 +508,7 @@ static void Locate1Coord(const int                               Index,
 
     ReverseParam(Bnd1, Bnd2, Bnd1, Bnd2);
 
-    if (DIsNull == false)
+    if (!DIsNull)
     {
       if (Index == 1)
       {
@@ -567,7 +567,7 @@ static void Locate1Coord(const int                               Index,
       {
         if (Index == 1)
         {
-          while (!(((f = BSplS->UKnot(i)) < Comp1) && ((l = BSplS->UKnot(i + 1)) > Comp1))
+          while ((((f = BSplS->UKnot(i)) >= Comp1) || ((l = BSplS->UKnot(i + 1)) <= Comp1))
                  && (i < Up))
           {
             i++;
@@ -575,7 +575,7 @@ static void Locate1Coord(const int                               Index,
         }
         else if (Index == 2)
         {
-          while (!(((f = BSplS->VKnot(i)) < Comp1) && ((l = BSplS->VKnot(i + 1)) > Comp1))
+          while ((((f = BSplS->VKnot(i)) >= Comp1) || ((l = BSplS->VKnot(i + 1)) <= Comp1))
                  && (i < Up))
           {
             i++;
@@ -1887,13 +1887,13 @@ void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                       
   Locate1Coord(1, UV, DUV, BSplS, DUIsNull, LeftBot, RightTop);
   Locate1Coord(2, UV, DUV, BSplS, DVIsNull, LeftBot, RightTop);
 
-  if ((DUIsNull == true) && (DVIsNull == false))
+  if ((DUIsNull) && (!DVIsNull))
   {
     NCollection_Array1<double> ArrU(1, BSplS->NbUKnots());
     BSplS->UKnots(ArrU);
     Locate2Coord(1, UV, DUV, BSplS, ArrU, LeftBot, RightTop);
   }
-  else if ((DVIsNull == true) && (DUIsNull == false))
+  else if ((DVIsNull) && (!DUIsNull))
   {
     NCollection_Array1<double> ArrV(1, BSplS->NbVKnots());
     BSplS->VKnots(ArrV);

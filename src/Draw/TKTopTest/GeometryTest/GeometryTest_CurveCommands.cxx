@@ -299,12 +299,12 @@ static int gproject(Draw_Interpretor& di, int n, const char** a)
     }
     else if (!strcmp(a[index], "-2d"))
     {
-      aProj2d = Draw::Atoi(a[index + 1]) > 0 ? true : false;
+      aProj2d = Draw::Atoi(a[index + 1]) > 0;
       Projector.SetProj2d(aProj2d);
     }
     else if (!strcmp(a[index], "-3d"))
     {
-      aProj3d = Draw::Atoi(a[index + 1]) > 0 ? true : false;
+      aProj3d = Draw::Atoi(a[index + 1]) > 0;
       Projector.SetProj3d(aProj3d);
     }
 
@@ -897,7 +897,7 @@ double CompLocalDev(const Adaptor3d_Curve& theCurve, const double u1, const doub
   {
     return std::sqrt(-aValue);
   }
-  if (!(d1 > aValue && d2 > aValue))
+  if (d1 <= aValue || d2 <= aValue)
   {
     double dmin = std::min(d1, std::min(aValue, d2));
     return std::sqrt(-dmin);

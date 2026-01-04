@@ -65,11 +65,7 @@ bool Expr_ArcTangent::IsIdentical(const occ::handle<Expr_GeneralExpression>& Oth
 
 bool Expr_ArcTangent::IsLinear() const
 {
-  if (ContainsUnknowns())
-  {
-    return false;
-  }
-  return true;
+  return !ContainsUnknowns();
 }
 
 occ::handle<Expr_GeneralExpression> Expr_ArcTangent::Derivative(

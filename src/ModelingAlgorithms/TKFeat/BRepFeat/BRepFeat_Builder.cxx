@@ -18,7 +18,7 @@
 #include <BOPDS_FaceInfo.hxx>
 #include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <Standard_Handle.hxx>
 #include <NCollection_Map.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
@@ -37,6 +37,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+class BOPDS_PaveBlock;
 
 //=================================================================================================
 

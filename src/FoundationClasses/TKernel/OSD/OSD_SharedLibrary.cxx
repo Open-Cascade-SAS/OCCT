@@ -143,14 +143,7 @@ bool OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
     myHandle = dlopen(myName, RTLD_NOW);
   }
 
-  if (!BAD(myHandle))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return !BAD(myHandle);
 }
 
 // ----------------------------------------------------------------

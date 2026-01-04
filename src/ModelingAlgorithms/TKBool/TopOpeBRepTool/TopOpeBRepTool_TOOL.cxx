@@ -849,9 +849,7 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
   {
     gp_Dir dir = BAC.Line().Direction();
     double dot = dir.Dot(tg0);
-    if (std::abs(1 - dot) < tola)
-      return false;
-    return true;
+    return std::abs(1 - dot) >= tola;
   }
 
   BRepLProp_CLProps clprops(BAC, par, 2, Precision::Confusion());

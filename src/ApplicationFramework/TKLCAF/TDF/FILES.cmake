@@ -11,7 +11,6 @@ set(OCCT_TDF_FILES
   TDF_AttributeDelta.cxx
   TDF_AttributeDelta.hxx
 
-  TDF_AttributeIndexedMap.hxx
   TDF_AttributeIterator.cxx
   TDF_AttributeIterator.hxx
 

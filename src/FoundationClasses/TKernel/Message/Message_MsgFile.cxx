@@ -189,7 +189,7 @@ static inline bool loadFile(_Char* theBuffer)
         }
         [[fallthrough]];
       case MsgFile_WaitingMessage:
-        if (isKeyword == false)
+        if (!isKeyword)
         {
           aMessage         = aString;
           aFirstLeftSpaces = aLeftSpaces; // remember the starting position

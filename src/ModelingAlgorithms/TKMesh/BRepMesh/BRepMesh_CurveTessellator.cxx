@@ -84,7 +84,7 @@ void BRepMesh_CurveTessellator::init()
   if (myParameters.AdjustMinSize)
   {
     aMinSize = std::min(aMinSize,
-                        myParameters.RelMinSize()
+                        IMeshTools_Parameters::RelMinSize()
                           * GCPnts_AbscissaPoint::Length(myCurve,
                                                          myCurve.FirstParameter(),
                                                          myCurve.LastParameter(),

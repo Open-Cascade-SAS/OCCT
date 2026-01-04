@@ -555,7 +555,7 @@ int bopnews(Draw_Interpretor& di, int n, const char** a)
   TopAbs_ShapeEnum aType;
   GetTypeByName(a[1], aType);
   //
-  if (!(aType == TopAbs_VERTEX || aType == TopAbs_EDGE || aType == TopAbs_FACE))
+  if (aType != TopAbs_VERTEX && aType != TopAbs_EDGE && aType != TopAbs_FACE)
   {
     di << "Use: bopnews v/e/f\n";
     return 1;

@@ -2655,7 +2655,7 @@ static int DDataStd_GetBooleanArrayValue(Draw_Interpretor& di, int, const char**
   }
   else
   {
-    di << ((A->Value(index) == true) ? "True" : "False") << "\n";
+    di << ((A->Value(index)) ? "True" : "False") << "\n";
   }
 
   return 0;
@@ -2769,7 +2769,7 @@ static int DDataStd_GetBooleanList(Draw_Interpretor& di, int nb, const char** ar
     }
 
     const NCollection_List<uint8_t>& bList   = A->List();
-    bool                             isEmpty = (bList.Extent() > 0) ? false : true;
+    bool                             isEmpty = bList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<uint8_t>::Iterator itr(bList);
@@ -2826,7 +2826,7 @@ static int DDataStd_GetIntegerList(Draw_Interpretor& di, int nb, const char** ar
     }
 
     const NCollection_List<int>& iList   = A->List();
-    bool                         isEmpty = (iList.Extent() > 0) ? false : true;
+    bool                         isEmpty = iList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<int>::Iterator itr(iList);
@@ -2884,7 +2884,7 @@ static int DDataStd_GetRealList(Draw_Interpretor& di, int nb, const char** arg)
     }
 
     const NCollection_List<double>& rList   = A->List();
-    bool                            isEmpty = (rList.Extent() > 0) ? false : true;
+    bool                            isEmpty = rList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<double>::Iterator itr(rList);
@@ -2940,8 +2940,8 @@ static int DDataStd_GetExtStringList(Draw_Interpretor& di, int nb, const char** 
       return 1;
     }
 
-    const NCollection_List<TCollection_ExtendedString>& aList = A->List();
-    bool isEmpty                                              = (aList.Extent() > 0) ? false : true;
+    const NCollection_List<TCollection_ExtendedString>& aList   = A->List();
+    bool                                                isEmpty = aList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<TCollection_ExtendedString>::Iterator itr(aList);
@@ -3001,7 +3001,7 @@ static int DDataStd_GetReferenceList(Draw_Interpretor& di, int nb, const char** 
     }
 
     const NCollection_List<TDF_Label>& aList   = A->List();
-    bool                               isEmpty = (aList.Extent() > 0) ? false : true;
+    bool                               isEmpty = aList.Extent() <= 0;
     if (!isEmpty)
     {
       NCollection_List<TDF_Label>::Iterator itr(aList);

@@ -456,12 +456,7 @@ public:
 private:
   CurvMaxMinCoordMVar& operator=(const CurvMaxMinCoordMVar&) = delete;
 
-  bool CheckInputData(double theParam)
-  {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
-  }
+  bool CheckInputData(double theParam) { return theParam >= myUMin && theParam <= myUMax; }
 
   const Adaptor3d_Curve& myCurve;
   double                 myUMin;
@@ -503,12 +498,7 @@ public:
 private:
   CurvMaxMinCoord& operator=(const CurvMaxMinCoord&) = delete;
 
-  bool CheckInputData(double theParam)
-  {
-    if (theParam < myUMin || theParam > myUMax)
-      return false;
-    return true;
-  }
+  bool CheckInputData(double theParam) { return theParam >= myUMin && theParam <= myUMax; }
 
   const Adaptor3d_Curve& myCurve;
   double                 myUMin;

@@ -35,7 +35,6 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
       myDrawEdges(true),
       myDrawIso(false)
 {
-  //
 }
 
 //=================================================================================================

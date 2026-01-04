@@ -108,7 +108,7 @@ void TDocStd_Application::ReadingFormats(NCollection_Sequence<TCollection_AsciiS
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<PCDM_RetrievalDriver>& aDriver = anIter.Value();
-    if (aDriver.IsNull() == false)
+    if (!aDriver.IsNull())
     {
       theFormats.Append(anIter.Key());
     }
@@ -126,7 +126,7 @@ void TDocStd_Application::WritingFormats(NCollection_Sequence<TCollection_AsciiS
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<PCDM_StorageDriver>& aDriver = anIter.Value();
-    if (aDriver.IsNull() == false)
+    if (!aDriver.IsNull())
     {
       theFormats.Append(anIter.Key());
     }

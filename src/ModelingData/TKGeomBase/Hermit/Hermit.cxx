@@ -146,10 +146,7 @@ static bool SignDenom(const NCollection_Array1<gp_Pnt2d>& Poles)
 {
   bool Result;
 
-  if (Poles(0).Y() < 0)
-    Result = false;
-  else
-    Result = true;
+  Result = Poles(0).Y() >= 0;
   return Result;
 }
 

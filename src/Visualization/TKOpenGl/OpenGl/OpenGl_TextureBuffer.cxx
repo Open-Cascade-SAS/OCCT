@@ -27,7 +27,6 @@ OpenGl_TextureBuffer::OpenGl_TextureBuffer()
     : myTextureId(NO_TEXTURE),
       myTexFormat(GL_RGBA32F)
 {
-  //
 }
 
 //=================================================================================================

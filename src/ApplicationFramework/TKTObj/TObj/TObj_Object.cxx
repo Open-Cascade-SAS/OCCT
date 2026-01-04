@@ -398,9 +398,7 @@ void TObj_Object::ClearBackReferences()
 bool TObj_Object::HasBackReferences() const
 {
   occ::handle<TObj_ObjectIterator> anItr = GetBackReferences();
-  if (anItr.IsNull() || !anItr->More())
-    return false;
-  return true;
+  return !anItr.IsNull() && anItr->More();
 }
 
 //=================================================================================================
@@ -793,7 +791,7 @@ TDF_Label TObj_Object::addReference(const int theRank1, const occ::handle<TObj_O
     aRefLabel = aRefLabel.FindChild(theRank1, true);
 
   TDF_TagSource aTag;
-  TDF_Label     aLabel = aTag.NewChild(aRefLabel);
+  TDF_Label     aLabel = TDF_TagSource::NewChild(aRefLabel);
 
   occ::handle<TObj_Object> me = this;
   TObj_TReference::Set(aLabel, theObject, me);
@@ -1212,10 +1210,7 @@ bool TObj_Object::IsAlive() const
     return false;
 
   occ::handle<TObj_Object> anObj;
-  if (!GetObj(myLabel, anObj))
-    return false;
-
-  return true;
+  return GetObj(myLabel, anObj);
 }
 
 //=================================================================================================

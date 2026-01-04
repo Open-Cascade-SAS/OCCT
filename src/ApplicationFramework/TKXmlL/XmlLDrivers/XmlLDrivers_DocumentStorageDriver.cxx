@@ -120,7 +120,7 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
   // Fill the document with data
   XmlObjMgt_Element anElement = aDOMDoc.getDocumentElement();
 
-  if (WriteToDomDocument(theDocument, anElement, theRange) == false)
+  if (!WriteToDomDocument(theDocument, anElement, theRange))
   {
 
     LDOM_XmlWriter aWriter;
@@ -340,7 +340,7 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
       aMessageDriver->Send(anErrorString.ToExtString(), Message_Fail);
     }
   }
-  if (anObjNb <= 0 && IsError() == false)
+  if (anObjNb <= 0 && !IsError())
   {
     SetIsError(true);
     SetStoreStatus(PCDM_SS_No_Obj);

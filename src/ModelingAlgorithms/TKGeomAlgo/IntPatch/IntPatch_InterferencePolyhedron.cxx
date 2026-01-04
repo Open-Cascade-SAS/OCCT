@@ -564,7 +564,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   else
                     Pb = true;
                 }
-                if (Pb == false)
+                if (!Pb)
                 {
                   piT -= piO.XYZ();
                   lg = piT.Modulus();

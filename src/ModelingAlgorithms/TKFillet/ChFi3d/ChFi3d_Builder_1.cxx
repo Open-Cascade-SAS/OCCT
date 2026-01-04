@@ -849,7 +849,7 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
   ChFiDS_TypeOfConcavity TypeOfConcavity = ChFi3d::DefineConnectType(Ec, ff1, ff2, 1.e-5, true);
   Spine->SetTypeOfConcavity(TypeOfConcavity);
 
-  bool                ToRestrict = (Offset > 0) ? true : false;
+  bool                ToRestrict = Offset > 0;
   BRepAdaptor_Surface Sb1(ff1, ToRestrict);
   BRepAdaptor_Surface Sb2(ff2, ToRestrict);
   if (Offset > 0)

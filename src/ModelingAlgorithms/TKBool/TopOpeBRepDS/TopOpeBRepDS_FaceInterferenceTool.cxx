@@ -50,7 +50,7 @@ Standard_EXPORT bool FUN_Parameters(const gp_Pnt& Pnt, const TopoDS_Shape& F, do
   double        uvtol = Surf.Tolerance();
   double        fu = Surf.FirstUParameter(), lu = Surf.LastUParameter();
   double        fv = Surf.FirstVParameter(), lv = Surf.LastVParameter();
-  Extrema_ExtPS extps(Pnt, Surf, fu, lu, fv, lv, uvtol, uvtol);
+  Extrema_ExtPS extps(Pnt, Surf, fu, lu, fv, lv, uvtol, uvtol, Extrema_ExtFlag_MIN);
   if (!extps.IsDone())
   {
     return false;

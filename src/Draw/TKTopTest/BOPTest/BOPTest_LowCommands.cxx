@@ -140,7 +140,7 @@ int b2dclassify(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   DrawTrSurf::GetPoint2d(theArgVec[2], aP);
   const TopoDS_Face& aF   = TopoDS::Face(aS);
   const double       aTol = (theArgNb >= 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
-  const bool         anUseBox     = (theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1) ? true : false;
+  const bool         anUseBox     = theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1;
   const double       aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
   BRepClass_FaceClassifier aClassifier;
   aClassifier.Perform(aF, aP, aTol, anUseBox, aGapCheckTol);

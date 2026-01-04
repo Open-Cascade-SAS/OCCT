@@ -37,7 +37,8 @@
 #include <Prs3d_TypeOfHighlight.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_AndOrFilter.hxx>
-#include <SelectMgr_IndexedMapOfOwner.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Shared.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <SelectMgr_PickingStrategy.hxx>
 #include <SelectMgr_SelectionManager.hxx>
@@ -48,6 +49,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Quantity_Color.hxx>
+class SelectMgr_EntityOwner;
 
 class V3d_Viewer;
 class V3d_View;
@@ -484,7 +486,7 @@ public: //! @name iteration through detected entities
   {
     if (!myDetectedSeq.IsEmpty())
     {
-      myCurDetected = myDetectedSeq.Lower();
+      myCurDetected = NCollection_Sequence<int>::Lower();
     }
   }
 
@@ -493,7 +495,8 @@ public: //! @name iteration through detected entities
   //! @sa DetectedCurrentOwner(), InitDetected(), NextDetected().
   bool MoreDetected() const
   {
-    return myCurDetected >= myDetectedSeq.Lower() && myCurDetected <= myDetectedSeq.Upper();
+    return myCurDetected >= NCollection_Sequence<int>::Lower()
+           && myCurDetected <= myDetectedSeq.Upper();
   }
 
   //! Gets next current object during iteration through mouse-detected interactive objects.

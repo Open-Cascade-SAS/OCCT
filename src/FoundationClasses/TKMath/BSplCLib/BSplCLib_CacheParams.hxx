@@ -82,8 +82,8 @@ struct BSplCLib_CacheParams
   {
     const double aNewParam = PeriodicNormalization(theParameter);
     const double aDelta    = aNewParam - SpanStart;
-    if (!((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
-          && (aDelta < SpanLength || SpanIndex == SpanIndexMax)))
+    if ((aDelta < 0.0 && SpanIndex != SpanIndexMin)
+        || (aDelta >= SpanLength && SpanIndex != SpanIndexMax))
     {
       return false;
     }
@@ -95,10 +95,7 @@ struct BSplCLib_CacheParams
     // within double floating point precision
     const double anEps        = Epsilon((std::min)(std::fabs(LastParameter), std::fabs(aNewParam)));
     const double aDeltaToNext = std::fabs(aDelta - SpanLength);
-    if (aDeltaToNext <= anEps)
-      return false; // next knot should be used instead
-
-    return true;
+    return aDeltaToNext > anEps; // next knot should be used instead
   }
 
   //! Computes span for the specified parameter

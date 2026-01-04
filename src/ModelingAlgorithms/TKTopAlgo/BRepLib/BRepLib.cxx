@@ -347,7 +347,7 @@ bool BRepLib::BuildCurve3d(const TopoDS_Edge&  AnEdge,
     {
       P = occ::down_cast<Geom_Plane>(RT->BasisSurface());
     }
-    not_done = !(S.IsNull() || !P.IsNull());
+    not_done = !S.IsNull() && P.IsNull();
   }
   if (!P.IsNull())
   {

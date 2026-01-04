@@ -983,11 +983,7 @@ bool SelectMgr_RectangularFrustum::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1
 
   const double anU = aMatU.Determinant() / aMat.Determinant();
   const double aV  = aMatV.Determinant() / aMat.Determinant();
-  if (anU >= 0.0 && anU <= 1.0 && aV >= 0.0 && aV <= 1.0)
-  {
-    return true;
-  }
-  return false;
+  return anU >= 0.0 && anU <= 1.0 && aV >= 0.0 && aV <= 1.0;
 }
 
 //=================================================================================================

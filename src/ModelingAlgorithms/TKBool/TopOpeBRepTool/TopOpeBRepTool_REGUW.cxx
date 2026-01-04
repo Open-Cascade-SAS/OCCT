@@ -25,10 +25,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
-
 #define FORWARD (1)
 #define REVERSED (2)
 #define INTERNAL (3)
@@ -85,11 +81,6 @@ Standard_EXPORT int FUN_adds(const TopoDS_Shape& s)
     aa = TCollection_AsciiString("f");
     is = STATIC_mapf.Add(s);
   }
-  #ifdef DRAW
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    FUN_tool_draw(aa, s, is);
-  #endif
   return is;
 }
 #endif
@@ -1188,26 +1179,7 @@ bool TopOpeBRepTool_REGUW::RemoveOldConnexity(const TopoDS_Vertex& v,
 
   TopOpeBRepTool_connexity& co = mymapvEds.ChangeFromKey(v);
   ok                           = co.RemoveItem(OriKey, e);
-  if (!ok)
-    return false;
-
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-  {
-    std::cout << "** removing old connexity : v" << FUN_adds(v) << " for e" << FUN_adds(e);
-    FUN_tool_tori(e.Orientation());
-    TopoDS_Vertex vclo;
-    bool          cloE = TopOpeBRepTool_TOOL::ClosedE(e, vclo);
-    if (cloE)
-      std::cout << " closed";
-    bool dgE = BRep_Tool::Degenerated(e);
-    if (dgE)
-      std::cout << " degenerated";
-    std::cout << std::endl;
-  }
-#endif
-  return true;
+  return ok;
 }
 
 //=================================================================================================

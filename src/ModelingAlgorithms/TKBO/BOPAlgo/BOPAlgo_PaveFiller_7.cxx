@@ -24,7 +24,8 @@
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
 #include <NCollection_Map.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_Pair.hxx>
@@ -56,6 +57,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+class BOPDS_PaveBlock;
 
 static bool IsBasedOnPlane(const TopoDS_Face& aF);
 

@@ -92,7 +92,7 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
 LDOM_NodeList LDOM_Element::getElementsByTagName(const LDOMString& theTagName) const
 {
   LDOM_NodeList aList(myDocument);
-  if (isNull() == false)
+  if (!isNull())
   {
     const LDOM_BasicElement& anElem = (const LDOM_BasicElement&)Origin();
     //    if (anElem.GetTagName().equals(theTagName))

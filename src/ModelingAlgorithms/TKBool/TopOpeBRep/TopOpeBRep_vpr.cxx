@@ -24,10 +24,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepDS_DRAW.hxx>
-#endif
-
 #include <Standard_DomainError.hxx>
 #include <Geom_Surface.hxx>
 #include <Precision.hxx>
@@ -1367,7 +1363,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
     TopOpeBRepTool_makeTransition MKT;
     bool ok = MKT.Initialize(OOedge, OOpar1, OOpar2, OOparedge, Face, OOuv, factor);
 
-    if (ok && !(interf2d && !MKT.IsT2d()))
+    if (ok && (!interf2d || MKT.IsT2d()))
     {
       MKT.SetRest(edge, paredge);
       TopAbs_State stb, sta;

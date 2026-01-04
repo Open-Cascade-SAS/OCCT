@@ -39,12 +39,7 @@ struct Edge
   //! Comparison operator.
   bool operator<(const Edge& other) const
   {
-    if (Idx1 < other.Idx1 || (Idx1 == other.Idx1 && Idx2 < other.Idx2))
-    {
-      return true;
-    }
-
-    return false;
+    return Idx1 < other.Idx1 || (Idx1 == other.Idx1 && Idx2 < other.Idx2);
   }
 
   bool operator==(const Edge& theOther) const

@@ -192,7 +192,7 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
     {
       if (aFirstAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         break;
-      if (aFirstAttr->isNull() == false)
+      if (!aFirstAttr->isNull())
         theLastCh = aFirstAttr;
       aPrevNode  = (const LDOM_BasicNode**)&(aFirstAttr->mySibling);
       aFirstAttr = aFirstAttr->mySibling;

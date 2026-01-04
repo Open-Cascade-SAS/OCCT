@@ -243,10 +243,7 @@ bool TopOpeBRepTool_ShapeTool::Closed(const TopoDS_Shape& S1, const TopoDS_Shape
     for (TopExp_Explorer x(F, TopAbs_EDGE); x.More(); x.Next())
       if (x.Current().IsSame(E))
         n++;
-    if (n < 2)
-      return false;
-    else
-      return true;
+    return n >= 2;
   }
   return false;
 }

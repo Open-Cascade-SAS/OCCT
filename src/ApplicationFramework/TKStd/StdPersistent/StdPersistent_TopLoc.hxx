@@ -17,10 +17,12 @@
 #include <StdObjMgt_SharedObject.hxx>
 #include <StdObjMgt_Persistent.hxx>
 #include <StdObject_Location.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class StdPersistent_TopLoc
 {

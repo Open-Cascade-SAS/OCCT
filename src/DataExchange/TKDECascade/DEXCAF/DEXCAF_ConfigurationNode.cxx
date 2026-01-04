@@ -174,9 +174,5 @@ bool DEXCAF_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
     return false;
   }
   const char* aBytes = (const char*)theBuffer->Data();
-  if (!::strncmp(aBytes, "BINFILE", 7))
-  {
-    return true;
-  }
-  return false;
+  return ::strncmp(aBytes, "BINFILE", 7) == 0;
 }

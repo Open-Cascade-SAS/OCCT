@@ -258,7 +258,7 @@ static const XmlObjMgt_DOMString& EvolutionString(const TNaming_Evolution i)
 static TNaming_Evolution EvolutionEnum(const XmlObjMgt_DOMString& theString)
 {
   TNaming_Evolution aResult = TNaming_PRIMITIVE;
-  if (theString.equals(::EvolPrimitiveString()) == false)
+  if (!theString.equals(::EvolPrimitiveString()))
   {
     if (theString.equals(::EvolGeneratedString()))
       aResult = TNaming_GENERATED;

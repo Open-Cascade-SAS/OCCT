@@ -28,10 +28,6 @@
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
-
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
 #define M_INTERNAL(ori) (ori == TopAbs_INTERNAL)
@@ -73,11 +69,6 @@ static int FUN_adds(const TopoDS_Shape& s)
     aa = TCollection_AsciiString("e");
     is = STATIC_mape.Add(s);
   }
-  #ifdef DRAW
-  bool trc = TopOpeBRepTool_GettraceREGUSO();
-  if (trc)
-    FUN_tool_draw(aa, s, is);
-  #endif
   return is;
 }
 #endif
@@ -261,15 +252,7 @@ bool TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face&                    Fanc
   }
 
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(Fanc, mapWlow, nFs);
-  if (!facesbuilt)
-  {
-#ifdef OCCT_DEBUG
-    if (trc)
-      std::cout << "** facesbuilt fails" << std::endl;
-#endif
-    return false;
-  }
-  return true;
+  return facesbuilt;
 }
 
 //=================================================================================================
@@ -836,9 +819,7 @@ static bool FUN_vectors(const TopoDS_Face& f,
     nt.Reverse();
   // <xx> :
   bool ok = FUN_tool_getxx(f, e, pare, xx);
-  if (!ok)
-    return false;
-  return true;
+  return ok;
 }
 
 //=================================================================================================

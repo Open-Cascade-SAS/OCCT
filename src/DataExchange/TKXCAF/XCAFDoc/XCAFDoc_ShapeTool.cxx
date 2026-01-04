@@ -386,7 +386,7 @@ TDF_Label XCAFDoc_ShapeTool::NewShape() const
   tdsB.MakeCompound(aShape);
 
   TDF_TagSource aTag;
-  TDF_Label     aLabel = aTag.NewChild(Label());
+  TDF_Label     aLabel = TDF_TagSource::NewChild(Label());
 
   TNaming_Builder tnBuild(aLabel);
   tnBuild.Generated(aShape);
@@ -477,7 +477,7 @@ TDF_Label XCAFDoc_ShapeTool::addShape(const TopoDS_Shape& S, const bool makeAsse
     return ShapeLabel;
 
   // else add a new label
-  ShapeLabel = aTag.NewChild(Label());
+  ShapeLabel = TDF_TagSource::NewChild(Label());
 
   // if shape has location, make a reference to the same shape without location
   if (!S.Location().IsIdentity() /*&& FindShape ( S, L )*/)
@@ -524,7 +524,7 @@ TDF_Label XCAFDoc_ShapeTool::addShape(const TopoDS_Shape& S, const bool makeAsse
       TDF_Label compL = addShape(S0, makeAssembly);
 
       // add a component as reference
-      TDF_Label RefLabel = aTag.NewChild(ShapeLabel);
+      TDF_Label RefLabel = TDF_TagSource::NewChild(ShapeLabel);
       MakeReference(RefLabel, compL, Scomp.Location());
     }
   }
@@ -794,10 +794,7 @@ bool XCAFDoc_ShapeTool::IsSubShape(const TDF_Label& L)
 bool XCAFDoc_ShapeTool::IsFree(const TDF_Label& L)
 {
   occ::handle<TDataStd_TreeNode> Node;
-  if (!L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node) || !Node->HasFirst())
-    return true;
-
-  return false;
+  return !L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node) || !Node->HasFirst();
 }
 
 //=======================================================================
@@ -918,7 +915,7 @@ TDF_Label XCAFDoc_ShapeTool::AddComponent(const TDF_Label&       assembly,
 
   // add a component as reference
   TDF_TagSource aTag;
-  L = aTag.NewChild(assembly);
+  L = TDF_TagSource::NewChild(assembly);
   MakeReference(L, compL, Loc);
 
   // map shape to label
@@ -1108,7 +1105,7 @@ bool XCAFDoc_ShapeTool::AddSubShape(const TDF_Label&    shapeL,
     return false;
 
   TDF_TagSource aTag;
-  addedSubShapeL = aTag.NewChild(shapeL);
+  addedSubShapeL = TDF_TagSource::NewChild(shapeL);
   TNaming_Builder tnBuild(addedSubShapeL);
   tnBuild.Generated(aSubShape);
 
@@ -1354,7 +1351,7 @@ TDF_Label XCAFDoc_ShapeTool::SetExternRefs(
   TDF_Label     ShapeLabel;
   TDF_TagSource aTag;
   // add a new label
-  ShapeLabel = aTag.NewChild(Label());
+  ShapeLabel = TDF_TagSource::NewChild(Label());
   TDataStd_UAttribute::Set(ShapeLabel, XCAFDoc::ExternRefGUID());
   for (int i = 1; i <= SHAS.Length(); i++)
   {
@@ -1394,9 +1391,7 @@ void XCAFDoc_ShapeTool::GetExternRefs(
 bool XCAFDoc_ShapeTool::GetSHUO(const TDF_Label&                SHUOLabel,
                                 occ::handle<XCAFDoc_GraphNode>& aSHUOAttr)
 {
-  if (!SHUOLabel.FindAttribute(XCAFDoc::SHUORefGUID(), aSHUOAttr))
-    return false;
-  return true;
+  return SHUOLabel.FindAttribute(XCAFDoc::SHUORefGUID(), aSHUOAttr);
 }
 
 //=================================================================================================
@@ -1432,7 +1427,7 @@ bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>& labels,
       return false;
 
   TDF_TagSource aTag;
-  TDF_Label     UpperSubL = aTag.NewChild(labels(1));
+  TDF_Label     UpperSubL = TDF_TagSource::NewChild(labels(1));
   if (theAutoNaming)
   {
     TCollection_ExtendedString Entry("SHUO");
@@ -1445,7 +1440,7 @@ bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>& labels,
   // add other next_usage occurrences.
   for (i = 2; i <= labels.Length(); i++)
   {
-    TDF_Label NextSubL = aTag.NewChild(labels(i));
+    TDF_Label NextSubL = TDF_TagSource::NewChild(labels(i));
     if (theAutoNaming)
     {
       TCollection_ExtendedString EntrySub("SHUO-");
@@ -1873,7 +1868,7 @@ bool XCAFDoc_ShapeTool::Expand(const TDF_Label& theShapeL)
         if (!GetReferredShape(aPart, aPart))
         {
           TDF_TagSource aTag;
-          aPart = aTag.NewChild(Label());
+          aPart = TDF_TagSource::NewChild(Label());
           SetShape(aPart, aChildShape.Located(TopLoc_Location()));
         }
       }

@@ -1806,7 +1806,7 @@ bool IFSelect_WorkSession::SetFileRoot(const occ::handle<IFSelect_Dispatch>& dis
 const char* IFSelect_WorkSession::GiveFileRoot(const char* file) const
 {
   OSD_Path path(file);
-  if (!path.IsValid(TCollection_AsciiString(file)))
+  if (!OSD_Path::IsValid(TCollection_AsciiString(file)))
     return file; // tant pis ..
   bufstr = path.Name();
   return bufstr.ToCString();
@@ -3628,7 +3628,7 @@ void IFSelect_WorkSession::EvaluateDispatch(const occ::handle<IFSelect_Dispatch>
   IFSelect_ShareOutResult eval(disp, thegraph->Graph());
   eval.Evaluate();
   int                              numpack = 0;
-  occ::handle<IFSelect_PacketList> evres   = eval.Packets(mode ? true : false);
+  occ::handle<IFSelect_PacketList> evres   = eval.Packets(mode != 0);
   int                              nbpack  = evres->NbPackets();
 
   sout << "Nb Packets produced : " << nbpack << " :" << std::endl;
@@ -3716,7 +3716,7 @@ void IFSelect_WorkSession::EvaluateComplete(const int mode) const
     sout << " ** (for each one : Evaluated Content)  **" << std::endl;
 
   int                              numpack = 0;
-  occ::handle<IFSelect_PacketList> evres   = eval.Packets(mode ? true : false);
+  occ::handle<IFSelect_PacketList> evres   = eval.Packets(mode != 0);
   int                              nbpack  = evres->NbPackets();
 
   sout << "Nb Packets produced : " << nbpack << " :" << std::endl;

@@ -155,7 +155,7 @@ protected:
 private:
   // Methods PRIVATE
   //
-  Standard_EXPORT NCollection_BaseSequence(const NCollection_BaseSequence& Other) = delete;
+  NCollection_BaseSequence(const NCollection_BaseSequence& Other) = delete;
 
   void Nullify() noexcept
   {

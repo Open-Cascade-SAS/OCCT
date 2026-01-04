@@ -80,10 +80,7 @@ bool ShapeUpgrade_EdgeDivide::Compute(const TopoDS_Edge& anEdge)
     myKnots2d = theSplit2dTool->SplitValues();
   }
 
-  if (theSplit3dTool->Status(ShapeExtend_DONE) || theSplit2dTool->Status(ShapeExtend_DONE))
-    return true;
-  else
-    return false;
+  return theSplit3dTool->Status(ShapeExtend_DONE) || theSplit2dTool->Status(ShapeExtend_DONE);
 }
 
 //=================================================================================================

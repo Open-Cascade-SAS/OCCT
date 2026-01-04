@@ -24,10 +24,6 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 
-#ifdef DRAW
-  #include <TopOpeBRepTool_DRAW.hxx>
-#endif
-
 #define SAME (-1)
 #define DIFF (-2)
 #define UNKNOWN (0)
@@ -58,9 +54,6 @@ static int FUN_adds(const TopoDS_Shape& s)
     aa = TCollection_AsciiString("fa");
     is = STATIC_mapf.Add(s);
   }
-  #ifdef DRAW
-  FUN_tool_draw(aa, s, is);
-  #endif
   return is;
 }
 
@@ -667,9 +660,7 @@ Standard_EXPORT bool FUN_tool_ClassifW(
   {
     const NCollection_List<TopoDS_Shape>& low = itm.Value();
     bool                                  ok  = CLASSI.Classilist(low, mapWlow);
-    if (!ok)
-      return false;
-    return true;
+    return ok;
   }
 
   // noldW > 1
@@ -862,7 +853,5 @@ bool TopOpeBRepTool::RegularizeFace(
   // <aListOfFaces>
   // -------------
   bool facesbuilt = TopOpeBRepTool_TOOL::WireToFace(theFace, mapWlow, newFaces);
-  if (!facesbuilt)
-    return false;
-  return true;
+  return facesbuilt;
 }

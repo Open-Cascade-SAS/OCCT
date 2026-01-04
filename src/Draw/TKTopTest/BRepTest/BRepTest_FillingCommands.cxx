@@ -182,7 +182,7 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
     Sprintf(name, "Edge_%d", i);
     DBRep::Set(name, E);
     MW.Add(E);
-    if (MW.IsDone() == false)
+    if (!MW.IsDone())
     {
       throw Standard_Failure("mkWire is over ");
     }
@@ -448,7 +448,7 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
     B.UpdateVertex(TopExp::LastVertex(E), dmax);
     BRepLib::BuildCurve3d(E);
     MW.Add(E);
-    if (MW.IsDone() == false)
+    if (!MW.IsDone())
     {
       throw Standard_Failure("mkWire is over ");
     }

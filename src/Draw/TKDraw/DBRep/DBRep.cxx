@@ -952,7 +952,7 @@ static int nbshapes(Draw_Interpretor& di, int n, const char** a)
   bool            aTotal;
   TopExp_Explorer ex;
   //
-  aTotal = !strcmp(a[n - 1], "-t") ? true : false;
+  aTotal = strcmp(a[n - 1], "-t") == 0;
   //
   for (i = 1; i < n; i++)
   {

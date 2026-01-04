@@ -62,10 +62,6 @@
 // #include <GeomLib_CheckSameParameter.hxx>
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <DrawTrSurf.hxx>
-    #include <Geom2d_Curve.hxx>
-  #endif
 // static int compteur = 0;
 #endif
 
@@ -396,7 +392,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
   }
 
   // Perform whole param space search.
-  Extrema_ExtPS ext(p, SurfLittle, theData.myTolU, theData.myTolV);
+  Extrema_ExtPS ext(p, SurfLittle, theData.myTolU, theData.myTolV, Extrema_ExtFlag_MIN);
   if (ext.IsDone() && ext.NbExt() >= 1)
   {
     Dist2Min      = ext.SquareDistance(1);
@@ -1123,7 +1119,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
     bool                           areManyZeros = false;
 
     pntproj = Pts(1);
-    Extrema_ExtPS aExtPS(pntproj, *Surf, TolU, TolV);
+    Extrema_ExtPS aExtPS(pntproj, *Surf, TolU, TolV, Extrema_ExtFlag_MIN);
     double        aMinSqDist = RealLast();
     if (aExtPS.IsDone())
     {
@@ -1218,7 +1214,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
               int indExt  = 0;
               int iT      = 1 + (NbOfPnts - 1) / 5 * i;
               pntproj     = Pts(iT);
-              Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV);
+              Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV, Extrema_ExtFlag_MIN);
               Dist2Min = 1.e+200;
               if (aTPS.IsDone() && aTPS.NbExt() >= 1)
               {
@@ -1251,7 +1247,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
               for (j = tPp + 1; j <= NbOfPnts; ++j)
               {
                 pntproj = Pts(j);
-                Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV);
+                Extrema_ExtPS aTPS(pntproj, *Surf, TolU, TolV, Extrema_ExtFlag_MIN);
                 Dist2Min = RealLast();
                 if (aTPS.IsDone() && aTPS.NbExt() >= 1)
                 {
@@ -1357,7 +1353,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
             }
             else
             {
-              Extrema_ExtPS aGlobalExtr(pntproj, *Surf, TolU, TolV);
+              Extrema_ExtPS aGlobalExtr(pntproj, *Surf, TolU, TolV, Extrema_ExtFlag_MIN);
               if (aGlobalExtr.IsDone())
               {
                 double LocalMinSqDist = RealLast();
@@ -1545,7 +1541,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_ComputeApproxOnPolarSurface::BuildInitial
           }
           if (!myProjIsDone)
           {
-            Extrema_ExtPS ext(pntproj, *Surf, TolU, TolV);
+            Extrema_ExtPS ext(pntproj, *Surf, TolU, TolV, Extrema_ExtFlag_MIN);
             if (ext.IsDone())
             {
               Dist2Min       = ext.SquareDistance(1);
@@ -2002,17 +1998,9 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
   }
   occ::handle<Geom2d_BSplineCurve> DummyC2d =
     new Geom2d_BSplineCurve(DummyPoles, DummyKnots, DummyMults, 1);
-  #ifdef DRAW
-  const char* Temp = "bs2d";
-  DrawTrSurf::Set(Temp, DummyC2d);
-  #endif
   //  DrawTrSurf::Set((const char* ) "bs2d",DummyC2d);
   occ::handle<Geom2dAdaptor_Curve> DDD = occ::down_cast<Geom2dAdaptor_Curve>(InitCurve2d);
 
-  #ifdef DRAW
-  Temp = "initc2d";
-  DrawTrSurf::Set(Temp, DDD->ChangeCurve2d().Curve());
-  #endif
 //  DrawTrSurf::Set((const char* ) "initc2d",DDD->ChangeCurve2d().Curve());
 #endif
 

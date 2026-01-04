@@ -258,14 +258,11 @@ public:
   //! Returns true if the symbol is CR, BEL, FF, NP, BS or VT
   static inline bool IsCommandSymbol(const char32_t& theSymbol)
   {
-    if (theSymbol == '\x0D'   // CR  (carriage return)
-        || theSymbol == '\a'  // BEL (alarm)
-        || theSymbol == '\f'  // FF  (form feed) NP (new page)
-        || theSymbol == '\b'  // BS  (backspace)
-        || theSymbol == '\v') // VT  (vertical tab)
-      return true;
-
-    return false;
+    return (theSymbol == '\x0D'    // CR  (carriage return)
+            || theSymbol == '\a'   // BEL (alarm)
+            || theSymbol == '\f'   // FF  (form feed) NP (new page)
+            || theSymbol == '\b'   // BS  (backspace)
+            || theSymbol == '\v'); // VT  (vertical tab)
   }
 
   //! Returns true if the symbol separates words when wrapping is enabled

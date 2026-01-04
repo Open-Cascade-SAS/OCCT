@@ -166,15 +166,9 @@ bool BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const double Tol)
 
   Value(Sol, valsol);
 
-  if (std::abs(valsol(1)) < Tol && std::abs(valsol(2)) < Tol
-      && std::abs(valsol(3)) < 2. * dist1 * Tol
-      && std::abs(valsol(4)) < Tol * (1. + tgang) * std::abs(PScaInv) * temp)
-  {
-
-    return true;
-  }
-
-  return false;
+  return std::abs(valsol(1)) < Tol && std::abs(valsol(2)) < Tol
+         && std::abs(valsol(3)) < 2. * dist1 * Tol
+         && std::abs(valsol(4)) < Tol * (1. + tgang) * std::abs(PScaInv) * temp;
 }
 
 //=================================================================================================

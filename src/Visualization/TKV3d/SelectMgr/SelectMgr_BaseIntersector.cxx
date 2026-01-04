@@ -25,15 +25,11 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseIntersector, Standard_Transient)
 SelectMgr_BaseIntersector::SelectMgr_BaseIntersector()
     : mySelectionType(SelectMgr_SelectionType_Unknown)
 {
-  //
 }
 
 //=================================================================================================
 
-SelectMgr_BaseIntersector::~SelectMgr_BaseIntersector()
-{
-  //
-}
+SelectMgr_BaseIntersector::~SelectMgr_BaseIntersector() = default;
 
 //=================================================================================================
 

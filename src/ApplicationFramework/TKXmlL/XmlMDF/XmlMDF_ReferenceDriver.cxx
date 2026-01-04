@@ -56,7 +56,7 @@ bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   }
 
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString(anXPath, anEntry) == false)
+  if (!XmlObjMgt::GetTagEntryString(anXPath, anEntry))
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Cannot retrieve reference from \"") + anXPath + '\"';

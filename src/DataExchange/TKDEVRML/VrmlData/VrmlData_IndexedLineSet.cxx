@@ -105,9 +105,9 @@ occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    if (myCoords.IsNull() == false)
+    if (!myCoords.IsNull())
       aResult->SetCoordinates(occ::down_cast<VrmlData_Coordinate>(myCoords->Clone(aDummyNode)));
-    if (myColors.IsNull() == false)
+    if (!myColors.IsNull())
       aResult->SetColors(occ::down_cast<VrmlData_Color>(myColors->Clone(aDummyNode)));
     // TODO: Replace the following lines with the relevant copying
     aResult->SetPolygons(myNbPolygons, myArrPolygons);
@@ -176,14 +176,14 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Write(const char* thePrefix) const
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
 
-    if (OK(aStatus) && myCoords.IsNull() == false)
+    if (OK(aStatus) && !myCoords.IsNull())
       aStatus = aScene.WriteNode("coord", myCoords);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("coordIndex", myArrPolygons, myNbPolygons);
 
-    if (OK(aStatus) && myColorPerVertex == false)
+    if (OK(aStatus) && !myColorPerVertex)
       aStatus = aScene.WriteLine("colorPerVertex  FALSE");
-    if (OK(aStatus) && myColors.IsNull() == false)
+    if (OK(aStatus) && !myColors.IsNull())
       aStatus = aScene.WriteNode("color", myColors);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("colorIndex", myArrColorInd, myNbColors);
@@ -204,7 +204,7 @@ bool VrmlData_IndexedLineSet::IsDefault() const
   bool aResult(true);
   if (myNbPolygons)
     aResult = false;
-  else if (myCoords.IsNull() == false)
+  else if (!myCoords.IsNull())
     aResult = myCoords->IsDefault();
   return aResult;
 }

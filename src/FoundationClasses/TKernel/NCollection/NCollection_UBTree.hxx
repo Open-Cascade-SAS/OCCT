@@ -318,7 +318,7 @@ public:
       this->myAlloc->Free(myRoot);
       myRoot = nullptr;
     }
-    if (aNewAlloc.IsNull() == false)
+    if (!aNewAlloc.IsNull())
       myAlloc = aNewAlloc;
   }
 

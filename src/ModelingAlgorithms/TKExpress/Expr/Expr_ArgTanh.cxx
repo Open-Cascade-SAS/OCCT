@@ -64,11 +64,7 @@ bool Expr_ArgTanh::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
 
 bool Expr_ArgTanh::IsLinear() const
 {
-  if (ContainsUnknowns())
-  {
-    return false;
-  }
-  return true;
+  return !ContainsUnknowns();
 }
 
 occ::handle<Expr_GeneralExpression> Expr_ArgTanh::Derivative(

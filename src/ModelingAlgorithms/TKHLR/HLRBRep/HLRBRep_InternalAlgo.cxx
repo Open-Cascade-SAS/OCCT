@@ -863,7 +863,7 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
       {
         if (fd.Hiding())
         {
-          if (HLRBRep_InternalAlgo_TRACE10 && HLRBRep_InternalAlgo_TRACE == false)
+          if (HLRBRep_InternalAlgo_TRACE10 && !static_cast<bool>(HLRBRep_InternalAlgo_TRACE))
           {
             if (++QWE > QWEQWE)
             {

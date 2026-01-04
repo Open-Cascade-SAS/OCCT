@@ -104,7 +104,7 @@ bool XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent&       theS
       myMessageDriver->Send(aMessageString, Message_Warning);
       aValue = 0;
     }
-    aBooleanList->Append(aValue ? true : false);
+    aBooleanList->Append(aValue != 0);
   }
   else if (aLastInd >= 1)
   {
@@ -121,7 +121,7 @@ bool XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent&       theS
         myMessageDriver->Send(aMessageString, Message_Warning);
         aValue = 0;
       }
-      aBooleanList->Append(aValue ? true : false);
+      aBooleanList->Append(aValue != 0);
     }
   }
 

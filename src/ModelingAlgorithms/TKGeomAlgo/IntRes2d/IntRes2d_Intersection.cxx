@@ -423,11 +423,7 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
   {
     if (!(PARAMEQUAL(PParamOnFirst, FirstParam1) || PARAMEQUAL(PParamOnFirst, LastParam1)))
     {
-      //-- Middle on the Curve 1
-
-      // modified by NIZHNY-MKK  Tue Nov 26 14:23:24 2002.BEGIN
       if ((PParamOnFirst > FirstParam1) && (PParamOnFirst < LastParam1))
-        // modified by NIZHNY-MKK  Tue Nov 26 14:23:27 2002.END
         T1.SetPosition(IntRes2d_Middle);
     }
   }
@@ -435,34 +431,10 @@ void InternalVerifyPosition(IntRes2d_Transition& T1,
   {
     if (!(PARAMEQUAL(PParamOnSecond, FirstParam2) || PARAMEQUAL(PParamOnSecond, LastParam2)))
     {
-
-      // modified by NIZHNY-MKK  Tue Nov 26 14:24:15 2002.BEGIN
       if ((PParamOnSecond > FirstParam2) && (PParamOnSecond < LastParam2))
-        // modified by NIZHNY-MKK  Tue Nov 26 14:24:19 2002.END
         T2.SetPosition(IntRes2d_Middle);
     }
   }
 }
 
 //----------------------------------------------------------------------
-
-#if 0 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  #define Debug(q) std::cout << "IntRes2d_Intersectionq =" << q << std::endl;
-
-char *DebugPos(const IntRes2d_Position P);
-
-Debug(FirstParam1);
-Debug(LastParam1);
-Debug(FirstParam2);
-Debug(LastParam2);
-Debug(PParamOnFirst);
-Debug(PParamOnSecond);
-std::cout<<" ##### T1  <> Middle ###### "<<DebugPos(T1.PositionOnCurve())<<std::endl;
-char *DebugPos(const IntRes2d_Position P) {
-  if(P==IntRes2d_Middle) return(" Middle ");
-  if(P==IntRes2d_Head) return(" Head ");
-  if(P==IntRes2d_End) return(" End ");
-}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#endif

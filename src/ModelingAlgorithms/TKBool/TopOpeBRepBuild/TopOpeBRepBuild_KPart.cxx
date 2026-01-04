@@ -2124,9 +2124,7 @@ bool TopOpeBRepBuild_Builder::KPiskoleFF(const TopoDS_Shape& F1,
   if (!st2ok)
     return false;
   bool stok = (St1 != St2);
-  if (!stok)
-    return false;
-  return true;
+  return stok;
 }
 
 //=======================================================================

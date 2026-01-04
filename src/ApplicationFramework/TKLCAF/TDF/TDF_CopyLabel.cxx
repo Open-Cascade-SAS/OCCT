@@ -128,10 +128,7 @@ bool TDF_CopyLabel::ExternalReferences(const TDF_Label&                         
   {
     ExternalReferences(L, itr.Value(), aExternals, aFilter, ds);
   }
-  if (!aExternals.Extent())
-    return false;
-  else
-    return true;
+  return aExternals.Extent() != 0;
 }
 
 //=======================================================================

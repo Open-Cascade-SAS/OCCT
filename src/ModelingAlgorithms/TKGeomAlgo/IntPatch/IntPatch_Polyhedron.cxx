@@ -621,10 +621,7 @@ bool IntPatch_Polyhedron::Contain(const int Triang, const gp_Pnt& ThePnt) const
   gp_XYZ v1 = (Pointi2 - Pointi1) ^ (ThePnt.XYZ() - Pointi1);
   gp_XYZ v2 = (Pointi3 - Pointi2) ^ (ThePnt.XYZ() - Pointi2);
   gp_XYZ v3 = (Pointi1 - Pointi3) ^ (ThePnt.XYZ() - Pointi3);
-  if (v1 * v2 >= 0. && v2 * v3 >= 0. && v3 * v1 >= 0.)
-    return true;
-  else
-    return false;
+  return v1 * v2 >= 0. && v2 * v3 >= 0. && v3 * v1 >= 0.;
 }
 
 //=================================================================================================

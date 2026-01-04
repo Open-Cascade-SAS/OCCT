@@ -168,10 +168,6 @@ bool DESTL_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>
     return false;
   }
   const char* aBytes = (const char*)theBuffer->Data();
-  if (!(::strncmp(aBytes, "solid", 5) || ::strncmp(aBytes, "SOLID", 5)) && isspace(aBytes[5]))
-  {
-    return true;
-  }
   // binary STL has no header for identification - format can be detected only by file extension
-  return false;
+  return !(::strncmp(aBytes, "solid", 5) || ::strncmp(aBytes, "SOLID", 5)) && isspace(aBytes[5]);
 }

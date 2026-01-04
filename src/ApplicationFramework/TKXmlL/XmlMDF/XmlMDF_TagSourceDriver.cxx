@@ -49,7 +49,7 @@ bool XmlMDF_TagSourceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   int                 aTag;
   XmlObjMgt_DOMString aTagStr = XmlObjMgt::GetStringValue(theSource.Element());
 
-  if (aTagStr.GetInteger(aTag) == false)
+  if (!aTagStr.GetInteger(aTag))
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve TagSource attribute from \"") + aTagStr + "\"";

@@ -1495,7 +1495,7 @@ reapprox:;
 
                 NCollection_Array1<gp_Pnt2d> tpoles2d(1, nbpoles);
                 NCollection_Array1<gp_Pnt>   tpoles(1, nbpoles);
-                mbspc.Curve((myApprox1 == true) ? 2 : 1, tpoles2d);
+                mbspc.Curve((myApprox1) ? 2 : 1, tpoles2d);
                 const gp_Pln& Pln = myHS2->Plane();
                 //
                 int ik;
@@ -1673,7 +1673,7 @@ reapprox:;
                   {
                     occ::handle<Geom2d_BSplineCurve> BS2;
                     NCollection_Array1<gp_Pnt2d>     tpoles2d(1, nbpoles);
-                    mbspc.Curve((myApprox1 == true) ? 3 : 2, tpoles2d);
+                    mbspc.Curve((myApprox1) ? 3 : 2, tpoles2d);
                     BS2 = new Geom2d_BSplineCurve(tpoles2d,
                                                   mbspc.Knots(),
                                                   mbspc.Multiplicities(),

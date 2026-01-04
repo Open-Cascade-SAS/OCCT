@@ -50,7 +50,7 @@ public:
   inline void SetBase(const StepDimTol_DatumOrCommonDatum& theBase) { myBase = theBase; }
 
   //! Indicates is field Modifiers exist
-  inline bool HasModifiers() const { return !(myModifiers.IsNull() || myModifiers->Length() == 0); }
+  inline bool HasModifiers() const { return !myModifiers.IsNull() && myModifiers->Length() != 0; }
 
   //! Returns field Modifiers
   inline occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> Modifiers()

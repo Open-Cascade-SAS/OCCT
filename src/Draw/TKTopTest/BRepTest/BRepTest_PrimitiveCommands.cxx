@@ -137,11 +137,11 @@ static int box(Draw_Interpretor&, int n, const char** a)
     TopoDS_Shape           S;
     BRepPreviewAPI_MakeBox aPreview;
 
-    if (isMinMax == true)
+    if (isMinMax)
     {
       aPreview.Init(anOrigin, aParams);
     }
-    else if (isMinMax == false && isAxis == false)
+    else if (!isMinMax && !isAxis)
     {
       aPreview.Init(anOrigin, aParams.X(), aParams.Y(), aParams.Z());
     }
@@ -161,11 +161,11 @@ static int box(Draw_Interpretor&, int n, const char** a)
   else
   {
     TopoDS_Solid S;
-    if (isMinMax == true)
+    if (isMinMax)
     {
       S = BRepPrimAPI_MakeBox(anOrigin, aParams);
     }
-    else if (isMinMax == false && isAxis == false)
+    else if (!isMinMax && !isAxis)
     {
       S = BRepPrimAPI_MakeBox(anOrigin, aParams.X(), aParams.Y(), aParams.Z());
     }

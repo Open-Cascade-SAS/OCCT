@@ -380,7 +380,7 @@ static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
   {
     if (theArgv[i][0] == '-' || theArgv[i][0] == '+')
     {
-      bool aVal = (theArgv[i][0] == '+' ? true : false);
+      bool aVal = (theArgv[i][0] == '+');
       switch (tolower(theArgv[i][1]))
       {
         case 'm': {

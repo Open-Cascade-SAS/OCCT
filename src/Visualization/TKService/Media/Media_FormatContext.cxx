@@ -178,7 +178,6 @@ Media_FormatContext::Media_FormatContext()
       myPtsStartBase(0.0),
       myDuration(0.0)
 {
-  //
 }
 
 //=================================================================================================

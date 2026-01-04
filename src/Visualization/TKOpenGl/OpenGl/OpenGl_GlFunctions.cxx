@@ -1767,7 +1767,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   bool isCoreProfile = false;
   if (theCtx.GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL && theCtx.IsGlGreaterEqual(3, 2))
   {
-    isCoreProfile = (theIsCoreProfile == true);
+    isCoreProfile = (theIsCoreProfile);
 
     // detect Core profile
     if (!isCoreProfile)

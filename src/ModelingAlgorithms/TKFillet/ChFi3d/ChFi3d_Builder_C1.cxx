@@ -99,10 +99,6 @@
 #include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef OCCT_DEBUG
-  #ifdef DRAW
-    #include <OSD_Chronometer.hxx>
-    #include <DrawTrSurf.hxx>
-  #endif // DRAW
 //  Modified by Sergey KHROMOV - Thu Apr 11 12:23:40 2002 Begin
 // The method
 // ChFi3d_Builder::PerformMoreSurfdata(const int Index)
@@ -1112,7 +1108,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
         pfac1   = Hc->Value(CV[i].ParameterOnArc());
         PcF     = Pc->Value(Udeb);
         PcL     = Pc->Value(Ufin);
-        onfirst = (pfac1.Distance(PcF) < pfac1.Distance(PcL)) ? true : false;
+        onfirst = pfac1.Distance(PcF) < pfac1.Distance(PcL);
         if (onfirst)
           Pc->D1(Udeb, PcF, DerPc);
         else
@@ -1654,11 +1650,8 @@ static bool IsShrink(const Geom2dAdaptor_Curve& PC,
     case GeomAbs_Line: {
       gp_Pnt2d P1 = PC.Value(Pf);
       gp_Pnt2d P2 = PC.Value(Pl);
-      if (std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
-          && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol)
-        return true;
-      else
-        return false;
+      return std::abs(P1.Coord(isU ? 1 : 2) - Param) <= tol
+             && std::abs(P2.Coord(isU ? 1 : 2) - Param) <= tol;
     }
     case GeomAbs_BezierCurve:
     case GeomAbs_BSplineCurve: {
@@ -2444,7 +2437,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
             {
               GeomAdaptor_Surface Asurf;
               Asurf.Load(Sfacemoins1);
-              Extrema_ExtPS ext(CV1.Point(), Asurf, tol, tol);
+              Extrema_ExtPS ext(CV1.Point(), Asurf, tol, tol, Extrema_ExtFlag_MIN);
               double        uc1, vc1;
               if (ext.IsDone())
               {
@@ -2668,7 +2661,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
           BRE.MakeFace(faceprol[nb - 1], Sfacemoins1, F.Location(), tol);
           GeomAdaptor_Surface Asurf;
           Asurf.Load(Sfacemoins1);
-          Extrema_ExtPS ext(CV2.Point(), Asurf, tol, tol);
+          Extrema_ExtPS ext(CV2.Point(), Asurf, tol, tol, Extrema_ExtFlag_MIN);
           double        uc2, vc2;
           if (ext.IsDone())
           {

@@ -193,7 +193,6 @@ Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
       myToDetectNode(false),
       myToDetectEdge(false)
 {
-  //
 }
 
 //=================================================================================================

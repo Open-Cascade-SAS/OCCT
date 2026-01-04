@@ -251,10 +251,7 @@ Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom2d_Curve>& pc)
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ = GC2d.GetType();
 
-  if (typ == GeomAbs_Line)
-    return true;
-
-  return false;
+  return typ == GeomAbs_Line;
 }
 
 // ----------------------------------------------------------------------

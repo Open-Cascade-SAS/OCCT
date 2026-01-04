@@ -149,7 +149,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       NbEdges--;
       edge = aWExp.Current();
       Or   = edge.Orientation();
-      if (!(Or == TopAbs_FORWARD || Or == TopAbs_REVERSED))
+      if (Or != TopAbs_FORWARD && Or != TopAbs_REVERSED)
       {
         continue;
       }
@@ -295,7 +295,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
           Vmax = P2d.Y();
         //
         aDstX = RealLast();
-        if (degenerated == false)
+        if (!degenerated)
         {
           P3d = C3d.Value(u);
           if (!SeqPnt2d.IsEmpty())
@@ -326,7 +326,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         //
         if (IsRealCurve3d)
         {
-          if (degenerated == false)
+          if (!degenerated)
           {
             Ancienpnt3d           = P3d;
             Ancienpnt3dinitialise = true;

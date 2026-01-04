@@ -460,7 +460,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
     MyTrigonometricFunction MTF(C_CC, C_SS, C_SC, C_C, C_S, C_1);
     TrigonometricRoots      PolDIS(C_CC - C_SS, C_SC, C_C + C_C, C_S + C_S, C_1 + C_SS, 0., PIpPI);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (PolDIS.IsDone() == false)
+    if (!PolDIS.IsDone())
     {
       done = false;
       return;
@@ -721,7 +721,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
             }
           }
 
-          for (i = 1; UnPtTg == (false) && (i <= nbsolDIS); i++)
+          for (i = 1; !UnPtTg && (i <= nbsolDIS); i++)
           {
             Theta1 = PolDIS.Value(i);
             Theta2 = (i < nbsolDIS) ? PolDIS.Value(i + 1) : (PolDIS.Value(1) + PIpPI);
@@ -1434,7 +1434,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
       NotLastOpenC2  = !TheCurve[c2].IsLastOpen();
       NotFirstOpenC2 = !TheCurve[c2].IsFirstOpen();
       TheCurve[c2].Domain(DInfC2, DSupC2);
-      if (TheCurve[c1].IsFirstOpen() == false)
+      if (!TheCurve[c1].IsFirstOpen())
       {
         if (NotLastOpenC2)
         {
@@ -1457,7 +1457,7 @@ void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
           }
         }
       }
-      if (TheCurve[c1].IsLastOpen() == false)
+      if (!TheCurve[c1].IsLastOpen())
       {
         if (NotLastOpenC2)
         {

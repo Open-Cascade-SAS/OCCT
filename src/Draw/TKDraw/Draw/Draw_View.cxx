@@ -96,7 +96,7 @@ bool Draw_View::Init(const char* theType)
   { // default fields
     myFocalDistance = 500.;
     myIsPers        = false;
-    myIs2D          = strcmp("-2D-", theType) ? false : true;
+    myIs2D          = strcmp("-2D-", theType) == 0;
     myZoom          = 1;
 
     ResetFrame();

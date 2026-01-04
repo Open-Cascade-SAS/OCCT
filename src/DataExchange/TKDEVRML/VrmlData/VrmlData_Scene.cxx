@@ -81,8 +81,8 @@ VrmlData_Scene::VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& theA
 const occ::handle<VrmlData_Node>& VrmlData_Scene::AddNode(const occ::handle<VrmlData_Node>& theN,
                                                           const bool isTopLevel)
 {
-  if (theN.IsNull() == false)
-    if (theN->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)) == false)
+  if (!theN.IsNull())
+    if (!theN->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
     {
       std::lock_guard<std::mutex>       aLock(myMutex);
       const occ::handle<VrmlData_Node>& aNode =
@@ -90,7 +90,7 @@ const occ::handle<VrmlData_Node>& VrmlData_Scene::AddNode(const occ::handle<Vrml
       // Name is checked for uniqueness. If not, letter 'D' is appended until
       // the name proves to be unique.
       if (aNode->Name()[0] != '\0')
-        while (myNamedNodes.Add(aNode) == false)
+        while (!myNamedNodes.Add(aNode))
           aNode->setName(aNode->Name(), "D");
       if (isTopLevel)
         myLstNodes.Append(aNode);
@@ -123,7 +123,7 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
   for (; anIterD.More(); anIterD.Next())
   {
     const occ::handle<VrmlData_Node>& aNode = anIterD.Value();
-    if (aNode.IsNull() == false)
+    if (!aNode.IsNull())
     {
       const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
@@ -141,7 +141,7 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<VrmlData_Node>& aNode = anIter.Value();
-    if (aNode.IsNull() == false)
+    if (!aNode.IsNull())
     {
       const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
@@ -268,7 +268,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadLine(VrmlData_InBuffer& theBuffer)
 
 nonempty_line:
   // Try to detect comment
-  if (theBuffer.IsProcessed == false)
+  if (!theBuffer.IsProcessed)
   {
     bool  isQuoted(false);
     int   anOffset(0);
@@ -279,7 +279,7 @@ nonempty_line:
         *ptr = ptr[anOffset];
       if (*ptr == '\n' || *ptr == '\r' || *ptr == '#')
       {
-        if (isQuoted == false)
+        if (!isQuoted)
         {
           *ptr = '\0';
           break;
@@ -347,12 +347,12 @@ VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
     // Unknown nodes are not stored however they do not generate error
     if (myStatus != VrmlData_StatusOK)
       break;
-    if (aNode.IsNull() == false /*&&
+    if (!aNode.IsNull() /*&&
         !aNode->IsKind (STANDARD_TYPE(VrmlData_UnknownNode))*/)
     {
-      if (aNode->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)) == false)
+      if (!aNode->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
         myLstNodes.Append(aNode);
-      else if (aNode->IsDefault() == false)
+      else if (!aNode->IsDefault())
       {
         const occ::handle<VrmlData_WorldInfo> aInfo = occ::down_cast<VrmlData_WorldInfo>(aNode);
         myWorldInfo->SetTitle(aInfo->Title());
@@ -420,10 +420,10 @@ occ::handle<VrmlData_Node> VrmlData_Scene::FindNode(const char* theName, gp_Trsf
     if (aNode->IsKind(STANDARD_TYPE(VrmlData_Group)))
     {
       const occ::handle<VrmlData_Group> aGroup = occ::down_cast<VrmlData_Group>(aNode);
-      if (aGroup.IsNull() == false)
+      if (!aGroup.IsNull())
       {
         aResult = aGroup->FindNode(theName, theLocation);
-        if (aResult.IsNull() == false)
+        if (!aResult.IsNull())
           break;
       }
     }
@@ -578,12 +578,12 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
     }
   }
   aStatus = ReadLine(theBuffer);
-  if (aNode.IsNull() == false)
+  if (!aNode.IsNull())
   {
     if (aNode->Name()[0] != '\0')
       myNamedNodes.Add(aNode);
-    if (theType.IsNull() == false)
-      if (aNode->IsKind(theType) == false)
+    if (!theType.IsNull())
+      if (!aNode->IsKind(theType))
         aStatus = VrmlData_VrmlFormatError;
   }
   if (aStatus == VrmlData_StatusOK)
@@ -641,22 +641,22 @@ void VrmlData_Scene::createShape(
     // Try a Shape type of node
     const occ::handle<VrmlData_ShapeNode> aNodeShape =
       occ::down_cast<VrmlData_ShapeNode>(anIter.Value());
-    if (aNodeShape.IsNull() == false)
+    if (!aNodeShape.IsNull())
     {
       const occ::handle<VrmlData_Geometry> aNodeGeom = aNodeShape->Geometry();
-      if (aNodeGeom.IsNull() == false)
+      if (!aNodeGeom.IsNull())
       {
-        if (aSingleShape.IsNull() == false)
+        if (!aSingleShape.IsNull())
           isSingleShape = false;
         const occ::handle<TopoDS_TShape> aTShape = aNodeGeom->TShape();
         aSingleShape.TShape(aTShape);
-        if (aSingleShape.IsNull() == false)
+        if (!aSingleShape.IsNull())
         {
           aBuilder.Add(outShape, aSingleShape);
           if (pMapShapeApp != nullptr)
           {
             const occ::handle<VrmlData_Appearance>& anAppearance = aNodeShape->Appearance();
-            if (anAppearance.IsNull() == false)
+            if (!anAppearance.IsNull())
             {
               // Check if the current topology is a single face
               if (aTShape->IsKind(STANDARD_TYPE(TopoDS_TFace)))
@@ -681,11 +681,11 @@ void VrmlData_Scene::createShape(
     }
     // Try a Group type of node
     const occ::handle<VrmlData_Group> aNodeGroup = occ::down_cast<VrmlData_Group>(anIter.Value());
-    if (aNodeGroup.IsNull() == false)
+    if (!aNodeGroup.IsNull())
     {
       TopoDS_Shape aShape;
       aNodeGroup->Shape(aShape, pMapShapeApp);
-      if (aShape.IsNull() == false)
+      if (!aShape.IsNull())
       {
         aBuilder.Add(outShape, aShape);
         isSingleShape = false;
@@ -863,7 +863,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           // The input value is a node index, store it in the buffer vector
           vecInt.Append(static_cast<int>(anIntValue));
         }
-        if ((anIntValue < 0 || isMore == false) && vecInt.Length() > 0)
+        if ((anIntValue < 0 || !isMore) && vecInt.Length() > 0)
         {
           const int aLen = vecInt.Length();
           // The input is the end-of-face, store and close this face
@@ -910,7 +910,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex(const char*  thePrefix,
                                                    const size_t theNbBlocks) const
 {
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
-  if (theNbBlocks && (IsDummyWrite() == false))
+  if (theNbBlocks && (!IsDummyWrite()))
   {
     if (VrmlData_Node::OK(aStatus, WriteLine(thePrefix, "[", 1)))
     {
@@ -968,7 +968,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteXYZ(const gp_XYZ& theXYZ,
                                               const char*   thePostfix) const
 {
   char buf[240];
-  if (IsDummyWrite() == false)
+  if (!IsDummyWrite())
   {
     if (isApplyScale && myLinearScale > Precision::Confusion())
       Sprintf(buf,
@@ -1051,8 +1051,8 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode(const char*                      
   else if (theNode->Name()[0] == '\0')
     isNoName = true;
 
-  if (theNode.IsNull() == false)
-    if (theNode->IsDefault() == false)
+  if (!theNode.IsNull())
+    if (!theNode->IsDefault())
     {
       if (isNoName && IsDummyWrite())
       {
@@ -1146,7 +1146,7 @@ void dumpNode(Standard_OStream&                 theStream,
     const occ::handle<VrmlData_Appearance> anAppearance =
       occ::down_cast<VrmlData_Appearance>(theNode);
     dumpNodeHeader(theStream, theIndent, "Appearance", theNode->Name());
-    if (theIndent.IsEmpty() == false)
+    if (!theIndent.IsEmpty())
     {
       dumpNode(theStream, anAppearance->Material(), aNewIndent);
       dumpNode(theStream, anAppearance->Texture(), aNewIndent);
@@ -1157,7 +1157,7 @@ void dumpNode(Standard_OStream&                 theStream,
   {
     const occ::handle<VrmlData_ShapeNode> aShape = occ::down_cast<VrmlData_ShapeNode>(theNode);
     dumpNodeHeader(theStream, theIndent, "Shape", theNode->Name());
-    if (theIndent.IsEmpty() == false)
+    if (!theIndent.IsEmpty())
     {
       dumpNode(theStream, aShape->Appearance(), aNewIndent);
       dumpNode(theStream, aShape->Geometry(), aNewIndent);
@@ -1179,7 +1179,7 @@ void dumpNode(Standard_OStream&                 theStream,
     char                              buf[64];
     Sprintf(buf, "Group (%s)", aGroup->IsTransform() ? "Transform" : "Group");
     dumpNodeHeader(theStream, theIndent, buf, theNode->Name());
-    if (theIndent.IsEmpty() == false)
+    if (!theIndent.IsEmpty())
     {
       NCollection_List<occ::handle<VrmlData_Node>>::Iterator anIter = aGroup->NodeIterator();
       for (; anIter.More(); anIter.Next())

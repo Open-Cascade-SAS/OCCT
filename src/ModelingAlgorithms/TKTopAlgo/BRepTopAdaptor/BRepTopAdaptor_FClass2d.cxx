@@ -163,7 +163,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         const BRepAdaptor_Curve   aCurveAdaptor3D(edge, Face);
 
         //-- Check cases when it was forgotten to code degenerated :  PRO17410 (janv 99)
-        if (degenerated == false)
+        if (!degenerated)
         {
           degenerated = isDegenerated(aCurveAdaptor3D, pfbid, plbid);
         }
@@ -207,7 +207,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
 
           double dist3dptcourant_ancienpnt = 1e+20; // RealLast();
           gp_Pnt P3d;
-          if (degenerated == false)
+          if (!degenerated)
           {
             P3d = aCurveAdaptor3D.Value(u);
             if (nbpnts > 1 && Ancienpnt3dinitialise)
@@ -222,7 +222,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           }
           if (IsRealCurve3d)
           {
-            if (degenerated == false)
+            if (!degenerated)
             {
               Ancienpnt3d           = P3d;
               Ancienpnt3dinitialise = true;

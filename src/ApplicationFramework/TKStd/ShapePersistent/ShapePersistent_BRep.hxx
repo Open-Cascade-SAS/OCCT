@@ -17,7 +17,7 @@
 #include <ShapePersistent_TopoDS.hxx>
 #include <ShapePersistent_Geom2d.hxx>
 #include <ShapePersistent_Poly.hxx>
-#include <StdObjMgt_TransientPersistentMap.hxx>
+#include <NCollection_DataMap.hxx>
 #include <StdObject_Location.hxx>
 #include <StdObject_gp_Vectors.hxx>
 
@@ -27,6 +27,8 @@
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+class Standard_Transient;
+class StdObjMgt_Persistent;
 
 class BRep_PointRepresentation;
 class BRep_CurveRepresentation;

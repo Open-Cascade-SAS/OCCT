@@ -296,7 +296,7 @@ static void BuildDomains(TopoDS_Face&                           myFace,
       TopoDS_Vertex   V = TopoDS::Vertex(exp.Current());
       gp_Pnt2d        PV;
       gp_Pnt          P3d = BRep_Tool::Pnt(V);
-      Extrema_ExtPS   ExtPS(P3d, S, Tol, Tol);
+      Extrema_ExtPS   ExtPS(P3d, S, Tol, Tol, Extrema_ExtFlag_MIN);
       double          Dist2Min = Precision::Infinite();
       double          Found    = false;
       for (int ie = 1; ie <= ExtPS.NbExt(); ie++)

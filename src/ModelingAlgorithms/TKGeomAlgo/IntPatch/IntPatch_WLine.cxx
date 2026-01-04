@@ -365,10 +365,10 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   {
     nbvtx         = NbVertex();
     encoreunefois = false;
-    for (i = 1; i <= nbvtx && encoreunefois == false; i++)
+    for (i = 1; i <= nbvtx && !encoreunefois; i++)
     {
       IntPatch_Point& VTXi = svtx.ChangeValue(i);
-      for (j = 1; j <= nbvtx && encoreunefois == false; j++)
+      for (j = 1; j <= nbvtx && !encoreunefois; j++)
       {
         if (i != j)
         {
@@ -410,7 +410,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                            VTXi.ParameterOnArc1(),
                            VTXi.TransitionLineArc1(),
                            VTXi.TransitionOnS1());
-                for (k = 1; encoreunefois == false && k <= nbvtx; k++)
+                for (k = 1; !encoreunefois && k <= nbvtx; k++)
                 {
                   const IntPatch_Point& VTXk = svtx.Value(k);
                   if (SameVtxRst(VTXk, vtx))
@@ -418,7 +418,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                     encoreunefois = true;
                   }
                 }
-                if (encoreunefois == false)
+                if (!encoreunefois)
                 {
                   VTXi.SetTolerance(newtoli);
                   VTXj.SetTolerance(newtolj);
@@ -457,7 +457,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                            VTXi.ParameterOnArc2(),
                            VTXi.TransitionLineArc2(),
                            VTXi.TransitionOnS2());
-                for (k = 1; encoreunefois == false && k <= nbvtx; k++)
+                for (k = 1; !encoreunefois && k <= nbvtx; k++)
                 {
                   const IntPatch_Point& VTXk = svtx.Value(k);
                   if (SameVtxRst(VTXk, vtx))
@@ -465,7 +465,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                     encoreunefois = true;
                   }
                 }
-                if (encoreunefois == false)
+                if (!encoreunefois)
                 {
                   VTXi.SetTolerance(newtoli);
                   VTXj.SetTolerance(newtolj);
@@ -490,19 +490,19 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
       if (VTXi.Tolerance() > Tol)
         Tol = VTXi.Tolerance(); //-- 9 oct 97
-      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
+      if ((VTXi.IsOnDomS1()) && (!VTXi.IsOnDomS2()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
+            if ((VTXj.IsOnDomS1()) && (!VTXj.IsOnDomS2()))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -528,22 +528,22 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS2() == true) && (VTXi.IsOnDomS1() == false))
+      if ((VTXi.IsOnDomS2()) && (!VTXi.IsOnDomS1()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS2() == true) && (VTXj.IsOnDomS1() == false))
+            if ((VTXj.IsOnDomS2()) && (!VTXj.IsOnDomS1()))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -569,7 +569,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   nbvtx     = NbVertex();
   nbponline = NbPnts();
@@ -775,7 +775,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
       //--Substitution=true;
       //-- }
 
-      if (Substitution == false)
+      if (!Substitution)
       {
         //-------------------------------------------------------
         //-- On insere le point de cheminement Vertex(i)
@@ -824,10 +824,10 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   do
   {
     APointDeleted = false;
-    for (i = 1; i <= nbvtx && (APointDeleted == false); i++)
+    for (i = 1; i <= nbvtx && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTX = svtx.Value(i);
-      for (j = 1; j <= nbvtx && (APointDeleted == false); j++)
+      for (j = 1; j <= nbvtx && (!APointDeleted); j++)
       {
         if (i != j)
         {
@@ -843,7 +843,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
               { //-- OnS1 == OnS1
                 if (VTXM1.IsOnDomS2())
                 { //-- OnS1 == OnS1  OnS2
-                  if (VTX.IsOnDomS2() == false)
+                  if (!VTX.IsOnDomS2())
                   { //-- OnS1 == OnS1  OnS2 PasOnS2
                     kill = true;
                   }
@@ -873,7 +873,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
                 { //-- OnS2 == OnS2
                   if (VTXM1.IsOnDomS1())
                   { //-- OnS2 == OnS2  OnS1
-                    if (VTX.IsOnDomS1() == false)
+                    if (!VTX.IsOnDomS1())
                     { //-- OnS2 == OnS2  OnS1 PasOnS1
                       kill = true;
                     }
@@ -911,7 +911,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
 
   do
   {
@@ -922,7 +922,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
       const IntPatch_Point& Pii  = svtx.Value(i);
       if (Pim1.ParameterOnLine() == Pii.ParameterOnLine())
       {
-        if ((Pii.IsOnDomS1() == false) && (Pii.IsOnDomS2() == false))
+        if ((!Pii.IsOnDomS1()) && (!Pii.IsOnDomS2()))
         {
           SortIsOK = false;
           svtx.Remove(i);
@@ -930,7 +930,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         }
         else
         {
-          if ((Pim1.IsOnDomS1() == false) && (Pim1.IsOnDomS2() == false))
+          if ((!Pim1.IsOnDomS1()) && (!Pim1.IsOnDomS2()))
           {
             SortIsOK = false;
             svtx.Remove(i - 1);
@@ -964,13 +964,13 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
       indl         = i;
     }
   }
-  if (bFirst == false)
+  if (!bFirst)
   {
     double         pu1, pv1, pu2, pv2;
     bool           vtxfound = false;
     IntPatch_Point vtx;
     curv->Value(1).Parameters(pu1, pv1, pu2, pv2);
-    for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
+    for (i = 1; (!vtxfound) && (i <= nbvtx); i++)
     {
       const IntPatch_Point& V = svtx.Value(i);
       // jgv: to avoid loops
@@ -982,7 +982,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         vtxfound = true;
       }
     }
-    if (vtxfound == false)
+    if (!vtxfound)
     {
       vtx.SetValue(curv->Value(1).Value(), Tol, false);
       vtx.SetParameters(pu1, pv1, pu2, pv2);
@@ -993,13 +993,13 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
     fipt = true;
     indf = 1;
   }
-  if (bLast == false)
+  if (!bLast)
   {
     double         pu1, pv1, pu2, pv2;
     bool           vtxfound = false;
     IntPatch_Point vtx;
     curv->Value(nbponline).Parameters(pu1, pv1, pu2, pv2);
-    for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
+    for (i = 1; (!vtxfound) && (i <= nbvtx); i++)
     {
       const IntPatch_Point& V = svtx.Value(i);
       // jgv: to avoid loops
@@ -1013,7 +1013,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         vtxfound = true;
       }
     }
-    if (vtxfound == false)
+    if (!vtxfound)
     {
       vtx.SetValue(curv->Value(nbponline).Value(), Tol, false);
       vtx.SetParameters(pu1, pv1, pu2, pv2);
@@ -1043,17 +1043,17 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
+      if ((VTXi.IsOnDomS1()) && (!VTXi.IsOnDomS2()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
+            if ((VTXj.IsOnDomS1()) && (!VTXj.IsOnDomS2()))
             {
               if ((VTXi.ParameterOnLine() == VTXj.ParameterOnLine() + 1)
                   || (VTXi.ParameterOnLine() == VTXj.ParameterOnLine() - 1))
@@ -1092,22 +1092,22 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
 
   //-- meme traitement sur les restrictions du second shape
 
-  while (APointDeleted == true);
+  while (APointDeleted);
   nbvtx = NbVertex();
   do
   {
     APointDeleted = false;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
+    for (i = 1; (i <= nbvtx) && (!APointDeleted); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == false) && (VTXi.IsOnDomS2() == true))
+      if ((!VTXi.IsOnDomS1()) && (VTXi.IsOnDomS2()))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
+        for (j = 1; (j <= nbvtx) && (!APointDeleted); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == false) && (VTXj.IsOnDomS2() == true))
+            if ((!VTXj.IsOnDomS1()) && (VTXj.IsOnDomS2()))
             {
               if ((VTXi.ParameterOnLine() == VTXj.ParameterOnLine() + 1)
                   || (VTXi.ParameterOnLine() == VTXj.ParameterOnLine() - 1))
@@ -1142,7 +1142,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
         }
       }
     }
-  } while (APointDeleted == true);
+  } while (APointDeleted);
   //--------------------------------------------------------------
 
   //--------------------------------------------------------------

@@ -71,7 +71,6 @@ RWPly_PlyWriterContext::RWPly_PlyWriterContext()
       myHasTexCoords(false),
       myHasSurfId(false)
 {
-  //
 }
 
 //=================================================================================================

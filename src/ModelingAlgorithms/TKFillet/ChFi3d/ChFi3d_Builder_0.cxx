@@ -477,14 +477,14 @@ bool ChFi3d_KParticular(const occ::handle<ChFiDS_Spine>& Spine,
   aST1                           = aS1.GetType();
   aST2                           = aS2.GetType();
   //
-  if (!(aST2 == GeomAbs_Plane || aST2 == GeomAbs_Cylinder || aST2 == GeomAbs_Cone))
+  if (aST2 != GeomAbs_Plane && aST2 != GeomAbs_Cylinder && aST2 != GeomAbs_Cone)
   {
     return !bRet;
   }
   //
   const BRepAdaptor_Curve& bc = Spine->CurrentElementarySpine(IE);
   aCT                         = bc.GetType();
-  if (!(aCT == GeomAbs_Line || aCT == GeomAbs_Circle))
+  if (aCT != GeomAbs_Line && aCT != GeomAbs_Circle)
   {
     return !bRet;
   }
@@ -3066,7 +3066,7 @@ void ChFi3d_FilDS(const int                         SolidIndex,
         DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
       }
     } // end of degenerated case
-    else if (!(Closed && j == SeqFil.Length()))
+    else if (!Closed || j != SeqFil.Length())
     {
       // Processing of interference Point / Edges
       if (V3.IsOnArc())

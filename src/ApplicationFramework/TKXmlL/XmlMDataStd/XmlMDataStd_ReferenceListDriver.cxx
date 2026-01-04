@@ -115,7 +115,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
         return false;
       }
       TCollection_AsciiString anEntry;
-      if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
+      if (!XmlObjMgt::GetTagEntryString(aValueStr, anEntry))
       {
         TCollection_ExtendedString aMessage =
           TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
@@ -140,7 +140,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
       return false;
     }
     TCollection_AsciiString anEntry;
-    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
+    if (!XmlObjMgt::GetTagEntryString(aValueStr, anEntry))
     {
       TCollection_ExtendedString aMessage =
         TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';

@@ -461,7 +461,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const double Radius,
     {
       Baryc(its.Value(), Barycentre);
       parbar = ElCLib::LineParameter(myAxis, Barycentre);
-      if (!(parbar < PntInfoFirst.Parameter() || parbar > PntInfoLast.Parameter()))
+      if (parbar >= PntInfoFirst.Parameter() && parbar <= PntInfoLast.Parameter())
       {
         KeepPart(its.Value());
       }

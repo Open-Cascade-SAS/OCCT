@@ -65,11 +65,7 @@ bool Expr_ArgCosh::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
 
 bool Expr_ArgCosh::IsLinear() const
 {
-  if (ContainsUnknowns())
-  {
-    return false;
-  }
-  return true;
+  return !ContainsUnknowns();
 }
 
 occ::handle<Expr_GeneralExpression> Expr_ArgCosh::Derivative(

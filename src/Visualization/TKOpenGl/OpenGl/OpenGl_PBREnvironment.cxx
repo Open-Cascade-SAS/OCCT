@@ -54,11 +54,11 @@ private:
 
     GLboolean aStatus = GL_TRUE;
     myContext->core11fwd->glGetBooleanv(GL_DEPTH_TEST, &aStatus);
-    myDepthTestWasEnabled = aStatus ? true : false;
+    myDepthTestWasEnabled = aStatus != 0;
     myContext->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &aStatus);
-    myDepthWrirtingWasEnablig = aStatus ? true : false;
+    myDepthWrirtingWasEnablig = aStatus != 0;
     myContext->core11fwd->glGetBooleanv(GL_SCISSOR_TEST, &aStatus);
-    myScissorTestWasEnabled = aStatus ? true : false;
+    myScissorTestWasEnabled = aStatus != 0;
     myContext->core11fwd->glGetIntegerv(GL_SCISSOR_BOX, myScissorBox);
   }
 

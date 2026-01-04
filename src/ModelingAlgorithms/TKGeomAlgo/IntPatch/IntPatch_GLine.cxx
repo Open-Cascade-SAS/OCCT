@@ -658,7 +658,7 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               {
                 if (VTXM1.IsOnDomS2()) //-- OnS1 == OnS1  OnS2
                 {
-                  if (VTX.IsOnDomS2() == false) //-- OnS1 == OnS1  OnS2 PasOnS2
+                  if (!VTX.IsOnDomS2()) //-- OnS1 == OnS1  OnS2 PasOnS2
                   {
                     kill = true;
                   }
@@ -688,13 +688,13 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
             }
             else //-- Pas OnS1  et  OnS1
             {
-              if (VTXM1.IsOnDomS2() == false && VTX.IsOnDomS2() == false)
+              if (!VTXM1.IsOnDomS2() && !VTX.IsOnDomS2())
               {
-                if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1() == false)
+                if (VTXM1.IsOnDomS1() && !VTX.IsOnDomS1())
                 {
                   kill = true;
                 }
-                else if (VTX.IsOnDomS1() && VTXM1.IsOnDomS1() == false)
+                else if (VTX.IsOnDomS1() && !VTXM1.IsOnDomS1())
                 {
                   killm1 = true;
                 }
@@ -709,7 +709,7 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                 {
                   if (VTXM1.IsOnDomS1()) //-- OnS2 == OnS2  OnS1
                   {
-                    if (VTX.IsOnDomS1() == false) //-- OnS2 == OnS2  OnS1 PasOnS1
+                    if (!VTX.IsOnDomS1()) //-- OnS2 == OnS2  OnS1 PasOnS1
                     {
                       kill = true;
                     }
@@ -741,13 +741,13 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               }
               else //-- Pas OnS2  et  OnS2
               {
-                if (VTXM1.IsOnDomS1() == false && VTX.IsOnDomS1() == false)
+                if (!VTXM1.IsOnDomS1() && !VTX.IsOnDomS1())
                 {
-                  if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2() == false)
+                  if (VTXM1.IsOnDomS2() && !VTX.IsOnDomS2())
                   {
                     kill = true;
                   }
-                  else if (VTX.IsOnDomS2() && VTXM1.IsOnDomS2() == false)
+                  else if (VTX.IsOnDomS2() && !VTXM1.IsOnDomS2())
                   {
                     killm1 = true;
                   }

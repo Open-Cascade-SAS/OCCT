@@ -94,5 +94,4 @@ Graphic3d_GraphicDriverFactory::Graphic3d_GraphicDriverFactory(
   const TCollection_AsciiString& theName)
     : myName(theName)
 {
-  //
 }

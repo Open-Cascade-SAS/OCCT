@@ -49,10 +49,7 @@ vtkStandardNewMacro(IVtkTools_ShapeDataSource)
 
 //=================================================================================================
 
-IVtkTools_ShapeDataSource::~IVtkTools_ShapeDataSource()
-{
-  //
-}
+IVtkTools_ShapeDataSource::~IVtkTools_ShapeDataSource() = default;
 
 //=================================================================================================
 

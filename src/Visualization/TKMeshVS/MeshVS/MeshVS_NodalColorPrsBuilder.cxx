@@ -486,7 +486,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   bool toSupressBackFaces = false;
   aDrawer->GetBoolean(MeshVS_DA_SupressBackFaces, toSupressBackFaces);
-  aGroup1->SetClosed(toSupressBackFaces == true);
+  aGroup1->SetClosed(toSupressBackFaces);
 
   aGroup1->SetPrimitivesAspect(anAsp);
   aGroup1->AddPrimitiveArray(aFaceTriangles /*aCPolyArr*/);

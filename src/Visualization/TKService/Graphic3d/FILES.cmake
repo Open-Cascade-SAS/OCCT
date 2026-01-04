@@ -94,9 +94,7 @@ set(OCCT_Graphic3d_FILES
   Graphic3d_LevelOfTextureAnisotropy.hxx
   Graphic3d_LightSet.cxx
   Graphic3d_LightSet.hxx
-  Graphic3d_MapOfAspectsToAspects.hxx
 
-  Graphic3d_MapOfStructure.hxx
   Graphic3d_MarkerImage.cxx
   Graphic3d_MarkerImage.hxx
   Graphic3d_MarkerImage.pxx

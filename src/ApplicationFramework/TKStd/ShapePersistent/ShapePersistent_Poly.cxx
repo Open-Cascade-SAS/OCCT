@@ -90,8 +90,7 @@ occ::handle<Poly_Triangulation> ShapePersistent_Poly::pTriangulation::Import() c
 {
   occ::handle<Poly_Triangulation> aTriangulation;
 
-// Triangulation is not used
-#if 1
+  // Triangulation is not used
   if (myNodes && myTriangles)
   {
     if (myUVNodes)
@@ -102,7 +101,6 @@ occ::handle<Poly_Triangulation> ShapePersistent_Poly::pTriangulation::Import() c
 
     aTriangulation->Deflection(myDeflection);
   }
-#endif
 
   return aTriangulation;
 }

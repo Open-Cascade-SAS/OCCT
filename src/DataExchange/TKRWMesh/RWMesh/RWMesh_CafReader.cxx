@@ -43,15 +43,11 @@ RWMesh_CafReader::RWMesh_CafReader()
       myMemoryLimitMiB(-1),
       myExtraStatus(RWMesh_CafReaderStatusEx_NONE)
 {
-  //
 }
 
 //=================================================================================================
 
-RWMesh_CafReader::~RWMesh_CafReader()
-{
-  //
-}
+RWMesh_CafReader::~RWMesh_CafReader() = default;
 
 void RWMesh_CafReader::SetDocument(const occ::handle<TDocStd_Document>& theDoc)
 {
@@ -540,7 +536,7 @@ void RWMesh_CafReader::generateNames(const TCollection_AsciiString& theFile,
 
   // replace empty names
   occ::handle<TDataStd_Name>      aNodeName;
-  int                             aRootIndex = aRootLabels.Lower();
+  int                             aRootIndex = NCollection_Sequence<TDF_Label>::Lower();
   NCollection_Sequence<TDF_Label> aNewRootLabels;
   for (NCollection_Sequence<TDF_Label>::Iterator aRootIter(aRootLabels); aRootIter.More();
        ++aRootIndex, aRootIter.Next())

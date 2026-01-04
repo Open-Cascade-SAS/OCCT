@@ -104,7 +104,7 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire& theWire,
       for (int iCrv = aResultApprox.Length(); iCrv > 0; iCrv--)
       {
         const occ::handle<Geom2d_Curve>& aCrv = aResultApprox(iCrv);
-        if (aCrv.IsNull() == false)
+        if (!aCrv.IsNull())
         {
           OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
           anOCurve.Curve          = occ::down_cast<Geom2d_TrimmedCurve>(aCrv);
@@ -117,7 +117,7 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire& theWire,
       for (int iCrv = 1; iCrv <= aResultApprox.Length(); iCrv++)
       {
         const occ::handle<Geom2d_Curve>& aCrv = aResultApprox(iCrv);
-        if (aCrv.IsNull() == false)
+        if (!aCrv.IsNull())
         {
           OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
           anOCurve.Curve          = occ::down_cast<Geom2d_TrimmedCurve>(aCrv);
