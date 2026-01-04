@@ -20,7 +20,6 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <PLib.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -86,12 +85,16 @@ public:
                            const NCollection_Array1<int>&    theVMults)
       : myUDegree(theUDegree),
         myVDegree(theVDegree),
+        myMaxDegree(std::max(theUDegree, theVDegree)),
+        myMinDegree(std::min(theUDegree, theVDegree)),
         myIsRational(theIsRational),
+        myIsMaxU(theUDegree > theVDegree),
         myUPeriodic(theUPeriodic),
         myVPeriodic(theVPeriodic),
         myNbUSpans(theUKnots.Length() - 1),
         myNbVSpans(theVKnots.Length() - 1),
         myRowLength(theIsRational ? 4 : 3),
+        myCacheCols((theIsRational ? 4 : 3) * (std::min(theUDegree, theVDegree) + 1)),
         myCoeffsPerSpan((std::max(theUDegree, theVDegree) + 1) * myRowLength
                         * (std::min(theUDegree, theVDegree) + 1)),
         myCoeffs(1, myNbUSpans * myNbVSpans * myCoeffsPerSpan),
@@ -102,8 +105,14 @@ public:
         myVSpanStart(1, myNbVSpans),
         myVSpanHalfLen(1, myNbVSpans),
         myVFlatKnotIdx(1, myNbVSpans),
-        myLastUSpanIdx(0),
-        myLastVSpanIdx(0)
+        myLastUSpanIdx(-1),
+        myLastVSpanIdx(-1),
+        myCachedUMid(0.0),
+        myCachedUHalfLen(0.0),
+        myCachedUFlatKnotIdx(0),
+        myCachedVMid(0.0),
+        myCachedVHalfLen(0.0),
+        myCachedVFlatKnotIdx(0)
   {
     myUFirstParam = theUKnots.Value(theUKnots.Lower());
     myULastParam  = theUKnots.Value(theUKnots.Upper());
@@ -140,12 +149,16 @@ public:
   Geom_BSplineSurfaceCache(const Geom_BSplineSurfaceCache& theOther)
       : myUDegree(theOther.myUDegree),
         myVDegree(theOther.myVDegree),
+        myMaxDegree(theOther.myMaxDegree),
+        myMinDegree(theOther.myMinDegree),
         myIsRational(theOther.myIsRational),
+        myIsMaxU(theOther.myIsMaxU),
         myUPeriodic(theOther.myUPeriodic),
         myVPeriodic(theOther.myVPeriodic),
         myNbUSpans(theOther.myNbUSpans),
         myNbVSpans(theOther.myNbVSpans),
         myRowLength(theOther.myRowLength),
+        myCacheCols(theOther.myCacheCols),
         myCoeffsPerSpan(theOther.myCoeffsPerSpan),
         myUFirstParam(theOther.myUFirstParam),
         myULastParam(theOther.myULastParam),
@@ -159,10 +172,16 @@ public:
         myVSpanStart(1, theOther.myNbVSpans),
         myVSpanHalfLen(1, theOther.myNbVSpans),
         myVFlatKnotIdx(1, theOther.myNbVSpans),
-        myLastUSpanIdx(0),
-        myLastVSpanIdx(0)
+        myLastUSpanIdx(-1),
+        myLastVSpanIdx(-1),
+        myCachedUMid(0.0),
+        myCachedUHalfLen(0.0),
+        myCachedUFlatKnotIdx(0),
+        myCachedVMid(0.0),
+        myCachedVHalfLen(0.0),
+        myCachedVFlatKnotIdx(0)
   {
-    std::shared_lock<std::shared_mutex> aLock(theOther.myMutex);
+    //std::shared_lock<std::shared_mutex> aLock(theOther.myMutex);
     for (int i = 1; i <= myCoeffs.Length(); ++i)
     {
       myCoeffs.ChangeValue(i) = theOther.myCoeffs.Value(i);
@@ -218,14 +237,14 @@ public:
   {
     const int aCellIdx = theUSpanIdx * myNbVSpans + theVSpanIdx + 1;
     {
-      std::shared_lock<std::shared_mutex> aReadLock(myMutex);
+      //std::shared_lock<std::shared_mutex> aReadLock(myMutex);
       if (mySpanValid.Value(aCellIdx))
       {
         return;
       }
     }
 
-    std::unique_lock<std::shared_mutex> aWriteLock(myMutex);
+    //std::unique_lock<std::shared_mutex> aWriteLock(myMutex);
     if (mySpanValid.Value(aCellIdx))
     {
       return;
@@ -236,10 +255,12 @@ public:
     const double aVMid     = myVSpanStart.Value(theVSpanIdx + 1);
     const double aVHalfLen = myVSpanHalfLen.Value(theVSpanIdx + 1);
 
-    const int                                aMaxDeg = std::max(myUDegree, myVDegree);
-    const int                                aMinDeg = std::min(myUDegree, myVDegree);
-    occ::handle<NCollection_HArray2<double>> aTempCache =
-      new NCollection_HArray2<double>(1, aMaxDeg + 1, 1, myRowLength * (aMinDeg + 1));
+    const int aMaxDeg = std::max(myUDegree, myVDegree);
+    const int aMinDeg = std::min(myUDegree, myVDegree);
+
+    const int aOffset   = (theUSpanIdx * myNbVSpans + theVSpanIdx) * myCoeffsPerSpan;
+    double*   aCoeffs   = &myCoeffs.ChangeValue(1) + aOffset;
+    NCollection_Array2<double> aCacheArray(aCoeffs[0], 1, aMaxDeg + 1, 1, myRowLength * (aMinDeg + 1));
 
     BSplSLib::BuildCache(aUMid,
                          aVMid,
@@ -255,43 +276,113 @@ public:
                          theVFlatKnots,
                          thePoles,
                          theWeights,
-                         aTempCache->ChangeArray2());
+                         aCacheArray);
 
-    const int     aOffset = (theUSpanIdx * myNbVSpans + theVSpanIdx) * myCoeffsPerSpan;
-    const double* aSrc    = &aTempCache->Value(1, 1);
-    double*       aDst    = &myCoeffs.ChangeValue(1) + aOffset;
-    for (int i = 0; i < myCoeffsPerSpan; ++i)
-    {
-      aDst[i] = aSrc[i];
-    }
     mySpanValid.ChangeValue(aCellIdx) = true;
   }
 
-  //! Locate span for given (U, V) parameters
+  //! Locate span for given (U, V) parameters.
+  //! Uses cached span bounds for O(1) fast path (like old BSplCLib_CacheParams::IsCacheValid).
+  //! Falls back to locateSpan1D only when parameter moves outside cached span.
   //! @param theU U parameter
   //! @param theV V parameter
   //! @return SpanInfo with span indices, flat knot indices, local parameters, and half-lengths
   SpanInfo LocateSpan(double theU, double theV) const
   {
     SpanInfo aResult;
-    aResult.U = locateSpan1D(theU,
-                             myUPeriodic,
-                             myUFirstParam,
-                             myULastParam,
-                             myNbUSpans,
-                             myUSpanStart,
-                             myUSpanHalfLen,
-                             myUFlatKnotIdx,
-                             myLastUSpanIdx);
-    aResult.V = locateSpan1D(theV,
-                             myVPeriodic,
-                             myVFirstParam,
-                             myVLastParam,
-                             myNbVSpans,
-                             myVSpanStart,
-                             myVSpanHalfLen,
-                             myVFlatKnotIdx,
-                             myLastVSpanIdx);
+
+    // Fast path: check if U is still in cached span (like old IsCacheValid)
+    const int aUIdx = myLastUSpanIdx.load(std::memory_order_relaxed);
+    if (aUIdx >= 0)
+    {
+      const double aUDelta = theU - myCachedUMid;
+      if (aUDelta >= -myCachedUHalfLen
+          && (aUDelta < myCachedUHalfLen || (aUIdx == myNbUSpans - 1 && aUDelta <= myCachedUHalfLen)))
+      {
+        // U is in cached span - use cached values directly
+        aResult.U = {aUIdx, myCachedUFlatKnotIdx, aUDelta / myCachedUHalfLen, myCachedUHalfLen};
+      }
+      else
+      {
+        // U moved to different span - need full search
+        aResult.U = locateSpan1D(theU,
+                                 myUPeriodic,
+                                 myUFirstParam,
+                                 myULastParam,
+                                 myNbUSpans,
+                                 myUSpanStart,
+                                 myUSpanHalfLen,
+                                 myUFlatKnotIdx,
+                                 myLastUSpanIdx);
+        // Update U cache
+        myCachedUMid         = myUSpanStart.Value(aResult.U.SpanIdx + 1);
+        myCachedUHalfLen     = aResult.U.SpanHalfLen;
+        myCachedUFlatKnotIdx = aResult.U.FlatKnotIdx;
+      }
+    }
+    else
+    {
+      // First call - need full search
+      aResult.U = locateSpan1D(theU,
+                               myUPeriodic,
+                               myUFirstParam,
+                               myULastParam,
+                               myNbUSpans,
+                               myUSpanStart,
+                               myUSpanHalfLen,
+                               myUFlatKnotIdx,
+                               myLastUSpanIdx);
+      myCachedUMid         = myUSpanStart.Value(aResult.U.SpanIdx + 1);
+      myCachedUHalfLen     = aResult.U.SpanHalfLen;
+      myCachedUFlatKnotIdx = aResult.U.FlatKnotIdx;
+    }
+
+    // Fast path: check if V is still in cached span
+    const int aVIdx = myLastVSpanIdx.load(std::memory_order_relaxed);
+    if (aVIdx >= 0)
+    {
+      const double aVDelta = theV - myCachedVMid;
+      if (aVDelta >= -myCachedVHalfLen
+          && (aVDelta < myCachedVHalfLen || (aVIdx == myNbVSpans - 1 && aVDelta <= myCachedVHalfLen)))
+      {
+        // V is in cached span - use cached values directly
+        aResult.V = {aVIdx, myCachedVFlatKnotIdx, aVDelta / myCachedVHalfLen, myCachedVHalfLen};
+      }
+      else
+      {
+        // V moved to different span - need full search
+        aResult.V = locateSpan1D(theV,
+                                 myVPeriodic,
+                                 myVFirstParam,
+                                 myVLastParam,
+                                 myNbVSpans,
+                                 myVSpanStart,
+                                 myVSpanHalfLen,
+                                 myVFlatKnotIdx,
+                                 myLastVSpanIdx);
+        // Update V cache
+        myCachedVMid         = myVSpanStart.Value(aResult.V.SpanIdx + 1);
+        myCachedVHalfLen     = aResult.V.SpanHalfLen;
+        myCachedVFlatKnotIdx = aResult.V.FlatKnotIdx;
+      }
+    }
+    else
+    {
+      // First call - need full search
+      aResult.V = locateSpan1D(theV,
+                               myVPeriodic,
+                               myVFirstParam,
+                               myVLastParam,
+                               myNbVSpans,
+                               myVSpanStart,
+                               myVSpanHalfLen,
+                               myVFlatKnotIdx,
+                               myLastVSpanIdx);
+      myCachedVMid         = myVSpanStart.Value(aResult.V.SpanIdx + 1);
+      myCachedVHalfLen     = aResult.V.SpanHalfLen;
+      myCachedVFlatKnotIdx = aResult.V.FlatKnotIdx;
+    }
+
     return aResult;
   }
 
@@ -307,31 +398,23 @@ public:
           double  theLocalV,
           gp_Pnt& thePoint) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
+    const double* aCoeffs   = spanCoeffs(theUSpanIdx, theVSpanIdx);
+    const double  aMinParam = myIsMaxU ? theLocalV : theLocalU;
+    const double  aMaxParam = myIsMaxU ? theLocalU : theLocalV;
 
-    const double* aCoeffs    = spanCoeffs(theUSpanIdx, theVSpanIdx);
-    const int     aDimension = myIsRational ? 4 : 3;
-    const int     aMaxDeg    = std::max(myUDegree, myVDegree);
-    const int     aMinDeg    = std::min(myUDegree, myVDegree);
-    const int     aCacheCols = myRowLength * (aMinDeg + 1);
-
-    const bool   isMaxU    = (myUDegree > myVDegree);
-    const double aMinParam = isMaxU ? theLocalV : theLocalU;
-    const double aMaxParam = isMaxU ? theLocalU : theLocalV;
-
-    NCollection_LocalArray<double> aTransientCoeffs(aCacheCols);
+    NCollection_LocalArray<double> aTransientCoeffs(myCacheCols);
     double                         aPoint[4] = {};
 
     PLib::NoDerivativeEvalPolynomial(aMaxParam,
-                                     aMaxDeg,
-                                     aCacheCols,
-                                     aMaxDeg * aCacheCols,
+                                     myMaxDegree,
+                                     myCacheCols,
+                                     myMaxDegree * myCacheCols,
                                      const_cast<double&>(aCoeffs[0]),
                                      aTransientCoeffs[0]);
     PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                     aMinDeg,
-                                     aDimension,
-                                     aDimension * aMinDeg,
+                                     myMinDegree,
+                                     myRowLength,
+                                     myRowLength * myMinDegree,
                                      aTransientCoeffs[0],
                                      aPoint[0]);
 
@@ -362,8 +445,6 @@ public:
           gp_Vec& theD1U,
           gp_Vec& theD1V) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     double aPntDeriv[16] = {};
     evaluatePolynomials(theUSpanIdx, theVSpanIdx, theLocalU, theLocalV, 1, 1, aPntDeriv);
 
@@ -415,8 +496,6 @@ public:
           gp_Vec& theD2V,
           gp_Vec& theD2UV) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     double aPntDeriv[36] = {};
     evaluatePolynomials(theUSpanIdx, theVSpanIdx, theLocalU, theLocalV, 2, 2, aPntDeriv);
 
@@ -458,7 +537,7 @@ public:
   //! Invalidate all spans (for geometry modification)
   void Invalidate()
   {
-    std::unique_lock<std::shared_mutex> aLock(myMutex);
+    //std::unique_lock<std::shared_mutex> aLock(myMutex);
     const int                           aNbCells = myNbUSpans * myNbVSpans;
     for (int i = 1; i <= aNbCells; ++i)
     {
@@ -601,30 +680,25 @@ private:
                            double* theResultArray) const
   {
     const double* aCoeffs    = spanCoeffs(theUSpanIdx, theVSpanIdx);
-    const int     aDimension = myIsRational ? 4 : 3;
-    const int     aMinDeg    = std::min(myUDegree, myVDegree);
-    const int     aCacheCols = myRowLength * (aMinDeg + 1);
-
-    const bool isMaxU     = (myUDegree > myVDegree);
-    const auto aMinParam  = isMaxU ? theLocalV : theLocalU;
-    const auto aMaxParam  = isMaxU ? theLocalU : theLocalV;
-    const int  aMaxDeriv  = isMaxU ? theUDerivMax : theVDerivMax;
-    const int  aMinDeriv  = isMaxU ? theVDerivMax : theUDerivMax;
-    const int  aRowStride = (aMinDeriv + 1) * aDimension;
+    const double  aMinParam  = myIsMaxU ? theLocalV : theLocalU;
+    const double  aMaxParam  = myIsMaxU ? theLocalU : theLocalV;
+    const int     aMaxDeriv  = myIsMaxU ? theUDerivMax : theVDerivMax;
+    const int     aMinDeriv  = myIsMaxU ? theVDerivMax : theUDerivMax;
+    const int     aRowStride = (aMinDeriv + 1) * myRowLength;
 
     NCollection_LocalArray<double> aTransientCoeffs(
-      std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
+      std::max((aMaxDeriv + 1) * myCacheCols, (aMinDeriv + 1) * myRowLength));
 
     PLib::EvalPolynomial(aMaxParam,
                          aMaxDeriv,
-                         isMaxU ? myUDegree : myVDegree,
-                         aCacheCols,
+                         myMaxDegree,
+                         myCacheCols,
                          const_cast<double&>(aCoeffs[0]),
                          aTransientCoeffs[0]);
     PLib::EvalPolynomial(aMinParam,
                          aMinDeriv,
-                         isMaxU ? myVDegree : myUDegree,
-                         aDimension,
+                         myMinDegree,
+                         myRowLength,
                          aTransientCoeffs[0],
                          theResultArray[0]);
 
@@ -633,9 +707,9 @@ private:
       const int aDeriv = myIsRational ? aMinDeriv : std::min(aMinDeriv, 1);
       PLib::EvalPolynomial(aMinParam,
                            aDeriv,
-                           isMaxU ? myVDegree : myUDegree,
-                           aDimension,
-                           aTransientCoeffs[aCacheCols],
+                           myMinDegree,
+                           myRowLength,
+                           aTransientCoeffs[myCacheCols],
                            theResultArray[aRowStride]);
 
       if (aMaxDeriv > 1)
@@ -644,19 +718,19 @@ private:
         if (aDeriv2 == 0)
         {
           PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                           isMaxU ? myVDegree : myUDegree,
-                                           aDimension,
-                                           (isMaxU ? myVDegree : myUDegree) * aDimension,
-                                           aTransientCoeffs[aCacheCols << 1],
+                                           myMinDegree,
+                                           myRowLength,
+                                           myMinDegree * myRowLength,
+                                           aTransientCoeffs[myCacheCols << 1],
                                            theResultArray[aRowStride << 1]);
         }
         else
         {
           PLib::EvalPolynomial(aMinParam,
                                aDeriv2,
-                               isMaxU ? myVDegree : myUDegree,
-                               aDimension,
-                               aTransientCoeffs[aCacheCols << 1],
+                               myMinDegree,
+                               myRowLength,
+                               aTransientCoeffs[myCacheCols << 1],
                                theResultArray[aRowStride << 1]);
         }
       }
@@ -667,7 +741,7 @@ private:
       const int                      aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
       NCollection_LocalArray<double> aTempStorage(aResultSize);
 
-      if (isMaxU)
+      if (myIsMaxU)
       {
         BSplSLib::RationalDerivative(theUDerivMax,
                                      theVDerivMax,
@@ -696,12 +770,16 @@ private:
 private:
   int  myUDegree;       //!< degree in U direction
   int  myVDegree;       //!< degree in V direction
+  int  myMaxDegree;     //!< max(UDegree, VDegree) - pre-computed
+  int  myMinDegree;     //!< min(UDegree, VDegree) - pre-computed
   bool myIsRational;    //!< whether surface is rational
+  bool myIsMaxU;        //!< whether U degree > V degree - pre-computed
   bool myUPeriodic;     //!< whether surface is periodic in U
   bool myVPeriodic;     //!< whether surface is periodic in V
   int  myNbUSpans;      //!< number of spans in U direction
   int  myNbVSpans;      //!< number of spans in V direction
   int  myRowLength;     //!< 3 for non-rational, 4 for rational
+  int  myCacheCols;     //!< rowLength * (minDegree + 1) - pre-computed
   int  myCoeffsPerSpan; //!< coefficients per span cell
 
   double myUFirstParam; //!< first valid U parameter
@@ -728,6 +806,15 @@ private:
   //! Last used span indices for O(1) fast path (atomic for thread-safe hint)
   mutable std::atomic<int> myLastUSpanIdx;
   mutable std::atomic<int> myLastVSpanIdx;
+
+  //! Cached span bounds for O(1) fast path in LocateSpan (like old BSplCLib_CacheParams)
+  //! Updated by LocateSpan, used for bounds check with NO array lookups
+  mutable double myCachedUMid;         //!< cached U span midpoint
+  mutable double myCachedUHalfLen;     //!< cached U span half-length
+  mutable int    myCachedUFlatKnotIdx; //!< cached U flat knot index
+  mutable double myCachedVMid;         //!< cached V span midpoint
+  mutable double myCachedVHalfLen;     //!< cached V span half-length
+  mutable int    myCachedVFlatKnotIdx; //!< cached V flat knot index
 
   //! Shared mutex for thread-safe access (readers don't block each other)
   mutable std::shared_mutex myMutex;

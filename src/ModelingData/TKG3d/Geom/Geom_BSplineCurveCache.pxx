@@ -78,7 +78,10 @@ public:
         mySpanStart(1, theKnots.Length() - 1),
         mySpanLength(1, theKnots.Length() - 1),
         myFlatKnotIdx(1, theKnots.Length() - 1),
-        myLastSpanIdx(0)
+        myLastSpanIdx(-1),
+        myCachedSpanStart(0.0),
+        myCachedSpanLength(0.0),
+        myCachedFlatKnotIdx(0)
   {
     for (int i = 1; i <= myNbSpans; ++i)
     {
@@ -114,7 +117,10 @@ public:
         mySpanStart(1, theOther.myNbSpans),
         mySpanLength(1, theOther.myNbSpans),
         myFlatKnotIdx(1, theOther.myNbSpans),
-        myLastSpanIdx(0)
+        myLastSpanIdx(-1),
+        myCachedSpanStart(0.0),
+        myCachedSpanLength(0.0),
+        myCachedFlatKnotIdx(0)
   {
     std::shared_lock<std::shared_mutex> aLock(theOther.myMutex);
     for (int i = myCoeffs.Lower(); i <= myCoeffs.Upper(); ++i)
@@ -207,8 +213,6 @@ public:
   //! @param thePoint output point
   void D0(int theSpanIdx, double theLocalParam, gp_Pnt& thePoint) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aResult[4];
 
@@ -238,8 +242,6 @@ public:
           gp_Pnt& thePoint,
           gp_Vec& theTangent) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[8];
 
@@ -284,8 +286,6 @@ public:
           gp_Vec& theTangent,
           gp_Vec& theCurvature) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[12];
 
@@ -339,8 +339,6 @@ public:
           gp_Vec& theCurvature,
           gp_Vec& theTorsion) const
   {
-    std::shared_lock<std::shared_mutex> aLock(myMutex);
-
     const double* aCoeffs = SpanCoeffs(theSpanIdx);
     double        aDerivArray[16];
 
@@ -397,14 +395,17 @@ public:
     {
       mySpanValid.ChangeValue(i) = false;
     }
+    myLastSpanIdx.store(-1, std::memory_order_relaxed);
   }
 
   //! Locate span containing the given parameter using optimized search.
-  //! Uses cached span boundaries with O(1) fast path for sequential access.
+  //! Uses cached span bounds directly for O(1) fast path (like old BSplCLib_CacheParams::IsCacheValid).
+  //! Falls back to sequential check (next, prev) then binary search only if needed.
   //! @param theU parameter value (will be normalized if periodic)
   //! @return SpanInfo with span index, flat knot index, local parameter, and span length
   SpanInfo LocateSpan(double theU) const
   {
+    // Handle periodic normalization
     double aU = theU;
     if (myIsPeriodic)
     {
@@ -421,49 +422,73 @@ public:
       }
     }
 
-    int aHintIdx = myLastSpanIdx.load(std::memory_order_relaxed);
-    if (aHintIdx >= 0 && aHintIdx < myNbSpans)
-    {
-      const double aStart = mySpanStart.Value(aHintIdx + 1);
-      const double aLen   = mySpanLength.Value(aHintIdx + 1);
-      const double aEnd   = aStart + aLen;
+    SpanInfo aResult;
 
-      if (aU >= aStart && (aU < aEnd || (aHintIdx == myNbSpans - 1 && aU <= aEnd)))
+    // FAST PATH: Check cached span bounds directly (NO array lookups!)
+    // This is like the old BSplCLib_CacheParams::IsCacheValid approach
+    const int aSpanIdx = myLastSpanIdx.load(std::memory_order_relaxed);
+    if (aSpanIdx >= 0)
+    {
+      const double aDelta = aU - myCachedSpanStart;
+      // Check if U is still in cached span using cached bounds directly
+      if (aDelta >= 0.0
+          && (aDelta < myCachedSpanLength
+              || (aSpanIdx == myNbSpans - 1 && aDelta <= myCachedSpanLength)))
       {
-        return {aHintIdx, myFlatKnotIdx.Value(aHintIdx + 1), (aU - aStart) / aLen, aLen};
+        // U is in cached span - return immediately using cached values (NO array lookups!)
+        aResult.SpanIdx     = aSpanIdx;
+        aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+        aResult.LocalParam  = aDelta / myCachedSpanLength;
+        aResult.SpanLength  = myCachedSpanLength;
+        return aResult;
       }
-      if (aHintIdx + 1 < myNbSpans)
+
+      // U moved out of cached span - try adjacent spans before binary search
+      // Check NEXT span
+      if (aSpanIdx + 1 < myNbSpans)
       {
-        const double aNextStart = mySpanStart.Value(aHintIdx + 2);
-        const double aNextLen   = mySpanLength.Value(aHintIdx + 2);
-        const double aNextEnd   = aNextStart + aNextLen;
-        if (aU >= aNextStart
-            && (aU < aNextEnd || (aHintIdx + 1 == myNbSpans - 1 && aU <= aNextEnd)))
+        const double aNextStart = mySpanStart.Value(aSpanIdx + 2);
+        const double aNextLen   = mySpanLength.Value(aSpanIdx + 2);
+        const double aNextDelta = aU - aNextStart;
+        if (aNextDelta >= 0.0
+            && (aNextDelta < aNextLen || (aSpanIdx + 1 == myNbSpans - 1 && aNextDelta <= aNextLen)))
         {
-          const int aSpanIdx = aHintIdx + 1;
-          myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
-          return {aSpanIdx,
-                  myFlatKnotIdx.Value(aSpanIdx + 1),
-                  (aU - aNextStart) / aNextLen,
-                  aNextLen};
+          const int aNewIdx = aSpanIdx + 1;
+          myLastSpanIdx.store(aNewIdx, std::memory_order_relaxed);
+          myCachedSpanStart   = aNextStart;
+          myCachedSpanLength  = aNextLen;
+          myCachedFlatKnotIdx = myFlatKnotIdx.Value(aNewIdx + 1);
+          aResult.SpanIdx     = aNewIdx;
+          aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+          aResult.LocalParam  = aNextDelta / aNextLen;
+          aResult.SpanLength  = aNextLen;
+          return aResult;
         }
       }
-      if (aHintIdx > 0)
+
+      // Check PREVIOUS span
+      if (aSpanIdx > 0)
       {
-        const double aPrevStart = mySpanStart.Value(aHintIdx);
-        const double aPrevLen   = mySpanLength.Value(aHintIdx);
-        if (aU >= aPrevStart && aU < aPrevStart + aPrevLen)
+        const double aPrevStart = mySpanStart.Value(aSpanIdx);
+        const double aPrevLen   = mySpanLength.Value(aSpanIdx);
+        const double aPrevDelta = aU - aPrevStart;
+        if (aPrevDelta >= 0.0 && aPrevDelta < aPrevLen)
         {
-          const int aSpanIdx = aHintIdx - 1;
-          myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
-          return {aSpanIdx,
-                  myFlatKnotIdx.Value(aSpanIdx + 1),
-                  (aU - aPrevStart) / aPrevLen,
-                  aPrevLen};
+          const int aNewIdx = aSpanIdx - 1;
+          myLastSpanIdx.store(aNewIdx, std::memory_order_relaxed);
+          myCachedSpanStart   = aPrevStart;
+          myCachedSpanLength  = aPrevLen;
+          myCachedFlatKnotIdx = myFlatKnotIdx.Value(aNewIdx + 1);
+          aResult.SpanIdx     = aNewIdx;
+          aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+          aResult.LocalParam  = aPrevDelta / aPrevLen;
+          aResult.SpanLength  = aPrevLen;
+          return aResult;
         }
       }
     }
 
+    // SLOW PATH: Binary search for span
     int aLow = 0, aHigh = myNbSpans - 1;
     while (aLow <= aHigh)
     {
@@ -482,22 +507,44 @@ public:
       }
       else
       {
+        // Found - update cache
         myLastSpanIdx.store(aMid, std::memory_order_relaxed);
-        return {aMid, myFlatKnotIdx.Value(aMid + 1), (aU - aStart) / aLen, aLen};
+        myCachedSpanStart   = aStart;
+        myCachedSpanLength  = aLen;
+        myCachedFlatKnotIdx = myFlatKnotIdx.Value(aMid + 1);
+        aResult.SpanIdx     = aMid;
+        aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+        aResult.LocalParam  = (aU - aStart) / aLen;
+        aResult.SpanLength  = aLen;
+        return aResult;
       }
     }
 
+    // Clamp to boundary spans
     if (aU <= myFirstParam)
     {
       myLastSpanIdx.store(0, std::memory_order_relaxed);
-      return {0, myFlatKnotIdx.Value(1), 0.0, mySpanLength.Value(1)};
+      myCachedSpanStart   = mySpanStart.Value(1);
+      myCachedSpanLength  = mySpanLength.Value(1);
+      myCachedFlatKnotIdx = myFlatKnotIdx.Value(1);
+      aResult.SpanIdx     = 0;
+      aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+      aResult.LocalParam  = 0.0;
+      aResult.SpanLength  = myCachedSpanLength;
     }
     else
     {
       const int aLastIdx = myNbSpans - 1;
       myLastSpanIdx.store(aLastIdx, std::memory_order_relaxed);
-      return {aLastIdx, myFlatKnotIdx.Value(myNbSpans), 1.0, mySpanLength.Value(myNbSpans)};
+      myCachedSpanStart   = mySpanStart.Value(myNbSpans);
+      myCachedSpanLength  = mySpanLength.Value(myNbSpans);
+      myCachedFlatKnotIdx = myFlatKnotIdx.Value(myNbSpans);
+      aResult.SpanIdx     = aLastIdx;
+      aResult.FlatKnotIdx = myCachedFlatKnotIdx;
+      aResult.LocalParam  = 1.0;
+      aResult.SpanLength  = myCachedSpanLength;
     }
+    return aResult;
   }
 
   //! Get stored span start parameter
@@ -558,6 +605,12 @@ private:
 
   //! Last used span index for O(1) fast path (atomic for thread-safe hint)
   mutable std::atomic<int> myLastSpanIdx;
+
+  //! Cached span bounds for O(1) fast path in LocateSpan (like old BSplCLib_CacheParams)
+  //! Updated by LocateSpan, used for bounds check with NO array lookups
+  mutable double myCachedSpanStart;   //!< cached span start parameter
+  mutable double myCachedSpanLength;  //!< cached span length
+  mutable int    myCachedFlatKnotIdx; //!< cached flat knot index
 
   //! Shared mutex for thread-safe access (readers don't block each other)
   mutable std::shared_mutex myMutex;
