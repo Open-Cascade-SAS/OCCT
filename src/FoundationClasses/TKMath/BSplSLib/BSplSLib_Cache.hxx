@@ -142,9 +142,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
 
+public:
+  //! Copy constructor - performs deep copy of cached data.
+  Standard_EXPORT BSplSLib_Cache(const BSplSLib_Cache& theOther);
+
 private:
-  // copying is prohibited
-  BSplSLib_Cache(const BSplSLib_Cache&) = delete;
+  // assignment is prohibited
   void operator=(const BSplSLib_Cache&) = delete;
 
 private:

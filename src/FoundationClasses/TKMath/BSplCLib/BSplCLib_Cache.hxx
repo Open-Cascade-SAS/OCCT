@@ -174,8 +174,12 @@ protected:
                                 int     theDerivative,
                                 double* theDerivArray) const;
 
-  // copying is prohibited
-  BSplCLib_Cache(const BSplCLib_Cache&) = delete;
+public:
+  //! Copy constructor - performs deep copy of cached data.
+  Standard_EXPORT BSplCLib_Cache(const BSplCLib_Cache& theOther);
+
+private:
+  // assignment is prohibited
   void operator=(const BSplCLib_Cache&) = delete;
 
 private:

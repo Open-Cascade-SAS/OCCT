@@ -82,8 +82,8 @@ struct BSplCLib_CacheParams
   {
     const double aNewParam = PeriodicNormalization(theParameter);
     const double aDelta    = aNewParam - SpanStart;
-    if ((aDelta < 0.0 && SpanIndex != SpanIndexMin)
-        || (aDelta >= SpanLength && SpanIndex != SpanIndexMax))
+    if (!((aDelta >= 0.0 || SpanIndex == SpanIndexMin)
+          && (aDelta < SpanLength || SpanIndex == SpanIndexMax)))
     {
       return false;
     }
@@ -95,7 +95,10 @@ struct BSplCLib_CacheParams
     // within double floating point precision
     const double anEps        = Epsilon((std::min)(std::fabs(LastParameter), std::fabs(aNewParam)));
     const double aDeltaToNext = std::fabs(aDelta - SpanLength);
-    return aDeltaToNext > anEps; // next knot should be used instead
+    if (aDeltaToNext <= anEps)
+      return false; // next knot should be used instead
+
+    return true;
   }
 
   //! Computes span for the specified parameter
@@ -115,8 +118,21 @@ struct BSplCLib_CacheParams
     SpanLength = theFlatKnots.Value(SpanIndex + 1) - SpanStart;
   }
 
-  // copying is prohibited
-  BSplCLib_CacheParams(const BSplCLib_CacheParams&)            = delete;
+  //! Copy constructor - performs deep copy of cache parameters.
+  BSplCLib_CacheParams(const BSplCLib_CacheParams& theOther)
+      : Degree(theOther.Degree),
+        IsPeriodic(theOther.IsPeriodic),
+        FirstParameter(theOther.FirstParameter),
+        LastParameter(theOther.LastParameter),
+        SpanIndexMin(theOther.SpanIndexMin),
+        SpanIndexMax(theOther.SpanIndexMax),
+        SpanStart(theOther.SpanStart),
+        SpanLength(theOther.SpanLength),
+        SpanIndex(theOther.SpanIndex)
+  {
+  }
+
+  // assignment is prohibited (const members)
   BSplCLib_CacheParams& operator=(const BSplCLib_CacheParams&) = delete;
 };
 
