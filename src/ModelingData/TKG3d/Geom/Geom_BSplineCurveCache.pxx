@@ -50,10 +50,10 @@ public:
   //! Result of span location operation
   struct SpanInfo
   {
-    int    SpanIdx;      //!< Span index (0-based)
-    int    FlatKnotIdx;  //!< Flat knot index for BuildSpan
-    double LocalParam;   //!< Local parameter in [0, 1] range within span
-    double SpanLength;   //!< Length of the span (for derivative scaling)
+    int    SpanIdx;     //!< Span index (0-based)
+    int    FlatKnotIdx; //!< Flat knot index for BuildSpan
+    double LocalParam;  //!< Local parameter in [0, 1] range within span
+    double SpanLength;  //!< Length of the span (for derivative scaling)
   };
 
   //! Constructor - allocates storage for all spans and builds span lookup tables
@@ -62,9 +62,9 @@ public:
   //! @param theIsPeriodic whether curve is periodic
   //! @param theKnots unique knot values
   //! @param theMults knot multiplicities
-  Geom_BSplineCurveCache(int                            theDegree,
-                         bool                           theIsRational,
-                         bool                           theIsPeriodic,
+  Geom_BSplineCurveCache(int                               theDegree,
+                         bool                              theIsRational,
+                         bool                              theIsPeriodic,
                          const NCollection_Array1<double>& theKnots,
                          const NCollection_Array1<int>&    theMults)
       : myDegree(theDegree),
@@ -87,7 +87,7 @@ public:
     const int aKnotsLower = theKnots.Lower();
     for (int i = 0; i < myNbSpans; ++i)
     {
-      const int aKnotIdx = aKnotsLower + i;
+      const int aKnotIdx              = aKnotsLower + i;
       mySpanStart.ChangeValue(i + 1)  = theKnots.Value(aKnotIdx);
       mySpanLength.ChangeValue(i + 1) = theKnots.Value(aKnotIdx + 1) - theKnots.Value(aKnotIdx);
       myFlatKnotIdx.ChangeValue(i + 1) =
@@ -137,10 +137,7 @@ public:
 
   //! Check if span coefficients are computed
   //! @param theSpanIdx span index (0-based)
-  bool IsSpanValid(int theSpanIdx) const noexcept
-  {
-    return mySpanValid.Value(theSpanIdx + 1);
-  }
+  bool IsSpanValid(int theSpanIdx) const noexcept { return mySpanValid.Value(theSpanIdx + 1); }
 
   //! Get pointer to span coefficients (assumes span is valid)
   //! Layout: [x0, y0, z0, [w0], x1, y1, z1, [w1], ...] for (degree+1) poles
@@ -440,11 +437,15 @@ public:
         const double aNextStart = mySpanStart.Value(aHintIdx + 2);
         const double aNextLen   = mySpanLength.Value(aHintIdx + 2);
         const double aNextEnd   = aNextStart + aNextLen;
-        if (aU >= aNextStart && (aU < aNextEnd || (aHintIdx + 1 == myNbSpans - 1 && aU <= aNextEnd)))
+        if (aU >= aNextStart
+            && (aU < aNextEnd || (aHintIdx + 1 == myNbSpans - 1 && aU <= aNextEnd)))
         {
           const int aSpanIdx = aHintIdx + 1;
           myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
-          return {aSpanIdx, myFlatKnotIdx.Value(aSpanIdx + 1), (aU - aNextStart) / aNextLen, aNextLen};
+          return {aSpanIdx,
+                  myFlatKnotIdx.Value(aSpanIdx + 1),
+                  (aU - aNextStart) / aNextLen,
+                  aNextLen};
         }
       }
       if (aHintIdx > 0)
@@ -455,7 +456,10 @@ public:
         {
           const int aSpanIdx = aHintIdx - 1;
           myLastSpanIdx.store(aSpanIdx, std::memory_order_relaxed);
-          return {aSpanIdx, myFlatKnotIdx.Value(aSpanIdx + 1), (aU - aPrevStart) / aPrevLen, aPrevLen};
+          return {aSpanIdx,
+                  myFlatKnotIdx.Value(aSpanIdx + 1),
+                  (aU - aPrevStart) / aPrevLen,
+                  aPrevLen};
         }
       }
     }

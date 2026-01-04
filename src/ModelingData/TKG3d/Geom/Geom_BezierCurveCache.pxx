@@ -85,7 +85,8 @@ public:
   //! Uses BSplCLib::BuildCache to compute Taylor expansion.
   //! @param thePoles poles array
   //! @param theWeights optional weights for rational curves
-  void Build(const NCollection_Array1<gp_Pnt>& thePoles, const NCollection_Array1<double>* theWeights)
+  void Build(const NCollection_Array1<gp_Pnt>& thePoles,
+             const NCollection_Array1<double>* theWeights)
   {
     if (IsValid())
     {
@@ -98,7 +99,9 @@ public:
       return;
     }
 
-    NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(myDegree), 1, 2 * (myDegree + 1));
+    NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(myDegree),
+                                          1,
+                                          2 * (myDegree + 1));
     double*                    aCoeffsPtr = Coeffs();
     NCollection_Array2<double> aCacheArray(aCoeffsPtr[0], 1, myDegree + 1, 1, myRowLength);
     BSplCLib::BuildCache(0.0,

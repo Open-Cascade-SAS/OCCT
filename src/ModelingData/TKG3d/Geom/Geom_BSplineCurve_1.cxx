@@ -167,7 +167,7 @@ int Geom_BSplineCurve::Degree() const
 
 void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 {
-  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
   const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
   aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
   aCache.D0(aSpan.SpanIdx, aSpan.LocalParam, P);
@@ -177,7 +177,7 @@ void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 
 void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
   const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
   aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
   aCache.D1(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1);
@@ -187,7 +187,7 @@ void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 
 void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
   const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
   aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
   aCache.D2(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2);
@@ -197,7 +197,7 @@ void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 
 void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  Geom_BSplineCurveCache&             aCache = ensureSpanCache();
+  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
   const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
   aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
   aCache.D3(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2, V3);

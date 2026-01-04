@@ -112,22 +112,22 @@ public:
 
     for (int i = 1; i <= myNbUSpans; ++i)
     {
-      const double aStart   = theUKnots.Value(theUKnots.Lower() + i - 1);
-      const double aEnd     = theUKnots.Value(theUKnots.Lower() + i);
-      const double aHalfLen = 0.5 * (aEnd - aStart);
-      myUSpanStart.ChangeValue(i)    = aStart + aHalfLen;
-      myUSpanHalfLen.ChangeValue(i)  = aHalfLen;
-      myUFlatKnotIdx.ChangeValue(i)  = BSplCLib::FlatIndex(theUDegree, i, theUMults, theUPeriodic);
+      const double aStart           = theUKnots.Value(theUKnots.Lower() + i - 1);
+      const double aEnd             = theUKnots.Value(theUKnots.Lower() + i);
+      const double aHalfLen         = 0.5 * (aEnd - aStart);
+      myUSpanStart.ChangeValue(i)   = aStart + aHalfLen;
+      myUSpanHalfLen.ChangeValue(i) = aHalfLen;
+      myUFlatKnotIdx.ChangeValue(i) = BSplCLib::FlatIndex(theUDegree, i, theUMults, theUPeriodic);
     }
 
     for (int i = 1; i <= myNbVSpans; ++i)
     {
-      const double aStart   = theVKnots.Value(theVKnots.Lower() + i - 1);
-      const double aEnd     = theVKnots.Value(theVKnots.Lower() + i);
-      const double aHalfLen = 0.5 * (aEnd - aStart);
-      myVSpanStart.ChangeValue(i)    = aStart + aHalfLen;
-      myVSpanHalfLen.ChangeValue(i)  = aHalfLen;
-      myVFlatKnotIdx.ChangeValue(i)  = BSplCLib::FlatIndex(theVDegree, i, theVMults, theVPeriodic);
+      const double aStart           = theVKnots.Value(theVKnots.Lower() + i - 1);
+      const double aEnd             = theVKnots.Value(theVKnots.Lower() + i);
+      const double aHalfLen         = 0.5 * (aEnd - aStart);
+      myVSpanStart.ChangeValue(i)   = aStart + aHalfLen;
+      myVSpanHalfLen.ChangeValue(i) = aHalfLen;
+      myVFlatKnotIdx.ChangeValue(i) = BSplCLib::FlatIndex(theVDegree, i, theVMults, theVPeriodic);
     }
 
     for (int i = 1; i <= myNbUSpans * myNbVSpans; ++i)
@@ -169,15 +169,15 @@ public:
     }
     for (int i = 1; i <= myNbUSpans; ++i)
     {
-      myUSpanStart.ChangeValue(i)    = theOther.myUSpanStart.Value(i);
-      myUSpanHalfLen.ChangeValue(i)  = theOther.myUSpanHalfLen.Value(i);
-      myUFlatKnotIdx.ChangeValue(i)  = theOther.myUFlatKnotIdx.Value(i);
+      myUSpanStart.ChangeValue(i)   = theOther.myUSpanStart.Value(i);
+      myUSpanHalfLen.ChangeValue(i) = theOther.myUSpanHalfLen.Value(i);
+      myUFlatKnotIdx.ChangeValue(i) = theOther.myUFlatKnotIdx.Value(i);
     }
     for (int i = 1; i <= myNbVSpans; ++i)
     {
-      myVSpanStart.ChangeValue(i)    = theOther.myVSpanStart.Value(i);
-      myVSpanHalfLen.ChangeValue(i)  = theOther.myVSpanHalfLen.Value(i);
-      myVFlatKnotIdx.ChangeValue(i)  = theOther.myVFlatKnotIdx.Value(i);
+      myVSpanStart.ChangeValue(i)   = theOther.myVSpanStart.Value(i);
+      myVSpanHalfLen.ChangeValue(i) = theOther.myVSpanHalfLen.Value(i);
+      myVFlatKnotIdx.ChangeValue(i) = theOther.myVFlatKnotIdx.Value(i);
     }
     const int aNbCells = myNbUSpans * myNbVSpans;
     for (int i = 1; i <= aNbCells; ++i)
@@ -236,8 +236,8 @@ public:
     const double aVMid     = myVSpanStart.Value(theVSpanIdx + 1);
     const double aVHalfLen = myVSpanHalfLen.Value(theVSpanIdx + 1);
 
-    const int aMaxDeg = std::max(myUDegree, myVDegree);
-    const int aMinDeg = std::min(myUDegree, myVDegree);
+    const int                                aMaxDeg = std::max(myUDegree, myVDegree);
+    const int                                aMinDeg = std::min(myUDegree, myVDegree);
     occ::handle<NCollection_HArray2<double>> aTempCache =
       new NCollection_HArray2<double>(1, aMaxDeg + 1, 1, myRowLength * (aMinDeg + 1));
 
@@ -301,8 +301,11 @@ public:
   //! @param theLocalU   local U parameter in [-1, 1]
   //! @param theLocalV   local V parameter in [-1, 1]
   //! @param thePoint    output point
-  void D0(int theUSpanIdx, int theVSpanIdx, double theLocalU, double theLocalV, gp_Pnt& thePoint)
-    const
+  void D0(int     theUSpanIdx,
+          int     theVSpanIdx,
+          double  theLocalU,
+          double  theLocalV,
+          gp_Pnt& thePoint) const
   {
     std::shared_lock<std::shared_mutex> aLock(myMutex);
 
@@ -312,7 +315,7 @@ public:
     const int     aMinDeg    = std::min(myUDegree, myVDegree);
     const int     aCacheCols = myRowLength * (aMinDeg + 1);
 
-    const bool   isMaxU = (myUDegree > myVDegree);
+    const bool   isMaxU    = (myUDegree > myVDegree);
     const double aMinParam = isMaxU ? theLocalV : theLocalU;
     const double aMaxParam = isMaxU ? theLocalU : theLocalV;
 
@@ -511,10 +514,7 @@ private:
 
       if (aParam >= aStart && (aParam < aEnd || (aHintIdx == theNbSpans - 1 && aParam <= aEnd)))
       {
-        return {aHintIdx,
-                theFlatKnotIdx.Value(aHintIdx + 1),
-                (aParam - aMid) / aHalfLen,
-                aHalfLen};
+        return {aHintIdx, theFlatKnotIdx.Value(aHintIdx + 1), (aParam - aMid) / aHalfLen, aHalfLen};
       }
       if (aHintIdx < theNbSpans - 1)
       {
@@ -554,11 +554,11 @@ private:
     int aLow = 0, aHigh = theNbSpans - 1;
     while (aLow <= aHigh)
     {
-      const int    aMid       = (aLow + aHigh) / 2;
-      const double aSpanMid   = theSpanStart.Value(aMid + 1);
-      const double aHalfLen   = theSpanHalfLen.Value(aMid + 1);
-      const double aStart     = aSpanMid - aHalfLen;
-      const double aEnd       = aSpanMid + aHalfLen;
+      const int    aMid     = (aLow + aHigh) / 2;
+      const double aSpanMid = theSpanStart.Value(aMid + 1);
+      const double aHalfLen = theSpanHalfLen.Value(aMid + 1);
+      const double aStart   = aSpanMid - aHalfLen;
+      const double aEnd     = aSpanMid + aHalfLen;
 
       if (aParam < aStart)
       {
@@ -694,14 +694,14 @@ private:
   }
 
 private:
-  int  myUDegree;     //!< degree in U direction
-  int  myVDegree;     //!< degree in V direction
-  bool myIsRational;  //!< whether surface is rational
-  bool myUPeriodic;   //!< whether surface is periodic in U
-  bool myVPeriodic;   //!< whether surface is periodic in V
-  int  myNbUSpans;    //!< number of spans in U direction
-  int  myNbVSpans;    //!< number of spans in V direction
-  int  myRowLength;   //!< 3 for non-rational, 4 for rational
+  int  myUDegree;       //!< degree in U direction
+  int  myVDegree;       //!< degree in V direction
+  bool myIsRational;    //!< whether surface is rational
+  bool myUPeriodic;     //!< whether surface is periodic in U
+  bool myVPeriodic;     //!< whether surface is periodic in V
+  int  myNbUSpans;      //!< number of spans in U direction
+  int  myNbVSpans;      //!< number of spans in V direction
+  int  myRowLength;     //!< 3 for non-rational, 4 for rational
   int  myCoeffsPerSpan; //!< coefficients per span cell
 
   double myUFirstParam; //!< first valid U parameter

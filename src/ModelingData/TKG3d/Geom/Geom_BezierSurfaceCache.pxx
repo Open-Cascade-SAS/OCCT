@@ -72,7 +72,8 @@ public:
   //! Uses BSplSLib_Cache::BuildCache for exact compatibility with BSpline formulas.
   //! @param thePoles poles array
   //! @param theWeights optional weights for rational surfaces
-  void Build(const NCollection_Array2<gp_Pnt>& thePoles, const NCollection_Array2<double>* theWeights)
+  void Build(const NCollection_Array2<gp_Pnt>& thePoles,
+             const NCollection_Array2<double>* theWeights)
   {
     if (IsValid())
     {

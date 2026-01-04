@@ -1948,7 +1948,8 @@ Geom_BezierSurfaceCache& Geom_BezierSurface::ensureCache() const
 {
   if (!myCache)
   {
-    myCache = std::make_unique<Geom_BezierSurfaceCache>(UDegree(), VDegree(), urational || vrational);
+    myCache =
+      std::make_unique<Geom_BezierSurfaceCache>(UDegree(), VDegree(), urational || vrational);
   }
   return *myCache;
 }

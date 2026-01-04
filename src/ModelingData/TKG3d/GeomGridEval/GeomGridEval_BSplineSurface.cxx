@@ -149,7 +149,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
     {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myGeom->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      myGeom
+        ->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aGrid.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
@@ -244,8 +245,7 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
     const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i);
     gp_Pnt          aPoint;
     gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-    myGeom
-      ->D3(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    myGeom->D3(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
     aResults.ChangeValue(i
                          + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
   }
