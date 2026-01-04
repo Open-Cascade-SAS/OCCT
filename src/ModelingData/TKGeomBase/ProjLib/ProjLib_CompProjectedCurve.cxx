@@ -494,16 +494,15 @@ static bool InitialPoint(const gp_Pnt&                         Point,
 
   ProjLib_PrjResolve aPrjPS(*C, *S, 1);
   double             ParU, ParV;
-  Extrema_ExtPS      aExtPS;
-  aExtPS.Initialize(*S,
-                    S->FirstUParameter(),
-                    S->LastUParameter(),
-                    S->FirstVParameter(),
-                    S->LastVParameter(),
-                    TolU,
-                    TolV);
-  aExtPS.SetFlag(Extrema_ExtFlag_MIN);
-  aExtPS.Perform(Point);
+  Extrema_ExtPS aExtPS(Point,
+                       *S,
+                       S->FirstUParameter(),
+                       S->LastUParameter(),
+                       S->FirstVParameter(),
+                       S->LastVParameter(),
+                       TolU,
+                       TolV,
+                       Extrema_ExtFlag_MIN);
   int    argmin   = 0;
   double aMaxDist = theMaxDist;
   if (aMaxDist > 0.)

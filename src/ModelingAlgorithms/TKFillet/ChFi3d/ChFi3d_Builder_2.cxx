@@ -135,18 +135,17 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&         compoint1,
       occ::handle<GeomAdaptor_Surface> HPlan = new GeomAdaptor_Surface(Plan);
       occ::handle<Geom2d_Curve>        C2dint2;
       NCollection_Array1<double>       Pdeb(1, 4), Pfin(1, 4);
-      GeomAdaptor_Surface              AS(Plan);
-      Extrema_ExtPS                    anExtPS;
-      anExtPS.Initialize(AS,
-                         AS.FirstUParameter(),
-                         AS.LastUParameter(),
-                         AS.FirstVParameter(),
-                         AS.LastVParameter(),
-                         1.e-3,
-                         1.e-3);
-      anExtPS.SetFlag(Extrema_ExtFlag_MIN);
-      anExtPS.Perform(P1);
-      double u1, v1;
+      GeomAdaptor_Surface AS(Plan);
+      Extrema_ExtPS       anExtPS(P1,
+                            AS,
+                            AS.FirstUParameter(),
+                            AS.LastUParameter(),
+                            AS.FirstVParameter(),
+                            AS.LastVParameter(),
+                            1.e-3,
+                            1.e-3,
+                            Extrema_ExtFlag_MIN);
+      double              u1, v1;
       anExtPS.Point(1).Parameter(u1, v1);
       Pdeb(1) = UV1.X();
       Pdeb(2) = UV1.Y();
