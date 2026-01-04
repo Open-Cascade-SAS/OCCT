@@ -21,7 +21,6 @@
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_ExtCS.hxx>
-#include <Extrema_ExtPS.hxx>
 #include <Extrema_GenExtCS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
 #include <Extrema_POnCurv.hxx>
@@ -1336,65 +1335,6 @@ static bool SetEmptyResultRange(const double theParameter, IntTools_MarkedRangeS
 
   return add;
 }
-
-// ---------------------------------------------------------------------------------
-// static function: TestCoinside
-// purpose:
-// ---------------------------------------------------------------------------------
-// static bool TestClose(const Extrema_ExtPS & theExt,
-//                                   const double   theDist)
-// {
-//   bool close = false;
-//   if(!theExt.IsDone() || theExt.NbExt() == 0)
-//     return close;
-//   else {
-//     int ie;
-//     for(ie = 1; ie <= theExt.NbExt(); ie++) {
-//       double dist = theExt.Value(ie);
-//       if(dist <= theDist) {
-//         close = true;
-//         break;
-//       }
-//     }
-//   }
-//   return close;
-// }
-
-// bool TestCoinside(const BRepAdaptor_Curve&   theCurve,
-//                               const BRepAdaptor_Surface& theSurface)
-// {
-//   double cfp = theCurve.FirstParameter(), clp = theCurve.LastParameter();
-//   double cdp = fabs(clp - cfp) / 23.;
-
-//   int i = 0;
-//   double tolE = theCurve.Tolerance(), tolF = theSurface.Tolerance();
-//   double tolT = tolE + tolF, tolU = 1.e-9, tolV = 1.e-9;
-//   gp_Pnt aP;
-
-//   theCurve.D0(cfp,aP);
-//   Extrema_ExtPS eps(aP,theSurface,tolU,tolV);
-
-//   if(!TestClose(eps,tolT))
-//     return false;
-
-//   theCurve.D0(clp,aP);
-//   eps.Perform(aP);
-
-//   if(!TestClose(eps,tolT))
-//     return false;
-
-//   bool close = true;
-
-//   for(i = 1; i <= 22; i++) {
-//     theCurve.D0((cfp+((double)i)*cdp),aP);
-//     eps.Perform(aP);
-//     if(!TestClose(eps,tolT)) {
-//       close = false;
-//       break;
-//     }
-//   }
-//   return close;
-// }
 
 //=================================================================================================
 

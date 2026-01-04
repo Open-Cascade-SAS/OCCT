@@ -81,7 +81,6 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <gp_Vec2d.hxx>
-#include <Extrema_ExtPS.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElCLib.hxx>

@@ -133,14 +133,12 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
                   double&                                           theFirst,
                   double&                                           theLast);
 //------------------------------------------------------------------------------------------------
-static bool IsPointOK(const gp_Pnt&            theTestPnt,
-                      const Adaptor3d_Surface& theTestSurface,
-                      const double&            theTol);
+static bool IsPointOK(Extrema_ExtPS& theExtPS, const gp_Pnt& theTestPnt, const double& theTol);
 //-------------------------------------------------------------------------------------------------
-static bool GetPointOn2S(const gp_Pnt&            theTestPnt,
-                         const Adaptor3d_Surface& theTestSurface,
-                         const double&            theTol,
-                         Extrema_POnSurf&         theResultPoint);
+static bool GetPointOn2S(Extrema_ExtPS&   theExtPS,
+                         const gp_Pnt&    theTestPnt,
+                         const double&    theTol,
+                         Extrema_POnSurf& theResultPoint);
 //-------------------------------------------------------------------------------------------------------------------------
 static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
   NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
@@ -1395,6 +1393,18 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     double EdgeTol                 = BRep_Tool::Tolerance(*anE);
     CheckTol                       = std::max(MaxVertexTol, EdgeTol);
     occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
+
+    // Initialize extrema projector for theSurfaceTool (used for classification checks)
+    Extrema_ExtPS anExtPSTool;
+    anExtPSTool.Initialize(*theSurfaceTool,
+                           theSurfaceTool->FirstUParameter(),
+                           theSurfaceTool->LastUParameter(),
+                           theSurfaceTool->FirstVParameter(),
+                           theSurfaceTool->LastVParameter(),
+                           CheckTol,
+                           CheckTol);
+    anExtPSTool.SetFlag(Extrema_ExtFlag_MIN);
+
     // classification gaps
     //  a. min - first
     if (std::abs(firstES1 - WLVertexParameters.Value(1)) > arc->Resolution(MaxVertexTol))
@@ -1402,7 +1412,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
       double param = (firstES1 + WLVertexParameters.Value(1)) / 2.;
       gp_Pnt point;
       aCEdge->D0(param, point);
-      if (!IsPointOK(point, *theSurfaceTool, CheckTol))
+      if (!IsPointOK(anExtPSTool, point, CheckTol))
       {
         classifyOK = false;
         break;
@@ -1415,7 +1425,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
       double param = (lastES1 + WLVertexParameters.Value(WLVertexParameters.Length())) / 2.;
       gp_Pnt point;
       aCEdge->D0(param, point);
-      if (!IsPointOK(point, *theSurfaceTool, CheckTol))
+      if (!IsPointOK(anExtPSTool, point, CheckTol))
       {
         classifyOK = false;
         break;
@@ -1431,7 +1441,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
         double param = (WLVertexParameters.Value(i * 2) + WLVertexParameters.Value(i * 2 + 1)) / 2.;
         gp_Pnt point;
         aCEdge->D0(param, point);
-        if (!IsPointOK(point, *theSurfaceTool, CheckTol))
+        if (!IsPointOK(anExtPSTool, point, CheckTol))
         {
           classifyOK = false;
           break;
@@ -1464,14 +1474,35 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   if (!classifyOK)
     return 0;
 
+  // Initialize extrema projectors for both surfaces
+  Extrema_ExtPS anExtPSObj;
+  anExtPSObj.Initialize(*theSurfaceObj,
+                        theSurfaceObj->FirstUParameter(),
+                        theSurfaceObj->LastUParameter(),
+                        theSurfaceObj->FirstVParameter(),
+                        theSurfaceObj->LastVParameter(),
+                        CheckTol,
+                        CheckTol);
+  anExtPSObj.SetFlag(Extrema_ExtFlag_MIN);
+
+  Extrema_ExtPS anExtPSTool2;
+  anExtPSTool2.Initialize(*theSurfaceTool,
+                          theSurfaceTool->FirstUParameter(),
+                          theSurfaceTool->LastUParameter(),
+                          theSurfaceTool->FirstVParameter(),
+                          theSurfaceTool->LastVParameter(),
+                          CheckTol,
+                          CheckTol);
+  anExtPSTool2.SetFlag(Extrema_ExtFlag_MIN);
+
   // create IntSurf_LineOn2S from points < PointsFromArc >
   for (i = 1; i <= PointsFromArc.Length(); i++)
   {
     Extrema_POnSurf pOnS1;
     Extrema_POnSurf pOnS2;
     gp_Pnt          arcpoint = PointsFromArc.Value(i);
-    bool            isOnS1   = GetPointOn2S(arcpoint, *theSurfaceObj, CheckTol, pOnS1);
-    bool            isOnS2   = GetPointOn2S(arcpoint, *theSurfaceTool, CheckTol, pOnS2);
+    bool            isOnS1   = GetPointOn2S(anExtPSObj, arcpoint, CheckTol, pOnS1);
+    bool            isOnS2   = GetPointOn2S(anExtPSTool2, arcpoint, CheckTol, pOnS2);
     if (isOnS1 && isOnS2)
     {
       double u1 = 0., v1 = 0., u2 = 0., v2 = 0.;
@@ -1491,22 +1522,18 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
 //
 //  purpose: returns the state of testPoint on OTHER face.
 //========================================================================================
-static bool IsPointOK(const gp_Pnt&            theTestPnt,
-                      const Adaptor3d_Surface& theTestSurface,
-                      const double&            theTol)
+static bool IsPointOK(Extrema_ExtPS& theExtPS, const gp_Pnt& theTestPnt, const double& theTol)
 {
-  bool          result = false;
-  double        ExtTol = theTol; // 1.e-7;
-  Extrema_ExtPS extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
-  if (extPS.IsDone() && extPS.NbExt() > 0)
+  bool result = false;
+  theExtPS.Perform(theTestPnt);
+  if (theExtPS.IsDone() && theExtPS.NbExt() > 0)
   {
-    int    i        = 0;
     double MinDist2 = 1.e+200;
-    for (i = 1; i <= extPS.NbExt(); i++)
+    for (int i = 1; i <= theExtPS.NbExt(); i++)
     {
-      if (extPS.SquareDistance(i) < MinDist2)
+      if (theExtPS.SquareDistance(i) < MinDist2)
       {
-        MinDist2 = extPS.SquareDistance(i);
+        MinDist2 = theExtPS.SquareDistance(i);
       }
     }
     if (MinDist2 <= theTol * theTol)
@@ -1520,30 +1547,29 @@ static bool IsPointOK(const gp_Pnt&            theTestPnt,
 //
 //  purpose: check state of testPoint and returns result point if state is OK.
 //========================================================================================
-static bool GetPointOn2S(const gp_Pnt&            theTestPnt,
-                         const Adaptor3d_Surface& theTestSurface,
-                         const double&            theTol,
-                         Extrema_POnSurf&         theResultPoint)
+static bool GetPointOn2S(Extrema_ExtPS&   theExtPS,
+                         const gp_Pnt&    theTestPnt,
+                         const double&    theTol,
+                         Extrema_POnSurf& theResultPoint)
 {
-  bool          result = false;
-  double        ExtTol = theTol; // 1.e-7;
-  Extrema_ExtPS extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
-  if (extPS.IsDone() && extPS.NbExt() > 0)
+  bool result = false;
+  theExtPS.Perform(theTestPnt);
+  if (theExtPS.IsDone() && theExtPS.NbExt() > 0)
   {
-    int    i = 0, minext = 1;
+    int    minext   = 1;
     double MinDist2 = 1.e+200;
-    for (i = 1; i <= extPS.NbExt(); i++)
+    for (int i = 1; i <= theExtPS.NbExt(); i++)
     {
-      if (extPS.SquareDistance(i) < MinDist2)
+      if (theExtPS.SquareDistance(i) < MinDist2)
       {
         minext   = i;
-        MinDist2 = extPS.SquareDistance(i);
+        MinDist2 = theExtPS.SquareDistance(i);
       }
     }
     if (MinDist2 <= theTol * theTol)
     {
       result         = true;
-      theResultPoint = extPS.Point(minext);
+      theResultPoint = theExtPS.Point(minext);
     }
   }
   return result;

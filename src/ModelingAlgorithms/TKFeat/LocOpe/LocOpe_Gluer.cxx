@@ -363,6 +363,20 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
   gp_Pnt          pvt;
   gp_Vec          d1u, d1v, n1, n2;
 
+  // Initialize extrema projector once for the target surface
+  GeomAdaptor_Surface GAS(Sb);
+  const double        TolU = GAS.UResolution(Precision::Confusion());
+  const double        TolV = GAS.VResolution(Precision::Confusion());
+  Extrema_ExtPS       anExtPS;
+  anExtPS.Initialize(GAS,
+                     GAS.FirstUParameter(),
+                     GAS.LastUParameter(),
+                     GAS.FirstVParameter(),
+                     GAS.LastVParameter(),
+                     TolU,
+                     TolV);
+  anExtPS.SetFlag(Extrema_ExtFlag_MIN);
+
   for (exp.Init(Fn, TopAbs_EDGE); exp.More(); exp.Next())
   {
     const TopoDS_Edge&        edg = TopoDS::Edge(exp.Current());
@@ -395,26 +409,23 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
         }
 
         // Projection sur Sb
-        GeomAdaptor_Surface GAS(Sb);
-        double              TolU = GAS.UResolution(Precision::Confusion());
-        double              TolV = GAS.VResolution(Precision::Confusion());
-        Extrema_ExtPS       dist(pvt, GAS, TolU, TolV);
-        if (dist.IsDone())
+        anExtPS.Perform(pvt);
+        if (anExtPS.IsDone())
         {
           double dist2min = RealLast();
           int    jmin     = 0;
-          for (int j = 1; j <= dist.NbExt(); j++)
+          for (int j = 1; j <= anExtPS.NbExt(); j++)
           {
-            if (dist.SquareDistance(j) < dist2min)
+            if (anExtPS.SquareDistance(j) < dist2min)
             {
               jmin     = j;
-              dist2min = dist.SquareDistance(j);
+              dist2min = anExtPS.SquareDistance(j);
             }
           }
           if (jmin != 0)
           {
             double uu, vv;
-            dist.Point(jmin).Parameter(uu, vv);
+            anExtPS.Point(jmin).Parameter(uu, vv);
             Sb->D1(uu, vv, pvt, d1u, d1v);
             n2 = d1u.Crossed(d1v);
             if (n2.Magnitude() > Precision::Confusion())

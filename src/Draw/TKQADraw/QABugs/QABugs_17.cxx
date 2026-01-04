@@ -51,7 +51,6 @@
 #include <PrsDim_RadiusDimension.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Extrema_ExtPS.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2dGcc_Circ2d3Tan.hxx>
