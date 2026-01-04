@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <memory>
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -32,6 +33,7 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
+class Geom_BSplineCurveCache;
 
 //! Definition of the B_spline curve.
 //! A B-spline curve can be
@@ -822,6 +824,13 @@ private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
+  //! Ensures the span cache is allocated, returns reference to it.
+  //! Thread-safe: uses double-checked locking for lazy initialization.
+  const Geom_BSplineCurveCache& ensureSpanCache() const;
+
+  //! Invalidates the span cache (called by modifying methods).
+  void invalidateSpanCache() const;
+
   bool                                     rational;
   bool                                     periodic;
   GeomAbs_BSplKnotDistribution             knotSet;
@@ -834,6 +843,10 @@ private:
   occ::handle<NCollection_HArray1<int>>    mults;
   double                                   maxderivinv;
   bool                                     maxderivinvok;
+
+  //! Lazy-loaded span cache for optimized D0/D1/D2/D3 evaluation.
+  //! Stores pre-computed Taylor expansion coefficients for all spans.
+  mutable std::unique_ptr<Geom_BSplineCurveCache> mySpanCache;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile

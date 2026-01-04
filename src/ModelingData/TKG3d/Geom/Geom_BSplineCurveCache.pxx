@@ -1,0 +1,386 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_BSplineCurveCache_pxx_HeaderFile
+#define _Geom_BSplineCurveCache_pxx_HeaderFile
+
+#include <BSplCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <PLib.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_OutOfRange.hxx>
+
+#include <atomic>
+#include <memory>
+#include <mutex>
+
+//! Private cache class for BSpline curve span coefficients.
+//! Stores Taylor expansion coefficients for ALL spans in contiguous memory.
+//! NOT a Standard_Transient - owned by Geom_BSplineCurve via unique_ptr.
+//!
+//! Key optimizations:
+//! - All span coefficients in ONE NCollection_Array1<double> for cache locality
+//! - O(1) access to any span's coefficients by span index
+//! - Atomic validity flags for lock-free read checks
+//! - On-demand span building with mutex protection
+class Geom_BSplineCurveCache
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Constructor - allocates storage for all spans
+  //! @param theDegree curve degree
+  //! @param theIsRational whether curve is rational
+  //! @param theNbSpans number of spans (NbKnots - 1)
+  Geom_BSplineCurveCache(int theDegree, bool theIsRational, int theNbSpans)
+      : myDegree(theDegree),
+        myIsRational(theIsRational),
+        myNbSpans(theNbSpans),
+        myRowLength(theIsRational ? 4 : 3),
+        myCoeffsPerSpan((theDegree + 1) * (theIsRational ? 4 : 3)),
+        myCoeffs(1, theNbSpans * (theDegree + 1) * (theIsRational ? 4 : 3)),
+        mySpanValid(new std::atomic<bool>[theNbSpans])
+  {
+    // Initialize all validity flags to false
+    for (int i = 0; i < theNbSpans; ++i)
+    {
+      mySpanValid[i].store(false, std::memory_order_relaxed);
+    }
+  }
+
+  //! Check if span coefficients are computed (lock-free)
+  //! @param theSpanIdx span index (0-based)
+  bool IsSpanValid(int theSpanIdx) const noexcept
+  {
+    return mySpanValid[theSpanIdx].load(std::memory_order_acquire);
+  }
+
+  //! Get pointer to span coefficients (assumes span is valid)
+  //! Layout: [x0, y0, z0, [w0], x1, y1, z1, [w1], ...] for (degree+1) poles
+  //! @param theSpanIdx span index (0-based)
+  double* SpanCoeffs(int theSpanIdx) noexcept
+  {
+    return &myCoeffs.ChangeFirst() + theSpanIdx * myCoeffsPerSpan;
+  }
+
+  //! Get pointer to span coefficients (const version)
+  const double* SpanCoeffs(int theSpanIdx) const noexcept
+  {
+    return &myCoeffs.First() + theSpanIdx * myCoeffsPerSpan;
+  }
+
+  //! Build coefficients for span (thread-safe)
+  //! Uses BSplCLib::BuildCache to compute Taylor expansion at span
+  //! @param theSpanIdx span index (0-based, corresponds to flat knot index - degree)
+  //! @param theFlatKnotIdx flat knot index where span starts
+  //! @param theFlatKnots flat knot sequence
+  //! @param thePoles poles array
+  //! @param theWeights optional weights for rational curves
+  //! @param theIsPeriodic whether the curve is periodic
+  void BuildSpan(int                               theSpanIdx,
+                 int                               theFlatKnotIdx,
+                 const NCollection_Array1<double>& theFlatKnots,
+                 const NCollection_Array1<gp_Pnt>& thePoles,
+                 const NCollection_Array1<double>* theWeights,
+                 bool                              theIsPeriodic)
+  {
+    // Double-checked locking pattern for thread safety
+    if (IsSpanValid(theSpanIdx))
+    {
+      return;
+    }
+
+    std::lock_guard<std::mutex> aLock(myBuildMutex);
+
+    // Check again under lock
+    if (mySpanValid[theSpanIdx].load(std::memory_order_relaxed))
+    {
+      return;
+    }
+
+    // Bounds check for span index
+    if (theSpanIdx < 0 || theSpanIdx >= myNbSpans)
+    {
+      throw Standard_OutOfRange("Geom_BSplineCurveCache::BuildSpan - span index out of range");
+    }
+
+    // Get span parameters
+    const double aSpanStart  = theFlatKnots.Value(theFlatKnotIdx);
+    const double aSpanLength = theFlatKnots.Value(theFlatKnotIdx + 1) - aSpanStart;
+
+    // Get pointer to our contiguous buffer for this span
+    double* aCoeffsPtr = SpanCoeffs(theSpanIdx);
+
+    // Create array wrapper referencing our buffer (like BSplCLib_Cache does)
+    NCollection_Array2<double> aCacheArray(aCoeffsPtr[0], 1, myDegree + 1, 1, myRowLength);
+
+    // Build cache using existing BSplCLib function
+    BSplCLib::BuildCache(aSpanStart,
+                         aSpanLength,
+                         theIsPeriodic,
+                         myDegree,
+                         theFlatKnotIdx,
+                         theFlatKnots,
+                         thePoles,
+                         theWeights,
+                         aCacheArray);
+
+    // Mark span as valid (with release semantics to ensure writes are visible)
+    mySpanValid[theSpanIdx].store(true, std::memory_order_release);
+  }
+
+  //! Evaluate D0 using cached span coefficients
+  //! @param theSpanIdx span index (0-based)
+  //! @param theLocalParam local parameter in [0, 1] range within span
+  //! @param theSpanLength length of the span (for derivative scaling, unused for D0)
+  //! @param thePoint output point
+  void D0(int theSpanIdx, double theLocalParam, gp_Pnt& thePoint) const
+  {
+    const double* aCoeffs = SpanCoeffs(theSpanIdx);
+    double        aResult[4];
+
+    PLib::NoDerivativeEvalPolynomial(theLocalParam,
+                                     myDegree,
+                                     myRowLength,
+                                     myDegree * myRowLength,
+                                     const_cast<double&>(aCoeffs[0]),
+                                     aResult[0]);
+
+    thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
+    if (myIsRational)
+    {
+      thePoint.ChangeCoord().Divide(aResult[3]);
+    }
+  }
+
+  //! Evaluate D1 using cached span coefficients
+  //! @param theSpanIdx span index (0-based)
+  //! @param theLocalParam local parameter in [0, 1] range within span
+  //! @param theSpanLength length of the span (for derivative scaling)
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  void D1(int     theSpanIdx,
+          double  theLocalParam,
+          double  theSpanLength,
+          gp_Pnt& thePoint,
+          gp_Vec& theTangent) const
+  {
+    const double* aCoeffs = SpanCoeffs(theSpanIdx);
+    double        aDerivArray[8]; // point + 1st derivative, 4 components max each
+
+    PLib::EvalPolynomial(theLocalParam,
+                         1,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // Unnormalize derivative
+    const double aFactor = 1.0 / theSpanLength;
+    for (int i = 0; i < myRowLength; ++i)
+    {
+      aDerivArray[myRowLength + i] *= aFactor;
+    }
+
+    if (myIsRational)
+    {
+      double aRationalResult[6];
+      PLib::RationalDerivative(1, 1, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+    }
+  }
+
+  //! Evaluate D2 using cached span coefficients
+  //! @param theSpanIdx span index (0-based)
+  //! @param theLocalParam local parameter in [0, 1] range within span
+  //! @param theSpanLength length of the span (for derivative scaling)
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  //! @param theCurvature output curvature vector (second derivative)
+  void D2(int     theSpanIdx,
+          double  theLocalParam,
+          double  theSpanLength,
+          gp_Pnt& thePoint,
+          gp_Vec& theTangent,
+          gp_Vec& theCurvature) const
+  {
+    const double* aCoeffs = SpanCoeffs(theSpanIdx);
+    double        aDerivArray[12]; // point + 1st + 2nd derivative
+
+    PLib::EvalPolynomial(theLocalParam,
+                         2,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // Unnormalize derivatives
+    double aFactor = 1.0 / theSpanLength;
+    for (int i = 0; i < myRowLength; ++i)
+    {
+      aDerivArray[myRowLength + i] *= aFactor;
+    }
+    aFactor /= theSpanLength;
+    for (int i = 0; i < myRowLength; ++i)
+    {
+      aDerivArray[2 * myRowLength + i] *= aFactor;
+    }
+
+    if (myIsRational)
+    {
+      double aRationalResult[9];
+      PLib::RationalDerivative(2, 2, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+      theCurvature.SetCoord(aRationalResult[6], aRationalResult[7], aRationalResult[8]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+      theCurvature.SetCoord(aDerivArray[6], aDerivArray[7], aDerivArray[8]);
+    }
+  }
+
+  //! Evaluate D3 using cached span coefficients
+  //! @param theSpanIdx span index (0-based)
+  //! @param theLocalParam local parameter in [0, 1] range within span
+  //! @param theSpanLength length of the span (for derivative scaling)
+  //! @param thePoint output point
+  //! @param theTangent output tangent vector
+  //! @param theCurvature output curvature vector (second derivative)
+  //! @param theTorsion output torsion vector (third derivative)
+  void D3(int     theSpanIdx,
+          double  theLocalParam,
+          double  theSpanLength,
+          gp_Pnt& thePoint,
+          gp_Vec& theTangent,
+          gp_Vec& theCurvature,
+          gp_Vec& theTorsion) const
+  {
+    const double* aCoeffs = SpanCoeffs(theSpanIdx);
+    double        aDerivArray[16]; // point + 1st + 2nd + 3rd derivative
+
+    int aDerivOrder = 3;
+    if (!myIsRational && myDegree < 3)
+    {
+      aDerivOrder = myDegree;
+      // Zero out higher derivatives
+      for (int i = myDegree * myRowLength; i < 4 * myRowLength; ++i)
+      {
+        aDerivArray[i] = 0.0;
+      }
+    }
+
+    PLib::EvalPolynomial(theLocalParam,
+                         aDerivOrder,
+                         myDegree,
+                         myRowLength,
+                         const_cast<double&>(aCoeffs[0]),
+                         aDerivArray[0]);
+
+    // Unnormalize derivatives
+    double aFactor = 1.0;
+    for (int deriv = 1; deriv <= aDerivOrder; ++deriv)
+    {
+      aFactor /= theSpanLength;
+      for (int i = 0; i < myRowLength; ++i)
+      {
+        aDerivArray[deriv * myRowLength + i] *= aFactor;
+      }
+    }
+
+    if (myIsRational)
+    {
+      double aRationalResult[12];
+      PLib::RationalDerivative(3, 3, 2, aDerivArray[0], aRationalResult[0]);
+      thePoint.SetCoord(aRationalResult[0], aRationalResult[1], aRationalResult[2]);
+      theTangent.SetCoord(aRationalResult[3], aRationalResult[4], aRationalResult[5]);
+      theCurvature.SetCoord(aRationalResult[6], aRationalResult[7], aRationalResult[8]);
+      theTorsion.SetCoord(aRationalResult[9], aRationalResult[10], aRationalResult[11]);
+    }
+    else
+    {
+      thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+      theTangent.SetCoord(aDerivArray[3], aDerivArray[4], aDerivArray[5]);
+      theCurvature.SetCoord(aDerivArray[6], aDerivArray[7], aDerivArray[8]);
+      theTorsion.SetCoord(aDerivArray[9], aDerivArray[10], aDerivArray[11]);
+    }
+  }
+
+  //! Invalidate all spans (for geometry modification)
+  void Invalidate()
+  {
+    for (int i = 0; i < myNbSpans; ++i)
+    {
+      mySpanValid[i].store(false, std::memory_order_relaxed);
+    }
+    // Ensure all stores are visible
+    std::atomic_thread_fence(std::memory_order_release);
+  }
+
+  //! Get span parameters from flat knots (computed on demand)
+  //! @param theFlatKnotIdx flat knot index where span starts
+  //! @param theFlatKnots flat knot sequence
+  //! @param theSpanStart output: start parameter of span
+  //! @param theSpanLength output: length of span
+  static void SpanParams(int                               theFlatKnotIdx,
+                         const NCollection_Array1<double>& theFlatKnots,
+                         double&                           theSpanStart,
+                         double&                           theSpanLength) noexcept
+  {
+    theSpanStart  = theFlatKnots.Value(theFlatKnotIdx);
+    theSpanLength = theFlatKnots.Value(theFlatKnotIdx + 1) - theSpanStart;
+  }
+
+  //! Returns number of spans
+  int NbSpans() const noexcept { return myNbSpans; }
+
+  //! Returns curve degree
+  int Degree() const noexcept { return myDegree; }
+
+  //! Returns whether cache is for rational curve
+  bool IsRational() const noexcept { return myIsRational; }
+
+private:
+  // Non-copyable
+  Geom_BSplineCurveCache(const Geom_BSplineCurveCache&)            = delete;
+  Geom_BSplineCurveCache& operator=(const Geom_BSplineCurveCache&) = delete;
+
+private:
+  int  myDegree;        //!< curve degree
+  bool myIsRational;    //!< whether curve is rational
+  int  myNbSpans;       //!< number of spans
+  int  myRowLength;     //!< 3 for 3D non-rational, 4 for 3D rational
+  int  myCoeffsPerSpan; //!< (degree+1) * rowLength
+
+  //! Contiguous storage for ALL span coefficients (OCCT container)
+  NCollection_Array1<double> myCoeffs;
+
+  //! Per-span validity flags (atomic for lock-free checking)
+  std::unique_ptr<std::atomic<bool>[]> mySpanValid;
+
+  //! Mutex for building spans
+  mutable std::mutex myBuildMutex;
+};
+
+#endif // _Geom_BSplineCurveCache_pxx_HeaderFile

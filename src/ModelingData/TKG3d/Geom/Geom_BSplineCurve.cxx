@@ -32,6 +32,7 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include "Geom_BSplineCurveCache.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -96,6 +97,29 @@ static bool Rational(const NCollection_Array1<double>& theWeights)
 occ::handle<Geom_Geometry> Geom_BSplineCurve::Copy() const
 {
   return new Geom_BSplineCurve(*this);
+}
+
+//=================================================================================================
+
+const Geom_BSplineCurveCache& Geom_BSplineCurve::ensureSpanCache() const
+{
+  if (!mySpanCache)
+  {
+    // Number of spans = NbKnots - 1
+    const int aNbSpans = knots->Length() - 1;
+    mySpanCache = std::make_unique<Geom_BSplineCurveCache>(deg, rational, aNbSpans);
+  }
+  return *mySpanCache;
+}
+
+//=================================================================================================
+
+void Geom_BSplineCurve::invalidateSpanCache() const
+{
+  if (mySpanCache)
+  {
+    mySpanCache->Invalidate();
+  }
 }
 
 //=================================================================================================
@@ -946,6 +970,7 @@ void Geom_BSplineCurve::SetPole(const int Index, const gp_Pnt& P)
     throw Standard_OutOfRange("BSpline curve: SetPole: index and #pole mismatch");
   poles->SetValue(Index, P);
   maxderivinvok = false;
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -988,6 +1013,7 @@ void Geom_BSplineCurve::SetWeight(const int Index, const double W)
     rational = !weights.IsNull();
   }
   maxderivinvok = false;
+  invalidateSpanCache();
 }
 
 //=================================================================================================
@@ -1023,6 +1049,7 @@ void Geom_BSplineCurve::MovePoint(const double  U,
   {
     poles->ChangeArray1() = npoles;
     maxderivinvok         = false;
+    invalidateSpanCache();
   }
 }
 
@@ -1070,6 +1097,7 @@ void Geom_BSplineCurve::MovePointAndTangent(const double  U,
   {
     poles->ChangeArray1() = new_poles;
     maxderivinvok         = false;
+    invalidateSpanCache();
   }
 }
 
@@ -1122,6 +1150,9 @@ void Geom_BSplineCurve::UpdateKnots()
         break;
     }
   }
+
+  // Reset span cache since structure may have changed
+  mySpanCache.reset();
 }
 
 //=======================================================================
