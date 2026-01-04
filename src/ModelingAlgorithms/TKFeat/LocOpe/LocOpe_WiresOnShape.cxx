@@ -1485,6 +1485,7 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
                       anAdF.LastVParameter(),
                       Precision::Confusion(),
                       Precision::Confusion());
+    anExtr.SetFlag(Extrema_ExtFlag_MIN);
 
     i  = 1;
     nb = anEdgeBoxes.Length();

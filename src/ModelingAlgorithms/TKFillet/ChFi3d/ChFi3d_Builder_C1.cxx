@@ -2437,7 +2437,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
             {
               GeomAdaptor_Surface Asurf;
               Asurf.Load(Sfacemoins1);
-              Extrema_ExtPS ext(CV1.Point(), Asurf, tol, tol);
+              Extrema_ExtPS ext(CV1.Point(), Asurf, tol, tol, Extrema_ExtFlag_MIN);
               double        uc1, vc1;
               if (ext.IsDone())
               {
@@ -2661,7 +2661,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
           BRE.MakeFace(faceprol[nb - 1], Sfacemoins1, F.Location(), tol);
           GeomAdaptor_Surface Asurf;
           Asurf.Load(Sfacemoins1);
-          Extrema_ExtPS ext(CV2.Point(), Asurf, tol, tol);
+          Extrema_ExtPS ext(CV2.Point(), Asurf, tol, tol, Extrema_ExtFlag_MIN);
           double        uc2, vc2;
           if (ext.IsDone())
           {

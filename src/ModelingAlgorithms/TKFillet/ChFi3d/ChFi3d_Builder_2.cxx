@@ -144,6 +144,7 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&         compoint1,
                          AS.LastVParameter(),
                          1.e-3,
                          1.e-3);
+      anExtPS.SetFlag(Extrema_ExtFlag_MIN);
       anExtPS.Perform(P1);
       double u1, v1;
       anExtPS.Point(1).Parameter(u1, v1);

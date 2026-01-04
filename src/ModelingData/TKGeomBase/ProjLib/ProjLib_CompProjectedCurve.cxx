@@ -502,7 +502,7 @@ static bool InitialPoint(const gp_Pnt&                         Point,
                     S->LastVParameter(),
                     TolU,
                     TolV);
-
+  aExtPS.SetFlag(Extrema_ExtFlag_MIN);
   aExtPS.Perform(Point);
   int    argmin   = 0;
   double aMaxDist = theMaxDist;
@@ -1604,7 +1604,7 @@ void ProjLib_CompProjectedCurve::D0(const double U, gp_Pnt2d& P) const
   else
   {
     gp_Pnt        thePoint = myCurve->Value(U);
-    Extrema_ExtPS aExtPS(thePoint, *mySurface, myTolU, myTolV);
+    Extrema_ExtPS aExtPS(thePoint, *mySurface, myTolU, myTolV, Extrema_ExtFlag_MIN);
     if (aExtPS.IsDone() && aExtPS.NbExt())
     {
       int k, Nend, imin = 1;
@@ -2143,6 +2143,7 @@ void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                      theSurface->LastVParameter(),
                      theTolU,
                      theTolV);
+  anExtPS.SetFlag(Extrema_ExtFlag_MIN);
   aDS.myExtPS = &anExtPS;
 
   if (theSurface->IsUPeriodic())

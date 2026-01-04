@@ -382,7 +382,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                 {
                   // Check distance between surface and point
                   BRepAdaptor_Surface aBAS(f, false);
-                  Extrema_ExtPS aProj(P, aBAS, Precision::PConfusion(), Precision::PConfusion());
+                  Extrema_ExtPS aProj(P, aBAS, Precision::PConfusion(), Precision::PConfusion(), Extrema_ExtFlag_MIN);
                   if (aProj.IsDone() && aProj.NbExt() > 0)
                   {
                     int    i, indmin = 0;

@@ -375,6 +375,7 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
                      GAS.LastVParameter(),
                      TolU,
                      TolV);
+  anExtPS.SetFlag(Extrema_ExtFlag_MIN);
 
   for (exp.Init(Fn, TopAbs_EDGE); exp.More(); exp.Next())
   {

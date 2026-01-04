@@ -1403,6 +1403,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
                            theSurfaceTool->LastVParameter(),
                            CheckTol,
                            CheckTol);
+    anExtPSTool.SetFlag(Extrema_ExtFlag_MIN);
 
     // classification gaps
     //  a. min - first
@@ -1482,6 +1483,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
                         theSurfaceObj->LastVParameter(),
                         CheckTol,
                         CheckTol);
+  anExtPSObj.SetFlag(Extrema_ExtFlag_MIN);
 
   Extrema_ExtPS anExtPSTool2;
   anExtPSTool2.Initialize(*theSurfaceTool,
@@ -1491,6 +1493,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
                           theSurfaceTool->LastVParameter(),
                           CheckTol,
                           CheckTol);
+  anExtPSTool2.SetFlag(Extrema_ExtFlag_MIN);
 
   // create IntSurf_LineOn2S from points < PointsFromArc >
   for (i = 1; i <= PointsFromArc.Length(); i++)
