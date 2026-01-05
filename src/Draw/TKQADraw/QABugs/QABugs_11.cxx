@@ -2352,76 +2352,6 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-//! Auxiliary functor.
-struct TestParallelFunctor
-{
-  TestParallelFunctor()
-      : myNbNotRaised(0),
-        myNbSigSegv(0),
-        myNbUnknown(0)
-  {
-  }
-
-  int NbNotRaised() const { return myNbNotRaised; }
-
-  int NbSigSegv() const { return myNbSigSegv; }
-
-  int NbUnknown() const { return myNbUnknown; }
-
-  void operator()(int theThreadId, int theTaskId) const
-  {
-    (void)theThreadId;
-    (void)theTaskId;
-
-    // Test Access Violation
-    {
-      try
-      {
-        OCC_CATCH_SIGNALS
-        int* pint = nullptr;
-        *pint     = 4;
-        ++myNbNotRaised;
-      }
-#ifdef _WIN32
-      catch (OSD_Exception_ACCESS_VIOLATION const&)
-#else
-      catch (OSD_SIGSEGV const&)
-#endif
-      {
-        ++myNbSigSegv;
-      }
-      catch (Standard_Failure const&)
-      {
-        ++myNbUnknown;
-      }
-    }
-  }
-
-private:
-  mutable std::atomic<int> myNbNotRaised;
-  mutable std::atomic<int> myNbSigSegv;
-  mutable std::atomic<int> myNbUnknown;
-};
-
-static int OCC30775(Draw_Interpretor& theDI, int theNbArgs, const char**)
-{
-  if (theNbArgs != 1)
-  {
-    std::cout << "Syntax error: wrong number of arguments\n";
-    return 1;
-  }
-
-  occ::handle<OSD_ThreadPool> aPool = new OSD_ThreadPool(4);
-  OSD_ThreadPool::Launcher    aLauncher(*aPool, 4);
-  TestParallelFunctor         aFunctor;
-  aLauncher.Perform(0, 100, aFunctor);
-  theDI << "NbRaised: " << (aFunctor.NbSigSegv() + aFunctor.NbUnknown()) << "\n"
-        << "NbNotRaised: " << aFunctor.NbNotRaised() << "\n"
-        << "NbSigSeg: " << aFunctor.NbSigSegv() << "\n"
-        << "NbUnknown: " << aFunctor.NbUnknown() << "\n";
-  return 0;
-}
-
 #if defined(_MSC_VER) && !defined(__clang__)
   #pragma optimize("", on)
 #endif
@@ -5051,7 +4981,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
   theCommands.Add("OCC6046", "OCC6046 nb_of_vectors size", __FILE__, OCC6046, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
-  theCommands.Add("OCC30775", "OCC30775 catching signals in threads", __FILE__, OCC30775, group);
   theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
   theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
   theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);

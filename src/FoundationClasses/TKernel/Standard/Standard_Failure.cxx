@@ -233,7 +233,6 @@ void Standard_Failure::Reraise()
 void Standard_Failure::Jump()
 {
 #if defined(OCC_CONVERT_SIGNALS)
-  Standard_ErrorHandler::Error(this);
   Standard_ErrorHandler::Abort(this);
 #else
   Throw();

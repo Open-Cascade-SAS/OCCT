@@ -12,125 +12,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//============================================================================
-//==== Title: Standard_ErrorHandler.cxx
-//==== Role : class "Standard_ErrorHandler" implementation.
-//============================================================================
 #include <Standard_ErrorHandler.hxx>
+
 #include <Standard_Failure.hxx>
-#include <Standard.hxx>
-
-#include <mutex>
-#include <shared_mutex>
-
-#ifndef _WIN32
-  #include <pthread.h>
-#else
-  #include <windows.h>
-#endif
-
-// ===========================================================================
-// The class "Standard_ErrorHandler" variables
-// ===========================================================================
 
 // During [sig]setjmp()/[sig]longjmp() K_SETJMP is non zero (try)
 // So if there is an abort request and if K_SETJMP is non zero, the abort
 // request will be ignored. If the abort request do a raise during a setjmp
 // or a longjmp, there will be a "terminating SEGV" impossible to handle.
 
-//==== The top of the Errors Stack ===========================================
-static Standard_ErrorHandler* Top = nullptr;
+// The top of the Errors Stack
 
-//=================================================================================================
-
-namespace
-{
-// Using std::shared_mutex to allow concurrent read access from multiple threads.
-// Most FindHandler calls (theUnlink=false) use shared_lock for concurrent searches.
-// Only write operations (constructor, Unlink, FindHandler with theUnlink=true) use unique_lock.
-//
-// TODO: Long-term optimization - use thread_local storage to eliminate locking entirely.
-//       Since each thread only accesses its own error handlers (filtered by thread ID),
-//       this global list could be replaced with thread_local Top pointers.
-//       This would eliminate all mutex overhead for thousands of try blocks in multi-threaded code.
-static std::shared_mutex THE_GLOBAL_MUTEX;
-
-static inline Standard_ThreadId GetThreadID()
-{
-#ifndef _WIN32
-  return (Standard_ThreadId)pthread_self();
-#else
-  return GetCurrentThreadId();
-#endif
-}
-} // namespace
-
-//============================================================================
-//====  Constructor : Create a ErrorHandler structure. And add it at the
-//====                'Top' of "ErrorHandler's stack".
-//============================================================================
+static thread_local Standard_ErrorHandler* Top = nullptr;
 
 Standard_ErrorHandler::Standard_ErrorHandler()
-    : myStatus(Standard_HandlerVoid),
-      myCallbackPtr(nullptr)
 {
-  myThread = GetThreadID();
-  memset(&myLabel, 0, sizeof(myLabel));
-
-  std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
   myPrevious = Top;
   Top        = this;
 }
 
-//============================================================================
-//==== Destructor : Delete the ErrorHandler and Abort if there is a 'Error'.
-//============================================================================
+//=================================================================================================
 
 void Standard_ErrorHandler::Destroy()
 {
   Unlink();
-  if (myStatus == Standard_HandlerJumped)
-  {
-    // jumped, but not caught
-    Abort(myCaughtError);
-  }
 }
 
 //=================================================================================================
 
 void Standard_ErrorHandler::Unlink()
 {
-  // put a lock on the stack
-  std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
-
-  Standard_ErrorHandler* aPrevious = nullptr;
-  Standard_ErrorHandler* aCurrent  = Top;
-
-  // locate this handler in the stack
-  while (aCurrent != nullptr && this != aCurrent)
+  // Unlink handlers that were created after this one (shouldn't happen in normal usage)
+  while (Top != nullptr && Top != this)
   {
-    aPrevious = aCurrent;
-    aCurrent  = aCurrent->myPrevious;
+    Top->Unlink();
   }
 
-  if (aCurrent == nullptr)
+  if (Top == this)
   {
-    return;
+    Top = myPrevious;
   }
 
-  if (aPrevious == nullptr)
-  {
-    // a top exception taken
-    Top = aCurrent->myPrevious;
-  }
-  else
-  {
-    aPrevious->myPrevious = aCurrent->myPrevious;
-  }
   myPrevious = nullptr;
 
   // unlink and destroy all registered callbacks
-  void* aPtr    = aCurrent->myCallbackPtr;
+  void* aPtr    = myCallbackPtr;
   myCallbackPtr = nullptr;
   while (aPtr)
   {
@@ -141,27 +67,20 @@ void Standard_ErrorHandler::Unlink()
   }
 }
 
-//=======================================================================
-// function : IsInTryBlock
-// purpose  :  test if the code is currently running in
-//=======================================================================
+//=================================================================================================
 
 bool Standard_ErrorHandler::IsInTryBlock()
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
+  Standard_ErrorHandler* anActive = FindHandler();
   return anActive != nullptr;
 }
 
-//============================================================================
-//==== Abort: make a longjmp to the saved Context.
-//====    Abort if there is a non null 'Error'
-//============================================================================
+//=================================================================================================
 
 void Standard_ErrorHandler::Abort(const occ::handle<Standard_Failure>& theError)
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, true);
+  Standard_ErrorHandler* anActive = FindHandler();
 
-  //==== Check if can do the "longjmp" =======================================
   if (anActive == nullptr)
   {
     std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
@@ -170,151 +89,34 @@ void Standard_ErrorHandler::Abort(const occ::handle<Standard_Failure>& theError)
     exit(1);
   }
 
-  anActive->myStatus = Standard_HandlerJumped;
+  anActive->myCaughtError = theError;
   longjmp(anActive->myLabel, true);
 }
 
-//============================================================================
-//==== Catches: If there is a 'Error', and it is in good type
-//====          returns True and clean 'Error', else returns False.
-//============================================================================
+//=================================================================================================
 
-bool Standard_ErrorHandler::Catches(const occ::handle<Standard_Type>& AType)
+void Standard_ErrorHandler::Raise()
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerJumped, false);
-  if (anActive == nullptr)
-    return false;
-
-  if (anActive->myCaughtError.IsNull())
-    return false;
-
-  if (anActive->myCaughtError->IsKind(AType))
+  if (myCaughtError.IsNull())
   {
-    myStatus = Standard_HandlerProcessed;
-    return true;
+    std::cerr << "*** Abort *** an exception handler was called, but not exception object is set."
+              << std::endl;
+    exit(1);
   }
-  else
-  {
-    return false;
-  }
+
+  myCaughtError->Reraise();
 }
 
-occ::handle<Standard_Failure> Standard_ErrorHandler::LastCaughtError()
+//=================================================================================================
+
+Standard_ErrorHandler* Standard_ErrorHandler::FindHandler()
 {
-  occ::handle<Standard_Failure> aHandle;
-  Standard_ErrorHandler*        anActive = FindHandler(Standard_HandlerProcessed, false);
-  if (anActive != nullptr)
-    aHandle = anActive->myCaughtError;
-
-  return aHandle;
-}
-
-occ::handle<Standard_Failure> Standard_ErrorHandler::Error() const
-{
-  return myCaughtError;
-}
-
-void Standard_ErrorHandler::Error(const occ::handle<Standard_Failure>& theError)
-{
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, false);
-  if (anActive == nullptr)
-    Abort(theError);
-
-  anActive->myCaughtError = theError;
-}
-
-Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_HandlerStatus theStatus,
-                                                          const bool                   theUnlink)
-{
-  // Use shared lock for read-only access (most common case), exclusive lock only when modifying
-  if (!theUnlink)
-  {
-    // Read-only path - use shared lock to allow concurrent searches from multiple threads
-    std::shared_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
-
-    // Find the current ErrorHandler according to thread
-    Standard_ErrorHandler* aCurrent = Top;
-    Standard_ThreadId      aTreadId = GetThreadID();
-
-    // searching an exception with correct ID number
-    while (aCurrent != nullptr)
-    {
-      if (aTreadId == aCurrent->myThread && theStatus == aCurrent->myStatus)
-      {
-        // found one
-        return aCurrent;
-      }
-      aCurrent = aCurrent->myPrevious;
-    }
-
-    return nullptr;
-  }
-  else
-  {
-    // Modifying path - use exclusive lock
-    std::unique_lock<std::shared_mutex> aLock(THE_GLOBAL_MUTEX);
-
-    // Find the current ErrorHandler according to thread
-    Standard_ErrorHandler* aPrevious = nullptr;
-    Standard_ErrorHandler* aCurrent  = Top;
-    Standard_ErrorHandler* anActive  = nullptr;
-    bool                   aStop     = false;
-    Standard_ThreadId      aTreadId  = GetThreadID();
-
-    // searching an exception with correct ID number
-    // which is not processed for the moment
-    while (!aStop)
-    {
-      while (aCurrent != nullptr && aTreadId != aCurrent->myThread)
-      {
-        aPrevious = aCurrent;
-        aCurrent  = aCurrent->myPrevious;
-      }
-
-      if (aCurrent != nullptr)
-      {
-        if (theStatus != aCurrent->myStatus)
-        {
-          // unlink current
-          if (aPrevious == nullptr)
-          {
-            // a top exception taken
-            Top = aCurrent->myPrevious;
-          }
-          else
-          {
-            aPrevious->myPrevious = aCurrent->myPrevious;
-          }
-
-          // shift
-          aCurrent = aCurrent->myPrevious;
-        }
-        else
-        {
-          // found one
-          anActive = aCurrent;
-          aStop    = true;
-        }
-      }
-      else
-      {
-        // Current is NULL, means that no handles
-        aStop = true;
-      }
-    }
-
-    return anActive;
-  }
+  return Top;
 }
 
 #if defined(OCC_CONVERT_SIGNALS)
 
-Standard_ErrorHandler::Callback::Callback()
-    : myHandler(nullptr),
-      myPrev(nullptr),
-      myNext(nullptr)
-{
-}
+Standard_ErrorHandler::Callback::Callback() {}
 
 Standard_ErrorHandler::Callback::~Callback()
 {
@@ -327,7 +129,7 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
     return; // already registered
 
   // find current active exception handler
-  Standard_ErrorHandler* aHandler = Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, false);
+  Standard_ErrorHandler* aHandler = Standard_ErrorHandler::FindHandler();
 
   // if found, add this callback object first to the list
   if (aHandler)

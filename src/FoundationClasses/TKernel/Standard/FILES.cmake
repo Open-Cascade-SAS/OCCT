@@ -37,13 +37,11 @@ set(OCCT_Standard_FILES
   Standard_GUID.cxx
   Standard_GUID.hxx
   Standard_Handle.hxx
-  Standard_HandlerStatus.hxx
   Standard_HashUtils.hxx
   Standard_HashUtils.lxx
   Standard_ImmutableObject.hxx
   Standard_Integer.hxx
   Standard_IStream.hxx
-  Standard_JmpBuf.hxx
   Standard_LicenseError.hxx
   Standard_LicenseNotFound.hxx
   Standard_Macro.hxx
@@ -69,7 +67,6 @@ set(OCCT_Standard_FILES
   Standard_Overflow.hxx
   Standard_PByte.hxx
   Standard_PCharacter.hxx
-  Standard_PErrorHandler.hxx
   Standard_Persistent.cxx
   Standard_Persistent.hxx
   Standard_PExtCharacter.hxx

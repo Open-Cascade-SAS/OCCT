@@ -19,14 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_PErrorHandler.hxx>
-#include <Standard_JmpBuf.hxx>
-#include <Standard_HandlerStatus.hxx>
-#include <Standard_ThreadId.hxx>
 #include <Standard_Type.hxx>
 
-#include <mutex>
+#include <setjmp.h>
 
 //! @file
 //! Support of handling of C signals as C++-style exceptions, and implementation
@@ -49,14 +44,13 @@
 
 #if defined(OCC_CONVERT_SIGNALS)
 
-  // Exceptions are raied as usual, signal cause jumps in the nearest
+  // Exceptions are raised as usual, signal cause jumps in the nearest
   // OCC_CATCH_SIGNALS and then thrown as exceptions.
   #define OCC_CATCH_SIGNALS                                                                        \
     Standard_ErrorHandler _aHandler;                                                               \
     if (setjmp(_aHandler.Label()))                                                                 \
     {                                                                                              \
-      _aHandler.Catches(STANDARD_TYPE(Standard_Failure));                                          \
-      _aHandler.Error()->Reraise();                                                                \
+      _aHandler.Raise();                                                                           \
     }
 
   // Suppress GCC warning "variable ...  might be clobbered by 'longjmp' or 'vfork'"
@@ -75,12 +69,11 @@ class Standard_Failure;
 
 //! Class implementing mechanics of conversion of signals to exceptions.
 //!
-//! Each instance of it stores data for jump placement, thread id,
+//! Each instance of it stores data for jump placement,
 //! and callbacks to be called during jump (for proper resource release).
 //!
 //! The active handlers are stored in the global stack, which is used
 //! to find appropriate handler when signal is raised.
-
 class Standard_ErrorHandler
 {
 public:
@@ -96,39 +89,30 @@ public:
   //! Destructor
   ~Standard_ErrorHandler() { Destroy(); }
 
-  //! Removes handler from the handlers list
-  Standard_EXPORT void Unlink();
-
-  //! Returns "True" if the caught exception has the same type
-  //! or inherits from "aType"
-  Standard_EXPORT bool Catches(const occ::handle<Standard_Type>& aType);
+  //! Throws C++ exception if exception object set,
+  //! otherwise prints error and terminates program.
+  Standard_EXPORT void Raise();
 
   //! Returns label for jump
-  Standard_JmpBuf& Label() { return myLabel; }
+  jmp_buf& Label() { return myLabel; }
 
   //! Returns the current Error.
-  Standard_EXPORT occ::handle<Standard_Failure> Error() const;
-
-  //! Returns the caught exception.
-  Standard_EXPORT static occ::handle<Standard_Failure> LastCaughtError();
+  const occ::handle<Standard_Failure>& Error() const { return myCaughtError; }
 
   //! Test if the code is currently running in a try block
   Standard_EXPORT static bool IsInTryBlock();
 
 private:
-  //! A exception is raised but it is not yet caught.
-  //! So Abort the current function and transmit the exception
-  //! to "calling routines".
-  //! Warning: If no catch is prepared for this exception, it displays the
-  //! exception name and calls "exit(1)".
-  Standard_EXPORT static void Abort(const occ::handle<Standard_Failure>& theError);
+  //! Removes handler from the list.
+  void Unlink();
 
-  //! Set the Error which will be transmitted to "calling routines".
-  Standard_EXPORT static void Error(const occ::handle<Standard_Failure>& aError);
+  //! Finds nearest error handler in the stack and sets its exception object to @p theError
+  //! and long jump which then throw normal C++ exception.
+  //! If handler not found, prints error and exit program with error code @c 1.
+  static void Abort(const occ::handle<Standard_Failure>& theError);
 
   //! Returns the current handler (closest in the stack in the current execution thread)
-  Standard_EXPORT static Standard_PErrorHandler FindHandler(const Standard_HandlerStatus theStatus,
-                                                            const bool                   theUnlink);
+  static Standard_ErrorHandler* FindHandler();
 
 public:
   //! Defines a base class for callback objects that can be registered
@@ -186,20 +170,18 @@ public:
       Callback();
 
   private:
-    void* myHandler;
-    void* myPrev;
-    void* myNext;
+    void* myHandler = nullptr;
+    void* myPrev    = nullptr;
+    void* myNext    = nullptr;
 
     friend class Standard_ErrorHandler;
   };
 
 private:
-  Standard_PErrorHandler        myPrevious;
+  Standard_ErrorHandler*        myPrevious = nullptr;
   occ::handle<Standard_Failure> myCaughtError;
-  Standard_JmpBuf               myLabel;
-  Standard_HandlerStatus        myStatus;
-  Standard_ThreadId             myThread;
-  Callback*                     myCallbackPtr;
+  jmp_buf                       myLabel       = {};
+  Callback*                     myCallbackPtr = nullptr;
 
   friend class Standard_Failure;
 };
@@ -207,18 +189,9 @@ private:
 // If OCC_CONVERT_SIGNALS is not defined,
 // provide empty inline implementation
 #if !defined(OCC_CONVERT_SIGNALS)
-inline Standard_ErrorHandler::Callback::Callback()
-    : myHandler(0),
-      myPrev(0),
-      myNext(0)
-{
-}
+inline Standard_ErrorHandler::Callback::Callback() {}
 
-inline Standard_ErrorHandler::Callback::~Callback()
-{
-  (void)myHandler;
-  (void)myPrev;
-}
+inline Standard_ErrorHandler::Callback::~Callback() {}
 
 inline void Standard_ErrorHandler::Callback::RegisterCallback() {}
 
