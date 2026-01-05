@@ -207,7 +207,7 @@ void ProjLib::MakePCurveOfType(const ProjLib_ProjectedCurve& PC, occ::handle<Geo
     case GeomAbs_BezierCurve:
     case GeomAbs_OtherCurve:
     default:
-      Standard_NotImplemented::Raise("ProjLib::MakePCurveOfType");
+      throw Standard_NotImplemented("ProjLib::MakePCurveOfType");
       break;
   }
 }

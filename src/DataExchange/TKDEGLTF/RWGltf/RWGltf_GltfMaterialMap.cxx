@@ -360,9 +360,8 @@ void RWGltf_GltfMaterialMap::DefineMaterial(const XCAFPrs_Style& theStyle,
 #ifdef HAVE_RAPIDJSON
   if (myWriter == nullptr)
   {
-    Standard_ProgramError::Raise(
+    throw Standard_ProgramError(
       "RWGltf_GltfMaterialMap::DefineMaterial() should be called with JSON Writer");
-    return;
   }
 
   XCAFDoc_VisMaterialPBR aPbrMat;

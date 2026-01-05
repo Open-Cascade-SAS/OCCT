@@ -165,7 +165,7 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
       }
       else
       {
-        Standard_NullObject::Raise("No mapping for the current Transient Curve");
+        throw Standard_NullObject("No mapping for the current Transient Curve");
       }
       theMap.Bind(theCurve, aPC);
     }

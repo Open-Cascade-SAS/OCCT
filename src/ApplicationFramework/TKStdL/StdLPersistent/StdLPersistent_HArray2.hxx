@@ -105,8 +105,7 @@ protected:
 
     const char* PNameT() const
     {
-      Standard_NotImplemented::Raise("StdLPersistent_HArray2::instance::PName - not implemented");
-      return "";
+      throw Standard_NotImplemented("StdLPersistent_HArray2::instance::PName - not implemented");
     }
 
     void PChildrenT(StdObjMgt_Persistent::SequenceOfPersistent&) const {}

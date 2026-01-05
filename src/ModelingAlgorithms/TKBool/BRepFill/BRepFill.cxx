@@ -863,7 +863,7 @@ void BRepFill::Axe(const TopoDS_Shape& Spine,
 void BRepFill::SearchOrigin(TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& Dir, const double Tol)
 {
   if (!W.Closed())
-    Standard_NoSuchObject::Raise("BRepFill::SearchOrigin : the wire must be closed");
+    throw Standard_NoSuchObject("BRepFill::SearchOrigin : the wire must be closed");
 
   bool          NewVertex = false;
   double        theparam  = 1.e101, angle;

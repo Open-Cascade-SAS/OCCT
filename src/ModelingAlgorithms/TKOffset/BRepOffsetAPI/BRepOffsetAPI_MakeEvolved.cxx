@@ -43,7 +43,7 @@ BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spin
 {
   if (Spine.ShapeType() != TopAbs_WIRE && Spine.ShapeType() != TopAbs_FACE)
   {
-    Standard_TypeMismatch::Raise("BRepOffsetAPI_MakeEvolved: face or wire is expected as a spine");
+    throw Standard_TypeMismatch("BRepOffsetAPI_MakeEvolved: face or wire is expected as a spine");
   }
   if (theIsVolume)
   {
@@ -96,7 +96,7 @@ const BRepFill_Evolved& BRepOffsetAPI_MakeEvolved::Evolved() const
 {
   if (myIsVolume)
   {
-    Standard_TypeMismatch::Raise(
+    throw Standard_TypeMismatch(
       "BRepOffsetAPI_MakeEvolved: myEvolved is accessed while in volume mode");
   }
   return myEvolved;

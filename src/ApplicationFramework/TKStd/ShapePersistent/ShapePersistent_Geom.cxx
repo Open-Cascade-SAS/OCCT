@@ -94,7 +94,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
       }
       else
       {
-        Standard_NullObject::Raise("No mapping for the current Transient Curve");
+        throw Standard_NullObject("No mapping for the current Transient Curve");
       }
       theMap.Bind(theCurve, aPC);
     }
@@ -179,7 +179,7 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom::Translate(
       }
       else
       {
-        Standard_NullObject::Raise("No mapping for the current Transient Surface");
+        throw Standard_NullObject("No mapping for the current Transient Surface");
       }
       theMap.Bind(theSurf, aPS);
     }

@@ -84,7 +84,7 @@ occ::handle<Geom2d_Curve> Geom2dAdaptor::MakeCurve(const Adaptor2d_Curve2d& HC)
       }
       else
       {
-        Standard_DomainError::Raise("Geom2dAdaptor::MakeCurve, Not Geom2dAdaptor_Curve");
+        throw Standard_DomainError("Geom2dAdaptor::MakeCurve, Not Geom2dAdaptor_Curve");
       }
     }
     break;

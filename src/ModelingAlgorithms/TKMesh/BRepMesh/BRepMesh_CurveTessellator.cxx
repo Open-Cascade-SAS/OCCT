@@ -65,7 +65,7 @@ void BRepMesh_CurveTessellator::init()
 {
   if (myParameters.MinSize <= 0.0)
   {
-    Standard_Failure::Raise("The structure \"myParameters\" is not initialized");
+    throw Standard_Failure("The structure \"myParameters\" is not initialized");
   }
 
   TopExp::Vertices(myEdge, myFirstVertex, myLastVertex);
