@@ -1563,178 +1563,92 @@ static void UpdateMapOfShapes(
 }
 
 //=======================================================================
-// function : GlueEdgesWithPCurves
-// purpose  : Glues the pcurves of the sequence of edges
-//           and glues their 3d curves
+// function : GlueEdgesWith3DCurves
+// purpose  : Glues 3d curves of the sequence of edges
 //=======================================================================
-static TopoDS_Edge GlueEdgesWithPCurves(const NCollection_Sequence<TopoDS_Shape>& aChain,
-                                        const TopoDS_Vertex&                      FirstVertex,
-                                        const TopoDS_Vertex&                      LastVertex)
+static TopoDS_Edge GlueEdgesWith3DCurves(const NCollection_Sequence<TopoDS_Shape>& aChain,
+                                         const TopoDS_Vertex&                      FirstVertex,
+                                         const TopoDS_Vertex&                      LastVertex)
 {
-  int i, j;
+  // number of curves
+  const int aCurveCount = aChain.Length();
 
-  TopoDS_Edge                                     FirstEdge = TopoDS::Edge(aChain(1));
-  NCollection_Sequence<occ::handle<Geom_Surface>> SurfSeq;
-  NCollection_Sequence<TopLoc_Location>           LocSeq;
-
-  // TODO: Issue (#966) Code is not working correctly
-  // All previous versions were relying that that loop never reach end and break on start,
-  // because it was starting from 0 and 0st is not existing curve index.
-  // for (int aCurveIndex = 1;; aCurveIndex++)
-  // {
-  //   occ::handle<Geom2d_Curve> aCurve;
-  //   occ::handle<Geom_Surface> aSurface;
-  //   TopLoc_Location           aLocation;
-  //   double                    aFirst, aLast;
-  //   BRep_Tool::CurveOnSurface(FirstEdge, aCurve, aSurface, aLocation, aFirst, aLast,
-  //   aCurveIndex); if (aCurve.IsNull())
-  //     continue;
-
-  //   SurfSeq.Append(aSurface);
-  //   LocSeq.Append(aLocation);
-  // }
-
-  double fpar, lpar;
-  BRep_Tool::Range(FirstEdge, fpar, lpar);
-  TopoDS_Edge   PrevEdge = FirstEdge;
-  TopoDS_Vertex CV;
-  double        MaxTol = 0.;
-
-  TopoDS_Edge  ResEdge;
-  BRep_Builder BB;
-
-  int                                                nb_curve = aChain.Length(); // number of curves
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> tab_c3d(0,
-                                                             nb_curve - 1); // array of the curves
-  NCollection_Array1<double>                         tabtolvertex(0,
-                                          nb_curve
-                                            - 1); //(0,nb_curve-2);  //array of the tolerances
-
-  TopoDS_Vertex PrevVertex = FirstVertex;
-  for (i = 1; i <= nb_curve; i++)
+  TopoDS_Edge   aPrevEdge     = TopoDS::Edge(aChain(1));
+  TopoDS_Vertex aPrevVertex   = FirstVertex;
+  double        aMaxTolerance = 0.;
+  // array of the curves converted to BSpline
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aBSplines(0, aCurveCount - 1);
+  // array of the tolerances at the vertices
+  NCollection_Array1<double> aVerticesTolerances(0, aCurveCount - 1);
+  for (int i = 1; i <= aCurveCount; ++i)
   {
-    TopoDS_Edge   anEdge = TopoDS::Edge(aChain(i));
-    TopoDS_Vertex VF, VL;
-    TopExp::Vertices(anEdge, VF, VL);
-    bool ToReverse = (!VF.IsSame(PrevVertex));
+    const TopoDS_Edge aCurrentEdge = TopoDS::Edge(aChain(i));
+    TopoDS_Vertex     aCurrentFirstVertex, aCurrentLastVertex;
+    TopExp::Vertices(aCurrentEdge, aCurrentFirstVertex, aCurrentLastVertex);
+    const bool aToReverse = !aCurrentFirstVertex.IsSame(aPrevVertex);
 
-    double Tol1 = BRep_Tool::Tolerance(VF);
-    double Tol2 = BRep_Tool::Tolerance(VL);
-    if (Tol1 > MaxTol)
-      MaxTol = Tol1;
-    if (Tol2 > MaxTol)
-      MaxTol = Tol2;
-
+    aMaxTolerance = std::max({aMaxTolerance,
+                              BRep_Tool::Tolerance(aCurrentFirstVertex),
+                              BRep_Tool::Tolerance(aCurrentLastVertex)});
     if (i > 1)
     {
-      TopExp::CommonVertex(PrevEdge, anEdge, CV);
-      double Tol          = BRep_Tool::Tolerance(CV);
-      tabtolvertex(i - 2) = Tol;
+      TopoDS_Vertex aCommonVertex;
+      TopExp::CommonVertex(aPrevEdge, aCurrentEdge, aCommonVertex);
+      aVerticesTolerances(i - 2) = BRep_Tool::Tolerance(aCommonVertex);
     }
 
-    occ::handle<Geom_Curve>        aCurve   = BRep_Tool::Curve(anEdge, fpar, lpar);
-    occ::handle<Geom_TrimmedCurve> aTrCurve = new Geom_TrimmedCurve(aCurve, fpar, lpar);
-    tab_c3d(i - 1)                          = GeomConvert::CurveToBSplineCurve(aTrCurve);
-    GeomConvert::C0BSplineToC1BSplineCurve(tab_c3d(i - 1), Precision::Confusion());
-    if (ToReverse)
-      tab_c3d(i - 1)->Reverse();
-    PrevVertex = (ToReverse) ? VF : VL;
-    PrevEdge   = anEdge;
+    double                        aFirstParam, aLastParam;
+    const occ::handle<Geom_Curve> aCurrentCurve =
+      BRep_Tool::Curve(aCurrentEdge, aFirstParam, aLastParam);
+    const occ::handle<Geom_TrimmedCurve> aTrimmedCurve =
+      new Geom_TrimmedCurve(aCurrentCurve, aFirstParam, aLastParam);
+    aBSplines(i - 1) = GeomConvert::CurveToBSplineCurve(aTrimmedCurve);
+    GeomConvert::C0BSplineToC1BSplineCurve(aBSplines(i - 1), Precision::Confusion());
+    if (aToReverse)
+    {
+      aBSplines(i - 1)->Reverse();
+    }
+
+    aPrevVertex = aToReverse ? aCurrentFirstVertex : aCurrentLastVertex;
+    aPrevEdge   = aCurrentEdge;
   }
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>
-                                        concatcurve;    // array of the concatenated curves
-  occ::handle<NCollection_HArray1<int>> ArrayOfIndices; // array of the remaining Vertex
-  bool                                  closed_flag = false;
-  GeomConvert::ConcatC1(tab_c3d,
-                        tabtolvertex,
-                        ArrayOfIndices,
-                        concatcurve,
-                        closed_flag,
+
+  // Array of the concatenated curves.
+  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>> aConcatCurves;
+  // Array of the remaining Vertex, effectively ignored here.
+  occ::handle<NCollection_HArray1<int>> anArrayOfIndices;
+  // Flag of closedness of the concatenated curve, effectively ignored here.
+  bool aClosedFlag = false;
+  GeomConvert::ConcatC1(aBSplines,
+                        aVerticesTolerances,
+                        anArrayOfIndices,
+                        aConcatCurves,
+                        aClosedFlag,
                         Precision::Confusion()); // C1 concatenation
 
-  if (concatcurve->Length() > 1)
+  if (aConcatCurves->Length() > 1)
   {
-    GeomConvert_CompCurveToBSplineCurve Concat(concatcurve->Value(concatcurve->Lower()));
+    GeomConvert_CompCurveToBSplineCurve Concat(aConcatCurves->Value(aConcatCurves->Lower()));
 
-    for (i = concatcurve->Lower() + 1; i <= concatcurve->Upper(); i++)
-      Concat.Add(concatcurve->Value(i), MaxTol, true);
-
-    concatcurve->SetValue(concatcurve->Lower(), Concat.BSplineCurve());
-  }
-  occ::handle<Geom_BSplineCurve> ResCurve = concatcurve->Value(concatcurve->Lower());
-
-  NCollection_Sequence<occ::handle<Geom2d_BoundedCurve>> ResPCurves;
-  for (j = 1; j <= SurfSeq.Length(); j++)
-  {
-    NCollection_Array1<occ::handle<Geom2d_BSplineCurve>> tab_c2d(0,
-                                                                 nb_curve
-                                                                   - 1); // array of the pcurves
-
-    PrevVertex = FirstVertex;
-    PrevEdge   = FirstEdge;
-    for (i = 1; i <= nb_curve; i++)
+    for (int i = aConcatCurves->Lower() + 1; i <= aConcatCurves->Upper(); ++i)
     {
-      TopoDS_Edge   anEdge = TopoDS::Edge(aChain(i));
-      TopoDS_Vertex VF, VL;
-      TopExp::Vertices(anEdge, VF, VL);
-      bool ToReverse = (!VF.IsSame(PrevVertex));
-
-      occ::handle<Geom2d_Curve> aPCurve =
-        BRep_Tool::CurveOnSurface(anEdge, SurfSeq(j), LocSeq(j), fpar, lpar);
-      if (aPCurve.IsNull())
-        continue;
-      occ::handle<Geom2d_TrimmedCurve> aTrPCurve = new Geom2d_TrimmedCurve(aPCurve, fpar, lpar);
-      tab_c2d(i - 1)                             = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
-      Geom2dConvert::C0BSplineToC1BSplineCurve(tab_c2d(i - 1), Precision::Confusion());
-      if (ToReverse)
-        tab_c2d(i - 1)->Reverse();
-      PrevVertex = (ToReverse) ? VF : VL;
-      PrevEdge   = anEdge;
+      Concat.Add(aConcatCurves->Value(i), aMaxTolerance, true);
     }
-    occ::handle<NCollection_HArray1<occ::handle<Geom2d_BSplineCurve>>>
-                                          concatc2d;    // array of the concatenated curves
-    occ::handle<NCollection_HArray1<int>> ArrayOfInd2d; // array of the remaining Vertex
-    closed_flag = false;
-    Geom2dConvert::ConcatC1(tab_c2d,
-                            tabtolvertex,
-                            ArrayOfInd2d,
-                            concatc2d,
-                            closed_flag,
-                            Precision::Confusion()); // C1 concatenation
 
-    if (concatc2d->Length() > 1)
-    {
-      Geom2dConvert_CompCurveToBSplineCurve Concat2d(concatc2d->Value(concatc2d->Lower()));
-
-      for (i = concatc2d->Lower() + 1; i <= concatc2d->Upper(); i++)
-        Concat2d.Add(concatc2d->Value(i), MaxTol, true);
-
-      concatc2d->SetValue(concatc2d->Lower(), Concat2d.BSplineCurve());
-    }
-    occ::handle<Geom2d_BSplineCurve> aResPCurve = concatc2d->Value(concatc2d->Lower());
-    ResPCurves.Append(aResPCurve);
+    aConcatCurves->SetValue(aConcatCurves->Lower(), Concat.BSplineCurve());
   }
 
-  ResEdge = BRepLib_MakeEdge(ResCurve,
-                             FirstVertex,
-                             LastVertex,
-                             ResCurve->FirstParameter(),
-                             ResCurve->LastParameter());
-  BB.SameRange(ResEdge, false);
-  BB.SameParameter(ResEdge, false);
-  for (j = 1; j <= ResPCurves.Length(); j++)
-  {
-    BB.UpdateEdge(ResEdge, ResPCurves(j), SurfSeq(j), LocSeq(j), MaxTol);
-    BB.Range(ResEdge,
-             SurfSeq(j),
-             LocSeq(j),
-             ResPCurves(j)->FirstParameter(),
-             ResPCurves(j)->LastParameter());
-  }
-
-  BRepLib::SameParameter(ResEdge, MaxTol, true);
-
-  return ResEdge;
+  occ::handle<Geom_BSplineCurve> aResCurve = aConcatCurves->Value(aConcatCurves->Lower());
+  const TopoDS_Edge              aResEdge  = BRepLib_MakeEdge(aResCurve,
+                                                FirstVertex,
+                                                LastVertex,
+                                                aResCurve->FirstParameter(),
+                                                aResCurve->LastParameter());
+  BRep_Builder                   aBuilder;
+  aBuilder.SameRange(aResEdge, false);
+  aBuilder.SameParameter(aResEdge, false);
+  BRepLib::SameParameter(aResEdge, aMaxTolerance, true);
+  return aResEdge;
 }
 
 //=================================================================================================
@@ -2421,20 +2335,10 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
     }
     if (NeedUnion)
     {
-#ifdef OCCT_DEBUG
-      std::cout << "can not make analytical union => make approximation" << std::endl;
-#endif
-      TopoDS_Edge E = GlueEdgesWithPCurves(theChain, VF, VL);
-      OutEdge       = E;
+      OutEdge = GlueEdgesWith3DCurves(theChain, VF, VL);
       return true;
     }
-    else
-    {
-#ifdef OCCT_DEBUG
-      std::cout << "can not make approximation for such types of curves" << std::endl;
-#endif
-      return false;
-    }
+    return false;
   }
   return false;
 }
