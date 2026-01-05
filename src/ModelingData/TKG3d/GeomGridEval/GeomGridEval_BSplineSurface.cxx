@@ -50,9 +50,9 @@ constexpr int THE_CACHE_THRESHOLD = 4;
 template <typename GetOrCreateCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints,
                            const occ::handle<BSplSLib_CacheGrid>&                   theCacheGrid,
-                           GetOrCreateCacheFunc&&                                   theGetOrCreateCache,
-                           CacheEvalFunc&&                                          theCacheEval,
-                           DirectEvalFunc&&                                         theDirectEval)
+                           GetOrCreateCacheFunc&& theGetOrCreateCache,
+                           CacheEvalFunc&&        theCacheEval,
+                           DirectEvalFunc&&       theDirectEval)
 {
   const int aNbPoints = theUVPoints.Size();
   if (aNbPoints == 0)
@@ -356,7 +356,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
     aCacheGrid,
     // Get or create cache for span (stores in grid for reuse)
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     // Cache evaluation (uses cache from grid)
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
@@ -459,7 +460,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
     aUVPoints,
     aCacheGrid,
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
@@ -580,7 +582,8 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
     aUVPoints,
     aCacheGrid,
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
@@ -705,7 +708,8 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
     aUVPoints,
     aCacheGrid,
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
@@ -1058,7 +1062,8 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
     aUVPoints,
     aCacheGrid,
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
@@ -1153,7 +1158,8 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
     aUVPoints,
     aCacheGrid,
     [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
-      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      return aCacheGrid
+        ->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
