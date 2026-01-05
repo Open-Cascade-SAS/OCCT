@@ -1944,14 +1944,14 @@ void Geom_BezierSurface::Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Po
 
 BSplSLib_Cache& Geom_BezierSurface::ensureCache() const
 {
-  NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(UDegree()),
-                                         1,
-                                         2 * (UDegree() + 1));
-  NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(VDegree()),
-                                         1,
-                                         2 * (VDegree() + 1));
   if (!myCache)
   {
+    NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(UDegree()),
+                                           1,
+                                           2 * (UDegree() + 1));
+    NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(VDegree()),
+                                           1,
+                                           2 * (VDegree() + 1));
     myCache = new BSplSLib_Cache(UDegree(),
                                  IsUPeriodic(),
                                  aUFlatKnots,
@@ -1959,8 +1959,8 @@ BSplSLib_Cache& Geom_BezierSurface::ensureCache() const
                                  IsVPeriodic(),
                                  aVFlatKnots,
                                  Weights());
+    myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, Poles(), Weights());
   }
-  myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, Poles(), Weights());
   return *myCache;
 }
 

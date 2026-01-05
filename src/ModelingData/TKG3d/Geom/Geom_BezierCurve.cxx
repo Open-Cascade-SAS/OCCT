@@ -510,12 +510,15 @@ int Geom_BezierCurve::Degree() const
 
 BSplCLib_Cache& Geom_BezierCurve::ensureCache() const
 {
-  NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(Degree()), 1, 2 * (Degree() + 1));
   if (!myCache)
   {
+    NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(Degree()),
+                                          1,
+                                          2 * (Degree() + 1));
+
     myCache = new BSplCLib_Cache(Degree(), IsPeriodic(), aFlatKnots, poles->Array1(), Weights());
+    myCache->BuildCache(0.5, aFlatKnots, Poles(), Weights());
   }
-  myCache->BuildCache(0.5, aFlatKnots, Poles(), Weights());
   return *myCache;
 }
 
