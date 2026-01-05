@@ -152,10 +152,10 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
     weights->ChangeArray1() = theOther.weights->Array1();
   }
 
-  if (theOther.mySpanCache)
-  {
-    mySpanCache = new BSplCLib_CacheGrid(*theOther.mySpanCache);
-  }
+  // if (theOther.mySpanCache)
+  // {
+  //   mySpanCache = new BSplCLib_CacheGrid(*theOther.mySpanCache);
+  // }
 }
 
 //=================================================================================================

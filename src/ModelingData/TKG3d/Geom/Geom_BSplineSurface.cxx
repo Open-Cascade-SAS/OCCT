@@ -187,10 +187,10 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
     weights->ChangeArray2() = theOther.weights->Array2();
   }
 
-  if (theOther.mySpanCache)
-  {
-    mySpanCache = new BSplSLib_CacheGrid(*theOther.mySpanCache);
-  }
+  // if (theOther.mySpanCache)
+  // {
+  //   mySpanCache = new BSplSLib_CacheGrid(*theOther.mySpanCache);
+  // }
 }
 
 //=================================================================================================
