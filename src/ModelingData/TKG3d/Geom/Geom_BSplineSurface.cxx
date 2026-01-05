@@ -25,7 +25,7 @@
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include "Geom_BSplineSurfaceCache.pxx"
+#include <BSplSLib_CacheGrid.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -1395,19 +1395,12 @@ void Geom_BSplineSurface::DumpJson(Standard_OStream& theOStream, int theDepth) c
 
 //=================================================================================================
 
-Geom_BSplineSurfaceCache& Geom_BSplineSurface::ensureSpanCache() const
+BSplSLib_CacheGrid& Geom_BSplineSurface::ensureSpanCache() const
 {
   if (!mySpanCache)
   {
-    mySpanCache = std::make_unique<Geom_BSplineSurfaceCache>(udeg,
-                                                             vdeg,
-                                                             urational || vrational,
-                                                             uperiodic,
-                                                             vperiodic,
-                                                             uknots->Array1(),
-                                                             umults->Array1(),
-                                                             vknots->Array1(),
-                                                             vmults->Array1());
+    mySpanCache =
+      new BSplSLib_CacheGrid(udeg, uperiodic, uknots->Array1(), vdeg, vperiodic, vknots->Array1());
   }
   return *mySpanCache;
 }

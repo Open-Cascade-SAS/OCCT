@@ -18,6 +18,8 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_IncAllocator.hxx>
 
+#include <atomic>
+
 class gp_Pnt;
 
 //! \brief A grid of caches for B-spline surface spans.
@@ -29,7 +31,7 @@ class gp_Pnt;
 //!
 //! The cache grid is lazily initialized - caches are only computed
 //! when a span is first accessed.
-class BSplSLib_CacheGrid
+class BSplSLib_CacheGrid : public Standard_Transient
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -68,19 +70,6 @@ public:
     const NCollection_Array2<gp_Pnt>& thePoles,
     const NCollection_Array2<double>* theWeights = nullptr);
 
-  //! Checks if the cache for the specified parameters is valid.
-  //! @param theU  U parameter
-  //! @param theV  V parameter
-  //! @return true if a valid cache exists for this span
-  Standard_EXPORT bool IsCacheValid(double theU, double theV) const;
-
-  //! Returns the current cache if valid, null handle otherwise.
-  //! This method doesn't create new caches.
-  //! @param theU  U parameter
-  //! @param theV  V parameter
-  //! @return handle to existing cache or null
-  Standard_EXPORT const occ::handle<BSplSLib_Cache>& CurrentCache(double theU, double theV) const;
-
   //! Returns the number of U spans.
   int NbUSpans() const { return myNbUSpans; }
 
@@ -89,9 +78,6 @@ public:
 
   //! Returns the total number of spans.
   int NbSpans() const { return myNbUSpans * myNbVSpans; }
-
-  //! Returns the number of cached spans (non-null caches).
-  Standard_EXPORT int NbCachedSpans() const;
 
 private:
   //! Locates the span index for U parameter.
@@ -132,8 +118,8 @@ private:
   mutable NCollection_Array2<occ::handle<BSplSLib_Cache>> myCacheGrid;
 
   // Current span tracking
-  mutable int myCurrentUSpan; //!< current U span index
-  mutable int myCurrentVSpan; //!< current V span index
+  mutable std::atomic_int myCurrentUSpan; //!< current U span index
+  mutable std::atomic_int myCurrentVSpan; //!< current V span index
 };
 
 #endif

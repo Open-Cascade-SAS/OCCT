@@ -36,7 +36,7 @@ class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
-class Geom_BezierSurfaceCache;
+class BSplSLib_Cache;
 
 //! Describes a rational or non-rational Bezier surface.
 //! - A non-rational Bezier surface is defined by a table
@@ -622,7 +622,7 @@ private:
 
   //! Ensures the span cache exists and returns a reference to it.
   //! Creates the cache lazily on first access.
-  Geom_BezierSurfaceCache& ensureCache() const;
+  BSplSLib_Cache& ensureCache() const;
 
   //! Invalidates the span cache. Call when geometry changes.
   void invalidateCache() const;
@@ -636,7 +636,7 @@ private:
   bool                                     maxderivinvok;
 
   //! Lazy-loaded cache for Taylor expansion coefficients
-  mutable std::unique_ptr<Geom_BezierSurfaceCache> myCache;
+  mutable occ::handle<BSplSLib_Cache> myCache;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

@@ -160,38 +160,6 @@ int BSplSLib_CacheGrid::locateVSpan(double                            theV,
 
 //==================================================================================================
 
-bool BSplSLib_CacheGrid::IsCacheValid(double theU, double theV) const
-{
-  // Check if we have a current span and if the parameters are still in it
-  if (myCurrentUSpan < 0 || myCurrentVSpan < 0)
-    return false;
-
-  const occ::handle<BSplSLib_Cache>& aCache = myCacheGrid.Value(myCurrentUSpan, myCurrentVSpan);
-  if (aCache.IsNull())
-    return false;
-
-  return aCache->IsCacheValid(theU, theV);
-}
-
-//==================================================================================================
-
-const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::CurrentCache(double theU, double theV) const
-{
-  if (myCurrentUSpan < 0 || myCurrentVSpan < 0)
-    return THE_NULL_CACHE;
-
-  const occ::handle<BSplSLib_Cache>& aCache = myCacheGrid.Value(myCurrentUSpan, myCurrentVSpan);
-  if (aCache.IsNull())
-    return THE_NULL_CACHE;
-
-  if (!aCache->IsCacheValid(theU, theV))
-    return THE_NULL_CACHE;
-
-  return aCache;
-}
-
-//==================================================================================================
-
 const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   double                            theU,
   double                            theV,
@@ -200,6 +168,39 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   const NCollection_Array2<gp_Pnt>& thePoles,
   const NCollection_Array2<double>* theWeights)
 {
+  // Check current span and adjacent spans
+  const int aCurrentUSpan = myCurrentUSpan;
+  const int aCurrentVSpan = myCurrentVSpan;
+  if (aCurrentUSpan >= 0 && aCurrentVSpan >= 0)
+  {
+    for (int aUOffset : {0, -1, 1})
+    {
+      for (int aVOffset : {0, -1, 1})
+      {
+        const int aUSpan = aCurrentUSpan + aUOffset;
+        const int aVSpan = aCurrentVSpan + aVOffset;
+
+        if (aUSpan < 0 || aUSpan >= myNbUSpans || aVSpan < 0 || aVSpan >= myNbVSpans)
+          continue;
+
+        const occ::handle<BSplSLib_Cache>& aCache = myCacheGrid.Value(aUSpan, aVSpan);
+        if (aCache.IsNull())
+          continue;
+
+        // Check U validity first - if U is invalid for this U span, skip remaining V offsets
+        if (!aCache->IsCacheValidU(theU))
+          break;
+
+        if (aCache->IsCacheValid(theU, theV))
+        {
+          myCurrentUSpan = aUSpan;
+          myCurrentVSpan = aVSpan;
+          return aCache;
+        }
+      }
+    }
+  }
+
   // Locate the span for the given parameters
   int aUSpan = locateUSpan(theU, theFlatKnotsU);
   int aVSpan = locateVSpan(theV, theFlatKnotsV);
@@ -217,7 +218,6 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   if (!aCache.IsNull())
   {
     // Cache exists - it should be valid for this span
-    // (each cache covers exactly one span)
     return aCache;
   }
 
@@ -247,20 +247,4 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   aCache->BuildCache(aSpanMidU, aSpanMidV, theFlatKnotsU, theFlatKnotsV, thePoles, theWeights);
 
   return aCache;
-}
-
-//==================================================================================================
-
-int BSplSLib_CacheGrid::NbCachedSpans() const
-{
-  int aCount = 0;
-  for (int i = myCacheGrid.LowerRow(); i <= myCacheGrid.UpperRow(); ++i)
-  {
-    for (int j = myCacheGrid.LowerCol(); j <= myCacheGrid.UpperCol(); ++j)
-    {
-      if (!myCacheGrid.Value(i, j).IsNull())
-        ++aCount;
-    }
-  }
-  return aCount;
 }

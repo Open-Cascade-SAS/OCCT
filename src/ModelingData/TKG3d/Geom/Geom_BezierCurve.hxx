@@ -34,7 +34,7 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
-class Geom_BezierCurveCache;
+class BSplCLib_Cache;
 
 //! Describes a rational or non-rational Bezier curve
 //! - a non-rational Bezier curve is defined by a table of
@@ -340,7 +340,7 @@ private:
 
   //! Ensures the span cache exists and returns a reference to it.
   //! Creates the cache lazily on first access.
-  Geom_BezierCurveCache& ensureCache() const;
+  BSplCLib_Cache& ensureCache() const;
 
   //! Invalidates the span cache. Call when geometry changes.
   void invalidateCache() const;
@@ -353,7 +353,7 @@ private:
   bool                                     maxderivinvok;
 
   //! Lazy-loaded cache for Taylor expansion coefficients
-  mutable std::unique_ptr<Geom_BezierCurveCache> myCache;
+  mutable occ::handle<BSplCLib_Cache> myCache;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

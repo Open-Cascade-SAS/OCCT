@@ -825,8 +825,7 @@ private:
   Standard_EXPORT void UpdateKnots();
 
   //! Ensures the span cache is allocated, returns reference to it.
-  //! Thread-safe: uses double-checked locking for lazy initialization.
-  Geom_BSplineCurveCache& ensureSpanCache() const;
+  BSplCLib_CacheGrid& ensureSpanCache() const;
 
   //! Invalidates the span cache (called by modifying methods).
   void invalidateSpanCache() const;
@@ -846,7 +845,7 @@ private:
 
   //! Lazy-loaded span cache for optimized D0/D1/D2/D3 evaluation.
   //! Stores pre-computed Taylor expansion coefficients for all spans.
-  mutable std::unique_ptr<Geom_BSplineCurveCache> mySpanCache;
+  mutable occ::handle<BSplCLib_CacheGrid> mySpanCache;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile

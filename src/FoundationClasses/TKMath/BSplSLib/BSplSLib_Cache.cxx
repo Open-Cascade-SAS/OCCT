@@ -277,7 +277,21 @@ BSplSLib_Cache::BSplSLib_Cache(const BSplSLib_Cache& theOther)
 
 bool BSplSLib_Cache::IsCacheValid(double theParameterU, double theParameterV) const
 {
-  return myParamsU.IsCacheValid(theParameterU) && myParamsV.IsCacheValid(theParameterV);
+  return IsCacheValidU(theParameterU) && IsCacheValidV(theParameterV);
+}
+
+//==================================================================================================
+
+bool BSplSLib_Cache::IsCacheValidU(double theLocalU) const
+{
+  return myParamsU.IsCacheValid(theLocalU);
+}
+
+//==================================================================================================
+
+bool BSplSLib_Cache::IsCacheValidV(double theLocalV) const
+{
+  return myParamsV.IsCacheValid(theLocalV);
 }
 
 //==================================================================================================

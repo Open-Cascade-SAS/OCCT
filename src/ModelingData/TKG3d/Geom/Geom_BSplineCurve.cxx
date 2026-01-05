@@ -32,7 +32,7 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include "Geom_BSplineCurveCache.pxx"
+#include <BSplCLib_CacheGrid.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -101,16 +101,12 @@ occ::handle<Geom_Geometry> Geom_BSplineCurve::Copy() const
 
 //=================================================================================================
 
-Geom_BSplineCurveCache& Geom_BSplineCurve::ensureSpanCache() const
+BSplCLib_CacheGrid& Geom_BSplineCurve::ensureSpanCache() const
 {
   if (!mySpanCache)
   {
     // Build cache with span lookup tables for fast parameter location
-    mySpanCache = std::make_unique<Geom_BSplineCurveCache>(deg,
-                                                           rational,
-                                                           periodic,
-                                                           knots->Array1(),
-                                                           mults->Array1());
+    mySpanCache = new BSplCLib_CacheGrid(deg, periodic, flatknots->Array1());
   }
   return *mySpanCache;
 }

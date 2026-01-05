@@ -27,7 +27,7 @@
 #define No_Standard_DimensionError
 
 #include <Geom_BezierCurve.hxx>
-#include "Geom_BezierCurveCache.pxx"
+#include <BSplCLib_Cache.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -508,11 +508,14 @@ int Geom_BezierCurve::Degree() const
 
 //=================================================================================================
 
-Geom_BezierCurveCache& Geom_BezierCurve::ensureCache() const
+BSplCLib_Cache& Geom_BezierCurve::ensureCache() const
 {
   if (!myCache)
   {
-    myCache = std::make_unique<Geom_BezierCurveCache>(Degree(), IsRational());
+    NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(Degree()),
+                                          1,
+                                          2 * (Degree() + 1));
+    myCache = new BSplCLib_Cache(Degree(), IsPeriodic(), aFlatKnots, poles->Array1(), Weights());
   }
   return *myCache;
 }

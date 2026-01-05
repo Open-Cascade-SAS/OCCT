@@ -17,6 +17,8 @@
 #include <BSplCLib_Cache.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <atomic>
+
 class gp_Pnt;
 class gp_Pnt2d;
 
@@ -29,7 +31,7 @@ class gp_Pnt2d;
 //!
 //! The cache grid is lazily initialized - caches are only computed
 //! when a span is first accessed.
-class BSplCLib_CacheGrid
+class BSplCLib_CacheGrid : public Standard_Transient
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -71,22 +73,8 @@ public:
     const NCollection_Array1<gp_Pnt2d>& thePoles2d,
     const NCollection_Array1<double>*   theWeights = nullptr);
 
-  //! Checks if the cache for the specified parameter is valid.
-  //! @param theParameter parameter value
-  //! @return true if a valid cache exists for this span
-  Standard_EXPORT bool IsCacheValid(double theParameter) const;
-
-  //! Returns the current cache if valid, null handle otherwise.
-  //! This method doesn't create new caches.
-  //! @param theParameter parameter value
-  //! @return handle to existing cache or null
-  Standard_EXPORT const occ::handle<BSplCLib_Cache>& CurrentCache(double theParameter) const;
-
   //! Returns the number of spans.
   int NbSpans() const { return myNbSpans; }
-
-  //! Returns the number of cached spans (non-null caches).
-  Standard_EXPORT int NbCachedSpans() const;
 
 private:
   //! Locates the span index for the parameter.
@@ -112,7 +100,7 @@ private:
   mutable NCollection_Array1<occ::handle<BSplCLib_Cache>> myCacheGrid;
 
   // Current span tracking
-  mutable int myCurrentSpan; //!< current span index
+  mutable std::atomic_int myCurrentSpan; //!< current span index
 };
 
 #endif

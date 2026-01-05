@@ -36,7 +36,7 @@ class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
-class Geom_BSplineSurfaceCache;
+class BSplSLib_CacheGrid;
 
 //! Describes a BSpline surface.
 //! In each parametric direction, a BSpline surface can be:
@@ -1323,11 +1323,11 @@ private:
   bool                                     maxderivinvok;
 
   //! Lazy-loaded global span cache for efficient evaluation
-  mutable std::unique_ptr<Geom_BSplineSurfaceCache> mySpanCache;
+  mutable occ::handle<BSplSLib_CacheGrid> mySpanCache;
 
   //! Ensures span cache is allocated (lazy initialization)
   //! @return reference to the span cache
-  Geom_BSplineSurfaceCache& ensureSpanCache() const;
+  BSplSLib_CacheGrid& ensureSpanCache() const;
 
   //! Invalidates the span cache (called when geometry changes)
   void invalidateSpanCache() const;

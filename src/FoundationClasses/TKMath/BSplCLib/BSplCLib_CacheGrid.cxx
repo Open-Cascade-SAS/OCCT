@@ -111,44 +111,31 @@ int BSplCLib_CacheGrid::locateSpan(double                            theParamete
 
 //==================================================================================================
 
-bool BSplCLib_CacheGrid::IsCacheValid(double theParameter) const
-{
-  // Check if we have a current span and if the parameter is still in it
-  if (myCurrentSpan < 0)
-    return false;
-
-  const occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.Value(myCurrentSpan);
-  if (aCache.IsNull())
-    return false;
-
-  return aCache->IsCacheValid(theParameter);
-}
-
-//==================================================================================================
-
-const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::CurrentCache(double theParameter) const
-{
-  if (myCurrentSpan < 0)
-    return THE_NULL_CACHE;
-
-  const occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.Value(myCurrentSpan);
-  if (aCache.IsNull())
-    return THE_NULL_CACHE;
-
-  if (!aCache->IsCacheValid(theParameter))
-    return THE_NULL_CACHE;
-
-  return aCache;
-}
-
-//==================================================================================================
-
 const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   double                            theParameter,
   const NCollection_Array1<double>& theFlatKnots,
   const NCollection_Array1<gp_Pnt>& thePoles,
   const NCollection_Array1<double>* theWeights)
 {
+  // Check current span and adjacent spans (current, previous, next)
+  const int aCurrentSpan = myCurrentSpan;
+  if (aCurrentSpan >= 0)
+  {
+    for (const int anOffset : {0, -1, 1})
+    {
+      const int aSpan = aCurrentSpan + anOffset;
+      if (aSpan < 0 || aSpan >= myNbSpans)
+        continue;
+
+      const occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.Value(aSpan);
+      if (!aCache.IsNull() && aCache->IsCacheValid(theParameter))
+      {
+        myCurrentSpan = aSpan;
+        return aCache;
+      }
+    }
+  }
+
   // Locate the span for the given parameter
   int aSpan = locateSpan(theParameter, theFlatKnots);
 
@@ -223,17 +210,4 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   aCache->BuildCache(aSpanMid, theFlatKnots, thePoles2d, theWeights);
 
   return aCache;
-}
-
-//==================================================================================================
-
-int BSplCLib_CacheGrid::NbCachedSpans() const
-{
-  int aCount = 0;
-  for (int i = myCacheGrid.Lower(); i <= myCacheGrid.Upper(); ++i)
-  {
-    if (!myCacheGrid.Value(i).IsNull())
-      ++aCount;
-  }
-  return aCount;
 }

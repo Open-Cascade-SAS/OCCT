@@ -10,10 +10,8 @@ set(OCCT_Geom_FILES
   Geom_AxisPlacement.hxx
   Geom_BezierCurve.cxx
   Geom_BezierCurve.hxx
-  Geom_BezierCurveCache.pxx
   Geom_BezierSurface.cxx
   Geom_BezierSurface.hxx
-  Geom_BezierSurfaceCache.pxx
   Geom_BoundedCurve.cxx
   Geom_BoundedCurve.hxx
   Geom_BoundedSurface.cxx
@@ -21,11 +19,9 @@ set(OCCT_Geom_FILES
   Geom_BSplineCurve.cxx
   Geom_BSplineCurve.hxx
   Geom_BSplineCurve_1.cxx
-  Geom_BSplineCurveCache.pxx
   Geom_BSplineSurface.cxx
   Geom_BSplineSurface.hxx
   Geom_BSplineSurface_1.cxx
-  Geom_BSplineSurfaceCache.pxx
   Geom_CartesianPoint.cxx
   Geom_CartesianPoint.hxx
   Geom_Circle.cxx

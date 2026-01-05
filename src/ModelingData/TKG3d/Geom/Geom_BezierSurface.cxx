@@ -27,9 +27,10 @@
 #define No_Standard_DimensionError
 
 #include <BSplCLib.hxx>
+#include <BSplCLib_Cache.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
-#include "Geom_BezierSurfaceCache.pxx"
+#include <BSplSLib_Cache.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
@@ -1407,8 +1408,7 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  Geom_BezierSurfaceCache& aCache = ensureCache();
-  aCache.Build(poles->Array2(), Weights());
+  BSplSLib_Cache& aCache = ensureCache();
   aCache.D0(U, V, P);
 }
 
@@ -1420,8 +1420,7 @@ void Geom_BezierSurface::D1(const double U,
                             gp_Vec&      D1U,
                             gp_Vec&      D1V) const
 {
-  Geom_BezierSurfaceCache& aCache = ensureCache();
-  aCache.Build(poles->Array2(), Weights());
+  BSplSLib_Cache& aCache = ensureCache();
   aCache.D1(U, V, P, D1U, D1V);
 }
 
@@ -1436,8 +1435,7 @@ void Geom_BezierSurface::D2(const double U,
                             gp_Vec&      D2V,
                             gp_Vec&      D2UV) const
 {
-  Geom_BezierSurfaceCache& aCache = ensureCache();
-  aCache.Build(poles->Array2(), Weights());
+  BSplSLib_Cache& aCache = ensureCache();
   aCache.D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
@@ -1944,12 +1942,23 @@ void Geom_BezierSurface::Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Po
 
 //=================================================================================================
 
-Geom_BezierSurfaceCache& Geom_BezierSurface::ensureCache() const
+BSplSLib_Cache& Geom_BezierSurface::ensureCache() const
 {
   if (!myCache)
   {
-    myCache =
-      std::make_unique<Geom_BezierSurfaceCache>(UDegree(), VDegree(), urational || vrational);
+    NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(UDegree()),
+                                           1,
+                                           2 * (UDegree() + 1));
+    NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(VDegree()),
+                                           1,
+                                           2 * (VDegree() + 1));
+    myCache = new BSplSLib_Cache(UDegree(),
+                                 IsUPeriodic(),
+                                 aUFlatKnots,
+                                 VDegree(),
+                                 IsVPeriodic(),
+                                 aVFlatKnots,
+                                 Weights());
   }
   return *myCache;
 }
@@ -1958,7 +1967,7 @@ Geom_BezierSurfaceCache& Geom_BezierSurface::ensureCache() const
 
 void Geom_BezierSurface::invalidateCache() const
 {
-  myCache.reset();
+  myCache = nullptr;
 }
 
 //=================================================================================================

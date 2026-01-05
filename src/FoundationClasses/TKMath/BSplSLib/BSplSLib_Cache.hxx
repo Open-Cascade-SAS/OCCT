@@ -47,6 +47,14 @@ public:
   //! \param theParameterV  second parameter of the point placed in the span
   Standard_EXPORT bool IsCacheValid(double theParameterU, double theParameterV) const;
 
+  //! Verifies validity of the cache in U using local parameters of the point
+  //! \param theLocalU  local U parameter of the point placed in the span
+  Standard_EXPORT bool IsCacheValidU(double theLocalU) const;
+
+  //! Verifies validity of the cache in V using local parameters of the point
+  //! \param theLocalV  local V parameter of the point placed in the span
+  Standard_EXPORT bool IsCacheValidV(double theLocalV) const;
+
   //! Recomputes the cache data. Does not verify validity of the cache
   //! \param theParameterU  the parametric value on the U axis to identify the span
   //! \param theParameterV  the parametric value on the V axis to identify the span

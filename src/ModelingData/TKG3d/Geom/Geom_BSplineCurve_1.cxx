@@ -16,7 +16,7 @@
 
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include "Geom_BSplineCurveCache.pxx"
+#include <BSplCLib_CacheGrid.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -167,40 +167,36 @@ int Geom_BSplineCurve::Degree() const
 
 void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 {
-  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
-  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
-  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
-  aCache.D0(aSpan.SpanIdx, aSpan.LocalParam, P);
+  BSplCLib_CacheGrid&    aCache = ensureSpanCache();
+  Handle(BSplCLib_Cache) aSpan  = aCache.Cache(U, FKNOTS, POLES, Weights());
+  aSpan->D0(U, P);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
-  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
-  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
-  aCache.D1(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1);
+  BSplCLib_CacheGrid&    aCache = ensureSpanCache();
+  Handle(BSplCLib_Cache) aSpan  = aCache.Cache(U, FKNOTS, POLES, Weights());
+  aSpan->D1(U, P, V1);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
-  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
-  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
-  aCache.D2(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2);
+  BSplCLib_CacheGrid&    aCache = ensureSpanCache();
+  Handle(BSplCLib_Cache) aSpan  = aCache.Cache(U, FKNOTS, POLES, Weights());
+  aSpan->D2(U, P, V1, V2);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  Geom_BSplineCurveCache&                aCache = ensureSpanCache();
-  const Geom_BSplineCurveCache::SpanInfo aSpan  = aCache.LocateSpan(U);
-  aCache.BuildSpan(aSpan.SpanIdx, aSpan.FlatKnotIdx, FKNOTS, POLES, Weights(), periodic);
-  aCache.D3(aSpan.SpanIdx, aSpan.LocalParam, aSpan.SpanLength, P, V1, V2, V3);
+  BSplCLib_CacheGrid&    aCache = ensureSpanCache();
+  Handle(BSplCLib_Cache) aSpan  = aCache.Cache(U, FKNOTS, POLES, Weights());
+  aSpan->D3(U, P, V1, V2, V3);
 }
 
 //=================================================================================================

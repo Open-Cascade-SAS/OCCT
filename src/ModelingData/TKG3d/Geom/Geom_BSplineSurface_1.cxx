@@ -27,7 +27,7 @@
 #include <BSplSLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include "Geom_BSplineSurfaceCache.pxx"
+#include <BSplSLib_CacheGrid.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp_Pnt.hxx>
@@ -117,21 +117,9 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
-  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
-                   aSpanInfo.V.SpanIdx,
-                   aSpanInfo.U.FlatKnotIdx,
-                   aSpanInfo.V.FlatKnotIdx,
-                   UFKNOTS,
-                   VFKNOTS,
-                   POLES,
-                   Weights());
-  aCache.D0(aSpanInfo.U.SpanIdx,
-            aSpanInfo.V.SpanIdx,
-            aSpanInfo.U.LocalParam,
-            aSpanInfo.V.LocalParam,
-            P);
+  BSplSLib_CacheGrid&    aCache     = ensureSpanCache();
+  Handle(BSplSLib_Cache) aSpanCache = aCache.Cache(U, V, UFKNOTS, VFKNOTS, POLES, Weights());
+  aSpanCache->D0(U, V, P);
 }
 
 //=================================================================================================
@@ -142,25 +130,9 @@ void Geom_BSplineSurface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
-  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
-                   aSpanInfo.V.SpanIdx,
-                   aSpanInfo.U.FlatKnotIdx,
-                   aSpanInfo.V.FlatKnotIdx,
-                   UFKNOTS,
-                   VFKNOTS,
-                   POLES,
-                   Weights());
-  aCache.D1(aSpanInfo.U.SpanIdx,
-            aSpanInfo.V.SpanIdx,
-            aSpanInfo.U.LocalParam,
-            aSpanInfo.V.LocalParam,
-            aSpanInfo.U.SpanHalfLen,
-            aSpanInfo.V.SpanHalfLen,
-            P,
-            D1U,
-            D1V);
+  BSplSLib_CacheGrid&    aCache     = ensureSpanCache();
+  Handle(BSplSLib_Cache) aSpanCache = aCache.Cache(U, V, UFKNOTS, VFKNOTS, POLES, Weights());
+  aSpanCache->D1(U, V, P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -174,28 +146,9 @@ void Geom_BSplineSurface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  Geom_BSplineSurfaceCache&                aCache    = ensureSpanCache();
-  const Geom_BSplineSurfaceCache::SpanInfo aSpanInfo = aCache.LocateSpan(U, V);
-  aCache.BuildSpan(aSpanInfo.U.SpanIdx,
-                   aSpanInfo.V.SpanIdx,
-                   aSpanInfo.U.FlatKnotIdx,
-                   aSpanInfo.V.FlatKnotIdx,
-                   UFKNOTS,
-                   VFKNOTS,
-                   POLES,
-                   Weights());
-  aCache.D2(aSpanInfo.U.SpanIdx,
-            aSpanInfo.V.SpanIdx,
-            aSpanInfo.U.LocalParam,
-            aSpanInfo.V.LocalParam,
-            aSpanInfo.U.SpanHalfLen,
-            aSpanInfo.V.SpanHalfLen,
-            P,
-            D1U,
-            D1V,
-            D2U,
-            D2V,
-            D2UV);
+  BSplSLib_CacheGrid&    aCache     = ensureSpanCache();
+  Handle(BSplSLib_Cache) aSpanCache = aCache.Cache(U, V, UFKNOTS, VFKNOTS, POLES, Weights());
+  aSpanCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
