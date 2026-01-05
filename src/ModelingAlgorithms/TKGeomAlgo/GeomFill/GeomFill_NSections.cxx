@@ -22,6 +22,7 @@
 
 #include <GeomFill_NSections.hxx>
 
+#include <BSplCLib.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
