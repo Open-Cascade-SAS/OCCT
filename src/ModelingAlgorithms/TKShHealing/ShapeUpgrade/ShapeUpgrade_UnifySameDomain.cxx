@@ -2338,7 +2338,6 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
       OutEdge = GlueEdgesWith3DCurves(theChain, VF, VL);
       return true;
     }
-    return false;
   }
   return false;
 }
