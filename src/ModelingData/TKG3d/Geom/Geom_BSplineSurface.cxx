@@ -186,6 +186,11 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
                                               theOther.weights->UpperCol());
     weights->ChangeArray2() = theOther.weights->Array2();
   }
+
+  if (theOther.mySpanCache)
+  {
+    mySpanCache = new BSplSLib_CacheGrid(*theOther.mySpanCache);
+  }
 }
 
 //=================================================================================================
@@ -1399,8 +1404,12 @@ BSplSLib_CacheGrid& Geom_BSplineSurface::ensureSpanCache() const
 {
   if (!mySpanCache)
   {
-    mySpanCache =
-      new BSplSLib_CacheGrid(udeg, uperiodic, uknots->Array1(), vdeg, vperiodic, vknots->Array1());
+    mySpanCache = new BSplSLib_CacheGrid(udeg,
+                                         uperiodic,
+                                         ufknots->Array1(),
+                                         vdeg,
+                                         vperiodic,
+                                         vfknots->Array1());
   }
   return *mySpanCache;
 }
@@ -1409,5 +1418,5 @@ BSplSLib_CacheGrid& Geom_BSplineSurface::ensureSpanCache() const
 
 void Geom_BSplineSurface::invalidateSpanCache() const
 {
-  mySpanCache.reset();
+  mySpanCache = nullptr;
 }

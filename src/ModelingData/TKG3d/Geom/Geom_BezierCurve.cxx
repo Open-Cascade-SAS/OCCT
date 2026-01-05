@@ -524,15 +524,14 @@ BSplCLib_Cache& Geom_BezierCurve::ensureCache() const
 
 void Geom_BezierCurve::invalidateCache() const
 {
-  myCache.reset();
+  myCache = nullptr;
 }
 
 //=================================================================================================
 
 void Geom_BezierCurve::D0(const double U, gp_Pnt& P) const
 {
-  Geom_BezierCurveCache& aCache = ensureCache();
-  aCache.Build(poles->Array1(), Weights());
+  BSplCLib_Cache& aCache = ensureCache();
   aCache.D0(U, P);
 }
 
@@ -540,8 +539,7 @@ void Geom_BezierCurve::D0(const double U, gp_Pnt& P) const
 
 void Geom_BezierCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  Geom_BezierCurveCache& aCache = ensureCache();
-  aCache.Build(poles->Array1(), Weights());
+  BSplCLib_Cache& aCache = ensureCache();
   aCache.D1(U, P, V1);
 }
 
@@ -549,8 +547,7 @@ void Geom_BezierCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 
 void Geom_BezierCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  Geom_BezierCurveCache& aCache = ensureCache();
-  aCache.Build(poles->Array1(), Weights());
+  BSplCLib_Cache& aCache = ensureCache();
   aCache.D2(U, P, V1, V2);
 }
 
@@ -558,8 +555,7 @@ void Geom_BezierCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) con
 
 void Geom_BezierCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  Geom_BezierCurveCache& aCache = ensureCache();
-  aCache.Build(poles->Array1(), Weights());
+  BSplCLib_Cache& aCache = ensureCache();
   aCache.D3(U, P, V1, V2, V3);
 }
 

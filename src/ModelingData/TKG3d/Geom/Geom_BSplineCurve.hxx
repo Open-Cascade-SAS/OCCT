@@ -33,7 +33,7 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
-class Geom_BSplineCurveCache;
+class BSplCLib_CacheGrid;
 
 //! Definition of the B_spline curve.
 //! A B-spline curve can be

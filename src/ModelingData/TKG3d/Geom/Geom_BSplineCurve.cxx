@@ -115,10 +115,7 @@ BSplCLib_CacheGrid& Geom_BSplineCurve::ensureSpanCache() const
 
 void Geom_BSplineCurve::invalidateSpanCache() const
 {
-  if (mySpanCache)
-  {
-    mySpanCache->Invalidate();
-  }
+  mySpanCache = nullptr;
 }
 
 //=================================================================================================
@@ -153,6 +150,11 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
   {
     weights = new NCollection_HArray1<double>(theOther.weights->Lower(), theOther.weights->Upper());
     weights->ChangeArray1() = theOther.weights->Array1();
+  }
+
+  if (theOther.mySpanCache)
+  {
+    mySpanCache = new BSplCLib_CacheGrid(*theOther.mySpanCache);
   }
 }
 
@@ -1151,7 +1153,7 @@ void Geom_BSplineCurve::UpdateKnots()
   }
 
   // Reset span cache since structure may have changed
-  mySpanCache.reset();
+  invalidateSpanCache();
 }
 
 //=======================================================================

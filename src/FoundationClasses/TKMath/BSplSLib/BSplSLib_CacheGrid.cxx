@@ -71,8 +71,8 @@ BSplSLib_CacheGrid::BSplSLib_CacheGrid(const BSplSLib_CacheGrid& theOther)
                   theOther.myCacheGrid.UpperRow(),
                   theOther.myCacheGrid.LowerCol(),
                   theOther.myCacheGrid.UpperCol()),
-      myCurrentUSpan(theOther.myCurrentUSpan),
-      myCurrentVSpan(theOther.myCurrentVSpan)
+      myCurrentUSpan(-1),
+      myCurrentVSpan(-1)
 {
   // Deep copy all cache handles
   for (int i = theOther.myCacheGrid.LowerRow(); i <= theOther.myCacheGrid.UpperRow(); ++i)

@@ -49,7 +49,7 @@ BSplCLib_CacheGrid::BSplCLib_CacheGrid(const BSplCLib_CacheGrid& theOther)
       myFirst(theOther.myFirst),
       myLast(theOther.myLast),
       myCacheGrid(theOther.myCacheGrid.Lower(), theOther.myCacheGrid.Upper()),
-      myCurrentSpan(theOther.myCurrentSpan)
+      myCurrentSpan(-1)
 {
   // Deep copy all cache handles
   for (int i = theOther.myCacheGrid.Lower(); i <= theOther.myCacheGrid.Upper(); ++i)
