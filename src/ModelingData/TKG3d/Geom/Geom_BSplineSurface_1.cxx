@@ -237,13 +237,13 @@ gp_Pnt Geom_BSplineSurface::LocalValue(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::LocalD0(const double U,
-                                  const double V,
-                                  const int    FromUK1,
-                                  const int    ToUK2,
-                                  const int    FromVK1,
-                                  const int    ToVK2,
-                                  gp_Pnt&      P) const
+void Geom_BSplineSurface::LocalD0(const double               U,
+                                  const double               V,
+                                  [[maybe_unused]] const int FromUK1,
+                                  [[maybe_unused]] const int ToUK2,
+                                  [[maybe_unused]] const int FromVK1,
+                                  [[maybe_unused]] const int ToVK2,
+                                  gp_Pnt&                    P) const
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD0");
@@ -252,15 +252,15 @@ void Geom_BSplineSurface::LocalD0(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::LocalD1(const double U,
-                                  const double V,
-                                  const int    FromUK1,
-                                  const int    ToUK2,
-                                  const int    FromVK1,
-                                  const int    ToVK2,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V) const
+void Geom_BSplineSurface::LocalD1(const double               U,
+                                  const double               V,
+                                  [[maybe_unused]] const int FromUK1,
+                                  [[maybe_unused]] const int ToUK2,
+                                  [[maybe_unused]] const int FromVK1,
+                                  [[maybe_unused]] const int ToVK2,
+                                  gp_Pnt&                    P,
+                                  gp_Vec&                    D1U,
+                                  gp_Vec&                    D1V) const
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD1");
@@ -269,18 +269,18 @@ void Geom_BSplineSurface::LocalD1(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::LocalD2(const double U,
-                                  const double V,
-                                  const int    FromUK1,
-                                  const int    ToUK2,
-                                  const int    FromVK1,
-                                  const int    ToVK2,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV) const
+void Geom_BSplineSurface::LocalD2(const double               U,
+                                  const double               V,
+                                  [[maybe_unused]] const int FromUK1,
+                                  [[maybe_unused]] const int ToUK2,
+                                  [[maybe_unused]] const int FromVK1,
+                                  [[maybe_unused]] const int ToVK2,
+                                  gp_Pnt&                    P,
+                                  gp_Vec&                    D1U,
+                                  gp_Vec&                    D1V,
+                                  gp_Vec&                    D2U,
+                                  gp_Vec&                    D2V,
+                                  gp_Vec&                    D2UV) const
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD2");
@@ -289,22 +289,22 @@ void Geom_BSplineSurface::LocalD2(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::LocalD3(const double U,
-                                  const double V,
-                                  const int    FromUK1,
-                                  const int    ToUK2,
-                                  const int    FromVK1,
-                                  const int    ToVK2,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV,
-                                  gp_Vec&      D3U,
-                                  gp_Vec&      D3V,
-                                  gp_Vec&      D3UUV,
-                                  gp_Vec&      D3UVV) const
+void Geom_BSplineSurface::LocalD3(const double               U,
+                                  const double               V,
+                                  [[maybe_unused]] const int FromUK1,
+                                  [[maybe_unused]] const int ToUK2,
+                                  [[maybe_unused]] const int FromVK1,
+                                  [[maybe_unused]] const int ToVK2,
+                                  gp_Pnt&                    P,
+                                  gp_Vec&                    D1U,
+                                  gp_Vec&                    D1V,
+                                  gp_Vec&                    D2U,
+                                  gp_Vec&                    D2V,
+                                  gp_Vec&                    D2UV,
+                                  gp_Vec&                    D3U,
+                                  gp_Vec&                    D3V,
+                                  gp_Vec&                    D3UUV,
+                                  gp_Vec&                    D3UVV) const
 {
   Standard_DomainError_Raise_if(FromUK1 == ToUK2 || FromVK1 == ToVK2,
                                 "Geom_BSplineSurface::LocalD3");

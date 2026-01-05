@@ -317,7 +317,10 @@ gp_Pnt Geom_BSplineCurve::LocalValue(const double U, const int FromK1, const int
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2, gp_Pnt& P) const
+void Geom_BSplineCurve::LocalD0(const double               U,
+                                [[maybe_unused]] const int FromK1,
+                                [[maybe_unused]] const int ToK2,
+                                gp_Pnt&                    P) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalValue");
   D0(U, P);
@@ -325,11 +328,11 @@ void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD1(const double U,
-                                const int    FromK1,
-                                const int    ToK2,
-                                gp_Pnt&      P,
-                                gp_Vec&      V1) const
+void Geom_BSplineCurve::LocalD1(const double               U,
+                                [[maybe_unused]] const int FromK1,
+                                [[maybe_unused]] const int ToK2,
+                                gp_Pnt&                    P,
+                                gp_Vec&                    V1) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD1");
   D1(U, P, V1);
@@ -337,12 +340,12 @@ void Geom_BSplineCurve::LocalD1(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD2(const double U,
-                                const int    FromK1,
-                                const int    ToK2,
-                                gp_Pnt&      P,
-                                gp_Vec&      V1,
-                                gp_Vec&      V2) const
+void Geom_BSplineCurve::LocalD2(const double               U,
+                                [[maybe_unused]] const int FromK1,
+                                [[maybe_unused]] const int ToK2,
+                                gp_Pnt&                    P,
+                                gp_Vec&                    V1,
+                                gp_Vec&                    V2) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD2");
   D2(U, P, V1, V2);
@@ -350,13 +353,13 @@ void Geom_BSplineCurve::LocalD2(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD3(const double U,
-                                const int    FromK1,
-                                const int    ToK2,
-                                gp_Pnt&      P,
-                                gp_Vec&      V1,
-                                gp_Vec&      V2,
-                                gp_Vec&      V3) const
+void Geom_BSplineCurve::LocalD3(const double               U,
+                                [[maybe_unused]] const int FromK1,
+                                [[maybe_unused]] const int ToK2,
+                                gp_Pnt&                    P,
+                                gp_Vec&                    V1,
+                                gp_Vec&                    V2,
+                                gp_Vec&                    V3) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD3");
   D3(U, P, V1, V2, V3);
