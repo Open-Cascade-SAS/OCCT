@@ -17,12 +17,6 @@
 
 #include <cmath>
 
-namespace
-{
-// Empty handle for returning null references
-const occ::handle<BSplSLib_Cache> THE_NULL_CACHE;
-} // namespace
-
 //==================================================================================================
 
 BSplSLib_CacheGrid::BSplSLib_CacheGrid(int                               theDegreeU,
@@ -221,14 +215,13 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
     return aCache;
   }
 
-  // Cache doesn't exist - create it
-  aCache = new BSplSLib_Cache(myDegreeU,
-                              myPeriodicU,
-                              theFlatKnotsU,
-                              myDegreeV,
-                              myPeriodicV,
-                              theFlatKnotsV,
-                              theWeights);
+  occ::handle<BSplSLib_Cache> aNewCache = new BSplSLib_Cache(myDegreeU,
+                                                             myPeriodicU,
+                                                             theFlatKnotsU,
+                                                             myDegreeV,
+                                                             myPeriodicV,
+                                                             theFlatKnotsV,
+                                                             theWeights);
 
   // Build the cache for this span
   // We need to use a parameter that is guaranteed to be in this span
@@ -244,7 +237,10 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   double aSpanEndV   = theFlatKnotsV.Value(aSpanIndexV + 1);
   double aSpanMidV   = 0.5 * (aSpanStartV + aSpanEndV);
 
-  aCache->BuildCache(aSpanMidU, aSpanMidV, theFlatKnotsU, theFlatKnotsV, thePoles, theWeights);
+  aNewCache->BuildCache(aSpanMidU, aSpanMidV, theFlatKnotsU, theFlatKnotsV, thePoles, theWeights);
+
+  // Special control for multi-threaded access:
+  aCache = aCache.IsNull() ? aNewCache : aCache;
 
   return aCache;
 }

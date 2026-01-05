@@ -16,12 +16,6 @@
 
 #include <cmath>
 
-namespace
-{
-// Empty handle for returning null references
-const occ::handle<BSplCLib_Cache> THE_NULL_CACHE;
-} // namespace
-
 //==================================================================================================
 
 BSplCLib_CacheGrid::BSplCLib_CacheGrid(int                               theDegree,
@@ -192,12 +186,12 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   if (!aCache.IsNull())
   {
     // Cache exists - it should be valid for this span
-    // (each cache covers exactly one span)
     return aCache;
   }
 
   // Cache doesn't exist - create it
-  aCache = new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles2d, theWeights);
+  occ::handle<BSplCLib_Cache> aNewCache =
+    new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles2d, theWeights);
 
   // Build the cache for this span
   // Use the span midpoint to ensure we're inside the span
@@ -207,7 +201,10 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   double aSpanEnd   = theFlatKnots.Value(aSpanIndex + 1);
   double aSpanMid   = 0.5 * (aSpanStart + aSpanEnd);
 
-  aCache->BuildCache(aSpanMid, theFlatKnots, thePoles2d, theWeights);
+  aNewCache->BuildCache(aSpanMid, theFlatKnots, thePoles2d, theWeights);
+
+  // Special control for multi-threaded access:
+  aCache = aCache.IsNull() ? aNewCache : aCache;
 
   return aCache;
 }
