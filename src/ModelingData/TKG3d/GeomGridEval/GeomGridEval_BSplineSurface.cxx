@@ -16,6 +16,8 @@
 #include <algorithm>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <BSplSLib_Cache.hxx>
+#include <BSplSLib_CacheGrid.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
@@ -32,19 +34,23 @@ constexpr int THE_CACHE_THRESHOLD = 4;
 //!
 //! This helper processes UV points that have been sorted by (USpanIdx, VSpanIdx, U).
 //! It tracks span changes and decides whether to use cache or direct evaluation
-//! based on the number of points in each span group.
+//! based on the number of points in each span group and whether cache already exists.
 //!
-//! @tparam BuildCacheFunc Functor type for cache initialization: void(double U, double V)
-//! @tparam CacheEvalFunc  Functor type for cache-based evaluation: void(const UVPointWithSpan& pt)
+//! @tparam GetOrCreateCacheFunc Functor type for getting/creating cache:
+//!         const Handle(BSplSLib_Cache)& (int USpan, int VSpan)
+//! @tparam CacheEvalFunc  Functor type for cache-based evaluation:
+//!         void(const Handle(BSplSLib_Cache)&, const UVPointWithSpan& pt)
 //! @tparam DirectEvalFunc Functor type for direct evaluation: void(const UVPointWithSpan& pt)
 //!
-//! @param theUVPoints    Sorted UV points with span info
-//! @param theBuildCache  Functor to rebuild cache for a span
-//! @param theCacheEval   Functor called for cache-based evaluation (large spans)
-//! @param theDirectEval  Functor called for direct evaluation (small spans)
-template <typename BuildCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
+//! @param theUVPoints         Sorted UV points with span info
+//! @param theCacheGrid        Shared cache grid from geometry object
+//! @param theGetOrCreateCache Functor to get or create cache for a span
+//! @param theCacheEval        Functor called for cache-based evaluation
+//! @param theDirectEval       Functor called for direct evaluation (small spans without cache)
+template <typename GetOrCreateCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints,
-                           BuildCacheFunc&&                                         theBuildCache,
+                           const occ::handle<BSplSLib_CacheGrid>&                   theCacheGrid,
+                           GetOrCreateCacheFunc&&                                   theGetOrCreateCache,
                            CacheEvalFunc&&                                          theCacheEval,
                            DirectEvalFunc&&                                         theDirectEval)
 {
@@ -74,18 +80,25 @@ void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpa
     }
     const int aGroupSize = aGroupEnd - i;
 
-    if (aGroupSize >= THE_CACHE_THRESHOLD)
+    // Check if cache already exists in the grid
+    const occ::handle<BSplSLib_Cache>& aExistingCache =
+      theCacheGrid->TryGetCacheBySpan(aUSpan, aVSpan);
+
+    // Use cache if: (1) already exists, OR (2) group is large enough to justify building
+    if (!aExistingCache.IsNull() || aGroupSize >= THE_CACHE_THRESHOLD)
     {
-      // Large group: use cache-based evaluation
-      theBuildCache(aFirstPt.U, aFirstPt.V);
+      // Get existing cache or create new one (which gets stored in grid)
+      const occ::handle<BSplSLib_Cache>& aCache =
+        !aExistingCache.IsNull() ? aExistingCache : theGetOrCreateCache(aUSpan, aVSpan);
+
       for (int j = i; j < aGroupEnd; ++j)
       {
-        theCacheEval(theUVPoints.Value(j));
+        theCacheEval(aCache, theUVPoints.Value(j));
       }
     }
     else
     {
-      // Small group: use direct evaluation (skip cache building)
+      // Small group and no existing cache: use direct evaluation (skip cache building)
       for (int j = i; j < aGroupEnd; ++j)
       {
         theDirectEval(theUVPoints.Value(j));
@@ -334,26 +347,24 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   const int                  aNbPoints = aNbU * aNbV;
   NCollection_Array1<gp_Pnt> aLinearResult(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   // Evaluate using sorted UV points
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    // Get or create cache for span (stores in grid for reuse)
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    // Cache evaluation (uses cache from grid)
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
-      aCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      theCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
       aLinearResult.SetValue(thePt.OutputIdx + 1, aPnt);
     },
+    // Direct evaluation
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
       BSplSLib::D0(thePt.U,
@@ -440,24 +451,19 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   // Allocate result buffer (1-based indexing)
   NCollection_Array1<gp_Pnt> aPoints(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   // Evaluate using sorted UV points
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
-      aCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      theCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
       aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
@@ -567,24 +573,19 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
 
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V;
-      aCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      theCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
       aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
@@ -697,24 +698,19 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
 
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      aCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      theCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aResults.SetValue(thePt.OutputIdx + 1,
                         GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
     },
@@ -1055,24 +1051,19 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
 
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V;
-      aCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      theCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
       aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
@@ -1155,24 +1146,19 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
 
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
 
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplSLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSortedUVPoints(
     aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    aCacheGrid,
+    [&](int theUSpan, int theVSpan) -> const occ::handle<BSplSLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theUSpan, theVSpan, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+    [&](const occ::handle<BSplSLib_Cache>& theCache, const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      aCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      theCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aResults.SetValue(thePt.OutputIdx + 1,
                         GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
     },

@@ -1086,6 +1086,17 @@ public:
   //! Returns handle to the V flat knots sequence.
   const occ::handle<NCollection_HArray1<double>>& HArrayVFlatKnots() const { return vfknots; }
 
+  //! Returns the span cache grid for efficient batch evaluation.
+  //! The cache is lazily created if it doesn't exist.
+  //! @warning The returned handle becomes invalid when the geometry is modified.
+  //!          Always obtain a fresh handle for each batch operation.
+  //! @return handle to the span cache grid
+  const occ::handle<BSplSLib_CacheGrid>& SpanCacheGrid() const
+  {
+    ensureSpanCache();
+    return mySpanCache;
+  }
+
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Raised if the continuity of the surface is not C1.

@@ -793,6 +793,17 @@ public:
   //! Returns handle to the flat knots array for efficient grid evaluation.
   const occ::handle<NCollection_HArray1<double>>& HArrayFlatKnots() const { return flatknots; }
 
+  //! Returns the span cache grid for efficient batch evaluation.
+  //! The cache is lazily created if it doesn't exist.
+  //! @warning The returned handle becomes invalid when the geometry is modified.
+  //!          Always obtain a fresh handle for each batch operation.
+  //! @return handle to the span cache grid
+  const occ::handle<BSplCLib_CacheGrid>& SpanCacheGrid() const
+  {
+    ensureSpanCache();
+    return mySpanCache;
+  }
+
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
 

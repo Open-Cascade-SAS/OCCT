@@ -76,6 +76,43 @@ public:
   //! Returns the number of spans.
   int NbSpans() const { return myNbSpans; }
 
+  //! Returns the minimal span index in flat knots array.
+  //! Use this to convert flat knot span index to 0-based grid index.
+  int SpanIndexMin() const { return mySpanIndexMin; }
+
+  //! Returns existing cache for the span, or null if not yet built.
+  //! Does not create cache - use for checking existence before deciding
+  //! whether to use cached or direct evaluation.
+  //! @param theSpanIndex span index in flat knots (from BSplCLib::LocateParameter)
+  //! @return cache handle (null if not built)
+  Standard_EXPORT const occ::handle<BSplCLib_Cache>& TryGetCacheBySpan(int theSpanIndex) const;
+
+  //! Gets or creates the cache for the specified span index (3D curves).
+  //! If cache doesn't exist, creates it and stores in the grid.
+  //! @param theSpanIndex span index in flat knots (from BSplCLib::LocateParameter)
+  //! @param theFlatKnots flat knots array
+  //! @param thePoles     poles array (3D)
+  //! @param theWeights   optional weights array
+  //! @return cache handle (never null)
+  Standard_EXPORT const occ::handle<BSplCLib_Cache>& CacheBySpan(
+    int                               theSpanIndex,
+    const NCollection_Array1<double>& theFlatKnots,
+    const NCollection_Array1<gp_Pnt>& thePoles,
+    const NCollection_Array1<double>* theWeights = nullptr);
+
+  //! Gets or creates the cache for the specified span index (2D curves).
+  //! If cache doesn't exist, creates it and stores in the grid.
+  //! @param theSpanIndex span index in flat knots (from BSplCLib::LocateParameter)
+  //! @param theFlatKnots flat knots array
+  //! @param thePoles2d   poles array (2D)
+  //! @param theWeights   optional weights array
+  //! @return cache handle (never null)
+  Standard_EXPORT const occ::handle<BSplCLib_Cache>& CacheBySpan(
+    int                                 theSpanIndex,
+    const NCollection_Array1<double>&   theFlatKnots,
+    const NCollection_Array1<gp_Pnt2d>& thePoles2d,
+    const NCollection_Array1<double>*   theWeights = nullptr);
+
 private:
   //! Locates the span index for the parameter.
   //! @param theParameter parameter value (will be normalized for periodic)

@@ -15,6 +15,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
+#include <BSplCLib_CacheGrid.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -183,10 +184,12 @@ int locateSpanWithHint(double                            theParam,
 }
 
 //! Iterate over span blocks and dispatch to cache or direct evaluation functors.
-template <typename BuildCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
+//! Uses shared cache grid from the geometry object when available.
+template <typename GetOrCreateCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSpanBlocks(const NCollection_Array1<SpanRange>&     theSpanRanges,
                        const NCollection_Array1<ParamWithSpan>& theParams,
-                       BuildCacheFunc&&                         theBuildCache,
+                       const occ::handle<BSplCLib_CacheGrid>&   theCacheGrid,
+                       GetOrCreateCacheFunc&&                   theGetOrCreateCache,
                        CacheEvalFunc&&                          theCacheEval,
                        DirectEvalFunc&&                         theDirectEval)
 {
@@ -195,22 +198,27 @@ void iterateSpanBlocks(const NCollection_Array1<SpanRange>&     theSpanRanges,
   {
     const auto& aRange    = theSpanRanges.Value(iRange);
     const int   aNbInSpan = aRange.EndIdx - aRange.StartIdx;
+    const int   aSpanIdx  = aRange.SpanIndex;
 
-    if (aNbInSpan >= THE_CACHE_THRESHOLD)
+    // Check if cache already exists in the grid
+    const occ::handle<BSplCLib_Cache>& aExistingCache = theCacheGrid->TryGetCacheBySpan(aSpanIdx);
+
+    // Use cache if: (1) already exists, OR (2) group is large enough to justify building
+    if (!aExistingCache.IsNull() || aNbInSpan >= THE_CACHE_THRESHOLD)
     {
-      // Large block: reuse cache
-      theBuildCache(theParams.Value(aRange.StartIdx).Param);
+      // Get existing cache or create new one (which gets stored in grid)
+      const occ::handle<BSplCLib_Cache>& aCache =
+        !aExistingCache.IsNull() ? aExistingCache : theGetOrCreateCache(aSpanIdx);
 
       for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
       {
         const auto& aP = theParams.Value(i);
-        theCacheEval(aP.OrigIdx, aP.LocalParam);
+        theCacheEval(aCache, aP.OrigIdx, aP.LocalParam);
       }
     }
     else
     {
-      // Small block: cheaper to evaluate directly
-      const int aSpanIdx = aRange.SpanIndex;
+      // Small block and no existing cache: cheaper to evaluate directly
       for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
       {
         const auto& aP = theParams.Value(i);
@@ -264,16 +272,20 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid(
   const int                  aNbParams = theParams.Size();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
 
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplCLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSpanBlocks(
     aPrepared.Ranges,
     aPrepared.Params,
-    [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
-    // Cache evaluation (local parameter)
-    [&](int theIdx, double theLocalParam) {
-      aCache->D0Local(theLocalParam, aPoints.ChangeValue(theIdx + 1));
+    aCacheGrid,
+    // Get or create cache for span (stores in grid for reuse)
+    [&](int theSpanIdx) -> const occ::handle<BSplCLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theSpanIdx, aFlatKnots, aPoles, aWeights);
+    },
+    // Cache evaluation (uses cache from grid)
+    [&](const occ::handle<BSplCLib_Cache>& theCache, int theIdx, double theLocalParam) {
+      theCache->D0Local(theLocalParam, aPoints.ChangeValue(theIdx + 1));
     },
     // Direct evaluation (global parameter + span index)
     [&](int theIdx, double theParam, int theSpanIdx) {
@@ -333,17 +345,20 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResults(1, aNbParams);
 
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplCLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSpanBlocks(
     aPrepared.Ranges,
     aPrepared.Params,
-    [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
-    [&](int theIdx, double theLocalParam) {
+    aCacheGrid,
+    [&](int theSpanIdx) -> const occ::handle<BSplCLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theSpanIdx, aFlatKnots, aPoles, aWeights);
+    },
+    [&](const occ::handle<BSplCLib_Cache>& theCache, int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1;
-      aCache->D1Local(theLocalParam, aPoint, aD1);
+      theCache->D1Local(theLocalParam, aPoint, aD1);
       aResults.ChangeValue(theIdx + 1) = {aPoint, aD1};
     },
     [&](int theIdx, double theParam, int theSpanIdx) {
@@ -405,17 +420,20 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResults(1, aNbParams);
 
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplCLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSpanBlocks(
     aPrepared.Ranges,
     aPrepared.Params,
-    [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
-    [&](int theIdx, double theLocalParam) {
+    aCacheGrid,
+    [&](int theSpanIdx) -> const occ::handle<BSplCLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theSpanIdx, aFlatKnots, aPoles, aWeights);
+    },
+    [&](const occ::handle<BSplCLib_Cache>& theCache, int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2;
-      aCache->D2Local(theLocalParam, aPoint, aD1, aD2);
+      theCache->D2Local(theLocalParam, aPoint, aD1, aD2);
       aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2};
     },
     [&](int theIdx, double theParam, int theSpanIdx) {
@@ -478,17 +496,20 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
   const int                                 aNbParams = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResults(1, aNbParams);
 
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
+  // Use shared cache grid from geometry
+  const occ::handle<BSplCLib_CacheGrid>& aCacheGrid = myGeom->SpanCacheGrid();
 
   iterateSpanBlocks(
     aPrepared.Ranges,
     aPrepared.Params,
-    [&](double theParam) { aCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
-    [&](int theIdx, double theLocalParam) {
+    aCacheGrid,
+    [&](int theSpanIdx) -> const occ::handle<BSplCLib_Cache>& {
+      return aCacheGrid->CacheBySpan(theSpanIdx, aFlatKnots, aPoles, aWeights);
+    },
+    [&](const occ::handle<BSplCLib_Cache>& theCache, int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2, aD3;
-      aCache->D3Local(theLocalParam, aPoint, aD1, aD2, aD3);
+      theCache->D3Local(theLocalParam, aPoint, aD1, aD2, aD3);
       aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2, aD3};
     },
     [&](int theIdx, double theParam, int theSpanIdx) {

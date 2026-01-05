@@ -17,6 +17,12 @@
 
 #include <cmath>
 
+namespace
+{
+//! Static null handle for TryGetCacheBySpan return value.
+static const occ::handle<BSplSLib_Cache> THE_NULL_CACHE;
+} // namespace
+
 //==================================================================================================
 
 BSplSLib_CacheGrid::BSplSLib_CacheGrid(int                               theDegreeU,
@@ -203,15 +209,13 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   aUSpan = std::max(0, std::min(aUSpan, myNbUSpans - 1));
   aVSpan = std::max(0, std::min(aVSpan, myNbVSpans - 1));
 
-  // Update current span
-  myCurrentUSpan = aUSpan;
-  myCurrentVSpan = aVSpan;
-
   // Check if cache already exists for this span
   occ::handle<BSplSLib_Cache>& aCache = myCacheGrid.ChangeValue(aUSpan, aVSpan);
   if (!aCache.IsNull())
   {
     // Cache exists - it should be valid for this span
+    myCurrentUSpan = aUSpan;
+    myCurrentVSpan = aVSpan;
     return aCache;
   }
 
@@ -240,7 +244,85 @@ const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::Cache(
   aNewCache->BuildCache(aSpanMidU, aSpanMidV, theFlatKnotsU, theFlatKnotsV, thePoles, theWeights);
 
   // Special control for multi-threaded access:
-  aCache = aCache.IsNull() ? aNewCache : aCache;
+  aCache         = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentUSpan = aUSpan;
+  myCurrentVSpan = aVSpan;
+
+  return aCache;
+}
+
+//==================================================================================================
+
+const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::TryGetCacheBySpan(int theUSpanIndex,
+                                                                         int theVSpanIndex) const
+{
+  // Convert flat knot span indices to 0-based grid indices
+  const int aUGridIndex = theUSpanIndex - mySpanIndexMinU;
+  const int aVGridIndex = theVSpanIndex - mySpanIndexMinV;
+
+  // Check bounds
+  if (aUGridIndex < 0 || aUGridIndex >= myNbUSpans || aVGridIndex < 0 || aVGridIndex >= myNbVSpans)
+  {
+    return THE_NULL_CACHE;
+  }
+
+  myCurrentUSpan = aUGridIndex;
+  myCurrentVSpan = aVGridIndex;
+
+  return myCacheGrid.Value(aUGridIndex, aVGridIndex);
+}
+
+//==================================================================================================
+
+const occ::handle<BSplSLib_Cache>& BSplSLib_CacheGrid::CacheBySpan(
+  int                               theUSpanIndex,
+  int                               theVSpanIndex,
+  const NCollection_Array1<double>& theFlatKnotsU,
+  const NCollection_Array1<double>& theFlatKnotsV,
+  const NCollection_Array2<gp_Pnt>& thePoles,
+  const NCollection_Array2<double>* theWeights)
+{
+  // Convert flat knot span indices to 0-based grid indices
+  int aUGridIndex = theUSpanIndex - mySpanIndexMinU;
+  int aVGridIndex = theVSpanIndex - mySpanIndexMinV;
+
+  // Clamp to valid range
+  aUGridIndex = std::max(0, std::min(aUGridIndex, myNbUSpans - 1));
+  aVGridIndex = std::max(0, std::min(aVGridIndex, myNbVSpans - 1));
+
+  // Check if cache already exists
+  occ::handle<BSplSLib_Cache>& aCache = myCacheGrid.ChangeValue(aUGridIndex, aVGridIndex);
+  if (!aCache.IsNull())
+  {
+    myCurrentUSpan = aUGridIndex;
+    myCurrentVSpan = aVGridIndex;
+    return aCache;
+  }
+
+  // Create new cache
+  occ::handle<BSplSLib_Cache> aNewCache = new BSplSLib_Cache(myDegreeU,
+                                                             myPeriodicU,
+                                                             theFlatKnotsU,
+                                                             myDegreeV,
+                                                             myPeriodicV,
+                                                             theFlatKnotsV,
+                                                             theWeights);
+
+  // Build the cache using span midpoints
+  const double aSpanStartU = theFlatKnotsU.Value(theUSpanIndex);
+  const double aSpanEndU   = theFlatKnotsU.Value(theUSpanIndex + 1);
+  const double aSpanMidU   = 0.5 * (aSpanStartU + aSpanEndU);
+
+  const double aSpanStartV = theFlatKnotsV.Value(theVSpanIndex);
+  const double aSpanEndV   = theFlatKnotsV.Value(theVSpanIndex + 1);
+  const double aSpanMidV   = 0.5 * (aSpanStartV + aSpanEndV);
+
+  aNewCache->BuildCache(aSpanMidU, aSpanMidV, theFlatKnotsU, theFlatKnotsV, thePoles, theWeights);
+
+  // Thread-safe assignment
+  aCache         = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentUSpan = aUGridIndex;
+  myCurrentVSpan = aVGridIndex;
 
   return aCache;
 }

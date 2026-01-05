@@ -79,6 +79,40 @@ public:
   //! Returns the total number of spans.
   int NbSpans() const { return myNbUSpans * myNbVSpans; }
 
+  //! Returns the minimal span index for U direction in flat knots array.
+  //! Use this to convert flat knot span index to 0-based grid index.
+  int SpanIndexMinU() const { return mySpanIndexMinU; }
+
+  //! Returns the minimal span index for V direction in flat knots array.
+  //! Use this to convert flat knot span index to 0-based grid index.
+  int SpanIndexMinV() const { return mySpanIndexMinV; }
+
+  //! Returns existing cache for the span, or null if not yet built.
+  //! Does not create cache - use for checking existence before deciding
+  //! whether to use cached or direct evaluation.
+  //! @param theUSpanIndex U span index in flat knots (from BSplCLib::LocateParameter)
+  //! @param theVSpanIndex V span index in flat knots (from BSplCLib::LocateParameter)
+  //! @return cache handle (null if not built)
+  Standard_EXPORT const occ::handle<BSplSLib_Cache>& TryGetCacheBySpan(int theUSpanIndex,
+                                                                       int theVSpanIndex) const;
+
+  //! Gets or creates the cache for the specified span indices.
+  //! If cache doesn't exist, creates it and stores in the grid.
+  //! @param theUSpanIndex U span index in flat knots (from BSplCLib::LocateParameter)
+  //! @param theVSpanIndex V span index in flat knots (from BSplCLib::LocateParameter)
+  //! @param theFlatKnotsU flat knots along U direction
+  //! @param theFlatKnotsV flat knots along V direction
+  //! @param thePoles      poles array
+  //! @param theWeights    optional weights array
+  //! @return cache handle (never null)
+  Standard_EXPORT const occ::handle<BSplSLib_Cache>& CacheBySpan(
+    int                               theUSpanIndex,
+    int                               theVSpanIndex,
+    const NCollection_Array1<double>& theFlatKnotsU,
+    const NCollection_Array1<double>& theFlatKnotsV,
+    const NCollection_Array2<gp_Pnt>& thePoles,
+    const NCollection_Array2<double>* theWeights = nullptr);
+
 private:
   //! Locates the span index for U parameter.
   //! @param theU          U parameter (will be normalized for periodic)

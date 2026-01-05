@@ -16,6 +16,12 @@
 
 #include <cmath>
 
+namespace
+{
+//! Static null handle for TryGetCacheBySpan return value.
+static const occ::handle<BSplCLib_Cache> THE_NULL_CACHE;
+} // namespace
+
 //==================================================================================================
 
 BSplCLib_CacheGrid::BSplCLib_CacheGrid(int                               theDegree,
@@ -136,20 +142,17 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   // Clamp to valid range (in case of edge cases)
   aSpan = std::max(0, std::min(aSpan, myNbSpans - 1));
 
-  // Update current span
-  myCurrentSpan = aSpan;
-
   // Check if cache already exists for this span
   occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.ChangeValue(aSpan);
   if (!aCache.IsNull())
   {
     // Cache exists - it should be valid for this span
-    // (each cache covers exactly one span)
+    myCurrentSpan = aSpan;
     return aCache;
   }
 
-  // Cache doesn't exist - create it
-  aCache = new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles, theWeights);
+  Handle(BSplCLib_Cache) aNewCache =
+    new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles, theWeights);
 
   // Build the cache for this span
   // Use the span midpoint to ensure we're inside the span
@@ -159,7 +162,11 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   double aSpanEnd   = theFlatKnots.Value(aSpanIndex + 1);
   double aSpanMid   = 0.5 * (aSpanStart + aSpanEnd);
 
-  aCache->BuildCache(aSpanMid, theFlatKnots, thePoles, theWeights);
+  aNewCache->BuildCache(aSpanMid, theFlatKnots, thePoles, theWeights);
+
+  // Special control for multi-threaded access:
+  aCache        = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentSpan = aSpan;
 
   return aCache;
 }
@@ -178,14 +185,12 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   // Clamp to valid range (in case of edge cases)
   aSpan = std::max(0, std::min(aSpan, myNbSpans - 1));
 
-  // Update current span
-  myCurrentSpan = aSpan;
-
   // Check if cache already exists for this span
   occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.ChangeValue(aSpan);
   if (!aCache.IsNull())
   {
     // Cache exists - it should be valid for this span
+    myCurrentSpan = aSpan;
     return aCache;
   }
 
@@ -204,7 +209,105 @@ const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::Cache(
   aNewCache->BuildCache(aSpanMid, theFlatKnots, thePoles2d, theWeights);
 
   // Special control for multi-threaded access:
-  aCache = aCache.IsNull() ? aNewCache : aCache;
+  aCache        = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentSpan = aSpan;
+
+  return aCache;
+}
+
+//==================================================================================================
+
+const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::TryGetCacheBySpan(int theSpanIndex) const
+{
+  // Convert flat knot span index to 0-based grid index
+  const int aGridIndex = theSpanIndex - mySpanIndexMin;
+
+  // Check bounds
+  if (aGridIndex < 0 || aGridIndex >= myNbSpans)
+  {
+    return THE_NULL_CACHE;
+  }
+
+  myCurrentSpan = aGridIndex;
+  return myCacheGrid.Value(aGridIndex);
+}
+
+//==================================================================================================
+
+const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::CacheBySpan(
+  int                               theSpanIndex,
+  const NCollection_Array1<double>& theFlatKnots,
+  const NCollection_Array1<gp_Pnt>& thePoles,
+  const NCollection_Array1<double>* theWeights)
+{
+  // Convert flat knot span index to 0-based grid index
+  int aGridIndex = theSpanIndex - mySpanIndexMin;
+
+  // Clamp to valid range
+  aGridIndex = std::max(0, std::min(aGridIndex, myNbSpans - 1));
+
+  // Check if cache already exists
+  occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.ChangeValue(aGridIndex);
+  if (!aCache.IsNull())
+  {
+    myCurrentSpan = aGridIndex;
+    return aCache;
+  }
+
+  // Create new cache
+  occ::handle<BSplCLib_Cache> aNewCache =
+    new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles, theWeights);
+
+  // Build the cache using span midpoint
+  const double aSpanStart = theFlatKnots.Value(theSpanIndex);
+  const double aSpanEnd   = theFlatKnots.Value(theSpanIndex + 1);
+  const double aSpanMid   = 0.5 * (aSpanStart + aSpanEnd);
+
+  aNewCache->BuildCache(aSpanMid, theFlatKnots, thePoles, theWeights);
+
+  // Thread-safe assignment
+  aCache        = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentSpan = aGridIndex;
+
+  return aCache;
+}
+
+//==================================================================================================
+
+const occ::handle<BSplCLib_Cache>& BSplCLib_CacheGrid::CacheBySpan(
+  int                                 theSpanIndex,
+  const NCollection_Array1<double>&   theFlatKnots,
+  const NCollection_Array1<gp_Pnt2d>& thePoles2d,
+  const NCollection_Array1<double>*   theWeights)
+{
+  // Convert flat knot span index to 0-based grid index
+  int aGridIndex = theSpanIndex - mySpanIndexMin;
+
+  // Clamp to valid range
+  aGridIndex = std::max(0, std::min(aGridIndex, myNbSpans - 1));
+
+  // Check if cache already exists
+  occ::handle<BSplCLib_Cache>& aCache = myCacheGrid.ChangeValue(aGridIndex);
+  if (!aCache.IsNull())
+  {
+    myCurrentSpan = aGridIndex;
+    return aCache;
+  }
+
+  // Create new cache
+  occ::handle<BSplCLib_Cache> aNewCache =
+    new BSplCLib_Cache(myDegree, myPeriodic, theFlatKnots, thePoles2d, theWeights);
+
+  // Build the cache using span midpoint
+  const double aSpanStart = theFlatKnots.Value(theSpanIndex);
+  const double aSpanEnd   = theFlatKnots.Value(theSpanIndex + 1);
+  const double aSpanMid   = 0.5 * (aSpanStart + aSpanEnd);
+
+  aNewCache->BuildCache(aSpanMid, theFlatKnots, thePoles2d, theWeights);
+
+  // Thread-safe assignment
+  aCache        = aCache.IsNull() ? aNewCache : aCache;
+  myCurrentSpan = aGridIndex;
 
   return aCache;
 }
