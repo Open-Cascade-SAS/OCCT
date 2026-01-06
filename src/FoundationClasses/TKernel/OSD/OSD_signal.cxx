@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <OSD.hxx>
+#include <Standard_CString.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <Standard_DivideByZero.hxx>
 #include <Standard_Overflow.hxx>
@@ -96,7 +97,7 @@ static bool fMsgBox;
 static std::mutex THE_SIGNAL_MUTEX;
 
 static LONG __fastcall _osd_raise(DWORD theCode, const char* theMsg, const char* theStack);
-static BOOL WINAPI _osd_ctrl_break_handler(DWORD);
+static BOOL WINAPI     _osd_ctrl_break_handler(DWORD);
 
   #if !defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
 static bool fDbgLoaded;
@@ -106,7 +107,7 @@ static LONG _osd_debug(void);
   #define _OSD_FPX (_EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW)
 
   #ifdef OCC_CONVERT_SIGNALS
-    #define THROW_OR_JUMP(Type, Message, Stack) Type::Jump(Type::NewInstance(Message, Stack))
+    #define THROW_OR_JUMP(Type, Message, Stack) Standard_ErrorHandler::Abort(Type(Message, Stack))
   #else
     #define THROW_OR_JUMP(Type, Message, Stack) throw Type(Message, Stack)
   #endif
@@ -818,41 +819,41 @@ static void Handler(const int theSignal)
   switch (theSignal)
   {
     case SIGHUP:
-      OSD_SIGHUP::Jump(OSD_SIGHUP::NewInstance("SIGHUP 'hangup' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGHUP("SIGHUP 'hangup' detected."));
       exit(SIGHUP);
       break;
     case SIGINT:
       // For safe handling of Control-C as stop event, arm a variable but do not
       // generate longjump (we are out of context anyway)
       fCtrlBrk = true;
-      // OSD_SIGINT::Jump(OSD_SIGINT::NewInstance("SIGINT 'interrupt' detected."));
+      // Standard_ErrorHandler::Abort(OSD_SIGINT("SIGINT 'interrupt' detected."));
       // exit(SIGINT);
       break;
     case SIGQUIT:
-      OSD_SIGQUIT::Jump(OSD_SIGQUIT::NewInstance("SIGQUIT 'quit' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGQUIT("SIGQUIT 'quit' detected."));
       exit(SIGQUIT);
       break;
     case SIGILL:
-      OSD_SIGILL::Jump(OSD_SIGILL::NewInstance("SIGILL 'illegal instruction' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGILL("SIGILL 'illegal instruction' detected."));
       exit(SIGILL);
       break;
     case SIGKILL:
-      OSD_SIGKILL::Jump(OSD_SIGKILL::NewInstance("SIGKILL 'kill' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGKILL("SIGKILL 'kill' detected."));
       exit(SIGKILL);
       break;
     case SIGBUS:
       sigaddset(&set, SIGBUS);
       sigprocmask(SIG_UNBLOCK, &set, nullptr);
-      OSD_SIGBUS::Jump(OSD_SIGBUS::NewInstance("SIGBUS 'bus error' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGBUS("SIGBUS 'bus error' detected."));
       exit(SIGBUS);
       break;
     case SIGSEGV:
-      OSD_SIGSEGV::Jump(OSD_SIGSEGV::NewInstance("SIGSEGV 'segmentation violation' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGSEGV("SIGSEGV 'segmentation violation' detected."));
       exit(SIGSEGV);
       break;
   #ifdef SIGSYS
     case SIGSYS:
-      OSD_SIGSYS::Jump(OSD_SIGSYS::NewInstance("SIGSYS 'bad argument to system call' detected."));
+      Standard_ErrorHandler::Abort(OSD_SIGSYS("SIGSYS 'bad argument to system call' detected."));
       exit(SIGSYS);
       break;
   #endif
@@ -863,8 +864,7 @@ static void Handler(const int theSignal)
       OSD::SetFloatingSignal(true);
   #endif
   #if (!defined(__sun)) && (!defined(SOLARIS))
-      Standard_NumericError::Jump(
-        Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected"));
+      Standard_ErrorHandler::Abort(Standard_NumericError("SIGFPE Arithmetic exception detected"));
       break;
   #else
       // Reste SOLARIS
@@ -873,39 +873,34 @@ static void Handler(const int theSignal)
         switch (aSigInfo->si_code)
         {
           case FPE_FLTDIV_TRAP:
-            Standard_DivideByZero::Jump(
-              Standard_DivideByZero::NewInstance("Floating Divide By Zero"));
+            Standard_ErrorHandler::Abort(Standard_DivideByZero("Floating Divide By Zero"));
             break;
           case FPE_INTDIV_TRAP:
-            Standard_DivideByZero::Jump(
-              Standard_DivideByZero::NewInstance("Integer Divide By Zero"));
+            Standard_ErrorHandler::Abort(Standard_DivideByZero("Integer Divide By Zero"));
             break;
           case FPE_FLTOVF_TRAP:
-            Standard_Overflow::Jump(Standard_Overflow::NewInstance("Floating Overflow"));
+            Standard_ErrorHandler::Abort(Standard_Overflow("Floating Overflow"));
             break;
           case FPE_INTOVF_TRAP:
-            Standard_Overflow::Jump(Standard_Overflow::NewInstance("Integer Overflow"));
+            Standard_ErrorHandler::Abort(Standard_Overflow("Integer Overflow"));
             break;
           case FPE_FLTUND_TRAP:
-            Standard_NumericError::Jump(Standard_NumericError::NewInstance("Floating Underflow"));
+            Standard_ErrorHandler::Abort(Standard_NumericError("Floating Underflow"));
             break;
           case FPE_FLTRES_TRAP:
-            Standard_NumericError::Jump(
-              Standard_NumericError::NewInstance("Floating Point Inexact Result"));
+            Standard_ErrorHandler::Abort(Standard_NumericError("Floating Point Inexact Result"));
             break;
           case FPE_FLTINV_TRAP:
-            Standard_NumericError::Jump(
-              Standard_NumericError::NewInstance("Invalid Floating Point Operation"));
+            Standard_ErrorHandler::Abort(Standard_NumericError("Invalid Floating Point Operation"));
             break;
           default:
-            Standard_NumericError::Jump(Standard_NumericError::NewInstance("Numeric Error"));
+            Standard_ErrorHandler::Abort(Standard_NumericError("Numeric Error"));
             break;
         }
       }
       else
       {
-        Standard_NumericError::Jump(
-          Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected"));
+        Standard_ErrorHandler::Abort(Standard_NumericError("SIGFPE Arithmetic exception detected"));
       }
   #endif
       break;
@@ -946,7 +941,7 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
         Standard::StackTrace(aStackBuffer, aStackBufLen, aStackLength);
       }
 
-      OSD_SIGSEGV::Jump(OSD_SIGSEGV::NewInstance(aMsg, aStackBuffer));
+      Standard_ErrorHandler::Abort(OSD_SIGSEGV(aMsg, aStackBuffer));
     }
   }
     #ifdef OCCT_DEBUG
@@ -971,7 +966,7 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
     {
       char aMsg[100];
       Sprintf(aMsg, "SIGSEGV 'segmentation violation' detected. Address %lx", anOffset);
-      OSD_SIGSEGV::Jump(OSD_SIGSEGV::NewInstance(aMsg));
+      Standard_ErrorHandler::Abort(OSD_SIGSEGV(aMsg));
     }
   }
     #ifdef OCCT_DEBUG

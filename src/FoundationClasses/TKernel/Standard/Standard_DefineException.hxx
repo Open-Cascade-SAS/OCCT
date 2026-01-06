@@ -23,8 +23,6 @@
 //! This macro creates a complete exception class with:
 //! - Constructors that forward to base class
 //! - ExceptionType() override returning the class name
-//! - Throw() override for signal handling
-//! - NewInstance() static methods for creating shared instances
 //!
 //! Usage:
 //! @code
@@ -47,25 +45,7 @@
     {                                                                                              \
     }                                                                                              \
                                                                                                    \
-    const char* ExceptionType() const noexcept override                                            \
-    {                                                                                              \
-      return #C1;                                                                                  \
-    }                                                                                              \
-                                                                                                   \
-    void Throw() const override                                                                    \
-    {                                                                                              \
-      throw *this;                                                                                 \
-    }                                                                                              \
-                                                                                                   \
-    static std::shared_ptr<C1> NewInstance(const char* theMessage = "")                            \
-    {                                                                                              \
-      return std::make_shared<C1>(theMessage);                                                     \
-    }                                                                                              \
-                                                                                                   \
-    static std::shared_ptr<C1> NewInstance(const char* theMessage, const char* theStackTrace)      \
-    {                                                                                              \
-      return std::make_shared<C1>(theMessage, theStackTrace);                                      \
-    }                                                                                              \
+    const char* ExceptionType() const noexcept override { return #C1; }                            \
   };
 
 #endif

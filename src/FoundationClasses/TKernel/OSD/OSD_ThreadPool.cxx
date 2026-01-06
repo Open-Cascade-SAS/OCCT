@@ -236,7 +236,8 @@ void OSD_ThreadPool::Launcher::wait()
     {
       if (aNbFailures == 1)
       {
-        Standard_Failure::Jump(aThreadIter.Value()->myFailure);
+        // Re-throw the single exception directly
+        throw *aThreadIter.Value()->myFailure;
       }
 
       if (!aFailures.IsEmpty())
@@ -253,9 +254,9 @@ void OSD_ThreadPool::Launcher::wait()
 
 //=================================================================================================
 
-void OSD_ThreadPool::performJob(std::shared_ptr<Standard_Failure>& theFailure,
-                                OSD_ThreadPool::JobInterface*      theJob,
-                                int                                theThreadIndex)
+void OSD_ThreadPool::performJob(std::optional<Standard_ProgramError>& theFailure,
+                                OSD_ThreadPool::JobInterface*         theJob,
+                                int                                   theThreadIndex)
 {
   try
   {
@@ -266,18 +267,17 @@ void OSD_ThreadPool::performJob(std::shared_ptr<Standard_Failure>& theFailure,
   {
     TCollection_AsciiString aMsg =
       TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.what();
-    theFailure =
-      std::make_shared<Standard_ProgramError>(aMsg.ToCString(), aFailure.GetStackString());
+    theFailure.emplace(aMsg.ToCString(), aFailure.GetStackString());
   }
   catch (std::exception& anStdException)
   {
     TCollection_AsciiString aMsg =
       TCollection_AsciiString(typeid(anStdException).name()) + ": " + anStdException.what();
-    theFailure = std::make_shared<Standard_ProgramError>(aMsg.ToCString(), nullptr);
+    theFailure.emplace(aMsg.ToCString(), nullptr);
   }
   catch (...)
   {
-    theFailure = std::make_shared<Standard_ProgramError>("Error: Unknown exception", nullptr);
+    theFailure.emplace("Error: Unknown exception", nullptr);
   }
 }
 

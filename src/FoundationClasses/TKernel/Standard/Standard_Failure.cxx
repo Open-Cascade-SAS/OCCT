@@ -169,28 +169,6 @@ const char* Standard_Failure::GetStackString() const
 
 //=================================================================================================
 
-void Standard_Failure::Jump(const std::shared_ptr<Standard_Failure>& theFail)
-{
-  if (!theFail)
-  {
-    throw Standard_Failure("Unknown error");
-  }
-#if defined(OCC_CONVERT_SIGNALS)
-  Standard_ErrorHandler::Abort(theFail);
-#else
-  theFail->Throw();
-#endif
-}
-
-//=================================================================================================
-
-void Standard_Failure::Throw() const
-{
-  throw *this;
-}
-
-//=================================================================================================
-
 void Standard_Failure::Print(Standard_OStream& theStream) const
 {
   if (myMessage != nullptr)
@@ -205,21 +183,6 @@ void Standard_Failure::Print(Standard_OStream& theStream) const
   {
     theStream << myStackTrace->GetMessage();
   }
-}
-
-//=================================================================================================
-
-std::shared_ptr<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage)
-{
-  return std::make_shared<Standard_Failure>(theMessage);
-}
-
-//=================================================================================================
-
-std::shared_ptr<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage,
-                                                                const char* theStackTrace)
-{
-  return std::make_shared<Standard_Failure>(theMessage, theStackTrace);
 }
 
 //=================================================================================================

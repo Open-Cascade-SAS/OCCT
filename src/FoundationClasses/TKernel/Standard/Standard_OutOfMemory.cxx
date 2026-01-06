@@ -15,22 +15,9 @@
 
 #include <Standard_OutOfMemory.hxx>
 
-#ifdef min
-  #undef min
-#endif
-
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
-
-namespace
-{
-//! Global instance allocated at load-time to avoid allocation during OOM.
-//! Note: Message buffer is not thread-safe, but this is acceptable trade-off
-//! since OOM is typically a fatal condition and avoiding allocation is priority.
-static std::shared_ptr<Standard_OutOfMemory> anOutOfMemInstance =
-  std::make_shared<Standard_OutOfMemory>();
-} // namespace
 
 //=================================================================================================
 
@@ -61,29 +48,4 @@ void Standard_OutOfMemory::SetMessageString(const char* theMessage)
   {
     std::memcpy(myBuffer, theMessage, n);
   }
-}
-
-//=================================================================================================
-
-std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage)
-{
-  anOutOfMemInstance->SetMessageString(theMessage);
-  return anOutOfMemInstance;
-}
-
-//=================================================================================================
-
-std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
-                                                                        const char* theStackTrace)
-{
-  (void)theStackTrace; // Stack trace is not stored in Standard_OutOfMemory to avoid allocation
-  anOutOfMemInstance->SetMessageString(theMessage);
-  return anOutOfMemInstance;
-}
-
-//=================================================================================================
-
-void Standard_OutOfMemory::Throw() const
-{
-  throw *this;
 }

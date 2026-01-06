@@ -19,8 +19,34 @@
 
 #include <Standard.hxx>
 
-#include <memory>
 #include <setjmp.h>
+#include <variant>
+#include <iostream>
+
+// Signal exception types for variant storage
+#include <OSD_SIGBUS.hxx>
+#include <OSD_SIGHUP.hxx>
+#include <OSD_SIGILL.hxx>
+#include <OSD_SIGINT.hxx>
+#include <OSD_SIGKILL.hxx>
+#include <OSD_SIGQUIT.hxx>
+#include <OSD_SIGSEGV.hxx>
+#include <OSD_SIGSYS.hxx>
+#include <OSD_Exception_ACCESS_VIOLATION.hxx>
+#include <OSD_Exception_ARRAY_BOUNDS_EXCEEDED.hxx>
+#include <OSD_Exception_ILLEGAL_INSTRUCTION.hxx>
+#include <OSD_Exception_IN_PAGE_ERROR.hxx>
+#include <OSD_Exception_INT_OVERFLOW.hxx>
+#include <OSD_Exception_INVALID_DISPOSITION.hxx>
+#include <OSD_Exception_NONCONTINUABLE_EXCEPTION.hxx>
+#include <OSD_Exception_PRIV_INSTRUCTION.hxx>
+#include <OSD_Exception_STACK_OVERFLOW.hxx>
+#include <OSD_Exception_STATUS_NO_MEMORY.hxx>
+#include <Standard_DivideByZero.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Overflow.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Underflow.hxx>
 
 //! @file
 //! Support of handling of C signals as C++-style exceptions, and implementation
@@ -64,8 +90,6 @@
 
 #endif
 
-class Standard_Failure;
-
 //! Class implementing mechanics of conversion of signals to exceptions.
 //!
 //! Each instance of it stores data for jump placement,
@@ -75,6 +99,34 @@ class Standard_Failure;
 //! to find appropriate handler when signal is raised.
 class Standard_ErrorHandler
 {
+public:
+  //! Variant type holding all possible signal exceptions.
+  //! Used to store exception across longjmp without heap allocation.
+  using SignalException = std::variant<std::monostate, // Empty state (no exception)
+                                       OSD_SIGBUS,
+                                       OSD_SIGHUP,
+                                       OSD_SIGILL,
+                                       OSD_SIGINT,
+                                       OSD_SIGKILL,
+                                       OSD_SIGQUIT,
+                                       OSD_SIGSEGV,
+                                       OSD_SIGSYS,
+                                       OSD_Exception_ACCESS_VIOLATION,
+                                       OSD_Exception_ARRAY_BOUNDS_EXCEEDED,
+                                       OSD_Exception_ILLEGAL_INSTRUCTION,
+                                       OSD_Exception_IN_PAGE_ERROR,
+                                       OSD_Exception_INT_OVERFLOW,
+                                       OSD_Exception_INVALID_DISPOSITION,
+                                       OSD_Exception_NONCONTINUABLE_EXCEPTION,
+                                       OSD_Exception_PRIV_INSTRUCTION,
+                                       OSD_Exception_STACK_OVERFLOW,
+                                       OSD_Exception_STATUS_NO_MEMORY,
+                                       Standard_DivideByZero,
+                                       Standard_NumericError,
+                                       Standard_Overflow,
+                                       Standard_ProgramError,
+                                       Standard_Underflow>;
+
 public:
   DEFINE_STANDARD_ALLOC
 
@@ -95,23 +147,25 @@ public:
   //! Returns label for jump
   jmp_buf& Label() { return myLabel; }
 
-  //! Returns the current Error.
-  const std::shared_ptr<Standard_Failure>& Error() const { return myCaughtError; }
+  //! Returns the current Error variant.
+  const SignalException& Error() const { return myCaughtError; }
 
   //! Test if the code is currently running in a try block
   Standard_EXPORT static bool IsInTryBlock();
+
+  //! Abort with specific exception type.
+  //! Finds nearest error handler, stores exception, and performs longjmp.
+  //! @tparam T Exception type (must be one of Standard_SignalException variant types)
+  //! @param theError Exception to store and throw after longjmp
+  template <typename T>
+  static void Abort(const T& theError);
 
 private:
   //! Removes handler from the list.
   void Unlink();
 
-  //! Finds nearest error handler in the stack and sets its exception object to @p theError
-  //! and long jump which then throw normal C++ exception.
-  //! If handler not found, prints error and exit program with error code @c 1.
-  static void Abort(const std::shared_ptr<Standard_Failure>& theError);
-
   //! Returns the current handler (closest in the stack in the current execution thread)
-  static Standard_ErrorHandler* FindHandler();
+  Standard_EXPORT static Standard_ErrorHandler* FindHandler();
 
 public:
   //! Defines a base class for callback objects that can be registered
@@ -140,15 +194,13 @@ public:
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      RegisterCallback();
+      void RegisterCallback();
 
 //! Unregisters this callback object from the error handler.
 #if defined(OCC_CONVERT_SIGNALS)
     Standard_EXPORT
 #endif
-      void
-      UnregisterCallback();
+      void UnregisterCallback();
 
 //! Destructor
 #if defined(OCC_CONVERT_SIGNALS)
@@ -177,13 +229,30 @@ public:
   };
 
 private:
-  std::shared_ptr<Standard_Failure> myCaughtError;
-  Standard_ErrorHandler*            myPrevious    = nullptr;
-  Callback*                         myCallbackPtr = nullptr;
-  jmp_buf                           myLabel       = {};
-
-  friend class Standard_Failure;
+  SignalException        myCaughtError;
+  Standard_ErrorHandler* myPrevious    = nullptr;
+  Callback*              myCallbackPtr = nullptr;
+  jmp_buf                myLabel       = {};
 };
+
+//! Template implementation of Abort - stores exception and performs longjmp.
+template <typename T>
+void Standard_ErrorHandler::Abort(const T& theError)
+{
+#ifndef OCC_CONVERT_SIGNALS
+  throw theError;
+#else
+  Standard_ErrorHandler* anActive = FindHandler();
+  if (anActive == nullptr)
+  {
+    std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
+    std::cerr << "\t... The exception is: " << theError.what() << std::endl;
+    exit(1);
+  }
+  anActive->myCaughtError = theError;
+  longjmp(anActive->myLabel, true);
+#endif
+}
 
 // If OCC_CONVERT_SIGNALS is not defined,
 // provide empty inline implementation

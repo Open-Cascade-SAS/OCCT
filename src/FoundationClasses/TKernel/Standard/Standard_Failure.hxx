@@ -22,7 +22,6 @@
 #include <Standard_SStream.hxx>
 
 #include <exception>
-#include <memory>
 
 //! Forms the root of the entire exception hierarchy.
 //! Inherits from std::exception and implements what() interface.
@@ -74,37 +73,12 @@ public:
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
 
 public:
-  //! Used to construct an instance of the exception object.
-  //! Shall be used to protect against possible construction of exception object in C stack,
-  //! which is dangerous since some of methods require that object was allocated dynamically.
-  Standard_EXPORT static std::shared_ptr<Standard_Failure> NewInstance(const char* theMessage = "");
-
-  //! Used to construct an instance of the exception object with stack trace.
-  Standard_EXPORT static std::shared_ptr<Standard_Failure> NewInstance(const char* theMessage,
-                                                                       const char* theStackTrace);
-
   //! Returns the default length of stack trace to be captured by Standard_Failure constructor;
   //! 0 by default meaning no stack trace.
   Standard_EXPORT static int DefaultStackTraceLength();
 
   //! Sets default length of stack trace to be captured by Standard_Failure constructor.
   Standard_EXPORT static void SetDefaultStackTraceLength(int theNbStackTraces);
-
-public:
-  //! Used to throw CASCADE exception from C signal handler.
-  //! On platforms that do not allow throwing C++ exceptions
-  //! from this handler (e.g. Linux), uses longjump to get to
-  //! the current active signal handler, and only then is
-  //! converted to C++ exception.
-  //! @param theFail exception object to throw
-  Standard_EXPORT static void Jump(const std::shared_ptr<Standard_Failure>& theFail);
-
-protected:
-  //! Used only if standard C++ exceptions are used.
-  //! Throws exception of the same type as this by C++ throw,
-  //! and stores current object as last thrown exception,
-  //! to be accessible by method Caught()
-  Standard_EXPORT virtual void Throw() const;
 
 private:
   //! Reference-counted string using malloc/free for exception safety.
@@ -140,18 +114,6 @@ private:
 inline Standard_OStream& operator<<(Standard_OStream& theStream, const Standard_Failure& theFailure)
 {
   theFailure.Print(theStream);
-  return theStream;
-}
-
-//=================================================================================================
-
-inline Standard_OStream& operator<<(Standard_OStream&                        theStream,
-                                    const std::shared_ptr<Standard_Failure>& theFailure)
-{
-  if (theFailure)
-  {
-    theFailure->Print(theStream);
-  }
   return theStream;
 }
 

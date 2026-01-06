@@ -14,8 +14,6 @@
 
 #include <Standard_ErrorHandler.hxx>
 
-#include <Standard_Failure.hxx>
-
 // During [sig]setjmp()/[sig]longjmp() K_SETJMP is non zero (try)
 // So if there is an abort request and if K_SETJMP is non zero, the abort
 // request will be ignored. If the abort request do a raise during a setjmp
@@ -77,34 +75,25 @@ bool Standard_ErrorHandler::IsInTryBlock()
 
 //=================================================================================================
 
-void Standard_ErrorHandler::Abort(const std::shared_ptr<Standard_Failure>& theError)
-{
-  Standard_ErrorHandler* anActive = FindHandler();
-
-  if (anActive == nullptr)
-  {
-    std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
-    if (theError.get() != nullptr)
-      std::cerr << "\t... The exception is:" << theError->what() << std::endl;
-    exit(1);
-  }
-
-  anActive->myCaughtError = theError;
-  longjmp(anActive->myLabel, true);
-}
-
-//=================================================================================================
-
 void Standard_ErrorHandler::Raise()
 {
-  if (myCaughtError.get() == nullptr)
+  if (std::holds_alternative<std::monostate>(myCaughtError))
   {
     std::cerr << "*** Abort *** an exception handler was called, but no exception object is set."
               << std::endl;
     exit(1);
   }
 
-  Standard_Failure::Jump(myCaughtError);
+  // Visit the variant and throw the appropriate exception type
+  std::visit(
+    [](auto&& theException) {
+      using T = std::decay_t<decltype(theException)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        throw theException;
+      }
+    },
+    myCaughtError);
 }
 
 //=================================================================================================

@@ -33,7 +33,6 @@
 //! macro DEFINE_STANDARD_EXCEPTION, to avoid necessity of dynamic
 //! memory allocations during throwing and stack unwinding:
 //!
-//! - method NewInstance() returns global static instance (singleton)
 //! - message string is stored as field, not allocated dynamically
 //!   (storable message length is limited by buffer size)
 //!
@@ -43,12 +42,8 @@
 //!
 //! @note Message buffer is not thread-safe, but this is acceptable trade-off
 //! since OOM is typically a fatal condition.
-//! @note Stack trace parameter in NewInstance() is intentionally ignored
-//! to avoid any memory allocation during out-of-memory handling.
 class Standard_OutOfMemory : public Standard_ProgramError
 {
-  Standard_EXPORT void Throw() const override;
-
 public:
   //! Constructor is kept public for backward compatibility.
   //! @param theMessage optional error message
@@ -63,16 +58,6 @@ public:
   //! Sets error message.
   //! @param theMessage error message (can be nullptr)
   Standard_EXPORT void SetMessageString(const char* theMessage);
-
-  //! Returns global static instance of exception.
-  Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
-    const char* theMessage = "");
-
-  //! Returns global static instance of exception.
-  //! @note theStackTrace is intentionally ignored to avoid memory allocation.
-  Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
-    const char* theMessage,
-    const char* theStackTrace);
 
 private:
   char myBuffer[1024];
