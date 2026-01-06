@@ -343,10 +343,10 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
       // clang-format on
 
 #ifdef _WIN32
-      if (anException.IsKind(STANDARD_TYPE(OSD_Exception)))
+      if (dynamic_cast<const OSD_Exception*>(&anException) != nullptr)
         ierr = 2;
 #else
-      if (anException.IsKind(STANDARD_TYPE(OSD_Signal)))
+      if (dynamic_cast<const OSD_Signal*>(&anException) != nullptr)
         ierr = 2;
 #endif
       //: abv 03Apr00: anent is actually a previous one:      if (anent.IsNull())

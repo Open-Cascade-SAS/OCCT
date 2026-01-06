@@ -17,17 +17,20 @@
 #ifndef _Standard_Failure_HeaderFile
 #define _Standard_Failure_HeaderFile
 
-#include <Standard_Type.hxx>
-
-#include <Standard_CString.hxx>
-#include <Standard_Transient.hxx>
+#include <Standard.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 
+#include <exception>
+#include <memory>
+
 //! Forms the root of the entire exception hierarchy.
-class Standard_Failure : public Standard_Transient
+//! Inherits from std::exception and implements what() interface.
+class Standard_Failure : public std::exception
 {
 public:
+  DEFINE_STANDARD_ALLOC
+
   //! Creates a status object of type "Failure".
   Standard_EXPORT Standard_Failure();
 
@@ -51,8 +54,11 @@ public:
 
   //! Prints on the stream @p theStream the exception name followed by the error message.
   //!
-  //! Note: there is a short-cut @c operator<< (Standard_OStream&, occ::handle<Standard_Failure>&)
+  //! Note: there is a short-cut @c operator<< (Standard_OStream&, const Standard_Failure&)
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
+
+  //! Returns error message (implements std::exception interface)
+  const char* what() const noexcept override { return GetMessageString(); }
 
   //! Returns error message
   Standard_EXPORT virtual const char* GetMessageString() const;
@@ -74,6 +80,11 @@ public:
   Standard_EXPORT void Reraise(const Standard_SStream& aReason);
 
 public:
+  //! Returns exception type name for displaying in messages.
+  //! Default implementation returns "Standard_Failure".
+  virtual const char* ExceptionType() const { return "Standard_Failure"; }
+
+public:
   //! Raises an exception of type "Failure" and associates
   //! an error message to it. The message can be printed
   //! in an exception handler.
@@ -84,14 +95,14 @@ public:
   //! at run-time.
   Standard_EXPORT static void Raise(const Standard_SStream& aReason);
 
-  //! Used to construct an instance of the exception object as a handle.
+  //! Used to construct an instance of the exception object.
   //! Shall be used to protect against possible construction of exception object in C stack,
   //! which is dangerous since some of methods require that object was allocated dynamically.
-  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage);
+  Standard_EXPORT static std::shared_ptr<Standard_Failure> NewInstance(const char* theMessage);
 
-  //! Used to construct an instance of the exception object as a handle.
-  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage,
-                                                                   const char* theStackTrace);
+  //! Used to construct an instance of the exception object.
+  Standard_EXPORT static std::shared_ptr<Standard_Failure> NewInstance(const char* theMessage,
+                                                                       const char* theStackTrace);
 
   //! Returns the default length of stack trace to be captured by Standard_Failure constructor;
   //! 0 by default meaning no stack trace.
@@ -106,9 +117,8 @@ public:
   //! from this handler (e.g. Linux), uses longjump to get to
   //! the current active signal handler, and only then is
   //! converted to C++ exception.
-  Standard_EXPORT void Jump();
-
-  DEFINE_STANDARD_RTTIEXT(Standard_Failure, Standard_Transient)
+  //! @param theFail exception object to throw
+  Standard_EXPORT static void Jump(const std::shared_ptr<Standard_Failure>& theFail);
 
 protected:
   //! Used only if standard C++ exceptions are used.
@@ -148,10 +158,9 @@ private:
 // function : operator<<
 // purpose  :
 // =======================================================================
-inline Standard_OStream& operator<<(Standard_OStream&                    theStream,
-                                    const occ::handle<Standard_Failure>& theFailure)
+inline Standard_OStream& operator<<(Standard_OStream& theStream, const Standard_Failure& theFailure)
 {
-  theFailure->Print(theStream);
+  theFailure.Print(theStream);
   return theStream;
 }
 
@@ -159,9 +168,13 @@ inline Standard_OStream& operator<<(Standard_OStream&                    theStre
 // function : operator<<
 // purpose  :
 // =======================================================================
-inline Standard_OStream& operator<<(Standard_OStream& theStream, const Standard_Failure& theFailure)
+inline Standard_OStream& operator<<(Standard_OStream&                             theStream,
+                                    const std::shared_ptr<Standard_Failure>& theFailure)
 {
-  theFailure.Print(theStream);
+  if (theFailure)
+  {
+    theFailure->Print(theStream);
+  }
   return theStream;
 }
 

@@ -18,9 +18,8 @@
 #define _Standard_ErrorHandler_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Handle.hxx>
-#include <Standard_Type.hxx>
 
+#include <memory>
 #include <setjmp.h>
 
 //! @file
@@ -97,7 +96,7 @@ public:
   jmp_buf& Label() { return myLabel; }
 
   //! Returns the current Error.
-  const occ::handle<Standard_Failure>& Error() const { return myCaughtError; }
+  const std::shared_ptr<Standard_Failure>& Error() const { return myCaughtError; }
 
   //! Test if the code is currently running in a try block
   Standard_EXPORT static bool IsInTryBlock();
@@ -109,7 +108,7 @@ private:
   //! Finds nearest error handler in the stack and sets its exception object to @p theError
   //! and long jump which then throw normal C++ exception.
   //! If handler not found, prints error and exit program with error code @c 1.
-  static void Abort(const occ::handle<Standard_Failure>& theError);
+  static void Abort(const std::shared_ptr<Standard_Failure>& theError);
 
   //! Returns the current handler (closest in the stack in the current execution thread)
   static Standard_ErrorHandler* FindHandler();
@@ -178,10 +177,10 @@ public:
   };
 
 private:
-  Standard_ErrorHandler*        myPrevious = nullptr;
-  occ::handle<Standard_Failure> myCaughtError;
-  jmp_buf                       myLabel       = {};
-  Callback*                     myCallbackPtr = nullptr;
+  std::shared_ptr<Standard_Failure> myCaughtError;
+  Standard_ErrorHandler*            myPrevious    = nullptr;
+  Callback*                         myCallbackPtr = nullptr;
+  jmp_buf                           myLabel       = {};
 
   friend class Standard_Failure;
 };

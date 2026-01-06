@@ -15,7 +15,6 @@
 #ifndef _OSD_Exception_PRIV_INSTRUCTION_HeaderFile
 #define _OSD_Exception_PRIV_INSTRUCTION_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>

@@ -22,8 +22,6 @@
 #include <algorithm>
 #include <cstdlib>
 
-IMPLEMENT_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
-
 //=================================================================================================
 
 Standard_OutOfMemory::Standard_OutOfMemory(const char* theMessage)
@@ -69,16 +67,17 @@ void Standard_OutOfMemory::Raise(Standard_SStream& theMessage)
 //=================================================================================================
 
 // global instance must be allocated at load-time
-static occ::handle<Standard_OutOfMemory> anOutOfMemInstance = new Standard_OutOfMemory;
+static std::shared_ptr<Standard_OutOfMemory> anOutOfMemInstance =
+  std::make_shared<Standard_OutOfMemory>();
 
-occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage)
+std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage)
 {
   anOutOfMemInstance->SetMessageString(theMessage);
   return anOutOfMemInstance;
 }
 
-occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
-                                                                    const char* theStackTrace)
+std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
+                                                                        const char* theStackTrace)
 {
   anOutOfMemInstance->SetMessageString(theMessage);
   anOutOfMemInstance->SetStackString(theStackTrace);

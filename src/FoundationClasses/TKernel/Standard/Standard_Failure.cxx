@@ -15,15 +15,8 @@
 #include <Standard_Failure.hxx>
 
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_PCharacter.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_TypeMismatch.hxx>
 
 #include <cstring>
-
-IMPLEMENT_STANDARD_RTTIEXT(Standard_Failure, Standard_Transient)
 
 namespace
 {
@@ -133,8 +126,7 @@ Standard_Failure::Standard_Failure(const char* theDesc, const char* theStackTrac
 //=================================================================================================
 
 Standard_Failure::Standard_Failure(const Standard_Failure& theFailure)
-    : Standard_Transient(theFailure),
-      myMessage(nullptr),
+    : myMessage(nullptr),
       myStackTrace(nullptr)
 {
   myMessage    = StringRef::copy_message(theFailure.myMessage);
@@ -193,7 +185,7 @@ void Standard_Failure::SetStackString(const char* theStack)
 
 void Standard_Failure::Raise(const char* theDesc)
 {
-  occ::handle<Standard_Failure> aFailure = new Standard_Failure();
+  std::shared_ptr<Standard_Failure> aFailure = std::make_shared<Standard_Failure>();
   aFailure->Reraise(theDesc);
 }
 
@@ -201,7 +193,7 @@ void Standard_Failure::Raise(const char* theDesc)
 
 void Standard_Failure::Raise(const Standard_SStream& theReason)
 {
-  occ::handle<Standard_Failure> aFailure = new Standard_Failure();
+  std::shared_ptr<Standard_Failure> aFailure = std::make_shared<Standard_Failure>();
   aFailure->Reraise(theReason);
 }
 
@@ -230,12 +222,12 @@ void Standard_Failure::Reraise()
 
 //=================================================================================================
 
-void Standard_Failure::Jump()
+void Standard_Failure::Jump(const std::shared_ptr<Standard_Failure>& theFail)
 {
 #if defined(OCC_CONVERT_SIGNALS)
-  Standard_ErrorHandler::Abort(this);
+  Standard_ErrorHandler::Abort(theFail);
 #else
-  Throw();
+  theFail->Throw();
 #endif
 }
 
@@ -252,11 +244,11 @@ void Standard_Failure::Print(Standard_OStream& theStream) const
 {
   if (myMessage != nullptr)
   {
-    theStream << DynamicType() << ": " << GetMessageString();
+    theStream << ExceptionType() << ": " << GetMessageString();
   }
   else
   {
-    theStream << DynamicType();
+    theStream << ExceptionType();
   }
   if (myStackTrace != nullptr)
   {
@@ -266,17 +258,17 @@ void Standard_Failure::Print(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theString)
+std::shared_ptr<Standard_Failure> Standard_Failure::NewInstance(const char* theString)
 {
-  return new Standard_Failure(theString);
+  return std::make_shared<Standard_Failure>(theString);
 }
 
 //=================================================================================================
 
-occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage,
-                                                            const char* theStackTrace)
+std::shared_ptr<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage,
+                                                                const char* theStackTrace)
 {
-  return new Standard_Failure(theMessage, theStackTrace);
+  return std::make_shared<Standard_Failure>(theMessage, theStackTrace);
 }
 
 //=================================================================================================

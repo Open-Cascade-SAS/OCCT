@@ -115,9 +115,8 @@ public:
                                const int                              kind,
                                const char*                            name = "");
 
-  //! Adds the currently caught exception
-  Standard_EXPORT void AddRaised(const occ::handle<Standard_Failure>& theException,
-                                 const char*                          name = "");
+  //! Adds the currently caught exception (stores exception type and message as text)
+  Standard_EXPORT void AddRaised(const Standard_Failure& theException, const char* name = "");
 
   //! Adds a Shape (recorded as a HShape)
   Standard_EXPORT void AddShape(const TopoDS_Shape& sh, const char* name = "");

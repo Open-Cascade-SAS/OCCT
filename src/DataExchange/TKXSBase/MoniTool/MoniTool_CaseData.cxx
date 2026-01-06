@@ -148,10 +148,13 @@ void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
   thesubst = 0;
 }
 
-void MoniTool_CaseData::AddRaised(const occ::handle<Standard_Failure>& theException,
-                                  const char*                          name)
+void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const char* name)
 {
-  AddData(theException, 1, name);
+  // Store exception type and message as text (since Standard_Failure is no longer Standard_Transient)
+  TCollection_AsciiString aText(theException.ExceptionType());
+  aText += ": ";
+  aText += theException.GetMessageString();
+  AddText(aText.ToCString(), name);
 }
 
 void MoniTool_CaseData::AddShape(const TopoDS_Shape& sh, const char* name)

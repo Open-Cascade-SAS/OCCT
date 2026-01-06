@@ -17,8 +17,9 @@
 #ifndef _Standard_OutOfMemory_HeaderFile
 #define _Standard_OutOfMemory_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_ProgramError.hxx>
+
+#include <memory>
 
 #if !defined No_Exception && !defined No_Standard_OutOfMemory
   #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE)                                        \
@@ -63,13 +64,16 @@ public:
   Standard_EXPORT static void Raise(Standard_SStream& theMessage);
 
   //! Returns global instance of exception
-  Standard_EXPORT static occ::handle<Standard_OutOfMemory> NewInstance(const char* theMessage = "");
+  Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
+    const char* theMessage = "");
 
   //! Returns global instance of exception
-  Standard_EXPORT static occ::handle<Standard_OutOfMemory> NewInstance(const char* theMessage,
-                                                                       const char* theStackTrace);
+  Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
+    const char* theMessage,
+    const char* theStackTrace);
 
-  DEFINE_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
+  //! Returns the exception type name.
+  const char* ExceptionType() const override { return "Standard_OutOfMemory"; }
 
 protected:
   char myBuffer[1024];

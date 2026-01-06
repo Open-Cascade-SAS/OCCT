@@ -17,7 +17,6 @@
 #ifndef _Standard_RangeError_HeaderFile
 #define _Standard_RangeError_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 

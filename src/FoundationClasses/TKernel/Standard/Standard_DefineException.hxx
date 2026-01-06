@@ -14,26 +14,18 @@
 #ifndef _Standard_DefineException_HeaderFile
 #define _Standard_DefineException_HeaderFile
 
-#include <Standard_Type.hxx>
+#include <memory>
 
 //! Defines an exception class \a C1 that inherits an exception class \a C2.
-/*! \a C2 must be Standard_Failure or its ancestor.
-    The macro defines empty constructor, copy constructor and static methods Raise() and
-   NewInstance(). Since Standard_Failure implements class manipulated by handle,
-   DEFINE_STANDARD_RTTI macro is also added to enable RTTI.
-
-    When using DEFINE_STANDARD_EXCEPTION in your code make sure you also insert a macro
-    DEFINE_STANDARD_HANDLE(C1,C2) before it.
-*/
+//! \a C2 must be Standard_Failure or its ancestor.
+//! The macro defines empty constructor, copy constructor and static methods Raise() and
+//! NewInstance().
 
 #define DEFINE_STANDARD_EXCEPTION(C1, C2)                                                          \
                                                                                                    \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const override                                                                    \
-    {                                                                                              \
-      throw *this;                                                                                 \
-    }                                                                                              \
+    void Throw() const override { throw *this; }                                                   \
                                                                                                    \
   public:                                                                                          \
     C1() {}                                                                                        \
@@ -47,23 +39,23 @@
     }                                                                                              \
     static void Raise(const char* theMessage = "")                                                 \
     {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                 \
+      std::shared_ptr<C1> _E = std::make_shared<C1>();                                             \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
     static void Raise(Standard_SStream& theMessage)                                                \
     {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                 \
+      std::shared_ptr<C1> _E = std::make_shared<C1>();                                             \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
-    static occ::handle<C1> NewInstance(const char* theMessage = "")                                \
+    static std::shared_ptr<C1> NewInstance(const char* theMessage = "")                            \
     {                                                                                              \
-      return new C1(theMessage);                                                                   \
+      return std::make_shared<C1>(theMessage);                                                     \
     }                                                                                              \
-    static occ::handle<C1> NewInstance(const char* theMessage, const char* theStackTrace)          \
+    static std::shared_ptr<C1> NewInstance(const char* theMessage, const char* theStackTrace)      \
     {                                                                                              \
-      return new C1(theMessage, theStackTrace);                                                    \
+      return std::make_shared<C1>(theMessage, theStackTrace);                                      \
     }                                                                                              \
-    DEFINE_STANDARD_RTTI_INLINE(C1, C2)                                                            \
+    const char* ExceptionType() const override { return #C1; }                                     \
   };
 
 //! Obsolete macro, kept for compatibility with old code
