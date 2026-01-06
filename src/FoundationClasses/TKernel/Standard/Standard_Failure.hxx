@@ -56,6 +56,10 @@ public:
   //! Returns empty string "" if no message was set.
   Standard_EXPORT const char* what() const noexcept override;
 
+  //! Returns error message
+  Standard_DEPRECATED("Use what() instead")
+  const char* GetMessageString() const noexcept { return what(); }
+
   //! Returns the exception type name.
   //! Default implementation returns "Standard_Failure".
   //! Derived classes override this to return their own type name.
@@ -70,7 +74,6 @@ public:
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
 
 public:
-
   //! Used to construct an instance of the exception object.
   //! Shall be used to protect against possible construction of exception object in C stack,
   //! which is dangerous since some of methods require that object was allocated dynamically.
@@ -142,7 +145,7 @@ inline Standard_OStream& operator<<(Standard_OStream& theStream, const Standard_
 
 //=================================================================================================
 
-inline Standard_OStream& operator<<(Standard_OStream&                         theStream,
+inline Standard_OStream& operator<<(Standard_OStream&                        theStream,
                                     const std::shared_ptr<Standard_Failure>& theFailure)
 {
   if (theFailure)
