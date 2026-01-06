@@ -150,7 +150,8 @@ void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
 
 void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const char* name)
 {
-  // Store exception type and message as text (since Standard_Failure is no longer Standard_Transient)
+  // Store exception type and message as text (since Standard_Failure is no longer
+  // Standard_Transient)
   TCollection_AsciiString aText(theException.ExceptionType());
   aText += ": ";
   aText += theException.what();

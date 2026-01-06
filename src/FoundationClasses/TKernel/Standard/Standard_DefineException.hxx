@@ -47,9 +47,15 @@
     {                                                                                              \
     }                                                                                              \
                                                                                                    \
-    const char* ExceptionType() const noexcept override { return #C1; }                            \
+    const char* ExceptionType() const noexcept override                                            \
+    {                                                                                              \
+      return #C1;                                                                                  \
+    }                                                                                              \
                                                                                                    \
-    void Throw() const override { throw *this; }                                                   \
+    void Throw() const override                                                                    \
+    {                                                                                              \
+      throw *this;                                                                                 \
+    }                                                                                              \
                                                                                                    \
     static std::shared_ptr<C1> NewInstance(const char* theMessage = "")                            \
     {                                                                                              \

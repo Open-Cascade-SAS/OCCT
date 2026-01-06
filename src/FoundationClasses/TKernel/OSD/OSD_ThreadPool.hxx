@@ -184,16 +184,16 @@ protected:
     static void* runThread(void* theTask);
 
   private:
-    OSD_ThreadPool*               myPool;
-    JobInterface*                 myJob;
+    OSD_ThreadPool*                   myPool;
+    JobInterface*                     myJob;
     std::shared_ptr<Standard_Failure> myFailure;
-    Standard_Condition            myWakeEvent;
-    Standard_Condition            myIdleEvent;
-    int                           myThreadIndex;
-    std::atomic<int>              myUsageCounter;
-    bool                          myIsStarted;
-    bool                          myToCatchFpe;
-    bool                          myIsSelfThread;
+    Standard_Condition                myWakeEvent;
+    Standard_Condition                myIdleEvent;
+    int                               myThreadIndex;
+    std::atomic<int>                  myUsageCounter;
+    bool                              myIsStarted;
+    bool                              myToCatchFpe;
+    bool                              myIsSelfThread;
   };
 
 public:
