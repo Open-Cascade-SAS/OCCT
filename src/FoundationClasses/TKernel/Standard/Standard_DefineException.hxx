@@ -45,7 +45,10 @@
     {                                                                                              \
     }                                                                                              \
                                                                                                    \
-    const char* ExceptionType() const noexcept override { return #C1; }                            \
+    const char* ExceptionType() const noexcept override                                            \
+    {                                                                                              \
+      return #C1;                                                                                  \
+    }                                                                                              \
   };
 
 #endif
