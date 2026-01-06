@@ -21,18 +21,27 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
+
+namespace
+{
+// global instance must be allocated at load-time
+static std::shared_ptr<Standard_OutOfMemory> anOutOfMemInstance =
+  std::make_shared<Standard_OutOfMemory>();
+} // namespace
 
 //=================================================================================================
 
 Standard_OutOfMemory::Standard_OutOfMemory(const char* theMessage)
 {
+  myBuffer[0] = '\0';
   // call explicitly own method (non-virtual call)
   Standard_OutOfMemory::SetMessageString(theMessage);
 }
 
 //=================================================================================================
 
-const char* Standard_OutOfMemory::GetMessageString() const
+const char* Standard_OutOfMemory::what() const noexcept
 {
   return myBuffer;
 }
@@ -42,33 +51,17 @@ const char* Standard_OutOfMemory::GetMessageString() const
 void Standard_OutOfMemory::SetMessageString(const char* theMessage)
 {
   // restrict length of the message by buffer size
-  size_t n = (theMessage ? std::min(strlen(theMessage), sizeof(myBuffer) - 1) : 0);
+  size_t n = (theMessage ? std::min(std::strlen(theMessage), sizeof(myBuffer) - 1) : 0);
 
   // first set line end symbol to be safe in case of concurrent call
   myBuffer[n] = '\0';
   if (n > 0)
-    memcpy(myBuffer, theMessage, n);
+  {
+    std::memcpy(myBuffer, theMessage, n);
+  }
 }
 
 //=================================================================================================
-
-void Standard_OutOfMemory::Raise(const char* theMessage)
-{
-  NewInstance(theMessage)->Reraise();
-}
-
-//=================================================================================================
-
-void Standard_OutOfMemory::Raise(Standard_SStream& theMessage)
-{
-  NewInstance(theMessage.str().c_str())->Reraise();
-}
-
-//=================================================================================================
-
-// global instance must be allocated at load-time
-static std::shared_ptr<Standard_OutOfMemory> anOutOfMemInstance =
-  std::make_shared<Standard_OutOfMemory>();
 
 std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage)
 {
@@ -76,11 +69,13 @@ std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const ch
   return anOutOfMemInstance;
 }
 
+//=================================================================================================
+
 std::shared_ptr<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
                                                                         const char* theStackTrace)
 {
+  (void)theStackTrace; // Stack trace is not stored in Standard_OutOfMemory to avoid allocation
   anOutOfMemInstance->SetMessageString(theMessage);
-  anOutOfMemInstance->SetStackString(theStackTrace);
   return anOutOfMemInstance;
 }
 

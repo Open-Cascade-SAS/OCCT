@@ -34,48 +34,41 @@
 //! memory allocations during throwing and stack unwinding:
 //!
 //! - method NewInstance() returns static instance (singleton)
-//! - method Raise() raises copy of that singleton, resetting
-//!   its message string
 //! - message string is stored as field, not allocated dynamically
 //!   (storable message length is limited by buffer size)
 //!
 //! The reason is that in out-of-memory condition any memory allocation can
 //! fail, thus use of operator new for allocation of new exception instance
 //! is dangerous (can cause recursion until stack overflow, see #24836).
-
 class Standard_OutOfMemory : public Standard_ProgramError
 {
   Standard_EXPORT void Throw() const override;
 
 public:
-  //! Constructor is kept public for backward compatibility
+  //! Constructor is kept public for backward compatibility.
+  //! @param theMessage optional error message
   Standard_EXPORT Standard_OutOfMemory(const char* theMessage = nullptr);
 
-  //! Returns error message
-  Standard_EXPORT const char* GetMessageString() const override;
+  //! Returns error message (implements std::exception interface).
+  Standard_EXPORT const char* what() const noexcept override;
 
-  //! Sets error message
-  Standard_EXPORT void SetMessageString(const char* aMessage) override;
+  //! Returns the exception type name.
+  const char* ExceptionType() const noexcept override { return "Standard_OutOfMemory"; }
 
-  //! Raises exception with specified message string
-  Standard_EXPORT static void Raise(const char* theMessage = "");
+  //! Sets error message.
+  //! @param theMessage error message (can be nullptr)
+  Standard_EXPORT void SetMessageString(const char* theMessage);
 
-  //! Raises exception with specified message string
-  Standard_EXPORT static void Raise(Standard_SStream& theMessage);
-
-  //! Returns global instance of exception
+  //! Returns global instance of exception.
   Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
     const char* theMessage = "");
 
-  //! Returns global instance of exception
+  //! Returns global instance of exception with stack trace.
   Standard_EXPORT static std::shared_ptr<Standard_OutOfMemory> NewInstance(
     const char* theMessage,
     const char* theStackTrace);
 
-  //! Returns the exception type name.
-  const char* ExceptionType() const override { return "Standard_OutOfMemory"; }
-
-protected:
+private:
   char myBuffer[1024];
 };
 

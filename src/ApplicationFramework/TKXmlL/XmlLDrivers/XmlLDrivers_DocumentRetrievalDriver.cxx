@@ -487,7 +487,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
   }
   catch (Standard_Failure const& anException)
   {
-    TCollection_ExtendedString anErrorString(anException.GetMessageString());
+    TCollection_ExtendedString anErrorString(anException.what());
     aMsgDriver->Send(anErrorString.ToExtString(), Message_Fail);
   }
   if (!aPS.More())

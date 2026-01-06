@@ -71,7 +71,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 

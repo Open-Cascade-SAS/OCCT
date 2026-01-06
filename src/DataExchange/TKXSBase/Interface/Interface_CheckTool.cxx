@@ -50,7 +50,7 @@ static void raisecheck(Standard_Failure& theException, occ::handle<Interface_Che
   if (dynamic_cast<OSD_Signal*>(&theException) != nullptr)
   {
 #endif
-    theException.SetMessageString("System Signal received, check interrupt");
+
     throw theException;
   }
 }

@@ -812,7 +812,7 @@ occ::handle<Transfer_Binder> Transfer_ProcessForTransient::Transferring(
       binder->AddFail("Transfer stopped by exception raising");
       if (thetrace)
       {
-        aSender << "    *** Raised : " << anException.GetMessageString() << std::endl;
+        aSender << "    *** Raised : " << anException.what() << std::endl;
         StartTrace(binder, start, thelevel - 1, 4);
       }
       thelevel = oldlev;

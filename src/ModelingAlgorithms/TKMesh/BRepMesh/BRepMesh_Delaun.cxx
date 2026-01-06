@@ -2591,7 +2591,7 @@ const char* BRepMesh_DumpPoly(void* thePolygon, void* theMeshHandlePtr, const ch
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 
   return theFileNameStr;

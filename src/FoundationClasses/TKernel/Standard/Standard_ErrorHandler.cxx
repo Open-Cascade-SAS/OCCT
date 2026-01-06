@@ -85,7 +85,7 @@ void Standard_ErrorHandler::Abort(const std::shared_ptr<Standard_Failure>& theEr
   {
     std::cerr << "*** Abort *** an exception was raised, but no catch was found." << std::endl;
     if (theError.get() != nullptr)
-      std::cerr << "\t... The exception is:" << theError->GetMessageString() << std::endl;
+      std::cerr << "\t... The exception is:" << theError->what() << std::endl;
     exit(1);
   }
 
@@ -104,7 +104,7 @@ void Standard_ErrorHandler::Raise()
     exit(1);
   }
 
-  myCaughtError->Reraise();
+  Standard_Failure::Jump(myCaughtError);
 }
 
 //=================================================================================================

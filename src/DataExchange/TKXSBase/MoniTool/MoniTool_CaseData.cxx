@@ -153,7 +153,7 @@ void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const ch
   // Store exception type and message as text (since Standard_Failure is no longer Standard_Transient)
   TCollection_AsciiString aText(theException.ExceptionType());
   aText += ": ";
-  aText += theException.GetMessageString();
+  aText += theException.what();
   AddText(aText.ToCString(), name);
 }
 

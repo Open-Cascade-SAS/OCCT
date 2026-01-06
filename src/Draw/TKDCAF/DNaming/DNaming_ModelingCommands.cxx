@@ -2188,7 +2188,7 @@ static int DNaming_TestSingle(Draw_Interpretor& theDI, int theNb, const char** t
         catch (Standard_Failure const& anException)
         {
           std::cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-          std::cout << anException.GetMessageString() << std::endl;
+          std::cout << anException.what() << std::endl;
         }
         catch (...)
         {
@@ -2342,7 +2342,7 @@ static int DNaming_Multiple(Draw_Interpretor& theDI, int theNb, const char** the
         catch (Standard_Failure const& anException)
         {
           std::cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-          std::cout << anException.GetMessageString() << std::endl;
+          std::cout << anException.what() << std::endl;
         }
         catch (...)
         {

@@ -93,7 +93,7 @@ void IVtkOCC_ShapeMesher::internalBuild()
     {
       Message::SendFail(TCollection_AsciiString(
                           "Error: addWireFrameFaces() wireframe presentation builder has failed (")
-                        + anException.GetMessageString() + ")");
+                        + anException.what() + ")");
     }
   }
 

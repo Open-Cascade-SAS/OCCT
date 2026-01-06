@@ -94,7 +94,7 @@ void StepData_StepReaderTool::Prepare(const bool optim)
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << " Exception Raised during Preparation :\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n Now, trying to continue, but with presomption of failure\n";
     }
   }

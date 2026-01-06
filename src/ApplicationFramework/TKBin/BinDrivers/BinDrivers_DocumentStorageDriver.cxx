@@ -189,7 +189,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSec
     catch (Standard_Failure const& anException)
     {
       TCollection_ExtendedString anErrorStr("BinDrivers_DocumentStorageDriver, Shape Section :");
-      myMsgDriver->Send(anErrorStr + anException.GetMessageString(), Message_Fail);
+      myMsgDriver->Send(anErrorStr + anException.what(), Message_Fail);
     }
   }
 

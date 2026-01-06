@@ -182,7 +182,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::ReadFile(const char* filename)
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    ReadFile Interruption by Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }
@@ -221,7 +221,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::ReadStream(const char*   theName,
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    ReadFile Interruption by Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }
@@ -1187,7 +1187,7 @@ Interface_EntityIterator IFSelect_WorkSession::EvalSelection(
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    EvalSelection Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
     errhand = theerrhand;
@@ -1226,7 +1226,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Wor
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    SelectionResult Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
     errhand = theerrhand;
@@ -1883,7 +1883,7 @@ void IFSelect_WorkSession::EvaluateFile()
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    EvaluateFile Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
       checks.CCheck(0)->AddFail("Exception Raised -> Abandon");
     }
@@ -1968,7 +1968,7 @@ bool IFSelect_WorkSession::SendSplit()
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    SendSplit Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
       checks.CCheck(0)->AddFail("Exception Raised -> Abandon");
     }
@@ -2217,7 +2217,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* filename, const 
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    SendAll Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
       errhand = theerrhand;
       checks.CCheck(0)->AddFail("Exception Raised -> Abandon");
@@ -2270,7 +2270,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* filename,
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    SendSelected Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
       checks.CCheck(0)->AddFail("Exception Raised -> Abandon");
       errhand     = theerrhand;
@@ -3371,7 +3371,7 @@ void IFSelect_WorkSession::DumpModel(const int level, Standard_OStream& S)
     {
       Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "    ****    DumpModel Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
   }
@@ -3558,7 +3558,7 @@ void IFSelect_WorkSession::EvaluateSelection(const occ::handle<IFSelect_Selectio
     catch (Standard_Failure const& anException)
     {
       sout << "    ****    EvaluateSelection Interrupted by Exception    ****  Title\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
     errhand = theerrhand;
@@ -3600,7 +3600,7 @@ void IFSelect_WorkSession::EvaluateDispatch(const occ::handle<IFSelect_Dispatch>
     catch (Standard_Failure const& anException)
     {
       sout << "    ****    EvaluateDispatch Interrupted by Exception    ****  Title\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
     errhand = theerrhand;
@@ -3694,7 +3694,7 @@ void IFSelect_WorkSession::EvaluateComplete(const int mode) const
     catch (Standard_Failure const& anException)
     {
       sout << "    ****    EvaluateComplete Interrupted by Exception :   ****\n";
-      sout << anException.GetMessageString();
+      sout << anException.what();
       sout << "\n    Abandon" << std::endl;
     }
     errhand = theerrhand;
@@ -3868,7 +3868,7 @@ void IFSelect_WorkSession::ListEntities(const Interface_EntityIterator& iter,
   catch (Standard_Failure const& anException)
   {
     sout << "    ****    ListEntities Interrupted by Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
   }
 }

@@ -14,51 +14,52 @@
 #ifndef _Standard_DefineException_HeaderFile
 #define _Standard_DefineException_HeaderFile
 
+#include <Standard_SStream.hxx>
+
 #include <memory>
 
-//! Defines an exception class \a C1 that inherits an exception class \a C2.
-//! \a C2 must be Standard_Failure or its ancestor.
-//! The macro defines empty constructor, copy constructor and static methods Raise() and
-//! NewInstance().
-
+//! @brief Defines an exception class inheriting from Standard_Failure.
+//!
+//! This macro creates a complete exception class with:
+//! - Constructors that forward to base class
+//! - ExceptionType() override returning the class name
+//! - Throw() override for signal handling
+//! - NewInstance() static methods for creating shared instances
+//!
+//! Usage:
+//! @code
+//! DEFINE_STANDARD_EXCEPTION(Standard_OutOfRange, Standard_RangeError)
+//! @endcode
+//!
+//! @param C1 Name of the exception class to define
+//! @param C2 Name of the parent exception class (must be Standard_Failure or derived)
 #define DEFINE_STANDARD_EXCEPTION(C1, C2)                                                          \
-                                                                                                   \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const override { throw *this; }                                                   \
-                                                                                                   \
   public:                                                                                          \
-    C1() {}                                                                                        \
-    C1(const char* theMessage)                                                                     \
+    C1(const char* theMessage = "")                                                                \
         : C2(theMessage)                                                                           \
     {                                                                                              \
     }                                                                                              \
+                                                                                                   \
     C1(const char* theMessage, const char* theStackTrace)                                          \
         : C2(theMessage, theStackTrace)                                                            \
     {                                                                                              \
     }                                                                                              \
-    static void Raise(const char* theMessage = "")                                                 \
-    {                                                                                              \
-      std::shared_ptr<C1> _E = std::make_shared<C1>();                                             \
-      _E->Reraise(theMessage);                                                                     \
-    }                                                                                              \
-    static void Raise(Standard_SStream& theMessage)                                                \
-    {                                                                                              \
-      std::shared_ptr<C1> _E = std::make_shared<C1>();                                             \
-      _E->Reraise(theMessage);                                                                     \
-    }                                                                                              \
+                                                                                                   \
+    const char* ExceptionType() const noexcept override { return #C1; }                            \
+                                                                                                   \
+    void Throw() const override { throw *this; }                                                   \
+                                                                                                   \
     static std::shared_ptr<C1> NewInstance(const char* theMessage = "")                            \
     {                                                                                              \
       return std::make_shared<C1>(theMessage);                                                     \
     }                                                                                              \
+                                                                                                   \
     static std::shared_ptr<C1> NewInstance(const char* theMessage, const char* theStackTrace)      \
     {                                                                                              \
       return std::make_shared<C1>(theMessage, theStackTrace);                                      \
     }                                                                                              \
-    const char* ExceptionType() const override { return #C1; }                                     \
   };
-
-//! Obsolete macro, kept for compatibility with old code
-#define IMPLEMENT_STANDARD_EXCEPTION(C1)
 
 #endif

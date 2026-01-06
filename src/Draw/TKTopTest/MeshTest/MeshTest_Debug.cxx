@@ -61,7 +61,7 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 
@@ -108,6 +108,6 @@ Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void*
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }

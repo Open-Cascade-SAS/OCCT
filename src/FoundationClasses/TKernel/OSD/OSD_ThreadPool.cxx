@@ -236,14 +236,14 @@ void OSD_ThreadPool::Launcher::wait()
     {
       if (aNbFailures == 1)
       {
-        aThreadIter.Value()->myFailure->Reraise();
+        Standard_Failure::Jump(aThreadIter.Value()->myFailure);
       }
 
       if (!aFailures.IsEmpty())
       {
         aFailures += "\n";
       }
-      aFailures += aThreadIter.Value()->myFailure->GetMessageString();
+      aFailures += aThreadIter.Value()->myFailure->what();
     }
   }
 
@@ -264,9 +264,7 @@ void OSD_ThreadPool::performJob(std::shared_ptr<Standard_Failure>& theFailure,
   }
   catch (Standard_Failure const& aFailure)
   {
-    TCollection_AsciiString aMsg =
-      TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.GetMessageString();
-    theFailure = std::make_shared<Standard_ProgramError>(aMsg.ToCString(), aFailure.GetStackString());
+    theFailure = std::make_shared<Standard_ProgramError>(aFailure.what(), aFailure.GetStackString());
   }
   catch (std::exception& anStdException)
   {

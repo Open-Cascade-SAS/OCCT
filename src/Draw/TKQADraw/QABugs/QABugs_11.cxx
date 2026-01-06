@@ -2097,7 +2097,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     catch (Standard_Failure const& anException)
     {
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2134,7 +2134,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2177,7 +2177,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2211,7 +2211,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2248,7 +2248,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2275,7 +2275,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2306,7 +2306,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2333,7 +2333,7 @@ static int OCC6143(Draw_Interpretor& di, int argc, const char** argv)
     {
       // std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
-      di << anException.GetMessageString();
+      di << anException.what();
       di << ")... KO\n";
       Succes = false;
     }
@@ -2427,14 +2427,14 @@ static Standard_NOINLINE int OCC30762(Draw_Interpretor& theDI, int theNbArgs, co
 #endif
     {
       theDI << " Caught (";
-      theDI << aSegException.GetMessageString();
+      theDI << aSegException.what();
       theDI << aSegException.GetStackString();
       theDI << ")... OK\n";
     }
     catch (Standard_Failure const& anException)
     {
       theDI << " Caught (";
-      theDI << anException.GetMessageString();
+      theDI << anException.what();
       theDI << anException.GetStackString();
       theDI << ")... KO\n";
     }
@@ -2504,7 +2504,7 @@ static int OCC7141(Draw_Interpretor& di, int argc, const char** argv)
   {
     di << "Failed :\n\n";
     // std::cout << Standard_Failure::Caught() << std::endl;
-    di << anException.GetMessageString();
+    di << anException.what();
   }
   di << argv[0] << " : Finish\n";
 
@@ -4752,7 +4752,7 @@ int CR23403(Draw_Interpretor& di, int argc, const char** argv)
   }
   catch (Standard_Failure const& anException)
   {
-    di << "Exception : " << anException.GetMessageString() << "\n";
+    di << "Exception : " << anException.what() << "\n";
   }
 
   return 0;

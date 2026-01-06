@@ -143,7 +143,7 @@ void SelectMgr_BVHThreadPool::BVHThread::performThread()
       catch (Standard_Failure const& aFailure)
       {
         TCollection_AsciiString aMsg =
-          TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.GetMessageString();
+          TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.what();
         Message::DefaultMessenger()->SendFail(aMsg);
       }
       catch (std::exception& anStdException)

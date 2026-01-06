@@ -31,7 +31,7 @@ static void CAUGHT(const Standard_Failure&           theException,
                    const TCollection_ExtendedString& what)
 {
   status += what;
-  status += theException.GetMessageString();
+  status += theException.what();
 }
 
 CDF_StoreList::CDF_StoreList(const occ::handle<CDM_Document>& aDocument)

@@ -145,7 +145,7 @@ bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
   catch (Standard_Failure const& theException)
   {
     Message::SendFail(TCollection_AsciiString("Failed to copy file\n")
-                      + theException.GetMessageString());
+                      + theException.what());
     return false;
   }
 }
