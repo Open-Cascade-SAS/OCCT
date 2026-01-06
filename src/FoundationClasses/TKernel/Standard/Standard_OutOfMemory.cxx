@@ -25,7 +25,9 @@
 
 namespace
 {
-// global instance must be allocated at load-time
+//! Global instance allocated at load-time to avoid allocation during OOM.
+//! Note: Message buffer is not thread-safe, but this is acceptable trade-off
+//! since OOM is typically a fatal condition and avoiding allocation is priority.
 static std::shared_ptr<Standard_OutOfMemory> anOutOfMemInstance =
   std::make_shared<Standard_OutOfMemory>();
 } // namespace

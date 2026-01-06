@@ -264,7 +264,10 @@ void OSD_ThreadPool::performJob(std::shared_ptr<Standard_Failure>& theFailure,
   }
   catch (Standard_Failure const& aFailure)
   {
-    theFailure = std::make_shared<Standard_ProgramError>(aFailure.what(), aFailure.GetStackString());
+    TCollection_AsciiString aMsg =
+      TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.what();
+    theFailure =
+      std::make_shared<Standard_ProgramError>(aMsg.ToCString(), aFailure.GetStackString());
   }
   catch (std::exception& anStdException)
   {

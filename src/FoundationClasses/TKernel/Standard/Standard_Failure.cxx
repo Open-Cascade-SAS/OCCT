@@ -77,7 +77,8 @@ void Standard_Failure::captureStackTrace()
   const int aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
-    const int aStackBufLen = std::max(aStackLength * 200, 2048);
+    // Limit stack allocation to 64KB to prevent stack overflow
+    const int aStackBufLen = std::min(std::max(aStackLength * 200, 2048), 65536);
     char*     aStackBuffer = (char*)alloca(aStackBufLen);
     if (aStackBuffer != nullptr)
     {
@@ -170,6 +171,10 @@ const char* Standard_Failure::GetStackString() const
 
 void Standard_Failure::Jump(const std::shared_ptr<Standard_Failure>& theFail)
 {
+  if (!theFail)
+  {
+    throw Standard_Failure("Unknown error");
+  }
 #if defined(OCC_CONVERT_SIGNALS)
   Standard_ErrorHandler::Abort(theFail);
 #else

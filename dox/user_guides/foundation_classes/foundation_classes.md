@@ -855,7 +855,7 @@ int main (int argc, char* argv[])
   }
   catch (const Standard_Failure& theFailure)
   {
-    std::cerr << "Error " + theFailure.DynamicType()->Name() << " [" << theFailure.GetMessageString() << "]\n";
+    std::cerr << "Error " << theFailure.ExceptionType() << " [" << theFailure.what() << "]\n";
   }
   return 1;
 }
