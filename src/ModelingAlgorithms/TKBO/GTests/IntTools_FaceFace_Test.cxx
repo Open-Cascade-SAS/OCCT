@@ -227,3 +227,182 @@ TEST_F(IntTools_FaceFaceTest, ReportedBugGeometry_NoIntersection)
     << "The cylinder center is ~19.66 units from plane center, but plane radius is only 13.335.";
   EXPECT_EQ(aNbPoints, 0) << "Expected no intersection points.";
 }
+
+//! Test the opposite half of the cylinder (U in [PI, 2*PI]) with the same geometry.
+//! The opposite half bulges toward the plane center (+Z direction) but is still outside.
+//! For cylinder axis along Y with default XDirection=(1,0,0):
+//! - U in [0, PI] bulges in -Z direction (away from plane)
+//! - U in [PI, 2*PI] bulges in +Z direction (toward plane)
+//! Even the closest point of the opposite half (~17.7 units) is still outside the circle (radius 13.335).
+TEST_F(IntTools_FaceFaceTest, ReportedBugGeometry_OppositeHalf_NoIntersection)
+{
+  const gp_Pnt aPlaneCenter(-23.45, -24.0, -18.81);
+  const gp_Dir aPlaneNormal(0.0, -1.0, 0.0);
+  const double aPlaneRadius = 13.335;
+
+  const gp_Pnt aCylCenter(-14.55, -24.0, -36.34);
+  const gp_Dir aCylAxis(0.0, 1.0, 0.0);
+  const double aCylRadius = 2.2225;
+  const double aVMin      = -0.5;
+  const double aVMax      = 0.0;
+
+  // Create the OPPOSITE half of the cylinder: U in [PI, 2*PI]
+  // This half bulges toward the plane center (+Z direction)
+  TopoDS_Face aCircularPlane = CreateCircularPlaneFace(aPlaneCenter, aPlaneNormal, aPlaneRadius);
+  TopoDS_Face aHalfCylinder =
+    CreateHalfCylinderFace(aCylCenter, aCylAxis, aCylRadius, aVMin, aVMax, M_PI, 2.0 * M_PI);
+
+  ASSERT_FALSE(aCircularPlane.IsNull()) << "Failed to create circular plane face";
+  ASSERT_FALSE(aHalfCylinder.IsNull()) << "Failed to create half-cylinder face";
+
+  // Perform face-face intersection
+  IntTools_FaceFace aFF;
+  aFF.SetParameters(true, true, true, 1.0e-6);
+  aFF.Perform(aCircularPlane, aHalfCylinder);
+
+  ASSERT_TRUE(aFF.IsDone()) << "IntTools_FaceFace::Perform() failed";
+
+  // Even the opposite half should have no intersection
+  // The closest point at U=3*PI/2 is at (-14.55, -24, -34.12)
+  // Distance to plane center: sqrt(8.9^2 + 15.31^2) ≈ 17.7 > 13.335
+  const int aNbCurves = aFF.Lines().Length();
+  const int aNbPoints = aFF.Points().Length();
+
+  EXPECT_EQ(aNbCurves, 0) << "Expected no intersection curves for opposite half. "
+                          << "Even the closest point (~17.7 units) is outside the circle (radius 13.335).";
+  EXPECT_EQ(aNbPoints, 0) << "Expected no intersection points for opposite half.";
+}
+
+//! Test geometry where the opposite half of the cylinder IS inside the circle.
+//! Position the cylinder closer so that the half bulging toward the plane is inside the circle.
+TEST_F(IntTools_FaceFaceTest, OppositeHalfInsideCircle_HasIntersection)
+{
+  // Plane circle centered at origin with radius 15
+  const gp_Pnt aPlaneCenter(0.0, 0.0, 0.0);
+  const gp_Dir aPlaneNormal(0.0, 1.0, 0.0);
+  const double aPlaneRadius = 15.0;
+
+  // Cylinder at X=10, Z=-5
+  // The half with U in [PI, 2*PI] bulges toward +Z (toward origin)
+  // At U=3*PI/2, the point is at (10, Y, -5 + 3) = (10, Y, -2)
+  // Distance from (10, -2) to origin = sqrt(100 + 4) ≈ 10.2 < 15 (inside!)
+  const gp_Pnt aCylCenter(10.0, 0.0, -5.0);
+  const gp_Dir aCylAxis(0.0, 1.0, 0.0);
+  const double aCylRadius = 3.0;
+  const double aVMin      = -1.0;
+  const double aVMax      = 1.0;
+
+  // Create the opposite half: U in [PI, 2*PI] (bulges toward +Z, toward plane center)
+  TopoDS_Face aCircularPlane = CreateCircularPlaneFace(aPlaneCenter, aPlaneNormal, aPlaneRadius);
+  TopoDS_Face aHalfCylinder =
+    CreateHalfCylinderFace(aCylCenter, aCylAxis, aCylRadius, aVMin, aVMax, M_PI, 2.0 * M_PI);
+
+  ASSERT_FALSE(aCircularPlane.IsNull()) << "Failed to create circular plane face";
+  ASSERT_FALSE(aHalfCylinder.IsNull()) << "Failed to create half-cylinder face";
+
+  // Perform face-face intersection
+  IntTools_FaceFace aFF;
+  aFF.SetParameters(true, true, true, 1.0e-7);
+  aFF.Perform(aCircularPlane, aHalfCylinder);
+
+  ASSERT_TRUE(aFF.IsDone()) << "IntTools_FaceFace::Perform() failed";
+
+  // This intersection SHOULD exist - the semicircle is partially inside the plane circle
+  const int aNbCurves = aFF.Lines().Length();
+
+  EXPECT_GE(aNbCurves, 1)
+    << "Expected intersection for opposite half that bulges toward plane center.";
+}
+
+//! Test geometry where the cylinder arc partially crosses the circle boundary.
+//! With wire-aware BRepTopAdaptor_TopolTool, the intersection curve is properly
+//! trimmed to the portion that lies within both face wire boundaries.
+TEST_F(IntTools_FaceFaceTest, PartialCrossing_ProperlyTrimmed)
+{
+  const gp_Pnt aPlaneCenter(0.0, 0.0, 0.0);
+  const gp_Dir aPlaneNormal(0.0, 1.0, 0.0);
+  const double aPlaneRadius = 15.0;
+
+  // Position cylinder so the arc partially crosses the boundary.
+  // First half: U in [0, PI], bulges toward -Z
+  // At U=PI/2: (12, Y, -11), distance = sqrt(144 + 121) ≈ 16.3 > 15 (outside!)
+  // At U=0: (15, Y, -8), distance = sqrt(225 + 64) ≈ 17.0 > 15 (outside!)
+  // At U=PI: (9, Y, -8), distance = sqrt(81 + 64) ≈ 12.0 < 15 (inside!)
+  // The arc crosses from outside to inside the circle.
+  const gp_Pnt aCylCenter(12.0, 0.0, -8.0);
+  const gp_Dir aCylAxis(0.0, 1.0, 0.0);
+  const double aCylRadius = 3.0;
+  const double aVMin      = -1.0;
+  const double aVMax      = 1.0;
+
+  TopoDS_Face aCircularPlane = CreateCircularPlaneFace(aPlaneCenter, aPlaneNormal, aPlaneRadius);
+  TopoDS_Face aHalfCylinder =
+    CreateHalfCylinderFace(aCylCenter, aCylAxis, aCylRadius, aVMin, aVMax, 0.0, M_PI);
+
+  ASSERT_FALSE(aCircularPlane.IsNull()) << "Failed to create circular plane face";
+  ASSERT_FALSE(aHalfCylinder.IsNull()) << "Failed to create half-cylinder face";
+
+  IntTools_FaceFace aFF;
+  aFF.SetParameters(true, true, true, 1.0e-7);
+  aFF.Perform(aCircularPlane, aHalfCylinder);
+
+  ASSERT_TRUE(aFF.IsDone()) << "IntTools_FaceFace::Perform() failed";
+
+  const int aNbCurves = aFF.Lines().Length();
+
+  // With wire-aware BRepTopAdaptor_TopolTool, partial intersections are properly
+  // trimmed to the valid region within both face boundaries, not rejected entirely.
+  // The portion of the cylinder that's inside the circular plane produces a valid
+  // intersection curve segment.
+  EXPECT_GE(aNbCurves, 1)
+    << "Wire-aware classification should produce trimmed intersection curve for partial overlap";
+}
+
+//! Test with cylinder positioned such that both halves are completely outside the circle.
+//! This verifies the algorithm correctly handles cases where no part of the cylinder
+//! is inside the circular boundary.
+TEST_F(IntTools_FaceFaceTest, BothHalvesCompletelyOutside_NoIntersection)
+{
+  // Plane circle with small radius
+  const gp_Pnt aPlaneCenter(0.0, 0.0, 0.0);
+  const gp_Dir aPlaneNormal(0.0, 1.0, 0.0);
+  const double aPlaneRadius = 5.0;
+
+  // Cylinder far from the plane center
+  // Both halves will be completely outside the circle
+  const gp_Pnt aCylCenter(20.0, 0.0, 20.0);
+  const gp_Dir aCylAxis(0.0, 1.0, 0.0);
+  const double aCylRadius = 2.0;
+  const double aVMin      = -1.0;
+  const double aVMax      = 1.0;
+
+  // Test first half
+  TopoDS_Face aCircularPlane = CreateCircularPlaneFace(aPlaneCenter, aPlaneNormal, aPlaneRadius);
+  TopoDS_Face aHalfCylinder1 =
+    CreateHalfCylinderFace(aCylCenter, aCylAxis, aCylRadius, aVMin, aVMax, 0.0, M_PI);
+
+  ASSERT_FALSE(aCircularPlane.IsNull());
+  ASSERT_FALSE(aHalfCylinder1.IsNull());
+
+  IntTools_FaceFace aFF1;
+  aFF1.SetParameters(true, true, true, 1.0e-7);
+  aFF1.Perform(aCircularPlane, aHalfCylinder1);
+
+  ASSERT_TRUE(aFF1.IsDone());
+  EXPECT_EQ(aFF1.Lines().Length(), 0) << "First half should have no intersection";
+  EXPECT_EQ(aFF1.Points().Length(), 0);
+
+  // Test opposite half
+  TopoDS_Face aHalfCylinder2 =
+    CreateHalfCylinderFace(aCylCenter, aCylAxis, aCylRadius, aVMin, aVMax, M_PI, 2.0 * M_PI);
+
+  ASSERT_FALSE(aHalfCylinder2.IsNull());
+
+  IntTools_FaceFace aFF2;
+  aFF2.SetParameters(true, true, true, 1.0e-7);
+  aFF2.Perform(aCircularPlane, aHalfCylinder2);
+
+  ASSERT_TRUE(aFF2.IsDone());
+  EXPECT_EQ(aFF2.Lines().Length(), 0) << "Opposite half should also have no intersection";
+  EXPECT_EQ(aFF2.Points().Length(), 0);
+}

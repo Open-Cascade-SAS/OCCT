@@ -46,7 +46,8 @@
 #include <IntSurf_Quadric.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
-#include <IntTools_TopolTool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
 #include <IntTools_WLineTool.hxx>
 #include <ProjLib_Plane.hxx>
 #include <TopExp_Explorer.hxx>
@@ -466,8 +467,15 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
-  const occ::handle<IntTools_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
-  const occ::handle<IntTools_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
+  // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
+  // This ensures intersection curves are properly trimmed to actual face wire boundaries,
+  // not just rectangular UV bounds.
+  // BRepTopAdaptor_TopolTool requires BRepAdaptor_Surface (not GeomAdaptor_Surface),
+  // so we create dedicated surface adaptors from the faces.
+  const occ::handle<BRepAdaptor_Surface>      aHS1ForTopo = new BRepAdaptor_Surface(myFace1);
+  const occ::handle<BRepAdaptor_Surface>      aHS2ForTopo = new BRepAdaptor_Surface(myFace2);
+  const occ::handle<BRepTopAdaptor_TopolTool> dom1        = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
+  const occ::handle<BRepTopAdaptor_TopolTool> dom2        = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
 
   myLConstruct.Load(dom1, dom2, myHS1, myHS2);
 
@@ -533,43 +541,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     for (int i = 1; i <= aNbLinIntersector; ++i)
     {
       MakeCurve(i, dom1, dom2, TolArc);
-    }
-    //
-    // Validate intersection curves against actual face wire boundaries.
-    // The MakeCurve() method uses domain classifiers that only check rectangular UV bounds,
-    // but faces may have non-rectangular boundaries (e.g., circular wires).
-    // We need to verify that curve points actually lie within both faces.
-    for (int i = mySeqOfCurve.Length(); i >= 1; --i)
-    {
-      const IntTools_Curve&         aIC  = mySeqOfCurve(i);
-      const occ::handle<Geom_Curve> aC3D = aIC.Curve();
-      if (aC3D.IsNull())
-      {
-        continue;
-      }
-
-      // Check multiple points along the curve to ensure it lies within both faces
-      const double aT1 = aC3D->FirstParameter();
-      const double aT2 = aC3D->LastParameter();
-
-      // Check start, middle, and end points
-      bool isValidCurve = true;
-      for (int iP = 0; iP <= 2 && isValidCurve; ++iP)
-      {
-        const double aT   = aT1 + (aT2 - aT1) * iP * 0.5;
-        const gp_Pnt aPnt = aC3D->Value(aT);
-
-        // Validate point against actual face boundaries (wire-aware check)
-        if (!myContext->IsValidPointForFaces(aPnt, myFace1, myFace2, myTol))
-        {
-          isValidCurve = false;
-        }
-      }
-
-      if (!isValidCurve)
-      {
-        mySeqOfCurve.Remove(i);
-      }
     }
     //
     ComputeTolReached3d(theToRunParallel);
