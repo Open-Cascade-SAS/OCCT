@@ -685,6 +685,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   NCollection_DataMap<int, NCollection_List<int>>      aDMBV(100, aTmpAllocator);
   // Cross-iteration collections (use main allocator, persist through entire loop)
   NCollection_Map<int>                           aMI(100, aAllocator);
+  NCollection_Map<int>                           aMVBoundsGlobal(100, aAllocator);  // Global boundary vertices
   NCollection_Map<occ::handle<BOPDS_PaveBlock>>  aMPBAdd(100, aAllocator);
   NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB(aAllocator);
   NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
@@ -811,7 +812,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
       {
         aLBV.Clear();
         //
-        PutBoundPaveOnCurve(aF1, aF2, aNC, aLBV);
+        PutBoundPaveOnCurve(aF1, aF2, aNC, aLBV, aMVBoundsGlobal, aMVOnIn);
         //
         if (!aLBV.IsEmpty())
         {
@@ -819,7 +820,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
           NCollection_List<int>::Iterator aItI(aLBV);
           for (; aItI.More(); aItI.Next())
           {
-            aMVBounds.Add(aItI.Value());
+            int nVBnd = aItI.Value();
+            aMVBounds.Add(nVBnd);
+            aMVBoundsGlobal.Add(nVBnd);  // Add to global map for cross-FF unification
           }
         }
       }
@@ -1643,11 +1646,18 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
   aNbFF                                    = aFFs.Length();
+  std::cout << "MakeBlocks: Processing " << aNbFF << " FF interferences" << std::endl;
   // 1. Sections (curves, points);
   for (i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFF = aFFs(i);
     aFF.Indices(nF1, nF2);
+    // Debug: print FF interferences involving Face 22
+    if (nF1 == 22 || nF2 == 22)
+    {
+      std::cout << "  FF[" << i << "] Face " << nF1 << " vs Face " << nF2
+                << " curves=" << aFF.Curves().Length() << std::endl;
+    }
     //
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
@@ -1688,6 +1698,21 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
         //
         aFI1.ChangePaveBlocksSc().Add(aPB);
         aFI2.ChangePaveBlocksSc().Add(aPB);
+        // Debug: print section edge details for Face 22
+        if (nF1 == 22 || nF2 == 22)
+        {
+          int           nEdge = aPB->Edge();
+          int           nV1x  = aPB->Pave1().Index();
+          int           nV2x  = aPB->Pave2().Index();
+          TopoDS_Vertex aV1x  = TopoDS::Vertex(myDS->Shape(nV1x));
+          TopoDS_Vertex aV2x  = TopoDS::Vertex(myDS->Shape(nV2x));
+          gp_Pnt        aP1x  = BRep_Tool::Pnt(aV1x);
+          gp_Pnt        aP2x  = BRep_Tool::Pnt(aV2x);
+          std::cout << "    -> Section Edge " << nEdge << " Pave1=" << nV1x << " Pave2=" << nV2x
+                    << " V1(" << aP1x.X() << "," << aP1x.Y() << "," << aP1x.Z() << ")"
+                    << " V2(" << aP2x.X() << "," << aP2x.Y() << "," << aP2x.Z() << ")"
+                    << std::endl;
+        }
         // Add edge-PB connection
         const int                                       nE      = aPB->Edge();
         NCollection_List<occ::handle<BOPDS_PaveBlock>>* pLPBOnE = anEdgeLPB.ChangeSeek(nE);
@@ -2219,10 +2244,12 @@ static void getBoundPaves(const BOPDS_DS* theDS, const BOPDS_Curve& theNC, int t
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
-                                             const TopoDS_Face&     aF2,
-                                             BOPDS_Curve&           aNC,
-                                             NCollection_List<int>& aLVB)
+void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&           aF1,
+                                             const TopoDS_Face&           aF2,
+                                             BOPDS_Curve&                 aNC,
+                                             NCollection_List<int>&       aLVB,
+                                             const NCollection_Map<int>& theMVBoundsGlobal,
+                                             const NCollection_Map<int>& theMVOnIn)
 {
   const IntTools_Curve& aIC = aNC.Curve();
   double                aT[2];
@@ -2239,6 +2266,9 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
   if (isClosed && (aBndNV[0] > 0 || aBndNV[1] > 0))
     return;
 
+  std::cout << "  PutBoundPaveOnCurve: curve bounds aBndNV[0]=" << aBndNV[0] << " aBndNV[1]=" << aBndNV[1]
+            << " P0(" << aP[0].X() << "," << aP[0].Y() << "," << aP[0].Z() << ")"
+            << " P1(" << aP[1].X() << "," << aP[1].Y() << "," << aP[1].Z() << ")" << std::endl;
   for (int j = 0; j < 2; ++j)
   {
     if (aBndNV[j] < 0)
@@ -2252,22 +2282,115 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
       bool bVF = myContext->IsValidPointForFaces(aP[j], aF1, aF2, aTolR3D);
       if (!bVF)
       {
+        std::cout << "    -> skipping bound " << j << " - not valid for faces" << std::endl;
         continue;
       }
-      TopoDS_Vertex aVn;
-      BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolR3D, aVn);
-      BOPTools_AlgoTools::UpdateVertex(aIC, aT[j], aVn);
-      aTolVnew = BRep_Tool::Tolerance(aVn);
 
-      BOPDS_ShapeInfo aSIVn;
-      aSIVn.SetShapeType(TopAbs_VERTEX);
-      aSIVn.SetShape(aVn);
+      // Check if there's an existing vertex (boundary or face vertex) that should be
+      // reused instead of creating a new boundary vertex. This handles cases where:
+      // 1. An existing face boundary vertex is at the curve endpoint
+      // 2. A boundary vertex from another FF interference is at the same point
+      // Use an adaptive tolerance based on face tolerances and a minimum threshold to
+      // account for numerical precision issues when large surfaces intersect at small regions.
+      int nVExisting = -1;
+      double aTolF1 = BRep_Tool::Tolerance(aF1);
+      double aTolF2 = BRep_Tool::Tolerance(aF2);
+      double aTolBndCheck = std::max({aTolR3D, aTolF1, aTolF2}) + myFuzzyValue;
+      // Minimum threshold for cases where numerical errors are larger
+      aTolBndCheck = std::max(aTolBndCheck, 5.e-3);
 
-      Bnd_Box& aBox = aSIVn.ChangeBox();
-      BRepBndLib::Add(aVn, aBox);
-      aBox.SetGap(aBox.GetGap() + Precision::Confusion());
+      // First check the curve's existing paves (face boundary vertices already placed on curve)
+      const NCollection_List<BOPDS_Pave>& aLP = aPB->ExtPaves();
+      for (NCollection_List<BOPDS_Pave>::Iterator aItPave(aLP); aItPave.More() && nVExisting < 0; aItPave.Next())
+      {
+        int nVPave = aItPave.Value().Index();
+        const BOPDS_ShapeInfo& aSIPave = myDS->ShapeInfo(nVPave);
+        if (aSIPave.ShapeType() != TopAbs_VERTEX)
+          continue;
+        const TopoDS_Vertex& aVPave = TopoDS::Vertex(aSIPave.Shape());
+        gp_Pnt aPPave = BRep_Tool::Pnt(aVPave);
+        double aTolVPave = BRep_Tool::Tolerance(aVPave);
+        double aDistCheck = aTolBndCheck + aTolVPave;
+        double aDist = aP[j].Distance(aPPave);
+        if (aDist <= aDistCheck)
+        {
+          nVExisting = nVPave;
+        }
+      }
 
-      int nVn = myDS->Append(aSIVn);
+      // Also check boundary vertices from other FF interferences
+      for (NCollection_Map<int>::Iterator aItBnd(theMVBoundsGlobal); aItBnd.More() && nVExisting < 0; aItBnd.Next())
+      {
+        int nVBnd = aItBnd.Value();
+        const BOPDS_ShapeInfo& aSIBnd = myDS->ShapeInfo(nVBnd);
+        const TopoDS_Vertex& aVBnd = TopoDS::Vertex(aSIBnd.Shape());
+        gp_Pnt aPBnd = BRep_Tool::Pnt(aVBnd);
+        double aTolVBnd = BRep_Tool::Tolerance(aVBnd);
+        double aDistCheck = aTolBndCheck + aTolVBnd;
+        double aDist = aP[j].Distance(aPBnd);
+        if (aDist <= aDistCheck)
+        {
+          nVExisting = nVBnd;
+        }
+      }
+
+      // Check vertices on/in the faces (including face boundary vertices and
+      // vertices from other FF interferences)
+      for (NCollection_Map<int>::Iterator aItOnIn(theMVOnIn); aItOnIn.More() && nVExisting < 0; aItOnIn.Next())
+      {
+        int nVOnIn = aItOnIn.Value();
+        const BOPDS_ShapeInfo& aSIOnIn = myDS->ShapeInfo(nVOnIn);
+        if (aSIOnIn.ShapeType() != TopAbs_VERTEX)
+          continue;
+        const TopoDS_Vertex& aVOnIn = TopoDS::Vertex(aSIOnIn.Shape());
+        gp_Pnt aPOnIn = BRep_Tool::Pnt(aVOnIn);
+        double aTolVOnIn = BRep_Tool::Tolerance(aVOnIn);
+        double aDistCheck = aTolBndCheck + aTolVOnIn;
+        double aDist = aP[j].Distance(aPOnIn);
+        if (aDist <= aDistCheck)
+        {
+          nVExisting = nVOnIn;
+        }
+      }
+
+      int nVn;
+      if (nVExisting >= 0)
+      {
+        // Reuse existing boundary vertex
+        nVn = nVExisting;
+        // Update vertex tolerance if needed
+        const TopoDS_Vertex& aVEx = (*(TopoDS_Vertex*)(&myDS->Shape(nVn)));
+        double aTolEx = BRep_Tool::Tolerance(aVEx);
+        gp_Pnt aPEx = BRep_Tool::Pnt(aVEx);
+        double aDist = aP[j].Distance(aPEx);
+        if (aDist > aTolEx)
+        {
+          BRep_Builder().UpdateVertex(aVEx, aDist + Precision::Confusion());
+          // Update bounding box
+          Bnd_Box& aBoxDS = myDS->ChangeShapeInfo(nVn).ChangeBox();
+          aBoxDS.SetVoid();
+          BRepBndLib::Add(aVEx, aBoxDS);
+          aBoxDS.SetGap(aBoxDS.GetGap() + Precision::Confusion());
+        }
+      }
+      else
+      {
+        // Create new vertex
+        TopoDS_Vertex aVn;
+        BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolR3D, aVn);
+        BOPTools_AlgoTools::UpdateVertex(aIC, aT[j], aVn);
+        aTolVnew = BRep_Tool::Tolerance(aVn);
+
+        BOPDS_ShapeInfo aSIVn;
+        aSIVn.SetShapeType(TopAbs_VERTEX);
+        aSIVn.SetShape(aVn);
+
+        Bnd_Box& aBox = aSIVn.ChangeBox();
+        BRepBndLib::Add(aVn, aBox);
+        aBox.SetGap(aBox.GetGap() + Precision::Confusion());
+
+        nVn = myDS->Append(aSIVn);
+      }
 
       BOPDS_Pave aPn;
       aPn.SetIndex(nVn);

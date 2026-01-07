@@ -48,6 +48,7 @@
 #include <IntTools_Tools.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
+#include <IntTools_TopolTool.hxx>
 #include <IntTools_WLineTool.hxx>
 #include <ProjLib_Plane.hxx>
 #include <TopExp_Explorer.hxx>

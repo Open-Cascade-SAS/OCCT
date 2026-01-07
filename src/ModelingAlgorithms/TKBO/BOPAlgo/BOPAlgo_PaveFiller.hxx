@@ -285,10 +285,12 @@ protected:
                                          double&                     aTolVExt,
                                          const int                   aType = 0);
 
-  Standard_EXPORT void PutBoundPaveOnCurve(const TopoDS_Face&     theF1,
-                                           const TopoDS_Face&     theF2,
-                                           BOPDS_Curve&           theNC,
-                                           NCollection_List<int>& theLBV);
+  Standard_EXPORT void PutBoundPaveOnCurve(const TopoDS_Face&           theF1,
+                                           const TopoDS_Face&           theF2,
+                                           BOPDS_Curve&                 theNC,
+                                           NCollection_List<int>&       theLBV,
+                                           const NCollection_Map<int>& theMVBoundsGlobal,
+                                           const NCollection_Map<int>& theMVOnIn);
 
   //! Checks if the given pave block (created on section curve)
   //! coincides with any of the pave blocks of the faces
