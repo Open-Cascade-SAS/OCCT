@@ -292,35 +292,13 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     aNbPBSc = aMPBSc.Extent();
     aNbAV   = aLIAV.Extent();
 
-    // Debug: Print face info
-    {
-      BRepAdaptor_Surface aSurf(aF, false);
-      const char* aSurfType = "Unknown";
-      switch (aSurf.GetType())
-      {
-        case GeomAbs_Plane:    aSurfType = "Plane"; break;
-        case GeomAbs_Cylinder: aSurfType = "Cylinder"; break;
-        case GeomAbs_Cone:     aSurfType = "Cone"; break;
-        case GeomAbs_Sphere:   aSurfType = "Sphere"; break;
-        case GeomAbs_Torus:    aSurfType = "Torus"; break;
-        default: break;
-      }
-      // Find which argument shape this face belongs to
-      int aRank = myDS->Rank(i);
-      std::cout << "BuildSplitFaces: Face " << i << " (Rank=" << aRank << ", " << aSurfType << ")"
-                << " PBIn=" << aNbPBIn << " PBOn=" << aNbPBOn
-                << " PBSc=" << aNbPBSc << " AV=" << aNbAV << std::endl;
-    }
-
     if (!aNbPBIn && !aNbPBOn && !aNbPBSc && !aNbAV)
     { // not compete
-      std::cout << "  -> Skipped (no interaction)" << std::endl;
       continue;
     }
 
     if (!aNbPBIn && !aNbPBSc)
     {
-      std::cout << "  -> Taking optimization path (no PBIn/PBSc)" << std::endl;
       // If there are any alone vertices to be put in the face,
       // the new face has to be created even if the wires of the
       // face have not been modified.
@@ -364,15 +342,11 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
         TopoDS_Face aFD = BuildDraftFace(aF, myImages, myContext, myReport);
         if (!aFD.IsNull())
         {
-          std::cout << "  -> BuildDraftFace succeeded" << std::endl;
           aFacesIm(aFacesIm.Add(i, NCollection_List<TopoDS_Shape>())).Append(aFD);
           continue;
         }
-        std::cout << "  -> BuildDraftFace failed, falling through to full algorithm" << std::endl;
       }
     }
-
-    std::cout << "  -> Taking FULL algorithm path" << std::endl;
     aMFence.Clear();
     //
     anOriF = aF.Orientation();
@@ -504,55 +478,16 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     //
     //
     // 1.3 Section edges
-    if (i == 22 || i == 12)
-    {
-      std::cout << "  DEBUG Face " << i << " Section edges (PBSc=" << aNbPBSc << "):" << std::endl;
-    }
     for (j = 1; j <= aNbPBSc; ++j)
     {
       const occ::handle<BOPDS_PaveBlock>& aPB = aMPBSc(j);
       nSp                                     = aPB->Edge();
       aSp                                     = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
-      // Debug: print section edge info for Face 22 and 12
-      if (i == 22 || i == 12)
-      {
-        TopoDS_Vertex aV1, aV2;
-        TopExp::Vertices(aSp, aV1, aV2);
-        gp_Pnt        aP1 = BRep_Tool::Pnt(aV1);
-        gp_Pnt        aP2 = BRep_Tool::Pnt(aV2);
-        int           nV1 = aPB->Pave1().Index();
-        int           nV2 = aPB->Pave2().Index();
-        std::cout << "    PBSc[" << j << "] Edge=" << nSp << " Pave1=" << nV1 << " Pave2=" << nV2
-                  << " V1(" << aP1.X() << "," << aP1.Y() << "," << aP1.Z() << ")"
-                  << " V2(" << aP2.X() << "," << aP2.Y() << "," << aP2.Z() << ")" << std::endl;
-      }
       //
       aSp.Orientation(TopAbs_FORWARD);
       aLE.Append(aSp);
       aSp.Orientation(TopAbs_REVERSED);
       aLE.Append(aSp);
-    }
-    std::cout << "  Face " << i << " edges for BuilderFace: " << aLE.Extent()
-              << " (boundary: " << (aLE.Extent() - 2 * aNbPBIn - 2 * aNbPBSc)
-              << " + PBIn*2: " << (2 * aNbPBIn)
-              << " + PBSc*2: " << (2 * aNbPBSc) << ")" << std::endl;
-    // Debug: For Face 22 (rank=1, Cylinder), print edge details
-    if (i == 22)
-    {
-      std::cout << "  DEBUG Face 22 edge details:" << std::endl;
-      int edgeIdx = 0;
-      for (NCollection_List<TopoDS_Shape>::Iterator itE(aLE); itE.More(); itE.Next(), ++edgeIdx)
-      {
-        const TopoDS_Edge& anEdge = TopoDS::Edge(itE.Value());
-        TopoDS_Vertex      aV1, aV2;
-        TopExp::Vertices(anEdge, aV1, aV2);
-        gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
-        gp_Pnt aP2 = BRep_Tool::Pnt(aV2);
-        std::cout << "    Edge " << edgeIdx << " orient=" << (int)anEdge.Orientation()
-                  << " V1(" << aP1.X() << "," << aP1.Y() << "," << aP1.Z() << ")"
-                  << " V2(" << aP2.X() << "," << aP2.Y() << "," << aP2.Z() << ")"
-                  << std::endl;
-      }
     }
     //
     if (!myPaveFiller->NonDestructive())
@@ -594,23 +529,11 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
   }
 
   aNbBF = aFacesIm.Extent();
-  std::cout << "BuildSplitFaces: Total " << aNbBF << " faces with splits" << std::endl;
   for (k = 1; k <= aNbBF; ++k)
   {
     const TopoDS_Face& aF                      = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
     anOriF                                     = aF.Orientation();
     const NCollection_List<TopoDS_Shape>& aLFR = aFacesIm(k);
-    int aFaceIdx = aFacesIm.FindKey(k);
-    BRepAdaptor_Surface aSurf(aF, false);
-    const char* aSurfType = "Unknown";
-    switch (aSurf.GetType())
-    {
-      case GeomAbs_Plane:    aSurfType = "Plane"; break;
-      case GeomAbs_Cylinder: aSurfType = "Cylinder"; break;
-      default: break;
-    }
-    std::cout << "  Face " << aFaceIdx << " (" << aSurfType << ", rank=" << myDS->Rank(aFaceIdx)
-              << ") -> " << aLFR.Extent() << " split faces" << std::endl;
     //
     NCollection_List<TopoDS_Shape>* pLFIm = myImages.Bound(aF, NCollection_List<TopoDS_Shape>());
     aIt.Initialize(aLFR);

@@ -1646,18 +1646,11 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
   aNbFF                                    = aFFs.Length();
-  std::cout << "MakeBlocks: Processing " << aNbFF << " FF interferences" << std::endl;
   // 1. Sections (curves, points);
   for (i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFF = aFFs(i);
     aFF.Indices(nF1, nF2);
-    // Debug: print FF interferences involving Face 22
-    if (nF1 == 22 || nF2 == 22)
-    {
-      std::cout << "  FF[" << i << "] Face " << nF1 << " vs Face " << nF2
-                << " curves=" << aFF.Curves().Length() << std::endl;
-    }
     //
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
@@ -1698,21 +1691,6 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
         //
         aFI1.ChangePaveBlocksSc().Add(aPB);
         aFI2.ChangePaveBlocksSc().Add(aPB);
-        // Debug: print section edge details for Face 22
-        if (nF1 == 22 || nF2 == 22)
-        {
-          int           nEdge = aPB->Edge();
-          int           nV1x  = aPB->Pave1().Index();
-          int           nV2x  = aPB->Pave2().Index();
-          TopoDS_Vertex aV1x  = TopoDS::Vertex(myDS->Shape(nV1x));
-          TopoDS_Vertex aV2x  = TopoDS::Vertex(myDS->Shape(nV2x));
-          gp_Pnt        aP1x  = BRep_Tool::Pnt(aV1x);
-          gp_Pnt        aP2x  = BRep_Tool::Pnt(aV2x);
-          std::cout << "    -> Section Edge " << nEdge << " Pave1=" << nV1x << " Pave2=" << nV2x
-                    << " V1(" << aP1x.X() << "," << aP1x.Y() << "," << aP1x.Z() << ")"
-                    << " V2(" << aP2x.X() << "," << aP2x.Y() << "," << aP2x.Z() << ")"
-                    << std::endl;
-        }
         // Add edge-PB connection
         const int                                       nE      = aPB->Edge();
         NCollection_List<occ::handle<BOPDS_PaveBlock>>* pLPBOnE = anEdgeLPB.ChangeSeek(nE);
@@ -2266,9 +2244,6 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&           aF1,
   if (isClosed && (aBndNV[0] > 0 || aBndNV[1] > 0))
     return;
 
-  std::cout << "  PutBoundPaveOnCurve: curve bounds aBndNV[0]=" << aBndNV[0] << " aBndNV[1]=" << aBndNV[1]
-            << " P0(" << aP[0].X() << "," << aP[0].Y() << "," << aP[0].Z() << ")"
-            << " P1(" << aP[1].X() << "," << aP[1].Y() << "," << aP[1].Z() << ")" << std::endl;
   for (int j = 0; j < 2; ++j)
   {
     if (aBndNV[j] < 0)
@@ -2282,7 +2257,6 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&           aF1,
       bool bVF = myContext->IsValidPointForFaces(aP[j], aF1, aF2, aTolR3D);
       if (!bVF)
       {
-        std::cout << "    -> skipping bound " << j << " - not valid for faces" << std::endl;
         continue;
       }
 
