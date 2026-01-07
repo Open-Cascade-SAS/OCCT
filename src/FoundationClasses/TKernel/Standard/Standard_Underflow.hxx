@@ -17,7 +17,6 @@
 #ifndef _Standard_Underflow_HeaderFile
 #define _Standard_Underflow_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_NumericError.hxx>

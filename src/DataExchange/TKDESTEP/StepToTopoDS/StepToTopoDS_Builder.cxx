@@ -749,7 +749,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
         {
           Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
           sout << "StepToTopoDS, GeometricSet, elem " << i << " of " << nbElem << ": exception ";
-          sout << anException.GetMessageString() << std::endl;
+          sout << anException.what() << std::endl;
         }
         if (!aGeomCrv.IsNull())
         {

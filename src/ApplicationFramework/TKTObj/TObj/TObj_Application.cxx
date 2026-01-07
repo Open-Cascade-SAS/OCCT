@@ -117,7 +117,7 @@ bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceF
     catch (Standard_Failure const& anException)
     {
 #ifdef OCCT_DEBUG
-      ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.GetMessageString());
+      ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.what());
 #endif
       (void)anException;
     }
@@ -148,7 +148,7 @@ bool TObj_Application::LoadDocument(Standard_IStream&              theIStream,
     catch (Standard_Failure const& anException)
     {
 #ifdef OCCT_DEBUG
-      ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.GetMessageString());
+      ErrorMessage(Message_Msg("TObj_Appl_Exception") << anException.what());
 #endif
       (void)anException;
     }

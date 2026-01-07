@@ -17,6 +17,7 @@
 #define _RWStl_Reader_HeaderFile
 
 #include <gp_XYZ.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_ReadLineBuffer.hxx>
 #include <Standard_IStream.hxx>
 

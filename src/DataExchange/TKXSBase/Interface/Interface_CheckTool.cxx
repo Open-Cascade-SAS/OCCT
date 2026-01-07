@@ -41,16 +41,16 @@ static int errh = 1;
 static void raisecheck(Standard_Failure& theException, occ::handle<Interface_Check>& ach)
 {
   char mess[100];
-  Sprintf(mess, "** Exception Raised during Check : %s **", theException.DynamicType()->Name());
+  Sprintf(mess, "** Exception Raised during Check : %s **", theException.ExceptionType());
   ach->AddFail(mess);
 #ifdef _WIN32
-  if (theException.IsKind(STANDARD_TYPE(OSD_Exception)))
+  if (dynamic_cast<OSD_Exception*>(&theException) != nullptr)
   {
 #else
-  if (theException.IsKind(STANDARD_TYPE(OSD_Signal)))
+  if (dynamic_cast<OSD_Signal*>(&theException) != nullptr)
   {
 #endif
-    theException.SetMessageString("System Signal received, check interrupt");
+
     throw theException;
   }
 }

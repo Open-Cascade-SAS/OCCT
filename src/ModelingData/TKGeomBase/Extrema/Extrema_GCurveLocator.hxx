@@ -16,6 +16,7 @@
 #define _Extrema_GCurveLocator_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_Real.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_OutOfRange.hxx>
 

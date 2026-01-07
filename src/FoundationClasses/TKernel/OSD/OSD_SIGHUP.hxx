@@ -15,7 +15,6 @@
 #ifndef _OSD_SIGHUP_HeaderFile
 #define _OSD_SIGHUP_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_SStream.hxx>
 #include <OSD_Signal.hxx>
 

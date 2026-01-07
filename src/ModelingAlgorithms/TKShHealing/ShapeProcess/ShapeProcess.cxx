@@ -169,7 +169,7 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
     catch (Standard_Failure const& anException)
     {
       Message_Msg SMSG2("SP.Sequence.Error.Except"); // Operator %s failed with exception %s
-      SMSG2 << oper << anException.GetMessageString();
+      SMSG2 << oper << anException.what();
       context->Messenger()->Send(SMSG2, Message_Alarm);
     }
   }
@@ -213,7 +213,7 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& theContext,
     catch (const Standard_Failure& anException)
     {
       Message_Msg aMessage("SP.Sequence.Error.Except"); // Operator %s failed with exception %s
-      aMessage << anOperationName << anException.GetMessageString();
+      aMessage << anOperationName << anException.what();
       theContext->Messenger()->Send(aMessage, Message_Alarm);
     }
   }

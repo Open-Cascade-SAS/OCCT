@@ -43,7 +43,7 @@ Standard_EXPORT const char* DBRep_Set(const char* theNameStr, void* theShapePtr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 

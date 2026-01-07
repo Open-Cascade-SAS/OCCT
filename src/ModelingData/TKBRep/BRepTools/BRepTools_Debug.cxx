@@ -39,7 +39,7 @@ const char* BRepTools_Write(const char* theFileStr, void* theShapePtr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 
@@ -62,7 +62,7 @@ const char* BRepTools_Dump(void* theShapePtr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 
@@ -87,7 +87,7 @@ const char* BRepTools_DumpLoc(void* theLocationPtr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 

@@ -19,7 +19,10 @@
 #include <OSD_Thread.hxx>
 #include <Standard_Condition.hxx>
 
+#include <Standard_ProgramError.hxx>
+
 #include <atomic>
+#include <optional>
 
 //! Class defining a thread pool for executing algorithms in multi-threaded mode.
 //! Thread pool allocates requested amount of threads and keep them alive
@@ -183,16 +186,16 @@ protected:
     static void* runThread(void* theTask);
 
   private:
-    OSD_ThreadPool*               myPool;
-    JobInterface*                 myJob;
-    occ::handle<Standard_Failure> myFailure;
-    Standard_Condition            myWakeEvent;
-    Standard_Condition            myIdleEvent;
-    int                           myThreadIndex;
-    std::atomic<int>              myUsageCounter;
-    bool                          myIsStarted;
-    bool                          myToCatchFpe;
-    bool                          myIsSelfThread;
+    OSD_ThreadPool*                      myPool;
+    JobInterface*                        myJob;
+    std::optional<Standard_ProgramError> myFailure;
+    Standard_Condition                   myWakeEvent;
+    Standard_Condition                   myIdleEvent;
+    int                                  myThreadIndex;
+    std::atomic<int>                     myUsageCounter;
+    bool                                 myIsStarted;
+    bool                                 myToCatchFpe;
+    bool                                 myIsSelfThread;
   };
 
 public:
@@ -336,9 +339,9 @@ protected:
   void release();
 
   //! Perform the job and catch exceptions.
-  static void performJob(occ::handle<Standard_Failure>& theFailure,
-                         OSD_ThreadPool::JobInterface*  theJob,
-                         int                            theThreadIndex);
+  static void performJob(std::optional<Standard_ProgramError>& theFailure,
+                         OSD_ThreadPool::JobInterface*         theJob,
+                         int                                   theThreadIndex);
 
 private:
   //! This method should not be called (prohibited).

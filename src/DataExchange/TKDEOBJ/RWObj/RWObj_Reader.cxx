@@ -605,7 +605,7 @@ int RWObj_Reader::triangulatePolygon(const NCollection_Array1<int>& theIndices)
   catch (Standard_Failure const& theFailure)
   {
     Message::SendWarning(TCollection_AsciiString("Error: exception raised during polygon split\n[")
-                         + theFailure.GetMessageString() + "]");
+                         + theFailure.what() + "]");
   }
   return triangulatePolygonFan(theIndices);
 }

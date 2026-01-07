@@ -18,6 +18,7 @@
 
 #include <Standard.hxx>
 
+#include <Standard_Type.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>

@@ -17,7 +17,6 @@
 #ifndef _Quantity_DateDefinitionError_HeaderFile
 #define _Quantity_DateDefinitionError_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 

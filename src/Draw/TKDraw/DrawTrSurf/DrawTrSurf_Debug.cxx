@@ -54,7 +54,7 @@ Standard_EXPORT const char* DrawTrSurf_Set(const char* theNameStr, void* theHand
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 
@@ -80,7 +80,7 @@ Standard_EXPORT const char* DrawTrSurf_SetPnt(const char* theNameStr, void* theP
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 
@@ -101,7 +101,7 @@ Standard_EXPORT const char* DrawTrSurf_SetPnt2d(const char* theNameStr, void* th
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }
 

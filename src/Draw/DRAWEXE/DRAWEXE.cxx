@@ -79,7 +79,7 @@ public:
     }
     catch (Standard_Failure& anExcept)
     {
-      std::cout << "Failed to evaluate command: " << anExcept.GetMessageString() << std::endl;
+      std::cout << "Failed to evaluate command: " << anExcept.what() << std::endl;
     }
     return aRes;
   }

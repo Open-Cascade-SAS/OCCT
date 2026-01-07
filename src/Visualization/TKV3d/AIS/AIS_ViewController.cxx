@@ -2977,7 +2977,7 @@ void AIS_ViewController::handleSelectionPoly(const occ::handle<AIS_InteractiveCo
       {
         Message::SendWarning(
           TCollection_AsciiString("Internal error while displaying rubber-band: ")
-          + theEx.DynamicType()->Name() + ", " + theEx.GetMessageString());
+          + theEx.ExceptionType() + ", " + theEx.what());
         myRubberBand->ClearPoints();
       }
       if (!theView->Viewer()->ZLayerSettings(myRubberBand->ZLayer()).IsImmediate())

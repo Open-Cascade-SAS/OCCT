@@ -737,7 +737,7 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
 #ifdef OCCT_DEBUG
         // fflush ( stdout );
         di << ": ";
-        di << anException.GetMessageString();
+        di << anException.what();
         di << " ** Skip\n";
 #endif
         (void)anException;

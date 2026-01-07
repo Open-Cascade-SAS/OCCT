@@ -1644,7 +1644,7 @@ bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame
     }
     catch (Standard_Failure& anExcept)
     {
-      std::cout << "Failed to initialize Tk: " << anExcept.GetMessageString() << std::endl;
+      std::cout << "Failed to initialize Tk: " << anExcept.what() << std::endl;
     }
 
     Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)NULL);

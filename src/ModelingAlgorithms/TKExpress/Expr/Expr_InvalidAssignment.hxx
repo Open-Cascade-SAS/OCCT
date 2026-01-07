@@ -17,7 +17,6 @@
 #ifndef _Expr_InvalidAssignment_HeaderFile
 #define _Expr_InvalidAssignment_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Expr_ExprFailure.hxx>

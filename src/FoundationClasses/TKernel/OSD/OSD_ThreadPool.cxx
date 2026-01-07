@@ -217,7 +217,7 @@ void OSD_ThreadPool::Launcher::wait()
        aThreadIter.Next())
   {
     aThreadIter.ChangeValue()->WaitIdle();
-    if (!aThreadIter.Value()->myFailure.IsNull())
+    if (aThreadIter.Value()->myFailure)
     {
       ++aNbFailures;
     }
@@ -232,18 +232,19 @@ void OSD_ThreadPool::Launcher::wait()
        aThreadIter.More() && aThreadIter.Value() != nullptr;
        aThreadIter.Next())
   {
-    if (!aThreadIter.Value()->myFailure.IsNull())
+    if (aThreadIter.Value()->myFailure)
     {
       if (aNbFailures == 1)
       {
-        aThreadIter.Value()->myFailure->Reraise();
+        // Re-throw the single exception directly
+        throw *aThreadIter.Value()->myFailure;
       }
 
       if (!aFailures.IsEmpty())
       {
         aFailures += "\n";
       }
-      aFailures += aThreadIter.Value()->myFailure->GetMessageString();
+      aFailures += aThreadIter.Value()->myFailure->what();
     }
   }
 
@@ -253,9 +254,9 @@ void OSD_ThreadPool::Launcher::wait()
 
 //=================================================================================================
 
-void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>& theFailure,
-                                OSD_ThreadPool::JobInterface*  theJob,
-                                int                            theThreadIndex)
+void OSD_ThreadPool::performJob(std::optional<Standard_ProgramError>& theFailure,
+                                OSD_ThreadPool::JobInterface*         theJob,
+                                int                                   theThreadIndex)
 {
   try
   {
@@ -265,18 +266,18 @@ void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>& theFailure,
   catch (Standard_Failure const& aFailure)
   {
     TCollection_AsciiString aMsg =
-      TCollection_AsciiString(aFailure.DynamicType()->Name()) + ": " + aFailure.GetMessageString();
-    theFailure = new Standard_ProgramError(aMsg.ToCString(), aFailure.GetStackString());
+      TCollection_AsciiString(aFailure.ExceptionType()) + ": " + aFailure.what();
+    theFailure.emplace(aMsg.ToCString(), aFailure.GetStackString());
   }
   catch (std::exception& anStdException)
   {
     TCollection_AsciiString aMsg =
       TCollection_AsciiString(typeid(anStdException).name()) + ": " + anStdException.what();
-    theFailure = new Standard_ProgramError(aMsg.ToCString(), nullptr);
+    theFailure.emplace(aMsg.ToCString(), nullptr);
   }
   catch (...)
   {
-    theFailure = new Standard_ProgramError("Error: Unknown exception", nullptr);
+    theFailure.emplace("Error: Unknown exception", nullptr);
   }
 }
 
@@ -294,7 +295,7 @@ void OSD_ThreadPool::EnumeratedThread::performThread()
       return;
     }
 
-    myFailure.Nullify();
+    myFailure.reset();
     if (myJob != nullptr)
     {
       OSD::SetThreadLocalSignal(OSD::SignalMode(), myToCatchFpe);

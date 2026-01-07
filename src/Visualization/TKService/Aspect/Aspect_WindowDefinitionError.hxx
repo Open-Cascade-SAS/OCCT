@@ -16,7 +16,6 @@
 #ifndef _Aspect_WindowDefinitionError_HeaderFile
 #define _Aspect_WindowDefinitionError_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>

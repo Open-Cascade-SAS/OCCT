@@ -20,6 +20,8 @@
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_Macro.hxx>
 
+#include <cstring>
+
 //! Defines an array of values of configurable size.
 //! For instance, this class allows defining an array of 32-bit or 64-bit integer values with
 //! bitness determined in runtime. The element size in bytes (stride) should be specified at

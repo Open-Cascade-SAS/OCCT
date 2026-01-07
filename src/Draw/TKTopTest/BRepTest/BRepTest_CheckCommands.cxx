@@ -1049,7 +1049,7 @@ static int checkshape(Draw_Interpretor& theCommands, int narg, const char** a)
   catch (Standard_Failure const& anException)
   {
     theCommands << "checkshape exception : ";
-    theCommands << anException.GetMessageString();
+    theCommands << anException.what();
     theCommands << "\n";
     return 1;
   }

@@ -38,6 +38,6 @@ Standard_EXPORT const char* Draw_Eval(const char* theCommandStr)
   }
   catch (Standard_Failure const& anException)
   {
-    return anException.GetMessageString();
+    return anException.what();
   }
 }

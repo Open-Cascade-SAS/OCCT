@@ -122,7 +122,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* filename)
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    Interruption ReadFile par Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }
@@ -166,7 +166,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*              file
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    Interruption ReadFile par Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }
@@ -209,7 +209,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName, std::i
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    Interruption ReadFile par Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }
@@ -254,7 +254,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*              th
   {
     Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "    ****    Interruption ReadFile par Exception :   ****\n";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << "\n    Abandon" << std::endl;
     status = IFSelect_RetFail;
   }

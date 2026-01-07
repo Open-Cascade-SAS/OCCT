@@ -17,7 +17,6 @@
 #ifndef _LProp_NotDefined_HeaderFile
 #define _LProp_NotDefined_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
