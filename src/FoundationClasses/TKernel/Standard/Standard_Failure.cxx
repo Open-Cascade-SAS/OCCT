@@ -78,7 +78,7 @@ void Standard_Failure::captureStackTrace()
   if (aStackLength > 0)
   {
     // Limit stack allocation to 64KB to prevent stack overflow
-    const int aStackBufLen = std::min(std::max(aStackLength * 200, 2048), 65536);
+    const int aStackBufLen = std::clamp(aStackLength * 200, 2048, 65536);
     char*     aStackBuffer = (char*)alloca(aStackBufLen);
     if (aStackBuffer != nullptr)
     {

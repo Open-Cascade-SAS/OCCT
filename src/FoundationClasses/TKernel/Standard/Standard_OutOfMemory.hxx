@@ -39,9 +39,6 @@
 //! The reason is that in out-of-memory condition any memory allocation can
 //! fail, thus use of operator new for allocation of new exception instance
 //! is dangerous (can cause recursion until stack overflow, see #24836).
-//!
-//! @note Message buffer is not thread-safe, but this is acceptable trade-off
-//! since OOM is typically a fatal condition.
 class Standard_OutOfMemory : public Standard_ProgramError
 {
 public:
