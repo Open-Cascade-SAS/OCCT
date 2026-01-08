@@ -472,8 +472,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   // not just rectangular UV bounds.
   // BRepTopAdaptor_TopolTool requires BRepAdaptor_Surface (not GeomAdaptor_Surface),
   // so we create dedicated surface adaptors from the faces.
-  const occ::handle<BRepAdaptor_Surface>      aHS1ForTopo = new BRepAdaptor_Surface(myFace1);
-  const occ::handle<BRepAdaptor_Surface>      aHS2ForTopo = new BRepAdaptor_Surface(myFace2);
+  const occ::handle<BRepAdaptor_Surface>      aHS1ForTopo = new BRepAdaptor_Surface(aBAS1);
+  const occ::handle<BRepAdaptor_Surface>      aHS2ForTopo = new BRepAdaptor_Surface(aBAS2);
   const occ::handle<BRepTopAdaptor_TopolTool> dom1 = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
   const occ::handle<BRepTopAdaptor_TopolTool> dom2 = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
 
