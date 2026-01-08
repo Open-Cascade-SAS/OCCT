@@ -16,6 +16,7 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_PaveFiller.hxx>
+#include <iostream> // DEBUG
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
@@ -2271,7 +2272,7 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&           aF1,
       double aTolF2 = BRep_Tool::Tolerance(aF2);
       double aTolBndCheck = std::max({aTolR3D, aTolF1, aTolF2}) + myFuzzyValue;
       // Minimum threshold for cases where numerical errors are larger
-      aTolBndCheck = std::max(aTolBndCheck, 5.e-3);
+      //aTolBndCheck = std::max(aTolBndCheck, 5.e-3);
 
       // First check the curve's existing paves (face boundary vertices already placed on curve)
       const NCollection_List<BOPDS_Pave>& aLP = aPB->ExtPaves();
@@ -2349,9 +2350,33 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&           aF1,
       }
       else
       {
-        // Create new vertex
+        // Compute distance from point to both surfaces to use as tolerance
+        double aTolFromSurfaces = aTolR3D;
+        {
+          // Get surfaces from faces
+          Handle(Geom_Surface) aSurf1 = BRep_Tool::Surface(aF1);
+          Handle(Geom_Surface) aSurf2 = BRep_Tool::Surface(aF2);
+          if (!aSurf1.IsNull() && !aSurf2.IsNull())
+          {
+            // Project point onto both surfaces and get distances
+            GeomAPI_ProjectPointOnSurf aProj1(aP[j], aSurf1);
+            GeomAPI_ProjectPointOnSurf aProj2(aP[j], aSurf2);
+            double aDist1 = aProj1.IsDone() && aProj1.NbPoints() > 0
+                            ? aProj1.LowerDistance() : 0.0;
+            double aDist2 = aProj2.IsDone() && aProj2.NbPoints() > 0
+                            ? aProj2.LowerDistance() : 0.0;
+            // Use max distance as tolerance (with some safety margin)
+            double aMaxDist = std::max(aDist1, aDist2);
+            if (aMaxDist > aTolR3D)
+            {
+              aTolFromSurfaces = aMaxDist + Precision::Confusion();
+            }
+          }
+        }
+
+        // Create new vertex with computed tolerance
         TopoDS_Vertex aVn;
-        BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolR3D, aVn);
+        BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolFromSurfaces, aVn);
         BOPTools_AlgoTools::UpdateVertex(aIC, aT[j], aVn);
         aTolVnew = BRep_Tool::Tolerance(aVn);
 

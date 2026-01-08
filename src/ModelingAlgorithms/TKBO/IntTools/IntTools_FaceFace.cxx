@@ -15,6 +15,8 @@
 
 #include <IntTools_FaceFace.hxx>
 
+#include <iostream> // DEBUG
+
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
@@ -450,21 +452,21 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     double umin, umax, vmin, vmax;
     // F1
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
+    //CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->Load(S1, umin, umax, vmin, vmax);
     // F2
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
+    //CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
   else
   {
     double umin, umax, vmin, vmax;
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
+    //CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->Load(S1, umin, umax, vmin, vmax);
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
+    //CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
@@ -769,7 +771,6 @@ reapprox:;
     }
   }
   // Do the Curve
-
   switch (typl)
   {
     // ########################################
@@ -791,6 +792,24 @@ reapprox:;
       else if (typl == IntPatch_Hyperbola)
       {
         newc = new Geom_Hyperbola(occ::down_cast<IntPatch_GLine>(L)->Hyperbola());
+      }
+
+      // Compute maximum vertex tolerance from GLine vertices.
+      // This tolerance accounts for boundary intersection computation errors
+      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
+      // to ensure vertices from different FF intersections can be unified.
+      double aMaxVertTol = 0.0;
+      {
+        occ::handle<IntPatch_GLine> aGL = occ::down_cast<IntPatch_GLine>(L);
+        int aNbVtx = aGL->NbVertex();
+        for (int iv = 1; iv <= aNbVtx; ++iv)
+        {
+          const IntPatch_Point& aVtx = aGL->Vertex(iv);
+          if (aVtx.Tolerance() > aMaxVertTol)
+          {
+            aMaxVertTol = aVtx.Tolerance();
+          }
+        }
       }
       //
       aNbParts = myLConstruct.NbParts();
@@ -837,6 +856,11 @@ reapprox:;
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
+          // Ensure curve tolerance is at least the maximum vertex tolerance
+          if (aCurve.Tolerance() < aMaxVertTol)
+          {
+            aCurve.SetTolerance(aMaxVertTol);
+          }
           //
           mySeqOfCurve.Append(aCurve);
         } // if (!bFNIt && !bLPIt) {
@@ -870,7 +894,12 @@ reapprox:;
               || typS2 == GeomAbs_OffsetSurface || typS2 == GeomAbs_SurfaceOfRevolution)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
+            IntTools_Curve aCurve(newc, H1, H1);
+            if (aCurve.Tolerance() < aMaxVertTol)
+            {
+              aCurve.SetTolerance(aMaxVertTol);
+            }
+            mySeqOfCurve.Append(aCurve);
             continue;
           }
 
@@ -886,7 +915,12 @@ reapprox:;
           if (ok)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
+            IntTools_Curve aCurve(newc, H1, H1);
+            if (aCurve.Tolerance() < aMaxVertTol)
+            {
+              aCurve.SetTolerance(aMaxVertTol);
+            }
+            mySeqOfCurve.Append(aCurve);
           }
         }
       } // for (i=1; i<=aNbParts; i++) {
@@ -906,6 +940,24 @@ reapprox:;
       else
       { // IntPatch_Ellipse
         newc = new Geom_Ellipse(occ::down_cast<IntPatch_GLine>(L)->Ellipse());
+      }
+
+      // Compute maximum vertex tolerance from GLine vertices.
+      // This tolerance accounts for boundary intersection computation errors
+      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
+      // to ensure vertices from different FF intersections can be unified.
+      double aMaxVertTol = 0.0;
+      {
+        occ::handle<IntPatch_GLine> aGL = occ::down_cast<IntPatch_GLine>(L);
+        int aNbVtx = aGL->NbVertex();
+        for (int iv = 1; iv <= aNbVtx; ++iv)
+        {
+          const IntPatch_Point& aVtx = aGL->Vertex(iv);
+          if (aVtx.Tolerance() > aMaxVertTol)
+          {
+            aMaxVertTol = aVtx.Tolerance();
+          }
+        }
       }
       //
       aNbParts = myLConstruct.NbParts();
@@ -1050,6 +1102,12 @@ reapprox:;
               aCurve.SetSecondCurve2d(C2d);
             }
           }
+          // Ensure curve tolerance is at least the maximum vertex tolerance
+          // to allow proper vertex unification in BOPAlgo
+          if (aCurve.Tolerance() < aMaxVertTol)
+          {
+            aCurve.SetTolerance(aMaxVertTol);
+          }
           //
           mySeqOfCurve.Append(aCurve);
           //==============================================
@@ -1083,6 +1141,11 @@ reapprox:;
                 occ::handle<Geom2d_Curve> C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
                 aCurve.SetSecondCurve2d(C2d);
+              }
+              // Ensure curve tolerance is at least the maximum vertex tolerance
+              if (aCurve.Tolerance() < aMaxVertTol)
+              {
+                aCurve.SetTolerance(aMaxVertTol);
               }
               //
               mySeqOfCurve.Append(aCurve);
@@ -1146,6 +1209,11 @@ reapprox:;
                 }
               } //  end of if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
               //==============================================
+              // Ensure curve tolerance is at least the maximum vertex tolerance
+              if (aCurve.Tolerance() < aMaxVertTol)
+              {
+                aCurve.SetTolerance(aMaxVertTol);
+              }
               //
               mySeqOfCurve.Append(aCurve);
               break;
@@ -1301,7 +1369,6 @@ reapprox:;
               ilprm = (int)lprm;
             }
           }
-
           bool anApprox = myApprox;
           if (typs1 == GeomAbs_Plane)
           {
@@ -1996,6 +2063,7 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
                               double&            thevmin,
                               double&            thevmax)
 {
+  return;
   bool                      enlarge, isuperiodic, isvperiodic;
   double                    uinf, usup, vinf, vsup, delta;
   GeomAbs_SurfaceType       aType;

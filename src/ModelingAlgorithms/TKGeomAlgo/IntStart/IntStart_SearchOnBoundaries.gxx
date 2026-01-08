@@ -37,7 +37,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
 #include <Extrema_ExtCC.hxx>
-// #include <Extrema_ExtCS.hxx>
+#include <Extrema_ExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <IntCurveSurface_HInter.hxx>
 
@@ -101,6 +101,30 @@ static int TreatLC(const TheArc&                    A,
                    IntStart_SequenceOfPathPoint&    pnt);
 
 static bool IsRegularity(const TheArc& A, const occ::handle<TheTopolTool>& aDomain);
+
+//! Returns the edge tolerance which represents the maximum deviation
+//! between any pcurve-on-surface evaluation and the 3D edge curve.
+//! This tolerance must be included for boundary intersection points
+//! to ensure vertices from different FF intersections can be unified.
+//! @param theDomain The topological tool providing access to the edge
+//! @return The edge tolerance, or 0 if edge is not available
+static double GetEdgeTolerance(const occ::handle<TheTopolTool>& theDomain)
+{
+  void* anEAddress = theDomain->Edge();
+  if (anEAddress == NULL)
+  {
+    return 0.0;
+  }
+
+  TopoDS_Edge* anEdge = (TopoDS_Edge*)anEAddress;
+  if (BRep_Tool::Degenerated(*anEdge))
+  {
+    return 0.0;
+  }
+
+  // Return the edge tolerance which covers all pcurve representations
+  return BRep_Tool::Tolerance(*anEdge);
+}
 
 class MinFunction : public math_Function
 {
@@ -547,9 +571,13 @@ static void BoundedArc(const TheArc&                    A,
             ptdeb = Func.Valpoint(ideb);
             ptfin = Func.Valpoint(ifin);
 
-            PointProcess(ptdeb, pardeb, A, Domain, pnt, theTol, ranged);
+            // Add edge tolerance to account for pcurve-to-3D-curve deviation
+            // This ensures boundary vertices can be unified across different FF intersections
+            double aEdgeTol = GetEdgeTolerance(Domain);
+            double aTol     = theTol + aEdgeTol;
+            PointProcess(ptdeb, pardeb, A, Domain, pnt, aTol, ranged);
             newseg.SetLimitPoint(pnt.Value(ranged), true);
-            PointProcess(ptfin, parfin, A, Domain, pnt, theTol, rangef);
+            PointProcess(ptfin, parfin, A, Domain, pnt, aTol, rangef);
             newseg.SetLimitPoint(pnt.Value(rangef), false);
             seg.Append(newseg);
           }
@@ -732,7 +760,11 @@ static void BoundedArc(const TheArc&                    A,
             }
           }
 
-          PointProcess(aPnt, para, A, Domain, pnt, TolBoundary, range);
+          // Add edge tolerance to account for pcurve-to-3D-curve deviation
+          // This ensures boundary vertices can be unified across different FF intersections
+          double aEdgeTol = GetEdgeTolerance(Domain);
+          double aTol     = TolBoundary + aEdgeTol;
+          PointProcess(aPnt, para, A, Domain, pnt, aTol, range);
         }
       } // end of if(ip)
     } // end of if(Nbp)
@@ -779,9 +811,13 @@ static void BoundedArc(const TheArc&                    A,
         ptfin = Func.Valpoint(ifin);
       }
 
-      PointProcess(ptdeb, pardeb, A, Domain, pnt, TolBoundary, ranged);
+      // Add edge tolerance to account for pcurve-to-3D-curve deviation
+      // This ensures boundary vertices can be unified across different FF intersections
+      double aEdgeTol = GetEdgeTolerance(Domain);
+      double aTol     = TolBoundary + aEdgeTol;
+      PointProcess(ptdeb, pardeb, A, Domain, pnt, aTol, ranged);
       newseg.SetLimitPoint(pnt.Value(ranged), true);
-      PointProcess(ptfin, parfin, A, Domain, pnt, TolBoundary, rangef);
+      PointProcess(ptfin, parfin, A, Domain, pnt, aTol, rangef);
       newseg.SetLimitPoint(pnt.Value(rangef), false);
       seg.Append(newseg);
     }
