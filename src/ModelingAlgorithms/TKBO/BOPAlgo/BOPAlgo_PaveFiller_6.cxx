@@ -16,7 +16,6 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <iostream> // DEBUG
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>

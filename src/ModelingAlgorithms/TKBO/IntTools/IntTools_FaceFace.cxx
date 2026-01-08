@@ -15,8 +15,6 @@
 
 #include <IntTools_FaceFace.hxx>
 
-#include <iostream> // DEBUG
-
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
@@ -452,21 +450,21 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     double umin, umax, vmin, vmax;
     // F1
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    //CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->Load(S1, umin, umax, vmin, vmax);
     // F2
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    //CorrectPlaneBoundaries(umin, umax, vmin, vmax);
+    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
   else
   {
     double umin, umax, vmin, vmax;
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    //CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
     myHS1->Load(S1, umin, umax, vmin, vmax);
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    //CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
+    CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
@@ -771,6 +769,7 @@ reapprox:;
     }
   }
   // Do the Curve
+
   switch (typl)
   {
     // ########################################
@@ -1369,6 +1368,7 @@ reapprox:;
               ilprm = (int)lprm;
             }
           }
+
           bool anApprox = myApprox;
           if (typs1 == GeomAbs_Plane)
           {

@@ -43,8 +43,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <iostream>
-#include <BRepAdaptor_Surface.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
@@ -291,7 +289,6 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     aNbPBOn = aMPBOn.Extent();
     aNbPBSc = aMPBSc.Extent();
     aNbAV   = aLIAV.Extent();
-
     if (!aNbPBIn && !aNbPBOn && !aNbPBSc && !aNbAV)
     { // not compete
       continue;
@@ -347,6 +344,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
         }
       }
     }
+
     aMFence.Clear();
     //
     anOriF = aF.Orientation();
