@@ -2063,7 +2063,6 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
                               double&            thevmin,
                               double&            thevmax)
 {
-  return;
   bool                      enlarge, isuperiodic, isvperiodic;
   double                    uinf, usup, vinf, vsup, delta;
   GeomAbs_SurfaceType       aType;
