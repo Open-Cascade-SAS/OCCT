@@ -52,6 +52,8 @@ set(OCCT_IntTools_FILES
   IntTools_SurfaceRangeSample.lxx
   IntTools_Tools.cxx
   IntTools_Tools.hxx
+  IntTools_TopolTool.cxx
+  IntTools_TopolTool.hxx
   IntTools_WLineTool.hxx
   IntTools_WLineTool.cxx
 )
