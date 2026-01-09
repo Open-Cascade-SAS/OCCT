@@ -146,7 +146,10 @@ void IntTools_EdgeEdge::Prepare()
     mySwap = true;
   }
   //
-  double aTolAdd = myFuzzyValue / 2.;
+  // Use a minimum tolerance that accounts for coordinate precision issues in tangent geometries.
+  // For mm-scale CAD models, coordinate precision can differ by 2-3e-6 between shapes that
+  // are geometrically "at the same position".
+  double aTolAdd = std::max(myFuzzyValue / 2., 2.0 * Precision::Approximation());
   myTol1         = myCurve1.Tolerance() + aTolAdd;
   myTol2         = myCurve2.Tolerance() + aTolAdd;
   myTol          = myTol1 + myTol2;
@@ -224,8 +227,7 @@ void IntTools_EdgeEdge::Perform()
     BRepExtrema_DistShapeShape aMinDist(myEdge1, myEdge2, Extrema_ExtFlag_MIN);
     if (aMinDist.IsDone())
     {
-      double d = aMinDist.Value();
-      if (d > 1.1 * myTol)
+      if (aMinDist.Value() > 1.1 * myTol)
       {
         return;
       }

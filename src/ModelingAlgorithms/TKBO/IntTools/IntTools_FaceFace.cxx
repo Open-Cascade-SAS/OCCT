@@ -13,6 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <iostream> // DEBUG
+
 #include <IntTools_FaceFace.hxx>
 
 #include <BRepTools.hxx>
@@ -532,9 +534,21 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
     //
     const int aNbLinIntersector = myIntersector.NbLines();
+    bool      bHasTangentLine   = false;
     for (int i = 1; i <= aNbLinIntersector; ++i)
     {
+      if (myIntersector.Line(i)->IsTangent())
+      {
+        bHasTangentLine = true;
+      }
       MakeCurve(i, dom1, dom2, TolArc);
+    }
+    //
+    // If tangent lines were found but no curves were produced,
+    // treat this as a tangent face case to avoid creating degenerate intersections.
+    if (bHasTangentLine && mySeqOfCurve.IsEmpty())
+    {
+      myTangentFaces = true;
     }
     //
     ComputeTolReached3d(theToRunParallel);
@@ -833,7 +847,9 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
@@ -844,7 +860,9 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }

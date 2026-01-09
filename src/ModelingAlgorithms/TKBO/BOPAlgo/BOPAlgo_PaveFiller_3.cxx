@@ -267,7 +267,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
   } // for (; myIterator->More(); myIterator->Next()) {
   //
   aNbEdgeEdge = aVEdgeEdge.Length();
-
+  //
   Message_ProgressScope aPS(aPSOuter.Next(9), "Performing Edge-edge intersection", aNbEdgeEdge);
   for (k = 0; k < aNbEdgeEdge; k++)
   {
@@ -804,7 +804,15 @@ void BOPAlgo_PaveFiller::AnalyzeShrunkData(const occ::handle<BOPDS_PaveBlock>& t
   double aTS1, aTS2;
   theSR.ShrunkRange(aTS1, aTS2);
   Bnd_Box aBox = theSR.BndBox();
-  aBox.SetGap(aBox.GetGap() + myFuzzyValue / 2.);
+  // Use FuzzyValue-based gap with minimum of 2*Precision::Approximation().
+  // When comparing two edges for intersection, the combined gap (from both boxes)
+  // must exceed coordinate differences that can occur between tangent geometries.
+  // For mm-scale CAD models, coordinate precision issues can reach 2-3e-6.
+  // Using 2*Approximation (2e-6) per edge gives combined gap of 4e-6, which is
+  // sufficient to handle such precision differences.
+  double aExistingGap = aBox.GetGap();
+  double aTolAdd = std::max(myFuzzyValue * 0.5, 2.0 * Precision::Approximation());
+  aBox.SetGap(aExistingGap + aTolAdd);
   thePB->SetShrunkData(aTS1, aTS2, aBox, theSR.IsSplittable());
 }
 
@@ -931,8 +939,12 @@ bool BOPAlgo_PaveFiller::GetPBBox(const TopoDS_Edge&                  theE,
   else
   {
     // build bounding box
+    // Use FuzzyValue-based enlargement with minimum of 2*Precision::Approximation().
+    // This ensures edge pairs found by BVH will also pass the EE box overlap test,
+    // and handles coordinate precision differences in tangent geometries.
     BRepAdaptor_Curve aBAC(theE);
-    double            aTol = BRep_Tool::Tolerance(theE) + Precision::Confusion();
+    double            aTolAdd = std::max(myFuzzyValue * 0.5, 2.0 * Precision::Approximation());
+    double            aTol    = BRep_Tool::Tolerance(theE) + aTolAdd;
     BndLib_Add3dCurve::Add(aBAC, theSFirst, theSLast, aTol, theBox);
     thePBBox.Bind(thePB, theBox);
   }

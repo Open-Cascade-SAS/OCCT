@@ -417,3 +417,527 @@ TEST_F(IntTools_FaceFaceTest, BothHalvesCompletelyOutside_NoIntersection)
   EXPECT_EQ(aFF2.Lines().Length(), 0) << "Opposite half should also have no intersection";
   EXPECT_EQ(aFF2.Points().Length(), 0);
 }
+
+//! Test face-face intersection using BREP files from disk.
+//! This test reads the actual geometry that triggered the original bug.
+TEST_F(IntTools_FaceFaceTest, BrepFilesIntersection)
+{
+  // Path to the BREP files - adjust as needed
+  const char* aFace1Path = "/Users/dpasukhi/work/OCCT/FF_0_Face1.brep";
+  const char* aFace2Path = "/Users/dpasukhi/work/OCCT/FF_0_Face2.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape aShape1, aShape2;
+
+  if (!BRepTools::Read(aShape1, aFace1Path, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << aFace1Path;
+  }
+  if (!BRepTools::Read(aShape2, aFace2Path, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << aFace2Path;
+  }
+
+  // Extract faces from shapes
+  TopoDS_Face aFace1, aFace2;
+  for (TopExp_Explorer anExp(aShape1, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    aFace1 = TopoDS::Face(anExp.Current());
+    break;
+  }
+  for (TopExp_Explorer anExp(aShape2, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    aFace2 = TopoDS::Face(anExp.Current());
+    break;
+  }
+
+  ASSERT_FALSE(aFace1.IsNull()) << "No face found in " << aFace1Path;
+  ASSERT_FALSE(aFace2.IsNull()) << "No face found in " << aFace2Path;
+
+  // Test face-face intersection
+  IntTools_FaceFace aFF;
+  aFF.SetParameters(true, true, true, 1.0e-7);
+  aFF.Perform(aFace1, aFace2);
+
+  ASSERT_TRUE(aFF.IsDone()) << "IntTools_FaceFace::Perform() failed";
+
+  const int aNbCurves = aFF.Lines().Length();
+  const int aNbPoints = aFF.Points().Length();
+
+  std::cout << "Face-Face intersection result:" << std::endl;
+  std::cout << "  Number of curves: " << aNbCurves << std::endl;
+  std::cout << "  Number of points: " << aNbPoints << std::endl;
+
+  // Based on our geometry analysis, these faces should NOT intersect
+  // because the cylinder is outside the circular plane boundary
+  EXPECT_EQ(aNbCurves, 0) << "Expected no intersection curves";
+  EXPECT_EQ(aNbPoints, 0) << "Expected no intersection points";
+}
+
+//! Test BRepAlgoAPI_Common using solid shapes (pill/capsule shapes) from BREP files.
+//! This reproduces the reported issue where Common produces incorrect results.
+TEST_F(IntTools_FaceFaceTest, BrepFilesBooleanCommon_Solids)
+{
+  // Path to the BREP files - pill-shaped solids
+  const char* anArgPath = "/Users/dpasukhi/work/OCCT/arg1.brep";
+  const char* aToolPath = "/Users/dpasukhi/work/OCCT/tool1.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape anArg, aTool;
+
+  if (!BRepTools::Read(anArg, anArgPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << anArgPath;
+  }
+  if (!BRepTools::Read(aTool, aToolPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << aToolPath;
+  }
+
+  // Count input faces and edges
+  int aNbArgFaces = 0, aNbToolFaces = 0;
+  int aNbArgEdges = 0, aNbToolEdges = 0;
+  for (TopExp_Explorer anExp(anArg, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aNbArgFaces;
+  for (TopExp_Explorer anExp(aTool, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aNbToolFaces;
+  for (TopExp_Explorer anExp(anArg, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++aNbArgEdges;
+  for (TopExp_Explorer anExp(aTool, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++aNbToolEdges;
+
+  std::cout << "Input solid shapes:" << std::endl;
+  std::cout << "  Argument (small pill): " << aNbArgFaces << " faces, " << aNbArgEdges << " edges"
+            << std::endl;
+  std::cout << "  Tool (large pill): " << aNbToolFaces << " faces, " << aNbToolEdges << " edges"
+            << std::endl;
+
+  // Perform Boolean Common with detailed debugging
+  BRepAlgoAPI_Common aCommon(anArg, aTool);
+  aCommon.SetRunParallel(false);
+  aCommon.SetFuzzyValue(1.0e-6);
+  aCommon.Build();
+
+  ASSERT_TRUE(aCommon.IsDone()) << "BRepAlgoAPI_Common failed";
+
+  // Check for warnings
+  if (aCommon.HasWarnings())
+  {
+    std::cout << "WARNING: BRepAlgoAPI_Common has warnings" << std::endl;
+  }
+  if (aCommon.HasErrors())
+  {
+    std::cout << "ERROR: BRepAlgoAPI_Common has errors" << std::endl;
+  }
+
+  const TopoDS_Shape& aResult = aCommon.Shape();
+
+  // Count faces, edges, and solids in the result
+  int aNbResultFaces = 0, aNbResultSolids = 0, aNbResultEdges = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aNbResultFaces;
+  for (TopExp_Explorer anExp(aResult, TopAbs_SOLID); anExp.More(); anExp.Next())
+    ++aNbResultSolids;
+  for (TopExp_Explorer anExp(aResult, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++aNbResultEdges;
+
+  std::cout << "\nBoolean Common result:" << std::endl;
+  std::cout << "  Result: " << aNbResultFaces << " faces, " << aNbResultEdges << " edges, "
+            << aNbResultSolids << " solids" << std::endl;
+  std::cout << "  Result is null: " << aResult.IsNull() << std::endl;
+
+  EXPECT_GT(aNbResultFaces, 0) << "Expected result to have faces";
+  EXPECT_GT(aNbResultSolids, 0) << "Expected result to have solids";
+
+  // Write result and individual components for inspection
+  BRepTools::Write(aResult, "/Users/dpasukhi/work/OCCT/common_test_result.brep");
+
+  // Write each result face separately for analysis
+  int aFaceIdx = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next(), ++aFaceIdx)
+  {
+    std::string aFaceFile =
+      "/Users/dpasukhi/work/OCCT/common_result_face_" + std::to_string(aFaceIdx) + ".brep";
+    BRepTools::Write(anExp.Current(), aFaceFile.c_str());
+  }
+
+  std::cout << "Result written to common_test_result.brep" << std::endl;
+  std::cout << "Individual faces written to common_result_face_*.brep" << std::endl;
+
+  // The expected result for Common should be SMALLER than both inputs
+  // since it's only the intersection volume
+  std::cout << "\nAnalysis:" << std::endl;
+  std::cout
+    << "  If result has more faces than expected, something is wrong with face splitting/selection"
+    << std::endl;
+}
+
+//! Diagnostic test to check face classification in boolean Common.
+//! Analyzes which face parts are classified as IN vs OUT.
+TEST_F(IntTools_FaceFaceTest, BrepFilesFaceClassification_Diagnostics)
+{
+  const char* anArgPath = "/Users/dpasukhi/work/OCCT/arg1.brep";
+  const char* aToolPath = "/Users/dpasukhi/work/OCCT/tool1.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape anArg, aTool;
+
+  if (!BRepTools::Read(anArg, anArgPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << anArgPath;
+  }
+  if (!BRepTools::Read(aTool, aToolPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << aToolPath;
+  }
+
+  // Get solids
+  TopoDS_Solid aToolSolid, anArgSolid;
+  for (TopExp_Explorer anExp(aTool, TopAbs_SOLID); anExp.More(); anExp.Next())
+  {
+    aToolSolid = TopoDS::Solid(anExp.Current());
+    break;
+  }
+  for (TopExp_Explorer anExp(anArg, TopAbs_SOLID); anExp.More(); anExp.Next())
+  {
+    anArgSolid = TopoDS::Solid(anExp.Current());
+    break;
+  }
+
+  std::cout << "\n=== Face Classification Analysis ===" << std::endl;
+
+  // First run the Boolean Common to get the split faces
+  BRepAlgoAPI_Common aCommon(anArg, aTool);
+  aCommon.SetRunParallel(false);
+  aCommon.SetFuzzyValue(1.0e-6);
+  aCommon.Build();
+
+  const TopoDS_Shape& aResult = aCommon.Shape();
+
+  std::cout << "Classifying RESULT faces:" << std::endl;
+  std::cout << "  (Each result face relative to both solids)" << std::endl;
+
+  int aFaceIdx = 0;
+  for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next(), ++aFaceIdx)
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+
+    // Get a point inside the face
+    BRepGProp_Face aProp(aFace);
+    double         aU1, aU2, aV1, aV2;
+    aProp.Bounds(aU1, aU2, aV1, aV2);
+    double aUMid = (aU1 + aU2) / 2.0;
+    double aVMid = (aV1 + aV2) / 2.0;
+    gp_Pnt aPnt;
+    gp_Vec aNormal;
+    aProp.Normal(aUMid, aVMid, aPnt, aNormal);
+
+    // Classify relative to tool
+    BRepClass3d_SolidClassifier aToolClassifier(aToolSolid, aPnt, 1e-7);
+    TopAbs_State                aToolState = aToolClassifier.State();
+
+    // Classify relative to argument
+    BRepClass3d_SolidClassifier anArgClassifier(anArgSolid, aPnt, 1e-7);
+    TopAbs_State                anArgState = anArgClassifier.State();
+
+    std::cout << "  ResultFace[" << aFaceIdx << "]: ";
+    std::cout << "Point(" << aPnt.X() << ", " << aPnt.Y() << ", " << aPnt.Z() << ")" << std::endl;
+    std::cout << "      vs Tool: ";
+    switch (aToolState)
+    {
+      case TopAbs_IN:
+        std::cout << "IN";
+        break;
+      case TopAbs_OUT:
+        std::cout << "OUT";
+        break;
+      case TopAbs_ON:
+        std::cout << "ON";
+        break;
+      default:
+        std::cout << "UNKNOWN";
+        break;
+    }
+    std::cout << ", vs Arg: ";
+    switch (anArgState)
+    {
+      case TopAbs_IN:
+        std::cout << "IN";
+        break;
+      case TopAbs_OUT:
+        std::cout << "OUT";
+        break;
+      case TopAbs_ON:
+        std::cout << "ON";
+        break;
+      default:
+        std::cout << "UNKNOWN";
+        break;
+    }
+    // For Common, face should be IN both solids or ON boundary
+    bool bCorrect = (aToolState == TopAbs_IN || aToolState == TopAbs_ON)
+                    && (anArgState == TopAbs_IN || anArgState == TopAbs_ON);
+    std::cout << " -> " << (bCorrect ? "CORRECT" : "*** WRONG ***") << std::endl;
+
+    // Write face for inspection
+    std::string aFaceFile =
+      "/Users/dpasukhi/work/OCCT/result_face_" + std::to_string(aFaceIdx) + ".brep";
+    BRepTools::Write(aFace, aFaceFile.c_str());
+  }
+}
+
+//! Detailed diagnostic test to analyze face-face intersections between two pill solids.
+//! Uses direct IntTools_FaceFace to examine intersection details.
+TEST_F(IntTools_FaceFaceTest, BrepFilesPaveFiller_Diagnostics)
+{
+  const char* anArgPath = "/Users/dpasukhi/work/OCCT/arg1.brep";
+  const char* aToolPath = "/Users/dpasukhi/work/OCCT/tool1.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape anArg, aTool;
+
+  if (!BRepTools::Read(anArg, anArgPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << anArgPath;
+  }
+  if (!BRepTools::Read(aTool, aToolPath, aBuilder))
+  {
+    GTEST_SKIP() << "Could not read " << aToolPath;
+  }
+
+  // Collect faces for direct analysis
+  std::vector<TopoDS_Face> anArgFaces, aToolFaces;
+  for (TopExp_Explorer anExp(anArg, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    anArgFaces.push_back(TopoDS::Face(anExp.Current()));
+  }
+  for (TopExp_Explorer anExp(aTool, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    aToolFaces.push_back(TopoDS::Face(anExp.Current()));
+  }
+
+  std::cout << "\n=== Direct Face-Face Intersection Analysis ===" << std::endl;
+  std::cout << "Argument faces: " << anArgFaces.size() << std::endl;
+  std::cout << "Tool faces: " << aToolFaces.size() << std::endl;
+
+  // Test all face pairs
+  int aTotalIntersections = 0;
+  for (size_t i = 0; i < anArgFaces.size(); ++i)
+  {
+    for (size_t j = 0; j < aToolFaces.size(); ++j)
+    {
+      IntTools_FaceFace aFF;
+      aFF.SetParameters(true, true, true, 1.0e-6);
+      aFF.Perform(anArgFaces[i], aToolFaces[j]);
+
+      if (aFF.IsDone())
+      {
+        const NCollection_Sequence<IntTools_Curve>& aCurves   = aFF.Lines();
+        const int                                   aNbCurves = aCurves.Length();
+        const int                                   aNbPoints = aFF.Points().Length();
+
+        if (aNbCurves > 0 || aNbPoints > 0)
+        {
+          ++aTotalIntersections;
+          std::cout << "\nIntersection found: ArgFace[" << i << "] x ToolFace[" << j << "]"
+                    << std::endl;
+          std::cout << "  Curves: " << aNbCurves << ", Points: " << aNbPoints << std::endl;
+
+          // Print curve details
+          for (int k = 1; k <= aNbCurves; ++k)
+          {
+            const IntTools_Curve&     aCurve = aCurves(k);
+            const Handle(Geom_Curve)& aC3D   = aCurve.Curve();
+            if (!aC3D.IsNull())
+            {
+              const double aFirst = aC3D->FirstParameter();
+              const double aLast  = aC3D->LastParameter();
+              const gp_Pnt aP1    = aC3D->Value(aFirst);
+              const gp_Pnt aP2    = aC3D->Value(aLast);
+              std::cout << "  Curve " << k << ": params [" << aFirst << ", " << aLast << "]"
+                        << std::endl;
+              std::cout << "    Start: (" << aP1.X() << ", " << aP1.Y() << ", " << aP1.Z() << ")"
+                        << std::endl;
+              std::cout << "    End:   (" << aP2.X() << ", " << aP2.Y() << ", " << aP2.Z() << ")"
+                        << std::endl;
+
+              // Write curve as edge
+              std::string aCurveFile = "/Users/dpasukhi/work/OCCT/diag_ArgFace_" + std::to_string(i)
+                                       + "_ToolFace_" + std::to_string(j) + "_Curve_"
+                                       + std::to_string(k) + ".brep";
+              BRepBuilderAPI_MakeEdge aME(aC3D, aFirst, aLast);
+              if (aME.IsDone())
+              {
+                BRepTools::Write(aME.Edge(), aCurveFile.c_str());
+                std::cout << "    Written to: " << aCurveFile << std::endl;
+              }
+            }
+          }
+
+          // Write intersecting face pair for inspection
+          std::string aFace1File = "/Users/dpasukhi/work/OCCT/diag_ArgFace_" + std::to_string(i)
+                                   + "_ToolFace_" + std::to_string(j) + "_arg.brep";
+          std::string aFace2File = "/Users/dpasukhi/work/OCCT/diag_ArgFace_" + std::to_string(i)
+                                   + "_ToolFace_" + std::to_string(j) + "_tool.brep";
+          BRepTools::Write(anArgFaces[i], aFace1File.c_str());
+          BRepTools::Write(aToolFaces[j], aFace2File.c_str());
+        }
+      }
+    }
+  }
+
+  std::cout << "\nTotal face-face intersections: " << aTotalIntersections << std::endl;
+}
+
+TEST_F(IntTools_FaceFaceTest, NewTest)
+{
+  std::string aFolderPath = "/Users/dpasukhi/work/OCCT/NotDetected/";
+  // other path: "/Users/dpasukhi/work/OCCT/Detected/";
+  std::string anArgPath   = aFolderPath + "Argument.brep";
+  std::string aToolPath   = aFolderPath + "Tool.brep";
+  std::string aCommonPath = aFolderPath + "Common.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape anArgShape;
+  BRepTools::Read(anArgShape, anArgPath.c_str(), aBuilder);
+  TopoDS_Shape aToolShape;
+  BRepTools::Read(aToolShape, aToolPath.c_str(), aBuilder);
+
+  BRepAlgoAPI_Common aCommon;
+  aCommon.SetRunParallel(false);
+  aCommon.SetFuzzyValue(1.0e-6);
+  NCollection_List<TopoDS_Shape> anArgShapes;
+  anArgShapes.Append(anArgShape);
+  aCommon.SetArguments(anArgShapes);
+  NCollection_List<TopoDS_Shape> aToolShapes;
+  aToolShapes.Append(aToolShape);
+  aCommon.SetTools(aToolShapes);
+  aCommon.Build();
+  if (!aCommon.IsDone())
+  {
+    std::cout << "Common is not done\n";
+    return;
+  }
+  // ==========================================
+  // Write common shape
+  // ==========================================
+  TopoDS_Shape aCommonShape = aCommon.Shape();
+  if (aCommonShape.IsNull())
+  {
+    std::cout << "Common shape is null\n";
+    return;
+  }
+  BRepTools::Write(aCommonShape, aCommonPath.c_str());
+  ;
+}
+
+// Helper function for bug investigation tests
+static void runBooleanCommonInvestigation(const std::string& theFolderPath,
+                                          const std::string& theTestName,
+                                          double             theFuzzyValue = 1.0e-6)
+{
+  std::cout << "\n========== " << theTestName << " (FuzzyValue=" << theFuzzyValue
+            << ") ==========\n";
+  std::cout << "Folder: " << theFolderPath << std::endl;
+
+  std::string anArgPath   = theFolderPath + "Argument.brep";
+  std::string aToolPath   = theFolderPath + "Tool.brep";
+  std::string aCommonPath = theFolderPath + "Common.brep";
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape anArgShape;
+  if (!BRepTools::Read(anArgShape, anArgPath.c_str(), aBuilder))
+  {
+    std::cout << "ERROR: Failed to read " << anArgPath << std::endl;
+    return;
+  }
+  std::cout << "Read Argument shape successfully" << std::endl;
+
+  TopoDS_Shape aToolShape;
+  if (!BRepTools::Read(aToolShape, aToolPath.c_str(), aBuilder))
+  {
+    std::cout << "ERROR: Failed to read " << aToolPath << std::endl;
+    return;
+  }
+  std::cout << "Read Tool shape successfully" << std::endl;
+
+  // Count shapes in input
+  int anArgFaceCount = 0, anArgEdgeCount = 0;
+  for (TopExp_Explorer anExp(anArgShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++anArgFaceCount;
+  for (TopExp_Explorer anExp(anArgShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++anArgEdgeCount;
+  std::cout << "Argument: " << anArgFaceCount << " faces, " << anArgEdgeCount << " edges" << std::endl;
+
+  int aToolFaceCount = 0, aToolEdgeCount = 0;
+  for (TopExp_Explorer anExp(aToolShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aToolFaceCount;
+  for (TopExp_Explorer anExp(aToolShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++aToolEdgeCount;
+  std::cout << "Tool: " << aToolFaceCount << " faces, " << aToolEdgeCount << " edges" << std::endl;
+
+  std::cout << "\n--- Starting Boolean Common operation ---\n";
+
+  BRepAlgoAPI_Common aCommon;
+  aCommon.SetRunParallel(false);
+  aCommon.SetFuzzyValue(theFuzzyValue);
+  NCollection_List<TopoDS_Shape> anArgShapes;
+  anArgShapes.Append(anArgShape);
+  aCommon.SetArguments(anArgShapes);
+  NCollection_List<TopoDS_Shape> aToolShapes;
+  aToolShapes.Append(aToolShape);
+  aCommon.SetTools(aToolShapes);
+
+  std::cout << "FuzzyValue: " << aCommon.FuzzyValue() << std::endl;
+
+  aCommon.Build();
+
+  std::cout << "\n--- Boolean Common operation completed ---\n";
+
+  if (!aCommon.IsDone())
+  {
+    std::cout << "RESULT: Common operation NOT DONE" << std::endl;
+    return;
+  }
+
+  TopoDS_Shape aCommonShape = aCommon.Shape();
+  if (aCommonShape.IsNull())
+  {
+    std::cout << "RESULT: Common shape is NULL" << std::endl;
+    return;
+  }
+
+  // Count shapes in result
+  int aResultFaceCount = 0, aResultEdgeCount = 0, aResultSolidCount = 0;
+  for (TopExp_Explorer anExp(aCommonShape, TopAbs_SOLID); anExp.More(); anExp.Next())
+    ++aResultSolidCount;
+  for (TopExp_Explorer anExp(aCommonShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    ++aResultFaceCount;
+  for (TopExp_Explorer anExp(aCommonShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+    ++aResultEdgeCount;
+
+  std::cout << "RESULT: " << aResultSolidCount << " solids, " << aResultFaceCount << " faces, "
+            << aResultEdgeCount << " edges" << std::endl;
+
+  BRepTools::Write(aCommonShape, aCommonPath.c_str());
+  std::cout << "Result written to: " << aCommonPath << std::endl;
+  std::cout << "========== END " << theTestName << " ==========\n\n";
+}
+
+// Test for NotDetected case with FuzzyValue=1e-6 (failing - shapes perfectly aligned)
+TEST_F(IntTools_FaceFaceTest, BugInvestigation_NotDetected)
+{
+  runBooleanCommonInvestigation("/Users/dpasukhi/work/OCCT/NotDetected/", "NotDetected", 1.0e-6);
+}
+
+// Test for NotDetected case with FuzzyValue=1e-5 (for comparison - may work)
+TEST_F(IntTools_FaceFaceTest, BugInvestigation_NotDetected_Fuzzy1e5)
+{
+  runBooleanCommonInvestigation("/Users/dpasukhi/work/OCCT/NotDetected/", "NotDetected_Fuzzy1e5", 1.0e-5);
+}
+
+// Test for Detected case (working - shapes slightly moved)
+TEST_F(IntTools_FaceFaceTest, BugInvestigation_Detected)
+{
+  runBooleanCommonInvestigation("/Users/dpasukhi/work/OCCT/Detected/", "Detected", 1.0e-6);
+}
