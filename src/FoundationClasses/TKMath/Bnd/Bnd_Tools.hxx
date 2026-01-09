@@ -28,14 +28,14 @@ public: //! @name Bnd_Box to BVH_Box conversion
   static BVH_Box<double, 2> Bnd2BVH(const Bnd_Box2d& theBox)
   {
     // get values like this:
-    const auto& [aXMin, aYMin, aXMax, aYMax] = theBox.Get();
+    const auto& [aXMin, aXMax, aYMin, aYMax] = theBox.Get();
     return BVH_Box<double, 2>(BVH_Vec2d(aXMin, aYMin), BVH_Vec2d(aXMax, aYMax));
   }
 
   //! Converts the given Bnd_Box to BVH_Box
   static BVH_Box<double, 3> Bnd2BVH(const Bnd_Box& theBox)
   {
-    const auto& [aXMin, aYMin, aZMin, aXMax, aYMax, aZMax] = theBox.Get();
+    const auto& [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theBox.Get();
     return BVH_Box<double, 3>(BVH_Vec3d(aXMin, aYMin, aZMin), BVH_Vec3d(aXMax, aYMax, aZMax));
   }
 };
