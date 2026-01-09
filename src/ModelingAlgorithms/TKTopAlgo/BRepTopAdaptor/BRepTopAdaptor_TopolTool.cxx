@@ -91,6 +91,12 @@ void BRepTopAdaptor_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& 
   {
     occ::handle<BRepAdaptor_Curve2d> aCurve =
       new BRepAdaptor_Curve2d(BRepAdaptor_Curve2d(TopoDS::Edge(ex.Current()), myFace));
+    // check for validity of the curve
+    if (std::abs(aCurve->FirstParameter()) < Precision::PConfusion()
+        && std::abs(aCurve->LastParameter()) < Precision::PConfusion())
+    {
+      continue;
+    }
     myCurves.Append(aCurve);
   }
   myCIterator = NCollection_List<occ::handle<Standard_Transient>>::Iterator();
