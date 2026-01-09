@@ -41,6 +41,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntPatch_GLine.hxx>
+#include <IntTools_TopolTool.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntSurf_Quadric.hxx>
@@ -432,6 +433,10 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     return;
   } // if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane){
 
+  occ::handle<Adaptor3d_TopolTool> dom1;
+  occ::handle<Adaptor3d_TopolTool> dom2;
+  ;
+
   if ((aType1 == GeomAbs_Plane) && isFace2Quad)
   {
     double umin, umax, vmin, vmax;
@@ -443,6 +448,16 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
+
+    // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
+    // This ensures intersection curves are properly trimmed to actual face wire boundaries,
+    // not just rectangular UV bounds.
+    const occ::handle<BRepAdaptor_Surface> aHS1ForTopo =
+      new BRepAdaptor_Surface(TopoDS::Face(myFace1.Moved(TopLoc_Location())));
+    const occ::handle<BRepAdaptor_Surface> aHS2ForTopo =
+      new BRepAdaptor_Surface(TopoDS::Face(myFace2.Moved(TopLoc_Location())));
+    dom1 = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
+    dom2 = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
   }
   else if ((aType2 == GeomAbs_Plane) && isFace1Quad)
   {
@@ -455,6 +470,16 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
+
+    // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
+    // This ensures intersection curves are properly trimmed to actual face wire boundaries,
+    // not just rectangular UV bounds.
+    const occ::handle<BRepAdaptor_Surface> aHS1ForTopo =
+      new BRepAdaptor_Surface(TopoDS::Face(myFace1.Moved(TopLoc_Location())));
+    const occ::handle<BRepAdaptor_Surface> aHS2ForTopo =
+      new BRepAdaptor_Surface(TopoDS::Face(myFace2.Moved(TopLoc_Location())));
+    dom1 = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
+    dom2 = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
   }
   else
   {
@@ -467,15 +492,14 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
-  // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
-  // This ensures intersection curves are properly trimmed to actual face wire boundaries,
-  // not just rectangular UV bounds.
-  // BRepTopAdaptor_TopolTool requires BRepAdaptor_Surface (not GeomAdaptor_Surface),
-  // so we create dedicated surface adaptors from the faces.
-  const occ::handle<BRepAdaptor_Surface>      aHS1ForTopo = new BRepAdaptor_Surface(myFace1);
-  const occ::handle<BRepAdaptor_Surface>      aHS2ForTopo = new BRepAdaptor_Surface(myFace2);
-  const occ::handle<BRepTopAdaptor_TopolTool> dom1 = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
-  const occ::handle<BRepTopAdaptor_TopolTool> dom2 = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
+  if (!dom1)
+  {
+    dom1 = new IntTools_TopolTool(myHS1);
+  }
+  if (!dom2)
+  {
+    dom2 = new IntTools_TopolTool(myHS2);
+  }
 
   myLConstruct.Load(dom1, dom2, myHS1, myHS2);
 
