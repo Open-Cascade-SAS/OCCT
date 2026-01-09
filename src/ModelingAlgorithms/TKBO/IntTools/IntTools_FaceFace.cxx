@@ -433,9 +433,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     return;
   } // if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane){
 
-  occ::handle<Adaptor3d_TopolTool> dom1;
-  occ::handle<Adaptor3d_TopolTool> dom2;
-
   if ((aType1 == GeomAbs_Plane) && isFace2Quad)
   {
     double umin, umax, vmin, vmax;
@@ -447,13 +444,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
-
-    // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
-    // This ensures intersection curves are properly trimmed to actual face wire boundaries,
-    // not just rectangular UV bounds.
-    const occ::handle<BRepAdaptor_Surface> aHS1ForTopo =
-      new BRepAdaptor_Surface(TopoDS::Face(myFace1.Moved(TopLoc_Location())));
-    dom1 = new BRepTopAdaptor_TopolTool(aHS1ForTopo);
   }
   else if ((aType2 == GeomAbs_Plane) && isFace1Quad)
   {
@@ -466,13 +456,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->Load(S2, umin, umax, vmin, vmax);
-
-    // Use BRepTopAdaptor_TopolTool which provides wire-aware Classify method.
-    // This ensures intersection curves are properly trimmed to actual face wire boundaries,
-    // not just rectangular UV bounds.
-    const occ::handle<BRepAdaptor_Surface> aHS2ForTopo =
-      new BRepAdaptor_Surface(TopoDS::Face(myFace2.Moved(TopLoc_Location())));
-    dom2 = new BRepTopAdaptor_TopolTool(aHS2ForTopo);
   }
   else
   {
@@ -485,14 +468,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
-  if (!dom1)
-  {
-    dom1 = new IntTools_TopolTool(myHS1);
-  }
-  if (!dom2)
-  {
-    dom2 = new IntTools_TopolTool(myHS2);
-  }
+  const occ::handle<Adaptor3d_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
+  const occ::handle<Adaptor3d_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
 
   myLConstruct.Load(dom1, dom2, myHS1, myHS2);
 
