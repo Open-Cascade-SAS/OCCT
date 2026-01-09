@@ -435,7 +435,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 
   occ::handle<Adaptor3d_TopolTool> dom1;
   occ::handle<Adaptor3d_TopolTool> dom2;
-  ;
 
   if ((aType1 == GeomAbs_Plane) && isFace2Quad)
   {
@@ -809,6 +808,24 @@ reapprox:;
       {
         newc = new Geom_Hyperbola(occ::down_cast<IntPatch_GLine>(L)->Hyperbola());
       }
+
+      // Compute maximum vertex tolerance from GLine vertices.
+      // This tolerance accounts for boundary intersection computation errors
+      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
+      // to ensure vertices from different FF intersections can be unified.
+      double aMaxVertTol = 0.0;
+      {
+        occ::handle<IntPatch_GLine> aGL    = occ::down_cast<IntPatch_GLine>(L);
+        int                         aNbVtx = aGL->NbVertex();
+        for (int iv = 1; iv <= aNbVtx; ++iv)
+        {
+          const IntPatch_Point& aVtx = aGL->Vertex(iv);
+          if (aVtx.Tolerance() > aMaxVertTol)
+          {
+            aMaxVertTol = aVtx.Tolerance();
+          }
+        }
+      }
       //
       aNbParts = myLConstruct.NbParts();
       for (i = 1; i <= aNbParts; i++)
@@ -854,6 +871,11 @@ reapprox:;
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
+          // Ensure curve tolerance is at least the maximum vertex tolerance
+          if (aCurve.Tolerance() < aMaxVertTol)
+          {
+            aCurve.SetTolerance(aMaxVertTol);
+          }
           //
           mySeqOfCurve.Append(aCurve);
         } // if (!bFNIt && !bLPIt) {
@@ -887,7 +909,12 @@ reapprox:;
               || typS2 == GeomAbs_OffsetSurface || typS2 == GeomAbs_SurfaceOfRevolution)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
+            IntTools_Curve                   aCurve(newc, H1, H1);
+            if (aCurve.Tolerance() < aMaxVertTol)
+            {
+              aCurve.SetTolerance(aMaxVertTol);
+            }
+            mySeqOfCurve.Append(aCurve);
             continue;
           }
 
@@ -903,7 +930,12 @@ reapprox:;
           if (ok)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
+            IntTools_Curve                   aCurve(newc, H1, H1);
+            if (aCurve.Tolerance() < aMaxVertTol)
+            {
+              aCurve.SetTolerance(aMaxVertTol);
+            }
+            mySeqOfCurve.Append(aCurve);
           }
         }
       } // for (i=1; i<=aNbParts; i++) {
@@ -923,6 +955,24 @@ reapprox:;
       else
       { // IntPatch_Ellipse
         newc = new Geom_Ellipse(occ::down_cast<IntPatch_GLine>(L)->Ellipse());
+      }
+
+      // Compute maximum vertex tolerance from GLine vertices.
+      // This tolerance accounts for boundary intersection computation errors
+      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
+      // to ensure vertices from different FF intersections can be unified.
+      double aMaxVertTol = 0.0;
+      {
+        occ::handle<IntPatch_GLine> aGL    = occ::down_cast<IntPatch_GLine>(L);
+        int                         aNbVtx = aGL->NbVertex();
+        for (int iv = 1; iv <= aNbVtx; ++iv)
+        {
+          const IntPatch_Point& aVtx = aGL->Vertex(iv);
+          if (aVtx.Tolerance() > aMaxVertTol)
+          {
+            aMaxVertTol = aVtx.Tolerance();
+          }
+        }
       }
       //
       aNbParts = myLConstruct.NbParts();
@@ -1067,6 +1117,12 @@ reapprox:;
               aCurve.SetSecondCurve2d(C2d);
             }
           }
+          // Ensure curve tolerance is at least the maximum vertex tolerance
+          // to allow proper vertex unification in BOPAlgo
+          if (aCurve.Tolerance() < aMaxVertTol)
+          {
+            aCurve.SetTolerance(aMaxVertTol);
+          }
           //
           mySeqOfCurve.Append(aCurve);
           //==============================================
@@ -1100,6 +1156,11 @@ reapprox:;
                 occ::handle<Geom2d_Curve> C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
                 aCurve.SetSecondCurve2d(C2d);
+              }
+              // Ensure curve tolerance is at least the maximum vertex tolerance
+              if (aCurve.Tolerance() < aMaxVertTol)
+              {
+                aCurve.SetTolerance(aMaxVertTol);
               }
               //
               mySeqOfCurve.Append(aCurve);
@@ -1163,6 +1224,11 @@ reapprox:;
                 }
               } //  end of if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
               //==============================================
+              // Ensure curve tolerance is at least the maximum vertex tolerance
+              if (aCurve.Tolerance() < aMaxVertTol)
+              {
+                aCurve.SetTolerance(aMaxVertTol);
+              }
               //
               mySeqOfCurve.Append(aCurve);
               break;
