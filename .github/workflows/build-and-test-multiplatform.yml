@@ -20,10 +20,50 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' && !(github.head_ref == 'IR' && github.repository == 'Open-Cascade-SAS/OCCT') && true || false }}
 
 jobs:
+  clang-format:
+    name: Check code formatting
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      with:
+        fetch-depth: 0
+
+    - name: Run clang-format check
+      uses: ./.github/actions/clang-format-check
+      with:
+        base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
+
+  ascii-check:
+    name: Check for non-ASCII characters
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      with:
+        fetch-depth: 0
+
+    - name: Check for non-ASCII characters
+      uses: ./.github/actions/ascii-check
+      with:
+        base-ref: ${{ github.event.pull_request.base.ref || 'master' }}
 
   documentation:
     name: Build Documentation
     runs-on: windows-2025
+    if: github.ref == 'refs/heads/master'
+    needs:
+      - clang-format
+      - ascii-check
+      - retest-windows-x64
+      - retest-macos-x64
+      - retest-linux-clang-x64
+      - run-gtest-windows-x64
+      - run-gtest-macos-x64
+      - run-gtest-linux-clang-x64
+      - run-gtest-macos-clang-no-pch
 
     steps:
     - name: Checkout repository
@@ -31,3 +71,261 @@ jobs:
 
     - name: Build documentation
       uses: ./.github/actions/build-docs
+
+  prepare-and-build-windows-x64:
+    name: Prepare and Build on Windows with MSVC (x64)
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: windows
+        compiler: msvc
+        artifact-name: install-windows-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare-and-build-macos-x64:
+    name: Prepare and Build on macOS with Clang (x64)
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: macos
+        compiler: clang
+        artifact-name: install-macos-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare-and-build-linux-clang-x64:
+    name: Prepare and Build on Ubuntu with Clang (x64)
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: linux
+        compiler: clang
+        artifact-name: install-linux-clang-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare-and-build-macos-clang-no-pch:
+    name: Prepare and Build on macOS with Clang (No PCH)
+    needs: prepare-and-build-macos-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Build OCCT
+      uses: ./.github/actions/build-occt
+      with:
+        platform: macos
+        compiler: clang
+        artifact-name: install-macos-clang-no-pch
+        build-use-pch: 'false'
+        build-opt-profile: 'Default'
+        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch -Wno-error=deprecated-declarations" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch -Wno-error=deprecated-declarations"'
+        cmake-build-type: 'Debug'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-windows-x64:
+    name: Test on Windows (x64)
+    runs-on: windows-2025
+    needs: prepare-and-build-windows-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run tests
+      uses: ./.github/actions/run-tests
+      with:
+        platform: windows
+        compiler: msvc
+        install-artifact-name: install-windows-x64
+        test-directory-name: windows-x64
+        test-script: .github/actions/testgrid/testwindows.tcl
+
+  retest-windows-x64:
+    name: Regression Test on Windows (x64)
+    runs-on: windows-2025
+    needs: test-windows-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      
+    - name: Run retest
+      uses: ./.github/actions/retest-failures
+      with:
+        platform: windows
+        compiler: msvc
+        install-artifact-name: install-windows-x64
+        results-artifact-name: results-windows-x64
+        test-directory-name: windows-x64
+
+  test-macos-x64:
+    name: Test on macOS (x64)
+    runs-on: macos-15
+    needs: prepare-and-build-macos-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run tests
+      uses: ./.github/actions/run-tests
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-x64
+        test-directory-name: macos-x64
+        test-script: .github/actions/testgrid/testmacos.tcl
+
+  retest-macos-x64:
+    name: Regression Test on macOS (x64)
+    runs-on: macos-15
+    needs: test-macos-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      
+    - name: Run retest
+      uses: ./.github/actions/retest-failures
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-x64
+        results-artifact-name: results-macos-x64
+        test-directory-name: macos-x64
+
+  test-linux-clang-x64:
+    name: Test on Linux with Clang (x64)
+    runs-on: ubuntu-24.04
+    needs: prepare-and-build-linux-clang-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run tests
+      uses: ./.github/actions/run-tests
+      with:
+        platform: linux
+        compiler: clang
+        install-artifact-name: install-linux-clang-x64
+        test-directory-name: linux-clang-x64
+        test-script: .github/actions/testgrid/testlinuxclang.tcl
+
+  retest-linux-clang-x64:
+    name: Regression Test on Linux with Clang (x64)
+    runs-on: ubuntu-24.04
+    needs: test-linux-clang-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+      
+    - name: Run retest
+      uses: ./.github/actions/retest-failures
+      with:
+        platform: linux
+        compiler: clang
+        install-artifact-name: install-linux-clang-x64
+        results-artifact-name: results-linux-clang-x64
+        test-directory-name: linux-clang-x64
+
+  run-gtest-windows-x64:
+    name: Run GTest on Windows with MSVC (x64)
+    needs: prepare-and-build-windows-x64
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: windows
+        compiler: msvc
+        install-artifact-name: install-windows-x64
+        artifact-suffix: x64
+
+  run-gtest-macos-x64:
+    name: Run GTest on macOS with Clang (x64)
+    needs: prepare-and-build-macos-x64
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-x64
+        artifact-suffix: x64
+
+  run-gtest-linux-clang-x64:
+    name: Run GTest on Linux with Clang (x64)
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: linux
+        compiler: clang
+        install-artifact-name: install-linux-clang-x64
+        artifact-suffix: x64
+
+  run-gtest-macos-clang-no-pch:
+    name: Run GTest on macOS with Clang (No PCH, Debug)
+    needs: prepare-and-build-macos-clang-no-pch
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-clang-no-pch
+        artifact-suffix: no-pch
+
+  test-summary:
+    name: 'Summarize Test Results'
+    runs-on: ubuntu-24.04
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    needs: [retest-windows-x64, retest-macos-x64, retest-linux-clang-x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+      
+      - name: Generate Test Summary
+        uses: ./.github/actions/test-summary
