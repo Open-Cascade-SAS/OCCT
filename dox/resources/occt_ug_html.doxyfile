@@ -16,6 +16,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = NO
 WARN_NO_PARAMDOC       = NO
+WARN_AS_ERROR          = NO
 EXAMPLE_RECURSIVE      = YES
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.md *.dox 
