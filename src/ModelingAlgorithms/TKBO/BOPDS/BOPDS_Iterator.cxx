@@ -15,8 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <iostream> // DEBUG: For investigation output
-
 #include <Bnd_OBB.hxx>
 #include <Bnd_Tools.hxx>
 #include <BOPDS_DS.hxx>
@@ -331,9 +329,7 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
       // avoid interfering of the shape with its sub-shapes
       if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
           || ((iType1 > iType2) && aSI2.HasSubShape(aPair.ID1)))
-      {
         continue;
-      }
 
       if (theCheckOBB)
       {
@@ -342,9 +338,7 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
         const Bnd_OBB& anOBB2 = theCtx->OBB(aSI2.Shape(), theFuzzyValue);
 
         if (anOBB1.IsOut(anOBB2))
-        {
           continue;
-        }
       }
 
       int iX = BOPDS_Tools::TypeToInteger(aType1, aType2);

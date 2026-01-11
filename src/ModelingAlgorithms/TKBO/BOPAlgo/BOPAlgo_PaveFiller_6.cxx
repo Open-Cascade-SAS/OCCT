@@ -15,8 +15,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <iostream> // DEBUG: For investigation output
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_Alerts.hxx>
@@ -826,85 +824,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
         }
       }
     } // for (j=0; j<aNbC; ++j) {
-
-    // Unify boundary vertices that should coincide
-    // This fixes issues where walking algorithm produces scattered endpoint positions
-    // for curves that should form closed loops (especially near tangent intersections)
-    if (aMVBounds.Extent() > 1 && aNbC > 1)
-    {
-      NCollection_DataMap<int, int> aVtxUnify;
-      NCollection_Vector<int>       aBndVtxList;
-
-      // Collect boundary vertices with their positions
-      NCollection_Vector<gp_Pnt> aBndVtxPos;
-      for (NCollection_Map<int>::Iterator itBV(aMVBounds); itBV.More(); itBV.Next())
-      {
-        int                  nV = itBV.Value();
-        const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
-        aBndVtxList.Append(nV);
-        aBndVtxPos.Append(BRep_Tool::Pnt(aV));
-      }
-
-      // Compute the minimum distance between any two boundary vertices
-      // This helps detect scattered boundary positions from walking algorithm
-      double aMinDist = RealLast();
-      for (int i = 0; i < aBndVtxPos.Length(); ++i)
-      {
-        for (int k = i + 1; k < aBndVtxPos.Length(); ++k)
-        {
-          double aDist = aBndVtxPos(i).Distance(aBndVtxPos(k));
-          if (aDist > Precision::Confusion() && aDist < aMinDist)
-          {
-            aMinDist = aDist;
-          }
-        }
-      }
-
-      // Use adaptive tolerance: if minimum distance is small (< 1mm),
-      // use that as unification tolerance (for scattered boundary positions)
-      // Otherwise use standard tolerance
-      double aUnifyTol = 1e-6; // default very small
-      if (aMinDist < 1.0 && aMinDist > Precision::Confusion())
-      {
-        // Walking algorithm scatter detected - use larger tolerance
-        aUnifyTol = aMinDist * 1.5; // 150% of minimum distance
-      }
-
-      // Find pairs of vertices that should be unified
-      for (int iBV1 = 0; iBV1 < aBndVtxList.Length(); ++iBV1)
-      {
-        int nV1 = aBndVtxList(iBV1);
-        if (aVtxUnify.IsBound(nV1))
-          continue;
-
-        const gp_Pnt& aP1 = aBndVtxPos(iBV1);
-
-        for (int iBV2 = iBV1 + 1; iBV2 < aBndVtxList.Length(); ++iBV2)
-        {
-          int nV2 = aBndVtxList(iBV2);
-          if (aVtxUnify.IsBound(nV2))
-            continue;
-
-          const gp_Pnt& aP2   = aBndVtxPos(iBV2);
-          double        aDist = aP1.Distance(aP2);
-
-          if (aDist <= aUnifyTol)
-          {
-            // Unify nV2 to nV1 by marking as same domain
-            aVtxUnify.Bind(nV2, nV1);
-            myDS->AddShapeSD(nV2, nV1);
-
-            // Also update vertex tolerance to cover the distance
-            TopoDS_Vertex aV1 = TopoDS::Vertex(myDS->Shape(nV1));
-            double aTol1 = BRep_Tool::Tolerance(aV1);
-            if (aDist > aTol1)
-            {
-              BRep_Builder().UpdateVertex(aV1, aDist + Precision::Confusion());
-            }
-          }
-        }
-      }
-    }
 
     // Put closing pave if needed
     for (j = 0; j < aNbC; ++j)
@@ -2317,7 +2236,6 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
   //
   double aTolVnew = Precision::Confusion();
   bool   isClosed = aP[1].IsEqual(aP[0], aTolVnew);
-
   if (isClosed && (aBndNV[0] > 0 || aBndNV[1] > 0))
     return;
 
@@ -2331,11 +2249,11 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
         // if curve is closed, process only one bound
         continue;
       }
-      // For boundary points from face-face intersection curves, the original validation
-      // (IsValidPointForFaces) can fail when walking algorithm produces boundary positions
-      // that lie slightly outside face domain. Since these points come from valid
-      // intersection curves, we accept them without strict validation.
-      // The curve itself was already validated during face-face intersection.
+      bool bVF = myContext->IsValidPointForFaces(aP[j], aF1, aF2, aTolR3D);
+      if (!bVF)
+      {
+        continue;
+      }
       TopoDS_Vertex aVn;
       BOPTools_AlgoTools::MakeNewVertex(aP[j], aTolR3D, aVn);
       BOPTools_AlgoTools::UpdateVertex(aIC, aT[j], aVn);

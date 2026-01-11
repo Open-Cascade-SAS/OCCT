@@ -19,8 +19,6 @@
 //--          If the intersection is not a conic,
 //--          analytical methods must be called.
 //----------------------------------------------------------------------
-#include <iostream> // DEBUG
-
 #ifndef OCCT_DEBUG
   #define No_Standard_RangeError
   #define No_Standard_OutOfRange
@@ -597,20 +595,29 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     typeres = IntAna_Line;
     omega.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);
 
-    // For tangent detection, use a tolerance that considers the cylinder radius.
-    // The input Tol is typically based on face tolerances which may be too tight
-    // for large-radius cylinders. Use at least 1e-7 * radius (10 ppm) to account
-    // for numerical precision in the geometry representation.
-    double aTolTangent = std::max(Tol, radius * 1.e-7);
-    double absDiff     = std::abs(std::abs(dist) - radius);
-    if (absDiff < aTolTangent)
+    if (std::abs(std::abs(dist) - radius) < Tol)
     {
-      // Near-tangent case: surfaces are tangent, no real intersection.
-      // Return Empty to avoid creating degenerate section curves with large tolerances.
-      typeres = IntAna_Empty;
-      nbint   = 0;
-      done = true;
-      return;
+      nbint = 1;
+      pt1.SetXYZ(omega);
+
+      if (newparams)
+      {
+        gp_XYZ omegaXYZ(X, Y, Z);
+        gp_XYZ omegaXYZtrnsl(omegaXYZ + 100. * axec.Direction().XYZ());
+        double Xt, Yt, Zt, distt;
+        omegaXYZtrnsl.Coord(Xt, Yt, Zt);
+        distt = A * Xt + B * Yt + C * Zt + D;
+        gp_XYZ omega1(omegaXYZtrnsl.X() - distt * A,
+                      omegaXYZtrnsl.Y() - distt * B,
+                      omegaXYZtrnsl.Z() - distt * C);
+        gp_Pnt ppt1;
+        ppt1.SetXYZ(omega1);
+        gp_Vec vv1(pt1, ppt1);
+        gp_Dir dd1(vv1);
+        dir1 = dd1;
+      }
+      else
+        dir1 = axec.Direction();
     }
     else if (std::abs(dist) < radius)
     {

@@ -12,8 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <iostream> // DEBUG
-
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Adaptor3d_Surface.hxx>

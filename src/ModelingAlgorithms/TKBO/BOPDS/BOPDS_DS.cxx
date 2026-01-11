@@ -346,11 +346,7 @@ void BOPDS_DS::Init(const double theFuzz)
     i1 = i2 + 1;
   }
   //
-  // Box gap is half of fuzzy tolerance so that two shapes within fuzzy distance
-  // have overlapping boxes. Use Precision::Approximation() (= 10 * Precision::Confusion())
-  // as minimum to handle shapes that are geometrically coincident (e.g., tangent surfaces
-  // sharing a plane) where numerical precision can cause very small gaps.
-  aTolAdd          = std::max(theFuzz * 0.5, Precision::Approximation());
+  aTolAdd          = std::max(theFuzz, Precision::Confusion()) * 0.5;
   myNbSourceShapes = NbShapes();
   //
   // 2 Bounding Boxes
