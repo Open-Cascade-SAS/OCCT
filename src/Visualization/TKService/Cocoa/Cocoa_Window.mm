@@ -15,11 +15,17 @@
 
 #import <TargetConditionals.h>
 
+// Suppress warnings from macOS system headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wmissing-method-return-type"
+#pragma clang diagnostic ignored "-Wavailability"
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   #import <UIKit/UIKit.h>
 #else
   #import <Cocoa/Cocoa.h>
 #endif
+#pragma clang diagnostic pop
 
 #include <Cocoa_Window.hxx>
 
