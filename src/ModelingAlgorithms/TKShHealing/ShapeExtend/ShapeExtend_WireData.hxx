@@ -25,8 +25,8 @@
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
-#include <unordered_set>
 class TopoDS_Wire;
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -223,7 +223,7 @@ private:
   occ::handle<NCollection_HSequence<TopoDS_Shape>> myEdges;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> myNonmanifoldEdges;
   occ::handle<NCollection_HSequence<int>>          mySeams;
-  std::unordered_set<int>                          mySeamsCache;
+  TColStd_PackedMapOfInteger                       mySeamsCache;
   int                                              mySeamF;
   int                                              mySeamR;
   bool                                             myManifoldMode;
