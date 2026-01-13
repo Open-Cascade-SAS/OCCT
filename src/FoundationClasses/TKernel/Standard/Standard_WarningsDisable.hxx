@@ -33,7 +33,9 @@
   #pragma clang diagnostic ignored "-Wextra"
   #pragma clang diagnostic ignored "-Wshorten-64-to-32"
   #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  #pragma clang diagnostic ignored "-Wnontrivial-memcall"
+  #if __clang_major__ >= 15
+    #pragma clang diagnostic ignored "-Wnontrivial-memcall"
+  #endif
 #elif defined(_MSC_VER)
   #pragma warning(push, 0)
 #elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
