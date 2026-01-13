@@ -1648,6 +1648,7 @@ bool ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& face) const
   // TopoDS_Shape SF = TopoDS::Face(S);
   TopoDS_Shape                       SF  = face;
   TopAbs_Orientation                 ori = face.Orientation();
+  NCollection_Map<TopoDS_Shape>      anAddedWires;
   NCollection_Sequence<TopoDS_Shape> SeqWir;
   NCollection_Sequence<TopoDS_Shape> SeqNMShapes;
   for (TopoDS_Iterator iter(SF, false); iter.More(); iter.Next())
@@ -1660,7 +1661,9 @@ bool ShapeFix_IntersectionTool::FixIntersectingWires(TopoDS_Face& face) const
       continue;
     }
     TopoDS_Wire wire = TopoDS::Wire(iter.Value());
-    SeqWir.Append(wire);
+    // Prevent duplicate wires from being added to the sequence
+    if (anAddedWires.Add(wire))
+      SeqWir.Append(wire);
   }
   if (SeqWir.Length() < 2)
     return false; // gka 06.09.04

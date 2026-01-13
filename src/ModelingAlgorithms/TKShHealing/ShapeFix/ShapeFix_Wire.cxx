@@ -292,7 +292,7 @@ int ShapeFix_Wire::NbEdges() const
 //           are limited if order of edges in the wire is not OK
 //=======================================================================
 
-bool ShapeFix_Wire::Perform()
+bool ShapeFix_Wire::Perform(const Message_ProgressRange& theProgress)
 {
   ClearStatuses();
   if (!IsLoaded())
@@ -306,7 +306,6 @@ bool ShapeFix_Wire::Perform()
   // FixReorder is first, because as a rule wire is required to be ordered
   // We shall analyze the order of edges in the wire and set appropriate
   // status even if FixReorder should not be called (if it is forbidden)
-
   ShapeAnalysis_WireOrder sawo;
   bool                    ReorderOK = (myAnalyzer->CheckOrder(sawo, myClosedMode) == 0);
   if (NeedFix(myFixReorderMode, !ReorderOK))
@@ -315,6 +314,9 @@ bool ShapeFix_Wire::Perform()
       Fixed = true;
     ReorderOK = !StatusReorder(ShapeExtend_FAIL);
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   // FixSmall is allowed to change topology only if mode is set and FixReorder
   // did not failed
@@ -332,11 +334,17 @@ bool ShapeFix_Wire::Perform()
     }
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixConnectedMode, ReorderOK))
   {
     if (FixConnected())
       Fixed = true;
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (NeedFix(myFixEdgeCurvesMode))
   {
@@ -349,11 +357,17 @@ bool ShapeFix_Wire::Perform()
     myFixShiftedMode = savFixShiftedMode;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixDegeneratedMode))
   {
     if (FixDegenerated())
       Fixed = true; // ?? if ! ReorderOK ??
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   // pdn - temporary to test
   if (myFixTailMode <= 0 && NeedFix(myFixNotchedEdgesMode, ReorderOK))
@@ -363,6 +377,9 @@ bool ShapeFix_Wire::Perform()
       FixShifted(); // skl 07.03.2002 for OCC180
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (myFixTailMode != 0)
   {
     if (FixTails())
@@ -371,6 +388,9 @@ bool ShapeFix_Wire::Perform()
       FixShifted();
     }
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (NeedFix(myFixSelfIntersectionMode, myClosedMode))
   {
@@ -384,19 +404,26 @@ bool ShapeFix_Wire::Perform()
     myFixIntersectingEdgesMode = savFixIntersectingEdgesMode;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixLackingMode, ReorderOK))
   {
     if (FixLacking())
       Fixed = true;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   // TEMPORARILY without special mode !!!
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int iedge = 1; iedge <= sbwd->NbEdges(); iedge++)
     if (myFixEdge->FixVertexTolerance(sbwd->Edge(iedge), Face()))
-    {
       Fixed = true;
-    }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (!Context().IsNull())
     UpdateWire();
@@ -486,6 +513,11 @@ bool ShapeFix_Wire::FixConnected(const double prec)
     FixConnected(i, prec);
     myStatusConnected |= myLastFixStatus;
   }
+
+  // Update wire once after all connections are fixed
+  // Using Value() in UpdateWire() prevents edge explosion from replacement chains
+  if (!Context().IsNull())
+    UpdateWire();
 
   return StatusConnected(ShapeExtend_DONE);
 }
@@ -1351,8 +1383,8 @@ bool ShapeFix_Wire::FixConnected(const int num, const double prec)
       }
     }
   }
-  if (!Context().IsNull())
-    UpdateWire();
+  // Note: UpdateWire() is NOT called here to avoid O(n^2) behavior
+  // The caller (FixConnected(double prec)) calls UpdateWire() once after the loop
 
   return true;
 }
@@ -3770,11 +3802,24 @@ void ShapeFix_Wire::FixDummySeam(const int num)
 void ShapeFix_Wire::UpdateWire()
 {
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
+  // Track already-expanded edges to prevent exponential growth from shared context
+  // (especially important for non-orientable surfaces like Möbius strips where
+  // edges are shared across faces and accumulated replacements can cascade)
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anExpandedEdges;
+
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
     TopoDS_Edge  E = sbwd->Edge(i);
-    TopoDS_Shape S = Context()->Apply(E);
+    // Use Value() instead of Apply() to get only the direct replacement
+    // without recursively following replacement chains. This prevents
+    // exponential edge explosion on Möbius strips where shared edges
+    // accumulate cascading replacements across multiple faces.
+    // The full chain resolution happens at final shell-level Apply().
+    TopoDS_Shape S = Context()->Value(E);
     if (S == E)
+      continue;
+    // Skip if this edge was already expanded in this call to prevent duplicates
+    if (!anExpandedEdges.Add(E))
       continue;
     for (TopExp_Explorer exp(S, TopAbs_EDGE); exp.More(); exp.Next())
       sbwd->Add(exp.Current(), i++);
