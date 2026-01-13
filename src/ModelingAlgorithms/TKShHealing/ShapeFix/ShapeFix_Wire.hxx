@@ -19,6 +19,7 @@
 
 #include <Standard.hxx>
 
+#include <Message_ProgressRange.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <ShapeFix_Root.hxx>
@@ -268,7 +269,7 @@ public:
   //! FixDegenerated (if wire is ordered)
   //! FixSelfIntersection (if wire is ordered and ClosedMode is True)
   //! FixLacking (if wire is ordered)
-  Standard_EXPORT bool Perform();
+  Standard_EXPORT bool Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Performs an analysis and reorders edges in the wire using class WireOrder.
   //! Flag <theModeBoth> determines the use of miscible mode if necessary.
