@@ -43,7 +43,7 @@ struct ReplacementRecord
 
 //! Helper structure for recursive Apply implementation.
 //! Tracks visited shapes to prevent infinite recursion on shared sub-shapes
-//! (e.g., Möbius strip with shared edges) and collects replacements.
+//! (e.g., Moebius strip with shared edges) and collects replacements.
 struct ApplyHelper
 {
   ShapeBuild_ReShape&                     ReShape;

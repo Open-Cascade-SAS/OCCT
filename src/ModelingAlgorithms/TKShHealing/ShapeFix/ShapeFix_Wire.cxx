@@ -3809,7 +3809,7 @@ void ShapeFix_Wire::UpdateWire()
 {
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   // Track already-expanded edges to prevent exponential growth from shared context
-  // (especially important for non-orientable surfaces like Möbius strips where
+  // (especially important for non-orientable surfaces like Moebius strips where
   // edges are shared across faces and accumulated replacements can cascade)
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anExpandedEdges;
 
@@ -3818,7 +3818,7 @@ void ShapeFix_Wire::UpdateWire()
     TopoDS_Edge E = sbwd->Edge(i);
     // Use Value() instead of Apply() to get only the direct replacement
     // without recursively following replacement chains. This prevents
-    // exponential edge explosion on Möbius strips where shared edges
+    // exponential edge explosion on Moebius strips where shared edges
     // accumulate cascading replacements across multiple faces.
     // The full chain resolution happens at final shell-level Apply().
     TopoDS_Shape S = Context()->Value(E);
