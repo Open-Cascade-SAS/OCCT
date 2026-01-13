@@ -739,8 +739,6 @@ LONG _osd_debug(void)
   #include <OSD_SIGSYS.hxx>
   #include <Standard_NumericError.hxx>
 
-  #include <Standard_ErrorHandler.hxx>
-
   // POSIX threads
   #include <pthread.h>
 
