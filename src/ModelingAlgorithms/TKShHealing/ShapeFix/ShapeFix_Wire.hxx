@@ -351,7 +351,10 @@ public:
   //! the same one
   //! Tests with starting preci or, if given greater, <prec>
   //! If <prec> is -1 then MaxTolerance() is taken.
-  Standard_EXPORT bool FixConnected(const int num, const double prec);
+  //! If <theUpdateWire> is true, synchronizes wire data with context replacements.
+  Standard_EXPORT bool FixConnected(const int    num,
+                                    const double prec,
+                                    const bool   theUpdateWire = true);
 
   //! Fixes a seam edge
   //! A Seam edge has two pcurves, one for forward. one for reversed

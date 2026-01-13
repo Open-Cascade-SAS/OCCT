@@ -306,6 +306,7 @@ bool ShapeFix_Wire::Perform(const Message_ProgressRange& theProgress)
   // FixReorder is first, because as a rule wire is required to be ordered
   // We shall analyze the order of edges in the wire and set appropriate
   // status even if FixReorder should not be called (if it is forbidden)
+
   ShapeAnalysis_WireOrder sawo;
   bool                    ReorderOK = (myAnalyzer->CheckOrder(sawo, myClosedMode) == 0);
   if (NeedFix(myFixReorderMode, !ReorderOK))
@@ -419,8 +420,12 @@ bool ShapeFix_Wire::Perform(const Message_ProgressRange& theProgress)
   // TEMPORARILY without special mode !!!
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int iedge = 1; iedge <= sbwd->NbEdges(); iedge++)
+  {
     if (myFixEdge->FixVertexTolerance(sbwd->Edge(iedge), Face()))
+    {
       Fixed = true;
+    }
+  }
 
   if (theProgress.UserBreak())
     return false;
@@ -510,7 +515,8 @@ bool ShapeFix_Wire::FixConnected(const double prec)
   int stop = (myClosedMode ? 0 : 1);
   for (int i = NbEdges(); i > stop; i--)
   {
-    FixConnected(i, prec);
+    // Call without UpdateWire to avoid O(n^2) behavior in the loop
+    FixConnected(i, prec, false);
     myStatusConnected |= myLastFixStatus;
   }
 
@@ -1272,14 +1278,13 @@ bool ShapeFix_Wire::FixSmall(const int num, const bool lockvtx, const double pre
 
 //=================================================================================================
 
-bool ShapeFix_Wire::FixConnected(const int num, const double prec)
+bool ShapeFix_Wire::FixConnected(const int num, const double prec, const bool theUpdateWire)
 {
   myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (!IsLoaded() || NbEdges() <= 0)
     return false;
 
   // analysis
-
   myAnalyzer->CheckConnected(num, prec < 0 ? MaxTolerance() : prec);
   if (myAnalyzer->LastCheckStatus(ShapeExtend_FAIL))
   {
@@ -1289,7 +1294,6 @@ bool ShapeFix_Wire::FixConnected(const int num, const double prec)
     return false;
 
   // action: replacing vertex
-
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   int                               n2   = (num > 0 ? num : sbwd->NbEdges());
   int                               n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
@@ -1383,8 +1387,10 @@ bool ShapeFix_Wire::FixConnected(const int num, const double prec)
       }
     }
   }
-  // Note: UpdateWire() is NOT called here to avoid O(n^2) behavior
-  // The caller (FixConnected(double prec)) calls UpdateWire() once after the loop
+
+  // Optionally update wire data with context replacements
+  if (theUpdateWire && !Context().IsNull())
+    UpdateWire();
 
   return true;
 }
@@ -3809,7 +3815,7 @@ void ShapeFix_Wire::UpdateWire()
 
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
-    TopoDS_Edge  E = sbwd->Edge(i);
+    TopoDS_Edge E = sbwd->Edge(i);
     // Use Value() instead of Apply() to get only the direct replacement
     // without recursively following replacement chains. This prevents
     // exponential edge explosion on Möbius strips where shared edges

@@ -15,6 +15,8 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Sequence.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend.hxx>
@@ -28,6 +30,137 @@
 #include <TopoDS_Solid.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
+
+namespace
+{
+
+//! Record of a shape replacement to be registered after recursive processing.
+struct ReplacementRecord
+{
+  TopoDS_Shape Original;
+  TopoDS_Shape Result;
+};
+
+//! Helper structure for recursive Apply implementation.
+//! Tracks visited shapes to prevent infinite recursion on shared sub-shapes
+//! (e.g., Möbius strip with shared edges) and collects replacements.
+struct ApplyHelper
+{
+  ShapeBuild_ReShape&                     ReShape;
+  NCollection_Map<TopoDS_Shape>           Visited;
+  NCollection_Sequence<ReplacementRecord> Replacements;
+  int                                     Status;
+
+  //! Recursively applies substitutions to a shape.
+  //! @param theShape the shape to process
+  //! @param theUntil the shape type at which to stop recursion
+  //! @return the processed shape (original or replacement)
+  TopoDS_Shape Apply(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theUntil)
+  {
+    Status = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+    if (theShape.IsNull())
+      return theShape;
+
+    // Apply direct replacement
+    TopoDS_Shape aNewShape = ReShape.Value(theShape);
+
+    // If shape removed, return NULL
+    if (aNewShape.IsNull())
+    {
+      Status = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+      return aNewShape;
+    }
+
+    // Check if this shape was already visited to prevent infinite recursion
+    if (!Visited.Add(theShape))
+    {
+      // Already processed this shape, return cached result
+      return aNewShape;
+    }
+
+    // If shape replaced, apply modifications to the result recursively
+    bool aConsLoc = ReShape.ModeConsiderLocation();
+    if ((aConsLoc && !aNewShape.IsPartner(theShape)) || (!aConsLoc && !aNewShape.IsSame(theShape)))
+    {
+      TopoDS_Shape aRes = Apply(aNewShape, theUntil);
+      Status |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+      return aRes;
+    }
+
+    TopAbs_ShapeEnum aST = theShape.ShapeType();
+    if (aST >= theUntil)
+      return aNewShape; // stop criterion
+    if (aST == TopAbs_VERTEX || aST == TopAbs_SHAPE)
+      return theShape;
+
+    BRep_Builder aBuilder;
+
+    TopoDS_Shape       aResult  = theShape.EmptyCopied();
+    TopAbs_Orientation anOrient = theShape.Orientation();
+    aResult.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
+    bool aModif     = false;
+    int  aLocStatus = Status;
+
+    // Apply recorded modifications to subshapes
+    for (TopoDS_Iterator anIt(theShape, false); anIt.More(); anIt.Next())
+    {
+      const TopoDS_Shape& aSh = anIt.Value();
+      aNewShape               = Apply(aSh, theUntil);
+      if (aNewShape != aSh)
+      {
+        if (ShapeExtend::DecodeStatus(Status, ShapeExtend_DONE4))
+          aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+        aModif = true;
+      }
+      if (aNewShape.IsNull())
+      {
+        aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+        continue;
+      }
+      aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+      if (aST == TopAbs_COMPOUND || aNewShape.ShapeType() == aSh.ShapeType())
+      {
+        // Fix for SAMTECH bug OCC322 about absence internal vertices after sewing
+        aBuilder.Add(aResult, aNewShape);
+        continue;
+      }
+      int aNbItems = 0;
+      for (TopoDS_Iterator aSubIt(aNewShape); aSubIt.More(); aSubIt.Next(), aNbItems++)
+      {
+        const TopoDS_Shape& aSubSh = aSubIt.Value();
+        if (aSubSh.ShapeType() == aSh.ShapeType())
+          aBuilder.Add(aResult, aSubSh);
+        else
+          aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      }
+      if (!aNbItems)
+        aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+    }
+    if (!aModif)
+      return theShape;
+
+    // Restore range on edge broken by EmptyCopied()
+    if (aST == TopAbs_EDGE)
+    {
+      ShapeBuild_Edge anSBE;
+      anSBE.CopyRanges(TopoDS::Edge(aResult), TopoDS::Edge(theShape));
+    }
+    else if (aST == TopAbs_WIRE || aST == TopAbs_SHELL)
+      aResult.Closed(BRep_Tool::IsClosed(aResult));
+    aResult.Orientation(anOrient);
+    Status = aLocStatus;
+
+    // Record this replacement for later registration
+    ReplacementRecord aRecord;
+    aRecord.Original = theShape;
+    aRecord.Result   = aResult;
+    Replacements.Append(aRecord);
+
+    return aResult;
+  }
+};
+
+} // namespace
 
 //=================================================================================================
 
@@ -162,128 +295,39 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_ShapeEnum until)
+TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
+                                       const TopAbs_ShapeEnum theUntil)
 {
-  NCollection_Map<TopoDS_Shape> aVisited;
-  return ApplyImpl(shape, until, aVisited);
+  ApplyHelper  aHelper{*this, {}, {}, ShapeExtend::EncodeStatus(ShapeExtend_OK)};
+  TopoDS_Shape aResult = aHelper.Apply(theShape, theUntil);
+
+  // Register all collected replacements using public API
+  for (NCollection_Sequence<ReplacementRecord>::Iterator anIt(aHelper.Replacements); anIt.More();
+       anIt.Next())
+  {
+    const ReplacementRecord& aRec = anIt.Value();
+    if (aRec.Result.IsNull())
+      Remove(aRec.Original);
+    else
+      Replace(aRec.Original, aRec.Result);
+  }
+
+  myStatus = aHelper.Status;
+  return aResult;
 }
 
 //=================================================================================================
 
-int ShapeBuild_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, const bool last)
+int ShapeBuild_ReShape::Status(const TopoDS_Shape& theShape,
+                               TopoDS_Shape&       theNewShape,
+                               const bool          theLast)
 {
-  return BRepTools_ReShape::Status(ashape, newsh, last);
+  return BRepTools_ReShape::Status(theShape, theNewShape, theLast);
 }
 
 //=================================================================================================
 
-bool ShapeBuild_ReShape::Status(const ShapeExtend_Status status) const
+bool ShapeBuild_ReShape::Status(const ShapeExtend_Status theStatus) const
 {
-  return ShapeExtend::DecodeStatus(myStatus, status);
-}
-
-//=================================================================================================
-
-TopoDS_Shape ShapeBuild_ReShape::ApplyImpl(const TopoDS_Shape&            shape,
-                                           const TopAbs_ShapeEnum         until,
-                                           NCollection_Map<TopoDS_Shape>& theVisited)
-{
-  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  if (shape.IsNull())
-    return shape;
-
-  // apply direct replacement
-  TopoDS_Shape newsh = Value(shape);
-
-  // if shape removed, return NULL
-  if (newsh.IsNull())
-  {
-    myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
-    return newsh;
-  }
-
-  // if shape replaced, apply modifications to the result recursively
-  bool aConsLoc = ModeConsiderLocation();
-
-  // Check if this shape was already visited to prevent infinite recursion
-  // on shapes with shared sub-shapes (e.g., Möbius strip with shared edges)
-  if (!theVisited.Add(shape))
-  {
-    // Already processed this shape, return the cached result without re-processing sub-shapes
-    return newsh;
-  }
-
-  if ((aConsLoc && !newsh.IsPartner(shape)) || (!aConsLoc && !newsh.IsSame(shape)))
-  {
-    TopoDS_Shape res = ApplyImpl(newsh, until, theVisited);
-    myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-    return res;
-  }
-
-  TopAbs_ShapeEnum st = shape.ShapeType();
-  if (st >= until)
-    return newsh; // critere d arret
-  if (st == TopAbs_VERTEX || st == TopAbs_SHAPE)
-    return shape;
-  // define allowed types of components
-
-  BRep_Builder B;
-
-  TopoDS_Shape       result = shape.EmptyCopied();
-  TopAbs_Orientation orient = shape.Orientation(); // JR/Hp: or -> orient
-  result.Orientation(TopAbs_FORWARD);              // protect against INTERNAL or EXTERNAL shapes
-  bool modif     = false;
-  int  locStatus = myStatus;
-
-  // apply recorded modifications to subshapes
-  for (TopoDS_Iterator it(shape, false); it.More(); it.Next())
-  {
-    const TopoDS_Shape& sh = it.Value();
-    newsh                  = ApplyImpl(sh, until, theVisited);
-    if (newsh != sh)
-    {
-      if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
-        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
-      modif = true;
-    }
-    if (newsh.IsNull())
-    {
-      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
-      continue;
-    }
-    locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-    if (st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType())
-    { // fix for SAMTECH bug OCC322 about absence internal vertices after sewing.
-      B.Add(result, newsh);
-      continue;
-    }
-    int nitems = 0;
-    for (TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++)
-    {
-      const TopoDS_Shape& subsh = subit.Value();
-      if (subsh.ShapeType() == sh.ShapeType())
-        B.Add(result, subsh);
-      else
-        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-    }
-    if (!nitems)
-      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-  }
-  if (!modif)
-    return shape;
-
-  // restore Range on edge broken by EmptyCopied()
-  if (st == TopAbs_EDGE)
-  {
-    ShapeBuild_Edge sbe;
-    sbe.CopyRanges(TopoDS::Edge(result), TopoDS::Edge(shape));
-  }
-  else if (st == TopAbs_WIRE || st == TopAbs_SHELL)
-    result.Closed(BRep_Tool::IsClosed(result));
-  result.Orientation(orient);
-  myStatus = locStatus;
-
-  replace(shape, result, result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
-
-  return result;
+  return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }
