@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <BRepTools_ReShape.hxx>
-#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -105,11 +104,6 @@ public:
   Standard_EXPORT virtual bool Status(const ShapeExtend_Status status) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
-
-private:
-  TopoDS_Shape ApplyImpl(const TopoDS_Shape&            shape,
-                         const TopAbs_ShapeEnum         until,
-                         NCollection_Map<TopoDS_Shape>& theVisited);
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile
