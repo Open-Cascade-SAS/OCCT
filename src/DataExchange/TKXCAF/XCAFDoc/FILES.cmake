@@ -2,8 +2,6 @@
 set(OCCT_XCAFDoc_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_XCAFDoc_FILES
-  FILES
-  GUID.txt
   XCAFDoc.cxx
   XCAFDoc.hxx
   XCAFDoc_AssemblyItemId.cxx

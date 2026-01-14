@@ -2,7 +2,6 @@
 set(OCCT_XCAFDimTolObjects_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_XCAFDimTolObjects_FILES
-  FILES
   XCAFDimTolObjects_DatumObject.cxx
   XCAFDimTolObjects_DatumObject.hxx
   XCAFDimTolObjects_DimensionObject.cxx
