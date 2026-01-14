@@ -33,7 +33,7 @@
   #pragma clang diagnostic ignored "-Wextra"
   #pragma clang diagnostic ignored "-Wshorten-64-to-32"
   #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  #if __clang_major__ >= 15
+  #if __clang_major__ >= 20
     #pragma clang diagnostic ignored "-Wnontrivial-memcall"
   #endif
 #elif defined(_MSC_VER)
