@@ -10,5 +10,4 @@ set(OCCT_MathOpt_FILES
   MathOpt_PSO.hxx
   MathOpt_GlobOpt.hxx
   MathOpt_Uzawa.hxx
-  README.md
 )

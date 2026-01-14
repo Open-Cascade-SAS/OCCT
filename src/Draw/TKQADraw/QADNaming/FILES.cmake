@@ -7,7 +7,6 @@ set(OCCT_QADNaming_FILES
   QADNaming_BasicCommands.cxx
   QADNaming_BuilderCommands.cxx
   QADNaming_IteratorsCommands.cxx
-  QADNaming_Selection.tcl
   QADNaming_SelectionCommands.cxx
   QADNaming_ToolsCommands.cxx
 )

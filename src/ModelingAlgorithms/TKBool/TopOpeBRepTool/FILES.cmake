@@ -2,7 +2,6 @@
 set(OCCT_TopOpeBRepTool_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TopOpeBRepTool_FILES
-  FILES
   TopOpeBRepTool.cxx
   TopOpeBRepTool.hxx
   TopOpeBRepTool_2d.cxx

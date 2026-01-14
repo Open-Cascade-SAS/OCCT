@@ -5,5 +5,4 @@ set(OCCT_MathPoly_FILES
   MathPoly_Quadratic.hxx
   MathPoly_Cubic.hxx
   MathPoly_Quartic.hxx
-  README.md
 )

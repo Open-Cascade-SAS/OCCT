@@ -54,7 +54,6 @@ set(OCCT_Draw_FILES
   Draw_Printer.hxx
   Draw_ProgressIndicator.cxx
   Draw_ProgressIndicator.hxx
-  Draw_Replace.tcl
   Draw_Segment2D.cxx
   Draw_Segment2D.hxx
   Draw_Segment3D.cxx
