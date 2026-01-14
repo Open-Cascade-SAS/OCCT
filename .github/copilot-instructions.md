@@ -85,6 +85,8 @@ Open CASCADE Technology (OCCT) is a comprehensive C++ software development platf
 
 ## 3. Code Conventions
 
+**NEVER** use non-ASCII symbols in code or comments.
+
 ### Naming Patterns
 
 | Element Type             | Pattern               | Example                        |
