@@ -205,7 +205,7 @@ public:
 
   //! Returns True if the coordinate system is right-handed. i.e.
   //! XDirection().Crossed(YDirection()).Dot(Direction()) > 0
-  bool Direct() const { return (vxdir.Crossed(vydir).Dot(axis.Direction()) > 0.); }
+  constexpr bool Direct() const { return (vxdir.Crossed(vydir).Dot(axis.Direction()) > 0.); }
 
   //! Returns True if
   //! . the distance between the "Location" point of <me> and
