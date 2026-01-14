@@ -9,10 +9,11 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
 > **IMPORTANT:** These are the most critical rules. Follow them strictly.
 
 1.  **Memory Management is Paramount:**
-    - **ALWAYS** use `Handle(ClassName)` for any class inheriting from `Standard_Transient` (e.g., `Geom_*`, `Poly_*`, `AIS_*`, `V3d_*`). This is for reference-counted objects.
+    - **ALWAYS** use `occ::handle<ClassName>` for any class inheriting from `Standard_Transient` (e.g., `Geom_*`, `Poly_*`, `AIS_*`, `V3d_*`). This is for reference-counted objects.
     - **NEVER** use raw pointers (`ClassName*`) for these types, as it will cause memory leaks.
-    - **Correct:** `Handle(Geom_Circle) aCircle = new Geom_Circle(...);`
+    - **Correct:** `occ::handle<Geom_Circle> aCircle = new Geom_Circle(...);`
     - **Wrong:** `Geom_Circle* aCircle = new Geom_Circle(...);`
+    - **Note:** The legacy `Handle(ClassName)` macro still exists but `occ::handle<>` is preferred in new code.
 
 2.  **Check Operation Status:**
     - After using an API that performs a geometric operation (e.g., `BRepAlgoAPI_Fuse`, `BRepBuilderAPI_MakeEdge`), **ALWAYS** check if the operation was successful using the `IsDone()` method before accessing the result.
@@ -46,10 +47,11 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
     - **Wrong:** `const TopoDS_Face& aFace = (const TopoDS_Face&)anExp.Current();`
 
 6.  **Handle Downcasting:**
-    - Use `Handle(DerivedClass)::DownCast(BaseHandle)` to safely downcast handles.
+    - Use `occ::down_cast<DerivedClass>(BaseHandle)` to safely downcast handles.
     - **Correct:**
       ```cpp
-      const Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurveHandle);
+      const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(aCurveHandle);
+      // Alternative (legacy): occ::handle<Geom_Circle>::DownCast(aCurveHandle)
       ```
     - **Wrong:**
       ```cpp
@@ -58,7 +60,7 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
       ```
 
 7.  **Validate Handles for Null Safety:**
-    - **ALWAYS** check that a `Handle(ClassName)` is not null before dereferencing it:
+    - **ALWAYS** check that an `occ::handle<ClassName>` is not null before dereferencing it:
       ```cpp
       if (!theHandle.IsNull())
       {
@@ -98,16 +100,23 @@ Open CASCADE Technology (OCCT) is a comprehensive C++ software development platf
 
 ### Primitive Types
 
-Use standard C++ primitive types in new code:
+Use standard C++ primitive types in all code. The old `Standard_*` typedefs are **deprecated** and must not be used:
 
-| Type     | Usage                        |
-| -------- | ---------------------------- |
-| `int`    | Integer values               |
-| `double` | Floating-point numbers       |
-| `bool`   | Boolean values (true/false)  |
-| `float`  | Single-precision when needed |
+| Use This        | Instead of (Deprecated)      | Usage                        |
+| --------------- | ---------------------------- | ---------------------------- |
+| `int`           | ~~Standard_Integer~~         | Integer values               |
+| `double`        | ~~Standard_Real~~            | Floating-point numbers       |
+| `bool`          | ~~Standard_Boolean~~         | Boolean values               |
+| `float`         | ~~Standard_ShortReal~~       | Single-precision floats      |
+| `char`          | ~~Standard_Character~~       | Character values             |
+| `uint8_t`       | ~~Standard_Byte~~            | Byte values                  |
+| `size_t`        | ~~Standard_Size~~            | Size values                  |
+| `void*`         | ~~Standard_Address~~         | Generic pointers             |
+| `char16_t`      | ~~Standard_ExtCharacter~~    | Unicode characters           |
+| `const char*`   | ~~Standard_CString~~         | C-style strings              |
+| `true`/`false`  | ~~Standard_True/False~~      | Boolean literals             |
 
-> **Note:** Legacy code uses `Standard_Integer`, `Standard_Real`, `Standard_Boolean`. These are typedefs to the native types above. In new code, prefer native types directly.
+> **WARNING:** All `Standard_*` type aliases in `Standard_TypeDef.hxx` are marked `Standard_DEPRECATED` and will be removed in future versions. Always use native C++ types directly.
 
 ### Strings and Collections
 
@@ -126,6 +135,24 @@ Use standard C++ primitive types in new code:
 | `NCollection_IndexedMap<K>`       | -                         | Indexed hash set           |
 | `NCollection_IndexedDataMap<K,V>` | -                         | Indexed hash map           |
 
+> **IMPORTANT: Package-Specific Type Aliases Removed**
+>
+> Old package-specific type aliases have been **removed** from OCCT. You must use `NCollection_*` templates directly with explicit types:
+>
+> | Removed Alias (Do Not Use)       | Use Instead                          |
+> | -------------------------------- | ------------------------------------ |
+> | ~~TColStd_ListOfInteger~~        | `NCollection_List<int>`              |
+> | ~~TColStd_Array1OfReal~~         | `NCollection_Array1<double>`         |
+> | ~~TColStd_SequenceOfInteger~~    | `NCollection_Sequence<int>`          |
+> | ~~TColStd_MapOfInteger~~         | `NCollection_Map<int>`               |
+> | ~~TColStd_DataMapOfIntegerReal~~ | `NCollection_DataMap<int, double>`   |
+> | ~~TopTools_ListOfShape~~         | `NCollection_List<TopoDS_Shape>`     |
+> | ~~TopTools_MapOfShape~~          | `NCollection_Map<TopoDS_Shape>`      |
+> | ~~TColgp_Array1OfPnt~~           | `NCollection_Array1<gp_Pnt>`         |
+> | ~~TColgp_SequenceOfPnt~~         | `NCollection_Sequence<gp_Pnt>`       |
+>
+> **Exception:** `TColStd_PackedMapOfInteger` still exists as it has a specialized implementation.
+
 **If STL containers are absolutely necessary**, use OCCT's allocators:
 
 ```cpp
@@ -138,7 +165,7 @@ std::vector<gp_Pnt, NCollection_Allocator<gp_Pnt>> aPoints;
 std::list<TopoDS_Shape, NCollection_Allocator<TopoDS_Shape>> aShapes;
 
 // Option 2: NCollection_OccAllocator - with custom memory pool (preferred for performance)
-Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
 NCollection_OccAllocator<gp_Pnt> anAllocator(anIncAlloc);
 std::vector<gp_Pnt, NCollection_OccAllocator<gp_Pnt>> aPooledPoints(anAllocator);
 ```
@@ -149,6 +176,7 @@ This is a C++17+ codebase. Use modern features where appropriate:
 - Range-based `for` loops
 - Structured bindings: `for (const auto& [aKey, aValue] : aMap)`
 - `std::optional` for optional return values
+- `std::variant` for type-safe unions
 - `if constexpr` for compile-time conditions
 - `[[nodiscard]]`, `[[maybe_unused]]` attributes where appropriate
 
@@ -287,6 +315,7 @@ cmake --build . --config Release
 
 ### Common Headers
 ```cpp
+#include <Standard_Handle.hxx>           // occ::handle, occ::down_cast
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <Geom_Circle.hxx>
@@ -299,6 +328,9 @@ cmake --build . --config Release
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Standard_Failure.hxx>
+#include <NCollection_List.hxx>          // NCollection_List<T>
+#include <NCollection_DataMap.hxx>       // NCollection_DataMap<K,V>
+#include <NCollection_IndexedDataMap.hxx>// NCollection_IndexedDataMap<K,V>
 ```
 
 ---
@@ -448,8 +480,8 @@ Common assertions:
 
 ```bash
 # Build
-cmake .. -DBUILD_GTEST=ON
-cmake --build . --config Release
+cmake ..
+cmake --build .
 
 # Run all
 ./bin/OpenCascadeGTest
