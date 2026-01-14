@@ -59,7 +59,7 @@ public:
   //! The "XDirection" and "YDirection" of theA3 define the "XAxis" and
   //! the "YAxis" of the plane used to parametrize the plane.
   constexpr gp_Pln(const gp_Ax3& theA3) noexcept
-      : pos(theA3)
+      : myPosition(theA3)
   {
   }
 
@@ -88,69 +88,105 @@ public:
   //! -   its origin and "main Direction" become those of the
   //! axis theA1 (the "X Direction" and "Y Direction" are then recomputed).
   //! Raises ConstructionError if the theA1 is parallel to the "XAxis" of the plane.
-  void SetAxis(const gp_Ax1& theA1) { pos.SetAxis(theA1); }
+  void SetAxis(const gp_Ax1& theA1) { myPosition.SetAxis(theA1); }
 
   //! Changes the origin of the plane.
-  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { pos.SetLocation(theLoc); }
+  constexpr void SetLocation(const gp_Pnt& theLoc) noexcept { myPosition.SetLocation(theLoc); }
 
   //! Changes the local coordinate system of the plane.
-  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { pos = theA3; }
+  constexpr void SetPosition(const gp_Ax3& theA3) noexcept { myPosition = theA3; }
 
   //! Reverses the U parametrization of the plane
   //! reversing the XAxis.
-  constexpr void UReverse() noexcept { pos.XReverse(); }
+  constexpr void UReverse() noexcept { myPosition.XReverse(); }
 
   //! Reverses the V parametrization of the plane
   //! reversing the YAxis.
-  constexpr void VReverse() noexcept { pos.YReverse(); }
+  constexpr void VReverse() noexcept { myPosition.YReverse(); }
 
   //! Returns true if the Ax3 is right handed.
-  bool Direct() const { return pos.Direct(); }
+  [[nodiscard]] constexpr bool Direct() const { return myPosition.Direct(); }
 
   //! Returns the plane's normal Axis.
-  constexpr const gp_Ax1& Axis() const noexcept { return pos.Axis(); }
+  [[nodiscard]] constexpr const gp_Ax1& Axis() const noexcept { return myPosition.Axis(); }
 
   //! Returns the plane's location (origin).
-  constexpr const gp_Pnt& Location() const noexcept { return pos.Location(); }
+  [[nodiscard]] constexpr const gp_Pnt& Location() const noexcept { return myPosition.Location(); }
 
   //! Returns the local coordinate system of the plane.
-  constexpr const gp_Ax3& Position() const noexcept { return pos; }
+  [[nodiscard]] constexpr const gp_Ax3& Position() const noexcept { return myPosition; }
 
   //! Computes the distance between <me> and the point <theP>.
-  double Distance(const gp_Pnt& theP) const noexcept;
+  [[nodiscard]] inline double Distance(const gp_Pnt& theP) const noexcept
+  {
+    return std::abs(SignedDistance(theP));
+  }
 
   //! Computes the distance between <me> and the line <theL>.
-  double Distance(const gp_Lin& theL) const noexcept;
+  [[nodiscard]] inline double Distance(const gp_Lin& theL) const noexcept
+  {
+    return std::abs(SignedDistance(theL));
+  }
 
   //! Computes the distance between two planes.
-  double Distance(const gp_Pln& theOther) const noexcept;
+  [[nodiscard]] inline double Distance(const gp_Pln& theOther) const noexcept
+  {
+    return std::abs(SignedDistance(theOther));
+  }
+
+  //! Computes the signed distance between <me> and the point <theP>.
+  //! The sign of the distance indicates on which side of the plane the point is located:
+  //! - positive sign: the point is located in the direction of the plane normal,
+  //! - negative sign: the point is located in the opposite direction to the plane normal,
+  //! - zero: the point is located on the plane.
+  [[nodiscard]] inline double SignedDistance(const gp_Pnt& theP) const noexcept;
+
+  //! Computes the signed distance between <me> and the line <theL>.
+  //! The sign of the distance indicates on which side of the plane the line is located:
+  //! - positive sign: the line is located in the direction of the plane normal,
+  //! - negative sign: the line is located in the opposite direction to the plane normal,
+  //! - zero: the line intersects the plane.
+  [[nodiscard]] inline double SignedDistance(const gp_Lin& theL) const noexcept;
+
+  //! Computes the signed distance between two planes.
+  //! The sign of the distance indicates on which side of <me> the other plane is located:
+  //! - positive sign: the other plane is located in the direction of the plane normal,
+  //! - negative sign: the other plane is located in the opposite direction to the plane normal,
+  //! - zero: the planes intersect.
+  [[nodiscard]] inline double SignedDistance(const gp_Pln& theOther) const noexcept;
 
   //! Computes the square distance between <me> and the point <theP>.
-  double SquareDistance(const gp_Pnt& theP) const noexcept
+  [[nodiscard]] inline double SquareDistance(const gp_Pnt& theP) const noexcept
   {
-    double aD = Distance(theP);
+    const double aD = Distance(theP);
     return aD * aD;
   }
 
   //! Computes the square distance between <me> and the line <theL>.
-  double SquareDistance(const gp_Lin& theL) const noexcept
+  [[nodiscard]] inline double SquareDistance(const gp_Lin& theL) const noexcept
   {
-    double aD = Distance(theL);
+    const double aD = Distance(theL);
     return aD * aD;
   }
 
   //! Computes the square distance between two planes.
-  double SquareDistance(const gp_Pln& theOther) const noexcept
+  [[nodiscard]] inline double SquareDistance(const gp_Pln& theOther) const noexcept
   {
-    double aD = Distance(theOther);
+    const double aD = Distance(theOther);
     return aD * aD;
   }
 
   //! Returns the X axis of the plane.
-  constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
+  [[nodiscard]] constexpr gp_Ax1 XAxis() const noexcept
+  {
+    return gp_Ax1(myPosition.Location(), myPosition.XDirection());
+  }
 
   //! Returns the Y axis of the plane.
-  constexpr gp_Ax1 YAxis() const noexcept { return gp_Ax1(pos.Location(), pos.YDirection()); }
+  [[nodiscard]] constexpr gp_Ax1 YAxis() const noexcept
+  {
+    return gp_Ax1(myPosition.Location(), myPosition.YDirection());
+  }
 
   //! Returns true if this plane contains the point theP. This means that
   //! -   the distance between point theP and this plane is less
@@ -160,7 +196,8 @@ public:
   //! AngularTolerance, and the distance between the origin
   //! of line L and this plane is less than or equal to
   //! theLinearTolerance.
-  bool Contains(const gp_Pnt& theP, const double theLinearTolerance) const noexcept
+  [[nodiscard]] inline bool Contains(const gp_Pnt& theP,
+                                     const double  theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -173,12 +210,12 @@ public:
   //! theAngularTolerance, and the distance between the origin
   //! of line theL and this plane is less than or equal to
   //! theLinearTolerance.
-  bool Contains(const gp_Lin& theL,
-                const double  theLinearTolerance,
-                const double  theAngularTolerance) const noexcept
+  [[nodiscard]] bool Contains(const gp_Lin& theL,
+                              const double  theLinearTolerance,
+                              const double  theAngularTolerance) const noexcept
   {
     return Contains(theL.Location(), theLinearTolerance)
-           && pos.Direction().IsNormal(theL.Direction(), theAngularTolerance);
+           && myPosition.Direction().IsNormal(theL.Direction(), theAngularTolerance);
   }
 
   Standard_EXPORT void Mirror(const gp_Pnt& theP) noexcept;
@@ -213,28 +250,28 @@ public:
   //! else it is the opposite.
   [[nodiscard]] Standard_EXPORT gp_Pln Mirrored(const gp_Ax2& theA2) const noexcept;
 
-  void Rotate(const gp_Ax1& theA1, const double theAng) { pos.Rotate(theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const double theAng) { myPosition.Rotate(theA1, theAng); }
 
   //! Rotates a plane. theA1 is the axis of the rotation.
   //! theAng is the angular value of the rotation in radians.
   [[nodiscard]] gp_Pln Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Pln aPl = *this;
-    aPl.pos.Rotate(theA1, theAng);
+    aPl.myPosition.Rotate(theA1, theAng);
     return aPl;
   }
 
-  void Scale(const gp_Pnt& theP, const double theS) { pos.Scale(theP, theS); }
+  void Scale(const gp_Pnt& theP, const double theS) { myPosition.Scale(theP, theS); }
 
   //! Scales a plane. theS is the scaling value.
   [[nodiscard]] gp_Pln Scaled(const gp_Pnt& theP, const double theS) const
   {
     gp_Pln aPl = *this;
-    aPl.pos.Scale(theP, theS);
+    aPl.myPosition.Scale(theP, theS);
     return aPl;
   }
 
-  void Transform(const gp_Trsf& theT) { pos.Transform(theT); }
+  void Transform(const gp_Trsf& theT) { myPosition.Transform(theT); }
 
   //! Transforms a plane with the transformation theT from class Trsf.
   //! The transformation is performed on the "Location"
@@ -244,31 +281,31 @@ public:
   [[nodiscard]] gp_Pln Transformed(const gp_Trsf& theT) const
   {
     gp_Pln aPl = *this;
-    aPl.pos.Transform(theT);
+    aPl.myPosition.Transform(theT);
     return aPl;
   }
 
-  constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
+  constexpr void Translate(const gp_Vec& theV) noexcept { myPosition.Translate(theV); }
 
   //! Translates a plane in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
   [[nodiscard]] constexpr gp_Pln Translated(const gp_Vec& theV) const noexcept
   {
     gp_Pln aPl = *this;
-    aPl.pos.Translate(theV);
+    aPl.myPosition.Translate(theV);
     return aPl;
   }
 
   constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
   {
-    pos.Translate(theP1, theP2);
+    myPosition.Translate(theP1, theP2);
   }
 
   //! Translates a plane from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Pln aPl = *this;
-    aPl.pos.Translate(theP1, theP2);
+    aPl.myPosition.Translate(theP1, theP2);
     return aPl;
   }
 
@@ -276,7 +313,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  gp_Ax3 pos;
+  gp_Ax3 myPosition;
 };
 
 //=================================================================================================
@@ -286,8 +323,8 @@ inline void gp_Pln::Coefficients(double& theA,
                                  double& theC,
                                  double& theD) const noexcept
 {
-  const gp_Dir& aDir = pos.Direction();
-  if (pos.Direct())
+  const gp_Dir& aDir = myPosition.Direction();
+  if (myPosition.Direct())
   {
     theA = aDir.X();
     theB = aDir.Y();
@@ -299,63 +336,42 @@ inline void gp_Pln::Coefficients(double& theA,
     theB = -aDir.Y();
     theC = -aDir.Z();
   }
-  const gp_Pnt& aP = pos.Location();
+  const gp_Pnt& aP = myPosition.Location();
   theD             = -(theA * aP.X() + theB * aP.Y() + theC * aP.Z());
 }
 
 //=================================================================================================
 
-inline double gp_Pln::Distance(const gp_Pnt& theP) const noexcept
+inline double gp_Pln::SignedDistance(const gp_Pnt& theP) const noexcept
 {
-  const gp_Pnt& aLoc = pos.Location();
-  const gp_Dir& aDir = pos.Direction();
-  double        aD   = (aDir.X() * (theP.X() - aLoc.X()) + aDir.Y() * (theP.Y() - aLoc.Y())
-               + aDir.Z() * (theP.Z() - aLoc.Z()));
-  if (aD < 0)
-  {
-    aD = -aD;
-  }
-  return aD;
+  const gp_Pnt& aLoc = myPosition.Location();
+  const gp_Dir& aDir = myPosition.Direction();
+  return (aDir.X() * (theP.X() - aLoc.X()) + aDir.Y() * (theP.Y() - aLoc.Y())
+          + aDir.Z() * (theP.Z() - aLoc.Z()));
 }
 
 //=================================================================================================
 
-inline double gp_Pln::Distance(const gp_Lin& theL) const noexcept
+inline double gp_Pln::SignedDistance(const gp_Lin& theL) const noexcept
 {
-  double aD = 0.0;
-  if ((pos.Direction()).IsNormal(theL.Direction(), gp::Resolution()))
+  if (!myPosition.Direction().IsNormal(theL.Direction(), gp::Resolution()))
   {
-    const gp_Pnt& aP   = theL.Location();
-    const gp_Pnt& aLoc = pos.Location();
-    const gp_Dir& aDir = pos.Direction();
-    aD                 = (aDir.X() * (aP.X() - aLoc.X()) + aDir.Y() * (aP.Y() - aLoc.Y())
-          + aDir.Z() * (aP.Z() - aLoc.Z()));
-    if (aD < 0)
-    {
-      aD = -aD;
-    }
+    return 0.;
   }
-  return aD;
+
+  return SignedDistance(theL.Location());
 }
 
 //=================================================================================================
 
-inline double gp_Pln::Distance(const gp_Pln& theOther) const noexcept
+inline double gp_Pln::SignedDistance(const gp_Pln& theOther) const noexcept
 {
-  double aD = 0.0;
-  if ((pos.Direction()).IsParallel(theOther.pos.Direction(), gp::Resolution()))
+  if (!myPosition.Direction().IsParallel(theOther.myPosition.Direction(), gp::Resolution()))
   {
-    const gp_Pnt& aP   = theOther.pos.Location();
-    const gp_Pnt& aLoc = pos.Location();
-    const gp_Dir& aDir = pos.Direction();
-    aD                 = (aDir.X() * (aP.X() - aLoc.X()) + aDir.Y() * (aP.Y() - aLoc.Y())
-          + aDir.Z() * (aP.Z() - aLoc.Z()));
-    if (aD < 0)
-    {
-      aD = -aD;
-    }
+    return 0.;
   }
-  return aD;
+
+  return SignedDistance(theOther.myPosition.Location());
 }
 
 #endif // _gp_Pln_HeaderFile
