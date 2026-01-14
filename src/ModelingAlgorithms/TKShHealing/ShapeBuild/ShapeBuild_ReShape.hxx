@@ -25,7 +25,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 class TopoDS_Shape;
 
 // resolve name collisions with X11 headers
@@ -108,8 +107,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
 private:
-  //! Visited map type using IsSame semantics (ignores orientation).
-  using VisitedMap = NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>;
+  //! Visited map type (orientation-sensitive to allow proper processing
+  //! of shapes with different orientations).
+  using VisitedMap = NCollection_Map<TopoDS_Shape>;
 
   //! Internal recursive implementation of Apply.
   //! Uses visited map to prevent infinite recursion on shapes with shared
