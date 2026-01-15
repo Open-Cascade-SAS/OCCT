@@ -109,31 +109,8 @@ double ComputeParameter(const TopoDS_Vertex& theVertex, const TopoDS_Edge& theEd
 //=================================================================================================
 
 BOPDS_DS::BOPDS_DS()
-    : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-      myArguments(myAllocator),
-      myRanges(0, myAllocator),
-      myLines(0, myAllocator),
-      myMapShapeIndex(100, myAllocator),
-      myPaveBlocksPool(0, myAllocator),
-      myMapPBCB(100, myAllocator),
-      myFaceInfoPool(0, myAllocator),
-      myShapesSD(100, myAllocator),
-      myMapVE(100, myAllocator),
-      myInterfTB(100, myAllocator),
-      myInterfVV(0, myAllocator),
-      myInterfVE(0, myAllocator),
-      myInterfVF(0, myAllocator),
-      myInterfEE(0, myAllocator),
-      myInterfEF(0, myAllocator),
-      myInterfFF(0, myAllocator),
-      myInterfVZ(0, myAllocator),
-      myInterfEZ(0, myAllocator),
-      myInterfFZ(0, myAllocator),
-      myInterfZZ(0, myAllocator),
-      myInterfered(100, myAllocator)
+    : BOPDS_DS(NCollection_BaseAllocator::CommonBaseAllocator())
 {
-  myNbShapes       = 0;
-  myNbSourceShapes = 0;
 }
 
 //=================================================================================================
@@ -205,9 +182,9 @@ void BOPDS_DS::Clear()
 
 //=================================================================================================
 
-void BOPDS_DS::SetArguments(const NCollection_List<TopoDS_Shape>& theLS)
+void BOPDS_DS::SetArguments(const NCollection_List<TopoDS_Shape>& theArguments)
 {
-  myArguments = theLS;
+  myArguments = theArguments;
 }
 
 //=================================================================================================
@@ -353,18 +330,15 @@ void BOPDS_DS::Init(const double theFuzz)
     NCollection_BaseAllocator::CommonBaseAllocator();
 
   int i1 = 0;
-  for (NCollection_List<TopoDS_Shape>::Iterator aIt(myArguments); aIt.More(); aIt.Next())
+  for (const TopoDS_Shape& aShape : myArguments)
   {
-    const TopoDS_Shape& aS = aIt.Value();
-    if (myMapShapeIndex.IsBound(aS))
+    if (myMapShapeIndex.IsBound(aShape))
     {
       continue;
     }
-    int aI = Append(aS);
+    InitShape(Append(aShape), aShape);
 
-    InitShape(aI, aS);
-
-    int i2 = NbShapes() - 1;
+    const int i2 = NbShapes() - 1;
     myRanges.Append(BOPDS_IndexRange(i1, i2));
     i1 = i2 + 1;
   }
@@ -665,22 +639,22 @@ void BOPDS_DS::InitShape(const int theShapeInfoIndex, const TopoDS_Shape& theSha
 
 bool BOPDS_DS::HasInterfShapeSubShapes(const int  theIndex1,
                                        const int  theIndex2,
-                                       const bool theFlag) const
+                                       const bool theAnyInterference) const
 {
-  const NCollection_List<int>& aSubShapes = ShapeInfo(theIndex1).SubShapes();
-  if (theFlag)
+  const NCollection_List<int>& aSubShapes = ShapeInfo(theIndex2).SubShapes();
+  if (theAnyInterference)
   {
     return std::any_of(
       aSubShapes.begin(),
       aSubShapes.end(),
-      [this, theIndex2](int theSubShapeIndex) { return HasInterf(theSubShapeIndex, theIndex2); });
+      [this, theIndex1](int theSubShapeIndex) { return HasInterf(theIndex1, theSubShapeIndex); });
   }
   else
   {
     return std::all_of(
       aSubShapes.begin(),
       aSubShapes.end(),
-      [this, theIndex2](int theSubShapeIndex) { return HasInterf(theSubShapeIndex, theIndex2); });
+      [this, theIndex1](int theSubShapeIndex) { return HasInterf(theIndex1, theSubShapeIndex); });
   }
 }
 
@@ -694,8 +668,6 @@ bool BOPDS_DS::HasInterfSubShapes(const int theIndex1, const int theIndex2) cons
   });
 }
 
-//
-// PaveBlocks
 //=================================================================================================
 
 const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::PaveBlocksPool()
@@ -1672,16 +1644,16 @@ void BOPDS_DS::Paves(const int theEdge, NCollection_List<BOPDS_Pave>& theLP)
   int                                                      aNb, i;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt;
   NCollection_Map<BOPDS_Pave>                              aMP;
-  //
+
   const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = PaveBlocks(theEdge);
   aNb                                                        = aLPB.Extent() + 1;
   if (aNb == 1)
   {
     return;
   }
-  //
+
   NCollection_Array1<BOPDS_Pave> pPaves(1, aNb);
-  //
+
   i = 1;
   aIt.Initialize(aLPB);
   for (; aIt.More(); aIt.Next())
@@ -1689,27 +1661,26 @@ void BOPDS_DS::Paves(const int theEdge, NCollection_List<BOPDS_Pave>& theLP)
     const occ::handle<BOPDS_PaveBlock>& aPB    = aIt.Value();
     const BOPDS_Pave&                   aPave1 = aPB->Pave1();
     const BOPDS_Pave&                   aPave2 = aPB->Pave2();
-    //
+
     if (aMP.Add(aPave1))
     {
       pPaves(i) = aPave1;
       ++i;
     }
-    //
+
     if (aMP.Add(aPave2))
     {
       pPaves(i) = aPave2;
       ++i;
     }
   }
-  //
+
   Standard_ASSERT_VOID(aNb == aMP.Extent(), "Abnormal number of paves");
-  //
+
   std::sort(pPaves.begin(), pPaves.end());
-  //
-  for (i = 1; i <= aNb; ++i)
+  for (const auto& aPave : pPaves)
   {
-    theLP.Append(pPaves(i));
+    theLP.Append(aPave);
   }
 }
 
