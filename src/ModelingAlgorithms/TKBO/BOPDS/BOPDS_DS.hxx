@@ -251,8 +251,9 @@ public:
 
   //! Selector
   //! Returns the indices of alone vertices
-  //! for the face with index theIndex
-  Standard_EXPORT void AloneVertices(const int theF, NCollection_List<int>& theLI) const;
+  //! for the face with index @p theFaceIndex
+  Standard_EXPORT void AloneVertices(const int              theFaceIndex,
+                                     NCollection_List<int>& theVertexList) const;
 
   //! Refine the state On for the all faces having
   //! state information
@@ -301,6 +302,10 @@ public:
   //!
   //! interferences
   Standard_EXPORT bool HasShapeSD(const int theIndex, int& theIndexSD) const;
+
+  //! Returns the index of same domain shape for the shape
+  //! with index @p theIndex. If there is no same domain shape, returns @p theIndex itself.
+  Standard_EXPORT int GetSameDomainIndex(const int theIndex) const;
 
   //! Selector/Modifier
   //! Returns the collection of interferences Vertex/Vertex
@@ -362,18 +367,18 @@ public:
   bool HasInterf(const int theI1, const int theI2) const;
 
   //! Query
-  //! Returns true if the shape with index theI1 is interfered
+  //! Returns true if the shape with index theIndex1 is interfered
   //! with
-  //! any sub-shape of the shape with index theI2  (theFlag=true)
-  //! all sub-shapes of the shape with index theI2 (theFlag=false)
-  Standard_EXPORT bool HasInterfShapeSubShapes(const int  theI1,
-                                               const int  theI2,
-                                               const bool theFlag = true) const;
+  //! any sub-shape of the shape with index theIndex2  (theAnyInterference=true)
+  //! all sub-shapes of the shape with index theIndex2 (theAnyInterference=false)
+  Standard_EXPORT bool HasInterfShapeSubShapes(const int  theIndex1,
+                                               const int  theIndex2,
+                                               const bool theAnyInterference = true) const;
 
   //! Query
-  //! Returns true if the shapes with indices theI1, theI2
+  //! Returns true if the shapes with indices theIndex1, theIndex2
   //! have interferred sub-shapes
-  Standard_EXPORT bool HasInterfSubShapes(const int theI1, const int theI2) const;
+  Standard_EXPORT bool HasInterfSubShapes(const int theIndex1, const int theIndex2) const;
 
   //! Selector
   //! Returns the table of interferences
@@ -383,7 +388,9 @@ public:
 
   Standard_EXPORT void Dump() const;
 
-  Standard_EXPORT bool IsSubShape(const int theI1, const int theI2);
+  //! Returns true if the shape with index @p theCandidate is a sub-shape
+  //! of the shape with index @p theParent
+  Standard_EXPORT bool IsSubShape(const int theCandidate, const int theParent);
 
   //! Fills theLP with sorted paves
   //! of the shape with index theIndex

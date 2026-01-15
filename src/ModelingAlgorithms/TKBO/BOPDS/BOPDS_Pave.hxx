@@ -32,6 +32,9 @@ public:
   //! Empty constructor
   BOPDS_Pave();
 
+  //! Constructor with index and parameter
+  BOPDS_Pave(const int theIndex, const double theParameter);
+
   //! Modifier
   //! Sets the index of vertex <theIndex>
   void SetIndex(const int theIndex);

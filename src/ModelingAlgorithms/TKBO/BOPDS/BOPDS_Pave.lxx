@@ -15,9 +15,16 @@
 //=================================================================================================
 
 inline BOPDS_Pave::BOPDS_Pave()
+    : myIndex(-1),
+      myParameter(99.)
 {
-  myIndex     = -1;
-  myParameter = 99.;
+}
+
+//==============================================================================================
+inline BOPDS_Pave::BOPDS_Pave(const int theIndex, const double theParameter)
+    : myIndex(theIndex),
+      myParameter(theParameter)
+{
 }
 
 //=================================================================================================
