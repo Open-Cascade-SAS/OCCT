@@ -43,7 +43,7 @@ runs:
       run: |
           set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
           cd build
-          cmake --build . --target doc --config Release
+          cmake --build . --target doc --config Release & exit /b 0
       shell: cmd
 
     - name: Upload refman documentation

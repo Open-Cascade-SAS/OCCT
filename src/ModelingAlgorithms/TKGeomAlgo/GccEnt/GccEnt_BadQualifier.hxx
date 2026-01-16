@@ -17,7 +17,6 @@
 #ifndef _GccEnt_BadQualifier_HeaderFile
 #define _GccEnt_BadQualifier_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>

@@ -5,5 +5,4 @@ set(OCCT_MathSys_FILES
   MathSys_Newton.hxx
   MathSys_Newton2D.hxx
   MathSys_LevenbergMarquardt.hxx
-  README.md
 )

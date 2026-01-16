@@ -15,7 +15,6 @@
 #ifndef _OSD_Exception_STATUS_NO_MEMORY_HeaderFile
 #define _OSD_Exception_STATUS_NO_MEMORY_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>

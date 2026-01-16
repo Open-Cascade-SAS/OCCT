@@ -15,26 +15,22 @@
 
 #include <Standard_OutOfMemory.hxx>
 
-#ifdef min
-  #undef min
-#endif
-
 #include <algorithm>
 #include <cstdlib>
-
-IMPLEMENT_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
+#include <cstring>
 
 //=================================================================================================
 
 Standard_OutOfMemory::Standard_OutOfMemory(const char* theMessage)
 {
+  myBuffer[0] = '\0';
   // call explicitly own method (non-virtual call)
   Standard_OutOfMemory::SetMessageString(theMessage);
 }
 
 //=================================================================================================
 
-const char* Standard_OutOfMemory::GetMessageString() const
+const char* Standard_OutOfMemory::what() const noexcept
 {
   return myBuffer;
 }
@@ -44,50 +40,11 @@ const char* Standard_OutOfMemory::GetMessageString() const
 void Standard_OutOfMemory::SetMessageString(const char* theMessage)
 {
   // restrict length of the message by buffer size
-  size_t n = (theMessage ? std::min(strlen(theMessage), sizeof(myBuffer) - 1) : 0);
+  const size_t aLength = (theMessage ? std::min(std::strlen(theMessage), sizeof(myBuffer) - 1) : 0);
 
-  // first set line end symbol to be safe in case of concurrent call
-  myBuffer[n] = '\0';
-  if (n > 0)
-    memcpy(myBuffer, theMessage, n);
-}
-
-//=================================================================================================
-
-void Standard_OutOfMemory::Raise(const char* theMessage)
-{
-  NewInstance(theMessage)->Reraise();
-}
-
-//=================================================================================================
-
-void Standard_OutOfMemory::Raise(Standard_SStream& theMessage)
-{
-  NewInstance(theMessage.str().c_str())->Reraise();
-}
-
-//=================================================================================================
-
-// global instance must be allocated at load-time
-static occ::handle<Standard_OutOfMemory> anOutOfMemInstance = new Standard_OutOfMemory;
-
-occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage)
-{
-  anOutOfMemInstance->SetMessageString(theMessage);
-  return anOutOfMemInstance;
-}
-
-occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
-                                                                    const char* theStackTrace)
-{
-  anOutOfMemInstance->SetMessageString(theMessage);
-  anOutOfMemInstance->SetStackString(theStackTrace);
-  return anOutOfMemInstance;
-}
-
-//=================================================================================================
-
-void Standard_OutOfMemory::Throw() const
-{
-  throw *this;
+  myBuffer[aLength] = '\0';
+  if (aLength > 0)
+  {
+    std::memcpy(myBuffer, theMessage, aLength);
+  }
 }

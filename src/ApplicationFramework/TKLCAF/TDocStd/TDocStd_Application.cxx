@@ -269,7 +269,7 @@ PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString&   
       //      Standard_SStream aMsg;
       //      aMsg << Standard_Failure::Caught() << std::endl;
       //      std::cout << "TDocStd_Application::Open(): " << aMsg.rdbuf()->str() << std::endl;
-      TCollection_ExtendedString aString(anException.GetMessageString());
+      TCollection_ExtendedString aString(anException.what());
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
@@ -306,7 +306,7 @@ PCDM_ReaderStatus TDocStd_Application::Open(Standard_IStream&                   
   {
     if (!MessageDriver().IsNull())
     {
-      TCollection_ExtendedString aFailureMessage(anException.GetMessageString());
+      TCollection_ExtendedString aFailureMessage(anException.what());
       MessageDriver()->Send(aFailureMessage.ToExtString(), Message_Fail);
     }
   }
@@ -345,7 +345,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
   {
     if (!MessageDriver().IsNull())
     {
-      TCollection_ExtendedString aString(anException.GetMessageString());
+      TCollection_ExtendedString aString(anException.what());
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
@@ -388,7 +388,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
   {
     if (!MessageDriver().IsNull())
     {
-      TCollection_ExtendedString aString(anException.GetMessageString());
+      TCollection_ExtendedString aString(anException.what());
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
@@ -413,7 +413,7 @@ PCDM_StoreStatus TDocStd_Application::Save(const occ::handle<TDocStd_Document>& 
     {
       if (!MessageDriver().IsNull())
       {
-        TCollection_ExtendedString aString(anException.GetMessageString());
+        TCollection_ExtendedString aString(anException.what());
         MessageDriver()->Send(aString.ToExtString(), Message_Fail);
       }
     }
@@ -463,7 +463,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
     {
       if (!MessageDriver().IsNull())
       {
-        TCollection_ExtendedString aString(anException.GetMessageString());
+        TCollection_ExtendedString aString(anException.what());
         MessageDriver()->Send(aString.ToExtString(), Message_Fail);
       }
     }
@@ -513,7 +513,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
   {
     if (!MessageDriver().IsNull())
     {
-      TCollection_ExtendedString aString(anException.GetMessageString());
+      TCollection_ExtendedString aString(anException.what());
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
@@ -539,7 +539,7 @@ PCDM_StoreStatus TDocStd_Application::Save(const occ::handle<TDocStd_Document>& 
     {
       if (!MessageDriver().IsNull())
       {
-        TCollection_ExtendedString aString(anException.GetMessageString());
+        TCollection_ExtendedString aString(anException.what());
         MessageDriver()->Send(aString.ToExtString(), Message_Fail);
       }
     }

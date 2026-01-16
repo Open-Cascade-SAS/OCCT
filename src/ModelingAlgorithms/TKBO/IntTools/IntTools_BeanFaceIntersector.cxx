@@ -53,29 +53,30 @@
 
 static bool SetEmptyResultRange(const double theParameter, IntTools_MarkedRangeSet& theMarkedRange);
 
-static Bnd_Box GetSurfaceBox(const occ::handle<Geom_BSplineSurface>& theSurf,
-                             const double                            theFirstU,
-                             const double                            theLastU,
-                             const double                            theFirstV,
-                             const double                            theLastV,
-                             const double                            theTolerance,
-                             IntTools_SurfaceRangeLocalizeData&      theSurfaceData);
+static Bnd_Box GetSurfaceBox(const BRepAdaptor_Surface&         theSurf,
+                             const double                       theFirstU,
+                             const double                       theLastU,
+                             const double                       theFirstV,
+                             const double                       theLastV,
+                             const double                       theTolerance,
+                             IntTools_SurfaceRangeLocalizeData& theSurfaceData);
 
-static void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
-                              const double                            theFirstU,
-                              const double                            theLastU,
-                              const double                            theFirstV,
-                              const double                            theLastV,
-                              const double                            theTolerance,
-                              IntTools_SurfaceRangeLocalizeData&      theSurfaceData);
+static void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
+                              occ::handle<Geom_BSplineSurface>   theBsplSurf,
+                              const double                       theFirstU,
+                              const double                       theLastU,
+                              const double                       theFirstV,
+                              const double                       theLastV,
+                              const double                       theTolerance,
+                              IntTools_SurfaceRangeLocalizeData& theSurfaceData);
 
-static void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
-                     const double                            theFirstU,
-                     const double                            theLastU,
-                     const double                            theFirstV,
-                     const double                            theLastV,
-                     IntTools_SurfaceRangeLocalizeData&      theSurfaceData,
-                     Bnd_Box&                                theBox);
+static void BuildBox(const BRepAdaptor_Surface&         theSurf,
+                     const double                       theFirstU,
+                     const double                       theLastU,
+                     const double                       theFirstV,
+                     const double                       theLastV,
+                     IntTools_SurfaceRangeLocalizeData& theSurfaceData,
+                     Bnd_Box&                           theBox);
 
 static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   theListCurveRange,
                            const NCollection_List<IntTools_SurfaceRangeSample>& theListSurfaceRange,
@@ -895,11 +896,6 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
   double Tol, af, al;
   Tol                            = Precision::PConfusion();
   occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(myCurve.Edge(), af, al);
-  GeomAdaptor_Surface     aGASurface(myTrsfSurface,
-                                 myUMinParameter,
-                                 myUMaxParameter,
-                                 myVMinParameter,
-                                 myVMaxParameter);
 
   for (int i = 1; i <= myRangeManager.Length(); i++)
   {
@@ -924,7 +920,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 
     GeomAdaptor_Curve aGACurve(aCurve, anarg1, anarg2);
     Extrema_ExtCS     anExtCS;
-    anExtCS.Initialize(aGASurface,
+    anExtCS.Initialize(mySurface,
                        myUMinParameter,
                        myUMaxParameter,
                        myVMinParameter,
@@ -1506,10 +1502,7 @@ bool IntTools_BeanFaceIntersector::LocalizeSolutions(
 
         if (mySurface.GetType() == GeomAbs_BSplineSurface)
         {
-          // 	if(false ) {
-          occ::handle<Geom_BSplineSurface> aSurfBspl =
-            occ::down_cast<Geom_BSplineSurface>(myTrsfSurface);
-          aBoxS = GetSurfaceBox(aSurfBspl,
+          aBoxS = GetSurfaceBox(mySurface,
                                 aPrevParU,
                                 aCurParU,
                                 aPrevParV,
@@ -1804,9 +1797,10 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
 
   if (mySurface.GetType() == GeomAbs_BSplineSurface)
   {
-    occ::handle<Geom_BSplineSurface> aSurfBspl = occ::down_cast<Geom_BSplineSurface>(myTrsfSurface);
-
-    ComputeGridPoints(aSurfBspl,
+    occ::handle<Geom_BSplineSurface> aBsplineSurface =
+      occ::down_cast<Geom_BSplineSurface>(myTrsfSurface);
+    ComputeGridPoints(mySurface,
+                      aBsplineSurface,
                       myUMinParameter,
                       myUMaxParameter,
                       myVMinParameter,
@@ -1816,7 +1810,7 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
 
     if (!bFBoxFound)
     {
-      FBox = GetSurfaceBox(aSurfBspl,
+      FBox = GetSurfaceBox(mySurface,
                            myUMinParameter,
                            myUMaxParameter,
                            myVMinParameter,
@@ -2129,13 +2123,13 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
 // static function: GetSurfaceBox
 // purpose:
 // ---------------------------------------------------------------------------------
-Bnd_Box GetSurfaceBox(const occ::handle<Geom_BSplineSurface>& theSurf,
-                      const double                            theFirstU,
-                      const double                            theLastU,
-                      const double                            theFirstV,
-                      const double                            theLastV,
-                      const double                            theTolerance,
-                      IntTools_SurfaceRangeLocalizeData&      theSurfaceData)
+Bnd_Box GetSurfaceBox(const BRepAdaptor_Surface&         theSurf,
+                      const double                       theFirstU,
+                      const double                       theLastU,
+                      const double                       theFirstV,
+                      const double                       theLastV,
+                      const double                       theTolerance,
+                      IntTools_SurfaceRangeLocalizeData& theSurfaceData)
 {
   Bnd_Box aTotalBox;
 
@@ -2149,24 +2143,25 @@ Bnd_Box GetSurfaceBox(const occ::handle<Geom_BSplineSurface>& theSurf,
 // static function: ComputeGridPoints
 // purpose:
 // ---------------------------------------------------------------------------------
-void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
-                       const double                            theFirstU,
-                       const double                            theLastU,
-                       const double                            theFirstV,
-                       const double                            theLastV,
-                       const double                            theTolerance,
-                       IntTools_SurfaceRangeLocalizeData&      theSurfaceData)
+void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
+                       occ::handle<Geom_BSplineSurface>   theBsplSurf,
+                       const double                       theFirstU,
+                       const double                       theLastU,
+                       const double                       theFirstV,
+                       const double                       theLastV,
+                       const double                       theTolerance,
+                       IntTools_SurfaceRangeLocalizeData& theSurfaceData)
 {
   int                        i;
   int                        j;
   int                        k;
-  int                        aNbSamples[2] = {theSurf->UDegree(), theSurf->VDegree()};
-  int                        aNbKnots[2]   = {theSurf->NbUKnots(), theSurf->NbVKnots()};
+  int                        aNbSamples[2] = {theSurf.UDegree(), theSurf.VDegree()};
+  int                        aNbKnots[2]   = {theSurf.NbUKnots(), theSurf.NbVKnots()};
   NCollection_Array1<double> aKnotsU(1, aNbKnots[0]);
   NCollection_Array1<double> aKnotsV(1, aNbKnots[1]);
 
-  theSurf->UKnots(aKnotsU);
-  theSurf->VKnots(aKnotsV);
+  theBsplSurf->UKnots(aKnotsU);
+  theBsplSurf->VKnots(aKnotsV);
 
   int    iLmI;
   int    iMin[2] = {-1, -1};
@@ -2310,11 +2305,11 @@ void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
 
       if (isCalcDefl)
       {
-        theSurf->D1(aParU, aParV, aPnt, aDU, aDV);
+        theSurf.D1(aParU, aParV, aPnt, aDU, aDV);
       }
       else
       {
-        theSurf->D0(aParU, aParV, aPnt);
+        theSurf.D0(aParU, aParV, aPnt);
       }
 
       theSurfaceData.SetGridPoint(i, j, aPnt);
@@ -2388,13 +2383,13 @@ void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
 // static function: BuildBox
 // purpose:  Compute bounding box.
 // ---------------------------------------------------------------------------------
-void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
-              const double                            theFirstU,
-              const double                            theLastU,
-              const double                            theFirstV,
-              const double                            theLastV,
-              IntTools_SurfaceRangeLocalizeData&      theSurfaceData,
-              Bnd_Box&                                theBox)
+void BuildBox(const BRepAdaptor_Surface&         theSurf,
+              const double                       theFirstU,
+              const double                       theLastU,
+              const double                       theFirstV,
+              const double                       theLastV,
+              IntTools_SurfaceRangeLocalizeData& theSurfaceData,
+              Bnd_Box&                           theBox)
 {
   int    i;
   int    j;
@@ -2408,22 +2403,22 @@ void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
   aNbVPnts = theSurfaceData.GetNBVPointsInFrame();
 
   // Add corner points.
-  theSurf->D0(theFirstU, theFirstV, aPnt);
+  theSurf.D0(theFirstU, theFirstV, aPnt);
   theBox.Add(aPnt);
-  theSurf->D0(theLastU, theFirstV, aPnt);
+  theSurf.D0(theLastU, theFirstV, aPnt);
   theBox.Add(aPnt);
-  theSurf->D0(theFirstU, theLastV, aPnt);
+  theSurf.D0(theFirstU, theLastV, aPnt);
   theBox.Add(aPnt);
-  theSurf->D0(theLastU, theLastV, aPnt);
+  theSurf.D0(theLastU, theLastV, aPnt);
   theBox.Add(aPnt);
 
   for (i = 1; i <= aNbUPnts; i++)
   {
     // Add top and bottom points.
     aParam = theSurfaceData.GetUParamInFrame(i);
-    theSurf->D0(aParam, theFirstV, aPnt);
+    theSurf.D0(aParam, theFirstV, aPnt);
     theBox.Add(aPnt);
-    theSurf->D0(aParam, theLastV, aPnt);
+    theSurf.D0(aParam, theLastV, aPnt);
     theBox.Add(aPnt);
 
     // Add internal points.
@@ -2439,9 +2434,9 @@ void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
   for (j = 1; j <= aNbVPnts; j++)
   {
     aParam = theSurfaceData.GetVParamInFrame(j);
-    theSurf->D0(theFirstU, aParam, aPnt);
+    theSurf.D0(theFirstU, aParam, aPnt);
     theBox.Add(aPnt);
-    theSurf->D0(theLastU, aParam, aPnt);
+    theSurf.D0(theLastU, aParam, aPnt);
     theBox.Add(aPnt);
   }
 

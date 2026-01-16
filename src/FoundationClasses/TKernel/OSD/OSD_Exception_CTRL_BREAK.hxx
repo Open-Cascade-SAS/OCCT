@@ -15,7 +15,6 @@
 #ifndef _OSD_Exception_CTRL_BREAK_HeaderFile
 #define _OSD_Exception_CTRL_BREAK_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 

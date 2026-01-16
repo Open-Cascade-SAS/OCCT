@@ -17,7 +17,6 @@
 #ifndef _GccAna_NoSolution_HeaderFile
 #define _GccAna_NoSolution_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>

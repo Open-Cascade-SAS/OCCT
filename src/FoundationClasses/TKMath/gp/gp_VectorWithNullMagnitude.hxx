@@ -17,13 +17,9 @@
 #ifndef _gp_VectorWithNullMagnitude_HeaderFile
 #define _gp_VectorWithNullMagnitude_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
-
-class gp_VectorWithNullMagnitude;
-DEFINE_STANDARD_HANDLE(gp_VectorWithNullMagnitude, Standard_DomainError)
 
 #if !defined No_Exception && !defined No_gp_VectorWithNullMagnitude
   #define gp_VectorWithNullMagnitude_Raise_if(CONDITION, MESSAGE)                                  \

@@ -336,7 +336,7 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
     {
       SetIsError(true);
       SetStoreStatus(PCDM_SS_Failure);
-      TCollection_ExtendedString anErrorString(anException.GetMessageString());
+      TCollection_ExtendedString anErrorString(anException.what());
       aMessageDriver->Send(anErrorString.ToExtString(), Message_Fail);
     }
   }

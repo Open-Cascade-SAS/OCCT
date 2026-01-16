@@ -2,7 +2,6 @@
 set(OCCT_TPrsStd_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TPrsStd_FILES
-  GUID.txt
   TPrsStd_AISPresentation.cxx
   TPrsStd_AISPresentation.hxx
   TPrsStd_AISViewer.cxx

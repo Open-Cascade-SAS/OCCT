@@ -23,7 +23,6 @@ set(OCCT_DNaming_FILES
   DNaming_PrismDriver.hxx
   DNaming_RevolutionDriver.cxx
   DNaming_RevolutionDriver.hxx
-  DNaming_Selection.tcl
   DNaming_SelectionCommands.cxx
   DNaming_SelectionDriver.cxx
   DNaming_SelectionDriver.hxx

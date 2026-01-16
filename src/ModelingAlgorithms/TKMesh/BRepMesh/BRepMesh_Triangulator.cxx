@@ -266,7 +266,7 @@ bool BRepMesh_Triangulator::triangulate(NCollection_List<Poly_Triangle>& thePoly
   {
     TCollection_AsciiString aStr(
       "makeTrianglesUsingBRepMesh: Exception raised during polygon triangulation: ");
-    aStr.AssignCat(aFailure.GetMessageString());
+    aStr.AssignCat(aFailure.what());
     myMess->Send(aStr.ToCString(), Message_Fail);
     return false;
   }

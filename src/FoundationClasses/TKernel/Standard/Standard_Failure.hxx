@@ -17,82 +17,62 @@
 #ifndef _Standard_Failure_HeaderFile
 #define _Standard_Failure_HeaderFile
 
-#include <Standard_Type.hxx>
-
-#include <Standard_CString.hxx>
-#include <Standard_Transient.hxx>
+#include <Standard.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 
+#include <exception>
+
 //! Forms the root of the entire exception hierarchy.
-class Standard_Failure : public Standard_Transient
+//! Inherits from std::exception and implements what() interface.
+class Standard_Failure : public std::exception
 {
 public:
+  DEFINE_STANDARD_ALLOC
+
   //! Creates a status object of type "Failure".
   Standard_EXPORT Standard_Failure();
 
   //! Copy constructor
-  Standard_EXPORT Standard_Failure(const Standard_Failure& f);
+  Standard_EXPORT Standard_Failure(const Standard_Failure& theOther);
 
-  //! Creates a status object of type "Failure".
-  //! @param[in] theDesc  exception description
-  Standard_EXPORT Standard_Failure(const char* theDesc);
+  //! Creates a status object of type "Failure" with message.
+  //! @param[in] theMessage exception description
+  Standard_EXPORT Standard_Failure(const char* theMessage);
 
-  //! Creates a status object of type "Failure" with stack trace.
-  //! @param[in] theDesc  exception description
-  //! @param[in] theStackTrace  associated stack trace
-  Standard_EXPORT Standard_Failure(const char* theDesc, const char* theStackTrace);
+  //! Creates a status object of type "Failure" with message and stack trace.
+  //! @param[in] theMessage    exception description
+  //! @param[in] theStackTrace stack trace string
+  Standard_EXPORT Standard_Failure(const char* theMessage, const char* theStackTrace);
 
   //! Assignment operator
-  Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& f);
+  Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& theOther);
 
   //! Destructor
   Standard_EXPORT ~Standard_Failure() override;
 
-  //! Prints on the stream @p theStream the exception name followed by the error message.
-  //!
-  //! Note: there is a short-cut @c operator<< (Standard_OStream&, occ::handle<Standard_Failure>&)
-  Standard_EXPORT void Print(Standard_OStream& theStream) const;
+  //! Returns error message (implements std::exception interface).
+  //! Returns empty string "" if no message was set.
+  Standard_EXPORT const char* what() const noexcept override;
 
   //! Returns error message
-  Standard_EXPORT virtual const char* GetMessageString() const;
+  Standard_DEPRECATED("Use what() instead")
+  const char* GetMessageString() const noexcept { return what(); }
 
-  //! Sets error message
-  Standard_EXPORT virtual void SetMessageString(const char* theMessage);
+  //! Returns the exception type name.
+  //! Default implementation returns "Standard_Failure".
+  //! Derived classes override this to return their own type name.
+  virtual const char* ExceptionType() const noexcept { return "Standard_Failure"; }
 
-  //! Returns the stack trace string
-  Standard_EXPORT virtual const char* GetStackString() const;
+  //! Returns the stack trace string (empty string if not available).
+  Standard_EXPORT const char* GetStackString() const;
 
-  //! Sets the stack trace string
-  Standard_EXPORT virtual void SetStackString(const char* theStack);
-
-  Standard_EXPORT void Reraise();
-
-  Standard_EXPORT void Reraise(const char* aMessage);
-
-  //! Reraises a caught exception and changes its error message.
-  Standard_EXPORT void Reraise(const Standard_SStream& aReason);
+  //! Prints on the stream @p theStream the exception name followed by the error message.
+  //!
+  //! Note: there is a short-cut @c operator<< (Standard_OStream&, const Standard_Failure&)
+  Standard_EXPORT void Print(Standard_OStream& theStream) const;
 
 public:
-  //! Raises an exception of type "Failure" and associates
-  //! an error message to it. The message can be printed
-  //! in an exception handler.
-  Standard_EXPORT static void Raise(const char* aMessage = "");
-
-  //! Raises an exception of type "Failure" and associates
-  //! an error message to it. The message can be constructed
-  //! at run-time.
-  Standard_EXPORT static void Raise(const Standard_SStream& aReason);
-
-  //! Used to construct an instance of the exception object as a handle.
-  //! Shall be used to protect against possible construction of exception object in C stack,
-  //! which is dangerous since some of methods require that object was allocated dynamically.
-  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage);
-
-  //! Used to construct an instance of the exception object as a handle.
-  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage,
-                                                                   const char* theStackTrace);
-
   //! Returns the default length of stack trace to be captured by Standard_Failure constructor;
   //! 0 by default meaning no stack trace.
   Standard_EXPORT static int DefaultStackTraceLength();
@@ -100,65 +80,37 @@ public:
   //! Sets default length of stack trace to be captured by Standard_Failure constructor.
   Standard_EXPORT static void SetDefaultStackTraceLength(int theNbStackTraces);
 
-public:
-  //! Used to throw CASCADE exception from C signal handler.
-  //! On platforms that do not allow throwing C++ exceptions
-  //! from this handler (e.g. Linux), uses longjump to get to
-  //! the current active signal handler, and only then is
-  //! converted to C++ exception.
-  Standard_EXPORT void Jump();
-
-  DEFINE_STANDARD_RTTIEXT(Standard_Failure, Standard_Transient)
-
-protected:
-  //! Used only if standard C++ exceptions are used.
-  //! Throws exception of the same type as this by C++ throw,
-  //! and stores current object as last thrown exception,
-  //! to be accessible by method Caught()
-  Standard_EXPORT virtual void Throw() const;
-
 private:
-  //! Reference-counted string,
-  //! Memory block is allocated with an extra 4-byte header (int representing number of references)
-  //! using low-level malloc() to avoid exceptions.
+  //! Reference-counted string using malloc/free for exception safety.
+  //! Memory block has a 4-byte header (int for reference count).
   struct StringRef
   {
     int  Counter;
     char Message[1];
 
     //! Return message string.
-    const char* GetMessage() const { return (const char*)&Message[0]; }
+    const char* GetMessage() const { return &Message[0]; }
 
     //! Allocate reference-counted message string.
-    static StringRef* allocate_message(const char* theString);
+    static StringRef* Allocate(const char* theString);
 
-    //! Copy reference-counted message string.
-    static StringRef* copy_message(StringRef* theString);
+    //! Copy reference-counted message string (increments counter).
+    static StringRef* Copy(StringRef* theString);
 
     //! Release reference-counted message string.
-    static void deallocate_message(StringRef* theString);
+    static void Free(StringRef* theString);
   };
 
+  //! Captures stack trace if configured.
+  void captureStackTrace();
+
 private:
-  StringRef* myMessage;
-  StringRef* myStackTrace;
+  StringRef* myMessage;    //!< Exception message
+  StringRef* myStackTrace; //!< Stack trace (optional)
 };
 
-// =======================================================================
-// function : operator<<
-// purpose  :
-// =======================================================================
-inline Standard_OStream& operator<<(Standard_OStream&                    theStream,
-                                    const occ::handle<Standard_Failure>& theFailure)
-{
-  theFailure->Print(theStream);
-  return theStream;
-}
+//=================================================================================================
 
-// =======================================================================
-// function : operator<<
-// purpose  :
-// =======================================================================
 inline Standard_OStream& operator<<(Standard_OStream& theStream, const Standard_Failure& theFailure)
 {
   theFailure.Print(theStream);

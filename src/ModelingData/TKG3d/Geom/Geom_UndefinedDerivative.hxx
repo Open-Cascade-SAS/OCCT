@@ -17,7 +17,6 @@
 #ifndef _Geom_UndefinedDerivative_HeaderFile
 #define _Geom_UndefinedDerivative_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>

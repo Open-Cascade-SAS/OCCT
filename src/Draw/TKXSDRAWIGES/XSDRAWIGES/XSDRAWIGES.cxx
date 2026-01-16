@@ -301,7 +301,7 @@ static int igesbrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
         catch (Standard_Failure const& anException)
         {
           theDI << "** Exception : ";
-          theDI << anException.GetMessageString();
+          theDI << anException.what();
           theDI << " ** Skip\n";
           theDI << "Saving shape in variable Draw : " << fname << "\n";
           WriteShape(shape, 1);
@@ -333,7 +333,7 @@ static int igesbrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
           catch (Standard_Failure const& anException)
           {
             theDI << "** Exception : ";
-            theDI << anException.GetMessageString();
+            theDI << anException.what();
             theDI << " ** Skip\n";
           }
         }
@@ -408,7 +408,7 @@ static int igesbrep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
         catch (Standard_Failure const& anException)
         {
           theDI << "** Exception : ";
-          theDI << anException.GetMessageString();
+          theDI << anException.what();
           theDI << " ** Skip\n";
           theDI << "Saving shape in variable Draw : " << fname << "\n";
           WriteShape(shape, 1);

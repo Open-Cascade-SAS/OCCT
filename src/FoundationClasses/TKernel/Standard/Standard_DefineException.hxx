@@ -14,59 +14,41 @@
 #ifndef _Standard_DefineException_HeaderFile
 #define _Standard_DefineException_HeaderFile
 
-#include <Standard_Type.hxx>
+#include <Standard_SStream.hxx>
 
-//! Defines an exception class \a C1 that inherits an exception class \a C2.
-/*! \a C2 must be Standard_Failure or its ancestor.
-    The macro defines empty constructor, copy constructor and static methods Raise() and
-   NewInstance(). Since Standard_Failure implements class manipulated by handle,
-   DEFINE_STANDARD_RTTI macro is also added to enable RTTI.
+#include <memory>
 
-    When using DEFINE_STANDARD_EXCEPTION in your code make sure you also insert a macro
-    DEFINE_STANDARD_HANDLE(C1,C2) before it.
-*/
-
+//! @brief Defines an exception class inheriting from Standard_Failure.
+//!
+//! This macro creates a complete exception class with:
+//! - Constructors that forward to base class
+//! - ExceptionType() override returning the class name
+//!
+//! Usage:
+//! @code
+//! DEFINE_STANDARD_EXCEPTION(Standard_OutOfRange, Standard_RangeError)
+//! @endcode
+//!
+//! @param C1 Name of the exception class to define
+//! @param C2 Name of the parent exception class (must be Standard_Failure or derived)
 #define DEFINE_STANDARD_EXCEPTION(C1, C2)                                                          \
-                                                                                                   \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const override                                                                    \
-    {                                                                                              \
-      throw *this;                                                                                 \
-    }                                                                                              \
-                                                                                                   \
   public:                                                                                          \
-    C1() {}                                                                                        \
-    C1(const char* theMessage)                                                                     \
+    C1(const char* theMessage = "")                                                                \
         : C2(theMessage)                                                                           \
     {                                                                                              \
     }                                                                                              \
+                                                                                                   \
     C1(const char* theMessage, const char* theStackTrace)                                          \
         : C2(theMessage, theStackTrace)                                                            \
     {                                                                                              \
     }                                                                                              \
-    static void Raise(const char* theMessage = "")                                                 \
+                                                                                                   \
+    const char* ExceptionType() const noexcept override                                            \
     {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                 \
-      _E->Reraise(theMessage);                                                                     \
+      return #C1;                                                                                  \
     }                                                                                              \
-    static void Raise(Standard_SStream& theMessage)                                                \
-    {                                                                                              \
-      occ::handle<C1> _E = new C1;                                                                 \
-      _E->Reraise(theMessage);                                                                     \
-    }                                                                                              \
-    static occ::handle<C1> NewInstance(const char* theMessage = "")                                \
-    {                                                                                              \
-      return new C1(theMessage);                                                                   \
-    }                                                                                              \
-    static occ::handle<C1> NewInstance(const char* theMessage, const char* theStackTrace)          \
-    {                                                                                              \
-      return new C1(theMessage, theStackTrace);                                                    \
-    }                                                                                              \
-    DEFINE_STANDARD_RTTI_INLINE(C1, C2)                                                            \
   };
-
-//! Obsolete macro, kept for compatibility with old code
-#define IMPLEMENT_STANDARD_EXCEPTION(C1)
 
 #endif

@@ -17,6 +17,5 @@ set(OCCT_DDataStd_FILES
   DDataStd_ObjectCommands.cxx
   DDataStd_TreeBrowser.cxx
   DDataStd_TreeBrowser.hxx
-  DDataStd_TreeBrowser.tcl
   DDataStd_TreeCommands.cxx
 )

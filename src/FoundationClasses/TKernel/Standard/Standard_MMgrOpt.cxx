@@ -21,6 +21,7 @@
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Assert.hxx>
 
+#include <cstring>
 #include <cstdio>
 #include <cerrno>
 

@@ -104,7 +104,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
   catch (Standard_Failure const& anException)
   {
     sout << "****  ****  TransferWriteShape, EXCEPTION : ";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << std::endl;
     status = IFSelect_RetFail;
   }
@@ -159,7 +159,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
   catch (Standard_Failure const& anException)
   {
     sout << "****  ****  TransferWriteShape, EXCEPTION : ";
-    sout << anException.GetMessageString();
+    sout << anException.what();
     sout << std::endl;
     status = IFSelect_RetFail;
   }

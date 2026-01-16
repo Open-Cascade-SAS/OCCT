@@ -104,9 +104,10 @@ void IntTools_SurfaceRangeLocalizeData::AddBox(const IntTools_SurfaceRangeSample
 bool IntTools_SurfaceRangeLocalizeData::FindBox(const IntTools_SurfaceRangeSample& theRange,
                                                 Bnd_Box&                           theBox) const
 {
-  if (myMapBox.IsBound(theRange))
+  const Bnd_Box* aBoxPtr = myMapBox.Seek(theRange);
+  if (aBoxPtr)
   {
-    theBox = myMapBox(theRange);
+    theBox = *aBoxPtr;
     return true;
   }
   return false;

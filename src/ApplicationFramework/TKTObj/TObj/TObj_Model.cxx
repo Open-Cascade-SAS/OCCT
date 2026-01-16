@@ -173,7 +173,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
       catch (Standard_Failure const& anException)
       {
 #ifdef OCCT_DEBUG
-        TCollection_ExtendedString aString(anException.DynamicType()->Name());
+        TCollection_ExtendedString aString(anException.ExceptionType());
         aString = aString + ": " + anException.GetMessageString();
         Messenger()->Send(Message_Msg("TObj_Appl_Exception") << aString);
 #endif
@@ -270,8 +270,7 @@ bool TObj_Model::Load(Standard_IStream& theIStream)
     catch (Standard_Failure const& anException)
     {
 #ifdef OCCT_DEBUG
-      TCollection_ExtendedString aString(anException.DynamicType()->Name());
-      aString = aString + ": " + anException.GetMessageString();
+      TCollection_ExtendedString aString(anException.what());
       Messenger()->Send(Message_Msg("TObj_Appl_Exception") << aString);
 #endif
       (void)anException;
