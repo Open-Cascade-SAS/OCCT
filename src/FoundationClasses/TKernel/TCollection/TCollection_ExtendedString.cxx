@@ -172,8 +172,15 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char aChar)
 
 TCollection_ExtendedString::TCollection_ExtendedString(const char16_t aChar)
 {
-  allocate(1);
-  myString[0] = aChar;
+  if (aChar != u'\0')
+  {
+    allocate(1);
+    myString[0] = aChar;
+  }
+  else
+  {
+    allocate(0);
+  }
 }
 
 //=================================================================================================
@@ -189,30 +196,26 @@ TCollection_ExtendedString::TCollection_ExtendedString(const int length, const c
 
 TCollection_ExtendedString::TCollection_ExtendedString(const int aValue)
 {
-  union {
-    int  bid;
-    char t[13];
-  } CHN{};
-
-  Sprintf(&CHN.t[0], "%d", aValue);
-  allocate((int)strlen(CHN.t));
+  char aBuffer[24] = {};
+  Sprintf(aBuffer, "%d", aValue);
+  allocate(static_cast<int>(strlen(aBuffer)));
   for (int i = 0; i < myLength; i++)
-    myString[i] = ToExtCharacter(CHN.t[i]);
+  {
+    myString[i] = ToExtCharacter(aBuffer[i]);
+  }
 }
 
 //=================================================================================================
 
 TCollection_ExtendedString::TCollection_ExtendedString(const double aValue)
 {
-  union {
-    int  bid;
-    char t[50];
-  } CHN{};
-
-  Sprintf(&CHN.t[0], "%g", aValue);
-  allocate((int)strlen(CHN.t));
+  char aBuffer[64] = {};
+  Sprintf(aBuffer, "%g", aValue);
+  allocate(static_cast<int>(strlen(aBuffer)));
   for (int i = 0; i < myLength; i++)
-    myString[i] = ToExtCharacter(CHN.t[i]);
+  {
+    myString[i] = ToExtCharacter(aBuffer[i]);
+  }
 }
 
 //=================================================================================================
@@ -438,9 +441,9 @@ void TCollection_ExtendedString::Insert(const int where, const char16_t what)
   if (where > myLength + 1)
     throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
                               "Parameter where is too big");
-  if (where < 0)
+  if (where < 1)
     throw Standard_OutOfRange("TCollection_ExtendedString::Insert : "
-                              "Parameter where is negative");
+                              "Parameter where is out of range");
   reallocate(myLength + 1);
   if (where != myLength)
   {
@@ -636,18 +639,23 @@ void TCollection_ExtendedString::RemoveAll(const char16_t what)
 
 void TCollection_ExtendedString::Remove(const int where, const int ahowmany)
 {
-  if (where + ahowmany <= myLength + 1)
+  if (where < 1 || where > myLength || ahowmany < 0 || where + ahowmany > myLength + 1)
   {
-    int i, j;
-    for (i = where + ahowmany - 1, j = where - 1; i < myLength; i++, j++)
-      myString[j] = myString[i];
-    myLength -= ahowmany;
-    myString[myLength] = '\0';
-  }
-  else
     throw Standard_OutOfRange("TCollection_ExtendedString::Remove: "
-                              "Too many characters to erase or "
-                              "invalid starting value.");
+                              "Invalid parameters");
+  }
+
+  if (ahowmany == 0)
+  {
+    return;
+  }
+
+  for (int i = where + ahowmany - 1, j = where - 1; i < myLength; i++, j++)
+  {
+    myString[j] = myString[i];
+  }
+  myLength -= ahowmany;
+  myString[myLength] = '\0';
 }
 
 //=================================================================================================
@@ -952,26 +960,29 @@ void TCollection_ExtendedString::allocate(const int theLength)
 
 void TCollection_ExtendedString::reallocate(const int theLength)
 {
-  if (theLength != 0)
+  if (theLength == 0)
   {
-    if (myString == THE_DEFAULT_EXT_CHAR_STRING)
+    // When shrinking to empty, just set length to 0 and null-terminate
+    if (myString != THE_DEFAULT_EXT_CHAR_STRING)
     {
-      const size_t aRoundSize = calculatePaddedSize(theLength);
-      myString = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
+      myString[0] = 0;
     }
-    else
-    {
-      // For reallocate, use padded size for consistency
-      const size_t aRoundSize = calculatePaddedSize(theLength);
-      myString = static_cast<Standard_PExtCharacter>(Standard::Reallocate(myString, aRoundSize));
-    }
-    myString[theLength] = 0;
+    myLength = 0;
+    return;
   }
-  if (myString != THE_DEFAULT_EXT_CHAR_STRING)
+
+  if (myString == THE_DEFAULT_EXT_CHAR_STRING)
   {
-    myString[theLength] = 0;
+    const size_t aRoundSize = calculatePaddedSize(theLength);
+    myString = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
   }
-  myLength = theLength;
+  else
+  {
+    const size_t aRoundSize = calculatePaddedSize(theLength);
+    myString = static_cast<Standard_PExtCharacter>(Standard::Reallocate(myString, aRoundSize));
+  }
+  myString[theLength] = 0;
+  myLength            = theLength;
 }
 
 //=================================================================================================
@@ -1011,11 +1022,8 @@ void TCollection_ExtendedString::LeftAdjust()
 
   if (anIndex > 0)
   {
-    for (int i = anIndex; i < myLength; ++i)
-    {
-      myString[i - anIndex] = myString[i];
-    }
     myLength -= anIndex;
+    memmove(myString, myString + anIndex, myLength * sizeof(char16_t));
     myString[myLength] = '\0';
   }
 }
@@ -1071,10 +1079,7 @@ void TCollection_ExtendedString::RightJustify(const int theWidth, const char16_t
     const int anOldLen = myLength;
     reallocate(theWidth);
     // Move existing characters to the end
-    for (int i = anOldLen - 1; i >= 0; --i)
-    {
-      myString[i + aShift] = myString[i];
-    }
+    memmove(myString + aShift, myString, anOldLen * sizeof(char16_t));
     // Fill the beginning with filler
     for (int i = 0; i < aShift; ++i)
     {
@@ -1100,10 +1105,7 @@ void TCollection_ExtendedString::Center(const int theWidth, const char16_t theFi
     reallocate(theWidth);
 
     // Move existing characters to the center
-    for (int i = anOldLen - 1; i >= 0; --i)
-    {
-      myString[i + aLeftShift] = myString[i];
-    }
+    memmove(myString + aLeftShift, myString, anOldLen * sizeof(char16_t));
     // Fill the beginning
     for (int i = 0; i < aLeftShift; ++i)
     {
@@ -1156,10 +1158,7 @@ void TCollection_ExtendedString::Prepend(const TCollection_ExtendedString& theOt
   reallocate(myLength + anOtherLength);
 
   // Move existing characters to the end
-  for (int i = anOldLength - 1; i >= 0; --i)
-  {
-    myString[i + anOtherLength] = myString[i];
-  }
+  memmove(myString + anOtherLength, myString, anOldLength * sizeof(char16_t));
   // Copy theOther to the beginning
   memcpy(myString, theOther.myString, anOtherLength * sizeof(char16_t));
 }
