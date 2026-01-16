@@ -24,8 +24,6 @@
 #include <Standard_OStream.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
-#include <atomic>
-
 class gp_Trsf;
 class TopLoc_Datum3D;
 
@@ -40,47 +38,19 @@ public:
 
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
-  Standard_EXPORT TopLoc_Location();
+  TopLoc_Location() = default;
 
   //! Copy constructor.
-  TopLoc_Location(const TopLoc_Location& theOther)
-      : myItems(theOther.myItems),
-        myCachedHash(theOther.myCachedHash.load(std::memory_order_relaxed))
-  {
-  }
+  TopLoc_Location(const TopLoc_Location& theOther) = default;
 
   //! Move constructor.
-  TopLoc_Location(TopLoc_Location&& theOther) noexcept
-      : myItems(std::move(theOther.myItems)),
-        myCachedHash(theOther.myCachedHash.load(std::memory_order_relaxed))
-  {
-    theOther.myCachedHash.store(0, std::memory_order_relaxed);
-  }
+  TopLoc_Location(TopLoc_Location&& theOther) noexcept = default;
 
   //! Copy assignment operator.
-  TopLoc_Location& operator=(const TopLoc_Location& theOther)
-  {
-    if (this != &theOther)
-    {
-      myItems = theOther.myItems;
-      myCachedHash.store(theOther.myCachedHash.load(std::memory_order_relaxed),
-                         std::memory_order_relaxed);
-    }
-    return *this;
-  }
+  TopLoc_Location& operator=(const TopLoc_Location& theOther) = default;
 
   //! Move assignment operator.
-  TopLoc_Location& operator=(TopLoc_Location&& theOther) noexcept
-  {
-    if (this != &theOther)
-    {
-      myItems = std::move(theOther.myItems);
-      myCachedHash.store(theOther.myCachedHash.load(std::memory_order_relaxed),
-                         std::memory_order_relaxed);
-      theOther.myCachedHash.store(0, std::memory_order_relaxed);
-    }
-    return *this;
-  }
+  TopLoc_Location& operator=(TopLoc_Location&& theOther) noexcept = default;
 
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
@@ -182,17 +152,12 @@ public:
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear()
-  {
-    myItems.Clear();
-    myCachedHash.store(0, std::memory_order_relaxed);
-  }
+  void Clear() { myItems.Clear(); }
 
   static double ScalePrec() { return 1.e-14; }
 
 private:
-  TopLoc_SListOfItemLocation  myItems;
-  mutable std::atomic<size_t> myCachedHash{0};
+  TopLoc_SListOfItemLocation myItems;
 };
 
 #include <TopLoc_Location.lxx>

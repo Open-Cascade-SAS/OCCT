@@ -31,7 +31,6 @@ inline bool TopLoc_Location::IsIdentity() const
 inline void TopLoc_Location::Identity()
 {
   myItems.Clear();
-  myCachedHash.store(0, std::memory_order_relaxed);
 }
 
 //=================================================================================================
@@ -59,29 +58,20 @@ inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 
 inline size_t TopLoc_Location::HashCode() const
 {
-  size_t aHash = myCachedHash.load(std::memory_order_relaxed);
-  if (aHash != 0)
-  {
-    return aHash;
-  }
   if (myItems.IsEmpty())
   {
-    // Return optimal seed for empty location (0 is sentinel for "not computed").
-    aHash = opencascade::MurmurHash::optimalSeed<size_t>();
-    myCachedHash.store(aHash, std::memory_order_relaxed);
-    return aHash;
+    return 0;
   }
-  // Hash all items incrementally using OCCT's MurmurHash.
-  aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+  // Hash all items using pointer-based iteration to avoid Handle copy overhead.
+  size_t aHash = opencascade::MurmurHash::optimalSeed<size_t>();
   size_t aCombined[3];
-  for (TopLoc_SListOfItemLocation anIter = myItems; anIter.More(); anIter.Next())
+  for (const TopLoc_SListOfItemLocation* pIter = &myItems; pIter->More(); pIter = &pIter->Tail())
   {
-    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(anIter.Value().myDatum);
-    aCombined[1] = opencascade::hash(anIter.Value().myPower);
+    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(pIter->Value().myDatum);
+    aCombined[1] = opencascade::hash(pIter->Value().myPower);
     aCombined[2] = aHash;
     aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
   }
-  myCachedHash.store(aHash, std::memory_order_relaxed);
   return aHash;
 }
 
@@ -95,26 +85,24 @@ inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
   {
     return true;
   }
-  // If both have cached hashes and they differ, locations are not equal.
-  const size_t aHash      = myCachedHash.load(std::memory_order_relaxed);
-  const size_t aOtherHash = theOther.myCachedHash.load(std::memory_order_relaxed);
-  if (aHash != 0 && aOtherHash != 0 && aHash != aOtherHash)
+  // Iterate through both lists in parallel using pointers to avoid Handle copy overhead.
+  const TopLoc_SListOfItemLocation* pIter1 = &myItems;
+  const TopLoc_SListOfItemLocation* pIter2 = &theOther.myItems;
+  while (pIter1->More() && pIter2->More())
   {
-    return false;
+    if (pIter1->Value().myDatum != pIter2->Value().myDatum)
+    {
+      return false;
+    }
+    if (pIter1->Value().myPower != pIter2->Value().myPower)
+    {
+      return false;
+    }
+    pIter1 = &pIter1->Tail();
+    pIter2 = &pIter2->Tail();
   }
-  if (IsIdentity() || theOther.IsIdentity())
-  {
-    return false;
-  }
-  if (FirstDatum() != theOther.FirstDatum())
-  {
-    return false;
-  }
-  if (FirstPower() != theOther.FirstPower())
-  {
-    return false;
-  }
-  return NextLocation() == theOther.NextLocation();
+  // Both lists should be exhausted at the same time for equality.
+  return !pIter1->More() && !pIter2->More();
 }
 
 //=================================================================================================

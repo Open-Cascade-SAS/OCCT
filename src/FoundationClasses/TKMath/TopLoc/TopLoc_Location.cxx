@@ -24,10 +24,6 @@
 
 //=================================================================================================
 
-TopLoc_Location::TopLoc_Location() = default;
-
-//=================================================================================================
-
 TopLoc_Location::TopLoc_Location(const occ::handle<TopLoc_Datum3D>& D)
 {
   myItems.Construct(TopLoc_ItemLocation(D, 1));
@@ -61,6 +57,9 @@ TopLoc_Location::operator gp_Trsf() const
 
 TopLoc_Location TopLoc_Location::Inverted() const
 {
+  if (IsIdentity())
+    return *this;
+
   //
   // the inverse of a Location is a chain in revert order
   // with opposite powers and same Local
@@ -87,6 +86,7 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
 
   if (IsIdentity())
     return Other;
+
   if (Other.IsIdentity())
     return *this;
 
@@ -105,8 +105,6 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   }
   if (p != 0)
     result.myItems.Construct(TopLoc_ItemLocation(Other.FirstDatum(), p));
-  // Invalidate cached hash since myItems was modified.
-  result.myCachedHash.store(0, std::memory_order_relaxed);
   return result;
 }
 
