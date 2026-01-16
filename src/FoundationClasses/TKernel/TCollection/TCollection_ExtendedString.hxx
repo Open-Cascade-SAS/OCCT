@@ -31,6 +31,11 @@
 #include <Standard_OStream.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Macro.hxx>
+
+#if Standard_CPP17_OR_HIGHER
+  #include <string_view>
+#endif
+
 class TCollection_AsciiString;
 
 //! A variable-length sequence of "extended" (UNICODE) characters (16-bit character type).
@@ -104,6 +109,40 @@ public:
   Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& astring,
                                              const bool                     isMultiByte = true);
 
+#if Standard_CPP17_OR_HIGHER
+  //! Initializes an ExtendedString from a std::u16string_view.
+  //! @param[in] theStringView the string view to copy
+  explicit TCollection_ExtendedString(const std::u16string_view& theStringView)
+  {
+    myLength = static_cast<int>(theStringView.size());
+    if (myLength == 0)
+    {
+      allocate(0);
+    }
+    else
+    {
+      allocate(myLength);
+      memcpy(myString, theStringView.data(), myLength * sizeof(char16_t));
+    }
+  }
+
+  //! Assignment from a std::u16string_view.
+  //! @param[in] theStringView the string view to copy
+  TCollection_ExtendedString& operator=(const std::u16string_view& theStringView)
+  {
+    const int aNewLen = static_cast<int>(theStringView.size());
+    reallocate(aNewLen);
+    if (aNewLen > 0)
+    {
+      memcpy(myString, theStringView.data(), aNewLen * sizeof(char16_t));
+    }
+    return *this;
+  }
+
+  //! Conversion to std::u16string_view.
+  operator std::u16string_view() const noexcept { return std::u16string_view(myString, myLength); }
+#endif
+
   //! Appends the other extended string to this extended string.
   //! Note that this method is an alias of operator +=.
   //! Example: aString += anotherString
@@ -113,6 +152,30 @@ public:
 
   //! Appends the utf16 char to this extended string.
   Standard_EXPORT void AssignCat(const char16_t theChar);
+
+  //! Appends the char16_t string to this extended string.
+  //! @param[in] theString the string to append
+  Standard_EXPORT void AssignCat(const char16_t* theString);
+
+  void operator+=(const char16_t* theString) { AssignCat(theString); }
+
+#if Standard_CPP17_OR_HIGHER
+  //! Appends the std::u16string_view to this extended string.
+  //! @param[in] theStringView the string view to append
+  void AssignCat(const std::u16string_view& theStringView)
+  {
+    if (theStringView.empty())
+    {
+      return;
+    }
+    const int anOtherLen = static_cast<int>(theStringView.size());
+    const int anOldLen   = myLength;
+    reallocate(myLength + anOtherLen);
+    memcpy(myString + anOldLen, theStringView.data(), anOtherLen * sizeof(char16_t));
+  }
+
+  void operator+=(const std::u16string_view& theStringView) { AssignCat(theStringView); }
+#endif
 
   //! Appends <other> to me.
   Standard_EXPORT TCollection_ExtendedString Cat(const TCollection_ExtendedString& other) const;
@@ -136,10 +199,21 @@ public:
   //! Used as operator =
   Standard_EXPORT void Copy(const TCollection_ExtendedString& fromwhere);
 
+  //! Copy from a char16_t pointer.
+  //! @param[in] theString the string to copy
+  Standard_EXPORT void Copy(const char16_t* theString);
+
   //! Copy assignment operator
   TCollection_ExtendedString& operator=(const TCollection_ExtendedString& theOther)
   {
     Copy(theOther);
+    return *this;
+  }
+
+  //! Assignment from char16_t pointer
+  TCollection_ExtendedString& operator=(const char16_t* theString)
+  {
+    Copy(theString);
     return *this;
   }
 
@@ -166,7 +240,7 @@ public:
   Standard_EXPORT void Insert(const int where, const TCollection_ExtendedString& what);
 
   //! Returns True if this string contains no characters.
-  bool IsEmpty() const { return mylength == 0; }
+  bool IsEmpty() const { return myLength == 0; }
 
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
@@ -324,12 +398,12 @@ public:
   //! @return a computed hash code
   size_t HashCode() const
   {
-    const int aSize = mylength * sizeof(char16_t);
-    if (mylength < 2)
+    const int aSize = myLength * sizeof(char16_t);
+    if (myLength < 2)
     {
-      return opencascade::FNVHash::hash_combine(*mystring, aSize);
+      return opencascade::FNVHash::hash_combine(*myString, aSize);
     }
-    return opencascade::hashBytes(mystring, aSize);
+    return opencascade::hashBytes(myString, aSize);
   }
 
   //! Returns a const reference to a single shared empty string instance.
@@ -364,6 +438,94 @@ public:
   //! coding. For external allocation, use: char* buf = new char[str.LengthOfCString() + 1];
   Standard_EXPORT int LengthOfCString() const;
 
+  //! Removes all space characters in the beginning of the string.
+  Standard_EXPORT void LeftAdjust();
+
+  //! Removes all space characters at the end of the string.
+  Standard_EXPORT void RightAdjust();
+
+  //! Left justify.
+  //! Length becomes equal to theWidth and the new characters are
+  //! equal to theFiller.
+  //! If theWidth < Length nothing happens.
+  //! @param[in] theWidth the desired width of the string
+  //! @param[in] theFiller the character to fill with
+  Standard_EXPORT void LeftJustify(const int theWidth, const char16_t theFiller);
+
+  //! Right justify.
+  //! Length becomes equal to theWidth and the new characters are
+  //! equal to theFiller.
+  //! If theWidth < Length nothing happens.
+  //! @param[in] theWidth the desired width of the string
+  //! @param[in] theFiller the character to fill with
+  Standard_EXPORT void RightJustify(const int theWidth, const char16_t theFiller);
+
+  //! Modifies this string so that its length becomes equal to theWidth
+  //! and the new characters are equal to theFiller.
+  //! New characters are added both at the beginning and at the end of this string.
+  //! If theWidth is less than the length of this string, nothing happens.
+  //! @param[in] theWidth the desired width of the string
+  //! @param[in] theFiller the character to fill with
+  Standard_EXPORT void Center(const int theWidth, const char16_t theFiller);
+
+  //! Converts the first character into its corresponding
+  //! upper-case character and the other characters into lowercase.
+  Standard_EXPORT void Capitalize();
+
+  //! Inserts the other extended string at the beginning of this string.
+  //! @param[in] theOther the string to prepend
+  Standard_EXPORT void Prepend(const TCollection_ExtendedString& theOther);
+
+  //! Returns the index of the first character of this string that is
+  //! present in theSet.
+  //! The search begins at index theFromIndex and ends at index theToIndex.
+  //! Returns zero if failure.
+  //! @param[in] theSet the set of characters to search for
+  //! @param[in] theFromIndex the starting index for search (1-based)
+  //! @param[in] theToIndex the ending index for search (1-based)
+  //! @return the index of first character found in set, or 0 if not found
+  Standard_EXPORT int FirstLocationInSet(const TCollection_ExtendedString& theSet,
+                                         const int                         theFromIndex,
+                                         const int                         theToIndex) const;
+
+  //! Returns the index of the first character of this string that is
+  //! NOT present in theSet.
+  //! The search begins at index theFromIndex and ends at index theToIndex.
+  //! Returns zero if failure.
+  //! @param[in] theSet the set of characters to check against
+  //! @param[in] theFromIndex the starting index for search (1-based)
+  //! @param[in] theToIndex the ending index for search (1-based)
+  //! @return the index of first character not in set, or 0 if not found
+  Standard_EXPORT int FirstLocationNotInSet(const TCollection_ExtendedString& theSet,
+                                            const int                         theFromIndex,
+                                            const int                         theToIndex) const;
+
+  //! Converts this extended string containing a numeric expression to an Integer.
+  //! @return the integer value
+  Standard_EXPORT int IntegerValue() const;
+
+  //! Returns True if this extended string contains an integer value.
+  //! @return true if string represents an integer value
+  Standard_EXPORT bool IsIntegerValue() const;
+
+  //! Converts this extended string containing a numeric expression to a Real.
+  //! @return the real value
+  Standard_EXPORT double RealValue() const;
+
+  //! Returns True if this extended string starts with characters that can be
+  //! interpreted as a real value.
+  //! @param[in] theToCheckFull when TRUE, checks if entire string defines a real value;
+  //!                           otherwise checks if string starts with a real value
+  //! @return true if string represents a real value
+  Standard_EXPORT bool IsRealValue(bool theToCheckFull = false) const;
+
+  //! Returns True if the strings contain same characters.
+  //! @param[in] theOther the string to compare with
+  //! @param[in] theIsCaseSensitive flag indicating case sensitivity
+  //! @return true if strings contain same characters
+  Standard_EXPORT bool IsSameString(const TCollection_ExtendedString& theOther,
+                                    const bool                        theIsCaseSensitive) const;
+
 private:
   //! Returns true if the input CString was successfully converted to UTF8 coding.
   bool ConvertToUnicode(const char* astring);
@@ -378,10 +540,8 @@ private:
   void deallocate();
 
 private:
-  Standard_PExtCharacter mystring{}; //!< NULL-terminated string
-  // clang-format off
-  int       mylength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
-  // clang-format on
+  Standard_PExtCharacter myString{}; //!< NULL-terminated string
+  int myLength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
 };
 
 namespace std
