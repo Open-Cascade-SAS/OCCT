@@ -53,9 +53,7 @@ public:
                                              const TopLoc_SListOfItemLocation& aTail);
 
   //! Creates a list from an other one. The lists are shared.
-  TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other)
-
-    = default;
+  TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other) = default;
 
   //! Sets a list from an other one. The lists are
   //! shared. The list itself is returned.
@@ -81,13 +79,13 @@ public:
   }
 
   //! Return true if this list is empty
-  bool IsEmpty() const { return myNode.IsNull(); }
+  bool IsEmpty() const noexcept { return myNode.IsNull(); }
 
   //! Sets the list to be empty.
-  void Clear() { myNode.Nullify(); }
+  void Clear() noexcept { myNode.Nullify(); }
 
   //! Destructor
-  ~TopLoc_SListOfItemLocation() { Clear(); }
+  ~TopLoc_SListOfItemLocation() noexcept { Clear(); }
 
   //! Returns the current value of the list. An error is
   //! raised if the list is empty.
@@ -109,7 +107,7 @@ public:
 
   //! Returns True if the iterator has a current value.
   //! This is !IsEmpty()
-  bool More() const { return !IsEmpty(); }
+  bool More() const noexcept { return !IsEmpty(); }
 
   //! Moves the iterator to the next object in the list.
   //! If the iterator is empty it will stay empty. This is ToTail()

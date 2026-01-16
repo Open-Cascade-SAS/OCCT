@@ -21,14 +21,14 @@
 
 //=================================================================================================
 
-inline bool TopLoc_Location::IsIdentity() const
+inline bool TopLoc_Location::IsIdentity() const noexcept
 {
   return myItems.IsEmpty();
 }
 
 //=================================================================================================
 
-inline void TopLoc_Location::Identity()
+inline void TopLoc_Location::Identity() noexcept
 {
   myItems.Clear();
 }
@@ -56,7 +56,7 @@ inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 
 //=================================================================================================
 
-inline size_t TopLoc_Location::HashCode() const
+inline size_t TopLoc_Location::HashCode() const noexcept
 {
   if (myItems.IsEmpty())
   {
@@ -77,7 +77,7 @@ inline size_t TopLoc_Location::HashCode() const
 
 //=================================================================================================
 
-inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
+inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
 {
   const void** p = (const void**)&myItems;
   const void** q = (const void**)&theOther.myItems;
@@ -107,7 +107,7 @@ inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
 
 //=================================================================================================
 
-inline bool TopLoc_Location::IsDifferent(const TopLoc_Location& theOther) const
+inline bool TopLoc_Location::IsDifferent(const TopLoc_Location& theOther) const noexcept
 {
   return !IsEqual(theOther);
 }
@@ -124,6 +124,9 @@ namespace std
 template <>
 struct hash<TopLoc_Location>
 {
-  size_t operator()(const TopLoc_Location& theLocation) const { return theLocation.HashCode(); }
+  size_t operator()(const TopLoc_Location& theLocation) const noexcept
+  {
+    return theLocation.HashCode();
+  }
 };
 } // namespace std
