@@ -380,8 +380,9 @@ void BOPTools_AlgoTools::OrientFacesOnShell(TopoDS_Shape& aShell)
       NCollection_List<TopoDS_Shape>::Iterator anIt(aLF);
       for (; anIt.More(); anIt.Next())
       {
-        const TopoDS_Shape& aF = anIt.Value();
-        if (aFM.Add(aF) == aFM.Extent())
+        const TopoDS_Shape& aF          = anIt.Value();
+        const int           aPrevExtent = aFM.Extent();
+        if (aFM.Add(aF) > aPrevExtent)
         {
           aLFTmp.Append(aF);
         }
@@ -483,8 +484,9 @@ void BOPTools_AlgoTools::OrientFacesOnShell(TopoDS_Shape& aShell)
       NCollection_List<TopoDS_Shape>::Iterator anIt(aLF);
       for (; anIt.More(); anIt.Next())
       {
-        const TopoDS_Face& aF = (*(TopoDS_Face*)(&anIt.Value()));
-        if (aProcessedFaces.Add(aF) == aProcessedFaces.Extent())
+        const TopoDS_Face& aF          = (*(TopoDS_Face*)(&anIt.Value()));
+        const int          aPrevExtent = aProcessedFaces.Extent();
+        if (aProcessedFaces.Add(aF) > aPrevExtent)
         {
           aBB.Add(aShellNew, aF);
         }

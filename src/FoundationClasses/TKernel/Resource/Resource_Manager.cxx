@@ -499,7 +499,7 @@ void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue
   TCollection_ExtendedString ExtValue = aValue;
   TCollection_AsciiString    FormatStr(ExtValue.Length() * 3 + 10, ' ');
 
-  *myExtStrMap.Bound(Resource, ExtValue) = ExtValue;
+  myExtStrMap.Bound(Resource, ExtValue);
   //
   pStr = (Standard_PCharacter)FormatStr.ToCString();
   //
@@ -516,9 +516,9 @@ void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue
 //=======================================================================
 void Resource_Manager::SetResource(const char* aResource, const char* aValue)
 {
-  TCollection_AsciiString Resource  = aResource;
-  TCollection_AsciiString Value     = aValue;
-  *myUserMap.Bound(Resource, Value) = Value;
+  TCollection_AsciiString Resource = aResource;
+  TCollection_AsciiString Value    = aValue;
+  myUserMap.Bound(Resource, Value);
 }
 
 //=======================================================================
