@@ -105,6 +105,8 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   }
   if (p != 0)
     result.myItems.Construct(TopLoc_ItemLocation(Other.FirstDatum(), p));
+  // Invalidate cached hash since myItems was modified.
+  result.myCachedHash.store(0, std::memory_order_relaxed);
   return result;
 }
 
@@ -152,7 +154,6 @@ TopLoc_Location TopLoc_Location::Powered(const int pwr) const
   else
     return Inverted().Powered(-pwr);
 }
-
 
 //=================================================================================================
 
