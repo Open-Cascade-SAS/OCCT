@@ -700,7 +700,7 @@ const NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_DS::PaveBlocks(const
     return myPaveBlocksPool(ShapeInfo(theIndex).Reference());
   }
 
-  static NCollection_List<occ::handle<BOPDS_PaveBlock>> aStaticEmptyList;
+  static const NCollection_List<occ::handle<BOPDS_PaveBlock>> aStaticEmptyList;
   return aStaticEmptyList;
 }
 
@@ -994,7 +994,7 @@ const BOPDS_FaceInfo& BOPDS_DS::FaceInfo(const int theIndex) const
 {
   if (!HasFaceInfo(theIndex))
   {
-    static BOPDS_FaceInfo anEmptyFaceInfo;
+    static const BOPDS_FaceInfo anEmptyFaceInfo;
     return anEmptyFaceInfo;
   }
 
