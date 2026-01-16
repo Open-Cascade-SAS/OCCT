@@ -265,25 +265,25 @@ public:
   Standard_EXPORT void RefineFaceInfoIn();
 
   //! Returns information about ON/IN sub-shapes of the given faces.
+  //! @param theFaceIndex1  the index of the first face
+  //! @param theFaceIndex2  the index of the second face
   //! @param theMVOnIn  the indices of ON/IN vertices from both faces
   //! @param theMVCommon the indices of common vertices for both faces
   //! @param thePBOnIn  all On/In pave blocks from both faces
-  //! @param theCommonPB  the common pave blocks (that are shared by both faces).
+  //! @param theCommonPaveBlocks  the common pave blocks (that are shared by both faces).
   Standard_EXPORT void SubShapesOnIn(
-    const int                                             theNF1,
-    const int                                             theNF2,
+    const int                                             theFaceIndex1,
+    const int                                             theFaceIndex2,
     NCollection_Map<int>&                                 theMVOnIn,
     NCollection_Map<int>&                                 theMVCommon,
     NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& thePBOnIn,
-    NCollection_Map<occ::handle<BOPDS_PaveBlock>>&        theCommonPB) const;
+    NCollection_Map<occ::handle<BOPDS_PaveBlock>>&        theCommonPaveBlocks) const;
 
   //! Returns the indices of edges that are shared
-  //! for the faces with indices theF1, theF2
-  //!
-  //! same domain shapes
-  Standard_EXPORT void SharedEdges(const int                                     theF1,
-                                   const int                                     theF2,
-                                   NCollection_List<int>&                        theLI,
+  //! for the faces with indices @p theFaceIndex1 and @p theFaceIndex2.
+  Standard_EXPORT void SharedEdges(const int                                     theFaceIndex1,
+                                   const int                                     theFaceIndex2,
+                                   NCollection_List<int>&                        theEdgeList,
                                    const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Selector

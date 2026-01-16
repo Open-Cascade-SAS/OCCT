@@ -74,8 +74,5 @@ inline bool BOPDS_Pave::IsLess(const BOPDS_Pave& theOther) const
 
 inline bool BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther) const
 {
-  bool bFlag;
-  //
-  bFlag = ((myIndex == theOther.myIndex) && (myParameter == theOther.myParameter));
-  return bFlag;
+ return myIndex == theOther.myIndex && myParameter == theOther.myParameter;
 }

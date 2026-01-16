@@ -252,10 +252,8 @@ int IntTools_Tools::SplitCurve(const IntTools_Curve& IC, NCollection_Sequence<In
 double IntTools_Tools::IntermediatePoint(const double aFirst, const double aLast)
 {
   // define parameter division number as 10*e^(-M_PI) = 0.43213918
-  const double PAR_T = 0.43213918;
-  double       aParm;
-  aParm = (1. - PAR_T) * aFirst + PAR_T * aLast;
-  return aParm;
+  constexpr double PAR_T = 0.43213918;
+  return (1. - PAR_T) * aFirst + PAR_T * aLast;
 }
 
 //=================================================================================================
