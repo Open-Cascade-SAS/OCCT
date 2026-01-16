@@ -211,14 +211,11 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
           // skip if it is on boundary
           if (aMapBndNodes.Contains(n1) && aMapBndNodes.Contains(n2))
             continue;
-          if (!myMapFaceLinks.Contains(iF))
-          {
-            occ::handle<NCollection_HSequence<int>> tmpSeq = new NCollection_HSequence<int>;
-            myMapFaceLinks.Add(iF, tmpSeq);
-          }
-          occ::handle<NCollection_HSequence<int>>& aSeq = myMapFaceLinks.ChangeFromKey(iF);
-          aSeq->Append(n1);
-          aSeq->Append(n2);
+          occ::handle<NCollection_HSequence<int>>* pSeq = myMapFaceLinks.ChangeSeek(iF);
+          if (!pSeq)
+            pSeq = myMapFaceLinks.Bound(iF, new NCollection_HSequence<int>);
+          (*pSeq)->Append(n1);
+          (*pSeq)->Append(n2);
         }
       }
     }

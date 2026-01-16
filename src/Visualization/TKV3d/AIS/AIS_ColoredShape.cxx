@@ -833,20 +833,14 @@ void AIS_ColoredShape::bindSubShapes(
   {
     for (TopExp_Explorer anExp(theKeyShape, TopAbs_FACE); anExp.More(); anExp.Next())
     {
-      if (!theShapeDrawerMap.IsBound(anExp.Current()))
-      {
-        theShapeDrawerMap.Bind(anExp.Current(), theDrawer);
-      }
+      theShapeDrawerMap.TryBound(anExp.Current(), theDrawer);
     }
   }
   else if (aShapeWithColorType == TopAbs_WIRE)
   {
     for (TopExp_Explorer anExp(theKeyShape, TopAbs_EDGE); anExp.More(); anExp.Next())
     {
-      if (!theShapeDrawerMap.IsBound(anExp.Current()))
-      {
-        theShapeDrawerMap.Bind(anExp.Current(), theDrawer);
-      }
+      theShapeDrawerMap.TryBound(anExp.Current(), theDrawer);
     }
   }
   else

@@ -1743,8 +1743,7 @@ static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
     for (; itrc.More(); itrc.Next())
     {
       const TopoDS_Shape& Edge = itrc.Value();
-      if (!mapE.Contains(Edge))
-        mapE.Add(Edge);
+      mapE.Add(Edge);
 
       TopExp_Explorer ex(Edge, TopAbs_VERTEX);
       for (; ex.More(); ex.Next())
@@ -1759,9 +1758,8 @@ static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
           for (; itl.More(); itl.Next())
           {
             const TopoDS_Shape& E = itl.Value();
-            if (!Edge.IsSame(E) && !mapE.Contains(E))
+            if (!Edge.IsSame(E) && mapE.Add(E))
             {
-              mapE.Add(E);
               nextEdges.Append(E);
             }
           }

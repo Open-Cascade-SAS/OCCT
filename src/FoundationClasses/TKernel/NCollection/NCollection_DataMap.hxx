@@ -443,6 +443,94 @@ public:
     return &data[aHash]->ChangeValue();
   }
 
+  //! TryBound binds Item to Key in map only if Key is not already present.
+  //! If Key already exists, the existing value is NOT modified.
+  //! @param theKey  key to add
+  //! @param theItem item to bind (only used if key is new)
+  //! @return pointer to item in map (either existing or newly bound)
+  TheItemType* TryBound(const TheKeyType& theKey, const TheItemType& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash]        = new (this->myAllocator) DataMapNode(theKey, theItem, data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! TryBound binds Item to Key in map only if Key is not already present.
+  //! If Key already exists, the existing value is NOT modified.
+  //! @param theKey  key to add
+  //! @param theItem item to bind (only used if key is new)
+  //! @return pointer to item in map (either existing or newly bound)
+  TheItemType* TryBound(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey), theItem, data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! TryBound binds Item to Key in map only if Key is not already present.
+  //! If Key already exists, the existing value is NOT modified.
+  //! @param theKey  key to add
+  //! @param theItem item to bind (only used if key is new)
+  //! @return pointer to item in map (either existing or newly bound)
+  TheItemType* TryBound(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] =
+      new (this->myAllocator) DataMapNode(theKey, std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! TryBound binds Item to Key in map only if Key is not already present.
+  //! If Key already exists, the existing value is NOT modified.
+  //! @param theKey  key to add
+  //! @param theItem item to bind (only used if key is new)
+  //! @return pointer to item in map (either existing or newly bound)
+  TheItemType* TryBound(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    if (Resizable())
+      ReSize(Extent());
+    size_t       aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<TheKeyType>(theKey),
+                                                      std::forward<TheItemType>(theItem),
+                                                      data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
   //! IsBound
   bool IsBound(const TheKeyType& theKey) const
   {

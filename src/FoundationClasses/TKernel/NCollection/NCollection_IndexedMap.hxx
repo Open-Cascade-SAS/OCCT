@@ -283,6 +283,53 @@ public:
     return aNewIndex;
   }
 
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing object.
+  //! @param theKey1 Key to search (and to add, if it was not in the map already)
+  //! @return const reference to Key in the map (new or existing)
+  const TheKeyType& Added(const TheKeyType& theKey1)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedMapNode* aNode;
+    size_t          aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Key1();
+    }
+    const int aNewIndex = Increment();
+    aNode          = new (this->myAllocator) IndexedMapNode(theKey1, aNewIndex, myData1[aHash]);
+    myData1[aHash] = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return aNode->Key1();
+  }
+
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing object.
+  //! @param theKey1 Key to search (and to add, if it was not in the map already)
+  //! @return const reference to Key in the map (new or existing)
+  const TheKeyType& Added(TheKeyType&& theKey1)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedMapNode* aNode;
+    size_t          aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Key1();
+    }
+    const int aNewIndex = Increment();
+    aNode               = new (this->myAllocator)
+      IndexedMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return aNode->Key1();
+  }
+
   //! Contains
   bool Contains(const TheKeyType& theKey1) const
   {

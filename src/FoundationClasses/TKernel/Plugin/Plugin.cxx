@@ -39,9 +39,13 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
   static NCollection_DataMap<TCollection_AsciiString, OSD_Function> theMapOfFunctions;
   OSD_Function                                                      f;
 
-  if (!theMapOfFunctions.IsBound(pid))
+  const OSD_Function* pFunc = theMapOfFunctions.Seek(pid);
+  if (pFunc)
   {
-
+    f = *pFunc;
+  }
+  else
+  {
     occ::handle<Resource_Manager> PluginResource = new Resource_Manager("Plugin");
     TCollection_AsciiString       theResource(thePluginId);
     theResource += ".Location";
@@ -96,8 +100,6 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
     }
     theMapOfFunctions.Bind(pid, f);
   }
-  else
-    f = theMapOfFunctions(pid);
 
   // Cast through void* to avoid -Wcast-function-type-mismatch warning.
   // This is safe for dynamically loaded plugin symbols.

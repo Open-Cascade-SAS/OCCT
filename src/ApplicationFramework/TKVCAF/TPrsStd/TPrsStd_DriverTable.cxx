@@ -102,9 +102,10 @@ bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&               guid,
 bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&         guid,
                                      occ::handle<TPrsStd_Driver>& driver) const
 {
-  if (myDrivers.IsBound(guid))
+  const occ::handle<TPrsStd_Driver>* pDriver = myDrivers.Seek(guid);
+  if (pDriver)
   {
-    driver = myDrivers.Find(guid);
+    driver = *pDriver;
     return true;
   }
   return false;

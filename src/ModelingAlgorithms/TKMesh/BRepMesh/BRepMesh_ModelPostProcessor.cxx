@@ -93,13 +93,7 @@ private:
         continue;
       }
 
-      if (!aMapOfPCurves.Contains(aDFacePtr))
-      {
-        aMapOfPCurves.Add(aDFacePtr, IMeshData::ListOfIPCurves());
-      }
-
-      IMeshData::ListOfIPCurves& aPCurves = aMapOfPCurves.ChangeFromKey(aDFacePtr);
-      aPCurves.Append(aPCurve);
+      aMapOfPCurves.Bound(aDFacePtr, IMeshData::ListOfIPCurves())->Append(aPCurve);
     }
 
     // Commit polygons related to separate face.

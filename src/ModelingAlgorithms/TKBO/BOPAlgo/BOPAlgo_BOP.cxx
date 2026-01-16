@@ -685,10 +685,7 @@ void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
         {
           BOPTools_Set aST;
           aST.Add(aS, TopAbs_FACE);
-          if (!aMSet.Contains(aST))
-          {
-            aMSet.Add(aST, aS);
-          }
+          aMSet.Add(aST, aS);
         }
       }
     }
@@ -1184,10 +1181,7 @@ void BOPAlgo_BOP::BuildSolid(const Message_ProgressRange& theRange)
     {
       BOPTools_Set aST;
       aST.Add(aSx, TopAbs_FACE);
-      if (!aDMSTS.Contains(aST))
-      {
-        aDMSTS.Add(aST, aSx);
-      }
+      aDMSTS.Add(aST, aSx);
     }
   }
   // Check for user break

@@ -438,10 +438,12 @@ double Resource_Manager::Real(const char* aResourceName) const
 const char* Resource_Manager::Value(const char* aResource) const
 {
   TCollection_AsciiString Resource(aResource);
-  if (myUserMap.IsBound(Resource))
-    return myUserMap(Resource).ToCString();
-  if (myRefMap.IsBound(Resource))
-    return myRefMap(Resource).ToCString();
+  const TCollection_AsciiString* pVal = myUserMap.Seek(Resource);
+  if (pVal)
+    return pVal->ToCString();
+  pVal = myRefMap.Seek(Resource);
+  if (pVal)
+    return pVal->ToCString();
   throw Resource_NoSuchResource(aResource);
 }
 
@@ -453,16 +455,16 @@ const char* Resource_Manager::Value(const char* aResource) const
 const char16_t* Resource_Manager::ExtValue(const char* aResource)
 {
   TCollection_AsciiString Resource(aResource);
-  if (myExtStrMap.IsBound(Resource))
-    return myExtStrMap(Resource).ToExtString();
+  const TCollection_ExtendedString* pVal = myExtStrMap.Seek(Resource);
+  if (pVal)
+    return pVal->ToExtString();
 
   TCollection_AsciiString    Result = Value(aResource);
   TCollection_ExtendedString ExtResult;
 
   Resource_Unicode::ConvertFormatToUnicode(Result.ToCString(), ExtResult);
 
-  myExtStrMap.Bind(Resource, ExtResult);
-  return myExtStrMap(Resource).ToExtString();
+  return myExtStrMap.Bound(Resource, ExtResult)->ToExtString();
 }
 
 //=======================================================================
@@ -497,10 +499,7 @@ void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue
   TCollection_ExtendedString ExtValue = aValue;
   TCollection_AsciiString    FormatStr(ExtValue.Length() * 3 + 10, ' ');
 
-  if (!myExtStrMap.Bind(Resource, ExtValue))
-  {
-    myExtStrMap(Resource) = ExtValue;
-  }
+  *myExtStrMap.Bound(Resource, ExtValue) = ExtValue;
   //
   pStr = (Standard_PCharacter)FormatStr.ToCString();
   //
@@ -519,8 +518,7 @@ void Resource_Manager::SetResource(const char* aResource, const char* aValue)
 {
   TCollection_AsciiString Resource = aResource;
   TCollection_AsciiString Value    = aValue;
-  if (!myUserMap.Bind(Resource, Value))
-    myUserMap(Resource) = Value;
+  *myUserMap.Bound(Resource, Value) = Value;
 }
 
 //=======================================================================

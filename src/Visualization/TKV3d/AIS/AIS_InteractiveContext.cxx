@@ -710,12 +710,13 @@ void AIS_InteractiveContext::HilightWithColor(const occ::handle<AIS_InteractiveO
   }
 
   setContextToObject(theObj);
-  if (!myObjects.IsBound(theObj))
+  const occ::handle<AIS_GlobalStatus>* pStatus = myObjects.Seek(theObj);
+  if (!pStatus)
   {
     return;
   }
 
-  const occ::handle<AIS_GlobalStatus>& aStatus = myObjects(theObj);
+  const occ::handle<AIS_GlobalStatus>& aStatus = *pStatus;
   aStatus->SetHilightStatus(true);
 
   if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
@@ -779,10 +780,11 @@ bool AIS_InteractiveContext::IsHilighted(const occ::handle<SelectMgr_EntityOwner
 
   if (anObj->GlobalSelOwner() == theOwner)
   {
-    if (!myObjects.IsBound(anObj))
+    const occ::handle<AIS_GlobalStatus>* pStatus = myObjects.Seek(anObj);
+    if (!pStatus)
       return false;
 
-    return myObjects(anObj)->IsHilighted();
+    return (*pStatus)->IsHilighted();
   }
 
   const occ::handle<Prs3d_Drawer>& aStyle  = getSelStyle(anObj, theOwner);

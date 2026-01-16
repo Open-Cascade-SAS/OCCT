@@ -529,14 +529,7 @@ bool ShapeFix::FixVertexPosition(TopoDS_Shape&                          theshape
         aVert1 = aVert;
       else if (aVert1.IsSame(aVert))
         continue;
-      if (aMapVertEdges.Contains(aVert))
-        aMapVertEdges.ChangeFromKey(aVert).Append(aExp1.Current());
-      else
-      {
-        NCollection_List<TopoDS_Shape> alEdges;
-        alEdges.Append(aExp1.Current());
-        aMapVertEdges.Add(aVert, alEdges);
-      }
+      aMapVertEdges.Bound(aVert, NCollection_List<TopoDS_Shape>())->Append(aExp1.Current());
     }
   }
   bool isDone = false;

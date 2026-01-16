@@ -990,10 +990,9 @@ bool LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F)
     for (; lexp.More(); lexp.Next())
     {
       const TopoDS_Edge& edg = TopoDS::Edge(lexp.Value());
-      if (!MapE.Contains(edg))
+      if (MapE.Add(edg))
       {
         B.Add(newW2, edg);
-        MapE.Add(edg);
         nbAddBound++;
         if (anE1.IsNull())
           anE1 = edg;

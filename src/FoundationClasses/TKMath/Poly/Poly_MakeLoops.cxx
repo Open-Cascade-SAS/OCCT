@@ -298,11 +298,12 @@ int Poly_MakeLoops::findContour(int                                           th
 
     aLastNode = getLastNode(aIndexS);
 
-    if (aNodeLink.IsBound(aLastNode))
+    const int* pNodeLink = aNodeLink.Seek(aLastNode);
+    if (pNodeLink)
     {
       // closing the loop, stop search
       theContour.Add(aIndexS);
-      aStartIndex = theContour.FindIndex(aNodeLink.Find(aLastNode));
+      aStartIndex = theContour.FindIndex(*pNodeLink);
       break;
     }
   }

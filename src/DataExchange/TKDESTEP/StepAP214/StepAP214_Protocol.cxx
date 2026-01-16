@@ -1579,10 +1579,8 @@ StepAP214_Protocol::StepAP214_Protocol()
 
 int StepAP214_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
-  if (types.IsBound(atype))
-    return types.Find(atype);
-  else
-    return 0;
+  const int* pType = types.Seek(atype);
+  return pType ? *pType : 0;
 }
 
 //=================================================================================================

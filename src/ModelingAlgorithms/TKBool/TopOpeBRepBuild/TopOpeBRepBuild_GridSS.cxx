@@ -648,11 +648,8 @@ static void FUNBUILD_MAPANCSPLSHAPES(
     const NCollection_List<TopoDS_Shape>& l = B.Splits(S, STATE);
     for (NCollection_List<TopoDS_Shape>::Iterator it(l); it.More(); it.Next())
     {
-      const TopoDS_Shape&            sps = it.Value(); // sps = split result of S on state STATE
-      NCollection_List<TopoDS_Shape> thelist;
-      if (!_IDM.Contains(sps))
-        _IDM.Add(sps, thelist);
-      _IDM.ChangeFromKey(sps).Append(S);
+      const TopoDS_Shape& sps = it.Value(); // sps = split result of S on state STATE
+      _IDM.Bound(sps, NCollection_List<TopoDS_Shape>())->Append(S);
     }
   }
 }
