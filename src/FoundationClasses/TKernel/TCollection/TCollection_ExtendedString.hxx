@@ -57,18 +57,21 @@ class TCollection_ExtendedString
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Initializes a ExtendedString to an empty ExtendedString.
+  //! Initializes an ExtendedString to an empty ExtendedString.
   Standard_EXPORT TCollection_ExtendedString() noexcept;
 
-  //! Creation by converting a CString to an extended
-  //! string. If <isMultiByte> is true then the string is
-  //! treated as having UTF-8 coding. If it is not a UTF-8
-  //! then <isMultiByte> is ignored and each character is
+  //! Creation by converting a CString to an extended string.
+  //! If theIsMultiByte is true then the string is treated as having UTF-8 coding.
+  //! If it is not a UTF-8 then theIsMultiByte is ignored and each character is
   //! copied to ExtCharacter.
-  Standard_EXPORT TCollection_ExtendedString(const char* astring, const bool isMultiByte = false);
+  //! @param[in] theString the C string to convert
+  //! @param[in] theIsMultiByte flag indicating UTF-8 coding
+  Standard_EXPORT TCollection_ExtendedString(const char* theString,
+                                             const bool  theIsMultiByte = false);
 
-  //! Creation by converting an ExtString to an extended string.
-  Standard_EXPORT TCollection_ExtendedString(const char16_t* astring);
+  //! Creation by converting an ExtString (char16_t*) to an extended string.
+  //! @param[in] theString the char16_t string to copy
+  Standard_EXPORT TCollection_ExtendedString(const char16_t* theString);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize from wide-char string considering it as Unicode string
@@ -76,37 +79,47 @@ public:
   //!
   //! This constructor is unavailable if application is built with deprecated msvc option
   //! "-Zc:wchar_t-", since OCCT itself is never built with this option.
+  //! @param[in] theStringUtf the wide character string to convert
   Standard_EXPORT TCollection_ExtendedString(const wchar_t* theStringUtf);
 #endif
 
-  //! Initializes a AsciiString with a single character.
-  Standard_EXPORT TCollection_ExtendedString(const char aChar);
+  //! Initializes an ExtendedString with a single ASCII character.
+  //! @param[in] theChar the ASCII character to initialize from
+  Standard_EXPORT TCollection_ExtendedString(const char theChar);
 
-  //! Initializes a ExtendedString with a single character.
-  Standard_EXPORT TCollection_ExtendedString(const char16_t aChar);
+  //! Initializes an ExtendedString with a single extended character.
+  //! @param[in] theChar the extended character to initialize from
+  Standard_EXPORT TCollection_ExtendedString(const char16_t theChar);
 
-  //! Initializes a ExtendedString with <length> space allocated.
-  //! and filled with <filler>.This is useful for buffers.
-  Standard_EXPORT TCollection_ExtendedString(const int length, const char16_t filler);
+  //! Initializes an ExtendedString with specified length space allocated
+  //! and filled with filler character. This is useful for buffers.
+  //! @param[in] theLength the length to allocate
+  //! @param[in] theFiller the character to fill with
+  Standard_EXPORT TCollection_ExtendedString(const int theLength, const char16_t theFiller);
 
-  //! Initializes an ExtendedString with an integer value
-  Standard_EXPORT TCollection_ExtendedString(const int value);
+  //! Initializes an ExtendedString with an integer value.
+  //! @param[in] theValue the integer value to convert to string
+  Standard_EXPORT TCollection_ExtendedString(const int theValue);
 
-  //! Initializes an ExtendedString with a real value
-  Standard_EXPORT TCollection_ExtendedString(const double value);
+  //! Initializes an ExtendedString with a real value.
+  //! @param[in] theValue the real value to convert to string
+  Standard_EXPORT TCollection_ExtendedString(const double theValue);
 
-  //! Initializes a ExtendedString with another ExtendedString.
-  Standard_EXPORT TCollection_ExtendedString(const TCollection_ExtendedString& astring);
+  //! Initializes an ExtendedString with another ExtendedString.
+  //! @param[in] theString the string to copy from
+  Standard_EXPORT TCollection_ExtendedString(const TCollection_ExtendedString& theString);
 
-  //! Move constructor
+  //! Move constructor.
+  //! @param[in] theOther the string to move from
   Standard_EXPORT TCollection_ExtendedString(TCollection_ExtendedString&& theOther) noexcept;
 
-  //! Creation by converting an Ascii string to an extended
-  //! string. The string is treated as having UTF-8 coding.
-  //! If it is not a UTF-8 or multi byte then
-  //! each character is copied to ExtCharacter.
-  Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& astring,
-                                             const bool                     isMultiByte = true);
+  //! Creation by converting an AsciiString to an extended string.
+  //! The string is treated as having UTF-8 coding.
+  //! If it is not a UTF-8 or multi byte then each character is copied to ExtCharacter.
+  //! @param[in] theString the ASCII string to convert
+  //! @param[in] theIsMultiByte flag indicating UTF-8 coding
+  Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& theString,
+                                             const bool                     theIsMultiByte = true);
 
 #if Standard_CPP17_OR_HIGHER
   //! Initializes an ExtendedString from a std::u16string_view.
@@ -139,17 +152,27 @@ public:
   }
 
   //! Conversion to std::u16string_view.
+  //! @return a non-owning view of the string data
   operator std::u16string_view() const noexcept { return std::u16string_view(myString, myLength); }
 #endif
 
   //! Appends the other extended string to this extended string.
   //! Note that this method is an alias of operator +=.
-  //! Example: aString += anotherString
-  Standard_EXPORT void AssignCat(const TCollection_ExtendedString& other);
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Hello");
+  //! TCollection_ExtendedString anotherString(u" World");
+  //! aString += anotherString;
+  //! // Result: aString == u"Hello World"
+  //! ```
+  //! @param[in] theOther the string to append
+  Standard_EXPORT void AssignCat(const TCollection_ExtendedString& theOther);
 
-  void operator+=(const TCollection_ExtendedString& other) { AssignCat(other); }
+  void operator+=(const TCollection_ExtendedString& theOther) { AssignCat(theOther); }
 
   //! Appends the utf16 char to this extended string.
+  //! @param[in] theChar the character to append
   Standard_EXPORT void AssignCat(const char16_t theChar);
 
   //! Appends the char16_t string to this extended string.
@@ -178,50 +201,79 @@ public:
   void operator+=(const std::u16string_view& theStringView) { AssignCat(theStringView); }
 #endif
 
-  //! Appends <other> to me.
-  Standard_EXPORT TCollection_ExtendedString Cat(const TCollection_ExtendedString& other) const;
+  //! Appends the other extended string to this string and returns a new string.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Hello");
+  //! TCollection_ExtendedString anotherString(u" World");
+  //! TCollection_ExtendedString aResult = aString + anotherString;
+  //! // Result: aResult == u"Hello World"
+  //! ```
+  //! @param[in] theOther the string to append
+  //! @return new string with theOther appended
+  Standard_EXPORT TCollection_ExtendedString Cat(const TCollection_ExtendedString& theOther) const;
 
-  TCollection_ExtendedString operator+(const TCollection_ExtendedString& other) const
+  TCollection_ExtendedString operator+(const TCollection_ExtendedString& theOther) const
   {
-    return Cat(other);
+    return Cat(theOther);
   }
 
-  //! Substitutes all the characters equal to aChar by NewChar
-  //! in the ExtendedString <me>.
+  //! Substitutes all the characters equal to theChar by theNewChar
+  //! in this ExtendedString.
   //! The substitution can be case sensitive.
-  //! If you don't use default case sensitive, no matter whether aChar is uppercase or not.
-  Standard_EXPORT void ChangeAll(const char16_t aChar, const char16_t NewChar);
+  //! If you don't use default case sensitive, no matter whether theChar is uppercase or not.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Histake");
+  //! aString.ChangeAll(u'H', u'M');
+  //! // Result: aString == u"Mistake"
+  //! ```
+  //! @param[in] theChar the character to replace
+  //! @param[in] theNewChar the replacement character
+  Standard_EXPORT void ChangeAll(const char16_t theChar, const char16_t theNewChar);
 
-  //! Removes all characters contained in <me>.
+  //! Removes all characters contained in this string.
   //! This produces an empty ExtendedString.
   Standard_EXPORT void Clear();
 
-  //! Copy <fromwhere> to <me>.
+  //! Copy theFromWhere to this string.
   //! Used as operator =
-  Standard_EXPORT void Copy(const TCollection_ExtendedString& fromwhere);
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString;
+  //! TCollection_ExtendedString anotherString(u"Hello World");
+  //! aString = anotherString;  // operator=
+  //! // Result: aString == u"Hello World"
+  //! ```
+  //! @param[in] theFromWhere the string to copy from
+  Standard_EXPORT void Copy(const TCollection_ExtendedString& theFromWhere);
 
   //! Copy from a char16_t pointer.
   //! @param[in] theString the string to copy
   Standard_EXPORT void Copy(const char16_t* theString);
 
-  //! Copy assignment operator
+  //! Copy assignment operator.
   TCollection_ExtendedString& operator=(const TCollection_ExtendedString& theOther)
   {
     Copy(theOther);
     return *this;
   }
 
-  //! Assignment from char16_t pointer
+  //! Assignment from char16_t pointer.
   TCollection_ExtendedString& operator=(const char16_t* theString)
   {
     Copy(theString);
     return *this;
   }
 
-  //! Moves string without reallocations
+  //! Moves string without reallocations.
+  //! @param[in] theOther the string to move from
   Standard_EXPORT void Move(TCollection_ExtendedString&& theOther);
 
-  //! Move assignment operator
+  //! Move assignment operator.
   TCollection_ExtendedString& operator=(TCollection_ExtendedString&& theOther) noexcept
   {
     Move(std::forward<TCollection_ExtendedString>(theOther));
@@ -229,168 +281,256 @@ public:
   }
 
   //! Exchange the data of two strings (without reallocating memory).
+  //! @param[in,out] theOther the string to exchange data with
   Standard_EXPORT void Swap(TCollection_ExtendedString& theOther);
 
   //! Frees memory allocated by ExtendedString.
   Standard_EXPORT ~TCollection_ExtendedString();
 
-  //! Insert a Character at position <where>.
-  Standard_EXPORT void Insert(const int where, const char16_t what);
+  //! Insert a Character at position theWhere.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"hy not ?");
+  //! aString.Insert(1, u'W');
+  //! // Result: aString == u"Why not ?"
+  //! ```
+  //! @param[in] theWhere the position to insert at (1-based)
+  //! @param[in] theWhat the character to insert
+  Standard_EXPORT void Insert(const int theWhere, const char16_t theWhat);
 
-  //! Insert a ExtendedString at position <where>.
-  Standard_EXPORT void Insert(const int where, const TCollection_ExtendedString& what);
+  //! Insert an ExtendedString at position theWhere.
+  //! @param[in] theWhere the position to insert at (1-based)
+  //! @param[in] theWhat the string to insert
+  Standard_EXPORT void Insert(const int theWhere, const TCollection_ExtendedString& theWhat);
 
   //! Returns True if this string contains no characters.
   bool IsEmpty() const { return myLength == 0; }
 
   //! Returns true if the characters in this extended
-  //! string are identical to the characters in the other extended string.
-  //! Note that this method is an alias of operator ==
-  Standard_EXPORT bool IsEqual(const char16_t* other) const;
+  //! string are identical to the characters in theOther extended string.
+  //! Note that this method is an alias of operator ==.
+  //! @param[in] theOther the char16_t string to compare with
+  //! @return true if strings are equal, false otherwise
+  Standard_EXPORT bool IsEqual(const char16_t* theOther) const;
 
-  bool operator==(const char16_t* other) const { return IsEqual(other); }
+  bool operator==(const char16_t* theOther) const { return IsEqual(theOther); }
 
   //! Returns true if the characters in this extended
-  //! string are identical to the characters in the other extended string.
-  //! Note that this method is an alias of operator ==
-  Standard_EXPORT bool IsEqual(const TCollection_ExtendedString& other) const;
+  //! string are identical to the characters in theOther extended string.
+  //! Note that this method is an alias of operator ==.
+  //! @param[in] theOther the extended string to compare with
+  //! @return true if strings are equal, false otherwise
+  Standard_EXPORT bool IsEqual(const TCollection_ExtendedString& theOther) const;
 
-  bool operator==(const TCollection_ExtendedString& other) const { return IsEqual(other); }
-
-  //! Returns true if there are differences between the
-  //! characters in this extended string and the other extended string.
-  //! Note that this method is an alias of operator !=.
-  Standard_EXPORT bool IsDifferent(const char16_t* other) const;
-
-  bool operator!=(const char16_t* other) const { return IsDifferent(other); }
+  bool operator==(const TCollection_ExtendedString& theOther) const { return IsEqual(theOther); }
 
   //! Returns true if there are differences between the
-  //! characters in this extended string and the other extended string.
+  //! characters in this extended string and theOther extended string.
   //! Note that this method is an alias of operator !=.
-  Standard_EXPORT bool IsDifferent(const TCollection_ExtendedString& other) const;
+  //! @param[in] theOther the char16_t string to compare with
+  //! @return true if strings are different, false otherwise
+  Standard_EXPORT bool IsDifferent(const char16_t* theOther) const;
 
-  bool operator!=(const TCollection_ExtendedString& other) const { return IsDifferent(other); }
+  bool operator!=(const char16_t* theOther) const { return IsDifferent(theOther); }
 
-  //! Returns TRUE if <me> is less than <other>.
-  Standard_EXPORT bool IsLess(const char16_t* other) const;
+  //! Returns true if there are differences between the
+  //! characters in this extended string and theOther extended string.
+  //! Note that this method is an alias of operator !=.
+  //! @param[in] theOther the extended string to compare with
+  //! @return true if strings are different, false otherwise
+  Standard_EXPORT bool IsDifferent(const TCollection_ExtendedString& theOther) const;
 
-  bool operator<(const char16_t* other) const { return IsLess(other); }
+  bool operator!=(const TCollection_ExtendedString& theOther) const
+  {
+    return IsDifferent(theOther);
+  }
 
-  //! Returns TRUE if <me> is less than <other>.
-  Standard_EXPORT bool IsLess(const TCollection_ExtendedString& other) const;
+  //! Returns TRUE if this string is lexicographically less than theOther.
+  //! @param[in] theOther the char16_t string to compare with
+  //! @return true if this string is less than theOther
+  Standard_EXPORT bool IsLess(const char16_t* theOther) const;
 
-  bool operator<(const TCollection_ExtendedString& other) const { return IsLess(other); }
+  bool operator<(const char16_t* theOther) const { return IsLess(theOther); }
 
-  //! Returns TRUE if <me> is greater than <other>.
-  Standard_EXPORT bool IsGreater(const char16_t* other) const;
+  //! Returns TRUE if this string is lexicographically less than theOther.
+  //! @param[in] theOther the extended string to compare with
+  //! @return true if this string is less than theOther
+  Standard_EXPORT bool IsLess(const TCollection_ExtendedString& theOther) const;
 
-  bool operator>(const char16_t* other) const { return IsGreater(other); }
+  bool operator<(const TCollection_ExtendedString& theOther) const { return IsLess(theOther); }
 
-  //! Returns TRUE if <me> is greater than <other>.
-  Standard_EXPORT bool IsGreater(const TCollection_ExtendedString& other) const;
+  //! Returns TRUE if this string is lexicographically greater than theOther.
+  //! @param[in] theOther the char16_t string to compare with
+  //! @return true if this string is greater than theOther
+  Standard_EXPORT bool IsGreater(const char16_t* theOther) const;
 
-  bool operator>(const TCollection_ExtendedString& other) const { return IsGreater(other); }
+  bool operator>(const char16_t* theOther) const { return IsGreater(theOther); }
+
+  //! Returns TRUE if this string is lexicographically greater than theOther.
+  //! @param[in] theOther the extended string to compare with
+  //! @return true if this string is greater than theOther
+  Standard_EXPORT bool IsGreater(const TCollection_ExtendedString& theOther) const;
+
+  bool operator>(const TCollection_ExtendedString& theOther) const { return IsGreater(theOther); }
 
   //! Determines whether the beginning of this string instance matches the specified string.
+  //! @param[in] theStartString the string to check for at the beginning
+  //! @return true if this string starts with theStartString
   Standard_EXPORT bool StartsWith(const TCollection_ExtendedString& theStartString) const;
 
   //! Determines whether the end of this string instance matches the specified string.
+  //! @param[in] theEndString the string to check for at the end
+  //! @return true if this string ends with theEndString
   Standard_EXPORT bool EndsWith(const TCollection_ExtendedString& theEndString) const;
 
-  //! Returns True if the ExtendedString contains only
-  //! "Ascii Range" characters .
+  //! Returns True if the ExtendedString contains only "Ascii Range" characters.
+  //! @return true if string contains only ASCII characters
   Standard_EXPORT bool IsAscii() const;
 
   //! Returns the number of 16-bit code units
   //! (might be greater than number of Unicode symbols if string contains surrogate pairs).
+  //! @return the number of 16-bit code units
   Standard_EXPORT int Length() const;
 
-  //! Displays <me> .
-  Standard_EXPORT void                     Print(Standard_OStream& astream) const;
-  friend Standard_EXPORT Standard_OStream& operator<<(Standard_OStream&                 astream,
-                                                      const TCollection_ExtendedString& astring);
+  //! Displays this string on a stream.
+  //! @param[in] theStream the output stream
+  Standard_EXPORT void                     Print(Standard_OStream& theStream) const;
+  friend Standard_EXPORT Standard_OStream& operator<<(Standard_OStream&                 theStream,
+                                                      const TCollection_ExtendedString& theString);
 
-  //! Removes every <what> characters from <me>.
-  Standard_EXPORT void RemoveAll(const char16_t what);
+  //! Removes every theWhat characters from this string.
+  //! @param[in] theWhat the character to remove
+  Standard_EXPORT void RemoveAll(const char16_t theWhat);
 
-  //! Erases <ahowmany> characters from position <where>,<where> included.
-  Standard_EXPORT void Remove(const int where, const int ahowmany = 1);
+  //! Erases theHowMany characters from position theWhere, theWhere included.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Hello");
+  //! aString.Remove(2, 2); // erases 2 characters from position 2
+  //! // Result: aString == u"Hlo"
+  //! ```
+  //! @param[in] theWhere the position to start erasing from (1-based)
+  //! @param[in] theHowMany the number of characters to erase
+  Standard_EXPORT void Remove(const int theWhere, const int theHowMany = 1);
 
-  //! Searches a ExtendedString in <me> from the beginning
-  //! and returns position of first item <what> matching.
-  //! it returns -1 if not found.
-  Standard_EXPORT int Search(const TCollection_ExtendedString& what) const;
+  //! Searches an ExtendedString in this string from the beginning
+  //! and returns position of first item theWhat matching.
+  //! It returns -1 if not found.
+  //! @param[in] theWhat the string to search for
+  //! @return the position of first match (1-based), or -1 if not found
+  Standard_EXPORT int Search(const TCollection_ExtendedString& theWhat) const;
 
-  //! Searches a ExtendedString in another ExtendedString from the
-  //! end and returns position of first item <what> matching.
-  //! it returns -1 if not found.
-  Standard_EXPORT int SearchFromEnd(const TCollection_ExtendedString& what) const;
+  //! Searches an ExtendedString in this string from the end
+  //! and returns position of first item theWhat matching.
+  //! It returns -1 if not found.
+  //! @param[in] theWhat the string to search for
+  //! @return the position of first match from end (1-based), or -1 if not found
+  Standard_EXPORT int SearchFromEnd(const TCollection_ExtendedString& theWhat) const;
 
-  //! Replaces one character in the ExtendedString at position <where>.
-  //! If <where> is less than zero or greater than the length of <me>
+  //! Replaces one character in the ExtendedString at position theWhere.
+  //! If theWhere is less than zero or greater than the length of this string
   //! an exception is raised.
-  Standard_EXPORT void SetValue(const int where, const char16_t what);
-
-  //! Replaces a part of <me> by another ExtendedString see above.
-  Standard_EXPORT void SetValue(const int where, const TCollection_ExtendedString& what);
-
-  //! Splits this extended string into two sub-strings at position where.
-  //! -   The second sub-string (from position
-  //! where + 1 of this string to the end) is
-  //! returned in a new extended string.
-  //! -   this extended string is modified: its last
-  //! characters are removed, it becomes equal to
-  //! the first sub-string (from the first character to position where).
+  //!
   //! Example:
-  //! aString contains "abcdefg"
-  //! aString.Split(3) gives <me> = "abc" and returns "defg"
-  Standard_EXPORT TCollection_ExtendedString Split(const int where);
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Garbake");
+  //! aString.SetValue(6, u'g');
+  //! // Result: aString == u"Garbage"
+  //! ```
+  //! @param[in] theWhere the position to replace at (1-based)
+  //! @param[in] theWhat the character to replace with
+  Standard_EXPORT void SetValue(const int theWhere, const char16_t theWhat);
 
-  //! Extracts <whichone> token from <me>.
-  //! By default, the <separators> is set to space and tabulation.
-  //! By default, the token extracted is the first one (whichone = 1).
-  //! <separators> contains all separators you need.
-  //! If no token indexed by <whichone> is found, it returns an empty AsciiString.
+  //! Replaces a part of this string by another ExtendedString.
+  //! @param[in] theWhere the position to start replacement (1-based)
+  //! @param[in] theWhat the string to replace with
+  Standard_EXPORT void SetValue(const int theWhere, const TCollection_ExtendedString& theWhat);
+
+  //! Splits this extended string into two sub-strings at position theWhere.
+  //! -   The second sub-string (from position theWhere + 1 of this string to the end) is
+  //!     returned in a new extended string.
+  //! -   This extended string is modified: its last characters are removed, it becomes equal to
+  //!     the first sub-string (from the first character to position theWhere).
+  //!
   //! Example:
-  //! aString contains "This is a     message"
-  //! aString.Token()  returns "This"
-  //! aString.Token(" ",4) returns "message"
-  //! aString.Token(" ",2) returns "is"
-  //! aString.Token(" ",9) returns ""
-  //! Other separators than space character and tabulation are allowed :
-  //! aString contains "1234; test:message   , value"
-  //! aString.Token("; :,",4) returns "value"
-  //! aString.Token("; :,",2) returns "test"
-  Standard_EXPORT TCollection_ExtendedString Token(const char16_t* separators,
-                                                   const int       whichone = 1) const;
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"abcdefg");
+  //! TCollection_ExtendedString aSecondPart = aString.Split(3);
+  //! // Result: aString == u"abc" and aSecondPart == u"defg"
+  //! ```
+  //! @param[in] theWhere the position to split at (0-based)
+  //! @return the second part of the split string
+  Standard_EXPORT TCollection_ExtendedString Split(const int theWhere);
 
-  //! Returns pointer to ExtString
+  //! Extracts theWhichOne token from this string.
+  //! By default, the theSeparators is set to space and tabulation.
+  //! By default, the token extracted is the first one (theWhichOne = 1).
+  //! theSeparators contains all separators you need.
+  //! If no token indexed by theWhichOne is found, it returns an empty ExtendedString.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"This is a     message");
+  //! TCollection_ExtendedString aToken1 = aString.Token();
+  //! // Result: aToken1 == u"This"
+  //!
+  //! TCollection_ExtendedString aToken2 = aString.Token(u" ", 4);
+  //! // Result: aToken2 == u"message"
+  //!
+  //! TCollection_ExtendedString aToken3 = aString.Token(u" ", 2);
+  //! // Result: aToken3 == u"is"
+  //!
+  //! TCollection_ExtendedString aToken4 = aString.Token(u" ", 9);
+  //! // Result: aToken4 == u""
+  //!
+  //! TCollection_ExtendedString bString(u"1234; test:message   , value");
+  //! TCollection_ExtendedString bToken1 = bString.Token(u"; :,", 4);
+  //! // Result: bToken1 == u"value"
+  //! ```
+  //! @param[in] theSeparators the separator characters
+  //! @param[in] theWhichOne the token number to extract (1-based)
+  //! @return the extracted token
+  Standard_EXPORT TCollection_ExtendedString Token(const char16_t* theSeparators,
+                                                   const int       theWhichOne = 1) const;
+
+  //! Returns pointer to ExtString (char16_t*).
+  //! @return the char16_t string representation
   Standard_EXPORT const char16_t* ToExtString() const;
 
 #ifdef _WIN32
   //! Returns pointer to string as wchar_t* on Windows platform where wchar_t* is considered as
   //! UTF-16 string. This method is useful to pass string into wide-char system APIs, and makes
   //! sense only on Windows (other systems use UTF-8 and can miss wide-char functions at all).
+  //! @return the wchar_t string representation
   const wchar_t* ToWideString() const { return (const wchar_t*)ToExtString(); }
 #endif
 
-  //! Truncates <me> to <ahowmany> characters.
-  //! Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
-  //! Exceptions
-  //! Standard_OutOfRange if ahowmany is greater
-  //! than the length of this string.
-  Standard_EXPORT void Trunc(const int ahowmany);
-
-  //! Returns character at position <where> in <me>.
-  //! If <where> is less than zero or greater than the length of
-  //! <me>, an exception is raised.
+  //! Truncates this string to theHowMany characters.
+  //!
   //! Example:
-  //! aString contains "Hello"
-  //! aString.Value(2) returns 'e'
-  //! Exceptions
-  //! Standard_OutOfRange if where lies outside
-  //! the bounds of this extended string.
-  Standard_EXPORT char16_t Value(const int where) const;
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Hello Dolly");
+  //! aString.Trunc(3);
+  //! // Result: aString == u"Hel"
+  //! ```
+  //! @param[in] theHowMany the number of characters to keep
+  Standard_EXPORT void Trunc(const int theHowMany);
+
+  //! Returns character at position theWhere in this string.
+  //! If theWhere is less than zero or greater than the length of
+  //! this string, an exception is raised.
+  //!
+  //! Example:
+  //! ```cpp
+  //! TCollection_ExtendedString aString(u"Hello");
+  //! char16_t aChar = aString.Value(2);
+  //! // Result: aChar == u'e'
+  //! ```
+  //! @param[in] theWhere the position to get character from (1-based)
+  //! @return the character at the specified position
+  Standard_EXPORT char16_t Value(const int theWhere) const;
 
   //! Returns a hashed value for the extended string.
   //! Note: if string is ASCII, the computed value is the same as the value computed with the
@@ -423,20 +563,26 @@ public:
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==.
+  //! @param[in] theString1 first string to compare
+  //! @param[in] theString2 second string to compare
+  //! @return true if strings are equal
   static bool IsEqual(const TCollection_ExtendedString& theString1,
                       const TCollection_ExtendedString& theString2)
   {
     return theString1.IsEqual(theString2);
   }
 
-  //! Converts the internal <mystring> to UTF8 coding and
+  //! Converts the internal myString to UTF8 coding and
   //! returns length of the out CString. A memory for the
-  //! <theCString> should be allocated before call!
+  //! theCString should be allocated before call!
+  //! @param[in,out] theCString pointer to the output buffer
+  //! @return length of the UTF-8 string
   Standard_EXPORT int ToUTF8CString(Standard_PCharacter& theCString) const;
 
   //! Returns expected CString length in UTF8 coding (like strlen, without null terminator).
   //! It can be used for memory calculation before converting to CString containing symbols in UTF8
   //! coding. For external allocation, use: char* buf = new char[str.LengthOfCString() + 1];
+  //! @return expected UTF-8 string length
   Standard_EXPORT int LengthOfCString() const;
 
   //! Removes all space characters in the beginning of the string.
@@ -531,7 +677,7 @@ public:
 
 private:
   //! Returns true if the input CString was successfully converted to UTF8 coding.
-  bool ConvertToUnicode(const char* astring);
+  bool ConvertToUnicode(const char* theString);
 
   //! Internal wrapper to allocate on stack or heap
   void allocate(const int theLength);
