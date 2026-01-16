@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_PExtCharacter.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
@@ -544,8 +543,8 @@ private:
   void deallocate();
 
 private:
-  Standard_PExtCharacter myString{}; //!< NULL-terminated string
-  int myLength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
+  char16_t* myString{}; //!< NULL-terminated string
+  int       myLength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
 };
 
 namespace std

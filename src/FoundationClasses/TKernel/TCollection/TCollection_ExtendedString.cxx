@@ -56,7 +56,7 @@ inline char16_t* Standard_UNUSED fromWideString(const wchar_t* theUtfString, int
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
   const size_t aRoundSize = calculatePaddedSize(theLength);
-  char16_t*    aString = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
+  char16_t*    aString    = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
   NCollection_UtfIterator<wchar_t> anIterRead(theUtfString);
   for (char16_t* anIterWrite = aString; *anIterRead != 0; ++anIterRead)
   {
@@ -79,8 +79,8 @@ inline char16_t* Standard_UNUSED fromWideString<sizeof(char16_t)>(const wchar_t*
     return THE_DEFAULT_EXT_CHAR_STRING;
   }
   const size_t aRoundSize = calculatePaddedSize(theLength);
-  char16_t*    aString = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
-  const int    aSize   = theLength * sizeof(char16_t);
+  char16_t*    aString    = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
+  const int    aSize      = theLength * sizeof(char16_t);
   memcpy(aString, theUtfString, aSize);
   aString[theLength] = 0;
   return aString;
@@ -786,9 +786,9 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* sep
     throw Standard_NullObject("TCollection_ExtendedString::Token : "
                               "parameter 'separators'");
 
-  int                    i, j, k, l;
-  Standard_PExtCharacter buftmp = res.myString;
-  char16_t               aSep;
+  int       i, j, k, l;
+  char16_t* buftmp = res.myString;
+  char16_t  aSep;
 
   bool isSepFound = false, otherSepFound;
 
@@ -967,8 +967,8 @@ void TCollection_ExtendedString::allocate(const int theLength)
   else
   {
     const size_t aRoundSize = calculatePaddedSize(theLength);
-    myString           = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
-    myString[myLength] = '\0';
+    myString                = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
+    myString[myLength]      = '\0';
   }
 }
 
@@ -990,12 +990,12 @@ void TCollection_ExtendedString::reallocate(const int theLength)
   if (myString == THE_DEFAULT_EXT_CHAR_STRING)
   {
     const size_t aRoundSize = calculatePaddedSize(theLength);
-    myString = static_cast<Standard_PExtCharacter>(Standard::AllocateOptimal(aRoundSize));
+    myString                = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
   }
   else
   {
     const size_t aRoundSize = calculatePaddedSize(theLength);
-    myString = static_cast<Standard_PExtCharacter>(Standard::Reallocate(myString, aRoundSize));
+    myString                = static_cast<char16_t*>(Standard::Reallocate(myString, aRoundSize));
   }
   myString[theLength] = 0;
   myLength            = theLength;
