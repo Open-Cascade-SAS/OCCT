@@ -86,6 +86,24 @@ inline char16_t* Standard_UNUSED fromWideString<sizeof(char16_t)>(const wchar_t*
   return aString;
 }
 
+//! Helper structure to hold formatted integer string with its length
+struct FormattedInteger
+{
+  char Buffer[16]; // Enough for 32-bit int + sign + null terminator
+  int  Length;
+
+  FormattedInteger(const int theValue) { Length = Sprintf(Buffer, "%d", theValue); }
+};
+
+//! Helper structure to hold formatted real number string with its length
+struct FormattedReal
+{
+  char Buffer[64]; // Enough for double in %g format + null terminator
+  int  Length;
+
+  FormattedReal(const double theValue) { Length = Sprintf(Buffer, "%g", theValue); }
+};
+
 } // namespace
 
 //=================================================================================================
@@ -194,27 +212,25 @@ TCollection_ExtendedString::TCollection_ExtendedString(const int length, const c
 
 //=================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const int aValue)
+TCollection_ExtendedString::TCollection_ExtendedString(const int theValue)
 {
-  char aBuffer[24] = {};
-  Sprintf(aBuffer, "%d", aValue);
-  allocate(static_cast<int>(strlen(aBuffer)));
+  const FormattedInteger aFormatted(theValue);
+  allocate(aFormatted.Length);
   for (int i = 0; i < myLength; i++)
   {
-    myString[i] = ToExtCharacter(aBuffer[i]);
+    myString[i] = ToExtCharacter(aFormatted.Buffer[i]);
   }
 }
 
 //=================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const double aValue)
+TCollection_ExtendedString::TCollection_ExtendedString(const double theValue)
 {
-  char aBuffer[64] = {};
-  Sprintf(aBuffer, "%g", aValue);
-  allocate(static_cast<int>(strlen(aBuffer)));
+  const FormattedReal aFormatted(theValue);
+  allocate(aFormatted.Length);
   for (int i = 0; i < myLength; i++)
   {
-    myString[i] = ToExtCharacter(aBuffer[i]);
+    myString[i] = ToExtCharacter(aFormatted.Buffer[i]);
   }
 }
 
