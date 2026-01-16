@@ -50,32 +50,6 @@
 
 namespace
 {
-//==================================================================================================
-
-// Recursively collects all unique sub-shapes of theShape into theShapeMap.
-void CollectShapesRecursively(const TopoDS_Shape&                                     theShape,
-                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapeMap)
-{
-  if (!theShapeMap.Add(theShape))
-  {
-    return;
-  }
-
-  for (TopoDS_Iterator aIt(theShape); aIt.More(); aIt.Next())
-  {
-    const TopoDS_Shape& aSubShape = aIt.Value();
-    CollectShapesRecursively(aSubShape, theShapeMap);
-  }
-}
-
-// Returns the count of unique sub-shapes of theShape.
-// Return value is never less than 1 (theShape itself).
-int CountUniqueShapes(const TopoDS_Shape& theShape)
-{
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aUniqueShapes;
-  CollectShapesRecursively(theShape, aUniqueShapes);
-  return aUniqueShapes.Extent();
-}
 
 //=================================================================================================
 
@@ -305,25 +279,19 @@ int BOPDS_DS::Index(const TopoDS_Shape& theShape) const
 
 void BOPDS_DS::Init(const double theFuzz)
 {
-  // 1 Append Source Shapes
+  // 1. Append Source Shapes
   if (myArguments.IsEmpty())
   {
     return;
   }
   myRanges.SetIncrement(myArguments.Size());
 
-  // Note: this preserves original behavior.
-  // Is is questionable if this calculation and call to SetIncrement actually optimizes anything
-  // because another container is created in order to count unique shapes.
-  // It potentially could be a pessimization, but additional tests are required to confirm this.
-  const int aUniqueShapesCount = std::accumulate(
-    myArguments.begin(),
-    myArguments.end(),
-    0,
-    [](int aSum, const TopoDS_Shape& aShape) { return aSum + CountUniqueShapes(aShape); });
-  myLines.SetIncrement(2 * aUniqueShapesCount);
-
-  //-----------------------------------------------------scope_1 f
+  // Arbitrary large increment to avoid multiple allocations.
+  // Previous implementation calculated it as amount of unique shapes (i.e. including sub-shapes)
+  // in arguments multiplied by 2. But the act of counting unique shapes iself causes a significant
+  // overhead. Also it seems like unique shapes count * 2 is not enough in many cases and still
+  // leads to multiple allocations.
+  myLines.SetIncrement(500);
 
   int i1 = 0;
   for (const TopoDS_Shape& aShape : myArguments)
