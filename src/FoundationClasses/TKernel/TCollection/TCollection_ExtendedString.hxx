@@ -157,6 +157,7 @@ public:
   //! @param[in] theString the string to append
   Standard_EXPORT void AssignCat(const char16_t* theString);
 
+  //! Appends the char16_t string to this extended string (alias of AssignCat()).
   void operator+=(const char16_t* theString) { AssignCat(theString); }
 
 #if Standard_CPP17_OR_HIGHER
@@ -174,6 +175,7 @@ public:
     memcpy(myString + anOldLen, theStringView.data(), anOtherLen * sizeof(char16_t));
   }
 
+  //! Appends the std::u16string_view to this extended string (alias of AssignCat()).
   void operator+=(const std::u16string_view& theStringView) { AssignCat(theStringView); }
 #endif
 
@@ -470,6 +472,7 @@ public:
 
   //! Converts the first character into its corresponding
   //! upper-case character and the other characters into lowercase.
+  //! @note Only ASCII characters (a-z, A-Z) are affected by case conversion.
   Standard_EXPORT void Capitalize();
 
   //! Inserts the other extended string at the beginning of this string.
@@ -522,6 +525,7 @@ public:
   //! Returns True if the strings contain same characters.
   //! @param[in] theOther the string to compare with
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
+  //! @note When case-insensitive, only ASCII characters (a-z, A-Z) are affected.
   //! @return true if strings contain same characters
   Standard_EXPORT bool IsSameString(const TCollection_ExtendedString& theOther,
                                     const bool                        theIsCaseSensitive) const;
