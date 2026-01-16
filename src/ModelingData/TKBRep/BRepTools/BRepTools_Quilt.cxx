@@ -412,7 +412,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
       TopExp_Explorer itf1(Shape, TopAbs_EDGE);
       for (; itf1.More(); itf1.Next())
       {
-        const TopoDS_Shape&  E     = itf1.Current();
+        const TopoDS_Shape& E      = itf1.Current();
         const TopoDS_Shape* pShell = M.Seek(E);
         if (pShell)
         {
@@ -446,7 +446,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
 
       for (; itf.More(); itf.Next())
       {
-        const TopoDS_Edge&   E         = TopoDS::Edge(itf.Current());
+        const TopoDS_Edge&  E         = TopoDS::Edge(itf.Current());
         const TopoDS_Shape* pOldShell = M.Seek(E);
         if (pOldShell)
         {
@@ -483,7 +483,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
             TopExp_Explorer aexp(SH, TopAbs_EDGE);
             for (; aexp.More(); aexp.Next())
             {
-              const TopoDS_Shape&  ae  = aexp.Current();
+              const TopoDS_Shape& ae  = aexp.Current();
               const TopoDS_Shape* pAs = M.Seek(ae);
               if (!pAs)
                 continue;

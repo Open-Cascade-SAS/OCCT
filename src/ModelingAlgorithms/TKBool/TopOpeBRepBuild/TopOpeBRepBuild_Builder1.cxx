@@ -1851,14 +1851,14 @@ int TopOpeBRepBuild_Builder1::TwoPiecesON(const NCollection_Sequence<TopoDS_Shap
         else if (aStateObj == TopAbs_IN && aStateTool == TopAbs_IN)
         {
           if (myProcessedPartsON2d.Add(aPieceObj) == myProcessedPartsON2d.Extent())
-          { // we proceed IsSame only if we didn't it before
+          {                                     // we proceed IsSame only if we didn't it before
             IsSame2d(aSeq, aListOfPiecesOut2d); // Perform IsSame 2d and keep periodic parts
           }
         }
         else if (aStateObj == TopAbs_OUT && aStateTool == TopAbs_OUT)
         {
           if (myProcessedPartsON2d.Add(aPieceObj) == myProcessedPartsON2d.Extent())
-          { // we proceed IsSame only if we didn't it before
+          {                                     // we proceed IsSame only if we didn't it before
             IsSame2d(aSeq, aListOfPiecesOut2d); // Perform IsSame 2d and keep periodic parts
           }
         }
@@ -1926,7 +1926,7 @@ int TopOpeBRepBuild_Builder1::TwoPiecesON(const NCollection_Sequence<TopoDS_Shap
         else if (aStateObj == TopAbs_IN && aStateTool == TopAbs_IN)
         {
           if (myProcessedPartsON2d.Add(aPieceObj) == myProcessedPartsON2d.Extent())
-          { // we proceed IsSame only if we didn't it before
+          {                                     // we proceed IsSame only if we didn't it before
             IsSame2d(aSeq, aListOfPiecesOut2d); // Perform IsSame 2d and keep periodic parts
           }
         }

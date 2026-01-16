@@ -350,10 +350,10 @@ void BRepFeat_Builder::RebuildFaces()
     aExp.Init(aFF, TopAbs_EDGE);
     for (; aExp.More(); aExp.Next())
     {
-      const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
-      anOriE                = aE.Orientation();
-      bIsDegenerated        = BRep_Tool::Degenerated(aE);
-      bIsClosed             = BRep_Tool::IsClosed(aE, aF);
+      const TopoDS_Edge& aE                 = (*(TopoDS_Edge*)(&aExp.Current()));
+      anOriE                                = aE.Orientation();
+      bIsDegenerated                        = BRep_Tool::Degenerated(aE);
+      bIsClosed                             = BRep_Tool::IsClosed(aE, aF);
       NCollection_List<TopoDS_Shape>* pLEIm = myImages.ChangeSeek(aE);
       if (pLEIm)
       {

@@ -746,7 +746,7 @@ static bool AddMultiConexityFaces(
     }
     for (NCollection_List<TopoDS_Shape>::Iterator aItl(lfaces); aItl.More(); aItl.Next())
     {
-      TopoDS_Shape aF = aItl.Value();
+      TopoDS_Shape        aF          = aItl.Value();
       const TopoDS_Shape* pOthershell = aMapFaceShells.Seek(aF);
       if (!pOthershell)
         continue;

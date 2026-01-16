@@ -123,7 +123,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
         {
           TopoDS_Shape aTestedShapeRev = aTestedShape;
           aTestedShapeRev.Orientation(isReverse ? TopAbs_FORWARD : TopAbs_REVERSED);
-          occ::handle<VrmlData_IndexedFaceSet> aFaceSetToReuse;
+          occ::handle<VrmlData_IndexedFaceSet>  aFaceSetToReuse;
           const occ::handle<VrmlData_Geometry>* pRevNode = myRelMap.Seek(aTestedShapeRev);
           if (pRevNode)
             aFaceSetToReuse = occ::down_cast<VrmlData_IndexedFaceSet>(*pRevNode);

@@ -835,12 +835,13 @@ TEST(NCollection_IndexedDataMapTest, BoundWithMoveSemantics)
   NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aMap;
 
   // Test with rvalue key
-  TCollection_AsciiString* p1 = aMap.Bound(TCollection_AsciiString("Key1"), TCollection_AsciiString("Value1"));
+  TCollection_AsciiString* p1 =
+    aMap.Bound(TCollection_AsciiString("Key1"), TCollection_AsciiString("Value1"));
   EXPECT_TRUE(p1 != nullptr);
   EXPECT_TRUE(p1->IsEqual("Value1"));
 
   // Test with rvalue item
-  TCollection_AsciiString aKey2("Key2");
+  TCollection_AsciiString  aKey2("Key2");
   TCollection_AsciiString* p2 = aMap.Bound(aKey2, TCollection_AsciiString("Value2"));
   EXPECT_TRUE(p2 != nullptr);
   EXPECT_TRUE(p2->IsEqual("Value2"));

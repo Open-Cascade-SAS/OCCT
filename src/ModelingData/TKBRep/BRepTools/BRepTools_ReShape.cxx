@@ -218,7 +218,7 @@ TopoDS_Shape BRepTools_ReShape::Value(const TopoDS_Shape& ashape) const
     shape.Location(nullLoc);
   }
 
-  bool                 fromMap = false;
+  bool                fromMap = false;
   const TReplacement* pRepl   = myShapeToReplacement.Seek(shape);
   if (!pRepl)
   {

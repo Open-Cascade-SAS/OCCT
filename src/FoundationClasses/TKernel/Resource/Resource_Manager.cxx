@@ -437,7 +437,7 @@ double Resource_Manager::Real(const char* aResourceName) const
 
 const char* Resource_Manager::Value(const char* aResource) const
 {
-  TCollection_AsciiString Resource(aResource);
+  TCollection_AsciiString        Resource(aResource);
   const TCollection_AsciiString* pVal = myUserMap.Seek(Resource);
   if (pVal)
     return pVal->ToCString();
@@ -454,7 +454,7 @@ const char* Resource_Manager::Value(const char* aResource) const
 
 const char16_t* Resource_Manager::ExtValue(const char* aResource)
 {
-  TCollection_AsciiString Resource(aResource);
+  TCollection_AsciiString           Resource(aResource);
   const TCollection_ExtendedString* pVal = myExtStrMap.Seek(Resource);
   if (pVal)
     return pVal->ToExtString();
@@ -516,8 +516,8 @@ void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue
 //=======================================================================
 void Resource_Manager::SetResource(const char* aResource, const char* aValue)
 {
-  TCollection_AsciiString Resource = aResource;
-  TCollection_AsciiString Value    = aValue;
+  TCollection_AsciiString Resource  = aResource;
+  TCollection_AsciiString Value     = aValue;
   *myUserMap.Bound(Resource, Value) = Value;
 }
 

@@ -289,8 +289,8 @@ TEST_F(NCollection_DataMapTest, TryBound_NoOverwrite)
   // TryBound on existing key should NOT overwrite, just return pointer
   TCollection_AsciiString* pVal2 = aMap.TryBound(1, "Second");
   ASSERT_NE(pVal2, nullptr);
-  EXPECT_EQ(*pVal2, "First"); // Should still be "First", not "Second"
-  EXPECT_EQ(pVal1, pVal2);    // Should be the same pointer
+  EXPECT_EQ(*pVal2, "First");  // Should still be "First", not "Second"
+  EXPECT_EQ(pVal1, pVal2);     // Should be the same pointer
   EXPECT_EQ(aMap.Extent(), 1); // Size should not change
 
   // Compare with Bound which DOES overwrite

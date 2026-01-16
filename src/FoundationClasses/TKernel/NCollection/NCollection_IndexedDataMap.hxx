@@ -506,7 +506,7 @@ public:
                                                        aNewIndex,
                                                        std::forward<TheItemType>(theItem),
                                                        myData1[aHash]);
-    myData1[aHash]         = aNode;
+    myData1[aHash] = aNode;
     myData2[aNewIndex - 1] = aNode;
     return &aNode->ChangeValue();
   }

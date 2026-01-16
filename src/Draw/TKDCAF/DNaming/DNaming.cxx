@@ -195,7 +195,7 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
     TopExp_Explorer     explV(aFace, TopAbs_VERTEX);
     for (; explV.More(); explV.Next())
     {
-      const TopoDS_Shape&            aVertex   = explV.Current();
+      const TopoDS_Shape&             aVertex   = explV.Current();
       NCollection_List<TopoDS_Shape>* pList     = vertexNaborFaces.TryBound(aVertex, empty);
       bool                            faceIsNew = true;
       for (NCollection_List<TopoDS_Shape>::Iterator itrF(*pList); itrF.More(); itrF.Next())
@@ -267,8 +267,8 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
   // clang-format on
   for (; anEx.More(); anEx.Next())
   {
-    bool                                   aC0     = false;
-    const TopoDS_Shape&                    anEdge1 = anEx.Current();
+    bool                                  aC0     = false;
+    const TopoDS_Shape&                   anEdge1 = anEx.Current();
     const NCollection_List<TopoDS_Shape>* pList1  = edgeNaborFaces.Seek(anEdge1);
     if (pList1)
     {

@@ -448,7 +448,7 @@ bool Draft_Modification::Propagate()
       vtiter.Init(E, TopAbs_VERTEX);
       while (vtiter.More())
       {
-        V = TopoDS::Vertex(vtiter.Current());
+        V                        = TopoDS::Vertex(vtiter.Current());
         Draft_VertexInfo* aVInfo = myVMap.Bound(V, Draft_VertexInfo());
         aVInfo->Add(E);
         aVInfo->ChangeParameter(E) = BRep_Tool::Parameter(V, E);

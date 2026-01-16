@@ -1395,7 +1395,9 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
       {
         const TopoDS_Edge&  anEdge = TopoDS::Edge(Exp.Current());
         const TopoDS_Shape& AE     = OffAnc.Ancestor(anEdge);
-        myMap.TryBound(AE, EmptyMap)->TryBound(V1, NCollection_List<TopoDS_Shape>())->Append(anEdge);
+        myMap.TryBound(AE, EmptyMap)
+          ->TryBound(V1, NCollection_List<TopoDS_Shape>())
+          ->Append(anEdge);
       }
       First = false;
     }
@@ -1419,7 +1421,7 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
     {
       const NCollection_List<TopoDS_Shape>&    LOF = it.Value()(V1);
       NCollection_List<TopoDS_Shape>::Iterator itLOF(LOF);
-      NCollection_List<TopoDS_Shape>* pListV2 =
+      NCollection_List<TopoDS_Shape>*          pListV2 =
         myMap.ChangeFind(it.Key()).TryBound(V2, NCollection_List<TopoDS_Shape>());
       NCollection_List<TopoDS_Shape>* pListE =
         myMap.ChangeFind(it.Key()).TryBound(E, NCollection_List<TopoDS_Shape>());

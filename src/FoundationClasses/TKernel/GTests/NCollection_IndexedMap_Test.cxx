@@ -654,7 +654,7 @@ TEST(NCollection_IndexedMapTest, AddedWithMoveSemantics)
   EXPECT_EQ(aMap.Extent(), 1);
 
   // Test with lvalue
-  TCollection_AsciiString aKey("Second");
+  TCollection_AsciiString        aKey("Second");
   const TCollection_AsciiString& ref2 = aMap.Added(aKey);
   EXPECT_TRUE(ref2.IsEqual("Second"));
   EXPECT_EQ(aMap.Extent(), 2);
