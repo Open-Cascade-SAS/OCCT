@@ -153,43 +153,6 @@ TopLoc_Location TopLoc_Location::Powered(const int pwr) const
     return Inverted().Powered(-pwr);
 }
 
-//=================================================================================================
-
-// two locations are Equal if the Items have the same LocalValues and Powers
-// this is a recursive function to test it
-
-bool TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
-{
-  const void** p = (const void**)&myItems;
-  const void** q = (const void**)&Other.myItems;
-  if (*p == *q)
-  {
-    return true;
-  }
-  if (IsIdentity() || Other.IsIdentity())
-  {
-    return false;
-  }
-  if (FirstDatum() != Other.FirstDatum())
-  {
-    return false;
-  }
-  if (FirstPower() != Other.FirstPower())
-  {
-    return false;
-  }
-  else
-  {
-    return NextLocation() == Other.NextLocation();
-  }
-}
-
-//=================================================================================================
-
-bool TopLoc_Location::IsDifferent(const TopLoc_Location& Other) const
-{
-  return !IsEqual(Other);
-}
 
 //=================================================================================================
 

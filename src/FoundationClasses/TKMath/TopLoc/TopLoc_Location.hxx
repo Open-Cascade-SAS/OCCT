@@ -20,10 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <TopLoc_SListOfItemLocation.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <TopLoc_SListOfItemLocation.hxx>
+
+#include <atomic>
 
 class gp_Trsf;
 class TopLoc_Datum3D;
@@ -40,6 +41,46 @@ public:
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
   Standard_EXPORT TopLoc_Location();
+
+  //! Copy constructor.
+  TopLoc_Location(const TopLoc_Location& theOther)
+      : myItems(theOther.myItems),
+        myCachedHash(theOther.myCachedHash.load(std::memory_order_relaxed))
+  {
+  }
+
+  //! Move constructor.
+  TopLoc_Location(TopLoc_Location&& theOther) noexcept
+      : myItems(std::move(theOther.myItems)),
+        myCachedHash(theOther.myCachedHash.load(std::memory_order_relaxed))
+  {
+    theOther.myCachedHash.store(0, std::memory_order_relaxed);
+  }
+
+  //! Copy assignment operator.
+  TopLoc_Location& operator=(const TopLoc_Location& theOther)
+  {
+    if (this != &theOther)
+    {
+      myItems = theOther.myItems;
+      myCachedHash.store(theOther.myCachedHash.load(std::memory_order_relaxed),
+                         std::memory_order_relaxed);
+    }
+    return *this;
+  }
+
+  //! Move assignment operator.
+  TopLoc_Location& operator=(TopLoc_Location&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      myItems = std::move(theOther.myItems);
+      myCachedHash.store(theOther.myCachedHash.load(std::memory_order_relaxed),
+                         std::memory_order_relaxed);
+      theOther.myCachedHash.store(0, std::memory_order_relaxed);
+    }
+    return *this;
+  }
 
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
@@ -122,17 +163,17 @@ public:
   //! have the same elementary data, i.e. contain the same
   //! series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator ==.
-  Standard_EXPORT bool IsEqual(const TopLoc_Location& Other) const;
+  bool IsEqual(const TopLoc_Location& theOther) const;
 
-  bool operator==(const TopLoc_Location& Other) const { return IsEqual(Other); }
+  bool operator==(const TopLoc_Location& theOther) const { return IsEqual(theOther); }
 
   //! Returns true if this location and the location Other do
   //! not have the same elementary data, i.e. do not
   //! contain the same series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator !=.
-  Standard_EXPORT bool IsDifferent(const TopLoc_Location& Other) const;
+  bool IsDifferent(const TopLoc_Location& theOther) const;
 
-  bool operator!=(const TopLoc_Location& Other) const { return IsDifferent(Other); }
+  bool operator!=(const TopLoc_Location& theOther) const { return IsDifferent(theOther); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -141,12 +182,17 @@ public:
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear() { myItems.Clear(); }
+  void Clear()
+  {
+    myItems.Clear();
+    myCachedHash.store(0, std::memory_order_relaxed);
+  }
 
   static double ScalePrec() { return 1.e-14; }
 
 private:
-  TopLoc_SListOfItemLocation myItems;
+  TopLoc_SListOfItemLocation  myItems;
+  mutable std::atomic<size_t> myCachedHash{0};
 };
 
 #include <TopLoc_Location.lxx>

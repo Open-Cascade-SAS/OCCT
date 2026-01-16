@@ -31,6 +31,7 @@ inline bool TopLoc_Location::IsIdentity() const
 inline void TopLoc_Location::Identity()
 {
   myItems.Clear();
+  myCachedHash.store(0, std::memory_order_relaxed);
 }
 
 //=================================================================================================
@@ -58,30 +59,69 @@ inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 
 inline size_t TopLoc_Location::HashCode() const
 {
+  size_t aHash = myCachedHash.load(std::memory_order_relaxed);
+  if (aHash != 0)
+  {
+    return aHash;
+  }
   if (myItems.IsEmpty())
   {
-    return 0;
+    // Return optimal seed for empty location (0 is sentinel for "not computed").
+    aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+    myCachedHash.store(aHash, std::memory_order_relaxed);
+    return aHash;
   }
-  // Hash based on first datum, first power, and last datum.
-  // Find the last item in the list.
-  TopLoc_SListOfItemLocation anItems = myItems;
-  while (!anItems.Tail().IsEmpty())
+  // Hash all items incrementally using OCCT's MurmurHash.
+  aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+  size_t aCombined[3];
+  for (TopLoc_SListOfItemLocation anIter = myItems; anIter.More(); anIter.Next())
   {
-    anItems.Next();
+    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(anIter.Value().myDatum);
+    aCombined[1] = opencascade::hash(anIter.Value().myPower);
+    aCombined[2] = aHash;
+    aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
   }
-  const occ::handle<TopLoc_Datum3D>& aLastDatum = anItems.Value().myDatum;
-  if (aLastDatum == myItems.Value().myDatum)
+  myCachedHash.store(aHash, std::memory_order_relaxed);
+  return aHash;
+}
+
+//=================================================================================================
+
+inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
+{
+  const void** p = (const void**)&myItems;
+  const void** q = (const void**)&theOther.myItems;
+  if (*p == *q)
   {
-    // Single item case: use first datum and power only.
-    const size_t aCombined[2] = {std::hash<occ::handle<TopLoc_Datum3D>>{}(myItems.Value().myDatum),
-                                 opencascade::hash(myItems.Value().myPower)};
-    return opencascade::hashBytes(aCombined, sizeof(aCombined));
+    return true;
   }
-  // Multiple items: combine first datum, first power, and last datum.
-  const size_t aCombined[3] = {std::hash<occ::handle<TopLoc_Datum3D>>{}(myItems.Value().myDatum),
-                               opencascade::hash(myItems.Value().myPower),
-                               std::hash<occ::handle<TopLoc_Datum3D>>{}(aLastDatum)};
-  return opencascade::hashBytes(aCombined, sizeof(aCombined));
+  // If both have cached hashes and they differ, locations are not equal.
+  const size_t aHash      = myCachedHash.load(std::memory_order_relaxed);
+  const size_t aOtherHash = theOther.myCachedHash.load(std::memory_order_relaxed);
+  if (aHash != 0 && aOtherHash != 0 && aHash != aOtherHash)
+  {
+    return false;
+  }
+  if (IsIdentity() || theOther.IsIdentity())
+  {
+    return false;
+  }
+  if (FirstDatum() != theOther.FirstDatum())
+  {
+    return false;
+  }
+  if (FirstPower() != theOther.FirstPower())
+  {
+    return false;
+  }
+  return NextLocation() == theOther.NextLocation();
+}
+
+//=================================================================================================
+
+inline bool TopLoc_Location::IsDifferent(const TopLoc_Location& theOther) const
+{
+  return !IsEqual(theOther);
 }
 
 //=================================================================================================
