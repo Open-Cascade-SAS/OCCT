@@ -423,23 +423,59 @@ public:
                                         Bnd_Box&   theBox,
                                         const bool theCheckInverted = true);
 
-protected:
+private:
   //! Initializes the pave blocks for the shape with index theIndex
-  Standard_EXPORT void InitPaveBlocks(const int theIndex);
+  void InitPaveBlocks(const int theIndex);
 
   //! Initializes the state of face with index theIndex
-  Standard_EXPORT void InitFaceInfo(const int theIndex);
+  void InitFaceInfo(const int theIndex);
 
   //! Initializes the FaceInfo structure for face with index theIndex with elements
   //! having IN state for the face
-  Standard_EXPORT void InitFaceInfoIn(const int theIndex);
+  void InitFaceInfoIn(const int theIndex);
 
-  Standard_EXPORT void InitShape(const int theIndex, const TopoDS_Shape& theS);
+  void InitShape(const int theIndex, const TopoDS_Shape& theS);
 
-  Standard_EXPORT bool CheckCoincidence(const occ::handle<BOPDS_PaveBlock>& thePB1,
-                                        const occ::handle<BOPDS_PaveBlock>& thePB2,
-                                        const double                        theFuzz);
+  bool CheckCoincidence(const occ::handle<BOPDS_PaveBlock>& thePB1,
+                        const occ::handle<BOPDS_PaveBlock>& thePB2,
+                        const double                        theFuzz);
 
+  //! Prepares vertices, updates their bounding boxes.
+  //! @param theAdditionalTolerance The additional tolerance to be added to the
+  //! gaps of the bounding boxes.
+  //! @return The number of vertices processed.
+  int prepareVertices(const double theAdditionalTolerance);
+
+  //! Prepares edges, updates their bounding boxes,
+  //! sets degenerated flag for degenerated edges, creates start/end vertices for infinite edges.
+  //! @param theAdditionalTolerance The additional tolerance to be added to the
+  //! gaps of the bounding boxes.
+  //! @return The number of edges processed.
+  int prepareEdges(const double theAdditionalTolerance);
+
+  //! Prepares faces, updates their bounding boxes and sub-shapes.
+  //! Initially, subshapes of the faces are wires. They will be updated to
+  //! contain edges and vertices.
+  //! @param theAdditionalTolerance The additional tolerance to be added to the
+  //! gaps of the bounding boxes.
+  //! @return The number of faces processed.
+  int prepareFaces(const double theAdditionalTolerance);
+
+  //! Prepares solids, updates their bounding boxes and sub-shapes.
+  //! Initially, subshapes of the solids are shells. They will be updated to
+  //! contain faces and edges.
+  //! @param theAdditionalTolerance The additional tolerance to be added to the
+  //! gaps of the bounding boxes.
+  //! @return The number of solids processed.
+  int prepareSolids();
+
+  //! Prepares the Vertex-Edge connection map.
+  //! For the index of each vertex in the data structure,
+  //! finds all edges sharing this vertex and
+  //! stores the indices of these edges in a map.
+  void buildVertexEdgeMap();
+
+private:
   occ::handle<NCollection_BaseAllocator>                             myAllocator;
   NCollection_List<TopoDS_Shape>                                     myArguments;
   int                                                                myNbShapes;

@@ -305,15 +305,12 @@ int BOPDS_DS::Index(const TopoDS_Shape& theShape) const
 
 void BOPDS_DS::Init(const double theFuzz)
 {
-  NCollection_List<int>::Iterator aIt2;
-
   // 1 Append Source Shapes
-  const int anArgCount = myArguments.Size();
-  if (anArgCount == 0)
+  if (myArguments.IsEmpty())
   {
     return;
   }
-  myRanges.SetIncrement(anArgCount);
+  myRanges.SetIncrement(myArguments.Size());
 
   // Note: this preserves original behavior.
   // Is is questionable if this calculation and call to SetIncrement actually optimizes anything
@@ -327,8 +324,6 @@ void BOPDS_DS::Init(const double theFuzz)
   myLines.SetIncrement(2 * aUniqueShapesCount);
 
   //-----------------------------------------------------scope_1 f
-  occ::handle<NCollection_BaseAllocator> anAllocator =
-    NCollection_BaseAllocator::CommonBaseAllocator();
 
   int i1 = 0;
   for (const TopoDS_Shape& aShape : myArguments)
@@ -337,275 +332,28 @@ void BOPDS_DS::Init(const double theFuzz)
     {
       continue;
     }
-    InitShape(Append(aShape), aShape);
 
+    InitShape(Append(aShape), aShape);
     const int i2 = NbShapes() - 1;
     myRanges.Append(BOPDS_IndexRange(i1, i2));
     i1 = i2 + 1;
   }
 
-  const double aTolAdd = std::max(theFuzz, Precision::Confusion()) * 0.5;
-  myNbSourceShapes     = NbShapes();
+  myNbSourceShapes = NbShapes();
 
-  // 2 Bounding Boxes
+  // 2. Prepare data for shapes. Includes updating bound boxes, updating sub-shapes.
+  const double anAdditionalTolerance = std::max(theFuzz, Precision::Confusion()) * 0.5;
+  prepareVertices(anAdditionalTolerance);                      // Vertex.
+  const int anEdgeCount = prepareEdges(anAdditionalTolerance); // Edge.
+  const int aFaceCount  = prepareFaces(anAdditionalTolerance); // Face.
+  prepareSolids();                                             // Solid.
 
-  // 2.1 Vertex
-  for (int j = 0; j < myNbSourceShapes; ++j)
-  {
-    BOPDS_ShapeInfo& aShapeInfo = ChangeShapeInfo(j);
-    if (aShapeInfo.ShapeType() != TopAbs_VERTEX)
-    {
-      continue;
-    }
+  // 3. Prepare Vertex-Edge connection map.
+  buildVertexEdgeMap();
 
-    const TopoDS_Vertex& aVertex = TopoDS::Vertex(aShapeInfo.Shape());
-
-    Bnd_Box& aBox = aShapeInfo.ChangeBox();
-    aBox.SetGap(BRep_Tool::Tolerance(aVertex) + aTolAdd);
-    aBox.Add(BRep_Tool::Pnt(aVertex));
-  }
-
-  // 2.2 Edge
-  int aNbE = 0;
-  for (int j = 0; j < myNbSourceShapes; ++j)
-  {
-    BOPDS_ShapeInfo& aShapeInfo = ChangeShapeInfo(j);
-    if (aShapeInfo.ShapeType() != TopAbs_EDGE)
-    {
-      continue;
-    }
-
-    const TopoDS_Edge& anEdge          = TopoDS::Edge(aShapeInfo.Shape());
-    const double       anEdgeTolerance = BRep_Tool::Tolerance(anEdge);
-
-    if (!BRep_Tool::Degenerated(anEdge))
-    {
-      gp_Pnt aPx;
-
-      NCollection_List<int>& aLI = aShapeInfo.ChangeSubShapes();
-
-      TopoDS_Edge aEx = anEdge;
-      aEx.Orientation(TopAbs_FORWARD);
-      double                        aCurveStart, aCurveEnd;
-      const occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aEx, aCurveStart, aCurveEnd);
-
-      if (Precision::IsNegativeInfinite(aCurveStart))
-      {
-        aC3D->D0(aCurveStart, aPx);
-        TopoDS_Vertex aVx;
-        BRep_Builder  aBB;
-        aBB.MakeVertex(aVx, aPx, anEdgeTolerance);
-        aVx.Orientation(TopAbs_FORWARD);
-
-        BOPDS_ShapeInfo aSIx;
-        aSIx.SetShape(aVx);
-        aSIx.SetShapeType(TopAbs_VERTEX);
-        aSIx.SetFlag(1); // infinite flag
-
-        aLI.Append(Append(aSIx));
-      }
-      if (Precision::IsPositiveInfinite(aCurveEnd))
-      {
-        aC3D->D0(aCurveEnd, aPx);
-        TopoDS_Vertex aVx;
-        BRep_Builder  aBB;
-        aBB.MakeVertex(aVx, aPx, anEdgeTolerance);
-        aVx.Orientation(TopAbs_REVERSED);
-
-        BOPDS_ShapeInfo aSIx;
-        aSIx.SetShape(aVx);
-        aSIx.SetShapeType(TopAbs_VERTEX);
-        aSIx.SetFlag(1); // infinite flag
-
-        aLI.Append(Append(aSIx));
-      }
-    }
-    else
-    {
-      aShapeInfo.SetFlag(j);
-    }
-
-    Bnd_Box& aBox = aShapeInfo.ChangeBox();
-    BRepBndLib::Add(anEdge, aBox);
-
-    for (NCollection_List<int>::Iterator aIt1(aShapeInfo.SubShapes()); aIt1.More(); aIt1.Next())
-    {
-      BOPDS_ShapeInfo& aSIV = ChangeShapeInfo(aIt1.Value());
-      Bnd_Box&         aBx  = aSIV.ChangeBox();
-      aBox.Add(aBx);
-    }
-    aBox.SetGap(aBox.GetGap() + aTolAdd);
-    ++aNbE;
-  }
-
-  // 2.3 Face
-  NCollection_Map<int>           aMI(100, anAllocator);
-  NCollection_Map<int>::Iterator aItMI;
-
-  int aNbF = 0;
-  for (int j = 0; j < myNbSourceShapes; ++j)
-  {
-    BOPDS_ShapeInfo& aShapeInfo = ChangeShapeInfo(j);
-    if (aShapeInfo.ShapeType() != TopAbs_FACE)
-    {
-      continue;
-    }
-
-    const TopoDS_Shape& aFace = aShapeInfo.Shape();
-
-    Bnd_Box& aBox = aShapeInfo.ChangeBox();
-    BRepBndLib::Add(aFace, aBox);
-
-    NCollection_List<int>& aLW = aShapeInfo.ChangeSubShapes();
-    for (NCollection_List<int>::Iterator aIt1(aLW); aIt1.More(); aIt1.Next())
-    {
-      BOPDS_ShapeInfo& aSIW = ChangeShapeInfo(aIt1.Value());
-
-      const NCollection_List<int>& aLE = aSIW.SubShapes();
-      aIt2.Initialize(aLE);
-      for (; aIt2.More(); aIt2.Next())
-      {
-        const int        nE   = aIt2.Value();
-        BOPDS_ShapeInfo& aSIE = ChangeShapeInfo(nE);
-        Bnd_Box&         aBx  = aSIE.ChangeBox();
-        aBox.Add(aBx);
-        aMI.Add(nE);
-
-        const TopoDS_Edge& aE = *(TopoDS_Edge*)(&aSIE.Shape());
-        if (BRep_Tool::Degenerated(aE))
-        {
-          aSIE.SetFlag(j);
-        }
-
-        const NCollection_List<int>& aLV = aSIE.SubShapes();
-        for (NCollection_List<int>::Iterator aIt3(aLV); aIt3.More(); aIt3.Next())
-        {
-          aMI.Add(aIt3.Value());
-        }
-      }
-    }
-
-    // pure internal vertices on the face
-    for (TopoDS_Iterator aItS(aFace); aItS.More(); aItS.Next())
-    {
-      const TopoDS_Shape& aSx = aItS.Value();
-      if (aSx.ShapeType() == TopAbs_VERTEX)
-      {
-        aMI.Add(Index(aSx));
-      }
-    }
-
-    // For a Face: change wires for BRep sub-shapes
-    aLW.Clear();
-    aItMI.Initialize(aMI);
-    for (; aItMI.More(); aItMI.Next())
-    {
-      aLW.Append(aItMI.Value());
-    }
-    aMI.Clear();
-    aBox.SetGap(aBox.GetGap() + aTolAdd);
-    ++aNbF;
-  }
-
-  // For the check mode we need to compute the bounding box for solid.
-  // Otherwise, it will be computed on the building stage
-  bool bCheckMode = (myArguments.Extent() == 1);
-  if (bCheckMode)
-  {
-    // 2.4 Solids
-    for (int j = 0; j < myNbSourceShapes; ++j)
-    {
-      BOPDS_ShapeInfo& aShapeInfo = ChangeShapeInfo(j);
-      if (aShapeInfo.ShapeType() != TopAbs_SOLID)
-      {
-        continue;
-      }
-
-      Bnd_Box& aBox = aShapeInfo.ChangeBox();
-      BuildBndBoxSolid(j, aBox);
-      // update sub-shapes by BRep comprising ones
-      aMI.Clear();
-      NCollection_List<int>& aLI1 = aShapeInfo.ChangeSubShapes();
-
-      for (NCollection_List<int>::Iterator aIt1(aLI1); aIt1.More(); aIt1.Next())
-      {
-        BOPDS_ShapeInfo& aSI1 = ChangeShapeInfo(aIt1.Value());
-        if (aSI1.ShapeType() != TopAbs_SHELL)
-        {
-          continue;
-        }
-
-        const NCollection_List<int>& aLI2 = aSI1.SubShapes();
-        aIt2.Initialize(aLI2);
-        for (; aIt2.More(); aIt2.Next())
-        {
-          const int        n2   = aIt2.Value();
-          BOPDS_ShapeInfo& aSI2 = ChangeShapeInfo(n2);
-          if (aSI2.ShapeType() != TopAbs_FACE)
-          {
-            continue;
-          }
-
-          aMI.Add(n2);
-
-          const NCollection_List<int>& aLI3 = aSI2.SubShapes();
-          for (NCollection_List<int>::Iterator aIt3(aLI3); aIt3.More(); aIt3.Next())
-          {
-            aMI.Add(aIt3.Value());
-          }
-        }
-      }
-
-      aLI1.Clear();
-      aItMI.Initialize(aMI);
-      for (; aItMI.More(); aItMI.Next())
-      {
-        aLI1.Append(aItMI.Value());
-      }
-      aMI.Clear();
-    }
-  }
-
-  aMI.Clear();
-  //-----------------------------------------------------
-
-  // Prepare Vertex-Edge connection map
-  for (int nE = 0; nE < myNbSourceShapes; ++nE)
-  {
-    BOPDS_ShapeInfo& aShapeInfo = ChangeShapeInfo(nE);
-    if (aShapeInfo.ShapeType() != TopAbs_EDGE)
-    {
-      continue;
-    }
-
-    const NCollection_List<int>& aLV = aShapeInfo.SubShapes();
-    for (NCollection_List<int>::Iterator aIt1(aLV); aIt1.More(); aIt1.Next())
-    {
-      const int              nV  = aIt1.Value();
-      NCollection_List<int>* pLE = myMapVE.ChangeSeek(nV);
-      if (!pLE)
-      {
-        pLE = myMapVE.Bound(nV, NCollection_List<int>(myAllocator));
-        pLE->Append(nE);
-      }
-      else
-      {
-        // provide uniqueness of the edges in the list
-        for (aIt2.Initialize(*pLE); aIt2.More(); aIt2.Next())
-        {
-          if (aIt2.Value() == nE)
-            break;
-        }
-        if (!aIt2.More())
-          pLE->Append(nE);
-      }
-    }
-  }
-  //-----------------------------------------------------scope_1 t
-  // 3 myPaveBlocksPool
-  // 4. myFaceInfoPool
-  myPaveBlocksPool.SetIncrement(aNbE);
-  myFaceInfoPool.SetIncrement(aNbF);
+  // 4. Prepare pools.
+  myPaveBlocksPool.SetIncrement(anEdgeCount);
+  myFaceInfoPool.SetIncrement(aFaceCount);
 }
 
 //=================================================================================================
@@ -718,56 +466,54 @@ NCollection_List<occ::handle<BOPDS_PaveBlock>>& BOPDS_DS::ChangePaveBlocks(const
 
 //=================================================================================================
 
-void BOPDS_DS::InitPaveBlocks(const int theIndex)
+void BOPDS_DS::InitPaveBlocks(const int theEdgeIndex)
 {
-  int                             nV = 0;
-  TopoDS_Vertex                   aV;
-  NCollection_List<int>::Iterator aIt;
 
-  BOPDS_ShapeInfo&  aShapeInfo = ChangeShapeInfo(theIndex);
-  const TopoDS_Edge anEdge     = TopoDS::Edge(aShapeInfo.Shape());
+  BOPDS_ShapeInfo&  anEdgeInfo = ChangeShapeInfo(theEdgeIndex);
+  const TopoDS_Edge anEdge     = TopoDS::Edge(anEdgeInfo.Shape());
 
-  const NCollection_List<int>& aSubShapeIndices = aShapeInfo.SubShapes();
-  if (aSubShapeIndices.IsEmpty())
+  const NCollection_List<int>& aVertexIndices = anEdgeInfo.SubShapes();
+  if (aVertexIndices.IsEmpty())
   {
     return;
   }
 
   occ::handle<BOPDS_PaveBlock> aPaveBlock = new BOPDS_PaveBlock;
-  aPaveBlock->SetOriginalEdge(theIndex);
+  aPaveBlock->SetOriginalEdge(theEdgeIndex);
 
   if (anEdge.Orientation() != TopAbs_INTERNAL)
   {
-    aIt.Initialize(aSubShapeIndices);
-    for (; aIt.More(); aIt.Next())
+    for (auto aVertexIndex : aVertexIndices)
     {
-      nV = aIt.Value();
+      const BOPDS_ShapeInfo& aVertexInfo = ShapeInfo(aVertexIndex);
+      TopoDS_Vertex          aVertex     = TopoDS::Vertex(aVertexInfo.Shape());
+      // Important: for vertices HasFlag() means that the original edge is located on the infinite
+      // curve and vertex was created during initialization of this class object.
+      // Such vertices are not topologically connected to the edge so we cannot use
+      // BRep_Tool::Parameter.
+      const double aVertexParam = aVertexInfo.HasFlag() ? ComputeParameter(aVertex, anEdge)
+                                                        : BRep_Tool::Parameter(aVertex, anEdge);
 
-      const BOPDS_ShapeInfo& aSIV = ShapeInfo(nV);
-      aV                          = *(TopoDS_Vertex*)(&aSIV.Shape());
-      const double aT =
-        aSIV.HasFlag() ? ComputeParameter(aV, anEdge) : BRep_Tool::Parameter(aV, anEdge);
-
-      nV = GetSameDomainIndex(nV);
-      BOPDS_Pave aPave(nV, aT);
-      if (aShapeInfo.HasFlag()) // for a degenerated edge append pave unconditionally
+      aVertexIndex = GetSameDomainIndex(aVertexIndex);
+      BOPDS_Pave aPave(aVertexIndex, aVertexParam);
+      if (anEdgeInfo.HasFlag()) // for a degenerated edge append pave unconditionally
         aPaveBlock->AppendExtPave1(aPave);
       else
         aPaveBlock->AppendExtPave(aPave);
-    }
 
-    if (aSubShapeIndices.Size() == 1)
-    {
-      aV.Reverse();
-      const double aT = BRep_Tool::Parameter(aV, anEdge);
-      aPaveBlock->AppendExtPave1(BOPDS_Pave(nV, aT));
+      // I'm not sure whats the purpose of this block. It looks like a hack for a specific case.
+      if (aVertexIndices.Size() == 1)
+      {
+        aVertex.Reverse();
+        aPaveBlock->AppendExtPave1(BOPDS_Pave(aVertexIndex, BRep_Tool::Parameter(aVertex, anEdge)));
+      }
     }
   }
   else
   {
-    for (TopoDS_Iterator aItE(anEdge, false, true); aItE.More(); aItE.Next())
+    for (TopoDS_Iterator anEdgeIter(anEdge, false, true); anEdgeIter.More(); anEdgeIter.Next())
     {
-      const TopoDS_Vertex&   aVertex        = TopoDS::Vertex(aItE.Value());
+      const TopoDS_Vertex&   aVertex        = TopoDS::Vertex(anEdgeIter.Value());
       const int              theVertexIndex = Index(aVertex);
       const BOPDS_ShapeInfo& aVertexInfo    = ShapeInfo(theVertexIndex);
       const double aVertexParam = aVertexInfo.HasFlag() ? ComputeParameter(aVertex, anEdge)
@@ -777,7 +523,7 @@ void BOPDS_DS::InitPaveBlocks(const int theIndex)
   }
 
   aPaveBlock->Update(myPaveBlocksPool.Appended(), false);
-  aShapeInfo.SetReference(myPaveBlocksPool.Length() - 1);
+  anEdgeInfo.SetReference(myPaveBlocksPool.Length() - 1);
 }
 
 //=================================================================================================
@@ -1736,9 +1482,9 @@ void BOPDS_DS::UpdatePaveBlockWithSDVertices(const occ::handle<BOPDS_PaveBlock>&
 
 //=================================================================================================
 
-void BOPDS_DS::UpdateCommonBlockWithSDVertices(const occ::handle<BOPDS_CommonBlock>& theCB)
+void BOPDS_DS::UpdateCommonBlockWithSDVertices(const occ::handle<BOPDS_CommonBlock>& theCommonBlock)
 {
-  for (const auto& aPaveBlock : theCB->PaveBlocks())
+  for (const auto& aPaveBlock : theCommonBlock->PaveBlocks())
   {
     UpdatePaveBlockWithSDVertices(aPaveBlock);
   }
@@ -1746,9 +1492,9 @@ void BOPDS_DS::UpdateCommonBlockWithSDVertices(const occ::handle<BOPDS_CommonBlo
 
 //=================================================================================================
 
-void BOPDS_DS::InitPaveBlocksForVertex(const int theNV)
+void BOPDS_DS::InitPaveBlocksForVertex(const int theVertexIndex)
 {
-  const NCollection_List<int>* anEdgeIndices = myMapVE.Seek(theNV);
+  const NCollection_List<int>* anEdgeIndices = myMapVE.Seek(theVertexIndex);
   if (!anEdgeIndices)
   {
     return;
@@ -1844,4 +1590,305 @@ bool BOPDS_DS::IsValidShrunkData(const occ::handle<BOPDS_PaveBlock>& thePaveBloc
     }
   }
   return true;
+}
+
+//=================================================================================================
+
+int BOPDS_DS::prepareVertices(const double theAdditionalTolerance)
+{
+  int aVertexCount = 0;
+
+  for (int aVertexIndex = 0; aVertexIndex < myNbSourceShapes; ++aVertexIndex)
+  {
+    BOPDS_ShapeInfo& aVertexInfo = ChangeShapeInfo(aVertexIndex);
+    if (aVertexInfo.ShapeType() != TopAbs_VERTEX)
+    {
+      continue;
+    }
+    ++aVertexCount;
+
+    const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVertexInfo.Shape());
+
+    Bnd_Box& aVertexBoundBox = aVertexInfo.ChangeBox();
+    aVertexBoundBox.SetGap(BRep_Tool::Tolerance(aVertex) + theAdditionalTolerance);
+    aVertexBoundBox.Add(BRep_Tool::Pnt(aVertex));
+  }
+
+  return aVertexCount;
+}
+
+//=================================================================================================
+
+int BOPDS_DS::prepareEdges(const double theAdditionalTolerance)
+{
+  int anEdgeCount = 0;
+
+  for (int anEdgeIndex = 0; anEdgeIndex < myNbSourceShapes; ++anEdgeIndex)
+  {
+    BOPDS_ShapeInfo& anEdgeInfo = ChangeShapeInfo(anEdgeIndex);
+    if (anEdgeInfo.ShapeType() != TopAbs_EDGE)
+    {
+      continue;
+    }
+    ++anEdgeCount;
+
+    const TopoDS_Edge& anEdge          = TopoDS::Edge(anEdgeInfo.Shape());
+    const double       anEdgeTolerance = BRep_Tool::Tolerance(anEdge);
+
+    if (!BRep_Tool::Degenerated(anEdge))
+    {
+      // This is processing of special case when edge has infinite curve.
+      // In this case vertices are created at the infinite positions
+      // and added to the edge sub-shape list.
+
+      NCollection_List<int>& aVertexIndices = anEdgeInfo.ChangeSubShapes();
+
+      TopoDS_Edge aForwardEdge = anEdge;
+      aForwardEdge.Orientation(TopAbs_FORWARD);
+      double                        aCurveStart, aCurveEnd;
+      const occ::handle<Geom_Curve> aForwardEdgeCurve =
+        BRep_Tool::Curve(aForwardEdge, aCurveStart, aCurveEnd);
+
+      // Process infinite values of the edge curve parameters.
+      // Creates vertices at the infinite positions and add them to the edge sub-shape list.
+      auto processInfinite =
+        [this, &aForwardEdgeCurve, &aVertexIndices, anEdgeTolerance](double theParam) {
+          gp_Pnt aPoint;
+          aForwardEdgeCurve->D0(theParam, aPoint);
+          TopoDS_Vertex aVertex;
+          BRep_Builder  aBuilder;
+          aBuilder.MakeVertex(aVertex, aPoint, anEdgeTolerance);
+          aVertex.Orientation(TopAbs_FORWARD);
+
+          BOPDS_ShapeInfo aVertexInfo;
+          aVertexInfo.SetShape(aVertex);
+          aVertexInfo.SetShapeType(TopAbs_VERTEX);
+          aVertexInfo.SetFlag(1); // infinite flag
+
+          aVertexIndices.Append(Append(aVertexInfo));
+        };
+
+      if (Precision::IsNegativeInfinite(aCurveStart))
+      {
+        processInfinite(aCurveStart);
+      }
+      if (Precision::IsPositiveInfinite(aCurveEnd))
+      {
+        processInfinite(aCurveEnd);
+      }
+    }
+    else
+    {
+      anEdgeInfo.SetFlag(anEdgeIndex);
+    }
+
+    // Update edge bounding box with its own bounding box.
+    Bnd_Box& anEdgeBoundBox = anEdgeInfo.ChangeBox();
+    BRepBndLib::Add(anEdge, anEdgeBoundBox);
+
+    // Add bounding boxes of vertices to the edge bounding box.
+    for (const auto& aVertexIndex : anEdgeInfo.SubShapes())
+    {
+      BOPDS_ShapeInfo& aVertexInfo = ChangeShapeInfo(aVertexIndex);
+      anEdgeBoundBox.Add(aVertexInfo.Box());
+    }
+
+    anEdgeBoundBox.SetGap(anEdgeBoundBox.GetGap() + theAdditionalTolerance);
+  }
+
+  return anEdgeCount;
+}
+
+//=================================================================================================
+
+int BOPDS_DS::prepareFaces(const double theAdditionalTolerance)
+{
+  int aFaceCount = 0;
+
+  for (int aFaceIndex = 0; aFaceIndex < myNbSourceShapes; ++aFaceIndex)
+  {
+    // Iterate over all faces.
+    BOPDS_ShapeInfo& aFaceInfo = ChangeShapeInfo(aFaceIndex);
+    if (aFaceInfo.ShapeType() != TopAbs_FACE)
+    {
+      continue;
+    }
+    ++aFaceCount;
+
+    // Map of sub-shape indices for the face that will replace the current list of wire indices.
+    NCollection_Map<int> aNewSubShapeIndices(100, NCollection_BaseAllocator::CommonBaseAllocator());
+
+    const TopoDS_Shape& aFace = aFaceInfo.Shape();
+
+    // Update face bounding box with its own bounding box.
+    Bnd_Box& aFaceBoundBox = aFaceInfo.ChangeBox();
+    BRepBndLib::Add(aFace, aFaceBoundBox);
+
+    // Container of the face sub-shape indices. Currently contains wire indices.
+    // Will be updated to contain edge and vertex indices instead.
+    NCollection_List<int>& aFaceSubShapes = aFaceInfo.ChangeSubShapes();
+
+    // Iterate over edges and vertices of the face and fill the new map of sub-shape indices.
+    // Also marks degenerated edges on the face.
+    for (const auto& aWireIndex : aFaceSubShapes)
+    {
+      for (const auto& anEdgeIndex : ChangeShapeInfo(aWireIndex).SubShapes())
+      {
+        // Update face bounding box with edge bounding boxes.
+        BOPDS_ShapeInfo& anEdgeInfo     = ChangeShapeInfo(anEdgeIndex);
+        Bnd_Box&         anEdgeBoundBox = anEdgeInfo.ChangeBox();
+        aFaceBoundBox.Add(anEdgeBoundBox);
+
+        // Add edge index to the map of indices.
+        aNewSubShapeIndices.Add(anEdgeIndex);
+
+        // Mark degenerated edges on the face.
+        // It is unclear what this flag means and how exactly it is used.
+        // Presumably, it means different things in different contexts.
+        // Setting this flag (if it is even a flag at this point) for degenerated edges
+        // to the value of the face index is weird but such is the original code.
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeInfo.Shape());
+        if (BRep_Tool::Degenerated(anEdge))
+        {
+          anEdgeInfo.SetFlag(aFaceIndex);
+        }
+
+        // Add vertices of the edge to the map of indices.
+        for (const auto& aVertexIndex : anEdgeInfo.SubShapes())
+        {
+          aNewSubShapeIndices.Add(aVertexIndex);
+        }
+      }
+    }
+
+    // Add vertices of the face to the map of indices.
+    for (TopoDS_Iterator aFaceIter(aFace); aFaceIter.More(); aFaceIter.Next())
+    {
+      const TopoDS_Shape& aSubShape = aFaceIter.Value();
+      if (aSubShape.ShapeType() == TopAbs_VERTEX)
+      {
+        aNewSubShapeIndices.Add(Index(aSubShape));
+      }
+    }
+
+    // Remove wire indices and fill in edge and vertex indices instead.
+    aFaceSubShapes.Clear();
+    for (NCollection_Map<int>::Iterator aSubShapeIndicesIter(aNewSubShapeIndices);
+         aSubShapeIndicesIter.More();
+         aSubShapeIndicesIter.Next())
+    {
+      aFaceSubShapes.Append(aSubShapeIndicesIter.Value());
+    }
+
+    aFaceBoundBox.SetGap(aFaceBoundBox.GetGap() + theAdditionalTolerance);
+  }
+
+  return aFaceCount;
+}
+
+//=================================================================================================
+
+int BOPDS_DS::prepareSolids()
+{
+  int aSolidCount = 0;
+
+  // For the check mode we need to compute the bounding box for solid.
+  // Otherwise, it will be computed on the building stage
+  if (myArguments.Size() != 1)
+  {
+    return 0;
+  }
+
+  for (int aSolidIndex = 0; aSolidIndex < myNbSourceShapes; ++aSolidIndex)
+  {
+    BOPDS_ShapeInfo& aSolidInfo = ChangeShapeInfo(aSolidIndex);
+    if (aSolidInfo.ShapeType() != TopAbs_SOLID)
+    {
+      continue;
+    }
+    ++aSolidCount;
+
+    // Map of sub-shape indices for the face that will replace the current list of wire indices.
+    NCollection_Map<int> aNewSubShapeIndices(100, NCollection_BaseAllocator::CommonBaseAllocator());
+
+    // Update solid bounding box with its own bounding box.
+    Bnd_Box& aSolidBoundBox = aSolidInfo.ChangeBox();
+    BuildBndBoxSolid(aSolidIndex, aSolidBoundBox);
+
+    // Container of the solid sub-shape indices. Currently contains shell indices.
+    // Will be updated to contain face and edge indices instead.
+    NCollection_List<int>& aSolidSubShapes = aSolidInfo.ChangeSubShapes();
+
+    // Iterate over faces and edges of the solid and fill the new map of sub-shape indices.
+    for (const auto& aShellIndex : aSolidSubShapes)
+    {
+      BOPDS_ShapeInfo& aShellInfo = ChangeShapeInfo(aShellIndex);
+      if (aShellInfo.ShapeType() != TopAbs_SHELL)
+      {
+        continue;
+      }
+
+      for (const auto& aFaceIndex : aShellInfo.SubShapes())
+      {
+        BOPDS_ShapeInfo& aFaceInfo = ChangeShapeInfo(aFaceIndex);
+        if (aFaceInfo.ShapeType() != TopAbs_FACE)
+        {
+          continue;
+        }
+        // Add face index to the map of indices.
+        aNewSubShapeIndices.Add(aFaceIndex);
+
+        for (const auto& anEdgeIndex : aFaceInfo.SubShapes())
+        {
+          // Add edge index to the map of indices.
+          aNewSubShapeIndices.Add(anEdgeIndex);
+        }
+      }
+    }
+
+    // Remove shell indices and fill in face and edge indices instead.
+    aSolidSubShapes.Clear();
+    for (NCollection_Map<int>::Iterator aSubShapeIndicesIter(aNewSubShapeIndices);
+         aSubShapeIndicesIter.More();
+         aSubShapeIndicesIter.Next())
+    {
+      aSolidSubShapes.Append(aSubShapeIndicesIter.Value());
+    }
+  }
+
+  return aSolidCount;
+}
+
+//=================================================================================================
+
+void BOPDS_DS::buildVertexEdgeMap()
+{
+  for (int aShapeIndex = 0; aShapeIndex < myNbSourceShapes; ++aShapeIndex)
+  {
+    BOPDS_ShapeInfo& anEdgeInfo = ChangeShapeInfo(aShapeIndex);
+    if (anEdgeInfo.ShapeType() != TopAbs_EDGE)
+    {
+      continue;
+    }
+
+    for (const auto& aSubShapeIndex : anEdgeInfo.SubShapes())
+    {
+      NCollection_List<int>* aVertexIndices = myMapVE.ChangeSeek(aSubShapeIndex);
+      if (!aVertexIndices)
+      {
+        aVertexIndices = myMapVE.Bound(aSubShapeIndex, NCollection_List<int>(myAllocator));
+        aVertexIndices->Append(aShapeIndex);
+      }
+      else
+      {
+        // provide uniqueness of the edges in the list
+        if (std::none_of(aVertexIndices->begin(),
+                         aVertexIndices->end(),
+                         [aShapeIndex](int theEdgeIndex) { return theEdgeIndex == aShapeIndex; }))
+        {
+          aVertexIndices->Append(aShapeIndex);
+        }
+      }
+    }
+  }
 }
