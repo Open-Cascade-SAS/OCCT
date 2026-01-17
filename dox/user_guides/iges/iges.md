@@ -69,7 +69,7 @@ The loading operation  only loads the IGES file into computer memory; it does no
 @subsubsection occt_iges_2_3_2 Checking the IGES file
 This step is not obligatory.  Check the loaded file with:  
 ~~~~{.cpp}
-Standard_Boolean ok =  reader.Check(Standard_True); 
+bool ok =  reader.Check(true); 
 ~~~~
 The variable “ok is  True” is returned if no fail message was found; “ok is False” is returned if  there was at least one fail message.  
 ~~~~{.cpp}
@@ -77,7 +77,7 @@ reader.PrintCheckLoad  (failsonly, mode);
 ~~~~
 Error messages are  displayed if there are invalid or incomplete IGES entities, giving you  information on the cause of the error.  
 ~~~~{.cpp}
-Standard_Boolean failsonly  = Standard_True or Standard_False; 
+bool failsonly  = true or false; 
 ~~~~
 If you give True, you  will see fail messages only. If you give False, you will see both fail and  warning messages.  
 
@@ -99,7 +99,7 @@ manages the continuity of BSpline curves (IGES entities  106, 112 and 126) after
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.iges.bspline.continuity"); 
+int ic =  Interface_Static::IVal("read.iges.bspline.continuity"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
@@ -118,7 +118,7 @@ reads the precision  value.
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.precision.mode"); 
+int ic =  Interface_Static::IVal("read.precision.mode"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
@@ -134,7 +134,7 @@ This value is in the  measurement unit defined in the IGES file header.
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Real rp =  Interface_Static::RVal("read.precision.val"); 
+double rp =  Interface_Static::RVal("read.precision.val"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
@@ -155,7 +155,7 @@ defines the mode of  applying the maximum allowed tolerance. Its possible values
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer mv =  Interface_Static::IVal("read.maxprecision.mode"); 
+int mv =  Interface_Static::IVal("read.maxprecision.mode"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
@@ -170,7 +170,7 @@ It should be not less than the basis  value of tolerance set in processor (eithe
 Actually, the maximum between *read.maxprecision.val* and  basis tolerance is used to define maximum allowed tolerance.  
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Real rp =  Interface_Static::RVal("read.maxprecision.val"); 
+double rp =  Interface_Static::RVal("read.maxprecision.val"); 
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
@@ -186,7 +186,7 @@ defines the using of  *BRepLib\::SameParameter*. Its possible values are:
 *BRepLib\::SameParameter* is used through  *ShapeFix_Edge\::SameParameter*. It ensures that the resulting edge will have the  lowest tolerance taking pcurves either unmodified from the IGES file or  modified by *BRepLib\::SameParameter*.  
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer mv =  Interface_Static::IVal("read.stdsameparameter.mode"); 
+int mv =  Interface_Static::IVal("read.stdsameparameter.mode"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
@@ -227,7 +227,7 @@ If either a 3D or a 2D  contour is absent in the file or cannot be translated, t
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.surfacecurve.mode"); 
+int ic =  Interface_Static::IVal("read.surfacecurve.mode"); 
 ~~~~
 Modify this value with:  
 ~~~~{.cpp}
@@ -241,7 +241,7 @@ This parameter is used within the *BRepLib::EncodeRegularity()*  function which 
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Real era =   Interface_Static::RVal("read.encoderegularity.angle"); 
+double era =   Interface_Static::RVal("read.encoderegularity.angle"); 
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
@@ -255,7 +255,7 @@ This parameter is obsolete (it is rarely used in real  practice). If set to True
 
 Read this parameter with:  
 ~~~~{.cpp}
-Standard_Real bam =   Interface_Static::CVal("read.iges.bspline.approxd1.mode"); 
+double bam =   Interface_Static::CVal("read.iges.bspline.approxd1.mode"); 
 ~~~~
 Modify this parameter with:  
 ~~~~{.cpp}
@@ -285,7 +285,7 @@ Default value is MM.
 
 A list of entities can  be formed by invoking the method *IGESControl_Reader::GiveList*.
 ~~~~{.cpp}
-Handle(TColStd_HSequenceOfTransient)  list = reader.GiveList(); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>  list = reader.GiveList(); 
 ~~~~
 Several predefined  operators can be used to select a list of entities of a specific type. 
 To make a selection, use the method *IGESControl_Reader::GiveList* with the selection type in  quotation marks as an argument. You can also make cumulative selections. For  example, you would use the following Syntax:
@@ -345,29 +345,29 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
 Perform translation  according to what you want to translate:  
 1.  Translate an entity identified  by its rank with:  
 ~~~~{.cpp}
-Standard_Boolean ok =  reader.Transfer (rank); 
+bool ok =  reader.Transfer (rank); 
 ~~~~
 2.  Translate an entity  identified by its handle with: 
 ~~~~{.cpp}
-Standard_Boolean ok =  reader.TransferEntity (ent); 
+bool ok =  reader.TransferEntity (ent); 
 ~~~~
 3. Translate a list of entities  in one operation with:  
 ~~~~{.cpp}
-Standard_Integer nbtrans =  reader.TransferList (list); 
+int nbtrans =  reader.TransferList (list); 
 reader.IsDone(); 
 ~~~~
 where *nbtrans* returns the number of items  in the list that produced a shape and    *reader.IsDone()* indicates  whether at least one entity was translated. 
 4. Translate a list of entities,  entity by entity: 
 ~~~~{.cpp}
-Standard_Integer i,nb =  list-Length();  
+int i,nb =  list-Length();  
 for (i = 1; i  <= nb; i ++) {  
-    Handle(Standard_Transient) ent = list-Value(i);  
-    Standard_Boolean OK = reader.TransferEntity (ent);  
+    occ::handle<Standard_Transient> ent = list-Value(i);  
+    bool OK = reader.TransferEntity (ent);  
 } 
 ~~~~
 5.  Translate the whole file (all  entities or only visible entities) with:  
 ~~~~{.cpp}
-Standard_Boolean  onlyvisible = Standard_True or Standard_False;  
+bool  onlyvisible = true or false;  
 reader.TransferRoots(onlyvisible) 
 ~~~~
 
@@ -375,7 +375,7 @@ reader.TransferRoots(onlyvisible)
 Each successful  translation operation outputs one shape. A series of translations gives a  series of shapes.  
 Each time you invoke  *TransferEntity, Transfer* or *Transferlist*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
 ~~~~{.cpp}
-Standard_Integer nbs =  reader.NbShapes(); 
+int nbs =  reader.NbShapes(); 
 ~~~~
 returns the number of  shapes recorded in the result.  
 ~~~~{.cpp}
@@ -609,16 +609,16 @@ The highlighted classes produce OCCT geometry.
 
 ~~~~{.cpp}
 #include “IGESControl_Reader.hxx” 
-#include “TColStd_HSequenceOfTransient.hxx” 
+#include “NCollection_HSequence<occ::handle<Standard_Transient>>.hxx” 
 #include “TopoDS_Shape.hxx” 
 { 
 IGESControl_Reader myIgesReader; 
-Standard_Integer nIgesFaces,nTransFaces; 
+int nIgesFaces,nTransFaces; 
 
 myIgesReader.ReadFile (“MyFile.igs”); 
 //loads file MyFile.igs 
 
-Handle(TColStd_HSequenceOfTransient) myList =  myIgesReader.GiveList(“iges-faces”); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> myList =  myIgesReader.GiveList(“iges-faces”); 
 //selects all IGES faces in the file and puts them into a list  called //MyList, 
 
 nIgesFaces = myList-Length();  
@@ -668,7 +668,7 @@ The following parameters are used for the OCCT-to-IGES  translation.
  * "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  BRep entities.  
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Integer byvalue =  Interface_Static::IVal("write.iges.brep.mode"); 
+int byvalue =  Interface_Static::IVal("write.iges.brep.mode"); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
@@ -703,7 +703,7 @@ Default value is "Faces" (0).
 
 Read this parameter  with:  
 ~~~~{.cpp}
-Standard_Real rp =  Interface_Static::RVal(;write.precision.val;); 
+double rp =  Interface_Static::RVal(;write.precision.val;); 
 ~~~~
 Modify this parameter  with:  
 ~~~~{.cpp}
@@ -724,11 +724,11 @@ write.iges.sequence - ToIGES.
 
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
 ~~~~{.cpp}
-Standard_Boolean ok =  writer.AddShape (TopoDS_Shape); 
+bool ok =  writer.AddShape (TopoDS_Shape); 
 ~~~~
 *ok* is True if translation was correctly performed and False if there was at least one entity that was not translated.  
 ~~~~{.cpp}
-Standard_Boolean ok =  writer.AddGeom (geom); 
+bool ok =  writer.AddGeom (geom); 
 ~~~~
 where *geom* is *Handle(Geom_Curve)* or *Handle(Geom_Surface)*;  
 *ok* is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
@@ -736,11 +736,11 @@ where *geom* is *Handle(Geom_Curve)* or *Handle(Geom_Surface)*;
 @subsubsection occt_iges_3_3_4 Writing the IGES  file
 Write the IGES file  with:  
 ~~~~{.cpp}
-Standard_Boolean ok =  writer.Write ("filename.igs"); 
+bool ok =  writer.Write ("filename.igs"); 
 ~~~~
 to give the file name.  
 ~~~~{.cpp}
-Standard_Boolean ok =  writer.Write (S); 
+bool ok =  writer.Write (S); 
 ~~~~
 where *S* is *Standard_OStream*  
 *ok* is True if the  operation was correctly performed and False if an error occurred (for instance,  if the processor could not create the file). 
@@ -829,7 +829,7 @@ The highlighted classes are intended to translate geometry.
 #include <IGESControl_Controller.hxx> 
 #include <IGESControl_Writer.hxx> 
 #include <TopoDS_Shape.hxx> 
-Standard_Integer main() 
+int main() 
 { 
   IGESControl_Controller::Init(); 
   IGESControl_Writer ICW (;MM;, 0); 
@@ -838,7 +838,7 @@ Standard_Integer main()
   ICW.AddShape (sh); 
   //adds shape sh to IGES model 
   ICW.ComputeModel(); 
-  Standard_Boolean OK = ICW.Write (;MyFile.igs;); 
+  bool OK = ICW.Write (;MyFile.igs;); 
   //writes a model to the file MyFile.igs 
 } 
 ~~~~
@@ -1124,7 +1124,7 @@ Allows writing the prepared model to a file with name *filename.igs*.
 
 Before performing any other operation, you must load an IGES  file with: 
 ~~~~{.cpp}
-IGESCAFControl_Reader reader(XSDRAW::Session(),  Standard_False); 
+IGESCAFControl_Reader reader(XSDRAW::Session(),  false); 
 IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”); 
 ~~~~
 Loading the file only memorizes, but does not translate the  data. 
@@ -1141,19 +1141,19 @@ In  addition, the following parameters can be set for XDE translation of  attrib
 * For transferring colors: 
 ~~~~{.cpp}
 reader.SetColorMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 * For transferring names: 
 ~~~~{.cpp}
 reader.SetNameMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 
 ### Translate an IGES file to XDE
 
 The following function performs a translation of the whole  document: 
 ~~~~{.cpp}
-Standard_Boolean ok = reader.Transfer(doc);  
+bool ok = reader.Transfer(doc);  
 ~~~~
 where *doc* is a variable which contains a handle to the output document and should have a  type *Handle(TDocStd_Document)*. 
 
@@ -1162,7 +1162,7 @@ where *doc* is a variable which contains a handle to the output document and sho
 
 The translation from XDE to IGES can be initialized as follows: 
 ~~~~{.cpp}
-IGESCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
+IGESCAFControl_Writer aWriter(XSDRAW::Session(),false); 
 ~~~~
 
 ### Set parameters for translation from XDE to IGES
@@ -1171,12 +1171,12 @@ The  following parameters can be set for translation of attributes to IGES:
 * For transferring colors: 
 ~~~~{.cpp}
 aWriter.SetColorMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 * For transferring names: 
 ~~~~{.cpp}
 aWriter.SetNameMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 
 ### Translate an XDE  document to IGES

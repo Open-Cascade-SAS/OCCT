@@ -163,7 +163,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
 ~~~~{.cpp}
 
     // The scope of functions is  defined.  
-    Handle(TFunction_Scope) scope = TFunction_Scope::Set( anyLabel );  
+    occ::handle<TFunction_Scope> scope = TFunction_Scope::Set( anyLabel );  
      
     // The information on  modifications in the model is received.  
     TFunction_Logbook&amp; log = scope-GetLogbook();  
@@ -177,17 +177,17 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
     {  
       // The function iterator may return a list of  current functions for execution.  
       // It might be useful for multi-threaded execution  of functions.  
-      const  TDF_LabelList&amp; currentFunctions = iterator.Current();  
+      const  NCollection_List<TDF_Label>&amp; currentFunctions = iterator.Current();  
        
       //The list of current functions is iterated.  
-      TDF_ListIteratorOfLabelList  currentterator( currentFunctions );
+      NCollection_List<TDF_Label>::Iterator  currentterator( currentFunctions );
       for (;  currentIterator.More(); currentIterator.Next())  
       {  
         //  An interface for the function is created.  
         TFunction_IFunction  interface( currentIterator.Value() );  
      
         //  The function driver is retrieved.  
-        Handle(TFunction_Driver)  driver = interface.GetDriver();  
+        occ::handle<TFunction_Driver>  driver = interface.GetDriver();  
      
         //  The dependency of the function on the  modified data is checked.  
         If  (driver-MustExecute( log ))  
@@ -210,7 +210,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
 ~~~~{.cpp}
 
     // A virtual method  ::Arguments() returns a list of arguments of the function.  
-    CylinderDriver::Arguments( TDF_LabelList&amp; args )  
+    CylinderDriver::Arguments( NCollection_List<TDF_Label>&amp; args )  
     {  
       // The direct arguments, located at sub-leaves of  the function, are collected (see picture 2).
       TDF_ChildIterator  cIterator( Label(), false );  
@@ -221,7 +221,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
         Args.Append(  sublabel );  
 
         // The references to the external data are  checked.  
-        Handle(TDF_Reference)  ref;  
+        occ::handle<TDF_Reference>  ref;  
         If (  sublabel.FindAttribute( TDF_Reference::GetID(), ref ) )  
         {  
           args.Append(  ref-Get() );  
@@ -229,7 +229,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
     }
      
     // A virtual method ::Results()  returns a list of result leaves.  
-    CylinderDriver::Results( TDF_LabelList&amp; res )  
+    CylinderDriver::Results( NCollection_List<TDF_Label>&amp; res )  
     {  
       // The result is kept at the function  label.  
       Res.Append(  Label() );  
@@ -246,11 +246,11 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
       TDF_Label radiusLabel  = Label().FindChild( 2 );  
        
       // The multiplicator of the radius ()is retrieved.  
-      Handle(TDataStd_Real)  radiusValue;  
+      occ::handle<TDataStd_Real>  radiusValue;  
       radiusLabel.FindAttribute(  TDataStd_Real::GetID(), radiusValue);  
        
       // The reference to the radius is retrieved.  
-      Handle(TDF_Reference)  refRadius;  
+      occ::handle<TDF_Reference>  refRadius;  
       RadiusLabel.FindAttribute(  TDF_Reference::GetID(), refRadius );  
        
       // The radius value is calculated.  
@@ -263,7 +263,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
       else  
       {  
         // The referenced radius value is  retrieved.   
-        Handle(TDataStd_Real)  referencedRadiusValue;  
+        occ::handle<TDataStd_Real>  referencedRadiusValue;  
         RefRadius-Get().FindAttribute(TDataStd_Real::GetID()  ,referencedRadiusValue );  
         radius  = referencedRadiusValue-Get() * radiusValue-Get();  
       }  

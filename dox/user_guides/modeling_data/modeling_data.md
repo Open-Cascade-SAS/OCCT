@@ -58,7 +58,7 @@ GeomAPI_Interpolate Interp(Points);
 
 From this object, the BSpline curve may be requested as follows: 
 ~~~~{.cpp}
-Handle(Geom_BSplineCurve) C = Interp.Curve(); 
+occ::handle<Geom_BSplineCurve> C = Interp.Curve(); 
 ~~~~
 
 #### 2D Approximation
@@ -79,7 +79,7 @@ Approx(Points,DegMin,DegMax,Continuity, Tol);
 From this object, the BSpline curve may be requested as follows: 
 
 ~~~~{.cpp}
-Handle(Geom_BSplineCurve) K = Approx.Curve(); 
+occ::handle<Geom_BSplineCurve> K = Approx.Curve(); 
 ~~~~
 
 #### Surface Approximation 
@@ -364,13 +364,13 @@ The adapted curve is created in the following way:
 
 **2D case:**
 ~~~~{.cpp}
-  Handle(Geom2d_Curve) mycurve = ... ;
+  occ::handle<Geom2d_Curve> mycurve = ... ;
   Geom2dAdaptor_Curve C (mycurve);
 ~~~~
 
 **3D case:**
 ~~~~{.cpp}
-  Handle(Geom_Curve) mycurve = ... ;
+  occ::handle<Geom_Curve> mycurve = ... ;
   GeomAdaptor_Curve C (mycurve);
 ~~~~
 
@@ -378,13 +378,13 @@ The algorithm is then constructed with this object:
 
 ~~~~{.cpp}
   GCPnts_UniformDeflection myAlgo ();
-  Standard_Real Deflection = ... ;
+  double Deflection = ... ;
   myAlgo.Initialize (C, Deflection);
   if (myAlgo.IsDone())
   {
-    Standard_Integer nbr = myAlgo.NbPoints();
-    Standard_Real param;
-    for (Standard_Integer i = 1; i <= nbr; i++)
+    int nbr = myAlgo.NbPoints();
+    double param;
+    for (int i = 1; i <= nbr; i++)
     {
       param = myAlgo.Parameter (i);
       ...
@@ -961,7 +961,7 @@ To process objects only once, they have to be placed in a Map.
 ~~~~{.cpp}
   void TopExp::MapShapes (const TopoDS_Shape& S,
                           const TopAbs_ShapeEnum T,
-                          TopTools_IndexedMapOfShape& M)
+                          NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
   {
     TopExp_Explorer Ex (S, T);
     while (Ex.More())
@@ -989,18 +989,18 @@ The following steps are performed:
 
 ~~~~{.cpp}
   void DrawShape (const TopoDS_Shape& aShape,
-                  const Standard_Integer nbIsos,
+                  const int nbIsos,
                   const Quantity_Color FaceIsocolor,
                   const Quantity_Color FreeEdgeColor,
                   const Quantity_Color BorderEdgeColor,
                   const Quantity_Color SharedEdgeColor)
   {
     // Store the edges in a Map
-    TopTools_IndexedMapOfShape edgemap;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edgemap;
     TopExp::MapShapes (aShape, TopAbs_EDGE, edgeMap);
 
     // Create an array set to zero
-    TColStd_Array1OfInteger faceCount (1, edgeMap.Extent());
+    NCollection_Array1<int> faceCount (1, edgeMap.Extent());
     faceCount.Init (0);
 
     // Explore the faces.
@@ -1022,7 +1022,7 @@ The following steps are performed:
     }
 
     // Draw the edges of theMap
-    for (Standard_Integer i = 1; i <= edgemap.Extent(); i++)
+    for (int i = 1; i <= edgemap.Extent(); i++)
     {
       switch (faceCount[i])
       {
@@ -1055,11 +1055,11 @@ The following example counts the size of a data structure as a number of *TShape
 
 ~~~~{.cpp}
   #include <TopoDS_Iterator.hxx>
-  Standard_Integer Size (const TopoDS_Shape& aShape)
+  int Size (const TopoDS_Shape& aShape)
   {
     // This is a recursive method.
     // The size of a shape is1 + the sizes of the subshapes.
-    Standard_Integer size = 1;
+    int size = 1;
     for (TopoDS_Iterator It (aShape); It.More(); It.Next())
     {
       size += Size (It.Value());
@@ -1078,7 +1078,7 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
   #include <TopTools_MapOfShape.hxx>
 
   void MapShapes (const TopoDS_Shape& aShape,
-                  TopTools_MapOfShape& aMap)
+                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
   {
     // This is a recursive auxiliary method. It stores all subShapes of aShape in a Map.
     if (aMap.Add (aShape))
@@ -1091,10 +1091,10 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
     }
   }
 
-  Standard_Integer Size (const TopoDS_Shape& aShape)
+  int Size (const TopoDS_Shape& aShape)
   { 
     // Store Shapes in a Mapand return the size.
-    TopTools_MapOfShape M;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
     MapShapes (aShape, M);
     return M.Extent();
   }
@@ -1121,14 +1121,14 @@ The principal algorithm is as follows:
   {
     // Copies the wholestructure of aShape using aBuilder.
     // Stores all thesub-Shapes in an IndexedMap.
-    TopTools_IndexedMapOfShape theMap;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
     TopoDS_Iterator It;
     TopLoc_Location Identity;
     TopoDS_Shape S = aShape;
     S.Location (Identity);
     S.Orientation(TopAbs_FORWARD);
     theMap.Add(S);
-    for (Standard_Integer i = 1; i <= theMap.Extent(); i++)
+    for (int i = 1; i <= theMap.Extent(); i++)
     {
       for (It.Initialize(theMap(i)); It.More(); It.Next())
       {
@@ -1153,9 +1153,9 @@ Only the underlying TShape is of great interest.
   TopTools_Array1OfShapetheCopies (1, theMap.Extent());
 
   // Use a recursivefunction to copy the first element.
-  void AuxiliaryCopy (Standard_Integer ,
-                      const TopTools_IndexedMapOfShape& ,
-                      TopTools_Array1OfShape& ,
+  void AuxiliaryCopy (int ,
+                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ,
+                      NCollection_Array1<TopoDS_Shape>& ,
                       const TopoDS_Builder& );
 
   AuxiliaryCopy (1, theMap, theCopies, aBuilder);
@@ -1171,9 +1171,9 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
 This method checks if the object has been copied; if not copied, then an empty copy is performed into the table and the copies of all the sub-elements are inserted by finding their rank in the map.
 
 ~~~~{.cpp}
-  void AuxiliaryCopy (Standard_Integer index,
+  void AuxiliaryCopy (int index,
                       const TopTools_IndexedMapOfShapes& sources,
-                      TopTools_Array1OfShape& copies,
+                      NCollection_Array1<TopoDS_Shape>& copies,
                       const TopoDS_Builder& aBuilder)
   {
     // If the copy is a null Shape the copy is not done.

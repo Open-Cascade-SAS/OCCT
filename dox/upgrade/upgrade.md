@@ -41,10 +41,10 @@ Porting of user applications from an earlier OCCT version to version 6.5.1 requi
 
 *	Method *Graphic3d_Structure::Groups()* now returns *Graphic3d_SequenceOfGroup*. If this method has been used, the application code should be updated to iterate another collection type or, if *Graphic3d_HSetOfGroup* is required, to fill its own collection:
 ~~~~{.cpp}
-const Graphic3d_SequenceOfGroup& aGroupsSeq = theStructure.Groups();
-Handle(Graphic3d_HSetOfGroup) aGroupSet = new Graphic3d_HSetOfGroup();
-Standard_Integer aLen = aGroupsSeq.Length();
-for (Standard_Integer aGr = 1; aGr <= aLen; ++aGr)
+const NCollection_Sequence<occ::handle<Graphic3d_Group>>& aGroupsSeq = theStructure.Groups();
+occ::handle<Graphic3d_HSetOfGroup> aGroupSet = new Graphic3d_HSetOfGroup();
+int aLen = aGroupsSeq.Length();
+for (int aGr = 1; aGr <= aLen; ++aGr)
 {
  aGroupSet->Add (aGroupsSeq.Value (aGr));
 }
@@ -64,7 +64,7 @@ Porting of user applications from an earlier OCCT version to version 6.5.2 requi
 * The print method used in the application code might need to be revised to take into account the ability to choose between print algorithms: tile and stretch. The stretch algorithm will be selected by default during porting.
 * It is recommended to *BRepMesh_DiscretFactory* users, to check *BRepMesh_DiscretFactory::SetDefault()* return value to determine plugin availability / validity. *BRepMesh_DiscretFactory::Discret()* method now returns handle instead of pointer. The code should be updated in the following manner:
 ~~~~{.cpp}
-Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape, theDeflection, theAngularToler);
+occ::handle<BRepMesh_DiscretRoot> aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape, theDeflection, theAngularToler);
  if (!aMeshAlgo.IsNull())  {}
 ~~~~
 
@@ -91,10 +91,10 @@ Porting of user applications from an earlier OCCT version to version 6.5.4 requi
 * The code using obsolete classes *Aspect_PixMap, Xw_PixMap* and *WNT_PixMap* should be rewritten implementing class *Image_PixMap*, which is now retrieved by *ToPixMap* methods as argument. A sample code using *ToPixMap* is given below:
 ~~~~{.cpp}
 #include <Image_AlienPixMap.hxx>
-void dump (Handle(V3d_View)& theView3D)
+void dump (occ::handle<V3d_View>& theView3D)
 {
-  Standard_Integer aWndSizeX = 0;
-  Standard_Integer aWndSizeY = 0;
+  int aWndSizeX = 0;
+  int aWndSizeY = 0;
   theView3D->Window()->Size (aWndSizeX, aWndSizeY);
   Image_AlienPixMap aPixMap;
   theView3D->ToPixMap (aPixMap, aWndSizeX, aWndSizeY);
@@ -124,11 +124,11 @@ Refer to the Visualization User's Guide for further details concerning OCCT 3D v
 * Run-time graphic driver library loading mechanism based on *CSF_GraphicShr* environment variable usage has been replaced by explicit linking against *TKOpenGl* library. The code sample below shows how the graphic driver should be created and initialized in the application code: 
 ~~~~{.cpp}
 // initialize a new viewer with OpenGl graphic driver
-Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+occ::handle<Graphic3d_GraphicDriver> aGraphicDriver = 
 new OpenGl_GraphicDriver ("TKOpenGl");
   aGraphicDriver->Begin (new Aspect_DisplayConnection());
   TCollection_ExtendedString aNameOfViewer ("Visu3D");
-  Handle(V3d_Viewer) aViewer 
+  occ::handle<V3d_Viewer> aViewer 
 = new V3d_Viewer (aGraphicDriver, aNameOfViewer.ToExtString());
   aViewer->Init();
 
@@ -136,18 +136,18 @@ new OpenGl_GraphicDriver ("TKOpenGl");
 // provided by a 3rd-party framework (Qt, MFC, C# or Cocoa)
 #if defined(_WIN32) || defined(__WIN32__)
   Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
-  Handle(WNT_Window) aWindow = new WNT_Window (winId());
+  occ::handle<WNT_Window> aWindow = new WNT_Window (winId());
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   NSView* aViewHandle = (NSView* )winId();
-  Handle(Cocoa_Window) aWindow = new Cocoa_Window (aViewHandle);
+  occ::handle<Cocoa_Window> aWindow = new Cocoa_Window (aViewHandle);
 #else
  Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
-  Handle(Xw_Window) aWindow = 
+  occ::handle<Xw_Window> aWindow = 
      new Xw_Window (aGraphicDriver->GetDisplayConnection(), aWindowHandle);
 #endif // WNT
 
 // setup the window for a new view
-  Handle(V3d_View) aView = aViewer->CreateView();
+  occ::handle<V3d_View> aView = aViewer->CreateView();
   aView->SetWindow (aWindow);
 ~~~~
 
@@ -266,10 +266,10 @@ Custom Interactive Objects should implement new virtual method *SelectMgr_Select
 Now the method *SelectMgr_Selection::Sensitive()* does not return *SelectBasics_SensitiveEntity*. It returns an instance of *SelectMgr_SensitiveEntity*, which belongs to a different class hierarchy (thus *DownCast()* will fail). To access base sensitive it is necessary to use method *SelectMgr_SensitiveEntity::BaseSensitive()*. For example:
 
 ~~~~{.cpp}
-Handle(SelectMgr_Selection) aSelection = anInteractiveObject->Selection (aMode);
+occ::handle<SelectMgr_Selection> aSelection = anInteractiveObject->Selection (aMode);
 for (aSelection->Init(); aSelection->More(); aSelection->Next())
 {
-   Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
+   occ::handle<SelectBasics_SensitiveEntity> anEntity = aSelection->Sensitive()->BaseSensitive();
 }
 ~~~~
 
@@ -290,14 +290,14 @@ Here is an example of overlap/inclusion test for a box:
 ~~~~{.cpp}
 if (!theMgr.IsOverlapAllowed()) // check for inclusion
 {
-  Standard_Boolean isInside = Standard_True;
+  bool isInside = true;
   return theMgr.Overlaps (myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
 }
 
-Standard_Real aDepth;
+double aDepth;
 if (!theMgr.Overlaps (myBox, aDepth)) // check for overlap
 {
-  return Standard_False;
+  return false;
 }
 
 thePickResult =
@@ -433,19 +433,19 @@ DEFINE_STANDARD_RTTI(Class) -> DEFINE_STANDARD_RTTIEXT(Class, Base)
 
 2. Replaces forward declarations of collection classes previously generated from CDL generics (defined in *TCollection* package) by inclusion of the corresponding header:
 ~~~~{.cpp}
-class TColStd_Array1OfReal; -> #include <TColStd_Array1OfReal.hxx>
+class NCollection_Array1<double>; -> #include <NCollection_Array1<double>.hxx>
 ~~~~
 
 3. Replaces underscored names of *Handle* classes by usage of a macro:
 ~~~~{.cpp}
-Handle_Class -> Handle(Class)
+Handle_Class -> occ::handle<Class>
 ~~~~
   This change is not applied if the source or header file is recognized as containing the definition of Qt class with signals or slots, to avoid possible compilation errors of MOC files caused by inability of MOC to recognize macros (see https://doc.qt.io/qt-4.8/signalsandslots.html).
   The file is considered as defining a Qt object if it contains strings *Q_OBJECT* and either *slots:* or *signals:*. 
 
 4. Removes forward declarations of classes with names <i>Handle(C)</i> or *Handle_C*, replacing them either by forward declaration of its argument class, or (for files defining Qt objects) <i>\#include</i> statement for a header with the name of the argument class and extension .hxx:
 ~~~~{.cpp}
-class Handle(TColStd_HArray1OfReal); -> #include <TColStd_HArray1OfReal.hxx>
+class occ::handle<NCollection_HArray1<double>>; -> #include <NCollection_HArray1<double>.hxx>
 ~~~~
 
 5. Removes <i> \#includes </i> of files <i>Handle_...hxx</i> that have disappeared in OCCT 7.0:
@@ -455,26 +455,26 @@ class Handle(TColStd_HArray1OfReal); -> #include <TColStd_HArray1OfReal.hxx>
 
 6. Removes *typedef* statements that use *Handle* macro to generate the name:
 ~~~~{.cpp}
-typedef NCollection_Handle<Message_Msg> Handle(Message_Msg); ->
+typedef NCollection_Handle<Message_Msg> occ::handle<Message_Msg>; ->
 ~~~~
 
 7. Converts C-style casts applied to Handles into calls to <i>DownCast()</i> method:
 ~~~~{.cpp}
-    ((Handle(A)&)b)     -> Handle(A)::DownCast(b)
-    (Handle(A)&)b       -> Handle(A)::DownCast(b)
-    (*((Handle(A)*)&b)) -> Handle(A)::DownCast(b)
-    *((Handle(A)*)&b)   -> Handle(A)::DownCast(b)
-    (*(Handle(A)*)&b)   -> Handle(A)::DownCast(b)
+    ((occ::handle<A>&)b)     -> occ::down_cast<A>(b)
+    (occ::handle<A>&)b       -> occ::down_cast<A>(b)
+    (*((occ::handle<A>*)&b)) -> occ::down_cast<A>(b)
+    *((occ::handle<A>*)&b)   -> occ::down_cast<A>(b)
+    (*(occ::handle<A>*)&b)   -> occ::down_cast<A>(b)
 ~~~~
 
 8. Moves <i>Handle()</i> macro out of namespace scope:
 ~~~~{.cpp}
-Namespace::Handle(Class) -> Handle(Namespace::Class)
+Namespace::occ::handle<Class> -> Handle(Namespace::Class)
 ~~~~
 
 9. Converts local variables of reference type, which are initialized by a temporary object returned by call to <i>DownCast()</i>, to the variables of non-reference type (to avoid using references to destroyed memory):
 ~~~~{.cpp}
-    const Handle(A)& a = Handle(B)::DownCast (b); -> Handle(A) a (Handle(B)::DownCast (b));
+    const occ::handle<A>& a = Handle(B)::DownCast (b); -> occ::handle<A> a (Handle(B)::DownCast (b));
 ~~~~
 
 10. Adds  <i>\#include</i> for all classes used as argument to macro <i>STANDARD_TYPE()</i>, except for already included ones;
@@ -508,7 +508,7 @@ The use of handle objects (construction, comparison using operators == or !=, us
 For example, the following lines will fail to compile if *Geom_Line.hxx* is not included:
 
 ~~~~{.cpp}
-Handle(Geom_Line) aLine = 0;
+occ::handle<Geom_Line> aLine = 0;
 if (aLine != aCurve) {...} 
 if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)) {...}
 aLine = Handle(Geom_Line)::DownCast (aCurve);
@@ -525,10 +525,10 @@ The problem is that operator  <i> const handle<T2>& </i> is defined for any type
 
 Example:
 ~~~~{.cpp}
-void func (const Handle(Geom_Curve)&);
-void func (const Handle(Geom_Surface)&);
+void func (const occ::handle<Geom_Curve>&);
+void func (const occ::handle<Geom_Surface>&);
 
-Handle(Geom_TrimmedCurve) aCurve = new Geom_TrimmedCurve (...);
+occ::handle<Geom_TrimmedCurve> aCurve = new Geom_TrimmedCurve (...);
 func (aCurve); // ambiguity error in VC++ 10
 ~~~~
 
@@ -538,16 +538,16 @@ To resolve this ambiguity, change your code so that argument type should corresp
 In some cases this can be done by using the relevant type for the corresponding variable, like in the example above:
 
 ~~~~{.cpp}
-Handle(Geom_Curve) aCurve = new Geom_TrimmedCurve (...);  
+occ::handle<Geom_Curve> aCurve = new Geom_TrimmedCurve (...);  
 ~~~~
 
 Other variants consist in assigning the argument to a local variable of the correct type and using the direct cast or constructor:
 
 ~~~~{.cpp}
-const Handle(Geom_Curve)& aGCurve (aTrimmedCurve);
+const occ::handle<Geom_Curve>& aGCurve (aTrimmedCurve);
 func (aGCurve); // OK - argument has exact type
 func (static_cast(aCurve)); // OK - direct cast 
-func (Handle(Geom_Curve)(aCurve)); // OK - temporary handle is constructed
+func (occ::handle<Geom_Curve>(aCurve)); // OK - temporary handle is constructed
 ~~~~
 
 Another possibility consists in defining additional template variant of the overloaded function causing ambiguity, and using *SFINAE* to resolve the ambiguity.
@@ -560,7 +560,7 @@ As the cast of a handle to the reference to another handle to the base type has 
 For example:
 
 ~~~~{.cpp}
-Handle(Geom_Geometry) aC = GC_MakeLine (p, v); // compiler error
+occ::handle<Geom_Geometry> aC = GC_MakeLine (p, v); // compiler error
 ~~~~
 
 The problem is that the class *GC_MakeLine* has a user-defined conversion to <i>const Handle(Geom_TrimmedCurve)&,</i> which is not the same as the type of the local variable *aC*.
@@ -568,21 +568,21 @@ The problem is that the class *GC_MakeLine* has a user-defined conversion to <i>
 To resolve this, use method <i>Value()</i>:
 
 ~~~~{.cpp}
-Handle(Geom_Geometry) aC = GC_MakeLine (p, v).Value(); // ok
+occ::handle<Geom_Geometry> aC = GC_MakeLine (p, v).Value(); // ok
 ~~~~
 
 or use variable of the appropriate type:
 
 ~~~~{.cpp}
-Handle(Geom_TrimmedCurve) aC = GC_MakeLine (p, v); // ok
+occ::handle<Geom_TrimmedCurve> aC = GC_MakeLine (p, v); // ok
 ~~~~
 
 A similar problem appears with GCC compiler, when *const* handle to derived type is used to construct handle to base type via assignment (and in some cases in return statement), for instance:
 
 ~~~~{.cpp}
-  const Handle(Geom_Line) aLine;
-  Handle(Geom_Curve) c1 = aLine; // GCC error 
-  Handle(Geom_Curve) c2 (aLine); // ok
+  const occ::handle<Geom_Line> aLine;
+  occ::handle<Geom_Curve> c1 = aLine; // GCC error 
+  occ::handle<Geom_Curve> c2 (aLine); // ok
 ~~~~
 
 This problem is specific to GCC and it does not appear if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
@@ -595,9 +595,9 @@ You might need to clean your code from incorrect use of macros *STANDARD_TYPE*()
    
    Example:
 ~~~~{.cpp}
-const Handle(Standard_Type)& STANDARD_TYPE(math_GlobOptMin)
+const occ::handle<Standard_Type>& STANDARD_TYPE(math_GlobOptMin)
 {
-  static Handle(Standard_Type) _atype = new Standard_Type ("math_GlobOptMin", sizeof (math_GlobOptMin));
+  static occ::handle<Standard_Type> _atype = new Standard_Type ("math_GlobOptMin", sizeof (math_GlobOptMin));
   return _atype;
 }
 ~~~~
@@ -619,8 +619,8 @@ Handles in OCCT 7.0 do not have the operator of conversion to <i>Standard_Transi
 This is done to prevent possible unintended errors like this:
 
 ~~~~{.cpp}
-Handle(Geom_Line) aLine = ...;
-Handle(Geom_Surface) aSurf = ...;
+occ::handle<Geom_Line> aLine = ...;
+occ::handle<Geom_Surface> aSurf = ...;
 ...
 if (aLine == aSurf) {...} // will cause a compiler error in OCCT 7.0, but not OCCT 6.x
 ~~~~
@@ -629,7 +629,7 @@ The places where this implicit cast has been used should be corrected manually.
 The typical situation is when Handle is passed to stream:
 
 ~~~~{.cpp}
-Handle(Geom_Line) aLine = ...;
+occ::handle<Geom_Line> aLine = ...;
 os << aLine; // in OCCT 6.9.0, resolves to operator << (void*) 
 ~~~~
 
@@ -641,8 +641,8 @@ Method *DownCast()* in OCCT 7.0 is made templated; if its argument is not a base
 This is done to prevent possible unintended errors like this:
 
 ~~~~{.cpp}
-Handle(Geom_Surface) aSurf = ;
-Handle(Geom_Line) aLine = 
+occ::handle<Geom_Surface> aSurf = ;
+occ::handle<Geom_Line> aLine = 
   Handle(Geom_Line)::DownCast (aSurf); // will cause a compiler warning in OCCT 7.0, but not OCCT 6.x
 ~~~~
 
@@ -652,9 +652,9 @@ If down casting is used in a template context where the argument can have the sa
 
 ~~~~{.cpp}
 template <class T>
-bool CheckLine (const Handle(T) theArg)
+bool CheckLine (const occ::handle<T> theArg)
 {
-  Handle(Geom_Line) aLine = dynamic_cast<Geom_Line> (theArg.get());
+  occ::handle<Geom_Line> aLine = dynamic_cast<Geom_Line> (theArg.get());
   ...
 }
 ~~~~
@@ -674,8 +674,8 @@ Example:
 
 ~~~~{.cpp}
 // note that DownCast() returns new temporary object!
-const Handle(Geom_BoundedCurve)& aBC =
-Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+const occ::handle<Geom_BoundedCurve>& aBC =
+occ::down_cast<Geom_TrimmedCurve>(aCurve);
 aBC->Transform (T); // access violation in OCCT 7.0
 ~~~~
 
@@ -685,9 +685,9 @@ In OCCT 6.x and earlier versions the handle classes formed a hierarchy echoing t
 This automatically enabled the possibility to use the handle to a derived class in all contexts where the handle to a base class was needed, e.g. to pass it in a function by reference without copying:
 
 ~~~~{.cpp}
-Standard_Boolean GetCurve (Handle(Geom_Curve)& theCurve);
+bool GetCurve (occ::handle<Geom_Curve>& theCurve);
 ....
-Handle(Geom_Line) aLine;
+occ::handle<Geom_Line> aLine;
 if (GetCurve (aLine)) {
   // use aLine, unsafe
 }
@@ -707,8 +707,8 @@ The code that relies on the possibility of casting to base should be amended to 
 For instance, the code from the example below can be changed as follows:
 
 ~~~~{.cpp}
-Handle(Geom_Line) aLine;
-Handle(Geom_Curve) aCurve;
+occ::handle<Geom_Line> aLine;
+occ::handle<Geom_Curve> aCurve;
 if (GetCurve (aCure) && !(aLine = Handle(Geom_Line)::DownCast (aCurve)).IsNull()) {
   // use aLine safely
 }
@@ -804,9 +804,9 @@ The property of *V3d_View* storing the global *ColorScale* object has been remov
 Here is an example of creating *ColorScale* using the updated API:
 
 ~~~~{.cpp}
-Handle(AIS_ColorScale) aCS = new AIS_ColorScale();
+occ::handle<AIS_ColorScale> aCS = new AIS_ColorScale();
 // configuring
-Standard_Integer aWidth, aHeight;
+int aWidth, aHeight;
 aView->Window()->Size (aWidth, aHeight);
 aCS->SetSize              (aWidth, aHeight);
 aCS->SetRange             (0.0, 10.0);
@@ -837,8 +837,8 @@ vdrawtext t "2D-TEXT" -2d -pos 0 150 0 -color red
 
 Here is a small example in C++ illustrating how to display a custom AIS object in 2d:
 ~~~~{.cpp}
-Handle(AIS_InteractiveContext) aContext = ...;
-Handle(AIS_InteractiveObject) anObj =...; // create an AIS object
+occ::handle<AIS_InteractiveContext> aContext = ...;
+occ::handle<AIS_InteractiveObject> anObj =...; // create an AIS object
 anObj->SetZLayer(Graphic3d_ZLayerId_TopOSD); // display object in overlay
 anObj->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0)); // set 2d flag, coordinate origin is set to down-left corner
 aContext->Display (anObj); // display the object
@@ -885,15 +885,15 @@ Old APIs based on global callback functions for creating *UserDraw* objects and 
 class UserDrawElement : public OpenGl_Element {};
 
 //! Implementation of virtual method AIS_InteractiveObject::Compute().
-void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                              const Handle(Prs3d_Presentation)& thePrs,
-                              const Standard_Integer theMode)
+void UserDrawObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                              const occ::handle<Prs3d_Presentation>& thePrs,
+                              const int theMode)
 {
-  Graphic3d_Vec4 aBndMin (myCoords[0], myCoords[1], myCoords[2], 1.0f);
-  Graphic3d_Vec4 aBndMax (myCoords[3], myCoords[4], myCoords[5], 1.0f);
+  NCollection_Vec4<float> aBndMin (myCoords[0], myCoords[1], myCoords[2], 1.0f);
+  NCollection_Vec4<float> aBndMax (myCoords[3], myCoords[4], myCoords[5], 1.0f);
 
   // casting to OpenGl_Group should be always true as far as application uses OpenGl_GraphicDriver for rendering
-  Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
+  occ::handle<OpenGl_Group> aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
   aGroup->SetMinMaxValues (aBndMin.x(), aBndMin.y(), aBndMin.z(),
                            aBndMax.x(), aBndMax.y(), aBndMax.z());
   UserDrawElement* anElem = new UserDrawElement (this);
@@ -915,7 +915,7 @@ public:
   //! Override rendering into the view.
   virtual void render (Graphic3d_Camera::Projection theProjection,
                        OpenGl_FrameBuffer*          theReadDrawFbo,
-                       const Standard_Boolean       theToDrawImmediate)
+                       const bool       theToDrawImmediate)
   {
     OpenGl_View::render (theProjection, theReadDrawFbo, theToDrawImmediate);
     if (theToDrawImmediate)
@@ -924,7 +924,7 @@ public:
     }
 
     // perform custom drawing
-    const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+    const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
     GLfloat aVerts[3] = { 0.0f, 0,0f, 0,0f };
     aCtx->core20->glEnableClientState(GL_VERTEX_ARRAY);
     aCtx->core20->glVertexPointer(3, GL_FLOAT, 0, aVerts);
@@ -939,11 +939,11 @@ class UserDriver : public OpenGl_GraphicDriver
 {
 public:
   //! Create instance of own view.
-  virtual Handle(Graphic3d_CView) CreateView (const Handle(Graphic3d_StructureManager)& theMgr) Standard_OVERRIDE
+  virtual occ::handle<Graphic3d_CView> CreateView (const occ::handle<Graphic3d_StructureManager>& theMgr) override
   {
-    Handle(UserView) aView = new UserView (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
+    occ::handle<UserView> aView = new UserView (theMgr, this, myCaps, myDeviceLostFlag, &myStateCounter);
     myMapOfView.Add (aView);
-    for (TColStd_SequenceOfInteger::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
+    for (NCollection_Sequence<int>::Iterator aLayerIt (myLayerSeq); aLayerIt.More(); aLayerIt.Next())
     {
       const Graphic3d_ZLayerId        aLayerID  = aLayerIt.Value();
       const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
@@ -1320,7 +1320,7 @@ The code example below demonstrates how to read shapes from a storage driver usi
 
 ~~~~{.cpp}
 // aDriver should be created and opened for reading
-Handle(StdStorage_Data) aData;
+occ::handle<StdStorage_Data> aData;
 
 // Read data from the driver
 // StdStorage::Read creates aData instance automatically if it is null
@@ -1331,16 +1331,16 @@ if (anError != Storage_VSOk)
 }
 
 // Get root objects
-Handle(StdStorage_RootData) aRootData = aData->RootData();
-Handle(StdStorage_HSequenceOfRoots) aRoots = aRootData->Roots();
+occ::handle<StdStorage_RootData> aRootData = aData->RootData();
+occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> aRoots = aRootData->Roots();
 if (!aRoots.IsNull())
 {
   // Iterator over the sequence of root objects
-  for (StdStorage_HSequenceOfRoots::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
+  for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
   {
-    Handle(StdStorage_Root)& aRoot = anIt.ChangeValue();
+    occ::handle<StdStorage_Root>& aRoot = anIt.ChangeValue();
 	// Get a persistent root's object
-    Handle(StdObjMgt_Persistent) aPObject = aRoot->Object();
+    occ::handle<StdObjMgt_Persistent> aPObject = aRoot->Object();
     if (!aPObject.IsNull())
     {
       Handle(ShapePersistent_TopoDS::HShape) aHShape = Handle(ShapePersistent_TopoDS::HShape)::DownCast(aPObject);
@@ -1372,14 +1372,14 @@ catch (Standard_Failure& e)
 }
 
 // Create a storage data instance
-Handle(StdStorage_Data) aData = new StdStorage_Data();
+occ::handle<StdStorage_Data> aData = new StdStorage_Data();
 // Set an axiliary application name (optional)
 aData->HeaderData()->SetApplicationName(TCollection_ExtendedString("Application"));
 
 // Provide a map to track sharing
-StdObjMgt_TransientPersistentMap aMap;
+NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>> aMap;
 // Iterator over a collection of shapes
-for (Standard_Integer i = 1; i <= shapes.Length(); ++i)
+for (int i = 1; i <= shapes.Length(); ++i)
 {
   TopoDS_Shape aShape = shapes.Value(i);
   // Translate a shape to a persistent object
@@ -1394,7 +1394,7 @@ for (Standard_Integer i = 1; i <= shapes.Length(); ++i)
   TCollection_AsciiString aName = TCollection_AsciiString("Shape_") + i;
 
   // Add a root to storage data
-  Handle(StdStorage_Root) aRoot = new StdStorage_Root(aName, aPShape);
+  occ::handle<StdStorage_Root> aRoot = new StdStorage_Root(aName, aPShape);
   aData->RootData()->AddRoot(aRoot);
 }
 
@@ -1646,26 +1646,26 @@ Case 1 (explicit parameters):
 #include <IMeshTools_Parameters.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 
-Standard_Boolean meshing_explicit_parameters()
+bool meshing_explicit_parameters()
 {
-  BRepMesh_IncrementalMesh aMesher (aShape, 0.1, Standard_False, 0.5, Standard_True);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  BRepMesh_IncrementalMesh aMesher (aShape, 0.1, false, 0.5, true);
+  const int aStatus = aMesher.GetStatusFlags();
   return !aStatus;
 }
 
-Standard_Boolean meshing_new()
+bool meshing_new()
 {
   IMeshTools_Parameters aMeshParams;
   aMeshParams.Deflection               = 0.1;
   aMeshParams.Angle                    = 0.5;
-  aMeshParams.Relative                 = Standard_False;
-  aMeshParams.InParallel               = Standard_True;
+  aMeshParams.Relative                 = false;
+  aMeshParams.InParallel               = true;
   aMeshParams.MinSize                  = Precision::Confusion();
-  aMeshParams.InternalVerticesMode     = Standard_True;
-  aMeshParams.ControlSurfaceDeflection = Standard_True;
+  aMeshParams.InternalVerticesMode     = true;
+  aMeshParams.ControlSurfaceDeflection = true;
 
   BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  const int aStatus = aMesher.GetStatusFlags();
   return !aStatus;
 }
 ~~~~
@@ -1690,25 +1690,25 @@ As aspects for different primitive types have been merged, Graphic3d_Group does 
 Existing code relying on old behavior and putting interleaved per-type aspects into single Graphic3d_Group should be updated.
 For example, the following pseudo-code will not work anymore, because all *SetGroupPrimitivesAspect* calls will setup the same property:
 ~~~~{.cpp}
-Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
 aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
 aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());    //!< overrides previous aspect
 
-Handle(Graphic3d_ArrayOfSegments) aLines = new Graphic3d_ArrayOfSegments (2);
-Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (3);
+occ::handle<Graphic3d_ArrayOfSegments> aLines = new Graphic3d_ArrayOfSegments (2);
+occ::handle<Graphic3d_ArrayOfTriangles> aTris = new Graphic3d_ArrayOfTriangles (3);
 aGroup->AddPrimitiveArray (aLines); //!< both arrays will use the same aspect
 aGroup->AddPrimitiveArray (aTris);
 ~~~~
 
 To solve the problem, the code should be modified to either put primitives into dedicated groups (preferred approach), or using *SetPrimitivesAspect* in proper order:
 ~~~~{.cpp}
-Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
 
 aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
-Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (3);
+occ::handle<Graphic3d_ArrayOfTriangles> aTris = new Graphic3d_ArrayOfTriangles (3);
 aGroup->AddPrimitiveArray (aTris);
 
-Handle(Graphic3d_ArrayOfSegments) aLines = new Graphic3d_ArrayOfSegments (2);
+occ::handle<Graphic3d_ArrayOfSegments> aLines = new Graphic3d_ArrayOfSegments (2);
 aGroup->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect()); //!< next array will use the new aspect
 aGroup->AddPrimitiveArray (aLines);
 ~~~~
@@ -1721,20 +1721,20 @@ As result, the following methods of *Graphic3d_MaterialAspect* class have been r
 Previously, computation of final value required the following code:
 ~~~~{.cpp}
 Graphic3d_MaterialAspect theMaterial; Quantity_Color theInteriorColor;
-Graphic3d_Vec3 anAmbient (0.0f);
+NCollection_Vec3<float> anAmbient (0.0f);
 if (theMaterial.ReflectionMode (Graphic3d_TOR_AMBIENT))
 {
   anAmbient = theMaterial.MaterialType (Graphic3d_MATERIAL_ASPECT)
-            ? (Graphic3d_Vec3 )theInteriorColor           * theMaterial.Ambient()
-            : (Graphic3d_Vec3 )theMaterial.AmbientColor() * theMaterial.Ambient();
+            ? (NCollection_Vec3<float> )theInteriorColor           * theMaterial.Ambient()
+            : (NCollection_Vec3<float> )theMaterial.AmbientColor() * theMaterial.Ambient();
 }
 ~~~~
 
 New code looks like this:
 ~~~~{.cpp}
 Graphic3d_MaterialAspect theMaterial; Quantity_Color theInteriorColor;
-Graphic3d_Vec3 anAmbient = theMaterial.AmbientColor();
-if (theMaterial.MaterialType (Graphic3d_MATERIAL_ASPECT)) { anAmbient *= (Graphic3d_Vec3 )theInteriorColor; }
+NCollection_Vec3<float> anAmbient = theMaterial.AmbientColor();
+if (theMaterial.MaterialType (Graphic3d_MATERIAL_ASPECT)) { anAmbient *= (NCollection_Vec3<float> )theInteriorColor; }
 ~~~~
 
 Existing code should be updated to:
@@ -1753,7 +1753,7 @@ Parameters of *Text* in *Graphic3d_Group* are moved into a new *Graphic3d_Text* 
 
 The previous code:
 ~~~~{.cpp}
-Standard_Real x, y, z;
+double x, y, z;
 theAttachmentPoint.Coord(x,y,z);
 theGroup->Text (theText,
                 Graphic3d_Vertex(x,y,z),
@@ -1765,7 +1765,7 @@ theGroup->Text (theText,
 ~~~~
 should be replaced by the new code:
 ~~~~{.cpp}
-Handle(Graphic3d_Text) aText = new Graphic3d_Text (theAspect->Height());
+occ::handle<Graphic3d_Text> aText = new Graphic3d_Text (theAspect->Height());
 aText->SetText (theText.ToExtString());
 aText->SetPosition (theAttachmentPoint);
 aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
@@ -1930,8 +1930,8 @@ The method Select3D_SensitiveEntity::NbSubElements() has been changed to be cons
 * TreatCompound method has been moved from *BOPAlgo_Tools* to *BOPTools_AlgoTools*. Additionally, the map parameter became optional:
 ~~~~{.cpp}
 void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
-                                        TopTools_ListOfShape& theLS,
-                                        TopTools_MapOfShape* theMap = NULL);
+                                        NCollection_List<TopoDS_Shape>& theLS,
+                                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMap = NULL);
 ~~~~
 
 @subsection upgrade_750_Adaptor2d_OffsetCurve  Offset direction change
@@ -2096,19 +2096,19 @@ The code that used operator << for messenger, should be ported as follows.
 
 Before the change:
 ~~~~{.cpp}
-  Handle(Message_Messenger) theMessenger = ...;
+  occ::handle<Message_Messenger> theMessenger = ...;
   theMessenger << "Value = " << anInteger << Message_EndLine;
 ~~~~
 
 After the change, single-line variant:
 ~~~~{.cpp}
-  Handle(Message_Messenger) theMessenger = ...;
+  occ::handle<Message_Messenger> theMessenger = ...;
   theMessenger->SendInfo() << "Value = " << anInteger << std::endl;
 ~~~~
 
 After the change, extended variant:
 ~~~~{.cpp}
-  Handle(Message_Messenger) theMessenger = ...;
+  occ::handle<Message_Messenger> theMessenger = ...;
   Message_Messenger::StreamBuffer aSender = theMessenger->SendInfo();
   aSender << "Array: [ ";
   for (int i = 0; i < aNb; ++i) { aSender << anArray[i] << " "; }
@@ -2181,8 +2181,8 @@ Existing code relying on old behavior, if any, shall be rewritten.
 Geom_RectangularTrimmedSurface sequentially trimming in U and V directions already no longer loses the first trim.
 For example:
 ~~~~{.cpp}
-  Handle(Geom_RectangularTrimmedSurface) ST  = new Geom_RectangularTrimmedSurface (Sbase, u1, u2, Standard_True); // trim along U
-  Handle(Geom_RectangularTrimmedSurface) ST1 = new Geom_RectangularTrimmedSurface (ST, v1, v2, Standard_False); // trim along V
+  occ::handle<Geom_RectangularTrimmedSurface> ST  = new Geom_RectangularTrimmedSurface (Sbase, u1, u2, true); // trim along U
+  occ::handle<Geom_RectangularTrimmedSurface> ST1 = new Geom_RectangularTrimmedSurface (ST, v1, v2, false); // trim along V
 ~~~~
 gives different result.
 In current version ST1 - surface trimmed only along V, U trim is removed;
@@ -2275,13 +2275,13 @@ Now the classes accept adaptors instead objects as input parameters.
 
 The following functions in *GeomLib_CheckCurveOnSurface* have been modified:
 ~~~~{.cpp}
-GeomLib_CheckCurveOnSurface(const Handle(Adaptor3d_Curve)& theCurve,
-                            const Standard_Real theTolRange);
+GeomLib_CheckCurveOnSurface(const occ::handle<Adaptor3d_Curve>& theCurve,
+                            const double theTolRange);
 
-void Init (const Handle(Adaptor3d_Curve)& theCurve, const Standard_Real theTolRange);
+void Init (const occ::handle<Adaptor3d_Curve>& theCurve, const double theTolRange);
 
-void Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
-             const Standard_Boolean isMultiThread);
+void Perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface,
+             const bool isMultiThread);
 ~~~~
 
 @subsection upgrade_occt760_old_bop_removed Removal of old Boolean operations algorithm (BRepAlgo_BooleanOperation)
@@ -2475,7 +2475,7 @@ The `Handle_*` type names are still available, but it is recommended to use the 
 Example:
 
 ~~~~{.cpp}
-  Handle(TDataStd_Application) anApp = new TDataStd_Application(); // recommended
+  occ::handle<TDataStd_Application> anApp = new TDataStd_Application(); // recommended
   Handle_TDataStd_Application anApp = new TDataStd_Application(); // deprecated
 ~~~~
 

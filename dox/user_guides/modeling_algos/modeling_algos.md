@@ -49,7 +49,7 @@ Geom2dAPI_InterCurveCurve Intersector(C3,tolerance);
 ~~~~
 
 ~~~~{.cpp}
-Standard_Integer N = Intersector.NbPoints(); 
+int N = Intersector.NbPoints(); 
 ~~~~
 Calls the number of intersection points
 
@@ -60,12 +60,12 @@ gp_Pnt2d P = Intersector.Point(Index);
 
 To call the number of intersection segments, use
 ~~~~{.cpp}
-Standard_Integer M = Intersector.NbSegments(); 
+int M = Intersector.NbSegments(); 
 ~~~~
 
 To select the desired intersection segment pass integer index values in argument. 
 ~~~~{.cpp}
-Handle(Geom2d_Curve) Seg1, Seg2; 
+occ::handle<Geom2d_Curve> Seg1, Seg2; 
 Intersector.Segment(Index,Seg1,Seg2); 
 // if intersection of 2 curves 
 Intersector.Segment(Index,Seg1); 
@@ -89,7 +89,7 @@ GeomAPI_IntCS Intersector(C, S);
 
 To call the number of intersection points, use:
 ~~~~{.cpp}
-Standard_Integer nb = Intersector.NbPoints(); 
+int nb = Intersector.NbPoints(); 
 ~~~~
 
 
@@ -109,12 +109,12 @@ GeomAPI_IntSS Intersector(S1, S2, Tolerance);
 Once the *GeomAPI_IntSS* object has been created, it can be interpreted. 
 
 ~~~~{.cpp}
-Standard_Integer nb = Intersector. NbLines(); 
+int nb = Intersector. NbLines(); 
 ~~~~
 Calls the number of intersection curves.
 
 ~~~~{.cpp}
-Handle(Geom_Curve) C = Intersector.Line(Index) 
+occ::handle<Geom_Curve> C = Intersector.Line(Index) 
 ~~~~
 Where *Index* is an  integer between 1 and *nb*, calls the intersection curves.
 
@@ -137,26 +137,26 @@ This class is used to  interpolate a BSplineCurve passing through an array of po
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
 Geom2dAPI_Interpolate 
-(const  Handle(TColgp_HArray1OfPnt2d)& Points, 
-const  Standard_Boolean PeriodicFlag, 
-const Standard_Real  Tolerance); 
+(const  occ::handle<NCollection_HArray1<gp_Pnt2d>>& Points, 
+const  bool PeriodicFlag, 
+const double  Tolerance); 
 
-Geom2dAPI_Interpolate Interp(Points, Standard_False, 
+Geom2dAPI_Interpolate Interp(Points, false, 
                                     Precision::Confusion()); 
 ~~~~
 
 
 It is possible to call the BSpline curve from the object defined  above it. 
 ~~~~{.cpp}
-Handle(Geom2d_BSplineCurve) C = Interp.Curve(); 
+occ::handle<Geom2d_BSplineCurve> C = Interp.Curve(); 
 ~~~~
 
 Note that the *Handle(Geom2d_BSplineCurve)* operator has been redefined by the method *Curve()*. Consequently, it is  unnecessary to pass via the construction of an intermediate object of the *Geom2dAPI_Interpolate* type and the following syntax is correct. 
 
 ~~~~{.cpp}
-Handle(Geom2d_BSplineCurve) C = 
+occ::handle<Geom2d_BSplineCurve> C = 
 Geom2dAPI_Interpolate(Points, 
-    Standard_False, 
+    false, 
     Precision::Confusion()); 
 ~~~~
 
@@ -165,17 +165,17 @@ Geom2dAPI_Interpolate(Points,
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
 GeomAPI_Interpolate 
-(const  Handle(TColgp_HArray1OfPnt)& Points, 
-const  Standard_Boolean PeriodicFlag, 
-const Standard_Real  Tolerance); 
+(const  occ::handle<NCollection_HArray1<gp_Pnt>>& Points, 
+const  bool PeriodicFlag, 
+const double  Tolerance); 
 
-GeomAPI_Interpolate Interp(Points, Standard_False, 
+GeomAPI_Interpolate Interp(Points, false, 
                                     Precision::Confusion()); 
 ~~~~
 
 It is possible to call the BSpline curve from the object defined  above it. 
 ~~~~{.cpp}
-Handle(Geom_BSplineCurve) C = Interp.Curve(); 
+occ::handle<Geom_BSplineCurve> C = Interp.Curve(); 
 ~~~~
 Note that the *Handle(Geom_BSplineCurve)* operator has been redefined by the method *Curve()*. Thus, it is unnecessary  to pass via the construction of an intermediate object of the *GeomAPI_Interpolate*  type and the following syntax is correct. 
 
@@ -187,7 +187,7 @@ Handle(Geom_BSplineCurve) C =
 Boundary conditions may  be imposed with the method Load. 
 ~~~~{.cpp}
 GeomAPI_Interpolate AnInterpolator 
-(Points, Standard_False, 1.0e-5); 
+(Points, false, 1.0e-5); 
 AnInterpolator.Load (StartingTangent, EndingTangent); 
 ~~~~
 
@@ -621,7 +621,7 @@ The class *MakeApprox* allows converting a *GeomPlate* surface into a *Geom_BSpl
 Let us create a Plate surface  and approximate it from a polyline as a curve constraint and a point constraint 
 
 ~~~~{.cpp}
-Standard_Integer NbCurFront=4, 
+int NbCurFront=4, 
 NbPointConstraint=1; 
 gp_Pnt P1(0.,0.,0.); 
 gp_Pnt P2(0.,10.,0.); 
@@ -641,25 +641,25 @@ BRepTools_WireExplorer anExp;
 for(anExp.Init(W); anExp.More(); anExp.Next()) 
 { 
 TopoDS_Edge E = anExp.Current(); 
-Handle(BRepAdaptor_HCurve) C = new 
+occ::handle<BRepAdaptor_HCurve> C = new 
 BRepAdaptor_HCurve(); 
 C-ChangeCurve().Initialize(E); 
-Handle(BRepFill_CurveConstraint) Cont= new 
+occ::handle<BRepFill_CurveConstraint> Cont= new 
 BRepFill_CurveConstraint(C,0); 
 BPSurf.Add(Cont); 
 } 
 // Point constraint 
-Handle(GeomPlate_PointConstraint) PCont= new 
+occ::handle<GeomPlate_PointConstraint> PCont= new 
 GeomPlate_PointConstraint(P5,0); 
 BPSurf.Add(PCont); 
 // Compute the Plate surface 
 BPSurf.Perform(); 
 // Approximation of the Plate surface 
-Standard_Integer MaxSeg=9; 
-Standard_Integer MaxDegree=8; 
-Standard_Integer CritOrder=0; 
-Standard_Real dmax,Tol; 
-Handle(GeomPlate_Surface) PSurf = BPSurf.Surface(); 
+int MaxSeg=9; 
+int MaxDegree=8; 
+int CritOrder=0; 
+double dmax,Tol; 
+occ::handle<GeomPlate_Surface> PSurf = BPSurf.Surface(); 
 dmax = Max(0.0001,10*BPSurf.G0Error()); 
 Tol=0.0001; 
 GeomPlate_MakeApprox 
@@ -667,7 +667,7 @@ Mapp(PSurf,Tol,MaxSeg,MaxDegree,dmax,CritOrder);
 Handle (Geom_Surface) Surf (Mapp.Surface()); 
 // create a face corresponding to the approximated Plate 
 Surface 
-Standard_Real Umin, Umax, Vmin, Vmax; 
+double Umin, Umax, Vmin, Vmax; 
 PSurf->Bounds( Umin, Umax, Vmin, Vmax); 
 BRepBuilderAPI_MakeFace MF(Surf,Umin, Umax, Vmin, Vmax); 
 ~~~~
@@ -693,7 +693,7 @@ The class *Geom2dAPI_ProjectPointOnCurve* may be instantiated as in the followin
 
 ~~~~{.cpp}
 gp_Pnt2d P; 
-Handle(Geom2d_BezierCurve) C = 
+occ::handle<Geom2d_BezierCurve> C = 
 	new  Geom2d_BezierCurve(args); 
 Geom2dAPI_ProjectPointOnCurve Projector (P, C); 
 ~~~~
@@ -707,7 +707,7 @@ Having thus created the *Geom2dAPI_ProjectPointOnCurve* object, we can now inter
 #### Calling the number of solution points
 
 ~~~~{.cpp}
-Standard_Integer NumSolutions = Projector.NbPoints(); 
+int NumSolutions = Projector.NbPoints(); 
 ~~~~
 
 #### Calling the location of a solution point
@@ -722,13 +722,13 @@ gp_Pnt2d Pn = Projector.Point(Index);
 For a given point  corresponding to a given *Index*: 
 
 ~~~~{.cpp}
-Standard_Real U = Projector.Parameter(Index); 
+double U = Projector.Parameter(Index); 
 ~~~~
 
 This can also be  programmed as: 
 
 ~~~~{.cpp}
-Standard_Real U; 
+double U; 
 Projector.Parameter(Index,U); 
 ~~~~
 
@@ -737,7 +737,7 @@ Projector.Parameter(Index,U);
 We can find the distance  between the initial point and a point, which corresponds to the given *Index*: 
 
 ~~~~{.cpp}
-Standard_Real D = Projector.Distance(Index); 
+double D = Projector.Distance(Index); 
 ~~~~
 
 #### Calling the nearest solution point
@@ -751,13 +751,13 @@ gp_Pnt2d P1 = Projector.NearestPoint();
 #### Calling the parameter of the nearest solution point
 
 ~~~~{.cpp}
-Standard_Real U = Projector.LowerDistanceParameter(); 
+double U = Projector.LowerDistanceParameter(); 
 ~~~~
 
 #### Calling the minimum distance from the point to the curve
 
 ~~~~{.cpp}
-Standard_Real D = Projector.LowerDistance(); 
+double D = Projector.LowerDistance(); 
 ~~~~
 
 #### Redefined operators
@@ -767,13 +767,13 @@ Some operators have been  redefined to find the closest solution.
 *Standard_Real()* returns  the minimum distance from the point to the curve. 
 
 ~~~~{.cpp}
-Standard_Real D = Geom2dAPI_ProjectPointOnCurve (P,C); 
+double D = Geom2dAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
 *Standard_Integer()* returns the number of solutions. 
 
 ~~~~{.cpp}
-Standard_Integer N = 
+int N = 
 Geom2dAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
@@ -809,7 +809,7 @@ The class *GeomAPI_ProjectPointOnCurve* is  instantiated as in the following exa
 
 ~~~~{.cpp}
 gp_Pnt P; 
-Handle(Geom_BezierCurve) C = 
+occ::handle<Geom_BezierCurve> C = 
 	new  Geom_BezierCurve(args); 
 GeomAPI_ProjectPointOnCurve Projector (P, C); 
 ~~~~
@@ -824,7 +824,7 @@ Having thus created the  *GeomAPI_ProjectPointOnCurve* object, you can now inter
 #### Calling the number of solution points
 
 ~~~~{.cpp}
-Standard_Integer NumSolutions = Projector.NbPoints(); 
+int NumSolutions = Projector.NbPoints(); 
 ~~~~
 
 #### Calling the location of a solution point
@@ -839,12 +839,12 @@ gp_Pnt Pn = Projector.Point(Index);
 For a given point  corresponding to a given index: 
 
 ~~~~{.cpp}
-Standard_Real U = Projector.Parameter(Index); 
+double U = Projector.Parameter(Index); 
 ~~~~
 
 This can also be  programmed as: 
 ~~~~{.cpp}
-Standard_Real U; 
+double U; 
 Projector.Parameter(Index,U); 
 ~~~~
 
@@ -852,7 +852,7 @@ Projector.Parameter(Index,U);
 
 The distance between the  initial point and a point, which corresponds to a given index, may be found: 
 ~~~~{.cpp}
-Standard_Real D = Projector.Distance(Index); 
+double D = Projector.Distance(Index); 
 ~~~~
 
 #### Calling the nearest solution point
@@ -865,13 +865,13 @@ gp_Pnt P1 = Projector.NearestPoint();
 #### Calling the parameter of the nearest solution point
 
 ~~~~{.cpp}
-Standard_Real U = Projector.LowerDistanceParameter(); 
+double U = Projector.LowerDistanceParameter(); 
 ~~~~
 
 #### Calling the minimum distance from the point to the curve
 
 ~~~~{.cpp}
-Standard_Real D =  Projector.LowerDistance(); 
+double D =  Projector.LowerDistance(); 
 ~~~~
 
 #### Redefined  operators 
@@ -881,12 +881,12 @@ Some operators have been  redefined to find the nearest solution.
 *Standard_Real()* returns  the minimum distance from the point to the curve. 
 
 ~~~~{.cpp}
-Standard_Real D = GeomAPI_ProjectPointOnCurve (P,C); 
+double D = GeomAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
 *Standard_Integer()* returns  the number of solutions. 
 ~~~~{.cpp}
-Standard_Integer N =  GeomAPI_ProjectPointOnCurve (P,C); 
+int N =  GeomAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
 *gp_Pnt2d()* returns the  nearest solution point. 
@@ -943,7 +943,7 @@ Having thus created the  *GeomAPI_ProjectPointOnSurf* object, you can interrogat
 #### Calling the number of solution points
 
 ~~~~{.cpp}
-Standard_Integer NumSolutions = Proj.NbPoints(); 
+int NumSolutions = Proj.NbPoints(); 
 ~~~~
 
 #### Calling the location of a solution point
@@ -959,7 +959,7 @@ gp_Pnt Pn = Proj.Point(Index);
 For a given point  corresponding to the given index: 
 
 ~~~~{.cpp}
-Standard_Real U,V; 
+double U,V; 
 Proj.Parameters(Index, U, V); 
 ~~~~
 
@@ -968,7 +968,7 @@ Proj.Parameters(Index, U, V);
 
 The distance between the  initial point and a point corresponding to the given index may be found: 
 ~~~~{.cpp}
-Standard_Real D = Projector.Distance(Index); 
+double D = Projector.Distance(Index); 
 ~~~~
 
 #### Calling the nearest solution point
@@ -981,14 +981,14 @@ gp_Pnt P1 = Proj.NearestPoint();
 #### Calling the parameters of the nearest solution point
 
 ~~~~{.cpp}
-Standard_Real U,V; 
+double U,V; 
 Proj.LowerDistanceParameters (U, V); 
 ~~~~
 
 #### Calling the minimum distance from a point to the surface
 
 ~~~~{.cpp}
-Standard_Real D = Proj.LowerDistance(); 
+double D = Proj.LowerDistance(); 
 ~~~~
 
 #### Redefined operators
@@ -998,13 +998,13 @@ Some operators have been  redefined to help you find the nearest solution.
 *Standard_Real()* returns  the minimum distance from the point to the surface. 
 
 ~~~~{.cpp}
-Standard_Real D = GeomAPI_ProjectPointOnSurf (P,S); 
+double D = GeomAPI_ProjectPointOnSurf (P,S); 
 ~~~~
 
 *Standard_Integer()* returns  the number of solutions. 
 
 ~~~~{.cpp}
-Standard_Integer N = GeomAPI_ProjectPointOnSurf (P,S); 
+int N = GeomAPI_ProjectPointOnSurf (P,S); 
 ~~~~
 
 *gp_Pnt2d()* returns the  nearest solution point. 
@@ -1045,8 +1045,8 @@ The *To2d* and *To3d* methods are used to;
 
 These methods are called  as follows: 
 ~~~~{.cpp}
-Handle(Geom2d_Curve) C2d = GeomAPI::To2d(C3d, Pln); 
-Handle(Geom_Curve) C3d = GeomAPI::To3d(C2d, Pln); 
+occ::handle<Geom2d_Curve> C2d = GeomAPI::To2d(C3d, Pln); 
+occ::handle<Geom_Curve> C3d = GeomAPI::To3d(C2d, Pln); 
 ~~~~
 
 
@@ -1082,9 +1082,9 @@ This class always creates a new vertex and has no other methods.
 Use *BRepBuilderAPI_MakeEdge* to create from a curve and vertices. The basic method constructs an edge from a curve, two vertices, and two parameters. 
 
 ~~~~{.cpp}
-Handle(Geom_Curve) C = ...; // a curve 
+occ::handle<Geom_Curve> C = ...; // a curve 
 TopoDS_Vertex V1 = ...,V2 = ...;// two Vertices 
-Standard_Real p1 = ..., p2 = ..;// two parameters 
+double p1 = ..., p2 = ..;// two parameters 
 TopoDS_Edge E = BRepBuilderAPI_MakeEdge(C,V1,V2,p1,p2); 
 ~~~~
 
@@ -1132,9 +1132,9 @@ There exist supplementary edge construction methods derived from the basic one.
 The five following  methods are thus derived from the basic construction: 
 
 ~~~~{.cpp}
-Handle(Geom_Curve) C = ...; // a curve 
+occ::handle<Geom_Curve> C = ...; // a curve 
 TopoDS_Vertex V1 = ...,V2 = ...;// two Vertices 
-Standard_Real p1 = ..., p2 = ..;// two parameters 
+double p1 = ..., p2 = ..;// two parameters 
 gp_Pnt P1 = ..., P2 = ...;// two points 
 TopoDS_Edge E; 
 // project the vertices on the curve 
@@ -1203,9 +1203,9 @@ The following example  creates a rectangle centered on the origin of dimensions 
 #include <BRepBuilderAPI_MakeWire.hxx> 
 
 // Use MakeArc method to make an edge and two vertices 
-void MakeArc(Standard_Real x,Standard_Real y, 
-Standard_Real R, 
-Standard_Real ang, 
+void MakeArc(double x,double y, 
+double R, 
+double ang, 
 TopoDS_Shape& E, 
 TopoDS_Shape& V1, 
 TopoDS_Shape& V2) 
@@ -1220,20 +1220,20 @@ V1 = ME.Vertex1();
 V2 = ME.Vertex2(); 
 } 
 
-TopoDS_Wire MakeFilletedRectangle(const Standard_Real H, 
-const Standard_Real L, 
-const Standard_Real  R) 
+TopoDS_Wire MakeFilletedRectangle(const double H, 
+const double L, 
+const double  R) 
 { 
-TopTools_Array1OfShape theEdges(1,8); 
-TopTools_Array1OfShape theVertices(1,8); 
+NCollection_Array1<TopoDS_Shape> theEdges(1,8); 
+NCollection_Array1<TopoDS_Shape> theVertices(1,8); 
 
 // First create the circular edges and the vertices 
 // using the MakeArc function described above. 
-void MakeArc(Standard_Real, Standard_Real, 
-Standard_Real, Standard_Real, 
+void MakeArc(double, double, 
+double, double, 
 TopoDS_Shape&, TopoDS_Shape&,  TopoDS_Shape&); 
 
-Standard_Real x = L/2 - R, y = H/2 - R; 
+double x = L/2 - R, y = H/2 - R; 
 MakeArc(x,-y,R,3.*PI/2.,theEdges(2),theVertices(2), 
 theVertices(3)); 
 MakeArc(x,y,R,0.,theEdges(4),theVertices(4), 
@@ -1243,7 +1243,7 @@ theVertices(7));
 MakeArc(-x,-y,R,PI,theEdges(8),theVertices(8), 
 theVertices(1)); 
 // Create the linear edges 
-for (Standard_Integer i = 1; i <= 7; i += 2) 
+for (int i = 1; i <= 7; i += 2) 
 { 
 theEdges(i) = BRepBuilderAPI_MakeEdge 
 (TopoDS::Vertex(theVertices(i)),TopoDS::Vertex 
@@ -1276,10 +1276,10 @@ The basic usage of  *BRepBuilderAPI_MakePolygon* is to create a wire by adding v
 #include <BRepBuilderAPI_MakePolygon.hxx> 
 #include <TColgp_Array1OfPnt.hxx> 
 
-TopoDS_Wire ClosedPolygon(const TColgp_Array1OfPnt&  Points) 
+TopoDS_Wire ClosedPolygon(const NCollection_Array1<gp_Pnt>&  Points) 
 { 
 BRepBuilderAPI_MakePolygon MP; 
-for(Standard_Integer i=Points.Lower();i=Points.Upper();i++) 
+for(int i=Points.Lower();i=Points.Upper();i++) 
 { 
 MP.Add(Points(i)); 
 } 
@@ -1294,7 +1294,7 @@ Two examples:
 
 Example of a closed  triangle from three vertices:
 ~~~~{.cpp}
-TopoDS_Wire W =  BRepBuilderAPI_MakePolygon(V1,V2,V3,Standard_True); 
+TopoDS_Wire W =  BRepBuilderAPI_MakePolygon(V1,V2,V3,true); 
 ~~~~
 
 Example of an open  polygon from four points:
@@ -1315,8 +1315,8 @@ Use *BRepBuilderAPI_MakeFace* class to create a face from a surface and wires. A
 A face can be  constructed from a surface and four parameters to determine a limitation of the  UV space. The parameters are optional, if they are omitted the natural bounds  of the surface are used. Up to four edges and vertices are created with a wire.  No edge is created when the parameter is infinite. 
 
 ~~~~{.cpp}
-Handle(Geom_Surface) S = ...; // a surface 
-Standard_Real umin,umax,vmin,vmax; // parameters 
+occ::handle<Geom_Surface> S = ...; // a surface 
+double umin,umax,vmin,vmax; // parameters 
 TopoDS_Face F =  BRepBuilderAPI_MakeFace(S,umin,umax,vmin,vmax); 
 ~~~~
 
@@ -1325,7 +1325,7 @@ TopoDS_Face F =  BRepBuilderAPI_MakeFace(S,umin,umax,vmin,vmax);
 To make a face from the  natural boundary of a surface, the parameters are not required: 
 
 ~~~~{.cpp}
-Handle(Geom_Surface) S = ...; // a surface 
+occ::handle<Geom_Surface> S = ...; // a surface 
 TopoDS_Face F = BRepBuilderAPI_MakeFace(S); 
 ~~~~
 
@@ -1374,10 +1374,10 @@ A planar face can be  created from only a wire, provided this wire defines a pla
 #include <BRepBuilderAPI_MakePolygon.hxx> 
 #include <BRepBuilderAPI_MakeFace.hxx> 
 
-TopoDS_Face PolygonalFace(const TColgp_Array1OfPnt&  thePnts) 
+TopoDS_Face PolygonalFace(const NCollection_Array1<gp_Pnt>&  thePnts) 
 { 
 BRepBuilderAPI_MakePolygon MP; 
-for(Standard_Integer i=thePnts.Lower(); 
+for(int i=thePnts.Lower(); 
 i<=thePnts.Upper(); i++) 
 { 
 MP.Add(thePnts(i)); 
@@ -1422,7 +1422,7 @@ For a higher or unknown  number of edges the Add method must be used; for exampl
 ~~~~{.cpp}
 TopTools_Array1OfShapes theEdges; 
 BRepBuilderAPI_MakeWire MW; 
-for (Standard_Integer i = theEdge.Lower(); 
+for (int i = theEdge.Lower(); 
 i <= theEdges.Upper(); i++) 
 MW.Add(TopoDS::Edge(theEdges(i)); 
 TopoDS_Wire W = MW; 
@@ -1536,7 +1536,7 @@ The following code  builds the cylindrical face of the figure, which is a quarte
 
 ~~~~{.cpp}
 
-Standard_Real X = 20, Y = 10, Z = 15, R = 10, DY = 30; 
+double X = 20, Y = 10, Z = 15, R = 10, DY = 30; 
 // Make the system of coordinates 
 gp_Ax2 axes = gp::ZOX(); 
 axes.Translate(gp_Vec(X,Y,Z)); 
@@ -1554,7 +1554,7 @@ BRepPrimAPI_MakeCylinder(axes,R,DY,PI/2.);
 The following code  builds the solid cone of the figure, which is located in the default system  with radii *R1* and *R2* and height *H*. 
 
 ~~~~{.cpp}
-Standard_Real R1 = 30, R2 = 10, H = 15; 
+double R1 = 30, R2 = 10, H = 15; 
 TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H); 
 ~~~~
 
@@ -1571,7 +1571,7 @@ TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H);
 The following code  builds four spheres from a radius and three angles. 
 
 ~~~~{.cpp}
-Standard_Real R = 30, ang = 
+double R = 30, ang = 
 	PI/2, a1 = -PI/2.3,  a2 = PI/4; 
 TopoDS_Solid S1 = BRepPrimAPI_MakeSphere(R); 
 TopoDS_Solid S2 = BRepPrimAPI_MakeSphere(R,ang); 
@@ -1597,7 +1597,7 @@ Note that we could  equally well choose to create Shells instead of Solids.
 The following code  builds four toroidal shells from two radii and three angles. 
 
 ~~~~{.cpp}
-Standard_Real R1 = 30, R2 = 10, ang = PI, a1 = 0, 
+double R1 = 30, R2 = 10, ang = PI, a1 = 0, 
 	a2 = PI/2; 
 TopoDS_Shell S1 = BRepPrimAPI_MakeTorus(R1,R2); 
 TopoDS_Shell S2 = BRepPrimAPI_MakeTorus(R1,R2,ang); 
@@ -1650,7 +1650,7 @@ The following code creates a finite, an infinite and a semi-infinite solid using
 ~~~~{.cpp}
 TopoDS_Face F = ..; // The swept face 
 gp_Dir direc(0,0,1); 
-Standard_Real l = 10; 
+double l = 10; 
 // create a vector from the direction and the length 
 gp_Vec v = direc; 
 v *= l; 
@@ -1658,7 +1658,7 @@ TopoDS_Solid P1 = BRepPrimAPI_MakePrism(F,v);
 // finite 
 TopoDS_Solid P2 = BRepPrimAPI_MakePrism(F,direc); 
 // infinite 
-TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,Standard_False); 
+TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,false); 
 // semi-infinite 
 ~~~~
 
@@ -1673,7 +1673,7 @@ The following code creates a full and a partial rotation using a face, an axis a
 ~~~~{.cpp}
 TopoDS_Face F = ...; // the profile 
 gp_Ax1 axis(gp_Pnt(0,0,0),gp_Dir(0,0,1)); 
-Standard_Real ang = PI/3; 
+double ang = PI/3; 
 TopoDS_Solid R1 = BRepPrimAPI_MakeRevol(F,axis); 
 // Full revol 
 TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang); 
@@ -1782,18 +1782,18 @@ To make the faces from edges it is, firstly, necessary to create planar wires fr
 The static methods *BOPAlgo_Tools::EdgesToWires* and *BOPAlgo_Tools::WiresToFaces* can be used for that:
 ~~~~{.cpp}
 TopoDS_Shape anEdges = ...; /* The input edges */
-Standard_Real anAngTol = 1.e-8; /* The angular tolerance for distinguishing the planes in which the wires are located */
-Standard_Boolean bShared = Standard_False; /* Defines whether the edges are shared or not */
+double anAngTol = 1.e-8; /* The angular tolerance for distinguishing the planes in which the wires are located */
+bool bShared = false; /* Defines whether the edges are shared or not */
 //
 TopoDS_Shape aWires; /* resulting wires */
-Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+int iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
 if (iErr) {
   cout << "Error: Unable to build wires from given edges\n";
   return;
 }
 //
 TopoDS_Shape aFaces; /* resulting faces */
-Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+bool bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
 if (!bDone) {
   cout << "Error: Unable to build faces from wires\n";
   return;
@@ -2008,7 +2008,7 @@ BRepBuilderAPI_Transform aTransformer(aS, aTrsf); // Transformation API algorith
 const TopoDS_Shape& aRes = aTransformer.Shape();
 
 // Create the translation history object
-TopTools_ListOfShape anArguments;
+NCollection_List<TopoDS_Shape> anArguments;
 anArguments.Append(aS);
 BRepTools_History aHistory(anArguments, aTransformer);
 ~~~~
@@ -2016,8 +2016,8 @@ BRepTools_History aHistory(anArguments, aTransformer);
 *BRepTools_History* also allows merging histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
 
 ~~~~{.cpp}
-Handle(BRepTools_History) aHist1 = ...; // History of first operation
-Handle(BRepTools_History) aHist2 = ...; // History of second operation
+occ::handle<BRepTools_History> aHist1 = ...; // History of first operation
+occ::handle<BRepTools_History> aHist2 = ...; // History of second operation
 ~~~~
 
 It is possible to merge the second history into the first one:
@@ -2027,7 +2027,7 @@ aHist1->Merge(aHist2);
 
 Or create the new history keeping the two histories unmodified:
 ~~~~{.cpp}
-Handle(BRepTools_History) aResHistory = new BRepTools_History;
+occ::handle<BRepTools_History> aResHistory = new BRepTools_History;
 aResHistory->Merge(aHist1);
 aResHistory->Merge(aHist2);
 ~~~~
@@ -2079,10 +2079,10 @@ In the following example  a filleted box with dimensions a,b,c and radius r is c
 #include <BRepFilletAPI_MakeFillet.hxx> 
 #include <TopExp_Explorer.hxx> 
 
-TopoDS_Shape FilletedBox(const Standard_Real a, 
-						const Standard_Real  b, 
-						const Standard_Real  c, 
-						const Standard_Real  r) 
+TopoDS_Shape FilletedBox(const double a, 
+						const double  b, 
+						const double  c, 
+						const double  r) 
 { 
 	TopoDS_Solid Box =  BRepPrimAPI_MakeBox(a,b,c); 
 	BRepFilletAPI_MakeFillet  MF(Box); 
@@ -2112,7 +2112,7 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 	ChFi3d_FilletShape  FSh = ChFi3d_Rational; 
 	Rake.SetFilletShape(FSh); 
 
-	TColgp_Array1OfPnt2d  ParAndRad(1, 6); 
+	NCollection_Array1<gp_Pnt2d>  ParAndRad(1, 6); 
 	ParAndRad(1).SetCoord(0.,  10.); 
 	ParAndRad(1).SetCoord(50.,  20.); 
 	ParAndRad(1).SetCoord(70.,  20.); 
@@ -2170,10 +2170,10 @@ Planar Fillet
 #include “TopoDS.hxx” 
 #include “TopoDS_Solid.hxx” 
 
-TopoDS_Shape FilletFace(const Standard_Real a, 
-						const Standard_Real  b, 
-						const Standard_Real c, 
-						const Standard_Real  r) 
+TopoDS_Shape FilletFace(const double a, 
+						const double  b, 
+						const double c, 
+						const double  r) 
 
 { 
 	TopoDS_Solid Box =  BRepPrimAPI_MakeBox (a,b,c); 
@@ -2245,12 +2245,12 @@ The MakeThickSolidByJoin method of the *BRepOffsetAPI_MakeThickSolid* takes the 
 ~~~~{.cpp}
 TopoDS_Solid SolidInitial = ...;
 
-Standard_Real 			Of 		= ...;
-TopTools_ListOfShape 	LCF;
+double 			Of 		= ...;
+NCollection_List<TopoDS_Shape> 	LCF;
 TopoDS_Shape 			Result;
-Standard_Real 			Tol = Precision::Confusion();
+double 			Tol = Precision::Confusion();
 
-for (Standard_Integer i = 1 ;i <= n; i++) {
+for (int i = 1 ;i <= n; i++) {
 	TopoDS_Face SF = ...; // a face from SolidInitial
 	LCF.Append(SF);
 }
@@ -2290,18 +2290,18 @@ The following code  places a draft angle on several faces of a shape; the same d
 ~~~~{.cpp}
 TopoDS_Shape myShape = ... 
 // The original shape 
-TopTools_ListOfShape ListOfFace; 
+NCollection_List<TopoDS_Shape> ListOfFace; 
 // Creation of the list of faces to be modified 
 ... 
 
 gp_Dir Direc(0.,0.,1.); 
 // Z direction 
-Standard_Real Angle = 5.*PI/180.; 
+double Angle = 5.*PI/180.; 
 // 5 degree angle 
 gp_Pln Neutral(gp_Pnt(0.,0.,5.), Direc); 
 // Neutral plane Z=5 
 BRepOffsetAPI_DraftAngle theDraft(myShape); 
-TopTools_ListIteratorOfListOfShape itl; 
+NCollection_List<TopoDS_Shape>::Iterator itl; 
 for (itl.Initialize(ListOfFace); itl.More(); itl.Next())  { 
 	theDraft.Add(TopoDS::Face(itl.Value()),Direc,Angle,Neutral); 
 	if  (!theDraft.AddDone()) { 
@@ -2383,7 +2383,7 @@ T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)),
 BRepBuilderAPI_Transformation theTrsf(T); 
 theTrsf.Perform(myShape1); 
 TopoDS_Shape myNewShape1 = theTrsf.Shape() 
-theTrsf.Perform(myShape2,Standard_True); 
+theTrsf.Perform(myShape2,true); 
 // Here duplication is forced 
 TopoDS_Shape myNewShape2 = theTrsf.Shape() 
 ~~~~
@@ -2625,7 +2625,7 @@ gp_Dir Extrusion (.,.,.);
 
 // An empty face is given as the sketch face 
 
-BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  Extrusion, Standard_True, Standard_True); 
+BRepFeat_MakePrism thePrism(Sbase, Fbase, TopoDS_Face(),  Extrusion, true, true); 
 
 thePrism, Perform(100.); 
 if (thePrism.IsDone()) { 
@@ -2671,20 +2671,20 @@ Ex.Next();
 Ex.Next(); 
 Ex.Next(); 
 TopoDS_Face F = TopoDS::Face(Ex.Current()); 
-Handle(Geom_Surface) surf = BRep_Tool::Surface(F); 
+occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F); 
 gp_Circ2d 
 c(gp_Ax2d(gp_Pnt2d(200.,130.),gp_Dir2d(1.,0.)),50.); 
 BRepBuilderAPI_MakeWire MW; 
-Handle(Geom2d_Curve) aline = new Geom2d_Circle(c); 
+occ::handle<Geom2d_Curve> aline = new Geom2d_Circle(c); 
 MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI)); 
 MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI)); 
 BRepBuilderAPI_MakeFace MKF; 
-MKF.Init(surf,Standard_False); 
+MKF.Init(surf,false); 
 MKF.Add(MW.Wire()); 
 TopoDS_Face FP = MKF.Face(); 
 BRepLib::BuildCurves3d(FP); 
-BRepFeat_MakeDPrism MKDP (S,FP,F,10*PI180,Standard_True, 
-							Standard_True); 
+BRepFeat_MakeDPrism MKDP (S,FP,F,10*PI180,true, 
+							true); 
 MKDP.Perform(200); 
 TopoDS_Shape res1 = MKDP.Shape(); 
 ~~~~
@@ -2724,7 +2724,7 @@ gp_Ax1 RevolAx(gp_Pnt(.,.,.), RevolDir);
 
 // An empty face is given as the sketch face 
 
-BRepFeat_MakeRevol theRevol(Sbase, Frevol, TopoDS_Face(), RevolAx,  Standard_True, Standard_True); 
+BRepFeat_MakeRevol theRevol(Sbase, Frevol, TopoDS_Face(), RevolAx,  true, true); 
 
 theRevol.Perform(FUntil); 
 if (theRevol.IsDone()) { 
@@ -2759,12 +2759,12 @@ Ex.Init(S,TopAbs_FACE);
 Ex.Next(); 
 Ex.Next(); 
 TopoDS_Face F1 = TopoDS::Face(Ex.Current()); 
-Handle(Geom_Surface) surf = BRep_Tool::Surface(F1); 
+occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F1); 
 BRepBuilderAPI_MakeWire MW1; 
 gp_Pnt2d p1,p2; 
 p1 = gp_Pnt2d(100.,100.); 
 p2 = gp_Pnt2d(200.,100.); 
-Handle(Geom2d_Line) aline = GCE2d_MakeLine(p1,p2).Value(); 
+occ::handle<Geom2d_Line> aline = GCE2d_MakeLine(p1,p2).Value(); 
 
 MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2))); 
 p1 = p2; 
@@ -2778,23 +2778,23 @@ aline = GCE2d_MakeLine(p1,p2).Value();
 
 MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2))); 
 BRepBuilderAPI_MakeFace MKF1; 
-MKF1.Init(surf,Standard_False); 
+MKF1.Init(surf,false); 
 MKF1.Add(MW1.Wire()); 
 TopoDS_Face FP = MKF1.Face(); 
 BRepLib::BuildCurves3d(FP); 
-TColgp_Array1OfPnt CurvePoles(1,3); 
+NCollection_Array1<gp_Pnt> CurvePoles(1,3); 
 gp_Pnt pt = gp_Pnt(150.,0.,150.); 
 CurvePoles(1) = pt; 
 pt = gp_Pnt(200.,100.,150.); 
 CurvePoles(2) = pt; 
 pt = gp_Pnt(150.,200.,150.); 
 CurvePoles(3) = pt; 
-Handle(Geom_BezierCurve) curve = new Geom_BezierCurve 
+occ::handle<Geom_BezierCurve> curve = new Geom_BezierCurve 
 (CurvePoles); 
 TopoDS_Edge E = BRepBuilderAPI_MakeEdge(curve); 
 TopoDS_Wire W = BRepBuilderAPI_MakeWire(E); 
-BRepFeat_MakePipe MKPipe (S,FP,F1,W,Standard_False, 
-Standard_True); 
+BRepFeat_MakePipe MKPipe (S,FP,F1,W,false, 
+true); 
 MKPipe.Perform(); 
 TopoDS_Shape res1 = MKPipe.Shape(); 
 ~~~~
@@ -2851,10 +2851,10 @@ TopoDS_Shape S = BRepBuilderAPI_MakePrism(BRepBuilderAPI_MakeFace
 TopoDS_Wire W = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt 
 	(50.,45.,100.), 
 gp_Pnt(100.,45.,50.))); 
-Handle(Geom_Plane) aplane = 
+occ::handle<Geom_Plane> aplane = 
 	new Geom_Plane(gp_Pnt(0.,45.,0.),  gp_Vec(0.,1.,0.)); 
 BRepFeat_MakeLinearForm aform(S, W, aplane, gp_Dir 
-	(0.,5.,0.), gp_Dir(0.,-3.,0.),  1, Standard_True); 
+	(0.,5.,0.), gp_Dir(0.,-3.,0.),  1, true); 
 aform.Perform(); 
 TopoDS_Shape res = aform.Shape(); 
 ~~~~
@@ -2874,14 +2874,14 @@ Two *Bind* methods are  used to bind a face of the glued shape to a face of the 
 TopoDS_Shape Sbase = ...; // the basic shape 
 TopoDS_Shape Sglued = ...; // the glued shape 
 
-TopTools_ListOfShape Lfbase; 
-TopTools_ListOfShape Lfglued; 
+NCollection_List<TopoDS_Shape> Lfbase; 
+NCollection_List<TopoDS_Shape> Lfglued; 
 // Determination of the glued faces 
 ... 
 
 BRepFeat_Gluer theGlue(Sglue, Sbase); 
-TopTools_ListIteratorOfListOfShape itlb(Lfbase); 
-TopTools_ListIteratorOfListOfShape itlg(Lfglued); 
+NCollection_List<TopoDS_Shape>::Iterator itlb(Lfbase); 
+NCollection_List<TopoDS_Shape>::Iterator itlg(Lfglued); 
 for (; itlb.More(); itlb.Next(), itlg(Next()) { 
 const TopoDS_Face& f1 = TopoDS::Face(itlg.Value()); 
 const TopoDS_Face& f2 = TopoDS::Face(itlb.Value()); 
@@ -2988,9 +2988,9 @@ Although, removal of only two faces, keeping one of the transverse faces, will f
 Here is the example of usage of the *BRepAlgoAPI_Defeaturing* algorithm on the C++ level:
 ~~~~{.cpp}
 TopoDS_Shape aSolid = ...;               // Input shape to remove the features from
-TopTools_ListOfShape aFeatures = ...;    // Features to remove from the shape
-Standard_Boolean bRunParallel = ...;     // Parallel processing mode
-Standard_Boolean isHistoryNeeded = ...;  // History support
+NCollection_List<TopoDS_Shape> aFeatures = ...;    // Features to remove from the shape
+bool bRunParallel = ...;     // Parallel processing mode
+bool isHistoryNeeded = ...;  // History support
 
 BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
 aDF.SetShape(aSolid);                    // Set the shape
@@ -3017,13 +3017,13 @@ const TopoDS_Shape& aResult = aDF.Shape(); // Result shape
 Use the API history methods to track the history of a shape:
 ~~~~{.cpp}
 // Obtain modification of the shape
-const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
+const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
 
 // Obtain shapes generated from the shape
-const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS);
+const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS);
 
 // Check if the shape is removed or not
-Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
+bool BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
 ~~~~
 
 The command <b>removefeatures</b> allows using the Defeaturing algorithm on the Draw level.
@@ -3166,13 +3166,13 @@ The algorithm is implemented in the class *BOPAlgo_MakePeriodic*.
 Here is the example of its usage on the API level:
 ~~~~{.cpp}
 TopoDS_Shape aShape = ...;                 // The shape to make periodic
-Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
-Standard_Real aXPeriod = ...;              // X period for the shape
-Standard_Boolean isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
+bool bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
+double aXPeriod = ...;              // X period for the shape
+bool isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
                                            // the shape to fit to X period
-Standard_Real aXFirst = ...;               // Start of the X period
+double aXFirst = ...;               // Start of the X period
                                            // (really necessary only if the trimming is requested)
-Standard_Boolean bRunParallel = ...;       // Parallel processing mode or single
+bool bRunParallel = ...;       // Parallel processing mode or single
 
 BOPAlgo_MakePeriodic aPeriodicityMaker;                   // Periodicity maker
 aPeriodicityMaker.SetShape(aShape);                       // Set the shape
@@ -3209,7 +3209,7 @@ The other options of the base class are not supported here and will have no effe
 All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
 ~~~~{.cpp}
 // Get the history object
-const Handle(BRepTools_History)& BOPAlgo_MakePeriodic::History();
+const occ::handle<BRepTools_History>& BOPAlgo_MakePeriodic::History();
 ~~~~
 
 For the usage of the MakePeriodic algorithm on the Draw level the following commands have been implemented:
@@ -3313,7 +3313,7 @@ For an *HLRBRep_HLRToShape* object built from an *HLRBRepAlgo* object you can al
 myAlgo = new HLRBRep_Algo(); 
 
 // Add Shapes into the algorithm 
-TopTools_ListIteratorOfListOfShape anIterator(myListOfShape); 
+NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
 myAlgo-Add(anIterator.Value(),myNbIsos); 
 
@@ -3360,7 +3360,7 @@ aHLRToShape.IsoLineHCompound();
 myPolyAlgo = new HLRBRep_PolyAlgo(); 
 
 // Add Shapes into the algorithm 
-TopTools_ListIteratorOfListOfShape 
+NCollection_List<TopoDS_Shape>::Iterator 
 anIterator(myListOfShape); 
 for (;anIterator.More();anIterator.Next()) 
 myPolyAlgo-Load(anIterator.Value()); 
@@ -3423,10 +3423,10 @@ For obtaining the material information the following methods should be used
 
 ~~~~{.cpp}
 // Returns the original shapes which images contain the given shape with FORWARD orientation.
-const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnPositiveSide(const TopoDS_Shape& theS)
+const NCollection_List<TopoDS_Shape>& BOPAlgo_MakeConnected::MaterialsOnPositiveSide(const TopoDS_Shape& theS)
 
 // Returns the original shapes which images contain the given shape with REVERSED orientation.
-const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnNegativeSide(const TopoDS_Shape& theS)
+const NCollection_List<TopoDS_Shape>& BOPAlgo_MakeConnected::MaterialsOnNegativeSide(const TopoDS_Shape& theS)
 ~~~~
 
 @subsection occt_modalg_makeconnected_makeperiodic Making connected shape periodic
@@ -3442,7 +3442,7 @@ The algorithm supports history of shapes modifications during the operation. Add
 The method is called *GetOrigins()*:
 ~~~~{.cpp}
 // Returns the list of original shapes from which the current shape has been created.
-const TopTools_ListOfShape& BOPAlgo_MakeConnected::GetOrigins(const TopoDS_Shape& theS);
+const NCollection_List<TopoDS_Shape>& BOPAlgo_MakeConnected::GetOrigins(const TopoDS_Shape& theS);
 ~~~~
 
 Both Gluing history and history of making the shape periodic and periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
@@ -3464,8 +3464,8 @@ For more information on the error/warning reporting system please see the chapte
 
 Here is the example of usage of the *BOPAlgo_MakePeriodic* algorithm on the API level:
 ~~~~{.cpp}
-TopTools_ListOfShape anArguments = ...;  // Shapes to make connected
-Standard_Boolean bRunParallel = ...;     // Parallel processing mode
+NCollection_List<TopoDS_Shape> anArguments = ...;  // Shapes to make connected
+bool bRunParallel = ...;     // Parallel processing mode
 
 BOPAlgo_MakeConnected aMC;               // Tool for making the shapes connected
 aMC.SetArguments(anArguments);           // Set the shapes
@@ -3494,8 +3494,8 @@ TopExp_Explorer anExp(anArguments.First(), anElemType);
 for (; anExp.More(); anExp.Next())
 {
   const TopoDS_Shape& anElement = anExp.Current();
-  const TopTools_ListOfShape& aNegativeM = aMC.MaterialsOnNegativeSide(anElement);
-  const TopTools_ListOfShape& aPositiveM = aMC.MaterialsOnPositiveSide(anElement);
+  const NCollection_List<TopoDS_Shape>& aNegativeM = aMC.MaterialsOnNegativeSide(anElement);
+  const NCollection_List<TopoDS_Shape>& aPositiveM = aMC.MaterialsOnPositiveSide(anElement);
 }
 
 // Making the connected shape periodic
@@ -3523,7 +3523,7 @@ The other options of the base class are not supported here and will have no effe
 All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
 ~~~~{.cpp}
 // Get the history object
-const Handle(BRepTools_History)& BOPAlgo_MakeConnected::History();
+const occ::handle<BRepTools_History>& BOPAlgo_MakeConnected::History();
 ~~~~
 
 For the usage of the MakeConnected algorithm on the Draw level the following commands have been implemented:

@@ -301,32 +301,32 @@ math_Vector {
   children ( #array ( expr: ((double*)($c.Array.Addr))[$i], size: 1+$c.UpperIndex ) )
 }
 
-TColStd_Array1OfReal {
+NCollection_Array1<double> {
   preview ( #( "Array1OfReal [", $e.myLowerBound, "..", $e.myUpperBound, "]" ) )
   children ( #array ( expr: ((double*)($c.myStart))[$i], size: 1+$c.myUpperBound ) )
 }
 
 Handle_TColStd_HArray1OfReal {
   preview ( #( "HArray1OfReal [",
-               ((TColStd_HArray1OfReal*)$e.entity)->myArray.myLowerBound, "..", 
-               ((TColStd_HArray1OfReal*)$e.entity)->myArray.myUpperBound, "] ",
+               ((NCollection_HArray1<double>*)$e.entity)->myArray.myLowerBound, "..", 
+               ((NCollection_HArray1<double>*)$e.entity)->myArray.myUpperBound, "] ",
                [$e.entity,x], " count=", $e.entity->count ) )
-  children ( #array ( expr: ((double*)(((TColStd_HArray1OfReal*)$e.entity)->myArray.myStart))[$i],
-                      size: 1+((TColStd_HArray1OfReal*)$e.entity)->myArray.myUpperBound ) )
+  children ( #array ( expr: ((double*)(((NCollection_HArray1<double>*)$e.entity)->myArray.myStart))[$i],
+                      size: 1+((NCollection_HArray1<double>*)$e.entity)->myArray.myUpperBound ) )
 }
 
-TColStd_Array1OfInteger {
-  preview ( #( "Array1OfInteger [", $e.myLowerBound, "..", $e.myUpperBound, "]" ) )
+NCollection_Array1<int> {
+  preview ( #( "NCollection_Shared<NCollection_Array1<int>> [", $e.myLowerBound, "..", $e.myUpperBound, "]" ) )
   children ( #array ( expr: ((int*)($c.myStart))[$i], size: 1+$c.myUpperBound ) )
 }
 
 Handle_TColStd_HArray1OfInteger {
   preview ( #( "HArray1OfInteger [",
-               ((TColStd_HArray1OfInteger*)$e.entity)->myArray.myLowerBound, "..", 
-               ((TColStd_HArray1OfInteger*)$e.entity)->myArray.myUpperBound, "] ",
+               ((NCollection_HArray1<int>*)$e.entity)->myArray.myLowerBound, "..", 
+               ((NCollection_HArray1<int>*)$e.entity)->myArray.myUpperBound, "] ",
                [$e.entity,x], " count=", $e.entity->count ) )
-  children ( #array ( expr: ((int*)(((TColStd_HArray1OfInteger*)$e.entity)->myArray.myStart))[$i],
-                      size: 1+((TColStd_HArray1OfInteger*)$e.entity)->myArray.myUpperBound ) )
+  children ( #array ( expr: ((int*)(((NCollection_HArray1<int>*)$e.entity)->myArray.myStart))[$i],
+                      size: 1+((NCollection_HArray1<int>*)$e.entity)->myArray.myUpperBound ) )
 }
 
 Handle_TCollection_HExtendedString {

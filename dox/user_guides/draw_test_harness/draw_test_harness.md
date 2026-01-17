@@ -783,31 +783,31 @@ restore theBox
 #### In DrawTrSurf package:
 
 ~~~~{.php}
-void Set(Standard_CString& Name,const gp_Pnt& G) ; 
-void Set(Standard_CString& Name,const gp_Pnt2d& G) ; 
-void Set(Standard_CString& Name, 
-const Handle(Geom_Geometry)& G) ; 
-void Set(Standard_CString& Name, 
-const Handle(Geom2d_Curve)& C) ; 
-void Set(Standard_CString& Name, 
-const Handle(Poly_Triangulation)& T) ; 
-void Set(Standard_CString& Name, 
-const Handle(Poly_Polygon3D)& P) ; 
-void Set(Standard_CString& Name, 
-const Handle(Poly_Polygon2D)& P) ; 
+void Set(const char*& Name,const gp_Pnt& G) ; 
+void Set(const char*& Name,const gp_Pnt2d& G) ; 
+void Set(const char*& Name, 
+const occ::handle<Geom_Geometry>& G) ; 
+void Set(const char*& Name, 
+const occ::handle<Geom2d_Curve>& C) ; 
+void Set(const char*& Name, 
+const occ::handle<Poly_Triangulation>& T) ; 
+void Set(const char*& Name, 
+const occ::handle<Poly_Polygon3D>& P) ; 
+void Set(const char*& Name, 
+const occ::handle<Poly_Polygon2D>& P) ; 
 ~~~~
 
 #### In DBRep package:
 
 ~~~~{.php}
-void Set(const Standard_CString Name, 
+void Set(const const char* Name, 
 const TopoDS_Shape& S) ; 
 ~~~~
 
 Example of *DrawTrSurf*
 
 ~~~~{.php}
-Handle(Geom2d_Circle) C1 = new Geom2d_Circle 
+occ::handle<Geom2d_Circle> C1 = new Geom2d_Circle 
 (gce_MakeCirc2d (gp_Pnt2d(50,0,) 25)); 
 DrawTrSurf::Set(char*, C1); 
 ~~~~
@@ -825,24 +825,24 @@ DBRep::Set(char*,B);
 #### In DrawTrSurf package:
  
 ~~~~{.php}
-Handle(Geom_Geometry) Get(Standard_CString& Name) ; 
+occ::handle<Geom_Geometry> Get(const char*& Name) ; 
 ~~~~
 
 #### In DBRep package:
 
 ~~~~{.php}
-TopoDS_Shape Get(Standard_CString& Name, 
+TopoDS_Shape Get(const char*& Name, 
 const TopAbs_ShapeEnum Typ = TopAbs_SHAPE, 
-const Standard_Boolean Complain 
-= Standard_True) ; 
+const bool Complain 
+= true) ; 
 ~~~~
 
 Example of *DrawTrSurf*
 
 ~~~~{.php}
-Standard_Integer MyCommand 
+int MyCommand 
 (Draw_Interpretor& theCommands, 
-Standard_Integer argc, char** argv) 
+int argc, char** argv) 
 {...... 
 // Creation of a Geom_Geometry from a Draw geometric 
 // name 
@@ -853,9 +853,9 @@ Handle (Geom_Geometry) aGeom= DrawTrSurf::Get(argv[1]);
 Example of *DBRep*
 
 ~~~~{.php}
-Standard_Integer MyCommand 
+int MyCommand 
 (Draw_Interpretor& theCommands, 
-Standard_Integer argc, char** argv) 
+int argc, char** argv) 
 {...... 
 // Creation of a TopoDS_Shape from a Draw topological 
 // name 
@@ -10975,7 +10975,7 @@ Custom command implementation has not undergone any changes since the introducti
 
 **Example:** 
 ~~~~{.cpp}
-static Standard_Integer myadvcurve(Draw_Interpretor& di, Standard_Integer n, char** a) 
+static int myadvcurve(Draw_Interpretor& di, int n, char** a) 
 { 
 ... 
 } 

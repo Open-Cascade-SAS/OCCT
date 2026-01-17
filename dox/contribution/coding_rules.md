@@ -49,9 +49,9 @@ Camel Case style is preferred for names.
 For example:
 
 ~~~~{.cpp}
-Standard_Integer awidthofbox;  // this is bad
-Standard_Integer width_of_box; // this is bad
-Standard_Integer aWidthOfBox;  // this is OK
+int awidthofbox;  // this is bad
+int width_of_box; // this is bad
+int aWidthOfBox;  // this is OK
 ~~~~
 
 @subsection occt_coding_rules_2_2 Names of development units
@@ -96,7 +96,7 @@ Such types should be given own names using *typedef* statement, located in same-
 
 For example, see definition in the file *TColStd_IndexedDataMapOfStringString.hxx*:
 ~~~~{.cpp}
-typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> TColStd_IndexedDataMapOfStringString;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>;
 ~~~~
 
 ### Names of functions
@@ -115,12 +115,12 @@ class MyPackage_MyClass
 
 public:
 
-  Standard_Integer Value() const;
-  void             SetValue (const Standard_Integer theValue);
+  int Value() const;
+  void             SetValue (const int theValue);
 
 private:
 
-  void setIntegerValue (const Standard_Integer theValue);
+  void setIntegerValue (const int theValue);
 
 };
 ~~~~
@@ -138,11 +138,11 @@ The name of a variable should not start with an underscore.
 See the following examples:
 
 ~~~~{.cpp}
-Standard_Integer Elapsed_Time = 0; // this is bad - possible class   name
-Standard_Integer gp = 0;           // this is bad - existing package name
-Standard_Integer aGp = 0;          // this is OK
-Standard_Integer _KERNEL = 0;      // this is bad
-Standard_Integer THE_KERNEL = 0;   // this is OK
+int Elapsed_Time = 0; // this is bad - possible class   name
+int gp = 0;           // this is bad - existing package name
+int aGp = 0;          // this is OK
+int _KERNEL = 0;      // this is bad
+int THE_KERNEL = 0;   // this is OK
 ~~~~
 
 ### Names of function parameters
@@ -164,9 +164,9 @@ The name of a class member variable should start with prefix *my* followed by th
 See the following examples:
 
 ~~~~{.cpp}
-Standard_Integer counter;   // This is bad
-Standard_Integer myC;       // This is OK
-Standard_Integer myCounter; // This is preferred
+int counter;   // This is bad
+int myC;       // This is OK
+int myCounter; // This is preferred
 ~~~~
 
 ### Names of global variables
@@ -177,15 +177,15 @@ However, as soon as a global variable is necessary, its name should be prefixed 
 See the following examples:
 
 ~~~~{.cpp}
-Standard_Integer MyPackage_myGlobalVariable = 0;
-Standard_Integer MyPackage_MyClass_myGlobalVariable = 0;
+int MyPackage_myGlobalVariable = 0;
+int MyPackage_MyClass_myGlobalVariable = 0;
 ~~~~
 
 Static constants within the file should be written in upper-case and begin with prefix *THE_*:
 ~~~~{.cpp}
 namespace
 {
-  static const Standard_Real THE_CONSTANT_COEF = 3.14;
+  static const double THE_CONSTANT_COEF = 3.14;
 };
 ~~~~
 
@@ -198,10 +198,10 @@ It is preferred to prefix local variable names with *a* and *an* (or *is*, *to* 
 See the following example:
 
 ~~~~{.cpp}
-Standard_Integer theI;    // this is bad
-Standard_Integer i;       // this is bad
-Standard_Integer index;   // this is bad
-Standard_Integer anIndex; // this is OK
+int theI;    // this is bad
+int i;       // this is bad
+int index;   // this is bad
+int anIndex; // this is OK
 ~~~~
 
 ### Avoid dummy names
@@ -212,19 +212,19 @@ The code becomes more and more complicated when such dummy names are used there 
 See the following examples for preferred style:
 
 ~~~~{.cpp}
-void Average (const Standard_Real** theArray,
-              Standard_Integer      theRowsNb,
-              Standard_Integer      theRowLen,
-              Standard_Real&        theResult)
+void Average (const double** theArray,
+              int      theRowsNb,
+              int      theRowLen,
+              double&        theResult)
 {
   theResult = 0.0;
-  for (Standard_Integer aRow = 0; aRow < aRowsNb; ++aRow)
+  for (int aRow = 0; aRow < aRowsNb; ++aRow)
   {
-    for (Standard_Integer aCol = 0; aCol < aRowLen; ++aCol)
+    for (int aCol = 0; aCol < aRowLen; ++aCol)
     {
       theResult += theArray[aRow][aCol];
     }
-    theResult /= Standard_Real(aRowsNb * aRowLen);
+    theResult /= double(aRowsNb * aRowLen);
   }
 }
 ~~~~
@@ -267,7 +267,7 @@ See the following example:
 
 ~~~~{.cpp}
 // check arguments
-Standard_Integer anArgsNb = argCount();
+int anArgsNb = argCount();
 if (anArgsNb < 3 || isSmthInvalid)
 {
   return THE_ARG_INVALID;
@@ -327,10 +327,10 @@ Entering a block increases and leaving a block decreases the indentation by one 
 Single-line conditional operators <i>(if, while, for,</i> etc.) can be written without brackets on the following line.
 
 ~~~~{.cpp}
-if (!myIsInit) return Standard_False; // bad
+if (!myIsInit) return false; // bad
 
 if (thePtr == NULL)                   // OK
-  return Standard_False;
+  return false;
 
 if (!theAlgo.IsNull())                // preferred
 {
@@ -384,10 +384,10 @@ Use an early return condition rather than collect indentations.
 Write like this:
 
 ~~~~{.cpp}
-Standard_Integer ComputeSumm (const Standard_Integer* theArray,
-                              const Standard_Size     theSize)
+int ComputeSumm (const int* theArray,
+                              const size_t     theSize)
 {
-  Standard_Integer aSumm = 0;
+  int aSumm = 0;
   if (theArray == NULL || theSize == 0)
   {
     return 0;
@@ -401,10 +401,10 @@ Standard_Integer ComputeSumm (const Standard_Integer* theArray,
 Rather than:
 
 ~~~~{.cpp}
-Standard_Integer ComputeSumm (const Standard_Integer* theArray,
-                              const Standard_Size     theSize)
+int ComputeSumm (const int* theArray,
+                              const size_t     theSize)
 {
-  Standard_Integer aSumm = 0;
+  int aSumm = 0;
   if (theArray != NULL && theSize != 0)
   {
     ... computing summ ...
@@ -479,7 +479,7 @@ Accepted style is:
 //! Method computes the square value.
 //! @param theValue the input value
 //! @return squared value
-Standard_Export Standard_Real Square (Standard_Real theValue);
+Standard_Export double Square (double theValue);
 @endverbatim
 
 ### Documenting C/C++ sources
@@ -571,7 +571,7 @@ class MyPackage_BaseClass
 
 public:
 
-  Standard_EXPORT virtual Standard_Boolean Perform();
+  Standard_EXPORT virtual bool Perform();
 
 };
 
@@ -580,7 +580,7 @@ class MyPackage_MyClass : public MyPackage_BaseClass
 
 public:
 
-  Standard_EXPORT virtual Standard_Boolean Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Perform() override;
 
 };
 ~~~~
@@ -610,7 +610,7 @@ Avoid *goto* statement unless it is really needed.
 Declare a cycle variable in the header of the *for()* statement if not used out of cycle.
 
 ~~~~{.cpp}
-Standard_Real aMinDist = Precision::Infinite();
+double aMinDist = Precision::Infinite();
 for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter (theSequence);
      aPntIter.More(); aPntIter.Next())
 {
@@ -623,8 +623,8 @@ for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter (theSequence);
 Avoid usage of C-style comparison for non-boolean variables:
 
 ~~~~{.cpp}
-void Function (Standard_Integer theValue,
-               Standard_Real*   thePointer)
+void Function (int theValue,
+               double*   thePointer)
 {
   if (!theValue)          // bad style - ambiguous logic
   {
@@ -701,20 +701,20 @@ See the following example:
     class Master : public Standard_Transient
     {
     ...
-      void SetSlave (const Handle(Slave)& theSlave)
+      void SetSlave (const occ::handle<Slave>& theSlave)
       { 
         mySlave = theSlave;
       }
     ...
     private:
-      Handle(Slave) theSlave; // smart pointer
+      occ::handle<Slave> theSlave; // smart pointer
     ...
     }
 
     class Slave : public Standard_Transient
     {
     ...
-      void SetMaster (const Handle(Master)& theMaster)
+      void SetMaster (const occ::handle<Master>& theMaster)
       { 
         myMaster = theMaster.get();
       }
@@ -748,8 +748,8 @@ Define a destructor, a copy constructor and an assignment operator for classes w
 Every variable should be initialized.
 
 ~~~~{.cpp}
-Standard_Integer aTmpVar1;     // bad
-Standard_Integer aTmpVar2 = 0; // OK
+int aTmpVar1;     // bad
+int aTmpVar2 = 0; // OK
 ~~~~
 
 Uninitialized variables might be kept only within performance-sensitive code blocks and only when their initialization is guaranteed by subsequent code.
@@ -830,8 +830,8 @@ public:
 
 private:
 
-  Standard_Integer myPropertyA;
-  Standard_Integer myPropertyB;
+  int myPropertyA;
+  int myPropertyB;
 
 };
 ~~~~
@@ -855,8 +855,8 @@ When programming procedures with extensive memory access, try to optimize them i
 On x86 this code
 
 ~~~~{.cpp}
-Standard_Real anArray[4096][2];
-for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
+double anArray[4096][2];
+for (int anIter = 0; anIter < 4096; ++anIter)
 {
   anArray[anIter][0] = anArray[anIter][1];
 }
@@ -865,8 +865,8 @@ for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 is more efficient then
 
 ~~~~{.cpp}
-Standard_Real anArray[2][4096];
-for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
+double anArray[2][4096];
+for (int anIter = 0; anIter < 4096; ++anIter)
 {
   anArray[0][anIter] = anArray[1][anIter];
 }
@@ -901,9 +901,9 @@ Command should warn the user about unknown arguments, including cases when extra
     return 1;
   }
 
-  Standard_Integer anArgIter  = 1;
-  Standard_CString aResName   = theArgVec[anArgIter++];
-  Standard_CString aFaceName  = theArgVec[anArgIter++];
+  int anArgIter  = 1;
+  const char* aResName   = theArgVec[anArgIter++];
+  const char* aFaceName  = theArgVec[anArgIter++];
   TopoDS_Shape     aFaceShape = DBRep::Get (aFaceName);
   if (aFaceShape.IsNull()
    || aFaceShape.ShapeType() != TopAbs_FACE)
@@ -939,10 +939,10 @@ myCommand -flag1 value1 value2 -flag2 value3
 Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values in C-locale.
 
 ~~~~{.cpp}
-  Standard_Real aPosition[3] = {0.0, 0.0, 0.0};
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  double aPosition[3] = {0.0, 0.0, 0.0};
+  for (int anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
-    Standard_CString anArg = theArgVec[anArgIter];
+    const char* anArg = theArgVec[anArgIter];
     TCollection_AsciiString aFlag (anArg);
     aFlag.LowerCase(); //!< for case insensitive comparison
     if (aFlag == "position")
@@ -977,7 +977,7 @@ public: //! @name public methods
   //! Method computes the square value.
   //! @param theValue the input value
   //! @return squared value
-  Standard_Export Standard_Real Square (const Standard_Real theValue);
+  Standard_Export double Square (const double theValue);
 
 private: //! \@name private methods
 
@@ -986,7 +986,7 @@ private: //! \@name private methods
 
 private: //! \@name private fields
 
-  Standard_Integer myCounter; //!< usage counter
+  int myCounter; //!< usage counter
 
 };
 
@@ -999,7 +999,7 @@ private: //! \@name private fields
 // function : Square
 // purpose  : Method computes the square value
 // ==========================================================
-Standard_Real Package_Class::Square (const Standard_Real theValue)
+double Package_Class::Square (const double theValue)
 {
   increment();
   return theValue * theValue;
