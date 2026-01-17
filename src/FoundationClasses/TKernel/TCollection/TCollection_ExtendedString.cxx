@@ -1179,18 +1179,18 @@ void TCollection_ExtendedString::Capitalize()
     return;
   }
 
-  // Convert first character to uppercase
-  if (myString[0] >= 'a' && myString[0] <= 'z')
+  // Convert first character to uppercase (ASCII only)
+  if (myString[0] >= u'a' && myString[0] <= u'z')
   {
-    myString[0] = static_cast<char16_t>(myString[0] - 'a' + 'A');
+    myString[0] = static_cast<char16_t>(myString[0] - u'a' + u'A');
   }
 
-  // Convert remaining characters to lowercase
+  // Convert remaining characters to lowercase (ASCII only)
   for (int i = 1; i < myLength; ++i)
   {
-    if (myString[i] >= 'A' && myString[i] <= 'Z')
+    if (myString[i] >= u'A' && myString[i] <= u'Z')
     {
-      myString[i] = static_cast<char16_t>(myString[i] - 'A' + 'a');
+      myString[i] = static_cast<char16_t>(myString[i] - u'A' + u'a');
     }
   }
 }
@@ -1350,20 +1350,20 @@ bool TCollection_ExtendedString::IsSameString(const TCollection_ExtendedString& 
     return memcmp(myString, theOther.myString, myLength * sizeof(char16_t)) == 0;
   }
 
-  // Case-insensitive comparison
+  // Case-insensitive comparison (ASCII only)
   for (int i = 0; i < myLength; ++i)
   {
     char16_t c1 = myString[i];
     char16_t c2 = theOther.myString[i];
 
-    // Convert to lowercase for comparison (ASCII only)
-    if (c1 >= 'A' && c1 <= 'Z')
+    // Convert to lowercase for comparison
+    if (c1 >= u'A' && c1 <= u'Z')
     {
-      c1 = static_cast<char16_t>(c1 - 'A' + 'a');
+      c1 = static_cast<char16_t>(c1 - u'A' + u'a');
     }
-    if (c2 >= 'A' && c2 <= 'Z')
+    if (c2 >= u'A' && c2 <= u'Z')
     {
-      c2 = static_cast<char16_t>(c2 - 'A' + 'a');
+      c2 = static_cast<char16_t>(c2 - u'A' + u'a');
     }
 
     if (c1 != c2)
