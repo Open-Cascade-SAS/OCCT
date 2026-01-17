@@ -196,7 +196,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const wchar_t* theStringU
 
 TCollection_ExtendedString::TCollection_ExtendedString(const char theChar)
 {
-  if (theChar != u'\0')
+  if (theChar != '\0')
   {
     allocate(1);
     myString[0] = ToExtCharacter(theChar);
