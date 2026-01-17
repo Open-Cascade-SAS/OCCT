@@ -2470,7 +2470,7 @@ Returns the object name. The methods with in / out argument return False if the 
 ~~~~{.cpp}
     virtual bool SetName ( const occ::handle<TCollection_HExtendedString>& theName ) const; 
     bool SetName         ( const occ::handle<TCollection_HAsciiString>& theName ) const; 
-    bool SetName         ( const const char* theName ) const; 
+    bool SetName         ( const char* theName ) const; 
 ~~~~
 
 Attributes a new name to the object and returns **True** if the name has been attributed successfully. 
@@ -2630,7 +2630,7 @@ if the copy will be in the other model or in the other partition with its own di
 The method *Clone* uses the following public methods for object data replications: 
 
 ~~~~{.cpp}
-    virtual void CopyReferences (const const occ::handle<TObj_Object>& theTargetObject, const occ::handle<TDF_RelocationTable> theRelocTable); 
+    virtual void CopyReferences (const occ::handle<TObj_Object>& theTargetObject, const occ::handle<TDF_RelocationTable> theRelocTable); 
 ~~~~
 
 Adds to the copy of the original object its references. 

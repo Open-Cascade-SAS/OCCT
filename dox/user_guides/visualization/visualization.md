@@ -1732,7 +1732,7 @@ The *theColor1* and *theColor2* parameters define the boundary colors of interpo
 
 To set the image as a background and change the background image style you can use the following method:
 ~~~~{.cpp}
-void V3d_View::SetBackgroundImage (const const char* theFileName,
+void V3d_View::SetBackgroundImage (const char* theFileName,
                                    const Aspect_FillMethod theFillStyle,
                                    const bool theToUpdate = false);
 ~~~~
@@ -1749,7 +1749,7 @@ The methods are:
 The 3D scene displayed in the view can be dumped into image file with resolution independent from window size (using offscreen buffer).
 The *V3d_View* has the following methods for dumping the 3D scene:
 ~~~~{.cpp}
-bool V3d_View::Dump (const const char* theFile,
+bool V3d_View::Dump (const char* theFile,
                                  const Image_TypeOfImage theBufferType);
 ~~~~
 Dumps the scene into an image file with the view dimensions.

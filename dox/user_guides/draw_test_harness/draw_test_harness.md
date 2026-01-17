@@ -800,7 +800,7 @@ const occ::handle<Poly_Polygon2D>& P) ;
 #### In DBRep package:
 
 ~~~~{.php}
-void Set(const const char* Name, 
+void Set(const char* Name, 
 const TopoDS_Shape& S) ; 
 ~~~~
 
