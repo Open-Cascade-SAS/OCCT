@@ -2294,8 +2294,8 @@ const TopoDS_Shape& anAllCells = aCBuilder.GetAllParts(); //all split parts
 TopTools_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result
 TopTools_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
 //
-Standard_Integer iMaterial = 1; // defines the material for the cells
-Standard_Boolean bUpdate = Standard_False; // defines whether to update the result right now or not
+int iMaterial = 1; // defines the material for the cells
+bool bUpdate = false; // defines whether to update the result right now or not
 // adding to result
 aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
 aCBuilder.RemoveInternalBoundaries(); // removing of the boundaries
@@ -2826,7 +2826,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // enabling the safe processing mode to prevent modification of the input shapes
-aGF.SetNonDestructive(Standard_True);
+aGF.SetNonDestructive(true);
 //
 ....
 ~~~~
@@ -2857,7 +2857,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // disabling the classification of the input solid
-aGF.SetCheckInverted(Standard_False);
+aGF.SetCheckInverted(false);
 //
 ....
 ~~~~
@@ -2884,7 +2884,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // Enabling the usage of OBB in the operation
-aGF.SetUseOBB(Standard_True);
+aGF.SetUseOBB(true);
 //
 ....
 ~~~~

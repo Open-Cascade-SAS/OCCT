@@ -30,7 +30,7 @@ The *Geom2dAPI_InterCurveCurve* class  allows the evaluation of the intersection
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image003.png,"Intersection and self-intersection of curves",300}
 
-In both cases, the  algorithm requires a value for the tolerance (Standard_Real) for the confusion  between two points. The default tolerance value used in all constructors is *1.0e-6.* 
+In both cases, the  algorithm requires a value for the tolerance (double) for the confusion  between two points. The default tolerance value used in all constructors is *1.0e-6.* 
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image004.png,"Intersection and tangent intersection",420}
 
@@ -151,7 +151,7 @@ It is possible to call the BSpline curve from the object defined  above it.
 occ::handle<Geom2d_BSplineCurve> C = Interp.Curve(); 
 ~~~~
 
-Note that the *Handle(Geom2d_BSplineCurve)* operator has been redefined by the method *Curve()*. Consequently, it is  unnecessary to pass via the construction of an intermediate object of the *Geom2dAPI_Interpolate* type and the following syntax is correct. 
+Note that the *occ::handle\<Geom2d_BSplineCurve\>* operator has been redefined by the method *Curve()*. Consequently, it is  unnecessary to pass via the construction of an intermediate object of the *Geom2dAPI_Interpolate* type and the following syntax is correct. 
 
 ~~~~{.cpp}
 occ::handle<Geom2d_BSplineCurve> C = 
@@ -177,12 +177,14 @@ It is possible to call the BSpline curve from the object defined  above it.
 ~~~~{.cpp}
 occ::handle<Geom_BSplineCurve> C = Interp.Curve(); 
 ~~~~
-Note that the *Handle(Geom_BSplineCurve)* operator has been redefined by the method *Curve()*. Thus, it is unnecessary  to pass via the construction of an intermediate object of the *GeomAPI_Interpolate*  type and the following syntax is correct. 
+Note that the *occ::handle\<Geom_BSplineCurve\>* operator has been redefined by the method *Curve()*. Thus, it is unnecessary  to pass via the construction of an intermediate object of the *GeomAPI_Interpolate*  type and the following syntax is correct.
 
-Handle(Geom_BSplineCurve) C = 
-	GeomAPI_Interpolate(Points,  
-						Standard_False,
-						1.0e-7); 
+~~~~{.cpp}
+occ::handle<Geom_BSplineCurve> C =
+    GeomAPI_Interpolate(Points,
+                        false,
+                        1.0e-7);
+~~~~ 
 
 Boundary conditions may  be imposed with the method Load. 
 ~~~~{.cpp}
@@ -636,9 +638,8 @@ W.Add(P4);
 W.Add(P1); 
 // Initialize a BuildPlateSurface 
 GeomPlate_BuildPlateSurface BPSurf(3,15,2); 
-// Create the curve constraints 
-BRepTools_WireExplorer anExp; 
-for(anExp.Init(W); anExp.More(); anExp.Next()) 
+// Create the curve constraints
+for (BRepTools_WireExplorer anExp(W); anExp.More(); anExp.Next()) 
 { 
 TopoDS_Edge E = anExp.Current(); 
 occ::handle<BRepAdaptor_HCurve> C = new 
@@ -660,7 +661,7 @@ int MaxDegree=8;
 int CritOrder=0; 
 double dmax,Tol; 
 occ::handle<GeomPlate_Surface> PSurf = BPSurf.Surface(); 
-dmax = Max(0.0001,10*BPSurf.G0Error()); 
+dmax = std::max(0.0001,10*BPSurf.G0Error()); 
 Tol=0.0001; 
 GeomPlate_MakeApprox 
 Mapp(PSurf,Tol,MaxSeg,MaxDegree,dmax,CritOrder); 
@@ -764,13 +765,13 @@ double D = Projector.LowerDistance();
 
 Some operators have been  redefined to find the closest solution. 
 
-*Standard_Real()* returns  the minimum distance from the point to the curve. 
+*double()* returns  the minimum distance from the point to the curve. 
 
 ~~~~{.cpp}
 double D = Geom2dAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
-*Standard_Integer()* returns the number of solutions. 
+*int()* returns the number of solutions. 
 
 ~~~~{.cpp}
 int N = 
@@ -878,13 +879,13 @@ double D =  Projector.LowerDistance();
 
 Some operators have been  redefined to find the nearest solution. 
 
-*Standard_Real()* returns  the minimum distance from the point to the curve. 
+*double()* returns  the minimum distance from the point to the curve. 
 
 ~~~~{.cpp}
 double D = GeomAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
-*Standard_Integer()* returns  the number of solutions. 
+*int()* returns  the number of solutions. 
 ~~~~{.cpp}
 int N =  GeomAPI_ProjectPointOnCurve (P,C); 
 ~~~~
@@ -995,13 +996,13 @@ double D = Proj.LowerDistance();
 
 Some operators have been  redefined to help you find the nearest solution. 
 
-*Standard_Real()* returns  the minimum distance from the point to the surface. 
+*double()* returns  the minimum distance from the point to the surface. 
 
 ~~~~{.cpp}
 double D = GeomAPI_ProjectPointOnSurf (P,S); 
 ~~~~
 
-*Standard_Integer()* returns  the number of solutions. 
+*int()* returns  the number of solutions. 
 
 ~~~~{.cpp}
 int N = GeomAPI_ProjectPointOnSurf (P,S); 
@@ -1279,7 +1280,7 @@ The basic usage of  *BRepBuilderAPI_MakePolygon* is to create a wire by adding v
 TopoDS_Wire ClosedPolygon(const NCollection_Array1<gp_Pnt>&  Points) 
 { 
 BRepBuilderAPI_MakePolygon MP; 
-for(int i=Points.Lower();i=Points.Upper();i++) 
+for (int i = Points.Lower(); i <= Points.Upper(); i++) 
 { 
 MP.Add(Points(i)); 
 } 
@@ -1961,7 +1962,7 @@ The History is filled basing on the result of the operation. History cannot retu
 If the result of the operation is an empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
 
 The history information can be accessed by the API methods:
-* *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
+* *bool IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
 * *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)* - to get the shapes Modified from the given shape;
 * *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)* - to get the shapes Generated from the given shape.
 

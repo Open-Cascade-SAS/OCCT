@@ -329,7 +329,7 @@ Single-line conditional operators <i>(if, while, for,</i> etc.) can be written w
 ~~~~{.cpp}
 if (!myIsInit) return false; // bad
 
-if (thePtr == NULL)                   // OK
+if (thePtr == nullptr)                // OK
   return false;
 
 if (!theAlgo.IsNull())                // preferred
@@ -346,8 +346,8 @@ In comparisons, put the variable (in the current context) on the left side and c
 That is, the so called "Yoda style" is to be avoided.
 
 ~~~~{.cpp}
-if (NULL != thePointer)    // Yoda style, not recommended
-if (thePointer != NULL)    // OK
+if (nullptr != thePointer) // Yoda style, not recommended
+if (thePointer != nullptr) // OK
 
 if (34 < anIter)           // Yoda style, not recommended
 if (anIter > 34)           // OK
@@ -388,7 +388,7 @@ int ComputeSumm (const int* theArray,
                               const size_t     theSize)
 {
   int aSumm = 0;
-  if (theArray == NULL || theSize == 0)
+  if (theArray == nullptr || theSize == 0)
   {
     return 0;
   }
@@ -405,7 +405,7 @@ int ComputeSumm (const int* theArray,
                               const size_t     theSize)
 {
   int aSumm = 0;
-  if (theArray != NULL && theSize != 0)
+  if (theArray != nullptr && theSize != 0)
   {
     ... computing summ ...
   }
@@ -562,8 +562,7 @@ A class with virtual function(s) ought to have a virtual destructor.
 
 ### Overriding virtual methods
 
-Declaration of overriding method should contains specifiers "virtual" and "override"
-(using Standard_OVERRIDE alias for compatibility with old compilers).
+Declaration of overriding method should contain specifiers "virtual" and "override".
 
 ~~~~{.cpp}
 class MyPackage_BaseClass
@@ -614,7 +613,7 @@ double aMinDist = Precision::Infinite();
 for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter (theSequence);
      aPntIter.More(); aPntIter.Next())
 {
-  aMinDist = Min (aMinDist, theOrigin.Distance (aPntIter.Value()));
+  aMinDist = std::min (aMinDist, theOrigin.Distance (aPntIter.Value()));
 }
 ~~~~
 
@@ -636,8 +635,8 @@ void Function (int theValue,
     DoSome();
   }
 
-  if (thePointer != NULL) // OK, predefined NULL makes pointer comparison cleaner to reader
-  {                       // (nullptr should be used instead as soon as C++11 will be available)
+  if (thePointer != nullptr) // OK, nullptr is preferred for pointer comparisons
+  {
     DoSome2();
   }
 }
@@ -652,8 +651,8 @@ This chapter contains rules that are critical for cross-platform portability.
 The source code must be portable to all platforms listed in the official 'Technical Requirements'.
 The term 'portable' here means 'able to be built from source'.
 
-The C++ source code should meet C++03 standard.
-Any usage of compiler-specific features or further language versions (for example, C++11, until all major compilers on all supported platforms implement all its features) should be optional (used only with appropriate preprocessor checks) and non-exclusive (an alternative implementation compatible with other compilers should be provided).
+The C++ source code should meet the C++17 standard or later.
+Compiler-specific features should be avoided where possible, or used only with appropriate preprocessor checks to ensure portability across all supported platforms.
 
 ### Avoid usage of global variables [MANDATORY]
 
@@ -663,9 +662,9 @@ Use global (package or class) functions that return reference to static variable
 
 Another possible problem is the order of initialization of global variables defined in various libraries that may differ depending on platform, compiler and environment.
 
-### Avoid explicit basic types
+### Use standard C++ primitive types
 
-Avoid explicit usage of basic types (*int*, *float*, *double*, etc.), use Open CASCADE Technology types from package *Standard: Standard_Integer, Standard_Real, Standard_ShortReal, Standard_Boolean, Standard_CString* and others or a specific *typedef* instead.
+In new code, use standard C++ primitive types (*int*, *double*, *bool*, *float*) directly instead of legacy Open CASCADE Technology typedef aliases (*Standard_Integer*, *Standard_Real*, *Standard_Boolean*, etc.). The legacy types are typedef aliases to native types and remain in the codebase for historical reasons. New code should prefer native types for clarity and consistency with modern C++.
 
 ### Use sizeof() to calculate sizes [MANDATORY]
 
@@ -767,7 +766,7 @@ In *operator=()* assign to all data members and check for assignment to self.
 Don't check floats for equality or non-equality; check for GT, GE, LT or LE.
 
 ~~~~{.cpp}
-if (Abs (theFloat1 - theFloat2) < theTolerance)
+if (std::abs (theFloat1 - theFloat2) < theTolerance)
 {
   DoSome();
 }

@@ -615,7 +615,7 @@ This class performs the following operations:
   * merges and removes small edges.
 
 Fixing of small edges can be managed with the help of two flags:
-  * *ModeDropSmallEdges()* -- mode for removing small edges that can not be merged, by default it is equal to Standard_False.
+  * *ModeDropSmallEdges()* -- mode for removing small edges that can not be merged, by default it is equal to false.
   * *LimitAngle* -- maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1).
 
 To perform fixes it is necessary to:
@@ -987,12 +987,12 @@ Methods for calculating the number of geometric objects or sub-shapes with a spe
 
 and selecting sub-shapes by various criteria.
 
-The corresponding flags should be set to True for storing a shape by a specified criteria:
-  * faces based on indirect surfaces -- *aCheckContents.MofifyIndirectMode() = Standard_True*;
-  * faces based on offset surfaces -- *aCheckContents.ModifyOffsetSurfaceMode() = Standard_True*;
-  * edges if their 3D curves are trimmed -- *aCheckContents.ModifyTrimmed3dMode() = Standard_True*;
-  * edges if their 3D curves and 2D curves are offset curves -- *aCheckContents.ModifyOffsetCurveMode() = Standard_True*;
-  * edges if their 2D curves are trimmed -- *aCheckContents.ModifyTrimmed2dMode() = Standard_True*;
+The corresponding flags should be set to true for storing a shape by a specified criteria:
+  * faces based on indirect surfaces -- *aCheckContents.MofifyIndirectMode() = true*;
+  * faces based on offset surfaces -- *aCheckContents.ModifyOffsetSurfaceMode() = true*;
+  * edges if their 3D curves are trimmed -- *aCheckContents.ModifyTrimmed3dMode() = true*;
+  * edges if their 3D curves and 2D curves are offset curves -- *aCheckContents.ModifyOffsetCurveMode() = true*;
+  * edges if their 2D curves are trimmed -- *aCheckContents.ModifyTrimmed2dMode() = true*;
 
 Let us, for example, select faces based on offset surfaces.
 
@@ -1686,9 +1686,9 @@ Requests may be applied as *Oriented* (i.e. only to an item with the same orient
 Then these requests may be applied to any shape, which may contain one or more of these individual shapes.
 
 This tool has a flag for taking the location of shapes into account (for keeping the structure of assemblies) (*ModeConsiderLocation*).
-If this mode is equal to Standard_True, the shared shapes with locations will be kept.
-If this mode is equal to Standard_False, some different shapes will be produced from one shape with different locations after rebuilding.
-By default, this mode is equal to Standard_False.
+If this mode is equal to true, the shared shapes with locations will be kept.
+If this mode is equal to false, some different shapes will be produced from one shape with different locations after rebuilding.
+By default, this mode is equal to false.
 
 To use this tool for the reconstruction of shapes it is necessary to take the following steps:
 1. Create this tool and use method *Apply()* for its initialization by the initial shape.
@@ -1909,7 +1909,7 @@ Let us create a custom sequence of operations:
 ~~~~{.cpp}
 static bool myFunction (const occ::handle<ShapeProcess_Context>& theContext)
 {
-  occ::handle<ShapeProcess_ShapeContext> aCtx = Handle(ShapeProcess_ShapeContext)::DownCast (theContext);
+  occ::handle<ShapeProcess_ShapeContext> aCtx = occ::down_cast<ShapeProcess_ShapeContext>(theContext);
   if (aCtx.IsNull()) { return false; }
   TopoDS_Shape aShape = aCtx->Result();
   // receive our parameter:

@@ -113,7 +113,7 @@ const char* BRepMesh_Dump (void* theMeshHandlePtr, const char* theFileNameStr)
 ~~~~
 
 Stores mesh produced in parametric space to BREP file.
-- *theMeshHandlePtr* -- a pointer to *Handle(BRepMesh_DataStructureOfDelaun)* variable.
+- *theMeshHandlePtr* -- a pointer to *occ::handle\<BRepMesh_DataStructureOfDelaun\>* variable.
 - *theFileNameStr* -- the name of the file where the mesh is stored.
 
 The following functions are provided by *TKTopTest* toolkit:
@@ -123,9 +123,9 @@ const char* MeshTest_DrawLinks(const char* theNameStr, void* theFaceAttr)
 const char* MeshTest_DrawTriangles(const char* theNameStr, void* theFaceAttr)
 ~~~~
 
-Sets the edges or triangles from mesh data structure of type *Handle(BRepMesh_FaceAttribute)* as DRAW interpreter variables, assigning a unique name in the form "<theNameStr>_<index>" to each object.
+Sets the edges or triangles from mesh data structure of type *occ::handle\<BRepMesh_FaceAttribute\>* as DRAW interpreter variables, assigning a unique name in the form "<theNameStr>_<index>" to each object.
 - *theNameStr* -- the prefix to use in names of objects.
-- *theFaceAttr* -- a pointer to *Handle(BRepMesh_FaceAttribute)* variable.
+- *theFaceAttr* -- a pointer to *occ::handle\<BRepMesh_FaceAttribute\>* variable.
 
 The following additional function is provided by *TKGeomBase* toolkit:
 
@@ -134,7 +134,7 @@ const char* GeomTools_Dump (void* theHandlePtr)
 ~~~~
 
 Dump geometric object to cout.
-- *theHandlePtr* -- a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
+- *theHandlePtr* -- a pointer to the geometric variable (*occ::handle\<\>* to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
 
 
 @section occt_debug_dump_json Dump OCCT objects into Json

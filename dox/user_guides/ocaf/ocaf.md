@@ -625,7 +625,7 @@ If your application defines specific OCAF attributes, you need to define your ow
 To retrieve the application containing your document, you use the syntax below. 
 
 ~~~~{.cpp}
-app = Handle(TDocStd_Application)::DownCast (doc->Application()); 
+app = occ::down_cast<TDocStd_Application>(doc->Application()); 
 ~~~~
 @subsection occt_ocaf_4_3 The Document
 
@@ -929,8 +929,8 @@ You can use the method <i>TNaming_NamedShape::Evolution()</i> to get the evoluti
   
 More detailed information about the contents of the named shape or about the modification history of a topology can be obtained with the following: 
 * *TNaming_Tool* provides a common high-level functionality for access to the named shapes contents:
-	* The method <i>GetShape(Handle(TNaming_NamedShape)) </i>  returns a compound of new shapes of the given named shape;
-	* The method <i>CurrentShape(Handle(TNaming_NamedShape))</i>  returns a compound of the shapes, which are latest versions of the shapes from the given named shape;
+	* The method <i>GetShape(occ::handle\<TNaming_NamedShape\>) </i>  returns a compound of new shapes of the given named shape;
+	* The method <i>CurrentShape(occ::handle\<TNaming_NamedShape\>)</i>  returns a compound of the shapes, which are latest versions of the shapes from the given named shape;
 	* The method <i>NamedShape(TopoDS_Shape,TDF_Label) </i> returns a named shape, which contains a given shape as a new shape. A given label is any label from the data framework -- it just gives access to it.
 * *TNaming_Iterator* gives access to the named shape and hooks pairs.
 
@@ -1296,7 +1296,7 @@ static occ::handle<TDataStd_Real> Set (const TDF_Label& label, const double valu
 
  This is a default form which is kept by the attribute. It uses the default GUID for the attribute identification - TDataStd_Real::GetID(). 
  In case if you want to use the new feature (user defined Real attribute), for example to define several attributes which should keep a value 
- of the same type - Standard_Real, but to be associated with different user's notions (or objects) the new static method Set should be used. 
+ of the same type - double, but to be associated with different user's notions (or objects) the new static method Set should be used. 
  In our example we will define two Real attributes which presents two customer's objects - Density and Volume and will be put on the same Label.
 
 ~~~~{.cpp}
@@ -1776,9 +1776,9 @@ There is one attribute driver for XML persistence for each transient attribute f
 
 At the beginning of storage/retrieval process, one instance of each attribute driver is created and appended to driver table implemented as *XmlMDF_ADriverTable*.  During OCAF Data storage, attribute drivers are retrieved from the driver table by the type of attribute. In the retrieval step, a data map is created linking names of *DOM_Elements* and attribute drivers, and then attribute drivers are sought in this map by *DOM_Element* qualified tag names. 
 
-Every transient attribute is saved as a *DOM_Element* (root element of OCAF attribute) with attributes and possibly sub-nodes. The name of the root element can be defined in the attribute driver as a string passed to the base class constructor. The default is the attribute type name. Similarly, namespace prefixes for each attribute can be set. There is no default value, but it is possible to pass NULL or an empty string to store attributes without namespace prefixes. 
+Every transient attribute is saved as a *DOM_Element* (root element of OCAF attribute) with attributes and possibly sub-nodes. The name of the root element can be defined in the attribute driver as a string passed to the base class constructor. The default is the attribute type name. Similarly, namespace prefixes for each attribute can be set. There is no default value, but it is possible to pass nullptr or an empty string to store attributes without namespace prefixes. 
 
-The basic class *XmlMDF_ADriver* supports errors reporting via the method *WriteMessage(const TCollection_ExtendedString&)*. It sends a message string to its message driver which is initialized in the constructor with a *Handle(CDM_MessageDriver)* passed from the application by Document Storage/Retrieval Driver. 
+The basic class *XmlMDF_ADriver* supports errors reporting via the method *WriteMessage(const TCollection_ExtendedString&)*. It sends a message string to its message driver which is initialized in the constructor with a *occ::handle\<CDM_MessageDriver\>* passed from the application by Document Storage/Retrieval Driver. 
 
 @subsection occt_ocaf_9_3 XML Document Structure
 
@@ -2331,11 +2331,11 @@ An object can be received from the model by the following methods:
 Returns *True* if the object has been found in the indicated label (or in the upper level label if *isSuper* is *True*). 
 
 ~~~~{.cpp}
-    occ::handle<TObj_Object> GetFatherObject ( const occ::handle<Standard_Type>& theType = NULL ) const; 
+    occ::handle<TObj_Object> GetFatherObject ( const occ::handle<Standard_Type>& theType = nullptr ) const; 
 ~~~~
 
 Returns the father object of the indicated type 
-for the current object (the direct father object if the type is NULL). 
+for the current object (the direct father object if the type is nullptr). 
 
 @subsubsection occt_tobj_3_3 Data layout and inheritance
 
@@ -2370,7 +2370,7 @@ This is useful when the data to be stored are represented by multiple OCAF attri
 of the same type (e.g. sequences of homogeneous data or references). 
 
 The get/set methods allow easily accessing the data located in the specified data label 
-for the most widely used data types (*Standard_Real*, *Standard_Integer*, *TCollection_HExtendedString*,
+for the most widely used data types (*double*, *int*, *TCollection_HExtendedString*,
  *TColStd_HArray1OfReal*, *TColStd_HArray1OfInteger*, *TColStd_HArray1OfExtendedString*). 
 For instance, methods provided for real numbers are: 
 
@@ -2507,11 +2507,11 @@ The most used methods for work with references are:
 Returns True if the current object refers to the indicated object. 
 
 ~~~~{.cpp}
-    virtual occ::handle<TObj_ObjectIterator> GetReferences ( const occ::handle<Standard_Type>& theType = NULL ) const; 
+    virtual occ::handle<TObj_ObjectIterator> GetReferences ( const occ::handle<Standard_Type>& theType = nullptr ) const; 
 ~~~~
 
 Returns an iterator on the object references. The optional argument *theType* 
-restricts the types of referred objects, or does not if it is NULL. 
+restricts the types of referred objects, or does not if it is nullptr. 
 
 ~~~~{.cpp}
     virtual void RemoveAllReferences(); 
@@ -2526,18 +2526,18 @@ Removes all references from the current object.
 Removes the reference to the indicated object. 
 
 ~~~~{.cpp}
-    virtual occ::handle<TObj_ObjectIterator> GetBackReferences ( const occ::handle<Standard_Type>& theType = NULL ) const; 
+    virtual occ::handle<TObj_ObjectIterator> GetBackReferences ( const occ::handle<Standard_Type>& theType = nullptr ) const; 
 ~~~~
 
 Returns an iterator on the object back references. 
-The argument theType restricts the types of master objects, or does not if it is NULL. 
+The argument theType restricts the types of master objects, or does not if it is nullptr. 
 
 ~~~~{.cpp}
     virtual void ReplaceReference  ( const occ::handle<TObj_Object>& theOldObject,  const occ::handle<TObj_Object>& theNewObject ); 
 ~~~~
 
 Replaces the reference to theOldObject by the reference to *theNewObject*. 
-The handle theNewObject may be NULL to remove the reference. 
+The handle theNewObject may be nullptr to remove the reference. 
 
 ~~~~{.cpp}
     virtual bool RelocateReferences  ( const TDF_Label& theFromRoot,  const TDF_Label& theToRoot, const bool theUpdateackRefs = true ); 

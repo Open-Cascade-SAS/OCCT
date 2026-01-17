@@ -439,7 +439,7 @@ of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follow
     TopoDS_Face aFace = TopoDS::Face (aShBinder->Result());
     if (! aFace.IsNull())
     {
-      occ::handle<Geom_Plane> aSurf = Handle(Geom_Plane)::DownCast (BRep_Tool::Surface (aFace));
+      occ::handle<Geom_Plane> aSurf = occ::down_cast<Geom_Plane>(BRep_Tool::Surface (aFace));
       if (! aSurf.IsNull())
       {
         gp_Ax3 anAxis = aSurf->Placement();
@@ -502,10 +502,10 @@ Perform the translation according to what you want to translate. You can choose 
   
 The following methods are used for translation:
 
-* *Standard_Boolean ok = reader.TransferRoot(rank)* -- translates a root entity identified by its rank;
-* *Standard_Boolean ok = reader.TransferOne(rank)* -- translates an entity identified by its rank;
-* *Standard_Integer num = reader.TransferList(list)* -- translates a list of entities in one operation (this method returns the number of successful translations);
-* *Standard_Integer NbRoots = reader.NbRootsForTransfer()* and *Standard_Integer num = reader.TransferRoots()* -- translate all transferable roots. 
+* *bool ok = reader.TransferRoot(rank)* -- translates a root entity identified by its rank;
+* *bool ok = reader.TransferOne(rank)* -- translates an entity identified by its rank;
+* *int num = reader.TransferList(list)* -- translates a list of entities in one operation (this method returns the number of successful translations);
+* *int NbRoots = reader.NbRootsForTransfer()* and *int num = reader.TransferRoots()* -- translate all transferable roots. 
 
 @subsubsection occt_step_2_3_5 Getting the translation results
 Each successful translation operation outputs one shape. A series of translations gives a set of shapes. 
@@ -517,7 +517,7 @@ reader.ClearShapes();
 between two translation operations, if you do not, the results from the next translation will be added to the accumulation. 
 
 *TransferRoots()* operations automatically clear all existing results before they start. 
-* *Standard_Integer num = reader.NbShapes()* -- gets the number of shapes recorded in the result; 
+* *int num = reader.NbShapes()* -- gets the number of shapes recorded in the result; 
 * *TopoDS_Shape shape = reader.Shape(rank)* -- gets the result identified by its rank, where rank is an integer between 1 and NbShapes;
 * *TopoDS_Shape shape = reader.Shape()* -- gets the first result of translation; 
 * *TopoDS_Shape shape = reader.OneShape()* -- gets all results in a single shape, which is:
@@ -561,7 +561,7 @@ Here is a simple example of how a list is translated:
 ~~~~{.cpp}
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = reader.GiveList(); 
 ~~~~
-The result is a *TColStd_HSequenceOfTransient*. 
+The result is a *NCollection_HSequence\<occ::handle\<Standard_Transient\>\>*. 
 You can either translate a list entity by entity or all at once. An entity-by-entity operation lets you check each individual entity translated. 
 
 <h5>Translating a whole list in one operation</h5>
@@ -613,7 +613,7 @@ bool ok = reader.Transfer (rank);
 ~~~~
 
 <h5>Direct selection of an entity</h5>
-*ent* is the entity. The argument is a *Handle(Standard_Transient)*. 
+*ent* is the entity. The argument is a *occ::handle\<Standard_Transient\>*. 
 ~~~~{.cpp}
 bool ok = reader.TransferEntity (ent); 
 ~~~~
@@ -893,9 +893,10 @@ writes the precision value.
 * Greatest (1) :  the uncertainty value is set to the maximum tolerance of an OCCT shape 
 * Session (2) :   the uncertainty value is that of the write.precision.val parameter. 
 
-Read this parameter with: 
-
-Standard_Integer ic = Interface_Static::IVal("write.precision.mode"); 
+Read this parameter with:
+~~~~{.cpp}
+int ic = Interface_Static::IVal("write.precision.mode");
+~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.precision.mode",1))  
@@ -957,7 +958,7 @@ if(!Interface_Static::SetCVal("write.step.schema","DIS"))
 .. error .. 
 ~~~~
 Default value is 1 (;CD;). 
-For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(Standard_True)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
+For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(true)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
  
 <h4>write.step.product.name</h4>
 Defines the text string that will be used for field `name' of PRODUCT entities written to the STEP file. 
@@ -1543,7 +1544,7 @@ The following function performs a translation of the whole document:
 ~~~~{.cpp}
 bool ok = reader.Transfer(doc); 
 ~~~~
-where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
+where *doc* is a variable which contains a handle to the output document and should have a type *occ::handle\<TDocStd_Document\>*. 
 
 
 @subsection occt_step_7_2 Attributes read from STEP 
@@ -1687,7 +1688,7 @@ You can perform the translation of document by calling the function:
 ~~~~{.cpp}
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
 ~~~~
-where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *Handle(TDocStd_Document)*. 
+where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *occ::handle\<TDocStd_Document\>*. 
 
 ### Write a STEP file
 

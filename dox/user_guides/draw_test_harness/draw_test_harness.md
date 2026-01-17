@@ -9982,7 +9982,7 @@ Syntax:
 fixsmalledges <result> <shape> [<toler> <mode> <maxangle>]
 ~~~~
 
-Searches at least one small edge at a given shape. If such edges have been found, then small edges are merged with a given tolerance. If parameter <i>\<mode\></i> is equal to *Standard_True* (can be given any values, except 2), then  small edges, which can not be merged, are removed, otherwise they are to be kept (*Standard_False* is used by default). Parameter <i>\<maxangle\></i> sets a maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1). Results are put into the shape, which is given as parameter result. 
+Searches at least one small edge at a given shape. If such edges have been found, then small edges are merged with a given tolerance. If parameter <i>\<mode\></i> is equal to *true* (can be given any values, except 2), then  small edges, which can not be merged, are removed, otherwise they are to be kept (*false* is used by default). Parameter <i>\<maxangle\></i> sets a maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1). Results are put into the shape, which is given as parameter result. 
 
 **Example:**
 ~~~~{.php}

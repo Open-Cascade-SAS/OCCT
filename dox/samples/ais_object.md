@@ -440,7 +440,7 @@ void MyAisObject::Compute (const occ::handle<PrsMgr_PresentationManager>& thePrs
     for (int aSliceIter = 0; aSliceIter < aNbSlices; ++aSliceIter)
     {
       double anAngle = M_PI * 2.0 * double(aSliceIter) / double(aNbSlices);
-      aTris2->AddVertex (gp_Pnt (Cos (anAngle) * aRadius, Sin (anAngle) * aRadius, aHeight), -gp::DZ());
+      aTris2->AddVertex (gp_Pnt (std::cos (anAngle) * aRadius, std::sin (anAngle) * aRadius, aHeight), -gp::DZ());
     }
     for (int aSliceIter = 0; aSliceIter < aNbSlices; ++aSliceIter)
     {
@@ -629,7 +629,7 @@ void SelectMgr_EntityOwner::HilightWithColor (
       theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN
     ? theStyle->ZLayer()
     : mySelectable->ZLayer();
-  thePrsMgr->Color (mySelectable, theStyle, theMode, NULL, aHiLayer);
+  thePrsMgr->Color (mySelectable, theStyle, theMode, nullptr, aHiLayer);
 }
 ~~~~
 

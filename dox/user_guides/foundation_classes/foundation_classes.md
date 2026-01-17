@@ -414,7 +414,7 @@ occ::handle<Geom_Point> aPnt1;
 occ::handle<Geom_CartesianPoint> aPnt2, aPnt3;
 aPnt2 = new Geom_CartesianPoint();
 aPnt1 = aPnt2; // OK, standard assignment
-aPnt3 = Handle(Geom_CartesianPoint)::DownCast (aPnt1);
+aPnt3 = occ::down_cast<Geom_CartesianPoint>(aPnt1);
 // OK, the actual type of aPnt1 is Geom_CartesianPoint, although the static type of the handle is Geom_Point
 ~~~~
 
@@ -450,7 +450,7 @@ t = aSeq.Value (1);
 // here, you cannot write:
 // a = t; // ERROR !
 // so you downcast:
-a = Handle (A)::Downcast (t)
+a = occ::down_cast<A>(t)
 if (!a.IsNull())
 {
   // types are compatible, you can use a
@@ -1770,7 +1770,7 @@ The *Precision* package addresses the daily problem of the geometric algorithm d
 Real number equivalence is clearly a poor choice.
 The difference between the numbers should be compared to a given precision setting.
 
-Do not write _if (X1 == X2)_, instead write _if (Abs(X1-X2) < Precision)_.
+Do not write _if (X1 == X2)_, instead write _if (std::abs(X1-X2) < Precision)_.
 
 Also, to order real numbers, keep in mind that _if (X1 < X2 - Precision)_ is incorrect.
 _if (X2 - X1 > Precision)_ is far better when *X1* and *X2* are high numbers.
@@ -1797,7 +1797,7 @@ This is because it is desirable to link parametric precision and real precision.
 If you are on a curve defined by the equation *P(t)*, you would want to have equivalence between the following:
 
 ~~~~{.cpp}
-  Abs (t1 - t2) < ParametricPrecision
+  std::abs (t1 - t2) < ParametricPrecision
   Distance (P(t1), P(t2)) < RealPrecision
 ~~~~
 
@@ -1835,7 +1835,7 @@ It can be used to check confusion of two angles as follows:
 ~~~~{.cpp}
 bool areEqualAngles (double theAngle1, double theAngle2)
 {
-  return Abs(theAngle1  - theAngle2) < Precision::Angular();
+  return std::abs(theAngle1  - theAngle2) < Precision::Angular();
 }
 ~~~~
 
@@ -1852,7 +1852,7 @@ So to test if two directions of type *gp_Dir* are perpendicular, it is legal to 
 ~~~~{.cpp}
 bool arePerpendicular (const gp_Dir& theDir1, const gp_Dir& theDir2)
 {
-  return Abs(theDir1 * theDir2) < Precision::Angular();
+  return std::abs(theDir1 * theDir2) < Precision::Angular();
 }
 ~~~~
 

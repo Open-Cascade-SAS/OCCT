@@ -1023,8 +1023,8 @@ In case of *AIS_Shape*, the (sub)shape is returned by method *StdSelect_BRepOwne
 for (myAISCtx->InitSelected(); myAISCtx->MoreSelected(); myAISCtx->NextSelected())
 {
   occ::handle<SelectMgr_EntityOwner> anOwner = myAISCtx->SelectedOwner();
-  occ::handle<AIS_InteractiveObject> anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-  if (occ::handle<StdSelect_BRepOwner> aBRepOwner = Handle(StdSelect_BRepOwner)::DownCast (anOwner))
+  occ::handle<AIS_InteractiveObject> anObj = occ::down_cast<AIS_InteractiveObject>(anOwner->Selectable());
+  if (occ::handle<StdSelect_BRepOwner> aBRepOwner = occ::down_cast<StdSelect_BRepOwner>(anOwner))
   {
     // to be able to use the picked shape
     TopoDS_Shape aShape = aBRepOwner->Shape();
@@ -2014,7 +2014,7 @@ anAspectWhite->SetColor (aWhite);
 
 Create marker attributes.
 ~~~~{.cpp}
-Handle(Graphic3d_AspectMarker3d aFirebrickMarker = new Graphic3d_AspectMarker3d();
+occ::handle<Graphic3d_AspectMarker3d> aFirebrickMarker = new Graphic3d_AspectMarker3d();
 // marker attributes
 aFirebrickMarker->SetColor (Firebrick);
 aFirebrickMarker->SetScale (1.0f);

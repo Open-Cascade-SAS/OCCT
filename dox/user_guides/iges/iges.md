@@ -697,7 +697,7 @@ Default value is "Faces" (0).
  * "Greatest" (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape.  
  * "Session" (2):    resolution  value is that of the write.precision.val parameter.  
  
- * Read this parameter  with <i>Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");</i> 
+ * Read this parameter  with <i>int ic = Interface_Static::IVal("write.precision.mode");</i> 
  * Modify this parameter  with <i>if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. </i>
 * *write.precision.val:* is the user precision value.  This parameter gives the resolution value for an IGES file when the  *write.precision.mode* parameter value is 1.  It is equal to 0.0001 by default, but can take any real positive (non null) value.  
 
@@ -730,7 +730,7 @@ bool ok =  writer.AddShape (TopoDS_Shape);
 ~~~~{.cpp}
 bool ok =  writer.AddGeom (geom); 
 ~~~~
-where *geom* is *Handle(Geom_Curve)* or *Handle(Geom_Surface)*;  
+where *geom* is *occ::handle\<Geom_Curve\>* or *occ::handle\<Geom_Surface\>*;  
 *ok* is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
 
 @subsubsection occt_iges_3_3_4 Writing the IGES  file
@@ -1155,7 +1155,7 @@ The following function performs a translation of the whole  document:
 ~~~~{.cpp}
 bool ok = reader.Transfer(doc);  
 ~~~~
-where *doc* is a variable which contains a handle to the output document and should have a  type *Handle(TDocStd_Document)*. 
+where *doc* is a variable which contains a handle to the output document and should have a  type *occ::handle\<TDocStd_Document\>*. 
 
 
 @subsection occt_iges_5_2 Writing to IGES
@@ -1185,7 +1185,7 @@ You can perform the translation of a document by calling the  function:
 ~~~~{.cpp}
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
 ~~~~
-where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *Handle(TDocStd_Document)*.
+where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *occ::handle\<TDocStd_Document\>*.
  
 ### Write an IGES file
 

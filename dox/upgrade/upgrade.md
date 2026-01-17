@@ -1261,7 +1261,7 @@ The following Grid management methods within class V3d_Viewer do not implicitly 
 
 The duplicating interface methods accepting *Quantity_NameOfColor* (in addition to methods accepting *Quantity_Color*) of TKV3d toolkit have been removed.
 In most cases this change should be transparent, however applications implementing such interface methods should also remove them
-(compiler will automatically highlight this issue for methods marked with Standard_OVERRIDE keyword).
+(compiler will automatically highlight this issue for methods marked with `override` keyword).
 
 @subsection upgrade_720_Result_Of_BOP_On_Containers Result of Boolean operations on containers
 
