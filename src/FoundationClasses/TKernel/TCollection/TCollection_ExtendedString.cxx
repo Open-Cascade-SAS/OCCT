@@ -24,7 +24,7 @@
 
 namespace
 {
-static char16_t THE_DEFAULT_EXT_CHAR_STRING[1] = {0};
+static char16_t THE_DEFAULT_EXT_CHAR_STRING[1] = {u'\0'};
 
 //! Calculate padded allocation size for ExtendedString (2-byte characters)
 //! Guarantees at least +1 character space for null terminator, aligned to 4-byte boundary
@@ -196,7 +196,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const wchar_t* theStringU
 
 TCollection_ExtendedString::TCollection_ExtendedString(const char theChar)
 {
-  if (theChar != '\0')
+  if (theChar != u'\0')
   {
     allocate(1);
     myString[0] = ToExtCharacter(theChar);
@@ -319,7 +319,7 @@ void TCollection_ExtendedString::AssignCat(const TCollection_ExtendedString& the
 
 void TCollection_ExtendedString::AssignCat(const char16_t theChar)
 {
-  if (theChar != '\0')
+  if (theChar != u'\0')
   {
     reallocate(myLength + 1);
     myString[myLength - 1] = theChar;
@@ -638,7 +638,7 @@ void TCollection_ExtendedString::RemoveAll(const char16_t theWhat)
     if (myString[i] != theWhat)
       myString[c++] = myString[i];
   myLength           = c;
-  myString[myLength] = '\0';
+  myString[myLength] = u'\0';
 }
 
 //==================================================================================================
@@ -661,7 +661,7 @@ void TCollection_ExtendedString::Remove(const int theWhere, const int theHowMany
     myString[j] = myString[i];
   }
   myLength -= theHowMany;
-  myString[myLength] = '\0';
+  myString[myLength] = u'\0';
 }
 
 //==================================================================================================
@@ -896,7 +896,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* the
   {
     for (res.myLength = 0; buftmp[res.myLength]; ++res.myLength)
       ;
-    res.myString[res.myLength] = '\0';
+    res.myString[res.myLength] = u'\0';
   }
   return res;
 }
@@ -916,7 +916,7 @@ void TCollection_ExtendedString::Trunc(const int theHowMany)
     throw Standard_OutOfRange("TCollection_ExtendedString::Trunc : "
                               "parameter 'theHowMany'");
   myLength           = theHowMany;
-  myString[myLength] = '\0';
+  myString[myLength] = u'\0';
 }
 
 //==================================================================================================
@@ -942,7 +942,7 @@ bool TCollection_ExtendedString::ConvertToUnicode(const char* theString)
   char16_t*                     anIterWrite = myString;
   if (*anIterRead == 0)
   {
-    *anIterWrite = '\0';
+    *anIterWrite = u'\0';
     return true;
   }
 
@@ -1003,7 +1003,7 @@ void TCollection_ExtendedString::allocate(const int theLength)
   {
     const size_t aRoundSize = calculatePaddedSize(theLength);
     myString                = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
-    myString[myLength]      = '\0';
+    myString[myLength]      = u'\0';
   }
 }
 
@@ -1066,7 +1066,7 @@ void TCollection_ExtendedString::LeftAdjust()
   }
 
   int anIndex = 0;
-  while (anIndex < myLength && myString[anIndex] == ' ')
+  while (anIndex < myLength && myString[anIndex] == u' ')
   {
     ++anIndex;
   }
@@ -1075,7 +1075,7 @@ void TCollection_ExtendedString::LeftAdjust()
   {
     myLength -= anIndex;
     memmove(myString, myString + anIndex, myLength * sizeof(char16_t));
-    myString[myLength] = '\0';
+    myString[myLength] = u'\0';
   }
 }
 
@@ -1088,11 +1088,11 @@ void TCollection_ExtendedString::RightAdjust()
     return;
   }
 
-  while (myLength > 0 && myString[myLength - 1] == ' ')
+  while (myLength > 0 && myString[myLength - 1] == u' ')
   {
     --myLength;
   }
-  myString[myLength] = '\0';
+  myString[myLength] = u'\0';
 }
 
 //==================================================================================================

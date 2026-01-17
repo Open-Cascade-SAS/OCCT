@@ -957,7 +957,7 @@ private:
       return 0;
     }
     int aLen = 0;
-    while (theString[aLen] != 0)
+    while (theString[aLen] != u'\0')
     {
       ++aLen;
     }
