@@ -184,7 +184,7 @@ To reference an object, we instantiate the class with one of its constructors.
 For example, in C++:
 
 ~~~~{.cpp}
-Handle(MyClass) anObject = new MyClass();
+occ::handle<MyClass> anObject = new MyClass();
 ~~~~
 
 In Open CASCADE Technology, the Handles are specific classes that are used to safely manipulate objects allocated in the dynamic memory by reference,
@@ -303,7 +303,7 @@ Objects of classes derived (directly or indirectly) from *Transient*, are normal
 Handle is defined as template class *opencascade::handle<>*.
 Open CASCADE Technology provides preprocessor macro *Handle()* that is historically used throughout OCCT code to name a handle:
 ~~~~{.cpp}
-Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handle<Geom_Line>"
+occ::handle<Geom_Line> aLine; // "occ::handle<Geom_Line>" is expanded to "opencascade::handle<Geom_Line>"
 ~~~~
 
 In addition, for most OCCT classes additional *typedef* is defined for a handle, as the name of a class prefixed by *Handle_*.
@@ -319,7 +319,7 @@ A handle is characterized by the object it references.
 Before performing any operation on a transient object, you must declare the handle.
 For example, if Point and Line are two transient classes from the Geom package, you would write:
 ~~~~{.cpp}
-Handle(Geom_Point) p1, p2;
+occ::handle<Geom_Point> p1, p2;
 ~~~~
 Declaring a handle creates a null handle that does not refer to any object.
 The handle may be checked to be null by its method *IsNull()*.
@@ -391,8 +391,8 @@ Thus, the dynamic type of an object (also called the actual type of an object) c
 Consider the class *Geom_CartesianPoint*, a sub-class of *Geom_Point*; the rule of type conformity can be illustrated as follows:
 
 ~~~~{.cpp}
-Handle(Geom_Point) aPnt1;
-Handle(Geom_CartesianPoint) aPnt2;
+occ::handle<Geom_Point> aPnt1;
+occ::handle<Geom_CartesianPoint> aPnt2;
 aPnt2 = new Geom_CartesianPoint();
 aPnt1 = aPnt2;  // OK, the types are compatible
 ~~~~
@@ -410,11 +410,11 @@ If this is not the case, the handle is nullified (explicit type conversion is so
 Consider the example below.
 
 ~~~~{.cpp}
-Handle(Geom_Point) aPnt1;
-Handle(Geom_CartesianPoint) aPnt2, aPnt3;
+occ::handle<Geom_Point> aPnt1;
+occ::handle<Geom_CartesianPoint> aPnt2, aPnt3;
 aPnt2 = new Geom_CartesianPoint();
 aPnt1 = aPnt2; // OK, standard assignment
-aPnt3 = Handle(Geom_CartesianPoint)::DownCast (aPnt1);
+aPnt3 = occ::down_cast<Geom_CartesianPoint>(aPnt1);
 // OK, the actual type of aPnt1 is Geom_CartesianPoint, although the static type of the handle is Geom_Point
 ~~~~
 
@@ -422,9 +422,9 @@ If conversion is not compatible with the actual type of the referenced object, t
 So, if you require reliable services defined in a sub-class of the type seen by the handle (static type), write as follows:
 
 ~~~~{.cpp}
-void MyFunction (const Handle(A) & a)
+void MyFunction (const occ::handle<A> & a)
 {
-  Handle(B) b =  Handle(B)::DownCast(a);
+  occ::handle<B> b =  occ::down_cast<B>(a);
   if (! b.IsNull()) {
     // we can use “b” if class B inherits from A
   }
@@ -438,10 +438,10 @@ Downcasting is used particularly with collections of objects of different types;
 For example, with a sequence of transient objects *TColStd_SequenceOfTransient* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
 
 ~~~~{.cpp}
-Handle(A) a;
-Handle(B) b;
-Handle(Standard_Transient) t;
-TColStd_SequenceOfTransient aSeq;
+occ::handle<A> a;
+occ::handle<B> b;
+occ::handle<Standard_Transient> t;
+NCollection_Sequence<occ::handle<Standard_Transient>> aSeq;
 a = new A();
 aSeq.Append (a);
 b = new B();
@@ -450,7 +450,7 @@ t = aSeq.Value (1);
 // here, you cannot write:
 // a = t; // ERROR !
 // so you downcast:
-a = Handle (A)::Downcast (t)
+a = occ::down_cast<A>(t)
 if (!a.IsNull())
 {
   // types are compatible, you can use a
@@ -467,7 +467,7 @@ To create an object which is manipulated by handle, declare the handle and initi
 The constructor can be any of those specified in the source of the class from which the object is instanced.
 
 ~~~~{.cpp}
-Handle(Geom_CartesianPoint) aPnt;
+occ::handle<Geom_CartesianPoint> aPnt;
 aPnt = new Geom_CartesianPoint (0, 0, 0);
 ~~~~
 
@@ -481,8 +481,8 @@ To test or to modify the state of the handle, the method is translated by the *d
 The example below illustrates how to access the coordinates of an (optionally initialized) point object:
 
 ~~~~{.cpp}
-Handle(Geom_CartesianPoint) aCentre;
-Standard_Real x, y, z;
+occ::handle<Geom_CartesianPoint> aCentre;
+double x, y, z;
 if (aCentre.IsNull())
 {
   aCentre = new PGeom_CartesianPoint (0, 0, 0);
@@ -493,7 +493,7 @@ aCentre->Coord (x, y, z);
 The example below illustrates how to access the type object of a Cartesian point:
 
 ~~~~{.cpp}
-Handle(Standard_Transient) aPnt = new Geom_CartesianPoint (0., 0., 0.);
+occ::handle<Standard_Transient> aPnt = new Geom_CartesianPoint (0., 0., 0.);
 if (aPnt->DynamicType() == STANDARD_TYPE(Geom_CartesianPoint))
 {
   std::cout << "Type check OK\n";
@@ -513,7 +513,7 @@ A class method is called like a static C++ function, i.e. it is called by the na
 For example, we can find the maximum degree of a Bezier curve:
 
 ~~~~{.cpp}
-Standard_Integer aDegree = Geom_BezierCurve::MaxDegree();
+int aDegree = Geom_BezierCurve::MaxDegree();
 ~~~~
 
 @subsubsection occt_fcug_2_2_5 Handle deallocation
@@ -532,14 +532,14 @@ The principle of allocation can be seen in the example below.
 ~~~~{.cpp}
 ...
 {
-  Handle(TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger();
+  occ::handle<NCollection_HSequence<int>> H1 = new NCollection_HSequence<int>();
   // H1 has one reference and corresponds to 48 bytes of  memory
   {
-    Handle(TColStd_HSequenceOfInteger) H2;
+    occ::handle<NCollection_HSequence<int>> H2;
     H2 = H1; // H1 has two references
     if (argc == 3)
     {
-      Handle(TColStd_HSequenceOfInteger) H3;
+      occ::handle<NCollection_HSequence<int>> H3;
       H3 = H1;
       // Here, H1 has three references
       ...
@@ -548,18 +548,18 @@ The principle of allocation can be seen in the example below.
   }
   // Here, H1 has 1 reference
 }
-// Here, H1 has no reference and the referred TColStd_HSequenceOfInteger object is deleted.
+// Here, H1 has no reference and the referred NCollection_HSequence<int> object is deleted.
 ~~~~
 
 You can easily cast a reference to the handle object to <i> void* </i> by defining the following:
 
 ~~~~{.cpp}
   void* aPointer;
-  Handle(Some_Class) aHandle;
+  occ::handle<Some_Class> aHandle;
   // Here only a pointer will be copied
   aPointer = &aHandle;
   // Here the Handle object will be copied
-  aHandle = *(Handle(Some_Class)*)aPointer;
+  aHandle = *(occ::handle<Some_Class>*)aPointer;
 ~~~~
 
 @subsubsection occt_fcug_2_2_6 Cycles
@@ -735,7 +735,7 @@ For example, if you consider the *TCollection_Array1* class used with:
 then, the *Value* function may be implemented as follows:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (Standard_Integer theIndex) const
+Item TCollection_Array1::Value (int theIndex) const
 {
   // where myR1 and myR2 are the lower and upper bounds of the array
   if (theIndex < myR1 || theIndex > myR2)
@@ -766,7 +766,7 @@ The entire call may be removed by defining one of the preprocessor symbols *No_E
 Using this syntax, the *Value* function becomes:
 
 ~~~~{.cpp}
-Item TCollection_Array1::Value (Standard_Integer theIndex) const
+Item TCollection_Array1::Value (int theIndex) const
 {
   Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in TCollection_Array1::Value");
   return myContents[theIndex];
@@ -942,7 +942,7 @@ The client may then call the functions supported by this object.
 To invoke one of the services provided by the plug-in, you may call the *Plugin::Load()* global function with the *Standard_GUID* of the requested service as follows:
 
 ~~~~{.cpp}
-Handle(FADriver_PartStorer)::DownCast(PlugIn::Load (yourStandardGUID));
+occ::down_cast<FADriver_PartStorer>(PlugIn::Load (yourStandardGUID));
 ~~~~
 
 Let us take *FAFactory.hxx* and *FAFactory.cxx* as an example:
@@ -955,7 +955,7 @@ Let us take *FAFactory.hxx* and *FAFactory.cxx* as an example:
 class FAFactory
 {
 public:
-  Standard_EXPORT static Handle(Standard_Transient) Factory (const Standard_GUID& theGUID);
+  Standard_EXPORT static occ::handle<Standard_Transient> Factory (const Standard_GUID& theGUID);
 };
 ~~~~
 
@@ -977,29 +977,29 @@ static Standard_GUID Schema         ("45b3c6a2-22f3-11d2-b09e-0000f8791463");
 // function : Factory
 // purpose :
 //======================================================
-Handle(Standard_Transient) FAFactory::Factory (const Standard_GUID& theGUID)
+occ::handle<Standard_Transient> FAFactory::Factory (const Standard_GUID& theGUID)
 {
   if (theGUID == StorageDriver)
   {
     std::cout << "FAFactory : Create store driver\n";
-    static Handle(FADriver_PartStorer) sd = new FADriver_PartStorer();
+    static occ::handle<FADriver_PartStorer> sd = new FADriver_PartStorer();
     return sd;
   }
   if (theGUID == RetrievalDriver)
   {
     std::cout << "FAFactory : Create retrieve driver\n";
-    static Handle(FADriver_PartRetriever) rd = new FADriver_PartRetriever();
+    static occ::handle<FADriver_PartRetriever> rd = new FADriver_PartRetriever();
     return rd;
   }
   if (theGUID == Schema)
   {
     std::cout << "FAFactory : Create schema\n";
-    static Handle(FirstAppSchema) s = new FirstAppSchema();
+    static occ::handle<FirstAppSchema> s = new FirstAppSchema();
     return s;
   }
 
   throw Standard_Failure ("FAFactory: unknown GUID");
-  return Handle(Standard_Transient)();
+  return occ::handle<Standard_Transient>();
 }
 
 // export plugin function "PLUGINFACTORY"
@@ -1056,7 +1056,7 @@ For the case, when sequence itself should be managed by handle, auxiliary macros
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 DEFINE_HSEQUENCE(MyPackage_HSequenceOfPnt, MyPackage_SequenceOfPnt)
 ...
-Handle(MyPackage_HSequenceOfPnt) aSeq = new MyPackage_HSequenceOfPnt();
+occ::handle<MyPackage_HSequenceOfPnt> aSeq = new MyPackage_HSequenceOfPnt();
 ~~~~
 
 See more details about available collections in following sections.
@@ -1368,10 +1368,10 @@ public:
   void Add (const MyBndType& theOther);
 
   //! Classifies other bounding type instance relatively me
-  Standard_Boolean IsOut (const MyBndType& theOther) const;
+  bool IsOut (const MyBndType& theOther) const;
 
   //! Computes the squared maximal linear extent of me (for a box it is the squared diagonal of the box).
-  Standard_Real SquareExtent() const;
+  double SquareExtent() const;
 };
 ~~~~
    
@@ -1399,12 +1399,12 @@ public:
 
   //! Bounding box rejection - definition of virtual method.
   //! @return True if theBox is outside the selection criterion.
-  virtual Standard_Boolean Reject (const Bnd_B2f& theBox) const override { return theBox.IsOut (myPnt); }
+  virtual bool Reject (const Bnd_B2f& theBox) const override { return theBox.IsOut (myPnt); }
 
   //! Redefined from the base class.
   //! Called when the bounding of theData conforms to the selection criterion.
   //! This method updates myList.
-  virtual Standard_Boolean Accept (const MyData& theData) override { myList.Append (theData); }
+  virtual bool Accept (const MyData& theData) override { myList.Append (theData); }
 
 private:
   gp_XY          myPnt;
@@ -1439,8 +1439,8 @@ while search with NCollection_UBTree provides logarithmic law access time.
 Packages *TShort*, *TColGeom*, *TColGeom2d*, *TColStd*, *TColgp* provide template instantiations (typedefs) of *NCollection* templates to standard OCCT types.
 Classes with *H* prefix in name are handle-based variants and inherit Standard_Transient.
 ~~~~{.cpp}
-typedef NCollection_Array1<gp_Vec>                  TColgp_Array1OfVec;
-typedef NCollection_Array1<TCollection_AsciiString> TColStd_Array1OfAsciiString;
+typedef NCollection_Array1<gp_Vec>                  NCollection_Array1<gp_Vec>;
+typedef NCollection_Array1<TCollection_AsciiString> NCollection_Array1<TCollection_AsciiString>;
 ~~~~
 
 Packages like *TopTools* also include definitions of collections and hash functions for complex types like shapes -- *TopTools_ShapeMapHasher*, *TopTools_MapOfShape*.
@@ -1548,7 +1548,7 @@ Vector and Matrix values may be initialized and obtained using indexes which mus
 ~~~~{.cpp}
 math_Vector aVec (1, 3);
 math_Matrix aMat (1, 3, 1, 3);
-Standard_Real aValue;
+double aValue;
 
 aVec (2) = 1.0;
 aValue = aVec(1);
@@ -1654,7 +1654,7 @@ class math_Gauss
 {
 public:
   math_Gauss (const math_Matrix& A);
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
   void Solve (const math_Vector& B, math_Vector& X) const;
 };
 ~~~~
@@ -1696,11 +1696,11 @@ class math_BissecNewton
 {
 public:
   math_BissecNewton (math_FunctionWithDerivative& f,
-                     const Standard_Real bound1,
-                     const Standard_Real bound2,
-                     const Standard_Real tolx);
-  Standard_Boolean IsDone() const;
-  Standard_Real Root();
+                     const double bound1,
+                     const double bound2,
+                     const double tolx);
+  bool IsDone() const;
+  double Root();
 }; 
 ~~~~
 
@@ -1711,9 +1711,9 @@ The following definition corresponds to the header file of the abstract class *m
 class math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value (const Standard_Real x, Standard_Real& f) = 0;
-  virtual Standard_Boolean Derivative (const Standard_Real x, Standard_Real& d) = 0;
-  virtual Standard_Boolean Values (const Standard_Real x, Standard_Real& f, Standard_Real& d) = 0;
+  virtual bool Value (const double x, double& f) = 0;
+  virtual bool Derivative (const double x, double& d) = 0;
+  virtual bool Values (const double x, double& f, double& d) = 0;
 };
 ~~~~
 
@@ -1725,23 +1725,23 @@ The function to solve is implemented in the class *myFunction* which inherits fr
 #include <math_FunctionWithDerivative.hxx>
 class myFunction : public math_FunctionWithDerivative
 {
-  Standard_Real myCoefA, myCoefB, myCoefC;
+  double myCoefA, myCoefB, myCoefC;
 
 public:
-  myFunction (const Standard_Real theA, const Standard_Real theB, const Standard_Real theC)
+  myFunction (const double theA, const double theB, const double theC)
   : myCoefA(a), myCoefB(b), myCoefC(c) {}
 
-  virtual Standard_Boolean Value (const Standard_Real x, Standard_Real& f) override
+  virtual bool Value (const double x, double& f) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
   }
 
-  virtual Standard_Boolean Derivative (const Standard_Real x, Standard_Real& d) override
+  virtual bool Derivative (const double x, double& d) override
   {
     d = myCoefA * x * 2.0 + myCoefB;
   }
 
-  virtual Standard_Boolean Values (const Standard_Real x, Standard_Real& f, Standard_Real& d) override
+  virtual bool Values (const double x, double& f, double& d) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
     d = myCoefA * x *  2.0 + myCoefB;
@@ -1754,7 +1754,7 @@ main()
   math_BissecNewton aSol (aFunc, 1.5, 2.5, 0.000001);
   if (aSol.IsDone()) // is it OK ?
   {
-    Standard_Real x = aSol.Root(); // yes
+    double x = aSol.Root(); // yes
   }
   else // no
   {
@@ -1770,7 +1770,7 @@ The *Precision* package addresses the daily problem of the geometric algorithm d
 Real number equivalence is clearly a poor choice.
 The difference between the numbers should be compared to a given precision setting.
 
-Do not write _if (X1 == X2)_, instead write _if (Abs(X1-X2) < Precision)_.
+Do not write _if (X1 == X2)_, instead write _if (std::abs(X1-X2) < Precision)_.
 
 Also, to order real numbers, keep in mind that _if (X1 < X2 - Precision)_ is incorrect.
 _if (X2 - X1 > Precision)_ is far better when *X1* and *X2* are high numbers.
@@ -1797,7 +1797,7 @@ This is because it is desirable to link parametric precision and real precision.
 If you are on a curve defined by the equation *P(t)*, you would want to have equivalence between the following:
 
 ~~~~{.cpp}
-  Abs (t1 - t2) < ParametricPrecision
+  std::abs (t1 - t2) < ParametricPrecision
   Distance (P(t1), P(t2)) < RealPrecision
 ~~~~
 
@@ -1835,7 +1835,7 @@ It can be used to check confusion of two angles as follows:
 ~~~~{.cpp}
 bool areEqualAngles (double theAngle1, double theAngle2)
 {
-  return Abs(theAngle1  - theAngle2) < Precision::Angular();
+  return std::abs(theAngle1  - theAngle2) < Precision::Angular();
 }
 ~~~~
 
@@ -1852,7 +1852,7 @@ So to test if two directions of type *gp_Dir* are perpendicular, it is legal to 
 ~~~~{.cpp}
 bool arePerpendicular (const gp_Dir& theDir1, const gp_Dir& theDir2)
 {
-  return Abs(theDir1 * theDir2) < Precision::Angular();
+  return std::abs(theDir1 * theDir2) < Precision::Angular();
 }
 ~~~~
 

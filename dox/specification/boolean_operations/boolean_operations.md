@@ -814,21 +814,21 @@ The following example illustrates how to use the GF algorithm:
 ~~~~{.cpp}
 BOPAlgo_Builder aBuilder;
 // Setting arguments
-TopTools_ListOfShape aLSObjects = …; // Objects
+NCollection_List<TopoDS_Shape> aLSObjects = …; // Objects
 aBuilder.SetArguments(aLSObjects);
 
 // Setting options for GF
 
 // Set parallel processing mode (default is false)
-Standard_Boolean bRunParallel = Standard_True;
+bool bRunParallel = true;
 aBuilder.SetRunParallel(bRunParallel);
 
 // Set Fuzzy value (default is Precision::Confusion())
-Standard_Real aFuzzyValue = 1.e-5;
+double aFuzzyValue = 1.e-5;
 aBuilder.SetFuzzyValue(aFuzzyValue);
 
 // Set safe processing mode (default is false)
-Standard_Boolean bSafeMode = Standard_True;
+bool bSafeMode = true;
 aBuilder.SetNonDestructive(bSafeMode);
 
 // Set Gluing mode for coinciding arguments (default is off)
@@ -836,11 +836,11 @@ BOPAlgo_GlueEnum aGlue = BOPAlgo_GlueShift;
 aBuilder.SetGlue(aGlue);
 
 // Disabling/Enabling the check for inverted solids (default is true)
-Standard Boolean bCheckInverted = Standard_False;
+Standard Boolean bCheckInverted = false;
 aBuilder.SetCheckInverted(bCheckInverted);
 
 // Set OBB usage (default is false)
-Standard_Boolean bUseOBB = Standard_True;
+bool bUseOBB = true;
 aBuilder.SetUseOBB(buseobb);
 
 // Perform the operation
@@ -1202,8 +1202,8 @@ On the low level the Splitter algorithm is implemented in class *BOPAlgo_Splitte
 ~~~~{.cpp}
 BOPAlgo_Splitter aSplitter;
 // Setting arguments and tools
-TopTools_ListOfShape aLSObjects = …; // Objects
-TopTools_ListOfShape aLSTools = …; // Tools
+NCollection_List<TopoDS_Shape> aLSObjects = …; // Objects
+NCollection_List<TopoDS_Shape> aLSTools = …; // Tools
 aSplitter.SetArguments(aLSObjects);
 aSplitter.SetTools(aLSTools);
 
@@ -2185,14 +2185,14 @@ The usage of the algorithm on the API level:
 ~~~~{.cpp}
 BOPAlgo_MakerVolume aMV;
 // Set the arguments
-TopTools_ListOfShape aLS = …; // arguments
+NCollection_List<TopoDS_Shape> aLS = …; // arguments
 aMV.SetArguments(aLS);
 
 // Set options for the algorithm
 // setting options for this algorithm is similar to setting options for GF algorithm (see "GF Usage" chapter)
 ...
 // Additional option of the algorithm
-Standard_Boolean bAvoidInternalShapes = Standard_False; // Set to True to exclude from the result any shapes internal to the solids
+bool bAvoidInternalShapes = false; // Set to True to exclude from the result any shapes internal to the solids
 aMV.SetAvoidInternalShapes(bAvoidInternalShapes);
 
 // Perform the operation
@@ -2294,8 +2294,8 @@ const TopoDS_Shape& anAllCells = aCBuilder.GetAllParts(); //all split parts
 TopTools_ListOfShape aLSToTake = ...; // parts of these arguments will be taken into result
 TopTools_ListOfShape aLSToAvoid = ...; // parts of these arguments will not be taken into result
 //
-Standard_Integer iMaterial = 1; // defines the material for the cells
-Standard_Boolean bUpdate = Standard_False; // defines whether to update the result right now or not
+int iMaterial = 1; // defines the material for the cells
+bool bUpdate = false; // defines whether to update the result right now or not
 // adding to result
 aCBuilder.AddToResult(aLSToTake, aLSToAvoid, iMaterial, bUpdate);
 aCBuilder.RemoveInternalBoundaries(); // removing of the boundaries
@@ -2826,7 +2826,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // enabling the safe processing mode to prevent modification of the input shapes
-aGF.SetNonDestructive(Standard_True);
+aGF.SetNonDestructive(true);
 //
 ....
 ~~~~
@@ -2857,7 +2857,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // disabling the classification of the input solid
-aGF.SetCheckInverted(Standard_False);
+aGF.SetCheckInverted(false);
 //
 ....
 ~~~~
@@ -2884,7 +2884,7 @@ BOPAlgo_Builder aGF;
 //
 ....
 // Enabling the usage of OBB in the operation
-aGF.SetUseOBB(Standard_True);
+aGF.SetUseOBB(true);
 //
 ....
 ~~~~
@@ -3181,7 +3181,7 @@ The following example illustrates how to use General Fuse operator:
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
   // prepare the arguments
-  TopTools_ListOfShape& aLS=…;
+  NCollection_List<TopoDS_Shape>& aLS=…;
   //
   // set the arguments	
   aBuilder.SetArguments(aLS);
@@ -3240,9 +3240,9 @@ BRepAlgoAPI_BuilderAlgo aSplitter;
 //
 // prepare the arguments
 // objects
-TopTools_ListOfShape& aLSObjects = … ;
+NCollection_List<TopoDS_Shape>& aLSObjects = … ;
 // tools
-TopTools_ListOfShape& aLSTools = … ;
+NCollection_List<TopoDS_Shape>& aLSTools = … ;
 //
 // set the arguments
 aSplitter.SetArguments(aLSObjects);
@@ -3302,15 +3302,15 @@ The following example illustrates how to use Common operation:
 #include <TopTools_ListOfShape.hxx>
 #include < BRepAlgoAPI_Common.hxx>
  {…
-  Standard_Boolean bRunParallel;
-  Standard_Real aFuzzyValue;
+  bool bRunParallel;
+  double aFuzzyValue;
   BRepAlgoAPI_Common aBuilder;
   
   // prepare the arguments
-  TopTools_ListOfShape& aLS=…;
-  TopTools_ListOfShape& aLT=…;
+  NCollection_List<TopoDS_Shape>& aLS=…;
+  NCollection_List<TopoDS_Shape>& aLT=…;
   //
-  bRunParallel=Standard_True;
+  bRunParallel=true;
   aFuzzyValue=2.1e-5;
   //
   // set the arguments	
@@ -3369,15 +3369,15 @@ The following example illustrates how to use Fuse operation:
 #include <TopTools_ListOfShape.hxx>
 #include < BRepAlgoAPI_Fuse.hxx>
  {…
-  Standard_Boolean bRunParallel;
-  Standard_Real aFuzzyValue;
+  bool bRunParallel;
+  double aFuzzyValue;
   BRepAlgoAPI_Fuse aBuilder;
   
   // prepare the arguments
-  TopTools_ListOfShape& aLS=…;
-  TopTools_ListOfShape& aLT=…;
+  NCollection_List<TopoDS_Shape>& aLS=…;
+  NCollection_List<TopoDS_Shape>& aLT=…;
   //
-  bRunParallel=Standard_True;
+  bRunParallel=true;
   aFuzzyValue=2.1e-5;
   //
   // set the arguments	
@@ -3436,15 +3436,15 @@ The following example illustrates how to use Cut operation:
 #include <TopTools_ListOfShape.hxx>
 #include < BRepAlgoAPI_Cut.hxx>
  {…
-  Standard_Boolean bRunParallel;
-  Standard_Real aFuzzyValue;
+  bool bRunParallel;
+  double aFuzzyValue;
   BRepAlgoAPI_Cut aBuilder;
   
   // prepare the arguments
-  TopTools_ListOfShape& aLS=…;
-  TopTools_ListOfShape& aLT=…;
+  NCollection_List<TopoDS_Shape>& aLS=…;
+  NCollection_List<TopoDS_Shape>& aLT=…;
   //
-  bRunParallel=Standard_True;
+  bRunParallel=true;
   aFuzzyValue=2.1e-5;
   //
   // set the arguments	
@@ -3504,15 +3504,15 @@ The following example illustrates how to use Section operation:
 #include <TopTools_ListOfShape.hxx>
 #include < BRepAlgoAPI_Section.hxx>
  {…
-  Standard_Boolean bRunParallel;
-  Standard_Real aFuzzyValue;
+  bool bRunParallel;
+  double aFuzzyValue;
   BRepAlgoAPI_Section aBuilder;
   
   // prepare the arguments
-  TopTools_ListOfShape& aLS=…;
-  TopTools_ListOfShape& aLT=…;
+  NCollection_List<TopoDS_Shape>& aLS=…;
+  NCollection_List<TopoDS_Shape>& aLT=…;
   //
-  bRunParallel=Standard_True;
+  bRunParallel=true;
   aFuzzyValue=2.1e-5;
   //
   // set the arguments	
