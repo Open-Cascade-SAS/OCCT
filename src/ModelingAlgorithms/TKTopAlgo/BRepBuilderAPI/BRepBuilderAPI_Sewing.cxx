@@ -3187,7 +3187,7 @@ void BRepBuilderAPI_Sewing::VerticesAssembling(const Message_ProgressRange& theP
       for (TopoDS_Iterator itv(bound, false); itv.More(); itv.Next())
       {
         const TopoDS_Shape& node = itv.Value();
-        myNodeSections.Bound(node, NCollection_List<TopoDS_Shape>())->Append(bound);
+        myNodeSections.TryBound(node, NCollection_List<TopoDS_Shape>())->Append(bound);
       }
     }
     // Glue vertices
@@ -4085,7 +4085,7 @@ void BRepBuilderAPI_Sewing::Cutting(const Message_ProgressRange& theProgress)
           if (const TopoDS_Shape* pVertex = myVertexNode.Seek(vertex))
             vertex = TopoDS::Vertex(*pVertex);
           // Update node sections
-          myNodeSections.Bound(vertex, NCollection_List<TopoDS_Shape>())->Append(section);
+          myNodeSections.TryBound(vertex, NCollection_List<TopoDS_Shape>())->Append(section);
         }
         // Store bound for section
         mySectionBound.Bind(section, bound);
@@ -4158,7 +4158,7 @@ void BRepBuilderAPI_Sewing::GetFreeWires(
     for (TopoDS_Iterator Iv(edge, false); Iv.More(); Iv.Next())
     {
       const TopoDS_Vertex& V1 = TopoDS::Vertex(Iv.Value());
-      VertEdge.Bound(V1, NCollection_List<TopoDS_Shape>())->Append(edge);
+      VertEdge.TryBound(V1, NCollection_List<TopoDS_Shape>())->Append(edge);
     }
   }
   BRep_Builder B;
