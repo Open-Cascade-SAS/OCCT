@@ -68,7 +68,13 @@ void OSD_Thread::Assign(const OSD_Thread& other)
   if (other.myThread)
   {
     HANDLE hProc = GetCurrentProcess(); // we are always within the same process
-    DuplicateHandle(hProc, other.myThread, hProc, &myThread, 0, TRUE, DUPLICATE_SAME_ACCESS);
+    if (!DuplicateHandle(hProc, other.myThread, hProc, &myThread, 0, TRUE, DUPLICATE_SAME_ACCESS))
+    {
+      // DuplicateHandle failed, ensure handle stays null
+      myThread   = OSD_PTHREAD_NULL;
+      myThreadId = 0;
+      return;
+    }
   }
 #else
   // On Unix/Linux, just copy the thread id
@@ -304,10 +310,16 @@ bool OSD_Thread::Wait(const int theTimeMs, void*& theResult)
     return false;
   }
 
-  time_t aSeconds      = (theTimeMs / 1000);
-  long   aMicroseconds = (theTimeMs - aSeconds * 1000) * 1000;
+  time_t aSeconds     = (theTimeMs / 1000);
+  long   aNanoseconds = (theTimeMs - aSeconds * 1000) * 1000000L;
   aTimeout.tv_sec += aSeconds;
-  aTimeout.tv_nsec += aMicroseconds * 1000;
+  aTimeout.tv_nsec += aNanoseconds;
+  // Normalize nanoseconds overflow to seconds
+  if (aTimeout.tv_nsec >= 1000000000L)
+  {
+    aTimeout.tv_sec += aTimeout.tv_nsec / 1000000000L;
+    aTimeout.tv_nsec = aTimeout.tv_nsec % 1000000000L;
+  }
 
   if (pthread_timedjoin_np(myThread, &theResult, &aTimeout) != 0)
   {
