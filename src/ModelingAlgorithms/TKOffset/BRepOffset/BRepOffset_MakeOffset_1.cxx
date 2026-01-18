@@ -4002,8 +4002,7 @@ static void buildPairs(const NCollection_IndexedMap<TopoDS_Shape, TopTools_Shape
   for (int it1 = 1; it1 <= aNbS; ++it1)
   {
     const TopoDS_Shape& aS = theSMap(it1);
-    if (!theIntPairs.IsBound(aS))
-      theIntPairs.Bind(aS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>());
+    theIntPairs.TryBound(aS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>());
   }
 
   for (int it1 = 1; it1 <= aNbS; ++it1)

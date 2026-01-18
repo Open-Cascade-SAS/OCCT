@@ -148,10 +148,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         char                                mess[300];
         const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         Sprintf(mess, "\t%s", aBinder->ResultTypeName());
-        if (aMapCountResult.IsBound(mess))
-          aMapCountResult.ChangeFind(mess)++;
-        else
-          aMapCountResult.Bind(mess, 1);
+        (*aMapCountResult.TryBound(mess, 0))++;
       }
       // Init for dicoCountMapping for IFSelect_Mapping
       else if (mode == IFSelect_Mapping)
@@ -167,10 +164,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                 "%d",
                 aBinder->ResultTypeName());
         // std::cout << mess << std::endl;
-        if (aMapCountMapping.IsBound(mess))
-          aMapCountMapping.ChangeFind(mess)++;
-        else
-          aMapCountMapping.Bind(mess, 1);
+        (*aMapCountMapping.TryBound(mess, 0))++;
       }
     }
 
@@ -189,38 +183,25 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       for (i = 1; (failsonly == IFSelect_FailAndWarn) && (i <= nw); i++)
       {
         Sprintf(mess, "\t W\t%d\t%d\t%s", type, form, aCheck->CWarning(i));
-        if (aMapCount.IsBound(mess))
-          aMapCount.ChangeFind(mess)++;
-        else
-          aMapCount.Bind(mess, 1);
-
-        occ::handle<NCollection_HSequence<int>> alist;
-        if (aMapList.IsBound(mess))
-          alist = aMapList.ChangeFind(mess);
-        else
+        (*aMapCount.TryBound(mess, 0))++;
+        occ::handle<NCollection_HSequence<int>>* pList = aMapList.ChangeSeek(mess);
+        if (!pList)
         {
-          alist = new NCollection_HSequence<int>();
-          aMapList.Bind(mess, alist);
+          pList = aMapList.Bound(mess, new NCollection_HSequence<int>());
         }
-        alist->Append(model->Number(igesEnt) * 2 - 1);
+        (*pList)->Append(model->Number(igesEnt) * 2 - 1);
       }
       for (i = 1; i <= nf; i++)
       {
         Sprintf(mess, "\t F\t%d\t%d\t%s", type, form, aCheck->CFail(i));
         // TF << mess << std::endl;
-        if (aMapCount.IsBound(mess))
-          aMapCount.ChangeFind(mess)++;
-        else
-          aMapCount.Bind(mess, 1);
-        occ::handle<NCollection_HSequence<int>> alist;
-        if (aMapList.IsBound(mess))
-          alist = aMapList.ChangeFind(mess);
-        else
+        (*aMapCount.TryBound(mess, 0))++;
+        occ::handle<NCollection_HSequence<int>>* pList = aMapList.ChangeSeek(mess);
+        if (!pList)
         {
-          alist = new NCollection_HSequence<int>();
-          aMapList.Bind(mess, alist);
+          pList = aMapList.Bound(mess, new NCollection_HSequence<int>());
         }
-        alist->Append(model->Number(igesEnt) * 2 - 1);
+        (*pList)->Append(model->Number(igesEnt) * 2 - 1);
       }
       nbWarn += nw;
       nbFail += nf;
@@ -337,10 +318,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                       "%d",
                       "Failed");
               // std::cout << mess << std::endl;
-              if (aMapCountMapping.IsBound(mess))
-                aMapCountMapping.ChangeFind(mess)++;
-              else
-                aMapCountMapping.Bind(mess, 1);
+              (*aMapCountMapping.TryBound(mess, 0))++;
             }
           }
         }

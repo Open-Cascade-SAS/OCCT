@@ -89,10 +89,9 @@ static bool CheckEdges(const TopoDS_Shape&                                      
 
     if (shape.Orientation() == TopAbs_FORWARD)
     {
-      // szv#4:S4163:12Mar99 optimized
-      if (dirs.FindIndex(shape) == 0)
-        dirs.Add(shape);
-      else
+      // Check if shape already exists - Add returns index <= previous extent if duplicate
+      const int aPrevExtent = dirs.Extent();
+      if (dirs.Add(shape) <= aPrevExtent)
       {
         bads.Add(shape);
         res = true;
@@ -100,10 +99,9 @@ static bool CheckEdges(const TopoDS_Shape&                                      
     }
     if (shape.Orientation() == TopAbs_REVERSED)
     {
-      // szv#4:S4163:12Mar99 optimized
-      if (revs.FindIndex(shape) == 0)
-        revs.Add(shape);
-      else
+      // Check if shape already exists - Add returns index <= previous extent if duplicate
+      const int aPrevExtent = revs.Extent();
+      if (revs.Add(shape) <= aPrevExtent)
       {
         bads.Add(shape);
         res = true;
@@ -111,9 +109,7 @@ static bool CheckEdges(const TopoDS_Shape&                                      
     }
     if (shape.Orientation() == TopAbs_INTERNAL)
     {
-      if (ints.FindIndex(shape) == 0)
-        ints.Add(shape);
-      // else { bads.Add (shape); res = true; }
+      ints.Add(shape);
     }
   }
 

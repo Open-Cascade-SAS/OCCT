@@ -81,9 +81,8 @@ void TopOpeBRepBuild_Tools::FindState(
     for (i = 1; i <= nSub; i++)
     {
       const TopoDS_Shape& aSS = aSubshMap(i);
-      if (!aMapProcessedSubsh.Contains(aSS))
+      if (aMapProcessedSubsh.Add(aSS))
       {
-        aMapProcessedSubsh.Add(aSS);
         aMapSS.Bind(aSS, aState);
         FindState(aSS, aState, aSubshEnum, aMapSubshAnc, aMapProcessedSubsh, aMapSS);
       }
@@ -262,9 +261,8 @@ void TopOpeBRepBuild_Tools::FindState2(
     for (i = 1; i <= nSub; i++)
     {
       const TopoDS_Shape& aSS = aSubshMap(i);
-      if (!aMapProcessedSubsh.Contains(aSS))
+      if (aMapProcessedSubsh.Add(aSS))
       {
-        aMapProcessedSubsh.Add(aSS);
         aMapSS.Bind(aSS, aState);
         FindState2(aSS, aState, aMapSubshAnc, aMapProcessedSubsh, aMapSS);
       }
@@ -304,9 +302,8 @@ void TopOpeBRepBuild_Tools::FindState1(
     for (i = 1; i <= nSub; i++)
     {
       const TopoDS_Shape& aSS = aSubshMap(i);
-      if (!aMapProcessedSubsh.Contains(aSS))
+      if (aMapProcessedSubsh.Add(aSS))
       {
-        aMapProcessedSubsh.Add(aSS);
         aMapSS.Bind(aSS, aState);
         FindState1(aSS, aState, aMapSubshAnc, aMapProcessedSubsh, aMapSS);
       }

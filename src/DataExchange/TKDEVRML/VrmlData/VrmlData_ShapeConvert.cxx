@@ -112,9 +112,10 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
       {
         occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, theLoc);
 
-        if (myRelMap.IsBound(aTestedShape))
+        const occ::handle<VrmlData_Geometry>* pNode = myRelMap.Seek(aTestedShape);
+        if (pNode)
         {
-          aTShapeNode = myRelMap(aTestedShape);
+          aTShapeNode = *pNode;
           break;
         }
 
@@ -122,9 +123,10 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
         {
           TopoDS_Shape aTestedShapeRev = aTestedShape;
           aTestedShapeRev.Orientation(isReverse ? TopAbs_FORWARD : TopAbs_REVERSED);
-          occ::handle<VrmlData_IndexedFaceSet> aFaceSetToReuse;
-          if (myRelMap.IsBound(aTestedShapeRev))
-            aFaceSetToReuse = occ::down_cast<VrmlData_IndexedFaceSet>(myRelMap(aTestedShapeRev));
+          occ::handle<VrmlData_IndexedFaceSet>  aFaceSetToReuse;
+          const occ::handle<VrmlData_Geometry>* pRevNode = myRelMap.Seek(aTestedShapeRev);
+          if (pRevNode)
+            aFaceSetToReuse = occ::down_cast<VrmlData_IndexedFaceSet>(*pRevNode);
 
           occ::handle<VrmlData_Coordinate> aCoordToReuse;
           if (!aFaceSetToReuse.IsNull())
@@ -149,17 +151,19 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
       const TopoDS_Edge& aEdge = TopoDS::Edge(theShape);
       if (!aEdge.IsNull())
       {
-        if (myRelMap.IsBound(aTestedShape))
+        const occ::handle<VrmlData_Geometry>* pEdgeNode = myRelMap.Seek(aTestedShape);
+        if (pEdgeNode)
         {
-          aTShapeNode = myRelMap(aTestedShape);
+          aTShapeNode = *pEdgeNode;
           break;
         }
         // Check the presence of reversly oriented Edge. It can also be used
         // because we do not distinguish the orientation for edges.
         aTestedShape.Orientation(isReverse ? TopAbs_FORWARD : TopAbs_REVERSED);
-        if (myRelMap.IsBound(aTestedShape))
+        pEdgeNode = myRelMap.Seek(aTestedShape);
+        if (pEdgeNode)
         {
-          aTShapeNode = myRelMap(aTestedShape);
+          aTShapeNode = *pEdgeNode;
           break;
         }
 

@@ -195,12 +195,10 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
     TopExp_Explorer     explV(aFace, TopAbs_VERTEX);
     for (; explV.More(); explV.Next())
     {
-      const TopoDS_Shape& aVertex = explV.Current();
-      if (!vertexNaborFaces.IsBound(aVertex))
-        vertexNaborFaces.Bind(aVertex, empty);
-      bool                                     faceIsNew = true;
-      NCollection_List<TopoDS_Shape>::Iterator itrF(vertexNaborFaces.Find(aVertex));
-      for (; itrF.More(); itrF.Next())
+      const TopoDS_Shape&             aVertex   = explV.Current();
+      NCollection_List<TopoDS_Shape>* pList     = vertexNaborFaces.TryBound(aVertex, empty);
+      bool                            faceIsNew = true;
+      for (NCollection_List<TopoDS_Shape>::Iterator itrF(*pList); itrF.More(); itrF.Next())
       {
         if (itrF.Value().IsSame(aFace))
         {
@@ -210,7 +208,7 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
       }
       if (faceIsNew)
       {
-        vertexNaborFaces.ChangeFind(aVertex).Append(aFace);
+        pList->Append(aFace);
       }
     }
   }
@@ -245,12 +243,10 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
     TopExp_Explorer     explV(aFace, TopAbs_EDGE);
     for (; explV.More(); explV.Next())
     {
-      const TopoDS_Shape& anEdge = explV.Current();
-      if (!edgeNaborFaces.IsBound(anEdge))
-        edgeNaborFaces.Bind(anEdge, empty);
-      bool                                     faceIsNew = true;
-      NCollection_List<TopoDS_Shape>::Iterator itrF(edgeNaborFaces.Find(anEdge));
-      for (; itrF.More(); itrF.Next())
+      const TopoDS_Shape&             anEdge    = explV.Current();
+      NCollection_List<TopoDS_Shape>* pList     = edgeNaborFaces.TryBound(anEdge, empty);
+      bool                            faceIsNew = true;
+      for (NCollection_List<TopoDS_Shape>::Iterator itrF(*pList); itrF.More(); itrF.Next())
       {
         if (itrF.Value().IsSame(aFace))
         {
@@ -260,7 +256,7 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
       }
       if (faceIsNew)
       {
-        edgeNaborFaces.ChangeFind(anEdge).Append(aFace);
+        pList->Append(aFace);
       }
     }
   }
@@ -271,11 +267,12 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
   // clang-format on
   for (; anEx.More(); anEx.Next())
   {
-    bool                aC0     = false;
-    const TopoDS_Shape& anEdge1 = anEx.Current();
-    if (edgeNaborFaces.IsBound(anEdge1))
+    bool                                  aC0     = false;
+    const TopoDS_Shape&                   anEdge1 = anEx.Current();
+    const NCollection_List<TopoDS_Shape>* pList1  = edgeNaborFaces.Seek(anEdge1);
+    if (pList1)
     {
-      const NCollection_List<TopoDS_Shape>& aList1 = edgeNaborFaces.Find(anEdge1);
+      const NCollection_List<TopoDS_Shape>& aList1 = *pList1;
       if (aList1.Extent() < 2)
         continue; // mpv (06.09.2002): these edges already was loaded
       NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::

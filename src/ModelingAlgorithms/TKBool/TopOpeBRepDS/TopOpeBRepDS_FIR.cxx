@@ -312,11 +312,8 @@ void FUN_GmapS(
     FDS_data(I1, GT1, G1, ST1, S1);
     if (GT1 != MDSke || ST1 != MDSkf)
       continue;
-    const TopoDS_Shape&    SG1 = BDS.Shape(G1);
-    TopOpeBRepDS_ShapeData thedata;
-    if (!mosd.Contains(SG1))
-      mosd.Add(SG1, thedata);
-    mosd.ChangeFromKey(SG1).ChangeInterferences().Append(I1);
+    const TopoDS_Shape& SG1 = BDS.Shape(G1);
+    mosd.Bound(SG1, TopOpeBRepDS_ShapeData())->ChangeInterferences().Append(I1);
   }
 }
 

@@ -275,3 +275,28 @@ TEST_F(NCollection_DataMapTest, STLAlgorithmCompatibility_Find)
   auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
   EXPECT_TRUE(aNotFound == aMap.cend());
 }
+
+TEST_F(NCollection_DataMapTest, TryBound_NoOverwrite)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // TryBound on new key should bind the value
+  TCollection_AsciiString* pVal1 = aMap.TryBound(1, "First");
+  ASSERT_NE(pVal1, nullptr);
+  EXPECT_EQ(*pVal1, "First");
+  EXPECT_EQ(aMap.Extent(), 1);
+
+  // TryBound on existing key should NOT overwrite, just return pointer
+  TCollection_AsciiString* pVal2 = aMap.TryBound(1, "Second");
+  ASSERT_NE(pVal2, nullptr);
+  EXPECT_EQ(*pVal2, "First");  // Should still be "First", not "Second"
+  EXPECT_EQ(pVal1, pVal2);     // Should be the same pointer
+  EXPECT_EQ(aMap.Extent(), 1); // Size should not change
+
+  // Compare with Bound which DOES overwrite
+  TCollection_AsciiString* pVal3 = aMap.Bound(1, "Third");
+  ASSERT_NE(pVal3, nullptr);
+  EXPECT_EQ(*pVal3, "Third"); // Bound overwrites the value
+  EXPECT_EQ(pVal1, pVal3);    // Same pointer
+  EXPECT_EQ(aMap.Extent(), 1);
+}

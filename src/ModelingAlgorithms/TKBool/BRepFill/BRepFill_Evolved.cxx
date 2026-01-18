@@ -1271,10 +1271,7 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
         {
           const TopoDS_Edge&  WC = TopoDS::Edge(Exp.Current());
           const TopoDS_Shape& GS = OffAnc.Ancestor(WC);
-          if (!myMap.IsBound(GS))
-            myMap.Bind(GS, EmptyMap);
-          if (!myMap(GS).IsBound(V[i]))
-            myMap(GS).Bind(V[i], Paral.GeneratedShapes(GS));
+          myMap.TryBound(GS, EmptyMap)->TryBound(V[i], Paral.GeneratedShapes(GS));
         }
       }
       TopoDS_Shape Rest = MapVP(V[i]);
@@ -1340,11 +1337,7 @@ void BRepFill_Evolved::PlanarPerform(const TopoDS_Face&              Sp,
         if (OffAnc.HasAncestor(CE))
         {
           const TopoDS_Shape& InitE = OffAnc.Ancestor(CE);
-          if (!myMap.IsBound(InitE))
-            myMap.Bind(InitE, EmptyMap);
-          if (!myMap(InitE).IsBound(E))
-            myMap(InitE).Bind(E, EmptyList);
-          myMap(InitE)(E).Append(F);
+          myMap.TryBound(InitE, EmptyMap)->TryBound(E, EmptyList)->Append(F);
         }
       }
     }
@@ -1402,16 +1395,9 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
       {
         const TopoDS_Edge&  anEdge = TopoDS::Edge(Exp.Current());
         const TopoDS_Shape& AE     = OffAnc.Ancestor(anEdge);
-        if (!myMap.IsBound(AE))
-        {
-          myMap.Bind(AE, EmptyMap);
-        }
-        if (!myMap(AE).IsBound(V1))
-        {
-          NCollection_List<TopoDS_Shape> L;
-          myMap(AE).Bind(V1, L);
-        }
-        myMap(AE)(V1).Append(anEdge);
+        myMap.TryBound(AE, EmptyMap)
+          ->TryBound(V1, NCollection_List<TopoDS_Shape>())
+          ->Append(anEdge);
       }
       First = false;
     }
@@ -1435,23 +1421,16 @@ void BRepFill_Evolved::VerticalPerform(const TopoDS_Face&              Sp,
     {
       const NCollection_List<TopoDS_Shape>&    LOF = it.Value()(V1);
       NCollection_List<TopoDS_Shape>::Iterator itLOF(LOF);
-      if (!myMap(it.Key()).IsBound(V2))
-      {
-        NCollection_List<TopoDS_Shape> L;
-        myMap(it.Key()).Bind(V2, L);
-      }
-
-      if (!myMap(it.Key()).IsBound(E))
-      {
-        NCollection_List<TopoDS_Shape> L;
-        myMap(it.Key()).Bind(E, L);
-      }
+      NCollection_List<TopoDS_Shape>*          pListV2 =
+        myMap.ChangeFind(it.Key()).TryBound(V2, NCollection_List<TopoDS_Shape>());
+      NCollection_List<TopoDS_Shape>* pListE =
+        myMap.ChangeFind(it.Key()).TryBound(E, NCollection_List<TopoDS_Shape>());
 
       for (; itLOF.More(); itLOF.Next())
       {
         const TopoDS_Shape& OS = itLOF.Value();
-        myMap(it.Key())(V2).Append(PS.LastShape(OS));
-        myMap(it.Key())(E).Append(PS.Shape(OS));
+        pListV2->Append(PS.LastShape(OS));
+        pListE->Append(PS.Shape(OS));
       }
     }
   }
@@ -1850,26 +1829,24 @@ void BRepFill_Evolved::Add(BRepFill_Evolved& Vevo, const TopoDS_Wire& Prof, BRep
     for (iteP.Initialize(MapVevo(CurrentSpine)); iteP.More(); iteP.Next())
     {
       CurrentProf = iteP.Key();
-      if (!myMap.IsBound(CurrentSpine))
+      //------------------------------------------------
+      // The element of spine is not yet present .
+      // => previous profile not on the border.
+      //-------------------------------------------------
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
+        pSpineMap = myMap.TryBound(CurrentSpine, EmptyMap);
+      if (!pSpineMap->IsBound(CurrentProf))
       {
-        //------------------------------------------------
-        // The element of spine is not yet present .
-        // => previous profile not on the border.
-        //-------------------------------------------------
-        myMap.Bind(CurrentSpine, EmptyMap);
-      }
-      if (!myMap(CurrentSpine).IsBound(CurrentProf))
-      {
-        myMap(CurrentSpine).Bind(CurrentProf, EmptyList);
+        NCollection_List<TopoDS_Shape>* pProfList = pSpineMap->TryBound(CurrentProf, EmptyList);
         const NCollection_List<TopoDS_Shape>&    GenShapes = MapVevo(CurrentSpine)(CurrentProf);
         NCollection_List<TopoDS_Shape>::Iterator itl(GenShapes);
         for (; itl.More(); itl.Next())
         {
           // during Glue.Add the shared shapes are recreated.
           if (Glue.IsCopied(itl.Value()))
-            myMap(CurrentSpine)(CurrentProf).Append(Glue.Copy(itl.Value()));
+            pProfList->Append(Glue.Copy(itl.Value()));
           else
-            myMap(CurrentSpine)(CurrentProf).Append(itl.Value());
+            pProfList->Append(itl.Value());
         }
       }
     }
@@ -1953,16 +1930,7 @@ void BRepFill_Evolved::Transfert(
         itl.ChangeValue().Move(LS);
       }
 
-      if (!myMap.IsBound(InitialSpine))
-      {
-        myMap.Bind(InitialSpine, EmptyMap);
-      }
-
-      if (!myMap(InitialSpine).IsBound(InitialProf))
-      {
-        myMap(InitialSpine).Bind(InitialProf, EmptyList);
-      }
-      myMap(InitialSpine)(InitialProf).Append(GenShapes);
+      myMap.TryBound(InitialSpine, EmptyMap)->TryBound(InitialProf, EmptyList)->Append(GenShapes);
     }
   }
   //--------------------------------------------------------------
@@ -3284,11 +3252,7 @@ int VertexFromNode(
     else
     {
       B.MakeVertex(VN);
-      if (!MapNodeVertex.IsBound(aNode))
-      {
-        MapNodeVertex.Bind(aNode, EmptyMap);
-      }
-      MapNodeVertex(aNode).Bind(ShapeOnNode, VN);
+      MapNodeVertex.TryBound(aNode, EmptyMap)->Bind(ShapeOnNode, VN);
     }
   }
   return Status;

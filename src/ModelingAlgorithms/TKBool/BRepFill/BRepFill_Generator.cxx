@@ -576,10 +576,7 @@ static TopoDS_Edge CreateNewEdge(
   }
   theCopiedEdges.Bind(theEdge, aNewEdge);
 
-  if (!theModifWires.Contains(theWire))
-  {
-    theModifWires.Add(theWire);
-  }
+  theModifWires.Add(theWire);
   return aNewEdge;
 }
 

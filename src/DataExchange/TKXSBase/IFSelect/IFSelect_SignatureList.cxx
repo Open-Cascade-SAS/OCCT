@@ -64,10 +64,7 @@ void IFSelect_SignatureList::Add(const occ::handle<Standard_Transient>& ent, con
     return;
   }
 
-  if (thedicount.Contains(sign))
-    thedicount.ChangeFromKey(sign)++;
-  else
-    thedicount.Add(sign, 1);
+  (*thedicount.Bound(sign, 0))++;
 
   if (thelistat)
   {

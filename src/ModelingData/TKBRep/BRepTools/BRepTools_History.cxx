@@ -226,15 +226,17 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
           }
           else
           {
-            if (theHistory23.myShapeToGenerated.IsBound(aS2))
+            const NCollection_List<TopoDS_Shape>* pGen = theHistory23.myShapeToGenerated.Seek(aS2);
+            if (pGen)
             {
-              add(aAdditions[0], theHistory23.myShapeToGenerated(aS2));
+              add(aAdditions[0], *pGen);
               aMAndGPropagated.Add(aS2);
             }
 
-            if (theHistory23.myShapeToModified.IsBound(aS2))
+            const NCollection_List<TopoDS_Shape>* pMod = theHistory23.myShapeToModified.Seek(aS2);
+            if (pMod)
             {
-              add(aAdditions[aI], theHistory23.myShapeToModified(aS2));
+              add(aAdditions[aI], *pMod);
               aMAndGPropagated.Add(aS2);
 
               aL12.Remove(aSIt2);

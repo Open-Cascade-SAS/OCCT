@@ -412,10 +412,11 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
       TopExp_Explorer itf1(Shape, TopAbs_EDGE);
       for (; itf1.More(); itf1.Next())
       {
-        const TopoDS_Shape& E = itf1.Current();
-        if (M.IsBound(E))
+        const TopoDS_Shape& E      = itf1.Current();
+        const TopoDS_Shape* pShell = M.Seek(E);
+        if (pShell)
         {
-          SH = TopoDS::Shell(M(E));
+          SH = TopoDS::Shell(*pShell);
           if (SH.Orientation() == E.Orientation())
             NewO = TopAbs::Reverse(Shape.Orientation());
           else
@@ -445,11 +446,11 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
 
       for (; itf.More(); itf.Next())
       {
-        const TopoDS_Edge& E = TopoDS::Edge(itf.Current());
-
-        if (M.IsBound(E))
+        const TopoDS_Edge&  E         = TopoDS::Edge(itf.Current());
+        const TopoDS_Shape* pOldShell = M.Seek(E);
+        if (pOldShell)
         {
-          const TopoDS_Shape oldShell = M(E);
+          const TopoDS_Shape oldShell = *pOldShell;
           if (!oldShell.IsSame(SH))
           {
             // Fuse the old shell with the new one
@@ -482,13 +483,11 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
             TopExp_Explorer aexp(SH, TopAbs_EDGE);
             for (; aexp.More(); aexp.Next())
             {
-              // for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape,
-              // TopTools_ShapeMapHasher>::Iterator itm(M);
-              //		 itm.More(); ) {
-              if (!M.IsBound(aexp.Current()))
+              const TopoDS_Shape& ae  = aexp.Current();
+              const TopoDS_Shape* pAs = M.Seek(ae);
+              if (!pAs)
                 continue;
-              const TopoDS_Shape& ae = aexp.Current();
-              TopoDS_Shape        as = M.Find(ae);
+              TopoDS_Shape as = *pAs;
               if (as.IsSame(oldShell))
               {
                 // update the orientation of free edges in SH.

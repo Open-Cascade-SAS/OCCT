@@ -104,10 +104,11 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
 
   TCollection_AsciiString  aMeshAlgoId = theName + "_" + theFuncName;
   BRepMesh_PluginEntryType aFunc       = nullptr;
-  if (myFactoryMethods.IsBound(aMeshAlgoId))
+  const OSD_Function*      pCachedFunc = myFactoryMethods.Seek(aMeshAlgoId);
+  if (pCachedFunc)
   {
     // retrieve from cache
-    aFunc = (BRepMesh_PluginEntryType)myFactoryMethods(aMeshAlgoId);
+    aFunc = (BRepMesh_PluginEntryType)*pCachedFunc;
   }
   else
   {

@@ -218,14 +218,15 @@ TopoDS_Shape BRepTools_ReShape::Value(const TopoDS_Shape& ashape) const
     shape.Location(nullLoc);
   }
 
-  bool fromMap = false;
-  if (!myShapeToReplacement.IsBound(shape))
+  bool                fromMap = false;
+  const TReplacement* pRepl   = myShapeToReplacement.Seek(shape);
+  if (!pRepl)
   {
     res = shape;
   }
   else
   {
-    res = myShapeToReplacement(shape).Result();
+    res = pRepl->Result();
     if (shape.Orientation() == TopAbs_REVERSED)
     {
       res.Reverse();
@@ -268,14 +269,15 @@ int BRepTools_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, c
     shape.Location(nullLoc);
   }
 
-  if (!myShapeToReplacement.IsBound(shape))
+  const TReplacement* pRepl = myShapeToReplacement.Seek(shape);
+  if (!pRepl)
   {
     newsh = shape;
     res   = 0;
   }
   else
   {
-    newsh = myShapeToReplacement(shape).Result();
+    newsh = pRepl->Result();
     res   = 1;
   }
   if (res > 0)

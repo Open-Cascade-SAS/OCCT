@@ -369,10 +369,10 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(
     // Create presentation edge
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(Edge1, V1, V2);
-    if (myVertexNode.Contains(V1))
-      V1 = TopoDS::Vertex(myVertexNode.FindFromKey(V1));
-    if (myVertexNode.Contains(V2))
-      V2 = TopoDS::Vertex(myVertexNode.FindFromKey(V2));
+    if (const TopoDS_Shape* pV1 = myVertexNode.Seek(V1))
+      V1 = TopoDS::Vertex(*pV1);
+    if (const TopoDS_Shape* pV2 = myVertexNode.Seek(V2))
+      V2 = TopoDS::Vertex(*pV2);
 
     TopoDS_Edge NewEdge = Edge1;
     NewEdge.EmptyCopy();
@@ -2627,11 +2627,7 @@ void BRepBuilderAPI_Sewing::FindFreeBoundaries()
     for (TopExp_Explorer eExp(shape, TopAbs_EDGE); eExp.More(); eExp.Next())
     {
       const TopoDS_Shape& edge = eExp.Current();
-      if (!EdgeFaces.Contains(edge))
-      {
-        NCollection_List<TopoDS_Shape> listFaces;
-        EdgeFaces.Add(edge, listFaces);
-      }
+      EdgeFaces.Add(edge, NCollection_List<TopoDS_Shape>());
     }
   }
   // Fill map Edge -> Faces
@@ -2644,10 +2640,8 @@ void BRepBuilderAPI_Sewing::FindFreeBoundaries()
     for (; fExp.More(); fExp.Next())
     {
       const TopoDS_Shape& face = fExp.Current();
-      if (mapFaces.Contains(face))
+      if (!mapFaces.Add(face))
         continue;
-      else
-        mapFaces.Add(face);
       // Explore face to find all boundaries
       for (TopoDS_Iterator aIw(face); aIw.More(); aIw.Next())
       {
@@ -2747,18 +2741,14 @@ void BRepBuilderAPI_Sewing::FindFreeBoundaries()
       if (isBound)
       {
         // Add to VertexNode
-        if (!myVertexNode.Contains(vFirst))
-          myVertexNode.Add(vFirst, vFirst);
-        if (!myVertexNode.Contains(vLast))
-          myVertexNode.Add(vLast, vLast);
+        myVertexNode.Add(vFirst, vFirst);
+        myVertexNode.Add(vLast, vLast);
       }
       else
       {
         // Add to VertexNodeFree
-        if (!myVertexNodeFree.Contains(vFirst))
-          myVertexNodeFree.Add(vFirst, vFirst);
-        if (!myVertexNodeFree.Contains(vLast))
-          myVertexNodeFree.Add(vLast, vLast);
+        myVertexNodeFree.Add(vFirst, vFirst);
+        myVertexNodeFree.Add(vLast, vLast);
       }
     }
   }
@@ -2887,9 +2877,8 @@ static bool CreateNewNodes(
       for (; ite.More(); ite.Next())
       {
         const TopoDS_Shape& edge = ite.Value();
-        if (!medge.Contains(edge))
+        if (medge.Add(edge))
         {
-          medge.Add(edge);
           ledge.Append(edge);
         }
       }
@@ -3049,14 +3038,14 @@ static bool GlueVertices(
         { // szv: Use brackets to destroy local variables
           TopoDS_Vertex ov1, ov2;
           TopExp::Vertices(TopoDS::Edge(e1), ov1, ov2);
-          if (aVertexNode.Contains(ov1))
+          if (const TopoDS_Shape* pOv1 = aVertexNode.Seek(ov1))
           {
-            if (node1.IsSame(aVertexNode.FindFromKey(ov1)))
+            if (node1.IsSame(*pOv1))
               v1 = ov1;
           }
-          if (aVertexNode.Contains(ov2))
+          if (const TopoDS_Shape* pOv2 = aVertexNode.Seek(ov2))
           {
-            if (node1.IsSame(aVertexNode.FindFromKey(ov2)))
+            if (node1.IsSame(*pOv2))
               v1 = ov2;
           }
         }
@@ -3080,14 +3069,14 @@ static bool GlueVertices(
           { // szv: Use brackets to destroy local variables
             TopoDS_Vertex ov1, ov2;
             TopExp::Vertices(TopoDS::Edge(e2), ov1, ov2);
-            if (aVertexNode.Contains(ov1))
+            if (const TopoDS_Shape* pOv1 = aVertexNode.Seek(ov1))
             {
-              if (node2.IsSame(aVertexNode.FindFromKey(ov1)))
+              if (node2.IsSame(*pOv1))
                 v2 = ov1;
             }
-            if (aVertexNode.Contains(ov2))
+            if (const TopoDS_Shape* pOv2 = aVertexNode.Seek(ov2))
             {
-              if (node2.IsSame(aVertexNode.FindFromKey(ov2)))
+              if (node2.IsSame(*pOv2))
                 v2 = ov2;
             }
           }
@@ -3198,14 +3187,7 @@ void BRepBuilderAPI_Sewing::VerticesAssembling(const Message_ProgressRange& theP
       for (TopoDS_Iterator itv(bound, false); itv.More(); itv.Next())
       {
         const TopoDS_Shape& node = itv.Value();
-        if (myNodeSections.IsBound(node))
-          myNodeSections(node).Append(bound);
-        else
-        {
-          NCollection_List<TopoDS_Shape> lbnd;
-          lbnd.Append(bound);
-          myNodeSections.Bind(node, lbnd);
-        }
+        myNodeSections.TryBound(node, NCollection_List<TopoDS_Shape>())->Append(bound);
       }
     }
     // Glue vertices
@@ -3791,8 +3773,7 @@ void BRepBuilderAPI_Sewing::Merging(const bool /* firstTime */,
       }
       if (myBoundSections.IsBound(bound))
         myBoundSections.UnBind(bound);
-      if (!myMergedEdges.Contains(bound))
-        myMergedEdges.Add(bound);
+      myMergedEdges.Add(bound);
     }
   }
 
@@ -3884,10 +3865,10 @@ bool BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape&              
       TopoDS_Vertex vs1, vs2;
       TopExp::Vertices(TopoDS::Edge(sec), vs1, vs2);
       TopoDS_Shape vs1n = vs1, vs2n = vs2;
-      if (myVertexNode.Contains(vs1))
-        vs1n = myVertexNode.FindFromKey(vs1);
-      if (myVertexNode.Contains(vs2))
-        vs2n = myVertexNode.FindFromKey(vs2);
+      if (const TopoDS_Shape* pVs1n = myVertexNode.Seek(vs1))
+        vs1n = *pVs1n;
+      if (const TopoDS_Shape* pVs2n = myVertexNode.Seek(vs2))
+        vs2n = *pVs2n;
       if ((mapVert1.Contains(vs1n) && mapVert2.Contains(vs2n))
           || (mapVert1.Contains(vs2n) && mapVert2.Contains(vs1n)))
         if (mapEdges.Add(sec))
@@ -4101,17 +4082,10 @@ void BRepBuilderAPI_Sewing::Cutting(const Message_ProgressRange& theProgress)
         {
           TopoDS_Shape vertex = itv.Value();
           // Convert vertex to node
-          if (myVertexNode.Contains(vertex))
-            vertex = TopoDS::Vertex(myVertexNode.FindFromKey(vertex));
+          if (const TopoDS_Shape* pVertex = myVertexNode.Seek(vertex))
+            vertex = TopoDS::Vertex(*pVertex);
           // Update node sections
-          if (myNodeSections.IsBound(vertex))
-            myNodeSections.ChangeFind(vertex).Append(section);
-          else
-          {
-            NCollection_List<TopoDS_Shape> lsec;
-            lsec.Append(section);
-            myNodeSections.Bind(vertex, lsec);
-          }
+          myNodeSections.TryBound(vertex, NCollection_List<TopoDS_Shape>())->Append(section);
         }
         // Store bound for section
         mySectionBound.Bind(section, bound);
@@ -4184,14 +4158,7 @@ void BRepBuilderAPI_Sewing::GetFreeWires(
     for (TopoDS_Iterator Iv(edge, false); Iv.More(); Iv.Next())
     {
       const TopoDS_Vertex& V1 = TopoDS::Vertex(Iv.Value());
-      if (VertEdge.IsBound(V1))
-        VertEdge.ChangeFind(V1).Append(edge);
-      else
-      {
-        NCollection_List<TopoDS_Shape> ls;
-        ls.Append(edge);
-        VertEdge.Bind(V1, ls);
-      }
+      VertEdge.TryBound(V1, NCollection_List<TopoDS_Shape>())->Append(edge);
     }
   }
   BRep_Builder B;

@@ -181,12 +181,7 @@ void LocOpe_Spliter::Perform(const occ::handle<LocOpe_WiresOnShape>& PW)
       fac                = TopoDS::Face(myMap(fac).First());
       if (IsFaceWithSec)
         theFacesWithSection.Add(fac);
-      if (!mapFE.Contains(fac))
-      {
-        NCollection_List<TopoDS_Shape> thelist;
-        mapFE.Add(fac, thelist);
-      }
-      mapFE.ChangeFromKey(fac).Append(edg);
+      mapFE.Bound(fac, NCollection_List<TopoDS_Shape>())->Append(edg);
     }
   }
 

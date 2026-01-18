@@ -2587,9 +2587,7 @@ bool ShapeUpgrade_UnifySameDomain::MergeEdges(
       const TopoDS_Shape& aV = it.Value();
       if (aV.Orientation() == TopAbs_FORWARD || aV.Orientation() == TopAbs_REVERSED)
       {
-        if (!aMapVE.Contains(aV))
-          aMapVE.Add(aV, NCollection_List<TopoDS_Shape>());
-        aMapVE.ChangeFromKey(aV).Append(anEdge);
+        aMapVE.Bound(aV, NCollection_List<TopoDS_Shape>())->Append(anEdge);
       }
     }
   }

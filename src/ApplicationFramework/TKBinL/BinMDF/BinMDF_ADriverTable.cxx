@@ -51,10 +51,10 @@ void BinMDF_ADriverTable::AddDerivedDriver(const occ::handle<TDF_Attribute>& the
     for (occ::handle<Standard_Type> aType = anInstanceType->Parent(); !aType.IsNull();
          aType                            = aType->Parent())
     {
-      if (myMap.IsBound(aType))
+      const occ::handle<BinMDF_ADriver>* pDriver = myMap.Seek(aType);
+      if (pDriver)
       {
-        occ::handle<BinMDF_DerivedDriver> aDriver =
-          new BinMDF_DerivedDriver(theInstance, myMap(aType));
+        occ::handle<BinMDF_DerivedDriver> aDriver = new BinMDF_DerivedDriver(theInstance, *pDriver);
         myMap.Bind(anInstanceType, aDriver);
         return;
       }
@@ -129,10 +129,10 @@ void BinMDF_ADriverTable::AssignIds(
     const occ::handle<Standard_Type>&  aType     = it.Key();
     const occ::handle<BinMDF_ADriver>& aDriver   = it.Value();
     const TCollection_AsciiString&     aTypeName = aDriver->TypeName();
-    if (aStringIdMap.IsBound(aTypeName))
+    const int*                         pId       = aStringIdMap.Seek(aTypeName);
+    if (pId)
     {
-      i = aStringIdMap(aTypeName);
-      myMapId.Bind(aType, i);
+      myMapId.Bind(aType, *pId);
     }
   }
 

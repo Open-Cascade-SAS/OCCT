@@ -193,8 +193,6 @@ bool BRepTools_PurgeLocations::IsDone() const
 
 TopoDS_Shape BRepTools_PurgeLocations::ModifiedShape(const TopoDS_Shape& theInitShape) const
 {
-  TopoDS_Shape aShape = theInitShape;
-  if (myMapNewShapes.IsBound(theInitShape))
-    aShape = myMapNewShapes.Find(theInitShape);
-  return aShape;
+  const TopoDS_Shape* pShape = myMapNewShapes.Seek(theInitShape);
+  return pShape ? *pShape : theInitShape;
 }

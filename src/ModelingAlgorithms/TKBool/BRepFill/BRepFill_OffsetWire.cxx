@@ -391,11 +391,7 @@ const NCollection_List<TopoDS_Shape>& BRepFill_OffsetWire::GeneratedShapes(
       {
         if (myMap.Contains(it.Key()))
         {
-          if (!myMap.Contains(it.Value()))
-          {
-            NCollection_List<TopoDS_Shape> L;
-            myMap.Add(it.Value(), L);
-          }
+          myMap.Bound(it.Value(), NCollection_List<TopoDS_Shape>());
           if (!it.Value().IsSame(it.Key()))
           {
             myMap.ChangeFromKey(it.Value()).Append(myMap.ChangeFromKey(it.Key()));
@@ -404,11 +400,7 @@ const NCollection_List<TopoDS_Shape>& BRepFill_OffsetWire::GeneratedShapes(
         }
         if (myMap.Contains(it.Key().Reversed()))
         {
-          if (!myMap.Contains(it.Value().Reversed()))
-          {
-            NCollection_List<TopoDS_Shape> L;
-            myMap.Add(it.Value().Reversed(), L);
-          }
+          myMap.Bound(it.Value().Reversed(), NCollection_List<TopoDS_Shape>());
           if (!it.Value().IsSame(it.Key()))
           {
             myMap.ChangeFromKey(it.Value().Reversed())
@@ -519,10 +511,8 @@ void BRepFill_OffsetWire::Perform(const double Offset, const double Alt)
             myMapSpine.Bind(NewEdge, myMapSpine(anE));
             TopoDS_Vertex NewV1, NewV2;
             EdgeVertices(NewEdge, NewV1, NewV2);
-            if (!myMapSpine.IsBound(NewV1))
-              myMapSpine.Bind(NewV1, myMapSpine(anE));
-            if (!myMapSpine.IsBound(NewV2))
-              myMapSpine.Bind(NewV2, myMapSpine(anE));
+            myMapSpine.TryBound(NewV1, myMapSpine(anE));
+            myMapSpine.TryBound(NewV2, myMapSpine(anE));
           }
           myMapSpine.UnBind(anE);
         }
@@ -941,11 +931,8 @@ void BRepFill_OffsetWire::PerformWithBiLo(const TopoDS_Face&              Spine,
     {
       for (k = 0; k <= 1; k++)
       {
-        if (!MapBis.IsBound(E[k]))
-        {
-          MapBis.Bind(E[k], EmptySeq);
-          MapVerPar.Bind(E[k], EmptySeqOfReal);
-        }
+        MapBis.TryBound(E[k], EmptySeq);
+        MapVerPar.TryBound(E[k], EmptySeqOfReal);
         for (int ii = 1; ii <= Vertices.Length(); ii++)
         {
           MapBis(E[k]).Append(Vertices.Value(ii));
@@ -1202,10 +1189,8 @@ void BRepFill_OffsetWire::PrepareSpine()
           B.Add(NW, NE);
           myMapSpine.Bind(NE, E);
           EdgeVertices(NE, V1, V2);
-          if (!myMapSpine.IsBound(V1))
-            myMapSpine.Bind(V1, E);
-          if (!myMapSpine.IsBound(V2))
-            myMapSpine.Bind(V2, E);
+          myMapSpine.TryBound(V1, E);
+          myMapSpine.TryBound(V2, E);
         }
       }
     }
@@ -1365,18 +1350,8 @@ void BRepFill_OffsetWire::MakeWires()
         continue; // remove small closed edges
       if (!CheckSmallParamOnEdge(E))
         continue;
-      if (!MVE.Contains(V1))
-      {
-        NCollection_List<TopoDS_Shape> empty;
-        MVE.Add(V1, empty);
-      }
-      MVE.ChangeFromKey(V1).Append(E);
-      if (!MVE.Contains(V2))
-      {
-        NCollection_List<TopoDS_Shape> empty;
-        MVE.Add(V2, empty);
-      }
-      MVE.ChangeFromKey(V2).Append(E);
+      MVE.Bound(V1, NCollection_List<TopoDS_Shape>())->Append(E);
+      MVE.Bound(V2, NCollection_List<TopoDS_Shape>())->Append(E);
     }
   }
 

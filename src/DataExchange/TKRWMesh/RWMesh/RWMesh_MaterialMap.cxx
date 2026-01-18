@@ -50,9 +50,10 @@ RWMesh_MaterialMap::~RWMesh_MaterialMap() = default;
 
 TCollection_AsciiString RWMesh_MaterialMap::AddMaterial(const XCAFPrs_Style& theStyle)
 {
-  if (myStyles.IsBound1(theStyle))
+  const TCollection_AsciiString* pMatKey = myStyles.Seek1(theStyle);
+  if (pMatKey)
   {
-    return myStyles.Find1(theStyle);
+    return *pMatKey;
   }
 
   TCollection_AsciiString aMatKey, aMatName, aMatNameSuffix;

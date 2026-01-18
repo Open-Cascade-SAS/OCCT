@@ -254,10 +254,7 @@ void StopwatchStorage::Clear()
 TCollection_AsciiString StopwatchStorage::Print(const TCollection_AsciiString& theName) const
 {
   TCollection_AsciiString anOutput;
-  if (myStopwatches.IsBound(theName))
-  {
-    print(theName, anOutput);
-  }
+  print(theName, anOutput);
   return anOutput;
 }
 

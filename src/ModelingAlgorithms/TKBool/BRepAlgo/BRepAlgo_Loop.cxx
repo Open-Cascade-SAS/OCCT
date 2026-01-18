@@ -506,18 +506,10 @@ static void StoreInMVE(
     YaCouture = false;
     return;
   }
-  if (!MVE.Contains(V1))
-  {
-    MVE.Add(V1, Empty);
-  }
-  MVE.ChangeFromKey(V1).Append(E);
+  MVE.Bound(V1, Empty)->Append(E);
   if (!V1.IsSame(V2))
   {
-    if (!MVE.Contains(V2))
-    {
-      MVE.Add(V2, Empty);
-    }
-    MVE.ChangeFromKey(V2).Append(E);
+    MVE.Bound(V2, Empty)->Append(E);
   }
   TopLoc_Location           L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(F, L);

@@ -152,13 +152,8 @@ occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> StdStorage_Root
 
 occ::handle<StdStorage_Root> StdStorage_RootData::Find(const TCollection_AsciiString& aName) const
 {
-  occ::handle<StdStorage_Root> p;
-  if (myObjects.Contains(aName))
-  {
-    p = myObjects.FindFromKey(aName);
-  }
-
-  return p;
+  const occ::handle<StdStorage_Root>* pRoot = myObjects.Seek(aName);
+  return pRoot ? *pRoot : occ::handle<StdStorage_Root>();
 }
 
 bool StdStorage_RootData::IsRoot(const TCollection_AsciiString& aName) const
@@ -168,9 +163,10 @@ bool StdStorage_RootData::IsRoot(const TCollection_AsciiString& aName) const
 
 void StdStorage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
 {
-  if (myObjects.Contains(aName))
+  occ::handle<StdStorage_Root>* pRoot = myObjects.ChangeSeek(aName);
+  if (pRoot)
   {
-    myObjects.ChangeFromKey(aName)->myRef = 0;
+    (*pRoot)->myRef = 0;
     myObjects.RemoveKey(aName);
     int aRef = 1;
     for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<StdStorage_Root>>::Iterator

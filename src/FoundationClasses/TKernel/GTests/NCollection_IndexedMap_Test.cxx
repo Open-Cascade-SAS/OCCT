@@ -563,3 +563,124 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   EXPECT_TRUE(aFoundStd != aVector.end());
   EXPECT_EQ(*aFoundOCCT, *aFoundStd);
 }
+
+TEST(NCollection_IndexedMapTest, AddedNewKey)
+{
+  NCollection_IndexedMap<KeyType> aMap;
+
+  // Test Added with new key - should add and return reference
+  const KeyType& key1 = aMap.Added(10);
+  EXPECT_EQ(key1, 10);
+  EXPECT_EQ(aMap.Extent(), 1);
+  EXPECT_TRUE(aMap.Contains(10));
+
+  const KeyType& key2 = aMap.Added(20);
+  EXPECT_EQ(key2, 20);
+  EXPECT_EQ(aMap.Extent(), 2);
+  EXPECT_TRUE(aMap.Contains(20));
+
+  const KeyType& key3 = aMap.Added(30);
+  EXPECT_EQ(key3, 30);
+  EXPECT_EQ(aMap.Extent(), 3);
+  EXPECT_TRUE(aMap.Contains(30));
+}
+
+TEST(NCollection_IndexedMapTest, AddedExistingKey)
+{
+  NCollection_IndexedMap<KeyType> aMap;
+
+  // Add initial element
+  aMap.Add(10);
+  EXPECT_EQ(aMap.Extent(), 1);
+
+  // Call Added with existing key - should return reference to existing key
+  const KeyType& keyRef = aMap.Added(10);
+  EXPECT_EQ(keyRef, 10);
+  EXPECT_EQ(aMap.Extent(), 1); // Size unchanged
+
+  // Verify the returned reference points to the key in the map
+  EXPECT_EQ(&keyRef, &aMap.FindKey(1));
+}
+
+TEST(NCollection_IndexedMapTest, AddedMixedUsage)
+{
+  NCollection_IndexedMap<KeyType> aMap;
+
+  // Use Added for both new and existing keys
+  const KeyType& k1 = aMap.Added(10); // New key
+  const KeyType& k2 = aMap.Added(20); // New key
+  const KeyType& k3 = aMap.Added(10); // Existing key - should return existing
+
+  EXPECT_EQ(aMap.Extent(), 2);
+  EXPECT_EQ(k1, 10);
+  EXPECT_EQ(k2, 20);
+  EXPECT_EQ(k3, 10);
+  EXPECT_EQ(&k1, &k3); // Same reference for same key
+
+  // Verify indices
+  EXPECT_EQ(aMap.FindIndex(10), 1);
+  EXPECT_EQ(aMap.FindIndex(20), 2);
+}
+
+TEST(NCollection_IndexedMapTest, AddedVsAddSemantics)
+{
+  // Verify that Added has the same semantics as Add for new keys
+  NCollection_IndexedMap<KeyType> aMap1;
+  NCollection_IndexedMap<KeyType> aMap2;
+
+  // Add using Add()
+  aMap1.Add(10);
+  aMap1.Add(20);
+  aMap1.Add(10); // Duplicate - ignored
+
+  // Add using Added()
+  aMap2.Added(10);
+  aMap2.Added(20);
+  aMap2.Added(10); // Duplicate - ignored
+
+  // Both maps should have identical content
+  EXPECT_EQ(aMap1.Extent(), aMap2.Extent());
+  EXPECT_EQ(aMap1.FindIndex(10), aMap2.FindIndex(10));
+  EXPECT_EQ(aMap1.FindIndex(20), aMap2.FindIndex(20));
+}
+
+TEST(NCollection_IndexedMapTest, AddedWithMoveSemantics)
+{
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+
+  // Test with rvalue
+  const TCollection_AsciiString& ref1 = aMap.Added(TCollection_AsciiString("First"));
+  EXPECT_TRUE(ref1.IsEqual("First"));
+  EXPECT_EQ(aMap.Extent(), 1);
+
+  // Test with lvalue
+  TCollection_AsciiString        aKey("Second");
+  const TCollection_AsciiString& ref2 = aMap.Added(aKey);
+  EXPECT_TRUE(ref2.IsEqual("Second"));
+  EXPECT_EQ(aMap.Extent(), 2);
+
+  // Test duplicate with rvalue
+  const TCollection_AsciiString& ref3 = aMap.Added(TCollection_AsciiString("First"));
+  EXPECT_TRUE(ref3.IsEqual("First"));
+  EXPECT_EQ(aMap.Extent(), 2); // No new element
+  EXPECT_EQ(&ref1, &ref3);     // Same reference
+}
+
+TEST(NCollection_IndexedMapTest, AddedReturnValueUsage)
+{
+  // Test that Added can be used in patterns replacing if (!Contains) Add
+  NCollection_IndexedMap<KeyType> aMap;
+
+  // Old pattern: if (!aMap.Contains(key)) { aMap.Add(key); }
+  // New pattern: aMap.Added(key);
+
+  // The return value allows getting the key reference in a single operation
+  for (int i = 0; i < 10; ++i)
+  {
+    // Try to add duplicates
+    const KeyType& ref = aMap.Added(i % 5); // Will add 0,1,2,3,4 then try duplicates
+    EXPECT_EQ(ref, i % 5);
+  }
+
+  EXPECT_EQ(aMap.Extent(), 5); // Only 5 unique elements
+}

@@ -70,10 +70,8 @@ const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& 
 
 const TopoDS_Shape TNaming_Translator::Copied(const TopoDS_Shape& aShape) const
 {
-  TopoDS_Shape aResult;
-  if (myDataMapOfResults.IsBound(aShape))
-    aResult = myDataMapOfResults.Find(aShape);
-  return aResult;
+  const TopoDS_Shape* pResult = myDataMapOfResults.Seek(aShape);
+  return pResult ? *pResult : TopoDS_Shape();
 }
 
 //=================================================================================================

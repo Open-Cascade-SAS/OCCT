@@ -635,12 +635,13 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
   TNaming_RefShape* pos = nullptr;
   TNaming_RefShape* pns;
 
-  if (myShapes->myMap.IsBound(newShape))
+  TNaming_RefShape** ppns = myShapes->myMap.ChangeSeek(newShape);
+  if (ppns)
   {
 #ifdef OCCT_DEBUG_BUILDER
     std::cout << "TNaming_Builder::Generate : the shape is already in the attribute" << std::endl;
 #endif
-    pns = myShapes->myMap.ChangeFind(newShape);
+    pns = *ppns;
     if (pns->FirstUse()->myAtt == myAtt.operator->())
     {
       throw Standard_ConstructionError("TNaming_Builder::Generate");
@@ -674,8 +675,9 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
   TNaming_RefShape* pns;
   TNaming_RefShape* pos;
 
-  if (myShapes->myMap.IsBound(oldShape))
-    pos = myShapes->myMap.ChangeFind(oldShape);
+  TNaming_RefShape** ppos = myShapes->myMap.ChangeSeek(oldShape);
+  if (ppos)
+    pos = *ppos;
   else
   {
 #ifdef OCCT_DEBUG_BUILDER
@@ -714,23 +716,25 @@ void TNaming_Builder::Generated(const TopoDS_Shape& oldShape, const TopoDS_Shape
 #endif
     return;
   }
-  TNaming_RefShape* pos;
-  if (!myShapes->myMap.IsBound(oldShape))
+  TNaming_RefShape*  pos;
+  TNaming_RefShape** ppos = myShapes->myMap.ChangeSeek(oldShape);
+  if (!ppos)
   {
     pos = new TNaming_RefShape(oldShape);
     myShapes->myMap.Bind(oldShape, pos);
   }
   else
-    pos = myShapes->myMap.ChangeFind(oldShape);
+    pos = *ppos;
 
-  TNaming_RefShape* pns;
-  if (!myShapes->myMap.IsBound(newShape))
+  TNaming_RefShape*  pns;
+  TNaming_RefShape** ppns = myShapes->myMap.ChangeSeek(newShape);
+  if (!ppns)
   {
     pns = new TNaming_RefShape(newShape);
     myShapes->myMap.Bind(newShape, pns);
   }
   else
-    pns = myShapes->myMap.ChangeFind(newShape);
+    pns = *ppns;
 
   TNaming_Node* pdn = new TNaming_Node(pos, pns);
   myAtt->Add(pdn);
@@ -757,23 +761,25 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape, const TopoDS_Shape& n
 #endif
     return;
   }
-  TNaming_RefShape* pos;
-  if (!myShapes->myMap.IsBound(oldShape))
+  TNaming_RefShape*  pos;
+  TNaming_RefShape** ppos = myShapes->myMap.ChangeSeek(oldShape);
+  if (!ppos)
   {
     pos = new TNaming_RefShape(oldShape);
     myShapes->myMap.Bind(oldShape, pos);
   }
   else
-    pos = myShapes->myMap.ChangeFind(oldShape);
+    pos = *ppos;
 
-  TNaming_RefShape* pns;
-  if (!myShapes->myMap.IsBound(newShape))
+  TNaming_RefShape*  pns;
+  TNaming_RefShape** ppns = myShapes->myMap.ChangeSeek(newShape);
+  if (!ppns)
   {
     pns = new TNaming_RefShape(newShape);
     myShapes->myMap.Bind(newShape, pns);
   }
   else
-    pns = myShapes->myMap.ChangeFind(newShape);
+    pns = *ppns;
 
   TNaming_Node* pdn = new TNaming_Node(pos, pns);
   myAtt->Add(pdn);
@@ -793,23 +799,25 @@ void TNaming_Builder::Select(const TopoDS_Shape& S, const TopoDS_Shape& InS)
       throw Standard_ConstructionError("TNaming_Builder : not same evolution");
   }
 
-  TNaming_RefShape* pos;
-  if (!myShapes->myMap.IsBound(InS))
+  TNaming_RefShape*  pos;
+  TNaming_RefShape** ppos = myShapes->myMap.ChangeSeek(InS);
+  if (!ppos)
   {
     pos = new TNaming_RefShape(InS);
     myShapes->myMap.Bind(InS, pos);
   }
   else
-    pos = myShapes->myMap.ChangeFind(InS);
+    pos = *ppos;
 
-  TNaming_RefShape* pns;
-  if (!myShapes->myMap.IsBound(S))
+  TNaming_RefShape*  pns;
+  TNaming_RefShape** ppns = myShapes->myMap.ChangeSeek(S);
+  if (!ppns)
   {
     pns = new TNaming_RefShape(S);
     myShapes->myMap.Bind(S, pns);
   }
   else
-    pns = myShapes->myMap.ChangeFind(S);
+    pns = *ppns;
 
   TNaming_Node* pdn = new TNaming_Node(pos, pns);
   myAtt->Add(pdn);
