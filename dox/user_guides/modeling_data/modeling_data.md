@@ -929,22 +929,21 @@ Find all the faces in a SHELL, then all the faces not in a SHELL:
 ~~~~{.cpp}
   void test()
   {
-    TopExp_Explorer Ex1, Ex2;
     TopoDS_Shape S;
-    for (Ex1.Init (S, TopAbs_SHELL); Ex1.More(); Ex1.Next())
+    for (TopExp_Explorer anExpShell(S, TopAbs_SHELL); anExpShell.More(); anExpShell.Next())
     {
       // visit all shells
-      for (Ex2.Init (Ex1.Current(), TopAbs_FACE); Ex2.More(); Ex2.Next())
+      for (TopExp_Explorer anExpFace(anExpShell.Current(), TopAbs_FACE); anExpFace.More(); anExpFace.Next())
       {
         // visit all the faces of the current shell
-        ProcessFaceinAshell(Ex2.Current());
+        ProcessFaceinAshell(anExpFace.Current());
         ...
       }
     }
-    for (Ex1.Init (S, TopAbs_FACE, TopAbs_SHELL); Ex1.More(); Ex1.Next())
+    for (TopExp_Explorer anExpFace(S, TopAbs_FACE, TopAbs_SHELL); anExpFace.More(); anExpFace.Next())
     {
       // visit all faces not in a shell
-      ProcessFace (Ex1.Current());
+      ProcessFace(anExpFace.Current());
     }
   }
 ~~~~
@@ -1209,12 +1208,10 @@ For example, in the wire in the image we want to recuperate the edges in the ord
 
 ~~~~{.cpp}
   TopoDS_Wire W = ...;
-  BRepTools_WireExplorer Ex;
-  for (Ex.Init (W); Ex.More(); Ex.Next())
+  for (BRepTools_WireExplorer anExp(W); anExp.More(); anExp.Next())
   {
-    ProcessTheCurrentEdge (Ex.Current());
-    ProcessTheVertexConnectingTheCurrentEdgeToThePrevious
-    One (Ex.CurrentVertex());
+    ProcessTheCurrentEdge(anExp.Current());
+    ProcessTheVertexConnectingTheCurrentEdgeToThePreviousOne(anExp.CurrentVertex());
   }
 ~~~~
 
