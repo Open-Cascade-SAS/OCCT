@@ -10,6 +10,8 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_BaseAllocator_Test.cxx
   NCollection_DataMap_Test.cxx
   NCollection_DoubleMap_Test.cxx
+  NCollection_FlatDataMap_Test.cxx
+  NCollection_FlatMap_Test.cxx
   NCollection_IndexedDataMap_Test.cxx
   NCollection_IndexedMap_Test.cxx
   NCollection_List_Test.cxx

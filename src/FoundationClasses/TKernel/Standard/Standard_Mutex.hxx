@@ -19,6 +19,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Macro.hxx>
 #include <NCollection_Shared.hxx>
 
 #if defined(_WIN32)
@@ -31,6 +32,9 @@
 
 /**
  * @brief Mutex: a class to synchronize access to shared data.
+ *
+ * @deprecated This class is deprecated and will be removed in OCCT 8.0.0.
+ *             Use std::mutex or std::shared_mutex directly instead.
  *
  * This is simple encapsulation of tools provided by the
  * operating system to synchronize access to shared data
@@ -61,8 +65,9 @@
  * To use this feature, call RegisterCallback() after Lock() or successful
  * TryLock(), and UnregisterCallback() before Unlock() (or use Sentry classes).
  */
-
-class Standard_Mutex : public Standard_ErrorHandler::Callback
+class Standard_DEPRECATED(
+  "Standard_Mutex is deprecated; use std::mutex instead. Will be removed in OCCT 8.0.0")
+  Standard_Mutex : public Standard_ErrorHandler::Callback
 {
 public:
   /**
@@ -167,6 +172,7 @@ private:
 #endif
 };
 
+//! @deprecated Use std::shared_ptr<std::mutex> instead. Will be removed in OCCT 8.0.0.
 typedef NCollection_Shared<Standard_Mutex> Standard_HMutex;
 
 // Implementation of the method Unlock is inline, since it is
