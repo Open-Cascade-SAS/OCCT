@@ -2156,8 +2156,7 @@ Fillets and chamfers are calculated when addition is  complete.
 
 If face F2 is created by 2D fillet and chamfer builder from face F1, the builder can be rebuilt (the  builder recovers the status it had before deletion). To do so, use the  following Syntax:
 ~~~~{.cpp}
-BRepFilletAPI_MakeFillet2d builder; 
-builder.Init(F1,F2); 
+BRepFilletAPI_MakeFillet2d aBuilder(F1, F2);
 ~~~~
 
 Planar Fillet
@@ -2663,31 +2662,27 @@ In case of the  concerned area of a face, it is possible to cut it out and move 
 The *Perform* methods are the same as for *MakePrism*. 
 
 ~~~~{.cpp}
-TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.); 
-TopExp_Explorer Ex; 
-Ex.Init(S,TopAbs_FACE); 
-Ex.Next(); 
-Ex.Next(); 
-Ex.Next(); 
-Ex.Next(); 
-Ex.Next(); 
-TopoDS_Face F = TopoDS::Face(Ex.Current()); 
-occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F); 
-gp_Circ2d 
-c(gp_Ax2d(gp_Pnt2d(200.,130.),gp_Dir2d(1.,0.)),50.); 
-BRepBuilderAPI_MakeWire MW; 
-occ::handle<Geom2d_Curve> aline = new Geom2d_Circle(c); 
-MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI)); 
-MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI)); 
-BRepBuilderAPI_MakeFace MKF; 
-MKF.Init(surf,false); 
-MKF.Add(MW.Wire()); 
-TopoDS_Face FP = MKF.Face(); 
-BRepLib::BuildCurves3d(FP); 
-BRepFeat_MakeDPrism MKDP (S,FP,F,10*PI180,true, 
-							true); 
-MKDP.Perform(200); 
-TopoDS_Shape res1 = MKDP.Shape(); 
+TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+TopExp_Explorer anExp(S, TopAbs_FACE);
+anExp.Next();
+anExp.Next();
+anExp.Next();
+anExp.Next();
+anExp.Next();
+TopoDS_Face F = TopoDS::Face(anExp.Current());
+occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F);
+gp_Circ2d c(gp_Ax2d(gp_Pnt2d(200.,130.),gp_Dir2d(1.,0.)),50.);
+BRepBuilderAPI_MakeWire MW;
+occ::handle<Geom2d_Curve> aline = new Geom2d_Circle(c);
+MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI));
+MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI));
+BRepBuilderAPI_MakeFace MKF(surf, false);
+MKF.Add(MW.Wire());
+TopoDS_Face FP = MKF.Face();
+BRepLib::BuildCurves3d(FP);
+BRepFeat_MakeDPrism MKDP(S, FP, F, 10*PI180, true, true);
+MKDP.Perform(200);
+TopoDS_Shape res1 = MKDP.Shape();
 ~~~~
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image049.png,"A tapered prism",320}
@@ -2754,33 +2749,31 @@ There are three Perform  methods:
 Let us have a look at the example:
 
 ~~~~{.cpp}
-TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.); 
-TopExp_Explorer Ex; 
-Ex.Init(S,TopAbs_FACE); 
-Ex.Next(); 
-Ex.Next(); 
-TopoDS_Face F1 = TopoDS::Face(Ex.Current()); 
-occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F1); 
-BRepBuilderAPI_MakeWire MW1; 
-gp_Pnt2d p1,p2; 
-p1 = gp_Pnt2d(100.,100.); 
-p2 = gp_Pnt2d(200.,100.); 
-occ::handle<Geom2d_Line> aline = GCE2d_MakeLine(p1,p2).Value(); 
+TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+TopExp_Explorer anExp(S, TopAbs_FACE);
+anExp.Next();
+anExp.Next();
+TopoDS_Face F1 = TopoDS::Face(anExp.Current());
+occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F1);
+BRepBuilderAPI_MakeWire MW1;
+gp_Pnt2d p1,p2;
+p1 = gp_Pnt2d(100.,100.);
+p2 = gp_Pnt2d(200.,100.);
+occ::handle<Geom2d_Line> aline = GCE2d_MakeLine(p1,p2).Value();
 
-MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2))); 
-p1 = p2; 
-p2 = gp_Pnt2d(150.,200.); 
-aline = GCE2d_MakeLine(p1,p2).Value(); 
+MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
+p1 = p2;
+p2 = gp_Pnt2d(150.,200.);
+aline = GCE2d_MakeLine(p1,p2).Value();
 
-MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2))); 
-p1 = p2; 
-p2 = gp_Pnt2d(100.,100.); 
-aline = GCE2d_MakeLine(p1,p2).Value(); 
+MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
+p1 = p2;
+p2 = gp_Pnt2d(100.,100.);
+aline = GCE2d_MakeLine(p1,p2).Value();
 
-MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2))); 
-BRepBuilderAPI_MakeFace MKF1; 
-MKF1.Init(surf,false); 
-MKF1.Add(MW1.Wire()); 
+MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
+BRepBuilderAPI_MakeFace MKF1(surf, false);
+MKF1.Add(MW1.Wire());
 TopoDS_Face FP = MKF1.Face(); 
 BRepLib::BuildCurves3d(FP); 
 NCollection_Array1<gp_Pnt> CurvePoles(1,3); 
