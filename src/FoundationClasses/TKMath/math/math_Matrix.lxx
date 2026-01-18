@@ -520,24 +520,27 @@ inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Ri
   const int aLowerCol  = Array.LowerCol();
   const int anUpperCol = Array.UpperCol();
 
-  double Som;
-  int    I1 = Left.LowerRow();
+  Init(0.0);
+
+  // Cache-friendly i-k-j loop order for row-major matrix storage.
+  // The inner loop accesses Right row-by-row (sequential memory access),
+  // improving cache utilization significantly for large matrices.
+  int I1 = Left.LowerRow();
   for (int I = aLowerRow; I <= anUpperRow; I++)
   {
-    int J2 = Right.LowerCol();
-    for (int J = aLowerCol; J <= anUpperCol; J++)
+    int J1 = Left.LowerCol();
+    int I2 = Right.LowerRow();
+    for (int K = Left.LowerCol(); K <= Left.UpperCol(); K++)
     {
-      Som    = 0.0;
-      int J1 = Left.LowerCol();
-      int I2 = Right.LowerRow();
-      for (int K = Left.LowerCol(); K <= Left.UpperCol(); K++)
+      const double aLeftVal = Left.Array(I1, J1);
+      int          J2       = Right.LowerCol();
+      for (int J = aLowerCol; J <= anUpperCol; J++)
       {
-        Som = Som + Left.Array(I1, J1) * Right.Array(I2, J2);
-        J1++;
-        I2++;
+        Array(I, J) += aLeftVal * Right.Array(I2, J2);
+        J2++;
       }
-      Array(I, J) = Som;
-      J2++;
+      J1++;
+      I2++;
     }
     I1++;
   }
@@ -594,21 +597,25 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
   const int aLowerCol  = Array.LowerCol();
   const int anUpperCol = Array.UpperCol();
 
-  math_Matrix Result(aLowerRow, anUpperRow, Right.LowerCol(), Right.UpperCol());
+  // Initialize result to zero
+  math_Matrix Result(aLowerRow, anUpperRow, Right.LowerCol(), Right.UpperCol(), 0.0);
 
-  double Som;
+  // Cache-friendly i-k-j loop order for row-major matrix storage.
+  // The inner loop accesses Right row-by-row (sequential memory access),
+  // improving cache utilization significantly for large matrices.
   for (int I = aLowerRow; I <= anUpperRow; I++)
   {
-    for (int J2 = Right.LowerCol(); J2 <= Right.UpperCol(); J2++)
+    int I2 = Right.LowerRow();
+    for (int J = aLowerCol; J <= anUpperCol; J++)
     {
-      Som    = 0.0;
-      int I2 = Right.LowerRow();
-      for (int J = aLowerCol; J <= anUpperCol; J++)
+      const double aLeftVal = Array(I, J);
+      int          J2       = Right.LowerCol();
+      for (int JR = Right.LowerCol(); JR <= Right.UpperCol(); JR++)
       {
-        Som = Som + Array(I, J) * Right.Array(I2, J2);
-        I2++;
+        Result.Array(I, JR) += aLeftVal * Right.Array(I2, J2);
+        J2++;
       }
-      Result.Array(I, J2) = Som;
+      I2++;
     }
   }
   return Result;

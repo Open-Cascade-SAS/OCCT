@@ -22,6 +22,8 @@
 #include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 
+#include <cmath>
+
 //! This class describes a cartesian coordinate entity in
 //! 3D space {X,Y,Z}. This entity is used for algebraic
 //! calculation. This entity can be transformed
@@ -149,12 +151,12 @@ public:
   //! Returns the Z coordinate
   constexpr double Z() const noexcept { return z; }
 
-  //! computes std::sqrt(X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ
+  //! Computes std::sqrt(X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ
   //! object.
-  double Modulus() const { return sqrt(x * x + y * y + z * z); }
+  double Modulus() const noexcept { return std::sqrt(std::fma(x, x, std::fma(y, y, z * z))); }
 
   //! Computes X*X + Y*Y + Z*Z where X, Y and Z are the three coordinates of this XYZ object.
-  constexpr double SquareModulus() const noexcept { return (x * x + y * y + z * z); }
+  double SquareModulus() const noexcept { return std::fma(x, x, std::fma(y, y, z * z)); }
 
   //! Returns True if he coordinates of this XYZ object are
   //! equal to the respective coordinates Other,
@@ -264,16 +266,16 @@ public:
     return Divided(theScalar);
   }
 
-  //! computes the scalar product between <me> and theOther
-  constexpr double Dot(const gp_XYZ& theOther) const noexcept
+  //! Computes the scalar product between <me> and theOther.
+  double Dot(const gp_XYZ& theOther) const noexcept
   {
-    return (x * theOther.x + y * theOther.y + z * theOther.z);
+    return std::fma(x, theOther.x, std::fma(y, theOther.y, z * theOther.z));
   }
 
-  constexpr double operator*(const gp_XYZ& theOther) const noexcept { return Dot(theOther); }
+  double operator*(const gp_XYZ& theOther) const noexcept { return Dot(theOther); }
 
-  //! computes the triple scalar product
-  constexpr double DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const noexcept;
+  //! Computes the triple scalar product (mixed product).
+  double DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const noexcept;
 
   //! @code
   //! <me>.X() = <me>.X() * theScalar;
@@ -304,9 +306,9 @@ public:
   constexpr void operator*=(const gp_XYZ& theOther) noexcept { Multiply(theOther); }
 
   //! <me> = theMatrix * <me>
-  constexpr void Multiply(const gp_Mat& theMatrix) noexcept;
+  void Multiply(const gp_Mat& theMatrix) noexcept;
 
-  constexpr void operator*=(const gp_Mat& theMatrix) noexcept { Multiply(theMatrix); }
+  void operator*=(const gp_Mat& theMatrix) noexcept { Multiply(theMatrix); }
 
   //! @code
   //! New.X() = <me>.X() * theScalar;
@@ -334,16 +336,20 @@ public:
   }
 
   //! New = theMatrix * <me>
-  [[nodiscard]] constexpr gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
+  [[nodiscard]] gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
   {
-    // Direct access to matrix data for optimal performance (gp_XYZ is friend of gp_Mat)
-    return gp_XYZ(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y + theMatrix.myMat[0][2] * z,
-                  theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y + theMatrix.myMat[1][2] * z,
-                  theMatrix.myMat[2][0] * x + theMatrix.myMat[2][1] * y
-                    + theMatrix.myMat[2][2] * z);
+    return gp_XYZ(std::fma(theMatrix.myMat[0][0],
+                           x,
+                           std::fma(theMatrix.myMat[0][1], y, theMatrix.myMat[0][2] * z)),
+                  std::fma(theMatrix.myMat[1][0],
+                           x,
+                           std::fma(theMatrix.myMat[1][1], y, theMatrix.myMat[1][2] * z)),
+                  std::fma(theMatrix.myMat[2][0],
+                           x,
+                           std::fma(theMatrix.myMat[2][1], y, theMatrix.myMat[2][2] * z)));
   }
 
-  [[nodiscard]] constexpr gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
+  [[nodiscard]] gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
   {
     return Multiplied(theMatrix);
   }
@@ -422,75 +428,76 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3 + theXYZ4
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const double  theA3,
-                               const gp_XYZ& theXYZ3,
-                               const gp_XYZ& theXYZ4) noexcept
+  void SetLinearForm(const double  theA1,
+                     const gp_XYZ& theXYZ1,
+                     const double  theA2,
+                     const gp_XYZ& theXYZ2,
+                     const double  theA3,
+                     const gp_XYZ& theXYZ3,
+                     const gp_XYZ& theXYZ4) noexcept
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x + theXYZ4.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y + theXYZ4.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theA3 * theXYZ3.z + theXYZ4.z;
+    x =
+      std::fma(theA1, theXYZ1.x, std::fma(theA2, theXYZ2.x, std::fma(theA3, theXYZ3.x, theXYZ4.x)));
+    y =
+      std::fma(theA1, theXYZ1.y, std::fma(theA2, theXYZ2.y, std::fma(theA3, theXYZ3.y, theXYZ4.y)));
+    z =
+      std::fma(theA1, theXYZ1.z, std::fma(theA2, theXYZ2.z, std::fma(theA3, theXYZ3.z, theXYZ4.z)));
   }
 
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const double  theA3,
-                               const gp_XYZ& theXYZ3) noexcept
+  void SetLinearForm(const double  theA1,
+                     const gp_XYZ& theXYZ1,
+                     const double  theA2,
+                     const gp_XYZ& theXYZ2,
+                     const double  theA3,
+                     const gp_XYZ& theXYZ3) noexcept
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theA3 * theXYZ3.z;
+    x = std::fma(theA1, theXYZ1.x, std::fma(theA2, theXYZ2.x, theA3 * theXYZ3.x));
+    y = std::fma(theA1, theXYZ1.y, std::fma(theA2, theXYZ2.y, theA3 * theXYZ3.y));
+    z = std::fma(theA1, theXYZ1.z, std::fma(theA2, theXYZ2.z, theA3 * theXYZ3.z));
   }
 
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theXYZ3
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const gp_XYZ& theXYZ3) noexcept
+  void SetLinearForm(const double  theA1,
+                     const gp_XYZ& theXYZ1,
+                     const double  theA2,
+                     const gp_XYZ& theXYZ2,
+                     const gp_XYZ& theXYZ3) noexcept
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theXYZ3.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theXYZ3.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z + theXYZ3.z;
+    x = std::fma(theA1, theXYZ1.x, std::fma(theA2, theXYZ2.x, theXYZ3.x));
+    y = std::fma(theA1, theXYZ1.y, std::fma(theA2, theXYZ2.y, theXYZ3.y));
+    z = std::fma(theA1, theXYZ1.z, std::fma(theA2, theXYZ2.z, theXYZ3.z));
   }
 
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2) noexcept
+  void SetLinearForm(const double  theA1,
+                     const gp_XYZ& theXYZ1,
+                     const double  theA2,
+                     const gp_XYZ& theXYZ2) noexcept
   {
-    x = theA1 * theXYZ1.x + theA2 * theXYZ2.x;
-    y = theA1 * theXYZ1.y + theA2 * theXYZ2.y;
-    z = theA1 * theXYZ1.z + theA2 * theXYZ2.z;
+    x = std::fma(theA1, theXYZ1.x, theA2 * theXYZ2.x);
+    y = std::fma(theA1, theXYZ1.y, theA2 * theXYZ2.y);
+    z = std::fma(theA1, theXYZ1.z, theA2 * theXYZ2.z);
   }
 
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theXYZ2
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const gp_XYZ& theXYZ2) noexcept
+  void SetLinearForm(const double theA1, const gp_XYZ& theXYZ1, const gp_XYZ& theXYZ2) noexcept
   {
-    x = theA1 * theXYZ1.x + theXYZ2.x;
-    y = theA1 * theXYZ1.y + theXYZ2.y;
-    z = theA1 * theXYZ1.z + theXYZ2.z;
+    x = std::fma(theA1, theXYZ1.x, theXYZ2.x);
+    y = std::fma(theA1, theXYZ1.y, theXYZ2.y);
+    z = std::fma(theA1, theXYZ1.z, theXYZ2.z);
   }
 
   //! <me> is set to the following linear form :
@@ -564,31 +571,30 @@ inline constexpr void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& 
 
 //=================================================================================================
 
-inline constexpr double gp_XYZ::DotCross(const gp_XYZ& theCoord1,
-                                         const gp_XYZ& theCoord2) const noexcept
+inline double gp_XYZ::DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const noexcept
 {
   const double aXresult  = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
   const double anYresult = theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z;
   const double aZresult  = theCoord1.x * theCoord2.y - theCoord1.y * theCoord2.x;
-  return (x * aXresult + y * anYresult + z * aZresult);
+  return std::fma(x, aXresult, std::fma(y, anYresult, z * aZresult));
 }
 
 //=================================================================================================
 
-inline constexpr void gp_XYZ::Multiply(const gp_Mat& theMatrix) noexcept
+inline void gp_XYZ::Multiply(const gp_Mat& theMatrix) noexcept
 {
-  // Cache original coordinates to avoid aliasing issues
   const double aOrigX = x;
   const double aOrigY = y;
   const double aOrigZ = z;
-
-  // Matrix-vector multiplication: this = theMatrix * this
-  x = theMatrix.myMat[0][0] * aOrigX + theMatrix.myMat[0][1] * aOrigY
-      + theMatrix.myMat[0][2] * aOrigZ;
-  y = theMatrix.myMat[1][0] * aOrigX + theMatrix.myMat[1][1] * aOrigY
-      + theMatrix.myMat[1][2] * aOrigZ;
-  z = theMatrix.myMat[2][0] * aOrigX + theMatrix.myMat[2][1] * aOrigY
-      + theMatrix.myMat[2][2] * aOrigZ;
+  x                   = std::fma(theMatrix.myMat[0][0],
+               aOrigX,
+               std::fma(theMatrix.myMat[0][1], aOrigY, theMatrix.myMat[0][2] * aOrigZ));
+  y                   = std::fma(theMatrix.myMat[1][0],
+               aOrigX,
+               std::fma(theMatrix.myMat[1][1], aOrigY, theMatrix.myMat[1][2] * aOrigZ));
+  z                   = std::fma(theMatrix.myMat[2][0],
+               aOrigX,
+               std::fma(theMatrix.myMat[2][1], aOrigY, theMatrix.myMat[2][2] * aOrigZ));
 }
 
 //=================================================================================================
@@ -603,19 +609,15 @@ inline void gp_XYZ::Normalize()
   z = z / aD;
 }
 
-//=======================================================================
-// function : operator*
-// purpose :
-//=======================================================================
-inline constexpr gp_XYZ operator*(const gp_Mat& theMatrix, const gp_XYZ& theCoord1) noexcept
+//=================================================================================================
+
+inline gp_XYZ operator*(const gp_Mat& theMatrix, const gp_XYZ& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theMatrix);
 }
 
-//=======================================================================
-// function : operator*
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline constexpr gp_XYZ operator*(const double theScalar, const gp_XYZ& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theScalar);

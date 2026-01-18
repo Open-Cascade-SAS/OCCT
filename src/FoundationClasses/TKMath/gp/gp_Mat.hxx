@@ -20,6 +20,8 @@
 #include <Standard_OStream.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <cmath>
+
 class gp_XYZ;
 
 //! Describes a three column, three row matrix.
@@ -228,25 +230,26 @@ public:
   //! and therefore cannot be inverted.
   [[nodiscard]] Standard_EXPORT gp_Mat Inverted() const;
 
-  //! Computes the product of two matrices <me> * <Other>
-  [[nodiscard]] constexpr gp_Mat Multiplied(const gp_Mat& theOther) const noexcept
+  //! Computes the product of two matrices <me> * <Other>.
+  [[nodiscard]] gp_Mat Multiplied(const gp_Mat& theOther) const noexcept
   {
     gp_Mat aNewMat = *this;
     aNewMat.Multiply(theOther);
     return aNewMat;
   }
 
-  [[nodiscard]] constexpr gp_Mat operator*(const gp_Mat& theOther) const noexcept
+  [[nodiscard]] gp_Mat operator*(const gp_Mat& theOther) const noexcept
   {
     return Multiplied(theOther);
   }
 
   //! Computes the product of two matrices <me> = <Other> * <me>.
-  constexpr void Multiply(const gp_Mat& theOther) noexcept;
+  void Multiply(const gp_Mat& theOther) noexcept;
 
-  constexpr void operator*=(const gp_Mat& theOther) noexcept { Multiply(theOther); }
+  void operator*=(const gp_Mat& theOther) noexcept { Multiply(theOther); }
 
-  constexpr void PreMultiply(const gp_Mat& theOther) noexcept;
+  //! Computes the product of two matrices <me> = <theOther> * <me>.
+  void PreMultiply(const gp_Mat& theOther) noexcept;
 
   [[nodiscard]] constexpr gp_Mat Multiplied(const double theScalar) const noexcept;
 
@@ -377,26 +380,37 @@ inline constexpr gp_Mat gp_Mat::Divided(const double theScalar) const
 
 //=================================================================================================
 
-inline constexpr void gp_Mat::Multiply(const gp_Mat& theOther) noexcept
+inline void gp_Mat::Multiply(const gp_Mat& theOther) noexcept
 {
-  const double aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0]
-                      + myMat[0][2] * theOther.myMat[2][0];
-  const double aT01 = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1]
-                      + myMat[0][2] * theOther.myMat[2][1];
-  const double aT02 = myMat[0][0] * theOther.myMat[0][2] + myMat[0][1] * theOther.myMat[1][2]
-                      + myMat[0][2] * theOther.myMat[2][2];
-  const double aT10 = myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0]
-                      + myMat[1][2] * theOther.myMat[2][0];
-  const double aT11 = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1]
-                      + myMat[1][2] * theOther.myMat[2][1];
-  const double aT12 = myMat[1][0] * theOther.myMat[0][2] + myMat[1][1] * theOther.myMat[1][2]
-                      + myMat[1][2] * theOther.myMat[2][2];
-  const double aT20 = myMat[2][0] * theOther.myMat[0][0] + myMat[2][1] * theOther.myMat[1][0]
-                      + myMat[2][2] * theOther.myMat[2][0];
-  const double aT21 = myMat[2][0] * theOther.myMat[0][1] + myMat[2][1] * theOther.myMat[1][1]
-                      + myMat[2][2] * theOther.myMat[2][1];
-  const double aT22 = myMat[2][0] * theOther.myMat[0][2] + myMat[2][1] * theOther.myMat[1][2]
-                      + myMat[2][2] * theOther.myMat[2][2];
+  // clang-format off
+  const double aT00 = std::fma(myMat[0][0], theOther.myMat[0][0],
+                      std::fma(myMat[0][1], theOther.myMat[1][0],
+                               myMat[0][2] * theOther.myMat[2][0]));
+  const double aT01 = std::fma(myMat[0][0], theOther.myMat[0][1],
+                      std::fma(myMat[0][1], theOther.myMat[1][1],
+                               myMat[0][2] * theOther.myMat[2][1]));
+  const double aT02 = std::fma(myMat[0][0], theOther.myMat[0][2],
+                      std::fma(myMat[0][1], theOther.myMat[1][2],
+                               myMat[0][2] * theOther.myMat[2][2]));
+  const double aT10 = std::fma(myMat[1][0], theOther.myMat[0][0],
+                      std::fma(myMat[1][1], theOther.myMat[1][0],
+                               myMat[1][2] * theOther.myMat[2][0]));
+  const double aT11 = std::fma(myMat[1][0], theOther.myMat[0][1],
+                      std::fma(myMat[1][1], theOther.myMat[1][1],
+                               myMat[1][2] * theOther.myMat[2][1]));
+  const double aT12 = std::fma(myMat[1][0], theOther.myMat[0][2],
+                      std::fma(myMat[1][1], theOther.myMat[1][2],
+                               myMat[1][2] * theOther.myMat[2][2]));
+  const double aT20 = std::fma(myMat[2][0], theOther.myMat[0][0],
+                      std::fma(myMat[2][1], theOther.myMat[1][0],
+                               myMat[2][2] * theOther.myMat[2][0]));
+  const double aT21 = std::fma(myMat[2][0], theOther.myMat[0][1],
+                      std::fma(myMat[2][1], theOther.myMat[1][1],
+                               myMat[2][2] * theOther.myMat[2][1]));
+  const double aT22 = std::fma(myMat[2][0], theOther.myMat[0][2],
+                      std::fma(myMat[2][1], theOther.myMat[1][2],
+                               myMat[2][2] * theOther.myMat[2][2]));
+  // clang-format on
   myMat[0][0] = aT00;
   myMat[0][1] = aT01;
   myMat[0][2] = aT02;
@@ -410,26 +424,37 @@ inline constexpr void gp_Mat::Multiply(const gp_Mat& theOther) noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_Mat::PreMultiply(const gp_Mat& theOther) noexcept
+inline void gp_Mat::PreMultiply(const gp_Mat& theOther) noexcept
 {
-  const double aT00 = theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0]
-                      + theOther.myMat[0][2] * myMat[2][0];
-  const double aT01 = theOther.myMat[0][0] * myMat[0][1] + theOther.myMat[0][1] * myMat[1][1]
-                      + theOther.myMat[0][2] * myMat[2][1];
-  const double aT02 = theOther.myMat[0][0] * myMat[0][2] + theOther.myMat[0][1] * myMat[1][2]
-                      + theOther.myMat[0][2] * myMat[2][2];
-  const double aT10 = theOther.myMat[1][0] * myMat[0][0] + theOther.myMat[1][1] * myMat[1][0]
-                      + theOther.myMat[1][2] * myMat[2][0];
-  const double aT11 = theOther.myMat[1][0] * myMat[0][1] + theOther.myMat[1][1] * myMat[1][1]
-                      + theOther.myMat[1][2] * myMat[2][1];
-  const double aT12 = theOther.myMat[1][0] * myMat[0][2] + theOther.myMat[1][1] * myMat[1][2]
-                      + theOther.myMat[1][2] * myMat[2][2];
-  const double aT20 = theOther.myMat[2][0] * myMat[0][0] + theOther.myMat[2][1] * myMat[1][0]
-                      + theOther.myMat[2][2] * myMat[2][0];
-  const double aT21 = theOther.myMat[2][0] * myMat[0][1] + theOther.myMat[2][1] * myMat[1][1]
-                      + theOther.myMat[2][2] * myMat[2][1];
-  const double aT22 = theOther.myMat[2][0] * myMat[0][2] + theOther.myMat[2][1] * myMat[1][2]
-                      + theOther.myMat[2][2] * myMat[2][2];
+  // clang-format off
+  const double aT00 = std::fma(theOther.myMat[0][0], myMat[0][0],
+                      std::fma(theOther.myMat[0][1], myMat[1][0],
+                               theOther.myMat[0][2] * myMat[2][0]));
+  const double aT01 = std::fma(theOther.myMat[0][0], myMat[0][1],
+                      std::fma(theOther.myMat[0][1], myMat[1][1],
+                               theOther.myMat[0][2] * myMat[2][1]));
+  const double aT02 = std::fma(theOther.myMat[0][0], myMat[0][2],
+                      std::fma(theOther.myMat[0][1], myMat[1][2],
+                               theOther.myMat[0][2] * myMat[2][2]));
+  const double aT10 = std::fma(theOther.myMat[1][0], myMat[0][0],
+                      std::fma(theOther.myMat[1][1], myMat[1][0],
+                               theOther.myMat[1][2] * myMat[2][0]));
+  const double aT11 = std::fma(theOther.myMat[1][0], myMat[0][1],
+                      std::fma(theOther.myMat[1][1], myMat[1][1],
+                               theOther.myMat[1][2] * myMat[2][1]));
+  const double aT12 = std::fma(theOther.myMat[1][0], myMat[0][2],
+                      std::fma(theOther.myMat[1][1], myMat[1][2],
+                               theOther.myMat[1][2] * myMat[2][2]));
+  const double aT20 = std::fma(theOther.myMat[2][0], myMat[0][0],
+                      std::fma(theOther.myMat[2][1], myMat[1][0],
+                               theOther.myMat[2][2] * myMat[2][0]));
+  const double aT21 = std::fma(theOther.myMat[2][0], myMat[0][1],
+                      std::fma(theOther.myMat[2][1], myMat[1][1],
+                               theOther.myMat[2][2] * myMat[2][1]));
+  const double aT22 = std::fma(theOther.myMat[2][0], myMat[0][2],
+                      std::fma(theOther.myMat[2][1], myMat[1][2],
+                               theOther.myMat[2][2] * myMat[2][2]));
+  // clang-format on
   myMat[0][0] = aT00;
   myMat[0][1] = aT01;
   myMat[0][2] = aT02;
@@ -499,8 +524,7 @@ inline constexpr gp_Mat gp_Mat::Subtracted(const gp_Mat& theOther) const noexcep
 #if defined(__APPLE__) && (__apple_build_version__ > 9020000)
 __attribute__((optnone))
 #endif
-inline void
-  gp_Mat::Transpose()
+inline void gp_Mat::Transpose()
 {
   std::swap(myMat[0][1], myMat[1][0]);
   std::swap(myMat[0][2], myMat[2][0]);
