@@ -65,9 +65,9 @@
  * To use this feature, call RegisterCallback() after Lock() or successful
  * TryLock(), and UnregisterCallback() before Unlock() (or use Sentry classes).
  */
-Standard_DEPRECATED(
+class Standard_DEPRECATED(
   "Standard_Mutex is deprecated; use std::mutex instead. Will be removed in OCCT 8.0.0")
-class Standard_Mutex : public Standard_ErrorHandler::Callback
+  Standard_Mutex : public Standard_ErrorHandler::Callback
 {
 public:
   /**
