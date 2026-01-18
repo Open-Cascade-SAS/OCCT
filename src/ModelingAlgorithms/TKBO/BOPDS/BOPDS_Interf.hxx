@@ -21,6 +21,8 @@
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_Point.hxx>
 
+#include <optional>
+
 /**
  * The class BOPDS_Interf stores the information about
  * the interference between two shapes.
@@ -164,7 +166,14 @@ public:
    *   the index
    * @return true if the interference has index of new shape
    */
-  bool HasIndexNew() const { return (myIndexNew + 1) != 0; }
+  bool HasIndexNew() const { return myIndexNew != -1; }
+
+  //! Returns the index of new shape.
+  //! If the index is not set, returns std::nullopt.
+  std::optional<int> GetIndexNew() const
+  {
+    return myIndexNew != -1 ? std::optional<int>(myIndexNew) : std::nullopt;
+  }
 
   //
 protected:

@@ -22,6 +22,14 @@ inline BOPDS_IndexRange::BOPDS_IndexRange()
 
 //=================================================================================================
 
+inline BOPDS_IndexRange::BOPDS_IndexRange(const int theI1, const int theI2)
+    : myFirst(theI1),
+      myLast(theI2)
+{
+}
+
+//=================================================================================================
+
 inline void BOPDS_IndexRange::SetFirst(const int aFirst)
 {
   myFirst = aFirst;
