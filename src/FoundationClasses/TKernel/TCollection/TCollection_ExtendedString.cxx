@@ -21,6 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <algorithm>
+#include <cstddef>
 
 namespace
 {
@@ -227,9 +228,15 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char16_t theChar)
 TCollection_ExtendedString::TCollection_ExtendedString(const int      theLength,
                                                        const char16_t theFiller)
 {
+  if (theLength < 0)
+  {
+    throw Standard_OutOfRange("TCollection_ExtendedString : negative length");
+  }
   allocate(theLength);
   for (int i = 0; i < theLength; i++)
+  {
     myString[i] = theFiller;
+  }
 }
 
 //==================================================================================================
@@ -309,6 +316,15 @@ void TCollection_ExtendedString::AssignCat(const TCollection_ExtendedString& the
     return;
   }
 
+  // Handle self-append case: theOther.myString will be invalidated by reallocate
+  if (&theOther == this)
+  {
+    const int anOldLength = myLength;
+    reallocate(myLength + myLength);
+    memcpy(myString + anOldLength, myString, anOldLength * sizeof(char16_t));
+    return;
+  }
+
   const int anOtherLength = theOther.myLength;
   const int anOldLength   = myLength;
   reallocate(myLength + anOtherLength);
@@ -335,9 +351,24 @@ void TCollection_ExtendedString::AssignCat(const char16_t* theString, const int 
     return;
   }
 
-  const int anOldLength = myLength;
-  reallocate(myLength + theLength);
-  memcpy(myString + anOldLength, theString, theLength * sizeof(char16_t));
+  // Check if theString points into current buffer (aliasing case)
+  const bool isAliased = (theString >= myString && theString < myString + myLength);
+
+  if (isAliased)
+  {
+    // Save offset before reallocate invalidates the pointer
+    const std::ptrdiff_t anOffset    = theString - myString;
+    const int            anOldLength = myLength;
+    reallocate(myLength + theLength);
+    // Use memmove since source and destination may overlap
+    memmove(myString + anOldLength, myString + anOffset, theLength * sizeof(char16_t));
+  }
+  else
+  {
+    const int anOldLength = myLength;
+    reallocate(myLength + theLength);
+    memcpy(myString + anOldLength, theString, theLength * sizeof(char16_t));
+  }
 }
 
 //==================================================================================================
@@ -494,6 +525,10 @@ void TCollection_ExtendedString::Insert(const int       theWhere,
 
 bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int theLength) const
 {
+  if (theLength < 0)
+  {
+    return false;
+  }
   if (myLength != theLength)
   {
     return false;
@@ -501,6 +536,10 @@ bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int the
   if (theLength == 0)
   {
     return true;
+  }
+  if (theOther == nullptr)
+  {
+    return false;
   }
   return memcmp(myString, theOther, theLength * sizeof(char16_t)) == 0;
 }
@@ -509,6 +548,10 @@ bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int the
 
 bool TCollection_ExtendedString::IsDifferent(const char16_t* theOther, const int theLength) const
 {
+  if (theLength < 0)
+  {
+    return true;
+  }
   if (myLength != theLength)
   {
     return true;
@@ -517,6 +560,10 @@ bool TCollection_ExtendedString::IsDifferent(const char16_t* theOther, const int
   {
     return false;
   }
+  if (theOther == nullptr)
+  {
+    return true;
+  }
   return memcmp(myString, theOther, theLength * sizeof(char16_t)) != 0;
 }
 
@@ -524,6 +571,14 @@ bool TCollection_ExtendedString::IsDifferent(const char16_t* theOther, const int
 
 bool TCollection_ExtendedString::IsLess(const char16_t* theOther, const int theLength) const
 {
+  if (theLength < 0)
+  {
+    return false; // this >= invalid
+  }
+  if (theOther == nullptr)
+  {
+    return theLength > 0 ? false : myLength < 0; // this >= empty/invalid
+  }
   const int aMinLen = (myLength < theLength) ? myLength : theLength;
   for (int i = 0; i < aMinLen; ++i)
   {
@@ -543,6 +598,14 @@ bool TCollection_ExtendedString::IsLess(const char16_t* theOther, const int theL
 
 bool TCollection_ExtendedString::IsGreater(const char16_t* theOther, const int theLength) const
 {
+  if (theLength < 0)
+  {
+    return true; // this > invalid
+  }
+  if (theOther == nullptr)
+  {
+    return theLength == 0 ? myLength > 0 : true; // this > empty/invalid
+  }
   const int aMinLen = (myLength < theLength) ? myLength : theLength;
   for (int i = 0; i < aMinLen; ++i)
   {
@@ -563,9 +626,17 @@ bool TCollection_ExtendedString::IsGreater(const char16_t* theOther, const int t
 bool TCollection_ExtendedString::StartsWith(const char16_t* theStartString,
                                             const int       theLength) const
 {
+  if (theLength < 0)
+  {
+    return false;
+  }
   if (theLength == 0)
   {
     return true;
+  }
+  if (theStartString == nullptr)
+  {
+    return false;
   }
   if (myLength < theLength)
   {
@@ -578,9 +649,17 @@ bool TCollection_ExtendedString::StartsWith(const char16_t* theStartString,
 
 bool TCollection_ExtendedString::EndsWith(const char16_t* theEndString, const int theLength) const
 {
+  if (theLength < 0)
+  {
+    return false;
+  }
   if (theLength == 0)
   {
     return true;
+  }
+  if (theEndString == nullptr)
+  {
+    return false;
   }
   if (myLength < theLength)
   {
@@ -1204,13 +1283,29 @@ void TCollection_ExtendedString::Prepend(const char16_t* theOther, const int the
     return;
   }
 
-  const int anOldLength = myLength;
-  reallocate(myLength + theLength);
+  // Check if theOther points into current buffer (aliasing case)
+  const bool isAliased = (theOther >= myString && theOther < myString + myLength);
 
-  // Move existing characters to the end
-  memmove(myString + theLength, myString, anOldLength * sizeof(char16_t));
-  // Copy theOther to the beginning
-  memcpy(myString, theOther, theLength * sizeof(char16_t));
+  if (isAliased)
+  {
+    // Save offset before reallocate invalidates the pointer
+    const std::ptrdiff_t anOffset    = theOther - myString;
+    const int            anOldLength = myLength;
+    reallocate(myLength + theLength);
+    // Move existing characters to the end first
+    memmove(myString + theLength, myString, anOldLength * sizeof(char16_t));
+    // Copy from the shifted position (offset + theLength because content was moved)
+    memmove(myString, myString + theLength + anOffset, theLength * sizeof(char16_t));
+  }
+  else
+  {
+    const int anOldLength = myLength;
+    reallocate(myLength + theLength);
+    // Move existing characters to the end
+    memmove(myString + theLength, myString, anOldLength * sizeof(char16_t));
+    // Copy theOther to the beginning
+    memcpy(myString, theOther, theLength * sizeof(char16_t));
+  }
 }
 
 //==================================================================================================

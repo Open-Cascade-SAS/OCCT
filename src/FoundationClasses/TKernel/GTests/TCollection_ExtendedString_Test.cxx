@@ -13,6 +13,7 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #include <gtest/gtest.h>
 
@@ -838,3 +839,192 @@ TEST(TCollection_ExtendedStringTest, StringView_EmptyConstructor)
   EXPECT_TRUE(aString.IsEmpty());
 }
 #endif
+
+// ========================================
+// Tests for edge cases and error handling
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, FillerConstructor_NegativeLength_Throws)
+{
+  EXPECT_THROW(TCollection_ExtendedString(-5, u'X'), Standard_OutOfRange);
+}
+
+TEST(TCollection_ExtendedStringTest, FillerConstructor_ZeroLength)
+{
+  const int                  aZeroLength = 0;
+  TCollection_ExtendedString aString(aZeroLength, u'X');
+  EXPECT_TRUE(aString.IsEmpty());
+  EXPECT_EQ(0, aString.Length());
+}
+
+// ========================================
+// Tests for AssignCat self-append (aliasing)
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, AssignCat_SelfAppend)
+{
+  TCollection_ExtendedString aString("Hello");
+  aString.AssignCat(aString);
+  EXPECT_EQ(10, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("HelloHello", anAscii.ToCString());
+}
+
+TEST(TCollection_ExtendedStringTest, AssignCat_SelfAppendMultiple)
+{
+  TCollection_ExtendedString aString("AB");
+  aString.AssignCat(aString);
+  aString.AssignCat(aString);
+  EXPECT_EQ(8, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("ABABABAB", anAscii.ToCString());
+}
+
+TEST(TCollection_ExtendedStringTest, AssignCat_PointerIntoSelf)
+{
+  TCollection_ExtendedString aString("HelloWorld");
+  // Append substring of self starting at position 5 (0-based), length 5
+  aString.AssignCat(aString.ToExtString() + 5, 5);
+  EXPECT_EQ(15, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("HelloWorldWorld", anAscii.ToCString());
+}
+
+TEST(TCollection_ExtendedStringTest, AssignCat_PointerIntoSelfBeginning)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Append first 3 characters of self
+  aString.AssignCat(aString.ToExtString(), 3);
+  EXPECT_EQ(8, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("HelloHel", anAscii.ToCString());
+}
+
+// ========================================
+// Tests for Prepend aliasing
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, Prepend_PointerIntoSelf)
+{
+  TCollection_ExtendedString aString("HelloWorld");
+  // Prepend substring of self starting at position 5 (0-based), length 5
+  aString.Prepend(aString.ToExtString() + 5, 5);
+  EXPECT_EQ(15, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("WorldHelloWorld", anAscii.ToCString());
+}
+
+TEST(TCollection_ExtendedStringTest, Prepend_PointerIntoSelfBeginning)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Prepend first 3 characters of self
+  aString.Prepend(aString.ToExtString(), 3);
+  EXPECT_EQ(8, aString.Length());
+  TCollection_AsciiString anAscii(aString);
+  EXPECT_STREQ("HelHello", anAscii.ToCString());
+}
+
+// ========================================
+// Tests for comparison methods with null/negative length
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, IsEqual_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  EXPECT_FALSE(aString.IsEqual(nullptr, 5));
+}
+
+TEST(TCollection_ExtendedStringTest, IsEqual_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aOther = u"Hello";
+  EXPECT_FALSE(aString.IsEqual(aOther, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, IsEqual_ZeroLengthNullPointer)
+{
+  TCollection_ExtendedString aString;
+  // Empty string with null pointer and zero length should be equal
+  EXPECT_TRUE(aString.IsEqual(nullptr, 0));
+}
+
+TEST(TCollection_ExtendedStringTest, IsDifferent_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  EXPECT_TRUE(aString.IsDifferent(nullptr, 5));
+}
+
+TEST(TCollection_ExtendedStringTest, IsDifferent_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aOther = u"Hello";
+  EXPECT_TRUE(aString.IsDifferent(aOther, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, IsLess_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Non-empty string is not less than null/invalid
+  EXPECT_FALSE(aString.IsLess(nullptr, 5));
+}
+
+TEST(TCollection_ExtendedStringTest, IsLess_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aOther = u"Hello";
+  EXPECT_FALSE(aString.IsLess(aOther, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, IsGreater_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Non-empty string is greater than null/invalid
+  EXPECT_TRUE(aString.IsGreater(nullptr, 5));
+}
+
+TEST(TCollection_ExtendedStringTest, IsGreater_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aOther = u"Hello";
+  EXPECT_TRUE(aString.IsGreater(aOther, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, StartsWith_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  EXPECT_FALSE(aString.StartsWith(nullptr, 3));
+}
+
+TEST(TCollection_ExtendedStringTest, StartsWith_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aPrefix = u"Hel";
+  EXPECT_FALSE(aString.StartsWith(aPrefix, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, StartsWith_ZeroLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Any string starts with empty string
+  EXPECT_TRUE(aString.StartsWith(nullptr, 0));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_NullPointer)
+{
+  TCollection_ExtendedString aString("Hello");
+  EXPECT_FALSE(aString.EndsWith(nullptr, 3));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_NegativeLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  const char16_t*            aSuffix = u"llo";
+  EXPECT_FALSE(aString.EndsWith(aSuffix, -1));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_ZeroLength)
+{
+  TCollection_ExtendedString aString("Hello");
+  // Any string ends with empty string
+  EXPECT_TRUE(aString.EndsWith(nullptr, 0));
+}
