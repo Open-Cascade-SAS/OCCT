@@ -11,5 +11,4 @@ set(OCCT_DDocStd_FILES
   DDocStd_MTMCommands.cxx
   DDocStd_ToolsCommands.cxx
   DDocStd_ShapeSchemaCommands.cxx
-  IDNames.tcl
 )

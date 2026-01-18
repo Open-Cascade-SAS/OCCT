@@ -319,7 +319,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
     }
     if (xstr.SearchFromEnd(c) == isym - 1)
       isym--; // replace the last separator by '\0'
-    xstr.SetValue(isym, '\0');
+    xstr.SetValue(isym, u'\0');
 #ifdef _DEBUG
     TCollection_AsciiString cstr(xstr, '?'); // deb
 #endif

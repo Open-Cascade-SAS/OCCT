@@ -9,5 +9,4 @@ set(OCCT_MathLin_FILES
   MathLin_Jacobi.hxx
   MathLin_LeastSquares.hxx
   MathLin_EigenSearch.hxx
-  README.md
 )

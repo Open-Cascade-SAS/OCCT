@@ -142,9 +142,10 @@ runs:
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
-        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
-        Remove-Item Noto-hinted.zip
+        Invoke-WebRequest -Uri https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/01_NotoSansCJK-OTF-VF.zip -OutFile NotoSansCJK.zip
+        Expand-Archive -Path NotoSansCJK.zip -DestinationPath NotoSansCJK
+        Copy-Item -Path "NotoSansCJK\Variable\OTF\*" -Destination "$env:windir\Fonts" -Force
+        Remove-Item -Recurse -Force NotoSansCJK, NotoSansCJK.zip
 
     - name: Set execute permissions on DRAWEXE (macOS/Linux)
       if: ${{ (inputs.platform == 'macos' || inputs.platform == 'linux') && steps.check_failures.outputs.failed_count > 0 }}

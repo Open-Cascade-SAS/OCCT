@@ -156,7 +156,7 @@ Defines which precision value will be used during translation (see section 2.5 b
 Read this parameter with: 
 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("read.precision.mode");  
+int ic = Interface_Static::IVal("read.precision.mode");  
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -172,7 +172,7 @@ This value is a basic value of tolerance in the processor. The value is in milli
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Real rp = Interface_Static::RVal("read.precision.val"); 
+double rp = Interface_Static::RVal("read.precision.val"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -190,7 +190,7 @@ Actually, the maximum between *read.maxprecision.val* and the basis tolerance is
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Real rp = Interface_Static::RVal("read.maxprecision.val"); 
+double rp = Interface_Static::RVal("read.maxprecision.val"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -208,7 +208,7 @@ Defines the mode of applying the maximum allowed tolerance. Its possible values 
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("read.maxprecision.mode"); 
+int ic = Interface_Static::IVal("read.maxprecision.mode"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -226,7 +226,7 @@ The functionality of *BRepLib::SameParameter* is used through *ShapeFix_Edge::Sa
  
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer mv = Interface_Static::IVal("read.stdsameparameter.mode"); 
+int mv = Interface_Static::IVal("read.stdsameparameter.mode"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -245,7 +245,7 @@ If both 2D and 3D representation of the entity are present, the computation of t
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer rp = Interface_Static::IVal("read.surfacecurve.mode"); 
+int rp = Interface_Static::IVal("read.surfacecurve.mode"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -259,7 +259,7 @@ Default value is (0).
 This parameter is used for call to *BRepLib::EncodeRegularity()* function which is called for the shape read from an IGES or a STEP file at the end of translation process. This function sets the regularity flag of the edge in the shell when this edge is shared by two faces. This flag shows the continuity these two faces are connected with at that edge.  
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Real era =  Interface_Static::RVal("read.encoderegularity.angle"); 
+double era =  Interface_Static::RVal("read.encoderegularity.angle"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -297,7 +297,7 @@ Defines the approach used for selection of top-level STEP entities for translati
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("read.step.product.mode");  
+int ic = Interface_Static::IVal("read.step.product.mode");  
 ~~~~
 
 Modify this parameter with: 
@@ -320,7 +320,7 @@ Note that in AP 203 and AP214 files all products should be marked as `design', s
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic =  Interface_Static::IVal("read.step.product.context");
+int ic =  Interface_Static::IVal("read.step.product.context");
 ~~~~
   
 Modify this parameter with: 
@@ -345,7 +345,7 @@ When this option is not equal to 1, for products with multiple representations t
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("read.step.shape.repr");  
+int ic = Interface_Static::IVal("read.step.shape.repr");  
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -364,7 +364,7 @@ Specifies which data should be read for the products found in the STEP file:
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic =                   Interface_Static::IVal("read.step.assembly.level"); 
+int ic =                   Interface_Static::IVal("read.step.assembly.level"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -381,7 +381,7 @@ Defines whether shapes associated with the main *SHAPE_DEFINITION_REPRESENTATION
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic =           Interface_Static::IVal("read.step.shape.relationship");
+int ic =           Interface_Static::IVal("read.step.shape.relationship");
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -398,7 +398,7 @@ Defines whether shapes associated with the *PRODUCT_DEFINITION_SHAPE* entity of 
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic =                   Interface_Static::IVal("read.step.shape.aspect"); 
+int ic =                   Interface_Static::IVal("read.step.shape.aspect"); 
 ~~~~
 
 Modify this parameter with: 
@@ -431,15 +431,15 @@ of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follow
 ~~~~{.cpp}
   STEPControl_Reader aReader;
   ... // translate file and parse STEP model to find relevant axis entity
-  Handle(StepGeom_Axis2Placement3d) aSTEPAxis = ...;
-  Handle(Transfer_Binder) aBinder = aReader->WS()->TransferReader()->TransientProcess()->Find(aSTEPAxis);
-  Handle(TransferBRep_ShapeBinder) aShBinder = Handle(TransferBRep_ShapeBinder)::DownCast(aBinder);
+  occ::handle<StepGeom_Axis2Placement3d> aSTEPAxis = ...;
+  occ::handle<Transfer_Binder> aBinder = aReader->WS()->TransferReader()->TransientProcess()->Find(aSTEPAxis);
+  occ::handle<TransferBRep_ShapeBinder> aShBinder = occ::down_cast<TransferBRep_ShapeBinder>(aBinder);
   if (! aShBinder.IsNull())
   {
     TopoDS_Face aFace = TopoDS::Face (aShBinder->Result());
     if (! aFace.IsNull())
     {
-      Handle(Geom_Plane) aSurf = Handle(Geom_Plane)::DownCast (BRep_Tool::Surface (aFace));
+      occ::handle<Geom_Plane> aSurf = occ::down_cast<Geom_Plane>(BRep_Tool::Surface (aFace));
       if (! aSurf.IsNull())
       {
         gp_Ax3 anAxis = aSurf->Placement();
@@ -467,7 +467,7 @@ Tessellated geometry is attached to shapes as objects of <i>Poly_Triangulation</
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("read.step.tessellated"); 
+int ic = Interface_Static::IVal("read.step.tessellated"); 
 ~~~~
 
 Modify this parameter with: 
@@ -502,10 +502,10 @@ Perform the translation according to what you want to translate. You can choose 
   
 The following methods are used for translation:
 
-* *Standard_Boolean ok = reader.TransferRoot(rank)* -- translates a root entity identified by its rank;
-* *Standard_Boolean ok = reader.TransferOne(rank)* -- translates an entity identified by its rank;
-* *Standard_Integer num = reader.TransferList(list)* -- translates a list of entities in one operation (this method returns the number of successful translations);
-* *Standard_Integer NbRoots = reader.NbRootsForTransfer()* and *Standard_Integer num = reader.TransferRoots()* -- translate all transferable roots. 
+* *bool ok = reader.TransferRoot(rank)* -- translates a root entity identified by its rank;
+* *bool ok = reader.TransferOne(rank)* -- translates an entity identified by its rank;
+* *int num = reader.TransferList(list)* -- translates a list of entities in one operation (this method returns the number of successful translations);
+* *int NbRoots = reader.NbRootsForTransfer()* and *int num = reader.TransferRoots()* -- translate all transferable roots. 
 
 @subsubsection occt_step_2_3_5 Getting the translation results
 Each successful translation operation outputs one shape. A series of translations gives a set of shapes. 
@@ -517,7 +517,7 @@ reader.ClearShapes();
 between two translation operations, if you do not, the results from the next translation will be added to the accumulation. 
 
 *TransferRoots()* operations automatically clear all existing results before they start. 
-* *Standard_Integer num = reader.NbShapes()* -- gets the number of shapes recorded in the result; 
+* *int num = reader.NbShapes()* -- gets the number of shapes recorded in the result; 
 * *TopoDS_Shape shape = reader.Shape(rank)* -- gets the result identified by its rank, where rank is an integer between 1 and NbShapes;
 * *TopoDS_Shape shape = reader.Shape()* -- gets the first result of translation; 
 * *TopoDS_Shape shape = reader.OneShape()* -- gets all results in a single shape, which is:
@@ -550,8 +550,8 @@ There are three selection possibilities. You can select:
 
 Transferring the whole file means transferring all root entities. The number of roots can be evaluated when the file is loaded: 
 ~~~~{.cpp}
-Standard_Integer NbRoots = reader.NbRootsForTransfer(); 
-Standard_Integer num = reader.TransferRoots(); 
+int NbRoots = reader.NbRootsForTransfer(); 
+int num = reader.TransferRoots(); 
 ~~~~
 
 <h5>List of entities</h5>
@@ -559,23 +559,23 @@ A list of entities can be formed by invoking *STEP214Control_Reader::GiveList* (
 
 Here is a simple example of how a list is translated: 
 ~~~~{.cpp}
-Handle(TColStd_HSequenceOfTransient) list = reader.GiveList(); 
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = reader.GiveList(); 
 ~~~~
-The result is a *TColStd_HSequenceOfTransient*. 
+The result is a *NCollection_HSequence\<occ::handle\<Standard_Transient\>\>*. 
 You can either translate a list entity by entity or all at once. An entity-by-entity operation lets you check each individual entity translated. 
 
 <h5>Translating a whole list in one operation</h5>
 ~~~~{.cpp}
-Standard_Integer nbtrans = reader.TransferList (list); 
+int nbtrans = reader.TransferList (list); 
 ~~~~
 *nbtrans* gives the number of items in the list that produced a shape. 
 
 <h5>Translating a list entity by entity:</h5>
 ~~~~{.cpp}
-Standard_Integer i,nb = list->Length();
+int i,nb = list->Length();
 for (i = 1; i <= nb; i ++) {
- Handle(Standard_Transient) ent = list->Value(i);
- Standard_Boolean OK = reader.TransferEntity (ent);
+ occ::handle<Standard_Transient> ent = list->Value(i);
+ bool OK = reader.TransferEntity (ent);
 }
 ~~~~
 
@@ -603,19 +603,19 @@ You can select an entity either by its rank or by its handle (an entity's handle
 <h5>Selection by rank</h5>
 Use method *StepData_StepModel::NextNumberForLabel* to find its rank with the following: 
 ~~~~{.cpp}
-Standard_CString label = `#...'; 
+const char* label = `#...'; 
 StepData_StepModel model = reader.StepModel(); 
-rank = model->NextNumberForLabe(label, 0, Standard_False); 
+rank = model->NextNumberForLabe(label, 0, false); 
 ~~~~
 Translate an entity specified by its rank: 
 ~~~~{.cpp}
-Standard_Boolean ok = reader.Transfer (rank); 
+bool ok = reader.Transfer (rank); 
 ~~~~
 
 <h5>Direct selection of an entity</h5>
-*ent* is the entity. The argument is a *Handle(Standard_Transient)*. 
+*ent* is the entity. The argument is a *occ::handle\<Standard_Transient\>*. 
 ~~~~{.cpp}
-Standard_Boolean ok = reader.TransferEntity (ent); 
+bool ok = reader.TransferEntity (ent); 
 ~~~~
 
 @subsection occt_step_2_4 Mapping STEP entities to Open CASCADE Technology shapes
@@ -824,18 +824,18 @@ The following diagram illustrates the structure of calls in reading STEP. The hi
 #include <TopoDS_Shape.hxx> 
 #include <BRepTools.hxx> 
 
-Standard_Integer main() 
+int main() 
 { 
   STEPControl_Reader reader; 
   reader.ReadFile("MyFile.stp");
 
   // Loads file MyFile.stp 
-  Standard_Integer NbRoots = reader.NbRootsForTransfer(); 
+  int NbRoots = reader.NbRootsForTransfer(); 
 
   // gets the number of transferable roots 
   cout;Number of roots in STEP file: ; NbRootsendl; 
 
-  Standard_Integer NbTrans = reader.TransferRoots(); 
+  int NbTrans = reader.TransferRoots(); 
   // translates all transferable roots, and returns the number of    //successful translations 
   cout;STEP roots transferred: ; NbTransendl; 
   cout;Number of resulting shapes is: ;reader.NbShapes()endl; 
@@ -893,9 +893,10 @@ writes the precision value.
 * Greatest (1) :  the uncertainty value is set to the maximum tolerance of an OCCT shape 
 * Session (2) :   the uncertainty value is that of the write.precision.val parameter. 
 
-Read this parameter with: 
-
-Standard_Integer ic = Interface_Static::IVal("write.precision.mode"); 
+Read this parameter with:
+~~~~{.cpp}
+int ic = Interface_Static::IVal("write.precision.mode");
+~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.precision.mode",1))  
@@ -912,7 +913,7 @@ This value is stored in shape_representation in a STEP file as an uncertainty.
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Real rp = Interface_Static::RVal("write.precision.val");  
+double rp = Interface_Static::RVal("write.precision.val");  
 ~~~~
 
 Modify this parameter with: 
@@ -930,7 +931,7 @@ writing assembly mode.
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer rp = Interface_Static::IVal("write.step.assembly"); 
+int rp = Interface_Static::IVal("write.step.assembly"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -957,7 +958,7 @@ if(!Interface_Static::SetCVal("write.step.schema","DIS"))
 .. error .. 
 ~~~~
 Default value is 1 (;CD;). 
-For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(Standard_True)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
+For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(true)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
  
 <h4>write.step.product.name</h4>
 Defines the text string that will be used for field `name' of PRODUCT entities written to the STEP file. 
@@ -972,7 +973,7 @@ This parameter indicates whether parametric curves (curves in parametric space o
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer wp = Interface_Static::IVal("write.surfacecurve.mode"); 
+int wp = Interface_Static::IVal("write.surfacecurve.mode"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -1002,7 +1003,7 @@ This parameter indicates which of free vertices writing mode is switch on.
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("write.step.vertex.mode"); 
+int ic = Interface_Static::IVal("write.step.vertex.mode"); 
 ~~~~
 Modify this parameter with: 
 ~~~~{.cpp}
@@ -1028,7 +1029,7 @@ Tessellated geometry is taken as objects of <i>Poly_Triangulation type</i> from 
 
 Read this parameter with: 
 ~~~~{.cpp}
-Standard_Integer ic = Interface_Static::IVal("write.step.tessellated"); 
+int ic = Interface_Static::IVal("write.step.tessellated"); 
 ~~~~
 
 Modify this parameter with: 
@@ -1194,7 +1195,7 @@ The highlighted classes are intended to translate geometry.
 #include <BRepTools.hxx> 
 #include <BRep_Builder.hxx> 
 
-Standard_Integer main() 
+int main() 
 { 
 TopoDS_Solid source; 
 . . . 
@@ -1513,7 +1514,7 @@ In addition to the translation of shapes implemented in basic translator, it pro
 ### Load a STEP file
 Before performing any other operation, you must load a STEP file with: 
 ~~~~{.cpp}
-STEPCAFControl_Reader reader(XSDRAW::Session(), Standard_False); 
+STEPCAFControl_Reader reader(XSDRAW::Session(), false); 
 IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp"); 
 ~~~~
 Loading the file only memorizes the data, it does not translate it. 
@@ -1529,21 +1530,21 @@ In addition, the following parameters can be set for XDE translation of attribut
   *  Parameter for transferring colors: 
 ~~~~{.cpp}
 reader.SetColorMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
   *  Parameter for transferring names: 
 ~~~~{.cpp}
 reader.SetNameMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 
 ### Translate a STEP file to XDE
 
 The following function performs a translation of the whole document: 
 ~~~~{.cpp}
-Standard_Boolean ok = reader.Transfer(doc); 
+bool ok = reader.Transfer(doc); 
 ~~~~
-where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
+where *doc* is a variable which contains a handle to the output document and should have a type *occ::handle\<TDocStd_Document\>*. 
 
 
 @subsection occt_step_7_2 Attributes read from STEP 
@@ -1664,7 +1665,7 @@ Attributes can be read for shapes at levels:
 
 The translation from XDE to STEP can be initialized as follows: 
 ~~~~{.cpp}
-STEPCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
+STEPCAFControl_Writer aWriter(XSDRAW::Session(),false); 
 ~~~~
 
 ### Set parameters for translation from XDE to STEP
@@ -1673,12 +1674,12 @@ The following parameters can be set for a translation of attributes to STEP:
   *  For transferring colors: 
 ~~~~{.cpp}
 aWriter.SetColorMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
   *  For transferring names: 
 ~~~~{.cpp}
 aWriter.SetNameMode(mode); 
-// mode can be Standard_True or Standard_False 
+// mode can be true or false 
 ~~~~
 
 ### Translate an XDE document to STEP
@@ -1687,7 +1688,7 @@ You can perform the translation of document by calling the function:
 ~~~~{.cpp}
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
 ~~~~
-where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *Handle(TDocStd_Document)*. 
+where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *occ::handle\<TDocStd_Document\>*. 
 
 ### Write a STEP file
 

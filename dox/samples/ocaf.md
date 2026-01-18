@@ -38,7 +38,7 @@ In the <i>Formats</i> method, add the format of the documents, which need to be 
 For example:
 
 ~~~~{.cpp}
-    void myApplication::Formats(TColStd_SequenceOfExtendedString& Formats)
+    void myApplication::Formats(NCollection_Sequence<TCollection_ExtendedString>& Formats)
     {
       Formats.Append(TCollection_ExtendedString ("OCAF-myApplication"));
     }
@@ -48,9 +48,9 @@ In the <i>ResourcesName</i> method, you only define the name of the resource fil
 This file contains several definitions for the saving and opening mechanisms associated with each format and calling of the plug-in file.
 
 ~~~~{.cpp}
-    Standard_CString myApplication::ResourcesName()
+    const char* myApplication::ResourcesName()
     {
-      return Standard_CString ("Resources");
+      return const char* ("Resources");
     }
 ~~~~
 
@@ -140,7 +140,7 @@ public: //!@ name Static methods
 
   //! Finds or creates the attribute attached to <theLabel>.
   //! The found or created attribute is returned.
-  Standard_EXPORT static Handle(MyPackage_Transformation) Set (const TDF_Label theLabel);
+  Standard_EXPORT static occ::handle<MyPackage_Transformation> Set (const TDF_Label theLabel);
 
 public: //!@ name Methods for access to the attribute data
 
@@ -150,7 +150,7 @@ public: //!@ name Methods for access to the attribute data
 public: //!@ name Methods for setting the data of transformation
 
   //! The method defines a rotation type of transformation.
-  Standard_EXPORT void SetRotation (const gp_Ax1& theAxis, Standard_Real theAngle);
+  Standard_EXPORT void SetRotation (const gp_Ax1& theAxis, double theAngle);
 
   //! The method defines a translation type of transformation.
   Standard_EXPORT void SetTranslation (const gp_Vec& theVector);
@@ -165,7 +165,7 @@ public: //!@ name Methods for setting the data of transformation
   Standard_EXPORT void SetMirror (const gp_Ax2& thePlane);
 
   //! The method defines a scale type of transformation.
-  Standard_EXPORT void SetScale (const gp_Pnt& thePoint, Standard_Real theScale);
+  Standard_EXPORT void SetScale (const gp_Pnt& thePoint, double theScale);
 
   //! The method defines a complex type of transformation from one coordinate system to another.
   Standard_EXPORT void SetTransformation (const gp_Ax3& theCoordinateSystem1, const gp_Ax3& theCoordinateSystem2);
@@ -178,15 +178,15 @@ public: //!@ name Overridden methods from TDF_Attribute
 
   //! The method is called on Undo / Redo.
   //! It copies the content of theAttribute into this attribute (copies the fields).
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& theAttribute);
+  Standard_EXPORT void Restore (const occ::handle<TDF_Attribute>& theAttribute);
 
   //! It creates a new instance of this attribute.
   //! It is called on Copy / Paste, Undo / Redo.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty () const;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty () const;
 
   //! The method is called on Copy / Paste.
   //! It copies the content of this attribute into theAttribute (copies the fields).
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& theAttribute, const Handle(TDF_RelocationTable)& theRelocationTable);
+  Standard_EXPORT void Paste (const occ::handle<TDF_Attribute>& theAttribute, const occ::handle<TDF_RelocationTable>& theRelocationTable);
 
   //! Prints the content of this attribute into the stream.
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS);
@@ -207,8 +207,8 @@ private:
   gp_Ax3 mySecondAx3;
 
   // Scalar values
-  Standard_Real myAngle;
-  Standard_Real myScale;
+  double myAngle;
+  double myScale;
 
   // Points
   gp_Pnt myFirstPoint;
@@ -238,9 +238,9 @@ const Standard_GUID& MyPackage_Transformation::GetID()
 //purpose  : Finds or creates the attribute attached to <theLabel>.
 //           The found or created attribute is returned.
 //=======================================================================
-Handle(MyPackage_Transformation) MyPackage_Transformation::Set(const TDF_Label& theLabel)
+occ::handle<MyPackage_Transformation> MyPackage_Transformation::Set(const TDF_Label& theLabel)
 {
-  Handle(MyPackage_Transformation) T;
+  occ::handle<MyPackage_Transformation> T;
   if (!theLabel.FindAttribute(MyPackage_Transformation::GetID(), T))
   {
     T = new MyPackage_Transformation();
@@ -309,7 +309,7 @@ gp_Trsf MyPackage_Transformation::Get() const
 //function : SetRotation
 //purpose  : The method defines a rotation type of transformation.
 //=======================================================================
-void MyPackage_Transformation::SetRotation(const gp_Ax1& theAxis, const Standard_Real theAngle)
+void MyPackage_Transformation::SetRotation(const gp_Ax1& theAxis, const double theAngle)
 {
   Backup();
   myType = gp_Rotation;
@@ -369,7 +369,7 @@ void MyPackage_Transformation::SetMirror(const gp_Ax2& thePlane)
 //function : SetScale
 //purpose  : The method defines a scale type of transformation.
 //=======================================================================
-void MyPackage_Transformation::SetScale(const gp_Pnt& thePoint, const Standard_Real theScale)
+void MyPackage_Transformation::SetScale(const gp_Pnt& thePoint, const double theScale)
 {
   Backup();
   myType = gp_Scale;
@@ -407,9 +407,9 @@ const Standard_GUID& MyPackage_Transformation::ID() const
 //           It copies the content of <theAttribute>
 //           into this attribute (copies the fields).
 //=======================================================================
-void MyPackage_Transformation::Restore(const Handle(TDF_Attribute)& theAttribute)
+void MyPackage_Transformation::Restore(const occ::handle<TDF_Attribute>& theAttribute)
 {
-  Handle(MyPackage_Transformation) theTransformation = Handle(MyPackage_Transformation)::DownCast(theAttribute);
+  occ::handle<MyPackage_Transformation> theTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
   myType = theTransformation->myType;
   myAx1 = theTransformation->myAx1;
   myAx2 = theTransformation->myAx2;
@@ -426,7 +426,7 @@ void MyPackage_Transformation::Restore(const Handle(TDF_Attribute)& theAttribute
 //purpose  : It creates a new instance of this attribute.
 //           It is called on Copy / Paste, Undo / Redo.
 //=======================================================================
-Handle(TDF_Attribute) MyPackage_Transformation::NewEmpty() const
+occ::handle<TDF_Attribute> MyPackage_Transformation::NewEmpty() const
 {
   return new MyPackage_Transformation();
 }
@@ -437,10 +437,10 @@ Handle(TDF_Attribute) MyPackage_Transformation::NewEmpty() const
 //           It copies the content of this attribute into
 //           <theAttribute> (copies the fields).
 //=======================================================================
-void MyPackage_Transformation::Paste (const Handle(TDF_Attribute)& theAttribute,
-                                      const Handle(TDF_RelocationTable)& ) const
+void MyPackage_Transformation::Paste (const occ::handle<TDF_Attribute>& theAttribute,
+                                      const occ::handle<TDF_RelocationTable>& ) const
 {
-  Handle(MyPackage_Transformation) theTransformation = Handle(MyPackage_Transformation)::DownCast(theAttribute);
+  occ::handle<MyPackage_Transformation> theTransformation = occ::down_cast<MyPackage_Transformation>(theAttribute);
   theTransformation->myType = myType;
   theTransformation->myAx1 = myAx1;
   theTransformation->myAx2 = myAx2;

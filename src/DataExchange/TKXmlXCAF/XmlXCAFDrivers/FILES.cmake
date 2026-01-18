@@ -2,8 +2,6 @@
 set(OCCT_XmlXCAFDrivers_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_XmlXCAFDrivers_FILES
-  FILES
-  GUID.txt
   XmlXCAFDrivers.cxx
   XmlXCAFDrivers.hxx
   XmlXCAFDrivers_DocumentRetrievalDriver.cxx

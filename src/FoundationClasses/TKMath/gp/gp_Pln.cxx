@@ -30,120 +30,126 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
 
-gp_Pln::gp_Pln(const gp_Pnt& P, const gp_Dir& V)
+//==================================================================================================
+
+gp_Pln::gp_Pln(const gp_Pnt& theP, const gp_Dir& theV)
 {
-  double A    = V.X();
-  double B    = V.Y();
-  double C    = V.Z();
-  double Aabs = A;
-  if (Aabs < 0)
-    Aabs = -Aabs;
-  double Babs = B;
-  if (Babs < 0)
-    Babs = -Babs;
-  double Cabs = C;
-  if (Cabs < 0)
-    Cabs = -Cabs;
+  const double A      = theV.X();
+  const double B      = theV.Y();
+  const double C      = theV.Z();
+  const double anAbsA = std::abs(A);
+  const double anAbsB = std::abs(B);
+  const double anAbsC = std::abs(C);
 
-  //  pour determiner l'axe X :
-  //  on dit que le produit scalaire Vx.V = 0.
-  //  et on recherche le max(A,B,C) pour faire la division.
-  //  l'une des coordonnees du vecteur est nulle.
+  // To determine the X axis:
+  // we require that the dot product Vx.V = 0.
+  // and we search for the max(A,B,C) to perform the division.
+  // one of the coordinates of the vector is zero.
 
-  if (Babs <= Aabs && Babs <= Cabs)
+  if (anAbsB <= anAbsA && anAbsB <= anAbsC)
   {
-    if (Aabs > Cabs)
-      pos = gp_Ax3(P, V, gp_Dir(-C, 0., A));
+    if (anAbsA > anAbsC)
+      myPosition = gp_Ax3(theP, theV, gp_Dir(-C, 0., A));
     else
-      pos = gp_Ax3(P, V, gp_Dir(C, 0., -A));
+      myPosition = gp_Ax3(theP, theV, gp_Dir(C, 0., -A));
   }
-  else if (Aabs <= Babs && Aabs <= Cabs)
+  else if (anAbsA <= anAbsB && anAbsA <= anAbsC)
   {
-    if (Babs > Cabs)
-      pos = gp_Ax3(P, V, gp_Dir(0., -C, B));
+    if (anAbsB > anAbsC)
+      myPosition = gp_Ax3(theP, theV, gp_Dir(0., -C, B));
     else
-      pos = gp_Ax3(P, V, gp_Dir(0., C, -B));
+      myPosition = gp_Ax3(theP, theV, gp_Dir(0., C, -B));
   }
   else
   {
-    if (Aabs > Babs)
-      pos = gp_Ax3(P, V, gp_Dir(-B, A, 0.));
+    if (anAbsA > anAbsB)
+      myPosition = gp_Ax3(theP, theV, gp_Dir(-B, A, 0.));
     else
-      pos = gp_Ax3(P, V, gp_Dir(B, -A, 0.));
+      myPosition = gp_Ax3(theP, theV, gp_Dir(B, -A, 0.));
   }
 }
 
-gp_Pln::gp_Pln(const double A, const double B, const double C, const double D)
+//==================================================================================================
+
+gp_Pln::gp_Pln(const double theA, const double theB, const double theC, const double theD)
 {
-  double Aabs = A;
-  if (Aabs < 0)
-    Aabs = -Aabs;
-  double Babs = B;
-  if (Babs < 0)
-    Babs = -Babs;
-  double Cabs = C;
-  if (Cabs < 0)
-    Cabs = -Cabs;
-  if (Babs <= Aabs && Babs <= Cabs)
+  const double anAbsA = std::abs(theA);
+  const double anAbsB = std::abs(theB);
+  const double anAbsC = std::abs(theC);
+  if (anAbsB <= anAbsA && anAbsB <= anAbsC)
   {
-    if (Aabs > Cabs)
-      pos = gp_Ax3(gp_Pnt(-D / A, 0., 0.), gp_Dir(A, B, C), gp_Dir(-C, 0., A));
+    if (anAbsA > anAbsC)
+      myPosition =
+        gp_Ax3(gp_Pnt(-theD / theA, 0., 0.), gp_Dir(theA, theB, theC), gp_Dir(-theC, 0., theA));
     else
-      pos = gp_Ax3(gp_Pnt(0., 0., -D / C), gp_Dir(A, B, C), gp_Dir(C, 0., -A));
+      myPosition =
+        gp_Ax3(gp_Pnt(0., 0., -theD / theC), gp_Dir(theA, theB, theC), gp_Dir(theC, 0., -theA));
   }
-  else if (Aabs <= Babs && Aabs <= Cabs)
+  else if (anAbsA <= anAbsB && anAbsA <= anAbsC)
   {
-    if (Babs > Cabs)
-      pos = gp_Ax3(gp_Pnt(0., -D / B, 0.), gp_Dir(A, B, C), gp_Dir(0., -C, B));
+    if (anAbsB > anAbsC)
+      myPosition =
+        gp_Ax3(gp_Pnt(0., -theD / theB, 0.), gp_Dir(theA, theB, theC), gp_Dir(0., -theC, theB));
     else
-      pos = gp_Ax3(gp_Pnt(0., 0., -D / C), gp_Dir(A, B, C), gp_Dir(0., C, -B));
+      myPosition =
+        gp_Ax3(gp_Pnt(0., 0., -theD / theC), gp_Dir(theA, theB, theC), gp_Dir(0., theC, -theB));
   }
   else
   {
-    if (Aabs > Babs)
-      pos = gp_Ax3(gp_Pnt(-D / A, 0., 0.), gp_Dir(A, B, C), gp_Dir(-B, A, 0.));
+    if (anAbsA > anAbsB)
+      myPosition =
+        gp_Ax3(gp_Pnt(-theD / theA, 0., 0.), gp_Dir(theA, theB, theC), gp_Dir(-theB, theA, 0.));
     else
-      pos = gp_Ax3(gp_Pnt(0., -D / B, 0.), gp_Dir(A, B, C), gp_Dir(B, -A, 0.));
+      myPosition =
+        gp_Ax3(gp_Pnt(0., -theD / theB, 0.), gp_Dir(theA, theB, theC), gp_Dir(theB, -theA, 0.));
   }
 }
 
-void gp_Pln::Mirror(const gp_Pnt& P) noexcept
+//==================================================================================================
+
+void gp_Pln::Mirror(const gp_Pnt& theP) noexcept
 {
-  pos.Mirror(P);
+  myPosition.Mirror(theP);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Pnt& P) const noexcept
+//==================================================================================================
+
+gp_Pln gp_Pln::Mirrored(const gp_Pnt& theP) const noexcept
 {
-  gp_Pln Pl = *this;
-  Pl.pos.Mirror(P);
-  return Pl;
+  return gp_Pln(myPosition.Mirrored(theP));
 }
 
-void gp_Pln::Mirror(const gp_Ax1& A1) noexcept
+//==================================================================================================
+
+void gp_Pln::Mirror(const gp_Ax1& theA1) noexcept
 {
-  pos.Mirror(A1);
+  myPosition.Mirror(theA1);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Ax1& A1) const noexcept
+//==================================================================================================
+
+gp_Pln gp_Pln::Mirrored(const gp_Ax1& theA1) const noexcept
 {
-  gp_Pln Pl = *this;
-  Pl.pos.Mirror(A1);
-  return Pl;
+  return gp_Pln(myPosition.Mirrored(theA1));
 }
 
-void gp_Pln::Mirror(const gp_Ax2& A2) noexcept
+//==================================================================================================
+
+void gp_Pln::Mirror(const gp_Ax2& theA2) noexcept
 {
-  pos.Mirror(A2);
+  myPosition.Mirror(theA2);
 }
 
-gp_Pln gp_Pln::Mirrored(const gp_Ax2& A2) const noexcept
+//==================================================================================================
+
+gp_Pln gp_Pln::Mirrored(const gp_Ax2& theA2) const noexcept
 {
-  gp_Pln Pl = *this;
-  Pl.pos.Mirror(A2);
-  return Pl;
+  return gp_Pln(myPosition.Mirrored(theA2));
 }
+
+//==================================================================================================
 
 void gp_Pln::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &pos)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPosition);
 }

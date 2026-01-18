@@ -13,7 +13,13 @@
 
 #if defined(__APPLE__) && !defined(HAVE_XLIB)
 
+// Suppress warnings from macOS system headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wmissing-method-return-type"
+#pragma clang diagnostic ignored "-Wavailability"
 #import <Cocoa/Cocoa.h>
+#pragma clang diagnostic pop
 
 #include <Cocoa_Window.hxx>
 #include <ViewerTest.hxx>

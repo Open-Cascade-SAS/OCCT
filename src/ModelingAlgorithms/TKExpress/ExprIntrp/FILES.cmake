@@ -4,10 +4,8 @@ set(OCCT_ExprIntrp_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_ExprIntrp_FILES
   ExprIntrp.cxx
   ExprIntrp.hxx
-  ExprIntrp.lex
   ExprIntrp.tab.c
   ExprIntrp.tab.h
-  ExprIntrp.yacc
   ExprIntrp_Analysis.cxx
   ExprIntrp_Analysis.hxx
   ExprIntrp_Generator.cxx

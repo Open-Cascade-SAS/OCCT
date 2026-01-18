@@ -35,38 +35,38 @@ The algorithm of shape triangulation is provided by the functionality of *BRepMe
 #include <IMeshTools_Parameters.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 
-Standard_Boolean meshing_explicit_parameters()
+bool meshing_explicit_parameters()
 {
-  const Standard_Real aRadius = 10.0; 
-  const Standard_Real aHeight = 25.0; 
+  const double aRadius = 10.0; 
+  const double aHeight = 25.0; 
   BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight); 
   TopoDS_Shape aShape = aCylinder.Shape();
 
-  const Standard_Real aLinearDeflection   = 0.01;
-  const Standard_Real anAngularDeflection = 0.5;
-  BRepMesh_IncrementalMesh aMesher (aShape, aLinearDeflection, Standard_False, anAngularDeflection, Standard_True);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  const double aLinearDeflection   = 0.01;
+  const double anAngularDeflection = 0.5;
+  BRepMesh_IncrementalMesh aMesher (aShape, aLinearDeflection, false, anAngularDeflection, true);
+  const int aStatus = aMesher.GetStatusFlags();
   return !aStatus;
 }
 
-Standard_Boolean meshing_imeshtools_parameters()
+bool meshing_imeshtools_parameters()
 {
-  const Standard_Real aRadius = 10.0; 
-  const Standard_Real aHeight = 25.0; 
+  const double aRadius = 10.0; 
+  const double aHeight = 25.0; 
   BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight); 
   TopoDS_Shape aShape = aCylinder.Shape();
   
   IMeshTools_Parameters aMeshParams;
   aMeshParams.Deflection               = 0.01;
   aMeshParams.Angle                    = 0.5;
-  aMeshParams.Relative                 = Standard_False;
-  aMeshParams.InParallel               = Standard_True;
+  aMeshParams.Relative                 = false;
+  aMeshParams.InParallel               = true;
   aMeshParams.MinSize                  = Precision::Confusion();
-  aMeshParams.InternalVerticesMode     = Standard_True;
-  aMeshParams.ControlSurfaceDeflection = Standard_True;
+  aMeshParams.InternalVerticesMode     = true;
+  aMeshParams.ControlSurfaceDeflection = true;
 
   BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  const int aStatus = aMesher.GetStatusFlags();
   return !aStatus;
 }
 ~~~~
@@ -208,7 +208,7 @@ The code snippet below shows passing a custom mesh factory to BRepMesh_Increment
 
 ~~~~{.cpp}
 IMeshTools_Parameters aMeshParams;
-Handle(IMeshTools_Context) aContext = new BRepMesh_Context();
+occ::handle<IMeshTools_Context> aContext = new BRepMesh_Context();
 aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory()));
 
 BRepMesh_IncrementalMesh aMesher;

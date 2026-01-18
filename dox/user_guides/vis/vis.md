@@ -219,7 +219,7 @@ vtkActorCollection* anActorCollection = aPicker->GetPickedActors();
 ~~~~
 or as a collection of picked shape IDs:
 ~~~~{.cpp}
-IVtk_ShapeIdList ids = aPicker->GetPickedShapesIds();
+NCollection_List<IVtk_IdType> ids = aPicker->GetPickedShapesIds();
 ~~~~
 These methods return a single top picked actor or a shape by default. To get all the picked actors or shapes it is necessary to send “true” value in the optional Boolean parameter:
 ~~~~{.cpp}
@@ -228,7 +228,7 @@ ids = aPicker->GetPickedShapesIds(true);
 ~~~~
 5. Obtain the picked sub-shape IDs:
 ~~~~{.cpp}
-IVtk_ShapeIdList subShapeIds = aPicker->GetPickedSubShapesIds(shapeId);
+NCollection_List<IVtk_IdType> subShapeIds = aPicker->GetPickedSubShapesIds(shapeId);
 ~~~~
 This method also returns a single ID of a top-level picked sub-shape and has the same optional Boolean parameter to get all the picked sub-shapes of a shape:
 ~~~~{.cpp}
@@ -264,7 +264,7 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> subShapesFilter = IVtkTools_SubPoly
 subShapesFilter->SetInputConnection(DS->GetOutputPort());
 
 // Get all picked sub-shapes ids of the shape from a picker (see 3.4)
-IVtk_ShapeIdList subShapeIds = aPicker->GetPickedSubShapesIds(ds->GetId(), true);
+NCollection_List<IVtk_IdType> subShapeIds = aPicker->GetPickedSubShapesIds(ds->GetId(), true);
 
 // Set ids to the filter to pass only picked sub-shapes
 subShapesFilter->SetData(subShapeIds);
@@ -352,11 +352,11 @@ myOccPickerAlgo->Pick(x, y);
 ~~~~
 5. Obtain top-level picking results as IDs of the picked top-level shapes:
 ~~~~{.cpp}
-IVtk_ShapeIdList ids = myOccPickerAlgo->ShapesPicked();
+NCollection_List<IVtk_IdType> ids = myOccPickerAlgo->ShapesPicked();
 ~~~~
 6. Obtain IDs of the picked sub-shapes:
 ~~~~{.cpp}
-IVtk_ShapeIdList subShapeIds
+NCollection_List<IVtk_IdType> subShapeIds
   = myOccPickerAlgo->SubShapesPicked(shapeId);
 ~~~~
 

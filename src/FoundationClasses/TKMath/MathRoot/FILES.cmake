@@ -9,5 +9,4 @@ set(OCCT_MathRoot_FILES
   MathRoot_Newton.hxx
   MathRoot_Secant.hxx
   MathRoot_Trig.hxx
-  README.md
 )

@@ -77,7 +77,7 @@ To instantiate a *gp_Pnt* object, just specify the X, Y, and Z coordinates of th
 Once your objects are instantiated, you can use methods provided by the class to access and modify its data. For example, to get the X coordinate of a point:
 
 ~~~~{.cpp}
-Standard_Real xValue1 = aPnt1.X();
+double xValue1 = aPnt1.X();
 ~~~~
 
 @subsection OCCT_TUTORIAL_SUB2_2 Profile: Defining the Geometry
@@ -96,16 +96,16 @@ This is because the *GC* provides two algorithm classes which are exactly what i
 Both of these classes return a *Geom_TrimmedCurve* manipulated by handle. This entity represents a base curve (line or circle, in our case), limited between two of its parameter values. For example, circle C is parameterized between 0 and 2PI. If you need to create a quarter of a circle, you create a *Geom_TrimmedCurve* on C limited between 0 and M_PI/2.
 
 ~~~~{.cpp}
-    Handle(Geom_TrimmedCurve) aArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
-    Handle(Geom_TrimmedCurve) aSegment1    = GC_MakeSegment(aPnt1, aPnt2);
-    Handle(Geom_TrimmedCurve) aSegment2    = GC_MakeSegment(aPnt4, aPnt5);
+    occ::handle<Geom_TrimmedCurve> aArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
+    occ::handle<Geom_TrimmedCurve> aSegment1    = GC_MakeSegment(aPnt1, aPnt2);
+    occ::handle<Geom_TrimmedCurve> aSegment2    = GC_MakeSegment(aPnt4, aPnt5);
 ~~~~
 
 All *GC* classes provide a casting method to obtain a result automatically with a function-like call. Note that this method will raise an exception if construction has failed. To handle possible errors more explicitly, you may use the *IsDone* and *Value* methods. For example:
 
 ~~~~{.cpp}
     GC_MakeSegment mkSeg (aPnt1, aPnt2);
-    Handle(Geom_TrimmedCurve) aSegment1;
+    occ::handle<Geom_TrimmedCurve> aSegment1;
     if(mkSegment.IsDone()){
         aSegment1 = mkSeg.Value();
     }
@@ -370,8 +370,8 @@ To create a cylinder, use another class from the primitives construction package
   * the radius and height.
 
 ~~~~{.cpp}
-    Standard_Real myNeckRadius = myThickness / 4.;
-    Standard_Real myNeckHeight = myHeight / 10;
+    double myNeckRadius = myThickness / 4.;
+    double myNeckHeight = myHeight / 10;
     BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, myNeckRadius, myNeckHeight);
     TopoDS_Shape myNeck = MKCylinder.Shape();
 ~~~~
@@ -424,7 +424,7 @@ For each detected face, you need to access the geometric properties of the shape
   * *Point* to access the 3D point of a vertex.
 
 ~~~~{.cpp}
-Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
 ~~~~
 
 As you can see, the *BRep_Tool::Surface* method returns an instance of the *Geom_Surface* class manipulated by handle. However, the *Geom_Surface* class does not provide information about the real type of the object *aSurface*, which could be an instance of *Geom_Plane*, *Geom_CylindricalSurface*, etc.
@@ -444,21 +444,21 @@ To compare a given type with the type you seek, use the *STANDARD_TYPE* macro, w
 If this comparison is true, you know that the *aSurface* real type is *Geom_Plane*. You can then convert it from *Geom_Surface* to *Geom_Plane* by using the *DownCast()* method provided by each class inheriting *Standard_Transient*. As its name implies, this static method is used to downcast objects to a given type with the following syntax:
 
 ~~~~{.cpp}
-    Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurface);
+    occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aSurface);
 ~~~~
 
 Remember that the goal of all these conversions is to find the highest face of the bottle lying on a plane. Suppose that you have these two global variables:
 
 ~~~~{.cpp}
     TopoDS_Face faceToRemove;
-    Standard_Real zMax = -1;
+    double zMax = -1;
 ~~~~
 
 You can easily find the plane whose origin is the biggest in Z knowing that the location of the plane is given with the *Geom_Plane::Location* method. For example:
 
 ~~~~{.cpp}
     gp_Pnt aPnt = aPlane->Location();
-    Standard_Real aZ = aPnt.Z();
+    double aZ = aPnt.Z();
     if(aZ > zMax){
         zMax = aZ;
         faceToRemove = aFace;
@@ -470,7 +470,7 @@ Open CASCADE Technology provides many collections for different kinds of objects
 The collection for shapes can be found in the *TopTools* package. As *BRepOffsetAPI_MakeThickSolid* requires a list, use the *TopTools_ListOfShape* class.
 
 ~~~~{.cpp}
-    TopTools_ListOfShape facesToRemove;
+    NCollection_List<TopoDS_Shape> facesToRemove;
     facesToRemove.Append(faceToRemove);
 ~~~~
 
@@ -504,9 +504,9 @@ Using the same coordinate system *neckAx2* used to position the neck, you create
 Notice that one of the cylindrical surfaces is smaller than the neck. There is a good reason for this: after the thread creation, you will fuse it with the neck. So, we must make sure that the two shapes remain in contact.
 
 ~~~~{.cpp}
-    Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
+    occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
 
-    Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
+    occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
 ~~~~
 
 
@@ -588,18 +588,18 @@ Supposing that:
 Your ellipses are defined as follows:
 
 ~~~~{.cpp}
-    Standard_Real aMajor = 2. * M_PI;
-    Standard_Real aMinor = myNeckHeight / 10;
-    Handle(Geom2d_Ellipse) anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
-    Handle(Geom2d_Ellipse) anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
+    double aMajor = 2. * M_PI;
+    double aMinor = myNeckHeight / 10;
+    occ::handle<Geom2d_Ellipse> anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
+    occ::handle<Geom2d_Ellipse> anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
 ~~~~
 
 To describe portions of curves for the arcs drawn above, you define *Geom2d_TrimmedCurve* trimmed curves out of the created ellipses and two parameters to limit them.
 As the parametric equation of an ellipse is P(U) = O + (MajorRadius * cos(U) * XDirection) + (MinorRadius * sin(U) * YDirection), the ellipses need to be limited between 0 and M_PI.
 
 ~~~~{.cpp}
-    Handle(Geom2d_TrimmedCurve) anArc1 = new Geom2d_TrimmedCurve(anEllipse1, 0, M_PI);
-    Handle(Geom2d_TrimmedCurve) anArc2 = new Geom2d_TrimmedCurve(anEllipse2, 0, M_PI);
+    occ::handle<Geom2d_TrimmedCurve> anArc1 = new Geom2d_TrimmedCurve(anEllipse1, 0, M_PI);
+    occ::handle<Geom2d_TrimmedCurve> anArc2 = new Geom2d_TrimmedCurve(anEllipse2, 0, M_PI);
 ~~~~
 
 The last step consists in defining the segment, which is the same for the two profiles: a line limited by the first and the last point of one of the arcs.
@@ -615,7 +615,7 @@ When creating the bottle's profile, you used classes from the *GC* package, prov
 In 2D geometry, this kind of algorithms is found in the *GCE2d* package. Class names and behaviors are similar to those in *GC*. For example, to create a 2D segment out of two points:
 
 ~~~~{.cpp}
-    Handle(Geom2d_TrimmedCurve) aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
+    occ::handle<Geom2d_TrimmedCurve> aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
 ~~~~
 
 
@@ -675,9 +675,9 @@ The loft function is implemented in the *BRepOffsetAPI_ThruSections* class, whic
   * Ask for the resulting loft shape with the Shape method.
 
 ~~~~{.cpp}
-    BRepOffsetAPI_ThruSections aTool(Standard_True);
+    BRepOffsetAPI_ThruSections aTool(true);
     aTool.AddWire(threadingWire1); aTool.AddWire(threadingWire2);
-    aTool.CheckCompatibility(Standard_False);
+    aTool.CheckCompatibility(false);
     TopoDS_Shape myThreading = aTool.Shape();
 ~~~~
 
@@ -709,8 +709,8 @@ If you want to know more and develop major projects using Open CASCADE Technolog
 Complete definition of MakeBottle function (defined in the file src/MakeBottle.cxx of the Tutorial):
 
 ~~~~{.cpp}
-    TopoDS_Shape MakeBottle(const Standard_Real myWidth, const Standard_Real myHeight,
-                            const Standard_Real myThickness)
+    TopoDS_Shape MakeBottle(const double myWidth, const double myHeight,
+                            const double myThickness)
     {
         // Profile : Define Support Points
         gp_Pnt aPnt1(-myWidth / 2., 0, 0);        
@@ -720,9 +720,9 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
         gp_Pnt aPnt5(myWidth / 2., 0, 0);
 
         // Profile : Define the Geometry
-        Handle(Geom_TrimmedCurve) anArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
-        Handle(Geom_TrimmedCurve) aSegment1 = GC_MakeSegment(aPnt1, aPnt2);
-        Handle(Geom_TrimmedCurve) aSegment2 = GC_MakeSegment(aPnt4, aPnt5);
+        occ::handle<Geom_TrimmedCurve> anArcOfCircle = GC_MakeArcOfCircle(aPnt2,aPnt3,aPnt4);
+        occ::handle<Geom_TrimmedCurve> aSegment1 = GC_MakeSegment(aPnt1, aPnt2);
+        occ::handle<Geom_TrimmedCurve> aSegment2 = GC_MakeSegment(aPnt4, aPnt5);
 
         // Profile : Define the Topology
         TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aSegment1);
@@ -766,8 +766,8 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
         gp_Dir neckAxis = gp::DZ();
         gp_Ax2 neckAx2(neckLocation, neckAxis);
 
-        Standard_Real myNeckRadius = myThickness / 4.;
-        Standard_Real myNeckHeight = myHeight / 10.;
+        double myNeckRadius = myThickness / 4.;
+        double myNeckHeight = myHeight / 10.;
 
         BRepPrimAPI_MakeCylinder MKCylinder(neckAx2, myNeckRadius, myNeckHeight);
         TopoDS_Shape myNeck = MKCylinder.Shape();
@@ -776,16 +776,16 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
 
         // Body : Create a Hollowed Solid
         TopoDS_Face   faceToRemove;
-        Standard_Real zMax = -1;
+        double zMax = -1;
 
         for(TopExp_Explorer aFaceExplorer(myBody, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next()){
             TopoDS_Face aFace = TopoDS::Face(aFaceExplorer.Current());
             // Check if <aFace> is the top face of the bottle's neck 
-            Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+            occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
             if(aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
-                Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurface);
+                occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aSurface);
                 gp_Pnt aPnt = aPlane->Location();
-                Standard_Real aZ   = aPnt.Z();
+                double aZ   = aPnt.Z();
                 if(aZ > zMax){
                     zMax = aZ;
                     faceToRemove = aFace;
@@ -793,31 +793,31 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
             }
         }
 
-        TopTools_ListOfShape facesToRemove;
+        NCollection_List<TopoDS_Shape> facesToRemove;
         facesToRemove.Append(faceToRemove);
         BRepOffsetAPI_MakeThickSolid aSolidMaker;
         aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
         myBody = aSolidMaker.Shape();
         // Threading : Create Surfaces
-        Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
-        Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
+        occ::handle<Geom_CylindricalSurface> aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
+        occ::handle<Geom_CylindricalSurface> aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
 
         // Threading : Define 2D Curves
         gp_Pnt2d aPnt(2. * M_PI, myNeckHeight / 2.);
         gp_Dir2d aDir(2. * M_PI, myNeckHeight / 4.);
         gp_Ax2d anAx2d(aPnt, aDir);
 
-        Standard_Real aMajor = 2. * M_PI;
-        Standard_Real aMinor = myNeckHeight / 10;
+        double aMajor = 2. * M_PI;
+        double aMinor = myNeckHeight / 10;
 
-        Handle(Geom2d_Ellipse) anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
-        Handle(Geom2d_Ellipse) anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
-        Handle(Geom2d_TrimmedCurve) anArc1 = new Geom2d_TrimmedCurve(anEllipse1, 0, M_PI);
-        Handle(Geom2d_TrimmedCurve) anArc2 = new Geom2d_TrimmedCurve(anEllipse2, 0, M_PI);
+        occ::handle<Geom2d_Ellipse> anEllipse1 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor);
+        occ::handle<Geom2d_Ellipse> anEllipse2 = new Geom2d_Ellipse(anAx2d, aMajor, aMinor / 4);
+        occ::handle<Geom2d_TrimmedCurve> anArc1 = new Geom2d_TrimmedCurve(anEllipse1, 0, M_PI);
+        occ::handle<Geom2d_TrimmedCurve> anArc2 = new Geom2d_TrimmedCurve(anEllipse2, 0, M_PI);
         gp_Pnt2d anEllipsePnt1 = anEllipse1->Value(0);
         gp_Pnt2d anEllipsePnt2 = anEllipse1->Value(M_PI);
 
-        Handle(Geom2d_TrimmedCurve) aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
+        occ::handle<Geom2d_TrimmedCurve> aSegment = GCE2d_MakeSegment(anEllipsePnt1, anEllipsePnt2);
         // Threading : Build Edges and Wires
         TopoDS_Edge anEdge1OnSurf1 = BRepBuilderAPI_MakeEdge(anArc1, aCyl1);
         TopoDS_Edge anEdge2OnSurf1 = BRepBuilderAPI_MakeEdge(aSegment, aCyl1);
@@ -829,10 +829,10 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
         BRepLib::BuildCurves3d(threadingWire2);
 
         // Create Threading 
-        BRepOffsetAPI_ThruSections aTool(Standard_True);
+        BRepOffsetAPI_ThruSections aTool(true);
         aTool.AddWire(threadingWire1);
         aTool.AddWire(threadingWire2);
-        aTool.CheckCompatibility(Standard_False);
+        aTool.CheckCompatibility(false);
 
         TopoDS_Shape myThreading = aTool.Shape();
 

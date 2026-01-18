@@ -2,7 +2,6 @@
 set(OCCT_FSD_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_FSD_FILES
-  FILES
   FSD_Base64.cxx
   FSD_Base64.hxx
   FSD_BinaryFile.cxx

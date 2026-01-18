@@ -18,5 +18,4 @@ set(OCCT_DDF_FILES
   DDF_Transaction.hxx
   DDF_TransactionCommands.cxx
 
-  FILES
 )

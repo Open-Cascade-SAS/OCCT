@@ -9,6 +9,4 @@ set(OCCT_StepFile_FILES
   StepFile_ReadData.hxx
   StepFile_Read.cxx
   StepFile_Read.hxx
-  step.lex
-  step.yacc
 )

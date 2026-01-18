@@ -7,5 +7,4 @@ set(OCCT_MathInteg_FILES
   MathInteg_DoubleExp.hxx
   MathInteg_Multiple.hxx
   MathInteg_Set.hxx
-  README.md
 )

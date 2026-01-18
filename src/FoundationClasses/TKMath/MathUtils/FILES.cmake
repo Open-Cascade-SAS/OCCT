@@ -20,5 +20,4 @@ set(OCCT_MathUtils_FILES
   MathUtils_FunctorScalar.hxx
   MathUtils_FunctorVector.hxx
   # Documentation
-  README.md
 )
