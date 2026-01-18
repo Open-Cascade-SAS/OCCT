@@ -109,7 +109,10 @@ public:
   //! Increments the reference counter of this object.
   //! Uses relaxed memory ordering since incrementing only requires atomicity,
   //! not synchronization with other memory operations.
-  inline void IncrementRefCounter() noexcept { myRefCount_.fetch_add(1, std::memory_order_relaxed); }
+  inline void IncrementRefCounter() noexcept
+  {
+    myRefCount_.fetch_add(1, std::memory_order_relaxed);
+  }
 
   //! Decrements the reference counter of this object;
   //! returns the decremented value.

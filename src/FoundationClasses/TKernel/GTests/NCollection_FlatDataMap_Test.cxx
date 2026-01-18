@@ -25,6 +25,7 @@ class NCollection_FlatDataMapTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 };
 
@@ -287,7 +288,7 @@ TEST_F(NCollection_FlatDataMapTest, LargeDataSet)
   }
 
   // Count elements using iterator
-  int                                            count = 0;
+  int                                         count = 0;
   NCollection_FlatDataMap<int, int>::Iterator it(aMap);
   for (; it.More(); it.Next())
   {
@@ -350,4 +351,3 @@ TEST_F(NCollection_FlatDataMapTest, IntegerKeyIntegerValue)
   EXPECT_EQ(200, aMap(20));
   EXPECT_EQ(300, aMap(30));
 }
-

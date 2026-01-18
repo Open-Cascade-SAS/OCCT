@@ -25,6 +25,7 @@ class NCollection_FlatMapTest : public testing::Test
 {
 protected:
   void SetUp() override {}
+
   void TearDown() override {}
 };
 
@@ -114,7 +115,7 @@ TEST_F(NCollection_FlatMapTest, Iterator)
   aMap.Add(20);
   aMap.Add(30);
 
-  std::set<int>                         foundKeys;
+  std::set<int>                      foundKeys;
   NCollection_FlatMap<int>::Iterator it(aMap);
   for (; it.More(); it.Next())
   {
