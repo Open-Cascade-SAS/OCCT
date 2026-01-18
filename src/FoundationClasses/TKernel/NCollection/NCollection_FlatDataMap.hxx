@@ -21,8 +21,9 @@
 #include <NCollection_BaseAllocator.hxx>
 
 #include <cstring>
-#include <utility>
 #include <new>
+#include <type_traits>
+#include <utility>
 
 /**
  * @brief High-performance hash map using open addressing with Robin Hood hashing.
@@ -46,6 +47,10 @@
  * - Keys and values must be movable
  * - Higher memory usage at low load factors
  * - Iteration order is not insertion order
+ * - Maximum probe distance is 250 (sufficient for normal hash distributions)
+ *
+ * @note This class is NOT thread-safe. External synchronization is required
+ *       for concurrent access from multiple threads.
  *
  * @tparam TheKeyType   Type of keys
  * @tparam TheItemType  Type of values
@@ -76,8 +81,11 @@ private:
     uint8_t     myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
     uint8_t     myState;         //!< SLOT_EMPTY, SLOT_DELETED, or SLOT_USED
 
-    Slot() noexcept
-        : myHash(0),
+    Slot() noexcept(std::is_nothrow_default_constructible<TheKeyType>::value
+                    && std::is_nothrow_default_constructible<TheItemType>::value)
+        : myKey(),
+          myItem(),
+          myHash(0),
           myProbeDistance(0),
           myState(SLOT_EMPTY)
     {
@@ -529,10 +537,10 @@ private:
   //! @return true if found
   bool findSlot(const TheKeyType& theKey, size_t& theIndex) const
   {
-    const size_t aHash   = myHasher(theKey);
-    const size_t aMask   = myCapacity - 1;
-    size_t       aIndex  = aHash & aMask;
-    uint8_t      aProbe  = 0;
+    const size_t aHash     = myHasher(theKey);
+    const size_t aMask     = myCapacity - 1;
+    size_t       aIndex    = aHash & aMask;
+    uint8_t      aProbe    = 0;
     const size_t aMaxProbe = myCapacity;
 
     while (aProbe < aMaxProbe)

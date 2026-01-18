@@ -113,12 +113,18 @@ public:
 
   //! Decrements the reference counter of this object;
   //! returns the decremented value.
-  //! Uses acquire-release ordering to ensure:
-  //! - Release: all writes to the object are visible before the count reaches zero
-  //! - Acquire: if result is zero, we see all writes before deletion
+  //! Uses release ordering for the decrement to ensure all writes to the object
+  //! are visible before the count reaches zero. An acquire fence is added only
+  //! when the count reaches zero, ensuring proper synchronization before deletion.
+  //! This is more efficient than using acq_rel for every decrement.
   inline int DecrementRefCounter() noexcept
   {
-    return myRefCount_.fetch_sub(1, std::memory_order_acq_rel) - 1;
+    const int aResult = myRefCount_.fetch_sub(1, std::memory_order_release) - 1;
+    if (aResult == 0)
+    {
+      std::atomic_thread_fence(std::memory_order_acquire);
+    }
+    return aResult;
   }
 
   //! Memory deallocator for transient classes

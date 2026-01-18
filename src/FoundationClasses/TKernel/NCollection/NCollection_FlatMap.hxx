@@ -18,8 +18,9 @@
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
-#include <utility>
 #include <new>
+#include <type_traits>
+#include <utility>
 
 /**
  * @brief High-performance hash set using open addressing with Robin Hood hashing.
@@ -43,6 +44,10 @@
  * - Keys must be movable
  * - Higher memory usage at low load factors
  * - Iteration order is not insertion order
+ * - Maximum probe distance is 250 (sufficient for normal hash distributions)
+ *
+ * @note This class is NOT thread-safe. External synchronization is required
+ *       for concurrent access from multiple threads.
  *
  * @tparam TheKeyType Type of keys
  * @tparam Hasher     Hash and equality functor (default: NCollection_DefaultHasher)
@@ -68,8 +73,9 @@ private:
     uint8_t    myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
     uint8_t    myState;         //!< SLOT_EMPTY, SLOT_DELETED, or SLOT_USED
 
-    Slot() noexcept
-        : myHash(0),
+    Slot() noexcept(std::is_nothrow_default_constructible<TheKeyType>::value)
+        : myKey(),
+          myHash(0),
           myProbeDistance(0),
           myState(SLOT_EMPTY)
     {
