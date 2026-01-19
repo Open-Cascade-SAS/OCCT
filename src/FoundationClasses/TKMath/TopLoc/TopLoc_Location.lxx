@@ -21,14 +21,14 @@
 
 //=================================================================================================
 
-inline bool TopLoc_Location::IsIdentity() const
+inline bool TopLoc_Location::IsIdentity() const noexcept
 {
   return myItems.IsEmpty();
 }
 
 //=================================================================================================
 
-inline void TopLoc_Location::Identity()
+inline void TopLoc_Location::Identity() noexcept
 {
   myItems.Clear();
 }
@@ -56,25 +56,60 @@ inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 
 //=================================================================================================
 
-inline size_t TopLoc_Location::HashCode() const
+inline size_t TopLoc_Location::HashCode() const noexcept
 {
-  // Hashing base on IsEqual function
   if (myItems.IsEmpty())
   {
     return 0;
   }
-  size_t                     aHash = opencascade::MurmurHash::optimalSeed<size_t>();
-  TopLoc_SListOfItemLocation items = myItems;
-  size_t                     aCombined[3];
-  while (items.More())
+  // Hash all items using pointer-based iteration to avoid Handle copy overhead.
+  size_t aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+  size_t aCombined[3];
+  for (const TopLoc_SListOfItemLocation* pIter = &myItems; pIter->More(); pIter = &pIter->Tail())
   {
-    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(items.Value().myDatum);
-    aCombined[1] = opencascade::hash(items.Value().myPower);
+    aCombined[0] = std::hash<occ::handle<TopLoc_Datum3D>>{}(pIter->Value().myDatum);
+    aCombined[1] = opencascade::hash(pIter->Value().myPower);
     aCombined[2] = aHash;
     aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
-    items.Next();
   }
   return aHash;
+}
+
+//=================================================================================================
+
+inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
+{
+  const void** p = (const void**)&myItems;
+  const void** q = (const void**)&theOther.myItems;
+  if (*p == *q)
+  {
+    return true;
+  }
+  // Iterate through both lists in parallel using pointers to avoid Handle copy overhead.
+  const TopLoc_SListOfItemLocation* pIter1 = &myItems;
+  const TopLoc_SListOfItemLocation* pIter2 = &theOther.myItems;
+  while (pIter1->More() && pIter2->More())
+  {
+    if (pIter1->Value().myDatum != pIter2->Value().myDatum)
+    {
+      return false;
+    }
+    if (pIter1->Value().myPower != pIter2->Value().myPower)
+    {
+      return false;
+    }
+    pIter1 = &pIter1->Tail();
+    pIter2 = &pIter2->Tail();
+  }
+  // Both lists should be exhausted at the same time for equality.
+  return !pIter1->More() && !pIter2->More();
+}
+
+//=================================================================================================
+
+inline bool TopLoc_Location::IsDifferent(const TopLoc_Location& theOther) const noexcept
+{
+  return !IsEqual(theOther);
 }
 
 //=================================================================================================
@@ -89,6 +124,9 @@ namespace std
 template <>
 struct hash<TopLoc_Location>
 {
-  size_t operator()(const TopLoc_Location& theLocation) const { return theLocation.HashCode(); }
+  size_t operator()(const TopLoc_Location& theLocation) const noexcept
+  {
+    return theLocation.HashCode();
+  }
 };
 } // namespace std

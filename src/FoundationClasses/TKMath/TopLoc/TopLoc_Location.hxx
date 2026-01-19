@@ -20,10 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <TopLoc_SListOfItemLocation.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <TopLoc_SListOfItemLocation.hxx>
 
 class gp_Trsf;
 class TopLoc_Datum3D;
@@ -39,7 +38,19 @@ public:
 
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
-  Standard_EXPORT TopLoc_Location();
+  TopLoc_Location() = default;
+
+  //! Copy constructor.
+  TopLoc_Location(const TopLoc_Location& theOther) = default;
+
+  //! Move constructor.
+  TopLoc_Location(TopLoc_Location&& theOther) noexcept = default;
+
+  //! Copy assignment operator.
+  TopLoc_Location& operator=(const TopLoc_Location& theOther) = default;
+
+  //! Move assignment operator.
+  TopLoc_Location& operator=(TopLoc_Location&& theOther) noexcept = default;
 
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
@@ -52,10 +63,10 @@ public:
   Standard_EXPORT TopLoc_Location(const occ::handle<TopLoc_Datum3D>& D);
 
   //! Returns true if this location is equal to the Identity transformation.
-  bool IsIdentity() const;
+  bool IsIdentity() const noexcept;
 
   //! Resets this location to the Identity transformation.
-  void Identity();
+  void Identity() noexcept;
 
   //! Returns the first elementary datum of the
   //! Location. Use the NextLocation function recursively to access
@@ -116,23 +127,23 @@ public:
   //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
   //! to store and retrieve the object easily
   //! @return a computed hash code
-  size_t HashCode() const;
+  size_t HashCode() const noexcept;
 
   //! Returns true if this location and the location Other
   //! have the same elementary data, i.e. contain the same
   //! series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator ==.
-  Standard_EXPORT bool IsEqual(const TopLoc_Location& Other) const;
+  bool IsEqual(const TopLoc_Location& theOther) const noexcept;
 
-  bool operator==(const TopLoc_Location& Other) const { return IsEqual(Other); }
+  bool operator==(const TopLoc_Location& theOther) const noexcept { return IsEqual(theOther); }
 
   //! Returns true if this location and the location Other do
   //! not have the same elementary data, i.e. do not
   //! contain the same series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator !=.
-  Standard_EXPORT bool IsDifferent(const TopLoc_Location& Other) const;
+  bool IsDifferent(const TopLoc_Location& theOther) const noexcept;
 
-  bool operator!=(const TopLoc_Location& Other) const { return IsDifferent(Other); }
+  bool operator!=(const TopLoc_Location& theOther) const noexcept { return IsDifferent(theOther); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -141,9 +152,9 @@ public:
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear() { myItems.Clear(); }
+  void Clear() noexcept { myItems.Clear(); }
 
-  static double ScalePrec() { return 1.e-14; }
+  static constexpr double ScalePrec() noexcept { return 1.e-14; }
 
 private:
   TopLoc_SListOfItemLocation myItems;
