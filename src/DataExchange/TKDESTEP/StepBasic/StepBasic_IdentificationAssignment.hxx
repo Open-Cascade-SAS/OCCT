@@ -23,9 +23,6 @@
 class TCollection_HAsciiString;
 class StepBasic_IdentificationRole;
 
-class StepBasic_IdentificationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_IdentificationAssignment, Standard_Transient)
-
 //! Representation of STEP entity IdentificationAssignment
 class StepBasic_IdentificationAssignment : public Standard_Transient
 {
@@ -35,27 +32,26 @@ public:
   Standard_EXPORT StepBasic_IdentificationAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aAssignedId,
-                            const Handle(StepBasic_IdentificationRole)& aRole);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aAssignedId,
+                            const occ::handle<StepBasic_IdentificationRole>& aRole);
 
   //! Returns field AssignedId
-  Standard_EXPORT Handle(TCollection_HAsciiString) AssignedId() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AssignedId() const;
 
   //! Set field AssignedId
-  Standard_EXPORT void SetAssignedId(const Handle(TCollection_HAsciiString)& AssignedId);
+  Standard_EXPORT void SetAssignedId(const occ::handle<TCollection_HAsciiString>& AssignedId);
 
   //! Returns field Role
-  Standard_EXPORT Handle(StepBasic_IdentificationRole) Role() const;
+  Standard_EXPORT occ::handle<StepBasic_IdentificationRole> Role() const;
 
   //! Set field Role
-  Standard_EXPORT void SetRole(const Handle(StepBasic_IdentificationRole)& Role);
+  Standard_EXPORT void SetRole(const occ::handle<StepBasic_IdentificationRole>& Role);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_IdentificationAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)     theAssignedId;
-  Handle(StepBasic_IdentificationRole) theRole;
+  occ::handle<TCollection_HAsciiString>     theAssignedId;
+  occ::handle<StepBasic_IdentificationRole> theRole;
 };
 
 #endif // _StepBasic_IdentificationAssignment_HeaderFile

@@ -23,44 +23,44 @@
 #include <stdio.h>
 
 void IntPatch_Point::SetValue(const gp_Pnt&          Pt,
-                              const Standard_Real    Tol,
-                              const Standard_Boolean Tangent)
+                              const double    Tol,
+                              const bool Tangent)
 {
-  onS1    = Standard_False;
-  onS2    = Standard_False;
-  vtxonS1 = Standard_False;
-  vtxonS2 = Standard_False;
-  mult    = Standard_False;
+  onS1    = false;
+  onS2    = false;
+  vtxonS1 = false;
+  vtxonS2 = false;
+  mult    = false;
   tgt     = Tangent;
   pt.SetValue(Pt);
   tol = Tol;
 }
 
-void IntPatch_Point::SetVertex(const Standard_Boolean OnFirst, const Handle(Adaptor3d_HVertex)& V)
+void IntPatch_Point::SetVertex(const bool OnFirst, const occ::handle<Adaptor3d_HVertex>& V)
 {
   if (OnFirst)
   {
-    onS1    = Standard_True;
-    vtxonS1 = Standard_True;
+    onS1    = true;
+    vtxonS1 = true;
     vS1     = V;
   }
   else
   {
-    onS2    = Standard_True;
-    vtxonS2 = Standard_True;
+    onS2    = true;
+    vtxonS2 = true;
     vS2     = V;
   }
 }
 
-void IntPatch_Point::SetArc(const Standard_Boolean           OnFirst,
-                            const Handle(Adaptor2d_Curve2d)& A,
-                            const Standard_Real              Param,
+void IntPatch_Point::SetArc(const bool           OnFirst,
+                            const occ::handle<Adaptor2d_Curve2d>& A,
+                            const double              Param,
                             const IntSurf_Transition&        TLine,
                             const IntSurf_Transition&        TArc)
 {
   if (OnFirst)
   {
-    onS1     = Standard_True;
+    onS1     = true;
     arcS1    = A;
     traline1 = TLine;
     tra1     = TArc;
@@ -68,7 +68,7 @@ void IntPatch_Point::SetArc(const Standard_Boolean           OnFirst,
   }
   else
   {
-    onS2     = Standard_True;
+    onS2     = true;
     arcS2    = A;
     traline2 = TLine;
     tra2     = TArc;
@@ -84,10 +84,10 @@ void IntPatch_Point::ReverseTransition()
     switch (traline1.TransitionType())
     {
       case IntSurf_In:
-        TLine.SetValue(Standard_False, IntSurf_Out);
+        TLine.SetValue(false, IntSurf_Out);
         break;
       case IntSurf_Out:
-        TLine.SetValue(Standard_False, IntSurf_In);
+        TLine.SetValue(false, IntSurf_In);
         break;
       default:
         break;
@@ -97,10 +97,10 @@ void IntPatch_Point::ReverseTransition()
     switch (tra1.TransitionType())
     {
       case IntSurf_In:
-        TArc.SetValue(Standard_False, IntSurf_Out);
+        TArc.SetValue(false, IntSurf_Out);
         break;
       case IntSurf_Out:
-        TArc.SetValue(Standard_False, IntSurf_In);
+        TArc.SetValue(false, IntSurf_In);
         break;
       default:
         break;
@@ -113,10 +113,10 @@ void IntPatch_Point::ReverseTransition()
     switch (traline2.TransitionType())
     {
       case IntSurf_In:
-        TLine.SetValue(Standard_False, IntSurf_Out);
+        TLine.SetValue(false, IntSurf_Out);
         break;
       case IntSurf_Out:
-        TLine.SetValue(Standard_False, IntSurf_In);
+        TLine.SetValue(false, IntSurf_In);
         break;
       default:
         break;
@@ -126,10 +126,10 @@ void IntPatch_Point::ReverseTransition()
     switch (tra2.TransitionType())
     {
       case IntSurf_In:
-        TArc.SetValue(Standard_False, IntSurf_Out);
+        TArc.SetValue(false, IntSurf_Out);
         break;
       case IntSurf_Out:
-        TArc.SetValue(Standard_False, IntSurf_In);
+        TArc.SetValue(false, IntSurf_In);
         break;
       default:
         break;
@@ -179,7 +179,7 @@ static void DumpTransition(const IntSurf_Transition& T)
 void IntPatch_Point::Dump() const
 {
   std::cout << "----------- IntPatch_Point : " << std::endl;
-  Standard_Real u1, v1, u2, v2;
+  double u1, v1, u2, v2;
   pt.Parameters(u1, v1, u2, v2);
 
   printf("P(%+10.20f,%+10.20f,%+10.20f) UV1(%+10.20f,%+10.20f)  UV2(%+10.20f,%+10.20f) "

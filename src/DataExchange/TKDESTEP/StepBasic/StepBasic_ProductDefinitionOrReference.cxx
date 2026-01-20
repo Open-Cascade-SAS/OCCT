@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_ProductDefinitionOrReference.hxx>
 #include <StepBasic_ProductDefinitionReference.hxx>
@@ -25,8 +25,8 @@ StepBasic_ProductDefinitionOrReference::StepBasic_ProductDefinitionOrReference()
 
 //=================================================================================================
 
-Standard_Integer StepBasic_ProductDefinitionOrReference::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepBasic_ProductDefinitionOrReference::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,7 +41,7 @@ Standard_Integer StepBasic_ProductDefinitionOrReference::CaseNum(
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionOrReference::ProductDefinition()
+occ::handle<StepBasic_ProductDefinition> StepBasic_ProductDefinitionOrReference::ProductDefinition()
   const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
@@ -49,7 +49,7 @@ Handle(StepBasic_ProductDefinition) StepBasic_ProductDefinitionOrReference::Prod
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionReference) StepBasic_ProductDefinitionOrReference::
+occ::handle<StepBasic_ProductDefinitionReference> StepBasic_ProductDefinitionOrReference::
   ProductDefinitionReference() const
 {
   return GetCasted(StepBasic_ProductDefinitionReference, Value());
@@ -57,7 +57,7 @@ Handle(StepBasic_ProductDefinitionReference) StepBasic_ProductDefinitionOrRefere
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)
+occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>
   StepBasic_ProductDefinitionOrReference::ProductDefinitionReferenceWithLocalRepresentation() const
 {
   return GetCasted(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, Value());

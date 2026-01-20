@@ -15,78 +15,80 @@
 #include <Geom_Curve.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeCustom_Curve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 ShapeCustom_Curve::ShapeCustom_Curve() {}
 
 //=================================================================================================
 
-ShapeCustom_Curve::ShapeCustom_Curve(const Handle(Geom_Curve)& C)
+ShapeCustom_Curve::ShapeCustom_Curve(const occ::handle<Geom_Curve>& C)
 {
   Init(C);
 }
 
 //=================================================================================================
 
-void ShapeCustom_Curve::Init(const Handle(Geom_Curve)& C)
+void ShapeCustom_Curve::Init(const occ::handle<Geom_Curve>& C)
 {
   myCurve = C;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) ShapeCustom_Curve::ConvertToPeriodic(const Standard_Boolean substitute,
-                                                        const Standard_Real    preci)
+occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool substitute,
+                                                        const double    preci)
 {
-  Handle(Geom_Curve)        newCurve;
-  Handle(Geom_BSplineCurve) BSpl = Handle(Geom_BSplineCurve)::DownCast(myCurve);
+  occ::handle<Geom_Curve>        newCurve;
+  occ::handle<Geom_BSplineCurve> BSpl = occ::down_cast<Geom_BSplineCurve>(myCurve);
   if (BSpl.IsNull())
     return newCurve;
 
   // PTV 13.02.02: check if curve closed with tolerance
-  Standard_Boolean closed = ShapeAnalysis_Curve::IsClosed(myCurve, preci);
+  bool closed = ShapeAnalysis_Curve::IsClosed(myCurve, preci);
 
   if (!closed)
     return newCurve;
 
-  Standard_Boolean converted = Standard_False; //: p6
+  bool converted = false; //: p6
 
   if (closed && !BSpl->IsPeriodic() && BSpl->NbPoles() > 3)
   {
-    Standard_Boolean set = Standard_True;
+    bool set = true;
     // if degree+1 at ends, first change it to 1 by rearranging knots
     if (BSpl->Multiplicity(1) == BSpl->Degree() + 1
         && BSpl->Multiplicity(BSpl->NbKnots()) == BSpl->Degree() + 1)
     {
-      Standard_Integer        nbPoles = BSpl->NbPoles();
-      TColgp_Array1OfPnt      oldPoles(1, nbPoles);
-      TColStd_Array1OfReal    oldWeights(1, nbPoles);
-      Standard_Integer        nbKnots = BSpl->NbKnots();
-      TColStd_Array1OfReal    oldKnots(1, nbKnots);
-      TColStd_Array1OfInteger oldMults(1, nbKnots);
+      int        nbPoles = BSpl->NbPoles();
+      NCollection_Array1<gp_Pnt>      oldPoles(1, nbPoles);
+      NCollection_Array1<double>    oldWeights(1, nbPoles);
+      int        nbKnots = BSpl->NbKnots();
+      NCollection_Array1<double>    oldKnots(1, nbKnots);
+      NCollection_Array1<int> oldMults(1, nbKnots);
 
       BSpl->Poles(oldPoles);
       BSpl->Weights(oldWeights);
       BSpl->Knots(oldKnots);
       BSpl->Multiplicities(oldMults);
 
-      TColStd_Array1OfReal    newKnots(1, nbKnots + 2);
-      TColStd_Array1OfInteger newMults(1, nbKnots + 2);
-      Standard_Real           a =
+      NCollection_Array1<double>    newKnots(1, nbKnots + 2);
+      NCollection_Array1<int> newMults(1, nbKnots + 2);
+      double           a =
         0.5 * (BSpl->Knot(2) - BSpl->Knot(1) + BSpl->Knot(nbKnots) - BSpl->Knot(nbKnots - 1));
 
       newKnots(1)           = oldKnots(1) - a;
       newKnots(nbKnots + 2) = oldKnots(nbKnots) + a;
       newMults(1) = newMults(nbKnots + 2) = 1;
-      for (Standard_Integer i = 2; i <= nbKnots + 1; i++)
+      for (int i = 2; i <= nbKnots + 1; i++)
       {
         newKnots(i) = oldKnots(i - 1);
         newMults(i) = oldMults(i - 1);
       }
       newMults(2) = newMults(nbKnots + 1) = BSpl->Degree();
-      Handle(Geom_BSplineCurve) res       = new Geom_BSplineCurve(oldPoles,
+      occ::handle<Geom_BSplineCurve> res       = new Geom_BSplineCurve(oldPoles,
                                                             oldWeights,
                                                             newKnots,
                                                             newMults,
@@ -96,11 +98,11 @@ Handle(Geom_Curve) ShapeCustom_Curve::ConvertToPeriodic(const Standard_Boolean s
     }
     else if (BSpl->Multiplicity(1) > BSpl->Degree()
              || BSpl->Multiplicity(BSpl->NbKnots()) > BSpl->Degree() + 1)
-      set = Standard_False;
+      set = false;
     if (set)
     {
       BSpl->SetPeriodic(); // make periodic
-      converted = Standard_True;
+      converted = true;
     }
   }
 #ifdef OCCT_DEBUG

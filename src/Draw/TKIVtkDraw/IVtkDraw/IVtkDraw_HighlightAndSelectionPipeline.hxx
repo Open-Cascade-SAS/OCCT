@@ -34,15 +34,7 @@
 #include <IVtkTools_DisplayModeFilter.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 
-typedef NCollection_DataMap<IVtk_IdType, vtkSmartPointer<IVtkTools_DisplayModeFilter>>
-  DisplayModeFiltersMap;
-typedef NCollection_DataMap<IVtk_IdType, vtkSmartPointer<IVtkTools_SubPolyDataFilter>>
-  SubShapesFiltersMap;
-
 class Prs3d_Drawer;
-
-class IVtkDraw_HighlightAndSelectionPipeline;
-DEFINE_STANDARD_HANDLE(IVtkDraw_HighlightAndSelectionPipeline, Standard_Transient)
 
 class IVtkDraw_HighlightAndSelectionPipeline : public Standard_Transient
 {
@@ -62,8 +54,8 @@ public:
 
 public:
   IVtkDraw_HighlightAndSelectionPipeline(const TopoDS_Shape&         theShape,
-                                         const Standard_Integer      theShapeID,
-                                         const Handle(Prs3d_Drawer)& theDrawerLink);
+                                         const int      theShapeID,
+                                         const occ::handle<Prs3d_Drawer>& theDrawerLink);
 
   ~IVtkDraw_HighlightAndSelectionPipeline() {}
 
@@ -117,7 +109,7 @@ private:
 //! Mapping between OCCT topological shape IDs and their correspondent
 //! visualization pipelines.
 typedef NCollection_Shared<
-  NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)>>
+  NCollection_DataMap<IVtk_IdType, occ::handle<IVtkDraw_HighlightAndSelectionPipeline>>>
   ShapePipelineMap;
 
 #endif

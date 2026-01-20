@@ -24,13 +24,15 @@
 #include <TNaming.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamingTool.hxx>
-#include <TNaming_MapOfNamedShape.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <NCollection_Map.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TNaming_Selector.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_LabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 
 #include <Draw_Appli.hxx>
 #include <Draw.hxx>
@@ -41,22 +43,22 @@
 
 //=================================================================================================
 
-static void Display(const Standard_CString Name, const TopoDS_Shape& S)
+static void Display(const char* const Name, const TopoDS_Shape& S)
 {
   // char* name = Name;
-  static Standard_Integer nbIsos  = 2;
-  static Standard_Real    size    = 100.;
-  static Standard_Integer discret = 30;
+  static int nbIsos  = 2;
+  static double    size    = 100.;
+  static int discret = 30;
 
-  Handle(DBRep_DrawableShape) D =
+  occ::handle<DBRep_DrawableShape> D =
     new DBRep_DrawableShape(S, Draw_jaune, Draw_vert, Draw_bleu, Draw_rouge, size, nbIsos, discret);
   Draw::Set(Name, D);
 }
 
 //=================================================================================================
 
-// static void DumpNaming (const Handle(TNaming_Naming)& naming)
-static void DumpNaming(const Handle(TNaming_Naming)& naming, Draw_Interpretor& di)
+// static void DumpNaming (const occ::handle<TNaming_Naming>& naming)
+static void DumpNaming(const occ::handle<TNaming_Naming>& naming, Draw_Interpretor& di)
 {
   TCollection_AsciiString Entry;
   const TNaming_Name&     AName = naming->GetName();
@@ -69,8 +71,8 @@ static void DumpNaming(const Handle(TNaming_Naming)& naming, Draw_Interpretor& d
   Standard_SStream aStream2;
   TopAbs::Print(AName.ShapeType(), aStream2);
   di << aStream2;
-  const TNaming_ListOfNamedShape& NSS = AName.Arguments();
-  for (TNaming_ListIteratorOfListOfNamedShape it(NSS); it.More(); it.Next())
+  const NCollection_List<occ::handle<TNaming_NamedShape>>& NSS = AName.Arguments();
+  for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(NSS); it.More(); it.Next())
   {
     TDF_Tool::Entry(it.Value()->Label(), Entry);
     di << " " << Entry.ToCString();
@@ -87,12 +89,12 @@ static void DumpNaming(const Handle(TNaming_Naming)& naming, Draw_Interpretor& d
 // purpose  : "Select DF entry shape [context [orient]]",
 //=======================================================================
 
-static Standard_Integer DNaming_Select(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DNaming_Select(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 3)
   {
-    Standard_Boolean geometry = !(strcmp(a[0], "SelectGeometry"));
-    Handle(TDF_Data) DF;
+    bool geometry = !(strcmp(a[0], "SelectGeometry"));
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     TDF_Label L;
@@ -105,7 +107,7 @@ static Standard_Integer DNaming_Select(Draw_Interpretor& di, Standard_Integer n,
     }
     if (n > 4)
     {
-      Standard_Boolean Orient(Standard_False);
+      bool Orient(false);
       if (n == 6)
         Orient = (Draw::Atoi(a[5]) != 0);
       TopoDS_Shape S = DBRep::Get(a[3], TopAbs_SHAPE);
@@ -121,20 +123,20 @@ static Standard_Integer DNaming_Select(Draw_Interpretor& di, Standard_Integer n,
 // #define DEB_SELN 1
 //=================================================================================================
 
-Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidMap)
+bool FillValidMap(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theValidMap)
 {
-  Standard_Boolean extRefFound = Standard_False;
-  TDF_AttributeMap anExtMap;
+  bool extRefFound = false;
+  NCollection_Map<occ::handle<TDF_Attribute>> anExtMap;
 #ifdef OCCT_DEBUG_SELN
   TCollection_AsciiString entr1;
   TDF_Tool::Entry(theLabel, entr1);
   std::cout << "\tNaming Attribute at = " << entr1 << std::endl;
 #endif
-  TDF_ChildIterator itr(theLabel, Standard_True);
+  TDF_ChildIterator itr(theLabel, true);
   for (; itr.More(); itr.Next())
   {
     const TDF_Label&       aLabel = itr.Value();
-    Handle(TNaming_Naming) aNaming;
+    occ::handle<TNaming_Naming> aNaming;
     if (!aLabel.IsNull())
       aLabel.FindAttribute(TNaming_Naming::GetID(), aNaming);
     if (aNaming.IsNull())
@@ -144,9 +146,9 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
     std::cout << "\tNaming Attribute at = " << entr1 << std::endl;
 #endif
     TDF_Tool::OutReferences(aLabel, anExtMap);
-    for (TDF_MapIteratorOfAttributeMap attMItr(anExtMap); attMItr.More(); attMItr.Next())
+    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(anExtMap); attMItr.More(); attMItr.Next())
     {
-      const Handle(TDF_Attribute)& att = attMItr.Key();
+      const occ::handle<TDF_Attribute>& att = attMItr.Key();
 #ifdef OCCT_DEBUG_SELN
       TDF_Tool::Entry(att->Label(), entr1);
       std::cout << "## References attribute dynamic type = " << att->DynamicType()
@@ -155,11 +157,11 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
       if (att->Label().IsDifferent(aLabel) && !att->Label().IsDescendant(theLabel))
       {
         theValidMap.Add(att->Label());
-        Handle(TNaming_NamedShape) aNS;
+        occ::handle<TNaming_NamedShape> aNS;
         att->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS);
         if (!aNS.IsNull())
           TNaming_NamingTool::BuildDescendants(aNS, theValidMap);
-        extRefFound = Standard_True;
+        extRefFound = true;
       }
     }
   }
@@ -171,31 +173,31 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 // purpose  : "SolveSelection DF entry",
 //=======================================================================
 
-static Standard_Integer DNaming_SolveSelection(Draw_Interpretor& di,
-                                               Standard_Integer  n,
+static int DNaming_SolveSelection(Draw_Interpretor& di,
+                                               int  n,
                                                const char**      a)
 {
   if (n == 3)
   {
     char             name[100];
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     TDF_Label L;
     DDF::AddLabel(DF, a[2], L);
 
-    Handle(TNaming_Naming) naming;
+    occ::handle<TNaming_Naming> naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
       std::cout << "DNaming__SolveSelection  : not a selection" << std::endl;
       return 1;
     }
-    TDF_LabelMap aValidMap;
+    NCollection_Map<TDF_Label> aValidMap;
     if (!FillValidMap(L, aValidMap))
       di << "Valid map is empty\n";
 #ifdef OCCT_DEBUG_SELN
     std::cout << "== Valid Label map ==" << std::endl;
-    for (TDF_MapIteratorOfLabelMap mapItr(aValidMap); mapItr.More(); mapItr.Next())
+    for (NCollection_Map<TDF_Label>::Iterator mapItr(aValidMap); mapItr.More(); mapItr.Next())
     {
       const TDF_Label& aLab = mapItr.Key();
 
@@ -206,7 +208,7 @@ static Standard_Integer DNaming_SolveSelection(Draw_Interpretor& di,
 #endif
 
     TNaming_Selector SL(L);
-    Standard_Boolean isSolved = SL.Solve(aValidMap);
+    bool isSolved = SL.Solve(aValidMap);
     if (!isSolved)
       di << "!!! Solver is failed\n";
     TopoDS_Shape Res = TNaming_Tool::CurrentShape(SL.NamedShape());
@@ -222,19 +224,19 @@ static Standard_Integer DNaming_SolveSelection(Draw_Interpretor& di,
 // function : DumpSelection
 // purpose  : DumpSelection DF entry (R)"
 //=======================================================================
-static Standard_Integer DNaming_DumpSelection(Draw_Interpretor& di,
-                                              Standard_Integer  n,
+static int DNaming_DumpSelection(Draw_Interpretor& di,
+                                              int  n,
                                               const char**      a)
 {
   if (n == 3 || n == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
       return 1;
-    Handle(TNaming_Naming) naming;
+    occ::handle<TNaming_Naming> naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
       di << "DNaming_DumpSelection : not a selection\n";
@@ -244,16 +246,16 @@ static Standard_Integer DNaming_DumpSelection(Draw_Interpretor& di,
     di << "\n";
     if (n == 4)
     {
-      Standard_Integer        depth    = L.Depth();
-      Standard_Integer        curdepth = 0;
+      int        depth    = L.Depth();
+      int        curdepth = 0;
       TCollection_AsciiString Entry;
-      TDF_ChildIterator       it(naming->Label(), Standard_True);
+      TDF_ChildIterator       it(naming->Label(), true);
       for (; it.More(); it.Next())
       {
         if (it.Value().FindAttribute(TNaming_Naming::GetID(), naming))
         {
           curdepth = (naming->Label().Depth() - depth);
-          for (Standard_Integer i = 1; i <= curdepth; i++)
+          for (int i = 1; i <= curdepth; i++)
             di << " ";
           TDF_Tool::Entry(naming->Label(), Entry);
           di << Entry.ToCString() << " ";
@@ -272,19 +274,19 @@ static Standard_Integer DNaming_DumpSelection(Draw_Interpretor& di,
 // function : ArgsSelection
 // purpose  : ArgsSelection DF entry"
 //=======================================================================
-static Standard_Integer DNaming_ArgsSelection(Draw_Interpretor& di,
-                                              Standard_Integer  n,
+static int DNaming_ArgsSelection(Draw_Interpretor& di,
+                                              int  n,
                                               const char**      a)
 {
   if (n == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
       return 1;
-    Handle(TNaming_Naming) naming;
+    occ::handle<TNaming_Naming> naming;
     if (!L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
       di << "DNaming_DumpSelection : not a selection\n";
@@ -293,9 +295,9 @@ static Standard_Integer DNaming_ArgsSelection(Draw_Interpretor& di,
     TCollection_AsciiString Entry;
     TNaming_Selector        SL(L);
     di << " Selection Arguments : ";
-    TDF_AttributeMap args;
+    NCollection_Map<occ::handle<TDF_Attribute>> args;
     SL.Arguments(args);
-    for (TDF_MapIteratorOfAttributeMap it(args); it.More(); it.Next())
+    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator it(args); it.More(); it.Next())
     {
       TDF_Tool::Entry(it.Key()->Label(), Entry);
       di << Entry.ToCString() << " ";
@@ -310,22 +312,22 @@ static Standard_Integer DNaming_ArgsSelection(Draw_Interpretor& di,
 //=================================================================================================
 
 static void CollectAttachment(const TDF_Label&              root,
-                              const Handle(TNaming_Naming)& naming,
-                              TNaming_MapOfNamedShape&      attachment)
+                              const occ::handle<TNaming_Naming>& naming,
+                              NCollection_Map<occ::handle<TNaming_NamedShape>>&      attachment)
 {
-  TNaming_ListIteratorOfListOfNamedShape itarg;
-  const TNaming_ListOfNamedShape&        args = naming->GetName().Arguments();
+  NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator itarg;
+  const NCollection_List<occ::handle<TNaming_NamedShape>>&        args = naming->GetName().Arguments();
   for (itarg.Initialize(args); itarg.More(); itarg.Next())
   {
     if (!itarg.Value()->Label().IsDescendant(root))
       attachment.Add(itarg.Value());
   }
-  Handle(TNaming_Naming) subnaming;
-  for (TDF_ChildIterator it(naming->Label(), Standard_True); it.More(); it.Next())
+  occ::handle<TNaming_Naming> subnaming;
+  for (TDF_ChildIterator it(naming->Label(), true); it.More(); it.Next())
   {
     if (it.Value().FindAttribute(TNaming_Naming::GetID(), subnaming))
     {
-      const TNaming_ListOfNamedShape& subargs = subnaming->GetName().Arguments();
+      const NCollection_List<occ::handle<TNaming_NamedShape>>& subargs = subnaming->GetName().Arguments();
       for (itarg.Initialize(subargs); itarg.More(); itarg.Next())
       {
         if (!itarg.Value()->Label().IsDescendant(root))
@@ -340,25 +342,25 @@ static void CollectAttachment(const TDF_Label&              root,
 // purpose  : Attachment DF entry"
 //=======================================================================
 
-static Standard_Integer DNaming_Attachment(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int DNaming_Attachment(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
       return 1;
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L))
       return 1;
-    Handle(TNaming_Naming)  naming;
-    TNaming_MapOfNamedShape attachment;
+    occ::handle<TNaming_Naming>  naming;
+    NCollection_Map<occ::handle<TNaming_NamedShape>> attachment;
     if (L.FindAttribute(TNaming_Naming::GetID(), naming))
     {
       CollectAttachment(L, naming, attachment);
     }
     else
     {
-      for (TDF_ChildIterator it(L, Standard_True); it.More(); it.Next())
+      for (TDF_ChildIterator it(L, true); it.More(); it.Next())
       {
         if (it.Value().FindAttribute(TNaming_Naming::GetID(), naming))
         {
@@ -371,7 +373,7 @@ static Standard_Integer DNaming_Attachment(Draw_Interpretor& di, Standard_Intege
     TDF_Tool::Entry(L, Entry);
     di << " Attachment of " << Entry.ToCString();
     di << "\n";
-    for (TNaming_MapIteratorOfMapOfNamedShape ita(attachment); ita.More(); ita.Next())
+    for (NCollection_Map<occ::handle<TNaming_NamedShape>>::Iterator ita(attachment); ita.More(); ita.Next())
     {
       TDF_Tool::Entry(ita.Key()->Label(), Entry);
       di << Entry.ToCString() << " ";
@@ -388,10 +390,10 @@ static Standard_Integer DNaming_Attachment(Draw_Interpretor& di, Standard_Intege
 void DNaming::SelectionCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "Naming data commands";
 

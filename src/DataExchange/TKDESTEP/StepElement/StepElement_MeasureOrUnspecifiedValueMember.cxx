@@ -20,8 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepElement_MeasureOrUnspecifiedValueMember, StepData_SelectNamed)
 
-static Standard_CString aContextDependedMeasure = "CONTEXT_DEPENDENT_MEASURE";
-static Standard_CString anUnspecifiedValue      = "UNSPECIFIED_VALUE";
+static const char* aContextDependedMeasure = "CONTEXT_DEPENDENT_MEASURE";
+static const char* anUnspecifiedValue      = "UNSPECIFIED_VALUE";
 
 //=================================================================================================
 
@@ -32,14 +32,14 @@ StepElement_MeasureOrUnspecifiedValueMember::StepElement_MeasureOrUnspecifiedVal
 
 //=================================================================================================
 
-Standard_Boolean StepElement_MeasureOrUnspecifiedValueMember::HasName() const
+bool StepElement_MeasureOrUnspecifiedValueMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepElement_MeasureOrUnspecifiedValueMember::Name() const
+const char* StepElement_MeasureOrUnspecifiedValueMember::Name() const
 {
   switch (mycase)
   {
@@ -55,9 +55,9 @@ Standard_CString StepElement_MeasureOrUnspecifiedValueMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& /*numen*/)
+static int CompareNames(const char* const name, int& /*numen*/)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
   else if (!strcmp(name, aContextDependedMeasure))
@@ -73,9 +73,9 @@ static Standard_Integer CompareNames(const Standard_CString name, Standard_Integ
 
 //=================================================================================================
 
-Standard_Boolean StepElement_MeasureOrUnspecifiedValueMember::SetName(const Standard_CString name)
+bool StepElement_MeasureOrUnspecifiedValueMember::SetName(const char* const name)
 {
-  Standard_Integer numit = 0;
+  int numit = 0;
   mycase                 = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
@@ -84,10 +84,10 @@ Standard_Boolean StepElement_MeasureOrUnspecifiedValueMember::SetName(const Stan
 
 //=================================================================================================
 
-Standard_Boolean StepElement_MeasureOrUnspecifiedValueMember::Matches(
-  const Standard_CString name) const
+bool StepElement_MeasureOrUnspecifiedValueMember::Matches(
+  const char* const name) const
 {
-  Standard_Integer numit   = 0;
-  Standard_Integer thecase = CompareNames(name, numit);
+  int numit   = 0;
+  int thecase = CompareNames(name, numit);
   return (mycase == thecase);
 }

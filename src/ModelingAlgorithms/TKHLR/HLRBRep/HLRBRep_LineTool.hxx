@@ -24,7 +24,7 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>
@@ -32,9 +32,12 @@
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
@@ -50,60 +53,60 @@ class HLRBRep_LineTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  static Standard_Real FirstParameter(const gp_Lin& C);
+  static double FirstParameter(const gp_Lin& C);
 
-  static Standard_Real LastParameter(const gp_Lin& C);
+  static double LastParameter(const gp_Lin& C);
 
   static GeomAbs_Shape Continuity(const gp_Lin& C);
 
   //! If necessary, breaks the line in intervals of
   //! continuity <S>. And returns the number of
   //! intervals.
-  static Standard_Integer NbIntervals(const gp_Lin& C, const GeomAbs_Shape S);
+  static int NbIntervals(const gp_Lin& C, const GeomAbs_Shape S);
 
   //! Sets the current working interval.
-  static void Intervals(const gp_Lin& C, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
+  static void Intervals(const gp_Lin& C, NCollection_Array1<double>& T, const GeomAbs_Shape Sh);
 
   //! Returns the first parameter of the current
   //! interval.
-  static Standard_Real IntervalFirst(const gp_Lin& C);
+  static double IntervalFirst(const gp_Lin& C);
 
   //! Returns the last parameter of the current
   //! interval.
-  static Standard_Real IntervalLast(const gp_Lin& C);
+  static double IntervalLast(const gp_Lin& C);
 
   static GeomAbs_Shape IntervalContinuity(const gp_Lin& C);
 
-  static Standard_Boolean IsClosed(const gp_Lin& C);
+  static bool IsClosed(const gp_Lin& C);
 
-  static Standard_Boolean IsPeriodic(const gp_Lin& C);
+  static bool IsPeriodic(const gp_Lin& C);
 
-  static Standard_Real Period(const gp_Lin& C);
-
-  //! Computes the point of parameter U on the line.
-  static gp_Pnt Value(const gp_Lin& C, const Standard_Real U);
+  static double Period(const gp_Lin& C);
 
   //! Computes the point of parameter U on the line.
-  static void D0(const gp_Lin& C, const Standard_Real U, gp_Pnt& P);
+  static gp_Pnt Value(const gp_Lin& C, const double U);
+
+  //! Computes the point of parameter U on the line.
+  static void D0(const gp_Lin& C, const double U, gp_Pnt& P);
 
   //! Computes the point of parameter U on the line with its
   //! first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  static void D1(const gp_Lin& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V);
+  static void D1(const gp_Lin& C, const double U, gp_Pnt& P, gp_Vec& V);
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  static void D2(const gp_Lin& C, const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
+  static void D2(const gp_Lin& C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2);
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const gp_Lin&       C,
-                 const Standard_Real U,
+                 const double U,
                  gp_Pnt&             P,
                  gp_Vec&             V1,
                  gp_Vec&             V2,
@@ -114,11 +117,11 @@ public:
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  static gp_Vec DN(const gp_Lin& C, const Standard_Real U, const Standard_Integer N);
+  static gp_Vec DN(const gp_Lin& C, const double U, const int N);
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
-  static Standard_Real Resolution(const gp_Lin& C, const Standard_Real R3d);
+  static double Resolution(const gp_Lin& C, const double R3d);
 
   //! Returns the type of the line in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
@@ -135,39 +138,37 @@ public:
 
   static gp_Parab Parabola(const gp_Lin& C);
 
-  static Handle(Geom_BezierCurve) Bezier(const gp_Lin& C);
+  static occ::handle<Geom_BezierCurve> Bezier(const gp_Lin& C);
 
-  static Handle(Geom_BSplineCurve) BSpline(const gp_Lin& C);
+  static occ::handle<Geom_BSplineCurve> BSpline(const gp_Lin& C);
 
-  static Standard_Integer Degree(const gp_Lin& C);
+  static int Degree(const gp_Lin& C);
 
-  static Standard_Integer NbPoles(const gp_Lin& C);
+  static int NbPoles(const gp_Lin& C);
 
-  static void Poles(const gp_Lin& C, TColgp_Array1OfPnt& TP);
+  static void Poles(const gp_Lin& C, NCollection_Array1<gp_Pnt>& TP);
 
-  static Standard_Boolean IsRational(const gp_Lin& C);
+  static bool IsRational(const gp_Lin& C);
 
-  static void PolesAndWeights(const gp_Lin& C, TColgp_Array1OfPnt& TP, TColStd_Array1OfReal& TW);
+  static void PolesAndWeights(const gp_Lin& C, NCollection_Array1<gp_Pnt>& TP, NCollection_Array1<double>& TW);
 
-  static Standard_Integer NbKnots(const gp_Lin& C);
+  static int NbKnots(const gp_Lin& C);
 
   static void KnotsAndMultiplicities(const gp_Lin&            C,
-                                     TColStd_Array1OfReal&    TK,
-                                     TColStd_Array1OfInteger& TM);
+                                     NCollection_Array1<double>&    TK,
+                                     NCollection_Array1<int>& TM);
 
-  static Standard_Integer NbSamples(const gp_Lin&       C,
-                                    const Standard_Real U0,
-                                    const Standard_Real U1);
+  static int NbSamples(const gp_Lin&       C,
+                                    const double U0,
+                                    const double U1);
 
   static void SamplePars(const gp_Lin&                  C,
-                         const Standard_Real            U0,
-                         const Standard_Real            U1,
-                         const Standard_Real            Defl,
-                         const Standard_Integer         NbMin,
-                         Handle(TColStd_HArray1OfReal)& Pars);
+                         const double            U0,
+                         const double            U1,
+                         const double            Defl,
+                         const int         NbMin,
+                         occ::handle<NCollection_HArray1<double>>& Pars);
 
-protected:
-private:
 };
 
 #include <HLRBRep_LineTool.lxx>

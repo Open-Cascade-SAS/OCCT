@@ -48,37 +48,37 @@ public:
   Standard_EXPORT IGESData_BasicEditor();
 
   //! Creates a Basic Editor, with a new IGESModel, ready to run
-  Standard_EXPORT IGESData_BasicEditor(const Handle(IGESData_Protocol)& protocol);
+  Standard_EXPORT IGESData_BasicEditor(const occ::handle<IGESData_Protocol>& protocol);
 
   //! Creates a Basic Editor for IGES Data, ready to run
-  Standard_EXPORT IGESData_BasicEditor(const Handle(IGESData_IGESModel)& model,
-                                       const Handle(IGESData_Protocol)&  protocol);
+  Standard_EXPORT IGESData_BasicEditor(const occ::handle<IGESData_IGESModel>& model,
+                                       const occ::handle<IGESData_Protocol>&  protocol);
 
   //! Initialize a Basic Editor, with a new IGESModel, ready to run
-  Standard_EXPORT void Init(const Handle(IGESData_Protocol)& protocol);
+  Standard_EXPORT void Init(const occ::handle<IGESData_Protocol>& protocol);
 
   //! Initialize a Basic Editor for IGES Data, ready to run
-  Standard_EXPORT void Init(const Handle(IGESData_IGESModel)& model,
-                            const Handle(IGESData_Protocol)&  protocol);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESModel>& model,
+                            const occ::handle<IGESData_Protocol>&  protocol);
 
   //! Returns the designated model
-  Standard_EXPORT Handle(IGESData_IGESModel) Model() const;
+  Standard_EXPORT occ::handle<IGESData_IGESModel> Model() const;
 
   //! Sets a new unit from its flag (param 14 of Global Section)
   //! Returns True if done, False if <flag> is incorrect
-  Standard_EXPORT Standard_Boolean SetUnitFlag(const Standard_Integer flag);
+  Standard_EXPORT bool SetUnitFlag(const int flag);
 
   //! Sets a new unit from its value in meters (rounded to the
   //! closest one, max gap 1%)
   //! Returns True if done, False if <val> is too far from a
   //! suitable value
-  Standard_EXPORT Standard_Boolean SetUnitValue(const Standard_Real val);
+  Standard_EXPORT bool SetUnitValue(const double val);
 
   //! Sets a new unit from its name (param 15 of Global Section)
   //! Returns True if done, False if <name> is incorrect
   //! Remark : if <flag> has been set to 3 (user defined), <name>
   //! is then free
-  Standard_EXPORT Standard_Boolean SetUnitName(const Standard_CString name);
+  Standard_EXPORT bool SetUnitName(const char* const name);
 
   //! Applies unit value to convert header data : Resolution,
   //! MaxCoord, MaxLineWeight
@@ -86,7 +86,7 @@ public:
   //! if <enforce> is given as True.
   //! It can be called just before writing the model to a file,
   //! i.e. when definitive values are finally known
-  Standard_EXPORT void ApplyUnit(const Standard_Boolean enforce = Standard_False);
+  Standard_EXPORT void ApplyUnit(const bool enforce = false);
 
   //! Performs the re-computation of status on the whole model
   //! (Subordinate Status and Use Flag of each IGES Entity), which
@@ -102,43 +102,42 @@ public:
   //! as required values for status, or references to be null), and
   //! the specific IGES service OwnCorrect, which is specialised for
   //! each type of entity.
-  Standard_EXPORT Standard_Boolean AutoCorrect(const Handle(IGESData_IGESEntity)& ent);
+  Standard_EXPORT bool AutoCorrect(const occ::handle<IGESData_IGESEntity>& ent);
 
   //! Performs auto-correction on the whole Model
   //! Returns the count of modified entities
-  Standard_EXPORT Standard_Integer AutoCorrectModel();
+  Standard_EXPORT int AutoCorrectModel();
 
   //! From the name of unit, computes flag number, 0 if incorrect
   //! (in this case, user defined entity remains possible)
-  Standard_EXPORT static Standard_Integer UnitNameFlag(const Standard_CString name);
+  Standard_EXPORT static int UnitNameFlag(const char* const name);
 
   //! From the flag of unit, determines value in MM, 0 if incorrect
-  Standard_EXPORT static Standard_Real UnitFlagValue(const Standard_Integer flag);
+  Standard_EXPORT static double UnitFlagValue(const int flag);
 
   //! From the flag of unit, determines its name, "" if incorrect
-  Standard_EXPORT static Standard_CString UnitFlagName(const Standard_Integer flag);
+  Standard_EXPORT static const char* UnitFlagName(const int flag);
 
   //! From the flag of IGES version, returns name, "" if incorrect
-  Standard_EXPORT static Standard_CString IGESVersionName(const Standard_Integer flag);
+  Standard_EXPORT static const char* IGESVersionName(const int flag);
 
   //! Returns the maximum allowed value for IGESVersion Flag
-  Standard_EXPORT static Standard_Integer IGESVersionMax();
+  Standard_EXPORT static int IGESVersionMax();
 
   //! From the flag of drafting standard, returns name, "" if incorrect
-  Standard_EXPORT static Standard_CString DraftingName(const Standard_Integer flag);
+  Standard_EXPORT static const char* DraftingName(const int flag);
 
   //! Returns the maximum allowed value for Drafting Flag
-  Standard_EXPORT static Standard_Integer DraftingMax();
+  Standard_EXPORT static int DraftingMax();
 
   //! Returns Flag corresponding to the scaling theValue.
   //! Returns 0 if there's no such flag.
-  Standard_EXPORT static Standard_Integer GetFlagByValue(const Standard_Real theValue);
+  Standard_EXPORT static int GetFlagByValue(const double theValue);
 
-protected:
 private:
-  Standard_Boolean           theunit;
-  Handle(IGESData_Protocol)  theproto;
-  Handle(IGESData_IGESModel) themodel;
+  bool           theunit;
+  occ::handle<IGESData_Protocol>  theproto;
+  occ::handle<IGESData_IGESModel> themodel;
   Interface_GeneralLib       theglib;
   IGESData_SpecificLib       theslib;
 };

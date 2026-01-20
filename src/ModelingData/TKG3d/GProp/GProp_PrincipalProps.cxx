@@ -28,12 +28,12 @@ GProp_PrincipalProps::GProp_PrincipalProps()
   g            = Pnt(RealLast(), RealLast(), RealLast());
 }
 
-GProp_PrincipalProps::GProp_PrincipalProps(const Standard_Real Ixx,
-                                           const Standard_Real Iyy,
-                                           const Standard_Real Izz,
-                                           const Standard_Real Rxx,
-                                           const Standard_Real Ryy,
-                                           const Standard_Real Rzz,
+GProp_PrincipalProps::GProp_PrincipalProps(const double Ixx,
+                                           const double Iyy,
+                                           const double Izz,
+                                           const double Rxx,
+                                           const double Ryy,
+                                           const double Rzz,
                                            const gp_Vec&       Vxx,
                                            const gp_Vec&       Vyy,
                                            const gp_Vec&       Vzz,
@@ -51,37 +51,37 @@ GProp_PrincipalProps::GProp_PrincipalProps(const Standard_Real Ixx,
 {
 }
 
-Standard_Boolean GProp_PrincipalProps::HasSymmetryAxis() const
+bool GProp_PrincipalProps::HasSymmetryAxis() const
 {
-  const Standard_Real aRelTol = 1.e-10;
-  Standard_Real       Eps1    = std::abs(i1) * aRelTol;
-  Standard_Real       Eps2    = std::abs(i2) * aRelTol;
+  const double aRelTol = 1.e-10;
+  double       Eps1    = std::abs(i1) * aRelTol;
+  double       Eps2    = std::abs(i2) * aRelTol;
   return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
 }
 
-Standard_Boolean GProp_PrincipalProps::HasSymmetryAxis(const Standard_Real aTol) const
+bool GProp_PrincipalProps::HasSymmetryAxis(const double aTol) const
 {
 
-  Standard_Real Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
-  Standard_Real Eps2 = std::abs(i2 * aTol) + std::abs(Epsilon(i2));
+  double Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  double Eps2 = std::abs(i2 * aTol) + std::abs(Epsilon(i2));
   return (std::abs(i1 - i2) <= Eps1 || std::abs(i1 - i3) <= Eps1 || std::abs(i2 - i3) <= Eps2);
 }
 
-Standard_Boolean GProp_PrincipalProps::HasSymmetryPoint() const
+bool GProp_PrincipalProps::HasSymmetryPoint() const
 {
-  const Standard_Real aRelTol = 1.e-10;
-  Standard_Real       Eps1    = std::abs(i1) * aRelTol;
+  const double aRelTol = 1.e-10;
+  double       Eps1    = std::abs(i1) * aRelTol;
   return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
 }
 
-Standard_Boolean GProp_PrincipalProps::HasSymmetryPoint(const Standard_Real aTol) const
+bool GProp_PrincipalProps::HasSymmetryPoint(const double aTol) const
 {
 
-  Standard_Real Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
+  double Eps1 = std::abs(i1 * aTol) + std::abs(Epsilon(i1));
   return (std::abs(i1 - i2) <= Eps1 && std::abs(i1 - i3) <= Eps1);
 }
 
-void GProp_PrincipalProps::Moments(Standard_Real& Ixx, Standard_Real& Iyy, Standard_Real& Izz) const
+void GProp_PrincipalProps::Moments(double& Ixx, double& Iyy, double& Izz) const
 {
 
   Ixx = i1;
@@ -104,9 +104,9 @@ const Vec& GProp_PrincipalProps::ThirdAxisOfInertia() const
   return v3;
 }
 
-void GProp_PrincipalProps::RadiusOfGyration(Standard_Real& Rxx,
-                                            Standard_Real& Ryy,
-                                            Standard_Real& Rzz) const
+void GProp_PrincipalProps::RadiusOfGyration(double& Rxx,
+                                            double& Ryy,
+                                            double& Rzz) const
 {
 
   Rxx = r1;

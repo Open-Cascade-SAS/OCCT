@@ -32,7 +32,8 @@
 #include <IntPatch_IType.hxx>
 #include <IntPatch_Line.hxx>
 #include <IntPatch_RLine.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntPatch_WLine.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -49,19 +50,19 @@
 #include <BRepAdaptor_Surface.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);
-extern Standard_Boolean TopOpeBRep_GettraceCONIC();
+extern bool TopOpeBRep_GetcontextALWLNBP(int&);
+extern bool TopOpeBRep_GettraceCONIC();
 #endif
 
 //-----------------------------------------------------------------------
-static void FUN_ALINETOWLINE(const Handle(IntPatch_ALine)&      AL,
-                             const Handle(BRepAdaptor_Surface)& surf1,
-                             const Handle(BRepAdaptor_Surface)& surf2,
-                             IntPatch_SequenceOfLine&           theLines)
+static void FUN_ALINETOWLINE(const occ::handle<IntPatch_ALine>&      AL,
+                             const occ::handle<BRepAdaptor_Surface>& surf1,
+                             const occ::handle<BRepAdaptor_Surface>& surf2,
+                             NCollection_Sequence<occ::handle<IntPatch_Line>>&           theLines)
 {
-  Standard_Integer nbpointsmax = 200;
+  int nbpointsmax = 200;
 #ifdef OCCT_DEBUG
-  Standard_Integer newnbp;
+  int newnbp;
   if (TopOpeBRep_GetcontextALWLNBP(newnbp))
     nbpointsmax = newnbp;
 #endif
@@ -72,7 +73,7 @@ static void FUN_ALINETOWLINE(const Handle(IntPatch_ALine)&      AL,
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::SetLine(const Handle(IntPatch_Line)& L,
+void TopOpeBRep_LineInter::SetLine(const occ::handle<IntPatch_Line>& L,
                                    const BRepAdaptor_Surface&   S1,
                                    const BRepAdaptor_Surface&   S2)
 {
@@ -107,40 +108,40 @@ void TopOpeBRep_LineInter::SetLine(const Handle(IntPatch_Line)& L,
       break;
     default:
       myTypeLineCurve = TopOpeBRep_OTHERTYPE;
-      SetOK(Standard_False);
+      SetOK(false);
       break;
   }
 
   switch (type)
   {
     case IntPatch_Analytic:
-      myILA = Handle(IntPatch_ALine)::DownCast(L);
+      myILA = occ::down_cast<IntPatch_ALine>(L);
       break;
     case IntPatch_Restriction:
-      myILR = Handle(IntPatch_RLine)::DownCast(L);
+      myILR = occ::down_cast<IntPatch_RLine>(L);
       break;
     case IntPatch_Walking:
-      myILW = Handle(IntPatch_WLine)::DownCast(L);
+      myILW = occ::down_cast<IntPatch_WLine>(L);
       break;
     default: //"geometric" line
-      myILG = Handle(IntPatch_GLine)::DownCast(L);
+      myILG = occ::down_cast<IntPatch_GLine>(L);
       break;
   }
 
   // transform an analytic line to a walking line
   if (myTypeLineCurve == TopOpeBRep_ANALYTIC)
   {
-    IntPatch_SequenceOfLine aSLin;
+    NCollection_Sequence<occ::handle<IntPatch_Line>> aSLin;
     FUN_ALINETOWLINE(myILA, new BRepAdaptor_Surface(S1), new BRepAdaptor_Surface(S2), aSLin);
 
     if (aSLin.Length() > 0)
-      myILW = Handle(IntPatch_WLine)::DownCast(aSLin.Value(1));
+      myILW = occ::down_cast<IntPatch_WLine>(aSLin.Value(1));
 
     myTypeLineCurve = TopOpeBRep_WALKING;
   }
 
   // number of points found on restriction(s)
-  Standard_Integer n = 0;
+  int n = 0;
   switch (myTypeLineCurve)
   {
     case TopOpeBRep_ANALYTIC:
@@ -168,14 +169,14 @@ void TopOpeBRep_LineInter::SetLine(const Handle(IntPatch_Line)& L,
       n = myILG->NbVertex();
       break;
     default:
-      SetOK(Standard_False);
+      SetOK(false);
       break;
   }
   myNbVPoint = n;
 
   // prepare VPoints from intersection points
-  myHAVP = new TopOpeBRep_HArray1OfVPointInter(0, n);
-  for (Standard_Integer i = 1; i <= n; i++)
+  myHAVP = new NCollection_HArray1<TopOpeBRep_VPointInter>(0, n);
+  for (int i = 1; i <= n; i++)
   {
     TopOpeBRep_VPointInter& VP = myHAVP->ChangeValue(i);
     switch (myTypeLineCurve)
@@ -199,14 +200,14 @@ void TopOpeBRep_LineInter::SetLine(const Handle(IntPatch_Line)& L,
 
 //=================================================================================================
 
-const TopOpeBRep_VPointInter& TopOpeBRep_LineInter::VPoint(const Standard_Integer I) const
+const TopOpeBRep_VPointInter& TopOpeBRep_LineInter::VPoint(const int I) const
 {
   return myHAVP->Value(I);
 }
 
 //=================================================================================================
 
-TopOpeBRep_VPointInter& TopOpeBRep_LineInter::ChangeVPoint(const Standard_Integer I)
+TopOpeBRep_VPointInter& TopOpeBRep_LineInter::ChangeVPoint(const int I)
 {
   return myHAVP->ChangeValue(I);
 }
@@ -218,26 +219,26 @@ void TopOpeBRep_LineInter::SetINL()
   TopOpeBRep_VPointInterIterator VPI(*this);
   if (!VPI.More())
   {
-    myINL = Standard_False;
+    myINL = false;
     return;
   }
-  const Standard_Real p0 = VPI.CurrentVP().ParameterOnLine();
+  const double p0 = VPI.CurrentVP().ParameterOnLine();
   VPI.Next();
   if (!VPI.More())
   {
-    myINL = Standard_True;
+    myINL = true;
     return;
   }
   for (; VPI.More(); VPI.Next())
   {
-    const Standard_Real p = VPI.CurrentVP().ParameterOnLine();
+    const double p = VPI.CurrentVP().ParameterOnLine();
     if (p != p0)
     {
-      myINL = Standard_False;
+      myINL = false;
       return;
     }
   }
-  myINL = Standard_True;
+  myINL = true;
 }
 
 //=================================================================================================
@@ -246,22 +247,22 @@ void TopOpeBRep_LineInter::SetIsVClosed()
 {
   if (myINL)
   {
-    myIsVClosed = Standard_False;
+    myIsVClosed = false;
     return;
   }
 
-  /*Standard_Boolean newV = Standard_True;
+  /*bool newV = true;
   if (!newV) {
     if (myTypeLineCurve != TopOpeBRep_WALKING) {
-      myIsVClosed = Standard_False;
+      myIsVClosed = false;
       return;
     }
   }*/
 
   TopOpeBRep_VPointInterIterator VPI(*this);
-  Standard_Integer               nV   = myNbVPoint;
-  Standard_Real                  pmin = RealLast(), pmax = RealFirst();
-  Standard_Integer               imin = 0, imax = 0; // index of IsOnArc VPoints
+  int               nV   = myNbVPoint;
+  double                  pmin = RealLast(), pmax = RealFirst();
+  int               imin = 0, imax = 0; // index of IsOnArc VPoints
   if (nV >= 2)
   {
     for (; VPI.More(); VPI.Next())
@@ -269,8 +270,8 @@ void TopOpeBRep_LineInter::SetIsVClosed()
       const TopOpeBRep_VPointInter& P = VPI.CurrentVP();
       if (!P.IsInternal())
       {
-        const Standard_Integer i = VPI.CurrentVPIndex();
-        const Standard_Real    p = P.ParameterOnLine();
+        const int i = VPI.CurrentVPIndex();
+        const double    p = P.ParameterOnLine();
         if (p < pmin)
         {
           imin = i;
@@ -285,7 +286,7 @@ void TopOpeBRep_LineInter::SetIsVClosed()
     }
     if (imax == 0)
     { // no VPoint on restriction found
-      myIsVClosed = Standard_True;
+      myIsVClosed = true;
       return;
     }
 
@@ -295,16 +296,16 @@ void TopOpeBRep_LineInter::SetIsVClosed()
     const gp_Pnt& pp1 = P1.Value();
     const gp_Pnt& pp2 = P2.Value();
 
-    const Standard_Real tol1 = P1.Tolerance();
-    const Standard_Real tol2 = P2.Tolerance();
-    const Standard_Real tol  = std::max(tol1, tol2);
+    const double tol1 = P1.Tolerance();
+    const double tol2 = P2.Tolerance();
+    const double tol  = std::max(tol1, tol2);
 
     myIsVClosed = pp1.IsEqual(pp2, tol);
   }
   else
   {
-    SetOK(Standard_False);
-    myIsVClosed = Standard_False;
+    SetOK(false);
+    myIsVClosed = false;
   }
 }
 
@@ -312,14 +313,14 @@ void TopOpeBRep_LineInter::SetIsVClosed()
 
 void TopOpeBRep_LineInter::SetHasVPonR()
 {
-  myHasVPonR = Standard_False;
+  myHasVPonR = false;
   TopOpeBRep_VPointInterIterator VPI(*this);
   for (; VPI.More(); VPI.Next())
   {
     const TopOpeBRep_VPointInter& P = VPI.CurrentVP();
     if (P.IsOnDomS1() || P.IsOnDomS2())
     {
-      myHasVPonR = Standard_True;
+      myHasVPonR = true;
       break;
     }
   }
@@ -330,17 +331,17 @@ void TopOpeBRep_LineInter::SetHasVPonR()
 void TopOpeBRep_LineInter::SetVPBounds()
 {
   myVPF = myVPL = myVPN = 0;
-  myVPBDefined          = Standard_True;
+  myVPBDefined          = true;
 
   TopOpeBRep_VPointInterIterator VPI(*this);
-  Standard_Integer               f = myNbVPoint + 1, l = 0, n = 0;
+  int               f = myNbVPoint + 1, l = 0, n = 0;
 
   for (; VPI.More(); VPI.Next())
   {
     if (VPI.CurrentVP().Keep())
     {
       n++;
-      const Standard_Integer i = VPI.CurrentVPIndex();
+      const int i = VPI.CurrentVPIndex();
       if (i < f)
         f = i;
       if (i > l)
@@ -355,14 +356,14 @@ void TopOpeBRep_LineInter::SetVPBounds()
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::VPBounds(Standard_Integer& f,
-                                    Standard_Integer& l,
-                                    Standard_Integer& n) const
+void TopOpeBRep_LineInter::VPBounds(int& f,
+                                    int& l,
+                                    int& n) const
 {
   if (!myVPBDefined)
   {
     TopOpeBRep_LineInter* p = (TopOpeBRep_LineInter*)this; // NYI deconst
-    p->SetOK(Standard_False);
+    p->SetOK(false);
     f = l = n = 0;
     return;
   }
@@ -373,38 +374,38 @@ void TopOpeBRep_LineInter::VPBounds(Standard_Integer& f,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_LineInter::IsPeriodic() const
+bool TopOpeBRep_LineInter::IsPeriodic() const
 {
   switch (myTypeLineCurve)
   {
     case TopOpeBRep_CIRCLE:
     case TopOpeBRep_ELLIPSE:
-      return Standard_True;
+      return true;
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real TopOpeBRep_LineInter::Period() const
+double TopOpeBRep_LineInter::Period() const
 {
-  Standard_Real aFirst = 0.0, aLast = 0.0;
+  double aFirst = 0.0, aLast = 0.0;
   Bounds(aFirst, aLast);
   return (aLast - aFirst);
 }
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::Bounds(Standard_Real& theFirst, Standard_Real& theLast) const
+void TopOpeBRep_LineInter::Bounds(double& theFirst, double& theLast) const
 {
   theFirst = 0.0;
   theLast  = 0.0;
   if (myILG.IsNull())
   {
     TopOpeBRep_LineInter* aPtr = const_cast<TopOpeBRep_LineInter*>(this); // NYI deconst
-    aPtr->SetOK(Standard_False);
+    aPtr->SetOK(false);
     return;
   }
 
@@ -426,20 +427,20 @@ void TopOpeBRep_LineInter::Bounds(Standard_Real& theFirst, Standard_Real& theLas
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_LineInter::HasVInternal()
+bool TopOpeBRep_LineInter::HasVInternal()
 {
   TopOpeBRep_VPointInterIterator VPI(*this);
   for (; VPI.More(); VPI.Next())
   {
     if (VPI.CurrentVP().IsInternal())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRep_LineInter::NbWPoint() const
+int TopOpeBRep_LineInter::NbWPoint() const
 {
   switch (myTypeLineCurve)
   {
@@ -453,7 +454,7 @@ Standard_Integer TopOpeBRep_LineInter::NbWPoint() const
 
 //=================================================================================================
 
-const TopOpeBRep_WPointInter& TopOpeBRep_LineInter::WPoint(const Standard_Integer IW)
+const TopOpeBRep_WPointInter& TopOpeBRep_LineInter::WPoint(const int IW)
 {
   switch (myTypeLineCurve)
   {
@@ -471,10 +472,10 @@ const TopOpeBRep_WPointInter& TopOpeBRep_LineInter::WPoint(const Standard_Intege
 
 //=================================================================================================
 
-Handle(Geom_Curve) TopOpeBRep_LineInter::Curve() const
+occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve() const
 {
   // Build the 3d curve
-  Handle(Geom_Curve) C3D;
+  occ::handle<Geom_Curve> C3D;
   switch (myTypeLineCurve)
   {
     case TopOpeBRep_LINE:
@@ -494,7 +495,7 @@ Handle(Geom_Curve) TopOpeBRep_LineInter::Curve() const
       break;
     default:
       TopOpeBRep_LineInter* p = (TopOpeBRep_LineInter*)this; // NYI deconst
-      p->SetOK(Standard_False);
+      p->SetOK(false);
       break;
   }
   return C3D;
@@ -502,12 +503,12 @@ Handle(Geom_Curve) TopOpeBRep_LineInter::Curve() const
 
 //=================================================================================================
 
-Handle(Geom_Curve) TopOpeBRep_LineInter::Curve(const Standard_Real parmin,
-                                               const Standard_Real parmax) const
+occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve(const double parmin,
+                                               const double parmax) const
 {
   // Build the trimmed 3d curve
-  Handle(Geom_Curve)        C3D  = Curve();
-  Handle(Geom_TrimmedCurve) TC3D = new Geom_TrimmedCurve(C3D, parmin, parmax);
+  occ::handle<Geom_Curve>        C3D  = Curve();
+  occ::handle<Geom_TrimmedCurve> TC3D = new Geom_TrimmedCurve(C3D, parmin, parmax);
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceCONIC())
   {
@@ -528,14 +529,14 @@ const TopoDS_Shape& TopOpeBRep_LineInter::Arc() const
   {
     if (myILR->IsArcOnS1())
     {
-      const Handle(Adaptor2d_Curve2d)& AHC2D = myILR->ArcOnS1();
+      const occ::handle<Adaptor2d_Curve2d>& AHC2D = myILR->ArcOnS1();
       const BRepAdaptor_Curve2d&       BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
       const TopoDS_Shape&              S     = BC2DP.Edge();
       return S;
     }
     else
     {
-      const Handle(Adaptor2d_Curve2d)& AHC2D = myILR->ArcOnS2();
+      const occ::handle<Adaptor2d_Curve2d>& AHC2D = myILR->ArcOnS2();
       const BRepAdaptor_Curve2d&       BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
       const TopoDS_Shape&              S     = BC2DP.Edge();
       return S;
@@ -547,19 +548,19 @@ const TopoDS_Shape& TopOpeBRep_LineInter::Arc() const
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_LineInter::ArcIsEdge(const Standard_Integer Index) const
+bool TopOpeBRep_LineInter::ArcIsEdge(const int Index) const
 {
   if (myTypeLineCurve == TopOpeBRep_RESTRICTION)
   {
-    const Standard_Boolean r = myILR->IsArcOnS1();
+    const bool r = myILR->IsArcOnS1();
     return (Index == 2 ? !r : r);
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_LineInter::HasFirstPoint() const
+bool TopOpeBRep_LineInter::HasFirstPoint() const
 {
   if (myILG.IsNull())
     throw Standard_ProgramError("TopOpeBRep_LineInter::HasFirstPoint sur line != GLine");
@@ -568,7 +569,7 @@ Standard_Boolean TopOpeBRep_LineInter::HasFirstPoint() const
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_LineInter::HasLastPoint() const
+bool TopOpeBRep_LineInter::HasLastPoint() const
 {
   if (myILG.IsNull())
     throw Standard_ProgramError("TopOpeBRep_LineInter::HasLastPoint sur line != GLine");
@@ -588,7 +589,7 @@ void TopOpeBRep_LineInter::ComputeFaceFaceTransition()
 //=================================================================================================
 
 const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition(
-  const Standard_Integer I) const
+  const int I) const
 {
   if (I == 1)
     return myLineTonF1;
@@ -610,10 +611,10 @@ void TopOpeBRep_LineInter::DumpType() const
 
 void TopOpeBRep_LineInter::DumpVPoint
 #ifndef OCCT_DEBUG
-  (const Standard_Integer, const TCollection_AsciiString&, const TCollection_AsciiString&) const
+  (const int, const TCollection_AsciiString&, const TCollection_AsciiString&) const
 {
 #else
-  (const Standard_Integer         I,
+  (const int         I,
    const TCollection_AsciiString& s1,
    const TCollection_AsciiString& s2) const
 {
@@ -639,8 +640,8 @@ void TopOpeBRep_LineInter::DumpBipoint
    const TCollection_AsciiString& s1,
    const TCollection_AsciiString& s2) const
 {
-  Standard_Integer i1 = bip.I1();
-  Standard_Integer i2 = bip.I2();
+  int i1 = bip.I1();
+  int i2 = bip.I2();
   std::cout << s1;
   std::cout << "(" << i1 << "," << i2 << ")";
   std::cout << s2;
@@ -649,14 +650,14 @@ void TopOpeBRep_LineInter::DumpBipoint
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::SetOK(const Standard_Boolean B)
+void TopOpeBRep_LineInter::SetOK(const bool B)
 {
   myOK = B;
 }
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::SetTraceIndex(const Standard_Integer exF1, const Standard_Integer exF2)
+void TopOpeBRep_LineInter::SetTraceIndex(const int exF1, const int exF2)
 {
   myexF1 = exF1;
   myexF2 = exF2;
@@ -664,7 +665,7 @@ void TopOpeBRep_LineInter::SetTraceIndex(const Standard_Integer exF1, const Stan
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::GetTraceIndex(Standard_Integer& exF1, Standard_Integer& exF2) const
+void TopOpeBRep_LineInter::GetTraceIndex(int& exF1, int& exF2) const
 {
   exF1 = myexF1;
   exF2 = myexF2;

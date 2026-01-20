@@ -21,9 +21,6 @@
 
 #include <IGESBasic_Group.hxx>
 
-class IGESBasic_OrderedGroup;
-DEFINE_STANDARD_HANDLE(IGESBasic_OrderedGroup, IGESBasic_Group)
-
 //! defines OrderedGroup, Type <402> Form <14>
 //! in package IGESBasic
 //! this class defines an Ordered Group with back pointers
@@ -39,8 +36,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_OrderedGroup, IGESBasic_Group)
 
-protected:
-private:
 };
 
 #endif // _IGESBasic_OrderedGroup_HeaderFile

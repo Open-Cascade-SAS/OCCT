@@ -49,7 +49,7 @@ public:
   Standard_EXPORT Aspect_GradientFillMethod BgGradientFillMethod() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   Quantity_Color            MyColor2;

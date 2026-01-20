@@ -18,9 +18,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CalendarDate, StepBasic_Date)
 
 StepBasic_CalendarDate::StepBasic_CalendarDate() {}
 
-void StepBasic_CalendarDate::Init(const Standard_Integer aYearComponent,
-                                  const Standard_Integer aDayComponent,
-                                  const Standard_Integer aMonthComponent)
+void StepBasic_CalendarDate::Init(const int aYearComponent,
+                                  const int aDayComponent,
+                                  const int aMonthComponent)
 {
   // --- classe own fields ---
   dayComponent   = aDayComponent;
@@ -29,22 +29,22 @@ void StepBasic_CalendarDate::Init(const Standard_Integer aYearComponent,
   StepBasic_Date::Init(aYearComponent);
 }
 
-void StepBasic_CalendarDate::SetDayComponent(const Standard_Integer aDayComponent)
+void StepBasic_CalendarDate::SetDayComponent(const int aDayComponent)
 {
   dayComponent = aDayComponent;
 }
 
-Standard_Integer StepBasic_CalendarDate::DayComponent() const
+int StepBasic_CalendarDate::DayComponent() const
 {
   return dayComponent;
 }
 
-void StepBasic_CalendarDate::SetMonthComponent(const Standard_Integer aMonthComponent)
+void StepBasic_CalendarDate::SetMonthComponent(const int aMonthComponent)
 {
   monthComponent = aMonthComponent;
 }
 
-Standard_Integer StepBasic_CalendarDate::MonthComponent() const
+int StepBasic_CalendarDate::MonthComponent() const
 {
   return monthComponent;
 }

@@ -40,7 +40,7 @@ inline const T& Graphic3d_ValueInterface::As() const
 // purpose  : Returns unique identifier of value type
 // =======================================================================
 template <class T>
-inline Standard_Size Graphic3d_UniformValue<T>::TypeID() const
+inline size_t Graphic3d_UniformValue<T>::TypeID() const
 {
   return Graphic3d_UniformValueTypeID<T>::ID;
 }

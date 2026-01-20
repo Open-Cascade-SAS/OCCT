@@ -22,8 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //! A bit map simply allows to associate a boolean flag to each
 //! item of a list, such as a list of entities, etc... numbered
@@ -49,107 +53,106 @@ public:
   //! One flag is defined, n0 0
   //! <resflags> prepares allocation for <resflags> more flags
   //! Flags values start at false
-  Standard_EXPORT Interface_BitMap(const Standard_Integer nbitems,
-                                   const Standard_Integer resflags = 0);
+  Standard_EXPORT Interface_BitMap(const int nbitems,
+                                   const int resflags = 0);
 
   //! Initialize empty bit by <nbitems> items
   //! One flag is defined, n0 0
   //! <resflags> prepares allocation for <resflags> more flags
   //! Flags values start at false
-  Standard_EXPORT void Initialize(const Standard_Integer nbitems,
-                                  const Standard_Integer resflags = 0);
+  Standard_EXPORT void Initialize(const int nbitems,
+                                  const int resflags = 0);
 
   //! Creates a BitMap from another one
   //! if <copied> is True, copies data
   //! else, data are not copied, only the header object is
   Standard_EXPORT Interface_BitMap(const Interface_BitMap& other,
-                                   const Standard_Boolean  copied = Standard_False);
+                                   const bool  copied = false);
 
   //! Initialize a BitMap from another one
   Standard_EXPORT void Initialize(const Interface_BitMap& other,
-                                  const Standard_Boolean  copied = Standard_False);
+                                  const bool  copied = false);
 
   //! Reservates for a count of more flags
-  Standard_EXPORT void Reservate(const Standard_Integer moreflags);
+  Standard_EXPORT void Reservate(const int moreflags);
 
   //! Sets for a new count of items, which can be either less or
   //! greater than the former one
   //! For new items, their flags start at false
-  Standard_EXPORT void SetLength(const Standard_Integer nbitems);
+  Standard_EXPORT void SetLength(const int nbitems);
 
   //! Adds a flag, a name can be attached to it
   //! Returns its flag number
   //! Makes required reservation
-  Standard_EXPORT Standard_Integer AddFlag(const Standard_CString name = "");
+  Standard_EXPORT int AddFlag(const char* const name = "");
 
   //! Adds several flags (<more>) with no name
   //! Returns the number of last added flag
-  Standard_EXPORT Standard_Integer AddSomeFlags(const Standard_Integer more);
+  Standard_EXPORT int AddSomeFlags(const int more);
 
   //! Removes a flag given its number.
   //! Returns True if done, false if num is out of range
-  Standard_EXPORT Standard_Boolean RemoveFlag(const Standard_Integer num);
+  Standard_EXPORT bool RemoveFlag(const int num);
 
   //! Sets a name for a flag, given its number
   //! name can be empty (to erase the name of a flag)
   //! Returns True if done, false if : num is out of range, or
   //! name non-empty already set to another flag
-  Standard_EXPORT Standard_Boolean SetFlagName(const Standard_Integer num,
-                                               const Standard_CString name);
+  Standard_EXPORT bool SetFlagName(const int num,
+                                               const char* const name);
 
   //! Returns the count of flags (flag 0 not included)
-  Standard_EXPORT Standard_Integer NbFlags() const;
+  Standard_EXPORT int NbFlags() const;
 
   //! Returns the count of items (i.e. the length of the bitmap)
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
   //! Returns the name recorded for a flag, or an empty string
-  Standard_EXPORT Standard_CString FlagName(const Standard_Integer num) const;
+  Standard_EXPORT const char* FlagName(const int num) const;
 
   //! Returns the number or a flag given its name, or zero
-  Standard_EXPORT Standard_Integer FlagNumber(const Standard_CString name) const;
+  Standard_EXPORT int FlagNumber(const char* const name) const;
 
   //! Returns the value (true/false) of a flag, from :
   //! - the number of the item
   //! - the flag number, by default 0
-  Standard_EXPORT Standard_Boolean Value(const Standard_Integer item,
-                                         const Standard_Integer flag = 0) const;
+  Standard_EXPORT bool Value(const int item,
+                                         const int flag = 0) const;
 
   //! Sets a new value for a flag
-  Standard_EXPORT void SetValue(const Standard_Integer item,
-                                const Standard_Boolean val,
-                                const Standard_Integer flag = 0) const;
+  Standard_EXPORT void SetValue(const int item,
+                                const bool val,
+                                const int flag = 0) const;
 
   //! Sets a flag to True
-  Standard_EXPORT void SetTrue(const Standard_Integer item, const Standard_Integer flag = 0) const;
+  Standard_EXPORT void SetTrue(const int item, const int flag = 0) const;
 
   //! Sets a flag to False
-  Standard_EXPORT void SetFalse(const Standard_Integer item, const Standard_Integer flag = 0) const;
+  Standard_EXPORT void SetFalse(const int item, const int flag = 0) const;
 
   //! Returns the former value for a flag and sets it to True
   //! (before : value returned; after : True)
-  Standard_EXPORT Standard_Boolean CTrue(const Standard_Integer item,
-                                         const Standard_Integer flag = 0) const;
+  Standard_EXPORT bool CTrue(const int item,
+                                         const int flag = 0) const;
 
   //! Returns the former value for a flag and sets it to False
   //! (before : value returned; after : False)
-  Standard_EXPORT Standard_Boolean CFalse(const Standard_Integer item,
-                                          const Standard_Integer flag = 0) const;
+  Standard_EXPORT bool CFalse(const int item,
+                                          const int flag = 0) const;
 
   //! Initialises all the values of Flag Number <flag> to a given
   //! value <val>
-  Standard_EXPORT void Init(const Standard_Boolean val, const Standard_Integer flag = 0) const;
+  Standard_EXPORT void Init(const bool val, const int flag = 0) const;
 
   //! Clear all field of bit map
   Standard_EXPORT void Clear();
 
-protected:
 private:
-  Standard_Integer                       thenbitems;
-  Standard_Integer                       thenbwords;
-  Standard_Integer                       thenbflags;
-  Handle(TColStd_HArray1OfInteger)       theflags;
-  Handle(TColStd_HSequenceOfAsciiString) thenames;
+  int                       thenbitems;
+  int                       thenbwords;
+  int                       thenbflags;
+  occ::handle<NCollection_HArray1<int>>       theflags;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> thenames;
 };
 
 #endif // _Interface_BitMap_HeaderFile

@@ -32,23 +32,23 @@ public:
   Graphic3d_Vertex() { SetCoord(0.0f, 0.0f, 0.0f); }
 
   //! Creates a point with theX, theY and theZ coordinates.
-  Graphic3d_Vertex(const Standard_ShortReal theX,
-                   const Standard_ShortReal theY,
-                   const Standard_ShortReal theZ)
+  Graphic3d_Vertex(const float theX,
+                   const float theY,
+                   const float theZ)
   {
     SetCoord(theX, theY, theZ);
   }
 
   //! Creates a point with theX, theY and theZ coordinates.
-  Graphic3d_Vertex(const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ)
+  Graphic3d_Vertex(const double theX, const double theY, const double theZ)
   {
     SetCoord(theX, theY, theZ);
   }
 
   //! Modifies the coordinates.
-  void SetCoord(const Standard_ShortReal theX,
-                const Standard_ShortReal theY,
-                const Standard_ShortReal theZ)
+  void SetCoord(const float theX,
+                const float theY,
+                const float theZ)
   {
     xyz[0] = theX;
     xyz[1] = theY;
@@ -56,15 +56,15 @@ public:
   }
 
   //! Modifies the coordinates.
-  void SetCoord(const Standard_Real theX, const Standard_Real theY, const Standard_Real theZ)
+  void SetCoord(const double theX, const double theY, const double theZ)
   {
-    xyz[0] = Standard_ShortReal(theX);
-    xyz[1] = Standard_ShortReal(theY);
-    xyz[2] = Standard_ShortReal(theZ);
+    xyz[0] = float(theX);
+    xyz[1] = float(theY);
+    xyz[2] = float(theZ);
   }
 
   //! Returns the coordinates.
-  void Coord(Standard_ShortReal& theX, Standard_ShortReal& theY, Standard_ShortReal& theZ) const
+  void Coord(float& theX, float& theY, float& theZ) const
   {
     theX = xyz[0];
     theY = xyz[1];
@@ -72,7 +72,7 @@ public:
   }
 
   //! Returns the coordinates.
-  void Coord(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+  void Coord(double& theX, double& theY, double& theZ) const
   {
     theX = xyz[0];
     theY = xyz[1];
@@ -80,19 +80,19 @@ public:
   }
 
   //! Returns the X coordinates.
-  Standard_ShortReal X() const { return xyz[0]; }
+  float X() const { return xyz[0]; }
 
   //! Returns the Y coordinate.
-  Standard_ShortReal Y() const { return xyz[1]; }
+  float Y() const { return xyz[1]; }
 
   //! Returns the Z coordinate.
-  Standard_ShortReal Z() const { return xyz[2]; }
+  float Z() const { return xyz[2]; }
 
   //! Returns the distance between two points.
-  Standard_EXPORT Standard_ShortReal Distance(const Graphic3d_Vertex& theOther) const;
+  Standard_EXPORT float Distance(const Graphic3d_Vertex& theOther) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   float xyz[3];
 };

@@ -26,7 +26,7 @@ StepBasic_SourceItem::StepBasic_SourceItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepBasic_SourceItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepBasic_SourceItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,15 +37,15 @@ Standard_Integer StepBasic_SourceItem::CaseNum(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepBasic_SourceItem::NewMember() const
+occ::handle<StepData_SelectMember> StepBasic_SourceItem::NewMember() const
 {
-  Handle(StepData_SelectNamed) member = new StepData_SelectNamed;
+  occ::handle<StepData_SelectNamed> member = new StepData_SelectNamed;
   return member;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_SourceItem::Identifier() const
+occ::handle<TCollection_HAsciiString> StepBasic_SourceItem::Identifier() const
 {
-  return Handle(TCollection_HAsciiString)::DownCast(Value());
+  return occ::down_cast<TCollection_HAsciiString>(Value());
 }

@@ -38,17 +38,17 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateShell();
 
-  Standard_EXPORT void Init(const Handle(StepShape_ConnectedFaceSet)& CFS,
+  Standard_EXPORT void Init(const occ::handle<StepShape_ConnectedFaceSet>& CFS,
                             StepToTopoDS_Tool&                        T,
                             StepToTopoDS_NMTool&                      NMTool,
                             const StepData_Factors&      theLocalFactors = StepData_Factors(),
                             const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
-  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedShell)& theTSh,
+  Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedShell>& theTSh,
                             StepToTopoDS_Tool&                         theTool,
                             StepToTopoDS_NMTool&                       theNMTool,
-                            const Standard_Boolean       theReadTessellatedWhenNoBRepOnly,
-                            Standard_Boolean&            theHasGeom,
+                            const bool       theReadTessellatedWhenNoBRepOnly,
+                            bool&            theHasGeom,
                             const StepData_Factors&      theLocalFactors = StepData_Factors(),
                             const Message_ProgressRange& theProgress     = Message_ProgressRange());
 
@@ -56,7 +56,6 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateShellError Error() const;
 
-protected:
 private:
   StepToTopoDS_TranslateShellError myError;
   TopoDS_Shape                     myResult;

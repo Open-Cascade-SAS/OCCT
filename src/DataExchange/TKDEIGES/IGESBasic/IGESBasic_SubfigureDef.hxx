@@ -20,13 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class Standard_Transient;
-
-class IGESBasic_SubfigureDef;
-DEFINE_STANDARD_HANDLE(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
 //! defines SubfigureDef, Type <308> Form <0>
 //! in package IGESBasic
@@ -44,35 +43,34 @@ public:
   //! - aDepth           : It indicates the amount of nesting
   //! - aName            : the subfigure name
   //! - allAssocEntities : the associated entities
-  Standard_EXPORT void Init(const Standard_Integer                      aDepth,
-                            const Handle(TCollection_HAsciiString)&     aName,
-                            const Handle(IGESData_HArray1OfIGESEntity)& allAssocEntities);
+  Standard_EXPORT void Init(const int                      aDepth,
+                            const occ::handle<TCollection_HAsciiString>&     aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities);
 
   //! returns depth of the Subfigure
   //! if theDepth = 0 - No reference to any subfigure instance.
-  Standard_EXPORT Standard_Integer Depth() const;
+  Standard_EXPORT int Depth() const;
 
   //! returns the name of Subfigure
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! returns number of entities. Is greater than or equal to zero.
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! returns the specific entity as indicated by Index
   //! raises exception if Index <= 0 or Index > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) AssociatedEntity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> AssociatedEntity(const int Index) const;
 
   //! returns the specific entity as indicated by Index
   //! raises exception if Index <= 0 or Index > NbEntities()
-  Standard_EXPORT Handle(Standard_Transient) Value(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Value(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                     theDepth;
-  Handle(TCollection_HAsciiString)     theName;
-  Handle(IGESData_HArray1OfIGESEntity) theAssocEntities;
+  int                     theDepth;
+  occ::handle<TCollection_HAsciiString>     theName;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theAssocEntities;
 };
 
 #endif // _IGESBasic_SubfigureDef_HeaderFile

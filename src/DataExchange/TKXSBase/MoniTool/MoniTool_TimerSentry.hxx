@@ -35,22 +35,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor creates an instance and runs the corresponding timer
-  MoniTool_TimerSentry(const Standard_CString cname);
+  MoniTool_TimerSentry(const char* const cname);
 
   //! Constructor creates an instance and runs the corresponding timer
-  MoniTool_TimerSentry(const Handle(MoniTool_Timer)& timer);
+  MoniTool_TimerSentry(const occ::handle<MoniTool_Timer>& timer);
 
   //! Destructor stops the associated timer
   ~MoniTool_TimerSentry();
 
-  Handle(MoniTool_Timer) Timer() const;
+  occ::handle<MoniTool_Timer> Timer() const;
 
   //! Manually stops the timer
   void Stop();
 
-protected:
 private:
-  Handle(MoniTool_Timer) myTimer;
+  occ::handle<MoniTool_Timer> myTimer;
 };
 
 #include <MoniTool_TimerSentry.lxx>

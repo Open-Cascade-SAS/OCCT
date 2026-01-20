@@ -24,9 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_GearPair,
-                       StepKinematics_LowOrderKinematicPairWithMotionCoupling)
-
 //! Representation of STEP entity GearPair
 class StepKinematics_GearPair : public StepKinematics_LowOrderKinematicPairWithMotionCoupling
 {
@@ -36,52 +33,52 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Real                          theRadiusFirstLink,
-    const Standard_Real                          theRadiusSecondLink,
-    const Standard_Real                          theBevel,
-    const Standard_Real                          theHelicalAngle,
-    const Standard_Real                          theGearRatio);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const double                          theRadiusFirstLink,
+    const double                          theRadiusSecondLink,
+    const double                          theBevel,
+    const double                          theHelicalAngle,
+    const double                          theGearRatio);
 
   //! Returns field RadiusFirstLink
-  Standard_EXPORT Standard_Real RadiusFirstLink() const;
+  Standard_EXPORT double RadiusFirstLink() const;
   //! Sets field RadiusFirstLink
-  Standard_EXPORT void SetRadiusFirstLink(const Standard_Real theRadiusFirstLink);
+  Standard_EXPORT void SetRadiusFirstLink(const double theRadiusFirstLink);
 
   //! Returns field RadiusSecondLink
-  Standard_EXPORT Standard_Real RadiusSecondLink() const;
+  Standard_EXPORT double RadiusSecondLink() const;
   //! Sets field RadiusSecondLink
-  Standard_EXPORT void SetRadiusSecondLink(const Standard_Real theRadiusSecondLink);
+  Standard_EXPORT void SetRadiusSecondLink(const double theRadiusSecondLink);
 
   //! Returns field Bevel
-  Standard_EXPORT Standard_Real Bevel() const;
+  Standard_EXPORT double Bevel() const;
   //! Sets field Bevel
-  Standard_EXPORT void SetBevel(const Standard_Real theBevel);
+  Standard_EXPORT void SetBevel(const double theBevel);
 
   //! Returns field HelicalAngle
-  Standard_EXPORT Standard_Real HelicalAngle() const;
+  Standard_EXPORT double HelicalAngle() const;
   //! Sets field HelicalAngle
-  Standard_EXPORT void SetHelicalAngle(const Standard_Real theHelicalAngle);
+  Standard_EXPORT void SetHelicalAngle(const double theHelicalAngle);
 
   //! Returns field GearRatio
-  Standard_EXPORT Standard_Real GearRatio() const;
+  Standard_EXPORT double GearRatio() const;
   //! Sets field GearRatio
-  Standard_EXPORT void SetGearRatio(const Standard_Real theGearRatio);
+  Standard_EXPORT void SetGearRatio(const double theGearRatio);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_GearPair,
                           StepKinematics_LowOrderKinematicPairWithMotionCoupling)
 
 private:
-  Standard_Real myRadiusFirstLink;
-  Standard_Real myRadiusSecondLink;
-  Standard_Real myBevel;
-  Standard_Real myHelicalAngle;
-  Standard_Real myGearRatio;
+  double myRadiusFirstLink;
+  double myRadiusSecondLink;
+  double myBevel;
+  double myHelicalAngle;
+  double myGearRatio;
 };
 #endif // _StepKinematics_GearPair_HeaderFile_

@@ -160,24 +160,24 @@ struct BealeFunc
 class QuadraticFuncOld : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aDx = theX(1) - 1.0;
     const double aDy = theX(2) - 2.0;
     theF             = aDx * aDx + aDy * aDy;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -186,28 +186,28 @@ public:
 class RosenbrockFuncOld : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aY - aX * aX;
     const double aT2 = 1.0 - aX;
     theF             = 100.0 * aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     const double aX = theX(1);
     const double aY = theX(2);
     theG(1)         = -400.0 * aX * (aY - aX * aX) - 2.0 * (1.0 - aX);
     theG(2)         = 200.0 * (aY - aX * aX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }

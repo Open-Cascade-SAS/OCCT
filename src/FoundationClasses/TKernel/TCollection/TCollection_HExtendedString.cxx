@@ -28,29 +28,29 @@ TCollection_HExtendedString::TCollection_HExtendedString() {}
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString(const Standard_CString message)
+TCollection_HExtendedString::TCollection_HExtendedString(const char* const message)
     : myString(message)
 {
 }
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString(const Standard_ExtString message)
+TCollection_HExtendedString::TCollection_HExtendedString(const char16_t* const message)
     : myString(message)
 {
 }
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString(const Standard_ExtCharacter aChar)
+TCollection_HExtendedString::TCollection_HExtendedString(const char16_t aChar)
     : myString(aChar)
 {
 }
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString(const Standard_Integer      length,
-                                                         const Standard_ExtCharacter filler)
+TCollection_HExtendedString::TCollection_HExtendedString(const int      length,
+                                                         const char16_t filler)
     : myString(length, filler)
 {
 }
@@ -65,7 +65,7 @@ TCollection_HExtendedString::TCollection_HExtendedString(const TCollection_Exten
 //=================================================================================================
 
 TCollection_HExtendedString::TCollection_HExtendedString(
-  const Handle(TCollection_HAsciiString)& astring)
+  const occ::handle<TCollection_HAsciiString>& astring)
     : myString(astring->String())
 {
 }
@@ -73,37 +73,37 @@ TCollection_HExtendedString::TCollection_HExtendedString(
 //=================================================================================================
 
 TCollection_HExtendedString::TCollection_HExtendedString(
-  const Handle(TCollection_HExtendedString)& astring)
+  const occ::handle<TCollection_HExtendedString>& astring)
     : myString(astring->ChangeString())
 {
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::AssignCat(const Handle(TCollection_HExtendedString)& other)
+void TCollection_HExtendedString::AssignCat(const occ::handle<TCollection_HExtendedString>& other)
 {
   myString.AssignCat(other->ChangeString());
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TCollection_HExtendedString::Cat(
-  const Handle(TCollection_HExtendedString)& other) const
+occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Cat(
+  const occ::handle<TCollection_HExtendedString>& other) const
 {
   return new TCollection_HExtendedString(myString.Cat(other->ChangeString()));
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::ChangeAll(const Standard_ExtCharacter aChar,
-                                            const Standard_ExtCharacter NewChar)
+void TCollection_HExtendedString::ChangeAll(const char16_t aChar,
+                                            const char16_t NewChar)
 {
   myString.ChangeAll(aChar, NewChar);
 }
 
 //=================================================================================================
 
-Standard_Boolean TCollection_HExtendedString::IsEmpty() const
+bool TCollection_HExtendedString::IsEmpty() const
 {
   return (myString.Length() == 0);
 }
@@ -117,123 +117,123 @@ void TCollection_HExtendedString::Clear()
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Insert(const Standard_Integer      where,
-                                         const Standard_ExtCharacter what)
+void TCollection_HExtendedString::Insert(const int      where,
+                                         const char16_t what)
 {
   myString.Insert(where, what);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Insert(const Standard_Integer                     where,
-                                         const Handle(TCollection_HExtendedString)& what)
+void TCollection_HExtendedString::Insert(const int                     where,
+                                         const occ::handle<TCollection_HExtendedString>& what)
 {
   myString.Insert(where, what->ChangeString());
 }
 
 //=================================================================================================
 
-Standard_Boolean TCollection_HExtendedString::IsLess(
-  const Handle(TCollection_HExtendedString)& other) const
+bool TCollection_HExtendedString::IsLess(
+  const occ::handle<TCollection_HExtendedString>& other) const
 {
   return myString.IsLess(other->ChangeString());
 }
 
 //=================================================================================================
 
-Standard_Boolean TCollection_HExtendedString::IsGreater(
-  const Handle(TCollection_HExtendedString)& other) const
+bool TCollection_HExtendedString::IsGreater(
+  const occ::handle<TCollection_HExtendedString>& other) const
 {
   return myString.IsGreater(other->ChangeString());
 }
 
 //=================================================================================================
 
-Standard_Boolean TCollection_HExtendedString::IsAscii() const
+bool TCollection_HExtendedString::IsAscii() const
 {
   return myString.IsAscii();
 }
 
 //=================================================================================================
 
-Standard_Integer TCollection_HExtendedString::Length() const
+int TCollection_HExtendedString::Length() const
 {
   return myString.Length();
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Remove(const Standard_Integer where,
-                                         const Standard_Integer ahowmany)
+void TCollection_HExtendedString::Remove(const int where,
+                                         const int ahowmany)
 {
   myString.Remove(where, ahowmany);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::RemoveAll(const Standard_ExtCharacter what)
+void TCollection_HExtendedString::RemoveAll(const char16_t what)
 {
   myString.RemoveAll(what);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::SetValue(const Standard_Integer      where,
-                                           const Standard_ExtCharacter what)
+void TCollection_HExtendedString::SetValue(const int      where,
+                                           const char16_t what)
 {
   myString.SetValue(where, what);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::SetValue(const Standard_Integer                     where,
-                                           const Handle(TCollection_HExtendedString)& what)
+void TCollection_HExtendedString::SetValue(const int                     where,
+                                           const occ::handle<TCollection_HExtendedString>& what)
 {
   myString.SetValue(where, what->ChangeString());
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TCollection_HExtendedString::Split(const Standard_Integer where)
+occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Split(const int where)
 {
   return new TCollection_HExtendedString(myString.Split(where));
 }
 
 //=================================================================================================
 
-Standard_Integer TCollection_HExtendedString::Search(
-  const Handle(TCollection_HExtendedString)& what) const
+int TCollection_HExtendedString::Search(
+  const occ::handle<TCollection_HExtendedString>& what) const
 {
   return myString.Search(what->ChangeString());
 }
 
 //=================================================================================================
 
-Standard_Integer TCollection_HExtendedString::SearchFromEnd(
-  const Handle(TCollection_HExtendedString)& what) const
+int TCollection_HExtendedString::SearchFromEnd(
+  const occ::handle<TCollection_HExtendedString>& what) const
 {
   return myString.SearchFromEnd(what->ChangeString());
 }
 
 //=================================================================================================
 
-Handle(TCollection_HExtendedString) TCollection_HExtendedString::Token(
-  const Standard_ExtString separators,
-  const Standard_Integer   whichone) const
+occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Token(
+  const char16_t* const separators,
+  const int   whichone) const
 {
   return new TCollection_HExtendedString(myString.Token(separators, whichone));
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Trunc(const Standard_Integer ahowmany)
+void TCollection_HExtendedString::Trunc(const int ahowmany)
 {
   myString.Trunc(ahowmany);
 }
 
 //=================================================================================================
 
-Standard_ExtCharacter TCollection_HExtendedString::Value(const Standard_Integer where) const
+char16_t TCollection_HExtendedString::Value(const int where) const
 {
   return myString.Value(where);
 }
@@ -256,8 +256,8 @@ void TCollection_HExtendedString::Print(Standard_OStream& S) const
 
 //=================================================================================================
 
-Standard_Boolean TCollection_HExtendedString::IsSameState(
-  const Handle(TCollection_HExtendedString)& other) const
+bool TCollection_HExtendedString::IsSameState(
+  const occ::handle<TCollection_HExtendedString>& other) const
 {
   return myString == other->String();
 }

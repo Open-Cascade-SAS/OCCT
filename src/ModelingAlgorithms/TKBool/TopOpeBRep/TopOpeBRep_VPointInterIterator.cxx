@@ -24,7 +24,7 @@ TopOpeBRep_VPointInterIterator::TopOpeBRep_VPointInterIterator()
     : myLineInter(NULL),
       myVPointIndex(0),
       myVPointNb(0),
-      mycheckkeep(Standard_False)
+      mycheckkeep(false)
 {
 }
 
@@ -38,7 +38,7 @@ TopOpeBRep_VPointInterIterator::TopOpeBRep_VPointInterIterator(const TopOpeBRep_
 //=================================================================================================
 
 void TopOpeBRep_VPointInterIterator::Init(const TopOpeBRep_LineInter& LI,
-                                          const Standard_Boolean      checkkeep)
+                                          const bool      checkkeep)
 {
   myLineInter = (TopOpeBRep_LineInter*)&LI;
   mycheckkeep = checkkeep;
@@ -66,7 +66,7 @@ void TopOpeBRep_VPointInterIterator::Init()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_VPointInterIterator::More() const
+bool TopOpeBRep_VPointInterIterator::More() const
 {
   return (myVPointIndex <= myVPointNb);
 }
@@ -111,7 +111,7 @@ TopOpeBRep_VPointInter& TopOpeBRep_VPointInterIterator::ChangeCurrentVP()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRep_VPointInterIterator::CurrentVPIndex() const
+int TopOpeBRep_VPointInterIterator::CurrentVPIndex() const
 {
   if (!More())
     throw Standard_ProgramError("TopOpeBRep_VPointInterIterator::CurrentVPIndex");

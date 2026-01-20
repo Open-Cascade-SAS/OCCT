@@ -2994,14 +2994,14 @@ struct StringViewHasher
   }
 };
 
-using StringViewDataMap = NCollection_DataMap<std::string_view, Standard_Integer, StringViewHasher>;
+using StringViewDataMap = NCollection_DataMap<std::string_view, int, StringViewHasher>;
 
 // Static maps for theTypenums and theTypeshor
 static StringViewDataMap THE_TYPENUMS;
 // Static map for theTypeshor
 static StringViewDataMap THE_TYPESHOR;
 // Static allocator for the maps
-static Handle(NCollection_IncAllocator) THE_INC_ALLOCATOR;
+static occ::handle<NCollection_IncAllocator> THE_INC_ALLOCATOR;
 
 // Initialize theTypenums map
 static void initializeTypenums(StringViewDataMap& theTypenums)
@@ -4323,11 +4323,11 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()
 
 // --- Case Recognition ---
 
-Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(const TCollection_AsciiString& key) const
+int RWStepAP214_ReadWriteModule::CaseStep(const TCollection_AsciiString& key) const
 {
   // FMA - le 25-07-96 : Optimisation -> on teste en premier les types les plus
   //                     frequents dans le fichier cad geometry/topology
-  Standard_Integer num;
+  int num;
   if (key.IsEqual(Reco_CartesianPoint))
     return 59; // car tres courant
   if (THE_TYPENUMS.Find(static_cast<std::string_view>(key), num))
@@ -4341,14 +4341,14 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(const TCollection_AsciiSt
 
 //=================================================================================================
 
-Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
-  const TColStd_SequenceOfAsciiString& theTypes) const
+int RWStepAP214_ReadWriteModule::CaseStep(
+  const NCollection_Sequence<TCollection_AsciiString>& theTypes) const
 {
 
   // Optimized by FMA : le test sur le nombre de composant est repete meme
   //                    si la valeur testee est la meme.
 
-  Standard_Integer NbComp = theTypes.Length();
+  int NbComp = theTypes.Length();
   if (NbComp < 2)
   {
 #ifdef OCCT_DEBUG
@@ -4360,7 +4360,7 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
     // SHORT TYPES
     //  Pas tres elegant : on convertit d abord
     //  Sinon, il faudrait sortir des routines
-    Standard_Integer i, num = 0;
+    int i, num = 0;
     for (i = 1; i <= NbComp; i++)
     {
       if (THE_TYPESHOR.IsBound(static_cast<std::string_view>(theTypes(i))))
@@ -4371,7 +4371,7 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
     }
     if (num > 0)
     {
-      TColStd_SequenceOfAsciiString longs;
+      NCollection_Sequence<TCollection_AsciiString> longs;
       for (i = 1; i <= NbComp; i++)
       {
         if (THE_TYPESHOR.Find(static_cast<std::string_view>(theTypes(i)), num))
@@ -4384,23 +4384,23 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
 
     // sln 03.10.2001. BUC61003. Correction of alphabetic order of complex entity's items (ascending
     // sorting)
-    TColStd_SequenceOfAsciiString types;
+    NCollection_Sequence<TCollection_AsciiString> types;
     for (i = 1; i <= theTypes.Length(); i++)
       types.Append(theTypes(i));
     // do ascending sorting
-    Standard_Boolean        isOK = Standard_False;
+    bool        isOK = false;
     TCollection_AsciiString tmpStr;
-    Standard_Integer        aLen = types.Length() - 1;
+    int        aLen = types.Length() - 1;
     while (!isOK)
     {
-      isOK = Standard_True;
+      isOK = true;
       for (i = 1; i <= aLen; i++)
         if (types(i) > types(i + 1))
         {
           tmpStr       = types(i);
           types(i)     = types(i + 1);
           types(i + 1) = tmpStr;
-          isOK         = Standard_False;
+          isOK         = false;
         }
     }
 
@@ -4817,117 +4817,117 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep(
 // purpose  : External Mapping Recognition
 //=======================================================================
 
-Standard_Boolean RWStepAP214_ReadWriteModule::IsComplex(const Standard_Integer CN) const
+bool RWStepAP214_ReadWriteModule::IsComplex(const int CN) const
 {
   switch (CN)
   {
     case 319:
-      return Standard_True;
+      return true;
     case 320:
-      return Standard_True;
+      return true;
     case 321:
-      return Standard_True;
+      return true;
     case 322:
-      return Standard_True;
+      return true;
     case 323:
-      return Standard_True;
+      return true;
     case 324:
-      return Standard_True;
+      return true;
     case 325:
-      return Standard_True;
+      return true;
     case 326:
-      return Standard_True;
+      return true;
     case 327:
-      return Standard_True;
+      return true;
     case 328:
-      return Standard_True;
+      return true;
     case 329:
-      return Standard_True;
+      return true;
     case 330:
-      return Standard_True;
+      return true;
     case 331:
-      return Standard_True;
+      return true;
     case 332:
-      return Standard_True;
+      return true;
       // Added by FMA
     case 333:
-      return Standard_True;
+      return true;
     case 334:
-      return Standard_True;
+      return true;
     case 335:
-      return Standard_True;
+      return true;
     case 337:
-      return Standard_True;
+      return true;
     case 338:
-      return Standard_True;
+      return true;
     case 344:
-      return Standard_True;
+      return true;
     case 345:
-      return Standard_True;
+      return true;
     case 346:
-      return Standard_True;
+      return true;
     case 347:
-      return Standard_True;
+      return true;
     case 357:
-      return Standard_True;
+      return true;
     case 358: //: n5
-      return Standard_True;
+      return true;
       //  AP214 CC1 -> CC2
     case 389:
-      return Standard_True;
+      return true;
     case 409:
     case 410:
     case 411:
     case 412:
-      return Standard_True;
+      return true;
     case 463:
-      return Standard_True;
+      return true;
     case 481:
-      return Standard_True;
+      return true;
     case 574:
-      return Standard_True;
+      return true;
     case 578:
-      return Standard_True;
+      return true;
     case 635:
-      return Standard_True;
+      return true;
     case 636:
-      return Standard_True;
+      return true;
     case 650:
-      return Standard_True;
+      return true;
     case 691:
-      return Standard_True;
+      return true;
     case 692:
-      return Standard_True;
+      return true;
     case 693:
-      return Standard_True;
+      return true;
     case 694:
-      return Standard_True;
+      return true;
     case 695:
-      return Standard_True;
+      return true;
     case 696:
-      return Standard_True;
+      return true;
     case 697:
-      return Standard_True;
+      return true;
     case 698:
-      return Standard_True;
+      return true;
     case 699:
-      return Standard_True;
+      return true;
     case 705:
-      return Standard_True;
+      return true;
     case 706:
-      return Standard_True;
+      return true;
     case 715:
-      return Standard_True;
+      return true;
     case 719:
-      return Standard_True;
+      return true;
     default:
-      return Standard_False;
+      return false;
   }
 }
 
 //=================================================================================================
 
-const std::string_view& RWStepAP214_ReadWriteModule::StepType(const Standard_Integer CN) const
+const std::string_view& RWStepAP214_ReadWriteModule::StepType(const int CN) const
 {
   switch (CN)
   {
@@ -6394,9 +6394,9 @@ const std::string_view& RWStepAP214_ReadWriteModule::StepType(const Standard_Int
 // purpose  : Complex Type (list of types)
 //=======================================================================
 
-Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(
-  const Standard_Integer         CN,
-  TColStd_SequenceOfAsciiString& types) const
+bool RWStepAP214_ReadWriteModule::ComplexType(
+  const int         CN,
+  NCollection_Sequence<TCollection_AsciiString>& types) const
 {
   switch (CN)
   {
@@ -6723,18 +6723,18 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(
       types.Append(TCollection_AsciiString(StepType(708)));
       break;
     default:
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer                 CN,
-                                           const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(Standard_Transient)&      ent) const
+void RWStepAP214_ReadWriteModule::ReadStep(const int                 CN,
+                                           const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<Standard_Transient>&      ent) const
 {
   if (CN == 0)
   {
@@ -11353,9 +11353,9 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer               
 
 //=================================================================================================
 
-void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer            CN,
+void RWStepAP214_ReadWriteModule::WriteStep(const int            CN,
                                             StepData_StepWriter&              SW,
-                                            const Handle(Standard_Transient)& ent) const
+                                            const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
     return;

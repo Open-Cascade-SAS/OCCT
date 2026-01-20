@@ -25,7 +25,7 @@
 
 TopTrans_CurveTransition::TopTrans_CurveTransition()
     : myCurv(0.0),
-      Init(Standard_False),
+      Init(false),
       CurvFirst(0.0),
       CurvLast(0.0)
 {
@@ -41,12 +41,12 @@ TopTrans_CurveTransition::TopTrans_CurveTransition()
 
 void TopTrans_CurveTransition::Reset(const gp_Dir&       Tgt,
                                      const gp_Dir&       Norm,
-                                     const Standard_Real Curv)
+                                     const double Curv)
 {
   myTgt  = Tgt;
   myNorm = Norm;
   myCurv = Curv;
-  Init   = Standard_True;
+  Init   = true;
 }
 
 //=======================================================================
@@ -59,7 +59,7 @@ void TopTrans_CurveTransition::Reset(const gp_Dir& Tgt)
 {
   myTgt  = Tgt;
   myCurv = 0.;
-  Init   = Standard_True;
+  Init   = true;
 }
 
 //=======================================================================
@@ -68,10 +68,10 @@ void TopTrans_CurveTransition::Reset(const gp_Dir& Tgt)
 //           curve with the interference stored in the complex Transition.
 //=======================================================================
 
-void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
+void TopTrans_CurveTransition::Compare(const double      Tole,
                                        const gp_Dir&            T,
                                        const gp_Dir&            N,
-                                       const Standard_Real      C,
+                                       const double      C,
                                        const TopAbs_Orientation St,
                                        const TopAbs_Orientation Or)
 {
@@ -92,7 +92,7 @@ void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
   // It is the first comparison for this complex transition
   if (Init)
   {
-    Init      = Standard_False;
+    Init      = false;
     TgtFirst  = T;
     NormFirst = N;
     CurvFirst = C;
@@ -125,8 +125,8 @@ void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
   // Compare with the existent first and last transition :
   else
   {
-    Standard_Boolean FirstSet    = Standard_False;
-    Standard_Real    cosAngWithT = myTgt * T;
+    bool FirstSet    = false;
+    double    cosAngWithT = myTgt * T;
     switch (O)
     {
       case TopAbs_REVERSED:
@@ -140,14 +140,14 @@ void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
       case TopAbs_EXTERNAL:
         break;
     }
-    Standard_Real cosAngWith1 = myTgt * TgtFirst;
+    double cosAngWith1 = myTgt * TgtFirst;
 
     switch (Compare(cosAngWithT, cosAngWith1, Tole))
     {
 
       case LOWER:
         // If the angle is greater than the first the new become the first
-        FirstSet = Standard_True;
+        FirstSet = true;
         TgtFirst = T;
         switch (O)
         {
@@ -171,7 +171,7 @@ void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
         // If same angles we look at the Curvature
         if (IsBefore(Tole, cosAngWithT, N, C, NormFirst, CurvFirst))
         {
-          FirstSet = Standard_True;
+          FirstSet = true;
           TgtFirst = T;
           switch (O)
           {
@@ -201,7 +201,7 @@ void TopTrans_CurveTransition::Compare(const Standard_Real      Tole,
       // Dans les cas de tangence le premier peut etre aussi le dernier
       if (O == TopAbs_INTERNAL)
         cosAngWithT = -cosAngWithT;
-      Standard_Real cosAngWith2 = myTgt * TgtLast;
+      double cosAngWith2 = myTgt * TgtLast;
 
       switch (Compare(cosAngWithT, cosAngWith2, Tole))
       {
@@ -302,16 +302,16 @@ TopAbs_State TopTrans_CurveTransition::StateAfter() const
 //           if T1 is before T2
 //=======================================================================
 
-Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
-                                                    const Standard_Real CosAngl,
+bool TopTrans_CurveTransition::IsBefore(const double Tole,
+                                                    const double CosAngl,
                                                     const gp_Dir&       N1,
-                                                    const Standard_Real C1,
+                                                    const double C1,
                                                     const gp_Dir&       N2,
-                                                    const Standard_Real C2) const
+                                                    const double C2) const
 {
-  Standard_Real    TN1       = myTgt * N1;
-  Standard_Real    TN2       = myTgt * N2;
-  Standard_Boolean OneBefore = Standard_False;
+  double    TN1       = myTgt * N1;
+  double    TN2       = myTgt * N2;
+  bool OneBefore = false;
 
   if (std::abs(TN1) <= Tole || std::abs(TN2) <= Tole)
   {
@@ -322,7 +322,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
       // The reference is straight
       // The first is the interference which have the lowest curvature.
       if (C1 < C2)
-        OneBefore = Standard_True;
+        OneBefore = true;
       //  Modified by Sergey KHROMOV - Wed Dec 27 17:08:49 2000 Begin
       if (CosAngl > 0)
         OneBefore = !OneBefore;
@@ -333,7 +333,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
       // The reference is curv
       // The first is the interference which have the nearest curvature
       // in the direction
-      Standard_Real deltaC1, deltaC2;
+      double deltaC1, deltaC2;
       if (C1 == 0. || myCurv == 0.)
       {
         deltaC1 = C1 - myCurv;
@@ -351,7 +351,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
         deltaC2 = (C2 - myCurv) * (N2 * myNorm);
       }
       if (deltaC1 < deltaC2)
-        OneBefore = Standard_True;
+        OneBefore = true;
       if (CosAngl > 0)
         OneBefore = !OneBefore;
     }
@@ -363,7 +363,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
     {
       // Before the second  interference we are out the curvature
       // The first interference is before  /* ->)( */
-      OneBefore = Standard_True;
+      OneBefore = true;
     }
     else
     {
@@ -372,7 +372,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
       {
         // We choice the greater curvature
         // The first interference is before   /* ->)) */
-        OneBefore = Standard_True;
+        OneBefore = true;
       }
     }
   }
@@ -386,7 +386,7 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
       {
         // We choice the lower curvature
         // The first interference is before
-        OneBefore = Standard_True;
+        OneBefore = true;
       }
     }
   }
@@ -395,11 +395,11 @@ Standard_Boolean TopTrans_CurveTransition::IsBefore(const Standard_Real Tole,
 
 //=================================================================================================
 
-Standard_Integer TopTrans_CurveTransition::Compare(const Standard_Real Ang1,
-                                                   const Standard_Real Ang2,
-                                                   const Standard_Real Tole) const
+int TopTrans_CurveTransition::Compare(const double Ang1,
+                                                   const double Ang2,
+                                                   const double Tole) const
 {
-  Standard_Integer res = SAME;
+  int res = SAME;
   if (Ang1 - Ang2 > Tole)
     res = GREATER;
   else if (Ang2 - Ang1 > Tole)

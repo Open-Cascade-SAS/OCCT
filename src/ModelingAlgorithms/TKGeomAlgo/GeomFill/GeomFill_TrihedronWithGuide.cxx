@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide, GeomFill_TrihedronLaw)
 
-Handle(Adaptor3d_Curve) GeomFill_TrihedronWithGuide::Guide() const
+occ::handle<Adaptor3d_Curve> GeomFill_TrihedronWithGuide::Guide() const
 {
   return myGuide;
 }

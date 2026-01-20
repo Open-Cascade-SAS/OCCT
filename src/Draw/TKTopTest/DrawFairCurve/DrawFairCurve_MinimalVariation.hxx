@@ -23,30 +23,25 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
-class DrawFairCurve_MinimalVariation;
-DEFINE_STANDARD_HANDLE(DrawFairCurve_MinimalVariation, DrawFairCurve_Batten)
-
 //! Interactive Draw object of type "MVC"
 class DrawFairCurve_MinimalVariation : public DrawFairCurve_Batten
 {
 
 public:
-  Standard_EXPORT DrawFairCurve_MinimalVariation(const Standard_Address TheMVC);
+  Standard_EXPORT DrawFairCurve_MinimalVariation(void* const TheMVC);
 
-  Standard_EXPORT void SetCurvature(const Standard_Integer Side, const Standard_Real Rho);
+  Standard_EXPORT void SetCurvature(const int Side, const double Rho);
 
-  Standard_EXPORT void SetPhysicalRatio(const Standard_Real Ratio);
+  Standard_EXPORT void SetPhysicalRatio(const double Ratio);
 
-  Standard_EXPORT Standard_Real GetCurvature(const Standard_Integer Side) const;
+  Standard_EXPORT double GetCurvature(const int Side) const;
 
-  Standard_EXPORT Standard_Real GetPhysicalRatio() const;
+  Standard_EXPORT double GetPhysicalRatio() const;
 
-  Standard_EXPORT void FreeCurvature(const Standard_Integer Side);
+  Standard_EXPORT void FreeCurvature(const int Side);
 
   DEFINE_STANDARD_RTTIEXT(DrawFairCurve_MinimalVariation, DrawFairCurve_Batten)
 
-protected:
-private:
 };
 
 #endif // _DrawFairCurve_MinimalVariation_HeaderFile

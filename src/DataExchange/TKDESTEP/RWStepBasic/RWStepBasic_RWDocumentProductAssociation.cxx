@@ -29,10 +29,10 @@ RWStepBasic_RWDocumentProductAssociation::RWStepBasic_RWDocumentProductAssociati
 //=================================================================================================
 
 void RWStepBasic_RWDocumentProductAssociation::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_DocumentProductAssociation)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                              num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_DocumentProductAssociation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document_product_association"))
@@ -40,21 +40,21 @@ void RWStepBasic_RWDocumentProductAssociation::ReadStep(
 
   // Own fields of DocumentProductAssociation
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(StepBasic_Document) aRelatingDocument;
+  occ::handle<StepBasic_Document> aRelatingDocument;
   data->ReadEntity(num,
                    3,
                    "relating_document",
@@ -73,7 +73,7 @@ void RWStepBasic_RWDocumentProductAssociation::ReadStep(
 
 void RWStepBasic_RWDocumentProductAssociation::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_DocumentProductAssociation)& ent) const
+  const occ::handle<StepBasic_DocumentProductAssociation>& ent) const
 {
 
   // Own fields of DocumentProductAssociation
@@ -95,7 +95,7 @@ void RWStepBasic_RWDocumentProductAssociation::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWDocumentProductAssociation::Share(
-  const Handle(StepBasic_DocumentProductAssociation)& ent,
+  const occ::handle<StepBasic_DocumentProductAssociation>& ent,
   Interface_EntityIterator&                           iter) const
 {
 

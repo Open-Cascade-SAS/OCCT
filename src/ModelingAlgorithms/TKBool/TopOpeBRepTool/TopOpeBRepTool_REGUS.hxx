@@ -20,12 +20,19 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
 
@@ -40,49 +47,48 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& S() const;
 
-  Standard_EXPORT Standard_Boolean MapS();
+  Standard_EXPORT bool MapS();
 
-  Standard_EXPORT static Standard_Boolean WireToFace(const TopoDS_Face&          Fanc,
-                                                     const TopTools_ListOfShape& nWs,
-                                                     TopTools_ListOfShape&       nFs);
+  Standard_EXPORT static bool WireToFace(const TopoDS_Face&          Fanc,
+                                                     const NCollection_List<TopoDS_Shape>& nWs,
+                                                     NCollection_List<TopoDS_Shape>&       nFs);
 
-  Standard_EXPORT static Standard_Boolean SplitF(const TopoDS_Face&    Fanc,
-                                                 TopTools_ListOfShape& FSplits);
+  Standard_EXPORT static bool SplitF(const TopoDS_Face&    Fanc,
+                                                 NCollection_List<TopoDS_Shape>& FSplits);
 
-  Standard_EXPORT Standard_Boolean SplitFaces();
+  Standard_EXPORT bool SplitFaces();
 
-  Standard_EXPORT Standard_Boolean REGU();
+  Standard_EXPORT bool REGU();
 
-  Standard_EXPORT void SetFsplits(TopTools_DataMapOfShapeListOfShape& Fsplits);
+  Standard_EXPORT void SetFsplits(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Fsplits);
 
-  Standard_EXPORT void GetFsplits(TopTools_DataMapOfShapeListOfShape& Fsplits) const;
+  Standard_EXPORT void GetFsplits(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Fsplits) const;
 
-  Standard_EXPORT void SetOshNsh(TopTools_DataMapOfShapeListOfShape& OshNsh);
+  Standard_EXPORT void SetOshNsh(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OshNsh);
 
-  Standard_EXPORT void GetOshNsh(TopTools_DataMapOfShapeListOfShape& OshNsh) const;
+  Standard_EXPORT void GetOshNsh(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OshNsh) const;
 
-  Standard_EXPORT Standard_Boolean InitBlock();
+  Standard_EXPORT bool InitBlock();
 
-  Standard_EXPORT Standard_Boolean NextinBlock();
+  Standard_EXPORT bool NextinBlock();
 
-  Standard_EXPORT Standard_Boolean NearestF(const TopoDS_Edge&          e,
-                                            const TopTools_ListOfShape& lof,
+  Standard_EXPORT bool NearestF(const TopoDS_Edge&          e,
+                                            const NCollection_List<TopoDS_Shape>& lof,
                                             TopoDS_Face&                ffound) const;
 
-protected:
 private:
-  Standard_Boolean                   hasnewsplits;
-  TopTools_DataMapOfShapeListOfShape myFsplits;
-  TopTools_DataMapOfShapeListOfShape myOshNsh;
+  bool                   hasnewsplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myFsplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myOshNsh;
   TopoDS_Shape                       myS;
-  TopTools_DataMapOfShapeListOfShape mymapeFsstatic;
-  TopTools_DataMapOfShapeListOfShape mymapeFs;
-  TopTools_IndexedMapOfShape         mymapemult;
-  Standard_Integer                   mynF;
-  Standard_Integer                   myoldnF;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mymapeFsstatic;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mymapeFs;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         mymapemult;
+  int                   mynF;
+  int                   myoldnF;
   TopoDS_Shape                       myf;
-  TopTools_MapOfShape                myedstoconnect;
-  TopTools_ListOfShape               mylFinBlock;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                myedstoconnect;
+  NCollection_List<TopoDS_Shape>               mylFinBlock;
 };
 
 #endif // _TopOpeBRepTool_REGUS_HeaderFile

@@ -20,7 +20,9 @@
 #include <IGESBasic_ToolSubfigureDef.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
@@ -29,7 +31,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
@@ -38,8 +40,8 @@
 // MGE 03/08/98
 IGESBasic_ToolSubfigureDef::IGESBasic_ToolSubfigureDef() {}
 
-void IGESBasic_ToolSubfigureDef::ReadOwnParams(const Handle(IGESBasic_SubfigureDef)&  ent,
-                                               const Handle(IGESData_IGESReaderData)& IR,
+void IGESBasic_ToolSubfigureDef::ReadOwnParams(const occ::handle<IGESBasic_SubfigureDef>&  ent,
+                                               const occ::handle<IGESData_IGESReaderData>& IR,
                                                IGESData_ParamReader&                  PR) const
 {
   // MGE 03/08/98
@@ -51,11 +53,11 @@ void IGESBasic_ToolSubfigureDef::ReadOwnParams(const Handle(IGESBasic_SubfigureD
   //  Message_Msg Msg211("XSTEP_211");
   //========================================
 
-  Standard_Integer                 tempDepth;
-  Handle(TCollection_HAsciiString) tempName;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                     nbval = 0;
-  Handle(IGESData_HArray1OfIGESEntity) EntArray;
+  int                 tempDepth;
+  occ::handle<TCollection_HAsciiString> tempName;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                     nbval = 0;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray;
 
   if (!PR.ReadInteger(PR.Current(), tempDepth))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -78,38 +80,38 @@ void IGESBasic_ToolSubfigureDef::ReadOwnParams(const Handle(IGESBasic_SubfigureD
   ent->Init(tempDepth, tempName, EntArray);
 }
 
-void IGESBasic_ToolSubfigureDef::WriteOwnParams(const Handle(IGESBasic_SubfigureDef)& ent,
+void IGESBasic_ToolSubfigureDef::WriteOwnParams(const occ::handle<IGESBasic_SubfigureDef>& ent,
                                                 IGESData_IGESWriter&                  IW) const
 {
-  Standard_Integer nb = ent->NbEntities();
+  int nb = ent->NbEntities();
 
   IW.Send(ent->Depth());
   IW.Send(ent->Name());
   IW.Send(nb);
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
     IW.Send(ent->AssociatedEntity(i));
 }
 
-void IGESBasic_ToolSubfigureDef::OwnShared(const Handle(IGESBasic_SubfigureDef)& ent,
+void IGESBasic_ToolSubfigureDef::OwnShared(const occ::handle<IGESBasic_SubfigureDef>& ent,
                                            Interface_EntityIterator&             iter) const
 {
-  Standard_Integer nb = ent->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = ent->NbEntities();
+  for (int i = 1; i <= nb; i++)
     iter.GetOneItem(ent->AssociatedEntity(i));
 }
 
-void IGESBasic_ToolSubfigureDef::OwnCopy(const Handle(IGESBasic_SubfigureDef)& another,
-                                         const Handle(IGESBasic_SubfigureDef)& ent,
+void IGESBasic_ToolSubfigureDef::OwnCopy(const occ::handle<IGESBasic_SubfigureDef>& another,
+                                         const occ::handle<IGESBasic_SubfigureDef>& ent,
                                          Interface_CopyTool&                   TC) const
 {
-  Standard_Integer                 lower, upper;
-  Standard_Integer                 aDepth = another->Depth();
-  Handle(TCollection_HAsciiString) aName  = new TCollection_HAsciiString(another->Name());
+  int                 lower, upper;
+  int                 aDepth = another->Depth();
+  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(another->Name());
 
   lower                                         = 1;
   upper                                         = another->NbEntities();
-  Handle(IGESData_HArray1OfIGESEntity) EntArray = new IGESData_HArray1OfIGESEntity(lower, upper);
-  for (Standard_Integer i = lower; i <= upper; i++)
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
+  for (int i = lower; i <= upper; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->AssociatedEntity(i)));
     EntArray->SetValue(i, myentity);
@@ -118,7 +120,7 @@ void IGESBasic_ToolSubfigureDef::OwnCopy(const Handle(IGESBasic_SubfigureDef)& a
 }
 
 IGESData_DirChecker IGESBasic_ToolSubfigureDef::DirChecker(
-  const Handle(IGESBasic_SubfigureDef)& ent) const
+  const occ::handle<IGESBasic_SubfigureDef>& ent) const
 {
   IGESData_DirChecker DC(308, 0); // TypeNo. 308, Form no. 0
   DC.Structure(IGESData_DefVoid);
@@ -133,16 +135,16 @@ IGESData_DirChecker IGESBasic_ToolSubfigureDef::DirChecker(
   return DC;
 }
 
-void IGESBasic_ToolSubfigureDef::OwnCheck(const Handle(IGESBasic_SubfigureDef)& /* ent */,
+void IGESBasic_ToolSubfigureDef::OwnCheck(const occ::handle<IGESBasic_SubfigureDef>& /* ent */,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& /* ach */) const
+                                          occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESBasic_ToolSubfigureDef::OwnDump(const Handle(IGESBasic_SubfigureDef)& ent,
+void IGESBasic_ToolSubfigureDef::OwnDump(const occ::handle<IGESBasic_SubfigureDef>& ent,
                                          const IGESData_IGESDumper&            dumper,
                                          Standard_OStream&                     S,
-                                         const Standard_Integer                level) const
+                                         const int                level) const
 {
   S << "IGESBasic_SubfigureDef\n"
     << "Depth of the subfigure : " << ent->Depth() << "\n"

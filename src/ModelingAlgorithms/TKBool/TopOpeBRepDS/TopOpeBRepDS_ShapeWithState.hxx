@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Shape;
@@ -33,28 +34,27 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_ShapeWithState();
 
-  Standard_EXPORT const TopTools_ListOfShape& Part(const TopAbs_State aState) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Part(const TopAbs_State aState) const;
 
   Standard_EXPORT void AddPart(const TopoDS_Shape& aShape, const TopAbs_State aState);
 
-  Standard_EXPORT void AddParts(const TopTools_ListOfShape& aListOfShape,
+  Standard_EXPORT void AddParts(const NCollection_List<TopoDS_Shape>& aListOfShape,
                                 const TopAbs_State          aState);
 
   Standard_EXPORT void SetState(const TopAbs_State aState);
 
   Standard_EXPORT TopAbs_State State() const;
 
-  Standard_EXPORT void SetIsSplitted(const Standard_Boolean anIsSplitted);
+  Standard_EXPORT void SetIsSplitted(const bool anIsSplitted);
 
-  Standard_EXPORT Standard_Boolean IsSplitted() const;
+  Standard_EXPORT bool IsSplitted() const;
 
-protected:
 private:
-  TopTools_ListOfShape myPartIn;
-  TopTools_ListOfShape myPartOut;
-  TopTools_ListOfShape myPartOn;
+  NCollection_List<TopoDS_Shape> myPartIn;
+  NCollection_List<TopoDS_Shape> myPartOut;
+  NCollection_List<TopoDS_Shape> myPartOn;
   TopAbs_State         myState;
-  Standard_Boolean     myIsSplitted;
+  bool     myIsSplitted;
 };
 
 #endif // _TopOpeBRepDS_ShapeWithState_HeaderFile

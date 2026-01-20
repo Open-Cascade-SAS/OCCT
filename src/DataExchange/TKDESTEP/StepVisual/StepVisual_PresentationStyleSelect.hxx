@@ -46,22 +46,20 @@ public:
   //! 6 -> TextStyle
   //! 7 -> NullStyle
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a PointStyle (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PointStyle) PointStyle() const;
+  Standard_EXPORT occ::handle<StepVisual_PointStyle> PointStyle() const;
 
   //! returns Value as a CurveStyle (Null if another type)
-  Standard_EXPORT Handle(StepVisual_CurveStyle) CurveStyle() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyle> CurveStyle() const;
 
   //! returns Value as a NullStyleMember (Null if another type)
-  Standard_EXPORT Handle(StepVisual_NullStyleMember) NullStyle() const;
+  Standard_EXPORT occ::handle<StepVisual_NullStyleMember> NullStyle() const;
 
   //! returns Value as a SurfaceStyleUsage (Null if another type)
-  Standard_EXPORT Handle(StepVisual_SurfaceStyleUsage) SurfaceStyleUsage() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleUsage> SurfaceStyleUsage() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_PresentationStyleSelect_HeaderFile

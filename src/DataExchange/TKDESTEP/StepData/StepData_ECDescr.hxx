@@ -20,16 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_SequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <StepData_EDescr.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_CString.hxx>
 class StepData_ESDescr;
 class StepData_Described;
-
-class StepData_ECDescr;
-DEFINE_STANDARD_HANDLE(StepData_ECDescr, StepData_EDescr)
 
 //! Describes a Complex Entity (Plex) as a list of Simple ones
 class StepData_ECDescr : public StepData_EDescr
@@ -41,32 +41,31 @@ public:
 
   //! Adds a member
   //! Warning : members are added in alphabetic order
-  Standard_EXPORT void Add(const Handle(StepData_ESDescr)& member);
+  Standard_EXPORT void Add(const occ::handle<StepData_ESDescr>& member);
 
   //! Returns the count of members
-  Standard_EXPORT Standard_Integer NbMembers() const;
+  Standard_EXPORT int NbMembers() const;
 
   //! Returns a Member from its rank
-  Standard_EXPORT Handle(StepData_ESDescr) Member(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepData_ESDescr> Member(const int num) const;
 
   //! Returns the ordered list of types
-  Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) TypeList() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> TypeList() const;
 
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT Standard_Boolean Matches(const Standard_CString steptype) const Standard_OVERRIDE;
+  Standard_EXPORT bool Matches(const char* const steptype) const override;
 
   //! Returns True
-  Standard_EXPORT Standard_Boolean IsComplex() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsComplex() const override;
 
   //! Creates a described entity (i.e. a complex one, made of one
   //! simple entity per member)
-  Standard_EXPORT Handle(StepData_Described) NewEntity() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<StepData_Described> NewEntity() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_ECDescr, StepData_EDescr)
 
-protected:
 private:
-  TColStd_SequenceOfTransient thelist;
+  NCollection_Sequence<occ::handle<Standard_Transient>> thelist;
 };
 
 #endif // _StepData_ECDescr_HeaderFile

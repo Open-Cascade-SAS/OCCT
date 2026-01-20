@@ -81,11 +81,11 @@ public:
   //!
   //! Refer to documentation of Standard_ErrorHandler.hxx for details.
   Standard_EXPORT static void SetSignal(OSD_SignalMode   theSignalMode,
-                                        Standard_Boolean theFloatingSignal);
+                                        bool theFloatingSignal);
 
   //! Sets signal and FPE handlers.
   //! Short-cut for OSD::SetSignal (OSD_SignalMode_Set, theFloatingSignal).
-  static void SetSignal(const Standard_Boolean theFloatingSignal = Standard_True)
+  static void SetSignal(const bool theFloatingSignal = true)
   {
     SetSignal(OSD_SignalMode_Set, theFloatingSignal);
   }
@@ -95,13 +95,13 @@ public:
   //! The main purpose of this method is initializing handlers for newly created threads
   //! without overriding global handlers (set by application or by OSD::SetSignal()).
   Standard_EXPORT static void SetThreadLocalSignal(OSD_SignalMode   theSignalMode,
-                                                   Standard_Boolean theFloatingSignal);
+                                                   bool theFloatingSignal);
 
   //! Enables / disables generation of C signal on floating point exceptions (FPE).
   //! This call does NOT register a handler for signal raised in case of FPE -
   //! SetSignal() should be called beforehand for complete setup.
   //! Note that FPE setting is thread-local, new threads inherit it from parent.
-  Standard_EXPORT static void SetFloatingSignal(Standard_Boolean theFloatingSignal);
+  Standard_EXPORT static void SetFloatingSignal(bool theFloatingSignal);
 
   //! Returns signal mode set by the last call to SetSignal().
   //! By default, returns OSD_SignalMode_AsIs.
@@ -109,26 +109,26 @@ public:
 
   //! Returns true if floating point exceptions will raise C signal
   //! according to current (platform-dependent) settings in this thread.
-  Standard_EXPORT static Standard_Boolean ToCatchFloatingSignals();
+  Standard_EXPORT static bool ToCatchFloatingSignals();
 
   //! Commands the process to sleep for a number of seconds.
-  Standard_EXPORT static void SecSleep(const Standard_Integer theSeconds);
+  Standard_EXPORT static void SecSleep(const int theSeconds);
 
   //! Commands the process to sleep for a number of milliseconds
-  Standard_EXPORT static void MilliSecSleep(const Standard_Integer theMilliseconds);
+  Standard_EXPORT static void MilliSecSleep(const int theMilliseconds);
 
   //! Converts aReal into aCstring in exponential format with a period as decimal point,
   //! no thousand separator and no grouping of digits.
   //! The conversion is independent from the current locale
-  Standard_EXPORT static Standard_Boolean RealToCString(const Standard_Real  aReal,
+  Standard_EXPORT static bool RealToCString(const double  aReal,
                                                         Standard_PCharacter& aString);
 
   //! Converts aCstring representing a real with a period as decimal point,
   //! no thousand separator and no grouping of digits into aReal.
   //!
   //! The conversion is independent from the current locale.
-  Standard_EXPORT static Standard_Boolean CStringToReal(const Standard_CString aString,
-                                                        Standard_Real&         aReal);
+  Standard_EXPORT static bool CStringToReal(const char* const aString,
+                                                        double&         aReal);
 
   //! since Windows NT does not support 'SIGINT' signal like UNIX,
   //! then this method checks whether Ctrl-Break keystroke was or
@@ -138,10 +138,10 @@ public:
   //! Returns a length of stack trace to be put into exception redirected from signal;
   //! 0 by default meaning no stack trace.
   //! @sa Standard_Failure::GetStackString()
-  Standard_EXPORT static Standard_Integer SignalStackTraceLength();
+  Standard_EXPORT static int SignalStackTraceLength();
 
   //! Sets a length of stack trace to be put into exception redirected from signal.
-  Standard_EXPORT static void SetSignalStackTraceLength(Standard_Integer theLength);
+  Standard_EXPORT static void SetSignalStackTraceLength(int theLength);
 };
 
 #endif // _OSD_HeaderFile

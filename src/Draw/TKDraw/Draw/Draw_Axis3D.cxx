@@ -25,11 +25,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Axis3D, Draw_Drawable3D)
 
-extern Standard_Boolean Draw_Bounds;
+extern bool Draw_Bounds;
 
 //=================================================================================================
 
-Draw_Axis3D::Draw_Axis3D(const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis3D::Draw_Axis3D(const Draw_Color& col, const int Size)
     : myAxes(gp::XOY()),
       myColor(col),
       mySize(Size)
@@ -38,7 +38,7 @@ Draw_Axis3D::Draw_Axis3D(const Draw_Color& col, const Standard_Integer Size)
 
 //=================================================================================================
 
-Draw_Axis3D::Draw_Axis3D(const gp_Pnt& p, const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis3D::Draw_Axis3D(const gp_Pnt& p, const Draw_Color& col, const int Size)
     : myAxes(p, gp::DZ(), gp::DX()),
       myColor(col),
       mySize(Size)
@@ -47,7 +47,7 @@ Draw_Axis3D::Draw_Axis3D(const gp_Pnt& p, const Draw_Color& col, const Standard_
 
 //=================================================================================================
 
-Draw_Axis3D::Draw_Axis3D(const gp_Ax3& a, const Draw_Color& col, const Standard_Integer Size)
+Draw_Axis3D::Draw_Axis3D(const gp_Ax3& a, const Draw_Color& col, const int Size)
     : myAxes(a),
       myColor(col),
       mySize(Size)
@@ -58,10 +58,10 @@ Draw_Axis3D::Draw_Axis3D(const gp_Ax3& a, const Draw_Color& col, const Standard_
 
 void Draw_Axis3D::DrawOn(Draw_Display& dis) const
 {
-  Draw_Bounds = Standard_False;
+  Draw_Bounds = false;
   dis.SetColor(myColor);
-  Standard_Real z = dis.Zoom();
-  z               = (Standard_Real)mySize / z;
+  double z = dis.Zoom();
+  z               = (double)mySize / z;
   gp_Pnt P, P0 = myAxes.Location();
   P = P0.Translated(gp_Vec(myAxes.XDirection()) * z);
   dis.Draw(P0, P);
@@ -72,5 +72,5 @@ void Draw_Axis3D::DrawOn(Draw_Display& dis) const
   P = P0.Translated(gp_Vec(myAxes.Direction()) * z);
   dis.Draw(P0, P);
   dis.DrawString(P, "Z");
-  Draw_Bounds = Standard_True;
+  Draw_Bounds = true;
 }

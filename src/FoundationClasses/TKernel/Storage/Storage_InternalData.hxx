@@ -21,18 +21,19 @@
 
 #include <Storage_BucketOfPersistent.hxx>
 #include <Standard_Integer.hxx>
-#include <Storage_HPArray.hxx>
-#include <Storage_MapOfCallBack.hxx>
+#include <Standard_Persistent.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <Storage_TypedCallBack.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-
-class Storage_InternalData;
-DEFINE_STANDARD_HANDLE(Storage_InternalData, Standard_Transient)
 
 class Storage_InternalData : public Standard_Transient
 {
 
 public:
-  Handle(Storage_HPArray)& ReadArray() { return myReadArray; }
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>& ReadArray() { return myReadArray; }
 
   Standard_EXPORT Storage_InternalData();
 
@@ -42,13 +43,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Storage_InternalData, Standard_Transient)
 
-protected:
 private:
   Storage_BucketOfPersistent myPtoA;
-  Standard_Integer           myObjId;
-  Standard_Integer           myTypeId;
-  Handle(Storage_HPArray)    myReadArray;
-  Storage_MapOfCallBack      myTypeBinding;
+  int           myObjId;
+  int           myTypeId;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Persistent>>>    myReadArray;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>      myTypeBinding;
 };
 
 #endif // _Storage_InternalData_HeaderFile

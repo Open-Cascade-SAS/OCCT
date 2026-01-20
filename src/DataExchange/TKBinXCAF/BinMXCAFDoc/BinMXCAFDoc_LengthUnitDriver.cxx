@@ -23,30 +23,30 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_LengthUnitDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMXCAFDoc_LengthUnitDriver::BinMXCAFDoc_LengthUnitDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_LengthUnit)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_LengthUnitDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_LengthUnitDriver::NewEmpty() const
 {
   return new XCAFDoc_LengthUnit();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_LengthUnitDriver::Paste(
+bool BinMXCAFDoc_LengthUnitDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   (void)theRelocTable;
-  Handle(XCAFDoc_LengthUnit) anAtt = Handle(XCAFDoc_LengthUnit)::DownCast(theTarget);
+  occ::handle<XCAFDoc_LengthUnit> anAtt = occ::down_cast<XCAFDoc_LengthUnit>(theTarget);
   TCollection_AsciiString    aName;
-  Standard_Real              aScaleFactor = 1.;
-  Standard_Boolean           isOk         = theSource >> aName >> aScaleFactor;
+  double              aScaleFactor = 1.;
+  bool           isOk         = theSource >> aName >> aScaleFactor;
   if (isOk)
   {
     anAtt->Set(aName, aScaleFactor);
@@ -56,11 +56,11 @@ Standard_Boolean BinMXCAFDoc_LengthUnitDriver::Paste(
 
 //=================================================================================================
 
-void BinMXCAFDoc_LengthUnitDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMXCAFDoc_LengthUnitDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&  theRelocTable) const
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   (void)theRelocTable;
-  Handle(XCAFDoc_LengthUnit) anAtt = Handle(XCAFDoc_LengthUnit)::DownCast(theSource);
+  occ::handle<XCAFDoc_LengthUnit> anAtt = occ::down_cast<XCAFDoc_LengthUnit>(theSource);
   theTarget << anAtt->GetUnitName() << anAtt->GetUnitValue();
 }

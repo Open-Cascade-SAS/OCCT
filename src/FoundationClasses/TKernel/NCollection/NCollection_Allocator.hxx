@@ -57,7 +57,7 @@ public:
   NCollection_Allocator() noexcept {}
 
   //! Constructor.
-  NCollection_Allocator(const Handle(NCollection_BaseAllocator)&) noexcept {}
+  NCollection_Allocator(const occ::handle<NCollection_BaseAllocator>&) noexcept {}
 
   //! Assignment operator
   template <typename OtherType>
@@ -89,7 +89,7 @@ public:
   //! Frees previously allocated memory.
   void deallocate(pointer thePnt, const size_type) const
   {
-    Standard::Free(static_cast<Standard_Address>(thePnt));
+    Standard::Free(static_cast<void*>(thePnt));
   }
 
   //! Reallocates memory for theSize objects.

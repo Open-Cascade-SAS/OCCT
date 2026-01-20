@@ -25,14 +25,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_TriangulationDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataXtd_TriangulationDriver::BinMDataXtd_TriangulationDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Triangulation)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataXtd_TriangulationDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataXtd_TriangulationDriver::NewEmpty() const
 {
   return new TDataXtd_Triangulation();
 }
@@ -41,17 +41,17 @@ Handle(TDF_Attribute) BinMDataXtd_TriangulationDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                        const Handle(TDF_Attribute)& theTarget,
+bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                        const occ::handle<TDF_Attribute>& theTarget,
                                                         BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDataXtd_Triangulation) attrubute = Handle(TDataXtd_Triangulation)::DownCast(theTarget);
+  occ::handle<TDataXtd_Triangulation> attrubute = occ::down_cast<TDataXtd_Triangulation>(theTarget);
 
-  Standard_Integer i;
-  Standard_Real    deflection, x, y, z;
-  Standard_Integer n1, n2, n3;
-  Standard_Integer nbNodes(0), nbTriangles(0);
-  Standard_Boolean hasUV(Standard_False);
+  int i;
+  double    deflection, x, y, z;
+  int n1, n2, n3;
+  int nbNodes(0), nbTriangles(0);
+  bool hasUV(false);
 
   theSource >> nbNodes;
   theSource >> nbTriangles;
@@ -60,11 +60,11 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
 
   if (!nbNodes || !nbTriangles)
   {
-    return Standard_False;
+    return false;
   }
 
   // allocate the mesh
-  Handle(Poly_Triangulation) PT = new Poly_Triangulation(nbNodes, nbTriangles, hasUV);
+  occ::handle<Poly_Triangulation> PT = new Poly_Triangulation(nbNodes, nbTriangles, hasUV);
 
   // deflection
   PT->Deflection(deflection);
@@ -107,18 +107,18 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                             BinObjMgt_Persistent&        theTarget,
-                                            BinObjMgt_SRelocationTable&) const
+                                            NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  const Handle(TDataXtd_Triangulation) attribute =
-    Handle(TDataXtd_Triangulation)::DownCast(theSource);
-  const Handle(Poly_Triangulation)& PT = attribute->Get();
+  const occ::handle<TDataXtd_Triangulation> attribute =
+    occ::down_cast<TDataXtd_Triangulation>(theSource);
+  const occ::handle<Poly_Triangulation>& PT = attribute->Get();
   if (!PT.IsNull())
   {
-    Standard_Integer nbNodes     = PT->NbNodes();
-    Standard_Integer nbTriangles = PT->NbTriangles();
-    Standard_Integer n1, n2, n3;
+    int nbNodes     = PT->NbNodes();
+    int nbTriangles = PT->NbTriangles();
+    int n1, n2, n3;
 
     // write number of elements
     theTarget << nbNodes;
@@ -128,7 +128,7 @@ void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     theTarget << PT->Deflection();
 
     // write 3d nodes
-    for (Standard_Integer i = 1; i <= nbNodes; i++)
+    for (int i = 1; i <= nbNodes; i++)
     {
       const gp_Pnt aNode = PT->Node(i);
       theTarget << aNode.X();
@@ -139,7 +139,7 @@ void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     // write 2d nodes
     if (PT->HasUVNodes())
     {
-      for (Standard_Integer i = 1; i <= nbNodes; i++)
+      for (int i = 1; i <= nbNodes; i++)
       {
         const gp_Pnt2d aNode2d = PT->UVNode(i);
         theTarget << aNode2d.X();
@@ -148,7 +148,7 @@ void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     }
 
     // Write triangles
-    for (Standard_Integer i = 1; i <= nbTriangles; i++)
+    for (int i = 1; i <= nbTriangles; i++)
     {
       PT->Triangle(i).Get(n1, n2, n3);
       theTarget << n1;

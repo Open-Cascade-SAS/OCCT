@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_UniversalPairWithRange, StepKinematics_UniversalPair)
-
 //! Representation of STEP entity UniversalPairWithRange
 class StepKinematics_UniversalPairWithRange : public StepKinematics_UniversalPair
 {
@@ -35,68 +33,68 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Boolean                       theLowOrderKinematicPair_TX,
-    const Standard_Boolean                       theLowOrderKinematicPair_TY,
-    const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-    const Standard_Boolean                       theLowOrderKinematicPair_RX,
-    const Standard_Boolean                       theLowOrderKinematicPair_RY,
-    const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-    const Standard_Boolean                       hasUniversalPair_InputSkewAngle,
-    const Standard_Real                          theUniversalPair_InputSkewAngle,
-    const Standard_Boolean                       hasLowerLimitFirstRotation,
-    const Standard_Real                          theLowerLimitFirstRotation,
-    const Standard_Boolean                       hasUpperLimitFirstRotation,
-    const Standard_Real                          theUpperLimitFirstRotation,
-    const Standard_Boolean                       hasLowerLimitSecondRotation,
-    const Standard_Real                          theLowerLimitSecondRotation,
-    const Standard_Boolean                       hasUpperLimitSecondRotation,
-    const Standard_Real                          theUpperLimitSecondRotation);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const bool                       theLowOrderKinematicPair_TX,
+    const bool                       theLowOrderKinematicPair_TY,
+    const bool                       theLowOrderKinematicPair_TZ,
+    const bool                       theLowOrderKinematicPair_RX,
+    const bool                       theLowOrderKinematicPair_RY,
+    const bool                       theLowOrderKinematicPair_RZ,
+    const bool                       hasUniversalPair_InputSkewAngle,
+    const double                          theUniversalPair_InputSkewAngle,
+    const bool                       hasLowerLimitFirstRotation,
+    const double                          theLowerLimitFirstRotation,
+    const bool                       hasUpperLimitFirstRotation,
+    const double                          theUpperLimitFirstRotation,
+    const bool                       hasLowerLimitSecondRotation,
+    const double                          theLowerLimitSecondRotation,
+    const bool                       hasUpperLimitSecondRotation,
+    const double                          theUpperLimitSecondRotation);
 
   //! Returns field LowerLimitFirstRotation
-  Standard_EXPORT Standard_Real LowerLimitFirstRotation() const;
+  Standard_EXPORT double LowerLimitFirstRotation() const;
   //! Sets field LowerLimitFirstRotation
-  Standard_EXPORT void SetLowerLimitFirstRotation(const Standard_Real theLowerLimitFirstRotation);
+  Standard_EXPORT void SetLowerLimitFirstRotation(const double theLowerLimitFirstRotation);
   //! Returns True if optional field LowerLimitFirstRotation is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitFirstRotation() const;
+  Standard_EXPORT bool HasLowerLimitFirstRotation() const;
 
   //! Returns field UpperLimitFirstRotation
-  Standard_EXPORT Standard_Real UpperLimitFirstRotation() const;
+  Standard_EXPORT double UpperLimitFirstRotation() const;
   //! Sets field UpperLimitFirstRotation
-  Standard_EXPORT void SetUpperLimitFirstRotation(const Standard_Real theUpperLimitFirstRotation);
+  Standard_EXPORT void SetUpperLimitFirstRotation(const double theUpperLimitFirstRotation);
   //! Returns True if optional field UpperLimitFirstRotation is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitFirstRotation() const;
+  Standard_EXPORT bool HasUpperLimitFirstRotation() const;
 
   //! Returns field LowerLimitSecondRotation
-  Standard_EXPORT Standard_Real LowerLimitSecondRotation() const;
+  Standard_EXPORT double LowerLimitSecondRotation() const;
   //! Sets field LowerLimitSecondRotation
-  Standard_EXPORT void SetLowerLimitSecondRotation(const Standard_Real theLowerLimitSecondRotation);
+  Standard_EXPORT void SetLowerLimitSecondRotation(const double theLowerLimitSecondRotation);
   //! Returns True if optional field LowerLimitSecondRotation is defined
-  Standard_EXPORT Standard_Boolean HasLowerLimitSecondRotation() const;
+  Standard_EXPORT bool HasLowerLimitSecondRotation() const;
 
   //! Returns field UpperLimitSecondRotation
-  Standard_EXPORT Standard_Real UpperLimitSecondRotation() const;
+  Standard_EXPORT double UpperLimitSecondRotation() const;
   //! Sets field UpperLimitSecondRotation
-  Standard_EXPORT void SetUpperLimitSecondRotation(const Standard_Real theUpperLimitSecondRotation);
+  Standard_EXPORT void SetUpperLimitSecondRotation(const double theUpperLimitSecondRotation);
   //! Returns True if optional field UpperLimitSecondRotation is defined
-  Standard_EXPORT Standard_Boolean HasUpperLimitSecondRotation() const;
+  Standard_EXPORT bool HasUpperLimitSecondRotation() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_UniversalPairWithRange, StepKinematics_UniversalPair)
 
 private:
-  Standard_Real    myLowerLimitFirstRotation;   //!< optional
-  Standard_Real    myUpperLimitFirstRotation;   //!< optional
-  Standard_Real    myLowerLimitSecondRotation;  //!< optional
-  Standard_Real    myUpperLimitSecondRotation;  //!< optional
-  Standard_Boolean defLowerLimitFirstRotation;  //!< flag "is LowerLimitFirstRotation defined"
-  Standard_Boolean defUpperLimitFirstRotation;  //!< flag "is UpperLimitFirstRotation defined"
-  Standard_Boolean defLowerLimitSecondRotation; //!< flag "is LowerLimitSecondRotation defined"
-  Standard_Boolean defUpperLimitSecondRotation; //!< flag "is UpperLimitSecondRotation defined"
+  double    myLowerLimitFirstRotation;   //!< optional
+  double    myUpperLimitFirstRotation;   //!< optional
+  double    myLowerLimitSecondRotation;  //!< optional
+  double    myUpperLimitSecondRotation;  //!< optional
+  bool defLowerLimitFirstRotation;  //!< flag "is LowerLimitFirstRotation defined"
+  bool defUpperLimitFirstRotation;  //!< flag "is UpperLimitFirstRotation defined"
+  bool defLowerLimitSecondRotation; //!< flag "is LowerLimitSecondRotation defined"
+  bool defUpperLimitSecondRotation; //!< flag "is UpperLimitSecondRotation defined"
 };
 #endif // _StepKinematics_UniversalPairWithRange_HeaderFile_

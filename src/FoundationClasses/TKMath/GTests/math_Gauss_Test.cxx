@@ -55,10 +55,10 @@ TEST(MathGaussTest, WellConditionedMatrix)
 
   // Verify solution by checking A * x = b
   math_Vector aVerify(1, 3);
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     aVerify(i) = 0.0;
-    for (Standard_Integer j = 1; j <= 3; j++)
+    for (int j = 1; j <= 3; j++)
     {
       aVerify(i) += aMatrix(i, j) * aX(j);
     }
@@ -178,7 +178,7 @@ TEST(MathGaussTest, Determinant)
   math_Gauss aGauss(aMatrix);
   EXPECT_TRUE(aGauss.IsDone()) << "Gauss decomposition should succeed";
 
-  Standard_Real aDet = aGauss.Determinant();
+  double aDet = aGauss.Determinant();
   // Expected determinant: 1*(1*0 - 4*6) - 2*(0*0 - 4*5) + 3*(0*6 - 1*5) = -24 + 40 - 15 = 1
   EXPECT_NEAR(aDet, 1.0, 1.0e-12) << "Determinant calculation";
 }
@@ -208,12 +208,12 @@ TEST(MathGaussTest, MatrixInversion)
 
   // Verify that A * A^(-1) = I
   math_Matrix aProduct(1, 2, 1, 2);
-  for (Standard_Integer i = 1; i <= 2; i++)
+  for (int i = 1; i <= 2; i++)
   {
-    for (Standard_Integer j = 1; j <= 2; j++)
+    for (int j = 1; j <= 2; j++)
     {
       aProduct(i, j) = 0.0;
-      for (Standard_Integer k = 1; k <= 2; k++)
+      for (int k = 1; k <= 2; k++)
       {
         aProduct(i, j) += aMatrix(i, k) * aInverse(k, j);
       }
@@ -244,7 +244,7 @@ TEST(MathGaussTest, SingularMatrix)
   math_Gauss aGauss(aMatrix);
   if (aGauss.IsDone())
   {
-    Standard_Real aDet = aGauss.Determinant();
+    double aDet = aGauss.Determinant();
     EXPECT_NEAR(aDet, 0.0, 1.0e-12) << "Determinant of singular matrix must be zero";
   }
   // Note: Some implementations may fail decomposition or throw exceptions for singular matrices
@@ -317,10 +317,10 @@ TEST(MathGaussTest, LargerMatrix)
 
   // Verify solution by checking A * x = b
   math_Vector aVerify(1, 4);
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
     aVerify(i) = 0.0;
-    for (Standard_Integer j = 1; j <= 4; j++)
+    for (int j = 1; j <= 4; j++)
     {
       aVerify(i) += aMatrix(i, j) * aX(j);
     }

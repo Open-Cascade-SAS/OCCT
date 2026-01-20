@@ -20,10 +20,10 @@
 
 RWStepShape_RWBoxDomain::RWStepShape_RWBoxDomain() {}
 
-void RWStepShape_RWBoxDomain::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                       const Standard_Integer                 num,
-                                       Handle(Interface_Check)&               ach,
-                                       const Handle(StepShape_BoxDomain)&     ent) const
+void RWStepShape_RWBoxDomain::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                       const int                 num,
+                                       occ::handle<Interface_Check>&               ach,
+                                       const occ::handle<StepShape_BoxDomain>&     ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,26 +33,26 @@ void RWStepShape_RWBoxDomain::ReadStep(const Handle(StepData_StepReaderData)& da
 
   // --- own field : corner ---
 
-  Handle(StepGeom_CartesianPoint) aCorner;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepGeom_CartesianPoint> aCorner;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "corner", ach, STANDARD_TYPE(StepGeom_CartesianPoint), aCorner);
 
   // --- own field : xlength ---
 
-  Standard_Real aXlength;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  double aXlength;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadReal(num, 2, "xlength", ach, aXlength);
 
   // --- own field : ylength ---
 
-  Standard_Real aYlength;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aYlength;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "ylength", ach, aYlength);
 
   // --- own field : zlength ---
 
-  Standard_Real aZlength;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aZlength;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "zlength", ach, aZlength);
 
   //--- Initialisation of the read entity ---
@@ -61,7 +61,7 @@ void RWStepShape_RWBoxDomain::ReadStep(const Handle(StepData_StepReaderData)& da
 }
 
 void RWStepShape_RWBoxDomain::WriteStep(StepData_StepWriter&               SW,
-                                        const Handle(StepShape_BoxDomain)& ent) const
+                                        const occ::handle<StepShape_BoxDomain>& ent) const
 {
 
   // --- own field : corner ---
@@ -81,7 +81,7 @@ void RWStepShape_RWBoxDomain::WriteStep(StepData_StepWriter&               SW,
   SW.Send(ent->Zlength());
 }
 
-void RWStepShape_RWBoxDomain::Share(const Handle(StepShape_BoxDomain)& ent,
+void RWStepShape_RWBoxDomain::Share(const occ::handle<StepShape_BoxDomain>& ent,
                                     Interface_EntityIterator&          iter) const
 {
 

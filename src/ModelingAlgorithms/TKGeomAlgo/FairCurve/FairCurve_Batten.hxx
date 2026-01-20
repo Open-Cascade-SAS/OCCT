@@ -24,9 +24,14 @@
 #include <FairCurve_AnalysisCode.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Integer.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_OStream.hxx>
 class gp_Vec2d;
 class Geom2d_BSplineCurve;
@@ -61,8 +66,8 @@ public:
   //! gp_Pnt2d::IsEqual tests to see if this is the case.
   Standard_EXPORT FairCurve_Batten(const gp_Pnt2d&     P1,
                                    const gp_Pnt2d&     P2,
-                                   const Standard_Real Height,
-                                   const Standard_Real Slope = 0);
+                                   const double Height,
+                                   const double Slope = 0);
 
   Standard_EXPORT virtual ~FairCurve_Batten();
 
@@ -70,7 +75,7 @@ public:
   //! When Freesliding is set to true and, as a result, sliding
   //! is free, the sliding factor is automatically computed to
   //! satisfy the equilibrium of the batten.
-  void SetFreeSliding(const Standard_Boolean FreeSliding);
+  void SetFreeSliding(const bool FreeSliding);
 
   //! Allows you to change the order of the constraint on the
   //! first point. ConstraintOrder has the default setting of 1.
@@ -83,7 +88,7 @@ public:
   //! These constraints, though geometric, represent the
   //! mechanical constraints due, for example, to the
   //! resistance of the material the actual physical batten is made of.
-  void SetConstraintOrder1(const Standard_Integer ConstraintOrder);
+  void SetConstraintOrder1(const int ConstraintOrder);
 
   //! Allows you to change the order of the constraint on the
   //! second point. ConstraintOrder is initialized with the default setting of 1.
@@ -97,7 +102,7 @@ public:
   //! These constraints, though geometric, represent the
   //! mechanical constraints due, for example, to the
   //! resistance of the material the actual physical batten is made of.
-  void SetConstraintOrder2(const Standard_Integer ConstraintOrder);
+  void SetConstraintOrder2(const int ConstraintOrder);
 
   //! Allows you to change the location of the point, P1, and in
   //! doing so, modify the curve.
@@ -125,19 +130,19 @@ public:
 
   //! Allows you to change the angle Angle1 at the first point,
   //! P1. The default setting is 0.
-  void SetAngle1(const Standard_Real Angle1);
+  void SetAngle1(const double Angle1);
 
   //! Allows you to change the angle Angle2 at the second
   //! point, P2. The default setting is 0.
-  void SetAngle2(const Standard_Real Angle2);
+  void SetAngle2(const double Angle2);
 
   //! Allows you to change the height of the deformation.
   //! Raises NegativeValue; -- if Height <= 0
   //! if Height <= 0
-  void SetHeight(const Standard_Real Height);
+  void SetHeight(const double Height);
 
   //! Allows you to set the slope value, Slope.
-  void SetSlope(const Standard_Real Slope);
+  void SetSlope(const double Slope);
 
   //! Allows you to change the ratio SlidingFactor. This
   //! compares the length of the batten and the reference
@@ -149,7 +154,7 @@ public:
   //! computed to satisfy the equilibrium of the batten. When
   //! sliding is imposed, a value is required for the sliding factor.
   //! SlidingFactor is initialized with the default setting of 1.
-  void SetSlidingFactor(const Standard_Real SlidingFactor);
+  void SetSlidingFactor(const double SlidingFactor);
 
   //! Performs the algorithm, using the arguments Code,
   //! NbIterations and Tolerance and computes the curve
@@ -161,9 +166,9 @@ public:
   //! -   NullHeight
   //! The parameters Tolerance and NbIterations control
   //! how precise the computation is, and how long it will take.
-  Standard_EXPORT virtual Standard_Boolean Compute(FairCurve_AnalysisCode& Code,
-                                                   const Standard_Integer  NbIterations = 50,
-                                                   const Standard_Real     Tolerance    = 1.0e-3);
+  Standard_EXPORT virtual bool Compute(FairCurve_AnalysisCode& Code,
+                                                   const int  NbIterations = 50,
+                                                   const double     Tolerance    = 1.0e-3);
 
   //! Computes the real number value for length Sliding of
   //! Reference for new constraints. If you want to give a
@@ -171,20 +176,20 @@ public:
   //! syntax: b.SetSlidingFactor(L /
   //! b.SlidingOfReference()) where b is the
   //! name of the batten curve object.
-  Standard_EXPORT Standard_Real SlidingOfReference() const;
+  Standard_EXPORT double SlidingOfReference() const;
 
   //! Returns the initial free sliding value, false by default.
   //! Free sliding is generally more aesthetically pleasing
   //! than constrained sliding. However, the computation can
   //! fail with values such as angles greater than PI/2. This is
   //! because the resulting batten length is theoretically infinite.
-  Standard_Boolean GetFreeSliding() const;
+  bool GetFreeSliding() const;
 
   //! Returns the established first constraint order.
-  Standard_Integer GetConstraintOrder1() const;
+  int GetConstraintOrder1() const;
 
   //! Returns the established second constraint order.
-  Standard_Integer GetConstraintOrder2() const;
+  int GetConstraintOrder2() const;
 
   //! Returns the established location of the point P1.
   const gp_Pnt2d& GetP1() const;
@@ -193,22 +198,22 @@ public:
   const gp_Pnt2d& GetP2() const;
 
   //! Returns the established first angle.
-  Standard_Real GetAngle1() const;
+  double GetAngle1() const;
 
   //! Returns the established second angle.
-  Standard_Real GetAngle2() const;
+  double GetAngle2() const;
 
   //! Returns the thickness of the lathe.
-  Standard_Real GetHeight() const;
+  double GetHeight() const;
 
   //! Returns the established slope value.
-  Standard_Real GetSlope() const;
+  double GetSlope() const;
 
   //! Returns the initial sliding factor.
-  Standard_Real GetSlidingFactor() const;
+  double GetSlidingFactor() const;
 
   //! Returns the computed curve a 2d BSpline.
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) Curve() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Curve() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -217,13 +222,13 @@ public:
   Standard_EXPORT virtual void Dump(Standard_OStream& o) const;
 
 protected:
-  Standard_EXPORT Standard_Real SlidingOfReference(const Standard_Real D,
-                                                   const Standard_Real A1,
-                                                   const Standard_Real A2) const;
+  Standard_EXPORT double SlidingOfReference(const double D,
+                                                   const double A1,
+                                                   const double A2) const;
 
-  Standard_EXPORT Standard_Real Compute(const Standard_Real D,
-                                        const Standard_Real A1,
-                                        const Standard_Real A2) const;
+  Standard_EXPORT double Compute(const double D,
+                                        const double A1,
+                                        const double A2) const;
 
   //! Returns the effective geometrical constraints at the
   //! last batten computation. This effectives values may
@@ -231,44 +236,44 @@ protected:
   //! - if the value is "free"
   //! - in the case of incomplete computation : collapse,
   //! infinite sliding, height of batten will be negative at end points
-  Standard_EXPORT Standard_Real Compute(const Standard_Real D, const Standard_Real A) const;
+  Standard_EXPORT double Compute(const double D, const double A) const;
 
   FairCurve_AnalysisCode           myCode;
   gp_Pnt2d                         OldP1;
   gp_Pnt2d                         OldP2;
-  Standard_Real                    OldAngle1;
-  Standard_Real                    OldAngle2;
-  Standard_Real                    OldHeight;
-  Standard_Real                    OldSlope;
-  Standard_Real                    OldSlidingFactor;
-  Standard_Boolean                 OldFreeSliding;
-  Standard_Integer                 OldConstraintOrder1;
-  Standard_Integer                 OldConstraintOrder2;
+  double                    OldAngle1;
+  double                    OldAngle2;
+  double                    OldHeight;
+  double                    OldSlope;
+  double                    OldSlidingFactor;
+  bool                 OldFreeSliding;
+  int                 OldConstraintOrder1;
+  int                 OldConstraintOrder2;
   gp_Pnt2d                         NewP1;
   gp_Pnt2d                         NewP2;
-  Standard_Real                    NewAngle1;
-  Standard_Real                    NewAngle2;
-  Standard_Real                    NewHeight;
-  Standard_Real                    NewSlope;
-  Standard_Real                    NewSlidingFactor;
-  Standard_Boolean                 NewFreeSliding;
-  Standard_Integer                 NewConstraintOrder1;
-  Standard_Integer                 NewConstraintOrder2;
-  Standard_Integer                 Degree;
-  Handle(TColgp_HArray1OfPnt2d)    Poles;
-  Handle(TColStd_HArray1OfReal)    Flatknots;
-  Handle(TColStd_HArray1OfReal)    Knots;
-  Handle(TColStd_HArray1OfInteger) Mults;
+  double                    NewAngle1;
+  double                    NewAngle2;
+  double                    NewHeight;
+  double                    NewSlope;
+  double                    NewSlidingFactor;
+  bool                 NewFreeSliding;
+  int                 NewConstraintOrder1;
+  int                 NewConstraintOrder2;
+  int                 Degree;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    Poles;
+  occ::handle<NCollection_HArray1<double>>    Flatknots;
+  occ::handle<NCollection_HArray1<double>>    Knots;
+  occ::handle<NCollection_HArray1<int>> Mults;
 
 private:
   //! compute the curve with respect of the delta-constraints.
-  Standard_EXPORT Standard_Boolean Compute(const gp_Vec2d&         DeltaP1,
+  Standard_EXPORT bool Compute(const gp_Vec2d&         DeltaP1,
                                            const gp_Vec2d&         DeltaP2,
-                                           const Standard_Real     DeltaAngle1,
-                                           const Standard_Real     DeltaAngle2,
+                                           const double     DeltaAngle1,
+                                           const double     DeltaAngle2,
                                            FairCurve_AnalysisCode& ACode,
-                                           const Standard_Integer  NbIterations,
-                                           const Standard_Real     Tolerance);
+                                           const int  NbIterations,
+                                           const double     Tolerance);
 
   Standard_EXPORT void Angles(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 };

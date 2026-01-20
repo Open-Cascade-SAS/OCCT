@@ -54,10 +54,10 @@ TEST(MathHouseholderTest, ExactlyDeterminedSystem)
 
   // Verify solution by checking A * x = b
   math_Vector aVerify(1, 3);
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     aVerify(i) = 0.0;
-    for (Standard_Integer j = 1; j <= 3; j++)
+    for (int j = 1; j <= 3; j++)
     {
       aVerify(i) += aA(i, j) * aSol(j);
     }

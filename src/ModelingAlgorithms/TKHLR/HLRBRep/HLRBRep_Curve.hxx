@@ -25,9 +25,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 class TopoDS_Edge;
 class gp_Pnt;
@@ -67,85 +69,85 @@ public:
 
   //! Returns the parameter on the 2d curve from the
   //! parameter on the 3d curve.
-  Standard_EXPORT Standard_Real Parameter2d(const Standard_Real P3d) const;
+  Standard_EXPORT double Parameter2d(const double P3d) const;
 
   //! Returns the parameter on the 3d curve from the
   //! parameter on the 2d curve.
-  Standard_EXPORT Standard_Real Parameter3d(const Standard_Real P2d) const;
+  Standard_EXPORT double Parameter3d(const double P2d) const;
 
   //! Update the minmax and the internal data
-  Standard_EXPORT Standard_Real Update(Standard_Real TotMin[16], Standard_Real TotMax[16]);
+  Standard_EXPORT double Update(double TotMin[16], double TotMax[16]);
 
   //! Update the minmax returns tol for enlarge;
-  Standard_EXPORT Standard_Real UpdateMinMax(Standard_Real TotMin[16], Standard_Real TotMax[16]);
+  Standard_EXPORT double UpdateMinMax(double TotMin[16], double TotMax[16]);
 
   //! Computes the Z coordinate of the point of
   //! parameter U on the curve in the viewing coordinate system
-  Standard_EXPORT Standard_Real Z(const Standard_Real U) const;
+  Standard_EXPORT double Z(const double U) const;
 
   //! Computes the 3D point of parameter U on the
   //! curve.
-  gp_Pnt Value3D(const Standard_Real U) const;
+  gp_Pnt Value3D(const double U) const;
 
   //! Computes the 3D point of parameter U on the
   //! curve.
-  void D0(const Standard_Real U, gp_Pnt& P) const;
+  void D0(const double U, gp_Pnt& P) const;
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
-  void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const;
+  void D1(const double U, gp_Pnt& P, gp_Vec& V) const;
 
   //! Depending on <AtStart> computes the 2D point and
   //! tangent on the curve at sart (or at end). If the first
   //! derivative is null look after at start (or before at end)
   //! with the second derivative.
-  Standard_EXPORT void Tangent(const Standard_Boolean AtStart, gp_Pnt2d& P, gp_Dir2d& D) const;
+  Standard_EXPORT void Tangent(const bool AtStart, gp_Pnt2d& P, gp_Dir2d& D) const;
 
-  Standard_Real FirstParameter() const;
+  double FirstParameter() const;
 
-  Standard_Real LastParameter() const;
+  double LastParameter() const;
 
   GeomAbs_Shape Continuity() const;
 
   //! If necessary, breaks the curve in intervals of
   //! continuity <S>. And returns the number of
   //! intervals.
-  Standard_Integer NbIntervals(const GeomAbs_Shape S) const;
+  int NbIntervals(const GeomAbs_Shape S) const;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
+  void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const;
 
-  Standard_Boolean IsClosed() const;
+  bool IsClosed() const;
 
-  Standard_Boolean IsPeriodic() const;
+  bool IsPeriodic() const;
 
-  Standard_Real Period() const;
-
-  //! Computes the point of parameter U on the curve.
-  gp_Pnt2d Value(const Standard_Real U) const;
+  double Period() const;
 
   //! Computes the point of parameter U on the curve.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const;
+  gp_Pnt2d Value(const double U) const;
+
+  //! Computes the point of parameter U on the curve.
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const;
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const;
 
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
-  Standard_EXPORT void D3(const Standard_Real U,
+  Standard_EXPORT void D3(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
@@ -156,11 +158,11 @@ public:
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real U, const Standard_Integer N) const;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
-  Standard_Real Resolution(const Standard_Real R3d) const;
+  double Resolution(const double R3d) const;
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
@@ -177,39 +179,38 @@ public:
 
   Standard_EXPORT gp_Parab2d Parabola() const;
 
-  Standard_Boolean IsRational() const;
+  bool IsRational() const;
 
-  Standard_Integer Degree() const;
+  int Degree() const;
 
-  Standard_Integer NbPoles() const;
+  int NbPoles() const;
 
-  Standard_EXPORT void Poles(TColgp_Array1OfPnt2d& TP) const;
+  Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt2d>& TP) const;
 
-  Standard_EXPORT void Poles(const Handle(Geom_BSplineCurve)& aCurve,
-                             TColgp_Array1OfPnt2d&            TP) const;
+  Standard_EXPORT void Poles(const occ::handle<Geom_BSplineCurve>& aCurve,
+                             NCollection_Array1<gp_Pnt2d>&            TP) const;
 
-  Standard_EXPORT void PolesAndWeights(TColgp_Array1OfPnt2d& TP, TColStd_Array1OfReal& TW) const;
+  Standard_EXPORT void PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP, NCollection_Array1<double>& TW) const;
 
-  Standard_EXPORT void PolesAndWeights(const Handle(Geom_BSplineCurve)& aCurve,
-                                       TColgp_Array1OfPnt2d&            TP,
-                                       TColStd_Array1OfReal&            TW) const;
+  Standard_EXPORT void PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve,
+                                       NCollection_Array1<gp_Pnt2d>&            TP,
+                                       NCollection_Array1<double>&            TW) const;
 
-  Standard_Integer NbKnots() const;
+  int NbKnots() const;
 
-  Standard_EXPORT void Knots(TColStd_Array1OfReal& kn) const;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& kn) const;
 
-  Standard_EXPORT void Multiplicities(TColStd_Array1OfInteger& mu) const;
+  Standard_EXPORT void Multiplicities(NCollection_Array1<int>& mu) const;
 
-protected:
 private:
   BRepAdaptor_Curve        myCurve;
   GeomAbs_CurveType        myType;
   const HLRAlgo_Projector* myProj;
-  Standard_Real            myOX;
-  Standard_Real            myOZ;
-  Standard_Real            myVX;
-  Standard_Real            myVZ;
-  Standard_Real            myOF;
+  double            myOX;
+  double            myOZ;
+  double            myVX;
+  double            myVZ;
+  double            myOF;
 };
 
 #include <HLRBRep_Curve.lxx>

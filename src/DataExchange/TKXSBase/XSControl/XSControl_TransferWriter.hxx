@@ -28,9 +28,6 @@ class Interface_InterfaceModel;
 class TopoDS_Shape;
 class Interface_CheckIterator;
 
-class XSControl_TransferWriter;
-DEFINE_STANDARD_HANDLE(XSControl_TransferWriter, Standard_Transient)
-
 //! TransferWriter gives help to control transfer to write a file
 //! after having converted data from Cascade/Imagine
 //!
@@ -49,16 +46,16 @@ public:
   }
 
   //! Returns the FinderProcess itself
-  const Handle(Transfer_FinderProcess)& FinderProcess() const { return myTransferWriter; }
+  const occ::handle<Transfer_FinderProcess>& FinderProcess() const { return myTransferWriter; }
 
   //! Sets a new FinderProcess and forgets the former one
-  void SetFinderProcess(const Handle(Transfer_FinderProcess)& theFP) { myTransferWriter = theFP; }
+  void SetFinderProcess(const occ::handle<Transfer_FinderProcess>& theFP) { myTransferWriter = theFP; }
 
   //! Returns the currently used Controller
-  const Handle(XSControl_Controller)& Controller() const { return myController; }
+  const occ::handle<XSControl_Controller>& Controller() const { return myController; }
 
   //! Sets a new Controller, also sets a new FinderProcess
-  void SetController(const Handle(XSControl_Controller)& theCtl)
+  void SetController(const occ::handle<XSControl_Controller>& theCtl)
   {
     myController = theCtl;
     Clear(-1);
@@ -67,27 +64,27 @@ public:
   //! Clears recorded data according a mode
   //! 0 clears FinderProcess (results, checks)
   //! -1 create a new FinderProcess
-  Standard_EXPORT void Clear(const Standard_Integer theMode);
+  Standard_EXPORT void Clear(const int theMode);
 
   //! Returns the current Transfer Mode (an Integer)
   //! It will be interpreted by the Controller to run Transfers
   //! This call form could be later replaced by more specific ones
   //! (parameters suited for each norm / transfer case)
-  Standard_Integer TransferMode() const { return myTransferMode; }
+  int TransferMode() const { return myTransferMode; }
 
   //! Changes the Transfer Mode
-  void SetTransferMode(const Standard_Integer theMode) { myTransferMode = theMode; }
+  void SetTransferMode(const int theMode) { myTransferMode = theMode; }
 
   //! Prints statistics on current Trace File, according what,mode
   //! See PrintStatsProcess for details
-  Standard_EXPORT void PrintStats(const Standard_Integer theWhat,
-                                  const Standard_Integer theMode = 0) const;
+  Standard_EXPORT void PrintStats(const int theWhat,
+                                  const int theMode = 0) const;
 
   //! Tells if a transient object (from an application) is a valid
   //! candidate for a transfer to a model
   //! Asks the Controller (RecognizeWriteTransient)
   //! If <obj> is a HShape, calls RecognizeShape
-  Standard_EXPORT Standard_Boolean RecognizeTransient(const Handle(Standard_Transient)& theObj);
+  Standard_EXPORT bool RecognizeTransient(const occ::handle<Standard_Transient>& theObj);
 
   //! Transfers a Transient object (from an application) to a model
   //! of current norm, according to the last call to SetTransferMode
@@ -95,13 +92,13 @@ public:
   //! Returns status : =0 if OK, >0 if error during transfer, <0 if
   //! transfer badly initialised
   Standard_EXPORT IFSelect_ReturnStatus
-    TransferWriteTransient(const Handle(Interface_InterfaceModel)& theModel,
-                           const Handle(Standard_Transient)&       theObj,
+    TransferWriteTransient(const occ::handle<Interface_InterfaceModel>& theModel,
+                           const occ::handle<Standard_Transient>&       theObj,
                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Tells if a Shape is valid for a transfer to a model
   //! Asks the Controller (RecognizeWriteShape)
-  Standard_EXPORT Standard_Boolean RecognizeShape(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool RecognizeShape(const TopoDS_Shape& theShape);
 
   //! Transfers a Shape from CasCade to a model of current norm,
   //! according to the last call to SetTransferMode
@@ -109,7 +106,7 @@ public:
   //! Returns status : =0 if OK, >0 if error during transfer, <0 if
   //! transfer badly initialised
   Standard_EXPORT IFSelect_ReturnStatus
-    TransferWriteShape(const Handle(Interface_InterfaceModel)& theModel,
+    TransferWriteShape(const occ::handle<Interface_InterfaceModel>& theModel,
                        const TopoDS_Shape&                     theShape,
                        const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -121,14 +118,14 @@ public:
   //! to bind to each check, the resulting entity in the model
   //! instead of keeping the original Mapper, whenever known
   Standard_EXPORT Interface_CheckIterator
-    ResultCheckList(const Handle(Interface_InterfaceModel)& theModel) const;
+    ResultCheckList(const occ::handle<Interface_InterfaceModel>& theModel) const;
 
   DEFINE_STANDARD_RTTIEXT(XSControl_TransferWriter, Standard_Transient)
 
 private:
-  Handle(XSControl_Controller)   myController;
-  Handle(Transfer_FinderProcess) myTransferWriter;
-  Standard_Integer               myTransferMode;
+  occ::handle<XSControl_Controller>   myController;
+  occ::handle<Transfer_FinderProcess> myTransferWriter;
+  int               myTransferMode;
 };
 
 #endif // _XSControl_TransferWriter_HeaderFile

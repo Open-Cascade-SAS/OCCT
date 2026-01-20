@@ -37,10 +37,10 @@ public:
   //! @param theRowUpp upper row bound
   //! @param theColLow lower column bound
   //! @param theColUpp upper column bound
-  NCollection_HArray2(const Standard_Integer theRowLow,
-                      const Standard_Integer theRowUpp,
-                      const Standard_Integer theColLow,
-                      const Standard_Integer theColUpp)
+  NCollection_HArray2(const int theRowLow,
+                      const int theRowUpp,
+                      const int theColLow,
+                      const int theColUpp)
       : Array2Type(theRowLow, theRowUpp, theColLow, theColUpp)
   {
   }
@@ -51,10 +51,10 @@ public:
   //! @param theColLow lower column bound
   //! @param theColUpp upper column bound
   //! @param theValue initial value for all elements
-  NCollection_HArray2(const Standard_Integer theRowLow,
-                      const Standard_Integer theRowUpp,
-                      const Standard_Integer theColLow,
-                      const Standard_Integer theColUpp,
+  NCollection_HArray2(const int theRowLow,
+                      const int theRowUpp,
+                      const int theColLow,
+                      const int theColUpp,
                       const TheItemType&     theValue)
       : Array2Type(theRowLow, theRowUpp, theColLow, theColUpp)
   {

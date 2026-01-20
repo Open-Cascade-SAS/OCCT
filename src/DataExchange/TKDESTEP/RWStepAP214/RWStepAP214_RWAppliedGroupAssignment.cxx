@@ -20,7 +20,9 @@
 #include "RWStepAP214_RWAppliedGroupAssignment.pxx"
 #include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepAP214_GroupItem.hxx>
-#include <StepAP214_HArray1OfGroupItem.hxx>
+#include <StepAP214_GroupItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Group.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -32,10 +34,10 @@ RWStepAP214_RWAppliedGroupAssignment::RWStepAP214_RWAppliedGroupAssignment() {}
 //=================================================================================================
 
 void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepAP214_AppliedGroupAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepAP214_AppliedGroupAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "applied_group_assignment"))
@@ -43,7 +45,7 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
 
   // Inherited fields of GroupAssignment
 
-  Handle(StepBasic_Group) aGroupAssignment_AssignedGroup;
+  occ::handle<StepBasic_Group> aGroupAssignment_AssignedGroup;
   data->ReadEntity(num,
                    1,
                    "group_assignment.assigned_group",
@@ -53,16 +55,16 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
 
   // Own fields of AppliedGroupAssignment
 
-  Handle(StepAP214_HArray1OfGroupItem) anItems;
-  Standard_Integer                     sub2 = 0;
+  occ::handle<NCollection_HArray1<StepAP214_GroupItem>> anItems;
+  int                     sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
-    Standard_Integer num2 = sub2;
-    Standard_Integer nb0  = data->NbParams(num2);
+    int num2 = sub2;
+    int nb0  = data->NbParams(num2);
     if (nb0)
     {
-      anItems = new StepAP214_HArray1OfGroupItem(1, nb0);
-      for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+      anItems = new NCollection_HArray1<StepAP214_GroupItem>(1, nb0);
+      for (int i0 = 1; i0 <= nb0; i0++)
       {
         StepAP214_GroupItem anIt0;
         data->ReadEntity(num2, i0, "items", ach, anIt0);
@@ -78,7 +80,7 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
 
 void RWStepAP214_RWAppliedGroupAssignment::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepAP214_AppliedGroupAssignment)& ent) const
+  const occ::handle<StepAP214_AppliedGroupAssignment>& ent) const
 {
 
   // Inherited fields of GroupAssignment
@@ -90,7 +92,7 @@ void RWStepAP214_RWAppliedGroupAssignment::WriteStep(
   SW.OpenSub();
   if (!ent->Items().IsNull())
   {
-    for (Standard_Integer i1 = 1; i1 <= ent->Items()->Length(); i1++)
+    for (int i1 = 1; i1 <= ent->Items()->Length(); i1++)
     {
       StepAP214_GroupItem Var0 = ent->Items()->Value(i1);
       SW.Send(Var0.Value());
@@ -102,7 +104,7 @@ void RWStepAP214_RWAppliedGroupAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepAP214_RWAppliedGroupAssignment::Share(
-  const Handle(StepAP214_AppliedGroupAssignment)& ent,
+  const occ::handle<StepAP214_AppliedGroupAssignment>& ent,
   Interface_EntityIterator&                       iter) const
 {
 
@@ -113,7 +115,7 @@ void RWStepAP214_RWAppliedGroupAssignment::Share(
   // Own fields of AppliedGroupAssignment
   if (!ent->Items().IsNull())
   {
-    for (Standard_Integer i2 = 1; i2 <= ent->Items()->Length(); i2++)
+    for (int i2 = 1; i2 <= ent->Items()->Length(); i2++)
     {
       StepAP214_GroupItem Var0 = ent->Items()->Value(i2);
       iter.AddItem(Var0.Value());

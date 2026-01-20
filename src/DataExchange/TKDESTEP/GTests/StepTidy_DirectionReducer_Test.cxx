@@ -22,15 +22,15 @@ class StepTidy_DirectionReducerTest : public StepTidy_BaseTestFixture
 {
 protected:
   //! Perform removal of duplicate entities.
-  TColStd_MapOfTransient replaceDuplicateDirections()
+  NCollection_Map<occ::handle<Standard_Transient>> replaceDuplicateDirections()
   {
     StepTidy_DirectionReducer aReducer(myWS);
-    for (Standard_Integer anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
+    for (int anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
     {
       aReducer.ProcessEntity(myWS->Model()->Value(anIndex));
     }
 
-    TColStd_MapOfTransient aRemovedEntities;
+    NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities;
     aReducer.Perform(aRemovedEntities);
     return aRemovedEntities;
   }
@@ -40,21 +40,21 @@ protected:
 TEST_F(StepTidy_DirectionReducerTest, DifferentNames)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection("dir1");
-  Handle(StepGeom_Direction) aDir2 = addDirection("dir2");
+  occ::handle<StepGeom_Direction> aDir1 = addDirection("dir1");
+  occ::handle<StepGeom_Direction> aDir2 = addDirection("dir2");
 
   // Creating vector containing the first direction.
-  Handle(StepGeom_Vector) aFirstVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aFirstVector = new StepGeom_Vector;
   aFirstVector->Init(new TCollection_HAsciiString, aDir1, 1.);
   addToModel(aFirstVector);
 
   // Creating vector containing the second direction.
-  Handle(StepGeom_Vector) aSecondVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aSecondVector = new StepGeom_Vector;
   aSecondVector->Init(new TCollection_HAsciiString, aDir2, 1.);
   addToModel(aSecondVector);
 
   // Performing removal of duplicate directions.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateDirections();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateDirections();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -65,12 +65,12 @@ TEST_F(StepTidy_DirectionReducerTest, DifferentNames)
 TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis1Placement)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection();
-  Handle(StepGeom_Direction) aDir2 = addDirection();
+  occ::handle<StepGeom_Direction> aDir1 = addDirection();
+  occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating Cartesian point for the location.
-  Handle(StepGeom_CartesianPoint) aLocation       = new StepGeom_CartesianPoint;
-  Handle(TColStd_HArray1OfReal)   aLocationCoords = new TColStd_HArray1OfReal(1, 3);
+  occ::handle<StepGeom_CartesianPoint> aLocation       = new StepGeom_CartesianPoint;
+  occ::handle<NCollection_HArray1<double>>   aLocationCoords = new NCollection_HArray1<double>(1, 3);
   aLocationCoords->SetValue(1, 0.);
   aLocationCoords->SetValue(2, 0.);
   aLocationCoords->SetValue(3, 0.);
@@ -78,17 +78,17 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis1Placement)
   addToModel(aLocation);
 
   // Creating axis containing the first direction.
-  Handle(StepGeom_Axis1Placement) aFirstAxis = new StepGeom_Axis1Placement;
+  occ::handle<StepGeom_Axis1Placement> aFirstAxis = new StepGeom_Axis1Placement;
   aFirstAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir1);
   addToModel(aFirstAxis);
 
   // Creating axis containing the second direction.
-  Handle(StepGeom_Axis1Placement) aSecondAxis = new StepGeom_Axis1Placement;
+  occ::handle<StepGeom_Axis1Placement> aSecondAxis = new StepGeom_Axis1Placement;
   aSecondAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir2);
   addToModel(aSecondAxis);
 
   // Performing removal of duplicate Cartesian points.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateDirections();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateDirections();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -100,12 +100,12 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis1Placement)
 TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis2Placement)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection();
-  Handle(StepGeom_Direction) aDir2 = addDirection();
+  occ::handle<StepGeom_Direction> aDir1 = addDirection();
+  occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating Cartesian point for the location.
-  Handle(StepGeom_CartesianPoint) aLocation       = new StepGeom_CartesianPoint;
-  Handle(TColStd_HArray1OfReal)   aLocationCoords = new TColStd_HArray1OfReal(1, 3);
+  occ::handle<StepGeom_CartesianPoint> aLocation       = new StepGeom_CartesianPoint;
+  occ::handle<NCollection_HArray1<double>>   aLocationCoords = new NCollection_HArray1<double>(1, 3);
   aLocationCoords->SetValue(1, 0.);
   aLocationCoords->SetValue(2, 0.);
   aLocationCoords->SetValue(3, 0.);
@@ -113,17 +113,17 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis2Placement)
   addToModel(aLocation);
 
   // Creating axis containing the first direction.
-  Handle(StepGeom_Axis2Placement3d) aFirstAxis = new StepGeom_Axis2Placement3d;
+  occ::handle<StepGeom_Axis2Placement3d> aFirstAxis = new StepGeom_Axis2Placement3d;
   aFirstAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir1, false, nullptr);
   addToModel(aFirstAxis);
 
   // Creating axis containing the second direction.
-  Handle(StepGeom_Axis2Placement3d) aSecondAxis = new StepGeom_Axis2Placement3d;
+  occ::handle<StepGeom_Axis2Placement3d> aSecondAxis = new StepGeom_Axis2Placement3d;
   aSecondAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir2, false, nullptr);
   addToModel(aSecondAxis);
 
   // Performing removal of duplicate Cartesian points.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateDirections();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateDirections();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -135,21 +135,21 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis2Placement)
 TEST_F(StepTidy_DirectionReducerTest, StepGeom_Vector)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection();
-  Handle(StepGeom_Direction) aDir2 = addDirection();
+  occ::handle<StepGeom_Direction> aDir1 = addDirection();
+  occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating vector containing the first direction.
-  Handle(StepGeom_Vector) aFirstVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aFirstVector = new StepGeom_Vector;
   aFirstVector->Init(new TCollection_HAsciiString, aDir1, 1.);
   addToModel(aFirstVector);
 
   // Creating vector containing the second direction.
-  Handle(StepGeom_Vector) aSecondVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aSecondVector = new StepGeom_Vector;
   aSecondVector->Init(new TCollection_HAsciiString, aDir2, 1.);
   addToModel(aSecondVector);
 
   // Performing removal of duplicate Cartesian points.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateDirections();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateDirections();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

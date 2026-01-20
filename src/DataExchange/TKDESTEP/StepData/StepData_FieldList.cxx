@@ -22,30 +22,30 @@ StepData_FieldList::~StepData_FieldList() {}
 
 StepData_FieldList::StepData_FieldList() {}
 
-Standard_Integer StepData_FieldList::NbFields() const
+int StepData_FieldList::NbFields() const
 {
   return 0;
 }
 
-const StepData_Field& StepData_FieldList::Field(const Standard_Integer) const
+const StepData_Field& StepData_FieldList::Field(const int) const
 {
   throw Standard_OutOfRange("StepData_FieldList : Field");
 }
 
-StepData_Field& StepData_FieldList::CField(const Standard_Integer)
+StepData_Field& StepData_FieldList::CField(const int)
 {
   throw Standard_OutOfRange("StepData_FieldList : CField");
 }
 
 void StepData_FieldList::FillShared(Interface_EntityIterator& iter) const
 {
-  Standard_Integer i, nb = NbFields();
+  int i, nb = NbFields();
   for (i = 1; i <= nb; i++)
   {
     const StepData_Field& fi = Field(i);
     if (fi.Kind() != 7)
       continue; // KindEntity
-    Standard_Integer i1, i2, nb1 = 1, nb2 = 1, ari = fi.Arity();
+    int i1, i2, nb1 = 1, nb2 = 1, ari = fi.Arity();
     if (ari == 1)
       nb1 = fi.Length();
     if (ari == 2)

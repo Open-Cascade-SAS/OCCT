@@ -30,8 +30,7 @@ set(OCCT_Convert_FILES
   Convert_ParameterisationType.hxx
   Convert_PolynomialCosAndSin.cxx
   Convert_PolynomialCosAndSin.hxx
-  Convert_SequenceOfArray1OfPoles.hxx
-  Convert_SequenceOfArray1OfPoles2d.hxx
+
   Convert_SphereToBSplineSurface.cxx
   Convert_SphereToBSplineSurface.hxx
   Convert_TorusToBSplineSurface.cxx

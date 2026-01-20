@@ -15,34 +15,35 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-Standard_EXPORT Standard_Integer FUN_unkeepEinterferences(TopOpeBRepDS_ListOfInterference&  LI,
+Standard_EXPORT int FUN_unkeepEinterferences(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
                                                           const TopOpeBRepDS_DataStructure& BDS,
-                                                          const Standard_Integer            SIX);
-Standard_EXPORT void             FUN_unkeepEsymetrictransitions(TopOpeBRepDS_ListOfInterference&  LI,
+                                                          const int            SIX);
+Standard_EXPORT void             FUN_unkeepEsymetrictransitions(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
                                                                 const TopOpeBRepDS_DataStructure& BDS,
-                                                                const Standard_Integer            SIX);
-Standard_EXPORT void             FUN_orderFFsamedomain(TopOpeBRepDS_ListOfInterference&           LI,
-                                                       const Handle(TopOpeBRepDS_HDataStructure)& BDS,
-                                                       const Standard_Integer                     SIX);
-Standard_EXPORT void             FUN_orderSTATETRANS(TopOpeBRepDS_ListOfInterference&           LI,
-                                                     const Handle(TopOpeBRepDS_HDataStructure)& BDS,
-                                                     const Standard_Integer                     SIX);
-Standard_EXPORT void             FUN_resolveEUNKNOWN(TopOpeBRepDS_ListOfInterference& LI,
+                                                                const int            SIX);
+Standard_EXPORT void             FUN_orderFFsamedomain(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+                                                       const occ::handle<TopOpeBRepDS_HDataStructure>& BDS,
+                                                       const int                     SIX);
+Standard_EXPORT void             FUN_orderSTATETRANS(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+                                                     const occ::handle<TopOpeBRepDS_HDataStructure>& BDS,
+                                                     const int                     SIX);
+Standard_EXPORT void             FUN_resolveEUNKNOWN(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
                                                      TopOpeBRepDS_DataStructure&      BDS,
-                                                     const Standard_Integer           SIX);
-Standard_EXPORT void             FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                 const Standard_Integer                     EIX,
-                                                 TopOpeBRepDS_ListOfInterference&           LI);
+                                                     const int           SIX);
+Standard_EXPORT void             FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                                 const int                     EIX,
+                                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI);
 
 //------------------------------------------------------
 static void FUN_FilterEdge
   //------------------------------------------------------
-  (TopOpeBRepDS_ListOfInterference&           LI,
-   const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-   const Standard_Integer                     SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+   const int                     SIX)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 
@@ -54,12 +55,12 @@ static void FUN_FilterEdge
 
 //=================================================================================================
 
-void TopOpeBRepDS_Filter::ProcessEdgeInterferences(const Standard_Integer SIX)
+void TopOpeBRepDS_Filter::ProcessEdgeInterferences(const int SIX)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
   //                 BDS.Shape(SIX);
-  TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
-  TopOpeBRepDS_ListOfInterference  lw, lE, lF, lUU, lall;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = BDS.ChangeShapeInterferences(SIX);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>  lw, lE, lF, lUU, lall;
   lall.Assign(LI);
 
   // xpu : 270398 :

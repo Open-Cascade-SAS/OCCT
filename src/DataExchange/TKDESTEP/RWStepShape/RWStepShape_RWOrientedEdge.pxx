@@ -36,19 +36,17 @@ public:
 
   Standard_HIDDEN RWStepShape_RWOrientedEdge();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepShape_OrientedEdge)&  ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<StepShape_OrientedEdge>&  ent) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                  SW,
-                                 const Handle(StepShape_OrientedEdge)& ent) const;
+                                 const occ::handle<StepShape_OrientedEdge>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepShape_OrientedEdge)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepShape_OrientedEdge>& ent,
                              Interface_EntityIterator&             iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepShape_RWOrientedEdge_HeaderFile

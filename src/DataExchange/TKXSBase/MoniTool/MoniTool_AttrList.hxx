@@ -45,74 +45,74 @@ public:
 
   //! Adds an attribute with a given name (replaces the former one
   //! with the same name if already exists)
-  Standard_EXPORT void SetAttribute(const Standard_CString            name,
-                                    const Handle(Standard_Transient)& val);
+  Standard_EXPORT void SetAttribute(const char* const            name,
+                                    const occ::handle<Standard_Transient>& val);
 
   //! Removes an attribute
   //! Returns True when done, False if this attribute did not exist
-  Standard_EXPORT Standard_Boolean RemoveAttribute(const Standard_CString name);
+  Standard_EXPORT bool RemoveAttribute(const char* const name);
 
   //! Returns an attribute from its name, filtered by a type
   //! If no attribute has this name, or if it is not kind of this
   //! type, <val> is Null and returned value is False
   //! Else, it is True
-  Standard_EXPORT Standard_Boolean GetAttribute(const Standard_CString       name,
-                                                const Handle(Standard_Type)& type,
-                                                Handle(Standard_Transient)&  val) const;
+  Standard_EXPORT bool GetAttribute(const char* const       name,
+                                                const occ::handle<Standard_Type>& type,
+                                                occ::handle<Standard_Transient>&  val) const;
 
   //! Returns an attribute from its name. Null Handle if not
   //! recorded (whatever Transient, Integer, Real ...)
   //! Integer is recorded as IntVal
   //! Real is recorded as RealVal
   //! Text is recorded as HAsciiString
-  Standard_EXPORT Handle(Standard_Transient) Attribute(const Standard_CString name) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Attribute(const char* const name) const;
 
   //! Returns the type of an attribute:
   //! ValueInt, ValueReal, ValueText (String), ValueIdent (any)
   //! or ValueVoid (not recorded)
-  Standard_EXPORT MoniTool_ValueType AttributeType(const Standard_CString name) const;
+  Standard_EXPORT MoniTool_ValueType AttributeType(const char* const name) const;
 
   //! Adds an integer value for an attribute
-  Standard_EXPORT void SetIntegerAttribute(const Standard_CString name, const Standard_Integer val);
+  Standard_EXPORT void SetIntegerAttribute(const char* const name, const int val);
 
   //! Returns an attribute from its name, as integer
   //! If no attribute has this name, or not an integer,
   //! <val> is 0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT Standard_Boolean GetIntegerAttribute(const Standard_CString name,
-                                                       Standard_Integer&      val) const;
+  Standard_EXPORT bool GetIntegerAttribute(const char* const name,
+                                                       int&      val) const;
 
   //! Returns an integer attribute from its name. 0 if not recorded
-  Standard_EXPORT Standard_Integer IntegerAttribute(const Standard_CString name) const;
+  Standard_EXPORT int IntegerAttribute(const char* const name) const;
 
   //! Adds a real value for an attribute
-  Standard_EXPORT void SetRealAttribute(const Standard_CString name, const Standard_Real val);
+  Standard_EXPORT void SetRealAttribute(const char* const name, const double val);
 
   //! Returns an attribute from its name, as real
   //! If no attribute has this name, or not a real
   //! <val> is 0.0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT Standard_Boolean GetRealAttribute(const Standard_CString name,
-                                                    Standard_Real&         val) const;
+  Standard_EXPORT bool GetRealAttribute(const char* const name,
+                                                    double&         val) const;
 
   //! Returns a real attribute from its name. 0.0 if not recorded
-  Standard_EXPORT Standard_Real RealAttribute(const Standard_CString name) const;
+  Standard_EXPORT double RealAttribute(const char* const name) const;
 
   //! Adds a String value for an attribute
-  Standard_EXPORT void SetStringAttribute(const Standard_CString name, const Standard_CString val);
+  Standard_EXPORT void SetStringAttribute(const char* const name, const char* const val);
 
   //! Returns an attribute from its name, as String
   //! If no attribute has this name, or not a String
   //! <val> is 0.0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT Standard_Boolean GetStringAttribute(const Standard_CString name,
-                                                      Standard_CString&      val) const;
+  Standard_EXPORT bool GetStringAttribute(const char* const name,
+                                                      const char*&      val) const;
 
   //! Returns a String attribute from its name. "" if not recorded
-  Standard_EXPORT Standard_CString StringAttribute(const Standard_CString name) const;
+  Standard_EXPORT const char* StringAttribute(const char* const name) const;
 
   //! Returns the exhaustive list of attributes
-  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>&
+  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
                         AttrList() const;
 
   //! Gets the list of attributes from <other>, as such, i.e.
@@ -133,12 +133,11 @@ public:
   //! These new attributes are added to the existing ones in <me>,
   //! in case of same name, they replace the existing ones
   Standard_EXPORT void GetAttributes(const MoniTool_AttrList& other,
-                                     const Standard_CString   fromname = "",
-                                     const Standard_Boolean   copied   = Standard_True);
+                                     const char* const   fromname = "",
+                                     const bool   copied   = true);
 
-protected:
 private:
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> theattrib;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> theattrib;
 };
 
 #endif // _MoniTool_AttrList_HeaderFile

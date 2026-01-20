@@ -38,18 +38,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeBoundedCurve(
-    const Handle(Geom_BoundedCurve)& C,
+    const occ::handle<Geom_BoundedCurve>& C,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeBoundedCurve(
-    const Handle(Geom2d_BoundedCurve)& C,
+    const occ::handle<Geom2d_BoundedCurve>& C,
     const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_BoundedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_BoundedCurve>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_BoundedCurve) theBoundedCurve;
+  occ::handle<StepGeom_BoundedCurve> theBoundedCurve;
 };
 
 #endif // _GeomToStep_MakeBoundedCurve_HeaderFile

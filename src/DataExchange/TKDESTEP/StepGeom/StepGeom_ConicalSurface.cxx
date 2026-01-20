@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_ConicalSurface, StepGeom_ElementarySurface)
 
 StepGeom_ConicalSurface::StepGeom_ConicalSurface() {}
 
-void StepGeom_ConicalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                   const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                   const Standard_Real                      aRadius,
-                                   const Standard_Real                      aSemiAngle)
+void StepGeom_ConicalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                   const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                   const double                      aRadius,
+                                   const double                      aSemiAngle)
 {
   // --- classe own fields ---
   radius    = aRadius;
@@ -31,22 +31,22 @@ void StepGeom_ConicalSurface::Init(const Handle(TCollection_HAsciiString)&  aNam
   StepGeom_ElementarySurface::Init(aName, aPosition);
 }
 
-void StepGeom_ConicalSurface::SetRadius(const Standard_Real aRadius)
+void StepGeom_ConicalSurface::SetRadius(const double aRadius)
 {
   radius = aRadius;
 }
 
-Standard_Real StepGeom_ConicalSurface::Radius() const
+double StepGeom_ConicalSurface::Radius() const
 {
   return radius;
 }
 
-void StepGeom_ConicalSurface::SetSemiAngle(const Standard_Real aSemiAngle)
+void StepGeom_ConicalSurface::SetSemiAngle(const double aSemiAngle)
 {
   semiAngle = aSemiAngle;
 }
 
-Standard_Real StepGeom_ConicalSurface::SemiAngle() const
+double StepGeom_ConicalSurface::SemiAngle() const
 {
   return semiAngle;
 }

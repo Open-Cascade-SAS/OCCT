@@ -43,8 +43,8 @@ inline const char* ConvertToString(const StepVisual_SurfaceSide theSourceEnum)
 //! Convert string to StepVisual_SurfaceSide
 //! @param theSideStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_SurfaceSide value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString theSideStr, StepVisual_SurfaceSide& theResultEnum)
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const theSideStr, StepVisual_SurfaceSide& theResultEnum)
 {
   if (IsEqual(theSideStr, ssNegative))
   {
@@ -60,9 +60,9 @@ inline bool ConvertToEnum(const Standard_CString theSideStr, StepVisual_SurfaceS
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepVisual_RWSurfaceSide
 

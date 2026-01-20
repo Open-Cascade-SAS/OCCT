@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
@@ -21,7 +21,7 @@
 
 StepShape_GeometricSetSelect::StepShape_GeometricSetSelect() {}
 
-Standard_Integer StepShape_GeometricSetSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepShape_GeometricSetSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -36,17 +36,17 @@ Standard_Integer StepShape_GeometricSetSelect::CaseNum(const Handle(Standard_Tra
   return 0;
 }
 
-Handle(StepGeom_Point) StepShape_GeometricSetSelect::Point() const
+occ::handle<StepGeom_Point> StepShape_GeometricSetSelect::Point() const
 {
   return GetCasted(StepGeom_Point, Value());
 }
 
-Handle(StepGeom_Curve) StepShape_GeometricSetSelect::Curve() const
+occ::handle<StepGeom_Curve> StepShape_GeometricSetSelect::Curve() const
 {
   return GetCasted(StepGeom_Curve, Value());
 }
 
-Handle(StepGeom_Surface) StepShape_GeometricSetSelect::Surface() const
+occ::handle<StepGeom_Surface> StepShape_GeometricSetSelect::Surface() const
 {
   return GetCasted(StepGeom_Surface, Value());
 }

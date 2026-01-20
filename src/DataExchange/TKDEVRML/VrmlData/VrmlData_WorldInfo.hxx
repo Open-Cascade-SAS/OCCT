@@ -67,23 +67,23 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual Handle(VrmlData_Node) Clone(const Handle(VrmlData_Node)& theOther) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
+    override;
 
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer& theBuffer) override;
 
   /**
    * Write the Node to the Scene output.
    */
-  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const Standard_OVERRIDE;
+  Standard_EXPORT virtual VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
   /**
    * Returns True if the node is default, then it would not be written.
    */
-  Standard_EXPORT virtual Standard_Boolean IsDefault() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDefault() const override;
 
 private:
   // ---------- PRIVATE FIELDS ----------
@@ -97,6 +97,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_WorldInfo, VrmlData_Node)
-
 #endif

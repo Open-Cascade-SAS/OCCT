@@ -22,21 +22,21 @@ inline const XmlObjMgt_Element& XmlObjMgt_Array1::Element() const
 
 //=================================================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Length() const
+inline int XmlObjMgt_Array1::Length() const
 {
   return myLast - myFirst + 1;
 }
 
 //=================================================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Lower() const
+inline int XmlObjMgt_Array1::Lower() const
 {
   return myFirst;
 }
 
 //=================================================================================================
 
-inline Standard_Integer XmlObjMgt_Array1::Upper() const
+inline int XmlObjMgt_Array1::Upper() const
 {
   return myLast;
 }

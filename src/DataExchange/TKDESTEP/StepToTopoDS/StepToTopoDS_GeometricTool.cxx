@@ -46,14 +46,14 @@
 // Purpose : returns true if the surface curve has at least one pcurve lying
 // on the surface
 // ----------------------------------------------------------------------------
-Standard_Integer StepToTopoDS_GeometricTool::PCurve(const Handle(StepGeom_SurfaceCurve)& SurfCurve,
-                                                    const Handle(StepGeom_Surface)&      BasisSurf,
-                                                    Handle(StepGeom_Pcurve)&             thePCurve,
-                                                    const Standard_Integer               last)
+int StepToTopoDS_GeometricTool::PCurve(const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
+                                                    const occ::handle<StepGeom_Surface>&      BasisSurf,
+                                                    occ::handle<StepGeom_Pcurve>&             thePCurve,
+                                                    const int               last)
 {
-  Standard_Integer NbAssGeom = SurfCurve->NbAssociatedGeometry();
+  int NbAssGeom = SurfCurve->NbAssociatedGeometry();
   thePCurve.Nullify();
-  for (Standard_Integer i = last + 1; i <= NbAssGeom; i++)
+  for (int i = last + 1; i <= NbAssGeom; i++)
   {
     thePCurve = SurfCurve->AssociatedGeometryValue(i).Pcurve();
     if (!thePCurve.IsNull())
@@ -72,20 +72,20 @@ Standard_Integer StepToTopoDS_GeometricTool::PCurve(const Handle(StepGeom_Surfac
 //           Then the surface_curve is a seam curve
 // ----------------------------------------------------------------------------
 
-Standard_Boolean StepToTopoDS_GeometricTool::IsSeamCurve(
-  const Handle(StepGeom_SurfaceCurve)& SurfCurve,
-  const Handle(StepGeom_Surface)&      Surf,
-  const Handle(StepShape_Edge)&        StepEdge,
-  const Handle(StepShape_EdgeLoop)&    EdgeLoop)
+bool StepToTopoDS_GeometricTool::IsSeamCurve(
+  const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
+  const occ::handle<StepGeom_Surface>&      Surf,
+  const occ::handle<StepShape_Edge>&        StepEdge,
+  const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->IsKind(STANDARD_TYPE(StepGeom_SeamCurve)))
-    return Standard_True;
+    return true;
 
   if (SurfCurve->NbAssociatedGeometry() != 2)
-    return Standard_False;
+    return false;
 
-  Handle(StepGeom_Pcurve) StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
-  Handle(StepGeom_Pcurve) StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
+  occ::handle<StepGeom_Pcurve> StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
+  occ::handle<StepGeom_Pcurve> StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
 
   // Do the two pcurves lye on the same surface ?
 
@@ -93,12 +93,12 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsSeamCurve(
       && (StepPCurve2->BasisSurface() == Surf))
   {
 
-    Standard_Integer NbEdge = EdgeLoop->NbEdgeList();
-    Standard_Integer nbOE   = 0;
+    int NbEdge = EdgeLoop->NbEdgeList();
+    int nbOE   = 0;
 
-    Handle(StepShape_OrientedEdge) OrEdge;
+    occ::handle<StepShape_OrientedEdge> OrEdge;
 
-    for (Standard_Integer i = 1; i <= NbEdge; i++)
+    for (int i = 1; i <= NbEdge; i++)
     {
       OrEdge = EdgeLoop->EdgeListValue(i);
       if (StepEdge == OrEdge->EdgeElement())
@@ -106,9 +106,9 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsSeamCurve(
     }
     // two oriented edges of the same wire share the same edge
     if (nbOE == 2)
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -119,17 +119,17 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsSeamCurve(
 //           range of gp_Resolution is not identified as closed
 // ----------------------------------------------------------------------------
 
-Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
-  const Handle(StepGeom_SurfaceCurve)& SurfCurve,
-  const Handle(StepGeom_Surface)&      Surf,
-  const Handle(StepShape_Edge)&        StepEdge,
-  const Handle(StepShape_EdgeLoop)&    EdgeLoop)
+bool StepToTopoDS_GeometricTool::IsLikeSeam(
+  const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
+  const occ::handle<StepGeom_Surface>&      Surf,
+  const occ::handle<StepShape_Edge>&        StepEdge,
+  const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->NbAssociatedGeometry() != 2)
-    return Standard_False;
+    return false;
 
-  Handle(StepGeom_Pcurve) StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
-  Handle(StepGeom_Pcurve) StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
+  occ::handle<StepGeom_Pcurve> StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
+  occ::handle<StepGeom_Pcurve> StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
 
   // Do the two pcurves lye on the same surface ?
 
@@ -137,12 +137,12 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
       && (StepPCurve2->BasisSurface() == Surf))
   {
 
-    Standard_Integer NbEdge = EdgeLoop->NbEdgeList();
-    Standard_Integer nbOE   = 0;
+    int NbEdge = EdgeLoop->NbEdgeList();
+    int nbOE   = 0;
 
-    Handle(StepShape_OrientedEdge) OrEdge;
+    occ::handle<StepShape_OrientedEdge> OrEdge;
 
-    for (Standard_Integer i = 1; i <= NbEdge; i++)
+    for (int i = 1; i <= NbEdge; i++)
     {
       OrEdge = EdgeLoop->EdgeListValue(i);
       if (StepEdge == OrEdge->EdgeElement())
@@ -152,32 +152,32 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
     if (nbOE == 1)
     {
       // check if the two pcurves are not identical ?
-      Handle(StepGeom_Line) line1 =
-        Handle(StepGeom_Line)::DownCast(StepPCurve1->ReferenceToCurve()->ItemsValue(1));
-      Handle(StepGeom_Line) line2 =
-        Handle(StepGeom_Line)::DownCast(StepPCurve2->ReferenceToCurve()->ItemsValue(1));
+      occ::handle<StepGeom_Line> line1 =
+        occ::down_cast<StepGeom_Line>(StepPCurve1->ReferenceToCurve()->ItemsValue(1));
+      occ::handle<StepGeom_Line> line2 =
+        occ::down_cast<StepGeom_Line>(StepPCurve2->ReferenceToCurve()->ItemsValue(1));
       if (!line1.IsNull() && !line2.IsNull())
       {
         // Same Origin in X OR Y && Same Vector ??
         // WITHIN A given tolerance !!!
-        Standard_Real DeltaX =
+        double DeltaX =
           std::abs(line1->Pnt()->CoordinatesValue(1) - line2->Pnt()->CoordinatesValue(1));
-        Standard_Real DeltaY =
+        double DeltaY =
           std::abs(line1->Pnt()->CoordinatesValue(2) - line2->Pnt()->CoordinatesValue(2));
 
-        Standard_Real DeltaDirX = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
+        double DeltaDirX = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
                                            - line2->Dir()->Orientation()->DirectionRatiosValue(1));
-        Standard_Real DeltaDirY = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
+        double DeltaDirY = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
                                            - line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
         // clang-format off
-        Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
+        double preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
         // clang-format on
 
         if ((DeltaX < preci2d) || (DeltaY < preci2d))
           return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
         else
-          return Standard_False;
+          return false;
 
         // Warning : la manipulation de tolerances dans ce contexte est un
         //           peu trop dangeureux.
@@ -193,11 +193,11 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
         //  Ce travail reste evidement A FAIRE !!! ...
       }
       else
-        return Standard_False;
+        return false;
     }
-    return Standard_False;
+    return false;
   }
-  return Standard_False;
+  return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -206,16 +206,16 @@ Standard_Boolean StepToTopoDS_GeometricTool::IsLikeSeam(
 //           This situation occurs when an edge crosses the parametric origin.
 // ----------------------------------------------------------------------------
 
-Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Curve)& theCurve,
-                                                           Standard_Real&            w1,
-                                                           Standard_Real&            w2,
-                                                           const Standard_Real       preci)
+bool StepToTopoDS_GeometricTool::UpdateParam3d(const occ::handle<Geom_Curve>& theCurve,
+                                                           double&            w1,
+                                                           double&            w2,
+                                                           const double       preci)
 {
   // w1 et/ou w2 peuvent etre en dehors des bornes naturelles de la courbe.
   // On donnera alors la valeur en bout a w1 et/ou w2
 
-  Standard_Real cf = theCurve->FirstParameter();
-  Standard_Real cl = theCurve->LastParameter();
+  double cf = theCurve->FirstParameter();
+  double cl = theCurve->LastParameter();
 
   if (theCurve->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) && !theCurve->IsClosed())
   {
@@ -250,7 +250,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
   }
 
   if (w1 < w2)
-    return Standard_True;
+    return true;
 
   if (theCurve->IsPeriodic())
   {
@@ -299,7 +299,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
         std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
                   << std::endl;
 #endif
-        Standard_Real tmp = w1;
+        double tmp = w1;
         w1                = w2;
         w2                = tmp;
       }
@@ -308,7 +308,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
   // The curve is closed within the 3D tolerance
   else if (theCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+    occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(theCurve);
     if (aBSpline->StartPoint().Distance(aBSpline->EndPoint()) <= preci)
     {
       //: S4136	<= BRepAPI::Precision()) {
@@ -335,7 +335,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
         std::cout << "Warning : parameter range of edge crossing non periodic curve origin"
                   << std::endl;
 #endif
-        Standard_Real tmp = w1;
+        double tmp = w1;
         w1                = w2;
         w2                = tmp;
       }
@@ -355,7 +355,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
     { // gka 10.07.1998 file PRO7656 entity 33334
       w1 = cf;
       w2 = cl;
-      return Standard_False;
+      return false;
     }
   }
   else
@@ -382,7 +382,7 @@ Standard_Boolean StepToTopoDS_GeometricTool::UpdateParam3d(const Handle(Geom_Cur
       w1 -= Precision::PConfusion();
       w2 += Precision::PConfusion();
     }
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }

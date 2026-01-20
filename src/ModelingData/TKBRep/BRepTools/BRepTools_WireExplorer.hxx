@@ -20,11 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_Orientation.hxx>
 class TopoDS_Wire;
 
@@ -71,13 +76,13 @@ public:
   //! <UMIn>, <UMax>, <VMin>, <VMax> - the UV bounds of the face <F>.
   Standard_EXPORT void Init(const TopoDS_Wire&  W,
                             const TopoDS_Face&  F,
-                            const Standard_Real UMin,
-                            const Standard_Real UMax,
-                            const Standard_Real VMin,
-                            const Standard_Real VMax);
+                            const double UMin,
+                            const double UMax,
+                            const double VMin,
+                            const double VMax);
 
   //! Returns True if there is a current edge.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Proceeds to the next edge.
   Standard_EXPORT void Next();
@@ -95,16 +100,15 @@ public:
   //! Clears the content of the explorer.
   Standard_EXPORT void Clear();
 
-protected:
 private:
-  TopTools_DataMapOfShapeListOfShape myMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
   TopoDS_Edge                        myEdge;
   TopoDS_Vertex                      myVertex;
   TopoDS_Face                        myFace;
-  TopTools_MapOfShape                myDoubles;
-  Standard_Boolean                   myReverse;
-  Standard_Real                      myTolU;
-  Standard_Real                      myTolV;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                myDoubles;
+  bool                   myReverse;
+  double                      myTolU;
+  double                      myTolV;
 };
 
 #endif // _BRepTools_WireExplorer_HeaderFile

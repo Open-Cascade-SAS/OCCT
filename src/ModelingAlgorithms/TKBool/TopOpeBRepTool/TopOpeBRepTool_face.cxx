@@ -43,25 +43,25 @@ static void FUN_reverse(const TopoDS_Face& f, TopoDS_Face& frev)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Face& Fref)
+bool TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Face& Fref)
 {
   myFfinite.Nullify();
   myW = W;
 
   // fres :
   //  TopoDS_Face fres;
-  //  Handle(Geom_Surface) su = BRep_Tool::Surface(Fref);
+  //  occ::handle<Geom_Surface> su = BRep_Tool::Surface(Fref);
   //  BRep_Builder B; B.MakeFace(fres,su,Precision::Confusion());
   TopoDS_Shape aLocalShape = Fref.EmptyCopied();
   TopoDS_Face  fres        = TopoDS::Face(aLocalShape);
   //  TopoDS_Face fres = TopoDS::Face(Fref.EmptyCopied());
   BRep_Builder B;
   B.Add(fres, W);
-  B.NaturalRestriction(fres, Standard_True);
+  B.NaturalRestriction(fres, true);
 
   // <myfinite> :
   BRepTopAdaptor_FClass2d FClass(fres, 0.);
-  Standard_Boolean        infinite = (FClass.PerformInfinitePoint() == TopAbs_IN);
+  bool        infinite = (FClass.PerformInfinitePoint() == TopAbs_IN);
   myfinite                         = !infinite;
 
   // <myFfinite> :
@@ -69,19 +69,19 @@ Standard_Boolean TopOpeBRepTool_face::Init(const TopoDS_Wire& W, const TopoDS_Fa
     myFfinite = fres;
   else
     FUN_reverse(fres, myFfinite);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_face::IsDone() const
+bool TopOpeBRepTool_face::IsDone() const
 {
   return (!myFfinite.IsNull());
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_face::Finite() const
+bool TopOpeBRepTool_face::Finite() const
 {
   if (!IsDone())
     throw Standard_Failure("TopOpeBRepTool_face NOT DONE");

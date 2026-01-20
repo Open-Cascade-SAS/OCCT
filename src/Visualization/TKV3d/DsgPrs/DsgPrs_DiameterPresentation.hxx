@@ -42,13 +42,13 @@ public:
   //! The value of the enumeration ArrowSide controls
   //! whether arrows will be displayed at either or both
   //! ends of the length. The text aText labels the diameter.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Pnt&                     AttachmentPoint,
                                   const gp_Circ&                    aCircle,
                                   const DsgPrs_ArrowSide            ArrowSide,
-                                  const Standard_Boolean            IsDiamSymbol);
+                                  const bool            IsDiamSymbol);
 
   //! Draws the diameter of the arc anArc displayed in the
   //! presentation aPresentation and with attributes
@@ -59,18 +59,16 @@ public:
   //! arrows will be displayed at either or both ends of the
   //! length. The parameters uFirst and uLast define the
   //! first and last points of the arc. The text aText labels the diameter.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const TCollection_ExtendedString& aText,
                                   const gp_Pnt&                     AttachmentPoint,
                                   const gp_Circ&                    aCircle,
-                                  const Standard_Real               uFirst,
-                                  const Standard_Real               uLast,
+                                  const double               uFirst,
+                                  const double               uLast,
                                   const DsgPrs_ArrowSide            ArrowSide,
-                                  const Standard_Boolean            IsDiamSymbol);
+                                  const bool            IsDiamSymbol);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_DiameterPresentation_HeaderFile

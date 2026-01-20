@@ -23,15 +23,15 @@ class StepTidy_CircleReducerTest : public StepTidy_BaseTestFixture
 {
 protected:
   //! Perform removal of duplicate entities.
-  TColStd_MapOfTransient replaceDuplicateCircles()
+  NCollection_Map<occ::handle<Standard_Transient>> replaceDuplicateCircles()
   {
     StepTidy_CircleReducer aReducer(myWS);
-    for (Standard_Integer anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
+    for (int anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
     {
       aReducer.ProcessEntity(myWS->Model()->Value(anIndex));
     }
 
-    TColStd_MapOfTransient aRemovedEntities;
+    NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities;
     aReducer.Perform(aRemovedEntities);
     return aRemovedEntities;
   }
@@ -41,29 +41,29 @@ protected:
 TEST_F(StepTidy_CircleReducerTest, DifferentNames)
 {
   // Creating Circles.
-  Handle(StepGeom_Circle) aCircle1 = addCircle("Circle1");
-  Handle(StepGeom_Circle) aCircle2 = addCircle("Circle2");
+  occ::handle<StepGeom_Circle> aCircle1 = addCircle("Circle1");
+  occ::handle<StepGeom_Circle> aCircle2 = addCircle("Circle2");
 
   // Creating EdgeCurve containing the first Circle.
-  Handle(StepShape_EdgeCurve) aFirstEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aFirstEdgeCurve = new StepShape_EdgeCurve;
   aFirstEdgeCurve->Init(new TCollection_HAsciiString,
                         new StepShape_Vertex,
                         new StepShape_Vertex,
                         aCircle1,
-                        Standard_True);
+                        true);
   addToModel(aFirstEdgeCurve);
 
   // Creating EdgeCurve containing the second Circle.
-  Handle(StepShape_EdgeCurve) aSecondEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aSecondEdgeCurve = new StepShape_EdgeCurve;
   aSecondEdgeCurve->Init(new TCollection_HAsciiString,
                          new StepShape_Vertex,
                          new StepShape_Vertex,
                          aCircle2,
-                         Standard_True);
+                         true);
   addToModel(aSecondEdgeCurve);
 
   // Performing removal of duplicate Circles.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateCircles();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCircles();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -73,29 +73,29 @@ TEST_F(StepTidy_CircleReducerTest, DifferentNames)
 TEST_F(StepTidy_CircleReducerTest, StepShape_EdgeCurve)
 {
   // Creating Circles.
-  Handle(StepGeom_Circle) aCircle1 = addCircle();
-  Handle(StepGeom_Circle) aCircle2 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle1 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle2 = addCircle();
 
   // Creating EdgeCurve containing the first Circle.
-  Handle(StepShape_EdgeCurve) aFirstEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aFirstEdgeCurve = new StepShape_EdgeCurve;
   aFirstEdgeCurve->Init(new TCollection_HAsciiString,
                         new StepShape_Vertex,
                         new StepShape_Vertex,
                         aCircle1,
-                        Standard_True);
+                        true);
   addToModel(aFirstEdgeCurve);
 
   // Creating EdgeCurve containing the second Circle.
-  Handle(StepShape_EdgeCurve) aSecondEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aSecondEdgeCurve = new StepShape_EdgeCurve;
   aSecondEdgeCurve->Init(new TCollection_HAsciiString,
                          new StepShape_Vertex,
                          new StepShape_Vertex,
                          aCircle2,
-                         Standard_True);
+                         true);
   addToModel(aSecondEdgeCurve);
 
   // Performing removal of duplicate Circles.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateCircles();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCircles();
 
   // Check that one Circle was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -106,27 +106,27 @@ TEST_F(StepTidy_CircleReducerTest, StepShape_EdgeCurve)
 TEST_F(StepTidy_CircleReducerTest, StepGeom_SurfaceCurve)
 {
   // Creating Circles.
-  Handle(StepGeom_Circle) aCircle1 = addCircle();
-  Handle(StepGeom_Circle) aCircle2 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle1 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle2 = addCircle();
 
   // Creating SurfaceCurve containing the first Circle.
-  Handle(StepGeom_SurfaceCurve) aFirstSurfaceCurve = new StepGeom_SurfaceCurve;
+  occ::handle<StepGeom_SurfaceCurve> aFirstSurfaceCurve = new StepGeom_SurfaceCurve;
   aFirstSurfaceCurve->Init(new TCollection_HAsciiString,
                            aCircle1,
-                           new StepGeom_HArray1OfPcurveOrSurface,
+                           new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                            StepGeom_pscrCurve3d);
   addToModel(aFirstSurfaceCurve);
 
   // Creating SurfaceCurve containing the second Circle.
-  Handle(StepGeom_SurfaceCurve) aSecondSurfaceCurve = new StepGeom_SurfaceCurve;
+  occ::handle<StepGeom_SurfaceCurve> aSecondSurfaceCurve = new StepGeom_SurfaceCurve;
   aSecondSurfaceCurve->Init(new TCollection_HAsciiString,
                             aCircle2,
-                            new StepGeom_HArray1OfPcurveOrSurface,
+                            new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                             StepGeom_pscrCurve3d);
   addToModel(aSecondSurfaceCurve);
 
   // Performing removal of duplicate Circles.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateCircles();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCircles();
 
   // Check that one Circle was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -137,27 +137,27 @@ TEST_F(StepTidy_CircleReducerTest, StepGeom_SurfaceCurve)
 TEST_F(StepTidy_CircleReducerTest, StepGeom_SeamCurve)
 {
   // Creating Circles.
-  Handle(StepGeom_Circle) aCircle1 = addCircle();
-  Handle(StepGeom_Circle) aCircle2 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle1 = addCircle();
+  occ::handle<StepGeom_Circle> aCircle2 = addCircle();
 
   // Creating SeamCurve containing the first Circle.
-  Handle(StepGeom_SeamCurve) aFirstSeamCurve = new StepGeom_SeamCurve;
+  occ::handle<StepGeom_SeamCurve> aFirstSeamCurve = new StepGeom_SeamCurve;
   aFirstSeamCurve->Init(new TCollection_HAsciiString,
                         aCircle1,
-                        new StepGeom_HArray1OfPcurveOrSurface,
+                        new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                         StepGeom_pscrCurve3d);
   addToModel(aFirstSeamCurve);
 
   // Creating SeamCurve containing the second Circle.
-  Handle(StepGeom_SeamCurve) aSecondSeamCurve = new StepGeom_SeamCurve;
+  occ::handle<StepGeom_SeamCurve> aSecondSeamCurve = new StepGeom_SeamCurve;
   aSecondSeamCurve->Init(new TCollection_HAsciiString,
                          aCircle2,
-                         new StepGeom_HArray1OfPcurveOrSurface,
+                         new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                          StepGeom_pscrCurve3d);
   addToModel(aSecondSeamCurve);
 
   // Performing removal of duplicate Circles.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateCircles();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCircles();
 
   // Check that one Circle was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

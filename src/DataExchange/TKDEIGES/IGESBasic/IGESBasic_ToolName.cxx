@@ -32,13 +32,13 @@
 
 IGESBasic_ToolName::IGESBasic_ToolName() {}
 
-void IGESBasic_ToolName::ReadOwnParams(const Handle(IGESBasic_Name)& ent,
-                                       const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESBasic_ToolName::ReadOwnParams(const occ::handle<IGESBasic_Name>& ent,
+                                       const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                        IGESData_ParamReader& PR) const
 {
-  Standard_Integer                 tempNbPropertyValues;
-  Handle(TCollection_HAsciiString) tempName;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int                 tempNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> tempName;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
   PR.ReadInteger(PR.Current(),"Number of property values",tempNbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
@@ -49,38 +49,38 @@ void IGESBasic_ToolName::ReadOwnParams(const Handle(IGESBasic_Name)& ent,
   ent->Init(tempNbPropertyValues, tempName);
 }
 
-void IGESBasic_ToolName::WriteOwnParams(const Handle(IGESBasic_Name)& ent,
+void IGESBasic_ToolName::WriteOwnParams(const occ::handle<IGESBasic_Name>& ent,
                                         IGESData_IGESWriter&          IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->Value());
 }
 
-void IGESBasic_ToolName::OwnShared(const Handle(IGESBasic_Name)& /* ent */,
+void IGESBasic_ToolName::OwnShared(const occ::handle<IGESBasic_Name>& /* ent */,
                                    Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESBasic_ToolName::OwnCopy(const Handle(IGESBasic_Name)& another,
-                                 const Handle(IGESBasic_Name)& ent,
+void IGESBasic_ToolName::OwnCopy(const occ::handle<IGESBasic_Name>& another,
+                                 const occ::handle<IGESBasic_Name>& ent,
                                  Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 aNbPropertyValues;
-  Handle(TCollection_HAsciiString) aName;
+  int                 aNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> aName;
   aName             = new TCollection_HAsciiString(another->Value());
   aNbPropertyValues = another->NbPropertyValues();
   ent->Init(aNbPropertyValues, aName);
 }
 
-Standard_Boolean IGESBasic_ToolName::OwnCorrect(const Handle(IGESBasic_Name)& ent) const
+bool IGESBasic_ToolName::OwnCorrect(const occ::handle<IGESBasic_Name>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 1);
+  bool res = (ent->NbPropertyValues() != 1);
   if (res)
     ent->Init(1, ent->Value());
   return res; // nbpropertyvalues = 1
 }
 
-IGESData_DirChecker IGESBasic_ToolName::DirChecker(const Handle(IGESBasic_Name)& /*ent*/) const
+IGESData_DirChecker IGESBasic_ToolName::DirChecker(const occ::handle<IGESBasic_Name>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 15); // Form no = 15 & Type = 406
   DC.Structure(IGESData_DefVoid);
@@ -91,18 +91,18 @@ IGESData_DirChecker IGESBasic_ToolName::DirChecker(const Handle(IGESBasic_Name)&
   return DC;
 }
 
-void IGESBasic_ToolName::OwnCheck(const Handle(IGESBasic_Name)& ent,
+void IGESBasic_ToolName::OwnCheck(const occ::handle<IGESBasic_Name>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
     ach->AddFail("Number of Property Values != 1");
 }
 
-void IGESBasic_ToolName::OwnDump(const Handle(IGESBasic_Name)& ent,
+void IGESBasic_ToolName::OwnDump(const occ::handle<IGESBasic_Name>& ent,
                                  const IGESData_IGESDumper& /* dumper */,
                                  Standard_OStream& S,
-                                 const Standard_Integer /* level */) const
+                                 const int /* level */) const
 {
   S << "IGESBasic_Name\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"

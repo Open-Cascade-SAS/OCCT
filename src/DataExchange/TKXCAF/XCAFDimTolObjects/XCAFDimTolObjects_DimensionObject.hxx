@@ -22,25 +22,26 @@
 
 #include <XCAFDimTolObjects_DimensionObjectSequence.hxx>
 #include <XCAFDimTolObjects_DimensionType.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <XCAFDimTolObjects_DimensionQualifier.hxx>
 #include <XCAFDimTolObjects_DimensionFormVariance.hxx>
 #include <XCAFDimTolObjects_DimensionGrade.hxx>
 #include <Standard_Integer.hxx>
-#include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <TopoDS_Edge.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Vector.hxx>
 #include <XCAFDimTolObjects_AngularQualifier.hxx>
-
-class XCAFDimTolObjects_DimensionObject;
-DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DimensionObject, Standard_Transient)
 
 //! Access object to store dimension data
 class XCAFDimTolObjects_DimensionObject : public Standard_Transient
@@ -50,13 +51,13 @@ public:
   Standard_EXPORT XCAFDimTolObjects_DimensionObject();
 
   Standard_EXPORT XCAFDimTolObjects_DimensionObject(
-    const Handle(XCAFDimTolObjects_DimensionObject)& theObj);
+    const occ::handle<XCAFDimTolObjects_DimensionObject>& theObj);
 
   //! Returns semantic name
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetSemanticName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetSemanticName() const;
 
   //! Sets semantic name
-  Standard_EXPORT void SetSemanticName(const Handle(TCollection_HAsciiString)& theName);
+  Standard_EXPORT void SetSemanticName(const occ::handle<TCollection_HAsciiString>& theName);
 
   //! Sets dimension qualifier as min., max. or average.
   Standard_EXPORT void SetQualifier(const XCAFDimTolObjects_DimensionQualifier theQualifier);
@@ -65,7 +66,7 @@ public:
   Standard_EXPORT XCAFDimTolObjects_DimensionQualifier GetQualifier() const;
 
   //! Returns True if the object has dimension qualifier.
-  Standard_EXPORT Standard_Boolean HasQualifier() const;
+  Standard_EXPORT bool HasQualifier() const;
 
   //! Sets angular qualifier as small, large or equal.
   Standard_EXPORT void SetAngularQualifier(
@@ -75,7 +76,7 @@ public:
   Standard_EXPORT XCAFDimTolObjects_AngularQualifier GetAngularQualifier() const;
 
   //! Returns True if the object has angular qualifier.
-  Standard_EXPORT Standard_Boolean HasAngularQualifier() const;
+  Standard_EXPORT bool HasAngularQualifier() const;
 
   //! Sets a specific type of dimension.
   Standard_EXPORT void SetType(const XCAFDimTolObjects_DimensionType theTyupe);
@@ -85,61 +86,61 @@ public:
 
   //! Returns the main dimension value.
   //! It will be the middle value in case of range dimension.
-  Standard_EXPORT Standard_Real GetValue() const;
+  Standard_EXPORT double GetValue() const;
 
   //! Returns raw array of dimension values
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) GetValues() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> GetValues() const;
 
   //! Sets the main dimension value.
   //! Overwrites previous values.
-  Standard_EXPORT void SetValue(const Standard_Real theValue);
+  Standard_EXPORT void SetValue(const double theValue);
 
   //! Replaces current raw array of dimension values with theValues array.
-  Standard_EXPORT void SetValues(const Handle(TColStd_HArray1OfReal)& theValue);
+  Standard_EXPORT void SetValues(const occ::handle<NCollection_HArray1<double>>& theValue);
 
   //! Returns True if the dimension is of range kind.
   //! Dimension is of range kind if its values array contains two elements
   //! defining lower and upper bounds.
-  Standard_EXPORT Standard_Boolean IsDimWithRange() const;
+  Standard_EXPORT bool IsDimWithRange() const;
 
   //! Sets the upper bound of the range dimension, otherwise
   //! resets it to an empty range with the specified upper bound.
-  Standard_EXPORT void SetUpperBound(const Standard_Real theUpperBound);
+  Standard_EXPORT void SetUpperBound(const double theUpperBound);
 
   //! Sets the lower bound of the range dimension, otherwise
   //! resets it to an empty range with the specified lower bound.
-  Standard_EXPORT void SetLowerBound(const Standard_Real theLowerBound);
+  Standard_EXPORT void SetLowerBound(const double theLowerBound);
 
   //! Returns the upper bound of the range dimension, otherwise - zero.
-  Standard_EXPORT Standard_Real GetUpperBound() const;
+  Standard_EXPORT double GetUpperBound() const;
 
   //! Returns the lower bound of the range dimension, otherwise - zero.
-  Standard_EXPORT Standard_Real GetLowerBound() const;
+  Standard_EXPORT double GetLowerBound() const;
 
   //! Returns True if the dimension is of +/- tolerance kind.
   //! Dimension is of +/- tolerance kind if its values array contains three elements
   //! defining the main value and the lower/upper tolerances.
-  Standard_EXPORT Standard_Boolean IsDimWithPlusMinusTolerance() const;
+  Standard_EXPORT bool IsDimWithPlusMinusTolerance() const;
 
   //! Sets the upper value of the toleranced dimension, otherwise
   //! resets a simple dimension to toleranced one with the specified lower/upper tolerances.
   //! Returns False in case of range dimension.
-  Standard_EXPORT Standard_Boolean SetUpperTolValue(const Standard_Real theUperTolValue);
+  Standard_EXPORT bool SetUpperTolValue(const double theUperTolValue);
 
   //! Sets the lower value of the toleranced dimension, otherwise
   //! resets a simple dimension to toleranced one with the specified lower/upper tolerances.
   //! Returns False in case of range dimension.
-  Standard_EXPORT Standard_Boolean SetLowerTolValue(const Standard_Real theLowerTolValue);
+  Standard_EXPORT bool SetLowerTolValue(const double theLowerTolValue);
 
   //! Returns the lower value of the toleranced dimension, otherwise - zero.
-  Standard_EXPORT Standard_Real GetUpperTolValue() const;
+  Standard_EXPORT double GetUpperTolValue() const;
 
   //! Returns the upper value of the toleranced dimension, otherwise - zero.
-  Standard_EXPORT Standard_Real GetLowerTolValue() const;
+  Standard_EXPORT double GetLowerTolValue() const;
 
   //! Returns True if the form variance was set to not XCAFDimTolObjects_DimensionFormVariance_None
   //! value.
-  Standard_EXPORT Standard_Boolean IsDimWithClassOfTolerance() const;
+  Standard_EXPORT bool IsDimWithClassOfTolerance() const;
 
   //! Sets tolerance class of the dimension.
   //! \param theHole - True if the tolerance applies to an internal feature
@@ -147,30 +148,30 @@ public:
   //!                          of the ISO 286 limits-and-fits tolerance classification.
   //! \param theGrade - represents the quality or the accuracy grade of a tolerance.
   Standard_EXPORT void SetClassOfTolerance(
-    const Standard_Boolean                        theHole,
+    const bool                        theHole,
     const XCAFDimTolObjects_DimensionFormVariance theFormVariance,
     const XCAFDimTolObjects_DimensionGrade        theGrade);
 
   //! Retrieves tolerance class parameters of the dimension.
   //! Returns True if the dimension is toleranced.
-  Standard_EXPORT Standard_Boolean
-    GetClassOfTolerance(Standard_Boolean&                        theHole,
+  Standard_EXPORT bool
+    GetClassOfTolerance(bool&                        theHole,
                         XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
                         XCAFDimTolObjects_DimensionGrade&        theGrade) const;
 
   //! Sets the number of places to the left and right of the decimal point respectively.
-  Standard_EXPORT void SetNbOfDecimalPlaces(const Standard_Integer theL,
-                                            const Standard_Integer theR);
+  Standard_EXPORT void SetNbOfDecimalPlaces(const int theL,
+                                            const int theR);
 
   //! Returns the number of places to the left and right of the decimal point respectively.
-  Standard_EXPORT void GetNbOfDecimalPlaces(Standard_Integer& theL, Standard_Integer& theR) const;
+  Standard_EXPORT void GetNbOfDecimalPlaces(int& theL, int& theR) const;
 
   //! Returns a sequence of modifiers of the dimension.
-  Standard_EXPORT XCAFDimTolObjects_DimensionModifiersSequence GetModifiers() const;
+  Standard_EXPORT NCollection_Sequence<XCAFDimTolObjects_DimensionModif> GetModifiers() const;
 
   //! Sets new sequence of dimension modifiers.
   Standard_EXPORT void SetModifiers(
-    const XCAFDimTolObjects_DimensionModifiersSequence& theModifiers);
+    const NCollection_Sequence<XCAFDimTolObjects_DimensionModif>& theModifiers);
 
   //! Adds a modifier to the dimension sequence of modifiers.
   Standard_EXPORT void AddModifier(const XCAFDimTolObjects_DimensionModif theModifier);
@@ -182,67 +183,67 @@ public:
   Standard_EXPORT void SetPath(const TopoDS_Edge& thePath);
 
   //! Returns the orientation of the dimension in annotation plane.
-  Standard_EXPORT Standard_Boolean GetDirection(gp_Dir& theDir) const;
+  Standard_EXPORT bool GetDirection(gp_Dir& theDir) const;
 
   //! Sets an orientation of the dimension in annotation plane.
-  Standard_EXPORT Standard_Boolean SetDirection(const gp_Dir& theDir);
+  Standard_EXPORT bool SetDirection(const gp_Dir& theDir);
 
   //! Sets position of the dimension text.
   void SetPointTextAttach(const gp_Pnt& thePntText)
   {
     myPntText    = thePntText;
-    myHasPntText = Standard_True;
+    myHasPntText = true;
   }
 
   //! Returns position of the dimension text.
   const gp_Pnt& GetPointTextAttach() const { return myPntText; }
 
   //! Returns True if the position of dimension text is specified.
-  Standard_Boolean HasTextPoint() const { return myHasPntText; }
+  bool HasTextPoint() const { return myHasPntText; }
 
   //! Sets annotation plane.
   void SetPlane(const gp_Ax2& thePlane)
   {
     myPlane    = thePlane;
-    myHasPlane = Standard_True;
+    myHasPlane = true;
   }
 
   //! Returns annotation plane.
   const gp_Ax2& GetPlane() const { return myPlane; }
 
   //! Returns True if the object has annotation plane.
-  Standard_Boolean HasPlane() const { return myHasPlane; }
+  bool HasPlane() const { return myHasPlane; }
 
   //! Returns true, if connection point exists (for dimensional_size),
   //! if connection point for the first shape exists (for dimensional_location).
-  Standard_Boolean HasPoint() const { return myHasConnection1; }
+  bool HasPoint() const { return myHasConnection1; }
 
   // Returns true, if connection point for the second shape exists (for dimensional_location only).
-  Standard_Boolean HasPoint2() const { return myHasConnection2; }
+  bool HasPoint2() const { return myHasConnection2; }
 
   //! Returns true, if the connection is a point not coordinate system (for dimensional_size),
   //! if connection point for the first shape exists (for dimensional_location).
-  Standard_Boolean IsPointConnection() const { return myConnectionIsPoint1; }
+  bool IsPointConnection() const { return myConnectionIsPoint1; }
 
   // Returns true, if the connection for the second shape is a point not coordinate system (for
   // dimensional_location only).
-  Standard_Boolean IsPointConnection2() const { return myConnectionIsPoint2; }
+  bool IsPointConnection2() const { return myConnectionIsPoint2; }
 
   //! Set connection point (for dimensional_size),
   //! Set connection point for the first shape (for dimensional_location).
   void SetPoint(const gp_Pnt& thePnt)
   {
     myConnection1.SetLocation(thePnt);
-    myHasConnection1     = Standard_True;
-    myConnectionIsPoint1 = Standard_True;
+    myHasConnection1     = true;
+    myConnectionIsPoint1 = true;
   }
 
   // Set connection point for the second shape (for dimensional_location only).
   void SetPoint2(const gp_Pnt& thePnt)
   {
     myConnection2.SetLocation(thePnt);
-    myHasConnection2     = Standard_True;
-    myConnectionIsPoint2 = Standard_True;
+    myHasConnection2     = true;
+    myConnectionIsPoint2 = true;
   }
 
   //! Set connection point as a coordinate system (for dimensional_size),
@@ -250,8 +251,8 @@ public:
   void SetConnectionAxis(const gp_Ax2& theAxis)
   {
     myConnection1        = theAxis;
-    myHasConnection1     = Standard_True;
-    myConnectionIsPoint1 = Standard_False;
+    myHasConnection1     = true;
+    myConnectionIsPoint1 = false;
   }
 
   // Set connection point as a coordinate system for the second shape (for dimensional_location
@@ -259,8 +260,8 @@ public:
   void SetConnectionAxis2(const gp_Ax2& theAxis)
   {
     myConnection2        = theAxis;
-    myHasConnection2     = Standard_True;
-    myConnectionIsPoint2 = Standard_False;
+    myHasConnection2     = true;
+    myConnectionIsPoint2 = false;
   }
 
   //! Get connection point (for dimensional_size),
@@ -279,26 +280,26 @@ public:
   gp_Ax2 GetConnectionAxis2() const { return myConnection2; }
 
   //! Returns connection name of the object.
-  Handle(TCollection_HAsciiString) GetConnectionName() const { return myConnectionName1; }
+  occ::handle<TCollection_HAsciiString> GetConnectionName() const { return myConnectionName1; }
 
   //! Returns 2nd connection name of the object.
-  Handle(TCollection_HAsciiString) GetConnectionName2() const { return myConnectionName2; }
+  occ::handle<TCollection_HAsciiString> GetConnectionName2() const { return myConnectionName2; }
 
   //! Sets connection name of the object.
-  void SetConnectionName(const Handle(TCollection_HAsciiString)& theName)
+  void SetConnectionName(const occ::handle<TCollection_HAsciiString>& theName)
   {
     myConnectionName1 = theName;
   }
 
   //! Sets 2nd connection name of the object.
-  void SetConnectionName2(const Handle(TCollection_HAsciiString)& theName)
+  void SetConnectionName2(const occ::handle<TCollection_HAsciiString>& theName)
   {
     myConnectionName2 = theName;
   }
 
   //! Set graphical presentation for the object.
   void SetPresentation(const TopoDS_Shape&                     thePresentation,
-                       const Handle(TCollection_HAsciiString)& thePresentationName)
+                       const occ::handle<TCollection_HAsciiString>& thePresentationName)
   {
     myPresentation     = thePresentation;
     myPresentationName = thePresentationName;
@@ -308,19 +309,19 @@ public:
   TopoDS_Shape GetPresentation() const { return myPresentation; }
 
   //! Returns graphical presentation of the object
-  Standard_EXPORT Handle(TCollection_HAsciiString) GetPresentationName() const
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> GetPresentationName() const
   {
     return myPresentationName;
   }
 
   //! Returns true, if the object has descriptions.
-  Standard_Boolean HasDescriptions() const { return (myDescriptions.Length() > 0); }
+  bool HasDescriptions() const { return (myDescriptions.Length() > 0); }
 
   //! Returns number of descriptions.
-  Standard_Integer NbDescriptions() const { return myDescriptions.Length(); }
+  int NbDescriptions() const { return myDescriptions.Length(); }
 
   //! Returns description with the given number.
-  Handle(TCollection_HAsciiString) GetDescription(const Standard_Integer theNumber) const
+  occ::handle<TCollection_HAsciiString> GetDescription(const int theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
       return new TCollection_HAsciiString();
@@ -328,7 +329,7 @@ public:
   }
 
   //! Returns name of description with the given number.
-  Handle(TCollection_HAsciiString) GetDescriptionName(const Standard_Integer theNumber) const
+  occ::handle<TCollection_HAsciiString> GetDescriptionName(const int theNumber) const
   {
     if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
       return new TCollection_HAsciiString();
@@ -336,55 +337,55 @@ public:
   }
 
   //! Remove description with the given number.
-  Standard_EXPORT void RemoveDescription(const Standard_Integer theNumber);
+  Standard_EXPORT void RemoveDescription(const int theNumber);
 
   //! Add new description.
-  void AddDescription(const Handle(TCollection_HAsciiString) theDescription,
-                      const Handle(TCollection_HAsciiString) theName)
+  void AddDescription(const occ::handle<TCollection_HAsciiString> theDescription,
+                      const occ::handle<TCollection_HAsciiString> theName)
   {
     myDescriptions.Append(theDescription);
     myDescriptionNames.Append(theName);
   }
 
   //! Returns true if the dimension type is a location.
-  Standard_EXPORT static Standard_Boolean IsDimensionalLocation(
+  Standard_EXPORT static bool IsDimensionalLocation(
     const XCAFDimTolObjects_DimensionType theType);
 
   //! Returns true if the dimension type is a size.
-  Standard_EXPORT static Standard_Boolean IsDimensionalSize(
+  Standard_EXPORT static bool IsDimensionalSize(
     const XCAFDimTolObjects_DimensionType theType);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient)
 
 private:
   XCAFDimTolObjects_DimensionType                      myType;
-  Handle(TColStd_HArray1OfReal)                        myVal;
+  occ::handle<NCollection_HArray1<double>>                        myVal;
   XCAFDimTolObjects_DimensionQualifier                 myQualifier;
   XCAFDimTolObjects_AngularQualifier                   myAngularQualifier;
-  Standard_Boolean                                     myIsHole;
+  bool                                     myIsHole;
   XCAFDimTolObjects_DimensionFormVariance              myFormVariance;
   XCAFDimTolObjects_DimensionGrade                     myGrade;
-  Standard_Integer                                     myL;
-  Standard_Integer                                     myR;
-  XCAFDimTolObjects_DimensionModifiersSequence         myModifiers;
+  int                                     myL;
+  int                                     myR;
+  NCollection_Sequence<XCAFDimTolObjects_DimensionModif>         myModifiers;
   TopoDS_Edge                                          myPath;
   gp_Dir                                               myDir;
   gp_Ax2                                               myConnection1, myConnection2;
-  Standard_Boolean                                     myHasConnection1, myHasConnection2;
-  Standard_Boolean                                     myConnectionIsPoint1, myConnectionIsPoint2;
-  Handle(TCollection_HAsciiString)                     myConnectionName1, myConnectionName2;
+  bool                                     myHasConnection1, myHasConnection2;
+  bool                                     myConnectionIsPoint1, myConnectionIsPoint2;
+  occ::handle<TCollection_HAsciiString>                     myConnectionName1, myConnectionName2;
   gp_Ax2                                               myPlane;
-  Standard_Boolean                                     myHasPlane;
-  Standard_Boolean                                     myHasPntText;
+  bool                                     myHasPlane;
+  bool                                     myHasPntText;
   gp_Pnt                                               myPntText;
   TopoDS_Shape                                         myPresentation;
-  Handle(TCollection_HAsciiString)                     mySemanticName;
-  Handle(TCollection_HAsciiString)                     myPresentationName;
-  NCollection_Vector<Handle(TCollection_HAsciiString)> myDescriptions;
-  NCollection_Vector<Handle(TCollection_HAsciiString)> myDescriptionNames;
+  occ::handle<TCollection_HAsciiString>                     mySemanticName;
+  occ::handle<TCollection_HAsciiString>                     myPresentationName;
+  NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptions;
+  NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptionNames;
 };
 
 #endif // _XCAFDimTolObjects_DimensionObject_HeaderFile

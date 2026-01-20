@@ -18,7 +18,8 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <Graphic3d_Camera.hxx>
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Prs3d_DatumParts.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -41,7 +42,7 @@ class V3d_View;
 //! The object is expected to behave like a trihedron in the view corner,
 //! therefore its position should be defined using transformation persistence flags:
 //! @code SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_TriedronPers,
-//! Aspect_TOTP_LEFT_LOWER, Graphic3d_Vec2i (100, 100)); @endcode
+//! Aspect_TOTP_LEFT_LOWER, NCollection_Vec2<int> (100, 100)); @endcode
 //!
 //! View Cube parts are sensitive to detection, or dynamic highlighting (but not selection),
 //! and every its owner AIS_ViewCubeOwner corresponds to camera transformation.
@@ -75,17 +76,17 @@ public:
   Standard_EXPORT AIS_ViewCube();
 
   //! Return view animation.
-  const Handle(AIS_AnimationCamera)& ViewAnimation() const { return myViewAnimation; }
+  const occ::handle<AIS_AnimationCamera>& ViewAnimation() const { return myViewAnimation; }
 
   //! Set view animation.
-  void SetViewAnimation(const Handle(AIS_AnimationCamera)& theAnimation)
+  void SetViewAnimation(const occ::handle<AIS_AnimationCamera>& theAnimation)
   {
     myViewAnimation = theAnimation;
   }
 
   //! Return TRUE if automatic camera transformation on selection (highlighting) is enabled; TRUE by
   //! default.
-  Standard_Boolean ToAutoStartAnimation() const { return myToAutoStartAnim; }
+  bool ToAutoStartAnimation() const { return myToAutoStartAnim; }
 
   //! Enable/disable automatic camera transformation on selection (highlighting).
   //! The automatic logic can be disabled if application wants performing action manually
@@ -93,7 +94,7 @@ public:
   void SetAutoStartAnimation(bool theToEnable) { myToAutoStartAnim = theToEnable; }
 
   //! Return TRUE if camera animation should be done in uninterruptible loop; TRUE by default.
-  Standard_Boolean IsFixedAnimationLoop() const { return myIsFixedAnimation; }
+  bool IsFixedAnimationLoop() const { return myIsFixedAnimation; }
 
   //! Set if camera animation should be done in uninterruptible loop.
   void SetFixedAnimationLoop(bool theToEnable) { myIsFixedAnimation = theToEnable; }
@@ -111,17 +112,17 @@ protected:
 
 public: //! @name Geometry management API
   //! @return size (width and height) of View cube sides; 100 by default.
-  Standard_Real Size() const { return mySize; }
+  double Size() const { return mySize; }
 
   //! Sets size (width and height) of View cube sides.
   //! @param theToAdaptAnother if TRUE, then other parameters will be adapted to specified size
-  Standard_EXPORT void SetSize(Standard_Real theValue, Standard_Boolean theToAdaptAnother = true);
+  Standard_EXPORT void SetSize(double theValue, bool theToAdaptAnother = true);
 
   //! Return box facet extension to edge/corner facet split; 10 by default.
-  Standard_Real BoxFacetExtension() const { return myBoxFacetExtension; }
+  double BoxFacetExtension() const { return myBoxFacetExtension; }
 
   //! Set new value of box facet extension.
-  void SetBoxFacetExtension(Standard_Real theValue)
+  void SetBoxFacetExtension(double theValue)
   {
     if (std::abs(myBoxFacetExtension - theValue) > Precision::Confusion())
     {
@@ -131,10 +132,10 @@ public: //! @name Geometry management API
   }
 
   //! Return padding between axes and 3D part (box); 10 by default.
-  Standard_Real AxesPadding() const { return myAxesPadding; }
+  double AxesPadding() const { return myAxesPadding; }
 
   //! Set new value of padding between axes and 3D part (box).
-  void SetAxesPadding(Standard_Real theValue)
+  void SetAxesPadding(double theValue)
   {
     if (std::abs(myAxesPadding - theValue) > Precision::Confusion())
     {
@@ -144,10 +145,10 @@ public: //! @name Geometry management API
   }
 
   //! Return gap between box edges and box sides; 0 by default.
-  Standard_Real BoxEdgeGap() const { return myBoxEdgeGap; }
+  double BoxEdgeGap() const { return myBoxEdgeGap; }
 
   //! Set new value of box edges gap.
-  void SetBoxEdgeGap(Standard_Real theValue)
+  void SetBoxEdgeGap(double theValue)
   {
     if (std::abs(myBoxEdgeGap - theValue) > Precision::Confusion())
     {
@@ -157,10 +158,10 @@ public: //! @name Geometry management API
   }
 
   //! Return minimal size of box edge; 2 by default.
-  Standard_Real BoxEdgeMinSize() const { return myBoxEdgeMinSize; }
+  double BoxEdgeMinSize() const { return myBoxEdgeMinSize; }
 
   //! Set new value of box edge minimal size.
-  void SetBoxEdgeMinSize(Standard_Real theValue)
+  void SetBoxEdgeMinSize(double theValue)
   {
     if (std::abs(myBoxEdgeMinSize - theValue) > Precision::Confusion())
     {
@@ -170,10 +171,10 @@ public: //! @name Geometry management API
   }
 
   //! Return minimal size of box corner; 2 by default.
-  Standard_Real BoxCornerMinSize() const { return myCornerMinSize; }
+  double BoxCornerMinSize() const { return myCornerMinSize; }
 
   //! Set new value of box corner minimal size.
-  void SetBoxCornerMinSize(Standard_Real theValue)
+  void SetBoxCornerMinSize(double theValue)
   {
     if (std::abs(myCornerMinSize - theValue) > Precision::Confusion())
     {
@@ -184,17 +185,17 @@ public: //! @name Geometry management API
 
   //! Return relative radius of side corners (round rectangle); 0.0 by default.
   //! The value in within [0, 0.5] range meaning absolute radius = RoundRadius() / Size().
-  Standard_Real RoundRadius() const { return myRoundRadius; }
+  double RoundRadius() const { return myRoundRadius; }
 
   //! Set relative radius of View Cube sides corners (round rectangle).
   //! The value should be within [0, 0.5] range.
-  Standard_EXPORT void SetRoundRadius(const Standard_Real theValue);
+  Standard_EXPORT void SetRoundRadius(const double theValue);
 
   //! Returns radius of axes of the trihedron; 1.0 by default.
-  Standard_Real AxesRadius() const { return myAxesRadius; }
+  double AxesRadius() const { return myAxesRadius; }
 
   //! Sets radius of axes of the trihedron.
-  void SetAxesRadius(const Standard_Real theRadius)
+  void SetAxesRadius(const double theRadius)
   {
     if (std::abs(myAxesRadius - theRadius) > Precision::Confusion())
     {
@@ -204,10 +205,10 @@ public: //! @name Geometry management API
   }
 
   //! Returns radius of cone of axes of the trihedron; 3.0 by default.
-  Standard_Real AxesConeRadius() const { return myAxesConeRadius; }
+  double AxesConeRadius() const { return myAxesConeRadius; }
 
   //! Sets radius of cone of axes of the trihedron.
-  void SetAxesConeRadius(Standard_Real theRadius)
+  void SetAxesConeRadius(double theRadius)
   {
     if (std::abs(myAxesConeRadius - theRadius) > Precision::Confusion())
     {
@@ -217,10 +218,10 @@ public: //! @name Geometry management API
   }
 
   //! Returns radius of sphere (central point) of the trihedron; 4.0 by default.
-  Standard_Real AxesSphereRadius() const { return myAxesSphereRadius; }
+  double AxesSphereRadius() const { return myAxesSphereRadius; }
 
   //! Sets radius of sphere (central point) of the trihedron.
-  void SetAxesSphereRadius(Standard_Real theRadius)
+  void SetAxesSphereRadius(double theRadius)
   {
     if (std::abs(myAxesSphereRadius - theRadius) > Precision::Confusion())
     {
@@ -230,10 +231,10 @@ public: //! @name Geometry management API
   }
 
   //! @return TRUE if trihedron is drawn; TRUE by default.
-  Standard_Boolean ToDrawAxes() const { return myToDisplayAxes; }
+  bool ToDrawAxes() const { return myToDisplayAxes; }
 
   //! Enable/disable drawing of trihedron.
-  void SetDrawAxes(Standard_Boolean theValue)
+  void SetDrawAxes(bool theValue)
   {
     if (myToDisplayAxes != theValue)
     {
@@ -243,10 +244,10 @@ public: //! @name Geometry management API
   }
 
   //! @return TRUE if edges of View Cube is drawn; TRUE by default.
-  Standard_Boolean ToDrawEdges() const { return myToDisplayEdges; }
+  bool ToDrawEdges() const { return myToDisplayEdges; }
 
   //! Enable/disable drawing of edges of View Cube.
-  void SetDrawEdges(Standard_Boolean theValue)
+  void SetDrawEdges(bool theValue)
   {
     if (myToDisplayEdges != theValue)
     {
@@ -256,10 +257,10 @@ public: //! @name Geometry management API
   }
 
   //! Return TRUE if vertices (vertex) of View Cube is drawn; TRUE by default.
-  Standard_Boolean ToDrawVertices() const { return myToDisplayVertices; }
+  bool ToDrawVertices() const { return myToDisplayVertices; }
 
   //! Enable/disable drawing of vertices (corners) of View Cube.
-  void SetDrawVertices(Standard_Boolean theValue)
+  void SetDrawVertices(bool theValue)
   {
     if (myToDisplayVertices != theValue)
     {
@@ -269,21 +270,21 @@ public: //! @name Geometry management API
   }
 
   //! Return TRUE if application expects Y-up viewer orientation instead of Z-up; FALSE by default.
-  Standard_Boolean IsYup() const { return myIsYup; }
+  bool IsYup() const { return myIsYup; }
 
   //! Set if application expects Y-up viewer orientation instead of Z-up.
-  Standard_EXPORT void SetYup(Standard_Boolean theIsYup,
-                              Standard_Boolean theToUpdateLabels = Standard_True);
+  Standard_EXPORT void SetYup(bool theIsYup,
+                              bool theToUpdateLabels = true);
 
 public: //! @name Style management API
   //! Return shading style of box sides.
-  const Handle(Prs3d_ShadingAspect)& BoxSideStyle() const { return myDrawer->ShadingAspect(); }
+  const occ::handle<Prs3d_ShadingAspect>& BoxSideStyle() const { return myDrawer->ShadingAspect(); }
 
   //! Return shading style of box edges.
-  const Handle(Prs3d_ShadingAspect)& BoxEdgeStyle() const { return myBoxEdgeAspect; }
+  const occ::handle<Prs3d_ShadingAspect>& BoxEdgeStyle() const { return myBoxEdgeAspect; }
 
   //! Return shading style of box corners.
-  const Handle(Prs3d_ShadingAspect)& BoxCornerStyle() const { return myBoxCornerAspect; }
+  const occ::handle<Prs3d_ShadingAspect>& BoxCornerStyle() const { return myBoxCornerAspect; }
 
   //! Return value of front color for the 3D part of object.
   const Quantity_Color& BoxColor() const { return myDrawer->ShadingAspect()->Color(); }
@@ -304,11 +305,11 @@ public: //! @name Style management API
   }
 
   //! Return transparency for 3D part of object.
-  Standard_Real BoxTransparency() const { return myDrawer->ShadingAspect()->Transparency(); }
+  double BoxTransparency() const { return myDrawer->ShadingAspect()->Transparency(); }
 
   //! Set new value of transparency for 3D part of object.
   //! @param[in] theValue  input transparency value
-  void SetBoxTransparency(Standard_Real theValue)
+  void SetBoxTransparency(double theValue)
   {
     if (std::abs(myDrawer->ShadingAspect()->Transparency() - theValue) > Precision::Confusion()
         || std::abs(myBoxEdgeAspect->Transparency() - theValue) > Precision::Confusion()
@@ -378,11 +379,11 @@ public: //! @name Style management API
   }
 
   //! Return height of font
-  Standard_Real FontHeight() const { return myDrawer->TextAspect()->Height(); }
+  double FontHeight() const { return myDrawer->TextAspect()->Height(); }
 
   //! Change font height. Alias for:
   //! @code Attributes()->TextAspect()->SetHeight() @endcode
-  void SetFontHeight(Standard_Real theValue)
+  void SetFontHeight(double theValue)
   {
     if (std::abs(myDrawer->TextAspect()->Height() - theValue) > Precision::Confusion())
     {
@@ -413,10 +414,10 @@ public: //! @name Style management API
 public:
   //! Set new value of color for the whole object.
   //! @param[in] theColor  input color value.
-  virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE { SetBoxColor(theColor); }
+  virtual void SetColor(const Quantity_Color& theColor) override { SetBoxColor(theColor); }
 
   //! Reset color for the whole object.
-  virtual void UnsetColor() Standard_OVERRIDE
+  virtual void UnsetColor() override
   {
     myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
     myBoxEdgeAspect->SetColor(Quantity_NOC_GRAY30);
@@ -426,16 +427,16 @@ public:
 
   //! Set new value of transparency for the whole object.
   //! @param[in] theValue  input transparency value.
-  virtual void SetTransparency(const Standard_Real theValue) Standard_OVERRIDE
+  virtual void SetTransparency(const double theValue) override
   {
     SetBoxTransparency(theValue);
   }
 
   //! Reset transparency for the whole object.
-  virtual void UnsetTransparency() Standard_OVERRIDE { SetBoxTransparency(0.0f); }
+  virtual void UnsetTransparency() override { SetBoxTransparency(0.0f); }
 
   //! Sets the material for the interactive object.
-  virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) Standard_OVERRIDE
+  virtual void SetMaterial(const Graphic3d_MaterialAspect& theMat) override
   {
     myDrawer->ShadingAspect()->SetMaterial(theMat);
     myBoxEdgeAspect->SetMaterial(theMat);
@@ -444,7 +445,7 @@ public:
   }
 
   //! Sets the material for the interactive object.
-  virtual void UnsetMaterial() Standard_OVERRIDE
+  virtual void UnsetMaterial() override
   {
     Graphic3d_MaterialAspect aMat(Graphic3d_NameOfMaterial_UserDefined);
     aMat.SetColor(Quantity_NOC_WHITE);
@@ -459,53 +460,53 @@ public:
 
 public: //! @name animation methods
   //! Return duration of animation in seconds; 0.5 sec by default
-  Standard_EXPORT Standard_Real Duration() const;
+  Standard_EXPORT double Duration() const;
 
   //! Set duration of animation.
   //! @param[in] theValue  input value of duration in seconds
-  Standard_EXPORT void SetDuration(Standard_Real theValue);
+  Standard_EXPORT void SetDuration(double theValue);
 
   //! Return TRUE if new camera Up direction should be always set to default value for a new camera
   //! Direction; FALSE by default. When this flag is FALSE, the new camera Up will be set as current
   //! Up orthogonalized to the new camera Direction, and will set to default Up on second click.
-  Standard_Boolean ToResetCameraUp() const { return myToResetCameraUp; }
+  bool ToResetCameraUp() const { return myToResetCameraUp; }
 
   //! Set if new camera Up direction should be always set to default value for a new camera
   //! Direction.
-  void SetResetCamera(Standard_Boolean theToReset) { myToResetCameraUp = theToReset; }
+  void SetResetCamera(bool theToReset) { myToResetCameraUp = theToReset; }
 
   //! Return TRUE if animation should fit selected objects and FALSE to fit entire scene; TRUE by
   //! default.
-  Standard_Boolean ToFitSelected() const { return myToFitSelected; }
+  bool ToFitSelected() const { return myToFitSelected; }
 
   //! Set if animation should fit selected objects or to fit entire scene.
-  void SetFitSelected(Standard_Boolean theToFitSelected) { myToFitSelected = theToFitSelected; }
+  void SetFitSelected(bool theToFitSelected) { myToFitSelected = theToFitSelected; }
 
   //! @return TRUE if View Cube has unfinished animation of view camera.
-  Standard_EXPORT Standard_Boolean HasAnimation() const;
+  Standard_EXPORT bool HasAnimation() const;
 
   //! Start camera transformation corresponding to the input detected owner.
   //! @param[in] theOwner  detected owner.
-  Standard_EXPORT virtual void StartAnimation(const Handle(AIS_ViewCubeOwner)& theOwner);
+  Standard_EXPORT virtual void StartAnimation(const occ::handle<AIS_ViewCubeOwner>& theOwner);
 
   //! Perform one step of current camera transformation.
   //! theToUpdate[in]  enable/disable update of view.
   //! @return TRUE if animation is not stopped.
-  Standard_EXPORT virtual Standard_Boolean UpdateAnimation(const Standard_Boolean theToUpdate);
+  Standard_EXPORT virtual bool UpdateAnimation(const bool theToUpdate);
 
   //! Perform camera transformation corresponding to the input detected owner.
-  Standard_EXPORT virtual void HandleClick(const Handle(AIS_ViewCubeOwner)& theOwner);
+  Standard_EXPORT virtual void HandleClick(const occ::handle<AIS_ViewCubeOwner>& theOwner);
 
 protected:
   //! Perform internal single step of animation.
   //! @return FALSE if animation has been finished
-  Standard_EXPORT Standard_Boolean updateAnimation();
+  Standard_EXPORT bool updateAnimation();
 
   //! Fit selected/all into view.
   //! @param[in] theView  view definition to retrieve scene bounding box
   //! @param theCamera [in,out] camera definition
-  Standard_EXPORT virtual void viewFitAll(const Handle(V3d_View)&         theView,
-                                          const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT virtual void viewFitAll(const occ::handle<V3d_View>&         theView,
+                                          const occ::handle<Graphic3d_Camera>& theCamera);
 
 protected: //! @name protected virtual API
   //! Method that is called after one step of transformation.
@@ -516,15 +517,15 @@ protected: //! @name protected virtual API
 
 public: //! @name Presentation computation
   //! Return TRUE for supported display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == 0;
   }
 
   //! Global selection has no meaning for this class.
-  virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE
+  virtual occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
   {
-    return Handle(SelectMgr_EntityOwner)();
+    return occ::handle<SelectMgr_EntityOwner>();
   }
 
   //! Compute 3D part of View Cube.
@@ -532,49 +533,49 @@ public: //! @name Presentation computation
   //! @param[in] thePrs  input presentation that is to be filled with flat presentation primitives.
   //! @param[in] theMode  display mode.
   //! @warning this object accept only 0 display mode.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode = 0) override;
 
   //! Redefine computing of sensitive entities for View Cube.
   //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
   //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
-  virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE { return Standard_False; }
+  virtual bool IsAutoHilight() const override { return false; }
 
   //! Method which clear all selected owners belonging to this selectable object.
   //! @warning this object does not support selection.
-  virtual void ClearSelected() Standard_OVERRIDE {}
+  virtual void ClearSelected() override {}
 
   //! Method which highlights input owner belonging to this selectable object.
   //! @param[in] thePM  presentation manager
   //! @param[in] theStyle  style for dynamic highlighting.
   //! @param[in] theOwner  input entity owner.
   Standard_EXPORT virtual void HilightOwnerWithColor(
-    const Handle(PrsMgr_PresentationManager)& thePM,
-    const Handle(Prs3d_Drawer)&               theStyle,
-    const Handle(SelectMgr_EntityOwner)&      theOwner) Standard_OVERRIDE;
+    const occ::handle<PrsMgr_PresentationManager>& thePM,
+    const occ::handle<Prs3d_Drawer>&               theStyle,
+    const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
 
   //! Method which draws selected owners.
-  Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
-                                               const SelectMgr_SequenceOfOwner&          theSeq)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theSeq)
+    override;
 
   //! Set default parameters for visual attributes
   //! @sa Attributes()
-  virtual void UnsetAttributes() Standard_OVERRIDE
+  virtual void UnsetAttributes() override
   {
     setDefaultAttributes();
     SetToUpdate();
   }
 
   //! Set default parameters for dynamic highlighting attributes, reset highlight attributes
-  virtual void UnsetHilightAttributes() Standard_OVERRIDE
+  virtual void UnsetHilightAttributes() override
   {
     myHilightDrawer.Nullify();
     setDefaultHighlightAttributes();
@@ -590,9 +591,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! triangulation
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxPartTriangles(
-    const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-    Standard_Integer&                         theNbNodes,
-    Standard_Integer&                         theNbTris,
+    const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+    int&                         theNbNodes,
+    int&                         theNbTris,
     V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box side.
@@ -603,9 +604,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! triangulation
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxSideTriangles(
-    const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-    Standard_Integer&                         theNbNodes,
-    Standard_Integer&                         theNbTris,
+    const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+    int&                         theNbNodes,
+    int&                         theNbTris,
     V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box edge.
@@ -616,9 +617,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! triangulation
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxEdgeTriangles(
-    const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-    Standard_Integer&                         theNbNodes,
-    Standard_Integer&                         theNbTris,
+    const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+    int&                         theNbNodes,
+    int&                         theNbTris,
     V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box corner (vertex).
@@ -629,9 +630,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! triangulation
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxCornerTriangles(
-    const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-    Standard_Integer&                         theNbNodes,
-    Standard_Integer&                         theNbTris,
+    const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+    int&                         theNbNodes,
+    int&                         theNbTris,
     V3d_TypeOfOrientation                     theDir) const;
 
 protected:
@@ -645,11 +646,11 @@ protected:
   //! @param[in] theRadius   radius at corners
   //! @param[in] theTrsf     transformation
   Standard_EXPORT static void createRoundRectangleTriangles(
-    const Handle(Graphic3d_ArrayOfTriangles)& theTris,
-    Standard_Integer&                         theNbNodes,
-    Standard_Integer&                         theNbTris,
+    const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
+    int&                         theNbNodes,
+    int&                         theNbTris,
     const gp_XY&                              theSize,
-    Standard_Real                             theRadius,
+    double                             theRadius,
     const gp_Trsf&                            theTrsf);
 
 protected:
@@ -657,35 +658,35 @@ protected:
     myBoxSideLabels; //!< map with box side labels
   NCollection_DataMap<Prs3d_DatumParts, TCollection_AsciiString>
                               myAxesLabels;      //!< map with axes labels
-  Handle(Prs3d_ShadingAspect) myBoxEdgeAspect;   //!< style for box edges
-  Handle(Prs3d_ShadingAspect) myBoxCornerAspect; //!< style for box corner
+  occ::handle<Prs3d_ShadingAspect> myBoxEdgeAspect;   //!< style for box edges
+  occ::handle<Prs3d_ShadingAspect> myBoxCornerAspect; //!< style for box corner
 
-  Standard_Real mySize;              //!< size of box side, length of one axis
-  Standard_Real myBoxEdgeMinSize;    //!< minimal size of box edge
-  Standard_Real myBoxEdgeGap;        //!< gap between box side and box edge
-  Standard_Real myBoxFacetExtension; //!< box facet extension
-  Standard_Real myAxesPadding;       //!< Padding between box and axes
+  double mySize;              //!< size of box side, length of one axis
+  double myBoxEdgeMinSize;    //!< minimal size of box edge
+  double myBoxEdgeGap;        //!< gap between box side and box edge
+  double myBoxFacetExtension; //!< box facet extension
+  double myAxesPadding;       //!< Padding between box and axes
   // clang-format off
-  Standard_Real                 myAxesRadius;        //!< radius of axes of the trihedron; 1.0 by default
-  Standard_Real                 myAxesConeRadius;    //!< radius of cone of axes of the trihedron; 3.0 by default
-  Standard_Real                 myAxesSphereRadius;  //!< radius of sphere (central point) of the trihedron; 4.0 by default
-  Standard_Real                 myCornerMinSize;     //!< minimal size of box corner
-  Standard_Real                 myRoundRadius;       //!< relative round radius within [0; 0.5] range
-  Standard_Boolean              myToDisplayAxes;     //!< trihedron visibility
-  Standard_Boolean              myToDisplayEdges;    //!< box edges visibility
-  Standard_Boolean              myToDisplayVertices; //!< box corners (vertices) visibility
-  Standard_Boolean              myIsYup;             //!< flag indicating that application expects Y-up viewer orientation instead of Z-up
+  double                 myAxesRadius;        //!< radius of axes of the trihedron; 1.0 by default
+  double                 myAxesConeRadius;    //!< radius of cone of axes of the trihedron; 3.0 by default
+  double                 myAxesSphereRadius;  //!< radius of sphere (central point) of the trihedron; 4.0 by default
+  double                 myCornerMinSize;     //!< minimal size of box corner
+  double                 myRoundRadius;       //!< relative round radius within [0; 0.5] range
+  bool              myToDisplayAxes;     //!< trihedron visibility
+  bool              myToDisplayEdges;    //!< box edges visibility
+  bool              myToDisplayVertices; //!< box corners (vertices) visibility
+  bool              myIsYup;             //!< flag indicating that application expects Y-up viewer orientation instead of Z-up
   // clang-format on
 
 protected:                                        //! @name Animation options
-  Handle(AIS_AnimationCamera) myViewAnimation;    //!< Camera animation object
-  Handle(Graphic3d_Camera)    myStartState;       //!< Start state of view camera
-  Handle(Graphic3d_Camera)    myEndState;         //!< End state of view camera
-  Standard_Boolean            myToAutoStartAnim;  //!< start animation automatically on click
-  Standard_Boolean            myIsFixedAnimation; //!< fixed-loop animation
-  Standard_Boolean            myToFitSelected;    //!< fit selected or fit entire scene
+  occ::handle<AIS_AnimationCamera> myViewAnimation;    //!< Camera animation object
+  occ::handle<Graphic3d_Camera>    myStartState;       //!< Start state of view camera
+  occ::handle<Graphic3d_Camera>    myEndState;         //!< End state of view camera
+  bool            myToAutoStartAnim;  //!< start animation automatically on click
+  bool            myIsFixedAnimation; //!< fixed-loop animation
+  bool            myToFitSelected;    //!< fit selected or fit entire scene
   // clang-format off
-  Standard_Boolean              myToResetCameraUp;   //!< always reset camera up direction to default
+  bool              myToResetCameraUp;   //!< always reset camera up direction to default
   // clang-format on
 };
 
@@ -696,10 +697,10 @@ class AIS_ViewCubeOwner : public SelectMgr_EntityOwner
   DEFINE_STANDARD_RTTIEXT(AIS_ViewCubeOwner, SelectMgr_EntityOwner)
 public:
   //! Main constructor.
-  AIS_ViewCubeOwner(const Handle(AIS_ViewCube)& theObject,
+  AIS_ViewCubeOwner(const occ::handle<AIS_ViewCube>& theObject,
                     V3d_TypeOfOrientation       theOrient,
-                    Standard_Integer            thePriority = 5)
-      : SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)theObject, thePriority),
+                    int            thePriority = 5)
+      : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject, thePriority),
         myMainOrient(theOrient)
   {
     myFromDecomposition = true;
@@ -707,16 +708,16 @@ public:
 
   //! @return TRUE. This owner will always call method
   //! Hilight for its Selectable Object when the owner is detected.
-  virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsForcedHilight() const override { return true; }
 
   //! Return new orientation to set.
   V3d_TypeOfOrientation MainOrientation() const { return myMainOrient; }
 
   //! Handle mouse button click event.
-  virtual Standard_Boolean HandleMouseClick(const Graphic3d_Vec2i& thePoint,
+  virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
                                             Aspect_VKeyMouse       theButton,
                                             Aspect_VKeyFlags       theModifiers,
-                                            bool theIsDoubleClick) Standard_OVERRIDE
+                                            bool theIsDoubleClick) override
   {
     (void)thePoint;
     (void)theButton;
@@ -724,7 +725,7 @@ public:
     (void)theIsDoubleClick;
     AIS_ViewCube* aCubePrs = dynamic_cast<AIS_ViewCube*>(mySelectable);
     aCubePrs->HandleClick(this);
-    return Standard_True;
+    return true;
   }
 
 protected:
@@ -737,13 +738,13 @@ class AIS_ViewCubeSensitive : public Select3D_SensitivePrimitiveArray
   DEFINE_STANDARD_RTTIEXT(AIS_ViewCubeSensitive, Select3D_SensitivePrimitiveArray)
 public:
   //! Constructor.
-  Standard_EXPORT AIS_ViewCubeSensitive(const Handle(SelectMgr_EntityOwner)&      theOwner,
-                                        const Handle(Graphic3d_ArrayOfTriangles)& theTris);
+  Standard_EXPORT AIS_ViewCubeSensitive(const occ::handle<SelectMgr_EntityOwner>&      theOwner,
+                                        const occ::handle<Graphic3d_ArrayOfTriangles>& theTris);
 
   //! Checks whether element overlaps current selecting volume.
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! Checks if picking ray can be used for detection.

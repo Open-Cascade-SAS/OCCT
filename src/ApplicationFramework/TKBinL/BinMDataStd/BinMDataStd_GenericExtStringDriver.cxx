@@ -23,21 +23,21 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_GenericExtStringDriver::BinMDataStd_GenericExtStringDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, STANDARD_TYPE(TDataStd_GenericExtString)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_GenericExtStringDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_GenericExtStringDriver::NewEmpty() const
 {
   return new TDataStd_Name;
 }
 
 //=================================================================================================
 
-const Handle(Standard_Type)& BinMDataStd_GenericExtStringDriver::SourceType() const
+const occ::handle<Standard_Type>& BinMDataStd_GenericExtStringDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericExtString>();
 }
@@ -47,26 +47,26 @@ const Handle(Standard_Type)& BinMDataStd_GenericExtStringDriver::SourceType() co
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_GenericExtStringDriver::Paste(
+bool BinMDataStd_GenericExtStringDriver::Paste(
   const BinObjMgt_Persistent&  Source,
-  const Handle(TDF_Attribute)& Target,
+  const occ::handle<TDF_Attribute>& Target,
   BinObjMgt_RRelocationTable&  RelocTable) const
 {
-  Handle(TDataStd_GenericExtString) aStrAttr = Handle(TDataStd_GenericExtString)::DownCast(Target);
+  occ::handle<TDataStd_GenericExtString> aStrAttr = occ::down_cast<TDataStd_GenericExtString>(Target);
   TCollection_ExtendedString        aStr;
-  Standard_Boolean                  ok = Source >> aStr;
+  bool                  ok = Source >> aStr;
   if (ok)
     aStrAttr->Set(aStr);
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const Standard_Integer& aPos = Source.Position();
+    const int& aPos = Source.Position();
     Standard_GUID           aGuid;
     ok = Source >> aGuid;
     if (!ok)
     {
       Source.SetPosition(aPos);
-      ok = Standard_True;
+      ok = true;
     }
     else
     {
@@ -81,11 +81,11 @@ Standard_Boolean BinMDataStd_GenericExtStringDriver::Paste(
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_GenericExtStringDriver::Paste(const Handle(TDF_Attribute)& Source,
+void BinMDataStd_GenericExtStringDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                                BinObjMgt_Persistent&        Target,
-                                               BinObjMgt_SRelocationTable& /*RelocTable*/) const
+                                               NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
-  Handle(TDataStd_GenericExtString) aStrAttr = Handle(TDataStd_GenericExtString)::DownCast(Source);
+  occ::handle<TDataStd_GenericExtString> aStrAttr = occ::down_cast<TDataStd_GenericExtString>(Source);
   Target << aStrAttr->Get();
   // process user defined guid
   Target << aStrAttr->ID();

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_ReportEntity, Standard_Transient)
 
 //=================================================================================================
 
-Interface_ReportEntity::Interface_ReportEntity(const Handle(Standard_Transient)& unknown)
+Interface_ReportEntity::Interface_ReportEntity(const occ::handle<Standard_Transient>& unknown)
 {
   theconcerned = unknown;
   thecontent   = unknown;
@@ -28,8 +28,8 @@ Interface_ReportEntity::Interface_ReportEntity(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Interface_ReportEntity::Interface_ReportEntity(const Handle(Interface_Check)&    acheck,
-                                               const Handle(Standard_Transient)& concerned)
+Interface_ReportEntity::Interface_ReportEntity(const occ::handle<Interface_Check>&    acheck,
+                                               const occ::handle<Standard_Transient>& concerned)
     : thecheck(acheck)
 {
   theconcerned = concerned;
@@ -38,7 +38,7 @@ Interface_ReportEntity::Interface_ReportEntity(const Handle(Interface_Check)&   
 
 //=================================================================================================
 
-void Interface_ReportEntity::SetContent(const Handle(Standard_Transient)& content)
+void Interface_ReportEntity::SetContent(const occ::handle<Standard_Transient>& content)
 {
   thecontent = content;
 }
@@ -47,56 +47,56 @@ void Interface_ReportEntity::SetContent(const Handle(Standard_Transient)& conten
 
 //=================================================================================================
 
-const Handle(Interface_Check)& Interface_ReportEntity::Check() const
+const occ::handle<Interface_Check>& Interface_ReportEntity::Check() const
 {
   return thecheck;
 }
 
 //=================================================================================================
 
-Handle(Interface_Check)& Interface_ReportEntity::CCheck()
+occ::handle<Interface_Check>& Interface_ReportEntity::CCheck()
 {
   return thecheck;
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) Interface_ReportEntity::Concerned() const
+occ::handle<Standard_Transient> Interface_ReportEntity::Concerned() const
 {
   return theconcerned;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_ReportEntity::HasContent() const
+bool Interface_ReportEntity::HasContent() const
 {
   return (!thecontent.IsNull());
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_ReportEntity::HasNewContent() const
+bool Interface_ReportEntity::HasNewContent() const
 {
   return (!thecontent.IsNull() && thecontent != theconcerned);
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) Interface_ReportEntity::Content() const
+occ::handle<Standard_Transient> Interface_ReportEntity::Content() const
 {
   return thecontent;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_ReportEntity::IsError() const
+bool Interface_ReportEntity::IsError() const
 {
   return (thecheck->NbFails() > 0);
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_ReportEntity::IsUnknown() const
+bool Interface_ReportEntity::IsUnknown() const
 {
   return ((thecheck->NbFails() == 0) && (thecheck->NbWarnings() == 0)
           && (theconcerned == thecontent));

@@ -16,18 +16,25 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_AttributeTable.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 
@@ -36,13 +43,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 //  in row), the Column number second (therefore, as a Row number)
 IGESDefs_AttributeTable::IGESDefs_AttributeTable() {}
 
-void IGESDefs_AttributeTable::Init(const Handle(TColStd_HArray2OfTransient)& attributes)
+void IGESDefs_AttributeTable::Init(const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)
 {
   if (attributes->LowerCol() != 1 || attributes->LowerRow() != 1)
     throw Standard_DimensionMismatch("IGESDefs_AttributeTable : Init");
   theAttributes = attributes;
 
-  Standard_Integer fn = FormNumber();
+  int fn = FormNumber();
   if (attributes->UpperCol() > 1)
     fn = 1;
   else if (fn < 0 || fn > 1)
@@ -51,78 +58,78 @@ void IGESDefs_AttributeTable::Init(const Handle(TColStd_HArray2OfTransient)& att
   //  FormNumber : 0 SingleRow, 1 MultipleRows (can be reduced to one ...)
 }
 
-void IGESDefs_AttributeTable::SetDefinition(const Handle(IGESDefs_AttributeDef)& def)
+void IGESDefs_AttributeTable::SetDefinition(const occ::handle<IGESDefs_AttributeDef>& def)
 {
   InitMisc(def, LabelDisplay(), LineWeightNumber());
 }
 
-Handle(IGESDefs_AttributeDef) IGESDefs_AttributeTable::Definition() const
+occ::handle<IGESDefs_AttributeDef> IGESDefs_AttributeTable::Definition() const
 {
   return GetCasted(IGESDefs_AttributeDef, Structure());
 }
 
-Standard_Integer IGESDefs_AttributeTable::NbRows() const
+int IGESDefs_AttributeTable::NbRows() const
 {
   return theAttributes->UpperCol();
 }
 
-Standard_Integer IGESDefs_AttributeTable::NbAttributes() const
+int IGESDefs_AttributeTable::NbAttributes() const
 {
   return theAttributes->UpperRow();
 }
 
-Standard_Integer IGESDefs_AttributeTable::DataType(const Standard_Integer Atnum) const
+int IGESDefs_AttributeTable::DataType(const int Atnum) const
 {
   return Definition()->AttributeType(Atnum);
 }
 
-Standard_Integer IGESDefs_AttributeTable::ValueCount(const Standard_Integer Atnum) const
+int IGESDefs_AttributeTable::ValueCount(const int Atnum) const
 {
   return Definition()->AttributeValueCount(Atnum);
 }
 
-Handle(Standard_Transient) IGESDefs_AttributeTable::AttributeList(
-  const Standard_Integer Atnum,
-  const Standard_Integer Rownum) const
+occ::handle<Standard_Transient> IGESDefs_AttributeTable::AttributeList(
+  const int Atnum,
+  const int Rownum) const
 {
   return theAttributes->Value(Atnum, Rownum);
 }
 
-Standard_Integer IGESDefs_AttributeTable::AttributeAsInteger(const Standard_Integer Atnum,
-                                                             const Standard_Integer Rownum,
-                                                             const Standard_Integer Valuenum) const
+int IGESDefs_AttributeTable::AttributeAsInteger(const int Atnum,
+                                                             const int Rownum,
+                                                             const int Valuenum) const
 {
-  return GetCasted(TColStd_HArray1OfInteger, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
+  return GetCasted(NCollection_HArray1<int>, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
 }
 
-Standard_Real IGESDefs_AttributeTable::AttributeAsReal(const Standard_Integer Atnum,
-                                                       const Standard_Integer Rownum,
-                                                       const Standard_Integer Valuenum) const
+double IGESDefs_AttributeTable::AttributeAsReal(const int Atnum,
+                                                       const int Rownum,
+                                                       const int Valuenum) const
 {
-  return GetCasted(TColStd_HArray1OfReal, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
+  return GetCasted(NCollection_HArray1<double>, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
 }
 
-Handle(TCollection_HAsciiString) IGESDefs_AttributeTable::AttributeAsString(
-  const Standard_Integer Atnum,
-  const Standard_Integer Rownum,
-  const Standard_Integer Valuenum) const
+occ::handle<TCollection_HAsciiString> IGESDefs_AttributeTable::AttributeAsString(
+  const int Atnum,
+  const int Rownum,
+  const int Valuenum) const
 {
-  return GetCasted(Interface_HArray1OfHAsciiString, theAttributes->Value(Atnum, Rownum))
+  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, theAttributes->Value(Atnum, Rownum))
     ->Value(Valuenum);
 }
 
-Handle(IGESData_IGESEntity) IGESDefs_AttributeTable::AttributeAsEntity(
-  const Standard_Integer Atnum,
-  const Standard_Integer Rownum,
-  const Standard_Integer Valuenum) const
+occ::handle<IGESData_IGESEntity> IGESDefs_AttributeTable::AttributeAsEntity(
+  const int Atnum,
+  const int Rownum,
+  const int Valuenum) const
 {
-  return GetCasted(IGESData_HArray1OfIGESEntity, theAttributes->Value(Atnum, Rownum))
+  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>, theAttributes->Value(Atnum, Rownum))
     ->Value(Valuenum);
 }
 
-Standard_Boolean IGESDefs_AttributeTable::AttributeAsLogical(const Standard_Integer Atnum,
-                                                             const Standard_Integer Rownum,
-                                                             const Standard_Integer Valuenum) const
+bool IGESDefs_AttributeTable::AttributeAsLogical(const int Atnum,
+                                                             const int Rownum,
+                                                             const int Valuenum) const
 {
   return (AttributeAsInteger(Atnum, Rownum, Valuenum) != 0); // shortcut
 }

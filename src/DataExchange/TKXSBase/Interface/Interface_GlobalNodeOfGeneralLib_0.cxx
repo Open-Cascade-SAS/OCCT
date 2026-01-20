@@ -26,8 +26,8 @@
 
 Interface_GlobalNodeOfGeneralLib::Interface_GlobalNodeOfGeneralLib() {}
 
-void Interface_GlobalNodeOfGeneralLib::Add(const Handle(Interface_GeneralModule)& amodule,
-                                           const Handle(Interface_Protocol)&      aprotocol)
+void Interface_GlobalNodeOfGeneralLib::Add(const occ::handle<Interface_GeneralModule>& amodule,
+                                           const occ::handle<Interface_Protocol>&      aprotocol)
 {
   if (themod == amodule)
     return;
@@ -50,17 +50,17 @@ void Interface_GlobalNodeOfGeneralLib::Add(const Handle(Interface_GeneralModule)
     thenext->Add(amodule, aprotocol);
 }
 
-const Handle(Interface_GeneralModule)& Interface_GlobalNodeOfGeneralLib::Module() const
+const occ::handle<Interface_GeneralModule>& Interface_GlobalNodeOfGeneralLib::Module() const
 {
   return themod;
 }
 
-const Handle(Interface_Protocol)& Interface_GlobalNodeOfGeneralLib::Protocol() const
+const occ::handle<Interface_Protocol>& Interface_GlobalNodeOfGeneralLib::Protocol() const
 {
   return theprot;
 }
 
-const Handle(Interface_GlobalNodeOfGeneralLib)& Interface_GlobalNodeOfGeneralLib::Next() const
+const occ::handle<Interface_GlobalNodeOfGeneralLib>& Interface_GlobalNodeOfGeneralLib::Next() const
 {
   return thenext;
 }

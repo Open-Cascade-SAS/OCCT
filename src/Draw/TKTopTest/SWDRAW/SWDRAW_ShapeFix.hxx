@@ -37,8 +37,6 @@ public:
   //! Loads commands defined in ShapeFix
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
-protected:
-private:
 };
 
 #endif // _SWDRAW_ShapeFix_HeaderFile

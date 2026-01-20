@@ -26,22 +26,22 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
 
-void DsgPrs_PerpenPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                    const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_PerpenPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
                                     const gp_Pnt&                     pAx1,
                                     const gp_Pnt&                     pAx2,
                                     const gp_Pnt&                     pnt1,
                                     const gp_Pnt&                     pnt2,
                                     const gp_Pnt&                     OffsetPoint,
-                                    const Standard_Boolean            intOut1,
-                                    const Standard_Boolean            intOut2)
+                                    const bool            intOut1,
+                                    const bool            intOut2)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID); // ou DOT ou DOTDASH
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   // segments
-  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines(6, 2);
+  occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(6, 2);
 
   aPrims->AddBound(3);
   aPrims->AddVertex(OffsetPoint);

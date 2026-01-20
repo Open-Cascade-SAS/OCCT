@@ -28,8 +28,8 @@ StepElement_Curve3dElementDescriptor::StepElement_Curve3dElementDescriptor() {}
 
 void StepElement_Curve3dElementDescriptor::Init(
   const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
-  const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
-  const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose)
+  const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+  const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>& aPurpose)
 {
   StepElement_ElementDescriptor::Init(aElementDescriptor_TopologyOrder,
                                       aElementDescriptor_Description);
@@ -39,7 +39,7 @@ void StepElement_Curve3dElementDescriptor::Init(
 
 //=================================================================================================
 
-Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)
+occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
   StepElement_Curve3dElementDescriptor::Purpose() const
 {
   return thePurpose;
@@ -48,7 +48,7 @@ Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)
 //=================================================================================================
 
 void StepElement_Curve3dElementDescriptor::SetPurpose(
-  const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose)
+  const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>& aPurpose)
 {
   thePurpose = aPurpose;
 }

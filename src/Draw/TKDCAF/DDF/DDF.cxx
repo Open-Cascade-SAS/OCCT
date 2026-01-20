@@ -29,23 +29,23 @@
 
 //=================================================================================================
 
-Standard_Boolean DDF::AddLabel
+bool DDF::AddLabel
 
-  (const Handle(TDF_Data)& DF, const Standard_CString Entry, TDF_Label& Label)
+  (const occ::handle<TDF_Data>& DF, const char* const Entry, TDF_Label& Label)
 {
-  TDF_Tool::Label(DF, Entry, Label, Standard_True);
-  return Standard_True;
+  TDF_Tool::Label(DF, Entry, Label, true);
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean DDF::FindLabel(const Handle(TDF_Data)& DF,
-                                const Standard_CString  Entry,
+bool DDF::FindLabel(const occ::handle<TDF_Data>& DF,
+                                const char* const  Entry,
                                 TDF_Label&              Label,
-                                const Standard_Boolean  Complain)
+                                const bool  Complain)
 {
   Label.Nullify();
-  TDF_Tool::Label(DF, Entry, Label, Standard_False);
+  TDF_Tool::Label(DF, Entry, Label, false);
   if (Label.IsNull() && Complain)
     std::cout << "No label for entry " << Entry << std::endl;
   return !Label.IsNull();
@@ -53,40 +53,40 @@ Standard_Boolean DDF::FindLabel(const Handle(TDF_Data)& DF,
 
 //=================================================================================================
 
-Standard_Boolean DDF::GetDF(Standard_CString&      Name,
-                            Handle(TDF_Data)&      DF,
-                            const Standard_Boolean Complain)
+bool DDF::GetDF(const char*&      Name,
+                            occ::handle<TDF_Data>&      DF,
+                            const bool Complain)
 {
-  Handle(Standard_Transient) t   = Draw::Get(Name);
-  Handle(DDF_Data)           DDF = Handle(DDF_Data)::DownCast(t);
-  // Handle(DDF_Data) DDF = Handle(DDF_Data)::DownCast (Draw::Get(Name, Complain));
+  occ::handle<Standard_Transient> t   = Draw::Get(Name);
+  occ::handle<DDF_Data>           DDF = occ::down_cast<DDF_Data>(t);
+  // occ::handle<DDF_Data> DDF = Handle(DDF_Data)::DownCast (Draw::Get(Name, Complain));
   if (!DDF.IsNull())
   {
     DF = DDF->DataFramework();
-    return Standard_True;
+    return true;
   }
   if (Complain)
     std::cout << "framework " << Name << " not found " << std::endl;
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DDF::Find(const Handle(TDF_Data)& DF,
-                           const Standard_CString  Entry,
+bool DDF::Find(const occ::handle<TDF_Data>& DF,
+                           const char* const  Entry,
                            const Standard_GUID&    ID,
-                           Handle(TDF_Attribute)&  A,
-                           const Standard_Boolean  Complain)
+                           occ::handle<TDF_Attribute>&  A,
+                           const bool  Complain)
 {
   TDF_Label L;
   if (FindLabel(DF, Entry, L, Complain))
   {
     if (L.FindAttribute(ID, A))
-      return Standard_True;
+      return true;
     if (Complain)
       std::cout << "attribute not found for entry : " << Entry << std::endl;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -103,10 +103,10 @@ Draw_Interpretor& DDF::ReturnLabel(Draw_Interpretor& di, const TDF_Label& L)
 
 void DDF::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DDF::BasicCommands(theCommands);
   DDF::DataCommands(theCommands);

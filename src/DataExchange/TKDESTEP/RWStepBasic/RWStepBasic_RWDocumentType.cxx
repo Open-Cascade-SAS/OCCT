@@ -20,10 +20,10 @@
 
 RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType() {}
 
-void RWStepBasic_RWDocumentType::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_DocumentType)&  ent) const
+void RWStepBasic_RWDocumentType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepBasic_DocumentType>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,8 +33,8 @@ void RWStepBasic_RWDocumentType::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- own field : product_data_type ---
 
-  Handle(TCollection_HAsciiString) aId;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aId;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "product_data_type", ach, aId);
 
   //--- Initialisation of the read entity ---
@@ -43,7 +43,7 @@ void RWStepBasic_RWDocumentType::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepBasic_RWDocumentType::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_DocumentType)& ent) const
+                                           const occ::handle<StepBasic_DocumentType>& ent) const
 {
 
   // --- own field : id ---
@@ -51,7 +51,7 @@ void RWStepBasic_RWDocumentType::WriteStep(StepData_StepWriter&                 
   SW.Send(ent->ProductDataType());
 }
 
-void RWStepBasic_RWDocumentType::Share(const Handle(StepBasic_DocumentType)&,
+void RWStepBasic_RWDocumentType::Share(const occ::handle<StepBasic_DocumentType>&,
                                        Interface_EntityIterator&) const
 {
 }

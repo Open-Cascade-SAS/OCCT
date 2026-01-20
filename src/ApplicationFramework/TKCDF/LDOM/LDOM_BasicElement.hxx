@@ -44,8 +44,8 @@ public:
   //    Empty constructor
 
   static LDOM_BasicElement& Create(const char*                    aName,
-                                   const Standard_Integer         aLength,
-                                   const Handle(LDOM_MemManager)& aDoc);
+                                   const int         aLength,
+                                   const occ::handle<LDOM_MemManager>& aDoc);
 
   //  Standard_EXPORT LDOM_BasicElement (const LDOM_BasicElement& theOther);
   //    Copy constructor
@@ -75,7 +75,7 @@ protected:
 
   Standard_EXPORT const LDOM_BasicNode* AddAttribute(const LDOMBasicString&         anAttrName,
                                                      const LDOMBasicString&         anAttrValue,
-                                                     const Handle(LDOM_MemManager)& aDoc,
+                                                     const occ::handle<LDOM_MemManager>& aDoc,
                                                      const LDOM_BasicNode*          aLastCh);
   //    add or replace an attribute to the element
 
@@ -102,7 +102,7 @@ private:
 
   void RemoveNodes();
 
-  void ReplaceElement(const LDOM_BasicElement& anOther, const Handle(LDOM_MemManager)& aDoc);
+  void ReplaceElement(const LDOM_BasicElement& anOther, const occ::handle<LDOM_MemManager>& aDoc);
   //    remark: recursive
 
   void AddElementsByTagName(LDOM_NodeList& aList, const LDOMBasicString& aTagName) const;

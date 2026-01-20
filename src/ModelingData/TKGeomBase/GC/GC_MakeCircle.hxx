@@ -58,14 +58,14 @@ public:
   //! A2 is the local coordinates system of the circle.
   //! It is not forbidden to create a circle with Radius = 0.0
   //! Status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GC_MakeCircle(const gp_Ax2& A2, const Standard_Real Radius);
+  Standard_EXPORT GC_MakeCircle(const gp_Ax2& A2, const double Radius);
 
   //! Make a Circle from Geom <TheCirc> parallel to another
   //! Circ <Circ> with a distance <Dist>.
   //! If Dist is greater than zero the result is enclosing
   //! the circle <Circ>, else the result is enclosed by the
   //! circle <Circ>.
-  Standard_EXPORT GC_MakeCircle(const gp_Circ& Circ, const Standard_Real Dist);
+  Standard_EXPORT GC_MakeCircle(const gp_Circ& Circ, const double Dist);
 
   //! Make a Circle from Geom <TheCirc> parallel to another
   //! Circ <Circ> and passing through a Pnt <Point>.
@@ -80,28 +80,28 @@ public:
   //! its radius <Radius>.
   Standard_EXPORT GC_MakeCircle(const gp_Pnt&       Center,
                                 const gp_Dir&       Norm,
-                                const Standard_Real Radius);
+                                const double Radius);
 
   //! Make a Circle from Geom <TheCirc> with its center
   //! <Center> and the normal of its plane defined by the
   //! two points <Center> and <PtAxis> and its radius <Radius>.
   Standard_EXPORT GC_MakeCircle(const gp_Pnt&       Center,
                                 const gp_Pnt&       PtAxis,
-                                const Standard_Real Radius);
+                                const double Radius);
 
   //! Make a Circle from Geom <TheCirc> with its center
   //! <Center> and its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Ax1& Axis, const Standard_Real Radius);
+  Standard_EXPORT GC_MakeCircle(const gp_Ax1& Axis, const double Radius);
 
   //! Returns the constructed circle.
   //! Exceptions
   //! StdFail_NotDone if no circle is constructed.
-  Standard_EXPORT const Handle(Geom_Circle)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Circle>& Value() const;
 
-  operator const Handle(Geom_Circle)&() const { return Value(); }
+  operator const occ::handle<Geom_Circle>&() const { return Value(); }
 
 private:
-  Handle(Geom_Circle) TheCircle;
+  occ::handle<Geom_Circle> TheCircle;
 };
 
 #endif // _GC_MakeCircle_HeaderFile

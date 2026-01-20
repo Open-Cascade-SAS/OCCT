@@ -16,21 +16,28 @@
 
 #include <BRepClass3d.hxx>
 #include <Message_ProgressScope.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Transient.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
-#include <StepShape_HArray1OfOrientedClosedShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepVisual_HArray1OfTessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
@@ -54,24 +61,24 @@
 
 TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
   const TopoDS_Solid&                   aSolid,
-  const Handle(Transfer_FinderProcess)& FP,
+  const occ::handle<Transfer_FinderProcess>& FP,
   const StepData_Factors&               theLocalFactors,
   const Message_ProgressRange&          theProgress)
 {
-  done = Standard_False;
+  done = false;
   TopoDS_Iterator                  It;
-  MoniTool_DataMapOfShapeTransient aMap;
-  TColStd_SequenceOfTransient      S;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
+  NCollection_Sequence<occ::handle<Standard_Transient>>      S;
   TopoDS_Shell                     aOutShell;
 
-  Handle(StepShape_TopologicalRepresentationItem) aItem;
-  Handle(StepShape_ClosedShell)                   aOuter, aCShell;
-  Handle(StepShape_OrientedClosedShell)           aOCShell;
-  Handle(StepShape_HArray1OfOrientedClosedShell)  aVoids;
-  TColStd_SequenceOfTransient                     aTessShells;
+  occ::handle<StepShape_TopologicalRepresentationItem> aItem;
+  occ::handle<StepShape_ClosedShell>                   aOuter, aCShell;
+  occ::handle<StepShape_OrientedClosedShell>           aOCShell;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>  aVoids;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                     aTessShells;
 
-  Handle(StepData_StepModel) aStepModel     = Handle(StepData_StepModel)::DownCast(FP->Model());
-  const Standard_Integer     aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
+  occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
+  const int     aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
 
   try
   {
@@ -85,7 +92,7 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
   TopoDSToStep_Builder StepB;
   TopoDSToStep_Tool    aTool(aStepModel);
 
-  Standard_Integer nbshapes = 0;
+  int nbshapes = 0;
   for (It.Initialize(aSolid); It.More(); It.Next())
     if (It.Value().ShapeType() == TopAbs_SHELL)
       nbshapes++;
@@ -101,17 +108,17 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
         CurrentShell.Reverse();
       //: d7 abv 16 Mar 98: try to treat 'open' shells as closed since flag
       // IsClosed() is often incorrect (taken from MakeManifoldSolid(Solid))
-      aTool.Init(aMap, Standard_False, aStepModel->InternalParameters.WriteSurfaceCurMode);
+      aTool.Init(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
       StepB.Init(CurrentShell, aTool, FP, aWriteTessGeom, theLocalFactors, aPS.Next());
       TopoDSToStep::AddResult(FP, aTool);
       if (StepB.IsDone())
       {
-        aCShell = Handle(StepShape_ClosedShell)::DownCast(StepB.Value());
+        aCShell = occ::down_cast<StepShape_ClosedShell>(StepB.Value());
         // si OPEN on le force a CLOSED mais que c est une honte !
         if (aCShell.IsNull())
         {
-          Handle(StepShape_OpenShell) aOShell =
-            Handle(StepShape_OpenShell)::DownCast(StepB.Value());
+          occ::handle<StepShape_OpenShell> aOShell =
+            occ::down_cast<StepShape_OpenShell>(StepB.Value());
           if (!aOShell.IsNull())
           {
             aCShell = new StepShape_ClosedShell;
@@ -122,7 +129,7 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
 #endif
           }
         }
-        Handle(StepVisual_TessellatedItem) aTessShell = StepB.TessellatedValue();
+        occ::handle<StepVisual_TessellatedItem> aTessShell = StepB.TessellatedValue();
         if (!aTessShell.IsNull())
         {
           aTessShells.Append(aTessShell);
@@ -145,11 +152,11 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
 #endif
       /* //:d7
         if (It.Value().Closed()) {
-          aTool.Init(aMap, Standard_False);
+          aTool.Init(aMap, false);
           StepB.Init(CurrentShell, aTool, FP);
           TopoDSToStep::AddResult ( FP, aTool );
           if (StepB.IsDone()) {
-            aCShell = Handle(StepShape_ClosedShell)::DownCast(StepB.Value());
+            aCShell = occ::down_cast<StepShape_ClosedShell>(StepB.Value());
             if ( aOutShell.IsEqual(It.Value()) )
               aOuter = aCShell;
             else
@@ -159,12 +166,12 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
       #ifdef OCCT_DEBUG
             std::cout << "Shell not mapped" << std::endl;
       #endif
-            done = Standard_False;
+            done = false;
           }
         }
         else {
           // Error Handling : the Shape is not closed
-          done = Standard_False;
+          done = false;
         }
       */
     }
@@ -172,12 +179,12 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
   if (!aPS.More())
     return;
 
-  Standard_Integer N = S.Length();
+  int N = S.Length();
   if (N >= 1)
   {
-    Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
-    aVoids                                 = new StepShape_HArray1OfOrientedClosedShell(1, N);
-    for (Standard_Integer i = 1; i <= N; i++)
+    occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
+    aVoids                                 = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, N);
+    for (int i = 1; i <= N; i++)
     {
       aOCShell = new StepShape_OrientedClosedShell;
       // Warning : the Oriented Shell Orientation is not always
@@ -185,46 +192,46 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
       //           Shall check the TopoDS_Shell orientation.
       // => if the Shell is reversed, shall create an OrientedShell.
       aOCShell->Init(aName,
-                     Handle(StepShape_ClosedShell)::DownCast(S.Value(i)),
-                     Standard_False); //: e0
-      //: e0			 Standard_True);
+                     occ::down_cast<StepShape_ClosedShell>(S.Value(i)),
+                     false); //: e0
+      //: e0			 true);
       aVoids->SetValue(i, aOCShell);
     }
 
     theBrepWithVoids = new StepShape_BrepWithVoids();
     theBrepWithVoids->Init(aName, aOuter, aVoids);
 
-    done = Standard_True;
+    done = true;
   }
 
   if (!aTessShells.IsEmpty())
   {
-    Handle(StepVisual_TessellatedSolid) aTessSolid = new StepVisual_TessellatedSolid();
-    Handle(TCollection_HAsciiString)    aTessName  = new TCollection_HAsciiString("");
-    Standard_Integer                    aNbItems   = 0;
-    for (TColStd_SequenceOfTransient::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
+    occ::handle<StepVisual_TessellatedSolid> aTessSolid = new StepVisual_TessellatedSolid();
+    occ::handle<TCollection_HAsciiString>    aTessName  = new TCollection_HAsciiString("");
+    int                    aNbItems   = 0;
+    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
     {
-      Handle(StepVisual_TessellatedShell) aTessShell =
-        Handle(StepVisual_TessellatedShell)::DownCast(anIt.Value());
+      occ::handle<StepVisual_TessellatedShell> aTessShell =
+        occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
       aNbItems += aTessShell->NbItems();
     }
-    Handle(StepVisual_HArray1OfTessellatedStructuredItem) anItems =
-      new StepVisual_HArray1OfTessellatedStructuredItem(1, aNbItems);
-    Standard_Integer j = 1;
-    for (TColStd_SequenceOfTransient::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
+    occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
+      new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, aNbItems);
+    int j = 1;
+    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
     {
-      Handle(StepVisual_TessellatedShell) aTessShell =
-        Handle(StepVisual_TessellatedShell)::DownCast(anIt.Value());
-      for (Standard_Integer i = 1; i <= aTessShell->NbItems(); ++i)
+      occ::handle<StepVisual_TessellatedShell> aTessShell =
+        occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
+      for (int i = 1; i <= aTessShell->NbItems(); ++i)
       {
         anItems->SetValue(j++, aTessShell->ItemsValue(i));
       }
     }
-    Standard_Boolean aHasGeomLink = !theBrepWithVoids.IsNull();
+    bool aHasGeomLink = !theBrepWithVoids.IsNull();
     aTessSolid->Init(aTessName, anItems, aHasGeomLink, theBrepWithVoids);
     theTessellatedItem = aTessSolid;
 
-    done = Standard_True;
+    done = true;
   }
 }
 
@@ -232,7 +239,7 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepShape_BrepWithVoids)& TopoDSToStep_MakeBrepWithVoids::Value() const
+const occ::handle<StepShape_BrepWithVoids>& TopoDSToStep_MakeBrepWithVoids::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeBrepWithVoids::Value() - no result");
   return theBrepWithVoids;
@@ -243,7 +250,7 @@ const Handle(StepShape_BrepWithVoids)& TopoDSToStep_MakeBrepWithVoids::Value() c
 // Purpose : Returns TessellatedItem as the optional result
 // ============================================================================
 
-const Handle(StepVisual_TessellatedItem)& TopoDSToStep_MakeBrepWithVoids::TessellatedValue() const
+const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeBrepWithVoids::TessellatedValue() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeBrepWithVoids::TessellatedValue() - no result");
   return theTessellatedItem;

@@ -18,14 +18,15 @@
 
 #include <Standard.hxx>
 
-#include <StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember.hxx>
+#include <StepElement_SurfaceElementPurposeMember.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepElement_Element2dShape.hxx>
 #include <StepElement_ElementDescriptor.hxx>
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
-
-class StepElement_Surface3dElementDescriptor;
-DEFINE_STANDARD_HANDLE(StepElement_Surface3dElementDescriptor, StepElement_ElementDescriptor)
 
 //! Representation of STEP entity Surface3dElementDescriptor
 class StepElement_Surface3dElementDescriptor : public StepElement_ElementDescriptor
@@ -38,17 +39,17 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
-    const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
-    const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& aPurpose,
+    const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& aPurpose,
     const StepElement_Element2dShape                                           aShape);
 
   //! Returns field Purpose
-  Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) Purpose()
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> Purpose()
     const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& Purpose);
+    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& Purpose);
 
   //! Returns field Shape
   Standard_EXPORT StepElement_Element2dShape Shape() const;
@@ -58,9 +59,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepElement_Surface3dElementDescriptor, StepElement_ElementDescriptor)
 
-protected:
 private:
-  Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) thePurpose;
+  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> thePurpose;
   StepElement_Element2dShape                                          theShape;
 };
 

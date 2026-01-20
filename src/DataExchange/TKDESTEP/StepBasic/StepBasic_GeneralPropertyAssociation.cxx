@@ -23,10 +23,10 @@ StepBasic_GeneralPropertyAssociation::StepBasic_GeneralPropertyAssociation() {}
 //=================================================================================================
 
 void StepBasic_GeneralPropertyAssociation::Init(
-  const Handle(TCollection_HAsciiString)&    aName,
-  const Handle(TCollection_HAsciiString)&    aDescription,
-  const Handle(StepBasic_GeneralProperty)&   aGeneralProperty,
-  const Handle(StepRepr_PropertyDefinition)& aPropertyDefinition)
+  const occ::handle<TCollection_HAsciiString>&    aName,
+  const occ::handle<TCollection_HAsciiString>&    aDescription,
+  const occ::handle<StepBasic_GeneralProperty>&   aGeneralProperty,
+  const occ::handle<StepRepr_PropertyDefinition>& aPropertyDefinition)
 {
   theName = aName;
 
@@ -39,21 +39,21 @@ void StepBasic_GeneralPropertyAssociation::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyAssociation::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralPropertyAssociation::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_GeneralPropertyAssociation::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_GeneralPropertyAssociation::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyAssociation::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_GeneralPropertyAssociation::Description() const
 {
   return theDescription;
 }
@@ -61,14 +61,14 @@ Handle(TCollection_HAsciiString) StepBasic_GeneralPropertyAssociation::Descripti
 //=================================================================================================
 
 void StepBasic_GeneralPropertyAssociation::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyAssociation::GeneralProperty() const
+occ::handle<StepBasic_GeneralProperty> StepBasic_GeneralPropertyAssociation::GeneralProperty() const
 {
   return theGeneralProperty;
 }
@@ -76,14 +76,14 @@ Handle(StepBasic_GeneralProperty) StepBasic_GeneralPropertyAssociation::GeneralP
 //=================================================================================================
 
 void StepBasic_GeneralPropertyAssociation::SetGeneralProperty(
-  const Handle(StepBasic_GeneralProperty)& aGeneralProperty)
+  const occ::handle<StepBasic_GeneralProperty>& aGeneralProperty)
 {
   theGeneralProperty = aGeneralProperty;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_PropertyDefinition) StepBasic_GeneralPropertyAssociation::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepBasic_GeneralPropertyAssociation::PropertyDefinition() const
 {
   return thePropertyDefinition;
 }
@@ -91,7 +91,7 @@ Handle(StepRepr_PropertyDefinition) StepBasic_GeneralPropertyAssociation::Proper
 //=================================================================================================
 
 void StepBasic_GeneralPropertyAssociation::SetPropertyDefinition(
-  const Handle(StepRepr_PropertyDefinition)& aPropertyDefinition)
+  const occ::handle<StepRepr_PropertyDefinition>& aPropertyDefinition)
 {
   thePropertyDefinition = aPropertyDefinition;
 }

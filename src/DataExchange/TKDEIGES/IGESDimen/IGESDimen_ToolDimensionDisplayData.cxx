@@ -30,31 +30,33 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDimen_ToolDimensionDisplayData::IGESDimen_ToolDimensionDisplayData() {}
 
 void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
-  const Handle(IGESDimen_DimensionDisplayData)& ent,
-  const Handle(IGESData_IGESReaderData)& /* IR */,
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                 tempDimType;
-  Standard_Integer                 tempLabelPos;
-  Standard_Integer                 tempCharSet;
-  Handle(TCollection_HAsciiString) tempLString;
-  Standard_Real                    tempWitLineAng;
-  Standard_Integer                 tempDeciSymb;
-  Standard_Integer                 tempTextAlign;
-  Standard_Integer                 tempTextLevel;
-  Standard_Integer                 tempTextPlace;
-  Standard_Integer                 tempArrHeadOrient;
-  Standard_Real                    tempInitVal;
-  Standard_Integer                 tempNbProps;
-  Handle(TColStd_HArray1OfInteger) tempSuppleNotes;
-  Handle(TColStd_HArray1OfInteger) tempStartInd;
-  Handle(TColStd_HArray1OfInteger) tempEndInd;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                 tempDimType;
+  int                 tempLabelPos;
+  int                 tempCharSet;
+  occ::handle<TCollection_HAsciiString> tempLString;
+  double                    tempWitLineAng;
+  int                 tempDeciSymb;
+  int                 tempTextAlign;
+  int                 tempTextLevel;
+  int                 tempTextPlace;
+  int                 tempArrHeadOrient;
+  double                    tempInitVal;
+  int                 tempNbProps;
+  occ::handle<NCollection_HArray1<int>> tempSuppleNotes;
+  occ::handle<NCollection_HArray1<int>> tempStartInd;
+  occ::handle<NCollection_HArray1<int>> tempEndInd;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Number of Properties", tempNbProps);
@@ -89,16 +91,16 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "ArrowHeadOrientation", tempArrHeadOrient);
   PR.ReadReal(PR.Current(), "Initial Value", tempInitVal);
-  Standard_Integer tempnbval;
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of supplementary notes", tempnbval);
+  int tempnbval;
+  bool st = PR.ReadInteger(PR.Current(), "No. of supplementary notes", tempnbval);
   if (st && tempnbval > 0)
   {
-    tempSuppleNotes = new TColStd_HArray1OfInteger(1, tempnbval);
-    tempStartInd    = new TColStd_HArray1OfInteger(1, tempnbval);
-    tempEndInd      = new TColStd_HArray1OfInteger(1, tempnbval);
-    for (Standard_Integer i = 1; i <= tempnbval; i++)
+    tempSuppleNotes = new NCollection_HArray1<int>(1, tempnbval);
+    tempStartInd    = new NCollection_HArray1<int>(1, tempnbval);
+    tempEndInd      = new NCollection_HArray1<int>(1, tempnbval);
+    for (int i = 1; i <= tempnbval; i++)
     {
-      Standard_Integer anote, astart, anend;
+      int anote, astart, anend;
       // st = PR.ReadInteger(PR.Current(), "Supplementary Notes", anote); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadInteger(PR.Current(), "Supplementary Notes", anote))
@@ -131,7 +133,7 @@ void IGESDimen_ToolDimensionDisplayData::ReadOwnParams(
 }
 
 void IGESDimen_ToolDimensionDisplayData::WriteOwnParams(
-  const Handle(IGESDimen_DimensionDisplayData)& ent,
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent,
   IGESData_IGESWriter&                          IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -147,9 +149,9 @@ void IGESDimen_ToolDimensionDisplayData::WriteOwnParams(
   IW.Send(ent->ArrowHeadOrientation());
   IW.Send(ent->InitialValue());
 
-  Standard_Integer nbval = ent->NbSupplementaryNotes();
+  int nbval = ent->NbSupplementaryNotes();
   IW.Send(nbval);
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     IW.Send(ent->SupplementaryNote(i));
     IW.Send(ent->StartIndex(i));
@@ -158,45 +160,45 @@ void IGESDimen_ToolDimensionDisplayData::WriteOwnParams(
 }
 
 void IGESDimen_ToolDimensionDisplayData::OwnShared(
-  const Handle(IGESDimen_DimensionDisplayData)& /* ent */,
+  const occ::handle<IGESDimen_DimensionDisplayData>& /* ent */,
   Interface_EntityIterator& /* iter */) const
 {
 }
 
 void IGESDimen_ToolDimensionDisplayData::OwnCopy(
-  const Handle(IGESDimen_DimensionDisplayData)& another,
-  const Handle(IGESDimen_DimensionDisplayData)& ent,
+  const occ::handle<IGESDimen_DimensionDisplayData>& another,
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent,
   Interface_CopyTool& /* TC */) const
 {
-  Handle(TColStd_HArray1OfInteger) EndList;
-  Handle(TColStd_HArray1OfInteger) StartList;
-  Handle(TColStd_HArray1OfInteger) NotesList;
+  occ::handle<NCollection_HArray1<int>> EndList;
+  occ::handle<NCollection_HArray1<int>> StartList;
+  occ::handle<NCollection_HArray1<int>> NotesList;
 
-  Standard_Integer upper = another->NbSupplementaryNotes();
+  int upper = another->NbSupplementaryNotes();
   if (upper > 0)
   {
-    EndList   = new TColStd_HArray1OfInteger(1, upper);
-    StartList = new TColStd_HArray1OfInteger(1, upper);
-    NotesList = new TColStd_HArray1OfInteger(1, upper);
-    for (Standard_Integer i = 1; i <= upper; i++)
+    EndList   = new NCollection_HArray1<int>(1, upper);
+    StartList = new NCollection_HArray1<int>(1, upper);
+    NotesList = new NCollection_HArray1<int>(1, upper);
+    for (int i = 1; i <= upper; i++)
     {
       EndList->SetValue(i, another->EndIndex(i));
       StartList->SetValue(i, another->StartIndex(i));
       NotesList->SetValue(i, another->SupplementaryNote(i));
     }
   }
-  Standard_Integer                 tempNbPropertyValues = another->NbPropertyValues();
-  Standard_Integer                 tempDimensionType    = another->DimensionType();
-  Standard_Integer                 tempLabelPos         = another->LabelPosition();
-  Standard_Integer                 tempCharSet          = another->CharacterSet();
-  Handle(TCollection_HAsciiString) tempLS        = new TCollection_HAsciiString(another->LString());
-  Standard_Integer                 tempSymbol    = another->DecimalSymbol();
-  Standard_Real                    tempAngle     = another->WitnessLineAngle();
-  Standard_Integer                 tempAlign     = another->TextAlignment();
-  Standard_Integer                 tempLevel     = another->TextLevel();
-  Standard_Integer                 tempPlacement = another->TextPlacement();
-  Standard_Integer                 tempArrowHead = another->ArrowHeadOrientation();
-  Standard_Real                    tempInitial   = another->InitialValue();
+  int                 tempNbPropertyValues = another->NbPropertyValues();
+  int                 tempDimensionType    = another->DimensionType();
+  int                 tempLabelPos         = another->LabelPosition();
+  int                 tempCharSet          = another->CharacterSet();
+  occ::handle<TCollection_HAsciiString> tempLS        = new TCollection_HAsciiString(another->LString());
+  int                 tempSymbol    = another->DecimalSymbol();
+  double                    tempAngle     = another->WitnessLineAngle();
+  int                 tempAlign     = another->TextAlignment();
+  int                 tempLevel     = another->TextLevel();
+  int                 tempPlacement = another->TextPlacement();
+  int                 tempArrowHead = another->ArrowHeadOrientation();
+  double                    tempInitial   = another->InitialValue();
 
   ent->Init(tempNbPropertyValues,
             tempDimensionType,
@@ -215,23 +217,23 @@ void IGESDimen_ToolDimensionDisplayData::OwnCopy(
             EndList);
 }
 
-Standard_Boolean IGESDimen_ToolDimensionDisplayData::OwnCorrect(
-  const Handle(IGESDimen_DimensionDisplayData)& ent) const
+bool IGESDimen_ToolDimensionDisplayData::OwnCorrect(
+  const occ::handle<IGESDimen_DimensionDisplayData>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 14);
+  bool res = (ent->NbPropertyValues() != 14);
   if (!res)
     return res;
-  Handle(TColStd_HArray1OfInteger) EndList;
-  Handle(TColStd_HArray1OfInteger) StartList;
-  Handle(TColStd_HArray1OfInteger) NotesList;
+  occ::handle<NCollection_HArray1<int>> EndList;
+  occ::handle<NCollection_HArray1<int>> StartList;
+  occ::handle<NCollection_HArray1<int>> NotesList;
 
-  Standard_Integer upper = ent->NbSupplementaryNotes();
+  int upper = ent->NbSupplementaryNotes();
   if (upper > 0)
   {
-    EndList   = new TColStd_HArray1OfInteger(1, upper);
-    StartList = new TColStd_HArray1OfInteger(1, upper);
-    NotesList = new TColStd_HArray1OfInteger(1, upper);
-    for (Standard_Integer i = 1; i <= upper; i++)
+    EndList   = new NCollection_HArray1<int>(1, upper);
+    StartList = new NCollection_HArray1<int>(1, upper);
+    NotesList = new NCollection_HArray1<int>(1, upper);
+    for (int i = 1; i <= upper; i++)
     {
       EndList->SetValue(i, ent->EndIndex(i));
       StartList->SetValue(i, ent->StartIndex(i));
@@ -257,7 +259,7 @@ Standard_Boolean IGESDimen_ToolDimensionDisplayData::OwnCorrect(
 }
 
 IGESData_DirChecker IGESDimen_ToolDimensionDisplayData::DirChecker(
-  const Handle(IGESDimen_DimensionDisplayData)& /* ent */) const
+  const occ::handle<IGESDimen_DimensionDisplayData>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 30); // type=406, Form no. = 30
   DC.Structure(IGESData_DefVoid);
@@ -269,9 +271,9 @@ IGESData_DirChecker IGESDimen_ToolDimensionDisplayData::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDimensionDisplayData::OwnCheck(const Handle(IGESDimen_DimensionDisplayData)& ent,
+void IGESDimen_ToolDimensionDisplayData::OwnCheck(const occ::handle<IGESDimen_DimensionDisplayData>& ent,
                                                   const Interface_ShareTool&,
-                                                  Handle(Interface_Check)& ach) const
+                                                  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 14)
     ach->AddFail("The No. of property values != 14 ");
@@ -292,17 +294,17 @@ void IGESDimen_ToolDimensionDisplayData::OwnCheck(const Handle(IGESDimen_Dimensi
     ach->AddFail("Incorrect Text Placement");
   if (ent->ArrowHeadOrientation() != 0 && ent->ArrowHeadOrientation() != 1)
     ach->AddFail("Incorrect ArrowHead Orientation");
-  for (Standard_Integer upper = ent->NbSupplementaryNotes(), i = 1; i <= upper; i++)
+  for (int upper = ent->NbSupplementaryNotes(), i = 1; i <= upper; i++)
   {
     if (ent->SupplementaryNote(i) < 1 || ent->SupplementaryNote(i) > 4)
       ach->AddFail("Incorrect First supplement note");
   }
 }
 
-void IGESDimen_ToolDimensionDisplayData::OwnDump(const Handle(IGESDimen_DimensionDisplayData)& ent,
+void IGESDimen_ToolDimensionDisplayData::OwnDump(const occ::handle<IGESDimen_DimensionDisplayData>& ent,
                                                  const IGESData_IGESDumper& /* dumper */,
                                                  Standard_OStream&      S,
-                                                 const Standard_Integer level) const
+                                                 const int level) const
 {
   S << "IGESDimen_DimensionDisplayData\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
@@ -426,7 +428,7 @@ void IGESDimen_ToolDimensionDisplayData::OwnDump(const Handle(IGESDimen_Dimensio
   else
     S << " (Incorrect Value)\n";
 
-  Standard_Integer nbnotes = ent->NbSupplementaryNotes();
+  int nbnotes = ent->NbSupplementaryNotes();
   S << " Primary Dimension Value : " << ent->InitialValue() << "\n"
     << " Number of Supplementary Notes : " << nbnotes << "\n"
     << "Supplementary Notes , "
@@ -435,7 +437,7 @@ void IGESDimen_ToolDimensionDisplayData::OwnDump(const Handle(IGESDimen_Dimensio
   IGESData_DumpVals(S, -level, 1, nbnotes, ent->EndIndex);
   S << "\n";
   if (level > 4)
-    for (Standard_Integer i = 1; i <= nbnotes; i++)
+    for (int i = 1; i <= nbnotes; i++)
     {
       S << "[" << i << "]:\n"
         << "Supplementary Note : " << ent->SupplementaryNote(i)

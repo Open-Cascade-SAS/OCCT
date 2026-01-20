@@ -15,28 +15,28 @@
 
 //=================================================================================================
 
-inline Standard_Real IntPatch_Polygo::Error() const
+inline double IntPatch_Polygo::Error() const
 {
   return myError;
 }
 
 //=================================================================================================
 
-inline Standard_Real IntPatch_Polygo::DeflectionOverEstimation() const
+inline double IntPatch_Polygo::DeflectionOverEstimation() const
 {
   return myError;
 }
 
 //=================================================================================================
 
-inline Standard_Integer IntPatch_Polygo::NbSegments() const
+inline int IntPatch_Polygo::NbSegments() const
 {
   return NbPoints() - 1;
 }
 
 //=================================================================================================
 
-inline void IntPatch_Polygo::Segment(const Standard_Integer theIndex,
+inline void IntPatch_Polygo::Segment(const int theIndex,
                                      gp_Pnt2d&              theBegin,
                                      gp_Pnt2d&              theEnd) const
 {

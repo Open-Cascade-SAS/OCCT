@@ -29,8 +29,8 @@ StepKinematics_KinematicTopologyRepresentationSelect::
 
 //=================================================================================================
 
-Standard_Integer StepKinematics_KinematicTopologyRepresentationSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepKinematics_KinematicTopologyRepresentationSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -45,24 +45,24 @@ Standard_Integer StepKinematics_KinematicTopologyRepresentationSelect::CaseNum(
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicTopologyDirectedStructure)
+occ::handle<StepKinematics_KinematicTopologyDirectedStructure>
   StepKinematics_KinematicTopologyRepresentationSelect::KinematicTopologyDirectedStructure() const
 {
-  return Handle(StepKinematics_KinematicTopologyDirectedStructure)::DownCast(Value());
+  return occ::down_cast<StepKinematics_KinematicTopologyDirectedStructure>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicTopologyNetworkStructure)
+occ::handle<StepKinematics_KinematicTopologyNetworkStructure>
   StepKinematics_KinematicTopologyRepresentationSelect::KinematicTopologyNetworkStructure() const
 {
-  return Handle(StepKinematics_KinematicTopologyNetworkStructure)::DownCast(Value());
+  return occ::down_cast<StepKinematics_KinematicTopologyNetworkStructure>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicTopologyStructure)
+occ::handle<StepKinematics_KinematicTopologyStructure>
   StepKinematics_KinematicTopologyRepresentationSelect::KinematicTopologyStructure() const
 {
-  return Handle(StepKinematics_KinematicTopologyStructure)::DownCast(Value());
+  return occ::down_cast<StepKinematics_KinematicTopologyStructure>(Value());
 }

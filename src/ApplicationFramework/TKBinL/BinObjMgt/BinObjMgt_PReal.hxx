@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_Real* BinObjMgt_PReal;
+typedef double* BinObjMgt_PReal;
 
 #endif

@@ -45,18 +45,18 @@ void DECascadeSingleton()
 
 //=================================================================================================
 
-static Standard_Integer DumpConfiguration(Draw_Interpretor& theDI,
-                                          Standard_Integer  theNbArgs,
+static int DumpConfiguration(Draw_Interpretor& theDI,
+                                          int  theNbArgs,
                                           const char**      theArgVec)
 {
-  Handle(DE_Wrapper)        aConf = DE_Wrapper::GlobalWrapper();
+  occ::handle<DE_Wrapper>        aConf = DE_Wrapper::GlobalWrapper();
   TCollection_AsciiString   aPath;
-  Standard_Boolean          aIsRecursive    = Standard_True;
-  Standard_Boolean          isHandleFormat  = Standard_False;
-  Standard_Boolean          isHandleVendors = Standard_False;
-  TColStd_ListOfAsciiString aFormats;
-  TColStd_ListOfAsciiString aVendors;
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  bool          aIsRecursive    = true;
+  bool          isHandleFormat  = false;
+  bool          isHandleVendors = false;
+  NCollection_List<TCollection_AsciiString> aFormats;
+  NCollection_List<TCollection_AsciiString> aVendors;
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -72,13 +72,13 @@ static Standard_Integer DumpConfiguration(Draw_Interpretor& theDI,
     }
     else if (anArg == "-format")
     {
-      isHandleFormat  = Standard_True;
-      isHandleVendors = Standard_False;
+      isHandleFormat  = true;
+      isHandleVendors = false;
     }
     else if (anArg == "-vendor")
     {
-      isHandleFormat  = Standard_False;
-      isHandleVendors = Standard_True;
+      isHandleFormat  = false;
+      isHandleVendors = true;
     }
     else if (isHandleFormat)
     {
@@ -94,7 +94,7 @@ static Standard_Integer DumpConfiguration(Draw_Interpretor& theDI,
       return 1;
     }
   }
-  Standard_Boolean aStat = Standard_True;
+  bool aStat = true;
   if (!aPath.IsEmpty())
   {
     aStat = aConf->Save(aPath, aIsRecursive, aFormats, aVendors);
@@ -112,8 +112,8 @@ static Standard_Integer DumpConfiguration(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer CompareConfiguration(Draw_Interpretor& theDI,
-                                             Standard_Integer  theNbArgs,
+static int CompareConfiguration(Draw_Interpretor& theDI,
+                                             int  theNbArgs,
                                              const char**      theArgVec)
 {
   if (theNbArgs > 5)
@@ -121,22 +121,22 @@ static Standard_Integer CompareConfiguration(Draw_Interpretor& theDI,
     theDI.PrintHelp(theArgVec[0]);
     return 1;
   }
-  Handle(DE_ConfigurationContext) aResourceFirst = new DE_ConfigurationContext();
+  occ::handle<DE_ConfigurationContext> aResourceFirst = new DE_ConfigurationContext();
   if (!aResourceFirst->Load(theArgVec[1]))
   {
     theDI << "Error: Can't load first configuration\n";
     return 1;
   }
-  Handle(DE_ConfigurationContext) aResourceSecond = new DE_ConfigurationContext();
+  occ::handle<DE_ConfigurationContext> aResourceSecond = new DE_ConfigurationContext();
   if (!aResourceSecond->Load(theArgVec[2]))
   {
     theDI << "Error: Can't load second configuration\n";
     return 1;
   }
-  const DE_ResourceMap& aResourceMapFirst  = aResourceFirst->GetInternalMap();
-  const DE_ResourceMap& aResourceMapSecond = aResourceSecond->GetInternalMap();
-  Standard_Integer      anDiffers          = 0;
-  for (DE_ResourceMap::Iterator anOrigIt(aResourceMapFirst); anOrigIt.More(); anOrigIt.Next())
+  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapFirst  = aResourceFirst->GetInternalMap();
+  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapSecond = aResourceSecond->GetInternalMap();
+  int      anDiffers          = 0;
+  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anOrigIt(aResourceMapFirst); anOrigIt.More(); anOrigIt.Next())
   {
     const TCollection_AsciiString& anOrigValue = anOrigIt.Value();
     const TCollection_AsciiString& anOrigKey   = anOrigIt.Key();
@@ -167,8 +167,8 @@ static Standard_Integer CompareConfiguration(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer LoadConfiguration(Draw_Interpretor& theDI,
-                                          Standard_Integer  theNbArgs,
+static int LoadConfiguration(Draw_Interpretor& theDI,
+                                          int  theNbArgs,
                                           const char**      theArgVec)
 {
   if (theNbArgs > 4)
@@ -176,9 +176,9 @@ static Standard_Integer LoadConfiguration(Draw_Interpretor& theDI,
     theDI.PrintHelp(theArgVec[0]);
     return 1;
   }
-  Handle(DE_Wrapper)      aConf        = DE_Wrapper::GlobalWrapper();
+  occ::handle<DE_Wrapper>      aConf        = DE_Wrapper::GlobalWrapper();
   TCollection_AsciiString aString      = theArgVec[1];
-  Standard_Boolean        aIsRecursive = Standard_True;
+  bool        aIsRecursive = true;
   if (theNbArgs == 4)
   {
     TCollection_AsciiString anArg = theArgVec[2];
@@ -199,8 +199,8 @@ static Standard_Integer LoadConfiguration(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer ReadFile(Draw_Interpretor& theDI,
-                                 Standard_Integer  theNbArgs,
+static int ReadFile(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
                                  const char**      theArgVec)
 {
   if (theNbArgs > 6)
@@ -210,11 +210,11 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
   }
   TCollection_AsciiString     aDocShapeName;
   TCollection_AsciiString     aFilePath;
-  Handle(TDocStd_Document)    aDoc;
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  occ::handle<TDocStd_Document>    aDoc;
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
   TCollection_AsciiString     aConfString;
-  Standard_Boolean            isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readfile");
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  bool            isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readfile");
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -226,10 +226,10 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
     else if (aDocShapeName.IsEmpty())
     {
       aDocShapeName             = theArgVec[anArgIter];
-      Standard_CString aNameVar = aDocShapeName.ToCString();
+      const char* aNameVar = aDocShapeName.ToCString();
       if (!isNoDoc)
       {
-        DDocStd::GetDocument(aNameVar, aDoc, Standard_False);
+        DDocStd::GetDocument(aNameVar, aDoc, false);
       }
     }
     else if (aFilePath.IsEmpty())
@@ -250,14 +250,14 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
   if (aDoc.IsNull() && !isNoDoc)
   {
     anApp->NewDocument(TCollection_ExtendedString("BinXCAF"), aDoc);
-    Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument(aDoc);
+    occ::handle<DDocStd_DrawDocument> aDrawDoc = new DDocStd_DrawDocument(aDoc);
     TDataStd_Name::Set(aDoc->GetData()->Root(), theArgVec[1]);
     Draw::Set(theArgVec[1], aDrawDoc);
   }
 
-  Handle(DE_Wrapper)            aConf = DE_Wrapper::GlobalWrapper()->Copy();
-  Handle(XSControl_WorkSession) aWS   = XSDRAW::Session();
-  Standard_Boolean              aStat = Standard_True;
+  occ::handle<DE_Wrapper>            aConf = DE_Wrapper::GlobalWrapper()->Copy();
+  occ::handle<XSControl_WorkSession> aWS   = XSDRAW::Session();
+  bool              aStat = true;
   if (!aConfString.IsEmpty())
   {
     aStat = aConf->Load(aConfString);
@@ -281,8 +281,8 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer WriteFile(Draw_Interpretor& theDI,
-                                  Standard_Integer  theNbArgs,
+static int WriteFile(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
                                   const char**      theArgVec)
 {
   if (theNbArgs > 6)
@@ -292,10 +292,10 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
   }
   TCollection_AsciiString  aDocShapeName;
   TCollection_AsciiString  aFilePath;
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   TCollection_AsciiString  aConfString;
-  Standard_Boolean         isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "writefile");
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  bool         isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "writefile");
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -307,10 +307,10 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
     else if (aDocShapeName.IsEmpty())
     {
       aDocShapeName             = theArgVec[anArgIter];
-      Standard_CString aNameVar = aDocShapeName.ToCString();
+      const char* aNameVar = aDocShapeName.ToCString();
       if (!isNoDoc)
       {
-        DDocStd::GetDocument(aNameVar, aDoc, Standard_False);
+        DDocStd::GetDocument(aNameVar, aDoc, false);
       }
     }
     else if (aFilePath.IsEmpty())
@@ -333,9 +333,9 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
     theDI << "Error: incorrect document\n";
     return 1;
   }
-  Handle(DE_Wrapper)            aConf = DE_Wrapper::GlobalWrapper()->Copy();
-  Handle(XSControl_WorkSession) aWS   = XSDRAW::Session();
-  Standard_Boolean              aStat = Standard_True;
+  occ::handle<DE_Wrapper>            aConf = DE_Wrapper::GlobalWrapper()->Copy();
+  occ::handle<XSControl_WorkSession> aWS   = XSDRAW::Session();
+  bool              aStat = true;
   if (!aConfString.IsEmpty())
   {
     aStat = aConf->Load(aConfString);
@@ -369,17 +369,17 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
 
 void XSDRAWDE::Factory(Draw_Interpretor& theDI)
 {
-  static Standard_Boolean aIsActivated = Standard_False;
+  static bool aIsActivated = false;
   if (aIsActivated)
   {
     return;
   }
-  aIsActivated = Standard_True;
+  aIsActivated = true;
 
   //! Ensure DEBREP and DEXCAF plugins are registered
   DECascadeSingleton();
 
-  Standard_CString aGroup = "XDE translation commands";
+  const char* aGroup = "XDE translation commands";
   theDI.Add("DumpConfiguration",
             "DumpConfiguration [-path <path>] [-recursive {on|off}] [-format fmt1 fmt2 ...] "
             "[-vendor vend1 vend2 ...]\n"

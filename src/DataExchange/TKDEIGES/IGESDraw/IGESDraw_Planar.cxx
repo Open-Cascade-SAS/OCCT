@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Planar, IGESData_IGESEntity)
 
 IGESDraw_Planar::IGESDraw_Planar() {}
 
-void IGESDraw_Planar::Init(const Standard_Integer                       nbMats,
-                           const Handle(IGESGeom_TransformationMatrix)& aTransformationMatrix,
-                           const Handle(IGESData_HArray1OfIGESEntity)&  allEntities)
+void IGESDraw_Planar::Init(const int                       nbMats,
+                           const occ::handle<IGESGeom_TransformationMatrix>& aTransformationMatrix,
+                           const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  allEntities)
 {
   if (!allEntities.IsNull())
     if (allEntities->Lower() != 1)
@@ -38,27 +38,27 @@ void IGESDraw_Planar::Init(const Standard_Integer                       nbMats,
   InitTypeAndForm(402, 16);
 }
 
-Standard_Integer IGESDraw_Planar::NbMatrices() const
+int IGESDraw_Planar::NbMatrices() const
 {
   return theNbMatrices;
 }
 
-Standard_Integer IGESDraw_Planar::NbEntities() const
+int IGESDraw_Planar::NbEntities() const
 {
   return (theEntities.IsNull() ? 0 : theEntities->Length());
 }
 
-Standard_Boolean IGESDraw_Planar::IsIdentityMatrix() const
+bool IGESDraw_Planar::IsIdentityMatrix() const
 {
   return (theTransformationMatrix.IsNull());
 }
 
-Handle(IGESGeom_TransformationMatrix) IGESDraw_Planar::TransformMatrix() const
+occ::handle<IGESGeom_TransformationMatrix> IGESDraw_Planar::TransformMatrix() const
 {
   return theTransformationMatrix;
 }
 
-Handle(IGESData_IGESEntity) IGESDraw_Planar::Entity(const Standard_Integer EntityIndex) const
+occ::handle<IGESData_IGESEntity> IGESDraw_Planar::Entity(const int EntityIndex) const
 {
   return (theEntities->Value(EntityIndex));
 }

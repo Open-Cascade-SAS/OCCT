@@ -24,30 +24,30 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 
-Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
+Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
                                                const Interface_GeneralLib&             lib)
     : thetool(amodel, lib)
 {
-  SetLast(Standard_True); // actor par defaut
+  SetLast(true); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
-Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel,
-                                               const Handle(Interface_Protocol)&       protocol)
+Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
+                                               const occ::handle<Interface_Protocol>&       protocol)
     : thetool(amodel, protocol)
 {
-  SetLast(Standard_True); // actor par defaut
+  SetLast(true); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
-Transfer_ActorDispatch::Transfer_ActorDispatch(const Handle(Interface_InterfaceModel)& amodel)
+Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel)
     : thetool(amodel)
 {
-  SetLast(Standard_True); // actor par defaut
+  SetLast(true); // actor par defaut
   thetool.TransientProcess()->SetActor(this);
 }
 
-void Transfer_ActorDispatch::AddActor(const Handle(Transfer_ActorOfTransientProcess)& actor)
+void Transfer_ActorDispatch::AddActor(const occ::handle<Transfer_ActorOfTransientProcess>& actor)
 {
   thetool.TransientProcess()->SetActor(actor);
 }
@@ -57,9 +57,9 @@ Transfer_TransferDispatch& Transfer_ActorDispatch::TransferDispatch()
   return thetool;
 }
 
-Handle(Transfer_Binder) Transfer_ActorDispatch::Transfer(
-  const Handle(Standard_Transient)& start,
-  const Handle(Transfer_TransientProcess)& /*TP*/,
+occ::handle<Transfer_Binder> Transfer_ActorDispatch::Transfer(
+  const occ::handle<Standard_Transient>& start,
+  const occ::handle<Transfer_TransientProcess>& /*TP*/,
   const Message_ProgressRange&)
 {
   thetool.TransferEntity(start);

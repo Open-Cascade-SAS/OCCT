@@ -6,13 +6,13 @@ set(OCCT_BRepTools_FILES
   BRepTools.hxx
   BRepTools_CopyModification.cxx
   BRepTools_CopyModification.hxx
-  BRepTools_DataMapIteratorOfMapOfVertexPnt2d.hxx
+
   BRepTools_Debug.cxx
   BRepTools_GTrsfModification.cxx
   BRepTools_GTrsfModification.hxx
   BRepTools_History.hxx
   BRepTools_History.cxx
-  BRepTools_MapOfVertexPnt2d.hxx
+
   BRepTools_Modification.cxx
   BRepTools_Modification.hxx
   BRepTools_Modifier.cxx

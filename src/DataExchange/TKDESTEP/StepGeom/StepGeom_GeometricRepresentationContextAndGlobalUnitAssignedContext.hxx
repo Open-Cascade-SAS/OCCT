@@ -22,15 +22,13 @@
 
 #include <StepRepr_RepresentationContext.hxx>
 #include <Standard_Integer.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepGeom_GeometricRepresentationContext;
 class StepRepr_GlobalUnitAssignedContext;
 class TCollection_HAsciiString;
 class StepBasic_NamedUnit;
-
-class StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext;
-DEFINE_STANDARD_HANDLE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,
-                       StepRepr_RepresentationContext)
 
 class StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext
     : public StepRepr_RepresentationContext
@@ -41,47 +39,46 @@ public:
   Standard_EXPORT StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                aContextIdentifier,
-    const Handle(TCollection_HAsciiString)&                aContextType,
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
-    const Handle(StepRepr_GlobalUnitAssignedContext)&      aGlobalUnitAssignedContext);
+    const occ::handle<TCollection_HAsciiString>&                aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                aContextType,
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext,
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>&      aGlobalUnitAssignedContext);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aContextIdentifier,
-                            const Handle(TCollection_HAsciiString)&     aContextType,
-                            const Standard_Integer                      aCoordinateSpaceDimension,
-                            const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+                            const occ::handle<TCollection_HAsciiString>&     aContextType,
+                            const int                      aCoordinateSpaceDimension,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationContext) GeometricRepresentationContext()
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext> GeometricRepresentationContext()
     const;
 
   Standard_EXPORT void SetGlobalUnitAssignedContext(
-    const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext);
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>& aGlobalUnitAssignedContext);
 
-  Standard_EXPORT Handle(StepRepr_GlobalUnitAssignedContext) GlobalUnitAssignedContext() const;
+  Standard_EXPORT occ::handle<StepRepr_GlobalUnitAssignedContext> GlobalUnitAssignedContext() const;
 
   Standard_EXPORT void SetCoordinateSpaceDimension(
-    const Standard_Integer aCoordinateSpaceDimension);
+    const int aCoordinateSpaceDimension);
 
-  Standard_EXPORT Standard_Integer CoordinateSpaceDimension() const;
+  Standard_EXPORT int CoordinateSpaceDimension() const;
 
-  Standard_EXPORT void SetUnits(const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfNamedUnit) Units() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 
-  Standard_EXPORT Handle(StepBasic_NamedUnit) UnitsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_NamedUnit> UnitsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbUnits() const;
+  Standard_EXPORT int NbUnits() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext,
                           StepRepr_RepresentationContext)
 
-protected:
 private:
-  Handle(StepGeom_GeometricRepresentationContext) geometricRepresentationContext;
-  Handle(StepRepr_GlobalUnitAssignedContext)      globalUnitAssignedContext;
+  occ::handle<StepGeom_GeometricRepresentationContext> geometricRepresentationContext;
+  occ::handle<StepRepr_GlobalUnitAssignedContext>      globalUnitAssignedContext;
 };
 
 #endif // _StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext_HeaderFile

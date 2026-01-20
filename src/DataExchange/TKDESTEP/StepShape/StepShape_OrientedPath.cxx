@@ -20,48 +20,48 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedPath, StepShape_Path)
 
 StepShape_OrientedPath::StepShape_OrientedPath() {}
 
-void StepShape_OrientedPath::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(StepShape_EdgeLoop)&       aPathElement,
-                                  const Standard_Boolean                  aOrientation)
+void StepShape_OrientedPath::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<StepShape_EdgeLoop>&       aPathElement,
+                                  const bool                  aOrientation)
 {
   // --- classe own fields ---
   pathElement = aPathElement;
   orientation = aOrientation;
   // --- classe inherited fields ---
-  Handle(StepShape_HArray1OfOrientedEdge) aEdgeList;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> aEdgeList;
   aEdgeList.Nullify();
   StepShape_Path::Init(aName, aEdgeList);
 }
 
-void StepShape_OrientedPath::SetPathElement(const Handle(StepShape_EdgeLoop)& aPathElement)
+void StepShape_OrientedPath::SetPathElement(const occ::handle<StepShape_EdgeLoop>& aPathElement)
 {
   pathElement = aPathElement;
 }
 
-Handle(StepShape_EdgeLoop) StepShape_OrientedPath::PathElement() const
+occ::handle<StepShape_EdgeLoop> StepShape_OrientedPath::PathElement() const
 {
   return pathElement;
 }
 
-void StepShape_OrientedPath::SetOrientation(const Standard_Boolean aOrientation)
+void StepShape_OrientedPath::SetOrientation(const bool aOrientation)
 {
   orientation = aOrientation;
 }
 
-Standard_Boolean StepShape_OrientedPath::Orientation() const
+bool StepShape_OrientedPath::Orientation() const
 {
   return orientation;
 }
 
 void StepShape_OrientedPath::SetEdgeList(
-  const Handle(StepShape_HArray1OfOrientedEdge)& /*aEdgeList*/)
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& /*aEdgeList*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-Handle(StepShape_HArray1OfOrientedEdge) StepShape_OrientedPath::EdgeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_OrientedPath::EdgeList() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -75,8 +75,8 @@ Handle(StepShape_HArray1OfOrientedEdge) StepShape_OrientedPath::EdgeList() const
   }
 }
 
-Handle(StepShape_OrientedEdge) StepShape_OrientedPath::EdgeListValue(
-  const Standard_Integer num) const
+occ::handle<StepShape_OrientedEdge> StepShape_OrientedPath::EdgeListValue(
+  const int num) const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -84,12 +84,12 @@ Handle(StepShape_OrientedEdge) StepShape_OrientedPath::EdgeListValue(
     return pathElement->EdgeListValue(num);
   else
   {
-    Standard_Integer nbEdges = pathElement->NbEdgeList();
+    int nbEdges = pathElement->NbEdgeList();
     return pathElement->EdgeListValue(nbEdges - num + 1);
   }
 }
 
-Standard_Integer StepShape_OrientedPath::NbEdgeList() const
+int StepShape_OrientedPath::NbEdgeList() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

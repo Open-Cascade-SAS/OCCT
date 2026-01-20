@@ -15,70 +15,70 @@
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetMaxTolerance(const Standard_Real theMaxToler)
+inline void BRepBuilderAPI_Sewing::SetMaxTolerance(const double theMaxToler)
 {
   myMaxTolerance = theMaxToler;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepBuilderAPI_Sewing::MaxTolerance() const
+inline double BRepBuilderAPI_Sewing::MaxTolerance() const
 {
   return myMaxTolerance;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepBuilderAPI_Sewing::Tolerance() const
+inline double BRepBuilderAPI_Sewing::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetTolerance(const Standard_Real theToler)
+inline void BRepBuilderAPI_Sewing::SetTolerance(const double theToler)
 {
   myTolerance = theToler;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetMinTolerance(const Standard_Real theMinToler)
+inline void BRepBuilderAPI_Sewing::SetMinTolerance(const double theMinToler)
 {
   myMinTolerance = theMinToler;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepBuilderAPI_Sewing::MinTolerance() const
+inline double BRepBuilderAPI_Sewing::MinTolerance() const
 {
   return myMinTolerance;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetFaceMode(const Standard_Boolean theFaceMode)
+inline void BRepBuilderAPI_Sewing::SetFaceMode(const bool theFaceMode)
 {
   myFaceMode = theFaceMode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBuilderAPI_Sewing::FaceMode() const
+inline bool BRepBuilderAPI_Sewing::FaceMode() const
 {
   return myFaceMode;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetFloatingEdgesMode(const Standard_Boolean theFloatingEdgesMode)
+inline void BRepBuilderAPI_Sewing::SetFloatingEdgesMode(const bool theFloatingEdgesMode)
 {
   myFloatingEdgesMode = theFloatingEdgesMode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBuilderAPI_Sewing::FloatingEdgesMode() const
+inline bool BRepBuilderAPI_Sewing::FloatingEdgesMode() const
 {
   return myFloatingEdgesMode;
 }
@@ -86,8 +86,7 @@ inline Standard_Boolean BRepBuilderAPI_Sewing::FloatingEdgesMode() const
 /*
 //=================================================================================================
 
-
-inline  void BRepBuilderAPI_Sewing::SetCuttingFloatingEdgesMode(const Standard_Boolean
+inline  void BRepBuilderAPI_Sewing::SetCuttingFloatingEdgesMode(const bool
 theCuttingFloatingEdgesMode)
 {
   myCuttingFloatingEdgesMode = theCuttingFloatingEdgesMode;
@@ -95,8 +94,7 @@ theCuttingFloatingEdgesMode)
 
 //=================================================================================================
 
-
-inline  Standard_Boolean BRepBuilderAPI_Sewing::CuttingFloatingEdgesMode() const
+inline  bool BRepBuilderAPI_Sewing::CuttingFloatingEdgesMode() const
 {
   return myCuttingFloatingEdgesMode;
 }
@@ -104,14 +102,14 @@ inline  Standard_Boolean BRepBuilderAPI_Sewing::CuttingFloatingEdgesMode() const
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBuilderAPI_Sewing::SameParameterMode() const
+inline bool BRepBuilderAPI_Sewing::SameParameterMode() const
 {
   return mySameParameterMode;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetSameParameterMode(const Standard_Boolean SameParameterMode)
+inline void BRepBuilderAPI_Sewing::SetSameParameterMode(const bool SameParameterMode)
 {
   mySameParameterMode = SameParameterMode;
 }
@@ -119,28 +117,28 @@ inline void BRepBuilderAPI_Sewing::SetSameParameterMode(const Standard_Boolean S
 //=================================================================================================
 
 inline void BRepBuilderAPI_Sewing::SetLocalTolerancesMode(
-  const Standard_Boolean theLocalTolerancesMode)
+  const bool theLocalTolerancesMode)
 {
   myLocalToleranceMode = theLocalTolerancesMode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBuilderAPI_Sewing::LocalTolerancesMode() const
+inline bool BRepBuilderAPI_Sewing::LocalTolerancesMode() const
 {
   return myLocalToleranceMode;
 }
 
 //=================================================================================================
 
-inline void BRepBuilderAPI_Sewing::SetNonManifoldMode(const Standard_Boolean theNonManifoldMode)
+inline void BRepBuilderAPI_Sewing::SetNonManifoldMode(const bool theNonManifoldMode)
 {
   myNonmanifold = theNonManifoldMode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBuilderAPI_Sewing::NonManifoldMode() const
+inline bool BRepBuilderAPI_Sewing::NonManifoldMode() const
 {
   return myNonmanifold;
 }

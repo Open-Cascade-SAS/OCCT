@@ -40,8 +40,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline, Standard_Tran
 
 IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline(
   const TopoDS_Shape&         theShape,
-  const Standard_Integer      theShapeID,
-  const Handle(Prs3d_Drawer)& theDrawerLink)
+  const int      theShapeID,
+  const occ::handle<Prs3d_Drawer>& theDrawerLink)
     : Standard_Transient()
 {
   /* ===========================
@@ -223,14 +223,14 @@ IVtkTools_DisplayModeFilter* IVtkDraw_HighlightAndSelectionPipeline::GetSelectio
 
 void IVtkDraw_HighlightAndSelectionPipeline::SharedVerticesSelectionOn()
 {
-  this->GetHighlightDMFilter()->SetDisplaySharedVertices(Standard_True);
-  this->GetSelectionDMFilter()->SetDisplaySharedVertices(Standard_True);
+  this->GetHighlightDMFilter()->SetDisplaySharedVertices(true);
+  this->GetSelectionDMFilter()->SetDisplaySharedVertices(true);
 }
 
 //=================================================================================================
 
 void IVtkDraw_HighlightAndSelectionPipeline::SharedVerticesSelectionOff()
 {
-  this->GetHighlightDMFilter()->SetDisplaySharedVertices(Standard_False);
-  this->GetSelectionDMFilter()->SetDisplaySharedVertices(Standard_False);
+  this->GetHighlightDMFilter()->SetDisplaySharedVertices(false);
+  this->GetSelectionDMFilter()->SetDisplaySharedVertices(false);
 }

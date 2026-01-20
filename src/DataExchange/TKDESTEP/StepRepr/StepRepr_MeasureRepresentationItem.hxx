@@ -26,9 +26,6 @@ class TCollection_HAsciiString;
 class StepBasic_MeasureValueMember;
 class StepBasic_Unit;
 
-class StepRepr_MeasureRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepRepr_MeasureRepresentationItem, StepRepr_RepresentationItem)
-
 //! Implements a measure_representation_item entity
 //! which is used for storing validation properties
 //! (e.g. area) for shapes
@@ -40,19 +37,18 @@ public:
   Standard_EXPORT StepRepr_MeasureRepresentationItem();
 
   //! Init all fields
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
-                            const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                            const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
                             const StepBasic_Unit&                       aUnitComponent);
 
-  Standard_EXPORT void SetMeasure(const Handle(StepBasic_MeasureWithUnit)& Measure);
+  Standard_EXPORT void SetMeasure(const occ::handle<StepBasic_MeasureWithUnit>& Measure);
 
-  Standard_EXPORT Handle(StepBasic_MeasureWithUnit) Measure() const;
+  Standard_EXPORT occ::handle<StepBasic_MeasureWithUnit> Measure() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_MeasureRepresentationItem, StepRepr_RepresentationItem)
 
-protected:
 private:
-  Handle(StepBasic_MeasureWithUnit) myMeasure;
+  occ::handle<StepBasic_MeasureWithUnit> myMeasure;
 };
 
 #endif // _StepRepr_MeasureRepresentationItem_HeaderFile

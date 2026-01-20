@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment, Standard_Transient)
 StepGeom_CompositeCurveSegment::StepGeom_CompositeCurveSegment() {}
 
 void StepGeom_CompositeCurveSegment::Init(const StepGeom_TransitionCode aTransition,
-                                          const Standard_Boolean        aSameSense,
-                                          const Handle(StepGeom_Curve)& aParentCurve)
+                                          const bool        aSameSense,
+                                          const occ::handle<StepGeom_Curve>& aParentCurve)
 {
   // --- classe own fields ---
   transition  = aTransition;
@@ -39,22 +39,22 @@ StepGeom_TransitionCode StepGeom_CompositeCurveSegment::Transition() const
   return transition;
 }
 
-void StepGeom_CompositeCurveSegment::SetSameSense(const Standard_Boolean aSameSense)
+void StepGeom_CompositeCurveSegment::SetSameSense(const bool aSameSense)
 {
   sameSense = aSameSense;
 }
 
-Standard_Boolean StepGeom_CompositeCurveSegment::SameSense() const
+bool StepGeom_CompositeCurveSegment::SameSense() const
 {
   return sameSense;
 }
 
-void StepGeom_CompositeCurveSegment::SetParentCurve(const Handle(StepGeom_Curve)& aParentCurve)
+void StepGeom_CompositeCurveSegment::SetParentCurve(const occ::handle<StepGeom_Curve>& aParentCurve)
 {
   parentCurve = aParentCurve;
 }
 
-Handle(StepGeom_Curve) StepGeom_CompositeCurveSegment::ParentCurve() const
+occ::handle<StepGeom_Curve> StepGeom_CompositeCurveSegment::ParentCurve() const
 {
   return parentCurve;
 }

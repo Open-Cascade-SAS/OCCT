@@ -18,12 +18,11 @@
 
 #include <Standard.hxx>
 
-#include <StepRepr_HArray1OfPropertyDefinitionRepresentation.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
-
-class StepRepr_DataEnvironment;
-DEFINE_STANDARD_HANDLE(StepRepr_DataEnvironment, Standard_Transient)
 
 //! Representation of STEP entity DataEnvironment
 class StepRepr_DataEnvironment : public Standard_Transient
@@ -35,36 +34,35 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                           aName,
-    const Handle(TCollection_HAsciiString)&                           aDescription,
-    const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& aElements);
+    const occ::handle<TCollection_HAsciiString>&                           aName,
+    const occ::handle<TCollection_HAsciiString>&                           aDescription,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field Elements
-  Standard_EXPORT Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) Elements() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> Elements() const;
 
   //! Set field Elements
   Standard_EXPORT void SetElements(
-    const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& Elements);
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& Elements);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_DataEnvironment, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)                           theName;
-  Handle(TCollection_HAsciiString)                           theDescription;
-  Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) theElements;
+  occ::handle<TCollection_HAsciiString>                           theName;
+  occ::handle<TCollection_HAsciiString>                           theDescription;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> theElements;
 };
 
 #endif // _StepRepr_DataEnvironment_HeaderFile

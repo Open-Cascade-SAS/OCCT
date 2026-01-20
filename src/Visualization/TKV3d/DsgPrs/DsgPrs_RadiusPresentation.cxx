@@ -31,58 +31,58 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
-                                        const Standard_Real lpar,
-                                        const Standard_Real para)
+static bool DsgPrs_InDomain(const double fpar,
+                                        const double lpar,
+                                        const double para)
 {
   if (fpar >= 0.)
     return ((para >= fpar) && (para <= lpar));
   if (para >= (fpar + 2. * M_PI))
-    return Standard_True;
+    return true;
   if (para <= lpar)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                    const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
                                     const TCollection_ExtendedString& aText,
                                     const gp_Pnt&                     AttachmentPoint,
                                     const gp_Circ&                    aCircle,
-                                    const Standard_Real               firstparam,
-                                    const Standard_Real               lastparam,
-                                    const Standard_Boolean            drawFromCenter,
-                                    const Standard_Boolean            reverseArrow)
+                                    const double               firstparam,
+                                    const double               lastparam,
+                                    const bool            drawFromCenter,
+                                    const bool            reverseArrow)
 {
-  Standard_Real fpara = firstparam;
-  Standard_Real lpara = lastparam;
+  double fpara = firstparam;
+  double lpara = lastparam;
   while (lpara > 2. * M_PI)
   {
     fpara -= 2. * M_PI;
     lpara -= 2. * M_PI;
   }
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Standard_Real    parat     = ElCLib::Parameter(aCircle, AttachmentPoint);
+  double    parat     = ElCLib::Parameter(aCircle, AttachmentPoint);
   gp_Pnt           attpoint  = AttachmentPoint;
-  Standard_Boolean otherside = Standard_False;
+  bool otherside = false;
   if (!DsgPrs_InDomain(fpara, lpara, parat))
   {
-    Standard_Real otherpar = parat + M_PI;
+    double otherpar = parat + M_PI;
     if (otherpar > 2. * M_PI)
       otherpar -= 2. * M_PI;
     if (DsgPrs_InDomain(fpara, lpara, otherpar))
     {
       parat     = otherpar;
-      otherside = Standard_True;
+      otherside = true;
     }
     else
     {
-      const Standard_Real ecartpar = std::min(std::abs(fpara - parat), std::abs(lpara - parat));
-      const Standard_Real ecartoth =
+      const double ecartpar = std::min(std::abs(fpara - parat), std::abs(lpara - parat));
+      const double ecartoth =
         std::min(std::abs(fpara - otherpar), std::abs(lpara - otherpar));
       if (ecartpar <= ecartoth)
       {
@@ -90,12 +90,12 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
       }
       else
       {
-        otherside = Standard_True;
+        otherside = true;
         parat     = (otherpar < fpara) ? fpara : lpara;
       }
       gp_Pnt              ptdir = ElCLib::Value(parat, aCircle);
       gp_Lin              lsup(aCircle.Location(), gp_Dir(ptdir.XYZ() - aCircle.Location().XYZ()));
-      const Standard_Real parpos = ElCLib::Parameter(lsup, AttachmentPoint);
+      const double parpos = ElCLib::Parameter(lsup, AttachmentPoint);
       attpoint                   = ElCLib::Value(parpos, lsup);
     }
   }
@@ -105,15 +105,15 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
   gp_Pnt drawtopoint = ptoncirc;
   if (drawFromCenter && !otherside)
   {
-    const Standard_Real uatt = ElCLib::Parameter(L, attpoint);
-    const Standard_Real uptc = ElCLib::Parameter(L, ptoncirc);
+    const double uatt = ElCLib::Parameter(L, attpoint);
+    const double uptc = ElCLib::Parameter(L, ptoncirc);
     if (std::abs(uatt) > std::abs(uptc))
       drawtopoint = aCircle.Location();
     else
       firstpoint = aCircle.Location();
   }
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(firstpoint);
   aPrims->AddVertex(drawtopoint);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
@@ -139,17 +139,17 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
 //         : adds radius representation according drawFromCenter value
 //=======================================================================
 
-void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                    const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
                                     const TCollection_ExtendedString& aText,
                                     const gp_Pnt&                     AttachmentPoint,
                                     const gp_Pnt&                     Center,
                                     const gp_Pnt&                     EndOfArrow,
                                     const DsgPrs_ArrowSide            ArrowPrs,
-                                    const Standard_Boolean            drawFromCenter,
-                                    const Standard_Boolean            reverseArrow)
+                                    const bool            drawFromCenter,
+                                    const bool            reverseArrow)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Pnt LineOrigin, LineEnd;
@@ -160,7 +160,7 @@ void DsgPrs_RadiusPresentation::Add(const Handle(Prs3d_Presentation)& aPresentat
                             LineOrigin,
                             LineEnd);
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(LineOrigin);
   aPrims->AddVertex(LineEnd);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);

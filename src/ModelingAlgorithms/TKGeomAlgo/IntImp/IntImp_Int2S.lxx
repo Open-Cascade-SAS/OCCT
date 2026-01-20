@@ -16,12 +16,12 @@
 #include <StdFail_UndefinedDerivative.hxx>
 #include <Standard_DomainError.hxx>
 
-inline Standard_Boolean IntImp_Int2S::IsDone() const
+inline bool IntImp_Int2S::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean IntImp_Int2S::IsEmpty() const
+inline bool IntImp_Int2S::IsEmpty() const
 {
   if (!done)
     throw StdFail_NotDone(" IntImp_Int2S::IsEmpty() ");
@@ -37,7 +37,7 @@ inline const IntSurf_PntOn2S& IntImp_Int2S::Point() const
   return pint;
 }
 
-inline Standard_Boolean IntImp_Int2S::IsTangent() const
+inline bool IntImp_Int2S::IsTangent() const
 {
 
   if (!done)

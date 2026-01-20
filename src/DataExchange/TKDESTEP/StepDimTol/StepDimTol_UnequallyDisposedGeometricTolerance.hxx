@@ -25,10 +25,6 @@ class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
 
-class StepDimTol_UnequallyDisposedGeometricTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_UnequallyDisposedGeometricTolerance,
-                       StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity UnequallyDisposedGeometricTolerance
 class StepDimTol_UnequallyDisposedGeometricTolerance : public StepDimTol_GeometricTolerance
 {
@@ -38,17 +34,17 @@ public:
   Standard_EXPORT StepDimTol_UnequallyDisposedGeometricTolerance();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        theName,
-                            const Handle(TCollection_HAsciiString)&        theDescription,
-                            const Handle(Standard_Transient)&              theMagnitude,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
+                            const occ::handle<TCollection_HAsciiString>&        theDescription,
+                            const occ::handle<Standard_Transient>&              theMagnitude,
                             const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theDisplacement);
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theDisplacement);
 
   //! Returns field Displacement
-  inline Handle(StepBasic_LengthMeasureWithUnit) Displacement() const { return myDisplacement; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> Displacement() const { return myDisplacement; }
 
   //! Set field Displacement
-  inline void SetDisplacement(const Handle(StepBasic_LengthMeasureWithUnit)& theDisplacement)
+  inline void SetDisplacement(const occ::handle<StepBasic_LengthMeasureWithUnit>& theDisplacement)
   {
     myDisplacement = theDisplacement;
   }
@@ -57,6 +53,6 @@ public:
                           StepDimTol_GeometricTolerance)
 
 private:
-  Handle(StepBasic_LengthMeasureWithUnit) myDisplacement;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myDisplacement;
 };
 #endif // _StepDimTol_UnequallyDisposedGeometricTolerance_HeaderFile

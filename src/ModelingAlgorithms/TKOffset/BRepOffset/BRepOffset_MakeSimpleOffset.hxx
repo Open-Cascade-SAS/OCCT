@@ -66,11 +66,11 @@ public:
 
   //! Constructor.
   Standard_EXPORT BRepOffset_MakeSimpleOffset(const TopoDS_Shape& theInputShape,
-                                              const Standard_Real theOffsetValue);
+                                              const double theOffsetValue);
 
   //! Initialise shape for modifications.
   Standard_EXPORT void Initialize(const TopoDS_Shape& theInputShape,
-                                  const Standard_Real theOffsetValue);
+                                  const double theOffsetValue);
 
   //! Computes offset shape.
   Standard_EXPORT void Perform();
@@ -83,31 +83,31 @@ public:
 
   // Inline methods.
   //! Gets solid building flag.
-  Standard_Boolean GetBuildSolidFlag() const { return myIsBuildSolid; }
+  bool GetBuildSolidFlag() const { return myIsBuildSolid; }
 
   //! Sets solid building flag.
-  void SetBuildSolidFlag(const Standard_Boolean theBuildFlag) { myIsBuildSolid = theBuildFlag; }
+  void SetBuildSolidFlag(const bool theBuildFlag) { myIsBuildSolid = theBuildFlag; }
 
   //! Gets offset value.
-  Standard_Real GetOffsetValue() const { return myOffsetValue; }
+  double GetOffsetValue() const { return myOffsetValue; }
 
   //! Sets offset value.
-  void SetOffsetValue(const Standard_Real theOffsetValue) { myOffsetValue = theOffsetValue; }
+  void SetOffsetValue(const double theOffsetValue) { myOffsetValue = theOffsetValue; }
 
   //! Gets tolerance (used for handling singularities).
-  Standard_Real GetTolerance() const { return myTolerance; }
+  double GetTolerance() const { return myTolerance; }
 
   //! Sets tolerance (used for handling singularities).
-  void SetTolerance(const Standard_Real theValue) { myTolerance = theValue; }
+  void SetTolerance(const double theValue) { myTolerance = theValue; }
 
   //! Gets done state.
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Returns result shape.
   const TopoDS_Shape& GetResultShape() const { return myResShape; }
 
   //! Computes max safe offset value for the given tolerance.
-  Standard_Real GetSafeOffset(const Standard_Real theExpectedToler);
+  double GetSafeOffset(const double theExpectedToler);
 
   //! Returns result shape for the given one (if exists).
   Standard_EXPORT const TopoDS_Shape Generated(const TopoDS_Shape& theShape) const;
@@ -127,7 +127,7 @@ private:
   TopoDS_Face BuildWallFace(const TopoDS_Edge& theOrigEdge);
 
   //! Builds missing walls.
-  Standard_Boolean BuildMissingWalls();
+  bool BuildMissingWalls();
 
   // Input data.
 
@@ -135,24 +135,24 @@ private:
   TopoDS_Shape myInputShape;
 
   //! Offset value.
-  Standard_Real myOffsetValue;
+  double myOffsetValue;
 
   //! Tolerance (for singularities)
-  Standard_Real myTolerance;
+  double myTolerance;
 
   //! Solid building flag. True means solid construction.
-  Standard_Boolean myIsBuildSolid;
+  bool myIsBuildSolid;
 
   // Internal data.
 
   //! Maximal angle in faces junction. This value helps to estimate result tolerance.
-  Standard_Real myMaxAngle;
+  double myMaxAngle;
 
   //! Error message.
   BRepOffsetSimple_Status myError;
 
   //! Done state.
-  Standard_Boolean myIsDone;
+  bool myIsDone;
 
   //! Map of vertex - wall edge.
   //! Used to build shared edge between adjacent wall faces.
@@ -162,7 +162,7 @@ private:
   BRepTools_Modifier myBuilder;
 
   //! Used for history support.
-  Handle(ShapeBuild_ReShape) myReShape;
+  occ::handle<ShapeBuild_ReShape> myReShape;
 
   // Output data.
 

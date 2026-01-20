@@ -23,10 +23,10 @@
 
 RWStepBasic_RWSiUnit::RWStepBasic_RWSiUnit() {}
 
-void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                    const Standard_Integer                 num,
-                                    Handle(Interface_Check)&               ach,
-                                    const Handle(StepBasic_SiUnit)&        ent) const
+void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                    const int                 num,
+                                    occ::handle<Interface_Check>&               ach,
+                                    const occ::handle<StepBasic_SiUnit>&        ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 3, ach, "si_unit"))
@@ -34,17 +34,17 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : dimensions ---
   // --- this field is redefined ---
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
-  data->CheckDerived(num, 1, "dimensions", ach, Standard_False);
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
+  data->CheckDerived(num, 1, "dimensions", ach, false);
 
   // --- own field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  Standard_Boolean   hasAprefix = Standard_False;
+  bool   hasAprefix = false;
   if (data->IsParamDefined(num, 2))
   {
     if (data->ParamType(num, 2) == Interface_ParamEnum)
     {
-      Standard_CString text = data->ParamCValue(num, 2);
+      const char* text = data->ParamCValue(num, 2);
       hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
@@ -61,7 +61,7 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
   StepBasic_SiUnitName aName = StepBasic_sunMetre;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepBasic_RWSiUnitName::ConvertToEnum(text, aName))
     {
       ach->AddFail("Enumeration si_unit_name has not an allowed value");
@@ -75,14 +75,14 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepBasic_SiUnit)& ent) const
+                                     const occ::handle<StepBasic_SiUnit>& ent) const
 {
 
   // --- inherited field dimensions ---
   SW.SendDerived();
 
   // --- own field : prefix ---
-  Standard_Boolean hasAprefix = ent->HasPrefix();
+  bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
   else

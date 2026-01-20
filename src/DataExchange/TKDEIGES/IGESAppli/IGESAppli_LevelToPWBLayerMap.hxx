@@ -20,13 +20,14 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-
-class IGESAppli_LevelToPWBLayerMap;
-DEFINE_STANDARD_HANDLE(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 
 //! defines LevelToPWBLayerMap, Type <406> Form <24>
 //! in package IGESAppli
@@ -49,42 +50,41 @@ public:
   //! - allExchIdents   : Exchange File Level Identifications
   //! raises exception if allExchLevels, allNativeLevels, allPhysLevels
   //! and all ExchIdents are not of same dimensions
-  Standard_EXPORT void Init(const Standard_Integer                         nbPropVal,
-                            const Handle(TColStd_HArray1OfInteger)&        allExchLevels,
-                            const Handle(Interface_HArray1OfHAsciiString)& allNativeLevels,
-                            const Handle(TColStd_HArray1OfInteger)&        allPhysLevels,
-                            const Handle(Interface_HArray1OfHAsciiString)& allExchIdents);
+  Standard_EXPORT void Init(const int                         nbPropVal,
+                            const occ::handle<NCollection_HArray1<int>>&        allExchLevels,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allNativeLevels,
+                            const occ::handle<NCollection_HArray1<int>>&        allPhysLevels,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allExchIdents);
 
   //! returns number of property values
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns number of level to layer definitions
-  Standard_EXPORT Standard_Integer NbLevelToLayerDefs() const;
+  Standard_EXPORT int NbLevelToLayerDefs() const;
 
   //! returns Exchange File Level Number
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Standard_Integer ExchangeFileLevelNumber(const Standard_Integer Index) const;
+  Standard_EXPORT int ExchangeFileLevelNumber(const int Index) const;
 
   //! returns Native Level Identification
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Handle(TCollection_HAsciiString) NativeLevel(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> NativeLevel(const int Index) const;
 
   //! returns Physical Layer Number
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Standard_Integer PhysicalLayerNumber(const Standard_Integer Index) const;
+  Standard_EXPORT int PhysicalLayerNumber(const int Index) const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) ExchangeFileLevelIdent(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ExchangeFileLevelIdent(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                        theNbPropertyValues;
-  Handle(TColStd_HArray1OfInteger)        theExchangeFileLevelNumber;
-  Handle(Interface_HArray1OfHAsciiString) theNativeLevel;
-  Handle(TColStd_HArray1OfInteger)        thePhysicalLayerNumber;
-  Handle(Interface_HArray1OfHAsciiString) theExchangeFileLevelIdent;
+  int                        theNbPropertyValues;
+  occ::handle<NCollection_HArray1<int>>        theExchangeFileLevelNumber;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theNativeLevel;
+  occ::handle<NCollection_HArray1<int>>        thePhysicalLayerNumber;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theExchangeFileLevelIdent;
 };
 
 #endif // _IGESAppli_LevelToPWBLayerMap_HeaderFile

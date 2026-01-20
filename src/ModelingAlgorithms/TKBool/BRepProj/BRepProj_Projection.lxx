@@ -13,9 +13,11 @@
 // commercial license or contractual agreement.
 
 #include <TopoDS.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
-inline Standard_Boolean BRepProj_Projection::IsDone() const
+inline bool BRepProj_Projection::IsDone() const
 {
   return myIsDone;
 }
@@ -30,7 +32,7 @@ inline void BRepProj_Projection::Init()
   myItr = 1;
 }
 
-inline Standard_Boolean BRepProj_Projection::More() const
+inline bool BRepProj_Projection::More() const
 {
   return myItr > 0 && !mySection.IsNull() && myItr <= mySection->Length();
 }

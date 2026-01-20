@@ -48,7 +48,7 @@ void StdLPersistent_TreeNode::PChildren(
 // function : CreateAttribute
 // purpose  : Create an empty transient attribute
 //=======================================================================
-Handle(TDF_Attribute) StdLPersistent_TreeNode::CreateAttribute()
+occ::handle<TDF_Attribute> StdLPersistent_TreeNode::CreateAttribute()
 {
   Static::CreateAttribute();
   myTransient->SetTreeID(myDynamicData->TreeID);
@@ -63,7 +63,7 @@ void StdLPersistent_TreeNode::ImportAttribute()
 {
   if (myDynamicData)
   {
-    Handle(StdLPersistent_TreeNode) aChild = myDynamicData->First;
+    occ::handle<StdLPersistent_TreeNode> aChild = myDynamicData->First;
     while (aChild)
     {
       if (aChild->myTransient)

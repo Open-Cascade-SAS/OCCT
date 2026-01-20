@@ -16,8 +16,11 @@
 #include <TDataStd_DeltaOnModificationOfExtStringArray.hxx>
 
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfExtendedString.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
@@ -30,16 +33,16 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfExtStringArray, TDF_Del
 //=================================================================================================
 
 TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtStringArray(
-  const Handle(TDataStd_ExtStringArray)& OldAtt)
+  const occ::handle<TDataStd_ExtStringArray>& OldAtt)
     : TDF_DeltaOnModification(OldAtt),
       myUp1(0),
       myUp2(0)
 {
-  Handle(TDataStd_ExtStringArray) CurrAtt;
+  occ::handle<TDataStd_ExtStringArray> CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
   {
     {
-      Handle(TColStd_HArray1OfExtendedString) Arr1, Arr2;
+      occ::handle<NCollection_HArray1<TCollection_ExtendedString>> Arr1, Arr2;
       Arr1 = OldAtt->Array();
       Arr2 = CurrAtt->Array();
 #ifdef OCCT_DEBUG
@@ -55,7 +58,7 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
       {
         myUp1 = Arr1->Upper();
         myUp2 = Arr2->Upper();
-        Standard_Integer i, N = 0, aCase = 0;
+        int i, N = 0, aCase = 0;
         if (myUp1 == myUp2)
         {
           aCase = 1;
@@ -72,7 +75,7 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
           N     = myUp2;
         } // Up1 > Up2
 
-        TColStd_ListOfInteger aList;
+        NCollection_List<int> aList;
         for (i = Arr1->Lower(); i <= N; i++)
           if (Arr1->Value(i) != Arr2->Value(i))
             aList.Append(i);
@@ -84,9 +87,9 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
 
         if (aList.Extent())
         {
-          myIndxes = new TColStd_HArray1OfInteger(1, aList.Extent());
-          myValues = new TColStd_HArray1OfExtendedString(1, aList.Extent());
-          TColStd_ListIteratorOfListOfInteger anIt(aList);
+          myIndxes = new NCollection_HArray1<int>(1, aList.Extent());
+          myValues = new NCollection_HArray1<TCollection_ExtendedString>(1, aList.Extent());
+          NCollection_List<int>::Iterator anIt(aList);
           for (i = 1; anIt.More(); anIt.Next(), i++)
           {
             myIndxes->SetValue(i, anIt.Value());
@@ -108,8 +111,8 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
 void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 {
 
-  Handle(TDF_Attribute)           TDFAttribute = Attribute();
-  Handle(TDataStd_ExtStringArray) BackAtt = Handle(TDataStd_ExtStringArray)::DownCast(TDFAttribute);
+  occ::handle<TDF_Attribute>           TDFAttribute = Attribute();
+  occ::handle<TDataStd_ExtStringArray> BackAtt = occ::down_cast<TDataStd_ExtStringArray>(TDFAttribute);
   if (BackAtt.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -118,7 +121,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
     return;
   }
 
-  Handle(TDataStd_ExtStringArray) aCurAtt;
+  occ::handle<TDataStd_ExtStringArray> aCurAtt;
   if (!Label().FindAttribute(BackAtt->ID(), aCurAtt))
   {
 
@@ -135,7 +138,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   else
     aCurAtt->Backup();
 
-  Standard_Integer aCase;
+  int aCase;
   if (myUp1 == myUp2)
     aCase = 1;
   else if (myUp1 < myUp2)
@@ -146,8 +149,8 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  Standard_Integer                        i;
-  Handle(TColStd_HArray1OfExtendedString) aStrArr = aCurAtt->Array();
+  int                        i;
+  occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aStrArr = aCurAtt->Array();
   if (aStrArr.IsNull())
     return;
 
@@ -156,8 +159,8 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
       aStrArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
   else if (aCase == 2)
   {
-    Handle(TColStd_HArray1OfExtendedString) strArr =
-      new TColStd_HArray1OfExtendedString(aStrArr->Lower(), myUp1);
+    occ::handle<NCollection_HArray1<TCollection_ExtendedString>> strArr =
+      new NCollection_HArray1<TCollection_ExtendedString>(aStrArr->Lower(), myUp1);
     for (i = aStrArr->Lower(); i <= myUp1 && i <= aStrArr->Upper(); i++)
       strArr->SetValue(i, aStrArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -167,9 +170,9 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   }
   else
   { // == 3
-    Standard_Integer                        low = aStrArr->Lower();
-    Handle(TColStd_HArray1OfExtendedString) strArr =
-      new TColStd_HArray1OfExtendedString(low, myUp1);
+    int                        low = aStrArr->Lower();
+    occ::handle<NCollection_HArray1<TCollection_ExtendedString>> strArr =
+      new NCollection_HArray1<TCollection_ExtendedString>(low, myUp1);
     for (i = aStrArr->Lower(); i <= myUp2 && i <= aStrArr->Upper(); i++)
       strArr->SetValue(i, aStrArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -187,7 +190,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 
 #ifdef OCCT_DEBUG
   std::cout << " << Array Dump after Delta Apply >>" << std::endl;
-  Handle(TColStd_HArray1OfExtendedString) aStrArr2 = aCurAtt->Array();
+  occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aStrArr2 = aCurAtt->Array();
   for (i = aStrArr2->Lower(); i <= aStrArr2->Upper() && i <= MAXUP; i++)
     std::cout << aStrArr2->Value(i) << "  ";
   std::cout << std::endl;

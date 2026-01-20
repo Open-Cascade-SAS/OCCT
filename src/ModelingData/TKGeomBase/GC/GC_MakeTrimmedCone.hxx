@@ -71,17 +71,17 @@ public:
   //! -   gce_NullAxis if points P1 and P2 are coincident (2nd syntax only).
   Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt&       P1,
                                      const gp_Pnt&       P2,
-                                     const Standard_Real R1,
-                                     const Standard_Real R2);
+                                     const double R1,
+                                     const double R2);
 
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.
-  Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_RectangularTrimmedSurface>& Value() const;
 
-  operator const Handle(Geom_RectangularTrimmedSurface)&() const { return Value(); }
+  operator const occ::handle<Geom_RectangularTrimmedSurface>&() const { return Value(); }
 
 private:
-  Handle(Geom_RectangularTrimmedSurface) TheCone;
+  occ::handle<Geom_RectangularTrimmedSurface> TheCone;
 };
 
 #endif // _GC_MakeTrimmedCone_HeaderFile

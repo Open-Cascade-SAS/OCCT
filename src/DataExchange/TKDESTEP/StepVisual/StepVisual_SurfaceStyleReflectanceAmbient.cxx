@@ -24,7 +24,7 @@ StepVisual_SurfaceStyleReflectanceAmbient::StepVisual_SurfaceStyleReflectanceAmb
 
 //=================================================================================================
 
-void StepVisual_SurfaceStyleReflectanceAmbient::Init(const Standard_Real theAmbientReflectance)
+void StepVisual_SurfaceStyleReflectanceAmbient::Init(const double theAmbientReflectance)
 {
 
   myAmbientReflectance = theAmbientReflectance;
@@ -32,7 +32,7 @@ void StepVisual_SurfaceStyleReflectanceAmbient::Init(const Standard_Real theAmbi
 
 //=================================================================================================
 
-Standard_Real StepVisual_SurfaceStyleReflectanceAmbient::AmbientReflectance() const
+double StepVisual_SurfaceStyleReflectanceAmbient::AmbientReflectance() const
 {
   return myAmbientReflectance;
 }
@@ -40,7 +40,7 @@ Standard_Real StepVisual_SurfaceStyleReflectanceAmbient::AmbientReflectance() co
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbient::SetAmbientReflectance(
-  const Standard_Real theAmbientReflectance)
+  const double theAmbientReflectance)
 {
   myAmbientReflectance = theAmbientReflectance;
 }

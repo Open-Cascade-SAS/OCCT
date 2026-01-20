@@ -37,20 +37,18 @@ public:
   Standard_HIDDEN RWStepAP214_RWAppliedPersonAndOrganizationAssignment();
 
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                          data,
-    const Standard_Integer                                          num,
-    Handle(Interface_Check)&                                        ach,
-    const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent) const;
+    const occ::handle<StepData_StepReaderData>&                          data,
+    const int                                          num,
+    occ::handle<Interface_Check>&                                        ach,
+    const occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>& ent) const;
 
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                            SW,
-    const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent) const;
+    const occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepAP214_AppliedPersonAndOrganizationAssignment)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>& ent,
                              Interface_EntityIterator& iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepAP214_RWAppliedPersonAndOrganizationAssignment_HeaderFile

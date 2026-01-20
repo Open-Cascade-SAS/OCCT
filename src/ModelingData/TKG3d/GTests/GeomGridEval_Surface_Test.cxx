@@ -36,9 +36,11 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -47,9 +49,9 @@ namespace
 const double THE_TOLERANCE = 1e-10;
 
 //! Helper function to create uniform parameters
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -59,18 +61,18 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 }
 
 //! Helper function to create a simple B-spline surface (bilinear patch)
-Handle(Geom_BSplineSurface) CreateSimpleBSplineSurface()
+occ::handle<Geom_BSplineSurface> CreateSimpleBSplineSurface()
 {
-  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 1)); // Non-planar corner
 
-  TColStd_Array1OfReal    aUKnots(1, 2);
-  TColStd_Array1OfReal    aVKnots(1, 2);
-  TColStd_Array1OfInteger aUMults(1, 2);
-  TColStd_Array1OfInteger aVMults(1, 2);
+  NCollection_Array1<double>    aUKnots(1, 2);
+  NCollection_Array1<double>    aVKnots(1, 2);
+  NCollection_Array1<int> aUMults(1, 2);
+  NCollection_Array1<int> aVMults(1, 2);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 1.0);
@@ -92,13 +94,13 @@ Handle(Geom_BSplineSurface) CreateSimpleBSplineSurface()
 TEST(GeomGridEval_PlaneTest, BasicEvaluation)
 {
   // XY plane at origin
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
   GeomGridEval_Plane anEval(aPlane);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 4);
@@ -120,12 +122,12 @@ TEST(GeomGridEval_PlaneTest, BasicEvaluation)
 TEST(GeomGridEval_PlaneTest, NonOriginPlane)
 {
   // Plane at (1, 2, 3) with normal (0, 0, 1)
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
 
   GeomGridEval_Plane anEval(aPlane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(-1.0, 1.0, 3);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-1.0, 1.0, 3);
+  NCollection_Array1<double> aUParams = CreateUniformParams(-1.0, 1.0, 3);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-1.0, 1.0, 3);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -150,14 +152,14 @@ TEST(GeomGridEval_PlaneTest, NonOriginPlane)
 TEST(GeomGridEval_SphereTest, BasicEvaluation)
 {
   // Unit sphere at origin
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
   GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5); // Latitude
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5); // Latitude
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -191,13 +193,13 @@ TEST(GeomGridEval_SphereTest, BasicEvaluation)
 TEST(GeomGridEval_SphereTest, NonUnitSphere)
 {
   // Sphere with radius 3 at center (1, 2, 3)
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 3.0);
 
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 17);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 17);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 9);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -220,14 +222,14 @@ TEST(GeomGridEval_SphereTest, NonUnitSphere)
 TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 {
   // Cylinder is not directly supported, should use fallback
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
   GeomGridEval_OtherSurface anEval(&anAdaptor);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -248,7 +250,7 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
-  Handle(Geom_Plane)  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane>  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
@@ -256,8 +258,8 @@ TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Plane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(-5.0, 5.0, 11);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-3.0, 3.0, 7);
+  NCollection_Array1<double> aUParams = CreateUniformParams(-5.0, 5.0, 11);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-3.0, 3.0, 7);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -274,7 +276,7 @@ TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 
 TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere =
+  occ::handle<Geom_SphericalSurface> aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
 
@@ -283,8 +285,8 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Sphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 13);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 13);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -301,7 +303,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
-  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
@@ -309,8 +311,8 @@ TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_BSplineSurface);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 11);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 11);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -327,12 +329,12 @@ TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 
 TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
 {
-  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomAdaptor_Surface        anAdaptor(aBezier);
 
   GeomGridEval_Surface anEval;
@@ -340,7 +342,7 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_BezierSurface);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
 
@@ -356,7 +358,7 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
 
 TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
@@ -365,8 +367,8 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Cylinder);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -383,7 +385,7 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
 
 TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
   GeomAdaptor_Surface anAdaptor(aTorus);
 
@@ -392,8 +394,8 @@ TEST(GeomGridEval_SurfaceTest, TorusDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Torus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -410,7 +412,7 @@ TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 
 TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomAdaptor_Surface anAdaptor(aCone);
 
@@ -419,8 +421,8 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Cone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -438,9 +440,9 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
 {
   // Surface of Revolution is not optimized, should use fallback
-  Handle(Geom_Line) aLine =
+  occ::handle<Geom_Line> aLine =
     new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(0, 0, 1)); // Line at x=1 parallel to Z
-  Handle(Geom_SurfaceOfRevolution) aRevSurf =
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf =
     new Geom_SurfaceOfRevolution(aLine, gp::OZ()); // Revolving around Z -> Cylinder-like
 
   GeomAdaptor_Surface anAdaptor(aRevSurf);
@@ -450,8 +452,8 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfRevolution);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -468,17 +470,17 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
 
 TEST(GeomGridEval_SurfaceTest, DirectHandleInit)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  // Initialize directly from Handle(Geom_Surface)
+  // Initialize directly from occ::handle<Geom_Surface>
   GeomGridEval_Surface anEval;
   anEval.Initialize(aPlane);
 
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Plane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_FALSE(aGrid.IsEmpty());
@@ -492,8 +494,8 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
   GeomGridEval_Surface anEval;
   EXPECT_FALSE(anEval.IsInitialized());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_TRUE(aGrid.IsEmpty());
@@ -501,7 +503,7 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 
 TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
-  Handle(Geom_Plane)  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane>  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
@@ -509,7 +511,7 @@ TEST(GeomGridEval_SurfaceTest, EmptyParams)
   EXPECT_TRUE(anEval.IsInitialized());
 
   // EvaluateGrid with empty params should return empty
-  TColStd_Array1OfReal       aEmptyParams;
+  NCollection_Array1<double>       aEmptyParams;
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams, aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
@@ -521,11 +523,11 @@ TEST(GeomGridEval_SurfaceTest, EmptyParams)
 TEST(GeomGridEval_PlaneTest, DerivativeD1)
 {
   // XY plane at origin
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomGridEval_Plane anEval(aPlane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -546,11 +548,11 @@ TEST(GeomGridEval_PlaneTest, DerivativeD1)
 
 TEST(GeomGridEval_PlaneTest, DerivativeD2)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomGridEval_Plane anEval(aPlane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -568,12 +570,12 @@ TEST(GeomGridEval_PlaneTest, DerivativeD2)
 
 TEST(GeomGridEval_SphereTest, DerivativeD1)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -594,12 +596,12 @@ TEST(GeomGridEval_SphereTest, DerivativeD1)
 
 TEST(GeomGridEval_SphereTest, DerivativeD2)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -623,15 +625,15 @@ TEST(GeomGridEval_SphereTest, DerivativeD2)
 
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aSphere);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -652,14 +654,14 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
-  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -687,11 +689,11 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 
 TEST(GeomGridEval_PlaneTest, DerivativeD3)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomGridEval_Plane anEval(aPlane);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -713,12 +715,12 @@ TEST(GeomGridEval_PlaneTest, DerivativeD3)
 
 TEST(GeomGridEval_SphereTest, DerivativeD3)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams =
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams =
     CreateUniformParams(-M_PI / 2 + 0.1, M_PI / 2 - 0.1, 5); // Avoid poles
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
@@ -759,12 +761,12 @@ TEST(GeomGridEval_SphereTest, DerivativeD3)
 
 TEST(GeomGridEval_CylinderTest, DerivativeD3)
 {
-  Handle(Geom_CylindricalSurface) aCyl =
+  occ::handle<Geom_CylindricalSurface> aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Cylinder anEval(aCyl);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -798,12 +800,12 @@ TEST(GeomGridEval_CylinderTest, DerivativeD3)
 
 TEST(GeomGridEval_ConeTest, DerivativeD3)
 {
-  Handle(Geom_ConicalSurface) aCone =
+  occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
   GeomGridEval_Cone anEval(aCone);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 6);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -837,12 +839,12 @@ TEST(GeomGridEval_ConeTest, DerivativeD3)
 
 TEST(GeomGridEval_TorusTest, DerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
   GeomGridEval_Torus anEval(aTorus);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -876,15 +878,15 @@ TEST(GeomGridEval_TorusTest, DerivativeD3)
 
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
+  occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
   GeomAdaptor_Surface anAdaptor(aTorus);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 

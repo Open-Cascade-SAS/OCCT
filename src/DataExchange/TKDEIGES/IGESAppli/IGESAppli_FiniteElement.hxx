@@ -20,13 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESAppli_HArray1OfNode.hxx>
+#include <IGESAppli_Node.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class IGESAppli_Node;
-
-class IGESAppli_FiniteElement;
-DEFINE_STANDARD_HANDLE(IGESAppli_FiniteElement, IGESData_IGESEntity)
 
 //! defines FiniteElement, Type <136> Form <0>
 //! in package IGESAppli
@@ -43,30 +42,29 @@ public:
   //! - aType    : Indicates the topology type
   //! - allNodes : List of Nodes defining the element
   //! - aName    : Element type name
-  Standard_EXPORT void Init(const Standard_Integer                  aType,
-                            const Handle(IGESAppli_HArray1OfNode)&  allNodes,
-                            const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void Init(const int                  aType,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&  allNodes,
+                            const occ::handle<TCollection_HAsciiString>& aName);
 
   //! returns Topology type
-  Standard_EXPORT Standard_Integer Topology() const;
+  Standard_EXPORT int Topology() const;
 
   //! returns the number of nodes defining the element
-  Standard_EXPORT Standard_Integer NbNodes() const;
+  Standard_EXPORT int NbNodes() const;
 
   //! returns Node defining element entity
   //! raises exception if Index <= 0 or Index > NbNodes()
-  Standard_EXPORT Handle(IGESAppli_Node) Node(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESAppli_Node> Node(const int Index) const;
 
   //! returns Element Type Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_FiniteElement, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theTopology;
-  Handle(IGESAppli_HArray1OfNode)  theNodes;
-  Handle(TCollection_HAsciiString) theName;
+  int                 theTopology;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  theNodes;
+  occ::handle<TCollection_HAsciiString> theName;
 };
 
 #endif // _IGESAppli_FiniteElement_HeaderFile

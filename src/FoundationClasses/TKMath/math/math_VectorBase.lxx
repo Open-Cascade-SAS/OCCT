@@ -20,8 +20,8 @@
 #include <stdio.h>
 
 template <typename TheItemType>
-math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
-                                              const Standard_Integer theUpper)
+math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
+                                              const int theUpper)
     : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
               ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
               : NCollection_Array1<TheItemType>(theLower, theUpper))
@@ -29,8 +29,8 @@ math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
 }
 
 template <typename TheItemType>
-math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
-                                              const Standard_Integer theUpper,
+math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
+                                              const int theUpper,
                                               const TheItemType      theInitialValue)
     : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
               ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
@@ -41,8 +41,8 @@ math_VectorBase<TheItemType>::math_VectorBase(const Standard_Integer theLower,
 
 template <typename TheItemType>
 math_VectorBase<TheItemType>::math_VectorBase(const TheItemType*     theTab,
-                                              const Standard_Integer theLower,
-                                              const Standard_Integer theUpper)
+                                              const int theLower,
+                                              const int theUpper)
     : Array(*theTab, theLower, theUpper)
 {
 }
@@ -94,16 +94,16 @@ math_VectorBase<TheItemType>::math_VectorBase(math_VectorBase<TheItemType>&& the
 }
 
 template <typename TheItemType>
-void math_VectorBase<TheItemType>::SetLower(const Standard_Integer theLower)
+void math_VectorBase<TheItemType>::SetLower(const int theLower)
 {
   Array.UpdateLowerBound(theLower);
 }
 
 template <typename TheItemType>
-Standard_Real math_VectorBase<TheItemType>::Norm() const
+double math_VectorBase<TheItemType>::Norm() const
 {
-  Standard_Real Result = 0;
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  double Result = 0;
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result = Result + Array(Index) * Array(Index);
   }
@@ -111,11 +111,11 @@ Standard_Real math_VectorBase<TheItemType>::Norm() const
 }
 
 template <typename TheItemType>
-Standard_Real math_VectorBase<TheItemType>::Norm2() const
+double math_VectorBase<TheItemType>::Norm2() const
 {
-  Standard_Real Result = 0;
+  double Result = 0;
 
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result = Result + Array(Index) * Array(Index);
   }
@@ -123,12 +123,12 @@ Standard_Real math_VectorBase<TheItemType>::Norm2() const
 }
 
 template <typename TheItemType>
-Standard_Integer math_VectorBase<TheItemType>::Max() const
+int math_VectorBase<TheItemType>::Max() const
 {
-  Standard_Integer I = 0;
-  Standard_Real    X = RealFirst();
+  int I = 0;
+  double    X = RealFirst();
 
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     if (Array(Index) > X)
     {
@@ -140,12 +140,12 @@ Standard_Integer math_VectorBase<TheItemType>::Max() const
 }
 
 template <typename TheItemType>
-Standard_Integer math_VectorBase<TheItemType>::Min() const
+int math_VectorBase<TheItemType>::Min() const
 {
-  Standard_Integer I = 0;
-  Standard_Real    X = RealLast();
+  int I = 0;
+  double    X = RealLast();
 
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     if (Array(Index) < X)
     {
@@ -157,15 +157,15 @@ Standard_Integer math_VectorBase<TheItemType>::Min() const
 }
 
 template <typename TheItemType>
-void math_VectorBase<TheItemType>::Set(const Standard_Integer              theI1,
-                                       const Standard_Integer              theI2,
+void math_VectorBase<TheItemType>::Set(const int              theI1,
+                                       const int              theI2,
                                        const math_VectorBase<TheItemType>& theV)
 {
   Standard_RangeError_Raise_if((theI1 < Lower()) || (theI2 > Upper()) || (theI1 > theI2)
                                  || (theI2 - theI1 + 1 != theV.Length()),
                                "math_VectorBase::Set() - invalid indices");
-  Standard_Integer I = theV.Lower();
-  for (Standard_Integer Index = theI1; Index <= theI2; Index++)
+  int I = theV.Lower();
+  for (int Index = theI1; Index <= theI2; Index++)
   {
     Array(Index) = theV.Array(I);
     I++;
@@ -175,10 +175,10 @@ void math_VectorBase<TheItemType>::Set(const Standard_Integer              theI1
 template <typename TheItemType>
 void math_VectorBase<TheItemType>::Normalize()
 {
-  Standard_Real Result = Norm();
+  double Result = Norm();
   Standard_NullValue_Raise_if((Result <= RealEpsilon()),
                               "math_VectorBase::Normalize() - vector has zero norm");
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) / Result;
   }
@@ -195,9 +195,9 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Normalized() const
 template <typename TheItemType>
 void math_VectorBase<TheItemType>::Invert()
 {
-  for (Standard_Integer Index = Lower(); Index <= (Lower() + Length()) >> 1; Index++)
+  for (int Index = Lower(); Index <= (Lower() + Length()) >> 1; Index++)
   {
-    Standard_Integer J     = Upper() + Lower() - Index;
+    int J     = Upper() + Lower() - Index;
     TheItemType      aTemp = Array(Index);
     Array(Index)           = Array(J);
     Array(J)               = aTemp;
@@ -217,7 +217,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Multiplied(
   const TheItemType theRight) const
 {
   math_VectorBase Result(Lower(), Upper());
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) * theRight;
   }
@@ -229,7 +229,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::TMultiplied(
   const TheItemType theRight) const
 {
   math_VectorBase Result(Lower(), Upper());
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) * theRight;
   }
@@ -239,7 +239,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::TMultiplied(
 template <typename TheItemType>
 void math_VectorBase<TheItemType>::Multiply(const TheItemType theRight)
 {
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) * theRight;
   }
@@ -251,7 +251,7 @@ void math_VectorBase<TheItemType>::Divide(const TheItemType theRight)
   Standard_DivideByZero_Raise_if(std::abs(theRight) <= RealEpsilon(),
                                  "math_VectorBase::Divide() - devisor is zero");
 
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) / theRight;
   }
@@ -272,8 +272,8 @@ void math_VectorBase<TheItemType>::Add(const math_VectorBase<TheItemType>& theRi
   Standard_DimensionError_Raise_if(Length() != theRight.Length(),
                                    "math_VectorBase::Add() - input vector has wrong dimensions");
 
-  Standard_Integer I = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) + theRight.Array(I);
     I++;
@@ -289,8 +289,8 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Added(
 
   math_VectorBase Result(Lower(), Upper());
 
-  Standard_Integer I = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) + theRight.Array(I);
     I++;
@@ -305,8 +305,8 @@ void math_VectorBase<TheItemType>::Subtract(const math_VectorBase<TheItemType>& 
     Length() != theRight.Length(),
     "math_VectorBase::Subtract() - input vector has wrong dimensions");
 
-  Standard_Integer I = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = Array(Index) - theRight.Array(I);
     I++;
@@ -323,8 +323,8 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Subtracted(
 
   math_VectorBase Result(Lower(), Upper());
 
-  Standard_Integer I = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = Array(Index) - theRight.Array(I);
     I++;
@@ -333,8 +333,8 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Subtracted(
 }
 
 template <typename TheItemType>
-math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Slice(const Standard_Integer theI1,
-                                                                 const Standard_Integer theI2) const
+math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Slice(const int theI1,
+                                                                 const int theI2) const
 {
   Standard_RangeError_Raise_if((theI1 < Lower()) || (theI1 > Upper()) || (theI2 < Lower())
                                  || (theI2 > Upper()),
@@ -343,7 +343,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Slice(const Standard_
   if (theI2 >= theI1)
   {
     math_VectorBase Result(theI1, theI2);
-    for (Standard_Integer Index = theI1; Index <= theI2; Index++)
+    for (int Index = theI1; Index <= theI2; Index++)
     {
       Result.Array(Index) = Array(Index);
     }
@@ -352,7 +352,7 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Slice(const Standard_
   else
   {
     math_VectorBase Result(theI2, theI1);
-    for (Standard_Integer Index = theI1; Index >= theI2; Index--)
+    for (int Index = theI1; Index >= theI2; Index--)
     {
       Result.Array(Index) = Array(Index);
     }
@@ -368,9 +368,9 @@ void math_VectorBase<TheItemType>::Add(const math_VectorBase<TheItemType>& theLe
                                      || (theRight.Length() != theLeft.Length()),
                                    "math_VectorBase::Add() - input vectors have wrong dimensions");
 
-  Standard_Integer I = theLeft.Lower();
-  Standard_Integer J = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theLeft.Lower();
+  int J = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = theLeft.Array(I) + theRight.Array(J);
     I++;
@@ -386,9 +386,9 @@ void math_VectorBase<TheItemType>::Subtract(const math_VectorBase<TheItemType>& 
     (Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()),
     "math_VectorBase::Subtract() - input vectors have wrong dimensions");
 
-  Standard_Integer I = theLeft.Lower();
-  Standard_Integer J = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theLeft.Lower();
+  int J = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Array(Index) = theLeft.Array(I) - theRight.Array(J);
     I++;
@@ -404,12 +404,12 @@ void math_VectorBase<TheItemType>::Multiply(const math_Matrix&                  
     (Length() != theLeft.RowNumber()) || (theLeft.ColNumber() != theRight.Length()),
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
-  Standard_Integer Index = Lower();
-  for (Standard_Integer I = theLeft.LowerRow(); I <= theLeft.UpperRow(); I++)
+  int Index = Lower();
+  for (int I = theLeft.LowerRow(); I <= theLeft.UpperRow(); I++)
   {
     Array(Index)       = 0.0;
-    Standard_Integer K = theRight.Lower();
-    for (Standard_Integer J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
+    int K = theRight.Lower();
+    for (int J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
     {
       Array(Index) = Array(Index) + theLeft(I, J) * theRight.Array(K);
       K++;
@@ -426,12 +426,12 @@ void math_VectorBase<TheItemType>::Multiply(const math_VectorBase<TheItemType>& 
     (Length() != theRight.ColNumber()) || (theLeft.Length() != theRight.RowNumber()),
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
-  Standard_Integer Index = Lower();
-  for (Standard_Integer J = theRight.LowerCol(); J <= theRight.UpperCol(); J++)
+  int Index = Lower();
+  for (int J = theRight.LowerCol(); J <= theRight.UpperCol(); J++)
   {
     Array(Index)       = 0.0;
-    Standard_Integer K = theLeft.Lower();
-    for (Standard_Integer I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
+    int K = theLeft.Lower();
+    for (int I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theRight(I, J);
       K++;
@@ -448,12 +448,12 @@ void math_VectorBase<TheItemType>::TMultiply(const math_Matrix&                 
     (Length() != theTLeft.ColNumber()) || (theTLeft.RowNumber() != theRight.Length()),
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
-  Standard_Integer Index = Lower();
-  for (Standard_Integer I = theTLeft.LowerCol(); I <= theTLeft.UpperCol(); I++)
+  int Index = Lower();
+  for (int I = theTLeft.LowerCol(); I <= theTLeft.UpperCol(); I++)
   {
     Array(Index)       = 0.0;
-    Standard_Integer K = theRight.Lower();
-    for (Standard_Integer J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
+    int K = theRight.Lower();
+    for (int J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
     {
       Array(Index) = Array(Index) + theTLeft(J, I) * theRight.Array(K);
       K++;
@@ -470,12 +470,12 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
     (Length() != theTRight.RowNumber()) || (theLeft.Length() != theTRight.ColNumber()),
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
-  Standard_Integer Index = Lower();
-  for (Standard_Integer J = theTRight.LowerRow(); J <= theTRight.UpperRow(); J++)
+  int Index = Lower();
+  for (int J = theTRight.LowerRow(); J <= theTRight.UpperRow(); J++)
   {
     Array(Index)       = 0.0;
-    Standard_Integer K = theLeft.Lower();
-    for (Standard_Integer I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
+    int K = theLeft.Lower();
+    for (int I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theTRight(J, I);
       K++;
@@ -488,14 +488,14 @@ template <typename TheItemType>
 TheItemType math_VectorBase<TheItemType>::Multiplied(
   const math_VectorBase<TheItemType>& theRight) const
 {
-  Standard_Real Result = 0;
+  double Result = 0;
 
   Standard_DimensionError_Raise_if(
     Length() != theRight.Length(),
     "math_VectorBase::Multiplied() - input vector has wrong dimensions");
 
-  Standard_Integer I = theRight.Lower();
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  int I = theRight.Lower();
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result = Result + Array(Index) * theRight.Array(I);
     I++;
@@ -507,7 +507,7 @@ template <typename TheItemType>
 math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Opposite()
 {
   math_VectorBase Result(Lower(), Upper());
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     Result.Array(Index) = -Array(Index);
   }
@@ -523,11 +523,11 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Multiplied(
     "math_VectorBase::Multiplied() - input matrix has wrong dimensions");
 
   math_VectorBase Result(theRight.LowerCol(), theRight.UpperCol());
-  for (Standard_Integer J2 = theRight.LowerCol(); J2 <= theRight.UpperCol(); J2++)
+  for (int J2 = theRight.LowerCol(); J2 <= theRight.UpperCol(); J2++)
   {
     Result.Array(J2)       = 0.0;
-    Standard_Integer theI2 = theRight.LowerRow();
-    for (Standard_Integer I = Lower(); I <= Upper(); I++)
+    int theI2 = theRight.LowerRow();
+    for (int I = Lower(); I <= Upper(); I++)
     {
       Result.Array(J2) = Result.Array(J2) + Array(I) * theRight(theI2, J2);
       theI2++;
@@ -543,7 +543,7 @@ void math_VectorBase<TheItemType>::Multiply(const TheItemType                   
   Standard_DimensionError_Raise_if(
     (Length() != theRight.Length()),
     "math_VectorBase::Multiply() - input vector has wrong dimensions");
-  for (Standard_Integer I = Lower(); I <= Upper(); I++)
+  for (int I = Lower(); I <= Upper(); I++)
   {
     Array(I) = theLeft * theRight.Array(I);
   }
@@ -585,19 +585,19 @@ template <typename TheItemType>
 void math_VectorBase<TheItemType>::Dump(Standard_OStream& theO) const
 {
   theO << "math_Vector of Length = " << Length() << "\n";
-  for (Standard_Integer Index = Lower(); Index <= Upper(); Index++)
+  for (int Index = Lower(); Index <= Upper(); Index++)
   {
     theO << "math_Vector(" << Index << ") = " << Array(Index) << "\n";
   }
 }
 
 template <typename TheItemType>
-void math_VectorBase<TheItemType>::Resize(const Standard_Integer theSize)
+void math_VectorBase<TheItemType>::Resize(const int theSize)
 {
-  const Standard_Integer theLower      = Array.Lower();
-  const Standard_Integer theUpper      = theLower + theSize - 1;
-  const Standard_Boolean aNewFitsStack = theSize <= THE_BUFFER_SIZE;
-  const Standard_Boolean aWasOnStack   = !Array.IsDeletable();
+  const int theLower      = Array.Lower();
+  const int theUpper      = theLower + theSize - 1;
+  const bool aNewFitsStack = theSize <= THE_BUFFER_SIZE;
+  const bool aWasOnStack   = !Array.IsDeletable();
 
   if (aWasOnStack && aNewFitsStack)
   {
@@ -607,8 +607,8 @@ void math_VectorBase<TheItemType>::Resize(const Standard_Integer theSize)
   else if (aNewFitsStack)
   {
     // Heap -> Stack: copy data to stack buffer
-    const Standard_Integer aCopyLen = std::min(Array.Length(), theSize);
-    for (Standard_Integer i = 0; i < aCopyLen; ++i)
+    const int aCopyLen = std::min(Array.Length(), theSize);
+    for (int i = 0; i < aCopyLen; ++i)
     {
       myBuffer[i] = Array.Value(theLower + i);
     }
@@ -617,6 +617,6 @@ void math_VectorBase<TheItemType>::Resize(const Standard_Integer theSize)
   else
   {
     // Stack -> Heap or Heap -> Heap: Array.Resize handles data copy
-    Array.Resize(theLower, theUpper, Standard_True);
+    Array.Resize(theLower, theUpper, true);
   }
 }

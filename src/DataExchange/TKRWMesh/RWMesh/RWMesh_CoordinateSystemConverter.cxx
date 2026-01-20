@@ -21,12 +21,12 @@
 RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
     : myInputLengthUnit(-1.0),
       myOutputLengthUnit(-1.0),
-      myHasInputAx3(Standard_False),
-      myHasOutputAx3(Standard_False),
+      myHasInputAx3(false),
+      myHasOutputAx3(false),
       //
       myUnitFactor(1),
-      myHasScale(Standard_False),
-      myIsEmpty(Standard_True)
+      myHasScale(false),
+      myIsEmpty(true)
 {
   //
 }
@@ -34,9 +34,9 @@ RWMesh_CoordinateSystemConverter::RWMesh_CoordinateSystemConverter()
 //=================================================================================================
 
 void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
-                                            Standard_Real theInputLengthUnit,
+                                            double theInputLengthUnit,
                                             const gp_Ax3& theOutputSystem,
-                                            Standard_Real theOutputLengthUnit)
+                                            double theOutputLengthUnit)
 {
   myInputLengthUnit  = theInputLengthUnit;
   myOutputLengthUnit = theOutputLengthUnit;
@@ -50,7 +50,7 @@ void RWMesh_CoordinateSystemConverter::Init(const gp_Ax3& theInputSystem,
   else
   {
     myUnitFactor = 1.0;
-    myHasScale   = Standard_False;
+    myHasScale   = false;
   }
 
   gp_Trsf aTrsf;

@@ -47,8 +47,8 @@ inline const char* ConvertToString(const StepVisual_TextPath theSourceEnum)
 //! Convert string to StepVisual_TextPath
 //! @param thePathStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_TextPath value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString thePathStr, StepVisual_TextPath& theResultEnum)
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const thePathStr, StepVisual_TextPath& theResultEnum)
 {
   if (IsEqual(thePathStr, tpUp))
   {
@@ -68,9 +68,9 @@ inline bool ConvertToEnum(const Standard_CString thePathStr, StepVisual_TextPath
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepVisual_RWTextPath
 

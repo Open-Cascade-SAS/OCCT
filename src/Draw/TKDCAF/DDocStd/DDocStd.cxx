@@ -34,9 +34,9 @@
 
 //=================================================================================================
 
-const Handle(TDocStd_Application)& DDocStd::GetApplication()
+const occ::handle<TDocStd_Application>& DDocStd::GetApplication()
 {
-  static Handle(TDocStd_Application) anApp;
+  static occ::handle<TDocStd_Application> anApp;
   if (anApp.IsNull())
   {
     anApp = new TDocStd_Application;
@@ -55,26 +55,26 @@ const Handle(TDocStd_Application)& DDocStd::GetApplication()
 
 //=================================================================================================
 
-Standard_Boolean DDocStd::GetDocument(Standard_CString&         Name,
-                                      Handle(TDocStd_Document)& DOC,
-                                      const Standard_Boolean    Complain)
+bool DDocStd::GetDocument(const char*&         Name,
+                                      occ::handle<TDocStd_Document>& DOC,
+                                      const bool    Complain)
 {
-  Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast(Draw::GetExisting(Name));
+  occ::handle<DDocStd_DrawDocument> DD = occ::down_cast<DDocStd_DrawDocument>(Draw::GetExisting(Name));
   if (DD.IsNull())
   {
     if (Complain)
       std::cout << Name << " is not a Document" << std::endl;
-    return Standard_False;
+    return false;
   }
-  Handle(TDocStd_Document) STDDOC = DD->GetDocument();
+  occ::handle<TDocStd_Document> STDDOC = DD->GetDocument();
   if (!STDDOC.IsNull())
   {
     DOC = STDDOC;
-    return Standard_True;
+    return true;
   }
   if (Complain)
     std::cout << Name << " is not a CAF Document" << std::endl;
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -82,13 +82,13 @@ Standard_Boolean DDocStd::GetDocument(Standard_CString&         Name,
 // purpose  : try to retrieve a label
 //=======================================================================
 
-Standard_Boolean DDocStd::Find(const Handle(TDocStd_Document)& D,
-                               const Standard_CString          Entry,
+bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
+                               const char* const          Entry,
                                TDF_Label&                      Label,
-                               const Standard_Boolean          Complain)
+                               const bool          Complain)
 {
   Label.Nullify();
-  TDF_Tool::Label(D->GetData(), Entry, Label, Standard_False);
+  TDF_Tool::Label(D->GetData(), Entry, Label, false);
   if (Label.IsNull() && Complain)
     std::cout << "No label for entry " << Entry << std::endl;
   return !Label.IsNull();
@@ -99,21 +99,21 @@ Standard_Boolean DDocStd::Find(const Handle(TDocStd_Document)& D,
 // purpose  : Try to retrieve an attribute.
 //=======================================================================
 
-Standard_Boolean DDocStd::Find(const Handle(TDocStd_Document)& D,
-                               const Standard_CString          Entry,
+bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
+                               const char* const          Entry,
                                const Standard_GUID&            ID,
-                               Handle(TDF_Attribute)&          A,
-                               const Standard_Boolean          Complain)
+                               occ::handle<TDF_Attribute>&          A,
+                               const bool          Complain)
 {
   TDF_Label L;
   if (Find(D, Entry, L, Complain))
   {
     if (L.FindAttribute(ID, A))
-      return Standard_True;
+      return true;
     if (Complain)
       std::cout << "attribute not found for entry : " << Entry << std::endl;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -130,10 +130,10 @@ Draw_Interpretor& DDocStd::ReturnLabel(Draw_Interpretor& di, const TDF_Label& L)
 
 void DDocStd::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   // define commands
   DDocStd::ApplicationCommands(theCommands);

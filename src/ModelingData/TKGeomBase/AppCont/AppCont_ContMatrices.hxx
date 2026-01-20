@@ -21,14 +21,14 @@
 // pour IBPMatrix (contraintes de passage aux extremites)
 // et IBTMatrix (contraintes de tangence aux extremites).
 
-void InvMMatrix(const Standard_Integer classe, math_Matrix& M);
+void InvMMatrix(const int classe, math_Matrix& M);
 
-void MMatrix(const Standard_Integer classe, math_Matrix& M);
+void MMatrix(const int classe, math_Matrix& M);
 
-void IBPMatrix(const Standard_Integer classe, math_Matrix& M);
+void IBPMatrix(const int classe, math_Matrix& M);
 
-void IBTMatrix(const Standard_Integer classe, math_Matrix& M);
+void IBTMatrix(const int classe, math_Matrix& M);
 
-void VBernstein(const Standard_Integer classe, const Standard_Integer nbpoints, math_Matrix& M);
+void VBernstein(const int classe, const int nbpoints, math_Matrix& M);
 
 #endif

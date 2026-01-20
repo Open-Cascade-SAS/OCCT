@@ -46,7 +46,7 @@ class TCollection_AsciiString;
 //! - Method ::Length() return the number of 16-bit code units, not the number of Unicode symbols.
 //! - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols,
 //!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
-//! If application needs to process surrogate pairs, NCollection_Utf16Iter class can be used
+//! If application needs to process surrogate pairs, NCollection_UtfIterator<char16_t> class can be used
 //! for iterating through Unicode string (UTF-32 code unit will be returned for each position).
 class TCollection_ExtendedString
 {
@@ -61,11 +61,11 @@ public:
   //! treated as having UTF-8 coding. If it is not a UTF-8
   //! then <isMultiByte> is ignored and each character is
   //! copied to ExtCharacter.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_CString astring,
-                                             const Standard_Boolean isMultiByte = Standard_False);
+  Standard_EXPORT TCollection_ExtendedString(const char* const astring,
+                                             const bool isMultiByte = false);
 
   //! Creation by converting an ExtString to an extended string.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_ExtString astring);
+  Standard_EXPORT TCollection_ExtendedString(const char16_t* const astring);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize from wide-char string considering it as Unicode string
@@ -73,39 +73,39 @@ public:
   //!
   //! This constructor is unavailable if application is built with deprecated msvc option
   //! "-Zc:wchar_t-", since OCCT itself is never built with this option.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_WideChar* theStringUtf);
+  Standard_EXPORT TCollection_ExtendedString(const wchar_t* theStringUtf);
 #endif
 
   //! Initializes a AsciiString with a single character.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_Character aChar);
+  Standard_EXPORT TCollection_ExtendedString(const char aChar);
 
   //! Initializes a ExtendedString with a single character.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_ExtCharacter aChar);
+  Standard_EXPORT TCollection_ExtendedString(const char16_t aChar);
 
   //! Initializes a ExtendedString with <length> space allocated.
   //! and filled with <filler>.This is useful for buffers.
-  Standard_EXPORT TCollection_ExtendedString(const Standard_Integer      length,
-                                             const Standard_ExtCharacter filler);
+  Standard_EXPORT TCollection_ExtendedString(const int      length,
+                                             const char16_t filler);
 
   //! Initializes an ExtendedString with an integer value
-  Standard_EXPORT TCollection_ExtendedString(const Standard_Integer value);
+  Standard_EXPORT TCollection_ExtendedString(const int value);
 
   //! Initializes an ExtendedString with a real value
-  Standard_EXPORT TCollection_ExtendedString(const Standard_Real value);
+  Standard_EXPORT TCollection_ExtendedString(const double value);
 
   //! Initializes a ExtendedString with another ExtendedString.
   Standard_EXPORT TCollection_ExtendedString(const TCollection_ExtendedString& astring);
 
   //! Move constructor
   Standard_EXPORT TCollection_ExtendedString(TCollection_ExtendedString&& theOther)
-    Standard_Noexcept;
+    noexcept;
 
   //! Creation by converting an Ascii string to an extended
   //! string. The string is treated as having UTF-8 coding.
   //! If it is not a UTF-8 or multi byte then
   //! each character is copied to ExtCharacter.
   Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& astring,
-                                             const Standard_Boolean isMultiByte = Standard_True);
+                                             const bool isMultiByte = true);
 
   //! Appends the other extended string to this extended string.
   //! Note that this method is an alias of operator +=.
@@ -115,7 +115,7 @@ public:
   void operator+=(const TCollection_ExtendedString& other) { AssignCat(other); }
 
   //! Appends the utf16 char to this extended string.
-  Standard_EXPORT void AssignCat(const Standard_Utf16Char theChar);
+  Standard_EXPORT void AssignCat(const char16_t theChar);
 
   //! Appends <other> to me.
   Standard_EXPORT TCollection_ExtendedString Cat(const TCollection_ExtendedString& other) const;
@@ -129,8 +129,8 @@ public:
   //! in the ExtendedString <me>.
   //! The substitution can be case sensitive.
   //! If you don't use default case sensitive, no matter whether aChar is uppercase or not.
-  Standard_EXPORT void ChangeAll(const Standard_ExtCharacter aChar,
-                                 const Standard_ExtCharacter NewChar);
+  Standard_EXPORT void ChangeAll(const char16_t aChar,
+                                 const char16_t NewChar);
 
   //! Removes all characters contained in <me>.
   //! This produces an empty ExtendedString.
@@ -164,27 +164,27 @@ public:
   Standard_EXPORT ~TCollection_ExtendedString();
 
   //! Insert a Character at position <where>.
-  Standard_EXPORT void Insert(const Standard_Integer where, const Standard_ExtCharacter what);
+  Standard_EXPORT void Insert(const int where, const char16_t what);
 
   //! Insert a ExtendedString at position <where>.
-  Standard_EXPORT void Insert(const Standard_Integer where, const TCollection_ExtendedString& what);
+  Standard_EXPORT void Insert(const int where, const TCollection_ExtendedString& what);
 
   //! Returns True if this string contains no characters.
-  Standard_Boolean IsEmpty() const { return mylength == 0; }
+  bool IsEmpty() const { return mylength == 0; }
 
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==
-  Standard_EXPORT Standard_Boolean IsEqual(const Standard_ExtString other) const;
+  Standard_EXPORT bool IsEqual(const char16_t* const other) const;
 
-  Standard_Boolean operator==(const Standard_ExtString other) const { return IsEqual(other); }
+  bool operator==(const char16_t* const other) const { return IsEqual(other); }
 
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==
-  Standard_EXPORT Standard_Boolean IsEqual(const TCollection_ExtendedString& other) const;
+  Standard_EXPORT bool IsEqual(const TCollection_ExtendedString& other) const;
 
-  Standard_Boolean operator==(const TCollection_ExtendedString& other) const
+  bool operator==(const TCollection_ExtendedString& other) const
   {
     return IsEqual(other);
   }
@@ -192,60 +192,60 @@ public:
   //! Returns true if there are differences between the
   //! characters in this extended string and the other extended string.
   //! Note that this method is an alias of operator !=.
-  Standard_EXPORT Standard_Boolean IsDifferent(const Standard_ExtString other) const;
+  Standard_EXPORT bool IsDifferent(const char16_t* const other) const;
 
-  Standard_Boolean operator!=(const Standard_ExtString other) const { return IsDifferent(other); }
+  bool operator!=(const char16_t* const other) const { return IsDifferent(other); }
 
   //! Returns true if there are differences between the
   //! characters in this extended string and the other extended string.
   //! Note that this method is an alias of operator !=.
-  Standard_EXPORT Standard_Boolean IsDifferent(const TCollection_ExtendedString& other) const;
+  Standard_EXPORT bool IsDifferent(const TCollection_ExtendedString& other) const;
 
-  Standard_Boolean operator!=(const TCollection_ExtendedString& other) const
+  bool operator!=(const TCollection_ExtendedString& other) const
   {
     return IsDifferent(other);
   }
 
   //! Returns TRUE if <me> is less than <other>.
-  Standard_EXPORT Standard_Boolean IsLess(const Standard_ExtString other) const;
+  Standard_EXPORT bool IsLess(const char16_t* const other) const;
 
-  Standard_Boolean operator<(const Standard_ExtString other) const { return IsLess(other); }
+  bool operator<(const char16_t* const other) const { return IsLess(other); }
 
   //! Returns TRUE if <me> is less than <other>.
-  Standard_EXPORT Standard_Boolean IsLess(const TCollection_ExtendedString& other) const;
+  Standard_EXPORT bool IsLess(const TCollection_ExtendedString& other) const;
 
-  Standard_Boolean operator<(const TCollection_ExtendedString& other) const
+  bool operator<(const TCollection_ExtendedString& other) const
   {
     return IsLess(other);
   }
 
   //! Returns TRUE if <me> is greater than <other>.
-  Standard_EXPORT Standard_Boolean IsGreater(const Standard_ExtString other) const;
+  Standard_EXPORT bool IsGreater(const char16_t* const other) const;
 
-  Standard_Boolean operator>(const Standard_ExtString other) const { return IsGreater(other); }
+  bool operator>(const char16_t* const other) const { return IsGreater(other); }
 
   //! Returns TRUE if <me> is greater than <other>.
-  Standard_EXPORT Standard_Boolean IsGreater(const TCollection_ExtendedString& other) const;
+  Standard_EXPORT bool IsGreater(const TCollection_ExtendedString& other) const;
 
-  Standard_Boolean operator>(const TCollection_ExtendedString& other) const
+  bool operator>(const TCollection_ExtendedString& other) const
   {
     return IsGreater(other);
   }
 
   //! Determines whether the beginning of this string instance matches the specified string.
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     StartsWith(const TCollection_ExtendedString& theStartString) const;
 
   //! Determines whether the end of this string instance matches the specified string.
-  Standard_EXPORT Standard_Boolean EndsWith(const TCollection_ExtendedString& theEndString) const;
+  Standard_EXPORT bool EndsWith(const TCollection_ExtendedString& theEndString) const;
 
   //! Returns True if the ExtendedString contains only
   //! "Ascii Range" characters .
-  Standard_EXPORT Standard_Boolean IsAscii() const;
+  Standard_EXPORT bool IsAscii() const;
 
   //! Returns the number of 16-bit code units
   //! (might be greater than number of Unicode symbols if string contains surrogate pairs).
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
   //! Displays <me> .
   Standard_EXPORT void                     Print(Standard_OStream& astream) const;
@@ -253,28 +253,28 @@ public:
                                                       const TCollection_ExtendedString& astring);
 
   //! Removes every <what> characters from <me>.
-  Standard_EXPORT void RemoveAll(const Standard_ExtCharacter what);
+  Standard_EXPORT void RemoveAll(const char16_t what);
 
   //! Erases <ahowmany> characters from position <where>,<where> included.
-  Standard_EXPORT void Remove(const Standard_Integer where, const Standard_Integer ahowmany = 1);
+  Standard_EXPORT void Remove(const int where, const int ahowmany = 1);
 
   //! Searches a ExtendedString in <me> from the beginning
   //! and returns position of first item <what> matching.
   //! it returns -1 if not found.
-  Standard_EXPORT Standard_Integer Search(const TCollection_ExtendedString& what) const;
+  Standard_EXPORT int Search(const TCollection_ExtendedString& what) const;
 
   //! Searches a ExtendedString in another ExtendedString from the
   //! end and returns position of first item <what> matching.
   //! it returns -1 if not found.
-  Standard_EXPORT Standard_Integer SearchFromEnd(const TCollection_ExtendedString& what) const;
+  Standard_EXPORT int SearchFromEnd(const TCollection_ExtendedString& what) const;
 
   //! Replaces one character in the ExtendedString at position <where>.
   //! If <where> is less than zero or greater than the length of <me>
   //! an exception is raised.
-  Standard_EXPORT void SetValue(const Standard_Integer where, const Standard_ExtCharacter what);
+  Standard_EXPORT void SetValue(const int where, const char16_t what);
 
   //! Replaces a part of <me> by another ExtendedString see above.
-  Standard_EXPORT void SetValue(const Standard_Integer            where,
+  Standard_EXPORT void SetValue(const int            where,
                                 const TCollection_ExtendedString& what);
 
   //! Splits this extended string into two sub-strings at position where.
@@ -287,7 +287,7 @@ public:
   //! Example:
   //! aString contains "abcdefg"
   //! aString.Split(3) gives <me> = "abc" and returns "defg"
-  Standard_EXPORT TCollection_ExtendedString Split(const Standard_Integer where);
+  Standard_EXPORT TCollection_ExtendedString Split(const int where);
 
   //! Extracts <whichone> token from <me>.
   //! By default, the <separators> is set to space and tabulation.
@@ -304,17 +304,17 @@ public:
   //! aString contains "1234; test:message   , value"
   //! aString.Token("; :,",4) returns "value"
   //! aString.Token("; :,",2) returns "test"
-  Standard_EXPORT TCollection_ExtendedString Token(const Standard_ExtString separators,
-                                                   const Standard_Integer   whichone = 1) const;
+  Standard_EXPORT TCollection_ExtendedString Token(const char16_t* const separators,
+                                                   const int   whichone = 1) const;
 
   //! Returns pointer to ExtString
-  Standard_EXPORT Standard_ExtString ToExtString() const;
+  Standard_EXPORT const char16_t* ToExtString() const;
 
 #ifdef _WIN32
   //! Returns pointer to string as wchar_t* on Windows platform where wchar_t* is considered as
   //! UTF-16 string. This method is useful to pass string into wide-char system APIs, and makes
   //! sense only on Windows (other systems use UTF-8 and can miss wide-char functions at all).
-  const Standard_WideChar* ToWideString() const { return (const Standard_WideChar*)ToExtString(); }
+  const wchar_t* ToWideString() const { return (const wchar_t*)ToExtString(); }
 #endif
 
   //! Truncates <me> to <ahowmany> characters.
@@ -322,7 +322,7 @@ public:
   //! Exceptions
   //! Standard_OutOfRange if ahowmany is greater
   //! than the length of this string.
-  Standard_EXPORT void Trunc(const Standard_Integer ahowmany);
+  Standard_EXPORT void Trunc(const int ahowmany);
 
   //! Returns character at position <where> in <me>.
   //! If <where> is less than zero or greater than the length of
@@ -333,7 +333,7 @@ public:
   //! Exceptions
   //! Standard_OutOfRange if where lies outside
   //! the bounds of this extended string.
-  Standard_EXPORT Standard_ExtCharacter Value(const Standard_Integer where) const;
+  Standard_EXPORT char16_t Value(const int where) const;
 
   //! Returns a hashed value for the extended string.
   //! Note: if string is ASCII, the computed value is the same as the value computed with the
@@ -342,7 +342,7 @@ public:
   //! @return a computed hash code
   size_t HashCode() const
   {
-    const int aSize = mylength * sizeof(Standard_ExtCharacter);
+    const int aSize = mylength * sizeof(char16_t);
     if (mylength < 2)
     {
       return opencascade::FNVHash::hash_combine(*mystring, aSize);
@@ -366,7 +366,7 @@ public:
   //! Returns true if the characters in this extended
   //! string are identical to the characters in the other extended string.
   //! Note that this method is an alias of operator ==.
-  static Standard_Boolean IsEqual(const TCollection_ExtendedString& theString1,
+  static bool IsEqual(const TCollection_ExtendedString& theString1,
                                   const TCollection_ExtendedString& theString2)
   {
     return theString1.IsEqual(theString2);
@@ -375,16 +375,16 @@ public:
   //! Converts the internal <mystring> to UTF8 coding and
   //! returns length of the out CString. A memory for the
   //! <theCString> should be allocated before call!
-  Standard_EXPORT Standard_Integer ToUTF8CString(Standard_PCharacter& theCString) const;
+  Standard_EXPORT int ToUTF8CString(Standard_PCharacter& theCString) const;
 
   //! Returns expected CString length in UTF8 coding (like strlen, without null terminator).
   //! It can be used for memory calculation before converting to CString containing symbols in UTF8
   //! coding. For external allocation, use: char* buf = new char[str.LengthOfCString() + 1];
-  Standard_EXPORT Standard_Integer LengthOfCString() const;
+  Standard_EXPORT int LengthOfCString() const;
 
 private:
   //! Returns true if the input CString was successfully converted to UTF8 coding.
-  Standard_Boolean ConvertToUnicode(const Standard_CString astring);
+  bool ConvertToUnicode(const char* const astring);
 
   //! Internal wrapper to allocate on stack or heap
   void allocate(const int theLength);
@@ -398,7 +398,7 @@ private:
 private:
   Standard_PExtCharacter mystring{}; //!< NULL-terminated string
   // clang-format off
-  Standard_Integer       mylength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
+  int       mylength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
   // clang-format on
 };
 

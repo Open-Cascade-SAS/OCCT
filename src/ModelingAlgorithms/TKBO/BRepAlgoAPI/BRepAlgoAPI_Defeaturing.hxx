@@ -68,9 +68,9 @@
 //! Here is the example of usage of the algorithm:
 //! ~~~~
 //! TopoDS_Shape aSolid = ...;               // Input shape to remove the features from
-//! TopTools_ListOfShape aFeatures = ...;    // Features to remove from the shape
-//! Standard_Boolean bRunParallel = ...;     // Parallel processing mode
-//! Standard_Boolean isHistoryNeeded = ...;  // History support
+//! NCollection_List<TopoDS_Shape> aFeatures = ...;    // Features to remove from the shape
+//! bool bRunParallel = ...;     // Parallel processing mode
+//! bool isHistoryNeeded = ...;  // History support
 //!
 //! BRepAlgoAPI_Defeaturing aDF;             // De-Featuring algorithm
 //! aDF.SetShape(aSolid);                    // Set the shape
@@ -106,7 +106,7 @@ public: //! @name Constructors
   //! Empty constructor
   BRepAlgoAPI_Defeaturing()
       : BRepAlgoAPI_Algo(),
-        myFillHistory(Standard_True)
+        myFillHistory(true)
   {
   }
 
@@ -125,56 +125,56 @@ public: //! @name Setting input data for the algorithm
 
   //! Adds the faces to remove from the input shape.
   //! @param[in] theFaces  The list of shapes to extract the faces for removal.
-  void AddFacesToRemove(const TopTools_ListOfShape& theFaces)
+  void AddFacesToRemove(const NCollection_List<TopoDS_Shape>& theFaces)
   {
-    TopTools_ListIteratorOfListOfShape it(theFaces);
+    NCollection_List<TopoDS_Shape>::Iterator it(theFaces);
     for (; it.More(); it.Next())
       myFacesToRemove.Append(it.Value());
   }
 
   //! Returns the list of faces which have been requested for removal
   //! from the input shape.
-  const TopTools_ListOfShape& FacesToRemove() const { return myFacesToRemove; }
+  const NCollection_List<TopoDS_Shape>& FacesToRemove() const { return myFacesToRemove; }
 
 public: //! @name Performing the operation
   //! Performs the operation
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 public: //! @name History Methods
   //! Defines whether to track the modification of the shapes or not.
-  void SetToFillHistory(const Standard_Boolean theFlag) { myFillHistory = theFlag; }
+  void SetToFillHistory(const bool theFlag) { myFillHistory = theFlag; }
 
   //! Returns whether the history was requested or not.
-  Standard_Boolean HasHistory() const { return myFillHistory; }
+  bool HasHistory() const { return myFillHistory; }
 
   //! Returns the list of shapes modified from the shape <theS> during the operation.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS)
+    override;
 
   //! Returns the list of shapes generated from the shape <theS> during the operation.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& theS)
+    override;
 
   //! Returns true if the shape <theS> has been deleted during the operation.
   //! It means that the shape has no any trace in the result.
   //! Otherwise it returns false.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& theS) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& theS) override;
 
   //! Returns true if any of the input shapes has been modified during operation.
-  Standard_EXPORT virtual Standard_Boolean HasModified() const;
+  Standard_EXPORT virtual bool HasModified() const;
 
   //! Returns true if any of the input shapes has generated shapes during operation.
-  Standard_EXPORT virtual Standard_Boolean HasGenerated() const;
+  Standard_EXPORT virtual bool HasGenerated() const;
 
   //! Returns true if any of the input shapes has been deleted during operation.
-  Standard_EXPORT virtual Standard_Boolean HasDeleted() const;
+  Standard_EXPORT virtual bool HasDeleted() const;
 
   //! Returns the History of shapes modifications
-  Handle(BRepTools_History) History() { return myFeatureRemovalTool.History(); }
+  occ::handle<BRepTools_History> History() { return myFeatureRemovalTool.History(); }
 
 protected: //! @name Setting the algorithm into default state
-  virtual void Clear() Standard_OVERRIDE
+  virtual void Clear() override
   {
     BRepAlgoAPI_Algo::Clear();
     myFeatureRemovalTool.Clear();
@@ -182,8 +182,8 @@ protected: //! @name Setting the algorithm into default state
 
 protected:                                     //! @name Fields
   TopoDS_Shape         myInputShape;           //!< Input shape to remove the features from
-  TopTools_ListOfShape myFacesToRemove;        //!< Features to remove from the shape
-  Standard_Boolean     myFillHistory;          //!< Defines whether to track the history of
+  NCollection_List<TopoDS_Shape> myFacesToRemove;        //!< Features to remove from the shape
+  bool     myFillHistory;          //!< Defines whether to track the history of
                                                //! shapes modifications or not (true by default)
   BOPAlgo_RemoveFeatures myFeatureRemovalTool; //!< Tool for the features removal
 };

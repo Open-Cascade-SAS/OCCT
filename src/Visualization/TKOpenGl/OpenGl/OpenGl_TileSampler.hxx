@@ -40,7 +40,7 @@ public:
   Standard_EXPORT OpenGl_TileSampler();
 
   //! Size of individual tile in pixels.
-  Graphic3d_Vec2i TileSize() const { return Graphic3d_Vec2i(myTileSize, myTileSize); }
+  NCollection_Vec2<int> TileSize() const { return NCollection_Vec2<int>(myTileSize, myTileSize); }
 
   //! Scale factor for quantization of visual error (float) into signed integer.
   float VarianceScaleFactor() const { return myScaleFactor; }
@@ -55,37 +55,37 @@ public:
   int NbTiles() const { return int(myTiles.SizeX * myTiles.SizeY); }
 
   //! Returns ray-tracing viewport.
-  const Graphic3d_Vec2i& ViewSize() const { return myViewSize; }
+  const NCollection_Vec2<int>& ViewSize() const { return myViewSize; }
 
   //! Number of tiles within offsets texture.
-  Graphic3d_Vec2i NbOffsetTiles(bool theAdaptive) const
+  NCollection_Vec2<int> NbOffsetTiles(bool theAdaptive) const
   {
-    return theAdaptive ? Graphic3d_Vec2i((int)myOffsetsShrunk.SizeX, (int)myOffsetsShrunk.SizeY)
-                       : Graphic3d_Vec2i((int)myOffsets.SizeX, (int)myOffsets.SizeY);
+    return theAdaptive ? NCollection_Vec2<int>((int)myOffsetsShrunk.SizeX, (int)myOffsetsShrunk.SizeY)
+                       : NCollection_Vec2<int>((int)myOffsets.SizeX, (int)myOffsets.SizeY);
   }
 
   //! Maximum number of tiles within offsets texture.
-  Graphic3d_Vec2i NbOffsetTilesMax() const
+  NCollection_Vec2<int> NbOffsetTilesMax() const
   {
     return NbOffsetTiles(true).cwiseMax(NbOffsetTiles(false));
   }
 
   //! Viewport for rendering using offsets texture.
-  Graphic3d_Vec2i OffsetTilesViewport(bool theAdaptive) const
+  NCollection_Vec2<int> OffsetTilesViewport(bool theAdaptive) const
   {
     return NbOffsetTiles(theAdaptive) * myTileSize;
   }
 
   //! Maximum viewport for rendering using offsets texture.
-  Graphic3d_Vec2i OffsetTilesViewportMax() const { return NbOffsetTilesMax() * myTileSize; }
+  NCollection_Vec2<int> OffsetTilesViewportMax() const { return NbOffsetTilesMax() * myTileSize; }
 
   //! Return maximum number of samples per tile.
   int MaxTileSamples() const
   {
     int aNbSamples = 0;
-    for (Standard_Size aRowIter = 0; aRowIter < myTiles.SizeY; ++aRowIter)
+    for (size_t aRowIter = 0; aRowIter < myTiles.SizeY; ++aRowIter)
     {
-      for (Standard_Size aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
+      for (size_t aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
       {
         aNbSamples = (std::max)(aNbSamples, static_cast<int>(myTiles.Value(aRowIter, aColIter)));
       }
@@ -95,30 +95,30 @@ public:
 
   //! Specifies size of ray-tracing viewport and recomputes tile size.
   Standard_EXPORT void SetSize(const Graphic3d_RenderingParams& theParams,
-                               const Graphic3d_Vec2i&           theSize);
+                               const NCollection_Vec2<int>&           theSize);
 
   //! Fetches current error estimation from the GPU and
   //! builds 2D discrete distribution for tile sampling.
-  Standard_EXPORT void GrabVarianceMap(const Handle(OpenGl_Context)& theContext,
-                                       const Handle(OpenGl_Texture)& theTexture);
+  Standard_EXPORT void GrabVarianceMap(const occ::handle<OpenGl_Context>& theContext,
+                                       const occ::handle<OpenGl_Texture>& theTexture);
 
   //! Resets (restart) tile sampler to initial state.
   void Reset() { myLastSample = 0; }
 
   //! Uploads tile samples to the given OpenGL texture.
-  bool UploadSamples(const Handle(OpenGl_Context)& theContext,
-                     const Handle(OpenGl_Texture)& theSamplesTexture,
+  bool UploadSamples(const occ::handle<OpenGl_Context>& theContext,
+                     const occ::handle<OpenGl_Texture>& theSamplesTexture,
                      const bool                    theAdaptive)
   {
-    return upload(theContext, theSamplesTexture, Handle(OpenGl_Texture)(), theAdaptive);
+    return upload(theContext, theSamplesTexture, occ::handle<OpenGl_Texture>(), theAdaptive);
   }
 
   //! Uploads offsets of sampled tiles to the given OpenGL texture.
-  bool UploadOffsets(const Handle(OpenGl_Context)& theContext,
-                     const Handle(OpenGl_Texture)& theOffsetsTexture,
+  bool UploadOffsets(const occ::handle<OpenGl_Context>& theContext,
+                     const occ::handle<OpenGl_Texture>& theOffsetsTexture,
                      const bool                    theAdaptive)
   {
-    return upload(theContext, Handle(OpenGl_Texture)(), theOffsetsTexture, theAdaptive);
+    return upload(theContext, occ::handle<OpenGl_Texture>(), theOffsetsTexture, theAdaptive);
   }
 
 protected:
@@ -131,12 +131,12 @@ protected:
   }
 
   //! Samples tile location according to estimated error.
-  Standard_EXPORT Graphic3d_Vec2i nextTileToSample();
+  Standard_EXPORT NCollection_Vec2<int> nextTileToSample();
 
   //! Uploads offsets of sampled tiles to the given OpenGL texture.
-  Standard_EXPORT bool upload(const Handle(OpenGl_Context)& theContext,
-                              const Handle(OpenGl_Texture)& theSamplesTexture,
-                              const Handle(OpenGl_Texture)& theOffsetsTexture,
+  Standard_EXPORT bool upload(const occ::handle<OpenGl_Context>& theContext,
+                              const occ::handle<OpenGl_Texture>& theSamplesTexture,
+                              const occ::handle<OpenGl_Texture>& theOffsetsTexture,
                               const bool                    theAdaptive);
 
   //! Auxiliary method for dumping 2D image map into stream (e.g. for debugging).
@@ -150,15 +150,15 @@ protected:
   Image_PixMapTypedData<unsigned int>    myTileSamples;   //!< number of samples for all pixels within the tile (initially equals to Tile area)
   Image_PixMapTypedData<float>           myVarianceMap;   //!< Estimation of visual error per tile
   Image_PixMapTypedData<int>             myVarianceRaw;   //!< Estimation of visual error per tile (raw data)
-  Image_PixMapTypedData<Graphic3d_Vec2i> myOffsets;       //!< 2D array of tiles redirecting to another tile
-  Image_PixMapTypedData<Graphic3d_Vec2i> myOffsetsShrunk; //!< 2D array of tiles redirecting to another tile (shrunk)
+  Image_PixMapTypedData<NCollection_Vec2<int>> myOffsets;       //!< 2D array of tiles redirecting to another tile
+  Image_PixMapTypedData<NCollection_Vec2<int>> myOffsetsShrunk; //!< 2D array of tiles redirecting to another tile (shrunk)
   std::vector<float>                     myMarginalMap;   //!< Marginal distribution of 2D error map
   OpenGl_HaltonSampler                   mySampler;       //!< Halton sequence generator
   unsigned int                           myLastSample;    //!< Index of generated sample
   float                                  myScaleFactor;   //!< scale factor for quantization of visual error (float) into signed integer
   // clang-format on
   int             myTileSize; //!< tile size
-  Graphic3d_Vec2i myViewSize; //!< ray-tracing viewport
+  NCollection_Vec2<int> myViewSize; //!< ray-tracing viewport
 };
 
 #endif // _OpenGl_TileSampler_H

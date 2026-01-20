@@ -20,32 +20,32 @@
 #include <GProp_PrincipalProps.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, const Standard_Real Tol)
+GProp_PEquation::GProp_PEquation(const NCollection_Array1<gp_Pnt>& Pnts, const double Tol)
     : type(GProp_None)
 {
   GProp_PGProps Pmat(Pnts);
   g = Pmat.CentreOfMass();
-  Standard_Real Xg, Yg, Zg;
+  double Xg, Yg, Zg;
   g.Coord(Xg, Yg, Zg);
   GProp_PrincipalProps Pp = Pmat.PrincipalProperties();
   gp_Vec               V1 = Pp.FirstAxisOfInertia();
-  Standard_Real        Xv1, Yv1, Zv1;
+  double        Xv1, Yv1, Zv1;
   V1.Coord(Xv1, Yv1, Zv1);
   gp_Vec        V2 = Pp.SecondAxisOfInertia();
-  Standard_Real Xv2, Yv2, Zv2;
+  double Xv2, Yv2, Zv2;
   V2.Coord(Xv2, Yv2, Zv2);
   gp_Vec        V3 = Pp.ThirdAxisOfInertia();
-  Standard_Real Xv3, Yv3, Zv3;
+  double Xv3, Yv3, Zv3;
   V3.Coord(Xv3, Yv3, Zv3);
-  Standard_Real D, X, Y, Z;
-  Standard_Real Dmx1 = RealFirst();
-  Standard_Real Dmn1 = RealLast();
-  Standard_Real Dmx2 = RealFirst();
-  Standard_Real Dmn2 = RealLast();
-  Standard_Real Dmx3 = RealFirst();
-  Standard_Real Dmn3 = RealLast();
+  double D, X, Y, Z;
+  double Dmx1 = RealFirst();
+  double Dmn1 = RealLast();
+  double Dmx2 = RealFirst();
+  double Dmn2 = RealLast();
+  double Dmx3 = RealFirst();
+  double Dmn3 = RealLast();
 
-  for (Standard_Integer i = Pnts.Lower(); i <= Pnts.Upper(); i++)
+  for (int i = Pnts.Lower(); i <= Pnts.Upper(); i++)
   {
     Pnts(i).Coord(X, Y, Z);
     D = (X - Xg) * Xv1 + (Y - Yg) * Yv1 + (Z - Zg) * Zv1;
@@ -64,8 +64,8 @@ GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, const Standard_
     if (D < Dmn3)
       Dmn3 = D;
   }
-  Standard_Integer dimension = 3;
-  Standard_Integer It        = 0;
+  int dimension = 3;
+  int It        = 0;
   if (std::abs(Dmx1 - Dmn1) <= Tol)
   {
     dimension = dimension - 1;
@@ -118,39 +118,39 @@ GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, const Standard_
   }
 }
 
-Standard_Boolean GProp_PEquation::IsPlanar() const
+bool GProp_PEquation::IsPlanar() const
 {
 
   if (type == GProp_Plane)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
-Standard_Boolean GProp_PEquation::IsLinear() const
+bool GProp_PEquation::IsLinear() const
 {
 
   if (type == GProp_Line)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
-Standard_Boolean GProp_PEquation::IsPoint() const
+bool GProp_PEquation::IsPoint() const
 {
 
   if (type == GProp_Point)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
-Standard_Boolean GProp_PEquation::IsSpace() const
+bool GProp_PEquation::IsSpace() const
 {
   if (type == GProp_Space)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 gp_Pln GProp_PEquation::Plane() const

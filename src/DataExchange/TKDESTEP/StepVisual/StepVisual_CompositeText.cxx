@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CompositeText, StepGeom_GeometricRepresent
 StepVisual_CompositeText::StepVisual_CompositeText() {}
 
 void StepVisual_CompositeText::Init(
-  const Handle(TCollection_HAsciiString)&            aName,
-  const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
+  const occ::handle<TCollection_HAsciiString>&            aName,
+  const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText)
 {
   // --- classe own fields ---
   collectedText = aCollectedText;
@@ -30,23 +30,23 @@ void StepVisual_CompositeText::Init(
 }
 
 void StepVisual_CompositeText::SetCollectedText(
-  const Handle(StepVisual_HArray1OfTextOrCharacter)& aCollectedText)
+  const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText)
 {
   collectedText = aCollectedText;
 }
 
-Handle(StepVisual_HArray1OfTextOrCharacter) StepVisual_CompositeText::CollectedText() const
+occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> StepVisual_CompositeText::CollectedText() const
 {
   return collectedText;
 }
 
 StepVisual_TextOrCharacter StepVisual_CompositeText::CollectedTextValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return collectedText->Value(num);
 }
 
-Standard_Integer StepVisual_CompositeText::NbCollectedText() const
+int StepVisual_CompositeText::NbCollectedText() const
 {
   return collectedText->Length();
 }

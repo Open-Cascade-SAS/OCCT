@@ -26,9 +26,6 @@
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 
-class Draw_Marker3D;
-DEFINE_STANDARD_HANDLE(Draw_Marker3D, Draw_Drawable3D)
-
 class Draw_Marker3D : public Draw_Drawable3D
 {
 
@@ -36,34 +33,33 @@ public:
   Standard_EXPORT Draw_Marker3D(const gp_Pnt&          P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const Standard_Integer ISize = 5);
+                                const int ISize = 5);
 
   Standard_EXPORT Draw_Marker3D(const gp_Pnt&          P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const Standard_Real    RSize);
+                                const double    RSize);
 
   //! myPos field
   Standard_EXPORT gp_Pnt& ChangePos();
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! Returns always false
-  Standard_EXPORT virtual Standard_Boolean PickReject(const Standard_Real X,
-                                                      const Standard_Real Y,
-                                                      const Standard_Real Prec) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool PickReject(const double X,
+                                                      const double Y,
+                                                      const double Prec) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Marker3D, Draw_Drawable3D)
 
-protected:
 private:
   gp_Pnt           myPos;
   Draw_Color       myCol;
   Draw_MarkerShape myTyp;
-  Standard_Integer mySiz;
-  Standard_Real    myRSiz;
-  Standard_Boolean myIsRSiz;
+  int mySiz;
+  double    myRSiz;
+  bool myIsRSiz;
 };
 
 #endif // _Draw_Marker3D_HeaderFile

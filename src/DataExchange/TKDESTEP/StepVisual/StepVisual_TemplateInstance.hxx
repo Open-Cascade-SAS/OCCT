@@ -22,9 +22,6 @@
 
 #include <StepRepr_MappedItem.hxx>
 
-class StepVisual_TemplateInstance;
-DEFINE_STANDARD_HANDLE(StepVisual_TemplateInstance, StepRepr_MappedItem)
-
 class StepVisual_TemplateInstance : public StepRepr_MappedItem
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TemplateInstance, StepRepr_MappedItem)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_TemplateInstance_HeaderFile

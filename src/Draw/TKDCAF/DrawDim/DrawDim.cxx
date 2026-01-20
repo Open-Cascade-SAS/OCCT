@@ -50,26 +50,26 @@ void DrawDim::AllCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const Standard_CString aname)
+void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const char* const aname)
 {
   gp_Pnt                  position;
   TCollection_AsciiString t(" ");
   switch (ashape.ShapeType())
   {
     case TopAbs_EDGE: {
-      Standard_Real      f, l, parameter;
-      Handle(Geom_Curve) curve = BRep_Tool::Curve(TopoDS::Edge(ashape), f, l);
+      double      f, l, parameter;
+      occ::handle<Geom_Curve> curve = BRep_Tool::Curve(TopoDS::Edge(ashape), f, l);
       if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
       {
         parameter = (f + l) / 2.;
-        position  = ElCLib::Value(parameter, Handle(Geom_Line)::DownCast(curve)->Lin());
+        position  = ElCLib::Value(parameter, occ::down_cast<Geom_Line>(curve)->Lin());
       }
       else if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
       {
         parameter = (f + l) / 2.;
         if (f > l)
           parameter = parameter + M_PI;
-        position = ElCLib::Value(parameter, Handle(Geom_Circle)::DownCast(curve)->Circ());
+        position = ElCLib::Value(parameter, occ::down_cast<Geom_Circle>(curve)->Circ());
       }
     }
     break;
@@ -81,42 +81,42 @@ void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const Standard_CString a
       break;
   }
   t += aname; // Name();
-  Handle(Draw_Text3D) text = new Draw_Text3D(position, t.ToCString(), Draw_blanc);
+  occ::handle<Draw_Text3D> text = new Draw_Text3D(position, t.ToCString(), Draw_blanc);
   dout << text;
 }
 
 //=================================================================================================
 
-Standard_Boolean DrawDim::Pln(const TopoDS_Face& f, gp_Pln& p)
+bool DrawDim::Pln(const TopoDS_Face& f, gp_Pln& p)
 {
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(BRep_Tool::Surface(f));
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(f));
   if (!P.IsNull())
   {
     p = P->Pln();
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DrawDim::Lin(const TopoDS_Edge& e,
+bool DrawDim::Lin(const TopoDS_Edge& e,
                               gp_Lin&            l,
-                              Standard_Boolean&  infinite,
-                              Standard_Real&     first,
-                              Standard_Real&     last)
+                              bool&  infinite,
+                              double&     first,
+                              double&     last)
 {
-  Standard_Real     f1, l1;
-  Handle(Geom_Line) L = Handle(Geom_Line)::DownCast(BRep_Tool::Curve(e, f1, l1));
+  double     f1, l1;
+  occ::handle<Geom_Line> L = occ::down_cast<Geom_Line>(BRep_Tool::Curve(e, f1, l1));
   if (!L.IsNull())
   {
     TopoDS_Vertex vf, vl;
     TopExp::Vertices(TopoDS::Edge(e), vf, vl);
     if (vf.IsNull() && vl.IsNull())
     {
-      infinite = Standard_True;
+      infinite = true;
       l        = L->Lin();
-      return Standard_True;
+      return true;
     }
     else if (vf.IsNull() || vl.IsNull())
     {
@@ -125,40 +125,40 @@ Standard_Boolean DrawDim::Lin(const TopoDS_Edge& e,
     else
     {
       l        = L->Lin();
-      infinite = Standard_True;
+      infinite = true;
       first    = f1;
       last     = l1;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DrawDim::Circ(const TopoDS_Edge& e,
+bool DrawDim::Circ(const TopoDS_Edge& e,
                                gp_Circ&           c,
-                               Standard_Real&     first,
-                               Standard_Real&     last)
+                               double&     first,
+                               double&     last)
 {
-  Standard_Real       f1, l1;
-  Handle(Geom_Circle) C = Handle(Geom_Circle)::DownCast(BRep_Tool::Curve(e, f1, l1));
+  double       f1, l1;
+  occ::handle<Geom_Circle> C = occ::down_cast<Geom_Circle>(BRep_Tool::Curve(e, f1, l1));
   if (!C.IsNull())
   {
     c     = C->Circ();
     first = f1;
     last  = l1;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 gp_Pnt DrawDim::Nearest(const TopoDS_Shape& ashape, const gp_Pnt& apoint)
 {
-  Standard_Real   dist = RealLast();
-  Standard_Real   curdist;
+  double   dist = RealLast();
+  double   curdist;
   gp_Pnt          result;
   gp_Pnt          curpnt;
   TopExp_Explorer explo(ashape, TopAbs_VERTEX);

@@ -29,23 +29,23 @@
 #include <math_Vector.hxx>
 
 FairCurve_DistributionOfJerk::FairCurve_DistributionOfJerk(
-  const Standard_Integer               BSplOrder,
-  const Handle(TColStd_HArray1OfReal)& FlatKnots,
-  const Handle(TColgp_HArray1OfPnt2d)& Poles,
-  const Standard_Integer               DerivativeOrder,
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int               DerivativeOrder,
   const FairCurve_BattenLaw&           Law,
-  const Standard_Integer               NbValAux)
+  const int               NbValAux)
     : FairCurve_DistributionOfEnergy(BSplOrder, FlatKnots, Poles, DerivativeOrder, NbValAux),
       MyLaw(Law)
 {
 }
 
-Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, math_Vector& Jerk)
+bool FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, math_Vector& Jerk)
 {
-  Standard_Boolean Ok = Standard_True;
-  Standard_Integer ier, ii, jj, kk;
+  bool Ok = true;
+  int ier, ii, jj, kk;
   gp_XY            CPrim(0., 0.), CSecn(0., 0.), CTroi(0., 0.);
-  Standard_Integer LastGradientIndex, FirstNonZero, LastZero;
+  int LastGradientIndex, FirstNonZero, LastZero;
 
   // (0.0) initialisations generales
   Jerk.Init(0.0);
@@ -63,7 +63,7 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
-    return Standard_False;
+    return false;
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -76,16 +76,16 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
   }
 
   // (1) Evaluation de la secousse locale = W*W
-  Standard_Real NormeCPrim       = CPrim.Modulus();
-  Standard_Real InvNormeCPrim    = 1 / NormeCPrim;
-  Standard_Real InvNormeCPrim2   = InvNormeCPrim * InvNormeCPrim;
-  Standard_Real ProduitC1C2      = CPrim * CSecn;
-  Standard_Real DeriveNormeCPrim = ProduitC1C2 * InvNormeCPrim2;
+  double NormeCPrim       = CPrim.Modulus();
+  double InvNormeCPrim    = 1 / NormeCPrim;
+  double InvNormeCPrim2   = InvNormeCPrim * InvNormeCPrim;
+  double ProduitC1C2      = CPrim * CSecn;
+  double DeriveNormeCPrim = ProduitC1C2 * InvNormeCPrim2;
 
-  Standard_Real Hauteur, WVal, Mesure;
-  Standard_Real NumRho       = CPrim ^ CSecn;
-  Standard_Real Numerateur   = (CPrim ^ CTroi) - 3 * NumRho * DeriveNormeCPrim;
-  Standard_Real Denominateur = pow(NormeCPrim, 2.5);
+  double Hauteur, WVal, Mesure;
+  double NumRho       = CPrim ^ CSecn;
+  double Numerateur   = (CPrim ^ CTroi) - 3 * NumRho * DeriveNormeCPrim;
+  double Denominateur = pow(NormeCPrim, 2.5);
 
   Ok = MyLaw.Value(TParam(TParam.Lower()), Hauteur);
   if (!Ok)
@@ -103,15 +103,15 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
       NGrad1(1, 2 * MyBSplOrder), NGrad2(1, 2 * MyBSplOrder), GradNormeCPrim(1, 2 * MyBSplOrder),
       NGDNCPrim(1, 2 * MyBSplOrder), GradDeriveNormeCPrim(1, 2 * MyBSplOrder),
       GradNumRho(1, 2 * MyBSplOrder), NumduGrad(1, 2 * MyBSplOrder);
-    Standard_Real Facteur;
-    Standard_Real XPrim           = CPrim.X();
-    Standard_Real YPrim           = CPrim.Y();
-    Standard_Real XSecn           = CSecn.X();
-    Standard_Real YSecn           = CSecn.Y();
-    Standard_Real XTroi           = CTroi.X();
-    Standard_Real YTroi           = CTroi.Y();
-    Standard_Real InvDenominateur = 1 / Denominateur;
-    Standard_Real Aux, AuxBis;
+    double Facteur;
+    double XPrim           = CPrim.X();
+    double YPrim           = CPrim.Y();
+    double XSecn           = CSecn.X();
+    double YSecn           = CSecn.Y();
+    double XTroi           = CTroi.X();
+    double YTroi           = CTroi.Y();
+    double InvDenominateur = 1 / Denominateur;
+    double Aux, AuxBis;
 
     Facteur = 2 * Mesure * WVal;
     Aux     = 2.5 * Numerateur * InvNormeCPrim;
@@ -170,15 +170,15 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      Standard_Real FacteurX  = (1 - std::pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
-      Standard_Real FacteurY  = (1 - std::pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
-      Standard_Real FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
-      Standard_Real FacteurW  = WVal * InvNormeCPrim;
+      double FacteurX  = (1 - std::pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      double FacteurY  = (1 - std::pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      double FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
+      double FacteurW  = WVal * InvNormeCPrim;
 
-      Standard_Real Produit, Produit2, ProduitV, HNumRho, DSeconde, NSeconde, HDeriveNormeCPrim,
+      double Produit, Produit2, ProduitV, HNumRho, DSeconde, NSeconde, HDeriveNormeCPrim,
         Aux1, DeriveAuxBis;
-      Standard_Real    VIntermed;
-      Standard_Integer k1, k2, II, JJ;
+      double    VIntermed;
+      int k1, k2, II, JJ;
 
       Facteur = 2 * Mesure;
 

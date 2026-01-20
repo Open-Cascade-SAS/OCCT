@@ -40,8 +40,8 @@ inline const char* ConvertToString(const StepVisual_CentralOrParallel theSourceE
 //! Convert string to StepVisual_CentralOrParallel
 //! @param theCentralOrParallelStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_CentralOrParallel value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString        theCentralOrParallelStr,
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const        theCentralOrParallelStr,
                           StepVisual_CentralOrParallel& theResultEnum)
 {
   if (IsEqual(theCentralOrParallelStr, copCentral))
@@ -54,9 +54,9 @@ inline bool ConvertToEnum(const Standard_CString        theCentralOrParallelStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepVisual_RWCentralOrParallel
 

@@ -34,30 +34,30 @@ public:
 
   Standard_EXPORT Graphic3d_AspectMarker3d(const Aspect_TypeOfMarker theType,
                                            const Quantity_Color&     theColor,
-                                           const Standard_Real       theScale);
+                                           const double       theScale);
 
   //! Creates a context table for marker primitives
   //! defined with the specified values.
   Standard_EXPORT Graphic3d_AspectMarker3d(const Quantity_Color&                theColor,
-                                           const Standard_Integer               theWidth,
-                                           const Standard_Integer               theHeight,
-                                           const Handle(TColStd_HArray1OfByte)& theTextureBitmap);
+                                           const int               theWidth,
+                                           const int               theHeight,
+                                           const occ::handle<NCollection_HArray1<uint8_t>>& theTextureBitmap);
 
   //! Creates a context table for marker primitives
   //! defined with the specified values.
-  Standard_EXPORT Graphic3d_AspectMarker3d(const Handle(Image_PixMap)& theTextureImage);
+  Standard_EXPORT Graphic3d_AspectMarker3d(const occ::handle<Image_PixMap>& theTextureImage);
 
   //! Return scale factor.
-  Standard_ShortReal Scale() const { return myMarkerScale; }
+  float Scale() const { return myMarkerScale; }
 
   //! Modifies the scale factor.
   //! Marker type Aspect_TOM_POINT is not affected by the marker size scale factor.
   //! It is always the smallest displayable dot.
   //! Warning: Raises Standard_OutOfRange if the scale is a negative value.
-  void SetScale(const Standard_ShortReal theScale) { SetMarkerScale(theScale); }
+  void SetScale(const float theScale) { SetMarkerScale(theScale); }
 
   //! Assign scale factor.
-  void SetScale(const Standard_Real theScale) { SetScale((float)theScale); }
+  void SetScale(const double theScale) { SetScale((float)theScale); }
 
   //! Return marker type.
   Aspect_TypeOfMarker Type() const { return myMarkerType; }
@@ -66,18 +66,16 @@ public:
   void SetType(const Aspect_TypeOfMarker theType) { myMarkerType = theType; }
 
   //! Returns marker's texture size.
-  Standard_EXPORT void GetTextureSize(Standard_Integer& theWidth,
-                                      Standard_Integer& theHeight) const;
+  Standard_EXPORT void GetTextureSize(int& theWidth,
+                                      int& theHeight) const;
 
   //! Returns marker's image texture.
   //! Could be null handle if marker aspect has been initialized as default type of marker.
-  const Handle(Graphic3d_MarkerImage)& GetMarkerImage() const { return myMarkerImage; }
+  const occ::handle<Graphic3d_MarkerImage>& GetMarkerImage() const { return myMarkerImage; }
 
-  Standard_EXPORT void SetBitMap(const Standard_Integer               theWidth,
-                                 const Standard_Integer               theHeight,
-                                 const Handle(TColStd_HArray1OfByte)& theTexture);
+  Standard_EXPORT void SetBitMap(const int               theWidth,
+                                 const int               theHeight,
+                                 const occ::handle<NCollection_HArray1<uint8_t>>& theTexture);
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_AspectMarker3d, Graphic3d_Aspects)
 
 #endif // _Graphic3d_AspectMarker3d_HeaderFile

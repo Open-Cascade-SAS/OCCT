@@ -26,13 +26,13 @@ StepVisual_ComplexTriangulatedSurfaceSet::StepVisual_ComplexTriangulatedSurfaceS
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedSurfaceSet::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedSurfaceSet_Coordinates,
-  const Standard_Integer                    theTessellatedSurfaceSet_Pnmax,
-  const Handle(TColStd_HArray2OfReal)&      theTessellatedSurfaceSet_Normals,
-  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
-  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theTessellatedSurfaceSet_Coordinates,
+  const int                    theTessellatedSurfaceSet_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theTessellatedSurfaceSet_Normals,
+  const occ::handle<NCollection_HArray1<int>>&   thePnindex,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans)
 {
   StepVisual_TessellatedSurfaceSet::Init(theRepresentationItem_Name,
                                          theTessellatedSurfaceSet_Coordinates,
@@ -48,7 +48,7 @@ void StepVisual_ComplexTriangulatedSurfaceSet::Init(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedSurfaceSet::Pnindex() const
+occ::handle<NCollection_HArray1<int>> StepVisual_ComplexTriangulatedSurfaceSet::Pnindex() const
 {
   return myPnindex;
 }
@@ -56,14 +56,14 @@ Handle(TColStd_HArray1OfInteger) StepVisual_ComplexTriangulatedSurfaceSet::Pnind
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedSurfaceSet::SetPnindex(
-  const Handle(TColStd_HArray1OfInteger)& thePnindex)
+  const occ::handle<NCollection_HArray1<int>>& thePnindex)
 {
   myPnindex = thePnindex;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::NbPnindex() const
+int StepVisual_ComplexTriangulatedSurfaceSet::NbPnindex() const
 {
   if (myPnindex.IsNull())
   {
@@ -74,15 +74,15 @@ Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::NbPnindex() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::PnindexValue(
-  const Standard_Integer theNum) const
+int StepVisual_ComplexTriangulatedSurfaceSet::PnindexValue(
+  const int theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedSurfaceSet::TriangleStrips() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> StepVisual_ComplexTriangulatedSurfaceSet::TriangleStrips() const
 {
   return myTriangleStrips;
 }
@@ -90,14 +90,14 @@ Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedSurfaceSet::Tri
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedSurfaceSet::SetTriangleStrips(
-  const Handle(TColStd_HArray1OfTransient)& theTriangleStrips)
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips)
 {
   myTriangleStrips = theTriangleStrips;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::NbTriangleStrips() const
+int StepVisual_ComplexTriangulatedSurfaceSet::NbTriangleStrips() const
 {
   if (myTriangleStrips.IsNull())
   {
@@ -108,7 +108,7 @@ Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::NbTriangleStrips() co
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedSurfaceSet::TriangleFans() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> StepVisual_ComplexTriangulatedSurfaceSet::TriangleFans() const
 {
   return myTriangleFans;
 }
@@ -116,14 +116,14 @@ Handle(TColStd_HArray1OfTransient) StepVisual_ComplexTriangulatedSurfaceSet::Tri
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedSurfaceSet::SetTriangleFans(
-  const Handle(TColStd_HArray1OfTransient)& theTriangleFans)
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans)
 {
   myTriangleFans = theTriangleFans;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_ComplexTriangulatedSurfaceSet::NbTriangleFans() const
+int StepVisual_ComplexTriangulatedSurfaceSet::NbTriangleFans() const
 {
   if (myTriangleFans.IsNull())
   {

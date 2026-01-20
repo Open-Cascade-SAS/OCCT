@@ -23,10 +23,10 @@
 RWStepVisual_RWPresentationLayerUsage::RWStepVisual_RWPresentationLayerUsage() {}
 
 void RWStepVisual_RWPresentationLayerUsage::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepVisual_PresentationLayerUsage)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepVisual_PresentationLayerUsage>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,10 +35,10 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
     return;
 
   // --- own fields
-  Handle(StepVisual_PresentationLayerAssignment) pla;
-  Handle(StepVisual_PresentationRepresentation)  pr;
+  occ::handle<StepVisual_PresentationLayerAssignment> pla;
+  occ::handle<StepVisual_PresentationRepresentation>  pr;
 
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "assignment",
@@ -60,7 +60,7 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
 
 void RWStepVisual_RWPresentationLayerUsage::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepVisual_PresentationLayerUsage)& ent) const
+  const occ::handle<StepVisual_PresentationLayerUsage>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -70,7 +70,7 @@ void RWStepVisual_RWPresentationLayerUsage::WriteStep(
 }
 
 void RWStepVisual_RWPresentationLayerUsage::Share(
-  const Handle(StepVisual_PresentationLayerUsage)& ent,
+  const occ::handle<StepVisual_PresentationLayerUsage>& ent,
   Interface_EntityIterator&                        iter) const
 {
   iter.AddItem(ent->Assignment());

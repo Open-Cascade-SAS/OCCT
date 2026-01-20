@@ -19,9 +19,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Signal.hxx>
 
-class OSD_SIGKILL;
-DEFINE_STANDARD_HANDLE(OSD_SIGKILL, OSD_Signal)
-
 #if !defined No_Exception && !defined No_OSD_SIGKILL
   #define OSD_SIGKILL_Raise_if(CONDITION, MESSAGE)                                                 \
     if (CONDITION)                                                                                 \

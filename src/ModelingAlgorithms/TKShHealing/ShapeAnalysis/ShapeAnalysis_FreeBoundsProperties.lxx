@@ -14,7 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAnalysis_HSequenceOfFreeBounds.hxx>
+#include <ShapeAnalysis_FreeBoundData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
@@ -28,14 +30,14 @@ inline TopoDS_Shape ShapeAnalysis_FreeBoundsProperties::Shape() const
 // purpose  : Returns True if shape is loaded
 //=======================================================================
 
-inline Standard_Boolean ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
+inline bool ShapeAnalysis_FreeBoundsProperties::IsLoaded() const
 {
   return !(myShape.IsNull());
 }
 
 //=================================================================================================
 
-inline Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
+inline double ShapeAnalysis_FreeBoundsProperties::Tolerance() const
 {
   return myTolerance;
 }
@@ -45,7 +47,7 @@ inline Standard_Real ShapeAnalysis_FreeBoundsProperties::Tolerance() const
 // purpose  : Returns number of free bounds
 //=======================================================================
 
-inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
+inline int ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
 {
   return (myClosedFreeBounds->Length() + myOpenFreeBounds->Length());
 }
@@ -55,7 +57,7 @@ inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbFreeBounds() const
 // purpose  : Returns number of closed free bounds
 //=======================================================================
 
-inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds() const
+inline int ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds() const
 {
   return myClosedFreeBounds->Length();
 }
@@ -65,7 +67,7 @@ inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbClosedFreeBounds()
 // purpose  : Returns number of open free bounds
 //=======================================================================
 
-inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
+inline int ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
 {
   return myOpenFreeBounds->Length();
 }
@@ -75,7 +77,7 @@ inline Standard_Integer ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() c
 // purpose  : Returns all closed free bounds
 //=======================================================================
 
-inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> ShapeAnalysis_FreeBoundsProperties::
   ClosedFreeBounds() const
 {
   return myClosedFreeBounds;
@@ -86,7 +88,7 @@ inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsPrope
 // purpose  : Returns all open free bounds
 //=======================================================================
 
-inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsProperties::
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> ShapeAnalysis_FreeBoundsProperties::
   OpenFreeBounds() const
 {
   return myOpenFreeBounds;
@@ -98,8 +100,8 @@ inline Handle(ShapeAnalysis_HSequenceOfFreeBounds) ShapeAnalysis_FreeBoundsPrope
 //           number
 //=======================================================================
 
-inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::ClosedFreeBound(
-  const Standard_Integer index) const
+inline occ::handle<ShapeAnalysis_FreeBoundData> ShapeAnalysis_FreeBoundsProperties::ClosedFreeBound(
+  const int index) const
 {
   return myClosedFreeBounds->Value(index);
 }
@@ -110,8 +112,8 @@ inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::C
 //           number
 //=======================================================================
 
-inline Handle(ShapeAnalysis_FreeBoundData) ShapeAnalysis_FreeBoundsProperties::OpenFreeBound(
-  const Standard_Integer index) const
+inline occ::handle<ShapeAnalysis_FreeBoundData> ShapeAnalysis_FreeBoundsProperties::OpenFreeBound(
+  const int index) const
 {
   return myOpenFreeBounds->Value(index);
 }

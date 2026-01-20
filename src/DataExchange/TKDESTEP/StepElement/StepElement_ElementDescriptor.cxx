@@ -27,7 +27,7 @@ StepElement_ElementDescriptor::StepElement_ElementDescriptor() {}
 //=================================================================================================
 
 void StepElement_ElementDescriptor::Init(const StepElement_ElementOrder          aTopologyOrder,
-                                         const Handle(TCollection_HAsciiString)& aDescription)
+                                         const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theTopologyOrder = aTopologyOrder;
@@ -51,7 +51,7 @@ void StepElement_ElementDescriptor::SetTopologyOrder(const StepElement_ElementOr
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_ElementDescriptor::Description() const
+occ::handle<TCollection_HAsciiString> StepElement_ElementDescriptor::Description() const
 {
   return theDescription;
 }
@@ -59,7 +59,7 @@ Handle(TCollection_HAsciiString) StepElement_ElementDescriptor::Description() co
 //=================================================================================================
 
 void StepElement_ElementDescriptor::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

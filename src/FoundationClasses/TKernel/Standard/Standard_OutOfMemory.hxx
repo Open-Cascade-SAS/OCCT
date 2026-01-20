@@ -20,9 +20,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_ProgramError.hxx>
 
-class Standard_OutOfMemory;
-DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
-
 #if !defined No_Exception && !defined No_Standard_OutOfMemory
   #define Standard_OutOfMemory_Raise_if(CONDITION, MESSAGE)                                        \
     if (CONDITION)                                                                                 \
@@ -47,30 +44,30 @@ DEFINE_STANDARD_HANDLE(Standard_OutOfMemory, Standard_ProgramError)
 
 class Standard_OutOfMemory : public Standard_ProgramError
 {
-  Standard_EXPORT void Throw() const Standard_OVERRIDE;
+  Standard_EXPORT void Throw() const override;
 
 public:
   //! Constructor is kept public for backward compatibility
-  Standard_EXPORT Standard_OutOfMemory(const Standard_CString theMessage = 0);
+  Standard_EXPORT Standard_OutOfMemory(const char* const theMessage = 0);
 
   //! Returns error message
-  Standard_EXPORT Standard_CString GetMessageString() const Standard_OVERRIDE;
+  Standard_EXPORT const char* GetMessageString() const override;
 
   //! Sets error message
-  Standard_EXPORT void SetMessageString(const Standard_CString aMessage) Standard_OVERRIDE;
+  Standard_EXPORT void SetMessageString(const char* const aMessage) override;
 
   //! Raises exception with specified message string
-  Standard_EXPORT static void Raise(const Standard_CString theMessage = "");
+  Standard_EXPORT static void Raise(const char* const theMessage = "");
 
   //! Raises exception with specified message string
   Standard_EXPORT static void Raise(Standard_SStream& theMessage);
 
   //! Returns global instance of exception
-  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance(Standard_CString theMessage = "");
+  Standard_EXPORT static occ::handle<Standard_OutOfMemory> NewInstance(const char* theMessage = "");
 
   //! Returns global instance of exception
-  Standard_EXPORT static Handle(Standard_OutOfMemory) NewInstance(Standard_CString theMessage,
-                                                                  Standard_CString theStackTrace);
+  Standard_EXPORT static occ::handle<Standard_OutOfMemory> NewInstance(const char* theMessage,
+                                                                  const char* theStackTrace);
 
   DEFINE_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
 

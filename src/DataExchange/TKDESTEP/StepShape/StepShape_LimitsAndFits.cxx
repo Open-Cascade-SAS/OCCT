@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_LimitsAndFits, Standard_Transient)
 
 StepShape_LimitsAndFits::StepShape_LimitsAndFits() {}
 
-void StepShape_LimitsAndFits::Init(const Handle(TCollection_HAsciiString)& form_variance,
-                                   const Handle(TCollection_HAsciiString)& zone_variance,
-                                   const Handle(TCollection_HAsciiString)& grade,
-                                   const Handle(TCollection_HAsciiString)& source)
+void StepShape_LimitsAndFits::Init(const occ::handle<TCollection_HAsciiString>& form_variance,
+                                   const occ::handle<TCollection_HAsciiString>& zone_variance,
+                                   const occ::handle<TCollection_HAsciiString>& grade,
+                                   const occ::handle<TCollection_HAsciiString>& source)
 {
   theFormVariance = form_variance;
   theZoneVariance = zone_variance;
@@ -29,42 +29,42 @@ void StepShape_LimitsAndFits::Init(const Handle(TCollection_HAsciiString)& form_
   theSource       = source;
 }
 
-Handle(TCollection_HAsciiString) StepShape_LimitsAndFits::FormVariance() const
+occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::FormVariance() const
 {
   return theFormVariance;
 }
 
-void StepShape_LimitsAndFits::SetFormVariance(const Handle(TCollection_HAsciiString)& form_variance)
+void StepShape_LimitsAndFits::SetFormVariance(const occ::handle<TCollection_HAsciiString>& form_variance)
 {
   theFormVariance = form_variance;
 }
 
-Handle(TCollection_HAsciiString) StepShape_LimitsAndFits::ZoneVariance() const
+occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::ZoneVariance() const
 {
   return theZoneVariance;
 }
 
-void StepShape_LimitsAndFits::SetZoneVariance(const Handle(TCollection_HAsciiString)& zone_variance)
+void StepShape_LimitsAndFits::SetZoneVariance(const occ::handle<TCollection_HAsciiString>& zone_variance)
 {
   theZoneVariance = zone_variance;
 }
 
-Handle(TCollection_HAsciiString) StepShape_LimitsAndFits::Grade() const
+occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::Grade() const
 {
   return theGrade;
 }
 
-void StepShape_LimitsAndFits::SetGrade(const Handle(TCollection_HAsciiString)& grade)
+void StepShape_LimitsAndFits::SetGrade(const occ::handle<TCollection_HAsciiString>& grade)
 {
   theGrade = grade;
 }
 
-Handle(TCollection_HAsciiString) StepShape_LimitsAndFits::Source() const
+occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::Source() const
 {
   return theSource;
 }
 
-void StepShape_LimitsAndFits::SetSource(const Handle(TCollection_HAsciiString)& source)
+void StepShape_LimitsAndFits::SetSource(const occ::handle<TCollection_HAsciiString>& source)
 {
   theSource = source;
 }

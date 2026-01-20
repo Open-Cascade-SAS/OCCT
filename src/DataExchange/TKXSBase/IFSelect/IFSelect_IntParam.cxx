@@ -22,13 +22,13 @@ IFSelect_IntParam::IFSelect_IntParam()
   theval = 0;
 }
 
-void IFSelect_IntParam::SetStaticName(const Standard_CString statname)
+void IFSelect_IntParam::SetStaticName(const char* const statname)
 {
   thestn.Clear();
   thestn.AssignCat(statname);
 }
 
-Standard_Integer IFSelect_IntParam::Value() const
+int IFSelect_IntParam::Value() const
 {
   if (thestn.Length() == 0)
     return theval;
@@ -37,7 +37,7 @@ Standard_Integer IFSelect_IntParam::Value() const
   return Interface_Static::IVal(thestn.ToCString());
 }
 
-void IFSelect_IntParam::SetValue(const Standard_Integer val)
+void IFSelect_IntParam::SetValue(const int val)
 {
   theval = val;
   if (thestn.Length() == 0)

@@ -184,7 +184,7 @@ private:
 
 //=================================================================================================
 
-Standard_Boolean Standard::StackTrace(char*     theBuffer,
+bool Standard::StackTrace(char*     theBuffer,
                                       const int theBufferSize,
                                       const int theNbTraces = 10,
                                       void*     theContext,

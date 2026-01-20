@@ -47,64 +47,62 @@ class AIS_PlaneTrihedron : public AIS_InteractiveObject
 public:
   //! Initializes the plane aPlane. The plane trihedron is
   //! constructed from this and an axis.
-  Standard_EXPORT AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT AIS_PlaneTrihedron(const occ::handle<Geom_Plane>& aPlane);
 
   //! Returns the component specified in SetComponent.
-  Standard_EXPORT Handle(Geom_Plane) Component();
+  Standard_EXPORT occ::handle<Geom_Plane> Component();
 
   //! Creates an instance of the component object aPlane.
-  Standard_EXPORT void SetComponent(const Handle(Geom_Plane)& aPlane);
+  Standard_EXPORT void SetComponent(const occ::handle<Geom_Plane>& aPlane);
 
   //! Returns the "XAxis".
-  Standard_EXPORT Handle(AIS_Line) XAxis() const;
+  Standard_EXPORT occ::handle<AIS_Line> XAxis() const;
 
   //! Returns the "YAxis".
-  Standard_EXPORT Handle(AIS_Line) YAxis() const;
+  Standard_EXPORT occ::handle<AIS_Line> YAxis() const;
 
   //! Returns the point of origin of the plane trihedron.
-  Standard_EXPORT Handle(AIS_Point) Position() const;
+  Standard_EXPORT occ::handle<AIS_Point> Position() const;
 
   //! Sets the length of the X and Y axes.
-  Standard_EXPORT void SetLength(const Standard_Real theLength);
+  Standard_EXPORT void SetLength(const double theLength);
 
   //! Returns the length of X and Y axes.
-  Standard_EXPORT Standard_Real GetLength() const;
+  Standard_EXPORT double GetLength() const;
 
   //! Returns true if the display mode selected, aMode, is valid.
-  Standard_EXPORT Standard_Boolean
-    AcceptDisplayMode(const Standard_Integer aMode) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    AcceptDisplayMode(const int aMode) const override;
 
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 4; }
+  virtual int Signature() const override { return 4; }
 
   //! Returns datum as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Datum;
   }
 
   //! Allows you to provide settings for the color aColor.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   void SetXLabel(const TCollection_AsciiString& theLabel) { myXLabel = theLabel; }
 
   void SetYLabel(const TCollection_AsciiString& theLabel) { myYLabel = theLabel; }
 
 protected:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& theprsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
 private:
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
 private:
-  Handle(Geom_Plane)            myPlane;
-  Handle(AIS_InteractiveObject) myShapes[3];
+  occ::handle<Geom_Plane>            myPlane;
+  occ::handle<AIS_InteractiveObject> myShapes[3];
   TCollection_AsciiString       myXLabel;
   TCollection_AsciiString       myYLabel;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_PlaneTrihedron, AIS_InteractiveObject)
 
 #endif // _AIS_PlaneTrihedron_HeaderFile

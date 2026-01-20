@@ -33,10 +33,10 @@ RWStepKinematics_RWPointOnPlanarCurvePair::RWStepKinematics_RWPointOnPlanarCurve
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
-  const Handle(StepData_StepReaderData)&               theData,
-  const Standard_Integer                               theNum,
-  Handle(Interface_Check)&                             theArch,
-  const Handle(StepKinematics_PointOnPlanarCurvePair)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&               theData,
+  const int                               theNum,
+  occ::handle<Interface_Check>&                             theArch,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePair>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 8, theArch, "point_on_planar_curve_pair"))
@@ -44,20 +44,20 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -68,11 +68,11 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -80,7 +80,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -90,7 +90,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -100,10 +100,10 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
 
   // Own fields of PointOnPlanarCurvePair
 
-  Handle(StepGeom_Curve) aPairCurve;
+  occ::handle<StepGeom_Curve> aPairCurve;
   theData->ReadEntity(theNum, 7, "pair_curve", theArch, STANDARD_TYPE(StepGeom_Curve), aPairCurve);
 
-  Standard_Boolean aOrientation;
+  bool aOrientation;
   theData->ReadBoolean(theNum, 8, "orientation", theArch, aOrientation);
 
   // Initialize entity
@@ -122,7 +122,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::ReadStep(
 
 void RWStepKinematics_RWPointOnPlanarCurvePair::WriteStep(
   StepData_StepWriter&                                 theSW,
-  const Handle(StepKinematics_PointOnPlanarCurvePair)& theEnt) const
+  const occ::handle<StepKinematics_PointOnPlanarCurvePair>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -158,7 +158,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePair::Share(
-  const Handle(StepKinematics_PointOnPlanarCurvePair)& theEnt,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePair>& theEnt,
   Interface_EntityIterator&                            iter) const
 {
 

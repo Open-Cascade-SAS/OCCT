@@ -33,17 +33,17 @@ public:
   //! theObject->LocalTransformation())
   //! @param[in] theTrsfEnd       local transformation at the end   of animation
   Standard_EXPORT AIS_AnimationObject(const TCollection_AsciiString&        theAnimationName,
-                                      const Handle(AIS_InteractiveContext)& theContext,
-                                      const Handle(AIS_InteractiveObject)&  theObject,
+                                      const occ::handle<AIS_InteractiveContext>& theContext,
+                                      const occ::handle<AIS_InteractiveObject>&  theObject,
                                       const gp_Trsf&                        theTrsfStart,
                                       const gp_Trsf&                        theTrsfEnd);
 
 protected:
   //! Update the progress.
-  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) Standard_OVERRIDE;
+  Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) override;
 
 private:
-  gp_TrsfNLerp myTrsfLerp; //!< interpolation tool
+  NCollection_Lerp<gp_Trsf> myTrsfLerp; //!< interpolation tool
 };
 
 #endif // _AIS_AnimationObject_HeaderFile

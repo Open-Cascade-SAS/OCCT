@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Block, StepGeom_GeometricRepresentationItem
 
 StepShape_Block::StepShape_Block() {}
 
-void StepShape_Block::Init(const Handle(TCollection_HAsciiString)&  aName,
-                           const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                           const Standard_Real                      aX,
-                           const Standard_Real                      aY,
-                           const Standard_Real                      aZ)
+void StepShape_Block::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                           const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                           const double                      aX,
+                           const double                      aY,
+                           const double                      aZ)
 {
   // --- classe own fields ---
   position = aPosition;
@@ -34,42 +34,42 @@ void StepShape_Block::Init(const Handle(TCollection_HAsciiString)&  aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_Block::SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition)
+void StepShape_Block::SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   position = aPosition;
 }
 
-Handle(StepGeom_Axis2Placement3d) StepShape_Block::Position() const
+occ::handle<StepGeom_Axis2Placement3d> StepShape_Block::Position() const
 {
   return position;
 }
 
-void StepShape_Block::SetX(const Standard_Real aX)
+void StepShape_Block::SetX(const double aX)
 {
   x = aX;
 }
 
-Standard_Real StepShape_Block::X() const
+double StepShape_Block::X() const
 {
   return x;
 }
 
-void StepShape_Block::SetY(const Standard_Real aY)
+void StepShape_Block::SetY(const double aY)
 {
   y = aY;
 }
 
-Standard_Real StepShape_Block::Y() const
+double StepShape_Block::Y() const
 {
   return y;
 }
 
-void StepShape_Block::SetZ(const Standard_Real aZ)
+void StepShape_Block::SetZ(const double aZ)
 {
   z = aZ;
 }
 
-Standard_Real StepShape_Block::Z() const
+double StepShape_Block::Z() const
 {
   return z;
 }

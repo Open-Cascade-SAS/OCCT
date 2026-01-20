@@ -23,10 +23,10 @@
 RWStepVisual_RWTextStyleWithBoxCharacteristics::RWStepVisual_RWTextStyleWithBoxCharacteristics() {}
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
-  const Handle(StepData_StepReaderData)&                    data,
-  const Standard_Integer                                    num,
-  Handle(Interface_Check)&                                  ach,
-  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent) const
+  const occ::handle<StepData_StepReaderData>&                    data,
+  const int                                    num,
+  occ::handle<Interface_Check>&                                  ach,
+  const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -39,14 +39,14 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : characterAppearance ---
 
-  Handle(StepVisual_TextStyleForDefinedFont) aCharacterAppearance;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepVisual_TextStyleForDefinedFont> aCharacterAppearance;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "character_appearance",
@@ -56,37 +56,37 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 
   // --- own field : characteristics ---
 
-  Standard_Integer        numr, numpr;
+  int        numr, numpr;
   TCollection_AsciiString TypeHeigth("BOX_HEIGHT");
   TCollection_AsciiString TypeWidth("BOX_WIDTH");
   TCollection_AsciiString TypeSlant("BOX_SLANT_ANGLE");
   TCollection_AsciiString TypeRotate("BOX_ROTATE_ANGLE");
   TCollection_AsciiString TrueType;
 
-  Handle(StepVisual_HArray1OfBoxCharacteristicSelect) aCharacteristics;
-  Standard_Real                                       aCharacteristicsItem;
+  occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> aCharacteristics;
+  double                                       aCharacteristicsItem;
   StepVisual_BoxCharacteristicSelect                  aBoxCharacteristicSelect;
 
-  Standard_Integer nsub3;
-  nsub3 = data->SubListNumber(num, 3, Standard_False);
+  int nsub3;
+  nsub3 = data->SubListNumber(num, 3, false);
   if (nsub3 != 0)
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aCharacteristics     = new StepVisual_HArray1OfBoxCharacteristicSelect(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aCharacteristics     = new NCollection_HArray1<StepVisual_BoxCharacteristicSelect>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
       // Looks for true type :
-      // szv#4:S4163:12Mar99 `Standard_Boolean statType =` not needed
+      // szv#4:S4163:12Mar99 `bool statType =` not needed
       if (data->ReadTypedParam(nsub3,
                                i3,
-                               Standard_True,
+                               true,
                                "characteristics",
                                ach,
                                numr,
                                numpr,
                                TrueType))
       {
-        // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+        // szv#4:S4163:12Mar99 `bool stat3 =` not needed
         if (data->ReadReal(numr, numpr, "characteristics", ach, aCharacteristicsItem))
         {
           aBoxCharacteristicSelect.SetRealValue(aCharacteristicsItem);
@@ -127,7 +127,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent) const
+  const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent) const
 {
 
   // --- inherited field name ---
@@ -145,7 +145,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
 }
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::Share(
-  const Handle(StepVisual_TextStyleWithBoxCharacteristics)& ent,
+  const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent,
   Interface_EntityIterator&                                 iter) const
 {
 

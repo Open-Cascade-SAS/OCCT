@@ -30,25 +30,25 @@ typedef Geom_Surface Surface;
 
 //=================================================================================================
 
-Handle(Geom_Surface) Geom_Surface::UReversed() const
+occ::handle<Geom_Surface> Geom_Surface::UReversed() const
 {
-  Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(Copy());
+  occ::handle<Geom_Surface> S = occ::down_cast<Geom_Surface>(Copy());
   S->UReverse();
   return S;
 }
 
 //=================================================================================================
 
-Handle(Geom_Surface) Geom_Surface::VReversed() const
+occ::handle<Geom_Surface> Geom_Surface::VReversed() const
 {
-  Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(Copy());
+  occ::handle<Geom_Surface> S = occ::down_cast<Geom_Surface>(Copy());
   S->VReverse();
   return S;
 }
 
 //=================================================================================================
 
-void Geom_Surface::TransformParameters(Standard_Real&, Standard_Real&, const gp_Trsf&) const {}
+void Geom_Surface::TransformParameters(double&, double&, const gp_Trsf&) const {}
 
 //=================================================================================================
 
@@ -60,29 +60,29 @@ gp_GTrsf2d Geom_Surface::ParametricTransformation(const gp_Trsf&) const
 
 //=================================================================================================
 
-Standard_Real Geom_Surface::UPeriod() const
+double Geom_Surface::UPeriod() const
 {
   Standard_NoSuchObject_Raise_if(!IsUPeriodic(), "Geom_Surface::UPeriod");
 
-  Standard_Real U1, U2, V1, V2;
+  double U1, U2, V1, V2;
   Bounds(U1, U2, V1, V2);
   return (U2 - U1);
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Surface::VPeriod() const
+double Geom_Surface::VPeriod() const
 {
   Standard_NoSuchObject_Raise_if(!IsVPeriodic(), "Geom_Surface::VPeriod");
 
-  Standard_Real U1, U2, V1, V2;
+  double U1, U2, V1, V2;
   Bounds(U1, U2, V1, V2);
   return (V2 - V1);
 }
 
 //=================================================================================================
 
-gp_Pnt Geom_Surface::Value(const Standard_Real U, const Standard_Real V) const
+gp_Pnt Geom_Surface::Value(const double U, const double V) const
 {
   gp_Pnt P;
   D0(U, V, P);
@@ -91,7 +91,7 @@ gp_Pnt Geom_Surface::Value(const Standard_Real U, const Standard_Real V) const
 
 //=================================================================================================
 
-void Geom_Surface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Surface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

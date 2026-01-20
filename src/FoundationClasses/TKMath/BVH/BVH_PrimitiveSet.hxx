@@ -35,7 +35,7 @@ protected:
   using BVH_Set<T, N>::Box;
 
 public:
-  static const Standard_Integer MaxTreeDepth = BVH_Constants_MaxTreeDepth;
+  static const int MaxTreeDepth = BVH_Constants_MaxTreeDepth;
 
   //! Creates set of abstract primitives.
   BVH_PrimitiveSet()
@@ -65,7 +65,7 @@ public:
 
 public:
   //! Returns AABB of primitive set.
-  virtual BVH_Box<T, N> Box() const Standard_OVERRIDE
+  virtual BVH_Box<T, N> Box() const override
   {
     if (BVH_Object<T, N>::myIsDirty)
     {
@@ -100,7 +100,7 @@ protected:
     if (BVH_Object<T, N>::myIsDirty)
     {
       myBuilder->Build(this, myBVH.operator->(), Box());
-      BVH_Object<T, N>::myIsDirty = Standard_False;
+      BVH_Object<T, N>::myIsDirty = false;
     }
   }
 

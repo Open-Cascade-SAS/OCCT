@@ -28,8 +28,8 @@ StepElement_Surface3dElementDescriptor::StepElement_Surface3dElementDescriptor()
 
 void StepElement_Surface3dElementDescriptor::Init(
   const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
-  const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
-  const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& aPurpose,
+  const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+  const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& aPurpose,
   const StepElement_Element2dShape                                           aShape)
 {
   StepElement_ElementDescriptor::Init(aElementDescriptor_TopologyOrder,
@@ -42,7 +42,7 @@ void StepElement_Surface3dElementDescriptor::Init(
 
 //=================================================================================================
 
-Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)
+occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>
   StepElement_Surface3dElementDescriptor::Purpose() const
 {
   return thePurpose;
@@ -51,7 +51,7 @@ Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)
 //=================================================================================================
 
 void StepElement_Surface3dElementDescriptor::SetPurpose(
-  const Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember)& aPurpose)
+  const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>>& aPurpose)
 {
   thePurpose = aPurpose;
 }

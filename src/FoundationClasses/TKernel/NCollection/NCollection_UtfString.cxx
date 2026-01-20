@@ -68,7 +68,7 @@ wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
 
 bool NCollection_UtfStringTool::ToLocale(const wchar_t*         theWideString,
                                          char*                  theBuffer,
-                                         const Standard_Integer theSizeBytes)
+                                         const int theSizeBytes)
 {
   #if defined(_WIN32)
   int aMbBytes =

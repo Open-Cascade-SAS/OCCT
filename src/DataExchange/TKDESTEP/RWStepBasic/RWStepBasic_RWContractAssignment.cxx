@@ -30,10 +30,10 @@ RWStepBasic_RWContractAssignment::RWStepBasic_RWContractAssignment() {}
 //=================================================================================================
 
 void RWStepBasic_RWContractAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_ContractAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepBasic_ContractAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "contract_assignment"))
@@ -41,7 +41,7 @@ void RWStepBasic_RWContractAssignment::ReadStep(
 
   // Own fields of ContractAssignment
 
-  Handle(StepBasic_Contract) aAssignedContract;
+  occ::handle<StepBasic_Contract> aAssignedContract;
   data->ReadEntity(num,
                    1,
                    "assigned_contract",
@@ -57,7 +57,7 @@ void RWStepBasic_RWContractAssignment::ReadStep(
 
 void RWStepBasic_RWContractAssignment::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepBasic_ContractAssignment)& ent) const
+  const occ::handle<StepBasic_ContractAssignment>& ent) const
 {
 
   // Own fields of ContractAssignment
@@ -67,7 +67,7 @@ void RWStepBasic_RWContractAssignment::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWContractAssignment::Share(const Handle(StepBasic_ContractAssignment)& ent,
+void RWStepBasic_RWContractAssignment::Share(const occ::handle<StepBasic_ContractAssignment>& ent,
                                              Interface_EntityIterator&                   iter) const
 {
 

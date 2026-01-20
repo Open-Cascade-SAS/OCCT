@@ -29,8 +29,8 @@
 //=================================================================================================
 
 BRepPrim_Torus::BRepPrim_Torus(const gp_Ax2&       Position,
-                               const Standard_Real Major,
-                               const Standard_Real Minor)
+                               const double Major,
+                               const double Minor)
     : BRepPrim_Revolution(Position, 0, 2 * M_PI),
       myMajor(Major),
       myMinor(Minor)
@@ -40,7 +40,7 @@ BRepPrim_Torus::BRepPrim_Torus(const gp_Ax2&       Position,
 
 //=================================================================================================
 
-BRepPrim_Torus::BRepPrim_Torus(const Standard_Real Major, const Standard_Real Minor)
+BRepPrim_Torus::BRepPrim_Torus(const double Major, const double Minor)
     : BRepPrim_Revolution(gp::XOY(), 0, 2 * M_PI),
       myMajor(Major),
       myMinor(Minor)
@@ -51,8 +51,8 @@ BRepPrim_Torus::BRepPrim_Torus(const Standard_Real Major, const Standard_Real Mi
 //=================================================================================================
 
 BRepPrim_Torus::BRepPrim_Torus(const gp_Pnt&       Center,
-                               const Standard_Real Major,
-                               const Standard_Real Minor)
+                               const double Major,
+                               const double Minor)
     : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, 2 * M_PI),
       myMajor(Major),
       myMinor(Minor)
@@ -64,7 +64,7 @@ BRepPrim_Torus::BRepPrim_Torus(const gp_Pnt&       Center,
 
 TopoDS_Face BRepPrim_Torus::MakeEmptyLateralFace() const
 {
-  Handle(Geom_ToroidalSurface) T = new Geom_ToroidalSurface(Axes(), myMajor, myMinor);
+  occ::handle<Geom_ToroidalSurface> T = new Geom_ToroidalSurface(Axes(), myMajor, myMinor);
   TopoDS_Face                  F;
   myBuilder.Builder().MakeFace(F, T, Precision::Confusion());
   return F;
@@ -80,8 +80,8 @@ void BRepPrim_Torus::SetMeridian()
   gp_Vec V = Axes().XDirection();
   V.Multiply(myMajor);
   A.Translate(V);
-  Handle(Geom_Circle)   C = new Geom_Circle(A, myMinor);
-  Handle(Geom2d_Circle) C2d =
+  occ::handle<Geom_Circle>   C = new Geom_Circle(A, myMinor);
+  occ::handle<Geom2d_Circle> C2d =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(myMajor, 0), gp_Dir2d(gp_Dir2d::D::X)), myMinor);
   Meridian(C, C2d);
 }

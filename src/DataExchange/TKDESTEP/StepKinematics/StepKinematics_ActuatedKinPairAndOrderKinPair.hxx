@@ -18,14 +18,11 @@
 
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 class StepRepr_RepresentationItem;
 class StepKinematics_ActuatedKinematicPair;
-class StepKinematics_ActuatedKinPairAndOrderKinPair;
-
-DEFINE_STANDARD_HANDLE(StepKinematics_ActuatedKinPairAndOrderKinPair, StepKinematics_KinematicPair)
-
 //! Representation of STEP entity ActuatedKinPairAndOrderKinPair
 class StepKinematics_ActuatedKinPairAndOrderKinPair : public StepKinematics_KinematicPair
 {
@@ -34,32 +31,32 @@ public:
   Standard_EXPORT StepKinematics_ActuatedKinPairAndOrderKinPair();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&             theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Name,
-    const Standard_Boolean                              hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&             theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&          theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)&        theJoint,
-    const Handle(StepKinematics_ActuatedKinematicPair)& theActuatedKinematicPair,
-    const Handle(StepKinematics_KinematicPair)&         theOrderKinematicPair);
+    const occ::handle<TCollection_HAsciiString>&             theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&             theItemDefinedTransformation_Name,
+    const bool                              hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&             theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&          theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&          theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>&        theJoint,
+    const occ::handle<StepKinematics_ActuatedKinematicPair>& theActuatedKinematicPair,
+    const occ::handle<StepKinematics_KinematicPair>&         theOrderKinematicPair);
 
-  inline void SetActuatedKinematicPair(const Handle(StepKinematics_ActuatedKinematicPair)& aKP)
+  inline void SetActuatedKinematicPair(const occ::handle<StepKinematics_ActuatedKinematicPair>& aKP)
   {
     myActuatedKinematicPair = aKP;
   }
 
-  inline Handle(StepKinematics_ActuatedKinematicPair) GetActuatedKinematicPair() const
+  inline occ::handle<StepKinematics_ActuatedKinematicPair> GetActuatedKinematicPair() const
   {
     return myActuatedKinematicPair;
   }
 
-  inline void SetOrderKinematicPair(const Handle(StepKinematics_KinematicPair)& aKP)
+  inline void SetOrderKinematicPair(const occ::handle<StepKinematics_KinematicPair>& aKP)
   {
     myOrderKinematicPair = aKP;
   }
 
-  inline Handle(StepKinematics_KinematicPair) GetOrderKinematicPair() const
+  inline occ::handle<StepKinematics_KinematicPair> GetOrderKinematicPair() const
   {
     return myOrderKinematicPair;
   }
@@ -68,7 +65,7 @@ public:
                           StepKinematics_KinematicPair)
 
 private:
-  Handle(StepKinematics_ActuatedKinematicPair) myActuatedKinematicPair;
-  Handle(StepKinematics_KinematicPair)         myOrderKinematicPair;
+  occ::handle<StepKinematics_ActuatedKinematicPair> myActuatedKinematicPair;
+  occ::handle<StepKinematics_KinematicPair>         myOrderKinematicPair;
 };
 #endif // StepKinematics_ActuatedKinPairAndOrderKinPair

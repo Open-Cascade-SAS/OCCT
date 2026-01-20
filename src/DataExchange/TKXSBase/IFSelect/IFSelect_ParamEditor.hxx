@@ -23,15 +23,14 @@
 #include <TCollection_AsciiString.hxx>
 #include <IFSelect_Editor.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Interface_TypedValue;
 class IFSelect_EditForm;
 class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceModel;
-
-class IFSelect_ParamEditor;
-DEFINE_STANDARD_HANDLE(IFSelect_ParamEditor, IFSelect_Editor)
 
 //! A ParamEditor gives access for edition to a list of TypedValue
 //! (i.e. of Static too)
@@ -48,45 +47,45 @@ public:
   //! Creates a ParamEditor, empty, with a maximum count of params
   //! (default is 100)
   //! And a label, by default it will be "Param Editor"
-  Standard_EXPORT IFSelect_ParamEditor(const Standard_Integer nbmax = 100,
-                                       const Standard_CString label = "");
+  Standard_EXPORT IFSelect_ParamEditor(const int nbmax = 100,
+                                       const char* const label = "");
 
   //! Adds a TypedValue
   //! By default, its short name equates its complete name, it can be made explicit
-  Standard_EXPORT void AddValue(const Handle(Interface_TypedValue)& val,
-                                const Standard_CString              shortname = "");
+  Standard_EXPORT void AddValue(const occ::handle<Interface_TypedValue>& val,
+                                const char* const              shortname = "");
 
   //! Adds a Constant Text, it will be Read Only
   //! By default, its long name equates its shortname
-  Standard_EXPORT void AddConstantText(const Standard_CString val,
-                                       const Standard_CString shortname,
-                                       const Standard_CString completename = "");
+  Standard_EXPORT void AddConstantText(const char* const val,
+                                       const char* const shortname,
+                                       const char* const completename = "");
 
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
-  Standard_EXPORT Standard_Boolean
-    Recognize(const Handle(IFSelect_EditForm)& form) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Recognize(const occ::handle<IFSelect_EditForm>& form) const override;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringValue(
-    const Handle(IFSelect_EditForm)& form,
-    const Standard_Integer           num) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> StringValue(
+    const occ::handle<IFSelect_EditForm>& form,
+    const int           num) const override;
 
-  Standard_EXPORT Standard_Boolean
-    Load(const Handle(IFSelect_EditForm)&        form,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Load(const occ::handle<IFSelect_EditForm>&        form,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
-  Standard_EXPORT Standard_Boolean
-    Apply(const Handle(IFSelect_EditForm)&        form,
-          const Handle(Standard_Transient)&       ent,
-          const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Apply(const occ::handle<IFSelect_EditForm>&        form,
+          const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a ParamEditor to work on the Static Parameters of
   //! which names are listed in <list>
   //! Null Handle if <list> is null or empty
-  Standard_EXPORT static Handle(IFSelect_ParamEditor) StaticEditor(
-    const Handle(TColStd_HSequenceOfHAsciiString)& list,
-    const Standard_CString                         label = "");
+  Standard_EXPORT static occ::handle<IFSelect_ParamEditor> StaticEditor(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+    const char* const                         label = "");
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_ParamEditor, IFSelect_Editor)
 

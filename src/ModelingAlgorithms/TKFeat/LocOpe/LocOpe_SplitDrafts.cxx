@@ -58,26 +58,31 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-static Standard_Boolean NewPlane(const TopoDS_Face&,
+static bool NewPlane(const TopoDS_Face&,
                                  const gp_Dir&,
                                  const gp_Pln&,
-                                 const Standard_Real,
+                                 const double,
                                  gp_Pln&,
                                  gp_Ax1&,
-                                 const Standard_Boolean);
+                                 const bool);
 
-static void MakeFace(TopoDS_Face&, TopTools_ListOfShape&);
+static void MakeFace(TopoDS_Face&, NCollection_List<TopoDS_Shape>&);
 
 static TopoDS_Edge NewEdge(const TopoDS_Edge&,
                            const TopoDS_Face&,
-                           const Handle(Geom_Surface)&,
+                           const occ::handle<Geom_Surface>&,
                            const TopoDS_Vertex&,
                            const TopoDS_Vertex&);
 
-static Standard_Boolean Contains(const TopTools_ListOfShape&, const TopoDS_Shape&);
+static bool Contains(const NCollection_List<TopoDS_Shape>&, const TopoDS_Shape&);
 
 //=================================================================================================
 
@@ -94,9 +99,9 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&  F,
                                  const TopoDS_Wire&  W,
                                  const gp_Dir&       Extr,
                                  const gp_Pln&       NPl,
-                                 const Standard_Real Angle)
+                                 const double Angle)
 {
-  Perform(F, W, Extr, NPl, Angle, Extr, NPl, Angle, Standard_True, Standard_False);
+  Perform(F, W, Extr, NPl, Angle, Extr, NPl, Angle, true, false);
 }
 
 //=================================================================================================
@@ -105,15 +110,15 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
                                  const TopoDS_Wire&     W,
                                  const gp_Dir&          Extrg,
                                  const gp_Pln&          NPlg,
-                                 const Standard_Real    Angleg,
+                                 const double    Angleg,
                                  const gp_Dir&          Extrd,
                                  const gp_Pln&          NPld,
-                                 const Standard_Real    Angled,
-                                 const Standard_Boolean ModLeft,
-                                 const Standard_Boolean ModRight)
+                                 const double    Angled,
+                                 const bool ModLeft,
+                                 const bool ModRight)
 
 {
-  Standard_Integer j;
+  int j;
 
   myResult.Nullify();
   myMap.Clear();
@@ -129,17 +134,17 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
 
   TopAbs_Orientation OriF = TopAbs_FORWARD;
 
-  Standard_Boolean FinS = Standard_False;
+  bool FinS = false;
   TopExp_Explorer  exp, exp2;
   for (exp.Init(myShape, TopAbs_FACE); exp.More(); exp.Next())
   {
     const TopoDS_Shape&  fac = exp.Current();
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     myMap.Bind(fac, thelist);
     if (fac.IsSame(F))
     {
       OriF = fac.Orientation();
-      FinS = Standard_True;
+      FinS = true;
     }
   }
 
@@ -163,17 +168,17 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     return;
   }
 
-  TopTools_ListIteratorOfListOfShape itl;
+  NCollection_List<TopoDS_Shape>::Iterator itl;
   BRep_Builder                       B;
 
-  Handle(Geom_Surface) NewSg       = new Geom_Plane(NewPlg);
-  Handle(Geom_Surface) NewSd       = new Geom_Plane(NewPld);
-  Handle(Geom_Line)    theLinePipe = new Geom_Line(NormalFg); // ou NormalFd
+  occ::handle<Geom_Surface> NewSg       = new Geom_Plane(NewPlg);
+  occ::handle<Geom_Surface> NewSd       = new Geom_Plane(NewPld);
+  occ::handle<Geom_Line>    theLinePipe = new Geom_Line(NormalFg); // ou NormalFd
   GeomInt_IntSS        i2s(NewSg, NewSd, Precision::Confusion());
 
-  TopTools_MapOfShape         theMap;
-  Handle(GeomAdaptor_Curve)   HAC = new GeomAdaptor_Curve;
-  Handle(GeomAdaptor_Surface) HAS = new GeomAdaptor_Surface;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>         theMap;
+  occ::handle<GeomAdaptor_Curve>   HAC = new GeomAdaptor_Curve;
+  occ::handle<GeomAdaptor_Surface> HAS = new GeomAdaptor_Surface;
   IntCurveSurface_HInter      intcs;
 
   TopoDS_Wire theW = W;
@@ -182,13 +187,13 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     // on split le wire" << std::endl;
 
     GeomFill_Pipe thePipe;
-    thePipe.GenerateParticularCase(Standard_True);
+    thePipe.GenerateParticularCase(true);
     thePipe.Init(theLinePipe, i2s.Line(1));
-    thePipe.Perform(Standard_True);
+    thePipe.Perform(true);
     if (!thePipe.IsDone())
       throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
-    Handle(Geom_Surface) Spl = thePipe.Surface();
+    occ::handle<Geom_Surface> Spl = thePipe.Surface();
     HAS->Load(Spl);
 
     LocOpe_SplitShape splw(W);
@@ -199,8 +204,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       if (theMap.Add(edg))
       {
         TopLoc_Location    Loc;
-        Standard_Real      f, l;
-        Handle(Geom_Curve) C = BRep_Tool::Curve(edg, f, l);
+        double      f, l;
+        occ::handle<Geom_Curve> C = BRep_Tool::Curve(edg, f, l);
         HAC->Load(C);
         intcs.Perform(HAC, HAS);
         if (!intcs.IsDone())
@@ -223,15 +228,15 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           TopExp::Vertices(edg, Vf, Vl);
           gp_Pnt        Pf   = BRep_Tool::Pnt(Vf);
           gp_Pnt        Pl   = BRep_Tool::Pnt(Vl);
-          Standard_Real Tolf = BRep_Tool::Tolerance(Vf);
-          Standard_Real Toll = BRep_Tool::Tolerance(Vl);
+          double Tolf = BRep_Tool::Tolerance(Vf);
+          double Toll = BRep_Tool::Tolerance(Vl);
           Tolf *= Tolf;
           Toll *= Toll;
 
-          Standard_Real dff = pf.SquareDistance(Pf);
-          Standard_Real dfl = pf.SquareDistance(Pl);
-          Standard_Real dlf = pl.SquareDistance(Pf);
-          Standard_Real dll = pl.SquareDistance(Pl);
+          double dff = pf.SquareDistance(Pf);
+          double dfl = pf.SquareDistance(Pl);
+          double dlf = pl.SquareDistance(Pf);
+          double dll = pl.SquareDistance(Pl);
 
           if ((dff <= Tolf && dll <= Toll) || (dlf <= Tolf && dfl <= Toll))
           {
@@ -260,17 +265,17 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           TopExp::Vertices(edg, Vf, Vl);
           gp_Pnt        Pf   = BRep_Tool::Pnt(Vf);
           gp_Pnt        Pl   = BRep_Tool::Pnt(Vl);
-          Standard_Real Tolf = BRep_Tool::Tolerance(Vf);
-          Standard_Real Toll = BRep_Tool::Tolerance(Vl);
+          double Tolf = BRep_Tool::Tolerance(Vf);
+          double Toll = BRep_Tool::Tolerance(Vl);
           Tolf *= Tolf;
           Toll *= Toll;
 
-          for (Standard_Integer i = 1; i <= intcs.NbPoints(); i++)
+          for (int i = 1; i <= intcs.NbPoints(); i++)
           {
             const IntCurveSurface_IntersectionPoint& Pi  = intcs.Point(i);
             const gp_Pnt&                            pi  = Pi.Pnt();
-            Standard_Real                            dif = pi.SquareDistance(Pf);
-            Standard_Real                            dil = pi.SquareDistance(Pl);
+            double                            dif = pi.SquareDistance(Pf);
+            double                            dil = pi.SquareDistance(Pl);
             if (dif <= Tolf)
             {
             }
@@ -291,7 +296,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       }
     }
 
-    const TopTools_ListOfShape& lres = splw.DescendantShapes(W);
+    const NCollection_List<TopoDS_Shape>& lres = splw.DescendantShapes(W);
     if (lres.Extent() != 1)
     {
       return;
@@ -307,7 +312,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     {
       if (!myMap.IsBound(exp.Current()))
       {
-        TopTools_ListOfShape thelist1;
+        NCollection_List<TopoDS_Shape> thelist1;
         myMap.Bind(exp.Current(), thelist1);
         for (itl.Initialize(splw.DescendantShapes(exp.Current())); itl.More(); itl.Next())
         {
@@ -317,7 +322,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         {
           if (!myMap.IsBound(exp2.Current()))
           {
-            TopTools_ListOfShape thelist2;
+            NCollection_List<TopoDS_Shape> thelist2;
             myMap.Bind(exp2.Current(), thelist2);
             myMap(exp2.Current()).Append(exp2.Current());
           }
@@ -331,14 +336,14 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     {
       if (!myMap.IsBound(exp.Current()))
       {
-        TopTools_ListOfShape thelist3;
+        NCollection_List<TopoDS_Shape> thelist3;
         myMap.Bind(exp.Current(), thelist3);
         myMap(exp.Current()).Append(exp.Current());
         for (exp2.Init(exp.Current(), TopAbs_VERTEX); exp2.More(); exp2.Next())
         {
           if (!myMap.IsBound(exp2.Current()))
           {
-            TopTools_ListOfShape thelist4;
+            NCollection_List<TopoDS_Shape> thelist4;
             myMap.Bind(exp2.Current(), thelist4);
             myMap(exp2.Current()).Append(exp2.Current());
           }
@@ -349,7 +354,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
 
   // On split la face par le wire
 
-  Handle(LocOpe_WiresOnShape) WonS = new LocOpe_WiresOnShape(myShape);
+  occ::handle<LocOpe_WiresOnShape> WonS = new LocOpe_WiresOnShape(myShape);
   LocOpe_Spliter              Spls(myShape);
   WonS->Bind(theW, F);
 
@@ -366,7 +371,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
   }
 
   TopoDS_Shape                Res     = Spls.ResultingShape();
-  const TopTools_ListOfShape& theLeft = Spls.DirectLeft();
+  const NCollection_List<TopoDS_Shape>& theLeft = Spls.DirectLeft();
 
   // Descendants
   for (exp.Init(myShape, TopAbs_FACE); exp.More(); exp.Next())
@@ -378,7 +383,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     }
   }
 
-  TopTools_DataMapOfShapeShape MapW;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapW;
   for (exp.Init(theW, TopAbs_EDGE); exp.More(); exp.Next())
   {
     if (!MapW.IsBound(exp.Current()))
@@ -394,14 +399,14 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     }
   }
 
-  TopTools_IndexedDataMapOfShapeListOfShape theMapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF;
   TopExp::MapShapesAndAncestors(Res, TopAbs_EDGE, TopAbs_FACE, theMapEF);
 
   // On stocke les geometries potentiellement generees par les edges
-  TopTools_IndexedDataMapOfShapeShape MapEV;        // genere
-  TopTools_DataMapOfShapeListOfShape  MapSg, MapSd; // image a gauche et a droite
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapEV;        // genere
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>  MapSg, MapSd; // image a gauche et a droite
 
-  Standard_Integer Nbedges, index;
+  int Nbedges, index;
   for (itl.Initialize(myMap(F)); itl.More(); itl.Next())
   {
     const TopoDS_Shape& fac = TopoDS::Face(itl.Value());
@@ -415,25 +420,25 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       if (MapW.IsBound(edg))
       { // edge du wire initial
         TopLoc_Location    Loc;
-        Standard_Real      f, l;
-        Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(edg), Loc, f, l);
+        double      f, l;
+        occ::handle<Geom_Curve> C = BRep_Tool::Curve(TopoDS::Edge(edg), Loc, f, l);
         if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
         {
-          C = Handle(Geom_TrimmedCurve)::DownCast(C)->BasisCurve();
+          C = occ::down_cast<Geom_TrimmedCurve>(C)->BasisCurve();
         }
-        C = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
+        C = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
 
         GeomFill_Pipe thePipe;
-        thePipe.GenerateParticularCase(Standard_True);
+        thePipe.GenerateParticularCase(true);
         thePipe.Init(theLinePipe, C);
-        thePipe.Perform(Standard_True);
+        thePipe.Perform(true);
         if (!thePipe.IsDone())
           throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
-        Handle(Geom_Surface) thePS = thePipe.Surface();
+        occ::handle<Geom_Surface> thePS = thePipe.Surface();
         if (thePS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
         {
-          thePS = Handle(Geom_RectangularTrimmedSurface)::DownCast(thePS)->BasisSurface();
+          thePS = occ::down_cast<Geom_RectangularTrimmedSurface>(thePS)->BasisSurface();
         }
 
         TopoDS_Face NewFace;
@@ -460,7 +465,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     }
   }
 
-  TopTools_DataMapOfShapeShape MapSonS;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapSonS;
 
   Nbedges = MapEV.Extent();
   for (index = 1; index <= Nbedges; index++)
@@ -497,7 +502,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           break;
         }
       }
-      Standard_Integer    Choice = 0;
+      int    Choice = 0;
       const TopoDS_Shape& edg1   = MapEV.FindKey(index);
       TopoDS_Shape        edg2;
       if (j <= Nbedges)
@@ -538,9 +543,9 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           Choice = 3; // mixte
         }
       }
-      Handle(Geom_Curve)   Newc;
-      Handle(Geom2d_Curve) newCs1, newCs2;
-      Standard_Real        knownp = 0;
+      occ::handle<Geom_Curve>   Newc;
+      occ::handle<Geom2d_Curve> newCs1, newCs2;
+      double        knownp = 0;
       TopoDS_Edge          Ebind;
       switch (Choice)
       {
@@ -567,10 +572,10 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           }
           if (exp2.More())
           {
-            Standard_Real   f, l;
+            double   f, l;
             TopLoc_Location Loc;
             Newc   = BRep_Tool::Curve(TopoDS::Edge(exp2.Current()), Loc, f, l);
-            Newc   = Handle(Geom_Curve)::DownCast(Newc->Transformed(Loc.Transformation()));
+            Newc   = occ::down_cast<Geom_Curve>(Newc->Transformed(Loc.Transformation()));
             Ebind  = TopoDS::Edge(exp2.Current());
             knownp = BRep_Tool::Parameter(vtx, Ebind);
           }
@@ -595,28 +600,28 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         case 3: {
           const TopoDS_Face&   F1    = TopoDS::Face(MapEV.FindFromKey(edg1));
           const TopoDS_Face&   F2    = TopoDS::Face(MapEV.FindFromKey(edg2));
-          Handle(Geom_Surface) S1    = BRep_Tool::Surface(F1);
-          Handle(Geom_Surface) S2    = BRep_Tool::Surface(F2);
-          Standard_Boolean     AppS1 = Standard_False;
-          Standard_Boolean     AppS2 = Standard_False;
+          occ::handle<Geom_Surface> S1    = BRep_Tool::Surface(F1);
+          occ::handle<Geom_Surface> S2    = BRep_Tool::Surface(F2);
+          bool     AppS1 = false;
+          bool     AppS2 = false;
           if (S1->DynamicType() != STANDARD_TYPE(Geom_Plane))
           {
-            AppS1 = Standard_True;
+            AppS1 = true;
           }
           if (S2->DynamicType() != STANDARD_TYPE(Geom_Plane))
           {
-            AppS2 = Standard_True;
+            AppS2 = true;
           }
-          i2s.Perform(S1, S2, Precision::Confusion(), Standard_True, AppS1, AppS2);
+          i2s.Perform(S1, S2, Precision::Confusion(), true, AppS1, AppS2);
           if (!i2s.IsDone() || i2s.NbLines() <= 0)
           {
             return;
           }
 
-          Standard_Real     pmin = 0, Dist2, Dist2Min, Glob2Min = RealLast();
+          double     pmin = 0, Dist2, Dist2Min, Glob2Min = RealLast();
           GeomAdaptor_Curve TheCurve;
 
-          Standard_Integer i, imin, k;
+          int i, imin, k;
           gp_Pnt           pv = BRep_Tool::Pnt(vtx);
           imin                = 0;
           for (i = 1; i <= i2s.NbLines(); i++)
@@ -627,7 +632,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
             if (myExtPC.IsDone())
             {
               gp_Pnt        p1b, p2b;
-              Standard_Real thepmin = TheCurve.FirstParameter();
+              double thepmin = TheCurve.FirstParameter();
               myExtPC.TrimmedSquareDistances(Dist2Min, Dist2, p1b, p2b);
               if (Dist2 < Dist2Min)
               {
@@ -673,16 +678,16 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       // Determination des vertex par intersection sur Plg ou/et Pld
 
       HAC->Load(Newc);
-      Standard_Integer nbfois = 2;
+      int nbfois = 2;
       TopoDS_Vertex    vtx1, vtx2;
-      Standard_Real    p1 = 0, p2 = 0;
-      Standard_Boolean IsLeft = Standard_False;
+      double    p1 = 0, p2 = 0;
+      bool IsLeft = false;
       if (Choice == 1)
       {
         // edge retrouve : on ne fait qu`une seule intersection
         // il faut utiliser Plg ou Pld
 
-        Standard_Integer indedgf = theMapEF.FindIndex(edg1);
+        int indedgf = theMapEF.FindIndex(edg1);
         for (itl.Initialize(theMapEF(indedgf)); itl.More(); itl.Next())
         {
           if (Contains(myMap(F), itl.Value()))
@@ -690,12 +695,12 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
             if (Contains(theLeft, itl.Value()))
             {
               HAS->Load(NewSg);
-              IsLeft = Standard_True;
+              IsLeft = true;
             }
             else
             {
               HAS->Load(NewSd);
-              IsLeft = Standard_False;
+              IsLeft = false;
             }
 
             nbfois = 1;
@@ -715,7 +720,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         HAS->Load(NewSg);
       }
 
-      for (Standard_Integer it = 1; it <= nbfois; it++)
+      for (int it = 1; it <= nbfois; it++)
       {
         if (it == 2)
         {
@@ -727,11 +732,11 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         {
           return; // voir ce qu`on peut faire de mieux
         }
-        Standard_Integer imin  = 1;
-        Standard_Real    delta = std::abs(knownp - intcs.Point(1).W());
-        for (Standard_Integer i = 2; i <= intcs.NbPoints(); i++)
+        int imin  = 1;
+        double    delta = std::abs(knownp - intcs.Point(1).W());
+        for (int i = 2; i <= intcs.NbPoints(); i++)
         {
-          Standard_Real newdelta = std::abs(knownp - intcs.Point(i).W());
+          double newdelta = std::abs(knownp - intcs.Point(i).W());
           if (newdelta < delta)
           {
             imin  = i;
@@ -800,27 +805,27 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
             else
             {
               B.Add(NE, thevtx);
-              Standard_Real theprm = BRep_Tool::Parameter(thevtx, Ebind);
+              double theprm = BRep_Tool::Parameter(thevtx, Ebind);
               B.UpdateVertex(thevtx, theprm, NE, BRep_Tool::Tolerance(thevtx));
             }
           }
           MapSonS.Bind(Ebind, NE.Oriented(TopAbs_FORWARD));
           if (IsLeft)
           {
-            TopTools_ListOfShape thelist5;
+            NCollection_List<TopoDS_Shape> thelist5;
             MapSg.Bind(vtx, thelist5);
             MapSg(vtx).Append(vtx1);
           }
           else
           {
-            TopTools_ListOfShape thelist6;
+            NCollection_List<TopoDS_Shape> thelist6;
             MapSd.Bind(vtx, thelist6);
             MapSd(vtx).Append(vtx1);
           }
         }
         else
         {
-          TopTools_ListOfShape thelist7, thelist8;
+          NCollection_List<TopoDS_Shape> thelist7, thelist8;
           MapSg.Bind(vtx, thelist7);
           MapSd.Bind(vtx, thelist8);
           MapSg(vtx).Append(vtx1);
@@ -834,20 +839,20 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         {
           if (IsLeft)
           {
-            TopTools_ListOfShape thelist9;
+            NCollection_List<TopoDS_Shape> thelist9;
             MapSg.Bind(vtx, thelist9);
             MapSg(vtx).Append(vtx);
           }
           else
           {
-            TopTools_ListOfShape thelist10;
+            NCollection_List<TopoDS_Shape> thelist10;
             MapSd.Bind(vtx, thelist10);
             MapSd(vtx).Append(vtx);
           }
         }
         else
         {
-          TopTools_ListOfShape thelist11, thelist12;
+          NCollection_List<TopoDS_Shape> thelist11, thelist12;
           MapSg.Bind(vtx, thelist11);
           MapSd.Bind(vtx, thelist12);
           MapSg(vtx).Append(vtx2);
@@ -865,9 +870,9 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     { // precaution sans doute inutile...
       continue;
     }
-    Standard_Integer     indedg = MapEV.FindIndex(edg);
+    int     indedg = MapEV.FindIndex(edg);
     TopoDS_Face&         GenF   = TopoDS::Face(MapEV(indedg));
-    TopTools_ListOfShape thelist13, thelist14;
+    NCollection_List<TopoDS_Shape> thelist13, thelist14;
     MapSg.Bind(edg, thelist13); // genere a gauche
     MapSd.Bind(edg, thelist14); // genere a droite
     TopoDS_Vertex Vf, Vl;
@@ -928,7 +933,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           MapSg(edg).Append(NewEdgg);
           MapSd(edg).Append(NewEdgd);
 
-          TopTools_ListOfShape theedges;
+          NCollection_List<TopoDS_Shape> theedges;
           theedges.Append(NewEdgg);
           theedges.Append(NewEdgd);
           if (Gvf.ShapeType() == TopAbs_EDGE) {
@@ -969,7 +974,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         MapSg(edg).Append(NewEdgg);
         MapSd(edg).Append(NewEdgd);
 
-        TopTools_ListOfShape theedges;
+        NCollection_List<TopoDS_Shape> theedges;
         theedges.Append(NewEdgg);
         theedges.Append(NewEdgd);
         theedges.Append(Gvf);
@@ -1022,25 +1027,25 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       return;
     }
 
-    Standard_Boolean isedg = Standard_False;
+    bool isedg = false;
     if (Gvf.ShapeType() == TopAbs_VERTEX && Gvl.ShapeType() == TopAbs_VERTEX)
     {
       // edg ou face a 2 cotes
 
       // Comparaison NewEdgg et NewEdgd
-      Standard_Real      fg, lg, fd, ld;
-      Handle(Geom_Curve) Cg   = BRep_Tool::Curve(NewEdgg, fg, lg);
-      Handle(Geom_Curve) Cd   = BRep_Tool::Curve(NewEdgd, fd, ld);
-      Standard_Real      prmg = (fg + lg) / 2.;
-      Standard_Real      prmd = (fd + ld) / 2.;
+      double      fg, lg, fd, ld;
+      occ::handle<Geom_Curve> Cg   = BRep_Tool::Curve(NewEdgg, fg, lg);
+      occ::handle<Geom_Curve> Cd   = BRep_Tool::Curve(NewEdgd, fd, ld);
+      double      prmg = (fg + lg) / 2.;
+      double      prmd = (fd + ld) / 2.;
       gp_Pnt             pg   = Cg->Value(prmg);
       gp_Pnt             pd   = Cd->Value(prmd);
-      Standard_Real Tol = std::max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(NewEdgg));
+      double Tol = std::max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(NewEdgg));
       if (pg.SquareDistance(pd) <= Tol * Tol)
       {
-        isedg = Standard_True;
+        isedg = true;
         // raffinement pour essayer de partager l`edge de depart...
-        Standard_Boolean modified = Standard_True;
+        bool modified = true;
         if (Gvf.IsSame(Vf) && Gvl.IsSame(Vl))
         {
           // Comparaison avec l`edge de depart
@@ -1050,7 +1055,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           Tol  = std::max(BRep_Tool::Tolerance(NewEdgg), BRep_Tool::Tolerance(edg));
           if (pg.SquareDistance(pd) <= Tol * Tol)
           {
-            modified = Standard_False;
+            modified = false;
           }
         }
 
@@ -1075,7 +1080,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
       MapSg(edg).Append(NewEdgg);
       MapSd(edg).Append(NewEdgd);
 
-      TopTools_ListOfShape theedges;
+      NCollection_List<TopoDS_Shape> theedges;
       theedges.Append(NewEdgg);
       theedges.Append(NewEdgd);
       if (Gvf.ShapeType() == TopAbs_EDGE)
@@ -1091,24 +1096,24 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     }
   }
 
-  TopTools_MapOfShape  mapedgadded;
-  TopTools_ListOfShape thefaces;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  mapedgadded;
+  NCollection_List<TopoDS_Shape> thefaces;
 
   for (itl.Initialize(myMap(F)); itl.More(); itl.Next())
   {
     const TopoDS_Face& fac = TopoDS::Face(itl.Value());
     theMap.Clear();
     TopoDS_Face      DrftFace; // elle est FORWARD
-    Standard_Boolean IsLeft;
+    bool IsLeft;
     if (Contains(theLeft, fac))
     {
       B.MakeFace(DrftFace, NewSg, BRep_Tool::Tolerance(fac));
-      IsLeft = Standard_True;
+      IsLeft = true;
     }
     else
     {
       B.MakeFace(DrftFace, NewSd, BRep_Tool::Tolerance(fac));
-      IsLeft = Standard_False;
+      IsLeft = false;
     }
 
     TopExp_Explorer exp3;
@@ -1126,7 +1131,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         }
         if (MapW.IsBound(edg))
         { // edge du wire d`origine
-          TopTools_ListIteratorOfListOfShape itld;
+          NCollection_List<TopoDS_Shape>::Iterator itld;
           TopAbs_Orientation                 ored = edg.Orientation();
           if (IsLeft)
           {
@@ -1149,7 +1154,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
         }
         else
         {
-          Handle(Geom_Surface) NewS;
+          occ::handle<Geom_Surface> NewS;
           if (IsLeft)
           {
             NewS = NewSg;
@@ -1158,7 +1163,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
           {
             NewS = NewSd;
           }
-          Standard_Integer   indedg = MapEV.FindIndex(edg);
+          int   indedg = MapEV.FindIndex(edg);
           const TopoDS_Face& GenF   = TopoDS::Face(MapEV(indedg));
           TopoDS_Vertex      Vf, Vl;
           TopoDS_Shape       aLocalEdge = edg.Oriented(TopAbs_FORWARD);
@@ -1328,10 +1333,10 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
   }
 
   BRepTools_Substitution                        theSubs;
-  TopTools_DataMapIteratorOfDataMapOfShapeShape itdmss;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itdmss;
   for (itdmss.Initialize(MapSonS); itdmss.More(); itdmss.Next())
   {
-    TopTools_ListOfShape lsubs;
+    NCollection_List<TopoDS_Shape> lsubs;
     for (exp.Init(itdmss.Value(), TopAbs_EDGE); exp.More(); exp.Next())
     {
       lsubs.Append(exp.Current());
@@ -1350,13 +1355,13 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
   }
 
   // Stockage des descendants
-  //  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdmsls(myMap);
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdmsls(myMap);
+  //  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdmsls(myMap);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdmsls(myMap);
   for (; itdmsls.More(); itdmsls.Next())
   {
     if (itdmsls.Key().ShapeType() == TopAbs_EDGE)
     {
-      TopTools_ListOfShape thedesc;
+      NCollection_List<TopoDS_Shape> thedesc;
       theMap.Clear();
       for (itl.Initialize(itdmsls.Value()); itl.More(); itl.Next())
       {
@@ -1377,7 +1382,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face&     F,
     }
     else
     {
-      TopTools_ListOfShape thedesc;
+      NCollection_List<TopoDS_Shape> thedesc;
       theMap.Clear();
       for (itl.Initialize(itdmsls.Value()); itl.More(); itl.Next())
       {
@@ -1436,7 +1441,7 @@ const TopoDS_Shape& LocOpe_SplitDrafts::Shape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_SplitDrafts::ShapesFromShape(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_SplitDrafts::ShapesFromShape(const TopoDS_Shape& S) const
 {
   if (myResult.IsNull())
   {
@@ -1447,25 +1452,25 @@ const TopTools_ListOfShape& LocOpe_SplitDrafts::ShapesFromShape(const TopoDS_Sha
 
 //=================================================================================================
 
-static Standard_Boolean NewPlane(const TopoDS_Face&     F,
+static bool NewPlane(const TopoDS_Face&     F,
                                  const gp_Dir&          Extr,
                                  const gp_Pln&          Neutr,
-                                 const Standard_Real    Ang,
+                                 const double    Ang,
                                  gp_Pln&                Newpl,
                                  gp_Ax1&                NormalF,
-                                 const Standard_Boolean Modify)
+                                 const bool Modify)
 {
 
   // Determination du nouveau plan incline
-  Handle(Geom_Surface) S = BRep_Tool::Surface(F);
+  occ::handle<Geom_Surface> S = BRep_Tool::Surface(F);
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+    S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
   }
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(S);
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(S);
   if (P.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   gp_Pln Plorig = P->Pln();
@@ -1478,11 +1483,11 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
     {
       NormalF.Reverse();
     }
-    return Standard_True;
+    return true;
   }
 
   gp_Ax1        Axe;
-  Standard_Real Theta;
+  double Theta;
 
   IntAna_QuadQuadGeo i2pl(Plorig, Neutr, Precision::Angular(), Precision::Confusion());
 
@@ -1492,12 +1497,12 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
     gp_Dir nx        = LinInters.Direction();
     NormalF          = Plorig.Axis();
     gp_Dir        ny = NormalF.Direction().Crossed(nx);
-    Standard_Real a  = Extr.Dot(nx);
+    double a  = Extr.Dot(nx);
     if (std::abs(a) <= 1 - Precision::Angular())
     {
-      Standard_Real      b = Extr.Dot(ny);
-      Standard_Real      c = Extr.Dot(NormalF.Direction());
-      Standard_Boolean   direct(Plorig.Direct());
+      double      b = Extr.Dot(ny);
+      double      c = Extr.Dot(NormalF.Direction());
+      bool   direct(Plorig.Direct());
       TopAbs_Orientation Oris = F.Orientation();
       if ((direct && Oris == TopAbs_REVERSED) || (!direct && Oris == TopAbs_FORWARD))
       {
@@ -1505,12 +1510,12 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
         c = -c;
         NormalF.Reverse();
       }
-      Standard_Real denom = std::sqrt(1 - a * a);
-      Standard_Real Sina  = std::sin(Ang);
+      double denom = std::sqrt(1 - a * a);
+      double Sina  = std::sin(Ang);
       if (denom > std::abs(Sina))
       {
-        Standard_Real phi    = std::atan2(b / denom, c / denom);
-        Standard_Real theta0 = std::acos(Sina / denom);
+        double phi    = std::atan2(b / denom, c / denom);
+        double theta0 = std::acos(Sina / denom);
         Theta                = theta0 - phi;
         if (std::cos(Theta) < 0.)
         {
@@ -1518,17 +1523,17 @@ static Standard_Boolean NewPlane(const TopoDS_Face&     F,
         }
         Axe   = LinInters.Position();
         Newpl = Plorig.Rotated(Axe, Theta);
-        return Standard_True;
+        return true;
       }
     }
   }
   std::cout << "fin newplane return standard_false" << std::endl;
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
+static void MakeFace(TopoDS_Face& F, NCollection_List<TopoDS_Shape>& ledg)
 {
 
   // ledg est une liste d'edge
@@ -1538,19 +1543,19 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
   // Verification de l`existence des p-curves. Celles qui manquent
   // correspondent necessairement a des isos (et meme des iso u).
 
-  Standard_Real f, l;
-  //  for (TopTools_ListIteratorOfListOfShape itl(ledg);
-  TopTools_ListIteratorOfListOfShape itl(ledg);
+  double f, l;
+  //  for (NCollection_List<TopoDS_Shape>::Iterator itl(ledg);
+  NCollection_List<TopoDS_Shape>::Iterator itl(ledg);
   for (; itl.More(); itl.Next())
   {
     const TopoDS_Edge&   edg = TopoDS::Edge(itl.Value());
-    Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
+    occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
     if (C2d.IsNull())
     {
       BRep_Tool::Range(edg, f, l);
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(edg, V1, V2);
-      TopTools_ListIteratorOfListOfShape itl2;
+      NCollection_List<TopoDS_Shape>::Iterator itl2;
       for (itl2.Initialize(ledg); itl2.More(); itl2.Next())
       {
         const TopoDS_Edge& edg2 = TopoDS::Edge(itl2.Value());
@@ -1562,8 +1567,8 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
         TopExp::Vertices(edg2, Vp1, Vp2);
         if (Vp1.IsSame(V1) || Vp2.IsSame(V1) || Vp1.IsSame(V2) || Vp2.IsSame(V2))
         {
-          Standard_Real        f2, l2;
-          Handle(Geom2d_Curve) C22d = BRep_Tool::CurveOnSurface(edg2, F, f2, l2);
+          double        f2, l2;
+          occ::handle<Geom2d_Curve> C22d = BRep_Tool::CurveOnSurface(edg2, F, f2, l2);
           if (!C22d.IsNull())
           {
             gp_Pnt2d pt2d;
@@ -1600,8 +1605,8 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
     }
   }
 
-  TopTools_ListOfShape lwires;
-  Standard_Boolean     alldone = ledg.IsEmpty();
+  NCollection_List<TopoDS_Shape> lwires;
+  bool     alldone = ledg.IsEmpty();
   while (!alldone)
   {
     TopoDS_Wire Wnew;
@@ -1621,7 +1626,7 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
     B.Add(Wnew, edg);
     ledg.RemoveFirst();
     // on suppose VFirst et VLast non nuls
-    Standard_Boolean wdone = (ledg.IsEmpty() || VFirst.IsSame(VLast));
+    bool wdone = (ledg.IsEmpty() || VFirst.IsSame(VLast));
     while (!wdone)
     {
       TopoDS_Vertex VF, VL;
@@ -1661,7 +1666,7 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
       }
       if (!itl.More())
       {
-        wdone = Standard_True;
+        wdone = true;
       }
       else
       {
@@ -1702,48 +1707,48 @@ static void MakeFace(TopoDS_Face& F, TopTools_ListOfShape& ledg)
 
 //=================================================================================================
 
-static Standard_Boolean Contains(const TopTools_ListOfShape& ll, const TopoDS_Shape& s)
+static bool Contains(const NCollection_List<TopoDS_Shape>& ll, const TopoDS_Shape& s)
 {
-  TopTools_ListIteratorOfListOfShape itl;
+  NCollection_List<TopoDS_Shape>::Iterator itl;
   for (itl.Initialize(ll); itl.More(); itl.Next())
   {
     if (itl.Value().IsSame(s))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
                            const TopoDS_Face&          F,
-                           const Handle(Geom_Surface)& NewS,
+                           const occ::handle<Geom_Surface>& NewS,
                            const TopoDS_Vertex&        V1,
                            const TopoDS_Vertex&        V2)
 {
   TopoDS_Edge          NewEdg;
-  Handle(Geom_Surface) S1    = BRep_Tool::Surface(F);
-  Standard_Boolean     AppS1 = Standard_False;
+  occ::handle<Geom_Surface> S1    = BRep_Tool::Surface(F);
+  bool     AppS1 = false;
   if (S1->DynamicType() != STANDARD_TYPE(Geom_Plane))
   {
-    AppS1 = Standard_True;
+    AppS1 = true;
   }
 
-  GeomInt_IntSS i2s(S1, NewS, Precision::Confusion(), Standard_True, AppS1);
+  GeomInt_IntSS i2s(S1, NewS, Precision::Confusion(), true, AppS1);
   if (!i2s.IsDone() || i2s.NbLines() <= 0)
   {
     return NewEdg;
   }
 
   BRep_Builder B;
-  //  Standard_Real pmin, Dist, DistMin;
-  Standard_Real     Dist2, Dist2Min;
-  Standard_Real     prmf = 0, prml = 0;
+  //  double pmin, Dist, DistMin;
+  double     Dist2, Dist2Min;
+  double     prmf = 0, prml = 0;
   GeomAdaptor_Curve TheCurve;
 
-  Standard_Integer i, k;
+  int i, k;
   gp_Pnt           pvf = BRep_Tool::Pnt(V1);
   gp_Pnt           pvl = BRep_Tool::Pnt(V2);
   for (i = 1; i <= i2s.NbLines(); i++)
@@ -1754,7 +1759,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
     if (myExtPC.IsDone())
     {
       gp_Pnt        p1b, p2b;
-      Standard_Real thepmin = TheCurve.FirstParameter();
+      double thepmin = TheCurve.FirstParameter();
       myExtPC.TrimmedSquareDistances(Dist2Min, Dist2, p1b, p2b);
       if (Dist2 < Dist2Min && !TheCurve.IsPeriodic())
       {
@@ -1806,11 +1811,11 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
 
   if (i <= i2s.NbLines())
   {
-    Standard_Boolean          rev  = Standard_False;
+    bool          rev  = false;
     TopoDS_Vertex             Vf   = V1;
     TopoDS_Vertex             Vl   = V2;
-    const Handle(Geom_Curve)& Cimg = i2s.Line(i);
-    Handle(Geom2d_Curve)      Cimg2d;
+    const occ::handle<Geom_Curve>& Cimg = i2s.Line(i);
+    occ::handle<Geom2d_Curve>      Cimg2d;
     if (AppS1)
     {
       Cimg2d = i2s.LineOnS1(i);
@@ -1819,15 +1824,15 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
     if (Cimg->IsPeriodic())
     {
 
-      Standard_Real period = Cimg->Period();
-      Standard_Real imf    = Cimg->FirstParameter();
-      Standard_Real iml    = Cimg->LastParameter();
+      double period = Cimg->Period();
+      double imf    = Cimg->FirstParameter();
+      double iml    = Cimg->LastParameter();
 
-      Standard_Real f, l;
+      double f, l;
       BRep_Tool::Range(edg, f, l);
-      Standard_Real delt  = l - f;
-      Standard_Real delt1 = std::abs(prml - prmf);
-      Standard_Real delt2 = std::abs(period - delt1);
+      double delt  = l - f;
+      double delt1 = std::abs(prml - prmf);
+      double delt2 = std::abs(period - delt1);
 
       if (delt1 == 0 || delt2 == 0)
       {
@@ -1896,7 +1901,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
         }
       }
 #ifdef OCCT_DEBUG
-      Standard_Real ptol = Precision::PConfusion();
+      double ptol = Precision::PConfusion();
       if (prmf < imf - ptol || prmf > iml + ptol || prml < imf - ptol || prml > iml + ptol)
       {
         std::cout << "Ca ne va pas aller" << std::endl;
@@ -1907,17 +1912,17 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
     if (S1->IsUPeriodic())
     {
 
-      Standard_Real speriod = S1->UPeriod();
-      //      Standard_Real f,l;
+      double speriod = S1->UPeriod();
+      //      double f,l;
       gp_Pnt2d pf, pl;
       pf = Cimg2d->Value(prmf);
       pl = Cimg2d->Value(prml);
 
-      Standard_Real Uf   = pf.X();
-      Standard_Real Ul   = pl.X();
-      Standard_Real ptra = 0.0;
+      double Uf   = pf.X();
+      double Ul   = pl.X();
+      double ptra = 0.0;
 
-      Standard_Real Ustart = std::min(Uf, Ul);
+      double Ustart = std::min(Uf, Ul);
       while (Ustart < -Precision::PConfusion())
       {
         Ustart += speriod;
@@ -1942,7 +1947,7 @@ static TopoDS_Edge NewEdge(const TopoDS_Edge&          edg,
     {
       Vf.Orientation(TopAbs_REVERSED);
       Vl.Orientation(TopAbs_FORWARD);
-      rev = Standard_True;
+      rev = true;
     }
 
     B.MakeEdge(NewEdg, Cimg, Precision::Confusion());

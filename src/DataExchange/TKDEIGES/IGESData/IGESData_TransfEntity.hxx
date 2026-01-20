@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_GTrsf;
 
-class IGESData_TransfEntity;
-DEFINE_STANDARD_HANDLE(IGESData_TransfEntity, IGESData_IGESEntity)
-
 //! defines required type for Transf in directory part
 //! an effective Transf entity must inherits it
 class IGESData_TransfEntity : public IGESData_IGESEntity
@@ -41,8 +38,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESData_TransfEntity, IGESData_IGESEntity)
 
-protected:
-private:
 };
 
 #endif // _IGESData_TransfEntity_HeaderFile

@@ -33,33 +33,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static Standard_OStream& PutReal(Standard_OStream&    OS,
-                                                   const Standard_Real& theValue);
+                                                   const double& theValue);
 
   Standard_EXPORT static Standard_OStream& PutShortReal(Standard_OStream&         OS,
-                                                        const Standard_ShortReal& theValue);
+                                                        const float& theValue);
 
   Standard_EXPORT static Standard_OStream& PutInteger(Standard_OStream&      OS,
-                                                      const Standard_Integer theValue);
+                                                      const int theValue);
 
   Standard_EXPORT static Standard_OStream& PutBool(Standard_OStream&      OS,
-                                                   const Standard_Boolean theValue);
+                                                   const bool theValue);
 
   Standard_EXPORT static Standard_OStream& PutExtChar(Standard_OStream&           OS,
-                                                      const Standard_ExtCharacter theValue);
+                                                      const char16_t theValue);
 
-  Standard_EXPORT static Standard_IStream& GetReal(Standard_IStream& IS, Standard_Real& theValue);
+  Standard_EXPORT static Standard_IStream& GetReal(Standard_IStream& IS, double& theValue);
 
   Standard_EXPORT static Standard_IStream& GetShortReal(Standard_IStream&   IS,
-                                                        Standard_ShortReal& theValue);
+                                                        float& theValue);
 
   Standard_EXPORT static Standard_IStream& GetInteger(Standard_IStream& IS,
-                                                      Standard_Integer& theValue);
+                                                      int& theValue);
 
   Standard_EXPORT static Standard_IStream& GetBool(Standard_IStream& IS,
-                                                   Standard_Boolean& theValue);
+                                                   bool& theValue);
 
   Standard_EXPORT static Standard_IStream& GetExtChar(Standard_IStream&      IS,
-                                                      Standard_ExtCharacter& theValue);
+                                                      char16_t& theValue);
 
   //! Writes the shape to the stream in binary format BinTools_FormatVersion_CURRENT.
   //! This alias writes shape with triangulation data.
@@ -72,8 +72,8 @@ public:
   {
     Write(theShape,
           theStream,
-          Standard_True,
-          Standard_False,
+          true,
+          false,
           BinTools_FormatVersion_CURRENT,
           theRange);
   }
@@ -92,8 +92,8 @@ public:
   Standard_EXPORT static void Write(
     const TopoDS_Shape&          theShape,
     Standard_OStream&            theStream,
-    const Standard_Boolean       theWithTriangles,
-    const Standard_Boolean       theWithNormals,
+    const bool       theWithTriangles,
+    const bool       theWithNormals,
     const BinTools_FormatVersion theVersion,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -106,14 +106,14 @@ public:
   //! @param[in] theShape  the shape to write
   //! @param[in] theFile   the path to file to output shape into
   //! @param theRange      the range of progress indicator to fill in
-  static Standard_Boolean Write(const TopoDS_Shape&          theShape,
-                                const Standard_CString       theFile,
+  static bool Write(const TopoDS_Shape&          theShape,
+                                const char* const       theFile,
                                 const Message_ProgressRange& theRange = Message_ProgressRange())
   {
     return Write(theShape,
                  theFile,
-                 Standard_True,
-                 Standard_False,
+                 true,
+                 false,
                  BinTools_FormatVersion_CURRENT,
                  theRange);
   }
@@ -129,18 +129,18 @@ public:
   //!                              has no effect on triangulation-only geometry
   //! @param[in] theVersion        the BinTools format version
   //! @param theRange              the range of progress indicator to fill in
-  Standard_EXPORT static Standard_Boolean Write(
+  Standard_EXPORT static bool Write(
     const TopoDS_Shape&          theShape,
-    const Standard_CString       theFile,
-    const Standard_Boolean       theWithTriangles,
-    const Standard_Boolean       theWithNormals,
+    const char* const       theFile,
+    const bool       theWithTriangles,
+    const bool       theWithNormals,
     const BinTools_FormatVersion theVersion,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Reads a shape from <theFile> and returns it in <theShape>.
-  Standard_EXPORT static Standard_Boolean Read(
+  Standard_EXPORT static bool Read(
     TopoDS_Shape&                theShape,
-    const Standard_CString       theFile,
+    const char* const       theFile,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 };
 

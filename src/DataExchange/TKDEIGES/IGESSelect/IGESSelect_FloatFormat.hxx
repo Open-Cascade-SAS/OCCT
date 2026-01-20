@@ -26,9 +26,6 @@
 class IFSelect_ContextWrite;
 class IGESData_IGESWriter;
 
-class IGESSelect_FloatFormat;
-DEFINE_STANDARD_HANDLE(IGESSelect_FloatFormat, IGESSelect_FileModifier)
-
 //! This class gives control out format for floatting values :
 //! ZeroSuppress or no, Main Format, Format in Range (for values
 //! around 1.), as IGESWriter allows to manage it.
@@ -45,15 +42,15 @@ public:
   //! Sets FloatFormat to default value (see Create) but if <digits>
   //! is given positive, it commands Formats (main and range) to
   //! ensure <digits> significant digits to be displayed
-  Standard_EXPORT void SetDefault(const Standard_Integer digits = 0);
+  Standard_EXPORT void SetDefault(const int digits = 0);
 
   //! Sets ZeroSuppress mode to a new value
-  Standard_EXPORT void SetZeroSuppress(const Standard_Boolean mode);
+  Standard_EXPORT void SetZeroSuppress(const bool mode);
 
   //! Sets Main Format to a new value
   //! Remark : SetFormat, SetZeroSuppress and SetFormatForRange are
   //! independent
-  Standard_EXPORT void SetFormat(const Standard_CString format = "%E");
+  Standard_EXPORT void SetFormat(const char* const format = "%E");
 
   //! Sets Format for Range to a new value with its range of
   //! application.
@@ -62,9 +59,9 @@ public:
   //! verified, this secondary format will be ignored.
   //! Moreover, this secondary format is intended to be used in a
   //! range around 1.
-  Standard_EXPORT void SetFormatForRange(const Standard_CString format = "%f",
-                                         const Standard_Real    Rmin   = 0.1,
-                                         const Standard_Real    Rmax   = 1000.0);
+  Standard_EXPORT void SetFormatForRange(const char* const format = "%f",
+                                         const double    Rmin   = 0.1,
+                                         const double    Rmax   = 1000.0);
 
   //! Returns all recorded parameters :
   //! zerosup  : ZeroSuppress status
@@ -75,31 +72,30 @@ public:
   //! forminrange : Secondary Format (it applies inside the range)
   //! rangemin, rangemax : the range in which the secondary format
   //! applies
-  Standard_EXPORT void Format(Standard_Boolean&        zerosup,
+  Standard_EXPORT void Format(bool&        zerosup,
                               TCollection_AsciiString& mainform,
-                              Standard_Boolean&        hasrange,
+                              bool&        hasrange,
                               TCollection_AsciiString& forminrange,
-                              Standard_Real&           rangemin,
-                              Standard_Real&           rangemax) const;
+                              double&           rangemin,
+                              double&           rangemax) const;
 
   //! Sets the Floatting Formats of IGESWriter to the recorded
   //! parameters
   Standard_EXPORT void Perform(IFSelect_ContextWrite& ctx,
-                               IGESData_IGESWriter&   writer) const Standard_OVERRIDE;
+                               IGESData_IGESWriter&   writer) const override;
 
   //! Returns specific Label : for instance,
   //! "Float Format [ZeroSuppress] %E [, in range R1-R2 %f]"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_FloatFormat, IGESSelect_FileModifier)
 
-protected:
 private:
-  Standard_Boolean        thezerosup;
+  bool        thezerosup;
   TCollection_AsciiString themainform;
   TCollection_AsciiString theformrange;
-  Standard_Real           therangemin;
-  Standard_Real           therangemax;
+  double           therangemin;
+  double           therangemax;
 };
 
 #endif // _IGESSelect_FloatFormat_HeaderFile

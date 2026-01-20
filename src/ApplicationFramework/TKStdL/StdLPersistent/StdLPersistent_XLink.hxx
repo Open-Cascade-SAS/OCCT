@@ -39,10 +39,10 @@ public:
   }
 
   //! Returns persistent type name
-  inline Standard_CString PName() const { return "PDocStd_XLink"; }
+  inline const char* PName() const { return "PDocStd_XLink"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDocStd_XLink)& theAttribute) const
+  void Import(const occ::handle<TDocStd_XLink>& theAttribute) const
   {
     if (myDocEntry)
       theAttribute->DocumentEntry(myDocEntry->Value()->String());

@@ -15,17 +15,27 @@
 #include <HeaderSection_FileName.hxx>
 #include <HeaderSection_FileSchema.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 #include <StepAP203_CcDesignApproval.hxx>
 #include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
 #include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP203_CcDesignSecurityClassification.hxx>
-#include <StepAP203_HArray1OfApprovedItem.hxx>
-#include <StepAP203_HArray1OfClassifiedItem.hxx>
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
+#include <StepAP203_ApprovedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP203_ClassifiedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP203_DateTimeItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP203_PersonOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepAP209_Construct.hxx>
 #include <StepAP214_AppliedApprovalAssignment.hxx>
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
@@ -33,10 +43,18 @@
 #include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_ApprovalItem.hxx>
 #include <StepAP214_DateAndTimeItem.hxx>
-#include <StepAP214_HArray1OfApprovalItem.hxx>
-#include <StepAP214_HArray1OfDateAndTimeItem.hxx>
-#include <StepAP214_HArray1OfPersonAndOrganizationItem.hxx>
-#include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
+#include <StepAP214_ApprovalItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP214_DateAndTimeItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP214_PersonAndOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepAP214_SecurityClassificationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepAP214_PersonAndOrganizationItem.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_ApplicationContext.hxx>
@@ -83,7 +101,9 @@
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 #include <StepFEA_FeaModel3d.hxx>
 #include <StepFEA_FeaModelDefinition.hxx>
-#include <StepFEA_HArray1OfCurveElementInterval.hxx>
+#include <StepFEA_CurveElementInterval.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepFEA_Surface3dElementRepresentation.hxx>
 #include <StepFEA_Volume3dElementRepresentation.hxx>
 #include <StepGeom_CartesianPoint.hxx>
@@ -91,7 +111,9 @@
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
@@ -101,8 +123,11 @@
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <XSControl_WorkSession.hxx>
 
 // #include <.hxx>
@@ -112,69 +137,69 @@ StepAP209_Construct::StepAP209_Construct() {}
 
 //=================================================================================================
 
-StepAP209_Construct::StepAP209_Construct(const Handle(XSControl_WorkSession)& WS)
+StepAP209_Construct::StepAP209_Construct(const occ::handle<XSControl_WorkSession>& WS)
     : STEPConstruct_Tool(WS)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean StepAP209_Construct::Init(const Handle(XSControl_WorkSession)& WS)
+bool StepAP209_Construct::Init(const occ::handle<XSControl_WorkSession>& WS)
 {
   return SetWS(WS);
 }
 
 //=================================================================================================
 
-Standard_Boolean StepAP209_Construct::IsDesing(
-  const Handle(StepBasic_ProductDefinitionFormation)& PDF) const
+bool StepAP209_Construct::IsDesing(
+  const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const
 {
   Interface_EntityIterator subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
       continue;
     if (PDF == PDFR->RelatingProductDefinitionFormation())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepAP209_Construct::IsAnalys(
-  const Handle(StepBasic_ProductDefinitionFormation)& PDF) const
+bool StepAP209_Construct::IsAnalys(
+  const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const
 {
   Interface_EntityIterator subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
       continue;
     if (PDF == PDFR->RelatedProductDefinitionFormation())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(StepElement_HSequenceOfElementMaterial) StepAP209_Construct::GetElementMaterial() const
+occ::handle<NCollection_HSequence<occ::handle<StepElement_ElementMaterial>>> StepAP209_Construct::GetElementMaterial() const
 {
-  Handle(StepElement_HSequenceOfElementMaterial) aSequence =
-    new StepElement_HSequenceOfElementMaterial;
-  Handle(Interface_InterfaceModel) model = Model();
-  Standard_Integer                 nb    = model->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<NCollection_HSequence<occ::handle<StepElement_ElementMaterial>>> aSequence =
+    new NCollection_HSequence<occ::handle<StepElement_ElementMaterial>>;
+  occ::handle<Interface_InterfaceModel> model = Model();
+  int                 nb    = model->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) anEntity = model->Value(i);
+    occ::handle<Standard_Transient> anEntity = model->Value(i);
     if (anEntity->IsKind(STANDARD_TYPE(StepElement_ElementMaterial)))
     {
-      Handle(StepElement_ElementMaterial) anElement =
-        Handle(StepElement_ElementMaterial)::DownCast(anEntity);
+      occ::handle<StepElement_ElementMaterial> anElement =
+        occ::down_cast<StepElement_ElementMaterial>(anEntity);
       aSequence->Append(anElement);
     }
   }
@@ -183,20 +208,20 @@ Handle(StepElement_HSequenceOfElementMaterial) StepAP209_Construct::GetElementMa
 
 //=================================================================================================
 
-Handle(StepFEA_HSequenceOfElementGeometricRelationship) StepAP209_Construct::GetElemGeomRelat()
+occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementGeometricRelationship>>> StepAP209_Construct::GetElemGeomRelat()
   const
 {
-  Handle(StepFEA_HSequenceOfElementGeometricRelationship) aSequence =
-    new StepFEA_HSequenceOfElementGeometricRelationship;
-  Handle(Interface_InterfaceModel) model = Model();
-  Standard_Integer                 nb    = model->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementGeometricRelationship>>> aSequence =
+    new NCollection_HSequence<occ::handle<StepFEA_ElementGeometricRelationship>>;
+  occ::handle<Interface_InterfaceModel> model = Model();
+  int                 nb    = model->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) anEntity = model->Value(i);
+    occ::handle<Standard_Transient> anEntity = model->Value(i);
     if (anEntity->IsKind(STANDARD_TYPE(StepFEA_ElementGeometricRelationship)))
     {
-      Handle(StepFEA_ElementGeometricRelationship) EGR =
-        Handle(StepFEA_ElementGeometricRelationship)::DownCast(anEntity);
+      occ::handle<StepFEA_ElementGeometricRelationship> EGR =
+        occ::down_cast<StepFEA_ElementGeometricRelationship>(anEntity);
       aSequence->Append(EGR);
     }
   }
@@ -205,26 +230,26 @@ Handle(StepFEA_HSequenceOfElementGeometricRelationship) StepAP209_Construct::Get
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::GetShReprForElem(
-  const Handle(StepFEA_ElementRepresentation)& ElemRepr) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::GetShReprForElem(
+  const occ::handle<StepFEA_ElementRepresentation>& ElemRepr) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (ElemRepr.IsNull())
     return SR;
   Interface_EntityIterator subs = Graph().Sharings(ElemRepr);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepFEA_ElementGeometricRelationship) EGR =
-      Handle(StepFEA_ElementGeometricRelationship)::DownCast(subs.Value());
+    occ::handle<StepFEA_ElementGeometricRelationship> EGR =
+      occ::down_cast<StepFEA_ElementGeometricRelationship>(subs.Value());
     if (EGR.IsNull())
       continue;
-    Handle(StepElement_AnalysisItemWithinRepresentation) AIWR = EGR->Item();
+    occ::handle<StepElement_AnalysisItemWithinRepresentation> AIWR = EGR->Item();
     if (AIWR.IsNull())
       continue;
-    Handle(StepRepr_Representation) Repr = AIWR->Rep();
+    occ::handle<StepRepr_Representation> Repr = AIWR->Rep();
     if (Repr.IsNull())
       continue;
-    SR = Handle(StepShape_ShapeRepresentation)::DownCast(Repr);
+    SR = occ::down_cast<StepShape_ShapeRepresentation>(Repr);
   }
   return SR;
 }
@@ -233,16 +258,16 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::GetShReprForElem(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(const Handle(StepBasic_Product)& Prod) const
+occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(const occ::handle<StepBasic_Product>& Prod) const
 {
-  Handle(StepFEA_FeaModel) FM;
+  occ::handle<StepFEA_FeaModel> FM;
   if (Prod.IsNull())
     return FM;
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormation) PDF =
-      Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
     FM = FeaModel(PDF);
@@ -252,19 +277,19 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(const Handle(StepBasic_Pr
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
-  const Handle(StepBasic_ProductDefinition)& PD) const
+occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
+  const occ::handle<StepBasic_ProductDefinition>& PD) const
 {
-  // Handle(Interface_InterfaceModel) model = Model();
-  // Standard_Integer nb = model->NbEntities();
-  Handle(StepFEA_FeaModel) FM;
+  // occ::handle<Interface_InterfaceModel> model = Model();
+  // int nb = model->NbEntities();
+  occ::handle<StepFEA_FeaModel> FM;
   if (PD.IsNull())
     return FM;
   Interface_EntityIterator subs = Graph().Shareds(PD);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormation) PDF =
-      Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
     FM = FeaModel(PDF);
@@ -274,18 +299,18 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
-  const Handle(StepBasic_ProductDefinitionFormation)& PDF) const
+occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
+  const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const
 {
-  Handle(StepFEA_FeaModel) FM;
+  occ::handle<StepFEA_FeaModel> FM;
   if (PDF.IsNull())
     return FM;
-  Handle(StepBasic_ProductDefinitionFormation) PDF2;
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                     subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
       continue;
     PDF2 = PDFR->RelatedProductDefinitionFormation();
@@ -295,15 +320,15 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinition) PD =
-      Handle(StepBasic_ProductDefinition)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinition> PD =
+      occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
       continue;
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && FM.IsNull(); subs2.Next())
     {
-      Handle(StepRepr_ProductDefinitionShape) PDS =
-        Handle(StepRepr_ProductDefinitionShape)::DownCast(subs2.Value());
+      occ::handle<StepRepr_ProductDefinitionShape> PDS =
+        occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
         continue;
       FM = FeaModel(PDS);
@@ -314,23 +339,23 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
-  const Handle(StepRepr_ProductDefinitionShape)& PDS) const
+occ::handle<StepFEA_FeaModel> StepAP209_Construct::FeaModel(
+  const occ::handle<StepRepr_ProductDefinitionShape>& PDS) const
 {
-  Handle(StepFEA_FeaModel) FM;
+  occ::handle<StepFEA_FeaModel> FM;
   Interface_EntityIterator subs = Graph().Sharings(PDS);
   for (subs.Start(); subs.More() && FM.IsNull(); subs.Next())
   {
-    Handle(StepFEA_FeaModelDefinition) FMD =
-      Handle(StepFEA_FeaModelDefinition)::DownCast(subs.Value());
+    occ::handle<StepFEA_FeaModelDefinition> FMD =
+      occ::down_cast<StepFEA_FeaModelDefinition>(subs.Value());
     if (FMD.IsNull())
       continue;
     Interface_EntityIterator subs2 = Graph().Sharings(FMD);
     for (subs2.Start(); subs2.More() && FM.IsNull(); subs2.Next())
     {
       // ENTITY structural_response_property - SUBTYPE OF (property_definition);
-      Handle(StepRepr_StructuralResponseProperty) SRP =
-        Handle(StepRepr_StructuralResponseProperty)::DownCast(subs2.Value());
+      occ::handle<StepRepr_StructuralResponseProperty> SRP =
+        occ::down_cast<StepRepr_StructuralResponseProperty>(subs2.Value());
       if (SRP.IsNull())
         continue;
       Interface_EntityIterator subs3 = Graph().Sharings(SRP);
@@ -338,16 +363,16 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
       {
         // ENTITY structural_response_property_definition_representation -
         // SUBTYPE OF (property_definition_representation);
-        Handle(StepRepr_StructuralResponsePropertyDefinitionRepresentation) SRPDR =
-          Handle(StepRepr_StructuralResponsePropertyDefinitionRepresentation)::DownCast(
+        occ::handle<StepRepr_StructuralResponsePropertyDefinitionRepresentation> SRPDR =
+          occ::down_cast<StepRepr_StructuralResponsePropertyDefinitionRepresentation>(
             subs3.Value());
         if (SRPDR.IsNull())
           continue;
-        Handle(StepRepr_Representation) Repr = SRPDR->UsedRepresentation();
+        occ::handle<StepRepr_Representation> Repr = SRPDR->UsedRepresentation();
         if (Repr.IsNull())
           continue;
         if (Repr->IsKind(STANDARD_TYPE(StepFEA_FeaModel)))
-          FM = Handle(StepFEA_FeaModel)::DownCast(Repr);
+          FM = occ::down_cast<StepFEA_FeaModel>(Repr);
       }
     }
   }
@@ -356,16 +381,16 @@ Handle(StepFEA_FeaModel) StepAP209_Construct::FeaModel(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaAxis2Placement3d) StepAP209_Construct::GetFeaAxis2Placement3d(
-  const Handle(StepFEA_FeaModel)& theFeaModel) const
+occ::handle<StepFEA_FeaAxis2Placement3d> StepAP209_Construct::GetFeaAxis2Placement3d(
+  const occ::handle<StepFEA_FeaModel>& theFeaModel) const
 {
-  Handle(StepFEA_FeaAxis2Placement3d) FA2P3D = new StepFEA_FeaAxis2Placement3d;
+  occ::handle<StepFEA_FeaAxis2Placement3d> FA2P3D = new StepFEA_FeaAxis2Placement3d;
   if (theFeaModel.IsNull())
     return FA2P3D;
   Interface_EntityIterator subs = Graph().Shareds(theFeaModel);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    FA2P3D = Handle(StepFEA_FeaAxis2Placement3d)::DownCast(subs.Value());
+    FA2P3D = occ::down_cast<StepFEA_FeaAxis2Placement3d>(subs.Value());
     if (FA2P3D.IsNull())
       continue;
     return FA2P3D;
@@ -377,17 +402,17 @@ Handle(StepFEA_FeaAxis2Placement3d) StepAP209_Construct::GetFeaAxis2Placement3d(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
-  const Handle(StepBasic_Product)& Prod) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
+  const occ::handle<StepBasic_Product>& Prod) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (Prod.IsNull())
     return SR;
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormation) PDF =
-      Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
     SR = IdealShape(PDF);
@@ -397,17 +422,17 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
-  const Handle(StepBasic_ProductDefinition)& PD) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
+  const occ::handle<StepBasic_ProductDefinition>& PD) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (PD.IsNull())
     return SR;
   Interface_EntityIterator subs = Graph().Shareds(PD);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormation) PDF =
-      Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
     SR = IdealShape(PDF);
@@ -417,18 +442,18 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
-  const Handle(StepBasic_ProductDefinitionFormation)& PDF) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
+  const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (PDF.IsNull())
     return SR;
-  Handle(StepBasic_ProductDefinitionFormation) PDF2;
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                     subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
       continue;
     PDF2 = PDFR->RelatedProductDefinitionFormation();
@@ -438,15 +463,15 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinition) PD =
-      Handle(StepBasic_ProductDefinition)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinition> PD =
+      occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
       continue;
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
-      Handle(StepRepr_ProductDefinitionShape) PDS =
-        Handle(StepRepr_ProductDefinitionShape)::DownCast(subs2.Value());
+      occ::handle<StepRepr_ProductDefinitionShape> PDS =
+        occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
         continue;
       SR = IdealShape(PDS);
@@ -457,18 +482,18 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
-  const Handle(StepRepr_ProductDefinitionShape)& PDS) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::IdealShape(
+  const occ::handle<StepRepr_ProductDefinitionShape>& PDS) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   Interface_EntityIterator              subs = Graph().Sharings(PDS);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-      Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
+    occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+      occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
     if (SDR.IsNull())
       continue;
-    SR = Handle(StepShape_ShapeRepresentation)::DownCast(SDR->UsedRepresentation());
+    SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
   }
   return SR;
 }
@@ -477,17 +502,17 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::IdealShape(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::NominShape(
-  const Handle(StepBasic_Product)& Prod) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::NominShape(
+  const occ::handle<StepBasic_Product>& Prod) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (Prod.IsNull())
     return SR;
   Interface_EntityIterator subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormation) PDF =
-      Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormation> PDF =
+      occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
     SR = NominShape(PDF);
@@ -497,18 +522,18 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::NominShape(
 
 //=================================================================================================
 
-Handle(StepShape_ShapeRepresentation) StepAP209_Construct::NominShape(
-  const Handle(StepBasic_ProductDefinitionFormation)& PDF) const
+occ::handle<StepShape_ShapeRepresentation> StepAP209_Construct::NominShape(
+  const occ::handle<StepBasic_ProductDefinitionFormation>& PDF) const
 {
-  Handle(StepShape_ShapeRepresentation) SR;
+  occ::handle<StepShape_ShapeRepresentation> SR;
   if (PDF.IsNull())
     return SR;
-  Handle(StepBasic_ProductDefinitionFormation) PDF2;
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF2;
   Interface_EntityIterator                     subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
-      Handle(StepBasic_ProductDefinitionFormationRelationship)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
+      occ::down_cast<StepBasic_ProductDefinitionFormationRelationship>(subs.Value());
     if (PDFR.IsNull())
       continue;
     PDF2 = PDFR->RelatingProductDefinitionFormation();
@@ -518,25 +543,25 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::NominShape(
   subs = Graph().Sharings(PDF2);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    Handle(StepBasic_ProductDefinition) PD =
-      Handle(StepBasic_ProductDefinition)::DownCast(subs.Value());
+    occ::handle<StepBasic_ProductDefinition> PD =
+      occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
       continue;
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
-      Handle(StepRepr_ProductDefinitionShape) PDS =
-        Handle(StepRepr_ProductDefinitionShape)::DownCast(subs2.Value());
+      occ::handle<StepRepr_ProductDefinitionShape> PDS =
+        occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
         continue;
       Interface_EntityIterator subs3 = Graph().Sharings(PDS);
       for (subs3.Start(); subs3.More() && SR.IsNull(); subs3.Next())
       {
-        Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-          Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs3.Value());
+        occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+          occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs3.Value());
         if (SDR.IsNull())
           continue;
-        SR = Handle(StepShape_ShapeRepresentation)::DownCast(SDR->UsedRepresentation());
+        SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
       }
     }
   }
@@ -545,50 +570,50 @@ Handle(StepShape_ShapeRepresentation) StepAP209_Construct::NominShape(
 
 //=================================================================================================
 
-Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetElements1D(
-  const Handle(StepFEA_FeaModel)& theFeaModel) const
+occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> StepAP209_Construct::GetElements1D(
+  const occ::handle<StepFEA_FeaModel>& theFeaModel) const
 {
   return GetFeaElements(theFeaModel, STANDARD_TYPE(StepFEA_Curve3dElementRepresentation));
 }
 
 //=================================================================================================
 
-Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetElements2D(
-  const Handle(StepFEA_FeaModel)& theFeaModel) const
+occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> StepAP209_Construct::GetElements2D(
+  const occ::handle<StepFEA_FeaModel>& theFeaModel) const
 {
   return GetFeaElements(theFeaModel, STANDARD_TYPE(StepFEA_Surface3dElementRepresentation));
 }
 
 //=================================================================================================
 
-Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetElements3D(
-  const Handle(StepFEA_FeaModel)& theFeaModel) const
+occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> StepAP209_Construct::GetElements3D(
+  const occ::handle<StepFEA_FeaModel>& theFeaModel) const
 {
   return GetFeaElements(theFeaModel, STANDARD_TYPE(StepFEA_Volume3dElementRepresentation));
 }
 
 //=================================================================================================
 
-Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetFeaElements(
-  const Handle(StepFEA_FeaModel)& theFeaModel,
-  const Handle(Standard_Type)&    theType) const
+occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> StepAP209_Construct::GetFeaElements(
+  const occ::handle<StepFEA_FeaModel>& theFeaModel,
+  const occ::handle<Standard_Type>&    theType) const
 {
-  Handle(StepFEA_HSequenceOfElementRepresentation) aSequence;
+  occ::handle<NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>> aSequence;
   if (!theType->SubType(STANDARD_TYPE(StepFEA_ElementRepresentation)))
     return aSequence;
 
   Interface_EntityIterator anIter = Graph().Sharings(theFeaModel);
   anIter.Start();
   if (anIter.More())
-    aSequence = new StepFEA_HSequenceOfElementRepresentation;
+    aSequence = new NCollection_HSequence<occ::handle<StepFEA_ElementRepresentation>>;
 
   for (; anIter.More(); anIter.Next())
   {
-    const Handle(Standard_Transient)& anEntity = anIter.Value();
+    const occ::handle<Standard_Transient>& anEntity = anIter.Value();
     if (anEntity->IsKind(theType))
     {
-      Handle(StepFEA_ElementRepresentation) anElement =
-        Handle(StepFEA_ElementRepresentation)::DownCast(anEntity);
+      occ::handle<StepFEA_ElementRepresentation> anElement =
+        occ::down_cast<StepFEA_ElementRepresentation>(anEntity);
       aSequence->Append(anElement);
     }
   }
@@ -597,26 +622,26 @@ Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetFeaElem
 
 //=================================================================================================
 
-Handle(StepElement_HSequenceOfCurveElementSectionDefinition) StepAP209_Construct::GetCurElemSection(
-  const Handle(StepFEA_Curve3dElementRepresentation)& ElemRepr) const
+occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>> StepAP209_Construct::GetCurElemSection(
+  const occ::handle<StepFEA_Curve3dElementRepresentation>& ElemRepr) const
 {
-  Handle(StepElement_HSequenceOfCurveElementSectionDefinition) aSequence =
-    new StepElement_HSequenceOfCurveElementSectionDefinition;
+  occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>> aSequence =
+    new NCollection_HSequence<occ::handle<StepElement_CurveElementSectionDefinition>>;
   if (ElemRepr.IsNull())
     return aSequence;
 
-  Handle(StepFEA_Curve3dElementProperty) C3dEP = ElemRepr->Property();
+  occ::handle<StepFEA_Curve3dElementProperty> C3dEP = ElemRepr->Property();
   if (C3dEP.IsNull())
     return aSequence;
 
-  Handle(StepFEA_HArray1OfCurveElementInterval) ACEI = C3dEP->IntervalDefinitions();
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>> ACEI = C3dEP->IntervalDefinitions();
   if (ACEI.IsNull())
     return aSequence;
 
-  for (Standard_Integer i = 1; i <= ACEI->Length(); i++)
+  for (int i = 1; i <= ACEI->Length(); i++)
   {
-    Handle(StepFEA_CurveElementIntervalConstant) CEIC =
-      Handle(StepFEA_CurveElementIntervalConstant)::DownCast(ACEI->Value(i));
+    occ::handle<StepFEA_CurveElementIntervalConstant> CEIC =
+      occ::down_cast<StepFEA_CurveElementIntervalConstant>(ACEI->Value(i));
     if (CEIC.IsNull())
       continue;
     aSequence->Append(CEIC->Section());
@@ -626,73 +651,73 @@ Handle(StepElement_HSequenceOfCurveElementSectionDefinition) StepAP209_Construct
 
 //=================================================================================================
 
-Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
-  const Handle(StepBasic_Product)& Prod) const
+bool StepAP209_Construct::CreateAnalysStructure(
+  const occ::handle<StepBasic_Product>& Prod) const
 {
   if (Prod.IsNull())
-    return Standard_False;
+    return false;
   Interface_EntityIterator                     subs = Graph().Sharings(Prod);
-  Handle(StepBasic_ProductDefinitionFormation) PDF;
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF;
   for (subs.Start(); subs.More() && PDF.IsNull(); subs.Next())
   {
-    PDF = Handle(StepBasic_ProductDefinitionFormation)::DownCast(subs.Value());
+    PDF = occ::down_cast<StepBasic_ProductDefinitionFormation>(subs.Value());
     if (PDF.IsNull())
       continue;
   }
   if (PDF.IsNull())
-    return Standard_False;
-  // if( IsDesing(PDF) || IsAnalys(PDF) ) return Standard_False;
+    return false;
+  // if( IsDesing(PDF) || IsAnalys(PDF) ) return false;
 
   // find nominal_design_shape:
-  Handle(StepShape_ShapeRepresentation) SR;
-  Handle(StepBasic_ProductDefinition)   PD;
+  occ::handle<StepShape_ShapeRepresentation> SR;
+  occ::handle<StepBasic_ProductDefinition>   PD;
   subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More() && SR.IsNull(); subs.Next())
   {
-    PD = Handle(StepBasic_ProductDefinition)::DownCast(subs.Value());
+    PD = occ::down_cast<StepBasic_ProductDefinition>(subs.Value());
     if (PD.IsNull())
       continue;
     Interface_EntityIterator subs2 = Graph().Sharings(PD);
     for (subs2.Start(); subs2.More() && SR.IsNull(); subs2.Next())
     {
-      Handle(StepRepr_ProductDefinitionShape) PDS =
-        Handle(StepRepr_ProductDefinitionShape)::DownCast(subs2.Value());
+      occ::handle<StepRepr_ProductDefinitionShape> PDS =
+        occ::down_cast<StepRepr_ProductDefinitionShape>(subs2.Value());
       if (PDS.IsNull())
         continue;
       Interface_EntityIterator subs3 = Graph().Sharings(PDS);
       for (subs3.Start(); subs3.More() && SR.IsNull(); subs3.Next())
       {
-        Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-          Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs3.Value());
+        occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+          occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs3.Value());
         if (SDR.IsNull())
           continue;
-        SR = Handle(StepShape_ShapeRepresentation)::DownCast(SDR->UsedRepresentation());
+        SR = occ::down_cast<StepShape_ShapeRepresentation>(SDR->UsedRepresentation());
       }
     }
   }
   if (SR.IsNull())
-    return Standard_False; // no nominal_design_shape
+    return false; // no nominal_design_shape
 
   // create structure:
   ReplaceCcDesingToApplied();
-  Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
+  occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
 
   // replace existing contexts for using AP209
-  Handle(StepBasic_ProductContext) OldProdCtx = Prod->FrameOfReferenceValue(1);
+  occ::handle<StepBasic_ProductContext> OldProdCtx = Prod->FrameOfReferenceValue(1);
   if (!OldProdCtx.IsNull())
   {
-    Handle(StepBasic_ProductContext) ProdCtx = new StepBasic_ProductContext;
+    occ::handle<StepBasic_ProductContext> ProdCtx = new StepBasic_ProductContext;
     ProdCtx->Init(OldProdCtx->Name(), OldProdCtx->FrameOfReference(), OldProdCtx->DisciplineType());
     smodel->ReplaceEntity(smodel->Number(OldProdCtx), ProdCtx);
     smodel->SetIdentLabel(ProdCtx, smodel->Number(ProdCtx));
-    Handle(StepBasic_HArray1OfProductContext) HAPC = Prod->FrameOfReference();
+    occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> HAPC = Prod->FrameOfReference();
     HAPC->SetValue(1, ProdCtx);
     Prod->SetFrameOfReference(HAPC);
   }
-  Handle(StepBasic_ProductDefinitionContext) OldPDCtx = PD->FrameOfReference();
+  occ::handle<StepBasic_ProductDefinitionContext> OldPDCtx = PD->FrameOfReference();
   if (!OldPDCtx.IsNull())
   {
-    Handle(StepBasic_ProductDefinitionContext) PDCtx = new StepBasic_ProductDefinitionContext;
+    occ::handle<StepBasic_ProductDefinitionContext> PDCtx = new StepBasic_ProductDefinitionContext;
     PDCtx->Init(OldPDCtx->Name(), OldPDCtx->FrameOfReference(), OldPDCtx->LifeCycleStage());
     smodel->ReplaceEntity(smodel->Number(OldPDCtx), PDCtx);
     smodel->SetIdentLabel(PDCtx, smodel->Number(PDCtx));
@@ -700,19 +725,19 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   }
 
   // add idealized_analys_shape:
-  Handle(StepShape_ShapeRepresentation) AnaSR = new StepShape_ShapeRepresentation;
-  Handle(StepRepr_RepresentationItem)   RI    = new StepRepr_RepresentationItem;
+  occ::handle<StepShape_ShapeRepresentation> AnaSR = new StepShape_ShapeRepresentation;
+  occ::handle<StepRepr_RepresentationItem>   RI    = new StepRepr_RepresentationItem;
   RI                                          = SR->ItemsValue(1);
   smodel->AddWithRefs(RI); // add new representation_item
   smodel->SetIdentLabel(RI, smodel->Number(RI));
-  Handle(StepRepr_HArray1OfRepresentationItem) ARI = new StepRepr_HArray1OfRepresentationItem(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> ARI = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   ARI->SetValue(1, RI);
   AnaSR->Init(new TCollection_HAsciiString("idealized_analysis_shape"), ARI, SR->ContextOfItems());
   smodel->AddWithRefs(AnaSR); // add idealized_analys_shape
   smodel->SetIdentLabel(AnaSR, smodel->Number(AnaSR));
 
   // add product:
-  Handle(StepBasic_Product) AnaProd = new StepBasic_Product;
+  occ::handle<StepBasic_Product> AnaProd = new StepBasic_Product;
   AnaProd->Init(new TCollection_HAsciiString(""),
                 new TCollection_HAsciiString("analysis"),
                 new TCollection_HAsciiString("analysis product"),
@@ -721,7 +746,7 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   smodel->SetIdentLabel(AnaProd, smodel->Number(AnaProd));
 
   // add product_definition_formation:
-  Handle(StepBasic_ProductDefinitionFormation) AnaPDF = new StepBasic_ProductDefinitionFormation;
+  occ::handle<StepBasic_ProductDefinitionFormation> AnaPDF = new StepBasic_ProductDefinitionFormation;
   AnaPDF->Init(new TCollection_HAsciiString(""),
                new TCollection_HAsciiString("analysis version"),
                AnaProd);
@@ -729,7 +754,7 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   smodel->SetIdentLabel(AnaPDF, smodel->Number(AnaPDF));
 
   // add product_definition_formation_relationship:
-  Handle(StepBasic_ProductDefinitionFormationRelationship) PDFR =
+  occ::handle<StepBasic_ProductDefinitionFormationRelationship> PDFR =
     new StepBasic_ProductDefinitionFormationRelationship;
   PDFR->Init(new TCollection_HAsciiString(""),
              new TCollection_HAsciiString("analysis design version relationship"),
@@ -740,9 +765,9 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   smodel->SetIdentLabel(PDFR, smodel->Number(PDFR));
 
   // add product_definition:
-  Handle(StepBasic_ProductDefinition)        AnaPD  = new StepBasic_ProductDefinition;
-  Handle(StepBasic_ProductDefinitionContext) AnaPDC = new StepBasic_ProductDefinitionContext;
-  Handle(StepBasic_ApplicationContext) AC = Prod->FrameOfReferenceValue(1)->FrameOfReference();
+  occ::handle<StepBasic_ProductDefinition>        AnaPD  = new StepBasic_ProductDefinition;
+  occ::handle<StepBasic_ProductDefinitionContext> AnaPDC = new StepBasic_ProductDefinitionContext;
+  occ::handle<StepBasic_ApplicationContext> AC = Prod->FrameOfReferenceValue(1)->FrameOfReference();
   AnaPDC->Init(new TCollection_HAsciiString("analysis"),
                AC,
                new TCollection_HAsciiString("analysis"));
@@ -756,18 +781,18 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   smodel->SetIdentLabel(AnaPD, smodel->Number(AnaPD));
 
   // add product_definition_shape:
-  Handle(StepRepr_ProductDefinitionShape) AnaPDS = new StepRepr_ProductDefinitionShape;
+  occ::handle<StepRepr_ProductDefinitionShape> AnaPDS = new StepRepr_ProductDefinitionShape;
   StepRepr_CharacterizedDefinition        ChDef;
   ChDef.SetValue(AnaPD);
   AnaPDS->Init(new TCollection_HAsciiString(""),
-               Standard_True,
+               true,
                new TCollection_HAsciiString("analysis shape"),
                ChDef);
   smodel->AddWithRefs(AnaPDS);
   smodel->SetIdentLabel(AnaPDS, smodel->Number(AnaPDS));
 
   // add shape_definition_representation:
-  Handle(StepShape_ShapeDefinitionRepresentation) AnaSDR =
+  occ::handle<StepShape_ShapeDefinitionRepresentation> AnaSDR =
     new StepShape_ShapeDefinitionRepresentation;
   StepRepr_RepresentedDefinition RepDef;
   RepDef.SetValue(AnaPDS);
@@ -776,7 +801,7 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
   smodel->SetIdentLabel(AnaSDR, smodel->Number(AnaSDR));
 
   // add shape_representation_relationship:
-  Handle(StepRepr_ShapeRepresentationRelationship) SRR =
+  occ::handle<StepRepr_ShapeRepresentationRelationship> SRR =
     new StepRepr_ShapeRepresentationRelationship;
   SRR->Init(new TCollection_HAsciiString("basis"), new TCollection_HAsciiString(""), AnaSR, SR);
   smodel->AddWithRefs(SRR);
@@ -784,48 +809,48 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure(
 
   CreateAddingEntities(AnaPD);
 
-  WS()->ComputeGraph(Standard_True);
-  WS()->ComputeCheck(Standard_True);
+  WS()->ComputeGraph(true);
+  WS()->ComputeCheck(true);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepAP209_Construct::CreateFeaStructure(
-  const Handle(StepBasic_Product)& Prod) const
+bool StepAP209_Construct::CreateFeaStructure(
+  const occ::handle<StepBasic_Product>& Prod) const
 {
   if (Prod.IsNull())
   {
 #ifdef OCCT_DEBUG
     std::cout << "Prod.IsNull()" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
-  Handle(StepShape_ShapeRepresentation) AnaSR = IdealShape(Prod);
+  occ::handle<StepShape_ShapeRepresentation> AnaSR = IdealShape(Prod);
   if (AnaSR.IsNull())
   {
 #ifdef OCCT_DEBUG
     std::cout << "AnaSR.IsNull()" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
-  Handle(StepRepr_ProductDefinitionShape) AnaPDS;
+  occ::handle<StepRepr_ProductDefinitionShape> AnaPDS;
   Interface_EntityIterator                subs = Graph().Sharings(AnaSR);
   for (subs.Start(); subs.More() && AnaPDS.IsNull(); subs.Next())
   {
-    Handle(StepShape_ShapeDefinitionRepresentation) SDR =
-      Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
+    occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
+      occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
     if (SDR.IsNull())
       continue;
-    AnaPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(SDR->Definition().Value());
+    AnaPDS = occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().Value());
   }
 
-  // Handle(Interface_InterfaceModel) model = Model();
-  Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
+  // occ::handle<Interface_InterfaceModel> model = Model();
+  occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
 
   // add fea_model_definition
-  Handle(StepFEA_FeaModelDefinition) FMD = new StepFEA_FeaModelDefinition;
+  occ::handle<StepFEA_FeaModelDefinition> FMD = new StepFEA_FeaModelDefinition;
   FMD->Init(new TCollection_HAsciiString("FEA_MODEL"),
             new TCollection_HAsciiString("FEA_MODEL"),
             AnaPDS,
@@ -834,25 +859,25 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
   smodel->SetIdentLabel(FMD, smodel->Number(FMD));
 
   // add fea_axis2_placement_3d
-  Handle(StepFEA_FeaAxis2Placement3d) FA2P3D = new StepFEA_FeaAxis2Placement3d;
-  Handle(StepGeom_CartesianPoint)     SGCP   = new StepGeom_CartesianPoint;
+  occ::handle<StepFEA_FeaAxis2Placement3d> FA2P3D = new StepFEA_FeaAxis2Placement3d;
+  occ::handle<StepGeom_CartesianPoint>     SGCP   = new StepGeom_CartesianPoint;
   SGCP->Init3D(new TCollection_HAsciiString(""), 0., 0., 0.);
-  Handle(TColStd_HArray1OfReal) ArrTmp = new TColStd_HArray1OfReal(1, 3);
+  occ::handle<NCollection_HArray1<double>> ArrTmp = new NCollection_HArray1<double>(1, 3);
   ArrTmp->SetValue(1, 0.);
   ArrTmp->SetValue(2, 0.);
   ArrTmp->SetValue(3, 1.);
-  Handle(StepGeom_Direction) SGD1 = new StepGeom_Direction;
+  occ::handle<StepGeom_Direction> SGD1 = new StepGeom_Direction;
   SGD1->Init(new TCollection_HAsciiString(""), ArrTmp);
   ArrTmp->SetValue(1, 1.);
   ArrTmp->SetValue(2, 0.);
   ArrTmp->SetValue(3, 0.);
-  Handle(StepGeom_Direction) SGD2 = new StepGeom_Direction;
+  occ::handle<StepGeom_Direction> SGD2 = new StepGeom_Direction;
   SGD2->Init(new TCollection_HAsciiString(""), ArrTmp);
   FA2P3D->Init(new TCollection_HAsciiString("FEA_BASIC_COORD_SYSTEM"),
                SGCP,
-               Standard_True,
+               true,
                SGD1,
-               Standard_True,
+               true,
                SGD2,
                StepFEA_Cartesian,
                new TCollection_HAsciiString("FEA_BASIC_COORD_SYSTEM"));
@@ -860,52 +885,52 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
   smodel->SetIdentLabel(FA2P3D, smodel->Number(FA2P3D));
 
   // create context for fea_model
-  Handle(StepShape_ShapeRepresentation)           NS = NominShape(Prod);
-  Handle(StepRepr_RepresentationContext)          RC = NS->ContextOfItems();
-  Handle(StepGeom_GeometricRepresentationContext) GeoCtx;
-  Handle(StepBasic_HArray1OfNamedUnit)            OldHANU;
+  occ::handle<StepShape_ShapeRepresentation>           NS = NominShape(Prod);
+  occ::handle<StepRepr_RepresentationContext>          RC = NS->ContextOfItems();
+  occ::handle<StepGeom_GeometricRepresentationContext> GeoCtx;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>            OldHANU;
   if (RC->IsKind(STANDARD_TYPE(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)))
   {
-    Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx) GeoUnitCtxNS =
-      Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::DownCast(RC);
+    occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx> GeoUnitCtxNS =
+      occ::down_cast<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx>(RC);
     GeoCtx  = GeoUnitCtxNS->GeometricRepresentationContext();
     OldHANU = GeoUnitCtxNS->GlobalUnitAssignedContext()->Units();
   }
   if (RC->IsKind(
         STANDARD_TYPE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)))
   {
-    Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) GeoUnitCtxNS =
-      Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::DownCast(RC);
+    occ::handle<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext> GeoUnitCtxNS =
+      occ::down_cast<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext>(RC);
     GeoCtx  = GeoUnitCtxNS->GeometricRepresentationContext();
     OldHANU = GeoUnitCtxNS->GlobalUnitAssignedContext()->Units();
   }
-  Handle(StepBasic_HArray1OfNamedUnit) NewHANU =
-    new StepBasic_HArray1OfNamedUnit(1, OldHANU->Length() + 3);
-  for (Standard_Integer i = 1; i <= OldHANU->Length(); i++)
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> NewHANU =
+    new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, OldHANU->Length() + 3);
+  for (int i = 1; i <= OldHANU->Length(); i++)
     NewHANU->SetValue(i, OldHANU->Value(i));
   // create SiUnitAndTimeUnit
-  Handle(StepBasic_SiUnitAndTimeUnit) SUTU = new StepBasic_SiUnitAndTimeUnit;
-  SUTU->Init(Standard_False, StepBasic_spExa, StepBasic_sunSecond);
+  occ::handle<StepBasic_SiUnitAndTimeUnit> SUTU = new StepBasic_SiUnitAndTimeUnit;
+  SUTU->Init(false, StepBasic_spExa, StepBasic_sunSecond);
   smodel->AddWithRefs(SUTU);
   smodel->SetIdentLabel(SUTU, smodel->Number(SUTU));
   NewHANU->SetValue(OldHANU->Length() + 1, SUTU);
   // create SiUnitAndMassUnit
-  Handle(StepBasic_SiUnitAndMassUnit) SUMU = new StepBasic_SiUnitAndMassUnit;
-  SUMU->Init(Standard_True, StepBasic_spKilo, StepBasic_sunGram);
+  occ::handle<StepBasic_SiUnitAndMassUnit> SUMU = new StepBasic_SiUnitAndMassUnit;
+  SUMU->Init(true, StepBasic_spKilo, StepBasic_sunGram);
   smodel->AddWithRefs(SUMU);
   smodel->SetIdentLabel(SUMU, smodel->Number(SUMU));
   NewHANU->SetValue(OldHANU->Length() + 2, SUMU);
   // create SiUnitAndThermodynamicTemperatureUnit
-  Handle(StepBasic_SiUnitAndThermodynamicTemperatureUnit) SUTTU =
+  occ::handle<StepBasic_SiUnitAndThermodynamicTemperatureUnit> SUTTU =
     new StepBasic_SiUnitAndThermodynamicTemperatureUnit;
-  SUTTU->Init(Standard_False, StepBasic_spExa, StepBasic_sunDegreeCelsius);
+  SUTTU->Init(false, StepBasic_spExa, StepBasic_sunDegreeCelsius);
   smodel->AddWithRefs(SUTTU);
   smodel->SetIdentLabel(SUTTU, smodel->Number(SUTTU));
   NewHANU->SetValue(OldHANU->Length() + 3, SUTTU);
 
-  Handle(StepRepr_GlobalUnitAssignedContext) NewUnitCtx = new StepRepr_GlobalUnitAssignedContext;
+  occ::handle<StepRepr_GlobalUnitAssignedContext> NewUnitCtx = new StepRepr_GlobalUnitAssignedContext;
   NewUnitCtx->Init(new TCollection_HAsciiString(""), new TCollection_HAsciiString(""), NewHANU);
-  Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext) NewGeoCtx =
+  occ::handle<StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext> NewGeoCtx =
     new StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext;
   NewGeoCtx->Init(new TCollection_HAsciiString("REP_CONTEXT_FEA"),
                   new TCollection_HAsciiString("3D"),
@@ -915,12 +940,12 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
   smodel->SetIdentLabel(NewGeoCtx, smodel->Number(NewGeoCtx));
 
   // create fea_model_3d
-  Handle(StepFEA_FeaModel3d) FM = new StepFEA_FeaModel3d;
+  occ::handle<StepFEA_FeaModel3d> FM = new StepFEA_FeaModel3d;
   FM->SetName(new TCollection_HAsciiString("FEA_MODEL"));
-  Handle(StepRepr_HArray1OfRepresentationItem) HARI =
-    new StepRepr_HArray1OfRepresentationItem(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> HARI =
+    new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   HARI->SetValue(1, FA2P3D);
-  Handle(TColStd_HArray1OfAsciiString) HAAS = new TColStd_HArray1OfAsciiString(1, 1);
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>> HAAS = new NCollection_HArray1<TCollection_AsciiString>(1, 1);
   HAAS->SetValue(1, "FEA_SOLVER");
   FM->Init(new TCollection_HAsciiString("FEA_MODEL"),
            HARI,
@@ -933,18 +958,18 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
   smodel->SetIdentLabel(FM, smodel->Number(FM));
 
   // add structural_response_property
-  Handle(StepRepr_StructuralResponseProperty) SRP = new StepRepr_StructuralResponseProperty;
+  occ::handle<StepRepr_StructuralResponseProperty> SRP = new StepRepr_StructuralResponseProperty;
   StepRepr_CharacterizedDefinition            ChDef2;
   ChDef2.SetValue(FMD);
   SRP->Init(new TCollection_HAsciiString("STRUCT_RESP_PROP"),
-            Standard_True,
+            true,
             new TCollection_HAsciiString("STRUCTURAL_RESPONSE_PROPERTY"),
             ChDef2);
   smodel->AddWithRefs(SRP);
   smodel->SetIdentLabel(SRP, smodel->Number(SRP));
 
   // add structural_response_property_definition_representation
-  Handle(StepRepr_StructuralResponsePropertyDefinitionRepresentation) SRPDR =
+  occ::handle<StepRepr_StructuralResponsePropertyDefinitionRepresentation> SRPDR =
     new StepRepr_StructuralResponsePropertyDefinitionRepresentation;
   StepRepr_RepresentedDefinition RepDef2;
   RepDef2.SetValue(SRP);
@@ -952,10 +977,10 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
   smodel->AddWithRefs(SRPDR);
   smodel->SetIdentLabel(SRPDR, smodel->Number(SRPDR));
 
-  WS()->ComputeGraph(Standard_True);
-  WS()->ComputeCheck(Standard_True);
+  WS()->ComputeGraph(true);
+  WS()->ComputeCheck(true);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -964,22 +989,22 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure(
 //           entities CcDesing... from AP203
 //=======================================================================
 
-Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
+bool StepAP209_Construct::ReplaceCcDesingToApplied() const
 {
-  Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
-  Standard_Integer           nb     = smodel->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
+  int           nb     = smodel->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) anEntity = smodel->Value(i);
+    occ::handle<Standard_Transient> anEntity = smodel->Value(i);
     if (anEntity->IsKind(STANDARD_TYPE(StepAP203_CcDesignApproval)))
     {
-      Handle(StepAP203_CcDesignApproval) ent =
-        Handle(StepAP203_CcDesignApproval)::DownCast(anEntity);
-      Handle(StepAP214_AppliedApprovalAssignment) nent    = new StepAP214_AppliedApprovalAssignment;
-      Handle(StepAP203_HArray1OfApprovedItem)     HAAI203 = ent->Items();
-      Handle(StepAP214_HArray1OfApprovalItem)     HAAI214 =
-        new StepAP214_HArray1OfApprovalItem(1, HAAI203->Length());
-      for (Standard_Integer j = 1; j <= HAAI203->Length(); j++)
+      occ::handle<StepAP203_CcDesignApproval> ent =
+        occ::down_cast<StepAP203_CcDesignApproval>(anEntity);
+      occ::handle<StepAP214_AppliedApprovalAssignment> nent    = new StepAP214_AppliedApprovalAssignment;
+      occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>>     HAAI203 = ent->Items();
+      occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>     HAAI214 =
+        new NCollection_HArray1<StepAP214_ApprovalItem>(1, HAAI203->Length());
+      for (int j = 1; j <= HAAI203->Length(); j++)
       {
         StepAP214_ApprovalItem AI214;
         AI214.SetValue(HAAI203->Value(j).Value());
@@ -991,14 +1016,14 @@ Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
     }
     else if (anEntity->IsKind(STANDARD_TYPE(StepAP203_CcDesignPersonAndOrganizationAssignment)))
     {
-      Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) ent =
-        Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)::DownCast(anEntity);
-      Handle(StepAP214_AppliedPersonAndOrganizationAssignment) nent =
+      occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> ent =
+        occ::down_cast<StepAP203_CcDesignPersonAndOrganizationAssignment>(anEntity);
+      occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> nent =
         new StepAP214_AppliedPersonAndOrganizationAssignment;
-      Handle(StepAP203_HArray1OfPersonOrganizationItem)    HAPOI203 = ent->Items();
-      Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI214 =
-        new StepAP214_HArray1OfPersonAndOrganizationItem(1, HAPOI203->Length());
-      for (Standard_Integer j = 1; j <= HAPOI203->Length(); j++)
+      occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI203 = ent->Items();
+      occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 =
+        new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, HAPOI203->Length());
+      for (int j = 1; j <= HAPOI203->Length(); j++)
       {
         StepAP214_PersonAndOrganizationItem POI214;
         POI214.SetValue(HAPOI203->Value(j).Value());
@@ -1010,14 +1035,14 @@ Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
     }
     else if (anEntity->IsKind(STANDARD_TYPE(StepAP203_CcDesignDateAndTimeAssignment)))
     {
-      Handle(StepAP203_CcDesignDateAndTimeAssignment) ent =
-        Handle(StepAP203_CcDesignDateAndTimeAssignment)::DownCast(anEntity);
-      Handle(StepAP214_AppliedDateAndTimeAssignment) nent =
+      occ::handle<StepAP203_CcDesignDateAndTimeAssignment> ent =
+        occ::down_cast<StepAP203_CcDesignDateAndTimeAssignment>(anEntity);
+      occ::handle<StepAP214_AppliedDateAndTimeAssignment> nent =
         new StepAP214_AppliedDateAndTimeAssignment;
-      Handle(StepAP203_HArray1OfDateTimeItem)    HADTI203 = ent->Items();
-      Handle(StepAP214_HArray1OfDateAndTimeItem) HADTI214 =
-        new StepAP214_HArray1OfDateAndTimeItem(1, HADTI203->Length());
-      for (Standard_Integer j = 1; j <= HADTI203->Length(); j++)
+      occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>    HADTI203 = ent->Items();
+      occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> HADTI214 =
+        new NCollection_HArray1<StepAP214_DateAndTimeItem>(1, HADTI203->Length());
+      for (int j = 1; j <= HADTI203->Length(); j++)
       {
         StepAP214_DateAndTimeItem DTI214;
         DTI214.SetValue(HADTI203->Value(j).Value());
@@ -1029,14 +1054,14 @@ Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
     }
     else if (anEntity->IsKind(STANDARD_TYPE(StepAP203_CcDesignSecurityClassification)))
     {
-      Handle(StepAP203_CcDesignSecurityClassification) ent =
-        Handle(StepAP203_CcDesignSecurityClassification)::DownCast(anEntity);
-      Handle(StepAP214_AppliedSecurityClassificationAssignment) nent =
+      occ::handle<StepAP203_CcDesignSecurityClassification> ent =
+        occ::down_cast<StepAP203_CcDesignSecurityClassification>(anEntity);
+      occ::handle<StepAP214_AppliedSecurityClassificationAssignment> nent =
         new StepAP214_AppliedSecurityClassificationAssignment;
-      Handle(StepAP203_HArray1OfClassifiedItem)             HACI203 = ent->Items();
-      Handle(StepAP214_HArray1OfSecurityClassificationItem) HASCI214 =
-        new StepAP214_HArray1OfSecurityClassificationItem(1, HACI203->Length());
-      for (Standard_Integer j = 1; j <= HACI203->Length(); j++)
+      occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>             HACI203 = ent->Items();
+      occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>> HASCI214 =
+        new NCollection_HArray1<StepAP214_SecurityClassificationItem>(1, HACI203->Length());
+      for (int j = 1; j <= HACI203->Length(); j++)
       {
         StepAP214_SecurityClassificationItem SCI214;
         SCI214.SetValue(HACI203->Value(j).Value());
@@ -1048,7 +1073,7 @@ Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -1057,33 +1082,33 @@ Standard_Boolean StepAP209_Construct::ReplaceCcDesingToApplied() const
 //           organization.. entities for analysis structure
 //=======================================================================
 
-Standard_Boolean StepAP209_Construct::CreateAddingEntities(
-  const Handle(StepBasic_ProductDefinition)& AnaPD) const
+bool StepAP209_Construct::CreateAddingEntities(
+  const occ::handle<StepBasic_ProductDefinition>& AnaPD) const
 {
-  Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
-  Handle(StepBasic_ProductDefinitionFormation) AnaPDF  = AnaPD->Formation();
-  Handle(StepBasic_Product)                    AnaProd = AnaPDF->OfProduct();
+  occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
+  occ::handle<StepBasic_ProductDefinitionFormation> AnaPDF  = AnaPD->Formation();
+  occ::handle<StepBasic_Product>                    AnaProd = AnaPDF->OfProduct();
 
-  Handle(StepBasic_ApprovalStatus) AS = new StepBasic_ApprovalStatus;
+  occ::handle<StepBasic_ApprovalStatus> AS = new StepBasic_ApprovalStatus;
   AS->Init(new TCollection_HAsciiString("approved"));
   smodel->AddEntity(AS);
   smodel->SetIdentLabel(AS, smodel->Number(AS));
-  Handle(StepBasic_Approval) Appr = new StepBasic_Approval;
+  occ::handle<StepBasic_Approval> Appr = new StepBasic_Approval;
   Appr->Init(AS, new TCollection_HAsciiString("approved"));
   smodel->AddWithRefs(Appr);
   smodel->SetIdentLabel(Appr, smodel->Number(Appr));
 
-  Handle(StepBasic_SecurityClassificationLevel) SCL = new StepBasic_SecurityClassificationLevel;
+  occ::handle<StepBasic_SecurityClassificationLevel> SCL = new StepBasic_SecurityClassificationLevel;
   SCL->Init(new TCollection_HAsciiString("unclassified"));
   smodel->AddEntity(SCL);
   smodel->SetIdentLabel(SCL, smodel->Number(SCL));
-  Handle(StepBasic_SecurityClassification) SC = new StepBasic_SecurityClassification;
+  occ::handle<StepBasic_SecurityClassification> SC = new StepBasic_SecurityClassification;
   SC->Init(new TCollection_HAsciiString(""), new TCollection_HAsciiString(""), SCL);
   smodel->AddWithRefs(SC);
   smodel->SetIdentLabel(SC, smodel->Number(SC));
 
-  Handle(StepAP214_AppliedApprovalAssignment) AAA  = new StepAP214_AppliedApprovalAssignment;
-  Handle(StepAP214_HArray1OfApprovalItem)     HAAI = new StepAP214_HArray1OfApprovalItem(1, 3);
+  occ::handle<StepAP214_AppliedApprovalAssignment> AAA  = new StepAP214_AppliedApprovalAssignment;
+  occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>     HAAI = new NCollection_HArray1<StepAP214_ApprovalItem>(1, 3);
   StepAP214_ApprovalItem                      AI1;
   AI1.SetValue(AnaPD);
   HAAI->SetValue(1, AI1);
@@ -1097,10 +1122,10 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddWithRefs(AAA);
   smodel->SetIdentLabel(AAA, smodel->Number(AAA));
 
-  Handle(StepAP214_AppliedSecurityClassificationAssignment) ASCA =
+  occ::handle<StepAP214_AppliedSecurityClassificationAssignment> ASCA =
     new StepAP214_AppliedSecurityClassificationAssignment;
-  Handle(StepAP214_HArray1OfSecurityClassificationItem) HASCI =
-    new StepAP214_HArray1OfSecurityClassificationItem(1, 1);
+  occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>> HASCI =
+    new NCollection_HArray1<StepAP214_SecurityClassificationItem>(1, 1);
   StepAP214_SecurityClassificationItem SCI;
   SCI.SetValue(AnaPDF);
   HASCI->SetValue(1, SCI);
@@ -1111,35 +1136,35 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   OSD_Process   sys;
   Quantity_Date date = sys.SystemDate();
 
-  Handle(StepBasic_CalendarDate) CDate = new StepBasic_CalendarDate;
+  occ::handle<StepBasic_CalendarDate> CDate = new StepBasic_CalendarDate;
   CDate->Init(date.Year(), date.Day(), date.Month());
   smodel->AddEntity(CDate);
   smodel->SetIdentLabel(CDate, smodel->Number(CDate));
-  Handle(StepBasic_CoordinatedUniversalTimeOffset) CUTO =
+  occ::handle<StepBasic_CoordinatedUniversalTimeOffset> CUTO =
     new StepBasic_CoordinatedUniversalTimeOffset;
-  CUTO->Init(0, Standard_True, 0, StepBasic_aobAhead);
+  CUTO->Init(0, true, 0, StepBasic_aobAhead);
   smodel->AddEntity(CUTO);
   smodel->SetIdentLabel(CUTO, smodel->Number(CUTO));
-  Handle(StepBasic_LocalTime) LT = new StepBasic_LocalTime;
+  occ::handle<StepBasic_LocalTime> LT = new StepBasic_LocalTime;
   LT->Init(date.Hour(),
-           Standard_True,
+           true,
            date.Minute(),
-           Standard_True,
-           (Standard_Real)date.Second(),
+           true,
+           (double)date.Second(),
            CUTO);
   smodel->AddWithRefs(LT);
   smodel->SetIdentLabel(LT, smodel->Number(LT));
-  Handle(StepBasic_DateAndTime) DAT = new StepBasic_DateAndTime;
+  occ::handle<StepBasic_DateAndTime> DAT = new StepBasic_DateAndTime;
   DAT->Init(CDate, LT);
   smodel->AddWithRefs(DAT);
   smodel->SetIdentLabel(DAT, smodel->Number(DAT));
 
-  Handle(StepBasic_DateTimeRole) DTR = new StepBasic_DateTimeRole;
+  occ::handle<StepBasic_DateTimeRole> DTR = new StepBasic_DateTimeRole;
   DTR->Init(new TCollection_HAsciiString("classification_date"));
   smodel->AddEntity(DTR);
   smodel->SetIdentLabel(DTR, smodel->Number(DTR));
-  Handle(StepAP214_AppliedDateAndTimeAssignment) ADTA = new StepAP214_AppliedDateAndTimeAssignment;
-  Handle(StepAP214_HArray1OfDateAndTimeItem) HADTI = new StepAP214_HArray1OfDateAndTimeItem(1, 1);
+  occ::handle<StepAP214_AppliedDateAndTimeAssignment> ADTA = new StepAP214_AppliedDateAndTimeAssignment;
+  occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> HADTI = new NCollection_HArray1<StepAP214_DateAndTimeItem>(1, 1);
   StepAP214_DateAndTimeItem                  DTI1;
   DTI1.SetValue(SC);
   HADTI->SetValue(1, DTI1);
@@ -1152,7 +1177,7 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(DTR);
   smodel->SetIdentLabel(DTR, smodel->Number(DTR));
   ADTA  = new StepAP214_AppliedDateAndTimeAssignment;
-  HADTI = new StepAP214_HArray1OfDateAndTimeItem(1, 1);
+  HADTI = new NCollection_HArray1<StepAP214_DateAndTimeItem>(1, 1);
   StepAP214_DateAndTimeItem DTI2;
   DTI2.SetValue(AnaPD);
   HADTI->SetValue(1, DTI2);
@@ -1160,49 +1185,49 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddWithRefs(ADTA);
   smodel->SetIdentLabel(ADTA, smodel->Number(ADTA));
 
-  Handle(StepBasic_ApprovalDateTime) ADT = new StepBasic_ApprovalDateTime;
+  occ::handle<StepBasic_ApprovalDateTime> ADT = new StepBasic_ApprovalDateTime;
   StepBasic_DateTimeSelect           DTS;
   DTS.SetValue(DAT);
   ADT->Init(DTS, Appr);
   smodel->AddWithRefs(ADT);
   smodel->SetIdentLabel(ADT, smodel->Number(ADT));
 
-  Handle(StepBasic_Person)                Pers  = new StepBasic_Person;
-  Handle(Interface_HArray1OfHAsciiString) HAHAS = new Interface_HArray1OfHAsciiString(1, 1);
+  occ::handle<StepBasic_Person>                Pers  = new StepBasic_Person;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HAHAS = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
   HAHAS->SetValue(1, new TCollection_HAsciiString(""));
   Pers->Init(new TCollection_HAsciiString("1"),
-             Standard_True,
+             true,
              new TCollection_HAsciiString("last_name"),
-             Standard_True,
+             true,
              new TCollection_HAsciiString("first_name"),
-             Standard_True,
+             true,
              HAHAS,
-             Standard_True,
+             true,
              HAHAS,
-             Standard_True,
+             true,
              HAHAS);
   smodel->AddEntity(Pers);
   smodel->SetIdentLabel(Pers, smodel->Number(Pers));
-  Handle(StepBasic_Organization) Org = new StepBasic_Organization;
-  Org->Init(Standard_True,
+  occ::handle<StepBasic_Organization> Org = new StepBasic_Organization;
+  Org->Init(true,
             new TCollection_HAsciiString("1"),
             new TCollection_HAsciiString("organisation"),
             new TCollection_HAsciiString("organisation_description"));
   smodel->AddEntity(Org);
   smodel->SetIdentLabel(Org, smodel->Number(Org));
-  Handle(StepBasic_PersonAndOrganization) PO = new StepBasic_PersonAndOrganization;
+  occ::handle<StepBasic_PersonAndOrganization> PO = new StepBasic_PersonAndOrganization;
   PO->Init(Pers, Org);
   smodel->AddWithRefs(PO);
   smodel->SetIdentLabel(PO, smodel->Number(PO));
 
-  Handle(StepBasic_PersonAndOrganizationRole) POR = new StepBasic_PersonAndOrganizationRole;
+  occ::handle<StepBasic_PersonAndOrganizationRole> POR = new StepBasic_PersonAndOrganizationRole;
   POR->Init(new TCollection_HAsciiString("analysis_owner"));
   smodel->AddEntity(POR);
   smodel->SetIdentLabel(POR, smodel->Number(POR));
-  Handle(StepAP214_AppliedPersonAndOrganizationAssignment) APOA =
+  occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
     new StepAP214_AppliedPersonAndOrganizationAssignment;
-  Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI =
-    new StepAP214_HArray1OfPersonAndOrganizationItem(1, 1);
+  occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI =
+    new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, 1);
   StepAP214_PersonAndOrganizationItem POI1;
   POI1.SetValue(AnaProd);
   HAPOI->SetValue(1, POI1);
@@ -1215,7 +1240,7 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(POR);
   smodel->SetIdentLabel(POR, smodel->Number(POR));
   APOA  = new StepAP214_AppliedPersonAndOrganizationAssignment;
-  HAPOI = new StepAP214_HArray1OfPersonAndOrganizationItem(1, 1);
+  HAPOI = new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, 1);
   StepAP214_PersonAndOrganizationItem POI2;
   POI2.SetValue(AnaPD);
   HAPOI->SetValue(1, POI2);
@@ -1228,7 +1253,7 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(POR);
   smodel->SetIdentLabel(POR, smodel->Number(POR));
   APOA  = new StepAP214_AppliedPersonAndOrganizationAssignment;
-  HAPOI = new StepAP214_HArray1OfPersonAndOrganizationItem(1, 1);
+  HAPOI = new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, 1);
   StepAP214_PersonAndOrganizationItem POI3;
   POI3.SetValue(AnaPD);
   HAPOI->SetValue(1, POI3);
@@ -1241,7 +1266,7 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(POR);
   smodel->SetIdentLabel(POR, smodel->Number(POR));
   APOA  = new StepAP214_AppliedPersonAndOrganizationAssignment;
-  HAPOI = new StepAP214_HArray1OfPersonAndOrganizationItem(1, 1);
+  HAPOI = new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, 1);
   StepAP214_PersonAndOrganizationItem POI4;
   POI4.SetValue(SC);
   HAPOI->SetValue(1, POI4);
@@ -1254,7 +1279,7 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(POR);
   smodel->SetIdentLabel(POR, smodel->Number(POR));
   APOA  = new StepAP214_AppliedPersonAndOrganizationAssignment;
-  HAPOI = new StepAP214_HArray1OfPersonAndOrganizationItem(1, 1);
+  HAPOI = new NCollection_HArray1<StepAP214_PersonAndOrganizationItem>(1, 1);
   StepAP214_PersonAndOrganizationItem POI5;
   POI5.SetValue(AnaPDF);
   HAPOI->SetValue(1, POI5);
@@ -1262,46 +1287,46 @@ Standard_Boolean StepAP209_Construct::CreateAddingEntities(
   smodel->AddWithRefs(APOA);
   smodel->SetIdentLabel(APOA, smodel->Number(APOA));
 
-  Handle(StepBasic_ApprovalRole) AR = new StepBasic_ApprovalRole;
+  occ::handle<StepBasic_ApprovalRole> AR = new StepBasic_ApprovalRole;
   AR->Init(new TCollection_HAsciiString("approver"));
   smodel->AddEntity(AR);
   smodel->SetIdentLabel(AR, smodel->Number(AR));
-  Handle(StepBasic_ApprovalPersonOrganization) APO = new StepBasic_ApprovalPersonOrganization;
+  occ::handle<StepBasic_ApprovalPersonOrganization> APO = new StepBasic_ApprovalPersonOrganization;
   StepBasic_PersonOrganizationSelect           POS;
   POS.SetValue(PO);
   APO->Init(POS, Appr, AR);
   smodel->AddWithRefs(APO);
   smodel->SetIdentLabel(APO, smodel->Number(APO));
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
+occ::handle<StepData_StepModel> StepAP209_Construct::CreateAP203Structure() const
 {
-  Handle(StepData_StepModel) smodel = Handle(StepData_StepModel)::DownCast(Model());
-  Handle(StepData_StepModel) nmodel; // = new StepData_StepModel;
+  occ::handle<StepData_StepModel> smodel = occ::down_cast<StepData_StepModel>(Model());
+  occ::handle<StepData_StepModel> nmodel; // = new StepData_StepModel;
   if (smodel.IsNull())
     return nmodel;
   // nmodel->SetProtocol(smodel->Protocol());
-  Handle(StepBasic_ProductDefinitionFormation)    PDF;
-  Handle(StepBasic_ProductDefinition)             PD;
-  Handle(StepRepr_ProductDefinitionShape)         PDS;
-  Handle(StepShape_ShapeDefinitionRepresentation) SDR;
-  Standard_Integer                                nb = smodel->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<StepBasic_ProductDefinitionFormation>    PDF;
+  occ::handle<StepBasic_ProductDefinition>             PD;
+  occ::handle<StepRepr_ProductDefinitionShape>         PDS;
+  occ::handle<StepShape_ShapeDefinitionRepresentation> SDR;
+  int                                nb = smodel->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
     if (smodel->Value(i)->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
     {
-      SDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(smodel->Value(i));
-      PDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(SDR->Definition().Value());
+      SDR = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(smodel->Value(i));
+      PDS = occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().Value());
       if (PDS.IsNull())
         continue;
-      PD = Handle(StepBasic_ProductDefinition)::DownCast(PDS->Definition().Value());
+      PD = occ::down_cast<StepBasic_ProductDefinition>(PDS->Definition().Value());
       if (PD.IsNull())
         continue;
-      Handle(StepBasic_ProductDefinitionFormation) PDF1 = PD->Formation();
+      occ::handle<StepBasic_ProductDefinitionFormation> PDF1 = PD->Formation();
       if (IsDesing(PDF1))
       {
         PDF = PDF1;
@@ -1314,28 +1339,28 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
   nmodel = new StepData_StepModel;
   nmodel->SetProtocol(smodel->Protocol());
 
-  Handle(StepBasic_Product) Prod = PDF->OfProduct();
+  occ::handle<StepBasic_Product> Prod = PDF->OfProduct();
   nmodel->AddWithRefs(Prod);
 
   // adding categories:
-  Handle(StepBasic_HArray1OfProduct) HAProd = new StepBasic_HArray1OfProduct(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> HAProd = new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, 1);
   HAProd->SetValue(1, Prod);
-  Handle(StepBasic_ProductRelatedProductCategory) PRPC =
+  occ::handle<StepBasic_ProductRelatedProductCategory> PRPC =
     new StepBasic_ProductRelatedProductCategory;
   PRPC->Init(new TCollection_HAsciiString("design"),
-             Standard_True,
+             true,
              Prod->Name(),
              HAProd); // may be Prod->Description() - ???
   nmodel->AddEntity(PRPC);
-  Handle(StepBasic_ProductCategory) PCat = new StepBasic_ProductCategory;
+  occ::handle<StepBasic_ProductCategory> PCat = new StepBasic_ProductCategory;
   PCat->Init(new TCollection_HAsciiString("part"),
-             Standard_True,
+             true,
              Prod->Name()); // may be Prod->Description() - ???
   nmodel->AddEntity(PCat);
   // nmodel->SetIdentLabel(PCat, smodel->Number(PCat));
-  Handle(StepBasic_ProductCategoryRelationship) PCR = new StepBasic_ProductCategoryRelationship;
+  occ::handle<StepBasic_ProductCategoryRelationship> PCR = new StepBasic_ProductCategoryRelationship;
   PCR->Init(new TCollection_HAsciiString(""),
-            Standard_True,
+            true,
             Prod->Name(),
             PCat,
             PRPC); // may be Prod->Description() - ???
@@ -1345,22 +1370,22 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
   nmodel->AddWithRefs(PD);
 
   // replacing contexts:
-  Handle(StepBasic_ApplicationContext) ApplCtx;
-  Handle(StepBasic_ProductContext)     ProdCtx = Prod->FrameOfReferenceValue(1);
+  occ::handle<StepBasic_ApplicationContext> ApplCtx;
+  occ::handle<StepBasic_ProductContext>     ProdCtx = Prod->FrameOfReferenceValue(1);
   if (!ProdCtx.IsNull())
   {
-    Handle(StepBasic_MechanicalContext) MechCtx = new StepBasic_MechanicalContext;
+    occ::handle<StepBasic_MechanicalContext> MechCtx = new StepBasic_MechanicalContext;
     MechCtx->Init(ProdCtx->Name(), ProdCtx->FrameOfReference(), ProdCtx->DisciplineType());
     nmodel->ReplaceEntity(nmodel->Number(ProdCtx), MechCtx);
-    Handle(StepBasic_HArray1OfProductContext) HAPC = new StepBasic_HArray1OfProductContext(1, 1);
+    occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> HAPC = new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, 1);
     HAPC->SetValue(1, MechCtx);
     Prod->SetFrameOfReference(HAPC);
     ApplCtx = MechCtx->FrameOfReference();
   }
-  Handle(StepBasic_ProductDefinitionContext) PDCtx = PD->FrameOfReference();
+  occ::handle<StepBasic_ProductDefinitionContext> PDCtx = PD->FrameOfReference();
   if (!PDCtx.IsNull())
   {
-    Handle(StepBasic_DesignContext) DesCtx = new StepBasic_DesignContext;
+    occ::handle<StepBasic_DesignContext> DesCtx = new StepBasic_DesignContext;
     DesCtx->Init(PDCtx->Name(), PDCtx->FrameOfReference(), PDCtx->LifeCycleStage());
     nmodel->ReplaceEntity(nmodel->Number(PDCtx), DesCtx);
     PD->SetFrameOfReference(DesCtx);
@@ -1368,11 +1393,11 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
   }
   if (!ApplCtx.IsNull())
   {
-    Handle(StepBasic_ApplicationProtocolDefinition) APD;
+    occ::handle<StepBasic_ApplicationProtocolDefinition> APD;
     Interface_EntityIterator                        subs = Graph().Sharings(ApplCtx);
     for (subs.Start(); subs.More() && APD.IsNull(); subs.Next())
     {
-      APD = Handle(StepBasic_ApplicationProtocolDefinition)::DownCast(subs.Value());
+      APD = occ::down_cast<StepBasic_ApplicationProtocolDefinition>(subs.Value());
       if (APD.IsNull())
         continue;
       nmodel->AddWithRefs(APD);
@@ -1385,7 +1410,7 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
   nmodel->AddWithRefs(SDR);
 
   // adding DimensionalExponents
-  Handle(StepBasic_DimensionalExponents) DimExp = new StepBasic_DimensionalExponents;
+  occ::handle<StepBasic_DimensionalExponents> DimExp = new StepBasic_DimensionalExponents;
   DimExp->Init(1., 0., 0., 0., 0., 0., 0.);
   nmodel->AddWithRefs(DimExp);
   DimExp = new StepBasic_DimensionalExponents;
@@ -1394,22 +1419,22 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
 
   // writing HeaderSection
   nmodel->ClearHeader();
-  Handle(HeaderSection_FileName) FN = Handle(HeaderSection_FileName)::DownCast(
+  occ::handle<HeaderSection_FileName> FN = occ::down_cast<HeaderSection_FileName>(
     smodel->HeaderEntity(STANDARD_TYPE(HeaderSection_FileName)));
   if (!FN.IsNull())
   {
     FN->SetPreprocessorVersion(new TCollection_HAsciiString("AP209 -> SDRB Convertor"));
     nmodel->AddHeaderEntity(FN);
   }
-  Handle(HeaderSection_FileSchema) FS = Handle(HeaderSection_FileSchema)::DownCast(
+  occ::handle<HeaderSection_FileSchema> FS = occ::down_cast<HeaderSection_FileSchema>(
     smodel->HeaderEntity(STANDARD_TYPE(HeaderSection_FileSchema)));
   if (!FS.IsNull())
     nmodel->AddHeaderEntity(FS);
-  Handle(HeaderSection_FileDescription) FD = Handle(HeaderSection_FileDescription)::DownCast(
+  occ::handle<HeaderSection_FileDescription> FD = occ::down_cast<HeaderSection_FileDescription>(
     smodel->HeaderEntity(STANDARD_TYPE(HeaderSection_FileDescription)));
   if (!FD.IsNull())
   {
-    Handle(Interface_HArray1OfHAsciiString) HAAS = new Interface_HArray1OfHAsciiString(1, 1);
+    occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HAAS = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
     HAAS->SetValue(1, new TCollection_HAsciiString("STEP AP203 file generated from STEP AP209"));
     FD->SetDescription(HAAS);
     nmodel->AddHeaderEntity(FD);
@@ -1426,21 +1451,21 @@ Handle(StepData_StepModel) StepAP209_Construct::CreateAP203Structure() const
 //           organization.. entities for analysis structure
 //=======================================================================
 
-Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
-  const Handle(StepBasic_ProductDefinition)& PD,
-  Handle(StepData_StepModel)&                aModel) const
+bool StepAP209_Construct::CreateAdding203Entities(
+  const occ::handle<StepBasic_ProductDefinition>& PD,
+  occ::handle<StepData_StepModel>&                aModel) const
 {
-  Handle(StepData_StepModel) smodel                 = Handle(StepData_StepModel)::DownCast(Model());
-  Handle(StepBasic_ProductDefinitionFormation) PDF  = PD->Formation();
-  Handle(StepBasic_Product)                    Prod = PDF->OfProduct();
+  occ::handle<StepData_StepModel> smodel                 = occ::down_cast<StepData_StepModel>(Model());
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF  = PD->Formation();
+  occ::handle<StepBasic_Product>                    Prod = PDF->OfProduct();
 
   // create SecurityClassification
-  Handle(StepBasic_SecurityClassification) SC;
+  occ::handle<StepBasic_SecurityClassification> SC;
   Interface_EntityIterator                 subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More() && SC.IsNull(); subs.Next())
   {
-    Handle(StepAP214_AppliedSecurityClassificationAssignment) ASCA =
-      Handle(StepAP214_AppliedSecurityClassificationAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedSecurityClassificationAssignment> ASCA =
+      occ::down_cast<StepAP214_AppliedSecurityClassificationAssignment>(subs.Value());
     if (ASCA.IsNull())
       continue;
     SC = ASCA->AssignedSecurityClassification();
@@ -1448,15 +1473,15 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   if (SC.IsNull())
   {
     // create new
-    Handle(StepBasic_SecurityClassificationLevel) SCL = new StepBasic_SecurityClassificationLevel;
+    occ::handle<StepBasic_SecurityClassificationLevel> SCL = new StepBasic_SecurityClassificationLevel;
     SCL->Init(new TCollection_HAsciiString("unclassified"));
     SC = new StepBasic_SecurityClassification;
     SC->Init(new TCollection_HAsciiString(""), new TCollection_HAsciiString(""), SCL);
   }
   aModel->AddWithRefs(SC);
-  Handle(StepAP203_CcDesignSecurityClassification) DSC =
+  occ::handle<StepAP203_CcDesignSecurityClassification> DSC =
     new StepAP203_CcDesignSecurityClassification;
-  Handle(StepAP203_HArray1OfClassifiedItem) HACI = new StepAP203_HArray1OfClassifiedItem(1, 1);
+  occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> HACI = new NCollection_HArray1<StepAP203_ClassifiedItem>(1, 1);
   StepAP203_ClassifiedItem                  CI;
   CI.SetValue(PDF);
   HACI->SetValue(1, CI);
@@ -1464,37 +1489,37 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   aModel->AddWithRefs(DSC);
 
   // create CcDesignApproval
-  Handle(StepBasic_DateAndTime) DT;
+  occ::handle<StepBasic_DateAndTime> DT;
   subs = Graph().Sharings(PD);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedApprovalAssignment) AAA =
-      Handle(StepAP214_AppliedApprovalAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedApprovalAssignment> AAA =
+      occ::down_cast<StepAP214_AppliedApprovalAssignment>(subs.Value());
     if (!AAA.IsNull())
     {
-      Handle(StepAP214_HArray1OfApprovalItem) HAAI214 = AAA->Items();
-      Handle(StepAP203_HArray1OfApprovedItem) HAAI =
-        new StepAP203_HArray1OfApprovedItem(1, HAAI214->Length());
-      for (Standard_Integer i = 1; i <= HAAI214->Length(); i++)
+      occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> HAAI214 = AAA->Items();
+      occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> HAAI =
+        new NCollection_HArray1<StepAP203_ApprovedItem>(1, HAAI214->Length());
+      for (int i = 1; i <= HAAI214->Length(); i++)
       {
         StepAP203_ApprovedItem AI;
         AI.SetValue(AAA->ItemsValue(i).Value());
         HAAI->SetValue(i, AI);
       }
-      Handle(StepAP203_CcDesignApproval) DA = new StepAP203_CcDesignApproval;
+      occ::handle<StepAP203_CcDesignApproval> DA = new StepAP203_CcDesignApproval;
       DA->Init(AAA->AssignedApproval(), HAAI);
       aModel->AddWithRefs(DA);
       // find ApprovalDateTime for Approval
       Interface_EntityIterator subs2 = Graph().Sharings(AAA->AssignedApproval());
       for (subs2.Start(); subs2.More(); subs2.Next())
       {
-        Handle(StepBasic_ApprovalDateTime) ADT =
-          Handle(StepBasic_ApprovalDateTime)::DownCast(subs2.Value());
+        occ::handle<StepBasic_ApprovalDateTime> ADT =
+          occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
           continue;
         aModel->AddWithRefs(ADT);
-        Handle(StepBasic_DateAndTime) DT1 =
-          Handle(StepBasic_DateAndTime)::DownCast(ADT->DateTime().Value());
+        occ::handle<StepBasic_DateAndTime> DT1 =
+          occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
           continue;
         DT = DT1;
@@ -1504,33 +1529,33 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedApprovalAssignment) AAA =
-      Handle(StepAP214_AppliedApprovalAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedApprovalAssignment> AAA =
+      occ::down_cast<StepAP214_AppliedApprovalAssignment>(subs.Value());
     if (!AAA.IsNull())
     {
-      Handle(StepAP214_HArray1OfApprovalItem) HAAI214 = AAA->Items();
-      Handle(StepAP203_HArray1OfApprovedItem) HAAI =
-        new StepAP203_HArray1OfApprovedItem(1, HAAI214->Length());
-      for (Standard_Integer i = 1; i <= HAAI214->Length(); i++)
+      occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> HAAI214 = AAA->Items();
+      occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> HAAI =
+        new NCollection_HArray1<StepAP203_ApprovedItem>(1, HAAI214->Length());
+      for (int i = 1; i <= HAAI214->Length(); i++)
       {
         StepAP203_ApprovedItem AI;
         AI.SetValue(AAA->ItemsValue(i).Value());
         HAAI->SetValue(i, AI);
       }
-      Handle(StepAP203_CcDesignApproval) DA = new StepAP203_CcDesignApproval;
+      occ::handle<StepAP203_CcDesignApproval> DA = new StepAP203_CcDesignApproval;
       DA->Init(AAA->AssignedApproval(), HAAI);
       aModel->AddWithRefs(DA);
       // find ApprovalDateTime for Approval
       Interface_EntityIterator subs2 = Graph().Sharings(AAA->AssignedApproval());
       for (subs2.Start(); subs2.More(); subs2.Next())
       {
-        Handle(StepBasic_ApprovalDateTime) ADT =
-          Handle(StepBasic_ApprovalDateTime)::DownCast(subs2.Value());
+        occ::handle<StepBasic_ApprovalDateTime> ADT =
+          occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
           continue;
         aModel->AddWithRefs(ADT);
-        Handle(StepBasic_DateAndTime) DT1 =
-          Handle(StepBasic_DateAndTime)::DownCast(ADT->DateTime().Value());
+        occ::handle<StepBasic_DateAndTime> DT1 =
+          occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
           continue;
         DT = DT1;
@@ -1540,33 +1565,33 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(SC);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedApprovalAssignment) AAA =
-      Handle(StepAP214_AppliedApprovalAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedApprovalAssignment> AAA =
+      occ::down_cast<StepAP214_AppliedApprovalAssignment>(subs.Value());
     if (!AAA.IsNull())
     {
-      Handle(StepAP214_HArray1OfApprovalItem) HAAI214 = AAA->Items();
-      Handle(StepAP203_HArray1OfApprovedItem) HAAI =
-        new StepAP203_HArray1OfApprovedItem(1, HAAI214->Length());
-      for (Standard_Integer i = 1; i <= HAAI214->Length(); i++)
+      occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> HAAI214 = AAA->Items();
+      occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> HAAI =
+        new NCollection_HArray1<StepAP203_ApprovedItem>(1, HAAI214->Length());
+      for (int i = 1; i <= HAAI214->Length(); i++)
       {
         StepAP203_ApprovedItem AI;
         AI.SetValue(AAA->ItemsValue(i).Value());
         HAAI->SetValue(i, AI);
       }
-      Handle(StepAP203_CcDesignApproval) DA = new StepAP203_CcDesignApproval;
+      occ::handle<StepAP203_CcDesignApproval> DA = new StepAP203_CcDesignApproval;
       DA->Init(AAA->AssignedApproval(), HAAI);
       aModel->AddWithRefs(DA);
       // find ApprovalDateTime for Approval
       Interface_EntityIterator subs2 = Graph().Sharings(AAA->AssignedApproval());
       for (subs2.Start(); subs2.More(); subs2.Next())
       {
-        Handle(StepBasic_ApprovalDateTime) ADT =
-          Handle(StepBasic_ApprovalDateTime)::DownCast(subs2.Value());
+        occ::handle<StepBasic_ApprovalDateTime> ADT =
+          occ::down_cast<StepBasic_ApprovalDateTime>(subs2.Value());
         if (ADT.IsNull())
           continue;
         aModel->AddWithRefs(ADT);
-        Handle(StepBasic_DateAndTime) DT1 =
-          Handle(StepBasic_DateAndTime)::DownCast(ADT->DateTime().Value());
+        occ::handle<StepBasic_DateAndTime> DT1 =
+          occ::down_cast<StepBasic_DateAndTime>(ADT->DateTime().Value());
         if (DT1.IsNull())
           continue;
         DT = DT1;
@@ -1580,20 +1605,20 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
     subs = Graph().Sharings(DT);
     for (subs.Start(); subs.More(); subs.Next())
     {
-      Handle(StepAP214_AppliedDateAndTimeAssignment) ADTA =
-        Handle(StepAP214_AppliedDateAndTimeAssignment)::DownCast(subs.Value());
+      occ::handle<StepAP214_AppliedDateAndTimeAssignment> ADTA =
+        occ::down_cast<StepAP214_AppliedDateAndTimeAssignment>(subs.Value());
       if (ADTA.IsNull())
         continue;
-      Handle(StepAP214_HArray1OfDateAndTimeItem) HADTI214 = ADTA->Items();
-      Handle(StepAP203_HArray1OfDateTimeItem)    HADTI =
-        new StepAP203_HArray1OfDateTimeItem(1, HADTI214->Length());
-      for (Standard_Integer i = 1; i <= HADTI214->Length(); i++)
+      occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> HADTI214 = ADTA->Items();
+      occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>    HADTI =
+        new NCollection_HArray1<StepAP203_DateTimeItem>(1, HADTI214->Length());
+      for (int i = 1; i <= HADTI214->Length(); i++)
       {
         StepAP203_DateTimeItem DTI;
         DTI.SetValue(ADTA->ItemsValue(i).Value());
         HADTI->SetValue(i, DTI);
       }
-      Handle(StepAP203_CcDesignDateAndTimeAssignment) DDTA =
+      occ::handle<StepAP203_CcDesignDateAndTimeAssignment> DDTA =
         new StepAP203_CcDesignDateAndTimeAssignment;
       DDTA->Init(DT, ADTA->Role(), HADTI);
       aModel->AddWithRefs(DDTA);
@@ -1604,20 +1629,20 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(Prod);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedPersonAndOrganizationAssignment) APOA =
-      Handle(StepAP214_AppliedPersonAndOrganizationAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
+      occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
       continue;
-    Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI214 = APOA->Items();
-    Handle(StepAP203_HArray1OfPersonOrganizationItem)    HAPOI =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, HAPOI214->Length());
-    for (Standard_Integer i = 1; i <= HAPOI214->Length(); i++)
+    occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
+    for (int i = 1; i <= HAPOI214->Length(); i++)
     {
       StepAP203_PersonOrganizationItem POI;
       POI.SetValue(HAPOI214->Value(i).Value());
       HAPOI->SetValue(i, POI);
     }
-    Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) DPOA =
+    occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> DPOA =
       new StepAP203_CcDesignPersonAndOrganizationAssignment;
     DPOA->Init(APOA->AssignedPersonAndOrganization(), APOA->Role(), HAPOI);
     aModel->AddWithRefs(DPOA);
@@ -1625,20 +1650,20 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(PD);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedPersonAndOrganizationAssignment) APOA =
-      Handle(StepAP214_AppliedPersonAndOrganizationAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
+      occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
       continue;
-    Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI214 = APOA->Items();
-    Handle(StepAP203_HArray1OfPersonOrganizationItem)    HAPOI =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, HAPOI214->Length());
-    for (Standard_Integer i = 1; i <= HAPOI214->Length(); i++)
+    occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
+    for (int i = 1; i <= HAPOI214->Length(); i++)
     {
       StepAP203_PersonOrganizationItem POI;
       POI.SetValue(HAPOI214->Value(i).Value());
       HAPOI->SetValue(i, POI);
     }
-    Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) DPOA =
+    occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> DPOA =
       new StepAP203_CcDesignPersonAndOrganizationAssignment;
     DPOA->Init(APOA->AssignedPersonAndOrganization(), APOA->Role(), HAPOI);
     aModel->AddWithRefs(DPOA);
@@ -1646,20 +1671,20 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(PDF);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedPersonAndOrganizationAssignment) APOA =
-      Handle(StepAP214_AppliedPersonAndOrganizationAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
+      occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
       continue;
-    Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI214 = APOA->Items();
-    Handle(StepAP203_HArray1OfPersonOrganizationItem)    HAPOI =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, HAPOI214->Length());
-    for (Standard_Integer i = 1; i <= HAPOI214->Length(); i++)
+    occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
+    for (int i = 1; i <= HAPOI214->Length(); i++)
     {
       StepAP203_PersonOrganizationItem POI;
       POI.SetValue(HAPOI214->Value(i).Value());
       HAPOI->SetValue(i, POI);
     }
-    Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) DPOA =
+    occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> DPOA =
       new StepAP203_CcDesignPersonAndOrganizationAssignment;
     DPOA->Init(APOA->AssignedPersonAndOrganization(), APOA->Role(), HAPOI);
     aModel->AddWithRefs(DPOA);
@@ -1667,24 +1692,24 @@ Standard_Boolean StepAP209_Construct::CreateAdding203Entities(
   subs = Graph().Sharings(SC);
   for (subs.Start(); subs.More(); subs.Next())
   {
-    Handle(StepAP214_AppliedPersonAndOrganizationAssignment) APOA =
-      Handle(StepAP214_AppliedPersonAndOrganizationAssignment)::DownCast(subs.Value());
+    occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> APOA =
+      occ::down_cast<StepAP214_AppliedPersonAndOrganizationAssignment>(subs.Value());
     if (APOA.IsNull())
       continue;
-    Handle(StepAP214_HArray1OfPersonAndOrganizationItem) HAPOI214 = APOA->Items();
-    Handle(StepAP203_HArray1OfPersonOrganizationItem)    HAPOI =
-      new StepAP203_HArray1OfPersonOrganizationItem(1, HAPOI214->Length());
-    for (Standard_Integer i = 1; i <= HAPOI214->Length(); i++)
+    occ::handle<NCollection_HArray1<StepAP214_PersonAndOrganizationItem>> HAPOI214 = APOA->Items();
+    occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>    HAPOI =
+      new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, HAPOI214->Length());
+    for (int i = 1; i <= HAPOI214->Length(); i++)
     {
       StepAP203_PersonOrganizationItem POI;
       POI.SetValue(HAPOI214->Value(i).Value());
       HAPOI->SetValue(i, POI);
     }
-    Handle(StepAP203_CcDesignPersonAndOrganizationAssignment) DPOA =
+    occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> DPOA =
       new StepAP203_CcDesignPersonAndOrganizationAssignment;
     DPOA->Init(APOA->AssignedPersonAndOrganization(), APOA->Role(), HAPOI);
     aModel->AddWithRefs(DPOA);
   }
 
-  return Standard_True;
+  return true;
 }

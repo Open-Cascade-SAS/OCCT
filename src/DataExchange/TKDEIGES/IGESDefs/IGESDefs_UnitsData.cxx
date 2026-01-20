@@ -25,11 +25,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_UnitsData, IGESData_IGESEntity)
 
 IGESDefs_UnitsData::IGESDefs_UnitsData() {}
 
-void IGESDefs_UnitsData::Init(const Handle(Interface_HArray1OfHAsciiString)& unitTypes,
-                              const Handle(Interface_HArray1OfHAsciiString)& unitValues,
-                              const Handle(TColStd_HArray1OfReal)&           unitScales)
+void IGESDefs_UnitsData::Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,
+                              const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitValues,
+                              const occ::handle<NCollection_HArray1<double>>&           unitScales)
 {
-  Standard_Integer length = unitTypes->Length();
+  int length = unitTypes->Length();
   if (unitTypes->Lower() != 1 || (unitValues->Lower() != 1 || unitValues->Length() != length)
       || (unitScales->Lower() != 1 || unitScales->Length() != length))
     throw Standard_DimensionMismatch("IGESDefs_UnitsData : Init");
@@ -39,22 +39,22 @@ void IGESDefs_UnitsData::Init(const Handle(Interface_HArray1OfHAsciiString)& uni
   InitTypeAndForm(316, 0);
 }
 
-Standard_Integer IGESDefs_UnitsData::NbUnits() const
+int IGESDefs_UnitsData::NbUnits() const
 {
   return theUnitTypes->Length();
 }
 
-Handle(TCollection_HAsciiString) IGESDefs_UnitsData::UnitType(const Standard_Integer UnitNum) const
+occ::handle<TCollection_HAsciiString> IGESDefs_UnitsData::UnitType(const int UnitNum) const
 {
   return theUnitTypes->Value(UnitNum);
 }
 
-Handle(TCollection_HAsciiString) IGESDefs_UnitsData::UnitValue(const Standard_Integer UnitNum) const
+occ::handle<TCollection_HAsciiString> IGESDefs_UnitsData::UnitValue(const int UnitNum) const
 {
   return theUnitValues->Value(UnitNum);
 }
 
-Standard_Real IGESDefs_UnitsData::ScaleFactor(const Standard_Integer UnitNum) const
+double IGESDefs_UnitsData::ScaleFactor(const int UnitNum) const
 {
   return theUnitScales->Value(UnitNum);
 }

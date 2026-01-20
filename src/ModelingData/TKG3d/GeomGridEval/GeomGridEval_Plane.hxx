@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for plane grid points.
 //!
@@ -41,7 +41,7 @@ public:
 
   //! Constructor with geometry.
   //! @param thePlane the plane geometry to evaluate
-  GeomGridEval_Plane(const Handle(Geom_Plane)& thePlane)
+  GeomGridEval_Plane(const occ::handle<Geom_Plane>& thePlane)
       : myGeom(thePlane)
   {
   }
@@ -53,14 +53,14 @@ public:
   GeomGridEval_Plane& operator=(GeomGridEval_Plane&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_Plane)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_Plane>& Geometry() const { return myGeom; }
 
   //! Evaluate grid points at Cartesian product of U and V parameters.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @return 2D array of evaluated points (1-based indexing)
-  NCollection_Array2<gp_Pnt> EvaluateGrid(const TColStd_Array1OfReal& theUParams,
-                                          const TColStd_Array1OfReal& theVParams) const
+  NCollection_Array2<gp_Pnt> EvaluateGrid(const NCollection_Array1<double>& theUParams,
+                                          const NCollection_Array1<double>& theVParams) const
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();
@@ -109,8 +109,8 @@ public:
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD1 (1-based indexing)
   NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();
@@ -162,8 +162,8 @@ public:
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD2 (1-based indexing)
   NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();
@@ -216,8 +216,8 @@ public:
   //! @param theVParams array of V parameter values
   //! @return 2D array of SurfD3 (1-based indexing)
   NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();
@@ -278,8 +278,8 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                            const TColStd_Array1OfReal& theVParams,
+  NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
+                                            const NCollection_Array1<double>& theVParams,
                                             int                         theNU,
                                             int                         theNV) const
   {
@@ -548,7 +548,7 @@ public:
   }
 
 private:
-  Handle(Geom_Plane) myGeom;
+  occ::handle<Geom_Plane> myGeom;
 };
 
 #endif // _GeomGridEval_Plane_HeaderFile

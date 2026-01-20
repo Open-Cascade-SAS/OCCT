@@ -19,11 +19,10 @@
 #include <Standard.hxx>
 
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
-#include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
+#include <StepElement_CurveElementEndReleasePacket.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
-
-class StepFEA_CurveElementEndRelease;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementEndRelease, Standard_Transient)
 
 //! Representation of STEP entity CurveElementEndRelease
 class StepFEA_CurveElementEndRelease : public Standard_Transient
@@ -36,7 +35,7 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepFEA_CurveElementEndCoordinateSystem&                   aCoordinateSystem,
-    const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>>& aReleases);
 
   //! Returns field CoordinateSystem
   Standard_EXPORT StepFEA_CurveElementEndCoordinateSystem CoordinateSystem() const;
@@ -46,18 +45,17 @@ public:
     const StepFEA_CurveElementEndCoordinateSystem& CoordinateSystem);
 
   //! Returns field Releases
-  Standard_EXPORT Handle(StepElement_HArray1OfCurveElementEndReleasePacket) Releases() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>> Releases() const;
 
   //! Set field Releases
   Standard_EXPORT void SetReleases(
-    const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& Releases);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>>& Releases);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndRelease, Standard_Transient)
 
-protected:
 private:
   StepFEA_CurveElementEndCoordinateSystem                   theCoordinateSystem;
-  Handle(StepElement_HArray1OfCurveElementEndReleasePacket) theReleases;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>> theReleases;
 };
 
 #endif // _StepFEA_CurveElementEndRelease_HeaderFile

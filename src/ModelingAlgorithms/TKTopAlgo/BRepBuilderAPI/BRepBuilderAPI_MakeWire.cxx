@@ -126,7 +126,7 @@ void BRepBuilderAPI_MakeWire::Add(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void BRepBuilderAPI_MakeWire::Add(const TopTools_ListOfShape& L)
+void BRepBuilderAPI_MakeWire::Add(const NCollection_List<TopoDS_Shape>& L)
 {
   myMakeWire.Add(L);
   if (myMakeWire.IsDone())
@@ -166,7 +166,7 @@ BRepBuilderAPI_MakeWire::operator TopoDS_Wire()
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeWire::IsDone() const
+bool BRepBuilderAPI_MakeWire::IsDone() const
 {
   return myMakeWire.IsDone();
 }

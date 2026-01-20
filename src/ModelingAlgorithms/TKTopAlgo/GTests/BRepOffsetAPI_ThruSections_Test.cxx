@@ -20,9 +20,11 @@
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 
@@ -63,13 +65,13 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
   aTopPolygon2.Close();
 
   // Create first loft (ThruSections)
-  BRepOffsetAPI_ThruSections aLoft1(Standard_True, Standard_True);
+  BRepOffsetAPI_ThruSections aLoft1(true, true);
   aLoft1.AddWire(aBottomPolygon1.Wire());
   aLoft1.AddWire(aTopPolygon1.Wire());
   aLoft1.Build();
 
   // Create second loft (ThruSections)
-  BRepOffsetAPI_ThruSections aLoft2(Standard_True, Standard_True);
+  BRepOffsetAPI_ThruSections aLoft2(true, true);
   aLoft2.AddWire(aBottomPolygon2.Wire());
   aLoft2.AddWire(aTopPolygon2.Wire());
   aLoft2.Build();
@@ -92,14 +94,14 @@ namespace
 //! @param thePoles Array of 3D pole coordinates (x1,y1,z1, x2,y2,z2, ...)
 //! @param theKnots Knot sequence for cubic B-spline
 //! @return Handle to the created B-spline curve
-Handle(Geom_BSplineCurve) createBSplineCurve(const std::vector<double>& thePoles,
+occ::handle<Geom_BSplineCurve> createBSplineCurve(const std::vector<double>& thePoles,
                                              const std::vector<double>& theKnots)
 {
   const int aKnotSeqSize = static_cast<int>(theKnots.size());
   const int aDegree      = 3; // cubic spline
   const int aNbPoles     = aKnotSeqSize - aDegree - 1;
 
-  TColgp_Array1OfPnt aPoles(1, aNbPoles);
+  NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   int                anIdx = 0;
   for (int i = 1; i <= aNbPoles; ++i)
   {
@@ -107,14 +109,14 @@ Handle(Geom_BSplineCurve) createBSplineCurve(const std::vector<double>& thePoles
     anIdx += 3;
   }
 
-  TColStd_Array1OfReal aKnotSeq(1, aKnotSeqSize);
+  NCollection_Array1<double> aKnotSeq(1, aKnotSeqSize);
   for (int i = 1; i <= aKnotSeqSize; ++i)
   {
     aKnotSeq(i) = theKnots[i - 1];
   }
 
-  TColStd_Array1OfReal    aKnots(1, BSplCLib::KnotsLength(aKnotSeq, false));
-  TColStd_Array1OfInteger aMults(1, aKnots.Upper());
+  NCollection_Array1<double>    aKnots(1, BSplCLib::KnotsLength(aKnotSeq, false));
+  NCollection_Array1<int> aMults(1, aKnots.Upper());
   BSplCLib::Knots(aKnotSeq, aKnots, aMults);
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree, false);
@@ -299,7 +301,7 @@ TEST(BRepOffsetAPI_ThruSections_Test, BSplineProfilesWithDifferentPoleCount)
 
   for (const auto& aSection : aSections)
   {
-    Handle(Geom_BSplineCurve) aCurve = createBSplineCurve(aSection.first, aSection.second);
+    occ::handle<Geom_BSplineCurve> aCurve = createBSplineCurve(aSection.first, aSection.second);
     ASSERT_FALSE(aCurve.IsNull()) << "Failed to create B-spline curve";
 
     BRepBuilderAPI_MakeEdge aMakeEdge(aCurve);

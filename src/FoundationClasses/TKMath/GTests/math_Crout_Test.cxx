@@ -289,18 +289,18 @@ TEST(MathCroutTest, LargerMatrix)
 
   // Verify solution by checking residual
   math_Vector aResidual(1, 4);
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
     aResidual(i) = 0.0;
-    for (Standard_Integer j = 1; j <= 4; j++)
+    for (int j = 1; j <= 4; j++)
     {
       aResidual(i) += aMatrix(i, j) * aX(j);
     }
     aResidual(i) -= aB(i);
   }
 
-  Standard_Real aResidualNorm = 0.0;
-  for (Standard_Integer i = 1; i <= 4; i++)
+  double aResidualNorm = 0.0;
+  for (int i = 1; i <= 4; i++)
   {
     aResidualNorm += aResidual(i) * aResidual(i);
   }

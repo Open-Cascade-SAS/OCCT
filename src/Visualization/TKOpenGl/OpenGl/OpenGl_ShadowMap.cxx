@@ -47,7 +47,7 @@ OpenGl_ShadowMap::~OpenGl_ShadowMap()
 
 //=================================================================================================
 
-Standard_Size OpenGl_ShadowMap::EstimatedDataSize() const
+size_t OpenGl_ShadowMap::EstimatedDataSize() const
 {
   return myShadowMapFbo->EstimatedDataSize();
 }
@@ -61,7 +61,7 @@ bool OpenGl_ShadowMap::IsValid() const
 
 //=================================================================================================
 
-const Handle(OpenGl_Texture)& OpenGl_ShadowMap::Texture() const
+const occ::handle<OpenGl_Texture>& OpenGl_ShadowMap::Texture() const
 {
   return myShadowMapFbo->DepthStencilTexture();
 }
@@ -83,20 +83,20 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
     case Graphic3d_TypeOfLightSource_Directional: {
       if (theOrigin != NULL)
       {
-        Graphic3d_Mat4d aTrans;
-        aTrans.Translate(Graphic3d_Vec3d(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
-        Graphic3d_Mat4d anOrientMat = myShadowCamera->OrientationMatrix() * aTrans;
-        myLightMatrix = myShadowCamera->ProjectionMatrixF() * Graphic3d_Mat4(anOrientMat);
+        NCollection_Mat4<double> aTrans;
+        aTrans.Translate(NCollection_Vec3<double>(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
+        NCollection_Mat4<double> anOrientMat = myShadowCamera->OrientationMatrix() * aTrans;
+        myLightMatrix = myShadowCamera->ProjectionMatrixF() * NCollection_Mat4<float>(anOrientMat);
         return true;
       }
 
-      Graphic3d_Vec4d aDir(myShadowLight->Direction().X(),
+      NCollection_Vec4<double> aDir(myShadowLight->Direction().X(),
                            myShadowLight->Direction().Y(),
                            myShadowLight->Direction().Z(),
                            0.0);
       if (myShadowLight->IsHeadlight())
       {
-        Graphic3d_Mat4d anOrientInv;
+        NCollection_Mat4<double> anOrientInv;
         theView.Camera()->OrientationMatrix().Inverted(anOrientInv);
         aDir = anOrientInv * aDir;
       }
@@ -129,20 +129,20 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
     case Graphic3d_TypeOfLightSource_Spot: {
       if (theOrigin != NULL)
       {
-        Graphic3d_Mat4d aTrans;
-        aTrans.Translate(Graphic3d_Vec3d(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
-        Graphic3d_Mat4d anOrientMat = myShadowCamera->OrientationMatrix() * aTrans;
-        myLightMatrix = myShadowCamera->ProjectionMatrixF() * Graphic3d_Mat4(anOrientMat);
+        NCollection_Mat4<double> aTrans;
+        aTrans.Translate(NCollection_Vec3<double>(theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
+        NCollection_Mat4<double> anOrientMat = myShadowCamera->OrientationMatrix() * aTrans;
+        myLightMatrix = myShadowCamera->ProjectionMatrixF() * NCollection_Mat4<float>(anOrientMat);
         return true;
       }
 
-      Graphic3d_Vec4d aDir(myShadowLight->Direction().X(),
+      NCollection_Vec4<double> aDir(myShadowLight->Direction().X(),
                            myShadowLight->Direction().Y(),
                            myShadowLight->Direction().Z(),
                            0.0);
       if (myShadowLight->IsHeadlight())
       {
-        Graphic3d_Mat4d anOrientInv;
+        NCollection_Mat4<double> anOrientInv;
         theView.Camera()->OrientationMatrix().Inverted(anOrientInv);
         aDir = anOrientInv * aDir;
       }
@@ -151,7 +151,7 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       myShadowCamera->SetProjectionType(Graphic3d_Camera::Projection_Perspective);
 
       const gp_Pnt& aLightPos = myShadowLight->Position();
-      Standard_Real aDistance(aMinMaxBox.Distance(Bnd_Box(aLightPos, aLightPos))
+      double aDistance(aMinMaxBox.Distance(Bnd_Box(aLightPos, aLightPos))
                               + aMinMaxBox.CornerMin().Distance(aMinMaxBox.CornerMax()));
       myShadowCamera->SetDistance(aDistance);
       myShadowCamera->MoveEyeTo(aLightPos);
@@ -174,9 +174,9 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
 
 void OpenGl_ShadowMapArray::Release(OpenGl_Context* theCtx)
 {
-  for (Standard_Integer anIter = Lower(); anIter <= Upper(); ++anIter)
+  for (int anIter = Lower(); anIter <= Upper(); ++anIter)
   {
-    if (const Handle(OpenGl_ShadowMap)& aShadow = ChangeValue(anIter))
+    if (const occ::handle<OpenGl_ShadowMap>& aShadow = ChangeValue(anIter))
     {
       aShadow->Release(theCtx);
     }
@@ -185,12 +185,12 @@ void OpenGl_ShadowMapArray::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-Standard_Size OpenGl_ShadowMapArray::EstimatedDataSize() const
+size_t OpenGl_ShadowMapArray::EstimatedDataSize() const
 {
-  Standard_Size aSize = 0;
-  for (Standard_Integer anIter = Lower(); anIter <= Upper(); ++anIter)
+  size_t aSize = 0;
+  for (int anIter = Lower(); anIter <= Upper(); ++anIter)
   {
-    if (const Handle(OpenGl_ShadowMap)& aShadow = Value(anIter))
+    if (const occ::handle<OpenGl_ShadowMap>& aShadow = Value(anIter))
     {
       aSize += aShadow->EstimatedDataSize();
     }

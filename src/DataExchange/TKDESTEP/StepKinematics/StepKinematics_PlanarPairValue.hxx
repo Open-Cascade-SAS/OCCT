@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PlanarPairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity PlanarPairValue
 class StepKinematics_PlanarPairValue : public StepKinematics_PairValue
 {
@@ -33,32 +31,32 @@ public:
   Standard_EXPORT StepKinematics_PlanarPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Standard_Real                         theActualRotation,
-                            const Standard_Real                         theActualTranslationX,
-                            const Standard_Real                         theActualTranslationY);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const double                         theActualRotation,
+                            const double                         theActualTranslationX,
+                            const double                         theActualTranslationY);
 
   //! Returns field ActualRotation
-  Standard_EXPORT Standard_Real ActualRotation() const;
+  Standard_EXPORT double ActualRotation() const;
   //! Sets field ActualRotation
-  Standard_EXPORT void SetActualRotation(const Standard_Real theActualRotation);
+  Standard_EXPORT void SetActualRotation(const double theActualRotation);
 
   //! Returns field ActualTranslationX
-  Standard_EXPORT Standard_Real ActualTranslationX() const;
+  Standard_EXPORT double ActualTranslationX() const;
   //! Sets field ActualTranslationX
-  Standard_EXPORT void SetActualTranslationX(const Standard_Real theActualTranslationX);
+  Standard_EXPORT void SetActualTranslationX(const double theActualTranslationX);
 
   //! Returns field ActualTranslationY
-  Standard_EXPORT Standard_Real ActualTranslationY() const;
+  Standard_EXPORT double ActualTranslationY() const;
   //! Sets field ActualTranslationY
-  Standard_EXPORT void SetActualTranslationY(const Standard_Real theActualTranslationY);
+  Standard_EXPORT void SetActualTranslationY(const double theActualTranslationY);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PlanarPairValue, StepKinematics_PairValue)
 
 private:
-  Standard_Real myActualRotation;
-  Standard_Real myActualTranslationX;
-  Standard_Real myActualTranslationY;
+  double myActualRotation;
+  double myActualTranslationX;
+  double myActualTranslationY;
 };
 #endif // _StepKinematics_PlanarPairValue_HeaderFile_

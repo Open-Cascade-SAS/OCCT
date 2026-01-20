@@ -29,40 +29,40 @@ RWStepDimTol_RWGeoTolAndGeoTolWthMod::RWStepDimTol_RWGeoTolAndGeoTolWthMod() {}
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthMod::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num0,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthMod)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num0,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMod>& ent) const
 {
-  Standard_Integer num = 0; // num0;
+  int num = 0; // num0;
   data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
   if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
     return;
   // Own fields of GeometricTolerance
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num, 3, "magnitude", ach, STANDARD_TYPE(Standard_Transient), aMagnitude);
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
   data->ReadEntity(num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", num0, num, ach);
   // Own fields of ModifiedGeometricTolerance
-  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifiers;
-  Standard_Integer                                       sub = 0;
+  occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers;
+  int                                       sub = 0;
   if (data->ReadSubList(num, 1, "modifiers", ach, sub))
   {
-    Standard_Integer nb0  = data->NbParams(sub);
-    aModifiers            = new StepDimTol_HArray1OfGeometricToleranceModifier(1, nb0);
-    Standard_Integer num2 = sub;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = data->NbParams(sub);
+    aModifiers            = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
+    int num2 = sub;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_GeometricToleranceModifier anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
       if (data->ParamType(num2, i0) == Interface_ParamEnum)
       {
-        Standard_CString text = data->ParamCValue(num2, i0);
+        const char* text = data->ParamCValue(num2, i0);
         if (strcmp(text, ".ANY_CROSS_SECTION.") == 0)
           anIt0 = StepDimTol_GTMAnyCrossSection;
         else if (strcmp(text, ".COMMON_ZONE.") == 0)
@@ -101,15 +101,15 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMod::ReadStep(
       aModifiers->SetValue(i0, anIt0);
     }
   }
-  Handle(StepDimTol_GeometricToleranceWithModifiers) aGTWM =
+  occ::handle<StepDimTol_GeometricToleranceWithModifiers> aGTWM =
     new StepDimTol_GeometricToleranceWithModifiers;
   aGTWM->SetModifiers(aModifiers);
 
   // Choose type of geometric tolerance
-  TColStd_SequenceOfAsciiString aTypes;
+  NCollection_Sequence<TCollection_AsciiString> aTypes;
   data->ComplexType(num0, aTypes);
-  Standard_CString                  aFirst = aTypes.First().ToCString();
-  Standard_CString                  aLast  = aTypes.Last().ToCString();
+  const char*                  aFirst = aTypes.First().ToCString();
+  const char*                  aLast  = aTypes.Last().ToCString();
   StepDimTol_GeometricToleranceType aType  = StepDimTol_GTTPositionTolerance;
   if (strcmp(aFirst, "ANGULARITY_TOLERANCE") == 0)
     aType = StepDimTol_GTTAngularityTolerance;
@@ -152,7 +152,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMod::ReadStep(
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthMod::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepDimTol_GeoTolAndGeoTolWthMod)& ent) const
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMod>& ent) const
 {
   StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
   if (aType == StepDimTol_GTTAngularityTolerance)
@@ -175,9 +175,9 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMod::WriteStep(
   SW.Send(ent->TolerancedShapeAspect().Value());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
   SW.OpenSub();
-  Handle(StepDimTol_GeometricToleranceWithModifiers) aGTWM =
+  occ::handle<StepDimTol_GeometricToleranceWithModifiers> aGTWM =
     ent->GetGeometricToleranceWithModifiers();
-  for (Standard_Integer i = 1; i <= aGTWM->NbModifiers(); i++)
+  for (int i = 1; i <= aGTWM->NbModifiers(); i++)
   {
     switch (aGTWM->ModifierValue(i))
     {
@@ -252,7 +252,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMod::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthMod::Share(
-  const Handle(StepDimTol_GeoTolAndGeoTolWthMod)& ent,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMod>& ent,
   Interface_EntityIterator&                       iter) const
 {
   // Own fields of GeometricTolerance

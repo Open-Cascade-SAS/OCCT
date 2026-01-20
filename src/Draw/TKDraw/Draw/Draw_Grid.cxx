@@ -25,8 +25,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Grid, Draw_Drawable3D)
 
-static Standard_Real MinimumStep = 1.e-3;
-static Standard_Real Ratio       = 200.0;
+static double MinimumStep = 1.e-3;
+static double Ratio       = 200.0;
 
 extern Draw_Viewer dout;
 
@@ -36,7 +36,7 @@ Draw_Grid::Draw_Grid()
     : myStepX(0.0),
       myStepY(0.0),
       myStepZ(0.0),
-      myIsActive(Standard_False)
+      myIsActive(false)
 {
 }
 
@@ -45,9 +45,9 @@ Draw_Grid::Draw_Grid()
 // Purpose  : Sets the steps along the X, Y & Z axis.
 //=======================================================================
 
-void Draw_Grid::Steps(const Standard_Real StepX,
-                      const Standard_Real StepY,
-                      const Standard_Real StepZ)
+void Draw_Grid::Steps(const double StepX,
+                      const double StepY,
+                      const double StepZ)
 {
   myStepX    = std::abs(StepX);
   myStepY    = std::abs(StepY);
@@ -62,16 +62,16 @@ void Draw_Grid::DrawOn(Draw_Display& Out) const
   if (!myIsActive)
     return;
 
-  Standard_Integer xmin, xmax, ymin, ymax;
-  Standard_Integer IndexX, IndexY;
-  Standard_Real    StepX, StepY;
-  Standard_Integer MinIndexX, MaxIndexX, MinIndexY, MaxIndexY;
-  Standard_Real    Offset;
-  Standard_Real    zoom, Xmin, Xmax, Ymin, Ymax;
+  int xmin, xmax, ymin, ymax;
+  int IndexX, IndexY;
+  double    StepX, StepY;
+  int MinIndexX, MaxIndexX, MinIndexY, MaxIndexY;
+  double    Offset;
+  double    zoom, Xmin, Xmax, Ymin, Ymax;
   gp_Trsf          T;
   gp_Pnt           Pnt1, Pnt2;
 
-  Standard_Integer IdtView;
+  int IdtView;
   char*            Type;
 
   IdtView = Out.ViewId();
@@ -117,24 +117,24 @@ void Draw_Grid::DrawOn(Draw_Display& Out) const
     T.Invert();
     zoom = dout.Zoom(IdtView);
 
-    Xmin = ((Standard_Real)xmin) / zoom;
-    Xmax = ((Standard_Real)xmax) / zoom;
-    Ymin = ((Standard_Real)ymin) / zoom;
-    Ymax = ((Standard_Real)ymax) / zoom;
+    Xmin = ((double)xmin) / zoom;
+    Xmax = ((double)xmax) / zoom;
+    Ymin = ((double)ymin) / zoom;
+    Ymax = ((double)ymax) / zoom;
 
     Offset = std::min(Xmax - Xmin, Ymax - Ymin) / Ratio;
 
-    MinIndexX = (Standard_Integer)(Xmin / StepX);
-    MaxIndexX = (Standard_Integer)(Xmax / StepX);
-    MinIndexY = (Standard_Integer)(Ymin / StepY);
-    MaxIndexY = (Standard_Integer)(Ymax / StepY);
+    MinIndexX = (int)(Xmin / StepX);
+    MaxIndexX = (int)(Xmax / StepX);
+    MinIndexY = (int)(Ymin / StepY);
+    MaxIndexY = (int)(Ymax / StepY);
 
     for (IndexX = MinIndexX; IndexX <= MaxIndexX; IndexX++)
     {
       for (IndexY = MinIndexY; IndexY <= MaxIndexY; IndexY++)
       {
-        Standard_Real X = ((Standard_Real)IndexX) * StepX;
-        Standard_Real Y = ((Standard_Real)IndexY) * StepY;
+        double X = ((double)IndexX) * StepX;
+        double Y = ((double)IndexY) * StepY;
 
         Pnt1.SetCoord(X - Offset, Y, 0.0);
         Pnt1.Transform(T);

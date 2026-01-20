@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_SurfaceStyleBoundary.hxx>
 #include <StepVisual_SurfaceStyleControlGrid.hxx>
@@ -22,8 +22,8 @@
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect() {}
 
-Standard_Integer StepVisual_SurfaceStyleElementSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_SurfaceStyleElementSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,25 +41,25 @@ Standard_Integer StepVisual_SurfaceStyleElementSelect::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_SurfaceStyleFillArea) StepVisual_SurfaceStyleElementSelect::SurfaceStyleFillArea()
+occ::handle<StepVisual_SurfaceStyleFillArea> StepVisual_SurfaceStyleElementSelect::SurfaceStyleFillArea()
   const
 {
   return GetCasted(StepVisual_SurfaceStyleFillArea, Value());
 }
 
-Handle(StepVisual_SurfaceStyleBoundary) StepVisual_SurfaceStyleElementSelect::SurfaceStyleBoundary()
+occ::handle<StepVisual_SurfaceStyleBoundary> StepVisual_SurfaceStyleElementSelect::SurfaceStyleBoundary()
   const
 {
   return GetCasted(StepVisual_SurfaceStyleBoundary, Value());
 }
 
-Handle(StepVisual_SurfaceStyleParameterLine) StepVisual_SurfaceStyleElementSelect::
+occ::handle<StepVisual_SurfaceStyleParameterLine> StepVisual_SurfaceStyleElementSelect::
   SurfaceStyleParameterLine() const
 {
   return GetCasted(StepVisual_SurfaceStyleParameterLine, Value());
 }
 
-Handle(StepVisual_SurfaceStyleRendering) StepVisual_SurfaceStyleElementSelect::
+occ::handle<StepVisual_SurfaceStyleRendering> StepVisual_SurfaceStyleElementSelect::
   SurfaceStyleRendering() const
 {
   return GetCasted(StepVisual_SurfaceStyleRendering, Value());

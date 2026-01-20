@@ -18,11 +18,11 @@
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) RWObj::ReadFile(const Standard_CString       theFile,
+occ::handle<Poly_Triangulation> RWObj::ReadFile(const char* const       theFile,
                                            const Message_ProgressRange& theProgress)
 {
   RWObj_TriangulationReader aReader;
-  aReader.SetCreateShapes(Standard_False);
+  aReader.SetCreateShapes(false);
   aReader.Read(theFile, theProgress);
   // note that returned bool value is ignored intentionally -- even if something went wrong,
   // but some data have been read, we at least will return these data

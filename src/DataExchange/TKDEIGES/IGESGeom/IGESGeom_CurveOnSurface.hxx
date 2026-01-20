@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGeom_CurveOnSurface;
-DEFINE_STANDARD_HANDLE(IGESGeom_CurveOnSurface, IGESData_IGESEntity)
-
 //! defines IGESCurveOnSurface, Type <142> Form <0>
 //! in package IGESGeom
 //! A curve on a parametric surface entity associates a given
@@ -46,11 +43,11 @@ public:
   //! 1 = S o B is preferred
   //! 2 = C is preferred
   //! 3 = C and S o B are equally preferred
-  Standard_EXPORT void Init(const Standard_Integer             aMode,
-                            const Handle(IGESData_IGESEntity)& aSurface,
-                            const Handle(IGESData_IGESEntity)& aCurveUV,
-                            const Handle(IGESData_IGESEntity)& aCurve3D,
-                            const Standard_Integer             aPreference);
+  Standard_EXPORT void Init(const int             aMode,
+                            const occ::handle<IGESData_IGESEntity>& aSurface,
+                            const occ::handle<IGESData_IGESEntity>& aCurveUV,
+                            const occ::handle<IGESData_IGESEntity>& aCurve3D,
+                            const int             aPreference);
 
   //! returns the mode in which the curve is created on the surface
   //! 0 = Unspecified
@@ -58,33 +55,32 @@ public:
   //! 2 = Intersection of two surfaces
   //! 3 = Isoparametric curve, i.e:- either a `u` parametric
   //! or a `v` parametric curve
-  Standard_EXPORT Standard_Integer CreationMode() const;
+  Standard_EXPORT int CreationMode() const;
 
   //! returns the surface on which the curve lies
-  Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
 
   //! returns curve S
-  Standard_EXPORT Handle(IGESData_IGESEntity) CurveUV() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> CurveUV() const;
 
   //! returns curve C
-  Standard_EXPORT Handle(IGESData_IGESEntity) Curve3D() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Curve3D() const;
 
   //! returns preference mode
   //! 0 = Unspecified
   //! 1 = S o B is preferred
   //! 2 = C is preferred
   //! 3 = C and S o B are equally preferred
-  Standard_EXPORT Standard_Integer PreferenceMode() const;
+  Standard_EXPORT int PreferenceMode() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer            theCreationMode;
-  Handle(IGESData_IGESEntity) theSurface;
-  Handle(IGESData_IGESEntity) theCurveUV;
-  Handle(IGESData_IGESEntity) theCurve3D;
-  Standard_Integer            thePreferenceMode;
+  int            theCreationMode;
+  occ::handle<IGESData_IGESEntity> theSurface;
+  occ::handle<IGESData_IGESEntity> theCurveUV;
+  occ::handle<IGESData_IGESEntity> theCurve3D;
+  int            thePreferenceMode;
 };
 
 #endif // _IGESGeom_CurveOnSurface_HeaderFile

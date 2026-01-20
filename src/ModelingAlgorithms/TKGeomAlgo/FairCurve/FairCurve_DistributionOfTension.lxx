@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void FairCurve_DistributionOfTension::SetLengthSliding(const Standard_Real LengthSliding)
+inline void FairCurve_DistributionOfTension::SetLengthSliding(const double LengthSliding)
 {
   MyLengthSliding = LengthSliding;
 }

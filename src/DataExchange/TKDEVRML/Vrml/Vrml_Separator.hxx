@@ -50,10 +50,9 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream);
 
-protected:
 private:
   Vrml_SeparatorRenderCulling myRenderCulling;
-  Standard_Boolean            myFlagPrint;
+  bool            myFlagPrint;
 };
 
 #endif // _Vrml_Separator_HeaderFile

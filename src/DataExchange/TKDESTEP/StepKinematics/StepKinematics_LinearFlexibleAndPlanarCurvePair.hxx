@@ -25,9 +25,6 @@
 #include <StepKinematics_KinematicJoint.hxx>
 #include <StepGeom_Curve.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_LinearFlexibleAndPlanarCurvePair,
-                       StepKinematics_HighOrderKinematicPair)
-
 //! Representation of STEP entity LinearFlexibleAndPlanarCurvePair
 class StepKinematics_LinearFlexibleAndPlanarCurvePair : public StepKinematics_HighOrderKinematicPair
 {
@@ -37,31 +34,31 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Handle(StepGeom_Curve)&                thePairCurve,
-    const Standard_Boolean                       theOrientation);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const occ::handle<StepGeom_Curve>&                thePairCurve,
+    const bool                       theOrientation);
 
   //! Returns field PairCurve
-  Standard_EXPORT Handle(StepGeom_Curve) PairCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_Curve> PairCurve() const;
   //! Sets field PairCurve
-  Standard_EXPORT void SetPairCurve(const Handle(StepGeom_Curve)& thePairCurve);
+  Standard_EXPORT void SetPairCurve(const occ::handle<StepGeom_Curve>& thePairCurve);
 
   //! Returns field Orientation
-  Standard_EXPORT Standard_Boolean Orientation() const;
+  Standard_EXPORT bool Orientation() const;
   //! Sets field Orientation
-  Standard_EXPORT void SetOrientation(const Standard_Boolean theOrientation);
+  Standard_EXPORT void SetOrientation(const bool theOrientation);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_LinearFlexibleAndPlanarCurvePair,
                           StepKinematics_HighOrderKinematicPair)
 
 private:
-  Handle(StepGeom_Curve) myPairCurve;
-  Standard_Boolean       myOrientation;
+  occ::handle<StepGeom_Curve> myPairCurve;
+  bool       myOrientation;
 };
 #endif // _StepKinematics_LinearFlexibleAndPlanarCurvePair_HeaderFile_

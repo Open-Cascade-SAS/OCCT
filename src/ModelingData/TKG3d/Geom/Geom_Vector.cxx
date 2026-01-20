@@ -31,17 +31,17 @@ void Geom_Vector::Reverse()
   gpVec.Reverse();
 }
 
-Standard_Real Geom_Vector::X() const
+double Geom_Vector::X() const
 {
   return gpVec.X();
 }
 
-Standard_Real Geom_Vector::Y() const
+double Geom_Vector::Y() const
 {
   return gpVec.Y();
 }
 
-Standard_Real Geom_Vector::Z() const
+double Geom_Vector::Z() const
 {
   return gpVec.Z();
 }
@@ -51,40 +51,40 @@ const gp_Vec& Geom_Vector::Vec() const
   return gpVec;
 }
 
-Handle(Geom_Vector) Geom_Vector::Reversed() const
+occ::handle<Geom_Vector> Geom_Vector::Reversed() const
 {
-  Handle(Geom_Vector) V = Handle(Geom_Vector)::DownCast(Copy());
+  occ::handle<Geom_Vector> V = occ::down_cast<Geom_Vector>(Copy());
   V->Reverse();
   return V;
 }
 
-Standard_Real Geom_Vector::Angle(const Handle(Geom_Vector)& Other) const
+double Geom_Vector::Angle(const occ::handle<Geom_Vector>& Other) const
 {
 
   return gpVec.Angle(Other->Vec());
 }
 
-Standard_Real Geom_Vector::AngleWithRef(const Handle(Geom_Vector)& Other,
-                                        const Handle(Geom_Vector)& VRef) const
+double Geom_Vector::AngleWithRef(const occ::handle<Geom_Vector>& Other,
+                                        const occ::handle<Geom_Vector>& VRef) const
 {
 
   return gpVec.AngleWithRef(Other->Vec(), VRef->Vec());
 }
 
-void Geom_Vector::Coord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const
+void Geom_Vector::Coord(double& X, double& Y, double& Z) const
 {
 
   gpVec.Coord(X, Y, Z);
 }
 
-Standard_Real Geom_Vector::Dot(const Handle(Geom_Vector)& Other) const
+double Geom_Vector::Dot(const occ::handle<Geom_Vector>& Other) const
 {
 
   return gpVec.Dot(Other->Vec());
 }
 
-Standard_Real Geom_Vector::DotCross(const Handle(Geom_Vector)& V1,
-                                    const Handle(Geom_Vector)& V2) const
+double Geom_Vector::DotCross(const occ::handle<Geom_Vector>& V1,
+                                    const occ::handle<Geom_Vector>& V2) const
 {
 
   return gpVec.DotCross(V1->Vec(), V2->Vec());

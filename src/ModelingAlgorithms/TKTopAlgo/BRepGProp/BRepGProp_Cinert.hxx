@@ -43,8 +43,6 @@ public:
 
   Standard_EXPORT void Perform(const BRepAdaptor_Curve& C);
 
-protected:
-private:
 };
 
 #endif // _BRepGProp_Cinert_HeaderFile

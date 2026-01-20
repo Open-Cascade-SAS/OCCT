@@ -29,16 +29,16 @@
 
 //=================================================================================================
 
-static Standard_Real DistanceToBorder(const math_Vector& theX,
+static double DistanceToBorder(const math_Vector& theX,
                                       const math_Vector& theMin,
                                       const math_Vector& theMax)
 {
-  Standard_Real aDist = RealLast();
+  double aDist = RealLast();
 
-  for (Standard_Integer anIdx = theMin.Lower(); anIdx <= theMin.Upper(); ++anIdx)
+  for (int anIdx = theMin.Lower(); anIdx <= theMin.Upper(); ++anIdx)
   {
-    const Standard_Real aDist1 = std::abs(theX(anIdx) - theMin(anIdx));
-    const Standard_Real aDist2 = std::abs(theX(anIdx) - theMax(anIdx));
+    const double aDist1 = std::abs(theX(anIdx) - theMin(anIdx));
+    const double aDist2 = std::abs(theX(anIdx) - theMax(anIdx));
 
     aDist = std::min(aDist, std::min(aDist1, aDist2));
   }
@@ -51,15 +51,15 @@ static Standard_Real DistanceToBorder(const math_Vector& theX,
 math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                  const math_Vector&        theA,
                                  const math_Vector&        theB,
-                                 const Standard_Real       theC,
-                                 const Standard_Real       theDiscretizationTol,
-                                 const Standard_Real       theSameTol)
+                                 const double       theC,
+                                 const double       theDiscretizationTol,
+                                 const double       theSameTol)
     : myN(theFunc->NbVariables()),
       myA(1, myN),
       myB(1, myN),
       myGlobA(1, myN),
       myGlobB(1, myN),
-      myIsConstLocked(Standard_False),
+      myIsConstLocked(false),
       myX(1, myN),
       myTmp(1, myN),
       myV(1, myN),
@@ -69,12 +69,12 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
       myCont(2),
       myF(Precision::Infinite())
 {
-  Standard_Integer i;
+  int i;
 
   myFunc                   = theFunc;
   myC                      = theC;
   myInitC                  = theC;
-  myIsFindSingleSolution   = Standard_False;
+  myIsFindSingleSolution   = false;
   myFunctionalMinimalValue = -Precision::Infinite();
   myZ                      = -1;
   mySolCount               = 0;
@@ -96,13 +96,13 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myTol     = theDiscretizationTol;
   mySameTol = theSameTol;
 
-  const Standard_Integer aMaxSquareSearchSol = 200;
-  Standard_Integer       aSolNb              = Standard_Integer(std::pow(3.0, Standard_Real(myN)));
+  const int aMaxSquareSearchSol = 200;
+  int       aSolNb              = int(std::pow(3.0, double(myN)));
   myMinCellFilterSol                         = std::max(2 * aSolNb, aMaxSquareSearchSol);
   initCellSize();
   ComputeInitSol();
 
-  myDone = Standard_False;
+  myDone = false;
 }
 
 //=======================================================================
@@ -112,11 +112,11 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
                                       const math_Vector&        theA,
                                       const math_Vector&        theB,
-                                      const Standard_Real       theC,
-                                      const Standard_Real       theDiscretizationTol,
-                                      const Standard_Real       theSameTol)
+                                      const double       theC,
+                                      const double       theDiscretizationTol,
+                                      const double       theSameTol)
 {
-  Standard_Integer i;
+  int i;
 
   myFunc     = theFunc;
   myC        = theC;
@@ -144,7 +144,7 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
   initCellSize();
   ComputeInitSol();
 
-  myDone = Standard_False;
+  myDone = false;
 }
 
 //=======================================================================
@@ -153,7 +153,7 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
 //=======================================================================
 void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA, const math_Vector& theLocalB)
 {
-  Standard_Integer i;
+  int i;
 
   myZ = -1;
   for (i = 1; i <= myN; i++)
@@ -167,15 +167,15 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA, const math_Ve
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
   }
 
-  myDone = Standard_False;
+  myDone = false;
 }
 
 //=======================================================================
 // function : SetTol
 // purpose  : Set algorithm tolerances.
 //=======================================================================
-void math_GlobOptMin::SetTol(const Standard_Real theDiscretizationTol,
-                             const Standard_Real theSameTol)
+void math_GlobOptMin::SetTol(const double theDiscretizationTol,
+                             const double theSameTol)
 {
   myTol     = theDiscretizationTol;
   mySameTol = theSameTol;
@@ -185,7 +185,7 @@ void math_GlobOptMin::SetTol(const Standard_Real theDiscretizationTol,
 // function : GetTol
 // purpose  : Get algorithm tolerances.
 //=======================================================================
-void math_GlobOptMin::GetTol(Standard_Real& theDiscretizationTol, Standard_Real& theSameTol)
+void math_GlobOptMin::GetTol(double& theDiscretizationTol, double& theSameTol)
 {
   theDiscretizationTol = myTol;
   theSameTol           = mySameTol;
@@ -196,16 +196,16 @@ void math_GlobOptMin::GetTol(Standard_Real& theDiscretizationTol, Standard_Real&
 // purpose  : Compute Global extremum point
 //=======================================================================
 // In this algo indexes started from 1, not from 0.
-void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
+void math_GlobOptMin::Perform(const bool isFindSingleSolution)
 {
-  myDone = Standard_False;
+  myDone = false;
 
   // Compute parameters range
-  Standard_Real minLength = RealLast();
-  Standard_Real maxLength = RealFirst();
-  for (Standard_Integer i = 1; i <= myN; i++)
+  double minLength = RealLast();
+  double maxLength = RealFirst();
+  for (int i = 1; i <= myN; i++)
   {
-    Standard_Real currentLength = myB(i) - myA(i);
+    double currentLength = myB(i) - myA(i);
     if (currentLength < minLength)
       minLength = currentLength;
     if (currentLength > maxLength)
@@ -249,24 +249,24 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
   // Search single solution and current solution in its neighborhood.
   if (CheckFunctionalStopCriteria())
   {
-    myDone = Standard_True;
+    myDone = true;
     return;
   }
 
   myLastStep              = 0.0;
-  isFirstCellFilterInvoke = Standard_True;
+  isFirstCellFilterInvoke = true;
   computeGlobalExtremum(myN);
 
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
-                                                       Standard_Real&     theVal,
+bool math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt,
+                                                       double&     theVal,
                                                        math_Vector&       theOutPnt)
 {
-  Standard_Integer i;
+  int i;
 
   // Newton method
   if (myCont >= 2 && dynamic_cast<math_MultipleVarFunctionWithHessian*>(myFunc))
@@ -283,7 +283,7 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
       theVal = newtonMinimum.Minimum();
 
       if (isInside(theOutPnt))
-        return Standard_True;
+        return true;
     }
   }
 
@@ -302,7 +302,7 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
       theVal = bfgs.Minimum();
 
       if (isInside(theOutPnt))
-        return Standard_True;
+        return true;
     }
   }
 
@@ -322,33 +322,33 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
       theVal = powell.Minimum();
 
       if (isInside(theOutPnt))
-        return Standard_True;
+        return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void math_GlobOptMin::computeInitialValues()
 {
-  const Standard_Real aMinLC  = 0.01;
-  const Standard_Real aMaxLC  = 1000.;
-  const Standard_Real aMinEps = 0.1;
-  const Standard_Real aMaxEps = 100.;
-  Standard_Integer    i;
+  const double aMinLC  = 0.01;
+  const double aMaxLC  = 1000.;
+  const double aMinEps = 0.1;
+  const double aMaxEps = 100.;
+  int    i;
   math_Vector         aCurrPnt(1, myN);
   math_Vector         aBestPnt(1, myN);
   math_Vector         aParamStep(1, myN);
-  Standard_Real       aCurrVal = RealLast();
+  double       aCurrVal = RealLast();
 
   // Lipchitz const approximation.
-  Standard_Real    aLipConst = 0.0, aPrevValDiag, aPrevValProj;
-  Standard_Integer aPntNb    = 13;
+  double    aLipConst = 0.0, aPrevValDiag, aPrevValProj;
+  int aPntNb    = 13;
   myFunc->Value(myA, aPrevValDiag);
   aPrevValProj        = aPrevValDiag;
-  Standard_Real aStep = (myB - myA).Norm() / aPntNb;
+  double aStep = (myB - myA).Norm() / aPntNb;
   aParamStep          = (myB - myA) / aPntNb;
   for (i = 1; i <= aPntNb; i++)
   {
@@ -376,23 +376,23 @@ void math_GlobOptMin::computeInitialValues()
 
 //=================================================================================================
 
-void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
+void math_GlobOptMin::computeGlobalExtremum(int j)
 {
-  Standard_Integer i;
-  Standard_Real    d   = RealLast(), aPrevVal; // Functional in original and moved points.
-  Standard_Real    val = RealLast();           // Local extrema computed in moved point.
-  Standard_Real    aStepBestValue = RealLast();
+  int i;
+  double    d   = RealLast(), aPrevVal; // Functional in original and moved points.
+  double    val = RealLast();           // Local extrema computed in moved point.
+  double    aStepBestValue = RealLast();
   math_Vector      aStepBestPoint(1, myN);
-  Standard_Boolean isInside = Standard_False, isReached = Standard_False;
+  bool isInside = false, isReached = false;
 
-  Standard_Real r1, r2, r;
+  double r1, r2, r;
 
   for (myX(j) = myA(j) + myE1; !isReached; myX(j) += myV(j))
   {
     if (myX(j) > myB(j))
     {
       myX(j)    = myB(j);
-      isReached = Standard_True;
+      isReached = true;
     }
 
     if (CheckFunctionalStopCriteria())
@@ -400,7 +400,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
 
     if (j == 1)
     {
-      isInside = Standard_False;
+      isInside = false;
       aPrevVal = d;
       myFunc->Value(myX, d);
       r1 = (d + myZ * myC * myLastStep - myF) * myZ; // Evtushenko estimation.
@@ -410,15 +410,15 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       r = std::min(r1, r2);
       if (r > myE3)
       {
-        Standard_Real aSaveParam = myX(1);
+        double aSaveParam = myX(1);
 
         // Piyavsky midpoint estimation.
-        Standard_Real aParam = (2 * myX(1) - myV(1)) * 0.5 + (aPrevVal - d) * 0.5 / myC;
+        double aParam = (2 * myX(1) - myV(1)) * 0.5 + (aPrevVal - d) * 0.5 / myC;
         if (Precision::IsInfinite(aPrevVal))
           aParam = myX(1) - myV(1) * 0.5; // Protection from upper dimension step.
 
         myX(1)             = aParam;
-        Standard_Real aVal = 0;
+        double aVal = 0;
         myFunc->Value(myX, aVal);
         myX(1) = aSaveParam;
 
@@ -452,7 +452,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
     }
     if (j < myN)
     {
-      Standard_Real aUpperDimStep = std::max(myV(j), myE2);
+      double aUpperDimStep = std::max(myV(j), myE2);
       if (myV(j + 1) > aUpperDimStep)
       {
         if (aUpperDimStep > myMaxV(j + 1)) // Case of too big step.
@@ -466,25 +466,25 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
 
 //=================================================================================================
 
-Standard_Boolean math_GlobOptMin::isInside(const math_Vector& thePnt)
+bool math_GlobOptMin::isInside(const math_Vector& thePnt)
 {
-  Standard_Integer i;
+  int i;
 
   for (i = 1; i <= myN; i++)
   {
     if (thePnt(i) < myGlobA(i) || thePnt(i) > myGlobB(i))
-      return Standard_False;
+      return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
+bool math_GlobOptMin::isStored(const math_Vector& thePnt)
 {
-  Standard_Integer i, j;
-  Standard_Boolean isSame = Standard_True;
+  int i, j;
+  bool isSame = true;
   math_Vector      aTol(1, myN);
   aTol = (myB - myA) * mySameTol;
 
@@ -493,17 +493,17 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
   {
     for (i = 0; i < mySolCount; i++)
     {
-      isSame = Standard_True;
+      isSame = true;
       for (j = 1; j <= myN; j++)
       {
         if ((std::abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
         {
-          isSame = Standard_False;
+          isSame = false;
           break;
         }
       }
-      if (isSame == Standard_True)
-        return Standard_True;
+      if (isSame == true)
+        return true;
     }
   }
   else
@@ -514,17 +514,17 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
       myFilter.Reset(myCellSize);
 
       // Copy initial data into cell filter.
-      for (Standard_Integer aSolIdx = 0; aSolIdx < mySolCount; aSolIdx++)
+      for (int aSolIdx = 0; aSolIdx < mySolCount; aSolIdx++)
       {
         math_Vector aVec(1, myN);
-        for (Standard_Integer aSolDim = 1; aSolDim <= myN; aSolDim++)
+        for (int aSolDim = 1; aSolDim <= myN; aSolDim++)
           aVec(aSolDim) = myY(aSolIdx * myN + aSolDim);
 
         myFilter.Add(aVec, aVec);
       }
     }
 
-    isFirstCellFilterInvoke = Standard_False;
+    isFirstCellFilterInvoke = false;
 
     math_Vector aLow(1, myN), anUp(1, myN);
     anInspector.Shift(thePnt, myCellSize, aLow, anUp);
@@ -538,14 +538,14 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
       myFilter.Add(thePnt, thePnt);
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void math_GlobOptMin::Points(const Standard_Integer theIndex, math_Vector& theSol)
+void math_GlobOptMin::Points(const int theIndex, math_Vector& theSol)
 {
-  Standard_Integer j;
+  int j;
 
   for (j = 1; j <= myN; j++)
     theSol(j) = myY((theIndex - 1) * myN + j);
@@ -555,7 +555,7 @@ void math_GlobOptMin::Points(const Standard_Integer theIndex, math_Vector& theSo
 
 void math_GlobOptMin::initCellSize()
 {
-  for (Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
+  for (int anIdx = 1; anIdx <= myN; anIdx++)
   {
     myCellSize(anIdx - 1) =
       (myGlobB(anIdx) - myGlobA(anIdx)) * Precision::PConfusion() / (2.0 * M_SQRT2);
@@ -564,20 +564,20 @@ void math_GlobOptMin::initCellSize()
 
 //=================================================================================================
 
-Standard_Boolean math_GlobOptMin::CheckFunctionalStopCriteria()
+bool math_GlobOptMin::CheckFunctionalStopCriteria()
 {
   // Search single solution and current solution in its neighborhood.
   if (myIsFindSingleSolution && std::abs(myF - myFunctionalMinimalValue) < mySameTol * 0.01)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void math_GlobOptMin::ComputeInitSol()
 {
-  Standard_Real aVal;
+  double aVal;
   math_Vector   aPnt(1, myN);
 
   // Check functional value in midpoint. It is necessary since local optimization
@@ -588,7 +588,7 @@ void math_GlobOptMin::ComputeInitSol()
   checkAddCandidate(aPnt, aVal);
 
   // Run local optimization from lower corner, midpoint, and upper corner.
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     aPnt = myA + (myB - myA) * (i - 1) / 2.0;
 
@@ -599,7 +599,7 @@ void math_GlobOptMin::ComputeInitSol()
 
 //=================================================================================================
 
-void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const Standard_Real theValue)
+void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const double theValue)
 {
   if (std::abs(theValue - myF) < mySameTol * 0.01 && // Value in point is close to optimal value.
       !myIsFindSingleSolution)                       // Several optimal solutions are allowed.
@@ -608,7 +608,7 @@ void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const Standar
     {
       if ((theValue - myF) * myZ > 0.0)
         myF = theValue;
-      for (Standard_Integer j = 1; j <= myN; j++)
+      for (int j = 1; j <= myN; j++)
         myY.Append(thePnt(j));
       mySolCount++;
     }
@@ -617,15 +617,15 @@ void math_GlobOptMin::checkAddCandidate(const math_Vector& thePnt, const Standar
   // New best solution:
   // new point is out of (mySameTol * 0.01) surrounding or
   // new point is better than old and single point search.
-  Standard_Real aDelta = (theValue - myF) * myZ;
+  double aDelta = (theValue - myF) * myZ;
   if (aDelta > mySameTol * 0.01 || (aDelta > 0.0 && myIsFindSingleSolution))
   {
     myF = theValue;
     myY.Clear();
-    for (Standard_Integer j = 1; j <= myN; j++)
+    for (int j = 1; j <= myN; j++)
       myY.Append(thePnt(j));
     mySolCount = 1;
 
-    isFirstCellFilterInvoke = Standard_True;
+    isFirstCellFilterInvoke = true;
   }
 }

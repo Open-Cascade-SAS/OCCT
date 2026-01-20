@@ -21,7 +21,8 @@
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_Pair.hxx>
-#include <BOPDS_MapOfPair.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_Pair.hxx>
 #include <BOPDS_Tools.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -37,7 +38,7 @@ class BOPDS_TSR : public BOPTools_BoxTreeSelector
 public:
   BOPDS_TSR()
       : BOPTools_BoxTreeSelector(),
-        myHasBRep(Standard_False),
+        myHasBRep(false),
         myIndex(-1)
   {
   }
@@ -46,13 +47,13 @@ public:
   virtual ~BOPDS_TSR() {}
 
   //
-  void SetHasBRep(const Standard_Boolean bFlag) { myHasBRep = bFlag; }
+  void SetHasBRep(const bool bFlag) { myHasBRep = bFlag; }
 
   //
-  void SetIndex(const Standard_Integer theIndex) { myIndex = theIndex; }
+  void SetIndex(const int theIndex) { myIndex = theIndex; }
 
   //
-  Standard_Integer Index() const { return myIndex; }
+  int Index() const { return myIndex; }
 
   //
   void Perform()
@@ -65,8 +66,8 @@ public:
 
   //
 protected:
-  Standard_Boolean myHasBRep;
-  Standard_Integer myIndex;
+  bool myHasBRep;
+  int myIndex;
 };
 
 //
@@ -79,10 +80,10 @@ typedef NCollection_Vector<BOPDS_TSR> BOPDS_VectorOfTSR;
 
 BOPDS_Iterator::BOPDS_Iterator()
     : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-      myRunParallel(Standard_False),
-      myUseExt(Standard_False)
+      myRunParallel(false),
+      myUseExt(false)
 {
-  Standard_Integer i, aNb;
+  int i, aNb;
   //
   myDS     = NULL;
   myLength = 0;
@@ -94,7 +95,7 @@ BOPDS_Iterator::BOPDS_Iterator()
     myLists.Appended();
   }
 
-  const Standard_Integer aNbExt = BOPDS_Iterator::NbExtInterfs();
+  const int aNbExt = BOPDS_Iterator::NbExtInterfs();
   myExtLists.SetIncrement(aNbExt);
   for (i = 0; i < aNbExt; ++i)
   {
@@ -104,14 +105,14 @@ BOPDS_Iterator::BOPDS_Iterator()
 
 //=================================================================================================
 
-BOPDS_Iterator::BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_Iterator::BOPDS_Iterator(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myLists(0, theAllocator),
-      myRunParallel(Standard_False),
+      myRunParallel(false),
       myExtLists(0, theAllocator),
-      myUseExt(Standard_False)
+      myUseExt(false)
 {
-  Standard_Integer i, aNb;
+  int i, aNb;
   //
   myDS     = NULL;
   myLength = 0;
@@ -123,7 +124,7 @@ BOPDS_Iterator::BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAlloc
     myLists.Appended();
   }
 
-  const Standard_Integer aNbExt = BOPDS_Iterator::NbExtInterfs();
+  const int aNbExt = BOPDS_Iterator::NbExtInterfs();
   myExtLists.SetIncrement(aNbExt);
   for (i = 0; i < aNbExt; ++i)
   {
@@ -137,14 +138,14 @@ BOPDS_Iterator::~BOPDS_Iterator() {}
 
 //=================================================================================================
 
-void BOPDS_Iterator::SetRunParallel(const Standard_Boolean theFlag)
+void BOPDS_Iterator::SetRunParallel(const bool theFlag)
 {
   myRunParallel = theFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_Iterator::RunParallel() const
+bool BOPDS_Iterator::RunParallel() const
 {
   return myRunParallel;
 }
@@ -165,17 +166,17 @@ const BOPDS_DS& BOPDS_Iterator::DS() const
 
 //=================================================================================================
 
-Standard_Integer BOPDS_Iterator::ExpectedLength() const
+int BOPDS_Iterator::ExpectedLength() const
 {
   return myLength;
 }
 
 //=================================================================================================
 
-Standard_Integer BOPDS_Iterator::BlockLength() const
+int BOPDS_Iterator::BlockLength() const
 {
-  Standard_Integer aNbIIs;
-  Standard_Real    aCfPredict = .5;
+  int aNbIIs;
+  double    aCfPredict = .5;
 
   aNbIIs = ExpectedLength();
 
@@ -184,7 +185,7 @@ Standard_Integer BOPDS_Iterator::BlockLength() const
     return 1;
   }
   //
-  aNbIIs = (Standard_Integer)(aCfPredict * (Standard_Real)aNbIIs);
+  aNbIIs = (int)(aCfPredict * (double)aNbIIs);
   return aNbIIs;
 }
 
@@ -192,13 +193,13 @@ Standard_Integer BOPDS_Iterator::BlockLength() const
 
 void BOPDS_Iterator::Initialize(const TopAbs_ShapeEnum aType1, const TopAbs_ShapeEnum aType2)
 {
-  Standard_Integer iX;
+  int iX;
   //
   myLength = 0;
   iX       = BOPDS_Tools::TypeToInteger(aType1, aType2);
   if (iX >= 0)
   {
-    BOPDS_VectorOfPair& aPairs =
+    NCollection_Vector<BOPDS_Pair>& aPairs =
       (myUseExt && iX < BOPDS_Iterator::NbExtInterfs()) ? myExtLists(iX) : myLists(iX);
     // sort interfering pairs for constant order of intersection
     std::stable_sort(aPairs.begin(), aPairs.end());
@@ -210,7 +211,7 @@ void BOPDS_Iterator::Initialize(const TopAbs_ShapeEnum aType1, const TopAbs_Shap
 
 //=================================================================================================
 
-Standard_Boolean BOPDS_Iterator::More() const
+bool BOPDS_Iterator::More() const
 {
   return myIterator.More();
 }
@@ -224,15 +225,15 @@ void BOPDS_Iterator::Next()
 
 //=================================================================================================
 
-void BOPDS_Iterator::Value(Standard_Integer& theI1, Standard_Integer& theI2) const
+void BOPDS_Iterator::Value(int& theI1, int& theI2) const
 {
-  Standard_Integer iT1, iT2, n1, n2;
+  int iT1, iT2, n1, n2;
   //
   const BOPDS_Pair& aPair = myIterator.Value();
   aPair.Indices(n1, n2);
   //
-  iT1 = (Standard_Integer)(myDS->ShapeInfo(n1).ShapeType());
-  iT2 = (Standard_Integer)(myDS->ShapeInfo(n2).ShapeType());
+  iT1 = (int)(myDS->ShapeInfo(n1).ShapeType());
+  iT2 = (int)(myDS->ShapeInfo(n2).ShapeType());
   //
   theI1 = n1;
   theI2 = n2;
@@ -245,11 +246,11 @@ void BOPDS_Iterator::Value(Standard_Integer& theI1, Standard_Integer& theI2) con
 
 //=================================================================================================
 
-void BOPDS_Iterator::Prepare(const Handle(IntTools_Context)& theCtx,
-                             const Standard_Boolean          theCheckOBB,
-                             const Standard_Real             theFuzzyValue)
+void BOPDS_Iterator::Prepare(const occ::handle<IntTools_Context>& theCtx,
+                             const bool          theCheckOBB,
+                             const double             theFuzzyValue)
 {
-  Standard_Integer i, aNbInterfTypes;
+  int i, aNbInterfTypes;
   //
   aNbInterfTypes = BOPDS_DS::NbInterfTypes();
   myLength       = 0;
@@ -268,16 +269,16 @@ void BOPDS_Iterator::Prepare(const Handle(IntTools_Context)& theCtx,
 //
 //=================================================================================================
 
-void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
-                               const Standard_Boolean          theCheckOBB,
-                               const Standard_Real             theFuzzyValue)
+void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
+                               const bool          theCheckOBB,
+                               const double             theFuzzyValue)
 {
-  const Standard_Integer aNb = myDS->NbSourceShapes();
+  const int aNb = myDS->NbSourceShapes();
 
   // Prepare BVH
   BOPTools_BoxTree aBoxTree;
   aBoxTree.SetSize(aNb);
-  for (Standard_Integer i = 0; i < aNb; ++i)
+  for (int i = 0; i < aNb; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.HasBRep())
@@ -292,18 +293,18 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
   // Select pairs of shapes with interfering bounding boxes
   BOPTools_BoxPairSelector aPairSelector;
   aPairSelector.SetBVHSets(&aBoxTree, &aBoxTree);
-  aPairSelector.SetSame(Standard_True);
+  aPairSelector.SetSame(true);
   aPairSelector.Select();
   aPairSelector.Sort();
 
   // Treat the selected pairs
   const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
-  const Standard_Integer aNbPairs = static_cast<Standard_Integer>(aPairs.size());
+  const int aNbPairs = static_cast<int>(aPairs.size());
 
-  Standard_Integer iPair = 0;
+  int iPair = 0;
 
-  const Standard_Integer aNbR = myDS->NbRanges();
-  for (Standard_Integer iR = 0; iR < aNbR; ++iR)
+  const int aNbR = myDS->NbRanges();
+  for (int iR = 0; iR < aNbR; ++iR)
   {
     const BOPDS_IndexRange& aRange = myDS->Range(iR);
 
@@ -324,8 +325,8 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
       const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
       const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
 
-      Standard_Integer iType1 = BOPDS_Tools::TypeToInteger(aType1);
-      Standard_Integer iType2 = BOPDS_Tools::TypeToInteger(aType2);
+      int iType1 = BOPDS_Tools::TypeToInteger(aType1);
+      int iType2 = BOPDS_Tools::TypeToInteger(aType2);
 
       // avoid interfering of the shape with its sub-shapes
       if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
@@ -342,7 +343,7 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
           continue;
       }
 
-      Standard_Integer iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
+      int iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
       myLists(iX).Append(
         BOPDS_Pair(std::min(aPair.ID1, aPair.ID2), std::max(aPair.ID1, aPair.ID2)));
     }
@@ -351,18 +352,18 @@ void BOPDS_Iterator::Intersect(const Handle(IntTools_Context)& theCtx,
 
 //=================================================================================================
 
-void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
+void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
 {
   if (!myDS)
     return;
 
-  const Standard_Integer aNb = myDS->NbSourceShapes();
+  const int aNb = myDS->NbSourceShapes();
 
   BOPTools_BoxTree aBoxTree;
   aBoxTree.SetSize(aNb);
   BOPDS_VectorOfTSR aVTSR(theIndices.Extent());
   //
-  for (Standard_Integer i = 0; i < aNb; ++i)
+  for (int i = 0; i < aNb; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.IsInterfering() || (aSI.ShapeType() == TopAbs_SOLID))
@@ -370,14 +371,14 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
     //
     if (theIndices.Contains(i))
     {
-      Standard_Integer nVSD = i;
+      int nVSD = i;
       myDS->HasShapeSD(i, nVSD);
       const BOPDS_ShapeInfo& aSISD = myDS->ShapeInfo(nVSD);
       const Bnd_Box&         aBox  = aSISD.Box();
       aBoxTree.Add(i, Bnd_Tools::Bnd2BVH(aBox));
 
       BOPDS_TSR& aTSR = aVTSR.Appended();
-      aTSR.SetHasBRep(Standard_True);
+      aTSR.SetHasBRep(true);
       aTSR.SetBVHSet(&aBoxTree);
       aTSR.SetBox(Bnd_Tools::Bnd2BVH(aBox));
       aTSR.SetIndex(i);
@@ -396,33 +397,33 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
   // Treat selections
 
   // Fence map to avoid duplicating pairs
-  BOPDS_MapOfPair aMPFence;
+  NCollection_Map<BOPDS_Pair> aMPFence;
 
-  const Standard_Integer aNbV = aVTSR.Length();
-  for (Standard_Integer k = 0; k < aNbV; ++k)
+  const int aNbV = aVTSR.Length();
+  for (int k = 0; k < aNbV; ++k)
   {
     BOPDS_TSR&                   aTSRi = aVTSR(k);
-    const TColStd_ListOfInteger& aLI   = aTSRi.Indices();
+    const NCollection_List<int>& aLI   = aTSRi.Indices();
     if (aLI.IsEmpty())
       continue;
 
-    const Standard_Integer i      = aTSRi.Index();
+    const int i      = aTSRi.Index();
     const BOPDS_ShapeInfo& aSI    = myDS->ShapeInfo(i);
-    const Standard_Integer iRankI = myDS->Rank(i);
+    const int iRankI = myDS->Rank(i);
     const TopAbs_ShapeEnum aTI    = aSI.ShapeType();
-    const Standard_Integer iTI    = BOPDS_Tools::TypeToInteger(aTI);
+    const int iTI    = BOPDS_Tools::TypeToInteger(aTI);
 
-    TColStd_ListIteratorOfListOfInteger itLI(aLI);
+    NCollection_List<int>::Iterator itLI(aLI);
     for (; itLI.More(); itLI.Next())
     {
-      const Standard_Integer j      = itLI.Value(); // Index in DS
-      const Standard_Integer iRankJ = myDS->Rank(j);
+      const int j      = itLI.Value(); // Index in DS
+      const int iRankJ = myDS->Rank(j);
       if (iRankI == iRankJ)
         continue;
 
       const BOPDS_ShapeInfo& aSJ = myDS->ShapeInfo(j);
       const TopAbs_ShapeEnum aTJ = aSJ.ShapeType();
-      const Standard_Integer iTJ = BOPDS_Tools::TypeToInteger(aTJ);
+      const int iTJ = BOPDS_Tools::TypeToInteger(aTJ);
 
       // avoid interfering of the shape with its sub-shapes
       if (((iTI < iTJ) && aSI.HasSubShape(j)) || ((iTI > iTJ) && aSJ.HasSubShape(i)))
@@ -431,12 +432,12 @@ void BOPDS_Iterator::IntersectExt(const TColStd_MapOfInteger& theIndices)
       BOPDS_Pair aPair(i, j);
       if (aMPFence.Add(aPair))
       {
-        const Standard_Integer iX = BOPDS_Tools::TypeToInteger(aTI, aTJ);
+        const int iX = BOPDS_Tools::TypeToInteger(aTI, aTJ);
         if (iX < BOPDS_Iterator::NbExtInterfs())
           myExtLists(iX).Append(aPair);
       }
     }
   }
 
-  myUseExt = Standard_True;
+  myUseExt = true;
 }

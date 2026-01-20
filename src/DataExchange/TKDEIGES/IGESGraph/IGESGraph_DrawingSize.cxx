@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DrawingSize, IGESData_IGESEntity)
 
 IGESGraph_DrawingSize::IGESGraph_DrawingSize() {}
 
-void IGESGraph_DrawingSize::Init(const Standard_Integer nbProps,
-                                 const Standard_Real    aXSize,
-                                 const Standard_Real    aYSize)
+void IGESGraph_DrawingSize::Init(const int nbProps,
+                                 const double    aXSize,
+                                 const double    aYSize)
 {
   theNbPropertyValues = nbProps;
   theXSize            = aXSize;
@@ -33,17 +33,17 @@ void IGESGraph_DrawingSize::Init(const Standard_Integer nbProps,
   InitTypeAndForm(406, 16);
 }
 
-Standard_Integer IGESGraph_DrawingSize::NbPropertyValues() const
+int IGESGraph_DrawingSize::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Real IGESGraph_DrawingSize::XSize() const
+double IGESGraph_DrawingSize::XSize() const
 {
   return theXSize;
 }
 
-Standard_Real IGESGraph_DrawingSize::YSize() const
+double IGESGraph_DrawingSize::YSize() const
 {
   return theYSize;
 }

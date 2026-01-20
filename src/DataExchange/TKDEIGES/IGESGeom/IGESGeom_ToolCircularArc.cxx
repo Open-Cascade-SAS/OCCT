@@ -39,8 +39,8 @@
 // MGE 28/07/98
 IGESGeom_ToolCircularArc::IGESGeom_ToolCircularArc() {}
 
-void IGESGeom_ToolCircularArc::ReadOwnParams(const Handle(IGESGeom_CircularArc)& ent,
-                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolCircularArc::ReadOwnParams(const occ::handle<IGESGeom_CircularArc>& ent,
+                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
   // MGE 28/07/98
@@ -51,9 +51,9 @@ void IGESGeom_ToolCircularArc::ReadOwnParams(const Handle(IGESGeom_CircularArc)&
   Message_Msg Msg78("XSTEP_78");
   //=====================================
 
-  Standard_Real aZT;
+  double aZT;
   gp_XY         aCenter, aStart, anEnd;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // MGE 28/07/98
   if (!PR.ReadReal(PR.Current(), aZT))
@@ -76,7 +76,7 @@ void IGESGeom_ToolCircularArc::ReadOwnParams(const Handle(IGESGeom_CircularArc)&
   ent->Init(aZT, aCenter, aStart, anEnd);
 }
 
-void IGESGeom_ToolCircularArc::WriteOwnParams(const Handle(IGESGeom_CircularArc)& ent,
+void IGESGeom_ToolCircularArc::WriteOwnParams(const occ::handle<IGESGeom_CircularArc>& ent,
                                               IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->ZPlane());
@@ -88,13 +88,13 @@ void IGESGeom_ToolCircularArc::WriteOwnParams(const Handle(IGESGeom_CircularArc)
   IW.Send(ent->EndPoint().Y());
 }
 
-void IGESGeom_ToolCircularArc::OwnShared(const Handle(IGESGeom_CircularArc)& /* ent */,
+void IGESGeom_ToolCircularArc::OwnShared(const occ::handle<IGESGeom_CircularArc>& /* ent */,
                                          Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESGeom_ToolCircularArc::OwnCopy(const Handle(IGESGeom_CircularArc)& another,
-                                       const Handle(IGESGeom_CircularArc)& ent,
+void IGESGeom_ToolCircularArc::OwnCopy(const occ::handle<IGESGeom_CircularArc>& another,
+                                       const occ::handle<IGESGeom_CircularArc>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->ZPlane(),
@@ -104,7 +104,7 @@ void IGESGeom_ToolCircularArc::OwnCopy(const Handle(IGESGeom_CircularArc)& anoth
 }
 
 IGESData_DirChecker IGESGeom_ToolCircularArc::DirChecker(
-  const Handle(IGESGeom_CircularArc)& /* ent */) const
+  const occ::handle<IGESGeom_CircularArc>& /* ent */) const
 {
   IGESData_DirChecker DC(100, 0);
   DC.Structure(IGESData_DefVoid);
@@ -115,19 +115,19 @@ IGESData_DirChecker IGESGeom_ToolCircularArc::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolCircularArc::OwnCheck(const Handle(IGESGeom_CircularArc)& /*ent*/,
+void IGESGeom_ToolCircularArc::OwnCheck(const occ::handle<IGESGeom_CircularArc>& /*ent*/,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& /*ach*/) const
+                                        occ::handle<Interface_Check>& /*ach*/) const
 {
   /*
-    //Standard_Real eps  = 1.E-04;    // Test tolerance ?? //szv#4:S4163:12Mar99 not needed
+    //double eps  = 1.E-04;    // Test tolerance ?? //szv#4:S4163:12Mar99 not needed
 
-    Standard_Real Rad1 = std::sqrt(Square(ent->StartPoint().X() - ent->Center().X()) +
+    double Rad1 = std::sqrt(Square(ent->StartPoint().X() - ent->Center().X()) +
                   Square(ent->StartPoint().Y() - ent->Center().Y()));
-    Standard_Real Rad2 = std::sqrt(Square(ent->EndPoint().X()   - ent->Center().X()) +
+    double Rad2 = std::sqrt(Square(ent->EndPoint().X()   - ent->Center().X()) +
                   Square(ent->EndPoint().Y()   - ent->Center().Y()));
 
-    Standard_Real ratio = std::abs(Rad1 - Rad2) / (Rad1+Rad2);
+    double ratio = std::abs(Rad1 - Rad2) / (Rad1+Rad2);
     if (ratio > eps) {
       char mess[80];
       Sprintf(mess,"Radius at Start & End Points, relative gap over %f",
@@ -137,10 +137,10 @@ void IGESGeom_ToolCircularArc::OwnCheck(const Handle(IGESGeom_CircularArc)& /*en
   */
 }
 
-void IGESGeom_ToolCircularArc::OwnDump(const Handle(IGESGeom_CircularArc)& ent,
+void IGESGeom_ToolCircularArc::OwnDump(const occ::handle<IGESGeom_CircularArc>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
                                        Standard_OStream&      S,
-                                       const Standard_Integer level) const
+                                       const int level) const
 {
   S << "CircularArc from IGESGeom]\n"
     << "Z-Plane Displacement : " << ent->ZPlane() << "\n"

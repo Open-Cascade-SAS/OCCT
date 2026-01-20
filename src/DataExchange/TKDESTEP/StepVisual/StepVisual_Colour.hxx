@@ -22,9 +22,6 @@
 
 #include <Standard_Transient.hxx>
 
-class StepVisual_Colour;
-DEFINE_STANDARD_HANDLE(StepVisual_Colour, Standard_Transient)
-
 class StepVisual_Colour : public Standard_Transient
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_Colour, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_Colour_HeaderFile

@@ -42,7 +42,7 @@ public:
   Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Sets the level of checking shape on self-interference.
   //! It defines which interferences will be checked:
@@ -56,10 +56,10 @@ public:
   //! 7 - V/V, V/E, E/E, V/F, E/F, F/F, V/S and E/S;
   //! 8 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S and F/S;
   //! 9 - V/V, V/E, E/E, V/F, E/F, F/F, V/S, E/S, F/S and S/S - all interferences (Default value)
-  Standard_EXPORT void SetLevelOfCheck(const Standard_Integer theLevel);
+  Standard_EXPORT void SetLevelOfCheck(const int theLevel);
 
 protected:
-  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) override;
 
   //! Treats the intersection results
   Standard_EXPORT void PostTreat();
@@ -84,9 +84,8 @@ protected:
   Standard_EXPORT virtual void PerformSZ(const TopAbs_ShapeEnum       aTS,
                                          const Message_ProgressRange& theRange);
 
-  Standard_Integer myLevelOfCheck;
+  int myLevelOfCheck;
 
-private:
 };
 
 #endif // _BOPAlgo_CheckerSI_HeaderFile

@@ -34,7 +34,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Returns a Protocol from IGESData (avoids to create it)
-  Standard_EXPORT static Handle(IGESData_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<IGESData_Protocol> Protocol();
 };
 
 #endif // _IGESData_HeaderFile

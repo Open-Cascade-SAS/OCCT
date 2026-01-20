@@ -37,29 +37,29 @@
 
 #define Eps 1.e-15
 
-static void t3dto2d(Standard_Real& a,
-                    Standard_Real& b,
+static void t3dto2d(double& a,
+                    double& b,
                     const gp_Vec&  A,
                     const gp_Vec&  B,
                     const gp_Vec&  C)
 {
-  Standard_Real AB   = A.Dot(B);
-  Standard_Real AC   = A.Dot(C);
-  Standard_Real BC   = B.Dot(C);
-  Standard_Real BB   = B.Dot(B);
-  Standard_Real CC   = C.Dot(C);
-  Standard_Real deno = (BB * CC - BC * BC);
+  double AB   = A.Dot(B);
+  double AC   = A.Dot(C);
+  double BC   = B.Dot(C);
+  double BB   = B.Dot(B);
+  double CC   = C.Dot(C);
+  double deno = (BB * CC - BC * BC);
   a                  = (AB * CC - AC * BC) / deno;
   b                  = (AC * BB - AB * BC) / deno;
 }
 
 //=================================================================================================
 
-BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad(const Handle(Adaptor3d_Surface)& Surf1,
-                                                   const Handle(Adaptor2d_Curve2d)& Rst1,
-                                                   const Handle(Adaptor3d_Surface)& Surf2,
-                                                   const Handle(Adaptor2d_Curve2d)& Rst2,
-                                                   const Handle(Adaptor3d_Curve)&   CGuide)
+BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad(const occ::handle<Adaptor3d_Surface>& Surf1,
+                                                   const occ::handle<Adaptor2d_Curve2d>& Rst1,
+                                                   const occ::handle<Adaptor3d_Surface>& Surf2,
+                                                   const occ::handle<Adaptor2d_Curve2d>& Rst2,
+                                                   const occ::handle<Adaptor3d_Curve>&   CGuide)
     : surf1(Surf1),
       surf2(Surf2),
       rst1(Rst1),
@@ -70,7 +70,7 @@ BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad(const Handle(Adaptor3d_Surfac
       tguide(CGuide),
       prmrst1(0.0),
       prmrst2(0.0),
-      istangent(Standard_True),
+      istangent(true),
       ray(0.0),
       choix(0),
       normtg(0.0),
@@ -84,21 +84,21 @@ BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad(const Handle(Adaptor3d_Surfac
 
 //=================================================================================================
 
-Standard_Integer BRepBlend_RstRstConstRad::NbVariables() const
+int BRepBlend_RstRstConstRad::NbVariables() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-Standard_Integer BRepBlend_RstRstConstRad::NbEquations() const
+int BRepBlend_RstRstConstRad::NbEquations() const
 {
   return 2;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::Value(const math_Vector& X, math_Vector& F)
+bool BRepBlend_RstRstConstRad::Value(const math_Vector& X, math_Vector& F)
 {
   ptrst1 = cons1.Value(X(1));
   ptrst2 = cons2.Value(X(2));
@@ -106,12 +106,12 @@ Standard_Boolean BRepBlend_RstRstConstRad::Value(const math_Vector& X, math_Vect
   F(1) = nplan.XYZ().Dot(ptrst1.XYZ()) + theD;
   F(2) = nplan.XYZ().Dot(ptrst2.XYZ()) + theD;
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BRepBlend_RstRstConstRad::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec d11, d21;
 
@@ -124,27 +124,27 @@ Standard_Boolean BRepBlend_RstRstConstRad::Derivatives(const math_Vector& X, mat
   D(2, 1) = 0.;
   D(2, 2) = nplan.Dot(d21);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::Values(const math_Vector& X,
+bool BRepBlend_RstRstConstRad::Values(const math_Vector& X,
                                                   math_Vector&       F,
                                                   math_Matrix&       D)
 {
   Value(X, F);
   Derivatives(X, D);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Set(const Handle(Adaptor3d_Surface)& SurfRef1,
-                                   const Handle(Adaptor2d_Curve2d)& RstRef1,
-                                   const Handle(Adaptor3d_Surface)& SurfRef2,
-                                   const Handle(Adaptor2d_Curve2d)& RstRef2)
+void BRepBlend_RstRstConstRad::Set(const occ::handle<Adaptor3d_Surface>& SurfRef1,
+                                   const occ::handle<Adaptor2d_Curve2d>& RstRef1,
+                                   const occ::handle<Adaptor3d_Surface>& SurfRef2,
+                                   const occ::handle<Adaptor2d_Curve2d>& RstRef2)
 {
   surfref1 = SurfRef1;
   surfref2 = SurfRef2;
@@ -154,7 +154,7 @@ void BRepBlend_RstRstConstRad::Set(const Handle(Adaptor3d_Surface)& SurfRef1,
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Set(const Standard_Real Param)
+void BRepBlend_RstRstConstRad::Set(const double Param)
 {
   tguide->D2(Param, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -164,14 +164,14 @@ void BRepBlend_RstRstConstRad::Set(const Standard_Real Param)
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Set(const Standard_Real First, const Standard_Real Last)
+void BRepBlend_RstRstConstRad::Set(const double First, const double Last)
 {
   tguide = guide->Trim(First, Last, 1.e-12);
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BRepBlend_RstRstConstRad::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = cons1.Resolution(Tol);
   Tolerance(2) = cons2.Resolution(Tol);
@@ -189,8 +189,8 @@ void BRepBlend_RstRstConstRad::GetBounds(math_Vector& InfBound, math_Vector& Sup
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
-                                                      const Standard_Real Tol)
+bool BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
+                                                      const double Tol)
 
 {
   math_Vector valsol(1, 2), secmember(1, 2);
@@ -199,7 +199,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
   gp_Vec dnplan, d1urst1, d1vrst1, d1urst2, d1vrst2, d11, d21, temp;
   gp_Pnt bid;
 
-  Standard_Real Cosa, Sina, Angle;
+  double Cosa, Sina, Angle;
 
   Values(Sol, valsol, gradsol);
 
@@ -228,7 +228,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
     if (Resol.IsDone())
     {
       Resol.Solve(secmember);
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
@@ -238,10 +238,10 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
         math_Vector DEDT(1, 3);
         DEDT = secmember;
         SingRS.Solve(DEDT, secmember, 1.e-6);
-        istangent = Standard_False;
+        istangent = false;
       }
       else
-        istangent = Standard_True;
+        istangent = true;
     }
 
     if (!istangent)
@@ -249,7 +249,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
       tgrst1 = secmember(1) * d11;
       tgrst2 = secmember(2) * d21;
 
-      Standard_Real a, b;
+      double a, b;
       surf1->D1(pt2drst1.X(), pt2drst1.Y(), bid, d1urst1, d1vrst1);
       t3dto2d(a, b, tgrst1, d1urst1, d1vrst1);
       tg2drst1.SetCoord(a, b);
@@ -260,12 +260,12 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
 
     gp_Pnt           Center;
     gp_Vec           NotUsed;
-    Standard_Boolean IsCenter;
+    bool IsCenter;
 
     IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, NotUsed);
 
     if (!IsCenter)
-      return Standard_False;
+      return false;
 
     gp_Vec n1(Center, ptrst1), n2(Center, ptrst2);
 
@@ -296,15 +296,15 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
     }
     distmin = std::min(distmin, ptrst1.Distance(ptrst2));
 
-    return Standard_True;
+    return true;
   }
-  istangent = Standard_True;
-  return Standard_False;
+  istangent = true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BRepBlend_RstRstConstRad::GetMinimalDistance() const
+double BRepBlend_RstRstConstRad::GetMinimalDistance() const
 {
   return distmin;
 }
@@ -339,21 +339,21 @@ const gp_Pnt2d& BRepBlend_RstRstConstRad::Pnt2dOnRst2() const
 
 //=================================================================================================
 
-Standard_Real BRepBlend_RstRstConstRad::ParameterOnRst1() const
+double BRepBlend_RstRstConstRad::ParameterOnRst1() const
 {
   return prmrst1;
 }
 
 //=================================================================================================
 
-Standard_Real BRepBlend_RstRstConstRad::ParameterOnRst2() const
+double BRepBlend_RstRstConstRad::ParameterOnRst2() const
 {
   return prmrst2;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::IsTangencyPoint() const
+bool BRepBlend_RstRstConstRad::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -413,8 +413,8 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
   gp_Vec        NRst1InPlane, NRst2InPlane;
   gp_Pnt        PtTmp1, PtTmp2, Center;
   gp_Vec        d1u, d1v, centptrst, NotUsed;
-  Standard_Real norm, unsurnorm;
-  Standard_Real u, v;
+  double norm, unsurnorm;
+  double u, v;
 
   rstref1->Value(Sol(1)).Coord(u, v);
   surfref1->D1(u, v, PtTmp1, d1u, d1v);
@@ -482,7 +482,7 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Set(const Standard_Real Radius, const Standard_Integer Choix)
+void BRepBlend_RstRstConstRad::Set(const double Radius, const int Choix)
 {
   choix = Choix;
   ray   = std::abs(Radius);
@@ -499,7 +499,7 @@ void BRepBlend_RstRstConstRad::Set(const BlendFunc_SectionShape TypeSection)
 // function : CenterCircleRst1Rst2
 // purpose  : Calculate the center of the circle passing by two points of restrictions
 //=======================================================================
-Standard_Boolean BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& PtRst1,
+bool BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& PtRst1,
                                                                 const gp_Pnt& PtRst2,
                                                                 const gp_Vec& np,
                                                                 gp_Pnt&       Center,
@@ -508,8 +508,8 @@ Standard_Boolean BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& Pt
 
   gp_Vec        rst1rst2(PtRst1, PtRst2);
   gp_Vec        vdmedNor; //,NRst1;    vdmedNor directong vector of the perpendicular bisector
-  Standard_Real norm2;
-  Standard_Real Dist; // distance between the middle of PtRst1,PtRst2 and Center
+  double norm2;
+  double Dist; // distance between the middle of PtRst1,PtRst2 and Center
 
   // Calculate the center of the circle
   VdMed = rst1rst2.Crossed(np);
@@ -522,7 +522,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& Pt
   }
 
   if (Dist < -1.E-07)
-    return Standard_False;
+    return false;
 
   if (Dist > 1.E-07)
   {
@@ -535,16 +535,16 @@ Standard_Boolean BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt& Pt
     Center.SetXYZ(0.5 * rst1rst2.XYZ() + PtRst1.XYZ());
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Section(const Standard_Real Param,
-                                       const Standard_Real U,
-                                       const Standard_Real V,
-                                       Standard_Real&      Pdeb,
-                                       Standard_Real&      Pfin,
+void BRepBlend_RstRstConstRad::Section(const double Param,
+                                       const double U,
+                                       const double V,
+                                       double&      Pdeb,
+                                       double&      Pfin,
                                        gp_Circ&            C)
 {
   gp_Vec ns, np, NotUsed;
@@ -582,21 +582,21 @@ void BRepBlend_RstRstConstRad::Section(const Standard_Real Param,
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::IsRational() const
+bool BRepBlend_RstRstConstRad::IsRational() const
 {
   return (mySShape == BlendFunc_Rational || mySShape == BlendFunc_QuasiAngular);
 }
 
 //=================================================================================================
 
-Standard_Real BRepBlend_RstRstConstRad::GetSectionSize() const
+double BRepBlend_RstRstConstRad::GetSectionSize() const
 {
   return maxang * std::abs(ray);
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
+void BRepBlend_RstRstConstRad::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weights);
   // It is supposed that it does not depend on the Radius!
@@ -604,24 +604,24 @@ void BRepBlend_RstRstConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) c
 
 //=================================================================================================
 
-Standard_Integer BRepBlend_RstRstConstRad::NbIntervals(const GeomAbs_Shape S) const
+int BRepBlend_RstRstConstRad::NbIntervals(const GeomAbs_Shape S) const
 {
   return guide->NbIntervals(BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BRepBlend_RstRstConstRad::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   guide->Intervals(T, BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::GetShape(Standard_Integer& NbPoles,
-                                        Standard_Integer& NbKnots,
-                                        Standard_Integer& Degree,
-                                        Standard_Integer& NbPoles2d)
+void BRepBlend_RstRstConstRad::GetShape(int& NbPoles,
+                                        int& NbKnots,
+                                        int& Degree,
+                                        int& NbPoles2d)
 {
   NbPoles2d = 2;
   BlendFunc::GetShape(mySShape, maxang, NbPoles, NbKnots, Degree, myTConv);
@@ -632,14 +632,14 @@ void BRepBlend_RstRstConstRad::GetShape(Standard_Integer& NbPoles,
 // purpose  : Determine Tolerances to be used in approximations.
 //=======================================================================
 
-void BRepBlend_RstRstConstRad::GetTolerance(const Standard_Real BoundTol,
-                                            const Standard_Real SurfTol,
-                                            const Standard_Real AngleTol,
+void BRepBlend_RstRstConstRad::GetTolerance(const double BoundTol,
+                                            const double SurfTol,
+                                            const double AngleTol,
                                             math_Vector&        Tol3d,
                                             math_Vector&        Tol1d) const
 {
-  Standard_Integer low = Tol3d.Lower(), up = Tol3d.Upper();
-  Standard_Real    Tol;
+  int low = Tol3d.Lower(), up = Tol3d.Upper();
+  double    Tol;
   Tol = GeomFill::GetTolerance(myTConv, minang, std::abs(ray), AngleTol, SurfTol);
   Tol1d.Init(SurfTol);
   Tol3d.Init(SurfTol);
@@ -649,14 +649,14 @@ void BRepBlend_RstRstConstRad::GetTolerance(const Standard_Real BoundTol,
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Knots(TColStd_Array1OfReal& TKnots)
+void BRepBlend_RstRstConstRad::Knots(NCollection_Array1<double>& TKnots)
 {
   GeomFill::Knots(myTConv, TKnots);
 }
 
 //=================================================================================================
 
-void BRepBlend_RstRstConstRad::Mults(TColStd_Array1OfInteger& TMults)
+void BRepBlend_RstRstConstRad::Mults(NCollection_Array1<int>& TMults)
 {
   GeomFill::Mults(myTConv, TMults);
 }
@@ -664,17 +664,17 @@ void BRepBlend_RstRstConstRad::Mults(TColStd_Array1OfInteger& TMults)
 //=================================================================================================
 
 void BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
-                                       TColgp_Array1OfPnt&   Poles,
-                                       TColgp_Array1OfPnt2d& Poles2d,
-                                       TColStd_Array1OfReal& Weights)
+                                       NCollection_Array1<gp_Pnt>&   Poles,
+                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                       NCollection_Array1<double>& Weights)
 {
   gp_Vec        ns, ns2, NotUsed;
   gp_Pnt        Center;
-  Standard_Real u, v;
+  double u, v;
 
-  Standard_Real    prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
+  double    prm = P.Parameter();
+  int low = Poles.Lower();
+  int upp = Poles.Upper();
 
   tguide->D1(prm, ptgui, d1gui);
   nplan = d1gui.Normalized();
@@ -728,13 +728,13 @@ void BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
-                                                   TColgp_Array1OfPnt&   Poles,
-                                                   TColgp_Array1OfVec&   DPoles,
-                                                   TColgp_Array1OfPnt2d& Poles2d,
-                                                   TColgp_Array1OfVec2d& DPoles2d,
-                                                   TColStd_Array1OfReal& Weights,
-                                                   TColStd_Array1OfReal& DWeights)
+bool BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
+                                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                                   NCollection_Array1<double>& Weights,
+                                                   NCollection_Array1<double>& DWeights)
 {
 
   gp_Vec d11, d21;
@@ -743,15 +743,15 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
   gp_Vec d1urst, d1vrst;
   gp_Pnt Center, NotUsed;
 
-  Standard_Real norm2, normmed, Dist;
+  double norm2, normmed, Dist;
 
   math_Vector sol(1, 2), valsol(1, 2), secmember(1, 2);
   math_Matrix gradsol(1, 2, 1, 2);
 
-  Standard_Real    prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
-  Standard_Boolean istgt;
+  double    prm = P.Parameter();
+  int low = Poles.Lower();
+  int upp = Poles.Upper();
+  bool istgt;
 
   tguide->D2(prm, ptgui, d1gui, d2gui);
   normtg = d1gui.Magnitude();
@@ -778,7 +778,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
 
   if (Resol.IsDone())
   {
-    istgt = Standard_False;
+    istgt = false;
     Resol.Solve(secmember);
   }
   else
@@ -789,19 +789,19 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
       math_Vector DEDT(1, 2);
       DEDT = secmember;
       SingRS.Solve(DEDT, secmember, 1.e-6);
-      istgt = Standard_False;
+      istgt = false;
     }
     else
-      istgt = Standard_True;
+      istgt = true;
   }
 
   gp_Vec           med;
   gp_Vec           rst1rst2(ptrst1, ptrst2);
-  Standard_Boolean IsCenter;
+  bool IsCenter;
 
   IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, med);
   if (!IsCenter)
-    return Standard_False;
+    return false;
 
   normmed = med.Magnitude();
   med.Normalize();
@@ -830,7 +830,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
       dmed = d1P1P2CrosNp - med.Dot(d1P1P2CrosNp) * med;
       dmed /= normmed;
       Dist                 = sqrt(Dist);
-      Standard_Real d1Dist = -(0.25 / Dist) * rst1rst2.Dot(d1rst1rst2);
+      double d1Dist = -(0.25 / Dist) * rst1rst2.Dot(d1rst1rst2);
 
       if (choix > 2)
       {
@@ -863,7 +863,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
   Poles2d(Poles2d.Upper()).SetCoord(pt2drst2.X(), pt2drst2.Y());
   if (!istgt)
   {
-    Standard_Real a, b;
+    double a, b;
     surf1->D1(pt2drst1.X(), pt2drst1.Y(), NotUsed, d1urst, d1vrst);
     t3dto2d(a, b, tgrst1, d1urst, d1vrst);
     DPoles2d(Poles2d.Lower()).SetCoord(a, b);
@@ -937,30 +937,30 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&    P,
                         Center,
                         Poles,
                         Weights);
-    return Standard_False;
+    return false;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point&,
-                                                   TColgp_Array1OfPnt&,
-                                                   TColgp_Array1OfVec&,
-                                                   TColgp_Array1OfVec&,
-                                                   TColgp_Array1OfPnt2d&,
-                                                   TColgp_Array1OfVec2d&,
-                                                   TColgp_Array1OfVec2d&,
-                                                   TColStd_Array1OfReal&,
-                                                   TColStd_Array1OfReal&,
-                                                   TColStd_Array1OfReal&)
+bool BRepBlend_RstRstConstRad::Section(const Blend_Point&,
+                                                   NCollection_Array1<gp_Pnt>&,
+                                                   NCollection_Array1<gp_Vec>&,
+                                                   NCollection_Array1<gp_Vec>&,
+                                                   NCollection_Array1<gp_Pnt2d>&,
+                                                   NCollection_Array1<gp_Vec2d>&,
+                                                   NCollection_Array1<gp_Vec2d>&,
+                                                   NCollection_Array1<double>&,
+                                                   NCollection_Array1<double>&,
+                                                   NCollection_Array1<double>&)
 {
-  return Standard_False;
+  return false;
 }
 
-void BRepBlend_RstRstConstRad::Resolution(const Standard_Integer IC2d,
-                                          const Standard_Real    Tol,
-                                          Standard_Real&         TolU,
-                                          Standard_Real&         TolV) const
+void BRepBlend_RstRstConstRad::Resolution(const int IC2d,
+                                          const double    Tol,
+                                          double&         TolU,
+                                          double&         TolV) const
 {
   if (IC2d == 1)
   {

@@ -55,8 +55,8 @@ void Intf_TangentZone::Append(const Intf_SectionPoint& Pi)
 
 void Intf_TangentZone::Append(const Intf_TangentZone& Tzi)
 {
-  Standard_Integer Tzi_NumberOfPoints = Tzi.NumberOfPoints();
-  for (Standard_Integer ipi = 1; ipi <= Tzi_NumberOfPoints; ipi++)
+  int Tzi_NumberOfPoints = Tzi.NumberOfPoints();
+  for (int ipi = 1; ipi <= Tzi_NumberOfPoints; ipi++)
   {
     PolygonInsert(Tzi.GetPoint(ipi));
   }
@@ -67,37 +67,37 @@ void Intf_TangentZone::Append(const Intf_TangentZone& Tzi)
 // purpose  : Insert the section point at his place in the tangent zone.
 //=======================================================================
 
-// Standard_Boolean Intf_TangentZone::Insert (const Intf_SectionPoint& Pi)
-Standard_Boolean Intf_TangentZone::Insert(const Intf_SectionPoint&)
+// bool Intf_TangentZone::Insert (const Intf_SectionPoint& Pi)
+bool Intf_TangentZone::Insert(const Intf_SectionPoint&)
 {
 #if DEBUG_TANGENTZONE
-  std::cout << " Standard_Boolean Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? "
+  std::cout << " bool Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? "
             << std::endl;
 #endif
-  Standard_Boolean Inserted = Standard_False;
+  bool Inserted = false;
   /*
-    Standard_Integer lpon=0;
+    int lpon=0;
 
     if (Result.Length()<1) {
       Append(Pi);
-      Inserted=Standard_True;
+      Inserted=true;
     }
     else if (Result.Length()==1) {
       if (Pi.IsOnSameEdge(Result(1))) {
         InsertAfter(1, Pi);
-        Inserted=Standard_True;
+        Inserted=true;
       }
     }
     else {
-      Standard_Integer lp1, lp2;
-      Standard_Integer nbptz=NumberOfPoints();
+      int lp1, lp2;
+      int nbptz=NumberOfPoints();
       for (lp1=1; lp1<=nbptz; lp1++) {
         lp2=(lp1%nbptz)+1;
         if (Pi.IsOnSameEdge(Result(lp1))) {
       lpon=lp1;
       if (Pi.IsOnSameEdge(Result(lp2))) {
         InsertAfter(lp1, Pi);
-        Inserted=Standard_True;
+        Inserted=true;
         break;
       }
         }
@@ -105,7 +105,7 @@ Standard_Boolean Intf_TangentZone::Insert(const Intf_SectionPoint&)
     }
     if (!Inserted && lpon>0) {
       InsertAfter(lpon, Pi);
-      Inserted=Standard_True;
+      Inserted=true;
     }
   */
   return Inserted;
@@ -118,9 +118,9 @@ Standard_Boolean Intf_TangentZone::Insert(const Intf_SectionPoint&)
 
 void Intf_TangentZone::PolygonInsert(const Intf_SectionPoint& Pi)
 {
-  //  Standard_Boolean  Inserted=Standard_False;
-  Standard_Integer nbpTz = NumberOfPoints();
-  //  Standard_Integer lpi;
+  //  bool  Inserted=false;
+  int nbpTz = NumberOfPoints();
+  //  int lpi;
   if (nbpTz == 0)
   {
     Append(Pi);
@@ -137,18 +137,18 @@ void Intf_TangentZone::PolygonInsert(const Intf_SectionPoint& Pi)
   else
   {
     /*----- Trop Long lbr le 13 mai 97
-        Standard_Real PiParamOnFirst  = Pi.ParamOnFirst();
-        Standard_Real PiParamOnSecond = Pi.ParamOnSecond();
+        double PiParamOnFirst  = Pi.ParamOnFirst();
+        double PiParamOnSecond = Pi.ParamOnSecond();
         for (lpi=1; lpi<=nbpTz; lpi++) {
           const Intf_SectionPoint& Resultlpi = Result(lpi);
           if (PiParamOnFirst<Resultlpi.ParamOnFirst()) {
         InsertBefore(lpi, Pi);
-        Inserted=Standard_True;
+        Inserted=true;
         break;
           }
           else if (PiParamOnFirst==Resultlpi.ParamOnFirst()) {
         if (PiParamOnSecond==Resultlpi.ParamOnSecond()) {
-          Inserted=Standard_True;
+          Inserted=true;
           break;
         }
           }
@@ -165,7 +165,7 @@ void Intf_TangentZone::PolygonInsert(const Intf_SectionPoint& Pi)
 
 //=================================================================================================
 
-void Intf_TangentZone::InsertAfter(const Standard_Integer Index, const Intf_SectionPoint& Pi)
+void Intf_TangentZone::InsertAfter(const int Index, const Intf_SectionPoint& Pi)
 {
   Result.InsertAfter(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
@@ -181,7 +181,7 @@ void Intf_TangentZone::InsertAfter(const Standard_Integer Index, const Intf_Sect
 
 //=================================================================================================
 
-void Intf_TangentZone::InsertBefore(const Standard_Integer Index, const Intf_SectionPoint& Pi)
+void Intf_TangentZone::InsertBefore(const int Index, const Intf_SectionPoint& Pi)
 {
   Result.InsertBefore(Index, Pi);
   if (ParamOnFirstMin > Pi.ParamOnFirst())
@@ -200,7 +200,7 @@ void Intf_TangentZone::InsertBefore(const Standard_Integer Index, const Intf_Sec
 // purpose  : Return the section point of range index in the tangent zone.
 //=======================================================================
 
-const Intf_SectionPoint& Intf_TangentZone::GetPoint(const Standard_Integer Index) const
+const Intf_SectionPoint& Intf_TangentZone::GetPoint(const int Index) const
 {
   return Result(Index);
 }
@@ -210,77 +210,77 @@ const Intf_SectionPoint& Intf_TangentZone::GetPoint(const Standard_Integer Index
 // purpose  : Compare two tangent zone.
 //=======================================================================
 
-Standard_Boolean Intf_TangentZone::IsEqual(const Intf_TangentZone& Other) const
+bool Intf_TangentZone::IsEqual(const Intf_TangentZone& Other) const
 {
   if (Result.Length() != Other.Result.Length())
-    return Standard_False;
-  Standard_Integer i;
+    return false;
+  int i;
   for (i = 1; i <= Result.Length(); i++)
   {
     if (!Result(i).IsEqual(Other.Result(i)))
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Intf_TangentZone::Contains(const Intf_SectionPoint& ThePI) const
+bool Intf_TangentZone::Contains(const Intf_SectionPoint& ThePI) const
 {
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= Result.Length(); i++)
     if (ThePI.IsEqual(Result(i)))
-      return Standard_True;
-  return Standard_False;
+      return true;
+  return false;
 }
 
 //=================================================================================================
 
-void Intf_TangentZone::InfoFirst(Standard_Integer& segMin,
-                                 Standard_Real&    paraMin,
-                                 Standard_Integer& segMax,
-                                 Standard_Real&    paraMax) const
+void Intf_TangentZone::InfoFirst(int& segMin,
+                                 double&    paraMin,
+                                 int& segMax,
+                                 double&    paraMax) const
 {
   ParamOnFirst(paraMin, paraMax);
-  segMin  = (Standard_Integer)(std::trunc(paraMin));
-  paraMin = paraMin - (Standard_Real)segMin;
-  segMax  = (Standard_Integer)(std::trunc(paraMax));
-  paraMax = paraMax - (Standard_Real)segMax;
+  segMin  = (int)(std::trunc(paraMin));
+  paraMin = paraMin - (double)segMin;
+  segMax  = (int)(std::trunc(paraMax));
+  paraMax = paraMax - (double)segMax;
 }
 
 //=================================================================================================
 
-void Intf_TangentZone::InfoSecond(Standard_Integer& segMin,
-                                  Standard_Real&    paraMin,
-                                  Standard_Integer& segMax,
-                                  Standard_Real&    paraMax) const
+void Intf_TangentZone::InfoSecond(int& segMin,
+                                  double&    paraMin,
+                                  int& segMax,
+                                  double&    paraMax) const
 {
   ParamOnSecond(paraMin, paraMax);
-  segMin  = (Standard_Integer)(std::trunc(paraMin));
-  paraMin = paraMin - (Standard_Real)segMin;
-  segMax  = (Standard_Integer)(std::trunc(paraMax));
-  paraMax = paraMax - (Standard_Real)segMax;
+  segMin  = (int)(std::trunc(paraMin));
+  paraMin = paraMin - (double)segMin;
+  segMax  = (int)(std::trunc(paraMax));
+  paraMax = paraMax - (double)segMax;
 }
 
 //=================================================================================================
 
-Standard_Boolean Intf_TangentZone::RangeContains(const Intf_SectionPoint& ThePI) const
+bool Intf_TangentZone::RangeContains(const Intf_SectionPoint& ThePI) const
 {
-  Standard_Real a, b, c, d;
+  double a, b, c, d;
   ParamOnFirst(a, b);
   ParamOnSecond(c, d);
   if (a <= ThePI.ParamOnFirst() && ThePI.ParamOnFirst() <= b && c <= ThePI.ParamOnSecond()
       && ThePI.ParamOnSecond() <= d)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Intf_TangentZone::HasCommonRange(const Intf_TangentZone& Other) const
+bool Intf_TangentZone::HasCommonRange(const Intf_TangentZone& Other) const
 {
-  Standard_Real a1, b1, c1, d1;
-  Standard_Real a2, b2, c2, d2;
+  double a1, b1, c1, d1;
+  double a2, b2, c2, d2;
   ParamOnFirst(a1, b1);
   ParamOnSecond(a2, b2);
   Other.ParamOnFirst(c1, d1);
@@ -288,23 +288,23 @@ Standard_Boolean Intf_TangentZone::HasCommonRange(const Intf_TangentZone& Other)
 
   if (((c1 <= a1 && a1 <= d1) || (c1 <= b1 && b1 <= d1) || (a1 <= c1 && c1 <= b1))
       && ((c2 <= a2 && a2 <= d2) || (c2 <= b2 && b2 <= d2) || (a2 <= c2 && c2 <= b2)))
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-void Intf_TangentZone::Dump(const Standard_Integer /*Indent*/) const
+void Intf_TangentZone::Dump(const int /*Indent*/) const
 {
 #if DEBUG_TANGENTZONE
-  for (Standard_Integer id = 0; id < Indent; id++)
+  for (int id = 0; id < Indent; id++)
     std::cout << " ";
   std::cout << "TZ \n";
   std::cout << "  ParamOnFirstMin Max    : " << ParamOnFirstMin << " " << ParamOnFirstMax
             << std::endl;
   std::cout << "  ParamOnSecondMin Max   : " << ParamOnSecondMin << " " << ParamOnSecondMax
             << std::endl;
-  for (Standard_Integer p = 1; p <= Result.Length(); p++)
+  for (int p = 1; p <= Result.Length(); p++)
   {
     Result(p).Dump(Indent + 2);
   }

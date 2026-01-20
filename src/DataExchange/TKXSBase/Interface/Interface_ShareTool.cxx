@@ -20,28 +20,32 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
-Interface_ShareTool::Interface_ShareTool(const Handle(Interface_InterfaceModel)& amodel,
+Interface_ShareTool::Interface_ShareTool(const occ::handle<Interface_InterfaceModel>& amodel,
                                          const Interface_GeneralLib&             lib)
 {
   theHGraph = new Interface_HGraph(amodel, lib);
 }
 
-Interface_ShareTool::Interface_ShareTool(const Handle(Interface_InterfaceModel)& amodel,
-                                         const Handle(Interface_GTool)&          gtool)
+Interface_ShareTool::Interface_ShareTool(const occ::handle<Interface_InterfaceModel>& amodel,
+                                         const occ::handle<Interface_GTool>&          gtool)
 {
   theHGraph = new Interface_HGraph(amodel, gtool);
 }
 
-Interface_ShareTool::Interface_ShareTool(const Handle(Interface_InterfaceModel)& amodel,
-                                         const Handle(Interface_Protocol)&       protocol)
+Interface_ShareTool::Interface_ShareTool(const occ::handle<Interface_InterfaceModel>& amodel,
+                                         const occ::handle<Interface_Protocol>&       protocol)
 {
   theHGraph = new Interface_HGraph(amodel, protocol);
 }
 
-Interface_ShareTool::Interface_ShareTool(const Handle(Interface_InterfaceModel)& amodel)
+Interface_ShareTool::Interface_ShareTool(const occ::handle<Interface_InterfaceModel>& amodel)
 {
   theHGraph = new Interface_HGraph(amodel);
 }
@@ -51,26 +55,26 @@ Interface_ShareTool::Interface_ShareTool(const Interface_Graph& agraph)
   theHGraph = new Interface_HGraph(agraph.Model());
 }
 
-Interface_ShareTool::Interface_ShareTool(const Handle(Interface_HGraph)& ahgraph)
+Interface_ShareTool::Interface_ShareTool(const occ::handle<Interface_HGraph>& ahgraph)
 {
   theHGraph = ahgraph;
 }
 
 //    Addition of "Implied" on all Entities of the Graph
-/*void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
+/*void Interface_ShareTool::AddImplied (const occ::handle<Interface_GTool>& gtool)
 {
   Interface_Graph& thegraph = theHGraph->CGraph();
-  Standard_Integer nb = thegraph.Size();
-  Standard_Boolean yena = Standard_False;
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-    Handle(Standard_Transient) ent = thegraph.Entity(i);
+  int nb = thegraph.Size();
+  bool yena = false;
+  for (int i = 1; i <= nb; i ++) {
+    occ::handle<Standard_Transient> ent = thegraph.Entity(i);
     if (ent.IsNull()) continue;
-    Handle(Interface_GeneralModule) module;  Standard_Integer CN;
+    occ::handle<Interface_GeneralModule> module;  int CN;
     if (gtool->Select(ent,module,CN)) {
       Interface_EntityIterator iter;
       module->ListImpliedCase(CN,ent,iter);
       if (iter.NbEntities() == 0) continue;
-      yena = Standard_True;
+      yena = true;
       thegraph.SetShare(ent);
       for (iter.Start(); iter.More(); iter.Next())
     thegraph.AddShared(ent,iter.Value());
@@ -79,7 +83,7 @@ Interface_ShareTool::Interface_ShareTool(const Handle(Interface_HGraph)& ahgraph
   if (yena) thegraph.EvalSharings();
 }*/
 
-Handle(Interface_InterfaceModel) Interface_ShareTool::Model() const
+occ::handle<Interface_InterfaceModel> Interface_ShareTool::Model() const
 {
   return theHGraph->Graph().Model();
 }
@@ -94,36 +98,36 @@ Interface_EntityIterator Interface_ShareTool::RootEntities() const
   return theHGraph->Graph().RootEntities();
 }
 
-Standard_Boolean Interface_ShareTool::IsShared(const Handle(Standard_Transient)& ent) const
+bool Interface_ShareTool::IsShared(const occ::handle<Standard_Transient>& ent) const
 {
   const Interface_Graph&               thegraph = theHGraph->Graph();
-  Handle(TColStd_HSequenceOfTransient) list     = thegraph.GetShareds(ent);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list     = thegraph.GetShareds(ent);
   return (!list.IsNull() && list->Length() > 0);
 }
 
-Interface_EntityIterator Interface_ShareTool::Shareds(const Handle(Standard_Transient)& ent) const
+Interface_EntityIterator Interface_ShareTool::Shareds(const occ::handle<Standard_Transient>& ent) const
 {
   return theHGraph->Graph().Shareds(ent);
 }
 
-Interface_EntityIterator Interface_ShareTool::Sharings(const Handle(Standard_Transient)& ent) const
+Interface_EntityIterator Interface_ShareTool::Sharings(const occ::handle<Standard_Transient>& ent) const
 {
   return theHGraph->Graph().Sharings(ent);
 }
 
-Standard_Integer Interface_ShareTool::NbTypedSharings(const Handle(Standard_Transient)& ent,
-                                                      const Handle(Standard_Type)&      atype) const
+int Interface_ShareTool::NbTypedSharings(const occ::handle<Standard_Transient>& ent,
+                                                      const occ::handle<Standard_Type>&      atype) const
 {
   Interface_Graph&                     thegraph = theHGraph->CGraph();
-  Handle(TColStd_HSequenceOfTransient) list     = thegraph.GetSharings(ent);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list     = thegraph.GetSharings(ent);
   if (list.IsNull())
     return 0;
 
-  Standard_Integer result = 0;
-  Standard_Integer n      = list->Length();
-  for (Standard_Integer i = 1; i <= n; i++)
+  int result = 0;
+  int n      = list->Length();
+  for (int i = 1; i <= n; i++)
   {
-    Handle(Standard_Transient) entsh = list->Value(i);
+    occ::handle<Standard_Transient> entsh = list->Value(i);
     if (entsh.IsNull())
       continue;
     if (entsh->IsKind(atype))
@@ -132,20 +136,20 @@ Standard_Integer Interface_ShareTool::NbTypedSharings(const Handle(Standard_Tran
   return result;
 }
 
-Handle(Standard_Transient) Interface_ShareTool::TypedSharing(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Standard_Type)&      atype) const
+occ::handle<Standard_Transient> Interface_ShareTool::TypedSharing(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Standard_Type>&      atype) const
 {
   Interface_Graph&                     thegraph = theHGraph->CGraph();
-  Handle(TColStd_HSequenceOfTransient) list     = thegraph.GetSharings(ent);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list     = thegraph.GetSharings(ent);
   if (list.IsNull())
     return 0;
-  Handle(Standard_Transient) entresult;
-  Standard_Integer           result = 0;
-  Standard_Integer           n      = list->Length();
-  for (Standard_Integer i = 1; i <= n; i++)
+  occ::handle<Standard_Transient> entresult;
+  int           result = 0;
+  int           n      = list->Length();
+  for (int i = 1; i <= n; i++)
   {
-    Handle(Standard_Transient) entsh = list->Value(i);
+    occ::handle<Standard_Transient> entsh = list->Value(i);
     if (entsh.IsNull())
       continue;
     if (entsh->IsKind(atype))
@@ -161,13 +165,13 @@ Handle(Standard_Transient) Interface_ShareTool::TypedSharing(
   return entresult;
 }
 
-Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transient)& ent,
-                                                  const Standard_Boolean            rootlast) const
+Interface_EntityIterator Interface_ShareTool::All(const occ::handle<Standard_Transient>& ent,
+                                                  const bool            rootlast) const
 {
-  Handle(Interface_InterfaceModel) model = Model();
+  occ::handle<Interface_InterfaceModel> model = Model();
   Interface_EntityIterator         list;
-  Standard_Integer                 i, n0 = 0, nb = model->NbEntities();
-  Handle(TColStd_HArray1OfInteger) fl = new TColStd_HArray1OfInteger(0, nb);
+  int                 i, n0 = 0, nb = model->NbEntities();
+  occ::handle<NCollection_HArray1<int>> fl = new NCollection_HArray1<int>(0, nb);
   fl->Init(0);
   if (ent == model)
   {
@@ -178,7 +182,7 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
       Interface_EntityIterator subl = All(roots.Value(), rootlast);
       for (subl.Start(); subl.More(); subl.Next())
       {
-        Standard_Integer nm = model->Number(subl.Value());
+        int nm = model->Number(subl.Value());
         if (fl->Value(nm) > 0)
           continue;
         n0++;
@@ -195,13 +199,13 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
   }
   else
   {
-    Handle(TColStd_HSequenceOfTransient) sq = new TColStd_HSequenceOfTransient();
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> sq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
     sq->Append(ent);
     //    file type process
     for (i = 1; i <= sq->Length(); i++)
     { // Length croit
-      Handle(Standard_Transient) en  = sq->Value(i);
-      Standard_Integer           num = model->Number(en);
+      occ::handle<Standard_Transient> en  = sq->Value(i);
+      int           num = model->Number(en);
       if (fl->Value(num) != 0)
         continue; // already seen
       n0++;
@@ -211,7 +215,7 @@ Interface_EntityIterator Interface_ShareTool::All(const Handle(Standard_Transien
     }
   }
   //    Remains to constitute the list, return if necessary
-  Handle(TColStd_HArray1OfInteger) ord = new TColStd_HArray1OfInteger(0, nb);
+  occ::handle<NCollection_HArray1<int>> ord = new NCollection_HArray1<int>(0, nb);
   ord->Init(0);
   for (i = 1; i <= nb; i++)
   {
@@ -239,7 +243,7 @@ void Interface_ShareTool::Print(const Interface_EntityIterator& iter, Standard_O
   S << " Nb.Entities : " << iter.NbEntities() << " : ";
   for (iter.Start(); iter.More(); iter.Next())
   {
-    const Handle(Standard_Transient)& ent = iter.Value();
+    const occ::handle<Standard_Transient>& ent = iter.Value();
     S << " n0/id:";
     Model()->Print(ent, S);
   }

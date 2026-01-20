@@ -18,7 +18,7 @@
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for line grid points.
 //!
@@ -36,7 +36,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theLine the line geometry to evaluate
-  GeomGridEval_Line(const Handle(Geom_Line)& theLine)
+  GeomGridEval_Line(const occ::handle<Geom_Line>& theLine)
       : myGeom(theLine)
   {
   }
@@ -48,13 +48,13 @@ public:
   GeomGridEval_Line& operator=(GeomGridEval_Line&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_Line)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_Line>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! @param theParams array of parameter values
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters
-  NCollection_Array1<gp_Pnt> EvaluateGrid(const TColStd_Array1OfReal& theParams) const
+  NCollection_Array1<gp_Pnt> EvaluateGrid(const NCollection_Array1<double>& theParams) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty())
     {
@@ -91,7 +91,7 @@ public:
   //! @return array of CurveD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theParams) const
+    const NCollection_Array1<double>& theParams) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty())
     {
@@ -130,7 +130,7 @@ public:
   //! @return array of CurveD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theParams) const
+    const NCollection_Array1<double>& theParams) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty())
     {
@@ -169,7 +169,7 @@ public:
   //! @return array of CurveD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theParams) const
+    const NCollection_Array1<double>& theParams) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty())
     {
@@ -208,7 +208,7 @@ public:
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing),
   //!         or empty array if geometry is null or no parameters
-  NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams, int theN) const
+  NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams, int theN) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
     {
@@ -240,7 +240,7 @@ public:
   }
 
 private:
-  Handle(Geom_Line) myGeom;
+  occ::handle<Geom_Line> myGeom;
 };
 
 #endif // _GeomGridEval_Line_HeaderFile

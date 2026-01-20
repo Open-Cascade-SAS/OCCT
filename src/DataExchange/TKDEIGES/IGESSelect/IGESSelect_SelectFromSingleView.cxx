@@ -15,7 +15,7 @@
 #include <IGESSelect_SelectFromSingleView.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -29,15 +29,15 @@ Interface_EntityIterator IGESSelect_SelectFromSingleView::RootResult(const Inter
   Interface_EntityIterator views = InputResult(G);
   if (views.NbEntities() == 0)
     return list;
-  Standard_Integer nb = G.Size();
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int nb = G.Size();
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
   {
     //    if (!G.IsPresent(i)) continue;
     DeclareAndCast(IGESData_IGESEntity, igesent, G.Entity(i));
     if (igesent.IsNull())
       continue;
-    Standard_Integer nv = G.EntityNumber(igesent->View());
+    int nv = G.EntityNumber(igesent->View());
     if (nv > 0 && nv <= nb)
       list.GetOneItem(igesent);
   }

@@ -18,36 +18,36 @@
 
 #include <Standard_Type.hxx>
 
-IGESBasic_HArray1OfHArray1OfXY::IGESBasic_HArray1OfHArray1OfXY(const Standard_Integer low,
-                                                               const Standard_Integer up)
+IGESBasic_HArray1OfHArray1OfXY::IGESBasic_HArray1OfHArray1OfXY(const int low,
+                                                               const int up)
     : thelist(low, up)
 {
-  Handle(Standard_Transient) nulo;
+  occ::handle<Standard_Transient> nulo;
   thelist.Init(nulo);
 }
 
-Standard_Integer IGESBasic_HArray1OfHArray1OfXY::Lower() const
+int IGESBasic_HArray1OfHArray1OfXY::Lower() const
 {
   return thelist.Lower();
 }
 
-Standard_Integer IGESBasic_HArray1OfHArray1OfXY::Upper() const
+int IGESBasic_HArray1OfHArray1OfXY::Upper() const
 {
   return thelist.Upper();
 }
 
-Standard_Integer IGESBasic_HArray1OfHArray1OfXY::Length() const
+int IGESBasic_HArray1OfHArray1OfXY::Length() const
 {
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfXY::SetValue(const Standard_Integer            num,
-                                              const Handle(TColgp_HArray1OfXY)& val)
+void IGESBasic_HArray1OfHArray1OfXY::SetValue(const int            num,
+                                              const occ::handle<NCollection_HArray1<gp_XY>>& val)
 {
   thelist.SetValue(num, val);
 }
 
-Handle(TColgp_HArray1OfXY) IGESBasic_HArray1OfHArray1OfXY::Value(const Standard_Integer num) const
+occ::handle<NCollection_HArray1<gp_XY>> IGESBasic_HArray1OfHArray1OfXY::Value(const int num) const
 {
-  return Handle(TColgp_HArray1OfXY)::DownCast(thelist.Value(num));
+  return occ::down_cast<NCollection_HArray1<gp_XY>>(thelist.Value(num));
 }

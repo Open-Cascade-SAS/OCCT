@@ -23,9 +23,6 @@
 #include <ChFiDS_ChamfMethod.hxx>
 #include <ChFiDS_Spine.hxx>
 
-class ChFiDS_ChamfSpine;
-DEFINE_STANDARD_HANDLE(ChFiDS_ChamfSpine, ChFiDS_Spine)
-
 //! Provides data specific to chamfers
 //! distances on each of faces.
 class ChFiDS_ChamfSpine : public ChFiDS_Spine
@@ -34,19 +31,19 @@ class ChFiDS_ChamfSpine : public ChFiDS_Spine
 public:
   Standard_EXPORT ChFiDS_ChamfSpine();
 
-  Standard_EXPORT ChFiDS_ChamfSpine(const Standard_Real Tol);
+  Standard_EXPORT ChFiDS_ChamfSpine(const double Tol);
 
-  Standard_EXPORT void SetDist(const Standard_Real Dis);
+  Standard_EXPORT void SetDist(const double Dis);
 
-  Standard_EXPORT void GetDist(Standard_Real& Dis) const;
+  Standard_EXPORT void GetDist(double& Dis) const;
 
-  Standard_EXPORT void SetDists(const Standard_Real Dis1, const Standard_Real Dis2);
+  Standard_EXPORT void SetDists(const double Dis1, const double Dis2);
 
-  Standard_EXPORT void Dists(Standard_Real& Dis1, Standard_Real& Dis2) const;
+  Standard_EXPORT void Dists(double& Dis1, double& Dis2) const;
 
-  Standard_EXPORT void GetDistAngle(Standard_Real& Dis, Standard_Real& Angle) const;
+  Standard_EXPORT void GetDistAngle(double& Dis, double& Angle) const;
 
-  Standard_EXPORT void SetDistAngle(const Standard_Real Dis, const Standard_Real Angle);
+  Standard_EXPORT void SetDistAngle(const double Dis, const double Angle);
 
   Standard_EXPORT void SetMode(const ChFiDS_ChamfMode theMode);
 
@@ -58,12 +55,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(ChFiDS_ChamfSpine, ChFiDS_Spine)
 
-protected:
 private:
-  Standard_Real d1;
-  Standard_Real d2;
-  // Standard_Boolean dison1;
-  Standard_Real      angle;
+  double d1;
+  double d2;
+  // bool dison1;
+  double      angle;
   ChFiDS_ChamfMethod mChamf;
 };
 

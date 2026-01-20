@@ -54,15 +54,15 @@
 Interface_FileReaderTool::Interface_FileReaderTool()
 {
   themessenger = Message::DefaultMessenger();
-  theerrhand   = Standard_True;
+  theerrhand   = true;
   thetrace     = 0;
   thenbrep0 = thenbreps = 0;
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::SetData(const Handle(Interface_FileReaderData)& reader,
-                                       const Handle(Interface_Protocol)&       protocol)
+void Interface_FileReaderTool::SetData(const occ::handle<Interface_FileReaderData>& reader,
+                                       const occ::handle<Interface_Protocol>&       protocol)
 {
   thereader = reader;
   theproto  = protocol;
@@ -70,35 +70,35 @@ void Interface_FileReaderTool::SetData(const Handle(Interface_FileReaderData)& r
 
 //=================================================================================================
 
-Handle(Interface_Protocol) Interface_FileReaderTool::Protocol() const
+occ::handle<Interface_Protocol> Interface_FileReaderTool::Protocol() const
 {
   return theproto;
 }
 
 //=================================================================================================
 
-Handle(Interface_FileReaderData) Interface_FileReaderTool::Data() const
+occ::handle<Interface_FileReaderData> Interface_FileReaderTool::Data() const
 {
   return thereader;
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::SetModel(const Handle(Interface_InterfaceModel)& amodel)
+void Interface_FileReaderTool::SetModel(const occ::handle<Interface_InterfaceModel>& amodel)
 {
   themodel = amodel;
 }
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) Interface_FileReaderTool::Model() const
+occ::handle<Interface_InterfaceModel> Interface_FileReaderTool::Model() const
 {
   return themodel;
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::SetMessenger(const Handle(Message_Messenger)& messenger)
+void Interface_FileReaderTool::SetMessenger(const occ::handle<Message_Messenger>& messenger)
 {
   if (messenger.IsNull())
     themessenger = Message::DefaultMessenger();
@@ -108,35 +108,35 @@ void Interface_FileReaderTool::SetMessenger(const Handle(Message_Messenger)& mes
 
 //=================================================================================================
 
-Handle(Message_Messenger) Interface_FileReaderTool::Messenger() const
+occ::handle<Message_Messenger> Interface_FileReaderTool::Messenger() const
 {
   return themessenger;
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::SetTraceLevel(const Standard_Integer tracelev)
+void Interface_FileReaderTool::SetTraceLevel(const int tracelev)
 {
   thetrace = tracelev;
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_FileReaderTool::TraceLevel() const
+int Interface_FileReaderTool::TraceLevel() const
 {
   return thetrace;
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::SetErrorHandle(const Standard_Boolean err)
+void Interface_FileReaderTool::SetErrorHandle(const bool err)
 {
   theerrhand = err;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_FileReaderTool::ErrorHandle() const
+bool Interface_FileReaderTool::ErrorHandle() const
 {
   return theerrhand;
 }
@@ -153,19 +153,19 @@ Standard_Boolean Interface_FileReaderTool::ErrorHandle() const
 
 void Interface_FileReaderTool::SetEntities()
 {
-  Standard_Integer num;
+  int num;
   thenbreps = 0;
   thenbrep0 = 0;
 
   for (num = thereader->FindNextRecord(0); num > 0; num = thereader->FindNextRecord(num))
   {
-    Handle(Standard_Transient) newent;
-    Handle(Interface_Check)    ach = new Interface_Check;
+    occ::handle<Standard_Transient> newent;
+    occ::handle<Interface_Check>    ach = new Interface_Check;
     if (!Recognize(num, ach, newent))
     {
       newent = UnknownEntity();
       if (thereports.IsNull())
-        thereports = new TColStd_HArray1OfTransient(1, thereader->NbRecords());
+        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -173,7 +173,7 @@ void Interface_FileReaderTool::SetEntities()
     else if ((ach->NbFails() + ach->NbWarnings() > 0) && !newent.IsNull())
     {
       if (thereports.IsNull())
-        thereports = new TColStd_HArray1OfTransient(1, thereader->NbRecords());
+        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -184,16 +184,16 @@ void Interface_FileReaderTool::SetEntities()
 
 //=================================================================================================
 
-Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer      num,
+bool Interface_FileReaderTool::RecognizeByLib(const int      num,
                                                           Interface_GeneralLib&       glib,
                                                           Interface_ReaderLib&        rlib,
-                                                          Handle(Interface_Check)&    ach,
-                                                          Handle(Standard_Transient)& ent) const
+                                                          occ::handle<Interface_Check>&    ach,
+                                                          occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Interface_GeneralModule) gmod;
-  Handle(Interface_ReaderModule)  rmod;
-  Handle(Interface_Protocol)      proto;
-  Standard_Integer                CN = 0;
+  occ::handle<Interface_GeneralModule> gmod;
+  occ::handle<Interface_ReaderModule>  rmod;
+  occ::handle<Interface_Protocol>      proto;
+  int                CN = 0;
   //   Search in ReaderLib : Case recognition -> CN , proto
   for (rlib.Start(); rlib.More(); rlib.Next())
   {
@@ -208,9 +208,9 @@ Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer
     }
   }
   if (CN <= 0 || proto.IsNull())
-    return Standard_False;
+    return false;
   //   Recalibrate in GeneralLib : Creation of empty entity
-  Handle(Standard_Type) typrot = proto->DynamicType();
+  occ::handle<Standard_Type> typrot = proto->DynamicType();
   for (glib.Start(); glib.More(); glib.Next())
   {
     proto = glib.Protocol();
@@ -218,40 +218,40 @@ Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer
       continue;
     if (proto->DynamicType() != typrot)
       continue;
-    Standard_Boolean res = glib.Module()->NewVoid(CN, ent);
+    bool res = glib.Module()->NewVoid(CN, ent);
     if (res)
       return res;
     if (!rmod.IsNull())
       return rmod->NewRead(CN, thereader, num, ach, ent);
     //    return res;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) Interface_FileReaderTool::UnknownEntity() const
+occ::handle<Standard_Transient> Interface_FileReaderTool::UnknownEntity() const
 {
   return theproto->UnknownEntity();
 }
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) Interface_FileReaderTool::NewModel() const
+occ::handle<Interface_InterfaceModel> Interface_FileReaderTool::NewModel() const
 {
   return theproto->NewModel();
 }
 
 //=================================================================================================
 
-void Interface_FileReaderTool::EndRead(const Handle(Interface_InterfaceModel)&) {
+void Interface_FileReaderTool::EndRead(const occ::handle<Interface_InterfaceModel>&) {
 } // by default, does nothing; redefinable as needed
 
 //  ....               (Sa Majeste le) CHARGEMENT DU MODELE               ....
 
 //=================================================================================================
 
-void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)& amodel)
+void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceModel>& amodel)
 //
 //   General method for reading a file : it is read via a FileReaderData
 //   which must provide access in the most efficient way possible
@@ -260,9 +260,9 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
   // MGE 16/06/98
   // Building of Messages
   //====================================
-  Handle(Message_Messenger) TF = Messenger();
+  occ::handle<Message_Messenger> TF = Messenger();
   //====================================
-  Handle(Interface_Check) ach = new Interface_Check;
+  occ::handle<Interface_Check> ach = new Interface_Check;
 
   SetModel(amodel);
 
@@ -291,13 +291,13 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
 
   amodel->Reservate(thereader->NbEntities());
 
-  Standard_Integer num, num0 = thereader->FindNextRecord(0);
+  int num, num0 = thereader->FindNextRecord(0);
   num = num0;
 
   while (num > 0)
   {
-    Standard_Integer           ierr = 0; // error on analysis of an entity
-    Handle(Standard_Transient) anent;
+    int           ierr = 0; // error on analysis of an entity
+    occ::handle<Standard_Transient> anent;
     try
     {
       OCC_CATCH_SIGNALS
@@ -365,7 +365,7 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
           continue;
         }
       }
-      /*Handle(Interface_Check)*/ ach = new Interface_Check(anent);
+      /*occ::handle<Interface_Check>*/ ach = new Interface_Check(anent);
       //: abv 03 Apr 00: trj3_s1-tc-214.stp: generate a message on exception
       Message_Msg Msg278("XSTEP_278");
       Msg278.Arg(amodel->StringLabel(anent));
@@ -401,13 +401,13 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
 
         //  Finally, we load an Unknown Entity
         thenbreps++;
-        Handle(Interface_ReportEntity) rep   = new Interface_ReportEntity(ach, anent);
-        Handle(Standard_Transient)     undef = UnknownEntity();
+        occ::handle<Interface_ReportEntity> rep   = new Interface_ReportEntity(ach, anent);
+        occ::handle<Standard_Transient>     undef = UnknownEntity();
         AnalyseRecord(num, undef, ach);
         rep->SetContent(undef);
 
         if (thereports.IsNull())
-          thereports = new TColStd_HArray1OfTransient(1, thereader->NbRecords());
+          thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
         thenbreps++;
         thereports->SetValue(num, rep);
         // if(isValid)
@@ -447,13 +447,13 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
     }
     amodel->Reservate(-thenbreps - 10);
     thenbreps = thereports->Upper();
-    for (Standard_Integer nr = 1; nr <= thenbreps; nr++)
+    for (int nr = 1; nr <= thenbreps; nr++)
     {
       if (thereports->Value(nr).IsNull())
         continue;
-      Handle(Standard_Transient)     anent = thereader->BoundEntity(nr);
-      Handle(Interface_ReportEntity) rep =
-        Handle(Interface_ReportEntity)::DownCast(thereports->Value(nr));
+      occ::handle<Standard_Transient>     anent = thereader->BoundEntity(nr);
+      occ::handle<Interface_ReportEntity> rep =
+        occ::down_cast<Interface_ReportEntity>(thereports->Value(nr));
       amodel->SetReportEntity(-amodel->Number(anent), rep);
     }
   }
@@ -482,16 +482,16 @@ void Interface_FileReaderTool::LoadModel(const Handle(Interface_InterfaceModel)&
 
 //=================================================================================================
 
-Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard_Integer num)
+occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int num)
 {
-  Handle(Standard_Transient)     anent = thereader->BoundEntity(num);
-  Handle(Interface_Check)        ach   = new Interface_Check(anent);
-  Handle(Interface_ReportEntity) rep; // entite Report, s il y a lieu
-  Standard_Integer               irep = 0;
-  // Standard_Integer nbe  = 0; svv #2
+  occ::handle<Standard_Transient>     anent = thereader->BoundEntity(num);
+  occ::handle<Interface_Check>        ach   = new Interface_Check(anent);
+  occ::handle<Interface_ReportEntity> rep; // entite Report, s il y a lieu
+  int               irep = 0;
+  // int nbe  = 0; svv #2
   if (thenbrep0 > 0)
   {
-    rep = Handle(Interface_ReportEntity)::DownCast(thereports->Value(num));
+    rep = occ::down_cast<Interface_ReportEntity>(thereports->Value(num));
     if (!rep.IsNull())
     {
       irep = num;
@@ -502,7 +502,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
   //    Trace Unknown Entity
   if (thetrace >= 2 && theproto->IsUnknownEntity(anent))
   {
-    Handle(Message_Messenger) TF = Messenger();
+    occ::handle<Message_Messenger> TF = Messenger();
     if (!TF.IsNull())
     {
       Message_Msg Msg22("XSTEP_22");
@@ -524,17 +524,17 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
   //   We exploit here the IsLoadError flag: if it has been defined (true or false)
   //   it has priority over check fails. Otherwise, it's the fails that speak
 
-  Standard_Integer nbf = ach->NbFails();
-  Standard_Integer nbw = ach->NbWarnings();
+  int nbf = ach->NbFails();
+  int nbw = ach->NbWarnings();
   if (nbf + nbw > 0)
   {
-    // Standard_Integer n0; svv #2
+    // int n0; svv #2
     themodel->NbEntities();
     rep = new Interface_ReportEntity(ach, anent);
     if (irep == 0)
     {
       if (thereports.IsNull())
-        thereports = new TColStd_HArray1OfTransient(1, thereader->NbRecords());
+        thereports = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
       irep = num;
       thenbreps++;
     }
@@ -552,7 +552,7 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity(const Standard
     nbf = (thereader->ResetErrorLoad() ? 1 : 0);
   if (nbf > 0)
   {
-    Handle(Standard_Transient) undef = UnknownEntity();
+    occ::handle<Standard_Transient> undef = UnknownEntity();
     AnalyseRecord(num, undef, ach);
     rep->SetContent(undef);
   }

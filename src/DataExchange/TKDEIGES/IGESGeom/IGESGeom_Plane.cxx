@@ -26,13 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Plane, IGESData_IGESEntity)
 
 IGESGeom_Plane::IGESGeom_Plane() {}
 
-void IGESGeom_Plane::Init(const Standard_Real                A,
-                          const Standard_Real                B,
-                          const Standard_Real                C,
-                          const Standard_Real                D,
-                          const Handle(IGESData_IGESEntity)& aCurve,
+void IGESGeom_Plane::Init(const double                A,
+                          const double                B,
+                          const double                C,
+                          const double                D,
+                          const occ::handle<IGESData_IGESEntity>& aCurve,
                           const gp_XYZ&                      attach,
-                          const Standard_Real                aSize)
+                          const double                aSize)
 {
   theA      = A;
   theB      = B;
@@ -45,9 +45,9 @@ void IGESGeom_Plane::Init(const Standard_Real                A,
   // FormNumber : 0 No Curve. +1 Bound. -1 Hole
 }
 
-void IGESGeom_Plane::SetFormNumber(const Standard_Integer form)
+void IGESGeom_Plane::SetFormNumber(const int form)
 {
-  Standard_Integer fn = 0;
+  int fn = 0;
   if (form < 0)
     fn = -1;
   if (form > 0)
@@ -55,10 +55,10 @@ void IGESGeom_Plane::SetFormNumber(const Standard_Integer form)
   InitTypeAndForm(108, fn);
 }
 
-void IGESGeom_Plane::Equation(Standard_Real& A,
-                              Standard_Real& B,
-                              Standard_Real& C,
-                              Standard_Real& D) const
+void IGESGeom_Plane::Equation(double& A,
+                              double& B,
+                              double& C,
+                              double& D) const
 {
   A = theA;
   B = theB;
@@ -66,22 +66,22 @@ void IGESGeom_Plane::Equation(Standard_Real& A,
   D = theD;
 }
 
-Standard_Boolean IGESGeom_Plane::HasBoundingCurve() const
+bool IGESGeom_Plane::HasBoundingCurve() const
 {
   return (!theCurve.IsNull());
 }
 
-Standard_Boolean IGESGeom_Plane::HasBoundingCurveHole() const
+bool IGESGeom_Plane::HasBoundingCurveHole() const
 {
   return ((FormNumber() == -1) && (!theCurve.IsNull()));
 }
 
-Handle(IGESData_IGESEntity) IGESGeom_Plane::BoundingCurve() const
+occ::handle<IGESData_IGESEntity> IGESGeom_Plane::BoundingCurve() const
 {
   return theCurve;
 }
 
-Standard_Boolean IGESGeom_Plane::HasSymbolAttach() const
+bool IGESGeom_Plane::HasSymbolAttach() const
 {
   return (theSize > 0);
 }
@@ -104,19 +104,19 @@ gp_Pnt IGESGeom_Plane::TransformedSymbolAttach() const
     return gp_Pnt(0, 0, 0);
 }
 
-Standard_Real IGESGeom_Plane::SymbolSize() const
+double IGESGeom_Plane::SymbolSize() const
 {
   return theSize;
 }
 
-void IGESGeom_Plane::TransformedEquation(Standard_Real& A,
-                                         Standard_Real& B,
-                                         Standard_Real& C,
-                                         Standard_Real& D) const
+void IGESGeom_Plane::TransformedEquation(double& A,
+                                         double& B,
+                                         double& C,
+                                         double& D) const
 {
   // eqn of plane AX + BY + CZ = D
 
-  Standard_Real x1, y1, z1, x2, y2, z2, x3, y3, z3;
+  double x1, y1, z1, x2, y2, z2, x3, y3, z3;
 
   // case 1 intersection of the plane with the XY plane.
   x1 = 0.0;
@@ -163,7 +163,7 @@ void IGESGeom_Plane::TransformedEquation(Standard_Real& A,
     hence c1(x - x2) + c2(y - y2) + c3(z - z2) = 0
 
   */
-  Standard_Real c1, c2, c3;
+  double c1, c2, c3;
 
   c1 = (y1 * (-z3 + z2) + y2 * (-z1 + z3) + y3 * (z1 - z2));
   c2 = (x1 * (z3 - z2) + x2 * (-z3 + z1) + x3 * (-z1 + z2));

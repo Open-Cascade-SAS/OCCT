@@ -31,12 +31,18 @@
 #include <ChFi3d_ChBuilder.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_CircSection.hxx>
-#include <ChFiDS_HData.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_ListIteratorOfRegularities.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
-#include <ChFiDS_SecHArray1.hxx>
+#include <NCollection_List.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <NCollection_List.hxx>
+#include <ChFiDS_Regul.hxx>
+#include <ChFiDS_CircSection.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -54,7 +60,7 @@
 #include <memory>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean ChFi3d_GettraceCHRON();
+extern bool ChFi3d_GettraceCHRON();
 #endif
 
 //=======================================================================
@@ -69,7 +75,7 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
                        TopoDS_Face&       F2)
 {
   TopoDS_Face                        Fc;
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
 
   F1.Nullify();
   F2.Nullify();
@@ -97,20 +103,20 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
 //           isfirst(i) = False if Spine(i) is oriented to V (i = 1,2)
 //=======================================================================
 
-void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
-                             Handle(ChFiDS_Spine)&  Spine2,
+void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>&  Spine1,
+                             occ::handle<ChFiDS_Spine>&  Spine2,
                              const TopoDS_Vertex&   V,
-                             const Standard_Real    dis1,
-                             const Standard_Real    dis2,
-                             const Standard_Boolean isfirst1,
-                             const Standard_Boolean isfirst2)
+                             const double    dis1,
+                             const double    dis2,
+                             const bool isfirst1,
+                             const bool isfirst2)
 {
-  Standard_Real tolesp = 1.e-7;
+  double tolesp = 1.e-7;
 
   // alpha, the opening angle between two
   // tangents of two guidelines in V is found
-  Standard_Real tga1, tga2;
-  Standard_Real d1plus = 0., d2plus = 0.;
+  double tga1, tga2;
+  double d1plus = 0., d2plus = 0.;
 
   gp_Pnt tmp;
   gp_Vec tg1, tg2;
@@ -123,12 +129,12 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
   if (isfirst2)
     tg2.Reverse();
 
-  Standard_Real cosalpha, sinalpha;
+  double cosalpha, sinalpha;
   cosalpha = tg1.Dot(tg2);
   sinalpha = sqrt(1 - cosalpha * cosalpha);
 
   // a1+a2 = alpha
-  Standard_Real temp;
+  double temp;
   temp = cosalpha + dis2 / dis1;
   if (std::abs(temp) > tolesp)
   {
@@ -153,7 +159,7 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
     }
     else
     {
-      Standard_Real param = Spine1->LastParameter(Spine1->NbEdges());
+      double param = Spine1->LastParameter(Spine1->NbEdges());
       Spine1->SetLastParameter(d1plus + param);
       Spine1->SetLastTgt(param);
     }
@@ -168,7 +174,7 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
     }
     else
     {
-      Standard_Real param = Spine2->LastParameter(Spine2->NbEdges());
+      double param = Spine2->LastParameter(Spine2->NbEdges());
       Spine2->SetLastParameter(d2plus + param);
       Spine2->SetLastTgt(param);
     }
@@ -177,7 +183,7 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
 
 //=================================================================================================
 
-ChFi3d_ChBuilder::ChFi3d_ChBuilder(const TopoDS_Shape& S, const Standard_Real Ta)
+ChFi3d_ChBuilder::ChFi3d_ChBuilder(const TopoDS_Shape& S, const double Ta)
     : ChFi3d_Builder(S, Ta)
 {
   myMode = ChFiDS_ClassicChamfer;
@@ -195,10 +201,10 @@ void ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
 
   if (!Contains(E) && myEFMap.Contains(E))
   {
-    Handle(ChFiDS_Stripe) Stripe    = new ChFiDS_Stripe();
-    Handle(ChFiDS_Spine)& Sp        = Stripe->ChangeSpine();
+    occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
+    occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
     Sp                              = new ChFiDS_ChamfSpine(tolesp);
-    Handle(ChFiDS_ChamfSpine) Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
@@ -220,7 +226,7 @@ void ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
 //
 //=======================================================================
 
-void ChFi3d_ChBuilder::Add(const Standard_Real Dis, const TopoDS_Edge& E)
+void ChFi3d_ChBuilder::Add(const double Dis, const TopoDS_Edge& E)
 {
   if (!Contains(E) && myEFMap.Contains(E))
   {
@@ -230,10 +236,10 @@ void ChFi3d_ChBuilder::Add(const Standard_Real Dis, const TopoDS_Edge& E)
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
 
-    Handle(ChFiDS_Stripe) Stripe    = new ChFiDS_Stripe();
-    Handle(ChFiDS_Spine)& Sp        = Stripe->ChangeSpine();
+    occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
+    occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
     Sp                              = new ChFiDS_ChamfSpine(tolesp);
-    Handle(ChFiDS_ChamfSpine) Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetMode(myMode);
 
@@ -256,22 +262,22 @@ void ChFi3d_ChBuilder::Add(const Standard_Real Dis, const TopoDS_Edge& E)
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDist(const Standard_Real    Dis,
-                               const Standard_Integer IC,
+void ChFi3d_ChBuilder::SetDist(const double    Dis,
+                               const int IC,
                                const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
   {
-    Handle(ChFiDS_ChamfSpine) csp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+    occ::handle<ChFiDS_ChamfSpine> csp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
     // Search the first edge which has a common face equal to F
     TopoDS_Face F1, F2, FirstF1, FirstF2;
     // TopAbs_Orientation Or1,Or2;
-    // Standard_Integer Choix, ChoixConge;
+    // int Choix, ChoixConge;
     BRepAdaptor_Surface Sb1, Sb2;
-    Standard_Integer    i     = 1;
-    Standard_Boolean    Found = Standard_False;
+    int    i     = 1;
+    bool    Found = false;
     while ((i <= csp->NbEdges()) && (!Found))
     {
       SearchCommonFaces(myEFMap, csp->Edges(i), F1, F2);
@@ -300,9 +306,9 @@ void ChFi3d_ChBuilder::SetDist(const Standard_Real    Dis,
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::GetDist(const Standard_Integer IC, Standard_Real& Dis) const
+void ChFi3d_ChBuilder::GetDist(const int IC, double& Dis) const
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
   chsp->GetDist(Dis);
 }
 
@@ -314,8 +320,8 @@ void ChFi3d_ChBuilder::GetDist(const Standard_Integer IC, Standard_Real& Dis) co
 //
 //=======================================================================
 
-void ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
-                           const Standard_Real Dis2,
+void ChFi3d_ChBuilder::Add(const double Dis1,
+                           const double Dis2,
                            const TopoDS_Edge&  E,
                            const TopoDS_Face&  F)
 {
@@ -325,13 +331,13 @@ void ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
 
-    Handle(ChFiDS_Stripe) Stripe    = new ChFiDS_Stripe();
-    Handle(ChFiDS_Spine)& Sp        = Stripe->ChangeSpine();
+    occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
+    occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
     Sp                              = new ChFiDS_ChamfSpine(tolesp);
-    Handle(ChFiDS_ChamfSpine) Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetMode(myMode);
-    Standard_Real Offset = -1;
+    double Offset = -1;
     if (myMode == ChFiDS_ConstThroatWithPenetrationChamfer)
     {
       Offset = std::min(Dis1, Dis2);
@@ -356,23 +362,23 @@ void ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDists(const Standard_Real    Dis1,
-                                const Standard_Real    Dis2,
-                                const Standard_Integer IC,
+void ChFi3d_ChBuilder::SetDists(const double    Dis1,
+                                const double    Dis2,
+                                const int IC,
                                 const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
   {
-    Handle(ChFiDS_ChamfSpine) csp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+    occ::handle<ChFiDS_ChamfSpine> csp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
     // Search the first edge which has a common face equal to F
     TopoDS_Face         F1, F2, FirstF1, FirstF2;
     TopAbs_Orientation  Or1, Or2;
-    Standard_Integer    Choix, ChoixConge;
+    int    Choix, ChoixConge;
     BRepAdaptor_Surface Sb1, Sb2;
-    Standard_Integer    i     = 1;
-    Standard_Boolean    Found = Standard_False;
+    int    i     = 1;
+    bool    Found = false;
     while ((i <= csp->NbEdges()) && (!Found))
     {
       SearchCommonFaces(myEFMap, csp->Edges(i), F1, F2);
@@ -410,12 +416,12 @@ void ChFi3d_ChBuilder::SetDists(const Standard_Real    Dis1,
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::Dists(const Standard_Integer IC,
-                             Standard_Real&         dis1,
-                             Standard_Real&         dis2) const
+void ChFi3d_ChBuilder::Dists(const int IC,
+                             double&         dis1,
+                             double&         dis2) const
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
-  Standard_Real             temp1, temp2;
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
+  double             temp1, temp2;
   chsp->Dists(temp1, temp2);
   dis1 = temp1;
   dis2 = temp2;
@@ -429,8 +435,8 @@ void ChFi3d_ChBuilder::Dists(const Standard_Integer IC,
 //
 //=======================================================================
 
-void ChFi3d_ChBuilder::AddDA(const Standard_Real Dis1,
-                             const Standard_Real Angle,
+void ChFi3d_ChBuilder::AddDA(const double Dis1,
+                             const double Angle,
                              const TopoDS_Edge&  E,
                              const TopoDS_Face&  F)
 {
@@ -440,10 +446,10 @@ void ChFi3d_ChBuilder::AddDA(const Standard_Real Dis1,
     TopoDS_Edge E_wnt = E;
     E_wnt.Orientation(TopAbs_FORWARD);
 
-    Handle(ChFiDS_Stripe) Stripe    = new ChFiDS_Stripe();
-    Handle(ChFiDS_Spine)& Sp        = Stripe->ChangeSpine();
+    occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
+    occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
     Sp                              = new ChFiDS_ChamfSpine(tolesp);
-    Handle(ChFiDS_ChamfSpine) Spine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
+    occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetEdges(E_wnt);
     if (PerformElement(Spine, -1, F))
@@ -464,21 +470,21 @@ void ChFi3d_ChBuilder::AddDA(const Standard_Real Dis1,
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
-                                    const Standard_Real    Angle,
-                                    const Standard_Integer IC,
+void ChFi3d_ChBuilder::SetDistAngle(const double    Dis,
+                                    const double    Angle,
+                                    const int IC,
                                     const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
   {
-    Handle(ChFiDS_ChamfSpine) csp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+    occ::handle<ChFiDS_ChamfSpine> csp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
     // Search the first edge which has a common face equal to F
     TopoDS_Face         F1, F2, FirstF1, FirstF2;
     BRepAdaptor_Surface Sb1, Sb2;
-    Standard_Integer    i     = 1;
-    Standard_Boolean    Found = Standard_False;
+    int    i     = 1;
+    bool    Found = false;
 
     while ((i <= csp->NbEdges()) && (!Found))
     {
@@ -512,11 +518,11 @@ void ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::GetDistAngle(const Standard_Integer IC,
-                                    Standard_Real&         Dis,
-                                    Standard_Real&         Angle) const
+void ChFi3d_ChBuilder::GetDistAngle(const int IC,
+                                    double&         Dis,
+                                    double&         Angle) const
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
   chsp->GetDistAngle(Dis, Angle);
 }
@@ -533,9 +539,9 @@ void ChFi3d_ChBuilder::SetMode(const ChFiDS_ChamfMode theMode)
 
 //=================================================================================================
 
-ChFiDS_ChamfMethod ChFi3d_ChBuilder::IsChamfer(const Standard_Integer IC) const
+ChFiDS_ChamfMethod ChFi3d_ChBuilder::IsChamfer(const int IC) const
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
   ChFiDS_ChamfMethod ret = chsp->IsChamfer();
 
@@ -551,19 +557,19 @@ ChFiDS_ChamfMode ChFi3d_ChBuilder::Mode() const
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::ResetContour(const Standard_Integer IC)
+void ChFi3d_ChBuilder::ResetContour(const int IC)
 {
   if (IC <= NbElements())
   {
-    Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Value(IC));
-    chsp->Reset(Standard_True);
+    occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
+    chsp->Reset(true);
   }
 }
 
 //--------------------------------AJOUT----------------------------------
 //=================================================================================================
 
-void ChFi3d_ChBuilder::Simulate(const Standard_Integer IC)
+void ChFi3d_ChBuilder::Simulate(const int IC)
 {
 #ifdef OCCT_DEBUG
   if (ChFi3d_GettraceCHRON())
@@ -574,13 +580,13 @@ void ChFi3d_ChBuilder::Simulate(const Standard_Integer IC)
     simul.Start();
   }
 #endif
-  ChFiDS_ListIteratorOfListOfStripe itel;
-  Standard_Integer                  i = 1;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
+  int                  i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
     {
-      PerformSetOfSurf(itel.ChangeValue(), Standard_True);
+      PerformSetOfSurf(itel.ChangeValue(), true);
       break;
     }
   }
@@ -601,10 +607,10 @@ void ChFi3d_ChBuilder::Simulate(const Standard_Integer IC)
 //---------------------------AJOUT---------------------------------------
 //=================================================================================================
 
-Standard_Integer ChFi3d_ChBuilder::NbSurf(const Standard_Integer IC) const
+int ChFi3d_ChBuilder::NbSurf(const int IC) const
 {
-  ChFiDS_ListIteratorOfListOfStripe itel;
-  Standard_Integer                  i = 1;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
+  int                  i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
@@ -618,22 +624,22 @@ Standard_Integer ChFi3d_ChBuilder::NbSurf(const Standard_Integer IC) const
 //--------------------------AJOUT---------------------------------------
 //=================================================================================================
 
-Handle(ChFiDS_SecHArray1) ChFi3d_ChBuilder::Sect(const Standard_Integer IC,
-                                                 const Standard_Integer IS) const
+occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_ChBuilder::Sect(const int IC,
+                                                 const int IS) const
 {
-  ChFiDS_ListIteratorOfListOfStripe itel;
-  Standard_Integer                  i = 1;
-  Handle(ChFiDS_SecHArray1)         res;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
+  int                  i = 1;
+  occ::handle<NCollection_HArray1<ChFiDS_CircSection>>         res;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
     {
-      Handle(Standard_Transient) bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
-      res                            = Handle(ChFiDS_SecHArray1)::DownCast(bid);
+      occ::handle<Standard_Transient> bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
+      res                            = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
       return res;
     }
   }
-  return Handle(ChFiDS_SecHArray1)();
+  return occ::handle<NCollection_HArray1<ChFiDS_CircSection>>();
 }
 
 //-------------------MODIFS---------------------------------------------
@@ -642,10 +648,10 @@ Handle(ChFiDS_SecHArray1) ChFi3d_ChBuilder::Sect(const Standard_Integer IC,
 // purpose  : Stores simulating sections in simul
 //=======================================================================
 
-void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
+void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  Handle(Geom_Surface)        S    = DStr.Surface(SD->Surf()).Surface();
+  occ::handle<Geom_Surface>        S    = DStr.Surface(SD->Surf()).Surface();
   gp_Pnt2d                    p1f =
     SD->InterferenceOnS1().PCurveOnSurf()->Value(SD->InterferenceOnS1().FirstParameter());
   gp_Pnt2d p1l =
@@ -655,8 +661,8 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
   gp_Pnt2d p2l =
     SD->InterferenceOnS2().PCurveOnSurf()->Value(SD->InterferenceOnS2().LastParameter());
   GeomAdaptor_Surface       AS(S);
-  Handle(ChFiDS_SecHArray1) sec;
-  Standard_Real             u1, v1, u2, v2;
+  occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
+  double             u1, v1, u2, v2;
   GeomAbs_SurfaceType       typ = AS.GetType();
   switch (typ)
   {
@@ -665,7 +671,7 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
       v2                       = p2f.Y();
       u1                       = std::max(p1f.X(), p2f.X());
       u2                       = std::min(p1l.X(), p2l.X());
-      sec                      = new ChFiDS_SecHArray1(1, 2);
+      sec                      = new NCollection_HArray1<ChFiDS_CircSection>(1, 2);
       gp_Pln              Pl   = AS.Plane();
       ChFiDS_CircSection& sec1 = sec->ChangeValue(1);
       ChFiDS_CircSection& sec2 = sec->ChangeValue(2);
@@ -678,17 +684,17 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
       v2                   = p2f.Y();
       u1                   = std::max(p1f.X(), p2f.X());
       u2                   = std::min(p1l.X(), p2l.X());
-      Standard_Real    ang = (u2 - u1);
+      double    ang = (u2 - u1);
       gp_Cone          Co  = AS.Cone();
-      Standard_Real    rad = Co.RefRadius(), sang = Co.SemiAngle();
-      Standard_Integer n = (Standard_Integer)(36. * ang / M_PI + 1);
+      double    rad = Co.RefRadius(), sang = Co.SemiAngle();
+      int n = (int)(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
-      sec = new ChFiDS_SecHArray1(1, n);
-      for (Standard_Integer i = 1; i <= n; i++)
+      sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
+      for (int i = 1; i <= n; i++)
       {
         ChFiDS_CircSection& isec = sec->ChangeValue(i);
-        Standard_Real       u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
+        double       u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
         isec.Set(ElSLib::ConeUIso(Co.Position(), rad, sang, u), v1, v2);
       }
     }
@@ -702,65 +708,65 @@ void ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
 //------------------------MODIFS---------------------------------------
 //=================================================================================================
 
-Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           Data,
-                                             const Handle(ChFiDS_ElSpine)&      HGuide,
-                                             const Handle(ChFiDS_Spine)&        Spine,
-                                             const Standard_Integer             Choix,
-                                             const Handle(BRepAdaptor_Surface)& S1,
-                                             const Handle(Adaptor3d_TopolTool)& I1,
-                                             const Handle(BRepAdaptor_Surface)& S2,
-                                             const Handle(Adaptor3d_TopolTool)& I2,
-                                             const Standard_Real                TolGuide,
-                                             Standard_Real&                     First,
-                                             Standard_Real&                     Last,
-                                             const Standard_Boolean             Inside,
-                                             const Standard_Boolean             Appro,
-                                             const Standard_Boolean             Forward,
-                                             const Standard_Boolean             RecOnS1,
-                                             const Standard_Boolean             RecOnS2,
+bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
+                                             const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                             const occ::handle<ChFiDS_Spine>&        Spine,
+                                             const int             Choix,
+                                             const occ::handle<BRepAdaptor_Surface>& S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& I1,
+                                             const occ::handle<BRepAdaptor_Surface>& S2,
+                                             const occ::handle<Adaptor3d_TopolTool>& I2,
+                                             const double                TolGuide,
+                                             double&                     First,
+                                             double&                     Last,
+                                             const bool             Inside,
+                                             const bool             Appro,
+                                             const bool             Forward,
+                                             const bool             RecOnS1,
+                                             const bool             RecOnS2,
                                              const math_Vector&                 Soldep,
-                                             Standard_Integer&                  intf,
-                                             Standard_Integer&                  intl)
+                                             int&                  intf,
+                                             int&                  intl)
 
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
     throw Standard_ConstructionError("SimulSurf : this is not the spine of a chamfer");
 
-  Standard_Real radius;
+  double radius;
   // Flexible parameters!
-  Standard_Real la = HGuide->LastParameter(), fi = HGuide->FirstParameter();
-  Standard_Real longueur    = la - fi;
-  Standard_Real MaxStep     = longueur * 0.05;
-  Standard_Real radiusspine = 0, locfleche, w;
+  double la = HGuide->LastParameter(), fi = HGuide->FirstParameter();
+  double longueur    = la - fi;
+  double MaxStep     = longueur * 0.05;
+  double radiusspine = 0, locfleche, w;
   gp_Pnt        Pbid;
   gp_Vec        d1, d2;
   // As ElSpine is parameterized by a curvilinear quasi-abscissa,
   // the min radius is estimated as 1/D2 max;
-  // for(Standard_Integer i = 0; i <= 20; i++){
-  Standard_Integer i;
+  // for(int i = 0; i <= 20; i++){
+  int i;
   for (i = 0; i <= 20; i++)
   {
     w = fi + i * MaxStep;
     HGuide->D2(w, Pbid, d1, d2);
-    Standard_Real temp = d2.SquareMagnitude();
+    double temp = d2.SquareMagnitude();
     if (temp > radiusspine)
       radiusspine = temp;
   }
 
-  Handle(BRepBlend_Line) lin;
-  Standard_Real          PFirst = First;
+  occ::handle<BRepBlend_Line> lin;
+  double          PFirst = First;
   if (intf)
     First = chsp->FirstParameter(1);
   if (intl)
     Last = chsp->LastParameter(chsp->NbEdges());
 
-  Handle(ChFiDS_ElSpine) OffsetHGuide;
+  occ::handle<ChFiDS_ElSpine> OffsetHGuide;
 
   if (chsp->IsChamfer() == ChFiDS_Sym)
   {
-    Standard_Real dis;
+    double dis;
     chsp->GetDist(dis);
     radius    = std::max(dis, radiusspine);
     locfleche = radius * 1.e-2; // graphic criterion
@@ -805,16 +811,16 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
                      RecOnS2);
 
     if (!done)
-      return Standard_False;
-    Handle(ChFiDS_SecHArray1) sec;
+      return false;
+    occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
-    Standard_Integer nbp = lin->NbPoints();
-    sec                  = new ChFiDS_SecHArray1(1, nbp);
+    int nbp = lin->NbPoints();
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      Standard_Real       u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -838,29 +844,29 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     Data->Set2dPoints(pf1, pl1, pf2, pl2);
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS2(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS2(),
                           tolapp3d);
 
-    Standard_Boolean reverse = (!Forward || Inside);
+    bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -879,7 +885,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     }
     if (intl)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -899,7 +905,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist)
   {
-    Standard_Real dis1, dis2;
+    double dis1, dis2;
     chsp->Dists(dis1, dis2);
     radius    = std::max(dis1, dis2);
     radius    = std::max(radius, radiusspine);
@@ -916,12 +922,12 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     }
     else
     {
-      ChFiDS_ListOfHElSpine&              ll        = Spine->ChangeElSpines();
-      ChFiDS_ListOfHElSpine&              ll_offset = Spine->ChangeOffsetElSpines();
-      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
-        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
+        const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -933,7 +939,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
       pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1, S2, OffsetHGuide));
-      Standard_Real Throat = std::max(dis1, dis2);
+      double Throat = std::max(dis1, dis2);
       pFunc->Set(Throat, Throat, Choix);
       pFInv->Set(Throat, Throat, Choix);
     }
@@ -963,16 +969,16 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
                      RecOnS2);
 
     if (!done)
-      return Standard_False;
-    Handle(ChFiDS_SecHArray1) sec;
+      return false;
+    occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
-    Standard_Integer nbp = lin->NbPoints();
-    sec                  = new ChFiDS_SecHArray1(1, nbp);
+    int nbp = lin->NbPoints();
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      Standard_Real       u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -996,29 +1002,29 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     Data->Set2dPoints(pf1, pl1, pf2, pl2);
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS2(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS2(),
                           tolapp3d);
 
-    Standard_Boolean reverse = (!Forward || Inside);
+    bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -1037,7 +1043,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     }
     if (intl)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -1057,13 +1063,13 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
   }
   else
   { // distance and angle
-    Standard_Real dis, angle;
+    double dis, angle;
     chsp->GetDistAngle(dis, angle);
     radius    = std::max(dis, dis * tan(angle));
     radius    = std::max(radius, radiusspine);
     locfleche = radius * 1.e-2; // graphic criterion
 
-    Standard_Integer Ch = Choix;
+    int Ch = Choix;
 
     BRepBlend_ChAsym    Func(S1, S2, HGuide);
     BRepBlend_ChAsymInv FInv(S1, S2, HGuide);
@@ -1096,16 +1102,16 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
                      RecOnS2);
 
     if (!done)
-      return Standard_False;
-    Handle(ChFiDS_SecHArray1) sec;
+      return false;
+    occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
-    Standard_Integer nbp = lin->NbPoints();
-    sec                  = new ChFiDS_SecHArray1(1, nbp);
+    int nbp = lin->NbPoints();
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      Standard_Real       u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -1129,29 +1135,29 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
     Data->Set2dPoints(pf1, pl1, pf2, pl2);
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS1(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS2(),
                           tolapp3d);
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS2(),
                           tolapp3d);
 
-    Standard_Boolean reverse = (!Forward || Inside);
+    bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -1171,7 +1177,7 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
 
     if (intl)
     {
-      Standard_Boolean          ok  = Standard_False;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -1189,94 +1195,94 @@ Standard_Boolean ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&           
       }
     }
   } // distance and angle
-  return Standard_True;
+  return true;
 }
 
-void ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&,
-                                 const Handle(ChFiDS_ElSpine)&,
-                                 const Handle(ChFiDS_Spine)&,
-                                 const Standard_Integer,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 Standard_Boolean&,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
+void ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&,
+                                 const occ::handle<ChFiDS_ElSpine>&,
+                                 const occ::handle<ChFiDS_Spine>&,
+                                 const int,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 bool&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
                                  const TopAbs_Orientation,
-                                 const Standard_Real,
-                                 const Standard_Real,
-                                 Standard_Real&,
-                                 Standard_Real&,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
+                                 const double,
+                                 const double,
+                                 double&,
+                                 double&,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
                                  const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 
-void ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&,
-                                 const Handle(ChFiDS_ElSpine)&,
-                                 const Handle(ChFiDS_Spine)&,
-                                 const Standard_Integer,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
+void ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&,
+                                 const occ::handle<ChFiDS_ElSpine>&,
+                                 const occ::handle<ChFiDS_Spine>&,
+                                 const int,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
                                  const TopAbs_Orientation,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 Standard_Boolean&,
-                                 const Standard_Real,
-                                 const Standard_Real,
-                                 Standard_Real&,
-                                 Standard_Real&,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 bool&,
+                                 const double,
+                                 const double,
+                                 double&,
+                                 double&,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
                                  const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 
-void ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&,
-                                 const Handle(ChFiDS_ElSpine)&,
-                                 const Handle(ChFiDS_Spine)&,
-                                 const Standard_Integer,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 Standard_Boolean&,
+void ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&,
+                                 const occ::handle<ChFiDS_ElSpine>&,
+                                 const occ::handle<ChFiDS_Spine>&,
+                                 const int,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 bool&,
                                  const TopAbs_Orientation,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(Adaptor3d_TopolTool)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 const Handle(BRepAdaptor_Surface)&,
-                                 const Handle(BRepAdaptor_Curve2d)&,
-                                 Standard_Boolean&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<Adaptor3d_TopolTool>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 const occ::handle<BRepAdaptor_Surface>&,
+                                 const occ::handle<BRepAdaptor_Curve2d>&,
+                                 bool&,
                                  const TopAbs_Orientation,
-                                 const Standard_Real,
-                                 const Standard_Real,
-                                 Standard_Real&,
-                                 Standard_Real&,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
-                                 const Standard_Boolean,
+                                 const double,
+                                 const double,
+                                 double&,
+                                 double&,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
+                                 const bool,
                                  const math_Vector&)
 {
   throw Standard_Failure("SimulSurf Not Implemented");
@@ -1288,28 +1294,28 @@ void ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&,
 // purpose  : to implement the first section if there is no KPart
 //=======================================================================
 
-Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine)&        Spine,
-                                                       const Handle(ChFiDS_ElSpine)&      HGuide,
-                                                       const Standard_Integer             Choix,
-                                                       Handle(BRepAdaptor_Surface)&       S1,
-                                                       Handle(BRepAdaptor_Surface)&       S2,
-                                                       const Handle(Adaptor3d_TopolTool)& I1,
-                                                       const Handle(Adaptor3d_TopolTool)& I2,
-                                                       const Standard_Real                Par,
+bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&        Spine,
+                                                       const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                                       const int             Choix,
+                                                       occ::handle<BRepAdaptor_Surface>&       S1,
+                                                       occ::handle<BRepAdaptor_Surface>&       S2,
+                                                       const occ::handle<Adaptor3d_TopolTool>& I1,
+                                                       const occ::handle<Adaptor3d_TopolTool>& I2,
+                                                       const double                Par,
                                                        math_Vector&                       SolDep,
                                                        TopAbs_State&                      Pos1,
                                                        TopAbs_State& Pos2) const
 {
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
 
-  Standard_Real TolGuide = HGuide->Resolution(tolapp3d);
+  double TolGuide = HGuide->Resolution(tolapp3d);
 
   if (chsp->IsChamfer() == ChFiDS_Sym)
   {
-    Standard_Real dis;
+    double dis;
     chsp->GetDist(dis);
 
     std::unique_ptr<BlendFunc_GenChamfer> pFunc;
@@ -1335,14 +1341,14 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    Standard_Boolean rev1 = Standard_False;
-    Standard_Boolean rev2 = Standard_False;
-    Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
-      rev1 = Standard_True;
+      rev1 = true;
     else
-      rev2 = Standard_True;
+      rev2 = true;
 
     if (sign < 0.)
     {
@@ -1360,8 +1366,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     temp = (TgL.XYZ()).Multiplied(dis);
     pt2.SetXYZ((ptgui.XYZ()).Added(temp));
 
-    Standard_Real tol = tolesp * 1.e2;
-    //    Standard_Real u,v;
+    double tol = tolesp * 1.e2;
+    //    double u,v;
     Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
     Extrema_GenLocateExtPS proj2(*S2, tol, tol);
@@ -1380,7 +1386,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist)
   {
-    Standard_Real dis1, dis2;
+    double dis1, dis2;
     chsp->Dists(dis1, dis2);
 
     std::unique_ptr<BlendFunc_GenChamfer> pFunc;
@@ -1391,13 +1397,13 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     }
     else
     {
-      Handle(ChFiDS_ElSpine)              OffsetHGuide;
-      ChFiDS_ListOfHElSpine&              ll        = Spine->ChangeElSpines();
-      ChFiDS_ListOfHElSpine&              ll_offset = Spine->ChangeOffsetElSpines();
-      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      occ::handle<ChFiDS_ElSpine>              OffsetHGuide;
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
-        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
+        const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -1408,7 +1414,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
         // exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
-      Standard_Real Throat = std::max(dis1, dis2);
+      double Throat = std::max(dis1, dis2);
       pFunc->Set(Throat, Throat, Choix); // dis2?
     }
     BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
@@ -1424,14 +1430,14 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    Standard_Boolean rev1 = Standard_False;
-    Standard_Boolean rev2 = Standard_False;
-    Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
-      rev1 = Standard_True;
+      rev1 = true;
     else
-      rev2 = Standard_True;
+      rev2 = true;
 
     if (sign < 0.)
     {
@@ -1444,18 +1450,18 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     if (rev2)
       TgL.Reverse();
 
-    Standard_Real aDist1 = dis1, aDist2 = dis2;
+    double aDist1 = dis1, aDist2 = dis2;
     if (chsp->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
     {
       /*
-      Standard_Real Alpha = TgF.Angle(TgL);
-      Standard_Real SinAlpha = std::sin(Alpha);
-      Standard_Real CosAlpha = std::cos(Alpha);
-      Standard_Real TanAlpha = std::tan(Alpha);
-      Standard_Real dis1dis1 = dis1*dis1, dis2dis2 = dis2*dis2;
+      double Alpha = TgF.Angle(TgL);
+      double SinAlpha = std::sin(Alpha);
+      double CosAlpha = std::cos(Alpha);
+      double TanAlpha = std::tan(Alpha);
+      double dis1dis1 = dis1*dis1, dis2dis2 = dis2*dis2;
       aDist2 = sqrt(dis1dis1 - dis2dis2) - dis2/TanAlpha;
-      Standard_Real CosBeta = sqrt(1-dis2dis2/dis1dis1)*CosAlpha + dis2/dis1*SinAlpha;
-      Standard_Real FullDist1 = dis1/CosBeta;
+      double CosBeta = sqrt(1-dis2dis2/dis1dis1)*CosAlpha + dis2/dis1*SinAlpha;
+      double FullDist1 = dis1/CosBeta;
       aDist1 = FullDist1 - dis2/SinAlpha;
       */
     }
@@ -1465,8 +1471,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     temp = (TgL.XYZ()).Multiplied(aDist2);
     pt2.SetXYZ((ptgui.XYZ()).Added(temp));
 
-    Standard_Real tol = tolesp * 1.e2;
-    //    Standard_Real u,v;
+    double tol = tolesp * 1.e2;
+    //    double u,v;
 
     Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
@@ -1486,10 +1492,10 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
   }
   else
   { // distance and angle
-    Standard_Real dis1, angle;
+    double dis1, angle;
     chsp->GetDistAngle(dis1, angle);
 
-    Standard_Integer Ch = Choix;
+    int Ch = Choix;
 
     BRepBlend_ChAsym Func(S1, S2, HGuide);
     Func.Set(dis1, angle, Ch);
@@ -1506,14 +1512,14 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     Func.Set(Par);
     Func.Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    Standard_Boolean rev1 = Standard_False;
-    Standard_Boolean rev2 = Standard_False;
-    Standard_Real    sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Ch % 2 == 1)
-      rev1 = Standard_True;
+      rev1 = true;
     else
-      rev2 = Standard_True;
+      rev2 = true;
 
     if (sign < 0.)
     {
@@ -1529,7 +1535,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     temp = (TgF.XYZ()).Multiplied(dis1);
     pt1.SetXYZ((ptgui.XYZ()).Added(temp));
 
-    Standard_Real dis2, tmpcos, tmpsin;
+    double dis2, tmpcos, tmpsin;
     tmpcos = TgF.Dot(TgL);
     tmpsin = sqrt(1. - tmpcos * tmpcos);
 
@@ -1538,8 +1544,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
     temp = (TgL.XYZ()).Multiplied(dis2);
     pt2.SetXYZ((ptgui.XYZ()).Added(temp));
 
-    Standard_Real tol = tolesp * 1.e2;
-    //      Standard_Real u,v;
+    double tol = tolesp * 1.e2;
+    //      double u,v;
     Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
     Extrema_GenLocateExtPS proj2(*S2, tol, tol);
@@ -1559,39 +1565,39 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection(const Handle(ChFiDS_Spine
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
-                                               const Handle(ChFiDS_ElSpine)&      HGuide,
-                                               const Handle(ChFiDS_Spine)&        Spine,
-                                               const Standard_Integer             Choix,
-                                               const Handle(BRepAdaptor_Surface)& S1,
-                                               const Handle(Adaptor3d_TopolTool)& I1,
-                                               const Handle(BRepAdaptor_Surface)& S2,
-                                               const Handle(Adaptor3d_TopolTool)& I2,
-                                               const Standard_Real                MaxStep,
-                                               const Standard_Real                Fleche,
-                                               const Standard_Real                TolGuide,
-                                               Standard_Real&                     First,
-                                               Standard_Real&                     Last,
-                                               const Standard_Boolean             Inside,
-                                               const Standard_Boolean             Appro,
-                                               const Standard_Boolean             Forward,
-                                               const Standard_Boolean             RecOnS1,
-                                               const Standard_Boolean             RecOnS2,
+bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
+                                               const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                               const occ::handle<ChFiDS_Spine>&        Spine,
+                                               const int             Choix,
+                                               const occ::handle<BRepAdaptor_Surface>& S1,
+                                               const occ::handle<Adaptor3d_TopolTool>& I1,
+                                               const occ::handle<BRepAdaptor_Surface>& S2,
+                                               const occ::handle<Adaptor3d_TopolTool>& I2,
+                                               const double                MaxStep,
+                                               const double                Fleche,
+                                               const double                TolGuide,
+                                               double&                     First,
+                                               double&                     Last,
+                                               const bool             Inside,
+                                               const bool             Appro,
+                                               const bool             Forward,
+                                               const bool             RecOnS1,
+                                               const bool             RecOnS2,
                                                const math_Vector&                 Soldep,
-                                               Standard_Integer&                  intf,
-                                               Standard_Integer&                  intl)
+                                               int&                  intf,
+                                               int&                  intl)
 
 {
-  Handle(ChFiDS_SurfData)   Data = SeqData(1);
-  Handle(ChFiDS_ChamfSpine) chsp = Handle(ChFiDS_ChamfSpine)::DownCast(Spine);
+  occ::handle<ChFiDS_SurfData>   Data = SeqData(1);
+  occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
 
-  Standard_Boolean       gd1, gd2, gf1, gf2;
-  Handle(BRepBlend_Line) lin;
+  bool       gd1, gd2, gf1, gf2;
+  occ::handle<BRepBlend_Line> lin;
   TopAbs_Orientation     Or     = S1->Face().Orientation();
-  Standard_Real          PFirst = First;
+  double          PFirst = First;
   if (intf)
     First = chsp->FirstParameter(1);
   if (intl)
@@ -1612,7 +1618,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
       pFunc.reset(new BRepBlend_ConstThroat(S1, S2, HGuide));
       pFInv.reset(new BRepBlend_ConstThroatInv(S1, S2, HGuide));
     }
-    Standard_Real dis;
+    double dis;
     chsp->GetDist(dis);
     pFunc->Set(dis, dis, Choix);
     pFInv->Set(dis, dis, Choix);
@@ -1646,14 +1652,14 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
                        RecOnS1,
                        RecOnS2);
     if (!done)
-      return Standard_False; // ratrappage possible PMN 14/05/1998
+      return false; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data, *pFunc, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
       throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist)
   {
-    Standard_Real d1, d2;
+    double d1, d2;
     chsp->Dists(d1, d2);
 
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
@@ -1667,13 +1673,13 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
     }
     else
     {
-      Handle(ChFiDS_ElSpine)              OffsetHGuide;
-      ChFiDS_ListOfHElSpine&              ll        = Spine->ChangeElSpines();
-      ChFiDS_ListOfHElSpine&              ll_offset = Spine->ChangeOffsetElSpines();
-      ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
+      occ::handle<ChFiDS_ElSpine>              OffsetHGuide;
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
-        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
+        const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -1685,7 +1691,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
       pFInv.reset(new BRepBlend_ConstThroatWithPenetrationInv(S1, S2, OffsetHGuide));
-      Standard_Real Throat = std::max(d1, d2);
+      double Throat = std::max(d1, d2);
       pFunc->Set(Throat, Throat, Choix);
       pFInv->Set(Throat, Throat, Choix);
     }
@@ -1719,17 +1725,17 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
                        RecOnS1,
                        RecOnS2);
     if (!done)
-      return Standard_False; // ratrappage possible PMN 14/05/1998
+      return false; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data, *pFunc, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
       throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
   else
   { // distance and angle
-    Standard_Real d1, angle;
+    double d1, angle;
     chsp->GetDistAngle(d1, angle);
 
-    Standard_Integer Ch = Choix;
+    int Ch = Choix;
 
     BRepBlend_ChAsym    Func(S1, S2, HGuide);
     BRepBlend_ChAsymInv FInv(S1, S2, HGuide);
@@ -1766,103 +1772,103 @@ Standard_Boolean ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&       
                        RecOnS2);
 
     if (!done)
-      return Standard_False; // ratrappage possible PMN 14/05/1998
+      return false; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data, Func, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
       throw Standard_Failure("PerformSurf : Fail of approximation!");
   }
 
-  return Standard_True;
+  return true;
 }
 
-void ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                   const Handle(ChFiDS_ElSpine)&,
-                                   const Handle(ChFiDS_Spine)&,
-                                   const Standard_Integer,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   Standard_Boolean&,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
+void ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                   const occ::handle<ChFiDS_ElSpine>&,
+                                   const occ::handle<ChFiDS_Spine>&,
+                                   const int,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   bool&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
                                    const TopAbs_Orientation,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   Standard_Real&,
-                                   Standard_Real&,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
+                                   const double,
+                                   const double,
+                                   const double,
+                                   double&,
+                                   double&,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
                                    const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
 }
 
-void ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                   const Handle(ChFiDS_ElSpine)&,
-                                   const Handle(ChFiDS_Spine)&,
-                                   const Standard_Integer,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
+void ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                   const occ::handle<ChFiDS_ElSpine>&,
+                                   const occ::handle<ChFiDS_Spine>&,
+                                   const int,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
                                    const TopAbs_Orientation,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   Standard_Boolean&,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   Standard_Real&,
-                                   Standard_Real&,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   bool&,
+                                   const double,
+                                   const double,
+                                   const double,
+                                   double&,
+                                   double&,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
                                    const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
 }
 
-void ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                   const Handle(ChFiDS_ElSpine)&,
-                                   const Handle(ChFiDS_Spine)&,
-                                   const Standard_Integer,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   Standard_Boolean&,
+void ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                   const occ::handle<ChFiDS_ElSpine>&,
+                                   const occ::handle<ChFiDS_Spine>&,
+                                   const int,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   bool&,
                                    const TopAbs_Orientation,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(Adaptor3d_TopolTool)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   const Handle(BRepAdaptor_Surface)&,
-                                   const Handle(BRepAdaptor_Curve2d)&,
-                                   Standard_Boolean&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<Adaptor3d_TopolTool>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   const occ::handle<BRepAdaptor_Surface>&,
+                                   const occ::handle<BRepAdaptor_Curve2d>&,
+                                   bool&,
                                    const TopAbs_Orientation,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   const Standard_Real,
-                                   Standard_Real&,
-                                   Standard_Real&,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
-                                   const Standard_Boolean,
+                                   const double,
+                                   const double,
+                                   const double,
+                                   double&,
+                                   double&,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
+                                   const bool,
                                    const math_Vector&)
 {
   throw Standard_Failure("PerformSurf Not Implemented");
@@ -1874,15 +1880,15 @@ void ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
 // PMN : 28/11/97 : Reproduces the code of fillets, and it seems to work better...
 //=======================================================================
 
-void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const Handle(ChFiDS_Stripe)& S)
+void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handle<ChFiDS_Stripe>& S)
 {
-  Standard_Integer     Sens  = 0;
-  Standard_Real        Coeff = 0.5;
-  Handle(ChFiDS_Spine) Spine = S->Spine();
+  int     Sens  = 0;
+  double        Coeff = 0.5;
+  occ::handle<ChFiDS_Spine> Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V, S, Sens);
   if (Spine->IsTangencyExtremity((Sens == 1)))
     return; // No extension on queue
-  Standard_Real dU = Spine->LastParameter(Spine->NbEdges());
+  double dU = Spine->LastParameter(Spine->NbEdges());
   if (Sens == 1)
   {
     Spine->SetFirstParameter(-dU * Coeff);
@@ -1901,19 +1907,19 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const Handle(ChFi
 //           on the side of the vertex V
 //=======================================================================
 
-void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS)
+void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
-  Standard_Integer                  Sens = 0;
-  ChFiDS_ListIteratorOfListOfStripe itel(LS);
-  Standard_Boolean                  FF = Standard_True;
-  Standard_Boolean                  isfirst[2];
-  Standard_Integer                  Iedge[2];
+  int                  Sens = 0;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS);
+  bool                  FF = true;
+  bool                  isfirst[2];
+  int                  Iedge[2];
   Iedge[0] = 1;
   Iedge[1] = 1;
-  Handle(ChFiDS_Stripe) Stripe[2];
-  Handle(ChFiDS_Spine)  Spine[2];
+  occ::handle<ChFiDS_Stripe> Stripe[2];
+  occ::handle<ChFiDS_Spine>  Spine[2];
 
-  Standard_Integer i = 0;
+  int i = 0;
   for (; itel.More(); itel.Next(), i++)
   {
     ChFi3d_IndexOfSurfData(V, itel.Value(), Sens);
@@ -1926,18 +1932,18 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_List
     Spine[i]   = Stripe[i]->Spine();
     if (!isfirst[i])
       Iedge[i] = Spine[i]->NbEdges();
-    FF = Standard_False;
+    FF = false;
   }
 
-  Handle(ChFiDS_ChamfSpine) chsp[2];
-  Standard_Real             d[4], dis[2] = {0.0, 0.0};
-  Standard_Integer          j;
+  occ::handle<ChFiDS_ChamfSpine> chsp[2];
+  double             d[4], dis[2] = {0.0, 0.0};
+  int          j;
   TopoDS_Face               F[4];
-  Standard_Real             tmpang, tmd;
+  double             tmpang, tmd;
 
   for (i = 0, j = 0; i < 2; i++, j += 2)
   {
-    chsp[i] = Handle(ChFiDS_ChamfSpine)::DownCast(Spine[i]);
+    chsp[i] = occ::down_cast<ChFiDS_ChamfSpine>(Spine[i]);
     ConexFaces(Spine[i], Iedge[i], F[j], F[j + 1]);
 
     if (chsp[i]->IsChamfer() == ChFiDS_Sym)
@@ -1958,7 +1964,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_List
     }
   }
 
-  Standard_Boolean notfound = Standard_True;
+  bool notfound = true;
   i                         = 0;
   while (notfound && (i < 2))
   {
@@ -1972,7 +1978,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_List
 
         dis[1] = d[j + 2];
         //	dOnArc[1] = d[(j+1)%2 + 2];
-        notfound = Standard_False;
+        notfound = false;
       }
       j++;
     }
@@ -1998,7 +2004,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_List
         i = 0;
         j = 1;
         if(dOnArc[j] > dOnArc[i]) {
-          Standard_Integer temp = i;
+          int temp = i;
           i = j;
           j = temp;
         }
@@ -2017,23 +2023,23 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const ChFiDS_List
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const ChFiDS_ListOfStripe& LS)
+void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
-  Standard_Integer    Sens = 0;
-  ChFiDS_ListOfStripe check;
-  Standard_Boolean    isfirst[3];
-  Standard_Integer    Iedge[3];
+  int    Sens = 0;
+  NCollection_List<occ::handle<ChFiDS_Stripe>> check;
+  bool    isfirst[3];
+  int    Iedge[3];
   Iedge[0] = 1;
   Iedge[1] = 1;
   Iedge[2] = 1;
-  Handle(ChFiDS_Spine) Spine[3];
+  occ::handle<ChFiDS_Spine> Spine[3];
 
-  Standard_Integer i = 0;
-  for (ChFiDS_ListIteratorOfListOfStripe itel(LS); itel.More(); itel.Next(), i++)
+  int i = 0;
+  for (NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS); itel.More(); itel.Next(), i++)
   {
-    Handle(ChFiDS_Stripe) Stripe = itel.Value();
+    occ::handle<ChFiDS_Stripe> Stripe = itel.Value();
     ChFi3d_IndexOfSurfData(V, Stripe, Sens);
-    for (ChFiDS_ListIteratorOfListOfStripe ich(check); ich.More(); ich.Next())
+    for (NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator ich(check); ich.More(); ich.Next())
     {
       if (Stripe == ich.Value())
       {
@@ -2050,15 +2056,15 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const ChFiDS_Li
     check.Append(Stripe);
   }
 
-  Standard_Real    d[3][2], tmd, tmpangle;
-  Standard_Integer j;
+  double    d[3][2], tmd, tmpangle;
+  int j;
   TopoDS_Face      F[3][2];
 
-  Handle(ChFiDS_ChamfSpine) chsp[3];
+  occ::handle<ChFiDS_ChamfSpine> chsp[3];
 
   for (i = 0; i < 3; i++)
   {
-    chsp[i] = Handle(ChFiDS_ChamfSpine)::DownCast(Spine[i]);
+    chsp[i] = occ::down_cast<ChFiDS_ChamfSpine>(Spine[i]);
     ConexFaces(Spine[i], Iedge[i], F[i][0], F[i][1]);
 
     if (chsp[i]->IsChamfer() == ChFiDS_Sym)
@@ -2082,15 +2088,15 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const ChFiDS_Li
 
   // dis[i][j] distance from chamfer i on the common face with
   // chamfer j
-  Standard_Real dis[3][3];
+  double dis[3][3];
 
   for (i = 0; i < 3; i++)
   {
-    //    for (Standard_Integer ii=0; ii<3; ii++) {
+    //    for (int ii=0; ii<3; ii++) {
     //      j = (i+ii)%3;
     j                         = (i + 1) % 3;
-    Standard_Boolean notfound = Standard_True;
-    Standard_Integer k, l;
+    bool notfound = true;
+    int k, l;
     k = 0;
     while (notfound && (k < 2))
     {
@@ -2101,7 +2107,7 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const ChFiDS_Li
         {
           dis[i][j] = d[i][k];
           dis[j][i] = d[j][l];
-          notfound  = Standard_False;
+          notfound  = false;
         }
         l++;
       }
@@ -2123,18 +2129,18 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const ChFiDS_Li
 void ChFi3d_ChBuilder::SetRegul()
 
 {
-  ChFiDS_ListIteratorOfRegularities  it;
-  TopTools_ListIteratorOfListOfShape itc;
-  TopTools_ListIteratorOfListOfShape its1;
-  TopTools_ListIteratorOfListOfShape its2;
+  NCollection_List<ChFiDS_Regul>::Iterator  it;
+  NCollection_List<TopoDS_Shape>::Iterator itc;
+  NCollection_List<TopoDS_Shape>::Iterator its1;
+  NCollection_List<TopoDS_Shape>::Iterator its2;
   BRepAdaptor_Surface                S;
   BRepAdaptor_Curve2d                PC;
-  Standard_Real                      u, v, t;
+  double                      u, v, t;
   gp_Pnt                             p;
   gp_Vec                             n1, n2, du, dv;
   BRep_Builder                       B;
-  Standard_Real                      Seuil  = M_PI / 360.;
-  Standard_Real                      Seuil2 = Seuil * Seuil;
+  double                      Seuil  = M_PI / 360.;
+  double                      Seuil2 = Seuil * Seuil;
   for (it.Initialize(myRegul); it.More(); it.Next())
   {
     const ChFiDS_Regul& reg = it.Value();
@@ -2150,14 +2156,14 @@ void ChFi3d_ChBuilder::SetRegul()
         {
           TopoDS_Face F1 = TopoDS::Face(its1.Value());
           TopoDS_Face F2 = TopoDS::Face(its2.Value());
-          S.Initialize(F1, Standard_False);
+          S.Initialize(F1, false);
           PC.Initialize(E, F1);
           t = 0.5 * (PC.FirstParameter() + PC.LastParameter());
           PC.Value(t).Coord(u, v);
           S.D1(u, v, p, du, dv);
           n1 = du.Crossed(dv);
 
-          S.Initialize(F2, Standard_False);
+          S.Initialize(F2, false);
           PC.Initialize(E, F2);
           PC.Value(t).Coord(u, v);
           S.D1(u, v, p, du, dv);
@@ -2167,7 +2173,7 @@ void ChFi3d_ChBuilder::SetRegul()
           {
             n1.Normalize();
             n2.Normalize();
-            Standard_Real sina2 = n1.Crossed(n2).SquareMagnitude();
+            double sina2 = n1.Crossed(n2).SquareMagnitude();
             if (sina2 < Seuil2)
             {
               GeomAbs_Shape cont = ChFi3d_evalconti(E, F1, F2);
@@ -2185,14 +2191,14 @@ void ChFi3d_ChBuilder::SetRegul()
 // purpose  : F1, F2 are connected to edge so that F1 corresponds to distance
 //=======================================================================
 
-void ChFi3d_ChBuilder::ConexFaces(const Handle(ChFiDS_Spine)& Spine,
-                                  const Standard_Integer      IEdge,
+void ChFi3d_ChBuilder::ConexFaces(const occ::handle<ChFiDS_Spine>& Spine,
+                                  const int      IEdge,
                                   TopoDS_Face&                F1,
                                   TopoDS_Face&                F2) const
 {
   BRepAdaptor_Surface Sb1, Sb2;
   TopAbs_Orientation  tmp1, tmp2;
-  Standard_Integer    RC, Choix;
+  int    RC, Choix;
   TopoDS_Face         f1, f2, ff1, ff2;
 
   // calculate the reference orientation

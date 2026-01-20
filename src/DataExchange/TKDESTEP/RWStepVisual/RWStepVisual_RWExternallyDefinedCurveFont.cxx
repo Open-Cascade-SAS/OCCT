@@ -29,10 +29,10 @@ RWStepVisual_RWExternallyDefinedCurveFont::RWStepVisual_RWExternallyDefinedCurve
 //=================================================================================================
 
 void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
-  const Handle(StepData_StepReaderData)&               data,
-  const Standard_Integer                               num,
-  Handle(Interface_Check)&                             ach,
-  const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const
+  const occ::handle<StepData_StepReaderData>&               data,
+  const int                               num,
+  occ::handle<Interface_Check>&                             ach,
+  const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "externally_defined_curve_font"))
@@ -43,7 +43,7 @@ void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
   StepBasic_SourceItem aExternallyDefinedItem_ItemId;
   data->ReadEntity(num, 1, "externally_defined_item.item_id", ach, aExternallyDefinedItem_ItemId);
 
-  Handle(StepBasic_ExternalSource) aExternallyDefinedItem_Source;
+  occ::handle<StepBasic_ExternalSource> aExternallyDefinedItem_Source;
   data->ReadEntity(num,
                    2,
                    "externally_defined_item.source",
@@ -59,7 +59,7 @@ void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
 
 void RWStepVisual_RWExternallyDefinedCurveFont::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepVisual_ExternallyDefinedCurveFont)& ent) const
+  const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent) const
 {
 
   // Inherited fields of ExternallyDefinedItem
@@ -72,7 +72,7 @@ void RWStepVisual_RWExternallyDefinedCurveFont::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWExternallyDefinedCurveFont::Share(
-  const Handle(StepVisual_ExternallyDefinedCurveFont)& ent,
+  const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent,
   Interface_EntityIterator&                            iter) const
 {
 

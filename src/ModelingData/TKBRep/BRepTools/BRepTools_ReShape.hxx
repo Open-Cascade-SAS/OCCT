@@ -19,8 +19,12 @@
 
 #include <BRepTools_History.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -31,9 +35,6 @@ class TopoDS_Vertex;
 #ifdef Status
   #undef Status
 #endif
-
-class BRepTools_ReShape;
-DEFINE_STANDARD_HANDLE(BRepTools_ReShape, Standard_Transient)
 
 //! Rebuilds a Shape by making pre-defined substitutions on some
 //! of its components
@@ -91,7 +92,7 @@ public:
   }
 
   //! Tells if a shape is recorded for Replace/Remove
-  Standard_EXPORT virtual Standard_Boolean IsRecorded(const TopoDS_Shape& shape) const;
+  Standard_EXPORT virtual bool IsRecorded(const TopoDS_Shape& shape) const;
 
   //! Returns the new value for an individual shape
   //! If not recorded, returns the original shape itself
@@ -106,9 +107,9 @@ public:
   //! If <last> is False, returns status and new shape recorded in
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
-  Standard_EXPORT virtual Standard_Integer Status(const TopoDS_Shape&    shape,
+  Standard_EXPORT virtual int Status(const TopoDS_Shape&    shape,
                                                   TopoDS_Shape&          newsh,
-                                                  const Standard_Boolean last = Standard_False);
+                                                  const bool last = false);
 
   //! Applies the substitutions requests to a shape.
   //!
@@ -125,14 +126,14 @@ public:
 
   //! Returns (modifiable) the flag which defines whether Location of shape take into account
   //! during replacing shapes.
-  virtual Standard_Boolean& ModeConsiderLocation() { return myConsiderLocation; }
+  virtual bool& ModeConsiderLocation() { return myConsiderLocation; }
 
   //! Returns modified copy of vertex if original one is not recorded or returns modified original
   //! vertex otherwise.
   //@param theV - original vertex.
   //@param theTol - new tolerance of vertex, optional.
   Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
-                                           const Standard_Real  theTol = -1.0);
+                                           const double  theTol = -1.0);
 
   //! Returns modified copy of vertex if original one is not recorded or returns modified original
   //! vertex otherwise.
@@ -141,14 +142,14 @@ public:
   //@param theTol - new tolerance of vertex.
   Standard_EXPORT TopoDS_Vertex CopyVertex(const TopoDS_Vertex& theV,
                                            const gp_Pnt&        theNewPos,
-                                           const Standard_Real  aTol);
+                                           const double  aTol);
 
   //! Checks if shape has been recorded by reshaper as a value
   //@param theShape is the given shape
-  Standard_EXPORT Standard_Boolean IsNewShape(const TopoDS_Shape& theShape) const;
+  Standard_EXPORT bool IsNewShape(const TopoDS_Shape& theShape) const;
 
   //! Returns the history of the substituted shapes.
-  Standard_EXPORT Handle(BRepTools_History) History() const;
+  Standard_EXPORT occ::handle<BRepTools_History> History() const;
 
   DEFINE_STANDARD_RTTIEXT(BRepTools_ReShape, Standard_Transient)
 
@@ -177,7 +178,7 @@ protected:
 
 private:
   //! Returns 'true' if the kind of a replacement is an ordinary merging.
-  static Standard_Boolean isOrdinaryMerged(const TReplacementKind theKind)
+  static bool isOrdinaryMerged(const TReplacementKind theKind)
   {
     return (theKind == TReplacementKind_Merge_Ordinary);
   }
@@ -230,11 +231,11 @@ private:
   TShapeToReplacement myShapeToReplacement;
 
 protected:
-  TopTools_MapOfShape myNewShapes;
-  Standard_Integer    myStatus;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myNewShapes;
+  int    myStatus;
 
 private:
-  Standard_Boolean myConsiderLocation;
+  bool myConsiderLocation;
 };
 
 #endif // _BRepTools_ReShape_HeaderFile

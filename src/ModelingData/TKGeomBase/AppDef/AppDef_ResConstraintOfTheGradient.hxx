@@ -25,8 +25,11 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_OutOfRange;
 class AppDef_MultiLine;
 class AppDef_MyLineTool;
@@ -51,19 +54,19 @@ public:
   Standard_EXPORT AppDef_ResConstraintOfTheGradient(
     const AppDef_MultiLine&                               SSP,
     AppParCurves_MultiCurve&                              SCurv,
-    const Standard_Integer                                FirstPoint,
-    const Standard_Integer                                LastPoint,
-    const Handle(AppParCurves_HArray1OfConstraintCouple)& Constraints,
+    const int                                FirstPoint,
+    const int                                LastPoint,
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& Constraints,
     const math_Matrix&                                    Bern,
     const math_Matrix&                                    DerivativeBern,
-    const Standard_Real                                   Tolerance = 1.0e-10);
+    const double                                   Tolerance = 1.0e-10);
 
   //! returns True if all has been correctly done.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns the maximum difference value between the curve
   //! and the given points.
-  Standard_EXPORT Standard_Real Error() const;
+  Standard_EXPORT double Error() const;
 
   Standard_EXPORT const math_Matrix& ConstraintMatrix() const;
 
@@ -73,7 +76,7 @@ public:
   //! Returns the derivative of the constraint matrix.
   Standard_EXPORT const math_Matrix& ConstraintDerivative(const AppDef_MultiLine& SSP,
                                                           const math_Vector&      Parameters,
-                                                          const Standard_Integer  Deg,
+                                                          const int  Deg,
                                                           const math_Matrix&      DA);
 
   //! returns the Inverse of Cont*Transposed(Cont), where
@@ -82,30 +85,30 @@ public:
 
 protected:
   //! is used internally to create the fields.
-  Standard_EXPORT Standard_Integer
+  Standard_EXPORT int
     NbConstraints(const AppDef_MultiLine&                               SSP,
-                  const Standard_Integer                                FirstPoint,
-                  const Standard_Integer                                LastPoint,
-                  const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints) const;
+                  const int                                FirstPoint,
+                  const int                                LastPoint,
+                  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints) const;
 
   //! is internally used for the fields creation.
-  Standard_EXPORT Standard_Integer NbColumns(const AppDef_MultiLine& SSP,
-                                             const Standard_Integer  Deg) const;
+  Standard_EXPORT int NbColumns(const AppDef_MultiLine& SSP,
+                                             const int  Deg) const;
 
 private:
-  Standard_Boolean        Done;
-  Standard_Real           Err;
+  bool        Done;
+  double           Err;
   math_Matrix             Cont;
   math_Matrix             DeCont;
   math_Vector             Secont;
   math_Matrix             CTCinv;
   math_Vector             Vardua;
-  Standard_Integer        IncPass;
-  Standard_Integer        IncTan;
-  Standard_Integer        IncCurv;
-  TColStd_Array1OfInteger IPas;
-  TColStd_Array1OfInteger ITan;
-  TColStd_Array1OfInteger ICurv;
+  int        IncPass;
+  int        IncTan;
+  int        IncCurv;
+  NCollection_Array1<int> IPas;
+  NCollection_Array1<int> ITan;
+  NCollection_Array1<int> ICurv;
 };
 
 #endif // _AppDef_ResConstraintOfTheGradient_HeaderFile

@@ -26,9 +26,6 @@
 class Standard_GUID;
 class TDF_RelocationTable;
 
-class TDataStd_Current;
-DEFINE_STANDARD_HANDLE(TDataStd_Current, TDF_Attribute)
-
 //! this attribute, located at root label, manage an
 //! access to a current label.
 class TDataStd_Current : public TDF_Attribute
@@ -49,7 +46,7 @@ public:
   //! Framework.
   //! class methods
   //! =============
-  Standard_EXPORT static Standard_Boolean Has(const TDF_Label& acces);
+  Standard_EXPORT static bool Has(const TDF_Label& acces);
 
   Standard_EXPORT TDataStd_Current();
 
@@ -57,24 +54,23 @@ public:
 
   Standard_EXPORT TDF_Label GetLabel() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Current, TDF_Attribute)
 
-protected:
 private:
   TDF_Label myLabel;
 };

@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 OPEN CASCADE SAS
+#
+# This file is part of Open CASCADE Technology software library.
+#
+# This library is free software; you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License version 2.1 as published
+# by the Free Software Foundation, with special exception defined in the file
+# OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+# distribution for complete text of the license and disclaimer of any warranty.
+#
+# Alternatively, this file may be used under the terms of Open CASCADE
+# commercial license or contractual agreement.
+
 """
 Script to validate and add OCCT license headers to C++ source files.
 
@@ -281,6 +294,10 @@ def main():
         help='Specific files to process (overrides path scanning)'
     )
     parser.add_argument(
+        '--file-list',
+        help='Path to a file containing list of files to process (one per line)'
+    )
+    parser.add_argument(
         '--ci',
         action='store_true',
         help='CI mode: exit with error code if any file is missing license'
@@ -293,7 +310,19 @@ def main():
         args.fix = True
 
     # Get list of files to process
-    if args.files:
+    if args.file_list:
+        # Read files from a list file
+        try:
+            with open(args.file_list, 'r', encoding='utf-8') as f:
+                file_paths = [line.strip() for line in f if line.strip()]
+            files = [os.path.abspath(f) for f in file_paths if os.path.isfile(f)]
+        except Exception as e:
+            print(f"Error reading file list: {e}")
+            return 1
+        if len(files) == 0:
+            print("No valid files found in file list")
+            return 0
+    elif args.files:
         # Process specific files
         files = [os.path.abspath(f) for f in args.files if os.path.isfile(f)]
         if len(files) == 0:

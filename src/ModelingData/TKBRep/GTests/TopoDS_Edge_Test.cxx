@@ -25,13 +25,13 @@ TEST(TopoDS_Edge_Test, BUC60828_InfiniteFlag)
   TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., 1.));
 
   // Check initial flag value (should be false by default)
-  Standard_Boolean anInitialValue = anEdge.Infinite();
+  bool anInitialValue = anEdge.Infinite();
   EXPECT_FALSE(anInitialValue) << "Initial Infinite flag should be false";
 
   // Set the flag to true
-  anEdge.Infinite(Standard_True);
+  anEdge.Infinite(true);
 
   // Verify the flag was set correctly
-  Standard_Boolean aCurrentValue = anEdge.Infinite();
+  bool aCurrentValue = anEdge.Infinite();
   EXPECT_TRUE(aCurrentValue) << "Infinite flag should be true after setting";
 }

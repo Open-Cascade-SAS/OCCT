@@ -50,8 +50,8 @@ void ProjLib_Torus::Init(const gp_Torus& To)
 {
   myType       = GeomAbs_OtherCurve;
   myTorus      = To;
-  myIsPeriodic = Standard_False;
-  isDone       = Standard_False;
+  myIsPeriodic = false;
+  isDone       = false;
 }
 
 //=======================================================================
@@ -68,9 +68,9 @@ void ProjLib_Torus::Init(const gp_Torus& To)
 
 static gp_Pnt2d EvalPnt2d(const gp_Vec& Ve, const gp_Torus& To)
 {
-  Standard_Real X = Ve.Dot(gp_Vec(To.Position().XDirection()));
-  Standard_Real Y = Ve.Dot(gp_Vec(To.Position().YDirection()));
-  Standard_Real U, V;
+  double X = Ve.Dot(gp_Vec(To.Position().XDirection()));
+  double Y = Ve.Dot(gp_Vec(To.Position().YDirection()));
+  double U, V;
 
   if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
@@ -109,10 +109,10 @@ void ProjLib_Torus::Project(const gp_Circ& C)
     // Iso V
     gp_Pnt2d      P1 = EvalPnt2d(Xc, myTorus); // evaluate U1
     gp_Pnt2d      P2 = EvalPnt2d(Yc, myTorus); // evaluate U2
-    Standard_Real Z  = OC.Dot(myTorus.Position().Direction());
+    double Z  = OC.Dot(myTorus.Position().Direction());
     Z /= myTorus.MinorRadius();
 
-    Standard_Real V;
+    double V;
 
     if (Z > 1.)
     {
@@ -151,12 +151,12 @@ void ProjLib_Torus::Project(const gp_Circ& C)
   else
   {
     // Iso U  -> U = angle( Xt, OC)
-    Standard_Real U = Xt.AngleWithRef(OC, Xt ^ Yt);
+    double U = Xt.AngleWithRef(OC, Xt ^ Yt);
     if (U < 0.)
       U += 2 * M_PI;
 
     // Origine de la droite
-    Standard_Real V1 = OC.AngleWithRef(Xc, OC ^ Zt);
+    double V1 = OC.AngleWithRef(Xc, OC ^ Zt);
     if (V1 < 0.)
       V1 += 2 * M_PI;
 
@@ -171,7 +171,7 @@ void ProjLib_Torus::Project(const gp_Circ& C)
 
     myLin = gp_Lin2d(P1, D2);
   }
-  isDone = Standard_True;
+  isDone = true;
 }
 
 void ProjLib_Torus::Project(const gp_Lin& L)

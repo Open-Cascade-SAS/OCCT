@@ -23,16 +23,16 @@ PCDM_Reference::PCDM_Reference()
 {
 }
 
-PCDM_Reference::PCDM_Reference(const Standard_Integer            aReferenceIdentifier,
+PCDM_Reference::PCDM_Reference(const int            aReferenceIdentifier,
                                const TCollection_ExtendedString& aFileName,
-                               const Standard_Integer            aDocumentVersion)
+                               const int            aDocumentVersion)
     : myReferenceIdentifier(aReferenceIdentifier),
       myFileName(aFileName),
       myDocumentVersion(aDocumentVersion)
 {
 }
 
-Standard_Integer PCDM_Reference::ReferenceIdentifier() const
+int PCDM_Reference::ReferenceIdentifier() const
 {
   return myReferenceIdentifier;
 }
@@ -42,7 +42,7 @@ TCollection_ExtendedString PCDM_Reference::FileName() const
   return myFileName;
 }
 
-Standard_Integer PCDM_Reference::DocumentVersion() const
+int PCDM_Reference::DocumentVersion() const
 {
   return myDocumentVersion;
 }

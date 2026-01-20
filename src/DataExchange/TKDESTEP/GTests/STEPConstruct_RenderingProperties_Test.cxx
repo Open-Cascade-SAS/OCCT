@@ -15,7 +15,9 @@
 
 #include <STEPConstruct_Styles.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
-#include <StepVisual_HArray1OfRenderingPropertiesSelect.hxx>
+#include <StepVisual_RenderingPropertiesSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx>
 #include <StepVisual_ColourRgb.hxx>
@@ -43,21 +45,21 @@ protected:
   }
 
   //! Helper function to create a STEP rendering properties object for testing
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) CreateStepRenderingProperties()
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> CreateStepRenderingProperties()
   {
     // Create the surface color
-    Handle(TCollection_HAsciiString) aColorName = new TCollection_HAsciiString("");
-    Handle(StepVisual_Colour) aSurfaceColor     = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
+    occ::handle<TCollection_HAsciiString> aColorName = new TCollection_HAsciiString("");
+    occ::handle<StepVisual_Colour> aSurfaceColor     = STEPConstruct_Styles::EncodeColor(mySurfaceColor);
 
     // Create transparency property
-    Handle(StepVisual_SurfaceStyleTransparent) aTransp = new StepVisual_SurfaceStyleTransparent();
+    occ::handle<StepVisual_SurfaceStyleTransparent> aTransp = new StepVisual_SurfaceStyleTransparent();
     aTransp->Init(myTransparency);
 
     // Create specular color
-    Handle(StepVisual_Colour) aSpecColor = STEPConstruct_Styles::EncodeColor(mySpecularColor);
+    occ::handle<StepVisual_Colour> aSpecColor = STEPConstruct_Styles::EncodeColor(mySpecularColor);
 
     // Create reflectance model
-    Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular) aReflectance =
+    occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular> aReflectance =
       new StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular();
     aReflectance->Init(myAmbientFactor,
                        myDiffuseFactor,
@@ -66,8 +68,8 @@ protected:
                        aSpecColor);
 
     // Create the properties array with two entries: transparency and reflectance
-    Handle(StepVisual_HArray1OfRenderingPropertiesSelect) aProps =
-      new StepVisual_HArray1OfRenderingPropertiesSelect(1, 2);
+    occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>> aProps =
+      new NCollection_HArray1<StepVisual_RenderingPropertiesSelect>(1, 2);
 
     StepVisual_RenderingPropertiesSelect aRps1, aRps2;
     aRps1.SetValue(aTransp);
@@ -77,7 +79,7 @@ protected:
     aProps->SetValue(2, aRps2);
 
     // Create and return the final object
-    Handle(StepVisual_SurfaceStyleRenderingWithProperties) aResult =
+    occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> aResult =
       new StepVisual_SurfaceStyleRenderingWithProperties();
     aResult->Init(StepVisual_ssmNormalShading, aSurfaceColor, aProps);
 
@@ -91,7 +93,7 @@ protected:
 
     // Set basic properties
     aMaterial.DiffuseColor = mySurfaceColor;
-    aMaterial.Transparency = static_cast<Standard_ShortReal>(myTransparency);
+    aMaterial.Transparency = static_cast<float>(myTransparency);
 
     // Calculate ambient color based on ambient factor
     aMaterial.AmbientColor = Quantity_Color(mySurfaceColor.Red() * myAmbientFactor,
@@ -101,18 +103,18 @@ protected:
 
     // Set specular properties
     aMaterial.SpecularColor = mySpecularColor;
-    aMaterial.Shininess     = (Standard_ShortReal)(mySpecularExponent / 128.0);
+    aMaterial.Shininess     = (float)(mySpecularExponent / 128.0);
 
     // Mark as defined
-    aMaterial.IsDefined = Standard_True;
+    aMaterial.IsDefined = true;
 
     return aMaterial;
   }
 
   //! Compare two colors with tolerance
-  Standard_Boolean AreColorsEqual(const Quantity_Color& theC1,
+  bool AreColorsEqual(const Quantity_Color& theC1,
                                   const Quantity_Color& theC2,
-                                  const Standard_Real   theTol = 0.01)
+                                  const double   theTol = 0.01)
   {
     return (std::abs(theC1.Red() - theC2.Red()) <= theTol)
            && (std::abs(theC1.Green() - theC2.Green()) <= theTol)
@@ -122,11 +124,11 @@ protected:
   // Test member variables
   Quantity_Color mySurfaceColor;     //!< Surface color for testing
   Quantity_Color mySpecularColor;    //!< Specular color for testing
-  Standard_Real  myTransparency;     //!< Transparency value for testing
-  Standard_Real  myAmbientFactor;    //!< Ambient reflectance factor for testing
-  Standard_Real  myDiffuseFactor;    //!< Diffuse reflectance factor for testing
-  Standard_Real  mySpecularFactor;   //!< Specular reflectance factor for testing
-  Standard_Real  mySpecularExponent; //!< Specular exponent value for testing
+  double  myTransparency;     //!< Transparency value for testing
+  double  myAmbientFactor;    //!< Ambient reflectance factor for testing
+  double  myDiffuseFactor;    //!< Diffuse reflectance factor for testing
+  double  mySpecularFactor;   //!< Specular reflectance factor for testing
+  double  mySpecularExponent; //!< Specular exponent value for testing
 };
 
 // Test default constructor
@@ -167,7 +169,7 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, RGBAConstructor)
 // Test StepVisual_SurfaceStyleRenderingWithProperties constructor
 TEST_F(STEPConstruct_RenderingPropertiesTest, StepRenderingPropertiesConstructor)
 {
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) aStepProps =
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> aStepProps =
     CreateStepRenderingProperties();
 
   STEPConstruct_RenderingProperties aProps(aStepProps);
@@ -263,7 +265,7 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, CreateRenderingProperties)
                                                  mySpecularExponent,
                                                  mySpecularColor);
 
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) aStepProps =
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> aStepProps =
     aProps.CreateRenderingProperties();
 
   ASSERT_FALSE(aStepProps.IsNull());
@@ -399,14 +401,14 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, NullInputs)
   STEPConstruct_RenderingProperties aProps;
 
   // Creating from null STEP rendering properties
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) nullProps;
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> nullProps;
   aProps.Init(nullProps);
 
   EXPECT_FALSE(aProps.IsDefined());
 
   // Creating from null XCAF material
   XCAFDoc_VisMaterialCommon nullMaterial;
-  nullMaterial.IsDefined = Standard_False;
+  nullMaterial.IsDefined = false;
 
   STEPConstruct_RenderingProperties propsFromNull(nullMaterial);
   EXPECT_FALSE(propsFromNull.IsDefined());
@@ -419,7 +421,7 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, CreateAmbientOnlyProperties)
   aProps.Init(mySurfaceColor, myTransparency);
   aProps.SetAmbientReflectance(myAmbientFactor);
 
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) aStepProps =
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> aStepProps =
     aProps.CreateRenderingProperties();
 
   ASSERT_FALSE(aStepProps.IsNull());
@@ -444,7 +446,7 @@ TEST_F(STEPConstruct_RenderingPropertiesTest, CreateAmbientAndDiffuseProperties)
   aProps.Init(mySurfaceColor, myTransparency);
   aProps.SetAmbientAndDiffuseReflectance(myAmbientFactor, myDiffuseFactor);
 
-  Handle(StepVisual_SurfaceStyleRenderingWithProperties) aStepProps =
+  occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> aStepProps =
     aProps.CreateRenderingProperties();
 
   ASSERT_FALSE(aStepProps.IsNull());

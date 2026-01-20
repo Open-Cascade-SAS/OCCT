@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class Standard_Transient;
 class StepKinematics_RotationAboutDirection;
@@ -40,13 +41,13 @@ public:
   //! Recognizes a kind of SpatialRotation select type
   //! -- 1 -> RotationAboutDirection
   //! -- 2 -> YprRotation
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as RotationAboutDirection (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_RotationAboutDirection) RotationAboutDirection() const;
+  Standard_EXPORT occ::handle<StepKinematics_RotationAboutDirection> RotationAboutDirection() const;
 
   //! Returns Value as YprRotation (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) YprRotation() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> YprRotation() const;
 };
 #endif // _StepKinematics_SpatialRotation_HeaderFile

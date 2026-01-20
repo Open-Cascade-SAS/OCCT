@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionedGeometry, IGESData_IGESEntity)
 
 IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry() {}
 
-void IGESDimen_DimensionedGeometry::Init(const Standard_Integer                      nbDims,
-                                         const Handle(IGESData_IGESEntity)&          aDimension,
-                                         const Handle(IGESData_HArray1OfIGESEntity)& entities)
+void IGESDimen_DimensionedGeometry::Init(const int                      nbDims,
+                                         const occ::handle<IGESData_IGESEntity>&          aDimension,
+                                         const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& entities)
 {
   if (entities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_DimensionedGeometry : Init");
@@ -36,23 +36,23 @@ void IGESDimen_DimensionedGeometry::Init(const Standard_Integer                 
   InitTypeAndForm(402, 13);
 }
 
-Standard_Integer IGESDimen_DimensionedGeometry::NbDimensions() const
+int IGESDimen_DimensionedGeometry::NbDimensions() const
 {
   return theNbDimensions;
 }
 
-Standard_Integer IGESDimen_DimensionedGeometry::NbGeometryEntities() const
+int IGESDimen_DimensionedGeometry::NbGeometryEntities() const
 {
   return theGeometryEntities->Length();
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_DimensionedGeometry::DimensionEntity() const
+occ::handle<IGESData_IGESEntity> IGESDimen_DimensionedGeometry::DimensionEntity() const
 {
   return theDimension;
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_DimensionedGeometry::GeometryEntity(
-  const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESDimen_DimensionedGeometry::GeometryEntity(
+  const int num) const
 {
   return theGeometryEntities->Value(num);
 }

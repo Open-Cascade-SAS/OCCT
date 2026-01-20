@@ -17,9 +17,11 @@
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
 
@@ -27,8 +29,8 @@
 TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
 {
   // Define BSpline curve data (from Glob_Poles, Glob_Knots, Glob_Mults)
-  const Standard_Integer aNbPoles       = 195;
-  const Standard_Real    aPoles[195][3] = {
+  const int aNbPoles       = 195;
+  const double    aPoles[195][3] = {
     {60000, 31.937047503393231, 799.36226142892554},
     {60000.000000027772, 16.712487623992825, 799.97053069028755},
     {59999.999999875639, 7.3723603687660546, 799.97042131653711},
@@ -225,8 +227,8 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
     {59999.999999990541, 7306.414330937022, 10560.108503883888},
     {60000, 7397.0783263606427, 11218.963217145942}};
 
-  const Standard_Integer aNbKnots   = 17;
-  const Standard_Real    aKnots[17] = {0,
+  const int aNbKnots   = 17;
+  const double    aKnots[17] = {0,
                                        0.0087664292723375857,
                                        0.015654339342331427,
                                        0.019098294377328347,
@@ -244,40 +246,40 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
                                        0.51350664396810353,
                                        1};
 
-  const Standard_Integer aMults[17] =
+  const int aMults[17] =
     {15, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 15};
 
   // Fill array of poles
-  TColgp_Array1OfPnt aPolesArray(1, aNbPoles);
-  for (Standard_Integer i = 0; i < aNbPoles; i++)
+  NCollection_Array1<gp_Pnt> aPolesArray(1, aNbPoles);
+  for (int i = 0; i < aNbPoles; i++)
   {
     aPolesArray.SetValue(i + 1, gp_Pnt(aPoles[i][0], aPoles[i][1], aPoles[i][2]));
   }
 
   // Fill array of knots
-  TColStd_Array1OfReal aKnotsArray(1, aNbKnots);
-  for (Standard_Integer i = 0; i < aNbKnots; i++)
+  NCollection_Array1<double> aKnotsArray(1, aNbKnots);
+  for (int i = 0; i < aNbKnots; i++)
   {
     aKnotsArray.SetValue(i + 1, aKnots[i]);
   }
 
   // Fill array of mults
-  TColStd_Array1OfInteger aMultsArray(1, aNbKnots);
-  for (Standard_Integer i = 0; i < aNbKnots; i++)
+  NCollection_Array1<int> aMultsArray(1, aNbKnots);
+  for (int i = 0; i < aNbKnots; i++)
   {
     aMultsArray.SetValue(i + 1, aMults[i]);
   }
 
   // Create B-Spline curve
-  const Standard_Integer    aDegree = 14;
-  Handle(Geom_BSplineCurve) aC1 =
+  const int    aDegree = 14;
+  occ::handle<Geom_BSplineCurve> aC1 =
     new Geom_BSplineCurve(aPolesArray, aKnotsArray, aMultsArray, aDegree);
 
   // Create trimmed line
   gp_XYZ                    aP1(60000, -7504.83, 6000);
   gp_XYZ                    aP2(60000, 7504.83, 6000);
-  Handle(Geom_Line)         aLine = new Geom_Line(gp_Pnt(aP1), gp_Dir(aP2 - aP1));
-  Handle(Geom_TrimmedCurve) aC2   = new Geom_TrimmedCurve(aLine, 0.0, (aP2 - aP1).Modulus());
+  occ::handle<Geom_Line>         aLine = new Geom_Line(gp_Pnt(aP1), gp_Dir(aP2 - aP1));
+  occ::handle<Geom_TrimmedCurve> aC2   = new Geom_TrimmedCurve(aLine, 0.0, (aP2 - aP1).Modulus());
 
   // Try to find extrema
   // IMPORTANT: it is not allowed to input infinite curves!
@@ -292,7 +294,7 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
   else
   {
     // Check if extrema were found
-    const Standard_Integer aNbEx = anEx.NbExtrema();
+    const int aNbEx = anEx.NbExtrema();
     EXPECT_GT(aNbEx, 0) << "Extrema should be found between BSpline and line";
 
     if (aNbEx > 0)
@@ -301,10 +303,10 @@ TEST(GeomAPI_ExtremaCurveCurve_Test, OCC862_ExtremaBSplineAndLine)
       gp_Pnt aPoint1, aPoint2;
       anEx.NearestPoints(aPoint1, aPoint2);
 
-      Standard_Real aU1, aU2;
+      double aU1, aU2;
       anEx.LowerDistanceParameters(aU1, aU2);
 
-      const Standard_Real aDistance = anEx.LowerDistance();
+      const double aDistance = anEx.LowerDistance();
 
       // Verify minimal distance is reasonable
       EXPECT_GE(aDistance, 0.0) << "Minimal distance should be non-negative";

@@ -32,7 +32,8 @@
 
 #include <ElCLib.hxx>
 
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <IntCurvesFace_Intersector.hxx>
 
@@ -46,7 +47,8 @@
 #include <BRep_Tool.hxx>
 
 #include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_SequenceOfLin.hxx>
+#include <gp_Lin.hxx>
+#include <NCollection_Sequence.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <BRepFeat_MakeDPrism.hxx>
 
@@ -57,28 +59,28 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Message.hxx>
 
-static void        SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& theSeq);
+static void        SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_Pnt>& theSeq);
 static TopoDS_Face NextFaceForPrism(const TopoDS_Shape& shape,
                                     const TopoDS_Shape& basis,
                                     const gp_Ax1&       ax1);
 static void        PrintState(Draw_Interpretor& aDI, const TopAbs_State& aState);
 //
-static Standard_Integer emptyshape(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer subshape(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer brepintcs(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer MakeBoss(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer MakeShell(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer xbounds(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer xclassify(Draw_Interpretor&, Standard_Integer, const char**);
+static int emptyshape(Draw_Interpretor&, int, const char**);
+static int subshape(Draw_Interpretor&, int, const char**);
+static int brepintcs(Draw_Interpretor&, int, const char**);
+static int MakeBoss(Draw_Interpretor&, int, const char**);
+static int MakeShell(Draw_Interpretor&, int, const char**);
+static int xbounds(Draw_Interpretor&, int, const char**);
+static int xclassify(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "TOPOLOGY other commands";
 
@@ -111,7 +113,7 @@ void BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 // function : emptyshape
 // purpose  : shape : shape name V/E/W/F/SH/SO/CS/C
 //=======================================================================
-Standard_Integer emptyshape(Draw_Interpretor&, Standard_Integer n, const char** a)
+int emptyshape(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
     return 1;
@@ -186,7 +188,7 @@ Standard_Integer emptyshape(Draw_Interpretor&, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int subshape(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 2)
     return 1;
@@ -201,10 +203,10 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
     p++;
   *p = '_';
   p++;
-  Standard_Integer i = 0;
+  int i = 0;
   if (n == 3)
   {
-    Standard_Integer isub = Draw::Atoi(a[2]);
+    int isub = Draw::Atoi(a[2]);
     TopoDS_Iterator  itr(S);
     while (itr.More())
     {
@@ -265,8 +267,8 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
         return 1;
     }
 
-    Standard_Integer    isub = Draw::Atoi(a[3]);
-    TopTools_MapOfShape M;
+    int    isub = Draw::Atoi(a[3]);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
     M.Add(S);
     TopExp_Explorer ex(S, typ);
     while (ex.More())
@@ -290,7 +292,7 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int brepintcs(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 2)
   {
@@ -298,7 +300,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
       << "Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]";
     return 1;
   }
-  Standard_Integer indshape = 2;
+  int indshape = 2;
   TopoDS_Shape     S;
   for (; indshape <= n - 1; indshape++)
   {
@@ -316,7 +318,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
   double                    tol = 1e-6;
   if (indshape < n - 1)
   {
-    Standard_Real preci = atof(a[n - 1]);
+    double preci = atof(a[n - 1]);
     if (preci >= Precision::Confusion())
       tol = preci;
   }
@@ -327,7 +329,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
   aB.MakeCompound(aComp);
   if (indshape == 2)
   {
-    Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[1]);
+    occ::handle<Geom_Curve> C = DrawTrSurf::GetCurve(a[1]);
     if (C.IsNull())
       return 2;
     GeomAdaptor_Curve acur(C);
@@ -351,9 +353,9 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
   else
   {
     theAlg.Load(S, tol);
-    for (Standard_Integer il = 1; il < indshape; il++)
+    for (int il = 1; il < indshape; il++)
     {
-      Handle(Geom_Curve) hl = DrawTrSurf::GetCurve(a[il]);
+      occ::handle<Geom_Curve> hl = DrawTrSurf::GetCurve(a[il]);
       if (!hl.IsNull())
       {
         theAlg.Init(hl);
@@ -383,17 +385,17 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer MakeBoss(Draw_Interpretor&, Standard_Integer, const char** a)
+int MakeBoss(Draw_Interpretor&, int, const char** a)
 {
   TopoDS_Shape myS = DBRep::Get(a[2]);
 
   TopoDS_Shape myBasis = DBRep::Get(a[3]);
 
-  Standard_Real ang = -0.05235987901687622;
+  double ang = -0.05235987901687622;
 
   TopoDS_Face basis = TopoDS::Face(myBasis);
 
-  BRepFeat_MakeDPrism DPRISM(myS, basis, basis, ang, 1, Standard_True);
+  BRepFeat_MakeDPrism DPRISM(myS, basis, basis, ang, 1, true);
 
   TopoDS_Shape myFaceOnShape;
   gp_Pnt       Pnt(0.0, 0.0, 50.0);
@@ -413,24 +415,24 @@ Standard_Integer MakeBoss(Draw_Interpretor&, Standard_Integer, const char** a)
 
 //=================================================================================================
 
-Standard_Integer MakeShell(Draw_Interpretor& theDI, Standard_Integer, const char** a)
+int MakeShell(Draw_Interpretor& theDI, int, const char** a)
 {
 
   TopoDS_Shape         aShape = DBRep::Get(a[1]);
-  TopTools_ListOfShape Lst;
+  NCollection_List<TopoDS_Shape> Lst;
   TopExp_Explorer      Exp(aShape, TopAbs_FACE);
   TopoDS_Shape         InputShape(DBRep::Get(a[2]));
   TopoDS_Face          F = TopoDS::Face(InputShape);
   //  TopoDS_Face F = TopoDS::Face(DBRep::Get( a[2] ));
 
-  Standard_Real Off = -Draw::Atof(a[3]);
+  double Off = -Draw::Atof(a[3]);
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
 
   BRepOffset_MakeOffset Offset;
 
   Offset
-    .Initialize(aShape, Off, 1.0e-3, BRepOffset_Skin, Standard_True, Standard_False, GeomAbs_Arc);
+    .Initialize(aShape, Off, 1.0e-3, BRepOffset_Skin, true, false, GeomAbs_Arc);
   Offset.AddFace(F);
   Offset.MakeThickSolid(aProgress->Start());
 
@@ -444,7 +446,7 @@ Standard_Integer MakeShell(Draw_Interpretor& theDI, Standard_Integer, const char
 
 //=================================================================================================
 
-Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int xbounds(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -453,7 +455,7 @@ Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
   //
 
-  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  double aUMin, aUMax, aVMin, aVMax;
   TopoDS_Shape  aS;
   TopoDS_Face   aF;
   //
@@ -490,7 +492,7 @@ Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer xclassify(Draw_Interpretor& aDI, Standard_Integer n, const char** a)
+int xclassify(Draw_Interpretor& aDI, int n, const char** a)
 {
   if (n < 2)
   {
@@ -511,7 +513,7 @@ Standard_Integer xclassify(Draw_Interpretor& aDI, Standard_Integer n, const char
     return 0;
   }
   //
-  Standard_Real aTol   = 1.e-7;
+  double aTol   = 1.e-7;
   TopAbs_State  aState = TopAbs_UNKNOWN;
   //
   aTol = 1.e-7;
@@ -563,10 +565,10 @@ TopoDS_Face NextFaceForPrism(const TopoDS_Shape& shape,
 {
   TopoDS_Face nextFace;
 
-  TColgp_SequenceOfPnt seqPnts;
+  NCollection_Sequence<gp_Pnt> seqPnts;
   SampleEdges(basis, seqPnts);
 
-  for (Standard_Integer i = 1; i <= seqPnts.Length(); i++)
+  for (int i = 1; i <= seqPnts.Length(); i++)
   {
     const gp_Pnt& pt = seqPnts(i);
     // find a axis through a face
@@ -574,15 +576,15 @@ TopoDS_Face NextFaceForPrism(const TopoDS_Shape& shape,
     gp_Ax1 ax1b(pt, dir);
 
     LocOpe_CSIntersector ASI(shape);
-    LocOpe_SequenceOfLin slin;
+    NCollection_Sequence<gp_Lin> slin;
     slin.Append(ax1b);
     ASI.Perform(slin);
 
     if (ASI.IsDone())
     {
-      Standard_Integer        no = 1, IndFrom, IndTo;
+      int        no = 1, IndFrom, IndTo;
       TopAbs_Orientation      theOr;
-      constexpr Standard_Real min = 1.e-04, Tol = -Precision::Confusion();
+      constexpr double min = 1.e-04, Tol = -Precision::Confusion();
       if (ASI.LocalizeAfter(no, min, Tol, theOr, IndFrom, IndTo))
       {
         nextFace = ASI.Point(no, IndFrom).Face();
@@ -599,12 +601,12 @@ TopoDS_Face NextFaceForPrism(const TopoDS_Shape& shape,
 // purpose  : Sampling of <theShape>.
 // design   : Collect the vertices and points on the edges
 //=======================================================================
-void SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& theSeq)
+void SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_Pnt>& theSeq)
 {
 
   theSeq.Clear();
 
-  TopTools_MapOfShape theMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
   TopExp_Explorer     exp;
 
   // Adds all vertices/pnt
@@ -617,9 +619,9 @@ void SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& theSeq)
   }
 
   // Computes points on edge, but does not take the extremities into account
-  Standard_Integer   NECHANT = 5;
-  Handle(Geom_Curve) C;
-  Standard_Real      f, l, prm;
+  int   NECHANT = 5;
+  occ::handle<Geom_Curve> C;
+  double      f, l, prm;
   for (exp.Init(theShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
@@ -628,7 +630,7 @@ void SampleEdges(const TopoDS_Shape& theShape, TColgp_SequenceOfPnt& theSeq)
       if (!BRep_Tool::Degenerated(edg))
       {
         C = BRep_Tool::Curve(edg, f, l);
-        for (Standard_Integer i = 1; i < NECHANT; i++)
+        for (int i = 1; i < NECHANT; i++)
         {
           prm = ((NECHANT - i) * f + i * l) / NECHANT;
           theSeq.Append(C->Value(prm));

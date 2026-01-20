@@ -20,12 +20,12 @@
 
 //=================================================================================================
 
-void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
-                                       Standard_Boolean&                theUEnlarge,
-                                       Standard_Boolean&                theVEnlarge)
+void IntPolyh_Tools::IsEnlargePossible(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                       bool&                theUEnlarge,
+                                       bool&                theVEnlarge)
 {
-  theUEnlarge = Standard_False;
-  theVEnlarge = Standard_False;
+  theUEnlarge = false;
+  theVEnlarge = false;
 
   // In the context of IntPolyh_Intersection only BSpline and Bezier surfaces
   // should be enlarged
@@ -38,7 +38,7 @@ void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
       if (!Precision::IsInfinite(theSurf->FirstUParameter())
           && !Precision::IsInfinite(theSurf->LastUParameter()))
       {
-        theUEnlarge = Standard_True;
+        theUEnlarge = true;
       }
     }
 
@@ -49,7 +49,7 @@ void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
       if (!Precision::IsInfinite(theSurf->FirstVParameter())
           && !Precision::IsInfinite(theSurf->LastVParameter()))
       {
-        theVEnlarge = Standard_True;
+        theVEnlarge = true;
       }
     }
   }
@@ -59,25 +59,25 @@ void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
 // function : EnlargeZone
 // purpose  : Enlarges the sampling zone of the surface
 //=======================================================================
-static void EnlargeZone(const Handle(Adaptor3d_Surface)& theSurf,
-                        Standard_Real&                   u0,
-                        Standard_Real&                   u1,
-                        Standard_Real&                   v0,
-                        Standard_Real&                   v1)
+static void EnlargeZone(const occ::handle<Adaptor3d_Surface>& theSurf,
+                        double&                   u0,
+                        double&                   u1,
+                        double&                   v0,
+                        double&                   v1)
 {
-  Standard_Boolean isToEnlargeU, isToEnlargeV;
+  bool isToEnlargeU, isToEnlargeV;
   IntPolyh_Tools::IsEnlargePossible(theSurf, isToEnlargeU, isToEnlargeV);
   // Enlarge U
   if (isToEnlargeU)
   {
-    Standard_Real delta_u = 0.01 * std::abs(u1 - u0);
+    double delta_u = 0.01 * std::abs(u1 - u0);
     u0 -= delta_u;
     u1 += delta_u;
   }
 
   if (isToEnlargeV)
   {
-    Standard_Real delta_v = 0.01 * std::abs(v1 - v0);
+    double delta_v = 0.01 * std::abs(v1 - v0);
     v0 -= delta_v;
     v1 += delta_v;
   }
@@ -85,18 +85,18 @@ static void EnlargeZone(const Handle(Adaptor3d_Surface)& theSurf,
 
 //=================================================================================================
 
-void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
-                                  const Standard_Integer           theNbSU,
-                                  const Standard_Integer           theNbSV,
-                                  const Standard_Boolean           theEnlargeZone,
-                                  TColStd_Array1OfReal&            theUPars,
-                                  TColStd_Array1OfReal&            theVPars)
+void IntPolyh_Tools::MakeSampling(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                  const int           theNbSU,
+                                  const int           theNbSV,
+                                  const bool           theEnlargeZone,
+                                  NCollection_Array1<double>&            theUPars,
+                                  NCollection_Array1<double>&            theVPars)
 {
   // Resize arrays
-  theUPars.Resize(1, theNbSU, Standard_False);
-  theVPars.Resize(1, theNbSV, Standard_False);
+  theUPars.Resize(1, theNbSU, false);
+  theVPars.Resize(1, theNbSV, false);
   //
-  Standard_Real u0, u1, v0, v1;
+  double u0, u1, v0, v1;
   u0 = theSurf->FirstUParameter();
   u1 = theSurf->LastUParameter();
   v0 = theSurf->FirstVParameter();
@@ -106,18 +106,18 @@ void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
   if (theEnlargeZone)
     EnlargeZone(theSurf, u0, u1, v0, v1);
 
-  Standard_Integer aNbSamplesU1 = theNbSU - 1;
-  Standard_Integer aNbSamplesV1 = theNbSV - 1;
+  int aNbSamplesU1 = theNbSU - 1;
+  int aNbSamplesV1 = theNbSV - 1;
 
   // U step
-  Standard_Real dU = (u1 - u0) / Standard_Real(aNbSamplesU1);
+  double dU = (u1 - u0) / double(aNbSamplesU1);
   // V step
-  Standard_Real dV = (v1 - v0) / Standard_Real(aNbSamplesV1);
+  double dV = (v1 - v0) / double(aNbSamplesV1);
 
   // Fill arrays
-  for (Standard_Integer i = 0; i < theNbSU; ++i)
+  for (int i = 0; i < theNbSU; ++i)
   {
-    Standard_Real aU = u0 + i * dU;
+    double aU = u0 + i * dU;
     if (i == aNbSamplesU1)
     {
       aU = u1;
@@ -125,9 +125,9 @@ void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
     theUPars.SetValue(i + 1, aU);
   }
   //
-  for (Standard_Integer i = 0; i < theNbSV; ++i)
+  for (int i = 0; i < theNbSV; ++i)
   {
-    Standard_Real aV = v0 + i * dV;
+    double aV = v0 + i * dV;
     if (i == aNbSamplesV1)
     {
       aV = v1;
@@ -138,40 +138,40 @@ void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
 
 //=================================================================================================
 
-Standard_Real IntPolyh_Tools::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurf,
-                                                const TColStd_Array1OfReal&      theUPars,
-                                                const TColStd_Array1OfReal&      theVPars)
+double IntPolyh_Tools::ComputeDeflection(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                                const NCollection_Array1<double>&      theUPars,
+                                                const NCollection_Array1<double>&      theVPars)
 {
   IntCurveSurface_ThePolyhedronOfHInter polyhedron(theSurf, theUPars, theVPars);
-  Standard_Real                         aDeflTol = polyhedron.DeflectionOverEstimation();
+  double                         aDeflTol = polyhedron.DeflectionOverEstimation();
   return aDeflTol;
 }
 
 //=================================================================================================
 
-void IntPolyh_Tools::FillArrayOfPointNormal(const Handle(Adaptor3d_Surface)& theSurf,
-                                            const TColStd_Array1OfReal&      theUPars,
-                                            const TColStd_Array1OfReal&      theVPars,
+void IntPolyh_Tools::FillArrayOfPointNormal(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                            const NCollection_Array1<double>&      theUPars,
+                                            const NCollection_Array1<double>&      theVPars,
                                             IntPolyh_ArrayOfPointNormal&     thePoints)
 {
-  Standard_Integer aNbU = theUPars.Length();
-  Standard_Integer aNbV = theVPars.Length();
-  Standard_Integer iCnt = 0;
+  int aNbU = theUPars.Length();
+  int aNbV = theVPars.Length();
+  int iCnt = 0;
   thePoints.Init(aNbU * aNbV);
-  for (Standard_Integer i = 1; i <= aNbU; ++i)
+  for (int i = 1; i <= aNbU; ++i)
   {
-    Standard_Real aU = theUPars(i);
+    double aU = theUPars(i);
 
-    for (Standard_Integer j = 1; j <= aNbV; ++j)
+    for (int j = 1; j <= aNbV; ++j)
     {
-      Standard_Real aV = theVPars(j);
+      double aV = theVPars(j);
       // Compute the point
       gp_Pnt aP;
       gp_Vec aDU, aDV;
       theSurf->D1(aU, aV, aP, aDU, aDV);
       // Compute normal
       gp_Vec        aVNorm  = aDU.Crossed(aDV);
-      Standard_Real aLength = aVNorm.Magnitude();
+      double aLength = aVNorm.Magnitude();
       if (aLength > gp::Resolution())
       {
         aVNorm /= aLength;

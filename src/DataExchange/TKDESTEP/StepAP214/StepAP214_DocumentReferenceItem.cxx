@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_DocumentReferenceItem.hxx>
@@ -36,8 +36,8 @@
 
 StepAP214_DocumentReferenceItem::StepAP214_DocumentReferenceItem() {}
 
-Standard_Integer StepAP214_DocumentReferenceItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_DocumentReferenceItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -84,110 +84,110 @@ Standard_Integer StepAP214_DocumentReferenceItem::CaseNum(
   return 0;
 }
 
-Handle(StepBasic_Approval) StepAP214_DocumentReferenceItem::Approval() const
+occ::handle<StepBasic_Approval> StepAP214_DocumentReferenceItem::Approval() const
 {
   return GetCasted(StepBasic_Approval, Value());
 }
 
-Handle(StepRepr_DescriptiveRepresentationItem) StepAP214_DocumentReferenceItem::
+occ::handle<StepRepr_DescriptiveRepresentationItem> StepAP214_DocumentReferenceItem::
   DescriptiveRepresentationItem() const
 {
   return GetCasted(StepRepr_DescriptiveRepresentationItem, Value());
 }
 
-Handle(StepRepr_MaterialDesignation) StepAP214_DocumentReferenceItem::MaterialDesignation() const
+occ::handle<StepRepr_MaterialDesignation> StepAP214_DocumentReferenceItem::MaterialDesignation() const
 {
   return GetCasted(StepRepr_MaterialDesignation, Value());
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_DocumentReferenceItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_DocumentReferenceItem::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship) StepAP214_DocumentReferenceItem::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_DocumentReferenceItem::
   ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-Handle(StepRepr_PropertyDefinition) StepAP214_DocumentReferenceItem::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepAP214_DocumentReferenceItem::PropertyDefinition() const
 {
   return GetCasted(StepRepr_PropertyDefinition, Value());
 }
 
-Handle(StepRepr_Representation) StepAP214_DocumentReferenceItem::Representation() const
+occ::handle<StepRepr_Representation> StepAP214_DocumentReferenceItem::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepAP214_DocumentReferenceItem::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepAP214_DocumentReferenceItem::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepRepr_ShapeAspectRelationship) StepAP214_DocumentReferenceItem::ShapeAspectRelationship()
+occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_DocumentReferenceItem::ShapeAspectRelationship()
   const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }
 
-Handle(StepAP214_AppliedExternalIdentificationAssignment) StepAP214_DocumentReferenceItem::
+occ::handle<StepAP214_AppliedExternalIdentificationAssignment> StepAP214_DocumentReferenceItem::
   AppliedExternalIdentificationAssignment() const
 {
   return GetCasted(StepAP214_AppliedExternalIdentificationAssignment, Value());
 }
 
-Handle(StepRepr_AssemblyComponentUsage) StepAP214_DocumentReferenceItem::AssemblyComponentUsage()
+occ::handle<StepRepr_AssemblyComponentUsage> StepAP214_DocumentReferenceItem::AssemblyComponentUsage()
   const
 {
   return GetCasted(StepRepr_AssemblyComponentUsage, Value());
 }
 
-Handle(StepBasic_CharacterizedObject) StepAP214_DocumentReferenceItem::CharacterizedObject() const
+occ::handle<StepBasic_CharacterizedObject> StepAP214_DocumentReferenceItem::CharacterizedObject() const
 {
   return GetCasted(StepBasic_CharacterizedObject, Value());
 }
 
-Handle(StepShape_DimensionalSize) StepAP214_DocumentReferenceItem::DimensionalSize() const
+occ::handle<StepShape_DimensionalSize> StepAP214_DocumentReferenceItem::DimensionalSize() const
 {
   return GetCasted(StepShape_DimensionalSize, Value());
 }
 
-Handle(StepBasic_ExternallyDefinedItem) StepAP214_DocumentReferenceItem::ExternallyDefinedItem()
+occ::handle<StepBasic_ExternallyDefinedItem> StepAP214_DocumentReferenceItem::ExternallyDefinedItem()
   const
 {
   return GetCasted(StepBasic_ExternallyDefinedItem, Value());
 }
 
-Handle(StepBasic_Group) StepAP214_DocumentReferenceItem::Group() const
+occ::handle<StepBasic_Group> StepAP214_DocumentReferenceItem::Group() const
 {
   return GetCasted(StepBasic_Group, Value());
 }
 
-Handle(StepBasic_GroupRelationship) StepAP214_DocumentReferenceItem::GroupRelationship() const
+occ::handle<StepBasic_GroupRelationship> StepAP214_DocumentReferenceItem::GroupRelationship() const
 {
   return GetCasted(StepBasic_GroupRelationship, Value());
 }
 
-Handle(StepRepr_MeasureRepresentationItem) StepAP214_DocumentReferenceItem::
+occ::handle<StepRepr_MeasureRepresentationItem> StepAP214_DocumentReferenceItem::
   MeasureRepresentationItem() const
 {
   return GetCasted(StepRepr_MeasureRepresentationItem, Value());
 }
 
-Handle(StepBasic_ProductCategory) StepAP214_DocumentReferenceItem::ProductCategory() const
+occ::handle<StepBasic_ProductCategory> StepAP214_DocumentReferenceItem::ProductCategory() const
 {
   return GetCasted(StepBasic_ProductCategory, Value());
 }
 
-Handle(StepBasic_ProductDefinitionContext) StepAP214_DocumentReferenceItem::
+occ::handle<StepBasic_ProductDefinitionContext> StepAP214_DocumentReferenceItem::
   ProductDefinitionContext() const
 {
   return GetCasted(StepBasic_ProductDefinitionContext, Value());
 }
 
-Handle(StepRepr_RepresentationItem) StepAP214_DocumentReferenceItem::RepresentationItem() const
+occ::handle<StepRepr_RepresentationItem> StepAP214_DocumentReferenceItem::RepresentationItem() const
 {
   return GetCasted(StepRepr_RepresentationItem, Value());
 }

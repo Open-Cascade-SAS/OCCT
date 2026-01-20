@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepVisual_HArray1OfCurveStyleFontPattern.hxx>
+#include <StepVisual_CurveStyleFontPattern.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_CurveStyleFontPattern;
-
-class StepVisual_CurveStyleFont;
-DEFINE_STANDARD_HANDLE(StepVisual_CurveStyleFont, Standard_Transient)
 
 class StepVisual_CurveStyleFont : public Standard_Transient
 {
@@ -36,29 +35,28 @@ public:
   //! Returns a CurveStyleFont
   Standard_EXPORT StepVisual_CurveStyleFont();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                  aName,
-                            const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                  aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>& aPatternList);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   Standard_EXPORT void SetPatternList(
-    const Handle(StepVisual_HArray1OfCurveStyleFontPattern)& aPatternList);
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>& aPatternList);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfCurveStyleFontPattern) PatternList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>> PatternList() const;
 
-  Standard_EXPORT Handle(StepVisual_CurveStyleFontPattern) PatternListValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyleFontPattern> PatternListValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbPatternList() const;
+  Standard_EXPORT int NbPatternList() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CurveStyleFont, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)                  name;
-  Handle(StepVisual_HArray1OfCurveStyleFontPattern) patternList;
+  occ::handle<TCollection_HAsciiString>                  name;
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>> patternList;
 };
 
 #endif // _StepVisual_CurveStyleFont_HeaderFile

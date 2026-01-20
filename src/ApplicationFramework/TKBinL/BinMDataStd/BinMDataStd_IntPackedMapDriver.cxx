@@ -18,7 +18,8 @@
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
@@ -32,14 +33,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_IntPackedMapDriver::BinMDataStd_IntPackedMapDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_IntPackedMapDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_IntPackedMapDriver::NewEmpty() const
 {
   return new TDataStd_IntPackedMap;
 }
@@ -49,54 +50,54 @@ Handle(TDF_Attribute) BinMDataStd_IntPackedMapDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&  Source,
-                                                       const Handle(TDF_Attribute)& Target,
+bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&  Source,
+                                                       const occ::handle<TDF_Attribute>& Target,
                                                        BinObjMgt_RRelocationTable& RelocTable) const
 {
-  Handle(TDataStd_IntPackedMap) aTagAtt = Handle(TDataStd_IntPackedMap)::DownCast(Target);
+  occ::handle<TDataStd_IntPackedMap> aTagAtt = occ::down_cast<TDataStd_IntPackedMap>(Target);
   if (aTagAtt.IsNull())
   {
     myMessageDriver->Send("IntPackedMapDriver:: The target attribute is Null.", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer aSize = 0;
+  int aSize = 0;
   if (!(Source >> aSize))
   {
     myMessageDriver->Send("Cannot retrieve size for IntPackedMap attribute.", Message_Fail);
-    return Standard_False;
+    return false;
   }
   if (aSize)
   {
-    Handle(TColStd_HPackedMapOfInteger) aHMap = new TColStd_HPackedMapOfInteger();
-    Standard_Integer                    aKey;
-    for (Standard_Integer i = 0; i < aSize; i++)
+    occ::handle<TColStd_HPackedMapOfInteger> aHMap = new TColStd_HPackedMapOfInteger();
+    int                    aKey;
+    for (int i = 0; i < aSize; i++)
     {
-      Standard_Boolean ok = Source >> aKey;
+      bool ok = Source >> aKey;
       if (!ok)
       {
         myMessageDriver->Send("Cannot retrieve integer member for IntPackedMap attribute.",
                               Message_Fail);
-        return Standard_False;
+        return false;
       }
       if (!aHMap->ChangeMap().Add(aKey))
-        return Standard_False;
+        return false;
     }
     aTagAtt->ChangeMap(aHMap);
   }
 
-  Standard_Boolean aDelta(Standard_False);
+  bool aDelta(false);
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
-    Standard_Byte aDeltaValue;
+    uint8_t aDeltaValue;
     if (!(Source >> aDeltaValue))
-      return Standard_False;
+      return false;
     else
       aDelta = (aDeltaValue != 0);
   }
   aTagAtt->SetDelta(aDelta);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -104,17 +105,17 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persisten
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntPackedMapDriver::Paste(const Handle(TDF_Attribute)& Source,
+void BinMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                            BinObjMgt_Persistent&        Target,
-                                           BinObjMgt_SRelocationTable& /*RelocTable*/) const
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
-  Handle(TDataStd_IntPackedMap) anAtt = Handle(TDataStd_IntPackedMap)::DownCast(Source);
+  occ::handle<TDataStd_IntPackedMap> anAtt = occ::down_cast<TDataStd_IntPackedMap>(Source);
   if (anAtt.IsNull())
   {
     myMessageDriver->Send("IntPackedMapDriver:: The source attribute is Null.", Message_Fail);
     return;
   }
-  Standard_Integer aSize = (anAtt->IsEmpty()) ? 0 : anAtt->Extent();
+  int aSize = (anAtt->IsEmpty()) ? 0 : anAtt->Extent();
   Target << aSize;
   if (aSize)
   {
@@ -122,5 +123,5 @@ void BinMDataStd_IntPackedMapDriver::Paste(const Handle(TDF_Attribute)& Source,
     for (; anIt.More(); anIt.Next())
       Target << anIt.Key();
   }
-  Target << (Standard_Byte)(anAtt->GetDelta() ? 1 : 0);
+  Target << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 }

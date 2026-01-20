@@ -20,7 +20,9 @@
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <MeshVS_Buffer.hxx>
 #include <MeshVS_CommonSensitiveEntity.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerOwner.hxx>
+#include <Standard_Integer.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
@@ -50,9 +52,11 @@
 #include <SelectMgr_SequenceOfOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
@@ -60,14 +64,14 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_Mesh, AIS_InteractiveObject)
 
 //=================================================================================================
 
-MeshVS_Mesh::MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped)
+MeshVS_Mesh::MeshVS_Mesh(const bool theIsAllowOverlapped)
 {
   myDataSource.Nullify();
   myHilighter.Nullify();
   myWholeMeshOwner.Nullify();
   mySelectionMethod = MeshVS_MSM_NODES;
 
-  SetAutoHilight(Standard_False);
+  SetAutoHilight(false);
 
   SetDisplayMode(MeshVS_DMF_WireFrame); // Mode as default
   SetHilightMode(MeshVS_DMF_WireFrame); // Wireframe as default hilight mode
@@ -80,11 +84,11 @@ MeshVS_Mesh::MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped)
   myCurrentDrawer->SetInteger(MeshVS_DA_InteriorStyle, Aspect_IS_SOLID);
   myCurrentDrawer->SetInteger(MeshVS_DA_MaxFaceNodes, 10);
   myCurrentDrawer->SetBoolean(MeshVS_DA_IsAllowOverlapped, theIsAllowOverlapped);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_Reflection, Standard_True);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_Reflection, true);
   myCurrentDrawer->SetDouble(MeshVS_DA_ShrinkCoeff, 0.8);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_ComputeTime, Standard_False);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_ComputeSelectionTime, Standard_False);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_DisplayNodes, Standard_True);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_ComputeTime, false);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_ComputeSelectionTime, false);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_DisplayNodes, true);
   myCurrentDrawer->SetDouble(MeshVS_DA_EdgeWidth, 1.0);
   myCurrentDrawer->SetInteger(MeshVS_DA_EdgeType, Aspect_TOL_SOLID);
   myCurrentDrawer->SetInteger(MeshVS_DA_MarkerType, Aspect_TOM_O);
@@ -92,8 +96,8 @@ MeshVS_Mesh::MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped)
   myCurrentDrawer->SetDouble(MeshVS_DA_MarkerScale, 1.0);
   myCurrentDrawer->SetInteger(MeshVS_DA_BeamType, Aspect_TOL_SOLID);
   myCurrentDrawer->SetDouble(MeshVS_DA_BeamWidth, 1.0);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_SmoothShading, Standard_False);
-  myCurrentDrawer->SetBoolean(MeshVS_DA_SupressBackFaces, Standard_False);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_SmoothShading, false);
+  myCurrentDrawer->SetBoolean(MeshVS_DA_SupressBackFaces, false);
 
   mySelectionDrawer = new MeshVS_Drawer();
   mySelectionDrawer->Assign(myCurrentDrawer);
@@ -128,36 +132,36 @@ MeshVS_Mesh::MeshVS_Mesh(const Standard_Boolean theIsAllowOverlapped)
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::AcceptDisplayMode(const Standard_Integer theMode) const
+bool MeshVS_Mesh::AcceptDisplayMode(const int theMode) const
 {
   if (theMode <= 0)
   {
-    return Standard_False;
+    return false;
   }
   else if (myBuilders.IsEmpty())
   {
-    return Standard_True;
+    return true;
   }
 
-  for (MeshVS_SequenceOfPrsBuilder::Iterator aBuilderIter(myBuilders); aBuilderIter.More();
+  for (NCollection_Sequence<occ::handle<MeshVS_PrsBuilder>>::Iterator aBuilderIter(myBuilders); aBuilderIter.More();
        aBuilderIter.Next())
   {
-    const Handle(MeshVS_PrsBuilder)& aBuilder = aBuilderIter.Value();
+    const occ::handle<MeshVS_PrsBuilder>& aBuilder = aBuilderIter.Value();
     if (!aBuilder.IsNull() && aBuilder->TestFlags(theMode))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void MeshVS_Mesh::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                          const Handle(Prs3d_Presentation)&         thePresentation,
-                          const Standard_Integer                    theMode)
+void MeshVS_Mesh::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                          const occ::handle<Prs3d_Presentation>&         thePresentation,
+                          const int                    theMode)
 {
-  Standard_Boolean toShowComputeTime = Standard_True;
+  bool toShowComputeTime = true;
   myCurrentDrawer->GetBoolean(MeshVS_DA_ComputeTime, toShowComputeTime);
   OSD_Timer aTimer;
   if (toShowComputeTime)
@@ -167,7 +171,7 @@ void MeshVS_Mesh::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
   }
 
   // Repair Ids in map if necessary
-  Handle(MeshVS_DataSource) aDS = GetDataSource();
+  occ::handle<MeshVS_DataSource> aDS = GetDataSource();
   if (aDS.IsNull() || theMode <= 0)
   {
     return;
@@ -175,32 +179,32 @@ void MeshVS_Mesh::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 
   const TColStd_PackedMapOfInteger& aNodes      = aDS->GetAllNodes();
   const TColStd_PackedMapOfInteger& aElems      = aDS->GetAllElements();
-  const Standard_Boolean            hasNodes    = !aNodes.IsEmpty();
-  const Standard_Boolean            hasElements = !aElems.IsEmpty();
+  const bool            hasNodes    = !aNodes.IsEmpty();
+  const bool            hasElements = !aElems.IsEmpty();
 
   TColStd_PackedMapOfInteger aNodesToExclude, aElemsToExclude;
-  for (MeshVS_SequenceOfPrsBuilder::Iterator aBuilderIter(myBuilders); aBuilderIter.More();
+  for (NCollection_Sequence<occ::handle<MeshVS_PrsBuilder>>::Iterator aBuilderIter(myBuilders); aBuilderIter.More();
        aBuilderIter.Next())
   {
-    const Handle(MeshVS_PrsBuilder)& aBuilder = aBuilderIter.Value();
+    const occ::handle<MeshVS_PrsBuilder>& aBuilder = aBuilderIter.Value();
     if (!aBuilder.IsNull() && aBuilder->TestFlags(theMode))
     {
       aBuilder->SetPresentationManager(thePrsMgr);
       if (hasNodes)
       {
-        aBuilder->Build(thePresentation, aNodes, aNodesToExclude, Standard_False, theMode);
+        aBuilder->Build(thePresentation, aNodes, aNodesToExclude, false, theMode);
       }
       if (hasElements)
       {
-        aBuilder->Build(thePresentation, aElems, aElemsToExclude, Standard_True, theMode);
+        aBuilder->Build(thePresentation, aElems, aElemsToExclude, true, theMode);
       }
     }
   }
 
   if (toShowComputeTime)
   {
-    Standard_Real    aSec, aCpu;
-    Standard_Integer aMin, anHour;
+    double    aSec, aCpu;
+    int aMin, anHour;
     aTimer.Show(aSec, aMin, anHour, aCpu);
     std::cout << "DisplayMode : " << theMode << "\n";
     std::cout << "Compute : " << aSec << " sec\n";
@@ -211,34 +215,34 @@ void MeshVS_Mesh::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 //=================================================================================================
 
 void MeshVS_Mesh::scanFacesForSharedNodes(const TColStd_PackedMapOfInteger& theAllElements,
-                                          const Standard_Integer            theNbMaxFaceNodes,
+                                          const int            theNbMaxFaceNodes,
                                           TColStd_PackedMapOfInteger&       theSharedNodes) const
 {
   theSharedNodes.Clear();
   MeshVS_EntityType    aType;
-  Standard_Integer     aNbNodes;
-  MeshVS_Buffer        aCoordsBuf(3 * theNbMaxFaceNodes * sizeof(Standard_Real));
-  TColStd_Array1OfReal aCoords(aCoordsBuf, 1, 3 * theNbMaxFaceNodes);
+  int     aNbNodes;
+  MeshVS_Buffer        aCoordsBuf(3 * theNbMaxFaceNodes * sizeof(double));
+  NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * theNbMaxFaceNodes);
   for (TColStd_MapIteratorOfPackedMapOfInteger aFaceIter(theAllElements); aFaceIter.More();
        aFaceIter.Next())
   {
-    const Standard_Integer aFaceIdx = aFaceIter.Key();
+    const int aFaceIdx = aFaceIter.Key();
 
-    if (IsSelectableElem(aFaceIdx) && myDataSource->GetGeomType(aFaceIdx, Standard_True, aType)
+    if (IsSelectableElem(aFaceIdx) && myDataSource->GetGeomType(aFaceIdx, true, aType)
         && aType == MeshVS_ET_Face)
     {
-      myDataSource->GetGeom(aFaceIdx, Standard_True, aCoords, aNbNodes, aType);
+      myDataSource->GetGeom(aFaceIdx, true, aCoords, aNbNodes, aType);
       if (aNbNodes == 0)
         continue;
 
-      MeshVS_Buffer           aNodesBuf(aNbNodes * sizeof(Standard_Integer));
-      TColStd_Array1OfInteger aElemNodes(aNodesBuf, 1, aNbNodes);
+      MeshVS_Buffer           aNodesBuf(aNbNodes * sizeof(int));
+      NCollection_Array1<int> aElemNodes(aNodesBuf, 1, aNbNodes);
       if (!myDataSource->GetNodesByElement(aFaceIdx, aElemNodes, aNbNodes))
         continue;
 
-      MeshVS_Buffer      aFacePntsBuf(aNbNodes * 3 * sizeof(Standard_Real));
-      TColgp_Array1OfPnt aFacePnts(aFacePntsBuf, 1, aNbNodes);
-      for (Standard_Integer aNodeIdx = 1; aNodeIdx <= aNbNodes; ++aNodeIdx)
+      MeshVS_Buffer      aFacePntsBuf(aNbNodes * 3 * sizeof(double));
+      NCollection_Array1<gp_Pnt> aFacePnts(aFacePntsBuf, 1, aNbNodes);
+      for (int aNodeIdx = 1; aNodeIdx <= aNbNodes; ++aNodeIdx)
       {
         theSharedNodes.Add(aElemNodes(aNodeIdx));
       }
@@ -248,11 +252,11 @@ void MeshVS_Mesh::scanFacesForSharedNodes(const TColStd_PackedMapOfInteger& theA
 
 //=================================================================================================
 
-void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                   const Standard_Integer             theMode)
+void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                   const int             theMode)
 {
   OSD_Timer        gTimer;
-  Standard_Boolean toShowComputeSelectionTime = Standard_True;
+  bool toShowComputeSelectionTime = true;
   myCurrentDrawer->GetBoolean(MeshVS_DA_ComputeSelectionTime, toShowComputeSelectionTime);
   if (toShowComputeSelectionTime)
   {
@@ -260,37 +264,37 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
     gTimer.Start();
   }
 
-  Standard_Integer          aMaxFaceNodes = 0;
-  Handle(MeshVS_DataSource) aSource       = GetDataSource();
+  int          aMaxFaceNodes = 0;
+  occ::handle<MeshVS_DataSource> aSource       = GetDataSource();
   if (aSource.IsNull() || myCurrentDrawer.IsNull()
       || !myCurrentDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0)
   {
     return;
   }
 
-  const Standard_Integer aMode = HasDisplayMode() ? DisplayMode() : DefaultDisplayMode();
+  const int aMode = HasDisplayMode() ? DisplayMode() : DefaultDisplayMode();
   if (myHilighter.IsNull() || (aMode & MeshVS_DMF_OCCMask) == 0)
   {
     return;
   }
 
   // Make two array aliases pointing to the same memory:
-  // - TColStd_Array1OfReal for getting values from MeshVS_DataSource interface
+  // - NCollection_Array1<double> for getting values from MeshVS_DataSource interface
   // - array of gp_Pnt for convenient work with array of points
-  MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(Standard_Real));
+  MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
   NCollection_Array1<gp_Pnt> aPntArray(aCoordsBuf, 1, aMaxFaceNodes);
-  TColStd_Array1OfReal       aPntArrayAsCoordArray(aCoordsBuf, 1, 3 * aMaxFaceNodes);
+  NCollection_Array1<double>       aPntArrayAsCoordArray(aCoordsBuf, 1, 3 * aMaxFaceNodes);
 
   const TColStd_PackedMapOfInteger& anAllNodesMap    = aSource->GetAllNodes();
   const TColStd_PackedMapOfInteger& anAllElementsMap = aSource->GetAllElements();
   if (aSource->IsAdvancedSelectionEnabled())
   {
-    Handle(MeshVS_MeshOwner) anOwner;
-    for (MeshVS_DataMapIteratorOfDataMapOfIntegerOwner anIt(GetOwnerMaps(Standard_False));
+    occ::handle<MeshVS_MeshOwner> anOwner;
+    for (NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>::Iterator anIt(GetOwnerMaps(false));
          anIt.More();
          anIt.Next())
     {
-      anOwner = Handle(MeshVS_MeshOwner)::DownCast(anIt.Value());
+      anOwner = occ::down_cast<MeshVS_MeshOwner>(anIt.Value());
       if (!anOwner.IsNull())
       {
         // get the owner if it is already created
@@ -309,7 +313,7 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
       myMeshOwners.Bind(1, anOwner);
     }
     // Create one sensitive entity. It should detect mesh entities correspondingly to selection mode
-    Handle(MeshVS_SensitiveMesh) aSensMesh = new MeshVS_SensitiveMesh(anOwner, theMode);
+    occ::handle<MeshVS_SensitiveMesh> aSensMesh = new MeshVS_SensitiveMesh(anOwner, theMode);
     theSelection->Add(aSensMesh);
   }
   else
@@ -321,21 +325,21 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
         for (TColStd_MapIteratorOfPackedMapOfInteger anIter(anAllNodesMap); anIter.More();
              anIter.Next())
         {
-          const Standard_Integer aKey     = anIter.Key();
-          Standard_Integer       aNbNodes = 0;
+          const int aKey     = anIter.Key();
+          int       aNbNodes = 0;
           MeshVS_EntityType      aType    = MeshVS_ET_NONE;
-          if (!myDataSource->GetGeom(aKey, Standard_False, aPntArrayAsCoordArray, aNbNodes, aType))
+          if (!myDataSource->GetGeom(aKey, false, aPntArrayAsCoordArray, aNbNodes, aType))
           {
             continue;
           }
 
-          Standard_Address               anAddr = myDataSource->GetAddr(aKey, Standard_False);
-          Handle(MeshVS_MeshEntityOwner) anOwner =
+          void*               anAddr = myDataSource->GetAddr(aKey, false);
+          occ::handle<MeshVS_MeshEntityOwner> anOwner =
             new MeshVS_MeshEntityOwner(this, aKey, anAddr, aType, 5);
           myNodeOwners.Bind(aKey, anOwner);
           if (IsSelectableNode(aKey))
           {
-            Handle(Select3D_SensitivePoint) aPoint =
+            occ::handle<Select3D_SensitivePoint> aPoint =
               new Select3D_SensitivePoint(anOwner, aPntArray.First());
             theSelection->Add(aPoint);
           }
@@ -378,19 +382,19 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
             scanFacesForSharedNodes(anAllElementsMap, aMaxFaceNodes, aSharedNodes);
 
             // create sensitive entities for free edges, if there are any
-            Standard_Integer  aNbNodes = 0;
+            int  aNbNodes = 0;
             MeshVS_EntityType aType    = MeshVS_ET_NONE;
             for (TColStd_MapIteratorOfPackedMapOfInteger anElemIter(anAllElementsMap);
                  anElemIter.More();
                  anElemIter.Next())
             {
-              const Standard_Integer anElemIdx = anElemIter.Key();
+              const int anElemIdx = anElemIter.Key();
               if (IsSelectableElem(anElemIdx)
-                  && myDataSource->GetGeomType(anElemIdx, Standard_True, aType)
+                  && myDataSource->GetGeomType(anElemIdx, true, aType)
                   && aType == MeshVS_ET_Link)
               {
                 myDataSource->GetGeom(anElemIdx,
-                                      Standard_True,
+                                      true,
                                       aPntArrayAsCoordArray,
                                       aNbNodes,
                                       aType);
@@ -399,17 +403,17 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
                   continue;
                 }
 
-                MeshVS_Buffer           aNodesBuf(aNbNodes * sizeof(Standard_Integer));
-                TColStd_Array1OfInteger aElemNodes(aNodesBuf, 1, aNbNodes);
+                MeshVS_Buffer           aNodesBuf(aNbNodes * sizeof(int));
+                NCollection_Array1<int> aElemNodes(aNodesBuf, 1, aNbNodes);
                 if (!myDataSource->GetNodesByElement(anElemIdx, aElemNodes, aNbNodes))
                 {
                   continue;
                 }
 
-                MeshVS_Buffer      aPntsBuf(aNbNodes * 3 * sizeof(Standard_Real));
-                TColgp_Array1OfPnt aLinkPnts(aPntsBuf, 1, aNbNodes);
-                Standard_Boolean   isVertsShared = Standard_True;
-                for (Standard_Integer aPntIdx = 1; aPntIdx <= aNbNodes; ++aPntIdx)
+                MeshVS_Buffer      aPntsBuf(aNbNodes * 3 * sizeof(double));
+                NCollection_Array1<gp_Pnt> aLinkPnts(aPntsBuf, 1, aNbNodes);
+                bool   isVertsShared = true;
+                for (int aPntIdx = 1; aPntIdx <= aNbNodes; ++aPntIdx)
                 {
                   aLinkPnts(aPntIdx) = aPntArray.Value(aPntIdx);
                   isVertsShared      = isVertsShared && aSharedNodes.Contains(aElemNodes(aPntIdx));
@@ -418,7 +422,7 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
 
                 if (!isVertsShared)
                 {
-                  Handle(Select3D_SensitiveEntity) aLinkEnt =
+                  occ::handle<Select3D_SensitiveEntity> aLinkEnt =
                     new Select3D_SensitiveSegment(myWholeMeshOwner,
                                                   aLinkPnts.Value(1),
                                                   aLinkPnts.Value(2));
@@ -432,13 +436,13 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
                  aNodesIter.More();
                  aNodesIter.Next())
             {
-              const Standard_Integer aNodeIdx = aNodesIter.Key();
+              const int aNodeIdx = aNodesIter.Key();
               if (IsSelectableNode(aNodeIdx)
                   && myDataSource
-                       ->GetGeom(aNodeIdx, Standard_False, aPntArrayAsCoordArray, aNbNodes, aType)
+                       ->GetGeom(aNodeIdx, false, aPntArrayAsCoordArray, aNbNodes, aType)
                   && !aSharedNodes.Contains(aNodeIdx))
               {
-                Handle(Select3D_SensitiveEntity) aNodeEnt =
+                occ::handle<Select3D_SensitiveEntity> aNodeEnt =
                   new Select3D_SensitivePoint(myWholeMeshOwner, aPntArray.First());
                 theSelection->Add(aNodeEnt);
               }
@@ -454,11 +458,11 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
         TColStd_PackedMapOfInteger anAllGroupsMap;
         aSource->GetAllGroups(anAllGroupsMap);
 
-        Handle(MeshVS_HArray1OfSequenceOfInteger) aTopo;
+        occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
         for (TColStd_MapIteratorOfPackedMapOfInteger anIter(anAllGroupsMap); anIter.More();
              anIter.Next())
         {
-          const Standard_Integer     aKeyGroup  = anIter.Key();
+          const int     aKeyGroup  = anIter.Key();
           MeshVS_EntityType          aGroupType = MeshVS_ET_NONE;
           TColStd_PackedMapOfInteger aGroupMap;
           if (!myDataSource->GetGroup(aKeyGroup, aGroupType, aGroupMap))
@@ -466,8 +470,8 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
             continue;
           }
 
-          Standard_Address anAddr = myDataSource->GetGroupAddr(aKeyGroup);
-          Standard_Integer aPrior = 0;
+          void* anAddr = myDataSource->GetGroupAddr(aKeyGroup);
+          int aPrior = 0;
           switch (aGroupType)
           {
             case MeshVS_ET_Volume:
@@ -489,34 +493,34 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
               break;
           }
 
-          Handle(MeshVS_MeshEntityOwner) anOwner =
-            new MeshVS_MeshEntityOwner(this, aKeyGroup, anAddr, aGroupType, aPrior, Standard_True);
+          occ::handle<MeshVS_MeshEntityOwner> anOwner =
+            new MeshVS_MeshEntityOwner(this, aKeyGroup, anAddr, aGroupType, aPrior, true);
           myGroupOwners.Bind(aKeyGroup, anOwner);
 
-          Standard_Boolean  added    = Standard_False;
-          Standard_Integer  aNbNodes = 0;
+          bool  added    = false;
+          int  aNbNodes = 0;
           MeshVS_EntityType aType    = MeshVS_ET_NONE;
           for (TColStd_MapIteratorOfPackedMapOfInteger anIterMG(aGroupMap); anIterMG.More();
                anIterMG.Next())
           {
-            Standard_Integer aKey = anIterMG.Key();
+            int aKey = anIterMG.Key();
             if (aGroupType == MeshVS_ET_Node)
             {
               if (myDataSource
-                    ->GetGeom(aKey, Standard_False, aPntArrayAsCoordArray, aNbNodes, aType)
+                    ->GetGeom(aKey, false, aPntArrayAsCoordArray, aNbNodes, aType)
                   && IsSelectableNode /*!IsHiddenNode*/ (aKey))
               {
                 theSelection->Add(new Select3D_SensitivePoint(anOwner, aPntArray.First()));
-                added = Standard_True;
+                added = true;
               }
             }
-            else if (myDataSource->GetGeomType(aKey, Standard_True, aType)
+            else if (myDataSource->GetGeomType(aKey, true, aType)
                      && IsSelectableElem /*!IsHiddenElem*/ (aKey))
             {
-              myDataSource->GetGeom(aKey, Standard_True, aPntArrayAsCoordArray, aNbNodes, aType);
+              myDataSource->GetGeom(aKey, true, aPntArrayAsCoordArray, aNbNodes, aType);
               if (aType == MeshVS_ET_Face && aNbNodes > 0) // Faces: 2D-elements
               {
-                Handle(Select3D_SensitiveEntity) aSensFace;
+                occ::handle<Select3D_SensitiveEntity> aSensFace;
                 if (aNbNodes == 3)
                 {
                   aSensFace = new Select3D_SensitiveTriangle(anOwner,
@@ -534,30 +538,30 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
                   aSensFace = new MeshVS_SensitiveFace(anOwner, aPntArray);
                 }
                 theSelection->Add(aSensFace);
-                added = Standard_True;
+                added = true;
               }
               else if (aType == MeshVS_ET_Link && aNbNodes > 0) // Links: 1D-elements
               {
-                Handle(MeshVS_SensitiveSegment) aSeg =
+                occ::handle<MeshVS_SensitiveSegment> aSeg =
                   new MeshVS_SensitiveSegment(anOwner, aPntArray(1), aPntArray(2));
                 theSelection->Add(aSeg);
-                added = Standard_True;
+                added = true;
               }
               else if (aType == MeshVS_ET_Volume && aSource->Get3DGeom(aKey, aNbNodes, aTopo))
               {
-                Handle(MeshVS_SensitivePolyhedron) aPolyhedron =
+                occ::handle<MeshVS_SensitivePolyhedron> aPolyhedron =
                   new MeshVS_SensitivePolyhedron(anOwner, aPntArray, aTopo);
                 theSelection->Add(aPolyhedron);
-                added = Standard_True;
+                added = true;
               }
               else // if ( aType == MeshVS_ET_0D )   // Custom : not only 0D-elements !!!
               {
-                Handle(Select3D_SensitiveEntity) anEnt =
+                occ::handle<Select3D_SensitiveEntity> anEnt =
                   myHilighter->CustomSensitiveEntity(anOwner, aKey);
                 if (!anEnt.IsNull())
                 {
                   theSelection->Add(anEnt);
-                  added = Standard_True;
+                  added = true;
                 }
               }
             }
@@ -571,10 +575,10 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
       }
       default: // all residuary modes
       {
-        Handle(MeshVS_HArray1OfSequenceOfInteger) aTopo;
+        occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
         myElementOwners.Clear();
 
-        MeshVS_DataMapOfIntegerOwner* aCurMap = &my0DOwners;
+        NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>* aCurMap = &my0DOwners;
         if (theMode == MeshVS_ET_Link)
         {
           aCurMap = &myLinkOwners;
@@ -589,18 +593,18 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
         }
         aCurMap->Clear();
 
-        Standard_Integer  aNbNodes = 0;
+        int  aNbNodes = 0;
         MeshVS_EntityType aType    = MeshVS_ET_NONE;
         for (TColStd_MapIteratorOfPackedMapOfInteger anIterMV(anAllElementsMap); anIterMV.More();
              anIterMV.Next())
         {
-          Standard_Integer aKey = anIterMV.Key();
-          if (myDataSource->GetGeomType(aKey, Standard_True, aType) && theMode == aType)
+          int aKey = anIterMV.Key();
+          if (myDataSource->GetGeomType(aKey, true, aType) && theMode == aType)
           {
-            myDataSource->GetGeom(aKey, Standard_True, aPntArrayAsCoordArray, aNbNodes, aType);
-            Standard_Address anAddr = myDataSource->GetAddr(aKey, Standard_True);
+            myDataSource->GetGeom(aKey, true, aPntArrayAsCoordArray, aNbNodes, aType);
+            void* anAddr = myDataSource->GetAddr(aKey, true);
 
-            Standard_Integer aPrior = 0;
+            int aPrior = 0;
             switch (aType)
             {
               case MeshVS_ET_Volume:
@@ -619,14 +623,14 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
                 break;
             }
 
-            Handle(MeshVS_MeshEntityOwner) anOwner =
+            occ::handle<MeshVS_MeshEntityOwner> anOwner =
               new MeshVS_MeshEntityOwner(this, aKey, anAddr, aType, aPrior);
             aCurMap->Bind(aKey, anOwner);
             if (IsSelectableElem(aKey)) // The element is selectable
             {
               if (aType == MeshVS_ET_Face && aNbNodes > 0) // Faces: 2D-elements
               {
-                Handle(Select3D_SensitiveEntity) aSensFace;
+                occ::handle<Select3D_SensitiveEntity> aSensFace;
                 if (aNbNodes == 3)
                 {
                   aSensFace = new Select3D_SensitiveTriangle(anOwner,
@@ -647,19 +651,19 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
               }
               else if (aType == MeshVS_ET_Link && aNbNodes > 0) // Links: 1D-elements
               {
-                Handle(MeshVS_SensitiveSegment) aSeg =
+                occ::handle<MeshVS_SensitiveSegment> aSeg =
                   new MeshVS_SensitiveSegment(anOwner, aPntArray(1), aPntArray(2));
                 theSelection->Add(aSeg);
               }
               else if (aType == MeshVS_ET_Volume && aSource->Get3DGeom(aKey, aNbNodes, aTopo))
               {
-                Handle(MeshVS_SensitivePolyhedron) aPolyhedron =
+                occ::handle<MeshVS_SensitivePolyhedron> aPolyhedron =
                   new MeshVS_SensitivePolyhedron(anOwner, aPntArray, aTopo);
                 theSelection->Add(aPolyhedron);
               }
               else // if ( aType == MeshVS_ET_0D )   // Custom : not only 0D-elements !!!
               {
-                Handle(Select3D_SensitiveEntity) anEnt =
+                occ::handle<Select3D_SensitiveEntity> anEnt =
                   myHilighter->CustomSensitiveEntity(anOwner, aKey);
                 if (!anEnt.IsNull())
                 {
@@ -680,8 +684,8 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
 
   if (toShowComputeSelectionTime)
   {
-    Standard_Real    sec, cpu;
-    Standard_Integer min, hour;
+    double    sec, cpu;
+    int min, hour;
     gTimer.Show(sec, min, hour, cpu);
     std::cout << "SelectionMode : " << theMode << "\n";
     std::cout << "Compute selection: " << sec << " sec\n";
@@ -692,17 +696,17 @@ void MeshVS_Mesh::ComputeSelection(const Handle(SelectMgr_Selection)& theSelecti
 
 //=================================================================================================
 
-Standard_Integer MeshVS_Mesh::GetBuildersCount() const
+int MeshVS_Mesh::GetBuildersCount() const
 {
   return myBuilders.Length();
 }
 
 //=================================================================================================
 
-Standard_Integer MeshVS_Mesh::GetFreeId() const
+int MeshVS_Mesh::GetFreeId() const
 {
   TColStd_PackedMapOfInteger Ids;
-  Standard_Integer           i, len = myBuilders.Length(), curId;
+  int           i, len = myBuilders.Length(), curId;
 
   for (i = 1; i <= len; i++)
     Ids.Add(myBuilders.Value(i)->GetId());
@@ -716,7 +720,7 @@ Standard_Integer MeshVS_Mesh::GetFreeId() const
 
 //=================================================================================================
 
-Handle(MeshVS_PrsBuilder) MeshVS_Mesh::GetBuilder(const Standard_Integer Index) const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetBuilder(const int Index) const
 {
   if (Index >= 1 && Index <= myBuilders.Length())
     return myBuilders.Value(Index);
@@ -726,11 +730,11 @@ Handle(MeshVS_PrsBuilder) MeshVS_Mesh::GetBuilder(const Standard_Integer Index) 
 
 //=================================================================================================
 
-Handle(MeshVS_PrsBuilder) MeshVS_Mesh::GetBuilderById(const Standard_Integer Id) const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetBuilderById(const int Id) const
 {
-  Handle(MeshVS_PrsBuilder) Result;
+  occ::handle<MeshVS_PrsBuilder> Result;
 
-  Standard_Integer i, len = myBuilders.Length();
+  int i, len = myBuilders.Length();
   for (i = 1; i <= len; i++)
     if (myBuilders.Value(i)->GetId() == Id)
     {
@@ -742,13 +746,13 @@ Handle(MeshVS_PrsBuilder) MeshVS_Mesh::GetBuilderById(const Standard_Integer Id)
 
 //=================================================================================================
 
-void MeshVS_Mesh::AddBuilder(const Handle(MeshVS_PrsBuilder)& theBuilder,
-                             const Standard_Boolean           TreatAsHilighter)
+void MeshVS_Mesh::AddBuilder(const occ::handle<MeshVS_PrsBuilder>& theBuilder,
+                             const bool           TreatAsHilighter)
 {
   if (theBuilder.IsNull())
     return;
 
-  Standard_Integer i, n = myBuilders.Length();
+  int i, n = myBuilders.Length();
   for (i = 1; i <= n; i++)
     if (myBuilders(i)->GetPriority() < theBuilder->GetPriority())
       break;
@@ -764,9 +768,9 @@ void MeshVS_Mesh::AddBuilder(const Handle(MeshVS_PrsBuilder)& theBuilder,
 
 //=================================================================================================
 
-void MeshVS_Mesh::RemoveBuilder(const Standard_Integer theIndex)
+void MeshVS_Mesh::RemoveBuilder(const int theIndex)
 {
-  Handle(MeshVS_PrsBuilder) aBuild = GetBuilder(theIndex);
+  occ::handle<MeshVS_PrsBuilder> aBuild = GetBuilder(theIndex);
   if (!aBuild.IsNull())
   {
     if (aBuild == myHilighter)
@@ -777,12 +781,12 @@ void MeshVS_Mesh::RemoveBuilder(const Standard_Integer theIndex)
 
 //=================================================================================================
 
-void MeshVS_Mesh::RemoveBuilderById(const Standard_Integer Id)
+void MeshVS_Mesh::RemoveBuilderById(const int Id)
 {
-  Standard_Integer i, n = myBuilders.Length();
+  int i, n = myBuilders.Length();
   for (i = 1; i <= n; i++)
   {
-    Handle(MeshVS_PrsBuilder) aCur = myBuilders(i);
+    occ::handle<MeshVS_PrsBuilder> aCur = myBuilders(i);
     if (!aCur.IsNull() && aCur->GetId() == Id)
       break;
   }
@@ -796,12 +800,12 @@ void MeshVS_Mesh::RemoveBuilderById(const Standard_Integer Id)
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetHiddenElems(const Handle(TColStd_HPackedMapOfInteger)& theMap)
+void MeshVS_Mesh::SetHiddenElems(const occ::handle<TColStd_HPackedMapOfInteger>& theMap)
 {
   myHiddenElements = theMap;
 
   // Note: update of list of selectable nodes -- this is not optimal!
-  Standard_Boolean AutoSelUpdate = Standard_False;
+  bool AutoSelUpdate = false;
   if (!GetDrawer().IsNull() && GetDrawer()->GetBoolean(MeshVS_DA_SelectableAuto, AutoSelUpdate)
       && AutoSelUpdate)
     UpdateSelectableNodes();
@@ -809,12 +813,12 @@ void MeshVS_Mesh::SetHiddenElems(const Handle(TColStd_HPackedMapOfInteger)& theM
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetHiddenNodes(const Handle(TColStd_HPackedMapOfInteger)& theMap)
+void MeshVS_Mesh::SetHiddenNodes(const occ::handle<TColStd_HPackedMapOfInteger>& theMap)
 {
   myHiddenNodes = theMap;
 
   // Note: update of list of selectable nodes -- this is not optimal!
-  Standard_Boolean AutoSelUpdate = Standard_False;
+  bool AutoSelUpdate = false;
   if (!GetDrawer().IsNull() && GetDrawer()->GetBoolean(MeshVS_DA_SelectableAuto, AutoSelUpdate)
       && AutoSelUpdate)
     UpdateSelectableNodes();
@@ -822,23 +826,23 @@ void MeshVS_Mesh::SetHiddenNodes(const Handle(TColStd_HPackedMapOfInteger)& theM
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_Mesh::GetHiddenElems() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_Mesh::GetHiddenElems() const
 {
   return myHiddenElements;
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_Mesh::GetHiddenNodes() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_Mesh::GetHiddenNodes() const
 {
   return myHiddenNodes;
 }
 
 //=================================================================================================
 
-void AddToMap(MeshVS_DataMapOfIntegerOwner& Result, const MeshVS_DataMapOfIntegerOwner& Addition)
+void AddToMap(NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>& Result, const NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>& Addition)
 {
-  MeshVS_DataMapIteratorOfDataMapOfIntegerOwner anIt(Addition);
+  NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>::Iterator anIt(Addition);
   for (; anIt.More(); anIt.Next())
     if (Result.IsBound(anIt.Key()))
       Result.ChangeFind(anIt.Key()) = anIt.Value();
@@ -848,9 +852,9 @@ void AddToMap(MeshVS_DataMapOfIntegerOwner& Result, const MeshVS_DataMapOfIntege
 
 //=================================================================================================
 
-const MeshVS_DataMapOfIntegerOwner& MeshVS_Mesh::GetOwnerMaps(const Standard_Boolean IsElements)
+const NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>& MeshVS_Mesh::GetOwnerMaps(const bool IsElements)
 {
-  Handle(MeshVS_DataSource) aDS = GetDataSource();
+  occ::handle<MeshVS_DataSource> aDS = GetDataSource();
   if (!aDS.IsNull() && aDS->IsAdvancedSelectionEnabled())
     return myMeshOwners;
   if (IsElements)
@@ -870,14 +874,14 @@ const MeshVS_DataMapOfIntegerOwner& MeshVS_Mesh::GetOwnerMaps(const Standard_Boo
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::IsHiddenElem(const Standard_Integer theID) const
+bool MeshVS_Mesh::IsHiddenElem(const int theID) const
 {
   return !myHiddenElements.IsNull() && myHiddenElements->Map().Contains(theID);
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::IsHiddenNode(const Standard_Integer theID) const
+bool MeshVS_Mesh::IsHiddenNode(const int theID) const
 {
   // note that by default all nodes are hidden
   return myHiddenNodes.IsNull() || myHiddenNodes->Map().Contains(theID);
@@ -885,36 +889,36 @@ Standard_Boolean MeshVS_Mesh::IsHiddenNode(const Standard_Integer theID) const
 
 //=================================================================================================
 
-Handle(MeshVS_Drawer) MeshVS_Mesh::GetDrawer() const
+occ::handle<MeshVS_Drawer> MeshVS_Mesh::GetDrawer() const
 {
   return myCurrentDrawer;
 }
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetDrawer(const Handle(MeshVS_Drawer)& aDrawer)
+void MeshVS_Mesh::SetDrawer(const occ::handle<MeshVS_Drawer>& aDrawer)
 {
   myCurrentDrawer = aDrawer;
 }
 
 //=================================================================================================
 
-Handle(MeshVS_DataSource) MeshVS_Mesh::GetDataSource() const
+occ::handle<MeshVS_DataSource> MeshVS_Mesh::GetDataSource() const
 {
   return myDataSource;
 }
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetDataSource(const Handle(MeshVS_DataSource)& theDataSource)
+void MeshVS_Mesh::SetDataSource(const occ::handle<MeshVS_DataSource>& theDataSource)
 {
   myDataSource = theDataSource;
 }
 
 //=================================================================================================
 
-void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& thePM,
-                                  const SelectMgr_SequenceOfOwner&          theOwners)
+void MeshVS_Mesh::HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                  const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theOwners)
 {
   if (myHilighter.IsNull())
     return;
@@ -924,7 +928,7 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
 
   // new functionality
 
-  Handle(Prs3d_Presentation) aSelectionPrs;
+  occ::handle<Prs3d_Presentation> aSelectionPrs;
 
   aSelectionPrs = GetSelectPresentation(thePM);
 
@@ -941,22 +945,22 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
   gTimer.Start();
 #endif
 
-  Standard_Integer len = theOwners.Length(), i;
+  int len = theOwners.Length(), i;
 
-  Handle(MeshVS_MeshEntityOwner) anOwner;
+  occ::handle<MeshVS_MeshEntityOwner> anOwner;
   TColStd_PackedMapOfInteger     aSelNodes, aSelElements;
 
   for (i = 1; i <= len; i++)
   {
     if (theOwners.Value(i) == GlobalSelOwner())
     {
-      const Standard_Integer      aHiMode = HasHilightMode() ? HilightMode() : 0;
-      const Handle(Prs3d_Drawer)& aSelStyle =
+      const int      aHiMode = HasHilightMode() ? HilightMode() : 0;
+      const occ::handle<Prs3d_Drawer>& aSelStyle =
         !HilightAttributes().IsNull() ? HilightAttributes() : GetContext()->SelectionStyle();
       thePM->Color(this, aSelStyle, aHiMode);
       continue;
     }
-    anOwner = Handle(MeshVS_MeshEntityOwner)::DownCast(theOwners.Value(i));
+    anOwner = occ::down_cast<MeshVS_MeshEntityOwner>(theOwners.Value(i));
     if (!anOwner.IsNull())
     {
       // nkv: add support of mesh groups
@@ -990,11 +994,11 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
     }
     else if (GetDataSource()->IsAdvancedSelectionEnabled())
     {
-      Handle(MeshVS_MeshOwner) aMeshOwner = Handle(MeshVS_MeshOwner)::DownCast(theOwners.Value(i));
+      occ::handle<MeshVS_MeshOwner> aMeshOwner = occ::down_cast<MeshVS_MeshOwner>(theOwners.Value(i));
       if (!aMeshOwner.IsNull())
       {
-        Handle(TColStd_HPackedMapOfInteger) aNodes = aMeshOwner->GetSelectedNodes();
-        Handle(TColStd_HPackedMapOfInteger) aElems = aMeshOwner->GetSelectedElements();
+        occ::handle<TColStd_HPackedMapOfInteger> aNodes = aMeshOwner->GetSelectedNodes();
+        occ::handle<TColStd_HPackedMapOfInteger> aElems = aMeshOwner->GetSelectedElements();
         if (!aNodes.IsNull())
           aSelNodes.Assign(aNodes->Map());
         if (!aElems.IsNull())
@@ -1018,7 +1022,7 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
     }
   }
 
-  Standard_Boolean IsNeedToRedisplay = Standard_False;
+  bool IsNeedToRedisplay = false;
 
   aSelectionPrs->Clear();
 
@@ -1027,17 +1031,17 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
   if (aSelNodes.Extent() > 0)
   {
     TColStd_PackedMapOfInteger tmp;
-    myHilighter->Build(aSelectionPrs, aSelNodes, tmp, Standard_False, MeshVS_DMF_SelectionPrs);
+    myHilighter->Build(aSelectionPrs, aSelNodes, tmp, false, MeshVS_DMF_SelectionPrs);
   }
   if (aSelElements.Extent() > 0)
   {
     TColStd_PackedMapOfInteger tmp;
-    myHilighter->Build(aSelectionPrs, aSelElements, tmp, Standard_True, MeshVS_DMF_SelectionPrs);
+    myHilighter->Build(aSelectionPrs, aSelElements, tmp, true, MeshVS_DMF_SelectionPrs);
   }
 
   myHilighter->SetDrawer(0);
 
-  IsNeedToRedisplay = Standard_True;
+  IsNeedToRedisplay = true;
 
   aSelectionPrs->SetZLayer(Graphic3d_ZLayerId_Top);
 
@@ -1048,8 +1052,8 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
   }
 
 #ifdef OCCT_DEBUG
-  Standard_Real    sec, cpu;
-  Standard_Integer min, hour;
+  double    sec, cpu;
+  int min, hour;
 
   gTimer.Show(sec, min, hour, cpu);
   std::cout << "HilightSelected : " << std::endl;
@@ -1063,9 +1067,9 @@ void MeshVS_Mesh::HilightSelected(const Handle(PrsMgr_PresentationManager)& theP
 
 //=================================================================================================
 
-void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                        const Handle(Prs3d_Drawer)&               theStyle,
-                                        const Handle(SelectMgr_EntityOwner)&      theOwner)
+void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const occ::handle<SelectMgr_EntityOwner>&      theOwner)
 {
   if (theOwner.IsNull())
     return;
@@ -1073,7 +1077,7 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
   const Quantity_Color& aColor = theStyle->Color();
   if (theOwner == GlobalSelOwner())
   {
-    Standard_Integer aHiMode = HasHilightMode() ? HilightMode() : 0;
+    int aHiMode = HasHilightMode() ? HilightMode() : 0;
     thePM->Color(this, theStyle, aHiMode, NULL, Graphic3d_ZLayerId_Top);
     return;
   }
@@ -1081,7 +1085,7 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
   if (myHilighter.IsNull())
     return;
 
-  Handle(Prs3d_Presentation) aHilightPrs;
+  occ::handle<Prs3d_Presentation> aHilightPrs;
   aHilightPrs = GetHilightPresentation(thePM);
 
   aHilightPrs->Clear();
@@ -1091,13 +1095,13 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
     aHilightPrs->SetTransformPersistence(Presentation()->TransformPersistence());
   //----------------
 
-  const Standard_Boolean isMeshEntityOwner =
+  const bool isMeshEntityOwner =
     theOwner->IsKind(STANDARD_TYPE(MeshVS_MeshEntityOwner));
-  const Standard_Boolean isWholeMeshOwner =
+  const bool isWholeMeshOwner =
     // agv    !Owner.IsNull() && Owner==myWholeMeshOwner;
     IsWholeMeshOwner(theOwner);
 
-  Standard_Integer aDispMode = MeshVS_DMF_Shading;
+  int aDispMode = MeshVS_DMF_Shading;
   if (HasDisplayMode() && (DisplayMode() & MeshVS_DMF_OCCMask) > MeshVS_DMF_WireFrame)
     aDispMode = (DisplayMode() & MeshVS_DMF_OCCMask);
   // It because we draw hilighted owners only in shading or shrink (not in wireframe)
@@ -1111,9 +1115,9 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
 
   if (isMeshEntityOwner)
   {
-    Handle(MeshVS_MeshEntityOwner) theAISOwner = Handle(MeshVS_MeshEntityOwner)::DownCast(theOwner);
+    occ::handle<MeshVS_MeshEntityOwner> theAISOwner = occ::down_cast<MeshVS_MeshEntityOwner>(theOwner);
     MeshVS_EntityType              aType       = theAISOwner->Type();
-    Standard_Integer               anID        = theAISOwner->ID();
+    int               anID        = theAISOwner->ID();
 
     if (theAISOwner->IsGroup())
     {
@@ -1148,17 +1152,17 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
       myHilighter->Build(aHilightPrs,
                          GetDataSource()->GetAllElements(),
                          tmp,
-                         Standard_True,
+                         true,
                          MeshVS_DMF_WireFrame);
     }
   }
   else
   {
-    Handle(MeshVS_MeshOwner) aMeshOwner = Handle(MeshVS_MeshOwner)::DownCast(theOwner);
+    occ::handle<MeshVS_MeshOwner> aMeshOwner = occ::down_cast<MeshVS_MeshOwner>(theOwner);
     if (!aMeshOwner.IsNull())
     {
-      Handle(TColStd_HPackedMapOfInteger) aNodes = aMeshOwner->GetDetectedNodes();
-      Handle(TColStd_HPackedMapOfInteger) aElems = aMeshOwner->GetDetectedElements();
+      occ::handle<TColStd_HPackedMapOfInteger> aNodes = aMeshOwner->GetDetectedNodes();
+      occ::handle<TColStd_HPackedMapOfInteger> aElems = aMeshOwner->GetDetectedElements();
       // hilight detected entities
       if (!aNodes.IsNull())
       {
@@ -1166,7 +1170,7 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
         myHilighter->Build(aHilightPrs,
                            aNodes->Map(),
                            tmp,
-                           Standard_False,
+                           false,
                            aDispMode | MeshVS_DMF_HilightPrs);
       }
       if (!aElems.IsNull())
@@ -1175,7 +1179,7 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
         myHilighter->Build(aHilightPrs,
                            aElems->Map(),
                            tmp,
-                           Standard_True,
+                           true,
                            aDispMode | MeshVS_DMF_HilightPrs);
       }
     }
@@ -1194,16 +1198,16 @@ void MeshVS_Mesh::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager)
 
 void MeshVS_Mesh::ClearSelected()
 {
-  Handle(Prs3d_Presentation) aSelectionPrs = GetSelectPresentation(NULL);
+  occ::handle<Prs3d_Presentation> aSelectionPrs = GetSelectPresentation(NULL);
   if (!aSelectionPrs.IsNull())
     aSelectionPrs->Clear();
 }
 
 //=================================================================================================
 
-Handle(MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder(const Standard_CString theTypeName) const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::FindBuilder(const char* const theTypeName) const
 {
-  for (const Handle(MeshVS_PrsBuilder)& aBuilder : myBuilders)
+  for (const occ::handle<MeshVS_PrsBuilder>& aBuilder : myBuilders)
   {
     if (aBuilder->IsKind(theTypeName))
     {
@@ -1213,9 +1217,9 @@ Handle(MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder(const Standard_CString theTyp
   return nullptr;
 }
 
-Handle(MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder(const Handle(Standard_Type)& theType) const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::FindBuilder(const occ::handle<Standard_Type>& theType) const
 {
-  for (const Handle(MeshVS_PrsBuilder)& aBuilder : myBuilders)
+  for (const occ::handle<MeshVS_PrsBuilder>& aBuilder : myBuilders)
   {
     if (aBuilder->IsKind(theType))
     {
@@ -1227,17 +1231,17 @@ Handle(MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder(const Handle(Standard_Type)& 
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetHilighter(const Handle(MeshVS_PrsBuilder)& Builder)
+void MeshVS_Mesh::SetHilighter(const occ::handle<MeshVS_PrsBuilder>& Builder)
 {
   myHilighter = Builder;
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::SetHilighter(const Standard_Integer Index)
+bool MeshVS_Mesh::SetHilighter(const int Index)
 {
-  Handle(MeshVS_PrsBuilder) aBuild = GetBuilder(Index);
-  Standard_Boolean          aRes   = (!aBuild.IsNull());
+  occ::handle<MeshVS_PrsBuilder> aBuild = GetBuilder(Index);
+  bool          aRes   = (!aBuild.IsNull());
   if (aRes)
     myHilighter = aBuild;
   return aRes;
@@ -1245,10 +1249,10 @@ Standard_Boolean MeshVS_Mesh::SetHilighter(const Standard_Integer Index)
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::SetHilighterById(const Standard_Integer Id)
+bool MeshVS_Mesh::SetHilighterById(const int Id)
 {
-  Handle(MeshVS_PrsBuilder) aBuild = GetBuilderById(Id);
-  Standard_Boolean          aRes   = (!aBuild.IsNull());
+  occ::handle<MeshVS_PrsBuilder> aBuild = GetBuilderById(Id);
+  bool          aRes   = (!aBuild.IsNull());
   if (aRes)
     myHilighter = aBuild;
   return aRes;
@@ -1256,35 +1260,35 @@ Standard_Boolean MeshVS_Mesh::SetHilighterById(const Standard_Integer Id)
 
 //=================================================================================================
 
-Handle(MeshVS_PrsBuilder) MeshVS_Mesh::GetHilighter() const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetHilighter() const
 {
   return myHilighter;
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::IsSelectableElem(const Standard_Integer ID) const
+bool MeshVS_Mesh::IsSelectableElem(const int ID) const
 {
   return !IsHiddenElem(ID);
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::IsSelectableNode(const Standard_Integer ID) const
+bool MeshVS_Mesh::IsSelectableNode(const int ID) const
 {
   return mySelectableNodes.IsNull() ? !IsHiddenNode(ID) : mySelectableNodes->Map().Contains(ID);
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_Mesh::GetSelectableNodes() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_Mesh::GetSelectableNodes() const
 {
   return mySelectableNodes;
 }
 
 //=================================================================================================
 
-void MeshVS_Mesh::SetSelectableNodes(const Handle(TColStd_HPackedMapOfInteger)& Ids)
+void MeshVS_Mesh::SetSelectableNodes(const occ::handle<TColStd_HPackedMapOfInteger>& Ids)
 {
   mySelectableNodes = Ids;
 }
@@ -1295,8 +1299,8 @@ void MeshVS_Mesh::UpdateSelectableNodes()
 {
   mySelectableNodes = new TColStd_HPackedMapOfInteger;
 
-  Standard_Integer          aMaxFaceNodes;
-  Handle(MeshVS_DataSource) aSource = GetDataSource();
+  int          aMaxFaceNodes;
+  occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   if (aSource.IsNull() || myCurrentDrawer.IsNull()
       || !myCurrentDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0)
     return;
@@ -1312,16 +1316,16 @@ void MeshVS_Mesh::UpdateSelectableNodes()
   TColStd_MapIteratorOfPackedMapOfInteger anIter(aSource->GetAllElements());
   for (; anIter.More(); anIter.Next())
   {
-    Standard_Integer aKey = anIter.Key();
+    int aKey = anIter.Key();
     if (IsHiddenElem(aKey))
       continue;
 
-    MeshVS_Buffer           aNodesBuf(aMaxFaceNodes * sizeof(Standard_Integer));
-    TColStd_Array1OfInteger aNodes(aNodesBuf, 1, aMaxFaceNodes);
-    Standard_Integer        NbNodes;
+    MeshVS_Buffer           aNodesBuf(aMaxFaceNodes * sizeof(int));
+    NCollection_Array1<int> aNodes(aNodesBuf, 1, aMaxFaceNodes);
+    int        NbNodes;
     if (!aSource->GetNodesByElement(aKey, aNodes, NbNodes))
       continue;
-    for (Standard_Integer i = 1; i <= NbNodes; i++)
+    for (int i = 1; i <= NbNodes; i++)
       mySelectableNodes->ChangeMap().Add(aNodes(i));
   }
 }
@@ -1342,7 +1346,7 @@ void MeshVS_Mesh::SetMeshSelMethod(const MeshVS_MeshSelectionMethod M)
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Mesh::IsWholeMeshOwner(const Handle(SelectMgr_EntityOwner)& theOwn) const
+bool MeshVS_Mesh::IsWholeMeshOwner(const occ::handle<SelectMgr_EntityOwner>& theOwn) const
 {
-  return theOwn.IsNull() ? Standard_False : (theOwn == myWholeMeshOwner);
+  return theOwn.IsNull() ? false : (theOwn == myWholeMeshOwner);
 }

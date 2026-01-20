@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CurveReplica, StepGeom_Curve)
 StepGeom_CurveReplica::StepGeom_CurveReplica() {}
 
 void StepGeom_CurveReplica::Init(
-  const Handle(TCollection_HAsciiString)&                 aName,
-  const Handle(StepGeom_Curve)&                           aParentCurve,
-  const Handle(StepGeom_CartesianTransformationOperator)& aTransformation)
+  const occ::handle<TCollection_HAsciiString>&                 aName,
+  const occ::handle<StepGeom_Curve>&                           aParentCurve,
+  const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation)
 {
   // --- classe own fields ---
   parentCurve    = aParentCurve;
@@ -31,23 +31,23 @@ void StepGeom_CurveReplica::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_CurveReplica::SetParentCurve(const Handle(StepGeom_Curve)& aParentCurve)
+void StepGeom_CurveReplica::SetParentCurve(const occ::handle<StepGeom_Curve>& aParentCurve)
 {
   parentCurve = aParentCurve;
 }
 
-Handle(StepGeom_Curve) StepGeom_CurveReplica::ParentCurve() const
+occ::handle<StepGeom_Curve> StepGeom_CurveReplica::ParentCurve() const
 {
   return parentCurve;
 }
 
 void StepGeom_CurveReplica::SetTransformation(
-  const Handle(StepGeom_CartesianTransformationOperator)& aTransformation)
+  const occ::handle<StepGeom_CartesianTransformationOperator>& aTransformation)
 {
   transformation = aTransformation;
 }
 
-Handle(StepGeom_CartesianTransformationOperator) StepGeom_CurveReplica::Transformation() const
+occ::handle<StepGeom_CartesianTransformationOperator> StepGeom_CurveReplica::Transformation() const
 {
   return transformation;
 }

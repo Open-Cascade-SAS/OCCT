@@ -22,9 +22,6 @@
 
 #include <StepShape_FaceBound.hxx>
 
-class StepShape_FaceOuterBound;
-DEFINE_STANDARD_HANDLE(StepShape_FaceOuterBound, StepShape_FaceBound)
-
 class StepShape_FaceOuterBound : public StepShape_FaceBound
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FaceOuterBound, StepShape_FaceBound)
 
-protected:
-private:
 };
 
 #endif // _StepShape_FaceOuterBound_HeaderFile

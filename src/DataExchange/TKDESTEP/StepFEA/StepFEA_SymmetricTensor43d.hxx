@@ -22,7 +22,8 @@
 
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class Standard_Transient;
 class StepData_SelectMember;
 
@@ -36,8 +37,8 @@ public:
   Standard_EXPORT StepFEA_SymmetricTensor43d();
 
   //! return 0
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member CurveElementFreedomMember
   //! 1 -> AnisotropicSymmetricTensor43d
@@ -47,35 +48,33 @@ public:
   //! 5 -> FeaColumnNormalisedOrthotropicSymmetricTensor43d
   //! 6 -> FeaColumnNormalisedMonoclinicSymmetricTensor43d
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
+    override;
 
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Returns Value as AnisotropicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) AnisotropicSymmetricTensor43d() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor43d() const;
 
-  Standard_EXPORT void SetFeaIsotropicSymmetricTensor43d(const Handle(TColStd_HArray1OfReal)& val);
+  Standard_EXPORT void SetFeaIsotropicSymmetricTensor43d(const occ::handle<NCollection_HArray1<double>>& val);
 
   //! Returns Value as FeaIsotropicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) FeaIsotropicSymmetricTensor43d() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> FeaIsotropicSymmetricTensor43d() const;
 
   //! Returns Value as FeaIsoOrthotropicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) FeaIsoOrthotropicSymmetricTensor43d() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> FeaIsoOrthotropicSymmetricTensor43d() const;
 
   //! Returns Value as FeaTransverseIsotropicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) FeaTransverseIsotropicSymmetricTensor43d() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> FeaTransverseIsotropicSymmetricTensor43d() const;
 
   //! Returns Value as FeaColumnNormalisedOrthotropicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) FeaColumnNormalisedOrthotropicSymmetricTensor43d()
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> FeaColumnNormalisedOrthotropicSymmetricTensor43d()
     const;
 
   //! Returns Value as FeaColumnNormalisedMonoclinicSymmetricTensor43d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) FeaColumnNormalisedMonoclinicSymmetricTensor43d()
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> FeaColumnNormalisedMonoclinicSymmetricTensor43d()
     const;
 
-protected:
-private:
 };
 
 #endif // _StepFEA_SymmetricTensor43d_HeaderFile

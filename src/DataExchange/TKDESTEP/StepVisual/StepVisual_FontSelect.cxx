@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_ExternallyDefinedTextFont.hxx>
 #include <StepVisual_FontSelect.hxx>
@@ -19,7 +19,7 @@
 
 StepVisual_FontSelect::StepVisual_FontSelect() {}
 
-Standard_Integer StepVisual_FontSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_FontSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -30,12 +30,12 @@ Standard_Integer StepVisual_FontSelect::CaseNum(const Handle(Standard_Transient)
   return 0;
 }
 
-Handle(StepVisual_PreDefinedTextFont) StepVisual_FontSelect::PreDefinedTextFont() const
+occ::handle<StepVisual_PreDefinedTextFont> StepVisual_FontSelect::PreDefinedTextFont() const
 {
   return GetCasted(StepVisual_PreDefinedTextFont, Value());
 }
 
-Handle(StepVisual_ExternallyDefinedTextFont) StepVisual_FontSelect::ExternallyDefinedTextFont()
+occ::handle<StepVisual_ExternallyDefinedTextFont> StepVisual_FontSelect::ExternallyDefinedTextFont()
   const
 {
   return GetCasted(StepVisual_ExternallyDefinedTextFont, Value());

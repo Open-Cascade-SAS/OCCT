@@ -29,8 +29,6 @@ public:
 
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
 
-protected:
-private:
 };
 
 #endif // _XDEDRAW_Layers_HeaderFile

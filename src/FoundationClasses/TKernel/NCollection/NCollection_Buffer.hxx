@@ -29,9 +29,9 @@ public:
   //! @param theAlloc memory allocator
   //! @param theSize  buffer size
   //! @param theData  buffer data allocated by theAlloc
-  NCollection_Buffer(const Handle(NCollection_BaseAllocator)& theAlloc,
-                     const Standard_Size                      theSize = 0,
-                     Standard_Byte*                           theData = NULL)
+  NCollection_Buffer(const occ::handle<NCollection_BaseAllocator>& theAlloc,
+                     const size_t                      theSize = 0,
+                     uint8_t*                           theData = NULL)
       : myData(NULL),
         mySize(0),
         myAllocator(theAlloc)
@@ -51,22 +51,22 @@ public:
   ~NCollection_Buffer() { Free(); }
 
   //! @return buffer data
-  const Standard_Byte* Data() const noexcept { return myData; }
+  const uint8_t* Data() const noexcept { return myData; }
 
   //! @return buffer data
-  Standard_Byte* ChangeData() noexcept { return myData; }
+  uint8_t* ChangeData() noexcept { return myData; }
 
   //! @return true if buffer is not allocated
   bool IsEmpty() const noexcept { return myData == NULL; }
 
   //! Return buffer length in bytes.
-  Standard_Size Size() const noexcept { return mySize; }
+  size_t Size() const noexcept { return mySize; }
 
   //! @return buffer allocator
-  const Handle(NCollection_BaseAllocator)& Allocator() const noexcept { return myAllocator; }
+  const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 
   //! Assign new buffer allocator with de-allocation of buffer.
-  void SetAllocator(const Handle(NCollection_BaseAllocator)& theAlloc)
+  void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     Free();
     myAllocator = theAlloc;
@@ -74,13 +74,13 @@ public:
 
   //! Allocate the buffer.
   //! @param theSize buffer length in bytes
-  bool Allocate(const Standard_Size theSize)
+  bool Allocate(const size_t theSize)
   {
     Free();
     mySize = theSize;
     if (theSize != 0 || !myAllocator.IsNull())
     {
-      myData = (Standard_Byte*)myAllocator->Allocate(theSize);
+      myData = (uint8_t*)myAllocator->Allocate(theSize);
     }
 
     if (myData == NULL)
@@ -103,7 +103,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     (void)theDepth;
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myData)
@@ -112,14 +112,12 @@ public:
   }
 
 protected:
-  Standard_Byte*                    myData;      //!< data pointer
-  Standard_Size                     mySize;      //!< buffer length in bytes
-  Handle(NCollection_BaseAllocator) myAllocator; //!< buffer allocator
+  uint8_t*                    myData;      //!< data pointer
+  size_t                     mySize;      //!< buffer length in bytes
+  occ::handle<NCollection_BaseAllocator> myAllocator; //!< buffer allocator
 
 public:
   DEFINE_STANDARD_RTTI_INLINE(NCollection_Buffer, Standard_Transient) // Type definition
 };
-
-DEFINE_STANDARD_HANDLE(NCollection_Buffer, Standard_Transient)
 
 #endif // _NCollection_Buffer_HeaderFile

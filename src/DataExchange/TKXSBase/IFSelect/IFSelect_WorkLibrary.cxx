@@ -29,9 +29,9 @@ IFSelect_WorkLibrary::IFSelect_WorkLibrary()
   thelevdef = 0;
 }
 
-Standard_Boolean IFSelect_WorkLibrary::CopyModel(
-  const Handle(Interface_InterfaceModel)& /*original*/,
-  const Handle(Interface_InterfaceModel)& newmodel,
+bool IFSelect_WorkLibrary::CopyModel(
+  const occ::handle<Interface_InterfaceModel>& /*original*/,
+  const occ::handle<Interface_InterfaceModel>& newmodel,
   const Interface_EntityIterator&         list,
   Interface_CopyTool&                     TC) const
 {
@@ -40,12 +40,12 @@ Standard_Boolean IFSelect_WorkLibrary::CopyModel(
 
   TC.FillModel(newmodel);
 
-  return Standard_True;
+  return true;
 }
 
-void IFSelect_WorkLibrary::DumpEntity(const Handle(Interface_InterfaceModel)& model,
-                                      const Handle(Interface_Protocol)&       protocol,
-                                      const Handle(Standard_Transient)&       entity,
+void IFSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                      const occ::handle<Interface_Protocol>&       protocol,
+                                      const occ::handle<Standard_Transient>&       entity,
                                       Standard_OStream&                       S) const
 {
   if (thelevhlp.IsNull())
@@ -54,15 +54,15 @@ void IFSelect_WorkLibrary::DumpEntity(const Handle(Interface_InterfaceModel)& mo
     DumpEntity(model, protocol, entity, S, thelevdef);
 }
 
-void IFSelect_WorkLibrary::SetDumpLevels(const Standard_Integer def, const Standard_Integer max)
+void IFSelect_WorkLibrary::SetDumpLevels(const int def, const int max)
 {
   thelevdef = def;
   thelevhlp.Nullify();
   if (max >= 0)
-    thelevhlp = new Interface_HArray1OfHAsciiString(0, max);
+    thelevhlp = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(0, max);
 }
 
-void IFSelect_WorkLibrary::DumpLevels(Standard_Integer& def, Standard_Integer& max) const
+void IFSelect_WorkLibrary::DumpLevels(int& def, int& max) const
 {
   def = thelevdef;
   if (thelevhlp.IsNull())
@@ -74,33 +74,33 @@ void IFSelect_WorkLibrary::DumpLevels(Standard_Integer& def, Standard_Integer& m
     max = thelevhlp->Upper();
 }
 
-void IFSelect_WorkLibrary::SetDumpHelp(const Standard_Integer level, const Standard_CString help)
+void IFSelect_WorkLibrary::SetDumpHelp(const int level, const char* const help)
 {
   if (thelevhlp.IsNull())
     return;
   if (level < 0 || level > thelevhlp->Upper())
     return;
-  Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(help);
+  occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(help);
   thelevhlp->SetValue(level, str);
 }
 
-Standard_CString IFSelect_WorkLibrary::DumpHelp(const Standard_Integer level) const
+const char* IFSelect_WorkLibrary::DumpHelp(const int level) const
 {
   if (thelevhlp.IsNull())
     return "";
   if (level < 0 || level > thelevhlp->Upper())
     return "";
-  Handle(TCollection_HAsciiString) str = thelevhlp->Value(level);
+  occ::handle<TCollection_HAsciiString> str = thelevhlp->Value(level);
   if (str.IsNull())
     return "";
   return str->ToCString();
 }
 
-Standard_Integer IFSelect_WorkLibrary::ReadStream(
-  const Standard_CString /*name*/,
+int IFSelect_WorkLibrary::ReadStream(
+  const char* const /*name*/,
   std::istream& /*istream*/,
-  Handle(Interface_InterfaceModel)& /*model*/,
-  const Handle(Interface_Protocol)& /*protocol*/) const
+  occ::handle<Interface_InterfaceModel>& /*model*/,
+  const occ::handle<Interface_Protocol>& /*protocol*/) const
 {
   return 1;
 }

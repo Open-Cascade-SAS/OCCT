@@ -27,9 +27,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Transient.hxx>
 
-class ChFiDS_SurfData;
-DEFINE_STANDARD_HANDLE(ChFiDS_SurfData, Standard_Transient)
-
 //! data structure for all information related to the
 //! fillet and to 2 faces vis a vis
 class ChFiDS_SurfData : public Standard_Transient
@@ -38,21 +35,21 @@ class ChFiDS_SurfData : public Standard_Transient
 public:
   Standard_EXPORT ChFiDS_SurfData();
 
-  Standard_EXPORT void Copy(const Handle(ChFiDS_SurfData)& Other);
+  Standard_EXPORT void Copy(const occ::handle<ChFiDS_SurfData>& Other);
 
-  Standard_Integer IndexOfS1() const;
+  int IndexOfS1() const;
 
-  Standard_Integer IndexOfS2() const;
+  int IndexOfS2() const;
 
-  Standard_Boolean IsOnCurve1() const;
+  bool IsOnCurve1() const;
 
-  Standard_Boolean IsOnCurve2() const;
+  bool IsOnCurve2() const;
 
-  Standard_Integer IndexOfC1() const;
+  int IndexOfC1() const;
 
-  Standard_Integer IndexOfC2() const;
+  int IndexOfC2() const;
 
-  Standard_Integer Surf() const;
+  int Surf() const;
 
   TopAbs_Orientation Orientation() const;
 
@@ -68,15 +65,15 @@ public:
 
   const ChFiDS_CommonPoint& VertexLastOnS2() const;
 
-  void ChangeIndexOfS1(const Standard_Integer Index);
+  void ChangeIndexOfS1(const int Index);
 
-  void ChangeIndexOfS2(const Standard_Integer Index);
+  void ChangeIndexOfS2(const int Index);
 
-  void ChangeSurf(const Standard_Integer Index);
+  void ChangeSurf(const int Index);
 
-  void SetIndexOfC1(const Standard_Integer Index);
+  void SetIndexOfC1(const int Index);
 
-  void SetIndexOfC2(const Standard_Integer Index);
+  void SetIndexOfC2(const int Index);
 
   TopAbs_Orientation& ChangeOrientation();
 
@@ -92,50 +89,50 @@ public:
 
   ChFiDS_CommonPoint& ChangeVertexLastOnS2();
 
-  Standard_EXPORT const ChFiDS_FaceInterference& Interference(const Standard_Integer OnS) const;
+  Standard_EXPORT const ChFiDS_FaceInterference& Interference(const int OnS) const;
 
-  Standard_EXPORT ChFiDS_FaceInterference& ChangeInterference(const Standard_Integer OnS);
+  Standard_EXPORT ChFiDS_FaceInterference& ChangeInterference(const int OnS);
 
-  Standard_EXPORT Standard_Integer Index(const Standard_Integer OfS) const;
-
-  //! returns one of the four vertices whether First is true
-  //! or wrong and OnS equals 1 or 2.
-  Standard_EXPORT const ChFiDS_CommonPoint& Vertex(const Standard_Boolean First,
-                                                   const Standard_Integer OnS) const;
+  Standard_EXPORT int Index(const int OfS) const;
 
   //! returns one of the four vertices whether First is true
   //! or wrong and OnS equals 1 or 2.
-  Standard_EXPORT ChFiDS_CommonPoint& ChangeVertex(const Standard_Boolean First,
-                                                   const Standard_Integer OnS);
+  Standard_EXPORT const ChFiDS_CommonPoint& Vertex(const bool First,
+                                                   const int OnS) const;
 
-  Standard_Boolean IsOnCurve(const Standard_Integer OnS) const;
+  //! returns one of the four vertices whether First is true
+  //! or wrong and OnS equals 1 or 2.
+  Standard_EXPORT ChFiDS_CommonPoint& ChangeVertex(const bool First,
+                                                   const int OnS);
 
-  Standard_Integer IndexOfC(const Standard_Integer OnS) const;
+  bool IsOnCurve(const int OnS) const;
 
-  Standard_EXPORT Standard_Real FirstSpineParam() const;
+  int IndexOfC(const int OnS) const;
 
-  Standard_EXPORT Standard_Real LastSpineParam() const;
+  Standard_EXPORT double FirstSpineParam() const;
 
-  Standard_EXPORT void FirstSpineParam(const Standard_Real Par);
+  Standard_EXPORT double LastSpineParam() const;
 
-  Standard_EXPORT void LastSpineParam(const Standard_Real Par);
+  Standard_EXPORT void FirstSpineParam(const double Par);
 
-  Standard_EXPORT Standard_Real FirstExtensionValue() const;
+  Standard_EXPORT void LastSpineParam(const double Par);
 
-  Standard_EXPORT Standard_Real LastExtensionValue() const;
+  Standard_EXPORT double FirstExtensionValue() const;
 
-  Standard_EXPORT void FirstExtensionValue(const Standard_Real Extend);
+  Standard_EXPORT double LastExtensionValue() const;
 
-  Standard_EXPORT void LastExtensionValue(const Standard_Real Extend);
+  Standard_EXPORT void FirstExtensionValue(const double Extend);
 
-  Standard_EXPORT Handle(Standard_Transient) Simul() const;
+  Standard_EXPORT void LastExtensionValue(const double Extend);
 
-  Standard_EXPORT void SetSimul(const Handle(Standard_Transient)& S);
+  Standard_EXPORT occ::handle<Standard_Transient> Simul() const;
+
+  Standard_EXPORT void SetSimul(const occ::handle<Standard_Transient>& S);
 
   Standard_EXPORT void ResetSimul();
 
-  Standard_EXPORT gp_Pnt2d Get2dPoints(const Standard_Boolean First,
-                                       const Standard_Integer OnS) const;
+  Standard_EXPORT gp_Pnt2d Get2dPoints(const bool First,
+                                       const int OnS) const;
 
   Standard_EXPORT void Get2dPoints(gp_Pnt2d& P2df1,
                                    gp_Pnt2d& P2dl1,
@@ -147,17 +144,16 @@ public:
                                    const gp_Pnt2d& P2df2,
                                    const gp_Pnt2d& P2dl2);
 
-  Standard_Boolean TwistOnS1() const;
+  bool TwistOnS1() const;
 
-  Standard_Boolean TwistOnS2() const;
+  bool TwistOnS2() const;
 
-  void TwistOnS1(const Standard_Boolean T);
+  void TwistOnS1(const bool T);
 
-  void TwistOnS2(const Standard_Boolean T);
+  void TwistOnS2(const bool T);
 
   DEFINE_STANDARD_RTTIEXT(ChFiDS_SurfData, Standard_Transient)
 
-protected:
 private:
   ChFiDS_CommonPoint         pfirstOnS1;
   ChFiDS_CommonPoint         plastOnS1;
@@ -169,20 +165,20 @@ private:
   gp_Pnt2d                   p2dl1;
   gp_Pnt2d                   p2df2;
   gp_Pnt2d                   p2dl2;
-  Standard_Real              ufspine;
-  Standard_Real              ulspine;
-  Standard_Real              myfirstextend;
-  Standard_Real              mylastextend;
-  Handle(Standard_Transient) simul;
-  Standard_Integer           indexOfS1;
-  Standard_Integer           indexOfC1;
-  Standard_Integer           indexOfS2;
-  Standard_Integer           indexOfC2;
-  Standard_Integer           indexOfConge;
-  Standard_Boolean           isoncurv1;
-  Standard_Boolean           isoncurv2;
-  Standard_Boolean           twistons1;
-  Standard_Boolean           twistons2;
+  double              ufspine;
+  double              ulspine;
+  double              myfirstextend;
+  double              mylastextend;
+  occ::handle<Standard_Transient> simul;
+  int           indexOfS1;
+  int           indexOfC1;
+  int           indexOfS2;
+  int           indexOfC2;
+  int           indexOfConge;
+  bool           isoncurv1;
+  bool           isoncurv2;
+  bool           twistons1;
+  bool           twistons2;
   TopAbs_Orientation         orientation;
 };
 

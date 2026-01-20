@@ -44,12 +44,12 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateEdge();
 
   Standard_EXPORT StepToTopoDS_TranslateEdge(
-    const Handle(StepShape_Edge)& E,
+    const occ::handle<StepShape_Edge>& E,
     StepToTopoDS_Tool&            T,
     StepToTopoDS_NMTool&          NMTool,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepShape_Edge)& E,
+  Standard_EXPORT void Init(const occ::handle<StepShape_Edge>& E,
                             StepToTopoDS_Tool&            T,
                             StepToTopoDS_NMTool&          NMTool,
                             const StepData_Factors&       theLocalFactors = StepData_Factors());
@@ -57,26 +57,25 @@ public:
   //! Warning! C3D is assumed to be a Curve 3D ...
   //! other cases to checked before calling this
   Standard_EXPORT void MakeFromCurve3D(
-    const Handle(StepGeom_Curve)&      C3D,
-    const Handle(StepShape_EdgeCurve)& EC,
-    const Handle(StepShape_Vertex)&    Vend,
-    const Standard_Real                preci,
+    const occ::handle<StepGeom_Curve>&      C3D,
+    const occ::handle<StepShape_EdgeCurve>& EC,
+    const occ::handle<StepShape_Vertex>&    Vend,
+    const double                preci,
     TopoDS_Edge&                       E,
     TopoDS_Vertex&                     V1,
     TopoDS_Vertex&                     V2,
     StepToTopoDS_Tool&                 T,
     const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(
-    const Handle(StepGeom_Pcurve)& PCU,
-    const Handle(Geom_Surface)&    ConvSurf,
+  Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(
+    const occ::handle<StepGeom_Pcurve>& PCU,
+    const occ::handle<Geom_Surface>&    ConvSurf,
     const StepData_Factors&        theLocalFactors = StepData_Factors()) const;
 
   Standard_EXPORT const TopoDS_Shape& Value() const;
 
   Standard_EXPORT StepToTopoDS_TranslateEdgeError Error() const;
 
-protected:
 private:
   StepToTopoDS_TranslateEdgeError myError;
   TopoDS_Shape                    myResult;

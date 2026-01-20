@@ -41,10 +41,10 @@ public:
   void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
   //! Returns persistent type name
-  Standard_CString PName() const { return "PDataStd_Real"; }
+  const char* PName() const { return "PDataStd_Real"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDataStd_Real)& theAttribute) const
+  void Import(const occ::handle<TDataStd_Real>& theAttribute) const
   {
     theAttribute->Set(myValue);
     Standard_DISABLE_DEPRECATION_WARNINGS theAttribute->SetDimension(
@@ -53,8 +53,8 @@ public:
   }
 
 private:
-  Standard_Real    myValue;
-  Standard_Integer myDimension;
+  double    myValue;
+  int myDimension;
 };
 
 #endif

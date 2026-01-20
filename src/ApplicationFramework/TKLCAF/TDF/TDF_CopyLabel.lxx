@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean TDF_CopyLabel::IsDone() const
+inline bool TDF_CopyLabel::IsDone() const
 {
   return myIsDone;
 }

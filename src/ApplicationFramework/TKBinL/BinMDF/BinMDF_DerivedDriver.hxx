@@ -26,8 +26,8 @@ public:
   //! theBaseDriver
   //! @param theDerivative an instance of the attribute, just created, detached from any label
   //! @param theBaseDriver a driver of the base attribute, called by Paste methods
-  BinMDF_DerivedDriver(const Handle(TDF_Attribute)&  theDerivative,
-                       const Handle(BinMDF_ADriver)& theBaseDriver)
+  BinMDF_DerivedDriver(const occ::handle<TDF_Attribute>&  theDerivative,
+                       const occ::handle<BinMDF_ADriver>& theBaseDriver)
       : BinMDF_ADriver(theBaseDriver->MessageDriver()),
         myDerivative(theDerivative),
         myBaseDirver(theBaseDriver)
@@ -35,17 +35,17 @@ public:
   }
 
   //! Creates a new instance of the derivative attribute
-  virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE
+  virtual occ::handle<TDF_Attribute> NewEmpty() const override
   {
     return myDerivative->NewEmpty();
   }
 
   //! Reuses the base driver to read the base fields
-  virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE
+  virtual bool Paste(const BinObjMgt_Persistent&  theSource,
+                                 const occ::handle<TDF_Attribute>& theTarget,
+                                 BinObjMgt_RRelocationTable&  theRelocTable) const override
   {
-    Standard_Boolean aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
+    bool aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
     // clang-format off
     theTarget->AfterRetrieval(); // to allow synchronization of the derived attribute with the base content
     // clang-format on
@@ -53,16 +53,16 @@ public:
   }
 
   //! Reuses the base driver to store the base fields
-  virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                      BinObjMgt_Persistent&        theTarget,
-                     BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE
+                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const override
   {
     myBaseDirver->Paste(theSource, theTarget, theRelocTable);
   }
 
 protected:
-  Handle(TDF_Attribute)  myDerivative; //!< the derivative attribute that inherits the base
-  Handle(BinMDF_ADriver) myBaseDirver; //!< the base attribute driver to be reused here
+  occ::handle<TDF_Attribute>  myDerivative; //!< the derivative attribute that inherits the base
+  occ::handle<BinMDF_ADriver> myBaseDirver; //!< the base attribute driver to be reused here
 };
 
 #endif

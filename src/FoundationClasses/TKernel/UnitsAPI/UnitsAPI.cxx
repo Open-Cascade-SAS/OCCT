@@ -19,7 +19,7 @@
 #include <Units_UnitsSystem.hxx>
 #include <UnitsAPI.hxx>
 
-static Handle(Resource_Manager) CurrentUnits, SICurrentUnits, MDTVCurrentUnits;
+static occ::handle<Resource_Manager> CurrentUnits, SICurrentUnits, MDTVCurrentUnits;
 static Units_UnitsSystem        LocalSystemUnits, SILocalSystemUnits, MDTVLocalSystemUnits;
 static TCollection_AsciiString  rstring;
 static UnitsAPI_SystemUnits     localSystem   = UnitsAPI_SI;
@@ -36,7 +36,7 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
       case UnitsAPI_DEFAULT:
         if (!CurrentUnits.IsNull())
           break;
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case UnitsAPI_SI:
         currentSystem = UnitsAPI_SI;
         if (SICurrentUnits.IsNull())
@@ -133,9 +133,9 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentToLS(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::CurrentToLS(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -156,9 +156,9 @@ Standard_Real UnitsAPI::CurrentToLS(const Standard_Real aData, const Standard_CS
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentToSI(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::CurrentToSI(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -178,9 +178,9 @@ Standard_Real UnitsAPI::CurrentToSI(const Standard_Real aData, const Standard_CS
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentFromLS(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::CurrentFromLS(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -201,9 +201,9 @@ Standard_Real UnitsAPI::CurrentFromLS(const Standard_Real aData, const Standard_
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentFromSI(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::CurrentFromSI(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -223,11 +223,11 @@ Standard_Real UnitsAPI::CurrentFromSI(const Standard_Real aData, const Standard_
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentToAny(const Standard_Real    aData,
-                                     const Standard_CString aQuantity,
-                                     const Standard_CString aUnit)
+double UnitsAPI::CurrentToAny(const double    aData,
+                                     const char* const aQuantity,
+                                     const char* const aUnit)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -247,11 +247,11 @@ Standard_Real UnitsAPI::CurrentToAny(const Standard_Real    aData,
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::CurrentFromAny(const Standard_Real    aData,
-                                       const Standard_CString aQuantity,
-                                       const Standard_CString aUnit)
+double UnitsAPI::CurrentFromAny(const double    aData,
+                                       const char* const aQuantity,
+                                       const char* const aUnit)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -271,15 +271,15 @@ Standard_Real UnitsAPI::CurrentFromAny(const Standard_Real    aData,
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyToLS(const Standard_Real aData, const Standard_CString aUnit)
+double UnitsAPI::AnyToLS(const double aData, const char* const aUnit)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
-  Handle(Units_Dimensions) aDim;
+  occ::handle<Units_Dimensions> aDim;
   aValue = Units::ToSI(aValue, aUnit, aDim);
   if (aDim.IsNull())
     return aValue;
-  Standard_CString quantity = aDim->Quantity();
+  const char* quantity = aDim->Quantity();
   if (quantity)
   {
     aValue = LocalSystemUnits.ConvertSIValueToUserSystem(quantity, aValue);
@@ -294,14 +294,14 @@ Standard_Real UnitsAPI::AnyToLS(const Standard_Real aData, const Standard_CStrin
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyToLS(const Standard_Real       aData,
-                                const Standard_CString    aUnit,
-                                Handle(Units_Dimensions)& aDim)
+double UnitsAPI::AnyToLS(const double       aData,
+                                const char* const    aUnit,
+                                occ::handle<Units_Dimensions>& aDim)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
   aValue                    = Units::ToSI(aValue, aUnit, aDim);
-  Standard_CString quantity = aDim->Quantity();
+  const char* quantity = aDim->Quantity();
   if (aDim.IsNull())
     return aValue;
   if (quantity)
@@ -318,9 +318,9 @@ Standard_Real UnitsAPI::AnyToLS(const Standard_Real       aData,
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyToSI(const Standard_Real aData, const Standard_CString aUnit)
+double UnitsAPI::AnyToSI(const double aData, const char* const aUnit)
 {
-  Standard_Real aValue;
+  double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::ToSI(aData, aUnit);
   return aValue;
@@ -328,11 +328,11 @@ Standard_Real UnitsAPI::AnyToSI(const Standard_Real aData, const Standard_CStrin
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyToSI(const Standard_Real       aData,
-                                const Standard_CString    aUnit,
-                                Handle(Units_Dimensions)& aDim)
+double UnitsAPI::AnyToSI(const double       aData,
+                                const char* const    aUnit,
+                                occ::handle<Units_Dimensions>& aDim)
 {
-  Standard_Real aValue;
+  double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::ToSI(aData, aUnit, aDim);
   return aValue;
@@ -340,13 +340,13 @@ Standard_Real UnitsAPI::AnyToSI(const Standard_Real       aData,
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyFromLS(const Standard_Real aData, const Standard_CString aUnit)
+double UnitsAPI::AnyFromLS(const double aData, const char* const aUnit)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
-  Handle(Units_Dimensions) aDim;
+  occ::handle<Units_Dimensions> aDim;
   aValue                    = Units::FromSI(aValue, aUnit, aDim);
-  Standard_CString quantity = aDim->Quantity();
+  const char* quantity = aDim->Quantity();
   if (quantity)
   {
     aValue = LocalSystemUnits.ConvertUserSystemValueToSI(quantity, aValue);
@@ -362,9 +362,9 @@ Standard_Real UnitsAPI::AnyFromLS(const Standard_Real aData, const Standard_CStr
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyFromSI(const Standard_Real aData, const Standard_CString aUnit)
+double UnitsAPI::AnyFromSI(const double aData, const char* const aUnit)
 {
-  Standard_Real aValue;
+  double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::FromSI(aData, aUnit);
   return aValue;
@@ -372,11 +372,11 @@ Standard_Real UnitsAPI::AnyFromSI(const Standard_Real aData, const Standard_CStr
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::AnyToAny(const Standard_Real    aData,
-                                 const Standard_CString aUnit1,
-                                 const Standard_CString aUnit2)
+double UnitsAPI::AnyToAny(const double    aData,
+                                 const char* const aUnit1,
+                                 const char* const aUnit2)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::Convert(aValue, aUnit1, aUnit2);
   return aValue;
@@ -384,9 +384,9 @@ Standard_Real UnitsAPI::AnyToAny(const Standard_Real    aData,
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::LSToSI(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::LSToSI(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -405,9 +405,9 @@ Standard_Real UnitsAPI::LSToSI(const Standard_Real aData, const Standard_CString
 
 //=================================================================================================
 
-Standard_Real UnitsAPI::SIToLS(const Standard_Real aData, const Standard_CString aQuantity)
+double UnitsAPI::SIToLS(const double aData, const char* const aQuantity)
 {
-  Standard_Real aValue = aData;
+  double aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -441,7 +441,7 @@ UnitsAPI_SystemUnits UnitsAPI::LocalSystem()
 
 //=================================================================================================
 
-void UnitsAPI::SetCurrentUnit(const Standard_CString aQuantity, const Standard_CString anUnit)
+void UnitsAPI::SetCurrentUnit(const char* const aQuantity, const char* const anUnit)
 {
   CheckLoading(localSystem);
   CurrentUnits->SetResource(aQuantity, anUnit);
@@ -467,7 +467,7 @@ void UnitsAPI::Reload()
 
 static TCollection_AsciiString astring;
 
-Standard_CString UnitsAPI::CurrentUnit(const Standard_CString aQuantity)
+const char* UnitsAPI::CurrentUnit(const char* const aQuantity)
 {
   CheckLoading(localSystem);
   astring = CurrentUnits->Value(aQuantity);
@@ -476,86 +476,86 @@ Standard_CString UnitsAPI::CurrentUnit(const Standard_CString aQuantity)
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::Dimensions(const Standard_CString aType)
+occ::handle<Units_Dimensions> UnitsAPI::Dimensions(const char* const aType)
 {
   return Units::Dimensions(aType);
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionLess()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionLess()
 {
   return Units_Dimensions::ALess();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionMass()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionMass()
 {
   return Units_Dimensions::AMass();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionLength()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionLength()
 {
   return Units_Dimensions::ALength();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionTime()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionTime()
 {
   return Units_Dimensions::ATime();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionElectricCurrent()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionElectricCurrent()
 {
   return Units_Dimensions::AElectricCurrent();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionThermodynamicTemperature()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionThermodynamicTemperature()
 {
   return Units_Dimensions::AThermodynamicTemperature();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionAmountOfSubstance()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionAmountOfSubstance()
 {
   return Units_Dimensions::AAmountOfSubstance();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionLuminousIntensity()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionLuminousIntensity()
 {
   return Units_Dimensions::ALuminousIntensity();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionPlaneAngle()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionPlaneAngle()
 {
   return Units_Dimensions::APlaneAngle();
 }
 
 //=================================================================================================
 
-Handle(Units_Dimensions) UnitsAPI::DimensionSolidAngle()
+occ::handle<Units_Dimensions> UnitsAPI::DimensionSolidAngle()
 {
   return Units_Dimensions::ASolidAngle();
 }
 
 //=================================================================================================
 
-Standard_Boolean UnitsAPI::Check(const Standard_CString aQuantity, const Standard_CString /*aUnit*/)
+bool UnitsAPI::Check(const char* const aQuantity, const char* const /*aUnit*/)
 {
-  Standard_Boolean status = Standard_False;
+  bool status = false;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {

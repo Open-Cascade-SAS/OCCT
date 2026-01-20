@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurface, StepGeom_BoundedSurface)
 StepGeom_BSplineSurface::StepGeom_BSplineSurface() {}
 
 void StepGeom_BSplineSurface::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aUDegree,
-  const Standard_Integer                          aVDegree,
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
+  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineSurfaceForm               aSurfaceForm,
   const StepData_Logical                          aUClosed,
   const StepData_Logical                          aVClosed,
@@ -41,52 +41,52 @@ void StepGeom_BSplineSurface::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_BSplineSurface::SetUDegree(const Standard_Integer aUDegree)
+void StepGeom_BSplineSurface::SetUDegree(const int aUDegree)
 {
   uDegree = aUDegree;
 }
 
-Standard_Integer StepGeom_BSplineSurface::UDegree() const
+int StepGeom_BSplineSurface::UDegree() const
 {
   return uDegree;
 }
 
-void StepGeom_BSplineSurface::SetVDegree(const Standard_Integer aVDegree)
+void StepGeom_BSplineSurface::SetVDegree(const int aVDegree)
 {
   vDegree = aVDegree;
 }
 
-Standard_Integer StepGeom_BSplineSurface::VDegree() const
+int StepGeom_BSplineSurface::VDegree() const
 {
   return vDegree;
 }
 
 void StepGeom_BSplineSurface::SetControlPointsList(
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList)
+  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList)
 {
   controlPointsList = aControlPointsList;
 }
 
-Handle(StepGeom_HArray2OfCartesianPoint) StepGeom_BSplineSurface::ControlPointsList() const
+occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineSurface::ControlPointsList() const
 {
   return controlPointsList;
 }
 
-Handle(StepGeom_CartesianPoint) StepGeom_BSplineSurface::ControlPointsListValue(
-  const Standard_Integer num1,
-  const Standard_Integer num2) const
+occ::handle<StepGeom_CartesianPoint> StepGeom_BSplineSurface::ControlPointsListValue(
+  const int num1,
+  const int num2) const
 {
   return controlPointsList->Value(num1, num2);
 }
 
-Standard_Integer StepGeom_BSplineSurface::NbControlPointsListI() const
+int StepGeom_BSplineSurface::NbControlPointsListI() const
 {
   if (controlPointsList.IsNull())
     return 0;
   return controlPointsList->UpperRow() - controlPointsList->LowerRow() + 1;
 }
 
-Standard_Integer StepGeom_BSplineSurface::NbControlPointsListJ() const
+int StepGeom_BSplineSurface::NbControlPointsListJ() const
 {
   if (controlPointsList.IsNull())
     return 0;

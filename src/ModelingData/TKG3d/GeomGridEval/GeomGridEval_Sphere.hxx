@@ -21,7 +21,7 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for sphere grid points.
 //!
@@ -43,7 +43,7 @@ public:
 
   //! Constructor with geometry.
   //! @param theSphere the spherical surface geometry to evaluate
-  GeomGridEval_Sphere(const Handle(Geom_SphericalSurface)& theSphere)
+  GeomGridEval_Sphere(const occ::handle<Geom_SphericalSurface>& theSphere)
       : myGeom(theSphere)
   {
   }
@@ -55,39 +55,39 @@ public:
   GeomGridEval_Sphere& operator=(GeomGridEval_Sphere&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_SphericalSurface)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_SphericalSurface>& Geometry() const { return myGeom; }
 
   //! Evaluate grid points at Cartesian product of U and V parameters.
   //! @param theUParams array of U parameter values (longitude)
   //! @param theVParams array of V parameter values (latitude)
   //! @return 2D array of evaluated points (1-based indexing)
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first partial derivatives.
   //! @param theUParams array of U parameter values (longitude)
   //! @param theVParams array of V parameter values (latitude)
   //! @return 2D array of SurfD1 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with first and second partial derivatives.
   //! @param theUParams array of U parameter values (longitude)
   //! @param theVParams array of V parameter values (latitude)
   //! @return 2D array of SurfD2 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate grid points with derivatives up to third order.
   //! @param theUParams array of U parameter values (longitude)
   //! @param theVParams array of V parameter values (latitude)
   //! @return 2D array of SurfD3 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
@@ -97,8 +97,8 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                                            const TColStd_Array1OfReal& theVParams,
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
+                                                            const NCollection_Array1<double>& theVParams,
                                                             int                         theNU,
                                                             int theNV) const;
 
@@ -180,7 +180,7 @@ private:
                           int             theNU,
                           int             theNV);
 
-  Handle(Geom_SphericalSurface) myGeom;
+  occ::handle<Geom_SphericalSurface> myGeom;
 };
 
 #endif // _GeomGridEval_Sphere_HeaderFile

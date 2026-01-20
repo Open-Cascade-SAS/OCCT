@@ -27,9 +27,6 @@ class Standard_GUID;
 class TDF_Data;
 class TDF_RelocationTable;
 
-class TDocStd_Owner;
-DEFINE_STANDARD_HANDLE(TDocStd_Owner, TDF_Attribute)
-
 //! This attribute located at the root label of the
 //! framework contains a back reference to the owner
 //! TDocStd_Document, providing access to the document
@@ -42,41 +39,40 @@ public:
   //! =============
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT static void SetDocument(const Handle(TDF_Data)&         indata,
-                                          const Handle(TDocStd_Document)& doc);
+  Standard_EXPORT static void SetDocument(const occ::handle<TDF_Data>&         indata,
+                                          const occ::handle<TDocStd_Document>& doc);
 
-  Standard_EXPORT static void SetDocument(const Handle(TDF_Data)& indata, TDocStd_Document* doc);
+  Standard_EXPORT static void SetDocument(const occ::handle<TDF_Data>& indata, TDocStd_Document* doc);
 
   //! Owner methods
   //! ===============
-  Standard_EXPORT static Handle(TDocStd_Document) GetDocument(const Handle(TDF_Data)& ofdata);
+  Standard_EXPORT static occ::handle<TDocStd_Document> GetDocument(const occ::handle<TDF_Data>& ofdata);
 
   Standard_EXPORT TDocStd_Owner();
 
-  Standard_EXPORT void SetDocument(const Handle(TDocStd_Document)& document);
+  Standard_EXPORT void SetDocument(const occ::handle<TDocStd_Document>& document);
 
   Standard_EXPORT void SetDocument(TDocStd_Document* document);
 
-  Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
+  Standard_EXPORT occ::handle<TDocStd_Document> GetDocument() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_Owner, TDF_Attribute)
 
-protected:
 private:
   //! It keeps pointer to the document to avoid handles cyclic dependency
   TDocStd_Document* myDocument;

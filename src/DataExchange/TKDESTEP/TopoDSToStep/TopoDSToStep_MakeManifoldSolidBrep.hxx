@@ -42,23 +42,22 @@ public:
 
   Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(
     const TopoDS_Shell&                   S,
-    const Handle(Transfer_FinderProcess)& FP,
+    const occ::handle<Transfer_FinderProcess>& FP,
     const StepData_Factors&               theLocalFactors = StepData_Factors(),
     const Message_ProgressRange&          theProgress     = Message_ProgressRange());
 
   Standard_EXPORT TopoDSToStep_MakeManifoldSolidBrep(
     const TopoDS_Solid&                   S,
-    const Handle(Transfer_FinderProcess)& FP,
+    const occ::handle<Transfer_FinderProcess>& FP,
     const StepData_Factors&               theLocalFactors = StepData_Factors(),
     const Message_ProgressRange&          theProgress     = Message_ProgressRange());
 
-  Standard_EXPORT const Handle(StepShape_ManifoldSolidBrep)& Value() const;
-  Standard_EXPORT const Handle(StepVisual_TessellatedItem)&  TessellatedValue() const;
+  Standard_EXPORT const occ::handle<StepShape_ManifoldSolidBrep>& Value() const;
+  Standard_EXPORT const occ::handle<StepVisual_TessellatedItem>&  TessellatedValue() const;
 
-protected:
 private:
-  Handle(StepShape_ManifoldSolidBrep) theManifoldSolidBrep;
-  Handle(StepVisual_TessellatedItem)  theTessellatedItem;
+  occ::handle<StepShape_ManifoldSolidBrep> theManifoldSolidBrep;
+  occ::handle<StepVisual_TessellatedItem>  theTessellatedItem;
 };
 
 #endif // _TopoDSToStep_MakeManifoldSolidBrep_HeaderFile

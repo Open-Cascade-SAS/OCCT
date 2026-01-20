@@ -30,13 +30,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_AngularDimension, IGESData_IGESEntity)
 
 IGESDimen_AngularDimension::IGESDimen_AngularDimension() {}
 
-void IGESDimen_AngularDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                                      const Handle(IGESDimen_WitnessLine)& aLine,
-                                      const Handle(IGESDimen_WitnessLine)& anotherLine,
+void IGESDimen_AngularDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                                      const occ::handle<IGESDimen_WitnessLine>& aLine,
+                                      const occ::handle<IGESDimen_WitnessLine>& anotherLine,
                                       const gp_XY&                         aVertex,
-                                      const Standard_Real                  aRadius,
-                                      const Handle(IGESDimen_LeaderArrow)& aLeader,
-                                      const Handle(IGESDimen_LeaderArrow)& anotherLeader)
+                                      const double                  aRadius,
+                                      const occ::handle<IGESDimen_LeaderArrow>& aLeader,
+                                      const occ::handle<IGESDimen_LeaderArrow>& anotherLeader)
 {
   theNote              = aNote;
   theFirstWitnessLine  = aLine;
@@ -48,27 +48,27 @@ void IGESDimen_AngularDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote
   InitTypeAndForm(202, 0);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_AngularDimension::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_AngularDimension::Note() const
 {
   return theNote;
 }
 
-Standard_Boolean IGESDimen_AngularDimension::HasFirstWitnessLine() const
+bool IGESDimen_AngularDimension::HasFirstWitnessLine() const
 {
   return (!theFirstWitnessLine.IsNull());
 }
 
-Handle(IGESDimen_WitnessLine) IGESDimen_AngularDimension::FirstWitnessLine() const
+occ::handle<IGESDimen_WitnessLine> IGESDimen_AngularDimension::FirstWitnessLine() const
 {
   return theFirstWitnessLine;
 }
 
-Standard_Boolean IGESDimen_AngularDimension::HasSecondWitnessLine() const
+bool IGESDimen_AngularDimension::HasSecondWitnessLine() const
 {
   return (!theSecondWitnessLine.IsNull());
 }
 
-Handle(IGESDimen_WitnessLine) IGESDimen_AngularDimension::SecondWitnessLine() const
+occ::handle<IGESDimen_WitnessLine> IGESDimen_AngularDimension::SecondWitnessLine() const
 {
   return theSecondWitnessLine;
 }
@@ -87,17 +87,17 @@ gp_Pnt2d IGESDimen_AngularDimension::TransformedVertex() const
   return gp_Pnt2d(point.X(), point.Y());
 }
 
-Standard_Real IGESDimen_AngularDimension::Radius() const
+double IGESDimen_AngularDimension::Radius() const
 {
   return theRadius;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_AngularDimension::FirstLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_AngularDimension::FirstLeader() const
 {
   return theFirstLeader;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_AngularDimension::SecondLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_AngularDimension::SecondLeader() const
 {
   return theSecondLeader;
 }

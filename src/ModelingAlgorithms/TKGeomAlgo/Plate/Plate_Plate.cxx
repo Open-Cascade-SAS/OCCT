@@ -39,7 +39,7 @@ Plate_Plate::Plate_Plate()
       points(0),
       deru(0),
       derv(0),
-      OK(Standard_False),
+      OK(false),
       maxConstraintOrder(0),
       Uold(1.e20),
       Vold(1.e20),
@@ -47,7 +47,7 @@ Plate_Plate::Plate_Plate()
       R(0.0),
       L(0.0)
 {
-  PolynomialPartOnly = Standard_False;
+  PolynomialPartOnly = false;
   memset(ddu, 0, sizeof(ddu));
   memset(ddv, 0, sizeof(ddv));
 }
@@ -69,7 +69,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
       R(0.0),
       L(0.0)
 {
-  Standard_Integer i;
+  int i;
   if (Ref.OK)
   {
     if (n_dim > 0 && Ref.solution != 0)
@@ -94,7 +94,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
 
       if (Ref.deru != 0)
       {
-        deru = new Standard_Integer[n_el];
+        deru = new int[n_el];
         for (i = 0; i < n_el; i++)
         {
           Deru(i) = Ref.Deru(i);
@@ -103,7 +103,7 @@ Plate_Plate::Plate_Plate(const Plate_Plate& Ref)
 
       if (Ref.derv != 0)
       {
-        derv = new Standard_Integer[n_el];
+        derv = new int[n_el];
         for (i = 0; i < n_el; i++)
         {
           Derv(i) = Ref.Derv(i);
@@ -133,7 +133,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
   n_el  = Ref.n_el;
   n_dim = Ref.n_dim;
   OK    = Ref.OK;
-  Standard_Integer i;
+  int i;
   if (Ref.OK)
   {
     if (n_dim > 0 && Ref.solution != 0)
@@ -158,7 +158,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
 
       if (Ref.deru != 0)
       {
-        deru = new Standard_Integer[n_el];
+        deru = new int[n_el];
         for (i = 0; i < n_el; i++)
         {
           Deru(i) = Ref.Deru(i);
@@ -167,7 +167,7 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
 
       if (Ref.derv != 0)
       {
-        derv = new Standard_Integer[n_el];
+        derv = new int[n_el];
         for (i = 0; i < n_el; i++)
         {
           Derv(i) = Ref.Derv(i);
@@ -194,23 +194,23 @@ Plate_Plate& Plate_Plate::Copy(const Plate_Plate& Ref)
 
 void Plate_Plate::Load(const Plate_PinpointConstraint& PConst)
 {
-  OK = Standard_False;
+  OK = false;
   n_el++;
   myConstraints.Append(PConst);
-  Standard_Integer OrdreConst = PConst.Idu() + PConst.Idv();
+  int OrdreConst = PConst.Idu() + PConst.Idv();
   if (maxConstraintOrder < OrdreConst)
     maxConstraintOrder = OrdreConst;
 }
 
 void Plate_Plate::Load(const Plate_LinearXYZConstraint& LXYZConst)
 {
-  OK = Standard_False;
+  OK = false;
   n_el += LXYZConst.Coeff().RowLength();
 
   myLXYZConstraints.Append(LXYZConst);
-  for (Standard_Integer j = 1; j <= LXYZConst.GetPPC().Length(); j++)
+  for (int j = 1; j <= LXYZConst.GetPPC().Length(); j++)
   {
-    Standard_Integer OrdreConst = LXYZConst.GetPPC()(j).Idu() + LXYZConst.GetPPC()(j).Idv();
+    int OrdreConst = LXYZConst.GetPPC()(j).Idu() + LXYZConst.GetPPC()(j).Idv();
     if (maxConstraintOrder < OrdreConst)
       maxConstraintOrder = OrdreConst;
   }
@@ -218,12 +218,12 @@ void Plate_Plate::Load(const Plate_LinearXYZConstraint& LXYZConst)
 
 void Plate_Plate::Load(const Plate_LinearScalarConstraint& LScalarConst)
 {
-  OK = Standard_False;
+  OK = false;
   n_el += LScalarConst.Coeff().RowLength();
   myLScalarConstraints.Append(LScalarConst);
-  for (Standard_Integer j = 1; j <= LScalarConst.GetPPC().Length(); j++)
+  for (int j = 1; j <= LScalarConst.GetPPC().Length(); j++)
   {
-    Standard_Integer OrdreConst = LScalarConst.GetPPC()(j).Idu() + LScalarConst.GetPPC()(j).Idv();
+    int OrdreConst = LScalarConst.GetPPC()(j).Idu() + LScalarConst.GetPPC()(j).Idv();
     if (maxConstraintOrder < OrdreConst)
       maxConstraintOrder = OrdreConst;
   }
@@ -246,13 +246,13 @@ void Plate_Plate::Load(const Plate_SampledCurveConstraint& SCConst)
 
 void Plate_Plate::Load(const Plate_GtoCConstraint& GtoCConst)
 {
-  for (Standard_Integer i = 0; i < GtoCConst.nb_PPC(); i++)
+  for (int i = 0; i < GtoCConst.nb_PPC(); i++)
     Load(GtoCConst.GetPPC(i));
 }
 
 void Plate_Plate::Load(const Plate_FreeGtoCConstraint& FGtoCConst)
 {
-  Standard_Integer i;
+  int i;
   for (i = 0; i < FGtoCConst.nb_PPC(); i++)
     Load(FGtoCConst.GetPPC(i));
   for (i = 0; i < FGtoCConst.nb_LSC(); i++)
@@ -269,12 +269,12 @@ void Plate_Plate::Load(const Plate_GlobalTranslationConstraint& GTConst)
 // purpose  : to solve the set of constraints
 //=======================================================================
 
-void Plate_Plate::SolveTI(const Standard_Integer       ord,
-                          const Standard_Real          anisotropie,
+void Plate_Plate::SolveTI(const int       ord,
+                          const double          anisotropie,
                           const Message_ProgressRange& theProgress)
 {
-  Standard_Integer IterationNumber = 0;
-  OK                               = Standard_False;
+  int IterationNumber = 0;
+  OK                               = false;
   order                            = ord;
   if (ord <= 1)
     return;
@@ -288,20 +288,20 @@ void Plate_Plate::SolveTI(const Standard_Integer       ord,
     return;
 
   // computation of the bounding box of the 2d PPconstraints
-  Standard_Real xmin, xmax, ymin, ymax;
+  double xmin, xmax, ymin, ymax;
   UVBox(xmin, xmax, ymin, ymax);
 
-  Standard_Real du = 0.5 * (xmax - xmin);
+  double du = 0.5 * (xmax - xmin);
   if (anisotropie > 1.)
     du *= anisotropie;
   if (du < 1.e-10)
     return;
   ddu[0] = 1;
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= 9; i++)
     ddu[i] = ddu[i - 1] / du;
 
-  Standard_Real dv = 0.5 * (ymax - ymin);
+  double dv = 0.5 * (ymax - ymin);
   if (anisotropie < 1.)
     dv /= anisotropie;
   if (dv < 1.e-10)
@@ -327,7 +327,7 @@ void Plate_Plate::SolveTI(const Standard_Integer       ord,
 //           only PinPointConstraints are loaded
 //=======================================================================
 
-void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
+void Plate_Plate::SolveTI1(const int       IterationNumber,
                            const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
@@ -337,42 +337,42 @@ void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
 
   delete[] (gp_XY*)points;
   points = new gp_XY[n_el];
-  Standard_Integer i;
+  int i;
   for (i = 0; i < n_el; i++)
     Points(i) = myConstraints(i + 1).Pnt2d();
 
-  delete[] (Standard_Integer*)deru;
-  deru = new Standard_Integer[n_el];
+  delete[] (int*)deru;
+  deru = new int[n_el];
   for (i = 0; i < n_el; i++)
     Deru(i) = myConstraints(i + 1).Idu();
 
-  delete[] (Standard_Integer*)derv;
-  derv = new Standard_Integer[n_el];
+  delete[] (int*)derv;
+  derv = new int[n_el];
   for (i = 0; i < n_el; i++)
     Derv(i) = myConstraints(i + 1).Idv();
 
   for (i = 0; i < n_el; i++)
   {
-    for (Standard_Integer j = 0; j < i; j++)
+    for (int j = 0; j < i; j++)
     {
-      Standard_Real signe = 1;
+      double signe = 1;
       if (((Deru(j) + Derv(j)) % 2) == 1)
         signe = -1;
-      Standard_Integer iu = Deru(i) + Deru(j);
-      Standard_Integer iv = Derv(i) + Derv(j);
+      int iu = Deru(i) + Deru(j);
+      int iv = Derv(i) + Derv(j);
       mat(i, j)           = signe * SolEm(Points(i) - Points(j), iu, iv);
     }
   }
 
   i = n_el;
-  for (Standard_Integer iu = 0; iu < order; iu++)
+  for (int iu = 0; iu < order; iu++)
   {
-    for (Standard_Integer iv = 0; iu + iv < order; iv++)
+    for (int iv = 0; iu + iv < order; iv++)
     {
-      for (Standard_Integer j = 0; j < n_el; j++)
+      for (int j = 0; j < n_el; j++)
       {
-        Standard_Integer idu = Deru(j);
-        Standard_Integer idv = Derv(j);
+        int idu = Deru(j);
+        int idv = Derv(j);
         mat(i, j)            = Polm(Points(j), iu, iv, idu, idv);
       }
       i++;
@@ -381,28 +381,28 @@ void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
 
   for (i = 0; i < n_dim; i++)
   {
-    for (Standard_Integer j = i + 1; j < n_dim; j++)
+    for (int j = i + 1; j < n_dim; j++)
     {
       mat(i, j) = mat(j, i);
     }
   }
 
   // initialisation of the Gauss algorithm
-  Standard_Real pivot_max = 1.e-12;
-  OK                      = Standard_True;
+  double pivot_max = 1.e-12;
+  OK                      = true;
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI1()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
 
   if (aScope.UserBreak())
   {
-    OK = Standard_False;
+    OK = false;
     return;
   }
 
   if (!algo_gauss.IsDone())
   {
-    Standard_Integer nbm = order * (order + 1) / 2;
+    int nbm = order * (order + 1) / 2;
     for (i = n_el; i < n_el + nbm; i++)
     {
       mat(i, i) = 1.e-8;
@@ -413,7 +413,7 @@ void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
 
     if (aScope.UserBreak())
     {
-      OK = Standard_False;
+      OK = false;
       return;
     }
     algo_gauss = thealgo;
@@ -429,7 +429,7 @@ void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
     delete[] (gp_XYZ*)solution;
     solution = new gp_XYZ[n_dim];
 
-    for (Standard_Integer icoor = 1; icoor <= 3; icoor++)
+    for (int icoor = 1; icoor <= 3; icoor++)
     {
       for (i = 0; i < n_el; i++)
       {
@@ -463,25 +463,25 @@ void Plate_Plate::SolveTI1(const Standard_Integer       IterationNumber,
 //           LinearXYZ constraints are provided but no LinearScalar one
 //=======================================================================
 
-void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
+void Plate_Plate::SolveTI2(const int       IterationNumber,
                            const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
 
-  Standard_Integer nCC1 = myConstraints.Length();
-  Standard_Integer nCC2 = 0;
-  Standard_Integer i;
+  int nCC1 = myConstraints.Length();
+  int nCC2 = 0;
+  int i;
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
     nCC2 += myLXYZConstraints(i).Coeff().ColLength();
 
-  Standard_Integer n_dimat = nCC1 + nCC2 + order * (order + 1) / 2;
+  int n_dimat = nCC1 + nCC2 + order * (order + 1) / 2;
 
   delete[] (gp_XY*)points;
   points = new gp_XY[n_el];
-  delete[] (Standard_Integer*)deru;
-  deru = new Standard_Integer[n_el];
-  delete[] (Standard_Integer*)derv;
-  derv = new Standard_Integer[n_el];
+  delete[] (int*)deru;
+  deru = new int[n_el];
+  delete[] (int*)derv;
+  derv = new int[n_el];
 
   for (i = 0; i < nCC1; i++)
   {
@@ -490,9 +490,9 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
     Derv(i)   = myConstraints(i + 1).Idv();
   }
 
-  Standard_Integer k = nCC1;
+  int k = nCC1;
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
-    for (Standard_Integer j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
     {
       Points(k) = myLXYZConstraints(i).GetPPC()(j).Pnt2d();
       Deru(k)   = myLXYZConstraints(i).GetPPC()(j).Idu();
@@ -505,15 +505,15 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
   fillXYZmatrix(mat, 0, 0, nCC1, nCC2);
 
   // initialisation of the Gauss algorithm
-  Standard_Real pivot_max = 1.e-12;
-  OK                      = Standard_True; // ************ JHH
+  double pivot_max = 1.e-12;
+  OK                      = true; // ************ JHH
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI2()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
 
   if (aScope.UserBreak())
   {
-    OK = Standard_False;
+    OK = false;
     return;
   }
 
@@ -529,7 +529,7 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
 
     if (aScope.UserBreak())
     {
-      OK = Standard_False;
+      OK = false;
       return;
     }
     algo_gauss = thealgo1;
@@ -546,7 +546,7 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
     n_dim    = n_el + order * (order + 1) / 2;
     solution = new gp_XYZ[n_dim];
 
-    for (Standard_Integer icoor = 1; icoor <= 3; icoor++)
+    for (int icoor = 1; icoor <= 3; icoor++)
     {
       for (i = 0; i < nCC1; i++)
       {
@@ -556,9 +556,9 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
       k = nCC1;
       for (i = 1; i <= myLXYZConstraints.Length(); i++)
       {
-        for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
         {
-          for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
             sec_member(k) += myLXYZConstraints(i).Coeff()(irow, icol)
                              * myLXYZConstraints(i).GetPPC()(icol).Value().Coord(icoor);
           k++;
@@ -582,15 +582,15 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
       for (i = 0; i < nCC1; i++)
         Solution(i).SetCoord(icoor, sol(i));
 
-      Standard_Integer kSolution = nCC1;
-      Standard_Integer ksol      = nCC1;
+      int kSolution = nCC1;
+      int ksol      = nCC1;
 
       for (i = 1; i <= myLXYZConstraints.Length(); i++)
       {
-        for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
         {
-          Standard_Real vsol = 0;
-          for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+          double vsol = 0;
+          for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
             vsol += myLXYZConstraints(i).Coeff()(irow, icol) * sol(ksol + irow - 1);
           Solution(kSolution).SetCoord(icoor, vsol);
           kSolution++;
@@ -611,32 +611,32 @@ void Plate_Plate::SolveTI2(const Standard_Integer       IterationNumber,
 // purpose  : to solve the set of constraints in the most general situation
 //=======================================================================
 
-void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
+void Plate_Plate::SolveTI3(const int       IterationNumber,
                            const Message_ProgressRange& theProgress)
 {
   // computation of square matrix members
 
-  Standard_Integer nCC1 = myConstraints.Length();
+  int nCC1 = myConstraints.Length();
 
-  Standard_Integer nCC2 = 0;
-  Standard_Integer i;
+  int nCC2 = 0;
+  int i;
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
     nCC2 += myLXYZConstraints(i).Coeff().ColLength();
 
-  Standard_Integer nCC3 = 0;
+  int nCC3 = 0;
   for (i = 1; i <= myLScalarConstraints.Length(); i++)
     nCC3 += myLScalarConstraints(i).Coeff().ColLength();
 
-  Standard_Integer nbm          = order * (order + 1) / 2;
-  Standard_Integer n_dimsousmat = nCC1 + nCC2 + nbm;
-  Standard_Integer n_dimat      = 3 * n_dimsousmat + nCC3;
+  int nbm          = order * (order + 1) / 2;
+  int n_dimsousmat = nCC1 + nCC2 + nbm;
+  int n_dimat      = 3 * n_dimsousmat + nCC3;
 
   delete[] (gp_XY*)points;
   points = new gp_XY[n_el];
-  delete[] (Standard_Integer*)deru;
-  deru = new Standard_Integer[n_el];
-  delete[] (Standard_Integer*)derv;
-  derv = new Standard_Integer[n_el];
+  delete[] (int*)deru;
+  deru = new int[n_el];
+  delete[] (int*)derv;
+  derv = new int[n_el];
 
   for (i = 0; i < nCC1; i++)
   {
@@ -645,18 +645,18 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
     Derv(i)   = myConstraints(i + 1).Idv();
   }
 
-  Standard_Integer k = nCC1;
+  int k = nCC1;
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
-    for (Standard_Integer j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
     {
       Points(k) = myLXYZConstraints(i).GetPPC()(j).Pnt2d();
       Deru(k)   = myLXYZConstraints(i).GetPPC()(j).Idu();
       Derv(k)   = myLXYZConstraints(i).GetPPC()(j).Idv();
       k++;
     }
-  Standard_Integer nPPC2 = k;
+  int nPPC2 = k;
   for (i = 1; i <= myLScalarConstraints.Length(); i++)
-    for (Standard_Integer j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
+    for (int j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
     {
       Points(k) = myLScalarConstraints(i).GetPPC()(j).Pnt2d();
       Deru(k)   = myLScalarConstraints(i).GetPPC()(j).Idu();
@@ -671,8 +671,8 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
   fillXYZmatrix(mat, 2 * n_dimsousmat, 2 * n_dimsousmat, nCC1, nCC2);
 
   k                     = 3 * n_dimsousmat;
-  Standard_Integer kppc = nPPC2;
-  Standard_Integer j;
+  int kppc = nPPC2;
+  int j;
   for (i = 1; i <= myLScalarConstraints.Length(); i++)
   {
     for (j = 0; j < nCC1; j++)
@@ -680,18 +680,18 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
 
       math_Vector vmat(1, myLScalarConstraints(i).GetPPC().Length());
 
-      for (Standard_Integer ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
       {
-        Standard_Real signe = 1;
+        double signe = 1;
         if (((Deru(j) + Derv(j)) % 2) == 1)
           signe = -1;
-        Standard_Integer iu = Deru(kppc + ippc - 1) + Deru(j);
-        Standard_Integer iv = Derv(kppc + ippc - 1) + Derv(j);
+        int iu = Deru(kppc + ippc - 1) + Deru(j);
+        int iv = Derv(kppc + ippc - 1) + Derv(j);
         vmat(ippc)          = signe * SolEm(Points(kppc + ippc - 1) - Points(j), iu, iv);
       }
 
-      for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-        for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
         {
           mat(k + irow - 1, j) += myLScalarConstraints(i).Coeff()(irow, icol).X() * vmat(icol);
           mat(k + irow - 1, n_dimsousmat + j) +=
@@ -701,9 +701,9 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
         }
     }
 
-    Standard_Integer k2    = nCC1;
-    Standard_Integer kppc2 = nCC1;
-    Standard_Integer i2;
+    int k2    = nCC1;
+    int kppc2 = nCC1;
+    int i2;
     for (i2 = 1; i2 <= myLXYZConstraints.Length(); i2++)
     {
 
@@ -712,24 +712,24 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
                          1,
                          myLXYZConstraints(i2).GetPPC().Length());
 
-      for (Standard_Integer ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
-        for (Standard_Integer ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
         {
-          Standard_Real signe = 1;
+          double signe = 1;
           if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
             signe = -1;
-          Standard_Integer iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
-          Standard_Integer iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          int iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
           tmpmat(ippc, ippc2) =
             signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), iu, iv);
         }
 
-      for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-        for (Standard_Integer irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
              irow2++)
-          for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
                icol++)
-            for (Standard_Integer icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
                  icol2++)
             {
               mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol).X()
@@ -748,20 +748,20 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
     }
 
     j = nCC1 + nCC2;
-    for (Standard_Integer iu = 0; iu < order; iu++)
-      for (Standard_Integer iv = 0; iu + iv < order; iv++)
+    for (int iu = 0; iu < order; iu++)
+      for (int iv = 0; iu + iv < order; iv++)
       {
 
         math_Vector vmat(1, myLScalarConstraints(i).GetPPC().Length());
-        for (Standard_Integer ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+        for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
         {
-          Standard_Integer idu = Deru(kppc + ippc - 1);
-          Standard_Integer idv = Derv(kppc + ippc - 1);
+          int idu = Deru(kppc + ippc - 1);
+          int idv = Derv(kppc + ippc - 1);
           vmat(ippc)           = Polm(Points(kppc + ippc - 1), iu, iv, idu, idv);
         }
 
-        for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-          for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
+        for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
                icol++)
           {
             mat(k + irow - 1, j) += myLScalarConstraints(i).Coeff()(irow, icol).X() * vmat(icol);
@@ -784,25 +784,25 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
                          1,
                          myLScalarConstraints(i2).GetPPC().Length());
 
-      for (Standard_Integer ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
-        for (Standard_Integer ippc2 = 1; ippc2 <= myLScalarConstraints(i2).GetPPC().Length();
+      for (int ippc = 1; ippc <= myLScalarConstraints(i).GetPPC().Length(); ippc++)
+        for (int ippc2 = 1; ippc2 <= myLScalarConstraints(i2).GetPPC().Length();
              ippc2++)
         {
-          Standard_Real signe = 1;
+          double signe = 1;
           if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
             signe = -1;
-          Standard_Integer a_iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
-          Standard_Integer iv   = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          int a_iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv   = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
           tmpmat(ippc, ippc2) =
             signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), a_iu, iv);
         }
 
-      for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
-        for (Standard_Integer irow2 = 1; irow2 <= myLScalarConstraints(i2).Coeff().ColLength();
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow2 = 1; irow2 <= myLScalarConstraints(i2).Coeff().ColLength();
              irow2++)
-          for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
+          for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength();
                icol++)
-            for (Standard_Integer icol2 = 1; icol2 <= myLScalarConstraints(i2).Coeff().RowLength();
+            for (int icol2 = 1; icol2 <= myLScalarConstraints(i2).Coeff().RowLength();
                  icol2++)
             {
               mat(k + irow - 1, k2 + irow2 - 1) += myLScalarConstraints(i).Coeff()(irow, icol)
@@ -823,15 +823,15 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
       mat(i, j) = mat(j, i);
 
   // initialisation of the Gauss algorithm
-  Standard_Real pivot_max = 1.e-12;
-  OK                      = Standard_True; // ************ JHH
+  double pivot_max = 1.e-12;
+  OK                      = true; // ************ JHH
 
   Message_ProgressScope aScope(theProgress, "Plate_Plate::SolveTI3()", 10);
   math_Gauss            algo_gauss(mat, pivot_max, aScope.Next(7));
 
   if (aScope.UserBreak())
   {
-    OK = Standard_False;
+    OK = false;
     return;
   }
 
@@ -849,7 +849,7 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
 
     if (aScope.UserBreak())
     {
-      OK = Standard_False;
+      OK = false;
       return;
     }
     algo_gauss = thealgo2;
@@ -866,7 +866,7 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
     n_dim    = n_el + order * (order + 1) / 2;
     solution = new gp_XYZ[n_dim];
 
-    Standard_Integer icoor;
+    int icoor;
     for (icoor = 1; icoor <= 3; icoor++)
     {
       for (i = 0; i < nCC1; i++)
@@ -874,9 +874,9 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
 
       k = nCC1;
       for (i = 1; i <= myLXYZConstraints.Length(); i++)
-        for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
         {
-          for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
             sec_member((icoor - 1) * n_dimsousmat + k) +=
               myLXYZConstraints(i).Coeff()(irow, icol)
               * myLXYZConstraints(i).GetPPC()(icol).Value().Coord(icoor);
@@ -885,9 +885,9 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
     }
     k = 3 * n_dimsousmat;
     for (i = 1; i <= myLScalarConstraints.Length(); i++)
-      for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+      for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
       {
-        for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+        for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
           sec_member(k) += myLScalarConstraints(i).Coeff()(irow, icol)
                            * myLScalarConstraints(i).GetPPC()(icol).Value();
         k++;
@@ -911,15 +911,15 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
       for (i = 0; i < nCC1; i++)
         Solution(i).SetCoord(icoor, sol((icoor - 1) * n_dimsousmat + i));
 
-      Standard_Integer kSolution = nCC1;
-      Standard_Integer ksol      = nCC1;
+      int kSolution = nCC1;
+      int ksol      = nCC1;
 
       for (i = 1; i <= myLXYZConstraints.Length(); i++)
       {
-        for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
         {
-          Standard_Real vsol = 0;
-          for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+          double vsol = 0;
+          for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
             vsol += myLXYZConstraints(i).Coeff()(irow, icol)
                     * sol((icoor - 1) * n_dimsousmat + ksol + irow - 1);
           Solution(kSolution).SetCoord(icoor, vsol);
@@ -935,14 +935,14 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
       }
     }
 
-    Standard_Integer ksol      = 3 * n_dimsousmat;
-    Standard_Integer kSolution = nPPC2;
+    int ksol      = 3 * n_dimsousmat;
+    int kSolution = nPPC2;
     for (i = 1; i <= myLScalarConstraints.Length(); i++)
     {
-      for (Standard_Integer icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
+      for (int icol = 1; icol <= myLScalarConstraints(i).Coeff().RowLength(); icol++)
       {
         gp_XYZ Vsol(0., 0., 0.);
-        for (Standard_Integer irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow = 1; irow <= myLScalarConstraints(i).Coeff().ColLength(); irow++)
           Vsol += myLScalarConstraints(i).Coeff()(irow, icol) * sol(ksol + irow - 1);
         Solution(kSolution) = Vsol;
         kSolution++;
@@ -955,53 +955,53 @@ void Plate_Plate::SolveTI3(const Standard_Integer       IterationNumber,
 //=================================================================================================
 
 void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
-                                const Standard_Integer i0,
-                                const Standard_Integer j0,
-                                const Standard_Integer ncc1,
-                                const Standard_Integer ncc2) const
+                                const int i0,
+                                const int j0,
+                                const int ncc1,
+                                const int ncc2) const
 {
-  Standard_Integer i, j;
+  int i, j;
   for (i = 0; i < ncc1; i++)
   {
     for (j = 0; j < i; j++)
     {
-      Standard_Real signe = 1;
+      double signe = 1;
       if (((Deru(j) + Derv(j)) % 2) == 1)
         signe = -1;
-      Standard_Integer iu = Deru(i) + Deru(j);
-      Standard_Integer iv = Derv(i) + Derv(j);
+      int iu = Deru(i) + Deru(j);
+      int iv = Derv(i) + Derv(j);
       mat(i0 + i, j0 + j) = signe * SolEm(Points(i) - Points(j), iu, iv);
     }
   }
 
-  Standard_Integer k    = ncc1;
-  Standard_Integer kppc = ncc1;
+  int k    = ncc1;
+  int kppc = ncc1;
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
   {
 
-    for (Standard_Integer a_j = 0; a_j < ncc1; a_j++)
+    for (int a_j = 0; a_j < ncc1; a_j++)
     {
 
       math_Vector vmat(1, myLXYZConstraints(i).GetPPC().Length());
 
-      for (Standard_Integer ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
+      for (int ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
       {
-        Standard_Real signe = 1;
+        double signe = 1;
         if (((Deru(a_j) + Derv(a_j)) % 2) == 1)
           signe = -1;
-        Standard_Integer iu = Deru(kppc + ippc - 1) + Deru(a_j);
-        Standard_Integer iv = Derv(kppc + ippc - 1) + Derv(a_j);
+        int iu = Deru(kppc + ippc - 1) + Deru(a_j);
+        int iv = Derv(kppc + ippc - 1) + Derv(a_j);
         vmat(ippc)          = signe * SolEm(Points(kppc + ippc - 1) - Points(a_j), iu, iv);
       }
 
-      for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
-        for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+      for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
           mat(i0 + k + irow - 1, j0 + a_j) += myLXYZConstraints(i).Coeff()(irow, icol) * vmat(icol);
     }
 
-    Standard_Integer k2    = ncc1;
-    Standard_Integer kppc2 = ncc1;
-    for (Standard_Integer i2 = 1; i2 <= i; i2++)
+    int k2    = ncc1;
+    int kppc2 = ncc1;
+    for (int i2 = 1; i2 <= i; i2++)
     {
 
       math_Matrix tmpmat(1,
@@ -1009,23 +1009,23 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
                          1,
                          myLXYZConstraints(i2).GetPPC().Length());
 
-      for (Standard_Integer ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
-        for (Standard_Integer ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+      for (int ippc = 1; ippc <= myLXYZConstraints(i).GetPPC().Length(); ippc++)
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
         {
-          Standard_Real signe = 1;
+          double signe = 1;
           if (((Deru(kppc2 + ippc2 - 1) + Derv(kppc2 + ippc2 - 1)) % 2) == 1)
             signe = -1;
-          Standard_Integer iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
-          Standard_Integer iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
+          int iu = Deru(kppc + ippc - 1) + Deru(kppc2 + ippc2 - 1);
+          int iv = Derv(kppc + ippc - 1) + Derv(kppc2 + ippc2 - 1);
           tmpmat(ippc, ippc2) =
             signe * SolEm(Points(kppc + ippc - 1) - Points(kppc2 + ippc2 - 1), iu, iv);
         }
 
-      for (Standard_Integer irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
-        for (Standard_Integer irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
+      for (int irow = 1; irow <= myLXYZConstraints(i).Coeff().ColLength(); irow++)
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
              irow2++)
-          for (Standard_Integer icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
-            for (Standard_Integer icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
+          for (int icol = 1; icol <= myLXYZConstraints(i).Coeff().RowLength(); icol++)
+            for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
                  icol2++)
               mat(i0 + k + irow - 1, j0 + k2 + irow2 - 1) +=
                 myLXYZConstraints(i).Coeff()(irow, icol)
@@ -1040,31 +1040,31 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
   }
 
   i = ncc1 + ncc2;
-  for (Standard_Integer iu = 0; iu < order; iu++)
-    for (Standard_Integer iv = 0; iu + iv < order; iv++)
+  for (int iu = 0; iu < order; iu++)
+    for (int iv = 0; iu + iv < order; iv++)
     {
-      for (Standard_Integer a_j = 0; a_j < ncc1; a_j++)
+      for (int a_j = 0; a_j < ncc1; a_j++)
       {
-        Standard_Integer idu  = Deru(a_j);
-        Standard_Integer idv  = Derv(a_j);
+        int idu  = Deru(a_j);
+        int idv  = Derv(a_j);
         mat(i0 + i, j0 + a_j) = Polm(Points(a_j), iu, iv, idu, idv);
       }
 
-      Standard_Integer k2    = ncc1;
-      Standard_Integer kppc2 = ncc1;
-      for (Standard_Integer i2 = 1; i2 <= myLXYZConstraints.Length(); i2++)
+      int k2    = ncc1;
+      int kppc2 = ncc1;
+      for (int i2 = 1; i2 <= myLXYZConstraints.Length(); i2++)
       {
         math_Vector vmat(1, myLXYZConstraints(i2).GetPPC().Length());
-        for (Standard_Integer ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
+        for (int ippc2 = 1; ippc2 <= myLXYZConstraints(i2).GetPPC().Length(); ippc2++)
         {
-          Standard_Integer idu = Deru(kppc2 + ippc2 - 1);
-          Standard_Integer idv = Derv(kppc2 + ippc2 - 1);
+          int idu = Deru(kppc2 + ippc2 - 1);
+          int idv = Derv(kppc2 + ippc2 - 1);
           vmat(ippc2)          = Polm(Points(kppc2 + ippc2 - 1), iu, iv, idu, idv);
         }
 
-        for (Standard_Integer irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
+        for (int irow2 = 1; irow2 <= myLXYZConstraints(i2).Coeff().ColLength();
              irow2++)
-          for (Standard_Integer icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
+          for (int icol2 = 1; icol2 <= myLXYZConstraints(i2).Coeff().RowLength();
                icol2++)
             mat(i0 + i, j0 + k2 + irow2 - 1) +=
               myLXYZConstraints(i2).Coeff()(irow2, icol2) * vmat(icol2);
@@ -1076,11 +1076,11 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
       i++;
     }
 
-  Standard_Integer n_dimat = ncc1 + ncc2 + order * (order + 1) / 2;
+  int n_dimat = ncc1 + ncc2 + order * (order + 1) / 2;
 
   for (i = 0; i < n_dimat; i++)
   {
-    for (Standard_Integer a_j = i + 1; a_j < n_dimat; a_j++)
+    for (int a_j = i + 1; a_j < n_dimat; a_j++)
     {
       mat(i0 + i, j0 + a_j) = mat(i0 + a_j, j0 + i);
     }
@@ -1089,7 +1089,7 @@ void Plate_Plate::fillXYZmatrix(math_Matrix&           mat,
 
 //=================================================================================================
 
-Standard_Boolean Plate_Plate::IsDone() const
+bool Plate_Plate::IsDone() const
 {
   return OK;
 }
@@ -1115,16 +1115,16 @@ void Plate_Plate::Init()
   delete[] (gp_XY*)points;
   points = 0;
 
-  delete[] (Standard_Integer*)deru;
+  delete[] (int*)deru;
   deru = 0;
 
-  delete[] (Standard_Integer*)derv;
+  delete[] (int*)derv;
   derv = 0;
 
   order              = 0;
   n_el               = 0;
   n_dim              = 0;
-  OK                 = Standard_True;
+  OK                 = true;
   maxConstraintOrder = 0;
 }
 
@@ -1141,17 +1141,17 @@ gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
 
   if (!PolynomialPartOnly)
   {
-    for (Standard_Integer i = 0; i < n_el; i++)
+    for (int i = 0; i < n_el; i++)
     {
-      Standard_Real signe = 1;
+      double signe = 1;
       if (((Deru(i) + Derv(i)) % 2) == 1)
         signe = -1;
       valeur += Solution(i) * (signe * SolEm(point2d - Points(i), Deru(i), Derv(i)));
     }
   }
-  Standard_Integer i = n_el;
-  for (Standard_Integer idu = 0; idu < order; idu++)
-    for (Standard_Integer idv = 0; idu + idv < order; idv++)
+  int i = n_el;
+  for (int idu = 0; idu < order; idu++)
+    for (int idv = 0; idu + idv < order; idv++)
     {
       valeur += Solution(i) * Polm(point2d, idu, idv, 0, 0);
       i++;
@@ -1162,8 +1162,8 @@ gp_XYZ Plate_Plate::Evaluate(const gp_XY& point2d) const
 //=================================================================================================
 
 gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY&           point2d,
-                                       const Standard_Integer iu,
-                                       const Standard_Integer iv) const
+                                       const int iu,
+                                       const int iv) const
 {
   if (solution == 0)
     return gp_XYZ(0, 0, 0);
@@ -1173,17 +1173,17 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY&           point2d,
   gp_XYZ valeur(0, 0, 0);
   if (!PolynomialPartOnly)
   {
-    for (Standard_Integer i = 0; i < n_el; i++)
+    for (int i = 0; i < n_el; i++)
     {
-      Standard_Real signe = 1;
+      double signe = 1;
       if (((Deru(i) + Derv(i)) % 2) == 1)
         signe = -1;
       valeur += Solution(i) * (signe * SolEm(point2d - Points(i), Deru(i) + iu, Derv(i) + iv));
     }
   }
-  Standard_Integer i = n_el;
-  for (Standard_Integer idu = 0; idu < order; idu++)
-    for (Standard_Integer idv = 0; idu + idv < order; idv++)
+  int i = n_el;
+  for (int idu = 0; idu < order; idu++)
+    for (int idv = 0; idu + idv < order; idv++)
     {
       valeur += Solution(i) * Polm(point2d, idu, idv, iu, iv);
       i++;
@@ -1197,12 +1197,12 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY&           point2d,
 // the polynomial part of the Plate function
 //=======================================================================
 
-void Plate_Plate::CoefPol(Handle(TColgp_HArray2OfXYZ)& Coefs) const
+void Plate_Plate::CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const
 {
-  Coefs              = new TColgp_HArray2OfXYZ(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
-  Standard_Integer i = n_el;
-  for (Standard_Integer iu = 0; iu < order; iu++)
-    for (Standard_Integer iv = 0; iu + iv < order; iv++)
+  Coefs              = new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
+  int i = n_el;
+  for (int iu = 0; iu < order; iu++)
+    for (int iv = 0; iu + iv < order; iv++)
     {
       Coefs->ChangeValue(iu, iv) = Solution(i) * ddu[iu] * ddv[iv];
       // Coefs->ChangeValue(idu,idv) = Solution(i);
@@ -1216,7 +1216,7 @@ void Plate_Plate::CoefPol(Handle(TColgp_HArray2OfXYZ)& Coefs) const
 // purpose  : give back the continuity order of the Plate function
 //=======================================================================
 
-Standard_Integer Plate_Plate::Continuity() const
+int Plate_Plate::Continuity() const
 {
   return 2 * order - 3 - maxConstraintOrder;
 }
@@ -1227,13 +1227,13 @@ Standard_Integer Plate_Plate::Continuity() const
 // of Laplcian at the power order
 //=======================================================================
 
-Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
-                                 const Standard_Integer iu,
-                                 const Standard_Integer iv) const
+double Plate_Plate::SolEm(const gp_XY&           point2d,
+                                 const int iu,
+                                 const int iv) const
 {
   Plate_Plate*     aThis = const_cast<Plate_Plate*>(this);
-  Standard_Real    U, V;
-  Standard_Integer IU, IV;
+  double    U, V;
+  int IU, IV;
 
   if (iv > iu)
   {
@@ -1267,30 +1267,30 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       return 0;
     aThis->L = log(R);
   }
-  Standard_Real DUV = 0;
+  double DUV = 0;
 
-  Standard_Integer m   = order;
-  Standard_Integer mm1 = m - 1;
-  Standard_Real&   r   = aThis->R;
+  int m   = order;
+  int mm1 = m - 1;
+  double&   r   = aThis->R;
 
-  // Standard_Real pr = pow(R, mm1 - IU - IV);
+  // double pr = pow(R, mm1 - IU - IV);
   //  this expression takes a lot of time
   //(does not take into account a small integer value of the exponent)
   //
 
-  Standard_Integer expo = mm1 - IU - IV;
-  Standard_Real    pr;
+  int expo = mm1 - IU - IV;
+  double    pr;
   if (expo < 0)
   {
     pr = R;
-    for (Standard_Integer i = 1; i < -expo; i++)
+    for (int i = 1; i < -expo; i++)
       pr *= R;
     pr = 1. / pr;
   }
   else if (expo > 0)
   {
     pr = R;
-    for (Standard_Integer i = 1; i < expo; i++)
+    for (int i = 1; i < expo; i++)
       pr *= R;
   }
   else
@@ -1320,7 +1320,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 1: {
-          Standard_Real m2 = m * m;
+          double m2 = m * m;
           // DUV = 4*pr*U*V*(-3+2*L+2*m-3*L*m+L*m2);
           DUV = 4 * pr * U * V * ((2 * m - 3) + (m2 - 3 * m + 2) * L);
         }
@@ -1335,7 +1335,7 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       switch (IV)
       {
         case 0: {
-          Standard_Real m2 = m * m;
+          double m2 = m * m;
           DUV              = 2 * pr
                 * (R - L * R + L * m * R - 6 * U2 + 4 * L * U2 + 4 * m * U2 - 6 * L * m * U2
                    + 2 * L * m2 * U2);
@@ -1343,8 +1343,8 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 1: {
-          Standard_Real m2 = m * m;
-          Standard_Real m3 = m2 * m;
+          double m2 = m * m;
+          double m3 = m2 * m;
           DUV = -3 * R + 2 * L * R + 2 * m * R - 3 * L * m * R + L * m2 * R + 22 * U2 - 12 * L * U2
                 - 24 * m * U2 + 22 * L * m * U2 + 6 * m2 * U2 - 12 * L * m2 * U2 + 2 * L * m3 * U2;
           DUV = DUV * 4 * pr * V;
@@ -1352,11 +1352,11 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 2: {
-          Standard_Real m2 = m * m;
-          Standard_Real m3 = m2 * m;
-          Standard_Real m4 = m2 * m2;
-          Standard_Real V2 = V * V;
-          Standard_Real R2 = R * R;
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
+          double V2 = V * V;
+          double R2 = R * R;
           DUV = -3 * R2 + 2 * L * R2 + 2 * m * R2 - 3 * L * m * R2 + L * m2 * R2 + 22 * R * U2
                 - 12 * L * R * U2 - 24 * m * R * U2 + 22 * L * m * R * U2 + 6 * m2 * R * U2
                 - 12 * L * m2 * R * U2;
@@ -1379,8 +1379,8 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       switch (IV)
       {
         case 0: {
-          Standard_Real m2 = m * m;
-          Standard_Real m3 = m2 * m;
+          double m2 = m * m;
+          double m3 = m2 * m;
           DUV = -9 * R + 6 * L * R + 6 * m * R - 9 * L * m * R + 3 * L * m2 * R + 22 * U2
                 - 12 * L * U2 - 24 * m * U2 + 22 * L * m * U2 + 6 * m2 * U2 - 12 * L * m2 * U2
                 + 2 * L * m3 * U2;
@@ -1389,9 +1389,9 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 1: {
-          Standard_Real m2 = m * m;
-          Standard_Real m3 = m2 * m;
-          Standard_Real m4 = m2 * m2;
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
           DUV = 33 * R - 18 * L * R - 36 * m * R + 33 * L * m * R + 9 * m2 * R - 18 * L * m2 * R
                 + 3 * L * m3 * R - 100 * U2 + 48 * L * U2 + 140 * m * U2 - 100 * L * m * U2
                 - 60 * m2 * U2 + 70 * L * m2 * U2;
@@ -1401,15 +1401,15 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 2: {
-          Standard_Real m2   = m * m;
-          Standard_Real m3   = m2 * m;
-          Standard_Real m4   = m2 * m2;
-          Standard_Real m5   = m4 * m;
-          Standard_Real ru2  = R * U2;
-          Standard_Real v2   = V * V;
-          Standard_Real rv2  = R * v2;
-          Standard_Real u2v2 = v2 * U2;
-          Standard_Real r2   = r * r;
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m4 * m;
+          double ru2  = R * U2;
+          double v2   = V * V;
+          double rv2  = R * v2;
+          double u2v2 = v2 * U2;
+          double r2   = r * r;
 
           // copy-paste the mathematics
           DUV = -100 * ru2 + 48 * L * ru2 + 140 * m * ru2 - 100 * L * m * ru2 - 60 * m2 * ru2
@@ -1427,16 +1427,16 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 3: {
-          Standard_Real m2   = m * m;
-          Standard_Real m3   = m2 * m;
-          Standard_Real m4   = m2 * m2;
-          Standard_Real m5   = m3 * m2;
-          Standard_Real m6   = m3 * m3;
-          Standard_Real ru2  = r * U2;
-          Standard_Real v2   = V * V;
-          Standard_Real rv2  = R * v2;
-          Standard_Real u2v2 = v2 * U2;
-          Standard_Real r2   = r * r;
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m3 * m2;
+          double m6   = m3 * m3;
+          double ru2  = r * U2;
+          double v2   = V * V;
+          double rv2  = R * v2;
+          double u2v2 = v2 * U2;
+          double r2   = r * r;
 
           // copy-paste the mathematics
           DUV = 1644 * ru2 - 720 * L * ru2 - 2700 * m * ru2 + 1644 * L * m * ru2 + 1530 * m2 * ru2
@@ -1464,11 +1464,11 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       switch (IV)
       {
         case 0: {
-          Standard_Real m2 = m * m;
-          Standard_Real m3 = m2 * m;
-          Standard_Real m4 = m2 * m2;
-          Standard_Real U4 = U2 * U2;
-          Standard_Real R2 = R * R;
+          double m2 = m * m;
+          double m3 = m2 * m;
+          double m4 = m2 * m2;
+          double U4 = U2 * U2;
+          double R2 = R * R;
           DUV = -9 * R2 + 6 * L * R2 + 6 * m * R2 - 9 * L * m * R2 + 3 * L * m2 * R2 + 132 * R * U2
                 - 72 * L * R * U2 - 144 * m * R * U2 + 132 * L * m * R * U2 + 36 * m2 * R * U2
                 - 72 * L * m2 * R * U2;
@@ -1480,13 +1480,13 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 1: {
-          Standard_Real m2  = m * m;
-          Standard_Real m3  = m2 * m;
-          Standard_Real m4  = m2 * m2;
-          Standard_Real m5  = m2 * m3;
-          Standard_Real u4  = U2 * U2;
-          Standard_Real ru2 = R * U2;
-          Standard_Real r2  = R * R;
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double u4  = U2 * U2;
+          double ru2 = R * U2;
+          double r2  = R * R;
 
           // copy-paste the mathematics
           DUV = -600 * ru2 + 288 * L * ru2 + 840 * m * ru2 - 600 * L * m * ru2 - 360 * m2 * ru2
@@ -1501,21 +1501,21 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 2: {
-          Standard_Real m2    = m * m;
-          Standard_Real m3    = m2 * m;
-          Standard_Real m4    = m2 * m2;
-          Standard_Real m5    = m2 * m3;
-          Standard_Real m6    = m3 * m3;
-          Standard_Real u4    = U2 * U2;
-          Standard_Real r2    = r * r;
-          Standard_Real r3    = r2 * r;
-          Standard_Real v2    = V * V;
-          Standard_Real u2v2  = v2 * U2;
-          Standard_Real ru2v2 = R * u2v2;
-          Standard_Real u4v2  = u4 * v2;
-          Standard_Real r2u2  = r2 * U2;
-          Standard_Real ru4   = r * u4;
-          Standard_Real r2v2  = r2 * v2;
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double ru4   = r * u4;
+          double r2v2  = r2 * v2;
 
           // copy-paste the mathematics
           DUV = 6576 * ru2v2 - 2880 * L * ru2v2 - 10800 * m * ru2v2 + 6576 * L * m * ru2v2
@@ -1539,22 +1539,22 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 3: {
-          Standard_Real m2    = m * m;
-          Standard_Real m3    = m2 * m;
-          Standard_Real m4    = m2 * m2;
-          Standard_Real m5    = m2 * m3;
-          Standard_Real m6    = m3 * m3;
-          Standard_Real m7    = m3 * m4;
-          Standard_Real u4    = U2 * U2;
-          Standard_Real r2    = r * r;
-          Standard_Real r3    = r2 * r;
-          Standard_Real v2    = V * V;
-          Standard_Real u2v2  = v2 * U2;
-          Standard_Real ru2v2 = R * u2v2;
-          Standard_Real u4v2  = u4 * v2;
-          Standard_Real r2u2  = r2 * U2;
-          Standard_Real r2v2  = r2 * v2;
-          Standard_Real ru4   = r * u4;
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double m7    = m3 * m4;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double r2v2  = r2 * v2;
+          double ru4   = r * u4;
 
           // copy-paste the mathematics
           DUV = -42336 * ru2v2 + 17280 * L * ru2v2 + 77952 * m * ru2v2 - 42336 * L * m * ru2v2
@@ -1590,13 +1590,13 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       switch (IV)
       {
         case 0: {
-          Standard_Real m2  = m * m;
-          Standard_Real m3  = m2 * m;
-          Standard_Real m4  = m2 * m2;
-          Standard_Real m5  = m2 * m3;
-          Standard_Real u4  = U2 * U2;
-          Standard_Real r2  = R * R;
-          Standard_Real ru2 = R * U2;
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double u4  = U2 * U2;
+          double r2  = R * R;
+          double ru2 = R * U2;
 
           // copy-paste the mathematics
           DUV = -1000 * ru2 + 480 * L * ru2 + 1400 * m * ru2 - 1000 * L * m * ru2 - 600 * m2 * ru2
@@ -1611,14 +1611,14 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 1: {
-          Standard_Real m2  = m * m;
-          Standard_Real m3  = m2 * m;
-          Standard_Real m4  = m2 * m2;
-          Standard_Real m5  = m2 * m3;
-          Standard_Real m6  = m3 * m3;
-          Standard_Real u4  = U2 * U2;
-          Standard_Real ru2 = r * U2;
-          Standard_Real r2  = r * r;
+          double m2  = m * m;
+          double m3  = m2 * m;
+          double m4  = m2 * m2;
+          double m5  = m2 * m3;
+          double m6  = m3 * m3;
+          double u4  = U2 * U2;
+          double ru2 = r * U2;
+          double r2  = r * r;
 
           // copy-paste the mathematics
           DUV = 5480 * ru2 - 2400 * L * ru2 - 9000 * m * ru2 + 5480 * L * m * ru2 + 5100 * m2 * ru2
@@ -1635,22 +1635,22 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
         break;
 
         case 2: {
-          Standard_Real m2    = m * m;
-          Standard_Real m3    = m2 * m;
-          Standard_Real m4    = m2 * m2;
-          Standard_Real m5    = m2 * m3;
-          Standard_Real m6    = m3 * m3;
-          Standard_Real m7    = m3 * m4;
-          Standard_Real u4    = U2 * U2;
-          Standard_Real r2    = r * r;
-          Standard_Real r3    = r2 * r;
-          Standard_Real v2    = V * V;
-          Standard_Real u2v2  = v2 * U2;
-          Standard_Real ru2v2 = R * u2v2;
-          Standard_Real u4v2  = u4 * v2;
-          Standard_Real r2u2  = r2 * U2;
-          Standard_Real r2v2  = r2 * v2;
-          Standard_Real ru4   = r * u4;
+          double m2    = m * m;
+          double m3    = m2 * m;
+          double m4    = m2 * m2;
+          double m5    = m2 * m3;
+          double m6    = m3 * m3;
+          double m7    = m3 * m4;
+          double u4    = U2 * U2;
+          double r2    = r * r;
+          double r3    = r2 * r;
+          double v2    = V * V;
+          double u2v2  = v2 * U2;
+          double ru2v2 = R * u2v2;
+          double u4v2  = u4 * v2;
+          double r2u2  = r2 * U2;
+          double r2v2  = r2 * v2;
+          double ru4   = r * u4;
 
           // copy-paste the mathematics
           DUV =
@@ -1687,17 +1687,17 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
       switch (IV)
       {
         case 0: {
-          Standard_Real m2   = m * m;
-          Standard_Real m3   = m2 * m;
-          Standard_Real m4   = m2 * m2;
-          Standard_Real m5   = m2 * m3;
-          Standard_Real m6   = m3 * m3;
-          Standard_Real u4   = U2 * U2;
-          Standard_Real u6   = U2 * u4;
-          Standard_Real r2   = r * r;
-          Standard_Real r3   = r2 * r;
-          Standard_Real r2u2 = r2 * U2;
-          Standard_Real ru4  = r * u4;
+          double m2   = m * m;
+          double m3   = m2 * m;
+          double m4   = m2 * m2;
+          double m5   = m2 * m3;
+          double m6   = m3 * m3;
+          double u4   = U2 * U2;
+          double u6   = U2 * u4;
+          double r2   = r * r;
+          double r3   = r2 * r;
+          double r2u2 = r2 * U2;
+          double ru4  = r * u4;
 
           // copy-paste the mathematics
           DUV = 16440 * ru4 - 7200 * L * ru4 - 27000 * m * ru4 + 16440 * L * m * ru4
@@ -1729,13 +1729,13 @@ Standard_Real Plate_Plate::SolEm(const gp_XY&           point2d,
 
 //=================================================================================================
 
-void Plate_Plate::UVBox(Standard_Real& UMin,
-                        Standard_Real& UMax,
-                        Standard_Real& VMin,
-                        Standard_Real& VMax) const
+void Plate_Plate::UVBox(double& UMin,
+                        double& UMax,
+                        double& VMin,
+                        double& VMax) const
 {
-  Standard_Integer    i;
-  const Standard_Real Bmin = 1.e-3;
+  int    i;
+  const double Bmin = 1.e-3;
   UMin                     = myConstraints(1).Pnt2d().X();
   UMax                     = UMin;
   VMin                     = myConstraints(1).Pnt2d().Y();
@@ -1743,12 +1743,12 @@ void Plate_Plate::UVBox(Standard_Real& UMin,
 
   for (i = 2; i <= myConstraints.Length(); i++)
   {
-    Standard_Real x = myConstraints(i).Pnt2d().X();
+    double x = myConstraints(i).Pnt2d().X();
     if (x < UMin)
       UMin = x;
     if (x > UMax)
       UMax = x;
-    Standard_Real y = myConstraints(i).Pnt2d().Y();
+    double y = myConstraints(i).Pnt2d().Y();
     if (y < VMin)
       VMin = y;
     if (y > VMax)
@@ -1756,14 +1756,14 @@ void Plate_Plate::UVBox(Standard_Real& UMin,
   }
 
   for (i = 1; i <= myLXYZConstraints.Length(); i++)
-    for (Standard_Integer j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
+    for (int j = 1; j <= myLXYZConstraints(i).GetPPC().Length(); j++)
     {
-      Standard_Real x = myLXYZConstraints(i).GetPPC()(j).Pnt2d().X();
+      double x = myLXYZConstraints(i).GetPPC()(j).Pnt2d().X();
       if (x < UMin)
         UMin = x;
       if (x > UMax)
         UMax = x;
-      Standard_Real y = myLXYZConstraints(i).GetPPC()(j).Pnt2d().Y();
+      double y = myLXYZConstraints(i).GetPPC()(j).Pnt2d().Y();
       if (y < VMin)
         VMin = y;
       if (y > VMax)
@@ -1771,14 +1771,14 @@ void Plate_Plate::UVBox(Standard_Real& UMin,
     }
 
   for (i = 1; i <= myLScalarConstraints.Length(); i++)
-    for (Standard_Integer j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
+    for (int j = 1; j <= myLScalarConstraints(i).GetPPC().Length(); j++)
     {
-      Standard_Real x = myLScalarConstraints(i).GetPPC()(j).Pnt2d().X();
+      double x = myLScalarConstraints(i).GetPPC()(j).Pnt2d().X();
       if (x < UMin)
         UMin = x;
       if (x > UMax)
         UMax = x;
-      Standard_Real y = myLScalarConstraints(i).GetPPC()(j).Pnt2d().Y();
+      double y = myLScalarConstraints(i).GetPPC()(j).Pnt2d().Y();
       if (y < VMin)
         VMin = y;
       if (y > VMax)
@@ -1787,13 +1787,13 @@ void Plate_Plate::UVBox(Standard_Real& UMin,
 
   if (UMax - UMin < Bmin)
   {
-    Standard_Real UM = 0.5 * (UMin + UMax);
+    double UM = 0.5 * (UMin + UMax);
     UMin             = UM - 0.5 * Bmin;
     UMax             = UM + 0.5 * Bmin;
   }
   if (VMax - VMin < Bmin)
   {
-    Standard_Real VM = 0.5 * (VMin + VMax);
+    double VM = 0.5 * (VMin + VMax);
     VMin             = VM - 0.5 * Bmin;
     VMax             = VM + 0.5 * Bmin;
   }
@@ -1801,9 +1801,9 @@ void Plate_Plate::UVBox(Standard_Real& UMin,
 
 //=================================================================================================
 
-void Plate_Plate::UVConstraints(TColgp_SequenceOfXY& Seq) const
+void Plate_Plate::UVConstraints(NCollection_Sequence<gp_XY>& Seq) const
 {
-  for (Standard_Integer i = 1; i <= myConstraints.Length(); i++)
+  for (int i = 1; i <= myConstraints.Length(); i++)
   {
     if ((myConstraints.Value(i).Idu() == 0) && (myConstraints.Value(i).Idv() == 0))
       Seq.Append((myConstraints.Value(i)).Pnt2d());
@@ -1812,7 +1812,7 @@ void Plate_Plate::UVConstraints(TColgp_SequenceOfXY& Seq) const
 
 //=======================================================================
 
-void Plate_Plate::SetPolynomialPartOnly(const Standard_Boolean PPOnly)
+void Plate_Plate::SetPolynomialPartOnly(const bool PPOnly)
 {
   PolynomialPartOnly = PPOnly;
 }

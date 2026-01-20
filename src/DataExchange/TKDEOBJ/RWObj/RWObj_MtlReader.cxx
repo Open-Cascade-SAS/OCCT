@@ -108,13 +108,13 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
   {
     Message::Send(TCollection_AsciiString("OBJ material file '") + myPath + "' is not found!",
                   Message_Warning);
-    return Standard_False;
+    return false;
   }
 
   char                    aLine[256] = {};
   TCollection_AsciiString aMatName;
   RWObj_Material          aMat;
-  const Standard_Integer  aNbMatOld = myMaterials->Extent();
+  const int  aNbMatOld = myMaterials->Extent();
   bool                    hasAspect = false;
   for (; ::feof(myFile) == 0 && ::fgets(aLine, 255, myFile) != NULL;)
   {
@@ -163,7 +163,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     {
       aPos += 3;
       char*          aNext = NULL;
-      Graphic3d_Vec3 aColor;
+      NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;
       if (validateColor(aColor))
@@ -176,7 +176,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     {
       aPos += 3;
       char*          aNext = NULL;
-      Graphic3d_Vec3 aColor;
+      NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;
       if (validateColor(aColor))
@@ -189,7 +189,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     {
       aPos += 3;
       char*          aNext = NULL;
-      Graphic3d_Vec3 aColor;
+      NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;
       if (validateColor(aColor))
@@ -321,7 +321,7 @@ void RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTextu
 
 //=================================================================================================
 
-bool RWObj_MtlReader::validateScalar(const Standard_Real theValue)
+bool RWObj_MtlReader::validateScalar(const double theValue)
 {
   if (theValue < 0.0 || theValue > 1.0)
   {
@@ -334,7 +334,7 @@ bool RWObj_MtlReader::validateScalar(const Standard_Real theValue)
 
 //=================================================================================================
 
-bool RWObj_MtlReader::validateColor(const Graphic3d_Vec3& theVec)
+bool RWObj_MtlReader::validateColor(const NCollection_Vec3<float>& theVec)
 {
   if (theVec.r() < 0.0f || theVec.r() > 1.0f || theVec.g() < 0.0f || theVec.g() > 1.0f
       || theVec.b() < 0.0f || theVec.b() > 1.0f)

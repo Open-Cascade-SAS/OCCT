@@ -19,25 +19,25 @@
 
 #include <TopOpeBRepDS_define.hxx>
 
-Standard_EXPORT const TopTools_ListOfShape& FDSCNX_EdgeConnexityShapeIndex(
+Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexityShapeIndex(
   const TopoDS_Shape&                        E,
-  const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-  const Standard_Integer                     SI);
-Standard_EXPORT const TopTools_ListOfShape& FDSCNX_EdgeConnexitySameShape(
+  const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+  const int                     SI);
+Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexitySameShape(
   const TopoDS_Shape&                        E,
-  const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+  const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape&                        S1,
                                     const TopoDS_Shape&                        S2,
-                                    const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-Standard_EXPORT Standard_Boolean
-  FDSCNX_HasConnexFace(const TopoDS_Shape& S, const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+                                    const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
+Standard_EXPORT bool
+  FDSCNX_HasConnexFace(const TopoDS_Shape& S, const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 Standard_EXPORT void FDSCNX_FaceEdgeConnexFaces(const TopoDS_Shape&                        F,
                                                 const TopoDS_Shape&                        E,
-                                                const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                                TopTools_ListOfShape&                      LF);
-Standard_EXPORT void FDSCNX_Dump(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-Standard_EXPORT void FDSCNX_Dump(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                 const Standard_Integer                     I);
-Standard_EXPORT void FDSCNX_DumpIndex(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-                                      const Standard_Integer                     I);
+                                                const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                                NCollection_List<TopoDS_Shape>&                      LF);
+Standard_EXPORT void FDSCNX_Dump(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
+Standard_EXPORT void FDSCNX_Dump(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                 const int                     I);
+Standard_EXPORT void FDSCNX_DumpIndex(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                      const int                     I);
 #endif

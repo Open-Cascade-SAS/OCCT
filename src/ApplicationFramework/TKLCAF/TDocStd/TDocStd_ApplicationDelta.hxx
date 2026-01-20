@@ -18,13 +18,11 @@
 
 #include <Standard.hxx>
 
-#include <TDocStd_SequenceOfDocument.hxx>
+#include <TDocStd_Document.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class TDocStd_ApplicationDelta;
-DEFINE_STANDARD_HANDLE(TDocStd_ApplicationDelta, Standard_Transient)
 
 class TDocStd_ApplicationDelta : public Standard_Transient
 {
@@ -32,7 +30,7 @@ class TDocStd_ApplicationDelta : public Standard_Transient
 public:
   Standard_EXPORT TDocStd_ApplicationDelta();
 
-  TDocStd_SequenceOfDocument& GetDocuments();
+  NCollection_Sequence<occ::handle<TDocStd_Document>>& GetDocuments();
 
   const TCollection_ExtendedString& GetName() const;
 
@@ -42,9 +40,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_ApplicationDelta, Standard_Transient)
 
-protected:
 private:
-  TDocStd_SequenceOfDocument myDocuments;
+  NCollection_Sequence<occ::handle<TDocStd_Document>> myDocuments;
   TCollection_ExtendedString myName;
 };
 

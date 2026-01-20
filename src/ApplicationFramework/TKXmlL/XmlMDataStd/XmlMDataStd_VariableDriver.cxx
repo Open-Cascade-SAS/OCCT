@@ -28,41 +28,41 @@ IMPLEMENT_DOMSTRING(ConstString, "true")
 //=================================================================================================
 
 XmlMDataStd_VariableDriver::XmlMDataStd_VariableDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_VariableDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_VariableDriver::NewEmpty() const
 {
   return (new TDataStd_Variable());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataStd_VariableDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
                                                    XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theTarget);
+  occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theTarget);
 
   XmlObjMgt_DOMString aStr = theSource.Element().getAttribute(::IsConstString());
   aV->Constant(aStr != NULL);
 
   aStr = theSource.Element().getAttribute(::UnitString());
   aV->Unit(aStr);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_VariableDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_VariableDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_Variable) aV = Handle(TDataStd_Variable)::DownCast(theSource);
+  occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theSource);
   if (aV->IsConstant())
     theTarget.Element().setAttribute(::IsConstString(), ::ConstString());
   theTarget.Element().setAttribute(::UnitString(), aV->Unit().ToCString());

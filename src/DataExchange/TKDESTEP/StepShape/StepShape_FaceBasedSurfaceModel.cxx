@@ -27,8 +27,8 @@ StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel() {}
 //=================================================================================================
 
 void StepShape_FaceBasedSurfaceModel::Init(
-  const Handle(TCollection_HAsciiString)&            aRepresentationItem_Name,
-  const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces)
+  const occ::handle<TCollection_HAsciiString>&            aRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& aFbsmFaces)
 {
   StepGeom_GeometricRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -37,7 +37,7 @@ void StepShape_FaceBasedSurfaceModel::Init(
 
 //=================================================================================================
 
-Handle(StepShape_HArray1OfConnectedFaceSet) StepShape_FaceBasedSurfaceModel::FbsmFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> StepShape_FaceBasedSurfaceModel::FbsmFaces() const
 {
   return theFbsmFaces;
 }
@@ -45,7 +45,7 @@ Handle(StepShape_HArray1OfConnectedFaceSet) StepShape_FaceBasedSurfaceModel::Fbs
 //=================================================================================================
 
 void StepShape_FaceBasedSurfaceModel::SetFbsmFaces(
-  const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces)
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& aFbsmFaces)
 {
   theFbsmFaces = aFbsmFaces;
 }

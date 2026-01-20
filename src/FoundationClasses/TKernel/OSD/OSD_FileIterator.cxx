@@ -72,7 +72,7 @@ void OSD_FileIterator ::Destroy() {}
 
 void OSD_FileIterator::Initialize(const OSD_Path& where, const TCollection_AsciiString& Mask)
 {
-  myFlag = Standard_False;
+  myFlag = false;
   where.SystemName(myPlace);
   if (myPlace.Length() == 0)
     myPlace = ".";
@@ -87,15 +87,15 @@ void OSD_FileIterator::Initialize(const OSD_Path& where, const TCollection_Ascii
 
 // Is there another file entry ?
 
-Standard_Boolean OSD_FileIterator::More()
+bool OSD_FileIterator::More()
 {
   if (myInit)
   {
     myInit  = 0;
-    myDescr = (Standard_Address)opendir(myPlace.ToCString());
+    myDescr = (void*)opendir(myPlace.ToCString());
     if (myDescr)
     { // LD : Si repertoire inaccessible retourner False
-      myFlag = Standard_True;
+      myFlag = true;
       myInit = 0;
       Next(); // Now find first entry
     }
@@ -195,7 +195,7 @@ void OSD_FileIterator::Next()
     if (!myEntry)
     {                           // No file found
       myEntry = NULL;           // Keep pointer clean
-      myFlag  = Standard_False; // No more files/directory
+      myFlag  = false; // No more files/directory
       closedir((DIR*)myDescr);  // so close directory
       myDescr = NULL;
       again   = 0;
@@ -214,7 +214,7 @@ void OSD_FileIterator::Next()
         if (strcmp_joker(myMask.ToCString(), ((struct dirent*)myEntry)->d_name))
         {
           // Does it follow mask ?
-          myFlag = Standard_True;
+          myFlag = true;
           again  = 0;
         }
     }
@@ -229,7 +229,7 @@ OSD_File OSD_FileIterator::Values()
   OSD_Path                thisvalue;
   TCollection_AsciiString Name;
   TCollection_AsciiString Ext;
-  Standard_Integer        position;
+  int        position;
 
   if (myEntry)
     Name = ((struct dirent*)myEntry)->d_name;
@@ -254,7 +254,7 @@ void OSD_FileIterator::Reset()
   myError.Reset();
 }
 
-Standard_Boolean OSD_FileIterator::Failed() const
+bool OSD_FileIterator::Failed() const
 {
   return (myError.Failed());
 }
@@ -264,7 +264,7 @@ void OSD_FileIterator::Perror()
   myError.Perror();
 }
 
-Standard_Integer OSD_FileIterator::Error() const
+int OSD_FileIterator::Error() const
 {
   return (myError.Error());
 }
@@ -281,12 +281,12 @@ Standard_Integer OSD_FileIterator::Error() const
 
   #define _FD ((PWIN32_FIND_DATAW)myData)
 
-void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
+void _osd_wnt_set_error(OSD_Error&, int, ...);
 
 OSD_FileIterator ::OSD_FileIterator(const OSD_Path& where, const TCollection_AsciiString& Mask)
 {
 
-  myFlag   = Standard_False;
+  myFlag   = false;
   myHandle = INVALID_HANDLE_VALUE;
 
   where.SystemName(myPlace);
@@ -311,7 +311,7 @@ void OSD_FileIterator ::Destroy()
 
 } // end  OSD_DirectoryIterator :: Destroy
 
-Standard_Boolean OSD_FileIterator ::More()
+bool OSD_FileIterator ::More()
 {
 
   if (myHandle == INVALID_HANDLE_VALUE)
@@ -337,8 +337,8 @@ Standard_Boolean OSD_FileIterator ::More()
     else
     {
 
-      myFlag      = Standard_True;
-      myFirstCall = Standard_True;
+      myFlag      = true;
+      myFirstCall = true;
 
       Next();
 
@@ -368,7 +368,7 @@ void OSD_FileIterator ::Next()
       if (!FindNextFileW((HANDLE)myHandle, _FD))
       {
 
-        myFlag = Standard_False;
+        myFlag = false;
 
         break;
 
@@ -378,7 +378,7 @@ void OSD_FileIterator ::Next()
 
   } // end if
 
-  myFirstCall = Standard_False;
+  myFirstCall = false;
 
 } // end OSD_FileIterator :: Next
 
@@ -386,14 +386,14 @@ OSD_File OSD_FileIterator ::Values()
 {
 
   // make UTF-8 string
-  TCollection_AsciiString aFileName(TCollection_ExtendedString((Standard_ExtString)_FD->cFileName));
+  TCollection_AsciiString aFileName(TCollection_ExtendedString((const char16_t*)_FD->cFileName));
   TheIterator.SetPath(OSD_Path(aFileName));
 
   return TheIterator;
 
 } // end OSD_FileIterator :: Values
 
-Standard_Boolean OSD_FileIterator ::Failed() const
+bool OSD_FileIterator ::Failed() const
 {
 
   return myError.Failed();
@@ -414,7 +414,7 @@ void OSD_FileIterator ::Perror()
 
 } // end OSD_FileIterator :: Perror
 
-Standard_Integer OSD_FileIterator ::Error() const
+int OSD_FileIterator ::Error() const
 {
 
   return myError.Error();
@@ -423,10 +423,10 @@ Standard_Integer OSD_FileIterator ::Error() const
 
 // For compatibility with UNIX version
 OSD_FileIterator::OSD_FileIterator()
-    : myFlag(Standard_False),
+    : myFlag(false),
       myHandle(0),
       myData(0),
-      myFirstCall(Standard_False)
+      myFirstCall(false)
 {
 }
 

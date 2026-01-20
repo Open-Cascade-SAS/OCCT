@@ -55,7 +55,7 @@ public:
 protected:
   NCollection_Array1<bool> myFormats; //!< list of supported formats
   // clang-format off
-  Standard_Boolean   myHasCompressed; //!< flag indicating that some compressed image formats are supported
+  bool   myHasCompressed; //!< flag indicating that some compressed image formats are supported
   // clang-format on
 };
 

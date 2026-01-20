@@ -15,7 +15,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReaderFilter, Standard_Transient)
 
-PCDM_ReaderFilter::PCDM_ReaderFilter(const Handle(Standard_Type)& theSkipped)
+PCDM_ReaderFilter::PCDM_ReaderFilter(const occ::handle<Standard_Type>& theSkipped)
     : myAppend(AppendMode_Forbid)
 {
   mySkip.Add(theSkipped->Name());
@@ -44,18 +44,18 @@ PCDM_ReaderFilter::~PCDM_ReaderFilter()
   ClearTree();
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsPassed(const Handle(Standard_Type)& theAttributeID) const
+bool PCDM_ReaderFilter::IsPassed(const occ::handle<Standard_Type>& theAttributeID) const
 {
   return IsPassedAttr(theAttributeID->Name());
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsPassedAttr(
+bool PCDM_ReaderFilter::IsPassedAttr(
   const TCollection_AsciiString& theAttributeType) const
 {
   return myRead.IsEmpty() ? !mySkip.Contains(theAttributeType) : myRead.Contains(theAttributeType);
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsPassed(const TCollection_AsciiString& theEntry) const
+bool PCDM_ReaderFilter::IsPassed(const TCollection_AsciiString& theEntry) const
 {
   if (mySubTrees.IsEmpty())
     return true;
@@ -74,7 +74,7 @@ Standard_Boolean PCDM_ReaderFilter::IsPassed(const TCollection_AsciiString& theE
   return false;
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& theEntry) const
+bool PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& theEntry) const
 {
   if (mySubTrees.IsEmpty() || theEntry.Length() == 2) // root is always passed if any sub is defined
     return true;
@@ -90,7 +90,7 @@ Standard_Boolean PCDM_ReaderFilter::IsSubPassed(const TCollection_AsciiString& t
   return false;
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsPartTree()
+bool PCDM_ReaderFilter::IsPartTree()
 {
   return !(mySubTrees.IsEmpty() || (mySubTrees.Size() == 1 && mySubTrees.First().Length() < 3));
 }
@@ -109,12 +109,12 @@ void PCDM_ReaderFilter::StartIteration()
   {
     TagTree*                aMap = &myTree;
     TCollection_AsciiString aTagStr, anEntry = aTreeIter.Value();
-    for (Standard_Integer aTagIndex = 2; !anEntry.IsEmpty(); ++aTagIndex) // skip the root tag
+    for (int aTagIndex = 2; !anEntry.IsEmpty(); ++aTagIndex) // skip the root tag
     {
       aTagStr = anEntry.Token(":", aTagIndex);
       if (aTagStr.IsEmpty())
         break;
-      Standard_Integer aTag = aTagStr.IntegerValue();
+      int aTag = aTagStr.IntegerValue();
       if (aMap->IsBound(aTag))
       {
         aMap = (TagTree*)aMap->Find(aTag);
@@ -152,17 +152,17 @@ void PCDM_ReaderFilter::Down(const int& theTag)
     ++myCurrentDepth;
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsPassed() const
+bool PCDM_ReaderFilter::IsPassed() const
 {
   return myCurrent->IsBound(-2);
 }
 
-Standard_Boolean PCDM_ReaderFilter::IsSubPassed() const
+bool PCDM_ReaderFilter::IsSubPassed() const
 {
   return myCurrentDepth == 0;
 }
 
-void PCDM_ReaderFilter::ClearSubTree(const Standard_Address theMap)
+void PCDM_ReaderFilter::ClearSubTree(void* const theMap)
 {
   if (theMap)
   {

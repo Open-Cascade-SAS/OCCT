@@ -33,31 +33,31 @@ public:
   virtual ~Message_PrinterToReport() {}
 
   //! Returns the current or default report
-  Standard_EXPORT const Handle(Message_Report)& Report() const;
+  Standard_EXPORT const occ::handle<Message_Report>& Report() const;
 
   //! Sets the printer report
   //! @param theReport report for messages processing, if NULL, the default report is used
-  void SetReport(const Handle(Message_Report)& theReport) { myReport = theReport; }
+  void SetReport(const occ::handle<Message_Report>& theReport) { myReport = theReport; }
 
   //! Send a string message with specified trace level.
   //! Stream is converted to string value.
   //! Default implementation calls first method Send().
   Standard_EXPORT virtual void SendStringStream(const Standard_SStream& theStream,
                                                 const Message_Gravity   theGravity) const
-    Standard_OVERRIDE;
+    override;
 
   //! Send a string message with specified trace level.
   //! The object is converted to string in format: <object kind> : <object pointer>.
   //! The parameter theToPutEol specified whether end-of-line should be added to the end of the
   //! message. Default implementation calls first method Send().
-  Standard_EXPORT virtual void SendObject(const Handle(Standard_Transient)& theObject,
-                                          const Message_Gravity theGravity) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void SendObject(const occ::handle<Standard_Transient>& theObject,
+                                          const Message_Gravity theGravity) const override;
 
 protected:
   //! Send a string message with specified trace level.
   //! This method must be redefined in descendant.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity theGravity) const Standard_OVERRIDE;
+                                    const Message_Gravity theGravity) const override;
 
   //! Send an alert with metrics active in the current report
   Standard_EXPORT void sendMetricAlert(const TCollection_AsciiString& theValue,
@@ -65,9 +65,7 @@ protected:
 
 private:
   mutable TCollection_AsciiString myName;
-  Handle(Message_Report)          myReport; //!< the report for sending alerts
+  occ::handle<Message_Report>          myReport; //!< the report for sending alerts
 };
-
-DEFINE_STANDARD_HANDLE(Message_PrinterToReport, Message_Printer)
 
 #endif // _Message_PrinterToReport_HeaderFile

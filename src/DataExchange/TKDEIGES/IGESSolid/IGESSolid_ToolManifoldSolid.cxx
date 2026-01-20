@@ -29,16 +29,18 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 31/07/98
 IGESSolid_ToolManifoldSolid::IGESSolid_ToolManifoldSolid() {}
 
-void IGESSolid_ToolManifoldSolid::ReadOwnParams(const Handle(IGESSolid_ManifoldSolid)& ent,
-                                                const Handle(IGESData_IGESReaderData)& IR,
+void IGESSolid_ToolManifoldSolid::ReadOwnParams(const occ::handle<IGESSolid_ManifoldSolid>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& IR,
                                                 IGESData_ParamReader&                  PR) const
 {
 
@@ -48,12 +50,12 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const Handle(IGESSolid_ManifoldS
   Message_Msg Msg180("XSTEP_180");
   //========================================
 
-  Standard_Boolean                 abool, shellFlag; // szv#4:S4163:12Mar99 `st` moved down
-  Standard_Integer                 nbshells, i;
-  Handle(TColStd_HArray1OfInteger) voidShellFlags;
-  Handle(IGESData_IGESEntity)      shell;
-  Handle(IGESSolid_Shell)          ashell;
-  Handle(IGESSolid_HArray1OfShell) voidShells;
+  bool                 abool, shellFlag; // szv#4:S4163:12Mar99 `st` moved down
+  int                 nbshells, i;
+  occ::handle<NCollection_HArray1<int>> voidShellFlags;
+  occ::handle<IGESData_IGESEntity>      shell;
+  occ::handle<IGESSolid_Shell>          ashell;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> voidShells;
   IGESData_Status                  aStatus;
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, shell))
@@ -79,7 +81,7 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const Handle(IGESSolid_ManifoldS
   }
 
   PR.ReadBoolean(PR.Current(), Msg180, shellFlag); // szv#4:S4163:12Mar99 `st=` not needed
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), nbshells);
+  bool st = PR.ReadInteger(PR.Current(), nbshells);
   if (!st)
   {
     Message_Msg Msg181("XSTEP_181");
@@ -92,8 +94,8 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const Handle(IGESSolid_ManifoldS
   */
   if (st && nbshells > 0)
   {
-    voidShells     = new IGESSolid_HArray1OfShell(1, nbshells);
-    voidShellFlags = new TColStd_HArray1OfInteger(1, nbshells);
+    voidShells     = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nbshells);
+    voidShellFlags = new NCollection_HArray1<int>(1, nbshells);
     voidShellFlags->Init(0);
     for (i = 1; i <= nbshells; i++)
     {
@@ -139,14 +141,14 @@ void IGESSolid_ToolManifoldSolid::ReadOwnParams(const Handle(IGESSolid_ManifoldS
     }
   }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
-  ent->Init(Handle(IGESSolid_Shell)::DownCast(shell), shellFlag, voidShells, voidShellFlags);
+  ent->Init(occ::down_cast<IGESSolid_Shell>(shell), shellFlag, voidShells, voidShellFlags);
 }
 
-void IGESSolid_ToolManifoldSolid::WriteOwnParams(const Handle(IGESSolid_ManifoldSolid)& ent,
+void IGESSolid_ToolManifoldSolid::WriteOwnParams(const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                                  IGESData_IGESWriter&                   IW) const
 {
-  Standard_Integer i;
-  Standard_Integer nbshells = ent->NbVoidShells();
+  int i;
+  int nbshells = ent->NbVoidShells();
 
   IW.Send(ent->Shell());
   IW.SendBoolean(ent->OrientationFlag());
@@ -158,32 +160,32 @@ void IGESSolid_ToolManifoldSolid::WriteOwnParams(const Handle(IGESSolid_Manifold
   }
 }
 
-void IGESSolid_ToolManifoldSolid::OwnShared(const Handle(IGESSolid_ManifoldSolid)& ent,
+void IGESSolid_ToolManifoldSolid::OwnShared(const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                             Interface_EntityIterator&              iter) const
 {
-  Standard_Integer i;
-  Standard_Integer nbshells = ent->NbVoidShells();
+  int i;
+  int nbshells = ent->NbVoidShells();
 
   iter.GetOneItem(ent->Shell());
   for (i = 1; i <= nbshells; i++)
     iter.GetOneItem(ent->VoidShell(i));
 }
 
-void IGESSolid_ToolManifoldSolid::OwnCopy(const Handle(IGESSolid_ManifoldSolid)& another,
-                                          const Handle(IGESSolid_ManifoldSolid)& ent,
+void IGESSolid_ToolManifoldSolid::OwnCopy(const occ::handle<IGESSolid_ManifoldSolid>& another,
+                                          const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                           Interface_CopyTool&                    TC) const
 {
   DeclareAndCast(IGESSolid_Shell, shell, TC.Transferred(another->Shell()));
-  Standard_Boolean shellFlag = another->OrientationFlag();
+  bool shellFlag = another->OrientationFlag();
 
-  Standard_Integer                 nbshells = another->NbVoidShells();
-  Handle(IGESSolid_HArray1OfShell) voidShells;
-  Handle(TColStd_HArray1OfInteger) voidFlags;
+  int                 nbshells = another->NbVoidShells();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> voidShells;
+  occ::handle<NCollection_HArray1<int>> voidFlags;
   if (nbshells > 0)
   {
-    voidShells = new IGESSolid_HArray1OfShell(1, nbshells);
-    voidFlags  = new TColStd_HArray1OfInteger(1, nbshells);
-    for (Standard_Integer i = 1; i <= nbshells; i++)
+    voidShells = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nbshells);
+    voidFlags  = new NCollection_HArray1<int>(1, nbshells);
+    for (int i = 1; i <= nbshells; i++)
     {
       DeclareAndCast(IGESSolid_Shell, voidshell, TC.Transferred(another->VoidShell(i)));
       voidShells->SetValue(i, voidshell);
@@ -194,7 +196,7 @@ void IGESSolid_ToolManifoldSolid::OwnCopy(const Handle(IGESSolid_ManifoldSolid)&
 }
 
 IGESData_DirChecker IGESSolid_ToolManifoldSolid::DirChecker(
-  const Handle(IGESSolid_ManifoldSolid)& /* ent */) const
+  const occ::handle<IGESSolid_ManifoldSolid>& /* ent */) const
 {
   IGESData_DirChecker DC(186, 0);
 
@@ -206,20 +208,20 @@ IGESData_DirChecker IGESSolid_ToolManifoldSolid::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolManifoldSolid::OwnCheck(const Handle(IGESSolid_ManifoldSolid)& /* ent */,
+void IGESSolid_ToolManifoldSolid::OwnCheck(const occ::handle<IGESSolid_ManifoldSolid>& /* ent */,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& /* ach */) const
+                                           occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESSolid_ToolManifoldSolid::OwnDump(const Handle(IGESSolid_ManifoldSolid)& ent,
+void IGESSolid_ToolManifoldSolid::OwnDump(const occ::handle<IGESSolid_ManifoldSolid>& ent,
                                           const IGESData_IGESDumper&             dumper,
                                           Standard_OStream&                      S,
-                                          const Standard_Integer                 level) const
+                                          const int                 level) const
 {
   S << "IGESSolid_ManifoldSolid\n";
 
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
   S << "Shell : ";
   dumper.Dump(ent->Shell(), S, sublevel);
   S << "\n";
@@ -235,8 +237,8 @@ void IGESSolid_ToolManifoldSolid::OwnDump(const Handle(IGESSolid_ManifoldSolid)&
     S << "[\n";
     if (ent->NbVoidShells() > 0)
     {
-      Standard_Integer upper = ent->NbVoidShells();
-      for (Standard_Integer i = 1; i <= upper; i++)
+      int upper = ent->NbVoidShells();
+      for (int i = 1; i <= upper; i++)
       {
         S << "[" << i << "]:  "
           << "Void shell : ";

@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <STEPSelections_HSequenceOfAssemblyLink.hxx>
+#include <STEPSelections_AssemblyLink.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 class StepShape_ShapeDefinitionRepresentation;
-
-class STEPSelections_AssemblyComponent;
-DEFINE_STANDARD_HANDLE(STEPSelections_AssemblyComponent, Standard_Transient)
 
 class STEPSelections_AssemblyComponent : public Standard_Transient
 {
@@ -34,23 +33,22 @@ public:
   Standard_EXPORT STEPSelections_AssemblyComponent();
 
   Standard_EXPORT STEPSelections_AssemblyComponent(
-    const Handle(StepShape_ShapeDefinitionRepresentation)& sdr,
-    const Handle(STEPSelections_HSequenceOfAssemblyLink)&  list);
+    const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr,
+    const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>&  list);
 
-  Handle(StepShape_ShapeDefinitionRepresentation) GetSDR() const;
+  occ::handle<StepShape_ShapeDefinitionRepresentation> GetSDR() const;
 
-  Handle(STEPSelections_HSequenceOfAssemblyLink) GetList() const;
+  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>> GetList() const;
 
-  void SetSDR(const Handle(StepShape_ShapeDefinitionRepresentation)& sdr);
+  void SetSDR(const occ::handle<StepShape_ShapeDefinitionRepresentation>& sdr);
 
-  void SetList(const Handle(STEPSelections_HSequenceOfAssemblyLink)& list);
+  void SetList(const occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>& list);
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_AssemblyComponent, Standard_Transient)
 
-protected:
 private:
-  Handle(StepShape_ShapeDefinitionRepresentation) mySDR;
-  Handle(STEPSelections_HSequenceOfAssemblyLink)  myList;
+  occ::handle<StepShape_ShapeDefinitionRepresentation> mySDR;
+  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>  myList;
 };
 
 #include <STEPSelections_AssemblyComponent.lxx>

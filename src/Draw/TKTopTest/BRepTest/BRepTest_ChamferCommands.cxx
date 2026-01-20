@@ -35,8 +35,8 @@
 //            required edge
 //===============================================================================
 
-static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
-                                                      Standard_Integer  narg,
+static int chamf_throat_with_penetration(Draw_Interpretor& di,
+                                                      int  narg,
                                                       const char**      a)
 {
   if (narg < 7)
@@ -48,9 +48,9 @@ static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
 
   TopoDS_Edge      E;
   TopoDS_Face      F;
-  Standard_Real    offset, throat;
-  Standard_Integer i     = 3;
-  Standard_Integer NbArg = 4;
+  double    offset, throat;
+  int i     = 3;
+  int NbArg = 4;
 
   BRepFilletAPI_MakeChamfer aMCh(S);
   aMCh.SetMode(ChFiDS_ConstThroatWithPenetrationChamfer);
@@ -104,7 +104,7 @@ static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
 //            required edge
 //===============================================================================
 
-static Standard_Integer chamf_throat(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int chamf_throat(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg < 5)
     return 1;
@@ -114,8 +114,8 @@ static Standard_Integer chamf_throat(Draw_Interpretor& di, Standard_Integer narg
     return 1;
 
   TopoDS_Edge      E;
-  Standard_Real    throat;
-  Standard_Integer i = 3;
+  double    throat;
+  int i = 3;
 
   BRepFilletAPI_MakeChamfer aMCh(S);
   aMCh.SetMode(ChFiDS_ConstThroatChamfer);
@@ -164,7 +164,7 @@ static Standard_Integer chamf_throat(Draw_Interpretor& di, Standard_Integer narg
 //            required edge
 //=========================================================================
 
-static Standard_Integer chamfer(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int chamfer(Draw_Interpretor& di, int narg, const char** a)
 {
   // check the argument number of the command
   if (narg == 1)
@@ -188,8 +188,8 @@ static Standard_Integer chamfer(Draw_Interpretor& di, Standard_Integer narg, con
 
     TopoDS_Edge      E;
     TopoDS_Face      F;
-    Standard_Real    d1, d2, angle;
-    Standard_Integer i = 3;
+    double    d1, d2, angle;
+    int i = 3;
 
     BRepFilletAPI_MakeChamfer aMCh(S);
 
@@ -268,10 +268,10 @@ static Standard_Integer chamfer(Draw_Interpretor& di, Standard_Integer narg, con
 
 void BRepTest::ChamferCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

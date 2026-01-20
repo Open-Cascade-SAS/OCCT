@@ -22,7 +22,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
@@ -30,10 +30,14 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_ResultFromModel.hxx>
@@ -53,7 +57,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferReader, Standard_Transient)
 
 //=================================================================================================
 
-void XSControl_TransferReader::SetController(const Handle(XSControl_Controller)& control)
+void XSControl_TransferReader::SetController(const occ::handle<XSControl_Controller>& control)
 {
   myController = control;
   myActor.Nullify();
@@ -62,7 +66,7 @@ void XSControl_TransferReader::SetController(const Handle(XSControl_Controller)&
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfTransientProcess) XSControl_TransferReader::Actor()
+occ::handle<Transfer_ActorOfTransientProcess> XSControl_TransferReader::Actor()
 {
   if (myActor.IsNull() && !myController.IsNull() && !myModel.IsNull())
     myActor = myController->ActorRead(myModel);
@@ -71,7 +75,7 @@ Handle(Transfer_ActorOfTransientProcess) XSControl_TransferReader::Actor()
 
 //=================================================================================================
 
-void XSControl_TransferReader::SetModel(const Handle(Interface_InterfaceModel)& model)
+void XSControl_TransferReader::SetModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   myModel = model;
   if (!myTP.IsNull())
@@ -80,7 +84,7 @@ void XSControl_TransferReader::SetModel(const Handle(Interface_InterfaceModel)& 
 
 //=================================================================================================
 
-void XSControl_TransferReader::SetGraph(const Handle(Interface_HGraph)& graph)
+void XSControl_TransferReader::SetGraph(const occ::handle<Interface_HGraph>& graph)
 {
   if (graph.IsNull())
   {
@@ -97,26 +101,26 @@ void XSControl_TransferReader::SetGraph(const Handle(Interface_HGraph)& graph)
 
 //=================================================================================================
 
-void XSControl_TransferReader::SetContext(const Standard_CString            name,
-                                          const Handle(Standard_Transient)& ctx)
+void XSControl_TransferReader::SetContext(const char* const            name,
+                                          const occ::handle<Standard_Transient>& ctx)
 {
   myContext.Bind(name, ctx);
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::GetContext(const Standard_CString       name,
-                                                      const Handle(Standard_Type)& type,
-                                                      Handle(Standard_Transient)&  ctx) const
+bool XSControl_TransferReader::GetContext(const char* const       name,
+                                                      const occ::handle<Standard_Type>& type,
+                                                      occ::handle<Standard_Transient>&  ctx) const
 {
   if (myContext.IsEmpty())
-    return Standard_False;
+    return false;
   if (!myContext.Find(name, ctx))
     ctx.Nullify();
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
   if (type.IsNull())
-    return Standard_True;
+    return true;
   if (!ctx->IsKind(type))
     ctx.Nullify();
   return !ctx.IsNull();
@@ -124,7 +128,7 @@ Standard_Boolean XSControl_TransferReader::GetContext(const Standard_CString    
 
 //=================================================================================================
 
-void XSControl_TransferReader::Clear(const Standard_Integer mode)
+void XSControl_TransferReader::Clear(const int mode)
 {
   if (mode & 1)
   {
@@ -146,24 +150,24 @@ void XSControl_TransferReader::Clear(const Standard_Integer mode)
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::RecordResult(const Handle(Standard_Transient)& ent)
+bool XSControl_TransferReader::RecordResult(const occ::handle<Standard_Transient>& ent)
 {
   if (myModel.IsNull() || myTP.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
-  Handle(TCollection_HAsciiString) lab = myModel->StringLabel(ent);
+    return false;
+  occ::handle<TCollection_HAsciiString> lab = myModel->StringLabel(ent);
 
-  Handle(Transfer_ResultFromModel) res = new Transfer_ResultFromModel;
+  occ::handle<Transfer_ResultFromModel> res = new Transfer_ResultFromModel;
   res->Fill(myTP, ent);
 
   //   Case of Shape result : for main result, make HShape ...
-  Handle(Transfer_Binder) binder = res->MainResult()->Binder();
+  occ::handle<Transfer_Binder> binder = res->MainResult()->Binder();
   DeclareAndCast(TransferBRep_ShapeBinder, shb, binder);
   if (!shb.IsNull())
   {
-    Handle(Transfer_SimpleBinderOfTransient) trb = new Transfer_SimpleBinderOfTransient;
+    occ::handle<Transfer_SimpleBinderOfTransient> trb = new Transfer_SimpleBinderOfTransient;
     trb->SetResult(new TopoDS_HShape(shb->Result()));
     trb->Merge(binder);
     res->MainResult()->SetBinder(trb);
@@ -171,48 +175,48 @@ Standard_Boolean XSControl_TransferReader::RecordResult(const Handle(Standard_Tr
 
   res->SetFileName(myFileName.ToCString());
   myResults.Bind(num, res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::IsRecorded(const Handle(Standard_Transient)& ent) const
+bool XSControl_TransferReader::IsRecorded(const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (!myResults.IsBound(num))
-    return Standard_False;
+    return false;
   return (myResults.Find(num)->DynamicType() == STANDARD_TYPE(Transfer_ResultFromModel));
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::HasResult(const Handle(Standard_Transient)& ent) const
+bool XSControl_TransferReader::HasResult(const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (!myResults.IsBound(num))
-    return Standard_False;
+    return false;
   DeclareAndCast(Transfer_ResultFromModel, fr, myResults.Find(num));
   if (fr.IsNull())
-    return Standard_False;
+    return false;
   return fr->HasResult();
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::RecordedList() const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_TransferReader::RecordedList() const
 {
-  Handle(TColStd_HSequenceOfTransient) li = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (myModel.IsNull())
     return li;
-  Standard_Integer i, nb = myModel->NbEntities();
+  int i, nb = myModel->NbEntities();
   for (i = 1; i <= nb; i++)
   {
     if (myResults.IsBound(i))
@@ -224,58 +228,58 @@ Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::RecordedList() co
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::Skip(const Handle(Standard_Transient)& ent)
+bool XSControl_TransferReader::Skip(const occ::handle<Standard_Transient>& ent)
 {
   if (myModel.IsNull() || myTP.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   myResults.Bind(num, ent);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::IsSkipped(const Handle(Standard_Transient)& ent) const
+bool XSControl_TransferReader::IsSkipped(const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (!myResults.IsBound(num))
-    return Standard_False;
+    return false;
   return (myResults.Find(num)->DynamicType() != STANDARD_TYPE(Transfer_ResultFromModel));
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::IsMarked(const Handle(Standard_Transient)& ent) const
+bool XSControl_TransferReader::IsMarked(const occ::handle<Standard_Transient>& ent) const
 {
   if (myModel.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (!myResults.IsBound(num))
-    return Standard_False;
+    return false;
   if (myResults.Find(num).IsNull())
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //  #########    SLIGHTLY MORE REFINED ACCESS    #########
 
 //=================================================================================================
 
-Handle(Transfer_ResultFromModel) XSControl_TransferReader::FinalResult(
-  const Handle(Standard_Transient)& ent) const
+occ::handle<Transfer_ResultFromModel> XSControl_TransferReader::FinalResult(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Transfer_ResultFromModel) res;
+  occ::handle<Transfer_ResultFromModel> res;
   if (myModel.IsNull())
     return res;
-  Standard_Integer num = myModel->Number(ent);
+  int num = myModel->Number(ent);
   if (num == 0)
     return res;
   if (!myResults.IsBound(num))
@@ -286,10 +290,10 @@ Handle(Transfer_ResultFromModel) XSControl_TransferReader::FinalResult(
 
 //=================================================================================================
 
-Standard_CString XSControl_TransferReader::FinalEntityLabel(
-  const Handle(Standard_Transient)& ent) const
+const char* XSControl_TransferReader::FinalEntityLabel(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Transfer_ResultFromModel) resu = FinalResult(ent);
+  occ::handle<Transfer_ResultFromModel> resu = FinalResult(ent);
   if (resu.IsNull())
     return "";
   return resu->MainLabel();
@@ -297,10 +301,10 @@ Standard_CString XSControl_TransferReader::FinalEntityLabel(
 
 //=================================================================================================
 
-Standard_Integer XSControl_TransferReader::FinalEntityNumber(
-  const Handle(Standard_Transient)& ent) const
+int XSControl_TransferReader::FinalEntityNumber(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Transfer_ResultFromModel) resu = FinalResult(ent);
+  occ::handle<Transfer_ResultFromModel> resu = FinalResult(ent);
   if (resu.IsNull())
     return 0;
   return resu->MainNumber();
@@ -308,10 +312,10 @@ Standard_Integer XSControl_TransferReader::FinalEntityNumber(
 
 //=================================================================================================
 
-Handle(Transfer_ResultFromModel) XSControl_TransferReader::ResultFromNumber(
-  const Standard_Integer num) const
+occ::handle<Transfer_ResultFromModel> XSControl_TransferReader::ResultFromNumber(
+  const int num) const
 {
-  Handle(Transfer_ResultFromModel) res;
+  occ::handle<Transfer_ResultFromModel> res;
   if (num < 1 || num > myModel->NbEntities())
     return res;
   if (!myResults.IsBound(num))
@@ -322,14 +326,14 @@ Handle(Transfer_ResultFromModel) XSControl_TransferReader::ResultFromNumber(
 
 //=================================================================================================
 
-Handle(Standard_Transient) XSControl_TransferReader::TransientResult(
-  const Handle(Standard_Transient)& ent) const
+occ::handle<Standard_Transient> XSControl_TransferReader::TransientResult(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Standard_Transient)       tres;
-  Handle(Transfer_ResultFromModel) res = FinalResult(ent);
+  occ::handle<Standard_Transient>       tres;
+  occ::handle<Transfer_ResultFromModel> res = FinalResult(ent);
   if (res.IsNull())
     return tres;
-  Handle(Transfer_ResultFromTransient) mres = res->MainResult();
+  occ::handle<Transfer_ResultFromTransient> mres = res->MainResult();
   if (mres.IsNull())
     return tres;
   DeclareAndCast(Transfer_SimpleBinderOfTransient, bnd, mres->Binder());
@@ -342,20 +346,20 @@ Handle(Standard_Transient) XSControl_TransferReader::TransientResult(
 
 //=================================================================================================
 
-TopoDS_Shape XSControl_TransferReader::ShapeResult(const Handle(Standard_Transient)& ent) const
+TopoDS_Shape XSControl_TransferReader::ShapeResult(const occ::handle<Standard_Transient>& ent) const
 {
   TopoDS_Shape                     tres; // DOIT RESTER NULL
-  Handle(Transfer_ResultFromModel) res = FinalResult(ent);
+  occ::handle<Transfer_ResultFromModel> res = FinalResult(ent);
   if (res.IsNull())
     return tres;
-  Handle(Transfer_ResultFromTransient) mres = res->MainResult();
+  occ::handle<Transfer_ResultFromTransient> mres = res->MainResult();
   if (mres.IsNull())
     return tres;
   XSControl_Utils xu;
   TopoDS_Shape    sh = xu.BinderShape(mres->Binder());
 
   //   Ooh the ugly wart
-  Standard_Real tolang = Interface_Static::RVal("read.encoderegularity.angle");
+  double tolang = Interface_Static::RVal("read.encoderegularity.angle");
   if (tolang <= 0 || sh.IsNull())
     return sh;
   ShapeFix::EncodeRegularity(sh, tolang);
@@ -364,26 +368,26 @@ TopoDS_Shape XSControl_TransferReader::ShapeResult(const Handle(Standard_Transie
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::ClearResult(const Handle(Standard_Transient)& ent,
-                                                       const Standard_Integer            mode)
+bool XSControl_TransferReader::ClearResult(const occ::handle<Standard_Transient>& ent,
+                                                       const int            mode)
 {
   if (myModel.IsNull())
-    return Standard_False;
-  Standard_Integer num = myModel->Number(ent);
+    return false;
+  int num = myModel->Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (!myResults.IsBound(num))
-    return Standard_False;
+    return false;
   if (mode < 0)
     myResults.ChangeFind(num).Nullify();
   else
   {
     DeclareAndCast(Transfer_ResultFromModel, resu, myResults.Find(num));
     if (resu.IsNull())
-      return Standard_False;
+      return false;
     resu->Strip(mode);
   }
-  return Standard_True;
+  return true;
 }
 
 //  <<<< >>>>  CAUTION, not great : it would be better
@@ -392,20 +396,20 @@ Standard_Boolean XSControl_TransferReader::ClearResult(const Handle(Standard_Tra
 
 //=================================================================================================
 
-Handle(Standard_Transient) XSControl_TransferReader::EntityFromResult(
-  const Handle(Standard_Transient)& res,
-  const Standard_Integer            mode) const
+occ::handle<Standard_Transient> XSControl_TransferReader::EntityFromResult(
+  const occ::handle<Standard_Transient>& res,
+  const int            mode) const
 {
-  Handle(Standard_Transient) nulh;
+  occ::handle<Standard_Transient> nulh;
   //  case of the shape
   XSControl_Utils xu;
   TopoDS_Shape    sh = xu.BinderShape(res);
   if (!sh.IsNull())
     return EntityFromShapeResult(sh, mode);
 
-  Handle(Transfer_Binder) abinder;
+  occ::handle<Transfer_Binder> abinder;
   DeclareAndCast(Transfer_Binder, binder, res);
-  Standard_Integer i, j, nb;
+  int i, j, nb;
 
   if (mode == 0 || mode == 1)
   {
@@ -444,11 +448,11 @@ Handle(Standard_Transient) XSControl_TransferReader::EntityFromResult(
     nb = myModel->NbEntities();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = ResultFromNumber(i);
+      occ::handle<Transfer_ResultFromModel> rec = ResultFromNumber(i);
       if (rec.IsNull())
         return nulh;
-      Handle(TColStd_HSequenceOfTransient) list = rec->Results(mode - 2);
-      Standard_Integer                     ir, nr = list->Length();
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = rec->Results(mode - 2);
+      int                     ir, nr = list->Length();
       for (ir = 1; ir <= nr; ir++)
       {
         DeclareAndCast(Transfer_ResultFromTransient, rft, list->Value(ir));
@@ -468,14 +472,14 @@ Handle(Standard_Transient) XSControl_TransferReader::EntityFromResult(
 
 //=================================================================================================
 
-Handle(Standard_Transient) XSControl_TransferReader::EntityFromShapeResult(
+occ::handle<Standard_Transient> XSControl_TransferReader::EntityFromShapeResult(
   const TopoDS_Shape&    res,
-  const Standard_Integer mode) const
+  const int mode) const
 {
-  Handle(Standard_Transient) nulh, samesh, partner;
+  occ::handle<Standard_Transient> nulh, samesh, partner;
   if (res.IsNull())
     return nulh;
-  Standard_Integer i, j, nb;
+  int i, j, nb;
 
   XSControl_Utils xu;
   if (mode == 0 || mode == 1 || mode == -1)
@@ -489,7 +493,7 @@ Handle(Standard_Transient) XSControl_TransferReader::EntityFromShapeResult(
         i = (mode == 0 ? myModel->Number(myTP->Root(j)) : j);
         if (i == 0)
           continue;
-        Handle(Standard_Transient) ent = myTP->Mapped(i);
+        occ::handle<Standard_Transient> ent = myTP->Mapped(i);
         TopoDS_Shape               sh  = TransferBRep::ShapeResult(myTP, ent);
         if (!sh.IsNull())
         {
@@ -518,12 +522,12 @@ Handle(Standard_Transient) XSControl_TransferReader::EntityFromShapeResult(
     nb = myModel->NbEntities();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = ResultFromNumber(i);
+      occ::handle<Transfer_ResultFromModel> rec = ResultFromNumber(i);
       if (rec.IsNull())
         continue;
 
-      Handle(TColStd_HSequenceOfTransient) list = rec->Results(mode - 2);
-      Standard_Integer                     ir, nr = list->Length();
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = rec->Results(mode - 2);
+      int                     ir, nr = list->Length();
       for (ir = 1; ir <= nr; ir++)
       {
         DeclareAndCast(Transfer_ResultFromTransient, rft, list->Value(ir));
@@ -541,17 +545,17 @@ Handle(Standard_Transient) XSControl_TransferReader::EntityFromShapeResult(
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::EntitiesFromShapeList(
-  const Handle(TopTools_HSequenceOfShape)& res,
-  const Standard_Integer                   mode) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_TransferReader::EntitiesFromShapeList(
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& res,
+  const int                   mode) const
 {
-  Handle(TColStd_HSequenceOfTransient) lt = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> lt = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (res.IsNull())
     return lt;
-  TopTools_MapOfShape shapes;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
 
   //  We convert res to a map, for rapid presence test
-  Standard_Integer i, j, nb = res->Length();
+  int i, j, nb = res->Length();
   if (nb == 0)
     return lt;
   for (i = 1; i <= nb; i++)
@@ -588,12 +592,12 @@ Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::EntitiesFromShape
     nb = myModel->NbEntities();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = ResultFromNumber(i);
+      occ::handle<Transfer_ResultFromModel> rec = ResultFromNumber(i);
       if (rec.IsNull())
         continue;
 
-      Handle(TColStd_HSequenceOfTransient) list = rec->Results(mode - 2);
-      Standard_Integer                     ir, nr = list->Length();
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = rec->Results(mode - 2);
+      int                     ir, nr = list->Length();
       for (ir = 1; ir <= nr; ir++)
       {
         DeclareAndCast(Transfer_ResultFromTransient, rft, list->Value(i));
@@ -613,8 +617,8 @@ Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::EntitiesFromShape
 
 //=================================================================================================
 
-Interface_CheckIterator XSControl_TransferReader::CheckList(const Handle(Standard_Transient)& ent,
-                                                            const Standard_Integer level) const
+Interface_CheckIterator XSControl_TransferReader::CheckList(const occ::handle<Standard_Transient>& ent,
+                                                            const int level) const
 {
   Interface_CheckIterator chl;
   if (myModel.IsNull() || ent.IsNull())
@@ -622,28 +626,28 @@ Interface_CheckIterator XSControl_TransferReader::CheckList(const Handle(Standar
   //  Check-List COMPLETE ... the entire Model
   if (ent == myModel)
   {
-    Standard_Integer i, nb = myModel->NbEntities();
+    int i, nb = myModel->NbEntities();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = ResultFromNumber(i);
+      occ::handle<Transfer_ResultFromModel> rec = ResultFromNumber(i);
       if (!rec.IsNull())
       {
-        Interface_CheckIterator chiter = rec->CheckList(Standard_False, 2);
+        Interface_CheckIterator chiter = rec->CheckList(false, 2);
         chl.Merge(chiter);
       }
     }
   }
   //  Check-List on a LIST ...
-  else if (ent->IsKind(STANDARD_TYPE(TColStd_HSequenceOfTransient)))
+  else if (ent->IsKind(STANDARD_TYPE(NCollection_HSequence<occ::handle<Standard_Transient>>)))
   {
-    DeclareAndCast(TColStd_HSequenceOfTransient, list, ent);
-    Standard_Integer i, nb = list->Length();
+    DeclareAndCast(NCollection_HSequence<occ::handle<Standard_Transient>>, list, ent);
+    int i, nb = list->Length();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = FinalResult(list->Value(i));
+      occ::handle<Transfer_ResultFromModel> rec = FinalResult(list->Value(i));
       if (!rec.IsNull())
       {
-        Interface_CheckIterator chiter = rec->CheckList(Standard_False, level);
+        Interface_CheckIterator chiter = rec->CheckList(false, level);
         chl.Merge(chiter);
       }
     }
@@ -658,10 +662,10 @@ Interface_CheckIterator XSControl_TransferReader::CheckList(const Handle(Standar
   }
   else
   {
-    Handle(Transfer_ResultFromModel) rec = FinalResult(ent);
+    occ::handle<Transfer_ResultFromModel> rec = FinalResult(ent);
     if (rec.IsNull())
       return chl;
-    chl = rec->CheckList(Standard_False, level); // manque level ...
+    chl = rec->CheckList(false, level); // manque level ...
   }
   if (ent == myModel)
     chl.SetName("XSControl : CheckList complete Model");
@@ -678,55 +682,55 @@ Interface_CheckIterator XSControl_TransferReader::CheckList(const Handle(Standar
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::HasChecks(const Handle(Standard_Transient)& ent,
-                                                     const Standard_Boolean failsonly) const
+bool XSControl_TransferReader::HasChecks(const occ::handle<Standard_Transient>& ent,
+                                                     const bool failsonly) const
 {
-  Handle(Transfer_ResultFromModel) resu = FinalResult(ent);
+  occ::handle<Transfer_ResultFromModel> resu = FinalResult(ent);
   if (resu.IsNull())
-    return Standard_False;
-  Standard_Integer stat = resu->ComputeCheckStatus(Standard_False);
+    return false;
+  int stat = resu->ComputeCheckStatus(false);
   if (stat == 0)
-    return Standard_False;
+    return false;
   if (stat > 1)
-    return Standard_True;
+    return true;
   return (!failsonly);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::CheckedList(
-  const Handle(Standard_Transient)& ent,
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_TransferReader::CheckedList(
+  const occ::handle<Standard_Transient>& ent,
   const Interface_CheckStatus       withcheck,
-  const Standard_Boolean            level) const
+  const bool            level) const
 {
-  Handle(TColStd_HSequenceOfTransient) res = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (ent.IsNull())
     return res;
 
   if (ent == myModel)
   {
-    Standard_Integer i, nb = myModel->NbEntities();
+    int i, nb = myModel->NbEntities();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = ResultFromNumber(i);
+      occ::handle<Transfer_ResultFromModel> rec = ResultFromNumber(i);
       if (!rec.IsNull())
         res->Append(rec->CheckedList(withcheck, level));
     }
   }
-  else if (ent->IsKind(STANDARD_TYPE(TColStd_HSequenceOfTransient)))
+  else if (ent->IsKind(STANDARD_TYPE(NCollection_HSequence<occ::handle<Standard_Transient>>)))
   {
-    DeclareAndCast(TColStd_HSequenceOfTransient, list, ent);
-    Standard_Integer i, nb = list->Length();
+    DeclareAndCast(NCollection_HSequence<occ::handle<Standard_Transient>>, list, ent);
+    int i, nb = list->Length();
     for (i = 1; i <= nb; i++)
     {
-      Handle(Transfer_ResultFromModel) rec = FinalResult(list->Value(i));
+      occ::handle<Transfer_ResultFromModel> rec = FinalResult(list->Value(i));
       if (!rec.IsNull())
         res->Append(rec->CheckedList(withcheck, level));
     }
   }
   else
   {
-    Handle(Transfer_ResultFromModel) rec = FinalResult(ent);
+    occ::handle<Transfer_ResultFromModel> rec = FinalResult(ent);
     if (!rec.IsNull())
       res = rec->CheckedList(withcheck, level);
   }
@@ -739,41 +743,41 @@ Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::CheckedList(
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::BeginTransfer()
+bool XSControl_TransferReader::BeginTransfer()
 {
   if (myModel.IsNull())
-    return Standard_False;
+    return false;
   if (Actor().IsNull())
-    return Standard_False;
+    return false;
   myShapeResult.Nullify();
 
   if (myTP.IsNull())
     myTP = new Transfer_TransientProcess(myModel->NbEntities());
 
-  Handle(Transfer_ActorOfTransientProcess) actor;
+  occ::handle<Transfer_ActorOfTransientProcess> actor;
   myTP->SetActor(actor); // -> Reset
   actor = Actor();
   myTP->SetActor(actor); // Set properly
-  myTP->SetErrorHandle(Standard_True);
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& aTPContext =
+  myTP->SetErrorHandle(true);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& aTPContext =
     myTP->Context();
   aTPContext = myContext;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_TransferReader::Recognize(const Handle(Standard_Transient)& ent)
+bool XSControl_TransferReader::Recognize(const occ::handle<Standard_Transient>& ent)
 {
   if (myActor.IsNull())
-    return Standard_False;
+    return false;
   return myActor->Recognize(ent);
 }
 
 //=================================================================================================
 
-Standard_Integer XSControl_TransferReader::TransferOne(const Handle(Standard_Transient)& ent,
-                                                       const Standard_Boolean            rec,
+int XSControl_TransferReader::TransferOne(const occ::handle<Standard_Transient>& ent,
+                                                       const bool            rec,
                                                        const Message_ProgressRange& theProgress)
 {
   if (myActor.IsNull() || myModel.IsNull())
@@ -786,7 +790,7 @@ Standard_Integer XSControl_TransferReader::TransferOne(const Handle(Standard_Tra
   }
 
   Message_Messenger::StreamBuffer sout  = myTP->Messenger()->SendInfo();
-  Standard_Integer                level = myTP->TraceLevel();
+  int                level = myTP->TraceLevel();
 
   Transfer_TransferOutput TP(myTP, myModel);
   if (myGraph.IsNull())
@@ -797,31 +801,31 @@ Standard_Integer XSControl_TransferReader::TransferOne(const Handle(Standard_Tra
   //  for the log-file
   if (level > 1)
   {
-    Standard_Integer                 num = myModel->Number(ent);
-    Handle(TCollection_HAsciiString) lab = myModel->StringLabel(ent);
+    int                 num = myModel->Number(ent);
+    occ::handle<TCollection_HAsciiString> lab = myModel->StringLabel(ent);
     sout << "\n*******************************************************************\n";
     sout << "******           Transferring one Entity                     ******" << std::endl;
     if (!lab.IsNull())
       sout << "******    N0 in file : " << Interface_MSG::Blanks(num, 5) << num
            << "      Ident : " << lab->ToCString() << Interface_MSG::Blanks(14 - lab->Length())
            << "******\n";
-    sout << "******    Type : " << myModel->TypeName(ent, Standard_False)
+    sout << "******    Type : " << myModel->TypeName(ent, false)
          << Interface_MSG::Blanks(
-              (Standard_Integer)(44 - strlen(myModel->TypeName(ent, Standard_False))))
+              (int)(44 - strlen(myModel->TypeName(ent, false))))
          << "******";
     sout << "\n*******************************************************************\n";
   }
 
   //  only difference between TransferRoots and TransferOne
-  Standard_Integer                  res = 0;
-  const Handle(Standard_Transient)& obj = ent;
+  int                  res = 0;
+  const occ::handle<Standard_Transient>& obj = ent;
   TP.Transfer(obj, theProgress);
   if (theProgress.UserBreak())
     return res;
   myTP->SetRoot(obj);
 
   //  Result ...
-  Handle(Transfer_Binder) binder = myTP->Find(obj);
+  occ::handle<Transfer_Binder> binder = myTP->Find(obj);
   if (binder.IsNull())
     return res;
   if (rec)
@@ -836,9 +840,9 @@ Standard_Integer XSControl_TransferReader::TransferOne(const Handle(Standard_Tra
 
 //=================================================================================================
 
-Standard_Integer XSControl_TransferReader::TransferList(
-  const Handle(TColStd_HSequenceOfTransient)& list,
-  const Standard_Boolean                      rec,
+int XSControl_TransferReader::TransferList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const bool                      rec,
   const Message_ProgressRange&                theProgress)
 {
   if (myActor.IsNull() || myModel.IsNull())
@@ -850,7 +854,7 @@ Standard_Integer XSControl_TransferReader::TransferList(
       return 0;
   }
 
-  Standard_Integer level = myTP->TraceLevel();
+  int level = myTP->TraceLevel();
 
   Transfer_TransferOutput TP(myTP, myModel);
   if (myGraph.IsNull())
@@ -858,7 +862,7 @@ Standard_Integer XSControl_TransferReader::TransferList(
   else
     myTP->SetGraph(myGraph);
 
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
 
   //   For the log-file
   if (level > 0)
@@ -869,18 +873,18 @@ Standard_Integer XSControl_TransferReader::TransferList(
          << " Entities       ******" << std::endl;
     sout << "\n*******************************************************************\n";
 
-    Handle(IFSelect_SignatureList) sl = new IFSelect_SignatureList;
+    occ::handle<IFSelect_SignatureList> sl = new IFSelect_SignatureList;
     for (i = 1; i <= nb; i++)
-      sl->Add(list->Value(i), myModel->TypeName(list->Value(i), Standard_False));
+      sl->Add(list->Value(i), myModel->TypeName(list->Value(i), false));
     sl->SetName("Entities to Transfer");
     sl->PrintCount(sout);
     sout << "\n*******************************************************************\n";
   }
 
   //  only difference between TransferRoots and TransferOne
-  Standard_Integer res = 0;
+  int res = 0;
   nb                   = list->Length();
-  Handle(Standard_Transient) obj;
+  occ::handle<Standard_Transient> obj;
   Message_ProgressScope      aPS(theProgress, NULL, nb);
   for (i = 1; i <= nb && aPS.More(); i++)
   {
@@ -889,7 +893,7 @@ Standard_Integer XSControl_TransferReader::TransferList(
     myTP->SetRoot(obj);
 
     //  Result ...
-    Handle(Transfer_Binder) binder = myTP->Find(obj);
+    occ::handle<Transfer_Binder> binder = myTP->Find(obj);
     if (binder.IsNull())
       continue;
     if (rec)
@@ -906,14 +910,14 @@ Standard_Integer XSControl_TransferReader::TransferList(
 
 //=================================================================================================
 
-Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph&       G,
+int XSControl_TransferReader::TransferRoots(const Interface_Graph&       G,
                                                          const Message_ProgressRange& theProgress)
 {
   if (myModel != G.Model())
     return -1;
   if (!BeginTransfer())
     return -1;
-  Standard_Integer level = myTP->TraceLevel();
+  int level = myTP->TraceLevel();
 
   Transfer_TransferOutput TP(myTP, myModel);
   if (myGraph.IsNull())
@@ -925,15 +929,15 @@ Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph& 
   if (level > 0)
   {
     Interface_EntityIterator        roots = G.RootEntities();
-    Standard_Integer                nb    = roots.NbEntities();
+    int                nb    = roots.NbEntities();
     Message_Messenger::StreamBuffer sout  = myTP->Messenger()->SendInfo();
     sout << "\n*******************************************************************\n";
     sout << "******           Transferring the " << Interface_MSG::Blanks(nb, 5)
          << " Root Entities        ******" << std::endl;
     sout << "\n*******************************************************************\n";
-    Handle(IFSelect_SignatureList) sl = new IFSelect_SignatureList;
+    occ::handle<IFSelect_SignatureList> sl = new IFSelect_SignatureList;
     for (roots.Start(); roots.More(); roots.Next())
-      sl->Add(roots.Value(), myModel->TypeName(roots.Value(), Standard_False));
+      sl->Add(roots.Value(), myModel->TypeName(roots.Value(), false));
     sl->SetName("Entities to Transfer");
     sl->PrintCount(sout);
     sout << "\n*******************************************************************\n";
@@ -944,11 +948,11 @@ Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph& 
     return -1;
 
   //  The transferred entities are noted as "asmain"
-  Standard_Integer i, n = myTP->NbMapped();
+  int i, n = myTP->NbMapped();
   for (i = 1; i <= n; i++)
   {
-    Handle(Standard_Transient) ent = myTP->Mapped(i);
-    Handle(Transfer_Binder)    bnd = myTP->MapItem(i);
+    occ::handle<Standard_Transient> ent = myTP->Mapped(i);
+    occ::handle<Transfer_Binder>    bnd = myTP->MapItem(i);
     if (bnd.IsNull())
       continue;
     if (!bnd->HasResult())
@@ -957,15 +961,15 @@ Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph& 
   }
 
   //  Result ... we carefully note the Shapes
-  myShapeResult = TransferBRep::Shapes(myTP, Standard_True);
+  myShapeResult = TransferBRep::Shapes(myTP, true);
   // ????  Et ici, il faut alimenter Imagine ...
   return myShapeResult->Length();
 }
 
 //=================================================================================================
 
-void XSControl_TransferReader::TransferClear(const Handle(Standard_Transient)& ent,
-                                             const Standard_Integer            level)
+void XSControl_TransferReader::TransferClear(const occ::handle<Standard_Transient>& ent,
+                                             const int            level)
 {
   if (myTP.IsNull())
     return;
@@ -982,8 +986,8 @@ void XSControl_TransferReader::TransferClear(const Handle(Standard_Transient)& e
 //=================================================================================================
 
 void XSControl_TransferReader::PrintStats(Standard_OStream&      sout,
-                                          const Standard_Integer what,
-                                          const Standard_Integer mode) const
+                                          const int what,
+                                          const int mode) const
 {
   //  To be improved ... !
   sout << "\n*******************************************************************\n";
@@ -1006,9 +1010,9 @@ void XSControl_TransferReader::PrintStats(Standard_OStream&      sout,
     sout << "****    Model unknown" << std::endl;
     return;
   }
-  Handle(TColStd_HSequenceOfTransient) list = RecordedList();
-  Standard_Integer                     i, nb = list->Length();
-  Handle(IFSelect_SignatureList)       counter;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = RecordedList();
+  int                     i, nb = list->Length();
+  occ::handle<IFSelect_SignatureList>       counter;
   if (mode > 2)
     counter = new IFSelect_SignatureList(mode == 6);
   IFSelect_PrintCount pcm = IFSelect_CountByItem;
@@ -1018,7 +1022,7 @@ void XSControl_TransferReader::PrintStats(Standard_OStream&      sout,
   sout << "****    Nb Recorded : " << nb << " : entities n0s : ";
   for (i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) ent = list->Value(i);
+    occ::handle<Standard_Transient> ent = list->Value(i);
     if (mode == 0)
     {
       sout << "  " << myModel->Number(ent);
@@ -1028,11 +1032,11 @@ void XSControl_TransferReader::PrintStats(Standard_OStream&      sout,
     {
       sout << "[ " << Interface_MSG::Blanks(i, 6) << " ]:";
       myModel->Print(ent, sout);
-      sout << "  Type:" << myModel->TypeName(ent, Standard_False);
+      sout << "  Type:" << myModel->TypeName(ent, false);
     }
     if (mode >= 3 && mode <= 6)
     {
-      counter->Add(ent, myModel->TypeName(ent, Standard_False));
+      counter->Add(ent, myModel->TypeName(ent, false));
     }
   }
   if (!counter.IsNull())
@@ -1050,23 +1054,23 @@ Interface_CheckIterator XSControl_TransferReader::LastCheckList() const
 {
   Interface_CheckIterator chl;
   if (!myTP.IsNull())
-    chl = myTP->CheckList(Standard_False);
+    chl = myTP->CheckList(false);
   return chl;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::LastTransferList(
-  const Standard_Boolean roots) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_TransferReader::LastTransferList(
+  const bool roots) const
 {
-  Handle(TColStd_HSequenceOfTransient) li = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (myTP.IsNull())
     return li;
-  Standard_Integer i, j, nb = (roots ? myTP->NbRoots() : myTP->NbMapped());
+  int i, j, nb = (roots ? myTP->NbRoots() : myTP->NbMapped());
   for (j = 1; j <= nb; j++)
   {
     i                           = (roots ? myModel->Number(myTP->Root(j)) : j);
-    Handle(Transfer_Binder) bnd = myTP->MapItem(i);
+    occ::handle<Transfer_Binder> bnd = myTP->MapItem(i);
     if (bnd.IsNull())
       continue;
     if (!bnd->HasResult())
@@ -1078,25 +1082,25 @@ Handle(TColStd_HSequenceOfTransient) XSControl_TransferReader::LastTransferList(
 
 //=================================================================================================
 
-const Handle(TopTools_HSequenceOfShape)& XSControl_TransferReader::ShapeResultList(
-  const Standard_Boolean rec)
+const occ::handle<NCollection_HSequence<TopoDS_Shape>>& XSControl_TransferReader::ShapeResultList(
+  const bool rec)
 {
   if (!rec)
   {
     if (myShapeResult.IsNull())
-      myShapeResult = TransferBRep::Shapes(myTP, Standard_True);
+      myShapeResult = TransferBRep::Shapes(myTP, true);
     if (myShapeResult.IsNull())
-      myShapeResult = new TopTools_HSequenceOfShape();
+      myShapeResult = new NCollection_HSequence<TopoDS_Shape>();
   }
   else
   {
     if (myShapeResult.IsNull())
-      myShapeResult = new TopTools_HSequenceOfShape();
+      myShapeResult = new NCollection_HSequence<TopoDS_Shape>();
     if (myModel.IsNull())
       return myShapeResult;
-    Handle(TColStd_HSequenceOfTransient) li = RecordedList();
-    myShapeResult                           = new TopTools_HSequenceOfShape();
-    Standard_Integer i, nb = myModel->NbEntities();
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> li = RecordedList();
+    myShapeResult                           = new NCollection_HSequence<TopoDS_Shape>();
+    int i, nb = myModel->NbEntities();
     TopoDS_Shape     sh;
     for (i = 1; i <= nb; i++)
     {
@@ -1116,9 +1120,9 @@ const Handle(TopTools_HSequenceOfShape)& XSControl_TransferReader::ShapeResultLi
 
 //=================================================================================================
 
-static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char* mess)
+static int BinderStatus(const occ::handle<Transfer_Binder>& binder, char* mess)
 {
-  Standard_Integer stat = 0;
+  int stat = 0;
   mess[0]               = '\0';
   if (binder.IsNull())
   {
@@ -1164,10 +1168,10 @@ static Standard_Integer BinderStatus(const Handle(Transfer_Binder)& binder, char
 
 //=================================================================================================
 
-static void PrintPercent(const Handle(Message_Messenger)& sout,
-                         const Standard_CString           mess,
-                         const Standard_Integer           nb,
-                         const Standard_Integer           nl)
+static void PrintPercent(const occ::handle<Message_Messenger>& sout,
+                         const char* const           mess,
+                         const int           nb,
+                         const int           nl)
 {
   if (nb <= 0 || nl == 0)
     return;
@@ -1183,20 +1187,20 @@ static void PrintPercent(const Handle(Message_Messenger)& sout,
 
 //=================================================================================================
 
-void XSControl_TransferReader::PrintStatsProcess(const Handle(Transfer_TransientProcess)& TP,
-                                                 const Standard_Integer                   what,
-                                                 const Standard_Integer                   mode)
+void XSControl_TransferReader::PrintStatsProcess(const occ::handle<Transfer_TransientProcess>& TP,
+                                                 const int                   what,
+                                                 const int                   mode)
 {
-  Handle(TColStd_HSequenceOfTransient) list; // null
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list; // null
   XSControl_TransferReader::PrintStatsOnList(TP, list, what, mode);
 }
 
 //=================================================================================================
 
-void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientProcess)&    TP,
-                                                const Handle(TColStd_HSequenceOfTransient)& list,
-                                                const Standard_Integer                      what,
-                                                const Standard_Integer                      mode)
+void XSControl_TransferReader::PrintStatsOnList(const occ::handle<Transfer_TransientProcess>&    TP,
+                                                const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+                                                const int                      what,
+                                                const int                      mode)
 {
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
 
@@ -1242,28 +1246,28 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
 
   //  Case what = 1,2,3: content of TP (binders)
 
-  Standard_Boolean                 nolist = list.IsNull();
-  Handle(Interface_InterfaceModel) model  = TP->Model();
+  bool                 nolist = list.IsNull();
+  occ::handle<Interface_InterfaceModel> model  = TP->Model();
   if (what >= 1 && what <= 3)
   {
 
-    Standard_Integer stat;
-    Standard_Integer nbw = 0, nbf = 0, nbr = 0, nbrw = 0, nbrf = 0, nbnr = 0, nbi = 0;
-    Transfer_IteratorOfProcessForTransient itrp(Standard_True);
+    int stat;
+    int nbw = 0, nbf = 0, nbr = 0, nbrw = 0, nbrf = 0, nbnr = 0, nbi = 0;
+    Transfer_IteratorOfProcessForTransient itrp(true);
     if (what == 1)
-      itrp = TP->RootResult(Standard_True);
+      itrp = TP->RootResult(true);
     if (what == 2)
-      itrp = TP->CompleteResult(Standard_True);
+      itrp = TP->CompleteResult(true);
     if (what == 3)
       itrp = TP->AbnormalResult();
-    Standard_Integer i = 0, nb = itrp.Number();
+    int i = 0, nb = itrp.Number();
     if (!nolist)
       itrp.Filter(list);
-    Standard_Integer               nl = itrp.Number(); // after filtering
-    Handle(IFSelect_SignatureList) counter;
+    int               nl = itrp.Number(); // after filtering
+    occ::handle<IFSelect_SignatureList> counter;
     if (mode > 2)
       counter = new IFSelect_SignatureList(mode == 6);
-    Standard_Boolean    notrec = (!nolist && mode > 2); // note the "no record"
+    bool    notrec = (!nolist && mode > 2); // note the "no record"
     IFSelect_PrintCount pcm    = IFSelect_CountByItem;
     if (mode == 6)
       pcm = IFSelect_ListByItem;
@@ -1276,8 +1280,8 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
     for (itrp.Start(); itrp.More(); itrp.Next())
     {
       nbi++;
-      const Handle(Transfer_Binder)&    binder = itrp.Value();
-      const Handle(Standard_Transient)& ent    = itrp.Starting();
+      const occ::handle<Transfer_Binder>&    binder = itrp.Value();
+      const occ::handle<Standard_Transient>& ent    = itrp.Starting();
       if (binder.IsNull())
       {
         nbnr++;
@@ -1287,7 +1291,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
         {
           sout << "[" << Interface_MSG::Blanks(nbi, 4) << nbi << " ]:";
           model->Print(ent, sout);
-          sout << "   " << model->TypeName(ent, Standard_False) << "  (not recorded)" << std::endl;
+          sout << "   " << model->TypeName(ent, false) << "  (not recorded)" << std::endl;
           continue;
         }
       }
@@ -1318,13 +1322,13 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
       {
         sout << "[" << Interface_MSG::Blanks(i, 4) << i << " ]:";
         model->Print(ent, sout);
-        sout << "   " << model->TypeName(ent, Standard_False);
+        sout << "   " << model->TypeName(ent, false);
         sout << "	Result:" << mess << std::endl;
         if (mode == 1)
           continue;
 
-        const Handle(Interface_Check)& ch = binder->Check();
-        Standard_Integer               newi, newnbw = ch->NbWarnings(), newnbf = ch->NbFails();
+        const occ::handle<Interface_Check>& ch = binder->Check();
+        int               newi, newnbw = ch->NbWarnings(), newnbf = ch->NbFails();
 
         if (newnbw > 0)
         {
@@ -1351,15 +1355,15 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
         // IFSelect_PrintCount newpcm = IFSelect_CountByItem;
         // if (mode == 6) newpcm = IFSelect_ListByItem;
         if (mode == 3)
-          counter->Add(ent, model->TypeName(ent, Standard_False));
+          counter->Add(ent, model->TypeName(ent, false));
         if (mode == 4)
           counter->Add(ent, mess);
         if (mode >= 5)
         {
-          TCollection_AsciiString mest(model->TypeName(ent, Standard_False));
+          TCollection_AsciiString mest(model->TypeName(ent, false));
           mest.AssignCat("	-> ");
           mest.AssignCat(mess);
-          // Sprintf(mest,"%s	-> %s",model->TypeName(ent,Standard_False),mess);
+          // Sprintf(mest,"%s	-> %s",model->TypeName(ent,false),mess);
           counter->Add(ent, mest.ToCString());
         }
       }
@@ -1398,7 +1402,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
   if (what == 4 || what == 5)
   {
 
-    Interface_CheckIterator chl = TP->CheckList(Standard_False);
+    Interface_CheckIterator chl = TP->CheckList(false);
     chl.SetName("** TRANSFER READ CHECK **");
     if (mode == 0)
     {
@@ -1409,8 +1413,8 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
       IFSelect_PrintCount pcm = IFSelect_CountByItem;
       if (mode == 2)
         pcm = IFSelect_ListByItem;
-      Handle(IFSelect_CheckCounter) counter = new IFSelect_CheckCounter(Standard_True);
-      counter->Analyse(chl, model, Standard_True, (what == 5));
+      occ::handle<IFSelect_CheckCounter> counter = new IFSelect_CheckCounter(true);
+      counter->Analyse(chl, model, true, (what == 5));
       counter->PrintList(sout, model, pcm);
     }
   }

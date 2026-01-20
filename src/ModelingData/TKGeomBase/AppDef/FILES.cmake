@@ -2,7 +2,7 @@
 set(OCCT_AppDef_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_AppDef_FILES
-  AppDef_Array1OfMultiPointConstraint.hxx
+
   AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx
   AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute_0.cxx
   AppDef_BSplineCompute.hxx
@@ -19,7 +19,7 @@ set(OCCT_AppDef_FILES
   AppDef_Gradient_BFGSOfMyGradientOfCompute_0.cxx
   AppDef_Gradient_BFGSOfTheGradient.hxx
   AppDef_Gradient_BFGSOfTheGradient_0.cxx
-  AppDef_HArray1OfMultiPointConstraint.hxx
+
   AppDef_LinearCriteria.cxx
   AppDef_LinearCriteria.hxx
   AppDef_MultiLine.cxx

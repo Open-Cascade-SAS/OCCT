@@ -32,29 +32,29 @@
 
 #include <stdio.h>
 static void                 PrintState(Draw_Interpretor& aDI, const TopAbs_State& aState);
-static Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E,
+static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge& E,
                                            const TopoDS_Face& F,
-                                           Standard_Real&     First,
-                                           Standard_Real&     Last);
-static Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge&          E,
-                                           const Handle(Geom_Surface)& S,
+                                           double&     First,
+                                           double&     Last);
+static occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&          E,
+                                           const occ::handle<Geom_Surface>& S,
                                            const TopLoc_Location&      L,
-                                           Standard_Real&              First,
-                                           Standard_Real&              Last);
+                                           double&              First,
+                                           double&              Last);
 
-static Standard_Integer bclassify(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer b2dclassify(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer b2dclassifx(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bhaspc(Draw_Interpretor&, Standard_Integer, const char**);
+static int bclassify(Draw_Interpretor&, int, const char**);
+static int b2dclassify(Draw_Interpretor&, int, const char**);
+static int b2dclassifx(Draw_Interpretor&, int, const char**);
+static int bhaspc(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::LowCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   theCommands.Add("bclassify",
@@ -79,8 +79,8 @@ void BOPTest::LowCommands(Draw_Interpretor& theCommands)
 // lj cd
 //=================================================================================================
 
-Standard_Integer b2dclassifx(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgNb,
+int b2dclassifx(Draw_Interpretor& theDI,
+                             int  theArgNb,
                              const char**      theArgVec)
 {
   if (theArgNb < 3)
@@ -105,7 +105,7 @@ Standard_Integer b2dclassifx(Draw_Interpretor& theDI,
   //
   DrawTrSurf::GetPoint2d(theArgVec[2], aP);
   const TopoDS_Face&  aF   = TopoDS::Face(aS);
-  const Standard_Real aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
+  const double aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
   //
   IntTools_FClass2d aClassifier(aF, aTol);
   aState = aClassifier.Perform(aP);
@@ -117,8 +117,8 @@ Standard_Integer b2dclassifx(Draw_Interpretor& theDI,
 //
 //=================================================================================================
 
-Standard_Integer b2dclassify(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgNb,
+int b2dclassify(Draw_Interpretor& theDI,
+                             int  theArgNb,
                              const char**      theArgVec)
 {
   if (theArgNb < 3)
@@ -143,10 +143,10 @@ Standard_Integer b2dclassify(Draw_Interpretor& theDI,
   //
   DrawTrSurf::GetPoint2d(theArgVec[2], aP);
   const TopoDS_Face&  aF   = TopoDS::Face(aS);
-  const Standard_Real aTol = (theArgNb >= 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
-  const Standard_Boolean anUseBox =
-    (theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1) ? Standard_True : Standard_False;
-  const Standard_Real      aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
+  const double aTol = (theArgNb >= 4) ? Draw::Atof(theArgVec[3]) : BRep_Tool::Tolerance(aF);
+  const bool anUseBox =
+    (theArgNb >= 5 && Draw::Atof(theArgVec[4]) == 1) ? true : false;
+  const double      aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
   BRepClass_FaceClassifier aClassifier;
   aClassifier.Perform(aF, aP, aTol, anUseBox, aGapCheckTol);
   PrintState(theDI, aClassifier.State());
@@ -156,8 +156,8 @@ Standard_Integer b2dclassify(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer bclassify(Draw_Interpretor& theDI,
-                           Standard_Integer  theArgNb,
+int bclassify(Draw_Interpretor& theDI,
+                           int  theArgNb,
                            const char**      theArgVec)
 {
   if (theArgNb < 3)
@@ -180,7 +180,7 @@ Standard_Integer bclassify(Draw_Interpretor& theDI,
 
   gp_Pnt aP(8., 9., 10.);
   DrawTrSurf::GetPoint(theArgVec[2], aP);
-  const Standard_Real aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : 1.e-7;
+  const double aTol = (theArgNb == 4) ? Draw::Atof(theArgVec[3]) : 1.e-7;
 
   BRepClass3d_SolidClassifier aSC(aS);
   aSC.Perform(aP, aTol);
@@ -191,7 +191,7 @@ Standard_Integer bclassify(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer bhaspc(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bhaspc(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -215,9 +215,9 @@ Standard_Integer bhaspc(Draw_Interpretor& di, Standard_Integer n, const char** a
   //
   const TopoDS_Edge& aE = TopoDS::Edge(S1);
   const TopoDS_Face& aF = TopoDS::Face(S2);
-  Standard_Real      f2D, l2D;
+  double      f2D, l2D;
 
-  Handle(Geom2d_Curve) C2D = CurveOnSurface(aE, aF, f2D, l2D);
+  occ::handle<Geom2d_Curve> C2D = CurveOnSurface(aE, aF, f2D, l2D);
 
   if (C2D.IsNull())
   {
@@ -263,13 +263,13 @@ void PrintState(Draw_Interpretor& theDI, const TopAbs_State& theState)
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E,
+occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge& E,
                                     const TopoDS_Face& F,
-                                    Standard_Real&     First,
-                                    Standard_Real&     Last)
+                                    double&     First,
+                                    double&     Last)
 {
   TopLoc_Location             l;
-  const Handle(Geom_Surface)& S          = BRep_Tool::Surface(F, l);
+  const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, l);
   TopoDS_Edge                 aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
@@ -278,29 +278,29 @@ Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E,
   return CurveOnSurface(aLocalEdge, S, l, First, Last);
 }
 
-static Handle(Geom2d_Curve) nullPCurve;
+static occ::handle<Geom2d_Curve> nullPCurve;
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge&          E,
-                                    const Handle(Geom_Surface)& S,
+occ::handle<Geom2d_Curve> CurveOnSurface(const TopoDS_Edge&          E,
+                                    const occ::handle<Geom_Surface>& S,
                                     const TopLoc_Location&      L,
-                                    Standard_Real&              First,
-                                    Standard_Real&              Last)
+                                    double&              First,
+                                    double&              Last)
 {
   TopLoc_Location  l           = L.Predivided(E.Location());
-  Standard_Boolean Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(
-    (*((Handle(BRep_TEdge)*)&E.TShape()))->ChangeCurves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(
+    (*((occ::handle<BRep_TEdge>*)&E.TShape()))->ChangeCurves());
 
   while (itcr.More())
   {
-    const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S, l))
     {
-      Handle(BRep_GCurve) GC(Handle(BRep_GCurve)::DownCast(cr));
+      occ::handle<BRep_GCurve> GC(occ::down_cast<BRep_GCurve>(cr));
       GC->Range(First, Last);
       if (GC->IsCurveOnClosedSurface() && Eisreversed)
         return GC->PCurve2();

@@ -23,8 +23,11 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Draw_Interpretor.hxx>
 class TDataStd_Real;
 class TFunction_Function;
@@ -46,54 +49,54 @@ class DNaming
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Handle(TDataStd_Real) GetReal(
-    const Handle(TFunction_Function)& theFunction,
-    const Standard_Integer            thePosition);
+  Standard_EXPORT static occ::handle<TDataStd_Real> GetReal(
+    const occ::handle<TFunction_Function>& theFunction,
+    const int            thePosition);
 
-  Standard_EXPORT static Handle(TDataStd_Integer) GetInteger(
-    const Handle(TFunction_Function)& theFunction,
-    const Standard_Integer            thePosition);
+  Standard_EXPORT static occ::handle<TDataStd_Integer> GetInteger(
+    const occ::handle<TFunction_Function>& theFunction,
+    const int            thePosition);
 
-  Standard_EXPORT static Handle(TDataStd_Name) GetString(
-    const Handle(TFunction_Function)& theFunction,
-    const Standard_Integer            thePosition);
+  Standard_EXPORT static occ::handle<TDataStd_Name> GetString(
+    const occ::handle<TFunction_Function>& theFunction,
+    const int            thePosition);
 
-  Standard_EXPORT static Standard_Boolean ComputeAxis(const Handle(TNaming_NamedShape)& theNS,
+  Standard_EXPORT static bool ComputeAxis(const occ::handle<TNaming_NamedShape>& theNS,
                                                       gp_Ax1&                           theAx1);
 
-  Standard_EXPORT static Handle(TNaming_NamedShape) GetFunctionResult(
-    const Handle(TFunction_Function)& theFunction);
+  Standard_EXPORT static occ::handle<TNaming_NamedShape> GetFunctionResult(
+    const occ::handle<TFunction_Function>& theFunction);
 
-  Standard_EXPORT static Handle(TDataStd_UAttribute) GetObjectArg(
-    const Handle(TFunction_Function)& theFunction,
-    const Standard_Integer            thePosition);
+  Standard_EXPORT static occ::handle<TDataStd_UAttribute> GetObjectArg(
+    const occ::handle<TFunction_Function>& theFunction,
+    const int            thePosition);
 
-  Standard_EXPORT static void SetObjectArg(const Handle(TFunction_Function)&  theFunction,
-                                           const Standard_Integer             thePosition,
-                                           const Handle(TDataStd_UAttribute)& theNewValue);
+  Standard_EXPORT static void SetObjectArg(const occ::handle<TFunction_Function>&  theFunction,
+                                           const int             thePosition,
+                                           const occ::handle<TDataStd_UAttribute>& theNewValue);
 
-  Standard_EXPORT static Handle(TNaming_NamedShape) GetObjectValue(
-    const Handle(TDataStd_UAttribute)& theObject);
+  Standard_EXPORT static occ::handle<TNaming_NamedShape> GetObjectValue(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static Handle(TFunction_Function) GetLastFunction(
-    const Handle(TDataStd_UAttribute)& theObject);
+  Standard_EXPORT static occ::handle<TFunction_Function> GetLastFunction(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static Handle(TFunction_Function) GetFirstFunction(
-    const Handle(TDataStd_UAttribute)& theObject);
+  Standard_EXPORT static occ::handle<TFunction_Function> GetFirstFunction(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static Handle(TFunction_Function) GetPrevFunction(
-    const Handle(TFunction_Function)& theFunction);
+  Standard_EXPORT static occ::handle<TFunction_Function> GetPrevFunction(
+    const occ::handle<TFunction_Function>& theFunction);
 
-  Standard_EXPORT static Handle(TDataStd_UAttribute) GetObjectFromFunction(
-    const Handle(TFunction_Function)& theFunction);
+  Standard_EXPORT static occ::handle<TDataStd_UAttribute> GetObjectFromFunction(
+    const occ::handle<TFunction_Function>& theFunction);
 
-  Standard_EXPORT static Standard_Boolean IsAttachment(
-    const Handle(TDataStd_UAttribute)& theObject);
+  Standard_EXPORT static bool IsAttachment(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static Handle(TNaming_NamedShape) GetAttachmentsContext(
-    const Handle(TDataStd_UAttribute)& theObject);
+  Standard_EXPORT static occ::handle<TNaming_NamedShape> GetAttachmentsContext(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static Standard_Boolean ComputeSweepDir(const TopoDS_Shape& theShape,
+  Standard_EXPORT static bool ComputeSweepDir(const TopoDS_Shape& theShape,
                                                           gp_Ax1&             theAxis);
 
   Standard_EXPORT static void LoadAndOrientModifiedShapes(
@@ -101,14 +104,14 @@ public:
     const TopoDS_Shape&                 ShapeIn,
     const TopAbs_ShapeEnum              GeneratedFrom,
     TNaming_Builder&                    Builder,
-    const TopTools_DataMapOfShapeShape& SubShapesOfResult);
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapesOfResult);
 
   Standard_EXPORT static void LoadAndOrientGeneratedShapes(
     BRepBuilderAPI_MakeShape&           MakeShape,
     const TopoDS_Shape&                 ShapeIn,
     const TopAbs_ShapeEnum              GeneratedFrom,
     TNaming_Builder&                    Builder,
-    const TopTools_DataMapOfShapeShape& SubShapesOfResult);
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapesOfResult);
 
   Standard_EXPORT static void LoadDeletedShapes(BRepBuilderAPI_MakeShape& MakeShape,
                                                 const TopoDS_Shape&       ShapeIn,
@@ -118,19 +121,19 @@ public:
   Standard_EXPORT static void LoadResult(const TDF_Label&              theLabel,
                                          BRepAlgoAPI_BooleanOperation& MS);
 
-  Standard_EXPORT static TopoDS_Shape CurrentShape(const Standard_CString  ShapeEntry,
-                                                   const Handle(TDF_Data)& Data);
+  Standard_EXPORT static TopoDS_Shape CurrentShape(const char* const  ShapeEntry,
+                                                   const occ::handle<TDF_Data>& Data);
 
-  Standard_EXPORT static void GetShape(const Standard_CString  ShapeEntry,
-                                       const Handle(TDF_Data)& Data,
-                                       TopTools_ListOfShape&   Shapes);
+  Standard_EXPORT static void GetShape(const char* const  ShapeEntry,
+                                       const occ::handle<TDF_Data>& Data,
+                                       NCollection_List<TopoDS_Shape>&   Shapes);
 
   //! theStatus = 0  Not  found,
   //! theStatus = 1  One  shape,
   //! theStatus = 2  More than one shape.
   Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&     Shape,
-                                                          const Handle(TDF_Data)& Data,
-                                                          Standard_Integer&       theStatus);
+                                                          const occ::handle<TDF_Data>& Data,
+                                                          int&       theStatus);
 
   //! Loads the Shape to DF
   Standard_EXPORT static void LoadImportedShape(const TDF_Label&    theResultLabel,

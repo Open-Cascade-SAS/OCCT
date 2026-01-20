@@ -25,34 +25,34 @@ class Select3D_SensitiveSphere : public Select3D_SensitiveEntity
 public:
   //! Constructs a sensitive sphere object defined by the owner theOwnerId,
   //! the center of the sphere and it's radius.
-  Standard_EXPORT Select3D_SensitiveSphere(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+  Standard_EXPORT Select3D_SensitiveSphere(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
                                            const gp_Pnt&                        theCenter,
-                                           const Standard_Real                  theRadius);
+                                           const double                  theRadius);
 
   //! Returns the radius of the sphere
-  Standard_Real Radius() const { return myRadius; }
+  double Radius() const { return myRadius; }
 
 public:
   //! Checks whether the sphere overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the sphere.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
-  //! Always returns Standard_False
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+  //! Always returns false
+  virtual bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 1; }
+  virtual int NbSubElements() const override { return 1; }
 
   //! Returns center of the sphere with transformation applied
-  virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCenter; };
+  virtual gp_Pnt CenterOfGeometry() const override { return myCenter; };
 
   //! Returns the position of detected point on the sphere.
   const gp_Pnt& LastDetectedPoint() const { return myLastDetectedPoint; }
@@ -66,7 +66,7 @@ public:
 protected:
   gp_Pnt        myCenter;
   gp_Pnt        myLastDetectedPoint;
-  Standard_Real myRadius;
+  double myRadius;
 };
 
 #endif // _Select3D_SensitiveSphere_HeaderFile

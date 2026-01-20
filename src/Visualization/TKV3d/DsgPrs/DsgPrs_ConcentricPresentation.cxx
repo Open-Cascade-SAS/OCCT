@@ -26,29 +26,29 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 
-void DsgPrs_ConcentricPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                        const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_ConcentricPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                        const occ::handle<Prs3d_Drawer>&       aDrawer,
                                         const gp_Pnt&                     aCenter,
-                                        const Standard_Real               aRadius,
+                                        const double               aRadius,
                                         const gp_Dir&                     aNorm,
                                         const gp_Pnt&                     aPoint)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   // Creation et discretisation du plus gros cercle
   gp_Circ                Circ(gp_Ax2(aCenter, aNorm), aRadius);
-  const Standard_Integer nbp   = 50;
-  const Standard_Real    dteta = (2. * M_PI) / nbp;
+  const int nbp   = 50;
+  const double    dteta = (2. * M_PI) / nbp;
 
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(2 * nbp + 6, 4);
+  occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(2 * nbp + 6, 4);
 
   gp_Pnt pt1 = ElCLib::Value(0., Circ);
   aPrims->AddBound(nbp + 1);
   aPrims->AddVertex(pt1);
-  Standard_Real    ucur = dteta;
-  Standard_Integer i;
+  double    ucur = dteta;
+  int i;
   for (i = 2; i <= nbp; i++, ucur += dteta)
     aPrims->AddVertex(ElCLib::Value(ucur, Circ));
   aPrims->AddVertex(pt1);

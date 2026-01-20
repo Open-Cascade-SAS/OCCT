@@ -66,45 +66,45 @@ inline void MoniTool_Timer::Reset()
 
 //=================================================================================================
 
-inline Standard_Integer MoniTool_Timer::Count() const
+inline int MoniTool_Timer::Count() const
 {
   return myCount;
 }
 
 //=================================================================================================
 
-inline Standard_Integer MoniTool_Timer::IsRunning() const
+inline int MoniTool_Timer::IsRunning() const
 {
   return myNesting;
 }
 
 //=================================================================================================
 
-inline Standard_Real MoniTool_Timer::Amend() const
+inline double MoniTool_Timer::Amend() const
 {
   return myAmend;
 }
 
 //=================================================================================================
 
-inline Standard_Real MoniTool_Timer::CPU()
+inline double MoniTool_Timer::CPU()
 {
-  Standard_Integer minutes, hours;
-  Standard_Real    seconds, cpu;
+  int minutes, hours;
+  double    seconds, cpu;
   myTimer.Show(seconds, minutes, hours, cpu);
   return cpu - myAmend;
 }
 
 //=================================================================================================
 
-inline void MoniTool_Timer::Start(const Standard_CString name)
+inline void MoniTool_Timer::Start(const char* const name)
 {
   Timer(name)->Start();
 }
 
 //=================================================================================================
 
-inline void MoniTool_Timer::Stop(const Standard_CString name)
+inline void MoniTool_Timer::Stop(const char* const name)
 {
   Timer(name)->Stop();
 }

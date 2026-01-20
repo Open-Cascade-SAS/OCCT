@@ -18,24 +18,26 @@
 #include <Intf_InterferencePolygon2d.hxx>
 #include <Intf_Polygon2d.hxx>
 #include <Intf_SectionPoint.hxx>
-#include <Intf_SeqOfSectionPoint.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Intf_TangentZone.hxx>
 #include <Precision.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 // Angular precision (sinus) below that value two right segments
 // are considered as having a potential zone of tangency.
 namespace
 {
-static const Standard_Real PRCANG = Precision::Angular();
+static const double PRCANG = Precision::Angular();
 }
 
 //=================================================================================================
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
-    : Intf_Interference(Standard_False),
-      oClos(Standard_False),
-      tClos(Standard_False),
+    : Intf_Interference(false),
+      oClos(false),
+      tClos(false),
       nbso(0)
 {
 }
@@ -47,9 +49,9 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d(const Intf_Polygon2d& Obje1,
                                                        const Intf_Polygon2d& Obje2)
-    : Intf_Interference(Standard_False),
-      oClos(Standard_False),
-      tClos(Standard_False),
+    : Intf_Interference(false),
+      oClos(false),
+      tClos(false),
       nbso(0)
 {
   if (!Obje1.Bounding().IsOut(Obje2.Bounding()))
@@ -71,9 +73,9 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d(const Intf_Polygon2d& Obj
 //=======================================================================
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d(const Intf_Polygon2d& Obje)
-    : Intf_Interference(Standard_True),
-      oClos(Standard_False),
-      tClos(Standard_False),
+    : Intf_Interference(true),
+      oClos(false),
+      tClos(false),
       nbso(0)
 {
   Tolerance = Obje.DeflectionOverEstimation() * 2;
@@ -89,7 +91,7 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d(const Intf_Polygon2d& Obj
 
 void Intf_InterferencePolygon2d::Perform(const Intf_Polygon2d& Obje1, const Intf_Polygon2d& Obje2)
 {
-  SelfInterference(Standard_False);
+  SelfInterference(false);
   if (!Obje1.Bounding().IsOut(Obje2.Bounding()))
   {
     Tolerance = Obje1.DeflectionOverEstimation() + Obje2.DeflectionOverEstimation();
@@ -107,7 +109,7 @@ void Intf_InterferencePolygon2d::Perform(const Intf_Polygon2d& Obje1, const Intf
 
 void Intf_InterferencePolygon2d::Perform(const Intf_Polygon2d& Obje)
 {
-  SelfInterference(Standard_True);
+  SelfInterference(true);
   Tolerance = Obje.DeflectionOverEstimation() * 2;
   if (Tolerance == 0.)
     Tolerance = Epsilon(1000.);
@@ -122,7 +124,7 @@ void Intf_InterferencePolygon2d::Perform(const Intf_Polygon2d& Obje)
 // purpose  : Give the section point of range Index in the interference.
 //=======================================================================
 
-gp_Pnt2d Intf_InterferencePolygon2d::Pnt2dValue(const Standard_Integer Index) const
+gp_Pnt2d Intf_InterferencePolygon2d::Pnt2dValue(const int Index) const
 {
   return gp_Pnt2d((mySPoins(Index)).Pnt().X(), (mySPoins(Index)).Pnt().Y());
 }
@@ -135,8 +137,8 @@ void Intf_InterferencePolygon2d::Interference(const Intf_Polygon2d& Obje1,
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  Standard_Integer iObje1, iObje2, n1 = nbso, n2 = Obje2.NbSegments();
-  Standard_Real    d1 = Obje1.DeflectionOverEstimation(), d2 = Obje2.DeflectionOverEstimation();
+  int iObje1, iObje2, n1 = nbso, n2 = Obje2.NbSegments();
+  double    d1 = Obje1.DeflectionOverEstimation(), d2 = Obje2.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
   for (iObje1 = 1; iObje1 <= n1; iObje1++)
@@ -169,8 +171,8 @@ void Intf_InterferencePolygon2d::Interference(const Intf_Polygon2d& Obje)
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  Standard_Integer iObje1, iObje2, n = Obje.NbSegments();
-  Standard_Real    d = Obje.DeflectionOverEstimation();
+  int iObje1, iObje2, n = Obje.NbSegments();
+  double    d = Obje.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
   for (iObje1 = 1; iObje1 <= n; iObje1++)
@@ -204,14 +206,14 @@ void Intf_InterferencePolygon2d::Clean()
   // The zones of tangency that concerns only one couple of segments are
   // conserved if the angle between the segments is less than <PRCANG> and
   // if there is no real point of intersection EDGE/EDGE:
-  Standard_Integer nbIt  = myTZones.Length();
-  Standard_Integer decal = 0;
-  Standard_Integer addr1, addr2;
+  int nbIt  = myTZones.Length();
+  int decal = 0;
+  int addr1, addr2;
   Intf_PIType      dim1, dim2;
-  Standard_Real    par;
-  Standard_Integer tsp, tsps;
-  Standard_Integer lpi, ltz;
-  Standard_Boolean Only1Seg = Standard_False;
+  double    par;
+  int tsp, tsps;
+  int lpi, ltz;
+  bool Only1Seg = false;
 
 #define PI1 (myTZones(ltz - decal).GetPoint(lpi))
 #define PI2 (myTZones(ltz - decal).GetPoint(tsp))
@@ -219,15 +221,15 @@ void Intf_InterferencePolygon2d::Clean()
   for (ltz = 1; ltz <= nbIt; ltz++)
   {
     tsp = tsps = 0;
-    Standard_Real pr1mi, pr1ma, pr2mi, pr2ma, delta1, delta2;
+    double pr1mi, pr1ma, pr2mi, pr2ma, delta1, delta2;
     myTZones(ltz - decal).ParamOnFirst(pr1mi, pr1ma);
     delta1 = pr1ma - pr1mi;
     myTZones(ltz - decal).ParamOnSecond(pr2mi, pr2ma);
     delta2 = pr2ma - pr2mi;
     if (delta1 < 1. && delta2 < 1.)
-      Only1Seg = Standard_True;
+      Only1Seg = true;
     if (delta1 == 0. || delta2 == 0.)
-      Only1Seg = Standard_True;
+      Only1Seg = true;
 
     for (lpi = 1; lpi <= myTZones(ltz - decal).NumberOfPoints(); lpi++)
     {
@@ -244,7 +246,7 @@ void Intf_InterferencePolygon2d::Clean()
         if (tsp > 0)
         {
           tsp      = 0;
-          Only1Seg = Standard_False;
+          Only1Seg = false;
           break;
         }
         tsp = lpi;
@@ -289,8 +291,8 @@ void Intf_InterferencePolygon2d::Clean()
 
 //=================================================================================================
 
-void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
-                                           const Standard_Integer iObje2,
+void Intf_InterferencePolygon2d::Intersect(const int iObje1,
+                                           const int iObje2,
                                            const gp_Pnt2d&        BegO,
                                            const gp_Pnt2d&        EndO,
                                            const gp_Pnt2d&        BegT,
@@ -302,37 +304,37 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
       return; //-- Ajout du 15 jan 98
   }
 
-  Standard_Integer       nbpi = 0;
-  Standard_Real          parO[8];
-  Standard_Real          parT[8];
-  Intf_SeqOfSectionPoint thePi;
+  int       nbpi = 0;
+  double          parO[8];
+  double          parT[8];
+  NCollection_Sequence<Intf_SectionPoint> thePi;
   gp_XY                  segT = EndT.XY() - BegT.XY();
   gp_XY                  segO = EndO.XY() - BegO.XY();
 
   // If the length of segment is zero, nothing is done
-  Standard_Real lgT = std::sqrt(segT * segT);
+  double lgT = std::sqrt(segT * segT);
   if (lgT <= 0.)
     return;
-  Standard_Real lgO = std::sqrt(segO * segO);
+  double lgO = std::sqrt(segO * segO);
   if (lgO <= 0.)
     return;
 
   // Direction of parsing of segments
-  Standard_Real sigPS = (segO * segT) > 0.0 ? 1.0 : -1.0;
+  double sigPS = (segO * segT) > 0.0 ? 1.0 : -1.0;
 
   // Precision of calculation
-  Standard_Real floatgap = Epsilon(lgO + lgT);
+  double floatgap = Epsilon(lgO + lgT);
 
   // Angle between two straight lines and radius of interference
-  Standard_Real sinTeta = (segO.CrossMagnitude(segT) / lgO) / lgT;
-  Standard_Real rayIntf = 0.;
+  double sinTeta = (segO.CrossMagnitude(segT) / lgO) / lgT;
+  double rayIntf = 0.;
   if (sinTeta > 0.)
     rayIntf = Tolerance / sinTeta;
 
   // Interference <begO> <segT>
-  Standard_Real dbOT  = ((BegO.XY() - BegT.XY()) ^ segT) / lgT;
-  Standard_Real dbObT = BegO.Distance(BegT);
-  Standard_Real dbOeT = BegO.Distance(EndT);
+  double dbOT  = ((BegO.XY() - BegT.XY()) ^ segT) / lgT;
+  double dbObT = BegO.Distance(BegT);
+  double dbOeT = BegO.Distance(EndT);
   if (std::abs(dbOT) <= Tolerance)
   {
     if (dbObT <= Tolerance)
@@ -362,9 +364,9 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   }
 
   // Interference <endO> <segT>
-  Standard_Real deOT  = ((EndO.XY() - BegT.XY()) ^ segT) / lgT;
-  Standard_Real deObT = EndO.Distance(BegT);
-  Standard_Real deOeT = EndO.Distance(EndT);
+  double deOT  = ((EndO.XY() - BegT.XY()) ^ segT) / lgT;
+  double deObT = EndO.Distance(BegT);
+  double deOeT = EndO.Distance(EndT);
   if (std::abs(deOT) <= Tolerance)
   {
     if (deObT <= Tolerance)
@@ -400,7 +402,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   }
 
   // Interference <begT> <segO>
-  Standard_Real dbTO = ((BegT.XY() - BegO.XY()) ^ segO) / lgO;
+  double dbTO = ((BegT.XY() - BegO.XY()) ^ segO) / lgO;
   if (std::abs(dbTO) <= Tolerance)
   {
     if (dbObT > Tolerance && deObT > Tolerance && dbObT + deObT <= (lgO + Tolerance))
@@ -414,7 +416,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   }
 
   // Interference <endT> <segO>
-  Standard_Real deTO = ((EndT.XY() - BegO.XY()) ^ segO) / lgO;
+  double deTO = ((EndT.XY() - BegO.XY()) ^ segO) / lgO;
   if (std::abs(deTO) <= Tolerance)
   {
     if (dbOeT > Tolerance && deOeT > Tolerance && dbOeT + deOeT <= (lgO + Tolerance))
@@ -433,8 +435,8 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     }
   }
 
-  Standard_Boolean edgeSP = Standard_False;
-  Standard_Real    parOSP = 0, parTSP = 0;
+  bool edgeSP = false;
+  double    parOSP = 0, parTSP = 0;
 
   if (std::abs(dbOT - deOT) > floatgap && std::abs(dbTO - deTO) > floatgap)
   {
@@ -442,7 +444,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     parTSP = dbTO / (dbTO - deTO);
     if (dbOT * deOT <= 0. && dbTO * deTO <= 0.)
     {
-      edgeSP = Standard_True;
+      edgeSP = true;
     }
     else if (nbpi == 0)
       return;
@@ -467,13 +469,13 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     // Otherwise it is required to check if there is no other
     else if (rayIntf >= Tolerance)
     {
-      Standard_Real deltaO = rayIntf / lgO;
-      Standard_Real deltaT = rayIntf / lgT;
-      Standard_Real x, y;
-      Standard_Real parOdeb = parOSP - deltaO;
-      Standard_Real parOfin = parOSP + deltaO;
-      Standard_Real parTdeb = parTSP - sigPS * deltaT;
-      Standard_Real parTfin = parTSP + sigPS * deltaT;
+      double deltaO = rayIntf / lgO;
+      double deltaT = rayIntf / lgT;
+      double x, y;
+      double parOdeb = parOSP - deltaO;
+      double parOfin = parOSP + deltaO;
+      double parTdeb = parTSP - sigPS * deltaT;
+      double parTfin = parTSP + sigPS * deltaT;
       if (nbpi == 0)
       {
         parO[1] = parOdeb;
@@ -499,7 +501,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
       { // nbpi>0
         if (nbpi == 1)
         {
-          Standard_Boolean ok = Standard_True;
+          bool ok = true;
           if (0. < parOdeb && parOdeb < 1. && 0. < parTdeb && parTdeb < 1.)
           {
             parO[nbpi + 1] = parOdeb;
@@ -512,7 +514,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
           }
           else
           {
-            ok = Standard_False;
+            ok = false;
           }
 
           if (ok)
@@ -535,11 +537,11 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
         }
         else
         { // plus d une singularite
-          Standard_Real parOmin = parO[1];
-          Standard_Real parOmax = parO[1];
-          Standard_Real parTmin = parT[1];
-          Standard_Real parTmax = parT[1];
-          for (Standard_Integer i = 2; i <= nbpi; i++)
+          double parOmin = parO[1];
+          double parOmax = parO[1];
+          double parTmin = parT[1];
+          double parTmax = parT[1];
+          for (int i = 2; i <= nbpi; i++)
           {
             parOmin = std::min(parOmin, parO[i]);
             parOmax = std::max(parOmax, parO[i]);
@@ -547,7 +549,7 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
             parTmax = std::max(parTmax, parT[i]);
           }
 
-          Standard_Real delta;
+          double delta;
           if (parOdeb < 0.)
           {
             delta   = -parOdeb;
@@ -634,27 +636,27 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
   }
 
   //-- lbr : The points too close to each other are suspended
-  Standard_Boolean suppr;
+  bool suppr;
   do
   {
-    suppr = Standard_False;
-    for (Standard_Integer i = 2; suppr == Standard_False && i <= nbpi; i++)
+    suppr = false;
+    for (int i = 2; suppr == false && i <= nbpi; i++)
     {
       const gp_Pnt& Pim1 = thePi(i - 1).Pnt();
       const gp_Pnt& Pi   = thePi(i).Pnt();
-      Standard_Real d    = Pi.Distance(Pim1);
+      double d    = Pi.Distance(Pim1);
       d *= 50.0;
       if (d < lgT && d < lgO)
       {
-        for (Standard_Integer j = i; j < nbpi; j++)
+        for (int j = i; j < nbpi; j++)
         {
           thePi(j) = thePi(j + 1);
         }
         nbpi--;
-        suppr = Standard_True;
+        suppr = true;
       }
     }
-  } while (suppr == Standard_True);
+  } while (suppr == true);
 
   if (nbpi == 1)
   {
@@ -674,11 +676,11 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     }
     if (!SelfIntf)
     {
-      Standard_Boolean contains = Standard_False;
-      for (Standard_Integer i = 1; i <= mySPoins.Length(); i++)
+      bool contains = false;
+      for (int i = 1; i <= mySPoins.Length(); i++)
         if (thePi(1).IsEqual(mySPoins(i)))
         {
-          contains = Standard_True;
+          contains = true;
           break;
         }
       if (!contains)
@@ -700,9 +702,9 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     }
     else
     {
-      Standard_Integer lpj;
-      Standard_Integer lmin = 1;
-      Standard_Integer lmax = 1;
+      int lpj;
+      int lmin = 1;
+      int lmax = 1;
       for (lpj = 2; lpj <= nbpi; lpj++)
       {
         if (parO[lpj] < parO[lmin])
@@ -713,8 +715,8 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
       TheTZ.PolygonInsert(thePi(lmin));
       TheTZ.PolygonInsert(thePi(lmax));
 
-      Standard_Integer ltmin = 1;
-      Standard_Integer ltmax = 1;
+      int ltmin = 1;
+      int ltmax = 1;
       for (lpj = 2; lpj <= nbpi; lpj++)
       {
         if (parT[lpj] < parT[ltmin])
@@ -739,10 +741,10 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
                           parTSP,
                           sinTeta));
 
-    Standard_Integer nbtz = myTZones.Length();
+    int nbtz = myTZones.Length();
 #if 0 
-    Standard_Integer decaltz=0;
-    for (Standard_Integer ltz=1; ltz<=nbtz; ltz++) {
+    int decaltz=0;
+    for (int ltz=1; ltz<=nbtz; ltz++) {
       if (TheTZ.HasCommonRange(myTZones(ltz-decaltz))) {
 	TheTZ.Append(myTZones(ltz-decaltz));
 	myTZones.Remove(ltz-decaltz);
@@ -751,8 +753,8 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     }
     myTZones.Append(TheTZ);
 #else
-    TColStd_ListOfInteger LIndex;
-    for (Standard_Integer ltz = 1; ltz <= nbtz; ltz++)
+    NCollection_List<int> LIndex;
+    for (int ltz = 1; ltz <= nbtz; ltz++)
     {
       if (TheTZ.HasCommonRange(myTZones(ltz)))
       {
@@ -768,13 +770,13 @@ void Intf_InterferencePolygon2d::Intersect(const Standard_Integer iObje1,
     }
     else
     {
-      Standard_Integer indexfirst = LIndex.First();
+      int indexfirst = LIndex.First();
       LIndex.RemoveFirst();
-      Standard_Integer decal = 0;
+      int decal = 0;
       myTZones(indexfirst).Append(TheTZ);
       while (!LIndex.IsEmpty())
       {
-        Standard_Integer index = LIndex.First();
+        int index = LIndex.First();
         LIndex.RemoveFirst();
         myTZones(indexfirst).Append(myTZones(index - decal));
         myTZones.Remove(index - decal);

@@ -21,9 +21,6 @@
 
 #include <StepDimTol_GeneralDatumReference.hxx>
 
-class StepDimTol_DatumReferenceElement;
-DEFINE_STANDARD_HANDLE(StepDimTol_DatumReferenceElement, StepDimTol_GeneralDatumReference)
-
 //! Representation of STEP entity DatumReferenceElement
 class StepDimTol_DatumReferenceElement : public StepDimTol_GeneralDatumReference
 {

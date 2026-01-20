@@ -24,19 +24,31 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColgp_SequenceOfArray1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Approx_ParametrizationType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AppBlend_Approx.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 class StdFail_NotDone;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -50,19 +62,19 @@ public:
 
   Standard_EXPORT BRepBlend_AppSurf();
 
-  Standard_EXPORT BRepBlend_AppSurf(const Standard_Integer Degmin,
-                                    const Standard_Integer Degmax,
-                                    const Standard_Real    Tol3d,
-                                    const Standard_Real    Tol2d,
-                                    const Standard_Integer NbIt,
-                                    const Standard_Boolean KnownParameters = Standard_False);
+  Standard_EXPORT BRepBlend_AppSurf(const int Degmin,
+                                    const int Degmax,
+                                    const double    Tol3d,
+                                    const double    Tol2d,
+                                    const int NbIt,
+                                    const bool KnownParameters = false);
 
-  Standard_EXPORT void Init(const Standard_Integer Degmin,
-                            const Standard_Integer Degmax,
-                            const Standard_Real    Tol3d,
-                            const Standard_Real    Tol2d,
-                            const Standard_Integer NbIt,
-                            const Standard_Boolean KnownParameters = Standard_False);
+  Standard_EXPORT void Init(const int Degmin,
+                            const int Degmax,
+                            const double    Tol3d,
+                            const double    Tol2d,
+                            const int NbIt,
+                            const bool KnownParameters = false);
 
   //! Define the type of parametrization used in the approximation
   Standard_EXPORT void SetParType(const Approx_ParametrizationType ParType);
@@ -74,9 +86,9 @@ public:
   //! the optimization.
   //!
   //! if Wi <= 0
-  Standard_EXPORT void SetCriteriumWeight(const Standard_Real W1,
-                                          const Standard_Real W2,
-                                          const Standard_Real W3);
+  Standard_EXPORT void SetCriteriumWeight(const double W1,
+                                          const double W2,
+                                          const double W3);
 
   //! returns the type of parametrization used in the approximation
   Standard_EXPORT Approx_ParametrizationType ParType() const;
@@ -86,109 +98,108 @@ public:
 
   //! returns the Weights (as percent) associed to the criterium used in
   //! the optimization.
-  Standard_EXPORT void CriteriumWeight(Standard_Real& W1,
-                                       Standard_Real& W2,
-                                       Standard_Real& W3) const;
+  Standard_EXPORT void CriteriumWeight(double& W1,
+                                       double& W2,
+                                       double& W3) const;
 
-  Standard_EXPORT void Perform(const Handle(BRepBlend_Line)& Lin,
+  Standard_EXPORT void Perform(const occ::handle<BRepBlend_Line>& Lin,
                                Blend_AppFunction&            SecGen,
-                               const Standard_Boolean        SpApprox = Standard_False);
+                               const bool        SpApprox = false);
 
-  Standard_EXPORT void PerformSmoothing(const Handle(BRepBlend_Line)& Lin,
+  Standard_EXPORT void PerformSmoothing(const occ::handle<BRepBlend_Line>& Lin,
                                         Blend_AppFunction&            SecGen);
 
-  Standard_EXPORT void Perform(const Handle(BRepBlend_Line)& Lin,
+  Standard_EXPORT void Perform(const occ::handle<BRepBlend_Line>& Lin,
                                Blend_AppFunction&            SecGen,
-                               const Standard_Integer        NbMaxP);
+                               const int        NbMaxP);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
-  Standard_EXPORT void SurfShape(Standard_Integer& UDegree,
-                                 Standard_Integer& VDegree,
-                                 Standard_Integer& NbUPoles,
-                                 Standard_Integer& NbVPoles,
-                                 Standard_Integer& NbUKnots,
-                                 Standard_Integer& NbVKnots) const;
+  Standard_EXPORT void SurfShape(int& UDegree,
+                                 int& VDegree,
+                                 int& NbUPoles,
+                                 int& NbVPoles,
+                                 int& NbUKnots,
+                                 int& NbVKnots) const;
 
-  Standard_EXPORT void Surface(TColgp_Array2OfPnt&      TPoles,
-                               TColStd_Array2OfReal&    TWeights,
-                               TColStd_Array1OfReal&    TUKnots,
-                               TColStd_Array1OfReal&    TVKnots,
-                               TColStd_Array1OfInteger& TUMults,
-                               TColStd_Array1OfInteger& TVMults) const;
+  Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>&      TPoles,
+                               NCollection_Array2<double>&    TWeights,
+                               NCollection_Array1<double>&    TUKnots,
+                               NCollection_Array1<double>&    TVKnots,
+                               NCollection_Array1<int>& TUMults,
+                               NCollection_Array1<int>& TVMults) const;
 
-  Standard_Integer UDegree() const;
+  int UDegree() const;
 
-  Standard_Integer VDegree() const;
+  int VDegree() const;
 
-  const TColgp_Array2OfPnt& SurfPoles() const;
+  const NCollection_Array2<gp_Pnt>& SurfPoles() const;
 
-  const TColStd_Array2OfReal& SurfWeights() const;
+  const NCollection_Array2<double>& SurfWeights() const;
 
-  const TColStd_Array1OfReal& SurfUKnots() const;
+  const NCollection_Array1<double>& SurfUKnots() const;
 
-  const TColStd_Array1OfReal& SurfVKnots() const;
+  const NCollection_Array1<double>& SurfVKnots() const;
 
-  const TColStd_Array1OfInteger& SurfUMults() const;
+  const NCollection_Array1<int>& SurfUMults() const;
 
-  const TColStd_Array1OfInteger& SurfVMults() const;
+  const NCollection_Array1<int>& SurfVMults() const;
 
-  Standard_Integer NbCurves2d() const;
+  int NbCurves2d() const;
 
-  Standard_EXPORT void Curves2dShape(Standard_Integer& Degree,
-                                     Standard_Integer& NbPoles,
-                                     Standard_Integer& NbKnots) const;
+  Standard_EXPORT void Curves2dShape(int& Degree,
+                                     int& NbPoles,
+                                     int& NbKnots) const;
 
-  Standard_EXPORT void Curve2d(const Standard_Integer   Index,
-                               TColgp_Array1OfPnt2d&    TPoles,
-                               TColStd_Array1OfReal&    TKnots,
-                               TColStd_Array1OfInteger& TMults) const;
+  Standard_EXPORT void Curve2d(const int   Index,
+                               NCollection_Array1<gp_Pnt2d>&    TPoles,
+                               NCollection_Array1<double>&    TKnots,
+                               NCollection_Array1<int>& TMults) const;
 
-  Standard_Integer Curves2dDegree() const;
+  int Curves2dDegree() const;
 
-  const TColgp_Array1OfPnt2d& Curve2dPoles(const Standard_Integer Index) const;
+  const NCollection_Array1<gp_Pnt2d>& Curve2dPoles(const int Index) const;
 
-  const TColStd_Array1OfReal& Curves2dKnots() const;
+  const NCollection_Array1<double>& Curves2dKnots() const;
 
-  const TColStd_Array1OfInteger& Curves2dMults() const;
+  const NCollection_Array1<int>& Curves2dMults() const;
 
-  void TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d) const;
+  void TolReached(double& Tol3d, double& Tol2d) const;
 
-  Standard_EXPORT Standard_Real TolCurveOnSurf(const Standard_Integer Index) const;
+  Standard_EXPORT double TolCurveOnSurf(const int Index) const;
 
-protected:
 private:
-  Standard_EXPORT void InternalPerform(const Handle(BRepBlend_Line)& Lin,
+  Standard_EXPORT void InternalPerform(const occ::handle<BRepBlend_Line>& Lin,
                                        Blend_AppFunction&            SecGen,
-                                       const Standard_Boolean        SpApprox,
-                                       const Standard_Boolean        UseVariational);
+                                       const bool        SpApprox,
+                                       const bool        UseVariational);
 
-  Standard_Boolean                 done;
-  Standard_Integer                 dmin;
-  Standard_Integer                 dmax;
-  Standard_Real                    tol3d;
-  Standard_Real                    tol2d;
-  Standard_Integer                 nbit;
-  Standard_Integer                 udeg;
-  Standard_Integer                 vdeg;
-  Standard_Boolean                 knownp;
-  Handle(TColgp_HArray2OfPnt)      tabPoles;
-  Handle(TColStd_HArray2OfReal)    tabWeights;
-  Handle(TColStd_HArray1OfReal)    tabUKnots;
-  Handle(TColStd_HArray1OfReal)    tabVKnots;
-  Handle(TColStd_HArray1OfInteger) tabUMults;
-  Handle(TColStd_HArray1OfInteger) tabVMults;
-  TColgp_SequenceOfArray1OfPnt2d   seqPoles2d;
-  Standard_Real                    tol3dreached;
-  Standard_Real                    tol2dreached;
+  bool                 done;
+  int                 dmin;
+  int                 dmax;
+  double                    tol3d;
+  double                    tol2d;
+  int                 nbit;
+  int                 udeg;
+  int                 vdeg;
+  bool                 knownp;
+  occ::handle<NCollection_HArray2<gp_Pnt>>      tabPoles;
+  occ::handle<NCollection_HArray2<double>>    tabWeights;
+  occ::handle<NCollection_HArray1<double>>    tabUKnots;
+  occ::handle<NCollection_HArray1<double>>    tabVKnots;
+  occ::handle<NCollection_HArray1<int>> tabUMults;
+  occ::handle<NCollection_HArray1<int>> tabVMults;
+  NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt2d>>>   seqPoles2d;
+  double                    tol3dreached;
+  double                    tol2dreached;
   Approx_ParametrizationType       paramtype;
   GeomAbs_Shape                    continuity;
-  Standard_Real                    critweights[3];
+  double                    critweights[3];
 };
 
 #define TheSectionGenerator Blend_AppFunction
 #define TheSectionGenerator_hxx <Blend_AppFunction.hxx>
-#define Handle_TheLine Handle(BRepBlend_Line)
+#define Handle_TheLine occ::handle<BRepBlend_Line>
 #define TheLine BRepBlend_Line
 #define TheLine_hxx <BRepBlend_Line.hxx>
 #define AppBlend_AppSurf BRepBlend_AppSurf

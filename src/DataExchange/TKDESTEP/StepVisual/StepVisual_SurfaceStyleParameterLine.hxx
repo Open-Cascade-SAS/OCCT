@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepVisual_HArray1OfDirectionCountSelect.hxx>
+#include <StepVisual_DirectionCountSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class StepVisual_CurveStyle;
 class StepVisual_DirectionCountSelect;
-
-class StepVisual_SurfaceStyleParameterLine;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
 class StepVisual_SurfaceStyleParameterLine : public Standard_Transient
 {
@@ -37,30 +36,29 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleParameterLine();
 
   Standard_EXPORT void Init(
-    const Handle(StepVisual_CurveStyle)&                    aStyleOfParameterLines,
-    const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts);
+    const occ::handle<StepVisual_CurveStyle>&                    aStyleOfParameterLines,
+    const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts);
 
   Standard_EXPORT void SetStyleOfParameterLines(
-    const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines);
+    const occ::handle<StepVisual_CurveStyle>& aStyleOfParameterLines);
 
-  Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfParameterLines() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyle> StyleOfParameterLines() const;
 
   Standard_EXPORT void SetDirectionCounts(
-    const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts);
+    const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfDirectionCountSelect) DirectionCounts() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> DirectionCounts() const;
 
   Standard_EXPORT StepVisual_DirectionCountSelect
-    DirectionCountsValue(const Standard_Integer num) const;
+    DirectionCountsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbDirectionCounts() const;
+  Standard_EXPORT int NbDirectionCounts() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_CurveStyle)                    styleOfParameterLines;
-  Handle(StepVisual_HArray1OfDirectionCountSelect) directionCounts;
+  occ::handle<StepVisual_CurveStyle>                    styleOfParameterLines;
+  occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> directionCounts;
 };
 
 #endif // _StepVisual_SurfaceStyleParameterLine_HeaderFile

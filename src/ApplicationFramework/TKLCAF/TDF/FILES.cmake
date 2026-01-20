@@ -7,18 +7,14 @@ set(OCCT_TDF_FILES
   TDF_Attribute.cxx
   TDF_Attribute.hxx
   TDF_Attribute.lxx
-  TDF_AttributeArray1.hxx
-  TDF_AttributeDataMap.hxx
+
   TDF_AttributeDelta.cxx
   TDF_AttributeDelta.hxx
-  TDF_AttributeDeltaList.hxx
-  TDF_AttributeDoubleMap.hxx
+
   TDF_AttributeIndexedMap.hxx
   TDF_AttributeIterator.cxx
   TDF_AttributeIterator.hxx
-  TDF_AttributeList.hxx
-  TDF_AttributeMap.hxx
-  TDF_AttributeSequence.hxx
+
   TDF_ChildIDIterator.cxx
   TDF_ChildIDIterator.hxx
   TDF_ChildIDIterator.lxx
@@ -40,9 +36,7 @@ set(OCCT_TDF_FILES
   TDF_Data.cxx
   TDF_Data.hxx
   TDF_Data.lxx
-  TDF_DataMapIteratorOfAttributeDataMap.hxx
-  TDF_DataMapIteratorOfLabelDataMap.hxx
-  TDF_DataMapIteratorOfLabelIntegerMap.hxx
+
   TDF_DataSet.cxx
   TDF_DataSet.hxx
   TDF_DataSet.lxx
@@ -53,7 +47,7 @@ set(OCCT_TDF_FILES
   TDF_Delta.cxx
   TDF_Delta.hxx
   TDF_Delta.lxx
-  TDF_DeltaList.hxx
+
   TDF_DeltaOnAddition.cxx
   TDF_DeltaOnAddition.hxx
   TDF_DeltaOnForget.cxx
@@ -66,38 +60,21 @@ set(OCCT_TDF_FILES
   TDF_DeltaOnResume.hxx
   TDF_DerivedAttribute.cxx
   TDF_DerivedAttribute.hxx
-  TDF_DoubleMapIteratorOfAttributeDoubleMap.hxx
-  TDF_DoubleMapIteratorOfGUIDProgIDMap.hxx
-  TDF_DoubleMapIteratorOfLabelDoubleMap.hxx
-  TDF_GUIDProgIDMap.hxx
+
   TDF_HAllocator.hxx
-  TDF_HAttributeArray1.hxx
+
   TDF_IDFilter.cxx
   TDF_IDFilter.hxx
   TDF_IDFilter.lxx
-  TDF_IDList.hxx
-  TDF_IDMap.hxx
+
   TDF_Label.cxx
   TDF_Label.hxx
   TDF_Label.lxx
-  TDF_LabelDataMap.hxx
-  TDF_LabelDoubleMap.hxx
-  TDF_LabelIndexedMap.hxx
-  TDF_LabelIntegerMap.hxx
-  TDF_LabelList.hxx
-  TDF_LabelMap.hxx
+
   TDF_LabelNode.cxx
   TDF_LabelNode.hxx
   TDF_LabelNodePtr.hxx
-  TDF_LabelSequence.hxx
-  TDF_ListIteratorOfAttributeDeltaList.hxx
-  TDF_ListIteratorOfAttributeList.hxx
-  TDF_ListIteratorOfDeltaList.hxx
-  TDF_ListIteratorOfIDList.hxx
-  TDF_ListIteratorOfLabelList.hxx
-  TDF_MapIteratorOfAttributeMap.hxx
-  TDF_MapIteratorOfIDMap.hxx
-  TDF_MapIteratorOfLabelMap.hxx
+
   TDF_Reference.cxx
   TDF_Reference.hxx
   TDF_RelocationTable.cxx

@@ -23,25 +23,21 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
-class MoniTool_IntVal;
-DEFINE_STANDARD_HANDLE(MoniTool_IntVal, Standard_Transient)
-
 //! An Integer through a Handle (i.e. managed as TShared)
 class MoniTool_IntVal : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT MoniTool_IntVal(const Standard_Integer val = 0);
+  Standard_EXPORT MoniTool_IntVal(const int val = 0);
 
-  Standard_EXPORT Standard_Integer Value() const;
+  Standard_EXPORT int Value() const;
 
-  Standard_EXPORT Standard_Integer& CValue();
+  Standard_EXPORT int& CValue();
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_IntVal, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer theval;
+  int theval;
 };
 
 #endif // _MoniTool_IntVal_HeaderFile

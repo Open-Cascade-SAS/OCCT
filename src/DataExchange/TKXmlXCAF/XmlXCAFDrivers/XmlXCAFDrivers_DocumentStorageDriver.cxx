@@ -34,11 +34,11 @@ XmlXCAFDrivers_DocumentStorageDriver::XmlXCAFDrivers_DocumentStorageDriver(
 
 //=================================================================================================
 
-Handle(XmlMDF_ADriverTable) XmlXCAFDrivers_DocumentStorageDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMsgDrv)
+occ::handle<XmlMDF_ADriverTable> XmlXCAFDrivers_DocumentStorageDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMsgDrv)
 {
   // Standard drivers
-  Handle(XmlMDF_ADriverTable) aTable = XmlDrivers::AttributeDrivers(theMsgDrv);
+  occ::handle<XmlMDF_ADriverTable> aTable = XmlDrivers::AttributeDrivers(theMsgDrv);
 
   // Native drivers
   XmlMXCAFDoc::AddDrivers(aTable, theMsgDrv);

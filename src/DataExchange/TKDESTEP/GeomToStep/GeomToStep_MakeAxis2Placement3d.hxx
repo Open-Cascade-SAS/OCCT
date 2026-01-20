@@ -54,14 +54,13 @@ public:
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeAxis2Placement3d(
-    const Handle(Geom_Axis2Placement)& A,
+    const occ::handle<Geom_Axis2Placement>& A,
     const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Axis2Placement3d)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Axis2Placement3d>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Axis2Placement3d) theAxis2Placement3d;
+  occ::handle<StepGeom_Axis2Placement3d> theAxis2Placement3d;
 };
 
 #endif // _GeomToStep_MakeAxis2Placement3d_HeaderFile

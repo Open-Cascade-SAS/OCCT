@@ -22,9 +22,6 @@
 
 #include <StepVisual_PreDefinedItem.hxx>
 
-class StepVisual_PreDefinedCurveFont;
-DEFINE_STANDARD_HANDLE(StepVisual_PreDefinedCurveFont, StepVisual_PreDefinedItem)
-
 class StepVisual_PreDefinedCurveFont : public StepVisual_PreDefinedItem
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PreDefinedCurveFont, StepVisual_PreDefinedItem)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_PreDefinedCurveFont_HeaderFile

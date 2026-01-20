@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AutoDesignGroupedItem.hxx>
 #include <StepRepr_RepresentationItem.hxx>
@@ -27,8 +27,8 @@
 
 StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem() {}
 
-Standard_Integer StepAP214_AutoDesignGroupedItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_AutoDesignGroupedItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -57,63 +57,63 @@ Standard_Integer StepAP214_AutoDesignGroupedItem::CaseNum(
   return 0;
 }
 
-Handle(StepShape_AdvancedBrepShapeRepresentation) StepAP214_AutoDesignGroupedItem::
+occ::handle<StepShape_AdvancedBrepShapeRepresentation> StepAP214_AutoDesignGroupedItem::
   AdvancedBrepShapeRepresentation() const
 {
   return GetCasted(StepShape_AdvancedBrepShapeRepresentation, Value());
 }
 
-Handle(StepShape_CsgShapeRepresentation) StepAP214_AutoDesignGroupedItem::CsgShapeRepresentation()
+occ::handle<StepShape_CsgShapeRepresentation> StepAP214_AutoDesignGroupedItem::CsgShapeRepresentation()
   const
 {
   return GetCasted(StepShape_CsgShapeRepresentation, Value());
 }
 
-Handle(StepShape_FacetedBrepShapeRepresentation) StepAP214_AutoDesignGroupedItem::
+occ::handle<StepShape_FacetedBrepShapeRepresentation> StepAP214_AutoDesignGroupedItem::
   FacetedBrepShapeRepresentation() const
 {
   return GetCasted(StepShape_FacetedBrepShapeRepresentation, Value());
 }
 
-Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation) StepAP214_AutoDesignGroupedItem::
+occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation> StepAP214_AutoDesignGroupedItem::
   GeometricallyBoundedSurfaceShapeRepresentation() const
 {
   return GetCasted(StepShape_GeometricallyBoundedSurfaceShapeRepresentation, Value());
 }
 
-Handle(StepShape_GeometricallyBoundedWireframeShapeRepresentation) StepAP214_AutoDesignGroupedItem::
+occ::handle<StepShape_GeometricallyBoundedWireframeShapeRepresentation> StepAP214_AutoDesignGroupedItem::
   GeometricallyBoundedWireframeShapeRepresentation() const
 {
   return GetCasted(StepShape_GeometricallyBoundedWireframeShapeRepresentation, Value());
 }
 
-Handle(StepShape_ManifoldSurfaceShapeRepresentation) StepAP214_AutoDesignGroupedItem::
+occ::handle<StepShape_ManifoldSurfaceShapeRepresentation> StepAP214_AutoDesignGroupedItem::
   ManifoldSurfaceShapeRepresentation() const
 {
   return GetCasted(StepShape_ManifoldSurfaceShapeRepresentation, Value());
 }
 
-Handle(StepRepr_Representation) StepAP214_AutoDesignGroupedItem::Representation() const
+occ::handle<StepRepr_Representation> StepAP214_AutoDesignGroupedItem::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_RepresentationItem) StepAP214_AutoDesignGroupedItem::RepresentationItem() const
+occ::handle<StepRepr_RepresentationItem> StepAP214_AutoDesignGroupedItem::RepresentationItem() const
 {
   return GetCasted(StepRepr_RepresentationItem, Value());
 }
 
-Handle(StepRepr_ShapeAspect) StepAP214_AutoDesignGroupedItem::ShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepAP214_AutoDesignGroupedItem::ShapeAspect() const
 {
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-Handle(StepShape_ShapeRepresentation) StepAP214_AutoDesignGroupedItem::ShapeRepresentation() const
+occ::handle<StepShape_ShapeRepresentation> StepAP214_AutoDesignGroupedItem::ShapeRepresentation() const
 {
   return GetCasted(StepShape_ShapeRepresentation, Value());
 }
 
-Handle(StepVisual_TemplateInstance) StepAP214_AutoDesignGroupedItem::TemplateInstance() const
+occ::handle<StepVisual_TemplateInstance> StepAP214_AutoDesignGroupedItem::TemplateInstance() const
 {
   return GetCasted(StepVisual_TemplateInstance, Value());
 }

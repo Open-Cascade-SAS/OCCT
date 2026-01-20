@@ -13,7 +13,7 @@ set(OCCT_Font_FILES
   Font_FTLibrary.hxx
   Font_Hinting.hxx
   Font_NameOfFont.hxx
-  Font_NListOfSystemFont.hxx
+
   Font_Rect.hxx
   Font_StrictLevel.hxx
   Font_SystemFont.cxx

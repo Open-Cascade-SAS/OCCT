@@ -35,38 +35,36 @@ public:
   //! Implements point picking
   //! @param[in]  theXPix, theYPix Display coordinates of the point
   //! @param[in]  theView  ICamera interface to update the projection parameters.
-  void Pick(const Standard_Integer    theXPix,
-            const Standard_Integer    theYPix,
+  void Pick(const int    theXPix,
+            const int    theYPix,
             const IVtk_IView::Handle& theView);
 
   //! Picking by rectangle
   //! @param[in]  theXMin, theYMin, theXMax, theYMax Rectangle coords
   //! @param[in]  theView ICamera interface to calculate projections
-  void Pick(const Standard_Integer    theXMin,
-            const Standard_Integer    theYMin,
-            const Standard_Integer    theXMax,
-            const Standard_Integer    theYMax,
+  void Pick(const int    theXMin,
+            const int    theYMin,
+            const int    theXMax,
+            const int    theYMax,
             const IVtk_IView::Handle& theView);
 
   //! Implements point picking
   void Pick(double** thePoly, const int theNbPoints, const IVtk_IView::Handle& theView);
 
   //! Activates the given selection
-  void Activate(const Handle(SelectMgr_Selection)& theSelection);
+  void Activate(const occ::handle<SelectMgr_Selection>& theSelection);
 
   //! Deactivate the given selection
-  void Deactivate(const Handle(SelectMgr_Selection)& theSelection);
+  void Deactivate(const occ::handle<SelectMgr_Selection>& theSelection);
 
   //! Converts VTK camera defined for input view to OCC camera
-  static Handle(Graphic3d_Camera) ConvertVtkToOccCamera(const IVtk_IView::Handle& theView);
+  static occ::handle<Graphic3d_Camera> ConvertVtkToOccCamera(const IVtk_IView::Handle& theView);
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 private:
-  Standard_Integer myPixTol;
-  Standard_Boolean myToUpdateTol;
+  int myPixTol;
+  bool myToUpdateTol;
 };
-
-DEFINE_STANDARD_HANDLE(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 #endif // __IVTKOCC_VIEWERSELECTOR_H__

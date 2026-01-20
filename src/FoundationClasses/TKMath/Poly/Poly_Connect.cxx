@@ -23,9 +23,9 @@
 struct polyedge
 {
   polyedge*        next;  // the next edge in the list
-  Standard_Integer nt[2]; // the two adjacent triangles
-  Standard_Integer nn[2]; // the two adjacent nodes
-  Standard_Integer nd;    // the second node of the edge
+  int nt[2]; // the two adjacent triangles
+  int nn[2]; // the two adjacent nodes
+  int nd;    // the second node of the edge
   DEFINE_STANDARD_ALLOC
 };
 
@@ -44,7 +44,7 @@ Poly_Connect::Poly_Connect()
 
 //=================================================================================================
 
-Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& theTriangulation)
+Poly_Connect::Poly_Connect(const occ::handle<Poly_Triangulation>& theTriangulation)
     : myTriangulation(theTriangulation),
       myTriangles(1, theTriangulation->NbNodes()),
       myAdjacents(1, 6 * theTriangulation->NbTriangles()),
@@ -60,7 +60,7 @@ Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& theTriangulation)
 
 //=================================================================================================
 
-void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
+void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
   myTriangulation = theTriangulation;
   mytr            = 0;
@@ -70,17 +70,17 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
   mysense         = false;
   mymore          = false;
 
-  const Standard_Integer aNbNodes = myTriangulation->NbNodes();
-  const Standard_Integer aNbTris  = myTriangulation->NbTriangles();
+  const int aNbNodes = myTriangulation->NbNodes();
+  const int aNbTris  = myTriangulation->NbTriangles();
   {
-    const Standard_Integer aNbAdjs = 6 * aNbTris;
+    const int aNbAdjs = 6 * aNbTris;
     if (myTriangles.Size() != aNbNodes)
     {
-      myTriangles.Resize(1, aNbNodes, Standard_False);
+      myTriangles.Resize(1, aNbNodes, false);
     }
     if (myAdjacents.Size() != aNbAdjs)
     {
-      myAdjacents.Resize(1, aNbAdjs, Standard_False);
+      myAdjacents.Resize(1, aNbAdjs, false);
     }
   }
 
@@ -92,12 +92,12 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
   NCollection_Array1<polyedge*> anEdges(1, aNbNodes);
   anEdges.Init(NULL);
   // use incremental allocator for small allocations
-  Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
 
   // loop on the triangles
-  NCollection_Vec3<Standard_Integer> aTriNodes;
-  NCollection_Vec2<Standard_Integer> anEdgeNodes;
-  for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+  NCollection_Vec3<int> aTriNodes;
+  NCollection_Vec2<int> anEdgeNodes;
+  for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
   {
     // get the nodes
     myTriangulation->Triangle(aTriIter).Get(aTriNodes[0], aTriNodes[1], aTriNodes[2]);
@@ -108,9 +108,9 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
     myTriangles.SetValue(aTriNodes[2], aTriIter);
 
     // update the edge lists
-    for (Standard_Integer aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
+    for (int aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
     {
-      const Standard_Integer aNodeNext = (aNodeInTri + 1) % 3; // the following node of the edge
+      const int aNodeNext = (aNodeInTri + 1) % 3; // the following node of the edge
       if (aTriNodes[aNodeInTri] < aTriNodes[aNodeNext])
       {
         anEdgeNodes[0] = aTriNodes[aNodeInTri];
@@ -153,16 +153,16 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
   }
 
   // now complete the myAdjacents array
-  Standard_Integer anAdjIndex = 1;
-  for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+  int anAdjIndex = 1;
+  for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
   {
     // get the nodes
     myTriangulation->Triangle(aTriIter).Get(aTriNodes[0], aTriNodes[1], aTriNodes[2]);
 
     // for each edge in triangle
-    for (Standard_Integer aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
+    for (int aNodeInTri = 0; aNodeInTri < 3; ++aNodeInTri)
     {
-      const Standard_Integer aNodeNext = (aNodeInTri + 1) % 3; // the following node of the edge
+      const int aNodeNext = (aNodeInTri + 1) % 3; // the following node of the edge
       if (aTriNodes[aNodeInTri] < aTriNodes[aNodeNext])
       {
         anEdgeNodes[0] = aTriNodes[aNodeInTri];
@@ -183,7 +183,7 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
       }
 
       // Find the adjacent triangle
-      const Standard_Integer l = ced->nt[0] == aTriIter ? 1 : 0;
+      const int l = ced->nt[0] == aTriIter ? 1 : 0;
 
       myAdjacents.SetValue(anAdjIndex, ced->nt[l]);
       myAdjacents.SetValue(anAdjIndex + 3, ced->nn[l]);
@@ -193,7 +193,7 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
   }
 
   // destroy the edges array - can be skipped when using NCollection_IncAllocator
-  /*for (Standard_Integer aNodeIter = anEdges.Lower(); aNodeIter <= anEdges.Upper(); ++aNodeIter)
+  /*for (int aNodeIter = anEdges.Lower(); aNodeIter <= anEdges.Upper(); ++aNodeIter)
   {
     for (polyedge* anEdgeIter = anEdges[aNodeIter]; anEdgeIter != NULL;)
     {
@@ -206,18 +206,18 @@ void Poly_Connect::Load(const Handle(Poly_Triangulation)& theTriangulation)
 
 //=================================================================================================
 
-void Poly_Connect::Initialize(const Standard_Integer N)
+void Poly_Connect::Initialize(const int N)
 {
   mynode  = N;
   myfirst = Triangle(N);
   mytr    = myfirst;
-  mysense = Standard_True;
+  mysense = true;
   mymore  = (myfirst != 0);
   myPassedTr.Clear();
   myPassedTr.Add(mytr);
   if (mymore)
   {
-    Standard_Integer i, no[3];
+    int i, no[3];
     myTriangulation->Triangle(myfirst).Get(no[0], no[1], no[2]);
     for (i = 0; i < 3; i++)
       if (no[i] == mynode)
@@ -230,9 +230,9 @@ void Poly_Connect::Initialize(const Standard_Integer N)
 
 void Poly_Connect::Next()
 {
-  Standard_Integer i, j;
-  Standard_Integer n[3];
-  Standard_Integer t[3];
+  int i, j;
+  int n[3];
+  int t[3];
   Triangles(mytr, t[0], t[1], t[2]);
   if (mysense)
   {
@@ -260,7 +260,7 @@ void Poly_Connect::Next()
       if (n[i] == mynode)
         break;
     myothernode = n[(i + 1) % 3];
-    mysense     = Standard_False;
+    mysense     = false;
     mytr        = myfirst;
     Triangles(mytr, t[0], t[1], t[2]);
   }
@@ -285,5 +285,5 @@ void Poly_Connect::Next()
       }
     }
   }
-  mymore = Standard_False;
+  mymore = false;
 }

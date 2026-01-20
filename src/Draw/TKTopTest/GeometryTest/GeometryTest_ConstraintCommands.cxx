@@ -18,7 +18,13 @@
 // PMN : Ajout de la commande smooth
 // JCT : Correction d'un trap dans la commande gcarc
 
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+
+#include <iostream>
+
+#include <iomanip>
+
+#include <fstream>
 
 #include <GeometryTest.hxx>
 #include <DrawTrSurf.hxx>
@@ -39,15 +45,23 @@
 #include <Draw_Marker3D.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Draw_Marker2D.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineCurve2d.hxx>
-#include <TColgp_HArray1OfVec.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GC_MakeArcOfCircle.hxx>
@@ -57,7 +71,7 @@ Standard_IMPORT Draw_Viewer dout;
 #endif
 Standard_IMPORT Draw_Color DrawTrSurf_CurveColor(const Draw_Color);
 
-static Standard_Integer solutions(Draw_Interpretor&        di,
+static int solutions(Draw_Interpretor&        di,
                                   Geom2dGcc_Circ2d2TanRad& ct3,
                                   const char*              name)
 {
@@ -68,9 +82,9 @@ static Standard_Integer solutions(Draw_Interpretor&        di,
 
   if (ct3.IsDone())
   {
-    for (Standard_Integer i = 1; i <= ct3.NbSolutions(); i++)
+    for (int i = 1; i <= ct3.NbSolutions(); i++)
     {
-      Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
+      occ::handle<Geom2d_Circle> C = new Geom2d_Circle(ct3.ThisSolution(i));
       Sprintf(solname, "%s_%d", name, i);
       DrawTrSurf::Set(solname, C);
       di << solname << " ";
@@ -84,7 +98,7 @@ static Standard_Integer solutions(Draw_Interpretor&        di,
   }
 }
 
-static Standard_Integer solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d3Tan& ct3, const char* name)
+static int solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d3Tan& ct3, const char* name)
 {
   char solname[200];
 
@@ -93,9 +107,9 @@ static Standard_Integer solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d3Tan& ct
 
   if (ct3.IsDone())
   {
-    for (Standard_Integer i = 1; i <= ct3.NbSolutions(); i++)
+    for (int i = 1; i <= ct3.NbSolutions(); i++)
     {
-      Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
+      occ::handle<Geom2d_Circle> C = new Geom2d_Circle(ct3.ThisSolution(i));
       Sprintf(solname, "%s_%d", name, i);
       DrawTrSurf::Set(solname, C);
       di << solname << " ";
@@ -111,7 +125,7 @@ static Standard_Integer solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d3Tan& ct
 
 //=================================================================================================
 
-static Standard_Integer solutions(Draw_Interpretor&       theDI,
+static int solutions(Draw_Interpretor&       theDI,
                                   Geom2dGcc_Circ2dTanCen& theCt2,
                                   const char*             theName)
 {
@@ -122,9 +136,9 @@ static Standard_Integer solutions(Draw_Interpretor&       theDI,
 
   if (theCt2.IsDone())
   {
-    for (Standard_Integer i = 1; i <= theCt2.NbSolutions(); i++)
+    for (int i = 1; i <= theCt2.NbSolutions(); i++)
     {
-      Handle(Geom2d_Circle) C = new Geom2d_Circle(theCt2.ThisSolution(i));
+      occ::handle<Geom2d_Circle> C = new Geom2d_Circle(theCt2.ThisSolution(i));
       Sprintf(solname, "%s_%d", theName, i);
       DrawTrSurf::Set(solname, C);
       theDI << solname << " ";
@@ -140,8 +154,8 @@ static Standard_Integer solutions(Draw_Interpretor&       theDI,
 
 //=================================================================================================
 
-static Standard_Integer Cirtang(Draw_Interpretor& theDI,
-                                Standard_Integer  theNArgs,
+static int Cirtang(Draw_Interpretor& theDI,
+                                int  theNArgs,
                                 const char**      theArgVals)
 {
   if (theNArgs < 3)
@@ -151,14 +165,14 @@ static Standard_Integer Cirtang(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Real        aTol = Precision::Confusion();
-  Handle(Geom2d_Curve) aC[3];
+  double        aTol = Precision::Confusion();
+  occ::handle<Geom2d_Curve> aC[3];
   gp_Pnt2d             aP[3];
-  Standard_Real        aRadius = -1.0;
+  double        aRadius = -1.0;
 
-  Standard_Integer aNbCurves = 0, aNbPnts = 0;
+  int aNbCurves = 0, aNbPnts = 0;
 
-  for (Standard_Integer anArgID = 2; anArgID < theNArgs; anArgID++)
+  for (int anArgID = 2; anArgID < theNArgs; anArgID++)
   {
     if (theArgVals[anArgID][0] != '-')
     {
@@ -326,13 +340,13 @@ static Standard_Integer Cirtang(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer lintang(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int lintang(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
 
-  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[2]);
-  Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[3]);
+  occ::handle<Geom2d_Curve> C1 = DrawTrSurf::GetCurve2d(a[2]);
+  occ::handle<Geom2d_Curve> C2 = DrawTrSurf::GetCurve2d(a[3]);
 
   char solname[200];
 
@@ -343,13 +357,13 @@ static Standard_Integer lintang(Draw_Interpretor& di, Standard_Integer n, const 
 
   if (n >= 5)
   {
-    Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(C2);
+    occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(C2);
     if (L.IsNull())
     {
       di << "Second argument must be a line";
       return 1;
     }
-    Standard_Real         ang = Draw::Atof(a[4]) * (M_PI / 180.0);
+    double         ang = Draw::Atof(a[4]) * (M_PI / 180.0);
     Geom2dGcc_Lin2dTanObl ct3(Geom2dGcc::Unqualified(C1),
                               L->Lin2d(),
                               Precision::Angular(),
@@ -357,9 +371,9 @@ static Standard_Integer lintang(Draw_Interpretor& di, Standard_Integer n, const 
                               ang);
     if (ct3.IsDone())
     {
-      for (Standard_Integer i = 1; i <= ct3.NbSolutions(); i++)
+      for (int i = 1; i <= ct3.NbSolutions(); i++)
       {
-        Handle(Geom2d_Line) LS = new Geom2d_Line(ct3.ThisSolution(i));
+        occ::handle<Geom2d_Line> LS = new Geom2d_Line(ct3.ThisSolution(i));
         Sprintf(solname, "%s_%d", a[1], i);
         char* temp = solname; // pour portage WNT
         DrawTrSurf::Set(temp, LS);
@@ -378,9 +392,9 @@ static Standard_Integer lintang(Draw_Interpretor& di, Standard_Integer n, const 
                             (C2->FirstParameter() + C2->LastParameter()) / 2.);
     if (ct3.IsDone())
     {
-      for (Standard_Integer i = 1; i <= ct3.NbSolutions(); i++)
+      for (int i = 1; i <= ct3.NbSolutions(); i++)
       {
-        Handle(Geom2d_Line) LS = new Geom2d_Line(ct3.ThisSolution(i));
+        occ::handle<Geom2d_Line> LS = new Geom2d_Line(ct3.ThisSolution(i));
         Sprintf(solname, "%s_%d", a[1], i);
         char* temp = solname; // pour portage WNT
         DrawTrSurf::Set(temp, LS);
@@ -397,7 +411,7 @@ static Standard_Integer lintang(Draw_Interpretor& di, Standard_Integer n, const 
 }
 
 //==================================================================================
-static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int interpol(Draw_Interpretor& di, int n, const char** a)
 //==================================================================================
 {
   if (n == 1)
@@ -407,38 +421,38 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
   }
   if (n == 2)
   {
-    Standard_Integer id, XX, YY, b, i, j;
+    int id, XX, YY, b, i, j;
     di << "Pick points \n";
     dout.Select(id, XX, YY, b);
-    Standard_Real zoom = dout.Zoom(id);
+    double zoom = dout.Zoom(id);
     if (b != 1)
       return 0;
     if (id < 0)
       return 0;
     gp_Pnt           P;
     gp_Pnt2d         P2d;
-    Standard_Boolean newcurve;
+    bool newcurve;
 
     if (dout.Is3D(id))
     {
-      Handle(Draw_Marker3D)       mark;
-      Handle(TColgp_HArray1OfPnt) Points = new TColgp_HArray1OfPnt(1, 1);
-      P.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom, 0.0);
+      occ::handle<Draw_Marker3D>       mark;
+      occ::handle<NCollection_HArray1<gp_Pnt>> Points = new NCollection_HArray1<gp_Pnt>(1, 1);
+      P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
       Points->SetValue(1, P);
-      Handle(TColgp_HArray1OfPnt) ThePoints = new TColgp_HArray1OfPnt(1, 2);
+      occ::handle<NCollection_HArray1<gp_Pnt>> ThePoints = new NCollection_HArray1<gp_Pnt>(1, 2);
       ThePoints->SetValue(1, P);
       mark = new Draw_Marker3D(Points->Value(1), Draw_X, Draw_vert);
       dout << mark;
       dout.Flush();
-      Handle(Geom_BSplineCurve) C;
+      occ::handle<Geom_BSplineCurve> C;
       i = 1;
 
       while (b != 3)
       {
-        dout.Select(id, XX, YY, b, Standard_False);
-        P.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom, 0.0);
+        dout.Select(id, XX, YY, b, false);
+        P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
         ThePoints->SetValue(i + 1, P);
-        newcurve = Standard_False;
+        newcurve = false;
         if (!(ThePoints->Value(i)).IsEqual(ThePoints->Value(i + 1), 1.e-06))
         {
           if (b == 1)
@@ -447,16 +461,16 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
             mark = new Draw_Marker3D(ThePoints->Value(i), Draw_X, Draw_vert);
             dout << mark;
             dout.Flush();
-            Points = new TColgp_HArray1OfPnt(ThePoints->Lower(), ThePoints->Upper());
+            Points = new NCollection_HArray1<gp_Pnt>(ThePoints->Lower(), ThePoints->Upper());
             Points->ChangeArray1() = ThePoints->Array1();
-            newcurve               = Standard_True;
+            newcurve               = true;
           }
-          GeomAPI_Interpolate anInterpolator(ThePoints, Standard_False, 1.0e-5);
+          GeomAPI_Interpolate anInterpolator(ThePoints, false, 1.0e-5);
           anInterpolator.Perform();
           if (anInterpolator.IsDone())
           {
             C                                  = anInterpolator.Curve();
-            Handle(DrawTrSurf_BSplineCurve) DC = new DrawTrSurf_BSplineCurve(C);
+            occ::handle<DrawTrSurf_BSplineCurve> DC = new DrawTrSurf_BSplineCurve(C);
             DC->ClearPoles();
             DC->ClearKnots();
             Draw::Set(a[1], DC);
@@ -464,13 +478,13 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
           }
           if (newcurve)
           {
-            ThePoints = new TColgp_HArray1OfPnt(1, i + 1);
+            ThePoints = new NCollection_HArray1<gp_Pnt>(1, i + 1);
             for (j = 1; j <= i; j++)
               ThePoints->SetValue(j, Points->Value(j));
           }
         }
       }
-      GeomAPI_Interpolate anInterpolator(ThePoints, Standard_False, 1.0e-5);
+      GeomAPI_Interpolate anInterpolator(ThePoints, false, 1.0e-5);
       anInterpolator.Perform();
       if (anInterpolator.IsDone())
       {
@@ -481,24 +495,24 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
     }
     else
     {
-      Handle(Draw_Marker2D)         mark;
-      Handle(TColgp_HArray1OfPnt2d) Points = new TColgp_HArray1OfPnt2d(1, 1);
-      P2d.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom);
+      occ::handle<Draw_Marker2D>         mark;
+      occ::handle<NCollection_HArray1<gp_Pnt2d>> Points = new NCollection_HArray1<gp_Pnt2d>(1, 1);
+      P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
       Points->SetValue(1, P2d);
-      Handle(TColgp_HArray1OfPnt2d) ThePoints = new TColgp_HArray1OfPnt2d(1, 2);
+      occ::handle<NCollection_HArray1<gp_Pnt2d>> ThePoints = new NCollection_HArray1<gp_Pnt2d>(1, 2);
       ThePoints->SetValue(1, P2d);
       mark = new Draw_Marker2D(P2d, Draw_X, Draw_vert);
       dout << mark;
       dout.Flush();
-      Handle(Geom2d_BSplineCurve) C;
+      occ::handle<Geom2d_BSplineCurve> C;
       i = 1;
 
       while (b != 3)
       {
-        dout.Select(id, XX, YY, b, Standard_False);
-        P2d.SetCoord((Standard_Real)XX / zoom, (Standard_Real)YY / zoom);
+        dout.Select(id, XX, YY, b, false);
+        P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
         ThePoints->SetValue(i + 1, P2d);
-        newcurve = Standard_False;
+        newcurve = false;
         if (!(ThePoints->Value(i)).IsEqual(ThePoints->Value(i + 1), 1.e-06))
         {
           if (b == 1)
@@ -507,17 +521,17 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
             mark = new Draw_Marker2D(P2d, Draw_X, Draw_vert);
             dout << mark;
             dout.Flush();
-            Points = new TColgp_HArray1OfPnt2d(ThePoints->Lower(), ThePoints->Upper());
+            Points = new NCollection_HArray1<gp_Pnt2d>(ThePoints->Lower(), ThePoints->Upper());
             Points->ChangeArray1() = ThePoints->Array1();
-            newcurve               = Standard_True;
+            newcurve               = true;
           }
-          Geom2dAPI_Interpolate a2dInterpolator(ThePoints, Standard_False, 1.0e-5);
+          Geom2dAPI_Interpolate a2dInterpolator(ThePoints, false, 1.0e-5);
           a2dInterpolator.Perform();
           if (a2dInterpolator.IsDone())
           {
             C = a2dInterpolator.Curve();
 
-            Handle(DrawTrSurf_BSplineCurve2d) DC = new DrawTrSurf_BSplineCurve2d(C);
+            occ::handle<DrawTrSurf_BSplineCurve2d> DC = new DrawTrSurf_BSplineCurve2d(C);
             DC->ClearPoles();
             DC->ClearKnots();
             Draw::Set(a[1], DC);
@@ -526,13 +540,13 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
 
           if (newcurve)
           {
-            ThePoints = new TColgp_HArray1OfPnt2d(1, i + 1);
+            ThePoints = new NCollection_HArray1<gp_Pnt2d>(1, i + 1);
             for (j = 1; j <= i; j++)
               ThePoints->SetValue(j, Points->Value(j));
           }
         }
       }
-      Geom2dAPI_Interpolate a2dInterpolator(Points, Standard_False, 1.0e-5);
+      Geom2dAPI_Interpolate a2dInterpolator(Points, false, 1.0e-5);
       a2dInterpolator.Perform();
       if (a2dInterpolator.IsDone())
       {
@@ -551,8 +565,8 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
     std::ifstream iFile(nomfic, std::ios::in);
     if (!iFile)
       return 1;
-    Standard_Integer nbp, i;
-    Standard_Real    x, y, z;
+    int nbp, i;
+    double    x, y, z;
     iFile >> nbp;
     constexpr size_t aBufferSize = 3;
     char             dimen[aBufferSize];
@@ -560,33 +574,33 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
     iFile >> dimen;
     if (!strcmp(dimen, "3d"))
     {
-      Handle(TColgp_HArray1OfPnt) Point = new TColgp_HArray1OfPnt(1, nbp);
+      occ::handle<NCollection_HArray1<gp_Pnt>> Point = new NCollection_HArray1<gp_Pnt>(1, nbp);
       for (i = 1; i <= nbp; i++)
       {
         iFile >> x >> y >> z;
         Point->SetValue(i, gp_Pnt(x, y, z));
       }
-      GeomAPI_Interpolate anInterpolator(Point, Standard_False, 1.0e-5);
+      GeomAPI_Interpolate anInterpolator(Point, false, 1.0e-5);
       anInterpolator.Perform();
       if (anInterpolator.IsDone())
       {
-        const Handle(Geom_BSplineCurve)& C = anInterpolator.Curve();
+        const occ::handle<Geom_BSplineCurve>& C = anInterpolator.Curve();
         DrawTrSurf::Set(a[1], C);
       }
     }
     else if (!strcmp(dimen, "2d"))
     {
-      Handle(TColgp_HArray1OfPnt2d) PointPtr = new TColgp_HArray1OfPnt2d(1, nbp);
+      occ::handle<NCollection_HArray1<gp_Pnt2d>> PointPtr = new NCollection_HArray1<gp_Pnt2d>(1, nbp);
       for (i = 1; i <= nbp; i++)
       {
         iFile >> x >> y;
         PointPtr->SetValue(i, gp_Pnt2d(x, y));
       }
-      Geom2dAPI_Interpolate a2dInterpolator(PointPtr, Standard_False, 1.0e-5);
+      Geom2dAPI_Interpolate a2dInterpolator(PointPtr, false, 1.0e-5);
       a2dInterpolator.Perform();
       if (a2dInterpolator.IsDone())
       {
-        const Handle(Geom2d_BSplineCurve)& C = a2dInterpolator.Curve();
+        const occ::handle<Geom2d_BSplineCurve>& C = a2dInterpolator.Curve();
         DrawTrSurf::Set(a[1], C);
       }
     }
@@ -594,33 +608,33 @@ static Standard_Integer interpol(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
-static Standard_Integer tanginterpol(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int tanginterpol(Draw_Interpretor& di, int n, const char** a)
 {
 
   if (n < 4)
     return 1;
 
-  Standard_Integer ii, jj,
+  int ii, jj,
     //    num_knots,
     //    degree,
     num_tangents, num_read, num_start, num_parameters;
 
-  Standard_Real
+  double
     //    delta,
     tolerance;
   //    parameter ;
 
-  Standard_Boolean periodic_flag = Standard_False;
+  bool periodic_flag = false;
   gp_Pnt           a_point;
   gp_Vec           a_vector;
   tolerance = 1.0e-5;
 
-  Handle(Geom_BSplineCurve) NewCurvePtr;
+  occ::handle<Geom_BSplineCurve> NewCurvePtr;
 
   num_read = 2;
   if (strcmp(a[num_read], "p") == 0)
   {
-    periodic_flag = Standard_True;
+    periodic_flag = true;
     num_read += 1;
   }
   num_parameters = Draw::Atoi(a[num_read]);
@@ -633,7 +647,7 @@ static Standard_Integer tanginterpol(Draw_Interpretor& di, Standard_Integer n, c
   {
     return 1;
   }
-  Handle(TColgp_HArray1OfPnt) PointsArrayPtr = new TColgp_HArray1OfPnt(1, num_parameters);
+  occ::handle<NCollection_HArray1<gp_Pnt>> PointsArrayPtr = new NCollection_HArray1<gp_Pnt>(1, num_parameters);
 
   num_tangents = ((n - num_read) / 3) - num_parameters;
   num_tangents = std::max(0, num_tangents);
@@ -655,17 +669,17 @@ static Standard_Integer tanginterpol(Draw_Interpretor& di, Standard_Integer n, c
 
   if (num_tangents > 0)
   {
-    TColgp_Array1OfVec               TangentsArray(1, num_parameters);
-    Handle(TColStd_HArray1OfBoolean) TangentFlagsPtr =
-      new TColStd_HArray1OfBoolean(1, num_parameters);
+    NCollection_Array1<gp_Vec>               TangentsArray(1, num_parameters);
+    occ::handle<NCollection_HArray1<bool>> TangentFlagsPtr =
+      new NCollection_HArray1<bool>(1, num_parameters);
 
     for (ii = 1; ii <= num_tangents; ii++)
     {
-      TangentFlagsPtr->SetValue(ii, Standard_True);
+      TangentFlagsPtr->SetValue(ii, true);
     }
     for (ii = num_tangents + 1; ii <= num_parameters; ii++)
     {
-      TangentFlagsPtr->SetValue(ii, Standard_False);
+      TangentFlagsPtr->SetValue(ii, false);
     }
     ii = 1;
     while (ii <= num_tangents)
@@ -693,7 +707,7 @@ static Standard_Integer tanginterpol(Draw_Interpretor& di, Standard_Integer n, c
 }
 
 //==================================================================================
-static Standard_Integer gcarc(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int gcarc(Draw_Interpretor& di, int n, const char** a)
 //==================================================================================
 {
   if (n >= 5)
@@ -705,7 +719,7 @@ static Standard_Integer gcarc(Draw_Interpretor& di, Standard_Integer n, const ch
       {
         if (DrawTrSurf::GetPoint(a[4], P2))
         {
-          Handle(Geom_Curve) theline(GC_MakeSegment(P1, P2).Value());
+          occ::handle<Geom_Curve> theline(GC_MakeSegment(P1, P2).Value());
           DrawTrSurf::Set(a[1], theline);
           return 1;
         }
@@ -724,13 +738,13 @@ static Standard_Integer gcarc(Draw_Interpretor& di, Standard_Integer n, const ch
             {
               DrawTrSurf::GetPoint(a[6], P4);
               gp_Vec             V1 = gp_Vec(P2, P3);
-              Handle(Geom_Curve) thearc(GC_MakeArcOfCircle(P1, V1, P4).Value());
+              occ::handle<Geom_Curve> thearc(GC_MakeArcOfCircle(P1, V1, P4).Value());
               DrawTrSurf::Set(a[1], thearc);
               return 1;
             }
             else
             {
-              Handle(Geom_Curve) thearc(GC_MakeArcOfCircle(P1, P2, P3).Value());
+              occ::handle<Geom_Curve> thearc(GC_MakeArcOfCircle(P1, P2, P3).Value());
               DrawTrSurf::Set(a[1], thearc);
               return 1;
             }
@@ -750,10 +764,10 @@ static Standard_Integer gcarc(Draw_Interpretor& di, Standard_Integer n, const ch
 void GeometryTest::ConstraintCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

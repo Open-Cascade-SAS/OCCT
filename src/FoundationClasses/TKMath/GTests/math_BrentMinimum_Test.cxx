@@ -30,10 +30,10 @@ namespace
 class QuadraticFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = (theX - 2.0) * (theX - 2.0) + 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -41,11 +41,11 @@ public:
 class QuarticFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
-    Standard_Real dx = theX - 1.0;
+    double dx = theX - 1.0;
     theF             = dx * dx * dx * dx + 2.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -53,10 +53,10 @@ public:
 class CosineFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -64,10 +64,10 @@ public:
 class ShiftedExponentialFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = exp(theX - 3.0);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -75,12 +75,12 @@ public:
 class RosenbrockSliceFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
-    Standard_Real dx = 1.0 - theX;
-    Standard_Real dy = theX - theX * theX;
+    double dx = 1.0 - theX;
+    double dy = theX - theX * theX;
     theF             = dx * dx + 100.0 * dy * dy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -130,8 +130,8 @@ TEST(MathBrentMinimumTest, ConstructorWithKnownValue)
 {
   // Test constructor when F(Bx) is known
   QuadraticFunction aFunc;
-  Standard_Real     Bx  = 1.5;
-  Standard_Real     Fbx = (Bx - 2.0) * (Bx - 2.0) + 1.0; // F(1.5) = 1.25
+  double     Bx  = 1.5;
+  double     Fbx = (Bx - 2.0) * (Bx - 2.0) + 1.0; // F(1.5) = 1.25
 
   math_BrentMinimum aSolver(1.0e-10, Fbx);
   aSolver.Perform(aFunc, 0.0, Bx, 4.0);

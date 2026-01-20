@@ -30,70 +30,70 @@ inline TopAbs_Orientation HLRAlgo_Intersection::Orientation() const
 
 //=================================================================================================
 
-inline void HLRAlgo_Intersection::Level(const Standard_Integer Lev)
+inline void HLRAlgo_Intersection::Level(const int Lev)
 {
   myLevel = Lev;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::Level() const
+inline int HLRAlgo_Intersection::Level() const
 {
   return myLevel;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_Intersection::SegIndex(const Standard_Integer SegInd)
+inline void HLRAlgo_Intersection::SegIndex(const int SegInd)
 {
   mySegIndex = SegInd;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::SegIndex() const
+inline int HLRAlgo_Intersection::SegIndex() const
 {
   return mySegIndex;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_Intersection::Index(const Standard_Integer Ind)
+inline void HLRAlgo_Intersection::Index(const int Ind)
 {
   myIndex = Ind;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_Intersection::Index() const
+inline int HLRAlgo_Intersection::Index() const
 {
   return myIndex;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_Intersection::Parameter(const Standard_Real P)
+inline void HLRAlgo_Intersection::Parameter(const double P)
 {
   myParam = P;
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRAlgo_Intersection::Parameter() const
+inline double HLRAlgo_Intersection::Parameter() const
 {
   return myParam;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_Intersection::Tolerance(const Standard_ShortReal T)
+inline void HLRAlgo_Intersection::Tolerance(const float T)
 {
   myToler = T;
 }
 
 //=================================================================================================
 
-inline Standard_ShortReal HLRAlgo_Intersection::Tolerance() const
+inline float HLRAlgo_Intersection::Tolerance() const
 {
   return myToler;
 }

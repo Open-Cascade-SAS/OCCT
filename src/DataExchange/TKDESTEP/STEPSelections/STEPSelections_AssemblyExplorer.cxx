@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinition.hxx>
@@ -26,7 +26,9 @@
 #include <StepRepr_PropertyDefinition.hxx>
 #include <STEPSelections_AssemblyExplorer.hxx>
 #include <STEPSelections_AssemblyLink.hxx>
-#include <STEPSelections_HSequenceOfAssemblyLink.hxx>
+#include <STEPSelections_AssemblyLink.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
@@ -38,47 +40,47 @@ STEPSelections_AssemblyExplorer::STEPSelections_AssemblyExplorer(const Interface
   Init(G);
 }
 
-Handle(Standard_Transient) STEPSelections_AssemblyExplorer::FindItemWithNAUO(
-  const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo) const
+occ::handle<Standard_Transient> STEPSelections_AssemblyExplorer::FindItemWithNAUO(
+  const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo) const
 {
-  Handle(Standard_Transient)              item;
-  Handle(StepRepr_ProductDefinitionShape) pds;
+  occ::handle<Standard_Transient>              item;
+  occ::handle<StepRepr_ProductDefinitionShape> pds;
   Interface_EntityIterator                subs = myGraph.Sharings(nauo);
   for (subs.Start(); subs.More() && pds.IsNull(); subs.Next())
     if (subs.Value()->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
-      pds = Handle(StepRepr_ProductDefinitionShape)::DownCast(subs.Value());
+      pds = occ::down_cast<StepRepr_ProductDefinitionShape>(subs.Value());
   if (pds.IsNull())
     return item;
 
   subs = myGraph.Sharings(pds);
-  Handle(StepShape_ContextDependentShapeRepresentation) cdsr;
-  Handle(StepShape_ShapeDefinitionRepresentation)       shdefrep;
-  Handle(Standard_Transient)                            itmp;
+  occ::handle<StepShape_ContextDependentShapeRepresentation> cdsr;
+  occ::handle<StepShape_ShapeDefinitionRepresentation>       shdefrep;
+  occ::handle<Standard_Transient>                            itmp;
   for (subs.Start(); subs.More() && shdefrep.IsNull(); subs.Next())
   {
     itmp = subs.Value();
     if (itmp->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))
       return itmp;
     if (itmp->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
-      shdefrep = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(itmp);
+      shdefrep = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(itmp);
   }
   if (shdefrep.IsNull())
     return shdefrep;
-  Handle(StepShape_ShapeRepresentation) srep =
-    Handle(StepShape_ShapeRepresentation)::DownCast(shdefrep->UsedRepresentation());
+  occ::handle<StepShape_ShapeRepresentation> srep =
+    occ::down_cast<StepShape_ShapeRepresentation>(shdefrep->UsedRepresentation());
   if (srep.IsNull())
     return srep;
-  for (Standard_Integer i = 1; i <= srep->NbItems(); i++)
+  for (int i = 1; i <= srep->NbItems(); i++)
   {
-    Handle(StepRepr_RepresentationItem) repitem = srep->ItemsValue(i);
+    occ::handle<StepRepr_RepresentationItem> repitem = srep->ItemsValue(i);
     if (repitem->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
       return repitem;
   }
   return item;
 }
 
-Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyExplorer::FindSDRWithProduct(
-  const Handle(StepBasic_ProductDefinition)& product) const
+occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyExplorer::FindSDRWithProduct(
+  const occ::handle<StepBasic_ProductDefinition>& product) const
 {
   Interface_EntityIterator subs = myGraph.Sharings(product);
   for (subs.Start(); subs.More(); subs.Next())
@@ -92,20 +94,20 @@ Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyExplorer:
           return SDR;
         }
     }
-  Handle(StepShape_ShapeDefinitionRepresentation) sdr;
+  occ::handle<StepShape_ShapeDefinitionRepresentation> sdr;
   return sdr;
 }
 
 void STEPSelections_AssemblyExplorer::FillListWithGraph(
-  const Handle(STEPSelections_AssemblyComponent)& cmp)
+  const occ::handle<STEPSelections_AssemblyComponent>& cmp)
 {
-  Handle(StepShape_ShapeDefinitionRepresentation) SDR  = cmp->GetSDR();
-  Handle(STEPSelections_HSequenceOfAssemblyLink)  list = cmp->GetList();
-  Handle(StepRepr_ProductDefinitionShape)         pdsh =
-    Handle(StepRepr_ProductDefinitionShape)::DownCast(SDR->Definition().PropertyDefinition());
+  occ::handle<StepShape_ShapeDefinitionRepresentation> SDR  = cmp->GetSDR();
+  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>  list = cmp->GetList();
+  occ::handle<StepRepr_ProductDefinitionShape>         pdsh =
+    occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().PropertyDefinition());
   if (pdsh.IsNull())
     return;
-  Handle(StepBasic_ProductDefinition) pdf = pdsh->Definition().ProductDefinition();
+  occ::handle<StepBasic_ProductDefinition> pdf = pdsh->Definition().ProductDefinition();
   if (pdf.IsNull())
     return;
   Interface_EntityIterator subs = myGraph.Sharings(pdf);
@@ -115,24 +117,24 @@ void STEPSelections_AssemblyExplorer::FillListWithGraph(
       DeclareAndCast(StepRepr_NextAssemblyUsageOccurrence, nauo, subs.Value());
       if (pdf == nauo->RelatingProductDefinition())
       {
-        Handle(STEPSelections_AssemblyLink) link = new STEPSelections_AssemblyLink;
+        occ::handle<STEPSelections_AssemblyLink> link = new STEPSelections_AssemblyLink;
         link->SetNAUO(nauo);
         link->SetItem(FindItemWithNAUO(nauo));
-        Handle(StepBasic_ProductDefinition) pdrComponent = nauo->RelatedProductDefinition();
+        occ::handle<StepBasic_ProductDefinition> pdrComponent = nauo->RelatedProductDefinition();
         if (pdrComponent.IsNull())
           continue;
-        Handle(StepShape_ShapeDefinitionRepresentation) subSDR = FindSDRWithProduct(pdrComponent);
+        occ::handle<StepShape_ShapeDefinitionRepresentation> subSDR = FindSDRWithProduct(pdrComponent);
         if (subSDR.IsNull())
           continue;
-        Standard_Integer index = myMap.FindIndex(subSDR);
+        int index = myMap.FindIndex(subSDR);
         if (index)
           link->SetComponent(
-            Handle(STEPSelections_AssemblyComponent)::DownCast(myMap.FindFromIndex(index)));
+            occ::down_cast<STEPSelections_AssemblyComponent>(myMap.FindFromIndex(index)));
         else
         {
-          Handle(STEPSelections_HSequenceOfAssemblyLink) sublist =
-            new STEPSelections_HSequenceOfAssemblyLink;
-          Handle(STEPSelections_AssemblyComponent) subCmp =
+          occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>> sublist =
+            new NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>;
+          occ::handle<STEPSelections_AssemblyComponent> subCmp =
             new STEPSelections_AssemblyComponent(subSDR, sublist);
           FillListWithGraph(subCmp);
           link->SetComponent(subCmp);
@@ -152,42 +154,42 @@ void STEPSelections_AssemblyExplorer::Init(const Interface_Graph& G)
   for (roots.Start(); roots.More(); roots.Next())
     if (roots.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
     {
-      Handle(STEPSelections_AssemblyComponent) cmp = new STEPSelections_AssemblyComponent;
-      cmp->SetSDR(Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(roots.Value()));
-      cmp->SetList(new STEPSelections_HSequenceOfAssemblyLink);
+      occ::handle<STEPSelections_AssemblyComponent> cmp = new STEPSelections_AssemblyComponent;
+      cmp->SetSDR(occ::down_cast<StepShape_ShapeDefinitionRepresentation>(roots.Value()));
+      cmp->SetList(new NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>);
       FillListWithGraph(cmp);
       myRoots.Append(cmp);
     }
 }
 
-static Standard_CString GetProductName(const Handle(StepShape_ShapeDefinitionRepresentation)& SDR)
+static const char* GetProductName(const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR)
 {
-  Standard_CString                    str = "";
-  Handle(StepBasic_Product)           empty;
-  Handle(StepRepr_PropertyDefinition) PropDf = SDR->Definition().PropertyDefinition();
+  const char*                    str = "";
+  occ::handle<StepBasic_Product>           empty;
+  occ::handle<StepRepr_PropertyDefinition> PropDf = SDR->Definition().PropertyDefinition();
   if (PropDf.IsNull())
     return str;
-  Handle(StepBasic_ProductDefinition) PD = PropDf->Definition().ProductDefinition();
+  occ::handle<StepBasic_ProductDefinition> PD = PropDf->Definition().ProductDefinition();
   if (PD.IsNull())
     return str;
-  Handle(StepBasic_ProductDefinitionFormation) PDF = PD->Formation();
+  occ::handle<StepBasic_ProductDefinitionFormation> PDF = PD->Formation();
   if (PDF.IsNull())
     return str;
   return PDF->OfProduct()->Name()->ToCString();
 }
 
 static void PrintSubAssembly(Standard_OStream&                               os,
-                             const Handle(STEPSelections_AssemblyComponent)& cmp,
-                             const Handle(Interface_InterfaceModel)&         Model,
-                             Standard_Integer                                level)
+                             const occ::handle<STEPSelections_AssemblyComponent>& cmp,
+                             const occ::handle<Interface_InterfaceModel>&         Model,
+                             int                                level)
 {
-  // for ( Standard_Integer j=0; j < level; j++ ) os << "\t";
+  // for ( int j=0; j < level; j++ ) os << "\t";
   os << "SDR: " << Model->StringLabel(cmp->GetSDR())->ToCString() << "\t";
 
   os << "Product: " << GetProductName(cmp->GetSDR()) << std::endl;
-  for (Standard_Integer i = 1; i <= cmp->GetList()->Length(); i++)
+  for (int i = 1; i <= cmp->GetList()->Length(); i++)
   {
-    for (Standard_Integer j = 0; j < level + 1; j++)
+    for (int j = 0; j < level + 1; j++)
       os << "\t";
     os << "NAUO :" << Model->StringLabel(cmp->GetList()->Value(i)->GetNAUO())->ToCString() << ";\t";
     if (cmp->GetList()->Value(i)->GetItem()->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
@@ -203,8 +205,8 @@ static void PrintSubAssembly(Standard_OStream&                               os,
 
 void STEPSelections_AssemblyExplorer::Dump(Standard_OStream& os) const
 {
-  Handle(Interface_InterfaceModel) model = myGraph.Model();
-  for (Standard_Integer i = 1; i <= myRoots.Length(); i++)
+  occ::handle<Interface_InterfaceModel> model = myGraph.Model();
+  for (int i = 1; i <= myRoots.Length(); i++)
   {
     os << "Assembly N: " << i << std::endl << std::endl;
     PrintSubAssembly(os, myRoots.Value(i), model, 0);

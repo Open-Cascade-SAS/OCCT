@@ -16,7 +16,7 @@
 #ifndef MeshVS_BuilderPriority_HeaderFile
 #define MeshVS_BuilderPriority_HeaderFile
 
-typedef Standard_Integer MeshVS_BuilderPriority;
+typedef int MeshVS_BuilderPriority;
 
 enum
 {

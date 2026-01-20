@@ -24,10 +24,10 @@
 
 //=================================================================================================
 
-IFSelect_ContextWrite::IFSelect_ContextWrite(const Handle(Interface_InterfaceModel)&  model,
-                                             const Handle(Interface_Protocol)&        proto,
-                                             const Handle(IFSelect_AppliedModifiers)& applieds,
-                                             const Standard_CString                   filename)
+IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_InterfaceModel>&  model,
+                                             const occ::handle<Interface_Protocol>&        proto,
+                                             const occ::handle<IFSelect_AppliedModifiers>& applieds,
+                                             const char* const                   filename)
     : themodel(model),
       theproto(proto),
       thefile(filename),
@@ -40,10 +40,10 @@ IFSelect_ContextWrite::IFSelect_ContextWrite(const Handle(Interface_InterfaceMod
 
 //=================================================================================================
 
-IFSelect_ContextWrite::IFSelect_ContextWrite(const Handle(Interface_HGraph)&          hgraph,
-                                             const Handle(Interface_Protocol)&        proto,
-                                             const Handle(IFSelect_AppliedModifiers)& applieds,
-                                             const Standard_CString                   filename)
+IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_HGraph>&          hgraph,
+                                             const occ::handle<Interface_Protocol>&        proto,
+                                             const occ::handle<IFSelect_AppliedModifiers>& applieds,
+                                             const char* const                   filename)
     : themodel(hgraph->Graph().Model()),
       theproto(proto),
       thefile(filename),
@@ -57,28 +57,28 @@ IFSelect_ContextWrite::IFSelect_ContextWrite(const Handle(Interface_HGraph)&    
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) IFSelect_ContextWrite::Model() const
+occ::handle<Interface_InterfaceModel> IFSelect_ContextWrite::Model() const
 {
   return themodel;
 }
 
 //=================================================================================================
 
-Handle(Interface_Protocol) IFSelect_ContextWrite::Protocol() const
+occ::handle<Interface_Protocol> IFSelect_ContextWrite::Protocol() const
 {
   return theproto;
 }
 
 //=================================================================================================
 
-Standard_CString IFSelect_ContextWrite::FileName() const
+const char* IFSelect_ContextWrite::FileName() const
 {
   return thefile.ToCString();
 }
 
 //=================================================================================================
 
-Handle(IFSelect_AppliedModifiers) IFSelect_ContextWrite::AppliedModifiers() const
+occ::handle<IFSelect_AppliedModifiers> IFSelect_ContextWrite::AppliedModifiers() const
 {
   return theapply;
 }
@@ -94,47 +94,47 @@ const Interface_Graph& IFSelect_ContextWrite::Graph()
 
 //=================================================================================================
 
-Standard_Integer IFSelect_ContextWrite::NbModifiers() const
+int IFSelect_ContextWrite::NbModifiers() const
 {
   return (theapply.IsNull() ? 0 : theapply->Count());
 }
 
-Standard_Boolean IFSelect_ContextWrite::SetModifier(const Standard_Integer numod)
+bool IFSelect_ContextWrite::SetModifier(const int numod)
 {
   themodif.Nullify();
   thenumod = thenbent = thecurr = 0;
   if (theapply.IsNull())
-    return Standard_False;
+    return false;
   if (numod < 1 || numod > theapply->Count())
-    return Standard_False;
+    return false;
   theapply->Item(numod, themodif, thenbent);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(IFSelect_GeneralModifier) IFSelect_ContextWrite::FileModifier() const
+occ::handle<IFSelect_GeneralModifier> IFSelect_ContextWrite::FileModifier() const
 {
   return themodif;
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextWrite::IsForNone() const
+bool IFSelect_ContextWrite::IsForNone() const
 {
   return (thenbent == 0);
 }
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextWrite::IsForAll() const
+bool IFSelect_ContextWrite::IsForAll() const
 {
   return theapply->IsForAll();
 }
 
 //=================================================================================================
 
-Standard_Integer IFSelect_ContextWrite::NbEntities() const
+int IFSelect_ContextWrite::NbEntities() const
 {
   return thenbent;
 }
@@ -148,7 +148,7 @@ void IFSelect_ContextWrite::Start()
 
 //=================================================================================================
 
-Standard_Boolean IFSelect_ContextWrite::More() const
+bool IFSelect_ContextWrite::More() const
 {
   return (thecurr <= thenbent);
 }
@@ -162,22 +162,22 @@ void IFSelect_ContextWrite::Next()
 
 //=================================================================================================
 
-Handle(Standard_Transient) IFSelect_ContextWrite::Value() const
+occ::handle<Standard_Transient> IFSelect_ContextWrite::Value() const
 {
   if (thecurr < 1 || thecurr > thenbent)
     throw Standard_NoSuchObject("IFSelect_ContextWrite:Value");
-  Standard_Integer num = theapply->ItemNum(thecurr);
+  int num = theapply->ItemNum(thecurr);
   return themodel->Value(num);
 }
 
 //=================================================================================================
 
-void IFSelect_ContextWrite::AddCheck(const Handle(Interface_Check)& check)
+void IFSelect_ContextWrite::AddCheck(const occ::handle<Interface_Check>& check)
 {
   if (check->NbFails() + check->NbWarnings() == 0)
     return;
-  const Handle(Standard_Transient)& ent = check->Entity();
-  Standard_Integer                  num = themodel->Number(ent);
+  const occ::handle<Standard_Transient>& ent = check->Entity();
+  int                  num = themodel->Number(ent);
   if (num == 0 && !ent.IsNull())
     num = -1; // force enregistrement
   thecheck.Add(check, num);
@@ -185,27 +185,27 @@ void IFSelect_ContextWrite::AddCheck(const Handle(Interface_Check)& check)
 
 //=================================================================================================
 
-void IFSelect_ContextWrite::AddWarning(const Handle(Standard_Transient)& start,
-                                       const Standard_CString            mess,
-                                       const Standard_CString            orig)
+void IFSelect_ContextWrite::AddWarning(const occ::handle<Standard_Transient>& start,
+                                       const char* const            mess,
+                                       const char* const            orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddWarning(mess, orig);
 }
 
 //=================================================================================================
 
-void IFSelect_ContextWrite::AddFail(const Handle(Standard_Transient)& start,
-                                    const Standard_CString            mess,
-                                    const Standard_CString            orig)
+void IFSelect_ContextWrite::AddFail(const occ::handle<Standard_Transient>& start,
+                                    const char* const            mess,
+                                    const char* const            orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddFail(mess, orig);
 }
 
 //=================================================================================================
 
-Handle(Interface_Check) IFSelect_ContextWrite::CCheck(const Standard_Integer num)
+occ::handle<Interface_Check> IFSelect_ContextWrite::CCheck(const int num)
 {
-  Handle(Interface_Check) ach = thecheck.CCheck(num);
+  occ::handle<Interface_Check> ach = thecheck.CCheck(num);
   if (num > 0 && num <= themodel->NbEntities())
     ach->SetEntity(themodel->Value(num));
   return ach;
@@ -213,12 +213,12 @@ Handle(Interface_Check) IFSelect_ContextWrite::CCheck(const Standard_Integer num
 
 //=================================================================================================
 
-Handle(Interface_Check) IFSelect_ContextWrite::CCheck(const Handle(Standard_Transient)& ent)
+occ::handle<Interface_Check> IFSelect_ContextWrite::CCheck(const occ::handle<Standard_Transient>& ent)
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0)
     num = -1; // force l enregistrement
-  Handle(Interface_Check) ach = thecheck.CCheck(num);
+  occ::handle<Interface_Check> ach = thecheck.CCheck(num);
   ach->SetEntity(ent);
   return ach;
 }

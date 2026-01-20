@@ -30,14 +30,14 @@
 static Standard_GUID BinStorageDriver("f78ff4a2-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID BinRetrievalDriver("f78ff4a3-a779-11d5-aab4-0050044b1af1");
 
-const Handle(Standard_Transient)& BinTObjDrivers::Factory(const Standard_GUID& aGUID)
+const occ::handle<Standard_Transient>& BinTObjDrivers::Factory(const Standard_GUID& aGUID)
 {
   if (aGUID == BinStorageDriver)
   {
 #ifdef OCCT_DEBUG
     std::cout << "BinTObjDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd = new BinTObjDrivers_DocumentStorageDriver;
+    static occ::handle<Standard_Transient> model_sd = new BinTObjDrivers_DocumentStorageDriver;
     return model_sd;
   }
 
@@ -46,7 +46,7 @@ const Handle(Standard_Transient)& BinTObjDrivers::Factory(const Standard_GUID& a
 #ifdef OCCT_DEBUG
     std::cout << "BinTObjDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_rd = new BinTObjDrivers_DocumentRetrievalDriver;
+    static occ::handle<Standard_Transient> model_rd = new BinTObjDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
 
@@ -55,7 +55,7 @@ const Handle(Standard_Transient)& BinTObjDrivers::Factory(const Standard_GUID& a
 
 //=================================================================================================
 
-void BinTObjDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
+void BinTObjDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 {
   theApp->DefineFormat("TObjBin",
                        "Binary TObj OCAF Document",
@@ -66,8 +66,8 @@ void BinTObjDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 
 //=================================================================================================
 
-void BinTObjDrivers::AddDrivers(const Handle(BinMDF_ADriverTable)& aDriverTable,
-                                const Handle(Message_Messenger)&   aMsgDrv)
+void BinTObjDrivers::AddDrivers(const occ::handle<BinMDF_ADriverTable>& aDriverTable,
+                                const occ::handle<Message_Messenger>&   aMsgDrv)
 {
   aDriverTable->AddDriver(new BinTObjDrivers_ModelDriver(aMsgDrv));
   aDriverTable->AddDriver(new BinTObjDrivers_ObjectDriver(aMsgDrv));

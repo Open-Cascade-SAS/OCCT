@@ -21,7 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Transient.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
@@ -39,24 +42,24 @@ class TopoDSToStep_Tool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TopoDSToStep_Tool(const Handle(StepData_StepModel)& theModel);
+  Standard_EXPORT TopoDSToStep_Tool(const occ::handle<StepData_StepModel>& theModel);
 
-  Standard_EXPORT TopoDSToStep_Tool(const MoniTool_DataMapOfShapeTransient& M,
-                                    const Standard_Boolean                  FacetedContext,
-                                    Standard_Integer                        theSurfCurveMode);
+  Standard_EXPORT TopoDSToStep_Tool(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                                    const bool                  FacetedContext,
+                                    int                        theSurfCurveMode);
 
-  Standard_EXPORT void Init(const MoniTool_DataMapOfShapeTransient& M,
-                            const Standard_Boolean                  FacetedContext,
-                            Standard_Integer                        theSurfCurveMode);
+  Standard_EXPORT void Init(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                            const bool                  FacetedContext,
+                            int                        theSurfCurveMode);
 
-  Standard_EXPORT Standard_Boolean IsBound(const TopoDS_Shape& S);
+  Standard_EXPORT bool IsBound(const TopoDS_Shape& S);
 
   Standard_EXPORT void Bind(const TopoDS_Shape&                                    S,
-                            const Handle(StepShape_TopologicalRepresentationItem)& T);
+                            const occ::handle<StepShape_TopologicalRepresentationItem>& T);
 
-  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) Find(const TopoDS_Shape& S);
+  Standard_EXPORT occ::handle<StepShape_TopologicalRepresentationItem> Find(const TopoDS_Shape& S);
 
-  Standard_EXPORT Standard_Boolean Faceted() const;
+  Standard_EXPORT bool Faceted() const;
 
   Standard_EXPORT void SetCurrentShell(const TopoDS_Shell& S);
 
@@ -78,30 +81,29 @@ public:
 
   Standard_EXPORT const TopoDS_Vertex& CurrentVertex() const;
 
-  Standard_EXPORT Standard_Real Lowest3DTolerance() const;
+  Standard_EXPORT double Lowest3DTolerance() const;
 
-  Standard_EXPORT void SetSurfaceReversed(const Standard_Boolean B);
+  Standard_EXPORT void SetSurfaceReversed(const bool B);
 
-  Standard_EXPORT Standard_Boolean SurfaceReversed() const;
+  Standard_EXPORT bool SurfaceReversed() const;
 
-  Standard_EXPORT const MoniTool_DataMapOfShapeTransient& Map() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& Map() const;
 
   //! Returns mode for writing pcurves
   //! (initialized by parameter write.surfacecurve.mode)
-  Standard_EXPORT Standard_Integer PCurveMode() const;
+  Standard_EXPORT int PCurveMode() const;
 
-protected:
 private:
-  MoniTool_DataMapOfShapeTransient myDataMap;
-  Standard_Boolean                 myFacetedContext;
-  Standard_Real                    myLowestTol;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> myDataMap;
+  bool                 myFacetedContext;
+  double                    myLowestTol;
   TopoDS_Shell                     myCurrentShell;
   TopoDS_Face                      myCurrentFace;
   TopoDS_Wire                      myCurrentWire;
   TopoDS_Edge                      myCurrentEdge;
   TopoDS_Vertex                    myCurrentVertex;
-  Standard_Boolean                 myReversedSurface;
-  Standard_Integer                 myPCurveMode;
+  bool                 myReversedSurface;
+  int                 myPCurveMode;
 };
 
 #endif // _TopoDSToStep_Tool_HeaderFile

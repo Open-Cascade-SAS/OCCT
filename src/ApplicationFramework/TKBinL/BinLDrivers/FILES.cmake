@@ -11,5 +11,5 @@ set(OCCT_BinLDrivers_FILES
   BinLDrivers_DocumentStorageDriver.cxx
   BinLDrivers_DocumentStorageDriver.hxx
   BinLDrivers_Marker.hxx
-  BinLDrivers_VectorOfDocumentSection.hxx
+
 )

@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Standard_Integer                         N, i;
-Handle(StepGeom_HArray1OfCartesianPoint) aPoints;
-Handle(StepGeom_CartesianPoint)          P2;
+int                         N, i;
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aPoints;
+occ::handle<StepGeom_CartesianPoint>          P2;
 
 N       = P.Length();
-aPoints = new StepGeom_HArray1OfCartesianPoint(1, N);
+aPoints = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, N);
 for (i = P.Lower(); i <= P.Upper(); i++)
 {
   P1 = P.Value(i);
@@ -28,6 +28,6 @@ for (i = P.Lower(); i <= P.Upper(); i++)
   aPoints->SetValue(i, P2);
 }
 thePolyline                           = new StepGeom_Polyline;
-Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
 thePolyline->Init(name, aPoints);
-done = Standard_True;
+done = true;

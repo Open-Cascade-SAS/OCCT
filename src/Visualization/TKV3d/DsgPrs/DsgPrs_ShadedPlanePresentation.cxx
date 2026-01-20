@@ -24,17 +24,17 @@
 
 //=================================================================================================
 
-void DsgPrs_ShadedPlanePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                         const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_ShadedPlanePresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                         const occ::handle<Prs3d_Drawer>&       aDrawer,
                                          const gp_Pnt&                     aPt1,
                                          const gp_Pnt&                     aPt2,
                                          const gp_Pnt&                     aPt3)
 {
-  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
+  occ::handle<Graphic3d_Group> aGroup = aPresentation->CurrentGroup();
   aGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());
   aGroup->SetPrimitivesAspect(aDrawer->ShadingAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfPolygons) aPrims = new Graphic3d_ArrayOfPolygons(4);
+  occ::handle<Graphic3d_ArrayOfPolygons> aPrims = new Graphic3d_ArrayOfPolygons(4);
   aPrims->AddVertex(aPt1);
   aPrims->AddVertex(aPt2);
   aPrims->AddVertex(aPt3);

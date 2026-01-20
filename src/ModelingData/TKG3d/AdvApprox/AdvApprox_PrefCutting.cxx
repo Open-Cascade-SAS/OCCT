@@ -17,21 +17,21 @@
 #include <AdvApprox_PrefCutting.hxx>
 #include <Precision.hxx>
 
-AdvApprox_PrefCutting::AdvApprox_PrefCutting(const TColStd_Array1OfReal& CutPnts)
+AdvApprox_PrefCutting::AdvApprox_PrefCutting(const NCollection_Array1<double>& CutPnts)
     : myPntOfCutting(1, CutPnts.Length())
 {
   myPntOfCutting = CutPnts;
 }
 
-Standard_Boolean AdvApprox_PrefCutting::Value(const Standard_Real a,
-                                              const Standard_Real b,
-                                              Standard_Real&      cuttingvalue) const
+bool AdvApprox_PrefCutting::Value(const double a,
+                                              const double b,
+                                              double&      cuttingvalue) const
 {
   //  longueur minimum d'un intervalle parametrique : PConfusion()
   //                                    pour F(U,V) : EPS1=1.e-9 (cf.MMEPS1)
-  constexpr Standard_Real lgmin = 10 * Precision::PConfusion();
-  Standard_Integer        i;
-  Standard_Real           cut, mil = (a + b) / 2, dist = std::abs((a - b) / 2);
+  constexpr double lgmin = 10 * Precision::PConfusion();
+  int        i;
+  double           cut, mil = (a + b) / 2, dist = std::abs((a - b) / 2);
   cut = mil;
   for (i = myPntOfCutting.Lower(); i <= myPntOfCutting.Upper(); i++)
   {

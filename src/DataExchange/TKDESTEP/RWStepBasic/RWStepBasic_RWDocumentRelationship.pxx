@@ -36,19 +36,17 @@ public:
 
   Standard_HIDDEN RWStepBasic_RWDocumentRelationship();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&        data,
-                                const Standard_Integer                        num,
-                                Handle(Interface_Check)&                      ach,
-                                const Handle(StepBasic_DocumentRelationship)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&        data,
+                                const int                        num,
+                                occ::handle<Interface_Check>&                      ach,
+                                const occ::handle<StepBasic_DocumentRelationship>& ent) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                          SW,
-                                 const Handle(StepBasic_DocumentRelationship)& ent) const;
+                                 const occ::handle<StepBasic_DocumentRelationship>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepBasic_DocumentRelationship)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepBasic_DocumentRelationship>& ent,
                              Interface_EntityIterator&                     iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepBasic_RWDocumentRelationship_HeaderFile

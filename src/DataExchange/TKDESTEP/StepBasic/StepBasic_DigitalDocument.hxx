@@ -22,9 +22,6 @@
 
 #include <StepBasic_Document.hxx>
 
-class StepBasic_DigitalDocument;
-DEFINE_STANDARD_HANDLE(StepBasic_DigitalDocument, StepBasic_Document)
-
 class StepBasic_DigitalDocument : public StepBasic_Document
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DigitalDocument, StepBasic_Document)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_DigitalDocument_HeaderFile

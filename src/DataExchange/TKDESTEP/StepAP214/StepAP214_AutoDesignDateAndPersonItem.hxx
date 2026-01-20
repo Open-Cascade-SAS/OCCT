@@ -53,32 +53,30 @@ public:
   //! 8     ProductDefinitionRelationship from StepBasic,
   //! 9     ProductDefinitionWithAssociatedDocuments from StepBasic
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
-  Standard_EXPORT Handle(StepAP214_AutoDesignOrganizationAssignment)
+  Standard_EXPORT occ::handle<StepAP214_AutoDesignOrganizationAssignment>
     AutoDesignOrganizationAssignment() const;
 
-  Standard_EXPORT Handle(StepBasic_Product) Product() const;
+  Standard_EXPORT occ::handle<StepBasic_Product> Product() const;
 
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionFormation) ProductDefinitionFormation() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
 
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
-  Standard_EXPORT Handle(StepAP214_AutoDesignDocumentReference) AutoDesignDocumentReference() const;
+  Standard_EXPORT occ::handle<StepAP214_AutoDesignDocumentReference> AutoDesignDocumentReference() const;
 
-  Standard_EXPORT Handle(StepRepr_ExternallyDefinedRepresentation) ExternallyDefinedRepresentation()
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation> ExternallyDefinedRepresentation()
     const;
 
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
     const;
 
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>
     ProductDefinitionWithAssociatedDocuments() const;
 
-protected:
-private:
 };
 
 #endif // _StepAP214_AutoDesignDateAndPersonItem_HeaderFile

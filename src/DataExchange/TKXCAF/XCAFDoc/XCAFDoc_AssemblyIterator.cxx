@@ -15,7 +15,8 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_RangeError.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc.hxx>
@@ -28,8 +29,8 @@
 // purpose  : Starts from free shapes
 // =======================================================================
 
-XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
-                                                   const Standard_Integer          theLevel)
+XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
+                                                   const int          theLevel)
     : myMaxLevel(theLevel),
       mySeedLevel(1)
 {
@@ -40,12 +41,12 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
 
   Standard_RangeError_Raise_if(myMaxLevel < 0, "Null document!");
 
-  TDF_LabelSequence aRoots;
+  NCollection_Sequence<TDF_Label> aRoots;
   myShapeTool->GetFreeShapes(aRoots);
 
   AuxAssemblyItem           anAuxItem;
-  TColStd_ListOfAsciiString aParentPath;
-  for (TDF_LabelSequence::Iterator anIt(aRoots); anIt.More(); anIt.Next())
+  NCollection_List<TCollection_AsciiString> aParentPath;
+  for (NCollection_Sequence<TDF_Label>::Iterator anIt(aRoots); anIt.More(); anIt.Next())
   {
     createItem(anIt.Value(), aParentPath, anAuxItem);
     myFringe.Append(anAuxItem);
@@ -57,9 +58,9 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
 // purpose  : Starts from the specified root
 // =======================================================================
 
-XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
+XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
                                                    const XCAFDoc_AssemblyItemId&   theRoot,
-                                                   const Standard_Integer          theLevel)
+                                                   const int          theLevel)
     : myMaxLevel(theLevel),
       mySeedLevel(theRoot.GetPath().Size())
 {
@@ -89,7 +90,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
     else
     {
       TCollection_AsciiString aPathStr = theRoot.ToString();
-      Standard_Integer        anIndex  = aPathStr.SearchFromEnd("/");
+      int        anIndex  = aPathStr.SearchFromEnd("/");
       if (anIndex != -1)
       {
         aPathStr.Remove(anIndex, aPathStr.Length() - anIndex + 1);
@@ -106,7 +107,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document
 // purpose  : Checks possibility to continue iteration
 // =======================================================================
 
-Standard_Boolean XCAFDoc_AssemblyIterator::More() const
+bool XCAFDoc_AssemblyIterator::More() const
 {
   return !myFringe.IsEmpty();
 }
@@ -132,7 +133,7 @@ void XCAFDoc_AssemblyIterator::Next()
   {
     // If current item is an assembly, then the next items to iterate in
     // depth-first order are the components of this assembly
-    TDF_LabelSequence aComponents;
+    NCollection_Sequence<TDF_Label> aComponents;
     if (myShapeTool->IsAssembly(aCurrent.myLabel))
     {
       myShapeTool->GetComponents(aCurrent.myLabel, aComponents);
@@ -144,7 +145,7 @@ void XCAFDoc_AssemblyIterator::Next()
 
     // Put all labels pending for iteration to the fringe
     AuxAssemblyItem anAuxItem;
-    for (Standard_Integer l = aComponents.Length(); l >= 1; --l)
+    for (int l = aComponents.Length(); l >= 1; --l)
     {
       TDF_Label aLabel = aComponents(l); // Insertion-level label
       createItem(aLabel, aCurrent.myItem.GetPath(), anAuxItem);
@@ -171,7 +172,7 @@ XCAFDoc_AssemblyItemId XCAFDoc_AssemblyIterator::Current() const
 // =======================================================================
 
 void XCAFDoc_AssemblyIterator::createItem(const TDF_Label&                 theLabel,
-                                          const TColStd_ListOfAsciiString& theParentPath,
+                                          const NCollection_List<TCollection_AsciiString>& theParentPath,
                                           AuxAssemblyItem&                 theAuxItem) const
 {
   TCollection_AsciiString anEntry;
@@ -187,7 +188,7 @@ void XCAFDoc_AssemblyIterator::createItem(const TDF_Label&                 theLa
     theAuxItem.myLabel = theLabel;
   }
 
-  TColStd_ListOfAsciiString aPath = theParentPath;
+  NCollection_List<TCollection_AsciiString> aPath = theParentPath;
   aPath.Append(anEntry);
   theAuxItem.myItem.Init(aPath);
 }

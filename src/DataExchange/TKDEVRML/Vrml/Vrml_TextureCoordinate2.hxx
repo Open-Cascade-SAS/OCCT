@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColgp_HArray1OfVec2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class Vrml_TextureCoordinate2;
-DEFINE_STANDARD_HANDLE(Vrml_TextureCoordinate2, Standard_Transient)
 
 //! defines a TextureCoordinate2 node of VRML specifying properties of geometry
 //! and its appearance.
@@ -44,19 +43,18 @@ class Vrml_TextureCoordinate2 : public Standard_Transient
 public:
   Standard_EXPORT Vrml_TextureCoordinate2();
 
-  Standard_EXPORT Vrml_TextureCoordinate2(const Handle(TColgp_HArray1OfVec2d)& aPoint);
+  Standard_EXPORT Vrml_TextureCoordinate2(const occ::handle<NCollection_HArray1<gp_Vec2d>>& aPoint);
 
-  Standard_EXPORT void SetPoint(const Handle(TColgp_HArray1OfVec2d)& aPoint);
+  Standard_EXPORT void SetPoint(const occ::handle<NCollection_HArray1<gp_Vec2d>>& aPoint);
 
-  Standard_EXPORT Handle(TColgp_HArray1OfVec2d) Point() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<gp_Vec2d>> Point() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_TextureCoordinate2, Standard_Transient)
 
-protected:
 private:
-  Handle(TColgp_HArray1OfVec2d) myPoint;
+  occ::handle<NCollection_HArray1<gp_Vec2d>> myPoint;
 };
 
 #endif // _Vrml_TextureCoordinate2_HeaderFile

@@ -57,7 +57,7 @@ Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName,
 
 //=================================================================================================
 
-Image_Texture::Image_Texture(const Handle(NCollection_Buffer)& theBuffer,
+Image_Texture::Image_Texture(const occ::handle<NCollection_Buffer>& theBuffer,
                              const TCollection_AsciiString&    theId)
     : myBuffer(theBuffer),
       myOffset(-1),
@@ -71,12 +71,12 @@ Image_Texture::Image_Texture(const Handle(NCollection_Buffer)& theBuffer,
 
 //=================================================================================================
 
-Handle(Image_CompressedPixMap) Image_Texture::ReadCompressedImage(
-  const Handle(Image_SupportedFormats)& theSupported) const
+occ::handle<Image_CompressedPixMap> Image_Texture::ReadCompressedImage(
+  const occ::handle<Image_SupportedFormats>& theSupported) const
 {
   if (!theSupported->HasCompressed())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   if (!myBuffer.IsNull())
@@ -93,16 +93,16 @@ Handle(Image_CompressedPixMap) Image_Texture::ReadCompressedImage(
   if (!aFilePathLower.EndsWith(".dds"))
   {
     // do not waste time on file system access in case of wrong file extension
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
   return Image_DDSParser::Load(theSupported, myImagePath, 0);
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Image_Texture::ReadImage(const Handle(Image_SupportedFormats)&) const
+occ::handle<Image_PixMap> Image_Texture::ReadImage(const occ::handle<Image_SupportedFormats>&) const
 {
-  Handle(Image_PixMap) anImage;
+  occ::handle<Image_PixMap> anImage;
   if (!myBuffer.IsNull())
   {
     anImage = loadImageBuffer(myBuffer, myTextureId);
@@ -118,49 +118,49 @@ Handle(Image_PixMap) Image_Texture::ReadImage(const Handle(Image_SupportedFormat
 
   if (anImage.IsNull())
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
   return anImage;
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Image_Texture::loadImageFile(const TCollection_AsciiString& thePath) const
+occ::handle<Image_PixMap> Image_Texture::loadImageFile(const TCollection_AsciiString& thePath) const
 {
-  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
   if (!anImage->Load(thePath))
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
   return anImage;
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Image_Texture::loadImageBuffer(const Handle(NCollection_Buffer)& theBuffer,
+occ::handle<Image_PixMap> Image_Texture::loadImageBuffer(const occ::handle<NCollection_Buffer>& theBuffer,
                                                     const TCollection_AsciiString&    theId) const
 {
   if (theBuffer.IsNull())
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
-  else if (theBuffer->Size() > (Standard_Size)IntegerLast())
+  else if (theBuffer->Size() > (size_t)IntegerLast())
   {
     Message::SendFail(TCollection_AsciiString("Error: Image file size is too big '") + theId + "'");
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
-  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
   if (!anImage->Load(theBuffer->Data(), (int)theBuffer->Size(), theId))
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
   return anImage;
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Image_Texture::loadImageOffset(const TCollection_AsciiString& thePath,
+occ::handle<Image_PixMap> Image_Texture::loadImageOffset(const TCollection_AsciiString& thePath,
                                                     int64_t                        theOffset,
                                                     int64_t                        theLength) const
 {
@@ -168,30 +168,30 @@ Handle(Image_PixMap) Image_Texture::loadImageOffset(const TCollection_AsciiStrin
   {
     Message::SendFail(TCollection_AsciiString("Error: Image file size is too big '") + thePath
                       + "'");
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aFile =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
   if (aFile.get() == NULL)
   {
     Message::SendFail(TCollection_AsciiString("Error: Image file '") + thePath
                       + "' cannot be opened");
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
   aFile->seekg((std::streamoff)theOffset, std::ios_base::beg);
   if (!aFile->good())
   {
     Message::SendFail(TCollection_AsciiString("Error: Image is defined with invalid file offset '")
                       + thePath + "'");
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
-  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
   if (!anImage->Load(*aFile, thePath))
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
   return anImage;
 }
@@ -224,7 +224,7 @@ TCollection_AsciiString Image_Texture::MimeType() const
 
 TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 {
-  static const Standard_Size THE_PROBE_SIZE = 20;
+  static const size_t THE_PROBE_SIZE = 20;
   char                       aBuffer[THE_PROBE_SIZE];
   if (!myBuffer.IsNull())
   {
@@ -234,7 +234,7 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
   }
   else
   {
-    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
     std::shared_ptr<std::istream> aFileIn =
       aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
     if (aFileIn.get() == NULL)
@@ -302,9 +302,9 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 
 //=================================================================================================
 
-Standard_Boolean Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
+bool Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream> aFileOut =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary | std::ios::trunc);
   if (aFileOut.get() == NULL)
@@ -330,7 +330,7 @@ Standard_Boolean Image_Texture::WriteImage(const TCollection_AsciiString& theFil
 
 //=================================================================================================
 
-Standard_Boolean Image_Texture::WriteImage(std::ostream&                  theStream,
+bool Image_Texture::WriteImage(std::ostream&                  theStream,
                                            const TCollection_AsciiString& theFile)
 {
   if (!myBuffer.IsNull())
@@ -344,7 +344,7 @@ Standard_Boolean Image_Texture::WriteImage(std::ostream&                  theStr
     return true;
   }
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aFileIn =
     aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
   if (aFileIn.get() == NULL)
@@ -372,13 +372,13 @@ Standard_Boolean Image_Texture::WriteImage(std::ostream&                  theStr
     aFileIn->seekg(0, std::ios_base::beg);
   }
 
-  Standard_Integer                  aChunkSize = 4096;
-  NCollection_Array1<Standard_Byte> aBuffer(0, aChunkSize - 1);
+  int                  aChunkSize = 4096;
+  NCollection_Array1<uint8_t> aBuffer(0, aChunkSize - 1);
   for (int64_t aChunkIter = 0; aChunkIter < aLen; aChunkIter += aChunkSize)
   {
     if (aChunkIter + aChunkSize >= aLen)
     {
-      aChunkSize = Standard_Integer(aLen - aChunkIter);
+      aChunkSize = int(aLen - aChunkIter);
     }
     if (!aFileIn->read((char*)&aBuffer.ChangeFirst(), aChunkSize))
     {
@@ -398,7 +398,7 @@ Standard_Boolean Image_Texture::WriteImage(std::ostream&                  theStr
 
 //=================================================================================================
 
-void Image_Texture::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Image_Texture::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

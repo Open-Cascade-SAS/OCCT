@@ -52,29 +52,29 @@ public:
 
   //! Creates a Writer from an already existing Session
   //! If <scratch> is True (D), clears already recorded data
-  Standard_EXPORT STEPControl_Writer(const Handle(XSControl_WorkSession)& WS,
-                                     const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT STEPControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                     const bool               scratch = true);
 
   //! Sets a length-measure value that
   //! will be written to uncertainty-measure-with-unit
   //! when the next shape is translated.
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol);
+  Standard_EXPORT void SetTolerance(const double Tol);
 
   //! Unsets the tolerance formerly forced by SetTolerance
   Standard_EXPORT void UnsetTolerance();
 
   //! Sets a specific session to <me>
-  Standard_EXPORT void SetWS(const Handle(XSControl_WorkSession)& WS,
-                             const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
+                             const bool               scratch = true);
 
   //! Returns the session used in <me>
-  Standard_EXPORT Handle(XSControl_WorkSession) WS() const;
+  Standard_EXPORT occ::handle<XSControl_WorkSession> WS() const;
 
   //! Returns the produced model. Produces a new one if not yet done
   //! or if <newone> is True
   //! This method allows for instance to edit product or header
   //! data before writing.
-  Standard_EXPORT Handle(StepData_StepModel) Model(const Standard_Boolean newone = Standard_False);
+  Standard_EXPORT occ::handle<StepData_StepModel> Model(const bool newone = false);
 
   //! Translates shape sh to a STEP
   //! entity. mode defines the STEP entity type to be output:
@@ -91,7 +91,7 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus
     Transfer(const TopoDS_Shape&             sh,
              const STEPControl_StepModelType mode,
-             const Standard_Boolean          compgraph   = Standard_True,
+             const bool          compgraph   = true,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Translates shape sh to a STEP entity
@@ -99,11 +99,11 @@ public:
     Transfer(const TopoDS_Shape&             sh,
              const STEPControl_StepModelType mode,
              const DESTEP_Parameters&        theParams,
-             const Standard_Boolean          compgraph   = Standard_True,
+             const bool          compgraph   = true,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes a STEP model in the file identified by filename.
-  Standard_EXPORT IFSelect_ReturnStatus Write(const Standard_CString theFileName);
+  Standard_EXPORT IFSelect_ReturnStatus Write(const char* const theFileName);
 
   //! Writes a STEP model in the std::ostream.
   Standard_EXPORT IFSelect_ReturnStatus WriteStream(std::ostream& theOStream);
@@ -128,8 +128,8 @@ public:
   //! - 5 gives the number of pairs (STEP or result type and status),
   //! - 6 gives the number of pairs (STEP or result type and status)
   //! AND the list of entity numbers in the STEP model.
-  Standard_EXPORT void PrintStatsTransfer(const Standard_Integer what,
-                                          const Standard_Integer mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(const int what,
+                                          const int mode = 0) const;
 
   Standard_EXPORT void CleanDuplicateEntities();
 
@@ -170,14 +170,14 @@ private:
   //! Returns the Actor for the Transfer of an Entity.
   //! This Actor is used by the Writer to perform the Transfer.
   //! @return the Actor for the Transfer of an Entity. May be nullptr.
-  Handle(Transfer_ActorOfFinderProcess) GetActor() const;
+  occ::handle<Transfer_ActorOfFinderProcess> GetActor() const;
 
   //! If parameters haven't yet been provided, initializes them with default values
   //! provided by GetDefaultShapeFixParameters() method.
   void InitializeMissingParameters();
 
 private:
-  Handle(XSControl_WorkSession) thesession;
+  occ::handle<XSControl_WorkSession> thesession;
 };
 
 #endif // _STEPControl_Writer_HeaderFile

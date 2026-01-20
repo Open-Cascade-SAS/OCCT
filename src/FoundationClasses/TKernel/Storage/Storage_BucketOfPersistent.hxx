@@ -29,12 +29,12 @@ class Storage_Bucket
   friend class Storage_BucketOfPersistent;
 
   Standard_Persistent** mySpace;
-  Standard_Integer      mySpaceSize;
-  Standard_Integer      myCurrentSpace;
+  int      mySpaceSize;
+  int      myCurrentSpace;
 
   void Append(Standard_Persistent*);
 
-  Standard_Persistent* Value(const Standard_Integer theIndex) const;
+  Standard_Persistent* Value(const int theIndex) const;
 
 public:
   Storage_Bucket()
@@ -45,7 +45,7 @@ public:
     mySpace = (Standard_Persistent**)Standard::Allocate(sizeof(Standard_Persistent*) * mySpaceSize);
   }
 
-  Storage_Bucket(const Standard_Integer theSpaceSize)
+  Storage_Bucket(const int theSpaceSize)
       : mySpace(0L),
         mySpaceSize(theSpaceSize),
         myCurrentSpace(-1)
@@ -62,22 +62,22 @@ class Storage_BucketOfPersistent
 {
   friend class Storage_BucketIterator;
   Storage_Bucket** myBuckets;
-  Standard_Integer myNumberOfBucket;
-  Standard_Integer myNumberOfBucketAllocated;
+  int myNumberOfBucket;
+  int myNumberOfBucketAllocated;
   Storage_Bucket*  myCurrentBucket;
-  Standard_Integer myCurrentBucketNumber;
-  Standard_Integer myLength;
-  Standard_Integer myBucketSize;
+  int myCurrentBucketNumber;
+  int myLength;
+  int myBucketSize;
 
 public:
-  Storage_BucketOfPersistent(const Standard_Integer theBucketSize   = 300000,
-                             const Standard_Integer theBucketNumber = 100);
+  Storage_BucketOfPersistent(const int theBucketSize   = 300000,
+                             const int theBucketNumber = 100);
 
-  Standard_Integer Length() const { return myLength; }
+  int Length() const { return myLength; }
 
-  void Append(const Handle(Standard_Persistent)& sp);
+  void Append(const occ::handle<Standard_Persistent>& sp);
 
-  Standard_Persistent* Value(const Standard_Integer theIndex);
+  Standard_Persistent* Value(const int theIndex);
 
   void Clear();
 
@@ -88,10 +88,10 @@ class Storage_BucketIterator
 {
   Storage_BucketOfPersistent* myBucket;
   Storage_Bucket*             myCurrentBucket;
-  Standard_Integer            myCurrentBucketIndex;
-  Standard_Integer            myCurrentIndex;
-  Standard_Integer            myBucketNumber;
-  Standard_Boolean            myMoreObject;
+  int            myCurrentBucketIndex;
+  int            myCurrentIndex;
+  int            myBucketNumber;
+  bool            myMoreObject;
 
 public:
   Storage_BucketIterator(Storage_BucketOfPersistent*);
@@ -108,7 +108,7 @@ public:
       return 0L;
   }
 
-  Standard_Boolean More() const { return myMoreObject; }
+  bool More() const { return myMoreObject; }
 
   void Next();
 };

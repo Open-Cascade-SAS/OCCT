@@ -20,8 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepElement_SurfaceElementPurposeMember, StepData_SelectNamed)
 
-static Standard_CString ESEP = "ENUMERATED_SURFACE_ELEMENT_PURPOSE";
-static Standard_CString ADEP = "APPLICATION_DEFINED_ELEMENT_PURPOSE";
+static const char* ESEP = "ENUMERATED_SURFACE_ELEMENT_PURPOSE";
+static const char* ADEP = "APPLICATION_DEFINED_ELEMENT_PURPOSE";
 
 //=================================================================================================
 
@@ -32,14 +32,14 @@ StepElement_SurfaceElementPurposeMember::StepElement_SurfaceElementPurposeMember
 
 //=================================================================================================
 
-Standard_Boolean StepElement_SurfaceElementPurposeMember::HasName() const
+bool StepElement_SurfaceElementPurposeMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepElement_SurfaceElementPurposeMember::Name() const
+const char* StepElement_SurfaceElementPurposeMember::Name() const
 {
   switch (mycase)
   {
@@ -55,9 +55,9 @@ Standard_CString StepElement_SurfaceElementPurposeMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& /*numen*/)
+static int CompareNames(const char* const name, int& /*numen*/)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
   else if (!strcmp(name, ESEP))
@@ -73,9 +73,9 @@ static Standard_Integer CompareNames(const Standard_CString name, Standard_Integ
 
 //=================================================================================================
 
-Standard_Boolean StepElement_SurfaceElementPurposeMember::SetName(const Standard_CString name)
+bool StepElement_SurfaceElementPurposeMember::SetName(const char* const name)
 {
-  Standard_Integer numit = 0;
+  int numit = 0;
   mycase                 = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
@@ -84,9 +84,9 @@ Standard_Boolean StepElement_SurfaceElementPurposeMember::SetName(const Standard
 
 //=================================================================================================
 
-Standard_Boolean StepElement_SurfaceElementPurposeMember::Matches(const Standard_CString name) const
+bool StepElement_SurfaceElementPurposeMember::Matches(const char* const name) const
 {
-  Standard_Integer numit   = 0;
-  Standard_Integer thecase = CompareNames(name, numit);
+  int numit   = 0;
+  int thecase = CompareNames(name, numit);
   return (mycase == thecase);
 }

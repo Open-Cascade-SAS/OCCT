@@ -25,8 +25,7 @@ set(OCCT_Transfer_FILES
   Transfer_FinderProcess.cxx
   Transfer_FinderProcess.hxx
   Transfer_FindHasher.hxx
-  Transfer_HSequenceOfBinder.hxx
-  Transfer_HSequenceOfFinder.hxx
+
   Transfer_IteratorOfProcessForFinder.hxx
   Transfer_IteratorOfProcessForFinder_0.cxx
   Transfer_IteratorOfProcessForTransient.hxx
@@ -43,8 +42,7 @@ set(OCCT_Transfer_FILES
   Transfer_ResultFromModel.hxx
   Transfer_ResultFromTransient.cxx
   Transfer_ResultFromTransient.hxx
-  Transfer_SequenceOfBinder.hxx
-  Transfer_SequenceOfFinder.hxx
+
   Transfer_SimpleBinderOfTransient.cxx
   Transfer_SimpleBinderOfTransient.hxx
   Transfer_StatusExec.hxx
@@ -57,8 +55,7 @@ set(OCCT_Transfer_FILES
   Transfer_TransferInput.hxx
   Transfer_TransferIterator.cxx
   Transfer_TransferIterator.hxx
-  Transfer_TransferMapOfProcessForFinder.hxx
-  Transfer_TransferMapOfProcessForTransient.hxx
+
   Transfer_TransferOutput.cxx
   Transfer_TransferOutput.hxx
   Transfer_TransientListBinder.cxx

@@ -17,13 +17,13 @@
 inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
   const IntRes2d_IntersectionPoint& P1,
   const IntRes2d_IntersectionPoint& P2,
-  const Standard_Boolean            Oppos,
-  const Standard_Boolean            ReverseFlag)
+  const bool            Oppos,
+  const bool            ReverseFlag)
     :
 
       oppos(Oppos),
-      first(Standard_True),
-      last(Standard_True),
+      first(true),
+      last(true),
       ptfirst(P1),
       ptlast(P2)
 {
@@ -39,9 +39,9 @@ inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
 
 inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
   const IntRes2d_IntersectionPoint& P,
-  const Standard_Boolean            First,
-  const Standard_Boolean            Oppos,
-  const Standard_Boolean            ReverseFlag)
+  const bool            First,
+  const bool            Oppos,
+  const bool            ReverseFlag)
     :
 
       oppos(Oppos),
@@ -52,14 +52,14 @@ inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
   {
     if (First)
     {
-      first  = Standard_False;
-      last   = Standard_True;
+      first  = false;
+      last   = true;
       ptlast = P;
     }
     else
     {
-      first   = Standard_True;
-      last    = Standard_False;
+      first   = true;
+      last    = false;
       ptfirst = P;
     }
   }
@@ -67,39 +67,39 @@ inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(
   {
     if (First)
     {
-      first   = Standard_True;
-      last    = Standard_False;
+      first   = true;
+      last    = false;
       ptfirst = P;
     }
     else
     {
-      first  = Standard_False;
-      last   = Standard_True;
+      first  = false;
+      last   = true;
       ptlast = P;
     }
   }
 }
 
-inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(const Standard_Boolean Oppos)
+inline IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment(const bool Oppos)
     : oppos(Oppos),
-      first(Standard_False),
-      last(Standard_False),
+      first(false),
+      last(false),
       ptfirst(),
       ptlast()
 {
 }
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::IsOpposite() const
+inline bool IntRes2d_IntersectionSegment::IsOpposite() const
 {
   return oppos;
 }
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::HasFirstPoint() const
+inline bool IntRes2d_IntersectionSegment::HasFirstPoint() const
 {
   return first;
 }
 
-inline Standard_Boolean IntRes2d_IntersectionSegment::HasLastPoint() const
+inline bool IntRes2d_IntersectionSegment::HasLastPoint() const
 {
   return last;
 }

@@ -19,18 +19,30 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <ProjLib_HSequenceOfHSequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ProjLib_Projector.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_CurveType.hxx>
 
 class gp_Pnt2d;
@@ -43,33 +55,33 @@ public:
   Standard_EXPORT ProjLib_CompProjectedCurve();
 
   //! try to find all solutions
-  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_Surface)& S,
-                                             const Handle(Adaptor3d_Curve)&   C,
-                                             const Standard_Real              TolU,
-                                             const Standard_Real              TolV);
+  Standard_EXPORT ProjLib_CompProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
+                                             const occ::handle<Adaptor3d_Curve>&   C,
+                                             const double              TolU,
+                                             const double              TolV);
 
   //! this constructor tries to optimize the search using the
   //! assumption that maximum distance between surface and curve less or
   //! equal then MaxDist.
   //! if MaxDist < 0 then algorithm works as above.
-  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_Surface)& S,
-                                             const Handle(Adaptor3d_Curve)&   C,
-                                             const Standard_Real              TolU,
-                                             const Standard_Real              TolV,
-                                             const Standard_Real              MaxDist);
+  Standard_EXPORT ProjLib_CompProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
+                                             const occ::handle<Adaptor3d_Curve>&   C,
+                                             const double              TolU,
+                                             const double              TolV,
+                                             const double              MaxDist);
 
   //! this constructor tries to optimize the search using the
   //! assumption that maximum distance between surface and curve less or
   //! equal then MaxDist.
   //! if MaxDist < 0 then algorithm try to find all solutions
   //! Tolerances of parameters are calculated automatically.
-  Standard_EXPORT ProjLib_CompProjectedCurve(const Standard_Real              Tol3d,
-                                             const Handle(Adaptor3d_Surface)& S,
-                                             const Handle(Adaptor3d_Curve)&   C,
-                                             const Standard_Real              MaxDist = -1.0);
+  Standard_EXPORT ProjLib_CompProjectedCurve(const double              Tol3d,
+                                             const occ::handle<Adaptor3d_Surface>& S,
+                                             const occ::handle<Adaptor3d_Curve>&   C,
+                                             const double              MaxDist = -1.0);
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   //! computes a set of projected point and determine the
   //! continuous parts of the projected curves. The points
@@ -84,7 +96,7 @@ public:
   Standard_EXPORT void Perform();
 
   //! Set the parameter, which defines 3d tolerance of approximation.
-  Standard_EXPORT void SetTol3d(const Standard_Real theTol3d);
+  Standard_EXPORT void SetTol3d(const double theTol3d);
 
   //! Set the parameter, which defines curve continuity.
   //! Default value is GeomAbs_C2;
@@ -93,158 +105,158 @@ public:
   //! Set max possible degree of result BSpline curve2d, which is got by approximation.
   //! If MaxDegree < 0, algorithm uses values that are chosen depending of types curve 3d
   //! and surface.
-  Standard_EXPORT void SetMaxDegree(const Standard_Integer theMaxDegree);
+  Standard_EXPORT void SetMaxDegree(const int theMaxDegree);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If MaxSeg < 0, algorithm uses default
   //! value = 16.
-  Standard_EXPORT void SetMaxSeg(const Standard_Integer theMaxSeg);
+  Standard_EXPORT void SetMaxSeg(const int theMaxSeg);
 
   //! Set the parameter, which defines necessity of 2d results.
-  Standard_EXPORT void SetProj2d(const Standard_Boolean theProj2d);
+  Standard_EXPORT void SetProj2d(const bool theProj2d);
 
   //! Set the parameter, which defines necessity of 3d results.
-  Standard_EXPORT void SetProj3d(const Standard_Boolean theProj3d);
+  Standard_EXPORT void SetProj3d(const bool theProj3d);
 
   //! Changes the surface.
-  Standard_EXPORT void Load(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Load(const occ::handle<Adaptor3d_Surface>& S);
 
   //! Changes the curve.
-  Standard_EXPORT void Load(const Handle(Adaptor3d_Curve)& C);
+  Standard_EXPORT void Load(const occ::handle<Adaptor3d_Curve>& C);
 
-  Standard_EXPORT const Handle(Adaptor3d_Surface)& GetSurface() const;
+  Standard_EXPORT const occ::handle<Adaptor3d_Surface>& GetSurface() const;
 
-  Standard_EXPORT const Handle(Adaptor3d_Curve)& GetCurve() const;
+  Standard_EXPORT const occ::handle<Adaptor3d_Curve>& GetCurve() const;
 
-  Standard_EXPORT void GetTolerance(Standard_Real& TolU, Standard_Real& TolV) const;
+  Standard_EXPORT void GetTolerance(double& TolU, double& TolV) const;
 
   //! returns the number of continuous part of the projected curve
-  Standard_EXPORT Standard_Integer NbCurves() const;
+  Standard_EXPORT int NbCurves() const;
 
   //! returns the bounds of the continuous part corresponding to Index
-  Standard_EXPORT void Bounds(const Standard_Integer Index,
-                              Standard_Real&         Udeb,
-                              Standard_Real&         Ufin) const;
+  Standard_EXPORT void Bounds(const int Index,
+                              double&         Udeb,
+                              double&         Ufin) const;
 
   //! returns True if part of projection with number Index is a single point and writes
   //! its coordinates in P
-  Standard_EXPORT Standard_Boolean IsSinglePnt(const Standard_Integer Index, gp_Pnt2d& P) const;
+  Standard_EXPORT bool IsSinglePnt(const int Index, gp_Pnt2d& P) const;
 
   //! returns True if part of projection with number Index is an u-isoparametric curve of
   //! input surface
-  Standard_EXPORT Standard_Boolean IsUIso(const Standard_Integer Index, Standard_Real& U) const;
+  Standard_EXPORT bool IsUIso(const int Index, double& U) const;
 
   //! returns True if part of projection with number Index is an v-isoparametric curve of
   //! input surface
-  Standard_EXPORT Standard_Boolean IsVIso(const Standard_Integer Index, Standard_Real& V) const;
+  Standard_EXPORT bool IsVIso(const int Index, double& V) const;
 
   //! Computes the point of parameter U on the curve.
-  Standard_EXPORT gp_Pnt2d Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt2d Value(const double U) const override;
 
   //! Computes the point of parameter U on the curve.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
 
   //! Computes the point of parameter U on the curve with its
   //! first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const Standard_Real U,
+  Standard_EXPORT void D2(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+                          gp_Vec2d&           V2) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
   //! Raised if N > 2.
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Returns the first parameter of the curve C
   //! which has a projection on S.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! Returns the last parameter of the curve C
   //! which has a projection on S.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Returns the Continuity used in the approximation.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns the number of intervals which define
   //! an S continuous part of the projected curve
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 2d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim(const Standard_Real FirstParam,
-                                                 const Standard_Real LastParam,
-                                                 const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double FirstParam,
+                                                 const double LastParam,
+                                                 const double Tol) const override;
 
   //! Returns the parameters corresponding to
   //! S discontinuities.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
+                                 const GeomAbs_Shape   S) const override;
 
   //! returns the maximum distance between
   //! curve to project and surface
-  Standard_EXPORT Standard_Real MaxDistance(const Standard_Integer Index) const;
+  Standard_EXPORT double MaxDistance(const int Index) const;
 
-  Standard_EXPORT const Handle(ProjLib_HSequenceOfHSequenceOfPnt)& GetSequence() const;
+  Standard_EXPORT const occ::handle<NCollection_HSequence<occ::handle<NCollection_HSequence<gp_Pnt>>>>& GetSequence() const;
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
-  Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_CurveType GetType() const override;
 
   //! Returns true if result of projecting of the curve interval
   //! with number Index is point.
-  Standard_EXPORT Standard_Boolean ResultIsPoint(const Standard_Integer theIndex) const;
+  Standard_EXPORT bool ResultIsPoint(const int theIndex) const;
 
   //! Returns the error of approximation of U parameter 2d-curve as a result
   //! projecting of the curve interval with number Index.
-  Standard_EXPORT Standard_Real GetResult2dUApproxError(const Standard_Integer theIndex) const;
+  Standard_EXPORT double GetResult2dUApproxError(const int theIndex) const;
 
   //! Returns the error of approximation of V parameter 2d-curve as a result
   //! projecting of the curve interval with number Index.
-  Standard_EXPORT Standard_Real GetResult2dVApproxError(const Standard_Integer theIndex) const;
+  Standard_EXPORT double GetResult2dVApproxError(const int theIndex) const;
 
   //! Returns the error of approximation of 3d-curve as a result
   //! projecting of the curve interval with number Index.
-  Standard_EXPORT Standard_Real GetResult3dApproxError(const Standard_Integer theIndex) const;
+  Standard_EXPORT double GetResult3dApproxError(const int theIndex) const;
 
   //! Returns the resulting 2d-curve of projecting
   //! of the curve interval with number Index.
-  Standard_EXPORT Handle(Geom2d_Curve) GetResult2dC(const Standard_Integer theIndex) const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> GetResult2dC(const int theIndex) const;
 
   //! Returns the resulting 3d-curve of projecting
   //! of the curve interval with number Index.
-  Standard_EXPORT Handle(Geom_Curve) GetResult3dC(const Standard_Integer theIndex) const;
+  Standard_EXPORT occ::handle<Geom_Curve> GetResult3dC(const int theIndex) const;
 
   //! Returns the resulting 2d-point of projecting
   //! of the curve interval with number Index.
-  Standard_EXPORT gp_Pnt2d GetResult2dP(const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt2d GetResult2dP(const int theIndex) const;
 
   //! Returns the resulting 3d-point of projecting
   //! of the curve interval with number Index.
-  Standard_EXPORT gp_Pnt GetResult3dP(const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt GetResult3dP(const int theIndex) const;
 
   //! Returns the parameter, which defines necessity of only 2d results.
-  Standard_Boolean GetProj2d() const { return myProj2d; }
+  bool GetProj2d() const { return myProj2d; }
 
   //! Returns the parameter, which defines necessity of only 3d results.
-  Standard_Boolean GetProj3d() const { return myProj3d; }
+  bool GetProj3d() const { return myProj3d; }
 
 private:
   //! This method performs check possibility of optimization traps and tries to go out from them.
@@ -254,35 +266,33 @@ private:
   Standard_EXPORT void BuildIntervals(const GeomAbs_Shape S) const;
 
 private:
-  Handle(Adaptor3d_Surface)                 mySurface;
-  Handle(Adaptor3d_Curve)                   myCurve;
-  Standard_Integer                          myNbCurves;
-  Handle(ProjLib_HSequenceOfHSequenceOfPnt) mySequence;
-  Handle(TColStd_HArray1OfBoolean)          myUIso;
-  Handle(TColStd_HArray1OfBoolean)          myVIso;
-  Handle(TColStd_HArray1OfBoolean)          mySnglPnts;
-  Handle(TColStd_HArray1OfReal)             myMaxDistance;
-  Handle(TColStd_HArray1OfReal)             myTabInt;
-  Standard_Real                             myTol3d;
+  occ::handle<Adaptor3d_Surface>                 mySurface;
+  occ::handle<Adaptor3d_Curve>                   myCurve;
+  int                          myNbCurves;
+  occ::handle<NCollection_HSequence<occ::handle<NCollection_HSequence<gp_Pnt>>>> mySequence;
+  occ::handle<NCollection_HArray1<bool>>          myUIso;
+  occ::handle<NCollection_HArray1<bool>>          myVIso;
+  occ::handle<NCollection_HArray1<bool>>          mySnglPnts;
+  occ::handle<NCollection_HArray1<double>>             myMaxDistance;
+  occ::handle<NCollection_HArray1<double>>             myTabInt;
+  double                             myTol3d;
   GeomAbs_Shape                             myContinuity;
-  Standard_Integer                          myMaxDegree;
-  Standard_Integer                          myMaxSeg;
-  Standard_Boolean                          myProj2d;
-  Standard_Boolean                          myProj3d;
-  Standard_Real                             myMaxDist;
-  Standard_Real                             myTolU;
-  Standard_Real                             myTolV;
+  int                          myMaxDegree;
+  int                          myMaxSeg;
+  bool                          myProj2d;
+  bool                          myProj3d;
+  double                             myMaxDist;
+  double                             myTolU;
+  double                             myTolV;
 
-  Handle(TColStd_HArray1OfBoolean)  myResultIsPoint;
-  Handle(TColStd_HArray1OfReal)     myResult2dUApproxError;
-  Handle(TColStd_HArray1OfReal)     myResult2dVApproxError;
-  Handle(TColStd_HArray1OfReal)     myResult3dApproxError;
-  Handle(TColgp_HArray1OfPnt)       myResult3dPoint;
-  Handle(TColgp_HArray1OfPnt2d)     myResult2dPoint;
-  Handle(TColGeom_HArray1OfCurve)   myResult3dCurve;
-  Handle(TColGeom2d_HArray1OfCurve) myResult2dCurve;
+  occ::handle<NCollection_HArray1<bool>>  myResultIsPoint;
+  occ::handle<NCollection_HArray1<double>>     myResult2dUApproxError;
+  occ::handle<NCollection_HArray1<double>>     myResult2dVApproxError;
+  occ::handle<NCollection_HArray1<double>>     myResult3dApproxError;
+  occ::handle<NCollection_HArray1<gp_Pnt>>       myResult3dPoint;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>     myResult2dPoint;
+  occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>   myResult3dCurve;
+  occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> myResult2dCurve;
 };
-
-DEFINE_STANDARD_HANDLE(ProjLib_CompProjectedCurve, Adaptor2d_Curve2d)
 
 #endif // _ProjLib_CompProjectedCurve_HeaderFile

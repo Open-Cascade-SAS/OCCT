@@ -28,21 +28,21 @@ IMPLEMENT_STANDARD_RTTIEXT(Standard_Failure, Standard_Transient)
 namespace
 {
 //! Global parameter defining default length of stack trace.
-static Standard_Integer Standard_Failure_DefaultStackTraceLength = 0;
+static int Standard_Failure_DefaultStackTraceLength = 0;
 } // namespace
 
 //=================================================================================================
 
 Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message(
-  const Standard_CString theString)
+  const char* const theString)
 {
   if (theString == NULL || *theString == '\0')
   {
     return NULL;
   }
 
-  const Standard_Size aLen = strlen(theString);
-  StringRef* aStrPtr = (StringRef*)Standard::AllocateOptimal(aLen + sizeof(Standard_Integer) + 1);
+  const size_t aLen = strlen(theString);
+  StringRef* aStrPtr = (StringRef*)Standard::AllocateOptimal(aLen + sizeof(int) + 1);
   if (aStrPtr != NULL)
   {
     strcpy((char*)&aStrPtr->Message[0], theString);
@@ -84,7 +84,7 @@ Standard_Failure::Standard_Failure()
     : myMessage(NULL),
       myStackTrace(NULL)
 {
-  const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
+  const int aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
     int   aStackBufLen = std::max(aStackLength * 200, 2048);
@@ -102,12 +102,12 @@ Standard_Failure::Standard_Failure()
 
 //=================================================================================================
 
-Standard_Failure::Standard_Failure(const Standard_CString theDesc)
+Standard_Failure::Standard_Failure(const char* const theDesc)
     : myMessage(NULL),
       myStackTrace(NULL)
 {
   myMessage                           = StringRef::allocate_message(theDesc);
-  const Standard_Integer aStackLength = Standard_Failure_DefaultStackTraceLength;
+  const int aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
     int   aStackBufLen = std::max(aStackLength * 200, 2048);
@@ -123,8 +123,8 @@ Standard_Failure::Standard_Failure(const Standard_CString theDesc)
 
 //=================================================================================================
 
-Standard_Failure::Standard_Failure(const Standard_CString theDesc,
-                                   const Standard_CString theStackTrace)
+Standard_Failure::Standard_Failure(const char* const theDesc,
+                                   const char* const theStackTrace)
     : myMessage(NULL),
       myStackTrace(NULL)
 {
@@ -153,14 +153,14 @@ Standard_Failure::~Standard_Failure()
 
 //=================================================================================================
 
-Standard_CString Standard_Failure::GetMessageString() const
+const char* Standard_Failure::GetMessageString() const
 {
   return myMessage != NULL ? myMessage->GetMessage() : "";
 }
 
 //=================================================================================================
 
-void Standard_Failure::SetMessageString(const Standard_CString theDesc)
+void Standard_Failure::SetMessageString(const char* const theDesc)
 {
   if (theDesc == GetMessageString())
   {
@@ -173,14 +173,14 @@ void Standard_Failure::SetMessageString(const Standard_CString theDesc)
 
 //=================================================================================================
 
-Standard_CString Standard_Failure::GetStackString() const
+const char* Standard_Failure::GetStackString() const
 {
   return myStackTrace != NULL ? myStackTrace->GetMessage() : "";
 }
 
 //=================================================================================================
 
-void Standard_Failure::SetStackString(const Standard_CString theStack)
+void Standard_Failure::SetStackString(const char* const theStack)
 {
   if (theStack == GetStackString())
   {
@@ -193,9 +193,9 @@ void Standard_Failure::SetStackString(const Standard_CString theStack)
 
 //=================================================================================================
 
-void Standard_Failure::Raise(const Standard_CString theDesc)
+void Standard_Failure::Raise(const char* const theDesc)
 {
-  Handle(Standard_Failure) aFailure = new Standard_Failure();
+  occ::handle<Standard_Failure> aFailure = new Standard_Failure();
   aFailure->Reraise(theDesc);
 }
 
@@ -203,13 +203,13 @@ void Standard_Failure::Raise(const Standard_CString theDesc)
 
 void Standard_Failure::Raise(const Standard_SStream& theReason)
 {
-  Handle(Standard_Failure) aFailure = new Standard_Failure();
+  occ::handle<Standard_Failure> aFailure = new Standard_Failure();
   aFailure->Reraise(theReason);
 }
 
 //=================================================================================================
 
-void Standard_Failure::Reraise(const Standard_CString theDesc)
+void Standard_Failure::Reraise(const char* const theDesc)
 {
   SetMessageString(theDesc);
   Reraise();
@@ -269,29 +269,29 @@ void Standard_Failure::Print(Standard_OStream& theStream) const
 
 //=================================================================================================
 
-Handle(Standard_Failure) Standard_Failure::NewInstance(Standard_CString theString)
+occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theString)
 {
   return new Standard_Failure(theString);
 }
 
 //=================================================================================================
 
-Handle(Standard_Failure) Standard_Failure::NewInstance(Standard_CString theMessage,
-                                                       Standard_CString theStackTrace)
+occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage,
+                                                       const char* theStackTrace)
 {
   return new Standard_Failure(theMessage, theStackTrace);
 }
 
 //=================================================================================================
 
-Standard_Integer Standard_Failure::DefaultStackTraceLength()
+int Standard_Failure::DefaultStackTraceLength()
 {
   return Standard_Failure_DefaultStackTraceLength;
 }
 
 //=================================================================================================
 
-void Standard_Failure::SetDefaultStackTraceLength(Standard_Integer theNbStackTraces)
+void Standard_Failure::SetDefaultStackTraceLength(int theNbStackTraces)
 {
   Standard_Failure_DefaultStackTraceLength = theNbStackTraces;
 }

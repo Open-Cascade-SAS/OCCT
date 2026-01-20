@@ -50,14 +50,14 @@ gp_Ax1 Geom_Conic::YAxis() const
 
 //=================================================================================================
 
-Standard_Boolean Geom_Conic::IsCN(const Standard_Integer) const
+bool Geom_Conic::IsCN(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Geom_Conic::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Conic::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Curve)

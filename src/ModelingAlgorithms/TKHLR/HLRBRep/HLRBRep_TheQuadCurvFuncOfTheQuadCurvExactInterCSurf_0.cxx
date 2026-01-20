@@ -28,34 +28,34 @@ HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::
 {
 }
 
-Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(
-  const Standard_Real Param,
-  Standard_Real&      F)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Value(
+  const double Param,
+  double&      F)
 {
   F = myQuadric.Distance(HLRBRep_LineTool::Value(myCurve, Param));
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(
-  const Standard_Real Param,
-  Standard_Real&      D)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Derivative(
+  const double Param,
+  double&      D)
 {
   gp_Pnt P;
   gp_Vec T;
   HLRBRep_LineTool::D1(myCurve, Param, P, T);
   D = T.Dot(myQuadric.Gradient(P));
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Values(
-  const Standard_Real Param,
-  Standard_Real&      F,
-  Standard_Real&      D)
+bool HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf::Values(
+  const double Param,
+  double&      F,
+  double&      D)
 {
   gp_Pnt P;
   gp_Vec T, Grad;
   HLRBRep_LineTool::D1(myCurve, Param, P, T);
   myQuadric.ValAndGrad(P, F, Grad);
   D = T.Dot(Grad);
-  return (Standard_True);
+  return (true);
 }

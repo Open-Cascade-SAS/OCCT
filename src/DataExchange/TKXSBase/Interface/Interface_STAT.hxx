@@ -22,9 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
@@ -88,7 +93,7 @@ public:
   //! with one default step. Then, it suffises to start with a
   //! count of items (and cycles if several) then record items,
   //! to have a queryable report.
-  Standard_EXPORT Interface_STAT(const Standard_CString title = "");
+  Standard_EXPORT Interface_STAT(const char* const title = "");
 
   //! used when starting
   Standard_EXPORT Interface_STAT(const Interface_STAT& other);
@@ -102,43 +107,43 @@ public:
 
   //! Returns fields in once, without copying them, used for copy
   //! when starting
-  Standard_EXPORT void Internals(Handle(TCollection_HAsciiString)&       tit,
-                                 Standard_Real&                          total,
-                                 Handle(TColStd_HSequenceOfAsciiString)& phn,
-                                 Handle(TColStd_HSequenceOfReal)&        phw,
-                                 Handle(TColStd_HSequenceOfInteger)&     phdeb,
-                                 Handle(TColStd_HSequenceOfInteger)&     phfin,
-                                 Handle(TColStd_HSequenceOfReal)&        stw) const;
+  Standard_EXPORT void Internals(occ::handle<TCollection_HAsciiString>&       tit,
+                                 double&                          total,
+                                 occ::handle<NCollection_HSequence<TCollection_AsciiString>>& phn,
+                                 occ::handle<NCollection_HSequence<double>>&        phw,
+                                 occ::handle<NCollection_HSequence<int>>&     phdeb,
+                                 occ::handle<NCollection_HSequence<int>>&     phfin,
+                                 occ::handle<NCollection_HSequence<double>>&        stw) const;
 
   //! Adds a new phase to the description.
   //! The first one after Create replaces the default unique one
-  Standard_EXPORT void AddPhase(const Standard_Real weight, const Standard_CString name = "");
+  Standard_EXPORT void AddPhase(const double weight, const char* const name = "");
 
   //! Adds a new step for the last added phase, the default unique
   //! one if no AddPhase has already been added
   //! Warning : AddStep before the first AddPhase are cancelled
-  Standard_EXPORT void AddStep(const Standard_Real weight = 1);
+  Standard_EXPORT void AddStep(const double weight = 1);
 
   //! Returns global description (cumulated weights of all phases,
   //! count of phases,1 for default, and title)
-  Standard_EXPORT void Description(Standard_Integer& nbphases,
-                                   Standard_Real&    total,
-                                   Standard_CString& title) const;
+  Standard_EXPORT void Description(int& nbphases,
+                                   double&    total,
+                                   const char*& title) const;
 
   //! Returns description of a phase, given its rank
   //! (n0 for first step, count of steps, default gives one;
   //! weight, name)
-  Standard_EXPORT void Phase(const Standard_Integer num,
-                             Standard_Integer&      n0step,
-                             Standard_Integer&      nbstep,
-                             Standard_Real&         weight,
-                             Standard_CString&      name) const;
+  Standard_EXPORT void Phase(const int num,
+                             int&      n0step,
+                             int&      nbstep,
+                             double&         weight,
+                             const char*&      name) const;
 
   //! Returns weight of a Step, related to the cumul given for the
   //! phase.
   //! <num> is given by <n0step> + i, i between 1 and <nbsteps>
   //! (default gives n0step < 0 then weight is one)
-  Standard_EXPORT Standard_Real Step(const Standard_Integer num) const;
+  Standard_EXPORT double Step(const int num) const;
 
   //! Starts a STAT on its first phase (or its default one)
   //! <items> gives the total count of items, <cycles> the count of
@@ -146,14 +151,14 @@ public:
   //! If <cycles> is more than one, the first Cycle must then be
   //! started by NextCycle (NextStep/NextItem are ignored).
   //! If it is one, NextItem/NextStep can then be called
-  Standard_EXPORT void Start(const Standard_Integer items, const Standard_Integer cycles = 1) const;
+  Standard_EXPORT void Start(const int items, const int cycles = 1) const;
 
   //! Starts a default STAT, with no phase, no step, ready to just
   //! count items.
   //! <items> gives the total count of items
   //! Hence, NextItem is available to directly count
-  Standard_EXPORT static void StartCount(const Standard_Integer items,
-                                         const Standard_CString title = "");
+  Standard_EXPORT static void StartCount(const int items,
+                                         const char* const title = "");
 
   //! Commands to resume the preceding phase and start a new one
   //! <items> and <cycles> as for Start, but for this new phase
@@ -161,14 +166,14 @@ public:
   //! If <cycles> is more than one, the first Cycle must then be
   //! started by NextCycle (NextStep/NextItem are ignored).
   //! If it is one, NextItem/NextStep can then be called
-  Standard_EXPORT static void NextPhase(const Standard_Integer items,
-                                        const Standard_Integer cycles = 1);
+  Standard_EXPORT static void NextPhase(const int items,
+                                        const int cycles = 1);
 
   //! Changes the parameters of the phase to start
   //! To be used before first counting (i.e. just after NextPhase)
   //! Can be used by an operator which has to reajust counts on run
-  Standard_EXPORT static void SetPhase(const Standard_Integer items,
-                                       const Standard_Integer cycles = 1);
+  Standard_EXPORT static void SetPhase(const int items,
+                                       const int cycles = 1);
 
   //! Commands to resume the preceding cycle and start a new one,
   //! with a count of items
@@ -176,7 +181,7 @@ public:
   //! Then, first step is started (or default one)
   //! NextItem can be called for the first step, or NextStep to pass
   //! to the next one
-  Standard_EXPORT static void NextCycle(const Standard_Integer items);
+  Standard_EXPORT static void NextCycle(const int items);
 
   //! Commands to resume the preceding step of the cycle
   //! Ignored if count of steps is already passed
@@ -187,7 +192,7 @@ public:
   //! cycle of the current phase
   //! By default, one item per call, can be overpassed
   //! Ignored if count of items of this cycle is already passed
-  Standard_EXPORT static void NextItem(const Standard_Integer nbitems = 1);
+  Standard_EXPORT static void NextItem(const int nbitems = 1);
 
   //! Commands to declare the process ended (hence, advancement is
   //! forced to 100 %)
@@ -196,22 +201,21 @@ public:
   //! Returns an identification of the STAT :
   //! <phase> True (D) : the name of the current phase
   //! <phase> False : the title of the current STAT
-  Standard_EXPORT static Standard_CString Where(const Standard_Boolean phase = Standard_True);
+  Standard_EXPORT static const char* Where(const bool phase = true);
 
   //! Returns the advancement as a percentage :
   //! <phase> True : inside the current phase
   //! <phase> False (D) : relative to the whole process
-  Standard_EXPORT static Standard_Integer Percent(const Standard_Boolean phase = Standard_False);
+  Standard_EXPORT static int Percent(const bool phase = false);
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)       thetitle;
-  Standard_Real                          thetotal;
-  Handle(TColStd_HSequenceOfAsciiString) thephnam;
-  Handle(TColStd_HSequenceOfReal)        thephw;
-  Handle(TColStd_HSequenceOfInteger)     thephdeb;
-  Handle(TColStd_HSequenceOfInteger)     thephfin;
-  Handle(TColStd_HSequenceOfReal)        thestw;
+  occ::handle<TCollection_HAsciiString>       thetitle;
+  double                          thetotal;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> thephnam;
+  occ::handle<NCollection_HSequence<double>>        thephw;
+  occ::handle<NCollection_HSequence<int>>     thephdeb;
+  occ::handle<NCollection_HSequence<int>>     thephfin;
+  occ::handle<NCollection_HSequence<double>>        thestw;
 };
 
 #endif // _Interface_STAT_HeaderFile

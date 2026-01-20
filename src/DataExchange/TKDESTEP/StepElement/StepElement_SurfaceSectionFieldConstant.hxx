@@ -22,9 +22,6 @@
 #include <StepElement_SurfaceSectionField.hxx>
 class StepElement_SurfaceSection;
 
-class StepElement_SurfaceSectionFieldConstant;
-DEFINE_STANDARD_HANDLE(StepElement_SurfaceSectionFieldConstant, StepElement_SurfaceSectionField)
-
 //! Representation of STEP entity SurfaceSectionFieldConstant
 class StepElement_SurfaceSectionFieldConstant : public StepElement_SurfaceSectionField
 {
@@ -34,19 +31,18 @@ public:
   Standard_EXPORT StepElement_SurfaceSectionFieldConstant();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepElement_SurfaceSection)& aDefinition);
+  Standard_EXPORT void Init(const occ::handle<StepElement_SurfaceSection>& aDefinition);
 
   //! Returns field Definition
-  Standard_EXPORT Handle(StepElement_SurfaceSection) Definition() const;
+  Standard_EXPORT occ::handle<StepElement_SurfaceSection> Definition() const;
 
   //! Set field Definition
-  Standard_EXPORT void SetDefinition(const Handle(StepElement_SurfaceSection)& Definition);
+  Standard_EXPORT void SetDefinition(const occ::handle<StepElement_SurfaceSection>& Definition);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceSectionFieldConstant, StepElement_SurfaceSectionField)
 
-protected:
 private:
-  Handle(StepElement_SurfaceSection) theDefinition;
+  occ::handle<StepElement_SurfaceSection> theDefinition;
 };
 
 #endif // _StepElement_SurfaceSectionFieldConstant_HeaderFile

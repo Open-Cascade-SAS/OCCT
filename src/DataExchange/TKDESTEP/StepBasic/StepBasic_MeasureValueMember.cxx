@@ -25,14 +25,14 @@ StepBasic_MeasureValueMember::StepBasic_MeasureValueMember()
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_MeasureValueMember::HasName() const
+bool StepBasic_MeasureValueMember::HasName() const
 {
   return (thecase > 0);
 }
 
 //=================================================================================================
 
-Standard_CString StepBasic_MeasureValueMember::Name() const
+const char* StepBasic_MeasureValueMember::Name() const
 {
   switch (thecase)
   {
@@ -78,7 +78,7 @@ Standard_CString StepBasic_MeasureValueMember::Name() const
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_MeasureValueMember::SetName(const Standard_CString name)
+bool StepBasic_MeasureValueMember::SetName(const char* const name)
 {
   if (!name || name[0] == '\0')
     thecase = 0;
@@ -116,7 +116,7 @@ Standard_Boolean StepBasic_MeasureValueMember::SetName(const Standard_CString na
   else if (name[0] == 'N' && !strcmp(name, "NUMERIC_MEASURE"))
     thecase = 16;
   else
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

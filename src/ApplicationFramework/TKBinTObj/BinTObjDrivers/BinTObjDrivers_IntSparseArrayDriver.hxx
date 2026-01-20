@@ -25,22 +25,22 @@ class BinTObjDrivers_IntSparseArrayDriver : public BinMDF_ADriver
 
 public:
   Standard_EXPORT BinTObjDrivers_IntSparseArrayDriver(
-    const Handle(Message_Messenger)& theMessageDriver);
+    const occ::handle<Message_Messenger>& theMessageDriver);
   // constructor
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
   // Creates a new attribute
 
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Paste(const BinObjMgt_Persistent&  theSource,
-          const Handle(TDF_Attribute)& theTarget,
-          BinObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+          const occ::handle<TDF_Attribute>& theTarget,
+          BinObjMgt_RRelocationTable&  theRelocTable) const override;
   // Translate the contents of <theSource> and put it
   // into <theTarget>
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
                              BinObjMgt_Persistent&        theTarget,
-                             BinObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const override;
   // Translate the contents of <aSource> and put it
   // into <aTarget>
 
@@ -50,8 +50,6 @@ public:
 };
 
 // Define handle class
-DEFINE_STANDARD_HANDLE(BinTObjDrivers_IntSparseArrayDriver, BinMDF_ADriver)
-
 #endif
 
 #ifdef _MSC_VER

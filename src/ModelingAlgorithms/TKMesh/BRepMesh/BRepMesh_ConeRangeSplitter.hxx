@@ -32,13 +32,13 @@ public:
   //! Returns split intervals along U and V direction.
   //! @param theParameters meshing parameters.
   //! @param[out] theStepsNb number of steps along corresponding direction.
-  std::pair<Standard_Real, Standard_Real> GetSplitSteps(
+  std::pair<double, double> GetSplitSteps(
     const IMeshTools_Parameters&                   theParameters,
-    std::pair<Standard_Integer, Standard_Integer>& theStepsNb) const;
+    std::pair<int, int>& theStepsNb) const;
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
-    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
+    const IMeshTools_Parameters& theParameters) const override;
 };
 
 #endif

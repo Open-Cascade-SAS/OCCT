@@ -31,20 +31,20 @@
 IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance() {}
 
 void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
-  const Handle(IGESDimen_DimensionTolerance)& ent,
-  const Handle(IGESData_IGESReaderData)& /*IR*/,
+  const occ::handle<IGESDimen_DimensionTolerance>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer tempNbProps;
-  Standard_Integer tempSecondTolFlag;
-  Standard_Integer tempTolTyp;
-  Standard_Integer tempTolPlaceFlag;
-  Standard_Real    tempUpperTol;
-  Standard_Real    tempLowerTol;
-  Standard_Boolean tempSignSupFlag;
-  Standard_Integer tempFracFlag;
-  Standard_Integer tempPrecision;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int tempNbProps;
+  int tempSecondTolFlag;
+  int tempTolTyp;
+  int tempTolPlaceFlag;
+  double    tempUpperTol;
+  double    tempLowerTol;
+  bool tempSignSupFlag;
+  int tempFracFlag;
+  int tempPrecision;
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -82,7 +82,7 @@ void IGESDimen_ToolDimensionTolerance::ReadOwnParams(
 }
 
 void IGESDimen_ToolDimensionTolerance::WriteOwnParams(
-  const Handle(IGESDimen_DimensionTolerance)& ent,
+  const occ::handle<IGESDimen_DimensionTolerance>& ent,
   IGESData_IGESWriter&                        IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -97,13 +97,13 @@ void IGESDimen_ToolDimensionTolerance::WriteOwnParams(
 }
 
 void IGESDimen_ToolDimensionTolerance::OwnShared(
-  const Handle(IGESDimen_DimensionTolerance)& /*ent*/,
+  const occ::handle<IGESDimen_DimensionTolerance>& /*ent*/,
   Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESDimen_ToolDimensionTolerance::OwnCopy(const Handle(IGESDimen_DimensionTolerance)& another,
-                                               const Handle(IGESDimen_DimensionTolerance)& ent,
+void IGESDimen_ToolDimensionTolerance::OwnCopy(const occ::handle<IGESDimen_DimensionTolerance>& another,
+                                               const occ::handle<IGESDimen_DimensionTolerance>& ent,
                                                Interface_CopyTool& /*TC*/) const
 {
   ent->Init(8,
@@ -117,10 +117,10 @@ void IGESDimen_ToolDimensionTolerance::OwnCopy(const Handle(IGESDimen_DimensionT
             another->Precision());
 }
 
-Standard_Boolean IGESDimen_ToolDimensionTolerance::OwnCorrect(
-  const Handle(IGESDimen_DimensionTolerance)& ent) const
+bool IGESDimen_ToolDimensionTolerance::OwnCorrect(
+  const occ::handle<IGESDimen_DimensionTolerance>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 8);
+  bool res = (ent->NbPropertyValues() != 8);
   if (res)
     ent->Init(8,
               ent->SecondaryToleranceFlag(),
@@ -135,7 +135,7 @@ Standard_Boolean IGESDimen_ToolDimensionTolerance::OwnCorrect(
 }
 
 IGESData_DirChecker IGESDimen_ToolDimensionTolerance::DirChecker(
-  const Handle(IGESDimen_DimensionTolerance)& /*ent*/) const
+  const occ::handle<IGESDimen_DimensionTolerance>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 29);
   DC.Structure(IGESData_DefVoid);
@@ -150,9 +150,9 @@ IGESData_DirChecker IGESDimen_ToolDimensionTolerance::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDimensionTolerance::OwnCheck(const Handle(IGESDimen_DimensionTolerance)& ent,
+void IGESDimen_ToolDimensionTolerance::OwnCheck(const occ::handle<IGESDimen_DimensionTolerance>& ent,
                                                 const Interface_ShareTool&,
-                                                Handle(Interface_Check)& ach) const
+                                                occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 8)
     ach->AddFail("Number of properties != 8");
@@ -166,10 +166,10 @@ void IGESDimen_ToolDimensionTolerance::OwnCheck(const Handle(IGESDimen_Dimension
     ach->AddFail("Fraction Flag != 0-2");
 }
 
-void IGESDimen_ToolDimensionTolerance::OwnDump(const Handle(IGESDimen_DimensionTolerance)& ent,
+void IGESDimen_ToolDimensionTolerance::OwnDump(const occ::handle<IGESDimen_DimensionTolerance>& ent,
                                                const IGESData_IGESDumper& /*dumper*/,
                                                Standard_OStream& S,
-                                               const Standard_Integer /*level*/) const
+                                               const int /*level*/) const
 {
   S << "IGESDimen_DimensionTolerance\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"

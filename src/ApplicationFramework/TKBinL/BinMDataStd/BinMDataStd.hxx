@@ -33,25 +33,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute drivers to <theDriverTable>.
-  Standard_EXPORT static void AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
-                                         const Handle(Message_Messenger)&   aMsgDrv);
+  Standard_EXPORT static void AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTable,
+                                         const occ::handle<Message_Messenger>&   aMsgDrv);
 
   template <class T>
   static void SetAttributeID(const BinObjMgt_Persistent& theSource,
-                             const Handle(T)&            anAtt,
-                             const Standard_Integer      aDocFormatVersion)
+                             const occ::handle<T>&            anAtt,
+                             const int      aDocFormatVersion)
   {
-    Standard_Boolean ok = Standard_True;
+    bool ok = true;
     if (aDocFormatVersion >= TDocStd_FormatVersion_VERSION_10)
     { // process user defined guid
-      const Standard_Integer& aPos = theSource.Position();
+      const int& aPos = theSource.Position();
       Standard_GUID           aGuid;
       ok = theSource >> aGuid;
       if (!ok)
       {
         theSource.SetPosition(aPos);
         anAtt->SetID(T::GetID());
-        ok = Standard_True;
+        ok = true;
       }
       else
       {

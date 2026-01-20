@@ -18,9 +18,9 @@
 
 #include <BVH_Box.hxx>
 
-//! Redefines BVH_Box<Standard_ShortReal, 4> for AABB representation
+//! Redefines BVH_Box<float, 4> for AABB representation
 //! Describes rendering parameters and effects.
 
-typedef BVH_Box<Standard_ShortReal, 4> Graphic3d_BndBox4f;
+typedef BVH_Box<float, 4> Graphic3d_BndBox4f;
 
 #endif // _Graphic3d_BndBox4f_HeaderFile

@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_SingleParentEntity.hxx>
 class IGESData_IGESEntity;
-
-class IGESBasic_SingleParent;
-DEFINE_STANDARD_HANDLE(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
 //! defines SingleParent, Type <402> Form <9>
 //! in package IGESBasic
@@ -43,31 +42,30 @@ public:
   //! - nbParentEntities : Indicates number of Parents, always = 1
   //! - aParentEntity    : Used to hold the Parent Entity
   //! - allChildren      : Used to hold the children
-  Standard_EXPORT void Init(const Standard_Integer                      nbParentEntities,
-                            const Handle(IGESData_IGESEntity)&          aParentEntity,
-                            const Handle(IGESData_HArray1OfIGESEntity)& allChildren);
+  Standard_EXPORT void Init(const int                      nbParentEntities,
+                            const occ::handle<IGESData_IGESEntity>&          aParentEntity,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren);
 
   //! returns the number of Parent Entities, which should be 1
-  Standard_EXPORT Standard_Integer NbParentEntities() const;
+  Standard_EXPORT int NbParentEntities() const;
 
   //! Returns the Parent Entity (inherited method)
-  Standard_EXPORT Handle(IGESData_IGESEntity) SingleParent() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> SingleParent() const override;
 
   //! returns the number of children of the Parent
-  Standard_EXPORT Standard_Integer NbChildren() const Standard_OVERRIDE;
+  Standard_EXPORT int NbChildren() const override;
 
   //! returns the specific child as indicated by Index
   //! raises exception if Index <= 0 or Index > NbChildren()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Child(const Standard_Integer Index) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Child(const int Index) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
-protected:
 private:
-  Standard_Integer                     theNbParentEntities;
-  Handle(IGESData_IGESEntity)          theParentEntity;
-  Handle(IGESData_HArray1OfIGESEntity) theChildren;
+  int                     theNbParentEntities;
+  occ::handle<IGESData_IGESEntity>          theParentEntity;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theChildren;
 };
 
 #endif // _IGESBasic_SingleParent_HeaderFile

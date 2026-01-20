@@ -27,7 +27,9 @@
 #include <TopExp.hxx>
 
 #include <ChFi3d_FilletShape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -37,12 +39,12 @@
   #include <stdio.h>
 #endif
 
-static Standard_Real tesp       = 1.e-4;
-static Standard_Real t3d        = 1.e-4;
-static Standard_Real t2d        = 1.e-5;
-static Standard_Real ta         = 1.e-2;
-static Standard_Real fl         = 1.e-3;
-static Standard_Real tapp_angle = 1.e-2;
+static double tesp       = 1.e-4;
+static double t3d        = 1.e-4;
+static double t2d        = 1.e-5;
+static double ta         = 1.e-2;
+static double fl         = 1.e-3;
+static double tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
@@ -57,7 +59,7 @@ static void printtolblend(Draw_Interpretor& di)
   di << "tolblend " << ta << " " << t3d << " " << t2d << " " << fl << "\n";
 }
 
-static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int VBLEND(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rakk != 0)
   {
@@ -68,11 +70,11 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   if (narg < 5)
     return 1;
 
-  Standard_Integer                NbToPick = (narg - 4) / 2;
-  Handle(TopTools_HArray1OfShape) arr      = new TopTools_HArray1OfShape(1, NbToPick);
+  int                NbToPick = (narg - 4) / 2;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> arr      = new NCollection_HArray1<TopoDS_Shape>(1, NbToPick);
   if (ViewerTest::PickShapes(TopAbs_EDGE, arr))
   {
-    for (Standard_Integer i = 1; i <= NbToPick; i++)
+    for (int i = 1; i <= NbToPick; i++)
     {
       TopoDS_Shape PickSh = arr->Value(i);
       if (!PickSh.IsNull())
@@ -100,10 +102,10 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
   Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rakk->SetContinuity(blend_cont, tapp_angle);
-  Standard_Real    Rad;
+  double    Rad;
   TopoDS_Edge      E;
-  Standard_Integer nbedge = 0;
-  for (Standard_Integer ii = 1; ii < (narg - 1) / 2; ii++)
+  int nbedge = 0;
+  for (int ii = 1; ii < (narg - 1) / 2; ii++)
   {
     Rad                      = Draw::Atof(a[2 * ii + 1]);
     TopoDS_Shape aLocalShape = DBRep::Get(a[(2 * ii + 2)], TopAbs_EDGE);
@@ -124,7 +126,7 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   DBRep::Set(a[1], res);
 
   // visu resultat...
-  ViewerTest::Display(a[2], Handle(AIS_InteractiveObject)(), false);
+  ViewerTest::Display(a[2], occ::handle<AIS_InteractiveObject>(), false);
   ViewerTest::Display(a[1], new AIS_Shape(res), true);
   return 0;
 }

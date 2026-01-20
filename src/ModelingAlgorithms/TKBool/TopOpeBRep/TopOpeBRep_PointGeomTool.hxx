@@ -40,11 +40,9 @@ public:
 
   Standard_EXPORT static TopOpeBRepDS_Point MakePoint(const TopoDS_Shape& S);
 
-  Standard_EXPORT static Standard_Boolean IsEqual(const TopOpeBRepDS_Point& DSP1,
+  Standard_EXPORT static bool IsEqual(const TopOpeBRepDS_Point& DSP1,
                                                   const TopOpeBRepDS_Point& DSP2);
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRep_PointGeomTool_HeaderFile

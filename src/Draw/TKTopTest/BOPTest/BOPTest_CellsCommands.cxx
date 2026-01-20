@@ -27,22 +27,22 @@
 
 #include <Draw_ProgressIndicator.hxx>
 
-static Standard_Integer bcbuild(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcaddall(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremoveall(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcadd(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremove(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcremoveint(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcmakecontainers(Draw_Interpretor&, Standard_Integer, const char**);
+static int bcbuild(Draw_Interpretor&, int, const char**);
+static int bcaddall(Draw_Interpretor&, int, const char**);
+static int bcremoveall(Draw_Interpretor&, int, const char**);
+static int bcadd(Draw_Interpretor&, int, const char**);
+static int bcremove(Draw_Interpretor&, int, const char**);
+static int bcremoveint(Draw_Interpretor&, int, const char**);
+static int bcmakecontainers(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::CellsCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -82,7 +82,7 @@ void BOPTest::CellsCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcbuild(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -97,14 +97,14 @@ Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
   //
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
   BOPAlgo_CellsBuilder& aCBuilder = BOPTest_Objects::CellsBuilder();
   aCBuilder.Clear();
   //
-  TopTools_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLSObj = BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next())
   {
@@ -112,7 +112,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** 
     aCBuilder.AddArgument(aS);
   }
   //
-  TopTools_ListOfShape& aLSTool = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLSTool = BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
   for (; aIt.More(); aIt.Next())
   {
@@ -121,9 +121,9 @@ Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
   //
   // set the options to the algorithm
-  Standard_Boolean bRunParallel    = BOPTest_Objects::RunParallel();
-  Standard_Real    aTol            = BOPTest_Objects::FuzzyValue();
-  Standard_Boolean bNonDestructive = BOPTest_Objects::NonDestructive();
+  bool bRunParallel    = BOPTest_Objects::RunParallel();
+  double    aTol            = BOPTest_Objects::FuzzyValue();
+  bool bNonDestructive = BOPTest_Objects::NonDestructive();
   BOPAlgo_GlueEnum aGlue           = BOPTest_Objects::Glue();
   //
   aCBuilder.SetRunParallel(bRunParallel);
@@ -134,7 +134,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** 
   aCBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   aCBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   aCBuilder.PerformWithFiller(aPF, aProgress->Start());
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   // Store the history of the Cells Builder into the session
@@ -161,7 +161,7 @@ Standard_Integer bcbuild(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer bcaddall(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcaddall(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2 || n > 5)
   {
@@ -169,8 +169,8 @@ Standard_Integer bcaddall(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  Standard_Integer iMaterial = 0;
-  Standard_Boolean bUpdate   = Standard_False;
+  int iMaterial = 0;
+  bool bUpdate   = false;
   //
   if (n > 3)
   {
@@ -203,7 +203,7 @@ Standard_Integer bcaddall(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bcremoveall(Draw_Interpretor& di, Standard_Integer n, const char**)
+int bcremoveall(Draw_Interpretor& di, int n, const char**)
 {
   if (n != 1)
   {
@@ -224,7 +224,7 @@ Standard_Integer bcremoveall(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bcadd(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcadd(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
   {
@@ -232,12 +232,12 @@ Standard_Integer bcadd(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  TopTools_ListOfShape aLSToTake, aLSToAvoid;
-  Standard_Integer     i, iMaterial, iTake, n1;
-  Standard_Boolean     bUpdate;
+  NCollection_List<TopoDS_Shape> aLSToTake, aLSToAvoid;
+  int     i, iMaterial, iTake, n1;
+  bool     bUpdate;
   //
   iMaterial = 0;
-  bUpdate   = Standard_False;
+  bUpdate   = false;
   n1        = n;
   //
   if (!strcmp(a[n - 3], "-m"))
@@ -296,7 +296,7 @@ Standard_Integer bcadd(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bcremove(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcremove(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4 || ((n % 2) != 0))
   {
@@ -304,8 +304,8 @@ Standard_Integer bcremove(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  TopTools_ListOfShape aLSToTake, aLSToAvoid;
-  Standard_Integer     i, iTake;
+  NCollection_List<TopoDS_Shape> aLSToTake, aLSToAvoid;
+  int     i, iTake;
   //
   for (i = 2; i < n; i += 2)
   {
@@ -348,7 +348,7 @@ Standard_Integer bcremove(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bcremoveint(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcremoveint(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -374,7 +374,7 @@ Standard_Integer bcremoveint(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bcmakecontainers(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcmakecontainers(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {

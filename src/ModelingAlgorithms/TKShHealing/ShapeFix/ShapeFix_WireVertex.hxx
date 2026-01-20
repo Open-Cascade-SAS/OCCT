@@ -40,12 +40,12 @@ public:
   //! Loads the wire, ininializes internal analyzer
   //! (ShapeAnalysis_WireVertex) with the given precision,
   //! and performs analysis
-  Standard_EXPORT void Init(const TopoDS_Wire& wire, const Standard_Real preci);
+  Standard_EXPORT void Init(const TopoDS_Wire& wire, const double preci);
 
   //! Loads the wire, ininializes internal analyzer
   //! (ShapeAnalysis_WireVertex) with the given precision,
   //! and performs analysis
-  Standard_EXPORT void Init(const Handle(ShapeExtend_WireData)& sbwd, const Standard_Real preci);
+  Standard_EXPORT void Init(const occ::handle<ShapeExtend_WireData>& sbwd, const double preci);
 
   //! Loads all the data on wire, already analysed by
   //! ShapeAnalysis_WireVertex
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT const ShapeAnalysis_WireVertex& Analyzer() const;
 
   //! returns data on wire (fixed)
-  Standard_EXPORT const Handle(ShapeExtend_WireData)& WireData() const;
+  Standard_EXPORT const occ::handle<ShapeExtend_WireData>& WireData() const;
 
   //! returns resulting wire (fixed)
   Standard_EXPORT TopoDS_Wire Wire() const;
@@ -63,14 +63,13 @@ public:
   //! Fixes "Same" or "Close" status (same vertex may be set,
   //! without changing parameters)
   //! Returns the count of fixed vertices, 0 if none
-  Standard_EXPORT Standard_Integer FixSame();
+  Standard_EXPORT int FixSame();
 
   //! Fixes all statuses except "Disjoined", i.e. the cases in which a
   //! common value has been set, with or without changing parameters
   //! Returns the count of fixed vertices, 0 if none
-  Standard_EXPORT Standard_Integer Fix();
+  Standard_EXPORT int Fix();
 
-protected:
 private:
   ShapeAnalysis_WireVertex myAnalyzer;
 };

@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_ModelIterator, TObj_ObjectIterator)
 
 //=================================================================================================
 
-TObj_ModelIterator::TObj_ModelIterator(const Handle(TObj_Model)& theModel)
+TObj_ModelIterator::TObj_ModelIterator(const occ::handle<TObj_Model>& theModel)
 {
   myObject = theModel->GetRoot();
   if (!myObject.IsNull())
@@ -32,9 +32,9 @@ TObj_ModelIterator::TObj_ModelIterator(const Handle(TObj_Model)& theModel)
 
 //=================================================================================================
 
-void TObj_ModelIterator::addIterator(const Handle(TObj_Object)& theObj)
+void TObj_ModelIterator::addIterator(const occ::handle<TObj_Object>& theObj)
 {
-  Handle(TObj_ObjectIterator) anIter = theObj->GetChildren();
+  occ::handle<TObj_ObjectIterator> anIter = theObj->GetChildren();
   if (anIter.IsNull())
     return; // object has no children.
   myIterSeq.Append(anIter);
@@ -42,14 +42,14 @@ void TObj_ModelIterator::addIterator(const Handle(TObj_Object)& theObj)
 
 //=================================================================================================
 
-Standard_Boolean TObj_ModelIterator::More() const
+bool TObj_ModelIterator::More() const
 {
   return !myObject.IsNull();
 }
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_ModelIterator::Value() const
+occ::handle<TObj_Object> TObj_ModelIterator::Value() const
 {
   return myObject;
 }

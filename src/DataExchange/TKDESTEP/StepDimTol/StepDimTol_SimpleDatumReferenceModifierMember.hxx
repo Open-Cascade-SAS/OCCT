@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <StepDimTol_SimpleDatumReferenceModifier.hxx>
 
-class StepDimTol_SimpleDatumReferenceModifierMember;
-DEFINE_STANDARD_HANDLE(StepDimTol_SimpleDatumReferenceModifierMember, StepData_SelectInt)
-
 //! Defines SimpleDatumReferenceModifier as unique member of DatumReferenceModifier
 //! Works with an EnumTool
 class StepDimTol_SimpleDatumReferenceModifierMember : public StepData_SelectInt
@@ -36,24 +33,24 @@ class StepDimTol_SimpleDatumReferenceModifierMember : public StepData_SelectInt
 public:
   Standard_EXPORT StepDimTol_SimpleDatumReferenceModifierMember();
 
-  virtual Standard_Boolean HasName() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool HasName() const override { return true; }
 
-  virtual Standard_CString Name() const Standard_OVERRIDE
+  virtual const char* Name() const override
   {
     return "SIMPLE_DATUM_REFERENCE_MODIFIER";
   }
 
-  virtual Standard_Boolean SetName(const Standard_CString /*theName*/) Standard_OVERRIDE
+  virtual bool SetName(const char* const /*theName*/) override
   {
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer Kind() const Standard_OVERRIDE { return 4; }
+  int Kind() const override { return 4; }
 
-  Standard_EXPORT virtual Standard_CString EnumText() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const Standard_Integer theValue,
-                                           const Standard_CString theText) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEnumText(const int theValue,
+                                           const char* const theText) override;
 
   Standard_EXPORT void SetValue(const StepDimTol_SimpleDatumReferenceModifier theValue);
 

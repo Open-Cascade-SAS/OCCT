@@ -22,7 +22,8 @@
 
 #include <TopoDS_Shape.hxx>
 #include <BOPAlgo_CheckStatus.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //! contains information about faulty shapes and faulty types
 //! can't be processed by Boolean Operations
@@ -53,10 +54,10 @@ public:
   Standard_EXPORT const TopoDS_Shape& GetShape2() const;
 
   //! returns list of faulty shapes for object
-  Standard_EXPORT const TopTools_ListOfShape& GetFaultyShapes1() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GetFaultyShapes1() const;
 
   //! returns list of faulty shapes for tool
-  Standard_EXPORT const TopTools_ListOfShape& GetFaultyShapes2() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GetFaultyShapes2() const;
 
   //! set status of faulty
   Standard_EXPORT void SetCheckStatus(const BOPAlgo_CheckStatus TheStatus);
@@ -65,40 +66,39 @@ public:
   Standard_EXPORT BOPAlgo_CheckStatus GetCheckStatus() const;
 
   //! Sets max distance for the first shape
-  Standard_EXPORT void SetMaxDistance1(const Standard_Real theDist);
+  Standard_EXPORT void SetMaxDistance1(const double theDist);
 
   //! Sets max distance for the second shape
-  Standard_EXPORT void SetMaxDistance2(const Standard_Real theDist);
+  Standard_EXPORT void SetMaxDistance2(const double theDist);
 
   //! Sets the parameter for the first shape
-  Standard_EXPORT void SetMaxParameter1(const Standard_Real thePar);
+  Standard_EXPORT void SetMaxParameter1(const double thePar);
 
   //! Sets the parameter for the second shape
-  Standard_EXPORT void SetMaxParameter2(const Standard_Real thePar);
+  Standard_EXPORT void SetMaxParameter2(const double thePar);
 
   //! Returns the distance for the first shape
-  Standard_EXPORT Standard_Real GetMaxDistance1() const;
+  Standard_EXPORT double GetMaxDistance1() const;
 
   //! Returns the distance for the second shape
-  Standard_EXPORT Standard_Real GetMaxDistance2() const;
+  Standard_EXPORT double GetMaxDistance2() const;
 
   //! Returns the parameter for the fircst shape
-  Standard_EXPORT Standard_Real GetMaxParameter1() const;
+  Standard_EXPORT double GetMaxParameter1() const;
 
   //! Returns the parameter for the second shape
-  Standard_EXPORT Standard_Real GetMaxParameter2() const;
+  Standard_EXPORT double GetMaxParameter2() const;
 
-protected:
 private:
   TopoDS_Shape         myShape1;
   TopoDS_Shape         myShape2;
   BOPAlgo_CheckStatus  myStatus;
-  TopTools_ListOfShape myFaulty1;
-  TopTools_ListOfShape myFaulty2;
-  Standard_Real        myMaxDist1;
-  Standard_Real        myMaxDist2;
-  Standard_Real        myMaxPar1;
-  Standard_Real        myMaxPar2;
+  NCollection_List<TopoDS_Shape> myFaulty1;
+  NCollection_List<TopoDS_Shape> myFaulty2;
+  double        myMaxDist1;
+  double        myMaxDist2;
+  double        myMaxPar1;
+  double        myMaxPar2;
 };
 
 #endif // _BOPAlgo_CheckResult_HeaderFile

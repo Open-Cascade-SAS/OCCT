@@ -23,7 +23,7 @@ inline HLRTopoBRep_VData::HLRTopoBRep_VData()
 
 //=================================================================================================
 
-inline Standard_Real HLRTopoBRep_VData::Parameter() const
+inline double HLRTopoBRep_VData::Parameter() const
 {
   return myParameter;
 }

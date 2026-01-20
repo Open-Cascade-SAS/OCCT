@@ -36,68 +36,67 @@ public:
 
   //! Constructor of a definite sphere
   Standard_EXPORT Bnd_Sphere(const gp_XYZ&          theCntr,
-                             const Standard_Real    theRad,
-                             const Standard_Integer theU,
-                             const Standard_Integer theV);
+                             const double    theRad,
+                             const int theU,
+                             const int theV);
 
   //! Returns the U parameter on shape
-  Standard_Integer U() const;
+  int U() const;
 
   //! Returns the V parameter on shape
-  Standard_Integer V() const;
+  int V() const;
 
   //! Returns validity status, indicating that this
   //! sphere corresponds to a real entity
-  Standard_Boolean IsValid() const;
+  bool IsValid() const;
 
-  void SetValid(const Standard_Boolean isValid);
+  void SetValid(const bool isValid);
 
   //! Returns center of sphere object
   const gp_XYZ& Center() const;
 
   //! Returns the radius value
-  Standard_Real Radius() const;
+  double Radius() const;
 
   //! Calculate and return minimal and maximal distance to sphere.
   //! NOTE: This function is tightly optimized; any modifications
   //! may affect performance!
   Standard_EXPORT void Distances(const gp_XYZ&  theXYZ,
-                                 Standard_Real& theMin,
-                                 Standard_Real& theMax) const;
+                                 double& theMin,
+                                 double& theMax) const;
 
   //! Calculate and return minimal and maximal distance to sphere.
   //! NOTE: This function is tightly optimized; any modifications
   //! may affect performance!
   Standard_EXPORT void SquareDistances(const gp_XYZ&  theXYZ,
-                                       Standard_Real& theMin,
-                                       Standard_Real& theMax) const;
+                                       double& theMin,
+                                       double& theMax) const;
 
   //! Projects a point on entity.
   //! Returns true if success
-  Standard_EXPORT Standard_Boolean Project(const gp_XYZ&     theNode,
+  Standard_EXPORT bool Project(const gp_XYZ&     theNode,
                                            gp_XYZ&           theProjNode,
-                                           Standard_Real&    theDist,
-                                           Standard_Boolean& theInside) const;
+                                           double&    theDist,
+                                           bool& theInside) const;
 
-  Standard_EXPORT Standard_Real Distance(const gp_XYZ& theNode) const;
+  Standard_EXPORT double Distance(const gp_XYZ& theNode) const;
 
-  Standard_EXPORT Standard_Real SquareDistance(const gp_XYZ& theNode) const;
+  Standard_EXPORT double SquareDistance(const gp_XYZ& theNode) const;
 
   Standard_EXPORT void Add(const Bnd_Sphere& theOther);
 
-  Standard_EXPORT Standard_Boolean IsOut(const Bnd_Sphere& theOther) const;
+  Standard_EXPORT bool IsOut(const Bnd_Sphere& theOther) const;
 
-  Standard_EXPORT Standard_Boolean IsOut(const gp_XYZ& thePnt, Standard_Real& theMaxDist) const;
+  Standard_EXPORT bool IsOut(const gp_XYZ& thePnt, double& theMaxDist) const;
 
-  Standard_EXPORT Standard_Real SquareExtent() const;
+  Standard_EXPORT double SquareExtent() const;
 
-protected:
 private:
   gp_XYZ           myCenter;
-  Standard_Real    myRadius;
-  Standard_Boolean myIsValid;
-  Standard_Integer myU;
-  Standard_Integer myV;
+  double    myRadius;
+  bool myIsValid;
+  int myU;
+  int myV;
 };
 
 #include <Bnd_Sphere.lxx>

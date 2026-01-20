@@ -23,7 +23,8 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <TDocStd_Document.hxx>
@@ -31,9 +32,6 @@
 class Resource_Manager;
 class CDM_Document;
 class TCollection_ExtendedString;
-
-class TDocStd_Application;
-DEFINE_STANDARD_HANDLE(TDocStd_Application, CDF_Application)
 
 //! The abstract root class for all application classes.
 //! They are in charge of:
@@ -73,7 +71,7 @@ public:
 
   //! Check if meta data driver was successfully loaded
   //! by the application constructor
-  Standard_EXPORT Standard_Boolean IsDriverLoaded() const;
+  Standard_EXPORT bool IsDriverLoaded() const;
 
   //! Returns resource manager defining supported persistent formats.
   //!
@@ -93,7 +91,7 @@ public:
   //!   - [Format].FileExtension: [Extension]
   //!   - [Format].RetrievalPlugin: [GUID] (optional)
   //!   - [Format].StoragePlugin: [GUID] (optional)
-  Standard_EXPORT virtual Handle(Resource_Manager) Resources() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Resource_Manager> Resources() override;
 
   //! Returns the name of the file containing the
   //! resources of this application, for support of legacy
@@ -124,7 +122,7 @@ public:
   //! inherited from the superclass CDM_Application.
   //!
   //! Default implementation returns empty string.
-  Standard_EXPORT virtual Standard_CString ResourcesName();
+  Standard_EXPORT virtual const char* ResourcesName();
 
   //! Sets up resources and registers read and storage drivers for
   //! the specified format.
@@ -140,36 +138,36 @@ public:
   Standard_EXPORT void DefineFormat(const TCollection_AsciiString&      theFormat,
                                     const TCollection_AsciiString&      theDescription,
                                     const TCollection_AsciiString&      theExtension,
-                                    const Handle(PCDM_RetrievalDriver)& theReader,
-                                    const Handle(PCDM_StorageDriver)&   theWriter);
+                                    const occ::handle<PCDM_RetrievalDriver>& theReader,
+                                    const occ::handle<PCDM_StorageDriver>&   theWriter);
 
   //! Returns the sequence of reading formats supported by the application.
   //!
   //! @param theFormats - sequence of reading formats. Output parameter.
-  Standard_EXPORT void ReadingFormats(TColStd_SequenceOfAsciiString& theFormats);
+  Standard_EXPORT void ReadingFormats(NCollection_Sequence<TCollection_AsciiString>& theFormats);
 
   //! Returns the sequence of writing formats supported by the application.
   //!
   //! @param theFormats - sequence of writing formats. Output parameter.
-  Standard_EXPORT void WritingFormats(TColStd_SequenceOfAsciiString& theFormats);
+  Standard_EXPORT void WritingFormats(NCollection_Sequence<TCollection_AsciiString>& theFormats);
 
   //! returns the number of documents handled by the current applicative session.
-  Standard_EXPORT Standard_Integer NbDocuments() const;
+  Standard_EXPORT int NbDocuments() const;
 
   //! Constructs the new document aDoc.
   //! aDoc is identified by the index index which is
   //! any integer between 1 and n where n is the
   //! number of documents returned by NbDocument.
   //! Example
-  //! Handle(TDocStd_Application)
+  //! occ::handle<TDocStd_Application>
   //! anApp;
   //! if (!CafTest::Find(A)) return 1;
-  //! Handle(TDocStd) aDoc;
-  //! Standard_Integer nbdoc = anApp->NbDocuments();
-  //! for (Standard_Integer i = 1; i <= nbdoc; i++) {
+  //! occ::handle<TDocStd> aDoc;
+  //! int nbdoc = anApp->NbDocuments();
+  //! for (int i = 1; i <= nbdoc; i++) {
   //! aApp->GetDocument(i,aDoc);
-  Standard_EXPORT void GetDocument(const Standard_Integer    index,
-                                   Handle(TDocStd_Document)& aDoc) const;
+  Standard_EXPORT void GetDocument(const int    index,
+                                   occ::handle<TDocStd_Document>& aDoc) const;
 
   //! Constructs the empty new document aDoc.
   //! This document will have the format format.
@@ -177,12 +175,12 @@ public:
   //! application, the new document is handled by the
   //! applicative session.
   Standard_EXPORT virtual void NewDocument(const TCollection_ExtendedString& format,
-                                           Handle(CDM_Document)& aDoc) Standard_OVERRIDE;
+                                           occ::handle<CDM_Document>& aDoc) override;
 
   //! A non-virtual method taking a TDocStd_Documment object as an input.
   //! Internally it calls a virtual method NewDocument() with CDM_Document object.
   Standard_EXPORT void NewDocument(const TCollection_ExtendedString& format,
-                                   Handle(TDocStd_Document)&         aDoc);
+                                   occ::handle<TDocStd_Document>&         aDoc);
 
   //! Initialize the document aDoc for the applicative session.
   //! This virtual function is called by NewDocument
@@ -191,12 +189,12 @@ public:
   //! =============
   //! to open/save a document
   //! =======================
-  Standard_EXPORT virtual void InitDocument(const Handle(CDM_Document)& aDoc) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const
+    override;
 
   //! Close the given document. the document is not any more
   //! handled by the applicative session.
-  Standard_EXPORT void Close(const Handle(TDocStd_Document)& aDoc);
+  Standard_EXPORT void Close(const occ::handle<TDocStd_Document>& aDoc);
 
   //! Returns an index for the document found in the
   //! path path in this applicative session.
@@ -213,12 +211,12 @@ public:
   //! user if he wants to override the version of the
   //! document in memory.
   //! Example:
-  //! Standard_Integer insession = A->IsInSession(aDoc);
+  //! int insession = A->IsInSession(aDoc);
   //! if (insession > 0) {
   //! std::cout << "document " << insession << " is already in session" << std::endl;
   //! return 0;
   //! }
-  Standard_EXPORT Standard_Integer IsInSession(const TCollection_ExtendedString& path) const;
+  Standard_EXPORT int IsInSession(const TCollection_ExtendedString& path) const;
 
   //! Retrieves the document from specified file.
   //! In order not to override a version of the document which is already in memory,
@@ -230,8 +228,8 @@ public:
   //! @return reading status
   Standard_EXPORT PCDM_ReaderStatus
     Open(const TCollection_ExtendedString& thePath,
-         Handle(TDocStd_Document)&         theDoc,
-         const Handle(PCDM_ReaderFilter)&  theFilter,
+         occ::handle<TDocStd_Document>&         theDoc,
+         const occ::handle<PCDM_ReaderFilter>&  theFilter,
          const Message_ProgressRange&      theRange = Message_ProgressRange());
 
   //! Retrieves the document from specified file.
@@ -242,10 +240,10 @@ public:
   //! @param[in]  theRange optional progress indicator
   //! @return reading status
   PCDM_ReaderStatus Open(const TCollection_ExtendedString& thePath,
-                         Handle(TDocStd_Document)&         theDoc,
+                         occ::handle<TDocStd_Document>&         theDoc,
                          const Message_ProgressRange&      theRange = Message_ProgressRange())
   {
-    return Open(thePath, theDoc, Handle(PCDM_ReaderFilter)(), theRange);
+    return Open(thePath, theDoc, occ::handle<PCDM_ReaderFilter>(), theRange);
   }
 
   //! Retrieves document from standard stream.
@@ -256,8 +254,8 @@ public:
   //! @return reading status
   Standard_EXPORT PCDM_ReaderStatus
     Open(Standard_IStream&                theIStream,
-         Handle(TDocStd_Document)&        theDoc,
-         const Handle(PCDM_ReaderFilter)& theFilter,
+         occ::handle<TDocStd_Document>&        theDoc,
+         const occ::handle<PCDM_ReaderFilter>& theFilter,
          const Message_ProgressRange&     theRange = Message_ProgressRange());
 
   //! Retrieves document from standard stream.
@@ -266,23 +264,23 @@ public:
   //! @param[in]     theRange   optional progress indicator
   //! @return reading status
   PCDM_ReaderStatus Open(Standard_IStream&            theIStream,
-                         Handle(TDocStd_Document)&    theDoc,
+                         occ::handle<TDocStd_Document>&    theDoc,
                          const Message_ProgressRange& theRange = Message_ProgressRange())
   {
-    return Open(theIStream, theDoc, Handle(PCDM_ReaderFilter)(), theRange);
+    return Open(theIStream, theDoc, occ::handle<PCDM_ReaderFilter>(), theRange);
   }
 
   //! Save the active document in the file <name> in the
   //! path <path>. overwrites the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const Handle(TDocStd_Document)&   theDoc,
+    SaveAs(const occ::handle<TDocStd_Document>&   theDoc,
            const TCollection_ExtendedString& path,
            const Message_ProgressRange&      theRange = Message_ProgressRange());
 
   //! Save theDoc to standard SEEKABLE stream theOStream.
   //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const Handle(TDocStd_Document)& theDoc,
+    SaveAs(const occ::handle<TDocStd_Document>& theDoc,
            Standard_OStream&               theOStream,
            const Message_ProgressRange&    theRange = Message_ProgressRange());
 
@@ -291,13 +289,13 @@ public:
   //! Standard_NotImplemented if the document
   //! was not retrieved in the applicative session by using Open.
   Standard_EXPORT PCDM_StoreStatus
-    Save(const Handle(TDocStd_Document)& theDoc,
+    Save(const occ::handle<TDocStd_Document>& theDoc,
          const Message_ProgressRange&    theRange = Message_ProgressRange());
 
   //! Save the active document in the file <name> in the
   //! path <path>. overwrite the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const Handle(TDocStd_Document)&   theDoc,
+    SaveAs(const occ::handle<TDocStd_Document>&   theDoc,
            const TCollection_ExtendedString& path,
            TCollection_ExtendedString&       theStatusMessage,
            const Message_ProgressRange&      theRange = Message_ProgressRange());
@@ -305,34 +303,34 @@ public:
   //! Save theDoc TO standard SEEKABLE stream theOStream.
   //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const Handle(TDocStd_Document)& theDoc,
+    SaveAs(const occ::handle<TDocStd_Document>& theDoc,
            Standard_OStream&               theOStream,
            TCollection_ExtendedString&     theStatusMessage,
            const Message_ProgressRange&    theRange = Message_ProgressRange());
 
   //! Save the document overwriting the previous file
   Standard_EXPORT PCDM_StoreStatus
-    Save(const Handle(TDocStd_Document)& theDoc,
+    Save(const occ::handle<TDocStd_Document>& theDoc,
          TCollection_ExtendedString&     theStatusMessage,
          const Message_ProgressRange&    theRange = Message_ProgressRange());
 
   //! Notification that is fired at each OpenTransaction event.
-  Standard_EXPORT virtual void OnOpenTransaction(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT virtual void OnOpenTransaction(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Notification that is fired at each CommitTransaction event.
-  Standard_EXPORT virtual void OnCommitTransaction(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT virtual void OnCommitTransaction(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Notification that is fired at each AbortTransaction event.
-  Standard_EXPORT virtual void OnAbortTransaction(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT virtual void OnAbortTransaction(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_Application, CDF_Application)
 
 protected:
-  Handle(Resource_Manager) myResources;
-  Standard_Boolean         myIsDriverLoaded;
+  occ::handle<Resource_Manager> myResources;
+  bool         myIsDriverLoaded;
 };
 
 #endif // _TDocStd_Application_HeaderFile

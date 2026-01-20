@@ -14,48 +14,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <HLRAlgo_HArray1OfTData.hxx>
-#include <HLRAlgo_HArray1OfPHDat.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_TriangleData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_PolyHidingData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-inline void HLRAlgo_PolyData::FaceIndex(const Standard_Integer I)
+inline void HLRAlgo_PolyData::FaceIndex(const int I)
 {
   myFaceIndices.Index = I;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_PolyData::FaceIndex() const
+inline int HLRAlgo_PolyData::FaceIndex() const
 {
   return myFaceIndices.Index;
 }
 
 //=================================================================================================
 
-inline TColgp_Array1OfXYZ& HLRAlgo_PolyData::Nodes() const
+inline NCollection_Array1<gp_XYZ>& HLRAlgo_PolyData::Nodes() const
 {
   return myHNodes->ChangeArray1();
 }
 
 //=================================================================================================
 
-inline HLRAlgo_Array1OfTData& HLRAlgo_PolyData::TData() const
+inline NCollection_Array1<HLRAlgo_TriangleData>& HLRAlgo_PolyData::TData() const
 {
   return myHTData->ChangeArray1();
 }
 
 //=================================================================================================
 
-inline HLRAlgo_Array1OfPHDat& HLRAlgo_PolyData::PHDat() const
+inline NCollection_Array1<HLRAlgo_PolyHidingData>& HLRAlgo_PolyData::PHDat() const
 {
   return myHPHDat->ChangeArray1();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_PolyData::Hiding() const
+inline bool HLRAlgo_PolyData::Hiding() const
 {
   return !myHPHDat.IsNull();
 }

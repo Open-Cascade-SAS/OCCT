@@ -21,11 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_Curve;
 
 //! Evaluation of the common BSplineProfile of a group
@@ -40,20 +43,20 @@ public:
   Standard_EXPORT GeomFill_Profiler();
   Standard_EXPORT virtual ~GeomFill_Profiler();
 
-  Standard_EXPORT void AddCurve(const Handle(Geom_Curve)& Curve);
+  Standard_EXPORT void AddCurve(const occ::handle<Geom_Curve>& Curve);
 
   //! Converts all curves to BSplineCurves.
   //! Set them to the common profile.
   //! <PTol> is used to compare 2 knots.
-  Standard_EXPORT virtual void Perform(const Standard_Real PTol);
+  Standard_EXPORT virtual void Perform(const double PTol);
 
   //! Raises if not yet perform
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
-  Standard_Boolean IsPeriodic() const;
+  bool IsPeriodic() const;
 
   //! Raises if not yet perform
-  Standard_EXPORT Standard_Integer NbPoles() const;
+  Standard_EXPORT int NbPoles() const;
 
   //! returns in <Poles> the poles of the BSplineCurve
   //! from index <Index> adjusting to the current profile.
@@ -61,7 +64,7 @@ public:
   //! Raises if <Index> not in the range [1,NbCurves]
   //! if the length of <Poles> is not equal to
   //! NbPoles().
-  Standard_EXPORT void Poles(const Standard_Integer Index, TColgp_Array1OfPnt& Poles) const;
+  Standard_EXPORT void Poles(const int Index, NCollection_Array1<gp_Pnt>& Poles) const;
 
   //! returns in <Weights> the weights of the BSplineCurve
   //! from index <Index> adjusting to the current profile.
@@ -69,25 +72,24 @@ public:
   //! Raises if <Index> not in the range [1,NbCurves] or
   //! if the length of <Weights> is not equal to
   //! NbPoles().
-  Standard_EXPORT void Weights(const Standard_Integer Index, TColStd_Array1OfReal& Weights) const;
+  Standard_EXPORT void Weights(const int Index, NCollection_Array1<double>& Weights) const;
 
   //! Raises if not yet perform
-  Standard_EXPORT Standard_Integer NbKnots() const;
+  Standard_EXPORT int NbKnots() const;
 
   //! Raises if not yet perform
   //! Raises if the lengths of <Knots> and <Mults> are
   //! not equal to NbKnots().
-  Standard_EXPORT void KnotsAndMults(TColStd_Array1OfReal&    Knots,
-                                     TColStd_Array1OfInteger& Mults) const;
+  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>&    Knots,
+                                     NCollection_Array1<int>& Mults) const;
 
-  const Handle(Geom_Curve)& Curve(const Standard_Integer Index) const;
+  const occ::handle<Geom_Curve>& Curve(const int Index) const;
 
 protected:
-  TColGeom_SequenceOfCurve mySequence;
-  Standard_Boolean         myIsDone;
-  Standard_Boolean         myIsPeriodic;
+  NCollection_Sequence<occ::handle<Geom_Curve>> mySequence;
+  bool         myIsDone;
+  bool         myIsPeriodic;
 
-private:
 };
 
 #include <GeomFill_Profiler.lxx>

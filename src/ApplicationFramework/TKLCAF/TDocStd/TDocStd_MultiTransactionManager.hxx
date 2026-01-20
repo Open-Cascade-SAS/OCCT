@@ -18,16 +18,14 @@
 
 #include <Standard.hxx>
 
-#include <TDocStd_SequenceOfApplicationDelta.hxx>
+#include <TDocStd_ApplicationDelta.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class TCollection_ExtendedString;
 class TDocStd_Document;
-
-class TDocStd_MultiTransactionManager;
-DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, Standard_Transient)
 
 //! Class for synchronization of transactions within multiple documents.
 //! Each transaction of this class involvess one transaction in each modified document.
@@ -52,10 +50,10 @@ public:
   Standard_EXPORT TDocStd_MultiTransactionManager();
 
   //! Sets undo limit for the manager and all documents.
-  Standard_EXPORT void SetUndoLimit(const Standard_Integer theLimit);
+  Standard_EXPORT void SetUndoLimit(const int theLimit);
 
   //! Returns undo limit for the manager.
-  Standard_Integer GetUndoLimit() const;
+  int GetUndoLimit() const;
 
   //! Undoes the current transaction of the manager.
   //! It calls the Undo () method of the document being
@@ -71,10 +69,10 @@ public:
   Standard_EXPORT void Redo();
 
   //! Returns available manager undos.
-  const TDocStd_SequenceOfApplicationDelta& GetAvailableUndos() const;
+  const NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>>& GetAvailableUndos() const;
 
   //! Returns available manager redos.
-  const TDocStd_SequenceOfApplicationDelta& GetAvailableRedos() const;
+  const NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>>& GetAvailableRedos() const;
 
   //! Opens transaction in each document and sets the flag that
   //! transaction is opened. If there are already opened transactions in the documents,
@@ -89,14 +87,14 @@ public:
   //! with the documents that have been changed during the transaction.
   //! Returns True if new data has been added to myUndos.
   //! NOTE: All nested transactions in the documents will be committed.
-  Standard_EXPORT Standard_Boolean CommitCommand();
+  Standard_EXPORT bool CommitCommand();
 
   //! Makes the same steps as the previous function but defines the name for transaction.
   //! Returns True if new data has been added to myUndos.
-  Standard_EXPORT Standard_Boolean CommitCommand(const TCollection_ExtendedString& theName);
+  Standard_EXPORT bool CommitCommand(const TCollection_ExtendedString& theName);
 
   //! Returns true if a transaction is opened.
-  Standard_Boolean HasOpenCommand() const;
+  bool HasOpenCommand() const;
 
   //! Removes undo information from the list of undos of the manager and
   //! all documents which have been modified during the transaction.
@@ -107,29 +105,29 @@ public:
 
   //! Adds the document to the transaction manager and
   //! checks if it has been already added
-  Standard_EXPORT void AddDocument(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT void AddDocument(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Removes the document from the transaction manager.
-  Standard_EXPORT void RemoveDocument(const Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT void RemoveDocument(const occ::handle<TDocStd_Document>& theDoc);
 
   //! Returns the added documents to the transaction manager.
-  const TDocStd_SequenceOfDocument& Documents() const;
+  const NCollection_Sequence<occ::handle<TDocStd_Document>>& Documents() const;
 
-  //! Sets nested transaction mode if isAllowed == Standard_True
+  //! Sets nested transaction mode if isAllowed == true
   //! NOTE: field myIsNestedTransactionMode exists only for synchronization
   //! between several documents and has no effect on transactions
   //! of multitransaction manager.
-  Standard_EXPORT void SetNestedTransactionMode(const Standard_Boolean isAllowed = Standard_True);
+  Standard_EXPORT void SetNestedTransactionMode(const bool isAllowed = true);
 
-  //! Returns Standard_True if NestedTransaction mode is set.
+  //! Returns true if NestedTransaction mode is set.
   //! Methods for protection of changes outside transactions
-  Standard_Boolean IsNestedTransactionMode() const;
+  bool IsNestedTransactionMode() const;
 
   //! If theTransactionOnly is True, denies all changes outside transactions.
-  Standard_EXPORT void SetModificationMode(const Standard_Boolean theTransactionOnly);
+  Standard_EXPORT void SetModificationMode(const bool theTransactionOnly);
 
   //! Returns True if changes are allowed only inside transactions.
-  Standard_Boolean ModificationMode() const;
+  bool ModificationMode() const;
 
   //! Clears undos in the manager and in documents.
   Standard_EXPORT void ClearUndos();
@@ -139,15 +137,14 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_MultiTransactionManager, Standard_Transient)
 
-protected:
 private:
-  TDocStd_SequenceOfDocument         myDocuments;
-  TDocStd_SequenceOfApplicationDelta myUndos;
-  TDocStd_SequenceOfApplicationDelta myRedos;
-  Standard_Integer                   myUndoLimit;
-  Standard_Boolean                   myOpenTransaction;
-  Standard_Boolean                   myIsNestedTransactionMode;
-  Standard_Boolean                   myOnlyTransactionModification;
+  NCollection_Sequence<occ::handle<TDocStd_Document>>         myDocuments;
+  NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>> myUndos;
+  NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>> myRedos;
+  int                   myUndoLimit;
+  bool                   myOpenTransaction;
+  bool                   myIsNestedTransactionMode;
+  bool                   myOnlyTransactionModification;
 };
 
 #include <TDocStd_MultiTransactionManager.lxx>

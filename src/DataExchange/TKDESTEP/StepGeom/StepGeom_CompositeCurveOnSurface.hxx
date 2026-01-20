@@ -22,9 +22,6 @@
 
 #include <StepGeom_CompositeCurve.hxx>
 
-class StepGeom_CompositeCurveOnSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_CompositeCurveOnSurface, StepGeom_CompositeCurve)
-
 class StepGeom_CompositeCurveOnSurface : public StepGeom_CompositeCurve
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveOnSurface, StepGeom_CompositeCurve)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_CompositeCurveOnSurface_HeaderFile

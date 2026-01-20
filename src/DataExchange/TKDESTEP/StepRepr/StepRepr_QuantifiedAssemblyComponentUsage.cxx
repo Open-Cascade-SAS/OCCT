@@ -30,17 +30,17 @@ StepRepr_QuantifiedAssemblyComponentUsage::StepRepr_QuantifiedAssemblyComponentU
 //=================================================================================================
 
 void StepRepr_QuantifiedAssemblyComponentUsage::Init(
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-  const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
-  const Handle(StepBasic_ProductDefinition)&
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+  const bool                  hasProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
+  const occ::handle<StepBasic_ProductDefinition>&
     aProductDefinitionRelationship_RelatingProductDefinition,
-  const Handle(StepBasic_ProductDefinition)&
+  const occ::handle<StepBasic_ProductDefinition>&
                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-  const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-  const Handle(Standard_Transient)&       aQuantity)
+  const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+  const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+  const occ::handle<Standard_Transient>&       aQuantity)
 {
   StepRepr_AssemblyComponentUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -57,17 +57,17 @@ void StepRepr_QuantifiedAssemblyComponentUsage::Init(
 //=================================================================================================
 
 void StepRepr_QuantifiedAssemblyComponentUsage::Init(
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-  const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-  const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+  const bool                  hasProductDefinitionRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
                                           aProductDefinitionRelationship_RelatedProductDefinition,
-  const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-  const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-  const Handle(Standard_Transient)&       aQuantity)
+  const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+  const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+  const occ::handle<Standard_Transient>&       aQuantity)
 {
   StepRepr_AssemblyComponentUsage::Init(aProductDefinitionRelationship_Id,
                                         aProductDefinitionRelationship_Name,
@@ -83,7 +83,7 @@ void StepRepr_QuantifiedAssemblyComponentUsage::Init(
 
 //=================================================================================================
 
-Handle(Standard_Transient) StepRepr_QuantifiedAssemblyComponentUsage::Quantity() const
+occ::handle<Standard_Transient> StepRepr_QuantifiedAssemblyComponentUsage::Quantity() const
 {
   return theQuantity;
 }
@@ -91,7 +91,7 @@ Handle(Standard_Transient) StepRepr_QuantifiedAssemblyComponentUsage::Quantity()
 //=================================================================================================
 
 void StepRepr_QuantifiedAssemblyComponentUsage::SetQuantity(
-  const Handle(Standard_Transient)& aQuantity)
+  const occ::handle<Standard_Transient>& aQuantity)
 {
   theQuantity = aQuantity;
 }

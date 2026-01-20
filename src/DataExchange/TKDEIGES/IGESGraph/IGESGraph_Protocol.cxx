@@ -36,18 +36,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_Protocol, IGESData_Protocol)
 
 IGESGraph_Protocol::IGESGraph_Protocol() {}
 
-Standard_Integer IGESGraph_Protocol::NbResources() const
+int IGESGraph_Protocol::NbResources() const
 {
   return 1;
 }
 
-Handle(Interface_Protocol) IGESGraph_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> IGESGraph_Protocol::Resource(const int /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESBasic::Protocol();
+  occ::handle<Interface_Protocol> res = IGESBasic::Protocol();
   return res;
 }
 
-Standard_Integer IGESGraph_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESGraph_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESGraph_Color))
     return 1;

@@ -48,16 +48,16 @@ public:                                                                         
     OCCT_CHECK_BASE_CLASS(Class, Base);                                                            \
     return #Class;                                                                                 \
   }                                                                                                \
-  static const Handle(Standard_Type)& get_type_descriptor()                                        \
+  static const occ::handle<Standard_Type>& get_type_descriptor()                                        \
   {                                                                                                \
-    static const Handle(Standard_Type) THE_TYPE_INSTANCE =                                         \
+    static const occ::handle<Standard_Type> THE_TYPE_INSTANCE =                                         \
       Standard_Type::Register(typeid(Class),                                                       \
                               get_type_name(),                                                     \
                               sizeof(Class),                                                       \
                               Base::get_type_descriptor());                                        \
     return THE_TYPE_INSTANCE;                                                                      \
   }                                                                                                \
-  virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE                       \
+  virtual const occ::handle<Standard_Type>& DynamicType() const Standard_OVERRIDE                       \
   {                                                                                                \
     return get_type_descriptor();                                                                  \
   }
@@ -74,22 +74,22 @@ public:                                                                         
     OCCT_CHECK_BASE_CLASS(Class, Base);                                                            \
     return #Class;                                                                                 \
   }                                                                                                \
-  Standard_EXPORT static const Handle(Standard_Type)&  get_type_descriptor();                      \
-  Standard_EXPORT virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE;
+  Standard_EXPORT static const occ::handle<Standard_Type>&  get_type_descriptor();                      \
+  Standard_EXPORT virtual const occ::handle<Standard_Type>& DynamicType() const Standard_OVERRIDE;
 
 //! Defines implementation of type descriptor and DynamicType() function
 #define IMPLEMENT_STANDARD_RTTIEXT(Class, Base)                                                    \
   OCCT_CHECK_BASE_CLASS(Class, Base)                                                               \
-  const Handle(Standard_Type)& Class::get_type_descriptor()                                        \
+  const occ::handle<Standard_Type>& Class::get_type_descriptor()                                        \
   {                                                                                                \
-    static const Handle(Standard_Type) THE_TYPE_INSTANCE =                                         \
+    static const occ::handle<Standard_Type> THE_TYPE_INSTANCE =                                         \
       Standard_Type::Register(typeid(Class),                                                       \
                               get_type_name(),                                                     \
                               sizeof(Class),                                                       \
                               Class::base_type::get_type_descriptor());                            \
     return THE_TYPE_INSTANCE;                                                                      \
   }                                                                                                \
-  const Handle(Standard_Type)& Class::DynamicType() const                                          \
+  const occ::handle<Standard_Type>& Class::DynamicType() const                                          \
   {                                                                                                \
     return STANDARD_TYPE(Class);                                                                   \
   }
@@ -121,24 +121,24 @@ class Standard_Type : public Standard_Transient
 {
 public:
   //! Returns the system type name of the class (typeinfo.name)
-  Standard_CString SystemName() const { return mySystemName; }
+  const char* SystemName() const { return mySystemName; }
 
   //! Returns the given name of the class type (get_type_name)
-  Standard_CString Name() const { return myName; }
+  const char* Name() const { return myName; }
 
   //! Returns the size of the class instance in bytes
-  Standard_Size Size() const { return mySize; }
+  size_t Size() const { return mySize; }
 
   //! Returns descriptor of the base class in the hierarchy
-  const Handle(Standard_Type)& Parent() const { return myParent; }
+  const occ::handle<Standard_Type>& Parent() const { return myParent; }
 
   //! Returns True if this type is the same as theOther, or inherits from theOther.
   //! Note that multiple inheritance is not supported.
-  Standard_EXPORT Standard_Boolean SubType(const Handle(Standard_Type)& theOther) const;
+  Standard_EXPORT bool SubType(const occ::handle<Standard_Type>& theOther) const;
 
   //! Returns True if this type is the same as theOther, or inherits from theOther.
   //! Note that multiple inheritance is not supported.
-  Standard_EXPORT Standard_Boolean SubType(const Standard_CString theOther) const;
+  Standard_EXPORT bool SubType(const char* const theOther) const;
 
   //! Prints type (address of descriptor + name) to a stream
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
@@ -149,7 +149,7 @@ public:
   //!
   //! See helper macro DEFINE_STANDARD_RTTI for defining these items in the class.
   template <class T>
-  static const Handle(Standard_Type)& Instance()
+  static const occ::handle<Standard_Type>& Instance()
   {
     return T::get_type_descriptor();
   }
@@ -164,8 +164,8 @@ public:
   //! Note that this function is intended for use by STANDARD_RTTIEXT macros only.
   Standard_EXPORT static Standard_Type* Register(const std::type_info&        theInfo,
                                                  const char*                  theName,
-                                                 Standard_Size                theSize,
-                                                 const Handle(Standard_Type)& theParent);
+                                                 size_t                theSize,
+                                                 const occ::handle<Standard_Type>& theParent);
 
   //! Destructor removes the type from the registry
   Standard_EXPORT ~Standard_Type();
@@ -177,19 +177,19 @@ private:
   //! Constructor is private
   Standard_Type(const char*                  theSystemName,
                 const char*                  theName,
-                Standard_Size                theSize,
-                const Handle(Standard_Type)& theParent);
+                size_t                theSize,
+                const occ::handle<Standard_Type>& theParent);
 
 private:
-  Standard_CString      mySystemName; //!< System name of the class
-  Standard_CString      myName;       //!< Given name of the class
-  Standard_Size         mySize;       //!< Size of the class instance, in bytes
-  Handle(Standard_Type) myParent;     //!< Type descriptor of parent class
+  const char*      mySystemName; //!< System name of the class
+  const char*      myName;       //!< Given name of the class
+  size_t         mySize;       //!< Size of the class instance, in bytes
+  occ::handle<Standard_Type> myParent;     //!< Type descriptor of parent class
 };
 
 //! Operator printing type descriptor to stream
 inline Standard_OStream& operator<<(Standard_OStream&            theStream,
-                                    const Handle(Standard_Type)& theType)
+                                    const occ::handle<Standard_Type>& theType)
 {
   theType->Print(theStream);
   return theStream;

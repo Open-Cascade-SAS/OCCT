@@ -45,9 +45,9 @@ void OpenGl_Clipping::Init()
 
 //=================================================================================================
 
-void OpenGl_Clipping::Reset(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+void OpenGl_Clipping::Reset(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes)
 {
-  const Standard_Integer aStartIndex = myPlanesGlobal.IsNull() ? 1 : myPlanesGlobal->Size() + 1;
+  const int aStartIndex = myPlanesGlobal.IsNull() ? 1 : myPlanesGlobal->Size() + 1;
   remove(myPlanesLocal, aStartIndex);
   remove(myPlanesGlobal, 1);
 
@@ -67,9 +67,9 @@ void OpenGl_Clipping::Reset(const Handle(Graphic3d_SequenceOfHClipPlane)& thePla
 
 //=================================================================================================
 
-void OpenGl_Clipping::SetLocalPlanes(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+void OpenGl_Clipping::SetLocalPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes)
 {
-  const Standard_Integer aStartIndex = myPlanesGlobal.IsNull() ? 1 : myPlanesGlobal->Size() + 1;
+  const int aStartIndex = myPlanesGlobal.IsNull() ? 1 : myPlanesGlobal->Size() + 1;
   remove(myPlanesLocal, aStartIndex);
 
   myPlanesLocal = thePlanes;
@@ -79,26 +79,26 @@ void OpenGl_Clipping::SetLocalPlanes(const Handle(Graphic3d_SequenceOfHClipPlane
 
 //=================================================================================================
 
-void OpenGl_Clipping::add(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
-                          const Standard_Integer                        theStartIndex)
+void OpenGl_Clipping::add(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
+                          const int                        theStartIndex)
 {
   if (thePlanes.IsNull())
   {
     return;
   }
 
-  Standard_Integer aPlaneId = theStartIndex;
+  int aPlaneId = theStartIndex;
   for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt(*thePlanes); aPlaneIt.More();
        aPlaneIt.Next(), ++aPlaneId)
   {
-    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-    myDisabledPlanes.SetValue(aPlaneId, Standard_False); // automatically resizes the vector
+    const occ::handle<Graphic3d_ClipPlane>& aPlane = aPlaneIt.Value();
+    myDisabledPlanes.SetValue(aPlaneId, false); // automatically resizes the vector
     if (!aPlane->IsOn())
     {
       continue;
     }
 
-    const Standard_Integer aNbSubPlanes = aPlane->NbChainNextPlanes();
+    const int aNbSubPlanes = aPlane->NbChainNextPlanes();
     myNbChains += 1;
     if (aPlane->IsCapping())
     {
@@ -113,25 +113,25 @@ void OpenGl_Clipping::add(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlane
 
 //=================================================================================================
 
-void OpenGl_Clipping::remove(const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
-                             const Standard_Integer                        theStartIndex)
+void OpenGl_Clipping::remove(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
+                             const int                        theStartIndex)
 {
   if (thePlanes.IsNull())
   {
     return;
   }
 
-  Standard_Integer aPlaneIndex = theStartIndex;
+  int aPlaneIndex = theStartIndex;
   for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt(*thePlanes); aPlaneIt.More();
        aPlaneIt.Next(), ++aPlaneIndex)
   {
-    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    const occ::handle<Graphic3d_ClipPlane>& aPlane = aPlaneIt.Value();
     if (!aPlane->IsOn() || myDisabledPlanes.Value(aPlaneIndex))
     {
       continue;
     }
 
-    const Standard_Integer aNbSubPlanes = aPlane->NbChainNextPlanes();
+    const int aNbSubPlanes = aPlane->NbChainNextPlanes();
     myNbChains -= 1;
     if (aPlane->IsCapping())
     {
@@ -146,18 +146,18 @@ void OpenGl_Clipping::remove(const Handle(Graphic3d_SequenceOfHClipPlane)& thePl
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_Clipping::SetEnabled(const OpenGl_ClippingIterator& thePlane,
-                                             const Standard_Boolean         theIsEnabled)
+bool OpenGl_Clipping::SetEnabled(const OpenGl_ClippingIterator& thePlane,
+                                             const bool         theIsEnabled)
 {
-  const Standard_Integer aPlaneIndex = thePlane.PlaneIndex();
-  Standard_Boolean&      isDisabled  = myDisabledPlanes.ChangeValue(aPlaneIndex);
+  const int aPlaneIndex = thePlane.PlaneIndex();
+  bool&      isDisabled  = myDisabledPlanes.ChangeValue(aPlaneIndex);
   if (isDisabled == !theIsEnabled)
   {
-    return Standard_False;
+    return false;
   }
 
   isDisabled                          = !theIsEnabled;
-  const Standard_Integer aNbSubPlanes = thePlane.Value()->NbChainNextPlanes();
+  const int aNbSubPlanes = thePlane.Value()->NbChainNextPlanes();
   if (thePlane.Value()->IsCapping())
   {
     myNbCapping += (theIsEnabled ? aNbSubPlanes : -aNbSubPlanes);
@@ -168,7 +168,7 @@ Standard_Boolean OpenGl_Clipping::SetEnabled(const OpenGl_ClippingIterator& theP
   }
   myNbChains += (theIsEnabled ? 1 : -1);
   myNbDisabled += (theIsEnabled ? -aNbSubPlanes : aNbSubPlanes);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -183,15 +183,15 @@ void OpenGl_Clipping::RestoreDisabled()
   myNbDisabled = 0;
   for (OpenGl_ClippingIterator aPlaneIter(*this); aPlaneIter.More(); aPlaneIter.Next())
   {
-    Standard_Boolean& isDisabled = myDisabledPlanes.ChangeValue(aPlaneIter.PlaneIndex());
+    bool& isDisabled = myDisabledPlanes.ChangeValue(aPlaneIter.PlaneIndex());
     if (!isDisabled)
     {
       continue;
     }
 
-    isDisabled                                      = Standard_False;
-    const Handle(Graphic3d_ClipPlane)& aPlane       = aPlaneIter.Value();
-    const Standard_Integer             aNbSubPlanes = aPlane->NbChainNextPlanes();
+    isDisabled                                      = false;
+    const occ::handle<Graphic3d_ClipPlane>& aPlane       = aPlaneIter.Value();
+    const int             aNbSubPlanes = aPlane->NbChainNextPlanes();
     myNbChains += 1;
     if (aPlane->IsCapping())
     {
@@ -216,14 +216,14 @@ void OpenGl_Clipping::DisableGlobal()
       return;
     }
 
-    SetEnabled(aPlaneIter, Standard_False);
+    SetEnabled(aPlaneIter, false);
   }
 }
 
 //=================================================================================================
 
-void OpenGl_Clipping::DisableAllExcept(const Handle(Graphic3d_ClipPlane)& theChain,
-                                       const Standard_Integer             theSubPlaneIndex)
+void OpenGl_Clipping::DisableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
+                                       const int             theSubPlaneIndex)
 {
   myCappedChain    = theChain;
   myCappedSubPlane = theSubPlaneIndex;
@@ -231,8 +231,8 @@ void OpenGl_Clipping::DisableAllExcept(const Handle(Graphic3d_ClipPlane)& theCha
 
 //=================================================================================================
 
-void OpenGl_Clipping::EnableAllExcept(const Handle(Graphic3d_ClipPlane)& theChain,
-                                      const Standard_Integer             theSubPlaneIndex)
+void OpenGl_Clipping::EnableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
+                                      const int             theSubPlaneIndex)
 {
   myCappedChain    = theChain;
   myCappedSubPlane = -theSubPlaneIndex;

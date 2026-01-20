@@ -18,7 +18,7 @@
 #include <Storage_StreamTypeMismatchError.hxx>
 #include <Storage_StreamWriteError.hxx>
 
-const Standard_CString MAGICNUMBER = "CMPFILE";
+const char* const MAGICNUMBER = "CMPFILE";
 
 IMPLEMENT_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
 
@@ -42,7 +42,7 @@ Storage_Error FSD_CmpFile::IsGoodFileType(const TCollection_AsciiString& aName)
   if (s == Storage_VSOk)
   {
     TCollection_AsciiString l;
-    Standard_Size           len = strlen(FSD_CmpFile::MagicNumber());
+    size_t           len = strlen(FSD_CmpFile::MagicNumber());
 
     f.ReadChar(l, len);
 
@@ -125,7 +125,7 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName, const Stor
 // purpose  : ------------------ PROTECTED
 //=======================================================================
 
-Standard_CString FSD_CmpFile::MagicNumber()
+const char* FSD_CmpFile::MagicNumber()
 {
   return MAGICNUMBER;
 }
@@ -140,7 +140,7 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadLine(aBuf);
-  for (Standard_Integer lv = aBuf.Length();
+  for (int lv = aBuf.Length();
        lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
        lv--)
   {
@@ -157,8 +157,8 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
 void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 {
 #if 0
-  Standard_ExtString extBuffer;
-  Standard_Integer   i, c, d;
+  const char16_t* extBuffer;
+  int   i, c, d;
 
   extBuffer = buffer.ToExtString();
 
@@ -171,8 +171,8 @@ void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 
   myStream << (char)0 << "\n";
 #endif
-  Standard_ExtString extBuffer;
-  Standard_Integer   i;
+  const char16_t* extBuffer;
+  int   i;
 
   extBuffer = buffer.ToExtString();
   PutInteger(buffer.Length());
@@ -188,8 +188,8 @@ void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 
 void FSD_CmpFile::ReadExtendedLine(TCollection_ExtendedString& buffer)
 {
-  Standard_ExtCharacter c;
-  Standard_Integer      i;
+  char16_t c;
+  int      i;
 
   GetInteger(i);
 
@@ -212,7 +212,7 @@ void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadString(aBuf);
-  for (Standard_Integer lv = aBuf.Length();
+  for (int lv = aBuf.Length();
        lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
        lv--)
   {
@@ -252,7 +252,7 @@ Storage_Error FSD_CmpFile::BeginReadInfoSection()
 {
   Storage_Error           s;
   TCollection_AsciiString l;
-  Standard_Size           len = strlen(FSD_CmpFile::MagicNumber());
+  size_t           len = strlen(FSD_CmpFile::MagicNumber());
 
   ReadChar(l, len);
 
@@ -270,8 +270,8 @@ Storage_Error FSD_CmpFile::BeginReadInfoSection()
 
 //=================================================================================================
 
-void FSD_CmpFile::WritePersistentObjectHeader(const Standard_Integer aRef,
-                                              const Standard_Integer aType)
+void FSD_CmpFile::WritePersistentObjectHeader(const int aRef,
+                                              const int aType)
 {
   myStream << "\n#" << aRef << "%" << aType << " ";
   if (myStream.bad())
@@ -312,7 +312,7 @@ void FSD_CmpFile::EndWritePersistentObjectData()
 
 //=================================================================================================
 
-void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef, Standard_Integer& aType)
+void FSD_CmpFile::ReadPersistentObjectHeader(int& aRef, int& aType)
 {
   char c = '\0';
 

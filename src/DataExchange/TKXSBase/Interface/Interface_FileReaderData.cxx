@@ -35,12 +35,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_FileReaderData, Standard_Transient)
 //  Optimization : Fields not possible, because Param is const. Too bad
 //  So, we assume that we read one file at a time (reasonable assumption)
 //  We note in field a file number, relative to which we optimize
-static Standard_Integer thefic = 0;
-static Standard_Integer thenm0 = -1;
-static Standard_Integer thenp0 = -1;
+static int thefic = 0;
+static int thenm0 = -1;
+static int thenp0 = -1;
 
-Interface_FileReaderData::Interface_FileReaderData(const Standard_Integer nbr,
-                                                   const Standard_Integer npar)
+Interface_FileReaderData::Interface_FileReaderData(const int nbr,
+                                                   const int npar)
     : therrload(0),
       thenumpar(0, nbr),
       theents(0, nbr)
@@ -51,15 +51,15 @@ Interface_FileReaderData::Interface_FileReaderData(const Standard_Integer nbr,
   thenum0 = ++thefic;
 }
 
-Standard_Integer Interface_FileReaderData::NbRecords() const
+int Interface_FileReaderData::NbRecords() const
 {
   return thenumpar.Upper();
 }
 
-Standard_Integer Interface_FileReaderData::NbEntities() const
+int Interface_FileReaderData::NbEntities() const
 {
-  Standard_Integer nb  = 0;
-  Standard_Integer num = 0;
+  int nb  = 0;
+  int num = 0;
   while ((num = FindNextRecord(num)) > 0)
     nb++;
   return nb;
@@ -67,41 +67,41 @@ Standard_Integer Interface_FileReaderData::NbEntities() const
 
 //  ....            Management of Parameters attached to Records            ....
 
-void Interface_FileReaderData::InitParams(const Standard_Integer num)
+void Interface_FileReaderData::InitParams(const int num)
 {
   thenumpar.SetValue(num, theparams->NbParams());
 }
 
-void Interface_FileReaderData::AddParam(const Standard_Integer /*num*/,
-                                        const Standard_CString    aval,
+void Interface_FileReaderData::AddParam(const int /*num*/,
+                                        const char* const    aval,
                                         const Interface_ParamType atype,
-                                        const Standard_Integer    nument)
+                                        const int    nument)
 {
   theparams->Append(aval, -1, atype, nument);
 }
 
-void Interface_FileReaderData::AddParam(const Standard_Integer /*num*/,
+void Interface_FileReaderData::AddParam(const int /*num*/,
                                         const TCollection_AsciiString& aval,
                                         const Interface_ParamType      atype,
-                                        const Standard_Integer         nument)
+                                        const int         nument)
 {
   theparams->Append(aval.ToCString(), aval.Length(), atype, nument);
 }
 
-void Interface_FileReaderData::AddParam(const Standard_Integer /*num*/,
+void Interface_FileReaderData::AddParam(const int /*num*/,
                                         const Interface_FileParameter& FP)
 {
   theparams->Append(FP);
 }
 
-void Interface_FileReaderData::SetParam(const Standard_Integer         num,
-                                        const Standard_Integer         nump,
+void Interface_FileReaderData::SetParam(const int         num,
+                                        const int         nump,
                                         const Interface_FileParameter& FP)
 {
   theparams->SetParam(thenumpar(num - 1) + nump, FP);
 }
 
-Standard_Integer Interface_FileReaderData::NbParams(const Standard_Integer num) const
+int Interface_FileReaderData::NbParams(const int num) const
 {
   if (num > 1)
     return (thenumpar(num) - thenumpar(num - 1));
@@ -111,7 +111,7 @@ Standard_Integer Interface_FileReaderData::NbParams(const Standard_Integer num) 
     return theparams->NbParams();
 }
 
-Handle(Interface_ParamList) Interface_FileReaderData::Params(const Standard_Integer num) const
+occ::handle<Interface_ParamList> Interface_FileReaderData::Params(const int num) const
 {
   if (num == 0)
     return theparams->Params(0, 0); // complet
@@ -121,8 +121,8 @@ Handle(Interface_ParamList) Interface_FileReaderData::Params(const Standard_Inte
     return theparams->Params(thenumpar(num - 1) + 1, (thenumpar(num) - thenumpar(num - 1)));
 }
 
-const Interface_FileParameter& Interface_FileReaderData::Param(const Standard_Integer num,
-                                                               const Standard_Integer nump) const
+const Interface_FileParameter& Interface_FileReaderData::Param(const int num,
+                                                               const int nump) const
 {
   if (thefic != thenum0)
     return theparams->Param(thenumpar(num - 1) + nump);
@@ -134,8 +134,8 @@ const Interface_FileParameter& Interface_FileReaderData::Param(const Standard_In
   return theparams->Param(thenp0 + nump);
 }
 
-Interface_FileParameter& Interface_FileReaderData::ChangeParam(const Standard_Integer num,
-                                                               const Standard_Integer nump)
+Interface_FileParameter& Interface_FileReaderData::ChangeParam(const int num,
+                                                               const int nump)
 {
   if (thefic != thenum0)
     return theparams->ChangeParam(thenumpar(num - 1) + nump);
@@ -147,53 +147,53 @@ Interface_FileParameter& Interface_FileReaderData::ChangeParam(const Standard_In
   return theparams->ChangeParam(thenp0 + nump);
 }
 
-Interface_ParamType Interface_FileReaderData::ParamType(const Standard_Integer num,
-                                                        const Standard_Integer nump) const
+Interface_ParamType Interface_FileReaderData::ParamType(const int num,
+                                                        const int nump) const
 {
   return Param(num, nump).ParamType();
 }
 
-Standard_CString Interface_FileReaderData::ParamCValue(const Standard_Integer num,
-                                                       const Standard_Integer nump) const
+const char* Interface_FileReaderData::ParamCValue(const int num,
+                                                       const int nump) const
 {
   return Param(num, nump).CValue();
 }
 
-Standard_Boolean Interface_FileReaderData::IsParamDefined(const Standard_Integer num,
-                                                          const Standard_Integer nump) const
+bool Interface_FileReaderData::IsParamDefined(const int num,
+                                                          const int nump) const
 {
   return (Param(num, nump).ParamType() != Interface_ParamVoid);
 }
 
-Standard_Integer Interface_FileReaderData::ParamNumber(const Standard_Integer num,
-                                                       const Standard_Integer nump) const
+int Interface_FileReaderData::ParamNumber(const int num,
+                                                       const int nump) const
 {
   return Param(num, nump).EntityNumber();
 }
 
-const Handle(Standard_Transient)& Interface_FileReaderData::ParamEntity(
-  const Standard_Integer num,
-  const Standard_Integer nump) const
+const occ::handle<Standard_Transient>& Interface_FileReaderData::ParamEntity(
+  const int num,
+  const int nump) const
 {
   return BoundEntity(Param(num, nump).EntityNumber());
 }
 
-Interface_FileParameter& Interface_FileReaderData::ChangeParameter(const Standard_Integer numpar)
+Interface_FileParameter& Interface_FileReaderData::ChangeParameter(const int numpar)
 {
   return theparams->ChangeParam(numpar);
 }
 
-void Interface_FileReaderData::ParamPosition(const Standard_Integer numpar,
-                                             Standard_Integer&      num,
-                                             Standard_Integer&      nump) const
+void Interface_FileReaderData::ParamPosition(const int numpar,
+                                             int&      num,
+                                             int&      nump) const
 {
-  Standard_Integer nbe = thenumpar.Upper();
+  int nbe = thenumpar.Upper();
   if (numpar <= 0)
   {
     num = nump = 0;
     return;
   }
-  for (Standard_Integer i = 1; i <= nbe; i++)
+  for (int i = 1; i <= nbe; i++)
   {
     if (thenumpar(i) > numpar)
     {
@@ -206,32 +206,32 @@ void Interface_FileReaderData::ParamPosition(const Standard_Integer numpar,
   nump = numpar - thenumpar(nbe) + 1;
 }
 
-Standard_Integer Interface_FileReaderData::ParamFirstRank(const Standard_Integer num) const
+int Interface_FileReaderData::ParamFirstRank(const int num) const
 {
   return thenumpar(num);
 }
 
-void Interface_FileReaderData::SetErrorLoad(const Standard_Boolean val)
+void Interface_FileReaderData::SetErrorLoad(const bool val)
 {
   therrload = (val ? 1 : -1);
 }
 
-Standard_Boolean Interface_FileReaderData::IsErrorLoad() const
+bool Interface_FileReaderData::IsErrorLoad() const
 {
   return (therrload != 0);
 }
 
-Standard_Boolean Interface_FileReaderData::ResetErrorLoad()
+bool Interface_FileReaderData::ResetErrorLoad()
 {
-  Standard_Boolean res = (therrload > 0);
+  bool res = (therrload > 0);
   therrload            = 0;
   return res;
 }
 
 //  ....        Management of Entities Associated with File Data       ....
 
-const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity(
-  const Standard_Integer num) const
+const occ::handle<Standard_Transient>& Interface_FileReaderData::BoundEntity(
+  const int num) const
 //      {  return theents(num);  }
 {
   if (num >= theents.Lower() && num <= theents.Upper())
@@ -240,16 +240,16 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity(
   }
   else
   {
-    static Handle(Standard_Transient) dummy;
+    static occ::handle<Standard_Transient> dummy;
     return dummy;
   }
 }
-/*  //static Handle(Standard_Transient) dummy;
+/*  //static occ::handle<Standard_Transient> dummy;
   {
   //smh#10 Protection. If iges entity does not exist, return null pointer.
     try {
       OCC_CATCH_SIGNALS
-      Handle(Standard_Transient) temp = theents.Value(num);
+      occ::handle<Standard_Transient> temp = theents.Value(num);
     }
   ////sln 21.01.2002 OCC133: Exception handling
  // catch (Standard_OutOfRange) {
@@ -260,8 +260,8 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity(
     catch (Standard_Failure) {
 
     // some work-around, the best would be to modify CDL to
-    // return "Handle(Standard_Transient)" not "const Handle(Standard_Transient)&"
-      static Handle(Standard_Transient) dummy;
+    // return "occ::handle<Standard_Transient>" not "const occ::handle<Standard_Transient>&"
+      static occ::handle<Standard_Transient> dummy;
      // std::cout<<" Catch of smh"<<std::endl;
     return dummy;
     }
@@ -272,8 +272,8 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity(
 }
 */
 
-void Interface_FileReaderData::BindEntity(const Standard_Integer            num,
-                                          const Handle(Standard_Transient)& ent)
+void Interface_FileReaderData::BindEntity(const int            num,
+                                          const occ::handle<Standard_Transient>& ent)
 //      {  theents.SetValue(num,ent);  }
 {
   //  #ifdef OCCT_DEBUG
@@ -285,7 +285,7 @@ void Interface_FileReaderData::BindEntity(const Standard_Integer            num,
 
 void Interface_FileReaderData::Destroy() {}
 
-Standard_Real Interface_FileReaderData::Fastof(const Standard_CString ligne)
+double Interface_FileReaderData::Fastof(const char* const ligne)
 {
   return Strtod(ligne, 0);
 }

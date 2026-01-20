@@ -113,7 +113,7 @@ void BRepBuilderAPI_MakeSolid::Add(const TopoDS_Shell& S)
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeSolid::IsDone() const
+bool BRepBuilderAPI_MakeSolid::IsDone() const
 {
   return myMakeSolid.IsDone();
 }
@@ -134,7 +134,7 @@ BRepBuilderAPI_MakeSolid::operator TopoDS_Solid()
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeSolid::IsDeleted(const TopoDS_Shape& S)
+bool BRepBuilderAPI_MakeSolid::IsDeleted(const TopoDS_Shape& S)
 
 {
   if (S.ShapeType() == TopAbs_FACE)
@@ -142,8 +142,8 @@ Standard_Boolean BRepBuilderAPI_MakeSolid::IsDeleted(const TopoDS_Shape& S)
     BRepLib_ShapeModification aStatus = myMakeSolid.FaceStatus(TopoDS::Face(S));
 
     if (aStatus == BRepLib_Deleted)
-      return Standard_True;
+      return true;
   }
 
-  return Standard_False;
+  return false;
 }

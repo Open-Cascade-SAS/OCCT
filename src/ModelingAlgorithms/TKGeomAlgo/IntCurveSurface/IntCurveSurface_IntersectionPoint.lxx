@@ -21,17 +21,17 @@ inline const gp_Pnt& IntCurveSurface_IntersectionPoint::Pnt() const
   return (myP);
 }
 
-inline Standard_Real IntCurveSurface_IntersectionPoint::U() const
+inline double IntCurveSurface_IntersectionPoint::U() const
 {
   return (myUSurf);
 }
 
-inline Standard_Real IntCurveSurface_IntersectionPoint::V() const
+inline double IntCurveSurface_IntersectionPoint::V() const
 {
   return (myVSurf);
 }
 
-inline Standard_Real IntCurveSurface_IntersectionPoint::W() const
+inline double IntCurveSurface_IntersectionPoint::W() const
 {
   return (myUCurv);
 }

@@ -31,13 +31,15 @@
 #include <IFSelect_SignCounter.hxx>
 #include <IFSelect_SignType.hxx>
 #include <IFSelect_SignValidity.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_Binder.hxx>
@@ -55,12 +57,12 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller, Standard_Transient)
 //  ParamEditor
 //  Transferts
 
-static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> listad;
+static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> listad;
 
 //=================================================================================================
 
-XSControl_Controller::XSControl_Controller(const Standard_CString theLongName,
-                                           const Standard_CString theShortName)
+XSControl_Controller::XSControl_Controller(const char* const theLongName,
+                                           const char* const theShortName)
     : myShortName(theShortName),
       myLongName(theLongName)
 {
@@ -74,10 +76,10 @@ XSControl_Controller::XSControl_Controller(const Standard_CString theLongName,
 
 //=================================================================================================
 
-void XSControl_Controller::TraceStatic(const Standard_CString theName,
-                                       const Standard_Integer theUse)
+void XSControl_Controller::TraceStatic(const char* const theName,
+                                       const int theUse)
 {
-  Handle(Interface_Static) val = Interface_Static::Static(theName);
+  occ::handle<Interface_Static> val = Interface_Static::Static(theName);
   if (val.IsNull())
     return;
   myParams.Append(val);
@@ -86,8 +88,8 @@ void XSControl_Controller::TraceStatic(const Standard_CString theName,
 
 //=================================================================================================
 
-void XSControl_Controller::SetNames(const Standard_CString theLongName,
-                                    const Standard_CString theShortName)
+void XSControl_Controller::SetNames(const char* const theLongName,
+                                    const char* const theShortName)
 {
   if (theLongName && theLongName[0] != '\0')
   {
@@ -103,12 +105,12 @@ void XSControl_Controller::SetNames(const Standard_CString theLongName,
 
 //=================================================================================================
 
-void XSControl_Controller::Record(const Standard_CString theName) const
+void XSControl_Controller::Record(const char* const theName) const
 {
   if (listad.IsBound(theName))
   {
-    Handle(Standard_Transient) thisadapt(this);
-    Handle(Standard_Transient) newadapt = listad.ChangeFind(theName);
+    occ::handle<Standard_Transient> thisadapt(this);
+    occ::handle<Standard_Transient> newadapt = listad.ChangeFind(theName);
     if (newadapt->IsKind(thisadapt->DynamicType()))
       return;
     if (!(thisadapt->IsKind(newadapt->DynamicType())) && thisadapt != newadapt)
@@ -119,26 +121,26 @@ void XSControl_Controller::Record(const Standard_CString theName) const
 
 //=================================================================================================
 
-Handle(XSControl_Controller) XSControl_Controller::Recorded(const Standard_CString theName)
+occ::handle<XSControl_Controller> XSControl_Controller::Recorded(const char* const theName)
 {
-  Handle(Standard_Transient) recorded;
-  return (listad.Find(theName, recorded) ? Handle(XSControl_Controller)::DownCast(recorded)
-                                         : Handle(XSControl_Controller)());
+  occ::handle<Standard_Transient> recorded;
+  return (listad.Find(theName, recorded) ? occ::down_cast<XSControl_Controller>(recorded)
+                                         : occ::handle<XSControl_Controller>());
 }
 
 //    ####    DEFINITION    ####
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfTransientProcess) XSControl_Controller::ActorRead(
-  const Handle(Interface_InterfaceModel)&) const
+occ::handle<Transfer_ActorOfTransientProcess> XSControl_Controller::ActorRead(
+  const occ::handle<Interface_InterfaceModel>&) const
 {
   return myAdaptorRead;
 }
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfFinderProcess) XSControl_Controller::ActorWrite() const
+occ::handle<Transfer_ActorOfFinderProcess> XSControl_Controller::ActorWrite() const
 {
   return myAdaptorWrite;
 }
@@ -148,64 +150,64 @@ Handle(Transfer_ActorOfFinderProcess) XSControl_Controller::ActorWrite() const
 
 //=================================================================================================
 
-void XSControl_Controller::SetModeWrite(const Standard_Integer modemin,
-                                        const Standard_Integer modemax,
-                                        const Standard_Boolean)
+void XSControl_Controller::SetModeWrite(const int modemin,
+                                        const int modemax,
+                                        const bool)
 {
   if (modemin > modemax)
   {
     myModeWriteShapeN.Nullify();
     return;
   }
-  myModeWriteShapeN = new Interface_HArray1OfHAsciiString(modemin, modemax);
+  myModeWriteShapeN = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(modemin, modemax);
 }
 
 //=================================================================================================
 
-void XSControl_Controller::SetModeWriteHelp(const Standard_Integer modetrans,
-                                            const Standard_CString help,
-                                            const Standard_Boolean)
+void XSControl_Controller::SetModeWriteHelp(const int modetrans,
+                                            const char* const help,
+                                            const bool)
 {
   if (myModeWriteShapeN.IsNull())
     return;
   if (modetrans < myModeWriteShapeN->Lower() || modetrans > myModeWriteShapeN->Upper())
     return;
-  Handle(TCollection_HAsciiString) hl = new TCollection_HAsciiString(help);
+  occ::handle<TCollection_HAsciiString> hl = new TCollection_HAsciiString(help);
   myModeWriteShapeN->SetValue(modetrans, hl);
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_Controller::ModeWriteBounds(Standard_Integer& modemin,
-                                                       Standard_Integer& modemax,
-                                                       const Standard_Boolean) const
+bool XSControl_Controller::ModeWriteBounds(int& modemin,
+                                                       int& modemax,
+                                                       const bool) const
 {
   modemin = modemax = 0;
   if (myModeWriteShapeN.IsNull())
-    return Standard_False;
+    return false;
   modemin = myModeWriteShapeN->Lower();
   modemax = myModeWriteShapeN->Upper();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XSControl_Controller::IsModeWrite(const Standard_Integer modetrans,
-                                                   const Standard_Boolean) const
+bool XSControl_Controller::IsModeWrite(const int modetrans,
+                                                   const bool) const
 {
   if (myModeWriteShapeN.IsNull())
-    return Standard_True;
+    return true;
   if (modetrans < myModeWriteShapeN->Lower())
-    return Standard_False;
+    return false;
   if (modetrans > myModeWriteShapeN->Upper())
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_CString XSControl_Controller::ModeWriteHelp(const Standard_Integer modetrans,
-                                                     const Standard_Boolean) const
+const char* XSControl_Controller::ModeWriteHelp(const int modetrans,
+                                                     const bool) const
 {
   if (myModeWriteShapeN.IsNull())
     return "";
@@ -213,7 +215,7 @@ Standard_CString XSControl_Controller::ModeWriteHelp(const Standard_Integer mode
     return "";
   if (modetrans > myModeWriteShapeN->Upper())
     return "";
-  Handle(TCollection_HAsciiString) str = myModeWriteShapeN->Value(modetrans);
+  occ::handle<TCollection_HAsciiString> str = myModeWriteShapeN->Value(modetrans);
   if (str.IsNull())
     return "";
   return str->ToCString();
@@ -225,23 +227,23 @@ Standard_CString XSControl_Controller::ModeWriteHelp(const Standard_Integer mode
 
 //=================================================================================================
 
-Standard_Boolean XSControl_Controller::RecognizeWriteTransient(
-  const Handle(Standard_Transient)& obj,
-  const Standard_Integer            modetrans) const
+bool XSControl_Controller::RecognizeWriteTransient(
+  const occ::handle<Standard_Transient>& obj,
+  const int            modetrans) const
 {
   if (myAdaptorWrite.IsNull())
-    return Standard_False;
+    return false;
   myAdaptorWrite->ModeTrans() = modetrans;
   return myAdaptorWrite->Recognize(new Transfer_TransientMapper(obj));
 }
 
 //=================================================================================================
 
-static IFSelect_ReturnStatus TransferFinder(const Handle(Transfer_ActorOfFinderProcess)& theActor,
-                                            const Handle(Transfer_Finder)&               theMapper,
-                                            const Handle(Transfer_FinderProcess)&        theFP,
-                                            const Handle(Interface_InterfaceModel)&      theModel,
-                                            const Standard_Integer       theModeTrans,
+static IFSelect_ReturnStatus TransferFinder(const occ::handle<Transfer_ActorOfFinderProcess>& theActor,
+                                            const occ::handle<Transfer_Finder>&               theMapper,
+                                            const occ::handle<Transfer_FinderProcess>&        theFP,
+                                            const occ::handle<Interface_InterfaceModel>&      theModel,
+                                            const int       theModeTrans,
                                             const Message_ProgressRange& theProgress)
 {
   if (theActor.IsNull())
@@ -254,14 +256,14 @@ static IFSelect_ReturnStatus TransferFinder(const Handle(Transfer_ActorOfFinderP
   theFP->Transfer(theMapper, theProgress);
 
   IFSelect_ReturnStatus                    stat   = IFSelect_RetFail;
-  Handle(Transfer_Binder)                  binder = theFP->Find(theMapper);
-  Handle(Transfer_SimpleBinderOfTransient) bindtr;
+  occ::handle<Transfer_Binder>                  binder = theFP->Find(theMapper);
+  occ::handle<Transfer_SimpleBinderOfTransient> bindtr;
   while (!binder.IsNull())
   {
-    bindtr = Handle(Transfer_SimpleBinderOfTransient)::DownCast(binder);
+    bindtr = occ::down_cast<Transfer_SimpleBinderOfTransient>(binder);
     if (!bindtr.IsNull())
     {
-      Handle(Standard_Transient) ent = bindtr->Result();
+      occ::handle<Standard_Transient> ent = bindtr->Result();
       if (!ent.IsNull())
       {
         stat = IFSelect_RetDone;
@@ -276,10 +278,10 @@ static IFSelect_ReturnStatus TransferFinder(const Handle(Transfer_ActorOfFinderP
 //=================================================================================================
 
 IFSelect_ReturnStatus XSControl_Controller::TransferWriteTransient(
-  const Handle(Standard_Transient)&       theObj,
-  const Handle(Transfer_FinderProcess)&   theFP,
-  const Handle(Interface_InterfaceModel)& theModel,
-  const Standard_Integer                  theModeTrans,
+  const occ::handle<Standard_Transient>&       theObj,
+  const occ::handle<Transfer_FinderProcess>&   theFP,
+  const occ::handle<Interface_InterfaceModel>& theModel,
+  const int                  theModeTrans,
   const Message_ProgressRange&            theProgress) const
 {
   if (theObj.IsNull())
@@ -294,11 +296,11 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteTransient(
 
 //=================================================================================================
 
-Standard_Boolean XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape&    shape,
-                                                           const Standard_Integer modetrans) const
+bool XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape&    shape,
+                                                           const int modetrans) const
 {
   if (myAdaptorWrite.IsNull())
-    return Standard_False;
+    return false;
   myAdaptorWrite->ModeTrans() = modetrans;
   return myAdaptorWrite->Recognize(new TransferBRep_ShapeMapper(shape));
 }
@@ -307,9 +309,9 @@ Standard_Boolean XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape&  
 
 IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
   const TopoDS_Shape&                     shape,
-  const Handle(Transfer_FinderProcess)&   FP,
-  const Handle(Interface_InterfaceModel)& model,
-  const Standard_Integer                  modetrans,
+  const occ::handle<Transfer_FinderProcess>&   FP,
+  const occ::handle<Interface_InterfaceModel>& model,
+  const int                  modetrans,
   const Message_ProgressRange&            theProgress) const
 {
   if (shape.IsNull())
@@ -331,9 +333,9 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
 
 //=================================================================================================
 
-void XSControl_Controller::AddSessionItem(const Handle(Standard_Transient)& theItem,
-                                          const Standard_CString            theName,
-                                          const Standard_Boolean            toApply)
+void XSControl_Controller::AddSessionItem(const occ::handle<Standard_Transient>& theItem,
+                                          const char* const            theName,
+                                          const bool            toApply)
 {
   if (theItem.IsNull() || theName[0] == '\0')
     return;
@@ -344,9 +346,9 @@ void XSControl_Controller::AddSessionItem(const Handle(Standard_Transient)& theI
 
 //=================================================================================================
 
-Handle(Standard_Transient) XSControl_Controller::SessionItem(const Standard_CString theName) const
+occ::handle<Standard_Transient> XSControl_Controller::SessionItem(const char* const theName) const
 {
-  Handle(Standard_Transient) item;
+  occ::handle<Standard_Transient> item;
   if (!myAdaptorSession.IsEmpty())
     item = myAdaptorSession.Find(theName);
   return item;
@@ -354,14 +356,14 @@ Handle(Standard_Transient) XSControl_Controller::SessionItem(const Standard_CStr
 
 //=================================================================================================
 
-void XSControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
+void XSControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
 {
   WS->SetParams(myParams, myParamUses);
 
   // General
   if (!myAdaptorSession.IsEmpty())
   {
-    NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
       myAdaptorSession);
     for (; iter.More(); iter.Next())
       WS->AddNamedItem(iter.Key().ToCString(), iter.ChangeValue());
@@ -370,64 +372,64 @@ void XSControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
   if (WS->NamedItem("xst-model-all").IsNull())
   {
 
-    Handle(IFSelect_SelectModelEntities) sle = new IFSelect_SelectModelEntities;
+    occ::handle<IFSelect_SelectModelEntities> sle = new IFSelect_SelectModelEntities;
     WS->AddNamedItem("xst-model-all", sle);
 
-    Handle(IFSelect_SelectModelRoots) slr = new IFSelect_SelectModelRoots;
+    occ::handle<IFSelect_SelectModelRoots> slr = new IFSelect_SelectModelRoots;
     WS->AddNamedItem("xst-model-roots", slr);
 
     if (strcasecmp(WS->SelectedNorm(), "STEP"))
     {
-      Handle(XSControl_SelectForTransfer) st1 = new XSControl_SelectForTransfer;
+      occ::handle<XSControl_SelectForTransfer> st1 = new XSControl_SelectForTransfer;
       st1->SetInput(slr);
       st1->SetReader(WS->TransferReader());
       WS->AddNamedItem("xst-transferrable-roots", st1);
     }
 
-    Handle(XSControl_SelectForTransfer) st2 = new XSControl_SelectForTransfer;
+    occ::handle<XSControl_SelectForTransfer> st2 = new XSControl_SelectForTransfer;
     st2->SetInput(sle);
     st2->SetReader(WS->TransferReader());
     WS->AddNamedItem("xst-transferrable-all", st2);
 
-    Handle(XSControl_SignTransferStatus) strs = new XSControl_SignTransferStatus;
+    occ::handle<XSControl_SignTransferStatus> strs = new XSControl_SignTransferStatus;
     strs->SetReader(WS->TransferReader());
     WS->AddNamedItem("xst-transfer-status", strs);
 
-    Handle(XSControl_ConnectedShapes) scs = new XSControl_ConnectedShapes;
+    occ::handle<XSControl_ConnectedShapes> scs = new XSControl_ConnectedShapes;
     scs->SetReader(WS->TransferReader());
     WS->AddNamedItem("xst-connected-faces", scs);
 
-    Handle(IFSelect_SignType) stp = new IFSelect_SignType(Standard_False);
+    occ::handle<IFSelect_SignType> stp = new IFSelect_SignType(false);
     WS->AddNamedItem("xst-long-type", stp);
 
-    Handle(IFSelect_SignType) stc = new IFSelect_SignType(Standard_True);
+    occ::handle<IFSelect_SignType> stc = new IFSelect_SignType(true);
     WS->AddNamedItem("xst-type", stc);
 
     WS->AddNamedItem("xst-ancestor-type", new IFSelect_SignAncestor);
-    WS->AddNamedItem("xst-types", new IFSelect_SignCounter(stp, Standard_False, Standard_True));
+    WS->AddNamedItem("xst-types", new IFSelect_SignCounter(stp, false, true));
     WS->AddNamedItem("xst-category", new IFSelect_SignCategory);
     WS->AddNamedItem("xst-validity", new IFSelect_SignValidity);
 
-    Handle(IFSelect_DispPerOne) dispone = new IFSelect_DispPerOne;
+    occ::handle<IFSelect_DispPerOne> dispone = new IFSelect_DispPerOne;
     dispone->SetFinalSelection(slr);
     WS->AddNamedItem("xst-disp-one", dispone);
 
-    Handle(IFSelect_DispPerCount) dispcount = new IFSelect_DispPerCount;
-    Handle(IFSelect_IntParam)     intcount  = new IFSelect_IntParam;
+    occ::handle<IFSelect_DispPerCount> dispcount = new IFSelect_DispPerCount;
+    occ::handle<IFSelect_IntParam>     intcount  = new IFSelect_IntParam;
     intcount->SetValue(5);
     dispcount->SetCount(intcount);
     dispcount->SetFinalSelection(slr);
     WS->AddNamedItem("xst-disp-count", dispcount);
 
-    Handle(IFSelect_DispPerFiles) dispfiles = new IFSelect_DispPerFiles;
-    Handle(IFSelect_IntParam)     intfiles  = new IFSelect_IntParam;
+    occ::handle<IFSelect_DispPerFiles> dispfiles = new IFSelect_DispPerFiles;
+    occ::handle<IFSelect_IntParam>     intfiles  = new IFSelect_IntParam;
     intfiles->SetValue(10);
     dispfiles->SetCount(intfiles);
     dispfiles->SetFinalSelection(slr);
     WS->AddNamedItem("xst-disp-files", dispfiles);
 
-    Handle(IFSelect_DispPerSignature) dispsign = new IFSelect_DispPerSignature;
-    dispsign->SetSignCounter(new IFSelect_SignCounter(Handle(IFSelect_Signature)(stc)));
+    occ::handle<IFSelect_DispPerSignature> dispsign = new IFSelect_DispPerSignature;
+    dispsign->SetSignCounter(new IFSelect_SignCounter(occ::handle<IFSelect_Signature>(stc)));
     dispsign->SetFinalSelection(slr);
     WS->AddNamedItem("xst-disp-sign", dispsign);
 
@@ -442,11 +444,11 @@ void XSControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
   }
 
   // Applied Modifiers
-  Standard_Integer i, nb = myAdaptorApplied.Length();
+  int i, nb = myAdaptorApplied.Length();
   for (i = 1; i <= nb; i++)
   {
-    const Handle(Standard_Transient)& anitem = myAdaptorApplied.Value(i);
-    Handle(TCollection_HAsciiString)  name   = WS->Name(anitem);
+    const occ::handle<Standard_Transient>& anitem = myAdaptorApplied.Value(i);
+    occ::handle<TCollection_HAsciiString>  name   = WS->Name(anitem);
     WS->SetAppliedModifier(GetCasted(IFSelect_GeneralModifier, anitem), WS->ShareOut());
   }
 
@@ -454,10 +456,10 @@ void XSControl_Controller::Customise(Handle(XSControl_WorkSession)& WS)
   // Here for the specific manufacturers of controllers could create the
   // Parameters: So wait here
 
-  Handle(TColStd_HSequenceOfHAsciiString) listat = Interface_Static::Items();
-  Handle(IFSelect_ParamEditor)            paramed =
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> listat = Interface_Static::Items();
+  occ::handle<IFSelect_ParamEditor>            paramed =
     IFSelect_ParamEditor::StaticEditor(listat, "All Static Parameters");
   WS->AddNamedItem("xst-static-params-edit", paramed);
-  Handle(IFSelect_EditForm) paramform = paramed->Form(Standard_False);
+  occ::handle<IFSelect_EditForm> paramform = paramed->Form(false);
   WS->AddNamedItem("xst-static-params", paramform);
 }

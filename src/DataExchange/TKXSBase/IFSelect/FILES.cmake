@@ -42,7 +42,7 @@ set(OCCT_IFSelect_FILES
   IFSelect_GeneralModifier.hxx
   IFSelect_GraphCounter.cxx
   IFSelect_GraphCounter.hxx
-  IFSelect_HSeqOfSelection.hxx
+
   IFSelect_IntParam.cxx
   IFSelect_IntParam.hxx
   IFSelect_ListEditor.cxx
@@ -129,9 +129,7 @@ set(OCCT_IFSelect_FILES
   IFSelect_SelectUnion.hxx
   IFSelect_SelectUnknownEntities.cxx
   IFSelect_SelectUnknownEntities.hxx
-  IFSelect_SequenceOfAppliedModifiers.hxx
-  IFSelect_SequenceOfGeneralModifier.hxx
-  IFSelect_SequenceOfInterfaceModel.hxx
+
   IFSelect_SessionDumper.cxx
   IFSelect_SessionDumper.hxx
   IFSelect_SessionFile.cxx
@@ -162,8 +160,7 @@ set(OCCT_IFSelect_FILES
   IFSelect_Transformer.hxx
   IFSelect_TransformStandard.cxx
   IFSelect_TransformStandard.hxx
-  IFSelect_TSeqOfDispatch.hxx
-  IFSelect_TSeqOfSelection.hxx
+
   IFSelect_WorkLibrary.cxx
   IFSelect_WorkLibrary.hxx
   IFSelect_WorkSession.cxx

@@ -26,54 +26,54 @@ static char defmess[31];
 //  Satisfies functions offered as standard ...
 
 // svv #2
-// static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
+// static bool StaticPath(const occ::handle<TCollection_HAsciiString>& val)
 //{
 //   OSD_Path apath;
 //   return apath.IsValid (TCollection_AsciiString(val->ToCString()));
 // }
 
-Interface_Static::Interface_Static(const Standard_CString    family,
-                                   const Standard_CString    name,
+Interface_Static::Interface_Static(const char* const    family,
+                                   const char* const    name,
                                    const Interface_ParamType type,
-                                   const Standard_CString    init)
+                                   const char* const    init)
     : Interface_TypedValue(name, type, init),
       thefamily(family),
-      theupdate(Standard_True)
+      theupdate(true)
 {
 }
 
-Interface_Static::Interface_Static(const Standard_CString          family,
-                                   const Standard_CString          name,
-                                   const Handle(Interface_Static)& other)
+Interface_Static::Interface_Static(const char* const          family,
+                                   const char* const          name,
+                                   const occ::handle<Interface_Static>& other)
     : Interface_TypedValue(name, other->Type(), ""),
       thefamily(family),
-      theupdate(Standard_True)
+      theupdate(true)
 {
   switch (Type())
   {
     case Interface_ParamInteger: {
-      Standard_Integer lim;
-      if (other->IntegerLimit(Standard_True, lim))
-        SetIntegerLimit(Standard_True, lim);
-      if (other->IntegerLimit(Standard_False, lim))
-        SetIntegerLimit(Standard_False, lim);
+      int lim;
+      if (other->IntegerLimit(true, lim))
+        SetIntegerLimit(true, lim);
+      if (other->IntegerLimit(false, lim))
+        SetIntegerLimit(false, lim);
     }
     break;
     case Interface_ParamReal: {
-      Standard_Real lim;
-      if (other->RealLimit(Standard_True, lim))
-        SetRealLimit(Standard_True, lim);
-      if (other->RealLimit(Standard_False, lim))
-        SetRealLimit(Standard_False, lim);
+      double lim;
+      if (other->RealLimit(true, lim))
+        SetRealLimit(true, lim);
+      if (other->RealLimit(false, lim))
+        SetRealLimit(false, lim);
       SetUnitDef(other->UnitDef());
     }
     break;
     case Interface_ParamEnum: {
-      Standard_Boolean match;
-      Standard_Integer e0, e1, i;
+      bool match;
+      int e0, e1, i;
       other->EnumDef(e0, e1, match);
       StartEnum(e0, match);
-      //      if (e1 >= e0) theenums = new TColStd_HArray1OfAsciiString(e0,e1);
+      //      if (e1 >= e0) theenums = new NCollection_HArray1<TCollection_AsciiString>(e0,e1);
       for (i = e0; i <= e1; i++)
         AddEnum(other->EnumVal(i));
     }
@@ -105,17 +105,17 @@ void Interface_Static::PrintStatic(Standard_OStream& S) const
 
 //  #########    COMPLEMENTS    ##########
 
-Standard_CString Interface_Static::Family() const
+const char* Interface_Static::Family() const
 {
   return thefamily.ToCString();
 }
 
-Handle(Interface_Static) Interface_Static::Wild() const
+occ::handle<Interface_Static> Interface_Static::Wild() const
 {
   return thewild;
 }
 
-void Interface_Static::SetWild(const Handle(Interface_Static)& wild)
+void Interface_Static::SetWild(const occ::handle<Interface_Static>& wild)
 {
   thewild = wild;
 }
@@ -124,10 +124,10 @@ void Interface_Static::SetWild(const Handle(Interface_Static)& wild)
 
 void Interface_Static::SetUptodate()
 {
-  theupdate = Standard_True;
+  theupdate = true;
 }
 
-Standard_Boolean Interface_Static::UpdatedStatus() const
+bool Interface_Static::UpdatedStatus() const
 {
   return theupdate;
 }
@@ -135,35 +135,35 @@ Standard_Boolean Interface_Static::UpdatedStatus() const
 //  #######################################################################
 //  #########    STATICS DICTIONARY (static on Static)    ##########
 
-Standard_Boolean Interface_Static::Init(const Standard_CString    family,
-                                        const Standard_CString    name,
+bool Interface_Static::Init(const char* const    family,
+                                        const char* const    name,
                                         const Interface_ParamType type,
-                                        const Standard_CString    init)
+                                        const char* const    init)
 {
   if (name[0] == '\0')
-    return Standard_False;
+    return false;
 
   if (MoniTool_TypedValue::Stats().IsBound(name))
-    return Standard_False;
-  Handle(Interface_Static) item;
+    return false;
+  occ::handle<Interface_Static> item;
   if (type == Interface_ParamMisc)
   {
-    Handle(Interface_Static) other = Interface_Static::Static(init);
+    occ::handle<Interface_Static> other = Interface_Static::Static(init);
     if (other.IsNull())
-      return Standard_False;
+      return false;
     item = new Interface_Static(family, name, other);
   }
   else
     item = new Interface_Static(family, name, type, init);
 
   MoniTool_TypedValue::Stats().Bind(name, item);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Interface_Static::Init(const Standard_CString   family,
-                                        const Standard_CString   name,
-                                        const Standard_Character type,
-                                        const Standard_CString   init)
+bool Interface_Static::Init(const char* const   family,
+                                        const char* const   name,
+                                        const char type,
+                                        const char* const   init)
 {
   Interface_ParamType epyt;
   switch (type)
@@ -190,68 +190,68 @@ Standard_Boolean Interface_Static::Init(const Standard_CString   family,
       epyt = Interface_ParamMisc;
       break;
     case '&': {
-      Handle(Interface_Static) unstat = Interface_Static::Static(name);
+      occ::handle<Interface_Static> unstat = Interface_Static::Static(name);
       if (unstat.IsNull())
-        return Standard_False;
+        return false;
       //    Editions : init gives a small edition text, in 2 terms "cmd var" :
       //  imin <ival>  imax <ival>  rmin <rval>  rmax <rval>  unit <def>
       //  enum <from>  ematch <from>  eval <cval>
-      Standard_Integer i, iblc = 0;
+      int i, iblc = 0;
       for (i = 0; init[i] != '\0'; i++)
         if (init[i] == ' ')
           iblc = i + 1;
       //  Recognition of the sub-case and routing
       if (init[0] == 'i' && init[2] == 'i')
-        unstat->SetIntegerLimit(Standard_False, atoi(&init[iblc]));
+        unstat->SetIntegerLimit(false, atoi(&init[iblc]));
       else if (init[0] == 'i' && init[2] == 'a')
-        unstat->SetIntegerLimit(Standard_True, atoi(&init[iblc]));
+        unstat->SetIntegerLimit(true, atoi(&init[iblc]));
       else if (init[0] == 'r' && init[2] == 'i')
-        unstat->SetRealLimit(Standard_False, Atof(&init[iblc]));
+        unstat->SetRealLimit(false, Atof(&init[iblc]));
       else if (init[0] == 'r' && init[2] == 'a')
-        unstat->SetRealLimit(Standard_True, Atof(&init[iblc]));
+        unstat->SetRealLimit(true, Atof(&init[iblc]));
       else if (init[0] == 'u')
         unstat->SetUnitDef(&init[iblc]);
       else if (init[0] == 'e' && init[1] == 'm')
-        unstat->StartEnum(atoi(&init[iblc]), Standard_True);
+        unstat->StartEnum(atoi(&init[iblc]), true);
       else if (init[0] == 'e' && init[1] == 'n')
-        unstat->StartEnum(atoi(&init[iblc]), Standard_False);
+        unstat->StartEnum(atoi(&init[iblc]), false);
       else if (init[0] == 'e' && init[1] == 'v')
         unstat->AddEnum(&init[iblc]);
       else
-        return Standard_False;
-      return Standard_True;
+        return false;
+      return true;
     }
     default:
-      return Standard_False;
+      return false;
   }
   if (!Interface_Static::Init(family, name, epyt, init))
-    return Standard_False;
+    return false;
   if (type != 'p')
-    return Standard_True;
-  Handle(Interface_Static) stat = Interface_Static::Static(name);
+    return true;
+  occ::handle<Interface_Static> stat = Interface_Static::Static(name);
   // NT  stat->SetSatisfies (StaticPath,"Path");
   if (!stat->Satisfies(stat->HStringValue()))
     stat->SetCStringValue("");
-  return Standard_True;
+  return true;
 }
 
-Handle(Interface_Static) Interface_Static::Static(const Standard_CString name)
+occ::handle<Interface_Static> Interface_Static::Static(const char* const name)
 {
-  Handle(Standard_Transient) result;
+  occ::handle<Standard_Transient> result;
   MoniTool_TypedValue::Stats().Find(name, result);
-  return Handle(Interface_Static)::DownCast(result);
+  return occ::down_cast<Interface_Static>(result);
 }
 
-Standard_Boolean Interface_Static::IsPresent(const Standard_CString name)
+bool Interface_Static::IsPresent(const char* const name)
 {
   return MoniTool_TypedValue::Stats().IsBound(name);
 }
 
-Standard_CString Interface_Static::CDef(const Standard_CString name, const Standard_CString part)
+const char* Interface_Static::CDef(const char* const name, const char* const part)
 {
   if (!part || part[0] == '\0')
     return "";
-  Handle(Interface_Static) stat = Interface_Static::Static(name);
+  occ::handle<Interface_Static> stat = Interface_Static::Static(name);
   if (stat.IsNull())
     return "";
   if (part[0] == 'f' && part[1] == 'a')
@@ -275,13 +275,13 @@ Standard_CString Interface_Static::CDef(const Standard_CString name, const Stand
   }
   if (part[0] == 'e')
   {
-    Standard_Integer nume = 0;
+    int nume = 0;
     sscanf(part, "%30s %d", defmess, &nume);
     return stat->EnumVal(nume);
   }
   if (part[0] == 'i')
   {
-    Standard_Integer ilim;
+    int ilim;
     if (!stat->IntegerLimit((part[2] == 'a'), ilim))
       return "";
     Sprintf(defmess, "%d", ilim);
@@ -289,7 +289,7 @@ Standard_CString Interface_Static::CDef(const Standard_CString name, const Stand
   }
   if (part[0] == 'r')
   {
-    Standard_Real rlim;
+    double rlim;
     if (!stat->RealLimit((part[2] == 'a'), rlim))
       return "";
     Sprintf(defmess, "%f", rlim);
@@ -300,24 +300,24 @@ Standard_CString Interface_Static::CDef(const Standard_CString name, const Stand
   return "";
 }
 
-Standard_Integer Interface_Static::IDef(const Standard_CString name, const Standard_CString part)
+int Interface_Static::IDef(const char* const name, const char* const part)
 {
   if (!part || part[0] == '\0')
     return 0;
-  Handle(Interface_Static) stat = Interface_Static::Static(name);
+  occ::handle<Interface_Static> stat = Interface_Static::Static(name);
   if (stat.IsNull())
     return 0;
   if (part[0] == 'i')
   {
-    Standard_Integer ilim;
+    int ilim;
     if (!stat->IntegerLimit((part[2] == 'a'), ilim))
       return 0;
     return ilim;
   }
   if (part[0] == 'e')
   {
-    Standard_Integer startcase, endcase;
-    Standard_Boolean match;
+    int startcase, endcase;
+    bool match;
     stat->EnumDef(startcase, endcase, match);
     if (part[1] == 's')
       return startcase;
@@ -337,22 +337,22 @@ Standard_Integer Interface_Static::IDef(const Standard_CString name, const Stand
 
 //  ##########  CURRENT VALUE  ###########
 
-Standard_Boolean Interface_Static::IsSet(const Standard_CString name, const Standard_Boolean proper)
+bool Interface_Static::IsSet(const char* const name, const bool proper)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   if (item->IsSetValue())
-    return Standard_True;
+    return true;
   if (proper)
-    return Standard_False;
+    return false;
   item = item->Wild();
   return item->IsSetValue();
 }
 
-Standard_CString Interface_Static::CVal(const Standard_CString name)
+const char* Interface_Static::CVal(const char* const name)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -363,9 +363,9 @@ Standard_CString Interface_Static::CVal(const Standard_CString name)
   return item->CStringValue();
 }
 
-Standard_Integer Interface_Static::IVal(const Standard_CString name)
+int Interface_Static::IVal(const char* const name)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -376,9 +376,9 @@ Standard_Integer Interface_Static::IVal(const Standard_CString name)
   return item->IntegerValue();
 }
 
-Standard_Real Interface_Static::RVal(const Standard_CString name)
+double Interface_Static::RVal(const char* const name)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -389,74 +389,74 @@ Standard_Real Interface_Static::RVal(const Standard_CString name)
   return item->RealValue();
 }
 
-Standard_Boolean Interface_Static::SetCVal(const Standard_CString name, const Standard_CString val)
+bool Interface_Static::SetCVal(const char* const name, const char* const val)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   return item->SetCStringValue(val);
 }
 
-Standard_Boolean Interface_Static::SetIVal(const Standard_CString name, const Standard_Integer val)
+bool Interface_Static::SetIVal(const char* const name, const int val)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   if (!item->SetIntegerValue(val))
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
-Standard_Boolean Interface_Static::SetRVal(const Standard_CString name, const Standard_Real val)
+bool Interface_Static::SetRVal(const char* const name, const double val)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   return item->SetRealValue(val);
 }
 
 //    UPDATE
 
-Standard_Boolean Interface_Static::Update(const Standard_CString name)
+bool Interface_Static::Update(const char* const name)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   item->SetUptodate();
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Interface_Static::IsUpdated(const Standard_CString name)
+bool Interface_Static::IsUpdated(const char* const name)
 {
-  Handle(Interface_Static) item = Interface_Static::Static(name);
+  occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
-    return Standard_False;
+    return false;
   return item->UpdatedStatus();
 }
 
-Handle(TColStd_HSequenceOfHAsciiString) Interface_Static::Items(const Standard_Integer mode,
-                                                                const Standard_CString criter)
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Static::Items(const int mode,
+                                                                const char* const criter)
 {
-  Standard_Integer                        modup = (mode / 100); // 0 any, 1 non-update, 2 update
-  Handle(TColStd_HSequenceOfHAsciiString) list  = new TColStd_HSequenceOfHAsciiString();
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(
+  int                        modup = (mode / 100); // 0 any, 1 non-update, 2 update
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list  = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
     MoniTool_TypedValue::Stats());
   for (; iter.More(); iter.Next())
   {
-    Handle(Interface_Static) item = Handle(Interface_Static)::DownCast(iter.Value());
+    occ::handle<Interface_Static> item = occ::down_cast<Interface_Static>(iter.Value());
     if (item.IsNull())
       continue;
-    Standard_Boolean ok = Standard_True;
+    bool ok = true;
     if (criter[0] == '$' && criter[1] == '\0')
     {
       if ((item->Family())[0] != '$')
-        ok = Standard_False;
+        ok = false;
     }
     else if (criter[0] != '\0')
     {
       if (strcmp(criter, item->Family()))
         continue;
-      ok = Standard_True;
+      ok = true;
     }
     else
     { // all ... except family with $
@@ -483,15 +483,15 @@ void Interface_Static::FillMap(
 {
   theMap.Clear();
 
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& aMap =
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& aMap =
     MoniTool_TypedValue::Stats();
 
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator anIt(
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator anIt(
          aMap);
        anIt.More();
        anIt.Next())
   {
-    Handle(Interface_Static) aValue = Handle(Interface_Static)::DownCast(anIt.Value());
+    occ::handle<Interface_Static> aValue = occ::down_cast<Interface_Static>(anIt.Value());
     if (aValue.IsNull())
     {
       continue;

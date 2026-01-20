@@ -20,16 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <MAT_SequenceOfArc.hxx>
+#include <MAT_Arc.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT_Side.hxx>
 class MAT_BasicElt;
 class MAT_Arc;
 class MAT_Node;
-
-class MAT_Zone;
-DEFINE_STANDARD_HANDLE(MAT_Zone, Standard_Transient)
 
 //! Definition of Zone of Proximity of a BasicElt :
 //! ----------------------------------------------
@@ -42,34 +40,33 @@ public:
   Standard_EXPORT MAT_Zone();
 
   //! Compute the frontier of the Zone of proximity.
-  Standard_EXPORT MAT_Zone(const Handle(MAT_BasicElt)& aBasicElt);
+  Standard_EXPORT MAT_Zone(const occ::handle<MAT_BasicElt>& aBasicElt);
 
   //! Compute the frontier of the Zone of proximity.
-  Standard_EXPORT void Perform(const Handle(MAT_BasicElt)& aBasicElt);
+  Standard_EXPORT void Perform(const occ::handle<MAT_BasicElt>& aBasicElt);
 
   //! Return the number Of Arcs On the frontier of <me>.
-  Standard_EXPORT Standard_Integer NumberOfArcs() const;
+  Standard_EXPORT int NumberOfArcs() const;
 
   //! Return the Arc number <Index> on the frontier.
   //! of <me>.
-  Standard_EXPORT Handle(MAT_Arc) ArcOnFrontier(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<MAT_Arc> ArcOnFrontier(const int Index) const;
 
   //! Return TRUE if <me> is not empty .
-  Standard_EXPORT Standard_Boolean NoEmptyZone() const;
+  Standard_EXPORT bool NoEmptyZone() const;
 
   //! Return TRUE if <me> is Limited.
-  Standard_EXPORT Standard_Boolean Limited() const;
+  Standard_EXPORT bool Limited() const;
 
   DEFINE_STANDARD_RTTIEXT(MAT_Zone, Standard_Transient)
 
-protected:
 private:
-  Standard_EXPORT Handle(MAT_Node) NodeForTurn(const Handle(MAT_Arc)&      anArc,
-                                               const Handle(MAT_BasicElt)& aBasicElt,
+  Standard_EXPORT occ::handle<MAT_Node> NodeForTurn(const occ::handle<MAT_Arc>&      anArc,
+                                               const occ::handle<MAT_BasicElt>& aBasicElt,
                                                const MAT_Side              aSide) const;
 
-  MAT_SequenceOfArc frontier;
-  Standard_Boolean  limited;
+  NCollection_Sequence<occ::handle<MAT_Arc>> frontier;
+  bool  limited;
 };
 
 #endif // _MAT_Zone_HeaderFile

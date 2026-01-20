@@ -28,9 +28,13 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_FindHasher.hxx>
@@ -39,16 +43,17 @@
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_StatusResult.hxx>
 #include <Transfer_TransferFailure.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <Transfer_Binder.hxx>
 #include <Transfer_VoidBinder.hxx>
 
 //=================================================================================================
 
-Transfer_ProcessForTransient::Transfer_ProcessForTransient(const Standard_Integer nb)
+Transfer_ProcessForTransient::Transfer_ProcessForTransient(const int nb)
     : themap(nb)
 {
-  theerrh      = Standard_True;
-  therootm     = Standard_False;
+  theerrh      = true;
+  therootm     = false;
   thelevel     = 0;
   therootl     = 0;
   themessenger = Message::DefaultMessenger();
@@ -59,12 +64,12 @@ Transfer_ProcessForTransient::Transfer_ProcessForTransient(const Standard_Intege
 //=================================================================================================
 
 Transfer_ProcessForTransient::Transfer_ProcessForTransient(
-  const Handle(Message_Messenger)& messenger,
-  const Standard_Integer           nb)
+  const occ::handle<Message_Messenger>& messenger,
+  const int           nb)
     : themap(nb)
 {
-  theerrh  = Standard_True;
-  therootm = Standard_False;
+  theerrh  = true;
+  therootm = false;
   thelevel = 0;
   therootl = 0;
   SetMessenger(messenger);
@@ -89,8 +94,8 @@ void Transfer_ProcessForTransient::Clear()
 
 void Transfer_ProcessForTransient::Clean()
 {
-  Standard_Integer i, nb  = NbMapped();
-  Standard_Integer j, unb = 0;
+  int i, nb  = NbMapped();
+  int j, unb = 0;
   for (i = 1; i <= nb; i++)
   {
     if (themap(i).IsNull())
@@ -100,13 +105,13 @@ void Transfer_ProcessForTransient::Clean()
     return;
 
   // Redo the map -> offsets
-  TColStd_Array1OfInteger unbs(1, nb);
+  NCollection_Array1<int> unbs(1, nb);
   unbs.Init(0);
-  Transfer_TransferMapOfProcessForTransient newmap(nb * 2);
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Transfer_Binder>> newmap(nb * 2);
   for (i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) ent = Mapped(i);
-    Handle(Transfer_Binder)    bnd = MapItem(i);
+    occ::handle<Standard_Transient> ent = Mapped(i);
+    occ::handle<Transfer_Binder>    bnd = MapItem(i);
     if (bnd.IsNull())
       continue;
     j = newmap.Add(ent, bnd);
@@ -115,11 +120,11 @@ void Transfer_ProcessForTransient::Clean()
   themap.Assign(newmap);
 
   // Update Root List
-  TColStd_IndexedMapOfInteger aNewRoots;
+  NCollection_IndexedMap<int> aNewRoots;
   for (i = 1; i <= theroots.Extent(); i++)
   {
     j                  = theroots.FindKey(i);
-    Standard_Integer k = unbs.Value(j);
+    int k = unbs.Value(j);
     if (k)
       aNewRoots.Add(k);
   }
@@ -134,7 +139,7 @@ void Transfer_ProcessForTransient::Clean()
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::Resize(const Standard_Integer nb)
+void Transfer_ProcessForTransient::Resize(const int nb)
 {
   if (nb > themap.NbBuckets())
     themap.ReSize(nb);
@@ -143,7 +148,7 @@ void Transfer_ProcessForTransient::Resize(const Standard_Integer nb)
 //=================================================================================================
 
 void Transfer_ProcessForTransient::SetActor(
-  const Handle(Transfer_ActorOfProcessForTransient)& actor)
+  const occ::handle<Transfer_ActorOfProcessForTransient>& actor)
 {
   if (theactor == actor)
     return;
@@ -162,47 +167,47 @@ void Transfer_ProcessForTransient::SetActor(
 
 //=================================================================================================
 
-Handle(Transfer_ActorOfProcessForTransient) Transfer_ProcessForTransient::Actor() const
+occ::handle<Transfer_ActorOfProcessForTransient> Transfer_ProcessForTransient::Actor() const
 {
   return theactor;
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::Find(
-  const Handle(Standard_Transient)& start) const
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::Find(
+  const occ::handle<Standard_Transient>& start) const
 {
   if (thelastobj == start)
   {
     if (theindex > 0)
       return thelastbnd;
   }
-  Standard_Integer index = themap.FindIndex(start);
+  int index = themap.FindIndex(start);
   if (index > 0)
   {
-    const Handle(Transfer_Binder)& binder = themap.FindFromIndex(index);
+    const occ::handle<Transfer_Binder>& binder = themap.FindFromIndex(index);
     return binder;
   }
-  return Handle(Transfer_Binder)();
+  return occ::handle<Transfer_Binder>();
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::IsBound(
-  const Handle(Standard_Transient)& start) const
+bool Transfer_ProcessForTransient::IsBound(
+  const occ::handle<Standard_Transient>& start) const
 {
-  Handle(Transfer_Binder) binder = Find(start);
+  occ::handle<Transfer_Binder> binder = Find(start);
   if (binder.IsNull())
-    return Standard_False;
+    return false;
   return binder->HasResult();
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::IsAlreadyUsed(
-  const Handle(Standard_Transient)& start) const
+bool Transfer_ProcessForTransient::IsAlreadyUsed(
+  const occ::handle<Standard_Transient>& start) const
 {
-  Handle(Transfer_Binder) binder = Find(start);
+  occ::handle<Transfer_Binder> binder = Find(start);
   if (binder.IsNull())
   {
     StartTrace(binder, start, thelevel, 4);
@@ -214,8 +219,8 @@ Standard_Boolean Transfer_ProcessForTransient::IsAlreadyUsed(
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::FindAndMask(
-  const Handle(Standard_Transient)& start)
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::FindAndMask(
+  const occ::handle<Standard_Transient>& start)
 {
   if (thelastobj == start)
   {
@@ -233,12 +238,12 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::FindAndMask(
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::Bind(const Handle(Standard_Transient)& start,
-                                        const Handle(Transfer_Binder)&    binder)
+void Transfer_ProcessForTransient::Bind(const occ::handle<Standard_Transient>& start,
+                                        const occ::handle<Transfer_Binder>&    binder)
 {
   if (binder.IsNull())
     return;
-  Handle(Transfer_Binder) former = FindAndMask(start);
+  occ::handle<Transfer_Binder> former = FindAndMask(start);
   if (!former.IsNull())
   {
     // We admit VoidBinder: then we resume our Check
@@ -276,28 +281,28 @@ void Transfer_ProcessForTransient::Bind(const Handle(Standard_Transient)& start,
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::Rebind(const Handle(Standard_Transient)& start,
-                                          const Handle(Transfer_Binder)&    binder)
+void Transfer_ProcessForTransient::Rebind(const occ::handle<Standard_Transient>& start,
+                                          const occ::handle<Transfer_Binder>&    binder)
 {
   Bind(start, binder);
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::Unbind(const Handle(Standard_Transient)& start)
+bool Transfer_ProcessForTransient::Unbind(const occ::handle<Standard_Transient>& start)
 {
-  Handle(Transfer_Binder) former = FindAndMask(start);
+  occ::handle<Transfer_Binder> former = FindAndMask(start);
   if (theindex == 0)
-    return Standard_False;
+    return false;
   if (former.IsNull())
-    return Standard_False;
+    return false;
   if (former->DynamicType() == STANDARD_TYPE(Transfer_VoidBinder))
-    return Standard_True;
+    return true;
   themap(theindex) = thelastbnd;
   if (theroots.Contains(theindex))
   {
-    TColStd_IndexedMapOfInteger aNewRoots;
-    for (Standard_Integer i = 1; i <= theroots.Extent(); i++)
+    NCollection_IndexedMap<int> aNewRoots;
+    for (int i = 1; i <= theroots.Extent(); i++)
       if (theindex != theroots.FindKey(i))
         aNewRoots.Add(theroots.FindKey(i));
 
@@ -308,15 +313,15 @@ Standard_Boolean Transfer_ProcessForTransient::Unbind(const Handle(Standard_Tran
   thelastobj.Nullify();
   thelastbnd.Nullify();
   theindex = 0;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::FindElseBind(
-  const Handle(Standard_Transient)& start)
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::FindElseBind(
+  const occ::handle<Standard_Transient>& start)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (!binder.IsNull())
     return binder;
   binder = new Transfer_VoidBinder;
@@ -326,7 +331,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::FindElseBind(
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SetMessenger(const Handle(Message_Messenger)& messenger)
+void Transfer_ProcessForTransient::SetMessenger(const occ::handle<Message_Messenger>& messenger)
 {
   if (messenger.IsNull())
     themessenger = Message::DefaultMessenger();
@@ -336,28 +341,28 @@ void Transfer_ProcessForTransient::SetMessenger(const Handle(Message_Messenger)&
 
 //=================================================================================================
 
-Handle(Message_Messenger) Transfer_ProcessForTransient::Messenger() const
+occ::handle<Message_Messenger> Transfer_ProcessForTransient::Messenger() const
 {
   return themessenger;
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SetTraceLevel(const Standard_Integer tracelev)
+void Transfer_ProcessForTransient::SetTraceLevel(const int tracelev)
 {
   thetrace = tracelev;
 }
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::TraceLevel() const
+int Transfer_ProcessForTransient::TraceLevel() const
 {
   return thetrace;
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SendFail(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::SendFail(const occ::handle<Standard_Transient>& start,
                                             const Message_Msg&                amsg)
 {
   AddFail(start, amsg);
@@ -365,7 +370,7 @@ void Transfer_ProcessForTransient::SendFail(const Handle(Standard_Transient)& st
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SendWarning(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::SendWarning(const occ::handle<Standard_Transient>& start,
                                                const Message_Msg&                amsg)
 {
   AddWarning(start, amsg);
@@ -373,10 +378,10 @@ void Transfer_ProcessForTransient::SendWarning(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SendMsg(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::SendMsg(const occ::handle<Standard_Transient>& start,
                                            const Message_Msg&                amsg)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
   {
     binder = new Transfer_VoidBinder;
@@ -396,11 +401,11 @@ void Transfer_ProcessForTransient::SendMsg(const Handle(Standard_Transient)& sta
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddFail(const Handle(Standard_Transient)& start,
-                                           const Standard_CString            mess,
-                                           const Standard_CString            orig)
+void Transfer_ProcessForTransient::AddFail(const occ::handle<Standard_Transient>& start,
+                                           const char* const            mess,
+                                           const char* const            orig)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
   {
     binder = new Transfer_VoidBinder;
@@ -420,16 +425,16 @@ void Transfer_ProcessForTransient::AddFail(const Handle(Standard_Transient)& sta
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddError(const Handle(Standard_Transient)& start,
-                                            const Standard_CString            mess,
-                                            const Standard_CString            orig)
+void Transfer_ProcessForTransient::AddError(const occ::handle<Standard_Transient>& start,
+                                            const char* const            mess,
+                                            const char* const            orig)
 {
   AddFail(start, mess, orig);
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddFail(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::AddFail(const occ::handle<Standard_Transient>& start,
                                            const Message_Msg&                amsg)
 {
   if (amsg.IsEdited())
@@ -442,11 +447,11 @@ void Transfer_ProcessForTransient::AddFail(const Handle(Standard_Transient)& sta
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddWarning(const Handle(Standard_Transient)& start,
-                                              const Standard_CString            mess,
-                                              const Standard_CString            orig)
+void Transfer_ProcessForTransient::AddWarning(const occ::handle<Standard_Transient>& start,
+                                              const char* const            mess,
+                                              const char* const            orig)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
   {
     binder = new Transfer_VoidBinder;
@@ -466,7 +471,7 @@ void Transfer_ProcessForTransient::AddWarning(const Handle(Standard_Transient)& 
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddWarning(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::AddWarning(const occ::handle<Standard_Transient>& start,
                                               const Message_Msg&                amsg)
 {
   if (amsg.IsEdited())
@@ -479,25 +484,25 @@ void Transfer_ProcessForTransient::AddWarning(const Handle(Standard_Transient)& 
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::Mend(const Handle(Standard_Transient)& start,
-                                        const Standard_CString            pref)
+void Transfer_ProcessForTransient::Mend(const occ::handle<Standard_Transient>& start,
+                                        const char* const            pref)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
     return;
-  Handle(Interface_Check) ach = binder->CCheck();
+  occ::handle<Interface_Check> ach = binder->CCheck();
   ach->Mend(pref);
 }
 
 //=================================================================================================
 
-Handle(Interface_Check) Transfer_ProcessForTransient::Check(
-  const Handle(Standard_Transient)& start) const
+occ::handle<Interface_Check> Transfer_ProcessForTransient::Check(
+  const occ::handle<Standard_Transient>& start) const
 {
-  const Handle(Transfer_Binder)& binder = Find(start);
+  const occ::handle<Transfer_Binder>& binder = Find(start);
   if (binder.IsNull())
   {
-    Handle(Interface_Check) check;
+    occ::handle<Interface_Check> check;
     return check;
   }
   return binder->Check();
@@ -505,14 +510,14 @@ Handle(Interface_Check) Transfer_ProcessForTransient::Check(
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::BindTransient(const Handle(Standard_Transient)& start,
-                                                 const Handle(Standard_Transient)& res)
+void Transfer_ProcessForTransient::BindTransient(const occ::handle<Standard_Transient>& start,
+                                                 const occ::handle<Standard_Transient>& res)
 {
   if (res.IsNull())
     return;
-  Handle(Transfer_Binder)                  former = Find(start);
-  Handle(Transfer_SimpleBinderOfTransient) binder =
-    Handle(Transfer_SimpleBinderOfTransient)::DownCast(former);
+  occ::handle<Transfer_Binder>                  former = Find(start);
+  occ::handle<Transfer_SimpleBinderOfTransient> binder =
+    occ::down_cast<Transfer_SimpleBinderOfTransient>(former);
   if (!binder.IsNull())
   {
     if (binder->Status() == Transfer_StatusVoid)
@@ -531,12 +536,12 @@ void Transfer_ProcessForTransient::BindTransient(const Handle(Standard_Transient
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_ProcessForTransient::FindTransient(
-  const Handle(Standard_Transient)& start) const
+const occ::handle<Standard_Transient>& Transfer_ProcessForTransient::FindTransient(
+  const occ::handle<Standard_Transient>& start) const
 {
-  static const Handle(Standard_Transient)  aDummy;
-  Handle(Transfer_SimpleBinderOfTransient) binder =
-    Handle(Transfer_SimpleBinderOfTransient)::DownCast(Find(start));
+  static const occ::handle<Standard_Transient>  aDummy;
+  occ::handle<Transfer_SimpleBinderOfTransient> binder =
+    occ::down_cast<Transfer_SimpleBinderOfTransient>(Find(start));
   if (binder.IsNull())
     return aDummy;
   if (!binder->HasResult())
@@ -546,9 +551,9 @@ const Handle(Standard_Transient)& Transfer_ProcessForTransient::FindTransient(
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::BindMultiple(const Handle(Standard_Transient)& start)
+void Transfer_ProcessForTransient::BindMultiple(const occ::handle<Standard_Transient>& start)
 {
-  Handle(Transfer_Binder) binder = FindAndMask(start);
+  occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (!binder.IsNull())
   {
     if (!binder->IsKind(STANDARD_TYPE(Transfer_MultipleBinder)))
@@ -563,11 +568,11 @@ void Transfer_ProcessForTransient::BindMultiple(const Handle(Standard_Transient)
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::AddMultiple(const Handle(Standard_Transient)& start,
-                                               const Handle(Standard_Transient)& res)
+void Transfer_ProcessForTransient::AddMultiple(const occ::handle<Standard_Transient>& start,
+                                               const occ::handle<Standard_Transient>& res)
 {
-  Handle(Transfer_Binder)         binder = FindAndMask(start);
-  Handle(Transfer_MultipleBinder) multr  = Handle(Transfer_MultipleBinder)::DownCast(binder);
+  occ::handle<Transfer_Binder>         binder = FindAndMask(start);
+  occ::handle<Transfer_MultipleBinder> multr  = occ::down_cast<Transfer_MultipleBinder>(binder);
   if (multr.IsNull())
   {
     StartTrace(binder, start, thelevel, 4);
@@ -581,60 +586,60 @@ void Transfer_ProcessForTransient::AddMultiple(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::FindTypedTransient(
-  const Handle(Standard_Transient)& start,
-  const Handle(Standard_Type)&      atype,
-  Handle(Standard_Transient)&       val) const
+bool Transfer_ProcessForTransient::FindTypedTransient(
+  const occ::handle<Standard_Transient>& start,
+  const occ::handle<Standard_Type>&      atype,
+  occ::handle<Standard_Transient>&       val) const
 {
   return GetTypedTransient(Find(start), atype, val);
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::GetTypedTransient(
-  const Handle(Transfer_Binder)& binder,
-  const Handle(Standard_Type)&   atype,
-  Handle(Standard_Transient)&    val) const
+bool Transfer_ProcessForTransient::GetTypedTransient(
+  const occ::handle<Transfer_Binder>& binder,
+  const occ::handle<Standard_Type>&   atype,
+  occ::handle<Standard_Transient>&    val) const
 {
   return Transfer_SimpleBinderOfTransient::GetTypedResult(binder, atype, val);
 }
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::NbMapped() const
+int Transfer_ProcessForTransient::NbMapped() const
 {
   return themap.Extent();
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_ProcessForTransient::Mapped(
-  const Standard_Integer num) const
+const occ::handle<Standard_Transient>& Transfer_ProcessForTransient::Mapped(
+  const int num) const
 {
   return themap.FindKey(num);
 }
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::MapIndex(
-  const Handle(Standard_Transient)& start) const
+int Transfer_ProcessForTransient::MapIndex(
+  const occ::handle<Standard_Transient>& start) const
 {
   return themap.FindIndex(start);
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::MapItem(const Standard_Integer num) const
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::MapItem(const int num) const
 {
-  Handle(Transfer_Binder) binder = themap.FindFromIndex(num);
+  occ::handle<Transfer_Binder> binder = themap.FindFromIndex(num);
   return binder;
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SetRoot(const Handle(Standard_Transient)& start)
+void Transfer_ProcessForTransient::SetRoot(const occ::handle<Standard_Transient>& start)
 {
-  Standard_Integer index = MapIndex(start);
+  int index = MapIndex(start);
   if (index == 0)
   {
     return;
@@ -647,24 +652,24 @@ void Transfer_ProcessForTransient::SetRoot(const Handle(Standard_Transient)& sta
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SetRootManagement(const Standard_Boolean stat)
+void Transfer_ProcessForTransient::SetRootManagement(const bool stat)
 {
   therootm = stat;
 }
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::NbRoots() const
+int Transfer_ProcessForTransient::NbRoots() const
 {
   return theroots.Extent();
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_ProcessForTransient::Root(
-  const Standard_Integer num) const
+const occ::handle<Standard_Transient>& Transfer_ProcessForTransient::Root(
+  const int num) const
 {
-  Standard_Integer ind = 0;
+  int ind = 0;
   if (num > 0 && num <= theroots.Extent())
     ind = theroots.FindKey(num);
   return themap.FindKey(ind);
@@ -672,9 +677,9 @@ const Handle(Standard_Transient)& Transfer_ProcessForTransient::Root(
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::RootItem(const Standard_Integer num) const
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::RootItem(const int num) const
 {
-  Standard_Integer ind = 0;
+  int ind = 0;
   if (num > 0 && num <= theroots.Extent())
     ind = theroots.FindKey(num);
   return themap.FindFromIndex(ind);
@@ -682,10 +687,10 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::RootItem(const Standard_In
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::RootIndex(
-  const Handle(Standard_Transient)& start) const
+int Transfer_ProcessForTransient::RootIndex(
+  const occ::handle<Standard_Transient>& start) const
 {
-  Standard_Integer index = MapIndex(start);
+  int index = MapIndex(start);
   if (index == 0)
     return 0;
   return theroots.FindIndex(index);
@@ -693,7 +698,7 @@ Standard_Integer Transfer_ProcessForTransient::RootIndex(
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::NestingLevel() const
+int Transfer_ProcessForTransient::NestingLevel() const
 {
   return thelevel;
 }
@@ -707,30 +712,30 @@ void Transfer_ProcessForTransient::ResetNestingLevel()
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::Recognize(
-  const Handle(Standard_Transient)& start) const
+bool Transfer_ProcessForTransient::Recognize(
+  const occ::handle<Standard_Transient>& start) const
 {
-  Handle(Transfer_ActorOfProcessForTransient) actor = theactor;
+  occ::handle<Transfer_ActorOfProcessForTransient> actor = theactor;
   // We scan the Next until we have a Result
   while (!actor.IsNull())
   {
     if (actor->Recognize(start))
-      return Standard_True;
+      return true;
     actor = actor->Next();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
-  const Handle(Standard_Transient)& start,
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::Transferring(
+  const occ::handle<Standard_Transient>& start,
   const Message_ProgressRange&      theProgress)
 {
-  Handle(Transfer_Binder) former = FindAndMask(start);
+  occ::handle<Transfer_Binder> former = FindAndMask(start);
   // We consider that this new Transfer request therefore corresponds to a
   // additional use: note "AlreadyUsed", therefore non-modifiable result
-  Standard_Boolean hasDeadLoop = Standard_False;
+  bool hasDeadLoop = false;
   if (!former.IsNull())
   {
     if (former->HasResult())
@@ -768,15 +773,15 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
         }
         else
           StartTrace(former, start, thelevel, 4);
-        hasDeadLoop = Standard_True;
+        hasDeadLoop = true;
         break;
     }
     if (!hasDeadLoop)
       former->SetStatusExec(Transfer_StatusRun);
   }
 
-  Handle(Transfer_Binder) binder;
-  Standard_Boolean        newbind = Standard_False;
+  occ::handle<Transfer_Binder> binder;
+  bool        newbind = false;
 
   // Handle dead loop condition detected before calling TransferProduct
   // When hasDeadLoop is true, we know:
@@ -801,7 +806,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
     Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
 
     // Transfer under protection for exceptions (for notification in fact)
-    Standard_Integer oldlev = thelevel;
+    int oldlev = thelevel;
     try
     {
       OCC_CATCH_SIGNALS
@@ -814,7 +819,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
         aSender << "                  *** Exception Raised with no Result" << std::endl;
         binder = new Transfer_VoidBinder;
         Bind(start, binder);
-        newbind = Standard_True;
+        newbind = true;
       }
       binder->AddFail("Transfer stopped by exception raising");
       if (thetrace)
@@ -831,7 +836,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
     binder = TransferProduct(start, theProgress);
 
   if (theProgress.UserBreak())
-    return Handle(Transfer_Binder)();
+    return occ::handle<Transfer_Binder>();
 
   if (!newbind && !binder.IsNull())
   {
@@ -851,7 +856,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
   {
     if (!former.IsNull())
       former->SetStatusExec(Transfer_StatusDone); //+
-    return Handle(Transfer_Binder)();             // Null Binder ... what else to do?
+    return occ::handle<Transfer_Binder>();             // Null Binder ... what else to do?
   }
 
   if (therootl >= thelevel)
@@ -867,13 +872,13 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::Transferring(
 
 //=================================================================================================
 
-Handle(Transfer_Binder) Transfer_ProcessForTransient::TransferProduct(
-  const Handle(Standard_Transient)& start,
+occ::handle<Transfer_Binder> Transfer_ProcessForTransient::TransferProduct(
+  const occ::handle<Standard_Transient>& start,
   const Message_ProgressRange&      theProgress)
 {
   thelevel++;
-  Handle(Transfer_Binder)                     binder;
-  Handle(Transfer_ActorOfProcessForTransient) actor = theactor;
+  occ::handle<Transfer_Binder>                     binder;
+  occ::handle<Transfer_ActorOfProcessForTransient> actor = theactor;
 
   // We scan the Next until we have a Result
   Message_ProgressScope aScope(theProgress, NULL, 1, true);
@@ -894,7 +899,7 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::TransferProduct(
     actor = actor->Next();
   }
   if (aScope.UserBreak())
-    return Handle(Transfer_Binder)();
+    return occ::handle<Transfer_Binder>();
 
   if (binder.IsNull())
   {
@@ -912,33 +917,33 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::TransferProduct(
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::Transfer(const Handle(Standard_Transient)& start,
+bool Transfer_ProcessForTransient::Transfer(const occ::handle<Standard_Transient>& start,
                                                         const Message_ProgressRange& theProgress)
 {
-  Handle(Transfer_Binder) binder = Transferring(start, theProgress);
+  occ::handle<Transfer_Binder> binder = Transferring(start, theProgress);
   return (!binder.IsNull());
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::SetErrorHandle(const Standard_Boolean err)
+void Transfer_ProcessForTransient::SetErrorHandle(const bool err)
 {
   theerrh = err;
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::ErrorHandle() const
+bool Transfer_ProcessForTransient::ErrorHandle() const
 {
   return theerrh;
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::StartTrace(const Handle(Transfer_Binder)&    binder,
-                                              const Handle(Standard_Transient)& start,
-                                              const Standard_Integer            level,
-                                              const Standard_Integer            mode) const
+void Transfer_ProcessForTransient::StartTrace(const occ::handle<Transfer_Binder>&    binder,
+                                              const occ::handle<Standard_Transient>& start,
+                                              const int            level,
+                                              const int            mode) const
 {
   Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
   // ###  Fail (Roots:50)  --  Start start->DynamicType()
@@ -967,8 +972,8 @@ void Transfer_ProcessForTransient::StartTrace(const Handle(Transfer_Binder)&    
 
   if (!binder.IsNull())
   {
-    Handle(Transfer_Binder) bnd    = binder;
-    Standard_Boolean        hasres = Standard_False;
+    occ::handle<Transfer_Binder> bnd    = binder;
+    bool        hasres = false;
     while (!bnd.IsNull())
     {
       if (bnd->Status() != Transfer_StatusVoid)
@@ -978,7 +983,7 @@ void Transfer_ProcessForTransient::StartTrace(const Handle(Transfer_Binder)&    
         else
           aSender << " , ";
         aSender << bnd->ResultTypeName();
-        hasres = Standard_True;
+        hasres = true;
       }
       bnd = bnd->NextResult();
     }
@@ -992,7 +997,7 @@ void Transfer_ProcessForTransient::StartTrace(const Handle(Transfer_Binder)&    
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::PrintTrace(const Handle(Standard_Transient)& start,
+void Transfer_ProcessForTransient::PrintTrace(const occ::handle<Standard_Transient>& start,
                                               Standard_OStream&                 S) const
 {
   if (!start.IsNull())
@@ -1001,7 +1006,7 @@ void Transfer_ProcessForTransient::PrintTrace(const Handle(Standard_Transient)& 
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::IsLooping(const Standard_Integer alevel) const
+bool Transfer_ProcessForTransient::IsLooping(const int alevel) const
 {
   return alevel > NbMapped();
 }
@@ -1009,14 +1014,14 @@ Standard_Boolean Transfer_ProcessForTransient::IsLooping(const Standard_Integer 
 //=================================================================================================
 
 Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::RootResult(
-  const Standard_Boolean withstart) const
+  const bool withstart) const
 {
   Transfer_IteratorOfProcessForTransient iter(withstart);
-  Standard_Integer                       max = theroots.Extent();
-  for (Standard_Integer j = 1; j <= max; j++)
+  int                       max = theroots.Extent();
+  for (int j = 1; j <= max; j++)
   {
-    Standard_Integer        i      = theroots.FindKey(j);
-    Handle(Transfer_Binder) binder = MapItem(i);
+    int        i      = theroots.FindKey(j);
+    occ::handle<Transfer_Binder> binder = MapItem(i);
     if (binder.IsNull())
       continue;
     if (withstart)
@@ -1030,13 +1035,13 @@ Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::RootResult(
 //=================================================================================================
 
 Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::CompleteResult(
-  const Standard_Boolean withstart) const
+  const bool withstart) const
 {
   Transfer_IteratorOfProcessForTransient iter(withstart);
-  Standard_Integer                       max = NbMapped();
-  for (Standard_Integer i = 1; i <= max; i++)
+  int                       max = NbMapped();
+  for (int i = 1; i <= max; i++)
   {
-    Handle(Transfer_Binder) binder = MapItem(i);
+    occ::handle<Transfer_Binder> binder = MapItem(i);
     if (binder.IsNull())
       continue;
     if (withstart)
@@ -1051,11 +1056,11 @@ Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::CompleteRes
 
 Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::AbnormalResult() const
 {
-  Transfer_IteratorOfProcessForTransient iter(Standard_True);
-  Standard_Integer                       max = NbMapped();
-  for (Standard_Integer i = 1; i <= max; i++)
+  Transfer_IteratorOfProcessForTransient iter(true);
+  int                       max = NbMapped();
+  for (int i = 1; i <= max; i++)
   {
-    Handle(Transfer_Binder) binder = MapItem(i);
+    occ::handle<Transfer_Binder> binder = MapItem(i);
     if (binder.IsNull())
       continue;
     Transfer_StatusExec statex = binder->StatusExec();
@@ -1068,22 +1073,22 @@ Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::AbnormalRes
 //=================================================================================================
 
 Interface_CheckIterator Transfer_ProcessForTransient::CheckList(
-  const Standard_Boolean erronly) const
+  const bool erronly) const
 {
   Interface_CheckIterator list;
-  Standard_Integer        num, max = NbMapped();
-  for (Standard_Integer i = 1; i <= max; i++)
+  int        num, max = NbMapped();
+  for (int i = 1; i <= max; i++)
   {
-    Handle(Transfer_Binder) binder = MapItem(i);
+    occ::handle<Transfer_Binder> binder = MapItem(i);
     if (binder.IsNull())
       continue;
     Transfer_StatusExec     statex = binder->StatusExec();
-    Handle(Interface_Check) check  = binder->Check();
+    occ::handle<Interface_Check> check  = binder->Check();
     if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone && !check->HasFailed())
       check->AddFail("Transfer in Abnormal Status (!= Initial or Done)");
     if (!check->HasFailed() && (erronly || check->NbWarnings() == 0))
       continue;
-    const Handle(Standard_Transient)& ent = Mapped(i);
+    const occ::handle<Standard_Transient>& ent = Mapped(i);
     num                                   = CheckNum(ent);
     if (num == 0)
       num = i;
@@ -1096,25 +1101,25 @@ Interface_CheckIterator Transfer_ProcessForTransient::CheckList(
 //=================================================================================================
 
 Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::ResultOne(
-  const Handle(Standard_Transient)& start,
-  const Standard_Integer            level,
-  const Standard_Boolean            withstart) const
+  const occ::handle<Standard_Transient>& start,
+  const int            level,
+  const bool            withstart) const
 {
   Transfer_IteratorOfProcessForTransient iter(withstart);
-  Standard_Integer                       max = NbMapped();
-  Standard_Integer                       ind = MapIndex(start);
+  int                       max = NbMapped();
+  int                       ind = MapIndex(start);
   if (ind == 0)
     return iter;
-  Standard_Integer                 i1  = (level == 0 ? ind : 1);
-  Standard_Integer                 i2  = (level == 0 ? ind : max);
-  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger(i1, i2, 0);
+  int                 i1  = (level == 0 ? ind : 1);
+  int                 i2  = (level == 0 ? ind : max);
+  occ::handle<NCollection_HArray1<int>> map = new NCollection_HArray1<int>(i1, i2, 0);
 
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ind = map->Value(i);
     if (ind == 0)
       continue;
-    Handle(Transfer_Binder) binder = MapItem(i);
+    occ::handle<Transfer_Binder> binder = MapItem(i);
     if (binder.IsNull())
       continue;
     if (withstart)
@@ -1128,34 +1133,34 @@ Transfer_IteratorOfProcessForTransient Transfer_ProcessForTransient::ResultOne(
 //=================================================================================================
 
 Interface_CheckIterator Transfer_ProcessForTransient::CheckListOne(
-  const Handle(Standard_Transient)& start,
-  const Standard_Integer            level,
-  const Standard_Boolean            erronly) const
+  const occ::handle<Standard_Transient>& start,
+  const int            level,
+  const bool            erronly) const
 {
   Interface_CheckIterator list;
-  Standard_Integer        max = NbMapped();
-  Standard_Integer        num, ind = MapIndex(start);
+  int        max = NbMapped();
+  int        num, ind = MapIndex(start);
   if (ind == 0)
     return list;
-  Standard_Integer                 i1  = (level == 0 ? ind : 1);
-  Standard_Integer                 i2  = (level == 0 ? ind : max);
-  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger(i1, i2, 0);
+  int                 i1  = (level == 0 ? ind : 1);
+  int                 i2  = (level == 0 ? ind : max);
+  occ::handle<NCollection_HArray1<int>> map = new NCollection_HArray1<int>(i1, i2, 0);
 
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ind = map->Value(i);
     if (ind == 0)
       continue;
-    Handle(Transfer_Binder) binder = MapItem(ind);
+    occ::handle<Transfer_Binder> binder = MapItem(ind);
     if (binder.IsNull())
       continue;
     Transfer_StatusExec     statex = binder->StatusExec();
-    Handle(Interface_Check) check  = binder->Check();
+    occ::handle<Interface_Check> check  = binder->Check();
     if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone && !check->HasFailed())
       check->AddFail("Transfer in Abnormal Status (!= Initial or Done)");
     if (!check->HasFailed() && (erronly || check->NbWarnings() == 0))
       continue;
-    const Handle(Standard_Transient)& ent = Mapped(ind);
+    const occ::handle<Standard_Transient>& ent = Mapped(ind);
     num                                   = CheckNum(ent);
     if (num == 0)
       num = ind;
@@ -1167,60 +1172,60 @@ Interface_CheckIterator Transfer_ProcessForTransient::CheckListOne(
 
 //=================================================================================================
 
-Standard_Boolean Transfer_ProcessForTransient::IsCheckListEmpty(
-  const Handle(Standard_Transient)& start,
-  const Standard_Integer            level,
-  const Standard_Boolean            erronly) const
+bool Transfer_ProcessForTransient::IsCheckListEmpty(
+  const occ::handle<Standard_Transient>& start,
+  const int            level,
+  const bool            erronly) const
 {
-  Standard_Integer max = NbMapped();
-  Standard_Integer ind = MapIndex(start);
+  int max = NbMapped();
+  int ind = MapIndex(start);
   if (ind == 0)
-    return Standard_False;
-  Standard_Integer                 i1  = (level == 0 ? ind : 1);
-  Standard_Integer                 i2  = (level == 0 ? ind : max);
-  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger(i1, i2, 0);
+    return false;
+  int                 i1  = (level == 0 ? ind : 1);
+  int                 i2  = (level == 0 ? ind : max);
+  occ::handle<NCollection_HArray1<int>> map = new NCollection_HArray1<int>(i1, i2, 0);
 
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ind = map->Value(i);
     if (ind == 0)
       continue;
-    Handle(Transfer_Binder) binder = MapItem(ind);
+    occ::handle<Transfer_Binder> binder = MapItem(ind);
     if (binder.IsNull())
       continue;
 
     Transfer_StatusExec     statex = binder->StatusExec();
-    Handle(Interface_Check) check  = binder->Check();
+    occ::handle<Interface_Check> check  = binder->Check();
     if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone)
-      return Standard_False;
+      return false;
     if (check->HasFailed() || (!erronly && check->NbWarnings() > 0))
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Transfer_ProcessForTransient::RemoveResult(const Handle(Standard_Transient)& start,
-                                                const Standard_Integer            level,
-                                                const Standard_Boolean /*compute*/)
+void Transfer_ProcessForTransient::RemoveResult(const occ::handle<Standard_Transient>& start,
+                                                const int            level,
+                                                const bool /*compute*/)
 {
   // if (compute) ComputeScopes();
-  Standard_Integer max = NbMapped();
-  Standard_Integer ind = MapIndex(start);
+  int max = NbMapped();
+  int ind = MapIndex(start);
   if (ind == 0)
     return;
-  Standard_Integer                 i1  = (level == 0 ? ind : 1);
-  Standard_Integer                 i2  = (level == 0 ? ind : max);
-  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger(i1, i2, 0);
+  int                 i1  = (level == 0 ? ind : 1);
+  int                 i2  = (level == 0 ? ind : max);
+  occ::handle<NCollection_HArray1<int>> map = new NCollection_HArray1<int>(i1, i2, 0);
 
-  Standard_Integer i;
+  int i;
   for (i = i1; i <= i2; i++)
   {
     ind = map->Value(i);
     if (ind == 0)
       continue;
-    Handle(Transfer_Binder) binder = MapItem(ind);
+    occ::handle<Transfer_Binder> binder = MapItem(ind);
     if (binder.IsNull())
       continue;
   }
@@ -1228,7 +1233,7 @@ void Transfer_ProcessForTransient::RemoveResult(const Handle(Standard_Transient)
 
 //=================================================================================================
 
-Standard_Integer Transfer_ProcessForTransient::CheckNum(const Handle(Standard_Transient)&) const
+int Transfer_ProcessForTransient::CheckNum(const occ::handle<Standard_Transient>&) const
 {
   return 0;
 }

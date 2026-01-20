@@ -26,24 +26,21 @@ class XmlMDF_ADriverTable;
 class Message_Messenger;
 class XmlMDF_ADriver;
 
-class XmlDrivers_DocumentRetrievalDriver;
-DEFINE_STANDARD_HANDLE(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
-
 class XmlDrivers_DocumentRetrievalDriver : public XmlLDrivers_DocumentRetrievalDriver
 {
 public:
   Standard_EXPORT XmlDrivers_DocumentRetrievalDriver();
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection(
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriver> ReadShapeSection(
     const XmlObjMgt_Element&         thePDoc,
-    const Handle(Message_Messenger)& theMsgDriver,
-    const Message_ProgressRange&     theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<Message_Messenger>& theMsgDriver,
+    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void ShapeSetCleaning(const Handle(XmlMDF_ADriver)& theDriver)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
 };

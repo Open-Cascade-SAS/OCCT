@@ -28,28 +28,28 @@
 
 //==================================================================================================
 
-void BSplCLib::Reverse(TColgp_Array1OfPnt2d& Poles, const Standard_Integer L)
+void BSplCLib::Reverse(NCollection_Array1<gp_Pnt2d>& Poles, const int L)
 {
   BSplCLib_Reverse(Poles, L);
 }
 
 //==================================================================================================
 
-Standard_Boolean BSplCLib::RemoveKnot(const Standard_Integer         Index,
-                                      const Standard_Integer         Mult,
-                                      const Standard_Integer         Degree,
-                                      const Standard_Boolean         Periodic,
-                                      const TColgp_Array1OfPnt2d&    Poles,
-                                      const TColStd_Array1OfReal*    Weights,
-                                      const TColStd_Array1OfReal&    Knots,
-                                      const TColStd_Array1OfInteger& Mults,
-                                      TColgp_Array1OfPnt2d&          NewPoles,
-                                      TColStd_Array1OfReal*          NewWeights,
-                                      TColStd_Array1OfReal&          NewKnots,
-                                      TColStd_Array1OfInteger&       NewMults,
-                                      const Standard_Real            Tolerance)
+bool BSplCLib::RemoveKnot(const int         Index,
+                                      const int         Mult,
+                                      const int         Degree,
+                                      const bool         Periodic,
+                                      const NCollection_Array1<gp_Pnt2d>&    Poles,
+                                      const NCollection_Array1<double>*    Weights,
+                                      const NCollection_Array1<double>&    Knots,
+                                      const NCollection_Array1<int>& Mults,
+                                      NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                                      NCollection_Array1<double>*          NewWeights,
+                                      NCollection_Array1<double>&          NewKnots,
+                                      NCollection_Array1<int>&       NewMults,
+                                      const double            Tolerance)
 {
-  return BSplCLib_RemoveKnot<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Index,
+  return BSplCLib_RemoveKnot<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Index,
                                                                           Mult,
                                                                           Degree,
                                                                           Periodic,
@@ -66,22 +66,22 @@ Standard_Boolean BSplCLib::RemoveKnot(const Standard_Integer         Index,
 
 //==================================================================================================
 
-void BSplCLib::InsertKnots(const Standard_Integer         Degree,
-                           const Standard_Boolean         Periodic,
-                           const TColgp_Array1OfPnt2d&    Poles,
-                           const TColStd_Array1OfReal*    Weights,
-                           const TColStd_Array1OfReal&    Knots,
-                           const TColStd_Array1OfInteger& Mults,
-                           const TColStd_Array1OfReal&    AddKnots,
-                           const TColStd_Array1OfInteger* AddMults,
-                           TColgp_Array1OfPnt2d&          NewPoles,
-                           TColStd_Array1OfReal*          NewWeights,
-                           TColStd_Array1OfReal&          NewKnots,
-                           TColStd_Array1OfInteger&       NewMults,
-                           const Standard_Real            Epsilon,
-                           const Standard_Boolean         Add)
+void BSplCLib::InsertKnots(const int         Degree,
+                           const bool         Periodic,
+                           const NCollection_Array1<gp_Pnt2d>&    Poles,
+                           const NCollection_Array1<double>*    Weights,
+                           const NCollection_Array1<double>&    Knots,
+                           const NCollection_Array1<int>& Mults,
+                           const NCollection_Array1<double>&    AddKnots,
+                           const NCollection_Array1<int>* AddMults,
+                           NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                           NCollection_Array1<double>*          NewWeights,
+                           NCollection_Array1<double>&          NewKnots,
+                           NCollection_Array1<int>&       NewMults,
+                           const double            Epsilon,
+                           const bool         Add)
 {
-  BSplCLib_InsertKnots<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_InsertKnots<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                     Periodic,
                                                                     Poles,
                                                                     Weights,
@@ -99,19 +99,19 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::InsertKnot(const Standard_Integer,
-                          const Standard_Real            U,
-                          const Standard_Integer         UMult,
-                          const Standard_Integer         Degree,
-                          const Standard_Boolean         Periodic,
-                          const TColgp_Array1OfPnt2d&    Poles,
-                          const TColStd_Array1OfReal*    Weights,
-                          const TColStd_Array1OfReal&    Knots,
-                          const TColStd_Array1OfInteger& Mults,
-                          TColgp_Array1OfPnt2d&          NewPoles,
-                          TColStd_Array1OfReal*          NewWeights)
+void BSplCLib::InsertKnot(const int,
+                          const double            U,
+                          const int         UMult,
+                          const int         Degree,
+                          const bool         Periodic,
+                          const NCollection_Array1<gp_Pnt2d>&    Poles,
+                          const NCollection_Array1<double>*    Weights,
+                          const NCollection_Array1<double>&    Knots,
+                          const NCollection_Array1<int>& Mults,
+                          NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                          NCollection_Array1<double>*          NewWeights)
 {
-  BSplCLib_InsertKnot<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(0,
+  BSplCLib_InsertKnot<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(0,
                                                                    U,
                                                                    UMult,
                                                                    Degree,
@@ -126,18 +126,18 @@ void BSplCLib::InsertKnot(const Standard_Integer,
 
 //==================================================================================================
 
-void BSplCLib::RaiseMultiplicity(const Standard_Integer         KnotIndex,
-                                 const Standard_Integer         Mult,
-                                 const Standard_Integer         Degree,
-                                 const Standard_Boolean         Periodic,
-                                 const TColgp_Array1OfPnt2d&    Poles,
-                                 const TColStd_Array1OfReal*    Weights,
-                                 const TColStd_Array1OfReal&    Knots,
-                                 const TColStd_Array1OfInteger& Mults,
-                                 TColgp_Array1OfPnt2d&          NewPoles,
-                                 TColStd_Array1OfReal*          NewWeights)
+void BSplCLib::RaiseMultiplicity(const int         KnotIndex,
+                                 const int         Mult,
+                                 const int         Degree,
+                                 const bool         Periodic,
+                                 const NCollection_Array1<gp_Pnt2d>&    Poles,
+                                 const NCollection_Array1<double>*    Weights,
+                                 const NCollection_Array1<double>&    Knots,
+                                 const NCollection_Array1<int>& Mults,
+                                 NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                                 NCollection_Array1<double>*          NewWeights)
 {
-  BSplCLib_RaiseMultiplicity<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(KnotIndex,
+  BSplCLib_RaiseMultiplicity<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(KnotIndex,
                                                                           Mult,
                                                                           Degree,
                                                                           Periodic,
@@ -151,19 +151,19 @@ void BSplCLib::RaiseMultiplicity(const Standard_Integer         KnotIndex,
 
 //==================================================================================================
 
-void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
-                              const Standard_Integer         NewDegree,
-                              const Standard_Boolean         Periodic,
-                              const TColgp_Array1OfPnt2d&    Poles,
-                              const TColStd_Array1OfReal*    Weights,
-                              const TColStd_Array1OfReal&    Knots,
-                              const TColStd_Array1OfInteger& Mults,
-                              TColgp_Array1OfPnt2d&          NewPoles,
-                              TColStd_Array1OfReal*          NewWeights,
-                              TColStd_Array1OfReal&          NewKnots,
-                              TColStd_Array1OfInteger&       NewMults)
+void BSplCLib::IncreaseDegree(const int         Degree,
+                              const int         NewDegree,
+                              const bool         Periodic,
+                              const NCollection_Array1<gp_Pnt2d>&    Poles,
+                              const NCollection_Array1<double>*    Weights,
+                              const NCollection_Array1<double>&    Knots,
+                              const NCollection_Array1<int>& Mults,
+                              NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                              NCollection_Array1<double>*          NewWeights,
+                              NCollection_Array1<double>&          NewKnots,
+                              NCollection_Array1<int>&       NewMults)
 {
-  BSplCLib_IncreaseDegree<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_IncreaseDegree<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                        NewDegree,
                                                                        Periodic,
                                                                        Poles,
@@ -178,17 +178,17 @@ void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::Unperiodize(const Standard_Integer         Degree,
-                           const TColStd_Array1OfInteger& Mults,
-                           const TColStd_Array1OfReal&    Knots,
-                           const TColgp_Array1OfPnt2d&    Poles,
-                           const TColStd_Array1OfReal*    Weights,
-                           TColStd_Array1OfInteger&       NewMults,
-                           TColStd_Array1OfReal&          NewKnots,
-                           TColgp_Array1OfPnt2d&          NewPoles,
-                           TColStd_Array1OfReal*          NewWeights)
+void BSplCLib::Unperiodize(const int         Degree,
+                           const NCollection_Array1<int>& Mults,
+                           const NCollection_Array1<double>&    Knots,
+                           const NCollection_Array1<gp_Pnt2d>&    Poles,
+                           const NCollection_Array1<double>*    Weights,
+                           NCollection_Array1<int>&       NewMults,
+                           NCollection_Array1<double>&          NewKnots,
+                           NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                           NCollection_Array1<double>*          NewWeights)
 {
-  BSplCLib_Unperiodize<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_Unperiodize<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                     Mults,
                                                                     Knots,
                                                                     Poles,
@@ -201,20 +201,20 @@ void BSplCLib::Unperiodize(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::Trimming(const Standard_Integer         Degree,
-                        const Standard_Boolean         Periodic,
-                        const TColStd_Array1OfReal&    Knots,
-                        const TColStd_Array1OfInteger& Mults,
-                        const TColgp_Array1OfPnt2d&    Poles,
-                        const TColStd_Array1OfReal*    Weights,
-                        const Standard_Real            U1,
-                        const Standard_Real            U2,
-                        TColStd_Array1OfReal&          NewKnots,
-                        TColStd_Array1OfInteger&       NewMults,
-                        TColgp_Array1OfPnt2d&          NewPoles,
-                        TColStd_Array1OfReal*          NewWeights)
+void BSplCLib::Trimming(const int         Degree,
+                        const bool         Periodic,
+                        const NCollection_Array1<double>&    Knots,
+                        const NCollection_Array1<int>& Mults,
+                        const NCollection_Array1<gp_Pnt2d>&    Poles,
+                        const NCollection_Array1<double>*    Weights,
+                        const double            U1,
+                        const double            U2,
+                        NCollection_Array1<double>&          NewKnots,
+                        NCollection_Array1<int>&       NewMults,
+                        NCollection_Array1<gp_Pnt2d>&          NewPoles,
+                        NCollection_Array1<double>*          NewWeights)
 {
-  BSplCLib_Trimming<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_Trimming<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                  Periodic,
                                                                  Knots,
                                                                  Mults,
@@ -230,13 +230,13 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::BuildEval(const Standard_Integer      Degree,
-                         const Standard_Integer      Index,
-                         const TColgp_Array1OfPnt2d& Poles,
-                         const TColStd_Array1OfReal* Weights,
-                         Standard_Real&              LP)
+void BSplCLib::BuildEval(const int      Degree,
+                         const int      Index,
+                         const NCollection_Array1<gp_Pnt2d>& Poles,
+                         const NCollection_Array1<double>* Weights,
+                         double&              LP)
 {
-  BSplCLib_BuildEval<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_BuildEval<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                   Index,
                                                                   Poles,
                                                                   Weights,
@@ -245,17 +245,17 @@ void BSplCLib::BuildEval(const Standard_Integer      Degree,
 
 //==================================================================================================
 
-void BSplCLib::D0(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColgp_Array1OfPnt2d&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
+void BSplCLib::D0(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<gp_Pnt2d>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
                   gp_Pnt2d&                      P)
 {
-  BSplCLib_D0<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_D0<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                            Index,
                                                            Degree,
                                                            Periodic,
@@ -268,18 +268,18 @@ void BSplCLib::D0(const Standard_Real            U,
 
 //==================================================================================================
 
-void BSplCLib::D1(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColgp_Array1OfPnt2d&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
+void BSplCLib::D1(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<gp_Pnt2d>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
                   gp_Pnt2d&                      P,
                   gp_Vec2d&                      V)
 {
-  BSplCLib_D1<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_D1<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                            Index,
                                                            Degree,
                                                            Periodic,
@@ -293,19 +293,19 @@ void BSplCLib::D1(const Standard_Real            U,
 
 //==================================================================================================
 
-void BSplCLib::D2(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColgp_Array1OfPnt2d&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
+void BSplCLib::D2(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<gp_Pnt2d>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
                   gp_Pnt2d&                      P,
                   gp_Vec2d&                      V1,
                   gp_Vec2d&                      V2)
 {
-  BSplCLib_D2<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_D2<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                            Index,
                                                            Degree,
                                                            Periodic,
@@ -320,20 +320,20 @@ void BSplCLib::D2(const Standard_Real            U,
 
 //==================================================================================================
 
-void BSplCLib::D3(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColgp_Array1OfPnt2d&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
+void BSplCLib::D3(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<gp_Pnt2d>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
                   gp_Pnt2d&                      P,
                   gp_Vec2d&                      V1,
                   gp_Vec2d&                      V2,
                   gp_Vec2d&                      V3)
 {
-  BSplCLib_D3<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_D3<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                            Index,
                                                            Degree,
                                                            Periodic,
@@ -349,18 +349,18 @@ void BSplCLib::D3(const Standard_Real            U,
 
 //==================================================================================================
 
-void BSplCLib::DN(const Standard_Real            U,
-                  const Standard_Integer         N,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColgp_Array1OfPnt2d&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
+void BSplCLib::DN(const double            U,
+                  const int         N,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<gp_Pnt2d>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
                   gp_Vec2d&                      VN)
 {
-  BSplCLib_DN<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_DN<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                            N,
                                                            Index,
                                                            Degree,
@@ -374,12 +374,12 @@ void BSplCLib::DN(const Standard_Real            U,
 
 //==================================================================================================
 
-Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const Standard_Integer UpperBandWidth,
-                                             const Standard_Integer LowerBandWidth,
-                                             TColgp_Array1OfPnt2d&  PolesArray)
+int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
+                                             const int UpperBandWidth,
+                                             const int LowerBandWidth,
+                                             NCollection_Array1<gp_Pnt2d>&  PolesArray)
 {
-  return BSplCLib_SolveBandedSystem<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Matrix,
+  return BSplCLib_SolveBandedSystem<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Matrix,
                                                                                  UpperBandWidth,
                                                                                  LowerBandWidth,
                                                                                  PolesArray);
@@ -387,14 +387,14 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
 
 //==================================================================================================
 
-Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
-                                             const Standard_Integer UpperBandWidth,
-                                             const Standard_Integer LowerBandWidth,
-                                             const Standard_Boolean HomogeneousFlag,
-                                             TColgp_Array1OfPnt2d&  PolesArray,
-                                             TColStd_Array1OfReal&  WeightsArray)
+int BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
+                                             const int UpperBandWidth,
+                                             const int LowerBandWidth,
+                                             const bool HomogeneousFlag,
+                                             NCollection_Array1<gp_Pnt2d>&  PolesArray,
+                                             NCollection_Array1<double>&  WeightsArray)
 {
-  return BSplCLib_SolveBandedSystem<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Matrix,
+  return BSplCLib_SolveBandedSystem<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Matrix,
                                                                                  UpperBandWidth,
                                                                                  LowerBandWidth,
                                                                                  HomogeneousFlag,
@@ -404,18 +404,18 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
 
 //==================================================================================================
 
-void BSplCLib::Eval(const Standard_Real         Parameter,
-                    const Standard_Boolean      PeriodicFlag,
-                    const Standard_Boolean      HomogeneousFlag,
-                    Standard_Integer&           ExtrapMode,
-                    const Standard_Integer      Degree,
-                    const TColStd_Array1OfReal& FlatKnots,
-                    const TColgp_Array1OfPnt2d& PolesArray,
-                    const TColStd_Array1OfReal& WeightsArray,
+void BSplCLib::Eval(const double         Parameter,
+                    const bool      PeriodicFlag,
+                    const bool      HomogeneousFlag,
+                    int&           ExtrapMode,
+                    const int      Degree,
+                    const NCollection_Array1<double>& FlatKnots,
+                    const NCollection_Array1<gp_Pnt2d>& PolesArray,
+                    const NCollection_Array1<double>& WeightsArray,
                     gp_Pnt2d&                   aPoint,
-                    Standard_Real&              aWeight)
+                    double&              aWeight)
 {
-  BSplCLib_Eval<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Parameter,
+  BSplCLib_Eval<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Parameter,
                                                              PeriodicFlag,
                                                              HomogeneousFlag,
                                                              ExtrapMode,
@@ -429,15 +429,15 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
 
 //==================================================================================================
 
-void BSplCLib::CacheD0(const Standard_Real         Parameter,
-                       const Standard_Integer      Degree,
-                       const Standard_Real         CacheParameter,
-                       const Standard_Real         SpanLenght,
-                       const TColgp_Array1OfPnt2d& PolesArray,
-                       const TColStd_Array1OfReal* WeightsArray,
+void BSplCLib::CacheD0(const double         Parameter,
+                       const int      Degree,
+                       const double         CacheParameter,
+                       const double         SpanLenght,
+                       const NCollection_Array1<gp_Pnt2d>& PolesArray,
+                       const NCollection_Array1<double>* WeightsArray,
                        gp_Pnt2d&                   aPoint)
 {
-  BSplCLib_CacheD0<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Parameter,
+  BSplCLib_CacheD0<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Parameter,
                                                                 Degree,
                                                                 CacheParameter,
                                                                 SpanLenght,
@@ -448,16 +448,16 @@ void BSplCLib::CacheD0(const Standard_Real         Parameter,
 
 //==================================================================================================
 
-void BSplCLib::CacheD1(const Standard_Real         Parameter,
-                       const Standard_Integer      Degree,
-                       const Standard_Real         CacheParameter,
-                       const Standard_Real         SpanLenght,
-                       const TColgp_Array1OfPnt2d& PolesArray,
-                       const TColStd_Array1OfReal* WeightsArray,
+void BSplCLib::CacheD1(const double         Parameter,
+                       const int      Degree,
+                       const double         CacheParameter,
+                       const double         SpanLenght,
+                       const NCollection_Array1<gp_Pnt2d>& PolesArray,
+                       const NCollection_Array1<double>* WeightsArray,
                        gp_Pnt2d&                   aPoint,
                        gp_Vec2d&                   aVector)
 {
-  BSplCLib_CacheD1<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Parameter,
+  BSplCLib_CacheD1<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Parameter,
                                                                 Degree,
                                                                 CacheParameter,
                                                                 SpanLenght,
@@ -469,17 +469,17 @@ void BSplCLib::CacheD1(const Standard_Real         Parameter,
 
 //==================================================================================================
 
-void BSplCLib::CacheD2(const Standard_Real         Parameter,
-                       const Standard_Integer      Degree,
-                       const Standard_Real         CacheParameter,
-                       const Standard_Real         SpanLenght,
-                       const TColgp_Array1OfPnt2d& PolesArray,
-                       const TColStd_Array1OfReal* WeightsArray,
+void BSplCLib::CacheD2(const double         Parameter,
+                       const int      Degree,
+                       const double         CacheParameter,
+                       const double         SpanLenght,
+                       const NCollection_Array1<gp_Pnt2d>& PolesArray,
+                       const NCollection_Array1<double>* WeightsArray,
                        gp_Pnt2d&                   aPoint,
                        gp_Vec2d&                   aVector1,
                        gp_Vec2d&                   aVector2)
 {
-  BSplCLib_CacheD2<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Parameter,
+  BSplCLib_CacheD2<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Parameter,
                                                                 Degree,
                                                                 CacheParameter,
                                                                 SpanLenght,
@@ -492,18 +492,18 @@ void BSplCLib::CacheD2(const Standard_Real         Parameter,
 
 //==================================================================================================
 
-void BSplCLib::CacheD3(const Standard_Real         Parameter,
-                       const Standard_Integer      Degree,
-                       const Standard_Real         CacheParameter,
-                       const Standard_Real         SpanLenght,
-                       const TColgp_Array1OfPnt2d& PolesArray,
-                       const TColStd_Array1OfReal* WeightsArray,
+void BSplCLib::CacheD3(const double         Parameter,
+                       const int      Degree,
+                       const double         CacheParameter,
+                       const double         SpanLenght,
+                       const NCollection_Array1<gp_Pnt2d>& PolesArray,
+                       const NCollection_Array1<double>* WeightsArray,
                        gp_Pnt2d&                   aPoint,
                        gp_Vec2d&                   aVector1,
                        gp_Vec2d&                   aVector2,
                        gp_Vec2d&                   aVector3)
 {
-  BSplCLib_CacheD3<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Parameter,
+  BSplCLib_CacheD3<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Parameter,
                                                                 Degree,
                                                                 CacheParameter,
                                                                 SpanLenght,
@@ -517,17 +517,17 @@ void BSplCLib::CacheD3(const Standard_Real         Parameter,
 
 //==================================================================================================
 
-void BSplCLib::BuildCache(const Standard_Real         U,
-                          const Standard_Real         SpanDomain,
-                          const Standard_Boolean      Periodic,
-                          const Standard_Integer      Degree,
-                          const TColStd_Array1OfReal& FlatKnots,
-                          const TColgp_Array1OfPnt2d& Poles,
-                          const TColStd_Array1OfReal* Weights,
-                          TColgp_Array1OfPnt2d&       CachePoles,
-                          TColStd_Array1OfReal*       CacheWeights)
+void BSplCLib::BuildCache(const double         U,
+                          const double         SpanDomain,
+                          const bool      Periodic,
+                          const int      Degree,
+                          const NCollection_Array1<double>& FlatKnots,
+                          const NCollection_Array1<gp_Pnt2d>& Poles,
+                          const NCollection_Array1<double>* Weights,
+                          NCollection_Array1<gp_Pnt2d>&       CachePoles,
+                          NCollection_Array1<double>*       CacheWeights)
 {
-  BSplCLib_BuildCache<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_BuildCache<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                                    SpanDomain,
                                                                    Periodic,
                                                                    Degree,
@@ -540,17 +540,17 @@ void BSplCLib::BuildCache(const Standard_Real         U,
 
 //==================================================================================================
 
-void BSplCLib::BuildCache(const Standard_Real         theParameter,
-                          const Standard_Real         theSpanDomain,
-                          const Standard_Boolean      thePeriodicFlag,
-                          const Standard_Integer      theDegree,
-                          const Standard_Integer      theSpanIndex,
-                          const TColStd_Array1OfReal& theFlatKnots,
-                          const TColgp_Array1OfPnt2d& thePoles,
-                          const TColStd_Array1OfReal* theWeights,
-                          TColStd_Array2OfReal&       theCacheArray)
+void BSplCLib::BuildCache(const double         theParameter,
+                          const double         theSpanDomain,
+                          const bool      thePeriodicFlag,
+                          const int      theDegree,
+                          const int      theSpanIndex,
+                          const NCollection_Array1<double>& theFlatKnots,
+                          const NCollection_Array1<gp_Pnt2d>& thePoles,
+                          const NCollection_Array1<double>* theWeights,
+                          NCollection_Array2<double>&       theCacheArray)
 {
-  BSplCLib_BuildCache<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(theParameter,
+  BSplCLib_BuildCache<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(theParameter,
                                                                    theSpanDomain,
                                                                    thePeriodicFlag,
                                                                    theDegree,
@@ -563,14 +563,14 @@ void BSplCLib::BuildCache(const Standard_Real         theParameter,
 
 //==================================================================================================
 
-void BSplCLib::Interpolate(const Standard_Integer         Degree,
-                           const TColStd_Array1OfReal&    FlatKnots,
-                           const TColStd_Array1OfReal&    Parameters,
-                           const TColStd_Array1OfInteger& ContactOrderArray,
-                           TColgp_Array1OfPnt2d&          Poles,
-                           Standard_Integer&              InversionProblem)
+void BSplCLib::Interpolate(const int         Degree,
+                           const NCollection_Array1<double>&    FlatKnots,
+                           const NCollection_Array1<double>&    Parameters,
+                           const NCollection_Array1<int>& ContactOrderArray,
+                           NCollection_Array1<gp_Pnt2d>&          Poles,
+                           int&              InversionProblem)
 {
-  BSplCLib_Interpolate<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_Interpolate<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                     FlatKnots,
                                                                     Parameters,
                                                                     ContactOrderArray,
@@ -580,15 +580,15 @@ void BSplCLib::Interpolate(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::Interpolate(const Standard_Integer         Degree,
-                           const TColStd_Array1OfReal&    FlatKnots,
-                           const TColStd_Array1OfReal&    Parameters,
-                           const TColStd_Array1OfInteger& ContactOrderArray,
-                           TColgp_Array1OfPnt2d&          Poles,
-                           TColStd_Array1OfReal&          Weights,
-                           Standard_Integer&              InversionProblem)
+void BSplCLib::Interpolate(const int         Degree,
+                           const NCollection_Array1<double>&    FlatKnots,
+                           const NCollection_Array1<double>&    Parameters,
+                           const NCollection_Array1<int>& ContactOrderArray,
+                           NCollection_Array1<gp_Pnt2d>&          Poles,
+                           NCollection_Array1<double>&          Weights,
+                           int&              InversionProblem)
 {
-  BSplCLib_Interpolate<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Degree,
+  BSplCLib_Interpolate<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Degree,
                                                                     FlatKnots,
                                                                     Parameters,
                                                                     ContactOrderArray,
@@ -599,19 +599,19 @@ void BSplCLib::Interpolate(const Standard_Integer         Degree,
 
 //==================================================================================================
 
-void BSplCLib::MovePoint(const Standard_Real         U,
+void BSplCLib::MovePoint(const double         U,
                          const gp_Vec2d&             Displ,
-                         const Standard_Integer      Index1,
-                         const Standard_Integer      Index2,
-                         const Standard_Integer      Degree,
-                         const TColgp_Array1OfPnt2d& Poles,
-                         const TColStd_Array1OfReal* Weights,
-                         const TColStd_Array1OfReal& FlatKnots,
-                         Standard_Integer&           FirstIndex,
-                         Standard_Integer&           LastIndex,
-                         TColgp_Array1OfPnt2d&       NewPoles)
+                         const int      Index1,
+                         const int      Index2,
+                         const int      Degree,
+                         const NCollection_Array1<gp_Pnt2d>& Poles,
+                         const NCollection_Array1<double>* Weights,
+                         const NCollection_Array1<double>& FlatKnots,
+                         int&           FirstIndex,
+                         int&           LastIndex,
+                         NCollection_Array1<gp_Pnt2d>&       NewPoles)
 {
-  BSplCLib_MovePoint<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_MovePoint<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                                   Displ,
                                                                   Index1,
                                                                   Index2,
@@ -626,20 +626,20 @@ void BSplCLib::MovePoint(const Standard_Real         U,
 
 //==================================================================================================
 
-void BSplCLib::MovePointAndTangent(const Standard_Real         U,
+void BSplCLib::MovePointAndTangent(const double         U,
                                    const gp_Vec2d&             Delta,
                                    const gp_Vec2d&             DeltaDerivatives,
-                                   const Standard_Real         Tolerance,
-                                   const Standard_Integer      Degree,
-                                   const Standard_Integer      StartingCondition,
-                                   const Standard_Integer      EndingCondition,
-                                   const TColgp_Array1OfPnt2d& Poles,
-                                   const TColStd_Array1OfReal* Weights,
-                                   const TColStd_Array1OfReal& FlatKnots,
-                                   TColgp_Array1OfPnt2d&       NewPoles,
-                                   Standard_Integer&           ErrorStatus)
+                                   const double         Tolerance,
+                                   const int      Degree,
+                                   const int      StartingCondition,
+                                   const int      EndingCondition,
+                                   const NCollection_Array1<gp_Pnt2d>& Poles,
+                                   const NCollection_Array1<double>* Weights,
+                                   const NCollection_Array1<double>& FlatKnots,
+                                   NCollection_Array1<gp_Pnt2d>&       NewPoles,
+                                   int&           ErrorStatus)
 {
-  BSplCLib_MovePointAndTangent<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(U,
+  BSplCLib_MovePointAndTangent<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(U,
                                                                             Delta,
                                                                             DeltaDerivatives,
                                                                             Tolerance,
@@ -655,15 +655,15 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
 
 //==================================================================================================
 
-void BSplCLib::Resolution(const TColgp_Array1OfPnt2d& Poles,
-                          const TColStd_Array1OfReal* Weights,
-                          const Standard_Integer      NumPoles,
-                          const TColStd_Array1OfReal& FlatKnots,
-                          const Standard_Integer      Degree,
-                          const Standard_Real         Tolerance3D,
-                          Standard_Real&              UTolerance)
+void BSplCLib::Resolution(const NCollection_Array1<gp_Pnt2d>& Poles,
+                          const NCollection_Array1<double>* Weights,
+                          const int      NumPoles,
+                          const NCollection_Array1<double>& FlatKnots,
+                          const int      Degree,
+                          const double         Tolerance3D,
+                          double&              UTolerance)
 {
-  BSplCLib_Resolution<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Poles,
+  BSplCLib_Resolution<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(Poles,
                                                                    Weights,
                                                                    NumPoles,
                                                                    FlatKnots,
@@ -675,15 +675,15 @@ void BSplCLib::Resolution(const TColgp_Array1OfPnt2d& Poles,
 //==================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const Standard_Integer            BSplineDegree,
-                                const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                const TColgp_Array1OfPnt2d&       Poles,
-                                const TColStd_Array1OfReal&       FlatKnots,
-                                const Standard_Integer            NewDegree,
-                                TColgp_Array1OfPnt2d&             NewPoles,
-                                Standard_Integer&                 theStatus)
+                                const int            BSplineDegree,
+                                const NCollection_Array1<double>&       BSplineFlatKnots,
+                                const NCollection_Array1<gp_Pnt2d>&       Poles,
+                                const NCollection_Array1<double>&       FlatKnots,
+                                const int            NewDegree,
+                                NCollection_Array1<gp_Pnt2d>&             NewPoles,
+                                int&                 theStatus)
 {
-  BSplCLib_FunctionMultiply<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(FunctionPtr,
+  BSplCLib_FunctionMultiply<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(FunctionPtr,
                                                                          BSplineDegree,
                                                                          BSplineFlatKnots,
                                                                          Poles,
@@ -696,15 +696,15 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 //==================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const Standard_Integer            BSplineDegree,
-                                      const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                      const TColgp_Array1OfPnt2d&       Poles,
-                                      const TColStd_Array1OfReal&       FlatKnots,
-                                      const Standard_Integer            NewDegree,
-                                      TColgp_Array1OfPnt2d&             NewPoles,
-                                      Standard_Integer&                 theStatus)
+                                      const int            BSplineDegree,
+                                      const NCollection_Array1<double>&       BSplineFlatKnots,
+                                      const NCollection_Array1<gp_Pnt2d>&       Poles,
+                                      const NCollection_Array1<double>&       FlatKnots,
+                                      const int            NewDegree,
+                                      NCollection_Array1<gp_Pnt2d>&             NewPoles,
+                                      int&                 theStatus)
 {
-  BSplCLib_FunctionReparameterise<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(FunctionPtr,
+  BSplCLib_FunctionReparameterise<gp_Pnt2d, gp_Vec2d, NCollection_Array1<gp_Pnt2d>, 2>(FunctionPtr,
                                                                                BSplineDegree,
                                                                                BSplineFlatKnots,
                                                                                Poles,

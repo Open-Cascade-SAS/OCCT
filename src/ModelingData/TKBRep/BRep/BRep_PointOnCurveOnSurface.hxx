@@ -25,41 +25,37 @@ class Geom2d_Curve;
 class Geom_Surface;
 class TopLoc_Location;
 
-class BRep_PointOnCurveOnSurface;
-DEFINE_STANDARD_HANDLE(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
-
 //! Representation by a parameter on a curve on a
 //! surface.
 class BRep_PointOnCurveOnSurface : public BRep_PointsOnSurface
 {
 
 public:
-  Standard_EXPORT BRep_PointOnCurveOnSurface(const Standard_Real         P,
-                                             const Handle(Geom2d_Curve)& C,
-                                             const Handle(Geom_Surface)& S,
+  Standard_EXPORT BRep_PointOnCurveOnSurface(const double         P,
+                                             const occ::handle<Geom2d_Curve>& C,
+                                             const occ::handle<Geom_Surface>& S,
                                              const TopLoc_Location&      L);
 
   //! Returns True
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPointOnCurveOnSurface() const override;
 
-  Standard_EXPORT virtual Standard_Boolean IsPointOnCurveOnSurface(const Handle(Geom2d_Curve)& PC,
-                                                                   const Handle(Geom_Surface)& S,
+  Standard_EXPORT virtual bool IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
+                                                                   const occ::handle<Geom_Surface>& S,
                                                                    const TopLoc_Location& L) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual const Handle(Geom2d_Curve)& PCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Geom2d_Curve>& PCurve() const override;
 
-  Standard_EXPORT virtual void PCurve(const Handle(Geom2d_Curve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void PCurve(const occ::handle<Geom2d_Curve>& C) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
 
-protected:
 private:
-  Handle(Geom2d_Curve) myPCurve;
+  occ::handle<Geom2d_Curve> myPCurve;
 };
 
 #endif // _BRep_PointOnCurveOnSurface_HeaderFile

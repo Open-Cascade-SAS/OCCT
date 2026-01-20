@@ -44,7 +44,7 @@ public:
   //! respected for all vectors and matrix declarations.
   Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
                                        const math_Vector&               Tolerance,
-                                       const Standard_Integer           NbIterations = 100);
+                                       const int           NbIterations = 100);
 
   //! is used in a sub-class to initialize correctly all the fields
   //! of this class.
@@ -53,7 +53,7 @@ public:
   //! The method SetTolerance must be called after this
   //! constructor.
   Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                       const Standard_Integer           NbIterations = 100);
+                                       const int           NbIterations = 100);
 
   //! Destructor
   Standard_EXPORT virtual ~math_FunctionSetRoot();
@@ -66,16 +66,16 @@ public:
   //! in a sub-class to implement a specific test to stop the iterations.
   //! In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
   //! for all unknowns.
-  virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives&)
+  virtual bool IsSolutionReached(math_FunctionSetWithDerivatives&)
   {
-    for (Standard_Integer i = 1; i <= Sol.Length(); ++i)
+    for (int i = 1; i <= Sol.Length(); ++i)
     {
       if (std::abs(Delta(i)) > Tol(i))
       {
-        return Standard_False;
+        return false;
       }
     }
-    return Standard_True;
+    return true;
   }
 
   //! Improves the root of function from the initial guess point.
@@ -84,7 +84,7 @@ public:
   //! for all unknowns.
   Standard_EXPORT void Perform(math_FunctionSetWithDerivatives& theFunction,
                                const math_Vector&               theStartingPoint,
-                               const Standard_Boolean theStopOnDivergent = Standard_False);
+                               const bool theStopOnDivergent = false);
 
   //! Improves the root of function from the initial guess point.
   //! The infinum and supremum may be given to constrain the solution.
@@ -94,15 +94,15 @@ public:
                                const math_Vector&               theStartingPoint,
                                const math_Vector&               theInfBound,
                                const math_Vector&               theSupBound,
-                               const Standard_Boolean theStopOnDivergent = Standard_False);
+                               const bool theStopOnDivergent = false);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const { return Done; }
+  bool IsDone() const { return Done; }
 
   //! Returns the number of iterations really done
   //! during the computation of the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Integer NbIterations() const
+  int NbIterations() const
   {
     StdFail_NotDone_Raise_if(!Done, " ");
     return Kount;
@@ -110,7 +110,7 @@ public:
 
   //! returns the stateNumber (as returned by
   //! F.GetStateNumber()) associated to the root found.
-  Standard_Integer StateNumber() const
+  int StateNumber() const
   {
     StdFail_NotDone_Raise_if(!Done, " ");
     return State;
@@ -171,7 +171,7 @@ public:
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-  Standard_Boolean IsDivergent() const { return myIsDivergent; }
+  bool IsDivergent() const { return myIsDivergent; }
 
 protected:
   math_Vector Delta;
@@ -180,10 +180,10 @@ protected:
   math_Vector Tol;
 
 private:
-  Standard_Boolean   Done;
-  Standard_Integer   Kount;
-  Standard_Integer   State;
-  Standard_Integer   Itermax;
+  bool   Done;
+  int   Kount;
+  int   State;
+  int   Itermax;
   math_Vector        InfBound;
   math_Vector        SupBound;
   math_Vector        SolSave;
@@ -198,7 +198,7 @@ private:
   math_Vector        Temp2;
   math_Vector        Temp3;
   math_Vector        Temp4;
-  Standard_Boolean   myIsDivergent;
+  bool   myIsDivergent;
 };
 
 inline Standard_OStream& operator<<(Standard_OStream& theStream, const math_FunctionSetRoot& theF)

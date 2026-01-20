@@ -22,15 +22,22 @@
 #include <Geom2dInt_GInter.hxx>
 #include <MAT2d_Circuit.hxx>
 #include <MAT2d_Connexion.hxx>
-#include <MAT2d_DataMapOfBiIntSequenceOfInteger.hxx>
+#include <MAT2d_BiInt.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MAT2d_MiniPath.hxx>
-#include <MAT2d_SequenceOfConnexion.hxx>
-#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
+#include <MAT2d_Connexion.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
 
@@ -47,23 +54,23 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
   #include <Draw_Appli.hxx>
   #include <DrawTrSurf_Curve2d.hxx>
   #include <Draw_Marker2D.hxx>
-static Handle(DrawTrSurf_Curve2d) draw;
+static occ::handle<DrawTrSurf_Curve2d> draw;
 Standard_EXPORT Draw_Viewer       dout;
 #endif
 #ifdef OCCT_DEBUG
-static void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer Indice);
-static Standard_Boolean AffichCircuit = 0;
+static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
+static bool AffichCircuit = 0;
 #endif
 
 // static functions:
 
-static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
-                               const Handle(Geom2d_Geometry)& Geom2,
-                               Standard_Real&                 DotProd);
+static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
+                               const occ::handle<Geom2d_Geometry>& Geom2,
+                               double&                 DotProd);
 
 //=================================================================================================
 
-MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType, const Standard_Boolean IsOpenResult)
+MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType, const bool IsOpenResult)
     : direction(0.0)
 {
   myJoinType     = aJoinType;
@@ -72,16 +79,16 @@ MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType, const Standard_Bo
 
 //=================================================================================================
 
-void MAT2d_Circuit::Perform(MAT2d_SequenceOfSequenceOfGeometry& FigItem,
-                            const TColStd_SequenceOfBoolean&    IsClosed,
-                            const Standard_Integer              IndRefLine,
-                            const Standard_Boolean              Trigo)
+void MAT2d_Circuit::Perform(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
+                            const NCollection_Sequence<bool>&    IsClosed,
+                            const int              IndRefLine,
+                            const bool              Trigo)
 {
-  Standard_Integer          NbLines = FigItem.Length();
-  Standard_Integer          i;
-  TColStd_Array1OfBoolean   Open(1, NbLines);
-  MAT2d_SequenceOfConnexion SVide;
-  Handle(MAT2d_Connexion)   ConnexionNul;
+  int          NbLines = FigItem.Length();
+  int          i;
+  NCollection_Array1<bool>   Open(1, NbLines);
+  NCollection_Sequence<occ::handle<MAT2d_Connexion>> SVide;
+  occ::handle<MAT2d_Connexion>   ConnexionNul;
 
   if (Trigo)
     direction = 1.;
@@ -101,20 +108,20 @@ void MAT2d_Circuit::Perform(MAT2d_SequenceOfSequenceOfGeometry& FigItem,
   //----------------------------
   for (i = 1; i <= NbLines; i++)
   {
-    Handle(Geom2d_TrimmedCurve) Curve;
-    Curve       = Handle(Geom2d_TrimmedCurve)::DownCast(FigItem.Value(i).First());
+    occ::handle<Geom2d_TrimmedCurve> Curve;
+    Curve       = occ::down_cast<Geom2d_TrimmedCurve>(FigItem.Value(i).First());
     gp_Pnt2d P1 = Curve->StartPoint();
-    Curve       = Handle(Geom2d_TrimmedCurve)::DownCast(FigItem.Value(i).Last());
+    Curve       = occ::down_cast<Geom2d_TrimmedCurve>(FigItem.Value(i).Last());
     gp_Pnt2d P2 = Curve->EndPoint();
     //  Modified by Sergey KHROMOV - Wed Mar  6 16:59:01 2002 Begin
-    //     if ( P1.IsEqual(P2,Precision::Confusion()))  Open(i) = Standard_False;
-    //     else                                         Open(i) = Standard_True;
+    //     if ( P1.IsEqual(P2,Precision::Confusion()))  Open(i) = false;
+    //     else                                         Open(i) = true;
     if (IsClosed(i))
-      Open(i) = Standard_False;
+      Open(i) = false;
     else if (P1.IsEqual(P2, Precision::Confusion()))
-      Open(i) = Standard_False;
+      Open(i) = false;
     else
-      Open(i) = Standard_True;
+      Open(i) = true;
     //  Modified by Sergey KHROMOV - Wed Mar  6 16:59:04 2002 End
   }
 
@@ -169,7 +176,7 @@ void MAT2d_Circuit::Perform(MAT2d_SequenceOfSequenceOfGeometry& FigItem,
   {
     if (Open(i))
     {
-      Handle(MAT2d_Connexion) CF;
+      occ::handle<MAT2d_Connexion> CF;
       if (Road.IsRoot(i))
         CF = ConnexionNul;
       else
@@ -194,10 +201,10 @@ void MAT2d_Circuit::Perform(MAT2d_SequenceOfSequenceOfGeometry& FigItem,
 #ifdef OCCT_DEBUG
   if (AffichCircuit)
   {
-    Standard_Integer NbConnexions = Road.Path().Length();
+    int NbConnexions = Road.Path().Length();
     for (i = 1; i <= NbConnexions; i++)
     {
-      Handle(Geom2d_TrimmedCurve) edge;
+      occ::handle<Geom2d_TrimmedCurve> edge;
       edge = GCE2d_MakeSegment(Road.Path().Value(i)->PointOnFirst(),
                                Road.Path().Value(i)->PointOnSecond());
       MAT2d_DrawCurve(edge, 2);
@@ -217,22 +224,22 @@ void MAT2d_Circuit::Perform(MAT2d_SequenceOfSequenceOfGeometry& FigItem,
 //           une cassure saillante par rapport <Direction>
 //=======================================================================
 
-Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geom1,
-                                              const Handle(Geom2d_Geometry)& Geom2,
-                                              const Standard_Real            Direction) const
+bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
+                                              const occ::handle<Geom2d_Geometry>& Geom2,
+                                              const double            Direction) const
 {
-  Standard_Real               DotProd;
-  Standard_Real               ProVec = CrossProd(Geom1, Geom2, DotProd);
-  Standard_Integer            NbTest = 1;
-  constexpr Standard_Real     DU     = Precision::Confusion();
-  Handle(Geom2d_TrimmedCurve) C1, C2;
+  double               DotProd;
+  double               ProVec = CrossProd(Geom1, Geom2, DotProd);
+  int            NbTest = 1;
+  constexpr double     DU     = Precision::Confusion();
+  occ::handle<Geom2d_TrimmedCurve> C1, C2;
 
-  C1 = Handle(Geom2d_TrimmedCurve)::DownCast(Geom1);
-  C2 = Handle(Geom2d_TrimmedCurve)::DownCast(Geom2);
+  C1 = occ::down_cast<Geom2d_TrimmedCurve>(Geom1);
+  C2 = occ::down_cast<Geom2d_TrimmedCurve>(Geom2);
   //  Modified by Sergey KHROMOV - Thu Oct 24 19:02:46 2002 Begin
   // Add the same criterion as it is in MAT2d_Circuit::InitOpen(..)
-  //  Standard_Real  TolAng = 1.E-5;
-  Standard_Real TolAng = 1.E-8;
+  //  double  TolAng = 1.E-5;
+  double TolAng = 1.E-8;
   //  Modified by Sergey KHROMOV - Thu Oct 24 19:02:47 2002 End
 
   if (myJoinType == GeomAbs_Arc)
@@ -240,18 +247,18 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     while (NbTest <= 10)
     {
       if ((ProVec)*Direction < -TolAng)
-        return Standard_True; // Saillant.
+        return true; // Saillant.
       if ((ProVec)*Direction > TolAng)
-        return Standard_False; // Rentrant.
+        return false; // Rentrant.
       else
       {
         if (DotProd > 0)
         {
-          return Standard_False; // Plat.
+          return false; // Plat.
         }
         TolAng           = 1.E-8;
-        Standard_Real U1 = C1->LastParameter() - NbTest * DU;
-        Standard_Real U2 = C2->FirstParameter() + NbTest * DU;
+        double U1 = C1->LastParameter() - NbTest * DU;
+        double U2 = C2->FirstParameter() + NbTest * DU;
         gp_Dir2d      Dir1(C1->DN(U1, 1));
         gp_Dir2d      Dir2(C2->DN(U2, 1));
         DotProd = Dir1.Dot(Dir2);
@@ -265,10 +272,10 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     // de calcul
     // Si pas dintersection => saillant.
     // Sinon                => rentrant.
-    Standard_Real           D;
-    constexpr Standard_Real Tol   = Precision::Confusion();
-    Standard_Real           MilC1 = (C1->LastParameter() + C1->FirstParameter()) * 0.5;
-    Standard_Real           MilC2 = (C2->LastParameter() + C2->FirstParameter()) * 0.5;
+    double           D;
+    constexpr double Tol   = Precision::Confusion();
+    double           MilC1 = (C1->LastParameter() + C1->FirstParameter()) * 0.5;
+    double           MilC2 = (C2->LastParameter() + C2->FirstParameter()) * 0.5;
     gp_Pnt2d                P     = C1->Value(C1->LastParameter());
     gp_Pnt2d                P1    = C1->Value(MilC1);
     gp_Pnt2d                P2    = C2->Value(MilC2);
@@ -279,26 +286,26 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     if (Direction < 0.)
       D = -D;
 
-    Handle(Geom2dAdaptor_Curve) HC1 = new Geom2dAdaptor_Curve(C1);
-    Handle(Geom2dAdaptor_Curve) HC2 = new Geom2dAdaptor_Curve(C2);
+    occ::handle<Geom2dAdaptor_Curve> HC1 = new Geom2dAdaptor_Curve(C1);
+    occ::handle<Geom2dAdaptor_Curve> HC2 = new Geom2dAdaptor_Curve(C2);
     Adaptor2d_OffsetCurve       OC1(HC1, D, MilC1, C1->LastParameter());
     Adaptor2d_OffsetCurve       OC2(HC2, D, C2->FirstParameter(), MilC2);
     Geom2dInt_GInter            Intersect;
     Intersect.Perform(OC1, OC2, Tol, Tol);
 
 #ifdef OCCT_DEBUG
-    static Standard_Boolean Affich = 0;
+    static bool Affich = 0;
     if (Affich)
     {
   #ifdef DRAW
-      Standard_Real DU1 = (OC1.LastParameter() - OC1.FirstParameter()) / 9.;
-      Standard_Real DU2 = (OC2.LastParameter() - OC2.FirstParameter()) / 9.;
-      for (Standard_Integer ki = 0; ki <= 9; ki++)
+      double DU1 = (OC1.LastParameter() - OC1.FirstParameter()) / 9.;
+      double DU2 = (OC2.LastParameter() - OC2.FirstParameter()) / 9.;
+      for (int ki = 0; ki <= 9; ki++)
       {
         gp_Pnt2d              P1  = OC1.Value(OC1.FirstParameter() + ki * DU1);
         gp_Pnt2d              P2  = OC2.Value(OC2.FirstParameter() + ki * DU2);
-        Handle(Draw_Marker2D) dr1 = new Draw_Marker2D(P1, Draw_Plus, Draw_vert);
-        Handle(Draw_Marker2D) dr2 = new Draw_Marker2D(P2, Draw_Plus, Draw_rouge);
+        occ::handle<Draw_Marker2D> dr1 = new Draw_Marker2D(P1, Draw_Plus, Draw_vert);
+        occ::handle<Draw_Marker2D> dr2 = new Draw_Marker2D(P2, Draw_Plus, Draw_rouge);
         dout << dr1;
         dout << dr2;
       }
@@ -309,11 +316,11 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
 
     if (Intersect.IsDone() && !Intersect.IsEmpty())
     {
-      return Standard_False;
+      return false;
     }
     else
     {
-      return Standard_True;
+      return true;
     }
   } // end of if (myJoinType == GeomAbs_Arc)
   else if (myJoinType == GeomAbs_Intersection)
@@ -322,36 +329,36 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     {
       while (NbTest <= 10)
       {
-        Standard_Real U1 = C1->LastParameter() - NbTest * DU;
-        Standard_Real U2 = C2->FirstParameter() + NbTest * DU;
+        double U1 = C1->LastParameter() - NbTest * DU;
+        double U2 = C2->FirstParameter() + NbTest * DU;
         gp_Dir2d      Dir1(C1->DN(U1, 1));
         gp_Dir2d      Dir2(C2->DN(U2, 1));
         DotProd = Dir1.Dot(Dir2);
         ProVec  = Dir1 ^ Dir2;
         if ((ProVec)*Direction < -TolAng)
-          return Standard_True; // Saillant.
+          return true; // Saillant.
         if ((ProVec)*Direction > TolAng)
-          return Standard_False; // Rentrant.
+          return false; // Rentrant.
 
         NbTest++;
       }
-      return Standard_False;
+      return false;
     }
     else
-      return Standard_False;
+      return false;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-static void SubSequence(const TColGeom2d_SequenceOfGeometry& S1,
-                        Standard_Integer                     IF,
-                        Standard_Integer                     IL,
-                        TColGeom2d_SequenceOfGeometry&       S2)
+static void SubSequence(const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& S1,
+                        int                     IF,
+                        int                     IL,
+                        NCollection_Sequence<occ::handle<Geom2d_Geometry>>&       S2)
 {
   S2.Clear();
-  for (Standard_Integer i = IF; i <= IL; i++)
+  for (int i = IF; i <= IL; i++)
   {
     S2.Append(S1.Value(i));
   }
@@ -359,16 +366,16 @@ static void SubSequence(const TColGeom2d_SequenceOfGeometry& S1,
 
 //=================================================================================================
 
-void MAT2d_Circuit::ConstructCircuit(const MAT2d_SequenceOfSequenceOfGeometry& FigItem,
-                                     const Standard_Integer                    IndRefLine,
+void MAT2d_Circuit::ConstructCircuit(const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& FigItem,
+                                     const int                    IndRefLine,
                                      const MAT2d_MiniPath&                     Road)
 {
-  Handle(MAT2d_Connexion)       PrevC, CurC;
-  TColGeom2d_SequenceOfGeometry SetOfItem;
-  Standard_Integer              NbConnexions;
-  Standard_Integer              ILastItem;
-  Standard_Integer              IndLast;
-  Standard_Integer              i;
+  occ::handle<MAT2d_Connexion>       PrevC, CurC;
+  NCollection_Sequence<occ::handle<Geom2d_Geometry>> SetOfItem;
+  int              NbConnexions;
+  int              ILastItem;
+  int              IndLast;
+  int              i;
 
   NbConnexions = Road.Path().Length();
   //-----------------------------------------------------
@@ -455,7 +462,7 @@ void MAT2d_Circuit::ConstructCircuit(const MAT2d_SequenceOfSequenceOfGeometry& F
   //--------------------------------------
   // Tri des RefToEqui pour chaque element.
   //--------------------------------------
-  MAT2d_DataMapIteratorOfDataMapOfBiIntSequenceOfInteger Ite;
+  NCollection_DataMap<MAT2d_BiInt, NCollection_Sequence<int>>::Iterator Ite;
 
   for (Ite.Initialize(linkRefEqui); Ite.More(); Ite.Next())
   {
@@ -473,7 +480,7 @@ void MAT2d_Circuit::ConstructCircuit(const MAT2d_SequenceOfSequenceOfGeometry& F
     {
       if (geomElements.Value(i)->DynamicType() != STANDARD_TYPE(Geom2d_CartesianPoint))
       {
-        MAT2d_DrawCurve(Handle(Geom2d_Curve)::DownCast(geomElements.Value(i)), 2);
+        MAT2d_DrawCurve(occ::down_cast<Geom2d_Curve>(geomElements.Value(i)), 2);
       }
     }
   }
@@ -482,21 +489,21 @@ void MAT2d_Circuit::ConstructCircuit(const MAT2d_SequenceOfSequenceOfGeometry& F
 
 //=================================================================================================
 
-void MAT2d_Circuit::InitOpen(TColGeom2d_SequenceOfGeometry& Line) const
+void MAT2d_Circuit::InitOpen(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
-  Handle(Geom2d_TrimmedCurve) Curve;
-  Standard_Real               DotProd;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
+  double               DotProd;
 
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.First());
+  Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.First());
   Line.InsertBefore(1, new Geom2d_CartesianPoint(Curve->StartPoint()));
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Last());
+  Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Last());
   Line.Append(new Geom2d_CartesianPoint(Curve->EndPoint()));
 
-  for (Standard_Integer i = 2; i <= Line.Length() - 2; i++)
+  for (int i = 2; i <= Line.Length() - 2; i++)
   {
     if (std::abs(CrossProd(Line.Value(i), Line.Value(i + 1), DotProd)) > 1.E-8 || DotProd < 0.)
     {
-      Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i));
+      Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(i));
       Line.InsertAfter(i, new Geom2d_CartesianPoint(Curve->EndPoint()));
       i++;
     }
@@ -505,17 +512,17 @@ void MAT2d_Circuit::InitOpen(TColGeom2d_SequenceOfGeometry& Line) const
 
 //=================================================================================================
 
-void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
-                               MAT2d_SequenceOfConnexion&     ConnexionFrom,
-                               const Handle(MAT2d_Connexion)& ConnexionFather,
-                               const Standard_Real            SideRef) const
+void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line,
+                               NCollection_Sequence<occ::handle<MAT2d_Connexion>>&     ConnexionFrom,
+                               const occ::handle<MAT2d_Connexion>& ConnexionFather,
+                               const double            SideRef) const
 {
-  Handle(Standard_Type)       Type;
-  Handle(Geom2d_TrimmedCurve) Curve;
-  Standard_Integer            NbItems = Line.Length();
-  Standard_Integer            i;
-  Standard_Real               ProVec, DotProd;
-  Handle(MAT2d_Connexion)     CC;
+  occ::handle<Standard_Type>       Type;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
+  int            NbItems = Line.Length();
+  int            i;
+  double               ProVec, DotProd;
+  occ::handle<MAT2d_Connexion>     CC;
 
   //--------------------------
   // Completion de la ligne.
@@ -531,7 +538,7 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
       }
       else
       {
-        Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i)->Copy());
+        Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(i)->Copy());
         Curve->Reverse();
         Line.Append(Curve);
       }
@@ -541,9 +548,9 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
   //------------------------------------------
   // Repartition des connexions sur la ligne
   //------------------------------------------
-  Standard_Integer IAfter       = ConnexionFrom.Length();
-  Standard_Integer NbConnexions = IAfter;
-  Standard_Integer IndCOF;
+  int IAfter       = ConnexionFrom.Length();
+  int NbConnexions = IAfter;
+  int IndCOF;
 
   for (i = 1; i <= IAfter; i++)
   {
@@ -568,7 +575,7 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
     }
     else if (Side(CC, Line) != SideRef)
     {
-      Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(IndCOF));
+      Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(IndCOF));
       CC->IndexItemOnFirst(2 * NbItems - IndCOF);
       CC->ParameterOnFirst(Curve->ReversedParameter(CC->ParameterOnFirst()));
       ConnexionFrom.InsertAfter(IAfter, CC);
@@ -600,7 +607,7 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
     }
     else if (Side(CC, Line) != SideRef)
     {
-      Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(IndCOF));
+      Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(IndCOF));
       ConnexionFather->IndexItemOnSecond(2 * NbItems - IndCOF);
       ConnexionFather->ParameterOnSecond(
         Curve->ReversedParameter(ConnexionFather->ParameterOnSecond()));
@@ -610,9 +617,9 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
   //-------------------------------------
   // Suppression des cassures rentrantes.
   //-------------------------------------
-  Standard_Integer        IndLine = 1;
-  Standard_Integer        ICorres = 1;
-  TColStd_Array1OfInteger Corres(1, Line.Length());
+  int        IndLine = 1;
+  int        ICorres = 1;
+  NCollection_Array1<int> Corres(1, Line.Length());
 
   while (Line.Value(IndLine) != Line.Last())
   {
@@ -670,11 +677,11 @@ void MAT2d_Circuit::DoubleLine(TColGeom2d_SequenceOfGeometry& Line,
 
 //=================================================================================================
 
-void MAT2d_Circuit::InsertCorner(TColGeom2d_SequenceOfGeometry& Line) const
+void MAT2d_Circuit::InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
-  Standard_Integer            i, isuiv;
-  Handle(Geom2d_TrimmedCurve) Curve;
-  Standard_Boolean            Insert;
+  int            i, isuiv;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
+  bool            Insert;
 
   for (i = 1; i <= Line.Length(); i++)
   {
@@ -686,10 +693,10 @@ void MAT2d_Circuit::InsertCorner(TColGeom2d_SequenceOfGeometry& Line) const
     {
       if (Insert)
       {
-        Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(isuiv));
+        Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(isuiv));
   #ifdef DRAW
         gp_Pnt2d              P  = Curve->StartPoint();
-        Handle(Draw_Marker2D) dr = new Draw_Marker2D(P, Draw_Plus, Draw_vert);
+        occ::handle<Draw_Marker2D> dr = new Draw_Marker2D(P, Draw_Plus, Draw_vert);
         dout << dr;
         dout.Flush();
   #endif
@@ -699,7 +706,7 @@ void MAT2d_Circuit::InsertCorner(TColGeom2d_SequenceOfGeometry& Line) const
 
     if (Insert)
     {
-      Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(isuiv));
+      Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(isuiv));
       Line.InsertAfter(i, new Geom2d_CartesianPoint(Curve->StartPoint()));
       i++;
     }
@@ -708,29 +715,29 @@ void MAT2d_Circuit::InsertCorner(TColGeom2d_SequenceOfGeometry& Line) const
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Circuit::NumberOfItems() const
+int MAT2d_Circuit::NumberOfItems() const
 {
   return geomElements.Length();
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Circuit::LineLength(const Standard_Integer I) const
+int MAT2d_Circuit::LineLength(const int I) const
 {
   return linesLength(I);
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Geometry) MAT2d_Circuit::Value(const Standard_Integer Index) const
+occ::handle<Geom2d_Geometry> MAT2d_Circuit::Value(const int Index) const
 {
   return geomElements.Value(Index);
 }
 
 //=================================================================================================
 
-const TColStd_SequenceOfInteger& MAT2d_Circuit::RefToEqui(const Standard_Integer IndLine,
-                                                          const Standard_Integer IndCurve) const
+const NCollection_Sequence<int>& MAT2d_Circuit::RefToEqui(const int IndLine,
+                                                          const int IndCurve) const
 {
   MAT2d_BiInt Key(IndLine, IndCurve);
   return linkRefEqui(Key);
@@ -740,9 +747,9 @@ const TColStd_SequenceOfInteger& MAT2d_Circuit::RefToEqui(const Standard_Integer
 
 void MAT2d_Circuit::SortRefToEqui(const MAT2d_BiInt& BiRef)
 {
-  Standard_Integer           i;
-  TColStd_SequenceOfInteger& S = linkRefEqui.ChangeFind(BiRef);
-  TColStd_SequenceOfInteger  SFin;
+  int           i;
+  NCollection_Sequence<int>& S = linkRefEqui.ChangeFind(BiRef);
+  NCollection_Sequence<int>  SFin;
 
   for (i = 1; i <= S.Length(); i++)
   {
@@ -759,28 +766,28 @@ void MAT2d_Circuit::SortRefToEqui(const MAT2d_BiInt& BiRef)
 
 //=================================================================================================
 
-Handle(MAT2d_Connexion) MAT2d_Circuit::Connexion(const Standard_Integer I) const
+occ::handle<MAT2d_Connexion> MAT2d_Circuit::Connexion(const int I) const
 {
   return connexionMap(I);
 }
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Circuit::ConnexionOn(const Standard_Integer I) const
+bool MAT2d_Circuit::ConnexionOn(const int I) const
 {
   return connexionMap.IsBound(I);
 }
 
 //=================================================================================================
 
-Standard_Real MAT2d_Circuit::Side(const Handle(MAT2d_Connexion)&       C1,
-                                  const TColGeom2d_SequenceOfGeometry& Line) const
+double MAT2d_Circuit::Side(const occ::handle<MAT2d_Connexion>&       C1,
+                                  const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const
 {
-  Handle(Geom2d_TrimmedCurve) Curve;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
 
   gp_Vec2d Vect1(C1->PointOnSecond().X() - C1->PointOnFirst().X(),
                  C1->PointOnSecond().Y() - C1->PointOnFirst().Y());
-  Curve          = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(C1->IndexItemOnFirst()));
+  Curve          = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(C1->IndexItemOnFirst()));
   gp_Vec2d Vect2 = Curve->DN(C1->ParameterOnFirst(), 1);
   if ((Vect1 ^ Vect2) > 0.)
     return -1.;
@@ -790,20 +797,20 @@ Standard_Real MAT2d_Circuit::Side(const Handle(MAT2d_Connexion)&       C1,
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Circuit::PassByLast(const Handle(MAT2d_Connexion)& C1,
-                                           const Handle(MAT2d_Connexion)& C2) const
+bool MAT2d_Circuit::PassByLast(const occ::handle<MAT2d_Connexion>& C1,
+                                           const occ::handle<MAT2d_Connexion>& C2) const
 {
   if (C2->IndexFirstLine() == C1->IndexSecondLine())
   {
     if (C2->IndexItemOnFirst() < C1->IndexItemOnSecond())
     {
-      return Standard_True;
+      return true;
     }
     else if (C2->IndexItemOnFirst() == C1->IndexItemOnSecond())
     {
       if (C1->IndexFirstLine() == C2->IndexSecondLine())
       {
-        return Standard_True;
+        return true;
       }
       if (C2->ParameterOnFirst() == C1->ParameterOnSecond())
       {
@@ -811,27 +818,27 @@ Standard_Boolean MAT2d_Circuit::PassByLast(const Handle(MAT2d_Connexion)& C1,
         gp_Vec2d Vect2(C2->PointOnFirst(), C2->PointOnSecond());
         if ((Vect1 ^ Vect2) * direction > 0)
         {
-          return Standard_True;
+          return true;
         }
       }
       else if (C2->ParameterOnFirst() < C1->ParameterOnSecond())
       {
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void MAT2d_Circuit::UpDateLink(const Standard_Integer IFirst,
-                               const Standard_Integer ILine,
-                               const Standard_Integer ICurveFirst,
-                               const Standard_Integer ICurveLast)
+void MAT2d_Circuit::UpDateLink(const int IFirst,
+                               const int ILine,
+                               const int ICurveFirst,
+                               const int ICurveLast)
 {
-  Standard_Integer IEqui = IFirst;
-  Standard_Integer i;
+  int IEqui = IFirst;
+  int i;
 
   for (i = ICurveFirst; i <= ICurveLast; i++)
   {
@@ -842,7 +849,7 @@ void MAT2d_Circuit::UpDateLink(const Standard_Integer IFirst,
     }
     else
     {
-      TColStd_SequenceOfInteger L;
+      NCollection_Sequence<int> L;
       linkRefEqui.Bind(Key, L);
       linkRefEqui(Key).Append(IEqui);
     }
@@ -856,15 +863,15 @@ void MAT2d_Circuit::UpDateLink(const Standard_Integer IFirst,
 //            tangentes a la fin de Geom1 et au debut de Geom2.
 //            Geom1 et Geom2 doivent etre des courbes.
 //==========================================================================
-static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
-                               const Handle(Geom2d_Geometry)& Geom2,
-                               Standard_Real&                 DotProd)
+static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
+                               const occ::handle<Geom2d_Geometry>& Geom2,
+                               double&                 DotProd)
 {
-  Handle(Geom2d_TrimmedCurve) Curve;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
 
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Geom1);
+  Curve = occ::down_cast<Geom2d_TrimmedCurve>(Geom1);
   gp_Dir2d Dir1(Curve->DN(Curve->LastParameter(), 1));
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Geom2);
+  Curve = occ::down_cast<Geom2d_TrimmedCurve>(Geom2);
   gp_Dir2d Dir2(Curve->DN(Curve->FirstParameter(), 1));
   DotProd = Dir1.Dot(Dir2);
   return Dir1 ^ Dir2;
@@ -880,25 +887,25 @@ static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
 //            Indice = 3 rouge,
 //            Indice = 4 vert.
 //==========================================================================
-void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer /*Indice*/)
+void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice*/)
 {
-  Handle(Standard_Type) type = aCurve->DynamicType();
-  Handle(Geom2d_Curve)  curve, CurveDraw;
+  occ::handle<Standard_Type> type = aCurve->DynamicType();
+  occ::handle<Geom2d_Curve>  curve, CurveDraw;
   #ifdef DRAW
-  Handle(DrawTrSurf_Curve2d) dr;
+  occ::handle<DrawTrSurf_Curve2d> dr;
   Draw_Color                 Couleur;
   #endif
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
-    curve = Handle(Geom2d_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
+    curve = occ::down_cast<Geom2d_TrimmedCurve>(aCurve)->BasisCurve();
     type  = curve->DynamicType();
     // PB de representation des courbes semi_infinies.
     gp_Parab2d    gpParabola;
     gp_Hypr2d     gpHyperbola;
-    Standard_Real Focus;
-    Standard_Real Limit = 50000.;
-    Standard_Real delta = 400;
+    double Focus;
+    double Limit = 50000.;
+    double delta = 400;
 
     // PB de representation des courbes semi_infinies.
     if (aCurve->LastParameter() == Precision::Infinite())
@@ -906,21 +913,21 @@ void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve, const Standard_Integer 
 
       if (type == STANDARD_TYPE(Geom2d_Parabola))
       {
-        gpParabola         = Handle(Geom2d_Parabola)::DownCast(curve)->Parab2d();
+        gpParabola         = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
         Focus              = gpParabola.Focal();
-        Standard_Real Val1 = std::sqrt(Limit * Focus);
-        Standard_Real Val2 = std::sqrt(Limit * Limit);
+        double Val1 = std::sqrt(Limit * Focus);
+        double Val2 = std::sqrt(Limit * Limit);
         delta              = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
       {
-        gpHyperbola         = Handle(Geom2d_Hyperbola)::DownCast(curve)->Hypr2d();
-        Standard_Real Majr  = gpHyperbola.MajorRadius();
-        Standard_Real Minr  = gpHyperbola.MinorRadius();
-        Standard_Real Valu1 = Limit / Majr;
-        Standard_Real Valu2 = Limit / Minr;
-        Standard_Real Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
-        Standard_Real Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
+        gpHyperbola         = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
+        double Majr  = gpHyperbola.MajorRadius();
+        double Minr  = gpHyperbola.MinorRadius();
+        double Valu1 = Limit / Majr;
+        double Valu2 = Limit / Minr;
+        double Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        double Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
         delta               = (Val1 <= Val2 ? Val1 : Val2);
       }
       CurveDraw =

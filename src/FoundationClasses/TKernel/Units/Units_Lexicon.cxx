@@ -100,15 +100,15 @@ Units_Lexicon::Units_Lexicon() {}
 
 void Units_Lexicon::Creates()
 {
-  thesequenceoftokens = new Units_TokensSequence();
+  thesequenceoftokens = new NCollection_HSequence<occ::handle<Units_Token>>();
 
-  const Standard_Integer aNbLexiItems = sizeof(THE_LEXICON) / sizeof(LexiconItem);
-  for (Standard_Integer anItemIter = 0; anItemIter < aNbLexiItems; ++anItemIter)
+  const int aNbLexiItems = sizeof(THE_LEXICON) / sizeof(LexiconItem);
+  for (int anItemIter = 0; anItemIter < aNbLexiItems; ++anItemIter)
   {
     const LexiconItem& anItem = THE_LEXICON[anItemIter];
     if (thesequenceoftokens->IsEmpty())
     {
-      Handle(Units_Token) aToken = new Units_Token(anItem.Prefix, anItem.Operation, anItem.Value);
+      occ::handle<Units_Token> aToken = new Units_Token(anItem.Prefix, anItem.Operation, anItem.Value);
       thesequenceoftokens->Prepend(aToken);
     }
     else
@@ -120,14 +120,14 @@ void Units_Lexicon::Creates()
 
 //=================================================================================================
 
-void Units_Lexicon::AddToken(const Standard_CString aword,
-                             const Standard_CString amean,
-                             const Standard_Real    avalue)
+void Units_Lexicon::AddToken(const char* const aword,
+                             const char* const amean,
+                             const double    avalue)
 {
-  Handle(Units_Token) token;
-  Handle(Units_Token) referencetoken;
-  Standard_Boolean    found = Standard_False;
-  Standard_Integer    index;
+  occ::handle<Units_Token> token;
+  occ::handle<Units_Token> referencetoken;
+  bool    found = false;
+  int    index;
 
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
   {
@@ -135,14 +135,14 @@ void Units_Lexicon::AddToken(const Standard_CString aword,
     if (referencetoken->Word() == aword)
     {
       referencetoken->Update(amean);
-      found = Standard_True;
+      found = true;
       break;
     }
     else if (!(referencetoken->Word() > aword))
     {
       token = new Units_Token(aword, amean, avalue);
       thesequenceoftokens->InsertBefore(index, token);
-      found = Standard_True;
+      found = true;
       break;
     }
   }

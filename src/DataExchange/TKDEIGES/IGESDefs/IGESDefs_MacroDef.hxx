@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-
-class IGESDefs_MacroDef;
-DEFINE_STANDARD_HANDLE(IGESDefs_MacroDef, IGESData_IGESEntity)
 
 //! defines IGES Macro Definition Entity, Type <306> Form <0>
 //! in package IGESDefs
@@ -44,34 +43,33 @@ public:
   //! - entityTypeID   : Entity Type ID
   //! - langStatements : Language Statements
   //! - endMacro       : END MACRO
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        macro,
-                            const Standard_Integer                         entityTypeID,
-                            const Handle(Interface_HArray1OfHAsciiString)& langStatements,
-                            const Handle(TCollection_HAsciiString)&        endMacro);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        macro,
+                            const int                         entityTypeID,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& langStatements,
+                            const occ::handle<TCollection_HAsciiString>&        endMacro);
 
   //! returns the number of language statements
-  Standard_EXPORT Standard_Integer NbStatements() const;
+  Standard_EXPORT int NbStatements() const;
 
   //! returns the MACRO(Literal)
-  Standard_EXPORT Handle(TCollection_HAsciiString) MACRO() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> MACRO() const;
 
   //! returns the Entity Type ID
-  Standard_EXPORT Standard_Integer EntityTypeID() const;
+  Standard_EXPORT int EntityTypeID() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) LanguageStatement(
-    const Standard_Integer StatNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> LanguageStatement(
+    const int StatNum) const;
 
   //! returns the ENDM(Literal)
-  Standard_EXPORT Handle(TCollection_HAsciiString) ENDMACRO() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ENDMACRO() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_MacroDef, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)        theMACRO;
-  Standard_Integer                        theEntityTypeID;
-  Handle(Interface_HArray1OfHAsciiString) theLangStatements;
-  Handle(TCollection_HAsciiString)        theENDMACRO;
+  occ::handle<TCollection_HAsciiString>        theMACRO;
+  int                        theEntityTypeID;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theLangStatements;
+  occ::handle<TCollection_HAsciiString>        theENDMACRO;
 };
 
 #endif // _IGESDefs_MacroDef_HeaderFile

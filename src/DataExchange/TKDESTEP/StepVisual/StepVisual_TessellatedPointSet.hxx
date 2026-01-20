@@ -22,9 +22,9 @@
 #include <StepVisual_TessellatedItem.hxx>
 
 #include <StepVisual_CoordinatesList.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedPointSet, StepVisual_TessellatedItem)
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity TessellatedPointSet
 class StepVisual_TessellatedPointSet : public StepVisual_TessellatedItem
@@ -35,33 +35,33 @@ public:
   Standard_EXPORT StepVisual_TessellatedPointSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-                            const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Handle(TColStd_HArray1OfInteger)&   thePointList);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+                            const occ::handle<NCollection_HArray1<int>>&   thePointList);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field PointList
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) PointList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> PointList() const;
 
   //! Sets field PointList
-  Standard_EXPORT void SetPointList(const Handle(TColStd_HArray1OfInteger)& thePointList);
+  Standard_EXPORT void SetPointList(const occ::handle<NCollection_HArray1<int>>& thePointList);
 
   //! Returns number of PointList
-  Standard_EXPORT Standard_Integer NbPointList() const;
+  Standard_EXPORT int NbPointList() const;
 
   //! Returns value of PointList by its num
-  Standard_EXPORT Standard_Integer PointListValue(const Standard_Integer theNum) const;
+  Standard_EXPORT int PointListValue(const int theNum) const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedPointSet, StepVisual_TessellatedItem)
 
 private:
-  Handle(StepVisual_CoordinatesList) myCoordinates;
-  Handle(TColStd_HArray1OfInteger)   myPointList;
+  occ::handle<StepVisual_CoordinatesList> myCoordinates;
+  occ::handle<NCollection_HArray1<int>>   myPointList;
 };
 
 #endif // _StepVisual_TessellatedPointSet_HeaderFile_

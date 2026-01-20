@@ -38,7 +38,7 @@ public:
   Standard_EXPORT void Init(const Sweep_NumShape& aShape);
 
   //! Returns True if there is a current sub-shape.
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Moves to the next sub-shape.
   Standard_EXPORT void Next();
@@ -49,12 +49,11 @@ public:
   //! Returns the orientation of the current sub-shape.
   TopAbs_Orientation Orientation() const;
 
-protected:
 private:
   Sweep_NumShape     myNumShape;
   Sweep_NumShape     myCurrentNumShape;
-  Standard_Integer   myCurrentRange;
-  Standard_Boolean   myMore;
+  int   myCurrentRange;
+  bool   myMore;
   TopAbs_Orientation myCurrentOrientation;
 };
 

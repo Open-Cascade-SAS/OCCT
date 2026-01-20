@@ -37,7 +37,7 @@ DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode()
 //=================================================================================================
 
 DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode(
-  const Handle(DE_ShapeFixConfigurationNode)& theNode)
+  const occ::handle<DE_ShapeFixConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode),
       ShapeFixParameters(theNode->ShapeFixParameters)
 {
@@ -45,7 +45,7 @@ DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode(
 
 //=================================================================================================
 
-bool DE_ShapeFixConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DE_ShapeFixConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".healing";

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-TopLoc_ItemLocation::TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const Standard_Integer P)
+TopLoc_ItemLocation::TopLoc_ItemLocation(const occ::handle<TopLoc_Datum3D>& D, const int P)
     : myDatum(D),
       myPower(P),
       myTrsf(D->Transformation().Powered(P))
@@ -30,7 +30,7 @@ TopLoc_ItemLocation::TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const 
 
 //=================================================================================================
 
-void TopLoc_ItemLocation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TopLoc_ItemLocation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, TopLoc_ItemLocation)
 

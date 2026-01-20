@@ -26,17 +26,17 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_Chamf2dPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_Chamf2dPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
                                      const gp_Pnt&                     aPntAttach,
                                      const gp_Pnt&                     aPntEnd,
                                      const TCollection_ExtendedString& aText)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
@@ -56,18 +56,18 @@ void DsgPrs_Chamf2dPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 // purpose  : it is possible to choose the symbol of extremities of the face (arrow, point ...)
 //==========================================================================
 
-void DsgPrs_Chamf2dPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_Chamf2dPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
                                      const gp_Pnt&                     aPntAttach,
                                      const gp_Pnt&                     aPntEnd,
                                      const TCollection_ExtendedString& aText,
                                      const DsgPrs_ArrowSide            ArrowPrs)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);

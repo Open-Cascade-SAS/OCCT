@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Bnd_HArray1OfBox.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class Standard_OutOfRange;
 class Bnd_Box;
@@ -41,24 +43,24 @@ public:
 
   //! Give the array of boxes. The box <n> corresponding
   //! to the triangle <n>.
-  static const Handle(Bnd_HArray1OfBox)& ComponentsBounding(const IntPatch_Polyhedron& thePolyh);
+  static const occ::handle<NCollection_HArray1<Bnd_Box>>& ComponentsBounding(const IntPatch_Polyhedron& thePolyh);
 
   //! Give the tolerance of the polygon.
-  static Standard_Real DeflectionOverEstimation(const IntPatch_Polyhedron& thePolyh);
+  static double DeflectionOverEstimation(const IntPatch_Polyhedron& thePolyh);
 
   //! Give the number of triangles in this polyhedral surface.
-  static Standard_Integer NbTriangles(const IntPatch_Polyhedron& thePolyh);
+  static int NbTriangles(const IntPatch_Polyhedron& thePolyh);
 
   //! Give the indices of the 3 points of the triangle of
   //! address Index in the Polyhedron.
   static void Triangle(const IntPatch_Polyhedron& thePolyh,
-                       const Standard_Integer     Index,
-                       Standard_Integer&          P1,
-                       Standard_Integer&          P2,
-                       Standard_Integer&          P3);
+                       const int     Index,
+                       int&          P1,
+                       int&          P2,
+                       int&          P3);
 
   //! Give the point of index i in the polyhedral surface.
-  static const gp_Pnt& Point(const IntPatch_Polyhedron& thePolyh, const Standard_Integer Index);
+  static const gp_Pnt& Point(const IntPatch_Polyhedron& thePolyh, const int Index);
 
   //! Gives the address Tricon of the triangle connexe to
   //! the triangle of address Triang by the edge Pivot Pedge
@@ -66,15 +68,13 @@ public:
   //! are on a free edge TriCon==0 but the function return
   //! the value of the triangle in the other side of Pivot
   //! on the free edge. Used to turn around a vertex.
-  static Standard_Integer TriConnex(const IntPatch_Polyhedron& thePolyh,
-                                    const Standard_Integer     Triang,
-                                    const Standard_Integer     Pivot,
-                                    const Standard_Integer     Pedge,
-                                    Standard_Integer&          TriCon,
-                                    Standard_Integer&          OtherP);
+  static int TriConnex(const IntPatch_Polyhedron& thePolyh,
+                                    const int     Triang,
+                                    const int     Pivot,
+                                    const int     Pedge,
+                                    int&          TriCon,
+                                    int&          OtherP);
 
-protected:
-private:
 };
 
 #include <IntPatch_PolyhedronTool.lxx>

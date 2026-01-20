@@ -17,19 +17,19 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalAssignment, Standard_Transient)
 
-void StepBasic_ApprovalAssignment::Init(const Handle(StepBasic_Approval)& aAssignedApproval)
+void StepBasic_ApprovalAssignment::Init(const occ::handle<StepBasic_Approval>& aAssignedApproval)
 {
   // --- classe own fields ---
   assignedApproval = aAssignedApproval;
 }
 
 void StepBasic_ApprovalAssignment::SetAssignedApproval(
-  const Handle(StepBasic_Approval)& aAssignedApproval)
+  const occ::handle<StepBasic_Approval>& aAssignedApproval)
 {
   assignedApproval = aAssignedApproval;
 }
 
-Handle(StepBasic_Approval) StepBasic_ApprovalAssignment::AssignedApproval() const
+occ::handle<StepBasic_Approval> StepBasic_ApprovalAssignment::AssignedApproval() const
 {
   return assignedApproval;
 }

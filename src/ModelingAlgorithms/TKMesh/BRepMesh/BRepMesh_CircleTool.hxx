@@ -36,29 +36,29 @@ public:
 
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal structures.
-  Standard_EXPORT BRepMesh_CircleTool(const Handle(NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMesh_CircleTool(const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Constructor.
   //! @param theReservedSize size to be reserved for vector of circles.
   //! @param theAllocator memory allocator to be used by internal structures.
-  Standard_EXPORT BRepMesh_CircleTool(const Standard_Integer                  theReservedSize,
-                                      const Handle(NCollection_IncAllocator)& theAllocator);
+  Standard_EXPORT BRepMesh_CircleTool(const int                  theReservedSize,
+                                      const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Initializes the tool.
   //! @param theReservedSize size to be reserved for vector of circles.
-  void Init(const Standard_Integer /*theReservedSize*/) { myTolerance = Precision::PConfusion(); }
+  void Init(const int /*theReservedSize*/) { myTolerance = Precision::PConfusion(); }
 
   //! Sets new size for cell filter.
   //! @param theSize cell size to be set for X and Y dimensions.
-  void SetCellSize(const Standard_Real theSize) { myCellFilter.Reset(theSize, myAllocator); }
+  void SetCellSize(const double theSize) { myCellFilter.Reset(theSize, myAllocator); }
 
   //! Sets new size for cell filter.
   //! @param theSizeX cell size to be set for X dimension.
   //! @param theSizeY cell size to be set for Y dimension.
-  void SetCellSize(const Standard_Real theSizeX, const Standard_Real theSizeY)
+  void SetCellSize(const double theSizeX, const double theSizeY)
   {
-    Standard_Real                     aCellSizeC[2] = {theSizeX, theSizeY};
-    NCollection_Array1<Standard_Real> aCellSize(aCellSizeC[0], 1, 2);
+    double                     aCellSizeC[2] = {theSizeX, theSizeY};
+    NCollection_Array1<double> aCellSize(aCellSizeC[0], 1, 2);
     myCellFilter.Reset(aCellSize, myAllocator);
   }
 
@@ -72,12 +72,12 @@ public:
   }
 
   //! Returns true if cell filter contains no circle.
-  Standard_Boolean IsEmpty() const { return mySelector.Circles().IsEmpty(); }
+  bool IsEmpty() const { return mySelector.Circles().IsEmpty(); }
 
   //! Binds the circle to the tool.
   //! @param theIndex index a circle should be bound with.
   //! @param theCircle circle to be bound.
-  Standard_EXPORT void Bind(const Standard_Integer theIndex, const gp_Circ2d& theCircle);
+  Standard_EXPORT void Bind(const int theIndex, const gp_Circ2d& theCircle);
 
   //! Computes circle on three points.
   //! @param thePoint1 first point.
@@ -87,11 +87,11 @@ public:
   //! @param[out] theRadius radius of computed circle.
   //! @return FALSE in case of impossibility to build a circle
   //! on the given points, TRUE elsewhere.
-  Standard_EXPORT static Standard_Boolean MakeCircle(const gp_XY&   thePoint1,
+  Standard_EXPORT static bool MakeCircle(const gp_XY&   thePoint1,
                                                      const gp_XY&   thePoint2,
                                                      const gp_XY&   thePoint3,
                                                      gp_XY&         theLocation,
-                                                     Standard_Real& theRadius);
+                                                     double& theRadius);
 
   //! Computes circle on three points and bind it to the tool.
   //! @param theIndex index a circle should be bound with.
@@ -100,18 +100,18 @@ public:
   //! @param thePoint3 third point.
   //! @return FALSE in case of impossibility to build a circle
   //! on the given points, TRUE elsewhere.
-  Standard_EXPORT Standard_Boolean Bind(const Standard_Integer theIndex,
+  Standard_EXPORT bool Bind(const int theIndex,
                                         const gp_XY&           thePoint1,
                                         const gp_XY&           thePoint2,
                                         const gp_XY&           thePoint3);
 
   //! Binds implicit zero circle.
   //! @param theIndex index a zero circle should be bound with.
-  Standard_EXPORT void MocBind(const Standard_Integer theIndex);
+  Standard_EXPORT void MocBind(const int theIndex);
 
   //! Deletes a circle from the tool.
   //! @param theIndex index of a circle to be removed.
-  Standard_EXPORT void Delete(const Standard_Integer theIndex);
+  Standard_EXPORT void Delete(const int theIndex);
 
   //! Select the circles shot by the given point.
   //! @param thePoint bullet point.
@@ -122,13 +122,13 @@ private:
   //! @param theIndex index a circle should be bound with.
   //! @param theLocation location of a circle.
   //! @param theRadius radius of a circle.
-  void bind(const Standard_Integer theIndex,
+  void bind(const int theIndex,
             const gp_XY&           theLocation,
-            const Standard_Real    theRadius);
+            const double    theRadius);
 
 private:
-  Standard_Real                    myTolerance;
-  Handle(NCollection_IncAllocator) myAllocator;
+  double                    myTolerance;
+  occ::handle<NCollection_IncAllocator> myAllocator;
   IMeshData::CircleCellFilter      myCellFilter;
   BRepMesh_CircleInspector         mySelector;
   gp_XY                            myFaceMax;

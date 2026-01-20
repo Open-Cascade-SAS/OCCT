@@ -23,16 +23,14 @@ set(OCCT_Contap_FILES
   Contap_Point.cxx
   Contap_Point.hxx
   Contap_Point.lxx
-  Contap_SequenceOfIWLineOfTheIWalking.hxx
-  Contap_SequenceOfPathPointOfTheSearch.hxx
-  Contap_SequenceOfSegmentOfTheSearch.hxx
+
   Contap_SurfFunction.cxx
   Contap_SurfFunction.hxx
   Contap_SurfFunction.lxx
   Contap_SurfProps.cxx
   Contap_SurfProps.hxx
   Contap_TFunction.hxx
-  Contap_TheHSequenceOfPoint.hxx
+
   Contap_TheIWalking.hxx
   Contap_TheIWalking_0.cxx
   Contap_TheIWLineOfTheIWalking.hxx
@@ -45,6 +43,5 @@ set(OCCT_Contap_FILES
   Contap_TheSearchInside_0.cxx
   Contap_TheSegmentOfTheSearch.hxx
   Contap_TheSegmentOfTheSearch_0.cxx
-  Contap_TheSequenceOfLine.hxx
-  Contap_TheSequenceOfPoint.hxx
+
 )

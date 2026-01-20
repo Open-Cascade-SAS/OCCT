@@ -64,19 +64,19 @@ public:
   using iterator       = typename NCollection_Array1<TheItemType>::iterator;
   using const_iterator = typename NCollection_Array1<TheItemType>::const_iterator;
 
-  static int BeginPosition(Standard_Integer theRowLower,
-                           Standard_Integer /*theRowUpper*/,
-                           Standard_Integer theColLower,
-                           Standard_Integer theColUpper) noexcept
+  static int BeginPosition(int theRowLower,
+                           int /*theRowUpper*/,
+                           int theColLower,
+                           int theColUpper) noexcept
   {
     // Calculate the offset for the beginning position
     return theColLower + (theRowLower * (theColUpper - theColLower + 1));
   }
 
-  static int LastPosition(Standard_Integer theRowLower,
-                          Standard_Integer theRowUpper,
-                          Standard_Integer theColLower,
-                          Standard_Integer theColUpper) noexcept
+  static int LastPosition(int theRowLower,
+                          int theRowUpper,
+                          int theColLower,
+                          int theColUpper) noexcept
   {
     return ((theRowUpper - theRowLower + 1) * (theColUpper - theColLower + 1)) + theColLower
            + (theRowLower * (theColUpper - theColLower + 1)) - 1;
@@ -97,10 +97,10 @@ public:
   }
 
   //! Constructor
-  NCollection_Array2(const Standard_Integer theRowLower,
-                     const Standard_Integer theRowUpper,
-                     const Standard_Integer theColLower,
-                     const Standard_Integer theColUpper)
+  NCollection_Array2(const int theRowLower,
+                     const int theRowUpper,
+                     const int theColLower,
+                     const int theColUpper)
       : NCollection_Array1<TheItemType>(
           BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
           LastPosition(theRowLower, theRowUpper, theColLower, theColUpper)),
@@ -113,10 +113,10 @@ public:
 
   //! Constructor
   explicit NCollection_Array2(const allocator_type&  theAlloc,
-                              const Standard_Integer theRowLower,
-                              const Standard_Integer theRowUpper,
-                              const Standard_Integer theColLower,
-                              const Standard_Integer theColUpper)
+                              const int theRowLower,
+                              const int theRowUpper,
+                              const int theColLower,
+                              const int theColUpper)
       : NCollection_Array1<TheItemType>(
           theAlloc,
           BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
@@ -154,10 +154,10 @@ public:
 
   //! C array-based constructor
   explicit NCollection_Array2(const TheItemType&     theBegin,
-                              const Standard_Integer theRowLower,
-                              const Standard_Integer theRowUpper,
-                              const Standard_Integer theColLower,
-                              const Standard_Integer theColUpper)
+                              const int theRowLower,
+                              const int theRowUpper,
+                              const int theColLower,
+                              const int theColUpper)
       : NCollection_Array1<TheItemType>(
           theBegin,
           BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
@@ -170,55 +170,55 @@ public:
   }
 
   //! Size (number of items)
-  Standard_Integer Size() const noexcept { return Length(); }
+  int Size() const noexcept { return Length(); }
 
   //! Length (number of items)
-  Standard_Integer Length() const noexcept { return NbRows() * NbColumns(); }
+  int Length() const noexcept { return NbRows() * NbColumns(); }
 
   //! Returns number of rows
-  Standard_Integer NbRows() const noexcept { return static_cast<int>(mySizeRow); }
+  int NbRows() const noexcept { return static_cast<int>(mySizeRow); }
 
   //! Returns number of columns
-  Standard_Integer NbColumns() const noexcept { return static_cast<int>(mySizeCol); }
+  int NbColumns() const noexcept { return static_cast<int>(mySizeCol); }
 
   //! Returns length of the row, i.e. number of columns
-  Standard_Integer RowLength() const noexcept { return NbColumns(); }
+  int RowLength() const noexcept { return NbColumns(); }
 
   //! Returns length of the column, i.e. number of rows
-  Standard_Integer ColLength() const noexcept { return NbRows(); }
+  int ColLength() const noexcept { return NbRows(); }
 
   //! LowerRow
-  Standard_Integer LowerRow() const noexcept { return myLowerRow; }
+  int LowerRow() const noexcept { return myLowerRow; }
 
   //! UpperRow
-  Standard_Integer UpperRow() const noexcept
+  int UpperRow() const noexcept
   {
     return myLowerRow + static_cast<int>(mySizeRow) - 1;
   }
 
   //! LowerCol
-  Standard_Integer LowerCol() const noexcept { return myLowerCol; }
+  int LowerCol() const noexcept { return myLowerCol; }
 
   //! UpperCol
-  Standard_Integer UpperCol() const noexcept
+  int UpperCol() const noexcept
   {
     return myLowerCol + static_cast<int>(mySizeCol) - 1;
   }
 
   //! Updates lower row
-  void UpdateLowerRow(const Standard_Integer theLowerRow) noexcept { myLowerRow = theLowerRow; }
+  void UpdateLowerRow(const int theLowerRow) noexcept { myLowerRow = theLowerRow; }
 
   //! Updates lower column
-  void UpdateLowerCol(const Standard_Integer theLowerCol) noexcept { myLowerCol = theLowerCol; }
+  void UpdateLowerCol(const int theLowerCol) noexcept { myLowerCol = theLowerCol; }
 
   //! Updates upper row
-  void UpdateUpperRow(const Standard_Integer theUpperRow) noexcept
+  void UpdateUpperRow(const int theUpperRow) noexcept
   {
     myLowerRow = myLowerRow - UpperRow() + theUpperRow;
   }
 
   //! Updates upper column
-  void UpdateUpperCol(const Standard_Integer theUpperCol) noexcept
+  void UpdateUpperCol(const int theUpperCol) noexcept
   {
     myLowerCol = myLowerCol - UpperCol() + theUpperCol;
   }
@@ -274,35 +274,35 @@ public:
   }
 
   //! Constant value access
-  const_reference Value(const Standard_Integer theRow, const Standard_Integer theCol) const
+  const_reference Value(const int theRow, const int theCol) const
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     return NCollection_Array1<TheItemType>::at(aPos);
   }
 
   //! operator() - alias to ChangeValue
-  const_reference operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
+  const_reference operator()(const int theRow, const int theCol) const
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     return NCollection_Array1<TheItemType>::at(aPos);
   }
 
   //! Variable value access
-  reference ChangeValue(const Standard_Integer theRow, const Standard_Integer theCol)
+  reference ChangeValue(const int theRow, const int theCol)
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     return NCollection_Array1<TheItemType>::at(aPos);
   }
 
   //! operator() - alias to ChangeValue
-  reference operator()(const Standard_Integer theRow, const Standard_Integer theCol)
+  reference operator()(const int theRow, const int theCol)
   {
     return ChangeValue(theRow, theCol);
   }
 
   //! SetValue
-  void SetValue(const Standard_Integer theRow,
-                const Standard_Integer theCol,
+  void SetValue(const int theRow,
+                const int theCol,
                 const TheItemType&     theItem)
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
@@ -310,7 +310,7 @@ public:
   }
 
   //! SetValue
-  void SetValue(const Standard_Integer theRow, const Standard_Integer theCol, TheItemType&& theItem)
+  void SetValue(const int theRow, const int theCol, TheItemType&& theItem)
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     NCollection_Array1<TheItemType>::at(aPos) = std::forward<TheItemType>(theItem);
@@ -324,11 +324,11 @@ public:
   //! @param theColLower new lower Column of array
   //! @param theColUpper new upper Column of array
   //! @param theToCopyData flag to copy existing data into new array
-  void Resize(Standard_Integer theRowLower,
-              Standard_Integer theRowUpper,
-              Standard_Integer theColLower,
-              Standard_Integer theColUpper,
-              Standard_Boolean theToCopyData)
+  void Resize(int theRowLower,
+              int theRowUpper,
+              int theColLower,
+              int theColUpper,
+              bool theToCopyData)
   {
     Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
                                  "NCollection_Array2::Resize");
@@ -372,9 +372,9 @@ public:
 
 protected:
   // ---------- PROTECTED FIELDS -----------
-  Standard_Integer myLowerRow;
+  int myLowerRow;
   size_t           mySizeRow;
-  Standard_Integer myLowerCol;
+  int myLowerCol;
   size_t           mySizeCol;
 
   // ----------- FRIEND CLASSES ------------

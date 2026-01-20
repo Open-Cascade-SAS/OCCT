@@ -18,10 +18,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedItem.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_CoordinatesList, StepVisual_TessellatedItem)
 
 class StepVisual_CoordinatesList : public StepVisual_TessellatedItem
 {
@@ -31,14 +31,14 @@ public:
   //! Returns a coordinate list
   Standard_EXPORT StepVisual_CoordinatesList();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Handle(TColgp_HArray1OfXYZ)&      thePoints);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>&      thePoints);
 
-  Standard_EXPORT Handle(TColgp_HArray1OfXYZ) Points() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<gp_XYZ>> Points() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CoordinatesList, StepVisual_TessellatedItem)
 
 private:
-  Handle(TColgp_HArray1OfXYZ) myPoints;
+  occ::handle<NCollection_HArray1<gp_XYZ>> myPoints;
 };
 #endif // StepVisual_CoordinatesList

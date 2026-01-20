@@ -24,38 +24,36 @@
 #include <Standard_Integer.hxx>
 #include <FEmTool_ElementaryCriterion.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <math_Vector.hxx>
-
-class FEmTool_LinearJerk;
-DEFINE_STANDARD_HANDLE(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 
 //! Criterion of LinearJerk To Hermit-Jacobi elements
 class FEmTool_LinearJerk : public FEmTool_ElementaryCriterion
 {
 
 public:
-  Standard_EXPORT FEmTool_LinearJerk(const Standard_Integer WorkDegree,
+  Standard_EXPORT FEmTool_LinearJerk(const int WorkDegree,
                                      const GeomAbs_Shape    ConstraintOrder);
 
-  Standard_EXPORT virtual Handle(TColStd_HArray2OfInteger) DependenceTable() const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray2<int>> DependenceTable() const
+    override;
 
-  Standard_EXPORT virtual Standard_Real Value() Standard_OVERRIDE;
+  Standard_EXPORT virtual double Value() override;
 
-  Standard_EXPORT virtual void Hessian(const Standard_Integer Dimension1,
-                                       const Standard_Integer Dimension2,
-                                       math_Matrix&           H) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Hessian(const int Dimension1,
+                                       const int Dimension2,
+                                       math_Matrix&           H) override;
 
-  Standard_EXPORT virtual void Gradient(const Standard_Integer Dimension,
-                                        math_Vector&           G) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Gradient(const int Dimension,
+                                        math_Vector&           G) override;
 
   DEFINE_STANDARD_RTTIEXT(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 
-protected:
 private:
   math_Matrix      RefMatrix;
-  Standard_Integer myOrder;
+  int myOrder;
 };
 
 #endif // _FEmTool_LinearJerk_HeaderFile

@@ -39,16 +39,16 @@
 math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
                        const math_Vector&     Secont,
                        const math_Vector&     StartingPoint,
-                       const Standard_Real    EpsLix,
-                       const Standard_Real    EpsLic,
-                       const Standard_Integer NbIterations)
+                       const double    EpsLix,
+                       const double    EpsLic,
+                       const int NbIterations)
     : Resul(1, Cont.ColNumber()),
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
       Vardua(1, Cont.RowNumber()),
       CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber()),
       NbIter(0),
-      Done(Standard_False)
+      Done(false)
 {
 
   Perform(Cont, Secont, StartingPoint, Cont.RowNumber(), 0, EpsLix, EpsLic, NbIterations);
@@ -57,18 +57,18 @@ math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
 math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
                        const math_Vector&     Secont,
                        const math_Vector&     StartingPoint,
-                       const Standard_Integer Nce,
-                       const Standard_Integer Nci,
-                       const Standard_Real    EpsLix,
-                       const Standard_Real    EpsLic,
-                       const Standard_Integer NbIterations)
+                       const int Nce,
+                       const int Nci,
+                       const double    EpsLix,
+                       const double    EpsLic,
+                       const int NbIterations)
     : Resul(1, Cont.ColNumber()),
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
       Vardua(1, Cont.RowNumber()),
       CTCinv(1, Cont.RowNumber(), 1, Cont.RowNumber()),
       NbIter(0),
-      Done(Standard_False)
+      Done(false)
 {
 
   Perform(Cont, Secont, StartingPoint, Nce, Nci, EpsLix, EpsLic, NbIterations);
@@ -77,19 +77,19 @@ math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
 void math_Uzawa::Perform(const math_Matrix&     Cont,
                          const math_Vector&     Secont,
                          const math_Vector&     StartingPoint,
-                         const Standard_Integer Nce,
-                         const Standard_Integer Nci,
-                         const Standard_Real    EpsLix,
-                         const Standard_Real    EpsLic,
-                         const Standard_Integer NbIterations)
+                         const int Nce,
+                         const int Nci,
+                         const double    EpsLix,
+                         const double    EpsLic,
+                         const int NbIterations)
 {
 
-  Standard_Integer i, j, k;
-  Standard_Real    scale;
-  Standard_Real    Normat, Normli, Xian, Xmax = 0, Xmuian;
-  Standard_Real    Rho, Err, Err1, ErrMax = 0, Coef = 1. / std::sqrt(2.);
-  Standard_Integer Nlig = Cont.RowNumber();
-  Standard_Integer Ncol = Cont.ColNumber();
+  int i, j, k;
+  double    scale;
+  double    Normat, Normli, Xian, Xmax = 0, Xmuian;
+  double    Rho, Err, Err1, ErrMax = 0, Coef = 1. / std::sqrt(2.);
+  int Nlig = Cont.RowNumber();
+  int Ncol = Cont.ColNumber();
 
   Standard_DimensionError_Raise_if((Secont.Length() != Nlig) || ((Nce + Nci) != Nlig), " ");
 
@@ -150,7 +150,7 @@ void math_Uzawa::Perform(const math_Matrix&     Cont,
     // restitution des valeurs calculees:
     //===================================
     Resul = StartingPoint + Erruza;
-    Done  = Standard_True;
+    Done  = true;
     return;
   } // Fin de la resolution directe.
     //==============================
@@ -242,24 +242,24 @@ void math_Uzawa::Perform(const math_Matrix&     Cont,
           if (ErrMax <= EpsLic)
           {
             //	    std::cout <<"Convergence atteinte dans Uzawa"<<std::endl;
-            Done = Standard_True;
+            Done = true;
           }
           else
           {
             //	    std::cout <<"convergence non atteinte pour le probleme dual"<<std::endl;
-            Done = Standard_False;
+            Done = false;
             return;
           }
           // Restitution des valeurs calculees
           //==================================
           Resul = StartingPoint + Erruza;
-          Done  = Standard_True;
+          Done  = true;
           return;
         }
       }
 
     } // fin de la boucle d iterations.
-    Done = Standard_False;
+    Done = false;
   }
 }
 

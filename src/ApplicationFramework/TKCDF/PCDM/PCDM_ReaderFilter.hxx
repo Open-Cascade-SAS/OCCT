@@ -20,9 +20,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 
-class PCDM_ReaderFilter;
-DEFINE_STANDARD_HANDLE(PCDM_ReaderFilter, Standard_Transient)
-
 //! Class represents a document reading filter.
 //!
 //! It allows to set attributes (by class names) that must be skipped during the document reading
@@ -47,7 +44,7 @@ public:
   }
 
   //! Creates a filter to skip only one type of attributes.
-  Standard_EXPORT PCDM_ReaderFilter(const Handle(Standard_Type)& theSkipped);
+  Standard_EXPORT PCDM_ReaderFilter(const occ::handle<Standard_Type>& theSkipped);
 
   //! Creates a filter to read only sub-labels of a label-path.
   //! Like, for "0:2" it will read all attributes for labels "0:2", "0:2:1", etc.
@@ -60,7 +57,7 @@ public:
   Standard_EXPORT ~PCDM_ReaderFilter();
 
   //! Adds skipped attribute by type.
-  Standard_EXPORT void AddSkipped(const Handle(Standard_Type)& theSkipped)
+  Standard_EXPORT void AddSkipped(const occ::handle<Standard_Type>& theSkipped)
   {
     mySkip.Add(theSkipped->Name());
   }
@@ -72,7 +69,7 @@ public:
   }
 
   //! Adds attribute to read by type. Disables the skipped attributes added.
-  Standard_EXPORT void AddRead(const Handle(Standard_Type)& theRead)
+  Standard_EXPORT void AddRead(const occ::handle<Standard_Type>& theRead)
   {
     myRead.Add(theRead->Name());
   }
@@ -90,24 +87,24 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassed(
-    const Handle(Standard_Type)& theAttributeID) const;
+  Standard_EXPORT virtual bool IsPassed(
+    const occ::handle<Standard_Type>& theAttributeID) const;
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassedAttr(
+  Standard_EXPORT virtual bool IsPassedAttr(
     const TCollection_AsciiString& theAttributeType) const;
   //! Returns true if content of the label must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassed(const TCollection_AsciiString& theEntry) const;
+  Standard_EXPORT virtual bool IsPassed(const TCollection_AsciiString& theEntry) const;
   //! Returns true if some sub-label of the given label is passed.
-  Standard_EXPORT virtual Standard_Boolean IsSubPassed(
+  Standard_EXPORT virtual bool IsSubPassed(
     const TCollection_AsciiString& theEntry) const;
   //! Returns true if only part of the document tree will be retrieved.
-  Standard_EXPORT virtual Standard_Boolean IsPartTree();
+  Standard_EXPORT virtual bool IsPartTree();
 
   //! Returns the append mode.
   Standard_EXPORT AppendMode& Mode() { return myAppend; }
 
   //! Returns true if appending to the document is performed.
-  Standard_EXPORT Standard_Boolean IsAppendMode()
+  Standard_EXPORT bool IsAppendMode()
   {
     return myAppend != PCDM_ReaderFilter::AppendMode_Forbid;
   }
@@ -121,9 +118,9 @@ public:
   //! Iteration to the child with defined tag.
   Standard_EXPORT virtual void Down(const int& theTag);
   //! Returns true if content of the currently iterated label must be read.
-  Standard_EXPORT virtual Standard_Boolean IsPassed() const;
+  Standard_EXPORT virtual bool IsPassed() const;
   //! Returns true if some sub-label of the currently iterated label is passed.
-  Standard_EXPORT virtual Standard_Boolean IsSubPassed() const;
+  Standard_EXPORT virtual bool IsSubPassed() const;
 
   DEFINE_STANDARD_RTTIEXT(PCDM_ReaderFilter, Standard_Transient)
 
@@ -131,7 +128,7 @@ private:
   //! Clears the iteration tree
   Standard_EXPORT void ClearTree();
   //! Clears the iteration sub-tree
-  Standard_EXPORT static void ClearSubTree(const Standard_Address theMap);
+  Standard_EXPORT static void ClearSubTree(void* const theMap);
 
 protected:
   //! Append mode for reading files into existing document
@@ -145,14 +142,14 @@ protected:
 
   //! Map from tag of a label to sub-tree of this tag. Used for fast browsing the tree
   //! and compare with entities that must be read.
-  typedef NCollection_DataMap<Standard_Integer, Standard_Address> TagTree;
+  typedef NCollection_DataMap<int, void*> TagTree;
   //! Whole tree that correspond to retrieved document.
   TagTree myTree;
   //! Pointer to the current node of the iterator.
   TagTree* myCurrent;
   //! If a node does not described in the read-entries, the iterator goes inside of this subtree
   //! just by keeping the depth of iteration.
-  Standard_Integer myCurrentDepth;
+  int myCurrentDepth;
 };
 
 #endif // _PCDM_ReaderFilter_HeaderFile

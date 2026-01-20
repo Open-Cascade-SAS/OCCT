@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CylindricalSurface, StepGeom_ElementarySurfa
 
 StepGeom_CylindricalSurface::StepGeom_CylindricalSurface() {}
 
-void StepGeom_CylindricalSurface::Init(const Handle(TCollection_HAsciiString)&  aName,
-                                       const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                                       const Standard_Real                      aRadius)
+void StepGeom_CylindricalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                                       const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                                       const double                      aRadius)
 {
   // --- classe own fields ---
   radius = aRadius;
@@ -29,12 +29,12 @@ void StepGeom_CylindricalSurface::Init(const Handle(TCollection_HAsciiString)&  
   StepGeom_ElementarySurface::Init(aName, aPosition);
 }
 
-void StepGeom_CylindricalSurface::SetRadius(const Standard_Real aRadius)
+void StepGeom_CylindricalSurface::SetRadius(const double aRadius)
 {
   radius = aRadius;
 }
 
-Standard_Real StepGeom_CylindricalSurface::Radius() const
+double StepGeom_CylindricalSurface::Radius() const
 {
   return radius;
 }

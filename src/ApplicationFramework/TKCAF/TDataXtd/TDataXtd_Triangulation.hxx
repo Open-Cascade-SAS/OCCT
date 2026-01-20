@@ -26,9 +26,6 @@ class Standard_GUID;
 class TDF_Label;
 class TDF_RelocationTable;
 
-class TDataXtd_Triangulation;
-DEFINE_STANDARD_HANDLE(TDataXtd_Triangulation, TDF_Attribute)
-
 //! An Ocaf attribute containing a mesh (Poly_Triangulation).
 //! It duplicates all methods from Poly_Triangulation.
 //! It is highly recommended to modify the mesh through the methods of this attribute,
@@ -44,13 +41,13 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds or creates a triangulation attribute.
-  Standard_EXPORT static Handle(TDataXtd_Triangulation) Set(const TDF_Label& theLabel);
+  Standard_EXPORT static occ::handle<TDataXtd_Triangulation> Set(const TDF_Label& theLabel);
 
   //! Finds or creates a triangulation attribute.
   //! Initializes the attribute by a Poly_Triangulation object.
-  Standard_EXPORT static Handle(TDataXtd_Triangulation) Set(
+  Standard_EXPORT static occ::handle<TDataXtd_Triangulation> Set(
     const TDF_Label&                  theLabel,
-    const Handle(Poly_Triangulation)& theTriangulation);
+    const occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Object methods
   //  ==============
@@ -62,10 +59,10 @@ public:
   Standard_EXPORT TDataXtd_Triangulation();
 
   //! Sets the triangulation.
-  Standard_EXPORT void Set(const Handle(Poly_Triangulation)& theTriangulation);
+  Standard_EXPORT void Set(const occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Returns the underlying triangulation.
-  Standard_EXPORT const Handle(Poly_Triangulation)& Get() const;
+  Standard_EXPORT const occ::handle<Poly_Triangulation>& Get() const;
 
   //! Poly_Triangulation methods
   //  =================
@@ -75,81 +72,81 @@ public:
   //! The most of the methods are considered as "inline" by the compiler in release mode.
 
   //! Returns the deflection of this triangulation.
-  Standard_EXPORT Standard_Real Deflection() const;
+  Standard_EXPORT double Deflection() const;
 
   //! Sets the deflection of this triangulation to theDeflection.
   //! See more on deflection in Polygon2D
-  Standard_EXPORT void Deflection(const Standard_Real theDeflection);
+  Standard_EXPORT void Deflection(const double theDeflection);
 
   //! Deallocates the UV nodes.
   Standard_EXPORT void RemoveUVNodes();
 
   //! @return the number of nodes for this triangulation.
-  Standard_EXPORT Standard_Integer NbNodes() const;
+  Standard_EXPORT int NbNodes() const;
 
   //! @return the number of triangles for this triangulation.
-  Standard_EXPORT Standard_Integer NbTriangles() const;
+  Standard_EXPORT int NbTriangles() const;
 
-  //! @return Standard_True if 2D nodes are associated with 3D nodes for this triangulation.
-  Standard_EXPORT Standard_Boolean HasUVNodes() const;
+  //! @return true if 2D nodes are associated with 3D nodes for this triangulation.
+  Standard_EXPORT bool HasUVNodes() const;
 
   //! @return node at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT gp_Pnt Node(const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt Node(const int theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a node at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT void SetNode(const Standard_Integer theIndex, const gp_Pnt& theNode);
+  Standard_EXPORT void SetNode(const int theIndex, const gp_Pnt& theNode);
 
   //! @return UVNode at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT gp_Pnt2d UVNode(const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt2d UVNode(const int theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a UVNode at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT void SetUVNode(const Standard_Integer theIndex, const gp_Pnt2d& theUVNode);
+  Standard_EXPORT void SetUVNode(const int theIndex, const gp_Pnt2d& theUVNode);
 
   //! @return triangle at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
-  Standard_EXPORT Poly_Triangle Triangle(const Standard_Integer theIndex) const;
+  Standard_EXPORT Poly_Triangle Triangle(const int theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a triangle at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
-  Standard_EXPORT void SetTriangle(const Standard_Integer theIndex,
+  Standard_EXPORT void SetTriangle(const int theIndex,
                                    const Poly_Triangle&   theTriangle);
 
   //! Changes normal at the given index.
   //! Raises Standard_OutOfRange exception.
-  Standard_EXPORT void SetNormal(const Standard_Integer theIndex, const gp_Dir& theNormal);
+  Standard_EXPORT void SetNormal(const int theIndex, const gp_Dir& theNormal);
 
-  //! Returns Standard_True if nodal normals are defined.
-  Standard_EXPORT Standard_Boolean HasNormals() const;
+  //! Returns true if nodal normals are defined.
+  Standard_EXPORT bool HasNormals() const;
 
   //! @return normal at the given index.
   //! Raises Standard_OutOfRange exception.
-  Standard_EXPORT gp_Dir Normal(const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Dir Normal(const int theIndex) const;
 
   //! Inherited attribute methods
   //  ===========================
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theAttribute) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theAttribute) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_STANDARD_RTTI_INLINE(TDataXtd_Triangulation, TDF_Attribute)
 
 private:
-  Handle(Poly_Triangulation) myTriangulation;
+  occ::handle<Poly_Triangulation> myTriangulation;
 };
 
 #endif // _TDataXtd_Triangulation_HeaderFile

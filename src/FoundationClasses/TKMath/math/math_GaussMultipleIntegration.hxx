@@ -42,18 +42,17 @@ public:
                                                 const math_IntegerVector& Order);
 
   //! returns True if all has been correctly done.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the integral.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! Prints information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Real    Val;
-  Standard_Boolean Done;
+  double    Val;
+  bool Done;
 };
 
 #include <math_GaussMultipleIntegration.lxx>

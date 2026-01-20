@@ -33,9 +33,9 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
     : Val(1, F.NbEquations())
 {
 
-  Standard_Integer NbEqua = F.NbEquations(), NbVar = F.NbVariables();
-  Standard_Integer i;
-  Standard_Boolean IsOk;
+  int NbEqua = F.NbEquations(), NbVar = F.NbVariables();
+  int i;
+  bool IsOk;
   math_Vector      FVal1(1, NbEqua), FVal2(1, NbEqua), Tval(1, NbVar);
 
   // Verification
@@ -44,12 +44,12 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
                                    "GaussSetIntegration ");
 
   // Initialisations
-  Done = Standard_False;
+  Done = false;
 
-  Standard_Real    Xdeb  = Lower.Value(Lower.Lower());
-  Standard_Real    Xfin  = Upper.Value(Upper.Lower());
-  Standard_Integer Ordre = Order.Value(Order.Lower());
-  Standard_Real    Xm, Xr;
+  double    Xdeb  = Lower.Value(Lower.Lower());
+  double    Xfin  = Upper.Value(Upper.Lower());
+  int Ordre = Order.Value(Order.Lower());
+  double    Xm, Xr;
   math_Vector      GaussP(1, Ordre), GaussW(1, Ordre);
 
   // Recuperation des points de Gauss dans le fichier GaussPoints.
@@ -60,7 +60,7 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
   Xm = 0.5 * (Xdeb + Xfin);
   Xr = 0.5 * (Xfin - Xdeb);
 
-  Standard_Integer ind = Ordre / 2, ind1 = (Ordre + 1) / 2;
+  int ind = Ordre / 2, ind1 = (Ordre + 1) / 2;
   if (ind1 > ind)
   {               // odder case
     Tval(1) = Xm; // +  Xr * GaussP(ind1);
@@ -90,7 +90,7 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
   }
   Val *= Xr;
 
-  Done = Standard_True;
+  Done = true;
 }
 
 void math_GaussSetIntegration::Dump(Standard_OStream& o) const

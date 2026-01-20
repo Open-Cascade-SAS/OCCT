@@ -25,14 +25,14 @@
 
 void HLRBRep_ThePolygonToolOfInterCSurf::Dump(const HLRBRep_ThePolygonOfInterCSurf& L)
 {
-  static Standard_Integer num = 0;
+  static int num = 0;
   num++;
-  Standard_Integer nbs = HLRBRep_ThePolygonToolOfInterCSurf::NbSegments(L);
+  int nbs = HLRBRep_ThePolygonToolOfInterCSurf::NbSegments(L);
   std::cout << "\npol2d " << num << " " << nbs << std::endl;
   std::cout << "Deflection " << HLRBRep_ThePolygonToolOfInterCSurf::DeflectionOverEstimation(L)
             << std::endl;
 
-  for (Standard_Integer i = 1; i <= nbs; i++)
+  for (int i = 1; i <= nbs; i++)
   {
     gp_Pnt P(HLRBRep_ThePolygonToolOfInterCSurf::BeginOfSeg(L, i));
     std::cout << "pnt " << num << " " << i << " " << P.X() << " " << P.Y() << " " << P.Z()

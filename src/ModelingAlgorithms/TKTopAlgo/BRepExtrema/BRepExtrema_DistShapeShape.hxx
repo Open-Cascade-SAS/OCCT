@@ -14,8 +14,10 @@
 #ifndef _BRepExtrema_DistShapeShape_HeaderFile
 #define _BRepExtrema_DistShapeShape_HeaderFile
 
-#include <Bnd_Array1OfBox.hxx>
-#include <BRepExtrema_SeqOfSolution.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <BRepExtrema_SolutionElem.hxx>
 #include <BRepExtrema_SolutionElem.hxx>
 #include <BRepExtrema_SupportType.hxx>
 #include <Extrema_ExtAlgo.hxx>
@@ -24,7 +26,8 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 //! This class provides tools to compute minimum distance
 //! between two Shapes (Compound,CompSolid, Solid, Shell, Face, Wire, Edge, Vertex).
@@ -60,13 +63,13 @@ public:
   Standard_EXPORT BRepExtrema_DistShapeShape(
     const TopoDS_Shape&          Shape1,
     const TopoDS_Shape&          Shape2,
-    const Standard_Real          theDeflection,
+    const double          theDeflection,
     const Extrema_ExtFlag        F        = Extrema_ExtFlag_MINMAX,
     const Extrema_ExtAlgo        A        = Extrema_ExtAlgo_Grad,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Sets deflection to computation of the minimum distance
-  void SetDeflection(const Standard_Real theDeflection) { myEps = theDeflection; }
+  void SetDeflection(const double theDeflection) { myEps = theDeflection; }
 
   //! load first shape into extrema
   Standard_EXPORT void LoadS1(const TopoDS_Shape& Shape1);
@@ -80,30 +83,30 @@ public:
   //!          from the minimum one.
   //!          Returns IsDone status.
   //! theRange - the progress indicator of algorithm
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! True if the minimum distance is found.
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
   //! Returns the number of solutions satisfying the minimum distance.
-  Standard_Integer NbSolution() const { return mySolutionsShape1.Length(); }
+  int NbSolution() const { return mySolutionsShape1.Length(); }
 
   //! Returns the value of the minimum distance.
-  Standard_EXPORT Standard_Real Value() const;
+  Standard_EXPORT double Value() const;
 
   //! True if one of the shapes is a solid and the other shape
   //! is completely or partially inside the solid.
-  Standard_Boolean InnerSolution() const { return myInnerSol; }
+  bool InnerSolution() const { return myInnerSol; }
 
   //! Returns the Point corresponding to the <N>th solution on the first Shape
-  const gp_Pnt& PointOnShape1(const Standard_Integer N) const
+  const gp_Pnt& PointOnShape1(const int N) const
   {
     return mySolutionsShape1.Value(N).Point();
   }
 
   //! Returns the Point corresponding to the <N>th solution on the second Shape
-  const gp_Pnt& PointOnShape2(const Standard_Integer N) const
+  const gp_Pnt& PointOnShape2(const int N) const
   {
     return mySolutionsShape2.Value(N).Point();
   }
@@ -113,7 +116,7 @@ public:
   //!   IsOnEdge => the Nth soluion on the first shape is on a Edge
   //!   IsInFace => the Nth solution on the first shape is inside a face
   //! the corresponding support is obtained by the method SupportOnShape1
-  BRepExtrema_SupportType SupportTypeShape1(const Standard_Integer N) const
+  BRepExtrema_SupportType SupportTypeShape1(const int N) const
   {
     return mySolutionsShape1.Value(N).SupportKind();
   }
@@ -123,38 +126,38 @@ public:
   //!   IsOnEdge => the Nth soluion on the secondt shape is on a Edge
   //!   IsInFace => the Nth solution on the second shape is inside a face
   //! the corresponding support is obtained by the method SupportOnShape2
-  BRepExtrema_SupportType SupportTypeShape2(const Standard_Integer N) const
+  BRepExtrema_SupportType SupportTypeShape2(const int N) const
   {
     return mySolutionsShape2.Value(N).SupportKind();
   }
 
   //! gives the support where the Nth solution on the first shape is situated.
   //! This support can be a Vertex, an Edge or a Face.
-  Standard_EXPORT TopoDS_Shape SupportOnShape1(const Standard_Integer N) const;
+  Standard_EXPORT TopoDS_Shape SupportOnShape1(const int N) const;
 
   //! gives the support where the Nth solution on the second shape is situated.
   //! This support can be a Vertex, an Edge or a Face.
-  Standard_EXPORT TopoDS_Shape SupportOnShape2(const Standard_Integer N) const;
+  Standard_EXPORT TopoDS_Shape SupportOnShape2(const int N) const;
 
   //! gives the corresponding parameter t if the Nth solution
   //! is situated on an Edge of the first shape
-  Standard_EXPORT void ParOnEdgeS1(const Standard_Integer N, Standard_Real& t) const;
+  Standard_EXPORT void ParOnEdgeS1(const int N, double& t) const;
 
   //! gives the corresponding parameter t if the Nth solution
   //! is situated on an Edge of the first shape
-  Standard_EXPORT void ParOnEdgeS2(const Standard_Integer N, Standard_Real& t) const;
+  Standard_EXPORT void ParOnEdgeS2(const int N, double& t) const;
 
   //! gives the corresponding parameters (U,V) if the Nth solution
   //! is situated on an face of the first shape
-  Standard_EXPORT void ParOnFaceS1(const Standard_Integer N,
-                                   Standard_Real&         u,
-                                   Standard_Real&         v) const;
+  Standard_EXPORT void ParOnFaceS1(const int N,
+                                   double&         u,
+                                   double&         v) const;
 
   //! gives the corresponding parameters (U,V) if the Nth solution
   //! is situated on an Face of the second shape
-  Standard_EXPORT void ParOnFaceS2(const Standard_Integer N,
-                                   Standard_Real&         u,
-                                   Standard_Real&         v) const;
+  Standard_EXPORT void ParOnFaceS2(const int N,
+                                   double&         u,
+                                   double&         v) const;
 
   //! Prints on the stream o information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
@@ -167,56 +170,56 @@ public:
   //! Obsolete
   void SetAlgo(const Extrema_ExtAlgo A) { myAlgo = A; }
 
-  //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  void SetMultiThread(Standard_Boolean theIsMultiThread) { myIsMultiThread = theIsMultiThread; }
+  //! If isMultiThread == true then computation will be performed in parallel.
+  void SetMultiThread(bool theIsMultiThread) { myIsMultiThread = theIsMultiThread; }
 
-  //! Returns Standard_True then computation will be performed in parallel
-  //! Default value is Standard_False
-  Standard_Boolean IsMultiThread() const { return myIsMultiThread; }
+  //! Returns true then computation will be performed in parallel
+  //! Default value is false
+  bool IsMultiThread() const { return myIsMultiThread; }
 
 private:
   //! computes the minimum distance between two maps of shapes (Face,Edge,Vertex)
-  Standard_Boolean DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,
-                                  const TopTools_IndexedMapOfShape& Map2,
-                                  const Bnd_Array1OfBox&            LBox1,
-                                  const Bnd_Array1OfBox&            LBox2,
+  bool DistanceMapMap(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map1,
+                                  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map2,
+                                  const NCollection_Array1<Bnd_Box>&            LBox1,
+                                  const NCollection_Array1<Bnd_Box>&            LBox2,
                                   const Message_ProgressRange&      theRange);
 
   //! computes the minimum distance between two maps of vertices
-  Standard_Boolean DistanceVertVert(const TopTools_IndexedMapOfShape& theMap1,
-                                    const TopTools_IndexedMapOfShape& theMap2,
+  bool DistanceVertVert(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap1,
+                                    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap2,
                                     const Message_ProgressRange&      theRange);
 
-  Standard_Boolean SolidTreatment(const TopoDS_Shape&               theShape,
-                                  const TopTools_IndexedMapOfShape& theMap,
+  bool SolidTreatment(const TopoDS_Shape&               theShape,
+                                  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
                                   const Message_ProgressRange&      theRange);
 
 private:
-  Standard_Real              myDistRef;
-  Standard_Boolean           myIsDone;
-  BRepExtrema_SeqOfSolution  mySolutionsShape1;
-  BRepExtrema_SeqOfSolution  mySolutionsShape2;
-  Standard_Boolean           myInnerSol;
-  Standard_Real              myEps;
+  double              myDistRef;
+  bool           myIsDone;
+  NCollection_Sequence<BRepExtrema_SolutionElem>  mySolutionsShape1;
+  NCollection_Sequence<BRepExtrema_SolutionElem>  mySolutionsShape2;
+  bool           myInnerSol;
+  double              myEps;
   TopoDS_Shape               myShape1;
   TopoDS_Shape               myShape2;
-  TopTools_IndexedMapOfShape myMapV1;
-  TopTools_IndexedMapOfShape myMapV2;
-  TopTools_IndexedMapOfShape myMapE1;
-  TopTools_IndexedMapOfShape myMapE2;
-  TopTools_IndexedMapOfShape myMapF1;
-  TopTools_IndexedMapOfShape myMapF2;
-  Standard_Boolean           myIsInitS1;
-  Standard_Boolean           myIsInitS2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapV1;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapV2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapE1;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapE2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapF1;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapF2;
+  bool           myIsInitS1;
+  bool           myIsInitS2;
   Extrema_ExtFlag            myFlag;
   Extrema_ExtAlgo            myAlgo;
-  Bnd_Array1OfBox            myBV1;
-  Bnd_Array1OfBox            myBV2;
-  Bnd_Array1OfBox            myBE1;
-  Bnd_Array1OfBox            myBE2;
-  Bnd_Array1OfBox            myBF1;
-  Bnd_Array1OfBox            myBF2;
-  Standard_Boolean           myIsMultiThread;
+  NCollection_Array1<Bnd_Box>            myBV1;
+  NCollection_Array1<Bnd_Box>            myBV2;
+  NCollection_Array1<Bnd_Box>            myBE1;
+  NCollection_Array1<Bnd_Box>            myBE2;
+  NCollection_Array1<Bnd_Box>            myBF1;
+  NCollection_Array1<Bnd_Box>            myBF2;
+  bool           myIsMultiThread;
 };
 
 #endif

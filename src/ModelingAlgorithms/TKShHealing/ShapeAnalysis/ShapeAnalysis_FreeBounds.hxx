@@ -22,8 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Compound.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Shape;
 
 //! This class is intended to output free bounds of the shape.
@@ -74,9 +78,9 @@ public:
   //! If <splitopen> is True extracts closed sub-wires out of
   //! built open wires.
   Standard_EXPORT ShapeAnalysis_FreeBounds(const TopoDS_Shape&    shape,
-                                           const Standard_Real    toler,
-                                           const Standard_Boolean splitclosed = Standard_False,
-                                           const Standard_Boolean splitopen   = Standard_True);
+                                           const double    toler,
+                                           const bool splitclosed = false,
+                                           const bool splitopen   = true);
 
   //! Builds actual free bounds of the <shape>.
   //! <shape> should be a compound of shells.
@@ -91,9 +95,9 @@ public:
   //! built open wires.
   Standard_EXPORT ShapeAnalysis_FreeBounds(
     const TopoDS_Shape&    shape,
-    const Standard_Boolean splitclosed        = Standard_False,
-    const Standard_Boolean splitopen          = Standard_True,
-    const Standard_Boolean checkinternaledges = Standard_False);
+    const bool splitclosed        = false,
+    const bool splitopen          = true,
+    const bool checkinternaledges = false);
 
   //! Returns compound of closed wires out of free edges.
   const TopoDS_Compound& GetClosedWires() const;
@@ -112,15 +116,15 @@ public:
   //! adjacent edges share the same vertex.
   //! If <shared> is False connection is performed only when
   //! ends of adjacent edges are at distance less than <toler>.
-  Standard_EXPORT static void ConnectEdgesToWires(Handle(TopTools_HSequenceOfShape)& edges,
-                                                  const Standard_Real                toler,
-                                                  const Standard_Boolean             shared,
-                                                  Handle(TopTools_HSequenceOfShape)& wires);
+  Standard_EXPORT static void ConnectEdgesToWires(occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
+                                                  const double                toler,
+                                                  const bool             shared,
+                                                  occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires);
 
-  Standard_EXPORT static void ConnectWiresToWires(Handle(TopTools_HSequenceOfShape)& iwires,
-                                                  const Standard_Real                toler,
-                                                  const Standard_Boolean             shared,
-                                                  Handle(TopTools_HSequenceOfShape)& owires);
+  Standard_EXPORT static void ConnectWiresToWires(occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
+                                                  const double                toler,
+                                                  const bool             shared,
+                                                  occ::handle<NCollection_HSequence<TopoDS_Shape>>& owires);
 
   //! Builds sequence of <owires> out of sequence of not sorted
   //! <iwires>.
@@ -135,11 +139,11 @@ public:
   //! ends of adjacent wires are at distance less than <toler>.
   //! Map <vertices> stores the correspondence between original
   //! end vertices of the wires and new connecting vertices.
-  Standard_EXPORT static void ConnectWiresToWires(Handle(TopTools_HSequenceOfShape)& iwires,
-                                                  const Standard_Real                toler,
-                                                  const Standard_Boolean             shared,
-                                                  Handle(TopTools_HSequenceOfShape)& owires,
-                                                  TopTools_DataMapOfShapeShape&      vertices);
+  Standard_EXPORT static void ConnectWiresToWires(occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
+                                                  const double                toler,
+                                                  const bool             shared,
+                                                  occ::handle<NCollection_HSequence<TopoDS_Shape>>& owires,
+                                                  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      vertices);
 
   //! Extracts closed sub-wires out of <wires> and adds them
   //! to <closed>, open wires remained after extraction are put
@@ -148,29 +152,28 @@ public:
   //! edges share the same vertex.
   //! If <shared> is False connection is performed only when
   //! ends of the edges are at distance less than <toler>.
-  Standard_EXPORT static void SplitWires(const Handle(TopTools_HSequenceOfShape)& wires,
-                                         const Standard_Real                      toler,
-                                         const Standard_Boolean                   shared,
-                                         Handle(TopTools_HSequenceOfShape)&       closed,
-                                         Handle(TopTools_HSequenceOfShape)&       open);
+  Standard_EXPORT static void SplitWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires,
+                                         const double                      toler,
+                                         const bool                   shared,
+                                         occ::handle<NCollection_HSequence<TopoDS_Shape>>&       closed,
+                                         occ::handle<NCollection_HSequence<TopoDS_Shape>>&       open);
 
   //! Dispatches sequence of <wires> into two compounds
   //! <closed> for closed wires and <open> for open wires.
   //! If a compound is not empty wires are added into it.
-  Standard_EXPORT static void DispatchWires(const Handle(TopTools_HSequenceOfShape)& wires,
+  Standard_EXPORT static void DispatchWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires,
                                             TopoDS_Compound&                         closed,
                                             TopoDS_Compound&                         open);
 
-protected:
 private:
   Standard_EXPORT void SplitWires();
 
   TopoDS_Compound  myWires;
   TopoDS_Compound  myEdges;
-  Standard_Real    myTolerance;
-  Standard_Boolean myShared;
-  Standard_Boolean mySplitClosed;
-  Standard_Boolean mySplitOpen;
+  double    myTolerance;
+  bool myShared;
+  bool mySplitClosed;
+  bool mySplitOpen;
 };
 
 #include <ShapeAnalysis_FreeBounds.lxx>

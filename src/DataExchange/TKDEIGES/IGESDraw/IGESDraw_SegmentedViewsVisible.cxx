@@ -26,16 +26,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible, IGESData_ViewKindEnti
 IGESDraw_SegmentedViewsVisible::IGESDraw_SegmentedViewsVisible() {}
 
 void IGESDraw_SegmentedViewsVisible::Init(
-  const Handle(IGESDraw_HArray1OfViewKindEntity)&  allViews,
-  const Handle(TColStd_HArray1OfReal)&             allBreakpointParameters,
-  const Handle(TColStd_HArray1OfInteger)&          allDisplayFlags,
-  const Handle(TColStd_HArray1OfInteger)&          allColorValues,
-  const Handle(IGESGraph_HArray1OfColor)&          allColorDefinitions,
-  const Handle(TColStd_HArray1OfInteger)&          allLineFontValues,
-  const Handle(IGESBasic_HArray1OfLineFontEntity)& allLineFontDefinitions,
-  const Handle(TColStd_HArray1OfInteger)&          allLineWeights)
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>&  allViews,
+  const occ::handle<NCollection_HArray1<double>>&             allBreakpointParameters,
+  const occ::handle<NCollection_HArray1<int>>&          allDisplayFlags,
+  const occ::handle<NCollection_HArray1<int>>&          allColorValues,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&          allColorDefinitions,
+  const occ::handle<NCollection_HArray1<int>>&          allLineFontValues,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>& allLineFontDefinitions,
+  const occ::handle<NCollection_HArray1<int>>&          allLineWeights)
 {
-  Standard_Integer Len = allViews->Length();
+  int Len = allViews->Length();
   if (allViews->Lower() != 1
       || (allBreakpointParameters->Lower() != 1 || allBreakpointParameters->Length() != Len)
       || (allDisplayFlags->Lower() != 1 || allDisplayFlags->Length() != Len)
@@ -57,75 +57,75 @@ void IGESDraw_SegmentedViewsVisible::Init(
   InitTypeAndForm(402, 19);
 }
 
-Standard_Boolean IGESDraw_SegmentedViewsVisible::IsSingle() const
+bool IGESDraw_SegmentedViewsVisible::IsSingle() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Integer IGESDraw_SegmentedViewsVisible::NbViews() const
-{
-  return theViews->Length();
-}
-
-Standard_Integer IGESDraw_SegmentedViewsVisible::NbSegmentBlocks() const
+int IGESDraw_SegmentedViewsVisible::NbViews() const
 {
   return theViews->Length();
 }
 
-Handle(IGESData_ViewKindEntity) IGESDraw_SegmentedViewsVisible::ViewItem(
-  const Standard_Integer ViewIndex) const
+int IGESDraw_SegmentedViewsVisible::NbSegmentBlocks() const
+{
+  return theViews->Length();
+}
+
+occ::handle<IGESData_ViewKindEntity> IGESDraw_SegmentedViewsVisible::ViewItem(
+  const int ViewIndex) const
 {
   return theViews->Value(ViewIndex);
 }
 
-Standard_Real IGESDraw_SegmentedViewsVisible::BreakpointParameter(
-  const Standard_Integer BreakpointIndex) const
+double IGESDraw_SegmentedViewsVisible::BreakpointParameter(
+  const int BreakpointIndex) const
 {
   return theBreakpointParameters->Value(BreakpointIndex);
 }
 
-Standard_Integer IGESDraw_SegmentedViewsVisible::DisplayFlag(const Standard_Integer FlagIndex) const
+int IGESDraw_SegmentedViewsVisible::DisplayFlag(const int FlagIndex) const
 {
   return theDisplayFlags->Value(FlagIndex);
 }
 
-Standard_Boolean IGESDraw_SegmentedViewsVisible::IsColorDefinition(
-  const Standard_Integer ColorIndex) const
+bool IGESDraw_SegmentedViewsVisible::IsColorDefinition(
+  const int ColorIndex) const
 {
   return (!theColorDefinitions->Value(ColorIndex).IsNull());
 }
 
-Standard_Integer IGESDraw_SegmentedViewsVisible::ColorValue(const Standard_Integer ColorIndex) const
+int IGESDraw_SegmentedViewsVisible::ColorValue(const int ColorIndex) const
 {
   return theColorValues->Value(ColorIndex);
 }
 
-Handle(IGESGraph_Color) IGESDraw_SegmentedViewsVisible::ColorDefinition(
-  const Standard_Integer ColorIndex) const
+occ::handle<IGESGraph_Color> IGESDraw_SegmentedViewsVisible::ColorDefinition(
+  const int ColorIndex) const
 {
   return theColorDefinitions->Value(ColorIndex);
 }
 
-Standard_Boolean IGESDraw_SegmentedViewsVisible::IsFontDefinition(
-  const Standard_Integer FontIndex) const
+bool IGESDraw_SegmentedViewsVisible::IsFontDefinition(
+  const int FontIndex) const
 {
   return (!theLineFontDefinitions->Value(FontIndex).IsNull());
 }
 
-Standard_Integer IGESDraw_SegmentedViewsVisible::LineFontValue(
-  const Standard_Integer FontIndex) const
+int IGESDraw_SegmentedViewsVisible::LineFontValue(
+  const int FontIndex) const
 {
   return theLineFontValues->Value(FontIndex);
 }
 
-Handle(IGESData_LineFontEntity) IGESDraw_SegmentedViewsVisible::LineFontDefinition(
-  const Standard_Integer FontIndex) const
+occ::handle<IGESData_LineFontEntity> IGESDraw_SegmentedViewsVisible::LineFontDefinition(
+  const int FontIndex) const
 {
   return theLineFontDefinitions->Value(FontIndex);
 }
 
-Standard_Integer IGESDraw_SegmentedViewsVisible::LineWeightItem(
-  const Standard_Integer WeightIndex) const
+int IGESDraw_SegmentedViewsVisible::LineWeightItem(
+  const int WeightIndex) const
 {
   return theLineWeights->Value(WeightIndex);
 }

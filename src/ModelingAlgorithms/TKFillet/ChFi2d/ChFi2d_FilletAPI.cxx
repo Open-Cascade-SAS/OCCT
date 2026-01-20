@@ -22,13 +22,13 @@
 // Call a method Init() to initialize the algorithm
 // before calling of a Perform() method.
 ChFi2d_FilletAPI::ChFi2d_FilletAPI()
-    : myIsAnalytical(Standard_False)
+    : myIsAnalytical(false)
 {
 }
 
 // A constructor of a fillet algorithm: accepts a wire consisting of two edges in a plane.
 ChFi2d_FilletAPI::ChFi2d_FilletAPI(const TopoDS_Wire& theWire, const gp_Pln& thePlane)
-    : myIsAnalytical(Standard_False)
+    : myIsAnalytical(false)
 {
   Init(theWire, thePlane);
 }
@@ -37,7 +37,7 @@ ChFi2d_FilletAPI::ChFi2d_FilletAPI(const TopoDS_Wire& theWire, const gp_Pln& the
 ChFi2d_FilletAPI::ChFi2d_FilletAPI(const TopoDS_Edge& theEdge1,
                                    const TopoDS_Edge& theEdge2,
                                    const gp_Pln&      thePlane)
-    : myIsAnalytical(Standard_False)
+    : myIsAnalytical(false)
 {
   Init(theEdge1, theEdge2, thePlane);
 }
@@ -78,13 +78,13 @@ void ChFi2d_FilletAPI::Init(const TopoDS_Edge& theEdge1,
 }
 
 // Returns true, if at least one result was found.
-Standard_Boolean ChFi2d_FilletAPI::Perform(const Standard_Real theRadius)
+bool ChFi2d_FilletAPI::Perform(const double theRadius)
 {
   return myIsAnalytical ? myAnaFilletAlgo.Perform(theRadius) : myFilletAlgo.Perform(theRadius);
 }
 
 // Returns number of possible solutions.
-Standard_Integer ChFi2d_FilletAPI::NbResults(const gp_Pnt& thePoint)
+int ChFi2d_FilletAPI::NbResults(const gp_Pnt& thePoint)
 {
   return myIsAnalytical ? 1 : myFilletAlgo.NbResults(thePoint);
 }
@@ -94,7 +94,7 @@ Standard_Integer ChFi2d_FilletAPI::NbResults(const gp_Pnt& thePoint)
 TopoDS_Edge ChFi2d_FilletAPI::Result(const gp_Pnt&          thePoint,
                                      TopoDS_Edge&           theEdge1,
                                      TopoDS_Edge&           theEdge2,
-                                     const Standard_Integer iSolution)
+                                     const int iSolution)
 {
   return myIsAnalytical ? myAnaFilletAlgo.Result(theEdge1, theEdge2)
                         : myFilletAlgo.Result(thePoint, theEdge1, theEdge2, iSolution);
@@ -103,10 +103,10 @@ TopoDS_Edge ChFi2d_FilletAPI::Result(const gp_Pnt&          thePoint,
 // Decides whether the input parameters may use an analytical algorithm
 // for calculation of the fillets, or an iteration-recursive method is needed.
 // The analytical solution is applicable for linear and circular edges having a common point.
-Standard_Boolean ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1,
+bool ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1,
                                                 const TopoDS_Edge& theEdge2)
 {
-  Standard_Boolean  ret(Standard_False);
+  bool  ret(false);
   BRepAdaptor_Curve AC1(theEdge1), AC2(theEdge2);
   if ((AC1.GetType() == GeomAbs_Line || AC1.GetType() == GeomAbs_Circle)
       && (AC2.GetType() == GeomAbs_Line || AC2.GetType() == GeomAbs_Circle))
@@ -122,7 +122,7 @@ Standard_Boolean ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1,
         || p12.SquareDistance(p21) < Precision::SquareConfusion()
         || p12.SquareDistance(p22) < Precision::SquareConfusion())
     {
-      ret = Standard_True;
+      ret = true;
     }
   }
   return ret;

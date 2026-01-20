@@ -15,8 +15,13 @@
 #define _Aspect_WindowInputListener_HeaderFile
 
 #include <Aspect_VKeySet.hxx>
-#include <Aspect_TouchMap.hxx>
-#include <Graphic3d_Vec.hxx>
+#include <Aspect_Touch.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
+#include <NCollection_Mat4.hxx>
 
 struct Aspect_ScrollDelta;
 class WNT_HIDSpaceMouse;
@@ -24,8 +29,6 @@ class WNT_HIDSpaceMouse;
 //! Defines a listener for window input events.
 class Aspect_WindowInputListener
 {
-public:
-  /// DEFINE_STANDARD_ALLOC
 public:
   //! Destructor.
   Standard_EXPORT virtual ~Aspect_WindowInputListener();
@@ -91,7 +94,7 @@ public: //! @name mouse input
   //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if window content should be redrawn
-  virtual bool UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
+  virtual bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
                                   Aspect_VKeyMouse       theButtons,
                                   Aspect_VKeyFlags       theModifiers,
                                   bool                   theIsEmulated) = 0;
@@ -105,7 +108,7 @@ public: //! @name mouse input
   //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if window content should be redrawn
-  virtual bool UpdateMousePosition(const Graphic3d_Vec2i& thePoint,
+  virtual bool UpdateMousePosition(const NCollection_Vec2<int>& thePoint,
                                    Aspect_VKeyMouse       theButtons,
                                    Aspect_VKeyFlags       theModifiers,
                                    bool                   theIsEmulated) = 0;
@@ -119,7 +122,7 @@ public: //! @name mouse input
   //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if window content should be redrawn
-  bool PressMouseButton(const Graphic3d_Vec2i& thePoint,
+  bool PressMouseButton(const NCollection_Vec2<int>& thePoint,
                         Aspect_VKeyMouse       theButton,
                         Aspect_VKeyFlags       theModifiers,
                         bool                   theIsEmulated)
@@ -136,7 +139,7 @@ public: //! @name mouse input
   //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if window content should be redrawn
-  bool ReleaseMouseButton(const Graphic3d_Vec2i& thePoint,
+  bool ReleaseMouseButton(const NCollection_Vec2<int>& thePoint,
                           Aspect_VKeyMouse       theButton,
                           Aspect_VKeyFlags       theModifiers,
                           bool                   theIsEmulated)
@@ -152,38 +155,38 @@ public: //! @name mouse input
   Aspect_VKeyFlags LastMouseFlags() const { return myMouseModifiers; }
 
   //! Return last mouse position.
-  const Graphic3d_Vec2i& LastMousePosition() const { return myMousePositionLast; }
+  const NCollection_Vec2<int>& LastMousePosition() const { return myMousePositionLast; }
 
 public: //! @name multi-touch input
   //! Return TRUE if touches map is not empty.
   bool HasTouchPoints() const { return !myTouchPoints.IsEmpty(); }
 
   //! Return map of active touches.
-  const Aspect_TouchMap& TouchPoints() const { return myTouchPoints; }
+  const NCollection_IndexedDataMap<size_t, Aspect_Touch>& TouchPoints() const { return myTouchPoints; }
 
   //! Add touch point with the given ID.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
   //! @param theClearBefore if TRUE previously registered touches will be removed
-  Standard_EXPORT virtual void AddTouchPoint(Standard_Size          theId,
-                                             const Graphic3d_Vec2d& thePnt,
-                                             Standard_Boolean       theClearBefore = false);
+  Standard_EXPORT virtual void AddTouchPoint(size_t          theId,
+                                             const NCollection_Vec2<double>& thePnt,
+                                             bool       theClearBefore = false);
 
   //! Remove touch point with the given ID.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param theClearSelectPnts if TRUE will initiate clearing of selection points
   //! @return TRUE if point has been removed
-  Standard_EXPORT virtual bool RemoveTouchPoint(Standard_Size    theId,
-                                                Standard_Boolean theClearSelectPnts = false);
+  Standard_EXPORT virtual bool RemoveTouchPoint(size_t    theId,
+                                                bool theClearSelectPnts = false);
 
   //! Update touch point with the given ID.
   //! If point with specified ID was not registered before, it will be added.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
-  Standard_EXPORT virtual void UpdateTouchPoint(Standard_Size theId, const Graphic3d_Vec2d& thePnt);
+  Standard_EXPORT virtual void UpdateTouchPoint(size_t theId, const NCollection_Vec2<double>& thePnt);
 
 public: //! @name 3d mouse input
   //! Return acceleration ratio for translation event; 2.0 by default.
@@ -239,12 +242,12 @@ protected:               //! @name keyboard input variables
   Aspect_VKeySet myKeys; //!< keyboard state
 
 protected:                              //! @name mouse input variables
-  Graphic3d_Vec2i  myMousePositionLast; //!< last mouse position
+  NCollection_Vec2<int>  myMousePositionLast; //!< last mouse position
   Aspect_VKeyMouse myMousePressed;      //!< active mouse buttons
   Aspect_VKeyFlags myMouseModifiers;    //!< active key modifiers passed with last mouse event
 
 protected:
-  Aspect_TouchMap myTouchPoints; //!< map of active touches
+  NCollection_IndexedDataMap<size_t, Aspect_Touch> myTouchPoints; //!< map of active touches
 
 protected:                                         //! @name 3d mouse input variables
   bool                   my3dMouseButtonState[32]; //!< cached button state

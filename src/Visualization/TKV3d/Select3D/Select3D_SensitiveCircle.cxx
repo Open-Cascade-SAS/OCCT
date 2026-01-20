@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCircle, Select3D_SensitiveEntity)
 // function : Select3D_SensitiveCircle (constructor)
 // purpose  : Definition of a sensitive circle
 //=======================================================================
-Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
+Select3D_SensitiveCircle::Select3D_SensitiveCircle(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
                                                    const gp_Circ&                       theCircle,
-                                                   const Standard_Boolean               theIsFilled)
+                                                   const bool               theIsFilled)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   myRadius = theCircle.Radius();
@@ -43,10 +43,10 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_Entity
 // function : Matches
 // purpose  : Checks whether the circle overlaps current selecting volume
 //=======================================================================
-Standard_Boolean Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
+bool Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
-  const Standard_Boolean aIsFilled = mySensType == Select3D_TOS_INTERIOR;
+  const bool aIsFilled = mySensType == Select3D_TOS_INTERIOR;
 
   if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
@@ -67,15 +67,15 @@ Standard_Boolean Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeM
 
   thePickResult.SetDistToGeomCenter(theMgr.DistToGeometryCenter(CenterOfGeometry()));
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveCircle::GetConnected()
+occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveCircle::GetConnected()
 {
-  Standard_Boolean                 anIsFilled = mySensType == Select3D_TOS_INTERIOR;
-  Handle(Select3D_SensitiveEntity) aNewEntity =
+  bool                 anIsFilled = mySensType == Select3D_TOS_INTERIOR;
+  occ::handle<Select3D_SensitiveEntity> aNewEntity =
     new Select3D_SensitiveCircle(myOwnerId, Circle(), anIsFilled);
   return aNewEntity;
 }
@@ -84,11 +84,11 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCircle::GetConnected()
 
 Select3D_BndBox3d Select3D_SensitiveCircle::BoundingBox()
 {
-  Graphic3d_Mat4d aTrsf;
+  NCollection_Mat4<double> aTrsf;
   myTrsf.GetMat4(aTrsf);
 
-  Select3D_BndBox3d aBox(SelectMgr_Vec3(-myRadius, -myRadius, 0),
-                         SelectMgr_Vec3(myRadius, myRadius, 0));
+  Select3D_BndBox3d aBox(NCollection_Vec3<double>(-myRadius, -myRadius, 0),
+                         NCollection_Vec3<double>(myRadius, myRadius, 0));
   aBox.Transform(aTrsf);
 
   return aBox;

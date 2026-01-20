@@ -20,14 +20,16 @@
 #include <Units_Sentence.hxx>
 #include <Units_ShiftedToken.hxx>
 #include <Units_Token.hxx>
-#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
-static Handle(Units_Token) CreateTokenForNumber(const Standard_CString str)
+static occ::handle<Units_Token> CreateTokenForNumber(const char* const str)
 {
   TCollection_AsciiString tstr    = str[0];
-  Standard_Boolean        IsPoint = Standard_False;
-  Standard_Size           len     = strlen(str);
-  for (Standard_Size in = 1; in < len; in++)
+  bool        IsPoint = false;
+  size_t           len     = strlen(str);
+  for (size_t in = 1; in < len; in++)
   {
     if (str[in] == '0' || str[in] == '1' || str[in] == '2' || str[in] == '3' || str[in] == '4'
         || str[in] == '5' || str[in] == '6' || str[in] == '7' || str[in] == '8' || str[in] == '9')
@@ -37,7 +39,7 @@ static Handle(Units_Token) CreateTokenForNumber(const Standard_CString str)
     else if (str[in] == '.' && !IsPoint)
     {
       tstr.AssignCat(str[in]);
-      IsPoint = Standard_True;
+      IsPoint = true;
     }
     else
       break;
@@ -47,28 +49,28 @@ static Handle(Units_Token) CreateTokenForNumber(const Standard_CString str)
 
 //=================================================================================================
 
-Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
-                               const Standard_CString       astring)
+Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
+                               const char* const       astring)
 {
-  Standard_Integer    index;
-  Standard_Size       i, limchain;
-  Handle(Units_Token) token;
-  Handle(Units_Token) referencetoken;
+  int    index;
+  size_t       i, limchain;
+  occ::handle<Units_Token> token;
+  occ::handle<Units_Token> referencetoken;
 
-  thesequenceoftokens                     = new Units_TokensSequence();
-  Handle(Units_TokensSequence) lstlexicon = alexicon->Sequence();
+  thesequenceoftokens                     = new NCollection_HSequence<occ::handle<Units_Token>>();
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> lstlexicon = alexicon->Sequence();
   if (lstlexicon.IsNull())
     throw Units_NoSuchType("BAD LEXICON descriptor");
   limchain = strlen(astring);
   i        = 0;
 
   TCollection_AsciiString tmpstr = astring;
-  // Handle(Units_Token) tmptoken;
+  // occ::handle<Units_Token> tmptoken;
   TCollection_AsciiString PrevMean;
   TCollection_AsciiString PrevWord;
   while (i < limchain)
   {
-    Standard_Boolean        IsFound  = Standard_False;
+    bool        IsFound  = false;
     TCollection_AsciiString LastWord = "";
     for (index = 1; index <= lstlexicon->Length(); index++)
     {
@@ -79,7 +81,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
       {
         token    = referencetoken->Creates();
         LastWord = aword;
-        IsFound  = Standard_True;
+        IsFound  = true;
       }
     }
     if (!IsFound)
@@ -134,9 +136,9 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
 
 void Units_Sentence::SetConstants()
 {
-  Standard_Integer        index;
-  Standard_Real           value;
-  Handle(Units_Token)     token;
+  int        index;
+  double           value;
+  occ::handle<Units_Token>     token;
   TCollection_AsciiString string;
 
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
@@ -157,16 +159,16 @@ void Units_Sentence::SetConstants()
 
 //=================================================================================================
 
-static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aSeq)
+static occ::handle<Units_Token> CalculateLocal(const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& aSeq)
 {
   // std::cout<<std::endl;
   // for(int index=1; index<=aSeq->Length(); index++) {
-  //   Handle(Units_Token) tok = aSeq->Value(index);
+  //   occ::handle<Units_Token> tok = aSeq->Value(index);
   //   std::cout<<tok->Word()<<" ";
   // }
   // std::cout<<std::endl;
-  Handle(Units_Token) tok1, tok2;
-  Standard_Integer    i, j;
+  occ::handle<Units_Token> tok1, tok2;
+  int    i, j;
 
   if (aSeq->Length() == 1)
   {
@@ -193,15 +195,15 @@ static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aS
     return aSeq->Value(1);
   }
 
-  Standard_Boolean IsBracket = Standard_True;
+  bool IsBracket = true;
   while (IsBracket)
   {
     for (i = 1; i <= aSeq->Length(); i++)
     {
       if (aSeq->Value(i)->Word() == "(")
       {
-        Handle(Units_TokensSequence) TmpSeq     = new Units_TokensSequence;
-        Standard_Integer             NbBrackets = 1;
+        occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> TmpSeq     = new NCollection_HSequence<occ::handle<Units_Token>>;
+        int             NbBrackets = 1;
         for (j = i + 1; j <= aSeq->Length(); j++)
         {
           if (aSeq->Value(j)->Word() == ")")
@@ -221,7 +223,7 @@ static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aS
     }
     if (i > aSeq->Length())
     {
-      IsBracket = Standard_False;
+      IsBracket = false;
       // there are not brackets => make calculations
       // step 1: operation '**'
       for (i = 1; i <= aSeq->Length(); i++)
@@ -262,17 +264,17 @@ static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aS
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Sentence::Evaluate()
+occ::handle<Units_Token> Units_Sentence::Evaluate()
 {
-  Handle(Units_Token) rtoken, ktoken;
+  occ::handle<Units_Token> rtoken, ktoken;
   if (thesequenceoftokens->Length() == 0)
     return rtoken;
 
   /* old variant
-    Standard_Integer index;
+    int index;
     static char *ooper[6] = { "+", "-", "*", ".", "/", "**" };
-    Standard_Integer numterm,i,j,k,maxlevel,curlevel,level[255];
-    Handle(Units_Token) currenttoken;
+    int numterm,i,j,k,maxlevel,curlevel,level[255];
+    occ::handle<Units_Token> currenttoken;
     TCollection_AsciiString string;
     TCollection_AsciiString mean;
     TCollection_AsciiString oper;
@@ -298,7 +300,7 @@ Handle(Units_Token) Units_Sentence::Evaluate()
     //if(IPrint==1) {
     //  std::cout<<std::endl;
     //  for(index=1; index<=thesequenceoftokens->Length(); index++) {
-    //    Handle(Units_Token) tok = thesequenceoftokens->Value(index);
+    //    occ::handle<Units_Token> tok = thesequenceoftokens->Value(index);
     //    std::cout<<tok->Word()<<" ";
     //  }
     //  std::cout<<std::endl;
@@ -328,7 +330,7 @@ Handle(Units_Token) Units_Sentence::Evaluate()
       }
     }
 
-    Handle(Units_Dimensions) aDim;
+    occ::handle<Units_Dimensions> aDim;
 
     numterm--;
     while(numterm>0) {

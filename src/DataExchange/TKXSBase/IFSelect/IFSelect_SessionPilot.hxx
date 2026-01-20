@@ -20,17 +20,16 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <IFSelect_PrintCount.hxx>
 class IFSelect_WorkSession;
 class IFSelect_WorkLibrary;
 class IFSelect_SignCounter;
-
-class IFSelect_SessionPilot;
-DEFINE_STANDARD_HANDLE(IFSelect_SessionPilot, IFSelect_Activator)
 
 //! A SessionPilot is intended to make easier the use of a WorkSession.
 //! It receives commands, under alphanumeric form,
@@ -72,26 +71,26 @@ public:
   //! Creates an empty SessionPilot, with a prompt which will be
   //! displayed on querying commands. If not precised (""), this
   //! prompt is set to "Test-XSTEP>"
-  Standard_EXPORT IFSelect_SessionPilot(const Standard_CString prompt = "");
+  Standard_EXPORT IFSelect_SessionPilot(const char* const prompt = "");
 
   //! Returns the WorkSession which is worked on
-  Standard_EXPORT Handle(IFSelect_WorkSession) Session() const;
+  Standard_EXPORT occ::handle<IFSelect_WorkSession> Session() const;
 
   //! Returns the WorKlibrary (Null if not set). WorkLibrary is used
   //! to Read and Write Files, according to the Norm
-  Standard_EXPORT Handle(IFSelect_WorkLibrary) Library() const;
+  Standard_EXPORT occ::handle<IFSelect_WorkLibrary> Library() const;
 
   //! Returns the Record Mode for Commands. Default is False.
-  Standard_EXPORT Standard_Boolean RecordMode() const;
+  Standard_EXPORT bool RecordMode() const;
 
   //! Sets a WorkSession to be worked on
-  Standard_EXPORT void SetSession(const Handle(IFSelect_WorkSession)& WS);
+  Standard_EXPORT void SetSession(const occ::handle<IFSelect_WorkSession>& WS);
 
   //! Sets a WorkLibrary
-  Standard_EXPORT void SetLibrary(const Handle(IFSelect_WorkLibrary)& WL);
+  Standard_EXPORT void SetLibrary(const occ::handle<IFSelect_WorkLibrary>& WL);
 
   //! Changes the RecordMode.
-  Standard_EXPORT void SetRecordMode(const Standard_Boolean mode);
+  Standard_EXPORT void SetRecordMode(const bool mode);
 
   //! Sets the value of the Command Line to be interpreted
   //! Also prepares the interpretation (splitting by blanks)
@@ -103,41 +102,41 @@ public:
   //! Returns the part of the command line which begins at argument
   //! <numarg> between 0 and NbWords-1 (by default, all the line)
   //! Empty string if out of range
-  Standard_EXPORT Standard_CString CommandPart(const Standard_Integer numarg = 0) const;
+  Standard_EXPORT const char* CommandPart(const int numarg = 0) const;
 
   //! Returns the count of words of the Command Line, separated by
   //! blanks : 0 if empty, one if a command without args, else it
   //! gives the count of args minus one.
   //! Warning : limited to 10 (command title + 9 args)
-  Standard_EXPORT Standard_Integer NbWords() const;
+  Standard_EXPORT int NbWords() const;
 
   //! Returns a word given its rank in the Command Line. Begins at 0
   //! which is the Command Title, 1 is the 1st arg., etc...
-  Standard_EXPORT const TCollection_AsciiString& Word(const Standard_Integer num) const;
+  Standard_EXPORT const TCollection_AsciiString& Word(const int num) const;
 
   //! Returns a word given its rank, as a CString.
   //! As for Word, begins at 0 (the command name), etc...
-  Standard_EXPORT Standard_CString Arg(const Standard_Integer num) const;
+  Standard_EXPORT const char* Arg(const int num) const;
 
   //! Removes a word given its rank. Returns True if Done, False if
   //! <num> is out of range
-  Standard_EXPORT Standard_Boolean RemoveWord(const Standard_Integer num);
+  Standard_EXPORT bool RemoveWord(const int num);
 
   //! Returns the count of recorded Commands
-  Standard_EXPORT Standard_Integer NbCommands() const;
+  Standard_EXPORT int NbCommands() const;
 
   //! Returns a recorded Command, given its rank (from 1)
-  Standard_EXPORT const TCollection_AsciiString& Command(const Standard_Integer num) const;
+  Standard_EXPORT const TCollection_AsciiString& Command(const int num) const;
 
   //! Allows to associate a Transient Value with the last execution
   //! as a partial result
   //! Returns RetDone if item is not Null, RetFail if item is Null
   //! Remark : it is nullified for each Perform
-  Standard_EXPORT IFSelect_ReturnStatus RecordItem(const Handle(Standard_Transient)& item);
+  Standard_EXPORT IFSelect_ReturnStatus RecordItem(const occ::handle<Standard_Transient>& item);
 
   //! Returns the Transient Object which was recorded with the
   //! current Line Command. If none was, returns a Null Handle
-  Standard_EXPORT Handle(Standard_Transient) RecordedItem() const;
+  Standard_EXPORT occ::handle<Standard_Transient> RecordedItem() const;
 
   //! Clears the recorded information (commands, objects)
   Standard_EXPORT void Clear();
@@ -149,7 +148,7 @@ public:
   //! either by command x or exit, or by reaching end of file
   //! Return Value follows the rules of Do : RetEnd for normal end,
   //! RetFail if script could not be opened
-  Standard_EXPORT IFSelect_ReturnStatus ReadScript(const Standard_CString file = "");
+  Standard_EXPORT IFSelect_ReturnStatus ReadScript(const char* const file = "");
 
   //! Executes the Command, itself (for built-in commands, which
   //! have priority) or by using the list of Activators.
@@ -178,15 +177,15 @@ public:
   //! <mode> gives the mode of printing results, default is
   //! CountByItem
   Standard_EXPORT IFSelect_ReturnStatus
-    ExecuteCounter(const Handle(IFSelect_SignCounter)& counter,
-                   const Standard_Integer              numword,
+    ExecuteCounter(const occ::handle<IFSelect_SignCounter>& counter,
+                   const int              numword,
                    const IFSelect_PrintCount           mode = IFSelect_CountByItem);
 
   //! Interprets a string value as an entity number :
   //! if it gives an integer, returns its value
   //! else, considers it as ENtityLabel (preferably case sensitive)
   //! in case of failure, returns 0
-  Standard_EXPORT Standard_Integer Number(const Standard_CString val) const;
+  Standard_EXPORT int Number(const char* const val) const;
 
   //! Processes specific commands, which are :
   //! x or exit for end of session
@@ -198,26 +197,26 @@ public:
   //! xstep is a simple prefix (useful in a wider environment, to
   //! avoid conflicts on command names)
   //! xset control commands which create items with names
-  Standard_EXPORT IFSelect_ReturnStatus Do(const Standard_Integer               number,
-                                           const Handle(IFSelect_SessionPilot)& session)
-    Standard_OVERRIDE;
+  Standard_EXPORT IFSelect_ReturnStatus Do(const int               number,
+                                           const occ::handle<IFSelect_SessionPilot>& session)
+    override;
 
   //! Help for specific commands (apart from general command help)
-  Standard_EXPORT Standard_CString Help(const Standard_Integer number) const Standard_OVERRIDE;
+  Standard_EXPORT const char* Help(const int number) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SessionPilot, IFSelect_Activator)
 
 private:
-  Handle(IFSelect_WorkSession)  thesession;
+  occ::handle<IFSelect_WorkSession>  thesession;
   TCollection_AsciiString       theprompt;
   TCollection_AsciiString       thecommand;
-  Standard_Integer              thenbwords;
-  TColStd_Array1OfAsciiString   thewords;
-  TColStd_Array1OfInteger       thewordeb;
-  Standard_Boolean              therecord;
-  Standard_Integer              thenumrec;
-  Handle(Standard_Transient)    theobjrec;
-  TColStd_SequenceOfAsciiString thecomlist;
+  int              thenbwords;
+  NCollection_Array1<TCollection_AsciiString>   thewords;
+  NCollection_Array1<int>       thewordeb;
+  bool              therecord;
+  int              thenumrec;
+  occ::handle<Standard_Transient>    theobjrec;
+  NCollection_Sequence<TCollection_AsciiString> thecomlist;
 };
 
 #endif // _IFSelect_SessionPilot_HeaderFile

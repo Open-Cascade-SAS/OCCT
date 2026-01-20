@@ -37,19 +37,17 @@ public:
   Standard_HIDDEN RWStepFEA_RWNode();
 
   //! Reads Node
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepFEA_Node)&            ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<StepFEA_Node>&            ent) const;
 
   //! Writes Node
-  Standard_HIDDEN void WriteStep(StepData_StepWriter& SW, const Handle(StepFEA_Node)& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter& SW, const occ::handle<StepFEA_Node>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepFEA_Node)& ent, Interface_EntityIterator& iter) const;
+  Standard_HIDDEN void Share(const occ::handle<StepFEA_Node>& ent, Interface_EntityIterator& iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepFEA_RWNode_HeaderFile

@@ -28,24 +28,26 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolCircArraySubfigure::IGESDraw_ToolCircArraySubfigure() {}
 
-void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(const Handle(IGESDraw_CircArraySubfigure)& ent,
-                                                    const Handle(IGESData_IGESReaderData)&     IR,
+void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(const occ::handle<IGESDraw_CircArraySubfigure>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
                                                     IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   gp_XYZ                           tempCenter;
-  Handle(IGESData_IGESEntity)      tempBase;
-  Standard_Real                    tempRadius, tempStAngle, tempDelAngle;
-  Standard_Integer                 tempNumLocs, tempFlag, tempListCount;
-  Handle(TColStd_HArray1OfInteger) tempNumPos;
+  occ::handle<IGESData_IGESEntity>      tempBase;
+  double                    tempRadius, tempStAngle, tempDelAngle;
+  int                 tempNumLocs, tempFlag, tempListCount;
+  occ::handle<NCollection_HArray1<int>> tempNumPos;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR, PR.Current(), "Base Entity", tempBase);
@@ -61,7 +63,7 @@ void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(const Handle(IGESDraw_CircAr
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempListCount > 0)
-      tempNumPos = new TColStd_HArray1OfInteger(1, tempListCount);
+      tempNumPos = new NCollection_HArray1<int>(1, tempListCount);
     else if (tempListCount < 0)
       PR.AddFail("DO-DONT List Count : Less than Zero");
   }
@@ -71,10 +73,10 @@ void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(const Handle(IGESDraw_CircAr
   // Read the HArray1 only if its Length was read without any Error
   if (!tempNumPos.IsNull())
   {
-    Standard_Integer I;
+    int I;
     for (I = 1; I <= tempListCount; I++)
     {
-      Standard_Integer tempPosition;
+      int tempPosition;
       // st = PR.ReadInteger(PR.Current(), "Number Of Position To Process",
       // tempPosition); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Number Of Position To Process", tempPosition))
@@ -93,7 +95,7 @@ void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(const Handle(IGESDraw_CircAr
             tempNumPos);
 }
 
-void IGESDraw_ToolCircArraySubfigure::WriteOwnParams(const Handle(IGESDraw_CircArraySubfigure)& ent,
+void IGESDraw_ToolCircArraySubfigure::WriteOwnParams(const occ::handle<IGESDraw_CircArraySubfigure>& ent,
                                                      IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->BaseEntity());
@@ -107,37 +109,37 @@ void IGESDraw_ToolCircArraySubfigure::WriteOwnParams(const Handle(IGESDraw_CircA
   IW.Send(ent->ListCount());
   IW.SendBoolean(ent->DoDontFlag());
   // Send the HArray1 only if it is not empty (i.e. Null)
-  Standard_Integer I;
-  Standard_Integer up = ent->ListCount();
+  int I;
+  int up = ent->ListCount();
   for (I = 1; I <= up; I++)
     IW.Send(ent->ListPosition(I));
 }
 
-void IGESDraw_ToolCircArraySubfigure::OwnShared(const Handle(IGESDraw_CircArraySubfigure)& /*ent*/,
+void IGESDraw_ToolCircArraySubfigure::OwnShared(const occ::handle<IGESDraw_CircArraySubfigure>& /*ent*/,
                                                 Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESDraw_ToolCircArraySubfigure::OwnCopy(const Handle(IGESDraw_CircArraySubfigure)& another,
-                                              const Handle(IGESDraw_CircArraySubfigure)& ent,
+void IGESDraw_ToolCircArraySubfigure::OwnCopy(const occ::handle<IGESDraw_CircArraySubfigure>& another,
+                                              const occ::handle<IGESDraw_CircArraySubfigure>& ent,
                                               Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempBase, TC.Transferred(another->BaseEntity()));
-  Standard_Integer                 tempNumLocs   = another->NbLocations();
+  int                 tempNumLocs   = another->NbLocations();
   gp_XYZ                           tempCenter    = (another->CenterPoint()).XYZ();
-  Standard_Real                    tempRadius    = another->CircleRadius();
-  Standard_Real                    tempStAngle   = another->StartAngle();
-  Standard_Real                    tempDelAngle  = another->DeltaAngle();
-  Standard_Integer                 tempListCount = another->ListCount();
-  Standard_Integer                 tempFlag      = another->DoDontFlag();
-  Handle(TColStd_HArray1OfInteger) tempNumPos;
+  double                    tempRadius    = another->CircleRadius();
+  double                    tempStAngle   = another->StartAngle();
+  double                    tempDelAngle  = another->DeltaAngle();
+  int                 tempListCount = another->ListCount();
+  int                 tempFlag      = another->DoDontFlag();
+  occ::handle<NCollection_HArray1<int>> tempNumPos;
   if (!another->DisplayFlag())
   {
-    tempNumPos = new TColStd_HArray1OfInteger(1, tempListCount);
-    Standard_Integer I;
+    tempNumPos = new NCollection_HArray1<int>(1, tempListCount);
+    int I;
     for (I = 1; I <= tempListCount; I++)
     {
-      Standard_Integer tempPosition = another->ListPosition(I);
+      int tempPosition = another->ListPosition(I);
       tempNumPos->SetValue(I, tempPosition);
     }
   }
@@ -153,7 +155,7 @@ void IGESDraw_ToolCircArraySubfigure::OwnCopy(const Handle(IGESDraw_CircArraySub
 }
 
 IGESData_DirChecker IGESDraw_ToolCircArraySubfigure::DirChecker(
-  const Handle(IGESDraw_CircArraySubfigure)& /*ent*/) const
+  const occ::handle<IGESDraw_CircArraySubfigure>& /*ent*/) const
 {
   IGESData_DirChecker DC(414, 0);
   DC.Structure(IGESData_DefVoid);
@@ -165,18 +167,18 @@ IGESData_DirChecker IGESDraw_ToolCircArraySubfigure::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolCircArraySubfigure::OwnCheck(const Handle(IGESDraw_CircArraySubfigure)& /*ent*/,
+void IGESDraw_ToolCircArraySubfigure::OwnCheck(const occ::handle<IGESDraw_CircArraySubfigure>& /*ent*/,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& /*ach*/) const
+                                               occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESDraw_ToolCircArraySubfigure::OwnDump(const Handle(IGESDraw_CircArraySubfigure)& ent,
+void IGESDraw_ToolCircArraySubfigure::OwnDump(const occ::handle<IGESDraw_CircArraySubfigure>& ent,
                                               const IGESData_IGESDumper&                 dumper,
                                               Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+                                              const int level) const
 {
-  Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
+  int tempSubLevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_CircArraySubfigure\n"
     << "Base Entity : ";

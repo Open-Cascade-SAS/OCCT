@@ -41,10 +41,10 @@ public:
   //! must be in the XZ plane of <A>. <PM> is the
   //! meridian in the XZ plane.
   Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&               A,
-                                      const Standard_Real         VMin,
-                                      const Standard_Real         VMax,
-                                      const Handle(Geom_Curve)&   M,
-                                      const Handle(Geom2d_Curve)& PM);
+                                      const double         VMin,
+                                      const double         VMax,
+                                      const occ::handle<Geom_Curve>&   M,
+                                      const occ::handle<Geom2d_Curve>& PM);
 
   //! The surface normal should be directed towards the
   //! outside.
@@ -53,11 +53,11 @@ public:
   //! Returns an edge with a 3D curve made from the
   //! meridian in the XZ plane rotated by <Ang> around
   //! the Z-axis. Ang may be 0 or myAngle.
-  Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const Standard_Real Ang) const;
+  Standard_EXPORT virtual TopoDS_Edge MakeEmptyMeridianEdge(const double Ang) const;
 
   //! Returns the meridian point at parameter <V> in the
   //! plane XZ.
-  Standard_EXPORT virtual gp_Pnt2d MeridianValue(const Standard_Real V) const;
+  Standard_EXPORT virtual gp_Pnt2d MeridianValue(const double V) const;
 
   //! Sets the parametric urve of the edge <E> in the
   //! face <F> to be the 2d representation of the
@@ -68,14 +68,14 @@ protected:
   //! Create a revolution body. The meridian is set
   //! later. Reserved for derivated classes.
   Standard_EXPORT BRepPrim_Revolution(const gp_Ax2&       A,
-                                      const Standard_Real VMin,
-                                      const Standard_Real VMax);
+                                      const double VMin,
+                                      const double VMax);
 
-  Standard_EXPORT void Meridian(const Handle(Geom_Curve)& M, const Handle(Geom2d_Curve)& PM);
+  Standard_EXPORT void Meridian(const occ::handle<Geom_Curve>& M, const occ::handle<Geom2d_Curve>& PM);
 
 private:
-  Handle(Geom_Curve)   myMeridian;
-  Handle(Geom2d_Curve) myPMeridian;
+  occ::handle<Geom_Curve>   myMeridian;
+  occ::handle<Geom2d_Curve> myPMeridian;
 };
 
 #endif // _BRepPrim_Revolution_HeaderFile

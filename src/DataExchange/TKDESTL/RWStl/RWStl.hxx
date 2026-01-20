@@ -29,41 +29,41 @@ public:
   //! Write triangulation to binary STL file.
   //! binary format of an STL file.
   //! Returns false if the cannot be opened;
-  Standard_EXPORT static Standard_Boolean WriteBinary(
-    const Handle(Poly_Triangulation)& theMesh,
+  Standard_EXPORT static bool WriteBinary(
+    const occ::handle<Poly_Triangulation>& theMesh,
     const OSD_Path&                   thePath,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Write triangulation to binary STL stream.
-  Standard_EXPORT static Standard_Boolean WriteBinary(
-    const Handle(Poly_Triangulation)& theMesh,
+  Standard_EXPORT static bool WriteBinary(
+    const occ::handle<Poly_Triangulation>& theMesh,
     Standard_OStream&                 theStream,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! write the meshing in a file following the
   //! Ascii format of an STL file.
   //! Returns false if the cannot be opened;
-  Standard_EXPORT static Standard_Boolean WriteAscii(
-    const Handle(Poly_Triangulation)& theMesh,
+  Standard_EXPORT static bool WriteAscii(
+    const occ::handle<Poly_Triangulation>& theMesh,
     const OSD_Path&                   thePath,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Write triangulation to ASCII STL stream.
-  Standard_EXPORT static Standard_Boolean WriteAscii(
-    const Handle(Poly_Triangulation)& theMesh,
+  Standard_EXPORT static bool WriteAscii(
+    const occ::handle<Poly_Triangulation>& theMesh,
     Standard_OStream&                 theStream,
     const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Read specified STL file and returns its content as triangulation.
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadFile(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadFile(
     const OSD_Path&              theFile,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read specified STL file and returns its content as triangulation.
   //! In case of error, returns Null handle.
-  static Handle(Poly_Triangulation) ReadFile(
-    const Standard_CString       theFile,
+  static occ::handle<Poly_Triangulation> ReadFile(
+    const char* const       theFile,
     const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
     return ReadFile(theFile, M_PI / 2.0, theProgress);
@@ -75,9 +75,9 @@ public:
   //! M_PI/2 means ignore angle
   //! @param[in] theProgress progress indicator
   //! @return result triangulation or NULL in case of error
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadFile(
-    const Standard_CString       theFile,
-    const Standard_Real          theMergeAngle,
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadFile(
+    const char* const       theFile,
+    const double          theMergeAngle,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read specified STL file and fills triangulation list for multi-domain case.
@@ -87,42 +87,42 @@ public:
   //! @param[out] theTriangList triangulation list for multi-domain case
   //! @param[in] theProgress progress indicator
   Standard_EXPORT static void ReadFile(
-    const Standard_CString                            theFile,
-    const Standard_Real                               theMergeAngle,
-    NCollection_Sequence<Handle(Poly_Triangulation)>& theTriangList,
+    const char* const                            theFile,
+    const double                               theMergeAngle,
+    NCollection_Sequence<occ::handle<Poly_Triangulation>>& theTriangList,
     const Message_ProgressRange&                      theProgress = Message_ProgressRange());
 
   //! Read triangulation from a binary STL file
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadBinary(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadBinary(
     const OSD_Path&              thePath,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read triangulation from an Ascii STL file
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadAscii(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadAscii(
     const OSD_Path&              thePath,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read triangulation from binary STL stream
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadBinaryStream(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadBinaryStream(
     Standard_IStream&            theStream,
-    const Standard_Real          theMergeAngle = M_PI / 2.0,
+    const double          theMergeAngle = M_PI / 2.0,
     const Message_ProgressRange& theProgress   = Message_ProgressRange());
 
   //! Read triangulation from ASCII STL stream
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadAsciiStream(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadAsciiStream(
     Standard_IStream&            theStream,
-    const Standard_Real          theMergeAngle = M_PI / 2.0,
+    const double          theMergeAngle = M_PI / 2.0,
     const Message_ProgressRange& theProgress   = Message_ProgressRange());
 
   //! Read STL data from stream (auto-detects ASCII vs Binary)
   //! In case of error, returns Null handle.
-  Standard_EXPORT static Handle(Poly_Triangulation) ReadStream(
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ReadStream(
     Standard_IStream&            theStream,
-    const Standard_Real          theMergeAngle = M_PI / 2.0,
+    const double          theMergeAngle = M_PI / 2.0,
     const Message_ProgressRange& theProgress   = Message_ProgressRange());
 };
 

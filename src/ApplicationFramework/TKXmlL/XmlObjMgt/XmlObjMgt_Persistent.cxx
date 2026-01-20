@@ -44,7 +44,7 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement
 {
   if (theElement != NULL)
   {
-    Standard_Integer aRefID;
+    int aRefID;
     if (theElement.getAttribute(theRef).GetInteger(aRefID))
     {
       myElement = XmlObjMgt::FindChildElement(theElement, aRefID);
@@ -60,7 +60,7 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement
 //=======================================================================
 void XmlObjMgt_Persistent::CreateElement(XmlObjMgt_Element&         theParent,
                                          const XmlObjMgt_DOMString& theType,
-                                         const Standard_Integer     theID)
+                                         const int     theID)
 {
   // AGV  XmlObjMgt_Document& anOwnerDoc =
   // AGV    (XmlObjMgt_Document&)theParent.getOwnerDocument();
@@ -72,7 +72,7 @@ void XmlObjMgt_Persistent::CreateElement(XmlObjMgt_Element&         theParent,
 
 //=================================================================================================
 
-void XmlObjMgt_Persistent::SetId(const Standard_Integer theId)
+void XmlObjMgt_Persistent::SetId(const int theId)
 {
   myID = theId;
   myElement.setAttribute(XmlObjMgt::IdString(), theId);

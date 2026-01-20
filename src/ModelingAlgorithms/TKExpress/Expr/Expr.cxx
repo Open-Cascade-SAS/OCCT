@@ -20,7 +20,7 @@
 #include <Expr_UnknownIterator.hxx>
 #include <Expr_RUIterator.hxx>
 
-Handle(Expr_GeneralExpression) Expr::CopyShare(const Handle(Expr_GeneralExpression)& exp)
+occ::handle<Expr_GeneralExpression> Expr::CopyShare(const occ::handle<Expr_GeneralExpression>& exp)
 {
   if (exp->IsShareable())
   {
@@ -29,9 +29,9 @@ Handle(Expr_GeneralExpression) Expr::CopyShare(const Handle(Expr_GeneralExpressi
   return exp->Copy();
 }
 
-Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralRelation)& rel)
+int Expr::NbOfFreeVariables(const occ::handle<Expr_GeneralRelation>& rel)
 {
-  Standard_Integer nbvar = 0;
+  int nbvar = 0;
   Expr_RUIterator  rit(rel);
   while (rit.More())
   {
@@ -44,9 +44,9 @@ Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralRelation)& rel
   return nbvar;
 }
 
-Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralExpression)& exp)
+int Expr::NbOfFreeVariables(const occ::handle<Expr_GeneralExpression>& exp)
 {
-  Standard_Integer     nbvar = 0;
+  int     nbvar = 0;
   Expr_UnknownIterator uit(exp);
   while (uit.More())
   {
@@ -59,7 +59,7 @@ Standard_Integer Expr::NbOfFreeVariables(const Handle(Expr_GeneralExpression)& e
   return nbvar;
 }
 
-Standard_Real Expr::Sign(const Standard_Real val)
+double Expr::Sign(const double val)
 {
   return std::copysign(1.0, val);
 }

@@ -24,7 +24,7 @@
 TEST(TNaming_Builder_Test, OCC361_ShapeOrientationPreservation)
 {
   // Create a document
-  Handle(TDocStd_Document) aDoc = new TDocStd_Document("BinOcaf");
+  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("BinOcaf");
 
   // Create a box shape
   BRepPrimAPI_MakeBox aBoxMaker(gp_Pnt(0, 0, 0), 100, 100, 100);

@@ -20,7 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+#include <TopoDS_Shape.hxx>
+#include <BRepTopAdaptor_Tool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
 class Contap_Contour;
@@ -41,30 +44,29 @@ public:
   Standard_EXPORT static void Insert(const TopoDS_Shape&            S,
                                      Contap_Contour&                FO,
                                      HLRTopoBRep_Data&              DS,
-                                     BRepTopAdaptor_MapOfShapeTool& MST,
-                                     const Standard_Integer         nbIso);
+                                     NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+                                     const int         nbIso);
 
-protected:
 private:
   //! Stores in <DS> the outlines of <F> using the current
   //! outliner.
-  Standard_EXPORT static void InsertFace(const Standard_Integer FI,
+  Standard_EXPORT static void InsertFace(const int FI,
                                          const TopoDS_Face&     F,
                                          Contap_Contour&        FO,
                                          HLRTopoBRep_Data&      DS,
-                                         const Standard_Boolean withPCurve);
+                                         const bool withPCurve);
 
   //! Make a vertex from an intersection point <P>and
   //! store it in the data structure <DS>.
   Standard_EXPORT static TopoDS_Vertex MakeVertex(const Contap_Point& P,
-                                                  const Standard_Real tol,
+                                                  const double tol,
                                                   HLRTopoBRep_Data&   DS);
 
   //! Insert a vertex from an internal intersection
   //! point <P> on restriction <E> and store it in the
   //! data structure <DS>.
   Standard_EXPORT static void InsertVertex(const Contap_Point& P,
-                                           const Standard_Real tol,
+                                           const double tol,
                                            const TopoDS_Edge&  E,
                                            HLRTopoBRep_Data&   DS);
 

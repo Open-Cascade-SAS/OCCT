@@ -18,6 +18,6 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-typedef Handle(NCollection_BaseAllocator) TDF_HAllocator;
+typedef occ::handle<NCollection_BaseAllocator> TDF_HAllocator;
 
 #endif

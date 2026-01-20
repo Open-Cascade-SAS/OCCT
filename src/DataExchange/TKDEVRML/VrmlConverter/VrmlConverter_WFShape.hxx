@@ -41,10 +41,8 @@ public:
 
   Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
                                   const TopoDS_Shape&                 aShape,
-                                  const Handle(VrmlConverter_Drawer)& aDrawer);
+                                  const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
-protected:
-private:
 };
 
 #endif // _VrmlConverter_WFShape_HeaderFile

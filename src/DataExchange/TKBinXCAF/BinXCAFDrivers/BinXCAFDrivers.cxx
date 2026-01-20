@@ -29,7 +29,7 @@ static Standard_GUID BinXCAFRetrievalDriver("a78ff497-a779-11d5-aab4-0050044b1af
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
+const occ::handle<Standard_Transient>& BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
 {
 
   if (theGUID == BinXCAFStorageDriver)
@@ -37,7 +37,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 #ifdef OCCT_DEBUG
     std::cout << "BinXCAFDrivers : Storage Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_sd = new BinXCAFDrivers_DocumentStorageDriver;
+    static occ::handle<Standard_Transient> model_sd = new BinXCAFDrivers_DocumentStorageDriver;
     return model_sd;
   }
 
@@ -46,7 +46,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 #ifdef OCCT_DEBUG
     std::cout << "BinXCAFDrivers : Retrieval Plugin" << std::endl;
 #endif
-    static Handle(Standard_Transient) model_rd = new BinXCAFDrivers_DocumentRetrievalDriver;
+    static occ::handle<Standard_Transient> model_rd = new BinXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
 
@@ -55,7 +55,7 @@ const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& t
 
 //=================================================================================================
 
-void BinXCAFDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
+void BinXCAFDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 {
   theApp->DefineFormat("BinXCAF",
                        "Binary XCAF Document",
@@ -66,11 +66,11 @@ void BinXCAFDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
 
 //=================================================================================================
 
-Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(
-  const Handle(Message_Messenger)& aMsgDrv)
+occ::handle<BinMDF_ADriverTable> BinXCAFDrivers::AttributeDrivers(
+  const occ::handle<Message_Messenger>& aMsgDrv)
 {
   // Standard Drivers
-  Handle(BinMDF_ADriverTable) aTable = BinDrivers::AttributeDrivers(aMsgDrv);
+  occ::handle<BinMDF_ADriverTable> aTable = BinDrivers::AttributeDrivers(aMsgDrv);
 
   // XCAF Drivers
   BinMXCAFDoc::AddDrivers(aTable, aMsgDrv);

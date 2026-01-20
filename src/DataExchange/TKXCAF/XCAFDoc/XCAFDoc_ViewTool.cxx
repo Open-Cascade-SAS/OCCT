@@ -35,9 +35,9 @@ XCAFDoc_ViewTool::XCAFDoc_ViewTool() {}
 
 //=================================================================================================
 
-Handle(XCAFDoc_ViewTool) XCAFDoc_ViewTool::Set(const TDF_Label& L)
+occ::handle<XCAFDoc_ViewTool> XCAFDoc_ViewTool::Set(const TDF_Label& L)
 {
-  Handle(XCAFDoc_ViewTool) A;
+  occ::handle<XCAFDoc_ViewTool> A;
   if (!L.FindAttribute(XCAFDoc_ViewTool::GetID(), A))
   {
     A = new XCAFDoc_ViewTool();
@@ -63,19 +63,19 @@ TDF_Label XCAFDoc_ViewTool::BaseLabel() const
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::IsView(const TDF_Label& theLabel) const
+bool XCAFDoc_ViewTool::IsView(const TDF_Label& theLabel) const
 {
-  Handle(XCAFDoc_View) aViewAttr;
+  occ::handle<XCAFDoc_View> aViewAttr;
   if (theLabel.FindAttribute(XCAFDoc_View::GetID(), aViewAttr))
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void XCAFDoc_ViewTool::GetViewLabels(TDF_LabelSequence& theLabels) const
+void XCAFDoc_ViewTool::GetViewLabels(NCollection_Sequence<TDF_Label>& theLabels) const
 {
   theLabels.Clear();
   TDF_ChildIterator aChildIterator(Label());
@@ -94,7 +94,7 @@ TDF_Label XCAFDoc_ViewTool::AddView()
   TDF_Label     aViewL;
   TDF_TagSource aTag;
   aViewL                        = aTag.NewChild(Label());
-  Handle(XCAFDoc_View)    aView = XCAFDoc_View::Set(aViewL);
+  occ::handle<XCAFDoc_View>    aView = XCAFDoc_View::Set(aViewL);
   TCollection_AsciiString aStr  = "View";
   TDataStd_Name::Set(aViewL, aStr);
   return aViewL;
@@ -102,22 +102,22 @@ TDF_Label XCAFDoc_ViewTool::AddView()
 
 //=================================================================================================
 
-void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
-                               const TDF_LabelSequence& theGDTs,
-                               const TDF_LabelSequence& theClippingPlanes,
-                               const TDF_LabelSequence& theNotes,
-                               const TDF_LabelSequence& theAnnotations,
+void XCAFDoc_ViewTool::SetView(const NCollection_Sequence<TDF_Label>& theShapes,
+                               const NCollection_Sequence<TDF_Label>& theGDTs,
+                               const NCollection_Sequence<TDF_Label>& theClippingPlanes,
+                               const NCollection_Sequence<TDF_Label>& theNotes,
+                               const NCollection_Sequence<TDF_Label>& theAnnotations,
                                const TDF_Label&         theViewL) const
 {
   if (!IsView(theViewL))
     return;
 
-  Handle(XCAFDoc_GraphNode) aChGNode;
-  Handle(XCAFDoc_GraphNode) aShapeGNode;
-  Handle(XCAFDoc_GraphNode) aGDTGNode;
-  Handle(XCAFDoc_GraphNode) aPlaneGNode;
-  Handle(XCAFDoc_GraphNode) aNoteGNode;
-  Handle(XCAFDoc_GraphNode) aAnnotGNode;
+  occ::handle<XCAFDoc_GraphNode> aChGNode;
+  occ::handle<XCAFDoc_GraphNode> aShapeGNode;
+  occ::handle<XCAFDoc_GraphNode> aGDTGNode;
+  occ::handle<XCAFDoc_GraphNode> aPlaneGNode;
+  occ::handle<XCAFDoc_GraphNode> aNoteGNode;
+  occ::handle<XCAFDoc_GraphNode> aAnnotGNode;
 
   if (theViewL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aChGNode))
   {
@@ -181,7 +181,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefShapeGUID());
   }
-  for (Standard_Integer i = theShapes.Lower(); i <= theShapes.Upper(); i++)
+  for (int i = theShapes.Lower(); i <= theShapes.Upper(); i++)
   {
     if (!theShapes.Value(i).FindAttribute(XCAFDoc::ViewRefShapeGUID(), aShapeGNode))
     {
@@ -199,7 +199,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefGDTGUID());
   }
-  for (Standard_Integer i = theGDTs.Lower(); i <= theGDTs.Upper(); i++)
+  for (int i = theGDTs.Lower(); i <= theGDTs.Upper(); i++)
   {
     if (!theGDTs.Value(i).FindAttribute(XCAFDoc::ViewRefGDTGUID(), aGDTGNode))
     {
@@ -218,7 +218,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefPlaneGUID());
   }
-  for (Standard_Integer i = theClippingPlanes.Lower(); i <= theClippingPlanes.Upper(); i++)
+  for (int i = theClippingPlanes.Lower(); i <= theClippingPlanes.Upper(); i++)
   {
     if (!theClippingPlanes.Value(i).FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aPlaneGNode))
     {
@@ -236,7 +236,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefPlaneGUID());
   }
-  for (Standard_Integer i = theNotes.Lower(); i <= theNotes.Upper(); i++)
+  for (int i = theNotes.Lower(); i <= theNotes.Upper(); i++)
   {
     if (!theNotes.Value(i).FindAttribute(XCAFDoc::ViewRefNoteGUID(), aNoteGNode))
     {
@@ -255,7 +255,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefAnnotationGUID());
   }
-  for (Standard_Integer i = theAnnotations.Lower(); i <= theAnnotations.Upper(); i++)
+  for (int i = theAnnotations.Lower(); i <= theAnnotations.Upper(); i++)
   {
     if (!theAnnotations.Value(i).FindAttribute(XCAFDoc::ViewRefAnnotationGUID(), aNoteGNode))
     {
@@ -270,18 +270,18 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapes,
 
 //=================================================================================================
 
-void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
-                               const TDF_LabelSequence& theGDTLabels,
-                               const TDF_LabelSequence& theClippingPlaneLabels,
+void XCAFDoc_ViewTool::SetView(const NCollection_Sequence<TDF_Label>& theShapeLabels,
+                               const NCollection_Sequence<TDF_Label>& theGDTLabels,
+                               const NCollection_Sequence<TDF_Label>& theClippingPlaneLabels,
                                const TDF_Label&         theViewL) const
 {
   if (!IsView(theViewL))
     return;
 
-  Handle(XCAFDoc_GraphNode) aChGNode;
-  Handle(XCAFDoc_GraphNode) aShapeGNode;
-  Handle(XCAFDoc_GraphNode) aGDTGNode;
-  Handle(XCAFDoc_GraphNode) aPlaneGNode;
+  occ::handle<XCAFDoc_GraphNode> aChGNode;
+  occ::handle<XCAFDoc_GraphNode> aShapeGNode;
+  occ::handle<XCAFDoc_GraphNode> aGDTGNode;
+  occ::handle<XCAFDoc_GraphNode> aPlaneGNode;
 
   if (theViewL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aChGNode))
   {
@@ -323,7 +323,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefShapeGUID());
   }
-  for (Standard_Integer i = theShapeLabels.Lower(); i <= theShapeLabels.Upper(); i++)
+  for (int i = theShapeLabels.Lower(); i <= theShapeLabels.Upper(); i++)
   {
     if (!theShapeLabels.Value(i).FindAttribute(XCAFDoc::ViewRefShapeGUID(), aShapeGNode))
     {
@@ -341,7 +341,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefGDTGUID());
   }
-  for (Standard_Integer i = theGDTLabels.Lower(); i <= theGDTLabels.Upper(); i++)
+  for (int i = theGDTLabels.Lower(); i <= theGDTLabels.Upper(); i++)
   {
     if (!theGDTLabels.Value(i).FindAttribute(XCAFDoc::ViewRefGDTGUID(), aGDTGNode))
     {
@@ -360,7 +360,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefPlaneGUID());
   }
-  for (Standard_Integer i = theClippingPlaneLabels.Lower(); i <= theClippingPlaneLabels.Upper();
+  for (int i = theClippingPlaneLabels.Lower(); i <= theClippingPlaneLabels.Upper();
        i++)
   {
     if (!theClippingPlaneLabels.Value(i).FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aPlaneGNode))
@@ -376,16 +376,16 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
 
 //=================================================================================================
 
-void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
-                               const TDF_LabelSequence& theGDTLabels,
+void XCAFDoc_ViewTool::SetView(const NCollection_Sequence<TDF_Label>& theShapeLabels,
+                               const NCollection_Sequence<TDF_Label>& theGDTLabels,
                                const TDF_Label&         theViewL) const
 {
   if (!IsView(theViewL))
     return;
 
-  Handle(XCAFDoc_GraphNode) aChGNode;
-  Handle(XCAFDoc_GraphNode) aShapeGNode;
-  Handle(XCAFDoc_GraphNode) aGDTGNode;
+  occ::handle<XCAFDoc_GraphNode> aChGNode;
+  occ::handle<XCAFDoc_GraphNode> aShapeGNode;
+  occ::handle<XCAFDoc_GraphNode> aGDTGNode;
 
   if (theViewL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aChGNode))
   {
@@ -416,7 +416,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefShapeGUID());
   }
-  for (Standard_Integer i = theShapeLabels.Lower(); i <= theShapeLabels.Upper(); i++)
+  for (int i = theShapeLabels.Lower(); i <= theShapeLabels.Upper(); i++)
   {
     if (!theShapeLabels.Value(i).FindAttribute(XCAFDoc::ViewRefShapeGUID(), aShapeGNode))
     {
@@ -434,7 +434,7 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefGDTGUID());
   }
-  for (Standard_Integer i = theGDTLabels.Lower(); i <= theGDTLabels.Upper(); i++)
+  for (int i = theGDTLabels.Lower(); i <= theGDTLabels.Upper(); i++)
   {
     if (!theGDTLabels.Value(i).FindAttribute(XCAFDoc::ViewRefGDTGUID(), aGDTGNode))
     {
@@ -449,14 +449,14 @@ void XCAFDoc_ViewTool::SetView(const TDF_LabelSequence& theShapeLabels,
 
 //=================================================================================================
 
-void XCAFDoc_ViewTool::SetClippingPlanes(const TDF_LabelSequence& theClippingPlaneLabels,
+void XCAFDoc_ViewTool::SetClippingPlanes(const NCollection_Sequence<TDF_Label>& theClippingPlaneLabels,
                                          const TDF_Label&         theViewL) const
 {
   if (!IsView(theViewL))
     return;
 
-  Handle(XCAFDoc_GraphNode) aChGNode;
-  Handle(XCAFDoc_GraphNode) aPlaneGNode;
+  occ::handle<XCAFDoc_GraphNode> aChGNode;
+  occ::handle<XCAFDoc_GraphNode> aPlaneGNode;
 
   if (theViewL.FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aChGNode))
   {
@@ -477,7 +477,7 @@ void XCAFDoc_ViewTool::SetClippingPlanes(const TDF_LabelSequence& theClippingPla
     aChGNode = XCAFDoc_GraphNode::Set(theViewL);
     aChGNode->SetGraphID(XCAFDoc::ViewRefPlaneGUID());
   }
-  for (Standard_Integer i = theClippingPlaneLabels.Lower(); i <= theClippingPlaneLabels.Upper();
+  for (int i = theClippingPlaneLabels.Lower(); i <= theClippingPlaneLabels.Upper();
        i++)
   {
     if (!theClippingPlaneLabels.Value(i).FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aPlaneGNode))
@@ -498,10 +498,10 @@ void XCAFDoc_ViewTool::RemoveView(const TDF_Label& theViewL)
   if (!IsView(theViewL))
     return;
 
-  Handle(XCAFDoc_GraphNode) aChGNode;
-  Handle(XCAFDoc_GraphNode) aShapeGNode;
-  Handle(XCAFDoc_GraphNode) aGDTGNode;
-  Handle(XCAFDoc_GraphNode) aPlaneGNode;
+  occ::handle<XCAFDoc_GraphNode> aChGNode;
+  occ::handle<XCAFDoc_GraphNode> aShapeGNode;
+  occ::handle<XCAFDoc_GraphNode> aGDTGNode;
+  occ::handle<XCAFDoc_GraphNode> aPlaneGNode;
 
   if (theViewL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aChGNode))
   {
@@ -538,223 +538,223 @@ void XCAFDoc_ViewTool::RemoveView(const TDF_Label& theViewL)
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetRefShapeLabel(const TDF_Label&   theViewL,
-                                                    TDF_LabelSequence& theShapeLabels) const
+bool XCAFDoc_ViewTool::GetRefShapeLabel(const TDF_Label&   theViewL,
+                                                    NCollection_Sequence<TDF_Label>& theShapeLabels) const
 {
   theShapeLabels.Clear();
-  Handle(TDataStd_TreeNode) aNode;
+  occ::handle<TDataStd_TreeNode> aNode;
   if (!theViewL.FindAttribute(XCAFDoc::ViewRefGUID(), aNode) || !aNode->HasFather())
   {
-    Handle(XCAFDoc_GraphNode) aGNode;
+    occ::handle<XCAFDoc_GraphNode> aGNode;
     if (theViewL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aGNode) && aGNode->NbFathers() > 0)
     {
-      for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+      for (int i = 1; i <= aGNode->NbFathers(); i++)
         theShapeLabels.Append(aGNode->GetFather(i)->Label());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
 
   theShapeLabels.Append(aNode->Father()->Label());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetRefGDTLabel(const TDF_Label&   theViewL,
-                                                  TDF_LabelSequence& theGDTLabels) const
+bool XCAFDoc_ViewTool::GetRefGDTLabel(const TDF_Label&   theViewL,
+                                                  NCollection_Sequence<TDF_Label>& theGDTLabels) const
 {
   theGDTLabels.Clear();
-  Handle(TDataStd_TreeNode) aNode;
+  occ::handle<TDataStd_TreeNode> aNode;
   if (!theViewL.FindAttribute(XCAFDoc::ViewRefGUID(), aNode) || !aNode->HasFather())
   {
-    Handle(XCAFDoc_GraphNode) aGNode;
+    occ::handle<XCAFDoc_GraphNode> aGNode;
     if (theViewL.FindAttribute(XCAFDoc::ViewRefGDTGUID(), aGNode) && aGNode->NbFathers() > 0)
     {
-      for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+      for (int i = 1; i <= aGNode->NbFathers(); i++)
         theGDTLabels.Append(aGNode->GetFather(i)->Label());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
 
   theGDTLabels.Append(aNode->Father()->Label());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetRefClippingPlaneLabel(
+bool XCAFDoc_ViewTool::GetRefClippingPlaneLabel(
   const TDF_Label&   theViewL,
-  TDF_LabelSequence& theClippingPlaneLabels) const
+  NCollection_Sequence<TDF_Label>& theClippingPlaneLabels) const
 {
   theClippingPlaneLabels.Clear();
-  Handle(TDataStd_TreeNode) aNode;
+  occ::handle<TDataStd_TreeNode> aNode;
   if (!theViewL.FindAttribute(XCAFDoc::ViewRefGUID(), aNode) || !aNode->HasFather())
   {
-    Handle(XCAFDoc_GraphNode) aGNode;
+    occ::handle<XCAFDoc_GraphNode> aGNode;
     if (theViewL.FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aGNode) && aGNode->NbFathers() > 0)
     {
-      for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+      for (int i = 1; i <= aGNode->NbFathers(); i++)
         theClippingPlaneLabels.Append(aGNode->GetFather(i)->Label());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
 
   theClippingPlaneLabels.Append(aNode->Father()->Label());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetRefNoteLabel(const TDF_Label&   theViewL,
-                                                   TDF_LabelSequence& theNoteLabels) const
+bool XCAFDoc_ViewTool::GetRefNoteLabel(const TDF_Label&   theViewL,
+                                                   NCollection_Sequence<TDF_Label>& theNoteLabels) const
 {
   theNoteLabels.Clear();
-  Handle(TDataStd_TreeNode) aNode;
+  occ::handle<TDataStd_TreeNode> aNode;
   if (!theViewL.FindAttribute(XCAFDoc::ViewRefGUID(), aNode) || !aNode->HasFather())
   {
-    Handle(XCAFDoc_GraphNode) aGNode;
+    occ::handle<XCAFDoc_GraphNode> aGNode;
     if (theViewL.FindAttribute(XCAFDoc::ViewRefNoteGUID(), aGNode) && aGNode->NbFathers() > 0)
     {
-      for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+      for (int i = 1; i <= aGNode->NbFathers(); i++)
         theNoteLabels.Append(aGNode->GetFather(i)->Label());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
 
   theNoteLabels.Append(aNode->Father()->Label());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetRefAnnotationLabel(
+bool XCAFDoc_ViewTool::GetRefAnnotationLabel(
   const TDF_Label&   theViewL,
-  TDF_LabelSequence& theAnnotationLabels) const
+  NCollection_Sequence<TDF_Label>& theAnnotationLabels) const
 {
   theAnnotationLabels.Clear();
-  Handle(TDataStd_TreeNode) aNode;
+  occ::handle<TDataStd_TreeNode> aNode;
   if (!theViewL.FindAttribute(XCAFDoc::ViewRefGUID(), aNode) || !aNode->HasFather())
   {
-    Handle(XCAFDoc_GraphNode) aGNode;
+    occ::handle<XCAFDoc_GraphNode> aGNode;
     if (theViewL.FindAttribute(XCAFDoc::ViewRefAnnotationGUID(), aGNode) && aGNode->NbFathers() > 0)
     {
-      for (Standard_Integer i = 1; i <= aGNode->NbFathers(); i++)
+      for (int i = 1; i <= aGNode->NbFathers(); i++)
         theAnnotationLabels.Append(aGNode->GetFather(i)->Label());
-      return Standard_True;
+      return true;
     }
     else
-      return Standard_False;
+      return false;
   }
 
   theAnnotationLabels.Append(aNode->Father()->Label());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetViewLabelsForShape(const TDF_Label&   theShapeL,
-                                                         TDF_LabelSequence& theViews) const
+bool XCAFDoc_ViewTool::GetViewLabelsForShape(const TDF_Label&   theShapeL,
+                                                         NCollection_Sequence<TDF_Label>& theViews) const
 {
-  Handle(XCAFDoc_GraphNode) aGNode;
-  Standard_Boolean          aResult = Standard_False;
+  occ::handle<XCAFDoc_GraphNode> aGNode;
+  bool          aResult = false;
   if (theShapeL.FindAttribute(XCAFDoc::ViewRefShapeGUID(), aGNode) && aGNode->NbChildren() > 0)
   {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++)
+    for (int i = 1; i <= aGNode->NbChildren(); i++)
     {
       theViews.Append(aGNode->GetChild(i)->Label());
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetViewLabelsForGDT(const TDF_Label&   theGDTL,
-                                                       TDF_LabelSequence& theViews) const
+bool XCAFDoc_ViewTool::GetViewLabelsForGDT(const TDF_Label&   theGDTL,
+                                                       NCollection_Sequence<TDF_Label>& theViews) const
 {
-  Handle(XCAFDoc_GraphNode) aGNode;
-  Standard_Boolean          aResult = Standard_False;
+  occ::handle<XCAFDoc_GraphNode> aGNode;
+  bool          aResult = false;
   if (theGDTL.FindAttribute(XCAFDoc::ViewRefGDTGUID(), aGNode) && aGNode->NbChildren() > 0)
   {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++)
+    for (int i = 1; i <= aGNode->NbChildren(); i++)
     {
       theViews.Append(aGNode->GetChild(i)->Label());
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetViewLabelsForClippingPlane(const TDF_Label& theClippingPlaneL,
-                                                                 TDF_LabelSequence& theViews) const
+bool XCAFDoc_ViewTool::GetViewLabelsForClippingPlane(const TDF_Label& theClippingPlaneL,
+                                                                 NCollection_Sequence<TDF_Label>& theViews) const
 {
-  Handle(XCAFDoc_GraphNode) aGNode;
-  Standard_Boolean          aResult = Standard_False;
+  occ::handle<XCAFDoc_GraphNode> aGNode;
+  bool          aResult = false;
   if (theClippingPlaneL.FindAttribute(XCAFDoc::ViewRefPlaneGUID(), aGNode)
       && aGNode->NbChildren() > 0)
   {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++)
+    for (int i = 1; i <= aGNode->NbChildren(); i++)
     {
       theViews.Append(aGNode->GetChild(i)->Label());
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetViewLabelsForNote(const TDF_Label&   theNoteL,
-                                                        TDF_LabelSequence& theViews) const
+bool XCAFDoc_ViewTool::GetViewLabelsForNote(const TDF_Label&   theNoteL,
+                                                        NCollection_Sequence<TDF_Label>& theViews) const
 {
-  Handle(XCAFDoc_GraphNode) aGNode;
-  Standard_Boolean          aResult = Standard_False;
+  occ::handle<XCAFDoc_GraphNode> aGNode;
+  bool          aResult = false;
   if (theNoteL.FindAttribute(XCAFDoc::ViewRefNoteGUID(), aGNode) && aGNode->NbChildren() > 0)
   {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++)
+    for (int i = 1; i <= aGNode->NbChildren(); i++)
     {
       theViews.Append(aGNode->GetChild(i)->Label());
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::GetViewLabelsForAnnotation(const TDF_Label&   theAnnotationL,
-                                                              TDF_LabelSequence& theViews) const
+bool XCAFDoc_ViewTool::GetViewLabelsForAnnotation(const TDF_Label&   theAnnotationL,
+                                                              NCollection_Sequence<TDF_Label>& theViews) const
 {
-  Handle(XCAFDoc_GraphNode) aGNode;
-  Standard_Boolean          aResult = Standard_False;
+  occ::handle<XCAFDoc_GraphNode> aGNode;
+  bool          aResult = false;
   if (theAnnotationL.FindAttribute(XCAFDoc::ViewRefAnnotationGUID(), aGNode)
       && aGNode->NbChildren() > 0)
   {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++)
+    for (int i = 1; i <= aGNode->NbChildren(); i++)
     {
       theViews.Append(aGNode->GetChild(i)->Label());
     }
-    aResult = Standard_True;
+    aResult = true;
   }
   return aResult;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_ViewTool::IsLocked(const TDF_Label& theViewL) const
+bool XCAFDoc_ViewTool::IsLocked(const TDF_Label& theViewL) const
 {
-  Handle(TDataStd_UAttribute) anAttr;
+  occ::handle<TDataStd_UAttribute> anAttr;
   return theViewL.FindAttribute(XCAFDoc::LockGUID(), anAttr);
 }
 

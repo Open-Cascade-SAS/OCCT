@@ -24,9 +24,6 @@
 class IGESData_IGESWriter;
 class IFSelect_ContextWrite;
 
-class IGESSelect_FileModifier;
-DEFINE_STANDARD_HANDLE(IGESSelect_FileModifier, IFSelect_GeneralModifier)
-
 class IGESSelect_FileModifier : public IFSelect_GeneralModifier
 {
 
@@ -49,7 +46,6 @@ protected:
   //! unchanges (because it works on the model already produced)
   Standard_EXPORT IGESSelect_FileModifier();
 
-private:
 };
 
 #endif // _IGESSelect_FileModifier_HeaderFile

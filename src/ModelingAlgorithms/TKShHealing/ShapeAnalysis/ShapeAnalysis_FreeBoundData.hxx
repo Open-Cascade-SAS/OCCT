@@ -21,13 +21,14 @@
 
 #include <TopoDS_Wire.hxx>
 #include <Standard_Real.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_DataMapOfShapeReal.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-
-class ShapeAnalysis_FreeBoundData;
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
 //! This class is intended to represent free bound and to store
 //! its properties.
@@ -63,63 +64,62 @@ public:
   void SetFreeBound(const TopoDS_Wire& freebound);
 
   //! Sets area of the contour
-  void SetArea(const Standard_Real area);
+  void SetArea(const double area);
 
   //! Sets perimeter of the contour
-  void SetPerimeter(const Standard_Real perimeter);
+  void SetPerimeter(const double perimeter);
 
   //! Sets ratio of average length to average width of the contour
-  void SetRatio(const Standard_Real ratio);
+  void SetRatio(const double ratio);
 
   //! Sets average width of the contour
-  void SetWidth(const Standard_Real width);
+  void SetWidth(const double width);
 
   //! Adds notch on the contour with its maximum width
-  Standard_EXPORT void AddNotch(const TopoDS_Wire& notch, const Standard_Real width);
+  Standard_EXPORT void AddNotch(const TopoDS_Wire& notch, const double width);
 
   //! Returns contour
   TopoDS_Wire FreeBound() const;
 
   //! Returns area of the contour
-  Standard_Real Area() const;
+  double Area() const;
 
   //! Returns perimeter of the contour
-  Standard_Real Perimeter() const;
+  double Perimeter() const;
 
   //! Returns ratio of average length to average width of the contour
-  Standard_Real Ratio() const;
+  double Ratio() const;
 
   //! Returns average width of the contour
-  Standard_Real Width() const;
+  double Width() const;
 
   //! Returns number of notches on the contour
-  Standard_Integer NbNotches() const;
+  int NbNotches() const;
 
   //! Returns sequence of notches on the contour
-  Handle(TopTools_HSequenceOfShape) Notches() const;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> Notches() const;
 
   //! Returns notch on the contour
-  TopoDS_Wire Notch(const Standard_Integer index) const;
+  TopoDS_Wire Notch(const int index) const;
 
   //! Returns maximum width of notch specified by its rank number
   //! on the contour
-  Standard_EXPORT Standard_Real NotchWidth(const Standard_Integer index) const;
+  Standard_EXPORT double NotchWidth(const int index) const;
 
   //! Returns maximum width of notch specified as TopoDS_Wire
   //! on the contour
-  Standard_EXPORT Standard_Real NotchWidth(const TopoDS_Wire& notch) const;
+  Standard_EXPORT double NotchWidth(const TopoDS_Wire& notch) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_FreeBoundData, Standard_Transient)
 
-protected:
 private:
   TopoDS_Wire                       myBound;
-  Standard_Real                     myArea;
-  Standard_Real                     myPerimeter;
-  Standard_Real                     myRatio;
-  Standard_Real                     myWidth;
-  Handle(TopTools_HSequenceOfShape) myNotches;
-  TopTools_DataMapOfShapeReal       myNotchesParams;
+  double                     myArea;
+  double                     myPerimeter;
+  double                     myRatio;
+  double                     myWidth;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> myNotches;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>       myNotchesParams;
 };
 
 #include <ShapeAnalysis_FreeBoundData.lxx>

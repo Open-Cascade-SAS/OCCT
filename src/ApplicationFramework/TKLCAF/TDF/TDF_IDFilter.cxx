@@ -19,22 +19,24 @@
 //		0.0	May 26 1997	Creation
 
 #include <TDF_IDFilter.hxx>
-#include <TDF_IDList.hxx>
-#include <TDF_MapIteratorOfIDMap.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_Map.hxx>
 
 // To avoid too much resizing actions, et 23 est un nombre premier.
 #define TDF_IDFilterMapSize 23
 
 //=================================================================================================
 
-TDF_IDFilter::TDF_IDFilter(const Standard_Boolean ignoreMode)
+TDF_IDFilter::TDF_IDFilter(const bool ignoreMode)
     : myIgnore(ignoreMode)
 {
 }
 
 //=================================================================================================
 
-void TDF_IDFilter::IgnoreAll(const Standard_Boolean ignore)
+void TDF_IDFilter::IgnoreAll(const bool ignore)
 {
   myIgnore = ignore;
   myIDMap.Clear();
@@ -53,14 +55,14 @@ void TDF_IDFilter::Keep(const Standard_GUID& anID)
 
 //=================================================================================================
 
-void TDF_IDFilter::Keep(const TDF_IDList& anIDList)
+void TDF_IDFilter::Keep(const NCollection_List<Standard_GUID>& anIDList)
 {
   if (!anIDList.IsEmpty())
   {
-    TDF_ListIteratorOfIDList itr(anIDList);
+    NCollection_List<Standard_GUID>::Iterator itr(anIDList);
     if (myIgnore)
     {
-      Standard_Integer n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
+      int n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
       myIDMap.ReSize(n);
       for (; itr.More(); itr.Next())
         myIDMap.Add(itr.Value());
@@ -85,11 +87,11 @@ void TDF_IDFilter::Ignore(const Standard_GUID& anID)
 
 //=================================================================================================
 
-void TDF_IDFilter::Ignore(const TDF_IDList& anIDList)
+void TDF_IDFilter::Ignore(const NCollection_List<Standard_GUID>& anIDList)
 {
   if (!anIDList.IsEmpty())
   {
-    TDF_ListIteratorOfIDList itr(anIDList);
+    NCollection_List<Standard_GUID>::Iterator itr(anIDList);
     if (myIgnore)
     {
       for (; itr.More(); itr.Next())
@@ -97,7 +99,7 @@ void TDF_IDFilter::Ignore(const TDF_IDList& anIDList)
     }
     else
     {
-      Standard_Integer n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
+      int n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
       myIDMap.ReSize(n);
       for (; itr.More(); itr.Next())
         myIDMap.Add(itr.Value());
@@ -107,10 +109,10 @@ void TDF_IDFilter::Ignore(const TDF_IDList& anIDList)
 
 //=================================================================================================
 
-void TDF_IDFilter::IDList(TDF_IDList& anIDList) const
+void TDF_IDFilter::IDList(NCollection_List<Standard_GUID>& anIDList) const
 {
   anIDList.Clear();
-  for (TDF_MapIteratorOfIDMap itr(myIDMap); itr.More(); itr.Next())
+  for (NCollection_Map<Standard_GUID>::Iterator itr(myIDMap); itr.More(); itr.Next())
     anIDList.Append(itr.Key());
 }
 
@@ -119,7 +121,7 @@ void TDF_IDFilter::IDList(TDF_IDList& anIDList) const
 void TDF_IDFilter::Copy(const TDF_IDFilter& fromFilter)
 {
   myIgnore = fromFilter.IgnoreAll();
-  TDF_IDList idl;
+  NCollection_List<Standard_GUID> idl;
   fromFilter.IDList(idl);
   if (myIgnore)
     Keep(idl);
@@ -141,7 +143,7 @@ void TDF_IDFilter::Dump(Standard_OStream& anOS) const
   else
     anOS << "keeps  ";
   anOS << " all IDs";
-  TDF_MapIteratorOfIDMap itr(myIDMap);
+  NCollection_Map<Standard_GUID>::Iterator itr(myIDMap);
   if (itr.More())
   {
     anOS << " BUT:" << std::endl;

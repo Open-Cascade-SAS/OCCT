@@ -119,8 +119,8 @@ TEST(BRepPrimAPI_MakeTorusTest, LateralFaceParameterization)
   ASSERT_TRUE(anExp.More()) << "No faces found";
 
   const TopoDS_Face&           aFace      = TopoDS::Face(anExp.Current());
-  Handle(Geom_Surface)         aSurface   = BRep_Tool::Surface(aFace);
-  Handle(Geom_ToroidalSurface) aTorusSurf = Handle(Geom_ToroidalSurface)::DownCast(aSurface);
+  occ::handle<Geom_Surface>         aSurface   = BRep_Tool::Surface(aFace);
+  occ::handle<Geom_ToroidalSurface> aTorusSurf = occ::down_cast<Geom_ToroidalSurface>(aSurface);
 
   ASSERT_FALSE(aTorusSurf.IsNull()) << "Lateral face is not a toroidal surface";
 

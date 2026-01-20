@@ -21,10 +21,10 @@
 RWStepRepr_RWFunctionallyDefinedTransformation::RWStepRepr_RWFunctionallyDefinedTransformation() {}
 
 void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
-  const Handle(StepData_StepReaderData)&                    data,
-  const Standard_Integer                                    num,
-  Handle(Interface_Check)&                                  ach,
-  const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                    data,
+  const int                                    num,
+  occ::handle<Interface_Check>&                                  ach,
+  const occ::handle<StepRepr_FunctionallyDefinedTransformation>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,16 +34,16 @@ void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 2))
   { // gka 05.03.99 S4134 upgrade from CD to DIS
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   //--- Initialisation of the read entity ---
@@ -53,7 +53,7 @@ void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
 
 void RWStepRepr_RWFunctionallyDefinedTransformation::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepRepr_FunctionallyDefinedTransformation)& ent) const
+  const occ::handle<StepRepr_FunctionallyDefinedTransformation>& ent) const
 {
 
   // --- own field : name ---

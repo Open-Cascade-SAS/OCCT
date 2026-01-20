@@ -18,11 +18,11 @@
 #include <Standard_DomainError.hxx>
 
 IntRes2d_Transition::IntRes2d_Transition()
-    : tangent(Standard_True),
+    : tangent(true),
       posit(IntRes2d_Middle),
       typetra(IntRes2d_Undecided),
       situat(IntRes2d_Unknown),
-      oppos(Standard_False)
+      oppos(false)
 {
 }
 

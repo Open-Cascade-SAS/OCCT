@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_RadiusDimension, PrsDim_Dimension)
 
 namespace
 {
-static const Standard_ExtCharacter THE_RADIUS_SYMBOL('R');
+static const char16_t THE_RADIUS_SYMBOL('R');
 }
 
 //=================================================================================================
@@ -66,7 +66,7 @@ PrsDim_RadiusDimension::PrsDim_RadiusDimension(const TopoDS_Shape& theShape)
 
 void PrsDim_RadiusDimension::SetMeasuredGeometry(const gp_Circ&         theCircle,
                                                  const gp_Pnt&          theAnchorPoint,
-                                                 const Standard_Boolean theHasAnchor)
+                                                 const bool theHasAnchor)
 {
   myCircle          = theCircle;
   myGeometryType    = GeometryType_Edge;
@@ -86,9 +86,9 @@ void PrsDim_RadiusDimension::SetMeasuredGeometry(const gp_Circ&         theCircl
 
 void PrsDim_RadiusDimension::SetMeasuredGeometry(const TopoDS_Shape&    theShape,
                                                  const gp_Pnt&          theAnchorPoint,
-                                                 const Standard_Boolean theHasAnchor)
+                                                 const bool theHasAnchor)
 {
-  Standard_Boolean isClosed = Standard_False;
+  bool isClosed = false;
   myShape                   = theShape;
   myGeometryType            = GeometryType_UndefShapes;
   myIsGeometryValid =
@@ -109,16 +109,16 @@ void PrsDim_RadiusDimension::SetMeasuredGeometry(const TopoDS_Shape&    theShape
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_RadiusDimension::CheckPlane(const gp_Pln& thePlane) const
+bool PrsDim_RadiusDimension::CheckPlane(const gp_Pln& thePlane) const
 {
   // Check if anchor point and circle center point belong to plane.
   if (!thePlane.Contains(myAnchorPoint, Precision::Confusion())
       && !thePlane.Contains(myCircle.Location(), Precision::Confusion()))
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -165,7 +165,7 @@ void PrsDim_RadiusDimension::SetDisplayUnits(const TCollection_AsciiString& theU
 
 //=================================================================================================
 
-Standard_Real PrsDim_RadiusDimension::ComputeValue() const
+double PrsDim_RadiusDimension::ComputeValue() const
 {
   if (!IsValid())
   {
@@ -177,9 +177,9 @@ Standard_Real PrsDim_RadiusDimension::ComputeValue() const
 
 //=================================================================================================
 
-void PrsDim_RadiusDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                     const Handle(Prs3d_Presentation)& thePresentation,
-                                     const Standard_Integer            theMode)
+void PrsDim_RadiusDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                     const occ::handle<Prs3d_Presentation>& thePresentation,
+                                     const int            theMode)
 {
   mySelectionGeom.Clear(theMode);
   if (!IsValid())
@@ -187,23 +187,23 @@ void PrsDim_RadiusDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
     return;
   }
 
-  DrawLinearDimension(thePresentation, theMode, myAnchorPoint, myCircle.Location(), Standard_True);
+  DrawLinearDimension(thePresentation, theMode, myAnchorPoint, myCircle.Location(), true);
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_RadiusDimension::IsValidCircle(const gp_Circ& theCircle) const
+bool PrsDim_RadiusDimension::IsValidCircle(const gp_Circ& theCircle) const
 {
   return theCircle.Radius() > Precision::Confusion();
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsDim_RadiusDimension::IsValidAnchor(const gp_Circ& theCircle,
+bool PrsDim_RadiusDimension::IsValidAnchor(const gp_Circ& theCircle,
                                                        const gp_Pnt&  theAnchor) const
 {
   gp_Pln        aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
-  Standard_Real anAnchorDist = theAnchor.Distance(theCircle.Location());
+  double anAnchorDist = theAnchor.Distance(theCircle.Location());
 
   return anAnchorDist > Precision::Confusion()
          && aCirclePlane.Contains(theAnchor, Precision::Confusion());
@@ -219,7 +219,7 @@ gp_Pnt PrsDim_RadiusDimension::GetTextPosition() const
   }
 
   // Counts text position according to the dimension parameters
-  return GetTextPositionForLinear(myAnchorPoint, myCircle.Location(), Standard_True);
+  return GetTextPositionForLinear(myAnchorPoint, myCircle.Location(), true);
 }
 
 //=================================================================================================
@@ -231,7 +231,7 @@ void PrsDim_RadiusDimension::SetTextPosition(const gp_Pnt& theTextPos)
     return;
   }
 
-  myIsTextPositionFixed = Standard_True;
+  myIsTextPositionFixed = true;
   myFixedTextPosition   = theTextPos;
 
   SetToUpdate();

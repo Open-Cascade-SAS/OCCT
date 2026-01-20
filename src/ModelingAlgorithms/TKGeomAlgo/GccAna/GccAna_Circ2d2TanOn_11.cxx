@@ -47,7 +47,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
                                          const gp_Pnt2d&     Point2,
                                          const gp_Circ2d&    OnCirc,
-                                         const Standard_Real Tolerance)
+                                         const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -64,19 +64,19 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
 {
   TheSame1.Init(0);
   TheSame2.Init(0);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol    = std::abs(Tolerance);
-  Standard_Real dist   = Point1.Distance(Point2);
-  Standard_Real dp1cen = Point1.Distance(OnCirc.Location());
-  Standard_Real dp2cen = Point2.Distance(OnCirc.Location());
-  Standard_Real R      = OnCirc.Radius();
+  double Tol    = std::abs(Tolerance);
+  double dist   = Point1.Distance(Point2);
+  double dp1cen = Point1.Distance(OnCirc.Location());
+  double dp2cen = Point2.Distance(OnCirc.Location());
+  double R      = OnCirc.Radius();
   gp_Circ2d     C1     = OnCirc;
   if (dist < Tol || std::abs(dp1cen + 2 * R - dp2cen) < Tol
       || std::abs(dp2cen + 2 * R - dp1cen) < Tol)
   {
-    WellDone = Standard_True;
+    WellDone = true;
     return;
   }
   gp_Lin2d L1(gp_Pnt2d((Point1.XY() + Point2.XY()) / 2.0),
@@ -99,7 +99,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
   {
     if (!Intp.IsEmpty())
     {
-      for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+      for (int i = 1; i <= Intp.NbPoints(); i++)
       {
         NbrSol++;
         gp_Ax2d axe(Intp.Point(i).Value(), dirx);
@@ -117,6 +117,6 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
         parcen3(NbrSol)    = ElCLib::Parameter(OnCirc, pntcen(NbrSol));
       }
     }
-    WellDone = Standard_True;
+    WellDone = true;
   }
 }

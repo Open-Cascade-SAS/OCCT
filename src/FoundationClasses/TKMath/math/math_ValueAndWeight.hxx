@@ -31,19 +31,19 @@ public:
   {
   }
 
-  math_ValueAndWeight(Standard_Real theValue, Standard_Real theWeight)
+  math_ValueAndWeight(double theValue, double theWeight)
       : myValue(theValue),
         myWeight(theWeight)
   {
   }
 
-  Standard_Real Value() const { return myValue; }
+  double Value() const { return myValue; }
 
-  Standard_Real Weight() const { return myWeight; }
+  double Weight() const { return myWeight; }
 
 private:
-  Standard_Real myValue;
-  Standard_Real myWeight;
+  double myValue;
+  double myWeight;
 };
 
 //! Comparison operator for math_ValueAndWeight, needed for sorting algorithms

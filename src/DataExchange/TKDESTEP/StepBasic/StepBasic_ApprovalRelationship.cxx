@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalRelationship, Standard_Transient)
 
 StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship() {}
 
-void StepBasic_ApprovalRelationship::Init(const Handle(TCollection_HAsciiString)& aName,
-                                          const Handle(TCollection_HAsciiString)& aDescription,
-                                          const Handle(StepBasic_Approval)&       aRelatingApproval,
-                                          const Handle(StepBasic_Approval)&       aRelatedApproval)
+void StepBasic_ApprovalRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                          const occ::handle<TCollection_HAsciiString>& aDescription,
+                                          const occ::handle<StepBasic_Approval>&       aRelatingApproval,
+                                          const occ::handle<StepBasic_Approval>&       aRelatedApproval)
 {
   // --- classe own fields ---
   name             = aName;
@@ -31,45 +31,45 @@ void StepBasic_ApprovalRelationship::Init(const Handle(TCollection_HAsciiString)
   relatedApproval  = aRelatedApproval;
 }
 
-void StepBasic_ApprovalRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ApprovalRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApprovalRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ApprovalRelationship::Name() const
 {
   return name;
 }
 
 void StepBasic_ApprovalRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApprovalRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ApprovalRelationship::Description() const
 {
   return description;
 }
 
 void StepBasic_ApprovalRelationship::SetRelatingApproval(
-  const Handle(StepBasic_Approval)& aRelatingApproval)
+  const occ::handle<StepBasic_Approval>& aRelatingApproval)
 {
   relatingApproval = aRelatingApproval;
 }
 
-Handle(StepBasic_Approval) StepBasic_ApprovalRelationship::RelatingApproval() const
+occ::handle<StepBasic_Approval> StepBasic_ApprovalRelationship::RelatingApproval() const
 {
   return relatingApproval;
 }
 
 void StepBasic_ApprovalRelationship::SetRelatedApproval(
-  const Handle(StepBasic_Approval)& aRelatedApproval)
+  const occ::handle<StepBasic_Approval>& aRelatedApproval)
 {
   relatedApproval = aRelatedApproval;
 }
 
-Handle(StepBasic_Approval) StepBasic_ApprovalRelationship::RelatedApproval() const
+occ::handle<StepBasic_Approval> StepBasic_ApprovalRelationship::RelatedApproval() const
 {
   return relatedApproval;
 }

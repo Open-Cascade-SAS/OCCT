@@ -39,17 +39,15 @@ public:
   //! 1 -> ProductDefinition,
   //! 2 -> ProductDefinitionRelationship,
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinitionRelationship) ProductDefinitionRelationship()
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
     const;
 
   //! returns Value as a ProductDefinition (Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
-protected:
-private:
 };
 
 #endif // _StepAP214_PresentedItemSelect_HeaderFile

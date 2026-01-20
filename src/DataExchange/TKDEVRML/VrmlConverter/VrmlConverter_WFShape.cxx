@@ -33,7 +33,7 @@
 
 void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
                                 const TopoDS_Shape&                 aShape,
-                                const Handle(VrmlConverter_Drawer)& aDrawer)
+                                const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   StdPrs_ShapeTool Tool(aShape);
@@ -42,7 +42,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   {
 
     BRepAdaptor_Surface S;
-    Standard_Boolean    isoU, isoV;
+    bool    isoU, isoV;
     for (Tool.InitFace(); Tool.MoreFace(); Tool.NextFace())
     {
       isoU = (aDrawer->UIsoAspect()->Number() != 0);
@@ -57,7 +57,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
         if (isoU || isoV)
         {
           S.Initialize(Tool.GetFace());
-          Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+          occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
           VrmlConverter_WFRestrictedFace::Add(anOStream,
                                               HS,
                                               isoU,
@@ -79,7 +79,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
       BRepAdaptor_Surface S;
       for (Tool.InitFace(); Tool.MoreFace(); Tool.NextFace())
       {
-        Standard_Boolean isoU = Standard_True;
+        bool isoU = true;
         if (Tool.HasSurface())
         {
           if (Tool.IsPlanarFace())
@@ -87,11 +87,11 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
           if (isoU)
           {
             S.Initialize(Tool.GetFace());
-            Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+            occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
             VrmlConverter_WFRestrictedFace::Add(anOStream,
                                                 HS,
                                                 isoU,
-                                                Standard_False,
+                                                false,
                                                 aDrawer->UIsoAspect()->Number(),
                                                 0,
                                                 aDrawer);
@@ -106,7 +106,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
       BRepAdaptor_Surface S;
       for (Tool.InitFace(); Tool.MoreFace(); Tool.NextFace())
       {
-        Standard_Boolean isoV = Standard_True;
+        bool isoV = true;
         if (Tool.HasSurface())
         {
           if (Tool.IsPlanarFace())
@@ -114,10 +114,10 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
           if (isoV)
           {
             S.Initialize(Tool.GetFace());
-            Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
+            occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(S);
             VrmlConverter_WFRestrictedFace::Add(anOStream,
                                                 HS,
-                                                Standard_False,
+                                                false,
                                                 isoV,
                                                 0,
                                                 aDrawer->VIsoAspect()->Number(),
@@ -129,7 +129,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   }
 
   //====
-  Standard_Integer qnt = 0;
+  int qnt = 0;
   for (Tool.InitCurve(); Tool.MoreCurve(); Tool.NextCurve())
   {
     qnt++;
@@ -143,7 +143,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -170,7 +170,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -197,7 +197,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   {
     if (qnt != 0)
     {
-      Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+      occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
       latmp->SetMaterial(aDrawer->LineAspect()->Material());
       latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
@@ -231,10 +231,10 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
 
   if (qnt != 0)
   {
-    Handle(TColgp_HArray1OfVec) HAV = new TColgp_HArray1OfVec(1, qnt);
+    occ::handle<NCollection_HArray1<gp_Vec>> HAV = new NCollection_HArray1<gp_Vec>(1, qnt);
     gp_Vec                      V;
     gp_Pnt                      P;
-    Standard_Integer            i = 0;
+    int            i = 0;
 
     for (Tool.InitVertex(); Tool.MoreVertex(); Tool.NextVertex())
     {
@@ -246,7 +246,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
       HAV->SetValue(i, V);
     }
 
-    Handle(VrmlConverter_PointAspect) PA = new VrmlConverter_PointAspect;
+    occ::handle<VrmlConverter_PointAspect> PA = new VrmlConverter_PointAspect;
     PA                                   = aDrawer->PointAspect();
 
     // Separator P {
@@ -257,13 +257,13 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
     if (PA->HasMaterial())
     {
 
-      Handle(Vrml_Material) MP;
+      occ::handle<Vrml_Material> MP;
       MP = PA->Material();
 
       MP->Print(anOStream);
     }
     // Coordinate3
-    Handle(Vrml_Coordinate3) C3 = new Vrml_Coordinate3(HAV);
+    occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV);
     C3->Print(anOStream);
 
     // PointSet

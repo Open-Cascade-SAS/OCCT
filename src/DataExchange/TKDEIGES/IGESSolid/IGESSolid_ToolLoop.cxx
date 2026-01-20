@@ -21,7 +21,9 @@
 #include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
@@ -35,11 +37,13 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -50,40 +54,40 @@ IGESSolid_ToolLoop::IGESSolid_ToolLoop() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::ReadOwnParams(const Handle(IGESSolid_Loop)&          ent,
-                                       const Handle(IGESData_IGESReaderData)& IR,
+void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&          ent,
+                                       const occ::handle<IGESData_IGESReaderData>& IR,
                                        IGESData_ParamReader&                  PR) const
 {
   // MGE 03/08/98
 
-  Standard_Boolean                               abool; // szv#4:S4163:12Mar99 `st` moved down
-  Standard_Integer                               nbedges = 0;
-  Standard_Integer                               i, j;
-  Standard_Integer                               anint;
-  Handle(IGESData_IGESEntity)                    anent;
-  Handle(TColStd_HArray1OfInteger)               tempTypes;
-  Handle(IGESData_HArray1OfIGESEntity)           tempEdges;
-  Handle(TColStd_HArray1OfInteger)               tempIndex;
-  Handle(TColStd_HArray1OfInteger)               tempOrientation;
-  Handle(TColStd_HArray1OfInteger)               nbParameterCurves;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger)    isoparametricFlags;
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) tempCurves;
+  bool                               abool; // szv#4:S4163:12Mar99 `st` moved down
+  int                               nbedges = 0;
+  int                               i, j;
+  int                               anint;
+  occ::handle<IGESData_IGESEntity>                    anent;
+  occ::handle<NCollection_HArray1<int>>               tempTypes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempEdges;
+  occ::handle<NCollection_HArray1<int>>               tempIndex;
+  occ::handle<NCollection_HArray1<int>>               tempOrientation;
+  occ::handle<NCollection_HArray1<int>>               nbParameterCurves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>    isoparametricFlags;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> tempCurves;
   IGESData_Status                                aStatus;
 
   // st = PR.ReadInteger(PR.Current(),Msg184, nbedges); //szv#4:S4163:12Mar99 moved in if
   // st = PR.ReadInteger(PR.Current(), "Number of edges", nbedges);
-  Standard_Boolean sb = PR.ReadInteger(PR.Current(), nbedges);
+  bool sb = PR.ReadInteger(PR.Current(), nbedges);
   if (sb && (nbedges > 0))
   {
 
     Message_Msg Msg180("XSTEP_180");
     Message_Msg Msg190("XSTEP_190");
 
-    tempTypes          = new TColStd_HArray1OfInteger(1, nbedges);
-    tempEdges          = new IGESData_HArray1OfIGESEntity(1, nbedges);
-    tempIndex          = new TColStd_HArray1OfInteger(1, nbedges);
-    tempOrientation    = new TColStd_HArray1OfInteger(1, nbedges);
-    nbParameterCurves  = new TColStd_HArray1OfInteger(1, nbedges);
+    tempTypes          = new NCollection_HArray1<int>(1, nbedges);
+    tempEdges          = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+    tempIndex          = new NCollection_HArray1<int>(1, nbedges);
+    tempOrientation    = new NCollection_HArray1<int>(1, nbedges);
+    nbParameterCurves  = new NCollection_HArray1<int>(1, nbedges);
     isoparametricFlags = new IGESBasic_HArray1OfHArray1OfInteger(1, nbedges);
     tempCurves         = new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nbedges);
 
@@ -140,7 +144,7 @@ void IGESSolid_ToolLoop::ReadOwnParams(const Handle(IGESSolid_Loop)&          en
       if (PR.ReadBoolean(PR.Current(), Msg180, abool))
         tempOrientation->SetValue(i, (abool ? 1 : 0)); // bool;
 
-      Standard_Boolean st = PR.ReadInteger(PR.Current(), anint);
+      bool st = PR.ReadInteger(PR.Current(), anint);
       if (!st)
       {
         Message_Msg Msg192("XSTEP_192");
@@ -151,8 +155,8 @@ void IGESSolid_ToolLoop::ReadOwnParams(const Handle(IGESSolid_Loop)&          en
       {
         Message_Msg Msg195("XSTEP_195");
         nbParameterCurves->SetValue(i, anint);
-        Handle(IGESData_HArray1OfIGESEntity) tmpents = new IGESData_HArray1OfIGESEntity(1, anint);
-        Handle(TColStd_HArray1OfInteger)     tmpints = new TColStd_HArray1OfInteger(1, anint);
+        occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tmpents = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, anint);
+        occ::handle<NCollection_HArray1<int>>     tmpints = new NCollection_HArray1<int>(1, anint);
         for (j = 1; j <= anint; j++)
         {
           // st = PR.ReadBoolean(PR.Current(), Msg195, abool); //szv#4:S4163:12Mar99 moved in if
@@ -213,11 +217,11 @@ void IGESSolid_ToolLoop::ReadOwnParams(const Handle(IGESSolid_Loop)&          en
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::WriteOwnParams(const Handle(IGESSolid_Loop)& ent,
+void IGESSolid_ToolLoop::WriteOwnParams(const occ::handle<IGESSolid_Loop>& ent,
                                         IGESData_IGESWriter&          IW) const
 {
-  Standard_Integer i, j;
-  Standard_Integer length = ent->NbEdges();
+  int i, j;
+  int length = ent->NbEdges();
 
   IW.Send(length);
   for (i = 1; i <= length; i++)
@@ -237,11 +241,11 @@ void IGESSolid_ToolLoop::WriteOwnParams(const Handle(IGESSolid_Loop)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::OwnShared(const Handle(IGESSolid_Loop)& ent,
+void IGESSolid_ToolLoop::OwnShared(const occ::handle<IGESSolid_Loop>& ent,
                                    Interface_EntityIterator&     iter) const
 {
-  Standard_Integer i, j;
-  Standard_Integer length = ent->NbEdges();
+  int i, j;
+  int length = ent->NbEdges();
 
   for (i = 1; i <= length; i++)
   {
@@ -253,22 +257,22 @@ void IGESSolid_ToolLoop::OwnShared(const Handle(IGESSolid_Loop)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::OwnCopy(const Handle(IGESSolid_Loop)& another,
-                                 const Handle(IGESSolid_Loop)& ent,
+void IGESSolid_ToolLoop::OwnCopy(const occ::handle<IGESSolid_Loop>& another,
+                                 const occ::handle<IGESSolid_Loop>& ent,
                                  Interface_CopyTool&           TC) const
 {
-  Standard_Integer nbedges = another->NbEdges();
-  Standard_Integer i, j;
-  Standard_Integer anint;
+  int nbedges = another->NbEdges();
+  int i, j;
+  int anint;
 
-  Handle(TColStd_HArray1OfInteger)     tempTypes = new TColStd_HArray1OfInteger(1, nbedges);
-  Handle(IGESData_HArray1OfIGESEntity) tempEdges = new IGESData_HArray1OfIGESEntity(1, nbedges);
-  Handle(TColStd_HArray1OfInteger)     tempIndex = new TColStd_HArray1OfInteger(1, nbedges);
-  Handle(TColStd_HArray1OfInteger)     tempOrientation   = new TColStd_HArray1OfInteger(1, nbedges);
-  Handle(TColStd_HArray1OfInteger)     nbParameterCurves = new TColStd_HArray1OfInteger(1, nbedges);
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) isoparametricFlags =
+  occ::handle<NCollection_HArray1<int>>     tempTypes = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEdges = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>>     tempIndex = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>>     tempOrientation   = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>>     nbParameterCurves = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> isoparametricFlags =
     new IGESBasic_HArray1OfHArray1OfInteger(1, nbedges);
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) tempCurves =
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> tempCurves =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nbedges);
 
   for (i = 1; i <= nbedges; i++)
@@ -285,12 +289,12 @@ void IGESSolid_ToolLoop::OwnCopy(const Handle(IGESSolid_Loop)& another,
     anint = another->NbParameterCurves(i);
     nbParameterCurves->SetValue(i, anint);
 
-    Handle(IGESData_HArray1OfIGESEntity) tmpents;
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tmpents;
     if (anint > 0)
-      tmpents = new IGESData_HArray1OfIGESEntity(1, anint);
-    Handle(TColStd_HArray1OfInteger) tmpints;
+      tmpents = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, anint);
+    occ::handle<NCollection_HArray1<int>> tmpints;
     if (anint > 0)
-      tmpints = new TColStd_HArray1OfInteger(1, anint);
+      tmpints = new NCollection_HArray1<int>(1, anint);
     for (j = 1; j <= anint; j++)
     {
       tmpints->SetValue(j, (another->IsIsoparametric(i, j) ? 1 : 0));
@@ -312,7 +316,7 @@ void IGESSolid_ToolLoop::OwnCopy(const Handle(IGESSolid_Loop)& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESSolid_ToolLoop::DirChecker(const Handle(IGESSolid_Loop)& /* ent  */) const
+IGESData_DirChecker IGESSolid_ToolLoop::DirChecker(const occ::handle<IGESSolid_Loop>& /* ent  */) const
 {
   IGESData_DirChecker DC(508, 0, 1);
 
@@ -327,9 +331,9 @@ IGESData_DirChecker IGESSolid_ToolLoop::DirChecker(const Handle(IGESSolid_Loop)&
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::OwnCheck(const Handle(IGESSolid_Loop)& ent,
+void IGESSolid_ToolLoop::OwnCheck(const occ::handle<IGESSolid_Loop>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -337,8 +341,8 @@ void IGESSolid_ToolLoop::OwnCheck(const Handle(IGESSolid_Loop)& ent,
   // Message_Msg Msg190("XSTEP_190");
   //========================================
 
-  Standard_Integer upper = ent->NbEdges();
-  for (Standard_Integer i = 1; i <= upper; i++)
+  int upper = ent->NbEdges();
+  for (int i = 1; i <= upper; i++)
     if (ent->EdgeType(i) != 0 && ent->EdgeType(i) != 1)
     {
       Message_Msg Msg190("XSTEP_190");
@@ -348,14 +352,14 @@ void IGESSolid_ToolLoop::OwnCheck(const Handle(IGESSolid_Loop)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
+void IGESSolid_ToolLoop::OwnDump(const occ::handle<IGESSolid_Loop>& ent,
                                  const IGESData_IGESDumper&    dumper,
                                  Standard_OStream&             S,
-                                 const Standard_Integer        level) const
+                                 const int        level) const
 {
-  Standard_Integer i, j;
-  Standard_Integer nbedges  = ent->NbEdges();
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int i, j;
+  int nbedges  = ent->NbEdges();
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESSolid_Loop\n"
     << "Edge types :\n"
@@ -370,7 +374,7 @@ void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
     S << "[ ";
     for (i = 1; i <= nbedges; i++)
     {
-      Standard_Integer nbc = ent->NbParameterCurves(i);
+      int nbc = ent->NbParameterCurves(i);
       S << "[" << i << "]:  "
         << "Edge type : " << ent->EdgeType(i) << "  "
         << "Edge : ";

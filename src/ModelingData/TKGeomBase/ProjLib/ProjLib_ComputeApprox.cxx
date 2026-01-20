@@ -33,10 +33,13 @@
 #include <AppParCurves_MultiCurve.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -48,7 +51,7 @@
   #include <DrawTrSurf.hxx>
 #endif
 #ifdef OCCT_DEBUG
-// static Standard_Boolean AffichValue = Standard_False;
+// static bool AffichValue = false;
 #endif
 
 namespace
@@ -97,24 +100,24 @@ struct PlaneProjector
 //=================================================================================================
 
 // OFV:
-static inline Standard_Boolean IsEqual(Standard_Real Check, Standard_Real With, Standard_Real Toler)
+static inline bool IsEqual(double Check, double With, double Toler)
 {
-  return ((std::abs(Check - With) < Toler) ? Standard_True : Standard_False);
+  return ((std::abs(Check - With) < Toler) ? true : false);
 }
 
 //=================================================================================================
 
-static gp_Pnt2d Function_Value(const Standard_Real              U,
-                               const Handle(Adaptor3d_Curve)&   myCurve,
-                               const Handle(Adaptor3d_Surface)& mySurface,
-                               const Standard_Real              U1,
-                               const Standard_Real              U2,
-                               const Standard_Real              V1,
-                               const Standard_Real              V2,
-                               const Standard_Boolean           UCouture,
-                               const Standard_Boolean           VCouture)
+static gp_Pnt2d Function_Value(const double              U,
+                               const occ::handle<Adaptor3d_Curve>&   myCurve,
+                               const occ::handle<Adaptor3d_Surface>& mySurface,
+                               const double              U1,
+                               const double              U2,
+                               const double              V1,
+                               const double              V2,
+                               const bool           UCouture,
+                               const bool           VCouture)
 {
-  Standard_Real S = 0., T = 0.;
+  double S = 0., T = 0.;
 
   gp_Pnt              P3d   = myCurve->Value(U);
   GeomAbs_SurfaceType SType = mySurface->GetType();
@@ -180,20 +183,20 @@ static gp_Pnt2d Function_Value(const Standard_Real              U,
 
 //=================================================================================================
 
-static Standard_Boolean Function_D1(const Standard_Real              U,
+static bool Function_D1(const double              U,
                                     gp_Pnt2d&                        P,
                                     gp_Vec2d&                        D,
-                                    const Handle(Adaptor3d_Curve)&   myCurve,
-                                    const Handle(Adaptor3d_Surface)& mySurface,
-                                    const Standard_Real              U1,
-                                    const Standard_Real              U2,
-                                    const Standard_Real              V1,
-                                    const Standard_Real              V2,
-                                    const Standard_Boolean           UCouture,
-                                    const Standard_Boolean           VCouture)
+                                    const occ::handle<Adaptor3d_Curve>&   myCurve,
+                                    const occ::handle<Adaptor3d_Surface>& mySurface,
+                                    const double              U1,
+                                    const double              U2,
+                                    const double              V1,
+                                    const double              V2,
+                                    const bool           UCouture,
+                                    const bool           VCouture)
 {
   gp_Pnt        P3d;
-  Standard_Real dU, dV;
+  double dU, dV;
 
   P = Function_Value(U, myCurve, mySurface, U1, U2, V1, V2, UCouture, VCouture);
 
@@ -213,11 +216,11 @@ static Standard_Boolean Function_D1(const Standard_Real              U,
 
       dU               = T.Dot(D1U);
       dV               = T.Dot(D1V);
-      Standard_Real Nu = D1U.SquareMagnitude();
-      Standard_Real Nv = D1V.SquareMagnitude();
+      double Nu = D1U.SquareMagnitude();
+      double Nv = D1V.SquareMagnitude();
 
       if (Nu < Epsilon(1.) || Nv < Epsilon(1.))
-        return Standard_False;
+        return false;
 
       dU /= Nu;
       dV /= Nv;
@@ -226,25 +229,25 @@ static Standard_Boolean Function_D1(const Standard_Real              U,
     break;
 
     default:
-      return Standard_False;
+      return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Real Function_ComputeStep(const Handle(Adaptor3d_Curve)& myCurve,
-                                          const Standard_Real            R)
+static double Function_ComputeStep(const occ::handle<Adaptor3d_Curve>& myCurve,
+                                          const double            R)
 {
-  Standard_Real Step0 = .1;
-  Standard_Real W1, W2;
+  double Step0 = .1;
+  double W1, W2;
   W1                   = myCurve->FirstParameter();
   W2                   = myCurve->LastParameter();
-  Standard_Real    L   = GCPnts_AbscissaPoint::Length(*myCurve);
-  Standard_Integer nbp = RealToInt(L / (R * M_PI_4)) + 1;
+  double    L   = GCPnts_AbscissaPoint::Length(*myCurve);
+  int nbp = RealToInt(L / (R * M_PI_4)) + 1;
   nbp                  = std::max(nbp, 3);
-  Standard_Real Step   = (W2 - W1) / (nbp - 1);
+  double Step   = (W2 - W1) / (nbp - 1);
   if (Step > Step0)
   {
     Step = Step0;
@@ -258,16 +261,16 @@ static Standard_Real Function_ComputeStep(const Handle(Adaptor3d_Curve)& myCurve
 
 //=================================================================================================
 
-static void Function_SetUVBounds(Standard_Real&                   myU1,
-                                 Standard_Real&                   myU2,
-                                 Standard_Real&                   myV1,
-                                 Standard_Real&                   myV2,
-                                 Standard_Boolean&                UCouture,
-                                 Standard_Boolean&                VCouture,
-                                 const Handle(Adaptor3d_Curve)&   myCurve,
-                                 const Handle(Adaptor3d_Surface)& mySurface)
+static void Function_SetUVBounds(double&                   myU1,
+                                 double&                   myU2,
+                                 double&                   myV1,
+                                 double&                   myV2,
+                                 bool&                UCouture,
+                                 bool&                VCouture,
+                                 const occ::handle<Adaptor3d_Curve>&   myCurve,
+                                 const occ::handle<Adaptor3d_Surface>& mySurface)
 {
-  Standard_Real W1, W2, W;
+  double W1, W2, W;
   gp_Pnt        P1, P2, P;
   //
   W1 = myCurve->FirstParameter();
@@ -284,10 +287,10 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
   {
 
     case GeomAbs_Cone: {
-      Standard_Real           tol  = Epsilon(1.);
-      constexpr Standard_Real ptol = Precision::PConfusion();
+      double           tol  = Epsilon(1.);
+      constexpr double ptol = Precision::PConfusion();
       gp_Cone                 Cone = mySurface->Cone();
-      VCouture                     = Standard_False;
+      VCouture                     = false;
       // Calculation of cone parameters for P == ConeApex often produces wrong
       // values of U
       gp_Pnt ConeApex = Cone.Apex();
@@ -312,7 +315,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         case GeomAbs_Parabola:
         case GeomAbs_Hyperbola:
         case GeomAbs_Ellipse: {
-          Standard_Real U1, U2, V1, V2, U, V;
+          double U1, U2, V1, V2, U, V;
           ElSLib::Parameters(Cone, P1, U1, V1);
           ElSLib::Parameters(Cone, P2, U2, V2);
           ElSLib::Parameters(Cone, P, U, V);
@@ -320,29 +323,29 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           myU2 = std::max(U1, U2);
           if ((U1 < U && U < U2) && !myCurve->IsClosed())
           {
-            UCouture = Standard_False;
+            UCouture = false;
           }
           else
           {
-            UCouture = Standard_True;
+            UCouture = true;
             myU2     = myU1 + 2 * M_PI;
           }
         }
         break;
         default: {
-          Standard_Real U1, V1, U, V, Delta = 0., d = 0., pmin = W1, pmax = W1, dmax = 0., Uf, Ul;
+          double U1, V1, U, V, Delta = 0., d = 0., pmin = W1, pmax = W1, dmax = 0., Uf, Ul;
           ElSLib::Parameters(Cone, P1, U1, V1);
           ElSLib::Parameters(Cone, P2, Ul, V1);
           const gp_Ax1& anAx1 = Cone.Axis();
           gp_Lin        aLin(anAx1);
-          Standard_Real R = (aLin.Distance(P1) + aLin.Distance(P2) + aLin.Distance(P)) / 3.;
-          Standard_Real Step;
+          double R = (aLin.Distance(P1) + aLin.Distance(P2) + aLin.Distance(P)) / 3.;
+          double Step;
           myU1 = U1;
           myU2 = U1;
           Uf   = U1;
           if (myCurve->GetType() == GeomAbs_Line)
           {
-            Standard_Integer nbp = 3;
+            int nbp = 3;
             Step                 = (W2 - W1) / (nbp - 1);
           }
           else
@@ -350,9 +353,9 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             Step = Function_ComputeStep(myCurve, R);
           }
           //
-          Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
-          Standard_Boolean isFirst    = Standard_True;
-          for (Standard_Real par = W1 + Step; par <= W2; par += Step)
+          bool isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
+          bool isFirst    = true;
+          for (double par = W1 + Step; par <= W2; par += Step)
           {
             if (!isclandper)
               par += Step;
@@ -410,8 +413,8 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
               pmax = par;
             }
             U1      = U;
-            isFirst = Standard_False;
-          } // for(Standard_Real par = W1 + Step; par <= W2; par += Step)
+            isFirst = false;
+          } // for(double par = W1 + Step; par <= W2; par += Step)
 
           if (!(std::abs(pmin - W1) <= Precision::PConfusion()
                 || std::abs(pmin - W2) <= Precision::PConfusion()))
@@ -421,13 +424,13 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             myU2 += dmax * .5;
 
           if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
-            UCouture = Standard_False;
+            UCouture = false;
           else
           {
             U        = (myU1 + myU2) / 2.;
             myU1     = U - M_PI;
             myU2     = U + M_PI;
-            UCouture = Standard_True;
+            UCouture = true;
           }
         }
         break;
@@ -437,12 +440,12 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
 
     case GeomAbs_Cylinder: {
       gp_Cylinder Cylinder = mySurface->Cylinder();
-      VCouture             = Standard_False;
+      VCouture             = false;
 
       if (myCurve->GetType() == GeomAbs_Ellipse)
       {
 
-        Standard_Real U1, U2, V1, V2, U, V;
+        double U1, U2, V1, V2, U, V;
         ElSLib::Parameters(Cylinder, P1, U1, V1);
         ElSLib::Parameters(Cylinder, P2, U2, V2);
         ElSLib::Parameters(Cylinder, P, U, V);
@@ -471,7 +474,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
               myU2 = U + 2 * M_PI;
             }
           }
-          UCouture = Standard_True;
+          UCouture = true;
         }
         else
         {
@@ -480,9 +483,9 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           gp_Pnt P3d;
           myCurve->D1(W1, P3d, T);
           mySurface->D1(U1, U2, P3d, D1U, D1V);
-          Standard_Real dU = T.Dot(D1U);
+          double dU = T.Dot(D1U);
 
-          UCouture = Standard_True;
+          UCouture = true;
           if (dU > 0.)
           {
             myU2 = myU1 + 2 * M_PI;
@@ -496,16 +499,16 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
       }
       else
       {
-        Standard_Real U1, V1, U, V;
+        double U1, V1, U, V;
         ElSLib::Parameters(Cylinder, P1, U1, V1);
-        Standard_Real R     = Cylinder.Radius();
-        Standard_Real Delta = 0., Step;
-        Standard_Real eps = M_PI, dmax = 0., d = 0.;
+        double R     = Cylinder.Radius();
+        double Delta = 0., Step;
+        double eps = M_PI, dmax = 0., d = 0.;
         Step               = Function_ComputeStep(myCurve, R);
         myU1               = U1;
         myU2               = U1;
-        Standard_Real pmin = W1, pmax = W1, plim = W2 + .1 * Step;
-        for (Standard_Real par = W1 + Step; par <= plim; par += Step)
+        double pmin = W1, pmax = W1, plim = W2 + .1 * Step;
+        for (double par = W1 + Step; par <= plim; par += Step)
         {
           P = myCurve->Value(par);
           ElSLib::Parameters(Cylinder, P, U, V);
@@ -548,25 +551,25 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
 
         if ((myU1 >= 0. && myU1 <= 2 * M_PI) && (myU2 >= 0. && myU2 <= 2 * M_PI))
         {
-          UCouture = Standard_False;
+          UCouture = false;
         }
         else
         {
           U        = (myU1 + myU2) / 2.;
           myU1     = U - M_PI;
           myU2     = U + M_PI;
-          UCouture = Standard_True;
+          UCouture = true;
         }
       }
     }
     break;
     //
     case GeomAbs_Sphere: {
-      VCouture     = Standard_False;
+      VCouture     = false;
       gp_Sphere SP = mySurface->Sphere();
       if (myCurve->GetType() == GeomAbs_Circle)
       {
-        UCouture = Standard_True;
+        UCouture = true;
 
         // we seek to know how many times the seam is
         // crossed.
@@ -582,9 +585,9 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         // y = 0                      (4)
         // REM : (1) (2)     : equation du cercle
         //       (1) (3) (4) : equation de la couture.
-        Standard_Integer NbSolutions = 0;
-        Standard_Real    A, B, C, D, R, Tol = 1.e-10;
-        Standard_Real    U1, U2, V1, V2;
+        int NbSolutions = 0;
+        double    A, B, C, D, R, Tol = 1.e-10;
+        double    U1, U2, V1, V2;
         gp_Trsf          Trsf;
         //
         gp_Circ Circle = myCurve->Circle();
@@ -612,7 +615,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         }
         else
         {
-          Standard_Real delta = R * R * (A * A + C * C) - D * D;
+          double delta = R * R * (A * A + C * C) - D * D;
           delta *= C * C;
           if (std::abs(delta) < Tol * Tol)
           {
@@ -621,7 +624,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           }
           else if (delta > 0)
           {
-            Standard_Real xx;
+            double xx;
             delta = std::sqrt(delta);
             xx    = -A * D + delta;
             //
@@ -636,15 +639,15 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         //
 
         // box+sphere >>
-        Standard_Real UU = 0.;
+        double UU = 0.;
         ElSLib::Parameters(SP, P1, U1, V1);
-        Standard_Real eps = 10. * Epsilon(1.);
-        Standard_Real dt  = std::max(Precision::PConfusion(), 0.01 * (W2 - W1));
+        double eps = 10. * Epsilon(1.);
+        double dt  = std::max(Precision::PConfusion(), 0.01 * (W2 - W1));
         if (std::abs(U1) < eps)
         {
           // May be U1 must be equal 2*PI?
           gp_Pnt        Pd = myCurve->Value(W1 + dt);
-          Standard_Real ud, vd;
+          double ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
           if (std::abs(U1 - ud) > M_PI)
           {
@@ -655,7 +658,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         {
           // maybe U1 = 0.?
           gp_Pnt        Pd = myCurve->Value(W1 + dt);
-          Standard_Real ud, vd;
+          double ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
           if (std::abs(U1 - ud) > M_PI)
           {
@@ -668,7 +671,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         {
           // May be U2 must be equal 2*PI?
           gp_Pnt        Pd = myCurve->Value(W2 - dt);
-          Standard_Real ud, vd;
+          double ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
           if (std::abs(U2 - ud) > M_PI)
           {
@@ -679,7 +682,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         {
           // maybe U2 = 0.?
           gp_Pnt        Pd = myCurve->Value(W2 - dt);
-          Standard_Real ud, vd;
+          double ud, vd;
           ElSLib::Parameters(SP, Pd, ud, vd);
           if (std::abs(U2 - ud) > M_PI)
           {
@@ -723,7 +726,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         else
         { // 0 ou 2 solutions
           gp_Pnt        Center = Circle.Location();
-          Standard_Real U, V;
+          double U, V;
           ElSLib::SphereParameters(gp_Ax3(gp::XOY()), 1, Center, U, V);
           myU1 = U - M_PI;
           myU2 = U + M_PI;
@@ -732,12 +735,12 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         // eval the VCouture.
         if ((C == 0) || std::abs(std::abs(D / C) - R) > 1.e-10)
         {
-          VCouture = Standard_False;
+          VCouture = false;
         }
         else
         {
-          VCouture = Standard_True;
-          UCouture = Standard_True;
+          VCouture = true;
+          UCouture = true;
 
           if (D / C < 0.)
           {
@@ -756,11 +759,11 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
           if (std::abs(pp.X() * pp.X() + pp.Y() * pp.Y() + pp.Z() * pp.Z() - R * R) < Tol)
           {
             gp_Pnt        Center = Circle.Location();
-            Standard_Real U, V;
+            double U, V;
             ElSLib::SphereParameters(gp_Ax3(gp::XOY()), 1, Center, U, V);
             myU1     = U - M_PI;
             myU2     = U + M_PI;
-            VCouture = Standard_False;
+            VCouture = false;
           }
         }
 
@@ -773,16 +776,16 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
 
       else
       {
-        Standard_Real U1, V1, U, V;
+        double U1, V1, U, V;
         ElSLib::Parameters(SP, P1, U1, V1);
-        Standard_Real R     = SP.Radius();
-        Standard_Real Delta = 0., Step;
-        Standard_Real eps = M_PI, dmax = 0., d = 0.;
+        double R     = SP.Radius();
+        double Delta = 0., Step;
+        double eps = M_PI, dmax = 0., d = 0.;
         Step               = Function_ComputeStep(myCurve, R);
         myU1               = U1;
         myU2               = U1;
-        Standard_Real pmin = W1, pmax = W1, plim = W2 + .1 * Step;
-        for (Standard_Real par = W1 + Step; par <= plim; par += Step)
+        double pmin = W1, pmax = W1, plim = W2 + .1 * Step;
+        for (double par = W1 + Step; par <= plim; par += Step)
         {
           P = myCurve->Value(par);
           ElSLib::Parameters(SP, P, U, V);
@@ -827,35 +830,35 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
         {
           myU1     = 0.;
           myU2     = 2. * M_PI;
-          UCouture = Standard_False;
+          UCouture = false;
         }
         else
         {
           U        = (myU1 + myU2) / 2.;
           myU1     = U - M_PI;
           myU2     = U + M_PI;
-          UCouture = Standard_True;
+          UCouture = true;
         }
 
-        VCouture = Standard_False;
+        VCouture = false;
       }
     }
     break;
     //
     case GeomAbs_Torus: {
       gp_Torus      TR = mySurface->Torus();
-      Standard_Real U1, V1, U, V, dU, dV;
+      double U1, V1, U, V, dU, dV;
       ElSLib::Parameters(TR, P1, U1, V1);
-      Standard_Real R      = TR.MinorRadius();
-      Standard_Real DeltaU = 0., DeltaV = 0., Step;
-      Standard_Real eps = M_PI, dmaxU = 0., dmaxV = 0.;
+      double R      = TR.MinorRadius();
+      double DeltaU = 0., DeltaV = 0., Step;
+      double eps = M_PI, dmaxU = 0., dmaxV = 0.;
       Step                = Function_ComputeStep(myCurve, R);
       myU1                = U1;
       myU2                = U1;
       myV1                = V1;
       myV2                = V1;
-      Standard_Real pminU = W1, pmaxU = W1, pminV = W1, pmaxV = W1, plim = W2 + .1 * Step;
-      for (Standard_Real par = W1 + Step; par <= plim; par += Step)
+      double pminU = W1, pmaxU = W1, pminV = W1, pmaxV = W1, plim = W2 + .1 * Step;
+      for (double par = W1 + Step; par <= plim; par += Step)
       {
         P = myCurve->Value(par);
         ElSLib::Parameters(TR, P, U, V);
@@ -934,32 +937,32 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
       {
         myU1     = 0.;
         myU2     = 2. * M_PI;
-        UCouture = Standard_False;
+        UCouture = false;
       }
       else
       {
         U        = (myU1 + myU2) / 2.;
         myU1     = U - M_PI;
         myU2     = U + M_PI;
-        UCouture = Standard_True;
+        UCouture = true;
       }
       if ((myV1 >= 0. && myV1 <= 2 * M_PI) && (myV2 >= 0. && myV2 <= 2 * M_PI))
       {
-        VCouture = Standard_False;
+        VCouture = false;
       }
       else
       {
         V        = (myV1 + myV2) / 2.;
         myV1     = V - M_PI;
         myV2     = V + M_PI;
-        VCouture = Standard_True;
+        VCouture = true;
       }
     }
     break;
 
     default: {
-      UCouture = Standard_False;
-      VCouture = Standard_False;
+      UCouture = false;
+      VCouture = false;
     }
     break;
   }
@@ -972,24 +975,24 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
 
 class ProjLib_Function : public AppCont_Function
 {
-  Handle(Adaptor3d_Curve)   myCurve;
-  Handle(Adaptor3d_Surface) mySurface;
-  Standard_Boolean          myIsPeriodic[2];
-  Standard_Real             myPeriod[2];
+  occ::handle<Adaptor3d_Curve>   myCurve;
+  occ::handle<Adaptor3d_Surface> mySurface;
+  bool          myIsPeriodic[2];
+  double             myPeriod[2];
 
 public:
-  Standard_Real    myU1, myU2, myV1, myV2;
-  Standard_Boolean UCouture, VCouture;
+  double    myU1, myU2, myV1, myV2;
+  bool UCouture, VCouture;
 
-  ProjLib_Function(const Handle(Adaptor3d_Curve)& C, const Handle(Adaptor3d_Surface)& S)
+  ProjLib_Function(const occ::handle<Adaptor3d_Curve>& C, const occ::handle<Adaptor3d_Surface>& S)
       : myCurve(C),
         mySurface(S),
         myU1(0.0),
         myU2(0.0),
         myV1(0.0),
         myV2(0.0),
-        UCouture(Standard_False),
-        VCouture(Standard_False)
+        UCouture(false),
+        VCouture(false)
   {
     myNbPnt   = 0;
     myNbPnt2d = 1;
@@ -1008,39 +1011,39 @@ public:
       myPeriod[1] = 0.0;
   }
 
-  void PeriodInformation(const Standard_Integer theDimIdx,
-                         Standard_Boolean&      IsPeriodic,
-                         Standard_Real&         thePeriod) const
+  void PeriodInformation(const int theDimIdx,
+                         bool&      IsPeriodic,
+                         double&         thePeriod) const
   {
     IsPeriodic = myIsPeriodic[theDimIdx - 1];
     thePeriod  = myPeriod[theDimIdx - 1];
   }
 
-  Standard_Real FirstParameter() const { return (myCurve->FirstParameter()); }
+  double FirstParameter() const { return (myCurve->FirstParameter()); }
 
-  Standard_Real LastParameter() const { return (myCurve->LastParameter()); }
+  double LastParameter() const { return (myCurve->LastParameter()); }
 
-  Standard_Boolean Value(const Standard_Real           theT,
+  bool Value(const double           theT,
                          NCollection_Array1<gp_Pnt2d>& thePnt2d,
                          NCollection_Array1<gp_Pnt>& /*thePnt*/) const
   {
     thePnt2d(1) =
       Function_Value(theT, myCurve, mySurface, myU1, myU2, myV1, myV2, UCouture, VCouture);
-    return Standard_True;
+    return true;
   }
 
-  gp_Pnt2d Value(const Standard_Real theT) const
+  gp_Pnt2d Value(const double theT) const
   {
     return Function_Value(theT, myCurve, mySurface, myU1, myU2, myV1, myV2, UCouture, VCouture);
   }
 
-  Standard_Boolean D1(const Standard_Real           theT,
+  bool D1(const double           theT,
                       NCollection_Array1<gp_Vec2d>& theVec2d,
                       NCollection_Array1<gp_Vec>& /*theVec*/) const
   {
     gp_Pnt2d         aPnt2d;
     gp_Vec2d         aVec2d;
-    Standard_Boolean isOk = Function_D1(theT,
+    bool isOk = Function_D1(theT,
                                         aPnt2d,
                                         aVec2d,
                                         myCurve,
@@ -1058,10 +1061,10 @@ public:
 
 //=================================================================================================
 
-static Standard_Real ComputeTolU(const Handle(Adaptor3d_Surface)& theSurf,
-                                 const Standard_Real              theTolerance)
+static double ComputeTolU(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                 const double              theTolerance)
 {
-  Standard_Real aTolU = theSurf->UResolution(theTolerance);
+  double aTolU = theSurf->UResolution(theTolerance);
   if (theSurf->IsUPeriodic())
   {
     aTolU = std::min(aTolU, 0.01 * theSurf->UPeriod());
@@ -1072,10 +1075,10 @@ static Standard_Real ComputeTolU(const Handle(Adaptor3d_Surface)& theSurf,
 
 //=================================================================================================
 
-static Standard_Real ComputeTolV(const Handle(Adaptor3d_Surface)& theSurf,
-                                 const Standard_Real              theTolerance)
+static double ComputeTolV(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                 const double              theTolerance)
 {
-  Standard_Real aTolV = theSurf->VResolution(theTolerance);
+  double aTolV = theSurf->VResolution(theTolerance);
   if (theSurf->IsVPeriodic())
   {
     aTolV = std::min(aTolV, 0.01 * theSurf->VPeriod());
@@ -1097,9 +1100,9 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox()
 
 //=================================================================================================
 
-ProjLib_ComputeApprox::ProjLib_ComputeApprox(const Handle(Adaptor3d_Curve)&   C,
-                                             const Handle(Adaptor3d_Surface)& S,
-                                             const Standard_Real              Tol)
+ProjLib_ComputeApprox::ProjLib_ComputeApprox(const occ::handle<Adaptor3d_Curve>&   C,
+                                             const occ::handle<Adaptor3d_Surface>& S,
+                                             const double              Tol)
     : myTolerance(std::max(Tol, Precision::PApproximation())),
       myDegMin(-1),
       myDegMax(-1),
@@ -1111,25 +1114,25 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox(const Handle(Adaptor3d_Curve)&   C,
 
 //=================================================================================================
 
-void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
-                                    const Handle(Adaptor3d_Surface)& S)
+void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
+                                    const occ::handle<Adaptor3d_Surface>& S)
 {
   // if the surface is a plane and the curve a BSpline or a BezierCurve,
   // don`t make an Approx but only the projection of the poles.
 
-  Standard_Integer    NbKnots, NbPoles;
+  int    NbKnots, NbPoles;
   GeomAbs_CurveType   CType = C->GetType();
   GeomAbs_SurfaceType SType = S->GetType();
 
-  Standard_Boolean SurfIsAnal = ProjLib::IsAnaSurf(S);
+  bool SurfIsAnal = ProjLib::IsAnaSurf(S);
 
-  Standard_Boolean CurvIsAnal = (CType != GeomAbs_BSplineCurve) && (CType != GeomAbs_BezierCurve)
+  bool CurvIsAnal = (CType != GeomAbs_BSplineCurve) && (CType != GeomAbs_BezierCurve)
                                 && (CType != GeomAbs_OffsetCurve) && (CType != GeomAbs_OtherCurve);
 
-  Standard_Boolean simplecase = SurfIsAnal && CurvIsAnal;
+  bool simplecase = SurfIsAnal && CurvIsAnal;
   if (CType == GeomAbs_BSplineCurve || CType == GeomAbs_BezierCurve)
   {
-    Standard_Integer aNbKnots = 1;
+    int aNbKnots = 1;
     if (CType == GeomAbs_BSplineCurve)
     {
       aNbKnots = C->NbKnots();
@@ -1141,24 +1144,24 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
   {
 
     // get the poles and eventually the weights
-    Handle(Geom_BSplineCurve) BS = C->BSpline();
+    occ::handle<Geom_BSplineCurve> BS = C->BSpline();
     NbPoles                      = BS->NbPoles();
-    TColgp_Array1OfPnt   P3d(1, NbPoles);
-    TColgp_Array1OfPnt2d Poles(1, NbPoles);
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<gp_Pnt>   P3d(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d> Poles(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     if (BS->IsRational())
       BS->Weights(Weights);
     BS->Poles(P3d);
 
     // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
     const PlaneProjector aProj(S->Plane().Position());
-    for (Standard_Integer i = 1; i <= NbPoles; i++)
+    for (int i = 1; i <= NbPoles; i++)
     {
       Poles.SetValue(i, aProj.Project(P3d(i)));
     }
     NbKnots = BS->NbKnots();
-    TColStd_Array1OfReal    Knots(1, NbKnots);
-    TColStd_Array1OfInteger Mults(1, NbKnots);
+    NCollection_Array1<double>    Knots(1, NbKnots);
+    NCollection_Array1<int> Mults(1, NbKnots);
     BS->Knots(Knots);
     BS->Multiplicities(Mults);
     // get the knots and mults if BSplineCurve
@@ -1176,11 +1179,11 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
   {
 
     // get the poles and eventually the weights
-    Handle(Geom_BezierCurve) BezierCurvePtr = C->Bezier();
+    occ::handle<Geom_BezierCurve> BezierCurvePtr = C->Bezier();
     NbPoles                                 = BezierCurvePtr->NbPoles();
-    TColgp_Array1OfPnt   P3d(1, NbPoles);
-    TColgp_Array1OfPnt2d Poles(1, NbPoles);
-    TColStd_Array1OfReal Weights(1, NbPoles);
+    NCollection_Array1<gp_Pnt>   P3d(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d> Poles(1, NbPoles);
+    NCollection_Array1<double> Weights(1, NbPoles);
     if (BezierCurvePtr->IsRational())
     {
       BezierCurvePtr->Weights(Weights);
@@ -1189,7 +1192,7 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
 
     // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
     const PlaneProjector aProj(S->Plane().Position());
-    for (Standard_Integer i = 1; i <= NbPoles; i++)
+    for (int i = 1; i <= NbPoles; i++)
     {
       Poles.SetValue(i, aProj.Project(P3d(i)));
     }
@@ -1208,15 +1211,15 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
 
 #ifdef OCCT_DEBUG
     // if ( AffichValue) {
-    //   Standard_Integer Nb = 20;
-    //   Standard_Real U1, U2, dU, U;
+    //   int Nb = 20;
+    //   double U1, U2, dU, U;
     //   U1 = F.FirstParameter();
     //   U2 = F.LastParameter();
     //   dU = ( U2 - U1) / Nb;
-    //   TColStd_Array1OfInteger Mults(1,Nb+1);
-    //   TColStd_Array1OfReal    Knots(1,Nb+1);
-    //   TColgp_Array1OfPnt2d    Poles(1,Nb+1);
-    //   for ( Standard_Integer i = 1; i <= Nb+1; i++) {
+    //   NCollection_Array1<int> Mults(1,Nb+1);
+    //   NCollection_Array1<double>    Knots(1,Nb+1);
+    //   NCollection_Array1<gp_Pnt2d>    Poles(1,Nb+1);
+    //   for ( int i = 1; i <= Nb+1; i++) {
     //    U = U1 + (i-1)*dU;
     //    Poles(i) = F.Value(U);
     //    std::cout << "i = " << i << ": U = " << U <<
@@ -1228,13 +1231,13 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     //   Mults(Nb+1) = 2;
 
     // 2D-curve for showing in DRAW
-    //   Handle(Geom2d_Curve) aCC = new Geom2d_BSplineCurve(Poles,Knots,Mults,1);
-    //   AffichValue = Standard_False;
+    //   occ::handle<Geom2d_Curve> aCC = new Geom2d_BSplineCurve(Poles,Knots,Mults,1);
+    //   AffichValue = false;
     // }
 #endif
 
     //-----------
-    Standard_Integer Deg1 = 5, Deg2;
+    int Deg1 = 5, Deg2;
     if (simplecase)
     {
       Deg2 = 8;
@@ -1253,7 +1256,7 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
       Deg2 = myDegMax;
     }
     //
-    Standard_Integer aMaxSegments = 1000;
+    int aMaxSegments = 1000;
     if (myMaxSegments > 0)
     {
       aMaxSegments = myMaxSegments;
@@ -1267,35 +1270,35 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     }
 
     //-------------
-    const Standard_Real aTolU = ComputeTolU(S, myTolerance);
-    const Standard_Real aTolV = ComputeTolV(S, myTolerance);
-    const Standard_Real aTol2d =
+    const double aTolU = ComputeTolU(S, myTolerance);
+    const double aTolV = ComputeTolV(S, myTolerance);
+    const double aTol2d =
       std::max(std::sqrt(aTolU * aTolU + aTolV * aTolV), Precision::PConfusion());
 
-    Approx_FitAndDivide2d Fit(Deg1, Deg2, myTolerance, aTol2d, Standard_True, aFistC, aLastC);
+    Approx_FitAndDivide2d Fit(Deg1, Deg2, myTolerance, aTol2d, true, aFistC, aLastC);
     Fit.SetMaxSegments(aMaxSegments);
     if (simplecase)
     {
-      Fit.SetHangChecking(Standard_False);
+      Fit.SetHangChecking(false);
     }
     Fit.Perform(F);
 
-    Standard_Real aNewTol2d = 0;
+    double aNewTol2d = 0;
     if (Fit.IsAllApproximated())
     {
-      Standard_Integer i;
-      Standard_Integer NbCurves = Fit.NbMultiCurves();
+      int i;
+      int NbCurves = Fit.NbMultiCurves();
 
       // on essaie de rendre la courbe au moins C1
       Convert_CompBezierCurves2dToBSplineCurve2d Conv;
 
-      Standard_Real Tol3d, Tol2d;
+      double Tol3d, Tol2d;
       for (i = 1; i <= NbCurves; i++)
       {
         Fit.Error(i, Tol3d, Tol2d);
         aNewTol2d                  = std::max(aNewTol2d, Tol2d);
         AppParCurves_MultiCurve MC = Fit.Value(i);           // Charge la Ieme Curve
-        TColgp_Array1OfPnt2d    Poles2d(1, MC.Degree() + 1); // Recupere les poles
+        NCollection_Array1<gp_Pnt2d>    Poles2d(1, MC.Degree() + 1); // Recupere les poles
         MC.Curve(1, Poles2d);
         Conv.AddCurve(Poles2d);
       }
@@ -1310,9 +1313,9 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
       if (NbKnots <= 0 || NbKnots > 100000)
         return;
 
-      TColgp_Array1OfPnt2d    NewPoles(1, NbPoles);
-      TColStd_Array1OfReal    NewKnots(1, NbKnots);
-      TColStd_Array1OfInteger NewMults(1, NbKnots);
+      NCollection_Array1<gp_Pnt2d>    NewPoles(1, NbPoles);
+      NCollection_Array1<double>    NewKnots(1, NbKnots);
+      NCollection_Array1<int> NewMults(1, NbKnots);
 
       Conv.KnotsAndMults(NewKnots, NewMults);
       Conv.Poles(NewPoles);
@@ -1333,10 +1336,10 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
       if (aFistC == AppParCurves_PassPoint || aLastC == AppParCurves_PassPoint)
       {
         // try to smoother the Curve GeomAbs_C1.
-        Standard_Integer aDeg       = myBSpline->Degree();
-        Standard_Boolean OK         = Standard_True;
-        Standard_Real    aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
-        for (Standard_Integer ij = 2; ij < NbKnots; ij++)
+        int aDeg       = myBSpline->Degree();
+        bool OK         = true;
+        double    aSmoothTol = std::max(Precision::Confusion(), aNewTol2d);
+        for (int ij = 2; ij < NbKnots; ij++)
         {
           OK = OK && myBSpline->RemoveKnot(ij, aDeg - 1, aSmoothTol);
         }
@@ -1344,10 +1347,10 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     }
     else
     {
-      Standard_Integer NbCurves = Fit.NbMultiCurves();
+      int NbCurves = Fit.NbMultiCurves();
       if (NbCurves != 0)
       {
-        Standard_Real Tol3d, Tol2d;
+        double Tol3d, Tol2d;
         Fit.Error(NbCurves, Tol3d, Tol2d);
         aNewTol2d = Tol2d;
       }
@@ -1363,11 +1366,11 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     myTolerance *= (aNewTol2d / aTol2d);
 
     // Return curve home
-    Standard_Real UFirst = F.FirstParameter();
-    Standard_Real ULast  = F.LastParameter();
-    Standard_Real Umid   = (UFirst + ULast) / 2;
+    double UFirst = F.FirstParameter();
+    double ULast  = F.LastParameter();
+    double Umid   = (UFirst + ULast) / 2;
     gp_Pnt        P3d    = C->Value(Umid);
-    Standard_Real u = 0., v = 0.;
+    double u = 0., v = 0.;
     switch (SType)
     {
       case GeomAbs_Plane: {
@@ -1398,29 +1401,29 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
       default:
         throw Standard_NoSuchObject("ProjLib_ComputeApprox::Value");
     }
-    Standard_Boolean ToMirror = Standard_False;
-    Standard_Real    du = 0., dv = 0.;
-    Standard_Integer number;
+    bool ToMirror = false;
+    double    du = 0., dv = 0.;
+    int number;
     if (F.VCouture)
     {
       if (SType == GeomAbs_Sphere && std::abs(u - F.myU1) > M_PI)
       {
-        ToMirror = Standard_True;
+        ToMirror = true;
         dv       = -M_PI;
         v        = M_PI - v;
       }
-      Standard_Real newV = ElCLib::InPeriod(v, F.myV1, F.myV2);
-      number             = (Standard_Integer)(std::floor((newV - v) / (F.myV2 - F.myV1)));
+      double newV = ElCLib::InPeriod(v, F.myV1, F.myV2);
+      number             = (int)(std::floor((newV - v) / (F.myV2 - F.myV1)));
       dv -= number * (F.myV2 - F.myV1);
     }
     if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
     {
-      Standard_Real aNbPer;
+      double aNbPer;
       gp_Pnt2d      P2d = F.Value(Umid);
       du                = u - P2d.X();
       du = (du < 0) ? (du - Precision::PConfusion()) : (du + Precision::PConfusion());
       modf(du / M_PI, &aNbPer);
-      number = (Standard_Integer)aNbPer;
+      number = (int)aNbPer;
       du     = number * M_PI;
     }
 
@@ -1439,15 +1442,15 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
 
 //=================================================================================================
 
-void ProjLib_ComputeApprox::SetTolerance(const Standard_Real theTolerance)
+void ProjLib_ComputeApprox::SetTolerance(const double theTolerance)
 {
   myTolerance = theTolerance;
 }
 
 //=================================================================================================
 
-void ProjLib_ComputeApprox::SetDegree(const Standard_Integer theDegMin,
-                                      const Standard_Integer theDegMax)
+void ProjLib_ComputeApprox::SetDegree(const int theDegMin,
+                                      const int theDegMax)
 {
   myDegMin = theDegMin;
   myDegMax = theDegMax;
@@ -1455,7 +1458,7 @@ void ProjLib_ComputeApprox::SetDegree(const Standard_Integer theDegMin,
 
 //=================================================================================================
 
-void ProjLib_ComputeApprox::SetMaxSegments(const Standard_Integer theMaxSegments)
+void ProjLib_ComputeApprox::SetMaxSegments(const int theMaxSegments)
 {
   myMaxSegments = theMaxSegments;
 }
@@ -1469,7 +1472,7 @@ void ProjLib_ComputeApprox::SetBndPnt(const AppParCurves_Constraint theBndPnt)
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) ProjLib_ComputeApprox::BSpline() const
+occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApprox::BSpline() const
 
 {
   return myBSpline;
@@ -1477,7 +1480,7 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApprox::BSpline() const
 
 //=================================================================================================
 
-Handle(Geom2d_BezierCurve) ProjLib_ComputeApprox::Bezier() const
+occ::handle<Geom2d_BezierCurve> ProjLib_ComputeApprox::Bezier() const
 
 {
   return myBezier;
@@ -1485,7 +1488,7 @@ Handle(Geom2d_BezierCurve) ProjLib_ComputeApprox::Bezier() const
 
 //=================================================================================================
 
-Standard_Real ProjLib_ComputeApprox::Tolerance() const
+double ProjLib_ComputeApprox::Tolerance() const
 {
   return myTolerance;
 }

@@ -30,7 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_SelectionDriver, TFunction_Driver)
 // #define SEL_DEB 1
 #ifdef OCCT_DEBUG
   #include <TDF_Tool.hxx>
-  #include <TDF_MapIteratorOfLabelMap.hxx>
+  #include <TDF_Label.hxx>
+  #include <NCollection_Map.hxx>
 #endif
 //=================================================================================================
 
@@ -40,22 +41,22 @@ DNaming_SelectionDriver::DNaming_SelectionDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_SelectionDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_SelectionDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <theLog> if the loaded function must be
 //           executed (i.e.arguments are modified) or not.
 //=======================================================================
-Standard_Boolean DNaming_SelectionDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_SelectionDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 #ifdef OCCT_DEBUG
   #include <BRepTools.hxx>
 
-static void Write(const TopoDS_Shape& shape, const Standard_CString filename)
+static void Write(const TopoDS_Shape& shape, const char* const filename)
 {
   std::ofstream save;
   save.open(filename);
@@ -70,13 +71,16 @@ static void Write(const TopoDS_Shape& shape, const Standard_CString filename)
 // purpose  : Execute the function and push in <theLog> the impacted
 //           labels (see method SetImpacted).
 //=======================================================================
-#include <TNaming_ListOfNamedShape.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 #include <TCollection_AsciiString.hxx>
 
-Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
@@ -85,26 +89,26 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
   if (aRLabel.IsNull())
     return -1;
 
-  Standard_Boolean           aIsWire        = Standard_False;
+  bool           aIsWire        = false;
   TopAbs_ShapeEnum           aPrevShapeType = TopAbs_SHAPE;
-  Handle(TNaming_NamedShape) aNShape;
+  occ::handle<TNaming_NamedShape> aNShape;
   if (aRLabel.FindAttribute(TNaming_NamedShape::GetID(), aNShape))
   {
     if (!aNShape.IsNull() && !aNShape->IsEmpty())
     {
       aPrevShapeType = aNShape->Get().ShapeType();
       if (aPrevShapeType == TopAbs_WIRE)
-        aIsWire = Standard_True;
+        aIsWire = true;
     }
   }
 
   TNaming_Selector aSelector(aRLabel);
 
-  TDF_LabelMap aMap;
+  NCollection_Map<TDF_Label> aMap;
   theLog->GetValid(aMap);
 #ifdef OCCT_DEBUG
   std::cout << "#E_DNaming_SelectionDriver:: Valid Label Map:" << std::endl;
-  TDF_MapIteratorOfLabelMap anItr(aMap);
+  NCollection_Map<TDF_Label>::Iterator anItr(aMap);
   for (; anItr.More(); anItr.Next())
   {
     const TDF_Label&        aLabel = anItr.Key();
@@ -118,14 +122,14 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
   //  aFilterForReferers.Keep(TNaming_NamedShape::GetID());
   //  TDF_IDFilter aFilterForReferences;
   //  aFilterForReferences.Keep(TNaming_NamedShape::GetID());
-  //   TDF_LabelMap aMap1;
+  //   NCollection_Map<TDF_Label> aMap1;
   //  TDF_Tool::OutReferences(aLabel, /*aFilterForReferers, aFilterForReferences, */outRefs);
   //***
 
   if (aSelector.Solve(aMap))
   {
     theLog->SetValid(aRLabel);
-    Handle(TNaming_NamedShape) aNS;
+    occ::handle<TNaming_NamedShape> aNS;
     if (!aRLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
       std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is not found" << std::endl;

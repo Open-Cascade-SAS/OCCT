@@ -28,7 +28,7 @@
     #include <tchar.h>
   #endif
 
-void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
+void _osd_wnt_set_error(OSD_Error&, int, ...);
 #else
   #include <errno.h>
   #include <stdio.h>
@@ -65,7 +65,7 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
     throw Standard_ProgramError("OSD_Directory::Build(): incorrect call - no directory name");
   }
 
-  Standard_Boolean isOK = Exists();
+  bool isOK = Exists();
   if (!isOK)
   {
     // myError will be set to fail by Exists() if intermediate dirs do not exist
@@ -75,7 +75,7 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
     TCollection_ExtendedString aDirNameW(aDirName);
     if (CreateDirectoryW(aDirNameW.ToWideString(), NULL))
     {
-      isOK = Standard_True;
+      isOK = true;
     }
     // if failed due to absence of intermediate directories, create them recursively
     else if (GetLastError() == ERROR_PATH_NOT_FOUND)

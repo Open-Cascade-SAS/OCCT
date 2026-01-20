@@ -30,7 +30,7 @@ Interface_Check::Interface_Check() {} // construit a vide
 
 //=================================================================================================
 
-Interface_Check::Interface_Check(const Handle(Standard_Transient)& anentity)
+Interface_Check::Interface_Check(const occ::handle<Standard_Transient>& anentity)
 {
   theent = anentity;
 }
@@ -46,32 +46,32 @@ void Interface_Check::SendFail(const Message_Msg& amsg)
 
 //=================================================================================================
 
-void Interface_Check::AddFail(const Handle(TCollection_HAsciiString)& mess)
+void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess)
 {
   if (thefails.IsNull())
-    thefails = new TColStd_HSequenceOfHAsciiString();
+    thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (thefailo.IsNull())
-    thefailo = new TColStd_HSequenceOfHAsciiString();
+    thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thefails->Append(mess);
   thefailo->Append(mess);
 }
 
 //=================================================================================================
 
-void Interface_Check::AddFail(const Handle(TCollection_HAsciiString)& mess,
-                              const Handle(TCollection_HAsciiString)& orig)
+void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess,
+                              const occ::handle<TCollection_HAsciiString>& orig)
 {
   if (thefails.IsNull())
-    thefails = new TColStd_HSequenceOfHAsciiString();
+    thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (thefailo.IsNull())
-    thefailo = new TColStd_HSequenceOfHAsciiString();
+    thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thefails->Append(mess);
   thefailo->Append(orig);
 }
 
 //=================================================================================================
 
-void Interface_Check::AddFail(const Standard_CString amess, const Standard_CString orig)
+void Interface_Check::AddFail(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
     return;
@@ -94,22 +94,22 @@ void Interface_Check::AddFail(const Message_Msg& amsg)
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::HasFailed() const
+bool Interface_Check::HasFailed() const
 {
   return (!thefails.IsNull());
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_Check::NbFails() const
+int Interface_Check::NbFails() const
 {
   return (thefails.IsNull() ? 0 : thefails->Length());
 }
 
 //=================================================================================================
 
-const Handle(TCollection_HAsciiString)& Interface_Check::Fail(const Standard_Integer num,
-                                                              const Standard_Boolean final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::Fail(const int num,
+                                                              const bool final) const
 {
   if (thefails.IsNull())
     throw Standard_OutOfRange();
@@ -118,18 +118,18 @@ const Handle(TCollection_HAsciiString)& Interface_Check::Fail(const Standard_Int
 
 //=================================================================================================
 
-Standard_CString Interface_Check::CFail(const Standard_Integer num,
-                                        const Standard_Boolean final) const
+const char* Interface_Check::CFail(const int num,
+                                        const bool final) const
 {
   return Fail(num, final)->ToCString();
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::Fails(const Standard_Boolean final) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Check::Fails(const bool final) const
 {
   if (thefails.IsNull())
-    return new TColStd_HSequenceOfHAsciiString();
+    return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   return (final ? thefails : thefailo);
 }
 
@@ -144,32 +144,32 @@ void Interface_Check::SendWarning(const Message_Msg& amsg)
 
 //=================================================================================================
 
-void Interface_Check::AddWarning(const Handle(TCollection_HAsciiString)& mess)
+void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& mess)
 {
   if (thewarns.IsNull())
-    thewarns = new TColStd_HSequenceOfHAsciiString();
+    thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (thewarno.IsNull())
-    thewarno = new TColStd_HSequenceOfHAsciiString();
+    thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thewarns->Append(mess);
   thewarno->Append(mess);
 }
 
 //=================================================================================================
 
-void Interface_Check::AddWarning(const Handle(TCollection_HAsciiString)& mess,
-                                 const Handle(TCollection_HAsciiString)& orig)
+void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& mess,
+                                 const occ::handle<TCollection_HAsciiString>& orig)
 {
   if (thewarns.IsNull())
-    thewarns = new TColStd_HSequenceOfHAsciiString();
+    thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (thewarno.IsNull())
-    thewarno = new TColStd_HSequenceOfHAsciiString();
+    thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thewarns->Append(mess);
   thewarno->Append(orig);
 }
 
 //=================================================================================================
 
-void Interface_Check::AddWarning(const Standard_CString amess, const Standard_CString orig)
+void Interface_Check::AddWarning(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
     return;
@@ -192,22 +192,22 @@ void Interface_Check::AddWarning(const Message_Msg& amsg)
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::HasWarnings() const
+bool Interface_Check::HasWarnings() const
 {
   return (!thewarns.IsNull());
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_Check::NbWarnings() const
+int Interface_Check::NbWarnings() const
 {
   return (thewarns.IsNull() ? 0 : thewarns->Length());
 }
 
 //=================================================================================================
 
-const Handle(TCollection_HAsciiString)& Interface_Check::Warning(const Standard_Integer num,
-                                                                 const Standard_Boolean final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::Warning(const int num,
+                                                                 const bool final) const
 {
   if (thewarns.IsNull())
     throw Standard_OutOfRange();
@@ -216,19 +216,19 @@ const Handle(TCollection_HAsciiString)& Interface_Check::Warning(const Standard_
 
 //=================================================================================================
 
-Standard_CString Interface_Check::CWarning(const Standard_Integer num,
-                                           const Standard_Boolean final) const
+const char* Interface_Check::CWarning(const int num,
+                                           const bool final) const
 {
   return Warning(num, final)->ToCString();
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::Warnings(
-  const Standard_Boolean final) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Check::Warnings(
+  const bool final) const
 {
   if (thewarns.IsNull())
-    return new TColStd_HSequenceOfHAsciiString();
+    return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   return (final ? thewarns : thewarno);
 }
 
@@ -238,30 +238,30 @@ Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::Warnings(
 
 void Interface_Check::SendMsg(const Message_Msg& amsg)
 {
-  Handle(TCollection_HAsciiString) mess = new TCollection_HAsciiString(amsg.Value());
-  Handle(TCollection_HAsciiString) orig = mess;
+  occ::handle<TCollection_HAsciiString> mess = new TCollection_HAsciiString(amsg.Value());
+  occ::handle<TCollection_HAsciiString> orig = mess;
   if (amsg.IsEdited())
     orig = new TCollection_HAsciiString(amsg.Original());
 
   if (theinfos.IsNull())
-    theinfos = new TColStd_HSequenceOfHAsciiString();
+    theinfos = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (theinfoo.IsNull())
-    theinfoo = new TColStd_HSequenceOfHAsciiString();
+    theinfoo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   theinfos->Append(mess);
   theinfoo->Append(mess);
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_Check::NbInfoMsgs() const
+int Interface_Check::NbInfoMsgs() const
 {
   return (theinfos.IsNull() ? 0 : theinfos->Length());
 }
 
 //=================================================================================================
 
-const Handle(TCollection_HAsciiString)& Interface_Check::InfoMsg(const Standard_Integer num,
-                                                                 const Standard_Boolean final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::InfoMsg(const int num,
+                                                                 const bool final) const
 {
   if (theinfos.IsNull())
     throw Standard_OutOfRange();
@@ -270,19 +270,19 @@ const Handle(TCollection_HAsciiString)& Interface_Check::InfoMsg(const Standard_
 
 //=================================================================================================
 
-Standard_CString Interface_Check::CInfoMsg(const Standard_Integer num,
-                                           const Standard_Boolean final) const
+const char* Interface_Check::CInfoMsg(const int num,
+                                           const bool final) const
 {
   return InfoMsg(num, final)->ToCString();
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfHAsciiString) Interface_Check::InfoMsgs(
-  const Standard_Boolean final) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Check::InfoMsgs(
+  const bool final) const
 {
   if (theinfos.IsNull())
-    return new TColStd_HSequenceOfHAsciiString();
+    return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   return (final ? theinfos : theinfoo);
 }
 
@@ -301,10 +301,10 @@ Interface_CheckStatus Interface_Check::Status() const
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::Complies(const Interface_CheckStatus status) const
+bool Interface_Check::Complies(const Interface_CheckStatus status) const
 {
-  Standard_Boolean now = thewarns.IsNull();
-  Standard_Boolean nof = thefails.IsNull();
+  bool now = thewarns.IsNull();
+  bool nof = thefails.IsNull();
   switch (status)
   {
     case Interface_CheckOK:
@@ -314,7 +314,7 @@ Standard_Boolean Interface_Check::Complies(const Interface_CheckStatus status) c
     case Interface_CheckFail:
       return !nof;
     case Interface_CheckAny:
-      return Standard_True;
+      return true;
     case Interface_CheckMessage:
       return (!nof || !now);
     case Interface_CheckNoFail:
@@ -322,77 +322,77 @@ Standard_Boolean Interface_Check::Complies(const Interface_CheckStatus status) c
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::Complies(const Handle(TCollection_HAsciiString)& mess,
-                                           const Standard_Integer                  incl,
+bool Interface_Check::Complies(const occ::handle<TCollection_HAsciiString>& mess,
+                                           const int                  incl,
                                            const Interface_CheckStatus             status) const
 {
   if (mess.IsNull())
-    return Standard_False;
-  Standard_Integer lng = mess->Length();
+    return false;
+  int lng = mess->Length();
   if (status == Interface_CheckWarning || status == Interface_CheckAny)
   {
-    Standard_Integer i, nb = NbWarnings();
+    int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      Handle(TCollection_HAsciiString) ames = Warning(i);
+      occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
       {
         if (mess->IsSameString(ames))
-          return Standard_True;
+          return true;
       }
       if (incl < 0)
       {
         if (ames->Location(mess, 1, ames->Length()) > 0)
-          return Standard_True;
+          return true;
       }
       if (incl < 0)
       {
         if (mess->Location(mess, 1, lng) > 0)
-          return Standard_True;
+          return true;
       }
     }
   }
   if (status == Interface_CheckFail || status == Interface_CheckAny)
   {
-    Standard_Integer i, nb = NbWarnings();
+    int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      Handle(TCollection_HAsciiString) ames = Warning(i);
+      occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
       {
         if (mess->IsSameString(ames))
-          return Standard_True;
+          return true;
       }
       if (incl < 0)
       {
         if (ames->Location(mess, 1, ames->Length()) > 0)
-          return Standard_True;
+          return true;
       }
       if (incl < 0)
       {
         if (mess->Location(mess, 1, lng) > 0)
-          return Standard_True;
+          return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::HasEntity() const
+bool Interface_Check::HasEntity() const
 {
   return (!theent.IsNull());
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Interface_Check::Entity() const
+const occ::handle<Standard_Transient>& Interface_Check::Entity() const
 {
   return theent;
 }
@@ -436,21 +436,21 @@ void Interface_Check::ClearInfoMsgs()
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::Remove(const Handle(TCollection_HAsciiString)& mess,
-                                         const Standard_Integer                  incl,
+bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
+                                         const int                  incl,
                                          const Interface_CheckStatus             status)
 {
   if (mess.IsNull())
-    return Standard_False;
-  Standard_Boolean res = Standard_False;
-  Standard_Integer lng = mess->Length();
+    return false;
+  bool res = false;
+  int lng = mess->Length();
   if (status == Interface_CheckWarning || status == Interface_CheckAny)
   {
-    Standard_Integer i, nb = NbWarnings();
+    int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      Standard_Boolean                 rem  = Standard_False;
-      Handle(TCollection_HAsciiString) ames = Warning(i);
+      bool                 rem  = false;
+      occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
         rem = mess->IsSameString(ames);
       if (incl < 0)
@@ -467,11 +467,11 @@ Standard_Boolean Interface_Check::Remove(const Handle(TCollection_HAsciiString)&
   }
   if (status == Interface_CheckFail || status == Interface_CheckAny)
   {
-    Standard_Integer i, nb = NbWarnings();
+    int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      Standard_Boolean                 rem  = Standard_False;
-      Handle(TCollection_HAsciiString) ames = Warning(i);
+      bool                 rem  = false;
+      occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
         rem = mess->IsSameString(ames);
       if (incl < 0)
@@ -491,9 +491,9 @@ Standard_Boolean Interface_Check::Remove(const Handle(TCollection_HAsciiString)&
 
 //=================================================================================================
 
-Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standard_Integer num)
+bool Interface_Check::Mend(const char* const pref, const int num)
 {
-  Standard_Integer i, n1 = num, n2 = num;
+  int i, n1 = num, n2 = num;
   if (pref && pref[2] == '\0')
   {
     if (pref[0] == 'F' && pref[1] == 'M')
@@ -501,33 +501,33 @@ Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standa
     if (pref[0] == 'C' && pref[1] == 'A')
     {
       Clear();
-      return Standard_True;
+      return true;
     }
     if (pref[0] == 'C' && pref[1] == 'W')
     {
       if (num == 0)
       {
         ClearWarnings();
-        return Standard_True;
+        return true;
       }
       if (num < 0 || num > NbWarnings())
-        return Standard_False;
+        return false;
       thewarns->Remove(num);
       thewarno->Remove(num);
-      return Standard_True;
+      return true;
     }
     if (pref[0] == 'C' && pref[1] == 'F')
     {
       if (num == 0)
       {
         ClearFails();
-        return Standard_True;
+        return true;
       }
       if (num < 0 || num > NbFails())
-        return Standard_False;
+        return false;
       thefails->Remove(num);
       thefailo->Remove(num);
-      return Standard_True;
+      return true;
     }
   }
   //  Common case
@@ -537,13 +537,13 @@ Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standa
     n2 = NbFails();
     for (i = n2; i >= n1; i--)
       Mend(pref, i);
-    return Standard_True;
+    return true;
   }
   else if (num < 0 || num > NbFails())
-    return Standard_False;
+    return false;
   //  A message
-  Handle(TCollection_HAsciiString) strf = thefails->Value(num);
-  Handle(TCollection_HAsciiString) stro = thefailo->Value(num);
+  occ::handle<TCollection_HAsciiString> strf = thefails->Value(num);
+  occ::handle<TCollection_HAsciiString> stro = thefailo->Value(num);
   if (pref && pref[0] != '\0')
   {
     strf->Insert(1, " : ");
@@ -560,19 +560,19 @@ Standard_Boolean Interface_Check::Mend(const Standard_CString pref, const Standa
     AddFail(strf);
   else
     AddFail(strf, stro);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Interface_Check::SetEntity(const Handle(Standard_Transient)& anentity)
+void Interface_Check::SetEntity(const occ::handle<Standard_Transient>& anentity)
 {
   theent = anentity;
 }
 
 //=================================================================================================
 
-void Interface_Check::GetEntity(const Handle(Standard_Transient)& anentity)
+void Interface_Check::GetEntity(const occ::handle<Standard_Transient>& anentity)
 {
   if (theent.IsNull())
     SetEntity(anentity);
@@ -586,81 +586,81 @@ void Interface_Check::GetEntity(const Handle(Standard_Transient)& anentity)
 
 //=================================================================================================
 
-void Interface_Check::GetMessages(const Handle(Interface_Check)& other)
+void Interface_Check::GetMessages(const occ::handle<Interface_Check>& other)
 {
-  Standard_Integer nb, i;
+  int nb, i;
   if ((nb = other->NbFails()) != 0)
   {
     if (thefails.IsNull())
-      thefails = new TColStd_HSequenceOfHAsciiString();
+      thefails = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (thefailo.IsNull())
-      thefailo = new TColStd_HSequenceOfHAsciiString();
+      thefailo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = 1; i <= nb; i++)
-      thefails->Append(other->Fail(i, Standard_True));
+      thefails->Append(other->Fail(i, true));
     for (i = 1; i <= nb; i++)
-      thefailo->Append(other->Fail(i, Standard_False));
+      thefailo->Append(other->Fail(i, false));
   }
   if ((nb = other->NbWarnings()) != 0)
   {
     if (thewarns.IsNull())
-      thewarns = new TColStd_HSequenceOfHAsciiString();
+      thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (thewarno.IsNull())
-      thewarno = new TColStd_HSequenceOfHAsciiString();
+      thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = 1; i <= nb; i++)
-      thewarns->Append(other->Warning(i, Standard_True));
+      thewarns->Append(other->Warning(i, true));
     for (i = 1; i <= nb; i++)
-      thewarno->Append(other->Warning(i, Standard_False));
+      thewarno->Append(other->Warning(i, false));
   }
   if ((nb = other->NbInfoMsgs()) != 0)
   {
     if (theinfos.IsNull())
-      theinfos = new TColStd_HSequenceOfHAsciiString();
+      theinfos = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (theinfoo.IsNull())
-      theinfoo = new TColStd_HSequenceOfHAsciiString();
+      theinfoo = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = 1; i <= nb; i++)
-      theinfos->Append(other->InfoMsg(i, Standard_True));
+      theinfos->Append(other->InfoMsg(i, true));
     for (i = 1; i <= nb; i++)
-      theinfoo->Append(other->InfoMsg(i, Standard_False));
+      theinfoo->Append(other->InfoMsg(i, false));
   }
 }
 
 //=================================================================================================
 
-void Interface_Check::GetAsWarning(const Handle(Interface_Check)& other,
-                                   const Standard_Boolean         failsonly)
+void Interface_Check::GetAsWarning(const occ::handle<Interface_Check>& other,
+                                   const bool         failsonly)
 {
-  Standard_Integer nb, i;
+  int nb, i;
   if ((nb = other->NbFails()) != 0)
   {
     if (thewarns.IsNull())
-      thewarns = new TColStd_HSequenceOfHAsciiString();
+      thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (thewarno.IsNull())
-      thewarno = new TColStd_HSequenceOfHAsciiString();
+      thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = 1; i <= nb; i++)
-      thewarns->Append(other->Fail(i, Standard_True));
+      thewarns->Append(other->Fail(i, true));
     for (i = 1; i <= nb; i++)
-      thewarno->Append(other->Fail(i, Standard_False));
+      thewarno->Append(other->Fail(i, false));
   }
   if ((nb = other->NbWarnings()) != 0 || !failsonly)
   {
     if (thewarns.IsNull())
-      thewarns = new TColStd_HSequenceOfHAsciiString();
+      thewarns = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (thewarno.IsNull())
-      thewarno = new TColStd_HSequenceOfHAsciiString();
+      thewarno = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = 1; i <= nb; i++)
-      thewarns->Append(other->Warning(i, Standard_True));
+      thewarns->Append(other->Warning(i, true));
     for (i = 1; i <= nb; i++)
-      thewarno->Append(other->Warning(i, Standard_False));
+      thewarno->Append(other->Warning(i, false));
   }
 }
 
 //=================================================================================================
 
 void Interface_Check::Print(Standard_OStream&      S,
-                            const Standard_Integer level,
-                            const Standard_Integer final) const
+                            const int level,
+                            const int final) const
 {
-  Standard_Integer j, nb = NbFails();
+  int j, nb = NbFails();
 
   if (level >= 1)
   {
@@ -669,12 +669,12 @@ void Interface_Check::Print(Standard_OStream&      S,
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
-        S << CFail(j, Standard_True) << "\n";
+        S << CFail(j, true) << "\n";
       else
-        S << CFail(j, Standard_False) << "\n";
+        S << CFail(j, false) << "\n";
       //      if (final == 0)
-      //	if (Fail(j,Standard_True) != Fail(j,Standard_False))
-      //	  S<<"[original:"<<CFail(j,Standard_False)<<"]\n";
+      //	if (Fail(j,true) != Fail(j,false))
+      //	  S<<"[original:"<<CFail(j,false)<<"]\n";
     }
   }
 
@@ -685,12 +685,12 @@ void Interface_Check::Print(Standard_OStream&      S,
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
-        S << CWarning(j, Standard_True) << "\n";
+        S << CWarning(j, true) << "\n";
       else
-        S << CWarning(j, Standard_False) << "\n";
+        S << CWarning(j, false) << "\n";
       //      if (final == 0)
-      //	if (Warning(j,Standard_True) != Warning(j,Standard_False))
-      //	  S<<"[original:"<<CWarning(j,Standard_False)<<"]\n";
+      //	if (Warning(j,true) != Warning(j,false))
+      //	  S<<"[original:"<<CWarning(j,false)<<"]\n";
     }
   }
 
@@ -702,19 +702,19 @@ void Interface_Check::Print(Standard_OStream&      S,
     for (j = 1; j <= nb; j++)
     {
       if (final >= 0)
-        S << CInfoMsg(j, Standard_True) << "\n";
+        S << CInfoMsg(j, true) << "\n";
       else
-        S << CInfoMsg(j, Standard_False) << "\n";
+        S << CInfoMsg(j, false) << "\n";
       //      if (final == 0)
-      //	if (InfoMsg(j,Standard_True) != InfoMsg(j,Standard_False))
-      //	  S<<"[original:"<<CInfoMsg(j,Standard_False)<<"]\n";
+      //	if (InfoMsg(j,true) != InfoMsg(j,false))
+      //	  S<<"[original:"<<CInfoMsg(j,false)<<"]\n";
     }
   }
 }
 
 //=================================================================================================
 
-void Interface_Check::Trace(const Standard_Integer level, const Standard_Integer final) const
+void Interface_Check::Trace(const int level, const int final) const
 {
   // clang-format off
   Message_Messenger::StreamBuffer sout = Message::SendInfo(); // shouldn't it be changed to SendTrace()?

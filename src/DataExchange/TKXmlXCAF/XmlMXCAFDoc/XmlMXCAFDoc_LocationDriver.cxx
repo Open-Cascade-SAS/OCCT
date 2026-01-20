@@ -36,7 +36,7 @@ IMPLEMENT_DOMSTRING(LocIdString, "locId")
 //=================================================================================================
 
 XmlMXCAFDoc_LocationDriver::XmlMXCAFDoc_LocationDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Location"),
       myLocations(0)
 {
@@ -44,33 +44,33 @@ XmlMXCAFDoc_LocationDriver::XmlMXCAFDoc_LocationDriver(
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_LocationDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_LocationDriver::NewEmpty() const
 {
   return (new XCAFDoc_Location());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMXCAFDoc_LocationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_LocationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
                                                    XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   TopLoc_Location aLoc;
   Translate(theSource.Element(), aLoc, theRelocTable);
 
-  Handle(XCAFDoc_Location) aT = Handle(XCAFDoc_Location)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Location> aT = occ::down_cast<XCAFDoc_Location>(theTarget);
   aT->Set(aLoc);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMXCAFDoc_LocationDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_LocationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
-  Handle(XCAFDoc_Location) aS     = Handle(XCAFDoc_Location)::DownCast(theSource);
+  occ::handle<XCAFDoc_Location> aS     = occ::down_cast<XCAFDoc_Location>(theSource);
   XmlObjMgt_Element        anElem = theTarget.Element();
   Translate(aS->Get(), anElem, theRelocTable);
 }
@@ -101,7 +101,7 @@ void XmlMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
   XmlObjMgt_Document aDoc     = theParent.getOwnerDocument();
   XmlObjMgt_Element  aLocElem = aDoc.createElement(::LocationString());
 
-  Standard_Integer anId = myLocations->Add(theLoc);
+  int anId = myLocations->Add(theLoc);
 
   aLocElem.setAttribute(::LocIdString(), anId);
   theParent.appendChild(aLocElem);
@@ -110,7 +110,7 @@ void XmlMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
   // the relocation table, but now it's not necessary
   // (try to uncomment it if some problems appear)
   /*
-  Handle(TopLoc_Datum3D) aDatum = theLoc.FirstDatum();
+  occ::handle<TopLoc_Datum3D> aDatum = theLoc.FirstDatum();
 
   if(!theMap.Contains(aDatum)) {
     theMap.Add(aDatum);
@@ -125,27 +125,27 @@ void XmlMXCAFDoc_LocationDriver::Translate(const TopLoc_Location&      theLoc,
 // function : Translate
 // purpose  : .. from Persistent to Transient
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element&    theParent,
+bool XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element&    theParent,
                                                        TopLoc_Location&            theLoc,
                                                        XmlObjMgt_RRelocationTable& theMap) const
 {
   XmlObjMgt_Element aLocElem = XmlObjMgt::FindChildByName(theParent, ::LocationString());
   if (aLocElem == NULL)
-    return Standard_False;
+    return false;
 
-  Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
+  int aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
   if (aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == 0)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer       aPower;
-  Handle(TopLoc_Datum3D) aDatum;
+  int       aPower;
+  occ::handle<TopLoc_Datum3D> aDatum;
 
   if (aFileVer >= TDocStd_FormatVersion_VERSION_6)
   {
     //  Get Location ID
-    Standard_Integer anId;
+    int anId;
     aLocElem.getAttribute(::LocIdString()).GetInteger(anId);
 
     const TopLoc_Location& aLoc = myLocations->Location(anId);
@@ -161,12 +161,12 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element& 
     XmlObjMgt_Persistent aPD(aLocElem, ::DatumString());
     if (aPD.Id() <= 0)
     {
-      Standard_Integer aDatumID;
+      int aDatumID;
       aLocElem.getAttribute(::DatumString()).GetInteger(aDatumID);
       if (aDatumID > 0 && theMap.IsBound(aDatumID))
-        aDatum = Handle(TopLoc_Datum3D)::DownCast(theMap.Find(aDatumID));
+        aDatum = occ::down_cast<TopLoc_Datum3D>(theMap.Find(aDatumID));
       else
-        return Standard_False;
+        return false;
     }
     else
     {
@@ -183,5 +183,5 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate(const XmlObjMgt_Element& 
 
   //  Calculate the result
   theLoc = aNextLoc * TopLoc_Location(aDatum).Powered(aPower);
-  return Standard_True;
+  return true;
 }

@@ -27,9 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
 IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol() {}
 
-void IGESDimen_GeneralSymbol::Init(const Handle(IGESDimen_GeneralNote)&          aNote,
-                                   const Handle(IGESData_HArray1OfIGESEntity)&   allGeoms,
-                                   const Handle(IGESDimen_HArray1OfLeaderArrow)& allLeaders)
+void IGESDimen_GeneralSymbol::Init(const occ::handle<IGESDimen_GeneralNote>&          aNote,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allGeoms,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders)
 {
   if (!allGeoms.IsNull() && allGeoms->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDimen_GeneralSymbol : Init");
@@ -43,40 +43,40 @@ void IGESDimen_GeneralSymbol::Init(const Handle(IGESDimen_GeneralNote)&         
   //  FormNumber specifies the Nature of the Symbol, see G.14 (0-3 or > 5000)
 }
 
-void IGESDimen_GeneralSymbol::SetFormNumber(const Standard_Integer form)
+void IGESDimen_GeneralSymbol::SetFormNumber(const int form)
 {
   if ((form < 0 || form > 3) && form < 5000)
     throw Standard_OutOfRange("IGESDimen_GeneralSymbol : SetFormNumber");
   InitTypeAndForm(228, form);
 }
 
-Standard_Boolean IGESDimen_GeneralSymbol::HasNote() const
+bool IGESDimen_GeneralSymbol::HasNote() const
 {
   return (!theNote.IsNull());
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_GeneralSymbol::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_GeneralSymbol::Note() const
 {
   return theNote;
 }
 
-Standard_Integer IGESDimen_GeneralSymbol::NbGeomEntities() const
+int IGESDimen_GeneralSymbol::NbGeomEntities() const
 {
   return theGeoms->Length();
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_GeneralSymbol::GeomEntity(const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESDimen_GeneralSymbol::GeomEntity(const int Index) const
 {
   return theGeoms->Value(Index);
 }
 
-Standard_Integer IGESDimen_GeneralSymbol::NbLeaders() const
+int IGESDimen_GeneralSymbol::NbLeaders() const
 {
   return (theLeaders.IsNull() ? 0 : theLeaders->Length());
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_GeneralSymbol::LeaderArrow(
-  const Standard_Integer Index) const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_GeneralSymbol::LeaderArrow(
+  const int Index) const
 {
   return theLeaders->Value(Index);
 }

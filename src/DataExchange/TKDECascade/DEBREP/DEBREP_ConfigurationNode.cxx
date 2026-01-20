@@ -38,7 +38,7 @@ DEBREP_ConfigurationNode::DEBREP_ConfigurationNode()
 
 //=================================================================================================
 
-DEBREP_ConfigurationNode::DEBREP_ConfigurationNode(const Handle(DEBREP_ConfigurationNode)& theNode)
+DEBREP_ConfigurationNode::DEBREP_ConfigurationNode(const occ::handle<DEBREP_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -46,7 +46,7 @@ DEBREP_ConfigurationNode::DEBREP_ConfigurationNode(const Handle(DEBREP_Configura
 
 //=================================================================================================
 
-bool DEBREP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DEBREP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -119,14 +119,14 @@ TCollection_AsciiString DEBREP_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DEBREP_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DEBREP_ConfigurationNode::Copy() const
 {
   return new DEBREP_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DEBREP_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DEBREP_ConfigurationNode::BuildProvider()
 {
   return new DEBREP_Provider(this);
 }
@@ -161,16 +161,16 @@ TCollection_AsciiString DEBREP_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DEBREP_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DEBREP_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("brep");
   return anExt;
 }
 
 //=================================================================================================
 
-bool DEBREP_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+bool DEBREP_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 20)
   {

@@ -27,10 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Deflection, Standard_Transient)
 
 //=================================================================================================
 
-Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
+double BRepMesh_Deflection::ComputeAbsoluteDeflection(
   const TopoDS_Shape& theShape,
-  const Standard_Real theRelativeDeflection,
-  const Standard_Real theMaxShapeSize)
+  const double theRelativeDeflection,
+  const double theMaxShapeSize)
 {
   if (theShape.IsNull())
   {
@@ -38,19 +38,19 @@ Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
   }
 
   Bnd_Box aBox;
-  BRepBndLib::Add(theShape, aBox, Standard_False);
+  BRepBndLib::Add(theShape, aBox, false);
 
-  Standard_Real aShapeSize = theRelativeDeflection;
+  double aShapeSize = theRelativeDeflection;
   BRepMesh_ShapeTool::BoxMaxDimension(aBox, aShapeSize);
 
   // Adjust resulting value in relation to the total size
 
-  Standard_Real aX1, aY1, aZ1, aX2, aY2, aZ2;
+  double aX1, aY1, aZ1, aX2, aY2, aZ2;
   aBox.Get(aX1, aY1, aZ1, aX2, aY2, aZ2);
-  const Standard_Real aMaxShapeSize =
+  const double aMaxShapeSize =
     (theMaxShapeSize > 0.0) ? theMaxShapeSize : std::max(aX2 - aX1, std::max(aY2 - aY1, aZ2 - aZ1));
 
-  Standard_Real anAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
+  double anAdjustmentCoefficient = aMaxShapeSize / (2 * aShapeSize);
   if (anAdjustmentCoefficient < 0.5)
   {
     anAdjustmentCoefficient = 0.5;
@@ -66,11 +66,11 @@ Standard_Real BRepMesh_Deflection::ComputeAbsoluteDeflection(
 //=================================================================================================
 
 void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEdge,
-                                            const Standard_Real           theMaxShapeSize,
+                                            const double           theMaxShapeSize,
                                             const IMeshTools_Parameters&  theParameters)
 {
-  const Standard_Real aAngDeflection = theParameters.Angle;
-  Standard_Real       aLinDeflection =
+  const double aAngDeflection = theParameters.Angle;
+  double       aLinDeflection =
     !theParameters.Relative
             ? theParameters.Deflection
             : ComputeAbsoluteDeflection(theDEdge->GetEdge(), theParameters.Deflection, theMaxShapeSize);
@@ -80,17 +80,17 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEd
   TopoDS_Vertex aFirstVertex, aLastVertex;
   TopExp::Vertices(anEdge, aFirstVertex, aLastVertex);
 
-  Handle(Geom_Curve) aCurve;
-  Standard_Real      aFirstParam, aLastParam;
+  occ::handle<Geom_Curve> aCurve;
+  double      aFirstParam, aLastParam;
   if (BRepMesh_ShapeTool::Range(anEdge, aCurve, aFirstParam, aLastParam))
   {
-    const Standard_Real aDistF =
+    const double aDistF =
       aFirstVertex.IsNull() ? -1.0
                             : BRep_Tool::Pnt(aFirstVertex).Distance(aCurve->Value(aFirstParam));
-    const Standard_Real aDistL =
+    const double aDistL =
       aLastVertex.IsNull() ? -1.0 : BRep_Tool::Pnt(aLastVertex).Distance(aCurve->Value(aLastParam));
 
-    const Standard_Real aVertexAdjustDistance = std::max(aDistF, aDistL);
+    const double aVertexAdjustDistance = std::max(aDistF, aDistL);
 
     aLinDeflection = std::max(aVertexAdjustDistance, aLinDeflection);
   }
@@ -104,10 +104,10 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IEdgeHandle& theDEd
 void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IWireHandle& theDWire,
                                             const IMeshTools_Parameters&  theParameters)
 {
-  Standard_Real aWireDeflection = 0.;
+  double aWireDeflection = 0.;
   if (theDWire->EdgesNb() > 0)
   {
-    for (Standard_Integer aEdgeIt = 0; aEdgeIt < theDWire->EdgesNb(); ++aEdgeIt)
+    for (int aEdgeIt = 0; aEdgeIt < theDWire->EdgesNb(); ++aEdgeIt)
     {
       aWireDeflection += theDWire->GetEdge(aEdgeIt)->GetDeflection();
     }
@@ -127,18 +127,18 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IWireHandle& theDWi
 void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IFaceHandle& theDFace,
                                             const IMeshTools_Parameters&  theParameters)
 {
-  Standard_Real aDeflection = theParameters.DeflectionInterior;
+  double aDeflection = theParameters.DeflectionInterior;
   if (theParameters.Relative)
   {
     aDeflection = ComputeAbsoluteDeflection(theDFace->GetFace(), aDeflection, -1.0);
   }
 
-  Standard_Real aFaceDeflection = 0.0;
+  double aFaceDeflection = 0.0;
   if (!theParameters.ForceFaceDeflection)
   {
     if (theDFace->WiresNb() > 0)
     {
-      for (Standard_Integer aWireIt = 0; aWireIt < theDFace->WiresNb(); ++aWireIt)
+      for (int aWireIt = 0; aWireIt < theDFace->WiresNb(); ++aWireIt)
       {
         aFaceDeflection += theDFace->GetWire(aWireIt)->GetDeflection();
       }
@@ -156,14 +156,14 @@ void BRepMesh_Deflection::ComputeDeflection(const IMeshData::IFaceHandle& theDFa
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_Deflection::IsConsistent(const Standard_Real    theCurrent,
-                                                   const Standard_Real    theRequired,
-                                                   const Standard_Boolean theAllowDecrease,
-                                                   const Standard_Real    theRatio)
+bool BRepMesh_Deflection::IsConsistent(const double    theCurrent,
+                                                   const double    theRequired,
+                                                   const bool theAllowDecrease,
+                                                   const double    theRatio)
 {
   // Check if the deflection of existing polygonal representation
   // fits the required deflection.
-  Standard_Boolean isConsistent =
+  bool isConsistent =
     theCurrent < (1. + theRatio) * theRequired
     && (!theAllowDecrease || theCurrent > (1. - theRatio) * theRequired);
   return isConsistent;

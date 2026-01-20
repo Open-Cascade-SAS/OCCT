@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ExternFile, Standard_Transient)
 
 STEPCAFControl_ExternFile::STEPCAFControl_ExternFile()
     : myLoadStatus(IFSelect_RetVoid),
-      myTransferStatus(Standard_False),
+      myTransferStatus(false),
       myWriteStatus(IFSelect_RetVoid)
 {
 }

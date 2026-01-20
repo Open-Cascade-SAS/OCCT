@@ -19,17 +19,18 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <math_KronrodSingleIntegration.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //==========================================================================
 // function : Constructor
 //==========================================================================
 BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -44,9 +45,9 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
 BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        const gp_Pnt&          thePoint,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -61,9 +62,9 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
 BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        BRepGProp_Domain&      theDomain,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -79,9 +80,9 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        BRepGProp_Domain&      theDomain,
                                        const gp_Pnt&          thePoint,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -96,9 +97,9 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
 BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        const gp_Pln&          thePlane,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -114,9 +115,9 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
                                        BRepGProp_Domain&      theDomain,
                                        const gp_Pln&          thePlane,
                                        const gp_Pnt&          theLocation,
-                                       const Standard_Real    theTolerance,
-                                       const Standard_Boolean theCGFlag,
-                                       const Standard_Boolean theIFlag)
+                                       const double    theTolerance,
+                                       const bool theCGFlag,
+                                       const bool theIFlag)
     : myErrorReached(0.)
 {
   SetLocation(theLocation);
@@ -128,15 +129,15 @@ BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
-  Standard_Real aShift[] = {0., 0., 0.};
+  double aShift[] = {0., 0., 0.};
 
-  return PrivatePerform(theSurface, NULL, Standard_True, aShift, theTolerance, theCGFlag, theIFlag);
+  return PrivatePerform(theSurface, NULL, true, aShift, theTolerance, theCGFlag, theIFlag);
 }
 
 //==========================================================================
@@ -144,19 +145,19 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
                                           const gp_Pnt&          thePoint,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
   gp_XYZ        aXYZ(thePoint.XYZ().Subtracted(loc.XYZ()));
-  Standard_Real aShift[3];
+  double aShift[3];
 
   aXYZ.Coord(aShift[0], aShift[1], aShift[2]);
 
-  return PrivatePerform(theSurface, NULL, Standard_True, aShift, theTolerance, theCGFlag, theIFlag);
+  return PrivatePerform(theSurface, NULL, true, aShift, theTolerance, theCGFlag, theIFlag);
 }
 
 //==========================================================================
@@ -164,18 +165,18 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
                                           BRepGProp_Domain&      theDomain,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
-  Standard_Real aShift[] = {0., 0., 0.};
+  double aShift[] = {0., 0., 0.};
 
   return PrivatePerform(theSurface,
                         &theDomain,
-                        Standard_True,
+                        true,
                         aShift,
                         theTolerance,
                         theCGFlag,
@@ -187,22 +188,22 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
                                           BRepGProp_Domain&      theDomain,
                                           const gp_Pnt&          thePoint,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
   gp_XYZ        aXYZ(thePoint.XYZ().Subtracted(loc.XYZ()));
-  Standard_Real aShift[3];
+  double aShift[3];
 
   aXYZ.Coord(aShift[0], aShift[1], aShift[2]);
 
   return PrivatePerform(theSurface,
                         &theDomain,
-                        Standard_True,
+                        true,
                         aShift,
                         theTolerance,
                         theCGFlag,
@@ -214,17 +215,17 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
                                           const gp_Pln&          thePlane,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
-  Standard_Real aCoeff[4];
-  Standard_Real aXLoc;
-  Standard_Real aYLoc;
-  Standard_Real aZLoc;
+  double aCoeff[4];
+  double aXLoc;
+  double aYLoc;
+  double aZLoc;
 
   loc.Coord(aXLoc, aYLoc, aZLoc);
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
@@ -232,7 +233,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 
   return PrivatePerform(theSurface,
                         NULL,
-                        Standard_False,
+                        false,
                         aCoeff,
                         theTolerance,
                         theCGFlag,
@@ -244,18 +245,18 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
+double BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
                                           BRepGProp_Domain&      theDomain,
                                           const gp_Pln&          thePlane,
-                                          const Standard_Real    theTolerance,
-                                          const Standard_Boolean theCGFlag,
-                                          const Standard_Boolean theIFlag)
+                                          const double    theTolerance,
+                                          const bool theCGFlag,
+                                          const bool theIFlag)
 
 {
-  Standard_Real aCoeff[4];
-  Standard_Real aXLoc;
-  Standard_Real aYLoc;
-  Standard_Real aZLoc;
+  double aCoeff[4];
+  double aXLoc;
+  double aYLoc;
+  double aZLoc;
 
   loc.Coord(aXLoc, aYLoc, aZLoc);
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
@@ -263,7 +264,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 
   return PrivatePerform(theSurface,
                         &theDomain,
-                        Standard_False,
+                        false,
                         aCoeff,
                         theTolerance,
                         theCGFlag,
@@ -275,22 +276,22 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face&        theSurface,
 //           Compute the properties.
 //==========================================================================
 
-Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurface,
-                                                 const Standard_Address thePtrDomain,
-                                                 const Standard_Boolean IsByPoint,
-                                                 const Standard_Real*   theCoeffs,
-                                                 const Standard_Real    theTolerance,
-                                                 const Standard_Boolean theCGFlag,
-                                                 const Standard_Boolean theIFlag)
+double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurface,
+                                                 void* const thePtrDomain,
+                                                 const bool IsByPoint,
+                                                 const double*   theCoeffs,
+                                                 const double    theTolerance,
+                                                 const bool theCGFlag,
+                                                 const bool theIFlag)
 
 {
 
-  const Standard_Real  aTTol   = 1.e-9;
-  const Standard_Real* aCoeffs = theCoeffs;
+  const double  aTTol   = 1.e-9;
+  const double* aCoeffs = theCoeffs;
 
   // Compute the number of 2d bounding curves of the face.
   BRepGProp_Domain* aPDomain  = NULL;
-  Standard_Integer  aNbCurves = 0;
+  int  aNbCurves = 0;
 
   // If the pointer to the domain is NULL, there is only one curve to treat:
   // U isoline with the UMax parameter.
@@ -311,53 +312,53 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
     return myErrorReached;
   }
 
-  // Standard_Real    aCrvTol = 0.5*theTolerance/aNbCurves;
-  Standard_Real           aCrvTol = 0.1 * theTolerance;
-  Standard_Real           aUMin;
-  Standard_Real           aUMax;
-  Standard_Real           aTMin;
-  Standard_Real           aTMax;
-  Standard_Integer        aNbPnts;
-  Standard_Integer        aNbMaxIter = 1000;
-  Standard_Integer        aNbVal     = 10;
-  Standard_Integer        k;
+  // double    aCrvTol = 0.5*theTolerance/aNbCurves;
+  double           aCrvTol = 0.1 * theTolerance;
+  double           aUMin;
+  double           aUMax;
+  double           aTMin;
+  double           aTMax;
+  int        aNbPnts;
+  int        aNbMaxIter = 1000;
+  int        aNbVal     = 10;
+  int        k;
   math_Vector             aLocalValue(1, aNbVal);
   math_Vector             aLocalTolReached(1, aNbVal);
   math_Vector             aValue(1, aNbVal);
   math_Vector             aTolReached(1, aNbVal);
-  TColStd_Array1OfBoolean CFlags(1, aNbVal);
-  CFlags.Init(Standard_False);
-  Standard_Boolean isMore;
+  NCollection_Array1<bool> CFlags(1, aNbVal);
+  CFlags.Init(false);
+  bool isMore;
 
   // aNbVal = 1;
   aValue.Init(0.);
   aTolReached.Init(0.);
 
-  CFlags.Init(Standard_False);
-  CFlags(1) = Standard_True;
+  CFlags.Init(false);
+  CFlags(1) = true;
 
   if (theCGFlag || theIFlag)
   {
-    Standard_Integer i;
+    int i;
     for (i = 2; i <= 4; ++i)
     {
-      CFlags(i) = Standard_True;
+      CFlags(i) = true;
     }
   }
 
   if (theIFlag)
   {
-    Standard_Integer i;
+    int i;
     for (i = 5; i <= 10; ++i)
     {
-      CFlags(i) = Standard_True;
+      CFlags(i) = true;
     }
   }
 
   theSurface.Bounds(aUMin, aUMax, aTMin, aTMax);
 
   if (thePtrDomain == NULL)
-    isMore = Standard_True;
+    isMore = true;
   else
   {
     aPDomain->Init();
@@ -370,7 +371,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
     // U isoline with the UMax parameter.
 
     if (thePtrDomain == NULL)
-      theSurface.Load(Standard_False, GeomAbs_IsoU);
+      theSurface.Load(false, GeomAbs_IsoU);
     else
       theSurface.Load(aPDomain->Value());
 
@@ -378,15 +379,15 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
     aTMax = theSurface.LastParameter();
 
     // Get the spans on the curve.
-    Handle(TColStd_HArray1OfReal) aTKnots;
+    occ::handle<NCollection_HArray1<double>> aTKnots;
     BRepGProp_TFunction           aTFunc(theSurface, loc, IsByPoint, theCoeffs, aUMin, aCrvTol);
 
     theSurface.GetTKnots(aTMin, aTMax, aTKnots);
 
-    Standard_Integer iU            = aTKnots->Upper();
-    Standard_Integer aNbTIntervals = aTKnots->Length() - 1;
-    // Standard_Real                 aTolSpan       = aCrvTol/aNbTIntervals;
-    Standard_Real                 aTolSpan = 0.9 * theTolerance; // Relative error
+    int iU            = aTKnots->Upper();
+    int aNbTIntervals = aTKnots->Length() - 1;
+    // double                 aTolSpan       = aCrvTol/aNbTIntervals;
+    double                 aTolSpan = 0.9 * theTolerance; // Relative error
     math_KronrodSingleIntegration anIntegral;
     GProp_ValueType               aValueType;
 
@@ -404,7 +405,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
       if (!CFlags(k))
         continue;
 
-      Standard_Integer i = aTKnots->Lower();
+      int i = aTKnots->Lower();
 
       switch (k)
       {
@@ -445,13 +446,13 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
       }
       aTFunc.SetValueType(aValueType);
 
-      Standard_Real err1 = 0.;
+      double err1 = 0.;
       while (i < iU)
       {
 
         // std::cout << "-------------- Span " << i << " nbp: " << aNbPnts << std::endl;
-        Standard_Real aT1 = aTKnots->Value(i++);
-        Standard_Real aT2 = aTKnots->Value(i);
+        double aT1 = aTKnots->Value(i++);
+        double aT2 = aTKnots->Value(i);
 
         if (aT2 - aT1 < aTTol)
           continue;
@@ -484,7 +485,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
     // If the pointer to the domain is NULL, there is only one curve to treat:
     // U isoline with the UMax parameter.
     if (thePtrDomain == NULL)
-      isMore = Standard_False;
+      isMore = false;
     else
     {
       aPDomain->Next();
@@ -496,8 +497,8 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face&        theSurfa
   dim                    = aValue(1);
   myErrorReached         = aTolReached(1);
   myAbsolutError         = myErrorReached;
-  Standard_Real anAbsDim = std::abs(dim);
-  Standard_Real aVolTol  = Epsilon(myAbsolutError);
+  double anAbsDim = std::abs(dim);
+  double aVolTol  = Epsilon(myAbsolutError);
   if (anAbsDim >= aVolTol)
     myErrorReached /= anAbsDim;
 

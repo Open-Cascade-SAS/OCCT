@@ -43,15 +43,15 @@ public:
   //! point P and the segment [Uinf,Usup] of the line C.
   Standard_EXPORT Extrema_ExtPElC(const gp_Pnt&       P,
                                   const gp_Lin&       C,
-                                  const Standard_Real Tol,
-                                  const Standard_Real Uinf,
-                                  const Standard_Real Usup);
+                                  const double Tol,
+                                  const double Uinf,
+                                  const double Usup);
 
   Standard_EXPORT void Perform(const gp_Pnt&       P,
                                const gp_Lin&       C,
-                               const Standard_Real Tol,
-                               const Standard_Real Uinf,
-                               const Standard_Real Usup);
+                               const double Tol,
+                               const double Uinf,
+                               const double Usup);
 
   //! Calculates the 2 extremum distances between the
   //! point P and the segment [Uinf,Usup] of the circle C.
@@ -66,15 +66,15 @@ public:
   //! the range [Uinf,Uinf+2.*PI[ are computed.
   Standard_EXPORT Extrema_ExtPElC(const gp_Pnt&       P,
                                   const gp_Circ&      C,
-                                  const Standard_Real Tol,
-                                  const Standard_Real Uinf,
-                                  const Standard_Real Usup);
+                                  const double Tol,
+                                  const double Uinf,
+                                  const double Usup);
 
   Standard_EXPORT void Perform(const gp_Pnt&       P,
                                const gp_Circ&      C,
-                               const Standard_Real Tol,
-                               const Standard_Real Uinf,
-                               const Standard_Real Usup);
+                               const double Tol,
+                               const double Uinf,
+                               const double Usup);
 
   //! Calculates the 4 extremum distances between the
   //! point P and the segment [Uinf,Usup] of the ellipse C.
@@ -90,15 +90,15 @@ public:
   //! the range [Uinf,Uinf+2.*PI[ are computed.
   Standard_EXPORT Extrema_ExtPElC(const gp_Pnt&       P,
                                   const gp_Elips&     C,
-                                  const Standard_Real Tol,
-                                  const Standard_Real Uinf,
-                                  const Standard_Real Usup);
+                                  const double Tol,
+                                  const double Uinf,
+                                  const double Usup);
 
   Standard_EXPORT void Perform(const gp_Pnt&       P,
                                const gp_Elips&     C,
-                               const Standard_Real Tol,
-                               const Standard_Real Uinf,
-                               const Standard_Real Usup);
+                               const double Tol,
+                               const double Uinf,
+                               const double Usup);
 
   //! Calculates the extremum distances between the
   //! point P and the segment [Uinf,Usup] of the hyperbola
@@ -108,15 +108,15 @@ public:
   //! dist(C(u),C(v)) < Tol.
   Standard_EXPORT Extrema_ExtPElC(const gp_Pnt&       P,
                                   const gp_Hypr&      C,
-                                  const Standard_Real Tol,
-                                  const Standard_Real Uinf,
-                                  const Standard_Real Usup);
+                                  const double Tol,
+                                  const double Uinf,
+                                  const double Usup);
 
   Standard_EXPORT void Perform(const gp_Pnt&       P,
                                const gp_Hypr&      C,
-                               const Standard_Real Tol,
-                               const Standard_Real Uinf,
-                               const Standard_Real Usup);
+                               const double Tol,
+                               const double Uinf,
+                               const double Usup);
 
   //! Calculates the 4 extremum distances between the
   //! point P and the segment [Uinf,Usup] of the parabola
@@ -126,38 +126,37 @@ public:
   //! dist(C(u),C(v)) < Tol.
   Standard_EXPORT Extrema_ExtPElC(const gp_Pnt&       P,
                                   const gp_Parab&     C,
-                                  const Standard_Real Tol,
-                                  const Standard_Real Uinf,
-                                  const Standard_Real Usup);
+                                  const double Tol,
+                                  const double Uinf,
+                                  const double Usup);
 
   Standard_EXPORT void Perform(const gp_Pnt&       P,
                                const gp_Parab&     C,
-                               const Standard_Real Tol,
-                               const Standard_Real Uinf,
-                               const Standard_Real Usup);
+                               const double Tol,
+                               const double Uinf,
+                               const double Usup);
 
   //! True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns True if the Nth extremum distance is a
   //! minimum.
-  Standard_EXPORT Standard_Boolean IsMin(const Standard_Integer N) const;
+  Standard_EXPORT bool IsMin(const int N) const;
 
   //! Returns the point of the Nth extremum distance.
-  Standard_EXPORT const Extrema_POnCurv& Point(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnCurv& Point(const int N) const;
 
-protected:
 private:
-  Standard_Boolean myDone;
-  Standard_Integer myNbExt;
-  Standard_Real    mySqDist[4];
-  Standard_Boolean myIsMin[4];
+  bool myDone;
+  int myNbExt;
+  double    mySqDist[4];
+  bool myIsMin[4];
   Extrema_POnCurv  myPoint[4];
 };
 

@@ -14,21 +14,21 @@
 
 //=================================================================================================
 
-inline void TCollection_HAsciiString::AssignCat(const Standard_CString other)
+inline void TCollection_HAsciiString::AssignCat(const char* const other)
 {
   myString.AssignCat(other);
 }
 
 //=================================================================================================
 
-inline void TCollection_HAsciiString::AssignCat(const Handle(TCollection_HAsciiString)& other)
+inline void TCollection_HAsciiString::AssignCat(const occ::handle<TCollection_HAsciiString>& other)
 {
   myString.AssignCat(other->String());
 }
 
 //=================================================================================================
 
-inline Standard_Integer TCollection_HAsciiString::Length() const
+inline int TCollection_HAsciiString::Length() const
 {
   return myString.Length();
 }
@@ -41,7 +41,7 @@ inline const TCollection_AsciiString& TCollection_HAsciiString::String() const
 }
 
 // ----------------------------------------------------------------------------
-inline Standard_CString TCollection_HAsciiString::ToCString() const
+inline const char* TCollection_HAsciiString::ToCString() const
 {
   return myString.ToCString();
 }
@@ -49,9 +49,9 @@ inline Standard_CString TCollection_HAsciiString::ToCString() const
 namespace std
 {
 template <>
-struct hash<Handle(TCollection_HAsciiString)>
+struct hash<occ::handle<TCollection_HAsciiString>>
 {
-  size_t operator()(const Handle(TCollection_HAsciiString)& theString) const
+  size_t operator()(const occ::handle<TCollection_HAsciiString>& theString) const
   {
     if (theString.IsNull())
       return 0;
@@ -60,10 +60,10 @@ struct hash<Handle(TCollection_HAsciiString)>
 };
 
 template <>
-struct equal_to<Handle(TCollection_HAsciiString)>
+struct equal_to<occ::handle<TCollection_HAsciiString>>
 {
-  bool operator()(const Handle(TCollection_HAsciiString)& theString1,
-                  const Handle(TCollection_HAsciiString)& theString2) const
+  bool operator()(const occ::handle<TCollection_HAsciiString>& theString1,
+                  const occ::handle<TCollection_HAsciiString>& theString2) const
   {
     return theString1 == theString2
            || (!theString1.IsNull() && !theString2.IsNull()

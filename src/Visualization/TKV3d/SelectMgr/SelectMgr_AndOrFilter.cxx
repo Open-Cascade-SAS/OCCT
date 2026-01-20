@@ -14,7 +14,8 @@
 #include <SelectMgr_AndOrFilter.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <NCollection_List.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 
@@ -29,37 +30,37 @@ SelectMgr_AndOrFilter::SelectMgr_AndOrFilter(const SelectMgr_FilterType theFilte
 
 //=================================================================================================
 
-void SelectMgr_AndOrFilter::SetDisabledObjects(const Handle(Graphic3d_NMapOfTransient)& theObjects)
+void SelectMgr_AndOrFilter::SetDisabledObjects(const occ::handle<NCollection_Shared<NCollection_Map<const Standard_Transient*>>>& theObjects)
 {
   myDisabledObjects = theObjects;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_AndOrFilter::IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
+bool SelectMgr_AndOrFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& theObj) const
 {
   const SelectMgr_SelectableObject* aSelectable = theObj->Selectable().operator->();
   if (!myDisabledObjects.IsNull() && myDisabledObjects->Contains(aSelectable))
   {
-    return Standard_False;
+    return false;
   }
 
-  for (SelectMgr_ListIteratorOfListOfFilter anIter(myFilters); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator anIter(myFilters); anIter.More(); anIter.Next())
   {
-    Standard_Boolean isOK = anIter.Value()->IsOk(theObj);
+    bool isOK = anIter.Value()->IsOk(theObj);
     if (isOK && myFilterType == SelectMgr_FilterType_OR)
     {
-      return Standard_True;
+      return true;
     }
     else if (!isOK && myFilterType == SelectMgr_FilterType_AND)
     {
-      return Standard_False;
+      return false;
     }
   }
 
   if (myFilterType == SelectMgr_FilterType_OR && !myFilters.IsEmpty())
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }

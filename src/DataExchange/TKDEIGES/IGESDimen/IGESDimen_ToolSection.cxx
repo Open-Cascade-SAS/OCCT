@@ -33,34 +33,36 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColgp_HArray1OfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDimen_ToolSection::IGESDimen_ToolSection() {}
 
-void IGESDimen_ToolSection::ReadOwnParams(const Handle(IGESDimen_Section)& ent,
-                                          const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& ent,
+                                          const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                           IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  Standard_Integer           datatype;
-  Standard_Real              zDisplacement;
-  Standard_Integer           nbval;
-  Handle(TColgp_HArray1OfXY) dataPoints;
+  int           datatype;
+  double              zDisplacement;
+  int           nbval;
+  occ::handle<NCollection_HArray1<gp_XY>> dataPoints;
 
   // clang-format off
   PR.ReadInteger(PR.Current(), "Interpretation Flag", datatype); //szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of data points", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of data points", nbval);
   if (st && nbval > 0)
-    dataPoints = new TColgp_HArray1OfXY(1, nbval);
+    dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
   else  PR.AddFail("Number of data points: Not Positive");
 
   PR.ReadReal(PR.Current(), "Common Z Displacement", zDisplacement); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
   if (!dataPoints.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       gp_XY tempXY;
       PR.ReadXY(PR.CurrentList(1, 2), "Data Points", tempXY); // szv#4:S4163:12Mar99 `st=` not
@@ -72,36 +74,36 @@ void IGESDimen_ToolSection::ReadOwnParams(const Handle(IGESDimen_Section)& ent,
   ent->Init(datatype, zDisplacement, dataPoints);
 }
 
-void IGESDimen_ToolSection::WriteOwnParams(const Handle(IGESDimen_Section)& ent,
+void IGESDimen_ToolSection::WriteOwnParams(const occ::handle<IGESDimen_Section>& ent,
                                            IGESData_IGESWriter&             IW) const
 {
-  Standard_Integer upper = ent->NbPoints();
+  int upper = ent->NbPoints();
   IW.Send(ent->Datatype());
   IW.Send(upper);
   IW.Send(ent->ZDisplacement());
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
   {
     IW.Send((ent->Point(i)).X());
     IW.Send((ent->Point(i)).Y());
   }
 }
 
-void IGESDimen_ToolSection::OwnShared(const Handle(IGESDimen_Section)& /* ent */,
+void IGESDimen_ToolSection::OwnShared(const occ::handle<IGESDimen_Section>& /* ent */,
                                       Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDimen_ToolSection::OwnCopy(const Handle(IGESDimen_Section)& another,
-                                    const Handle(IGESDimen_Section)& ent,
+void IGESDimen_ToolSection::OwnCopy(const occ::handle<IGESDimen_Section>& another,
+                                    const occ::handle<IGESDimen_Section>& ent,
                                     Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer datatype      = another->Datatype();
-  Standard_Integer nbval         = another->NbPoints();
-  Standard_Real    zDisplacement = another->ZDisplacement();
+  int datatype      = another->Datatype();
+  int nbval         = another->NbPoints();
+  double    zDisplacement = another->ZDisplacement();
 
-  Handle(TColgp_HArray1OfXY) dataPoints = new TColgp_HArray1OfXY(1, nbval);
+  occ::handle<NCollection_HArray1<gp_XY>> dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     gp_Pnt tempPnt = (another->Point(i));
     gp_XY  tempPnt2d(tempPnt.X(), tempPnt.Y());
@@ -111,29 +113,29 @@ void IGESDimen_ToolSection::OwnCopy(const Handle(IGESDimen_Section)& another,
   ent->SetFormNumber(another->FormNumber());
 }
 
-Standard_Boolean IGESDimen_ToolSection::OwnCorrect(const Handle(IGESDimen_Section)& ent) const
+bool IGESDimen_ToolSection::OwnCorrect(const occ::handle<IGESDimen_Section>& ent) const
 {
-  Standard_Boolean res = (ent->RankLineFont() != 1);
+  bool res = (ent->RankLineFont() != 1);
   if (res)
   {
-    Handle(IGESData_LineFontEntity) nulfont;
+    occ::handle<IGESData_LineFontEntity> nulfont;
     ent->InitLineFont(nulfont, 1);
   }
   if (ent->Datatype() == 1)
     return res;
   //  Force DataType = 1 -> reconstruct
-  Standard_Integer nb = ent->NbPoints();
+  int nb = ent->NbPoints();
   if (nb == 0)
-    return Standard_False; // nothing could be done (is this possible?)
-  Handle(TColgp_HArray1OfXY) pts = new TColgp_HArray1OfXY(1, nb);
-  for (Standard_Integer i = 1; i <= nb; i++)
+    return false; // nothing could be done (is this possible?)
+  occ::handle<NCollection_HArray1<gp_XY>> pts = new NCollection_HArray1<gp_XY>(1, nb);
+  for (int i = 1; i <= nb; i++)
     pts->SetValue(i, gp_XY(ent->Point(i).X(), ent->Point(i).Y()));
   ent->Init(1, ent->ZDisplacement(), pts);
-  return Standard_True;
+  return true;
 }
 
 IGESData_DirChecker IGESDimen_ToolSection::DirChecker(
-  const Handle(IGESDimen_Section)& /* ent */) const
+  const occ::handle<IGESDimen_Section>& /* ent */) const
 {
   IGESData_DirChecker DC(106, 31, 38);
   DC.Structure(IGESData_DefVoid);
@@ -145,9 +147,9 @@ IGESData_DirChecker IGESDimen_ToolSection::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolSection::OwnCheck(const Handle(IGESDimen_Section)& ent,
+void IGESDimen_ToolSection::OwnCheck(const occ::handle<IGESDimen_Section>& ent,
                                      const Interface_ShareTool&,
-                                     Handle(Interface_Check)& ach) const
+                                     occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() != 1)
     ach->AddFail("Line Font Pattern != 1");
@@ -157,10 +159,10 @@ void IGESDimen_ToolSection::OwnCheck(const Handle(IGESDimen_Section)& ent,
     ach->AddFail("Number of data points is not even");
 }
 
-void IGESDimen_ToolSection::OwnDump(const Handle(IGESDimen_Section)& ent,
+void IGESDimen_ToolSection::OwnDump(const occ::handle<IGESDimen_Section>& ent,
                                     const IGESData_IGESDumper& /* dumper */,
                                     Standard_OStream&      S,
-                                    const Standard_Integer level) const
+                                    const int level) const
 {
   S << "IGESDimen_Section\n"
     << "Data Type   : " << ent->Datatype() << "  "

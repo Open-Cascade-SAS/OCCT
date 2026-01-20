@@ -35,13 +35,13 @@
 
 //=================================================================================================
 
-void QADNaming::GetShape(const Standard_CString  LabelName,
-                         const Handle(TDF_Data)& DF,
-                         TopTools_ListOfShape&   L)
+void QADNaming::GetShape(const char* const  LabelName,
+                         const occ::handle<TDF_Data>& DF,
+                         NCollection_List<TopoDS_Shape>&   L)
 {
   L.Clear();
   TDF_Label        Label;
-  Standard_Boolean Found = DDF::AddLabel(DF, LabelName, Label);
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (Found)
   {
     TNaming_Iterator it(Label, DF->Transaction());
@@ -54,7 +54,7 @@ void QADNaming::GetShape(const Standard_CString  LabelName,
 
 //=================================================================================================
 
-void QADNaming_BuildMap(TDF_LabelMap& Updated, const TDF_Label& Lab)
+void QADNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& Lab)
 {
   TDF_ChildIterator it(Lab);
   for (; it.More(); it.Next())
@@ -66,11 +66,11 @@ void QADNaming_BuildMap(TDF_LabelMap& Updated, const TDF_Label& Lab)
 
 //=================================================================================================
 
-TopoDS_Shape QADNaming::CurrentShape(const Standard_CString LabelName, const Handle(TDF_Data)& DF)
+TopoDS_Shape QADNaming::CurrentShape(const char* const LabelName, const occ::handle<TDF_Data>& DF)
 {
   TopoDS_Shape     S;
   TDF_Label        Label;
-  Standard_Boolean Found = DDF::AddLabel(DF, LabelName, Label);
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (!Found)
   {
     std::cout << "no labels" << std::endl;
@@ -78,7 +78,7 @@ TopoDS_Shape QADNaming::CurrentShape(const Standard_CString LabelName, const Han
   }
   if (Found)
   {
-    Handle(TNaming_NamedShape) NS;
+    occ::handle<TNaming_NamedShape> NS;
     Label.FindAttribute(TNaming_NamedShape::GetID(), NS);
     S = TNaming_Tool::CurrentShape(NS);
     if (S.IsNull())
@@ -91,18 +91,18 @@ TopoDS_Shape QADNaming::CurrentShape(const Standard_CString LabelName, const Han
 //=================================================================================================
 
 TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&     Shape,
-                                            const Handle(TDF_Data)& DF,
-                                            Standard_Integer&       theStatus)
+                                            const occ::handle<TDF_Data>& DF,
+                                            int&       theStatus)
 {
   theStatus = 0;
-  // Handle(TNaming_UsedShapes) US;
+  // occ::handle<TNaming_UsedShapes> US;
   // DF->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
 
   if (!TNaming_Tool::HasLabel(DF->Root(), Shape))
   {
     return TCollection_AsciiString();
   }
-  Standard_Integer        Transdef;
+  int        Transdef;
   TDF_Label               Lab = TNaming_Tool::Label(DF->Root(), Shape, Transdef);
   TCollection_AsciiString entry;
   TDF_Tool::Entry(Lab, entry);
@@ -119,28 +119,28 @@ TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&     Shape,
 
 //=================================================================================================
 
-Standard_Boolean QADNaming::Entry(const Standard_Address theArguments, TDF_Label& theLabel)
+bool QADNaming::Entry(void* const theArguments, TDF_Label& theLabel)
 {
   const char**     arg = (const char**)theArguments;
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
   {
     std::cout << "Wrong df" << std::endl;
-    return Standard_False;
+    return false;
   }
   DDF::AddLabel(DF, arg[2], theLabel);
   if (!theLabel.IsNull())
-    return Standard_True;
+    return true;
   std::cout << "Wrong entry" << std::endl;
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : IsSameShapes
 // purpose  : IsSameShapes DrawShape1 DrawShape2
 //=======================================================================
-static Standard_Integer QADNaming_IsSameShapes(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int QADNaming_IsSameShapes(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
   if (nb == 3)
@@ -160,8 +160,8 @@ static Standard_Integer QADNaming_IsSameShapes(Draw_Interpretor& di,
 // function : CenterOfShape
 // purpose  : CenterOfShape DrawShape
 //=======================================================================
-static Standard_Integer QADNaming_CenterOfShape(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int QADNaming_CenterOfShape(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb == 2)
@@ -169,7 +169,7 @@ static Standard_Integer QADNaming_CenterOfShape(Draw_Interpretor& di,
     TopoDS_Shape aShape = DBRep::Get(arg[1]);
     if (aShape.IsNull())
       return 1;
-    Standard_Real   x = 0, y = 0, z = 0;
+    double   x = 0, y = 0, z = 0;
     float           all = 0;
     TopExp_Explorer anExp(aShape, TopAbs_VERTEX);
     for (; anExp.More(); anExp.Next(), all++)
@@ -195,10 +195,10 @@ static Standard_Integer QADNaming_CenterOfShape(Draw_Interpretor& di,
 
 void QADNaming::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   QADNaming::BasicCommands(theCommands);
   QADNaming::BuilderCommands(theCommands);

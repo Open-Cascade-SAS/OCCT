@@ -24,9 +24,6 @@
 #include <StepBasic_AheadOrBehind.hxx>
 #include <Standard_Transient.hxx>
 
-class StepBasic_CoordinatedUniversalTimeOffset;
-DEFINE_STANDARD_HANDLE(StepBasic_CoordinatedUniversalTimeOffset, Standard_Transient)
-
 class StepBasic_CoordinatedUniversalTimeOffset : public Standard_Transient
 {
 
@@ -34,22 +31,22 @@ public:
   //! Returns a CoordinatedUniversalTimeOffset
   Standard_EXPORT StepBasic_CoordinatedUniversalTimeOffset();
 
-  Standard_EXPORT void Init(const Standard_Integer        aHourOffset,
-                            const Standard_Boolean        hasAminuteOffset,
-                            const Standard_Integer        aMinuteOffset,
+  Standard_EXPORT void Init(const int        aHourOffset,
+                            const bool        hasAminuteOffset,
+                            const int        aMinuteOffset,
                             const StepBasic_AheadOrBehind aSense);
 
-  Standard_EXPORT void SetHourOffset(const Standard_Integer aHourOffset);
+  Standard_EXPORT void SetHourOffset(const int aHourOffset);
 
-  Standard_EXPORT Standard_Integer HourOffset() const;
+  Standard_EXPORT int HourOffset() const;
 
-  Standard_EXPORT void SetMinuteOffset(const Standard_Integer aMinuteOffset);
+  Standard_EXPORT void SetMinuteOffset(const int aMinuteOffset);
 
   Standard_EXPORT void UnSetMinuteOffset();
 
-  Standard_EXPORT Standard_Integer MinuteOffset() const;
+  Standard_EXPORT int MinuteOffset() const;
 
-  Standard_EXPORT Standard_Boolean HasMinuteOffset() const;
+  Standard_EXPORT bool HasMinuteOffset() const;
 
   Standard_EXPORT void SetSense(const StepBasic_AheadOrBehind aSense);
 
@@ -57,12 +54,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_CoordinatedUniversalTimeOffset, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer        hourOffset;
-  Standard_Integer        minuteOffset;
+  int        hourOffset;
+  int        minuteOffset;
   StepBasic_AheadOrBehind sense;
-  Standard_Boolean        hasMinuteOffset;
+  bool        hasMinuteOffset;
 };
 
 #endif // _StepBasic_CoordinatedUniversalTimeOffset_HeaderFile

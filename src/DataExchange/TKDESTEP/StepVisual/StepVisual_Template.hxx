@@ -22,9 +22,6 @@
 
 #include <StepRepr_Representation.hxx>
 
-class StepVisual_Template;
-DEFINE_STANDARD_HANDLE(StepVisual_Template, StepRepr_Representation)
-
 class StepVisual_Template : public StepRepr_Representation
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_Template, StepRepr_Representation)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_Template_HeaderFile

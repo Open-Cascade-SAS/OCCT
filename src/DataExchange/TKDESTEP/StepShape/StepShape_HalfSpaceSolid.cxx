@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_HalfSpaceSolid, StepGeom_GeometricRepresent
 
 StepShape_HalfSpaceSolid::StepShape_HalfSpaceSolid() {}
 
-void StepShape_HalfSpaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
-                                    const Handle(StepGeom_Surface)&         aBaseSurface,
-                                    const Standard_Boolean                  aAgreementFlag)
+void StepShape_HalfSpaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                    const occ::handle<StepGeom_Surface>&         aBaseSurface,
+                                    const bool                  aAgreementFlag)
 {
   // --- classe own fields ---
   baseSurface   = aBaseSurface;
@@ -30,22 +30,22 @@ void StepShape_HalfSpaceSolid::Init(const Handle(TCollection_HAsciiString)& aNam
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_HalfSpaceSolid::SetBaseSurface(const Handle(StepGeom_Surface)& aBaseSurface)
+void StepShape_HalfSpaceSolid::SetBaseSurface(const occ::handle<StepGeom_Surface>& aBaseSurface)
 {
   baseSurface = aBaseSurface;
 }
 
-Handle(StepGeom_Surface) StepShape_HalfSpaceSolid::BaseSurface() const
+occ::handle<StepGeom_Surface> StepShape_HalfSpaceSolid::BaseSurface() const
 {
   return baseSurface;
 }
 
-void StepShape_HalfSpaceSolid::SetAgreementFlag(const Standard_Boolean aAgreementFlag)
+void StepShape_HalfSpaceSolid::SetAgreementFlag(const bool aAgreementFlag)
 {
   agreementFlag = aAgreementFlag;
 }
 
-Standard_Boolean StepShape_HalfSpaceSolid::AgreementFlag() const
+bool StepShape_HalfSpaceSolid::AgreementFlag() const
 {
   return agreementFlag;
 }

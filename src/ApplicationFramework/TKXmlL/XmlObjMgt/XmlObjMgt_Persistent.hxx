@@ -42,9 +42,9 @@ public:
   //! myElement := <theType id="theID"/>
   Standard_EXPORT void CreateElement(XmlObjMgt_Element&         theParent,
                                      const XmlObjMgt_DOMString& theType,
-                                     const Standard_Integer     theID);
+                                     const int     theID);
 
-  Standard_EXPORT void SetId(const Standard_Integer theId);
+  Standard_EXPORT void SetId(const int theId);
 
   //! return myElement
   const XmlObjMgt_Element& Element() const;
@@ -54,12 +54,11 @@ public:
   XmlObjMgt_Element& Element();
   inline             operator XmlObjMgt_Element&();
 
-  Standard_Integer Id() const;
+  int Id() const;
 
-protected:
 private:
   XmlObjMgt_Element myElement;
-  Standard_Integer  myID;
+  int  myID;
 };
 
 #include <XmlObjMgt_Persistent.lxx>

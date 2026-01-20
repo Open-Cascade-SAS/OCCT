@@ -22,33 +22,33 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_AttributeFilter, SelectMgr_Filter)
 
 AIS_AttributeFilter::AIS_AttributeFilter()
-    : hasC(Standard_False),
-      hasW(Standard_False)
+    : hasC(false),
+      hasW(false)
 {
 }
 
 AIS_AttributeFilter::AIS_AttributeFilter(const Quantity_NameOfColor aCol)
     : myCol(aCol),
-      hasC(Standard_True),
-      hasW(Standard_False)
+      hasC(true),
+      hasW(false)
 {
 }
 
-AIS_AttributeFilter::AIS_AttributeFilter(const Standard_Real aWid)
+AIS_AttributeFilter::AIS_AttributeFilter(const double aWid)
     : myWid(aWid),
-      hasC(Standard_False),
-      hasW(Standard_True)
+      hasC(false),
+      hasW(true)
 {
 }
 
-Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const
+bool AIS_AttributeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const
 {
-  Handle(AIS_InteractiveObject) aSelectable(
-    Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable()));
+  occ::handle<AIS_InteractiveObject> aSelectable(
+    occ::down_cast<AIS_InteractiveObject>(anObj->Selectable()));
   if (aSelectable.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Boolean okstat = Standard_True;
+  bool okstat = true;
   if (hasC && aSelectable->HasColor())
   {
     Quantity_Color aColor;

@@ -23,10 +23,11 @@
 #include <ShapeProcess_Operator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static NCollection_DataMap<TCollection_AsciiString, Handle(ShapeProcess_Operator)> aMapOfOperators;
+static NCollection_DataMap<TCollection_AsciiString, occ::handle<ShapeProcess_Operator>> aMapOfOperators;
 
 namespace
 {
@@ -55,31 +56,31 @@ private:
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess::RegisterOperator(const Standard_CString               name,
-                                                const Handle(ShapeProcess_Operator)& op)
+bool ShapeProcess::RegisterOperator(const char* const               name,
+                                                const occ::handle<ShapeProcess_Operator>& op)
 {
   if (aMapOfOperators.IsBound(name))
   {
 #ifdef OCCT_DEBUG
     std::cout << "Warning: operator with name " << name << " is already registered!" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   aMapOfOperators.Bind(name, op);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess::FindOperator(const Standard_CString         name,
-                                            Handle(ShapeProcess_Operator)& op)
+bool ShapeProcess::FindOperator(const char* const         name,
+                                            occ::handle<ShapeProcess_Operator>& op)
 {
   if (!aMapOfOperators.IsBound(name))
   {
 #ifdef OCCT_DEBUG
     std::cout << "Error: no operator with name " << name << " registered!" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   op = aMapOfOperators.ChangeFind(name);
   return !op.IsNull();
@@ -87,8 +88,8 @@ Standard_Boolean ShapeProcess::FindOperator(const Standard_CString         name,
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& context,
-                                       const Standard_CString              seq,
+bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
+                                       const char* const              seq,
                                        const Message_ProgressRange&        theProgress)
 {
   ScopeLock aSequenceScope(*context, seq);
@@ -106,11 +107,11 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
       Message_Msg SMSG3("SP.Sequence.Warn.NoSeq"); // Sequence %s not found
       context->Messenger()->Send(SMSG3 << seq, Message_Warning);
     }
-    return Standard_False;
+    return false;
   }
-  TColStd_SequenceOfAsciiString sequenceOfOperators;
+  NCollection_Sequence<TCollection_AsciiString> sequenceOfOperators;
   TCollection_AsciiString       oper;
-  Standard_Integer              i;
+  int              i;
   for (i = 1;; i++)
   {
     oper = sequence.Token(" \t,;", i);
@@ -124,7 +125,7 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
   {
     Message_Msg             SMSG0("SP.Sequence.Info.Seq"); // Sequence of operators: %s
     TCollection_AsciiString Seq;
-    for (Standard_Integer i1 = 1; i1 <= sequenceOfOperators.Length(); i1++)
+    for (int i1 = 1; i1 <= sequenceOfOperators.Length(); i1++)
     {
       if (i1 > 1)
         Seq += ",";
@@ -135,7 +136,7 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
   }
 
   // iterate on operators in the sequence
-  Standard_Boolean      isDone = Standard_False;
+  bool      isDone = false;
   Message_ProgressScope aPS(theProgress, NULL, sequenceOfOperators.Length());
   for (i = 1; i <= sequenceOfOperators.Length() && aPS.More(); i++)
   {
@@ -149,7 +150,7 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
       context->Messenger()->Send(SMSG5, Message_Alarm);
     }
 
-    Handle(ShapeProcess_Operator) op;
+    occ::handle<ShapeProcess_Operator> op;
     if (!ShapeProcess::FindOperator(oper.ToCString(), op))
     {
       if (context->TraceLevel() > 0)
@@ -165,7 +166,7 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
     {
       OCC_CATCH_SIGNALS
       if (op->Perform(context, aRange))
-        isDone = Standard_True;
+        isDone = true;
     }
     catch (Standard_Failure const& anException)
     {
@@ -180,30 +181,30 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& conte
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)&  theContext,
+bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>&  theContext,
                                        const ShapeProcess::OperationsFlags& theOperations,
                                        const Message_ProgressRange&         theProgress)
 {
   if (!theContext)
   {
-    return Standard_False;
+    return false;
   }
 
-  std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> anOperators =
+  std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> anOperators =
     getOperators(theOperations);
   if (anOperators.empty())
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean      anIsAnySuccess = Standard_False;
+  bool      anIsAnySuccess = false;
   Message_ProgressScope aProgressScope(theProgress,
                                        nullptr,
-                                       static_cast<Standard_Real>(anOperators.size()));
+                                       static_cast<double>(anOperators.size()));
   for (const auto& anOperator : anOperators)
   {
     const char*                          anOperationName = anOperator.first;
-    const Handle(ShapeProcess_Operator)& anOperation     = anOperator.second;
+    const occ::handle<ShapeProcess_Operator>& anOperation     = anOperator.second;
     Message_ProgressRange                aProgressRange  = aProgressScope.Next();
     ScopeLock anOperationScope(*theContext, anOperationName); // Set operation scope.
     try
@@ -245,10 +246,10 @@ std::pair<ShapeProcess::Operation, bool> ShapeProcess::ToOperationFlag(const cha
 
 //=================================================================================================
 
-std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> ShapeProcess::getOperators(
+std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapeProcess::getOperators(
   const ShapeProcess::OperationsFlags& theFlags)
 {
-  std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> aResult;
+  std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> aResult;
   for (std::underlying_type<Operation>::type anOperation = Operation::First;
        anOperation <= Operation::Last;
        ++anOperation)
@@ -260,7 +261,7 @@ std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> ShapeProcess:
       {
         continue;
       }
-      Handle(ShapeProcess_Operator) anOperator;
+      occ::handle<ShapeProcess_Operator> anOperator;
       if (FindOperator(anOperationName, anOperator))
       {
         aResult.emplace_back(anOperationName, anOperator);

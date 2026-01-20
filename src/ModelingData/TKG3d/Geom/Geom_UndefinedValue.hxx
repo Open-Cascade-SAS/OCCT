@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-class Geom_UndefinedValue;
-DEFINE_STANDARD_HANDLE(Geom_UndefinedValue, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_Geom_UndefinedValue
   #define Geom_UndefinedValue_Raise_if(CONDITION, MESSAGE)                                         \
     if (CONDITION)                                                                                 \

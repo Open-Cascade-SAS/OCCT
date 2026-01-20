@@ -28,8 +28,10 @@
 #include <gp_Dir.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_Triangle.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <BRep_Tool.hxx>
 #include <TopLoc_Location.hxx>
 #include <TDocStd_Document.hxx>
@@ -46,7 +48,7 @@ protected:
   void SetUp() override
   {
     // Initialize provider with default configuration
-    Handle(DESTL_ConfigurationNode) aNode = new DESTL_ConfigurationNode();
+    occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
     myProvider                            = new DESTL_Provider(aNode);
 
     // Create triangulated shape for testing (STL format requires triangulated data)
@@ -54,7 +56,7 @@ protected:
     myTriangularFace = CreateTriangulatedFace();
 
     // Create test document
-    Handle(TDocStd_Application) anApp = new TDocStd_Application();
+    occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
     anApp->NewDocument("BinXCAF", myDocument);
   }
 
@@ -65,9 +67,9 @@ protected:
   }
 
   // Helper method to count shape elements
-  Standard_Integer CountShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
+  int CountShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
   {
-    Standard_Integer aCount = 0;
+    int aCount = 0;
     for (TopExp_Explorer anExplorer(theShape, theType); anExplorer.More(); anExplorer.Next())
     {
       aCount++;
@@ -79,19 +81,19 @@ protected:
   TopoDS_Shape CreateTriangulatedFace()
   {
     // Create vertices for triangulation
-    TColgp_Array1OfPnt aNodes(1, 4);
+    NCollection_Array1<gp_Pnt> aNodes(1, 4);
     aNodes.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));   // Bottom-left
     aNodes.SetValue(2, gp_Pnt(10.0, 0.0, 0.0));  // Bottom-right
     aNodes.SetValue(3, gp_Pnt(10.0, 10.0, 0.0)); // Top-right
     aNodes.SetValue(4, gp_Pnt(0.0, 10.0, 0.0));  // Top-left
 
     // Create triangles (two triangles forming a quad)
-    Poly_Array1OfTriangle aTriangles(1, 2);
+    NCollection_Array1<Poly_Triangle> aTriangles(1, 2);
     aTriangles.SetValue(1, Poly_Triangle(1, 2, 3)); // First triangle
     aTriangles.SetValue(2, Poly_Triangle(1, 3, 4)); // Second triangle
 
     // Create triangulation
-    Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
+    occ::handle<Poly_Triangulation> aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
 
     // Create a simple planar face
     gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
@@ -112,9 +114,9 @@ protected:
   }
 
 protected:
-  Handle(DESTL_Provider)   myProvider;
+  occ::handle<DESTL_Provider>   myProvider;
   TopoDS_Shape             myTriangularFace;
-  Handle(TDocStd_Document) myDocument;
+  occ::handle<TDocStd_Document> myDocument;
 };
 
 // Test basic provider creation and format/vendor information
@@ -154,7 +156,7 @@ TEST_F(DESTL_ProviderTest, StreamShapeWriteRead)
     if (!aReadShape.IsNull())
     {
       // STL should produce faces with triangulation
-      Standard_Integer aReadFaces = CountShapeElements(aReadShape, TopAbs_FACE);
+      int aReadFaces = CountShapeElements(aReadShape, TopAbs_FACE);
       EXPECT_GT(aReadFaces, 0); // Should have faces
     }
   }
@@ -164,7 +166,7 @@ TEST_F(DESTL_ProviderTest, StreamShapeWriteRead)
 TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
 {
   // Add triangulated shape to document
-  Handle(XCAFDoc_ShapeTool) aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
   TDF_Label                 aShapeLabel = aShapeTool->AddShape(myTriangularFace);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
@@ -181,8 +183,8 @@ TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
   if (!aStlContent.empty())
   {
     // Create new document for reading
-    Handle(TDocStd_Application) anApp = new TDocStd_Application();
-    Handle(TDocStd_Document)    aNewDocument;
+    occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+    occ::handle<TDocStd_Document>    aNewDocument;
     anApp->NewDocument("BinXCAF", aNewDocument);
 
     // Read back from stream
@@ -193,8 +195,8 @@ TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
     EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
     // Validate document content
-    Handle(XCAFDoc_ShapeTool) aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-    TDF_LabelSequence         aLabels;
+    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+    NCollection_Sequence<TDF_Label>         aLabels;
     aNewShapeTool->GetShapes(aLabels);
     EXPECT_GT(aLabels.Length(), 0); // Should have at least one shape in document
   }
@@ -205,7 +207,7 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
 {
   // Initialize DE_Wrapper and bind STL provider
   DE_Wrapper                      aWrapper;
-  Handle(DESTL_ConfigurationNode) aNode = new DESTL_ConfigurationNode();
+  occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
 
   // Bind the configured node to wrapper
   EXPECT_TRUE(aWrapper.Bind(aNode));
@@ -235,7 +237,7 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
     DE_Provider::ReadStreamList aReadStreams2;
     aReadStreams2.Append(DE_Provider::ReadStreamNode("test.stl", anIStream2));
 
-    Handle(DESTL_Provider) aDirectProvider = new DESTL_Provider(aNode);
+    occ::handle<DESTL_Provider> aDirectProvider = new DESTL_Provider(aNode);
     TopoDS_Shape           aDirectShape;
     bool                   aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
 
@@ -245,7 +247,7 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
 
     if (aDirectResult && !aDirectShape.IsNull())
     {
-      Standard_Integer aFaces = CountShapeElements(aDirectShape, TopAbs_FACE);
+      int aFaces = CountShapeElements(aDirectShape, TopAbs_FACE);
       EXPECT_GT(aFaces, 0);
     }
   }
@@ -283,7 +285,7 @@ TEST_F(DESTL_ProviderTest, ErrorHandling)
   EXPECT_FALSE(myProvider->Read(anInvalidReadStreams, anInvalidShape));
 
   // Test with null document
-  Handle(TDocStd_Document) aNullDoc;
+  occ::handle<TDocStd_Document> aNullDoc;
   EXPECT_FALSE(myProvider->Write(aWriteStreams, aNullDoc));
   EXPECT_FALSE(myProvider->Read(anEmptyReadStreams, aNullDoc));
 }
@@ -291,15 +293,15 @@ TEST_F(DESTL_ProviderTest, ErrorHandling)
 // Test DESTL configuration modes
 TEST_F(DESTL_ProviderTest, ConfigurationModes)
 {
-  Handle(DESTL_ConfigurationNode) aNode =
-    Handle(DESTL_ConfigurationNode)::DownCast(myProvider->GetNode());
+  occ::handle<DESTL_ConfigurationNode> aNode =
+    occ::down_cast<DESTL_ConfigurationNode>(myProvider->GetNode());
 
   // Test ASCII mode configuration
-  aNode->InternalParameters.WriteAscii = Standard_True;
+  aNode->InternalParameters.WriteAscii = true;
   EXPECT_TRUE(aNode->InternalParameters.WriteAscii);
 
   // Test Binary mode configuration
-  aNode->InternalParameters.WriteAscii = Standard_False;
+  aNode->InternalParameters.WriteAscii = false;
   EXPECT_FALSE(aNode->InternalParameters.WriteAscii);
 
   // Test merge angle configuration
@@ -314,11 +316,11 @@ TEST_F(DESTL_ProviderTest, ConfigurationModes)
 // Test ASCII vs Binary mode configurations
 TEST_F(DESTL_ProviderTest, AsciiVsBinaryModes)
 {
-  Handle(DESTL_ConfigurationNode) aNode =
-    Handle(DESTL_ConfigurationNode)::DownCast(myProvider->GetNode());
+  occ::handle<DESTL_ConfigurationNode> aNode =
+    occ::down_cast<DESTL_ConfigurationNode>(myProvider->GetNode());
 
   // Test ASCII mode
-  aNode->InternalParameters.WriteAscii = Standard_True;
+  aNode->InternalParameters.WriteAscii = true;
 
   std::ostringstream           anAsciiStream;
   DE_Provider::WriteStreamList anAsciiWriteStreams;
@@ -330,7 +332,7 @@ TEST_F(DESTL_ProviderTest, AsciiVsBinaryModes)
   EXPECT_TRUE(anAsciiContent.find("solid") != std::string::npos);
 
   // Test Binary mode
-  aNode->InternalParameters.WriteAscii = Standard_False;
+  aNode->InternalParameters.WriteAscii = false;
 
   std::ostringstream           aBinaryStream;
   DE_Provider::WriteStreamList aBinaryWriteStreams;
@@ -348,7 +350,7 @@ TEST_F(DESTL_ProviderTest, AsciiVsBinaryModes)
 TEST_F(DESTL_ProviderTest, MultipleShapesInDocument)
 {
   // Add triangulated face to document multiple times (to create multiple shapes)
-  Handle(XCAFDoc_ShapeTool) aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
   TDF_Label                 aFaceLabel1 = aShapeTool->AddShape(myTriangularFace);
   TDF_Label aFaceLabel2 = aShapeTool->AddShape(myTriangularFace); // Add same face again
 
@@ -366,8 +368,8 @@ TEST_F(DESTL_ProviderTest, MultipleShapesInDocument)
   EXPECT_FALSE(aStlContent.empty());
 
   // Read back into new document
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
-  Handle(TDocStd_Document)    aNewDocument;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aNewDocument;
   anApp->NewDocument("BinXCAF", aNewDocument);
 
   std::istringstream          anIStream(aStlContent);
@@ -377,8 +379,8 @@ TEST_F(DESTL_ProviderTest, MultipleShapesInDocument)
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
   // Validate document content
-  Handle(XCAFDoc_ShapeTool) aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-  TDF_LabelSequence         aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+  NCollection_Sequence<TDF_Label>         aLabels;
   aNewShapeTool->GetShapes(aLabels);
   EXPECT_GT(aLabels.Length(), 0);
 }
@@ -411,7 +413,7 @@ TEST_F(DESTL_ProviderTest, TriangulatedFaceHandling)
 TEST_F(DESTL_ProviderTest, DE_WrapperFileExtensions)
 {
   DE_Wrapper                      aWrapper;
-  Handle(DESTL_ConfigurationNode) aNode = new DESTL_ConfigurationNode();
+  occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
   EXPECT_TRUE(aWrapper.Bind(aNode));
 
   // Test different STL extensions
@@ -474,8 +476,8 @@ TEST_F(DESTL_ProviderTest, StreamErrorConditions)
 // Test configuration parameter validation
 TEST_F(DESTL_ProviderTest, ConfigurationParameterValidation)
 {
-  Handle(DESTL_ConfigurationNode) aNode =
-    Handle(DESTL_ConfigurationNode)::DownCast(myProvider->GetNode());
+  occ::handle<DESTL_ConfigurationNode> aNode =
+    occ::down_cast<DESTL_ConfigurationNode>(myProvider->GetNode());
 
   // Test valid merge angle
   aNode->InternalParameters.ReadMergeAngle = 30.0;
@@ -489,10 +491,10 @@ TEST_F(DESTL_ProviderTest, ConfigurationParameterValidation)
   EXPECT_DOUBLE_EQ(90.0, aNode->InternalParameters.ReadMergeAngle);
 
   // Test BRep vs triangulation modes
-  aNode->InternalParameters.ReadBRep = Standard_True;
+  aNode->InternalParameters.ReadBRep = true;
   EXPECT_TRUE(aNode->InternalParameters.ReadBRep);
 
-  aNode->InternalParameters.ReadBRep = Standard_False;
+  aNode->InternalParameters.ReadBRep = false;
   EXPECT_FALSE(aNode->InternalParameters.ReadBRep);
 }
 
@@ -500,15 +502,15 @@ TEST_F(DESTL_ProviderTest, ConfigurationParameterValidation)
 TEST_F(DESTL_ProviderTest, MultipleTriangulatedFaces)
 {
   // Create another triangulated face with different geometry
-  TColgp_Array1OfPnt aNodes(1, 3);
+  NCollection_Array1<gp_Pnt> aNodes(1, 3);
   aNodes.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
   aNodes.SetValue(2, gp_Pnt(5.0, 0.0, 0.0));
   aNodes.SetValue(3, gp_Pnt(2.5, 5.0, 0.0));
 
-  Poly_Array1OfTriangle aTriangles(1, 1);
+  NCollection_Array1<Poly_Triangle> aTriangles(1, 1);
   aTriangles.SetValue(1, Poly_Triangle(1, 2, 3));
 
-  Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
+  occ::handle<Poly_Triangulation> aTriangulation = new Poly_Triangulation(aNodes, aTriangles);
 
   gp_Pln                  aPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z));
   BRepBuilderAPI_MakeFace aFaceBuilder(aPlane, 0.0, 5.0, 0.0, 5.0);

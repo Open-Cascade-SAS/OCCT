@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OSD_CachedFileSystem, OSD_FileSystem)
 
 //=================================================================================================
 
-OSD_CachedFileSystem::OSD_CachedFileSystem(const Handle(OSD_FileSystem)& theLinkedFileSystem)
+OSD_CachedFileSystem::OSD_CachedFileSystem(const occ::handle<OSD_FileSystem>& theLinkedFileSystem)
     : myLinkedFS(!theLinkedFileSystem.IsNull() ? theLinkedFileSystem
                                                : OSD_FileSystem::DefaultFileSystem())
 {
@@ -27,14 +27,14 @@ OSD_CachedFileSystem::OSD_CachedFileSystem(const Handle(OSD_FileSystem)& theLink
 
 //=================================================================================================
 
-Standard_Boolean OSD_CachedFileSystem::IsSupportedPath(const TCollection_AsciiString& theUrl) const
+bool OSD_CachedFileSystem::IsSupportedPath(const TCollection_AsciiString& theUrl) const
 {
   return myLinkedFS->IsSupportedPath(theUrl);
 }
 
 //=================================================================================================
 
-Standard_Boolean OSD_CachedFileSystem::IsOpenIStream(
+bool OSD_CachedFileSystem::IsOpenIStream(
   const std::shared_ptr<std::istream>& theStream) const
 {
   return myLinkedFS->IsOpenIStream(theStream);
@@ -42,7 +42,7 @@ Standard_Boolean OSD_CachedFileSystem::IsOpenIStream(
 
 //=================================================================================================
 
-Standard_Boolean OSD_CachedFileSystem::IsOpenOStream(
+bool OSD_CachedFileSystem::IsOpenOStream(
   const std::shared_ptr<std::ostream>& theStream) const
 {
   return myLinkedFS->IsOpenOStream(theStream);

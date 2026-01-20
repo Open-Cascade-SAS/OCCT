@@ -40,18 +40,17 @@ public:
 
   //! Sets the elementary Datum to <D>
   //! Sets the exponent to <P>
-  Standard_EXPORT TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const Standard_Integer P);
+  Standard_EXPORT TopLoc_ItemLocation(const occ::handle<TopLoc_Datum3D>& D, const int P);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   friend class TopLoc_Location;
   friend class TopLoc_SListOfItemLocation;
 
-protected:
 private:
-  Handle(TopLoc_Datum3D) myDatum;
-  Standard_Integer       myPower;
+  occ::handle<TopLoc_Datum3D> myDatum;
+  int       myPower;
   gp_Trsf                myTrsf;
 };
 

@@ -24,9 +24,9 @@
 namespace
 {
 static int              THE_Interface_Category_init = 0;
-static Standard_CString unspec                      = "unspecified";
+static const char* unspec                      = "unspecified";
 
-static volatile Standard_Boolean gMapTypesInit = Standard_False;
+static volatile bool gMapTypesInit = false;
 
 static NCollection_Vector<TCollection_AsciiString>& theCats()
 {
@@ -42,43 +42,43 @@ static std::mutex& GetMapTypesMutex()
 
 } // namespace
 
-Standard_Integer Interface_Category::CatNum(const Handle(Standard_Transient)& theEnt,
+int Interface_Category::CatNum(const occ::handle<Standard_Transient>& theEnt,
                                             const Interface_ShareTool&        theShares)
 {
   if (theEnt.IsNull())
     return 0;
-  Standard_Integer                CN;
-  Handle(Interface_GeneralModule) aModule;
+  int                CN;
+  occ::handle<Interface_GeneralModule> aModule;
   if (!myGTool->Select(theEnt, aModule, CN))
     return 0;
   return aModule->CategoryNumber(CN, theEnt, theShares);
 }
 
-void Interface_Category::Compute(const Handle(Interface_InterfaceModel)& theModel,
+void Interface_Category::Compute(const occ::handle<Interface_InterfaceModel>& theModel,
                                  const Interface_ShareTool&              theShares)
 {
   ClearNums();
   if (theModel.IsNull())
     return;
-  Standard_Integer CN, i, nb = theModel->NbEntities();
+  int CN, i, nb = theModel->NbEntities();
   myGTool->Reservate(nb);
   if (nb == 0)
     return;
-  myNum = new TColStd_HArray1OfInteger(1, nb);
+  myNum = new NCollection_HArray1<int>(1, nb);
   myNum->Init(0);
   for (i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) anEnt = theModel->Value(i);
+    occ::handle<Standard_Transient> anEnt = theModel->Value(i);
     if (anEnt.IsNull())
       continue;
-    Handle(Interface_GeneralModule) aModule;
+    occ::handle<Interface_GeneralModule> aModule;
     if (!myGTool->Select(anEnt, aModule, CN))
       continue;
     myNum->SetValue(i, aModule->CategoryNumber(CN, anEnt, theShares));
   }
 }
 
-Standard_Integer Interface_Category::Num(const Standard_Integer theNumEnt) const
+int Interface_Category::Num(const int theNumEnt) const
 {
   if (myNum.IsNull())
     return 0;
@@ -89,21 +89,21 @@ Standard_Integer Interface_Category::Num(const Standard_Integer theNumEnt) const
 
 // List of Categories
 
-Standard_Integer Interface_Category::AddCategory(const Standard_CString theName)
+int Interface_Category::AddCategory(const char* const theName)
 {
-  Standard_Integer aNum = Interface_Category::Number(theName);
+  int aNum = Interface_Category::Number(theName);
   if (aNum > 0)
     return aNum;
   theCats().Append(TCollection_AsciiString(theName));
   return theCats().Length() + 1;
 }
 
-Standard_Integer Interface_Category::NbCategories()
+int Interface_Category::NbCategories()
 {
   return theCats().Length();
 }
 
-Standard_CString Interface_Category::Name(const Standard_Integer theNum)
+const char* Interface_Category::Name(const int theNum)
 {
   if (theNum < 0)
     return "";
@@ -112,9 +112,9 @@ Standard_CString Interface_Category::Name(const Standard_Integer theNum)
   return theCats().ChangeValue(theNum).ToCString();
 }
 
-Standard_Integer Interface_Category::Number(const Standard_CString theName)
+int Interface_Category::Number(const char* const theName)
 {
-  Standard_Integer i;
+  int i;
   for (i = theCats().Lower(); i <= theCats().Upper(); i++)
   {
     if (theCats().ChangeValue(i).IsEqual(theName))
@@ -147,7 +147,7 @@ void Interface_Category::Init()
       Interface_Category::AddCategory("Kinematics");
       Interface_Category::AddCategory("Piping");
 
-      gMapTypesInit = Standard_True;
+      gMapTypesInit = true;
     }
   }
 }

@@ -24,8 +24,6 @@ class AIS_InteractiveContext;
 class Aspect_Window;
 class V3d_View;
 
-DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, Standard_Transient)
-
 //! used to manage mouse event (move,select)
 //! By default the events are transmitted to interactive context.
 class ViewerTest_EventManager : public Standard_Transient, public AIS_ViewController
@@ -33,43 +31,43 @@ class ViewerTest_EventManager : public Standard_Transient, public AIS_ViewContro
   DEFINE_STANDARD_RTTIEXT(ViewerTest_EventManager, Standard_Transient)
 public:
   //! Return TRUE if View should be closed on escape.
-  static Standard_Boolean& ToCloseViewOnEscape()
+  static bool& ToCloseViewOnEscape()
   {
-    static Standard_Boolean Draw_ToCloseViewOnEsc = Standard_False;
+    static bool Draw_ToCloseViewOnEsc = false;
     return Draw_ToCloseViewOnEsc;
   }
 
   //! Return TRUE if Draw Harness should exit on closing View.
-  static Standard_Boolean& ToExitOnCloseView()
+  static bool& ToExitOnCloseView()
   {
-    static Standard_Boolean Draw_ToExitOnCloseView = Standard_False;
+    static bool Draw_ToExitOnCloseView = false;
     return Draw_ToExitOnCloseView;
   }
 
   //! Use global camera animation object shared across all Views in ViewerTest.
-  Standard_EXPORT static const Handle(AIS_AnimationCamera)& GlobalViewAnimation();
+  Standard_EXPORT static const occ::handle<AIS_AnimationCamera>& GlobalViewAnimation();
 
 public:
   //! Main constructor.
-  Standard_EXPORT ViewerTest_EventManager(const Handle(V3d_View)&               aView,
-                                          const Handle(AIS_InteractiveContext)& aCtx);
+  Standard_EXPORT ViewerTest_EventManager(const occ::handle<V3d_View>&               aView,
+                                          const occ::handle<AIS_InteractiveContext>& aCtx);
 
   //! Destructor.
   Standard_EXPORT virtual ~ViewerTest_EventManager();
 
   //! Setup or adjust window callbacks.
-  Standard_EXPORT static void SetupWindowCallbacks(const Handle(Aspect_Window)& theWin);
+  Standard_EXPORT static void SetupWindowCallbacks(const occ::handle<Aspect_Window>& theWin);
 
   //! Return interactive context.
-  const Handle(AIS_InteractiveContext)& Context() const { return myCtx; }
+  const occ::handle<AIS_InteractiveContext>& Context() const { return myCtx; }
 
   //! Returns TRUE if picking point mode has been enabled (for VPick command).
-  Standard_Boolean ToPickPoint() const { return myToPickPnt; }
+  bool ToPickPoint() const { return myToPickPnt; }
 
   //! Start picking point for VPick command.
   void StartPickPoint(const char* theArgX, const char* theArgY, const char* theArgZ)
   {
-    myToPickPnt        = Standard_True;
+    myToPickPnt        = true;
     myPickPntArgVec[0] = theArgX;
     myPickPntArgVec[1] = theArgY;
     myPickPntArgVec[2] = theArgZ;
@@ -77,50 +75,50 @@ public:
 
   //! Update mouse scroll event.
   Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
-    Standard_OVERRIDE;
+    override;
 
   //! Handle mouse button click event.
-  Standard_EXPORT virtual bool UpdateMouseClick(const Graphic3d_Vec2i& thePoint,
+  Standard_EXPORT virtual bool UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
                                                 Aspect_VKeyMouse       theButton,
                                                 Aspect_VKeyFlags       theModifiers,
-                                                bool theIsDoubleClick) Standard_OVERRIDE;
+                                                bool theIsDoubleClick) override;
 
   //! Handle mouse button press/release event.
-  Standard_EXPORT virtual bool UpdateMouseButtons(const Graphic3d_Vec2i& thePoint,
+  Standard_EXPORT virtual bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
                                                   Aspect_VKeyMouse       theButtons,
                                                   Aspect_VKeyFlags       theModifiers,
-                                                  bool theIsEmulated) Standard_OVERRIDE;
+                                                  bool theIsEmulated) override;
 
   //! Release key.
   Standard_EXPORT virtual void KeyDown(Aspect_VKey theKey,
                                        double      theTime,
-                                       double      thePressure = 1.0) Standard_OVERRIDE;
+                                       double      thePressure = 1.0) override;
 
   //! Release key.
-  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) Standard_OVERRIDE;
+  Standard_EXPORT virtual void KeyUp(Aspect_VKey theKey, double theTime) override;
 
   //! Redraw the View on an Expose Event
-  Standard_EXPORT virtual void ProcessExpose() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessExpose() override;
 
   //! Handle redraw.
-  Standard_EXPORT virtual void handleViewRedraw(const Handle(AIS_InteractiveContext)& theCtx,
-                                                const Handle(V3d_View)& theView) Standard_OVERRIDE;
+  Standard_EXPORT virtual void handleViewRedraw(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                                const occ::handle<V3d_View>& theView) override;
 
   //! Resize View.
-  Standard_EXPORT virtual void ProcessConfigure(bool theIsResized = true) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessConfigure(bool theIsResized = true) override;
 
   //! Handle window input event immediately (flush input buffer).
-  Standard_EXPORT virtual void ProcessInput() Standard_OVERRIDE;
+  Standard_EXPORT virtual void ProcessInput() override;
 
   //! Handle KeyPress event.
   Standard_EXPORT void ProcessKeyPress(Aspect_VKey theKey);
 
   //! Callback called on Selection of another (sub)view.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void OnSubviewChanged(const Handle(AIS_InteractiveContext)& theCtx,
-                                                const Handle(V3d_View)&               theOldView,
-                                                const Handle(V3d_View)&               theNewView)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void OnSubviewChanged(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                                const occ::handle<V3d_View>&               theOldView,
+                                                const occ::handle<V3d_View>&               theNewView)
+    override;
 
 protected:
   //! Register hot-keys for specified Action.
@@ -165,15 +163,15 @@ private:
 #endif
 
 private:
-  Handle(AIS_InteractiveContext) myCtx;
-  Handle(V3d_View)               myView;
+  occ::handle<AIS_InteractiveContext> myCtx;
+  occ::handle<V3d_View>               myView;
   // clang-format off
   NCollection_DataMap<unsigned int, Aspect_VKey> myNavKeyMap; //!< map of Hot-Key (key+modifiers) to Action
   // clang-format on
 
   TCollection_AsciiString myPickPntArgVec[3];
-  Standard_Boolean        myToPickPnt;
-  Standard_Boolean        myIsTmpContRedraw;
+  bool        myToPickPnt;
+  bool        myIsTmpContRedraw;
 
   unsigned int myNbUpdateRequests; //!< counter for unhandled update requests
 };

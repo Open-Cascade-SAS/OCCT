@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 
 //=================================================================================================
 
-Units_ShiftedToken::Units_ShiftedToken(const Standard_CString          aword,
-                                       const Standard_CString          amean,
-                                       const Standard_Real             avalue,
-                                       const Standard_Real             amove,
-                                       const Handle(Units_Dimensions)& adimensions)
+Units_ShiftedToken::Units_ShiftedToken(const char* const          aword,
+                                       const char* const          amean,
+                                       const double             avalue,
+                                       const double             amove,
+                                       const occ::handle<Units_Dimensions>& adimensions)
     : Units_Token(aword, amean, avalue, adimensions)
 {
   themove = amove;
@@ -35,7 +35,7 @@ Units_ShiftedToken::Units_ShiftedToken(const Standard_CString          aword,
 
 //=================================================================================================
 
-Handle(Units_Token) Units_ShiftedToken::Creates() const
+occ::handle<Units_Token> Units_ShiftedToken::Creates() const
 {
   TCollection_AsciiString word = Word();
   TCollection_AsciiString mean = Mean();
@@ -44,28 +44,28 @@ Handle(Units_Token) Units_ShiftedToken::Creates() const
 
 //=================================================================================================
 
-Standard_Real Units_ShiftedToken::Move() const
+double Units_ShiftedToken::Move() const
 {
   return themove;
 }
 
 //=================================================================================================
 
-Standard_Real Units_ShiftedToken::Multiplied(const Standard_Real avalue) const
+double Units_ShiftedToken::Multiplied(const double avalue) const
 {
   return (avalue + themove) * Value();
 }
 
 //=================================================================================================
 
-Standard_Real Units_ShiftedToken::Divided(const Standard_Real avalue) const
+double Units_ShiftedToken::Divided(const double avalue) const
 {
   return (avalue / Value()) - themove;
 }
 
 //=================================================================================================
 
-void Units_ShiftedToken::Dump(const Standard_Integer ashift, const Standard_Integer alevel) const
+void Units_ShiftedToken::Dump(const int ashift, const int alevel) const
 {
   Units_Token::Dump(ashift, alevel);
   for (int i = 0; i < ashift; i++)

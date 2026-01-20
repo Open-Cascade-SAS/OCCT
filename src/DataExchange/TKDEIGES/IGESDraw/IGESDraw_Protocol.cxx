@@ -35,18 +35,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Protocol, IGESData_Protocol)
 
 IGESDraw_Protocol::IGESDraw_Protocol() {}
 
-Standard_Integer IGESDraw_Protocol::NbResources() const
+int IGESDraw_Protocol::NbResources() const
 {
   return 1;
 }
 
-Handle(Interface_Protocol) IGESDraw_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> IGESDraw_Protocol::Resource(const int /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESDimen::Protocol();
+  occ::handle<Interface_Protocol> res = IGESDimen::Protocol();
   return res;
 }
 
-Standard_Integer IGESDraw_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESDraw_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESDraw_CircArraySubfigure))
     return 1;

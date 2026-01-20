@@ -30,10 +30,10 @@ RWStepBasic_RWExternalIdentificationAssignment::RWStepBasic_RWExternalIdentifica
 //=================================================================================================
 
 void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                    data,
-  const Standard_Integer                                    num,
-  Handle(Interface_Check)&                                  ach,
-  const Handle(StepBasic_ExternalIdentificationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                    data,
+  const int                                    num,
+  occ::handle<Interface_Check>&                                  ach,
+  const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "external_identification_assignment"))
@@ -41,14 +41,14 @@ void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
 
   // Inherited fields of IdentificationAssignment
 
-  Handle(TCollection_HAsciiString) aIdentificationAssignment_AssignedId;
+  occ::handle<TCollection_HAsciiString> aIdentificationAssignment_AssignedId;
   data->ReadString(num,
                    1,
                    "identification_assignment.assigned_id",
                    ach,
                    aIdentificationAssignment_AssignedId);
 
-  Handle(StepBasic_IdentificationRole) aIdentificationAssignment_Role;
+  occ::handle<StepBasic_IdentificationRole> aIdentificationAssignment_Role;
   data->ReadEntity(num,
                    2,
                    "identification_assignment.role",
@@ -58,7 +58,7 @@ void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
 
   // Own fields of ExternalIdentificationAssignment
 
-  Handle(StepBasic_ExternalSource) aSource;
+  occ::handle<StepBasic_ExternalSource> aSource;
   data->ReadEntity(num, 3, "source", ach, STANDARD_TYPE(StepBasic_ExternalSource), aSource);
 
   // Initialize entity
@@ -69,7 +69,7 @@ void RWStepBasic_RWExternalIdentificationAssignment::ReadStep(
 
 void RWStepBasic_RWExternalIdentificationAssignment::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepBasic_ExternalIdentificationAssignment)& ent) const
+  const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent) const
 {
 
   // Inherited fields of IdentificationAssignment
@@ -86,7 +86,7 @@ void RWStepBasic_RWExternalIdentificationAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWExternalIdentificationAssignment::Share(
-  const Handle(StepBasic_ExternalIdentificationAssignment)& ent,
+  const occ::handle<StepBasic_ExternalIdentificationAssignment>& ent,
   Interface_EntityIterator&                                 iter) const
 {
 

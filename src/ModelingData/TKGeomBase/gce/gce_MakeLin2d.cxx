@@ -47,7 +47,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Pnt2d& P, const gp_Dir2d& V)
 //    equation.                                                           +
 //=========================================================================
 
-gce_MakeLin2d::gce_MakeLin2d(const Standard_Real A, const Standard_Real B, const Standard_Real C)
+gce_MakeLin2d::gce_MakeLin2d(const double A, const double B, const double C)
 {
   if (A * A + B * B <= gp::Resolution())
   {
@@ -94,7 +94,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const gp_Pnt2d& Point)
 //   <Line1> a une distance <Dist1>.                                      +
 //=========================================================================
 
-gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const Standard_Real Dist)
+gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const double Dist)
 {
   gp_Pnt2d Point(Line.Location().XY() + Dist * gp_XY(-Line.Direction().Y(), Line.Direction().X()));
   TheLin2d = gp_Lin2d(Point, Line.Direction());

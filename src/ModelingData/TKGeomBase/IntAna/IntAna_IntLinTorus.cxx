@@ -27,7 +27,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 
 IntAna_IntLinTorus::IntAna_IntLinTorus()
-    : done(Standard_False),
+    : done(false),
       nbpt(0)
 {
   memset(theFi, 0, sizeof(theFi));
@@ -48,7 +48,7 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
   // Reparametrize the line:
   // set its location as nearest to the location of torus
   gp_Pnt        TorLoc       = T.Location();
-  Standard_Real ParamOfNewPL = gp_Vec(PL, TorLoc).Dot(gp_Vec(DL));
+  double ParamOfNewPL = gp_Vec(PL, TorLoc).Dot(gp_Vec(DL));
   gp_Pnt        NewPL(PL.XYZ() + ParamOfNewPL * DL.XYZ());
 
   //--------------------------------------------------------------
@@ -59,9 +59,9 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
   NewPL.Transform(trsf);
   DL.Transform(trsf);
 
-  Standard_Real a, b, c, x1, y1, z1, x0, y0, z0;
-  Standard_Real a0, a1, a2, a3, a4;
-  Standard_Real R, r, R2, r2;
+  double a, b, c, x1, y1, z1, x0, y0, z0;
+  double a0, a1, a2, a3, a4;
+  double R, r, R2, r2;
 
   x1 = DL.X();
   y1 = DL.Y();
@@ -84,16 +84,16 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
   a1 = 2.0 * b * c + 8.0 * R2 * z1 * z0;
   a0 = c * c + 4.0 * R2 * (z0 * z0 - r2);
 
-  Standard_Real              u, v;
+  double              u, v;
   math_DirectPolynomialRoots mdpr(a4, a3, a2, a1, a0);
   if (mdpr.IsDone())
   {
-    Standard_Integer nbsolvalid = 0;
-    Standard_Integer n          = mdpr.NbSolutions();
-    Standard_Integer aNbBadSol  = 0;
-    for (Standard_Integer i = 1; i <= n; i++)
+    int nbsolvalid = 0;
+    int n          = mdpr.NbSolutions();
+    int aNbBadSol  = 0;
+    for (int i = 1; i <= n; i++)
     {
-      Standard_Real t = mdpr.Value(i);
+      double t = mdpr.Value(i);
       t += ParamOfNewPL;
       gp_Pnt PSolL(ElCLib::Value(t, L));
       ElSLib::Parameters(T, PSolL, u, v);
@@ -121,34 +121,34 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
     if (n > 0 && nbsolvalid == 0 && aNbBadSol == n)
     {
       nbpt = 0;
-      done = Standard_False;
+      done = false;
     }
     else
     {
       nbpt = nbsolvalid;
-      done = Standard_True;
+      done = true;
     }
   }
   else
   {
     nbpt = 0;
-    done = Standard_False;
+    done = false;
   }
 }
 
 #if 0 
 
-static void MULT_A3_B1(Standard_Real& c4,
-                       Standard_Real& c3,
-                       Standard_Real& c2,
-                       Standard_Real& c1,
-                       Standard_Real& c0,
-                       const Standard_Real a3,
-                       const Standard_Real a2,
-                       const Standard_Real a1,
-                       const Standard_Real a0,
-                       const Standard_Real b1,
-                       const Standard_Real b0) { 
+static void MULT_A3_B1(double& c4,
+                       double& c3,
+                       double& c2,
+                       double& c1,
+                       double& c0,
+                       const double a3,
+                       const double a2,
+                       const double a1,
+                       const double a0,
+                       const double b1,
+                       const double b0) { 
   c4 = a3 * b1;
   c3 = a3 * b0  + a2 * b1;
   c2 =            a2 * b0  + a1 * b1;
@@ -156,17 +156,17 @@ static void MULT_A3_B1(Standard_Real& c4,
   c0 =                                  a0 * b0;
 }
                        
-static void MULT_A2_B2(Standard_Real& c4,
-                       Standard_Real& c3,
-                       Standard_Real& c2,
-                       Standard_Real& c1,
-                       Standard_Real& c0,
-                       const Standard_Real a2,
-                       const Standard_Real a1,
-                       const Standard_Real a0,
-                       const Standard_Real b2,
-                       const Standard_Real b1,
-                       const Standard_Real b0) {
+static void MULT_A2_B2(double& c4,
+                       double& c3,
+                       double& c2,
+                       double& c1,
+                       double& c0,
+                       const double a2,
+                       const double a1,
+                       const double a0,
+                       const double b2,
+                       const double b1,
+                       const double b0) {
   c4 = a2 * b2;
   c3 = a2 * b1 + a1 * b2;
   c2 = a2 * b0 + a1 * b1 + a0 * b2;
@@ -174,15 +174,15 @@ static void MULT_A2_B2(Standard_Real& c4,
   c0 =                     a0 * b0;
 }
 
-static void MULT_A2_B1(Standard_Real& c3,
-                       Standard_Real& c2,
-                       Standard_Real& c1,
-                       Standard_Real& c0,
-                       const Standard_Real a2,
-                       const Standard_Real a1,
-                       const Standard_Real a0,
-                       const Standard_Real b1,
-                       const Standard_Real b0) {
+static void MULT_A2_B1(double& c3,
+                       double& c2,
+                       double& c1,
+                       double& c0,
+                       const double a2,
+                       const double a1,
+                       const double a0,
+                       const double b1,
+                       const double b0) {
   c3 = a2 * b1;
   c2 = a2 * b0 + a1 * b1;
   c1 =           a1 * b0 + a0 * b1;
@@ -190,7 +190,7 @@ static void MULT_A2_B1(Standard_Real& c3,
 }
 
 void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
-  TColStd_Array1OfReal C(1,31);
+  NCollection_Array1<double> C(1,31);
   T.Coefficients(C);
   const gp_Pnt& PL=L.Location();
   const gp_Dir& DL=L.Direction();
@@ -201,22 +201,22 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   //-- X3  = ax3 l3 + 3 ax2 ax0 l2  + 3 ax1 bx2 l    + bx3
   //-- X4  = ax4 l4 + 4 ax3 ax0 l3  + 6 ax2 bx2 l2  + 4 ax1 bx3 l + bx4
 
-  Standard_Real ax1,ax2,ax3,ax4,ax0,bx2,bx3,bx4;
-  Standard_Real ay1,ay2,ay3,ay4,ay0,by2,by3,by4;
-  Standard_Real az1,az2,az3,az4,az0,bz2,bz3,bz4;
-  Standard_Real c0,c1,c2,c3,c4;
+  double ax1,ax2,ax3,ax4,ax0,bx2,bx3,bx4;
+  double ay1,ay2,ay3,ay4,ay0,by2,by3,by4;
+  double az1,az2,az3,az4,az0,bz2,bz3,bz4;
+  double c0,c1,c2,c3,c4;
   ax1=DL.X(); ax0=PL.X();  ay1=DL.Y(); ay0=PL.Y(); az1=DL.Z(); az0=PL.Z();
   ax2=ax1*ax1; ax3=ax2*ax1; ax4=ax3*ax1; bx2=ax0*ax0; bx3=bx2*ax0; bx4=bx3*ax0;
   ay2=ay1*ay1; ay3=ay2*ay1; ay4=ay3*ay1; by2=ay0*ay0; by3=by2*ay0; by4=by3*ay0;
   az2=az1*az1; az3=az2*az1; az4=az3*az1; bz2=az0*az0; bz3=bz2*az0; bz4=bz3*az0;
 	
   //--------------------------------------------------------------------------- Terme X**4
-  Standard_Real c=C(1);  
-  Standard_Real a4 = c *ax4;
-  Standard_Real a3 = c *4.0*ax3*ax0;
-  Standard_Real a2 = c *6.0*ax2*bx2;
-  Standard_Real a1 = c *4.0*ax1*bx3;
-  Standard_Real a0 = c *bx4;
+  double c=C(1);  
+  double a4 = c *ax4;
+  double a3 = c *4.0*ax3*ax0;
+  double a2 = c *6.0*ax2*bx2;
+  double a1 = c *4.0*ax1*bx3;
+  double a0 = c *bx4;
   //--------------------------------------------------------------------------- Terme Y**4
   c = C(2);
   a4+=  c*ay4; 
@@ -256,7 +256,6 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   MULT_A3_B1(c4,c3,c2,c1,c0,    az3, 3.0*az2*az0, 3.0*az1*bz2, bz3,     ay1,ay0);
   a4+=  c*c4; a3+=  c*c3; a2+=  c*c2;  a1+=  c*c1; a0+=  c*c0; 	
 
-
   //--------------------------------------------------------------------------- Terme X**2 Y**2
   c = C(10); 
   MULT_A2_B2(c4,c3,c2,c1,c0,  ax2, 2.0*ax1*ax0, bx2,    ay2,2.0*ay1*ay0, by2);
@@ -269,7 +268,6 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   c = C(12);
   MULT_A2_B2(c4,c3,c2,c1,c0,  ay2, 2.0*ay1*ay0, by2,    az2,2.0*az1*az0, bz2);
   a4+=  c*c4; a3+=  c*c3; a2+=  c*c2;  a1+=  c*c1; a0+=  c*c0; 
-
 
   //--------------------------------------------------------------------------- Terme X**3
   c = C(13);
@@ -289,7 +287,6 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   a2+= c*( 3.0*az2*az0 );
   a1+= c*( 3.0*az1*bz2 );
   a0+= c*( bz3 );  
-
 
   //--------------------------------------------------------------------------- Terme X**2 Y
   c = C(16);
@@ -315,7 +312,6 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   c = C(21);
   MULT_A2_B1(c3,c2,c1,c0,   az2, 2.0*az1*az0, bz2,   ay1,ay0);
   a3+= c*c3; a2+= c* c2; a1+= c* c1; a0+= c*c0;
-
 
   //--------------------------------------------------------------------------- Terme X**2 
   c = C(22);
@@ -367,8 +363,6 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   c = C(31);
   a0+=c;
 
-
-
   std::cout<<"\n ---------- Coefficients Line - Torus  : "<<std::endl;
   std::cout<<" a0 : "<<a0<<std::endl;
   std::cout<<" a1 : "<<a1<<std::endl;
@@ -376,13 +370,13 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
   std::cout<<" a3 : "<<a3<<std::endl;
   std::cout<<" a4 : "<<a4<<std::endl;
 
-  Standard_Real u,v;
+  double u,v;
   math_DirectPolynomialRoots mdpr(a4,a3,a2,a1,a0);
   if(mdpr.IsDone()) {
-     Standard_Integer nbsolvalid = 0; 
-     Standard_Integer n = mdpr.NbSolutions();
-     for(Standard_Integer i = 1; i<=n ; i++) { 
-	Standard_Real t = mdpr.Value(i);
+     int nbsolvalid = 0; 
+     int n = mdpr.NbSolutions();
+     for(int i = 1; i<=n ; i++) { 
+	double t = mdpr.Value(i);
         gp_Pnt PSolL(ax0+ax1*t, ay0+ay1*t, az0+az1*t);
         ElSLib::Parameters(T,PSolL,u,v);
 	gp_Pnt PSolT(ElSLib::Value(u,v,T));
@@ -402,11 +396,11 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
         }
       }
       nbpt = nbsolvalid;
-      done = Standard_True;
+      done = true;
    }
    else { 
       nbpt = 0;
-      done = Standard_False;
+      done = false;
    }
 }
 #endif

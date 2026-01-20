@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Surface();
 
-  Standard_EXPORT TopOpeBRepDS_Surface(const Handle(Geom_Surface)& P, const Standard_Real T);
+  Standard_EXPORT TopOpeBRepDS_Surface(const occ::handle<Geom_Surface>& P, const double T);
 
   Standard_EXPORT TopOpeBRepDS_Surface(const TopOpeBRepDS_Surface& Other);
 
@@ -41,21 +41,21 @@ public:
 
   void operator=(const TopOpeBRepDS_Surface& Other) { Assign(Other); }
 
-  const Handle(Geom_Surface)& Surface() const { return mySurface; }
+  const occ::handle<Geom_Surface>& Surface() const { return mySurface; }
 
-  Standard_Real Tolerance() const { return myTolerance; }
+  double Tolerance() const { return myTolerance; }
 
   //! Update the tolerance
-  void Tolerance(Standard_Real theTol) { myTolerance = theTol; }
+  void Tolerance(double theTol) { myTolerance = theTol; }
 
-  Standard_Boolean Keep() const { return myKeep; }
+  bool Keep() const { return myKeep; }
 
-  void ChangeKeep(Standard_Boolean theToKeep) { myKeep = theToKeep; }
+  void ChangeKeep(bool theToKeep) { myKeep = theToKeep; }
 
 private:
-  Handle(Geom_Surface) mySurface;
-  Standard_Real        myTolerance;
-  Standard_Boolean     myKeep;
+  occ::handle<Geom_Surface> mySurface;
+  double        myTolerance;
+  bool     myKeep;
 };
 
 #endif // _TopOpeBRepDS_Surface_HeaderFile

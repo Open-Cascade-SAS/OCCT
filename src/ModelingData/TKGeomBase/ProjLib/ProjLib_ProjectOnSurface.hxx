@@ -32,27 +32,27 @@ public:
   Standard_EXPORT ProjLib_ProjectOnSurface();
 
   //! Create a projector normally to the surface <S>.
-  Standard_EXPORT ProjLib_ProjectOnSurface(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT ProjLib_ProjectOnSurface(const occ::handle<Adaptor3d_Surface>& S);
 
   Standard_EXPORT virtual ~ProjLib_ProjectOnSurface();
 
   //! Set the Surface to <S>.
   //! To compute the projection, you have to Load the Curve.
-  Standard_EXPORT void Load(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Load(const occ::handle<Adaptor3d_Surface>& S);
 
   //! Compute the projection of the curve <C> on the Surface.
-  Standard_EXPORT void Load(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tolerance);
+  Standard_EXPORT void Load(const occ::handle<Adaptor3d_Curve>& C, const double Tolerance);
 
-  Standard_Boolean IsDone() const { return myIsDone; }
+  bool IsDone() const { return myIsDone; }
 
-  Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const;
+  Standard_EXPORT occ::handle<Geom_BSplineCurve> BSpline() const;
 
 private:
-  Handle(Adaptor3d_Curve)   myCurve;
-  Handle(Adaptor3d_Surface) mySurface;
-  Standard_Real             myTolerance;
-  Standard_Boolean          myIsDone;
-  Handle(Geom_BSplineCurve) myResult;
+  occ::handle<Adaptor3d_Curve>   myCurve;
+  occ::handle<Adaptor3d_Surface> mySurface;
+  double             myTolerance;
+  bool          myIsDone;
+  occ::handle<Geom_BSplineCurve> myResult;
 };
 
 #endif // _ProjLib_ProjectOnSurface_HeaderFile

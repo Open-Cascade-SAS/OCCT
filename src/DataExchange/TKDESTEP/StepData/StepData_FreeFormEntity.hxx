@@ -20,15 +20,16 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepData_HArray1OfField.hxx>
+#include <StepData_Field.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 class StepData_Field;
-
-class StepData_FreeFormEntity;
-DEFINE_STANDARD_HANDLE(StepData_FreeFormEntity, Standard_Transient)
 
 //! A Free Form Entity allows to record any kind of STEP
 //! parameters, in any way of typing
@@ -44,60 +45,59 @@ public:
 
   //! Sets the type of an entity
   //! For a complex one, the type of this member
-  Standard_EXPORT void SetStepType(const Standard_CString typenam);
+  Standard_EXPORT void SetStepType(const char* const typenam);
 
   //! Returns the recorded StepType
   //! For a complex one, the type of this member
-  Standard_EXPORT Standard_CString StepType() const;
+  Standard_EXPORT const char* StepType() const;
 
   //! Sets a next member, in order to define or complete a Complex
   //! entity
   //! If <last> is True (D), this next will be set as last of list
   //! Else, it is inserted just as next of <me>
   //! If <next> is Null, Next is cleared
-  Standard_EXPORT void SetNext(const Handle(StepData_FreeFormEntity)& next,
-                               const Standard_Boolean                 last = Standard_True);
+  Standard_EXPORT void SetNext(const occ::handle<StepData_FreeFormEntity>& next,
+                               const bool                 last = true);
 
   //! Returns the next member of a Complex entity
   //! (remark : the last member has none)
-  Standard_EXPORT Handle(StepData_FreeFormEntity) Next() const;
+  Standard_EXPORT occ::handle<StepData_FreeFormEntity> Next() const;
 
   //! Returns True if a FreeFormEntity is Complex (i.e. has Next)
-  Standard_EXPORT Standard_Boolean IsComplex() const;
+  Standard_EXPORT bool IsComplex() const;
 
   //! Returns the member of a FreeFormEntity of which the type name
   //! is given (exact match, no sub-type)
-  Standard_EXPORT Handle(StepData_FreeFormEntity) Typed(const Standard_CString typenam) const;
+  Standard_EXPORT occ::handle<StepData_FreeFormEntity> Typed(const char* const typenam) const;
 
   //! Returns the list of types (one type for a simple entity),
   //! as is (non reordered)
-  Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) TypeList() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> TypeList() const;
 
   //! Reorders a Complex entity if required, i.e. if member types
   //! are not in alphabetic order
   //! Returns False if nothing done (order was OK or simple entity),
   //! True plus modified <ent> if <ent> has been reordered
-  Standard_EXPORT static Standard_Boolean Reorder(Handle(StepData_FreeFormEntity)& ent);
+  Standard_EXPORT static bool Reorder(occ::handle<StepData_FreeFormEntity>& ent);
 
   //! Sets a count of Fields, from scratch
-  Standard_EXPORT void SetNbFields(const Standard_Integer nb);
+  Standard_EXPORT void SetNbFields(const int nb);
 
   //! Returns the count of fields
-  Standard_EXPORT Standard_Integer NbFields() const;
+  Standard_EXPORT int NbFields() const;
 
   //! Returns a field from its rank, for read-only use
-  Standard_EXPORT const StepData_Field& Field(const Standard_Integer num) const;
+  Standard_EXPORT const StepData_Field& Field(const int num) const;
 
   //! Returns a field from its rank, in order to modify it
-  Standard_EXPORT StepData_Field& CField(const Standard_Integer num);
+  Standard_EXPORT StepData_Field& CField(const int num);
 
   DEFINE_STANDARD_RTTIEXT(StepData_FreeFormEntity, Standard_Transient)
 
-protected:
 private:
   TCollection_AsciiString         thetype;
-  Handle(StepData_HArray1OfField) thefields;
-  Handle(StepData_FreeFormEntity) thenext;
+  occ::handle<NCollection_HArray1<StepData_Field>> thefields;
+  occ::handle<StepData_FreeFormEntity> thenext;
 };
 
 #endif // _StepData_FreeFormEntity_HeaderFile

@@ -21,20 +21,24 @@
 #include <Standard_Type.hxx>
 
 #include <TopOpeBRepBuild_Builder1.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_State.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepDS_BuildTool;
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepBuild_Builder;
-
-class TopOpeBRepBuild_HBuilder;
-DEFINE_STANDARD_HANDLE(TopOpeBRepBuild_HBuilder, Standard_Transient)
 
 //! The HBuilder algorithm constructs topological
 //! objects from an existing topology and new
@@ -53,11 +57,11 @@ public:
 
   //! Stores the data structure <HDS>,
   //! Create shapes from the new geometries described in <HDS>.
-  Standard_EXPORT void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+  Standard_EXPORT void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
 
   //! Same as previous + evaluates if an operation performed on shapes S1,S2
   //! is a particular case.
-  Standard_EXPORT void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+  Standard_EXPORT void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                const TopoDS_Shape&                        S1,
                                const TopoDS_Shape&                        S2);
 
@@ -66,7 +70,7 @@ public:
   Standard_EXPORT void Clear();
 
   //! returns the DS handled by this builder
-  Standard_EXPORT Handle(TopOpeBRepDS_HDataStructure) DataStructure() const;
+  Standard_EXPORT occ::handle<TopOpeBRepDS_HDataStructure> DataStructure() const;
 
   Standard_EXPORT TopOpeBRepDS_BuildTool& ChangeBuildTool();
 
@@ -89,56 +93,56 @@ public:
   Standard_EXPORT void MergeSolid(const TopoDS_Shape& S, const TopAbs_State TB);
 
   //! Returns True if the shape <S> has been split.
-  Standard_EXPORT Standard_Boolean IsSplit(const TopoDS_Shape& S, const TopAbs_State ToBuild) const;
+  Standard_EXPORT bool IsSplit(const TopoDS_Shape& S, const TopAbs_State ToBuild) const;
 
   //! Returns the split parts <ToBuild> of shape <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Splits(const TopoDS_Shape& S,
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Splits(const TopoDS_Shape& S,
                                                      const TopAbs_State  ToBuild) const;
 
   //! Returns True if the shape <S> has been merged.
-  Standard_EXPORT Standard_Boolean IsMerged(const TopoDS_Shape& S,
+  Standard_EXPORT bool IsMerged(const TopoDS_Shape& S,
                                             const TopAbs_State  ToBuild) const;
 
   //! Returns the merged parts <ToBuild> of shape <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Merged(const TopoDS_Shape& S,
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Merged(const TopoDS_Shape& S,
                                                      const TopAbs_State  ToBuild) const;
 
   //! Returns the vertex created on point <I>.
-  Standard_EXPORT const TopoDS_Shape& NewVertex(const Standard_Integer I) const;
+  Standard_EXPORT const TopoDS_Shape& NewVertex(const int I) const;
 
   //! Returns the edges created on curve <I>.
-  Standard_EXPORT const TopTools_ListOfShape& NewEdges(const Standard_Integer I) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& NewEdges(const int I) const;
 
   //! Returns the edges created on curve <I>.
-  Standard_EXPORT TopTools_ListOfShape& ChangeNewEdges(const Standard_Integer I);
+  Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeNewEdges(const int I);
 
   //! Returns the faces created on surface <I>.
-  Standard_EXPORT const TopTools_ListOfShape& NewFaces(const Standard_Integer I) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& NewFaces(const int I) const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Section();
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Section();
 
-  Standard_EXPORT void InitExtendedSectionDS(const Standard_Integer k = 3);
+  Standard_EXPORT void InitExtendedSectionDS(const int k = 3);
 
-  Standard_EXPORT void InitSection(const Standard_Integer k = 3);
+  Standard_EXPORT void InitSection(const int k = 3);
 
-  Standard_EXPORT Standard_Boolean MoreSection() const;
+  Standard_EXPORT bool MoreSection() const;
 
   Standard_EXPORT void NextSection();
 
   Standard_EXPORT const TopoDS_Shape& CurrentSection() const;
 
-  Standard_EXPORT Standard_Integer GetDSEdgeFromSectEdge(const TopoDS_Shape&    E,
-                                                         const Standard_Integer rank);
+  Standard_EXPORT int GetDSEdgeFromSectEdge(const TopoDS_Shape&    E,
+                                                         const int rank);
 
-  Standard_EXPORT TColStd_ListOfInteger& GetDSFaceFromDSEdge(const Standard_Integer indexEdg,
-                                                             const Standard_Integer rank);
+  Standard_EXPORT NCollection_List<int>& GetDSFaceFromDSEdge(const int indexEdg,
+                                                             const int rank);
 
-  Standard_EXPORT Standard_Integer GetDSCurveFromSectEdge(const TopoDS_Shape& SectEdge);
+  Standard_EXPORT int GetDSCurveFromSectEdge(const TopoDS_Shape& SectEdge);
 
-  Standard_EXPORT Standard_Integer GetDSFaceFromDSCurve(const Standard_Integer indexCur,
-                                                        const Standard_Integer rank);
+  Standard_EXPORT int GetDSFaceFromDSCurve(const int indexCur,
+                                                        const int rank);
 
-  Standard_EXPORT Standard_Integer GetDSPointFromNewVertex(const TopoDS_Shape& NewVert);
+  Standard_EXPORT int GetDSPointFromNewVertex(const TopoDS_Shape& NewVert);
 
   //! search for the couple of face F1,F2
   //! (from arguments of supra Perform(S1,S2,HDS)) method which
@@ -146,10 +150,10 @@ public:
   //! returns True if F1,F2 have been valued.
   //! returns False if E is not a section edge built
   //! on intersection curve IC.
-  Standard_EXPORT Standard_Boolean EdgeCurveAncestors(const TopoDS_Shape& E,
+  Standard_EXPORT bool EdgeCurveAncestors(const TopoDS_Shape& E,
                                                       TopoDS_Shape&       F1,
                                                       TopoDS_Shape&       F2,
-                                                      Standard_Integer&   IC);
+                                                      int&   IC);
 
   //! search for the couple of face F1,F2
   //! (from arguments of supra Perform(S1,S2,HDS)) method which
@@ -159,14 +163,14 @@ public:
   //! on at least one edge of S1 and/or S2.
   //! LE1,LE2 are edges of S1,S2 which common part is edge E.
   //! LE1 or LE2 may be empty() but not both.
-  Standard_EXPORT Standard_Boolean EdgeSectionAncestors(const TopoDS_Shape&   E,
-                                                        TopTools_ListOfShape& LF1,
-                                                        TopTools_ListOfShape& LF2,
-                                                        TopTools_ListOfShape& LE1,
-                                                        TopTools_ListOfShape& LE2);
+  Standard_EXPORT bool EdgeSectionAncestors(const TopoDS_Shape&   E,
+                                                        NCollection_List<TopoDS_Shape>& LF1,
+                                                        NCollection_List<TopoDS_Shape>& LF2,
+                                                        NCollection_List<TopoDS_Shape>& LE1,
+                                                        NCollection_List<TopoDS_Shape>& LE2);
 
   //! Returns 0 is standard operation, != 0 if particular case
-  Standard_EXPORT Standard_Integer IsKPart();
+  Standard_EXPORT int IsKPart();
 
   Standard_EXPORT void MergeKPart(const TopAbs_State TB1, const TopAbs_State TB2);
 
@@ -182,17 +186,17 @@ private:
 
   Standard_EXPORT void MakeCurveAncestorMap();
 
-  TopTools_DataMapOfShapeInteger        mySectEdgeDSEdges1;
-  TopTools_DataMapOfShapeInteger        mySectEdgeDSEdges2;
-  TColStd_DataMapOfIntegerListOfInteger myDSEdgesDSFaces1;
-  TColStd_DataMapOfIntegerListOfInteger myDSEdgesDSFaces2;
-  Standard_Boolean                      myMakeEdgeAncestorIsDone;
-  TopTools_DataMapOfShapeInteger        mySectEdgeDSCurve;
-  Standard_Boolean                      myMakeCurveAncestorIsDone;
-  TopTools_DataMapOfShapeInteger        myNewVertexDSPoint;
-  Standard_Boolean                      myMakePointAncestorIsDone;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>        mySectEdgeDSEdges1;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>        mySectEdgeDSEdges2;
+  NCollection_DataMap<int, NCollection_List<int>> myDSEdgesDSFaces1;
+  NCollection_DataMap<int, NCollection_List<int>> myDSEdgesDSFaces2;
+  bool                      myMakeEdgeAncestorIsDone;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>        mySectEdgeDSCurve;
+  bool                      myMakeCurveAncestorIsDone;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>        myNewVertexDSPoint;
+  bool                      myMakePointAncestorIsDone;
   TopoDS_Shape                          myEmptyShape;
-  TColStd_ListOfInteger                 myEmptyIntegerList;
+  NCollection_List<int>                 myEmptyIntegerList;
 };
 
 #endif // _TopOpeBRepBuild_HBuilder_HeaderFile

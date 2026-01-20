@@ -24,7 +24,7 @@
 struct StepTidy_VectorHasher
 {
   // Hashes the Vector by its name and Vector ratios.
-  std::size_t operator()(const Handle(StepGeom_Vector)& theVector) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_Vector>& theVector) const noexcept
   {
     const size_t aHashes[2]{StepTidy_DirectionHasher{}(theVector->Orientation()),
                             opencascade::hash(static_cast<int>(theVector->Magnitude()))};
@@ -42,8 +42,8 @@ struct StepTidy_VectorHasher
   }
 
   // Compares two Vectors by their names and Vector ratios.
-  bool operator()(const Handle(StepGeom_Vector)& theVector1,
-                  const Handle(StepGeom_Vector)& theVector2) const noexcept
+  bool operator()(const occ::handle<StepGeom_Vector>& theVector1,
+                  const occ::handle<StepGeom_Vector>& theVector2) const noexcept
   {
     // Compare names.
     if (theVector1->Name().IsNull() != theVector2->Name().IsNull())

@@ -20,13 +20,12 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_Representation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepFEA_FeaModel;
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
-
-class StepFEA_NodeRepresentation;
-DEFINE_STANDARD_HANDLE(StepFEA_NodeRepresentation, StepRepr_Representation)
 
 //! Representation of STEP entity NodeRepresentation
 class StepFEA_NodeRepresentation : public StepRepr_Representation
@@ -38,22 +37,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
-    const Handle(StepFEA_FeaModel)&                     aModelRef);
+    const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
+    const occ::handle<StepFEA_FeaModel>&                     aModelRef);
 
   //! Returns field ModelRef
-  Standard_EXPORT Handle(StepFEA_FeaModel) ModelRef() const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel> ModelRef() const;
 
   //! Set field ModelRef
-  Standard_EXPORT void SetModelRef(const Handle(StepFEA_FeaModel)& ModelRef);
+  Standard_EXPORT void SetModelRef(const occ::handle<StepFEA_FeaModel>& ModelRef);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeRepresentation, StepRepr_Representation)
 
-protected:
 private:
-  Handle(StepFEA_FeaModel) theModelRef;
+  occ::handle<StepFEA_FeaModel> theModelRef;
 };
 
 #endif // _StepFEA_NodeRepresentation_HeaderFile

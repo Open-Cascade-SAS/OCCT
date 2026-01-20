@@ -23,27 +23,27 @@
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_WFDeflectionSurface.hxx>
 
-static void FindLimits(const Handle(Adaptor3d_Surface)& surf,
-                       const Standard_Real              aLimit,
-                       Standard_Real&                   UFirst,
-                       Standard_Real&                   ULast,
-                       Standard_Real&                   VFirst,
-                       Standard_Real&                   VLast)
+static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
+                       const double              aLimit,
+                       double&                   UFirst,
+                       double&                   ULast,
+                       double&                   VFirst,
+                       double&                   VLast)
 {
   UFirst = surf->FirstUParameter();
   ULast  = surf->LastUParameter();
   VFirst = surf->FirstVParameter();
   VLast  = surf->LastVParameter();
 
-  Standard_Boolean UfirstInf = Precision::IsNegativeInfinite(UFirst);
-  Standard_Boolean UlastInf  = Precision::IsPositiveInfinite(ULast);
-  Standard_Boolean VfirstInf = Precision::IsNegativeInfinite(VFirst);
-  Standard_Boolean VlastInf  = Precision::IsPositiveInfinite(VLast);
+  bool UfirstInf = Precision::IsNegativeInfinite(UFirst);
+  bool UlastInf  = Precision::IsPositiveInfinite(ULast);
+  bool VfirstInf = Precision::IsNegativeInfinite(VFirst);
+  bool VlastInf  = Precision::IsPositiveInfinite(VLast);
 
   if (UfirstInf || UlastInf)
   {
     gp_Pnt        P1, P2;
-    Standard_Real v;
+    double v;
     if (VfirstInf && VlastInf)
       v = 0;
     else if (VfirstInf)
@@ -53,7 +53,7 @@ static void FindLimits(const Handle(Adaptor3d_Surface)& surf,
     else
       v = (VFirst + VLast) / 2;
 
-    Standard_Real delta = aLimit * 2;
+    double delta = aLimit * 2;
 
     if (UfirstInf && UlastInf)
     {
@@ -91,9 +91,9 @@ static void FindLimits(const Handle(Adaptor3d_Surface)& surf,
   if (VfirstInf || VlastInf)
   {
     gp_Pnt        P1, P2;
-    Standard_Real u = (UFirst + ULast) / 2;
+    double u = (UFirst + ULast) / 2;
 
-    Standard_Real delta = aLimit * 2;
+    double delta = aLimit * 2;
 
     if (VfirstInf && VlastInf)
     {
@@ -131,26 +131,26 @@ static void FindLimits(const Handle(Adaptor3d_Surface)& surf,
 
 //=================================================================================================
 
-void StdPrs_WFDeflectionSurface::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Adaptor3d_Surface)&  aSurface,
-                                     const Handle(Prs3d_Drawer)&       aDrawer)
+void StdPrs_WFDeflectionSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Adaptor3d_Surface>&  aSurface,
+                                     const occ::handle<Prs3d_Drawer>&       aDrawer)
 {
-  Standard_Real U1, U2, V1, V2;
-  Standard_Real MaxP = aDrawer->MaximalParameterValue();
+  double U1, U2, V1, V2;
+  double MaxP = aDrawer->MaximalParameterValue();
   FindLimits(aSurface, MaxP, U1, U2, V1, V2);
 
-  Standard_Boolean UClosed = aSurface->IsUClosed();
-  Standard_Boolean VClosed = aSurface->IsVClosed();
+  bool UClosed = aSurface->IsUClosed();
+  bool VClosed = aSurface->IsVClosed();
 
-  Standard_Real           TheDeflection;
+  double           TheDeflection;
   Aspect_TypeOfDeflection TOD = aDrawer->TypeOfDeflection();
   if (TOD == Aspect_TOD_RELATIVE)
   {
     // On calcule la fleche en fonction des min max globaux de la piece:
     Bnd_Box Total;
     BndLib_AddSurface::Add(*aSurface, U1, U2, V1, V2, 0., Total);
-    Standard_Real m = aDrawer->MaximalChordialDeviation() / aDrawer->DeviationCoefficient();
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+    double m = aDrawer->MaximalChordialDeviation() / aDrawer->DeviationCoefficient();
+    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     if (!(Total.IsOpenXmin() || Total.IsOpenXmax()))
       m = std::min(m, std::abs(aXmax - aXmin));
@@ -192,13 +192,13 @@ void StdPrs_WFDeflectionSurface::Add(const Handle(Prs3d_Presentation)& aPresenta
   // Trace des isoparametriques.
   // ***************************
   //
-  Standard_Integer fin = aDrawer->UIsoAspect()->Number();
+  int fin = aDrawer->UIsoAspect()->Number();
   if (fin != 0)
   {
     aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
 
-    Standard_Real du = UClosed ? (U2 - U1) / fin : (U2 - U1) / (1 + fin);
-    for (Standard_Integer i = 1; i <= fin; i++)
+    double du = UClosed ? (U2 - U1) / fin : (U2 - U1) / (1 + fin);
+    for (int i = 1; i <= fin; i++)
     {
       anIso.Load(GeomAbs_IsoU, U1 + du * i, V1, V2);
       StdPrs_DeflectionCurve::Add(aPresentation, anIso, TheDeflection, MaxP);
@@ -209,8 +209,8 @@ void StdPrs_WFDeflectionSurface::Add(const Handle(Prs3d_Presentation)& aPresenta
   {
     aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
 
-    Standard_Real dv = VClosed ? (V2 - V1) / fin : (V2 - V1) / (1 + fin);
-    for (Standard_Integer i = 1; i <= fin; i++)
+    double dv = VClosed ? (V2 - V1) / fin : (V2 - V1) / (1 + fin);
+    for (int i = 1; i <= fin; i++)
     {
       anIso.Load(GeomAbs_IsoV, V1 + dv * i, U1, U2);
       StdPrs_DeflectionCurve::Add(aPresentation, anIso, TheDeflection, MaxP);

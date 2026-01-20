@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_UAttribute, TDF_Attribute)
 
 //=================================================================================================
 
-Handle(TDataStd_UAttribute) TDataStd_UAttribute::Set(const TDF_Label&     label,
+occ::handle<TDataStd_UAttribute> TDataStd_UAttribute::Set(const TDF_Label&     label,
                                                      const Standard_GUID& guid)
 {
-  Handle(TDataStd_UAttribute) A;
+  occ::handle<TDataStd_UAttribute> A;
   if (!label.FindAttribute(guid, A))
   {
     A = new TDataStd_UAttribute();
@@ -67,33 +67,33 @@ void TDataStd_UAttribute::SetID(const Standard_GUID& guid)
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_UAttribute::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_UAttribute::NewEmpty() const
 {
-  Handle(TDataStd_UAttribute) A = new TDataStd_UAttribute();
+  occ::handle<TDataStd_UAttribute> A = new TDataStd_UAttribute();
   A->SetID(myID);
   return A;
 }
 
 //=================================================================================================
 
-void TDataStd_UAttribute::Restore(const Handle(TDF_Attribute)& with)
+void TDataStd_UAttribute::Restore(const occ::handle<TDF_Attribute>& with)
 {
-  Handle(TDataStd_UAttribute) A = Handle(TDataStd_UAttribute)::DownCast(with);
+  occ::handle<TDataStd_UAttribute> A = occ::down_cast<TDataStd_UAttribute>(with);
   SetID(A->ID());
 }
 
 //=================================================================================================
 
-void TDataStd_UAttribute::Paste(const Handle(TDF_Attribute)& into,
-                                const Handle(TDF_RelocationTable)& /*RT*/) const
+void TDataStd_UAttribute::Paste(const occ::handle<TDF_Attribute>& into,
+                                const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TDataStd_UAttribute) A = Handle(TDataStd_UAttribute)::DownCast(into);
+  occ::handle<TDataStd_UAttribute> A = occ::down_cast<TDataStd_UAttribute>(into);
   A->SetID(myID);
 }
 
 //=================================================================================================
 
-void TDataStd_UAttribute::References(const Handle(TDF_DataSet)& /*DS*/) const {}
+void TDataStd_UAttribute::References(const occ::handle<TDF_DataSet>& /*DS*/) const {}
 
 //=================================================================================================
 
@@ -106,7 +106,7 @@ Standard_OStream& TDataStd_UAttribute::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_UAttribute::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_UAttribute::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -32,18 +32,18 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)
 
 namespace
 {
-static std::atomic<Standard_Integer> THE_TEXTURE_COUNTER(0);
+static std::atomic<int> THE_TEXTURE_COUNTER(0);
 }
 
 //=================================================================================================
 
 TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 {
-  static Standard_Boolean        IsDefined = Standard_False;
+  static bool        IsDefined = false;
   static TCollection_AsciiString VarName;
   if (!IsDefined)
   {
-    IsDefined = Standard_True;
+    IsDefined = true;
     OSD_Environment aTexDirEnv("CSF_MDTVTexturesDirectory");
     VarName = aTexDirEnv.Value();
     if (VarName.IsEmpty())
@@ -99,7 +99,7 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot(const TCollection_AsciiString& theF
 
 //=================================================================================================
 
-Graphic3d_TextureRoot::Graphic3d_TextureRoot(const Handle(Image_PixMap)&   thePixMap,
+Graphic3d_TextureRoot::Graphic3d_TextureRoot(const occ::handle<Image_PixMap>&   thePixMap,
                                              const Graphic3d_TypeOfTexture theType)
     : myParams(new Graphic3d_TextureParams()),
       myPixMap(thePixMap),
@@ -129,12 +129,12 @@ void Graphic3d_TextureRoot::generateId()
 
 //=================================================================================================
 
-Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_CompressedPixMap> Graphic3d_TextureRoot::GetCompressedImage(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   if (!myPixMap.IsNull())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   // Case 2: texture source is specified as path
@@ -142,7 +142,7 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
   myPath.SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   TCollection_AsciiString aFilePathLower = aFilePath;
@@ -150,23 +150,23 @@ Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage(
   if (!aFilePathLower.EndsWith(".dds"))
   {
     // do not waste time on file system access in case of wrong file extension
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
-  if (Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load(theSupported, aFilePath, 0))
+  if (occ::handle<Image_CompressedPixMap> anImage = Image_DDSParser::Load(theSupported, aFilePath, 0))
   {
     myIsTopDown = anImage->IsTopDown();
     return anImage;
   }
-  return Handle(Image_CompressedPixMap)();
+  return occ::handle<Image_CompressedPixMap>();
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_PixMap> Graphic3d_TextureRoot::GetImage(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
-  if (Handle(Image_PixMap) anOldImage = GetImage())
+  if (occ::handle<Image_PixMap> anOldImage = GetImage())
   {
     myIsTopDown = anOldImage->IsTopDown();
     return anOldImage; // compatibility with old API
@@ -184,10 +184,10 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
   myPath.SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
-  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
   if (anImage->Load(aFilePath))
   {
     myIsTopDown = anImage->IsTopDown();
@@ -195,13 +195,13 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage(
     return anImage;
   }
 
-  return Handle(Image_PixMap)();
+  return occ::handle<Image_PixMap>();
 }
 
 //=================================================================================================
 
-void Graphic3d_TextureRoot::convertToCompatible(const Handle(Image_SupportedFormats)& theSupported,
-                                                const Handle(Image_PixMap)&           theImage)
+void Graphic3d_TextureRoot::convertToCompatible(const occ::handle<Image_SupportedFormats>& theSupported,
+                                                const occ::handle<Image_PixMap>&           theImage)
 {
   if (theImage.IsNull() || theSupported.IsNull() || theSupported->IsSupported(theImage->Format()))
   {
@@ -228,7 +228,7 @@ void Graphic3d_TextureRoot::convertToCompatible(const Handle(Image_SupportedForm
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_TextureRoot::IsDone() const
+bool Graphic3d_TextureRoot::IsDone() const
 {
   // Case 1: texture source is specified as pixmap
   if (!myPixMap.IsNull())

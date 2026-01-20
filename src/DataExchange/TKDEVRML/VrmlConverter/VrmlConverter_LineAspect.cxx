@@ -18,32 +18,32 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_LineAspect, Standard_Transient)
 
 VrmlConverter_LineAspect::VrmlConverter_LineAspect()
 {
-  myHasMaterial = Standard_False;
+  myHasMaterial = false;
 }
 
-VrmlConverter_LineAspect::VrmlConverter_LineAspect(const Handle(Vrml_Material)& aMaterial,
-                                                   const Standard_Boolean       OnOff)
+VrmlConverter_LineAspect::VrmlConverter_LineAspect(const occ::handle<Vrml_Material>& aMaterial,
+                                                   const bool       OnOff)
 {
   myMaterial    = aMaterial;
   myHasMaterial = OnOff;
 }
 
-void VrmlConverter_LineAspect::SetMaterial(const Handle(Vrml_Material)& aMaterial)
+void VrmlConverter_LineAspect::SetMaterial(const occ::handle<Vrml_Material>& aMaterial)
 {
   myMaterial = aMaterial;
 }
 
-Handle(Vrml_Material) VrmlConverter_LineAspect::Material() const
+occ::handle<Vrml_Material> VrmlConverter_LineAspect::Material() const
 {
   return myMaterial;
 }
 
-void VrmlConverter_LineAspect::SetHasMaterial(const Standard_Boolean OnOff)
+void VrmlConverter_LineAspect::SetHasMaterial(const bool OnOff)
 {
   myHasMaterial = OnOff;
 }
 
-Standard_Boolean VrmlConverter_LineAspect::HasMaterial() const
+bool VrmlConverter_LineAspect::HasMaterial() const
 {
   return myHasMaterial;
 }

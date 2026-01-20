@@ -30,101 +30,101 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_Plate.hxx>
 
-NLPlate_NLPlate::NLPlate_NLPlate(const Handle(Geom_Surface)& InitialSurface)
+NLPlate_NLPlate::NLPlate_NLPlate(const occ::handle<Geom_Surface>& InitialSurface)
     : myInitialSurface(InitialSurface),
-      OK(Standard_False)
+      OK(false)
 {
 }
 
 //=======================================================================
 
-void NLPlate_NLPlate::Load(const Handle(NLPlate_HGPPConstraint)& GConst)
+void NLPlate_NLPlate::Load(const occ::handle<NLPlate_HGPPConstraint>& GConst)
 {
   if (!GConst.IsNull())
     myHGPPConstraints.Append(GConst);
-  OK = Standard_False;
+  OK = false;
 }
 
 //=================================================================================================
 
-void NLPlate_NLPlate::Solve(const Standard_Integer ord,
-                            const Standard_Integer InitialConsraintOrder)
+void NLPlate_NLPlate::Solve(const int ord,
+                            const int InitialConsraintOrder)
 {
-  Standard_Integer maxOrder = MaxActiveConstraintOrder();
-  Standard_Integer ordre    = ord;
+  int maxOrder = MaxActiveConstraintOrder();
+  int ordre    = ord;
   if (ordre < maxOrder + 2)
     ordre = maxOrder + 2;
 
-  for (Standard_Integer iterOrder = InitialConsraintOrder; iterOrder <= maxOrder; iterOrder++)
+  for (int iterOrder = InitialConsraintOrder; iterOrder <= maxOrder; iterOrder++)
   {
     if (!Iterate(iterOrder, ordre + iterOrder - maxOrder))
     {
-      OK = Standard_False;
+      OK = false;
       break;
     }
   }
-  OK = Standard_True;
+  OK = true;
 }
 
 //=================================================================================================
 
-void NLPlate_NLPlate::Solve2(const Standard_Integer ord,
-                             const Standard_Integer InitialConsraintOrder)
+void NLPlate_NLPlate::Solve2(const int ord,
+                             const int InitialConsraintOrder)
 {
-  Standard_Integer maxOrder = MaxActiveConstraintOrder();
-  Standard_Integer ordre    = ord;
+  int maxOrder = MaxActiveConstraintOrder();
+  int ordre    = ord;
   if (ordre < maxOrder + 2)
     ordre = maxOrder + 2;
   if (Iterate(0, ord))
   {
-    mySOP.First().SetPolynomialPartOnly(Standard_True);
+    mySOP.First().SetPolynomialPartOnly(true);
     ConstraintsSliding();
   }
 
-  for (Standard_Integer iterOrder = InitialConsraintOrder; iterOrder <= maxOrder; iterOrder++)
+  for (int iterOrder = InitialConsraintOrder; iterOrder <= maxOrder; iterOrder++)
   {
     if (!Iterate(iterOrder, ordre + iterOrder - maxOrder))
     {
-      OK = Standard_False;
+      OK = false;
       break;
     }
   }
-  OK = Standard_True;
+  OK = true;
 }
 
 //=================================================================================================
 
-void NLPlate_NLPlate::IncrementalSolve(const Standard_Integer ord,
-                                       const Standard_Integer /*InitialConsraintOrder*/,
-                                       const Standard_Integer NbIncrements,
-                                       const Standard_Boolean UVSliding)
+void NLPlate_NLPlate::IncrementalSolve(const int ord,
+                                       const int /*InitialConsraintOrder*/,
+                                       const int NbIncrements,
+                                       const bool UVSliding)
 {
-  Standard_Integer maxOrder = MaxActiveConstraintOrder();
-  Standard_Integer ordre    = ord;
+  int maxOrder = MaxActiveConstraintOrder();
+  int ordre    = ord;
   if (ordre < maxOrder + 2)
     ordre = maxOrder + 2;
-  Standard_Real IncrementalLoad = 1.;
+  double IncrementalLoad = 1.;
 
-  for (Standard_Integer increment = 0; increment < NbIncrements; increment++)
+  for (int increment = 0; increment < NbIncrements; increment++)
   {
-    IncrementalLoad = 1. / Standard_Real(NbIncrements - increment);
-    //      for(Standard_Integer iterOrder=InitialConsraintOrder;iterOrder<=maxOrder;iterOrder++)
-    Standard_Integer iterOrder = maxOrder;
+    IncrementalLoad = 1. / double(NbIncrements - increment);
+    //      for(int iterOrder=InitialConsraintOrder;iterOrder<=maxOrder;iterOrder++)
+    int iterOrder = maxOrder;
     {
       if (!Iterate(iterOrder, ordre + iterOrder - maxOrder, IncrementalLoad))
       {
-        OK = Standard_False;
+        OK = false;
         return;
       }
     }
     if (UVSliding)
       ConstraintsSliding();
   }
-  OK = Standard_True;
+  OK = true;
 }
 
 //=======================================================================
-Standard_Boolean NLPlate_NLPlate::IsDone() const
+bool NLPlate_NLPlate::IsDone() const
 {
   return OK;
 }
@@ -154,8 +154,8 @@ gp_XYZ NLPlate_NLPlate::Evaluate(const gp_XY& point2d) const
 //=======================================================================
 
 gp_XYZ NLPlate_NLPlate::EvaluateDerivative(const gp_XY&           point2d,
-                                           const Standard_Integer iu,
-                                           const Standard_Integer iv) const
+                                           const int iu,
+                                           const int iv) const
 {
   gp_XYZ Value(0., 0., 0.);
   if ((iu == 0) && (iv == 0))
@@ -163,7 +163,7 @@ gp_XYZ NLPlate_NLPlate::EvaluateDerivative(const gp_XY&           point2d,
   else
     Value = myInitialSurface->DN(point2d.X(), point2d.Y(), iu, iv).XYZ();
 
-  for (NLPlate_ListIteratorOfStackOfPlate SI(mySOP); SI.More(); SI.Next())
+  for (NCollection_List<Plate_Plate>::Iterator SI(mySOP); SI.More(); SI.Next())
   {
     if (SI.Value().IsDone())
       Value += SI.Value().EvaluateDerivative(point2d, iu, iv);
@@ -173,15 +173,15 @@ gp_XYZ NLPlate_NLPlate::EvaluateDerivative(const gp_XY&           point2d,
 
 //=======================================================================
 
-Standard_Integer NLPlate_NLPlate::Continuity() const
+int NLPlate_NLPlate::Continuity() const
 {
-  Standard_Integer cont;
+  int cont;
   for (cont = -1; cont < 10; cont++)
   {
     if (!(myInitialSurface->IsCNu(cont + 1) && myInitialSurface->IsCNv(cont + 1)))
       break;
   }
-  for (NLPlate_ListIteratorOfStackOfPlate SI(mySOP); SI.More(); SI.Next())
+  for (NCollection_List<Plate_Plate>::Iterator SI(mySOP); SI.More(); SI.Next())
   {
     if ((SI.Value().IsDone()) && (cont > SI.Value().Continuity()))
       cont = SI.Value().Continuity();
@@ -191,17 +191,17 @@ Standard_Integer NLPlate_NLPlate::Continuity() const
 
 //=======================================================================
 
-Standard_Boolean NLPlate_NLPlate::Iterate(const Standard_Integer ConstraintOrder,
-                                          const Standard_Integer ResolutionOrder,
-                                          const Standard_Real    IncrementalLoading)
+bool NLPlate_NLPlate::Iterate(const int ConstraintOrder,
+                                          const int ResolutionOrder,
+                                          const double    IncrementalLoading)
 {
   Plate_Plate EmptyPlate;
   mySOP.Prepend(EmptyPlate);
   Plate_Plate& TopP = mySOP.First();
-  for (Standard_Integer index = 1; index <= myHGPPConstraints.Length(); index++)
+  for (int index = 1; index <= myHGPPConstraints.Length(); index++)
   {
-    const Handle(NLPlate_HGPPConstraint)& HGPP  = myHGPPConstraints(index);
-    Standard_Integer                      Order = HGPP->ActiveOrder();
+    const occ::handle<NLPlate_HGPPConstraint>& HGPP  = myHGPPConstraints(index);
+    int                      Order = HGPP->ActiveOrder();
     if (ConstraintOrder < Order)
       Order = ConstraintOrder;
     const gp_XY& UV = HGPP->UV();
@@ -311,25 +311,25 @@ Standard_Boolean NLPlate_NLPlate::Iterate(const Standard_Integer ConstraintOrder
   if (!TopP.IsDone())
   {
     mySOP.RemoveFirst();
-    return Standard_False;
+    return false;
   }
   else
-    return Standard_True;
+    return true;
 }
 
 //=======================================================================
 
-void NLPlate_NLPlate::ConstraintsSliding(const Standard_Integer NbIterations)
+void NLPlate_NLPlate::ConstraintsSliding(const int NbIterations)
 {
-  for (Standard_Integer index = 1; index <= myHGPPConstraints.Length(); index++)
+  for (int index = 1; index <= myHGPPConstraints.Length(); index++)
   {
-    const Handle(NLPlate_HGPPConstraint)& HGPP = myHGPPConstraints(index);
+    const occ::handle<NLPlate_HGPPConstraint>& HGPP = myHGPPConstraints(index);
     if (HGPP->UVFreeSliding() && HGPP->IsG0())
     {
       gp_XY        UV = HGPP->UV();
       gp_XYZ       P0 = Evaluate(UV);
       const gp_XYZ P1 = HGPP->G0Target();
-      for (Standard_Integer iter = 1; iter <= NbIterations; iter++)
+      for (int iter = 1; iter <= NbIterations; iter++)
       {
         // on itere au premier ordre, ce qui suffit si on est assez pres de la surface ??
         gp_XYZ      DP = P1 - P0;
@@ -360,12 +360,12 @@ void NLPlate_NLPlate::ConstraintsSliding(const Standard_Integer NbIterations)
 
 //=======================================================================
 
-Standard_Integer NLPlate_NLPlate::MaxActiveConstraintOrder() const
+int NLPlate_NLPlate::MaxActiveConstraintOrder() const
 {
-  Standard_Integer MaxOrder = -1;
-  for (Standard_Integer index = 1; index <= myHGPPConstraints.Length(); index++)
+  int MaxOrder = -1;
+  for (int index = 1; index <= myHGPPConstraints.Length(); index++)
   {
-    Standard_Integer CAOrder = myHGPPConstraints(index)->ActiveOrder();
+    int CAOrder = myHGPPConstraints(index)->ActiveOrder();
     if (CAOrder > MaxOrder)
       MaxOrder = CAOrder;
   }

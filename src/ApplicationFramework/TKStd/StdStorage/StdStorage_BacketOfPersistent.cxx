@@ -39,15 +39,15 @@ void StdStorage_Bucket::Append(StdObjMgt_Persistent* sp)
 
 //=================================================================================================
 
-StdObjMgt_Persistent* StdStorage_Bucket::Value(const Standard_Integer theIndex) const
+StdObjMgt_Persistent* StdStorage_Bucket::Value(const int theIndex) const
 {
   return mySpace[theIndex];
 }
 
 //=================================================================================================
 
-StdStorage_BucketOfPersistent::StdStorage_BucketOfPersistent(const Standard_Integer theBucketSize,
-                                                             const Standard_Integer theBucketNumber)
+StdStorage_BucketOfPersistent::StdStorage_BucketOfPersistent(const int theBucketSize,
+                                                             const int theBucketNumber)
     : myNumberOfBucket(1),
       myNumberOfBucketAllocated(theBucketNumber),
       myBucketSize(theBucketSize)
@@ -65,7 +65,7 @@ void StdStorage_BucketOfPersistent::Clear()
 {
   if (myBuckets)
   {
-    Standard_Integer i;
+    int i;
 
     for (i = 1; i < myNumberOfBucket; i++)
       delete myBuckets[i];
@@ -87,9 +87,9 @@ StdStorage_BucketOfPersistent::~StdStorage_BucketOfPersistent()
 
 //=================================================================================================
 
-StdObjMgt_Persistent* StdStorage_BucketOfPersistent::Value(const Standard_Integer theIndex)
+StdObjMgt_Persistent* StdStorage_BucketOfPersistent::Value(const int theIndex)
 {
-  Standard_Integer theInd, theCurrentBucketNumber, tecurrentind = theIndex - 1;
+  int theInd, theCurrentBucketNumber, tecurrentind = theIndex - 1;
   theCurrentBucketNumber = tecurrentind / myBucketSize;
   theInd                 = tecurrentind - (myBucketSize * theCurrentBucketNumber);
 
@@ -98,7 +98,7 @@ StdObjMgt_Persistent* StdStorage_BucketOfPersistent::Value(const Standard_Intege
 
 //=================================================================================================
 
-void StdStorage_BucketOfPersistent::Append(const Handle(StdObjMgt_Persistent)& sp)
+void StdStorage_BucketOfPersistent::Append(const occ::handle<StdObjMgt_Persistent>& sp)
 {
   myCurrentBucket->myCurrentSpace++;
 
@@ -115,7 +115,7 @@ void StdStorage_BucketOfPersistent::Append(const Handle(StdObjMgt_Persistent)& s
 
   if (myNumberOfBucket > myNumberOfBucketAllocated)
   {
-    Standard_Size e = sizeof(StdStorage_Bucket*) * myNumberOfBucketAllocated;
+    size_t e = sizeof(StdStorage_Bucket*) * myNumberOfBucketAllocated;
     myBuckets       = (StdStorage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
     myNumberOfBucketAllocated *= 2;
   }
@@ -138,10 +138,10 @@ StdStorage_BucketIterator::StdStorage_BucketIterator(StdStorage_BucketOfPersiste
     myBucketNumber       = aBucketManager->myNumberOfBucket;
     myCurrentBucketIndex = 0;
     myCurrentIndex       = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
   else
-    myMoreObject = Standard_False;
+    myMoreObject = false;
 }
 
 //=================================================================================================
@@ -154,10 +154,10 @@ void StdStorage_BucketIterator::Reset()
     myBucketNumber       = myBucket->myNumberOfBucket;
     myCurrentIndex       = 0;
     myCurrentBucketIndex = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
   else
-    myMoreObject = Standard_False;
+    myMoreObject = false;
 }
 
 //=================================================================================================
@@ -171,10 +171,10 @@ void StdStorage_BucketIterator::Init(StdStorage_BucketOfPersistent* aBucketManag
     myBucketNumber       = aBucketManager->myNumberOfBucket;
     myCurrentIndex       = 0;
     myCurrentBucketIndex = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
   else
-    myMoreObject = Standard_False;
+    myMoreObject = false;
 }
 
 //=================================================================================================
@@ -198,7 +198,7 @@ void StdStorage_BucketIterator::Next()
     }
     else
     {
-      myMoreObject = Standard_False;
+      myMoreObject = false;
     }
   }
 }

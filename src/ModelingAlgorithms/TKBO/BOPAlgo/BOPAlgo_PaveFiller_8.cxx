@@ -31,7 +31,8 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntTools_Context.hxx>
 #include <Precision.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -39,14 +40,14 @@
 static void MakeSplitEdge1(const TopoDS_Edge&   aE,
                            const TopoDS_Face&   aF,
                            const TopoDS_Vertex& aV1,
-                           const Standard_Real  aP1,
+                           const double  aP1,
                            const TopoDS_Vertex& aV2,
-                           const Standard_Real  aP2,
+                           const double  aP2,
                            TopoDS_Edge&         aNewEdge);
 
-static Standard_Boolean AddSplitPoint(const Handle(BOPDS_PaveBlock)& thePBD,
+static bool AddSplitPoint(const occ::handle<BOPDS_PaveBlock>& thePBD,
                                       const BOPDS_Pave&              thePave,
-                                      const Standard_Real            theTol);
+                                      const double            theTol);
 
 //=================================================================================================
 
@@ -78,17 +79,17 @@ void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
       if (aSIF.ShapeType() == TopAbs_FACE)
       {
         // 1. Find PaveBlocks that go through nV for nF
-        BOPDS_ListOfPaveBlock aLPBOut(NCollection_BaseAllocator::CommonBaseAllocator());
+        NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPBOut(NCollection_BaseAllocator::CommonBaseAllocator());
         FindPaveBlocks(nV, nF, aLPBOut);
         if (!aLPBOut.IsEmpty())
         {
           //
           // 2.
-          BOPDS_ListOfPaveBlock& aLPBD = myDS->ChangePaveBlocks(anEdgeIndex);
+          NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBD = myDS->ChangePaveBlocks(anEdgeIndex);
           Standard_ASSERT_VOID(!aLPBD.IsEmpty(), "ListOfPaveBlock is unexpectedly empty");
           if (aLPBD.IsEmpty())
             continue;
-          Handle(BOPDS_PaveBlock) aPBD = aLPBD.First();
+          occ::handle<BOPDS_PaveBlock> aPBD = aLPBD.First();
           //
           FillPaves(nV, anEdgeIndex, nF, aLPBOut, aPBD);
           //
@@ -106,14 +107,14 @@ void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
         aE.EmptyCopy();
         BRep_Builder BB;
         BB.Add(aE, aVn);
-        BB.Degenerated(aE, Standard_True);
+        BB.Degenerated(aE, true);
         BB.UpdateEdge(aE, Precision::Confusion());
         BOPDS_ShapeInfo aSI;
         aSI.SetShapeType(TopAbs_EDGE);
         aSI.SetShape(aE);
         const int               nEn   = myDS->Append(aSI);
-        BOPDS_ListOfPaveBlock&  aLPBD = myDS->ChangePaveBlocks(anEdgeIndex);
-        Handle(BOPDS_PaveBlock) aPBD  = aLPBD.First();
+        NCollection_List<occ::handle<BOPDS_PaveBlock>>&  aLPBD = myDS->ChangePaveBlocks(anEdgeIndex);
+        occ::handle<BOPDS_PaveBlock> aPBD  = aLPBD.First();
         aPBD->SetEdge(nEn);
       }
     }
@@ -127,15 +128,15 @@ void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::FindPaveBlocks(const Standard_Integer thePaveIndex,
-                                        const Standard_Integer theFaceInfoIndex,
-                                        BOPDS_ListOfPaveBlock& theFoundBlocks)
+void BOPAlgo_PaveFiller::FindPaveBlocks(const int thePaveIndex,
+                                        const int theFaceInfoIndex,
+                                        NCollection_List<occ::handle<BOPDS_PaveBlock>>& theFoundBlocks)
 {
   auto processPaveBlocks = [thePaveIndex,
-                            &theFoundBlocks](const BOPDS_IndexedMapOfPaveBlock& thePaveBlocksMap) {
+                            &theFoundBlocks](const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& thePaveBlocksMap) {
     for (int aBlockIndex = 1; aBlockIndex <= thePaveBlocksMap.Size(); ++aBlockIndex)
     {
-      const Handle(BOPDS_PaveBlock)& aPaveBlock = thePaveBlocksMap(aBlockIndex);
+      const occ::handle<BOPDS_PaveBlock>& aPaveBlock = thePaveBlocksMap(aBlockIndex);
       int                            nV1, nV2;
       aPaveBlock->Indices(nV1, nV2);
       if (thePaveIndex == nV1 || thePaveIndex == nV2)
@@ -153,13 +154,13 @@ void BOPAlgo_PaveFiller::FindPaveBlocks(const Standard_Integer thePaveIndex,
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::MakeSplitEdge(const Standard_Integer nDE, const Standard_Integer nDF)
+void BOPAlgo_PaveFiller::MakeSplitEdge(const int nDE, const int nDF)
 {
-  Standard_Integer                    nSp, nV1, nV2, aNbPB;
-  Standard_Real                       aT1, aT2;
+  int                    nSp, nV1, nV2, aNbPB;
+  double                       aT1, aT2;
   TopoDS_Edge                         aDE, aSp;
   TopoDS_Vertex                       aV1, aV2;
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   BOPDS_ShapeInfo                     aSI;
   //
   aSI.SetShapeType(TopAbs_EDGE);
@@ -169,13 +170,13 @@ void BOPAlgo_PaveFiller::MakeSplitEdge(const Standard_Integer nDE, const Standar
   //
   const TopoDS_Face& aDF = (*(TopoDS_Face*)(&myDS->Shape(nDF)));
   //
-  BOPDS_ListOfPaveBlock& aLPB = myDS->ChangePaveBlocks(nDE);
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = myDS->ChangePaveBlocks(nDE);
   aNbPB                       = aLPB.Extent();
   //
   aItLPB.Initialize(aLPB);
   for (; aItLPB.More(); aItLPB.Next())
   {
-    Handle(BOPDS_PaveBlock)& aPB = aItLPB.ChangeValue();
+    occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.ChangeValue();
     //
     const BOPDS_Pave& aPave1 = aPB->Pave1();
     aPave1.Contents(nV1, aT1);
@@ -214,11 +215,11 @@ void BOPAlgo_PaveFiller::MakeSplitEdge(const Standard_Integer nDE, const Standar
 //           Extra paves of the pave block of degenerated edge for future
 //           splitting.
 //=======================================================================
-void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
-                                   const Standard_Integer         nED,
-                                   const Standard_Integer         nFD,
-                                   const BOPDS_ListOfPaveBlock&   aLPBOut,
-                                   const Handle(BOPDS_PaveBlock)& aPBD)
+void BOPAlgo_PaveFiller::FillPaves(const int         nVD,
+                                   const int         nED,
+                                   const int         nFD,
+                                   const NCollection_List<occ::handle<BOPDS_PaveBlock>>&   aLPBOut,
+                                   const occ::handle<BOPDS_PaveBlock>& aPBD)
 {
   // Prepare pave to put to pave block as an Extra pave
   BOPDS_Pave aPave;
@@ -228,33 +229,33 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
   const TopoDS_Edge&   aDE = (*(TopoDS_Edge*)(&myDS->Shape(nED)));
   const TopoDS_Face&   aDF = (*(TopoDS_Face*)(&myDS->Shape(nFD)));
   //
-  Standard_Real              aTolV = BRep_Tool::Tolerance(aDV);
+  double              aTolV = BRep_Tool::Tolerance(aDV);
   const BRepAdaptor_Surface& aBAS  = myContext->SurfaceAdaptor(aDF);
   //
   // 2D intersection tolerance should be computed as a resolution
   // from the tolerance of vertex to resolve the touching cases
-  Standard_Real aTolInt = Precision::PConfusion();
+  double aTolInt = Precision::PConfusion();
   // UResolution from the tolerance of the vertex
-  Standard_Real aURes = aBAS.UResolution(aTolV);
+  double aURes = aBAS.UResolution(aTolV);
   // VResolution from the tolerance of the vertex
-  Standard_Real aVRes = aBAS.VResolution(aTolV);
+  double aVRes = aBAS.VResolution(aTolV);
   //
   aTolInt = std::max(aTolInt, std::max(aURes, aVRes));
   //
   // Parametric tolerance to compare intersection point with boundaries
   // should be computed as a resolution from the tolerance of vertex
   // in the direction of the 2D curve of degenerated edge
-  Standard_Real aTolCmp = Precision::PConfusion();
+  double aTolCmp = Precision::PConfusion();
   // Get 2D curve
-  Standard_Real        aTD1, aTD2;
-  Handle(Geom2d_Curve) aC2DDE = BRep_Tool::CurveOnSurface(aDE, aDF, aTD1, aTD2);
+  double        aTD1, aTD2;
+  occ::handle<Geom2d_Curve> aC2DDE = BRep_Tool::CurveOnSurface(aDE, aDF, aTD1, aTD2);
   if (aC2DDE.IsNull())
   {
     return;
   }
 
   // Get direction of the curve
-  Standard_Boolean bUDir =
+  bool bUDir =
     std::abs(aC2DDE->Value(aTD1).Y() - aC2DDE->Value(aTD2).Y()) < Precision::PConfusion();
   //
   aTolCmp = std::max(aTolCmp, (bUDir ? aURes : aVRes));
@@ -263,18 +264,18 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
   Geom2dAdaptor_Curve aGAC1;
   aGAC1.Load(aC2DDE, aTD1, aTD2);
   //
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPBOut);
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPBOut);
   for (; aItLPB.More(); aItLPB.Next())
   {
-    const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();
-    Standard_Integer               nE  = aPB->Edge();
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
+    int               nE  = aPB->Edge();
     if (nE < 0)
     {
       continue;
     }
     const TopoDS_Edge&   aE = (*(TopoDS_Edge*)(&myDS->Shape(nE)));
-    Standard_Real        aT1, aT2;
-    Handle(Geom2d_Curve) aC2D = BRep_Tool::CurveOnSurface(aE, aDF, aT1, aT2);
+    double        aT1, aT2;
+    occ::handle<Geom2d_Curve> aC2D = BRep_Tool::CurveOnSurface(aE, aDF, aT1, aT2);
     if (aC2D.IsNull())
     {
       continue;
@@ -283,7 +284,7 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
     // Prepare adaptor for the passing edge for intersection
     Geom2dAdaptor_Curve aGAC2;
     //
-    Handle(Geom2d_Line) aL2D = Handle(Geom2d_Line)::DownCast(aC2D);
+    occ::handle<Geom2d_Line> aL2D = occ::down_cast<Geom2d_Line>(aC2D);
     if (!aL2D.IsNull())
     {
       aGAC2.Load(aC2D);
@@ -297,10 +298,10 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
     if (aGInter.IsDone() && aGInter.NbPoints())
     {
       // Analyze intersection points
-      Standard_Integer i, aNbPoints = aGInter.NbPoints();
+      int i, aNbPoints = aGInter.NbPoints();
       for (i = 1; i <= aNbPoints; ++i)
       {
-        Standard_Real aX = aGInter.Point(i).ParamOnFirst();
+        double aX = aGInter.Point(i).ParamOnFirst();
         aPave.SetParameter(aX);
         AddSplitPoint(aPBD, aPave, aTolCmp);
       }
@@ -309,13 +310,13 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
     {
       // If the intersection did not succeed, try the projection of the end point
       // of the curve corresponding to the vertex of degenerated edge
-      Standard_Real aT =
+      double aT =
         (nVD == aPB->Pave1().Index() ? aPB->Pave1().Parameter() : aPB->Pave2().Parameter());
       gp_Pnt2d                      aP2d = aC2D->Value(aT);
       Geom2dAPI_ProjectPointOnCurve aProj2d(aP2d, aC2DDE, aTD1, aTD2);
       if (aProj2d.NbPoints())
       {
-        Standard_Real aX = aProj2d.LowerDistanceParameter();
+        double aX = aProj2d.LowerDistanceParameter();
         aPave.SetParameter(aX);
         AddSplitPoint(aPBD, aPave, aTolCmp);
       }
@@ -328,12 +329,12 @@ void BOPAlgo_PaveFiller::FillPaves(const Standard_Integer         nVD,
 void MakeSplitEdge1(const TopoDS_Edge&   aE,
                     const TopoDS_Face&   aF,
                     const TopoDS_Vertex& aV1,
-                    const Standard_Real  aP1,
+                    const double  aP1,
                     const TopoDS_Vertex& aV2,
-                    const Standard_Real  aP2,
+                    const double  aP2,
                     TopoDS_Edge&         aNewEdge)
 {
-  Standard_Real aTol = 1.e-7;
+  double aTol = 1.e-7;
 
   TopoDS_Edge E = aE;
 
@@ -344,7 +345,7 @@ void MakeSplitEdge1(const TopoDS_Edge&   aE,
 
   BB.Range(E, aF, aP1, aP2);
 
-  BB.Degenerated(E, Standard_True);
+  BB.Degenerated(E, true);
 
   BB.UpdateEdge(E, aTol);
   aNewEdge = E;
@@ -358,25 +359,25 @@ void MakeSplitEdge1(const TopoDS_Edge&   aE,
 //          Extra Pave to the Pave Block for further splitting of the latter.
 //          Returns TRUE if the point is added, otherwise returns FALSE.
 //=======================================================================
-Standard_Boolean AddSplitPoint(const Handle(BOPDS_PaveBlock)& thePBD,
+bool AddSplitPoint(const occ::handle<BOPDS_PaveBlock>& thePBD,
                                const BOPDS_Pave&              thePave,
-                               const Standard_Real            theTol)
+                               const double            theTol)
 {
-  Standard_Real aTD1, aTD2;
+  double aTD1, aTD2;
   thePBD->Range(aTD1, aTD2);
 
-  Standard_Real aT = thePave.Parameter();
+  double aT = thePave.Parameter();
   // Check that the parameter is inside the Pave Block
   if (aT - aTD1 < theTol || aTD2 - aT < theTol)
-    return Standard_False;
+    return false;
 
   // Check that the pave block does not contain the same parameter
-  Standard_Integer anInd;
+  int anInd;
   if (thePBD->ContainsParameter(aT, theTol, anInd))
-    return Standard_False;
+    return false;
 
   // Add the point as an Extra pave to the Pave Block for further
   // splitting of the latter
   thePBD->AppendExtPave1(thePave);
-  return Standard_True;
+  return true;
 }

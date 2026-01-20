@@ -35,7 +35,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 
 namespace
@@ -46,17 +47,17 @@ namespace
 //           of the nodes of theTriangulation. Each node will be
 //           transformed with theTransformation.
 //=======================================================================
-Handle(StepVisual_CoordinatesList) GenerateCoordinateList(
-  const Handle(Poly_Triangulation)& theTriangulation,
+occ::handle<StepVisual_CoordinatesList> GenerateCoordinateList(
+  const occ::handle<Poly_Triangulation>& theTriangulation,
   const gp_Trsf&                    theTransformation)
 {
-  Handle(TColgp_HArray1OfXYZ) thePoints = new TColgp_HArray1OfXYZ(1, theTriangulation->NbNodes());
-  for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+  occ::handle<NCollection_HArray1<gp_XYZ>> thePoints = new NCollection_HArray1<gp_XYZ>(1, theTriangulation->NbNodes());
+  for (int aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
   {
     const gp_Pnt aCurrentNode = theTriangulation->Node(aNodeIndex).Transformed(theTransformation);
     thePoints->SetValue(aNodeIndex, aCurrentNode.XYZ());
   }
-  Handle(StepVisual_CoordinatesList) aCoordinatesList = new StepVisual_CoordinatesList;
+  occ::handle<StepVisual_CoordinatesList> aCoordinatesList = new StepVisual_CoordinatesList;
   aCoordinatesList->Init(new TCollection_HAsciiString(), thePoints);
   return aCoordinatesList;
 }
@@ -78,7 +79,7 @@ Handle(StepVisual_CoordinatesList) GenerateCoordinateList(
 //           theTriangulation->NbNodes(), if each vertex has a unique
 //             node associated with it.
 //=======================================================================
-Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation)
+int CountNormals(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
   if (!theTriangulation->HasNormals())
   {
@@ -86,12 +87,12 @@ Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation
   }
 
   // Function to compare normal coordinates values.
-  auto isEqual = [](const Standard_Real theVal1, const Standard_Real theVal2) {
+  auto isEqual = [](const double theVal1, const double theVal2) {
     return std::abs(theVal1 - theVal2) < Precision::Confusion();
   };
   // Checking if all normals are equal.
   const gp_Dir aReferenceNormal = theTriangulation->Normal(1);
-  for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+  for (int aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
   {
     const gp_Dir aCurrentNormal = theTriangulation->Normal(aNodeIndex);
     if (!isEqual(aReferenceNormal.X(), aCurrentNormal.X())
@@ -113,18 +114,18 @@ Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation
 //           IMPORTANT: Output will be nullptr if theTriangulation has
 //           no normals.
 //=======================================================================
-Handle(TColStd_HArray2OfReal) GenerateNormalsArray(
-  const Handle(Poly_Triangulation)& theTriangulation,
+occ::handle<NCollection_HArray2<double>> GenerateNormalsArray(
+  const occ::handle<Poly_Triangulation>& theTriangulation,
   const gp_Trsf&                    theTransformation)
 {
-  const Standard_Integer aNormalCount = CountNormals(theTriangulation);
+  const int aNormalCount = CountNormals(theTriangulation);
   if (aNormalCount == 0)
   {
     return nullptr;
   }
   else if (aNormalCount == 1)
   {
-    Handle(TColStd_HArray2OfReal) aNormals = new TColStd_HArray2OfReal(1, 1, 1, 3);
+    occ::handle<NCollection_HArray2<double>> aNormals = new NCollection_HArray2<double>(1, 1, 1, 3);
     const gp_Dir aNormal = theTriangulation->Normal(1).Transformed(theTransformation);
     aNormals->SetValue(1, 1, aNormal.X());
     aNormals->SetValue(1, 2, aNormal.Y());
@@ -133,10 +134,10 @@ Handle(TColStd_HArray2OfReal) GenerateNormalsArray(
   }
   else
   {
-    Handle(TColStd_HArray2OfReal) aNormals =
-      new TColStd_HArray2OfReal(1, theTriangulation->NbNodes(), 1, 3);
+    occ::handle<NCollection_HArray2<double>> aNormals =
+      new NCollection_HArray2<double>(1, theTriangulation->NbNodes(), 1, 3);
 
-    for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+    for (int aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
     {
       const gp_Dir aCurrentNormal =
         theTriangulation->Normal(aNodeIndex).Transformed(theTransformation);
@@ -155,18 +156,18 @@ Handle(TColStd_HArray2OfReal) GenerateNormalsArray(
 //           all triangles from it would just be imported as tringle
 //           strips of one triangle.
 //=======================================================================
-Handle(TColStd_HArray1OfTransient) GenerateTriangleStrips(
-  const Handle(Poly_Triangulation)& theTriangulation)
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> GenerateTriangleStrips(
+  const occ::handle<Poly_Triangulation>& theTriangulation)
 {
-  Handle(TColStd_HArray1OfTransient) aTriangleStrips =
-    new TColStd_HArray1OfTransient(1, theTriangulation->NbTriangles());
-  for (Standard_Integer aTriangleIndex = 1; aTriangleIndex <= theTriangulation->NbTriangles();
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, theTriangulation->NbTriangles());
+  for (int aTriangleIndex = 1; aTriangleIndex <= theTriangulation->NbTriangles();
        ++aTriangleIndex)
   {
     // Since Poly_Triangulation doesn't support triangle strips or triangle fans,
     // we just write each thriangle as triangle strip.
     const Poly_Triangle&             aCurrentTriangle = theTriangulation->Triangle(aTriangleIndex);
-    Handle(TColStd_HArray1OfInteger) aTriangleStrip   = new TColStd_HArray1OfInteger(1, 3);
+    occ::handle<NCollection_HArray1<int>> aTriangleStrip   = new NCollection_HArray1<int>(1, 3);
     aTriangleStrip->SetValue(1, aCurrentTriangle.Value(1));
     aTriangleStrip->SetValue(2, aCurrentTriangle.Value(2));
     aTriangleStrip->SetValue(3, aCurrentTriangle.Value(3));
@@ -180,11 +181,11 @@ Handle(TColStd_HArray1OfTransient) GenerateTriangleStrips(
 // purpose  : Generates complex_triangulated_surface_set from theFace.
 //           Returns nullptr if face has no triangulation.
 //=======================================================================
-Handle(StepVisual_ComplexTriangulatedSurfaceSet) GenerateComplexTriangulatedSurfaceSet(
+occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulatedSurfaceSet(
   const TopoDS_Face& theFace)
 {
   TopLoc_Location                  aFaceLoc;
-  const Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace, aFaceLoc);
+  const occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(theFace, aFaceLoc);
   if (aTriangulation.IsNull())
   {
     return nullptr;
@@ -192,12 +193,12 @@ Handle(StepVisual_ComplexTriangulatedSurfaceSet) GenerateComplexTriangulatedSurf
   const gp_Trsf aFaceTransform = aFaceLoc.Transformation();
 
   // coordinates
-  Handle(StepVisual_CoordinatesList) aCoordinatesList =
+  occ::handle<StepVisual_CoordinatesList> aCoordinatesList =
     GenerateCoordinateList(aTriangulation, aFaceTransform);
   // pnmax
-  Standard_Integer aPnmax = aTriangulation->NbNodes();
+  int aPnmax = aTriangulation->NbNodes();
   // normals
-  Handle(TColStd_HArray2OfReal) aNormals = GenerateNormalsArray(aTriangulation, aFaceTransform);
+  occ::handle<NCollection_HArray2<double>> aNormals = GenerateNormalsArray(aTriangulation, aFaceTransform);
   // pnindex
   // From "Recommended Practices Recommended Practices for 3D Tessellated Geometry", Release 1.1:
   // "pnindex is the table of indices of the points used in the definition of the triangles.
@@ -205,15 +206,15 @@ Handle(StepVisual_ComplexTriangulatedSurfaceSet) GenerateComplexTriangulatedSurf
   //  pnmax: this is the size of normals when each point has a normal.
   //  0: no indirection."
   // In our case there is no indirection, so it's always empty.
-  Handle(TColStd_HArray1OfInteger) aPnindex = new TColStd_HArray1OfInteger;
+  occ::handle<NCollection_HArray1<int>> aPnindex = new NCollection_HArray1<int>;
   // triangle_strips
-  Handle(TColStd_HArray1OfTransient) aTriangleStrips = GenerateTriangleStrips(aTriangulation);
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips = GenerateTriangleStrips(aTriangulation);
   // triangle_fans
   // All triangles were already written as triangle strips.
-  Handle(TColStd_HArray1OfTransient) aTriangleFans = new TColStd_HArray1OfTransient;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleFans = new NCollection_HArray1<occ::handle<Standard_Transient>>;
 
   // Initialization of complex_triangulated_surface_set.
-  Handle(StepVisual_ComplexTriangulatedSurfaceSet) aCTSS =
+  occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aCTSS =
     new StepVisual_ComplexTriangulatedSurfaceSet;
   aCTSS->Init(new TCollection_HAsciiString(),
               aCoordinatesList,
@@ -230,11 +231,11 @@ Handle(StepVisual_ComplexTriangulatedSurfaceSet) GenerateComplexTriangulatedSurf
 // purpose  : Generates tesselated_curve_set from theShape.
 //           If no valid curves were found, return nullptr.
 //=======================================================================
-Handle(StepVisual_TessellatedCurveSet) GenerateTessellatedCurveSet(const TopoDS_Shape& theShape)
+occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(const TopoDS_Shape& theShape)
 {
-  NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aLineStrips =
-    new StepVisual_VectorOfHSequenceOfInteger;
-  // Temporary contanier for points. We need points in TColgp_HArray1OfXYZ type of
+  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aLineStrips =
+    new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
+  // Temporary contanier for points. We need points in NCollection_HArray1<gp_XYZ> type of
   // container, however in order to create it we need to know it's size.
   // Currently number of points is unknown, so we will put all the points in a
   // temporary container and then just copy them after all edges will be processed.
@@ -242,14 +243,14 @@ Handle(StepVisual_TessellatedCurveSet) GenerateTessellatedCurveSet(const TopoDS_
   for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next())
   {
     // Find out type of edge curve
-    Standard_Real            aFirstParam = 0, aLastParam = 0;
-    const Handle(Geom_Curve) anEdgeCurve =
+    double            aFirstParam = 0, aLastParam = 0;
+    const occ::handle<Geom_Curve> anEdgeCurve =
       BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()), aFirstParam, aLastParam);
     if (anEdgeCurve.IsNull())
     {
       continue;
     }
-    Handle(TColStd_HSequenceOfInteger) aCurrentCurve = new TColStd_HSequenceOfInteger;
+    occ::handle<NCollection_HSequence<int>> aCurrentCurve = new NCollection_HSequence<int>;
     if (anEdgeCurve->IsKind(STANDARD_TYPE(Geom_Line))) // Line
     {
       for (TopExp_Explorer aVertIt(aCurveIt.Current(), TopAbs_VERTEX); aVertIt.More();
@@ -262,9 +263,9 @@ Handle(StepVisual_TessellatedCurveSet) GenerateTessellatedCurveSet(const TopoDS_
     else // BSpline
     {
       ShapeConstruct_Curve      aSCC;
-      Handle(Geom_BSplineCurve) aBSCurve =
+      occ::handle<Geom_BSplineCurve> aBSCurve =
         aSCC.ConvertToBSpline(anEdgeCurve, aFirstParam, aLastParam, Precision::Confusion());
-      for (Standard_Integer aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
+      for (int aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
       {
         aTmpPointsContainer.Append(aBSCurve->Pole(aPoleIndex).XYZ());
         aCurrentCurve->Append(aTmpPointsContainer.Size());
@@ -275,18 +276,18 @@ Handle(StepVisual_TessellatedCurveSet) GenerateTessellatedCurveSet(const TopoDS_
 
   if (aTmpPointsContainer.IsEmpty())
   {
-    return Handle(StepVisual_TessellatedCurveSet){};
+    return occ::handle<StepVisual_TessellatedCurveSet>{};
   }
 
-  Handle(TColgp_HArray1OfXYZ) aPoints = new TColgp_HArray1OfXYZ(1, aTmpPointsContainer.Size());
-  for (Standard_Integer aPointIndex = 1; aPointIndex <= aPoints->Size(); ++aPointIndex)
+  occ::handle<NCollection_HArray1<gp_XYZ>> aPoints = new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Size());
+  for (int aPointIndex = 1; aPointIndex <= aPoints->Size(); ++aPointIndex)
   {
     aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1));
   }
   // STEP entities
-  Handle(StepVisual_CoordinatesList) aCoordinates = new StepVisual_CoordinatesList();
+  occ::handle<StepVisual_CoordinatesList> aCoordinates = new StepVisual_CoordinatesList();
   aCoordinates->Init(new TCollection_HAsciiString(), aPoints);
-  Handle(StepVisual_TessellatedCurveSet) aTCS = new StepVisual_TessellatedCurveSet();
+  occ::handle<StepVisual_TessellatedCurveSet> aTCS = new StepVisual_TessellatedCurveSet();
   aTCS->Init(new TCollection_HAsciiString(), aCoordinates, aLineStrips);
   return aTCS;
 }
@@ -299,131 +300,131 @@ STEPCAFControl_GDTProperty::STEPCAFControl_GDTProperty() {}
 //=================================================================================================
 
 void STEPCAFControl_GDTProperty::GetDimModifiers(
-  const Handle(StepRepr_CompoundRepresentationItem)& theCRI,
-  XCAFDimTolObjects_DimensionModifiersSequence&      theModifiers)
+  const occ::handle<StepRepr_CompoundRepresentationItem>& theCRI,
+  NCollection_Sequence<XCAFDimTolObjects_DimensionModif>&      theModifiers)
 {
-  for (Standard_Integer l = 1; l <= theCRI->ItemElement()->Length(); l++)
+  for (int l = 1; l <= theCRI->ItemElement()->Length(); l++)
   {
-    Handle(StepRepr_DescriptiveRepresentationItem) aDRI =
-      Handle(StepRepr_DescriptiveRepresentationItem)::DownCast(theCRI->ItemElement()->Value(l));
+    occ::handle<StepRepr_DescriptiveRepresentationItem> aDRI =
+      occ::down_cast<StepRepr_DescriptiveRepresentationItem>(theCRI->ItemElement()->Value(l));
     if (aDRI.IsNull())
       continue;
     XCAFDimTolObjects_DimensionModif aModifier = XCAFDimTolObjects_DimensionModif_ControlledRadius;
     const TCollection_AsciiString    aModifStr = aDRI->Description()->String();
-    Standard_Boolean                 aFound    = Standard_False;
+    bool                 aFound    = false;
     if (aModifStr.IsEqual("controlled radius"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_ControlledRadius;
     }
     else if (aModifStr.IsEqual("square"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_Square;
     }
     else if (aModifStr.IsEqual("statistical"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_StatisticalTolerance;
     }
     else if (aModifStr.IsEqual("continuous feature"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_ContinuousFeature;
     }
     else if (aModifStr.IsEqual("two point size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_TwoPointSize;
     }
     else if (aModifStr.IsEqual("local size defined by a sphere"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_LocalSizeDefinedBySphere;
     }
     else if (aModifStr.IsEqual("least squares association criteria"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_LeastSquaresAssociationCriterion;
     }
     else if (aModifStr.IsEqual("maximum inscribed association criteria"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MaximumInscribedAssociation;
     }
     else if (aModifStr.IsEqual("minimum circumscribed association criteria"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MinimumCircumscribedAssociation;
     }
     else if (aModifStr.IsEqual("circumference diameter calculated size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_CircumferenceDiameter;
     }
     else if (aModifStr.IsEqual("area diameter calculated size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_AreaDiameter;
     }
     else if (aModifStr.IsEqual("volume diameter calculated size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_VolumeDiameter;
     }
     else if (aModifStr.IsEqual("maximum rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MaximumSize;
     }
     else if (aModifStr.IsEqual("minimum rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MinimumSize;
     }
     else if (aModifStr.IsEqual("average rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_AverageSize;
     }
     else if (aModifStr.IsEqual("median rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MedianSize;
     }
     else if (aModifStr.IsEqual("mid range rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_MidRangeSize;
     }
     else if (aModifStr.IsEqual("range rank order size"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_RangeOfSizes;
     }
     else if (aModifStr.IsEqual("any part of the feature"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_AnyRestrictedPortionOfFeature;
     }
     else if (aModifStr.IsEqual("any cross section"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_AnyCrossSection;
     }
     else if (aModifStr.IsEqual("specific fixed cross section"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_SpecificFixedCrossSection;
     }
     else if (aModifStr.IsEqual("common tolerance"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_CommonTolerance;
     }
     else if (aModifStr.IsEqual("free state condition"))
     {
-      aFound    = Standard_True;
+      aFound    = true;
       aModifier = XCAFDimTolObjects_DimensionModif_FreeStateCondition;
     }
     if (aFound)
@@ -434,224 +435,224 @@ void STEPCAFControl_GDTProperty::GetDimModifiers(
 //=================================================================================================
 
 void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
-  const Handle(StepShape_LimitsAndFits)&   theLAF,
-  Standard_Boolean&                        theHolle,
+  const occ::handle<StepShape_LimitsAndFits>&   theLAF,
+  bool&                        theHolle,
   XCAFDimTolObjects_DimensionFormVariance& theFV,
   XCAFDimTolObjects_DimensionGrade&        theG)
 {
-  Handle(TCollection_HAsciiString) aFormV = theLAF->FormVariance();
-  Handle(TCollection_HAsciiString) aGrade = theLAF->Grade();
+  occ::handle<TCollection_HAsciiString> aFormV = theLAF->FormVariance();
+  occ::handle<TCollection_HAsciiString> aGrade = theLAF->Grade();
   theFV                                   = XCAFDimTolObjects_DimensionFormVariance_None;
-  Standard_Boolean aFound;
-  theHolle = Standard_False;
+  bool aFound;
+  theHolle = false;
   // it is not verified information
-  for (Standard_Integer c = 0; c <= 1 && !aFormV.IsNull(); c++)
+  for (int c = 0; c <= 1 && !aFormV.IsNull(); c++)
   {
-    aFound                     = Standard_False;
-    Standard_Boolean aCaseSens = Standard_False;
+    aFound                     = false;
+    bool aCaseSens = false;
     if (c == 1)
-      aCaseSens = Standard_True;
-    Handle(TCollection_HAsciiString) aStr = new TCollection_HAsciiString("a");
+      aCaseSens = true;
+    occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString("a");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_A;
       continue;
     }
     aStr = new TCollection_HAsciiString("b");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_B;
       continue;
     }
     aStr = new TCollection_HAsciiString("c");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_C;
       continue;
     }
     aStr = new TCollection_HAsciiString("cd");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_CD;
       continue;
     }
     aStr = new TCollection_HAsciiString("d");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_D;
       continue;
     }
     aStr = new TCollection_HAsciiString("e");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_E;
       continue;
     }
     aStr = new TCollection_HAsciiString("ef");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_EF;
       continue;
     }
     aStr = new TCollection_HAsciiString("f");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_F;
       continue;
     }
     aStr = new TCollection_HAsciiString("fg");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_FG;
       continue;
     }
     aStr = new TCollection_HAsciiString("g");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_G;
       continue;
     }
     aStr = new TCollection_HAsciiString("h");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_H;
       continue;
     }
     aStr = new TCollection_HAsciiString("js");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_JS;
       continue;
     }
     aStr = new TCollection_HAsciiString("k");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_K;
       continue;
     }
     aStr = new TCollection_HAsciiString("m");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_M;
       continue;
     }
     aStr = new TCollection_HAsciiString("n");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_N;
       continue;
     }
     aStr = new TCollection_HAsciiString("p");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_P;
       continue;
     }
     aStr = new TCollection_HAsciiString("r");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_R;
       continue;
     }
     aStr = new TCollection_HAsciiString("s");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_S;
       continue;
     }
     aStr = new TCollection_HAsciiString("t");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_T;
       continue;
     }
     aStr = new TCollection_HAsciiString("u");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_U;
       continue;
     }
     aStr = new TCollection_HAsciiString("v");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_V;
       continue;
     }
     aStr = new TCollection_HAsciiString("x");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_X;
       continue;
     }
     aStr = new TCollection_HAsciiString("y");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_Y;
       continue;
     }
     aStr = new TCollection_HAsciiString("b");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_B;
       continue;
     }
     aStr = new TCollection_HAsciiString("z");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_Z;
       continue;
     }
     aStr = new TCollection_HAsciiString("za");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_ZA;
       continue;
     }
     aStr = new TCollection_HAsciiString("zb");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_ZB;
       continue;
     }
     aStr = new TCollection_HAsciiString("zc");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
-      aFound = Standard_True;
+      aFound = true;
       theFV  = XCAFDimTolObjects_DimensionFormVariance_ZC;
       continue;
     }
 
     if (c == 1 && !aFound)
-      theHolle = Standard_True;
+      theHolle = true;
   }
-  Handle(TCollection_HAsciiString) aStr = new TCollection_HAsciiString("01");
+  occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString("01");
   theG                                  = XCAFDimTolObjects_DimensionGrade_IT01;
   if (!aGrade.IsNull() && !aGrade->String().IsEqual("01") && aGrade->IsIntegerValue())
   {
@@ -661,8 +662,8 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_GDTProperty::GetDimType(
-  const Handle(TCollection_HAsciiString)& theName,
+bool STEPCAFControl_GDTProperty::GetDimType(
+  const occ::handle<TCollection_HAsciiString>& theName,
   XCAFDimTolObjects_DimensionType&        theType)
 {
   TCollection_AsciiString aName = theName->String();
@@ -768,15 +769,15 @@ Standard_Boolean STEPCAFControl_GDTProperty::GetDimType(
   if (theType != XCAFDimTolObjects_DimensionType_Location_None
       && theType != XCAFDimTolObjects_DimensionType_CommonLabel)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_GDTProperty::GetDatumTargetType(
-  const Handle(TCollection_HAsciiString)& theDescription,
+bool STEPCAFControl_GDTProperty::GetDatumTargetType(
+  const occ::handle<TCollection_HAsciiString>& theDescription,
   XCAFDimTolObjects_DatumTargetType&      theType)
 {
   TCollection_AsciiString aName = theDescription->String();
@@ -784,35 +785,35 @@ Standard_Boolean STEPCAFControl_GDTProperty::GetDatumTargetType(
   if (aName.IsEqual("area"))
   {
     theType = XCAFDimTolObjects_DatumTargetType_Area;
-    return Standard_True;
+    return true;
   }
   else if (aName.IsEqual("line"))
   {
     theType = XCAFDimTolObjects_DatumTargetType_Line;
-    return Standard_True;
+    return true;
   }
   else if (aName.IsEqual("circle"))
   {
     theType = XCAFDimTolObjects_DatumTargetType_Circle;
-    return Standard_True;
+    return true;
   }
   else if (aName.IsEqual("rectangle"))
   {
     theType = XCAFDimTolObjects_DatumTargetType_Rectangle;
-    return Standard_True;
+    return true;
   }
   else if (aName.IsEqual("point"))
   {
     theType = XCAFDimTolObjects_DatumTargetType_Point;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_GDTProperty::GetDimQualifierType(
-  const Handle(TCollection_HAsciiString)& theDescription,
+bool STEPCAFControl_GDTProperty::GetDimQualifierType(
+  const occ::handle<TCollection_HAsciiString>& theDescription,
   XCAFDimTolObjects_DimensionQualifier&   theType)
 {
   TCollection_AsciiString aName = theDescription->String();
@@ -832,15 +833,15 @@ Standard_Boolean STEPCAFControl_GDTProperty::GetDimQualifierType(
   }
   if (theType != XCAFDimTolObjects_DimensionQualifier_None)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_GDTProperty::GetTolValueType(
-  const Handle(TCollection_HAsciiString)&   theDescription,
+bool STEPCAFControl_GDTProperty::GetTolValueType(
+  const occ::handle<TCollection_HAsciiString>&   theDescription,
   XCAFDimTolObjects_GeomToleranceTypeValue& theType)
 {
   TCollection_AsciiString aName = theDescription->String();
@@ -856,17 +857,17 @@ Standard_Boolean STEPCAFControl_GDTProperty::GetTolValueType(
   }
   if (theType != XCAFDimTolObjects_GeomToleranceTypeValue_None)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimTypeName(
+occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetDimTypeName(
   const XCAFDimTolObjects_DimensionType theType)
 {
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   switch (theType)
   {
     // Dimensional_Location
@@ -952,10 +953,10 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimTypeName(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimQualifierName(
+occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetDimQualifierName(
   const XCAFDimTolObjects_DimensionQualifier theQualifier)
 {
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   switch (theQualifier)
   {
     case XCAFDimTolObjects_DimensionQualifier_Min:
@@ -975,10 +976,10 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimQualifierName
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimModifierName(
+occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetDimModifierName(
   const XCAFDimTolObjects_DimensionModif theModifier)
 {
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   switch (theModifier)
   {
     case XCAFDimTolObjects_DimensionModif_ControlledRadius:
@@ -1058,18 +1059,18 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDimModifierName(
 
 //=================================================================================================
 
-Handle(StepShape_LimitsAndFits) STEPCAFControl_GDTProperty::GetLimitsAndFits(
-  Standard_Boolean                        theHole,
+occ::handle<StepShape_LimitsAndFits> STEPCAFControl_GDTProperty::GetLimitsAndFits(
+  bool                        theHole,
   XCAFDimTolObjects_DimensionFormVariance theFormVariance,
   XCAFDimTolObjects_DimensionGrade        theGrade)
 {
-  Handle(StepShape_LimitsAndFits)  aLAF = new StepShape_LimitsAndFits();
-  Handle(TCollection_HAsciiString) aGradeStr, aFormStr, aHoleStr;
+  occ::handle<StepShape_LimitsAndFits>  aLAF = new StepShape_LimitsAndFits();
+  occ::handle<TCollection_HAsciiString> aGradeStr, aFormStr, aHoleStr;
 
   if (theGrade == XCAFDimTolObjects_DimensionGrade_IT01)
     aGradeStr = new TCollection_HAsciiString("01");
   else
-    aGradeStr = new TCollection_HAsciiString((Standard_Integer)theGrade + 1);
+    aGradeStr = new TCollection_HAsciiString((int)theGrade + 1);
 
   switch (theFormVariance)
   {
@@ -1177,10 +1178,10 @@ Handle(StepShape_LimitsAndFits) STEPCAFControl_GDTProperty::GetLimitsAndFits(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetDatumTargetName(
+occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetDatumTargetName(
   const XCAFDimTolObjects_DatumTargetType theDatumType)
 {
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   switch (theDatumType)
   {
     case XCAFDimTolObjects_DatumTargetType_Point:
@@ -1290,7 +1291,7 @@ XCAFDimTolObjects_GeomToleranceType STEPCAFControl_GDTProperty::GetGeomTolerance
 
 //=================================================================================================
 
-Handle(StepDimTol_GeometricTolerance) STEPCAFControl_GDTProperty::GetGeomTolerance(
+occ::handle<StepDimTol_GeometricTolerance> STEPCAFControl_GDTProperty::GetGeomTolerance(
   const XCAFDimTolObjects_GeomToleranceType theType)
 {
   switch (theType)
@@ -1360,20 +1361,20 @@ StepDimTol_GeometricToleranceModifier STEPCAFControl_GDTProperty::GetGeomToleran
 // function : GetDatumRefModifiers
 // purpose  : Note: this function does not add anything to model
 //=======================================================================
-Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::GetDatumRefModifiers(
-  const XCAFDimTolObjects_DatumModifiersSequence& theModifiers,
+occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFControl_GDTProperty::GetDatumRefModifiers(
+  const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers,
   const XCAFDimTolObjects_DatumModifWithValue&    theModifWithVal,
-  const Standard_Real                             theValue,
+  const double                             theValue,
   const StepBasic_Unit&                           theUnit)
 {
   if ((theModifiers.Length() == 0)
       && (theModifWithVal == XCAFDimTolObjects_DatumModifWithValue_None))
     return NULL;
-  Standard_Integer aModifNb = theModifiers.Length();
+  int aModifNb = theModifiers.Length();
   if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
     aModifNb++;
-  Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModifiers =
-    new StepDimTol_HArray1OfDatumReferenceModifier(1, aModifNb);
+  occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> aModifiers =
+    new NCollection_HArray1<StepDimTol_DatumReferenceModifier>(1, aModifNb);
 
   // Modifier with value
   if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
@@ -1396,12 +1397,12 @@ Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::G
       default:
         aType = StepDimTol_Distance;
     }
-    Handle(StepBasic_LengthMeasureWithUnit) aLMWU        = new StepBasic_LengthMeasureWithUnit();
-    Handle(StepBasic_MeasureValueMember)    aValueMember = new StepBasic_MeasureValueMember();
+    occ::handle<StepBasic_LengthMeasureWithUnit> aLMWU        = new StepBasic_LengthMeasureWithUnit();
+    occ::handle<StepBasic_MeasureValueMember>    aValueMember = new StepBasic_MeasureValueMember();
     aValueMember->SetName("LENGTH_MEASURE");
     aValueMember->SetReal(theValue);
     aLMWU->Init(aValueMember, theUnit);
-    Handle(StepDimTol_DatumReferenceModifierWithValue) aModifWithVal =
+    occ::handle<StepDimTol_DatumReferenceModifierWithValue> aModifWithVal =
       new StepDimTol_DatumReferenceModifierWithValue();
     aModifWithVal->Init(aType, aLMWU);
     StepDimTol_DatumReferenceModifier aModif;
@@ -1410,9 +1411,9 @@ Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::G
   }
 
   // Simple modifiers
-  for (Standard_Integer i = 1; i <= theModifiers.Length(); i++)
+  for (int i = 1; i <= theModifiers.Length(); i++)
   {
-    Handle(StepDimTol_SimpleDatumReferenceModifierMember) aSimpleModifMember =
+    occ::handle<StepDimTol_SimpleDatumReferenceModifierMember> aSimpleModifMember =
       new StepDimTol_SimpleDatumReferenceModifierMember();
     switch (theModifiers.Value(i))
     {
@@ -1493,7 +1494,7 @@ Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::G
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetTolValueType(
+occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetTolValueType(
   const XCAFDimTolObjects_GeomToleranceTypeValue& theType)
 {
   switch (theType)
@@ -1509,11 +1510,11 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetTolValueType(
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessellation(
+occ::handle<StepVisual_TessellatedGeometricSet> STEPCAFControl_GDTProperty::GetTessellation(
   const TopoDS_Shape& theShape)
 {
   // Build complex_triangulated_surface_set.
-  std::vector<Handle(StepVisual_ComplexTriangulatedSurfaceSet)> aCTSSs;
+  std::vector<occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>> aCTSSs;
   for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
     const TopoDS_Face aFace = TopoDS::Face(aFaceIt.Current());
@@ -1521,19 +1522,19 @@ Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessel
   }
 
   // Build tesselated_curve_set.
-  Handle(StepVisual_TessellatedCurveSet) aTCS = GenerateTessellatedCurveSet(theShape);
+  occ::handle<StepVisual_TessellatedCurveSet> aTCS = GenerateTessellatedCurveSet(theShape);
 
   // Fill the container of tessellated items.
-  NCollection_Handle<StepVisual_Array1OfTessellatedItem> aTesselatedItems =
-    new StepVisual_Array1OfTessellatedItem(1, static_cast<Standard_Integer>(aCTSSs.size()) + 1);
+  NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> aTesselatedItems =
+    new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, static_cast<int>(aCTSSs.size()) + 1);
   aTesselatedItems->SetValue(1, aTCS);
   for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.size(); ++aCTSSIndex)
   {
-    aTesselatedItems->SetValue(static_cast<Standard_Integer>(aCTSSIndex) + 2, aCTSSs[aCTSSIndex]);
+    aTesselatedItems->SetValue(static_cast<int>(aCTSSIndex) + 2, aCTSSs[aCTSSIndex]);
   }
 
   // Build tessellated_geometric_set.
-  Handle(StepVisual_TessellatedGeometricSet) aTGS = new StepVisual_TessellatedGeometricSet();
+  occ::handle<StepVisual_TessellatedGeometricSet> aTGS = new StepVisual_TessellatedGeometricSet();
   aTGS->Init(new TCollection_HAsciiString(), aTesselatedItems);
   return aTGS;
 }

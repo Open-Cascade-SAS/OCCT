@@ -36,10 +36,10 @@ namespace
 //! Extracts basis surface from potentially nested RectangularTrimmedSurface wrappers.
 //! @param theSurface input surface (may be RectangularTrimmedSurface or any other)
 //! @return the underlying basis surface, or theSurface if not a RectangularTrimmedSurface
-Handle(Geom_Surface) ExtractBasisSurface(const Handle(Geom_Surface)& theSurface)
+occ::handle<Geom_Surface> ExtractBasisSurface(const occ::handle<Geom_Surface>& theSurface)
 {
-  Handle(Geom_Surface) aResult = theSurface;
-  while (auto aTrimmed = Handle(Geom_RectangularTrimmedSurface)::DownCast(aResult))
+  occ::handle<Geom_Surface> aResult = theSurface;
+  while (auto aTrimmed = occ::down_cast<Geom_RectangularTrimmedSurface>(aResult))
   {
     aResult = aTrimmed->BasisSurface();
   }
@@ -49,7 +49,7 @@ Handle(Geom_Surface) ExtractBasisSurface(const Handle(Geom_Surface)& theSurface)
 //! Creates Geom_Surface from adaptor's elementary surface type.
 //! @param theSurface the adaptor to extract geometry from
 //! @return Geom_Surface handle, or null if type is not elementary
-Handle(Geom_Surface) CreateGeomSurfaceFromAdaptor(const Adaptor3d_Surface& theSurface)
+occ::handle<Geom_Surface> CreateGeomSurfaceFromAdaptor(const Adaptor3d_Surface& theSurface)
 {
   switch (theSurface.GetType())
   {
@@ -64,35 +64,35 @@ Handle(Geom_Surface) CreateGeomSurfaceFromAdaptor(const Adaptor3d_Surface& theSu
     case GeomAbs_Torus:
       return new Geom_ToroidalSurface(theSurface.Torus());
     default:
-      return Handle(Geom_Surface)();
+      return occ::handle<Geom_Surface>();
   }
 }
 
 //! Extracts Geom_Curve from Adaptor3d_Curve if possible.
 //! @param theCurve the curve adaptor
 //! @return Geom_Curve handle, or null if not available
-Handle(Geom_Curve) ExtractGeomCurve(const Handle(Adaptor3d_Curve)& theCurve)
+occ::handle<Geom_Curve> ExtractGeomCurve(const occ::handle<Adaptor3d_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
-    return Handle(Geom_Curve)();
+    return occ::handle<Geom_Curve>();
   }
-  if (auto aGeomAdaptor = Handle(GeomAdaptor_Curve)::DownCast(theCurve))
+  if (auto aGeomAdaptor = occ::down_cast<GeomAdaptor_Curve>(theCurve))
   {
     return aGeomAdaptor->Curve();
   }
-  return Handle(Geom_Curve)();
+  return occ::handle<Geom_Curve>();
 }
 
 //! Creates Geom_SurfaceOfRevolution from adaptor data.
 //! @param theAdaptor the revolution surface adaptor
 //! @return Geom_SurfaceOfRevolution handle, or null if curve not available
-Handle(Geom_Surface) CreateRevolutionSurface(const GeomAdaptor_SurfaceOfRevolution& theAdaptor)
+occ::handle<Geom_Surface> CreateRevolutionSurface(const GeomAdaptor_SurfaceOfRevolution& theAdaptor)
 {
-  Handle(Geom_Curve) aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
+  occ::handle<Geom_Curve> aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
   if (aCurve.IsNull())
   {
-    return Handle(Geom_Surface)();
+    return occ::handle<Geom_Surface>();
   }
   return new Geom_SurfaceOfRevolution(aCurve, theAdaptor.AxeOfRevolution());
 }
@@ -100,12 +100,12 @@ Handle(Geom_Surface) CreateRevolutionSurface(const GeomAdaptor_SurfaceOfRevoluti
 //! Creates Geom_SurfaceOfLinearExtrusion from adaptor data.
 //! @param theAdaptor the extrusion surface adaptor
 //! @return Geom_SurfaceOfLinearExtrusion handle, or null if curve not available
-Handle(Geom_Surface) CreateExtrusionSurface(const GeomAdaptor_SurfaceOfLinearExtrusion& theAdaptor)
+occ::handle<Geom_Surface> CreateExtrusionSurface(const GeomAdaptor_SurfaceOfLinearExtrusion& theAdaptor)
 {
-  Handle(Geom_Curve) aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
+  occ::handle<Geom_Curve> aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
   if (aCurve.IsNull())
   {
-    return Handle(Geom_Surface)();
+    return occ::handle<Geom_Surface>();
   }
   return new Geom_SurfaceOfLinearExtrusion(aCurve, theAdaptor.Direction());
 }
@@ -143,7 +143,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     const auto& aRevAdaptor = static_cast<const GeomAdaptor_SurfaceOfRevolution&>(theSurface);
 
     // First try to get elementary surface type (Plane, Cylinder, Cone, Sphere, Torus)
-    Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(aRevAdaptor);
+    occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(aRevAdaptor);
     if (!aGeomSurf.IsNull())
     {
       Initialize(aGeomSurf);
@@ -178,7 +178,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     const auto& aExtAdaptor = static_cast<const GeomAdaptor_SurfaceOfLinearExtrusion&>(theSurface);
 
     // First try to get elementary surface type (Plane, Cylinder, Cone, Sphere, Torus)
-    Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(aExtAdaptor);
+    occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(aExtAdaptor);
     if (!aGeomSurf.IsNull())
     {
       Initialize(aGeomSurf);
@@ -211,7 +211,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
     const auto&          aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
-    Handle(Geom_Surface) aGeomSurf    = aGeomAdaptor.Surface();
+    occ::handle<Geom_Surface> aGeomSurf    = aGeomAdaptor.Surface();
 
     // If Surface() is null, try to create from elementary type
     if (aGeomSurf.IsNull())
@@ -232,7 +232,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   }
 
   // For non-GeomAdaptor adaptors, try to create Geom_Surface from elementary type first
-  Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(theSurface);
+  occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(theSurface);
   if (!aGeomSurf.IsNull())
   {
     Initialize(aGeomSurf);
@@ -246,7 +246,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
 //==================================================================================================
 
-void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
+void GeomGridEval_Surface::Initialize(const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
   {
@@ -256,54 +256,54 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   }
 
   // Extract basis surface from potentially nested RectangularTrimmedSurface wrappers
-  Handle(Geom_Surface) aBasisSurf = ExtractBasisSurface(theSurface);
+  occ::handle<Geom_Surface> aBasisSurf = ExtractBasisSurface(theSurface);
 
-  if (auto aPlane = Handle(Geom_Plane)::DownCast(aBasisSurf))
+  if (auto aPlane = occ::down_cast<Geom_Plane>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Plane;
     myEvaluator.emplace<GeomGridEval_Plane>(aPlane);
   }
-  else if (auto aCyl = Handle(Geom_CylindricalSurface)::DownCast(aBasisSurf))
+  else if (auto aCyl = occ::down_cast<Geom_CylindricalSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Cylinder;
     myEvaluator.emplace<GeomGridEval_Cylinder>(aCyl);
   }
-  else if (auto aSphere = Handle(Geom_SphericalSurface)::DownCast(aBasisSurf))
+  else if (auto aSphere = occ::down_cast<Geom_SphericalSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Sphere;
     myEvaluator.emplace<GeomGridEval_Sphere>(aSphere);
   }
-  else if (auto aCone = Handle(Geom_ConicalSurface)::DownCast(aBasisSurf))
+  else if (auto aCone = occ::down_cast<Geom_ConicalSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Cone;
     myEvaluator.emplace<GeomGridEval_Cone>(aCone);
   }
-  else if (auto aTorus = Handle(Geom_ToroidalSurface)::DownCast(aBasisSurf))
+  else if (auto aTorus = occ::down_cast<Geom_ToroidalSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Torus;
     myEvaluator.emplace<GeomGridEval_Torus>(aTorus);
   }
-  else if (auto aBezier = Handle(Geom_BezierSurface)::DownCast(aBasisSurf))
+  else if (auto aBezier = occ::down_cast<Geom_BezierSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_BezierSurface;
     myEvaluator.emplace<GeomGridEval_BezierSurface>(aBezier);
   }
-  else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(aBasisSurf))
+  else if (auto aBSpline = occ::down_cast<Geom_BSplineSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_BSplineSurface;
     myEvaluator.emplace<GeomGridEval_BSplineSurface>(aBSpline);
   }
-  else if (auto anOffset = Handle(Geom_OffsetSurface)::DownCast(aBasisSurf))
+  else if (auto anOffset = occ::down_cast<Geom_OffsetSurface>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_OffsetSurface;
     myEvaluator.emplace<GeomGridEval_OffsetSurface>(anOffset);
   }
-  else if (auto aRevolution = Handle(Geom_SurfaceOfRevolution)::DownCast(aBasisSurf))
+  else if (auto aRevolution = occ::down_cast<Geom_SurfaceOfRevolution>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_SurfaceOfRevolution;
     myEvaluator.emplace<GeomGridEval_SurfaceOfRevolution>(aRevolution);
   }
-  else if (auto anExtrusion = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aBasisSurf))
+  else if (auto anExtrusion = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aBasisSurf))
   {
     mySurfaceType = GeomAbs_SurfaceOfExtrusion;
     myEvaluator.emplace<GeomGridEval_SurfaceOfExtrusion>(anExtrusion);
@@ -326,8 +326,8 @@ bool GeomGridEval_Surface::IsInitialized() const
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_Surface::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   NCollection_Array2<gp_Pnt> aResult = std::visit(
     [&theUParams, &theVParams](const auto& theEval) -> NCollection_Array2<gp_Pnt> {
@@ -354,8 +354,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Surface::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Surface::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   NCollection_Array2<GeomGridEval::SurfD1> aResult = std::visit(
     [&theUParams, &theVParams](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD1> {
@@ -382,8 +382,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Surface::EvaluateGridD1(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   NCollection_Array2<GeomGridEval::SurfD2> aResult = std::visit(
     [&theUParams, &theVParams](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD2> {
@@ -410,8 +410,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   NCollection_Array2<GeomGridEval::SurfD3> aResult = std::visit(
     [&theUParams, &theVParams](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD3> {
@@ -438,8 +438,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3(
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_Surface::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {

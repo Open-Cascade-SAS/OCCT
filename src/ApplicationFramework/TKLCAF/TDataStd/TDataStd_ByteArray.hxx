@@ -18,7 +18,8 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfByte.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -27,9 +28,6 @@
 class TDF_Label;
 class TDF_RelocationTable;
 class TDF_DeltaOnModification;
-
-class TDataStd_ByteArray;
-DEFINE_STANDARD_HANDLE(TDataStd_ByteArray, TDF_Attribute)
 
 //! An array of Byte (unsigned char) values.
 class TDataStd_ByteArray : public TDF_Attribute
@@ -47,50 +45,50 @@ public:
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
   //! If attribute is already set, all input parameters are refused and the found
   //! attribute is returned.
-  Standard_EXPORT static Handle(TDataStd_ByteArray) Set(
+  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(
     const TDF_Label&       label,
-    const Standard_Integer lower,
-    const Standard_Integer upper,
-    const Standard_Boolean isDelta = Standard_False);
+    const int lower,
+    const int upper,
+    const bool isDelta = false);
 
   //! Finds or creates an attribute with byte array and explicit user defined <guid> on the
   //! specified label.
-  Standard_EXPORT static Handle(TDataStd_ByteArray) Set(
+  Standard_EXPORT static occ::handle<TDataStd_ByteArray> Set(
     const TDF_Label&       label,
     const Standard_GUID&   theGuid,
-    const Standard_Integer lower,
-    const Standard_Integer upper,
-    const Standard_Boolean isDelta = Standard_False);
+    const int lower,
+    const int upper,
+    const bool isDelta = false);
 
   //! Initialize the inner array with bounds from <lower> to <upper>
-  Standard_EXPORT void Init(const Standard_Integer lower, const Standard_Integer upper);
+  Standard_EXPORT void Init(const int lower, const int upper);
 
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
   //! internal array.
-  Standard_EXPORT void SetValue(const Standard_Integer index, const Standard_Byte value);
+  Standard_EXPORT void SetValue(const int index, const uint8_t value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
   //! Return the value of the <Index>th element of the array.
-  Standard_EXPORT Standard_Byte Value(const Standard_Integer Index) const;
+  Standard_EXPORT uint8_t Value(const int Index) const;
 
-  Standard_Byte operator()(const Standard_Integer Index) const { return Value(Index); }
+  uint8_t operator()(const int Index) const { return Value(Index); }
 
   //! Returns the lower boundary of the array.
-  Standard_EXPORT Standard_Integer Lower() const;
+  Standard_EXPORT int Lower() const;
 
   //! Returns the upper boundary of the array.
-  Standard_EXPORT Standard_Integer Upper() const;
+  Standard_EXPORT int Upper() const;
 
   //! Returns the number of elements in the array.
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
-  const Handle(TColStd_HArray1OfByte)& InternalArray() const { return myValue; }
+  const occ::handle<NCollection_HArray1<uint8_t>>& InternalArray() const { return myValue; }
 
   //! Sets the inner array <myValue> of the attribute to
   //! <newArray>. If value of <newArray> differs from <myValue>, Backup performed
@@ -98,42 +96,42 @@ public:
   //! values.
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
-  Standard_EXPORT void ChangeArray(const Handle(TColStd_HArray1OfByte)& newArray,
-                                   const Standard_Boolean isCheckItems = Standard_True);
+  Standard_EXPORT void ChangeArray(const occ::handle<NCollection_HArray1<uint8_t>>& newArray,
+                                   const bool isCheckItems = true);
 
-  Standard_Boolean GetDelta() const { return myIsDelta; }
+  bool GetDelta() const { return myIsDelta; }
 
   //! for internal use only!
-  void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+  void SetDelta(const bool isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT TDataStd_ByteArray();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& with) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& OS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& OS) const override;
 
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute>.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
-    const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnModification> DeltaOnModification(
+    const occ::handle<TDF_Attribute>& anOldAttribute) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 private:
   void RemoveArray() { myValue.Nullify(); }
 
 private:
-  Handle(TColStd_HArray1OfByte) myValue;
-  Standard_Boolean              myIsDelta;
+  occ::handle<NCollection_HArray1<uint8_t>> myValue;
+  bool              myIsDelta;
   Standard_GUID                 myID;
 };
 

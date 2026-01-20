@@ -20,21 +20,21 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_FileProtocol, StepData_Protocol)
 
 // static TCollection_AsciiString  thename("");
-static Standard_CString thename = ""; // Empty schema name for file protocols
+static const char* thename = ""; // Empty schema name for file protocols
 
 //  Protocol factory created on demand with other Protocols
 
 StepData_FileProtocol::StepData_FileProtocol() {}
 
-void StepData_FileProtocol::Add(const Handle(StepData_Protocol)& protocol)
+void StepData_FileProtocol::Add(const occ::handle<StepData_Protocol>& protocol)
 {
   // Add a protocol to the collection, avoiding duplicates of the same type
   if (protocol.IsNull())
     return;
-  Handle(Standard_Type) ptype = protocol->DynamicType();
-  Standard_Integer      nb    = thecomps.Length();
+  occ::handle<Standard_Type> ptype = protocol->DynamicType();
+  int      nb    = thecomps.Length();
   // Check if a protocol of the same type is already present
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
     if (thecomps.Value(i)->IsInstance(ptype))
       return; // Protocol of this type already exists
@@ -42,35 +42,35 @@ void StepData_FileProtocol::Add(const Handle(StepData_Protocol)& protocol)
   thecomps.Append(protocol);
 }
 
-Standard_Integer StepData_FileProtocol::NbResources() const
+int StepData_FileProtocol::NbResources() const
 {
   // Return the number of component protocols in this file protocol
   return thecomps.Length();
 }
 
-Handle(Interface_Protocol) StepData_FileProtocol::Resource(const Standard_Integer num) const
+occ::handle<Interface_Protocol> StepData_FileProtocol::Resource(const int num) const
 {
-  return Handle(Interface_Protocol)::DownCast(thecomps.Value(num));
+  return occ::down_cast<Interface_Protocol>(thecomps.Value(num));
 }
 
-Standard_Integer StepData_FileProtocol::TypeNumber(const Handle(Standard_Type)& /*atype*/) const
+int StepData_FileProtocol::TypeNumber(const occ::handle<Standard_Type>& /*atype*/) const
 {
   // FileProtocol doesn't recognize specific types directly (delegates to component protocols)
   return 0;
 }
 
-Standard_Boolean StepData_FileProtocol::GlobalCheck(const Interface_Graph&   G,
-                                                    Handle(Interface_Check)& ach) const
+bool StepData_FileProtocol::GlobalCheck(const Interface_Graph&   G,
+                                                    occ::handle<Interface_Check>& ach) const
 {
   // Perform global validation check across all component protocols
-  Standard_Boolean res = Standard_False;
-  Standard_Integer i, nb = NbResources();
+  bool res = false;
+  int i, nb = NbResources();
   for (i = 1; i <= nb; i++)
     res |= Resource(i)->GlobalCheck(G, ach); // Aggregate results from all protocols
   return res;
 }
 
-Standard_CString StepData_FileProtocol::SchemaName(const Handle(Interface_InterfaceModel)&) const
+const char* StepData_FileProtocol::SchemaName(const occ::handle<Interface_InterfaceModel>&) const
 {
   return thename;
 }

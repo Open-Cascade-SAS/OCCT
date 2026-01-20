@@ -25,14 +25,14 @@ Storage_TypeData::Storage_TypeData()
 {
 }
 
-Standard_Boolean Storage_TypeData::Read(const Handle(Storage_BaseDriver)& theDriver)
+bool Storage_TypeData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Read type section
@@ -40,14 +40,14 @@ Standard_Boolean Storage_TypeData::Read(const Handle(Storage_BaseDriver)& theDri
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer        aTypeNum;
+  int        aTypeNum;
   TCollection_AsciiString aTypeName;
 
-  Standard_Integer len = theDriver->TypeSectionSize();
-  for (Standard_Integer i = 1; i <= len; i++)
+  int len = theDriver->TypeSectionSize();
+  for (int i = 1; i <= len; i++)
   {
     try
     {
@@ -58,7 +58,7 @@ Standard_Boolean Storage_TypeData::Read(const Handle(Storage_BaseDriver)& theDri
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadTypeInformations";
-      return Standard_False;
+      return false;
     }
 
     myPt.Add(aTypeName, aTypeNum);
@@ -68,26 +68,26 @@ Standard_Boolean Storage_TypeData::Read(const Handle(Storage_BaseDriver)& theDri
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer Storage_TypeData::NumberOfTypes() const
+int Storage_TypeData::NumberOfTypes() const
 {
   return myPt.Extent();
 }
 
-Standard_Boolean Storage_TypeData::IsType(const TCollection_AsciiString& aName) const
+bool Storage_TypeData::IsType(const TCollection_AsciiString& aName) const
 {
   return myPt.Contains(aName);
 }
 
-Handle(TColStd_HSequenceOfAsciiString) Storage_TypeData::Types() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_TypeData::Types() const
 {
-  Handle(TColStd_HSequenceOfAsciiString) r = new TColStd_HSequenceOfAsciiString;
-  Standard_Integer                       i;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r = new NCollection_HSequence<TCollection_AsciiString>;
+  int                       i;
 
   for (i = 1; i <= myPt.Extent(); i++)
   {
@@ -98,12 +98,12 @@ Handle(TColStd_HSequenceOfAsciiString) Storage_TypeData::Types() const
 }
 
 void Storage_TypeData::AddType(const TCollection_AsciiString& aName,
-                               const Standard_Integer         aTypeNum)
+                               const int         aTypeNum)
 {
   myPt.Add(aName, aTypeNum);
 }
 
-TCollection_AsciiString Storage_TypeData::Type(const Standard_Integer aTypeNum) const
+TCollection_AsciiString Storage_TypeData::Type(const int aTypeNum) const
 {
   TCollection_AsciiString r;
 
@@ -119,9 +119,9 @@ TCollection_AsciiString Storage_TypeData::Type(const Standard_Integer aTypeNum) 
   return r;
 }
 
-Standard_Integer Storage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
+int Storage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
 {
-  Standard_Integer r = 0;
+  int r = 0;
 
   if (myPt.Contains(aTypeName))
   {

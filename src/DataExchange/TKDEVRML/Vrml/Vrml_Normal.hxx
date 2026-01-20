@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColgp_HArray1OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class Vrml_Normal;
-DEFINE_STANDARD_HANDLE(Vrml_Normal, Standard_Transient)
 
 //! defines a Normal node of VRML specifying properties of geometry
 //! and its appearance.
@@ -38,21 +37,20 @@ class Vrml_Normal : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_Normal(const Handle(TColgp_HArray1OfVec)& aVector);
+  Standard_EXPORT Vrml_Normal(const occ::handle<NCollection_HArray1<gp_Vec>>& aVector);
 
   Standard_EXPORT Vrml_Normal();
 
-  Standard_EXPORT void SetVector(const Handle(TColgp_HArray1OfVec)& aVector);
+  Standard_EXPORT void SetVector(const occ::handle<NCollection_HArray1<gp_Vec>>& aVector);
 
-  Standard_EXPORT Handle(TColgp_HArray1OfVec) Vector() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<gp_Vec>> Vector() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_Normal, Standard_Transient)
 
-protected:
 private:
-  Handle(TColgp_HArray1OfVec) myVector;
+  occ::handle<NCollection_HArray1<gp_Vec>> myVector;
 };
 
 #endif // _Vrml_Normal_HeaderFile

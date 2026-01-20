@@ -34,7 +34,7 @@ public:
   }
 
   //! Constructor. Never creates VOID range.
-  Bnd_Range(const Standard_Real theMin, const Standard_Real theMax)
+  Bnd_Range(const double theMin, const double theMax)
       : myFirst(theMin),
         myLast(theMax)
   {
@@ -50,7 +50,7 @@ public:
   //! Returns false if the operation cannot be done (e.g.
   //! input arguments are empty or separated).
   //! @sa use method ::Add() to merge two ranges unconditionally
-  Standard_EXPORT Standard_Boolean Union(const Bnd_Range& theOther);
+  Standard_EXPORT bool Union(const Bnd_Range& theOther);
 
   //! Splits <this> to several sub-ranges by theVal value
   //! (e.g. range [3, 15] will be split by theVal==5 to the two
@@ -62,9 +62,9 @@ public:
   //! theVal+thePeriod*k, where k is an integer number (k = 0, +/-1, +/-2, ...).
   //! (let thePeriod in above example be 4 ==> we will obtain
   //! four ranges: [3, 5], [5, 9], [9, 13] and [13, 15].
-  Standard_EXPORT void Split(const Standard_Real          theVal,
+  Standard_EXPORT void Split(const double          theVal,
                              NCollection_List<Bnd_Range>& theList,
-                             const Standard_Real          thePeriod = 0.0) const;
+                             const double          thePeriod = 0.0) const;
 
   //! Checks if <this> intersects values like
   //!   theVal+k*thePeriod, where k is an integer number (k = 0, +/-1, +/-2, ...).
@@ -75,11 +75,11 @@ public:
   //!
   //! ATTENTION!!!
   //!  If (myFirst == myLast) then this function will return only either 0 or 2.
-  Standard_EXPORT Standard_Integer IsIntersected(const Standard_Real theVal,
-                                                 const Standard_Real thePeriod = 0.0) const;
+  Standard_EXPORT int IsIntersected(const double theVal,
+                                                 const double thePeriod = 0.0) const;
 
   //! Extends <this> to include theParameter
-  void Add(const Standard_Real theParameter)
+  void Add(const double theParameter)
   {
     if (IsVoid())
     {
@@ -109,42 +109,42 @@ public:
 
   //! Obtain MIN boundary of <this>.
   //! If <this> is VOID the method returns false.
-  Standard_Boolean GetMin(Standard_Real& thePar) const
+  bool GetMin(double& thePar) const
   {
     if (IsVoid())
     {
-      return Standard_False;
+      return false;
     }
 
     thePar = myFirst;
-    return Standard_True;
+    return true;
   }
 
   //! Obtain MAX boundary of <this>.
   //! If <this> is VOID the method returns false.
-  Standard_Boolean GetMax(Standard_Real& thePar) const
+  bool GetMax(double& thePar) const
   {
     if (IsVoid())
     {
-      return Standard_False;
+      return false;
     }
 
     thePar = myLast;
-    return Standard_True;
+    return true;
   }
 
   //! Obtain first and last boundary of <this>.
   //! If <this> is VOID the method returns false.
-  Standard_Boolean GetBounds(Standard_Real& theFirstPar, Standard_Real& theLastPar) const
+  bool GetBounds(double& theFirstPar, double& theLastPar) const
   {
     if (IsVoid())
     {
-      return Standard_False;
+      return false;
     }
 
     theFirstPar = myFirst;
     theLastPar  = myLast;
-    return Standard_True;
+    return true;
   }
 
   //! Obtain theParameter satisfied to the equation
@@ -155,23 +155,23 @@ public:
   //!   *  theLambda < 0 --> the value less than MIN will be returned;
   //!   *  theLambda > 1 --> the value greater than MAX will be returned.
   //! If <this> is VOID the method returns false.
-  Standard_Boolean GetIntermediatePoint(const Standard_Real theLambda,
-                                        Standard_Real&      theParameter) const
+  bool GetIntermediatePoint(const double theLambda,
+                                        double&      theParameter) const
   {
     if (IsVoid())
     {
-      return Standard_False;
+      return false;
     }
 
     theParameter = myFirst + theLambda * (myLast - myFirst);
-    return Standard_True;
+    return true;
   }
 
   //! Returns range value (MAX-MIN). Returns negative value for VOID range.
-  Standard_Real Delta() const { return (myLast - myFirst); }
+  double Delta() const { return (myLast - myFirst); }
 
   //! Is <this> initialized.
-  Standard_Boolean IsVoid() const { return (myLast < myFirst); }
+  bool IsVoid() const { return (myLast < myFirst); }
 
   //! Initializes <this> by default parameters. Makes <this> VOID.
   void SetVoid()
@@ -181,7 +181,7 @@ public:
   }
 
   //! Extends this to the given value (in both side)
-  void Enlarge(const Standard_Real theDelta)
+  void Enlarge(const double theDelta)
   {
     if (IsVoid())
     {
@@ -193,13 +193,13 @@ public:
   }
 
   //! Returns the copy of <*this> shifted by theVal
-  Bnd_Range Shifted(const Standard_Real theVal) const
+  Bnd_Range Shifted(const double theVal) const
   {
     return !IsVoid() ? Bnd_Range(myFirst + theVal, myLast + theVal) : Bnd_Range();
   }
 
   //! Shifts <*this> by theVal
-  void Shift(const Standard_Real theVal)
+  void Shift(const double theVal)
   {
     if (!IsVoid())
     {
@@ -210,7 +210,7 @@ public:
 
   //! Trims the First value in range by the given lower limit.
   //! Marks range as Void if the given Lower value is greater than range Max.
-  void TrimFrom(const Standard_Real theValLower)
+  void TrimFrom(const double theValLower)
   {
     if (!IsVoid())
     {
@@ -220,7 +220,7 @@ public:
 
   //! Trim the Last value in range by the given Upper limit.
   //! Marks range as Void if the given Upper value is smaller than range Max.
-  void TrimTo(const Standard_Real theValUpper)
+  void TrimTo(const double theValUpper)
   {
     if (!IsVoid())
     {
@@ -229,29 +229,29 @@ public:
   }
 
   //! Returns True if the value is out of this range.
-  Standard_Boolean IsOut(Standard_Real theValue) const
+  bool IsOut(double theValue) const
   {
     return IsVoid() || theValue < myFirst || theValue > myLast;
   }
 
   //! Returns True if the given range is out of this range.
-  Standard_Boolean IsOut(const Bnd_Range& theRange) const
+  bool IsOut(const Bnd_Range& theRange) const
   {
     return IsVoid() || theRange.IsVoid() || theRange.myLast < myFirst || theRange.myFirst > myLast;
   }
 
   //! Returns TRUE if theOther is equal to <*this>
-  Standard_Boolean operator==(const Bnd_Range& theOther) const
+  bool operator==(const Bnd_Range& theOther) const
   {
     return ((myFirst == theOther.myFirst) && (myLast == theOther.myLast));
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  Standard_Real myFirst; //!< Start of range
-  Standard_Real myLast;  //!< End   of range
+  double myFirst; //!< Start of range
+  double myLast;  //!< End   of range
 };
 
 #endif

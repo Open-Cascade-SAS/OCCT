@@ -21,9 +21,6 @@
 
 #include <StepRepr_DerivedShapeAspect.hxx>
 
-class StepRepr_CentreOfSymmetry;
-DEFINE_STANDARD_HANDLE(StepRepr_CentreOfSymmetry, StepRepr_DerivedShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_CentreOfSymmetry : public StepRepr_DerivedShapeAspect
 {

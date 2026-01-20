@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_BooleanTree, IGESData_IGESEntity)
 
 IGESSolid_BooleanTree::IGESSolid_BooleanTree() {}
 
-void IGESSolid_BooleanTree::Init(const Handle(IGESData_HArray1OfIGESEntity)& operands,
-                                 const Handle(TColStd_HArray1OfInteger)&     operations)
+void IGESSolid_BooleanTree::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& operands,
+                                 const occ::handle<NCollection_HArray1<int>>&     operations)
 {
   if (operands->Lower() != 1 || operations->Lower() != 1
       || operands->Length() != operations->Length())
@@ -36,22 +36,22 @@ void IGESSolid_BooleanTree::Init(const Handle(IGESData_HArray1OfIGESEntity)& ope
   InitTypeAndForm(180, 0);
 }
 
-Standard_Integer IGESSolid_BooleanTree::Length() const
+int IGESSolid_BooleanTree::Length() const
 {
   return theOperands->Length();
 }
 
-Standard_Boolean IGESSolid_BooleanTree::IsOperand(const Standard_Integer Index) const
+bool IGESSolid_BooleanTree::IsOperand(const int Index) const
 {
   return (!theOperands->Value(Index).IsNull());
 }
 
-Handle(IGESData_IGESEntity) IGESSolid_BooleanTree::Operand(const Standard_Integer Index) const
+occ::handle<IGESData_IGESEntity> IGESSolid_BooleanTree::Operand(const int Index) const
 {
   return theOperands->Value(Index);
 }
 
-Standard_Integer IGESSolid_BooleanTree::Operation(const Standard_Integer Index) const
+int IGESSolid_BooleanTree::Operation(const int Index) const
 {
   if (theOperands->Value(Index).IsNull())
     return theOperations->Value(Index);

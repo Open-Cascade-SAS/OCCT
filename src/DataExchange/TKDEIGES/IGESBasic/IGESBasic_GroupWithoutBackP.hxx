@@ -21,9 +21,6 @@
 
 #include <IGESBasic_Group.hxx>
 
-class IGESBasic_GroupWithoutBackP;
-DEFINE_STANDARD_HANDLE(IGESBasic_GroupWithoutBackP, IGESBasic_Group)
-
 //! defines GroupWithoutBackP, Type <402> Form <7>
 //! in package IGESBasic
 //! this class defines a Group without back pointers
@@ -37,8 +34,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_GroupWithoutBackP, IGESBasic_Group)
 
-protected:
-private:
 };
 
 #endif // _IGESBasic_GroupWithoutBackP_HeaderFile

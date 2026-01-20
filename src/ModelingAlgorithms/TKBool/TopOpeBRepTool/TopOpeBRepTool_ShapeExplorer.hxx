@@ -66,7 +66,7 @@ public:
   }
 
   //! Index of current sub-shape
-  Standard_Integer Index() const { return myIndex; }
+  int Index() const { return myIndex; }
 
   //! Dump info on current shape to stream
   Standard_OStream& DumpCurrent(Standard_OStream& OS) const
@@ -82,7 +82,7 @@ public:
   }
 
 private:
-  Standard_Integer myIndex;
+  int myIndex;
 };
 
 #endif // _TopOpeBRepTool_ShapeExplorer_HeaderFile

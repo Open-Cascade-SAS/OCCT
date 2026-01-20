@@ -27,7 +27,9 @@
 #include <StepGeom_BoundaryCurve.hxx>
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
-#include <StepGeom_HArray1OfSurfaceBoundary.hxx>
+#include <StepGeom_SurfaceBoundary.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>
 #include <StepToTopoDS_TranslateCurveBoundedSurface.hxx>
@@ -42,8 +44,8 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 //=================================================================================================
 
 StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface(
-  const Handle(StepGeom_CurveBoundedSurface)& CBS,
-  const Handle(Transfer_TransientProcess)&    TP,
+  const occ::handle<StepGeom_CurveBoundedSurface>& CBS,
+  const occ::handle<Transfer_TransientProcess>&    TP,
   const StepData_Factors&                     theLocalFactors)
 {
   Init(CBS, TP, theLocalFactors);
@@ -51,30 +53,30 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 
 //=================================================================================================
 
-Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init(
-  const Handle(StepGeom_CurveBoundedSurface)& CBS,
-  const Handle(Transfer_TransientProcess)&    TP,
+bool StepToTopoDS_TranslateCurveBoundedSurface::Init(
+  const occ::handle<StepGeom_CurveBoundedSurface>& CBS,
+  const occ::handle<Transfer_TransientProcess>&    TP,
   const StepData_Factors&                     theLocalFactors)
 {
   myFace.Nullify();
   if (CBS.IsNull())
-    return Standard_False;
+    return false;
 
   // translate basis surface
-  Handle(StepGeom_Surface) S    = CBS->BasisSurface();
-  Handle(Geom_Surface)     Surf = StepToGeom::MakeSurface(S, theLocalFactors);
+  occ::handle<StepGeom_Surface> S    = CBS->BasisSurface();
+  occ::handle<Geom_Surface>     Surf = StepToGeom::MakeSurface(S, theLocalFactors);
   if (Surf.IsNull())
   {
     TP->AddFail(CBS, "Basis surface not translated");
-    return Standard_False;
+    return false;
   }
 
   // abv 30.06.00: trj4_k1_geo-tu.stp #108: do as in TranslateFace
   // pdn to force bsplsurf to be periodic
-  Handle(StepGeom_BSplineSurface) sgbss = Handle(StepGeom_BSplineSurface)::DownCast(S);
+  occ::handle<StepGeom_BSplineSurface> sgbss = occ::down_cast<StepGeom_BSplineSurface>(S);
   if (!sgbss.IsNull())
   {
-    Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(Surf);
+    occ::handle<Geom_Surface> periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(Surf);
     if (!periodicSurf.IsNull())
     {
       TP->AddWarning(S, "Surface forced to be periodic");
@@ -99,11 +101,11 @@ Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init(
   }
 
   // translate boundaries
-  Handle(StepGeom_HArray1OfSurfaceBoundary) bnd = CBS->Boundaries();
-  Standard_Integer                          nb  = bnd->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>> bnd = CBS->Boundaries();
+  int                          nb  = bnd->Length();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(StepGeom_CompositeCurve) cc = bnd->Value(i).BoundaryCurve();
+    occ::handle<StepGeom_CompositeCurve> cc = bnd->Value(i).BoundaryCurve();
     if (cc.IsNull())
       continue;
     StepToTopoDS_TranslateCompositeCurve TrCC(cc, TP, S, Surf, theLocalFactors);

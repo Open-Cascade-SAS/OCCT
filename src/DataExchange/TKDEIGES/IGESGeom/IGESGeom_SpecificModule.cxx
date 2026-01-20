@@ -57,7 +57,7 @@
 #include <IGESGeom_ToolTrimmedSurface.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SpecificModule, IGESData_SpecificModule)
@@ -67,11 +67,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SpecificModule, IGESData_SpecificModule)
 //  the method TypeNumber from this Protocol
 IGESGeom_SpecificModule::IGESGeom_SpecificModule() {}
 
-void IGESGeom_SpecificModule::OwnDump(const Standard_Integer             CN,
-                                      const Handle(IGESData_IGESEntity)& ent,
+void IGESGeom_SpecificModule::OwnDump(const int             CN,
+                                      const occ::handle<IGESData_IGESEntity>& ent,
                                       const IGESData_IGESDumper&         dumper,
                                       Standard_OStream&                  S,
-                                      const Standard_Integer             own) const
+                                      const int             own) const
 {
   switch (CN)
   {
@@ -264,8 +264,8 @@ void IGESGeom_SpecificModule::OwnDump(const Standard_Integer             CN,
   }
 }
 
-Standard_Boolean IGESGeom_SpecificModule::OwnCorrect(const Standard_Integer             CN,
-                                                     const Handle(IGESData_IGESEntity)& ent) const
+bool IGESGeom_SpecificModule::OwnCorrect(const int             CN,
+                                                     const occ::handle<IGESData_IGESEntity>& ent) const
 {
   //   Applies only on some types
   switch (CN)
@@ -315,5 +315,5 @@ Standard_Boolean IGESGeom_SpecificModule::OwnCorrect(const Standard_Integer     
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }

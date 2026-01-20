@@ -13,13 +13,13 @@
 
 #include <StdLPersistent_Dependency.hxx>
 
-static void ImportName(const Handle(TDataStd_Expression)& theAttribute,
+static void ImportName(const occ::handle<TDataStd_Expression>& theAttribute,
                        const TCollection_ExtendedString&  theName)
 {
   theAttribute->SetExpression(theName);
 }
 
-static void ImportName(const Handle(TDataStd_Relation)&  theAttribute,
+static void ImportName(const occ::handle<TDataStd_Relation>&  theAttribute,
                        const TCollection_ExtendedString& theName)
 {
   theAttribute->SetRelation(theName);
@@ -31,17 +31,17 @@ static void ImportName(const Handle(TDataStd_Relation)&  theAttribute,
 //=======================================================================
 template <class AttribClass>
 void StdLPersistent_Dependency::instance<AttribClass>::Import(
-  const Handle(AttribClass)& theAttribute) const
+  const occ::handle<AttribClass>& theAttribute) const
 {
   if (myName)
     ImportName(theAttribute, myName->Value()->String());
 
   if (myVariables)
   {
-    StdLPersistent_HArray1OfPersistent::Iterator anIter(*myVariables->Array());
+    NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>::Iterator anIter(*myVariables->Array());
     for (; anIter.More(); anIter.Next())
     {
-      const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
+      const occ::handle<StdObjMgt_Persistent>& aPersistent = anIter.Value();
       if (aPersistent)
         theAttribute->GetVariables().Append(aPersistent->GetAttribute());
     }

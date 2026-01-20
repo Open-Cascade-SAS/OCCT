@@ -27,10 +27,10 @@ RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWExternalSource::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepBasic_ExternalSource)& ent) const
+void RWStepBasic_RWExternalSource::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepBasic_ExternalSource>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "external_source"))
@@ -48,7 +48,7 @@ void RWStepBasic_RWExternalSource::ReadStep(const Handle(StepData_StepReaderData
 //=================================================================================================
 
 void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepBasic_ExternalSource)& ent) const
+                                             const occ::handle<StepBasic_ExternalSource>& ent) const
 {
 
   // Own fields of ExternalSource
@@ -58,7 +58,7 @@ void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&               
 
 //=================================================================================================
 
-void RWStepBasic_RWExternalSource::Share(const Handle(StepBasic_ExternalSource)& ent,
+void RWStepBasic_RWExternalSource::Share(const occ::handle<StepBasic_ExternalSource>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 

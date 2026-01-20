@@ -44,11 +44,13 @@
 #include <IGESSelect_UpdateLastChange.hxx>
 #include <IGESSelect_ViewSorter.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Activator, IFSelect_Activator)
@@ -102,14 +104,14 @@ IGESSelect_Activator::IGESSelect_Activator()
   Add(70, "setuseflag");
 }
 
-IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer               number,
-                                               const Handle(IFSelect_SessionPilot)& pilot)
+IFSelect_ReturnStatus IGESSelect_Activator::Do(const int               number,
+                                               const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  Standard_Integer       argc = pilot->NbWords();
-  const Standard_CString arg1 = pilot->Word(1).ToCString();
-  const Standard_CString arg2 = pilot->Word(2).ToCString();
-  //  const Standard_CString arg3 = pilot->Word(3).ToCString();
-  Handle(IFSelect_WorkSession) WS = pilot->Session();
+  int       argc = pilot->NbWords();
+  const char* const arg1 = pilot->Word(1).ToCString();
+  const char* const arg2 = pilot->Word(2).ToCString();
+  //  const char* const arg3 = pilot->Word(3).ToCString();
+  occ::handle<IFSelect_WorkSession> WS = pilot->Session();
 
   switch (number)
   {
@@ -117,7 +119,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
     case 5:   //        ****    ListViews (without additional sorting)
     case 6:   //        ****    ListDrawings
     case 7: { //        ****    ListS(ingle)Views
-      Standard_Integer listmode = 0;
+      int listmode = 0;
       if (argc == 2 && arg1[0] == '?')
         argc = -1;
       if (argc < 2)
@@ -150,7 +152,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         return IFSelect_RetError;
       }
 
-      Handle(IGESSelect_ViewSorter) vs = new IGESSelect_ViewSorter;
+      occ::handle<IGESSelect_ViewSorter> vs = new IGESSelect_ViewSorter;
       vs->SetModel(GetCasted(IGESData_IGESModel, WS->Model()));
       if (argc == 2)
         vs->AddModel(WS->Model());
@@ -165,13 +167,13 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         }
         vs->AddList(WS->SelectionResult(sel));
       }
-      Standard_Boolean listdr = (number > 5);
+      bool listdr = (number > 5);
       if (number == 6)
         vs->SortDrawings(WS->Graph());
       if (number == 7)
-        vs->SortSingleViews(Standard_True);
-      Handle(IFSelect_PacketList) sets = vs->Sets(listdr);
-      Standard_Integer            nb   = vs->NbSets(listdr);
+        vs->SortSingleViews(true);
+      occ::handle<IFSelect_PacketList> sets = vs->Sets(listdr);
+      int            nb   = vs->NbSets(listdr);
       std::cout << " --  ViewSorter for";
       if (number == 5)
         std::cout << " Views & Drawings";
@@ -182,7 +184,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       std::cout << ", on " << vs->NbEntities() << " ent.s, give " << nb << " Sets" << std::endl;
 
       Interface_EntityIterator iter;
-      for (Standard_Integer i = 1; i <= nb; i++)
+      for (int i = 1; i <= nb; i++)
       {
         std::cout << " --  Set n0 " << i
                   << " Item=entity n0: " << WS->Model()->Number(vs->SetItem(i, listdr))
@@ -195,10 +197,10 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       }
 
       std::cout << " --  Remaining Entities (not yet sorted) :"
-                << sets->NbDuplicated(0, Standard_False) << std::endl;
+                << sets->NbDuplicated(0, false) << std::endl;
       if (listmode < 2)
         return IFSelect_RetVoid;
-      iter = sets->Duplicated(0, Standard_False);
+      iter = sets->Duplicated(0, false);
       WS->ListEntities(iter, 0, std::cout);
       return IFSelect_RetVoid;
     }
@@ -215,7 +217,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         Sprintf(signature, "%s", arg1);
       else
         Sprintf(signature, "%s %s", arg1, arg2);
-      Handle(IFSelect_SelectSignature) sel =
+      occ::handle<IFSelect_SelectSignature> sel =
         new IFSelect_SelectSignature(new IGESSelect_IGESTypeForm, signature, (argc > 2));
       return pilot->RecordItem(sel);
     }
@@ -230,7 +232,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         std::cout << "Give a TextParam Name for IGESName" << std::endl;
         return IFSelect_RetError;
       }
-      Handle(IGESSelect_SelectName) sel = new IGESSelect_SelectName;
+      occ::handle<IGESSelect_SelectName> sel = new IGESSelect_SelectName;
       sel->SetName(GetCasted(TCollection_HAsciiString, WS->NamedItem(arg1)));
       return pilot->RecordItem(sel);
     }
@@ -251,7 +253,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         std::cout << arg1 << " : not an IntParam (for Level)" << std::endl;
         return IFSelect_RetError;
       }
-      Handle(IGESSelect_SelectLevelNumber) sel = new IGESSelect_SelectLevelNumber;
+      occ::handle<IGESSelect_SelectLevelNumber> sel = new IGESSelect_SelectLevelNumber;
       sel->SetLevelNumber(lev);
       return pilot->RecordItem(sel);
     }
@@ -287,12 +289,12 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       }
       else
         prem = arg1[0];
-      Standard_Boolean zerosup = Standard_False;
-      Standard_Integer digits  = 0;
+      bool zerosup = false;
+      int digits  = 0;
       if (prem == 'N' || prem == 'n')
-        zerosup = Standard_False;
+        zerosup = false;
       else if (prem == 'Z' || prem == 'z')
-        zerosup = Standard_True;
+        zerosup = true;
       else if (prem >= 48 && prem <= 57)
         digits = atoi(arg1);
       else
@@ -307,7 +309,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
                   << std::flush;
         return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
       }
-      Standard_Real Rmin = 0., Rmax = 0.;
+      double Rmin = 0., Rmax = 0.;
       if (argc > 4)
       {
         Rmin = Atof(pilot->Word(4).ToCString());
@@ -318,7 +320,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
           return IFSelect_RetError;
         }
       }
-      Handle(IGESSelect_FloatFormat) fm = new IGESSelect_FloatFormat;
+      occ::handle<IGESSelect_FloatFormat> fm = new IGESSelect_FloatFormat;
       if (argc == 2)
         fm->SetDefault(digits);
       else
@@ -341,7 +343,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         std::cout << "Give integer=n0 param to change + TextParam name for the value" << std::endl;
         return IFSelect_RetError;
       }
-      Standard_Integer numpar = atoi(arg1);
+      int numpar = atoi(arg1);
       if (numpar <= 0)
       {
         std::cout << "Pas un n0 de param global correct:" << arg1 << std::endl;
@@ -353,7 +355,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
         std::cout << "Pas un nom de TextParam:" << arg2 << std::endl;
         return IFSelect_RetError;
       }
-      Handle(IGESSelect_SetGlobalParameter) mod = new IGESSelect_SetGlobalParameter(numpar);
+      occ::handle<IGESSelect_SetGlobalParameter> mod = new IGESSelect_SetGlobalParameter(numpar);
       mod->SetValue(val);
       return pilot->RecordItem(mod);
     }
@@ -394,26 +396,26 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
                   << " n for normal, t for tryC2" << std::endl;
         return IFSelect_RetError;
       }
-      Standard_Boolean tryC2;
+      bool tryC2;
       if (arg1[0] == 'n' || arg1[0] == 'N')
-        tryC2 = Standard_False;
+        tryC2 = false;
       else if (arg1[0] == 't' || arg1[0] == 'T')
-        tryC2 = Standard_True;
+        tryC2 = true;
       else
       {
         std::cout << " Mode incorrect : " << arg1 << std::endl;
         return IFSelect_RetError;
       }
-      Handle(IGESSelect_SplineToBSpline) conv = new IGESSelect_SplineToBSpline(tryC2);
+      occ::handle<IGESSelect_SplineToBSpline> conv = new IGESSelect_SplineToBSpline(tryC2);
       return pilot->RecordItem(conv);
     }
 
     case 70: { //        ****    SetUseFlag
-      Standard_Integer usefl = atoi(arg1);
+      int usefl = atoi(arg1);
       if (argc > 2)
       {
-        Handle(TColStd_HSequenceOfTransient) list = WS->GiveList(pilot->CommandPart(2));
-        Standard_Integer                     i, nb = list->Length();
+        occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = WS->GiveList(pilot->CommandPart(2));
+        int                     i, nb = list->Length();
         for (i = 1; i <= nb; i++)
         {
           DeclareAndCast(IGESData_IGESEntity, ent, list->Value(i));
@@ -426,7 +428,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
       }
       else
       {
-        Standard_Integer i, nb = WS->NbStartingEntities();
+        int i, nb = WS->NbStartingEntities();
         for (i = 1; i <= nb; i++)
         {
           DeclareAndCast(IGESData_IGESEntity, ent, WS->StartingEntity(i));
@@ -446,7 +448,7 @@ IFSelect_ReturnStatus IGESSelect_Activator::Do(const Standard_Integer           
   return IFSelect_RetVoid;
 }
 
-Standard_CString IGESSelect_Activator::Help(const Standard_Integer number) const
+const char* IGESSelect_Activator::Help(const int number) const
 {
   switch (number)
   {

@@ -31,11 +31,11 @@ public:
   void SetEndElementName(const TCollection_AsciiString& anEndElementName);
   //    set the name of the element which would stop parsing when parsed
 
-  Standard_Boolean startElement();
+  bool startElement();
   //    redefined method from LDOMParser
   //    stops parsing when the attributes of header element have been read
 
-  Standard_Boolean endElement();
+  bool endElement();
 
   //    redefined method from LDOMParser
   //    stops parsing when the info element with all sub-elements has been read

@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_OverRidingStyledItem, StepVisual_StyledIte
 StepVisual_OverRidingStyledItem::StepVisual_OverRidingStyledItem() {}
 
 void StepVisual_OverRidingStyledItem::Init(
-  const Handle(TCollection_HAsciiString)&                        aName,
-  const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-  const Handle(Standard_Transient)&                              aItem,
-  const Handle(StepVisual_StyledItem)&                           aOverRiddenStyle)
+  const occ::handle<TCollection_HAsciiString>&                        aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles,
+  const occ::handle<Standard_Transient>&                              aItem,
+  const occ::handle<StepVisual_StyledItem>&                           aOverRiddenStyle)
 {
   // --- classe own fields ---
   overRiddenStyle = aOverRiddenStyle;
@@ -32,12 +32,12 @@ void StepVisual_OverRidingStyledItem::Init(
 }
 
 void StepVisual_OverRidingStyledItem::SetOverRiddenStyle(
-  const Handle(StepVisual_StyledItem)& aOverRiddenStyle)
+  const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle)
 {
   overRiddenStyle = aOverRiddenStyle;
 }
 
-Handle(StepVisual_StyledItem) StepVisual_OverRidingStyledItem::OverRiddenStyle() const
+occ::handle<StepVisual_StyledItem> StepVisual_OverRidingStyledItem::OverRiddenStyle() const
 {
   return overRiddenStyle;
 }

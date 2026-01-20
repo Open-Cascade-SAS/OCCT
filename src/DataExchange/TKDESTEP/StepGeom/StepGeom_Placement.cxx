@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Placement, StepGeom_GeometricRepresentationI
 
 StepGeom_Placement::StepGeom_Placement() {}
 
-void StepGeom_Placement::Init(const Handle(TCollection_HAsciiString)& aName,
-                              const Handle(StepGeom_CartesianPoint)&  aLocation)
+void StepGeom_Placement::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                              const occ::handle<StepGeom_CartesianPoint>&  aLocation)
 {
   // --- classe own fields ---
   location = aLocation;
@@ -28,12 +28,12 @@ void StepGeom_Placement::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_Placement::SetLocation(const Handle(StepGeom_CartesianPoint)& aLocation)
+void StepGeom_Placement::SetLocation(const occ::handle<StepGeom_CartesianPoint>& aLocation)
 {
   location = aLocation;
 }
 
-Handle(StepGeom_CartesianPoint) StepGeom_Placement::Location() const
+occ::handle<StepGeom_CartesianPoint> StepGeom_Placement::Location() const
 {
   return location;
 }

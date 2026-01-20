@@ -29,11 +29,11 @@ StepBasic_ProductDefinitionReferenceWithLocalRepresentation::
 //=================================================================================================
 
 void StepBasic_ProductDefinitionReferenceWithLocalRepresentation::Init(
-  const Handle(StepBasic_ExternalSource)&             theSource,
-  const Handle(TCollection_HAsciiString)&             theId,
-  const Handle(TCollection_HAsciiString)&             theDescription,
-  const Handle(StepBasic_ProductDefinitionFormation)& theFormation,
-  const Handle(StepBasic_ProductDefinitionContext)&   theFrameOfReference)
+  const occ::handle<StepBasic_ExternalSource>&             theSource,
+  const occ::handle<TCollection_HAsciiString>&             theId,
+  const occ::handle<TCollection_HAsciiString>&             theDescription,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& theFormation,
+  const occ::handle<StepBasic_ProductDefinitionContext>&   theFrameOfReference)
 {
   StepBasic_ProductDefinition::Init(theId, theDescription, theFormation, theFrameOfReference);
   mySource = theSource;

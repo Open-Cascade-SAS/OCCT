@@ -34,9 +34,9 @@ BRepAdaptor_Curve2d::BRepAdaptor_Curve2d(const TopoDS_Edge& E, const TopoDS_Face
 
 //=================================================================================================
 
-Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
+occ::handle<Adaptor2d_Curve2d> BRepAdaptor_Curve2d::ShallowCopy() const
 {
-  Handle(BRepAdaptor_Curve2d) aCopy = new BRepAdaptor_Curve2d();
+  occ::handle<BRepAdaptor_Curve2d> aCopy = new BRepAdaptor_Curve2d();
 
   aCopy->myCurve     = myCurve;
   aCopy->myTypeCurve = myTypeCurve;
@@ -55,8 +55,8 @@ void BRepAdaptor_Curve2d::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   myEdge = E;
   myFace = F;
-  Standard_Real              aFirs, aLast;
-  const Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(E, F, aFirs, aLast);
+  double              aFirs, aLast;
+  const occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E, F, aFirs, aLast);
   if (!aPCurve.IsNull())
   {
     Geom2dAdaptor_Curve::Load(aPCurve, aFirs, aLast);

@@ -24,7 +24,8 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2dContinuity, ShapeUpgrade_SplitCurve2d)
 
@@ -66,7 +67,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::SetCriterion(const GeomAbs_Shape Crite
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve2dContinuity::SetTolerance(const Standard_Real Tol)
+void ShapeUpgrade_SplitCurve2dContinuity::SetTolerance(const double Tol)
 {
   myTolerance = Tol;
 }
@@ -79,13 +80,13 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
   if (mySplitValues->Length() > 2)
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-  constexpr Standard_Real precision = Precision::PConfusion();
-  Standard_Real           First     = mySplitValues->Value(1);
-  Standard_Real           Last      = mySplitValues->Value(mySplitValues->Length());
+  constexpr double precision = Precision::PConfusion();
+  double           First     = mySplitValues->Value(1);
+  double           Last      = mySplitValues->Value(mySplitValues->Length());
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
-    Handle(Geom2d_TrimmedCurve)         tmp      = Handle(Geom2d_TrimmedCurve)::DownCast(myCurve);
-    Handle(Geom2d_Curve)                BasCurve = tmp->BasisCurve();
+    occ::handle<Geom2d_TrimmedCurve>         tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
+    occ::handle<Geom2d_Curve>                BasCurve = tmp->BasisCurve();
     ShapeUpgrade_SplitCurve2dContinuity spc;
     //    spc.Init(BasCurve,Max(First,tmp->FirstParameter()),Min(Last,tmp->LastParameter()));
     spc.Init(BasCurve, First, Last);
@@ -121,9 +122,9 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
         BasCriterion = GeomAbs_CN;
         break;
     }
-    Handle(Geom2d_OffsetCurve) tmp      = Handle(Geom2d_OffsetCurve)::DownCast(myCurve);
-    Handle(Geom2d_Curve)       BasCurve = tmp->BasisCurve();
-    // Standard_Real Offset = tmp->Offset(); // Offset not used (skl)
+    occ::handle<Geom2d_OffsetCurve> tmp      = occ::down_cast<Geom2d_OffsetCurve>(myCurve);
+    occ::handle<Geom2d_Curve>       BasCurve = tmp->BasisCurve();
+    // double Offset = tmp->Offset(); // Offset not used (skl)
     ShapeUpgrade_SplitCurve2dContinuity spc;
     //    spc.Init(BasCurve,Max(tmp->FirstParameter(),First),Min(tmp->LastParameter(),Last));
     spc.Init(BasCurve, First, Last);
@@ -137,7 +138,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
     return;
   }
 
-  Handle(Geom2d_BSplineCurve) MyBSpline = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
+  occ::handle<Geom2d_BSplineCurve> MyBSpline = occ::down_cast<Geom2d_BSplineCurve>(myCurve);
   if (MyBSpline.IsNull())
   {
     //    if (ShapeUpgrade::Debug()) std::cout<<". curve is not a Bspline"<<std::endl;
@@ -145,33 +146,33 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
   }
 
   myNbCurves               = 1;
-  Standard_Integer Deg     = MyBSpline->Degree();
-  Standard_Integer NbKnots = MyBSpline->NbKnots();
+  int Deg     = MyBSpline->Degree();
+  int NbKnots = MyBSpline->NbKnots();
   //  if (ShapeUpgrade::Debug()) std::cout<<". NbKnots="<<NbKnots<<std::endl;
   if (NbKnots <= 2)
   {
     return;
   }
-  Standard_Integer FirstInd = MyBSpline->FirstUKnotIndex() + 1,
+  int FirstInd = MyBSpline->FirstUKnotIndex() + 1,
                    LastInd  = MyBSpline->LastUKnotIndex() - 1;
-  Standard_Integer iknot    = FirstInd;
-  for (Standard_Integer j = 2; j <= mySplitValues->Length(); j++)
+  int iknot    = FirstInd;
+  for (int j = 2; j <= mySplitValues->Length(); j++)
   {
     Last = mySplitValues->Value(j);
     for (; iknot <= LastInd; iknot++)
     {
-      Standard_Real valknot = MyBSpline->Knot(iknot);
+      double valknot = MyBSpline->Knot(iknot);
       if (valknot <= First + precision)
         continue;
       if (valknot >= Last - precision)
         break;
-      Standard_Integer Continuity = Deg - MyBSpline->Multiplicity(iknot);
-      // Standard_Real tt = MyBSpline->Knot(iknot); // tt not used (skl)
+      int Continuity = Deg - MyBSpline->Multiplicity(iknot);
+      // double tt = MyBSpline->Knot(iknot); // tt not used (skl)
       if (Continuity < myCont)
       {
         // At this knot, the curve is C0; try to remove Knot.
-        Standard_Boolean corrected       = Standard_False;
-        Standard_Integer newMultiplicity = Deg - myCont;
+        bool corrected       = false;
+        int newMultiplicity = Deg - myCont;
         if (newMultiplicity < 0)
           newMultiplicity = 0;
         {
@@ -182,7 +183,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
           }
           catch (Standard_Failure const&)
           {
-            corrected = Standard_False;
+            corrected = false;
           }
         }
         if (corrected && newMultiplicity > 0)

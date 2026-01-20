@@ -17,7 +17,35 @@
 #ifndef _TopOpeBRepTool_PROJECT_HeaderFile
 #define _TopOpeBRepTool_PROJECT_HeaderFile
 
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+
+#include <TopAbs_Orientation.hxx>
+
+#include <TopAbs_State.hxx>
+
+#include <TopoDS_Shape.hxx>
+
+#include <TopTools_ShapeMapHasher.hxx>
+
+#include <NCollection_Map.hxx>
+
+#include <NCollection_List.hxx>
+
+#include <NCollection_IndexedMap.hxx>
+
+#include <NCollection_DataMap.hxx>
+
+#include <Standard_Integer.hxx>
+
+#include <NCollection_IndexedDataMap.hxx>
+
+#include <TopoDS_Face.hxx>
+
+#include <TopoDS_Edge.hxx>
+
+#include <TopoDS_Vertex.hxx>
+
+#include <TCollection_AsciiString.hxx>
 
 #include <Geom_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -30,72 +58,72 @@
 // ----------------------------------------------------------------------
 //  project point <P> on geometries (curve <C>,surface <S>)
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_tool_bounds(const TopoDS_Edge& E, Standard_Real& f, Standard_Real& l);
-Standard_EXPORT Standard_Integer FUN_tool_getindex(const Extrema_ExtPC& ponc);
-Standard_EXPORT Standard_Integer FUN_tool_getindex(const Extrema_ExtPC2d& ponc);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC(const gp_Pnt&            P,
-                                                   const Standard_Real      tole,
+Standard_EXPORT void FUN_tool_bounds(const TopoDS_Edge& E, double& f, double& l);
+Standard_EXPORT int FUN_tool_getindex(const Extrema_ExtPC& ponc);
+Standard_EXPORT int FUN_tool_getindex(const Extrema_ExtPC2d& ponc);
+Standard_EXPORT bool FUN_tool_projPonC(const gp_Pnt&            P,
+                                                   const double      tole,
                                                    const BRepAdaptor_Curve& BAC,
-                                                   const Standard_Real      pmin,
-                                                   const Standard_Real      pmax,
-                                                   Standard_Real&           param,
-                                                   Standard_Real&           dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC(const gp_Pnt&            P,
+                                                   const double      pmin,
+                                                   const double      pmax,
+                                                   double&           param,
+                                                   double&           dist);
+Standard_EXPORT bool FUN_tool_projPonC(const gp_Pnt&            P,
                                                    const BRepAdaptor_Curve& BAC,
-                                                   const Standard_Real      pmin,
-                                                   const Standard_Real      pmax,
-                                                   Standard_Real&           param,
-                                                   Standard_Real&           dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC(const gp_Pnt&            P,
+                                                   const double      pmin,
+                                                   const double      pmax,
+                                                   double&           param,
+                                                   double&           dist);
+Standard_EXPORT bool FUN_tool_projPonC(const gp_Pnt&            P,
                                                    const BRepAdaptor_Curve& BAC,
-                                                   Standard_Real&           param,
-                                                   Standard_Real&           dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC2D(const gp_Pnt&              P,
-                                                     const Standard_Real        tole,
+                                                   double&           param,
+                                                   double&           dist);
+Standard_EXPORT bool FUN_tool_projPonC2D(const gp_Pnt&              P,
+                                                     const double        tole,
                                                      const BRepAdaptor_Curve2d& BAC2D,
-                                                     const Standard_Real        pmin,
-                                                     const Standard_Real        pmax,
-                                                     Standard_Real&             param,
-                                                     Standard_Real&             dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC2D(const gp_Pnt&              P,
+                                                     const double        pmin,
+                                                     const double        pmax,
+                                                     double&             param,
+                                                     double&             dist);
+Standard_EXPORT bool FUN_tool_projPonC2D(const gp_Pnt&              P,
                                                      const BRepAdaptor_Curve2d& BAC2D,
-                                                     const Standard_Real        pmin,
-                                                     const Standard_Real        pmax,
-                                                     Standard_Real&             param,
-                                                     Standard_Real&             dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonC2D(const gp_Pnt&              P,
+                                                     const double        pmin,
+                                                     const double        pmax,
+                                                     double&             param,
+                                                     double&             dist);
+Standard_EXPORT bool FUN_tool_projPonC2D(const gp_Pnt&              P,
                                                      const BRepAdaptor_Curve2d& BAC2D,
-                                                     Standard_Real&             param,
-                                                     Standard_Real&             dist);
-Standard_EXPORT Standard_Boolean
+                                                     double&             param,
+                                                     double&             dist);
+Standard_EXPORT bool
   FUN_tool_projPonS(const gp_Pnt&               P,
-                    const Handle(Geom_Surface)& S,
+                    const occ::handle<Geom_Surface>& S,
                     gp_Pnt2d&                   UV,
-                    Standard_Real&              dist,
+                    double&              dist,
                     const Extrema_ExtFlag       anExtFlag = Extrema_ExtFlag_MINMAX,
                     const Extrema_ExtAlgo       anExtAlgo = Extrema_ExtAlgo_Grad);
 
 // ----------------------------------------------------------------------
 //  project point <P> on topologies (edge <E>,face <F>)
 // ----------------------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_tool_projPonE(const gp_Pnt&       P,
-                                                   const Standard_Real tole,
+Standard_EXPORT bool FUN_tool_projPonE(const gp_Pnt&       P,
+                                                   const double tole,
                                                    const TopoDS_Edge&  E,
-                                                   Standard_Real&      param,
-                                                   Standard_Real&      dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonE(const gp_Pnt&      P,
+                                                   double&      param,
+                                                   double&      dist);
+Standard_EXPORT bool FUN_tool_projPonE(const gp_Pnt&      P,
                                                    const TopoDS_Edge& E,
-                                                   Standard_Real&     param,
-                                                   Standard_Real&     dist);
-Standard_EXPORT Standard_Boolean FUN_tool_projPonboundedF(const gp_Pnt&      P,
+                                                   double&     param,
+                                                   double&     dist);
+Standard_EXPORT bool FUN_tool_projPonboundedF(const gp_Pnt&      P,
                                                           const TopoDS_Face& F,
                                                           gp_Pnt2d&          UV,
-                                                          Standard_Real&     dist);
-Standard_EXPORT Standard_Boolean
+                                                          double&     dist);
+Standard_EXPORT bool
   FUN_tool_projPonF(const gp_Pnt&         P,
                     const TopoDS_Face&    F,
                     gp_Pnt2d&             UV,
-                    Standard_Real&        dist,
+                    double&        dist,
                     const Extrema_ExtFlag anExtFlag = Extrema_ExtFlag_MINMAX,
                     const Extrema_ExtAlgo anExtAlgo = Extrema_ExtAlgo_Grad);
 

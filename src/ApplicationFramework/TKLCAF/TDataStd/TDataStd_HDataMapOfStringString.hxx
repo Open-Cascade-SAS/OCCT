@@ -18,28 +18,27 @@
 
 #include <Standard.hxx>
 
-#include <TDataStd_DataMapOfStringString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
-//! Extension of TDataStd_DataMapOfStringString class
+//! Extension of NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> class
 //! to be manipulated by handle.
 class TDataStd_HDataMapOfStringString : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringString, Standard_Transient)
 public:
-  Standard_EXPORT TDataStd_HDataMapOfStringString(const Standard_Integer NbBuckets = 1);
+  Standard_EXPORT TDataStd_HDataMapOfStringString(const int NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringString(const TDataStd_DataMapOfStringString& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringString(const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theOther);
 
-  const TDataStd_DataMapOfStringString& Map() const { return myMap; }
+  const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& Map() const { return myMap; }
 
-  TDataStd_DataMapOfStringString& ChangeMap() { return myMap; }
+  NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& ChangeMap() { return myMap; }
 
 private:
-  TDataStd_DataMapOfStringString myMap;
+  NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> myMap;
 };
-
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringString, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringString_HeaderFile

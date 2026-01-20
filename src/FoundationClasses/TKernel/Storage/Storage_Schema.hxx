@@ -19,14 +19,15 @@
 
 #include <Storage_BaseDriver.hxx>
 #include <Storage_InternalData.hxx>
-#include <Storage_MapOfCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <Storage_TypedCallBack.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 class Storage_CallBack;
-
-class Storage_Schema;
-DEFINE_STANDARD_HANDLE(Storage_Schema, Standard_Transient)
 
 //! Root class for basic storage/retrieval algorithms.
 //! A Storage_Schema object processes:
@@ -62,7 +63,7 @@ public:
   //! inheriting from Storage_Schema and containing
   //! the description of your application data schema,
   //! you create a storage/retrieval algorithm as follows:
-  //! Handle(ShapeSchema) s = new
+  //! occ::handle<ShapeSchema> s = new
   //! ShapeSchema;
   //! -------- --
   //! USER API -- --------------------------------------------------------------
@@ -87,8 +88,8 @@ public:
   //! schema with which this algorithm is working.
   //! Note: aData may aggregate several root objects
   //! to be stored together.
-  Standard_EXPORT void Write(const Handle(Storage_BaseDriver)& s,
-                             const Handle(Storage_Data)&       aData) const;
+  Standard_EXPORT void Write(const occ::handle<Storage_BaseDriver>& s,
+                             const occ::handle<Storage_Data>&       aData) const;
 
   //! return a current date string
   Standard_EXPORT static TCollection_AsciiString ICreationDate();
@@ -104,20 +105,20 @@ public:
   //! application's schema a callback used when
   //! the schema doesn't know how to handle this
   //! type.
-  Standard_EXPORT static Standard_Boolean CheckTypeMigration(
+  Standard_EXPORT static bool CheckTypeMigration(
     const TCollection_AsciiString& theTypeName,
     TCollection_AsciiString&       theNewName);
 
   //! add two functions to the callback list
   Standard_EXPORT void AddReadUnknownTypeCallBack(const TCollection_AsciiString&  aTypeName,
-                                                  const Handle(Storage_CallBack)& aCallBack);
+                                                  const occ::handle<Storage_CallBack>& aCallBack);
 
   //! remove a callback for a type
   Standard_EXPORT void RemoveReadUnknownTypeCallBack(const TCollection_AsciiString& aTypeName);
 
   //! returns a list of type name with installed
   //! callback.
-  Standard_EXPORT Handle(TColStd_HSequenceOfAsciiString) InstalledCallBackList() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> InstalledCallBackList() const;
 
   //! clear all callback from schema instance.
   Standard_EXPORT void ClearCallBackList();
@@ -131,12 +132,12 @@ public:
   Standard_EXPORT void DontUseDefaultCallBack();
 
   //! ask if the schema is using the default callback.
-  Standard_EXPORT Standard_Boolean IsUsingDefaultCallBack() const;
+  Standard_EXPORT bool IsUsingDefaultCallBack() const;
 
   //! overload the default function for build. (use to
   //! set an error message or skip an object while
   //! reading an unknown type).
-  Standard_EXPORT void SetDefaultCallBack(const Handle(Storage_CallBack)& f);
+  Standard_EXPORT void SetDefaultCallBack(const occ::handle<Storage_CallBack>& f);
 
   //! reset the default function defined by Storage
   //! package.
@@ -144,49 +145,49 @@ public:
 
   //! returns the read function used when the
   //! UseDefaultCallBack() is set.
-  Standard_EXPORT Handle(Storage_CallBack) DefaultCallBack() const;
+  Standard_EXPORT occ::handle<Storage_CallBack> DefaultCallBack() const;
 
-  void WritePersistentObjectHeader(const Handle(Standard_Persistent)& sp,
-                                   const Handle(Storage_BaseDriver)&  theDriver)
+  void WritePersistentObjectHeader(const occ::handle<Standard_Persistent>& sp,
+                                   const occ::handle<Storage_BaseDriver>&  theDriver)
   {
     theDriver->WritePersistentObjectHeader(sp->_refnum, sp->_typenum);
   }
 
-  void WritePersistentReference(const Handle(Standard_Persistent)& sp,
-                                const Handle(Storage_BaseDriver)&  theDriver)
+  void WritePersistentReference(const occ::handle<Standard_Persistent>& sp,
+                                const occ::handle<Storage_BaseDriver>&  theDriver)
   {
     theDriver->PutReference(sp.IsNull() ? 0 : sp->_refnum);
   }
 
-  Standard_EXPORT Standard_Boolean AddPersistent(const Handle(Standard_Persistent)& sp,
-                                                 const Standard_CString             tName) const;
+  Standard_EXPORT bool AddPersistent(const occ::handle<Standard_Persistent>& sp,
+                                                 const char* const             tName) const;
 
-  Standard_EXPORT Standard_Boolean PersistentToAdd(const Handle(Standard_Persistent)& sp) const;
+  Standard_EXPORT bool PersistentToAdd(const occ::handle<Standard_Persistent>& sp) const;
 
   DEFINE_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
 
 protected:
-  Standard_Boolean HasTypeBinding(const TCollection_AsciiString& aTypeName) const
+  bool HasTypeBinding(const TCollection_AsciiString& aTypeName) const
   {
     return Storage_Schema::ICurrentData()->InternalData()->myTypeBinding.IsBound(aTypeName);
   }
 
   Standard_EXPORT void BindType(const TCollection_AsciiString&  aTypeName,
-                                const Handle(Storage_CallBack)& aCallBack) const;
+                                const occ::handle<Storage_CallBack>& aCallBack) const;
 
-  Standard_EXPORT Handle(Storage_CallBack) TypeBinding(
+  Standard_EXPORT occ::handle<Storage_CallBack> TypeBinding(
     const TCollection_AsciiString& aTypeName) const;
 
 private:
   Standard_EXPORT void Clear() const;
 
-  Standard_EXPORT static void ISetCurrentData(const Handle(Storage_Data)& dData);
+  Standard_EXPORT static void ISetCurrentData(const occ::handle<Storage_Data>& dData);
 
-  Standard_EXPORT static Handle(Storage_Data)& ICurrentData();
+  Standard_EXPORT static occ::handle<Storage_Data>& ICurrentData();
 
-  Storage_MapOfCallBack    myCallBack;
-  Standard_Boolean         myCallBackState;
-  Handle(Storage_CallBack) myDefaultCallBack;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>    myCallBack;
+  bool         myCallBackState;
+  occ::handle<Storage_CallBack> myDefaultCallBack;
   TCollection_AsciiString  myName;
   TCollection_AsciiString  myVersion;
 };

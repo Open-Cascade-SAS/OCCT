@@ -20,8 +20,9 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <IntCurveSurface_Intersection.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 
 class IntCurveSurface_TheHCurveTool;
 class Adaptor3d_HSurfaceTool;
@@ -53,157 +54,157 @@ public:
 
   //! Compute the Intersection between the curve and the
   //! surface
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&   Curve,
-                               const Handle(Adaptor3d_Surface)& Surface);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&   Curve,
+                               const occ::handle<Adaptor3d_Surface>& Surface);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&            Curve,
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&            Curve,
                                const IntCurveSurface_ThePolygonOfHInter& Polygon,
-                               const Handle(Adaptor3d_Surface)&          Surface);
+                               const occ::handle<Adaptor3d_Surface>&          Surface);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&               Curve,
                                const IntCurveSurface_ThePolygonOfHInter&    ThePolygon,
-                               const Handle(Adaptor3d_Surface)&             Surface,
+                               const occ::handle<Adaptor3d_Surface>&             Surface,
                                const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
   //! its polygon : <Polygon> is given. The Surface is
   //! also sampled and <Polyhedron> is given.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&               Curve,
                                const IntCurveSurface_ThePolygonOfHInter&    ThePolygon,
-                               const Handle(Adaptor3d_Surface)&             Surface,
+                               const occ::handle<Adaptor3d_Surface>&             Surface,
                                const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron,
                                Bnd_BoundSortBox&                            BndBSB);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Surface is already sampled and
   //! its polyhedron : <Polyhedron> is given.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&               Curve,
-                               const Handle(Adaptor3d_Surface)&             Surface,
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&               Curve,
+                               const occ::handle<Adaptor3d_Surface>&             Surface,
                                const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron);
 
 protected:
   //! Compute the Intersection between the curve and the
   //! surface
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&   Curve,
-                               const Handle(Adaptor3d_Surface)& Surface,
-                               const Standard_Real              U0,
-                               const Standard_Real              V0,
-                               const Standard_Real              U1,
-                               const Standard_Real              V1);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&   Curve,
+                               const occ::handle<Adaptor3d_Surface>& Surface,
+                               const double              U0,
+                               const double              V0,
+                               const double              U1,
+                               const double              V1);
 
-  Standard_EXPORT void InternalPerformCurveQuadric(const Handle(Adaptor3d_Curve)&   Curve,
-                                                   const Handle(Adaptor3d_Surface)& Surface);
+  Standard_EXPORT void InternalPerformCurveQuadric(const occ::handle<Adaptor3d_Curve>&   Curve,
+                                                   const occ::handle<Adaptor3d_Surface>& Surface);
 
-  Standard_EXPORT void InternalPerform(const Handle(Adaptor3d_Curve)&               Curve,
+  Standard_EXPORT void InternalPerform(const occ::handle<Adaptor3d_Curve>&               Curve,
                                        const IntCurveSurface_ThePolygonOfHInter&    Polygon,
-                                       const Handle(Adaptor3d_Surface)&             Surface,
+                                       const occ::handle<Adaptor3d_Surface>&             Surface,
                                        const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron,
-                                       const Standard_Real                          U1,
-                                       const Standard_Real                          V1,
-                                       const Standard_Real                          U2,
-                                       const Standard_Real                          V2);
+                                       const double                          U1,
+                                       const double                          V1,
+                                       const double                          U2,
+                                       const double                          V2);
 
-  Standard_EXPORT void InternalPerform(const Handle(Adaptor3d_Curve)&               Curve,
+  Standard_EXPORT void InternalPerform(const occ::handle<Adaptor3d_Curve>&               Curve,
                                        const IntCurveSurface_ThePolygonOfHInter&    Polygon,
-                                       const Handle(Adaptor3d_Surface)&             Surface,
+                                       const occ::handle<Adaptor3d_Surface>&             Surface,
                                        const IntCurveSurface_ThePolyhedronOfHInter& Polyhedron,
-                                       const Standard_Real                          U1,
-                                       const Standard_Real                          V1,
-                                       const Standard_Real                          U2,
-                                       const Standard_Real                          V2,
+                                       const double                          U1,
+                                       const double                          V1,
+                                       const double                          U2,
+                                       const double                          V2,
                                        Bnd_BoundSortBox&                            BSB);
 
-  Standard_EXPORT void InternalPerform(const Handle(Adaptor3d_Curve)&            Curve,
+  Standard_EXPORT void InternalPerform(const occ::handle<Adaptor3d_Curve>&            Curve,
                                        const IntCurveSurface_ThePolygonOfHInter& Polygon,
-                                       const Handle(Adaptor3d_Surface)&          Surface,
-                                       const Standard_Real                       U1,
-                                       const Standard_Real                       V1,
-                                       const Standard_Real                       U2,
-                                       const Standard_Real                       V2);
+                                       const occ::handle<Adaptor3d_Surface>&          Surface,
+                                       const double                       U1,
+                                       const double                       V1,
+                                       const double                       U2,
+                                       const double                       V2);
 
   Standard_EXPORT void PerformConicSurf(const gp_Lin&                    Line,
-                                        const Handle(Adaptor3d_Curve)&   Curve,
-                                        const Handle(Adaptor3d_Surface)& Surface,
-                                        const Standard_Real              U1,
-                                        const Standard_Real              V1,
-                                        const Standard_Real              U2,
-                                        const Standard_Real              V2);
+                                        const occ::handle<Adaptor3d_Curve>&   Curve,
+                                        const occ::handle<Adaptor3d_Surface>& Surface,
+                                        const double              U1,
+                                        const double              V1,
+                                        const double              U2,
+                                        const double              V2);
 
   Standard_EXPORT void PerformConicSurf(const gp_Circ&                   Circle,
-                                        const Handle(Adaptor3d_Curve)&   Curve,
-                                        const Handle(Adaptor3d_Surface)& Surface,
-                                        const Standard_Real              U1,
-                                        const Standard_Real              V1,
-                                        const Standard_Real              U2,
-                                        const Standard_Real              V2);
+                                        const occ::handle<Adaptor3d_Curve>&   Curve,
+                                        const occ::handle<Adaptor3d_Surface>& Surface,
+                                        const double              U1,
+                                        const double              V1,
+                                        const double              U2,
+                                        const double              V2);
 
   Standard_EXPORT void PerformConicSurf(const gp_Elips&                  Ellipse,
-                                        const Handle(Adaptor3d_Curve)&   Curve,
-                                        const Handle(Adaptor3d_Surface)& Surface,
-                                        const Standard_Real              U1,
-                                        const Standard_Real              V1,
-                                        const Standard_Real              U2,
-                                        const Standard_Real              V2);
+                                        const occ::handle<Adaptor3d_Curve>&   Curve,
+                                        const occ::handle<Adaptor3d_Surface>& Surface,
+                                        const double              U1,
+                                        const double              V1,
+                                        const double              U2,
+                                        const double              V2);
 
   Standard_EXPORT void PerformConicSurf(const gp_Parab&                  Parab,
-                                        const Handle(Adaptor3d_Curve)&   Curve,
-                                        const Handle(Adaptor3d_Surface)& Surface,
-                                        const Standard_Real              U1,
-                                        const Standard_Real              V1,
-                                        const Standard_Real              U2,
-                                        const Standard_Real              V2);
+                                        const occ::handle<Adaptor3d_Curve>&   Curve,
+                                        const occ::handle<Adaptor3d_Surface>& Surface,
+                                        const double              U1,
+                                        const double              V1,
+                                        const double              U2,
+                                        const double              V2);
 
   Standard_EXPORT void PerformConicSurf(const gp_Hypr&                   Hyper,
-                                        const Handle(Adaptor3d_Curve)&   Curve,
-                                        const Handle(Adaptor3d_Surface)& Surface,
-                                        const Standard_Real              U1,
-                                        const Standard_Real              V1,
-                                        const Standard_Real              U2,
-                                        const Standard_Real              V2);
+                                        const occ::handle<Adaptor3d_Curve>&   Curve,
+                                        const occ::handle<Adaptor3d_Surface>& Surface,
+                                        const double              U1,
+                                        const double              V1,
+                                        const double              U2,
+                                        const double              V2);
 
-  Standard_EXPORT void AppendIntAna(const Handle(Adaptor3d_Curve)&   Curve,
-                                    const Handle(Adaptor3d_Surface)& Surface,
+  Standard_EXPORT void AppendIntAna(const occ::handle<Adaptor3d_Curve>&   Curve,
+                                    const occ::handle<Adaptor3d_Surface>& Surface,
                                     const IntAna_IntConicQuad&       InterAna);
 
-  Standard_EXPORT void AppendPoint(const Handle(Adaptor3d_Curve)&   Curve,
-                                   const Standard_Real              w,
-                                   const Handle(Adaptor3d_Surface)& Surface,
-                                   const Standard_Real              u,
-                                   const Standard_Real              v);
+  Standard_EXPORT void AppendPoint(const occ::handle<Adaptor3d_Curve>&   Curve,
+                                   const double              w,
+                                   const occ::handle<Adaptor3d_Surface>& Surface,
+                                   const double              u,
+                                   const double              v);
 
-  Standard_EXPORT void AppendSegment(const Handle(Adaptor3d_Curve)&   Curve,
-                                     const Standard_Real              u0,
-                                     const Standard_Real              u1,
-                                     const Handle(Adaptor3d_Surface)& Surface);
+  Standard_EXPORT void AppendSegment(const occ::handle<Adaptor3d_Curve>&   Curve,
+                                     const double              u0,
+                                     const double              u1,
+                                     const occ::handle<Adaptor3d_Surface>& Surface);
 
 private:
-  Standard_EXPORT void DoSurface(const Handle(Adaptor3d_Surface)& surface,
-                                 const Standard_Real              u0,
-                                 const Standard_Real              u1,
-                                 const Standard_Real              v0,
-                                 const Standard_Real              v1,
-                                 TColgp_Array2OfPnt&              pntsOnSurface,
+  Standard_EXPORT void DoSurface(const occ::handle<Adaptor3d_Surface>& surface,
+                                 const double              u0,
+                                 const double              u1,
+                                 const double              v0,
+                                 const double              v1,
+                                 NCollection_Array2<gp_Pnt>&              pntsOnSurface,
                                  Bnd_Box&                         boxSurface,
-                                 Standard_Real&                   gap);
+                                 double&                   gap);
 
-  Standard_EXPORT void DoNewBounds(const Handle(Adaptor3d_Surface)& surface,
-                                   const Standard_Real              u0,
-                                   const Standard_Real              u1,
-                                   const Standard_Real              v0,
-                                   const Standard_Real              v1,
-                                   const TColgp_Array2OfPnt&        pntsOnSurface,
-                                   const TColStd_Array1OfReal&      X,
-                                   const TColStd_Array1OfReal&      Y,
-                                   const TColStd_Array1OfReal&      Z,
-                                   TColStd_Array1OfReal&            Bounds);
+  Standard_EXPORT void DoNewBounds(const occ::handle<Adaptor3d_Surface>& surface,
+                                   const double              u0,
+                                   const double              u1,
+                                   const double              v0,
+                                   const double              v1,
+                                   const NCollection_Array2<gp_Pnt>&        pntsOnSurface,
+                                   const NCollection_Array1<double>&      X,
+                                   const NCollection_Array1<double>&      Y,
+                                   const NCollection_Array1<double>&      Z,
+                                   NCollection_Array1<double>&            Bounds);
 };
 
 #endif // _IntCurveSurface_HInter_HeaderFile

@@ -29,18 +29,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_Protocol, IGESData_Protocol)
 
 IGESDefs_Protocol::IGESDefs_Protocol() {}
 
-Standard_Integer IGESDefs_Protocol::NbResources() const
+int IGESDefs_Protocol::NbResources() const
 {
   return 1;
 }
 
-Handle(Interface_Protocol) IGESDefs_Protocol::Resource(const Standard_Integer /*num*/) const
+occ::handle<Interface_Protocol> IGESDefs_Protocol::Resource(const int /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESGraph::Protocol();
+  occ::handle<Interface_Protocol> res = IGESGraph::Protocol();
   return res;
 }
 
-Standard_Integer IGESDefs_Protocol::TypeNumber(const Handle(Standard_Type)& atype) const
+int IGESDefs_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESDefs_AssociativityDef))
     return 1;

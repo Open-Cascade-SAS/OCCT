@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet, StepShape_TopologicalRepr
 
 StepShape_ConnectedFaceSet::StepShape_ConnectedFaceSet() {}
 
-void StepShape_ConnectedFaceSet::Init(const Handle(TCollection_HAsciiString)& aName,
-                                      const Handle(StepShape_HArray1OfFace)&  aCfsFaces)
+void StepShape_ConnectedFaceSet::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                      const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&  aCfsFaces)
 {
   // --- classe own fields ---
   cfsFaces = aCfsFaces;
@@ -28,22 +28,22 @@ void StepShape_ConnectedFaceSet::Init(const Handle(TCollection_HAsciiString)& aN
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_ConnectedFaceSet::SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces)
+void StepShape_ConnectedFaceSet::SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces)
 {
   cfsFaces = aCfsFaces;
 }
 
-Handle(StepShape_HArray1OfFace) StepShape_ConnectedFaceSet::CfsFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_ConnectedFaceSet::CfsFaces() const
 {
   return cfsFaces;
 }
 
-Handle(StepShape_Face) StepShape_ConnectedFaceSet::CfsFacesValue(const Standard_Integer num) const
+occ::handle<StepShape_Face> StepShape_ConnectedFaceSet::CfsFacesValue(const int num) const
 {
   return cfsFaces->Value(num);
 }
 
-Standard_Integer StepShape_ConnectedFaceSet::NbCfsFaces() const
+int StepShape_ConnectedFaceSet::NbCfsFaces() const
 {
   if (cfsFaces.IsNull())
     return 0;

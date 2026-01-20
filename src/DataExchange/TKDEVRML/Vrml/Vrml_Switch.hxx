@@ -37,17 +37,16 @@ class Vrml_Switch
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_Switch(const Standard_Integer aWhichChild = -1);
+  Standard_EXPORT Vrml_Switch(const int aWhichChild = -1);
 
-  Standard_EXPORT void SetWhichChild(const Standard_Integer aWhichChild);
+  Standard_EXPORT void SetWhichChild(const int aWhichChild);
 
-  Standard_EXPORT Standard_Integer WhichChild() const;
+  Standard_EXPORT int WhichChild() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Integer myWhichChild;
+  int myWhichChild;
 };
 
 #endif // _Vrml_Switch_HeaderFile

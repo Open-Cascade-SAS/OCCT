@@ -115,12 +115,12 @@ static const int Draw_modeTab[16] = {R2_BLACK,
                                      R2_WHITE};
 #endif
 
-extern Standard_Boolean Draw_Batch;
-extern Standard_Boolean Draw_VirtualWindows;
-Standard_Boolean        Draw_BlackBackGround = Standard_True;
+extern bool Draw_Batch;
+extern bool Draw_VirtualWindows;
+bool        Draw_BlackBackGround = true;
 #if defined(_WIN32)
 // indicates SUBSYSTEM:CONSOLE linker option, to be set to True in main()
-Standard_EXPORT Standard_Boolean Draw_IsConsoleSubsystem    = Standard_False;
+Standard_EXPORT bool Draw_IsConsoleSubsystem    = false;
 HWND                             Draw_Window::hWndClientMDI = 0;
 #endif
 
@@ -209,15 +209,15 @@ static void Prompt(Tcl_Interp* theInterp, int thePartial);
 
 //! Non-zero means standard input is a terminal-like device.
 //! Zero means it's a file.
-static Standard_Boolean tty;
+static bool tty;
 
   #if defined(HAVE_XLIB)
 static unsigned long thePixels[MAXCOLOR];
 
 Display*                                Draw_WindowDisplay = NULL;
 Colormap                                Draw_WindowColorMap;
-static Standard_Integer                 Draw_WindowScreen = 0;
-static Handle(Aspect_DisplayConnection) Draw_DisplayConnection;
+static int                 Draw_WindowScreen = 0;
+static occ::handle<Aspect_DisplayConnection> Draw_DisplayConnection;
 
 //! Return list of windows.
 static NCollection_List<Draw_Window*>& getDrawWindowList()
@@ -254,7 +254,7 @@ Draw_Window::Draw_Window(const char*                  theTitle,
       myBase(new Base_Window()),
   #endif
       myCurrentColor(0),
-      myUseBuffer(Standard_False)
+      myUseBuffer(false)
 {
   NCollection_Vec2<int> anXY = theXY, aSize = theSize;
   #if defined(_WIN32)
@@ -343,7 +343,7 @@ void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec
   if (Draw_VirtualWindows)
   {
     // create a virtual window
-    SetUseBuffer(Standard_True);
+    SetUseBuffer(true);
   }
   #elif defined(HAVE_XLIB)
   if (Draw_BlackBackGround)
@@ -389,7 +389,7 @@ void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec
 
     if (Draw_VirtualWindows)
     {
-      myUseBuffer = Standard_True;
+      myUseBuffer = true;
       InitBuffer();
     }
   }
@@ -413,7 +413,7 @@ void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec
 
 //=================================================================================================
 
-void Draw_Window::SetUseBuffer(Standard_Boolean theToUse)
+void Draw_Window::SetUseBuffer(bool theToUse)
 {
   myUseBuffer = theToUse;
   InitBuffer();
@@ -513,7 +513,7 @@ void Draw_Window::InitBuffer()
 
 //=================================================================================================
 
-void Draw_Window::SetPosition(Standard_Integer theNewXpos, Standard_Integer theNewYpos)
+void Draw_Window::SetPosition(int theNewXpos, int theNewYpos)
 {
   #ifdef _WIN32
   UINT aFlags = SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER;
@@ -523,7 +523,7 @@ void Draw_Window::SetPosition(Standard_Integer theNewXpos, Standard_Integer theN
   }
   SetWindowPos(myWindow, 0, theNewXpos, theNewYpos, 0, 0, aFlags);
   #elif defined(HAVE_XLIB)
-  Standard_Integer aPosX = 0, aPosY = 0;
+  int aPosX = 0, aPosY = 0;
   GetPosition(aPosX, aPosY);
   if (aPosX != theNewXpos || aPosY != theNewYpos)
   {
@@ -537,7 +537,7 @@ void Draw_Window::SetPosition(Standard_Integer theNewXpos, Standard_Integer theN
 
 //=================================================================================================
 
-void Draw_Window::SetDimension(Standard_Integer theNewDx, Standard_Integer theNewDy)
+void Draw_Window::SetDimension(int theNewDx, int theNewDy)
 {
   #ifdef _WIN32
   UINT aFlags = SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER;
@@ -559,7 +559,7 @@ void Draw_Window::SetDimension(Standard_Integer theNewDx, Standard_Integer theNe
 
 //=================================================================================================
 
-void Draw_Window::GetPosition(Standard_Integer& thePosX, Standard_Integer& thePosY)
+void Draw_Window::GetPosition(int& thePosX, int& thePosY)
 {
   thePosX = thePosY = 0;
   #ifdef _WIN32
@@ -583,7 +583,7 @@ void Draw_Window::GetPosition(Standard_Integer& thePosX, Standard_Integer& thePo
 
 //=================================================================================================
 
-Standard_Integer Draw_Window::HeightWin() const
+int Draw_Window::HeightWin() const
 {
   #ifdef _WIN32
   RECT aRect;
@@ -600,7 +600,7 @@ Standard_Integer Draw_Window::HeightWin() const
 
 //=================================================================================================
 
-Standard_Integer Draw_Window::WidthWin() const
+int Draw_Window::WidthWin() const
 {
   #ifdef _WIN32
   RECT aRect;
@@ -648,24 +648,24 @@ TCollection_AsciiString Draw_Window::GetTitle() const
 
 //=================================================================================================
 
-Standard_Boolean Draw_Window::DefineColor(const Standard_Integer theIndex, const char* theColorName)
+bool Draw_Window::DefineColor(const int theIndex, const char* theColorName)
 {
   #if defined(HAVE_XLIB)
   XColor aColor;
   if (!XParseColor(Draw_WindowDisplay, Draw_WindowColorMap, theColorName, &aColor))
   {
-    return Standard_False;
+    return false;
   }
   if (!XAllocColor(Draw_WindowDisplay, Draw_WindowColorMap, &aColor))
   {
-    return Standard_False;
+    return false;
   }
   thePixels[theIndex % MAXCOLOR] = aColor.pixel;
-  return Standard_True;
+  return true;
   #else
   (void)theIndex;
   (void)theColorName;
-  return Standard_True;
+  return true;
   #endif
 }
 
@@ -784,7 +784,7 @@ void Draw_Window::Flush()
 
 //=================================================================================================
 
-void Draw_Window::DrawString(Standard_Integer theX, Standard_Integer theY, const char* theText)
+void Draw_Window::DrawString(int theX, int theY, const char* theText)
 {
   #ifdef _WIN32
   HDC hDC     = GetDC(myWindow);
@@ -815,7 +815,7 @@ void Draw_Window::DrawString(Standard_Integer theX, Standard_Integer theY, const
 
 //=================================================================================================
 
-void Draw_Window::DrawSegments(const Draw_XSegment* theSegments, Standard_Integer theNbElems)
+void Draw_Window::DrawSegments(const Draw_XSegment* theSegments, int theNbElems)
 {
   #ifdef _WIN32
   HDC hDC     = GetDC(myWindow);
@@ -882,7 +882,7 @@ void Draw_Window::Redraw()
 
 //=================================================================================================
 
-void Draw_Window::SetColor(Standard_Integer theColor)
+void Draw_Window::SetColor(int theColor)
 {
   #ifdef _WIN32
   HDC hDC   = GetDC(myWindow);
@@ -915,24 +915,24 @@ void Draw_Window::SetMode(int theMode)
 /*--------------------------------------------------------*\
 |  SaveBitmap
 \*--------------------------------------------------------*/
-static Standard_Boolean SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
+static bool SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
 {
   // Get information about the bitmap
   BITMAP aBitmap;
   if (GetObjectW(theHBitmap, sizeof(BITMAP), &aBitmap) == 0)
   {
-    return Standard_False;
+    return false;
   }
 
   Image_AlienPixMap   anImage;
-  const Standard_Size aSizeRowBytes =
-    ((Standard_Size(aBitmap.bmWidth) * 24 + 31) / 32) * 4; // 4 bytes alignment for GetDIBits()
+  const size_t aSizeRowBytes =
+    ((size_t(aBitmap.bmWidth) * 24 + 31) / 32) * 4; // 4 bytes alignment for GetDIBits()
   if (!anImage.InitTrash(Image_Format_BGR,
-                         Standard_Size(aBitmap.bmWidth),
-                         Standard_Size(aBitmap.bmHeight),
+                         size_t(aBitmap.bmWidth),
+                         size_t(aBitmap.bmHeight),
                          aSizeRowBytes))
   {
-    return Standard_False;
+    return false;
   }
   anImage.SetTopDown(false);
 
@@ -948,7 +948,7 @@ static Standard_Boolean SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
 
   // Copy the pixels
   HDC              aDC       = GetDC(NULL);
-  Standard_Boolean isSuccess = GetDIBits(aDC,
+  bool isSuccess = GetDIBits(aDC,
                                          theHBitmap,
                                          0,                          // first scan line to set
                                          aBitmap.bmHeight,           // number of scan lines to copy
@@ -963,7 +963,7 @@ static Standard_Boolean SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
 
 //=================================================================================================
 
-Standard_Boolean Draw_Window::Save(const char* theFileName) const
+bool Draw_Window::Save(const char* theFileName) const
 {
   #ifdef _WIN32
   if (myUseBuffer)
@@ -986,7 +986,7 @@ Standard_Boolean Draw_Window::Save(const char* theFileName) const
   HBITMAP anHBitmapOld  = (HBITMAP)SelectObject(aMemDC, anHBitmapDump);
   BitBlt(aMemDC, 0, 0, aWidth, aHeight, aSrcDC, 0, 0, SRCCOPY);
 
-  Standard_Boolean isSuccess = SaveBitmap(anHBitmapDump, theFileName);
+  bool isSuccess = SaveBitmap(anHBitmapDump, theFileName);
 
   // Free objects
   DeleteObject(SelectObject(aMemDC, anHBitmapOld));
@@ -1022,7 +1022,7 @@ Standard_Boolean Draw_Window::Save(const char* theFileName) const
         || ((aWinTop + aWinAttr.height) > aWinAttrRoot.height) || aWinTop < aWinAttrRoot.y)
     {
       std::cerr << "The window not fully visible! Can't create the snapshot.\n";
-      return Standard_False;
+      return false;
     }
   }
 
@@ -1031,18 +1031,18 @@ Standard_Boolean Draw_Window::Save(const char* theFileName) const
       && XMatchVisualInfo(Draw_WindowDisplay, Draw_WindowScreen, 24, TrueColor, &aVInfo) == 0)
   {
     std::cerr << "24-bit TrueColor visual is not supported by server!\n";
-    return Standard_False;
+    return false;
   }
 
   Image_AlienPixMap   anImage;
   bool                isBigEndian   = Image_PixMap::IsBigEndianHost();
-  const Standard_Size aSizeRowBytes = Standard_Size(aWinAttr.width) * 4;
+  const size_t aSizeRowBytes = size_t(aWinAttr.width) * 4;
   if (!anImage.InitTrash(isBigEndian ? Image_Format_RGB32 : Image_Format_BGR32,
-                         Standard_Size(aWinAttr.width),
-                         Standard_Size(aWinAttr.height),
+                         size_t(aWinAttr.width),
+                         size_t(aWinAttr.height),
                          aSizeRowBytes))
   {
-    return Standard_False;
+    return false;
   }
   anImage.SetTopDown(true);
 
@@ -1072,7 +1072,7 @@ Standard_Boolean Draw_Window::Save(const char* theFileName) const
   {
     anXImage->data = NULL;
     XDestroyImage(anXImage);
-    return Standard_False;
+    return false;
   }
 
   // destroy the image
@@ -1092,7 +1092,7 @@ Standard_Boolean Draw_Window::Save(const char* theFileName) const
 #if defined(HAVE_XLIB)
 //=================================================================================================
 
-void Draw_Window::Wait(Standard_Boolean theToWait)
+void Draw_Window::Wait(bool theToWait)
 {
   Flush();
   long aMask = ButtonPressMask | ExposureMask | StructureNotifyMask;
@@ -1181,9 +1181,9 @@ void Draw_Window::GetNextEvent(Draw_Window::Draw_XEvent& theEvent)
 #ifndef _WIN32
 //=================================================================================================
 
-static Standard_Boolean (*Interprete)(const char*);
+static bool (*Interprete)(const char*);
 
-void Run_Appli(Standard_Boolean (*interprete)(const char*))
+void Run_Appli(bool (*interprete)(const char*))
 {
   Interprete = interprete;
 
@@ -1257,7 +1257,7 @@ void Run_Appli(Standard_Boolean (*interprete)(const char*))
 
 //=================================================================================================
 
-Standard_Boolean Init_Appli()
+bool Init_Appli()
 {
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
   aCommands.Init();
@@ -1307,7 +1307,7 @@ Standard_Boolean Init_Appli()
     {
       std::cout << "Cannot open display (" << theFail << "). Interpret commands in batch mode."
                 << std::endl;
-      return Standard_False;
+      return false;
     }
   }
   if (Draw_WindowDisplay == NULL)
@@ -1327,7 +1327,7 @@ Standard_Boolean Init_Appli()
   tty = isatty(0);
   Tcl_SetVar(interp, "tcl_interactive", (char*)(tty ? "1" : "0"), TCL_GLOBAL_ONLY);
   //  Tcl_SetVar(interp,"tcl_interactive",tty ? "1" : "0", TCL_GLOBAL_ONLY);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -1359,11 +1359,11 @@ static void StdinProc(ClientData clientData, int theMask)
   Tcl_DStringInit(&aLineTmp);
   Tcl_UniChar* aUniCharString =
     Tcl_UtfToUniCharDString(Tcl_DStringValue(&Draw_TclLine), -1, &aLineTmp);
-  Standard_Integer        l = Tcl_UniCharLen(aUniCharString);
+  int        l = Tcl_UniCharLen(aUniCharString);
   TCollection_AsciiString anAsciiString;
-  for (Standard_Integer i = 0; i < l; ++i)
+  for (int i = 0; i < l; ++i)
   {
-    Standard_Character aCharacter = aUniCharString[i];
+    char aCharacter = aUniCharString[i];
     anAsciiString.AssignCat(aCharacter);
   }
   Tcl_DStringInit(&Draw_TclLine);
@@ -1612,7 +1612,7 @@ bool volatile isTkLoopStarted = false;
 /*--------------------------------------------------------*\
 |  Init_Appli
 \*--------------------------------------------------------*/
-Standard_Boolean Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame)
+bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame)
 {
   DWORD  IDThread;
   HANDLE hThread;
@@ -1631,7 +1631,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWN
   {
     std::cout << "Failed to create Tcl/Tk main loop thread. Switching to batch mode..."
               << std::endl;
-    Draw_Batch                  = Standard_True;
+    Draw_Batch                  = true;
     Draw_Interpretor& aCommands = Draw::GetInterpretor();
     aCommands.Init();
     Tcl_Interp* interp = aCommands.Interp();
@@ -1650,7 +1650,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWN
     Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)NULL);
   #endif
     // since the main Tcl/Tk loop wasn't created --> switch to batch mode
-    return Standard_False;
+    return false;
   }
 
   // san - 06/08/2002 - Time for tkLoop to start; Tk fails to initialize otherwise
@@ -1664,7 +1664,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWN
   {
     if (!RegisterAppClass(hInst))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -1679,10 +1679,10 @@ Standard_Boolean Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWN
     UpdateWindow(hWndFrame);
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Draw_Interprete(const char*);
+bool Draw_Interprete(const char*);
 
 /*--------------------------------------------------------*\
 |  readStdinThreadFunc
@@ -1913,7 +1913,7 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
     try
     {
       OCC_CATCH_SIGNALS
-      Standard_Integer res = Tk_Init(interp);
+      int res = Tk_Init(interp);
       if (res != TCL_OK)
       {
     #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
@@ -1946,7 +1946,7 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
   #endif // #ifdef _TK
 
   // set signal handler in the new thread
-  OSD::SetSignal(Standard_False);
+  OSD::SetSignal(false);
 
   // inform the others that we have started
   isTkLoopStarted = true;
@@ -1962,7 +1962,7 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
   }
 
   // process a command
-  Standard_Boolean toLoop = Standard_True;
+  bool toLoop = true;
   while (toLoop)
   {
     // The natural way is first flushing events, already put into queue, and then processing custom
@@ -2020,7 +2020,7 @@ void Run_Appli(HWND hWnd)
     if (!hThread)
     {
       std::cout << "pb in creation of the thread reading stdin" << std::endl;
-      Draw_IsConsoleSubsystem = Standard_False;
+      Draw_IsConsoleSubsystem = false;
       Init_Appli(GetModuleHandleW(NULL),
                  GetModuleHandleW(NULL),
                  1,

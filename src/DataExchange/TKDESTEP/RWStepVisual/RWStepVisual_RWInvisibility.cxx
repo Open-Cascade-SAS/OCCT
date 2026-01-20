@@ -21,10 +21,10 @@
 
 RWStepVisual_RWInvisibility::RWStepVisual_RWInvisibility() {}
 
-void RWStepVisual_RWInvisibility::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepVisual_Invisibility)& ent) const
+void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepVisual_Invisibility>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,16 +34,16 @@ void RWStepVisual_RWInvisibility::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- own field : invisibleItems ---
 
-  Handle(StepVisual_HArray1OfInvisibleItem) aInvisibleItems;
+  occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>> aInvisibleItems;
   StepVisual_InvisibleItem                  aInvisibleItemsItem;
-  Standard_Integer                          nsub1;
+  int                          nsub1;
   if (data->ReadSubList(num, 1, "invisible_items", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aInvisibleItems      = new StepVisual_HArray1OfInvisibleItem(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    aInvisibleItems      = new NCollection_HArray1<StepVisual_InvisibleItem>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1, i1, "invisible_items", ach, aInvisibleItemsItem))
         aInvisibleItems->SetValue(i1, aInvisibleItemsItem);
     }
@@ -55,25 +55,25 @@ void RWStepVisual_RWInvisibility::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepVisual_RWInvisibility::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepVisual_Invisibility)& ent) const
+                                            const occ::handle<StepVisual_Invisibility>& ent) const
 {
 
   // --- own field : invisibleItems ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbInvisibleItems(); i1++)
+  for (int i1 = 1; i1 <= ent->NbInvisibleItems(); i1++)
   {
     SW.Send(ent->InvisibleItemsValue(i1).Value());
   }
   SW.CloseSub();
 }
 
-void RWStepVisual_RWInvisibility::Share(const Handle(StepVisual_Invisibility)& ent,
+void RWStepVisual_RWInvisibility::Share(const occ::handle<StepVisual_Invisibility>& ent,
                                         Interface_EntityIterator&              iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbInvisibleItems();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbInvisibleItems();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->InvisibleItemsValue(is1).Value());
   }

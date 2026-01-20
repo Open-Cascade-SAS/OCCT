@@ -27,16 +27,19 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 
-FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
+FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree,
                                        const GeomAbs_Shape    ConstraintOrder)
     : RefMatrix(0, WorkDegree, 0, WorkDegree)
 {
-  static Standard_Integer Order = -333, WDeg = 14;
+  static int Order = -333, WDeg = 14;
   static math_Vector      MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
 
   myOrder = PLib::NivConstr(ConstraintOrder);
@@ -47,12 +50,12 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
     if (WorkDegree > WDeg)
       throw Standard_ConstructionError("Degree too high");
     Order                     = myOrder;
-    Standard_Integer DerOrder = 3;
+    int DerOrder = 3;
 
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
     FEmTool_ElementsOfRefMatrix Elem = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
 
-    Standard_Integer maxDegree = WDeg + 1;
+    int maxDegree = WDeg + 1;
 
     math_IntegerVector anOrder(1, 1, std::min(4 * (maxDegree / 2 + 1), math::GaussPointsMax()));
 
@@ -63,7 +66,7 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
     MatrixElemts = anInt.Value();
   }
 
-  Standard_Integer i, j, ii, jj;
+  int i, j, ii, jj;
   for (ii = i = 0; i <= WorkDegree; i++)
   {
     RefMatrix(i, i) = MatrixElemts(ii);
@@ -75,36 +78,36 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
   }
 }
 
-Handle(TColStd_HArray2OfInteger) FEmTool_LinearJerk::DependenceTable() const
+occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() const
 {
   if (myCoeff.IsNull())
     throw Standard_DomainError("FEmTool_LinearJerk::DependenceTable");
 
-  Handle(TColStd_HArray2OfInteger) DepTab = new TColStd_HArray2OfInteger(myCoeff->LowerCol(),
+  occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
                                                                          myCoeff->UpperCol(),
                                                                          myCoeff->LowerCol(),
                                                                          myCoeff->UpperCol(),
                                                                          0);
-  Standard_Integer                 i;
+  int                 i;
   for (i = myCoeff->LowerCol(); i <= myCoeff->UpperCol(); i++)
     DepTab->SetValue(i, i, 1);
 
   return DepTab;
 }
 
-Standard_Real FEmTool_LinearJerk::Value()
+double FEmTool_LinearJerk::Value()
 {
-  Standard_Integer deg = std::min(myCoeff->ColLength() - 1, RefMatrix.UpperRow()), i, j,
+  int deg = std::min(myCoeff->ColLength() - 1, RefMatrix.UpperRow()), i, j,
                    j0 = myCoeff->LowerRow(), degH = std::min(2 * myOrder + 1, deg),
                    NbDim = myCoeff->RowLength(), dim;
 
-  TColStd_Array2OfReal NewCoeff(1, NbDim, 0, deg);
+  NCollection_Array2<double> NewCoeff(1, NbDim, 0, deg);
 
-  Standard_Real coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact, Jline;
+  double coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact, Jline;
 
-  Standard_Integer k1;
+  int k1;
 
-  Standard_Real J = 0.;
+  double J = 0.;
 
   for (i = 0; i <= degH; i++)
   {
@@ -140,12 +143,12 @@ Standard_Real FEmTool_LinearJerk::Value()
   return cteh3 * J;
 }
 
-void FEmTool_LinearJerk::Hessian(const Standard_Integer Dimension1,
-                                 const Standard_Integer Dimension2,
+void FEmTool_LinearJerk::Hessian(const int Dimension1,
+                                 const int Dimension2,
                                  math_Matrix&           H)
 {
 
-  Handle(TColStd_HArray2OfInteger) DepTab = DependenceTable();
+  occ::handle<NCollection_HArray2<int>> DepTab = DependenceTable();
 
   if (Dimension1 < DepTab->LowerRow() || Dimension1 > DepTab->UpperRow()
       || Dimension2 < DepTab->LowerCol() || Dimension2 > DepTab->UpperCol())
@@ -154,11 +157,11 @@ void FEmTool_LinearJerk::Hessian(const Standard_Integer Dimension1,
   if (DepTab->Value(Dimension1, Dimension2) == 0)
     throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
 
-  Standard_Integer deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
+  int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
                    degH = std::min(2 * myOrder + 1, deg);
 
-  Standard_Real    coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact;
-  Standard_Integer k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1;
+  double    coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact;
+  int k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1;
 
   H.Init(0.);
 
@@ -204,15 +207,15 @@ void FEmTool_LinearJerk::Hessian(const Standard_Integer Dimension1,
   }
 }
 
-void FEmTool_LinearJerk::Gradient(const Standard_Integer Dimension, math_Vector& G)
+void FEmTool_LinearJerk::Gradient(const int Dimension, math_Vector& G)
 {
   if (Dimension < myCoeff->LowerCol() || Dimension > myCoeff->UpperCol())
     throw Standard_OutOfRange("FEmTool_LinearJerk::Gradient");
 
-  Standard_Integer deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
+  int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
   math_Vector      X(0, deg);
-  Standard_Integer i, i1 = myCoeff->LowerRow();
+  int i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
     X(i) = myCoeff->Value(i1 + i, Dimension);
 

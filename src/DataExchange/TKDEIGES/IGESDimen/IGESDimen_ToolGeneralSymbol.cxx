@@ -24,27 +24,29 @@
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_GeneralSymbol.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDimen_ToolGeneralSymbol.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 
 IGESDimen_ToolGeneralSymbol::IGESDimen_ToolGeneralSymbol() {}
 
-void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const Handle(IGESDimen_GeneralSymbol)& ent,
-                                                const Handle(IGESData_IGESReaderData)& IR,
+void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const occ::handle<IGESDimen_GeneralSymbol>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& IR,
                                                 IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                       i, num;
-  Handle(IGESData_HArray1OfIGESEntity)   tempGeoms;
-  Handle(IGESDimen_HArray1OfLeaderArrow) tempLeaders;
-  Handle(IGESDimen_GeneralNote)          tempNote;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                       i, num;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   tempGeoms;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> tempLeaders;
+  occ::handle<IGESDimen_GeneralNote>          tempNote;
 
   if ((ent->FormNumber() == 0) && (!PR.IsParamEntity(PR.CurrentNumber())))
     PR.SetCurrentNumber(PR.CurrentNumber() + 1);
@@ -55,7 +57,7 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const Handle(IGESDimen_GeneralSy
                   STANDARD_TYPE(IGESDimen_GeneralNote),
                   tempNote); // szv#4:S4163:12Mar99 `st=` not needed
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
   if (!st || num <= 0)
     PR.AddFail("Number of Geometries: Not Positive");
   if (num > 0)
@@ -64,10 +66,10 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const Handle(IGESDimen_GeneralSy
     PR.ReadEnts (IR,PR.CurrentList(num),"Geometry Entities",tempGeoms); //szv#4:S4163:12Mar99 `st=` not needed
     // clang-format on
     /*
-        tempGeoms = new IGESData_HArray1OfIGESEntity(1, num);
+        tempGeoms = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
         for ( i = 1; i <= num; i++)
           {
-        Handle(IGESData_IGESEntity) tempEnt;
+        occ::handle<IGESData_IGESEntity> tempEnt;
         st = PR.ReadEntity(IR, PR.Current(), "Geometry Entity", tempEnt);
         if (st) tempGeoms->SetValue(i, tempEnt);
           }
@@ -79,13 +81,13 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const Handle(IGESDimen_GeneralSy
   }
   st = PR.ReadInteger(PR.Current(), "Number of Leaders", num);
   if (st && num > 0)
-    tempLeaders = new IGESDimen_HArray1OfLeaderArrow(1, num);
+    tempLeaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, num);
   else if (num < 0)
     PR.AddFail("Number of Leaders: Less than zero");
   if (!tempLeaders.IsNull())
     for (i = 1; i <= num; i++)
     {
-      Handle(IGESDimen_LeaderArrow) tempEnt;
+      occ::handle<IGESDimen_LeaderArrow> tempEnt;
       // st = PR.ReadEntity(IR, PR.Current(), "Leader Entity",
       // STANDARD_TYPE(IGESDimen_LeaderArrow), tempEnt); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadEntity(IR,
@@ -100,10 +102,10 @@ void IGESDimen_ToolGeneralSymbol::ReadOwnParams(const Handle(IGESDimen_GeneralSy
   ent->Init(tempNote, tempGeoms, tempLeaders);
 }
 
-void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const Handle(IGESDimen_GeneralSymbol)& ent,
+void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                                  IGESData_IGESWriter&                   IW) const
 {
-  Standard_Integer i, num;
+  int i, num;
   IW.Send(ent->Note());
   IW.Send(ent->NbGeomEntities());
   for (num = ent->NbGeomEntities(), i = 1; i <= num; i++)
@@ -113,10 +115,10 @@ void IGESDimen_ToolGeneralSymbol::WriteOwnParams(const Handle(IGESDimen_GeneralS
     IW.Send(ent->LeaderArrow(i));
 }
 
-void IGESDimen_ToolGeneralSymbol::OwnShared(const Handle(IGESDimen_GeneralSymbol)& ent,
+void IGESDimen_ToolGeneralSymbol::OwnShared(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                             Interface_EntityIterator&              iter) const
 {
-  Standard_Integer i, num;
+  int i, num;
   iter.GetOneItem(ent->Note());
   for (num = ent->NbGeomEntities(), i = 1; i <= num; i++)
     iter.GetOneItem(ent->GeomEntity(i));
@@ -124,24 +126,24 @@ void IGESDimen_ToolGeneralSymbol::OwnShared(const Handle(IGESDimen_GeneralSymbol
     iter.GetOneItem(ent->LeaderArrow(i));
 }
 
-void IGESDimen_ToolGeneralSymbol::OwnCopy(const Handle(IGESDimen_GeneralSymbol)& another,
-                                          const Handle(IGESDimen_GeneralSymbol)& ent,
+void IGESDimen_ToolGeneralSymbol::OwnCopy(const occ::handle<IGESDimen_GeneralSymbol>& another,
+                                          const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                           Interface_CopyTool&                    TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
-  Standard_Integer                     num       = another->NbGeomEntities();
-  Handle(IGESData_HArray1OfIGESEntity) tempGeoms = new IGESData_HArray1OfIGESEntity(1, num);
-  Standard_Integer                     i;
+  int                     num       = another->NbGeomEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeoms = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  int                     i;
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, new_item, TC.Transferred(another->GeomEntity(i)));
     tempGeoms->SetValue(i, new_item);
   }
-  Handle(IGESDimen_HArray1OfLeaderArrow) tempLeaders;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> tempLeaders;
   num = another->NbLeaders();
   if (num > 0)
   {
-    tempLeaders = new IGESDimen_HArray1OfLeaderArrow(1, num);
+    tempLeaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, num);
     for (i = 1; i <= num; i++)
     {
       DeclareAndCast(IGESDimen_LeaderArrow, new_item, TC.Transferred(another->LeaderArrow(i)));
@@ -153,7 +155,7 @@ void IGESDimen_ToolGeneralSymbol::OwnCopy(const Handle(IGESDimen_GeneralSymbol)&
 }
 
 IGESData_DirChecker IGESDimen_ToolGeneralSymbol::DirChecker(
-  const Handle(IGESDimen_GeneralSymbol)& /* ent */) const
+  const occ::handle<IGESDimen_GeneralSymbol>& /* ent */) const
 {
   IGESData_DirChecker DC(228, 0, 9999);
   DC.Structure(IGESData_DefVoid);
@@ -165,9 +167,9 @@ IGESData_DirChecker IGESDimen_ToolGeneralSymbol::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolGeneralSymbol::OwnCheck(const Handle(IGESDimen_GeneralSymbol)& ent,
+void IGESDimen_ToolGeneralSymbol::OwnCheck(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                            const Interface_ShareTool&,
-                                           Handle(Interface_Check)& ach) const
+                                           occ::handle<Interface_Check>& ach) const
 {
   if ((ent->FormNumber() < 0 || ent->FormNumber() > 3)
       && (ent->FormNumber() < 5001 || ent->FormNumber() > 9999))
@@ -177,12 +179,12 @@ void IGESDimen_ToolGeneralSymbol::OwnCheck(const Handle(IGESDimen_GeneralSymbol)
       ach->AddFail("No General Note defined for form number non 0");
 }
 
-void IGESDimen_ToolGeneralSymbol::OwnDump(const Handle(IGESDimen_GeneralSymbol)& ent,
+void IGESDimen_ToolGeneralSymbol::OwnDump(const occ::handle<IGESDimen_GeneralSymbol>& ent,
                                           const IGESData_IGESDumper&             dumper,
                                           Standard_OStream&                      S,
-                                          const Standard_Integer                 level) const
+                                          const int                 level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
   S << "IGESDimen_GeneralSymbol\n"
     << "General Note : ";
   dumper.Dump(ent->Note(), S, sublevel);

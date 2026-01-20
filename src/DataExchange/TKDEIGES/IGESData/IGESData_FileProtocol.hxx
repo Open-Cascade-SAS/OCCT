@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class Interface_Protocol;
 
-class IGESData_FileProtocol;
-DEFINE_STANDARD_HANDLE(IGESData_FileProtocol, IGESData_Protocol)
-
 //! This class allows to define complex protocols, in order to
 //! treat various sub-sets (or the complete set) of the IGES Norm,
 //! such as Solid + Draw (which are normally independent), etc...
@@ -39,20 +36,20 @@ public:
   Standard_EXPORT IGESData_FileProtocol();
 
   //! Adds a resource
-  Standard_EXPORT void Add(const Handle(IGESData_Protocol)& protocol);
+  Standard_EXPORT void Add(const occ::handle<IGESData_Protocol>& protocol);
 
   //! Gives the count of Resources : the count of Added Protocols
-  Standard_EXPORT virtual Standard_Integer NbResources() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbResources() const override;
 
   //! Returns a Resource, given a rank (rank of call to Add)
-  Standard_EXPORT virtual Handle(Interface_Protocol) Resource(const Standard_Integer num) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_FileProtocol, IGESData_Protocol)
 
 private:
-  Handle(IGESData_Protocol)     theresource;
-  Handle(IGESData_FileProtocol) thenext;
+  occ::handle<IGESData_Protocol>     theresource;
+  occ::handle<IGESData_FileProtocol> thenext;
 };
 
 #endif // _IGESData_FileProtocol_HeaderFile

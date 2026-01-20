@@ -21,9 +21,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_RangeError.hxx>
 
-class Standard_OutOfRange;
-DEFINE_STANDARD_HANDLE(Standard_OutOfRange, Standard_RangeError)
-
 #if (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)))
   // suppress false-positive warnings produced by GCC optimizer
   #define Standard_OutOfRange_Always_Raise_if(CONDITION, MESSAGE)                                  \

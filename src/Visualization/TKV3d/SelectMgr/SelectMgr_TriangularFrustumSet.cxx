@@ -32,7 +32,7 @@ static const size_t MEMORY_BLOCK_SIZE = 512 * 7;
 //=================================================================================================
 
 SelectMgr_TriangularFrustumSet::SelectMgr_TriangularFrustumSet()
-    : myToAllowOverlap(Standard_False)
+    : myToAllowOverlap(false)
 {
 }
 
@@ -45,11 +45,11 @@ SelectMgr_TriangularFrustumSet::~SelectMgr_TriangularFrustumSet()
 
 //=================================================================================================
 
-void SelectMgr_TriangularFrustumSet::Init(const TColgp_Array1OfPnt2d& thePoints)
+void SelectMgr_TriangularFrustumSet::Init(const NCollection_Array1<gp_Pnt2d>& thePoints)
 {
   if (mySelPolyline.Points.IsNull())
   {
-    mySelPolyline.Points = new TColgp_HArray1OfPnt2d(thePoints.Lower(), thePoints.Upper());
+    mySelPolyline.Points = new NCollection_HArray1<gp_Pnt2d>(thePoints.Lower(), thePoints.Upper());
   }
   mySelPolyline.Points->Resize(thePoints.Lower(), thePoints.Upper(), false);
   *mySelPolyline.Points = thePoints;
@@ -72,17 +72,17 @@ void SelectMgr_TriangularFrustumSet::Build()
 
   myFrustums.Clear();
 
-  Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
-  Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure =
+  occ::handle<NCollection_IncAllocator> anAllocator = new NCollection_IncAllocator(MEMORY_BLOCK_SIZE);
+  occ::handle<BRepMesh_DataStructureOfDelaun> aMeshStructure =
     new BRepMesh_DataStructureOfDelaun(anAllocator);
-  Standard_Integer           aPtsLower = mySelPolyline.Points->Lower();
-  Standard_Integer           aPtsUpper = mySelPolyline.Points->Upper();
+  int           aPtsLower = mySelPolyline.Points->Lower();
+  int           aPtsUpper = mySelPolyline.Points->Upper();
   IMeshData::VectorOfInteger anIndexes(mySelPolyline.Points->Size(), anAllocator);
   myBoundaryPoints.Resize(aPtsLower,
                           aPtsLower + 2 * (mySelPolyline.Points->Size()) - 1,
-                          Standard_False);
+                          false);
 
-  for (Standard_Integer aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
+  for (int aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
     BRepMesh_Vertex aVertex(mySelPolyline.Points->Value(aPtIdx).XY(), aPtIdx, BRepMesh_Frontier);
     anIndexes.Append(aMeshStructure->AddNode(aVertex));
@@ -94,21 +94,21 @@ void SelectMgr_TriangularFrustumSet::Build()
     myBoundaryPoints.SetValue(aPtIdx + mySelPolyline.Points->Size(), aFarPnt);
   }
 
-  Standard_Real aPtSum = 0;
-  for (Standard_Integer aIdx = aPtsLower; aIdx <= aPtsUpper; ++aIdx)
+  double aPtSum = 0;
+  for (int aIdx = aPtsLower; aIdx <= aPtsUpper; ++aIdx)
   {
-    Standard_Integer aNextIdx = (aIdx % mySelPolyline.Points->Length()) + 1;
+    int aNextIdx = (aIdx % mySelPolyline.Points->Length()) + 1;
     aPtSum += (mySelPolyline.Points->Value(aNextIdx).Coord().X()
                - mySelPolyline.Points->Value(aIdx).Coord().X())
               * (mySelPolyline.Points->Value(aNextIdx).Coord().Y()
                  + mySelPolyline.Points->Value(aIdx).Coord().Y());
   }
-  Standard_Boolean isClockwiseOrdered = aPtSum < 0;
+  bool isClockwiseOrdered = aPtSum < 0;
 
-  for (Standard_Integer aIdx = 0; aIdx < anIndexes.Length(); ++aIdx)
+  for (int aIdx = 0; aIdx < anIndexes.Length(); ++aIdx)
   {
-    Standard_Integer aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
-    Standard_Integer aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
+    int aPtIdx     = isClockwiseOrdered ? aIdx : (aIdx + 1) % anIndexes.Length();
+    int aNextPtIdx = isClockwiseOrdered ? (aIdx + 1) % anIndexes.Length() : aIdx;
     BRepMesh_Edge anEdge(anIndexes.Value(aPtIdx), anIndexes.Value(aNextPtIdx), BRepMesh_Frontier);
     aMeshStructure->AddLink(anEdge);
   }
@@ -121,23 +121,23 @@ void SelectMgr_TriangularFrustumSet::Build()
   IMeshData::IteratorOfMapOfInteger aTriangleIt(aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
   {
-    const Standard_Integer   aTriangleId      = aTriangleIt.Key();
+    const int   aTriangleId      = aTriangleIt.Key();
     const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
       continue;
 
-    Standard_Integer aTriangleVerts[3];
+    int aTriangleVerts[3];
     aMeshStructure->ElementNodes(aCurrentTriangle, aTriangleVerts);
 
     gp_Pnt2d aPts[3];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 3; ++aVertIdx)
+    for (int aVertIdx = 0; aVertIdx < 3; ++aVertIdx)
     {
       const BRepMesh_Vertex& aVertex = aMeshStructure->GetNode(aTriangleVerts[aVertIdx]);
       aPts[aVertIdx]                 = aVertex.Coord();
     }
 
-    Handle(SelectMgr_TriangularFrustum) aTrFrustum = new SelectMgr_TriangularFrustum();
+    occ::handle<SelectMgr_TriangularFrustum> aTrFrustum = new SelectMgr_TriangularFrustum();
     aTrFrustum->Init(aPts[0], aPts[1], aPts[2]);
     aTrFrustum->SetBuilder(myBuilder);
     aTrFrustum->Build();
@@ -159,25 +159,25 @@ void SelectMgr_TriangularFrustumSet::Build()
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransform(
-  const Standard_Integer                  theScale,
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustumSet::ScaleAndTransform(
+  const int                  theScale,
   const gp_GTrsf&                         theTrsf,
-  const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+  const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::ScaleAndTransform() should be "
                         "called after selection frustum initialization");
 
-  Handle(SelectMgr_TriangularFrustumSet) aRes = new SelectMgr_TriangularFrustumSet();
+  occ::handle<SelectMgr_TriangularFrustumSet> aRes = new SelectMgr_TriangularFrustumSet();
   aRes->SetCamera(myCamera);
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
-    aRes->myFrustums.Append(Handle(SelectMgr_TriangularFrustum)::DownCast(
+    aRes->myFrustums.Append(occ::down_cast<SelectMgr_TriangularFrustum>(
       anIter.Value()->ScaleAndTransform(theScale, theTrsf, theBuilder)));
   }
 
-  aRes->myBoundaryPoints.Resize(myBoundaryPoints.Lower(), myBoundaryPoints.Upper(), Standard_False);
-  for (Standard_Integer anIdx = myBoundaryPoints.Lower(); anIdx <= myBoundaryPoints.Upper();
+  aRes->myBoundaryPoints.Resize(myBoundaryPoints.Lower(), myBoundaryPoints.Upper(), false);
+  for (int anIdx = myBoundaryPoints.Lower(); anIdx <= myBoundaryPoints.Upper();
        anIdx++)
   {
     gp_Pnt aPoint = myBoundaryPoints.Value(anIdx);
@@ -196,8 +196,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransf
 // purpose  : Returns a copy of the frustum using the given frustum builder configuration.
 //            Returned frustum should be re-constructed before being used.
 //=======================================================================
-Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::CopyWithBuilder(
-  const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+occ::handle<SelectMgr_BaseIntersector> SelectMgr_TriangularFrustumSet::CopyWithBuilder(
+  const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::CopyWithBuilder() should be called "
@@ -207,12 +207,12 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::CopyWithBuilde
     !theBuilder.IsNull(),
     "Error! SelectMgr_TriangularFrustumSet::CopyWithBuilder() should be called with valid builder");
 
-  Handle(SelectMgr_TriangularFrustumSet) aRes = new SelectMgr_TriangularFrustumSet();
+  occ::handle<SelectMgr_TriangularFrustumSet> aRes = new SelectMgr_TriangularFrustumSet();
   aRes->SetCamera(myCamera);
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     aRes->myFrustums.Append(
-      Handle(SelectMgr_TriangularFrustum)::DownCast(anIter.Value()->CopyWithBuilder(theBuilder)));
+      occ::down_cast<SelectMgr_TriangularFrustum>(anIter.Value()->CopyWithBuilder(theBuilder)));
   }
   aRes->mySelectionType  = mySelectionType;
   aRes->mySelPolyline    = mySelPolyline;
@@ -223,9 +223,9 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::CopyWithBuilde
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(
-  const SelectMgr_Vec3&          theMinPnt,
-  const SelectMgr_Vec3&          theMaxPnt,
+bool SelectMgr_TriangularFrustumSet::OverlapsBox(
+  const NCollection_Vec3<double>&          theMinPnt,
+  const NCollection_Vec3<double>&          theMaxPnt,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
 {
@@ -233,28 +233,28 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, theClipRange, thePickResult))
     {
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(const SelectMgr_Vec3& theMinPnt,
-                                                             const SelectMgr_Vec3& theMaxPnt,
-                                                             Standard_Boolean*     theInside) const
+bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>& theMinPnt,
+                                                             const NCollection_Vec3<double>& theMaxPnt,
+                                                             bool*     theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, NULL))
     {
@@ -263,7 +263,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(const SelectMgr_Vec
 
     if (myToAllowOverlap || theInside == NULL)
     {
-      return Standard_True;
+      return true;
     }
 
     gp_Pnt aMinMaxPnts[2] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
@@ -273,31 +273,31 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox(const SelectMgr_Vec
                           gp_Pnt(0.0, aMinMaxPnts[1].Y() - aMinMaxPnts[0].Y(), 0.0),
                           gp_Pnt(0.0, 0.0, aMinMaxPnts[1].Z() - aMinMaxPnts[0].Z())};
 
-    Standard_Integer aSign = 1;
-    for (Standard_Integer aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
+    int aSign = 1;
+    for (int aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
     {
-      for (Standard_Integer aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
+      for (int aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
       {
         gp_Pnt anOffsetPnt = aMinMaxPnts[aPntsIdx].XYZ() + aSign * anOffset[aCoordIdx].XYZ();
         if (isIntersectBoundary(aMinMaxPnts[aPntsIdx], anOffsetPnt)
             || isIntersectBoundary(anOffsetPnt,
                                    anOffsetPnt.XYZ() + aSign * anOffset[(aCoordIdx + 1) % 3].XYZ()))
         {
-          *theInside &= Standard_False;
-          return Standard_True;
+          *theInside &= false;
+          return true;
         }
       }
       aSign = -aSign;
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPoint(
+bool SelectMgr_TriangularFrustumSet::OverlapsPoint(
   const gp_Pnt&                  thePnt,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
@@ -306,21 +306,21 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPoint(
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->OverlapsPoint(thePnt, theClipRange, thePickResult))
     {
-      return Standard_True;
+      return true;
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon(
-  const TColgp_Array1OfPnt&      theArrayOfPts,
+bool SelectMgr_TriangularFrustumSet::OverlapsPolygon(
+  const NCollection_Array1<gp_Pnt>&      theArrayOfPts,
   Select3D_TypeOfSensitivity     theSensType,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
@@ -329,7 +329,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon(
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (!anIter.Value()->OverlapsPolygon(theArrayOfPts, theSensType, theClipRange, thePickResult))
     {
@@ -338,28 +338,28 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon(
 
     if (myToAllowOverlap)
     {
-      return Standard_True;
+      return true;
     }
 
-    Standard_Integer aPtsLower = theArrayOfPts.Lower();
-    Standard_Integer aPtsUpper = theArrayOfPts.Upper();
-    for (Standard_Integer anIdx = aPtsLower; anIdx <= aPtsUpper; anIdx++)
+    int aPtsLower = theArrayOfPts.Lower();
+    int aPtsUpper = theArrayOfPts.Upper();
+    for (int anIdx = aPtsLower; anIdx <= aPtsUpper; anIdx++)
     {
       if (isIntersectBoundary(theArrayOfPts.Value(anIdx),
                               theArrayOfPts.Value(anIdx < aPtsUpper ? anIdx + 1 : aPtsLower)))
       {
-        return Standard_False;
+        return false;
       }
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment(
+bool SelectMgr_TriangularFrustumSet::OverlapsSegment(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
   const SelectMgr_ViewClipRange& theClipRange,
@@ -369,7 +369,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment(
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (!anIter.Value()->OverlapsSegment(thePnt1, thePnt2, theClipRange, thePickResult))
     {
@@ -378,22 +378,22 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment(
 
     if (myToAllowOverlap)
     {
-      return Standard_True;
+      return true;
     }
 
     if (isIntersectBoundary(thePnt1, thePnt2))
     {
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle(
+bool SelectMgr_TriangularFrustumSet::OverlapsTriangle(
   const gp_Pnt&                  thePnt1,
   const gp_Pnt&                  thePnt2,
   const gp_Pnt&                  thePnt3,
@@ -405,7 +405,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle(
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (!anIter.Value()
            ->OverlapsTriangle(thePnt1, thePnt2, thePnt3, theSensType, theClipRange, thePickResult))
@@ -415,40 +415,40 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle(
 
     if (myToAllowOverlap)
     {
-      return Standard_True;
+      return true;
     }
 
     if (isIntersectBoundary(thePnt1, thePnt2) || isIntersectBoundary(thePnt2, thePnt3)
         || isIntersectBoundary(thePnt3, thePnt1))
     {
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
+bool SelectMgr_TriangularFrustumSet::OverlapsSphere(
   const gp_Pnt&       theCenter,
-  const Standard_Real theRadius,
-  Standard_Boolean* /*theInside*/) const
+  const double theRadius,
+  bool* /*theInside*/) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->OverlapsSphere(theCenter, theRadius, NULL))
     {
       // select 3 points of the frustum and build a plane on them
-      Standard_Real    aMaxDist1 = 0.0, aMaxDist2 = 0.0;
-      Standard_Integer anIdx1 = myBoundaryPoints.Lower();
-      Standard_Integer anIdx2 = myBoundaryPoints.Lower();
-      Standard_Integer anIdx3 = myBoundaryPoints.Lower();
-      for (Standard_Integer anIdx = myBoundaryPoints.Lower();
+      double    aMaxDist1 = 0.0, aMaxDist2 = 0.0;
+      int anIdx1 = myBoundaryPoints.Lower();
+      int anIdx2 = myBoundaryPoints.Lower();
+      int anIdx3 = myBoundaryPoints.Lower();
+      for (int anIdx = myBoundaryPoints.Lower();
            anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower();
            anIdx++)
       {
@@ -483,11 +483,11 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
 
       // If the center of the sphere is inside of the volume projection, then anAngleSum will be
       // equal 2*M_PI
-      Standard_Real      anAngleSum = 0.0;
-      TColgp_Array1OfPnt aBoundaries(myBoundaryPoints.Lower(),
+      double      anAngleSum = 0.0;
+      NCollection_Array1<gp_Pnt> aBoundaries(myBoundaryPoints.Lower(),
                                      myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower());
 
-      for (Standard_Integer anIdx = myBoundaryPoints.Lower();
+      for (int anIdx = myBoundaryPoints.Lower();
            anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower();
            anIdx++)
       {
@@ -504,9 +504,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
         gp_Vec aVecAngle2(aCenterProj, aPntProj2);
         anAngleSum += aVecAngle1.Angle(aVecAngle2);
       }
-      Standard_Boolean isCenterInside   = std::abs(anAngleSum - 2 * M_PI) < Precision::Confusion();
-      Standard_Boolean isBoundaryInside = Standard_False;
-      Standard_Boolean isIntersectSphereBoundaries =
+      bool isCenterInside   = std::abs(anAngleSum - 2 * M_PI) < Precision::Confusion();
+      bool isBoundaryInside = false;
+      bool isIntersectSphereBoundaries =
         IsBoundaryIntersectSphere(aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
 
       if (myToAllowOverlap)
@@ -519,45 +519,45 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere(
+bool SelectMgr_TriangularFrustumSet::OverlapsSphere(
   const gp_Pnt&                  theCenter,
-  const Standard_Real            theRadius,
+  const double            theRadius,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->OverlapsSphere(theCenter, theRadius, theClipRange, thePickResult))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
-  const Standard_Real            theBottomRad,
-  const Standard_Real            theTopRad,
-  const Standard_Real            theHeight,
+bool SelectMgr_TriangularFrustumSet::OverlapsCylinder(
+  const double            theBottomRad,
+  const double            theTopRad,
+  const double            theHeight,
   const gp_Trsf&                 theTrsf,
-  const Standard_Boolean         theIsHollow,
+  const bool         theIsHollow,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->OverlapsCylinder(theBottomRad,
                                          theTopRad,
@@ -575,13 +575,13 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
-  const Standard_Real    theBottomRad,
-  const Standard_Real    theTopRad,
-  const Standard_Real    theHeight,
+bool SelectMgr_TriangularFrustumSet::OverlapsCylinder(
+  const double    theBottomRad,
+  const double    theTopRad,
+  const double    theHeight,
   const gp_Trsf&         theTrsf,
-  const Standard_Boolean theIsHollow,
-  Standard_Boolean*      theInside) const
+  const bool theIsHollow,
+  bool*      theInside) const
 {
   const gp_Dir aCylNorm(gp::DZ().Transformed(theTrsf));
   const gp_Pnt aBottomCenter(gp::Origin().Transformed(theTrsf));
@@ -591,19 +591,19 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
   const gp_Vec aVecPlane2(myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[2]);
 
   const gp_Dir        aDirNorm(aVecPlane1.Crossed(aVecPlane2));
-  const Standard_Real anAngle   = aCylNorm.Angle(aDirNorm);
-  const Standard_Real aCosAngle = std::cos(anAngle);
+  const double anAngle   = aCylNorm.Angle(aDirNorm);
+  const double aCosAngle = std::cos(anAngle);
   const gp_Pln        aPln(myFrustums.First()->myVertices[0], aDirNorm);
-  Standard_Real       aCoefA, aCoefB, aCoefC, aCoefD;
+  double       aCoefA, aCoefB, aCoefC, aCoefD;
   aPln.Coefficients(aCoefA, aCoefB, aCoefC, aCoefD);
 
-  const Standard_Real aTBottom =
+  const double aTBottom =
     -(aBottomCenter.XYZ().Dot(aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot(aDirNorm);
   const gp_Pnt aBottomCenterProject(aCoefA * aTBottom + aBottomCenter.X(),
                                     aCoefB * aTBottom + aBottomCenter.Y(),
                                     aCoefC * aTBottom + aBottomCenter.Z());
 
-  const Standard_Real aTTop =
+  const double aTTop =
     -(aTopCenter.XYZ().Dot(aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot(aDirNorm);
   const gp_Pnt aTopCenterProject(aCoefA * aTTop + aTopCenter.X(),
                                  aCoefB * aTTop + aTopCenter.Y(),
@@ -611,7 +611,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
 
   gp_XYZ              aCylNormProject;
   const gp_XYZ        aTopBottomVec  = aTopCenterProject.XYZ() - aBottomCenterProject.XYZ();
-  const Standard_Real aTopBottomDist = aTopBottomVec.Modulus();
+  const double aTopBottomDist = aTopBottomVec.Modulus();
   if (aTopBottomDist > 0.0)
   {
     aCylNormProject = aTopBottomVec / aTopBottomDist;
@@ -630,13 +630,13 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
   aPoints[5] = aBottomCenterProject.XYZ() - aDirEndFaces.XYZ() * theBottomRad;
 
   gp_Pnt             aVerticesBuf[3];
-  TColgp_Array1OfPnt aVertices(aVerticesBuf[0], 0, 2);
+  NCollection_Array1<gp_Pnt> aVertices(aVerticesBuf[0], 0, 2);
 
   bool isCylInsideTriangSet = true;
   for (int i = 0; i < 6; ++i)
   {
     bool isInside = false;
-    for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+    for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
     {
 
       for (int anIdx = 0; anIdx < 3; anIdx++)
@@ -659,7 +659,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
   {
     return true;
   }
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()
           ->OverlapsCylinder(theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow, theInside))
@@ -672,17 +672,17 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(
-  const Standard_Real            theRadius,
+bool SelectMgr_TriangularFrustumSet::OverlapsCircle(
+  const double            theRadius,
   const gp_Trsf&                 theTrsf,
-  const Standard_Boolean         theIsFilled,
+  const bool         theIsFilled,
   const SelectMgr_ViewClipRange& theClipRange,
   SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()
           ->OverlapsCircle(theRadius, theTrsf, theIsFilled, theClipRange, thePickResult))
@@ -695,10 +695,10 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(const Standard_Real    theRadius,
+bool SelectMgr_TriangularFrustumSet::OverlapsCircle(const double    theRadius,
                                                                 const gp_Trsf&         theTrsf,
-                                                                const Standard_Boolean theIsFilled,
-                                                                Standard_Boolean* theInside) const
+                                                                const bool theIsFilled,
+                                                                bool* theInside) const
 {
   const gp_Pnt aCenter(gp::Origin().Transformed(theTrsf));
   const gp_Vec aVecPlane1(myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[1]);
@@ -706,20 +706,20 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(const Standard_R
 
   const gp_Dir  aDirNorm(aVecPlane1.Crossed(aVecPlane2));
   const gp_Pln  aPln(myFrustums.First()->myVertices[0], aDirNorm);
-  Standard_Real aCoefA, aCoefB, aCoefC, aCoefD;
+  double aCoefA, aCoefB, aCoefC, aCoefD;
   aPln.Coefficients(aCoefA, aCoefB, aCoefC, aCoefD);
 
-  const Standard_Real aT = -(aCenter.XYZ().Dot(aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot(aDirNorm);
+  const double aT = -(aCenter.XYZ().Dot(aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot(aDirNorm);
   const gp_Pnt        aCenterProject(aCoefA * aT + aCenter.X(),
                               aCoefB * aT + aCenter.Y(),
                               aCoefC * aT + aCenter.Z());
 
   gp_Pnt             aVerticesBuf[3];
-  TColgp_Array1OfPnt aVertices(aVerticesBuf[0], 0, 2);
+  NCollection_Array1<gp_Pnt> aVertices(aVerticesBuf[0], 0, 2);
 
   if (!theIsFilled)
   {
-    for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+    for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
     {
       if (!anIter.Value()->OverlapsCircle(theRadius, theTrsf, theIsFilled, theInside))
       {
@@ -728,23 +728,23 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(const Standard_R
 
       if (myToAllowOverlap)
       {
-        return Standard_True;
+        return true;
       }
 
       if (isIntersectBoundary(theRadius, theTrsf, theIsFilled))
       {
         if (theInside != NULL)
         {
-          *theInside &= Standard_False;
+          *theInside &= false;
         }
-        return Standard_False;
+        return false;
       }
-      return Standard_True;
+      return true;
     }
   }
   else
   {
-    for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+    for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
     {
       if (!anIter.Value()->OverlapsCircle(theRadius, theTrsf, theIsFilled, theInside))
       {
@@ -753,33 +753,33 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle(const Standard_R
 
       if (myToAllowOverlap)
       {
-        return Standard_True;
+        return true;
       }
 
       if (isIntersectBoundary(theRadius, theTrsf, theIsFilled))
       {
-        return Standard_False;
+        return false;
       }
-      return Standard_True;
+      return true;
     }
   }
 
   if (theInside != NULL)
   {
-    *theInside &= Standard_False;
+    *theInside &= false;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void SelectMgr_TriangularFrustumSet::GetPlanes(
-  NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   thePlaneEquations.Clear();
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
     anIter.Value()->GetPlanes(thePlaneEquations);
   }
@@ -787,14 +787,14 @@ void SelectMgr_TriangularFrustumSet::GetPlanes(
 
 //=================================================================================================
 
-void SelectMgr_TriangularFrustumSet::SetAllowOverlapDetection(const Standard_Boolean theIsToAllow)
+void SelectMgr_TriangularFrustumSet::SetAllowOverlapDetection(const bool theIsToAllow)
 {
   myToAllowOverlap = theIsToAllow;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::pointInTriangle(const gp_Pnt& thePnt,
+bool SelectMgr_TriangularFrustumSet::pointInTriangle(const gp_Pnt& thePnt,
                                                                  const gp_Pnt& theV1,
                                                                  const gp_Pnt& theV2,
                                                                  const gp_Pnt& theV3)
@@ -817,7 +817,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::pointInTriangle(const gp_Pnt& t
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::segmentSegmentIntersection(
+bool SelectMgr_TriangularFrustumSet::segmentSegmentIntersection(
   const gp_Pnt& theStartPnt1,
   const gp_Pnt& theEndPnt1,
   const gp_Pnt& theStartPnt2,
@@ -847,22 +847,22 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentSegmentIntersection(
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
-  const Standard_Real    theRadius,
+bool SelectMgr_TriangularFrustumSet::isIntersectBoundary(
+  const double    theRadius,
   const gp_Trsf&         theTrsf,
-  const Standard_Boolean theIsFilled) const
+  const bool theIsFilled) const
 {
-  Standard_Integer aFacesNb = myBoundaryPoints.Size() / 2;
+  int aFacesNb = myBoundaryPoints.Size() / 2;
 
   const gp_Pnt& aCircCenter = theTrsf.TranslationPart();
   gp_Ax2        anAxis;
   anAxis.Transform(theTrsf);
-  Handle(Geom_Circle) aCirc = new Geom_Circle(anAxis, theRadius);
+  occ::handle<Geom_Circle> aCirc = new Geom_Circle(anAxis, theRadius);
 
   gp_Dir               aCircNorm  = gp_Dir(gp_Dir::D::Z).Transformed(theTrsf);
-  Handle(Geom_Surface) aCircPlane = new Geom_Plane(aCircCenter, aCircNorm);
+  occ::handle<Geom_Surface> aCircPlane = new Geom_Plane(aCircCenter, aCircNorm);
 
-  for (Standard_Integer anIdx = myBoundaryPoints.Lower();
+  for (int anIdx = myBoundaryPoints.Lower();
        anIdx < aFacesNb + myBoundaryPoints.Lower();
        anIdx++)
   {
@@ -872,7 +872,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
                        myBoundaryPoints.Value(anIdx % aFacesNb + 1)};
 
     gp_Dir aBndPlaneNorm           = gp_Vec(aFace[0], aFace[1]).Crossed(gp_Vec(aFace[0], aFace[2]));
-    Handle(Geom_Surface) aBndPlane = new Geom_Plane(aFace[0], aBndPlaneNorm);
+    occ::handle<Geom_Surface> aBndPlane = new Geom_Plane(aFace[0], aBndPlaneNorm);
 
     GeomInt_IntSS anInterSS(aCircPlane, aBndPlane, Precision::Confusion());
     if (!anInterSS.IsDone() || anInterSS.NbLines() == 0)
@@ -880,8 +880,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
       continue;
     }
 
-    const Handle(Geom_Line)& anInterLine = Handle(Geom_Line)::DownCast(anInterSS.Line(1));
-    Standard_Real            aDistance   = anInterLine->Lin().Distance(aCircCenter);
+    const occ::handle<Geom_Line>& anInterLine = occ::down_cast<Geom_Line>(anInterSS.Line(1));
+    double            aDistance   = anInterLine->Lin().Distance(aCircCenter);
     if (aDistance > theRadius)
     {
       continue;
@@ -892,7 +892,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
     gp_Pnt aCrossPoint =
       aCircCenter.Translated(aNormalLine.Direction().Reversed().XYZ() * aDistance);
 
-    Standard_Real anOffset = std::sqrt(theRadius * theRadius - aDistance * aDistance);
+    double anOffset = std::sqrt(theRadius * theRadius - aDistance * aDistance);
     // Line-circle intersection points
     gp_Pnt aP1 = aCrossPoint.Translated(aLine.Direction().XYZ() * anOffset);
     gp_Pnt aP2 = aCrossPoint.Translated(aLine.Direction().Reversed().XYZ() * anOffset);
@@ -902,7 +902,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
         || pointInTriangle(aP2, aFace[0], aFace[1], aFace[2])
         || pointInTriangle(aP2, aFace[0], aFace[2], aFace[3]))
     {
-      return Standard_True;
+      return true;
     }
 
     if (theIsFilled || segmentSegmentIntersection(aP1, aP2, aFace[0], aFace[1])
@@ -910,22 +910,22 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(
         || segmentSegmentIntersection(aP1, aP2, aFace[2], aFace[3])
         || segmentSegmentIntersection(aP1, aP2, aFace[0], aFace[3]))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(const gp_Pnt& thePnt1,
+bool SelectMgr_TriangularFrustumSet::isIntersectBoundary(const gp_Pnt& thePnt1,
                                                                      const gp_Pnt& thePnt2) const
 {
-  Standard_Integer aFacesNb = myBoundaryPoints.Size() / 2;
+  int aFacesNb = myBoundaryPoints.Size() / 2;
   gp_Vec           aDir     = thePnt2.XYZ() - thePnt1.XYZ();
   gp_Pnt           anOrig   = thePnt1;
 
-  for (Standard_Integer anIdx = myBoundaryPoints.Lower();
+  for (int anIdx = myBoundaryPoints.Lower();
        anIdx < aFacesNb + myBoundaryPoints.Lower();
        anIdx++)
   {
@@ -937,24 +937,24 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary(const gp_Pn
     if (segmentTriangleIntersection(anOrig, aDir, aFace[0], aFace[1], aFace[2])
         || segmentTriangleIntersection(anOrig, aDir, aFace[0], aFace[2], aFace[3]))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : segmentTriangleIntersection
 // purpose  : Moller-Trumbore ray-triangle intersection test
 //=======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(const gp_Pnt& theOrig,
+bool SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(const gp_Pnt& theOrig,
                                                                              const gp_Vec& theDir,
                                                                              const gp_Pnt& theV1,
                                                                              const gp_Pnt& theV2,
                                                                              const gp_Pnt& theV3)
 {
   gp_Vec        aPVec, aTVec, aQVec;
-  Standard_Real aD, aInvD, anU, aV, aT;
+  double aD, aInvD, anU, aV, aT;
 
   gp_Vec anEdge1 = theV2.XYZ() - theV1.XYZ();
   gp_Vec anEdge2 = theV3.XYZ() - theV1.XYZ();
@@ -963,7 +963,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(con
   aD    = anEdge1.Dot(aPVec);
   if (fabs(aD) < gp::Resolution())
   {
-    return Standard_False;
+    return false;
   }
 
   aInvD = 1.0 / aD;
@@ -971,28 +971,28 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection(con
   anU   = aInvD * aTVec.Dot(aPVec);
   if (anU < 0.0 || anU > 1.0)
   {
-    return Standard_False;
+    return false;
   }
 
   aQVec = aTVec.Crossed(anEdge1);
   aV    = aInvD * theDir.Dot(aQVec);
   if (aV < 0.0 || anU + aV > 1.0)
   {
-    return Standard_False;
+    return false;
   }
 
   aT = aInvD * anEdge2.Dot(aQVec);
   if (aT < 0 || aT > 1)
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-gp_Pnt SelectMgr_TriangularFrustumSet::DetectedPoint(const Standard_Real theDepth) const
+gp_Pnt SelectMgr_TriangularFrustumSet::DetectedPoint(const double theDepth) const
 {
   (void)theDepth;
   throw Standard_ProgramError("SelectMgr_TriangularFrustumSet::DetectedPoint() should not be "
@@ -1002,14 +1002,14 @@ gp_Pnt SelectMgr_TriangularFrustumSet::DetectedPoint(const Standard_Real theDept
 //=================================================================================================
 
 void SelectMgr_TriangularFrustumSet::DumpJson(Standard_OStream& theOStream,
-                                              Standard_Integer  theDepth) const
+                                              int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_TriangularFrustumSet)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_BaseFrustum)
 
-  for (SelectMgr_TriangFrustums::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums); anIter.More(); anIter.Next())
   {
-    const Handle(SelectMgr_TriangularFrustum)& aFrustum = anIter.Value();
+    const occ::handle<SelectMgr_TriangularFrustum>& aFrustum = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aFrustum.get())
   }
 }

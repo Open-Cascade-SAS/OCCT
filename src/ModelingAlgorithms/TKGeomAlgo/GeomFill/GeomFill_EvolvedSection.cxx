@@ -25,8 +25,9 @@
 #include <Law_Function.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
@@ -34,24 +35,24 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
   #include <Geom_BSplineCurve.hxx>
-static Standard_Integer NumSec = 0;
-static Standard_Boolean Affich = 0;
+static int NumSec = 0;
+static bool Affich = 0;
 #endif
 
-GeomFill_EvolvedSection::GeomFill_EvolvedSection(const Handle(Geom_Curve)&   C,
-                                                 const Handle(Law_Function)& L)
+GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>&   C,
+                                                 const occ::handle<Law_Function>& L)
 {
   L->Bounds(First, Last);
-  mySection = Handle(Geom_Curve)::DownCast(C->Copy());
+  mySection = occ::down_cast<Geom_Curve>(C->Copy());
   myLaw     = L->Trim(First, Last, 1.e-20);
   TLaw      = myLaw;
-  myCurve   = Handle(Geom_BSplineCurve)::DownCast(C);
+  myCurve   = occ::down_cast<Geom_BSplineCurve>(C);
   if (myCurve.IsNull())
   {
     myCurve = GeomConvert::CurveToBSplineCurve(C, Convert_QuasiAngular);
     if (myCurve->IsPeriodic())
     {
-      Standard_Integer M = myCurve->Degree() / 2 + 1;
+      int M = myCurve->Degree() / 2 + 1;
       myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
@@ -69,12 +70,12 @@ GeomFill_EvolvedSection::GeomFill_EvolvedSection(const Handle(Geom_Curve)&   C,
 //=======================================================
 // Purpose :D0
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::D0(const Standard_Real   U,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColStd_Array1OfReal& Weights)
+bool GeomFill_EvolvedSection::D0(const double   U,
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<double>& Weights)
 {
-  Standard_Real    val;
-  Standard_Integer ii, L = Poles.Length();
+  double    val;
+  int ii, L = Poles.Length();
   val = TLaw->Value(U);
   myCurve->Poles(Poles);
   for (ii = 1; ii <= L; ii++)
@@ -83,20 +84,20 @@ Standard_Boolean GeomFill_EvolvedSection::D0(const Standard_Real   U,
   }
   myCurve->Weights(Weights);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================
 // Purpose :D1
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::D1(const Standard_Real   U,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColgp_Array1OfVec&   DPoles,
-                                             TColStd_Array1OfReal& Weights,
-                                             TColStd_Array1OfReal& DWeights)
+bool GeomFill_EvolvedSection::D1(const double   U,
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<gp_Vec>&   DPoles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights)
 {
-  Standard_Real    val, dval;
-  Standard_Integer ii, L = Poles.Length();
+  double    val, dval;
+  int ii, L = Poles.Length();
   TLaw->D1(U, val, dval);
 
   myCurve->Poles(Poles);
@@ -109,22 +110,22 @@ Standard_Boolean GeomFill_EvolvedSection::D1(const Standard_Real   U,
   }
   DWeights.Init(0);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================
 // Purpose :D2
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::D2(const Standard_Real   U,
-                                             TColgp_Array1OfPnt&   Poles,
-                                             TColgp_Array1OfVec&   DPoles,
-                                             TColgp_Array1OfVec&   D2Poles,
-                                             TColStd_Array1OfReal& Weights,
-                                             TColStd_Array1OfReal& DWeights,
-                                             TColStd_Array1OfReal& D2Weights)
+bool GeomFill_EvolvedSection::D2(const double   U,
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<gp_Vec>&   DPoles,
+                                             NCollection_Array1<gp_Vec>&   D2Poles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights,
+                                             NCollection_Array1<double>& D2Weights)
 {
-  Standard_Real    val, dval, d2val;
-  Standard_Integer ii, L = Poles.Length();
+  double    val, dval, d2val;
+  int ii, L = Poles.Length();
   TLaw->D2(U, val, dval, d2val);
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -141,18 +142,18 @@ Standard_Boolean GeomFill_EvolvedSection::D2(const Standard_Real   U,
   DWeights.Init(0);
   D2Weights.Init(0);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================
 // Purpose :BSplineSurface()
 //=======================================================
-Handle(Geom_BSplineSurface) GeomFill_EvolvedSection::BSplineSurface() const
+occ::handle<Geom_BSplineSurface> GeomFill_EvolvedSection::BSplineSurface() const
 {
-  /*  Standard_Integer ii, NbPoles = myCurve->NbPoles();
-    TColgp_Array2OfPnt Poles( 1, NbPoles, 1, 2);
-    TColStd_Array1OfReal UKnots(1,myCurve->NbKnots()), VKnots(1,2);
-    TColStd_Array1OfInteger UMults(1,myCurve->NbKnots()), VMults(1,2);
+  /*  int ii, NbPoles = myCurve->NbPoles();
+    NCollection_Array2<gp_Pnt> Poles( 1, NbPoles, 1, 2);
+    NCollection_Array1<double> UKnots(1,myCurve->NbKnots()), VKnots(1,2);
+    NCollection_Array1<int> UMults(1,myCurve->NbKnots()), VMults(1,2);
 
     for (ii=1; ii <= NbPoles; ii++) {
       Poles(ii, 1) =  Poles(ii, 2) = myCurve->Pole(ii);
@@ -165,14 +166,13 @@ Handle(Geom_BSplineSurface) GeomFill_EvolvedSection::BSplineSurface() const
     myCurve->Multiplicities(UMults);
     VMults.Init(2);
 
-
-    Handle(Geom_BSplineSurface) BS =
+    occ::handle<Geom_BSplineSurface> BS =
       new (Geom_BSplineSurface) ( Poles,
                      UKnots, VKnots,
                      UMults, VMults,
                      myCurve->Degree(), 1,
                      myCurve->IsPeriodic());*/
-  Handle(Geom_BSplineSurface) BS;
+  occ::handle<Geom_BSplineSurface> BS;
   BS.Nullify();
   return BS;
 }
@@ -180,16 +180,16 @@ Handle(Geom_BSplineSurface) GeomFill_EvolvedSection::BSplineSurface() const
 //=======================================================
 // Purpose :SectionShape
 //=======================================================
-void GeomFill_EvolvedSection::SectionShape(Standard_Integer& NbPoles,
-                                           Standard_Integer& NbKnots,
-                                           Standard_Integer& Degree) const
+void GeomFill_EvolvedSection::SectionShape(int& NbPoles,
+                                           int& NbKnots,
+                                           int& Degree) const
 {
   NbPoles = myCurve->NbPoles();
   NbKnots = myCurve->NbKnots();
   Degree  = myCurve->Degree();
 }
 
-void GeomFill_EvolvedSection::Knots(TColStd_Array1OfReal& TKnots) const
+void GeomFill_EvolvedSection::Knots(NCollection_Array1<double>& TKnots) const
 {
   myCurve->Knots(TKnots);
 }
@@ -197,7 +197,7 @@ void GeomFill_EvolvedSection::Knots(TColStd_Array1OfReal& TKnots) const
 //=======================================================
 // Purpose :Mults
 //=======================================================
-void GeomFill_EvolvedSection::Mults(TColStd_Array1OfInteger& TMults) const
+void GeomFill_EvolvedSection::Mults(NCollection_Array1<int>& TMults) const
 {
   myCurve->Multiplicities(TMults);
 }
@@ -205,7 +205,7 @@ void GeomFill_EvolvedSection::Mults(TColStd_Array1OfInteger& TMults) const
 //=======================================================
 // Purpose :IsRational
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::IsRational() const
+bool GeomFill_EvolvedSection::IsRational() const
 {
   return myCurve->IsRational();
 }
@@ -213,7 +213,7 @@ Standard_Boolean GeomFill_EvolvedSection::IsRational() const
 //=======================================================
 // Purpose :IsUPeriodic
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::IsUPeriodic() const
+bool GeomFill_EvolvedSection::IsUPeriodic() const
 {
   return myCurve->IsPeriodic();
 }
@@ -221,7 +221,7 @@ Standard_Boolean GeomFill_EvolvedSection::IsUPeriodic() const
 //=======================================================
 // Purpose :IsVPeriodic
 //=======================================================
-Standard_Boolean GeomFill_EvolvedSection::IsVPeriodic() const
+bool GeomFill_EvolvedSection::IsVPeriodic() const
 {
   return (std::abs(myLaw->Value(First) - myLaw->Value(Last)) < Precision::Confusion());
 }
@@ -229,7 +229,7 @@ Standard_Boolean GeomFill_EvolvedSection::IsVPeriodic() const
 //=======================================================
 // Purpose :NbIntervals
 //=======================================================
-Standard_Integer GeomFill_EvolvedSection::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_EvolvedSection::NbIntervals(const GeomAbs_Shape S) const
 {
   return myLaw->NbIntervals(S);
 }
@@ -237,7 +237,7 @@ Standard_Integer GeomFill_EvolvedSection::NbIntervals(const GeomAbs_Shape S) con
 //=======================================================
 // Purpose :Intervals
 //=======================================================
-void GeomFill_EvolvedSection::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_EvolvedSection::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   myLaw->Intervals(T, S);
 }
@@ -245,7 +245,7 @@ void GeomFill_EvolvedSection::Intervals(TColStd_Array1OfReal& T, const GeomAbs_S
 //=======================================================
 // Purpose : SetInterval
 //=======================================================
-void GeomFill_EvolvedSection::SetInterval(const Standard_Real F, const Standard_Real L)
+void GeomFill_EvolvedSection::SetInterval(const double F, const double L)
 {
   TLaw = myLaw->Trim(F, L, Precision::PConfusion());
 }
@@ -253,7 +253,7 @@ void GeomFill_EvolvedSection::SetInterval(const Standard_Real F, const Standard_
 //=======================================================
 // Purpose : GetInterval
 //=======================================================
-void GeomFill_EvolvedSection::GetInterval(Standard_Real& F, Standard_Real& L) const
+void GeomFill_EvolvedSection::GetInterval(double& F, double& L) const
 {
   TLaw->Bounds(F, L);
 }
@@ -261,7 +261,7 @@ void GeomFill_EvolvedSection::GetInterval(Standard_Real& F, Standard_Real& L) co
 //=======================================================
 // Purpose : GetDomain
 //=======================================================
-void GeomFill_EvolvedSection::GetDomain(Standard_Real& F, Standard_Real& L) const
+void GeomFill_EvolvedSection::GetDomain(double& F, double& L) const
 {
   F = First;
   L = Last;
@@ -270,11 +270,11 @@ void GeomFill_EvolvedSection::GetDomain(Standard_Real& F, Standard_Real& L) cons
 //=======================================================
 // Purpose : GetTolerance
 //=======================================================
-void GeomFill_EvolvedSection::GetTolerance(const Standard_Real BoundTol,
-                                           const Standard_Real SurfTol,
-                                           //					    const Standard_Real AngleTol,
-                                           const Standard_Real,
-                                           TColStd_Array1OfReal& Tol3d) const
+void GeomFill_EvolvedSection::GetTolerance(const double BoundTol,
+                                           const double SurfTol,
+                                           //					    const double AngleTol,
+                                           const double,
+                                           NCollection_Array1<double>& Tol3d) const
 {
   Tol3d.Init(SurfTol);
   if (BoundTol < SurfTol)
@@ -289,8 +289,8 @@ void GeomFill_EvolvedSection::GetTolerance(const Standard_Real BoundTol,
 //=======================================================
 gp_Pnt GeomFill_EvolvedSection::BarycentreOfSurf() const
 {
-  Standard_Real    U = mySection->FirstParameter(), Delta, b;
-  Standard_Integer ii;
+  double    U = mySection->FirstParameter(), Delta, b;
+  int ii;
   gp_Pnt           P, Bary;
 
   Delta = (myCurve->LastParameter() - U) / 20;
@@ -311,10 +311,10 @@ gp_Pnt GeomFill_EvolvedSection::BarycentreOfSurf() const
   return Bary;
 }
 
-Standard_Real GeomFill_EvolvedSection::MaximalSection() const
+double GeomFill_EvolvedSection::MaximalSection() const
 {
-  Standard_Real     L, val, max, U, Delta;
-  Standard_Integer  ii;
+  double     L, val, max, U, Delta;
+  int  ii;
   GeomAdaptor_Curve AC(mySection);
   L = GCPnts_AbscissaPoint::Length(AC);
 
@@ -328,7 +328,7 @@ Standard_Real GeomFill_EvolvedSection::MaximalSection() const
   return L * max;
 }
 
-void GeomFill_EvolvedSection::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
+void GeomFill_EvolvedSection::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
   if (myCurve->IsRational())
   {
@@ -340,17 +340,17 @@ void GeomFill_EvolvedSection::GetMinimalWeight(TColStd_Array1OfReal& Weights) co
   }
 }
 
-Standard_Boolean GeomFill_EvolvedSection::IsConstant(Standard_Real& Error) const
+bool GeomFill_EvolvedSection::IsConstant(double& Error) const
 {
-  //  Standard_Real isconst = Standard_False;
-  Standard_Boolean isconst = Standard_False;
+  //  double isconst = false;
+  bool isconst = false;
   Error                    = 0.;
   return isconst;
 }
 
-Handle(Geom_Curve) GeomFill_EvolvedSection::ConstantSection() const
+occ::handle<Geom_Curve> GeomFill_EvolvedSection::ConstantSection() const
 {
-  Standard_Real Err, scale;
+  double Err, scale;
   if (!IsConstant(Err))
     throw StdFail_NotDone("The Law is not Constant!");
   gp_Trsf T;
@@ -358,8 +358,8 @@ Handle(Geom_Curve) GeomFill_EvolvedSection::ConstantSection() const
   scale = myLaw->Value(First) + myLaw->Value((First + Last) / 2) + myLaw->Value(Last);
   T.SetScale(P, scale / 3);
 
-  Handle(Geom_Curve) C;
-  C = Handle(Geom_Curve)::DownCast(mySection->Copy());
+  occ::handle<Geom_Curve> C;
+  C = occ::down_cast<Geom_Curve>(mySection->Copy());
   C->Transform(T);
   return C;
 }

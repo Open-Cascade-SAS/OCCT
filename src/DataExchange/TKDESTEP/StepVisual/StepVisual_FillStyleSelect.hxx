@@ -41,13 +41,11 @@ public:
   //! 4 -> ExternallyDefinedHatchStyle
   //! 5 -> FillAreaStyleHatching
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a FillAreaStyleColour (Null if another type)
-  Standard_EXPORT Handle(StepVisual_FillAreaStyleColour) FillAreaStyleColour() const;
+  Standard_EXPORT occ::handle<StepVisual_FillAreaStyleColour> FillAreaStyleColour() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_FillStyleSelect_HeaderFile

@@ -37,10 +37,7 @@ set(OCCT_AdvApp2Var_FILES
   AdvApp2Var_Node.hxx
   AdvApp2Var_Patch.cxx
   AdvApp2Var_Patch.hxx
-  AdvApp2Var_SequenceOfNode.hxx
-  AdvApp2Var_SequenceOfPatch.hxx
-  AdvApp2Var_SequenceOfStrip.hxx
-  AdvApp2Var_Strip.hxx
+
   AdvApp2Var_SysBase.cxx
   AdvApp2Var_SysBase.hxx
   AdvApp2Var_SysBase_baseinit.cxx

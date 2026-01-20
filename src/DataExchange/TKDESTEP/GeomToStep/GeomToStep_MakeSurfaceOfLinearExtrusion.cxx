@@ -31,12 +31,12 @@
 // SurfaceOfLinearExtrusion de Geom
 //=============================================================================
 GeomToStep_MakeSurfaceOfLinearExtrusion::GeomToStep_MakeSurfaceOfLinearExtrusion(
-  const Handle(Geom_SurfaceOfLinearExtrusion)& S,
+  const occ::handle<Geom_SurfaceOfLinearExtrusion>& S,
   const StepData_Factors&                      theLocalFactors)
 {
-  Handle(StepGeom_SurfaceOfLinearExtrusion) Surf;
-  Handle(StepGeom_Curve)                    aSweptCurve;
-  Handle(StepGeom_Vector)                   aExtrusionAxis;
+  occ::handle<StepGeom_SurfaceOfLinearExtrusion> Surf;
+  occ::handle<StepGeom_Curve>                    aSweptCurve;
+  occ::handle<StepGeom_Vector>                   aExtrusionAxis;
 
   GeomToStep_MakeCurve  MkCurve(S->BasisCurve(), theLocalFactors);
   GeomToStep_MakeVector MkVector(gp_Vec(S->Direction()), theLocalFactors);
@@ -45,17 +45,17 @@ GeomToStep_MakeSurfaceOfLinearExtrusion::GeomToStep_MakeSurfaceOfLinearExtrusion
   aExtrusionAxis = MkVector.Value();
 
   Surf                                  = new StepGeom_SurfaceOfLinearExtrusion;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Surf->Init(name, aSweptCurve, aExtrusionAxis);
   theSurfaceOfLinearExtrusion = Surf;
-  done                        = Standard_True;
+  done                        = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_SurfaceOfLinearExtrusion)& GeomToStep_MakeSurfaceOfLinearExtrusion::Value()
+const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& GeomToStep_MakeSurfaceOfLinearExtrusion::Value()
   const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSurfaceOfLinearExtrusion::Value() - no result");

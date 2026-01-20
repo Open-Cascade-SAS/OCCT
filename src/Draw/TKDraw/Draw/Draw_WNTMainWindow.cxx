@@ -25,8 +25,8 @@
   #include "Draw_WNTMainWindow.pxx"
   #include "Draw_WNTRessource.pxx"
 
-Standard_Boolean        Draw_Interprete(const char* command); // Implemented in Draw.cxx
-extern Standard_Boolean Draw_IsConsoleSubsystem;
+bool        Draw_Interprete(const char* command); // Implemented in Draw.cxx
+extern bool Draw_IsConsoleSubsystem;
 
 /*--------------------------------------------------------*\
 |  CLIENT WINDOW PROCEDURE
@@ -80,7 +80,7 @@ BOOL CreateProc(HWND hWndFrame)
 /*--------------------------------------------------------------------------*\
 |  COMMAND PROCEDURE
 |  		Handler for message WM_COMMAND
-|     It is used when Draw_IsConsoleSubsystem = Standard_False
+|     It is used when Draw_IsConsoleSubsystem = false
 |     i.e. in non-console mode (see Draw_main() in Draw_Main.cxx).
 \*--------------------------------------------------------------------------*/
 LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)

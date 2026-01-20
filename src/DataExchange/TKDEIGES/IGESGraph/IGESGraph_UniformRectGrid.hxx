@@ -26,9 +26,6 @@
 class gp_Pnt2d;
 class gp_Vec2d;
 
-class IGESGraph_UniformRectGrid;
-DEFINE_STANDARD_HANDLE(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
-
 //! defines IGESUniformRectGrid, Type <406> Form <22>
 //! in package IGESGraph
 //!
@@ -50,29 +47,29 @@ public:
   //! - aGridSpacing : Grid spacing
   //! - pointsX      : No. of points/lines in X Direction
   //! - pointsY      : No. of points/lines in Y Direction
-  Standard_EXPORT void Init(const Standard_Integer nbProps,
-                            const Standard_Integer finite,
-                            const Standard_Integer line,
-                            const Standard_Integer weighted,
+  Standard_EXPORT void Init(const int nbProps,
+                            const int finite,
+                            const int line,
+                            const int weighted,
                             const gp_XY&           aGridPoint,
                             const gp_XY&           aGridSpacing,
-                            const Standard_Integer pointsX,
-                            const Standard_Integer pointsY);
+                            const int pointsX,
+                            const int pointsY);
 
   //! returns the number of property values in <me>.
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns False if <me> is an infinite grid,
   //! True if <me> is a finite grid.
-  Standard_EXPORT Standard_Boolean IsFinite() const;
+  Standard_EXPORT bool IsFinite() const;
 
   //! returns False if <me> is a Point grid,
   //! True if <me> is a Line grid.
-  Standard_EXPORT Standard_Boolean IsLine() const;
+  Standard_EXPORT bool IsLine() const;
 
   //! returns False if <me> is a Weighted grid,
   //! True if <me> is not a Weighted grid.
-  Standard_EXPORT Standard_Boolean IsWeighted() const;
+  Standard_EXPORT bool IsWeighted() const;
 
   //! returns coordinates of lower left corner,
   //! if <me> is a finite grid,
@@ -85,24 +82,23 @@ public:
 
   //! returns the no. of points/lines in X direction
   //! (only applicable if IsFinite() = 1, i.e: a finite grid).
-  Standard_EXPORT Standard_Integer NbPointsX() const;
+  Standard_EXPORT int NbPointsX() const;
 
   //! returns the no. of points/lines in Y direction
   //! (only applicable if IsFinite() = 1, i.e: a finite grid).
-  Standard_EXPORT Standard_Integer NbPointsY() const;
+  Standard_EXPORT int NbPointsY() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer isItFinite;
-  Standard_Integer isItLine;
-  Standard_Integer isItWeighted;
+  int theNbPropertyValues;
+  int isItFinite;
+  int isItLine;
+  int isItWeighted;
   gp_XY            theGridPoint;
   gp_XY            theGridSpacing;
-  Standard_Integer theNbPointsX;
-  Standard_Integer theNbPointsY;
+  int theNbPointsX;
+  int theNbPointsY;
 };
 
 #endif // _IGESGraph_UniformRectGrid_HeaderFile

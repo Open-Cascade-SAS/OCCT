@@ -24,22 +24,22 @@
 #include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IGESData_IGESDumper::IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model,
-                                         const Handle(IGESData_Protocol)&  protocol)
+IGESData_IGESDumper::IGESData_IGESDumper(const occ::handle<IGESData_IGESModel>& model,
+                                         const occ::handle<IGESData_Protocol>&  protocol)
     : thelib(protocol)
 {
   themodel = model;
 }
 
-void IGESData_IGESDumper::PrintDNum(const Handle(IGESData_IGESEntity)& ent,
+void IGESData_IGESDumper::PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
                                     Standard_OStream&                  S) const
 {
   //   Display guaranteed on 12 characters 12345/D24689
-  Standard_Integer num = 0;
+  int num = 0;
   if (!ent.IsNull())
   {
     if (themodel.IsNull())
@@ -57,13 +57,13 @@ void IGESData_IGESDumper::PrintDNum(const Handle(IGESData_IGESEntity)& ent,
     S << "  D0(Null)  ";
 }
 
-void IGESData_IGESDumper::PrintShort(const Handle(IGESData_IGESEntity)& ent,
+void IGESData_IGESDumper::PrintShort(const occ::handle<IGESData_IGESEntity>& ent,
                                      Standard_OStream&                  S) const
 {
   //  PrintDNum(ent,S);
   if (!ent.IsNull())
   {
-    Standard_Integer num = 0;
+    int num = 0;
     if (!themodel.IsNull())
       num = themodel->Number(ent);
     if (num > 0)
@@ -74,13 +74,13 @@ void IGESData_IGESDumper::PrintShort(const Handle(IGESData_IGESEntity)& ent,
   }
 }
 
-void IGESData_IGESDumper::Dump(const Handle(IGESData_IGESEntity)& ent,
+void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own,
-                               const Standard_Integer             attached) const
+                               const int             own,
+                               const int             attached) const
 {
-  Standard_Integer att    = attached;
-  Standard_Integer diratt = 1;
+  int att    = attached;
+  int diratt = 1;
   if (own < 3)
     diratt = own - 1;
   if (att == 0)
@@ -243,8 +243,8 @@ void IGESData_IGESDumper::Dump(const Handle(IGESData_IGESEntity)& ent,
   if (att < 0)
     return;
   Interface_EntityIterator iter   = ent->Properties();
-  Standard_Integer         nb     = iter.NbEntities();
-  Standard_Boolean         iasuit = (nb > 0);
+  int         nb     = iter.NbEntities();
+  bool         iasuit = (nb > 0);
   if (nb > 0)
   {
     S << "\n****     Properties (nb:" << nb << ")          ****\n";
@@ -257,7 +257,7 @@ void IGESData_IGESDumper::Dump(const Handle(IGESData_IGESEntity)& ent,
   iter = ent->Associativities();
   nb   = iter.NbEntities();
   if (nb > 0)
-    iasuit = Standard_True;
+    iasuit = true;
   if (nb > 0)
   {
     S << "\n****   Associativities (nb:" << nb << ")        ****\n";
@@ -275,12 +275,12 @@ void IGESData_IGESDumper::Dump(const Handle(IGESData_IGESEntity)& ent,
   S << "\n****             End of Dump          ****\n" << std::endl;
 }
 
-void IGESData_IGESDumper::OwnDump(const Handle(IGESData_IGESEntity)& ent,
+void IGESData_IGESDumper::OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
                                   Standard_OStream&                  S,
-                                  const Standard_Integer             own) const
+                                  const int             own) const
 {
-  Handle(IGESData_SpecificModule) module;
-  Standard_Integer                CN;
+  occ::handle<IGESData_SpecificModule> module;
+  int                CN;
   if (thelib.Select(ent, module, CN))
     module->OwnDump(CN, ent, *this, S, own);
   else if (themodel.IsNull())

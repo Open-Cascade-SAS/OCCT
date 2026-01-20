@@ -16,17 +16,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_IntVal, Standard_Transient)
 
-MoniTool_IntVal::MoniTool_IntVal(const Standard_Integer val)
+MoniTool_IntVal::MoniTool_IntVal(const int val)
 {
   theval = val;
 }
 
-Standard_Integer MoniTool_IntVal::Value() const
+int MoniTool_IntVal::Value() const
 {
   return theval;
 }
 
-Standard_Integer& MoniTool_IntVal::CValue()
+int& MoniTool_IntVal::CValue()
 {
   return theval;
 }

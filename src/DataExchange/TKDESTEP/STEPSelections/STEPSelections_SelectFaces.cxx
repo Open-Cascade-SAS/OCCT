@@ -31,35 +31,35 @@ STEPSelections_SelectFaces::STEPSelections_SelectFaces()
 {
 }
 
-Standard_Boolean STEPSelections_SelectFaces::Explore(const Standard_Integer /*level*/,
-                                                     const Handle(Standard_Transient)& start,
+bool STEPSelections_SelectFaces::Explore(const int /*level*/,
+                                                     const occ::handle<Standard_Transient>& start,
                                                      const Interface_Graph&            G,
                                                      Interface_EntityIterator& explored) const
 {
   if (start.IsNull())
-    return Standard_False;
+    return false;
 
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceSurface)))
-    return Standard_True;
+    return true;
 
-  Standard_Boolean isInFaceOfInSurface = Standard_False;
+  bool isInFaceOfInSurface = false;
   if (start->IsKind(STANDARD_TYPE(StepGeom_Surface)))
   {
     Interface_EntityIterator subs = G.Sharings(start);
     for (subs.Start(); subs.More(); subs.Next())
     {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
-        return Standard_True;
+        return true;
       if (subs.Value()->IsKind(STANDARD_TYPE(StepGeom_Surface)))
-        isInFaceOfInSurface = Standard_True;
+        isInFaceOfInSurface = true;
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_FaceSurface)))
-        isInFaceOfInSurface = Standard_True;
+        isInFaceOfInSurface = true;
     }
     return !isInFaceOfInSurface;
   }
   Interface_EntityIterator subs = G.Shareds(start);
   subs.Start();
-  Standard_Boolean isSome = subs.More();
+  bool isSome = subs.More();
   for (; subs.More(); subs.Next())
     explored.AddItem(subs.Value());
 

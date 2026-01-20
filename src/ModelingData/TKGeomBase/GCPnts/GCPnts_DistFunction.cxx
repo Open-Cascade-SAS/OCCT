@@ -17,8 +17,8 @@
 //=================================================================================================
 
 GCPnts_DistFunction::GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
-                                         const Standard_Real    U1,
-                                         const Standard_Real    U2)
+                                         const double    U1,
+                                         const double    U2)
     : myCurve(theCurve),
       myU1(U1),
       myU2(U2)
@@ -39,13 +39,13 @@ GCPnts_DistFunction::GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
 //
 //=================================================================================================
 
-Standard_Boolean GCPnts_DistFunction::Value(const Standard_Real X, Standard_Real& F)
+bool GCPnts_DistFunction::Value(const double X, double& F)
 {
   if (X < myU1 || X > myU2)
-    return Standard_False;
+    return false;
   //
   F = -myLin.SquareDistance(myCurve.Value(X));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -57,15 +57,15 @@ GCPnts_DistFunctionMV::GCPnts_DistFunctionMV(GCPnts_DistFunction& theCurvLinDist
 
 //=================================================================================================
 
-Standard_Boolean GCPnts_DistFunctionMV::Value(const math_Vector& X, Standard_Real& F)
+bool GCPnts_DistFunctionMV::Value(const math_Vector& X, double& F)
 {
-  Standard_Boolean Ok = myMaxCurvLinDist.Value(X(1), F);
+  bool Ok = myMaxCurvLinDist.Value(X(1), F);
   return Ok;
 }
 
 //=================================================================================================
 
-Standard_Integer GCPnts_DistFunctionMV::NbVariables() const
+int GCPnts_DistFunctionMV::NbVariables() const
 {
   return 1;
 }

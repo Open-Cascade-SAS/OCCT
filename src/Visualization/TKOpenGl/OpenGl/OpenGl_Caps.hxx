@@ -28,17 +28,17 @@ class OpenGl_Caps : public Standard_Transient
 
 public
     : //! @name flags to disable particular functionality, should be used only for testing purposes!
-  Standard_Boolean sRGBDisable; //!< Disables sRGB rendering (OFF by default)
+  bool sRGBDisable; //!< Disables sRGB rendering (OFF by default)
   // clang-format off
-  Standard_Boolean compressedTexturesDisable; //!< Disables uploading of compressed texture formats native to GPU (OFF by default)
-  Standard_Boolean vboDisable;        //!< disallow VBO usage for debugging purposes (OFF by default)
-  Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
-  Standard_Boolean keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
-  Standard_Boolean ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (OFF by default)
-  Standard_Boolean usePolygonMode;    //!< Enables Polygon Mode instead of built-in GLSL programs (OFF by default; unsupported on OpenGL ES)
-  Standard_Boolean useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
-  Standard_Integer swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
-  Standard_Boolean useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
+  bool compressedTexturesDisable; //!< Disables uploading of compressed texture formats native to GPU (OFF by default)
+  bool vboDisable;        //!< disallow VBO usage for debugging purposes (OFF by default)
+  bool pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
+  bool keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
+  bool ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (OFF by default)
+  bool usePolygonMode;    //!< Enables Polygon Mode instead of built-in GLSL programs (OFF by default; unsupported on OpenGL ES)
+  bool useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
+  int swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
+  bool useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
   // clang-format on
 
 public: //! @name context creation parameters
@@ -49,7 +49,7 @@ public: //! @name context creation parameters
    *
    * OFF by default.
    */
-  Standard_Boolean buffersNoSwap;
+  bool buffersNoSwap;
 
   /**
    * Specify whether alpha component within color buffer should be written or not.
@@ -60,7 +60,7 @@ public: //! @name context creation parameters
    *
    * ON by default.
    */
-  Standard_Boolean buffersOpaqueAlpha;
+  bool buffersOpaqueAlpha;
 
   /**
    * Specify whether deep color format (10-bit per component / 30-bit RGB) should be used
@@ -79,14 +79,14 @@ public: //! @name context creation parameters
    *
    * OFF by default.
    */
-  Standard_Boolean buffersDeepColor;
+  bool buffersDeepColor;
 
   /**
    * Request stereoscopic context (with Quad Buffer). This flag requires support in OpenGL driver.
    *
    * OFF by default.
    */
-  Standard_Boolean contextStereo;
+  bool contextStereo;
 
   /**
    * Request debug GL context. This flag requires support in OpenGL driver.
@@ -97,7 +97,7 @@ public: //! @name context creation parameters
    *
    * OFF by default.
    */
-  Standard_Boolean contextDebug;
+  bool contextDebug;
 
   /**
    * Request debug GL context to emit messages within main thread (when contextDebug is specified!).
@@ -110,7 +110,7 @@ public: //! @name context creation parameters
    *
    * OFF by default.
    */
-  Standard_Boolean contextSyncDebug;
+  bool contextSyncDebug;
 
   /**
    * Disable hardware acceleration.
@@ -124,7 +124,7 @@ public: //! @name context creation parameters
    *
    * OFF by default. Currently implemented only for Windows (WGL) and Mac OS X (Cocoa).
    */
-  Standard_Boolean contextNoAccel;
+  bool contextNoAccel;
 
   /**
    * Request backward-compatible GL context. This flag requires support in OpenGL driver.
@@ -142,7 +142,7 @@ public: //! @name context creation parameters
    *
    * ON by default.
    */
-  Standard_Boolean contextCompatible;
+  bool contextCompatible;
 
   /**
    * Disallow using OpenGL extensions.
@@ -150,7 +150,7 @@ public: //! @name context creation parameters
    *
    * OFF by default.
    */
-  Standard_Boolean contextNoExtensions;
+  bool contextNoExtensions;
 
   /**
    * Synthetically restrict upper version of OpenGL functionality to be used.
@@ -158,8 +158,8 @@ public: //! @name context creation parameters
    *
    * (-1, -1) by default, which means no restriction.
    */
-  Standard_Integer contextMajorVersionUpper;
-  Standard_Integer contextMinorVersionUpper;
+  int contextMajorVersionUpper;
+  int contextMinorVersionUpper;
 
   /**
    * Define if 2D texture UV coordinates are defined top-down or bottom-up. FALSE by default.
@@ -172,14 +172,14 @@ public: //! @name context creation parameters
    * Graphic driver now compares this flag with image layout reported by Image_PixMap::IsTopDown(),
    * and in case of mismatch applies implicit texture coordinates conversion in GLSL program.
    */
-  Standard_Boolean isTopDownTextureUV;
+  bool isTopDownTextureUV;
 
 public: //! @name flags to activate verbose output
   //! Print GLSL program compilation/linkage warnings, if any. OFF by default.
-  Standard_Boolean glslWarnings;
+  bool glslWarnings;
 
   //! Suppress redundant messages from debug GL context. ON by default.
-  Standard_Boolean suppressExtraMsg;
+  bool suppressExtraMsg;
 
   //! Print GLSL program source code. OFF by default.
   OpenGl_ShaderProgramDumpLevel glslDumpLevel;
@@ -201,7 +201,5 @@ private:
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient) // Type definition
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_Caps, Standard_Transient)
 
 #endif // _OpenGl_Caps_H__

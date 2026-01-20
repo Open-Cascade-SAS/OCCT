@@ -24,19 +24,19 @@
 #include <Standard_ProgramError.hxx>
 
 #define theMetaDataDriver                                                                          \
-  Handle(CDF_Application)::DownCast((myCurrentDocument->Application()))->MetaDataDriver()
+  occ::down_cast<CDF_Application>((myCurrentDocument->Application()))->MetaDataDriver()
 
-static const Handle(TCollection_HExtendedString) blank = new TCollection_HExtendedString("");
+static const occ::handle<TCollection_HExtendedString> blank = new TCollection_HExtendedString("");
 
 CDF_Store::CDF_Store()
-    : myHasSubComponents(Standard_False),
-      myIsMainDocument(Standard_False),
+    : myHasSubComponents(false),
+      myIsMainDocument(false),
       myStatus(PCDM_SS_No_Obj)
 {
 }
 
-CDF_Store::CDF_Store(const Handle(CDM_Document)& aDocument)
-    : myHasSubComponents(Standard_False)
+CDF_Store::CDF_Store(const occ::handle<CDM_Document>& aDocument)
+    : myHasSubComponents(false)
 {
 
   myMainDocument = aDocument;
@@ -51,44 +51,44 @@ void CDF_Store::Init()
 
   // getting the subcomponents.
   //
-  myIsMainDocument = Standard_False;
+  myIsMainDocument = false;
   myList->Init();
   for (myList->Init(); myList->More(); myList->Next())
   {
     myCurrentDocument = myList->Value();
     if (myCurrentDocument != myMainDocument)
     {
-      myHasSubComponents = Standard_True;
+      myHasSubComponents = true;
       FindDefault();
     }
   }
-  myIsMainDocument  = Standard_True;
+  myIsMainDocument  = true;
   myCurrentDocument = myMainDocument;
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::Folder() const
+occ::handle<TCollection_HExtendedString> CDF_Store::Folder() const
 {
   if (myCurrentDocument->HasRequestedFolder())
     return new TCollection_HExtendedString(myCurrentDocument->RequestedFolder());
   return blank;
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::Name() const
+occ::handle<TCollection_HExtendedString> CDF_Store::Name() const
 {
   return new TCollection_HExtendedString(myCurrentDocument->RequestedName());
 }
 
-Standard_Boolean CDF_Store::SetFolder(const Standard_ExtString aFolder)
+bool CDF_Store::SetFolder(const char16_t* const aFolder)
 {
   TCollection_ExtendedString f(aFolder);
   return SetFolder(f);
 }
 
-Standard_Boolean CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder)
+bool CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder)
 {
 
   TCollection_ExtendedString theFolder(aFolder);
-  Standard_Integer           aLen = theFolder.Length();
+  int           aLen = theFolder.Length();
 
   // if the last character is the folder separator, remove it.
   if (aLen > 1 && (theFolder.Value(aLen) == '/' || theFolder.Value(aLen) == '\\'))
@@ -97,9 +97,9 @@ Standard_Boolean CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder)
   if (theMetaDataDriver->FindFolder(theFolder))
   {
     myCurrentDocument->SetRequestedFolder(theFolder);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 CDF_StoreSetNameStatus CDF_Store::RecheckName()
@@ -113,7 +113,7 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const TCollection_ExtendedString& aNam
 
   if (myCurrentDocument->IsStored())
   {
-    Handle(CDM_MetaData) E = myCurrentDocument->MetaData();
+    occ::handle<CDM_MetaData> E = myCurrentDocument->MetaData();
     if (E->Folder() == myCurrentDocument->RequestedFolder() && E->Name() == theName)
       return CDF_SSNS_OK;
   }
@@ -135,7 +135,7 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const TCollection_ExtendedString& aNam
   return CDF_SSNS_OK;
 }
 
-CDF_StoreSetNameStatus CDF_Store::SetName(const Standard_ExtString aName)
+CDF_StoreSetNameStatus CDF_Store::SetName(const char16_t* const aName)
 {
   TCollection_ExtendedString theName(aName);
   return SetName(theName);
@@ -144,67 +144,67 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const Standard_ExtString aName)
 void CDF_Store::Realize(const Message_ProgressRange& theRange)
 {
   Standard_ProgramError_Raise_if(!myList->IsConsistent(), "information are missing");
-  Handle(CDM_MetaData) m;
+  occ::handle<CDM_MetaData> m;
   myText   = "";
   myStatus = myList->Store(m, myText, theRange);
   if (myStatus == PCDM_SS_OK)
     myPath = m->Path();
 }
 
-Standard_ExtString CDF_Store::Path() const
+const char16_t* CDF_Store::Path() const
 {
   return myPath.ToExtString();
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::MetaDataPath() const
+occ::handle<TCollection_HExtendedString> CDF_Store::MetaDataPath() const
 {
   if (myCurrentDocument->IsStored())
     return new TCollection_HExtendedString(myCurrentDocument->MetaData()->Path());
   return blank;
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::Description() const
+occ::handle<TCollection_HExtendedString> CDF_Store::Description() const
 {
   if (myMainDocument->FindDescription())
     return new TCollection_HExtendedString(myMainDocument->Description());
   return blank;
 }
 
-Standard_Boolean CDF_Store::IsStored() const
+bool CDF_Store::IsStored() const
 {
   return myCurrentDocument->IsStored();
 }
 
-Standard_Boolean CDF_Store::IsModified() const
+bool CDF_Store::IsModified() const
 {
   return myCurrentDocument->IsModified();
 }
 
-Standard_Boolean CDF_Store::CurrentIsConsistent() const
+bool CDF_Store::CurrentIsConsistent() const
 {
   if (!myCurrentDocument->IsStored())
     return myCurrentDocument->HasRequestedFolder();
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean CDF_Store::IsConsistent() const
+bool CDF_Store::IsConsistent() const
 {
   return myList->IsConsistent();
 }
 
-Standard_Boolean CDF_Store::HasAPreviousVersion() const
+bool CDF_Store::HasAPreviousVersion() const
 {
   return myCurrentDocument->HasRequestedPreviousVersion();
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::PreviousVersion() const
+occ::handle<TCollection_HExtendedString> CDF_Store::PreviousVersion() const
 {
   if (myCurrentDocument->HasRequestedPreviousVersion())
     return new TCollection_HExtendedString(myCurrentDocument->RequestedPreviousVersion());
   return blank;
 }
 
-Standard_Boolean CDF_Store::SetPreviousVersion(const Standard_ExtString aPreviousVersion)
+bool CDF_Store::SetPreviousVersion(const char16_t* const aPreviousVersion)
 {
   if (theMetaDataDriver->HasVersionCapability())
   {
@@ -216,18 +216,18 @@ Standard_Boolean CDF_Store::SetPreviousVersion(const Standard_ExtString aPreviou
       {
 
         myCurrentDocument->SetRequestedPreviousVersion(aPreviousVersion);
-        return Standard_True;
+        return true;
       }
       else
-        return Standard_False;
+        return false;
     }
     else
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
-void CDF_Store::SetCurrent(const Standard_ExtString /*aPresentation*/)
+void CDF_Store::SetCurrent(const char16_t* const /*aPresentation*/)
 {
   myIsMainDocument = myCurrentDocument == myMainDocument;
 }
@@ -235,10 +235,10 @@ void CDF_Store::SetCurrent(const Standard_ExtString /*aPresentation*/)
 void CDF_Store::SetMain()
 {
   myCurrentDocument = myMainDocument;
-  myIsMainDocument  = Standard_True;
+  myIsMainDocument  = true;
 }
 
-Standard_Boolean CDF_Store::IsMainDocument() const
+bool CDF_Store::IsMainDocument() const
 {
   return myIsMainDocument;
 }
@@ -248,7 +248,7 @@ PCDM_StoreStatus CDF_Store::StoreStatus() const
   return myStatus;
 }
 
-Standard_ExtString CDF_Store::AssociatedStatusText() const
+const char16_t* CDF_Store::AssociatedStatusText() const
 {
   return myText.ToExtString();
 }
@@ -258,18 +258,18 @@ void CDF_Store::FindDefault()
   if (!myCurrentDocument->IsStored())
   {
     myCurrentDocument->SetRequestedFolder(
-      Handle(CDF_Application)::DownCast((myCurrentDocument->Application()))->DefaultFolder());
+      occ::down_cast<CDF_Application>((myCurrentDocument->Application()))->DefaultFolder());
     myCurrentDocument->SetRequestedName(
       theMetaDataDriver->SetName(myCurrentDocument, myCurrentDocument->RequestedName()));
   }
 }
 
-void CDF_Store::SetComment(const Standard_ExtString aComment)
+void CDF_Store::SetComment(const char16_t* const aComment)
 {
   myCurrentDocument->SetRequestedComment(aComment);
 }
 
-Handle(TCollection_HExtendedString) CDF_Store::Comment() const
+occ::handle<TCollection_HExtendedString> CDF_Store::Comment() const
 {
   return new TCollection_HExtendedString(myCurrentDocument->RequestedComment());
 }

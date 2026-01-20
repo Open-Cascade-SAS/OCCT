@@ -36,33 +36,33 @@ public:
   Standard_EXPORT ShapeUpgrade_ShapeDivideArea(const TopoDS_Shape& S);
 
   //! Set max area allowed for faces
-  Standard_Real& MaxArea();
+  double& MaxArea();
 
   //! Set number of parts expected
   //! for the case of splitting by number
-  Standard_Integer& NbParts();
+  int& NbParts();
 
   //! Set fixed numbers of splits in U and V directions.
   //! Only for "Splitting By Numbers" mode
-  void SetNumbersUVSplits(const Standard_Integer theNbUsplits, const Standard_Integer theNbVsplits);
+  void SetNumbersUVSplits(const int theNbUsplits, const int theNbVsplits);
 
   //! Set splitting mode
   //! If the mode is "splitting by number",
   //! the face is splitted approximately into <myNbParts> parts,
   //! the parts are similar to squares in 2D.
-  void SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber);
+  void SetSplittingByNumber(const bool theIsSplittingByNumber);
 
 protected:
   //! Returns the tool for splitting faces.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_FaceDivide) GetSplitFaceTool() const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const
+    override;
 
 private:
-  Standard_Real    myMaxArea;
-  Standard_Integer myNbParts;
-  Standard_Integer myUnbSplit;
-  Standard_Integer myVnbSplit;
-  Standard_Boolean myIsSplittingByNumber;
+  double    myMaxArea;
+  int myNbParts;
+  int myUnbSplit;
+  int myVnbSplit;
+  bool myIsSplittingByNumber;
 };
 
 #include <ShapeUpgrade_ShapeDivideArea.lxx>

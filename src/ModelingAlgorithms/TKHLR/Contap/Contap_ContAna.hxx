@@ -42,25 +42,25 @@ public:
 
   Standard_EXPORT void Perform(const gp_Sphere& S, const gp_Dir& D);
 
-  Standard_EXPORT void Perform(const gp_Sphere& S, const gp_Dir& D, const Standard_Real Ang);
+  Standard_EXPORT void Perform(const gp_Sphere& S, const gp_Dir& D, const double Ang);
 
   Standard_EXPORT void Perform(const gp_Sphere& S, const gp_Pnt& Eye);
 
   Standard_EXPORT void Perform(const gp_Cylinder& C, const gp_Dir& D);
 
-  Standard_EXPORT void Perform(const gp_Cylinder& C, const gp_Dir& D, const Standard_Real Ang);
+  Standard_EXPORT void Perform(const gp_Cylinder& C, const gp_Dir& D, const double Ang);
 
   Standard_EXPORT void Perform(const gp_Cylinder& C, const gp_Pnt& Eye);
 
   Standard_EXPORT void Perform(const gp_Cone& C, const gp_Dir& D);
 
-  Standard_EXPORT void Perform(const gp_Cone& C, const gp_Dir& D, const Standard_Real Ang);
+  Standard_EXPORT void Perform(const gp_Cone& C, const gp_Dir& D, const double Ang);
 
   Standard_EXPORT void Perform(const gp_Cone& C, const gp_Pnt& Eye);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
-  Standard_Integer NbContours() const;
+  int NbContours() const;
 
   //! Returns GeomAbs_Line or GeomAbs_Circle, when
   //! IsDone() returns True.
@@ -68,12 +68,11 @@ public:
 
   gp_Circ Circle() const;
 
-  Standard_EXPORT gp_Lin Line(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Lin Line(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean  done;
-  Standard_Integer  nbSol;
+  bool  done;
+  int  nbSol;
   GeomAbs_CurveType typL;
   gp_Pnt            pt1;
   gp_Pnt            pt2;
@@ -83,7 +82,7 @@ private:
   gp_Dir            dir2;
   gp_Dir            dir3;
   gp_Dir            dir4;
-  Standard_Real     prm;
+  double     prm;
 };
 
 #include <Contap_ContAna.lxx>

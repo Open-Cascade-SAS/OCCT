@@ -82,8 +82,8 @@ inline const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
 //! Convert string to StepBasic_SiPrefix
 //! @param thePrefixStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_SiPrefix value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString thePrefixStr, StepBasic_SiPrefix& theResultEnum)
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const thePrefixStr, StepBasic_SiPrefix& theResultEnum)
 {
   if (IsEqual(thePrefixStr, spExa))
   {
@@ -151,9 +151,9 @@ inline bool ConvertToEnum(const Standard_CString thePrefixStr, StepBasic_SiPrefi
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 } // namespace RWStepBasic_RWSiPrefix

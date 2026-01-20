@@ -18,30 +18,30 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_Invisibility, Standard_Transient)
 
 StepVisual_Invisibility::StepVisual_Invisibility() {}
 
-void StepVisual_Invisibility::Init(const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
+void StepVisual_Invisibility::Init(const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems)
 {
   // --- classe own fields ---
   invisibleItems = aInvisibleItems;
 }
 
 void StepVisual_Invisibility::SetInvisibleItems(
-  const Handle(StepVisual_HArray1OfInvisibleItem)& aInvisibleItems)
+  const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems)
 {
   invisibleItems = aInvisibleItems;
 }
 
-Handle(StepVisual_HArray1OfInvisibleItem) StepVisual_Invisibility::InvisibleItems() const
+occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>> StepVisual_Invisibility::InvisibleItems() const
 {
   return invisibleItems;
 }
 
 StepVisual_InvisibleItem StepVisual_Invisibility::InvisibleItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return invisibleItems->Value(num);
 }
 
-Standard_Integer StepVisual_Invisibility::NbInvisibleItems() const
+int StepVisual_Invisibility::NbInvisibleItems() const
 {
   return invisibleItems->Length();
 }

@@ -31,9 +31,9 @@ IGESGeom_CopiousData::IGESGeom_CopiousData()
   theDataType = 0; // to allow Setting Form Number before Init
 }
 
-void IGESGeom_CopiousData::Init(const Standard_Integer               aDataType,
-                                const Standard_Real                  aZPlane,
-                                const Handle(TColStd_HArray1OfReal)& allData)
+void IGESGeom_CopiousData::Init(const int               aDataType,
+                                const double                  aZPlane,
+                                const occ::handle<NCollection_HArray1<double>>& allData)
 {
   // PTV OCC386 crash application while reading So5771b.igs
   if (allData.IsNull())
@@ -49,9 +49,9 @@ void IGESGeom_CopiousData::Init(const Standard_Integer               aDataType,
   InitTypeAndForm(106, FormNumber());
 }
 
-void IGESGeom_CopiousData::SetPolyline(const Standard_Boolean F)
+void IGESGeom_CopiousData::SetPolyline(const bool F)
 {
-  Standard_Integer newfn = theDataType;
+  int newfn = theDataType;
   if (F)
     newfn += 10;
   InitTypeAndForm(106, newfn);
@@ -62,29 +62,29 @@ void IGESGeom_CopiousData::SetClosedPath2D()
   InitTypeAndForm(106, 63); // and verify DataType !
 }
 
-Standard_Boolean IGESGeom_CopiousData::IsPointSet() const
+bool IGESGeom_CopiousData::IsPointSet() const
 {
   return (FormNumber() < 10);
 }
 
-Standard_Boolean IGESGeom_CopiousData::IsPolyline() const
+bool IGESGeom_CopiousData::IsPolyline() const
 {
   return (FormNumber() / 10 == 1);
 }
 
-Standard_Boolean IGESGeom_CopiousData::IsClosedPath2D() const
+bool IGESGeom_CopiousData::IsClosedPath2D() const
 {
   return (FormNumber() == 63);
 }
 
-Standard_Integer IGESGeom_CopiousData::DataType() const
+int IGESGeom_CopiousData::DataType() const
 {
   return theDataType;
 }
 
-Standard_Integer IGESGeom_CopiousData::NbPoints() const
+int IGESGeom_CopiousData::NbPoints() const
 {
-  Standard_Integer nbtuples;
+  int nbtuples;
   // PTV OCC386
   if (theData.IsNull())
     nbtuples = 0;
@@ -99,10 +99,10 @@ Standard_Integer IGESGeom_CopiousData::NbPoints() const
   return nbtuples;
 }
 
-Standard_Real IGESGeom_CopiousData::Data(const Standard_Integer nump,
-                                         const Standard_Integer numdata) const
+double IGESGeom_CopiousData::Data(const int nump,
+                                         const int numdata) const
 {
-  Standard_Integer numd = 0;
+  int numd = 0;
   if (theDataType == 1)
     numd = 2 * (nump - 1) + numdata; // 1-2
   else if (theDataType == 2)
@@ -112,16 +112,16 @@ Standard_Real IGESGeom_CopiousData::Data(const Standard_Integer nump,
   return theData->Value(numd);
 }
 
-Standard_Real IGESGeom_CopiousData::ZPlane() const
+double IGESGeom_CopiousData::ZPlane() const
 {
   return theZPlane;
 }
 
-gp_Pnt IGESGeom_CopiousData::Point(const Standard_Integer anIndex) const
+gp_Pnt IGESGeom_CopiousData::Point(const int anIndex) const
 {
-  Standard_Integer lower = theData->Lower();
-  Standard_Integer real_index;
-  Standard_Real    X = 0., Y = 0., Z = 0.;
+  int lower = theData->Lower();
+  int real_index;
+  double    X = 0., Y = 0., Z = 0.;
   if (theDataType == 1)
   {
     real_index = lower + 2 * (anIndex - 1);
@@ -150,7 +150,7 @@ gp_Pnt IGESGeom_CopiousData::Point(const Standard_Integer anIndex) const
   return point;
 }
 
-gp_Pnt IGESGeom_CopiousData::TransformedPoint(const Standard_Integer anIndex) const
+gp_Pnt IGESGeom_CopiousData::TransformedPoint(const int anIndex) const
 {
   if (!HasTransf())
     return Point(anIndex);
@@ -159,20 +159,20 @@ gp_Pnt IGESGeom_CopiousData::TransformedPoint(const Standard_Integer anIndex) co
   return gp_Pnt(xyz);
 }
 
-gp_Vec IGESGeom_CopiousData::Vector(const Standard_Integer anIndex) const
+gp_Vec IGESGeom_CopiousData::Vector(const int anIndex) const
 {
-  Standard_Integer lower = theData->Lower();
-  Standard_Integer Real_Index;
+  int lower = theData->Lower();
+  int Real_Index;
   if (theDataType != 3)
     return gp_Vec(0.0, 0.0, 0.0);
   Real_Index      = lower + 6 * (anIndex - 1) + 3;
-  Standard_Real I = theData->Value(Real_Index);
-  Standard_Real J = theData->Value(Real_Index + 1);
-  Standard_Real K = theData->Value(Real_Index + 2);
+  double I = theData->Value(Real_Index);
+  double J = theData->Value(Real_Index + 1);
+  double K = theData->Value(Real_Index + 2);
   return gp_Vec(I, J, K);
 }
 
-gp_Vec IGESGeom_CopiousData::TransformedVector(const Standard_Integer anIndex) const
+gp_Vec IGESGeom_CopiousData::TransformedVector(const int anIndex) const
 {
   if (!HasTransf())
     return Vector(anIndex);

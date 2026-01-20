@@ -30,9 +30,9 @@
 
 //=================================================================================================
 
-BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_Surface)& S1,
-                                   const Handle(Adaptor3d_Surface)& S2,
-                                   const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_ChAsym::BlendFunc_ChAsym(const occ::handle<Adaptor3d_Surface>& S1,
+                                   const occ::handle<Adaptor3d_Surface>& S2,
+                                   const occ::handle<Adaptor3d_Curve>&   C)
     : surf1(S1),
       surf2(S2),
       curv(C),
@@ -43,7 +43,7 @@ BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_Surface)& S1,
       tgang(RealLast()),
       FX(1, 4),
       DX(1, 4, 1, 4),
-      istangent(Standard_True),
+      istangent(true),
       choix(0),
       distmin(RealLast())
 {
@@ -51,14 +51,14 @@ BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_Surface)& S1,
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_ChAsym::NbEquations() const
+int BlendFunc_ChAsym::NbEquations() const
 {
   return 4;
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Set(const Standard_Real Param)
+void BlendFunc_ChAsym::Set(const double Param)
 {
   param = Param;
 }
@@ -69,14 +69,14 @@ void BlendFunc_ChAsym::Set(const Standard_Real Param)
 //           La precision est prise arbitrairement petite !?
 //=======================================================================
 
-void BlendFunc_ChAsym::Set(const Standard_Real First, const Standard_Real Last)
+void BlendFunc_ChAsym::Set(const double First, const double Last)
 {
   tcurv = curv->Trim(First, Last, 1.e-12);
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_ChAsym::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = surf1->UResolution(Tol);
   Tolerance(2) = surf1->VResolution(Tol);
@@ -97,11 +97,11 @@ void BlendFunc_ChAsym::GetBounds(math_Vector& InfBound, math_Vector& SupBound) c
   SupBound(3) = surf2->LastUParameter();
   SupBound(4) = surf2->LastVParameter();
 
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
     if (!Precision::IsInfinite(InfBound(i)) && !Precision::IsInfinite(SupBound(i)))
     {
-      const Standard_Real range = (SupBound(i) - InfBound(i));
+      const double range = (SupBound(i) - InfBound(i));
       InfBound(i) -= range;
       SupBound(i) += range;
     }
@@ -110,7 +110,7 @@ void BlendFunc_ChAsym::GetBounds(math_Vector& InfBound, math_Vector& SupBound) c
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
@@ -118,7 +118,7 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
   gp_Pnt        ptgui;
   gp_Vec        np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
   gp_Vec        d1u1, d1v1, d1u2, d1v2;
-  Standard_Real Normg;
+  double Normg;
 
   tcurv->D2(param, ptgui, d1gui, d2gui);
   Normg = d1gui.Magnitude();
@@ -141,9 +141,9 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
 
   gp_Vec        pguis1(ptgui, pt1), pguis2(ptgui, pt2);
   gp_Vec        CrossVec, s1s2(pt1, pt2);
-  Standard_Real PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
-  Standard_Real maxpiv  = 1.e-9;
-  Standard_Real Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
+  double PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
+  double maxpiv  = 1.e-9;
+  double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
 
   temp = 2. * (Nordu1 + Nordv1) * s1s2.Magnitude() + 2. * Nordu1 * Nordv1;
 
@@ -170,7 +170,7 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
     if (Resol.IsDone())
     {
       Resol.Solve(secmember);
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
@@ -180,10 +180,10 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
         math_Vector DEDT(1, 4);
         DEDT = secmember;
         SingRS.Solve(DEDT, secmember, 1.e-6);
-        istangent = Standard_False;
+        istangent = false;
       }
       else
-        istangent = Standard_True;
+        istangent = true;
     }
 
     if (!istangent)
@@ -196,32 +196,32 @@ Standard_Boolean BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const Stan
 
     distmin = std::min(distmin, pt1.Distance(pt2));
 
-    return Standard_True;
+    return true;
   }
 
-  istangent = Standard_True;
-  return Standard_False;
+  istangent = true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BlendFunc_ChAsym::GetMinimalDistance() const
+double BlendFunc_ChAsym::GetMinimalDistance() const
 {
   return distmin;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
-                                                 const Standard_Integer DegF,
-                                                 const Standard_Integer DegL)
+bool BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
+                                                 const int DegF,
+                                                 const int DegL)
 {
   if (DegF > DegL)
-    return Standard_False;
+    return false;
 
   gp_Vec        np, d1gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2, Nsurf1;
   gp_Pnt        ptgui;
-  Standard_Real PScaInv, F4;
+  double PScaInv, F4;
 
   tcurv->D1(param, ptgui, d1gui);
   nplan = d1gui.Normalized();
@@ -250,7 +250,7 @@ Standard_Boolean BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
 
   if (DegF == 0)
   {
-    Standard_Real Dist;
+    double Dist;
     Dist = ptgui.XYZ().Dot(np.XYZ());
 
     FX(1) = pt1.XYZ().Dot(np.XYZ()) - Dist;
@@ -261,7 +261,7 @@ Standard_Boolean BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
 
   if (DegL == 1)
   {
-    Standard_Real temp;
+    double temp;
     gp_Vec        tempVec;
     gp_Vec        d1utsurf1, d1vtsurf1;
     d1utsurf1 = (d2u1.Crossed(d1v1) + d1u1.Crossed(d2uv1)).Crossed(np);
@@ -298,32 +298,32 @@ Standard_Boolean BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
     DX(4, 4) = temp * PScaInv;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ChAsym::Value(const math_Vector& X, math_Vector& F)
 {
-  const Standard_Boolean Error = ComputeValues(X, 0, 0);
+  const bool Error = ComputeValues(X, 0, 0);
   F                            = FX;
   return Error;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_ChAsym::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  const Standard_Boolean Error = ComputeValues(X, 1, 1);
+  const bool Error = ComputeValues(X, 1, 1);
   D                            = DX;
   return Error;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_ChAsym::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
-  const Standard_Boolean Error = ComputeValues(X, 0, 1);
+  const bool Error = ComputeValues(X, 0, 1);
   F                            = FX;
   D                            = DX;
   return Error;
@@ -345,7 +345,7 @@ const gp_Pnt& BlendFunc_ChAsym::PointOnS2() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::IsTangencyPoint() const
+bool BlendFunc_ChAsym::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -388,7 +388,7 @@ const gp_Vec2d& BlendFunc_ChAsym::Tangent2dOnS2() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::TwistOnS1() const
+bool BlendFunc_ChAsym::TwistOnS1() const
 {
   if (istangent)
     throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS1");
@@ -397,7 +397,7 @@ Standard_Boolean BlendFunc_ChAsym::TwistOnS1() const
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::TwistOnS2() const
+bool BlendFunc_ChAsym::TwistOnS2() const
 {
   if (istangent)
     throw Standard_DomainError("BlendFunc_ChAsym::TwistOnS2");
@@ -410,10 +410,10 @@ Standard_Boolean BlendFunc_ChAsym::TwistOnS2() const
 //           aux surfaces S1 et S2
 //=======================================================================
 
-void BlendFunc_ChAsym::Tangent(const Standard_Real U1,
-                               const Standard_Real V1,
-                               const Standard_Real U2,
-                               const Standard_Real V2,
+void BlendFunc_ChAsym::Tangent(const double U1,
+                               const double V1,
+                               const double U2,
+                               const double V2,
                                gp_Vec&             TgF,
                                gp_Vec&             TgL,
                                gp_Vec&             NmF,
@@ -422,8 +422,8 @@ void BlendFunc_ChAsym::Tangent(const Standard_Real U1,
   gp_Pnt           Pt1, Pt2, ptgui;
   gp_Vec           d1u1, d1v1, d1u2, d1v2;
   gp_Vec           np, d1gui;
-  Standard_Boolean revF = Standard_False;
-  Standard_Boolean revL = Standard_False;
+  bool revF = false;
+  bool revL = false;
 
   tcurv->D1(param, ptgui, d1gui);
   np = d1gui.Normalized();
@@ -439,15 +439,15 @@ void BlendFunc_ChAsym::Tangent(const Standard_Real U1,
 
   if ((choix == 2) || (choix == 5))
   {
-    revF = Standard_True;
-    revL = Standard_True;
+    revF = true;
+    revL = true;
   }
 
   if ((choix == 4) || (choix == 7))
-    revL = Standard_True;
+    revL = true;
 
   if ((choix == 3) || (choix == 8))
-    revF = Standard_True;
+    revF = true;
 
   if (revF)
     TgF.Reverse();
@@ -457,13 +457,13 @@ void BlendFunc_ChAsym::Tangent(const Standard_Real U1,
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Section(const Standard_Real /*Param*/,
-                               const Standard_Real U1,
-                               const Standard_Real V1,
-                               const Standard_Real U2,
-                               const Standard_Real V2,
-                               Standard_Real&      Pdeb,
-                               Standard_Real&      Pfin,
+void BlendFunc_ChAsym::Section(const double /*Param*/,
+                               const double U1,
+                               const double V1,
+                               const double U2,
+                               const double V2,
+                               double&      Pdeb,
+                               double&      Pfin,
                                gp_Lin&             C)
 {
   const gp_Pnt Pt1 = surf1->Value(U1, V1);
@@ -479,45 +479,45 @@ void BlendFunc_ChAsym::Section(const Standard_Real /*Param*/,
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::IsRational() const
+bool BlendFunc_ChAsym::IsRational() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BlendFunc_ChAsym::GetSectionSize() const
+double BlendFunc_ChAsym::GetSectionSize() const
 {
   throw Standard_NotImplemented("BlendFunc_ChAsym::GetSectionSize()");
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
+void BlendFunc_ChAsym::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
   Weights.Init(1);
 }
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_ChAsym::NbIntervals(const GeomAbs_Shape S) const
+int BlendFunc_ChAsym::NbIntervals(const GeomAbs_Shape S) const
 {
   return curv->NbIntervals(BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BlendFunc_ChAsym::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   curv->Intervals(T, BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::GetShape(Standard_Integer& NbPoles,
-                                Standard_Integer& NbKnots,
-                                Standard_Integer& Degree,
-                                Standard_Integer& NbPoles2d)
+void BlendFunc_ChAsym::GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d)
 {
   NbPoles   = 2;
   NbPoles2d = 2;
@@ -529,9 +529,9 @@ void BlendFunc_ChAsym::GetShape(Standard_Integer& NbPoles,
 // function : GetTolerance
 // purpose  : Determine les Tolerances a utiliser dans les approximations.
 //=======================================================================
-void BlendFunc_ChAsym::GetTolerance(const Standard_Real BoundTol,
-                                    const Standard_Real,
-                                    const Standard_Real,
+void BlendFunc_ChAsym::GetTolerance(const double BoundTol,
+                                    const double,
+                                    const double,
                                     math_Vector& Tol3d,
                                     math_Vector&) const
 {
@@ -540,7 +540,7 @@ void BlendFunc_ChAsym::GetTolerance(const Standard_Real BoundTol,
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Knots(TColStd_Array1OfReal& TKnots)
+void BlendFunc_ChAsym::Knots(NCollection_Array1<double>& TKnots)
 {
   TKnots(1) = 0.;
   TKnots(2) = 1.;
@@ -548,7 +548,7 @@ void BlendFunc_ChAsym::Knots(TColStd_Array1OfReal& TKnots)
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Mults(TColStd_Array1OfInteger& TMults)
+void BlendFunc_ChAsym::Mults(NCollection_Array1<int>& TMults)
 {
   TMults(1) = 2;
   TMults(2) = 2;
@@ -557,13 +557,13 @@ void BlendFunc_ChAsym::Mults(TColStd_Array1OfInteger& TMults)
 //=================================================================================================
 
 void BlendFunc_ChAsym::Section(const Blend_Point&    P,
-                               TColgp_Array1OfPnt&   Poles,
-                               TColgp_Array1OfPnt2d& Poles2d,
-                               TColStd_Array1OfReal& Weights)
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>& Weights)
 {
-  Standard_Real    u1, v1, u2, v2, prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
+  double    u1, v1, u2, v2, prm = P.Parameter();
+  int low = Poles.Lower();
+  int upp = Poles.Upper();
   math_Vector      X(1, 4), F(1, 4);
 
   P.ParametersOnS1(u1, v1);
@@ -585,19 +585,19 @@ void BlendFunc_ChAsym::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
-                                           TColgp_Array1OfPnt&   Poles,
-                                           TColgp_Array1OfVec&   DPoles,
-                                           TColgp_Array1OfPnt2d& Poles2d,
-                                           TColgp_Array1OfVec2d& DPoles2d,
-                                           TColStd_Array1OfReal& Weights,
-                                           TColStd_Array1OfReal& DWeights)
+bool BlendFunc_ChAsym::Section(const Blend_Point&    P,
+                                           NCollection_Array1<gp_Pnt>&   Poles,
+                                           NCollection_Array1<gp_Vec>&   DPoles,
+                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                           NCollection_Array1<double>& Weights,
+                                           NCollection_Array1<double>& DWeights)
 {
   math_Vector      Sol(1, 4), valsol(1, 4), secmember(1, 4);
   math_Matrix      gradsol(1, 4, 1, 4);
-  Standard_Real    prm = P.Parameter();
-  Standard_Integer low = Poles.Lower();
-  Standard_Integer upp = Poles.Upper();
+  double    prm = P.Parameter();
+  int low = Poles.Lower();
+  int upp = Poles.Upper();
 
   P.ParametersOnS1(Sol(1), Sol(2));
   P.ParametersOnS2(Sol(3), Sol(4));
@@ -613,7 +613,7 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
   gp_Pnt        ptgui;
   gp_Vec        np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
   gp_Vec        d1u1, d1v1, d1u2, d1v2;
-  Standard_Real Normg;
+  double Normg;
 
   tcurv->D2(param, ptgui, d1gui, d2gui);
   Normg = d1gui.Magnitude();
@@ -636,9 +636,9 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
 
   gp_Vec        pguis1(ptgui, pt1), pguis2(ptgui, pt2);
   gp_Vec        CrossVec, s1s2(pt1, pt2);
-  Standard_Real PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
-  Standard_Real maxpiv  = 1.e-9;
-  Standard_Real Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
+  double PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
+  double maxpiv  = 1.e-9;
+  double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
 
   temp = 2. * (Nordu1 + Nordv1) * s1s2.Magnitude() + 2. * Nordu1 * Nordv1;
 
@@ -659,7 +659,7 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
   if (Resol.IsDone())
   {
     Resol.Solve(secmember);
-    istangent = Standard_False;
+    istangent = false;
   }
   else
   {
@@ -669,10 +669,10 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
       math_Vector DEDT(1, 4);
       DEDT = secmember;
       SingRS.Solve(DEDT, secmember, 1.e-6);
-      istangent = Standard_False;
+      istangent = false;
     }
     else
-      istangent = Standard_True;
+      istangent = true;
   }
 
   if (!istangent)
@@ -701,26 +701,26 @@ Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_ChAsym::Section(const Blend_Point& /*P*/,
-                                           TColgp_Array1OfPnt& /*Poles*/,
-                                           TColgp_Array1OfVec& /*DPoles*/,
-                                           TColgp_Array1OfVec& /*D2Poles*/,
-                                           TColgp_Array1OfPnt2d& /*Poles2d*/,
-                                           TColgp_Array1OfVec2d& /*DPoles2d*/,
-                                           TColgp_Array1OfVec2d& /*D2Poles2d*/,
-                                           TColStd_Array1OfReal& /*Weights*/,
-                                           TColStd_Array1OfReal& /*DWeights*/,
-                                           TColStd_Array1OfReal& /*D2Weights*/)
+bool BlendFunc_ChAsym::Section(const Blend_Point& /*P*/,
+                                           NCollection_Array1<gp_Pnt>& /*Poles*/,
+                                           NCollection_Array1<gp_Vec>& /*DPoles*/,
+                                           NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                                           NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                                           NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                                           NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                                           NCollection_Array1<double>& /*Weights*/,
+                                           NCollection_Array1<double>& /*DWeights*/,
+                                           NCollection_Array1<double>& /*D2Weights*/)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Resolution(const Standard_Integer IC2d,
-                                  const Standard_Real    Tol,
-                                  Standard_Real&         TolU,
-                                  Standard_Real&         TolV) const
+void BlendFunc_ChAsym::Resolution(const int IC2d,
+                                  const double    Tol,
+                                  double&         TolU,
+                                  double&         TolV) const
 {
   if (IC2d == 1)
   {
@@ -736,9 +736,9 @@ void BlendFunc_ChAsym::Resolution(const Standard_Integer IC2d,
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Set(const Standard_Real    Dist1,
-                           const Standard_Real    Angle,
-                           const Standard_Integer Choix)
+void BlendFunc_ChAsym::Set(const double    Dist1,
+                           const double    Angle,
+                           const int Choix)
 {
   dist1 = std::abs(Dist1);
   angle = Angle;

@@ -23,7 +23,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to three circles.                        +
@@ -31,7 +31,7 @@
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                      const GccEnt_QualifiedCirc& Qualified2,
                                      const GccEnt_QualifiedCirc& Qualified3,
-                                     const Standard_Real         Tolerance)
+                                     const double         Tolerance)
     :
 
       //=========================================================================
@@ -57,8 +57,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = std::abs(Tolerance);
-  WellDone          = Standard_False;
+  double Tol = std::abs(Tolerance);
+  WellDone          = false;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
@@ -78,20 +78,20 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   gp_Circ2d     Cir1 = Qualified1.Qualified();
   gp_Circ2d     Cir2 = Qualified2.Qualified();
   gp_Circ2d     Cir3 = Qualified3.Qualified();
-  Standard_Real R1   = Cir1.Radius();
-  Standard_Real R2   = Cir2.Radius();
-  Standard_Real R3   = Cir3.Radius();
+  double R1   = Cir1.Radius();
+  double R2   = Cir2.Radius();
+  double R3   = Cir3.Radius();
   gp_Pnt2d      center1(Cir1.Location());
   gp_Pnt2d      center2(Cir2.Location());
   gp_Pnt2d      center3(Cir3.Location());
 
-  Standard_Real X1 = center1.X();
-  Standard_Real X2 = center2.X();
-  Standard_Real X3 = center3.X();
+  double X1 = center1.X();
+  double X2 = center2.X();
+  double X3 = center3.X();
 
-  Standard_Real Y1 = center1.Y();
-  Standard_Real Y2 = center2.Y();
-  Standard_Real Y3 = center3.Y();
+  double Y1 = center1.Y();
+  double Y2 = center2.Y();
+  double Y3 = center3.Y();
 
   gp_XY dir2 = center1.XY() - center2.XY();
   gp_XY dir3 = center1.XY() - center3.XY();
@@ -105,9 +105,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   {
     if (std::abs(dir2 ^ dir3) <= Tolerance)
     {
-      Standard_Real Dist1 = center1.Distance(center2);
-      Standard_Real Dist2 = center1.Distance(center3);
-      Standard_Real Dist3 = center2.Distance(center3);
+      double Dist1 = center1.Distance(center2);
+      double Dist2 = center1.Distance(center3);
+      double Dist3 = center2.Distance(center3);
       if (std::abs(std::abs(R1 - R2) - Dist1) <= Tolerance)
       {
         if (std::abs(std::abs(R1 - R3) - Dist2) <= Tolerance)
@@ -137,32 +137,32 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
     }
   }
   /////////
-  TColStd_Array1OfReal A2(1, 8), B2(1, 8), C2(1, 8), D2(1, 8), E2(1, 8), F2(1, 8);
-  TColStd_Array1OfReal A3(1, 8), B3(1, 8), C3(1, 8), D3(1, 8), E3(1, 8), F3(1, 8);
-  TColStd_Array1OfReal Beta2(1, 8), Gamma2(1, 8), Delta2(1, 8);
-  TColStd_Array1OfReal Beta3(1, 8), Gamma3(1, 8), Delta3(1, 8);
-  Standard_Real        a2, b2, c2, d2, e2, f2;
-  Standard_Real        a3, b3, c3, d3, e3, f3;
-  Standard_Real        A, B, C, D, E;
-  Standard_Boolean     IsSame;
-  Standard_Boolean     IsTouch;
-  Standard_Integer     FirstIndex;
+  NCollection_Array1<double> A2(1, 8), B2(1, 8), C2(1, 8), D2(1, 8), E2(1, 8), F2(1, 8);
+  NCollection_Array1<double> A3(1, 8), B3(1, 8), C3(1, 8), D3(1, 8), E3(1, 8), F3(1, 8);
+  NCollection_Array1<double> Beta2(1, 8), Gamma2(1, 8), Delta2(1, 8);
+  NCollection_Array1<double> Beta3(1, 8), Gamma3(1, 8), Delta3(1, 8);
+  double        a2, b2, c2, d2, e2, f2;
+  double        a3, b3, c3, d3, e3, f3;
+  double        A, B, C, D, E;
+  bool     IsSame;
+  bool     IsTouch;
+  int     FirstIndex;
 
-  Standard_Integer        i, j, k, l;
-  TColStd_Array1OfReal    xSol(1, 64);
-  TColStd_Array1OfReal    ySol(1, 64);
-  TColStd_Array1OfReal    rSol(1, 16);
-  TColStd_Array1OfInteger FirstSol(1, 9);
-  TColStd_Array1OfReal    xSol1(1, 32);
-  TColStd_Array1OfReal    ySol1(1, 32);
-  TColStd_Array1OfReal    rSol1(1, 32);
-  TColStd_Array1OfInteger FirstSol1(1, 9);
-  Standard_Real           x, y, r;
-  Standard_Real           m, n, t, s, v;
-  Standard_Real           p, q;
-  Standard_Real           Epsilon;
+  int        i, j, k, l;
+  NCollection_Array1<double>    xSol(1, 64);
+  NCollection_Array1<double>    ySol(1, 64);
+  NCollection_Array1<double>    rSol(1, 16);
+  NCollection_Array1<int> FirstSol(1, 9);
+  NCollection_Array1<double>    xSol1(1, 32);
+  NCollection_Array1<double>    ySol1(1, 32);
+  NCollection_Array1<double>    rSol1(1, 32);
+  NCollection_Array1<int> FirstSol1(1, 9);
+  double           x, y, r;
+  double           m, n, t, s, v;
+  double           p, q;
+  double           Epsilon;
 
-  Standard_Integer CurSol;
+  int CurSol;
 
   //*********************************************************************************************
   //*********************************************************************************************
@@ -211,9 +211,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
            <= Tolerance
       || std::abs((X2 - X3) * (X2 - X3) + (Y2 - Y3) * (Y2 - Y3) - (R2 + R3) * (R2 + R3))
            <= Tolerance)
-    IsTouch = Standard_True;
+    IsTouch = true;
   else
-    IsTouch = Standard_False;
+    IsTouch = false;
 
   //   First step:
   //     We are searching for Beta, Gamma and Delta coefficients
@@ -420,10 +420,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           {
             y = yRoots1.Value(k);
             // Check if this value is already caught
-            IsSame = Standard_False;
+            IsSame = false;
             for (l = 1; l < k; l++)
               if (std::abs(y - yRoots1.Value(l)) <= 10 * Tolerance)
-                IsSame = Standard_True;
+                IsSame = true;
 
             Epsilon =
               (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
@@ -448,11 +448,11 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         {
           y = yRoots1.Value(k);
           // Check if this value is already caught
-          IsSame     = Standard_False;
+          IsSame     = false;
           FirstIndex = (i == 1) ? 1 : FirstSol(i);
           for (l = FirstIndex; l < CurSol; l++)
             if (std::abs(y - ySol(l)) <= 10 * Tolerance)
-              IsSame = Standard_True;
+              IsSame = true;
 
           if (!IsSame && std::abs(b2 * y + d2) > b2 * Tolerance)
           {
@@ -541,11 +541,11 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               q = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
 
               // Check if this value is already caught
-              IsSame     = Standard_False;
+              IsSame     = false;
               FirstIndex = (i == 1) ? 1 : FirstSol(i);
               for (l = FirstIndex; l < CurSol; l++)
                 if (std::abs(y - ySol(l)) <= 10 * Tolerance)
-                  IsSame = Standard_True;
+                  IsSame = true;
 
               Epsilon =
                 (std::abs((std::abs((std::abs(4 * A * y) + std::abs(3 * B)) * y) + std::abs(2 * C))
@@ -593,10 +593,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             q = (c2 * (y * y) + 2 * e2 * y + f2) / a2;
 
             // Check if this value is already caught
-            IsSame = Standard_False;
+            IsSame = false;
             for (l = 1; l < k; l++)
               if (std::abs(y - yRoots.Value(l)) <= 10 * Tolerance)
-                IsSame = Standard_True;
+                IsSame = true;
 
             Epsilon = 2.
                       * (std::abs((b2 * b2 + std::abs(a2 * c2)) * y) + std::abs(b2 * d2)
@@ -835,7 +835,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), rSol(j));
 
       //   ==========================================================
-      Standard_Real distcc1 = Center.Distance(center1);
+      double distcc1 = Center.Distance(center1);
       if (!Qualified1.IsUnqualified())
         qualifier1(NbrSol) = Qualified1.Qualifier();
       else if (std::abs(distcc1 + rSol(j) - R1) <= Tol)
@@ -845,7 +845,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       else
         qualifier1(NbrSol) = GccEnt_enclosing;
 
-      Standard_Real distcc2 = Center.Distance(center1);
+      double distcc2 = Center.Distance(center1);
       if (!Qualified2.IsUnqualified())
         qualifier2(NbrSol) = Qualified2.Qualifier();
       else if (std::abs(distcc2 + rSol(j) - R2) <= Tol)
@@ -855,7 +855,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       else
         qualifier2(NbrSol) = GccEnt_enclosing;
 
-      Standard_Real distcc3 = Center.Distance(center1);
+      double distcc3 = Center.Distance(center1);
       if (!Qualified3.IsUnqualified())
         qualifier3(NbrSol) = Qualified3.Qualifier();
       else if (std::abs(distcc3 + rSol(j) - R3) <= Tol)
@@ -913,22 +913,22 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       }
     }
   }
-  WellDone = Standard_True;
+  WellDone = true;
 }
 
 //=========================================================================
 
-Standard_Boolean GccAna_Circ2d3Tan::IsDone() const
+bool GccAna_Circ2d3Tan::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Circ2d3Tan::NbSolutions() const
+int GccAna_Circ2d3Tan::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d GccAna_Circ2d3Tan::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d GccAna_Circ2d3Tan::ThisSolution(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -939,7 +939,7 @@ gp_Circ2d GccAna_Circ2d3Tan::ThisSolution(const Standard_Integer Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2d3Tan::WhichQualifier(const Standard_Integer Index,
+void GccAna_Circ2d3Tan::WhichQualifier(const int Index,
                                        GccEnt_Position&       Qualif1,
                                        GccEnt_Position&       Qualif2,
                                        GccEnt_Position&       Qualif3) const
@@ -960,9 +960,9 @@ void GccAna_Circ2d3Tan::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2d3Tan::Tangency1(const Standard_Integer Index,
-                                  Standard_Real&         ParSol,
-                                  Standard_Real&         ParArg,
+void GccAna_Circ2d3Tan::Tangency1(const int Index,
+                                  double&         ParSol,
+                                  double&         ParArg,
                                   gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -988,9 +988,9 @@ void GccAna_Circ2d3Tan::Tangency1(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2d3Tan::Tangency2(const Standard_Integer Index,
-                                  Standard_Real&         ParSol,
-                                  Standard_Real&         ParArg,
+void GccAna_Circ2d3Tan::Tangency2(const int Index,
+                                  double&         ParSol,
+                                  double&         ParArg,
                                   gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -1016,9 +1016,9 @@ void GccAna_Circ2d3Tan::Tangency2(const Standard_Integer Index,
   }
 }
 
-void GccAna_Circ2d3Tan::Tangency3(const Standard_Integer Index,
-                                  Standard_Real&         ParSol,
-                                  Standard_Real&         ParArg,
+void GccAna_Circ2d3Tan::Tangency3(const int Index,
+                                  double&         ParSol,
+                                  double&         ParArg,
                                   gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -1044,7 +1044,7 @@ void GccAna_Circ2d3Tan::Tangency3(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean GccAna_Circ2d3Tan::IsTheSame1(const Standard_Integer Index) const
+bool GccAna_Circ2d3Tan::IsTheSame1(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -1053,12 +1053,12 @@ Standard_Boolean GccAna_Circ2d3Tan::IsTheSame1(const Standard_Integer Index) con
     throw Standard_OutOfRange();
 
   if (TheSame1(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GccAna_Circ2d3Tan::IsTheSame2(const Standard_Integer Index) const
+bool GccAna_Circ2d3Tan::IsTheSame2(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -1067,12 +1067,12 @@ Standard_Boolean GccAna_Circ2d3Tan::IsTheSame2(const Standard_Integer Index) con
     throw Standard_OutOfRange();
 
   if (TheSame2(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GccAna_Circ2d3Tan::IsTheSame3(const Standard_Integer Index) const
+bool GccAna_Circ2d3Tan::IsTheSame3(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -1081,7 +1081,7 @@ Standard_Boolean GccAna_Circ2d3Tan::IsTheSame3(const Standard_Integer Index) con
     throw Standard_OutOfRange();
 
   if (TheSame3(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

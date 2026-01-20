@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Torus, StepGeom_GeometricRepresentationItem
 
 StepShape_Torus::StepShape_Torus() {}
 
-void StepShape_Torus::Init(const Handle(TCollection_HAsciiString)& aName,
-                           const Handle(StepGeom_Axis1Placement)&  aPosition,
-                           const Standard_Real                     aMajorRadius,
-                           const Standard_Real                     aMinorRadius)
+void StepShape_Torus::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                           const occ::handle<StepGeom_Axis1Placement>&  aPosition,
+                           const double                     aMajorRadius,
+                           const double                     aMinorRadius)
 {
   // --- classe own fields ---
   position    = aPosition;
@@ -32,32 +32,32 @@ void StepShape_Torus::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_Torus::SetPosition(const Handle(StepGeom_Axis1Placement)& aPosition)
+void StepShape_Torus::SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition)
 {
   position = aPosition;
 }
 
-Handle(StepGeom_Axis1Placement) StepShape_Torus::Position() const
+occ::handle<StepGeom_Axis1Placement> StepShape_Torus::Position() const
 {
   return position;
 }
 
-void StepShape_Torus::SetMajorRadius(const Standard_Real aMajorRadius)
+void StepShape_Torus::SetMajorRadius(const double aMajorRadius)
 {
   majorRadius = aMajorRadius;
 }
 
-Standard_Real StepShape_Torus::MajorRadius() const
+double StepShape_Torus::MajorRadius() const
 {
   return majorRadius;
 }
 
-void StepShape_Torus::SetMinorRadius(const Standard_Real aMinorRadius)
+void StepShape_Torus::SetMinorRadius(const double aMinorRadius)
 {
   minorRadius = aMinorRadius;
 }
 
-Standard_Real StepShape_Torus::MinorRadius() const
+double StepShape_Torus::MinorRadius() const
 {
   return minorRadius;
 }

@@ -28,10 +28,15 @@
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_FilSpine.hxx>
-#include <ChFiDS_HData.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_SecHArray1.hxx>
-#include <ChFiDS_SequenceOfSurfData.hxx>
+#include <ChFiDS_CircSection.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -55,9 +60,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-static Standard_Boolean isinlist(const TopoDS_Shape& E, const TopTools_ListOfShape& L)
+static bool isinlist(const TopoDS_Shape& E, const NCollection_List<TopoDS_Shape>& L)
 {
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   for (It.Initialize(L); It.More(); It.Next())
   {
     if (E.IsSame(It.Value()))
@@ -66,22 +71,22 @@ static Standard_Boolean isinlist(const TopoDS_Shape& E, const TopTools_ListOfSha
   return 0;
 }
 
-static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_Curve)& Ed,
+static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
                                     const gp_Pln&              P,
-                                    Standard_Real&             w,
-                                    const Standard_Real        tol3d)
+                                    double&             w,
+                                    const double        tol3d)
 {
-  Standard_Boolean            done = 0;
-  Standard_Real               f    = Ed->FirstParameter();
-  Standard_Real               l    = Ed->LastParameter();
+  bool            done = 0;
+  double               f    = Ed->FirstParameter();
+  double               l    = Ed->LastParameter();
   gp_Pnt                      Or   = P.Location();
-  Handle(Geom_Plane)          Pln  = new Geom_Plane(P);
-  Handle(GeomAdaptor_Surface) Plan = new GeomAdaptor_Surface(GeomAdaptor_Surface(Pln));
+  occ::handle<Geom_Plane>          Pln  = new Geom_Plane(P);
+  occ::handle<GeomAdaptor_Surface> Plan = new GeomAdaptor_Surface(GeomAdaptor_Surface(Pln));
 
   IntCurveSurface_HInter            Intersection;
-  Standard_Integer                  nbp, iip;
+  int                  nbp, iip;
   IntCurveSurface_IntersectionPoint IP;
-  Standard_Real                     dist = RealLast();
+  double                     dist = RealLast();
 
   Intersection.Perform(Ed, Plan);
 
@@ -92,7 +97,7 @@ static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_Curve)& Ed,
     {
       IP                 = Intersection.Point(iip);
       gp_Pnt        pint = IP.Pnt();
-      Standard_Real d    = pint.Distance(Or);
+      double d    = pint.Distance(Or);
       if (d < dist)
       {
         done = 1;
@@ -103,14 +108,14 @@ static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_Curve)& Ed,
   }
   gp_Pnt        pdeb = Ed->Value(f);
   gp_Pnt        pfin = Ed->Value(l);
-  Standard_Real u, v;
+  double u, v;
   // check if the extremities are not solution
   ElSLib::Parameters(P, pdeb, u, v);
   gp_Pnt        projdeb  = ElSLib::Value(u, v, P);
-  Standard_Real dprojdeb = pdeb.Distance(projdeb);
+  double dprojdeb = pdeb.Distance(projdeb);
   if (dprojdeb < tol3d)
   {
-    Standard_Real d = pdeb.Distance(Or);
+    double d = pdeb.Distance(Or);
     if (d < dist)
     {
       done = 1;
@@ -120,10 +125,10 @@ static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_Curve)& Ed,
   }
   ElSLib::Parameters(P, pfin, u, v);
   gp_Pnt        projfin  = ElSLib::Value(u, v, P);
-  Standard_Real dprojfin = pfin.Distance(projfin);
+  double dprojfin = pfin.Distance(projfin);
   if (dprojfin < tol3d)
   {
-    Standard_Real d = pfin.Distance(Or);
+    double d = pfin.Distance(Or);
     if (d < dist)
     {
       done = 1;
@@ -134,18 +139,18 @@ static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_Curve)& Ed,
   return done;
 }
 
-static Standard_Boolean ComputeEdgeParameter(const Handle(ChFiDS_Spine)& Spine,
-                                             const Standard_Integer      ind,
-                                             const Standard_Real         pelsp,
-                                             Standard_Real&              ped,
-                                             const Standard_Real         tol3d)
+static bool ComputeEdgeParameter(const occ::handle<ChFiDS_Spine>& Spine,
+                                             const int      ind,
+                                             const double         pelsp,
+                                             double&              ped,
+                                             const double         tol3d)
 {
-  Handle(ChFiDS_ElSpine) Guide = Spine->ElSpine(ind);
+  occ::handle<ChFiDS_ElSpine> Guide = Spine->ElSpine(ind);
   gp_Pnt                 P;
   gp_Vec                 V;
   Guide->D1(pelsp, P, V);
   gp_Pln                    pln(P, V);
-  Handle(BRepAdaptor_Curve) ed = new BRepAdaptor_Curve(Spine->CurrentElementarySpine(ind));
+  occ::handle<BRepAdaptor_Curve> ed = new BRepAdaptor_Curve(Spine->CurrentElementarySpine(ind));
   return IntPlanEdge(ed, pln, ped, tol3d);
 }
 
@@ -153,9 +158,9 @@ static Standard_Boolean ComputeEdgeParameter(const Handle(ChFiDS_Spine)& Spine,
 
 FilletSurf_InternalBuilder::FilletSurf_InternalBuilder(const TopoDS_Shape&      S,
                                                        const ChFi3d_FilletShape FShape,
-                                                       const Standard_Real      Ta,
-                                                       const Standard_Real      Tapp3d,
-                                                       const Standard_Real      Tapp2d)
+                                                       const double      Ta,
+                                                       const double      Tapp3d,
+                                                       const double      Tapp2d)
     : ChFi3d_FilBuilder(S, FShape, Ta)
 {
   SetParams(Ta, Tapp3d, Tapp2d, Tapp3d, Tapp2d, 1.e-3);
@@ -174,12 +179,12 @@ FilletSurf_InternalBuilder::FilletSurf_InternalBuilder(const TopoDS_Shape&      
 //  5 : edge is not alive
 //=======================================================================
 
-Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
-                                                 const Standard_Real         R)
+int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E,
+                                                 const double         R)
 {
   if (E.IsEmpty())
     return 1;
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   for (It.Initialize(E); It.More(); It.Next())
   {
     TopoDS_Edge cured = TopoDS::Edge(It.Value());
@@ -214,9 +219,9 @@ Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
   TopoDS_Edge ed = TopoDS::Edge(E.First());
   ed.Orientation(TopAbs_FORWARD);
   ChFi3d_FilBuilder::Add(R, ed);
-  Handle(ChFiDS_Stripe) st       = myListStripe.First();
-  Handle(ChFiDS_Spine)& sp       = st->ChangeSpine();
-  Standard_Boolean      periodic = sp->IsPeriodic();
+  occ::handle<ChFiDS_Stripe> st       = myListStripe.First();
+  occ::handle<ChFiDS_Spine>& sp       = st->ChangeSpine();
+  bool      periodic = sp->IsPeriodic();
 
   // It is checked if edges of list E are in the contour,
   // the edges that arenot in the list are removed from the contour,
@@ -229,11 +234,11 @@ Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
       return 2;
   }
 
-  Handle(ChFiDS_FilSpine) newsp              = new ChFiDS_FilSpine();
-  Standard_Boolean        debut              = 0;
-  Standard_Integer        premierquinyestpas = 0;
-  Standard_Integer        yatrou             = 0;
-  for (Standard_Integer i = 1; i <= sp->NbEdges(); i++)
+  occ::handle<ChFiDS_FilSpine> newsp              = new ChFiDS_FilSpine();
+  bool        debut              = 0;
+  int        premierquinyestpas = 0;
+  int        yatrou             = 0;
+  for (int i = 1; i <= sp->NbEdges(); i++)
   {
     TopoDS_Edge cured = sp->Edges(i);
     if (isinlist(cured, E))
@@ -253,8 +258,8 @@ Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
     return 2;
   if (periodic && yatrou)
   {
-    Standard_Boolean vraitrou = 0, aLocalDebut = 0;
-    for (Standard_Integer i = sp->NbEdges(); i > yatrou; i--)
+    bool vraitrou = 0, aLocalDebut = 0;
+    for (int i = sp->NbEdges(); i > yatrou; i--)
     {
       TopoDS_Edge cured = sp->Edges(i);
       if (isinlist(cured, E))
@@ -277,7 +282,7 @@ Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
   }
 
   // ElSpine is immediately constructed
-  Handle(ChFiDS_ElSpine) hels = new ChFiDS_ElSpine();
+  occ::handle<ChFiDS_ElSpine> hels = new ChFiDS_ElSpine();
   gp_Vec                 TFirst, TLast;
   gp_Pnt                 PFirst, PLast;
   sp->D1(sp->FirstParameter(), PFirst, TFirst);
@@ -288,7 +293,7 @@ Standard_Integer FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
   hels->SetLastPointAndTgt(PLast, TLast);
   ChFi3d_PerformElSpine(hels, sp, myConti, tolesp);
   sp->AppendElSpine(hels);
-  sp->SplitDone(Standard_True);
+  sp->SplitDone(true);
   return 0;
 }
 
@@ -298,12 +303,12 @@ void FilletSurf_InternalBuilder::Perform()
 {
   // PerformSetOfSurfOnElSpine is enough.
 
-  Handle(ChFiDS_Stripe) Stripe = myListStripe.First();
-  Handle(ChFiDS_HData)& HData  = Stripe->ChangeSetOfSurfData();
-  HData                        = new ChFiDS_HData();
-  Handle(ChFiDS_Spine)& Spine  = Stripe->ChangeSpine();
+  occ::handle<ChFiDS_Stripe> Stripe = myListStripe.First();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData  = Stripe->ChangeSetOfSurfData();
+  HData                        = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
+  occ::handle<ChFiDS_Spine>& Spine  = Stripe->ChangeSpine();
   TopAbs_Orientation    RefOr1, RefOr2;
-  Standard_Integer      RefChoix;
+  int      RefChoix;
   StripeOrientations(Spine, RefOr1, RefOr2, RefChoix);
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
@@ -313,39 +318,39 @@ void FilletSurf_InternalBuilder::Perform()
 
 //=================================================================================================
 
-Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&         SeqData,
-                                                         const Handle(ChFiDS_ElSpine)&      Guide,
-                                                         const Handle(ChFiDS_Spine)&        Spine,
-                                                         const Standard_Integer             Choix,
-                                                         const Handle(BRepAdaptor_Surface)& S1,
-                                                         const Handle(Adaptor3d_TopolTool)& I1,
-                                                         const Handle(BRepAdaptor_Surface)& S2,
-                                                         const Handle(Adaptor3d_TopolTool)& I2,
-                                                         const Standard_Real                MaxStep,
-                                                         const Standard_Real                Fleche,
-                                                         const Standard_Real    TolGuide,
-                                                         Standard_Real&         First,
-                                                         Standard_Real&         Last,
-                                                         const Standard_Boolean Inside,
-                                                         const Standard_Boolean Appro,
-                                                         const Standard_Boolean Forward,
-                                                         const Standard_Boolean RecOnS1,
-                                                         const Standard_Boolean RecOnS2,
+bool FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
+                                                         const occ::handle<ChFiDS_ElSpine>&      Guide,
+                                                         const occ::handle<ChFiDS_Spine>&        Spine,
+                                                         const int             Choix,
+                                                         const occ::handle<BRepAdaptor_Surface>& S1,
+                                                         const occ::handle<Adaptor3d_TopolTool>& I1,
+                                                         const occ::handle<BRepAdaptor_Surface>& S2,
+                                                         const occ::handle<Adaptor3d_TopolTool>& I2,
+                                                         const double                MaxStep,
+                                                         const double                Fleche,
+                                                         const double    TolGuide,
+                                                         double&         First,
+                                                         double&         Last,
+                                                         const bool Inside,
+                                                         const bool Appro,
+                                                         const bool Forward,
+                                                         const bool RecOnS1,
+                                                         const bool RecOnS2,
                                                          const math_Vector&     Soldep,
-                                                         Standard_Integer&      Intf,
-                                                         Standard_Integer&      Intl)
+                                                         int&      Intf,
+                                                         int&      Intl)
 {
-  Handle(ChFiDS_SurfData) Data = SeqData(1);
-  Handle(ChFiDS_FilSpine) fsp  = Handle(ChFiDS_FilSpine)::DownCast(Spine);
+  occ::handle<ChFiDS_SurfData> Data = SeqData(1);
+  occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
-  Handle(BRepBlend_Line) lin;
+  occ::handle<BRepBlend_Line> lin;
   TopAbs_Orientation     Or = S1->Face().Orientation();
   if (!fsp->IsConstant())
     throw Standard_ConstructionError("PerformSurf : no variable radiuses");
-  // Standard_Boolean maybesingular; //pour scinder les Surfdata singulieres
+  // bool maybesingular; //pour scinder les Surfdata singulieres
 
-  Handle(ChFiDS_ElSpine) EmptyGuide;
+  occ::handle<ChFiDS_ElSpine> EmptyGuide;
 
   BRepBlend_ConstRad    Func(S1, S2, Guide);
   BRepBlend_ConstRadInv FInv(S1, S2, Guide);
@@ -362,7 +367,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
     case ChFi3d_Polynomial:
       Func.Set(BlendFunc_Polynomial);
   }
-  Standard_Real PFirst = First;
+  double PFirst = First;
   done                 = SimulData(Data,
                    Guide,
                    EmptyGuide,
@@ -387,12 +392,12 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
                    RecOnS1,
                    RecOnS2);
   if (!done)
-    return Standard_False;
+    return false;
   if (lin->StartPointOnFirst().NbPointOnRst() != 0)
   {
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS1(),
                           tolapp3d);
   }
@@ -400,7 +405,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
   {
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS1(),
                           tolapp3d);
   }
@@ -408,7 +413,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
   {
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_True,
+                          true,
                           Data->ChangeVertexFirstOnS2(),
                           tolapp3d);
   }
@@ -416,7 +421,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
   {
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
-                          Standard_False,
+                          false,
                           Data->ChangeVertexLastOnS2(),
                           tolapp3d);
   }
@@ -424,7 +429,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
   if (!done)
     throw Standard_Failure("PerformSurf : Failed approximation!");
   //  maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d);
-  Standard_Boolean ok = Standard_False;
+  bool ok = false;
   if (!Forward)
   {
     Intf                           = 0;
@@ -445,7 +450,7 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
     }
   }
   Intl                           = 0;
-  ok                             = Standard_False;
+  ok                             = false;
   const ChFiDS_CommonPoint& cpl1 = Data->VertexLastOnS1();
   if (cpl1.IsOnArc())
   {
@@ -466,103 +471,103 @@ Standard_Boolean FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfDa
 
   //  if (maybesingular) SplitSurf(SeqData, lin);
   //  Necessite de trimer resultats : A faire
-  return Standard_True;
+  return true;
 }
 
-void FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                             const Handle(ChFiDS_ElSpine)&,
-                                             const Handle(ChFiDS_Spine)&,
-                                             const Standard_Integer,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             Standard_Boolean&,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
+void FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                             const occ::handle<ChFiDS_ElSpine>&,
+                                             const occ::handle<ChFiDS_Spine>&,
+                                             const int,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             bool&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
                                              const TopAbs_Orientation,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             Standard_Real&,
-                                             Standard_Real&,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
+                                             const double,
+                                             const double,
+                                             const double,
+                                             double&,
+                                             double&,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
                                              const math_Vector&)
 {
   throw Standard_DomainError("BlendFunc_CSConstRad::Section : Not implemented");
 }
 
-void FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                             const Handle(ChFiDS_ElSpine)&,
-                                             const Handle(ChFiDS_Spine)&,
-                                             const Standard_Integer,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
+void FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                             const occ::handle<ChFiDS_ElSpine>&,
+                                             const occ::handle<ChFiDS_Spine>&,
+                                             const int,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
                                              const TopAbs_Orientation,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             Standard_Boolean&,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             Standard_Real&,
-                                             Standard_Real&,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             bool&,
+                                             const double,
+                                             const double,
+                                             const double,
+                                             double&,
+                                             double&,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
                                              const math_Vector&)
 {
   throw Standard_DomainError("BlendFunc_CSConstRad::Section : Not implemented");
 }
 
-void FilletSurf_InternalBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&,
-                                             const Handle(ChFiDS_ElSpine)&,
-                                             const Handle(ChFiDS_Spine)&,
-                                             const Standard_Integer,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             Standard_Boolean&,
+void FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&,
+                                             const occ::handle<ChFiDS_ElSpine>&,
+                                             const occ::handle<ChFiDS_Spine>&,
+                                             const int,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             bool&,
                                              const TopAbs_Orientation,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(Adaptor3d_TopolTool)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             const Handle(BRepAdaptor_Surface)&,
-                                             const Handle(BRepAdaptor_Curve2d)&,
-                                             Standard_Boolean&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<Adaptor3d_TopolTool>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             const occ::handle<BRepAdaptor_Surface>&,
+                                             const occ::handle<BRepAdaptor_Curve2d>&,
+                                             bool&,
                                              const TopAbs_Orientation,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             const Standard_Real,
-                                             Standard_Real&,
-                                             Standard_Real&,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
-                                             const Standard_Boolean,
+                                             const double,
+                                             const double,
+                                             const double,
+                                             double&,
+                                             double&,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
+                                             const bool,
                                              const math_Vector&)
 {
   throw Standard_DomainError("BlendFunc_CSConstRad::Section : Not implemented");
 }
 
-Standard_Boolean FilletSurf_InternalBuilder::Done() const
+bool FilletSurf_InternalBuilder::Done() const
 {
   return done;
 }
@@ -572,7 +577,7 @@ Standard_Boolean FilletSurf_InternalBuilder::Done() const
 // purpose  :  gives the number of NUBS surfaces  of the Fillet
 //=======================================================================
 
-Standard_Integer FilletSurf_InternalBuilder::NbSurface() const
+int FilletSurf_InternalBuilder::NbSurface() const
 {
   return myListStripe.First()->SetOfSurfData()->Length();
 }
@@ -582,10 +587,10 @@ Standard_Integer FilletSurf_InternalBuilder::NbSurface() const
 // purpose  : gives the NUBS surface of index Index
 //=======================================================================
 
-const Handle(Geom_Surface)& FilletSurf_InternalBuilder::SurfaceFillet(
-  const Standard_Integer Index) const
+const occ::handle<Geom_Surface>& FilletSurf_InternalBuilder::SurfaceFillet(
+  const int Index) const
 {
-  Standard_Integer isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->Surf();
+  int isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->Surf();
 
   return myDS->Surface(isurf).Surface();
 }
@@ -595,9 +600,9 @@ const Handle(Geom_Surface)& FilletSurf_InternalBuilder::SurfaceFillet(
 // purpose  :  gives the 3d tolerance reached during approximation
 //=======================================================================
 
-Standard_Real FilletSurf_InternalBuilder::TolApp3d(const Standard_Integer Index) const
+double FilletSurf_InternalBuilder::TolApp3d(const int Index) const
 {
-  Standard_Integer isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->Surf();
+  int isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->Surf();
 
   return myDS->Surface(isurf).Tolerance();
 }
@@ -606,9 +611,9 @@ Standard_Real FilletSurf_InternalBuilder::TolApp3d(const Standard_Integer Index)
 // function : SupportFace1
 // purpose  : gives the first support  face relative to SurfaceFillet(Index)
 //=======================================================================
-const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace1(const Standard_Integer Index) const
+const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace1(const int Index) const
 {
-  Standard_Integer isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->IndexOfS1();
+  int isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->IndexOfS1();
 
   return TopoDS::Face(myDS->Shape(isurf));
 }
@@ -617,9 +622,9 @@ const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace1(const Standard_Integ
 // function : SupportFace2
 // purpose  : gives the second support face relative to SurfaceFillet(Index)
 //=======================================================================
-const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace2(const Standard_Integer Index) const
+const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace2(const int Index) const
 {
-  Standard_Integer isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->IndexOfS2();
+  int isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->IndexOfS2();
 
   return TopoDS::Face(myDS->Shape(isurf));
 }
@@ -629,10 +634,10 @@ const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace2(const Standard_Integ
 // purpose  :  gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
 //===============================================================================
 
-const Handle(Geom_Curve)& FilletSurf_InternalBuilder::CurveOnFace1(
-  const Standard_Integer Index) const
+const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace1(
+  const int Index) const
 {
-  Standard_Integer icurv =
+  int icurv =
     myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().LineIndex();
   return myDS->Curve(icurv).Curve();
 }
@@ -642,10 +647,10 @@ const Handle(Geom_Curve)& FilletSurf_InternalBuilder::CurveOnFace1(
 // purpose  : gives the 3d  curve of  SurfaceFillet(Index) on SupportFace2(Index
 //=======================================================================
 
-const Handle(Geom_Curve)& FilletSurf_InternalBuilder::CurveOnFace2(
-  const Standard_Integer Index) const
+const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace2(
+  const int Index) const
 {
-  Standard_Integer icurv =
+  int icurv =
     myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().LineIndex();
   return myDS->Curve(icurv).Curve();
 }
@@ -654,8 +659,8 @@ const Handle(Geom_Curve)& FilletSurf_InternalBuilder::CurveOnFace2(
 // function : PCurveOnFace1
 // purpose  : gives the  PCurve associated to CurvOnSup1(Index)  on the support face
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurveOnFace1(
-  const Standard_Integer Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace1(
+  const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().PCurveOnFace();
 }
@@ -665,8 +670,8 @@ const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurveOnFace1(
 // purpose  : gives the PCurve associated to CurveOnFace1(Index) on the Fillet
 //=======================================================================
 
-const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurve1OnFillet(
-  const Standard_Integer Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve1OnFillet(
+  const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().PCurveOnSurf();
 }
@@ -675,8 +680,8 @@ const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurve1OnFillet(
 // function : PCurveOnFace2
 // purpose  : gives the  PCurve associated to CurvOnSup2(Index)  on the support face
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurveOnFace2(
-  const Standard_Integer Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace2(
+  const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().PCurveOnFace();
 }
@@ -685,8 +690,8 @@ const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurveOnFace2(
 // function : PCurveOnFillet2
 // purpose  : gives the PCurve associated to CurveOnFace2(Index) on the Fillet
 //=======================================================================
-const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurve2OnFillet(
-  const Standard_Integer Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve2OnFillet(
+  const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().PCurveOnSurf();
 }
@@ -696,16 +701,16 @@ const Handle(Geom2d_Curve)& FilletSurf_InternalBuilder::PCurve2OnFillet(
 // purpose  : gives the parameter of the fillet  on the first edge
 //=======================================================================
 
-Standard_Real FilletSurf_InternalBuilder::FirstParameter() const
+double FilletSurf_InternalBuilder::FirstParameter() const
 {
-  const Handle(ChFiDS_Stripe)&   st  = myListStripe.First();
-  const Handle(ChFiDS_Spine)&    sp  = st->Spine();
-  const Handle(ChFiDS_SurfData)& sd  = st->SetOfSurfData()->Value(1);
-  Standard_Real                  p   = sd->FirstSpineParam();
-  Standard_Integer               ind = 1;
+  const occ::handle<ChFiDS_Stripe>&   st  = myListStripe.First();
+  const occ::handle<ChFiDS_Spine>&    sp  = st->Spine();
+  const occ::handle<ChFiDS_SurfData>& sd  = st->SetOfSurfData()->Value(1);
+  double                  p   = sd->FirstSpineParam();
+  int               ind = 1;
   if (sp->IsPeriodic())
     ind = sp->Index(p);
-  Standard_Real ep;
+  double ep;
   if (ComputeEdgeParameter(sp, ind, p, ep, tolapp3d))
     return ep;
   return 0.0;
@@ -715,16 +720,16 @@ Standard_Real FilletSurf_InternalBuilder::FirstParameter() const
 // function : LastParameter
 // purpose  :  gives the parameter of the fillet  on the last edge
 //=======================================================================
-Standard_Real FilletSurf_InternalBuilder::LastParameter() const
+double FilletSurf_InternalBuilder::LastParameter() const
 {
-  const Handle(ChFiDS_Stripe)&   st  = myListStripe.First();
-  const Handle(ChFiDS_Spine)&    sp  = st->Spine();
-  const Handle(ChFiDS_SurfData)& sd  = st->SetOfSurfData()->Value(NbSurface());
-  Standard_Real                  p   = sd->LastSpineParam();
-  Standard_Integer               ind = sp->NbEdges();
+  const occ::handle<ChFiDS_Stripe>&   st  = myListStripe.First();
+  const occ::handle<ChFiDS_Spine>&    sp  = st->Spine();
+  const occ::handle<ChFiDS_SurfData>& sd  = st->SetOfSurfData()->Value(NbSurface());
+  double                  p   = sd->LastSpineParam();
+  int               ind = sp->NbEdges();
   if (sp->IsPeriodic())
     ind = sp->Index(p);
-  Standard_Real ep;
+  double ep;
   if (ComputeEdgeParameter(sp, ind, p, ep, tolapp3d))
     return ep;
   return 0.0;
@@ -744,9 +749,9 @@ Standard_Real FilletSurf_InternalBuilder::LastParameter() const
 FilletSurf_StatusType FilletSurf_InternalBuilder::StartSectionStatus() const
 {
 
-  Standard_Boolean isonedge1 =
+  bool isonedge1 =
     myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS1().IsOnArc();
-  Standard_Boolean isonedge2 =
+  bool isonedge2 =
     myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS2().IsOnArc();
 
   if (isonedge1 && isonedge2)
@@ -775,9 +780,9 @@ FilletSurf_StatusType FilletSurf_InternalBuilder::StartSectionStatus() const
 //=======================================================================
 FilletSurf_StatusType FilletSurf_InternalBuilder::EndSectionStatus() const
 {
-  Standard_Boolean isonedge1 =
+  bool isonedge1 =
     myListStripe.First()->SetOfSurfData()->Value(NbSurface())->VertexLastOnS1().IsOnArc();
-  Standard_Boolean isonedge2 =
+  bool isonedge2 =
     myListStripe.First()->SetOfSurfData()->Value(NbSurface())->VertexLastOnS2().IsOnArc();
 
   if (isonedge1 && isonedge2)
@@ -801,12 +806,12 @@ FilletSurf_StatusType FilletSurf_InternalBuilder::EndSectionStatus() const
 void FilletSurf_InternalBuilder::Simulate()
 {
   // ChFi3d_FilBuilder::Simulate(1);
-  Handle(ChFiDS_Stripe) Stripe = myListStripe.First();
-  Handle(ChFiDS_HData)& HData  = Stripe->ChangeSetOfSurfData();
-  HData                        = new ChFiDS_HData();
-  Handle(ChFiDS_Spine)& Spine  = Stripe->ChangeSpine();
+  occ::handle<ChFiDS_Stripe> Stripe = myListStripe.First();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData  = Stripe->ChangeSetOfSurfData();
+  HData                        = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
+  occ::handle<ChFiDS_Spine>& Spine  = Stripe->ChangeSpine();
   TopAbs_Orientation    RefOr1, RefOr2;
-  Standard_Integer      RefChoix;
+  int      RefChoix;
   StripeOrientations(Spine, RefOr1, RefOr2, RefChoix);
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
@@ -818,7 +823,7 @@ void FilletSurf_InternalBuilder::Simulate()
 // function : NbSection
 // purpose  :  gives the number of sections relative to SurfaceFillet(IndexSurf)
 //=======================================================================
-Standard_Integer FilletSurf_InternalBuilder::NbSection(const Standard_Integer IndexSurf) const
+int FilletSurf_InternalBuilder::NbSection(const int IndexSurf) const
 {
   return Sect(1, IndexSurf)->Length();
 }
@@ -829,13 +834,13 @@ Standard_Integer FilletSurf_InternalBuilder::NbSection(const Standard_Integer In
 //           IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 //           trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_InternalBuilder::Section(const Standard_Integer     IndexSurf,
-                                         const Standard_Integer     IndexSec,
-                                         Handle(Geom_TrimmedCurve)& Circ) const
+void FilletSurf_InternalBuilder::Section(const int     IndexSurf,
+                                         const int     IndexSec,
+                                         occ::handle<Geom_TrimmedCurve>& Circ) const
 {
   gp_Circ       c;
-  Standard_Real deb, fin;
+  double deb, fin;
   Sect(1, IndexSurf)->Value(IndexSec).Get(c, deb, fin);
-  Handle(Geom_Circle) Gc = new Geom_Circle(c);
+  occ::handle<Geom_Circle> Gc = new Geom_Circle(c);
   Circ                   = new Geom_TrimmedCurve(Gc, deb, fin);
 }

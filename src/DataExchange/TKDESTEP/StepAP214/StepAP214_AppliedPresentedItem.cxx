@@ -19,30 +19,30 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedPresentedItem, StepVisual_PresentedI
 StepAP214_AppliedPresentedItem::StepAP214_AppliedPresentedItem() {}
 
 void StepAP214_AppliedPresentedItem::Init(
-  const Handle(StepAP214_HArray1OfPresentedItemSelect)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
 }
 
 void StepAP214_AppliedPresentedItem::SetItems(
-  const Handle(StepAP214_HArray1OfPresentedItemSelect)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfPresentedItemSelect) StepAP214_AppliedPresentedItem::Items() const
+occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>> StepAP214_AppliedPresentedItem::Items() const
 {
   return items;
 }
 
 StepAP214_PresentedItemSelect StepAP214_AppliedPresentedItem::ItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedPresentedItem::NbItems() const
+int StepAP214_AppliedPresentedItem::NbItems() const
 {
   if (items.IsNull())
     return 0;

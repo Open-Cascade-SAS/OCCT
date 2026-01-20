@@ -21,7 +21,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_EdgeBasedWireframeModel.hxx>
-#include <StepShape_HArray1OfConnectedEdgeSet.hxx>
+#include <StepShape_ConnectedEdgeSet.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -30,10 +32,10 @@ RWStepShape_RWEdgeBasedWireframeModel::RWStepShape_RWEdgeBasedWireframeModel() {
 //=================================================================================================
 
 void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepShape_EdgeBasedWireframeModel)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepShape_EdgeBasedWireframeModel>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "edge_based_wireframe_model"))
@@ -41,21 +43,21 @@ void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of EdgeBasedWireframeModel
 
-  Handle(StepShape_HArray1OfConnectedEdgeSet) aEbwmBoundary;
-  Standard_Integer                            sub2 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> aEbwmBoundary;
+  int                            sub2 = 0;
   if (data->ReadSubList(num, 2, "ebwm_boundary", ach, sub2))
   {
-    Standard_Integer num2 = sub2;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aEbwmBoundary         = new StepShape_HArray1OfConnectedEdgeSet(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub2;
+    int nb0  = data->NbParams(num2);
+    aEbwmBoundary         = new NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepShape_ConnectedEdgeSet) anIt0;
+      occ::handle<StepShape_ConnectedEdgeSet> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "ebwm_boundary",
@@ -74,7 +76,7 @@ void RWStepShape_RWEdgeBasedWireframeModel::ReadStep(
 
 void RWStepShape_RWEdgeBasedWireframeModel::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepShape_EdgeBasedWireframeModel)& ent) const
+  const occ::handle<StepShape_EdgeBasedWireframeModel>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -84,9 +86,9 @@ void RWStepShape_RWEdgeBasedWireframeModel::WriteStep(
   // Own fields of EdgeBasedWireframeModel
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->EbwmBoundary()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->EbwmBoundary()->Length(); i1++)
   {
-    Handle(StepShape_ConnectedEdgeSet) Var0 = ent->EbwmBoundary()->Value(i1);
+    occ::handle<StepShape_ConnectedEdgeSet> Var0 = ent->EbwmBoundary()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -95,7 +97,7 @@ void RWStepShape_RWEdgeBasedWireframeModel::WriteStep(
 //=================================================================================================
 
 void RWStepShape_RWEdgeBasedWireframeModel::Share(
-  const Handle(StepShape_EdgeBasedWireframeModel)& ent,
+  const occ::handle<StepShape_EdgeBasedWireframeModel>& ent,
   Interface_EntityIterator&                        iter) const
 {
 
@@ -103,9 +105,9 @@ void RWStepShape_RWEdgeBasedWireframeModel::Share(
 
   // Own fields of EdgeBasedWireframeModel
 
-  for (Standard_Integer i1 = 1; i1 <= ent->EbwmBoundary()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->EbwmBoundary()->Length(); i1++)
   {
-    Handle(StepShape_ConnectedEdgeSet) Var0 = ent->EbwmBoundary()->Value(i1);
+    occ::handle<StepShape_ConnectedEdgeSet> Var0 = ent->EbwmBoundary()->Value(i1);
     iter.AddItem(Var0);
   }
 }

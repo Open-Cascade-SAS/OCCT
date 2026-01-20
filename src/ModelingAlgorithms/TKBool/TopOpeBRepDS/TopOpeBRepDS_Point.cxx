@@ -21,16 +21,16 @@
 //=================================================================================================
 
 TopOpeBRepDS_Point::TopOpeBRepDS_Point()
-    : myKeep(Standard_True)
+    : myKeep(true)
 {
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_Point::TopOpeBRepDS_Point(const gp_Pnt& P, const Standard_Real T)
+TopOpeBRepDS_Point::TopOpeBRepDS_Point(const gp_Pnt& P, const double T)
     : myPoint(P),
       myTolerance(T),
-      myKeep(Standard_True)
+      myKeep(true)
 {
 }
 
@@ -44,10 +44,10 @@ TopOpeBRepDS_Point::TopOpeBRepDS_Point(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Point::IsEqual(const TopOpeBRepDS_Point& P) const
+bool TopOpeBRepDS_Point::IsEqual(const TopOpeBRepDS_Point& P) const
 {
-  Standard_Real    t = std::max(myTolerance, P.Tolerance());
-  Standard_Boolean b = myPoint.IsEqual(P.Point(), t);
+  double    t = std::max(myTolerance, P.Tolerance());
+  bool b = myPoint.IsEqual(P.Point(), t);
   return b;
 }
 
@@ -67,28 +67,28 @@ gp_Pnt& TopOpeBRepDS_Point::ChangePoint()
 
 //=================================================================================================
 
-Standard_Real TopOpeBRepDS_Point::Tolerance() const
+double TopOpeBRepDS_Point::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Point::Tolerance(const Standard_Real Tol)
+void TopOpeBRepDS_Point::Tolerance(const double Tol)
 {
   myTolerance = Tol;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_Point::Keep() const
+bool TopOpeBRepDS_Point::Keep() const
 {
   return myKeep;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_Point::ChangeKeep(const Standard_Boolean b)
+void TopOpeBRepDS_Point::ChangeKeep(const bool b)
 {
   myKeep = b;
 }

@@ -17,7 +17,7 @@
 #include <IGESToBRep_Actor.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <ShapeExtend_Explorer.hxx>
@@ -41,16 +41,16 @@ namespace
 // function : EncodeRegul
 // purpose  : INTERNAL to encode regularity on edges
 //=======================================================================
-static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
+static bool EncodeRegul(const TopoDS_Shape& theShape)
 {
-  const Standard_Real aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
+  const double aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
   if (theShape.IsNull())
   {
-    return Standard_True;
+    return true;
   }
   if (aToleranceAngle <= 0.)
   {
-    return Standard_True;
+    return true;
   }
 
   try
@@ -60,16 +60,16 @@ static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
   }
   catch (const Standard_Failure&)
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : TrimTolerances
 // purpose  : Trims tolerances of the shape according to static parameters
 //=======================================================================
-static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real theTolerance)
+static void TrimTolerances(const TopoDS_Shape& theShape, const double theTolerance)
 {
   if (Interface_Static::IVal("read.maxprecision.mode") == 1)
   {
@@ -91,67 +91,67 @@ IGESToBRep_Actor::IGESToBRep_Actor()
 
 //=======================================================================
 
-void IGESToBRep_Actor::SetModel(const Handle(Interface_InterfaceModel)& model)
+void IGESToBRep_Actor::SetModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   themodel = model;
-  theeps   = Handle(IGESData_IGESModel)::DownCast(themodel)->GlobalSection().Resolution();
+  theeps   = occ::down_cast<IGESData_IGESModel>(themodel)->GlobalSection().Resolution();
 }
 
 //=======================================================================
 
-void IGESToBRep_Actor::SetContinuity(const Standard_Integer continuity)
+void IGESToBRep_Actor::SetContinuity(const int continuity)
 {
   thecontinuity = continuity;
 }
 
 //=======================================================================
 
-Standard_Integer IGESToBRep_Actor::GetContinuity() const
+int IGESToBRep_Actor::GetContinuity() const
 {
   return thecontinuity;
 }
 
 //=======================================================================
 
-Standard_Boolean IGESToBRep_Actor::Recognize(const Handle(Standard_Transient)& start)
+bool IGESToBRep_Actor::Recognize(const occ::handle<Standard_Transient>& start)
 {
   DeclareAndCast(IGESData_IGESModel, mymodel, themodel);
   DeclareAndCast(IGESData_IGESEntity, ent, start);
   if (ent.IsNull())
-    return Standard_False;
+    return false;
 
   //   Cas reconnus
-  Standard_Integer typnum = ent->TypeNumber();
-  Standard_Integer fornum = ent->FormNumber();
+  int typnum = ent->TypeNumber();
+  int fornum = ent->FormNumber();
   if (IGESToBRep::IsCurveAndSurface(ent)
       || ((typnum == 402 && (fornum == 1 || fornum == 7 || fornum == 14 || fornum == 15))
           || (typnum == 408) || (typnum == 308)))
-    return Standard_True;
+    return true;
 
   //  Cas restants : non reconnus
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 
-Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transient)&        start,
-                                                   const Handle(Transfer_TransientProcess)& TP,
+occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(const occ::handle<Standard_Transient>&        start,
+                                                   const occ::handle<Transfer_TransientProcess>& TP,
                                                    const Message_ProgressRange& theProgress)
 {
   DeclareAndCast(IGESData_IGESModel, mymodel, themodel);
   DeclareAndCast(IGESData_IGESEntity, ent, start);
   if (mymodel.IsNull() || ent.IsNull())
     return NullResult();
-  Standard_Integer anum = mymodel->Number(start);
+  int anum = mymodel->Number(start);
 
   if (Interface_Static::IVal("read.iges.faulty.entities") == 0 && mymodel->IsErrorEntity(anum))
     return NullResult();
   TopoDS_Shape shape;
 
   // Call the transfer only if type is OK.
-  Standard_Integer typnum = ent->TypeNumber();
-  Standard_Integer fornum = ent->FormNumber();
-  Standard_Real    eps;
+  int typnum = ent->TypeNumber();
+  int fornum = ent->FormNumber();
+  double    eps;
   if (IGESToBRep::IsCurveAndSurface(ent)
       || (typnum == 402 && (fornum == 1 || fornum == 7 || fornum == 14 || fornum == 15))
       || (typnum == 408) || (typnum == 308))
@@ -165,7 +165,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transie
     CAS.SetModel(mymodel);
     CAS.SetContinuity(thecontinuity);
     CAS.SetTransferProcess(TP);
-    Standard_Integer Ival = Interface_Static::IVal("read.precision.mode");
+    int Ival = Interface_Static::IVal("read.precision.mode");
     if (Ival == 0)
       eps = mymodel->GlobalSection().Resolution();
     else
@@ -181,7 +181,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transie
       CAS.SetEpsGeom(eps);
       theeps = eps * CAS.GetUnitFactor();
     }
-    Standard_Integer nbTPitems = TP->NbMapped();
+    int nbTPitems = TP->NbMapped();
     {
       try
       {
@@ -212,7 +212,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transie
   }
 
   ShapeExtend_Explorer SBE;
-  if (SBE.ShapeType(shape, Standard_True) != TopAbs_SHAPE)
+  if (SBE.ShapeType(shape, true) != TopAbs_SHAPE)
   {
     if (!shape.IsNull())
     {
@@ -222,7 +222,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transie
       //   Shapes().Append(shape);
     }
   }
-  Handle(TransferBRep_ShapeBinder) binder;
+  occ::handle<TransferBRep_ShapeBinder> binder;
   if (!shape.IsNull())
     binder = new TransferBRep_ShapeBinder(shape);
   return binder;
@@ -230,7 +230,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer(const Handle(Standard_Transie
 
 //=============================================================================
 
-Standard_Real IGESToBRep_Actor::UsedTolerance() const
+double IGESToBRep_Actor::UsedTolerance() const
 {
   return theeps;
 }

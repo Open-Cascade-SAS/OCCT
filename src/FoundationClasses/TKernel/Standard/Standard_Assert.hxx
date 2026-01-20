@@ -94,7 +94,7 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 
 // use debug CRT built-in function that show up message box to user
 // with formatted assert description and 3 possible actions
-inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
+inline bool Standard_ASSERT_REPORT_(const char* theFile,
                                                 const int   theLine,
                                                 const char* theExpr,
                                                 const char* theDesc)
@@ -111,7 +111,7 @@ inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
 }
   #else
 // just log assertion description into standard error stream
-inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
+inline bool Standard_ASSERT_REPORT_(const char* theFile,
                                                 const int   theLine,
                                                 const char* theExpr,
                                                 const char* theDesc)
@@ -123,7 +123,7 @@ inline Standard_Boolean Standard_ASSERT_REPORT_(const char* theFile,
     std::cerr << "Description: " << theDesc << "\n";
 
   std::cerr << std::flush;
-  return Standard_True;
+  return true;
 }
   #endif
 

@@ -14,24 +14,24 @@
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
+inline bool BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
 {
   return (aTi == TopAbs_VERTEX || aTi == TopAbs_EDGE || aTi == TopAbs_FACE);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_Tools::IsInterfering(const TopAbs_ShapeEnum aTi)
+inline bool BOPDS_Tools::IsInterfering(const TopAbs_ShapeEnum aTi)
 {
   return (BOPDS_Tools::HasBRep(aTi) || aTi == TopAbs_SOLID);
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
+inline int BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
                                                    const TopAbs_ShapeEnum aType2)
 {
-  Standard_Integer iRet, iT1, iT2, iX;
+  int iRet, iT1, iT2, iX;
   //
   iRet = -1;
   iT1  = BOPDS_Tools::TypeToInteger(aType1);
@@ -84,9 +84,9 @@ inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1)
+inline int BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1)
 {
-  Standard_Integer iRet = 9;
+  int iRet = 9;
   //
   switch (aType1)
   {

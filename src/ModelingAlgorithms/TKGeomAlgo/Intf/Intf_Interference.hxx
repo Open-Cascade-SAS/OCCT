@@ -21,9 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Intf_SeqOfSectionPoint.hxx>
-#include <Intf_SeqOfSectionLine.hxx>
-#include <Intf_SeqOfTangentZone.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Intf_SectionLine.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Intf_TangentZone.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class Intf_SectionPoint;
 class Intf_SectionLine;
@@ -40,38 +43,38 @@ public:
 
   //! Gives the number of points of intersection in the
   //! interference.
-  Standard_Integer NbSectionPoints() const;
+  int NbSectionPoints() const;
 
   //! Gives the point of intersection of address Index in
   //! the interference.
-  const Intf_SectionPoint& PntValue(const Standard_Integer Index) const;
+  const Intf_SectionPoint& PntValue(const int Index) const;
 
   //! Gives the number of polylines of intersection in the
   //! interference.
-  Standard_Integer NbSectionLines() const;
+  int NbSectionLines() const;
 
   //! Gives the polyline of intersection at address <Index> in
   //! the interference.
-  const Intf_SectionLine& LineValue(const Standard_Integer Index) const;
+  const Intf_SectionLine& LineValue(const int Index) const;
 
   //! Gives the number of zones of tangence in the interference.
-  Standard_Integer NbTangentZones() const;
+  int NbTangentZones() const;
 
   //! Gives the zone of tangence at address Index in the
   //! interference.
-  const Intf_TangentZone& ZoneValue(const Standard_Integer Index) const;
+  const Intf_TangentZone& ZoneValue(const int Index) const;
 
   //! Gives the tolerance used for the calculation.
-  Standard_Real GetTolerance() const;
+  double GetTolerance() const;
 
   //! Tests if the polylines of intersection or the zones of
   //! tangence contain the point of intersection <ThePnt>.
-  Standard_EXPORT Standard_Boolean Contains(const Intf_SectionPoint& ThePnt) const;
+  Standard_EXPORT bool Contains(const Intf_SectionPoint& ThePnt) const;
 
   //! Inserts a new zone of tangence in the current list of
   //! tangent zones of the interference and returns True
   //! when done.
-  Standard_EXPORT Standard_Boolean Insert(const Intf_TangentZone& TheZone);
+  Standard_EXPORT bool Insert(const Intf_TangentZone& TheZone);
 
   //! Insert a new segment of intersection in the current list of
   //! polylines of intersection of the interference.
@@ -81,21 +84,20 @@ public:
 
 protected:
   //! Empty constructor
-  Standard_EXPORT Intf_Interference(const Standard_Boolean Self);
+  Standard_EXPORT Intf_Interference(const bool Self);
 
   //! Destructor is protected, for safer inheritance
   ~Intf_Interference() {}
 
   //! Only one argument for the intersection.
-  Standard_EXPORT void SelfInterference(const Standard_Boolean Self);
+  Standard_EXPORT void SelfInterference(const bool Self);
 
-  Intf_SeqOfSectionPoint mySPoins;
-  Intf_SeqOfSectionLine  mySLines;
-  Intf_SeqOfTangentZone  myTZones;
-  Standard_Boolean       SelfIntf;
-  Standard_Real          Tolerance;
+  NCollection_Sequence<Intf_SectionPoint> mySPoins;
+  NCollection_Sequence<Intf_SectionLine>  mySLines;
+  NCollection_Sequence<Intf_TangentZone>  myTZones;
+  bool       SelfIntf;
+  double          Tolerance;
 
-private:
 };
 
 #include <Intf_Interference.lxx>

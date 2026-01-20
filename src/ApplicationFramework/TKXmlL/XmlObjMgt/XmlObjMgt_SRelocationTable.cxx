@@ -20,7 +20,7 @@
 // purpose  : getter for the file header data
 //=======================================================================
 
-const Handle(Storage_HeaderData)& XmlObjMgt_SRelocationTable::GetHeaderData() const
+const occ::handle<Storage_HeaderData>& XmlObjMgt_SRelocationTable::GetHeaderData() const
 {
   return myHeaderData;
 }
@@ -30,7 +30,7 @@ const Handle(Storage_HeaderData)& XmlObjMgt_SRelocationTable::GetHeaderData() co
 // purpose  : setter for the file header data
 //=======================================================================
 
-void XmlObjMgt_SRelocationTable::SetHeaderData(const Handle(Storage_HeaderData)& theHeaderData)
+void XmlObjMgt_SRelocationTable::SetHeaderData(const occ::handle<Storage_HeaderData>& theHeaderData)
 {
   myHeaderData = theHeaderData;
 }
@@ -41,8 +41,8 @@ void XmlObjMgt_SRelocationTable::SetHeaderData(const Handle(Storage_HeaderData)&
 //         : In this case the reference to the file header data should also be
 //         : cleared, because it is specific to the document.
 //=======================================================================
-void XmlObjMgt_SRelocationTable::Clear(const Standard_Boolean doReleaseMemory)
+void XmlObjMgt_SRelocationTable::Clear(const bool doReleaseMemory)
 {
   myHeaderData.Nullify();
-  TColStd_IndexedMapOfTransient::Clear(doReleaseMemory);
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>::Clear(doReleaseMemory);
 }

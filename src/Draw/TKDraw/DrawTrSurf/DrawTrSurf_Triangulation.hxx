@@ -17,13 +17,13 @@
 #ifndef _DrawTrSurf_Triangulation_HeaderFile
 #define _DrawTrSurf_Triangulation_HeaderFile
 
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 
 class Poly_Triangulation;
-
-DEFINE_STANDARD_HANDLE(DrawTrSurf_Triangulation, Draw_Drawable3D)
 
 //! Used to display a triangulation.
 //!
@@ -35,38 +35,38 @@ class DrawTrSurf_Triangulation : public Draw_Drawable3D
   DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Triangulation, Draw_Drawable3D)
   Draw_Drawable3D_FACTORY
 public:
-  Standard_EXPORT DrawTrSurf_Triangulation(const Handle(Poly_Triangulation)& T);
+  Standard_EXPORT DrawTrSurf_Triangulation(const occ::handle<Poly_Triangulation>& T);
 
-  Handle(Poly_Triangulation) Triangulation() const { return myTriangulation; }
+  occ::handle<Poly_Triangulation> Triangulation() const { return myTriangulation; }
 
-  void ShowNodes(const Standard_Boolean theB) { myNodes = theB; }
+  void ShowNodes(const bool theB) { myNodes = theB; }
 
-  Standard_Boolean ShowNodes() const { return myNodes; }
+  bool ShowNodes() const { return myNodes; }
 
-  void ShowTriangles(const Standard_Boolean theB) { myTriangles = theB; }
+  void ShowTriangles(const bool theB) { myTriangles = theB; }
 
-  Standard_Boolean ShowTriangles() const { return myTriangles; }
+  bool ShowTriangles() const { return myTriangles; }
 
-  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
   //! For variable copy.
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
   //! For variable dump.
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
   //! Save drawable into stream.
-  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Save(Standard_OStream& theStream) const override;
 
   //! For variable whatis command. Set as a result the type of the variable.
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
 private:
-  Handle(Poly_Triangulation)       myTriangulation;
-  Handle(TColStd_HArray1OfInteger) myInternals;
-  Handle(TColStd_HArray1OfInteger) myFree;
-  Standard_Boolean                 myNodes;
-  Standard_Boolean                 myTriangles;
+  occ::handle<Poly_Triangulation>       myTriangulation;
+  occ::handle<NCollection_HArray1<int>> myInternals;
+  occ::handle<NCollection_HArray1<int>> myFree;
+  bool                 myNodes;
+  bool                 myTriangles;
 };
 
 #endif // _DrawTrSurf_Triangulation_HeaderFile

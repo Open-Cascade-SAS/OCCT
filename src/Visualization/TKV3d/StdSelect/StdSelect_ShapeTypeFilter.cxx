@@ -32,16 +32,16 @@ StdSelect_ShapeTypeFilter::StdSelect_ShapeTypeFilter(const TopAbs_ShapeEnum aTyp
 // Purpose : Renvoie True si la shape est du type defini a la construction
 //==================================================
 
-Standard_Boolean StdSelect_ShapeTypeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+bool StdSelect_ShapeTypeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
-  Handle(StdSelect_BRepOwner) BRO = Handle(StdSelect_BRepOwner)::DownCast(EO);
+  occ::handle<StdSelect_BRepOwner> BRO = occ::down_cast<StdSelect_BRepOwner>(EO);
   if (BRO.IsNull() || !BRO->HasShape())
-    return Standard_False;
+    return false;
   const TopoDS_Shape& anobj = BRO->Shape();
   return anobj.ShapeType() == myType;
 }
 
-Standard_Boolean StdSelect_ShapeTypeFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+bool StdSelect_ShapeTypeFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
 {
   return aStandardMode == myType;
 }

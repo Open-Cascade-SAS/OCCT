@@ -27,7 +27,7 @@ class BRepMesh_DefaultRangeSplitter
 public:
   //! Constructor.
   BRepMesh_DefaultRangeSplitter()
-      : myIsValid(Standard_True)
+      : myIsValid(true)
   {
   }
 
@@ -45,7 +45,7 @@ public:
   Standard_EXPORT virtual void AdjustRange();
 
   //! Returns True if computed range is valid.
-  Standard_EXPORT virtual Standard_Boolean IsValid();
+  Standard_EXPORT virtual bool IsValid();
 
   //! Scales the given point from real parametric space
   //! to face basis and otherwise.
@@ -54,7 +54,7 @@ public:
   //! otherwise performs reverse conversion.
   //! @return scaled point.
   Standard_EXPORT gp_Pnt2d Scale(const gp_Pnt2d&        thePoint,
-                                 const Standard_Boolean isToFaceBasis) const;
+                                 const bool isToFaceBasis) const;
 
   //! Returns list of nodes generated using surface data and specified parameters.
   //! By default returns null ptr.
@@ -70,54 +70,54 @@ public:
 
 protected:
   //! Computes parametric tolerance taking length along U and V into account.
-  Standard_EXPORT virtual void computeTolerance(const Standard_Real theLenU,
-                                                const Standard_Real theLenV);
+  Standard_EXPORT virtual void computeTolerance(const double theLenU,
+                                                const double theLenV);
 
   //! Computes parametric delta taking length along U and V and value of tolerance into account.
-  Standard_EXPORT virtual void computeDelta(const Standard_Real theLengthU,
-                                            const Standard_Real theLengthV);
+  Standard_EXPORT virtual void computeDelta(const double theLengthU,
+                                            const double theLengthV);
 
 public:
   //! Returns face model.
   const IMeshData::IFaceHandle& GetDFace() const { return myDFace; }
 
   //! Returns surface.
-  const Handle(BRepAdaptor_Surface)& GetSurface() const { return myDFace->GetSurface(); }
+  const occ::handle<BRepAdaptor_Surface>& GetSurface() const { return myDFace->GetSurface(); }
 
   //! Returns U range.
-  const std::pair<Standard_Real, Standard_Real>& GetRangeU() const { return myRangeU; }
+  const std::pair<double, double>& GetRangeU() const { return myRangeU; }
 
   //! Returns V range.
-  const std::pair<Standard_Real, Standard_Real>& GetRangeV() const { return myRangeV; }
+  const std::pair<double, double>& GetRangeV() const { return myRangeV; }
 
   //! Returns delta.
-  const std::pair<Standard_Real, Standard_Real>& GetDelta() const { return myDelta; }
+  const std::pair<double, double>& GetDelta() const { return myDelta; }
 
-  const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const { return myTolerance; }
+  const std::pair<double, double>& GetToleranceUV() const { return myTolerance; }
 
 private:
   //! Computes length along U direction using grid evaluation.
   //! @return computed length along U direction
-  Standard_Real computeLengthU();
+  double computeLengthU();
 
   //! Computes length along V direction using grid evaluation.
   //! @return computed length along V direction
-  Standard_Real computeLengthV();
+  double computeLengthV();
 
   //! Updates discrete range of surface according to its geometric range.
-  void updateRange(const Standard_Real    theGeomFirst,
-                   const Standard_Real    theGeomLast,
-                   const Standard_Boolean isPeriodic,
-                   Standard_Real&         theDiscreteFirst,
-                   Standard_Real&         theDiscreteLast);
+  void updateRange(const double    theGeomFirst,
+                   const double    theGeomLast,
+                   const bool isPeriodic,
+                   double&         theDiscreteFirst,
+                   double&         theDiscreteLast);
 
 protected:
   IMeshData::IFaceHandle                  myDFace;
-  std::pair<Standard_Real, Standard_Real> myRangeU;
-  std::pair<Standard_Real, Standard_Real> myRangeV;
-  std::pair<Standard_Real, Standard_Real> myDelta;
-  std::pair<Standard_Real, Standard_Real> myTolerance;
-  Standard_Boolean                        myIsValid;
+  std::pair<double, double> myRangeU;
+  std::pair<double, double> myRangeV;
+  std::pair<double, double> myDelta;
+  std::pair<double, double> myTolerance;
+  bool                        myIsValid;
 };
 
 #endif

@@ -28,14 +28,14 @@ namespace
 {
 
 //! Number of neighbor pixels.
-static const Standard_Size Image_Diff_NbOfNeighborPixels = 8;
+static const size_t Image_Diff_NbOfNeighborPixels = 8;
 
 //! List of neighbor pixels (offsets).
 static const int Image_Diff_NEIGHBOR_PIXELS[Image_Diff_NbOfNeighborPixels][2] =
   {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
 
 //! @return true if pixel is black
-static bool isBlackPixel(const Image_PixMap& theData, Standard_Size theY, Standard_Size theX)
+static bool isBlackPixel(const Image_PixMap& theData, size_t theY, size_t theX)
 {
   switch (theData.Format())
   {
@@ -49,7 +49,7 @@ static bool isBlackPixel(const Image_PixMap& theData, Standard_Size theY, Standa
     case Image_Format_BGR32:
     case Image_Format_RGBA:
     case Image_Format_BGRA: {
-      const Standard_Byte* aColor = theData.RawValue(theY, theX);
+      const uint8_t* aColor = theData.RawValue(theY, theX);
       return aColor[0] == 0 && aColor[1] == 0 && aColor[2] == 0;
     }
     default: {
@@ -66,7 +66,7 @@ static bool isBlackPixel(const Image_PixMap& theData, Standard_Size theY, Standa
 
 Image_Diff::Image_Diff()
     : myColorTolerance(0.0),
-      myIsBorderFilterOn(Standard_False)
+      myIsBorderFilterOn(false)
 {
   //
 }
@@ -80,9 +80,9 @@ Image_Diff::~Image_Diff()
 
 //=================================================================================================
 
-Standard_Boolean Image_Diff::Init(const Handle(Image_PixMap)& theImageRef,
-                                  const Handle(Image_PixMap)& theImageNew,
-                                  const Standard_Boolean      theToBlackWhite)
+bool Image_Diff::Init(const occ::handle<Image_PixMap>& theImageRef,
+                                  const occ::handle<Image_PixMap>& theImageNew,
+                                  const bool      theToBlackWhite)
 {
   myImageRef.Nullify();
   myImageNew.Nullify();
@@ -94,12 +94,12 @@ Standard_Boolean Image_Diff::Init(const Handle(Image_PixMap)& theImageRef,
       || theImageRef->Format() != theImageNew->Format())
   {
     Message::SendFail("Error: Images have different format or dimensions");
-    return Standard_False;
+    return false;
   }
   else if (theImageRef->SizeX() >= 0xFFFF || theImageRef->SizeY() >= 0xFFFF)
   {
     Message::SendFail("Error: Images are too large");
-    return Standard_False;
+    return false;
   }
 
   myImageRef = theImageRef;
@@ -109,31 +109,31 @@ Standard_Boolean Image_Diff::Init(const Handle(Image_PixMap)& theImageRef,
     Image_PixMap::ToBlackWhite(*myImageRef);
     Image_PixMap::ToBlackWhite(*myImageNew);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Image_Diff::Init(const TCollection_AsciiString& theImgPathRef,
+bool Image_Diff::Init(const TCollection_AsciiString& theImgPathRef,
                                   const TCollection_AsciiString& theImgPathNew,
-                                  const Standard_Boolean         theToBlackWhite)
+                                  const bool         theToBlackWhite)
 {
-  Handle(Image_AlienPixMap) anImgRef = new Image_AlienPixMap();
-  Handle(Image_AlienPixMap) anImgNew = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImgRef = new Image_AlienPixMap();
+  occ::handle<Image_AlienPixMap> anImgNew = new Image_AlienPixMap();
   if (!anImgRef->Load(theImgPathRef) || !anImgNew->Load(theImgPathNew))
   {
     Message::SendFail("Error: Failed to load image(s) file(s)");
-    return Standard_False;
+    return false;
   }
   return Init(anImgRef, anImgNew, theToBlackWhite);
 }
 
 //=================================================================================================
 
-Standard_Integer Image_Diff::Compare()
+int Image_Diff::Compare()
 {
   // Number of different pixels (by color)
-  Standard_Integer aNbDiffColors = 0;
+  int aNbDiffColors = 0;
   myDiffPixels.Clear();
 
   if (myImageRef.IsNull() || myImageNew.IsNull())
@@ -153,14 +153,14 @@ Standard_Integer Image_Diff::Compare()
     case Image_Format_Gray:
     case Image_Format_Alpha: {
       // Tolerance of comparison operation for color
-      const Standard_Integer aDiffThreshold = Standard_Integer(255.0 * myColorTolerance);
-      for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
+      const int aDiffThreshold = int(255.0 * myColorTolerance);
+      for (size_t aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
-        for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
+        for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
-          const Standard_Integer aDiff =
-            Standard_Integer(myImageNew->Value<unsigned char>(aRow, aCol))
-            - Standard_Integer(myImageRef->Value<unsigned char>(aRow, aCol));
+          const int aDiff =
+            int(myImageNew->Value<unsigned char>(aRow, aCol))
+            - int(myImageRef->Value<unsigned char>(aRow, aCol));
           if (std::abs(aDiff) > aDiffThreshold)
           {
             myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
@@ -178,17 +178,17 @@ Standard_Integer Image_Diff::Compare()
     case Image_Format_BGRA: {
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
-      const Standard_Integer aDiffThreshold = Standard_Integer(255.0 * myColorTolerance);
+      const int aDiffThreshold = int(255.0 * myColorTolerance);
 
       // we don't care about RGB/BGR/RGBA/BGRA/RGB32/BGR32 differences
       // because we just compute summ of r g b components
-      for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
+      for (size_t aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
-        for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
+        for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
           // compute Chebyshev distance between two colors
-          const Standard_Byte* aColorRef = myImageRef->RawValue(aRow, aCol);
-          const Standard_Byte* aColorNew = myImageNew->RawValue(aRow, aCol);
+          const uint8_t* aColorRef = myImageRef->RawValue(aRow, aCol);
+          const uint8_t* aColorNew = myImageNew->RawValue(aRow, aCol);
           const int            aDiff = NCollection_Vec3<int>(int(aColorRef[0]) - int(aColorNew[0]),
                                                   int(aColorRef[1]) - int(aColorNew[1]),
                                                   int(aColorRef[2]) - int(aColorNew[2]))
@@ -207,15 +207,15 @@ Standard_Integer Image_Diff::Compare()
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
       const float aDiffThreshold = float(myColorTolerance);
-      for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
+      for (size_t aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
-        for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
+        for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
           // compute Chebyshev distance between two colors
           const Quantity_ColorRGBA aPixel1Rgba =
-            myImageRef->PixelColor(Standard_Integer(aCol), Standard_Integer(aRow));
+            myImageRef->PixelColor(int(aCol), int(aRow));
           const Quantity_ColorRGBA aPixel2Rgba =
-            myImageNew->PixelColor(Standard_Integer(aCol), Standard_Integer(aRow));
+            myImageNew->PixelColor(int(aCol), int(aRow));
           const NCollection_Vec3<float>& aPixel1 = aPixel1Rgba.GetRGB();
           const NCollection_Vec3<float>& aPixel2 = aPixel2Rgba.GetRGB();
           const float                    aDiff   = (aPixel2 - aPixel1).cwiseAbs().maxComp();
@@ -241,11 +241,11 @@ Standard_Integer Image_Diff::Compare()
 
 //=================================================================================================
 
-Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
+bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
 {
   if (myImageRef.IsNull() || myImageNew.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   if (theDiffImage.IsEmpty() || theDiffImage.SizeX() != myImageRef->SizeX()
@@ -253,7 +253,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
   {
     if (!theDiffImage.InitTrash(Image_Format_Gray, myImageRef->SizeX(), myImageRef->SizeY()))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -265,14 +265,14 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
   {
     if (myIsBorderFilterOn)
     {
-      return Standard_True;
+      return true;
     }
 
     switch (theDiffImage.Format())
     {
       case Image_Format_Gray:
       case Image_Format_Alpha: {
-        for (NCollection_Vector<Standard_Integer>::Iterator aPixelIter(myDiffPixels);
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
              aPixelIter.More();
              aPixelIter.Next())
         {
@@ -287,7 +287,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
       case Image_Format_BGR32:
       case Image_Format_RGBA:
       case Image_Format_BGRA: {
-        for (NCollection_Vector<Standard_Integer>::Iterator aPixelIter(myDiffPixels);
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
              aPixelIter.More();
              aPixelIter.Next())
         {
@@ -299,7 +299,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         break;
       }
       default: {
-        for (NCollection_Vector<Standard_Integer>::Iterator aPixelIter(myDiffPixels);
+        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels);
              aPixelIter.More();
              aPixelIter.Next())
         {
@@ -310,11 +310,11 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         break;
       }
     }
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer aGroupId = 1;
-  for (NCollection_List<Handle(TColStd_HPackedMapOfInteger)>::Iterator aGrIter(
+  int aGroupId = 1;
+  for (NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>>::Iterator aGrIter(
          myGroupsOfDiffPixels);
        aGrIter.More();
        aGrIter.Next(), ++aGroupId)
@@ -324,7 +324,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
       continue; // skip linear groups
     }
 
-    const Handle(TColStd_HPackedMapOfInteger)& aGroup = aGrIter.Value();
+    const occ::handle<TColStd_HPackedMapOfInteger>& aGroup = aGrIter.Value();
     switch (theDiffImage.Format())
     {
       case Image_Format_Gray:
@@ -332,7 +332,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         for (TColStd_MapIteratorOfPackedMapOfInteger aPixelIter(aGroup->Map()); aPixelIter.More();
              aPixelIter.Next())
         {
-          Standard_Integer aDiffPixel(aPixelIter.Key());
+          int aDiffPixel(aPixelIter.Key());
           theDiffImage.ChangeValue<unsigned char>(UnpackY(aDiffPixel), UnpackX(aDiffPixel)) = 255;
         }
         break;
@@ -346,8 +346,8 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         for (TColStd_MapIteratorOfPackedMapOfInteger aPixelIter(aGroup->Map()); aPixelIter.More();
              aPixelIter.Next())
         {
-          Standard_Integer aDiffPixel(aPixelIter.Key());
-          memset(theDiffImage.ChangeValue<Standard_Byte*>(UnpackY(aDiffPixel), UnpackX(aDiffPixel)),
+          int aDiffPixel(aPixelIter.Key());
+          memset(theDiffImage.ChangeValue<uint8_t*>(UnpackY(aDiffPixel), UnpackX(aDiffPixel)),
                  255,
                  3);
         }
@@ -357,7 +357,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         for (TColStd_MapIteratorOfPackedMapOfInteger aPixelIter(aGroup->Map()); aPixelIter.More();
              aPixelIter.Next())
         {
-          Standard_Integer aDiffPixel(aPixelIter.Key());
+          int aDiffPixel(aPixelIter.Key());
           theDiffImage.SetPixelColor(UnpackX(aDiffPixel), UnpackY(aDiffPixel), aWhiteRgba);
         }
         break;
@@ -365,23 +365,23 @@ Standard_Boolean Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Image_Diff::SaveDiffImage(const TCollection_AsciiString& theDiffPath) const
+bool Image_Diff::SaveDiffImage(const TCollection_AsciiString& theDiffPath) const
 {
   if (myImageRef.IsNull() || myImageNew.IsNull() || theDiffPath.IsEmpty())
   {
-    return Standard_False;
+    return false;
   }
 
   Image_AlienPixMap aDiff;
   if (!aDiff.InitTrash(Image_Format_Gray, myImageRef->SizeX(), myImageRef->SizeY())
       || !SaveDiffImage(aDiff))
   {
-    return Standard_False;
+    return false;
   }
 
   // save image
@@ -390,7 +390,7 @@ Standard_Boolean Image_Diff::SaveDiffImage(const TCollection_AsciiString& theDif
 
 //=================================================================================================
 
-Standard_Integer Image_Diff::ignoreBorderEffect()
+int Image_Diff::ignoreBorderEffect()
 {
   if (myImageRef.IsNull() || myImageNew.IsNull())
   {
@@ -402,22 +402,22 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
 
   // Find a different area (a set of close to each other pixels which colors differ in both images).
   // It filters alone pixels with different color.
-  const Standard_Integer aLen1 = !myDiffPixels.IsEmpty() ? (myDiffPixels.Length() - 1) : 0;
-  for (Standard_Integer aPixelId1 = 0; aPixelId1 < aLen1; ++aPixelId1)
+  const int aLen1 = !myDiffPixels.IsEmpty() ? (myDiffPixels.Length() - 1) : 0;
+  for (int aPixelId1 = 0; aPixelId1 < aLen1; ++aPixelId1)
   {
-    Standard_Integer aValue1 = myDiffPixels.Value(aPixelId1);
+    int aValue1 = myDiffPixels.Value(aPixelId1);
 
     // Check other pixels in the list looking for a neighbour of this one
-    for (Standard_Integer aPixelId2 = aPixelId1 + 1; aPixelId2 < myDiffPixels.Length(); ++aPixelId2)
+    for (int aPixelId2 = aPixelId1 + 1; aPixelId2 < myDiffPixels.Length(); ++aPixelId2)
     {
-      Standard_Integer aValue2 = myDiffPixels.Value(aPixelId2);
-      if (std::abs(Standard_Integer(UnpackX(aValue1)) - Standard_Integer(UnpackX(aValue2))) <= 1
-          && std::abs(Standard_Integer(UnpackY(aValue1)) - Standard_Integer(UnpackY(aValue2))) <= 1)
+      int aValue2 = myDiffPixels.Value(aPixelId2);
+      if (std::abs(int(UnpackX(aValue1)) - int(UnpackX(aValue2))) <= 1
+          && std::abs(int(UnpackY(aValue1)) - int(UnpackY(aValue2))) <= 1)
       {
         // A neighbour is found. Create a new group and add both pixels.
         if (myGroupsOfDiffPixels.IsEmpty())
         {
-          Handle(TColStd_HPackedMapOfInteger) aGroup = new TColStd_HPackedMapOfInteger();
+          occ::handle<TColStd_HPackedMapOfInteger> aGroup = new TColStd_HPackedMapOfInteger();
           aGroup->ChangeMap().Add(aValue1);
           aGroup->ChangeMap().Add(aValue2);
           myGroupsOfDiffPixels.Append(aGroup);
@@ -425,17 +425,17 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
         else
         {
           // Find a group the pixels belong to.
-          Standard_Boolean isFound = Standard_False;
-          for (NCollection_List<Handle(TColStd_HPackedMapOfInteger)>::Iterator aGrIter(
+          bool isFound = false;
+          for (NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>>::Iterator aGrIter(
                  myGroupsOfDiffPixels);
                aGrIter.More();
                aGrIter.Next())
           {
-            const Handle(TColStd_HPackedMapOfInteger)& aGroup = aGrIter.ChangeValue();
+            const occ::handle<TColStd_HPackedMapOfInteger>& aGroup = aGrIter.ChangeValue();
             if (aGroup->Map().Contains(aValue1))
             {
               aGroup->ChangeMap().Add(aValue2);
-              isFound = Standard_True;
+              isFound = true;
               break;
             }
           }
@@ -443,7 +443,7 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
           if (!isFound)
           {
             // Create a new group
-            Handle(TColStd_HPackedMapOfInteger) aGroup = new TColStd_HPackedMapOfInteger();
+            occ::handle<TColStd_HPackedMapOfInteger> aGroup = new TColStd_HPackedMapOfInteger();
             aGroup->ChangeMap().Add(aValue1);
             aGroup->ChangeMap().Add(aValue2);
             myGroupsOfDiffPixels.Append(aGroup);
@@ -454,21 +454,21 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
   }
 
   // filter linear groups which represent border of a solid shape
-  Standard_Integer aGroupId = 1;
-  for (NCollection_List<Handle(TColStd_HPackedMapOfInteger)>::Iterator aGrIter(
+  int aGroupId = 1;
+  for (NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>>::Iterator aGrIter(
          myGroupsOfDiffPixels);
        aGrIter.More();
        aGrIter.Next(), ++aGroupId)
   {
-    Standard_Integer                           aNeighboursNb = 0;
-    Standard_Boolean                           isLine        = Standard_True;
-    const Handle(TColStd_HPackedMapOfInteger)& aGroup        = aGrIter.Value();
+    int                           aNeighboursNb = 0;
+    bool                           isLine        = true;
+    const occ::handle<TColStd_HPackedMapOfInteger>& aGroup        = aGrIter.Value();
     if (aGroup->Map().IsEmpty())
     {
       continue;
     }
 
-    Standard_Integer aDiffPixel = 0;
+    int aDiffPixel = 0;
     for (TColStd_MapIteratorOfPackedMapOfInteger aPixelIter(aGroup->Map()); aPixelIter.More();
          aPixelIter.Next())
     {
@@ -477,13 +477,13 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
 
       // pixels of a line have only 1 or 2 neighbour pixels inside the same group
       // check all neighbour pixels on presence in the group
-      for (Standard_Size aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
+      for (size_t aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
       {
-        Standard_Integer anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
-        Standard_Integer anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (Standard_Size(anX)
-              < myImageRef->SizeX() // this unsigned math checks Standard_Size(-1) at-once
-            && Standard_Size(anY) < myImageRef->SizeY()
+        int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
+        int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
+        if (size_t(anX)
+              < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+            && size_t(anY) < myImageRef->SizeY()
             && aGroup->Map().Contains(PackXY((uint16_t)anX, (uint16_t)anY)))
         {
           ++aNeighboursNb;
@@ -492,7 +492,7 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
 
       if (aNeighboursNb > 2)
       {
-        isLine = Standard_False;
+        isLine = false;
         break;
       }
     }
@@ -504,14 +504,14 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       // If the pixel has greater than 1 not black neighbour pixel, it is a border of a shape.
       // Otherwise, it may be a topological edge, for example.
       aNeighboursNb = 0;
-      for (Standard_Size aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
+      for (size_t aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
       {
-        Standard_Integer anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
-        Standard_Integer anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (Standard_Size(anX)
-              < myImageRef->SizeX() // this unsigned math checks Standard_Size(-1) at-once
-            && Standard_Size(anY) < myImageRef->SizeY()
-            && !isBlackPixel(*myImageRef, Standard_Size(anY), Standard_Size(anX)))
+        int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
+        int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
+        if (size_t(anX)
+              < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+            && size_t(anY) < myImageRef->SizeY()
+            && !isBlackPixel(*myImageRef, size_t(anY), size_t(anX)))
         {
           ++aNeighboursNb;
         }
@@ -525,9 +525,9 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
   }
 
   // number of different groups of pixels (except linear groups)
-  Standard_Integer aNbDiffColors = 0;
+  int aNbDiffColors = 0;
   aGroupId                       = 1;
-  for (NCollection_List<Handle(TColStd_HPackedMapOfInteger)>::Iterator aGrIter(
+  for (NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>>::Iterator aGrIter(
          myGroupsOfDiffPixels);
        aGrIter.More();
        aGrIter.Next(), ++aGroupId)

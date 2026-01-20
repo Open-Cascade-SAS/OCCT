@@ -40,17 +40,17 @@
 // #define PERF
 
 #ifdef PERF
-static Standard_Integer NbIntersCS             = 0;
-static Standard_Integer NbIntersCSVides        = 0;
-static Standard_Integer NbIntersAuto           = 0;
-static Standard_Integer NbIntersSimulate       = 0;
-static Standard_Integer NbInters               = 0;
-static Standard_Integer NbIntersVides          = 0;
-static Standard_Integer NbInters1Segment       = 0;
-static Standard_Integer NbInters1Point         = 0;
-static Standard_Integer NbIntersNPoints        = 0;
-static Standard_Integer NbIntersNSegments      = 0;
-static Standard_Integer NbIntersPointEtSegment = 0;
+static int NbIntersCS             = 0;
+static int NbIntersCSVides        = 0;
+static int NbIntersAuto           = 0;
+static int NbIntersSimulate       = 0;
+static int NbInters               = 0;
+static int NbIntersVides          = 0;
+static int NbInters1Segment       = 0;
+static int NbInters1Point         = 0;
+static int NbIntersNPoints        = 0;
+static int NbIntersNSegments      = 0;
+static int NbIntersPointEtSegment = 0;
 #endif
 
 //=================================================================================================
@@ -83,7 +83,7 @@ HLRBRep_Intersector::HLRBRep_Intersector()
 #endif
 
   // Set minimal number of samples in case of HLR polygonal intersector.
-  const Standard_Integer aMinNbHLRSamples = 4;
+  const int aMinNbHLRSamples = 4;
   myIntersector.SetMinNbSamples(aMinNbHLRSamples);
 }
 
@@ -103,7 +103,7 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
 
   gp_Pnt2d           pa, pb; //,pa1,pb1;
   double             a, b, d, tol;
-  Standard_ShortReal ta, tb;
+  float ta, tb;
 
   theEdge1->Status().Bounds(a, ta, b, tb);
   d = b - a;
@@ -115,10 +115,10 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
   myC1->D0(b, pb);
   a = myC1->Parameter2d(a);
   b = myC1->Parameter2d(b);
-  IntRes2d_Domain D1(pa, a, (Standard_Real)ta, pb, b, (Standard_Real)tb);
+  IntRes2d_Domain D1(pa, a, (double)ta, pb, b, (double)tb);
 
   // modified by jgv, 18.04.2016 for OCC27341
-  // tol = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
+  // tol = (double)(((HLRBRep_EdgeData*) A1)->Tolerance());
   tol = Precision::Confusion();
   //////////////////////////////////////////
 
@@ -151,7 +151,7 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
   gp_Pnt2d           pa1, pb1, pa2, pb2;
   gp_Vec2d           va1, vb1, va2, vb2;
   double             a1, b1, a2, b2, d, dd, tol, tol1, tol2;
-  Standard_ShortReal ta, tb;
+  float ta, tb;
 
   // modified by jgv, 18.04.2016 for OCC27341
   // tol1 = theEdge1->Tolerance();
@@ -173,7 +173,7 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
   {
     aPasBon = false;
     theEdge1->Status().Bounds(a1, ta, b1, tb); //--   -> Parametres 3d
-    Standard_Real mtol = tol;
+    double mtol = tol;
     if (mtol < ta)
       mtol = ta;
     if (mtol < tb)
@@ -252,9 +252,9 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
-      ta = (Standard_ShortReal)tol;
+      ta = (float)tol;
     if (tb > tol)
-      tb = (Standard_ShortReal)tol;
+      tb = (float)tol;
 
     IntRes2d_Domain D1(pa1, a1, (double)ta, pb1, b1, (double)tb);
 
@@ -335,9 +335,9 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
-      ta = (Standard_ShortReal)tol;
+      ta = (float)tol;
     if (tb > tol)
-      tb = (Standard_ShortReal)tol;
+      tb = (float)tol;
 
     IntRes2d_Domain D2(pa2, a2, (double)ta, pb2, b2, (double)tb);
 
@@ -519,13 +519,13 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
         nbsv         = HLRBRep_SurfaceTool::NbSamplesV(mySurface, v1, v2);
         myPolyhedron = new HLRBRep_ThePolyhedronOfInterCSurf(mySurface, nbsu, nbsv, u1, v1, u2, v2);
       }
-      Standard_Real x0, y0, z0, x1, y1, z1, pmin, pmax; //,pp;
+      double x0, y0, z0, x1, y1, z1, pmin, pmax; //,pp;
       myPolyhedron->Bounding().Get(x0, y0, z0, x1, y1, z1);
 #if 0
       pmax = pmin = ElCLib::Parameter(L, gp_Pnt((x1+x0)*0.5,
 						(y1+y0)*0.5,
 						(z1+z0)*0.5));
-      Standard_Real d = (x1-x0) + (y1-y0) + (z1-z0);
+      double d = (x1-x0) + (y1-y0) + (z1-z0);
       pmin -= d;
       pmax += d;
       if (pmin > P) pmin = P - d;
@@ -537,7 +537,7 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
       break;
 #else
       //-- On va rejeter tous les points de parametres > P
-      Standard_Real p;
+      double p;
       p    = ElCLib::Parameter(L, gp_Pnt(x0, y0, z0));
       pmin = pmax = p;
       p           = ElCLib::Parameter(L, gp_Pnt(x0, y0, z1));
@@ -612,19 +612,19 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_Intersector::IsDone() const
+bool HLRBRep_Intersector::IsDone() const
 {
   if (myTypePerform == 1)
     return myIntersector.IsDone();
   else if (myTypePerform == 2)
     return myCSIntersector.IsDone();
   else
-    return (Standard_True);
+    return (true);
 }
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_Intersector::NbPoints() const
+int HLRBRep_Intersector::NbPoints() const
 {
   if (myTypePerform == 43)
     return (0);
@@ -639,7 +639,7 @@ Standard_Integer HLRBRep_Intersector::NbPoints() const
 
 //=================================================================================================
 
-const IntRes2d_IntersectionPoint& HLRBRep_Intersector::Point(const Standard_Integer N) const
+const IntRes2d_IntersectionPoint& HLRBRep_Intersector::Point(const int N) const
 {
   if (myTypePerform == 0)
     return (mySinglePoint);
@@ -650,14 +650,14 @@ const IntRes2d_IntersectionPoint& HLRBRep_Intersector::Point(const Standard_Inte
 //=================================================================================================
 
 const IntCurveSurface_IntersectionPoint& HLRBRep_Intersector::CSPoint(
-  const Standard_Integer N) const
+  const int N) const
 {
   return myCSIntersector.Point(N);
 }
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_Intersector::NbSegments() const
+int HLRBRep_Intersector::NbSegments() const
 {
   if (myTypePerform == 1)
     return myIntersector.NbSegments();
@@ -669,7 +669,7 @@ Standard_Integer HLRBRep_Intersector::NbSegments() const
 
 //=================================================================================================
 
-const IntRes2d_IntersectionSegment& HLRBRep_Intersector::Segment(const Standard_Integer N) const
+const IntRes2d_IntersectionSegment& HLRBRep_Intersector::Segment(const int N) const
 {
   return myIntersector.Segment(N);
 }
@@ -677,7 +677,7 @@ const IntRes2d_IntersectionSegment& HLRBRep_Intersector::Segment(const Standard_
 //=================================================================================================
 
 const IntCurveSurface_IntersectionSegment& HLRBRep_Intersector::CSSegment(
-  const Standard_Integer N) const
+  const int N) const
 {
   return myCSIntersector.Segment(N);
 }
@@ -694,33 +694,32 @@ void HLRBRep_Intersector::Destroy()
 
    sauvegarde de l etat du 23 janvier 98
 
-
-void  HLRBRep_Intersector::Perform (const Standard_Integer nA,
-                    const Standard_Address A1,
-                    const Standard_Real da1,
-                    const Standard_Real db1,
-                    const Standard_Integer nB,
-                    const Standard_Address A2,
-                    const Standard_Real da2,
-                    const Standard_Real db2,
-                    const Standard_Boolean EnBout)
+void  HLRBRep_Intersector::Perform (const int nA,
+                    void* const A1,
+                    const double da1,
+                    const double db1,
+                    const int nB,
+                    void* const A2,
+                    const double da2,
+                    const double db2,
+                    const bool EnBout)
 {
-  Standard_Address myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
-  Standard_Address myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
+  void* myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
+  void* myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
 
   myTypePerform = 1;
 
   gp_Pnt2d pa,pb;
-  Standard_Real a,b,d,tol,tol1,tol2;
-  Standard_ShortReal ta,tb;
+  double a,b,d,tol,tol1,tol2;
+  float ta,tb;
 
-  tol1 = (Standard_Real)(((HLRBRep_EdgeData*) A1)->Tolerance());
-  tol2 = (Standard_Real)(((HLRBRep_EdgeData*) A2)->Tolerance());
+  tol1 = (double)(((HLRBRep_EdgeData*) A1)->Tolerance());
+  tol2 = (double)(((HLRBRep_EdgeData*) A2)->Tolerance());
   if (tol1 > tol2) tol = tol1;
   else             tol = tol2;
 
   ((HLRBRep_EdgeData*) A1)->Status().Bounds(a,ta,b,tb); //--   -> Parametres 3d
-  Standard_Real mtol = tol;
+  double mtol = tol;
   if(mtol<ta) mtol=ta;
   if(mtol<tb) mtol=tb;
   d = b - a;
@@ -739,8 +738,7 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer nA,
   if(ta>tol) ta=tol;
   if(tb>tol) tb=tol;
 
-
-  IntRes2d_Domain D1(pa,a,(Standard_Real)ta,pb,b,(Standard_Real)tb);
+  IntRes2d_Domain D1(pa,a,(double)ta,pb,b,(double)tb);
 
   ((HLRBRep_EdgeData*) A2)->Status().Bounds(a,ta,b,tb);
   mtol = tol;
@@ -763,14 +761,9 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer nA,
   if(ta>tol) ta=tol;
   if(tb>tol) tb=tol;
 
-
- IntRes2d_Domain D2(pa,a,(Standard_Real)ta,pb,b,(Standard_Real)tb);
+ IntRes2d_Domain D2(pa,a,(double)ta,pb,b,(double)tb);
 
   myIntersector.Perform(myC1,D1,myC2,D2,tol,tol);
-
-
-
-
 
 #ifdef PERF
   NbInters++;

@@ -25,7 +25,8 @@
 #include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
 #include <ShapeUpgrade_SplitSurfaceContinuity.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_SplitSurface)
 
@@ -63,18 +64,18 @@ void ShapeUpgrade_SplitSurfaceContinuity::SetCriterion(const GeomAbs_Shape Crite
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceContinuity::SetTolerance(const Standard_Real Tol)
+void ShapeUpgrade_SplitSurfaceContinuity::SetTolerance(const double Tol)
 {
   myTolerance = Tol;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment)
+void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
 {
   if (!Segment)
   {
-    Standard_Real UF, UL, VF, VL;
+    double UF, UL, VF, VL;
     mySurface->Bounds(UF, UL, VF, VL);
     if (!Precision::IsInfinite(UF))
       myUSplitValues->SetValue(1, UF);
@@ -86,11 +87,11 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
       myVSplitValues->SetValue(myVSplitValues->Length(), VL);
   }
 
-  Standard_Real           UFirst    = myUSplitValues->Value(1);
-  Standard_Real           ULast     = myUSplitValues->Value(myUSplitValues->Length());
-  Standard_Real           VFirst    = myVSplitValues->Value(1);
-  Standard_Real           VLast     = myVSplitValues->Value(myVSplitValues->Length());
-  constexpr Standard_Real precision = Precision::Confusion();
+  double           UFirst    = myUSplitValues->Value(1);
+  double           ULast     = myUSplitValues->Value(myUSplitValues->Length());
+  double           VFirst    = myVSplitValues->Value(1);
+  double           VLast     = myVSplitValues->Value(myVSplitValues->Length());
+  constexpr double precision = Precision::Confusion();
   //  if (ShapeUpgrade::Debug()) std::cout << "SplitSurfaceContinuity::Build" << std::endl;
   if (mySurface->Continuity() < myCriterion)
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
@@ -99,14 +100,14 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
 
   if (mySurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
-    Handle(Geom_SurfaceOfRevolution) Surface =
-      Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
+    occ::handle<Geom_SurfaceOfRevolution> Surface =
+      occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
     if (Surface->Continuity() >= myCriterion && myUSplitValues->Length() == 2
         && myVSplitValues->Length() == 2)
     {
       return;
     }
-    Handle(Geom_Curve)                  BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>                  BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3dContinuity spc;
     spc.Init(BasCurve, VFirst, VLast);
     spc.SetCriterion(myCriterion);
@@ -125,14 +126,14 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
   }
   if (mySurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
   {
-    Handle(Geom_SurfaceOfLinearExtrusion) Surface =
-      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
+    occ::handle<Geom_SurfaceOfLinearExtrusion> Surface =
+      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface);
     if (Surface->Continuity() >= myCriterion && myUSplitValues->Length() == 2
         && myVSplitValues->Length() == 2)
     {
       return;
     }
-    Handle(Geom_Curve)                  BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>                  BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3dContinuity spc;
     spc.Init(BasCurve, UFirst, ULast);
     spc.SetCriterion(myCriterion);
@@ -148,7 +149,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
     if (spc.Status(ShapeExtend_DONE3))
     {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-      const Handle(Geom_Curve)& aNewBascurve = spc.GetCurve();
+      const occ::handle<Geom_Curve>& aNewBascurve = spc.GetCurve();
       Surface->SetBasisCurve(aNewBascurve);
     }
     return;
@@ -156,16 +157,16 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
 
   if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    Handle(Geom_RectangularTrimmedSurface) tmp =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(mySurface);
+    occ::handle<Geom_RectangularTrimmedSurface> tmp =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface);
     if (tmp->Continuity() >= myCriterion && myUSplitValues->Length() == 2
         && myVSplitValues->Length() == 2)
     {
       return;
     }
-    Standard_Real U1, U2, V1, V2;
+    double U1, U2, V1, V2;
     tmp->Bounds(U1, U2, V1, V2);
-    Handle(Geom_Surface)                theSurf = tmp->BasisSurface();
+    occ::handle<Geom_Surface>                theSurf = tmp->BasisSurface();
     ShapeUpgrade_SplitSurfaceContinuity sps;
     sps.Init(theSurf,
              std::max(U1, UFirst),
@@ -176,7 +177,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
     sps.SetVSplitValues(myVSplitValues);
     sps.SetTolerance(myTolerance);
     sps.SetCriterion(myCriterion);
-    sps.Compute(Standard_True);
+    sps.Compute(true);
     myUSplitValues->Clear();
     myUSplitValues->ChangeSequence() = sps.USplitValues()->Sequence();
     myVSplitValues->Clear();
@@ -206,8 +207,8 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
         BasCriterion = GeomAbs_CN;
         break;
     }
-    Handle(Geom_OffsetSurface) tmp     = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-    Handle(Geom_Surface)       theSurf = tmp->BasisSurface();
+    occ::handle<Geom_OffsetSurface> tmp     = occ::down_cast<Geom_OffsetSurface>(mySurface);
+    occ::handle<Geom_Surface>       theSurf = tmp->BasisSurface();
     if (theSurf->Continuity() >= BasCriterion && myUSplitValues->Length() == 2
         && myVSplitValues->Length() == 2)
     {
@@ -219,7 +220,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
     sps.SetVSplitValues(myVSplitValues);
     sps.SetTolerance(myTolerance);
     sps.SetCriterion(BasCriterion);
-    sps.Compute(Standard_True);
+    sps.Compute(true);
     myUSplitValues->Clear();
     myUSplitValues->ChangeSequence() = sps.USplitValues()->Sequence();
     myVSplitValues->Clear();
@@ -228,9 +229,9 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
     return;
   }
 
-  Handle(Geom_BSplineSurface) MyBSpline;
+  occ::handle<Geom_BSplineSurface> MyBSpline;
   if (mySurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
-    MyBSpline = Handle(Geom_BSplineSurface)::DownCast(mySurface->Copy());
+    MyBSpline = occ::down_cast<Geom_BSplineSurface>(mySurface->Copy());
   if (MyBSpline.IsNull())
   {
     //    if (ShapeUpgrade::Debug()) std::cout<<".  Surface is not a Bspline"<<std::endl;
@@ -242,37 +243,37 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
   }
 
   // it is a BSplineSurface
-  Standard_Integer UDeg      = MyBSpline->UDegree();
-  Standard_Integer VDeg      = MyBSpline->VDegree();
-  Standard_Integer NbUKnots  = MyBSpline->NbUKnots();
-  Standard_Integer UFirstInd = MyBSpline->FirstUKnotIndex() + 1,
+  int UDeg      = MyBSpline->UDegree();
+  int VDeg      = MyBSpline->VDegree();
+  int NbUKnots  = MyBSpline->NbUKnots();
+  int UFirstInd = MyBSpline->FirstUKnotIndex() + 1,
                    ULastInd  = MyBSpline->LastUKnotIndex() - 1,
                    VFirstInd = MyBSpline->FirstVKnotIndex() + 1,
                    VLastInd  = MyBSpline->LastVKnotIndex() - 1;
-  Standard_Integer NbVKnots  = MyBSpline->NbVKnots();
+  int NbVKnots  = MyBSpline->NbVKnots();
 
   //  if (ShapeUpgrade::Debug()) std::cout<<". NbUKnots="<<NbUKnots<<std::endl;
   if (NbUKnots > 2)
   {
     // Only the internal knots are checked.
-    Standard_Integer iknot = UFirstInd;
-    for (Standard_Integer j = 2; j <= myUSplitValues->Length(); j++)
+    int iknot = UFirstInd;
+    for (int j = 2; j <= myUSplitValues->Length(); j++)
     {
       ULast = myUSplitValues->Value(j);
 
       for (; iknot <= ULastInd; iknot++)
       {
-        Standard_Real valknot = MyBSpline->UKnot(iknot);
+        double valknot = MyBSpline->UKnot(iknot);
         if (valknot <= UFirst + precision)
           continue;
         if (valknot >= ULast - precision)
           break;
-        Standard_Integer Continuity = UDeg - MyBSpline->UMultiplicity(iknot);
+        int Continuity = UDeg - MyBSpline->UMultiplicity(iknot);
         if (Continuity < myCont)
         {
           // At this knot, the Surface is C0; try to remove Knot.
-          Standard_Integer newMultiplicity = UDeg - myCont;
-          Standard_Boolean corrected       = Standard_False;
+          int newMultiplicity = UDeg - myCont;
+          bool corrected       = false;
           if (newMultiplicity >= 0)
             corrected = MyBSpline->RemoveUKnot(iknot, newMultiplicity, myTolerance);
           if (corrected && newMultiplicity > 0)
@@ -297,7 +298,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
           {
             // impossible to force C1 within the tolerance:
             // this knot will be a splitting value.
-            Standard_Real u = MyBSpline->UKnot(iknot);
+            double u = MyBSpline->UKnot(iknot);
             myUSplitValues->InsertBefore(j++, u);
             myNbResultingRow++;
             //	    if (ShapeUpgrade::Debug()) std::cout<<". Splitting at Knot "<<iknot<<std::endl;
@@ -311,23 +312,23 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
   if (NbVKnots > 2)
   {
     // Only the internal knots are checked.
-    Standard_Integer iknot = VFirstInd;
-    for (Standard_Integer j1 = 2; j1 <= myVSplitValues->Length(); j1++)
+    int iknot = VFirstInd;
+    for (int j1 = 2; j1 <= myVSplitValues->Length(); j1++)
     {
       VLast = myVSplitValues->Value(j1);
       for (; iknot <= VLastInd; iknot++)
       {
-        Standard_Real valknot = MyBSpline->VKnot(iknot);
+        double valknot = MyBSpline->VKnot(iknot);
         if (valknot <= VFirst + precision)
           continue;
         if (valknot >= VLast - precision)
           break;
-        Standard_Integer Continuity = VDeg - MyBSpline->VMultiplicity(iknot);
+        int Continuity = VDeg - MyBSpline->VMultiplicity(iknot);
         if (Continuity < myCont)
         {
           // At this knot, the Surface is C0; try to remove Knot.
-          Standard_Integer newMultiplicity = VDeg - myCont;
-          Standard_Boolean corrected       = Standard_False;
+          int newMultiplicity = VDeg - myCont;
+          bool corrected       = false;
           if (newMultiplicity >= 0)
             corrected = MyBSpline->RemoveVKnot(iknot, newMultiplicity, myTolerance);
           if (corrected && newMultiplicity > 0)
@@ -351,7 +352,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const Standard_Boolean Segment
           else
           {
             // this knot will be a splitting value.
-            Standard_Real v = MyBSpline->VKnot(iknot);
+            double v = MyBSpline->VKnot(iknot);
             myVSplitValues->InsertBefore(j1++, v);
             myNbResultingCol++;
             //	    if (ShapeUpgrade::Debug()) std::cout<<". Splitting at Knot "<<iknot<<std::endl;

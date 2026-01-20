@@ -14,9 +14,11 @@
 #include <gtest/gtest.h>
 
 #include <Geom_BSplineSurface.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 
 class Geom_BSplineSurface_Test : public ::testing::Test
@@ -25,41 +27,41 @@ protected:
   void SetUp() override
   {
     // Create a simple BSpline surface for testing
-    TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
-    for (Standard_Integer i = 1; i <= 3; ++i)
+    NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+    for (int i = 1; i <= 3; ++i)
     {
-      for (Standard_Integer j = 1; j <= 3; ++j)
+      for (int j = 1; j <= 3; ++j)
       {
         aPoles(i, j) = gp_Pnt(i, j, (i + j) * 0.1);
       }
     }
 
-    TColStd_Array1OfReal anUKnots(1, 2);
+    NCollection_Array1<double> anUKnots(1, 2);
     anUKnots(1) = 0.0;
     anUKnots(2) = 1.0;
 
-    TColStd_Array1OfReal aVKnots(1, 2);
+    NCollection_Array1<double> aVKnots(1, 2);
     aVKnots(1) = 0.0;
     aVKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger anUMults(1, 2);
+    NCollection_Array1<int> anUMults(1, 2);
     anUMults(1) = 3;
     anUMults(2) = 3;
 
-    TColStd_Array1OfInteger aVMults(1, 2);
+    NCollection_Array1<int> aVMults(1, 2);
     aVMults(1) = 3;
     aVMults(2) = 3;
 
     myOriginalSurface = new Geom_BSplineSurface(aPoles, anUKnots, aVKnots, anUMults, aVMults, 2, 2);
   }
 
-  Handle(Geom_BSplineSurface) myOriginalSurface;
+  occ::handle<Geom_BSplineSurface> myOriginalSurface;
 };
 
 TEST_F(Geom_BSplineSurface_Test, CopyConstructorBasicProperties)
 {
   // Test copy constructor
-  Handle(Geom_BSplineSurface) aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
+  occ::handle<Geom_BSplineSurface> aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
 
   // Verify basic properties are identical
   EXPECT_EQ(myOriginalSurface->UDegree(), aCopiedSurface->UDegree());
@@ -74,12 +76,12 @@ TEST_F(Geom_BSplineSurface_Test, CopyConstructorBasicProperties)
 
 TEST_F(Geom_BSplineSurface_Test, CopyConstructorPoles)
 {
-  Handle(Geom_BSplineSurface) aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
+  occ::handle<Geom_BSplineSurface> aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
 
   // Verify all poles are identical
-  for (Standard_Integer i = 1; i <= myOriginalSurface->NbUPoles(); ++i)
+  for (int i = 1; i <= myOriginalSurface->NbUPoles(); ++i)
   {
-    for (Standard_Integer j = 1; j <= myOriginalSurface->NbVPoles(); ++j)
+    for (int j = 1; j <= myOriginalSurface->NbVPoles(); ++j)
     {
       gp_Pnt anOrigPole = myOriginalSurface->Pole(i, j);
       gp_Pnt aCopyPole  = aCopiedSurface->Pole(i, j);
@@ -90,17 +92,17 @@ TEST_F(Geom_BSplineSurface_Test, CopyConstructorPoles)
 
 TEST_F(Geom_BSplineSurface_Test, CopyConstructorKnots)
 {
-  Handle(Geom_BSplineSurface) aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
+  occ::handle<Geom_BSplineSurface> aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
 
   // Verify U knots are identical
-  for (Standard_Integer i = 1; i <= myOriginalSurface->NbUKnots(); ++i)
+  for (int i = 1; i <= myOriginalSurface->NbUKnots(); ++i)
   {
     EXPECT_DOUBLE_EQ(myOriginalSurface->UKnot(i), aCopiedSurface->UKnot(i));
     EXPECT_EQ(myOriginalSurface->UMultiplicity(i), aCopiedSurface->UMultiplicity(i));
   }
 
   // Verify V knots are identical
-  for (Standard_Integer i = 1; i <= myOriginalSurface->NbVKnots(); ++i)
+  for (int i = 1; i <= myOriginalSurface->NbVKnots(); ++i)
   {
     EXPECT_DOUBLE_EQ(myOriginalSurface->VKnot(i), aCopiedSurface->VKnot(i));
     EXPECT_EQ(myOriginalSurface->VMultiplicity(i), aCopiedSurface->VMultiplicity(i));
@@ -110,8 +112,8 @@ TEST_F(Geom_BSplineSurface_Test, CopyConstructorKnots)
 TEST_F(Geom_BSplineSurface_Test, CopyMethodUsesOptimizedConstructor)
 {
   // Test that Copy() method uses the optimized copy constructor
-  Handle(Geom_Geometry)       aCopiedGeom    = myOriginalSurface->Copy();
-  Handle(Geom_BSplineSurface) aCopiedSurface = Handle(Geom_BSplineSurface)::DownCast(aCopiedGeom);
+  occ::handle<Geom_Geometry>       aCopiedGeom    = myOriginalSurface->Copy();
+  occ::handle<Geom_BSplineSurface> aCopiedSurface = occ::down_cast<Geom_BSplineSurface>(aCopiedGeom);
 
   EXPECT_FALSE(aCopiedSurface.IsNull());
 
@@ -120,9 +122,9 @@ TEST_F(Geom_BSplineSurface_Test, CopyMethodUsesOptimizedConstructor)
   EXPECT_EQ(myOriginalSurface->VDegree(), aCopiedSurface->VDegree());
 
   // Test evaluation at several points
-  for (Standard_Real u = 0.0; u <= 1.0; u += 0.5)
+  for (double u = 0.0; u <= 1.0; u += 0.5)
   {
-    for (Standard_Real v = 0.0; v <= 1.0; v += 0.5)
+    for (double v = 0.0; v <= 1.0; v += 0.5)
     {
       gp_Pnt anOrigPnt = myOriginalSurface->Value(u, v);
       gp_Pnt aCopyPnt  = aCopiedSurface->Value(u, v);
@@ -133,7 +135,7 @@ TEST_F(Geom_BSplineSurface_Test, CopyMethodUsesOptimizedConstructor)
 
 TEST_F(Geom_BSplineSurface_Test, CopyIndependence)
 {
-  Handle(Geom_BSplineSurface) aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
+  occ::handle<Geom_BSplineSurface> aCopiedSurface = new Geom_BSplineSurface(*myOriginalSurface);
 
   // Modify the original surface
   gp_Pnt aNewPole(10, 10, 10);

@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop, Standard_Transient)
 //=================================================================================================
 
 TopOpeBRepBuild_Loop::TopOpeBRepBuild_Loop(const TopoDS_Shape& S)
-    : myIsShape(Standard_True),
+    : myIsShape(true),
       myShape(S),
       myBlockIterator(0, 0)
 {
@@ -30,14 +30,14 @@ TopOpeBRepBuild_Loop::TopOpeBRepBuild_Loop(const TopoDS_Shape& S)
 //=================================================================================================
 
 TopOpeBRepBuild_Loop::TopOpeBRepBuild_Loop(const TopOpeBRepBuild_BlockIterator& BI)
-    : myIsShape(Standard_False),
+    : myIsShape(false),
       myBlockIterator(BI)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_Loop::IsShape() const
+bool TopOpeBRepBuild_Loop::IsShape() const
 {
   return myIsShape;
 }

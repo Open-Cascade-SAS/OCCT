@@ -37,7 +37,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC0(const GeomLProp_SLProps& Surf1,
 void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 {
   gp_Vec        V1u, V2u, V1v, V2v;
-  Standard_Real norm1u, norm2u, norm1v, norm2v, angu, angv;
+  double norm1u, norm2u, norm1v, norm2v, angu, angv;
 
   V1u = Surf1.D1U();
   V2u = Surf2.D1U();
@@ -73,7 +73,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NullFirstDerivative;
   }
 }
@@ -84,8 +84,8 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
 
 {
   gp_Vec        V11u, V12u, V21u, V22u, V11v, V12v, V21v, V22v;
-  Standard_Real norm11u, norm12u, norm21u, norm22u, norm11v, norm12v, norm21v, norm22v;
-  Standard_Real ang;
+  double norm11u, norm12u, norm21u, norm22u, norm11v, norm12v, norm21v, norm22v;
+  double ang;
   V11u    = Surf1.D1U();
   V12u    = Surf2.D1U();
   V21u    = Surf1.D2U();
@@ -117,14 +117,14 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
     }
     else
     {
-      myIsDone      = Standard_False;
+      myIsDone      = false;
       myErrorStatus = LocalAnalysis_NullSecondDerivative;
     }
   }
 
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NullFirstDerivative;
   }
 
@@ -159,13 +159,13 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
     }
     else
     {
-      myIsDone      = Standard_False;
+      myIsDone      = false;
       myErrorStatus = LocalAnalysis_NullSecondDerivative;
     }
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NullFirstDerivative;
   }
 }
@@ -177,7 +177,7 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
   {
     gp_Dir        D1  = Surf1.Normal();
     gp_Dir        D2  = Surf2.Normal();
-    Standard_Real ang = D1.Angle(D2);
+    double ang = D1.Angle(D2);
     if (ang > M_PI / 2)
       myContG1 = M_PI - ang;
     else
@@ -185,7 +185,7 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_NormalNotDefined;
   }
 }
@@ -195,8 +195,8 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
 void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 {
   gp_Dir        DMIN1, DMIN2, DMAX1, DMAX2;
-  Standard_Real RMIN1, RMIN2, RMAX1, RMAX2;
-  Standard_Real x1, x2, y1, y2, z1, z2;
+  double RMIN1, RMIN2, RMAX1, RMAX2;
+  double x1, x2, y1, y2, z1, z2;
 
   if (Surf1.IsCurvatureDefined() && Surf2.IsCurvatureDefined())
   {
@@ -224,7 +224,7 @@ void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp
     myZETA1 = (RMAX1 - RMIN1) / 2;
     myZETA2 = (RMAX2 - RMIN2) / 2;
     myZETA  = (myZETA1 + myZETA2) / 2;
-    Standard_Real DETA, DZETA;
+    double DETA, DZETA;
     DETA  = (myETA1 - myETA2) / 2;
     DZETA = (myZETA1 - myZETA2) / 2;
     myGap = std::abs(DETA)
@@ -233,18 +233,18 @@ void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp
   }
   else
   {
-    myIsDone      = Standard_False;
+    myIsDone      = false;
     myErrorStatus = LocalAnalysis_CurvatureNotDefined;
   }
 }
 
-LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Standard_Real EpsNul,
-                                                                 const Standard_Real EpsC0,
-                                                                 const Standard_Real EpsC1,
-                                                                 const Standard_Real EpsC2,
-                                                                 const Standard_Real EpsG1,
-                                                                 const Standard_Real Percent,
-                                                                 const Standard_Real Maxlen)
+LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const double EpsNul,
+                                                                 const double EpsC0,
+                                                                 const double EpsC1,
+                                                                 const double EpsC2,
+                                                                 const double EpsG1,
+                                                                 const double Percent,
+                                                                 const double Maxlen)
     : myContC0(0.0),
       myContC1U(0.0),
       myContC1V(0.0),
@@ -271,7 +271,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Standard_
   myepsG1  = EpsG1;
   myperce  = Percent;
   mymaxlen = Maxlen;
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
@@ -314,20 +314,20 @@ void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
 
 /*********************************************************************************/
 
-LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Geom_Surface)& Surf1,
-                                                                 const Standard_Real         u1,
-                                                                 const Standard_Real         v1,
-                                                                 const Handle(Geom_Surface)& Surf2,
-                                                                 const Standard_Real         u2,
-                                                                 const Standard_Real         v2,
+LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const occ::handle<Geom_Surface>& Surf1,
+                                                                 const double         u1,
+                                                                 const double         v1,
+                                                                 const occ::handle<Geom_Surface>& Surf2,
+                                                                 const double         u2,
+                                                                 const double         v2,
                                                                  const GeomAbs_Shape         Ordre,
-                                                                 const Standard_Real         EpsNul,
-                                                                 const Standard_Real         EpsC0,
-                                                                 const Standard_Real         EpsC1,
-                                                                 const Standard_Real         EpsC2,
-                                                                 const Standard_Real         EpsG1,
-                                                                 const Standard_Real Percent,
-                                                                 const Standard_Real Maxlen)
+                                                                 const double         EpsNul,
+                                                                 const double         EpsC0,
+                                                                 const double         EpsC1,
+                                                                 const double         EpsC2,
+                                                                 const double         EpsG1,
+                                                                 const double Percent,
+                                                                 const double Maxlen)
     : myContC0(0.0),
       myContC1U(0.0),
       myContC1V(0.0),
@@ -355,7 +355,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
   myepsG1    = EpsG1;
   myperce    = Percent;
   mymaxlen   = Maxlen;
-  myIsDone   = Standard_True;
+  myIsDone   = true;
   switch (Ordre)
   {
     case GeomAbs_C0: {
@@ -401,19 +401,19 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
 
 /*********************************************************************************/
 
-LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Geom2d_Curve)& curv1,
-                                                                 const Handle(Geom2d_Curve)& curv2,
-                                                                 const Standard_Real         U,
-                                                                 const Handle(Geom_Surface)& Surf1,
-                                                                 const Handle(Geom_Surface)& Surf2,
+LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const occ::handle<Geom2d_Curve>& curv1,
+                                                                 const occ::handle<Geom2d_Curve>& curv2,
+                                                                 const double         U,
+                                                                 const occ::handle<Geom_Surface>& Surf1,
+                                                                 const occ::handle<Geom_Surface>& Surf2,
                                                                  const GeomAbs_Shape         Ordre,
-                                                                 const Standard_Real         EpsNul,
-                                                                 const Standard_Real         EpsC0,
-                                                                 const Standard_Real         EpsC1,
-                                                                 const Standard_Real         EpsC2,
-                                                                 const Standard_Real         EpsG1,
-                                                                 const Standard_Real Percent,
-                                                                 const Standard_Real Maxlen)
+                                                                 const double         EpsNul,
+                                                                 const double         EpsC0,
+                                                                 const double         EpsC1,
+                                                                 const double         EpsC2,
+                                                                 const double         EpsG1,
+                                                                 const double Percent,
+                                                                 const double Maxlen)
     : myContC0(0.0),
       myContC1U(0.0),
       myContC1V(0.0),
@@ -433,7 +433,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
       myAlpha(0.0),
       myGap(0.0)
 {
-  Standard_Real pard1, parf1, pard2, parf2, u1, v1, u2, v2;
+  double pard1, parf1, pard2, parf2, u1, v1, u2, v2;
 
   myTypeCont = Ordre;
   myepsnul   = EpsNul;
@@ -443,7 +443,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
   myepsG1    = EpsG1;
   myperce    = Percent;
   mymaxlen   = Maxlen;
-  myIsDone   = Standard_True;
+  myIsDone   = true;
 
   pard1 = curv1->FirstParameter();
   pard2 = curv2->FirstParameter();
@@ -451,7 +451,7 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
   parf2 = curv2->LastParameter();
 
   if (!(((U <= parf1) && (U >= pard1)) && ((U <= parf2) && (U >= pard2))))
-    myIsDone = Standard_False;
+    myIsDone = false;
   else
   {
     gp_Pnt2d pt1 = curv1->Value(U);
@@ -505,37 +505,37 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC0() const
+bool LocalAnalysis_SurfaceContinuity::IsC0() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (myContC0 <= myepsC0)
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC1() const
+bool LocalAnalysis_SurfaceContinuity::IsC1() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (IsC0() && (myContC1U <= myepsC1) && (myContC1V <= myepsC1))
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC2() const
+bool LocalAnalysis_SurfaceContinuity::IsC2() const
 {
-  Standard_Real eps1u, eps1v, eps2u, eps2v;
+  double eps1u, eps1v, eps2u, eps2v;
 
   if (!myIsDone)
   {
@@ -551,39 +551,39 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsC2() const
     {
       if (std::abs(myLambda1U * myLambda1U - myLambda2U) <= (eps1u * eps1u + eps2u))
         if (std::abs(myLambda1V * myLambda1V - myLambda2V) <= (eps1v * eps1v + eps2v))
-          return Standard_True;
+          return true;
         else
-          return Standard_False;
+          return false;
       else
-        return Standard_False;
+        return false;
     }
     else
-      return Standard_False;
+      return false;
   }
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG1() const
+bool LocalAnalysis_SurfaceContinuity::IsG1() const
 {
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
   if (IsC0() && (myContG1 <= myepsG1))
-    return Standard_True;
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2() const
+bool LocalAnalysis_SurfaceContinuity::IsG2() const
 {
-  Standard_Real    EPSNL;
-  Standard_Integer itype;
+  double    EPSNL;
+  int itype;
 
   if (!myIsDone)
   {
@@ -594,7 +594,7 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2() const
   if (IsG1())
   {
     if ((std::abs(myETA) < EPSNL) && (std::abs(myZETA) < EPSNL))
-      return Standard_True;
+      return true;
     if ((std::abs(myZETA1) < EPSNL) && (std::abs(myZETA2) < EPSNL))
       itype = 1;
     else if ((std::abs(myETA1) < EPSNL) && (std::abs(myETA2) < EPSNL))
@@ -609,19 +609,19 @@ Standard_Boolean LocalAnalysis_SurfaceContinuity::IsG2() const
     {
 
       if ((myETA >= (2 * myZETA)) && (myGap <= (myperce * (myETA - myZETA))))
-        return Standard_True;
+        return true;
       if ((myZETA >= myETA) && (myGap <= (myperce * myZETA)))
-        return Standard_True;
+        return true;
       if ((myZETA <= myETA) && (myETA <= (2 * myZETA)) && (myGap <= (myperce * myETA)))
-        return Standard_True;
+        return true;
       else
-        return Standard_False;
+        return false;
     }
     else
-      return Standard_False;
+      return false;
   }
   else
-    return Standard_False;
+    return false;
 }
 
 /*********************************************************************************/
@@ -637,7 +637,7 @@ GeomAbs_Shape LocalAnalysis_SurfaceContinuity::ContinuityStatus() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C0Value() const
+double LocalAnalysis_SurfaceContinuity::C0Value() const
 {
   if (!myIsDone)
   {
@@ -648,7 +648,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C0Value() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C1UAngle() const
+double LocalAnalysis_SurfaceContinuity::C1UAngle() const
 {
   if (!myIsDone)
   {
@@ -659,7 +659,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1UAngle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C1VAngle() const
+double LocalAnalysis_SurfaceContinuity::C1VAngle() const
 {
   if (!myIsDone)
   {
@@ -670,7 +670,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1VAngle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C2UAngle() const
+double LocalAnalysis_SurfaceContinuity::C2UAngle() const
 {
   if (!myIsDone)
   {
@@ -681,7 +681,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2UAngle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C2VAngle() const
+double LocalAnalysis_SurfaceContinuity::C2VAngle() const
 {
   if (!myIsDone)
   {
@@ -692,7 +692,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2VAngle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::G1Angle() const
+double LocalAnalysis_SurfaceContinuity::G1Angle() const
 {
   if (!myIsDone)
   {
@@ -703,7 +703,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::G1Angle() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C1URatio() const
+double LocalAnalysis_SurfaceContinuity::C1URatio() const
 {
   if (!myIsDone)
   {
@@ -714,7 +714,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1URatio() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C2URatio() const
+double LocalAnalysis_SurfaceContinuity::C2URatio() const
 {
   if (!myIsDone)
   {
@@ -725,7 +725,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2URatio() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C1VRatio() const
+double LocalAnalysis_SurfaceContinuity::C1VRatio() const
 {
   if (!myIsDone)
   {
@@ -736,7 +736,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C1VRatio() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::C2VRatio() const
+double LocalAnalysis_SurfaceContinuity::C2VRatio() const
 {
   if (!myIsDone)
   {
@@ -747,7 +747,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::C2VRatio() const
 
 /*********************************************************************************/
 
-Standard_Real LocalAnalysis_SurfaceContinuity::G2CurvatureGap() const
+double LocalAnalysis_SurfaceContinuity::G2CurvatureGap() const
 {
   if (!myIsDone)
   {
@@ -758,7 +758,7 @@ Standard_Real LocalAnalysis_SurfaceContinuity::G2CurvatureGap() const
 
 /*********************************************************************************/
 
-Standard_Boolean LocalAnalysis_SurfaceContinuity::IsDone() const
+bool LocalAnalysis_SurfaceContinuity::IsDone() const
 {
   return (myIsDone);
 }

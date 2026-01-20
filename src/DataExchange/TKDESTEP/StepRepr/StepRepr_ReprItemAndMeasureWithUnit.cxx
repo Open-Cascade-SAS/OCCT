@@ -31,8 +31,8 @@ StepRepr_ReprItemAndMeasureWithUnit::StepRepr_ReprItemAndMeasureWithUnit()
 
 //=================================================================================================
 
-void StepRepr_ReprItemAndMeasureWithUnit::Init(const Handle(StepBasic_MeasureWithUnit)&   aMWU,
-                                               const Handle(StepRepr_RepresentationItem)& aRI)
+void StepRepr_ReprItemAndMeasureWithUnit::Init(const occ::handle<StepBasic_MeasureWithUnit>&   aMWU,
+                                               const occ::handle<StepRepr_RepresentationItem>& aRI)
 {
   myMeasureWithUnit = aMWU;
   SetName(aRI->Name());
@@ -40,7 +40,7 @@ void StepRepr_ReprItemAndMeasureWithUnit::Init(const Handle(StepBasic_MeasureWit
 
 //=================================================================================================
 
-Handle(StepRepr_MeasureRepresentationItem) StepRepr_ReprItemAndMeasureWithUnit::
+occ::handle<StepRepr_MeasureRepresentationItem> StepRepr_ReprItemAndMeasureWithUnit::
   GetMeasureRepresentationItem() const
 {
   return myMeasureRepresentationItem;
@@ -49,24 +49,24 @@ Handle(StepRepr_MeasureRepresentationItem) StepRepr_ReprItemAndMeasureWithUnit::
 //=================================================================================================
 
 void StepRepr_ReprItemAndMeasureWithUnit::SetMeasureWithUnit(
-  const Handle(StepBasic_MeasureWithUnit)& aMWU)
+  const occ::handle<StepBasic_MeasureWithUnit>& aMWU)
 {
   myMeasureWithUnit = aMWU;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_MeasureWithUnit) StepRepr_ReprItemAndMeasureWithUnit::GetMeasureWithUnit() const
+occ::handle<StepBasic_MeasureWithUnit> StepRepr_ReprItemAndMeasureWithUnit::GetMeasureWithUnit() const
 {
   return myMeasureWithUnit;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationItem) StepRepr_ReprItemAndMeasureWithUnit::GetRepresentationItem()
+occ::handle<StepRepr_RepresentationItem> StepRepr_ReprItemAndMeasureWithUnit::GetRepresentationItem()
   const
 {
-  Handle(StepRepr_RepresentationItem) RI = new StepRepr_RepresentationItem();
+  occ::handle<StepRepr_RepresentationItem> RI = new StepRepr_RepresentationItem();
   RI->Init(Name());
   return RI;
 }

@@ -18,30 +18,50 @@
 #include <StdObject_gp_Vectors.hxx>
 #include <StdObject_gp_Curves.hxx>
 
-#include <TColgp_HArray2OfXYZ.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColgp_HArray2OfDir.hxx>
-#include <TColgp_HArray2OfVec.hxx>
-#include <TColgp_HArray2OfXY.hxx>
-#include <TColgp_HArray2OfPnt2d.hxx>
-#include <TColgp_HArray2OfDir2d.hxx>
-#include <TColgp_HArray2OfVec2d.hxx>
-#include <TColgp_HArray2OfLin2d.hxx>
-#include <TColgp_HArray2OfCirc2d.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Dir2d.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Lin2d.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Circ2d.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 class ShapePersistent_HArray2 : private StdLPersistent_HArray2
 {
 public:
-  typedef instance<TColgp_HArray2OfXYZ>    XYZ;
-  typedef instance<TColgp_HArray2OfPnt>    Pnt;
-  typedef instance<TColgp_HArray2OfDir>    Dir;
-  typedef instance<TColgp_HArray2OfVec>    Vec;
-  typedef instance<TColgp_HArray2OfXY>     XY;
-  typedef instance<TColgp_HArray2OfPnt2d>  Pnt2d;
-  typedef instance<TColgp_HArray2OfDir2d>  Dir2d;
-  typedef instance<TColgp_HArray2OfVec2d>  Vec2d;
-  typedef instance<TColgp_HArray2OfLin2d>  Lin2d;
-  typedef instance<TColgp_HArray2OfCirc2d> Circ2d;
+  typedef instance<NCollection_HArray2<gp_XYZ>>    XYZ;
+  typedef instance<NCollection_HArray2<gp_Pnt>>    Pnt;
+  typedef instance<NCollection_HArray2<gp_Dir>>    Dir;
+  typedef instance<NCollection_HArray2<gp_Vec>>    Vec;
+  typedef instance<NCollection_HArray2<gp_XY>>     XY;
+  typedef instance<NCollection_HArray2<gp_Pnt2d>>  Pnt2d;
+  typedef instance<NCollection_HArray2<gp_Dir2d>>  Dir2d;
+  typedef instance<NCollection_HArray2<gp_Vec2d>>  Vec2d;
+  typedef instance<NCollection_HArray2<gp_Lin2d>>  Lin2d;
+  typedef instance<NCollection_HArray2<gp_Circ2d>> Circ2d;
 };
 
 #endif

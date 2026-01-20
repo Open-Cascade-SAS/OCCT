@@ -27,50 +27,50 @@
 #include <Message_ProgressScope.hxx>
 
 Transfer_TransferOutput::Transfer_TransferOutput(
-  const Handle(Transfer_ActorOfTransientProcess)& actor,
-  const Handle(Interface_InterfaceModel)&         amodel)
+  const occ::handle<Transfer_ActorOfTransientProcess>& actor,
+  const occ::handle<Interface_InterfaceModel>&         amodel)
 {
   theproc = new Transfer_TransientProcess(amodel->NbEntities());
   theproc->SetActor(actor);
   themodel = amodel;
-  //  thescope = Standard_False;
+  //  thescope = false;
   //  theundef = Transfer_UndefIgnore;
 }
 
-Transfer_TransferOutput::Transfer_TransferOutput(const Handle(Transfer_TransientProcess)& proc,
-                                                 const Handle(Interface_InterfaceModel)&  amodel)
+Transfer_TransferOutput::Transfer_TransferOutput(const occ::handle<Transfer_TransientProcess>& proc,
+                                                 const occ::handle<Interface_InterfaceModel>&  amodel)
 {
   theproc  = proc;
   themodel = amodel;
-  //  thescope = Standard_False; //szv#4:S4163:12Mar99 initialization needed
+  //  thescope = false; //szv#4:S4163:12Mar99 initialization needed
   //  theundef = Transfer_UndefIgnore;
 }
 
-// Standard_Boolean&  Transfer_TransferOutput::ScopeMode ()
+// bool&  Transfer_TransferOutput::ScopeMode ()
 //{  return  thescope;  }
 
-Handle(Interface_InterfaceModel) Transfer_TransferOutput::Model() const
+occ::handle<Interface_InterfaceModel> Transfer_TransferOutput::Model() const
 {
   return themodel;
 }
 
-Handle(Transfer_TransientProcess) Transfer_TransferOutput::TransientProcess() const
+occ::handle<Transfer_TransientProcess> Transfer_TransferOutput::TransientProcess() const
 {
   return theproc;
 }
 
-void Transfer_TransferOutput::Transfer(const Handle(Standard_Transient)& obj,
+void Transfer_TransferOutput::Transfer(const occ::handle<Standard_Transient>& obj,
                                        const Message_ProgressRange&      theProgress)
 {
   if (themodel->Number(obj) == 0)
     throw Transfer_TransferFailure(
       "TransferOutput : Transfer, entities do not come from same initial model");
-  //  Standard_Integer scope = 0;
+  //  int scope = 0;
   //  if (thescope) scope = theproc->NewScope (obj);
 
   //: 1 modified by ABV 5 Nov 97
   //: 1  if (!theproc->Transfer(obj)) return;    // auparavant, traitement Undefined
-  //  Standard_Boolean ok =
+  //  bool ok =
   theproc->Transfer(obj, theProgress);
   //  if (scope > 0) theproc->EndScope (scope);
   //  if ( ! ok ) return;
@@ -93,17 +93,17 @@ void Transfer_TransferOutput::TransferRoots(const Message_ProgressRange& theProg
   TransferRoots(Interface_Protocol::Active(), theProgress);
 }
 
-void Transfer_TransferOutput::TransferRoots(const Handle(Interface_Protocol)& protocol,
+void Transfer_TransferOutput::TransferRoots(const occ::handle<Interface_Protocol>& protocol,
                                             const Message_ProgressRange&      theProgress)
 {
-  theproc->SetRootManagement(Standard_False);
+  theproc->SetRootManagement(false);
   Interface_ShareFlags     tool(themodel, protocol);
   Interface_EntityIterator list = tool.RootEntities();
   Message_ProgressScope    aPS(theProgress, NULL, list.NbEntities());
   for (list.Start(); list.More() && aPS.More(); list.Next())
   {
-    const Handle(Standard_Transient)& ent = list.Value();
-    //    Standard_Integer scope = 0;
+    const occ::handle<Standard_Transient>& ent = list.Value();
+    //    int scope = 0;
     //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer(ent, aPS.Next()))
       theproc->SetRoot(ent);
@@ -114,15 +114,15 @@ void Transfer_TransferOutput::TransferRoots(const Handle(Interface_Protocol)& pr
 void Transfer_TransferOutput::TransferRoots(const Interface_Graph&       G,
                                             const Message_ProgressRange& theProgress)
 {
-  theproc->SetRootManagement(Standard_False);
+  theproc->SetRootManagement(false);
   Interface_ShareFlags tool(G);
   theproc->SetModel(G.Model());
   Interface_EntityIterator list = tool.RootEntities();
   Message_ProgressScope    aPS(theProgress, NULL, list.NbEntities());
   for (list.Start(); list.More() && aPS.More(); list.Next())
   {
-    const Handle(Standard_Transient)& ent = list.Value();
-    //    Standard_Integer scope = 0;
+    const occ::handle<Standard_Transient>& ent = list.Value();
+    //    int scope = 0;
     //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer(ent, aPS.Next()))
       theproc->SetRoot(ent);
@@ -130,30 +130,30 @@ void Transfer_TransferOutput::TransferRoots(const Interface_Graph&       G,
   }
 }
 
-Interface_EntityIterator Transfer_TransferOutput::ListForStatus(const Standard_Boolean normal,
-                                                                const Standard_Boolean roots) const
+Interface_EntityIterator Transfer_TransferOutput::ListForStatus(const bool normal,
+                                                                const bool roots) const
 {
   Interface_EntityIterator list;
-  Standard_Integer         max = (roots ? theproc->NbRoots() : theproc->NbMapped());
-  for (Standard_Integer i = 1; i <= max; i++)
+  int         max = (roots ? theproc->NbRoots() : theproc->NbMapped());
+  for (int i = 1; i <= max; i++)
   {
-    const Handle(Transfer_Binder)& binder = (roots ? theproc->RootItem(i) : theproc->MapItem(i));
+    const occ::handle<Transfer_Binder>& binder = (roots ? theproc->RootItem(i) : theproc->MapItem(i));
     if (binder.IsNull())
       continue;
     Transfer_StatusExec statex = binder->StatusExec();
-    Standard_Boolean    ok = (statex == Transfer_StatusInitial || statex == Transfer_StatusDone);
+    bool    ok = (statex == Transfer_StatusInitial || statex == Transfer_StatusDone);
     if (ok == normal)
       list.AddItem((roots ? theproc->Root(i) : theproc->Mapped(i)));
   }
   return list;
 }
 
-Handle(Interface_InterfaceModel) Transfer_TransferOutput::ModelForStatus(
-  const Handle(Interface_Protocol)& protocol,
-  const Standard_Boolean            normal,
-  const Standard_Boolean            roots) const
+occ::handle<Interface_InterfaceModel> Transfer_TransferOutput::ModelForStatus(
+  const occ::handle<Interface_Protocol>& protocol,
+  const bool            normal,
+  const bool            roots) const
 {
-  Handle(Interface_InterfaceModel) newmod;
+  occ::handle<Interface_InterfaceModel> newmod;
   if (themodel.IsNull())
     return newmod;
   newmod                        = themodel->NewEmptyModel();

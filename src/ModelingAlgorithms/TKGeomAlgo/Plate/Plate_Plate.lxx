@@ -17,29 +17,29 @@
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
-inline Standard_Real Plate_Plate::Polm(const gp_XY&           point2d,
-                                       const Standard_Integer iu,
-                                       const Standard_Integer iv,
-                                       const Standard_Integer idu,
-                                       const Standard_Integer idv) const
+inline double Plate_Plate::Polm(const gp_XY&           point2d,
+                                       const int iu,
+                                       const int iv,
+                                       const int idu,
+                                       const int idv) const
 {
   if (idu > iu)
     return 0;
   if (idv > iv)
     return 0;
-  Standard_Real u = point2d.X();
-  Standard_Real v = point2d.Y();
+  double u = point2d.X();
+  double v = point2d.Y();
 
-  Standard_Real value = 1;
+  double value = 1;
 
-  Standard_Integer degu = iu - idu;
-  Standard_Integer i;
+  int degu = iu - idu;
+  int i;
   for (i = 0; i < degu; i++)
     value *= u;
   for (i = iu; i > degu; i--)
     value *= i;
 
-  Standard_Integer degv = iv - idv;
+  int degv = iv - idv;
   for (i = 0; i < degv; i++)
     value *= v;
   for (i = iv; i > degv; i--)
@@ -54,22 +54,22 @@ inline Standard_Real Plate_Plate::Polm(const gp_XY&           point2d,
   // return value;
 }
 
-inline Standard_Integer& Plate_Plate::Deru(const Standard_Integer index) const
+inline int& Plate_Plate::Deru(const int index) const
 {
-  return ((Standard_Integer*)deru)[index];
+  return ((int*)deru)[index];
 }
 
-inline Standard_Integer& Plate_Plate::Derv(const Standard_Integer index) const
+inline int& Plate_Plate::Derv(const int index) const
 {
-  return ((Standard_Integer*)derv)[index];
+  return ((int*)derv)[index];
 }
 
-inline gp_XYZ& Plate_Plate::Solution(const Standard_Integer index) const
+inline gp_XYZ& Plate_Plate::Solution(const int index) const
 {
   return ((gp_XYZ*)solution)[index];
 }
 
-inline gp_XY& Plate_Plate::Points(const Standard_Integer index) const
+inline gp_XY& Plate_Plate::Points(const int index) const
 {
   return ((gp_XY*)points)[index];
 }

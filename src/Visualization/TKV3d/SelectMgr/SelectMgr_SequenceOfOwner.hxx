@@ -21,6 +21,6 @@
 
 class SelectMgr_EntityOwner;
 
-typedef NCollection_Sequence<Handle(SelectMgr_EntityOwner)> SelectMgr_SequenceOfOwner;
+typedef NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>> SelectMgr_SequenceOfOwner;
 
 #endif

@@ -40,8 +40,14 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 #ifdef HAVE_FREETYPE
   #include <ft2build.h>
@@ -58,19 +64,19 @@ static const unsigned int      THE_RESOLUTION_DPI = 4800;
 static const Font_FTFontParams THE_FONT_PARAMS(THE_FONT_SIZE, THE_RESOLUTION_DPI);
 
 // compute scaling factor for specified font size
-inline Standard_Real getScale(const Standard_Real theSize)
+inline double getScale(const double theSize)
 {
-  return theSize / Standard_Real(THE_FONT_SIZE) * 72.0 / Standard_Real(THE_RESOLUTION_DPI);
+  return theSize / double(THE_FONT_SIZE) * 72.0 / double(THE_RESOLUTION_DPI);
 }
 
 #ifdef HAVE_FREETYPE
 //! Auxiliary method to convert FT_Vector to gp_XY
 static gp_XY readFTVec(const FT_Vector&    theVec,
-                       const Standard_Real theScaleUnits,
-                       const Standard_Real theWidthScaling = 1.0)
+                       const double theScaleUnits,
+                       const double theWidthScaling = 1.0)
 {
-  return gp_XY(theScaleUnits * Standard_Real(theVec.x) * theWidthScaling / 64.0,
-               theScaleUnits * Standard_Real(theVec.y) / 64.0);
+  return gp_XY(theScaleUnits * double(theVec.x) * theWidthScaling / 64.0,
+               theScaleUnits * double(theVec.y) / 64.0);
 }
 
 //! Auxiliary method for classification wire theW2 with respect to wire theW1
@@ -88,15 +94,15 @@ static TopAbs_State classifyWW(const TopoDS_Wire& theW1,
   for (TopoDS_Iterator anEdgeIter(theW2); anEdgeIter.More(); anEdgeIter.Next())
   {
     const TopoDS_Edge&   anEdge  = TopoDS::Edge(anEdgeIter.Value());
-    Standard_Real        aPFirst = 0.0, aPLast = 0.0;
-    Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(anEdge, theF, aPFirst, aPLast);
+    double        aPFirst = 0.0, aPLast = 0.0;
+    occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(anEdge, theF, aPFirst, aPLast);
     if (aCurve2d.IsNull())
     {
       continue;
     }
 
     gp_Pnt2d     aPnt2d = aCurve2d->Value((aPFirst + aPLast) / 2.0);
-    TopAbs_State aState = aClass2d.Perform(aPnt2d, Standard_False);
+    TopAbs_State aState = aClass2d.Perform(aPnt2d, false);
     if (aState == TopAbs_OUT || aState == TopAbs_IN)
     {
       if (aRes == TopAbs_UNKNOWN)
@@ -119,7 +125,7 @@ static TopAbs_State classifyWW(const TopoDS_Wire& theW1,
 StdPrs_BRepFont::StdPrs_BRepFont()
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
-      myIsCompositeCurve(Standard_False),
+      myIsCompositeCurve(false),
       my3Poles(1, 3),
       my4Poles(1, 4)
 {
@@ -133,18 +139,18 @@ void StdPrs_BRepFont::init()
 {
   mySurface                              = new Geom_Plane(gp_Pln(gp::XOY()));
   myCurve2dAdaptor                       = new Geom2dAdaptor_Curve();
-  Handle(Adaptor3d_Surface) aSurfAdaptor = new GeomAdaptor_Surface(mySurface);
+  occ::handle<Adaptor3d_Surface> aSurfAdaptor = new GeomAdaptor_Surface(mySurface);
   myCurvOnSurf.Load(aSurfAdaptor);
 }
 
 //=================================================================================================
 
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                 const Standard_Real       theSize,
-                                 const Standard_Integer    theFaceId)
+                                 const double       theSize,
+                                 const int    theFaceId)
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
-      myIsCompositeCurve(Standard_False),
+      myIsCompositeCurve(false),
       my3Poles(1, 3),
       my4Poles(1, 4)
 {
@@ -163,11 +169,11 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
 
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
                                  const Font_FontAspect     theFontAspect,
-                                 const Standard_Real       theSize,
+                                 const double       theSize,
                                  const Font_StrictLevel    theStrictLevel)
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
-      myIsCompositeCurve(Standard_False),
+      myIsCompositeCurve(false),
       my3Poles(1, 3),
       my4Poles(1, 4)
 {
@@ -192,22 +198,22 @@ void StdPrs_BRepFont::Release()
 
 //=================================================================================================
 
-Handle(StdPrs_BRepFont) StdPrs_BRepFont::FindAndCreate(const TCollection_AsciiString& theFontName,
+occ::handle<StdPrs_BRepFont> StdPrs_BRepFont::FindAndCreate(const TCollection_AsciiString& theFontName,
                                                        const Font_FontAspect          theFontAspect,
-                                                       const Standard_Real            theSize,
+                                                       const double            theSize,
                                                        const Font_StrictLevel theStrictLevel)
 {
-  Handle(StdPrs_BRepFont) aFont = new StdPrs_BRepFont();
+  occ::handle<StdPrs_BRepFont> aFont = new StdPrs_BRepFont();
 
   if (aFont->FindAndInit(theFontName, theFontAspect, theSize, theStrictLevel))
     return aFont;
 
-  return Handle(StdPrs_BRepFont)();
+  return occ::handle<StdPrs_BRepFont>();
 }
 
 //=================================================================================================
 
-void StdPrs_BRepFont::SetCompositeCurveMode(const Standard_Boolean theToConcatenate)
+void StdPrs_BRepFont::SetCompositeCurveMode(const bool theToConcatenate)
 {
   if (myIsCompositeCurve != theToConcatenate)
   {
@@ -219,8 +225,8 @@ void StdPrs_BRepFont::SetCompositeCurveMode(const Standard_Boolean theToConcaten
 //=================================================================================================
 
 bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
-                           const Standard_Real       theSize,
-                           const Standard_Integer    theFaceId)
+                           const double       theSize,
+                           const int    theFaceId)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -236,7 +242,7 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
 
 bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
                                   const Font_FontAspect          theFontAspect,
-                                  const Standard_Real            theSize,
+                                  const double            theSize,
                                   const Font_StrictLevel         theStrictLevel)
 {
   if (theSize <= myPrecision * 100.0)
@@ -254,7 +260,7 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const Standard_Utf32Char& theChar)
+TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const char32_t& theChar)
 {
   TopoDS_Shape                aShape;
   std::lock_guard<std::mutex> aLock(myMutex);
@@ -264,14 +270,14 @@ TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const Standard_Utf32Char& theChar)
 
 //=================================================================================================
 
-bool StdPrs_BRepFont::to3d(const Handle(Geom2d_Curve)& theCurve2d,
+bool StdPrs_BRepFont::to3d(const occ::handle<Geom2d_Curve>& theCurve2d,
                            const GeomAbs_Shape         theContinuity,
-                           Handle(Geom_Curve)&         theCurve3d)
+                           occ::handle<Geom_Curve>&         theCurve3d)
 {
-  Standard_Real aMaxDeviation   = 0.0;
-  Standard_Real anAverDeviation = 0.0;
+  double aMaxDeviation   = 0.0;
+  double anAverDeviation = 0.0;
   myCurve2dAdaptor->Load(theCurve2d);
-  const Handle(Adaptor2d_Curve2d)& aCurve = myCurve2dAdaptor; // to avoid ambiguity
+  const occ::handle<Adaptor2d_Curve2d>& aCurve = myCurve2dAdaptor; // to avoid ambiguity
   myCurvOnSurf.Load(aCurve);
   GeomLib::BuildCurve3d(myPrecision,
                         myCurvOnSurf,
@@ -286,30 +292,30 @@ bool StdPrs_BRepFont::to3d(const Handle(Geom2d_Curve)& theCurve2d,
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
+bool StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
                                              TopoDS_Shape&                            theRes)
 {
 #ifdef HAVE_FREETYPE
   // classify wires
   NCollection_DataMap<TopoDS_Shape, NCollection_Sequence<TopoDS_Wire>, TopTools_ShapeMapHasher>
                                  aMapOutInts;
-  TopTools_DataMapOfShapeInteger aMapNbOuts;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMapNbOuts;
   TopoDS_Face                    aF;
   myBuilder.MakeFace(aF, mySurface, myPrecision);
-  Standard_Integer aWireIter1Index = 1;
+  int aWireIter1Index = 1;
   for (NCollection_Sequence<TopoDS_Wire>::Iterator aWireIter1(theWires); aWireIter1.More();
        ++aWireIter1Index, aWireIter1.Next())
   {
     const TopoDS_Wire& aW1 = aWireIter1.Value();
     if (!aMapNbOuts.IsBound(aW1))
     {
-      const Standard_Integer aNbOuts = 0;
+      const int aNbOuts = 0;
       aMapNbOuts.Bind(aW1, aNbOuts);
     }
 
     NCollection_Sequence<TopoDS_Wire>* anIntWs =
       aMapOutInts.Bound(aW1, NCollection_Sequence<TopoDS_Wire>());
-    Standard_Integer aWireIter2Index = 1;
+    int aWireIter2Index = 1;
     for (NCollection_Sequence<TopoDS_Wire>::Iterator aWireIter2(theWires); aWireIter2.More();
          ++aWireIter2Index, aWireIter2.Next())
     {
@@ -323,13 +329,13 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
       if (aClass == TopAbs_IN)
       {
         anIntWs->Append(aW2);
-        if (Standard_Integer* aNbOutsPtr = aMapNbOuts.ChangeSeek(aW2))
+        if (int* aNbOutsPtr = aMapNbOuts.ChangeSeek(aW2))
         {
           ++(*aNbOutsPtr);
         }
         else
         {
-          const Standard_Integer aNbOuts = 1;
+          const int aNbOuts = 1;
           aMapNbOuts.Bind(aW2, aNbOuts);
         }
       }
@@ -337,10 +343,10 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
   }
 
   // check out wires and remove "not out" wires from maps
-  for (TopTools_DataMapIteratorOfDataMapOfShapeInteger anOutIter(aMapNbOuts); anOutIter.More();
+  for (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator anOutIter(aMapNbOuts); anOutIter.More();
        anOutIter.Next())
   {
-    const Standard_Integer aTmp = anOutIter.Value() % 2;
+    const int aTmp = anOutIter.Value() % 2;
     if (aTmp > 0)
     {
       // not out wire
@@ -349,14 +355,14 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
   }
 
   // create faces for out wires
-  TopTools_MapOfShape anUsedShapes;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anUsedShapes;
   TopoDS_Compound     aFaceComp;
   myBuilder.MakeCompound(aFaceComp);
   for (; !aMapOutInts.IsEmpty();)
   {
     // find out wire with max number of outs
     TopoDS_Shape     aW;
-    Standard_Integer aMaxNbOuts = -1;
+    int aMaxNbOuts = -1;
     for (NCollection_DataMap<TopoDS_Shape,
                              NCollection_Sequence<TopoDS_Wire>,
                              TopTools_ShapeMapHasher>::Iterator itMOI(aMapOutInts);
@@ -364,7 +370,7 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
          itMOI.Next())
     {
       const TopoDS_Shape&    aKey    = itMOI.Key();
-      const Standard_Integer aNbOuts = aMapNbOuts.Find(aKey);
+      const int aNbOuts = aMapNbOuts.Find(aKey);
       if (aNbOuts > aMaxNbOuts)
       {
         aMaxNbOuts = aNbOuts;
@@ -398,7 +404,7 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
 
   if (aFaceComp.NbChildren() == 0)
   {
-    return Standard_False;
+    return false;
   }
 
   if (aFaceComp.NbChildren() == 1)
@@ -409,17 +415,17 @@ Standard_Boolean StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_W
   {
     theRes = aFaceComp;
   }
-  return Standard_True;
+  return true;
 #else
   (void)theWires;
   (void)theRes;
-  return Standard_False;
+  return false;
 #endif
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
+bool StdPrs_BRepFont::renderGlyph(const char32_t theChar,
                                               TopoDS_Shape&            theShape)
 {
   theShape.Nullify();
@@ -427,7 +433,7 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
   const FT_Outline* anOutline = myFTFont->renderGlyphOutline(theChar);
   if (!anOutline)
   {
-    return Standard_False;
+    return false;
   }
   else if (myCache.Find(theChar, theShape))
   {
@@ -435,7 +441,7 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
   }
 
   if (!anOutline->n_contours)
-    return Standard_False;
+    return false;
 
   TopLoc_Location                   aLoc;
   NCollection_Sequence<TopoDS_Wire> aWires;
@@ -487,7 +493,7 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
         }
 
         const gp_XY         aDirVec = aPntCurr - aPntLine1;
-        const Standard_Real aLen    = aDirVec.Modulus();
+        const double aLen    = aDirVec.Modulus();
         if (aLen <= myPrecision)
         {
           aPntLine1 = aPntCurr;
@@ -497,14 +503,14 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
 
         if (myIsCompositeCurve)
         {
-          Handle(Geom2d_TrimmedCurve) aLine =
+          occ::handle<Geom2d_TrimmedCurve> aLine =
             GCE2d_MakeSegment(gp_Pnt2d(aPntLine1), gp_Pnt2d(aPntCurr));
           myConcatMaker.Add(aLine, myPrecision);
         }
         else
         {
-          Handle(Geom_Curve)  aCurve3d;
-          Handle(Geom2d_Line) aCurve2d = new Geom2d_Line(gp_Pnt2d(aPntLine1), gp_Dir2d(aDirVec));
+          occ::handle<Geom_Curve>  aCurve3d;
+          occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(aPntLine1), gp_Dir2d(aDirVec));
           if (to3d(aCurve2d, GeomAbs_C1, aCurve3d))
           {
             TopoDS_Edge anEdge = BRepLib_MakeEdge(aCurve3d, 0.0, aLen);
@@ -536,14 +542,14 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
         my3Poles.SetValue(1, aPntPrev2);
         my3Poles.SetValue(2, aPntCurr);
         my3Poles.SetValue(3, aPntNext2);
-        Handle(Geom2d_BezierCurve) aBezierArc = new Geom2d_BezierCurve(my3Poles);
+        occ::handle<Geom2d_BezierCurve> aBezierArc = new Geom2d_BezierCurve(my3Poles);
         if (myIsCompositeCurve)
         {
           myConcatMaker.Add(aBezierArc, myPrecision);
         }
         else
         {
-          Handle(Geom_Curve) aCurve3d;
+          occ::handle<Geom_Curve> aCurve3d;
           if (to3d(aBezierArc, GeomAbs_C1, aCurve3d))
           {
             TopoDS_Edge anEdge = BRepLib_MakeEdge(aCurve3d);
@@ -563,14 +569,14 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
           4,
           gp_Pnt2d(
             readFTVec(aPntList[(aPntId + 2) % aPntsNb], myScaleUnits, myFTFont->WidthScaling())));
-        Handle(Geom2d_BezierCurve) aBezier = new Geom2d_BezierCurve(my4Poles);
+        occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(my4Poles);
         if (myIsCompositeCurve)
         {
           myConcatMaker.Add(aBezier, myPrecision);
         }
         else
         {
-          Handle(Geom_Curve) aCurve3d;
+          occ::handle<Geom_Curve> aCurve3d;
           if (to3d(aBezier, GeomAbs_C1, aCurve3d))
           {
             TopoDS_Edge anEdge = BRepLib_MakeEdge(aCurve3d);
@@ -583,7 +589,7 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
 
     if (myIsCompositeCurve)
     {
-      Handle(Geom2d_BSplineCurve) aDraft2d = myConcatMaker.BSplineCurve();
+      occ::handle<Geom2d_BSplineCurve> aDraft2d = myConcatMaker.BSplineCurve();
       if (aDraft2d.IsNull())
       {
         continue;
@@ -593,12 +599,12 @@ Standard_Boolean StdPrs_BRepFont::renderGlyph(const Standard_Utf32Char theChar,
       const gp_Pnt2d aLastPnt  = aDraft2d->EndPoint();
       if (!myFTFont->IsSingleStrokeFont() && !aFirstPnt.IsEqual(aLastPnt, myPrecision))
       {
-        Handle(Geom2d_TrimmedCurve) aLine = GCE2d_MakeSegment(aLastPnt, aFirstPnt);
+        occ::handle<Geom2d_TrimmedCurve> aLine = GCE2d_MakeSegment(aLastPnt, aFirstPnt);
         myConcatMaker.Add(aLine, myPrecision);
       }
 
-      Handle(Geom2d_BSplineCurve) aCurve2d = myConcatMaker.BSplineCurve();
-      Handle(Geom_Curve)          aCurve3d;
+      occ::handle<Geom2d_BSplineCurve> aCurve2d = myConcatMaker.BSplineCurve();
+      occ::handle<Geom_Curve>          aCurve3d;
       if (to3d(aCurve2d, GeomAbs_C0, aCurve3d))
       {
         TopoDS_Edge anEdge = BRepLib_MakeEdge(aCurve3d);

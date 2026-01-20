@@ -24,10 +24,10 @@
 RWStepShape_RWMeasureQualification::RWStepShape_RWMeasureQualification() {}
 
 void RWStepShape_RWMeasureQualification::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepShape_MeasureQualification)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                        num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepShape_MeasureQualification>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,28 +37,28 @@ void RWStepShape_RWMeasureQualification::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescr;
+  occ::handle<TCollection_HAsciiString> aDescr;
   data->ReadString(num, 2, "description", ach, aDescr);
 
   // --- own field : qualified_measure ---
 
-  Handle(Standard_Transient) aQM;
+  occ::handle<Standard_Transient> aQM;
   data->ReadEntity(num, 3, "qualified_measure", ach, STANDARD_TYPE(Standard_Transient), aQM);
 
   // --- own field : qualifiers ---
 
-  Handle(StepShape_HArray1OfValueQualifier) quals;
-  Standard_Integer                          nsub4;
+  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> quals;
+  int                          nsub4;
   if (data->ReadSubList(num, 4, "qualifiers", ach, nsub4))
   {
-    Standard_Integer nb4 = data->NbParams(nsub4);
-    quals                = new StepShape_HArray1OfValueQualifier(1, nb4);
-    for (Standard_Integer i4 = 1; i4 <= nb4; i4++)
+    int nb4 = data->NbParams(nsub4);
+    quals                = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb4);
+    for (int i4 = 1; i4 <= nb4; i4++)
     {
       StepShape_ValueQualifier VQ;
       if (data->ReadEntity(nsub4, i4, "qualifier", ach, VQ))
@@ -73,22 +73,22 @@ void RWStepShape_RWMeasureQualification::ReadStep(
 
 void RWStepShape_RWMeasureQualification::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepShape_MeasureQualification)& ent) const
+  const occ::handle<StepShape_MeasureQualification>& ent) const
 {
   SW.Send(ent->Name());
   SW.Send(ent->Description());
   SW.Send(ent->QualifiedMeasure());
-  Standard_Integer i, nbq = ent->NbQualifiers();
+  int i, nbq = ent->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
     SW.Send(ent->QualifiersValue(i).Value());
   SW.CloseSub();
 }
 
-void RWStepShape_RWMeasureQualification::Share(const Handle(StepShape_MeasureQualification)& ent,
+void RWStepShape_RWMeasureQualification::Share(const occ::handle<StepShape_MeasureQualification>& ent,
                                                Interface_EntityIterator& iter) const
 {
-  Standard_Integer i, nbq = ent->NbQualifiers();
+  int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
     iter.AddItem(ent->QualifiersValue(i).Value());
 }

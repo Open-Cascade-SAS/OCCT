@@ -18,10 +18,10 @@
 
 RWStepBasic_RWOrdinalDate::RWStepBasic_RWOrdinalDate() {}
 
-void RWStepBasic_RWOrdinalDate::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepBasic_OrdinalDate)&   ent) const
+void RWStepBasic_RWOrdinalDate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepBasic_OrdinalDate>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -31,14 +31,14 @@ void RWStepBasic_RWOrdinalDate::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : yearComponent ---
 
-  Standard_Integer aYearComponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aYearComponent;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "year_component", ach, aYearComponent);
 
   // --- own field : dayComponent ---
 
-  Standard_Integer aDayComponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aDayComponent;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "day_component", ach, aDayComponent);
 
   //--- Initialisation of the read entity ---
@@ -47,7 +47,7 @@ void RWStepBasic_RWOrdinalDate::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepBasic_RWOrdinalDate::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepBasic_OrdinalDate)& ent) const
+                                          const occ::handle<StepBasic_OrdinalDate>& ent) const
 {
 
   // --- inherited field yearComponent ---

@@ -17,7 +17,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
@@ -58,7 +59,7 @@ TEST(BRepBuilderAPI_MakeWire_Test, OCC27552_AddEdgesAndListOfEdges)
   anE4 = BRepBuilderAPI_MakeEdge(aV5, aV7).Edge();
 
   // Add edges as a list
-  TopTools_ListOfShape aListOfEdges;
+  NCollection_List<TopoDS_Shape> aListOfEdges;
   aListOfEdges.Append(anE3);
   aListOfEdges.Append(anE4);
 

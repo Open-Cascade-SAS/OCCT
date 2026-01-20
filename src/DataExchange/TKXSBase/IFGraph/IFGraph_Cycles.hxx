@@ -35,17 +35,15 @@ public:
   //! creates with a Graph, and will analyse :
   //! whole True  : all the contents of the Model
   //! whole False : sub-parts which will be given later
-  Standard_EXPORT IFGraph_Cycles(const Interface_Graph& agraph, const Standard_Boolean whole);
+  Standard_EXPORT IFGraph_Cycles(const Interface_Graph& agraph, const bool whole);
 
   //! creates from a StrongComponants which was already computed
   Standard_EXPORT IFGraph_Cycles(IFGraph_StrongComponants& subparts);
 
   //! does the computation. Cycles are StrongComponants which are
   //! not Single
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
-protected:
-private:
 };
 
 #endif // _IFGraph_Cycles_HeaderFile

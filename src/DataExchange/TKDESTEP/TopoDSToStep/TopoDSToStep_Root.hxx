@@ -33,17 +33,16 @@ public:
 
   //! Returns (modifiable) the tolerance to be used for writing
   //! If not set, starts at 0.0001
-  Standard_EXPORT Standard_Real& Tolerance();
+  Standard_EXPORT double& Tolerance();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
 protected:
   Standard_EXPORT TopoDSToStep_Root();
 
-  Standard_Real    toler;
-  Standard_Boolean done;
+  double    toler;
+  bool done;
 
-private:
 };
 
 #endif // _TopoDSToStep_Root_HeaderFile

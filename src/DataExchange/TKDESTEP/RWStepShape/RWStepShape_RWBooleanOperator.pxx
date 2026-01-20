@@ -43,8 +43,8 @@ inline const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum
 //! Convert string to StepShape_BooleanOperator
 //! @param theOperatorStr The string to convert
 //! @param theResultEnum The corresponding StepShape_BooleanOperator value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString     theOperatorStr,
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const     theOperatorStr,
                           StepShape_BooleanOperator& theResultEnum)
 {
   if (IsEqual(theOperatorStr, boDifference))
@@ -61,9 +61,9 @@ inline bool ConvertToEnum(const Standard_CString     theOperatorStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepShape_RWBooleanOperator
 

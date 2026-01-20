@@ -88,17 +88,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Sets the current plane.
-  Standard_EXPORT static void Plane(const Handle(Geom_Plane)& P);
+  Standard_EXPORT static void Plane(const occ::handle<Geom_Plane>& P);
 
   //! Returns the current plane.
-  Standard_EXPORT static const Handle(Geom_Plane)& Plane();
+  Standard_EXPORT static const occ::handle<Geom_Plane>& Plane();
 
   //! Sets the default precision. The current Precision
   //! is returned.
-  Standard_EXPORT static void Precision(const Standard_Real P);
+  Standard_EXPORT static void Precision(const double P);
 
   //! Returns the default precision.
-  Standard_EXPORT static Standard_Real Precision();
+  Standard_EXPORT static double Precision();
 };
 
 #endif // _BRepBuilderAPI_HeaderFile

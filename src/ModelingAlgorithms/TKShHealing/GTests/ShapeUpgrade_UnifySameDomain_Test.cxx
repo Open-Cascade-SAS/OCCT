@@ -109,7 +109,7 @@ TEST(ShapeUpgrade_UnifySameDomainTest, InternalEdgesTermination_Issue925)
   ShapeUpgrade_UnifySameDomain aUnifier(aShell);
   aUnifier.SetAngularTolerance(1e-6);
   aUnifier.SetLinearTolerance(1e-5);
-  aUnifier.AllowInternalEdges(Standard_True);
+  aUnifier.AllowInternalEdges(true);
 
   // This should complete without hanging
   aUnifier.Build();
@@ -205,7 +205,7 @@ TEST(ShapeUpgrade_UnifySameDomainTest, MultipleCoplanarFacesWithInternalWires)
   ShapeUpgrade_UnifySameDomain aUnifier(aSewedShape);
   aUnifier.SetAngularTolerance(1e-6);
   aUnifier.SetLinearTolerance(1e-5);
-  aUnifier.AllowInternalEdges(Standard_True);
+  aUnifier.AllowInternalEdges(true);
 
   aUnifier.Build();
 
@@ -272,7 +272,7 @@ TEST(ShapeUpgrade_UnifySameDomainTest, ClosedInternalWire)
   ShapeUpgrade_UnifySameDomain aUnifier(aShell);
   aUnifier.SetAngularTolerance(1e-6);
   aUnifier.SetLinearTolerance(1e-5);
-  aUnifier.AllowInternalEdges(Standard_True);
+  aUnifier.AllowInternalEdges(true);
 
   aUnifier.Build();
 

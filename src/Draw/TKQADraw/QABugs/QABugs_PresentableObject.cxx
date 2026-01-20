@@ -26,13 +26,13 @@ QABugs_PresentableObject::QABugs_PresentableObject(
 {
 }
 
-void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                       const Handle(Prs3d_Presentation)& thePrs,
-                                       const Standard_Integer            theMode)
+void QABugs_PresentableObject::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                       const occ::handle<Prs3d_Presentation>& thePrs,
+                                       const int            theMode)
 {
-  const Handle(Graphic3d_Structure)& aStructure = thePrs;
-  Handle(Graphic3d_Group)            aGroup     = aStructure->NewGroup();
-  Handle(Prs3d_ShadingAspect)        anAspect   = myDrawer->ShadingAspect();
+  const occ::handle<Graphic3d_Structure>& aStructure = thePrs;
+  occ::handle<Graphic3d_Group>            aGroup     = aStructure->NewGroup();
+  occ::handle<Prs3d_ShadingAspect>        anAspect   = myDrawer->ShadingAspect();
   Graphic3d_MaterialAspect           aMat       = anAspect->Aspect()->FrontMaterial();
   aMat.SetAmbientColor(Quantity_NOC_BLACK);
   aMat.SetDiffuseColor(Quantity_NOC_BLACK);
@@ -41,11 +41,11 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&
   anAspect->SetMaterial(aMat);
   aGroup->SetPrimitivesAspect(anAspect->Aspect());
 
-  Handle(Graphic3d_ArrayOfTriangles) aPrims =
+  occ::handle<Graphic3d_ArrayOfTriangles> aPrims =
     new Graphic3d_ArrayOfTriangles(6,
                                    0,
                                    theMode == 1,   // normals
-                                   Standard_True); // color per vertex
+                                   true); // color per vertex
   switch (theMode)
   {
     case 0: {
@@ -85,7 +85,7 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)&
   aGroup->AddPrimitiveArray(aPrims);
 }
 
-void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)&,
-                                                const Standard_Integer)
+void QABugs_PresentableObject::ComputeSelection(const occ::handle<SelectMgr_Selection>&,
+                                                const int)
 {
 }

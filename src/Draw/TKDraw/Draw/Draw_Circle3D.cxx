@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle3D, Draw_Drawable3D)
 //=================================================================================================
 
 Draw_Circle3D::Draw_Circle3D(const gp_Circ&      C,
-                             const Standard_Real A1,
-                             const Standard_Real A2,
+                             const double A1,
+                             const double A2,
                              const Draw_Color&   col)
     : myCirc(C),
       myA1(A1),

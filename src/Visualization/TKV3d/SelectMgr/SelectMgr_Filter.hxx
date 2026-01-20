@@ -24,9 +24,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 
-class SelectMgr_Filter;
-DEFINE_STANDARD_HANDLE(SelectMgr_Filter, Standard_Transient)
-
 //! The root class to define filter objects for selection.
 //! Advance handling of objects requires the services of
 //! filters. These only allow dynamic detection and
@@ -48,25 +45,23 @@ public:
   //! When an object is detected by the mouse - in AIS,
   //! this is done through a context selector - its owner
   //! is passed to the filter as an argument.
-  //! If the object returns Standard_True, it is kept; if
+  //! If the object returns true, it is kept; if
   //! not, it is rejected.
   //! If you are creating a filter class inheriting this
   //! framework, and the daughter class is to be used in
   //! an AIS local context, you will need to implement the
   //! virtual function ActsOn.
-  Standard_EXPORT virtual Standard_Boolean IsOk(
-    const Handle(SelectMgr_EntityOwner)& anObj) const = 0;
+  Standard_EXPORT virtual bool IsOk(
+    const occ::handle<SelectMgr_EntityOwner>& anObj) const = 0;
 
   //! Returns true in an AIS local context, if this filter
   //! operates on a type of subshape defined in a filter
   //! class inheriting this framework.
   //! This function completes IsOk in an AIS local context.
-  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_Filter, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _SelectMgr_Filter_HeaderFile

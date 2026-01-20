@@ -48,20 +48,20 @@
 // #include <BRepAdaptor_Curve2d.hxx>
 //=================================================================================================
 
-Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&      DStr,
-                                                Handle(ChFiDS_SurfData)&         Data,
-                                                const Handle(Adaptor3d_Surface)& S1,
-                                                const Handle(Adaptor3d_Surface)& S2,
+bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&      DStr,
+                                                occ::handle<ChFiDS_SurfData>&         Data,
+                                                const occ::handle<Adaptor3d_Surface>& S1,
+                                                const occ::handle<Adaptor3d_Surface>& S2,
                                                 const TopAbs_Orientation         Or1,
                                                 const TopAbs_Orientation         Or2,
-                                                const Handle(ChFiDS_Spine)&      Sp,
-                                                const Standard_Integer           Iedge)
+                                                const occ::handle<ChFiDS_Spine>&      Sp,
+                                                const int           Iedge)
 {
-  Standard_Real Wref = 0.;
+  double Wref = 0.;
 
-  Handle(ChFiDS_FilSpine)   Spine  = Handle(ChFiDS_FilSpine)::DownCast(Sp);
-  Handle(ChFiDS_ChamfSpine) CSpine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
-  Standard_Boolean          surfok = Standard_False;
+  occ::handle<ChFiDS_FilSpine>   Spine  = occ::down_cast<ChFiDS_FilSpine>(Sp);
+  occ::handle<ChFiDS_ChamfSpine> CSpine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
+  bool          surfok = false;
   GeomAbs_SurfaceType       typ1   = S1->GetType();
   GeomAbs_SurfaceType       typ2   = S2->GetType();
   GeomAbs_CurveType         ctyp;
@@ -73,16 +73,16 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
 
   // Return orientations.
   TopAbs_Orientation          OrFace1 = TopAbs_FORWARD, OrFace2 = TopAbs_FORWARD;
-  Handle(BRepAdaptor_Surface) HS = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  occ::handle<BRepAdaptor_Surface> HS = occ::down_cast<BRepAdaptor_Surface>(S1);
   if (!HS.IsNull())
     OrFace1 = HS->Face().Orientation();
-  HS = Handle(BRepAdaptor_Surface)::DownCast(S2);
+  HS = occ::down_cast<BRepAdaptor_Surface>(S2);
   if (!HS.IsNull())
     OrFace2 = HS->Face().Orientation();
 
   if (!Spine.IsNull())
   {
-    Standard_Real Radius = Spine->Radius(Iedge);
+    double Radius = Spine->Radius(Iedge);
     if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane)
     {
       surfok = ChFiKPart_MakeFillet(DStr,
@@ -111,7 +111,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       Spine->Line(),
                                       Wref,
                                       OrFace1,
-                                      Standard_True);
+                                      true);
       else
         surfok = ChFiKPart_MakeFillet(DStr,
                                       Data,
@@ -125,7 +125,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       Spine->Circle(),
                                       Wref,
                                       OrFace1,
-                                      Standard_True);
+                                      true);
     }
     else if (typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane)
     {
@@ -142,7 +142,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       Spine->Line(),
                                       Wref,
                                       OrFace2,
-                                      Standard_False);
+                                      false);
       else
         surfok = ChFiKPart_MakeFillet(DStr,
                                       Data,
@@ -156,7 +156,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       Spine->Circle(),
                                       Wref,
                                       OrFace2,
-                                      Standard_False);
+                                      false);
     }
     else if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone)
     {
@@ -172,7 +172,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                     Spine->Circle(),
                                     Wref,
                                     OrFace1,
-                                    Standard_True);
+                                    true);
     }
     else if (typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane)
     {
@@ -188,7 +188,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                     Spine->Circle(),
                                     Wref,
                                     OrFace2,
-                                    Standard_False);
+                                    false);
     }
     else
     {
@@ -202,7 +202,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
 
     if (CSpine->IsChamfer() == ChFiDS_Sym)
     {
-      Standard_Real dis;
+      double dis;
       CSpine->GetDist(dis);
 
       if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane)
@@ -237,7 +237,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Circle(),
                                          Wref,
                                          OrFace1,
-                                         Standard_True);
+                                         true);
         else
           surfok = ChFiKPart_MakeChamfer(DStr,
                                          Data,
@@ -253,7 +253,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Line(),
                                          Wref,
                                          OrFace1,
-                                         Standard_True);
+                                         true);
       }
       else if (typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane)
       {
@@ -272,7 +272,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Circle(),
                                          Wref,
                                          OrFace2,
-                                         Standard_False);
+                                         false);
         else
           surfok = ChFiKPart_MakeChamfer(DStr,
                                          Data,
@@ -288,7 +288,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Line(),
                                          Wref,
                                          OrFace2,
-                                         Standard_False);
+                                         false);
       }
       else if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone)
       {
@@ -306,7 +306,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                        CSpine->Circle(),
                                        Wref,
                                        OrFace1,
-                                       Standard_True);
+                                       true);
       }
       else if (typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane)
       {
@@ -324,7 +324,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                        CSpine->Circle(),
                                        Wref,
                                        OrFace2,
-                                       Standard_False);
+                                       false);
       }
       else
       {
@@ -333,7 +333,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
     }
     else if (CSpine->IsChamfer() == ChFiDS_TwoDist)
     {
-      Standard_Real dis1, dis2;
+      double dis1, dis2;
       CSpine->Dists(dis1, dis2);
       if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane)
       {
@@ -367,7 +367,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Circle(),
                                          Wref,
                                          OrFace1,
-                                         Standard_True);
+                                         true);
         else
           surfok = ChFiKPart_MakeChamfer(DStr,
                                          Data,
@@ -383,7 +383,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Line(),
                                          Wref,
                                          OrFace1,
-                                         Standard_True);
+                                         true);
       }
       else if (typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane)
       {
@@ -402,7 +402,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Circle(),
                                          Wref,
                                          OrFace2,
-                                         Standard_False);
+                                         false);
         else
           surfok = ChFiKPart_MakeChamfer(DStr,
                                          Data,
@@ -418,7 +418,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                          CSpine->Line(),
                                          Wref,
                                          OrFace2,
-                                         Standard_False);
+                                         false);
       }
       else if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone)
       {
@@ -436,7 +436,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                        CSpine->Circle(),
                                        Wref,
                                        OrFace1,
-                                       Standard_True);
+                                       true);
       }
       else if (typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane)
       {
@@ -454,7 +454,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                        CSpine->Circle(),
                                        Wref,
                                        OrFace2,
-                                       Standard_False);
+                                       false);
       }
       else
       {
@@ -463,8 +463,8 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
     }
     else
     {
-      Standard_Real    dis, Angle;
-      Standard_Boolean DisOnP = Standard_True;
+      double    dis, Angle;
+      bool DisOnP = true;
       CSpine->GetDistAngle(dis, Angle);
       if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane)
       {
@@ -497,7 +497,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                         CSpine->Circle(),
                                         Wref,
                                         OrFace1,
-                                        Standard_True,
+                                        true,
                                         DisOnP);
         else
           surfok = ChFiKPart_MakeChAsym(DStr,
@@ -513,7 +513,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                         CSpine->Line(),
                                         Wref,
                                         OrFace1,
-                                        Standard_True,
+                                        true,
                                         DisOnP);
       }
       else if (typ1 == GeomAbs_Cylinder && typ2 == GeomAbs_Plane)
@@ -532,7 +532,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                         CSpine->Circle(),
                                         Wref,
                                         OrFace2,
-                                        Standard_False,
+                                        false,
                                         DisOnP);
         else
           surfok = ChFiKPart_MakeChAsym(DStr,
@@ -548,7 +548,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                         CSpine->Line(),
                                         Wref,
                                         OrFace2,
-                                        Standard_False,
+                                        false,
                                         DisOnP);
       }
       else if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Cone)
@@ -566,7 +566,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       CSpine->Circle(),
                                       Wref,
                                       OrFace1,
-                                      Standard_True,
+                                      true,
                                       DisOnP);
       }
       else if (typ1 == GeomAbs_Cone && typ2 == GeomAbs_Plane)
@@ -584,7 +584,7 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
                                       CSpine->Circle(),
                                       Wref,
                                       OrFace2,
-                                      Standard_False,
+                                      false,
                                       DisOnP);
       }
       else
@@ -598,22 +598,22 @@ Standard_Boolean ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&     
 
 //=================================================================================================
 
-Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
-                                                      const Handle(ChFiDS_SurfData)&   Data,
-                                                      const Handle(Adaptor3d_Surface)& S1,
-                                                      const Handle(Adaptor3d_Surface)& S2,
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
                                                       const TopAbs_Orientation         OrFace1,
                                                       const TopAbs_Orientation,
                                                       const TopAbs_Orientation Or1,
                                                       const TopAbs_Orientation Or2,
-                                                      const Standard_Real      minRad,
-                                                      const Standard_Real      majRad,
+                                                      const double      minRad,
+                                                      const double      majRad,
                                                       const gp_Pnt2d&          P1S1,
                                                       const gp_Pnt2d&          P2S1,
                                                       const gp_Pnt2d&          P1S2,
                                                       const gp_Pnt2d&          P2S2)
 {
-  Standard_Boolean    surfok;
+  bool    surfok;
   GeomAbs_SurfaceType typ1 = S1->GetType();
   GeomAbs_SurfaceType typ2 = S2->GetType();
   if (typ1 != GeomAbs_Plane)
@@ -625,7 +625,7 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure
 
   gp_Cylinder   cyl;
   gp_Circ       circ;
-  Standard_Real First, Last, fu, lu;
+  double First, Last, fu, lu;
   ChFiKPart_CornerSpine(S1, S2, P1S1, P2S1, P1S2, P2S2, majRad, cyl, circ, First, Last);
   if (typ2 == GeomAbs_Cylinder)
   {
@@ -650,7 +650,7 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure
                                 circ,
                                 First,
                                 OrFace1,
-                                Standard_True);
+                                true);
   if (surfok)
   {
     if (typ2 != GeomAbs_Cylinder)
@@ -666,22 +666,22 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure
     Data->ChangeInterferenceOnS1().SetLastParameter(Last);
     Data->ChangeInterferenceOnS2().SetFirstParameter(First);
     Data->ChangeInterferenceOnS2().SetLastParameter(Last);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
-                                                      const Handle(ChFiDS_SurfData)&   Data,
-                                                      const Handle(Adaptor3d_Surface)& S1,
-                                                      const Handle(Adaptor3d_Surface)& S2,
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
                                                       const TopAbs_Orientation         OrFace1,
                                                       const TopAbs_Orientation         OrFace2,
                                                       const TopAbs_Orientation         Or1,
                                                       const TopAbs_Orientation         Or2,
-                                                      const Standard_Real              Rad,
+                                                      const double              Rad,
                                                       const gp_Pnt2d&                  PS1,
                                                       const gp_Pnt2d&                  P1S2,
                                                       const gp_Pnt2d&                  P2S2)
@@ -691,16 +691,16 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure
 
 //=================================================================================================
 
-Standard_Boolean ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
-                                                      const Handle(ChFiDS_SurfData)&   Data,
-                                                      const Handle(Adaptor3d_Surface)& S,
-                                                      const Handle(Adaptor3d_Surface)& S1,
-                                                      const Handle(Adaptor3d_Surface)& S2,
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
                                                       const TopAbs_Orientation         OfS,
                                                       const TopAbs_Orientation         OS,
                                                       const TopAbs_Orientation         OS1,
                                                       const TopAbs_Orientation         OS2,
-                                                      const Standard_Real              Radius)
+                                                      const double              Radius)
 {
   GeomAbs_SurfaceType typ  = S->GetType();
   GeomAbs_SurfaceType typ1 = S1->GetType();

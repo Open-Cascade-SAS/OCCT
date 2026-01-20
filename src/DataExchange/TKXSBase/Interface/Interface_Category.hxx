@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
 #include <Interface_GTool.hxx>
@@ -64,28 +66,28 @@ public:
   }
 
   //! Creates a Category with a given protocol
-  Interface_Category(const Handle(Interface_Protocol)& theProtocol)
+  Interface_Category(const occ::handle<Interface_Protocol>& theProtocol)
       : myGTool(new Interface_GTool(theProtocol))
   {
     Init();
   }
 
   //! Creates a Category with a given GTool
-  Interface_Category(const Handle(Interface_GTool)& theGTool)
+  Interface_Category(const occ::handle<Interface_GTool>& theGTool)
       : myGTool(theGTool)
   {
     Init();
   }
 
   //! Sets/Changes Protocol
-  void SetProtocol(const Handle(Interface_Protocol)& theProtocol)
+  void SetProtocol(const occ::handle<Interface_Protocol>& theProtocol)
   {
     myGTool->SetProtocol(theProtocol);
   }
 
   //! Determines the Category Number for an entity in its context,
   //! by using general service CategoryNumber
-  Standard_EXPORT Standard_Integer CatNum(const Handle(Standard_Transient)& theEnt,
+  Standard_EXPORT int CatNum(const occ::handle<Standard_Transient>& theEnt,
                                           const Interface_ShareTool&        theShares);
 
   //! Clears the recorded list of category numbers for a Model
@@ -96,33 +98,33 @@ public:
   //! Hence, it can be queried by the method Num.
   //! The Model itself is not recorded, this method is intended to
   //! be used in a wider context (which detains also a Graph, etc)
-  Standard_EXPORT void Compute(const Handle(Interface_InterfaceModel)& theModel,
+  Standard_EXPORT void Compute(const occ::handle<Interface_InterfaceModel>& theModel,
                                const Interface_ShareTool&              theShares);
 
   //! Returns the category number recorded for an entity number
   //! Returns 0 if out of range
-  Standard_EXPORT Standard_Integer Num(const Standard_Integer theNumEnt) const;
+  Standard_EXPORT int Num(const int theNumEnt) const;
 
   //! Records a new Category defined by its names, produces a number
   //! New if not yet recorded
-  Standard_EXPORT static Standard_Integer AddCategory(const Standard_CString theName);
+  Standard_EXPORT static int AddCategory(const char* const theName);
 
   //! Returns the count of recorded categories
-  Standard_EXPORT static Standard_Integer NbCategories();
+  Standard_EXPORT static int NbCategories();
 
   //! Returns the name of a category, according to its number
-  Standard_EXPORT static Standard_CString Name(const Standard_Integer theNum);
+  Standard_EXPORT static const char* Name(const int theNum);
 
   //! Returns the number of a category, according to its name
-  Standard_EXPORT static Standard_Integer Number(const Standard_CString theName);
+  Standard_EXPORT static int Number(const char* const theName);
 
   //! Default initialisation
   //! (protected against several calls : passes only once)
   Standard_EXPORT static void Init();
 
 private:
-  Handle(Interface_GTool)          myGTool;
-  Handle(TColStd_HArray1OfInteger) myNum;
+  occ::handle<Interface_GTool>          myGTool;
+  occ::handle<NCollection_HArray1<int>> myNum;
 };
 
 #endif // _Interface_Category_HeaderFile

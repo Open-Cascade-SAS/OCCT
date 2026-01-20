@@ -22,11 +22,11 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
 
 //=================================================================================================
 
-OpenGl_StructureShadow::OpenGl_StructureShadow(const Handle(Graphic3d_StructureManager)& theManager,
-                                               const Handle(OpenGl_Structure)& theStructure)
+OpenGl_StructureShadow::OpenGl_StructureShadow(const occ::handle<Graphic3d_StructureManager>& theManager,
+                                               const occ::handle<OpenGl_Structure>& theStructure)
     : OpenGl_Structure(theManager)
 {
-  Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast(theStructure);
+  occ::handle<OpenGl_StructureShadow> aShadow = occ::down_cast<OpenGl_StructureShadow>(theStructure);
   myParent                               = aShadow.IsNull() ? theStructure : aShadow->myParent;
 
   IsInfinite = myParent->IsInfinite;

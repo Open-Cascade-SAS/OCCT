@@ -32,19 +32,19 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Computes the point <P> of parameter <U> on the curve <C>.
-  Standard_EXPORT static void Value(const Handle(Geom_Curve)& C, const Standard_Real U, gp_Pnt& P);
+  Standard_EXPORT static void Value(const occ::handle<Geom_Curve>& C, const double U, gp_Pnt& P);
 
   //! Computes the point <P> and first derivative <V1> of
   //! parameter <U> on the curve <C>.
-  Standard_EXPORT static void D1(const Handle(Geom_Curve)& C,
-                                 const Standard_Real       U,
+  Standard_EXPORT static void D1(const occ::handle<Geom_Curve>& C,
+                                 const double       U,
                                  gp_Pnt&                   P,
                                  gp_Vec&                   V1);
 
   //! Computes the point <P>, the first derivative <V1> and second
   //! derivative <V2> of parameter <U> on the curve <C>.
-  Standard_EXPORT static void D2(const Handle(Geom_Curve)& C,
-                                 const Standard_Real       U,
+  Standard_EXPORT static void D2(const occ::handle<Geom_Curve>& C,
+                                 const double       U,
                                  gp_Pnt&                   P,
                                  gp_Vec&                   V1,
                                  gp_Vec&                   V2);
@@ -52,8 +52,8 @@ public:
   //! Computes the point <P>, the first derivative <V1>, the
   //! second derivative <V2> and third derivative <V3> of
   //! parameter <U> on the curve <C>.
-  Standard_EXPORT static void D3(const Handle(Geom_Curve)& C,
-                                 const Standard_Real       U,
+  Standard_EXPORT static void D3(const occ::handle<Geom_Curve>& C,
+                                 const double       U,
                                  gp_Pnt&                   P,
                                  gp_Vec&                   V1,
                                  gp_Vec&                   V2,
@@ -63,17 +63,15 @@ public:
   //! returns 1 : first derivative only is computable
   //! returns 2 : first and second derivative only are computable.
   //! returns 3 : first, second and third are computable.
-  Standard_EXPORT static Standard_Integer Continuity(const Handle(Geom_Curve)& C);
+  Standard_EXPORT static int Continuity(const occ::handle<Geom_Curve>& C);
 
   //! returns the first parameter bound of the curve.
-  Standard_EXPORT static Standard_Real FirstParameter(const Handle(Geom_Curve)& C);
+  Standard_EXPORT static double FirstParameter(const occ::handle<Geom_Curve>& C);
 
   //! returns the last parameter bound of the curve.
   //! FirstParameter must be less than LastParamenter.
-  Standard_EXPORT static Standard_Real LastParameter(const Handle(Geom_Curve)& C);
+  Standard_EXPORT static double LastParameter(const occ::handle<Geom_Curve>& C);
 
-protected:
-private:
 };
 
 #endif // _GeomLProp_CurveTool_HeaderFile

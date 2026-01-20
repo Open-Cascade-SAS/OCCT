@@ -28,10 +28,10 @@ RWStepBasic_RWCertificationType::RWStepBasic_RWCertificationType() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWCertificationType::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepBasic_CertificationType)& ent) const
+void RWStepBasic_RWCertificationType::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepBasic_CertificationType>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "certification_type"))
@@ -39,7 +39,7 @@ void RWStepBasic_RWCertificationType::ReadStep(const Handle(StepData_StepReaderD
 
   // Own fields of CertificationType
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 1, "description", ach, aDescription);
 
   // Initialize entity
@@ -50,7 +50,7 @@ void RWStepBasic_RWCertificationType::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepBasic_RWCertificationType::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepBasic_CertificationType)& ent) const
+  const occ::handle<StepBasic_CertificationType>& ent) const
 {
 
   // Own fields of CertificationType
@@ -60,7 +60,7 @@ void RWStepBasic_RWCertificationType::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWCertificationType::Share(const Handle(StepBasic_CertificationType)&,
+void RWStepBasic_RWCertificationType::Share(const occ::handle<StepBasic_CertificationType>&,
                                             Interface_EntityIterator&) const
 {
   // Own fields of CertificationType

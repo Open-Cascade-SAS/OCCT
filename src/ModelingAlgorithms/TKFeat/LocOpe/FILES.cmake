@@ -15,8 +15,7 @@ set(OCCT_LocOpe_FILES
   LocOpe_CurveShapeIntersector.cxx
   LocOpe_CurveShapeIntersector.hxx
   LocOpe_CurveShapeIntersector.lxx
-  LocOpe_DataMapIteratorOfDataMapOfShapePnt.hxx
-  LocOpe_DataMapOfShapePnt.hxx
+
   LocOpe_DPrism.cxx
   LocOpe_DPrism.hxx
   LocOpe_FindEdges.cxx
@@ -49,9 +48,7 @@ set(OCCT_LocOpe_FILES
   LocOpe_Revol.hxx
   LocOpe_RevolutionForm.cxx
   LocOpe_RevolutionForm.hxx
-  LocOpe_SequenceOfCirc.hxx
-  LocOpe_SequenceOfLin.hxx
-  LocOpe_SequenceOfPntFace.hxx
+
   LocOpe_SplitDrafts.cxx
   LocOpe_SplitDrafts.hxx
   LocOpe_Spliter.cxx

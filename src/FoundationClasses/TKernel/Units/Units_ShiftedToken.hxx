@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class Units_Dimensions;
 
-class Units_ShiftedToken;
-DEFINE_STANDARD_HANDLE(Units_ShiftedToken, Units_Token)
-
 //! The ShiftedToken class inherits from Token and
 //! describes tokens which have a gap in addition of
 //! the multiplicative factor. This kind of token
@@ -51,37 +48,36 @@ public:
   //! numeric value of the dimension, <amove> is the gap,
   //! and <adimensions> is the dimension of the given word
   //! <aword>.
-  Standard_EXPORT Units_ShiftedToken(const Standard_CString          aword,
-                                     const Standard_CString          amean,
-                                     const Standard_Real             avalue,
-                                     const Standard_Real             amove,
-                                     const Handle(Units_Dimensions)& adimensions);
+  Standard_EXPORT Units_ShiftedToken(const char* const          aword,
+                                     const char* const          amean,
+                                     const double             avalue,
+                                     const double             amove,
+                                     const occ::handle<Units_Dimensions>& adimensions);
 
   //! Creates and returns a token, which is a ShiftedToken.
-  Standard_EXPORT virtual Handle(Units_Token) Creates() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Units_Token> Creates() const override;
 
   //! Returns the gap <themove>
-  Standard_EXPORT Standard_Real Move() const;
+  Standard_EXPORT double Move() const;
 
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  Standard_EXPORT virtual Standard_Real Multiplied(const Standard_Real avalue) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double Multiplied(const double avalue) const
+    override;
 
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  Standard_EXPORT virtual Standard_Real Divided(const Standard_Real avalue) const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Divided(const double avalue) const override;
 
-  Standard_EXPORT virtual void Dump(const Standard_Integer ashift,
-                                    const Standard_Integer alevel) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(const int ashift,
+                                    const int alevel) const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 
-protected:
 private:
-  Standard_Real themove;
+  double themove;
 };
 
 #endif // _Units_ShiftedToken_HeaderFile

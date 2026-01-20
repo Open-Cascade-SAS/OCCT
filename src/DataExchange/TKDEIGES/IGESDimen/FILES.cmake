@@ -6,8 +6,7 @@ set(OCCT_IGESDimen_FILES
   IGESDimen.hxx
   IGESDimen_AngularDimension.cxx
   IGESDimen_AngularDimension.hxx
-  IGESDimen_Array1OfGeneralNote.hxx
-  IGESDimen_Array1OfLeaderArrow.hxx
+
   IGESDimen_BasicDimension.cxx
   IGESDimen_BasicDimension.hxx
   IGESDimen_CenterLine.cxx
@@ -34,8 +33,7 @@ set(OCCT_IGESDimen_FILES
   IGESDimen_GeneralNote.hxx
   IGESDimen_GeneralSymbol.cxx
   IGESDimen_GeneralSymbol.hxx
-  IGESDimen_HArray1OfGeneralNote.hxx
-  IGESDimen_HArray1OfLeaderArrow.hxx
+
   IGESDimen_LeaderArrow.cxx
   IGESDimen_LeaderArrow.hxx
   IGESDimen_LinearDimension.cxx

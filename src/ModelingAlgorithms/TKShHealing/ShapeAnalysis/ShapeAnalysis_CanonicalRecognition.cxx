@@ -49,7 +49,9 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <BRepLib_FindSurface.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
 #include <GeomConvert_FuncSphereLSDist.hxx>
 #include <GeomConvert_FuncCylinderLSDist.hxx>
@@ -62,52 +64,52 @@
 #include <ElSLib.hxx>
 
 // Declaration of static functions
-static Standard_Integer GetNbPars(const GeomAbs_CurveType theTarget);
-static Standard_Integer GetNbPars(const GeomAbs_SurfaceType theTarget);
-static Standard_Boolean SetConicParameters(const GeomAbs_CurveType   theTarget,
-                                           const Handle(Geom_Curve)& theConic,
+static int GetNbPars(const GeomAbs_CurveType theTarget);
+static int GetNbPars(const GeomAbs_SurfaceType theTarget);
+static bool SetConicParameters(const GeomAbs_CurveType   theTarget,
+                                           const occ::handle<Geom_Curve>& theConic,
                                            gp_Ax2&                   thePos,
-                                           TColStd_Array1OfReal&     theParams);
-static Standard_Boolean CompareConicParams(const GeomAbs_CurveType     theTarget,
-                                           const Standard_Real         theTol,
+                                           NCollection_Array1<double>&     theParams);
+static bool CompareConicParams(const GeomAbs_CurveType     theTarget,
+                                           const double         theTol,
                                            const gp_Ax2&               theRefPos,
-                                           const TColStd_Array1OfReal& theRefParams,
+                                           const NCollection_Array1<double>& theRefParams,
                                            const gp_Ax2&               thePos,
-                                           const TColStd_Array1OfReal& theParams);
-static Standard_Boolean SetSurfParams(const GeomAbs_SurfaceType   theTarget,
-                                      const Handle(Geom_Surface)& theElemSurf,
+                                           const NCollection_Array1<double>& theParams);
+static bool SetSurfParams(const GeomAbs_SurfaceType   theTarget,
+                                      const occ::handle<Geom_Surface>& theElemSurf,
                                       gp_Ax3&                     thePos,
-                                      TColStd_Array1OfReal&       theParams);
-static Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
-                                          const Standard_Real         theTol,
+                                      NCollection_Array1<double>&       theParams);
+static bool CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
+                                          const double         theTol,
                                           const gp_Ax3&               theRefPos,
-                                          const TColStd_Array1OfReal& theRefParams,
+                                          const NCollection_Array1<double>& theRefParams,
                                           const gp_Ax3&               thePos,
-                                          const TColStd_Array1OfReal& theParams);
-static Standard_Real    DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
+                                          const NCollection_Array1<double>& theParams);
+static double    DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
                                             const gp_Ax3&               theRefPos,
-                                            const TColStd_Array1OfReal& theRefParams,
+                                            const NCollection_Array1<double>& theRefParams,
                                             const gp_Ax3&               thePos,
-                                            const TColStd_Array1OfReal& theParams);
-static Standard_Boolean GetSamplePoints(const TopoDS_Wire&           theWire,
-                                        const Standard_Real          theTol,
-                                        const Standard_Integer       theMaxNbInt,
-                                        Handle(TColgp_HArray1OfXYZ)& thePoints);
-static Standard_Real    GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
+                                            const NCollection_Array1<double>& theParams);
+static bool GetSamplePoints(const TopoDS_Wire&           theWire,
+                                        const double          theTol,
+                                        const int       theMaxNbInt,
+                                        occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints);
+static double    GetLSGap(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
                                  const GeomAbs_SurfaceType          theTarget,
                                  const gp_Ax3&                      thePos,
-                                 const TColStd_Array1OfReal&        theParams);
+                                 const NCollection_Array1<double>&        theParams);
 static void             FillSolverData(const GeomAbs_SurfaceType   theTarget,
                                        const gp_Ax3&               thePos,
-                                       const TColStd_Array1OfReal& theParams,
+                                       const NCollection_Array1<double>& theParams,
                                        math_Vector&                theStartPoint,
                                        math_Vector&                theFBnd,
                                        math_Vector&                theLBnd,
-                                       const Standard_Real         theRelDev = 0.2);
+                                       const double         theRelDev = 0.2);
 static void             SetCanonicParameters(const GeomAbs_SurfaceType theTarget,
                                              const math_Vector&        theSol,
                                              gp_Ax3&                   thePos,
-                                             TColStd_Array1OfReal&     theParams);
+                                             NCollection_Array1<double>&     theParams);
 
 //=================================================================================================
 
@@ -154,49 +156,49 @@ void ShapeAnalysis_CanonicalRecognition::Init(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsElementarySurf(
+bool ShapeAnalysis_CanonicalRecognition::IsElementarySurf(
   const GeomAbs_SurfaceType theTarget,
-  const Standard_Real       theTol,
+  const double       theTol,
   gp_Ax3&                   thePos,
-  TColStd_Array1OfReal&     theParams)
+  NCollection_Array1<double>&     theParams)
 {
   if (myStatus != 0)
-    return Standard_False;
+    return false;
   //
   if (mySType == TopAbs_FACE)
   {
-    Handle(Geom_Surface) anElemSurf =
+    occ::handle<Geom_Surface> anElemSurf =
       GetSurface(TopoDS::Face(myShape), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
     if (anElemSurf.IsNull())
-      return Standard_False;
+      return false;
     //
-    Standard_Boolean isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
+    bool isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
   else if (mySType == TopAbs_SHELL)
   {
-    Handle(Geom_Surface) anElemSurf =
+    occ::handle<Geom_Surface> anElemSurf =
       GetSurface(TopoDS::Shell(myShape), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
     if (anElemSurf.IsNull())
     {
-      return Standard_False;
+      return false;
     }
-    Standard_Boolean isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
+    bool isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
   else if (mySType == TopAbs_EDGE)
   {
-    Handle(Geom_Surface) anElemSurf = GetSurface(TopoDS::Edge(myShape),
+    occ::handle<Geom_Surface> anElemSurf = GetSurface(TopoDS::Edge(myShape),
                                                  theTol,
                                                  GeomConvert_Target,
                                                  theTarget,
@@ -205,17 +207,17 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsElementarySurf(
                                                  myGap,
                                                  myStatus);
 
-    Standard_Boolean isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
+    bool isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
   else if (mySType == TopAbs_WIRE)
   {
-    Handle(Geom_Surface) anElemSurf = GetSurface(TopoDS::Wire(myShape),
+    occ::handle<Geom_Surface> anElemSurf = GetSurface(TopoDS::Wire(myShape),
                                                  theTol,
                                                  GeomConvert_Target,
                                                  theTarget,
@@ -224,56 +226,56 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsElementarySurf(
                                                  myGap,
                                                  myStatus);
 
-    Standard_Boolean isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
+    bool isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsPlane(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsPlane(const double theTol,
                                                              gp_Pln&             thePln)
 {
   gp_Ax3               aPos = thePln.Position();
-  TColStd_Array1OfReal aParams(1, 1);
+  NCollection_Array1<double> aParams(1, 1);
   //
   GeomAbs_SurfaceType aTarget = GeomAbs_Plane;
   if (IsElementarySurf(aTarget, theTol, aPos, aParams))
   {
     thePln.SetPosition(aPos);
-    return Standard_True;
+    return true;
   }
   // Try to build plane for wire or edge
   if (mySType == TopAbs_EDGE || mySType == TopAbs_WIRE)
   {
-    BRepLib_FindSurface aFndSurf(myShape, theTol, Standard_True, Standard_False);
+    BRepLib_FindSurface aFndSurf(myShape, theTol, true, false);
     if (aFndSurf.Found())
     {
-      Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aFndSurf.Surface());
+      occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aFndSurf.Surface());
       thePln                    = aPlane->Pln();
       myGap                     = aFndSurf.ToleranceReached();
       myStatus                  = 0;
-      return Standard_True;
+      return true;
     }
     else
       myStatus = 1;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCylinder(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsCylinder(const double theTol,
                                                                 gp_Cylinder&        theCyl)
 {
   gp_Ax3               aPos = theCyl.Position();
-  TColStd_Array1OfReal aParams(1, 1);
+  NCollection_Array1<double> aParams(1, 1);
   aParams(1) = theCyl.Radius();
   //
   GeomAbs_SurfaceType aTarget = GeomAbs_Cylinder;
@@ -281,13 +283,13 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCylinder(const Standard_R
   {
     theCyl.SetPosition(aPos);
     theCyl.SetRadius(aParams(1));
-    return Standard_True;
+    return true;
   }
 
   if (aParams(1) > Precision::Infinite())
   {
     // Sample cylinder does not seem to be set, least square method is not applicable.
-    return Standard_False;
+    return false;
   }
   if (myShape.ShapeType() == TopAbs_EDGE || myShape.ShapeType() == TopAbs_WIRE)
   {
@@ -303,25 +305,25 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCylinder(const Standard_R
     {
       aWire = TopoDS::Wire(myShape);
     }
-    Standard_Boolean isDone =
+    bool isDone =
       GetSurfaceByLS(aWire, theTol, aTarget, aPos, aParams, myGap, myStatus);
     if (isDone)
     {
       theCyl.SetPosition(aPos);
       theCyl.SetRadius(aParams(1));
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCone(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsCone(const double theTol,
                                                             gp_Cone&            theCone)
 {
   gp_Ax3               aPos = theCone.Position();
-  TColStd_Array1OfReal aParams(1, 2);
+  NCollection_Array1<double> aParams(1, 2);
   aParams(1) = theCone.SemiAngle();
   aParams(2) = theCone.RefRadius();
   //
@@ -331,13 +333,13 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCone(const Standard_Real 
     theCone.SetPosition(aPos);
     theCone.SetSemiAngle(aParams(1));
     theCone.SetRadius(aParams(2));
-    return Standard_True;
+    return true;
   }
 
   if (aParams(2) > Precision::Infinite())
   {
     // Sample cone does not seem to be set, least square method is not applicable.
-    return Standard_False;
+    return false;
   }
   if (myShape.ShapeType() == TopAbs_EDGE || myShape.ShapeType() == TopAbs_WIRE)
   {
@@ -353,26 +355,26 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCone(const Standard_Real 
     {
       aWire = TopoDS::Wire(myShape);
     }
-    Standard_Boolean isDone =
+    bool isDone =
       GetSurfaceByLS(aWire, theTol, aTarget, aPos, aParams, myGap, myStatus);
     if (isDone)
     {
       theCone.SetPosition(aPos);
       theCone.SetSemiAngle(aParams(1));
       theCone.SetRadius(aParams(2));
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsSphere(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsSphere(const double theTol,
                                                               gp_Sphere&          theSphere)
 {
   gp_Ax3               aPos = theSphere.Position();
-  TColStd_Array1OfReal aParams(1, 1);
+  NCollection_Array1<double> aParams(1, 1);
   aParams(1) = theSphere.Radius();
   //
   GeomAbs_SurfaceType aTarget = GeomAbs_Sphere;
@@ -380,13 +382,13 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsSphere(const Standard_Rea
   {
     theSphere.SetPosition(aPos);
     theSphere.SetRadius(aParams(1));
-    return Standard_True;
+    return true;
   }
   //
   if (aParams(1) > Precision::Infinite())
   {
     // Sample sphere does not seem to be set, least square method is not applicable.
-    return Standard_False;
+    return false;
   }
   if (myShape.ShapeType() == TopAbs_EDGE || myShape.ShapeType() == TopAbs_WIRE)
   {
@@ -402,44 +404,44 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsSphere(const Standard_Rea
     {
       aWire = TopoDS::Wire(myShape);
     }
-    Standard_Boolean isDone =
+    bool isDone =
       GetSurfaceByLS(aWire, theTol, aTarget, aPos, aParams, myGap, myStatus);
     if (isDone)
     {
       theSphere.SetPosition(aPos);
       theSphere.SetRadius(aParams(1));
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_CurveType theTarget,
-                                                             const Standard_Real     theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_CurveType theTarget,
+                                                             const double     theTol,
                                                              gp_Ax2&                 thePos,
-                                                             TColStd_Array1OfReal&   theParams)
+                                                             NCollection_Array1<double>&   theParams)
 {
   if (myStatus != 0)
-    return Standard_False;
+    return false;
 
   if (mySType == TopAbs_EDGE)
   {
-    Handle(Geom_Curve) aConic =
+    occ::handle<Geom_Curve> aConic =
       GetCurve(TopoDS::Edge(myShape), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
 
     if (aConic.IsNull())
-      return Standard_False;
+      return false;
 
-    Standard_Boolean isOK = SetConicParameters(theTarget, aConic, thePos, theParams);
+    bool isOK = SetConicParameters(theTarget, aConic, thePos, theParams);
 
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
-    return Standard_True;
+    return true;
   }
   else if (mySType == TopAbs_WIRE)
   {
@@ -447,27 +449,27 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_Curve
     if (!anIter.More())
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
     gp_Ax2               aPos;
-    TColStd_Array1OfReal aParams(1, theParams.Length());
+    NCollection_Array1<double> aParams(1, theParams.Length());
     const TopoDS_Shape&  anEdge = anIter.Value();
 
-    Handle(Geom_Curve) aConic =
+    occ::handle<Geom_Curve> aConic =
       GetCurve(TopoDS::Edge(anEdge), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
     if (aConic.IsNull())
     {
-      return Standard_False;
+      return false;
     }
-    Standard_Boolean isOK = SetConicParameters(theTarget, aConic, thePos, theParams);
+    bool isOK = SetConicParameters(theTarget, aConic, thePos, theParams);
     if (!isOK)
     {
       myStatus = 1;
-      return Standard_False;
+      return false;
     }
     if (!anIter.More())
     {
-      return Standard_True;
+      return true;
     }
     else
     {
@@ -483,32 +485,32 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_Curve
                         myStatus);
       if (aConic.IsNull())
       {
-        return Standard_False;
+        return false;
       }
       isOK = SetConicParameters(theTarget, aConic, aPos, aParams);
       isOK = CompareConicParams(theTarget, theTol, thePos, theParams, aPos, aParams);
 
       if (!isOK)
       {
-        return Standard_False;
+        return false;
       }
     }
-    return Standard_True;
+    return true;
   }
   myStatus = 1;
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsLine(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsLine(const double theTol,
                                                             gp_Lin&             theLin)
 {
   gp_Ax2               aPos;
-  TColStd_Array1OfReal aParams(1, 1);
+  NCollection_Array1<double> aParams(1, 1);
 
   GeomAbs_CurveType aTarget = GeomAbs_Line;
-  Standard_Boolean  isOK    = IsConic(aTarget, theTol, aPos, aParams);
+  bool  isOK    = IsConic(aTarget, theTol, aPos, aParams);
   if (isOK)
   {
     theLin.SetPosition(aPos.Axis());
@@ -518,14 +520,14 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsLine(const Standard_Real 
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCircle(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsCircle(const double theTol,
                                                               gp_Circ&            theCirc)
 {
   gp_Ax2               aPos;
-  TColStd_Array1OfReal aParams(1, 1);
+  NCollection_Array1<double> aParams(1, 1);
 
   GeomAbs_CurveType aTarget = GeomAbs_Circle;
-  Standard_Boolean  isOK    = IsConic(aTarget, theTol, aPos, aParams);
+  bool  isOK    = IsConic(aTarget, theTol, aPos, aParams);
   if (isOK)
   {
     theCirc.SetPosition(aPos);
@@ -536,14 +538,14 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsCircle(const Standard_Rea
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsEllipse(const Standard_Real theTol,
+bool ShapeAnalysis_CanonicalRecognition::IsEllipse(const double theTol,
                                                                gp_Elips&           theElips)
 {
   gp_Ax2               aPos;
-  TColStd_Array1OfReal aParams(1, 2);
+  NCollection_Array1<double> aParams(1, 2);
 
   GeomAbs_CurveType aTarget = GeomAbs_Ellipse;
-  Standard_Boolean  isOK    = IsConic(aTarget, theTol, aPos, aParams);
+  bool  isOK    = IsConic(aTarget, theTol, aPos, aParams);
   if (isOK)
   {
     theElips.SetPosition(aPos);
@@ -555,17 +557,17 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::IsEllipse(const Standard_Re
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
+occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   const TopoDS_Face&         theFace,
-  const Standard_Real        theTol,
+  const double        theTol,
   const GeomConvert_ConvType theType,
   const GeomAbs_SurfaceType  theTarget,
-  Standard_Real&             theGap,
-  Standard_Integer&          theStatus)
+  double&             theGap,
+  int&          theStatus)
 {
   theStatus = 0;
   TopLoc_Location             aLoc;
-  const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theFace, aLoc);
+  const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFace, aLoc);
   if (aSurf.IsNull())
   {
     theStatus = 1;
@@ -574,7 +576,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   GeomConvert_SurfToAnaSurf aConv(aSurf);
   aConv.SetConvType(theType);
   aConv.SetTarget(theTarget);
-  Handle(Geom_Surface) anAnaSurf = aConv.ConvertToAnalytical(theTol);
+  occ::handle<Geom_Surface> anAnaSurf = aConv.ConvertToAnalytical(theTol);
   if (anAnaSurf.IsNull())
     return anAnaSurf;
   //
@@ -587,15 +589,15 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
+occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   const TopoDS_Shell&        theShell,
-  const Standard_Real        theTol,
+  const double        theTol,
   const GeomConvert_ConvType theType,
   const GeomAbs_SurfaceType  theTarget,
-  Standard_Real&             theGap,
-  Standard_Integer&          theStatus)
+  double&             theGap,
+  int&          theStatus)
 {
-  Handle(Geom_Surface) anElemSurf;
+  occ::handle<Geom_Surface> anElemSurf;
   TopoDS_Iterator      anIter(theShell);
   if (!anIter.More())
   {
@@ -603,7 +605,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     return anElemSurf;
   }
   gp_Ax3               aPos1;
-  TColStd_Array1OfReal aParams1(1, std::max(1, GetNbPars(theTarget)));
+  NCollection_Array1<double> aParams1(1, std::max(1, GetNbPars(theTarget)));
   const TopoDS_Shape&  aFace = anIter.Value();
 
   anElemSurf = GetSurface(TopoDS::Face(aFace), theTol, theType, theTarget, theGap, theStatus);
@@ -621,11 +623,11 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     anIter.Next();
   }
   gp_Ax3               aPos;
-  TColStd_Array1OfReal aParams(1, std::max(1, GetNbPars(theTarget)));
-  Standard_Boolean     isOK;
+  NCollection_Array1<double> aParams(1, std::max(1, GetNbPars(theTarget)));
+  bool     isOK;
   for (; anIter.More(); anIter.Next())
   {
-    Handle(Geom_Surface) anElemSurf1 =
+    occ::handle<Geom_Surface> anElemSurf1 =
       GetSurface(TopoDS::Face(anIter.Value()), theTol, theType, theTarget, theGap, theStatus);
     if (anElemSurf1.IsNull())
     {
@@ -645,27 +647,27 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
+occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   const TopoDS_Edge&         theEdge,
-  const Standard_Real        theTol,
+  const double        theTol,
   const GeomConvert_ConvType theType,
   const GeomAbs_SurfaceType  theTarget,
   gp_Ax3&                    thePos,
-  TColStd_Array1OfReal&      theParams,
-  Standard_Real&             theGap,
-  Standard_Integer&          theStatus)
+  NCollection_Array1<double>&      theParams,
+  double&             theGap,
+  int&          theStatus)
 {
   // Get surface list
-  NCollection_Vector<Handle(Geom_Surface)> aSurfs;
-  NCollection_Vector<Standard_Real>        aGaps;
-  Standard_Integer                         j = 0;
+  NCollection_Vector<occ::handle<Geom_Surface>> aSurfs;
+  NCollection_Vector<double>        aGaps;
+  int                         j = 0;
   for (;;)
   {
     j++;
-    Handle(Geom_Surface) aSurf;
+    occ::handle<Geom_Surface> aSurf;
     TopLoc_Location      aLoc;
-    Handle(Geom2d_Curve) aPCurve;
-    Standard_Real        ff, ll;
+    occ::handle<Geom2d_Curve> aPCurve;
+    double        ff, ll;
     BRep_Tool::CurveOnSurface(theEdge, aPCurve, aSurf, aLoc, ff, ll, j);
     if (aSurf.IsNull())
     {
@@ -674,7 +676,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     GeomConvert_SurfToAnaSurf aConv(aSurf);
     aConv.SetConvType(theType);
     aConv.SetTarget(theTarget);
-    Handle(Geom_Surface) anAnaSurf = aConv.ConvertToAnalytical(theTol);
+    occ::handle<Geom_Surface> anAnaSurf = aConv.ConvertToAnalytical(theTol);
     if (anAnaSurf.IsNull())
       continue;
     //
@@ -692,11 +694,11 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   }
 
   gp_Ax3               aPos;
-  Standard_Integer     aNbPars = std::max(1, GetNbPars(theTarget));
-  TColStd_Array1OfReal aParams(1, aNbPars);
+  int     aNbPars = std::max(1, GetNbPars(theTarget));
+  NCollection_Array1<double> aParams(1, aNbPars);
 
-  Standard_Integer ifit    = -1, i;
-  Standard_Real    aMinDev = RealLast();
+  int ifit    = -1, i;
+  double    aMinDev = RealLast();
   if (aSurfs.Size() == 1)
   {
     ifit = 0;
@@ -706,7 +708,7 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
     for (i = 0; i < aSurfs.Size(); ++i)
     {
       SetSurfParams(theTarget, aSurfs(i), aPos, aParams);
-      Standard_Real aDev = DeviationSurfParams(theTarget, thePos, theParams, aPos, aParams);
+      double aDev = DeviationSurfParams(theTarget, thePos, theParams, aPos, aParams);
       if (aDev < aMinDev)
       {
         aMinDev = aDev;
@@ -729,19 +731,19 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
+occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   const TopoDS_Wire&         theWire,
-  const Standard_Real        theTol,
+  const double        theTol,
   const GeomConvert_ConvType theType,
   const GeomAbs_SurfaceType  theTarget,
   gp_Ax3&                    thePos,
-  TColStd_Array1OfReal&      theParams,
-  Standard_Real&             theGap,
-  Standard_Integer&          theStatus)
+  NCollection_Array1<double>&      theParams,
+  double&             theGap,
+  int&          theStatus)
 {
   // Get surface list
-  NCollection_Vector<Handle(Geom_Surface)> aSurfs;
-  NCollection_Vector<Standard_Real>        aGaps;
+  NCollection_Vector<occ::handle<Geom_Surface>> aSurfs;
+  NCollection_Vector<double>        aGaps;
 
   TopoDS_Iterator anIter(theWire);
   if (!anIter.More())
@@ -753,15 +755,15 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   // First edge
   const TopoDS_Edge&   anEdge1 = TopoDS::Edge(anIter.Value());
   gp_Ax3               aPos1   = thePos;
-  Standard_Integer     aNbPars = GetNbPars(theTarget);
-  TColStd_Array1OfReal aParams1(1, std::max(1, aNbPars));
-  Standard_Real        aGap1;
-  Standard_Integer     i;
+  int     aNbPars = GetNbPars(theTarget);
+  NCollection_Array1<double> aParams1(1, std::max(1, aNbPars));
+  double        aGap1;
+  int     i;
   for (i = 1; i <= aNbPars; ++i)
   {
     aParams1(i) = theParams(i);
   }
-  Handle(Geom_Surface) anElemSurf1 =
+  occ::handle<Geom_Surface> anElemSurf1 =
     GetSurface(anEdge1, theTol, theType, theTarget, aPos1, aParams1, aGap1, theStatus);
   if (theStatus != 0 || anElemSurf1.IsNull())
   {
@@ -772,20 +774,20 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
   {
     gp_Ax3 aPos = aPos1;
     aNbPars     = GetNbPars(theTarget);
-    TColStd_Array1OfReal aParams(1, std::max(1, aNbPars));
+    NCollection_Array1<double> aParams(1, std::max(1, aNbPars));
     for (i = 1; i <= aNbPars; ++i)
     {
       aParams(i) = aParams1(i);
     }
-    Standard_Real        aGap;
+    double        aGap;
     const TopoDS_Edge&   anEdge = TopoDS::Edge(anIter.Value());
-    Handle(Geom_Surface) anElemSurf =
+    occ::handle<Geom_Surface> anElemSurf =
       GetSurface(anEdge, theTol, theType, theTarget, aPos, aParams, aGap, theStatus);
     if (theStatus != 0 || anElemSurf.IsNull())
     {
       return NULL;
     }
-    Standard_Boolean isOK = CompareSurfParams(theTarget, theTol, aPos1, aParams1, aPos, aParams);
+    bool isOK = CompareSurfParams(theTarget, theTol, aPos1, aParams1, aPos, aParams);
     if (!isOK)
     {
       return NULL;
@@ -799,28 +801,28 @@ Handle(Geom_Surface) ShapeAnalysis_CanonicalRecognition::GetSurface(
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
+bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
   const TopoDS_Wire&        theWire,
-  const Standard_Real       theTol,
+  const double       theTol,
   const GeomAbs_SurfaceType theTarget,
   gp_Ax3&                   thePos,
-  TColStd_Array1OfReal&     theParams,
-  Standard_Real&            theGap,
-  Standard_Integer&         theStatus)
+  NCollection_Array1<double>&     theParams,
+  double&            theGap,
+  int&         theStatus)
 {
-  Handle(TColgp_HArray1OfXYZ) aPoints;
-  Standard_Integer            aNbMaxInt = 100;
+  occ::handle<NCollection_HArray1<gp_XYZ>> aPoints;
+  int            aNbMaxInt = 100;
   if (!GetSamplePoints(theWire, theTol, aNbMaxInt, aPoints))
-    return Standard_False;
+    return false;
 
   theGap = GetLSGap(aPoints, theTarget, thePos, theParams);
   if (theGap <= theTol)
   {
     theStatus = 0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Integer aNbVar = 0;
+  int aNbVar = 0;
   if (theTarget == GeomAbs_Sphere)
     aNbVar = 4;
   else if (theTarget == GeomAbs_Cylinder)
@@ -828,11 +830,11 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
   else if (theTarget == GeomAbs_Cone)
     aNbVar = 5;
   else
-    return Standard_False;
+    return false;
 
   math_Vector aFBnd(1, aNbVar), aLBnd(1, aNbVar), aStartPoint(1, aNbVar);
 
-  Standard_Real aRelDev = 0.2; // Customer can set parameters of sample surface
+  double aRelDev = 0.2; // Customer can set parameters of sample surface
                                //  with relative precision about aRelDev.
                                //  For example, if radius of sample surface is R,
                                //  it means, that "exact" value is in interav
@@ -841,7 +843,7 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
   FillSolverData(theTarget, thePos, theParams, aStartPoint, aFBnd, aLBnd, aRelDev);
 
   //
-  constexpr Standard_Real        aTol = Precision::Confusion();
+  constexpr double        aTol = Precision::Confusion();
   math_MultipleVarFunction*      aPFunc;
   GeomConvert_FuncSphereLSDist   aFuncSph(aPoints);
   GeomConvert_FuncCylinderLSDist aFuncCyl(aPoints, thePos.Direction());
@@ -862,14 +864,14 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
     aPFunc = NULL;
   //
   math_Vector      aSteps(1, aNbVar);
-  Standard_Integer aNbInt = 10;
-  Standard_Integer i;
+  int aNbInt = 10;
+  int i;
   for (i = 1; i <= aNbVar; ++i)
   {
     aSteps(i) = (aLBnd(i) - aFBnd(i)) / aNbInt;
   }
   math_PSO      aGlobSolver(aPFunc, aFBnd, aLBnd, aSteps);
-  Standard_Real aLSDist;
+  double aLSDist;
   aGlobSolver.Perform(aSteps, aLSDist, aStartPoint);
   SetCanonicParameters(theTarget, aStartPoint, thePos, theParams);
 
@@ -877,7 +879,7 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
   if (theGap <= theTol)
   {
     theStatus = 0;
-    return Standard_True;
+    return true;
   }
   //
   math_Matrix aDirMatrix(1, aNbVar, 1, aNbVar, 0.0);
@@ -912,27 +914,27 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(
     theGap    = GetLSGap(aPoints, theTarget, thePos, theParams);
     theStatus = 0;
     if (theGap <= theTol)
-      return Standard_True;
+      return true;
   }
   else
     theStatus = 1;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) ShapeAnalysis_CanonicalRecognition::GetCurve(const TopoDS_Edge&         theEdge,
-                                                                const Standard_Real        theTol,
+occ::handle<Geom_Curve> ShapeAnalysis_CanonicalRecognition::GetCurve(const TopoDS_Edge&         theEdge,
+                                                                const double        theTol,
                                                                 const GeomConvert_ConvType theType,
                                                                 const GeomAbs_CurveType theTarget,
-                                                                Standard_Real&          theGap,
-                                                                Standard_Integer&       theStatus)
+                                                                double&          theGap,
+                                                                int&       theStatus)
 {
   theStatus = 0;
   TopLoc_Location           aLoc;
-  Standard_Real             f, l, nf, nl;
-  const Handle(Geom_Curve)& aCurv = BRep_Tool::Curve(theEdge, aLoc, f, l);
+  double             f, l, nf, nl;
+  const occ::handle<Geom_Curve>& aCurv = BRep_Tool::Curve(theEdge, aLoc, f, l);
   if (aCurv.IsNull())
   {
     theStatus = 1;
@@ -941,7 +943,7 @@ Handle(Geom_Curve) ShapeAnalysis_CanonicalRecognition::GetCurve(const TopoDS_Edg
   GeomConvert_CurveToAnaCurve aConv(aCurv);
   aConv.SetConvType(theType);
   aConv.SetTarget(theTarget);
-  Handle(Geom_Curve) anAnaCurv;
+  occ::handle<Geom_Curve> anAnaCurv;
   aConv.ConvertToAnalytical(theTol, anAnaCurv, f, l, nf, nl);
   if (anAnaCurv.IsNull())
     return anAnaCurv;
@@ -956,9 +958,9 @@ Handle(Geom_Curve) ShapeAnalysis_CanonicalRecognition::GetCurve(const TopoDS_Edg
 // Static methods
 //=================================================================================================
 
-Standard_Integer GetNbPars(const GeomAbs_CurveType theTarget)
+int GetNbPars(const GeomAbs_CurveType theTarget)
 {
-  Standard_Integer aNbPars = 0;
+  int aNbPars = 0;
   switch (theTarget)
   {
     case GeomAbs_Line:
@@ -980,9 +982,9 @@ Standard_Integer GetNbPars(const GeomAbs_CurveType theTarget)
 
 //=================================================================================================
 
-Standard_Integer GetNbPars(const GeomAbs_SurfaceType theTarget)
+int GetNbPars(const GeomAbs_SurfaceType theTarget)
 {
-  Standard_Integer aNbPars = 0;
+  int aNbPars = 0;
   switch (theTarget)
   {
     case GeomAbs_Plane:
@@ -1005,16 +1007,16 @@ Standard_Integer GetNbPars(const GeomAbs_SurfaceType theTarget)
 
 //=================================================================================================
 
-Standard_Boolean SetConicParameters(const GeomAbs_CurveType   theTarget,
-                                    const Handle(Geom_Curve)& theConic,
+bool SetConicParameters(const GeomAbs_CurveType   theTarget,
+                                    const occ::handle<Geom_Curve>& theConic,
                                     gp_Ax2&                   thePos,
-                                    TColStd_Array1OfReal&     theParams)
+                                    NCollection_Array1<double>&     theParams)
 {
   if (theConic.IsNull())
-    return Standard_False;
+    return false;
   GeomAdaptor_Curve aGAC(theConic);
   if (aGAC.GetType() != theTarget)
-    return Standard_False;
+    return false;
 
   if (theTarget == GeomAbs_Line)
   {
@@ -1035,29 +1037,29 @@ Standard_Boolean SetConicParameters(const GeomAbs_CurveType   theTarget,
     theParams(2)     = anElips.MinorRadius();
   }
   else
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean CompareConicParams(const GeomAbs_CurveType     theTarget,
-                                    const Standard_Real         theTol,
+bool CompareConicParams(const GeomAbs_CurveType     theTarget,
+                                    const double         theTol,
                                     const gp_Ax2&               theRefPos,
-                                    const TColStd_Array1OfReal& theRefParams,
+                                    const NCollection_Array1<double>& theRefParams,
                                     const gp_Ax2&               thePos,
-                                    const TColStd_Array1OfReal& theParams)
+                                    const NCollection_Array1<double>& theParams)
 {
-  Standard_Integer i, aNbPars = GetNbPars(theTarget);
+  int i, aNbPars = GetNbPars(theTarget);
 
   for (i = 1; i <= aNbPars; ++i)
   {
     if (std::abs(theRefParams(i) - theParams(i)) > theTol)
-      return Standard_False;
+      return false;
   }
 
-  Standard_Real anAngTol = theTol / (2. * M_PI);
-  Standard_Real aTol     = theTol;
+  double anAngTol = theTol / (2. * M_PI);
+  double aTol     = theTol;
   if (theTarget == GeomAbs_Line)
     aTol = Precision::Infinite();
 
@@ -1067,28 +1069,28 @@ Standard_Boolean CompareConicParams(const GeomAbs_CurveType     theTarget,
 
   if (aRef.IsCoaxial(anAx1, anAngTol, aTol) || aRef.IsCoaxial(anAx1Rev, anAngTol, aTol))
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean SetSurfParams(const GeomAbs_SurfaceType   theTarget,
-                               const Handle(Geom_Surface)& theElemSurf,
+bool SetSurfParams(const GeomAbs_SurfaceType   theTarget,
+                               const occ::handle<Geom_Surface>& theElemSurf,
                                gp_Ax3&                     thePos,
-                               TColStd_Array1OfReal&       theParams)
+                               NCollection_Array1<double>&       theParams)
 {
   //
   if (theElemSurf.IsNull())
-    return Standard_False;
+    return false;
   GeomAdaptor_Surface aGAS(theElemSurf);
   if (aGAS.GetType() != theTarget)
-    return Standard_False;
+    return false;
 
-  Standard_Real aNbPars = GetNbPars(theTarget);
+  double aNbPars = GetNbPars(theTarget);
   if (theParams.Length() < aNbPars)
-    return Standard_False;
+    return false;
 
   if (theTarget == GeomAbs_Plane)
   {
@@ -1116,25 +1118,25 @@ Standard_Boolean SetSurfParams(const GeomAbs_SurfaceType   theTarget,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
-                                   const Standard_Real         theTol,
+bool CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
+                                   const double         theTol,
                                    const gp_Ax3&               theRefPos,
-                                   const TColStd_Array1OfReal& theRefParams,
+                                   const NCollection_Array1<double>& theRefParams,
                                    const gp_Ax3&               thePos,
-                                   const TColStd_Array1OfReal& theParams)
+                                   const NCollection_Array1<double>& theParams)
 {
   if (theTarget != GeomAbs_Plane)
   {
     if (std::abs(theRefParams(1) - theParams(1)) > theTol)
     {
-      return Standard_False;
+      return false;
     }
   }
   //
@@ -1143,13 +1145,13 @@ Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
     gp_Pnt aRefLoc = theRefPos.Location(), aLoc = thePos.Location();
     if (aRefLoc.SquareDistance(aLoc) <= theTol * theTol)
     {
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
   //
-  Standard_Real anAngTol = theTol / (2. * M_PI);
-  Standard_Real aTol     = theTol;
+  double anAngTol = theTol / (2. * M_PI);
+  double aTol     = theTol;
   if (theTarget == GeomAbs_Cylinder || theTarget == GeomAbs_Cone)
   {
     aTol = Precision::Infinite();
@@ -1160,7 +1162,7 @@ Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
   gp_Ax1        anAx1Rev = anAx1.Reversed();
   if (!(aRef.IsCoaxial(anAx1, anAngTol, aTol) || aRef.IsCoaxial(anAx1Rev, anAngTol, aTol)))
   {
-    return Standard_False;
+    return false;
   }
 
   if (theTarget == GeomAbs_Cone)
@@ -1171,23 +1173,23 @@ Standard_Boolean CompareSurfParams(const GeomAbs_SurfaceType   theTarget,
     gp_Pnt  anApex   = aCone.Apex();
     if (aRefApex.SquareDistance(anApex) <= theTol * theTol)
     {
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Real DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
+double DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
                                   const gp_Ax3&               theRefPos,
-                                  const TColStd_Array1OfReal& theRefParams,
+                                  const NCollection_Array1<double>& theRefParams,
                                   const gp_Ax3&               thePos,
-                                  const TColStd_Array1OfReal& theParams)
+                                  const NCollection_Array1<double>& theParams)
 {
-  Standard_Real aDevPars = 0.;
+  double aDevPars = 0.;
   if (theTarget != GeomAbs_Plane)
   {
     aDevPars = std::abs(theRefParams(1) - theParams(1));
@@ -1202,7 +1204,7 @@ Standard_Real DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
   {
     const gp_Dir& aRefDir  = theRefPos.Direction();
     const gp_Dir& aDir     = thePos.Direction();
-    Standard_Real anAngDev = (1. - std::abs(aRefDir * aDir));
+    double anAngDev = (1. - std::abs(aRefDir * aDir));
     aDevPars += anAngDev;
   }
 
@@ -1211,16 +1213,16 @@ Standard_Real DeviationSurfParams(const GeomAbs_SurfaceType   theTarget,
 
 //=================================================================================================
 
-Standard_Boolean GetSamplePoints(const TopoDS_Wire&           theWire,
-                                 const Standard_Real          theTol,
-                                 const Standard_Integer       theMaxNbInt,
-                                 Handle(TColgp_HArray1OfXYZ)& thePoints)
+bool GetSamplePoints(const TopoDS_Wire&           theWire,
+                                 const double          theTol,
+                                 const int       theMaxNbInt,
+                                 occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
 {
-  NCollection_Vector<Standard_Real>     aLengths;
+  NCollection_Vector<double>     aLengths;
   NCollection_Vector<BRepAdaptor_Curve> aCurves;
   NCollection_Vector<gp_XYZ>            aPoints;
-  Standard_Real                         aTol         = std::max(1.e-3, theTol / 10.);
-  Standard_Real                         aTotalLength = 0.;
+  double                         aTol         = std::max(1.e-3, theTol / 10.);
+  double                         aTotalLength = 0.;
   TopoDS_Iterator                       anEIter(theWire);
   for (; anEIter.More(); anEIter.Next())
   {
@@ -1228,63 +1230,63 @@ Standard_Boolean GetSamplePoints(const TopoDS_Wire&           theWire,
     if (BRep_Tool::Degenerated(anE))
       continue;
     BRepAdaptor_Curve aBAC(anE);
-    Standard_Real     aClength = GCPnts_AbscissaPoint::Length(aBAC, aTol);
+    double     aClength = GCPnts_AbscissaPoint::Length(aBAC, aTol);
     aTotalLength += aClength;
     aCurves.Append(aBAC);
     aLengths.Append(aClength);
   }
 
   if (aTotalLength < theTol)
-    return Standard_False;
+    return false;
 
-  Standard_Integer i, aNb = aLengths.Length();
+  int i, aNb = aLengths.Length();
   for (i = 0; i < aNb; ++i)
   {
     const BRepAdaptor_Curve& aC        = aCurves(i);
-    Standard_Real            aClength  = GCPnts_AbscissaPoint::Length(aC, aTol);
-    Standard_Integer         aNbPoints = RealToInt(aClength / aTotalLength * theMaxNbInt + 1);
+    double            aClength  = GCPnts_AbscissaPoint::Length(aC, aTol);
+    int         aNbPoints = RealToInt(aClength / aTotalLength * theMaxNbInt + 1);
     aNbPoints                          = std::max(2, aNbPoints);
     GCPnts_QuasiUniformAbscissa aPointGen(aC, aNbPoints);
     if (!aPointGen.IsDone())
       continue;
     aNbPoints = aPointGen.NbPoints();
-    Standard_Integer j;
+    int j;
     for (j = 1; j <= aNbPoints; ++j)
     {
-      Standard_Real t  = aPointGen.Parameter(j);
+      double t  = aPointGen.Parameter(j);
       gp_Pnt        aP = aC.Value(t);
       aPoints.Append(aP.XYZ());
     }
   }
 
   if (aPoints.Length() < 1)
-    return Standard_False;
+    return false;
 
-  thePoints = new TColgp_HArray1OfXYZ(1, aPoints.Length());
+  thePoints = new NCollection_HArray1<gp_XYZ>(1, aPoints.Length());
   for (i = 0; i < aPoints.Length(); ++i)
   {
     thePoints->SetValue(i + 1, aPoints(i));
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
+static double GetLSGap(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
                               const GeomAbs_SurfaceType          theTarget,
                               const gp_Ax3&                      thePos,
-                              const TColStd_Array1OfReal&        theParams)
+                              const NCollection_Array1<double>&        theParams)
 {
 
-  Standard_Real aGap = 0.;
+  double aGap = 0.;
   gp_XYZ        aLoc = thePos.Location().XYZ();
   gp_Vec        aDir(thePos.Direction());
 
-  Standard_Integer i;
+  int i;
   if (theTarget == GeomAbs_Sphere)
   {
-    Standard_Real anR = theParams(1);
+    double anR = theParams(1);
     for (i = thePoints->Lower(); i <= thePoints->Upper(); ++i)
     {
       gp_XYZ aD = thePoints->Value(i) - aLoc;
@@ -1293,7 +1295,7 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
   }
   else if (theTarget == GeomAbs_Cylinder)
   {
-    Standard_Real anR = theParams(1);
+    double anR = theParams(1);
     for (i = thePoints->Lower(); i <= thePoints->Upper(); ++i)
     {
       gp_Vec aD(thePoints->Value(i) - aLoc);
@@ -1303,11 +1305,11 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
   }
   else if (theTarget == GeomAbs_Cone)
   {
-    Standard_Real anAng = theParams(1);
-    Standard_Real anR   = theParams(2);
+    double anAng = theParams(1);
+    double anR   = theParams(2);
     for (i = thePoints->Lower(); i <= thePoints->Upper(); ++i)
     {
-      Standard_Real u, v;
+      double u, v;
       gp_Pnt        aPi(thePoints->Value(i));
       ElSLib::ConeParameters(thePos, anR, anAng, aPi, u, v);
       gp_Pnt aPp;
@@ -1324,11 +1326,11 @@ static Standard_Real GetLSGap(const Handle(TColgp_HArray1OfXYZ)& thePoints,
 
 void FillSolverData(const GeomAbs_SurfaceType   theTarget,
                     const gp_Ax3&               thePos,
-                    const TColStd_Array1OfReal& theParams,
+                    const NCollection_Array1<double>& theParams,
                     math_Vector&                theStartPoint,
                     math_Vector&                theFBnd,
                     math_Vector&                theLBnd,
-                    const Standard_Real         theRelDev)
+                    const double         theRelDev)
 {
   if (theTarget == GeomAbs_Sphere || theTarget == GeomAbs_Cylinder)
   {
@@ -1336,9 +1338,9 @@ void FillSolverData(const GeomAbs_SurfaceType   theTarget,
     theStartPoint(2)       = thePos.Location().Y();
     theStartPoint(3)       = thePos.Location().Z();
     theStartPoint(4)       = theParams(1);
-    Standard_Real    aDR   = theRelDev * theParams(1);
-    Standard_Real    aDXYZ = aDR;
-    Standard_Integer i;
+    double    aDR   = theRelDev * theParams(1);
+    double    aDXYZ = aDR;
+    int i;
     for (i = 1; i <= 3; ++i)
     {
       theFBnd(i) = theStartPoint(i) - aDXYZ;
@@ -1354,14 +1356,14 @@ void FillSolverData(const GeomAbs_SurfaceType   theTarget,
     theStartPoint(3)  = thePos.Location().Z();
     theStartPoint(4)  = theParams(1); // SemiAngle
     theStartPoint(5)  = theParams(2); // Radius
-    Standard_Real aDR = theRelDev * theParams(2);
+    double aDR = theRelDev * theParams(2);
     if (aDR < Precision::Confusion())
     {
       aDR = 0.1;
     }
-    Standard_Real    aDXYZ = aDR;
-    Standard_Real    aDAng = theRelDev * std::abs(theParams(1));
-    Standard_Integer i;
+    double    aDXYZ = aDR;
+    double    aDAng = theRelDev * std::abs(theParams(1));
+    int i;
     for (i = 1; i <= 3; ++i)
     {
       theFBnd(i) = theStartPoint(i) - aDXYZ;
@@ -1387,7 +1389,7 @@ void FillSolverData(const GeomAbs_SurfaceType   theTarget,
 void SetCanonicParameters(const GeomAbs_SurfaceType theTarget,
                           const math_Vector&        theSol,
                           gp_Ax3&                   thePos,
-                          TColStd_Array1OfReal&     theParams)
+                          NCollection_Array1<double>&     theParams)
 {
   gp_Pnt aLoc(theSol(1), theSol(2), theSol(3));
   thePos.SetLocation(aLoc);

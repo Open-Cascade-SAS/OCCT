@@ -15,7 +15,7 @@
 
 //=================================================================================================
 
-inline void BRepGProp_TFunction::SetNbKronrodPoints(const Standard_Integer theNbPoints)
+inline void BRepGProp_TFunction::SetNbKronrodPoints(const int theNbPoints)
 {
   myNbPntOuter = (theNbPoints % 2 == 0) ? theNbPoints + 1 : theNbPoints;
 }
@@ -30,21 +30,21 @@ inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
 
 //=================================================================================================
 
-inline void BRepGProp_TFunction::SetTolerance(const Standard_Real theTolerance)
+inline void BRepGProp_TFunction::SetTolerance(const double theTolerance)
 {
   myTolerance = theTolerance;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepGProp_TFunction::ErrorReached() const
+inline double BRepGProp_TFunction::ErrorReached() const
 {
   return myErrReached;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepGProp_TFunction::AbsolutError() const
+inline double BRepGProp_TFunction::AbsolutError() const
 {
   return myAbsError;
 }

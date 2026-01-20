@@ -20,10 +20,10 @@
 
 RWStepVisual_RWTemplateInstance::RWStepVisual_RWTemplateInstance() {}
 
-void RWStepVisual_RWTemplateInstance::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_TemplateInstance)& ent) const
+void RWStepVisual_RWTemplateInstance::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_TemplateInstance>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,14 +33,14 @@ void RWStepVisual_RWTemplateInstance::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : mappingSource ---
 
-  Handle(StepRepr_RepresentationMap) aMappingSource;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepRepr_RepresentationMap> aMappingSource;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "mapping_source",
@@ -50,8 +50,8 @@ void RWStepVisual_RWTemplateInstance::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : mappingTarget ---
 
-  Handle(StepRepr_RepresentationItem) aMappingTarget;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_RepresentationItem> aMappingTarget;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "mapping_target",
@@ -66,7 +66,7 @@ void RWStepVisual_RWTemplateInstance::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepVisual_RWTemplateInstance::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepVisual_TemplateInstance)& ent) const
+  const occ::handle<StepVisual_TemplateInstance>& ent) const
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepVisual_RWTemplateInstance::WriteStep(
   SW.Send(ent->MappingTarget());
 }
 
-void RWStepVisual_RWTemplateInstance::Share(const Handle(StepVisual_TemplateInstance)& ent,
+void RWStepVisual_RWTemplateInstance::Share(const occ::handle<StepVisual_TemplateInstance>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 

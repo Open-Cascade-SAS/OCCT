@@ -22,7 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <gp_Dir.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
@@ -76,8 +79,8 @@ public:
                      const TopoDS_Shape&    Pbase,
                      const TopoDS_Face&     Skface,
                      const gp_Dir&          Direction,
-                     const Standard_Integer Fuse,
-                     const Standard_Boolean Modify);
+                     const int Fuse,
+                     const bool Modify);
 
   //! Initializes this algorithm for building prisms along surfaces.
   //! A face Pbase is selected in the shape Sbase
@@ -93,15 +96,15 @@ public:
                             const TopoDS_Shape&    Pbase,
                             const TopoDS_Face&     Skface,
                             const gp_Dir&          Direction,
-                            const Standard_Integer Fuse,
-                            const Standard_Boolean Modify);
+                            const int Fuse,
+                            const bool Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
   //! basis shape, or the edge to the prismed shape.
   Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
 
-  Standard_EXPORT void Perform(const Standard_Real Length);
+  Standard_EXPORT void Perform(const double Length);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Until);
 
@@ -124,21 +127,20 @@ public:
 
   //! Assigns both a limiting shape, Until from
   //! TopoDS_Shape, and a height, Length at which to stop generation of the prism feature.
-  Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const Standard_Real Length);
+  Standard_EXPORT void PerformUntilHeight(const TopoDS_Shape& Until, const double Length);
 
   //! Returns the list of curves S parallel to the axis of the prism.
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
 
   //! Generates a curve along the center of mass of the primitive.
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
-protected:
 private:
   TopoDS_Shape                       myPbase;
-  TopTools_DataMapOfShapeListOfShape mySlface;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
   gp_Dir                             myDir;
-  TColGeom_SequenceOfCurve           myCurves;
-  Handle(Geom_Curve)                 myBCurve;
+  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurves;
+  occ::handle<Geom_Curve>                 myBCurve;
   BRepFeat_StatusError               myStatusError;
 };
 

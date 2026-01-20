@@ -39,16 +39,14 @@ public:
   //! Recognizes a type of Unit Entity
   //! 1 -> NamedUnit
   //! 2 -> DerivedUnit
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a NamedUnit (Null if another type)
-  Standard_EXPORT Handle(StepBasic_NamedUnit) NamedUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_NamedUnit> NamedUnit() const;
 
   //! returns Value as a DerivedUnit (Null if another type)
-  Standard_EXPORT Handle(StepBasic_DerivedUnit) DerivedUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_DerivedUnit> DerivedUnit() const;
 
-protected:
-private:
 };
 
 #endif // _StepBasic_Unit_HeaderFile

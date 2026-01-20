@@ -21,12 +21,11 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColgp_HArray1OfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
-
-class IGESDimen_WitnessLine;
-DEFINE_STANDARD_HANDLE(IGESDimen_WitnessLine, IGESData_IGESEntity)
 
 //! defines WitnessLine, Type <106> Form <40>
 //! in package IGESDimen
@@ -43,34 +42,33 @@ public:
   //! - dataType   : Interpretation Flag, always = 1
   //! - aDispl     : Common z displacement
   //! - dataPoints : Data points
-  Standard_EXPORT void Init(const Standard_Integer            dataType,
-                            const Standard_Real               aDisp,
-                            const Handle(TColgp_HArray1OfXY)& dataPoints);
+  Standard_EXPORT void Init(const int            dataType,
+                            const double               aDisp,
+                            const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints);
 
   //! returns Interpretation Flag, always = 1
-  Standard_EXPORT Standard_Integer Datatype() const;
+  Standard_EXPORT int Datatype() const;
 
   //! returns number of Data Points
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! returns common Z displacement
-  Standard_EXPORT Standard_Real ZDisplacement() const;
+  Standard_EXPORT double ZDisplacement() const;
 
   //! returns Index'th. data point
   //! raises exception if Index <= 0 or Index > NbPoints
-  Standard_EXPORT gp_Pnt Point(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt Point(const int Index) const;
 
   //! returns data point after Transformation.
   //! raises exception if Index <= 0 or Index > NbPoints
-  Standard_EXPORT gp_Pnt TransformedPoint(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt TransformedPoint(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_WitnessLine, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer           theDatatype;
-  Standard_Real              theZDisplacement;
-  Handle(TColgp_HArray1OfXY) theDataPoints;
+  int           theDatatype;
+  double              theZDisplacement;
+  occ::handle<NCollection_HArray1<gp_XY>> theDataPoints;
 };
 
 #endif // _IGESDimen_WitnessLine_HeaderFile

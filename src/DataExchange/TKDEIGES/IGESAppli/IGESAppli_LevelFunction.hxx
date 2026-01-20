@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_LevelFunction;
-DEFINE_STANDARD_HANDLE(IGESAppli_LevelFunction, IGESData_IGESEntity)
-
 //! defines LevelFunction, Type <406> Form <3>
 //! in package IGESAppli
 //! Used to transfer the meaning or intended use of a level
@@ -43,27 +40,26 @@ public:
   //! default = 0
   //! - aFuncDescrip : Function Description
   //! default = null string
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Standard_Integer                  aCode,
-                            const Handle(TCollection_HAsciiString)& aFuncDescrip);
+  Standard_EXPORT void Init(const int                  nbPropVal,
+                            const int                  aCode,
+                            const occ::handle<TCollection_HAsciiString>& aFuncDescrip);
 
   //! is always 2
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the function description code. Default = 0
-  Standard_EXPORT Standard_Integer FuncDescriptionCode() const;
+  Standard_EXPORT int FuncDescriptionCode() const;
 
   //! returns the function description
   //! Default = null string
-  Standard_EXPORT Handle(TCollection_HAsciiString) FuncDescription() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FuncDescription() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Standard_Integer                 theFuncDescripCode;
-  Handle(TCollection_HAsciiString) theFuncDescrip;
+  int                 theNbPropertyValues;
+  int                 theFuncDescripCode;
+  occ::handle<TCollection_HAsciiString> theFuncDescrip;
 };
 
 #endif // _IGESAppli_LevelFunction_HeaderFile

@@ -36,7 +36,7 @@ Prs3d_TextAspect::Prs3d_TextAspect()
 
 //=================================================================================================
 
-Prs3d_TextAspect::Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspect)
+Prs3d_TextAspect::Prs3d_TextAspect(const occ::handle<Graphic3d_AspectText3d>& theAspect)
     : myTextAspect(theAspect),
       myHeight(16.0),
       myHorizontalJustification(Graphic3d_HTA_LEFT),
@@ -48,7 +48,7 @@ Prs3d_TextAspect::Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspe
 
 //=================================================================================================
 
-void Prs3d_TextAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_TextAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_Array1OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Mat.hxx>
 #include <Standard_Integer.hxx>
 class GeomFill_LocationLaw;
@@ -31,38 +32,37 @@ class GeomFill_LocFunction
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomFill_LocFunction(const Handle(GeomFill_LocationLaw)& Law);
+  Standard_EXPORT GeomFill_LocFunction(const occ::handle<GeomFill_LocationLaw>& Law);
 
   //! compute the section for v = param
-  Standard_EXPORT Standard_Boolean D0(const Standard_Real Param,
-                                      const Standard_Real First,
-                                      const Standard_Real Last);
+  Standard_EXPORT bool D0(const double Param,
+                                      const double First,
+                                      const double Last);
 
   //! compute the first derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT Standard_Boolean D1(const Standard_Real Param,
-                                      const Standard_Real First,
-                                      const Standard_Real Last);
+  Standard_EXPORT bool D1(const double Param,
+                                      const double First,
+                                      const double Last);
 
   //! compute the second derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT Standard_Boolean D2(const Standard_Real Param,
-                                      const Standard_Real First,
-                                      const Standard_Real Last);
+  Standard_EXPORT bool D2(const double Param,
+                                      const double First,
+                                      const double Last);
 
-  Standard_EXPORT void DN(const Standard_Real    Param,
-                          const Standard_Real    First,
-                          const Standard_Real    Last,
-                          const Standard_Integer Order,
-                          Standard_Real&         Result,
-                          Standard_Integer&      Ier);
+  Standard_EXPORT void DN(const double    Param,
+                          const double    First,
+                          const double    Last,
+                          const int Order,
+                          double&         Result,
+                          int&      Ier);
 
-protected:
 private:
-  Handle(GeomFill_LocationLaw) myLaw;
-  TColgp_Array1OfVec           V;
-  TColgp_Array1OfVec           DV;
-  TColgp_Array1OfVec           D2V;
+  occ::handle<GeomFill_LocationLaw> myLaw;
+  NCollection_Array1<gp_Vec>           V;
+  NCollection_Array1<gp_Vec>           DV;
+  NCollection_Array1<gp_Vec>           D2V;
   gp_Mat                       M;
   gp_Mat                       DM;
   gp_Mat                       D2M;

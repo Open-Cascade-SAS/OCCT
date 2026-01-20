@@ -14,46 +14,46 @@
 #include <StepData_EnumTool.hxx>
 #include <TCollection_AsciiString.hxx>
 
-StepData_EnumTool::StepData_EnumTool(const Standard_CString e0,
-                                     const Standard_CString e1,
-                                     const Standard_CString e2,
-                                     const Standard_CString e3,
-                                     const Standard_CString e4,
-                                     const Standard_CString e5,
-                                     const Standard_CString e6,
-                                     const Standard_CString e7,
-                                     const Standard_CString e8,
-                                     const Standard_CString e9,
-                                     const Standard_CString e10,
-                                     const Standard_CString e11,
-                                     const Standard_CString e12,
-                                     const Standard_CString e13,
-                                     const Standard_CString e14,
-                                     const Standard_CString e15,
-                                     const Standard_CString e16,
-                                     const Standard_CString e17,
-                                     const Standard_CString e18,
-                                     const Standard_CString e19,
-                                     const Standard_CString e20,
-                                     const Standard_CString e21,
-                                     const Standard_CString e22,
-                                     const Standard_CString e23,
-                                     const Standard_CString e24,
-                                     const Standard_CString e25,
-                                     const Standard_CString e26,
-                                     const Standard_CString e27,
-                                     const Standard_CString e28,
-                                     const Standard_CString e29,
-                                     const Standard_CString e30,
-                                     const Standard_CString e31,
-                                     const Standard_CString e32,
-                                     const Standard_CString e33,
-                                     const Standard_CString e34,
-                                     const Standard_CString e35,
-                                     const Standard_CString e36,
-                                     const Standard_CString e37,
-                                     const Standard_CString e38,
-                                     const Standard_CString e39)
+StepData_EnumTool::StepData_EnumTool(const char* const e0,
+                                     const char* const e1,
+                                     const char* const e2,
+                                     const char* const e3,
+                                     const char* const e4,
+                                     const char* const e5,
+                                     const char* const e6,
+                                     const char* const e7,
+                                     const char* const e8,
+                                     const char* const e9,
+                                     const char* const e10,
+                                     const char* const e11,
+                                     const char* const e12,
+                                     const char* const e13,
+                                     const char* const e14,
+                                     const char* const e15,
+                                     const char* const e16,
+                                     const char* const e17,
+                                     const char* const e18,
+                                     const char* const e19,
+                                     const char* const e20,
+                                     const char* const e21,
+                                     const char* const e22,
+                                     const char* const e23,
+                                     const char* const e24,
+                                     const char* const e25,
+                                     const char* const e26,
+                                     const char* const e27,
+                                     const char* const e28,
+                                     const char* const e29,
+                                     const char* const e30,
+                                     const char* const e31,
+                                     const char* const e32,
+                                     const char* const e33,
+                                     const char* const e34,
+                                     const char* const e35,
+                                     const char* const e36,
+                                     const char* const e37,
+                                     const char* const e38,
+                                     const char* const e39)
 {
   AddDefinition(e0);
   AddDefinition(e1);
@@ -96,17 +96,17 @@ StepData_EnumTool::StepData_EnumTool(const Standard_CString e0,
   AddDefinition(e38);
   AddDefinition(e39);
   theinit = thetexts.Length();
-  theopt  = Standard_True;
+  theopt  = true;
 }
 
-void StepData_EnumTool::AddDefinition(const Standard_CString term)
+void StepData_EnumTool::AddDefinition(const char* const term)
 {
   char text[80];
   if (!term)
     return;
   if (term[0] == '\0')
     return;
-  Standard_Integer n0 = 0, n1 = 0;
+  int n0 = 0, n1 = 0;
   for (; term[n0] != '\0'; n0++)
   {
     if (term[n0] <= 32)
@@ -151,37 +151,37 @@ void StepData_EnumTool::AddDefinition(const Standard_CString term)
   thetexts.Append(TCollection_AsciiString(text));
 }
 
-Standard_Boolean StepData_EnumTool::IsSet() const
+bool StepData_EnumTool::IsSet() const
 {
   return (thetexts.Length() > theinit);
 }
 
-Standard_Integer StepData_EnumTool::MaxValue() const
+int StepData_EnumTool::MaxValue() const
 {
   return thetexts.Length() - 1;
 }
 
-void StepData_EnumTool::Optional(const Standard_Boolean mode)
+void StepData_EnumTool::Optional(const bool mode)
 {
   theopt = mode;
 }
 
-Standard_Integer StepData_EnumTool::NullValue() const
+int StepData_EnumTool::NullValue() const
 {
-  return (theopt ? Value("$") : Standard_False);
+  return (theopt ? Value("$") : false);
 }
 
-const TCollection_AsciiString& StepData_EnumTool::Text(const Standard_Integer num) const
+const TCollection_AsciiString& StepData_EnumTool::Text(const int num) const
 {
   if (num < 0 || num >= thetexts.Length())
     return TCollection_AsciiString::EmptyString();
   return thetexts.Value(num + 1);
 }
 
-Standard_Integer StepData_EnumTool::Value(const Standard_CString txt) const
+int StepData_EnumTool::Value(const char* const txt) const
 {
-  Standard_Integer nb = thetexts.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thetexts.Length();
+  for (int i = 1; i <= nb; i++)
   {
     if (thetexts.Value(i).IsEqual(txt))
       return i - 1;
@@ -189,10 +189,10 @@ Standard_Integer StepData_EnumTool::Value(const Standard_CString txt) const
   return (-1);
 }
 
-Standard_Integer StepData_EnumTool::Value(const TCollection_AsciiString& txt) const
+int StepData_EnumTool::Value(const TCollection_AsciiString& txt) const
 {
-  Standard_Integer nb = thetexts.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thetexts.Length();
+  for (int i = 1; i <= nb; i++)
   {
     if (thetexts.Value(i).IsEqual(txt))
       return i - 1;

@@ -26,24 +26,24 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CoonsAlgPatch, Standard_Transient)
 
 //=================================================================================================
 
-GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch(const Handle(GeomFill_Boundary)& B1,
-                                               const Handle(GeomFill_Boundary)& B2,
-                                               const Handle(GeomFill_Boundary)& B3,
-                                               const Handle(GeomFill_Boundary)& B4)
+GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch(const occ::handle<GeomFill_Boundary>& B1,
+                                               const occ::handle<GeomFill_Boundary>& B2,
+                                               const occ::handle<GeomFill_Boundary>& B3,
+                                               const occ::handle<GeomFill_Boundary>& B4)
 {
   bound[0] = B1;
   bound[1] = B2;
   bound[2] = B3;
   bound[3] = B4;
-  Standard_Real deb0, deb1, fin0, fin1;
+  double deb0, deb1, fin0, fin1;
 
   B2->Bounds(deb1, fin1);
-  Handle(Law_Linear) aLaw0 = new Law_Linear();
+  occ::handle<Law_Linear> aLaw0 = new Law_Linear();
   aLaw0->Set(deb1, 1., fin1, 0.);
   a[0] = aLaw0;
 
   B1->Bounds(deb0, fin0);
-  Handle(Law_Linear) aLaw1 = new Law_Linear();
+  occ::handle<Law_Linear> aLaw1 = new Law_Linear();
   aLaw1->Set(deb0, 0., fin0, 1.);
   a[1] = aLaw1;
 
@@ -64,7 +64,7 @@ GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch(const Handle(GeomFill_Boundary)& 
 
 //=================================================================================================
 
-void GeomFill_CoonsAlgPatch::SetFunc(const Handle(Law_Function)& f1, const Handle(Law_Function)& f2)
+void GeomFill_CoonsAlgPatch::SetFunc(const occ::handle<Law_Function>& f1, const occ::handle<Law_Function>& f2)
 {
   a[0] = f1;
   a[1] = f2;
@@ -72,7 +72,7 @@ void GeomFill_CoonsAlgPatch::SetFunc(const Handle(Law_Function)& f1, const Handl
 
 //=================================================================================================
 
-void GeomFill_CoonsAlgPatch::Func(Handle(Law_Function)& f1, Handle(Law_Function)& f2) const
+void GeomFill_CoonsAlgPatch::Func(occ::handle<Law_Function>& f1, occ::handle<Law_Function>& f2) const
 {
   f1 = a[0];
   f2 = a[1];
@@ -80,10 +80,10 @@ void GeomFill_CoonsAlgPatch::Func(Handle(Law_Function)& f1, Handle(Law_Function)
 
 //=================================================================================================
 
-// gp_Pnt GeomFill_CoonsAlgPatch::Value(const Standard_Real U,
-gp_Pnt GeomFill_CoonsAlgPatch::Value(const Standard_Real, const Standard_Real V) const
+// gp_Pnt GeomFill_CoonsAlgPatch::Value(const double U,
+gp_Pnt GeomFill_CoonsAlgPatch::Value(const double, const double V) const
 {
-  Standard_Real a0, a1, a2, a3;
+  double a0, a1, a2, a3;
   a0 = a[0]->Value(V);
   a1 = a[1]->Value(V);
   a2 = 1. - a0;
@@ -126,9 +126,9 @@ gp_Pnt GeomFill_CoonsAlgPatch::Value(const Standard_Real, const Standard_Real V)
 
 //=================================================================================================
 
-gp_Vec GeomFill_CoonsAlgPatch::D1U(const Standard_Real U, const Standard_Real V) const
+gp_Vec GeomFill_CoonsAlgPatch::D1U(const double U, const double V) const
 {
-  Standard_Real a0, a1, a2, a3, bid;
+  double a0, a1, a2, a3, bid;
   a0 = a[0]->Value(V);
   a[1]->D1(U, bid, a1);
   a2 = 1 - a0;
@@ -176,9 +176,9 @@ gp_Vec GeomFill_CoonsAlgPatch::D1U(const Standard_Real U, const Standard_Real V)
 
 //=================================================================================================
 
-gp_Vec GeomFill_CoonsAlgPatch::D1V(const Standard_Real U, const Standard_Real V) const
+gp_Vec GeomFill_CoonsAlgPatch::D1V(const double U, const double V) const
 {
-  Standard_Real a0, a1, a2, a3, bid;
+  double a0, a1, a2, a3, bid;
   a[0]->D1(V, bid, a0);
   a1 = a[1]->Value(U);
   a2 = -a0;
@@ -226,9 +226,9 @@ gp_Vec GeomFill_CoonsAlgPatch::D1V(const Standard_Real U, const Standard_Real V)
 
 //=================================================================================================
 
-gp_Vec GeomFill_CoonsAlgPatch::DUV(const Standard_Real U, const Standard_Real V) const
+gp_Vec GeomFill_CoonsAlgPatch::DUV(const double U, const double V) const
 {
-  Standard_Real a0, a1, a2, a3, bid;
+  double a0, a1, a2, a3, bid;
   a[0]->D1(V, bid, a0);
   a[1]->D1(U, bid, a1);
   a2 = -a0;
@@ -279,21 +279,21 @@ gp_Vec GeomFill_CoonsAlgPatch::DUV(const Standard_Real U, const Standard_Real V)
 
 //=================================================================================================
 
-const Handle(GeomFill_Boundary)& GeomFill_CoonsAlgPatch::Bound(const Standard_Integer I) const
+const occ::handle<GeomFill_Boundary>& GeomFill_CoonsAlgPatch::Bound(const int I) const
 {
   return bound[I];
 }
 
 //=================================================================================================
 
-const gp_Pnt& GeomFill_CoonsAlgPatch::Corner(const Standard_Integer I) const
+const gp_Pnt& GeomFill_CoonsAlgPatch::Corner(const int I) const
 {
   return c[I];
 }
 
 //=================================================================================================
 
-const Handle(Law_Function)& GeomFill_CoonsAlgPatch::Func(const Standard_Integer I) const
+const occ::handle<Law_Function>& GeomFill_CoonsAlgPatch::Func(const int I) const
 {
   return a[I];
 }

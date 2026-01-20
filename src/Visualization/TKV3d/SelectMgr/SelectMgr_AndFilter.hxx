@@ -23,9 +23,6 @@
 #include <SelectMgr_CompositionFilter.hxx>
 class SelectMgr_EntityOwner;
 
-class SelectMgr_AndFilter;
-DEFINE_STANDARD_HANDLE(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
-
 //! A framework to define a selection filter for two or
 //! more types of entity.
 class SelectMgr_AndFilter : public SelectMgr_CompositionFilter
@@ -36,13 +33,11 @@ public:
   //! more types of entity.
   Standard_EXPORT SelectMgr_AndFilter();
 
-  Standard_EXPORT Standard_Boolean
-    IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
 
-protected:
-private:
 };
 
 #endif // _SelectMgr_AndFilter_HeaderFile

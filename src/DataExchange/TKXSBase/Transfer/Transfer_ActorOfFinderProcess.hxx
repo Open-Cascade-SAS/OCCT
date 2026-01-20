@@ -29,9 +29,6 @@ class Transfer_ProcessForFinder;
 class Transfer_FinderProcess;
 class Standard_Transient;
 
-class Transfer_ActorOfFinderProcess;
-DEFINE_STANDARD_HANDLE(Transfer_ActorOfFinderProcess, Transfer_ActorOfProcessForFinder)
-
 //! The original class was renamed. Compatibility only
 //!
 //! ModeTrans : a simple way of transmitting a transfer mode from
@@ -42,21 +39,21 @@ public:
   Standard_EXPORT Transfer_ActorOfFinderProcess();
 
   //! Returns the Transfer Mode, modifiable
-  Standard_EXPORT Standard_Integer& ModeTrans();
+  Standard_EXPORT int& ModeTrans();
 
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring(
-    const Handle(Transfer_Finder)&           start,
-    const Handle(Transfer_ProcessForFinder)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
+    const occ::handle<Transfer_Finder>&           start,
+    const occ::handle<Transfer_ProcessForFinder>& TP,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
-    const Handle(Transfer_Finder)&        start,
-    const Handle(Transfer_FinderProcess)& TP,
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+    const occ::handle<Transfer_Finder>&        start,
+    const occ::handle<Transfer_FinderProcess>& TP,
     const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
-  Standard_EXPORT virtual Handle(Standard_Transient) TransferTransient(
-    const Handle(Standard_Transient)&     start,
-    const Handle(Transfer_FinderProcess)& TP,
+  Standard_EXPORT virtual occ::handle<Standard_Transient> TransferTransient(
+    const occ::handle<Standard_Transient>&     start,
+    const occ::handle<Transfer_FinderProcess>& TP,
     const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
   //! Sets parameters for shape processing.
@@ -101,7 +98,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Transfer_ActorOfFinderProcess, Transfer_ActorOfProcessForFinder)
 
 protected:
-  Standard_Integer themodetrans;
+  int themodetrans;
 
 private:
   // clang-format off

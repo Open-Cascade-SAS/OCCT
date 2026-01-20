@@ -26,21 +26,21 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Driver, TPrsStd_Driver)
 
 //=================================================================================================
 
-Standard_Boolean XCAFPrs_Driver::Update(const TDF_Label& L, Handle(AIS_InteractiveObject)& ais)
+bool XCAFPrs_Driver::Update(const TDF_Label& L, occ::handle<AIS_InteractiveObject>& ais)
 
 {
   //  std::cout << "XCAFPrs_Driver::Update" << std::endl;
   // WARNING! The label L can be out of any document
   // (this is a case for reading from the file)
-  //  Handle(TDocStd_Document) DOC = TDocStd_Document::Get(L);
+  //  occ::handle<TDocStd_Document> DOC = TDocStd_Document::Get(L);
 
   XCAFDoc_ShapeTool shapes;
   if (!shapes.IsShape(L))
-    return Standard_False;
+    return false;
 
   ais = new XCAFPrs_AISObject(L);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================

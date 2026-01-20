@@ -21,15 +21,15 @@
 TEST(TDataStd_TreeNode_Test, BUC60817_DescendantRelationship)
 {
   // Create TDF document
-  Handle(TDF_Data) aDF = new TDF_Data();
+  occ::handle<TDF_Data> aDF = new TDF_Data();
 
   // Create two labels
-  TDF_Label aLabel1 = aDF->Root().FindChild(2, Standard_True);
-  TDF_Label aLabel2 = aDF->Root().FindChild(3, Standard_True);
+  TDF_Label aLabel1 = aDF->Root().FindChild(2, true);
+  TDF_Label aLabel2 = aDF->Root().FindChild(3, true);
 
   // Create TreeNodes on the labels
-  Handle(TDataStd_TreeNode) aTN1 = TDataStd_TreeNode::Set(aLabel1);
-  Handle(TDataStd_TreeNode) aTN2 = TDataStd_TreeNode::Set(aLabel2);
+  occ::handle<TDataStd_TreeNode> aTN1 = TDataStd_TreeNode::Set(aLabel1);
+  occ::handle<TDataStd_TreeNode> aTN2 = TDataStd_TreeNode::Set(aLabel2);
 
   // Append TN2 as a child of TN1
   aTN1->Append(aTN2);

@@ -25,9 +25,6 @@
 #include <IntSurf_Situation.hxx>
 #include <Standard_Transient.hxx>
 
-class IntPatch_Line;
-DEFINE_STANDARD_HANDLE(IntPatch_Line, Standard_Transient)
-
 //! Definition of an intersection line between two
 //! surfaces.
 //! A line may be either geometric : line, circle, ellipse,
@@ -41,10 +38,10 @@ class IntPatch_Line : public Standard_Transient
 public:
   //! To set the values returned by IsUIsoS1,....
   //! The default values are False.
-  void SetValue(const Standard_Boolean Uiso1,
-                const Standard_Boolean Viso1,
-                const Standard_Boolean Uiso2,
-                const Standard_Boolean Viso2);
+  void SetValue(const bool Uiso1,
+                const bool Viso1,
+                const bool Uiso2,
+                const bool Viso2);
 
   //! Returns the type of geometry 3d (Line, Circle, Parabola,
   //! Hyperbola, Ellipse, Analytic, Walking, Restriction)
@@ -52,7 +49,7 @@ public:
 
   //! Returns TRUE if the intersection is a line of tangency
   //! between the 2 patches.
-  Standard_Boolean IsTangent() const;
+  bool IsTangent() const;
 
   //! Returns the type of the transition of the line
   //! for the first surface. The transition is "constant"
@@ -94,51 +91,51 @@ public:
 
   //! Returns TRUE if the intersection is a U isoparametric curve
   //! on the first patch.
-  Standard_Boolean IsUIsoOnS1() const;
+  bool IsUIsoOnS1() const;
 
   //! Returns TRUE if the intersection is a V isoparametric curve
   //! on the first patch.
-  Standard_Boolean IsVIsoOnS1() const;
+  bool IsVIsoOnS1() const;
 
   //! Returns TRUE if the intersection is a U isoparametric curve
   //! on the second patch.
-  Standard_Boolean IsUIsoOnS2() const;
+  bool IsUIsoOnS2() const;
 
   //! Returns TRUE if the intersection is a V isoparametric curve
   //! on the second patch.
-  Standard_Boolean IsVIsoOnS2() const;
+  bool IsVIsoOnS2() const;
 
   DEFINE_STANDARD_RTTIEXT(IntPatch_Line, Standard_Transient)
 
 protected:
   //! To initialize the fields, when the transitions
   //! are In or Out.
-  Standard_EXPORT IntPatch_Line(const Standard_Boolean  Tang,
+  Standard_EXPORT IntPatch_Line(const bool  Tang,
                                 const IntSurf_TypeTrans Trans1,
                                 const IntSurf_TypeTrans Trans2);
 
   //! To initialize the fields, when the transitions
   //! are Touch.
-  Standard_EXPORT IntPatch_Line(const Standard_Boolean  Tang,
+  Standard_EXPORT IntPatch_Line(const bool  Tang,
                                 const IntSurf_Situation Situ1,
                                 const IntSurf_Situation Situ2);
 
   //! To initialize the fields, when the transitions
   //! are Undecided.
-  Standard_EXPORT IntPatch_Line(const Standard_Boolean Tang);
+  Standard_EXPORT IntPatch_Line(const bool Tang);
 
   IntPatch_IType typ;
 
 private:
-  Standard_Boolean  tg;
+  bool  tg;
   IntSurf_TypeTrans tS1;
   IntSurf_TypeTrans tS2;
   IntSurf_Situation sit1;
   IntSurf_Situation sit2;
-  Standard_Boolean  uS1;
-  Standard_Boolean  vS1;
-  Standard_Boolean  uS2;
-  Standard_Boolean  vS2;
+  bool  uS1;
+  bool  vS1;
+  bool  uS2;
+  bool  vS2;
 };
 
 #include <IntPatch_Line.lxx>

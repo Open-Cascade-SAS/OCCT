@@ -18,7 +18,11 @@
 #ifndef TObj_SequenceIterator_HeaderFile
 #define TObj_SequenceIterator_HeaderFile
 
-#include <TObj_Container.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+#include <TDF_Label.hxx>
+#include <TObj_SequenceOfObject.hxx>
 #include <TObj_ObjectIterator.hxx>
 
 /**
@@ -42,8 +46,8 @@ public:
    */
 
   //! Creates an iterator an initialize it by sequence of objects.
-  Standard_EXPORT TObj_SequenceIterator(const Handle(TObj_HSequenceOfObject)& theObjects,
-                                        const Handle(Standard_Type)&          theType = NULL);
+  Standard_EXPORT TObj_SequenceIterator(const occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theObjects,
+                                        const occ::handle<Standard_Type>&          theType = NULL);
 
 public:
   /**
@@ -51,21 +55,21 @@ public:
    */
 
   //! Returns True if there is a current Item in the iteration.
-  virtual Standard_EXPORT Standard_Boolean More() const Standard_OVERRIDE;
+  virtual Standard_EXPORT bool More() const override;
 
   //! Move to the next Item
-  virtual Standard_EXPORT void Next() Standard_OVERRIDE;
+  virtual Standard_EXPORT void Next() override;
 
   //! Returns the current item
-  virtual Standard_EXPORT Handle(TObj_Object) Value() const Standard_OVERRIDE;
+  virtual Standard_EXPORT occ::handle<TObj_Object> Value() const override;
 
 protected:
   /**
    * Fields
    */
-  Standard_Integer               myIndex;   //!< current index of object in sequence
-  Handle(Standard_Type)          myType;    //!< type of object
-  Handle(TObj_HSequenceOfObject) myObjects; //!< sequence of objects
+  int               myIndex;   //!< current index of object in sequence
+  occ::handle<Standard_Type>          myType;    //!< type of object
+  occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>> myObjects; //!< sequence of objects
 
 public:
   //! CASCADE RTTI
@@ -73,8 +77,6 @@ public:
 };
 
 //! Define handle class for TObj_SequenceIterator
-DEFINE_STANDARD_HANDLE(TObj_SequenceIterator, TObj_ObjectIterator)
-
 #endif
 
 #ifdef _MSC_VER

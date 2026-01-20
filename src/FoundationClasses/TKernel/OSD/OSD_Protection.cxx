@@ -674,10 +674,10 @@ void OSD_Protection::Sub(OSD_SingleProtection& aProtection, const OSD_SingleProt
 
 /* Get internal UNIX's access rights for user, group and other */
 
-Standard_Integer OSD_Protection::Internal() const
+int OSD_Protection::Internal() const
 {
 
-  Standard_Integer internal_prot = 0;
+  int internal_prot = 0;
 
   if (u & OSD_R)
     internal_prot |= S_IRUSR;
@@ -731,8 +731,8 @@ Standard_Integer OSD_Protection::Internal() const
   #define FLAG_EXECUTE 0x00000004
   #define FLAG_DELETE 0x00000008
 
-static Standard_Integer __fastcall _get_mask(OSD_SingleProtection);
-static OSD_SingleProtection __fastcall _get_prot(Standard_Integer);
+static int __fastcall _get_mask(OSD_SingleProtection);
+static OSD_SingleProtection __fastcall _get_prot(int);
 
 OSD_Protection ::OSD_Protection()
 {
@@ -838,9 +838,9 @@ OSD_SingleProtection OSD_Protection ::World() const
 void OSD_Protection ::Add(OSD_SingleProtection& aProt, const OSD_SingleProtection aRight)
 {
 
-  Standard_Integer pMask = 0;
-  Standard_Integer rMask = 0;
-  Standard_Integer sMask = 0;
+  int pMask = 0;
+  int rMask = 0;
+  int sMask = 0;
 
   pMask = _get_mask(aProt);
   rMask = _get_mask(aRight);
@@ -868,8 +868,8 @@ void OSD_Protection ::Add(OSD_SingleProtection& aProt, const OSD_SingleProtectio
 void OSD_Protection ::Sub(OSD_SingleProtection& aProt, const OSD_SingleProtection aRight)
 {
 
-  Standard_Integer pMask = 0;
-  Standard_Integer rMask = 0;
+  int pMask = 0;
+  int rMask = 0;
 
   pMask = _get_mask(aProt);
   rMask = _get_mask(aRight);
@@ -894,17 +894,17 @@ void OSD_Protection ::Sub(OSD_SingleProtection& aProt, const OSD_SingleProtectio
 
 } // end OSD_Protection :: Sub
 
-Standard_Integer OSD_Protection ::Internal() const
+int OSD_Protection ::Internal() const
 {
 
   return 0;
 
 } // end OSD_Protection :: Internal
 
-static Standard_Integer __fastcall _get_mask(OSD_SingleProtection p)
+static int __fastcall _get_mask(OSD_SingleProtection p)
 {
 
-  Standard_Integer retVal = 0;
+  int retVal = 0;
 
   if (p == OSD_R || p == OSD_RW || p == OSD_RX || p == OSD_RWX || p == OSD_RXD || p == OSD_RWXD
       || p == OSD_RD || p == OSD_RWD)
@@ -926,7 +926,7 @@ static Standard_Integer __fastcall _get_mask(OSD_SingleProtection p)
 
 } // end _get_mask
 
-static OSD_SingleProtection __fastcall _get_prot(Standard_Integer m)
+static OSD_SingleProtection __fastcall _get_prot(int m)
 {
 
   OSD_SingleProtection retVal;

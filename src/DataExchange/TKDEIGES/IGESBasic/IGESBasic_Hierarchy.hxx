@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESBasic_Hierarchy;
-DEFINE_STANDARD_HANDLE(IGESBasic_Hierarchy, IGESData_IGESEntity)
-
 //! defines Hierarchy, Type <406> Form <10>
 //! in package IGESBasic
 //! Provides ability to control the hierarchy of each
@@ -50,46 +47,45 @@ public:
   //! physically subordinate to this entity.
   //! 1 : The directory entry attribute of this entity will not
   //! apply to physically subordinate entities.
-  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
-                            const Standard_Integer aLineFont,
-                            const Standard_Integer aView,
-                            const Standard_Integer anEntityLevel,
-                            const Standard_Integer aBlankStatus,
-                            const Standard_Integer aLineWt,
-                            const Standard_Integer aColorNum);
+  Standard_EXPORT void Init(const int nbPropVal,
+                            const int aLineFont,
+                            const int aView,
+                            const int anEntityLevel,
+                            const int aBlankStatus,
+                            const int aLineWt,
+                            const int aColorNum);
 
   //! returns the number of property values, which should be 6
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the line font
-  Standard_EXPORT Standard_Integer NewLineFont() const;
+  Standard_EXPORT int NewLineFont() const;
 
   //! returns the view
-  Standard_EXPORT Standard_Integer NewView() const;
+  Standard_EXPORT int NewView() const;
 
   //! returns the entity level
-  Standard_EXPORT Standard_Integer NewEntityLevel() const;
+  Standard_EXPORT int NewEntityLevel() const;
 
   //! returns the blank status
-  Standard_EXPORT Standard_Integer NewBlankStatus() const;
+  Standard_EXPORT int NewBlankStatus() const;
 
   //! returns the line weight
-  Standard_EXPORT Standard_Integer NewLineWeight() const;
+  Standard_EXPORT int NewLineWeight() const;
 
   //! returns the color number
-  Standard_EXPORT Standard_Integer NewColorNum() const;
+  Standard_EXPORT int NewColorNum() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_Hierarchy, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theLineFont;
-  Standard_Integer theView;
-  Standard_Integer theEntityLevel;
-  Standard_Integer theBlankStatus;
-  Standard_Integer theLineWeight;
-  Standard_Integer theColorNum;
+  int theNbPropertyValues;
+  int theLineFont;
+  int theView;
+  int theEntityLevel;
+  int theBlankStatus;
+  int theLineWeight;
+  int theColorNum;
 };
 
 #endif // _IGESBasic_Hierarchy_HeaderFile

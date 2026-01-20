@@ -23,10 +23,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
 
-typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellatedItem;
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)
-
 class StepVisual_TessellatedGeometricSet : public StepVisual_TessellatedItem
 {
 public:
@@ -35,13 +31,13 @@ public:
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedGeometricSet();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                       theName,
-                            const NCollection_Handle<StepVisual_Array1OfTessellatedItem>& theItems);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                       theName,
+                            const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems);
 
-  Standard_EXPORT NCollection_Handle<StepVisual_Array1OfTessellatedItem> Items() const;
+  Standard_EXPORT NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> Items() const;
 
 private:
-  NCollection_Handle<StepVisual_Array1OfTessellatedItem> myItems;
+  NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> myItems;
 
 public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet, StepVisual_TessellatedItem)

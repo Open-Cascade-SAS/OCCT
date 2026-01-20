@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileName, IGESData_IGESEntity)
 
 IGESBasic_ExternalRefFileName::IGESBasic_ExternalRefFileName() {}
 
-void IGESBasic_ExternalRefFileName::Init(const Handle(TCollection_HAsciiString)& aFileIdent,
-                                         const Handle(TCollection_HAsciiString)& anExtName)
+void IGESBasic_ExternalRefFileName::Init(const occ::handle<TCollection_HAsciiString>& aFileIdent,
+                                         const occ::handle<TCollection_HAsciiString>& anExtName)
 {
   theExtRefFileIdentifier = aFileIdent;
   theExtRefEntitySymbName = anExtName;
@@ -33,17 +33,17 @@ void IGESBasic_ExternalRefFileName::Init(const Handle(TCollection_HAsciiString)&
   //  FormNumber 0-2 : meaning not clear. Could be 0:Definition  2:Entity
 }
 
-void IGESBasic_ExternalRefFileName::SetForEntity(const Standard_Boolean F)
+void IGESBasic_ExternalRefFileName::SetForEntity(const bool F)
 {
   InitTypeAndForm(416, (F ? 2 : 0));
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefFileName::FileId() const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefFileName::FileId() const
 {
   return theExtRefFileIdentifier;
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefFileName::ReferenceName() const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefFileName::ReferenceName() const
 {
   return theExtRefEntitySymbName;
 }

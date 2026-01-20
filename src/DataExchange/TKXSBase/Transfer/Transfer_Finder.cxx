@@ -30,12 +30,12 @@ size_t Transfer_Finder::GetHashCode() const
   return thecode;
 }
 
-Handle(Standard_Type) Transfer_Finder::ValueType() const
+occ::handle<Standard_Type> Transfer_Finder::ValueType() const
 {
   return DynamicType();
 }
 
-Standard_CString Transfer_Finder::ValueTypeName() const
+const char* Transfer_Finder::ValueTypeName() const
 {
   return "(finder)";
 }
@@ -44,44 +44,44 @@ Standard_CString Transfer_Finder::ValueTypeName() const
 
 // Integer -> IntVal, Real -> Geom2d_CartesianPoint, CString -> HAsciiString
 
-void Transfer_Finder::SetAttribute(const Standard_CString            name,
-                                   const Handle(Standard_Transient)& val)
+void Transfer_Finder::SetAttribute(const char* const            name,
+                                   const occ::handle<Standard_Transient>& val)
 {
   theattrib.Bind(name, val);
 }
 
-Standard_Boolean Transfer_Finder::RemoveAttribute(const Standard_CString name)
+bool Transfer_Finder::RemoveAttribute(const char* const name)
 {
   if (theattrib.IsEmpty())
-    return Standard_False;
+    return false;
   return theattrib.UnBind(name);
 }
 
-Standard_Boolean Transfer_Finder::GetAttribute(const Standard_CString       name,
-                                               const Handle(Standard_Type)& type,
-                                               Handle(Standard_Transient)&  val) const
+bool Transfer_Finder::GetAttribute(const char* const       name,
+                                               const occ::handle<Standard_Type>& type,
+                                               occ::handle<Standard_Transient>&  val) const
 {
   if (theattrib.IsEmpty())
   {
     val.Nullify();
-    return Standard_False;
+    return false;
   }
   if (!theattrib.Find(name, val))
   {
     val.Nullify();
-    return Standard_False;
+    return false;
   }
   if (!val->IsKind(type))
   {
     val.Nullify();
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
-Handle(Standard_Transient) Transfer_Finder::Attribute(const Standard_CString name) const
+occ::handle<Standard_Transient> Transfer_Finder::Attribute(const char* const name) const
 {
-  Handle(Standard_Transient) atr;
+  occ::handle<Standard_Transient> atr;
   if (theattrib.IsEmpty())
     return atr;
   if (!theattrib.Find(name, atr))
@@ -89,9 +89,9 @@ Handle(Standard_Transient) Transfer_Finder::Attribute(const Standard_CString nam
   return atr;
 }
 
-Interface_ParamType Transfer_Finder::AttributeType(const Standard_CString name) const
+Interface_ParamType Transfer_Finder::AttributeType(const char* const name) const
 {
-  Handle(Standard_Transient) atr = Attribute(name);
+  occ::handle<Standard_Transient> atr = Attribute(name);
   if (atr.IsNull())
     return Interface_ParamVoid;
   if (atr->DynamicType() == STANDARD_TYPE(Interface_IntVal))
@@ -103,144 +103,144 @@ Interface_ParamType Transfer_Finder::AttributeType(const Standard_CString name) 
   return Interface_ParamIdent;
 }
 
-void Transfer_Finder::SetIntegerAttribute(const Standard_CString name, const Standard_Integer val)
+void Transfer_Finder::SetIntegerAttribute(const char* const name, const int val)
 {
-  Handle(Interface_IntVal) ival = new Interface_IntVal;
+  occ::handle<Interface_IntVal> ival = new Interface_IntVal;
   ival->CValue()                = val;
   SetAttribute(name, ival);
 }
 
-Standard_Boolean Transfer_Finder::GetIntegerAttribute(const Standard_CString name,
-                                                      Standard_Integer&      val) const
+bool Transfer_Finder::GetIntegerAttribute(const char* const name,
+                                                      int&      val) const
 {
-  Handle(Interface_IntVal) ival = Handle(Interface_IntVal)::DownCast(Attribute(name));
+  occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
   {
     val = 0;
-    return Standard_False;
+    return false;
   }
   val = ival->Value();
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer Transfer_Finder::IntegerAttribute(const Standard_CString name) const
+int Transfer_Finder::IntegerAttribute(const char* const name) const
 {
-  Handle(Interface_IntVal) ival = Handle(Interface_IntVal)::DownCast(Attribute(name));
+  occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
     return 0;
   return ival->Value();
 }
 
-void Transfer_Finder::SetRealAttribute(const Standard_CString name, const Standard_Real val)
+void Transfer_Finder::SetRealAttribute(const char* const name, const double val)
 {
-  Handle(Geom2d_CartesianPoint) rval = new Geom2d_CartesianPoint(val, 0);
+  occ::handle<Geom2d_CartesianPoint> rval = new Geom2d_CartesianPoint(val, 0);
   SetAttribute(name, rval);
 }
 
-Standard_Boolean Transfer_Finder::GetRealAttribute(const Standard_CString name,
-                                                   Standard_Real&         val) const
+bool Transfer_Finder::GetRealAttribute(const char* const name,
+                                                   double&         val) const
 {
-  Handle(Geom2d_CartesianPoint) rval = Handle(Geom2d_CartesianPoint)::DownCast(Attribute(name));
+  occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
   {
     val = 0.0;
-    return Standard_False;
+    return false;
   }
   val = rval->X();
-  return Standard_True;
+  return true;
 }
 
-Standard_Real Transfer_Finder::RealAttribute(const Standard_CString name) const
+double Transfer_Finder::RealAttribute(const char* const name) const
 {
-  Handle(Geom2d_CartesianPoint) rval = Handle(Geom2d_CartesianPoint)::DownCast(Attribute(name));
+  occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
     return 0;
   return rval->X();
 }
 
-void Transfer_Finder::SetStringAttribute(const Standard_CString name, const Standard_CString val)
+void Transfer_Finder::SetStringAttribute(const char* const name, const char* const val)
 {
-  Handle(TCollection_HAsciiString) hval = new TCollection_HAsciiString(val);
+  occ::handle<TCollection_HAsciiString> hval = new TCollection_HAsciiString(val);
   SetAttribute(name, hval);
 }
 
-Standard_Boolean Transfer_Finder::GetStringAttribute(const Standard_CString name,
-                                                     Standard_CString&      val) const
+bool Transfer_Finder::GetStringAttribute(const char* const name,
+                                                     const char*&      val) const
 {
-  Handle(TCollection_HAsciiString) hval =
-    Handle(TCollection_HAsciiString)::DownCast(Attribute(name));
+  occ::handle<TCollection_HAsciiString> hval =
+    occ::down_cast<TCollection_HAsciiString>(Attribute(name));
   if (hval.IsNull())
   {
     val = "";
-    return Standard_False;
+    return false;
   }
   val = hval->ToCString();
-  return Standard_True;
+  return true;
 }
 
-Standard_CString Transfer_Finder::StringAttribute(const Standard_CString name) const
+const char* Transfer_Finder::StringAttribute(const char* const name) const
 {
-  Handle(TCollection_HAsciiString) hval =
-    Handle(TCollection_HAsciiString)::DownCast(Attribute(name));
+  occ::handle<TCollection_HAsciiString> hval =
+    occ::down_cast<TCollection_HAsciiString>(Attribute(name));
   if (hval.IsNull())
     return "";
   return hval->ToCString();
 }
 
-NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Transfer_Finder::
+NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& Transfer_Finder::
   AttrList()
 {
   return theattrib;
 }
 
-void Transfer_Finder::SameAttributes(const Handle(Transfer_Finder)& other)
+void Transfer_Finder::SameAttributes(const occ::handle<Transfer_Finder>& other)
 {
   if (!other.IsNull())
     theattrib = other->AttrList();
 }
 
-void Transfer_Finder::GetAttributes(const Handle(Transfer_Finder)& other,
-                                    const Standard_CString         fromname,
-                                    const Standard_Boolean         copied)
+void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
+                                    const char* const         fromname,
+                                    const bool         copied)
 {
   if (other.IsNull())
     return;
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& list =
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list =
     other->AttrList();
   if (list.IsEmpty())
     return;
 
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(list);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(list);
   for (; iter.More(); iter.Next())
   {
     const TCollection_AsciiString& name = iter.Key();
     if (!name.StartsWith(fromname))
       continue;
-    const Handle(Standard_Transient)& atr    = iter.Value();
-    Handle(Standard_Transient)        newatr = atr;
+    const occ::handle<Standard_Transient>& atr    = iter.Value();
+    occ::handle<Standard_Transient>        newatr = atr;
 
     //    Copy ? according type
     if (copied)
     {
-      Handle(Interface_IntVal) ival = Handle(Interface_IntVal)::DownCast(atr);
+      occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(atr);
       if (!ival.IsNull())
       {
-        Standard_Integer intval = ival->Value();
+        int intval = ival->Value();
         ival                    = new Interface_IntVal;
         ival->CValue()          = intval;
         newatr                  = ival;
       }
-      Handle(Geom2d_CartesianPoint) rval = Handle(Geom2d_CartesianPoint)::DownCast(atr);
+      occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(atr);
       if (!rval.IsNull())
       {
-        Standard_Real realval = rval->X();
+        double realval = rval->X();
         rval                  = new Geom2d_CartesianPoint(realval, 0);
         newatr                = rval;
       }
-      Handle(TCollection_HAsciiString) hval = Handle(TCollection_HAsciiString)::DownCast(atr);
+      occ::handle<TCollection_HAsciiString> hval = occ::down_cast<TCollection_HAsciiString>(atr);
       if (!hval.IsNull())
       {
-        Handle(TCollection_HAsciiString) strval = new TCollection_HAsciiString(hval->ToCString());
+        occ::handle<TCollection_HAsciiString> strval = new TCollection_HAsciiString(hval->ToCString());
         newatr                                  = strval;
       }
     }

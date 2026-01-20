@@ -40,9 +40,9 @@ public:
   //! Type of line refers to whether the line is solid or dotted, for example.
   Standard_EXPORT Prs3d_LineAspect(const Quantity_Color&   theColor,
                                    const Aspect_TypeOfLine theType,
-                                   const Standard_Real     theWidth);
+                                   const double     theWidth);
 
-  Prs3d_LineAspect(const Handle(Graphic3d_AspectLine3d)& theAspect)
+  Prs3d_LineAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect)
       : myAspect(theAspect)
   {
   }
@@ -58,22 +58,20 @@ public:
 
   //! Sets the line width defined at the time of construction.
   //! Default value: 1.
-  void SetWidth(const Standard_Real theWidth) { myAspect->SetWidth(theWidth); }
+  void SetWidth(const double theWidth) { myAspect->SetWidth(theWidth); }
 
   //! Returns the line aspect. This is defined as the set of
   //! color, type and thickness attributes.
-  const Handle(Graphic3d_AspectLine3d)& Aspect() const { return myAspect; }
+  const occ::handle<Graphic3d_AspectLine3d>& Aspect() const { return myAspect; }
 
-  void SetAspect(const Handle(Graphic3d_AspectLine3d)& theAspect) { myAspect = theAspect; }
+  void SetAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect) { myAspect = theAspect; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 protected:
-  Handle(Graphic3d_AspectLine3d) myAspect;
+  occ::handle<Graphic3d_AspectLine3d> myAspect;
 };
-
-DEFINE_STANDARD_HANDLE(Prs3d_LineAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_LineAspect_HeaderFile

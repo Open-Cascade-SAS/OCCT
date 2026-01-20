@@ -25,16 +25,16 @@ StepVisual_TessellatedConnectingEdge::StepVisual_TessellatedConnectingEdge() {}
 //=================================================================================================
 
 void StepVisual_TessellatedConnectingEdge::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedEdge_Coordinates,
-  const Standard_Boolean                    theHasTessellatedEdge_GeometricLink,
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theTessellatedEdge_Coordinates,
+  const bool                    theHasTessellatedEdge_GeometricLink,
   const StepVisual_EdgeOrCurve&             theTessellatedEdge_GeometricLink,
-  const Handle(TColStd_HArray1OfInteger)&   theTessellatedEdge_LineStrip,
+  const occ::handle<NCollection_HArray1<int>>&   theTessellatedEdge_LineStrip,
   const StepData_Logical                    theSmooth,
-  const Handle(StepVisual_TessellatedFace)& theFace1,
-  const Handle(StepVisual_TessellatedFace)& theFace2,
-  const Handle(TColStd_HArray1OfInteger)&   theLineStripFace1,
-  const Handle(TColStd_HArray1OfInteger)&   theLineStripFace2)
+  const occ::handle<StepVisual_TessellatedFace>& theFace1,
+  const occ::handle<StepVisual_TessellatedFace>& theFace2,
+  const occ::handle<NCollection_HArray1<int>>&   theLineStripFace1,
+  const occ::handle<NCollection_HArray1<int>>&   theLineStripFace2)
 {
   StepVisual_TessellatedEdge::Init(theRepresentationItem_Name,
                                    theTessellatedEdge_Coordinates,
@@ -69,7 +69,7 @@ void StepVisual_TessellatedConnectingEdge::SetSmooth(const StepData_Logical theS
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedFace) StepVisual_TessellatedConnectingEdge::Face1() const
+occ::handle<StepVisual_TessellatedFace> StepVisual_TessellatedConnectingEdge::Face1() const
 {
   return myFace1;
 }
@@ -77,14 +77,14 @@ Handle(StepVisual_TessellatedFace) StepVisual_TessellatedConnectingEdge::Face1()
 //=================================================================================================
 
 void StepVisual_TessellatedConnectingEdge::SetFace1(
-  const Handle(StepVisual_TessellatedFace)& theFace1)
+  const occ::handle<StepVisual_TessellatedFace>& theFace1)
 {
   myFace1 = theFace1;
 }
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedFace) StepVisual_TessellatedConnectingEdge::Face2() const
+occ::handle<StepVisual_TessellatedFace> StepVisual_TessellatedConnectingEdge::Face2() const
 {
   return myFace2;
 }
@@ -92,14 +92,14 @@ Handle(StepVisual_TessellatedFace) StepVisual_TessellatedConnectingEdge::Face2()
 //=================================================================================================
 
 void StepVisual_TessellatedConnectingEdge::SetFace2(
-  const Handle(StepVisual_TessellatedFace)& theFace2)
+  const occ::handle<StepVisual_TessellatedFace>& theFace2)
 {
   myFace2 = theFace2;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedConnectingEdge::LineStripFace1() const
+occ::handle<NCollection_HArray1<int>> StepVisual_TessellatedConnectingEdge::LineStripFace1() const
 {
   return myLineStripFace1;
 }
@@ -107,14 +107,14 @@ Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedConnectingEdge::LineStrip
 //=================================================================================================
 
 void StepVisual_TessellatedConnectingEdge::SetLineStripFace1(
-  const Handle(TColStd_HArray1OfInteger)& theLineStripFace1)
+  const occ::handle<NCollection_HArray1<int>>& theLineStripFace1)
 {
   myLineStripFace1 = theLineStripFace1;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedConnectingEdge::NbLineStripFace1() const
+int StepVisual_TessellatedConnectingEdge::NbLineStripFace1() const
 {
   if (myLineStripFace1.IsNull())
   {
@@ -125,15 +125,15 @@ Standard_Integer StepVisual_TessellatedConnectingEdge::NbLineStripFace1() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedConnectingEdge::LineStripFace1Value(
-  const Standard_Integer theNum) const
+int StepVisual_TessellatedConnectingEdge::LineStripFace1Value(
+  const int theNum) const
 {
   return myLineStripFace1->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedConnectingEdge::LineStripFace2() const
+occ::handle<NCollection_HArray1<int>> StepVisual_TessellatedConnectingEdge::LineStripFace2() const
 {
   return myLineStripFace2;
 }
@@ -141,14 +141,14 @@ Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedConnectingEdge::LineStrip
 //=================================================================================================
 
 void StepVisual_TessellatedConnectingEdge::SetLineStripFace2(
-  const Handle(TColStd_HArray1OfInteger)& theLineStripFace2)
+  const occ::handle<NCollection_HArray1<int>>& theLineStripFace2)
 {
   myLineStripFace2 = theLineStripFace2;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedConnectingEdge::NbLineStripFace2() const
+int StepVisual_TessellatedConnectingEdge::NbLineStripFace2() const
 {
   if (myLineStripFace2.IsNull())
   {
@@ -159,8 +159,8 @@ Standard_Integer StepVisual_TessellatedConnectingEdge::NbLineStripFace2() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedConnectingEdge::LineStripFace2Value(
-  const Standard_Integer theNum) const
+int StepVisual_TessellatedConnectingEdge::LineStripFace2Value(
+  const int theNum) const
 {
   return myLineStripFace2->Value(theNum);
 }

@@ -23,9 +23,9 @@
 
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_EdgeOrCurve.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedEdge, StepVisual_TessellatedStructuredItem)
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity TessellatedEdge
 class StepVisual_TessellatedEdge : public StepVisual_TessellatedStructuredItem
@@ -36,17 +36,17 @@ public:
   Standard_EXPORT StepVisual_TessellatedEdge();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-                            const Handle(StepVisual_CoordinatesList)& theCoordinates,
-                            const Standard_Boolean                    theHasGeometricLink,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+                            const bool                    theHasGeometricLink,
                             const StepVisual_EdgeOrCurve&             theGeometricLink,
-                            const Handle(TColStd_HArray1OfInteger)&   theLineStrip);
+                            const occ::handle<NCollection_HArray1<int>>&   theLineStrip);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(StepVisual_CoordinatesList) Coordinates() const;
+  Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(StepVisual_CoordinatesList)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field GeometricLink
   Standard_EXPORT StepVisual_EdgeOrCurve GeometricLink() const;
@@ -55,27 +55,27 @@ public:
   Standard_EXPORT void SetGeometricLink(const StepVisual_EdgeOrCurve& theGeometricLink);
 
   //! Returns True if optional field GeometricLink is defined
-  Standard_EXPORT Standard_Boolean HasGeometricLink() const;
+  Standard_EXPORT bool HasGeometricLink() const;
 
   //! Returns field LineStrip
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) LineStrip() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> LineStrip() const;
 
   //! Sets field LineStrip
-  Standard_EXPORT void SetLineStrip(const Handle(TColStd_HArray1OfInteger)& theLineStrip);
+  Standard_EXPORT void SetLineStrip(const occ::handle<NCollection_HArray1<int>>& theLineStrip);
 
   //! Returns number of LineStrip
-  Standard_EXPORT Standard_Integer NbLineStrip() const;
+  Standard_EXPORT int NbLineStrip() const;
 
   //! Returns value of LineStrip by its num
-  Standard_EXPORT Standard_Integer LineStripValue(const Standard_Integer theNum) const;
+  Standard_EXPORT int LineStripValue(const int theNum) const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedEdge, StepVisual_TessellatedStructuredItem)
 
 private:
-  Handle(StepVisual_CoordinatesList) myCoordinates;
+  occ::handle<StepVisual_CoordinatesList> myCoordinates;
   StepVisual_EdgeOrCurve             myGeometricLink; //!< optional
-  Handle(TColStd_HArray1OfInteger)   myLineStrip;
-  Standard_Boolean                   myHasGeometricLink; //!< flag "is GeometricLink defined"
+  occ::handle<NCollection_HArray1<int>>   myLineStrip;
+  bool                   myHasGeometricLink; //!< flag "is GeometricLink defined"
 };
 
 #endif // _StepVisual_TessellatedEdge_HeaderFile_

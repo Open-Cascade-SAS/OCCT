@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 class TopoDS_Shape;
@@ -39,13 +40,13 @@ public:
   Standard_EXPORT BRepSweep_Tool(const TopoDS_Shape& aShape);
 
   //! Returns the number of subshapes in the shape.
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
   //! Returns the index of <aShape>.
-  Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& aShape) const;
+  Standard_EXPORT int Index(const TopoDS_Shape& aShape) const;
 
   //! Returns the Shape at Index anIdex.
-  Standard_EXPORT TopoDS_Shape Shape(const Standard_Integer anIndex) const;
+  Standard_EXPORT TopoDS_Shape Shape(const int anIndex) const;
 
   //! Returns the type of <aShape>.
   Standard_EXPORT TopAbs_ShapeEnum Type(const TopoDS_Shape& aShape) const;
@@ -56,9 +57,8 @@ public:
   //! Set the Orientation of <aShape> with Or.
   Standard_EXPORT void SetOrientation(TopoDS_Shape& aShape, const TopAbs_Orientation Or) const;
 
-protected:
 private:
-  TopTools_IndexedMapOfShape myMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _BRepSweep_Tool_HeaderFile

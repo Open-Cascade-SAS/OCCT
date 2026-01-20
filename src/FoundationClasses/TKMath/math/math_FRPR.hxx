@@ -36,9 +36,9 @@ public:
   //! Initializes the computation of the minimum of F.
   //! Warning: constructor does not perform computations.
   Standard_EXPORT math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
-                            const Standard_Real                         theTolerance,
-                            const Standard_Integer                      theNbIterations = 200,
-                            const Standard_Real                         theZEPS         = 1.0e-12);
+                            const double                         theTolerance,
+                            const int                      theNbIterations = 200,
+                            const double                         theZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_FRPR();
@@ -51,10 +51,10 @@ public:
   //! The solution F = Fi is found when:
   //! 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
   //! The maximum number of iterations allowed is given by NbIterations.
-  virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunctionWithGradient& theFunction);
+  virtual bool IsSolutionReached(math_MultipleVarFunctionWithGradient& theFunction);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the location vector of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
@@ -68,7 +68,7 @@ public:
 
   //! returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Minimum() const;
+  double Minimum() const;
 
   //! returns the gradient vector at the minimum.
   //! Exception NotDone is raised if the minimum was not found.
@@ -83,7 +83,7 @@ public:
   //! returns the number of iterations really done during the
   //! computation of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -93,17 +93,17 @@ public:
 protected:
   math_Vector   TheLocation;
   math_Vector   TheGradient;
-  Standard_Real TheMinimum;
-  Standard_Real PreviousMinimum;
-  Standard_Real XTol;
-  Standard_Real EPSZ;
+  double TheMinimum;
+  double PreviousMinimum;
+  double XTol;
+  double EPSZ;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer Iter;
-  Standard_Integer State;
+  bool Done;
+  int Iter;
+  int State;
   math_Status      TheStatus;
-  Standard_Integer Itermax;
+  int Itermax;
 };
 
 #include <math_FRPR.lxx>

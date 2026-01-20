@@ -18,11 +18,10 @@
 
 #include <Standard.hxx>
 
-#include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
+#include <StepFEA_DegreeOfFreedom.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
-
-class StepFEA_FreedomsList;
-DEFINE_STANDARD_HANDLE(StepFEA_FreedomsList, Standard_Transient)
 
 //! Representation of STEP entity FreedomsList
 class StepFEA_FreedomsList : public Standard_Transient
@@ -33,19 +32,18 @@ public:
   Standard_EXPORT StepFEA_FreedomsList();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepFEA_HArray1OfDegreeOfFreedom)& aFreedoms);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms);
 
   //! Returns field Freedoms
-  Standard_EXPORT Handle(StepFEA_HArray1OfDegreeOfFreedom) Freedoms() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>> Freedoms() const;
 
   //! Set field Freedoms
-  Standard_EXPORT void SetFreedoms(const Handle(StepFEA_HArray1OfDegreeOfFreedom)& Freedoms);
+  Standard_EXPORT void SetFreedoms(const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& Freedoms);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FreedomsList, Standard_Transient)
 
-protected:
 private:
-  Handle(StepFEA_HArray1OfDegreeOfFreedom) theFreedoms;
+  occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>> theFreedoms;
 };
 
 #endif // _StepFEA_FreedomsList_HeaderFile

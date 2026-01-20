@@ -39,16 +39,14 @@ public:
   //! 1 -> PreDefinedTextFont
   //! 2 -> ExternallyDefinedTextFont
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a PreDefinedTextFont (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PreDefinedTextFont) PreDefinedTextFont() const;
+  Standard_EXPORT occ::handle<StepVisual_PreDefinedTextFont> PreDefinedTextFont() const;
 
   //! returns Value as a ExternallyDefinedTextFont (Null if another type)
-  Standard_EXPORT Handle(StepVisual_ExternallyDefinedTextFont) ExternallyDefinedTextFont() const;
+  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedTextFont> ExternallyDefinedTextFont() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_FontSelect_HeaderFile

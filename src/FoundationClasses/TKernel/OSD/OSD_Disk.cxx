@@ -22,7 +22,7 @@
 #ifdef _WIN32
   #include <windows.h>
 
-void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
+void _osd_wnt_set_error(OSD_Error&, int, ...);
 
 static TCollection_AsciiString _osd_wnt_set_disk_name(const OSD_Path& thePath)
 {
@@ -124,7 +124,7 @@ OSD_Disk::OSD_Disk(const OSD_Path& theName)
 #endif
 }
 
-OSD_Disk::OSD_Disk(const Standard_CString theName)
+OSD_Disk::OSD_Disk(const char* const theName)
     : myDiskName(theName)
 {
 #ifdef _WIN32
@@ -155,7 +155,7 @@ OSD_Path OSD_Disk::Name() const
 
 //=================================================================================================
 
-Standard_Integer OSD_Disk::DiskSize()
+int OSD_Disk::DiskSize()
 {
 #ifdef _WIN32
   ULARGE_INTEGER                   aNbFreeAvailableBytes, aNbTotalBytes, aNbTotalFreeBytes;
@@ -170,13 +170,13 @@ Standard_Integer OSD_Disk::DiskSize()
   }
 
   ULONGLONG aSize = aNbTotalBytes.QuadPart / 512;
-  return (Standard_Integer)aSize; // may be an overflow
+  return (int)aSize; // may be an overflow
 #else
   struct statvfs aBuffer;
   if (statvfs(myDiskName.ToCString(), &aBuffer) == 0)
   {
     unsigned long aBSize512 = aBuffer.f_frsize / 512;
-    return Standard_Integer(aBuffer.f_blocks * aBSize512);
+    return int(aBuffer.f_blocks * aBSize512);
   }
   myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
   return 0;
@@ -185,7 +185,7 @@ Standard_Integer OSD_Disk::DiskSize()
 
 //=================================================================================================
 
-Standard_Integer OSD_Disk::DiskFree()
+int OSD_Disk::DiskFree()
 {
 #ifdef _WIN32
   ULARGE_INTEGER                   aNbFreeAvailableBytes, aNbTotalBytes, aNbTotalFreeBytes;
@@ -200,13 +200,13 @@ Standard_Integer OSD_Disk::DiskFree()
   }
 
   ULONGLONG aSize = aNbFreeAvailableBytes.QuadPart / 512;
-  return (Standard_Integer)aSize; // may be an overflow
+  return (int)aSize; // may be an overflow
 #else
   struct statvfs aBuffer;
   if (statvfs(myDiskName.ToCString(), &aBuffer) == 0)
   {
     unsigned long aBSize512 = aBuffer.f_frsize / 512;
-    return Standard_Integer(aBuffer.f_bavail * aBSize512);
+    return int(aBuffer.f_bavail * aBSize512);
   }
   myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
   return 0;

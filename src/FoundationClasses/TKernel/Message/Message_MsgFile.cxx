@@ -55,13 +55,13 @@ typedef enum
 //           theDirName may be represented as list: "/dirA/dirB /dirA/dirC"
 //=======================================================================
 
-Standard_Boolean Message_MsgFile::Load(const Standard_CString theDirName,
-                                       const Standard_CString theFileName)
+bool Message_MsgFile::Load(const char* const theDirName,
+                                       const char* const theFileName)
 {
   if (!theDirName || !theFileName)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean        ret = Standard_True;
+  bool        ret = true;
   TCollection_AsciiString aDirList(theDirName);
   //  Try to load from all consecutive directories in list
   for (int i = 1;; i++)
@@ -76,7 +76,7 @@ Standard_Boolean Message_MsgFile::Load(const Standard_CString theDirName,
 #endif
     aFileName += theFileName;
     if (!LoadFile(aFileName.ToCString()))
-      ret = Standard_False;
+      ret = false;
   }
   return ret;
 }
@@ -92,25 +92,25 @@ template <typename CharType>
 struct TCollection_String;
 
 template <>
-struct TCollection_String<Standard_Character>
+struct TCollection_String<char>
 {
   typedef TCollection_AsciiString type;
 };
 
 template <>
-struct TCollection_String<Standard_ExtCharacter>
+struct TCollection_String<char16_t>
 {
   typedef TCollection_ExtendedString type;
 };
 
 template <class CharType>
-static inline Standard_Boolean getString(CharType*&                  thePtr,
+static inline bool getString(CharType*&                  thePtr,
                                          TCollection_ExtendedString& theString,
-                                         Standard_Integer&           theLeftSpaces)
+                                         int&           theLeftSpaces)
 {
   CharType*        anEndPtr = thePtr;
   CharType*        aPtr;
-  Standard_Integer aLeftSpaces;
+  int aLeftSpaces;
 
   do
   {
@@ -144,13 +144,13 @@ static inline Standard_Boolean getString(CharType*&                  thePtr,
 
   //    form the result
   if (aPtr == anEndPtr)
-    return Standard_False;
+    return false;
   thePtr = anEndPtr;
   if (*thePtr)
     *thePtr++ = '\0';
   theString     = typename TCollection_String<CharType>::type(aPtr);
   theLeftSpaces = aLeftSpaces;
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -160,18 +160,18 @@ static inline Standard_Boolean getString(CharType*&                  thePtr,
 //=======================================================================
 
 template <class _Char>
-static inline Standard_Boolean loadFile(_Char* theBuffer)
+static inline bool loadFile(_Char* theBuffer)
 {
   TCollection_AsciiString    aKeyword;
   TCollection_ExtendedString aMessage, aString;
   LoadingState               aState         = MsgFile_WaitingKeyword;
   _Char*                     sCurrentString = theBuffer;
-  Standard_Integer           aLeftSpaces = 0, aFirstLeftSpaces = 0;
+  int           aLeftSpaces = 0, aFirstLeftSpaces = 0;
 
   //    Take strings one-by-one; comments already screened
   while (::getString(sCurrentString, aString, aLeftSpaces))
   {
-    Standard_Boolean isKeyword = (aString.Value(1) == '.');
+    bool isKeyword = (aString.Value(1) == '.');
     switch (aState)
     {
       case MsgFile_WaitingMoreMessage:
@@ -188,9 +188,9 @@ static inline Standard_Boolean loadFile(_Char* theBuffer)
           aMessage += aString;
           break;
         }
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case MsgFile_WaitingMessage:
-        if (isKeyword == Standard_False)
+        if (isKeyword == false)
         {
           aMessage         = aString;
           aFirstLeftSpaces = aLeftSpaces; // remember the starting position
@@ -198,7 +198,7 @@ static inline Standard_Boolean loadFile(_Char* theBuffer)
           break;
         }
         //      Pass from here to 'case MsgFile_WaitingKeyword'
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       case MsgFile_WaitingKeyword:
         if (isKeyword)
         {
@@ -216,12 +216,12 @@ static inline Standard_Boolean loadFile(_Char* theBuffer)
   //    Process the last string still remaining in the buffer
   if (aState == MsgFile_WaitingMoreMessage)
     Message_MsgFile::AddMsg(aKeyword, aMessage);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Integer GetFileSize(FILE* theFile)
+static int GetFileSize(FILE* theFile)
 {
   if (!theFile)
     return -1;
@@ -234,7 +234,7 @@ static Standard_Integer GetFileSize(FILE* theFile)
   if (fseek(theFile, 0, SEEK_SET) != 0)
     return -1;
 
-  return (Standard_Integer)nRealFileSize;
+  return (int)nRealFileSize;
 }
 
 //=======================================================================
@@ -242,42 +242,42 @@ static Standard_Integer GetFileSize(FILE* theFile)
 // purpose  : Load the list of messages from a file
 //=======================================================================
 
-Standard_Boolean Message_MsgFile::LoadFile(const Standard_CString theFileName)
+bool Message_MsgFile::LoadFile(const char* const theFileName)
 {
   if (theFileName == NULL || *theFileName == '\0')
-    return Standard_False;
+    return false;
 
   //    Open the file
   FILE* anMsgFile = OSD_OpenFile(theFileName, "rb");
   if (!anMsgFile)
-    return Standard_False;
+    return false;
 
-  const Standard_Integer aFileSize = GetFileSize(anMsgFile);
+  const int aFileSize = GetFileSize(anMsgFile);
   NCollection_Buffer     aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aFileSize <= 0 || !aBuffer.Allocate(aFileSize + 2))
   {
     fclose(anMsgFile);
-    return Standard_False;
+    return false;
   }
 
   char*                  anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
-  const Standard_Integer nbRead =
-    static_cast<Standard_Integer>(fread(anMsgBuffer, 1, aFileSize, anMsgFile));
+  const int nbRead =
+    static_cast<int>(fread(anMsgBuffer, 1, aFileSize, anMsgFile));
 
   fclose(anMsgFile);
   if (nbRead != aFileSize)
-    return Standard_False;
+    return false;
 
   anMsgBuffer[aFileSize]     = 0;
   anMsgBuffer[aFileSize + 1] = 0;
 
   // Read the messages in the file and append them to the global DataMap
-  Standard_Boolean isLittleEndian = (anMsgBuffer[0] == '\xff' && anMsgBuffer[1] == '\xfe');
-  Standard_Boolean isBigEndian    = (anMsgBuffer[0] == '\xfe' && anMsgBuffer[1] == '\xff');
+  bool isLittleEndian = (anMsgBuffer[0] == '\xff' && anMsgBuffer[1] == '\xfe');
+  bool isBigEndian    = (anMsgBuffer[0] == '\xfe' && anMsgBuffer[1] == '\xff');
   if (isLittleEndian || isBigEndian)
   {
-    Standard_ExtCharacter* aUnicodeBuffer =
-      reinterpret_cast<Standard_ExtCharacter*>(&anMsgBuffer[2]);
+    char16_t* aUnicodeBuffer =
+      reinterpret_cast<char16_t*>(&anMsgBuffer[2]);
     // Convert Unicode representation to order adopted on current platform
 #if defined(__sparc) && defined(__sun)
     if (isLittleEndian)
@@ -286,10 +286,10 @@ Standard_Boolean Message_MsgFile::LoadFile(const Standard_CString theFileName)
 #endif
     {
       // Reverse the bytes throughout the buffer
-      const Standard_ExtCharacter* const anEnd =
-        reinterpret_cast<const Standard_ExtCharacter*>(&anMsgBuffer[aFileSize]);
+      const char16_t* const anEnd =
+        reinterpret_cast<const char16_t*>(&anMsgBuffer[aFileSize]);
 
-      for (Standard_ExtCharacter* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
+      for (char16_t* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
       {
         unsigned short aWord = *aPtr;
         *aPtr                = (aWord & 0x00ff) << 8 | (aWord & 0xff00) >> 8;
@@ -303,9 +303,9 @@ Standard_Boolean Message_MsgFile::LoadFile(const Standard_CString theFileName)
 
 //=================================================================================================
 
-Standard_Boolean Message_MsgFile::LoadFromEnv(const Standard_CString theEnvName,
-                                              const Standard_CString theFileName,
-                                              const Standard_CString theLangExt)
+bool Message_MsgFile::LoadFromEnv(const char* const theEnvName,
+                                              const char* const theFileName,
+                                              const char* const theLangExt)
 {
   TCollection_AsciiString aLangExt(theLangExt != NULL ? theLangExt : "");
   if (aLangExt.IsEmpty())
@@ -344,14 +344,14 @@ Standard_Boolean Message_MsgFile::LoadFromEnv(const Standard_CString theEnvName,
 
 //=================================================================================================
 
-Standard_Boolean Message_MsgFile::LoadFromString(const Standard_CString theContent,
-                                                 const Standard_Integer theLength)
+bool Message_MsgFile::LoadFromString(const char* const theContent,
+                                                 const int theLength)
 {
-  Standard_Integer aStringSize = theLength >= 0 ? theLength : (Standard_Integer)strlen(theContent);
+  int aStringSize = theLength >= 0 ? theLength : (int)strlen(theContent);
   NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aStringSize <= 0 || !aBuffer.Allocate(aStringSize + 2))
   {
-    return Standard_False;
+    return false;
   }
 
   memcpy(aBuffer.ChangeData(), theContent, aStringSize);
@@ -366,21 +366,21 @@ Standard_Boolean Message_MsgFile::LoadFromString(const Standard_CString theConte
 // purpose  : Add one message to the global table. Fails if the same keyword
 //           already exists in the table
 //=======================================================================
-Standard_Boolean Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKeyword,
+bool Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKeyword,
                                          const TCollection_ExtendedString& theMessage)
 {
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
 
   std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
   aDataMap.Bind(theKeyword, theMessage);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : getMsg
 // purpose  : retrieve the message previously defined for the given keyword
 //=======================================================================
-const TCollection_ExtendedString& Message_MsgFile::Msg(const Standard_CString theKeyword)
+const TCollection_ExtendedString& Message_MsgFile::Msg(const char* const theKeyword)
 {
   TCollection_AsciiString aKey(theKeyword);
   return Msg(aKey);
@@ -388,7 +388,7 @@ const TCollection_ExtendedString& Message_MsgFile::Msg(const Standard_CString th
 
 //=================================================================================================
 
-Standard_Boolean Message_MsgFile::HasMsg(const TCollection_AsciiString& theKeyword)
+bool Message_MsgFile::HasMsg(const TCollection_AsciiString& theKeyword)
 {
   std::lock_guard<std::mutex> aLock(Message_MsgFile_Mutex());
   return ::msgsDataMap().IsBound(theKeyword);

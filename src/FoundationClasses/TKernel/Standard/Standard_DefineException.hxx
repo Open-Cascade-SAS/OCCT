@@ -30,7 +30,7 @@
                                                                                                    \
   class C1 : public C2                                                                             \
   {                                                                                                \
-    void Throw() const Standard_OVERRIDE                                                           \
+    void Throw() const override                                                           \
     {                                                                                              \
       throw *this;                                                                                 \
     }                                                                                              \
@@ -40,29 +40,29 @@
         : C2()                                                                                     \
     {                                                                                              \
     }                                                                                              \
-    C1(Standard_CString theMessage)                                                                \
+    C1(const char* theMessage)                                                                \
         : C2(theMessage)                                                                           \
     {                                                                                              \
     }                                                                                              \
-    C1(Standard_CString theMessage, Standard_CString theStackTrace)                                \
+    C1(const char* theMessage, const char* theStackTrace)                                \
         : C2(theMessage, theStackTrace)                                                            \
     {                                                                                              \
     }                                                                                              \
-    static void Raise(const Standard_CString theMessage = "")                                      \
+    static void Raise(const char* const theMessage = "")                                      \
     {                                                                                              \
-      Handle(C1) _E = new C1;                                                                      \
+      occ::handle<C1> _E = new C1;                                                                      \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
     static void Raise(Standard_SStream& theMessage)                                                \
     {                                                                                              \
-      Handle(C1) _E = new C1;                                                                      \
+      occ::handle<C1> _E = new C1;                                                                      \
       _E->Reraise(theMessage);                                                                     \
     }                                                                                              \
-    static Handle(C1) NewInstance(Standard_CString theMessage = "")                                \
+    static occ::handle<C1> NewInstance(const char* theMessage = "")                                \
     {                                                                                              \
       return new C1(theMessage);                                                                   \
     }                                                                                              \
-    static Handle(C1) NewInstance(Standard_CString theMessage, Standard_CString theStackTrace)     \
+    static occ::handle<C1> NewInstance(const char* theMessage, const char* theStackTrace)     \
     {                                                                                              \
       return new C1(theMessage, theStackTrace);                                                    \
     }                                                                                              \

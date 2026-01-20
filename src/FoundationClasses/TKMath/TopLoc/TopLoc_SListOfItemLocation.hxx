@@ -69,20 +69,20 @@ public:
   }
 
   //! Move constructor
-  TopLoc_SListOfItemLocation(TopLoc_SListOfItemLocation&& theOther) Standard_Noexcept
+  TopLoc_SListOfItemLocation(TopLoc_SListOfItemLocation&& theOther) noexcept
       : myNode(std::move(theOther.myNode))
   {
   }
 
   //! Move operator
-  TopLoc_SListOfItemLocation& operator=(TopLoc_SListOfItemLocation&& theOther) Standard_Noexcept
+  TopLoc_SListOfItemLocation& operator=(TopLoc_SListOfItemLocation&& theOther) noexcept
   {
     myNode = std::move(theOther.myNode);
     return *this;
   }
 
   //! Return true if this list is empty
-  Standard_Boolean IsEmpty() const { return myNode.IsNull(); }
+  bool IsEmpty() const { return myNode.IsNull(); }
 
   //! Sets the list to be empty.
   void Clear() { myNode.Nullify(); }
@@ -110,14 +110,14 @@ public:
 
   //! Returns True if the iterator has a current value.
   //! This is !IsEmpty()
-  Standard_Boolean More() const { return !IsEmpty(); }
+  bool More() const { return !IsEmpty(); }
 
   //! Moves the iterator to the next object in the list.
   //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
 
 private:
-  Handle(TopLoc_SListNodeOfItemLocation) myNode;
+  occ::handle<TopLoc_SListNodeOfItemLocation> myNode;
 };
 
 #endif // _TopLoc_SListOfItemLocation_HeaderFile

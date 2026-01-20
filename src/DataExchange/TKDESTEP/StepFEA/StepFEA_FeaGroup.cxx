@@ -27,25 +27,25 @@ StepFEA_FeaGroup::StepFEA_FeaGroup() {}
 
 //=================================================================================================
 
-void StepFEA_FeaGroup::Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
-                            const Handle(TCollection_HAsciiString)& aGroup_Description,
-                            const Handle(StepFEA_FeaModel)&         aModelRef)
+void StepFEA_FeaGroup::Init(const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+                            const occ::handle<TCollection_HAsciiString>& aGroup_Description,
+                            const occ::handle<StepFEA_FeaModel>&         aModelRef)
 {
-  StepBasic_Group::Init(aGroup_Name, Standard_True, aGroup_Description);
+  StepBasic_Group::Init(aGroup_Name, true, aGroup_Description);
 
   theModelRef = aModelRef;
 }
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel) StepFEA_FeaGroup::ModelRef() const
+occ::handle<StepFEA_FeaModel> StepFEA_FeaGroup::ModelRef() const
 {
   return theModelRef;
 }
 
 //=================================================================================================
 
-void StepFEA_FeaGroup::SetModelRef(const Handle(StepFEA_FeaModel)& aModelRef)
+void StepFEA_FeaGroup::SetModelRef(const occ::handle<StepFEA_FeaModel>& aModelRef)
 {
   theModelRef = aModelRef;
 }

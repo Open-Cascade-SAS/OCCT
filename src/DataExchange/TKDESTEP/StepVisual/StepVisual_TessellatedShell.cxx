@@ -22,16 +22,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedShell, StepVisual_TessellatedIt
 
 StepVisual_TessellatedShell::StepVisual_TessellatedShell()
 {
-  myHasTopologicalLink = Standard_False;
+  myHasTopologicalLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedShell::Init(
-  const Handle(TCollection_HAsciiString)&                      theRepresentationItem_Name,
-  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-  const Standard_Boolean                                       theHasTopologicalLink,
-  const Handle(StepShape_ConnectedFaceSet)&                    theTopologicalLink)
+  const occ::handle<TCollection_HAsciiString>&                      theRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems,
+  const bool                                       theHasTopologicalLink,
+  const occ::handle<StepShape_ConnectedFaceSet>&                    theTopologicalLink)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -50,7 +50,7 @@ void StepVisual_TessellatedShell::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedShell::Items() const
+occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> StepVisual_TessellatedShell::Items() const
 {
   return myItems;
 }
@@ -58,14 +58,14 @@ Handle(StepVisual_HArray1OfTessellatedStructuredItem) StepVisual_TessellatedShel
 //=================================================================================================
 
 void StepVisual_TessellatedShell::SetItems(
-  const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems)
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems)
 {
   myItems = theItems;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedShell::NbItems() const
+int StepVisual_TessellatedShell::NbItems() const
 {
   if (myItems.IsNull())
   {
@@ -76,15 +76,15 @@ Standard_Integer StepVisual_TessellatedShell::NbItems() const
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedStructuredItem) StepVisual_TessellatedShell::ItemsValue(
-  const Standard_Integer theNum) const
+occ::handle<StepVisual_TessellatedStructuredItem> StepVisual_TessellatedShell::ItemsValue(
+  const int theNum) const
 {
   return myItems->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(StepShape_ConnectedFaceSet) StepVisual_TessellatedShell::TopologicalLink() const
+occ::handle<StepShape_ConnectedFaceSet> StepVisual_TessellatedShell::TopologicalLink() const
 {
   return myTopologicalLink;
 }
@@ -92,14 +92,14 @@ Handle(StepShape_ConnectedFaceSet) StepVisual_TessellatedShell::TopologicalLink(
 //=================================================================================================
 
 void StepVisual_TessellatedShell::SetTopologicalLink(
-  const Handle(StepShape_ConnectedFaceSet)& theTopologicalLink)
+  const occ::handle<StepShape_ConnectedFaceSet>& theTopologicalLink)
 {
   myTopologicalLink = theTopologicalLink;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedShell::HasTopologicalLink() const
+bool StepVisual_TessellatedShell::HasTopologicalLink() const
 {
   return myHasTopologicalLink;
 }

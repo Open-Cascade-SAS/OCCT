@@ -46,10 +46,15 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColgp_SequenceOfXY.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -80,7 +85,7 @@ static gp_Vec MakeFinVec(const TopoDS_Wire& aWire, const TopoDS_Vertex& aVertex)
   return gp_Vec(BRep_Tool::Pnt(Origin), BRep_Tool::Pnt(aVertex));
 }
 
-static TopoDS_Wire WireFromList(TopTools_ListOfShape& Edges)
+static TopoDS_Wire WireFromList(NCollection_List<TopoDS_Shape>& Edges)
 {
   BRep_Builder BB;
   TopoDS_Wire  aWire;
@@ -90,16 +95,16 @@ static TopoDS_Wire WireFromList(TopTools_ListOfShape& Edges)
   Edges.RemoveFirst();
 
   TopoDS_Vertex V1, V2;
-  TopExp::Vertices(anEdge, V1, V2, Standard_True); // with orientation
+  TopExp::Vertices(anEdge, V1, V2, true); // with orientation
 
   while (!Edges.IsEmpty())
   {
-    TopTools_ListIteratorOfListOfShape itl(Edges);
+    NCollection_List<TopoDS_Shape>::Iterator itl(Edges);
     for (; itl.More(); itl.Next())
     {
       anEdge = TopoDS::Edge(itl.Value());
       TopoDS_Vertex V3, V4;
-      TopExp::Vertices(anEdge, V3, V4, Standard_True); // with orientation
+      TopExp::Vertices(anEdge, V3, V4, true); // with orientation
       if (V1.IsSame(V3) || V1.IsSame(V4) || V2.IsSame(V3) || V2.IsSame(V4))
       {
         if (V1.IsSame(V3))
@@ -129,22 +134,22 @@ static TopoDS_Wire WireFromList(TopTools_ListOfShape& Edges)
     Edges.Remove(itl);
   }
 
-  aWire.Closed(Standard_True);
+  aWire.Closed(true);
   return aWire;
 }
 
 //=================================================================================================
 
-BRepFill_Filling::BRepFill_Filling(const Standard_Integer Degree,
-                                   const Standard_Integer NbPtsOnCur,
-                                   const Standard_Integer NbIter,
-                                   const Standard_Boolean Anisotropie,
-                                   const Standard_Real    Tol2d,
-                                   const Standard_Real    Tol3d,
-                                   const Standard_Real    TolAng,
-                                   const Standard_Real    TolCurv,
-                                   const Standard_Integer MaxDeg,
-                                   const Standard_Integer MaxSegments)
+BRepFill_Filling::BRepFill_Filling(const int Degree,
+                                   const int NbPtsOnCur,
+                                   const int NbIter,
+                                   const bool Anisotropie,
+                                   const double    Tol2d,
+                                   const double    Tol3d,
+                                   const double    TolAng,
+                                   const double    TolCurv,
+                                   const int MaxDeg,
+                                   const int MaxSegments)
 {
   myDegree      = Degree;
   myNbPtsOnCur  = NbPtsOnCur;
@@ -159,17 +164,17 @@ BRepFill_Filling::BRepFill_Filling(const Standard_Integer Degree,
   myMaxDeg      = MaxDeg;
   myMaxSegments = MaxSegments;
 
-  myIsInitFaceGiven = Standard_False;
+  myIsInitFaceGiven = false;
 
-  myIsDone = Standard_False;
+  myIsDone = false;
 }
 
 //=================================================================================================
 
-void BRepFill_Filling::SetConstrParam(const Standard_Real Tol2d,
-                                      const Standard_Real Tol3d,
-                                      const Standard_Real TolAng,
-                                      const Standard_Real TolCurv)
+void BRepFill_Filling::SetConstrParam(const double Tol2d,
+                                      const double Tol3d,
+                                      const double TolAng,
+                                      const double TolCurv)
 {
   myTol2d   = Tol2d;
   myTol3d   = Tol3d;
@@ -179,10 +184,10 @@ void BRepFill_Filling::SetConstrParam(const Standard_Real Tol2d,
 
 //=================================================================================================
 
-void BRepFill_Filling::SetResolParam(const Standard_Integer Degree,
-                                     const Standard_Integer NbPtsOnCur,
-                                     const Standard_Integer NbIter,
-                                     const Standard_Boolean Anisotropie)
+void BRepFill_Filling::SetResolParam(const int Degree,
+                                     const int NbPtsOnCur,
+                                     const int NbIter,
+                                     const bool Anisotropie)
 {
   myDegree      = Degree;
   myNbPtsOnCur  = NbPtsOnCur;
@@ -192,8 +197,8 @@ void BRepFill_Filling::SetResolParam(const Standard_Integer Degree,
 
 //=================================================================================================
 
-void BRepFill_Filling::SetApproxParam(const Standard_Integer MaxDeg,
-                                      const Standard_Integer MaxSegments)
+void BRepFill_Filling::SetApproxParam(const int MaxDeg,
+                                      const int MaxSegments)
 {
   myMaxDeg      = MaxDeg;
   myMaxSegments = MaxSegments;
@@ -204,16 +209,16 @@ void BRepFill_Filling::SetApproxParam(const Standard_Integer MaxDeg,
 void BRepFill_Filling::LoadInitSurface(const TopoDS_Face& aFace)
 {
   myInitFace        = aFace;
-  myIsInitFaceGiven = Standard_True;
+  myIsInitFaceGiven = true;
 }
 
 //=======================================================================
 // function : Add
 // purpose  : adds an edge as a constraint
 //======================================================================
-Standard_Integer BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
+int BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
                                        const GeomAbs_Shape    Order,
-                                       const Standard_Boolean IsBound)
+                                       const bool IsBound)
 {
   TopoDS_Face               NullFace;
   BRepFill_EdgeFaceAndOrder EdgeFaceAndOrder(anEdge, NullFace, Order);
@@ -233,10 +238,10 @@ Standard_Integer BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
 // function : Add
 // purpose  : adds an edge with supporting face as a constraint
 //======================================================================
-Standard_Integer BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
+int BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
                                        const TopoDS_Face&     Support,
                                        const GeomAbs_Shape    Order,
-                                       const Standard_Boolean IsBound)
+                                       const bool IsBound)
 {
   BRepFill_EdgeFaceAndOrder EdgeFaceAndOrder(anEdge, Support, Order);
   if (IsBound)
@@ -255,7 +260,7 @@ Standard_Integer BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
 // function : Add
 // purpose  : adds a "free constraint": face without edge
 //======================================================================
-Standard_Integer BRepFill_Filling::Add(const TopoDS_Face& Support, const GeomAbs_Shape Order)
+int BRepFill_Filling::Add(const TopoDS_Face& Support, const GeomAbs_Shape Order)
 {
   BRepFill_FaceAndOrder FaceAndOrder(Support, Order);
   myFreeConstraints.Append(FaceAndOrder);
@@ -266,9 +271,9 @@ Standard_Integer BRepFill_Filling::Add(const TopoDS_Face& Support, const GeomAbs
 // function : Add
 // purpose  : adds a point constraint
 //======================================================================
-Standard_Integer BRepFill_Filling::Add(const gp_Pnt& Point)
+int BRepFill_Filling::Add(const gp_Pnt& Point)
 {
-  Handle(GeomPlate_PointConstraint) aPC = new GeomPlate_PointConstraint(Point, GeomAbs_C0, myTol3d);
+  occ::handle<GeomPlate_PointConstraint> aPC = new GeomPlate_PointConstraint(Point, GeomAbs_C0, myTol3d);
   myPoints.Append(aPC);
   return (myBoundary.Length() + myFreeConstraints.Length() + myConstraints.Length()
           + myPoints.Length());
@@ -278,14 +283,14 @@ Standard_Integer BRepFill_Filling::Add(const gp_Pnt& Point)
 // function : Add
 // purpose  : adds a point constraint on a face
 //======================================================================
-Standard_Integer BRepFill_Filling::Add(const Standard_Real U,
-                                       const Standard_Real V,
+int BRepFill_Filling::Add(const double U,
+                                       const double V,
                                        const TopoDS_Face&  Support,
                                        const GeomAbs_Shape Order)
 {
-  Handle(BRepAdaptor_Surface) HSurf = new BRepAdaptor_Surface();
+  occ::handle<BRepAdaptor_Surface> HSurf = new BRepAdaptor_Surface();
   HSurf->Initialize(Support);
-  Handle(GeomPlate_PointConstraint) aPC =
+  occ::handle<GeomPlate_PointConstraint> aPC =
     new GeomPlate_PointConstraint(U,
                                   V,
                                   BRep_Tool::Surface(HSurf->Face()),
@@ -300,14 +305,14 @@ Standard_Integer BRepFill_Filling::Add(const Standard_Real U,
 
 //=================================================================================================
 
-void BRepFill_Filling::AddConstraints(const BRepFill_SequenceOfEdgeFaceAndOrder& SeqOfConstraints)
+void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFaceAndOrder>& SeqOfConstraints)
 {
   TopoDS_Edge   CurEdge;
   TopoDS_Face   CurFace;
   GeomAbs_Shape CurOrder;
 
-  Handle(GeomPlate_CurveConstraint) Constr;
-  Standard_Integer                  i;
+  occ::handle<GeomPlate_CurveConstraint> Constr;
+  int                  i;
   for (i = 1; i <= SeqOfConstraints.Length(); i++)
   {
     CurEdge  = SeqOfConstraints(i).myEdge;
@@ -318,31 +323,31 @@ void BRepFill_Filling::AddConstraints(const BRepFill_SequenceOfEdgeFaceAndOrder&
     {
       if (CurOrder == GeomAbs_C0)
       {
-        Handle(BRepAdaptor_Curve) HCurve = new BRepAdaptor_Curve();
+        occ::handle<BRepAdaptor_Curve> HCurve = new BRepAdaptor_Curve();
         HCurve->Initialize(CurEdge);
-        const Handle(Adaptor3d_Curve)& aHCurve = HCurve; // to avoid ambiguity
+        const occ::handle<Adaptor3d_Curve>& aHCurve = HCurve; // to avoid ambiguity
         Constr = new BRepFill_CurveConstraint(aHCurve, CurOrder, myNbPtsOnCur, myTol3d);
       }
       else
       { // Pas de representation Topologique
         // On prend une representation Geometrique : au pif !
-        Handle(Geom_Surface) Surface;
-        Handle(Geom2d_Curve) C2d;
+        occ::handle<Geom_Surface> Surface;
+        occ::handle<Geom2d_Curve> C2d;
         TopLoc_Location      loc;
-        Standard_Real        f, l;
+        double        f, l;
         BRep_Tool::CurveOnSurface(CurEdge, C2d, Surface, loc, f, l);
         if (Surface.IsNull())
         {
           throw Standard_Failure("Add");
           return;
         }
-        Surface = Handle(Geom_Surface)::DownCast(Surface->Copy());
+        Surface = occ::down_cast<Geom_Surface>(Surface->Copy());
         Surface->Transform(loc.Transformation());
-        Handle(GeomAdaptor_Surface) Surf    = new GeomAdaptor_Surface(Surface);
-        Handle(Geom2dAdaptor_Curve) Curve2d = new Geom2dAdaptor_Curve(C2d);
+        occ::handle<GeomAdaptor_Surface> Surf    = new GeomAdaptor_Surface(Surface);
+        occ::handle<Geom2dAdaptor_Curve> Curve2d = new Geom2dAdaptor_Curve(C2d);
 
         Adaptor3d_CurveOnSurface         CurvOnSurf(Curve2d, Surf);
-        Handle(Adaptor3d_CurveOnSurface) HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
+        occ::handle<Adaptor3d_CurveOnSurface> HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
 
         Constr = new GeomPlate_CurveConstraint(HCurvOnSurf,
                                                CurOrder,
@@ -354,15 +359,15 @@ void BRepFill_Filling::AddConstraints(const BRepFill_SequenceOfEdgeFaceAndOrder&
     }
     else
     {
-      Handle(BRepAdaptor_Surface) Surf = new BRepAdaptor_Surface();
+      occ::handle<BRepAdaptor_Surface> Surf = new BRepAdaptor_Surface();
       Surf->Initialize(CurFace);
-      Handle(BRepAdaptor_Curve2d) Curve2d = new BRepAdaptor_Curve2d();
+      occ::handle<BRepAdaptor_Curve2d> Curve2d = new BRepAdaptor_Curve2d();
       Curve2d->Initialize(CurEdge, CurFace);
       // If CurEdge has no 2d representation on CurFace,
       // there will be exception "Attempt to access to null object"
       // in this initialization (null pcurve).
       Adaptor3d_CurveOnSurface         CurvOnSurf(Curve2d, Surf);
-      Handle(Adaptor3d_CurveOnSurface) HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
+      occ::handle<Adaptor3d_CurveOnSurface> HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
 
       Constr = new BRepFill_CurveConstraint(HCurvOnSurf,
                                             CurOrder,
@@ -373,8 +378,8 @@ void BRepFill_Filling::AddConstraints(const BRepFill_SequenceOfEdgeFaceAndOrder&
     }
     if (myIsInitFaceGiven)
     {
-      Handle(Geom2d_Curve) Curve2d;
-      Standard_Real        FirstPar, LastPar;
+      occ::handle<Geom2d_Curve> Curve2d;
+      double        FirstPar, LastPar;
       Curve2d = BRep_Tool::CurveOnSurface(CurEdge, myInitFace, FirstPar, LastPar);
       if (!Curve2d.IsNull())
       {
@@ -388,10 +393,10 @@ void BRepFill_Filling::AddConstraints(const BRepFill_SequenceOfEdgeFaceAndOrder&
 
 //=================================================================================================
 
-void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListOfShape& WireList)
+void BRepFill_Filling::BuildWires(NCollection_List<TopoDS_Shape>& EdgeList, NCollection_List<TopoDS_Shape>& WireList)
 {
-  TopTools_ListIteratorOfListOfShape Itl;
-  Standard_Integer                   i, j;
+  NCollection_List<TopoDS_Shape>::Iterator Itl;
+  int                   i, j;
 
   while (!EdgeList.IsEmpty())
   {
@@ -405,7 +410,7 @@ void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListO
     {
       TopoDS_Wire CurWire = MW.Wire();
       TopExp::Vertices(CurWire, V_wire[0], V_wire[1]);
-      Standard_Boolean found = Standard_False;
+      bool found = false;
       for (Itl.Initialize(EdgeList); Itl.More(); Itl.Next())
       {
         TopoDS_Edge CurEdge = TopoDS::Edge(Itl.Value());
@@ -417,7 +422,7 @@ void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListO
             {
               MW.Add(CurEdge);
               EdgeList.Remove(Itl);
-              found = Standard_True;
+              found = true;
               break;
             }
           if (found)
@@ -439,7 +444,7 @@ void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListO
           {
             for (j = 0; j < 2; j++)
             {
-              Standard_Real aDist = P_wire[i].Distance(BRep_Tool::Pnt(V_edge[j]));
+              double aDist = P_wire[i].Distance(BRep_Tool::Pnt(V_edge[j]));
               if (aDist < BRep_Tool::Tolerance(V_wire[i])
                   && aDist < BRep_Tool::Tolerance(V_edge[j]))
               {
@@ -448,7 +453,7 @@ void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListO
                 myOldNewMap.Bind(CurEdge.Oriented(TopAbs_FORWARD),
                                  NewEdge.Oriented(TopAbs_FORWARD));
                 EdgeList.Remove(Itl);
-                found = Standard_True;
+                found = true;
                 break;
               }
             }
@@ -470,11 +475,11 @@ void BRepFill_Filling::BuildWires(TopTools_ListOfShape& EdgeList, TopTools_ListO
 
 //=================================================================================================
 
-void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireList,
-                                              TopTools_SequenceOfShape&   VerSeq) const
+void BRepFill_Filling::FindExtremitiesOfHoles(const NCollection_List<TopoDS_Shape>& WireList,
+                                              NCollection_Sequence<TopoDS_Shape>&   VerSeq) const
 {
-  TopTools_SequenceOfShape           WireSeq;
-  TopTools_ListIteratorOfListOfShape Itl(WireList);
+  NCollection_Sequence<TopoDS_Shape>           WireSeq;
+  NCollection_List<TopoDS_Shape>::Iterator Itl(WireList);
   for (; Itl.More(); Itl.Next())
     WireSeq.Append(Itl.Value());
 
@@ -503,22 +508,22 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireLi
   while (!WireSeq.IsEmpty())
   {
     TopoDS_Vertex    MinVtx;
-    Standard_Integer i, MinInd = 1;
-    Standard_Boolean IsLast   = Standard_False;
-    Standard_Real    MinAngle = M_PI;
+    int i, MinInd = 1;
+    bool IsLast   = false;
+    double    MinAngle = M_PI;
 
     for (i = 1; i <= WireSeq.Length(); i++)
     {
       const TopoDS_Wire& CurWire = TopoDS::Wire(WireSeq(i));
       TopExp::Vertices(CurWire, Vfirst, Vlast);
 
-      Standard_Real angle = FinVec.Angle(gp_Vec(BRep_Tool::Pnt(theVertex), BRep_Tool::Pnt(Vfirst)));
+      double angle = FinVec.Angle(gp_Vec(BRep_Tool::Pnt(theVertex), BRep_Tool::Pnt(Vfirst)));
       if (angle < MinAngle)
       {
         MinAngle = angle;
         MinVtx   = Vfirst;
         MinInd   = i;
-        IsLast   = Standard_True;
+        IsLast   = true;
       }
       angle = FinVec.Angle(gp_Vec(BRep_Tool::Pnt(theVertex), BRep_Tool::Pnt(Vlast)));
       if (angle < MinAngle)
@@ -526,7 +531,7 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireLi
         MinAngle = angle;
         MinVtx   = Vlast;
         MinInd   = i;
-        IsLast   = Standard_False;
+        IsLast   = false;
       }
     }
     VerSeq.Append(MinVtx);
@@ -566,19 +571,19 @@ void BRepFill_Filling::Build()
 
   if (myBoundary.IsEmpty())
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
   TopoDS_Edge      CurEdge;
   TopoDS_Face      CurFace;
-  Standard_Integer i, j;
+  int i, j;
 
   // Creating array of vertices: extremities of wires
-  TopTools_SequenceOfShape VerSeq;
+  NCollection_Sequence<TopoDS_Shape> VerSeq;
 
   // Building missing bounds
-  TopTools_ListOfShape EdgeList, WireList;
+  NCollection_List<TopoDS_Shape> EdgeList, WireList;
   for (i = 1; i <= myBoundary.Length(); i++)
     EdgeList.Append(myBoundary(i).myEdge);
 
@@ -589,12 +594,12 @@ void BRepFill_Filling::Build()
   for (j = 1; j <= myFreeConstraints.Length(); j++)
   {
     GeomAPI_ProjectPointOnSurf Projector;
-    Standard_Real              U1, V1, U2, V2;
+    double              U1, V1, U2, V2;
 
     CurFace                           = myFreeConstraints(j).myFace;
-    Handle(BRepAdaptor_Surface) HSurf = new BRepAdaptor_Surface();
+    occ::handle<BRepAdaptor_Surface> HSurf = new BRepAdaptor_Surface();
     HSurf->Initialize(CurFace);
-    Handle(Geom_Surface) CurSurface = BRep_Tool::Surface(HSurf->Face());
+    occ::handle<Geom_Surface> CurSurface = BRep_Tool::Surface(HSurf->Face());
     // BRepTopAdaptor_FClass2d Classifier( CurFace, Precision::Confusion() );
 
     for (i = 1; i <= VerSeq.Length(); i += 2)
@@ -610,8 +615,8 @@ void BRepFill_Filling::Build()
 
       /*
       State = Classifier.Perform(gp_Pnt2d( U1, V1 ),
-                     ((HSurf->IsUPeriodic() || HSurf->IsVPeriodic())? Standard_True :
-      Standard_False)); if (State == TopAbs_OUT || State == TopAbs_UNKNOWN) continue;
+                     ((HSurf->IsUPeriodic() || HSurf->IsVPeriodic())? true :
+      false)); if (State == TopAbs_OUT || State == TopAbs_UNKNOWN) continue;
       */
 
       gp_Pnt LastPnt = BRep_Tool::Pnt(LastVtx);
@@ -622,15 +627,15 @@ void BRepFill_Filling::Build()
 
       /*
       State = Classifier.Perform(gp_Pnt2d( U2, V2 ),
-                     ((HSurf->IsUPeriodic() || HSurf->IsVPeriodic())? Standard_True :
-      Standard_False)); if (State == TopAbs_OUT || State == TopAbs_UNKNOWN) continue;
+                     ((HSurf->IsUPeriodic() || HSurf->IsVPeriodic())? true :
+      false)); if (State == TopAbs_OUT || State == TopAbs_UNKNOWN) continue;
       */
 
       // Making the constraint
-      TColgp_Array1OfPnt2d Points(1, 2);
+      NCollection_Array1<gp_Pnt2d> Points(1, 2);
       Points(1)                         = gp_Pnt2d(U1, V1);
       Points(2)                         = gp_Pnt2d(U2, V2);
-      Handle(Geom2d_BezierCurve) Line2d = new Geom2d_BezierCurve(Points);
+      occ::handle<Geom2d_BezierCurve> Line2d = new Geom2d_BezierCurve(Points);
       TopoDS_Edge                E      = BRepLib_MakeEdge(Line2d, CurSurface, FirstVtx, LastVtx);
       Add(E, CurFace, myFreeConstraints(j).myOrder);
       VerSeq.Remove(i, i + 1);
@@ -641,7 +646,7 @@ void BRepFill_Filling::Build()
   // Load initial surface to myBuilder if it is given
   if (myIsInitFaceGiven)
   {
-    Handle(BRepAdaptor_Surface) HSurfInit = new BRepAdaptor_Surface();
+    occ::handle<BRepAdaptor_Surface> HSurfInit = new BRepAdaptor_Surface();
     HSurfInit->Initialize(myInitFace);
     myBuilder->LoadInitSurface(BRep_Tool::Surface(HSurfInit->Face()));
   }
@@ -658,25 +663,25 @@ void BRepFill_Filling::Build()
   myBuilder->Perform();
   if (myBuilder->IsDone())
   {
-    myIsDone = Standard_True;
+    myIsDone = true;
   }
   else
   {
-    myIsDone = Standard_False;
+    myIsDone = false;
     return;
   }
 
-  Handle(GeomPlate_Surface)   GPlate = myBuilder->Surface();
-  Handle(Geom_BSplineSurface) Surface;
+  occ::handle<GeomPlate_Surface>   GPlate = myBuilder->Surface();
+  occ::handle<Geom_BSplineSurface> Surface;
   // Approximation
-  Standard_Real dmax = 1.1 * myBuilder->G0Error(); //???????????
-  // Standard_Real dmax = myTol3d;
+  double dmax = 1.1 * myBuilder->G0Error(); //???????????
+  // double dmax = myTol3d;
   if (!myIsInitFaceGiven)
   {
-    Standard_Real seuil; //?????
+    double seuil; //?????
 
-    TColgp_SequenceOfXY  S2d;
-    TColgp_SequenceOfXYZ S3d;
+    NCollection_Sequence<gp_XY>  S2d;
+    NCollection_Sequence<gp_XYZ> S3d;
     myBuilder->Disc2dContour(4, S2d);
     myBuilder->Disc3dContour(4, 0, S3d);
     seuil = std::max(myTol3d, 10 * myBuilder->G0Error()); //????????
@@ -695,8 +700,8 @@ void BRepFill_Filling::Build()
   }
 
   // Build the final wire and final face
-  TopTools_ListOfShape              FinalEdges;
-  Handle(TColGeom2d_HArray1OfCurve) CurvesOnPlate = myBuilder->Curves2d();
+  NCollection_List<TopoDS_Shape>              FinalEdges;
+  occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> CurvesOnPlate = myBuilder->Curves2d();
   BRep_Builder                      BB;
   for (i = 1; i <= myBoundary.Length(); i++)
   {
@@ -706,7 +711,7 @@ void BRepFill_Filling::Build()
     if (myOldNewMap.IsBound(anEdge))
       anEdge = TopoDS::Edge(myOldNewMap(anEdge));
 
-    Handle(Geom2d_Curve) aCurveOnPlate = CurvesOnPlate->Value(i);
+    occ::handle<Geom2d_Curve> aCurveOnPlate = CurvesOnPlate->Value(i);
 
     TopoDS_Edge NewEdge = TopoDS::Edge(anEdge.EmptyCopied());
 
@@ -740,7 +745,7 @@ void BRepFill_Filling::Build()
     TopLoc_Location Loc;
     BB.UpdateEdge(NewEdge, aCurveOnPlate, Surface, Loc, dmax);
     // BRepLib::SameRange(NewEdge);
-    BRepLib::SameParameter(NewEdge, dmax, Standard_True);
+    BRepLib::SameParameter(NewEdge, dmax, true);
     FinalEdges.Append(NewEdge);
     myOldNewMap.Bind(InitEdge.Oriented(TopAbs_FORWARD), NewEdge.Oriented(TopAbs_FORWARD));
   }
@@ -752,7 +757,7 @@ void BRepFill_Filling::Build()
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_Filling::IsDone() const
+bool BRepFill_Filling::IsDone() const
 {
   return myIsDone;
 }
@@ -768,7 +773,7 @@ TopoDS_Face BRepFill_Filling::Face() const
 // function : Generated
 // purpose  : returns the new edge (first in list) made from old edge "S"
 //=======================================================================
-const TopTools_ListOfShape& BRepFill_Filling::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepFill_Filling::Generated(const TopoDS_Shape& S)
 {
   myGenerated.Clear();
 
@@ -782,7 +787,7 @@ const TopTools_ListOfShape& BRepFill_Filling::Generated(const TopoDS_Shape& S)
 // function : G0Error
 // purpose  : returns maximum distance from boundary to the resulting surface
 //==========================================================================
-Standard_Real BRepFill_Filling::G0Error() const
+double BRepFill_Filling::G0Error() const
 {
   return myBuilder->G0Error();
 }
@@ -792,7 +797,7 @@ Standard_Real BRepFill_Filling::G0Error() const
 // purpose  : returns maximum angle between the resulting surface
 //           and constraint surfaces at boundaries
 //======================================================================
-Standard_Real BRepFill_Filling::G1Error() const
+double BRepFill_Filling::G1Error() const
 {
   return myBuilder->G1Error();
 }
@@ -802,7 +807,7 @@ Standard_Real BRepFill_Filling::G1Error() const
 // purpose  : returns maximum difference of curvature between
 //           the resulting surface and constraint surfaces at boundaries
 //======================================================================
-Standard_Real BRepFill_Filling::G2Error() const
+double BRepFill_Filling::G2Error() const
 {
   return myBuilder->G2Error();
 }
@@ -812,7 +817,7 @@ Standard_Real BRepFill_Filling::G2Error() const
 // purpose  : returns maximum distance between the constraint number Index
 //           and the resulting surface
 //==========================================================================
-Standard_Real BRepFill_Filling::G0Error(const Standard_Integer Index)
+double BRepFill_Filling::G0Error(const int Index)
 {
   return myBuilder->G0Error(Index);
 }
@@ -822,7 +827,7 @@ Standard_Real BRepFill_Filling::G0Error(const Standard_Integer Index)
 // purpose  : returns maximum angle between the constraint number Index
 //           and the resulting surface
 //==========================================================================
-Standard_Real BRepFill_Filling::G1Error(const Standard_Integer Index)
+double BRepFill_Filling::G1Error(const int Index)
 {
   return myBuilder->G1Error(Index);
 }
@@ -832,7 +837,7 @@ Standard_Real BRepFill_Filling::G1Error(const Standard_Integer Index)
 // purpose  : returns maximum difference of curvature between
 //           the constraint number Index and the resulting surface
 //==========================================================================
-Standard_Real BRepFill_Filling::G2Error(const Standard_Integer Index)
+double BRepFill_Filling::G2Error(const int Index)
 {
   return myBuilder->G2Error(Index);
 }

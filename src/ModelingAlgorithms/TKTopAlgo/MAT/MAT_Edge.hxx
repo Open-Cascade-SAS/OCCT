@@ -24,46 +24,42 @@
 #include <Standard_Transient.hxx>
 class MAT_Bisector;
 
-class MAT_Edge;
-DEFINE_STANDARD_HANDLE(MAT_Edge, Standard_Transient)
-
 class MAT_Edge : public Standard_Transient
 {
 
 public:
   Standard_EXPORT MAT_Edge();
 
-  Standard_EXPORT void EdgeNumber(const Standard_Integer anumber);
+  Standard_EXPORT void EdgeNumber(const int anumber);
 
-  Standard_EXPORT void FirstBisector(const Handle(MAT_Bisector)& abisector);
+  Standard_EXPORT void FirstBisector(const occ::handle<MAT_Bisector>& abisector);
 
-  Standard_EXPORT void SecondBisector(const Handle(MAT_Bisector)& abisector);
+  Standard_EXPORT void SecondBisector(const occ::handle<MAT_Bisector>& abisector);
 
-  Standard_EXPORT void Distance(const Standard_Real adistance);
+  Standard_EXPORT void Distance(const double adistance);
 
-  Standard_EXPORT void IntersectionPoint(const Standard_Integer apoint);
+  Standard_EXPORT void IntersectionPoint(const int apoint);
 
-  Standard_EXPORT Standard_Integer EdgeNumber() const;
+  Standard_EXPORT int EdgeNumber() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) FirstBisector() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> FirstBisector() const;
 
-  Standard_EXPORT Handle(MAT_Bisector) SecondBisector() const;
+  Standard_EXPORT occ::handle<MAT_Bisector> SecondBisector() const;
 
-  Standard_EXPORT Standard_Real Distance() const;
+  Standard_EXPORT double Distance() const;
 
-  Standard_EXPORT Standard_Integer IntersectionPoint() const;
+  Standard_EXPORT int IntersectionPoint() const;
 
-  Standard_EXPORT void Dump(const Standard_Integer ashift, const Standard_Integer alevel) const;
+  Standard_EXPORT void Dump(const int ashift, const int alevel) const;
 
   DEFINE_STANDARD_RTTIEXT(MAT_Edge, Standard_Transient)
 
-protected:
 private:
-  Standard_Integer     theedgenumber;
-  Handle(MAT_Bisector) thefirstbisector;
-  Handle(MAT_Bisector) thesecondbisector;
-  Standard_Real        thedistance;
-  Standard_Integer     theintersectionpoint;
+  int     theedgenumber;
+  occ::handle<MAT_Bisector> thefirstbisector;
+  occ::handle<MAT_Bisector> thesecondbisector;
+  double        thedistance;
+  int     theintersectionpoint;
 };
 
 #endif // _MAT_Edge_HeaderFile

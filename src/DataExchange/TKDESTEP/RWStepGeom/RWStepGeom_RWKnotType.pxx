@@ -47,8 +47,8 @@ inline const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
 //! Convert string to StepGeom_KnotType
 //! @param theKnotTypeString The string to convert
 //! @param theResultEnum The corresponding StepGeom_KnotType value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString theKnotTypeString,
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* const theKnotTypeString,
                           StepGeom_KnotType&     theResultEnum)
 {
   if (IsEqual(theKnotTypeString, ktUniformKnots))
@@ -69,9 +69,9 @@ inline bool ConvertToEnum(const Standard_CString theKnotTypeString,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepGeom_RWKnotType
 

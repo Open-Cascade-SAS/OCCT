@@ -37,24 +37,24 @@ public:
 
   //! Recognizes a kind of MeasureOrUnspecifiedValue select type
   //! return 0
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member MeasureOrUnspecifiedValueMember
   //! 1 -> ContextDependentMeasure
   //! 2 -> UnspecifiedValue
   //! 0 else
-  Standard_EXPORT virtual Standard_Integer CaseMem(const Handle(StepData_SelectMember)& ent) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
+    override;
 
   //! Returns a new select member the type MeasureOrUnspecifiedValueMember
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Set Value for ContextDependentMeasure
-  Standard_EXPORT void SetContextDependentMeasure(const Standard_Real aVal);
+  Standard_EXPORT void SetContextDependentMeasure(const double aVal);
 
   //! Returns Value as ContextDependentMeasure (or Null if another type)
-  Standard_EXPORT Standard_Real ContextDependentMeasure() const;
+  Standard_EXPORT double ContextDependentMeasure() const;
 
   //! Set Value for UnspecifiedValue
   Standard_EXPORT void SetUnspecifiedValue(const StepElement_UnspecifiedValue aVal);
@@ -62,8 +62,6 @@ public:
   //! Returns Value as UnspecifiedValue (or Null if another type)
   Standard_EXPORT StepElement_UnspecifiedValue UnspecifiedValue() const;
 
-protected:
-private:
 };
 
 #endif // _StepElement_MeasureOrUnspecifiedValue_HeaderFile

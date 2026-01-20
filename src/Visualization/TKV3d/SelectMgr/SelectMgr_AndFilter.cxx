@@ -15,18 +15,19 @@
 #include <SelectMgr_AndFilter.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_AndFilter, SelectMgr_CompositionFilter)
 
 SelectMgr_AndFilter::SelectMgr_AndFilter() {}
 
-Standard_Boolean SelectMgr_AndFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
+bool SelectMgr_AndFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
 {
-  SelectMgr_ListIteratorOfListOfFilter it(myFilters);
+  NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator it(myFilters);
   for (; it.More(); it.Next())
     if (!it.Value()->IsOk(anobj))
-      return Standard_False;
-  return Standard_True;
+      return false;
+  return true;
 }

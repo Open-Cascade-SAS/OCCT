@@ -22,9 +22,6 @@
 
 #include <StepGeom_BSplineCurve.hxx>
 
-class StepGeom_BezierCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_BezierCurve, StepGeom_BSplineCurve)
-
 class StepGeom_BezierCurve : public StepGeom_BSplineCurve
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BezierCurve, StepGeom_BSplineCurve)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_BezierCurve_HeaderFile

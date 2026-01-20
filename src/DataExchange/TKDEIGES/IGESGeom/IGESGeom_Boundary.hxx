@@ -21,13 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESBasic_HArray1OfHArray1OfIGESEntity;
-
-class IGESGeom_Boundary;
-DEFINE_STANDARD_HANDLE(IGESGeom_Boundary, IGESData_IGESEntity)
 
 //! defines IGESBoundary, Type <141> Form <0>
 //! in package IGESGeom
@@ -52,12 +53,12 @@ public:
   //! raises exception if allSenses, allModelCurves and
   //! allParameterCurves do not have same dimensions
   Standard_EXPORT void Init(
-    const Standard_Integer                                aType,
-    const Standard_Integer                                aPreference,
-    const Handle(IGESData_IGESEntity)&                    aSurface,
-    const Handle(IGESData_HArray1OfIGESEntity)&           allModelCurves,
-    const Handle(TColStd_HArray1OfInteger)&               allSenses,
-    const Handle(IGESBasic_HArray1OfHArray1OfIGESEntity)& allParameterCurves);
+    const int                                aType,
+    const int                                aPreference,
+    const occ::handle<IGESData_IGESEntity>&                    aSurface,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allModelCurves,
+    const occ::handle<NCollection_HArray1<int>>&               allSenses,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>& allParameterCurves);
 
   //! returns type of bounded surface representation
   //! 0 = Boundary entities may only reference model space trimming
@@ -65,57 +66,56 @@ public:
   //! 1 = Boundary entities must reference model space curves and
   //! associated parameter space curve collections. Associated
   //! surface must be a parametric representation
-  Standard_EXPORT Standard_Integer BoundaryType() const;
+  Standard_EXPORT int BoundaryType() const;
 
   //! returns preferred representation of trimming curves
   //! 0 = Unspecified
   //! 1 = Model space
   //! 2 = Parameter space
   //! 3 = Representations are of equal preference
-  Standard_EXPORT Standard_Integer PreferenceType() const;
+  Standard_EXPORT int PreferenceType() const;
 
   //! returns the surface to be bounded
-  Standard_EXPORT Handle(IGESData_IGESEntity) Surface() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
 
   //! returns the number of model space curves
-  Standard_EXPORT Standard_Integer NbModelSpaceCurves() const;
+  Standard_EXPORT int NbModelSpaceCurves() const;
 
   //! returns Model Space Curve
   //! raises exception if Index <= 0 or Index > NbModelSpaceCurves()
-  Standard_EXPORT Handle(IGESData_IGESEntity) ModelSpaceCurve(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ModelSpaceCurve(const int Index) const;
 
   //! returns the sense of a particular model space curve
   //! 1 = model curve direction does not need reversal
   //! 2 = model curve direction needs to be reversed
   //! raises exception if Index <= 0 or Index > NbModelSpaceCurves()
-  Standard_EXPORT Standard_Integer Sense(const Standard_Integer Index) const;
+  Standard_EXPORT int Sense(const int Index) const;
 
   //! returns the number of parameter curves associated with one
   //! model space curve referred to by Index
   //! raises exception if Index <= 0 or Index > NbModelSpaceCurves()
-  Standard_EXPORT Standard_Integer NbParameterCurves(const Standard_Integer Index) const;
+  Standard_EXPORT int NbParameterCurves(const int Index) const;
 
   //! returns an array of parameter space curves associated with
   //! a model space curve referred to by the Index
   //! raises exception if Index <= 0 or Index > NbModelSpaceCurves()
-  Standard_EXPORT Handle(IGESData_HArray1OfIGESEntity) ParameterCurves(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ParameterCurves(
+    const int Index) const;
 
   //! returns an individual parameter curve
   //! raises exception if Index or Num is out of range
-  Standard_EXPORT Handle(IGESData_IGESEntity) ParameterCurve(const Standard_Integer Index,
-                                                             const Standard_Integer Num) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ParameterCurve(const int Index,
+                                                             const int Num) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Boundary, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                               theType;
-  Standard_Integer                               thePreference;
-  Handle(IGESData_IGESEntity)                    theSurface;
-  Handle(IGESData_HArray1OfIGESEntity)           theModelCurves;
-  Handle(TColStd_HArray1OfInteger)               theSenses;
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) theParameterCurves;
+  int                               theType;
+  int                               thePreference;
+  occ::handle<IGESData_IGESEntity>                    theSurface;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           theModelCurves;
+  occ::handle<NCollection_HArray1<int>>               theSenses;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> theParameterCurves;
 };
 
 #endif // _IGESGeom_Boundary_HeaderFile

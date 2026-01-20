@@ -26,23 +26,7 @@ set(OCCT_StepAP214_FILES
   StepAP214_AppliedSecurityClassificationAssignment.hxx
   StepAP214_ApprovalItem.cxx
   StepAP214_ApprovalItem.hxx
-  StepAP214_Array1OfApprovalItem.hxx
-  StepAP214_Array1OfAutoDesignDateAndPersonItem.hxx
-  StepAP214_Array1OfAutoDesignDateAndTimeItem.hxx
-  StepAP214_Array1OfAutoDesignDatedItem.hxx
-  StepAP214_Array1OfAutoDesignGeneralOrgItem.hxx
-  StepAP214_Array1OfAutoDesignGroupedItem.hxx
-  StepAP214_Array1OfAutoDesignPresentedItemSelect.hxx
-  StepAP214_Array1OfAutoDesignReferencingItem.hxx
-  StepAP214_Array1OfDateAndTimeItem.hxx
-  StepAP214_Array1OfDateItem.hxx
-  StepAP214_Array1OfDocumentReferenceItem.hxx
-  StepAP214_Array1OfExternalIdentificationItem.hxx
-  StepAP214_Array1OfGroupItem.hxx
-  StepAP214_Array1OfOrganizationItem.hxx
-  StepAP214_Array1OfPersonAndOrganizationItem.hxx
-  StepAP214_Array1OfPresentedItemSelect.hxx
-  StepAP214_Array1OfSecurityClassificationItem.hxx
+
   StepAP214_AutoDesignActualDateAndTimeAssignment.cxx
   StepAP214_AutoDesignActualDateAndTimeAssignment.hxx
   StepAP214_AutoDesignActualDateAssignment.cxx
@@ -99,23 +83,7 @@ set(OCCT_StepAP214_FILES
   StepAP214_ExternallyDefinedGeneralProperty.hxx
   StepAP214_GroupItem.cxx
   StepAP214_GroupItem.hxx
-  StepAP214_HArray1OfApprovalItem.hxx
-  StepAP214_HArray1OfAutoDesignDateAndPersonItem.hxx
-  StepAP214_HArray1OfAutoDesignDateAndTimeItem.hxx
-  StepAP214_HArray1OfAutoDesignDatedItem.hxx
-  StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx
-  StepAP214_HArray1OfAutoDesignGroupedItem.hxx
-  StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx
-  StepAP214_HArray1OfAutoDesignReferencingItem.hxx
-  StepAP214_HArray1OfDateAndTimeItem.hxx
-  StepAP214_HArray1OfDateItem.hxx
-  StepAP214_HArray1OfDocumentReferenceItem.hxx
-  StepAP214_HArray1OfExternalIdentificationItem.hxx
-  StepAP214_HArray1OfGroupItem.hxx
-  StepAP214_HArray1OfOrganizationItem.hxx
-  StepAP214_HArray1OfPersonAndOrganizationItem.hxx
-  StepAP214_HArray1OfPresentedItemSelect.hxx
-  StepAP214_HArray1OfSecurityClassificationItem.hxx
+
   StepAP214_OrganizationItem.cxx
   StepAP214_OrganizationItem.hxx
   StepAP214_PersonAndOrganizationItem.cxx

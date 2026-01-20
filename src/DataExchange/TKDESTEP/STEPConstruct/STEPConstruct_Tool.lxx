@@ -22,21 +22,21 @@
 
 //=================================================================================================
 
-inline const Handle(XSControl_WorkSession)& STEPConstruct_Tool::WS() const
+inline const occ::handle<XSControl_WorkSession>& STEPConstruct_Tool::WS() const
 {
   return myWS;
 }
 
 //=================================================================================================
 
-inline Handle(Interface_InterfaceModel) STEPConstruct_Tool::Model() const
+inline occ::handle<Interface_InterfaceModel> STEPConstruct_Tool::Model() const
 {
   return myWS->Model();
 }
 
 //=================================================================================================
 
-inline const Interface_Graph& STEPConstruct_Tool::Graph(const Standard_Boolean recompute) const
+inline const Interface_Graph& STEPConstruct_Tool::Graph(const bool recompute) const
 {
   // Note: myWS->Graph() recomputes graph each time!
   return recompute ? myWS->Graph() : myHGraph->Graph();
@@ -44,14 +44,14 @@ inline const Interface_Graph& STEPConstruct_Tool::Graph(const Standard_Boolean r
 
 //=================================================================================================
 
-inline const Handle(Transfer_TransientProcess)& STEPConstruct_Tool::TransientProcess() const
+inline const occ::handle<Transfer_TransientProcess>& STEPConstruct_Tool::TransientProcess() const
 {
   return myTransientProcess;
 }
 
 //=================================================================================================
 
-inline const Handle(Transfer_FinderProcess)& STEPConstruct_Tool::FinderProcess() const
+inline const occ::handle<Transfer_FinderProcess>& STEPConstruct_Tool::FinderProcess() const
 {
   return myFinderProcess;
 }

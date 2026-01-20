@@ -40,19 +40,19 @@ static void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d);
 ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
                                                  const TopoDS_Face&     F1,
                                                  const TopoDS_Face&     F2,
-                                                 const Standard_Real    SinTol,
-                                                 const Standard_Boolean CorrectPoint)
+                                                 const double    SinTol,
+                                                 const bool CorrectPoint)
 {
-  const Handle(Geom_Surface)& S1 = BRep_Tool::Surface(F1);
-  const Handle(Geom_Surface)& S2 = BRep_Tool::Surface(F2);
+  const occ::handle<Geom_Surface>& S1 = BRep_Tool::Surface(F1);
+  const occ::handle<Geom_Surface>& S2 = BRep_Tool::Surface(F2);
   //
-  Standard_Real        f, l;
-  Handle(Geom2d_Curve) C1 = BRep_Tool::CurveOnSurface(E, F1, f, l);
+  double        f, l;
+  occ::handle<Geom2d_Curve> C1 = BRep_Tool::CurveOnSurface(E, F1, f, l);
   // For the case of seam edge
   TopoDS_Edge EE = E;
   if (F1.IsSame(F2))
     EE.Reverse();
-  Handle(Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(EE, F2, f, l);
+  occ::handle<Geom2d_Curve> C2 = BRep_Tool::CurveOnSurface(EE, F2, f, l);
   if (C1.IsNull() || C2.IsNull())
     return ChFiDS_Other;
 
@@ -60,7 +60,7 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
   f = C.FirstParameter();
   l = C.LastParameter();
   //
-  Standard_Real ParOnC = 0.5 * (f + l);
+  double ParOnC = 0.5 * (f + l);
   gp_Vec        T1     = C.DN(ParOnC, 1);
   if (T1.SquareMagnitude() <= gp::Resolution())
   {
@@ -103,7 +103,7 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
   DN2.Normalize();
 
   gp_Vec        ProVec     = DN1 ^ DN2;
-  Standard_Real NormProVec = ProVec.Magnitude();
+  double NormProVec = ProVec.Magnitude();
   if (NormProVec < SinTol)
   {
     // plane
@@ -125,7 +125,7 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
   {
     if (NormProVec > gp::Resolution())
       ProVec /= NormProVec;
-    Standard_Real Prod = T1.Dot(ProVec);
+    double Prod = T1.Dot(ProVec);
     if (Prod > 0.)
     {
       //
@@ -141,20 +141,20 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
+bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
                                         const TopoDS_Face&  theFace1,
                                         const TopoDS_Face&  theFace2,
                                         const GeomAbs_Shape theOrder)
 {
   if (theOrder == GeomAbs_G1 && BRep_Tool::Continuity(theEdge, theFace1, theFace2) != GeomAbs_C0)
-    return Standard_True;
+    return true;
 
-  Standard_Real TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+  double TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
 
-  Standard_Real aFirst;
-  Standard_Real aLast;
+  double aFirst;
+  double aLast;
 
-  Handle(Geom2d_Curve) aC2d1, aC2d2;
+  occ::handle<Geom2d_Curve> aC2d1, aC2d2;
 
   if (!theFace1.IsSame(theFace2) && BRep_Tool::IsClosed(theEdge, theFace1)
       && BRep_Tool::IsClosed(theEdge, theFace2))
@@ -174,7 +174,7 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
       }
     }
     if (anEdgeInFace1.IsNull())
-      return Standard_False;
+      return false;
 
     aC2d1              = BRep_Tool::CurveOnSurface(anEdgeInFace1, aFace1, aFirst, aLast);
     TopoDS_Face aFace2 = theFace2;
@@ -194,30 +194,30 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
   }
 
   if (aC2d1.IsNull() || aC2d2.IsNull())
-    return Standard_False;
+    return false;
 
   // Obtaining of two surfaces from adjacent faces.
-  Handle(Geom_Surface) aSurf1 = BRep_Tool::Surface(theFace1);
-  Handle(Geom_Surface) aSurf2 = BRep_Tool::Surface(theFace2);
+  occ::handle<Geom_Surface> aSurf1 = BRep_Tool::Surface(theFace1);
+  occ::handle<Geom_Surface> aSurf2 = BRep_Tool::Surface(theFace2);
 
   if (aSurf1.IsNull() || aSurf2.IsNull())
-    return Standard_False;
+    return false;
 
   // Computation of the number of samples on the edge.
   BRepAdaptor_Surface              aBAS1(theFace1);
   BRepAdaptor_Surface              aBAS2(theFace2);
-  Handle(BRepAdaptor_Surface)      aBAHS1      = new BRepAdaptor_Surface(aBAS1);
-  Handle(BRepAdaptor_Surface)      aBAHS2      = new BRepAdaptor_Surface(aBAS2);
-  Handle(BRepTopAdaptor_TopolTool) aTool1      = new BRepTopAdaptor_TopolTool(aBAHS1);
-  Handle(BRepTopAdaptor_TopolTool) aTool2      = new BRepTopAdaptor_TopolTool(aBAHS2);
-  Standard_Integer                 aNbSamples1 = aTool1->NbSamples();
-  Standard_Integer                 aNbSamples2 = aTool2->NbSamples();
-  Standard_Integer                 aNbSamples  = std::max(aNbSamples1, aNbSamples2);
+  occ::handle<BRepAdaptor_Surface>      aBAHS1      = new BRepAdaptor_Surface(aBAS1);
+  occ::handle<BRepAdaptor_Surface>      aBAHS2      = new BRepAdaptor_Surface(aBAS2);
+  occ::handle<BRepTopAdaptor_TopolTool> aTool1      = new BRepTopAdaptor_TopolTool(aBAHS1);
+  occ::handle<BRepTopAdaptor_TopolTool> aTool2      = new BRepTopAdaptor_TopolTool(aBAHS2);
+  int                 aNbSamples1 = aTool1->NbSamples();
+  int                 aNbSamples2 = aTool2->NbSamples();
+  int                 aNbSamples  = std::max(aNbSamples1, aNbSamples2);
 
   // Computation of the continuity.
-  Standard_Real    aPar;
-  Standard_Real    aDelta = (aLast - aFirst) / (aNbSamples - 1);
-  Standard_Integer i, nbNotDone = 0;
+  double    aPar;
+  double    aDelta = (aLast - aFirst) / (aNbSamples - 1);
+  int i, nbNotDone = 0;
 
   for (i = 1, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta)
   {
@@ -238,26 +238,26 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
     if (theOrder == GeomAbs_G1)
     {
       if (!aCont.IsG1())
-        return Standard_False;
+        return false;
     }
     else if (!aCont.IsG2())
-      return Standard_False;
+      return false;
   }
 
   if (nbNotDone == aNbSamples)
-    return Standard_False;
+    return false;
 
   // Compare normals of tangent faces in the middle point
-  Standard_Real MidPar = (aFirst + aLast) / 2.;
+  double MidPar = (aFirst + aLast) / 2.;
   gp_Pnt2d      uv1    = aC2d1->Value(MidPar);
   gp_Pnt2d      uv2    = aC2d2->Value(MidPar);
   gp_Dir        normal1, normal2;
   TopOpeBRepTool_TOOL::Nt(uv1, theFace1, normal1);
   TopOpeBRepTool_TOOL::Nt(uv2, theFace2, normal2);
-  Standard_Real dot = normal1.Dot(normal2);
+  double dot = normal1.Dot(normal2);
   if (dot < 0.)
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=======================================================================
@@ -265,19 +265,19 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
 // purpose  : calculate the concave face at the neighborhood of the border of
 //           2 faces.
 //=======================================================================
-Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
+int ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
                                      const BRepAdaptor_Surface& S2,
                                      const TopoDS_Edge&         E,
                                      TopAbs_Orientation&        Or1,
                                      TopAbs_Orientation&        Or2)
 
 {
-  Standard_Integer ChoixConge;
+  int ChoixConge;
   Or1 = Or2 = TopAbs_FORWARD;
   BRepAdaptor_Curve CE(E);
-  Standard_Real     first = CE.FirstParameter();
-  Standard_Real     last  = CE.LastParameter();
-  Standard_Real     par   = 0.691254 * first + 0.308746 * last;
+  double     first = CE.FirstParameter();
+  double     last  = CE.LastParameter();
+  double     par   = 0.691254 * first + 0.308746 * last;
 
   gp_Pnt             pt, pt1, pt2;
   gp_Vec             tgE, tgE1, tgE2, ns1, ns2, dint1, dint2;
@@ -304,14 +304,14 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
   else
   {
     TopExp_Explorer  Exp;
-    Standard_Boolean found = 0;
+    bool found = 0;
     for (Exp.Init(F1, TopAbs_EDGE); Exp.More() && !found; Exp.Next())
     {
       if (E.IsSame(TopoDS::Edge(Exp.Current())))
       {
         if (Exp.Current().Orientation() == TopAbs_REVERSED)
           tgE1.Reverse();
-        found = Standard_True;
+        found = true;
       }
     }
     if (!found)
@@ -325,7 +325,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       {
         if (Exp.Current().Orientation() == TopAbs_REVERSED)
           tgE2.Reverse();
-        found = Standard_True;
+        found = true;
       }
     }
     if (!found)
@@ -352,10 +352,10 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
 
   dint1             = ns1.Crossed(tgE1);
   dint2             = ns2.Crossed(tgE2);
-  Standard_Real ang = ns1.CrossMagnitude(ns2);
+  double ang = ns1.CrossMagnitude(ns2);
   if (ang > 0.0001 * M_PI)
   {
-    Standard_Real scal = ns2.Dot(dint1);
+    double scal = ns2.Dot(dint1);
     if (scal <= 0.)
     {
       ns2.Reverse();
@@ -395,7 +395,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       ang   = ns1.CrossMagnitude(ns2);
       if (ang > 0.0001 * M_PI)
       {
-        Standard_Real scal = ns2.Dot(dint1);
+        double scal = ns2.Dot(dint1);
         if (scal <= 0.)
         {
           ns2.Reverse();
@@ -421,9 +421,9 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
     {
       // here it turns back, the points are taken in faces
       // neither too close nor too far as much as possible.
-      Standard_Real u, v;
+      double u, v;
 #ifdef OCCT_DEBUG
-//      Standard_Real deport = 1000*BRep_Tool::Tolerance(E);
+//      double deport = 1000*BRep_Tool::Tolerance(E);
 #endif
       ChFi3d_Coefficient(dint1, DU1, DV1, u, v);
       p2d1.SetX(p2d1.X() + u);
@@ -472,11 +472,11 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
 
 //=================================================================================================
 
-Standard_Integer ChFi3d::NextSide(TopAbs_Orientation&      Or1,
+int ChFi3d::NextSide(TopAbs_Orientation&      Or1,
                                   TopAbs_Orientation&      Or2,
                                   const TopAbs_Orientation OrSave1,
                                   const TopAbs_Orientation OrSave2,
-                                  const Standard_Integer   ChoixSave)
+                                  const int   ChoixSave)
 {
   if (Or1 == TopAbs_FORWARD)
   {
@@ -495,7 +495,7 @@ Standard_Integer ChFi3d::NextSide(TopAbs_Orientation&      Or1,
     Or2 = TopAbs::Reverse(OrSave2);
   }
 
-  Standard_Integer ChoixConge;
+  int ChoixConge;
   if (Or1 == TopAbs_FORWARD)
   {
     if (Or2 == TopAbs_FORWARD)
@@ -543,7 +543,7 @@ void ChFi3d::NextSide(TopAbs_Orientation&      Or,
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d::SameSide(const TopAbs_Orientation Or,
+bool ChFi3d::SameSide(const TopAbs_Orientation Or,
                                   const TopAbs_Orientation OrSave1,
                                   const TopAbs_Orientation OrSave2,
                                   const TopAbs_Orientation OrFace1,
@@ -573,17 +573,17 @@ Standard_Boolean ChFi3d::SameSide(const TopAbs_Orientation Or,
 
 void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d)
 {
-  BRepAdaptor_Surface aBAS(theF, Standard_False);
+  BRepAdaptor_Surface aBAS(theF, false);
   if (aBAS.GetType() < GeomAbs_BezierSurface)
   {
     return;
   }
   //
-  const Standard_Real coeff = 0.01;
-  Standard_Real       eps;
-  Standard_Real       u1, u2, v1, v2;
+  const double coeff = 0.01;
+  double       eps;
+  double       u1, u2, v1, v2;
   //
-  aBAS.Initialize(theF, Standard_True);
+  aBAS.Initialize(theF, true);
   u1 = aBAS.FirstUParameter();
   u2 = aBAS.LastUParameter();
   v1 = aBAS.FirstVParameter();

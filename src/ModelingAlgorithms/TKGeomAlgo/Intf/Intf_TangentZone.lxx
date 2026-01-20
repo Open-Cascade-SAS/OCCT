@@ -14,21 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intf_SeqOfSectionPoint.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
 
 //=======================================================================
 // function : NumberOfPoint
 // purpose  : Return the points number of the tangent zone.
 //=======================================================================
 
-inline Standard_Integer Intf_TangentZone::NumberOfPoints() const
+inline int Intf_TangentZone::NumberOfPoints() const
 {
   return Result.Length();
 }
 
 //=================================================================================================
 
-inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real& paraMax) const
+inline void Intf_TangentZone::ParamOnFirst(double& paraMin, double& paraMax) const
 {
   paraMin = ParamOnFirstMin;
   paraMax = ParamOnFirstMax;
@@ -36,7 +37,7 @@ inline void Intf_TangentZone::ParamOnFirst(Standard_Real& paraMin, Standard_Real
 
 //=================================================================================================
 
-inline void Intf_TangentZone::ParamOnSecond(Standard_Real& paraMin, Standard_Real& paraMax) const
+inline void Intf_TangentZone::ParamOnSecond(double& paraMin, double& paraMax) const
 {
   paraMin = ParamOnSecondMin;
   paraMax = ParamOnSecondMax;

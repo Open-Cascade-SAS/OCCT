@@ -34,7 +34,7 @@
 
 TDocStd_XLinkTool::TDocStd_XLinkTool()
 {
-  isDone = Standard_False;
+  isDone = false;
   myRT   = new TDF_RelocationTable();
 }
 
@@ -42,7 +42,7 @@ TDocStd_XLinkTool::TDocStd_XLinkTool()
 
 void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
 {
-  Handle(TDocStd_Document) TARGET, SOURCE;
+  occ::handle<TDocStd_Document> TARGET, SOURCE;
   TARGET = TDocStd_Document::Get(target);
   SOURCE = TDocStd_Document::Get(source);
   if (TARGET != SOURCE)
@@ -54,9 +54,9 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
   }
 
   // Remove TreeNode, then restore, if present
-  Handle(TDataStd_TreeNode) aFather, aPrev, aNext;
-  Handle(TDataStd_TreeNode) anOldFather, anOldPrev, anOldNext;
-  Handle(TDataStd_TreeNode) aNode, anOldNode;
+  occ::handle<TDataStd_TreeNode> aFather, aPrev, aNext;
+  occ::handle<TDataStd_TreeNode> anOldFather, anOldPrev, anOldNext;
+  occ::handle<TDataStd_TreeNode> aNode, anOldNode;
   if (TDataStd_TreeNode::Find(source, aNode))
   {
     aFather = aNode->Father();
@@ -72,16 +72,16 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
     anOldNode->Remove();
   }
 
-  myRT                   = new TDF_RelocationTable(Standard_True);
+  myRT                   = new TDF_RelocationTable(true);
   myDS                   = new TDF_DataSet;
-  Handle(TDF_DataSet) DS = new TDF_DataSet();
-  TDF_ClosureMode     mode(Standard_True); // descendant plus reference
+  occ::handle<TDF_DataSet> DS = new TDF_DataSet();
+  TDF_ClosureMode     mode(true); // descendant plus reference
   myDS->AddLabel(source);
   myRT->SetRelocation(source, target);
-  TDF_IDFilter filter(Standard_False); // on prend tout
+  TDF_IDFilter filter(false); // on prend tout
   TDF_ClosureTool::Closure(myDS, filter, mode);
   TDF_CopyTool::Copy(myDS, myRT);
-  // TopTools_DataMapOfShapeShape M; // removed to avoid dependence with TNaming
+  // NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> M; // removed to avoid dependence with TNaming
   // TNaming::ChangeShapes(target,M);// should be used as postfix after Copy
 
   if (!aNode.IsNull())
@@ -111,14 +111,14 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
     }
   }
 
-  isDone = Standard_True;
+  isDone = true;
 }
 
 //=================================================================================================
 
 void TDocStd_XLinkTool::CopyWithLink(const TDF_Label& target, const TDF_Label& source)
 {
-  Handle(TDF_Reference) REF;
+  occ::handle<TDF_Reference> REF;
   if (target.FindAttribute(TDF_Reference::GetID(), REF))
   {
     throw Standard_DomainError(" TDocStd_CopyWithLink : already a ref");
@@ -128,18 +128,18 @@ void TDocStd_XLinkTool::CopyWithLink(const TDF_Label& target, const TDF_Label& s
   {
     TCollection_AsciiString xlabelentry, xdocentry;
     TDF_Tool::Entry(source, xlabelentry);
-    Handle(TDocStd_Document) aSourceD  = TDocStd_Document::Get(source);
-    Handle(TDocStd_Document) aTargetD  = TDocStd_Document::Get(target);
-    Standard_Integer         aDocEntry = 0;
+    occ::handle<TDocStd_Document> aSourceD  = TDocStd_Document::Get(source);
+    occ::handle<TDocStd_Document> aTargetD  = TDocStd_Document::Get(target);
+    int         aDocEntry = 0;
     if (aSourceD != aTargetD)
       aDocEntry = aTargetD->CreateReference(aSourceD);
     xdocentry = aDocEntry;
 
-    Handle(TDocStd_XLink) X = TDocStd_XLink::Set(target);
+    occ::handle<TDocStd_XLink> X = TDocStd_XLink::Set(target);
     X->LabelEntry(xlabelentry);
     X->DocumentEntry(xdocentry);
     TDF_Reference::Set(target, source);
-    isDone = Standard_True;
+    isDone = true;
   }
 }
 
@@ -147,7 +147,7 @@ void TDocStd_XLinkTool::CopyWithLink(const TDF_Label& target, const TDF_Label& s
 
 void TDocStd_XLinkTool::UpdateLink(const TDF_Label& label)
 {
-  Handle(TDF_Reference) REF;
+  occ::handle<TDF_Reference> REF;
   if (!label.FindAttribute(TDF_Reference::GetID(), REF))
   {
     throw Standard_DomainError(" TDocStd_XLinkTool::UpdateLink : not ref registered");
@@ -158,21 +158,21 @@ void TDocStd_XLinkTool::UpdateLink(const TDF_Label& label)
 
 //=================================================================================================
 
-Standard_Boolean TDocStd_XLinkTool::IsDone() const
+bool TDocStd_XLinkTool::IsDone() const
 {
   return isDone;
 }
 
 //=================================================================================================
 
-Handle(TDF_RelocationTable) TDocStd_XLinkTool::RelocationTable() const
+occ::handle<TDF_RelocationTable> TDocStd_XLinkTool::RelocationTable() const
 {
   return myRT;
 }
 
 //=================================================================================================
 
-Handle(TDF_DataSet) TDocStd_XLinkTool::DataSet() const
+occ::handle<TDF_DataSet> TDocStd_XLinkTool::DataSet() const
 {
   return myDS;
 }

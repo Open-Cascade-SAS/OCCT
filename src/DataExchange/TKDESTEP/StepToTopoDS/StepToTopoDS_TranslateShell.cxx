@@ -40,7 +40,7 @@
 StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
     : myError(StepToTopoDS_TranslateShellOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 // ============================================================================
@@ -48,7 +48,7 @@ StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
 // Purpose : Init with a ConnectedFaceSet and a Tool
 // ============================================================================
 
-void StepToTopoDS_TranslateShell::Init(const Handle(StepShape_ConnectedFaceSet)& CFS,
+void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFaceSet>& CFS,
                                        StepToTopoDS_Tool&                        aTool,
                                        StepToTopoDS_NMTool&                      NMTool,
                                        const StepData_Factors&                   theLocalFactors,
@@ -62,27 +62,27 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepShape_ConnectedFaceSet)&
   {
 
     BRep_Builder                      B;
-    Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
+    occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
-    Standard_Integer NbFc = CFS->NbCfsFaces();
+    int NbFc = CFS->NbCfsFaces();
     TopoDS_Shell     Sh;
     B.MakeShell(Sh);
     TopoDS_Face            F;
     TopoDS_Shape           S;
-    Handle(StepShape_Face) StepFace;
+    occ::handle<StepShape_Face> StepFace;
 
     StepToTopoDS_TranslateFace myTranFace;
     myTranFace.SetPrecision(Precision()); // gka
     myTranFace.SetMaxTol(MaxTol());
 
     Message_ProgressScope PS(theProgress, "Face", NbFc);
-    for (Standard_Integer i = 1; i <= NbFc && PS.More(); i++, PS.Next())
+    for (int i = 1; i <= NbFc && PS.More(); i++, PS.Next())
     {
 #ifdef OCCT_DEBUG
       std::cout << "Processing Face : " << i << std::endl;
 #endif
       StepFace                            = CFS->CfsFacesValue(i);
-      Handle(StepShape_FaceSurface) theFS = Handle(StepShape_FaceSurface)::DownCast(StepFace);
+      occ::handle<StepShape_FaceSurface> theFS = occ::down_cast<StepShape_FaceSurface>(StepFace);
       if (!theFS.IsNull())
       {
         myTranFace.Init(theFS, aTool, NMTool, theLocalFactors);
@@ -106,13 +106,13 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepShape_ConnectedFaceSet)&
     myResult = Sh;
     aTool.Bind(CFS, myResult);
     myError = StepToTopoDS_TranslateShellDone;
-    done    = Standard_True;
+    done    = true;
   }
   else
   {
     myResult = TopoDS::Shell(aTool.Find(CFS));
     myError  = StepToTopoDS_TranslateShellDone;
-    done     = Standard_True;
+    done     = true;
   }
 }
 
@@ -121,11 +121,11 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepShape_ConnectedFaceSet)&
 // Purpose : Init with a ConnectedFaceSet and a Tool
 // ============================================================================
 
-void StepToTopoDS_TranslateShell::Init(const Handle(StepVisual_TessellatedShell)& theTSh,
+void StepToTopoDS_TranslateShell::Init(const occ::handle<StepVisual_TessellatedShell>& theTSh,
                                        StepToTopoDS_Tool&                         theTool,
                                        StepToTopoDS_NMTool&                       theNMTool,
-                                       const Standard_Boolean  theReadTessellatedWhenNoBRepOnly,
-                                       Standard_Boolean&       theHasGeom,
+                                       const bool  theReadTessellatedWhenNoBRepOnly,
+                                       bool&       theHasGeom,
                                        const StepData_Factors& theLocalFactors,
                                        const Message_ProgressRange& theProgress)
 {
@@ -135,45 +135,45 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepVisual_TessellatedShell)
   BRep_Builder aB;
   TopoDS_Shell aSh;
 
-  Standard_Integer      aNb = theTSh->NbItems();
+  int      aNb = theTSh->NbItems();
   Message_ProgressScope aPS(theProgress, "Face", theTSh->HasTopologicalLink() ? aNb + 1 : aNb);
 
-  Handle(Transfer_TransientProcess) aTP = theTool.TransientProcess();
+  occ::handle<Transfer_TransientProcess> aTP = theTool.TransientProcess();
 
   if (theTSh->HasTopologicalLink())
   {
-    Handle(TransferBRep_ShapeBinder) aBinder =
-      Handle(TransferBRep_ShapeBinder)::DownCast(aTP->Find(theTSh->TopologicalLink()));
+    occ::handle<TransferBRep_ShapeBinder> aBinder =
+      occ::down_cast<TransferBRep_ShapeBinder>(aTP->Find(theTSh->TopologicalLink()));
     if (!aBinder.IsNull())
     {
       aSh        = aBinder->Shell();
-      theHasGeom = Standard_True;
+      theHasGeom = true;
     }
   }
 
-  Standard_Boolean aNewShell = Standard_False;
+  bool aNewShell = false;
   if (aSh.IsNull())
   {
     aB.MakeShell(aSh);
-    aNewShell  = Standard_True;
-    theHasGeom = Standard_False;
+    aNewShell  = true;
+    theHasGeom = false;
   }
 
   StepToTopoDS_TranslateFace aTranTF;
   aTranTF.SetPrecision(Precision());
   aTranTF.SetMaxTol(MaxTol());
 
-  for (Standard_Integer i = 1; i <= aNb && aPS.More(); i++, aPS.Next())
+  for (int i = 1; i <= aNb && aPS.More(); i++, aPS.Next())
   {
 #ifdef OCCT_DEBUG
     std::cout << "Processing Face : " << i << std::endl;
 #endif
-    Handle(StepVisual_TessellatedStructuredItem) anItem = theTSh->ItemsValue(i);
+    occ::handle<StepVisual_TessellatedStructuredItem> anItem = theTSh->ItemsValue(i);
     if (anItem->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace)))
     {
-      Handle(StepVisual_TessellatedFace) aTFace =
-        Handle(StepVisual_TessellatedFace)::DownCast(anItem);
-      Standard_Boolean aHasFaceGeom = Standard_False;
+      occ::handle<StepVisual_TessellatedFace> aTFace =
+        occ::down_cast<StepVisual_TessellatedFace>(anItem);
+      bool aHasFaceGeom = false;
       aTranTF.Init(aTFace,
                    theTool,
                    theNMTool,
@@ -202,7 +202,7 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepVisual_TessellatedShell)
   aSh.Closed(BRep_Tool::IsClosed(aSh));
   myResult = aSh;
   myError  = StepToTopoDS_TranslateShellDone;
-  done     = Standard_True;
+  done     = true;
 }
 
 // ============================================================================

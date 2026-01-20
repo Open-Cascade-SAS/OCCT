@@ -39,15 +39,15 @@ class IGESData_IGESModel;
 //! To load a file in a model use method:
 //! reader.ReadFile("filename.igs")
 //! To check a loading file use method Check:
-//! reader.Check(failsonly); where failsonly is equal to Standard_True or
-//! Standard_False;
+//! reader.Check(failsonly); where failsonly is equal to true or
+//! false;
 //! To print the results of load:
 //! reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of
 //! enumeration IFSelect_PrintCount
 //! To transfer entities from a model the following methods can be used:
 //! for the whole model
 //! reader.TransferRoots(onlyvisible); where onlyvisible is equal to
-//! Standard_True or Standard_False;
+//! true or false;
 //! To transfer a list of entities:
 //! reader.TransferList(list);
 //! To transfer one entity
@@ -71,23 +71,23 @@ public:
   Standard_EXPORT IGESControl_Reader();
 
   //! Creates a Reader from an already existing Session
-  Standard_EXPORT IGESControl_Reader(const Handle(XSControl_WorkSession)& WS,
-                                     const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT IGESControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
+                                     const bool               scratch = true);
 
   //! Set the transion of ALL Roots (if theReadOnlyVisible is False)
   //! or of Visible Roots (if theReadOnlyVisible is True)
-  void SetReadVisible(const Standard_Boolean ReadRoot);
+  void SetReadVisible(const bool ReadRoot);
 
-  Standard_Boolean GetReadVisible() const;
+  bool GetReadVisible() const;
 
   //! Returns the model as a IGESModel.
   //! It can then be consulted (header, product)
-  Standard_EXPORT Handle(IGESData_IGESModel) IGESModel() const;
+  Standard_EXPORT occ::handle<IGESData_IGESModel> IGESModel() const;
 
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
   //! <theReadOnlyVisible> is taken into account to define roots
-  Standard_EXPORT virtual Standard_Integer NbRootsForTransfer() Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbRootsForTransfer() override;
 
   //! Prints Statistics and check list for Transfer
   Standard_EXPORT void PrintTransferInfo(const IFSelect_PrintFail  failwarn,
@@ -97,15 +97,15 @@ protected:
   //! Returns default parameters for shape fixing.
   //! @return default parameters for shape fixing.
   Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
   Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const
-    Standard_OVERRIDE;
+    override;
 
 private:
-  Standard_Boolean theReadOnlyVisible;
+  bool theReadOnlyVisible;
 };
 
 #include <IGESControl_Reader.lxx>

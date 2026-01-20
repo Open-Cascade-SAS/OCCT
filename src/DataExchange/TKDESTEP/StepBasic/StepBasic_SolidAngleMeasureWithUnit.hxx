@@ -21,9 +21,6 @@
 
 #include <StepBasic_MeasureWithUnit.hxx>
 
-class StepBasic_SolidAngleMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_SolidAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_SolidAngleMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SolidAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_SolidAngleMeasureWithUnit_HeaderFile

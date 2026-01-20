@@ -27,13 +27,13 @@
 //=================================================================================================
 
 Geom2dLProp_NumericCurInf2d::Geom2dLProp_NumericCurInf2d()
-    : isDone(Standard_False)
+    : isDone(false)
 {
 }
 
 //=================================================================================================
 
-void Geom2dLProp_NumericCurInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C,
+void Geom2dLProp_NumericCurInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C,
                                                 LProp_CurAndInf&            Result)
 {
   PerformCurExt(C,
@@ -44,30 +44,30 @@ void Geom2dLProp_NumericCurInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C,
 
 //=================================================================================================
 
-void Geom2dLProp_NumericCurInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C,
-                                                const Standard_Real         UMin,
-                                                const Standard_Real         UMax,
+void Geom2dLProp_NumericCurInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C,
+                                                const double         UMin,
+                                                const double         UMax,
                                                 LProp_CurAndInf&            Result)
 {
-  isDone = Standard_True;
+  isDone = true;
 
-  Standard_Real           EpsH = 1.e-4 * (UMax - UMin);
-  constexpr Standard_Real Tol  = Precision::PConfusion();
+  double           EpsH = 1.e-4 * (UMax - UMin);
+  constexpr double Tol  = Precision::PConfusion();
 
   // la premiere recherce se fait avec une tolerance assez grande
   // car la derivee de la fonction est estimee assez grossierement.
 
   Geom2dLProp_FuncCurExt F(C, EpsH);
-  Standard_Integer       NbSamples = 100;
-  Standard_Boolean       SolType;
+  int       NbSamples = 100;
+  bool       SolType;
 
   math_FunctionRoots SolRoot(F, UMin, UMax, NbSamples, EpsH, EpsH, EpsH);
 
   if (SolRoot.IsDone())
   {
-    for (Standard_Integer j = 1; j <= SolRoot.NbSolutions(); j++)
+    for (int j = 1; j <= SolRoot.NbSolutions(); j++)
     {
-      Standard_Real Param = SolRoot.Value(j);
+      double Param = SolRoot.Value(j);
       // la solution est affinee.
       math_BracketedRoot BS(F, Param - EpsH, Param + EpsH, Tol);
       if (BS.IsDone())
@@ -80,13 +80,13 @@ void Geom2dLProp_NumericCurInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C,
   }
   else
   {
-    isDone = Standard_False;
+    isDone = false;
   }
 }
 
 //=================================================================================================
 
-void Geom2dLProp_NumericCurInf2d::PerformInf(const Handle(Geom2d_Curve)& C, LProp_CurAndInf& Result)
+void Geom2dLProp_NumericCurInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C, LProp_CurAndInf& Result)
 {
   PerformInf(C,
              Geom2dLProp_Curve2dTool::FirstParameter(C),
@@ -96,35 +96,35 @@ void Geom2dLProp_NumericCurInf2d::PerformInf(const Handle(Geom2d_Curve)& C, LPro
 
 //=================================================================================================
 
-void Geom2dLProp_NumericCurInf2d::PerformInf(const Handle(Geom2d_Curve)& C,
-                                             const Standard_Real         UMin,
-                                             const Standard_Real         UMax,
+void Geom2dLProp_NumericCurInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C,
+                                             const double         UMin,
+                                             const double         UMax,
                                              LProp_CurAndInf&            Result)
 {
-  isDone = Standard_True;
+  isDone = true;
   Geom2dLProp_FuncCurNul F(C);
-  Standard_Real          EpsX      = 1.e-6;
-  Standard_Real          EpsF      = 1.e-6;
-  Standard_Integer       NbSamples = 30;
+  double          EpsX      = 1.e-6;
+  double          EpsF      = 1.e-6;
+  int       NbSamples = 30;
 
   math_FunctionRoots SolRoot(F, UMin, UMax, NbSamples, EpsX, EpsF, EpsX);
 
   if (SolRoot.IsDone())
   {
-    for (Standard_Integer j = 1; j <= SolRoot.NbSolutions(); j++)
+    for (int j = 1; j <= SolRoot.NbSolutions(); j++)
     {
       Result.AddInflection(SolRoot.Value(j));
     }
   }
   else
   {
-    isDone = Standard_False;
+    isDone = false;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2dLProp_NumericCurInf2d::IsDone() const
+bool Geom2dLProp_NumericCurInf2d::IsDone() const
 {
   return isDone;
 }

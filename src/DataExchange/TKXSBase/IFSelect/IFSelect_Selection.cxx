@@ -20,9 +20,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Selection, Standard_Transient)
 
-Standard_Boolean IFSelect_Selection::HasUniqueResult() const
+bool IFSelect_Selection::HasUniqueResult() const
 {
-  return Standard_False;
+  return false;
 } // eminemment redefinissable
 
 // UniqueResult, it is RootResult passed through a Map (-> flattened)
@@ -46,8 +46,8 @@ Interface_EntityIterator IFSelect_Selection::CompleteResult(const Interface_Grap
   Interface_Graph GG(G);
   for (iter.Start(); iter.More(); iter.Next())
   {
-    const Handle(Standard_Transient)& ent = iter.Value();
-    GG.GetFromEntity(ent, Standard_True); // and there we go
+    const occ::handle<Standard_Transient>& ent = iter.Value();
+    GG.GetFromEntity(ent, true); // and there we go
   }
   return Interface_GraphContent(GG); // specialized EntityIterator (same size)
 }

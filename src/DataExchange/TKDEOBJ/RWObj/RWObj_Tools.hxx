@@ -16,14 +16,15 @@
 #define _RWObj_Tools_HeaderFile
 
 #include <gp_XYZ.hxx>
-#include <Graphic3d_Vec3.hxx>
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! Auxiliary tools for OBJ format parser.
 namespace RWObj_Tools
 {
 //! Read 3 float values.
-inline bool ReadVec3(const char* thePos, char*& theNext, Graphic3d_Vec3& theVec)
+inline bool ReadVec3(const char* thePos, char*& theNext, NCollection_Vec3<float>& theVec)
 {
   const char* aPos = thePos;
   theVec.x()       = (float)Strtod(aPos, &theNext);
@@ -49,8 +50,8 @@ inline bool ReadVec3(const char* thePos, char*& theNext, gp_XYZ& theVec)
 //! Read string.
 inline bool ReadName(const char* thePos, TCollection_AsciiString& theName)
 {
-  Standard_Integer aFrom = 0;
-  Standard_Integer aTail = (Standard_Integer)std::strlen(thePos) - 1;
+  int aFrom = 0;
+  int aTail = (int)std::strlen(thePos) - 1;
   if (aTail >= 0 && thePos[aTail] == '\n')
   {
     --aTail;

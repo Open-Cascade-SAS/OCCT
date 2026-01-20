@@ -22,10 +22,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignedSharing, IFSelect_SelectExplore)
 
 IFSelect_SelectSignedSharing::IFSelect_SelectSignedSharing(
-  const Handle(IFSelect_Signature)& matcher,
-  const Standard_CString            signtext,
-  const Standard_Boolean            exact,
-  const Standard_Integer            level)
+  const occ::handle<IFSelect_Signature>& matcher,
+  const char* const            signtext,
+  const bool            exact,
+  const int            level)
     : IFSelect_SelectExplore(level),
       thematcher(matcher),
       thesigntext(signtext),
@@ -33,7 +33,7 @@ IFSelect_SelectSignedSharing::IFSelect_SelectSignedSharing(
 {
 }
 
-Handle(IFSelect_Signature) IFSelect_SelectSignedSharing::Signature() const
+occ::handle<IFSelect_Signature> IFSelect_SelectSignedSharing::Signature() const
 {
   return thematcher;
 }
@@ -43,37 +43,37 @@ const TCollection_AsciiString& IFSelect_SelectSignedSharing::SignatureText() con
   return thesigntext;
 }
 
-Standard_Boolean IFSelect_SelectSignedSharing::IsExact() const
+bool IFSelect_SelectSignedSharing::IsExact() const
 {
   return theexact;
 }
 
-Standard_Boolean IFSelect_SelectSignedSharing::Explore(const Standard_Integer            level,
-                                                       const Handle(Standard_Transient)& ent,
+bool IFSelect_SelectSignedSharing::Explore(const int            level,
+                                                       const occ::handle<Standard_Transient>& ent,
                                                        const Interface_Graph&            G,
                                                        Interface_EntityIterator& explored) const
 {
   if (thematcher->Matches(ent, G.Model(), thesigntext, theexact))
-    return Standard_True;
+    return true;
 
   //  otherwise, we do the sorting here
   Interface_EntityIterator list = G.Sharings(ent);
   //  If no more Sharing, then it's finished
   if (list.NbEntities() == 0)
-    return Standard_False;
+    return false;
 
   //  Otherwise, sort if we are at the level
   if (level < Level())
   {
     explored = list;
-    return Standard_True;
+    return true;
   }
   for (list.Start(); list.More(); list.Next())
   {
     if (thematcher->Matches(list.Value(), G.Model(), thesigntext, theexact))
       explored.AddItem(list.Value());
   }
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IFSelect_SelectSignedSharing::ExploreLabel() const

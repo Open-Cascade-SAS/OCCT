@@ -22,7 +22,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_Naming::NamedShape::Import(const Handle(TNaming_NamedShape)& theAttribute) const
+void StdPersistent_Naming::NamedShape::Import(const occ::handle<TNaming_NamedShape>& theAttribute) const
 {
   theAttribute->SetVersion(myVersion);
 
@@ -31,8 +31,8 @@ void StdPersistent_Naming::NamedShape::Import(const Handle(TNaming_NamedShape)& 
 
   TNaming_Builder aBuilder(theAttribute->Label());
 
-  StdPersistent_HArray1OfShape1::Iterator aOldShapesIter(*myOldShapes->Array());
-  StdPersistent_HArray1OfShape1::Iterator aNewShapesIter(*myNewShapes->Array());
+  NCollection_HArray1<StdObject_Shape>::Iterator aOldShapesIter(*myOldShapes->Array());
+  NCollection_HArray1<StdObject_Shape>::Iterator aNewShapesIter(*myNewShapes->Array());
   for (; aNewShapesIter.More(); aOldShapesIter.Next(), aNewShapesIter.Next())
   {
     TopoDS_Shape aOldShape = aOldShapesIter.Value().Import();
@@ -84,29 +84,29 @@ void StdPersistent_Naming::Name::Write(StdObjMgt_WriteData& theWriteData) const
 // function : Import
 // purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name::Import(TNaming_Name& theName, const Handle(TDF_Data)&) const
+void StdPersistent_Naming::Name::Import(TNaming_Name& theName, const occ::handle<TDF_Data>&) const
 {
   theName.Type(static_cast<TNaming_NameType>(myType));
   theName.ShapeType(static_cast<TopAbs_ShapeEnum>(myShapeType));
 
   if (myArgs)
   {
-    StdLPersistent_HArray1OfPersistent::Iterator anIter(*myArgs->Array());
+    NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>::Iterator anIter(*myArgs->Array());
     for (; anIter.More(); anIter.Next())
     {
-      const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
+      const occ::handle<StdObjMgt_Persistent>& aPersistent = anIter.Value();
       if (aPersistent)
       {
-        Handle(TDF_Attribute) anArg = aPersistent->GetAttribute();
-        theName.Append(Handle(TNaming_NamedShape)::DownCast(anArg));
+        occ::handle<TDF_Attribute> anArg = aPersistent->GetAttribute();
+        theName.Append(occ::down_cast<TNaming_NamedShape>(anArg));
       }
     }
   }
 
   if (myStop)
   {
-    Handle(TDF_Attribute) aStop = myStop->GetAttribute();
-    theName.StopNamedShape(Handle(TNaming_NamedShape)::DownCast(aStop));
+    occ::handle<TDF_Attribute> aStop = myStop->GetAttribute();
+    theName.StopNamedShape(occ::down_cast<TNaming_NamedShape>(aStop));
   }
 
   theName.Index(myIndex);
@@ -137,7 +137,7 @@ void StdPersistent_Naming::Name_1::Write(StdObjMgt_WriteData& theWriteData) cons
 // purpose  : Import transient object from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Name_1::Import(TNaming_Name&           theName,
-                                          const Handle(TDF_Data)& theDF) const
+                                          const occ::handle<TDF_Data>& theDF) const
 {
   Name::Import(theName, theDF);
   if (myContextLabel)
@@ -169,7 +169,7 @@ void StdPersistent_Naming::Name_2::Write(StdObjMgt_WriteData& theWriteData) cons
 // purpose  : Import transient object from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Name_2::Import(TNaming_Name&           theName,
-                                          const Handle(TDF_Data)& theDF) const
+                                          const occ::handle<TDF_Data>& theDF) const
 {
   Name_1::Import(theName, theDF);
   theName.Orientation(static_cast<TopAbs_Orientation>(myOrientation));
@@ -181,7 +181,7 @@ void StdPersistent_Naming::Name_2::Import(TNaming_Name&           theName,
 //=======================================================================
 void StdPersistent_Naming::Naming::ImportAttribute()
 {
-  Handle(Name) aName = Handle(Name)::DownCast(myData);
+  occ::handle<Name> aName = occ::down_cast<Name>(myData);
   if (aName)
   {
     aName->Import(myTransient->ChangeName(), myTransient->Label().Data());
@@ -197,7 +197,7 @@ void StdPersistent_Naming::Naming_1::ImportAttribute()
 {
   Naming::ImportAttribute();
 
-  Handle(TNaming_NamedShape) aNamedShape;
+  occ::handle<TNaming_NamedShape> aNamedShape;
   if (myTransient->Label().FindAttribute(TNaming_NamedShape::GetID(), aNamedShape)
       && aNamedShape->Evolution() == TNaming_SELECTED)
   {

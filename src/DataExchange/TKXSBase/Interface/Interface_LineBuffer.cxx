@@ -16,7 +16,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-Interface_LineBuffer::Interface_LineBuffer(const Standard_Integer size)
+Interface_LineBuffer::Interface_LineBuffer(const int size)
     : myLine(1, size + 1)
 {
   myLine.SetValue(1, '\0');
@@ -24,7 +24,7 @@ Interface_LineBuffer::Interface_LineBuffer(const Standard_Integer size)
   myInit = myLen = myGet = myKeep = myFriz = 0;
 }
 
-void Interface_LineBuffer::SetMax(const Standard_Integer theMax)
+void Interface_LineBuffer::SetMax(const int theMax)
 {
   if (theMax > myLine.Length())
   {
@@ -40,7 +40,7 @@ void Interface_LineBuffer::SetMax(const Standard_Integer theMax)
   }
 }
 
-void Interface_LineBuffer::SetInitial(const Standard_Integer theInitial)
+void Interface_LineBuffer::SetInitial(const int theInitial)
 {
   if (myFriz > 0)
   {
@@ -65,18 +65,18 @@ void Interface_LineBuffer::SetKeep()
   myKeep = -myLen;
 }
 
-Standard_Boolean Interface_LineBuffer::CanGet(const Standard_Integer theMore)
+bool Interface_LineBuffer::CanGet(const int theMore)
 {
   myGet = theMore;
   if ((myLen + myInit + theMore) <= myMax)
   {
-    return Standard_True;
+    return true;
   }
   if (myKeep < 0)
   {
     myKeep = -myKeep;
   }
-  return Standard_False;
+  return false;
 }
 
 void Interface_LineBuffer::FreezeInitial()
@@ -103,11 +103,11 @@ void Interface_LineBuffer::Prepare()
       return;
     }
 
-    for (Standard_Integer i = myLen + 1; i > 0; --i)
+    for (int i = myLen + 1; i > 0; --i)
     {
       myLine.SetValue(i + myInit, myLine.Value(i));
     }
-    for (Standard_Integer i = 1; i <= myInit; ++i)
+    for (int i = 1; i <= myInit; ++i)
     {
       myLine.SetValue(i, ' ');
     }
@@ -137,7 +137,7 @@ void Interface_LineBuffer::Keep()
   if (myKeep > 0)
   {
     myLine.SetValue(1, myKept);
-    for (Standard_Integer i = myKeep + 1; i <= myLen + myInit + 1; ++i)
+    for (int i = myKeep + 1; i <= myLen + myInit + 1; ++i)
     {
       myLine.SetValue(i - myKeep + 1, myLine.Value(i));
     }
@@ -162,32 +162,32 @@ void Interface_LineBuffer::Move(TCollection_AsciiString& theStr)
   Keep();
 }
 
-void Interface_LineBuffer::Move(const Handle(TCollection_HAsciiString)& theStr)
+void Interface_LineBuffer::Move(const occ::handle<TCollection_HAsciiString>& theStr)
 {
   Prepare();
   theStr->AssignCat(&myLine.First());
   Keep();
 }
 
-Handle(TCollection_HAsciiString) Interface_LineBuffer::Moved()
+occ::handle<TCollection_HAsciiString> Interface_LineBuffer::Moved()
 {
   Prepare();
-  Handle(TCollection_HAsciiString) R = new TCollection_HAsciiString(&myLine.First());
+  occ::handle<TCollection_HAsciiString> R = new TCollection_HAsciiString(&myLine.First());
   Keep();
   return R;
 }
 
 // ....                        AJOUTS                        ....
 
-void Interface_LineBuffer::Add(const Standard_CString theText)
+void Interface_LineBuffer::Add(const char* const theText)
 {
-  Add(theText, (Standard_Integer)strlen(theText));
+  Add(theText, (int)strlen(theText));
 }
 
-void Interface_LineBuffer::Add(const Standard_CString text, const Standard_Integer lntext)
+void Interface_LineBuffer::Add(const char* const text, const int lntext)
 {
-  Standard_Integer lnt = (lntext > (myMax - myLen - myInit) ? (myMax - myLen - myInit) : lntext);
-  for (Standard_Integer i = 1; i <= lnt; ++i)
+  int lnt = (lntext > (myMax - myLen - myInit) ? (myMax - myLen - myInit) : lntext);
+  for (int i = 1; i <= lnt; ++i)
   {
     myLine.SetValue(myLen + i, text[i - 1]);
   }
@@ -200,7 +200,7 @@ void Interface_LineBuffer::Add(const TCollection_AsciiString& theText)
   Add(theText.ToCString(), theText.Length());
 }
 
-void Interface_LineBuffer::Add(const Standard_Character theText)
+void Interface_LineBuffer::Add(const char theText)
 {
   myLine.SetValue(myLen + 1, theText);
   ++myLen;

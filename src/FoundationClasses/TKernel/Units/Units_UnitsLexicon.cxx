@@ -35,9 +35,9 @@ Units_UnitsLexicon::Units_UnitsLexicon()
 
 //=================================================================================================
 
-void Units_UnitsLexicon::Creates(const Standard_Boolean amode)
+void Units_UnitsLexicon::Creates(const bool amode)
 {
-  Handle(Units_UnitsDictionary) unitsdictionary;
+  occ::handle<Units_UnitsDictionary> unitsdictionary;
 
   Units_Lexicon::Creates();
 

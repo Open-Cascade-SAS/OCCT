@@ -20,13 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <Standard_Integer.hxx>
 class gp_GTrsf;
-
-class IGESGeom_TransformationMatrix;
-DEFINE_STANDARD_HANDLE(IGESGeom_TransformationMatrix, IGESData_TransfEntity)
 
 //! defines IGESTransformationMatrix, Type <124> Form <0>
 //! in package IGESGeom
@@ -46,26 +44,25 @@ public:
   //! - aMatrix : 3 x 4 array containing elements of the
   //! transformation matrix
   //! raises exception if aMatrix is not 3 x 4 array
-  Standard_EXPORT void Init(const Handle(TColStd_HArray2OfReal)& aMatrix);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray2<double>>& aMatrix);
 
   //! Changes FormNumber (indicates the Type of Transf :
   //! Transformation 0-1 or Coordinate System 10-11-12)
   //! Error if not in ranges [0-1] or [10-12]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns individual Data
   //! Error if I not in [1-3] or J not in [1-4]
-  Standard_EXPORT Standard_Real Data(const Standard_Integer I, const Standard_Integer J) const;
+  Standard_EXPORT double Data(const int I, const int J) const;
 
   //! returns the transformation matrix
   //! 4th row elements of GTrsf will always be 0, 0, 0, 1 (not defined)
-  Standard_EXPORT gp_GTrsf Value() const Standard_OVERRIDE;
+  Standard_EXPORT gp_GTrsf Value() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_TransformationMatrix, IGESData_TransfEntity)
 
-protected:
 private:
-  Handle(TColStd_HArray2OfReal) theData;
+  occ::handle<NCollection_HArray2<double>> theData;
 };
 
 #endif // _IGESGeom_TransformationMatrix_HeaderFile

@@ -21,8 +21,8 @@
 #include <StepElement_CurveElementFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static Standard_CString anEnum = "ENUMERATED_CURVE_ELEMENT_FREEDOM";
-static Standard_CString anApp  = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
+static const char* anEnum = "ENUMERATED_CURVE_ELEMENT_FREEDOM";
+static const char* anApp  = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
@@ -30,16 +30,16 @@ StepElement_CurveElementFreedom::StepElement_CurveElementFreedom() {}
 
 //=================================================================================================
 
-Standard_Integer StepElement_CurveElementFreedom::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_CurveElementFreedom::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_CurveElementFreedom::CaseMem(
-  const Handle(StepData_SelectMember)& ent) const
+int StepElement_CurveElementFreedom::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -53,7 +53,7 @@ Standard_Integer StepElement_CurveElementFreedom::CaseMem(
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_CurveElementFreedom::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_CurveElementFreedom::NewMember() const
 {
   return new StepElement_CurveElementFreedomMember;
 }
@@ -63,14 +63,14 @@ Handle(StepData_SelectMember) StepElement_CurveElementFreedom::NewMember() const
 void StepElement_CurveElementFreedom::SetEnumeratedCurveElementFreedom(
   const StepElement_EnumeratedCurveElementFreedom val)
 {
-  Handle(StepElement_CurveElementFreedomMember) SelMem =
-    Handle(StepElement_CurveElementFreedomMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementFreedomMember> SelMem =
+    occ::down_cast<StepElement_CurveElementFreedomMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_FREEDOM");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
@@ -78,17 +78,17 @@ void StepElement_CurveElementFreedom::SetEnumeratedCurveElementFreedom(
 StepElement_EnumeratedCurveElementFreedom StepElement_CurveElementFreedom::
   EnumeratedCurveElementFreedom() const
 {
-  Handle(StepElement_CurveElementFreedomMember) SelMem =
-    Handle(StepElement_CurveElementFreedomMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementFreedomMember> SelMem =
+    occ::down_cast<StepElement_CurveElementFreedomMember>(Value());
   if (SelMem.IsNull())
     return StepElement_None;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_FREEDOM");
   if (name->IsDifferent(nameitem))
     return StepElement_None;
-  Standard_Integer                          numit = SelMem->Enum();
+  int                          numit = SelMem->Enum();
   StepElement_EnumeratedCurveElementFreedom val;
   switch (numit)
   {
@@ -126,13 +126,13 @@ StepElement_EnumeratedCurveElementFreedom StepElement_CurveElementFreedom::
 //=================================================================================================
 
 void StepElement_CurveElementFreedom::SetApplicationDefinedDegreeOfFreedom(
-  const Handle(TCollection_HAsciiString)& val)
+  const occ::handle<TCollection_HAsciiString>& val)
 {
-  Handle(StepElement_CurveElementFreedomMember) SelMem =
-    Handle(StepElement_CurveElementFreedomMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementFreedomMember> SelMem =
+    occ::down_cast<StepElement_CurveElementFreedomMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name =
+  occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
   SelMem->SetString(val->ToCString());
@@ -140,20 +140,20 @@ void StepElement_CurveElementFreedom::SetApplicationDefinedDegreeOfFreedom(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_CurveElementFreedom::
+occ::handle<TCollection_HAsciiString> StepElement_CurveElementFreedom::
   ApplicationDefinedDegreeOfFreedom() const
 {
-  Handle(StepElement_CurveElementFreedomMember) SelMem =
-    Handle(StepElement_CurveElementFreedomMember)::DownCast(Value());
+  occ::handle<StepElement_CurveElementFreedomMember> SelMem =
+    occ::down_cast<StepElement_CurveElementFreedomMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
     return 0;
-  Handle(TCollection_HAsciiString) val = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;
 }

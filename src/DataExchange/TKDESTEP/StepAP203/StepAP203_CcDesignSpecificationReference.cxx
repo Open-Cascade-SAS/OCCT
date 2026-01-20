@@ -29,9 +29,9 @@ StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReferen
 //=================================================================================================
 
 void StepAP203_CcDesignSpecificationReference::Init(
-  const Handle(StepBasic_Document)&               aDocumentReference_AssignedDocument,
-  const Handle(TCollection_HAsciiString)&         aDocumentReference_Source,
-  const Handle(StepAP203_HArray1OfSpecifiedItem)& aItems)
+  const occ::handle<StepBasic_Document>&               aDocumentReference_AssignedDocument,
+  const occ::handle<TCollection_HAsciiString>&         aDocumentReference_Source,
+  const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& aItems)
 {
   StepBasic_DocumentReference::Init0(aDocumentReference_AssignedDocument,
                                      aDocumentReference_Source);
@@ -41,7 +41,7 @@ void StepAP203_CcDesignSpecificationReference::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfSpecifiedItem) StepAP203_CcDesignSpecificationReference::Items() const
+occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>> StepAP203_CcDesignSpecificationReference::Items() const
 {
   return theItems;
 }
@@ -49,7 +49,7 @@ Handle(StepAP203_HArray1OfSpecifiedItem) StepAP203_CcDesignSpecificationReferenc
 //=================================================================================================
 
 void StepAP203_CcDesignSpecificationReference::SetItems(
-  const Handle(StepAP203_HArray1OfSpecifiedItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& aItems)
 {
   theItems = aItems;
 }

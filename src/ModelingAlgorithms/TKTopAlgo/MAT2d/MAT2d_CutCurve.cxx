@@ -21,7 +21,8 @@
 #include <MAT2d_CutCurve.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColGeom2d_SequenceOfCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
@@ -29,24 +30,24 @@ MAT2d_CutCurve::MAT2d_CutCurve() {}
 
 //=================================================================================================
 
-MAT2d_CutCurve::MAT2d_CutCurve(const Handle(Geom2d_Curve)& C)
+MAT2d_CutCurve::MAT2d_CutCurve(const occ::handle<Geom2d_Curve>& C)
 {
   Perform(C);
 }
 
 //=================================================================================================
 
-void MAT2d_CutCurve::Perform(const Handle(Geom2d_Curve)& C)
+void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   theCurves.Clear();
 
   Geom2dLProp_CurAndInf2d     Sommets;
-  Handle(Geom2d_TrimmedCurve) TrimC;
-  Standard_Real               UF, UL, UC;
+  occ::handle<Geom2d_TrimmedCurve> TrimC;
+  double               UF, UL, UC;
   gp_Pnt2d                    PF, PL, PC;
-  constexpr Standard_Real     PTol  = Precision::PConfusion() * 10;
-  constexpr Standard_Real     Tol   = Precision::Confusion() * 10;
-  Standard_Boolean            YaCut = Standard_False;
+  constexpr double     PTol  = Precision::PConfusion() * 10;
+  constexpr double     Tol   = Precision::Confusion() * 10;
+  bool            YaCut = false;
   Sommets.Perform(C);
 
   if (Sommets.IsDone() && !Sommets.IsEmpty())
@@ -56,7 +57,7 @@ void MAT2d_CutCurve::Perform(const Handle(Geom2d_Curve)& C)
     PF = C->Value(UF);
     PL = C->Value(UL);
 
-    for (Standard_Integer i = 1; i <= Sommets.NbPoints(); i++)
+    for (int i = 1; i <= Sommets.NbPoints(); i++)
     {
       UC = Sommets.Parameter(i);
 
@@ -71,7 +72,7 @@ void MAT2d_CutCurve::Perform(const Handle(Geom2d_Curve)& C)
         theCurves.Append(TrimC);
         UF    = UC;
         PF    = PC;
-        YaCut = Standard_True;
+        YaCut = true;
       }
     }
     if (YaCut)
@@ -84,14 +85,14 @@ void MAT2d_CutCurve::Perform(const Handle(Geom2d_Curve)& C)
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_CutCurve::UnModified() const
+bool MAT2d_CutCurve::UnModified() const
 {
   return theCurves.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_CutCurve::NbCurves() const
+int MAT2d_CutCurve::NbCurves() const
 {
   if (UnModified())
   {
@@ -102,7 +103,7 @@ Standard_Integer MAT2d_CutCurve::NbCurves() const
 
 //=================================================================================================
 
-Handle(Geom2d_TrimmedCurve) MAT2d_CutCurve::Value(const Standard_Integer Index) const
+occ::handle<Geom2d_TrimmedCurve> MAT2d_CutCurve::Value(const int Index) const
 {
   if (UnModified())
   {
@@ -112,5 +113,5 @@ Handle(Geom2d_TrimmedCurve) MAT2d_CutCurve::Value(const Standard_Integer Index) 
   {
     throw Standard_OutOfRange();
   }
-  return Handle(Geom2d_TrimmedCurve)::DownCast(theCurves.Value(Index));
+  return occ::down_cast<Geom2d_TrimmedCurve>(theCurves.Value(Index));
 }

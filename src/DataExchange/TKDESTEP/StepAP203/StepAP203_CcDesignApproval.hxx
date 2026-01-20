@@ -19,12 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfApprovedItem.hxx>
+#include <StepAP203_ApprovedItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ApprovalAssignment.hxx>
 class StepBasic_Approval;
-
-class StepAP203_CcDesignApproval;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignApproval, StepBasic_ApprovalAssignment)
 
 //! Representation of STEP entity CcDesignApproval
 class StepAP203_CcDesignApproval : public StepBasic_ApprovalAssignment
@@ -35,20 +34,19 @@ public:
   Standard_EXPORT StepAP203_CcDesignApproval();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_Approval)& aApprovalAssignment_AssignedApproval,
-                            const Handle(StepAP203_HArray1OfApprovedItem)& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Approval>& aApprovalAssignment_AssignedApproval,
+                            const occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfApprovedItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfApprovedItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignApproval, StepBasic_ApprovalAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfApprovedItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> theItems;
 };
 
 #endif // _StepAP203_CcDesignApproval_HeaderFile

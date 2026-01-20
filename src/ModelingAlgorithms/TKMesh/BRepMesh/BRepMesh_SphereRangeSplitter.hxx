@@ -32,16 +32,16 @@ public:
 
   //! Returns list of nodes generated using surface data and specified parameters.
   Standard_EXPORT virtual Handle(IMeshData::ListOfPnt2d) GenerateSurfaceNodes(
-    const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
+    const IMeshTools_Parameters& theParameters) const override;
 
 private:
   //! Computes step for the given range.
-  void computeStep(const std::pair<Standard_Real, Standard_Real>& theRange,
-                   const Standard_Real                            theDefaultStep,
-                   std::pair<Standard_Real, Standard_Real>&       theStepAndOffset) const
+  void computeStep(const std::pair<double, double>& theRange,
+                   const double                            theDefaultStep,
+                   std::pair<double, double>&       theStepAndOffset) const
   {
-    const Standard_Real aDiff = theRange.second - theRange.first;
-    theStepAndOffset.first    = aDiff / ((Standard_Integer)(aDiff / theDefaultStep) + 1);
+    const double aDiff = theRange.second - theRange.first;
+    theStepAndOffset.first    = aDiff / ((int)(aDiff / theDefaultStep) + 1);
     theStepAndOffset.second   = theRange.second - Precision::PConfusion();
   }
 };

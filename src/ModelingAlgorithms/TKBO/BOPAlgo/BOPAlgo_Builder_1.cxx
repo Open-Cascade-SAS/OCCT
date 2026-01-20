@@ -26,37 +26,41 @@
 #include <BRep_Tool.hxx>
 #include <IntTools_Context.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
 void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Filling splits of vertices", myDS->ShapesSD().Size());
-  TColStd_DataMapIteratorOfDataMapOfIntegerInteger aIt(myDS->ShapesSD());
+  NCollection_DataMap<int, int>::Iterator aIt(myDS->ShapesSD());
   for (; aIt.More(); aIt.Next(), aPS.Next())
   {
     if (UserBreak(aPS))
     {
       return;
     }
-    Standard_Integer nV   = aIt.Key();
-    Standard_Integer nVSD = aIt.Value();
+    int nV   = aIt.Key();
+    int nVSD = aIt.Value();
 
     const TopoDS_Shape& aV   = myDS->Shape(nV);
     const TopoDS_Shape& aVSD = myDS->Shape(nVSD);
     // Add to Images map
-    myImages.Bound(aV, TopTools_ListOfShape(myAllocator))->Append(aVSD);
+    myImages.Bound(aV, NCollection_List<TopoDS_Shape>(myAllocator))->Append(aVSD);
     // Add to SD map
     myShapesSD.Bind(aV, aVSD);
     // Add to Origins map
-    TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aVSD);
+    NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aVSD);
     if (!pLOr)
-      pLOr = myOrigins.Bound(aVSD, TopTools_ListOfShape());
+      pLOr = myOrigins.Bound(aVSD, NCollection_List<TopoDS_Shape>());
     pLOr->Append(aV);
   }
 }
@@ -65,7 +69,7 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
 
 void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
 {
-  Standard_Integer      i, aNbS = myDS->NbSourceShapes();
+  int      i, aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Filling splits of edges", aNbS);
   for (i = 0; i < aNbS; ++i, aPS.Next())
   {
@@ -82,33 +86,33 @@ void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
     }
     //
     const TopoDS_Shape&          aE   = aSI.Shape();
-    const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks(i);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = myDS->PaveBlocks(i);
     //
     // Fill the images of the edge from the list of its pave blocks.
     // The small edges, having no pave blocks, will have the empty list
     // of images and, thus, will be avoided in the result.
-    TopTools_ListOfShape* pLS = myImages.Bound(aE, TopTools_ListOfShape());
+    NCollection_List<TopoDS_Shape>* pLS = myImages.Bound(aE, NCollection_List<TopoDS_Shape>());
     //
-    BOPDS_ListIteratorOfListOfPaveBlock aItPB(aLPB);
+    NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB  = aItPB.Value();
-      Handle(BOPDS_PaveBlock)        aPBR = myDS->RealPaveBlock(aPB);
+      const occ::handle<BOPDS_PaveBlock>& aPB  = aItPB.Value();
+      occ::handle<BOPDS_PaveBlock>        aPBR = myDS->RealPaveBlock(aPB);
       //
-      Standard_Integer    nSpR = aPBR->Edge();
+      int    nSpR = aPBR->Edge();
       const TopoDS_Shape& aSpR = myDS->Shape(nSpR);
       pLS->Append(aSpR);
       //
-      TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aSpR);
+      NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aSpR);
       if (!pLOr)
       {
-        pLOr = myOrigins.Bound(aSpR, TopTools_ListOfShape());
+        pLOr = myOrigins.Bound(aSpR, NCollection_List<TopoDS_Shape>());
       }
       pLOr->Append(aE);
       //
       if (myDS->IsCommonBlockOnEdge(aPB))
       {
-        Standard_Integer    nSp = aPB->Edge();
+        int    nSp = aPB->Edge();
         const TopoDS_Shape& aSp = myDS->Shape(nSp);
         myShapesSD.Bind(aSp, aSpR);
       }
@@ -125,17 +129,17 @@ void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
 void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 {
   // Fence map
-  TopTools_MapOfShape aMFence;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
   // Iterate on all arguments of given type
   // and add their images into result
-  TopTools_ListIteratorOfListOfShape aItA(myArguments);
+  NCollection_List<TopoDS_Shape>::Iterator aItA(myArguments);
   for (; aItA.More(); aItA.Next())
   {
     const TopoDS_Shape& aS = aItA.Value();
     if (aS.ShapeType() != theType)
       continue;
     // Get images
-    const TopTools_ListOfShape* pLSIm = myImages.Seek(aS);
+    const NCollection_List<TopoDS_Shape>* pLSIm = myImages.Seek(aS);
     if (!pLSIm)
     {
       // No images -> add the argument shape itself into result
@@ -145,7 +149,7 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
     else
     {
       // Add images of the argument shape into result
-      TopTools_ListIteratorOfListOfShape aItIm(*pLSIm);
+      NCollection_List<TopoDS_Shape>::Iterator aItIm(*pLSIm);
       for (; aItIm.More(); aItIm.Next())
       {
         const TopoDS_Shape& aSIm = aItIm.Value();
@@ -161,8 +165,8 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum       theType,
                                            const Message_ProgressRange& theRange)
 {
-  Standard_Integer    i, aNbS;
-  TopTools_MapOfShape aMFP(100, myAllocator);
+  int    i, aNbS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFP(100, myAllocator);
   //
   aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Building splits of containers", 1);
@@ -185,8 +189,8 @@ void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum       theType,
 
 void BOPAlgo_Builder::FillImagesCompounds(const Message_ProgressRange& theRange)
 {
-  Standard_Integer    i, aNbS;
-  TopTools_MapOfShape aMFP(100, myAllocator);
+  int    i, aNbS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFP(100, myAllocator);
   //
   aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Building splits of compounds", aNbS);
@@ -214,7 +218,7 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
   for (; aIt.More(); aIt.Next())
   {
     const TopoDS_Shape&         aSS   = aIt.Value();
-    const TopTools_ListOfShape* pLFIm = myImages.Seek(aSS);
+    const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aSS);
     if (pLFIm && ((pLFIm->Extent() != 1) || !pLFIm->First().IsSame(aSS)))
       break;
   }
@@ -235,7 +239,7 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
   for (; aIt.More(); aIt.Next())
   {
     const TopoDS_Shape&         aSS    = aIt.Value();
-    const TopTools_ListOfShape* pLSSIm = myImages.Seek(aSS);
+    const NCollection_List<TopoDS_Shape>* pLSSIm = myImages.Seek(aSS);
 
     if (!pLSSIm)
     {
@@ -245,7 +249,7 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
     }
 
     // Add the splits
-    TopTools_ListIteratorOfListOfShape aItIm(*pLSSIm);
+    NCollection_List<TopoDS_Shape>::Iterator aItIm(*pLSSIm);
     for (; aItIm.More(); aItIm.Next())
     {
       TopoDS_Shape aSSIm = aItIm.Value();
@@ -259,25 +263,25 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
   }
 
   aCIm.Closed(BRep_Tool::IsClosed(aCIm));
-  myImages.Bound(theS, TopTools_ListOfShape(myAllocator))->Append(aCIm);
+  myImages.Bound(theS, NCollection_List<TopoDS_Shape>(myAllocator))->Append(aCIm);
 }
 
 //=================================================================================================
 
-void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapOfShape& theMFP)
+void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMFP)
 {
-  Standard_Boolean                   bInterferred;
+  bool                   bInterferred;
   TopAbs_Orientation                 aOrX;
   TopoDS_Iterator                    aIt;
   BRep_Builder                       aBB;
-  TopTools_ListIteratorOfListOfShape aItIm;
+  NCollection_List<TopoDS_Shape>::Iterator aItIm;
   //
   if (!theMFP.Add(theS))
   {
     return;
   }
   //
-  bInterferred = Standard_False;
+  bInterferred = false;
   aIt.Initialize(theS);
   for (; aIt.More(); aIt.Next())
   {
@@ -288,7 +292,7 @@ void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapO
     }
     if (myImages.IsBound(aSx))
     {
-      bInterferred = Standard_True;
+      bInterferred = true;
     }
   }
   if (!bInterferred)
@@ -306,7 +310,7 @@ void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapO
     aOrX                    = aSX.Orientation();
     if (myImages.IsBound(aSX))
     {
-      const TopTools_ListOfShape& aLFIm = myImages.Find(aSX);
+      const NCollection_List<TopoDS_Shape>& aLFIm = myImages.Find(aSX);
       aItIm.Initialize(aLFIm);
       for (; aItIm.More(); aItIm.Next())
       {
@@ -321,7 +325,7 @@ void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, TopTools_MapO
     }
   }
   //
-  TopTools_ListOfShape aLSIm(myAllocator);
+  NCollection_List<TopoDS_Shape> aLSIm(myAllocator);
   aLSIm.Append(aCIm);
   myImages.Bind(theS, aLSIm);
 }

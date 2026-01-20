@@ -14,7 +14,7 @@
 
 #include <IntSurf_QuadricTool.hxx>
 
-Standard_Real IntSurf_QuadricTool::Tolerance(const IntSurf_Quadric& Q)
+double IntSurf_QuadricTool::Tolerance(const IntSurf_Quadric& Q)
 {
   switch (Q.TypeQuadric())
   {

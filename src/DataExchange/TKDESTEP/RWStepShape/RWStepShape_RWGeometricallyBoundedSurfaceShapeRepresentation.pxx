@@ -37,21 +37,19 @@ public:
   Standard_HIDDEN RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation();
 
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                                  data,
-    const Standard_Integer                                                  num,
-    Handle(Interface_Check)&                                                ach,
-    const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent) const;
+    const occ::handle<StepData_StepReaderData>&                                  data,
+    const int                                                  num,
+    occ::handle<Interface_Check>&                                                ach,
+    const occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>& ent) const;
 
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                                    SW,
-    const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent) const;
+    const occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>& ent) const;
 
   Standard_HIDDEN void Share(
-    const Handle(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)& ent,
+    const occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>& ent,
     Interface_EntityIterator&                                               iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepShape_RWGeometricallyBoundedSurfaceShapeRepresentation_HeaderFile

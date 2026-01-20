@@ -17,12 +17,12 @@
 #include <Standard_DomainError.hxx>
 #include <IntPatch_Line.hxx>
 
-inline Standard_Boolean IntPatch_Intersection::IsDone() const
+inline bool IntPatch_Intersection::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean IntPatch_Intersection::IsEmpty() const
+inline bool IntPatch_Intersection::IsEmpty() const
 {
   if (!done)
   {
@@ -31,7 +31,7 @@ inline Standard_Boolean IntPatch_Intersection::IsEmpty() const
   return empt;
 }
 
-inline Standard_Boolean IntPatch_Intersection::TangentFaces() const
+inline bool IntPatch_Intersection::TangentFaces() const
 {
   if (!done)
   {
@@ -40,7 +40,7 @@ inline Standard_Boolean IntPatch_Intersection::TangentFaces() const
   return tgte;
 }
 
-inline Standard_Boolean IntPatch_Intersection::OppositeFaces() const
+inline bool IntPatch_Intersection::OppositeFaces() const
 {
   if (!done)
   {
@@ -53,7 +53,7 @@ inline Standard_Boolean IntPatch_Intersection::OppositeFaces() const
   return oppo;
 }
 
-inline Standard_Integer IntPatch_Intersection::NbPnts() const
+inline int IntPatch_Intersection::NbPnts() const
 {
   if (!done)
   {
@@ -62,7 +62,7 @@ inline Standard_Integer IntPatch_Intersection::NbPnts() const
   return spnt.Length();
 }
 
-inline const IntPatch_Point& IntPatch_Intersection::Point(const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_Intersection::Point(const int Index) const
 {
   if (!done)
   {
@@ -71,7 +71,7 @@ inline const IntPatch_Point& IntPatch_Intersection::Point(const Standard_Integer
   return spnt(Index);
 }
 
-inline Standard_Integer IntPatch_Intersection::NbLines() const
+inline int IntPatch_Intersection::NbLines() const
 {
   if (!done)
   {
@@ -80,7 +80,7 @@ inline Standard_Integer IntPatch_Intersection::NbLines() const
   return slin.Length();
 }
 
-inline const Handle(IntPatch_Line)& IntPatch_Intersection::Line(const Standard_Integer Index) const
+inline const occ::handle<IntPatch_Line>& IntPatch_Intersection::Line(const int Index) const
 {
   if (!done)
   {

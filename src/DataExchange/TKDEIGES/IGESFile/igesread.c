@@ -32,8 +32,6 @@ void iges_param(int *Pstat,char *ligne,char c_separ,char c_fin,int lonlin);
 void iges_Dsect (int *Dstat,int numsec,char* ligne);
 void iges_Psect(int numsec,char ligne[80]);
 
-
-
 /*  General reading routine for an IGES file
     Ensures the chaining of necessary calls
     Results in a set of data (struct C) queryable by
@@ -42,7 +40,6 @@ void iges_Psect(int numsec,char ligne[80]);
     Returns: 0 if OK, 1 if file could not be opened
   */
 
-
 /* MGE 16/06/98*/
 /* To use strcpy*/
 /*#include <string.h>*/
@@ -50,7 +47,6 @@ void iges_Psect(int numsec,char ligne[80]);
 /*#include <MoniTool_Msg.hxx>*/
 
 static  char sects [] = " SGDPT ";
-
 
 int igesread (char* nomfic, int lesect[6], int modefnes)
 {

@@ -28,55 +28,55 @@ public:
   //! @param[in] theBottomRad cylinder bottom radius
   //! @param[in] theTopRad    cylinder top radius
   //! @param[in] theHeight    cylinder height
-  Standard_EXPORT Select3D_SensitiveCylinder(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                             const Standard_Real                  theBottomRad,
-                                             const Standard_Real                  theTopRad,
-                                             const Standard_Real                  theHeight,
+  Standard_EXPORT Select3D_SensitiveCylinder(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                             const double                  theBottomRad,
+                                             const double                  theTopRad,
+                                             const double                  theHeight,
                                              const gp_Trsf&                       theTrsf,
-                                             const Standard_Boolean theIsHollow = Standard_False);
+                                             const bool theIsHollow = false);
 
   //! Checks whether the cylinder overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches(SelectBasics_SelectingVolumeManager& theMgr,
+  Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
-    Standard_OVERRIDE;
+    override;
 
   //! Returns the copy of this
-  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   //! Returns bounding box of the cylinder.
   //! If location transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
-  //! Always returns Standard_False
-  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+  //! Always returns false
+  virtual bool ToBuildBVH() const override { return false; }
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 1; }
+  virtual int NbSubElements() const override { return 1; }
 
   //! Returns center of the cylinder with transformation applied
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Returns cylinder transformation
   const gp_Trsf& Transformation() const { return myTrsf; }
 
   //! Returns cylinder top radius
-  Standard_Real TopRadius() const { return myTopRadius; }
+  double TopRadius() const { return myTopRadius; }
 
   //! Returns cylinder bottom radius
-  Standard_Real BottomRadius() const { return myBottomRadius; }
+  double BottomRadius() const { return myBottomRadius; }
 
   //! Returns cylinder height
-  Standard_Real Height() const { return myHeight; }
+  double Height() const { return myHeight; }
 
   //! Returns true if the cylinder is empty inside
-  Standard_Boolean IsHollow() const { return myIsHollow; }
+  bool IsHollow() const { return myIsHollow; }
 
 protected:
   gp_Trsf          myTrsf;         //!< cylinder transformation to apply
-  Standard_Real    myBottomRadius; //!< cylinder bottom radius
-  Standard_Real    myTopRadius;    //!< cylinder top radius
-  Standard_Real    myHeight;       //!< cylinder height
-  Standard_Boolean myIsHollow;     //!< true if the cylinder is empty inside
+  double    myBottomRadius; //!< cylinder bottom radius
+  double    myTopRadius;    //!< cylinder top radius
+  double    myHeight;       //!< cylinder height
+  bool myIsHollow;     //!< true if the cylinder is empty inside
 };
 
 #endif // _Select3D_SensitiveSphere_HeaderFile

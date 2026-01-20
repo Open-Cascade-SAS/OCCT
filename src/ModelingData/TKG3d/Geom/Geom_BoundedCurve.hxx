@@ -23,9 +23,6 @@
 #include <Geom_Curve.hxx>
 class gp_Pnt;
 
-class Geom_BoundedCurve;
-DEFINE_STANDARD_HANDLE(Geom_BoundedCurve, Geom_Curve)
-
 //! The abstract class BoundedCurve describes the
 //! common behavior of bounded curves in 3D space. A
 //! bounded curve is limited by two finite values of the
@@ -53,12 +50,10 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BoundedCurve, Geom_Curve)
 
-protected:
-private:
 };
 
 #endif // _Geom_BoundedCurve_HeaderFile

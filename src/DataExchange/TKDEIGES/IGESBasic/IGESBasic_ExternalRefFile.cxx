@@ -24,13 +24,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefFile, IGESData_IGESEntity)
 
 IGESBasic_ExternalRefFile::IGESBasic_ExternalRefFile() {}
 
-void IGESBasic_ExternalRefFile::Init(const Handle(TCollection_HAsciiString)& aFileIdent)
+void IGESBasic_ExternalRefFile::Init(const occ::handle<TCollection_HAsciiString>& aFileIdent)
 {
   theExtRefFileIdentifier = aFileIdent;
   InitTypeAndForm(416, 1);
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefFile::FileId() const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefFile::FileId() const
 {
   return theExtRefFileIdentifier;
 }

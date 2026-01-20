@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_FreeFormEntity.hxx>
 #include <NCollection_DataMap.hxx>
@@ -19,20 +19,20 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_FreeFormEntity, Standard_Transient)
 
-void StepData_FreeFormEntity::SetStepType(const Standard_CString typenam)
+void StepData_FreeFormEntity::SetStepType(const char* const typenam)
 {
   // Set the STEP entity type name for this free-form entity
   thetype.Clear();
   thetype.AssignCat(typenam);
 }
 
-Standard_CString StepData_FreeFormEntity::StepType() const
+const char* StepData_FreeFormEntity::StepType() const
 {
   return thetype.ToCString();
 }
 
-void StepData_FreeFormEntity::SetNext(const Handle(StepData_FreeFormEntity)& next,
-                                      const Standard_Boolean                 last)
+void StepData_FreeFormEntity::SetNext(const occ::handle<StepData_FreeFormEntity>& next,
+                                      const bool                 last)
 {
   if (next.IsNull())
     thenext.Nullify();
@@ -47,20 +47,20 @@ void StepData_FreeFormEntity::SetNext(const Handle(StepData_FreeFormEntity)& nex
   }
 }
 
-Handle(StepData_FreeFormEntity) StepData_FreeFormEntity::Next() const
+occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Next() const
 {
   return thenext;
 }
 
-Standard_Boolean StepData_FreeFormEntity::IsComplex() const
+bool StepData_FreeFormEntity::IsComplex() const
 {
   // A complex entity is one that has additional entity parts linked via 'next'
   return (!thenext.IsNull());
 }
 
-Handle(StepData_FreeFormEntity) StepData_FreeFormEntity::Typed(const Standard_CString typenam) const
+occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Typed(const char* const typenam) const
 {
-  Handle(StepData_FreeFormEntity) res;
+  occ::handle<StepData_FreeFormEntity> res;
   if (thetype.IsEqual(typenam))
     return this;
   if (thenext.IsNull())
@@ -68,11 +68,11 @@ Handle(StepData_FreeFormEntity) StepData_FreeFormEntity::Typed(const Standard_CS
   return thenext->Typed(typenam);
 }
 
-Handle(TColStd_HSequenceOfAsciiString) StepData_FreeFormEntity::TypeList() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_FreeFormEntity::TypeList() const
 {
-  Handle(TColStd_HSequenceOfAsciiString) li = new TColStd_HSequenceOfAsciiString();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> li = new NCollection_HSequence<TCollection_AsciiString>();
   li->Append(thetype);
-  Handle(StepData_FreeFormEntity) next = thenext;
+  occ::handle<StepData_FreeFormEntity> next = thenext;
   while (!next.IsNull())
   {
     li->Append(TCollection_AsciiString(next->StepType()));
@@ -81,22 +81,22 @@ Handle(TColStd_HSequenceOfAsciiString) StepData_FreeFormEntity::TypeList() const
   return li;
 }
 
-Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity)& ent)
+bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
 {
   // Reorder complex entities to ensure alphabetical sorting of entity types
   if (ent.IsNull())
-    return Standard_False;
+    return false;
   if (!ent->IsComplex())
-    return Standard_False;
-  Standard_Boolean                afr = Standard_False; // flag: any reordering needed
-  Handle(StepData_FreeFormEntity) e1  = ent;
-  Handle(StepData_FreeFormEntity) e2  = ent->Next();
+    return false;
+  bool                afr = false; // flag: any reordering needed
+  occ::handle<StepData_FreeFormEntity> e1  = ent;
+  occ::handle<StepData_FreeFormEntity> e2  = ent->Next();
   // Check if entities are already in alphabetical order
   while (!e2.IsNull())
   {
     if (strcmp(e1->StepType(), e2->StepType()) > 0)
     {
-      afr = Standard_True; // Found out-of-order pair
+      afr = true; // Found out-of-order pair
       break;
     }
     e1 = e2;
@@ -107,14 +107,14 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
   //  Reordering using a dictionary (map) to sort entity types alphabetically
   e1 = ent;
   e2.Nullify();
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> dic;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> dic;
   while (!e1.IsNull())
   {
     dic.Bind(e1->StepType(), e1);
     e1 = e1->Next();
   }
   //  First clear the current 'next' links to break the chain...
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(dic);
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(dic);
        iter.More();
        iter.Next())
   {
@@ -124,7 +124,7 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
   }
   //  ... then rebuild the chain in alphabetical order
   e1.Nullify();
-  for (NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(dic);
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(dic);
        iter.More();
        iter.Next())
   {
@@ -138,26 +138,26 @@ Standard_Boolean StepData_FreeFormEntity::Reorder(Handle(StepData_FreeFormEntity
   return afr;
 }
 
-void StepData_FreeFormEntity::SetNbFields(const Standard_Integer nb)
+void StepData_FreeFormEntity::SetNbFields(const int nb)
 {
   // Initialize the array of fields for this entity
   if (nb <= 0)
     thefields.Nullify();
   else
-    thefields = new StepData_HArray1OfField(1, nb);
+    thefields = new NCollection_HArray1<StepData_Field>(1, nb);
 }
 
-Standard_Integer StepData_FreeFormEntity::NbFields() const
+int StepData_FreeFormEntity::NbFields() const
 {
   return (thefields.IsNull() ? 0 : thefields->Length());
 }
 
-const StepData_Field& StepData_FreeFormEntity::Field(const Standard_Integer num) const
+const StepData_Field& StepData_FreeFormEntity::Field(const int num) const
 {
   return thefields->Value(num);
 }
 
-StepData_Field& StepData_FreeFormEntity::CField(const Standard_Integer num)
+StepData_Field& StepData_FreeFormEntity::CField(const int num)
 {
   return thefields->ChangeValue(num);
 }

@@ -22,14 +22,14 @@
 
 //=================================================================================================
 
-ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle)
+ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const double MaxAngle)
 {
   InitTool(MaxAngle);
 }
 
 //=================================================================================================
 
-ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const Standard_Real MaxAngle,
+ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const double MaxAngle,
                                                              const TopoDS_Shape& S)
     : ShapeUpgrade_ShapeDivide(S)
 {
@@ -38,9 +38,9 @@ ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const Standard_Real
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivideAngle::InitTool(const Standard_Real MaxAngle)
+void ShapeUpgrade_ShapeDivideAngle::InitTool(const double MaxAngle)
 {
-  Handle(ShapeUpgrade_FaceDivide) tool = GetSplitFaceTool();
+  occ::handle<ShapeUpgrade_FaceDivide> tool = GetSplitFaceTool();
   tool->SetSplitSurfaceTool(new ShapeUpgrade_SplitSurfaceAngle(MaxAngle));
   tool->SetWireDivideTool(0); // no splitting of wire
   SetSplitFaceTool(tool);
@@ -48,7 +48,7 @@ void ShapeUpgrade_ShapeDivideAngle::InitTool(const Standard_Real MaxAngle)
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivideAngle::SetMaxAngle(const Standard_Real MaxAngle)
+void ShapeUpgrade_ShapeDivideAngle::SetMaxAngle(const double MaxAngle)
 {
   InitTool(MaxAngle);
 }
@@ -57,10 +57,10 @@ void ShapeUpgrade_ShapeDivideAngle::SetMaxAngle(const Standard_Real MaxAngle)
 
 double ShapeUpgrade_ShapeDivideAngle::MaxAngle() const
 {
-  Handle(ShapeUpgrade_FaceDivide) faceTool = GetSplitFaceTool();
+  occ::handle<ShapeUpgrade_FaceDivide> faceTool = GetSplitFaceTool();
   if (faceTool.IsNull())
     return 0.;
-  Handle(ShapeUpgrade_SplitSurfaceAngle) tool =
-    Handle(ShapeUpgrade_SplitSurfaceAngle)::DownCast(faceTool->GetSplitSurfaceTool());
+  occ::handle<ShapeUpgrade_SplitSurfaceAngle> tool =
+    occ::down_cast<ShapeUpgrade_SplitSurfaceAngle>(faceTool->GetSplitSurfaceTool());
   return (tool.IsNull() ? 0. : tool->MaxAngle());
 }

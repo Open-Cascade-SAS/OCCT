@@ -17,24 +17,24 @@
 #include <IGESData_ReadWriteModule.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_FileReaderData.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_ReadWriteModule, Interface_ReaderModule)
 
-Standard_Integer IGESData_ReadWriteModule::CaseNum(const Handle(Interface_FileReaderData)& data,
-                                                   const Standard_Integer num) const
+int IGESData_ReadWriteModule::CaseNum(const occ::handle<Interface_FileReaderData>& data,
+                                                   const int num) const
 {
   IGESData_IGESType DT = GetCasted(IGESData_IGESReaderData, data)->DirType(num);
   return CaseIGES(DT.Type(), DT.Form());
 }
 
-void IGESData_ReadWriteModule::Read(const Standard_Integer,
-                                    const Handle(Interface_FileReaderData)&,
-                                    const Standard_Integer,
-                                    Handle(Interface_Check)&,
-                                    const Handle(Standard_Transient)&) const
+void IGESData_ReadWriteModule::Read(const int,
+                                    const occ::handle<Interface_FileReaderData>&,
+                                    const int,
+                                    occ::handle<Interface_Check>&,
+                                    const occ::handle<Standard_Transient>&) const
 {
 #ifdef OCCT_DEBUG
   std::cout << "IGESData_ReadWriteModule, Read called" << std::endl;

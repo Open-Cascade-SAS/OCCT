@@ -21,9 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Transfer_TransferIterator.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <Transfer_Binder.hxx>
 
 class Standard_NoSuchObject;
 class Standard_Transient;
@@ -39,37 +42,36 @@ public:
   //! Creates an empty Iterator
   //! if withstarts is True, each Binder to be iterated will
   //! be associated to its corresponding Starting Object
-  Standard_EXPORT Transfer_IteratorOfProcessForTransient(const Standard_Boolean withstarts);
+  Standard_EXPORT Transfer_IteratorOfProcessForTransient(const bool withstarts);
 
   //! Adds a Binder to the iteration list (construction)
   //! with no corresponding Starting Object
   //! (note that Result is brought by Binder)
-  Standard_EXPORT void Add(const Handle(Transfer_Binder)& binder);
+  Standard_EXPORT void Add(const occ::handle<Transfer_Binder>& binder);
 
   //! Adds a Binder to the iteration list, associated with
   //! its corresponding Starting Object "start"
   //! Starting Object is ignored if not required at
   //! Creation time
-  Standard_EXPORT void Add(const Handle(Transfer_Binder)&    binder,
-                           const Handle(Standard_Transient)& start);
+  Standard_EXPORT void Add(const occ::handle<Transfer_Binder>&    binder,
+                           const occ::handle<Standard_Transient>& start);
 
   //! After having added all items, keeps or rejects items
   //! which are attached to starting data given by <only>
   //! <keep> = True (D) : keeps. <keep> = False : rejects
   //! Does nothing if <withstarts> was False
-  Standard_EXPORT void Filter(const Handle(TColStd_HSequenceOfTransient)& list,
-                              const Standard_Boolean                      keep = Standard_True);
+  Standard_EXPORT void Filter(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+                              const bool                      keep = true);
 
   //! Returns True if Starting Object is available
   //! (defined at Creation Time)
-  Standard_EXPORT Standard_Boolean HasStarting() const;
+  Standard_EXPORT bool HasStarting() const;
 
   //! Returns corresponding Starting Object
-  Standard_EXPORT const Handle(Standard_Transient)& Starting() const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Starting() const;
 
-protected:
 private:
-  Handle(TColStd_HSequenceOfTransient) thestarts;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thestarts;
 };
 
 #endif // _Transfer_IteratorOfProcessForTransient_HeaderFile

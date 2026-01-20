@@ -18,9 +18,8 @@ set(OCCT_NLPlate_FILES
   NLPlate_HPG2Constraint.hxx
   NLPlate_HPG3Constraint.cxx
   NLPlate_HPG3Constraint.hxx
-  NLPlate_ListIteratorOfStackOfPlate.hxx
+
   NLPlate_NLPlate.cxx
   NLPlate_NLPlate.hxx
-  NLPlate_SequenceOfHGPPConstraint.hxx
-  NLPlate_StackOfPlate.hxx
+
 )

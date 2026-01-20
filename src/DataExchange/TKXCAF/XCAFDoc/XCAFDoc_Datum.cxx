@@ -72,12 +72,12 @@ const Standard_GUID& XCAFDoc_Datum::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_Datum) XCAFDoc_Datum::Set(const TDF_Label&                        theLabel,
-                                         const Handle(TCollection_HAsciiString)& theName,
-                                         const Handle(TCollection_HAsciiString)& theDescription,
-                                         const Handle(TCollection_HAsciiString)& theIdentification)
+occ::handle<XCAFDoc_Datum> XCAFDoc_Datum::Set(const TDF_Label&                        theLabel,
+                                         const occ::handle<TCollection_HAsciiString>& theName,
+                                         const occ::handle<TCollection_HAsciiString>& theDescription,
+                                         const occ::handle<TCollection_HAsciiString>& theIdentification)
 {
-  Handle(XCAFDoc_Datum) aDatum;
+  occ::handle<XCAFDoc_Datum> aDatum;
   if (!theLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
     aDatum = new XCAFDoc_Datum();
@@ -89,9 +89,9 @@ Handle(XCAFDoc_Datum) XCAFDoc_Datum::Set(const TDF_Label&                       
 
 //=================================================================================================
 
-Handle(XCAFDoc_Datum) XCAFDoc_Datum::Set(const TDF_Label& theLabel)
+occ::handle<XCAFDoc_Datum> XCAFDoc_Datum::Set(const TDF_Label& theLabel)
 {
-  Handle(XCAFDoc_Datum) aDatum;
+  occ::handle<XCAFDoc_Datum> aDatum;
   if (!theLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
     aDatum = new XCAFDoc_Datum();
@@ -102,9 +102,9 @@ Handle(XCAFDoc_Datum) XCAFDoc_Datum::Set(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-void XCAFDoc_Datum::Set(const Handle(TCollection_HAsciiString)& theName,
-                        const Handle(TCollection_HAsciiString)& theDescription,
-                        const Handle(TCollection_HAsciiString)& theIdentification)
+void XCAFDoc_Datum::Set(const occ::handle<TCollection_HAsciiString>& theName,
+                        const occ::handle<TCollection_HAsciiString>& theDescription,
+                        const occ::handle<TCollection_HAsciiString>& theIdentification)
 {
   Backup();
   myName           = theName;
@@ -114,7 +114,7 @@ void XCAFDoc_Datum::Set(const Handle(TCollection_HAsciiString)& theName,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Datum::GetName() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Datum::GetName() const
 {
   if (myName.IsNull())
     return new TCollection_HAsciiString();
@@ -123,21 +123,21 @@ Handle(TCollection_HAsciiString) XCAFDoc_Datum::GetName() const
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Datum::GetDescription() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Datum::GetDescription() const
 {
   return myDescription;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDoc_Datum::GetIdentification() const
+occ::handle<TCollection_HAsciiString> XCAFDoc_Datum::GetIdentification() const
 {
   return myIdentification;
 }
 
 //=================================================================================================
 
-void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theObject)
+void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& theObject)
 {
   Backup();
 
@@ -152,19 +152,19 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
     Label().FindChild(aChild).ForgetAllAttributes();
   }
   if (!theObject->GetName().IsNull() && !theObject->GetName()->IsEmpty())
-    Handle(TDataStd_AsciiString) anAttName =
+    occ::handle<TDataStd_AsciiString> anAttName =
       TDataStd_AsciiString::Set(Label().FindChild(ChildLab_Name), theObject->GetName()->String());
 
-  Handle(TDataStd_Integer) aPosition =
+  occ::handle<TDataStd_Integer> aPosition =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_Position), theObject->GetPosition());
 
   if (theObject->GetModifiers().Length() > 0)
   {
-    Handle(TColStd_HArray1OfInteger) anArr =
-      new TColStd_HArray1OfInteger(1, theObject->GetModifiers().Length());
-    for (Standard_Integer i = 1; i <= theObject->GetModifiers().Length(); i++)
+    occ::handle<NCollection_HArray1<int>> anArr =
+      new NCollection_HArray1<int>(1, theObject->GetModifiers().Length());
+    for (int i = 1; i <= theObject->GetModifiers().Length(); i++)
       anArr->SetValue(i, theObject->GetModifiers().Value(i));
-    Handle(TDataStd_IntegerArray) aModifiers =
+    occ::handle<TDataStd_IntegerArray> aModifiers =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers),
                                  1,
                                  theObject->GetModifiers().Length());
@@ -173,23 +173,23 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
   }
 
   XCAFDimTolObjects_DatumModifWithValue aM;
-  Standard_Real                         aV;
+  double                         aV;
   theObject->GetModifierWithValue(aM, aV);
   if (aM != XCAFDimTolObjects_DatumModifWithValue_None)
   {
-    Handle(TDataStd_Integer) aModifierWithValueM =
+    occ::handle<TDataStd_Integer> aModifierWithValueM =
       TDataStd_Integer::Set(Label().FindChild(ChildLab_ModifierWithValue), aM);
 
-    Handle(TDataStd_Real) aModifierWithValueV =
+    occ::handle<TDataStd_Real> aModifierWithValueV =
       TDataStd_Real::Set(Label().FindChild(ChildLab_ModifierWithValue), aV);
   }
 
-  Handle(TDataStd_Integer) aIsTarget =
+  occ::handle<TDataStd_Integer> aIsTarget =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_IsDTarget), theObject->IsDatumTarget());
 
   if (theObject->IsDatumTarget())
   {
-    Handle(TDataStd_Integer) aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetType),
+    occ::handle<TDataStd_Integer> aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetType),
                                                            theObject->GetDatumTargetType());
 
     if (theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
@@ -203,41 +203,41 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
     else if (theObject->HasDatumTargetParams())
     {
       gp_Ax2                        anAx    = theObject->GetDatumTargetAxis();
-      Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
-      for (Standard_Integer i = 1; i <= 3; i++)
+      occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
+      for (int i = 1; i <= 3; i++)
         aLocArr->SetValue(i, anAx.Location().Coord(i));
-      Handle(TDataStd_RealArray) aLoc =
+      occ::handle<TDataStd_RealArray> aLoc =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisLoc), 1, 3);
       if (!aLoc.IsNull())
         aLoc->ChangeArray(aLocArr);
 
-      Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
-      for (Standard_Integer i = 1; i <= 3; i++)
+      occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
+      for (int i = 1; i <= 3; i++)
         aNArr->SetValue(i, anAx.Direction().Coord(i));
-      Handle(TDataStd_RealArray) aN =
+      occ::handle<TDataStd_RealArray> aN =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisN), 1, 3);
       if (!aN.IsNull())
         aN->ChangeArray(aNArr);
 
-      Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
-      for (Standard_Integer i = 1; i <= 3; i++)
+      occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
+      for (int i = 1; i <= 3; i++)
         aRArr->SetValue(i, anAx.XDirection().Coord(i));
-      Handle(TDataStd_RealArray) aR =
+      occ::handle<TDataStd_RealArray> aR =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_AxisRef), 1, 3);
       if (!aR.IsNull())
         aR->ChangeArray(aRArr);
 
       if (theObject->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
       {
-        Handle(TDataStd_Real) aLen = TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
+        occ::handle<TDataStd_Real> aLen = TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
                                                         theObject->GetDatumTargetLength());
         if (theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
-          Handle(TDataStd_Real) aWidth =
+          occ::handle<TDataStd_Real> aWidth =
             TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetWidth),
                                theObject->GetDatumTargetWidth());
       }
     }
-    Handle(TDataStd_Integer) aNum = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetNumber),
+    occ::handle<TDataStd_Integer> aNum = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetNumber),
                                                           theObject->GetDatumTargetNumber());
   }
 
@@ -245,26 +245,26 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
   {
     gp_Ax2 anAx = theObject->GetPlane();
 
-    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
-    for (Standard_Integer i = 1; i <= 3; i++)
+    occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
+    for (int i = 1; i <= 3; i++)
       aLocArr->SetValue(i, anAx.Location().Coord(i));
-    Handle(TDataStd_RealArray) aLoc =
+    occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneLoc), 1, 3);
     if (!aLoc.IsNull())
       aLoc->ChangeArray(aLocArr);
 
-    Handle(TColStd_HArray1OfReal) aNArr = new TColStd_HArray1OfReal(1, 3);
-    for (Standard_Integer i = 1; i <= 3; i++)
+    occ::handle<NCollection_HArray1<double>> aNArr = new NCollection_HArray1<double>(1, 3);
+    for (int i = 1; i <= 3; i++)
       aNArr->SetValue(i, anAx.Direction().Coord(i));
-    Handle(TDataStd_RealArray) aN =
+    occ::handle<TDataStd_RealArray> aN =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneN), 1, 3);
     if (!aN.IsNull())
       aN->ChangeArray(aNArr);
 
-    Handle(TColStd_HArray1OfReal) aRArr = new TColStd_HArray1OfReal(1, 3);
-    for (Standard_Integer i = 1; i <= 3; i++)
+    occ::handle<NCollection_HArray1<double>> aRArr = new NCollection_HArray1<double>(1, 3);
+    for (int i = 1; i <= 3; i++)
       aRArr->SetValue(i, anAx.XDirection().Coord(i));
-    Handle(TDataStd_RealArray) aR =
+    occ::handle<TDataStd_RealArray> aR =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PlaneRef), 1, 3);
     if (!aR.IsNull())
       aR->ChangeArray(aRArr);
@@ -274,10 +274,10 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
   {
     gp_Pnt aPnt = theObject->GetPoint();
 
-    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
-    for (Standard_Integer i = 1; i <= 3; i++)
+    occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
+    for (int i = 1; i <= 3; i++)
       aLocArr->SetValue(i, aPnt.Coord(i));
-    Handle(TDataStd_RealArray) aLoc =
+    occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_Pnt), 1, 3);
     if (!aLoc.IsNull())
       aLoc->ChangeArray(aLocArr);
@@ -287,10 +287,10 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
   {
     gp_Pnt aPntText = theObject->GetPointTextAttach();
 
-    Handle(TColStd_HArray1OfReal) aLocArr = new TColStd_HArray1OfReal(1, 3);
-    for (Standard_Integer i = 1; i <= 3; i++)
+    occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
+    for (int i = 1; i <= 3; i++)
       aLocArr->SetValue(i, aPntText.Coord(i));
-    Handle(TDataStd_RealArray) aLoc =
+    occ::handle<TDataStd_RealArray> aLoc =
       TDataStd_RealArray::Set(Label().FindChild(ChildLab_PntText), 1, 3);
     if (!aLoc.IsNull())
       aLoc->ChangeArray(aLocArr);
@@ -302,7 +302,7 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
     TDF_Label       aLPres = Label().FindChild(ChildLab_Presentation);
     TNaming_Builder tnBuild(aLPres);
     tnBuild.Generated(aPresentation);
-    Handle(TCollection_HAsciiString) aName = theObject->GetPresentationName();
+    occ::handle<TCollection_HAsciiString> aName = theObject->GetPresentationName();
     if (!aName.IsNull())
     {
       TCollection_ExtendedString str(aName->String());
@@ -313,12 +313,12 @@ void XCAFDoc_Datum::SetObject(const Handle(XCAFDimTolObjects_DatumObject)& theOb
 
 //=================================================================================================
 
-Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
+occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
 {
-  Handle(XCAFDimTolObjects_DatumObject) anObj = new XCAFDimTolObjects_DatumObject();
+  occ::handle<XCAFDimTolObjects_DatumObject> anObj = new XCAFDimTolObjects_DatumObject();
 
-  Handle(TDataStd_Name)            aSemanticNameAttr;
-  Handle(TCollection_HAsciiString) aSemanticName;
+  occ::handle<TDataStd_Name>            aSemanticNameAttr;
+  occ::handle<TCollection_HAsciiString> aSemanticName;
   if (Label().FindAttribute(TDataStd_Name::GetID(), aSemanticNameAttr))
   {
     const TCollection_ExtendedString& aName = aSemanticNameAttr->Get();
@@ -327,29 +327,29 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
   }
   anObj->SetSemanticName(aSemanticName);
 
-  Handle(TDataStd_AsciiString) anAttName;
+  occ::handle<TDataStd_AsciiString> anAttName;
   if (Label().FindChild(ChildLab_Name).FindAttribute(TDataStd_AsciiString::GetID(), anAttName))
   {
-    Handle(TCollection_HAsciiString) aStr = new TCollection_HAsciiString(anAttName->Get());
+    occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString(anAttName->Get());
     anObj->SetName(aStr);
   }
 
-  Handle(TDataStd_IntegerArray) anArr;
+  occ::handle<TDataStd_IntegerArray> anArr;
   if (Label().FindChild(ChildLab_Modifiers).FindAttribute(TDataStd_IntegerArray::GetID(), anArr)
       && !anArr->Array().IsNull())
   {
-    XCAFDimTolObjects_DatumModifiersSequence aModifiers;
-    for (Standard_Integer i = 1; i <= anArr->Length(); i++)
+    NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aModifiers;
+    for (int i = 1; i <= anArr->Length(); i++)
       aModifiers.Append((XCAFDimTolObjects_DatumSingleModif)anArr->Value(i));
     anObj->SetModifiers(aModifiers);
   }
 
-  Handle(TDataStd_Integer) aModifierWithValueM;
+  occ::handle<TDataStd_Integer> aModifierWithValueM;
   if (Label()
         .FindChild(ChildLab_ModifierWithValue)
         .FindAttribute(TDataStd_Integer::GetID(), aModifierWithValueM))
   {
-    Handle(TDataStd_Real) aModifierWithValueV;
+    occ::handle<TDataStd_Real> aModifierWithValueV;
     if (Label()
           .FindChild(ChildLab_ModifierWithValue)
           .FindAttribute(TDataStd_Real::GetID(), aModifierWithValueV))
@@ -359,13 +359,13 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     }
   }
 
-  Handle(TDataStd_Integer) aPosition;
+  occ::handle<TDataStd_Integer> aPosition;
   if (Label().FindChild(ChildLab_Position).FindAttribute(TDataStd_Integer::GetID(), aPosition))
   {
     anObj->SetPosition(aPosition->Get());
   }
 
-  Handle(TDataStd_RealArray) aLoc, aN, aR;
+  occ::handle<TDataStd_RealArray> aLoc, aN, aR;
   if (Label().FindChild(ChildLab_PlaneLoc).FindAttribute(TDataStd_RealArray::GetID(), aLoc)
       && aLoc->Length() == 3
       && Label().FindChild(ChildLab_PlaneN).FindAttribute(TDataStd_RealArray::GetID(), aN)
@@ -382,7 +382,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     anObj->SetPlane(anAx);
   }
 
-  Handle(TDataStd_RealArray) aPnt;
+  occ::handle<TDataStd_RealArray> aPnt;
   if (Label().FindChild(ChildLab_Pnt).FindAttribute(TDataStd_RealArray::GetID(), aPnt)
       && aPnt->Length() == 3)
   {
@@ -392,7 +392,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     anObj->SetPoint(aP);
   }
 
-  Handle(TDataStd_RealArray) aPntText;
+  occ::handle<TDataStd_RealArray> aPntText;
   if (Label().FindChild(ChildLab_PntText).FindAttribute(TDataStd_RealArray::GetID(), aPntText)
       && aPntText->Length() == 3)
   {
@@ -402,7 +402,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     anObj->SetPointTextAttach(aP);
   }
 
-  Handle(TDataStd_Integer) aIsDTarget;
+  occ::handle<TDataStd_Integer> aIsDTarget;
   if (Label().FindChild(ChildLab_IsDTarget).FindAttribute(TDataStd_Integer::GetID(), aIsDTarget))
   {
     anObj->IsDatumTarget((aIsDTarget->Get() != 0));
@@ -414,7 +414,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
 
   if (aIsDTarget->Get() != 0)
   {
-    Handle(TDataStd_Integer) aDTargetType;
+    occ::handle<TDataStd_Integer> aDTargetType;
     if (Label()
           .FindChild(ChildLab_DTargetType)
           .FindAttribute(TDataStd_Integer::GetID(), aDTargetType))
@@ -422,7 +422,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
       anObj->SetDatumTargetType((XCAFDimTolObjects_DatumTargetType)aDTargetType->Get());
       if (anObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
       {
-        Handle(TNaming_NamedShape) aDatumTarget;
+        occ::handle<TNaming_NamedShape> aDatumTarget;
         if (Label()
               .FindChild(ChildLab_DatumTarget)
               .FindAttribute(TNaming_NamedShape::GetID(), aDatumTarget))
@@ -452,14 +452,14 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
 
         if (anObj->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
         {
-          Handle(TDataStd_Real) aLen;
+          occ::handle<TDataStd_Real> aLen;
           if (Label().FindChild(ChildLab_DTargetLength).FindAttribute(TDataStd_Real::GetID(), aLen))
           {
             anObj->SetDatumTargetLength(aLen->Get());
           }
           if (anObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
           {
-            Handle(TDataStd_Real) aWidth;
+            occ::handle<TDataStd_Real> aWidth;
             if (Label()
                   .FindChild(ChildLab_DTargetWidth)
                   .FindAttribute(TDataStd_Real::GetID(), aWidth))
@@ -470,7 +470,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
         }
       }
     }
-    Handle(TDataStd_Integer) aNum;
+    occ::handle<TDataStd_Integer> aNum;
     if (Label().FindChild(ChildLab_DTargetNumber).FindAttribute(TDataStd_Integer::GetID(), aNum))
     {
       anObj->SetDatumTargetNumber(aNum->Get());
@@ -481,7 +481,7 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     }
   }
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
@@ -489,8 +489,8 @@ Handle(XCAFDimTolObjects_DatumObject) XCAFDoc_Datum::GetObject() const
     TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);
     if (!aPresentation.IsNull())
     {
-      Handle(TDataStd_Name)            aNameAtrr;
-      Handle(TCollection_HAsciiString) aPresentName;
+      occ::handle<TDataStd_Name>            aNameAtrr;
+      occ::handle<TCollection_HAsciiString> aPresentName;
       if (aLPres.FindAttribute(TDataStd_Name::GetID(), aNameAtrr))
       {
         const TCollection_ExtendedString& aName = aNameAtrr->Get();
@@ -514,31 +514,31 @@ const Standard_GUID& XCAFDoc_Datum::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_Datum::Restore(const Handle(TDF_Attribute)& theWith)
+void XCAFDoc_Datum::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
-  myName           = Handle(XCAFDoc_Datum)::DownCast(theWith)->GetName();
-  myDescription    = Handle(XCAFDoc_Datum)::DownCast(theWith)->GetDescription();
-  myIdentification = Handle(XCAFDoc_Datum)::DownCast(theWith)->GetIdentification();
+  myName           = occ::down_cast<XCAFDoc_Datum>(theWith)->GetName();
+  myDescription    = occ::down_cast<XCAFDoc_Datum>(theWith)->GetDescription();
+  myIdentification = occ::down_cast<XCAFDoc_Datum>(theWith)->GetIdentification();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_Datum::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_Datum::NewEmpty() const
 {
   return new XCAFDoc_Datum();
 }
 
 //=================================================================================================
 
-void XCAFDoc_Datum::Paste(const Handle(TDF_Attribute)& theInto,
-                          const Handle(TDF_RelocationTable)& /*RT*/) const
+void XCAFDoc_Datum::Paste(const occ::handle<TDF_Attribute>& theInto,
+                          const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(XCAFDoc_Datum)::DownCast(theInto)->Set(myName, myDescription, myIdentification);
+  occ::down_cast<XCAFDoc_Datum>(theInto)->Set(myName, myDescription, myIdentification);
 }
 
 //=================================================================================================
 
-void XCAFDoc_Datum::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Datum::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -548,6 +548,6 @@ void XCAFDoc_Datum::DumpJson(Standard_OStream& theOStream, Standard_Integer theD
   OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myDescription.get())
   OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myIdentification.get())
 
-  Handle(XCAFDimTolObjects_DatumObject) anObject = GetObject();
+  occ::handle<XCAFDimTolObjects_DatumObject> anObject = GetObject();
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anObject.get())
 }

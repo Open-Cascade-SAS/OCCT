@@ -44,14 +44,12 @@ public:
   Standard_EXPORT TopOpeBRepBuild_SolidAreaBuilder(
     TopOpeBRepBuild_LoopSet&        LS,
     TopOpeBRepBuild_LoopClassifier& LC,
-    const Standard_Boolean          ForceClass = Standard_False);
+    const bool          ForceClass = false);
 
   Standard_EXPORT void InitSolidAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                             TopOpeBRepBuild_LoopClassifier& LC,
-                                            const Standard_Boolean ForceClass = Standard_False);
+                                            const bool ForceClass = false);
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRepBuild_SolidAreaBuilder_HeaderFile

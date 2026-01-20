@@ -18,14 +18,16 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
-#include <StepGeom_HArray1OfCompositeCurveSegment.hxx>
+#include <StepGeom_CompositeCurveSegment.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepGeom_RWCompositeCurve::RWStepGeom_RWCompositeCurve() {}
 
-void RWStepGeom_RWCompositeCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_CompositeCurve)& ent) const
+void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepGeom_CompositeCurve>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,22 +37,22 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : segments ---
 
-  Handle(StepGeom_HArray1OfCompositeCurveSegment) aSegments;
-  Handle(StepGeom_CompositeCurveSegment)          anent2;
-  Standard_Integer                                nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>> aSegments;
+  occ::handle<StepGeom_CompositeCurveSegment>          anent2;
+  int                                nsub2;
   if (data->ReadSubList(num, 2, "segments", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aSegments            = new StepGeom_HArray1OfCompositeCurveSegment(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aSegments            = new NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "composite_curve_segment",
@@ -64,7 +66,7 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const Handle(StepData_StepReaderData)
   // --- own field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadLogical(num, 3, "self_intersect", ach, aSelfIntersect);
 
   //--- Initialisation of the read entity ---
@@ -73,7 +75,7 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_CompositeCurve)& ent) const
+                                            const occ::handle<StepGeom_CompositeCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -83,7 +85,7 @@ void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                
   // --- own field : segments ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbSegments(); i2++)
+  for (int i2 = 1; i2 <= ent->NbSegments(); i2++)
   {
     SW.Send(ent->SegmentsValue(i2));
   }
@@ -94,12 +96,12 @@ void RWStepGeom_RWCompositeCurve::WriteStep(StepData_StepWriter&                
   SW.SendLogical(ent->SelfIntersect());
 }
 
-void RWStepGeom_RWCompositeCurve::Share(const Handle(StepGeom_CompositeCurve)& ent,
+void RWStepGeom_RWCompositeCurve::Share(const occ::handle<StepGeom_CompositeCurve>& ent,
                                         Interface_EntityIterator&              iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbSegments();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbSegments();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->SegmentsValue(is1));
   }

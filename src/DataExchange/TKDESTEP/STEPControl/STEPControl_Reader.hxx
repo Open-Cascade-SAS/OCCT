@@ -24,9 +24,11 @@
 #include <XSControl_Reader.hxx>
 #include <Standard_Integer.hxx>
 #include <DESTEP_Parameters.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <TColStd_Array1OfAsciiString.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 class XSControl_WorkSession;
 class StepData_StepModel;
 class StepRepr_RepresentationContext;
@@ -44,11 +46,11 @@ class StepRepr_RepresentationContext;
 //! To print load results reader.PrintCheckLoad(failsonly,mode)
 //! where mode is equal to the value of enumeration IFSelect_PrintCount
 //! For definition number of candidates :
-//! Standard_Integer nbroots = reader. NbRootsForTransfer();
+//! int nbroots = reader. NbRootsForTransfer();
 //! To transfer entities from a model the following methods can be used:
 //! for the whole model - reader.TransferRoots();
 //! to transfer a list of entities: reader.TransferList(list);
-//! to transfer one entity Handle(Standard_Transient)
+//! to transfer one entity occ::handle<Standard_Transient>
 //! ent = reader.RootForTransfer(num);
 //! reader.TransferEntity(ent), or
 //! reader.TransferOneRoot(num), or
@@ -62,7 +64,7 @@ class StepRepr_RepresentationContext;
 //! IFSelect_PrintFail, mode see above; or reader.PrintStatsTransfer();
 //! Gets correspondence between a STEP entity and a result
 //! shape obtained from it.
-//! Handle(XSControl_WorkSession)
+//! occ::handle<XSControl_WorkSession>
 //! WS = reader.WS();
 //! if ( WS->TransferReader()->HasResult(ent) )
 //! TopoDS_Shape shape = WS->TransferReader()->ShapeResult(ent);
@@ -76,30 +78,30 @@ public:
 
   //! Creates a Reader for STEP from an already existing Session
   //! Clears the session if it was not yet set for STEP
-  Standard_EXPORT STEPControl_Reader(const Handle(XSControl_WorkSession)& WS,
-                                     const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT STEPControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
+                                     const bool               scratch = true);
 
   //! Returns the model as a StepModel.
   //! It can then be consulted (header, product)
-  Standard_EXPORT Handle(StepData_StepModel) StepModel() const;
+  Standard_EXPORT occ::handle<StepData_StepModel> StepModel() const;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const Standard_CString filename)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* const filename)
+    override;
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const Standard_CString theName,
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char* const theName,
                                                            std::istream&          theIStream)
-    Standard_OVERRIDE;
+    override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const Standard_CString   filename,
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* const   filename,
                                                  const DESTEP_Parameters& theParams);
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const Standard_CString   theName,
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const   theName,
                                                    const DESTEP_Parameters& theParams,
                                                    std::istream&            theIStream);
 
@@ -107,46 +109,46 @@ public:
   //! Default is the first one
   //! Returns True if a shape has resulted, false else
   //! Same as inherited TransferOneRoot, kept for compatibility
-  Standard_EXPORT Standard_Boolean
-    TransferRoot(const Standard_Integer       num         = 1,
+  Standard_EXPORT bool
+    TransferRoot(const int       num         = 1,
                  const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
-  Standard_EXPORT virtual Standard_Integer NbRootsForTransfer() Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbRootsForTransfer() override;
 
   //! Returns sequence of all unit names for shape representations
   //! found in file
-  Standard_EXPORT void FileUnits(TColStd_SequenceOfAsciiString& theUnitLengthNames,
-                                 TColStd_SequenceOfAsciiString& theUnitAngleNames,
-                                 TColStd_SequenceOfAsciiString& theUnitSolidAngleNames);
+  Standard_EXPORT void FileUnits(NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
+                                 NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
+                                 NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames);
 
   //! Sets system length unit used by transfer process.
   //! Performs only if a model is not NULL
-  Standard_EXPORT void SetSystemLengthUnit(const Standard_Real theLengthUnit);
+  Standard_EXPORT void SetSystemLengthUnit(const double theLengthUnit);
 
   //! Returns system length unit used by transfer process.
   //! Performs only if a model is not NULL
-  Standard_EXPORT Standard_Real SystemLengthUnit() const;
+  Standard_EXPORT double SystemLengthUnit() const;
 
 protected:
   //! Returns default parameters for shape fixing.
   //! This method is used by the base class to get default parameters for shape fixing.
   //! @return default parameters for shape fixing.
   Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
   Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const
-    Standard_OVERRIDE;
+    override;
 
 private:
   //! Returns units for length, angle and solidangle for shape representations
-  Standard_EXPORT Standard_Boolean
-    findUnits(const Handle(StepRepr_RepresentationContext)& theReprContext,
-              TColStd_Array1OfAsciiString&                  theNameUnits,
-              TColStd_Array1OfReal&                         theFactorUnits);
+  Standard_EXPORT bool
+    findUnits(const occ::handle<StepRepr_RepresentationContext>& theReprContext,
+              NCollection_Array1<TCollection_AsciiString>&                  theNameUnits,
+              NCollection_Array1<double>&                         theFactorUnits);
 };
 
 #endif // _STEPControl_Reader_HeaderFile

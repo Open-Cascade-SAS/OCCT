@@ -16,7 +16,7 @@
 #include <APIHeaderSection_MakeHeader.hxx>
 #include <DE_ShapeFixParameters.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
 #include <DESTEP_Parameters.hxx>
@@ -41,8 +41,8 @@ STEPControl_Writer::STEPControl_Writer()
 
 //=================================================================================================
 
-STEPControl_Writer::STEPControl_Writer(const Handle(XSControl_WorkSession)& WS,
-                                       const Standard_Boolean               scratch)
+STEPControl_Writer::STEPControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                       const bool               scratch)
 {
   STEPControl_Controller::Init();
   SetWS(WS, scratch);
@@ -50,25 +50,25 @@ STEPControl_Writer::STEPControl_Writer(const Handle(XSControl_WorkSession)& WS,
 
 //=================================================================================================
 
-void STEPControl_Writer::SetWS(const Handle(XSControl_WorkSession)& WS,
-                               const Standard_Boolean               scratch)
+void STEPControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS,
+                               const bool               scratch)
 {
   thesession = WS;
   thesession->SelectNorm("STEP");
   thesession->InitTransferReader(0);
-  Handle(StepData_StepModel) model = Model(scratch);
+  occ::handle<StepData_StepModel> model = Model(scratch);
 }
 
 //=================================================================================================
 
-Handle(XSControl_WorkSession) STEPControl_Writer::WS() const
+occ::handle<XSControl_WorkSession> STEPControl_Writer::WS() const
 {
   return thesession;
 }
 
 //=================================================================================================
 
-Handle(StepData_StepModel) STEPControl_Writer::Model(const Standard_Boolean newone)
+occ::handle<StepData_StepModel> STEPControl_Writer::Model(const bool newone)
 {
   DeclareAndCast(StepData_StepModel, model, thesession->Model());
   if (newone || model.IsNull())
@@ -78,7 +78,7 @@ Handle(StepData_StepModel) STEPControl_Writer::Model(const Standard_Boolean newo
 
 //=================================================================================================
 
-void STEPControl_Writer::SetTolerance(const Standard_Real Tol)
+void STEPControl_Writer::SetTolerance(const double Tol)
 {
   DeclareAndCast(STEPControl_ActorWrite, act, WS()->NormAdaptor()->ActorWrite());
   if (!act.IsNull())
@@ -96,10 +96,10 @@ void STEPControl_Writer::UnsetTolerance()
 
 IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
                                                    const STEPControl_StepModelType mode,
-                                                   const Standard_Boolean          compgraph,
+                                                   const bool          compgraph,
                                                    const Message_ProgressRange&    theProgress)
 {
-  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(thesession->Model());
+  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(thesession->Model());
   if (!aStepModel.IsNull())
   {
     aStepModel->InternalParameters.InitFromStatic();
@@ -110,10 +110,10 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
 IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
                                                    const STEPControl_StepModelType mode,
                                                    const DESTEP_Parameters&        theParams,
-                                                   const Standard_Boolean          compgraph,
+                                                   const bool          compgraph,
                                                    const Message_ProgressRange&    theProgress)
 {
-  Standard_Integer mws = -1;
+  int mws = -1;
   switch (mode)
   {
     case STEPControl_AsIs:
@@ -145,19 +145,19 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
   Model()->InternalParameters = theParams;
   APIHeaderSection_MakeHeader aHeaderMaker;
   aHeaderMaker.Apply(Model());
-  Handle(STEPControl_ActorWrite) ActWrite =
-    Handle(STEPControl_ActorWrite)::DownCast(WS()->NormAdaptor()->ActorWrite());
+  occ::handle<STEPControl_ActorWrite> ActWrite =
+    occ::down_cast<STEPControl_ActorWrite>(WS()->NormAdaptor()->ActorWrite());
   ActWrite->SetGroupMode(
-    Handle(StepData_StepModel)::DownCast(thesession->Model())->InternalParameters.WriteAssembly);
+    occ::down_cast<StepData_StepModel>(thesession->Model())->InternalParameters.WriteAssembly);
   InitializeMissingParameters();
   return thesession->TransferWriteShape(sh, compgraph, theProgress);
 }
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Writer::Write(const Standard_CString theFileName)
+IFSelect_ReturnStatus STEPControl_Writer::Write(const char* const theFileName)
 {
-  Handle(StepData_StepModel) aModel = Model();
+  occ::handle<StepData_StepModel> aModel = Model();
   if (aModel.IsNull())
   {
     return IFSelect_RetFail;
@@ -171,13 +171,13 @@ IFSelect_ReturnStatus STEPControl_Writer::Write(const Standard_CString theFileNa
 
 IFSelect_ReturnStatus STEPControl_Writer::WriteStream(std::ostream& theOStream)
 {
-  Handle(StepData_StepModel) aModel = Model();
+  occ::handle<StepData_StepModel> aModel = Model();
   if (aModel.IsNull())
   {
     return IFSelect_RetFail;
   }
 
-  Handle(StepData_Protocol) aProtocol = Handle(StepData_Protocol)::DownCast(aModel->Protocol());
+  occ::handle<StepData_Protocol> aProtocol = occ::down_cast<StepData_Protocol>(aModel->Protocol());
   if (aProtocol.IsNull())
   {
     return IFSelect_RetFail;
@@ -192,8 +192,8 @@ IFSelect_ReturnStatus STEPControl_Writer::WriteStream(std::ostream& theOStream)
 
 //=================================================================================================
 
-void STEPControl_Writer::PrintStatsTransfer(const Standard_Integer what,
-                                            const Standard_Integer mode) const
+void STEPControl_Writer::PrintStatsTransfer(const int what,
+                                            const int mode) const
 {
   thesession->TransferWriter()->PrintStats(what, mode);
 }
@@ -211,7 +211,7 @@ Standard_EXPORT void STEPControl_Writer::CleanDuplicateEntities()
 void STEPControl_Writer::SetShapeFixParameters(
   const XSAlgo_ShapeProcessor::ParameterMap& theParameters)
 {
-  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
   {
     anActor->SetShapeFixParameters(theParameters);
   }
@@ -221,7 +221,7 @@ void STEPControl_Writer::SetShapeFixParameters(
 
 void STEPControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters)
 {
-  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
   {
     anActor->SetShapeFixParameters(std::move(theParameters));
   }
@@ -233,7 +233,7 @@ void STEPControl_Writer::SetShapeFixParameters(
   const DE_ShapeFixParameters&               theParameters,
   const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)
 {
-  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
   {
     anActor->SetShapeFixParameters(theParameters, theAdditionalParameters);
   }
@@ -244,7 +244,7 @@ void STEPControl_Writer::SetShapeFixParameters(
 const XSAlgo_ShapeProcessor::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
 {
   static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
-  const Handle(Transfer_ActorOfFinderProcess)      anActor = GetActor();
+  const occ::handle<Transfer_ActorOfFinderProcess>      anActor = GetActor();
   return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
@@ -252,7 +252,7 @@ const XSAlgo_ShapeProcessor::ParameterMap& STEPControl_Writer::GetShapeFixParame
 
 void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
 {
-  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
   {
     anActor->SetShapeProcessFlags(theFlags);
   }
@@ -263,21 +263,21 @@ void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 const XSAlgo_ShapeProcessor::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
 {
   static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
-  const Handle(Transfer_ActorOfFinderProcess)         anActor = GetActor();
+  const occ::handle<Transfer_ActorOfFinderProcess>         anActor = GetActor();
   return anActor.IsNull() ? anEmptyFlags : anActor->GetShapeProcessFlags();
 }
 
 //=============================================================================
 
-Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
+occ::handle<Transfer_ActorOfFinderProcess> STEPControl_Writer::GetActor() const
 {
-  Handle(XSControl_WorkSession) aSession = WS();
+  occ::handle<XSControl_WorkSession> aSession = WS();
   if (aSession.IsNull())
   {
     return nullptr;
   }
 
-  Handle(XSControl_Controller) aController = aSession->NormAdaptor();
+  occ::handle<XSControl_Controller> aController = aSession->NormAdaptor();
   if (aController.IsNull())
   {
     return nullptr;

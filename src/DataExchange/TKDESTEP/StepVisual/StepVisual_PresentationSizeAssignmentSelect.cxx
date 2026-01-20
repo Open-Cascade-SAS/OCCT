@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_AreaInSet.hxx>
 #include <StepVisual_PresentationArea.hxx>
@@ -20,8 +20,8 @@
 
 StepVisual_PresentationSizeAssignmentSelect::StepVisual_PresentationSizeAssignmentSelect() {}
 
-Standard_Integer StepVisual_PresentationSizeAssignmentSelect::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_PresentationSizeAssignmentSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -34,19 +34,19 @@ Standard_Integer StepVisual_PresentationSizeAssignmentSelect::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_PresentationView) StepVisual_PresentationSizeAssignmentSelect::PresentationView()
+occ::handle<StepVisual_PresentationView> StepVisual_PresentationSizeAssignmentSelect::PresentationView()
   const
 {
   return GetCasted(StepVisual_PresentationView, Value());
 }
 
-Handle(StepVisual_PresentationArea) StepVisual_PresentationSizeAssignmentSelect::PresentationArea()
+occ::handle<StepVisual_PresentationArea> StepVisual_PresentationSizeAssignmentSelect::PresentationArea()
   const
 {
   return GetCasted(StepVisual_PresentationArea, Value());
 }
 
-Handle(StepVisual_AreaInSet) StepVisual_PresentationSizeAssignmentSelect::AreaInSet() const
+occ::handle<StepVisual_AreaInSet> StepVisual_PresentationSizeAssignmentSelect::AreaInSet() const
 {
   return GetCasted(StepVisual_AreaInSet, Value());
 }

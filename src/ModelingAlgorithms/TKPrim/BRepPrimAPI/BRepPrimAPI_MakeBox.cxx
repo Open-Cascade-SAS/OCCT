@@ -23,9 +23,9 @@
 #include <TopoDS_Solid.hxx>
 
 inline gp_Pnt pmin(const gp_Pnt&       p,
-                   const Standard_Real dx,
-                   const Standard_Real dy,
-                   const Standard_Real dz)
+                   const double dx,
+                   const double dy,
+                   const double dz)
 {
   gp_Pnt P = p;
   if (dx < 0)
@@ -39,9 +39,9 @@ inline gp_Pnt pmin(const gp_Pnt&       p,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const Standard_Real dx,
-                                         const Standard_Real dy,
-                                         const Standard_Real dz)
+BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const double dx,
+                                         const double dy,
+                                         const double dz)
     : myWedge(gp_Ax2(pmin(gp_Pnt(0, 0, 0), dx, dy, dz), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
               std::abs(dx),
               std::abs(dy),
@@ -52,9 +52,9 @@ BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const Standard_Real dx,
 //=================================================================================================
 
 BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const gp_Pnt&       P,
-                                         const Standard_Real dx,
-                                         const Standard_Real dy,
-                                         const Standard_Real dz)
+                                         const double dx,
+                                         const double dy,
+                                         const double dz)
     : myWedge(gp_Ax2(pmin(P, dx, dy, dz), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
               std::abs(dx),
               std::abs(dy),
@@ -80,18 +80,18 @@ BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const gp_Pnt& P1, const gp_Pnt& P2)
 //=================================================================================================
 
 BRepPrimAPI_MakeBox::BRepPrimAPI_MakeBox(const gp_Ax2&       Axes,
-                                         const Standard_Real dx,
-                                         const Standard_Real dy,
-                                         const Standard_Real dz)
+                                         const double dx,
+                                         const double dy,
+                                         const double dz)
     : myWedge(Axes, dx, dy, dz)
 {
 }
 
 //=================================================================================================
 
-void BRepPrimAPI_MakeBox::Init(const Standard_Real theDX,
-                               const Standard_Real theDY,
-                               const Standard_Real theDZ)
+void BRepPrimAPI_MakeBox::Init(const double theDX,
+                               const double theDY,
+                               const double theDZ)
 {
   myWedge = BRepPrim_Wedge(
     gp_Ax2(pmin(gp_Pnt(0, 0, 0), theDX, theDY, theDZ), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
@@ -103,9 +103,9 @@ void BRepPrimAPI_MakeBox::Init(const Standard_Real theDX,
 //=================================================================================================
 
 void BRepPrimAPI_MakeBox::Init(const gp_Pnt&       thePnt,
-                               const Standard_Real theDX,
-                               const Standard_Real theDY,
-                               const Standard_Real theDZ)
+                               const double theDX,
+                               const double theDY,
+                               const double theDZ)
 {
   myWedge = BRepPrim_Wedge(
     gp_Ax2(pmin(thePnt, theDX, theDY, theDZ), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)),
@@ -128,9 +128,9 @@ void BRepPrimAPI_MakeBox::Init(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 //=================================================================================================
 
 void BRepPrimAPI_MakeBox::Init(const gp_Ax2&       theAxes,
-                               const Standard_Real theDX,
-                               const Standard_Real theDY,
-                               const Standard_Real theDZ)
+                               const double theDX,
+                               const double theDY,
+                               const double theDZ)
 {
   myWedge = BRepPrim_Wedge(theAxes, theDX, theDY, theDZ);
 }

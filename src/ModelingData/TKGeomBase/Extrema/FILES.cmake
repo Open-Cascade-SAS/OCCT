@@ -2,13 +2,7 @@
 set(OCCT_Extrema_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Extrema_FILES
-  Extrema_Array1OfPOnCurv.hxx
-  Extrema_Array1OfPOnCurv2d.hxx
-  Extrema_Array1OfPOnSurf.hxx
-  Extrema_Array2OfPOnCurv.hxx
-  Extrema_Array2OfPOnCurv2d.hxx
-  Extrema_Array2OfPOnSurf.hxx
-  Extrema_Array2OfPOnSurfParams.hxx
+
   Extrema_CCLocFOfLocECC.hxx
   Extrema_CCLocFOfLocECC2d.hxx
   Extrema_Curve2dTool.cxx
@@ -93,13 +87,7 @@ set(OCCT_Extrema_FILES
   Extrema_GlobOptFuncCQuadric.cxx
   Extrema_GlobOptFuncCQuadric.hxx
   Extrema_GLocateExtPC.hxx
-  Extrema_HArray1OfPOnCurv.hxx
-  Extrema_HArray1OfPOnCurv2d.hxx
-  Extrema_HArray1OfPOnSurf.hxx
-  Extrema_HArray2OfPOnCurv.hxx
-  Extrema_HArray2OfPOnCurv2d.hxx
-  Extrema_HArray2OfPOnSurf.hxx
-  Extrema_HUBTreeOfSphere.hxx
+
   Extrema_LocateExtCC.cxx
   Extrema_LocateExtCC.hxx
   Extrema_LocateExtCC2d.cxx
@@ -120,7 +108,5 @@ set(OCCT_Extrema_FILES
   Extrema_POnCurv2d.hxx
   Extrema_POnSurf.hxx
   Extrema_POnSurfParams.hxx
-  Extrema_SequenceOfPOnCurv.hxx
-  Extrema_SequenceOfPOnCurv2d.hxx
-  Extrema_SequenceOfPOnSurf.hxx
+
 )

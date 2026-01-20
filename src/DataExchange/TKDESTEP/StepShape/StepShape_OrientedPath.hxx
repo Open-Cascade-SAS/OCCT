@@ -21,14 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_Path.hxx>
-#include <StepShape_HArray1OfOrientedEdge.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class StepShape_EdgeLoop;
 class TCollection_HAsciiString;
 class StepShape_OrientedEdge;
-
-class StepShape_OrientedPath;
-DEFINE_STANDARD_HANDLE(StepShape_OrientedPath, StepShape_Path)
 
 class StepShape_OrientedPath : public StepShape_Path
 {
@@ -37,35 +36,34 @@ public:
   //! Returns a OrientedPath
   Standard_EXPORT StepShape_OrientedPath();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_EdgeLoop)&       aPathElement,
-                            const Standard_Boolean                  aOrientation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_EdgeLoop>&       aPathElement,
+                            const bool                  aOrientation);
 
-  Standard_EXPORT void SetPathElement(const Handle(StepShape_EdgeLoop)& aPathElement);
+  Standard_EXPORT void SetPathElement(const occ::handle<StepShape_EdgeLoop>& aPathElement);
 
-  Standard_EXPORT Handle(StepShape_EdgeLoop) PathElement() const;
+  Standard_EXPORT occ::handle<StepShape_EdgeLoop> PathElement() const;
 
-  Standard_EXPORT void SetOrientation(const Standard_Boolean aOrientation);
+  Standard_EXPORT void SetOrientation(const bool aOrientation);
 
-  Standard_EXPORT Standard_Boolean Orientation() const;
+  Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEdgeList(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfOrientedEdge) EdgeList() const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList() const
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_OrientedEdge) EdgeListValue(
-    const Standard_Integer num) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_OrientedEdge> EdgeListValue(
+    const int num) const override;
 
-  Standard_EXPORT virtual Standard_Integer NbEdgeList() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbEdgeList() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedPath, StepShape_Path)
 
-protected:
 private:
-  Handle(StepShape_EdgeLoop) pathElement;
-  Standard_Boolean           orientation;
+  occ::handle<StepShape_EdgeLoop> pathElement;
+  bool           orientation;
 };
 
 #endif // _StepShape_OrientedPath_HeaderFile

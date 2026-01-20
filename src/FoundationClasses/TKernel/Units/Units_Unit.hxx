@@ -20,16 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class Units_Quantity;
 class Units_Token;
-
-class Units_Unit;
-DEFINE_STANDARD_HANDLE(Units_Unit, Standard_Transient)
 
 //! This class defines an elementary word contained in
 //! a physical quantity.
@@ -41,63 +40,63 @@ public:
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit, and <avalue> is the value in relation to the
   //! International System of Units.
-  Standard_EXPORT Units_Unit(const Standard_CString        aname,
-                             const Standard_CString        asymbol,
-                             const Standard_Real           avalue,
-                             const Handle(Units_Quantity)& aquantity);
+  Standard_EXPORT Units_Unit(const char* const        aname,
+                             const char* const        asymbol,
+                             const double           avalue,
+                             const occ::handle<Units_Quantity>& aquantity);
 
   //! Creates and returns a unit. <aname> is the name of
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit.
-  Standard_EXPORT Units_Unit(const Standard_CString aname, const Standard_CString asymbol);
+  Standard_EXPORT Units_Unit(const char* const aname, const char* const asymbol);
 
   //! Creates and returns a unit. <aname> is the name of
   //! the unit.
-  Standard_EXPORT Units_Unit(const Standard_CString aname);
+  Standard_EXPORT Units_Unit(const char* const aname);
 
   //! Returns the name of the unit <thename>
   TCollection_AsciiString Name() const;
 
   //! Adds a new symbol <asymbol> attached to <me>.
-  Standard_EXPORT void Symbol(const Standard_CString asymbol);
+  Standard_EXPORT void Symbol(const char* const asymbol);
 
   //! Returns the value in relation with the International
   //! System of Units.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! Returns <thequantity> contained in <me>.
-  Handle(Units_Quantity) Quantity() const;
+  occ::handle<Units_Quantity> Quantity() const;
 
   //! Returns the sequence of symbols <thesymbolssequence>
-  Handle(TColStd_HSequenceOfHAsciiString) SymbolsSequence() const;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> SymbolsSequence() const;
 
   //! Sets the value <avalue> to <me>.
-  void Value(const Standard_Real avalue);
+  void Value(const double avalue);
 
   //! Sets the physical Quantity <aquantity> to <me>.
-  void Quantity(const Handle(Units_Quantity)& aquantity);
+  void Quantity(const occ::handle<Units_Quantity>& aquantity);
 
   //! Starting with <me>, returns a new Token object.
-  Standard_EXPORT virtual Handle(Units_Token) Token() const;
+  Standard_EXPORT virtual occ::handle<Units_Token> Token() const;
 
   //! Compares all the symbols linked within <me> with the
   //! name of <atoken>, and returns True if there is one
   //! symbol equal to the name, False otherwise.
-  Standard_EXPORT Standard_Boolean IsEqual(const Standard_CString astring) const;
+  Standard_EXPORT bool IsEqual(const char* const astring) const;
 
   //! Useful for debugging
-  Standard_EXPORT virtual void Dump(const Standard_Integer ashift,
-                                    const Standard_Integer alevel) const;
+  Standard_EXPORT virtual void Dump(const int ashift,
+                                    const int alevel) const;
 
   DEFINE_STANDARD_RTTIEXT(Units_Unit, Standard_Transient)
 
 protected:
-  Handle(TColStd_HSequenceOfHAsciiString) thesymbolssequence;
-  Standard_Real                           thevalue;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thesymbolssequence;
+  double                           thevalue;
 
 private:
-  Handle(TCollection_HAsciiString) thename;
-  Handle(Units_Quantity)           thequantity;
+  occ::handle<TCollection_HAsciiString> thename;
+  occ::handle<Units_Quantity>           thequantity;
 };
 
 #include <Units_Unit.lxx>

@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUnitAssignedContext, StepRepr_Represen
 StepRepr_GlobalUnitAssignedContext::StepRepr_GlobalUnitAssignedContext() {}
 
 void StepRepr_GlobalUnitAssignedContext::Init(
-  const Handle(TCollection_HAsciiString)&     aContextIdentifier,
-  const Handle(TCollection_HAsciiString)&     aContextType,
-  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+  const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&     aContextType,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   // --- classe own fields ---
   units = aUnits;
@@ -30,23 +30,23 @@ void StepRepr_GlobalUnitAssignedContext::Init(
 }
 
 void StepRepr_GlobalUnitAssignedContext::SetUnits(
-  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   units = aUnits;
 }
 
-Handle(StepBasic_HArray1OfNamedUnit) StepRepr_GlobalUnitAssignedContext::Units() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> StepRepr_GlobalUnitAssignedContext::Units() const
 {
   return units;
 }
 
-Handle(StepBasic_NamedUnit) StepRepr_GlobalUnitAssignedContext::UnitsValue(
-  const Standard_Integer num) const
+occ::handle<StepBasic_NamedUnit> StepRepr_GlobalUnitAssignedContext::UnitsValue(
+  const int num) const
 {
   return units->Value(num);
 }
 
-Standard_Integer StepRepr_GlobalUnitAssignedContext::NbUnits() const
+int StepRepr_GlobalUnitAssignedContext::NbUnits() const
 {
   if (units.IsNull())
     return 0;

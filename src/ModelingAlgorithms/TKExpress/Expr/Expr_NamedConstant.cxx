@@ -25,75 +25,75 @@
 IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedConstant, Expr_NamedExpression)
 
 Expr_NamedConstant::Expr_NamedConstant(const TCollection_AsciiString& name,
-                                       const Standard_Real            value)
+                                       const double            value)
 {
   SetName(name);
   myValue = value;
 }
 
-const Handle(Expr_GeneralExpression)& Expr_NamedConstant::SubExpression(
-  const Standard_Integer) const
+const occ::handle<Expr_GeneralExpression>& Expr_NamedConstant::SubExpression(
+  const int) const
 {
   throw Standard_OutOfRange();
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedConstant::Simplified() const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::Simplified() const
 {
-  Handle(Expr_GeneralExpression) res = new Expr_NumericValue(myValue);
+  occ::handle<Expr_GeneralExpression> res = new Expr_NumericValue(myValue);
   return res;
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedConstant::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::Copy() const
 {
   return new Expr_NamedConstant(GetName(), myValue);
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedConstant::Derivative(
-  const Handle(Expr_NamedUnknown)&) const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::Derivative(
+  const occ::handle<Expr_NamedUnknown>&) const
 {
-  Handle(Expr_GeneralExpression) aNumVal = new Expr_NumericValue(0.0);
+  occ::handle<Expr_GeneralExpression> aNumVal = new Expr_NumericValue(0.0);
   return aNumVal;
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedConstant::NDerivative(const Handle(Expr_NamedUnknown)&,
-                                                               const Standard_Integer) const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::NDerivative(const occ::handle<Expr_NamedUnknown>&,
+                                                               const int) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedConstant::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::ShallowSimplified() const
 {
-  Handle(Expr_GeneralExpression) res = new Expr_NumericValue(myValue);
+  occ::handle<Expr_GeneralExpression> res = new Expr_NumericValue(myValue);
   return res;
 }
 
-Standard_Real Expr_NamedConstant::Evaluate(const Expr_Array1OfNamedUnknown&,
-                                           const TColStd_Array1OfReal&) const
+double Expr_NamedConstant::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&,
+                                           const NCollection_Array1<double>&) const
 {
   return myValue;
 }
 
-Standard_Integer Expr_NamedConstant::NbSubExpressions() const
+int Expr_NamedConstant::NbSubExpressions() const
 {
   return 0;
 }
 
-Standard_Boolean Expr_NamedConstant::ContainsUnknowns() const
+bool Expr_NamedConstant::ContainsUnknowns() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_NamedConstant::Contains(const Handle(Expr_GeneralExpression)&) const
+bool Expr_NamedConstant::Contains(const occ::handle<Expr_GeneralExpression>&) const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_NamedConstant::IsLinear() const
+bool Expr_NamedConstant::IsLinear() const
 {
-  return Standard_True;
+  return true;
 }
 
-void Expr_NamedConstant::Replace(const Handle(Expr_NamedUnknown)&,
-                                 const Handle(Expr_GeneralExpression)&)
+void Expr_NamedConstant::Replace(const occ::handle<Expr_NamedUnknown>&,
+                                 const occ::handle<Expr_GeneralExpression>&)
 {
 }

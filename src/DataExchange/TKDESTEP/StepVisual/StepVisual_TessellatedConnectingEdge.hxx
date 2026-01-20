@@ -23,9 +23,9 @@
 
 #include <StepData_Logical.hxx>
 #include <StepVisual_TessellatedFace.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedConnectingEdge, StepVisual_TessellatedEdge)
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity TessellatedConnectingEdge
 class StepVisual_TessellatedConnectingEdge : public StepVisual_TessellatedEdge
@@ -37,16 +37,16 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-    const Handle(StepVisual_CoordinatesList)& theTessellatedEdge_Coordinates,
-    const Standard_Boolean                    theHasTessellatedEdge_GeometricLink,
+    const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>& theTessellatedEdge_Coordinates,
+    const bool                    theHasTessellatedEdge_GeometricLink,
     const StepVisual_EdgeOrCurve&             theTessellatedEdge_GeometricLink,
-    const Handle(TColStd_HArray1OfInteger)&   theTessellatedEdge_LineStrip,
+    const occ::handle<NCollection_HArray1<int>>&   theTessellatedEdge_LineStrip,
     const StepData_Logical                    theSmooth,
-    const Handle(StepVisual_TessellatedFace)& theFace1,
-    const Handle(StepVisual_TessellatedFace)& theFace2,
-    const Handle(TColStd_HArray1OfInteger)&   theLineStripFace1,
-    const Handle(TColStd_HArray1OfInteger)&   theLineStripFace2);
+    const occ::handle<StepVisual_TessellatedFace>& theFace1,
+    const occ::handle<StepVisual_TessellatedFace>& theFace2,
+    const occ::handle<NCollection_HArray1<int>>&   theLineStripFace1,
+    const occ::handle<NCollection_HArray1<int>>&   theLineStripFace2);
 
   //! Returns field Smooth
   Standard_EXPORT StepData_Logical Smooth() const;
@@ -55,49 +55,49 @@ public:
   Standard_EXPORT void SetSmooth(const StepData_Logical theSmooth);
 
   //! Returns field Face1
-  Standard_EXPORT Handle(StepVisual_TessellatedFace) Face1() const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedFace> Face1() const;
 
   //! Sets field Face1
-  Standard_EXPORT void SetFace1(const Handle(StepVisual_TessellatedFace)& theFace1);
+  Standard_EXPORT void SetFace1(const occ::handle<StepVisual_TessellatedFace>& theFace1);
 
   //! Returns field Face2
-  Standard_EXPORT Handle(StepVisual_TessellatedFace) Face2() const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedFace> Face2() const;
 
   //! Sets field Face2
-  Standard_EXPORT void SetFace2(const Handle(StepVisual_TessellatedFace)& theFace2);
+  Standard_EXPORT void SetFace2(const occ::handle<StepVisual_TessellatedFace>& theFace2);
 
   //! Returns field LineStripFace1
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) LineStripFace1() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> LineStripFace1() const;
 
   //! Sets field LineStripFace1
-  Standard_EXPORT void SetLineStripFace1(const Handle(TColStd_HArray1OfInteger)& theLineStripFace1);
+  Standard_EXPORT void SetLineStripFace1(const occ::handle<NCollection_HArray1<int>>& theLineStripFace1);
 
   //! Returns number of LineStripFace1
-  Standard_EXPORT Standard_Integer NbLineStripFace1() const;
+  Standard_EXPORT int NbLineStripFace1() const;
 
   //! Returns value of LineStripFace1 by its num
-  Standard_EXPORT Standard_Integer LineStripFace1Value(const Standard_Integer theNum) const;
+  Standard_EXPORT int LineStripFace1Value(const int theNum) const;
 
   //! Returns field LineStripFace2
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) LineStripFace2() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<int>> LineStripFace2() const;
 
   //! Sets field LineStripFace2
-  Standard_EXPORT void SetLineStripFace2(const Handle(TColStd_HArray1OfInteger)& theLineStripFace2);
+  Standard_EXPORT void SetLineStripFace2(const occ::handle<NCollection_HArray1<int>>& theLineStripFace2);
 
   //! Returns number of LineStripFace2
-  Standard_EXPORT Standard_Integer NbLineStripFace2() const;
+  Standard_EXPORT int NbLineStripFace2() const;
 
   //! Returns value of LineStripFace2 by its num
-  Standard_EXPORT Standard_Integer LineStripFace2Value(const Standard_Integer theNum) const;
+  Standard_EXPORT int LineStripFace2Value(const int theNum) const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedConnectingEdge, StepVisual_TessellatedEdge)
 
 private:
   StepData_Logical                   mySmooth;
-  Handle(StepVisual_TessellatedFace) myFace1;
-  Handle(StepVisual_TessellatedFace) myFace2;
-  Handle(TColStd_HArray1OfInteger)   myLineStripFace1;
-  Handle(TColStd_HArray1OfInteger)   myLineStripFace2;
+  occ::handle<StepVisual_TessellatedFace> myFace1;
+  occ::handle<StepVisual_TessellatedFace> myFace2;
+  occ::handle<NCollection_HArray1<int>>   myLineStripFace1;
+  occ::handle<NCollection_HArray1<int>>   myLineStripFace2;
 };
 
 #endif // _StepVisual_TessellatedConnectingEdge_HeaderFile_

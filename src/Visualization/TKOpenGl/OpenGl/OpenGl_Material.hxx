@@ -25,10 +25,10 @@ class OpenGl_Context;
 struct OpenGl_MaterialCommon
 {
 
-  OpenGl_Vec4 Diffuse;           //!< diffuse RGB coefficients + alpha
-  OpenGl_Vec4 Emission;          //!< material RGB emission
-  OpenGl_Vec4 SpecularShininess; //!< glossy  RGB coefficients + shininess
-  OpenGl_Vec4 Ambient;           //!< ambient RGB coefficients
+  NCollection_Vec4<float> Diffuse;           //!< diffuse RGB coefficients + alpha
+  NCollection_Vec4<float> Emission;          //!< material RGB emission
+  NCollection_Vec4<float> SpecularShininess; //!< glossy  RGB coefficients + shininess
+  NCollection_Vec4<float> Ambient;           //!< ambient RGB coefficients
 
   float Shine() const { return SpecularShininess.a(); }
 
@@ -44,7 +44,7 @@ struct OpenGl_MaterialCommon
   }
 
   //! Set material color.
-  void SetColor(const OpenGl_Vec3& theColor)
+  void SetColor(const NCollection_Vec3<float>& theColor)
   {
     // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
     Ambient.SetValues(theColor * 0.25f, Ambient.a());
@@ -56,11 +56,11 @@ struct OpenGl_MaterialCommon
 struct OpenGl_MaterialPBR
 {
 
-  OpenGl_Vec4 BaseColor; //!< base color of PBR material with alpha component
+  NCollection_Vec4<float> BaseColor; //!< base color of PBR material with alpha component
                          // clang-format off
-  OpenGl_Vec4 EmissionIOR; //!< light intensity which is emitted by PBR material and index of refraction
+  NCollection_Vec4<float> EmissionIOR; //!< light intensity which is emitted by PBR material and index of refraction
                          // clang-format on
-  OpenGl_Vec4 Params;    //!< extra packed parameters
+  NCollection_Vec4<float> Params;    //!< extra packed parameters
 
   float Metallic() const { return Params.b(); }
 
@@ -79,7 +79,7 @@ struct OpenGl_MaterialPBR
   }
 
   //! Set material color.
-  void SetColor(const OpenGl_Vec3& theColor) { BaseColor.SetValues(theColor, BaseColor.a()); }
+  void SetColor(const NCollection_Vec3<float>& theColor) { BaseColor.SetValues(theColor, BaseColor.a()); }
 };
 
 //! OpenGL material definition
@@ -89,7 +89,7 @@ struct OpenGl_Material
   OpenGl_MaterialPBR    Pbr[2];
 
   //! Set material color.
-  void SetColor(const OpenGl_Vec3& theColor)
+  void SetColor(const NCollection_Vec3<float>& theColor)
   {
     Common[0].SetColor(theColor);
     Common[1].SetColor(theColor);
@@ -121,21 +121,21 @@ struct OpenGl_Material
   bool operator!=(const OpenGl_Material& theOther) const { return !IsEqual(theOther); }
 
   //! Returns packed (serialized) representation of common material properties
-  const OpenGl_Vec4* PackedCommon() const { return reinterpret_cast<const OpenGl_Vec4*>(Common); }
+  const NCollection_Vec4<float>* PackedCommon() const { return reinterpret_cast<const NCollection_Vec4<float>*>(Common); }
 
-  static Standard_Integer NbOfVec4Common() { return 4 * 2; }
+  static int NbOfVec4Common() { return 4 * 2; }
 
   //! Returns packed (serialized) representation of PBR material properties
-  const OpenGl_Vec4* PackedPbr() const { return reinterpret_cast<const OpenGl_Vec4*>(Pbr); }
+  const NCollection_Vec4<float>* PackedPbr() const { return reinterpret_cast<const NCollection_Vec4<float>*>(Pbr); }
 
-  static Standard_Integer NbOfVec4Pbr() { return 3 * 2; }
+  static int NbOfVec4Pbr() { return 3 * 2; }
 
 private:
   //! Initialize material
   void init(const OpenGl_Context&           theCtx,
             const Graphic3d_MaterialAspect& theMat,
             const Quantity_Color&           theColor,
-            const Standard_Integer          theIndex);
+            const int          theIndex);
 };
 
 //! Material flag

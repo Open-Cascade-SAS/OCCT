@@ -36,25 +36,23 @@ public:
   //! Computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) = 0;
+  Standard_EXPORT virtual bool Value(const double X, double& F) = 0;
 
   //! Computes the derivative <D> of the function
   //! for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D) = 0;
+  Standard_EXPORT virtual bool Derivative(const double X, double& D) = 0;
 
   //! Computes the value <F> and the derivative <D> of the
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const Standard_Real X,
-                                                  Standard_Real&      F,
-                                                  Standard_Real&      D) = 0;
+  Standard_EXPORT virtual bool Values(const double X,
+                                                  double&      F,
+                                                  double&      D) = 0;
   Standard_EXPORT virtual ~math_FunctionWithDerivative();
 
-protected:
-private:
 };
 
 #endif // _math_FunctionWithDerivative_HeaderFile

@@ -21,9 +21,12 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntPatch_Intersection.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopOpeBRep_HArray1OfLineInter.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class BRepTopAdaptor_TopolTool;
 class Bnd_Box;
@@ -45,56 +48,55 @@ public:
                                const Bnd_Box&      B1,
                                const Bnd_Box&      B2);
 
-  Standard_EXPORT Standard_Boolean IsEmpty();
+  Standard_EXPORT bool IsEmpty();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if Perform() arguments are two faces with the
   //! same surface.
-  Standard_EXPORT Standard_Boolean SameDomain() const;
+  Standard_EXPORT bool SameDomain() const;
 
   //! returns first or second intersected face.
-  Standard_EXPORT const TopoDS_Shape& Face(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Shape& Face(const int Index) const;
 
   //! Returns True if Perform() arguments are two faces
   //! SameDomain() and normals on both side.
   //! Raise if SameDomain is False
-  Standard_EXPORT Standard_Boolean SurfacesSameOriented() const;
+  Standard_EXPORT bool SurfacesSameOriented() const;
 
   //! returns true if edge <E> is found as same as the edge
   //! associated with a RESTRICTION line.
-  Standard_EXPORT Standard_Boolean IsRestriction(const TopoDS_Shape& E) const;
+  Standard_EXPORT bool IsRestriction(const TopoDS_Shape& E) const;
 
   //! returns the map of edges found as TopeBRepBRep_RESTRICTION
-  Standard_EXPORT const TopTools_IndexedMapOfShape& Restrictions() const;
+  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Restrictions() const;
 
   Standard_EXPORT void PrepareLines();
 
-  Standard_EXPORT Handle(TopOpeBRep_HArray1OfLineInter) Lines();
+  Standard_EXPORT occ::handle<NCollection_HArray1<TopOpeBRep_LineInter>> Lines();
 
-  Standard_EXPORT Standard_Integer NbLines() const;
+  Standard_EXPORT int NbLines() const;
 
   Standard_EXPORT void InitLine();
 
-  Standard_EXPORT Standard_Boolean MoreLine() const;
+  Standard_EXPORT bool MoreLine() const;
 
   Standard_EXPORT void NextLine();
 
   Standard_EXPORT TopOpeBRep_LineInter& CurrentLine();
 
-  Standard_EXPORT Standard_Integer CurrentLineIndex() const;
+  Standard_EXPORT int CurrentLineIndex() const;
 
-  Standard_EXPORT TopOpeBRep_LineInter& ChangeLine(const Standard_Integer IL);
+  Standard_EXPORT TopOpeBRep_LineInter& ChangeLine(const int IL);
 
   //! Force the tolerance values used by the next Perform(S1,S2) call.
-  Standard_EXPORT void ForceTolerances(const Standard_Real tolarc, const Standard_Real toltang);
+  Standard_EXPORT void ForceTolerances(const double tolarc, const double toltang);
 
   //! Return the tolerance values used in the last Perform() call
   //! If ForceTolerances() has been called, return the given values.
   //! If not, return values extracted from shapes.
-  Standard_EXPORT void GetTolerances(Standard_Real& tolarc, Standard_Real& toltang) const;
+  Standard_EXPORT void GetTolerances(double& tolarc, double& toltang) const;
 
-protected:
 private:
   Standard_EXPORT void FindLine();
 
@@ -111,28 +113,28 @@ private:
   //! found in shape <S>. If no such sub-shape found, return
   //! Precision::Intersection()
   //! (called by ShapeTolerances())
-  Standard_EXPORT Standard_Real ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
+  Standard_EXPORT double ToleranceMax(const TopoDS_Shape& S, const TopAbs_ShapeEnum T) const;
 
   IntPatch_Intersection                 myIntersector;
-  Standard_Boolean                      myIntersectionDone;
-  Standard_Real                         myTol1;
-  Standard_Real                         myTol2;
-  Standard_Boolean                      myForceTolerances;
-  Handle(TopOpeBRep_HArray1OfLineInter) myHAL;
+  bool                      myIntersectionDone;
+  double                         myTol1;
+  double                         myTol2;
+  bool                      myForceTolerances;
+  occ::handle<NCollection_HArray1<TopOpeBRep_LineInter>> myHAL;
   TopOpeBRep_LineInter                  myLine;
-  Standard_Integer                      myLineIndex;
-  Standard_Boolean                      myLineFound;
-  Standard_Integer                      myLineNb;
+  int                      myLineIndex;
+  bool                      myLineFound;
+  int                      myLineNb;
   TopoDS_Face                           myFace1;
   TopoDS_Face                           myFace2;
-  Handle(BRepAdaptor_Surface)           mySurface1;
-  Handle(BRepAdaptor_Surface)           mySurface2;
+  occ::handle<BRepAdaptor_Surface>           mySurface1;
+  occ::handle<BRepAdaptor_Surface>           mySurface2;
   GeomAbs_SurfaceType                   mySurfaceType1;
   GeomAbs_SurfaceType                   mySurfaceType2;
-  Standard_Boolean                      mySurfacesSameOriented;
-  Handle(BRepTopAdaptor_TopolTool)      myDomain1;
-  Handle(BRepTopAdaptor_TopolTool)      myDomain2;
-  TopTools_IndexedMapOfShape            myEdgeRestrictionMap;
+  bool                      mySurfacesSameOriented;
+  occ::handle<BRepTopAdaptor_TopolTool>      myDomain1;
+  occ::handle<BRepTopAdaptor_TopolTool>      myDomain2;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>            myEdgeRestrictionMap;
   TopoDS_Shape                          myNullShape;
 };
 

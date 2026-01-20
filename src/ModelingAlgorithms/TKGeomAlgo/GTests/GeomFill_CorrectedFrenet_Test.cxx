@@ -20,9 +20,11 @@
 #include <GC_MakeSegment.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 
@@ -32,28 +34,28 @@
 
 TEST(GeomFill_CorrectedFrenet, EndlessLoopPrevention)
 {
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
   aPoles(2) = gp_Pnt(1.0, 0.0, 0.0);
   aPoles(3) = gp_Pnt(1.0, 1.0, 0.0);
   aPoles(4) = gp_Pnt(0.0, 1.0, 0.0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
-  Handle(Geom_BSplineCurve) aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  occ::handle<Geom_BSplineCurve> aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<GeomAdaptor_Curve> anAdaptor = new GeomAdaptor_Curve(aCurve);
 
-  GeomFill_CorrectedFrenet aCorrectedFrenet(Standard_False);
+  GeomFill_CorrectedFrenet aCorrectedFrenet(false);
   aCorrectedFrenet.SetCurve(anAdaptor);
 
-  Standard_Real aParam1 = 0.0;
-  Standard_Real aParam2 = 1.0;
+  double aParam1 = 0.0;
+  double aParam2 = 1.0;
 
   gp_Vec aTangent1, aNormal1, aBinormal1;
   gp_Vec aTangent2, aNormal2, aBinormal2;
@@ -76,22 +78,22 @@ TEST(GeomFill_CorrectedFrenet, EndlessLoopPrevention)
 
 TEST(GeomFill_CorrectedFrenet, SmallStepHandling)
 {
-  TColgp_Array1OfPnt aPoles(1, 2);
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
   aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
   aPoles(2) = gp_Pnt(1e-10, 0.0, 0.0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 2;
   aMults(2) = 2;
 
-  Handle(Geom_BSplineCurve) aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  occ::handle<Geom_BSplineCurve> aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+  occ::handle<GeomAdaptor_Curve> anAdaptor = new GeomAdaptor_Curve(aCurve);
 
-  GeomFill_CorrectedFrenet aCorrectedFrenet(Standard_False);
+  GeomFill_CorrectedFrenet aCorrectedFrenet(false);
   aCorrectedFrenet.SetCurve(anAdaptor);
 
   gp_Vec aTangent, aNormal, aBinormal;
@@ -103,26 +105,26 @@ TEST(GeomFill_CorrectedFrenet, SmallStepHandling)
 
 TEST(GeomFill_CorrectedFrenet, ParameterProgressionGuarantee)
 {
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
   aPoles(2) = gp_Pnt(0.5, 0.5, 0.0);
   aPoles(3) = gp_Pnt(1.0, 0.0, 0.0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 3;
   aMults(2) = 3;
 
-  Handle(Geom_BSplineCurve) aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  occ::handle<Geom_BSplineCurve> aCurve    = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<GeomAdaptor_Curve> anAdaptor = new GeomAdaptor_Curve(aCurve);
 
-  GeomFill_CorrectedFrenet aCorrectedFrenet(Standard_False);
+  GeomFill_CorrectedFrenet aCorrectedFrenet(false);
   aCorrectedFrenet.SetCurve(anAdaptor);
 
-  for (Standard_Real aParam = 0.1; aParam <= 0.9; aParam += 0.1)
+  for (double aParam = 0.1; aParam <= 0.9; aParam += 0.1)
   {
     gp_Vec aTangent, aNormal, aBinormal;
 
@@ -138,23 +140,23 @@ TEST(GeomFill_CorrectedFrenet, ParameterProgressionGuarantee)
 
 TEST(GeomFill_CorrectedFrenet, ActualReproducerCase)
 {
-  TColgp_Array1OfPnt aPoints(1, 4);
+  NCollection_Array1<gp_Pnt> aPoints(1, 4);
   aPoints(1) = gp_Pnt(-1, -1, 0);
   aPoints(2) = gp_Pnt(0, -2, 0);
   aPoints(3) = gp_Pnt(0, -2, -1);
   aPoints(4) = gp_Pnt(0, -1, -1);
 
   ShapeExtend_WireData anExtend;
-  for (Standard_Integer i = 2; i <= aPoints.Length(); i++)
+  for (int i = 2; i <= aPoints.Length(); i++)
   {
-    Handle(Geom_Curve) aCurve = GC_MakeSegment(aPoints(i - 1), aPoints(i)).Value();
+    occ::handle<Geom_Curve> aCurve = GC_MakeSegment(aPoints(i - 1), aPoints(i)).Value();
     TopoDS_Edge        anEdge = BRepBuilderAPI_MakeEdge(aCurve).Edge();
     anExtend.Add(anEdge);
   }
 
   BRepAdaptor_CompCurve anAdaptor(anExtend.WireAPIMake());
 
-  GeomFill_CorrectedFrenet aCorrectedFrenet(Standard_False);
+  GeomFill_CorrectedFrenet aCorrectedFrenet(false);
 
   // This SetCurve call should not hang (was causing infinite loops)
   EXPECT_NO_THROW({ aCorrectedFrenet.SetCurve(anAdaptor.ShallowCopy()); });

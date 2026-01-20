@@ -37,28 +37,27 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT Vrml_Cylinder(const Vrml_CylinderParts aParts  = Vrml_CylinderALL,
-                                const Standard_Real      aRadius = 1,
-                                const Standard_Real      aHeight = 2);
+                                const double      aRadius = 1,
+                                const double      aHeight = 2);
 
   Standard_EXPORT void SetParts(const Vrml_CylinderParts aParts);
 
   Standard_EXPORT Vrml_CylinderParts Parts() const;
 
-  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+  Standard_EXPORT void SetRadius(const double aRadius);
 
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
-  Standard_EXPORT void SetHeight(const Standard_Real aHeight);
+  Standard_EXPORT void SetHeight(const double aHeight);
 
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
   Vrml_CylinderParts myParts;
-  Standard_Real      myRadius;
-  Standard_Real      myHeight;
+  double      myRadius;
+  double      myHeight;
 };
 
 #endif // _Vrml_Cylinder_HeaderFile

@@ -35,9 +35,9 @@ RWMesh_TriangulationSource::~RWMesh_TriangulationSource()
 
 //=================================================================================================
 
-Standard_Boolean RWMesh_TriangulationSource::loadDeferredData(
-  const Handle(OSD_FileSystem)&     theFileSystem,
-  const Handle(Poly_Triangulation)& theDestTriangulation) const
+bool RWMesh_TriangulationSource::loadDeferredData(
+  const occ::handle<OSD_FileSystem>&     theFileSystem,
+  const occ::handle<Poly_Triangulation>& theDestTriangulation) const
 {
   myStatisticOfDegeneratedTriNb = 0;
   if (myReader.IsNull())
@@ -53,8 +53,8 @@ Standard_Boolean RWMesh_TriangulationSource::loadDeferredData(
 
 //=================================================================================================
 
-void RWMesh_TriangulationSource::ResizeEdges(Standard_Integer theNbEdges,
-                                             Standard_Boolean theToCopyOld)
+void RWMesh_TriangulationSource::ResizeEdges(int theNbEdges,
+                                             bool theToCopyOld)
 {
   myEdges.Resize(1, theNbEdges, theToCopyOld);
 }

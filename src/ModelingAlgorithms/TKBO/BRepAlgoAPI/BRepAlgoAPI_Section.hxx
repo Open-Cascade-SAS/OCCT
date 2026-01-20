@@ -56,7 +56,7 @@ public:
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&    S1,
                                       const TopoDS_Shape&    S2,
-                                      const Standard_Boolean PerformNow = Standard_True);
+                                      const bool PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  -argument
@@ -68,7 +68,7 @@ public:
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&       S1,
                                       const TopoDS_Shape&       S2,
                                       const BOPAlgo_PaveFiller& aDSF,
-                                      const Standard_Boolean    PerformNow = Standard_True);
+                                      const bool    PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  - argument
@@ -78,7 +78,7 @@ public:
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&    S1,
                                       const gp_Pln&          Pl,
-                                      const Standard_Boolean PerformNow = Standard_True);
+                                      const bool PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  - argument
@@ -87,8 +87,8 @@ public:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&         S1,
-                                      const Handle(Geom_Surface)& Sf,
-                                      const Standard_Boolean      PerformNow = Standard_True);
+                                      const occ::handle<Geom_Surface>& Sf,
+                                      const bool      PerformNow = true);
 
   //! Constructor with two shapes
   //! <Sf>  - argument
@@ -96,9 +96,9 @@ public:
   //! <PerformNow> - the flag:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf,
+  Standard_EXPORT BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf,
                                       const TopoDS_Shape&         S2,
-                                      const Standard_Boolean      PerformNow = Standard_True);
+                                      const bool      PerformNow = true);
 
   //! Constructor with two shapes
   //! <Sf1>  - argument
@@ -106,9 +106,9 @@ public:
   //! <PerformNow> - the flag:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1,
-                                      const Handle(Geom_Surface)& Sf2,
-                                      const Standard_Boolean      PerformNow = Standard_True);
+  Standard_EXPORT BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf1,
+                                      const occ::handle<Geom_Surface>& Sf2,
+                                      const bool      PerformNow = true);
 
   //! initialize the argument
   //! <S1>  - argument
@@ -123,7 +123,7 @@ public:
   //! initialize the argument
   //! <Sf>  - argument
   //! Obsolete
-  Standard_EXPORT void Init1(const Handle(Geom_Surface)& Sf);
+  Standard_EXPORT void Init1(const occ::handle<Geom_Surface>& Sf);
 
   //! initialize the tool
   //! <S2>  - tool
@@ -138,9 +138,9 @@ public:
   //! initialize the tool
   //! <Sf>  - tool
   //! Obsolete
-  Standard_EXPORT void Init2(const Handle(Geom_Surface)& Sf);
+  Standard_EXPORT void Init2(const occ::handle<Geom_Surface>& Sf);
 
-  Standard_EXPORT void Approximation(const Standard_Boolean B);
+  Standard_EXPORT void Approximation(const bool B);
 
   //! Indicates whether the P-Curve should be (or not)
   //! performed on the argument.
@@ -150,7 +150,7 @@ public:
   //! to attach an P-Curve in the parametric space of the argument
   //! to the constructed edges.
   //! Obsolete
-  Standard_EXPORT void ComputePCurveOn1(const Standard_Boolean B);
+  Standard_EXPORT void ComputePCurveOn1(const bool B);
 
   //! Indicates whether the P-Curve should be (or not)
   //! performed on the tool.
@@ -160,13 +160,13 @@ public:
   //! to attach an P-Curve in the parametric space of the tool
   //! to the constructed edges.
   //! Obsolete
-  Standard_EXPORT void ComputePCurveOn2(const Standard_Boolean B);
+  Standard_EXPORT void ComputePCurveOn2(const bool B);
 
   //! Performs the algorithm
   //! Filling interference Data Structure (if it is necessary)
   //! Building the result of the operation.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! get the face of the first part giving section edge <E>.
   //! Returns True on the 3 following conditions :
@@ -176,7 +176,7 @@ public:
   //! is not the result of common edges)
   //! When False, F remains untouched.
   //! Obsolete
-  Standard_EXPORT Standard_Boolean HasAncestorFaceOn1(const TopoDS_Shape& E, TopoDS_Shape& F) const;
+  Standard_EXPORT bool HasAncestorFaceOn1(const TopoDS_Shape& E, TopoDS_Shape& F) const;
 
   //! Identifies the ancestor faces of
   //! the intersection edge E resulting from the last
@@ -197,17 +197,17 @@ public:
   //! Boolean value before using the ancestor face: F is significant
   //! only if the returned Boolean value equals true.
   //! Obsolete
-  Standard_EXPORT Standard_Boolean HasAncestorFaceOn2(const TopoDS_Shape& E, TopoDS_Shape& F) const;
+  Standard_EXPORT bool HasAncestorFaceOn2(const TopoDS_Shape& E, TopoDS_Shape& F) const;
 
 protected:
-  Standard_EXPORT void Init(const Standard_Boolean PerformNow);
+  Standard_EXPORT void Init(const bool PerformNow);
 
-  Standard_EXPORT virtual void SetAttributes() Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetAttributes() override;
 
 private:
-  Standard_Boolean myApprox;
-  Standard_Boolean myComputePCurve1;
-  Standard_Boolean myComputePCurve2;
+  bool myApprox;
+  bool myComputePCurve1;
+  bool myComputePCurve2;
 };
 
 #endif // _BRepAlgoAPI_Section_HeaderFile

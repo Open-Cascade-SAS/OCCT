@@ -21,9 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <gp_Pnt.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <Extrema_SequenceOfPOnCurv.hxx>
-#include <Extrema_SequenceOfPOnSurf.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
 class Adaptor3d_Curve;
@@ -46,59 +48,59 @@ public:
   //! sets the field mysurf of the function.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& C, const Adaptor3d_Surface& S);
 
-  Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT int NbVariables() const override;
 
-  Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT int NbEquations() const override;
 
   //! Calculation of Fi(U,V).
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& UV, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculation of Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& UV,
-                                               math_Matrix&       DF) Standard_OVERRIDE;
+  Standard_EXPORT bool Derivatives(const math_Vector& UV,
+                                               math_Matrix&       DF) override;
 
   //! Calculation of Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& UV,
+  Standard_EXPORT bool Values(const math_Vector& UV,
                                           math_Vector&       F,
-                                          math_Matrix&       DF) Standard_OVERRIDE;
+                                          math_Matrix&       DF) override;
 
   //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
+  Standard_EXPORT virtual int GetStateNumber() override;
 
   //! Return the number of found extrema.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Return the value of the Nth distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the Nth extremum on C.
-  Standard_EXPORT const Extrema_POnCurv& PointOnCurve(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnCurv& PointOnCurve(const int N) const;
 
   //! Return the Nth extremum on S.
-  Standard_EXPORT const Extrema_POnSurf& PointOnSurface(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& PointOnSurface(const int N) const;
 
   //! Change Sequence of SquareDistance
-  TColStd_SequenceOfReal& SquareDistances() { return mySqDist; }
+  NCollection_Sequence<double>& SquareDistances() { return mySqDist; }
 
   //! Change Sequence of PointOnCurv
-  Extrema_SequenceOfPOnCurv& PointsOnCurve() { return myPoint1; }
+  NCollection_Sequence<Extrema_POnCurv>& PointsOnCurve() { return myPoint1; }
 
   //! Change Sequence of PointOnSurf
-  Extrema_SequenceOfPOnSurf& PointsOnSurf() { return myPoint2; }
+  NCollection_Sequence<Extrema_POnSurf>& PointsOnSurf() { return myPoint2; }
 
 private:
   const Adaptor3d_Curve*    myC;
   const Adaptor3d_Surface*  myS;
   gp_Pnt                    myP1;
   gp_Pnt                    myP2;
-  Standard_Real             myt;
-  Standard_Real             myU;
-  Standard_Real             myV;
-  TColStd_SequenceOfReal    mySqDist;
-  Extrema_SequenceOfPOnCurv myPoint1;
-  Extrema_SequenceOfPOnSurf myPoint2;
-  Standard_Boolean          myCinit;
-  Standard_Boolean          mySinit;
+  double             myt;
+  double             myU;
+  double             myV;
+  NCollection_Sequence<double>    mySqDist;
+  NCollection_Sequence<Extrema_POnCurv> myPoint1;
+  NCollection_Sequence<Extrema_POnSurf> myPoint2;
+  bool          myCinit;
+  bool          mySinit;
 };
 
 #endif // _Extrema_FuncExtCS_HeaderFile

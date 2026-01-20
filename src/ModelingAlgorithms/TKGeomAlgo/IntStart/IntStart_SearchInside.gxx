@@ -24,14 +24,14 @@
 #include <TopAbs_State.hxx>
 
 IntStart_SearchInside::IntStart_SearchInside()
-    : done(Standard_False)
+    : done(false)
 {
 }
 
 IntStart_SearchInside::IntStart_SearchInside(TheFunction&                Func,
                                              const ThePSurface&          PS,
-                                             const Handle(TheTopolTool)& T,
-                                             const Standard_Real         Epsilon)
+                                             const occ::handle<TheTopolTool>& T,
+                                             const double         Epsilon)
 {
 
   Perform(Func, PS, T, Epsilon);
@@ -44,36 +44,36 @@ IntStart_SearchInside::IntStart_SearchInside(TheFunction&                Func,
 
 void IntStart_SearchInside::Perform(TheFunction&                Func,
                                     const ThePSurface&          PS,
-                                    const Handle(TheTopolTool)& T,
-                                    const Standard_Real         Epsilon)
+                                    const occ::handle<TheTopolTool>& T,
+                                    const double         Epsilon)
 {
 
-  done = Standard_False;
+  done = false;
   list.Clear();
-  Standard_Real    aBinf[2], aBsup[2], aUVap[2], atoler[2];
+  double    aBinf[2], aBsup[2], aUVap[2], atoler[2];
   math_Vector      Binf(aBinf, 1, 2), Bsup(aBsup, 1, 2), UVap(aUVap, 1, 2), toler(atoler, 1, 2);
   gp_Pnt           psol;
-  Standard_Boolean testpnt;
-  Standard_Integer i, j, nbpt;
+  bool testpnt;
+  int i, j, nbpt;
   TopAbs_State     situ;
-  Standard_Real    umin, umax, vmin, vmax;
+  double    umin, umax, vmin, vmax;
   Binf(1) = umin = ThePSurfaceTool::FirstUParameter(PS);
   Binf(2) = vmin = ThePSurfaceTool::FirstVParameter(PS);
   Bsup(1) = umax = ThePSurfaceTool::LastUParameter(PS);
   Bsup(2) = vmax = ThePSurfaceTool::LastVParameter(PS);
 
-  Standard_Integer NbsampleU = T->NbSamplesU();
-  Standard_Integer NbsampleV = T->NbSamplesV();
-  Standard_Integer Nbsample  = T->NbSamples();
+  int NbsampleU = T->NbSamplesU();
+  int NbsampleV = T->NbSamplesV();
+  int Nbsample  = T->NbSamples();
 
-  Standard_Real du = Bsup(1) - Binf(1);
-  Standard_Real dv = Bsup(2) - Binf(2);
-  du /= (Standard_Real)NbsampleU * 0.5;
-  dv /= (Standard_Real)NbsampleV * 0.5;
+  double du = Bsup(1) - Binf(1);
+  double dv = Bsup(2) - Binf(2);
+  du /= (double)NbsampleU * 0.5;
+  dv /= (double)NbsampleV * 0.5;
 
-  Standard_Real toler1 = toler(1) = ThePSurfaceTool::UResolution(PS, Precision::Confusion());
-  Standard_Real toler2 = toler(2) = ThePSurfaceTool::VResolution(PS, Precision::Confusion());
-  Standard_Real Maxtoler1toler2   = toler1;
+  double toler1 = toler(1) = ThePSurfaceTool::UResolution(PS, Precision::Confusion());
+  double toler2 = toler(2) = ThePSurfaceTool::VResolution(PS, Precision::Confusion());
+  double Maxtoler1toler2   = toler1;
   if (toler2 > Maxtoler1toler2)
     Maxtoler1toler2 = toler2;
 
@@ -86,7 +86,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
     Maxtoler1toler2 = dv * 0.001;
 
   Func.Set(PS);
-  Standard_Real Tol = Func.Tolerance();
+  double Tol = Func.Tolerance();
 
   math_FunctionSetRoot Rsnld(Func, toler);
 
@@ -121,14 +121,14 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
   {
     gp_Pnt2d         s2d;
     gp_Pnt           s3d;
-    Standard_Boolean nepastester = Standard_False;
+    bool nepastester = false;
     if (i <= Nbsample)
     {
       T->SamplePoint(i, s2d, s3d);
       UVap(1) = s2d.X();
       UVap(2) = s2d.Y();
 
-      Standard_Real u1, v1, u2, v2;
+      double u1, v1, u2, v2;
       u1 = Binf(1) = std::max(umin, UVap(1) - du);
       v1 = Binf(2) = std::max(vmin, UVap(2) - dv);
       u2 = Bsup(1) = std::min(umax, UVap(1) + du);
@@ -137,14 +137,14 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
       //-- gp_Pnt Pmilieu = ThePSurfaceTool::Value(PS,0.5*(u1+u2),0.5*(v1+v2));
       gp_Pnt        Pextrm1 = ThePSurfaceTool::Value(PS, u1, v1);
       gp_Pnt        Pextrm2 = ThePSurfaceTool::Value(PS, u2, v2);
-      Standard_Real aValf[1];
+      double aValf[1];
       math_Vector   Valf(aValf, 1, 1);
       Func.Value(UVap, Valf);
-      Standard_Real rvalf  = Valf(1);
-      Standard_Real DistPP = Pextrm1.SquareDistance(Pextrm2);
+      double rvalf  = Valf(1);
+      double DistPP = Pextrm1.SquareDistance(Pextrm2);
       if (rvalf * rvalf > 3.0 * DistPP)
       {
-        nepastester = Standard_True;
+        nepastester = true;
       }
     }
     else
@@ -209,7 +209,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
       Bsup(2) = std::min(vmax, UVap(2) + dv);
     }
 
-    if (nepastester == Standard_False)
+    if (nepastester == false)
     {
       Rsnld.Perform(Func, UVap, Binf, Bsup);
       if (Rsnld.IsDone())
@@ -235,7 +235,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
                   && (std::abs(UVap(1) - IPj.UParameter()) <= toler1)
                   && (std::abs(UVap(2) - IPj.VParameter()) <= toler2))
               {
-                testpnt = Standard_False;
+                testpnt = false;
               }
               else
               {
@@ -249,7 +249,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
               situ =
                 T->Classify(gp_Pnt2d(UVap(1), UVap(2)),
                             Maxtoler1toler2,
-                            Standard_False); //-- ,Standard_False pour ne pas recadrer on Periodic
+                            false); //-- ,false pour ne pas recadrer on Periodic
               if (situ == TopAbs_IN)
               {
                 list.Append(IntSurf_InteriorPoint(psol,
@@ -266,7 +266,7 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
   }
   //-- printf("\n Total : %d    Rejet : %d   RatioPointCalc : %g   nbpt
   //=%d\n",REJET_OK+REJET_KO,REJET_OK,(double)(REJET_KO)/(double)(REJET_OK+REJET_KO),list.Length());
-  done = Standard_True;
+  done = true;
 }
 
 //=======================================================================
@@ -276,10 +276,10 @@ void IntStart_SearchInside::Perform(TheFunction&                Func,
 
 void IntStart_SearchInside::Perform(TheFunction&        Func,
                                     const ThePSurface&  PS,
-                                    const Standard_Real UStart,
-                                    const Standard_Real VStart)
+                                    const double UStart,
+                                    const double VStart)
 {
-  done = Standard_False;
+  done = false;
   list.Clear();
   math_Vector Binf(1, 2), Bsup(1, 2), toler(1, 2);
 
@@ -304,8 +304,8 @@ void IntStart_SearchInside::Perform(TheFunction&        Func,
     Rsnld.Perform(Func, UVap, Binf, Bsup);
     if (Rsnld.IsDone())
     {
-      Standard_Real tol  = Func.Tolerance();
-      Standard_Real valf = Func.Root();
+      double tol  = Func.Tolerance();
+      double valf = Func.Root();
       if (std::abs(valf) <= tol && !Func.IsTangent())
       {
         const gp_Pnt& psol = Func.Point();
@@ -316,5 +316,5 @@ void IntStart_SearchInside::Perform(TheFunction&        Func,
     }
   }
 
-  done = Standard_True;
+  done = true;
 }

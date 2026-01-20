@@ -26,62 +26,62 @@
 #include <StdFail_NotDone.hxx>
 #include <TopoDS_Shape.hxx>
 
-static void Perform(BRepIntCurveSurface_Inter&, LocOpe_SequenceOfPntFace&);
+static void Perform(BRepIntCurveSurface_Inter&, NCollection_Sequence<LocOpe_PntFace>&);
 
 //=================================================================================================
 
 void LocOpe_CurveShapeIntersector::Init(const gp_Ax1& Axis, const TopoDS_Shape& S)
 {
-  myDone = Standard_False;
+  myDone = false;
   myPoints.Clear();
   if (S.IsNull())
   {
     return;
   }
-  Standard_Real Tol = Precision::Confusion();
+  double Tol = Precision::Confusion();
 
   BRepIntCurveSurface_Inter theInt;
   theInt.Init(S, gp_Lin(Axis), Tol);
   Perform(theInt, myPoints);
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 void LocOpe_CurveShapeIntersector::Init(const gp_Circ& C, const TopoDS_Shape& S)
 {
-  myDone = Standard_False;
+  myDone = false;
   myPoints.Clear();
   if (S.IsNull())
   {
     return;
   }
-  Standard_Real Tol = Precision::Confusion();
+  double Tol = Precision::Confusion();
 
-  Handle(Geom_Circle) GC = new Geom_Circle(C);
+  occ::handle<Geom_Circle> GC = new Geom_Circle(C);
   GeomAdaptor_Curve   AC(GC, 0., 2. * M_PI);
 
   BRepIntCurveSurface_Inter theInt;
   theInt.Init(S, AC, Tol);
 
   Perform(theInt, myPoints);
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Real From,
+bool LocOpe_CurveShapeIntersector::LocalizeAfter(const double From,
                                                              TopAbs_Orientation& Or,
-                                                             Standard_Integer&   IndFrom,
-                                                             Standard_Integer&   IndTo) const
+                                                             int&   IndFrom,
+                                                             int&   IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  Standard_Real    Eps = Precision::Confusion();
-  Standard_Real    param, FMEPS = From - Eps;
-  Standard_Integer i, ifirst, nbpoints = myPoints.Length();
+  double    Eps = Precision::Confusion();
+  double    param, FMEPS = From - Eps;
+  int i, ifirst, nbpoints = myPoints.Length();
   for (ifirst = 1; ifirst <= nbpoints; ifirst++)
   {
     if (myPoints(ifirst).Parameter() >= FMEPS)
@@ -89,12 +89,12 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Real
       break;
     }
   }
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst <= nbpoints)
   {
     i                      = ifirst;
     IndFrom                = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = myPoints(i).Orientation();
@@ -123,8 +123,8 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Real
       else
       { // on a une intersection franche
         IndTo  = i - 1;
-        found  = Standard_True;
-        RetVal = Standard_True;
+        found  = true;
+        RetVal = true;
       }
     }
   }
@@ -134,18 +134,18 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Real
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Real From,
+bool LocOpe_CurveShapeIntersector::LocalizeBefore(const double From,
                                                               TopAbs_Orientation& Or,
-                                                              Standard_Integer&   IndFrom,
-                                                              Standard_Integer&   IndTo) const
+                                                              int&   IndFrom,
+                                                              int&   IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  Standard_Real    Eps = Precision::Confusion();
-  Standard_Real    param, FPEPS = From + Eps;
-  Standard_Integer i, ifirst, nbpoints = myPoints.Length();
+  double    Eps = Precision::Confusion();
+  double    param, FPEPS = From + Eps;
+  int i, ifirst, nbpoints = myPoints.Length();
   for (ifirst = nbpoints; ifirst >= 1; ifirst--)
   {
     if (myPoints(ifirst).Parameter() <= FPEPS)
@@ -153,12 +153,12 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Rea
       break;
     }
   }
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst >= 1)
   {
     i                      = ifirst;
     IndTo                  = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = myPoints(i).Orientation();
@@ -187,8 +187,8 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Rea
       else
       { // on a une intersection franche
         IndFrom = i + 1;
-        found   = Standard_True;
-        RetVal  = Standard_True;
+        found   = true;
+        RetVal  = true;
       }
     }
   }
@@ -198,24 +198,24 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Rea
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Integer FromInd,
+bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int FromInd,
                                                              TopAbs_Orientation&    Or,
-                                                             Standard_Integer&      IndFrom,
-                                                             Standard_Integer&      IndTo) const
+                                                             int&      IndFrom,
+                                                             int&      IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  Standard_Integer nbpoints = myPoints.Length();
+  int nbpoints = myPoints.Length();
   if (FromInd >= nbpoints)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real    Eps = Precision::Confusion();
-  Standard_Real    param, FMEPS;
-  Standard_Integer i, ifirst;
+  double    Eps = Precision::Confusion();
+  double    param, FMEPS;
+  int i, ifirst;
   if (FromInd >= 1)
   {
     FMEPS = myPoints(FromInd).Parameter() - Eps;
@@ -232,12 +232,12 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Inte
     ifirst = 1;
   }
 
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst <= nbpoints)
   {
     i                      = ifirst;
     IndFrom                = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = myPoints(i).Orientation();
@@ -266,8 +266,8 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Inte
       else
       { // on a une intersection franche
         IndTo  = i - 1;
-        found  = Standard_True;
-        RetVal = Standard_True;
+        found  = true;
+        RetVal = true;
       }
     }
   }
@@ -276,24 +276,24 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeAfter(const Standard_Inte
 
 //=================================================================================================
 
-Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Integer FromInd,
+bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int FromInd,
                                                               TopAbs_Orientation&    Or,
-                                                              Standard_Integer&      IndFrom,
-                                                              Standard_Integer&      IndTo) const
+                                                              int&      IndFrom,
+                                                              int&      IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  Standard_Integer nbpoints = myPoints.Length();
+  int nbpoints = myPoints.Length();
   if (FromInd <= 1)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Real    Eps = Precision::Confusion();
-  Standard_Real    param, FPEPS;
-  Standard_Integer i, ifirst;
+  double    Eps = Precision::Confusion();
+  double    param, FPEPS;
+  int i, ifirst;
   if (FromInd <= nbpoints)
   {
     FPEPS = myPoints(FromInd).Parameter() + Eps;
@@ -310,12 +310,12 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Int
     ifirst = nbpoints;
   }
 
-  Standard_Boolean RetVal = Standard_False;
+  bool RetVal = false;
   if (ifirst >= 1)
   {
     i                      = ifirst;
     IndTo                  = ifirst;
-    Standard_Boolean found = Standard_False;
+    bool found = false;
     while (!found)
     {
       Or    = myPoints(i).Orientation();
@@ -344,8 +344,8 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Int
       else
       { // on a une intersection franche
         IndFrom = i + 1;
-        found   = Standard_True;
-        RetVal  = Standard_True;
+        found   = true;
+        RetVal  = true;
       }
     }
   }
@@ -354,10 +354,10 @@ Standard_Boolean LocOpe_CurveShapeIntersector::LocalizeBefore(const Standard_Int
 
 //=================================================================================================
 
-static void Perform(BRepIntCurveSurface_Inter& theInt, LocOpe_SequenceOfPntFace& thePoints)
+static void Perform(BRepIntCurveSurface_Inter& theInt, NCollection_Sequence<LocOpe_PntFace>& thePoints)
 {
-  Standard_Real    param, paramu, paramv;
-  Standard_Integer i, nbpoints = 0;
+  double    param, paramu, paramv;
+  int i, nbpoints = 0;
 
   TopAbs_Orientation theor = TopAbs_FORWARD, orface;
 

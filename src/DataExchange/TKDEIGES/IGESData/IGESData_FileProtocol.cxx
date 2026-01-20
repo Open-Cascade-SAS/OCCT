@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESData_FileProtocol, IGESData_Protocol)
 
 IGESData_FileProtocol::IGESData_FileProtocol() {}
 
-void IGESData_FileProtocol::Add(const Handle(IGESData_Protocol)& protocol)
+void IGESData_FileProtocol::Add(const occ::handle<IGESData_Protocol>& protocol)
 {
   if (theresource.IsNull())
     theresource = protocol;
@@ -35,19 +35,19 @@ void IGESData_FileProtocol::Add(const Handle(IGESData_Protocol)& protocol)
   }
 }
 
-Standard_Integer IGESData_FileProtocol::NbResources() const
+int IGESData_FileProtocol::NbResources() const
 {
-  Standard_Integer nb = (theresource.IsNull() ? 0 : 1);
+  int nb = (theresource.IsNull() ? 0 : 1);
   if (!thenext.IsNull())
     nb += thenext->NbResources();
   return nb;
 }
 
-Handle(Interface_Protocol) IGESData_FileProtocol::Resource(const Standard_Integer num) const
+occ::handle<Interface_Protocol> IGESData_FileProtocol::Resource(const int num) const
 {
-  Handle(IGESData_Protocol) res;
+  occ::handle<IGESData_Protocol> res;
   if (num == 1)
-    return Handle(Interface_Protocol)(theresource);
+    return occ::handle<Interface_Protocol>(theresource);
   else if (!thenext.IsNull())
     return thenext->Resource(num - 1);
   return res; // Null

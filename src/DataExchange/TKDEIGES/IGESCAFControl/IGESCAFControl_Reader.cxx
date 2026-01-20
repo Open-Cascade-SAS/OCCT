@@ -30,7 +30,9 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 #include <XCAFDoc_ColorTool.hxx>
@@ -45,7 +47,7 @@
 
 //=================================================================================================
 
-static void checkColorRange(Standard_Real& theCol)
+static void checkColorRange(double& theCol)
 {
   if (theCol < 0.)
     theCol = 0.;
@@ -53,21 +55,21 @@ static void checkColorRange(Standard_Real& theCol)
     theCol = 100.;
 }
 
-static inline Standard_Boolean IsComposite(const TopoDS_Shape& theShape)
+static inline bool IsComposite(const TopoDS_Shape& theShape)
 {
   if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
     if (!theShape.Location().IsIdentity())
-      return Standard_True;
-    TopoDS_Iterator anIt(theShape, Standard_False, Standard_False);
+      return true;
+    TopoDS_Iterator anIt(theShape, false, false);
 
     for (; anIt.More(); anIt.Next())
     {
       if (IsComposite(anIt.Value()))
-        return Standard_True;
+        return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -87,10 +89,10 @@ static inline Standard_Boolean IsComposite(const TopoDS_Shape& theShape)
 //           compound.
 //           theMap is used to avoid visiting the same compound.
 //=======================================================================
-static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
+static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
                               const TopoDS_Shape&              theShape,
-                              Standard_Boolean                 theConsiderLoc,
-                              TopTools_MapOfShape&             theMap)
+                              bool                 theConsiderLoc,
+                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&             theMap)
 {
   TopoDS_Shape           aShape = theShape;
   const TopLoc_Location& aLoc   = theShape.Location();
@@ -99,22 +101,22 @@ static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
   if (!theMap.Add(aShape))
     return;
 
-  TopoDS_Iterator  anIt(theShape, Standard_False, Standard_False);
-  Standard_Boolean aHasCompositeSubShape = Standard_False;
+  TopoDS_Iterator  anIt(theShape, false, false);
+  bool aHasCompositeSubShape = false;
   TopoDS_Compound  aSimpleShape;
   BRep_Builder     aB;
   aB.MakeCompound(aSimpleShape);
   TopoDS_Compound aCompShape;
   aB.MakeCompound(aCompShape);
-  Standard_Integer nbSimple = 0;
+  int nbSimple = 0;
 
   for (; anIt.More(); anIt.Next())
   {
     const TopoDS_Shape& aSubShape = anIt.Value();
     if (IsComposite(aSubShape))
     {
-      aHasCompositeSubShape = Standard_True;
-      AddCompositeShape(theSTool, aSubShape, Standard_False, theMap);
+      aHasCompositeSubShape = true;
+      AddCompositeShape(theSTool, aSubShape, false, theMap);
       aB.Add(aCompShape, aSubShape);
     }
     else
@@ -126,7 +128,7 @@ static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
   // case of hybrid shape
   if (nbSimple && aHasCompositeSubShape)
   {
-    theSTool->AddShape(aSimpleShape, Standard_False, Standard_False);
+    theSTool->AddShape(aSimpleShape, false, false);
 
     TopoDS_Compound aNewShape;
     aB.MakeCompound(aNewShape);
@@ -136,29 +138,29 @@ static void AddCompositeShape(const Handle(XCAFDoc_ShapeTool)& theSTool,
     if (!aLoc.IsIdentity())
       aNewShape.Location(aLoc);
     aNewShape.Orientation(theShape.Orientation());
-    theSTool->AddShape(aNewShape, aHasCompositeSubShape, Standard_False);
+    theSTool->AddShape(aNewShape, aHasCompositeSubShape, false);
   }
   else
-    theSTool->AddShape(aShape, aHasCompositeSubShape, Standard_False);
+    theSTool->AddShape(aShape, aHasCompositeSubShape, false);
   return;
 }
 
 //=================================================================================================
 
-Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)& doc,
+bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
                                                  const Message_ProgressRange&    theProgress)
 {
   // read all shapes
-  Standard_Integer num; // = NbRootsForTransfer();
-  // if ( num <=0 ) return Standard_False;
-  // for ( Standard_Integer i=1; i <= num; i++ ) {
+  int num; // = NbRootsForTransfer();
+  // if ( num <=0 ) return false;
+  // for ( int i=1; i <= num; i++ ) {
   //   TransferOneRoot ( i );
   // }
 
   // set units
-  Handle(IGESData_IGESModel) aModel = Handle(IGESData_IGESModel)::DownCast(WS()->Model());
+  occ::handle<IGESData_IGESModel> aModel = occ::down_cast<IGESData_IGESModel>(WS()->Model());
 
-  Standard_Real aScaleFactorMM = 1.;
+  double aScaleFactorMM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
   {
     XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
@@ -170,52 +172,52 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
   TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if (num <= 0)
-    return Standard_False;
+    return false;
 
   // and insert them to the document
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
+  occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
   if (STool.IsNull())
-    return Standard_False;
-  Standard_Integer i;
+    return false;
+  int i;
   for (i = 1; i <= num; i++)
   {
     TopoDS_Shape sh = Shape(i);
     // ---- HERE -- to add check [ assembly / hybrid model ]
     if (!IsComposite(sh))
-      STool->AddShape(sh, Standard_False);
+      STool->AddShape(sh, false);
     else
     {
-      TopTools_MapOfShape aMap;
-      AddCompositeShape(STool, sh, Standard_True, aMap);
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
+      AddCompositeShape(STool, sh, true, aMap);
     }
   }
 
   // added by skl 13.10.2003
-  const Handle(XSControl_TransferReader)&  TR      = WS()->TransferReader();
-  const Handle(Transfer_TransientProcess)& TP      = TR->TransientProcess();
-  Standard_Boolean                         IsCTool = Standard_True;
-  Handle(XCAFDoc_ColorTool)                CTool   = XCAFDoc_DocumentTool::ColorTool(doc->Main());
+  const occ::handle<XSControl_TransferReader>&  TR      = WS()->TransferReader();
+  const occ::handle<Transfer_TransientProcess>& TP      = TR->TransientProcess();
+  bool                         IsCTool = true;
+  occ::handle<XCAFDoc_ColorTool>                CTool   = XCAFDoc_DocumentTool::ColorTool(doc->Main());
   if (CTool.IsNull())
-    IsCTool = Standard_False;
-  Standard_Boolean          IsLTool = Standard_True;
-  Handle(XCAFDoc_LayerTool) LTool   = XCAFDoc_DocumentTool::LayerTool(doc->Main());
+    IsCTool = false;
+  bool          IsLTool = true;
+  occ::handle<XCAFDoc_LayerTool> LTool   = XCAFDoc_DocumentTool::LayerTool(doc->Main());
   if (LTool.IsNull())
-    IsLTool = Standard_False;
+    IsLTool = false;
 
-  Standard_Integer nb = aModel->NbEntities();
+  int nb = aModel->NbEntities();
   for (i = 1; i <= nb; i++)
   {
-    Handle(IGESData_IGESEntity) ent = Handle(IGESData_IGESEntity)::DownCast(aModel->Value(i));
+    occ::handle<IGESData_IGESEntity> ent = occ::down_cast<IGESData_IGESEntity>(aModel->Value(i));
     if (ent.IsNull())
       continue;
-    Handle(Transfer_Binder) binder = TP->Find(ent);
+    occ::handle<Transfer_Binder> binder = TP->Find(ent);
     if (binder.IsNull())
       continue;
     TopoDS_Shape S = TransferBRep::ShapeResult(binder);
     if (S.IsNull())
       continue;
 
-    Standard_Boolean IsColor = Standard_False;
+    bool IsColor = false;
     Quantity_Color   col;
     if (GetColorMode() && IsCTool)
     {
@@ -224,24 +226,24 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
       {
         // color is assigned
         // decode color and set to document
-        IsColor = Standard_True;
+        IsColor = true;
         if (ent->DefColor() == IGESData_DefValue)
         {
           col = IGESCAFControl::DecodeColor(ent->RankColor());
         }
         else
         {
-          Handle(IGESGraph_Color) color = Handle(IGESGraph_Color)::DownCast(ent->Color());
+          occ::handle<IGESGraph_Color> color = occ::down_cast<IGESGraph_Color>(ent->Color());
           if (color.IsNull())
           {
 #ifdef OCCT_DEBUG
             std::cout << "Error: Unrecognized type of color definition" << std::endl;
 #endif
-            IsColor = Standard_False;
+            IsColor = false;
           }
           else
           {
-            Standard_Real r, g, b;
+            double r, g, b;
             color->RGBIntensity(r, g, b);
             checkColorRange(r);
             checkColorRange(g);
@@ -254,15 +256,15 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
 
     TDF_Label L;
 
-    Standard_Boolean IsFound;
+    bool IsFound;
     if (IsColor)
     {
       CTool->AddColor(col);
-      IsFound = STool->SearchUsingMap(S, L, Standard_False, Standard_True);
+      IsFound = STool->SearchUsingMap(S, L, false, true);
     }
     else
     {
-      IsFound = STool->SearchUsingMap(S, L, Standard_False, Standard_False);
+      IsFound = STool->SearchUsingMap(S, L, false, false);
     }
     if (!IsFound)
     {
@@ -270,7 +272,7 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
       {
         for (TopoDS_Iterator it(S); it.More(); it.Next())
         {
-          if (STool->SearchUsingMap(it.Value(), L, Standard_False, Standard_True))
+          if (STool->SearchUsingMap(it.Value(), L, false, true))
           {
             CTool->SetColor(L, col, XCAFDoc_ColorGen);
             if (GetLayerMode() && IsLTool)
@@ -286,9 +288,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
                   break;
                 }
                 case IGESData_DefSeveral: {
-                  Handle(IGESData_LevelListEntity) aLevelList = ent->LevelList();
-                  Standard_Integer                 layerNb    = aLevelList->NbLevelNumbers();
-                  for (Standard_Integer ilev = 1; ilev <= layerNb; ilev++)
+                  occ::handle<IGESData_LevelListEntity> aLevelList = ent->LevelList();
+                  int                 layerNb    = aLevelList->NbLevelNumbers();
+                  for (int ilev = 1; ilev <= layerNb; ilev++)
                   {
                     TCollection_ExtendedString aLayerName(aLevelList->LevelNumber(ilev));
                     LTool->SetLayer(L, aLayerName);
@@ -334,9 +336,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
             break;
           }
           case IGESData_DefSeveral: {
-            Handle(IGESData_LevelListEntity) aLevelList = ent->LevelList();
-            Standard_Integer                 layerNb    = aLevelList->NbLevelNumbers();
-            for (Standard_Integer ilev = 1; ilev <= layerNb; ilev++)
+            occ::handle<IGESData_LevelListEntity> aLevelList = ent->LevelList();
+            int                 layerNb    = aLevelList->NbLevelNumbers();
+            for (int ilev = 1; ilev <= layerNb; ilev++)
             {
               TCollection_ExtendedString aLayerName(aLevelList->LevelNumber(ilev));
               LTool->SetLayer(L, aLayerName);
@@ -350,12 +352,12 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
     }
 
     // Checks that current entity is a subfigure
-    Handle(IGESBasic_SubfigureDef) aSubfigure = Handle(IGESBasic_SubfigureDef)::DownCast(ent);
+    occ::handle<IGESBasic_SubfigureDef> aSubfigure = occ::down_cast<IGESBasic_SubfigureDef>(ent);
     if (GetNameMode() && !aSubfigure.IsNull() && !aSubfigure->Name().IsNull()
-        && STool->Search(S, L, Standard_True, Standard_True))
+        && STool->Search(S, L, true, true))
     {
       // In this case we attach subfigure name to the label, instead of default "COMPOUND"
-      Handle(TCollection_HAsciiString) aName = aSubfigure->Name();
+      occ::handle<TCollection_HAsciiString> aName = aSubfigure->Name();
       aName->LeftAdjust();
       aName->RightAdjust();
       TCollection_ExtendedString anExtStrName(aName->ToCString());
@@ -368,16 +370,16 @@ Standard_Boolean IGESCAFControl_Reader::Transfer(const Handle(TDocStd_Document)&
   // Update assembly compounds
   STool->UpdateAssemblies();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean IGESCAFControl_Reader::Perform(const Standard_CString          filename,
-                                                const Handle(TDocStd_Document)& doc,
+bool IGESCAFControl_Reader::Perform(const char* const          filename,
+                                                const occ::handle<TDocStd_Document>& doc,
                                                 const Message_ProgressRange&    theProgress)
 {
   if (ReadFile(filename) != IFSelect_RetDone)
-    return Standard_False;
+    return false;
   return Transfer(doc, theProgress);
 }

@@ -21,7 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-gce_MakeParab::gce_MakeParab(const gp_Ax2& A2, const Standard_Real Focal)
+gce_MakeParab::gce_MakeParab(const gp_Ax2& A2, const double Focal)
 {
   if (Focal < 0.0)
   {

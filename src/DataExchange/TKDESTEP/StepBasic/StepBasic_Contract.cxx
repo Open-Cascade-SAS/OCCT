@@ -28,9 +28,9 @@ StepBasic_Contract::StepBasic_Contract() {}
 
 //=================================================================================================
 
-void StepBasic_Contract::Init(const Handle(TCollection_HAsciiString)& aName,
-                              const Handle(TCollection_HAsciiString)& aPurpose,
-                              const Handle(StepBasic_ContractType)&   aKind)
+void StepBasic_Contract::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                              const occ::handle<TCollection_HAsciiString>& aPurpose,
+                              const occ::handle<StepBasic_ContractType>&   aKind)
 {
 
   theName = aName;
@@ -42,42 +42,42 @@ void StepBasic_Contract::Init(const Handle(TCollection_HAsciiString)& aName,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Contract::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_Contract::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_Contract::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_Contract::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Contract::Purpose() const
+occ::handle<TCollection_HAsciiString> StepBasic_Contract::Purpose() const
 {
   return thePurpose;
 }
 
 //=================================================================================================
 
-void StepBasic_Contract::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
+void StepBasic_Contract::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ContractType) StepBasic_Contract::Kind() const
+occ::handle<StepBasic_ContractType> StepBasic_Contract::Kind() const
 {
   return theKind;
 }
 
 //=================================================================================================
 
-void StepBasic_Contract::SetKind(const Handle(StepBasic_ContractType)& aKind)
+void StepBasic_Contract::SetKind(const occ::handle<StepBasic_ContractType>& aKind)
 {
   theKind = aKind;
 }

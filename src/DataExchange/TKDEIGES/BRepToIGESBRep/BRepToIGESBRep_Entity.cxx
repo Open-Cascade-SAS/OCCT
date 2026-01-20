@@ -38,23 +38,34 @@
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
 #include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
-#include <IGESSolid_HArray1OfVertexList.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
 #include <IGESSolid_VertexList.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -103,14 +114,14 @@ void BRepToIGESBRep_Entity::Clear()
 void BRepToIGESBRep_Entity::TransferVertexList()
 {
 
-  Standard_Integer nbvertices = myVertices.Extent();
+  int nbvertices = myVertices.Extent();
   if (!nbvertices)
     return;
-  Handle(TColgp_HArray1OfXYZ) vertices = new TColgp_HArray1OfXYZ(1, nbvertices);
-  Standard_Real               Unit     = GetUnit();
-  Standard_Real               X, Y, Z;
+  occ::handle<NCollection_HArray1<gp_XYZ>> vertices = new NCollection_HArray1<gp_XYZ>(1, nbvertices);
+  double               Unit     = GetUnit();
+  double               X, Y, Z;
 
-  for (Standard_Integer ivertex = 1; ivertex <= nbvertices; ivertex++)
+  for (int ivertex = 1; ivertex <= nbvertices; ivertex++)
   {
     TopoDS_Shape  myshape  = myVertices(ivertex);
     TopoDS_Vertex myvertex = TopoDS::Vertex(myshape);
@@ -125,7 +136,7 @@ void BRepToIGESBRep_Entity::TransferVertexList()
 //=============================================================================
 // IndexVertex
 //=============================================================================
-Standard_Integer BRepToIGESBRep_Entity::IndexVertex(const TopoDS_Vertex& myvertex) const
+int BRepToIGESBRep_Entity::IndexVertex(const TopoDS_Vertex& myvertex) const
 {
   const TopoDS_Shape& V = myvertex;
   return myVertices.FindIndex(V);
@@ -136,13 +147,13 @@ Standard_Integer BRepToIGESBRep_Entity::IndexVertex(const TopoDS_Vertex& myverte
 //
 //=============================================================================
 
-Standard_Integer BRepToIGESBRep_Entity::AddVertex(const TopoDS_Vertex& myvertex)
+int BRepToIGESBRep_Entity::AddVertex(const TopoDS_Vertex& myvertex)
 {
   if (myvertex.IsNull())
     return 0;
 
   const TopoDS_Shape& V     = myvertex;
-  Standard_Integer    index = myVertices.FindIndex(V);
+  int    index = myVertices.FindIndex(V);
   if (index == 0)
   {
     index = myVertices.Add(V);
@@ -159,25 +170,25 @@ Standard_Integer BRepToIGESBRep_Entity::AddVertex(const TopoDS_Vertex& myvertex)
 void BRepToIGESBRep_Entity::TransferEdgeList()
 {
 
-  Handle(IGESSolid_VertexList) TheVertexList = myVertexList;
+  occ::handle<IGESSolid_VertexList> TheVertexList = myVertexList;
 
-  Handle(IGESData_IGESEntity)  mycurve;
-  Standard_Integer             mystartindex, myendindex;
-  Handle(IGESSolid_VertexList) mystartlist;
-  Handle(IGESSolid_VertexList) myendlist;
+  occ::handle<IGESData_IGESEntity>  mycurve;
+  int             mystartindex, myendindex;
+  occ::handle<IGESSolid_VertexList> mystartlist;
+  occ::handle<IGESSolid_VertexList> myendlist;
 
-  Standard_Integer nbedges = myEdges.Extent();
+  int nbedges = myEdges.Extent();
   if (!nbedges)
     return;
-  Handle(IGESData_HArray1OfIGESEntity)  Curves = new IGESData_HArray1OfIGESEntity(1, nbedges);
-  Handle(IGESSolid_HArray1OfVertexList) startVertexList =
-    new IGESSolid_HArray1OfVertexList(1, nbedges);
-  Handle(TColStd_HArray1OfInteger)      startVertexIndex = new TColStd_HArray1OfInteger(1, nbedges);
-  Handle(IGESSolid_HArray1OfVertexList) endVertexList =
-    new IGESSolid_HArray1OfVertexList(1, nbedges);
-  Handle(TColStd_HArray1OfInteger) endVertexIndex = new TColStd_HArray1OfInteger(1, nbedges);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  Curves = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> startVertexList =
+    new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>>      startVertexIndex = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> endVertexList =
+    new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>> endVertexIndex = new NCollection_HArray1<int>(1, nbedges);
 
-  for (Standard_Integer iedge = 1; iedge <= nbedges; iedge++)
+  for (int iedge = 1; iedge <= nbedges; iedge++)
   {
     TopoDS_Shape myshape = myEdges(iedge);
     TopoDS_Edge  myedge  = TopoDS::Edge(myshape);
@@ -201,7 +212,7 @@ void BRepToIGESBRep_Entity::TransferEdgeList()
 //=============================================================================
 // IndexEdge
 //=============================================================================
-Standard_Integer BRepToIGESBRep_Entity::IndexEdge(const TopoDS_Edge& myedge) const
+int BRepToIGESBRep_Entity::IndexEdge(const TopoDS_Edge& myedge) const
 {
   const TopoDS_Shape& E = myedge;
   return myEdges.FindIndex(E);
@@ -212,15 +223,15 @@ Standard_Integer BRepToIGESBRep_Entity::IndexEdge(const TopoDS_Edge& myedge) con
 //
 //=============================================================================
 
-Standard_Integer BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&                 myedge,
-                                                const Handle(IGESData_IGESEntity)& mycurve3d)
+int BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&                 myedge,
+                                                const occ::handle<IGESData_IGESEntity>& mycurve3d)
 {
   if (myedge.IsNull())
     return 0;
 
   const TopoDS_Shape&         E     = myedge;
-  Handle(IGESData_IGESEntity) C     = mycurve3d;
-  Standard_Integer            index = myEdges.FindIndex(E);
+  occ::handle<IGESData_IGESEntity> C     = mycurve3d;
+  int            index = myEdges.FindIndex(E);
   if (index == 0)
   {
     index = myEdges.Add(E);
@@ -232,11 +243,11 @@ Standard_Integer BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&              
 
 //=================================================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape(
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferShape(
   const TopoDS_Shape&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   // TopoDS_Shape theShape;
 
   if (start.IsNull())
@@ -257,8 +268,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape(
     TopoDS_Edge       E = TopoDS::Edge(start);
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    TopTools_DataMapOfShapeShape anEmptyMap;
-    res = BW.TransferEdge(E, anEmptyMap, Standard_False);
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+    res = BW.TransferEdge(E, anEmptyMap, false);
     return res;
   }
   else if (start.ShapeType() == TopAbs_WIRE)
@@ -315,38 +326,38 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape(
 // TransferEdge
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge& myedge)
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge& myedge)
 {
-  Standard_Integer anInd = IndexEdge(myedge);
+  int anInd = IndexEdge(myedge);
   if (anInd != 0)
   {
-    Handle(IGESData_IGESEntity) ICurve3d = Handle(IGESData_IGESEntity)::DownCast(myCurves(anInd));
+    occ::handle<IGESData_IGESEntity> ICurve3d = occ::down_cast<IGESData_IGESEntity>(myCurves(anInd));
     if (!ICurve3d.IsNull())
       return ICurve3d;
   }
   BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
-  TopTools_DataMapOfShapeShape anEmptyMap;
-  return BR.TransferEdge(myedge, anEmptyMap, Standard_True);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+  return BR.TransferEdge(myedge, anEmptyMap, true);
 }
 
 //=============================================================================
 // TransferEdge
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge&  myedge,
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge&  myedge,
                                                                 const TopoDS_Face&  myface,
-                                                                const Standard_Real Length)
+                                                                const double Length)
 {
-  Handle(IGESData_IGESEntity) ICurve3d;
-  Handle(IGESData_IGESEntity) ICurve2d;
+  occ::handle<IGESData_IGESEntity> ICurve3d;
+  occ::handle<IGESData_IGESEntity> ICurve2d;
   if (myedge.IsNull())
     return ICurve2d;
 
   BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
-  TopTools_DataMapOfShapeShape anEmptyMap;
-  ICurve2d = BR.TransferEdge(myedge, myface, anEmptyMap, Length, Standard_True);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+  ICurve2d = BR.TransferEdge(myedge, myface, anEmptyMap, Length, true);
 
   // curve 3d is obligatory. If it does not exist it is created and stored in "myCurves".
   // If the edge is degenerated, there is no associated 3d. So "edge-tuple"
@@ -369,24 +380,24 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edg
 // TransferWire
 //=============================================================================
 
-Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  mywire,
+occ::handle<IGESSolid_Loop> BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  mywire,
                                                            const TopoDS_Face&  myface,
-                                                           const Standard_Real Length)
+                                                           const double Length)
 {
-  Handle(IGESSolid_Loop) myLoop = new IGESSolid_Loop;
+  occ::handle<IGESSolid_Loop> myLoop = new IGESSolid_Loop;
   if (mywire.IsNull())
     return myLoop;
-  Handle(IGESData_IGESEntity) Pointeur;
+  occ::handle<IGESData_IGESEntity> Pointeur;
 
-  TColStd_SequenceOfInteger            Seqindex;
-  TColStd_SequenceOfInteger            Seqorient;
-  TColStd_SequenceOfInteger            Seqtype;
-  Handle(IGESData_IGESEntity)          ent2d;
-  Handle(IGESData_IGESEntity)          ent3d;
-  Handle(TColStd_HSequenceOfTransient) Seq2d = new TColStd_HSequenceOfTransient();
+  NCollection_Sequence<int>            Seqindex;
+  NCollection_Sequence<int>            Seqorient;
+  NCollection_Sequence<int>            Seqtype;
+  occ::handle<IGESData_IGESEntity>          ent2d;
+  occ::handle<IGESData_IGESEntity>          ent3d;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq2d = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   BRepTools_WireExplorer WE;
-  // Standard_Integer nbedge = 0; //szv#4:S4163:12Mar99 unused
+  // int nbedge = 0; //szv#4:S4163:12Mar99 unused
   TopExp_Explorer TE(mywire, TopAbs_VERTEX);
   if (TE.More())
   {
@@ -401,12 +412,12 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  m
       {
         ent2d = TransferEdge(E, myface, Length);
         Seq2d->Append(ent2d);
-        Standard_Integer myindex;
+        int myindex;
 
         // add Vertices in the Map "myVertices"
         TopoDS_Vertex V1, V2;
         TopExp::Vertices(E, V1, V2);
-        // Standard_Integer Ivertex1, Ivertex2; //szv#4:S4163:12Mar99 not needed
+        // int Ivertex1, Ivertex2; //szv#4:S4163:12Mar99 not needed
         if (!BRep_Tool::Degenerated(E))
         {
           if (!V1.IsNull())
@@ -436,27 +447,27 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  m
   else
     AddWarning(mywire, " no Vertex associated to the Wire");
 
-  Standard_Integer                            nbedges = Seq2d->Length();
-  Handle(TColStd_HArray1OfInteger)            types   = new TColStd_HArray1OfInteger(1, nbedges);
-  Standard_Integer                            mytype;
-  Handle(IGESData_HArray1OfIGESEntity)        edges = new IGESData_HArray1OfIGESEntity(1, nbedges);
-  Handle(IGESData_IGESEntity)                 myedge;
-  Handle(TColStd_HArray1OfInteger)            index = new TColStd_HArray1OfInteger(1, nbedges);
-  Standard_Integer                            myindex;
-  Handle(TColStd_HArray1OfInteger)            orient = new TColStd_HArray1OfInteger(1, nbedges);
-  Standard_Integer                            myorient;
-  Handle(TColStd_HArray1OfInteger)            nbcurves = new TColStd_HArray1OfInteger(1, nbedges);
-  Standard_Integer                            mynbcurve;
-  Handle(TColStd_HArray1OfInteger)            flag;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) isoflags =
+  int                            nbedges = Seq2d->Length();
+  occ::handle<NCollection_HArray1<int>>            types   = new NCollection_HArray1<int>(1, nbedges);
+  int                            mytype;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>        edges = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+  occ::handle<IGESData_IGESEntity>                 myedge;
+  occ::handle<NCollection_HArray1<int>>            index = new NCollection_HArray1<int>(1, nbedges);
+  int                            myindex;
+  occ::handle<NCollection_HArray1<int>>            orient = new NCollection_HArray1<int>(1, nbedges);
+  int                            myorient;
+  occ::handle<NCollection_HArray1<int>>            nbcurves = new NCollection_HArray1<int>(1, nbedges);
+  int                            mynbcurve;
+  occ::handle<NCollection_HArray1<int>>            flag;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> isoflags =
     new IGESBasic_HArray1OfHArray1OfInteger(1, nbedges);
-  Standard_Integer                               myisoflag;
-  Handle(IGESData_HArray1OfIGESEntity)           curve;
-  Handle(IGESBasic_HArray1OfHArray1OfIGESEntity) curves =
+  int                               myisoflag;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           curve;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> curves =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nbedges);
-  Handle(IGESData_IGESEntity) mycurve;
+  occ::handle<IGESData_IGESEntity> mycurve;
 
-  for (Standard_Integer itab = 1; itab <= nbedges; itab++)
+  for (int itab = 1; itab <= nbedges; itab++)
   {
     mytype = Seqtype.Value(itab);
     types->SetValue(itab, mytype);
@@ -474,11 +485,11 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  m
     // clang-format on
     nbcurves->SetValue(itab, mynbcurve);
     myisoflag = 0;
-    flag      = new TColStd_HArray1OfInteger(1, 1);
+    flag      = new NCollection_HArray1<int>(1, 1);
     flag->SetValue(1, myisoflag);
     isoflags->SetValue(itab, flag);
     mycurve = GetCasted(IGESData_IGESEntity, Seq2d->Value(itab));
-    curve   = new IGESData_HArray1OfIGESEntity(1, 1);
+    curve   = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, 1);
     curve->SetValue(1, mycurve);
     curves->SetValue(itab, curve);
   }
@@ -495,28 +506,28 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  m
 //
 //=============================================================================
 
-Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& start)
+occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& start)
 {
-  Handle(IGESSolid_Face) myent = new IGESSolid_Face;
+  occ::handle<IGESSolid_Face> myent = new IGESSolid_Face;
   if (start.IsNull())
     return myent;
-  Handle(IGESData_IGESEntity) ISurf;
-  Standard_Real               Length = 1.;
+  occ::handle<IGESData_IGESEntity> ISurf;
+  double               Length = 1.;
 
   // returns the face surface, the face tolerance, the face natural restriction flag.
   // --------------------------------------------------------------------------------
-  Handle(Geom_Surface) Surf = BRep_Tool::Surface(start);
+  occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(start);
   if (!Surf.IsNull())
   {
-    Standard_Real U1, U2, V1, V2;
+    double U1, U2, V1, V2;
     BRepTools::UVBounds(start, U1, U2, V1, V2); // to limit the base surfaces
     GeomToIGES_GeomSurface GS;
     // S4181 pdn 17.04.99 Boolean flags in order to define write of elementary surfaces added.
-    GS.SetBRepMode(Standard_True);
+    GS.SetBRepMode(true);
     GS.SetAnalyticMode(Interface_Static::IVal("write.convertsurface.mode") == 0);
     GS.SetModel(GetModel());
 
-    Handle(Geom_Surface) st;
+    occ::handle<Geom_Surface> st;
     if (Surf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
       DeclareAndCast(Geom_RectangularTrimmedSurface, rectang, Surf);
@@ -540,32 +551,32 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
 
   // to explore the face , it is required to set it FORWARD.
   TopoDS_Face      myface     = start;
-  Standard_Boolean IsReversed = Standard_False;
+  bool IsReversed = false;
   if (start.Orientation() == TopAbs_REVERSED)
   {
     myface.Reverse();
-    IsReversed = Standard_True;
+    IsReversed = true;
   }
 
   // outer wire
   //: n3  TopoDS_Wire Outer = BRepTools::OuterWire(myface);
   TopoDS_Wire            Outer         = ShapeAlgo::AlgoContainer()->OuterWire(myface); //: n3
-  Handle(IGESSolid_Loop) OuterLoop     = new IGESSolid_Loop;
-  Standard_Boolean       OuterLoopFlag = Standard_False;
+  occ::handle<IGESSolid_Loop> OuterLoop     = new IGESSolid_Loop;
+  bool       OuterLoopFlag = false;
   if (!Outer.IsNull())
   {
-    OuterLoopFlag = Standard_True;
+    OuterLoopFlag = true;
     OuterLoop     = TransferWire(Outer, myface, Length);
   }
 
   // inner wires
   TopExp_Explorer                      Ex;
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   for (Ex.Init(myface, TopAbs_WIRE); Ex.More(); Ex.Next())
   {
     TopoDS_Wire            W         = TopoDS::Wire(Ex.Current());
-    Handle(IGESSolid_Loop) InnerLoop = new IGESSolid_Loop;
+    occ::handle<IGESSolid_Loop> InnerLoop = new IGESSolid_Loop;
     if (W.IsNull())
     {
       AddWarning(start, " a Wire is a null entity");
@@ -585,15 +596,15 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
     AddWarning(E, "An edge alone is not transfer as an IGESBRep Entity");
   }
 
-  Standard_Integer                nbent = Seq->Length();
-  Handle(IGESSolid_HArray1OfLoop) TabLoop;
-  TabLoop = new IGESSolid_HArray1OfLoop(1, nbent + 1);
+  int                nbent = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> TabLoop;
+  TabLoop = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbent + 1);
   TabLoop->SetValue(1, OuterLoop);
   if (nbent >= 1)
   {
-    for (Standard_Integer itab = 1; itab <= nbent; itab++)
+    for (int itab = 1; itab <= nbent; itab++)
     {
-      Handle(IGESSolid_Loop) item = GetCasted(IGESSolid_Loop, Seq->Value(itab));
+      occ::handle<IGESSolid_Loop> item = GetCasted(IGESSolid_Loop, Seq->Value(itab));
       TabLoop->SetValue(itab + 1, item);
     }
   }
@@ -614,20 +625,20 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
 // TransferShell
 //=============================================================================
 
-Handle(IGESSolid_Shell) BRepToIGESBRep_Entity ::TransferShell(
+occ::handle<IGESSolid_Shell> BRepToIGESBRep_Entity ::TransferShell(
   const TopoDS_Shell&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESSolid_Shell) myshell = new IGESSolid_Shell;
+  occ::handle<IGESSolid_Shell> myshell = new IGESSolid_Shell;
   if (start.IsNull())
     return myshell;
 
   TopExp_Explorer                      Ex;
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
-  TColStd_SequenceOfInteger            SeqFlag;
-  Handle(IGESSolid_Face)               IFace;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  NCollection_Sequence<int>            SeqFlag;
+  occ::handle<IGESSolid_Face>               IFace;
 
-  Standard_Integer nbf = 0;
+  int nbf = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
     nbf++;
   Message_ProgressScope aPS(theProgress, NULL, nbf);
@@ -655,14 +666,14 @@ Handle(IGESSolid_Shell) BRepToIGESBRep_Entity ::TransferShell(
     }
   }
 
-  Standard_Integer                 nbfaces = Seq->Length();
-  Handle(IGESSolid_HArray1OfFace)  TabFace = new IGESSolid_HArray1OfFace(1, nbfaces);
-  Handle(TColStd_HArray1OfInteger) TabFlag = new TColStd_HArray1OfInteger(1, nbfaces);
-  for (Standard_Integer itab = 1; itab <= nbfaces; itab++)
+  int                 nbfaces = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  TabFace = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
+  occ::handle<NCollection_HArray1<int>> TabFlag = new NCollection_HArray1<int>(1, nbfaces);
+  for (int itab = 1; itab <= nbfaces; itab++)
   {
-    Handle(IGESSolid_Face) itemface = GetCasted(IGESSolid_Face, Seq->Value(itab));
+    occ::handle<IGESSolid_Face> itemface = GetCasted(IGESSolid_Face, Seq->Value(itab));
     TabFace->SetValue(itab, itemface);
-    Standard_Integer item = SeqFlag.Value(itab);
+    int item = SeqFlag.Value(itab);
     TabFlag->SetValue(itab, item);
   }
 
@@ -678,21 +689,21 @@ Handle(IGESSolid_Shell) BRepToIGESBRep_Entity ::TransferShell(
 // with a Solid
 //=============================================================================
 
-Handle(IGESSolid_ManifoldSolid) BRepToIGESBRep_Entity ::TransferSolid(
+occ::handle<IGESSolid_ManifoldSolid> BRepToIGESBRep_Entity ::TransferSolid(
   const TopoDS_Solid&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESSolid_ManifoldSolid) mysol = new IGESSolid_ManifoldSolid;
+  occ::handle<IGESSolid_ManifoldSolid> mysol = new IGESSolid_ManifoldSolid;
   if (start.IsNull())
     return mysol;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESSolid_Shell)              IShell, FirstShell;
-  Standard_Integer                     ShellFlag = 1;
-  Handle(TColStd_HSequenceOfTransient) Seq       = new TColStd_HSequenceOfTransient();
-  TColStd_SequenceOfInteger            SeqFlag;
+  occ::handle<IGESSolid_Shell>              IShell, FirstShell;
+  int                     ShellFlag = 1;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq       = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  NCollection_Sequence<int>            SeqFlag;
 
-  Standard_Integer nbs = 0;
+  int nbs = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
     nbs++;
   Message_ProgressScope aPS(theProgress, NULL, nbs);
@@ -718,17 +729,17 @@ Handle(IGESSolid_ManifoldSolid) BRepToIGESBRep_Entity ::TransferSolid(
     }
   }
 
-  Standard_Integer                 nbshells = Seq->Length();
-  Handle(IGESSolid_HArray1OfShell) Tab;
-  Handle(TColStd_HArray1OfInteger) TabFlag;
+  int                 nbshells = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> Tab;
+  occ::handle<NCollection_HArray1<int>> TabFlag;
   if (nbshells > 1)
   {
-    Tab     = new IGESSolid_HArray1OfShell(1, nbshells - 1);
-    TabFlag = new TColStd_HArray1OfInteger(1, nbshells - 1);
-    for (Standard_Integer itab = 1; itab <= nbshells; itab++)
+    Tab     = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nbshells - 1);
+    TabFlag = new NCollection_HArray1<int>(1, nbshells - 1);
+    for (int itab = 1; itab <= nbshells; itab++)
     {
-      Handle(IGESSolid_Shell) itemShell = GetCasted(IGESSolid_Shell, Seq->Value(itab));
-      Standard_Integer        item      = SeqFlag.Value(itab);
+      occ::handle<IGESSolid_Shell> itemShell = GetCasted(IGESSolid_Shell, Seq->Value(itab));
+      int        item      = SeqFlag.Value(itab);
       if (itab == 1)
       {
         FirstShell = itemShell;
@@ -767,19 +778,19 @@ Handle(IGESSolid_ManifoldSolid) BRepToIGESBRep_Entity ::TransferSolid(
 // with a CompSolid
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompSolid(
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompSolid(
   const TopoDS_CompSolid&      start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) myent;
+  occ::handle<IGESData_IGESEntity> myent;
   if (start.IsNull())
     return myent;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESSolid_ManifoldSolid)      ISolid = new IGESSolid_ManifoldSolid;
-  Handle(TColStd_HSequenceOfTransient) Seq    = new TColStd_HSequenceOfTransient();
+  occ::handle<IGESSolid_ManifoldSolid>      ISolid = new IGESSolid_ManifoldSolid;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq    = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
-  Standard_Integer nbs = 0;
+  int nbs = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbs++;
   Message_ProgressScope aPS(theProgress, NULL, nbs);
@@ -799,14 +810,14 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompSolid(
     }
   }
 
-  Standard_Integer                     nbsolids = Seq->Length();
-  Handle(IGESData_HArray1OfIGESEntity) Tab;
+  int                     nbsolids = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbsolids > 1)
   {
-    Tab = new IGESData_HArray1OfIGESEntity(1, nbsolids);
-    for (Standard_Integer itab = 1; itab <= nbsolids; itab++)
+    Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbsolids);
+    for (int itab = 1; itab <= nbsolids; itab++)
     {
-      Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
+      occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
   }
@@ -817,7 +828,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompSolid(
   }
   else if (nbsolids > 1)
   {
-    Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
+    occ::handle<IGESBasic_Group> IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     myent = IGroup;
   }
@@ -832,20 +843,20 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompSolid(
 // with a Compound
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound(
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompound(
   const TopoDS_Compound&       start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
     return res;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESData_IGESEntity)          IShape;
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
+  occ::handle<IGESData_IGESEntity>          IShape;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   // count numbers of subshapes
-  Standard_Integer nbshapes = 0;
+  int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbshapes++;
   for (Ex.Init(start, TopAbs_SHELL, TopAbs_SOLID); Ex.More(); Ex.Next())
@@ -929,8 +940,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound(
 
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    TopTools_DataMapOfShapeShape anEmptyMap;
-    IShape = BW.TransferEdge(S, anEmptyMap, Standard_False);
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+    IShape = BW.TransferEdge(S, anEmptyMap, false);
     if (!IShape.IsNull())
       Seq->Append(IShape);
   }
@@ -951,14 +962,14 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound(
   nbshapes = Seq->Length();
   if (nbshapes > 0)
   {
-    Handle(IGESData_HArray1OfIGESEntity) Tab = new IGESData_HArray1OfIGESEntity(1, nbshapes);
-    for (Standard_Integer itab = 1; itab <= nbshapes; itab++)
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbshapes);
+    for (int itab = 1; itab <= nbshapes; itab++)
     {
-      Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
+      occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
 
-    Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
+    occ::handle<IGESBasic_Group> IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;
   }

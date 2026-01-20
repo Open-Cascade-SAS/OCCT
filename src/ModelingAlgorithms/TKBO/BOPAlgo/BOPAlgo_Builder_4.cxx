@@ -20,11 +20,12 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& theS)
+const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& theS)
 {
   // The rules for Generated shapes are these:
   // 1. The EDGE may be generated from the FACES as an intersection edge;
@@ -45,7 +46,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
     return myHistShapes;
 
   // Check that DS contains the shape, i.e. it is from the arguments of the operation
-  Standard_Integer nS = myDS->Index(theS);
+  int nS = myDS->Index(theS);
   if (nS < 0)
     // Unknown shape
     return myHistShapes;
@@ -58,21 +59,21 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
 
   // Analyze all types of Interferences which can produce
   // new vertices - Edge/Edge and Edge/Face
-  BOPDS_VectorOfInterfEE& aEEs = myDS->InterfEE();
-  BOPDS_VectorOfInterfEF& aEFs = myDS->InterfEF();
+  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
 
   // Fence map to avoid duplicates in the list of Generated;
-  TColStd_MapOfInteger aMFence;
+  NCollection_Map<int> aMFence;
 
   // Analyze each interference and find those in which the given shape has participated
 
   // No need to analyze Edge/Edge interferences for the shapes of type FACE
-  Standard_Boolean isFace = (aType == TopAbs_FACE);
+  bool isFace = (aType == TopAbs_FACE);
 
-  for (Standard_Integer k = (isFace ? 1 : 0); k < 2; ++k)
+  for (int k = (isFace ? 1 : 0); k < 2; ++k)
   {
-    Standard_Integer aNbLines = !k ? aEEs.Length() : aEFs.Length();
-    for (Standard_Integer i = 0; i < aNbLines; ++i)
+    int aNbLines = !k ? aEEs.Length() : aEFs.Length();
+    for (int i = 0; i < aNbLines; ++i)
     {
       BOPDS_Interf* aInt = !k ? (BOPDS_Interf*)(&aEEs(i)) : (BOPDS_Interf*)(&aEFs(i));
       if (!aInt->HasIndexNew())
@@ -82,7 +83,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
       if (!aInt->Contains(nS))
         continue;
 
-      Standard_Integer nVNew = aInt->IndexNew();
+      int nVNew = aInt->IndexNew();
       myDS->HasShapeSD(nVNew, nVNew);
       if (!aMFence.Add(nVNew))
         continue;
@@ -106,10 +107,10 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
   const BOPDS_FaceInfo& aFI = myDS->FaceInfo(nS);
 
   // Section edges of the face
-  const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBSc = aFI.PaveBlocksSc();
   // Save section edges contained in the result shape
-  Standard_Integer aNb = aMPBSc.Extent();
-  for (Standard_Integer i = 1; i <= aNb; ++i)
+  int aNb = aMPBSc.Extent();
+  for (int i = 1; i <= aNb; ++i)
   {
     const TopoDS_Shape& aENew = myDS->Shape(aMPBSc(i)->Edge());
     if (myMapShape.Contains(aENew))
@@ -117,9 +118,9 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
   }
 
   // Section vertices of the face
-  const TColStd_MapOfInteger& aMVSc = aFI.VerticesSc();
+  const NCollection_Map<int>& aMVSc = aFI.VerticesSc();
   // Save section vertices contained in the result shape
-  TColStd_MapOfInteger::Iterator aItM(aMVSc);
+  NCollection_Map<int>::Iterator aItM(aMVSc);
   for (; aItM.More(); aItM.Next())
   {
     const TopoDS_Shape& aVNew = myDS->Shape(aItM.Value());
@@ -132,7 +133,7 @@ const TopTools_ListOfShape& BOPAlgo_Builder::LocGenerated(const TopoDS_Shape& th
 
 //=================================================================================================
 
-const TopTools_ListOfShape* BOPAlgo_Builder::LocModified(const TopoDS_Shape& theS)
+const NCollection_List<TopoDS_Shape>* BOPAlgo_Builder::LocModified(const TopoDS_Shape& theS)
 {
   return myImages.Seek(theS);
 }
@@ -158,9 +159,9 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
   //   the generated elements kept in the result shape as Generated from the shape;
   // - Shapes that have no trace in the result shape. Add them as Deleted
   //   during the operation.
-  Standard_Integer      aNbS = myDS->NbSourceShapes();
+  int      aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Preparing history information", aNbS);
-  for (Standard_Integer i = 0; i < aNbS; ++i, aPS.Next())
+  for (int i = 0; i < aNbS; ++i, aPS.Next())
   {
     const TopoDS_Shape& aS = myDS->Shape(i);
 
@@ -173,14 +174,14 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
       return;
     }
 
-    Standard_Boolean isModified = Standard_False;
+    bool isModified = false;
 
     // Check if the shape has any splits
-    const TopTools_ListOfShape* pLSp = LocModified(aS);
+    const NCollection_List<TopoDS_Shape>* pLSp = LocModified(aS);
     if (pLSp)
     {
       // Find all splits of the shape which are kept in the result
-      TopTools_ListIteratorOfListOfShape aIt(*pLSp);
+      NCollection_List<TopoDS_Shape>::Iterator aIt(*pLSp);
       for (; aIt.More(); aIt.Next())
       {
         TopoDS_Shape aSp = aIt.Value();
@@ -195,14 +196,14 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
             aSp.Reverse();
 
           myHistory->AddModified(aS, aSp);
-          isModified = Standard_True;
+          isModified = true;
         }
       }
     }
 
     // Check if the shape has Generated elements
-    const TopTools_ListOfShape&        aGenShapes = LocGenerated(aS);
-    TopTools_ListIteratorOfListOfShape aIt(aGenShapes);
+    const NCollection_List<TopoDS_Shape>&        aGenShapes = LocGenerated(aS);
+    NCollection_List<TopoDS_Shape>::Iterator aIt(aGenShapes);
     for (; aIt.More(); aIt.Next())
     {
       const TopoDS_Shape& aG = aIt.Value();

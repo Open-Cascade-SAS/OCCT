@@ -38,17 +38,21 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 ShapeAnalysis_ShapeContents::ShapeAnalysis_ShapeContents()
 {
-  myBigSplineSec     = new TopTools_HSequenceOfShape;
-  myIndirectSec      = new TopTools_HSequenceOfShape;
-  myOffsetSurfaceSec = new TopTools_HSequenceOfShape;
-  myTrimmed3dSec     = new TopTools_HSequenceOfShape;
-  myOffsetCurveSec   = new TopTools_HSequenceOfShape;
-  myTrimmed2dSec     = new TopTools_HSequenceOfShape;
+  myBigSplineSec     = new NCollection_HSequence<TopoDS_Shape>;
+  myIndirectSec      = new NCollection_HSequence<TopoDS_Shape>;
+  myOffsetSurfaceSec = new NCollection_HSequence<TopoDS_Shape>;
+  myTrimmed3dSec     = new NCollection_HSequence<TopoDS_Shape>;
+  myOffsetCurveSec   = new NCollection_HSequence<TopoDS_Shape>;
+  myTrimmed2dSec     = new NCollection_HSequence<TopoDS_Shape>;
   ClearFlags();
 }
 
@@ -99,12 +103,12 @@ void ShapeAnalysis_ShapeContents::Clear()
 
 void ShapeAnalysis_ShapeContents::ClearFlags()
 {
-  myBigSplineMode     = Standard_False;
-  myIndirectMode      = Standard_False;
-  myOffsetSurfaceMode = Standard_False;
-  myTrimmed3dMode     = Standard_False;
-  myOffsetCurveMode   = Standard_False;
-  myTrimmed2dMode     = Standard_False;
+  myBigSplineMode     = false;
+  myIndirectMode      = false;
+  myOffsetSurfaceMode = false;
+  myTrimmed3dMode     = false;
+  myOffsetCurveMode   = false;
+  myTrimmed2dMode     = false;
 }
 
 void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
@@ -112,7 +116,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
   Clear();
   //  On y va
   TopExp_Explorer     exp;
-  TopTools_MapOfShape mapsh;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapsh;
   //  On note pour les SOLIDES : ceux qui ont des trous (plus d un SHELL)
 
   for (exp.Init(Shape, TopAbs_SOLID); exp.More(); exp.Next())
@@ -120,7 +124,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     TopoDS_Solid sol = TopoDS::Solid(exp.Current());
     sol.Location(TopLoc_Location());
     mapsh.Add(sol);
-    Standard_Integer nbs = 0;
+    int nbs = 0;
     for (TopExp_Explorer shel(sol, TopAbs_SHELL); shel.More(); shel.Next())
       nbs++;
     if (nbs > 1)
@@ -132,7 +136,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
   //  Pour les SHELLS, on compte les faces dans les SHELLS
   //  Ensuite une soustraction, et on a les faces libres
   mapsh.Clear();
-  Standard_Integer nbfaceshell = 0;
+  int nbfaceshell = 0;
   for (exp.Init(Shape, TopAbs_SHELL); exp.More(); exp.Next())
   {
     myNbShells++;
@@ -157,11 +161,11 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     TopoDS_Face face = TopoDS::Face(exp.Current());
     myNbFaces++;
     TopLoc_Location      loc;
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(face, loc);
+    occ::handle<Geom_Surface> surf = BRep_Tool::Surface(face, loc);
     face.Location(TopLoc_Location());
     mapsh.Add(face);
-    Handle(Geom_RectangularTrimmedSurface) trsu =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(surf);
+    occ::handle<Geom_RectangularTrimmedSurface> trsu =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(surf);
     if (!trsu.IsNull())
     {
       myNbTrimSurf++;
@@ -174,7 +178,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
       myNbC0Surfaces++;
     }
 
-    Handle(Geom_BSplineSurface) bsps = Handle(Geom_BSplineSurface)::DownCast(surf);
+    occ::handle<Geom_BSplineSurface> bsps = occ::down_cast<Geom_BSplineSurface>(surf);
     if (!bsps.IsNull())
     {
       myNbBSplibeSurf++;
@@ -185,7 +189,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
           myBigSplineSec->Append(face);
       }
     }
-    Handle(Geom_ElementarySurface) els = Handle(Geom_ElementarySurface)::DownCast(surf);
+    occ::handle<Geom_ElementarySurface> els = occ::down_cast<Geom_ElementarySurface>(surf);
     if (!els.IsNull())
     {
       if (!els->Position().Direct())
@@ -206,19 +210,19 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
       myNbBezierSurf++;
     }
 
-    Standard_Integer maxseam = 0, nbwires = 0;
+    int maxseam = 0, nbwires = 0;
     for (TopExp_Explorer wires(face, TopAbs_WIRE); wires.More(); wires.Next())
     {
       TopoDS_Wire      wire   = TopoDS::Wire(wires.Current());
-      Standard_Integer nbseam = 0;
+      int nbseam = 0;
       nbwires++;
       for (TopExp_Explorer edg(wire, TopAbs_EDGE); edg.More(); edg.Next())
       {
         TopoDS_Edge   edge = TopoDS::Edge(edg.Current());
-        Standard_Real first, last;
+        double first, last;
         if (BRep_Tool::IsClosed(edge, face))
           nbseam++;
-        Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge, first, last);
+        occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, first, last);
         if (!c3d.IsNull())
         {
           if (c3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
@@ -228,7 +232,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
               myTrimmed3dSec->Append(face);
           }
         }
-        Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface(edge, face, first, last);
+        occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(edge, face, first, last);
         if (c2d.IsNull())
           myNbNoPCurve++;
         else if (c2d->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
@@ -276,9 +280,9 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     edge.Location(TopLoc_Location());
     mapsh.Add(edge);
     TopLoc_Location loc;
-    Standard_Real   first, last;
+    double   first, last;
     myNbEdges++;
-    Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge, loc, first, last);
+    occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, loc, first, last);
     if (!c3d.IsNull() && c3d->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
       myNbOffsetCurves++;

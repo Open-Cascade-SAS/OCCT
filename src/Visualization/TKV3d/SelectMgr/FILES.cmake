@@ -27,10 +27,9 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_Frustum.lxx
   SelectMgr_FrustumBuilder.cxx
   SelectMgr_FrustumBuilder.hxx
-  SelectMgr_IndexedDataMapOfOwnerCriterion.hxx
+
   SelectMgr_IndexedMapOfOwner.hxx
-  SelectMgr_ListIteratorOfListOfFilter.hxx
-  SelectMgr_ListOfFilter.hxx
+
   SelectMgr_OrFilter.cxx
   SelectMgr_OrFilter.hxx
   SelectMgr_PickingStrategy.hxx
@@ -54,7 +53,7 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_SensitiveEntitySet.cxx
   SelectMgr_SensitiveEntitySet.hxx
   SelectMgr_SequenceOfOwner.hxx
-  SelectMgr_SequenceOfSelection.hxx
+
   SelectMgr_SortCriterion.hxx
   SelectMgr_StateOfSelection.hxx
   SelectMgr_ToleranceMap.hxx
@@ -66,10 +65,10 @@ set(OCCT_SelectMgr_FILES
   SelectMgr_TypeOfBVHUpdate.hxx
   SelectMgr_TypeOfDepthTolerance.hxx
   SelectMgr_TypeOfUpdate.hxx
-  SelectMgr_VectorTypes.hxx
+
   SelectMgr_ViewClipRange.cxx
   SelectMgr_ViewClipRange.hxx
   SelectMgr_ViewerSelector.cxx
   SelectMgr_ViewerSelector.hxx
-  SelectMgr_ViewerSelector3d.hxx
+
 )

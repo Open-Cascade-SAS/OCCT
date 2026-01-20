@@ -21,7 +21,7 @@
 #include <gp_Trsf.hxx>
 #include <Standard_DimensionError.hxx>
 
-void gp_Torus::Coefficients(TColStd_Array1OfReal& theCoef) const
+void gp_Torus::Coefficients(NCollection_Array1<double>& theCoef) const
 {
   //  R = majorRadius;
   //  r = minorRadius.
@@ -38,38 +38,38 @@ void gp_Torus::Coefficients(TColStd_Array1OfReal& theCoef) const
   //   2*(R^2+r^2)*(X^2+Y^2)+
   //   2*(R^2-r^2)*Z^2+(R^2-r^2)^2 = 0.0
 
-  const Standard_Integer aLowIndex = theCoef.Lower();
+  const int aLowIndex = theCoef.Lower();
   Standard_DimensionError_Raise_if(theCoef.Length() < 35,
                                    "gp_Torus::theCoefficients(): Dimension mismatch");
 
   gp_Trsf aTr;
   aTr.SetTransformation(pos);
-  const Standard_Real aT11 = aTr.Value(1, 1);
-  const Standard_Real aT12 = aTr.Value(1, 2);
-  const Standard_Real aT13 = aTr.Value(1, 3);
-  const Standard_Real aT14 = aTr.Value(1, 4);
-  const Standard_Real aT21 = aTr.Value(2, 1);
-  const Standard_Real aT22 = aTr.Value(2, 2);
-  const Standard_Real aT23 = aTr.Value(2, 3);
-  const Standard_Real aT24 = aTr.Value(2, 4);
-  const Standard_Real aT31 = aTr.Value(3, 1);
-  const Standard_Real aT32 = aTr.Value(3, 2);
-  const Standard_Real aT33 = aTr.Value(3, 3);
-  const Standard_Real aT34 = aTr.Value(3, 4);
+  const double aT11 = aTr.Value(1, 1);
+  const double aT12 = aTr.Value(1, 2);
+  const double aT13 = aTr.Value(1, 3);
+  const double aT14 = aTr.Value(1, 4);
+  const double aT21 = aTr.Value(2, 1);
+  const double aT22 = aTr.Value(2, 2);
+  const double aT23 = aTr.Value(2, 3);
+  const double aT24 = aTr.Value(2, 4);
+  const double aT31 = aTr.Value(3, 1);
+  const double aT32 = aTr.Value(3, 2);
+  const double aT33 = aTr.Value(3, 3);
+  const double aT34 = aTr.Value(3, 4);
 
-  const Standard_Real aTcol1sq    = aT11 * aT11 + aT21 * aT21 + aT31 * aT31;
-  const Standard_Real aTcol2sq    = aT12 * aT12 + aT22 * aT22 + aT32 * aT32;
-  const Standard_Real aTcol3sq    = aT13 * aT13 + aT23 * aT23 + aT33 * aT33;
-  const Standard_Real aTcol4sq    = aT14 * aT14 + aT24 * aT24 + aT34 * aT34;
-  const Standard_Real aTcol1Tcol2 = aT11 * aT12 + aT21 * aT22 + aT31 * aT32;
-  const Standard_Real aTcol1Tcol3 = aT11 * aT13 + aT21 * aT23 + aT31 * aT33;
-  const Standard_Real aTcol2Tcol3 = aT12 * aT13 + aT22 * aT23 + aT32 * aT33;
-  const Standard_Real aTcol1Tcol4 = aT11 * aT14 + aT21 * aT24 + aT31 * aT34;
-  const Standard_Real aTcol2Tcol4 = aT12 * aT14 + aT22 * aT24 + aT32 * aT34;
-  const Standard_Real aTcol3Tcol4 = aT13 * aT14 + aT23 * aT24 + aT33 * aT34;
+  const double aTcol1sq    = aT11 * aT11 + aT21 * aT21 + aT31 * aT31;
+  const double aTcol2sq    = aT12 * aT12 + aT22 * aT22 + aT32 * aT32;
+  const double aTcol3sq    = aT13 * aT13 + aT23 * aT23 + aT33 * aT33;
+  const double aTcol4sq    = aT14 * aT14 + aT24 * aT24 + aT34 * aT34;
+  const double aTcol1Tcol2 = aT11 * aT12 + aT21 * aT22 + aT31 * aT32;
+  const double aTcol1Tcol3 = aT11 * aT13 + aT21 * aT23 + aT31 * aT33;
+  const double aTcol2Tcol3 = aT12 * aT13 + aT22 * aT23 + aT32 * aT33;
+  const double aTcol1Tcol4 = aT11 * aT14 + aT21 * aT24 + aT31 * aT34;
+  const double aTcol2Tcol4 = aT12 * aT14 + aT22 * aT24 + aT32 * aT34;
+  const double aTcol3Tcol4 = aT13 * aT14 + aT23 * aT24 + aT33 * aT34;
 
-  const Standard_Real aSumRadius = (majorRadius * majorRadius + minorRadius * minorRadius);
-  const Standard_Real aSubRadius = (majorRadius * majorRadius - minorRadius * minorRadius);
+  const double aSumRadius = (majorRadius * majorRadius + minorRadius * minorRadius);
+  const double aSubRadius = (majorRadius * majorRadius - minorRadius * minorRadius);
 
   /*
   After substitution

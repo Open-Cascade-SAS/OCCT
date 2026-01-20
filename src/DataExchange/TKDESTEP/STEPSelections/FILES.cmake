@@ -14,7 +14,7 @@ set(OCCT_STEPSelections_FILES
   STEPSelections_Counter.cxx
   STEPSelections_Counter.hxx
   STEPSelections_Counter.lxx
-  STEPSelections_HSequenceOfAssemblyLink.hxx
+
   STEPSelections_SelectAssembly.cxx
   STEPSelections_SelectAssembly.hxx
   STEPSelections_SelectDerived.cxx
@@ -27,6 +27,5 @@ set(OCCT_STEPSelections_FILES
   STEPSelections_SelectGSCurves.hxx
   STEPSelections_SelectInstances.cxx
   STEPSelections_SelectInstances.hxx
-  STEPSelections_SequenceOfAssemblyComponent.hxx
-  STEPSelections_SequenceOfAssemblyLink.hxx
+
 )

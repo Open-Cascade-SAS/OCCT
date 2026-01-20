@@ -17,16 +17,16 @@
 // static MoniTool_Stat Statvoid("");
 // static MoniTool_Stat Statact ("");
 // not Used
-// static Standard_CString voidname = "";
-MoniTool_Stat::MoniTool_Stat(const Standard_CString title)
+// static const char* voidname = "";
+MoniTool_Stat::MoniTool_Stat(const char* const title)
 {
   thetit = new TCollection_HAsciiString(title);
   thelev = 0;
-  thetot = new TColStd_HArray1OfInteger(1, 20);
+  thetot = new NCollection_HArray1<int>(1, 20);
   thetot->Init(0);
-  thedone = new TColStd_HArray1OfInteger(1, 20);
+  thedone = new NCollection_HArray1<int>(1, 20);
   thetot->Init(0);
-  thecurr = new TColStd_HArray1OfInteger(1, 20);
+  thecurr = new NCollection_HArray1<int>(1, 20);
   thetot->Init(0);
 }
 
@@ -41,7 +41,7 @@ MoniTool_Stat& MoniTool_Stat::Current()
   return thecur;
 }
 
-Standard_Integer MoniTool_Stat::Open(const Standard_Integer nb)
+int MoniTool_Stat::Open(const int nb)
 {
   thelev++;
   thetot->SetValue(thelev, nb);
@@ -50,20 +50,20 @@ Standard_Integer MoniTool_Stat::Open(const Standard_Integer nb)
   return thelev;
 }
 
-void MoniTool_Stat::OpenMore(const Standard_Integer id, const Standard_Integer nb)
+void MoniTool_Stat::OpenMore(const int id, const int nb)
 {
   if (id <= 0 || id > thelev)
     return;
   thetot->SetValue(id, thetot->Value(id) + nb);
 }
 
-void MoniTool_Stat::Add(const Standard_Integer nb)
+void MoniTool_Stat::Add(const int nb)
 {
   thedone->SetValue(thelev, thedone->Value(thelev) + nb);
   thecurr->SetValue(thelev, 0);
 }
 
-void MoniTool_Stat::AddSub(const Standard_Integer nb)
+void MoniTool_Stat::AddSub(const int nb)
 {
   thecurr->SetValue(thelev, nb);
 }
@@ -74,7 +74,7 @@ void MoniTool_Stat::AddEnd()
   thecurr->SetValue(thelev, 0);
 }
 
-void MoniTool_Stat::Close(const Standard_Integer id)
+void MoniTool_Stat::Close(const int id)
 {
   if (id < thelev)
     Close(id + 1);
@@ -82,18 +82,18 @@ void MoniTool_Stat::Close(const Standard_Integer id)
   thelev--;
 }
 
-Standard_Integer MoniTool_Stat::Level() const
+int MoniTool_Stat::Level() const
 {
   return thelev;
 }
 
-Standard_Real MoniTool_Stat::Percent(const Standard_Integer fromlev) const
+double MoniTool_Stat::Percent(const int fromlev) const
 {
   if (fromlev > thelev)
     return 0;
-  Standard_Real    r1, r2, r3;
-  Standard_Integer tot  = thetot->Value(fromlev);
-  Standard_Integer done = thedone->Value(fromlev);
+  double    r1, r2, r3;
+  int tot  = thetot->Value(fromlev);
+  int done = thedone->Value(fromlev);
   if (done >= tot)
     return 100.;
   if (fromlev == thelev)
@@ -102,7 +102,7 @@ Standard_Real MoniTool_Stat::Percent(const Standard_Integer fromlev) const
     r2 = done;
     return (r2 * 100) / r1;
   }
-  Standard_Integer cur = thecurr->Value(fromlev);
+  int cur = thecurr->Value(fromlev);
   r1                   = tot;
   r2                   = done;
   r3                   = 0;

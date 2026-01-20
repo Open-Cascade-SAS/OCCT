@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepVisual_HArray1OfBoxCharacteristicSelect.hxx>
+#include <StepVisual_BoxCharacteristicSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TextStyle.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_TextStyleForDefinedFont;
 class StepVisual_BoxCharacteristicSelect;
-
-class StepVisual_TextStyleWithBoxCharacteristics;
-DEFINE_STANDARD_HANDLE(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
 
 class StepVisual_TextStyleWithBoxCharacteristics : public StepVisual_TextStyle
 {
@@ -38,25 +37,24 @@ public:
   Standard_EXPORT StepVisual_TextStyleWithBoxCharacteristics();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                    aName,
-    const Handle(StepVisual_TextStyleForDefinedFont)&          aCharacterAppearance,
-    const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
+    const occ::handle<TCollection_HAsciiString>&                    aName,
+    const occ::handle<StepVisual_TextStyleForDefinedFont>&          aCharacterAppearance,
+    const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics);
 
   Standard_EXPORT void SetCharacteristics(
-    const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
+    const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfBoxCharacteristicSelect) Characteristics() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> Characteristics() const;
 
   Standard_EXPORT StepVisual_BoxCharacteristicSelect
-    CharacteristicsValue(const Standard_Integer num) const;
+    CharacteristicsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbCharacteristics() const;
+  Standard_EXPORT int NbCharacteristics() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
 
-protected:
 private:
-  Handle(StepVisual_HArray1OfBoxCharacteristicSelect) characteristics;
+  occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> characteristics;
 };
 
 #endif // _StepVisual_TextStyleWithBoxCharacteristics_HeaderFile

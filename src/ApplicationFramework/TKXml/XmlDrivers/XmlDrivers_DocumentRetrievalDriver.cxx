@@ -30,8 +30,8 @@ XmlDrivers_DocumentRetrievalDriver::XmlDrivers_DocumentRetrievalDriver() {}
 
 //=================================================================================================
 
-Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers(
-  const Handle(Message_Messenger)& theMessageDriver)
+occ::handle<XmlMDF_ADriverTable> XmlDrivers_DocumentRetrievalDriver::AttributeDrivers(
+  const occ::handle<Message_Messenger>& theMessageDriver)
 {
   return XmlDrivers::AttributeDrivers(theMessageDriver);
 }
@@ -40,18 +40,18 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
 // function : ReadShapeSection
 // purpose  : Implementation of ReadShapeSection
 //=======================================================================
-Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
+occ::handle<XmlMDF_ADriver> XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
   const XmlObjMgt_Element&         theElement,
-  const Handle(Message_Messenger)& theMsgDriver,
+  const occ::handle<Message_Messenger>& theMsgDriver,
   const Message_ProgressRange&     theRange)
 {
   if (myDrivers.IsNull())
     myDrivers = AttributeDrivers(theMsgDriver);
-  Handle(XmlMDF_ADriver) aDriver;
+  occ::handle<XmlMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
-    Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(XmlMNaming_NamedShapeDriver)::DownCast(aDriver);
+    occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
+      occ::down_cast<XmlMNaming_NamedShapeDriver>(aDriver);
     aNamedShapeDriver->ReadShapeSection(theElement, theRange);
   }
   return aDriver;
@@ -61,10 +61,10 @@ Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
 // function : ShapeSetCleaning
 // purpose  : definition of ShapeSetCleaning
 //=======================================================================
-void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(const Handle(XmlMDF_ADriver)& theDriver)
+void XmlDrivers_DocumentRetrievalDriver::ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver)
 {
-  Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver =
-    Handle(XmlMNaming_NamedShapeDriver)::DownCast(theDriver);
-  if (aNamedShapeDriver.IsNull() == Standard_False)
+  occ::handle<XmlMNaming_NamedShapeDriver> aNamedShapeDriver =
+    occ::down_cast<XmlMNaming_NamedShapeDriver>(theDriver);
+  if (aNamedShapeDriver.IsNull() == false)
     aNamedShapeDriver->Clear();
 }

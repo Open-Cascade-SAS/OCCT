@@ -21,16 +21,15 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 class Interface_InterfaceModel;
 class Interface_Protocol;
 class IFSelect_ContextWrite;
 class Interface_EntityIterator;
 class Interface_CopyTool;
-
-class IFSelect_WorkLibrary;
-DEFINE_STANDARD_HANDLE(IFSelect_WorkLibrary, Standard_Transient)
 
 //! This class defines the (empty) frame which can be used to
 //! enrich a XSTEP set with new capabilities
@@ -54,10 +53,10 @@ public:
   //! Simply, 0 is for "Execution OK"
   //! The Protocol can be used to work (e.g. create the Model, read
   //! and recognize the Entities)
-  Standard_EXPORT virtual Standard_Integer ReadFile(
-    const Standard_CString            name,
-    Handle(Interface_InterfaceModel)& model,
-    const Handle(Interface_Protocol)& protocol) const = 0;
+  Standard_EXPORT virtual int ReadFile(
+    const char* const            name,
+    occ::handle<Interface_InterfaceModel>& model,
+    const occ::handle<Interface_Protocol>& protocol) const = 0;
 
   //! Interface to read a data from the specified stream.
   //! @param model is the resulting Model, which has to be created by this method.
@@ -65,11 +64,11 @@ public:
   //! Return value is a status: 0 - OK, 1 - read failure, -1 - stream failure.
   //!
   //! Default implementation returns 1 (error).
-  Standard_EXPORT virtual Standard_Integer ReadStream(
-    const Standard_CString            theName,
+  Standard_EXPORT virtual int ReadStream(
+    const char* const            theName,
     std::istream&                     theIStream,
-    Handle(Interface_InterfaceModel)& model,
-    const Handle(Interface_Protocol)& protocol) const;
+    occ::handle<Interface_InterfaceModel>& model,
+    const occ::handle<Interface_Protocol>& protocol) const;
 
   //! Gives the way to Write a File from a Model.
   //! <ctx> contains all necessary information : the model, the
@@ -89,7 +88,7 @@ public:
   //! on selected entities (Start/Next/More/Value)
   //! it can call AddFail or AddWarning, as necessary
   //! }
-  Standard_EXPORT virtual Standard_Boolean WriteFile(IFSelect_ContextWrite& ctx) const = 0;
+  Standard_EXPORT virtual bool WriteFile(IFSelect_ContextWrite& ctx) const = 0;
 
   //! Performs the copy of entities from an original model to a new
   //! one. It must also copy headers if any. Returns True when done.
@@ -100,9 +99,9 @@ public:
   //! by another way (do not forget to Bind each copied result with
   //! its original entity in TC) and returns True, or does not know
   //! how to copy and returns False
-  Standard_EXPORT virtual Standard_Boolean CopyModel(
-    const Handle(Interface_InterfaceModel)& original,
-    const Handle(Interface_InterfaceModel)& newmodel,
+  Standard_EXPORT virtual bool CopyModel(
+    const occ::handle<Interface_InterfaceModel>& original,
+    const occ::handle<Interface_InterfaceModel>& newmodel,
     const Interface_EntityIterator&         list,
     Interface_CopyTool&                     TC) const;
 
@@ -110,32 +109,32 @@ public:
   //! for each norm. <model> helps to identify, number ... entities.
   //! <level> is to be interpreted for each norm (because of the
   //! formats which can be very different)
-  Standard_EXPORT virtual void DumpEntity(const Handle(Interface_InterfaceModel)& model,
-                                          const Handle(Interface_Protocol)&       protocol,
-                                          const Handle(Standard_Transient)&       entity,
+  Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                          const occ::handle<Interface_Protocol>&       protocol,
+                                          const occ::handle<Standard_Transient>&       entity,
                                           Standard_OStream&                       S,
-                                          const Standard_Integer                  level) const = 0;
+                                          const int                  level) const = 0;
 
   //! Calls deferred DumpEntity with the recorded default level
-  Standard_EXPORT void DumpEntity(const Handle(Interface_InterfaceModel)& model,
-                                  const Handle(Interface_Protocol)&       protocol,
-                                  const Handle(Standard_Transient)&       entity,
+  Standard_EXPORT void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
+                                  const occ::handle<Interface_Protocol>&       protocol,
+                                  const occ::handle<Standard_Transient>&       entity,
                                   Standard_OStream&                       S) const;
 
   //! Records a default level and a maximum value for level
   //! level for DumpEntity can go between 0 and <max>
   //! default value will be <def>
-  Standard_EXPORT void SetDumpLevels(const Standard_Integer def, const Standard_Integer max);
+  Standard_EXPORT void SetDumpLevels(const int def, const int max);
 
   //! Returns the recorded default and maximum dump levels
   //! If none was recorded, max is returned negative, def as zero
-  Standard_EXPORT void DumpLevels(Standard_Integer& def, Standard_Integer& max) const;
+  Standard_EXPORT void DumpLevels(int& def, int& max) const;
 
   //! Records a short line of help for a level (0 - max)
-  Standard_EXPORT void SetDumpHelp(const Standard_Integer level, const Standard_CString help);
+  Standard_EXPORT void SetDumpHelp(const int level, const char* const help);
 
   //! Returns the help line recorded for <level>, or an empty string
-  Standard_EXPORT Standard_CString DumpHelp(const Standard_Integer level) const;
+  Standard_EXPORT const char* DumpHelp(const int level) const;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_WorkLibrary, Standard_Transient)
 
@@ -144,8 +143,8 @@ protected:
   Standard_EXPORT IFSelect_WorkLibrary();
 
 private:
-  Standard_Integer                        thelevdef;
-  Handle(Interface_HArray1OfHAsciiString) thelevhlp;
+  int                        thelevdef;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> thelevhlp;
 };
 
 #endif // _IFSelect_WorkLibrary_HeaderFile

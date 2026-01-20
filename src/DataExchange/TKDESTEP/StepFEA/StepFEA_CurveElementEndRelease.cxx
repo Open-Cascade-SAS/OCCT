@@ -27,7 +27,7 @@ StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease() {}
 
 void StepFEA_CurveElementEndRelease::Init(
   const StepFEA_CurveElementEndCoordinateSystem&                   aCoordinateSystem,
-  const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases)
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>>& aReleases)
 {
 
   theCoordinateSystem = aCoordinateSystem;
@@ -52,7 +52,7 @@ void StepFEA_CurveElementEndRelease::SetCoordinateSystem(
 
 //=================================================================================================
 
-Handle(StepElement_HArray1OfCurveElementEndReleasePacket) StepFEA_CurveElementEndRelease::Releases()
+occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>> StepFEA_CurveElementEndRelease::Releases()
   const
 {
   return theReleases;
@@ -61,7 +61,7 @@ Handle(StepElement_HArray1OfCurveElementEndReleasePacket) StepFEA_CurveElementEn
 //=================================================================================================
 
 void StepFEA_CurveElementEndRelease::SetReleases(
-  const Handle(StepElement_HArray1OfCurveElementEndReleasePacket)& aReleases)
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementEndReleasePacket>>>& aReleases)
 {
   theReleases = aReleases;
 }

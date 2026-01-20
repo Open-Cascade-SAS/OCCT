@@ -47,33 +47,33 @@ public:
   //! as for any InterfaceModel, it gives each Entity a number;
   //! but for IGESEntities, the "Number of Directory Entry"
   //! according to the definition of IGES Files, is also useful.
-  Standard_EXPORT IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model,
-                                      const Handle(IGESData_Protocol)&  protocol);
+  Standard_EXPORT IGESData_IGESDumper(const occ::handle<IGESData_IGESModel>& model,
+                                      const occ::handle<IGESData_Protocol>&  protocol);
 
   //! Prints onto an output, the "Number of Directory Entry" which
   //! corresponds to an IGESEntity in the IGESModel, under the form
   //! "D#nnn" (a Null Handle gives D#0)
-  Standard_EXPORT void PrintDNum(const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
+  Standard_EXPORT void PrintDNum(const occ::handle<IGESData_IGESEntity>& ent, Standard_OStream& S) const;
 
   //! Prints onto an output, the "Number of Directory Entry" (see
   //! PrintDNum) plus IGES Type and Form Numbers, which gives
   //! "D#nnn  Type nnn  Form nnn"
-  Standard_EXPORT void PrintShort(const Handle(IGESData_IGESEntity)& ent,
+  Standard_EXPORT void PrintShort(const occ::handle<IGESData_IGESEntity>& ent,
                                   Standard_OStream&                  S) const;
 
-  Standard_EXPORT void Dump(const Handle(IGESData_IGESEntity)& ent,
+  Standard_EXPORT void Dump(const occ::handle<IGESData_IGESEntity>& ent,
                             Standard_OStream&                  S,
-                            const Standard_Integer             own,
-                            const Standard_Integer             attached = -1) const;
+                            const int             own,
+                            const int             attached = -1) const;
 
   //! Specific Dump for each IGES Entity, call by Dump (just above)
   //! <own> is the parameter <own> from Dump
-  Standard_EXPORT void OwnDump(const Handle(IGESData_IGESEntity)& ent,
+  Standard_EXPORT void OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
                                Standard_OStream&                  S,
-                               const Standard_Integer             own) const;
+                               const int             own) const;
 
 private:
-  Handle(IGESData_IGESModel) themodel;
+  occ::handle<IGESData_IGESModel> themodel;
   IGESData_SpecificLib       thelib;
 };
 

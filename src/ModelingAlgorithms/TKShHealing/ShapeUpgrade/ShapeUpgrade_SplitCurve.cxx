@@ -22,8 +22,11 @@
 #include <ShapeUpgrade.hxx>
 #include <ShapeUpgrade_SplitCurve.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve, Standard_Transient)
 
@@ -37,33 +40,33 @@ ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve()
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve::Init(const Standard_Real First, const Standard_Real Last)
+void ShapeUpgrade_SplitCurve::Init(const double First, const double Last)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   //  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve::Init"<<std::endl;
 
   myNbCurves = 1;
   // mySplitValues.Clear();
-  mySplitValues = new TColStd_HSequenceOfReal;
+  mySplitValues = new NCollection_HSequence<double>;
   mySplitValues->Append(First);
   mySplitValues->Append(Last);
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve::SetSplitValues(const Handle(TColStd_HSequenceOfReal)& SplitValues)
+void ShapeUpgrade_SplitCurve::SetSplitValues(const occ::handle<NCollection_HSequence<double>>& SplitValues)
 {
-  constexpr Standard_Real precision = Precision::PConfusion();
+  constexpr double precision = Precision::PConfusion();
   if (SplitValues.IsNull())
     return;
   if (SplitValues->Length() == 0)
     return;
 
-  Standard_Real First  = mySplitValues->Value(1),
+  double First  = mySplitValues->Value(1),
                 Last   = mySplitValues->Value(mySplitValues->Length());
-  Standard_Integer i   = 1;
-  Standard_Integer len = SplitValues->Length();
-  for (Standard_Integer k = 2; k <= mySplitValues->Length(); k++)
+  int i   = 1;
+  int len = SplitValues->Length();
+  for (int k = 2; k <= mySplitValues->Length(); k++)
   {
     Last = mySplitValues->Value(k);
     for (; i <= len; i++)
@@ -80,21 +83,21 @@ void ShapeUpgrade_SplitCurve::SetSplitValues(const Handle(TColStd_HSequenceOfRea
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve::Build(const Standard_Boolean /*Segment*/)
+void ShapeUpgrade_SplitCurve::Build(const bool /*Segment*/)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HSequenceOfReal)& ShapeUpgrade_SplitCurve::SplitValues() const
+const occ::handle<NCollection_HSequence<double>>& ShapeUpgrade_SplitCurve::SplitValues() const
 {
   return mySplitValues;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve::Perform(const Standard_Boolean Segment)
+void ShapeUpgrade_SplitCurve::Perform(const bool Segment)
 {
   Compute();
   // if ( ! mySplitValues.IsNull() )
@@ -111,7 +114,7 @@ void ShapeUpgrade_SplitCurve::Compute()
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_SplitCurve::Status(const ShapeExtend_Status status) const
+bool ShapeUpgrade_SplitCurve::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }

@@ -21,9 +21,6 @@
 
 #include <StepRepr_RepresentationItem.hxx>
 
-class StepFEA_FeaMaterialPropertyRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaMaterialPropertyRepresentationItem, StepRepr_RepresentationItem)
-
 //! Representation of STEP entity FeaMaterialPropertyRepresentationItem
 class StepFEA_FeaMaterialPropertyRepresentationItem : public StepRepr_RepresentationItem
 {
@@ -35,8 +32,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaMaterialPropertyRepresentationItem,
                           StepRepr_RepresentationItem)
 
-protected:
-private:
 };
 
 #endif // _StepFEA_FeaMaterialPropertyRepresentationItem_HeaderFile

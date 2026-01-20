@@ -47,11 +47,9 @@ public:
 
   Standard_EXPORT static void Add(Standard_OStream&                      anOStream,
                                   const TopoDS_Shape&                    aShape,
-                                  const Handle(VrmlConverter_Drawer)&    aDrawer,
-                                  const Handle(VrmlConverter_Projector)& aProjector);
+                                  const occ::handle<VrmlConverter_Drawer>&    aDrawer,
+                                  const occ::handle<VrmlConverter_Projector>& aProjector);
 
-protected:
-private:
 };
 
 #endif // _VrmlConverter_HLRShape_HeaderFile

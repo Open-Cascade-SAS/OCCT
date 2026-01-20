@@ -22,8 +22,11 @@
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <NCollection_List.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -34,8 +37,10 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -49,9 +54,11 @@
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
@@ -62,7 +69,7 @@ OSD_Chronometer cl_total, cl_extent, cl_perfsetofsurf, cl_perffilletonvertex, cl
   cl_reconstruction, cl_setregul, cl_perform1corner, cl_perform2corner, cl_performatend,
   cl_perform3corner, cl_performmore3corner;
 
-Standard_EXPORT Standard_Real t_total, t_extent, t_perfsetofsurf, t_perffilletonvertex, t_filds,
+Standard_EXPORT double t_total, t_extent, t_perfsetofsurf, t_perffilletonvertex, t_filds,
   t_reconstruction, t_setregul, t_perfsetofkgen, t_perfsetofkpart, t_makextremities, t_performatend,
   t_startsol, t_performsurf, t_perform1corner, t_perform2corner, t_perform3corner,
   t_performmore3corner, t_batten, t_inter, t_sameinter, t_same, t_plate, t_approxplate,
@@ -71,8 +78,8 @@ Standard_EXPORT Standard_Real t_total, t_extent, t_perfsetofsurf, t_perffilleton
   t_completedata, t_t2cornerDS, t_t3cornerDS;
 
 extern void             ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void             ChFi3d_ResultChron(OSD_Chronometer& ch, Standard_Real& time);
-extern Standard_Boolean ChFi3d_GettraceCHRON();
+extern void             ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
+extern bool ChFi3d_GettraceCHRON();
 #endif
 
 //=================================================================================================
@@ -87,11 +94,11 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
   for (ExpE.Init(S, TopAbs_EDGE); ExpE.More(); ExpE.Next())
   {
     const TopoDS_Edge& E       = TopoDS::Edge(ExpE.Current());
-    Standard_Boolean   hasgeom = DStr.HasGeometry(E);
+    bool   hasgeom = DStr.HasGeometry(E);
     if (hasgeom)
     {
-      const TopTools_ListOfShape&        WireListAnc = MapEW(E);
-      TopTools_ListIteratorOfListOfShape itaW(WireListAnc);
+      const NCollection_List<TopoDS_Shape>&        WireListAnc = MapEW(E);
+      NCollection_List<TopoDS_Shape>::Iterator itaW(WireListAnc);
       while (itaW.More())
       {
         const TopoDS_Shape& WireAnc = itaW.Value();
@@ -105,11 +112,11 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
   for (ExpF.Init(S, TopAbs_FACE); ExpF.More(); ExpF.Next())
   {
     const TopoDS_Face& F       = TopoDS::Face(ExpF.Current());
-    Standard_Boolean   hasgeom = DStr.HasGeometry(F);
+    bool   hasgeom = DStr.HasGeometry(F);
     if (hasgeom)
     {
-      const TopTools_ListOfShape&        ShellListAnc = MapFS(F);
-      TopTools_ListIteratorOfListOfShape itaS(ShellListAnc);
+      const NCollection_List<TopoDS_Shape>&        ShellListAnc = MapFS(F);
+      NCollection_List<TopoDS_Shape>::Iterator itaS(ShellListAnc);
       while (itaS.More())
       {
         const TopoDS_Shape& ShellAnc = itaS.Value();
@@ -120,13 +127,13 @@ static void CompleteDS(TopOpeBRepDS_DataStructure& DStr, const TopoDS_Shape& S)
   }
 
   // set the range on the DS Curves
-  for (Standard_Integer ic = 1; ic <= DStr.NbCurves(); ic++)
+  for (int ic = 1; ic <= DStr.NbCurves(); ic++)
   {
-    Standard_Real                          parmin = RealLast(), parmax = RealFirst();
-    const TopOpeBRepDS_ListOfInterference& LI = DStr.CurveInterferences(ic);
+    double                          parmin = RealLast(), parmax = RealFirst();
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = DStr.CurveInterferences(ic);
     for (TopOpeBRepDS_PointIterator it(LI); it.More(); it.Next())
     {
-      Standard_Real par = it.Parameter();
+      double par = it.Parameter();
       parmin            = std::min(parmin, par);
       parmax            = std::max(parmax, par);
     }
@@ -142,8 +149,8 @@ ChFi3d_Builder::~ChFi3d_Builder() {}
 
 void ChFi3d_Builder::ExtentAnalyse()
 {
-  Standard_Integer nbedges, nbs;
-  for (Standard_Integer iv = 1; iv <= myVDataMap.Extent(); iv++)
+  int nbedges, nbs;
+  for (int iv = 1; iv <= myVDataMap.Extent(); iv++)
   {
     nbs                      = myVDataMap(iv).Extent();
     const TopoDS_Vertex& Vtx = myVDataMap.FindKey(iv);
@@ -223,11 +230,11 @@ void ChFi3d_Builder::Compute()
   Reset();
   myDS                             = new TopOpeBRepDS_HDataStructure();
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  done                             = Standard_True;
-  hasresult                        = Standard_False;
+  done                             = true;
+  hasresult                        = false;
 
   // filling of myVDatatMap
-  ChFiDS_ListIteratorOfListOfStripe itel;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
 
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
@@ -264,13 +271,13 @@ void ChFi3d_Builder::Compute()
 #endif
       (void)anException;
       badstripes.Append(itel.Value());
-      done = Standard_True;
+      done = true;
       if (itel.Value()->Spine()->ErrorStatus() == ChFiDS_Ok)
         itel.Value()->Spine()->SetErrorStatus(ChFiDS_Error);
     }
     if (!done)
       badstripes.Append(itel.Value());
-    done = Standard_True;
+    done = true;
   }
   done = (badstripes.IsEmpty());
 
@@ -282,7 +289,7 @@ void ChFi3d_Builder::Compute()
   // construct fillets on each vertex + feed the Ds
   if (done)
   {
-    Standard_Integer j;
+    int j;
     for (j = 1; j <= myVDataMap.Extent(); j++)
     {
       try
@@ -297,12 +304,12 @@ void ChFi3d_Builder::Compute()
 #endif
         (void)anException;
         badvertices.Append(myVDataMap.FindKey(j));
-        hasresult = Standard_False;
-        done      = Standard_True;
+        hasresult = false;
+        done      = true;
       }
       if (!done)
         badvertices.Append(myVDataMap.FindKey(j));
-      done = Standard_True;
+      done = true;
     }
     if (!hasresult)
       done = badvertices.IsEmpty();
@@ -313,37 +320,37 @@ void ChFi3d_Builder::Compute()
   ChFi3d_InitChron(cl_filds);
 #endif
 
-  TColStd_MapOfInteger MapIndSo;
+  NCollection_Map<int> MapIndSo;
   TopExp_Explorer      expso(myShape, TopAbs_SOLID);
   for (; expso.More(); expso.Next())
   {
     const TopoDS_Shape& cursol    = expso.Current();
-    Standard_Integer    indcursol = DStr.AddShape(cursol);
+    int    indcursol = DStr.AddShape(cursol);
     MapIndSo.Add(indcursol);
   }
   TopExp_Explorer expsh(myShape, TopAbs_SHELL, TopAbs_SOLID);
   for (; expsh.More(); expsh.Next())
   {
     const TopoDS_Shape& cursh    = expsh.Current();
-    Standard_Integer    indcursh = DStr.AddShape(cursh);
+    int    indcursh = DStr.AddShape(cursh);
     MapIndSo.Add(indcursh);
   }
   if (done)
   {
-    Standard_Integer i1;
+    int i1;
     for (itel.Initialize(myListStripe), i1 = 0; itel.More(); itel.Next(), i1++)
     {
-      const Handle(ChFiDS_Stripe)& st = itel.Value();
+      const occ::handle<ChFiDS_Stripe>& st = itel.Value();
       // 05/02/02 akm vvv : (OCC119) First we'll check ain't there
       //                    intersections between fillets
-      ChFiDS_ListIteratorOfListOfStripe itel1;
-      Standard_Integer                  i2;
+      NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel1;
+      int                  i2;
       for (itel1.Initialize(myListStripe), i2 = 0; itel1.More(); itel1.Next(), i2++)
       {
         if (i2 <= i1)
           // Do not twice intersect the stripes
           continue;
-        Handle(ChFiDS_Stripe) aCheckStripe = itel1.Value();
+        occ::handle<ChFiDS_Stripe> aCheckStripe = itel1.Value();
         try
         {
           OCC_CATCH_SIGNALS
@@ -356,13 +363,13 @@ void ChFi3d_Builder::Compute()
 #endif
           (void)anException;
           badstripes.Append(itel.Value());
-          hasresult = Standard_False;
-          done      = Standard_False;
+          hasresult = false;
+          done      = false;
           break;
         }
       }
       // 05/02/02 akm ^^^
-      Standard_Integer solidindex = st->SolidIndex();
+      int solidindex = st->SolidIndex();
       ChFi3d_FilDS(solidindex, st, DStr, myRegul, tolapp3d, tol2d);
       if (!done)
         break;
@@ -383,24 +390,24 @@ void ChFi3d_Builder::Compute()
       for (; cex.More(); cex.Next())
       {
         TopOpeBRepDS_Curve& c     = *((TopOpeBRepDS_Curve*)(void*)&(cex.Curve()));
-        Standard_Real       tolc  = 0.;
-        Standard_Boolean    degen = c.Curve().IsNull();
+        double       tolc  = 0.;
+        bool    degen = c.Curve().IsNull();
         if (!degen)
           tolc = c.Tolerance();
-        Standard_Integer           ic = cex.Index();
+        int           ic = cex.Index();
         TopOpeBRepDS_PointIterator It(myDS->CurvePoints(ic));
         for (; It.More(); It.Next())
         {
-          Handle(TopOpeBRepDS_CurvePointInterference) II;
-          II = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(It.Value());
+          occ::handle<TopOpeBRepDS_CurvePointInterference> II;
+          II = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(It.Value());
           if (II.IsNull())
             continue;
           TopOpeBRepDS_Kind gk = II->GeometryType();
-          Standard_Integer  gi = II->Geometry();
+          int  gi = II->Geometry();
           if (gk == TopOpeBRepDS_VERTEX)
           {
             const TopoDS_Vertex& v    = TopoDS::Vertex(myDS->Shape(gi));
-            Standard_Real        tolv = BRep_Tool::Tolerance(v);
+            double        tolv = BRep_Tool::Tolerance(v);
             if (tolv > 0.0001)
             {
               tolv += 0.0003;
@@ -415,7 +422,7 @@ void ChFi3d_Builder::Compute()
           else if (gk == TopOpeBRepDS_POINT)
           {
             TopOpeBRepDS_Point& p    = DStr.ChangePoint(gi);
-            Standard_Real       tolp = p.Tolerance();
+            double       tolp = p.Tolerance();
             if (degen && tolc < tolp)
               tolc = tolp;
             else if (tolc > tolp)
@@ -426,33 +433,33 @@ void ChFi3d_Builder::Compute()
           c.Tolerance(tolc);
       }
       myCoup->Perform(myDS);
-      TColStd_MapIteratorOfMapOfInteger It(MapIndSo);
+      NCollection_Map<int>::Iterator It(MapIndSo);
       for (; It.More(); It.Next())
       {
-        Standard_Integer    indsol   = It.Key();
+        int    indsol   = It.Key();
         const TopoDS_Shape& curshape = DStr.Shape(indsol);
         myCoup->MergeSolid(curshape, TopAbs_IN);
       }
 
-      Standard_Integer i = 1, n = DStr.NbShapes();
+      int i = 1, n = DStr.NbShapes();
       for (; i <= n; i++)
       {
         const TopoDS_Shape S = DStr.Shape(i);
         if (S.ShapeType() != TopAbs_EDGE)
           continue;
-        Standard_Boolean issplitIN = myCoup->IsSplit(S, TopAbs_IN);
+        bool issplitIN = myCoup->IsSplit(S, TopAbs_IN);
         if (!issplitIN)
           continue;
-        TopTools_ListIteratorOfListOfShape it(myCoup->Splits(S, TopAbs_IN));
+        NCollection_List<TopoDS_Shape>::Iterator it(myCoup->Splits(S, TopAbs_IN));
         for (; it.More(); it.Next())
         {
           const TopoDS_Edge& newE = TopoDS::Edge(it.Value());
-          Standard_Real      tole = BRep_Tool::Tolerance(newE);
+          double      tole = BRep_Tool::Tolerance(newE);
           TopExp_Explorer    exv(newE, TopAbs_VERTEX);
           for (; exv.More(); exv.Next())
           {
             const TopoDS_Vertex& v    = TopoDS::Vertex(exv.Current());
-            Standard_Real        tolv = BRep_Tool::Tolerance(v);
+            double        tolv = BRep_Tool::Tolerance(v);
             if (tole > tolv)
               B1.UpdateVertex(v, tole);
           }
@@ -461,11 +468,11 @@ void ChFi3d_Builder::Compute()
       if (!hasresult)
       {
         B1.MakeCompound(TopoDS::Compound(myShapeResult));
-        for (It = TColStd_MapIteratorOfMapOfInteger(MapIndSo); It.More(); It.Next())
+        for (It = NCollection_Map<int>::Iterator(MapIndSo); It.More(); It.Next())
         {
-          Standard_Integer                   indsol   = It.Key();
+          int                   indsol   = It.Key();
           const TopoDS_Shape&                curshape = DStr.Shape(indsol);
-          TopTools_ListIteratorOfListOfShape its      = myCoup->Merged(curshape, TopAbs_IN);
+          NCollection_List<TopoDS_Shape>::Iterator its      = myCoup->Merged(curshape, TopAbs_IN);
           if (!its.More())
             B1.Add(myShapeResult, curshape);
           else
@@ -493,13 +500,13 @@ void ChFi3d_Builder::Compute()
       }
       else
       {
-        done = Standard_False;
+        done = false;
         B1.MakeCompound(TopoDS::Compound(badShape));
-        for (It = TColStd_MapIteratorOfMapOfInteger(MapIndSo); It.More(); It.Next())
+        for (It = NCollection_Map<int>::Iterator(MapIndSo); It.More(); It.Next())
         {
-          Standard_Integer                   indsol   = It.Key();
+          int                   indsol   = It.Key();
           const TopoDS_Shape&                curshape = DStr.Shape(indsol);
-          TopTools_ListIteratorOfListOfShape its      = myCoup->Merged(curshape, TopAbs_IN);
+          NCollection_List<TopoDS_Shape>::Iterator its      = myCoup->Merged(curshape, TopAbs_IN);
           if (!its.More())
             B1.Add(badShape, curshape);
           else
@@ -601,21 +608,21 @@ void ChFi3d_Builder::Compute()
   // if it is necessary
   if (IsDone())
   {
-    Standard_Real                      SameParTol = Precision::Confusion();
-    Standard_Integer                   aNbSurfaces, iF;
-    TopTools_ListIteratorOfListOfShape aIt;
+    double                      SameParTol = Precision::Confusion();
+    int                   aNbSurfaces, iF;
+    NCollection_List<TopoDS_Shape>::Iterator aIt;
     //
     aNbSurfaces = myDS->NbSurfaces();
 
     for (iF = 1; iF <= aNbSurfaces; ++iF)
     {
-      const TopTools_ListOfShape& aLF = myCoup->NewFaces(iF);
+      const NCollection_List<TopoDS_Shape>& aLF = myCoup->NewFaces(iF);
       aIt.Initialize(aLF);
       for (; aIt.More(); aIt.Next())
       {
         const TopoDS_Shape& aF = aIt.Value();
-        BRepLib::SameParameter(aF, SameParTol, Standard_True);
-        ShapeFix::SameParameter(aF, Standard_False, SameParTol);
+        BRepLib::SameParameter(aF, SameParTol, true);
+        ShapeFix::SameParameter(aF, false, SameParTol);
       }
     }
   }
@@ -626,23 +633,23 @@ void ChFi3d_Builder::Compute()
 // purpose  : Load vertex and degenerated edges.
 //=======================================================================
 
-void ChFi3d_Builder::PerformSingularCorner(const Standard_Integer Index)
+void ChFi3d_Builder::PerformSingularCorner(const int Index)
 {
-  ChFiDS_ListIteratorOfListOfStripe It;
-  Handle(ChFiDS_Stripe)             stripe;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator It;
+  occ::handle<ChFiDS_Stripe>             stripe;
   TopOpeBRepDS_DataStructure&       DStr = myDS->ChangeDS();
   const TopoDS_Vertex&              Vtx  = myVDataMap.FindKey(Index);
 
-  Handle(ChFiDS_SurfData) Fd;
-  Standard_Integer        i, Icurv;
-  Standard_Integer        Ivtx = 0;
+  occ::handle<ChFiDS_SurfData> Fd;
+  int        i, Icurv;
+  int        Ivtx = 0;
   for (It.Initialize(myVDataMap(Index)), i = 0; It.More(); It.Next(), i++)
   {
     stripe = It.Value();
     // SurfData concerned and its CommonPoints,
-    Standard_Integer sens         = 0;
-    Standard_Integer num          = ChFi3d_IndexOfSurfData(Vtx, stripe, sens);
-    Standard_Boolean isfirst      = (sens == 1);
+    int sens         = 0;
+    int num          = ChFi3d_IndexOfSurfData(Vtx, stripe, sens);
+    bool isfirst      = (sens == 1);
     Fd                            = stripe->SetOfSurfData()->Sequence().Value(num);
     const ChFiDS_CommonPoint& CV1 = Fd->Vertex(isfirst, 1);
     const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst, 2);
@@ -653,11 +660,11 @@ void ChFi3d_Builder::PerformSingularCorner(const Standard_Integer Index)
       // and the edge at end is created
       if (i == 0)
         Ivtx = ChFi3d_IndexPointInDS(CV1, DStr);
-      Standard_Real        tolreached;
-      Standard_Real        Pardeb, Parfin;
+      double        tolreached;
+      double        Pardeb, Parfin;
       gp_Pnt2d             VOnS1, VOnS2;
-      Handle(Geom_Curve)   C3d;
-      Handle(Geom2d_Curve) PCurv;
+      occ::handle<Geom_Curve>   C3d;
+      occ::handle<Geom2d_Curve> PCurv;
       TopOpeBRepDS_Curve   Crv;
       if (isfirst)
       {
@@ -701,56 +708,56 @@ void ChFi3d_Builder::PerformSingularCorner(const Standard_Integer Index)
 
 //=================================================================================================
 
-void ChFi3d_Builder::PerformFilletOnVertex(const Standard_Integer Index)
+void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
 {
 
-  ChFiDS_ListIteratorOfListOfStripe It;
-  Handle(ChFiDS_Stripe)             stripe;
-  Handle(ChFiDS_Spine)              sp;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator It;
+  occ::handle<ChFiDS_Stripe>             stripe;
+  occ::handle<ChFiDS_Spine>              sp;
   const TopoDS_Vertex&              Vtx = myVDataMap.FindKey(Index);
 
-  Handle(ChFiDS_SurfData) Fd;
-  Standard_Integer        i;
-  Standard_Boolean        nondegenere      = Standard_True;
-  Standard_Boolean        toujoursdegenere = Standard_True;
-  Standard_Boolean        isfirst          = Standard_False;
+  occ::handle<ChFiDS_SurfData> Fd;
+  int        i;
+  bool        nondegenere      = true;
+  bool        toujoursdegenere = true;
+  bool        isfirst          = false;
   for (It.Initialize(myVDataMap(Index)), i = 0; It.More(); It.Next(), i++)
   {
     stripe = It.Value();
     sp     = stripe->Spine();
     // SurfData and its CommonPoints,
-    Standard_Integer sens         = 0;
-    Standard_Integer num          = ChFi3d_IndexOfSurfData(Vtx, stripe, sens);
+    int sens         = 0;
+    int num          = ChFi3d_IndexOfSurfData(Vtx, stripe, sens);
     isfirst                       = (sens == 1);
     Fd                            = stripe->SetOfSurfData()->Sequence().Value(num);
     const ChFiDS_CommonPoint& CV1 = Fd->Vertex(isfirst, 1);
     const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst, 2);
     // Is it always degenerated ?
     if (CV1.Point().IsEqual(CV2.Point(), 0))
-      nondegenere = Standard_False;
+      nondegenere = false;
     else
-      toujoursdegenere = Standard_False;
+      toujoursdegenere = false;
   }
 
   // calcul du nombre de faces = nombre d'aretes
-  /*  TopTools_ListIteratorOfListOfShape ItF,JtF,ItE;
-    Standard_Integer nbf = 0, jf = 0;
+  /*  NCollection_List<TopoDS_Shape>::Iterator ItF,JtF,ItE;
+    int nbf = 0, jf = 0;
     for (ItF.Initialize(myVFMap(Vtx)); ItF.More(); ItF.Next()){
       jf++;
-      Standard_Integer kf = 1;
+      int kf = 1;
       const TopoDS_Shape& cur = ItF.Value();
       for (JtF.Initialize(myVFMap(Vtx)); JtF.More() && (kf < jf); JtF.Next(), kf++){
         if(cur.IsSame(JtF.Value())) break;
       }
       if(kf == jf) nbf++;
     }
-    Standard_Integer nba=myVEMap(Vtx).Extent();
+    int nba=myVEMap(Vtx).Extent();
     for (ItE.Initialize(myVEMap(Vtx)); ItE.More(); ItE.Next()){
       const TopoDS_Edge& cur = TopoDS::Edge(ItE.Value());
       if (BRep_Tool::Degenerated(cur)) nba--;
     }
     nba=nba/2;*/
-  Standard_Integer nba = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap);
+  int nba = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap);
 
   if (nondegenere)
   { // Normal processing
@@ -854,14 +861,14 @@ void ChFi3d_Builder::PerformFilletOnVertex(const Standard_Integer Index)
 
 void ChFi3d_Builder::Reset()
 {
-  done = Standard_False;
+  done = false;
   myVDataMap.Clear();
   myRegul.Clear();
   myEVIMap.Clear();
   badstripes.Clear();
   badvertices.Clear();
 
-  ChFiDS_ListIteratorOfListOfStripe itel;
+  NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
   for (itel.Initialize(myListStripe); itel.More();)
   {
     if (!itel.Value()->Spine().IsNull())
@@ -876,7 +883,7 @@ void ChFi3d_Builder::Reset()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& ChFi3d_Builder::Generated(const TopoDS_Shape& EouV)
+const NCollection_List<TopoDS_Shape>& ChFi3d_Builder::Generated(const TopoDS_Shape& EouV)
 {
   myGenerated.Clear();
   if (EouV.IsNull())
@@ -885,13 +892,13 @@ const TopTools_ListOfShape& ChFi3d_Builder::Generated(const TopoDS_Shape& EouV)
     return myGenerated;
   if (myEVIMap.IsBound(EouV))
   {
-    const TColStd_ListOfInteger&        L = myEVIMap.Find(EouV);
-    TColStd_ListIteratorOfListOfInteger IL;
+    const NCollection_List<int>&        L = myEVIMap.Find(EouV);
+    NCollection_List<int>::Iterator IL;
     for (IL.Initialize(L); IL.More(); IL.Next())
     {
-      Standard_Integer                   I  = IL.Value();
-      const TopTools_ListOfShape&        LS = myCoup->NewFaces(I);
-      TopTools_ListIteratorOfListOfShape ILS;
+      int                   I  = IL.Value();
+      const NCollection_List<TopoDS_Shape>&        LS = myCoup->NewFaces(I);
+      NCollection_List<TopoDS_Shape>::Iterator ILS;
       for (ILS.Initialize(LS); ILS.More(); ILS.Next())
       {
         myGenerated.Append(ILS.Value());

@@ -22,28 +22,28 @@
 #include <math_FunctionSample.hxx>
 #include <Standard_OutOfRange.hxx>
 
-math_FunctionSample::math_FunctionSample(const Standard_Real    A,
-                                         const Standard_Real    B,
-                                         const Standard_Integer N)
+math_FunctionSample::math_FunctionSample(const double    A,
+                                         const double    B,
+                                         const int N)
     : a(A),
       b(B),
       n(N)
 {
 }
 
-void math_FunctionSample::Bounds(Standard_Real& A, Standard_Real& B) const
+void math_FunctionSample::Bounds(double& A, double& B) const
 {
 
   A = a;
   B = b;
 }
 
-Standard_Integer math_FunctionSample::NbPoints() const
+int math_FunctionSample::NbPoints() const
 {
   return n;
 }
 
-Standard_Real math_FunctionSample::GetParameter(const Standard_Integer Index) const
+double math_FunctionSample::GetParameter(const int Index) const
 {
   Standard_OutOfRange_Raise_if((Index <= 0) || (Index > n), " ");
   return ((n - Index) * a + (Index - 1) * b) / (n - 1);

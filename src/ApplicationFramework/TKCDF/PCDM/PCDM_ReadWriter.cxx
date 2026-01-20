@@ -27,7 +27,9 @@
 #include <Storage_TypeData.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <UTL.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReadWriter, Standard_Transient)
@@ -40,7 +42,7 @@ static TCollection_ExtendedString TryXmlDriverType(Standard_IStream& theIStream)
 
 //=================================================================================================
 
-void PCDM_ReadWriter::Open(const Handle(Storage_BaseDriver)& aDriver,
+void PCDM_ReadWriter::Open(const occ::handle<Storage_BaseDriver>& aDriver,
                            const TCollection_ExtendedString& aFileName,
                            const Storage_OpenMode            aMode)
 {
@@ -68,22 +70,22 @@ void PCDM_ReadWriter::Open(const Handle(Storage_BaseDriver)& aDriver,
 
 //=================================================================================================
 
-Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader(const TCollection_ExtendedString&)
+occ::handle<PCDM_ReadWriter> PCDM_ReadWriter::Reader(const TCollection_ExtendedString&)
 {
   return (new PCDM_ReadWriter_1);
 }
 
 //=================================================================================================
 
-Handle(PCDM_ReadWriter) PCDM_ReadWriter::Writer()
+occ::handle<PCDM_ReadWriter> PCDM_ReadWriter::Writer()
 {
   return (new PCDM_ReadWriter_1);
 }
 
 //=================================================================================================
 
-void PCDM_ReadWriter::WriteFileFormat(const Handle(Storage_Data)& aData,
-                                      const Handle(CDM_Document)& aDocument)
+void PCDM_ReadWriter::WriteFileFormat(const occ::handle<Storage_Data>& aData,
+                                      const occ::handle<CDM_Document>& aDocument)
 {
   TCollection_AsciiString ligne(FILE_FORMAT);
   ligne += TCollection_AsciiString(aDocument->StorageFormat(), '?');
@@ -97,31 +99,31 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(const TCollection_Extende
 {
   TCollection_ExtendedString theFormat;
 
-  Handle(Storage_BaseDriver) theFileDriver;
+  occ::handle<Storage_BaseDriver> theFileDriver;
 
   // conversion to UTF-8 is done inside
   TCollection_AsciiString theFileName(aFileName);
   if (PCDM::FileDriverType(theFileName, theFileDriver) == PCDM_TOFD_Unknown)
     return ::TryXmlDriverType(theFileName);
 
-  Standard_Boolean theFileIsOpen(Standard_False);
+  bool theFileIsOpen(false);
   try
   {
     OCC_CATCH_SIGNALS
 
     Open(theFileDriver, aFileName, Storage_VSRead);
-    theFileIsOpen = Standard_True;
+    theFileIsOpen = true;
     Storage_HeaderData hd;
     hd.Read(theFileDriver);
-    const TColStd_SequenceOfAsciiString& refUserInfo = hd.UserInfo();
-    Standard_Boolean                     found       = Standard_False;
-    for (Standard_Integer i = 1; !found && i <= refUserInfo.Length(); i++)
+    const NCollection_Sequence<TCollection_AsciiString>& refUserInfo = hd.UserInfo();
+    bool                     found       = false;
+    for (int i = 1; !found && i <= refUserInfo.Length(); i++)
     {
       if (refUserInfo(i).Search(FILE_FORMAT) != -1)
       {
-        found = Standard_True;
+        found = true;
         theFormat =
-          TCollection_ExtendedString(refUserInfo(i).Token(" ", 2).ToCString(), Standard_True);
+          TCollection_ExtendedString(refUserInfo(i).Token(" ", 2).ToCString(), true);
       }
     }
     if (!found)
@@ -146,11 +148,11 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(const TCollection_Extende
 //=================================================================================================
 
 TCollection_ExtendedString PCDM_ReadWriter::FileFormat(Standard_IStream&     theIStream,
-                                                       Handle(Storage_Data)& theData)
+                                                       occ::handle<Storage_Data>& theData)
 {
   TCollection_ExtendedString aFormat;
 
-  Handle(Storage_BaseDriver) aFileDriver;
+  occ::handle<Storage_BaseDriver> aFileDriver;
   if (PCDM::FileDriverType(theIStream, aFileDriver) == PCDM_TOFD_XmlFile)
   {
     return ::TryXmlDriverType(theIStream);
@@ -163,13 +165,13 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(Standard_IStream&     the
 
   aFileDriver->ReadCompleteInfo(theIStream, theData);
 
-  for (Standard_Integer i = 1; i <= theData->HeaderData()->UserInfo().Length(); i++)
+  for (int i = 1; i <= theData->HeaderData()->UserInfo().Length(); i++)
   {
     const TCollection_AsciiString& aLine = theData->HeaderData()->UserInfo().Value(i);
 
     if (aLine.Search(FILE_FORMAT) != -1)
     {
-      aFormat = TCollection_ExtendedString(aLine.Token(" ", 2).ToCString(), Standard_True);
+      aFormat = TCollection_ExtendedString(aLine.Token(" ", 2).ToCString(), true);
     }
   }
 
@@ -186,7 +188,7 @@ static TCollection_ExtendedString TryXmlDriverType(const TCollection_AsciiString
   TCollection_ExtendedString theFormat;
   PCDM_DOMHeaderParser       aParser;
   const char*                aDocumentElementName = "document";
-  aParser.SetStartElementName(Standard_CString(aDocumentElementName));
+  aParser.SetStartElementName(static_cast<const char*>(aDocumentElementName));
 
   // Parse the file; if there is no error or an error appears before retrieval
   // of the DocumentElement, the XML format cannot be defined
@@ -209,13 +211,13 @@ static TCollection_ExtendedString TryXmlDriverType(Standard_IStream& theIStream)
   TCollection_ExtendedString theFormat;
   PCDM_DOMHeaderParser       aParser;
   const char*                aDocumentElementName = "document";
-  aParser.SetStartElementName(Standard_CString(aDocumentElementName));
+  aParser.SetStartElementName(static_cast<const char*>(aDocumentElementName));
 
   if (theIStream.good())
   {
     // Parse the file; if there is no error or an error appears before retrieval
     // of the DocumentElement, the XML format cannot be defined
-    if (aParser.parse(theIStream, Standard_True))
+    if (aParser.parse(theIStream, true))
     {
       const LDOM_Element& anElement = aParser.GetElement();
       if (anElement.getTagName().equals(LDOMString(aDocumentElementName)))

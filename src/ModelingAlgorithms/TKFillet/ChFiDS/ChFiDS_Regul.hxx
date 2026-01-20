@@ -31,29 +31,28 @@ public:
 
   Standard_EXPORT ChFiDS_Regul();
 
-  Standard_EXPORT void SetCurve(const Standard_Integer IC);
+  Standard_EXPORT void SetCurve(const int IC);
 
-  Standard_EXPORT void SetS1(const Standard_Integer IS1,
-                             const Standard_Boolean IsFace = Standard_True);
+  Standard_EXPORT void SetS1(const int IS1,
+                             const bool IsFace = true);
 
-  Standard_EXPORT void SetS2(const Standard_Integer IS2,
-                             const Standard_Boolean IsFace = Standard_True);
+  Standard_EXPORT void SetS2(const int IS2,
+                             const bool IsFace = true);
 
-  Standard_EXPORT Standard_Boolean IsSurface1() const;
+  Standard_EXPORT bool IsSurface1() const;
 
-  Standard_EXPORT Standard_Boolean IsSurface2() const;
+  Standard_EXPORT bool IsSurface2() const;
 
-  Standard_EXPORT Standard_Integer Curve() const;
+  Standard_EXPORT int Curve() const;
 
-  Standard_EXPORT Standard_Integer S1() const;
+  Standard_EXPORT int S1() const;
 
-  Standard_EXPORT Standard_Integer S2() const;
+  Standard_EXPORT int S2() const;
 
-protected:
 private:
-  Standard_Integer icurv;
-  Standard_Integer is1;
-  Standard_Integer is2;
+  int icurv;
+  int is1;
+  int is2;
 };
 
 #endif // _ChFiDS_Regul_HeaderFile

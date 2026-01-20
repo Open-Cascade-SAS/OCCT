@@ -26,9 +26,9 @@ ChFiDS_CommonPoint::ChFiDS_CommonPoint()
       prmarc(0.0),
       prmtg(0.0),
       traarc(TopAbs_FORWARD),
-      isonarc(Standard_False),
-      isvtx(Standard_False),
-      hasvector(Standard_False)
+      isonarc(false),
+      isvtx(false),
+      hasvector(false)
 {
 }
 
@@ -37,9 +37,9 @@ ChFiDS_CommonPoint::ChFiDS_CommonPoint()
 void ChFiDS_CommonPoint::Reset()
 {
   tol       = 0.;
-  isvtx     = Standard_False;
-  isonarc   = Standard_False;
-  hasvector = Standard_False;
+  isvtx     = false;
+  isonarc   = false;
+  hasvector = false;
 }
 
 //=======================================================================
@@ -48,12 +48,12 @@ void ChFiDS_CommonPoint::Reset()
 // 30/09/1997 : PMN On n'ecrabouille plus la tolerance
 //=======================================================================
 
-void ChFiDS_CommonPoint::SetArc(const Standard_Real      Tol,
+void ChFiDS_CommonPoint::SetArc(const double      Tol,
                                 const TopoDS_Edge&       A,
-                                const Standard_Real      Param,
+                                const double      Param,
                                 const TopAbs_Orientation TArc)
 {
-  isonarc = Standard_True;
+  isonarc = true;
   if (Tol > tol)
     tol = Tol;
   arc    = A;
@@ -63,7 +63,7 @@ void ChFiDS_CommonPoint::SetArc(const Standard_Real      Tol,
 
 //=================================================================================================
 
-void ChFiDS_CommonPoint::SetParameter(const Standard_Real Param)
+void ChFiDS_CommonPoint::SetParameter(const double Param)
 {
   prmtg = Param;
 }
@@ -92,7 +92,7 @@ TopAbs_Orientation ChFiDS_CommonPoint::TransitionOnArc() const
 
 //=================================================================================================
 
-Standard_Real ChFiDS_CommonPoint::ParameterOnArc() const
+double ChFiDS_CommonPoint::ParameterOnArc() const
 {
   if (!isonarc)
   {
@@ -103,7 +103,7 @@ Standard_Real ChFiDS_CommonPoint::ParameterOnArc() const
 
 //=================================================================================================
 
-Standard_Real ChFiDS_CommonPoint::Parameter() const
+double ChFiDS_CommonPoint::Parameter() const
 {
   return prmtg;
 }

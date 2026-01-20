@@ -30,21 +30,21 @@ namespace
 struct Edge
 {
   //! Constructor. Sets edge nodes.
-  Edge(const Standard_Integer TheIdx1, const Standard_Integer TheIdx2)
+  Edge(const int TheIdx1, const int TheIdx2)
       : Idx1(std::min(TheIdx1, TheIdx2)),
         Idx2(std::max(TheIdx1, TheIdx2))
   {
   }
 
   //! Comparison operator.
-  Standard_Boolean operator<(const Edge& other) const
+  bool operator<(const Edge& other) const
   {
     if (Idx1 < other.Idx1 || (Idx1 == other.Idx1 && Idx2 < other.Idx2))
     {
-      return Standard_True;
+      return true;
     }
 
-    return Standard_False;
+    return false;
   }
 
   bool operator==(const Edge& theOther) const
@@ -53,10 +53,10 @@ struct Edge
   }
 
   //! First index. It is lower or equal than the second.
-  Standard_Integer Idx1;
+  int Idx1;
 
   //! Second index.
-  Standard_Integer Idx2;
+  int Idx2;
 };
 } // namespace
 
@@ -87,19 +87,19 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   if (myMesh.IsNull() || myMesh->NbNodes() == 0 || myMesh->NbTriangles() == 0)
     return;
 
-  const Standard_Integer aNbNodes     = myMesh->NbNodes();
-  const Standard_Integer aNbTriangles = myMesh->NbTriangles();
+  const int aNbNodes     = myMesh->NbNodes();
+  const int aNbTriangles = myMesh->NbTriangles();
 
   // We are going to have three loops: iterate once over nodes and iterate twice
   // over triangles of input mesh.
   Message_ProgressScope aPS(theRange,
                             "Per-facet shape construction",
-                            Standard_Real(aNbNodes + 2 * aNbTriangles));
+                            double(aNbNodes + 2 * aNbTriangles));
 
   // Build shared vertices.
-  NCollection_IndexedDataMap<Standard_Integer, TopoDS_Vertex> aPnt2VertexMap;
+  NCollection_IndexedDataMap<int, TopoDS_Vertex> aPnt2VertexMap;
 
-  for (Standard_Integer i = 1; i <= aNbNodes; ++i)
+  for (int i = 1; i <= aNbNodes; ++i)
   {
     aPS.Next();
     if (aPS.UserBreak())
@@ -112,13 +112,13 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
 
   // Build shared edges.
   NCollection_IndexedDataMap<Edge, TopoDS_Edge> anEdgeToTEgeMap;
-  for (Standard_Integer i = 1; i <= aNbTriangles; ++i)
+  for (int i = 1; i <= aNbTriangles; ++i)
   {
     aPS.Next();
     if (aPS.UserBreak())
       return;
 
-    Standard_Integer     anIdx[3];
+    int     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
@@ -129,9 +129,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     const gp_Pnt        aP1 = myMesh->Node(anIdx[0]);
     const gp_Pnt        aP2 = myMesh->Node(anIdx[1]);
     const gp_Pnt        aP3 = myMesh->Node(anIdx[2]);
-    const Standard_Real aD1 = aP1.SquareDistance(aP2);
-    const Standard_Real aD2 = aP1.SquareDistance(aP3);
-    const Standard_Real aD3 = aP2.SquareDistance(aP3);
+    const double aD1 = aP1.SquareDistance(aP2);
+    const double aD2 = aP1.SquareDistance(aP3);
+    const double aD3 = aP2.SquareDistance(aP3);
     if (aD1 < gp::Resolution() || aD2 < gp::Resolution() || aD3 < gp::Resolution())
     {
       continue;
@@ -173,26 +173,26 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   TopoDS_Compound aResult;
   BRep_Builder    aBB;
   aBB.MakeCompound(aResult);
-  for (Standard_Integer i = 1; i <= aNbTriangles; ++i)
+  for (int i = 1; i <= aNbTriangles; ++i)
   {
     aPS.Next();
     if (aPS.UserBreak())
       return;
 
-    Standard_Integer     anIdx[3];
+    int     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
     const Edge             aMeshEdge1(anIdx[0], anIdx[1]);
     const Edge             aMeshEdge2(anIdx[1], anIdx[2]);
     const Edge             aMeshEdge3(anIdx[2], anIdx[0]);
-    const Standard_Boolean isReversed1 = anIdx[1] < anIdx[0];
-    const Standard_Boolean isReversed2 = anIdx[2] < anIdx[1];
-    const Standard_Boolean isReversed3 = anIdx[0] < anIdx[2];
+    const bool isReversed1 = anIdx[1] < anIdx[0];
+    const bool isReversed2 = anIdx[2] < anIdx[1];
+    const bool isReversed3 = anIdx[0] < anIdx[2];
 
     // Edges can be skipped in case of mesh defects - topologically or geometrically
     // degenerated triangles.
-    const Standard_Boolean aHasAllEdges = anEdgeToTEgeMap.Contains(aMeshEdge1)
+    const bool aHasAllEdges = anEdgeToTEgeMap.Contains(aMeshEdge1)
                                           && anEdgeToTEgeMap.Contains(aMeshEdge2)
                                           && anEdgeToTEgeMap.Contains(aMeshEdge3);
     if (!aHasAllEdges)

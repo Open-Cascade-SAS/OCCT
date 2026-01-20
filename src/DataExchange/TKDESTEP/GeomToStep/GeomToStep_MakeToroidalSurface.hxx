@@ -36,14 +36,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeToroidalSurface(
-    const Handle(Geom_ToroidalSurface)& TorSurf,
+    const occ::handle<Geom_ToroidalSurface>& TorSurf,
     const StepData_Factors&             theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_ToroidalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_ToroidalSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_ToroidalSurface) theToroidalSurface;
+  occ::handle<StepGeom_ToroidalSurface> theToroidalSurface;
 };
 
 #endif // _GeomToStep_MakeToroidalSurface_HeaderFile

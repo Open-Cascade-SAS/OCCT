@@ -42,7 +42,7 @@ public:
   //! Example : OSD_Disk myDisk ("/tmp")
   //! Initializes a disk object with the mounted
   //! file associated to /tmp.
-  Standard_EXPORT OSD_Disk(const Standard_CString PathName);
+  Standard_EXPORT OSD_Disk(const char* const PathName);
 
   //! Returns disk name of <me>.
   Standard_EXPORT OSD_Path Name() const;
@@ -51,13 +51,13 @@ public:
   Standard_EXPORT void SetName(const OSD_Path& Name);
 
   //! Returns total disk capacity in 512 bytes blocks.
-  Standard_EXPORT Standard_Integer DiskSize();
+  Standard_EXPORT int DiskSize();
 
   //! Returns free available 512 bytes blocks on disk.
-  Standard_EXPORT Standard_Integer DiskFree();
+  Standard_EXPORT int DiskFree();
 
   //! Returns TRUE if an error occurs
-  Standard_Boolean Failed() const { return myError.Failed(); }
+  bool Failed() const { return myError.Failed(); }
 
   //! Resets error counter to zero
   void Reset() { myError.Reset(); }
@@ -66,7 +66,7 @@ public:
   void Perror() { myError.Perror(); }
 
   //! Returns error number if 'Failed' is TRUE.
-  Standard_Integer Error() const { return myError.Error(); }
+  int Error() const { return myError.Error(); }
 
 private:
   TCollection_AsciiString myDiskName;

@@ -24,9 +24,6 @@
 class TDF_Label;
 class AIS_InteractiveObject;
 
-class TPrsStd_PlaneDriver;
-DEFINE_STANDARD_HANDLE(TPrsStd_PlaneDriver, TPrsStd_Driver)
-
 //! An implementation of TPrsStd_Driver for planes.
 class TPrsStd_PlaneDriver : public TPrsStd_Driver
 {
@@ -39,14 +36,12 @@ public:
   //! No compute is done.
   //! Returns <True> if information was found
   //! and AISObject updated.
-  Standard_EXPORT virtual Standard_Boolean Update(const TDF_Label&               aLabel,
-                                                  Handle(AIS_InteractiveObject)& anAISObject)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Update(const TDF_Label&               aLabel,
+                                                  occ::handle<AIS_InteractiveObject>& anAISObject)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_PlaneDriver, TPrsStd_Driver)
 
-protected:
-private:
 };
 
 #endif // _TPrsStd_PlaneDriver_HeaderFile

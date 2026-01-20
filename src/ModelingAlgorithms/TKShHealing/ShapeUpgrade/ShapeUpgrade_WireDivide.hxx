@@ -39,9 +39,6 @@ class TopLoc_Location;
   #undef Status
 #endif
 
-class ShapeUpgrade_WireDivide;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
-
 //! Divides edges in the wire lying on the face or free wires or
 //! free edges with a criterion.
 //! Splits 3D curve and pcurve(s) of the edge on the face.
@@ -64,7 +61,7 @@ public:
   Standard_EXPORT void Init(const TopoDS_Wire& W, const TopoDS_Face& F);
 
   //! Initializes by wire and surface
-  Standard_EXPORT void Init(const TopoDS_Wire& W, const Handle(Geom_Surface)& S);
+  Standard_EXPORT void Init(const TopoDS_Wire& W, const occ::handle<Geom_Surface>& S);
 
   //! Loads working wire
   Standard_EXPORT void Load(const TopoDS_Wire& W);
@@ -76,10 +73,10 @@ public:
   Standard_EXPORT void SetFace(const TopoDS_Face& F);
 
   //! Sets supporting surface
-  Standard_EXPORT void SetSurface(const Handle(Geom_Surface)& S);
+  Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& S);
 
   //! Sets supporting surface with location
-  Standard_EXPORT void SetSurface(const Handle(Geom_Surface)& S, const TopLoc_Location& L);
+  Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& S, const TopLoc_Location& L);
 
   //! Computes the resulting wire by splitting all the edges
   //! according to splitting criteria.
@@ -99,62 +96,62 @@ public:
   //! DONE1 - some edges were split
   //! FAIL1 - some edges have no 3d curve (skipped)
   //! FAIL2 - some edges have no pcurve (skipped)
-  Standard_EXPORT Standard_Boolean Status(const ShapeExtend_Status status) const;
+  Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
 
   //! Sets the tool for splitting 3D curves.
   Standard_EXPORT void SetSplitCurve3dTool(
-    const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool);
+    const occ::handle<ShapeUpgrade_SplitCurve3d>& splitCurve3dTool);
 
   //! Sets the tool for splitting pcurves.
   Standard_EXPORT void SetSplitCurve2dTool(
-    const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool);
+    const occ::handle<ShapeUpgrade_SplitCurve2d>& splitCurve2dTool);
 
   //! Sets the tool for Transfer parameters between curves and pcurves.
   Standard_EXPORT void SetTransferParamTool(
-    const Handle(ShapeAnalysis_TransferParameters)& TransferParam);
+    const occ::handle<ShapeAnalysis_TransferParameters>& TransferParam);
 
   //! Sets tool for splitting edge
-  Standard_EXPORT void SetEdgeDivideTool(const Handle(ShapeUpgrade_EdgeDivide)& edgeDivideTool);
+  Standard_EXPORT void SetEdgeDivideTool(const occ::handle<ShapeUpgrade_EdgeDivide>& edgeDivideTool);
 
   //! returns tool for splitting edges
-  Standard_EXPORT virtual Handle(ShapeUpgrade_EdgeDivide) GetEdgeDivideTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_EdgeDivide> GetEdgeDivideTool() const;
 
   //! Returns the tool for Transfer of parameters.
-  Standard_EXPORT virtual Handle(ShapeAnalysis_TransferParameters) GetTransferParamTool();
+  Standard_EXPORT virtual occ::handle<ShapeAnalysis_TransferParameters> GetTransferParamTool();
 
   //! Sets mode for splitting 3d curves from edges.
   //! 0 - only curve 3d from free edges.
   //! 1 - only curve 3d from shared edges.
   //! 2 - all curve 3d.
-  Standard_EXPORT void SetEdgeMode(const Standard_Integer EdgeMode);
+  Standard_EXPORT void SetEdgeMode(const int EdgeMode);
 
   //! Sets tool for fixing small curves with specified min tolerance;
   Standard_EXPORT void SetFixSmallCurveTool(
-    const Handle(ShapeUpgrade_FixSmallCurves)& FixSmallCurvesTool);
+    const occ::handle<ShapeUpgrade_FixSmallCurves>& FixSmallCurvesTool);
 
   //! Returns tool for fixing small curves
-  Standard_EXPORT Handle(ShapeUpgrade_FixSmallCurves) GetFixSmallCurveTool() const;
+  Standard_EXPORT occ::handle<ShapeUpgrade_FixSmallCurves> GetFixSmallCurveTool() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
 
 protected:
   //! Returns the tool for splitting 3D curves.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve3d) GetSplitCurve3dTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve3d> GetSplitCurve3dTool() const;
 
   //! Returns the tool for splitting pcurves.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve2d) GetSplitCurve2dTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve2d> GetSplitCurve2dTool() const;
 
   TopoDS_Face      myFace;
   TopoDS_Wire      myWire;
-  Standard_Integer myStatus;
-  Standard_Integer myEdgeMode;
+  int myStatus;
+  int myEdgeMode;
 
 private:
-  Handle(ShapeUpgrade_SplitCurve3d)        mySplitCurve3dTool;
-  Handle(ShapeUpgrade_SplitCurve2d)        mySplitCurve2dTool;
-  Handle(ShapeUpgrade_EdgeDivide)          myEdgeDivide;
-  Handle(ShapeAnalysis_TransferParameters) myTransferParamTool;
-  Handle(ShapeUpgrade_FixSmallCurves)      myFixSmallCurveTool;
+  occ::handle<ShapeUpgrade_SplitCurve3d>        mySplitCurve3dTool;
+  occ::handle<ShapeUpgrade_SplitCurve2d>        mySplitCurve2dTool;
+  occ::handle<ShapeUpgrade_EdgeDivide>          myEdgeDivide;
+  occ::handle<ShapeAnalysis_TransferParameters> myTransferParamTool;
+  occ::handle<ShapeUpgrade_FixSmallCurves>      myFixSmallCurveTool;
 };
 
 #endif // _ShapeUpgrade_WireDivide_HeaderFile

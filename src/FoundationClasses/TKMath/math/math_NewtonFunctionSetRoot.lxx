@@ -14,17 +14,17 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_NewtonFunctionSetRoot::IsSolutionReached(
+inline bool math_NewtonFunctionSetRoot::IsSolutionReached(
   math_FunctionSetWithDerivatives&)
 {
-  for (Standard_Integer i = DeltaX.Lower(); i <= DeltaX.Upper(); ++i)
+  for (int i = DeltaX.Lower(); i <= DeltaX.Upper(); ++i)
     if (std::abs(DeltaX(i)) > TolX(i) || std::abs(FValues(i)) > TolF)
-      return Standard_False;
+      return false;
 
-  return Standard_True;
+  return true;
 }
 
-inline Standard_Boolean math_NewtonFunctionSetRoot::IsDone() const
+inline bool math_NewtonFunctionSetRoot::IsDone() const
 {
   return Done;
 }
@@ -71,7 +71,7 @@ inline void math_NewtonFunctionSetRoot::FunctionSetErrors(math_Vector& Err) cons
   Err = DeltaX;
 }
 
-inline Standard_Integer math_NewtonFunctionSetRoot::NbIterations() const
+inline int math_NewtonFunctionSetRoot::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return Iter;

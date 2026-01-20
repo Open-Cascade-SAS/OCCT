@@ -44,7 +44,7 @@ public:
 
   //! <A2> is the local cartesian coordinate system of <me>.
   //! The status is "NegativeRadius" if R < 0.0
-  Standard_EXPORT gce_MakeCylinder(const gp_Ax2& A2, const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCylinder(const gp_Ax2& A2, const double Radius);
 
   //! Makes a Cylinder from gp <TheCylinder> coaxial to another
   //! Cylinder <Cylinder> and passing through a Pnt <Point>.
@@ -55,7 +55,7 @@ public:
   //! be greater or lower than zero.
   //! The radius of the result is the absolute value of the
   //! radius of <Cyl> plus <Dist>
-  Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const Standard_Real Dist);
+  Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist);
 
   //! Makes a Cylinder from gp <TheCylinder> with 3 points
   //! <P1>,<P2>,<P3>.
@@ -64,7 +64,7 @@ public:
   Standard_EXPORT gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
   //! Makes a Cylinder by its axis <Axis> and radius <Radius>.
-  Standard_EXPORT gce_MakeCylinder(const gp_Ax1& Axis, const Standard_Real Radius);
+  Standard_EXPORT gce_MakeCylinder(const gp_Ax1& Axis, const double Radius);
 
   //! Makes a Cylinder by its circular base.
   //! Warning
@@ -84,7 +84,6 @@ public:
   Standard_EXPORT const gp_Cylinder& Operator() const;
   Standard_EXPORT                    operator gp_Cylinder() const;
 
-protected:
 private:
   gp_Cylinder TheCylinder;
 };

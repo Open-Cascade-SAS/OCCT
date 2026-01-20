@@ -18,7 +18,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceMismatch.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ReportEntity.hxx>
 #include <Standard_Transient.hxx>
 #include <StepData_ESDescr.hxx>
@@ -57,19 +57,19 @@ static TCollection_AsciiString textunknown(".U.");
 
 //=================================================================================================
 
-StepData_StepWriter::StepData_StepWriter(const Handle(StepData_StepModel)& amodel)
+StepData_StepWriter::StepData_StepWriter(const occ::handle<StepData_StepModel>& amodel)
     : thecurr(StepLong),
       thefloatw(12)
 {
   themodel   = amodel;
   thelabmode = thetypmode = 0;
-  thefile                 = new TColStd_HSequenceOfHAsciiString();
-  thesect                 = Standard_False;
-  thefirst                = Standard_True;
-  themult                 = Standard_False;
-  thecomm                 = Standard_False;
+  thefile                 = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  thesect                 = false;
+  thefirst                = true;
+  themult                 = false;
+  thecomm                 = false;
   thelevel = theindval = 0;
-  theindent            = Standard_False;
+  theindent            = false;
   // Floating point format: delegated to FloatWriter
 }
 
@@ -84,14 +84,14 @@ Interface_FloatWriter& StepData_StepWriter::FloatWriter()
 
 //=================================================================================================
 
-Standard_Integer& StepData_StepWriter::LabelMode()
+int& StepData_StepWriter::LabelMode()
 {
   return thelabmode;
 }
 
 //=================================================================================================
 
-Standard_Integer& StepData_StepWriter::TypeMode()
+int& StepData_StepWriter::TypeMode()
 {
   return thetypmode;
 }
@@ -100,18 +100,18 @@ Standard_Integer& StepData_StepWriter::TypeMode()
 
 //=================================================================================================
 
-void StepData_StepWriter::SetScope(const Standard_Integer numscope, const Standard_Integer numin)
+void StepData_StepWriter::SetScope(const int numscope, const int numin)
 {
-  Standard_Integer nb = themodel->NbEntities();
+  int nb = themodel->NbEntities();
   if (numscope <= 0 || numscope > nb || numin <= 0 || numin > nb)
     throw Interface_InterfaceMismatch("StepWriter : SetScope, out of range");
   if (thescopenext.IsNull())
   {
-    thescopebeg = new TColStd_HArray1OfInteger(1, nb);
+    thescopebeg = new NCollection_HArray1<int>(1, nb);
     thescopebeg->Init(0);
-    thescopeend = new TColStd_HArray1OfInteger(1, nb);
+    thescopeend = new NCollection_HArray1<int>(1, nb);
     thescopeend->Init(0);
-    thescopenext = new TColStd_HArray1OfInteger(1, nb);
+    thescopenext = new NCollection_HArray1<int>(1, nb);
     thescopenext->Init(0);
   }
   else if (thescopenext->Value(numin) != 0)
@@ -125,7 +125,7 @@ void StepData_StepWriter::SetScope(const Standard_Integer numscope, const Standa
   thescopenext->SetValue(numin, -1); // new end of scope
   if (thescopebeg->Value(numscope) == 0)
     thescopebeg->SetValue(numscope, numin);
-  Standard_Integer lastin = thescopeend->Value(numscope);
+  int lastin = thescopeend->Value(numscope);
   if (lastin > 0)
     thescopenext->SetValue(lastin, numin);
   thescopeend->SetValue(numscope, numin);
@@ -133,10 +133,10 @@ void StepData_StepWriter::SetScope(const Standard_Integer numscope, const Standa
 
 //=================================================================================================
 
-Standard_Boolean StepData_StepWriter::IsInScope(const Standard_Integer num) const
+bool StepData_StepWriter::IsInScope(const int num) const
 {
   if (thescopenext.IsNull())
-    return Standard_False;
+    return false;
   return (thescopenext->Value(num) != 0);
 }
 
@@ -147,8 +147,8 @@ Standard_Boolean StepData_StepWriter::IsInScope(const Standard_Integer num) cons
 
 //=================================================================================================
 
-void StepData_StepWriter::SendModel(const Handle(StepData_Protocol)& protocol,
-                                    const Standard_Boolean           headeronly)
+void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protocol,
+                                    const bool           headeronly)
 {
   StepData_WriterLib lib(protocol);
 
@@ -162,11 +162,11 @@ void StepData_StepWriter::SendModel(const Handle(StepData_Protocol)& protocol,
   thenum                          = 0;
   for (header.Start(); header.More(); header.Next())
   {
-    const Handle(Standard_Transient)& anent = header.Value();
+    const occ::handle<Standard_Transient>& anent = header.Value();
 
     //   Write Entity via Lib  (similaire a SendEntity)
-    Handle(StepData_ReadWriteModule) module;
-    Standard_Integer                 CN;
+    occ::handle<StepData_ReadWriteModule> module;
+    int                 CN;
     if (lib.Select(anent, module, CN))
     {
       if (module->IsComplex(CN))
@@ -207,24 +207,24 @@ void StepData_StepWriter::SendModel(const Handle(StepData_Protocol)& protocol,
 
   // ....                    Global Errors (if any)                    ....
 
-  Handle(Interface_Check) achglob = themodel->GlobalCheck();
-  Standard_Integer        nbfails = achglob->NbFails();
+  occ::handle<Interface_Check> achglob = themodel->GlobalCheck();
+  int        nbfails = achglob->NbFails();
   if (nbfails > 0)
   {
-    Comment(Standard_True);
+    Comment(true);
     SendComment("GLOBAL FAIL MESSAGES,  recorded at Read time :");
-    for (Standard_Integer ifail = 1; ifail <= nbfails; ifail++)
+    for (int ifail = 1; ifail <= nbfails; ifail++)
     {
       SendComment(achglob->Fail(ifail));
     }
-    Comment(Standard_False);
-    NewLine(Standard_False);
+    Comment(false);
+    NewLine(false);
   }
 
   //  ....                Output Entities one by one                ....
 
-  Standard_Integer nb = themodel->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = themodel->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
     //    Main list: we don't send Entities that are in a Scope
     //    They will be sent through the Scope that contains them
@@ -246,9 +246,9 @@ void StepData_StepWriter::SendModel(const Handle(StepData_Protocol)& protocol,
 
 void StepData_StepWriter::SendHeader()
 {
-  NewLine(Standard_False);
+  NewLine(false);
   thefile->Append(new TCollection_HAsciiString("HEADER;"));
-  thesect = Standard_True;
+  thesect = true;
 }
 
 //=================================================================================================
@@ -257,9 +257,9 @@ void StepData_StepWriter::SendData()
 {
   if (thesect)
     throw Interface_InterfaceMismatch("StepWriter : Data section");
-  NewLine(Standard_False);
+  NewLine(false);
   thefile->Append(new TCollection_HAsciiString("DATA;"));
-  thesect = Standard_True;
+  thesect = true;
 }
 
 //=================================================================================================
@@ -267,7 +267,7 @@ void StepData_StepWriter::SendData()
 void StepData_StepWriter::EndSec()
 {
   thefile->Append(new TCollection_HAsciiString("ENDSEC;"));
-  thesect = Standard_False;
+  thesect = false;
 }
 
 //=================================================================================================
@@ -276,20 +276,20 @@ void StepData_StepWriter::EndFile()
 {
   if (thesect)
     throw Interface_InterfaceMismatch("StepWriter : EndFile");
-  NewLine(Standard_False);
+  NewLine(false);
   thefile->Append(new TCollection_HAsciiString("END-ISO-10303-21;"));
-  thesect = Standard_False;
+  thesect = false;
 }
 
 //  ....                        SENDING AN ENTITY                        ....
 
 //=================================================================================================
 
-void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_WriterLib& lib)
+void StepData_StepWriter::SendEntity(const int num, const StepData_WriterLib& lib)
 {
   char                       lident[20];
-  Handle(Standard_Transient) anent = themodel->Entity(num);
-  Standard_Integer           idnum = num, idtrue = 0;
+  occ::handle<Standard_Transient> anent = themodel->Entity(num);
+  int           idnum = num, idtrue = 0;
 
   //   themodel->Number(anent) and/or IdentLabel(anent)
   if (thelabmode > 0)
@@ -306,16 +306,16 @@ void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_
   //  SendIdent reused, lident has just been calculated
   thecurr.Clear();
   thecurr.Add(lident);
-  themult = Standard_False;
+  themult = false;
 
   //  ....        Processing of Potential Scope
   if (!thescopebeg.IsNull())
   {
-    Standard_Integer numin = thescopebeg->Value(num);
+    int numin = thescopebeg->Value(num);
     if (numin != 0)
     {
       SendScope();
-      for (Standard_Integer nument = numin; numin > 0; nument = numin)
+      for (int nument = numin; numin > 0; nument = numin)
       {
         SendEntity(nument, lib);
         numin = thescopenext->Value(nument);
@@ -328,12 +328,12 @@ void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_
 
   //   Write Entity via Lib
   thenum = num;
-  Handle(StepData_ReadWriteModule) module;
-  Standard_Integer                 CN;
+  occ::handle<StepData_ReadWriteModule> module;
+  int                 CN;
   if (themodel->IsRedefinedContent(num))
   {
     //    Error Entity: Write the Content + Errors as Comments
-    Handle(Interface_ReportEntity) rep = themodel->ReportEntity(num);
+    occ::handle<Interface_ReportEntity> rep = themodel->ReportEntity(num);
     DeclareAndCast(StepData_UndefinedEntity, und, rep->Content());
     if (und.IsNull())
     {
@@ -352,19 +352,19 @@ void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_
       } // thelevel --; }
     }
     EndEntity(); // BEFORE Comments
-    NewLine(Standard_False);
-    Comment(Standard_True);
+    NewLine(false);
+    Comment(true);
     if (und.IsNull())
       SendComment("   ERRONEOUS ENTITY, DATA LOST");
     SendComment("On Entity above, Fail Messages recorded at Read time :");
-    Handle(Interface_Check) ach     = rep->Check();
-    Standard_Integer        nbfails = ach->NbFails();
-    for (Standard_Integer ifail = 1; ifail <= nbfails; ifail++)
+    occ::handle<Interface_Check> ach     = rep->Check();
+    int        nbfails = ach->NbFails();
+    for (int ifail = 1; ifail <= nbfails; ifail++)
     {
       SendComment(ach->Fail(ifail));
     }
-    Comment(Standard_False);
-    NewLine(Standard_False);
+    Comment(false);
+    NewLine(false);
 
     //    Normal case
   }
@@ -404,17 +404,17 @@ void StepData_StepWriter::SendEntity(const Standard_Integer num, const StepData_
 //  ###########################################################################
 //  ##    ##    ##        TEXT CONSTITUTION FOR SENDING        ##    ##    ##
 
-//  Go to next line. Empty line not counted unless evenempty == Standard_True
+//  Go to next line. Empty line not counted unless evenempty == true
 
 //=================================================================================================
 
-void StepData_StepWriter::NewLine(const Standard_Boolean evenempty)
+void StepData_StepWriter::NewLine(const bool evenempty)
 {
   if (evenempty || thecurr.Length() > 0)
   {
     thefile->Append(thecurr.Moved());
   }
-  Standard_Integer indst = thelevel * 2;
+  int indst = thelevel * 2;
   if (theindent)
     indst += theindval;
   thecurr.SetInitial(indst);
@@ -422,32 +422,32 @@ void StepData_StepWriter::NewLine(const Standard_Boolean evenempty)
 }
 
 //  Group current line with previous; remains current except if newline
-//  == Standard_True, in which case we start a new line
+//  == true, in which case we start a new line
 //  Does nothing if: corresponding total > StepLong or start or end of entity
 
 //=================================================================================================
 
-void StepData_StepWriter::JoinLast(const Standard_Boolean)
+void StepData_StepWriter::JoinLast(const bool)
 {
   thecurr.SetKeep();
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::Indent(const Standard_Boolean onent)
+void StepData_StepWriter::Indent(const bool onent)
 {
   theindent = onent;
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::SendIdent(const Standard_Integer ident)
+void StepData_StepWriter::SendIdent(const int ident)
 {
   char lident[12];
   Sprintf(lident, "#%d =", ident);
   thecurr.Clear();
   thecurr.Add(lident);
-  themult = Standard_False;
+  themult = false;
 }
 
 //=================================================================================================
@@ -461,13 +461,13 @@ void StepData_StepWriter::SendScope()
 
 void StepData_StepWriter::SendEndscope()
 {
-  NewLine(Standard_False);
+  NewLine(false);
   thefile->Append(new TCollection_HAsciiString(textendscope));
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::Comment(const Standard_Boolean mode)
+void StepData_StepWriter::Comment(const bool mode)
 {
   if (mode && !thecomm)
     AddString(textcomm, 20);
@@ -478,7 +478,7 @@ void StepData_StepWriter::Comment(const Standard_Boolean mode)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendComment(const Handle(TCollection_HAsciiString)& text)
+void StepData_StepWriter::SendComment(const occ::handle<TCollection_HAsciiString>& text)
 {
   if (!thecomm)
     throw Interface_InterfaceMismatch("StepWriter : Comment");
@@ -487,11 +487,11 @@ void StepData_StepWriter::SendComment(const Handle(TCollection_HAsciiString)& te
 
 //=================================================================================================
 
-void StepData_StepWriter::SendComment(const Standard_CString text)
+void StepData_StepWriter::SendComment(const char* const text)
 {
   if (!thecomm)
     throw Interface_InterfaceMismatch("StepWriter : Comment");
-  AddString(text, (Standard_Integer)strlen(text));
+  AddString(text, (int)strlen(text));
 }
 
 //=================================================================================================
@@ -508,13 +508,13 @@ void StepData_StepWriter::StartEntity(const TCollection_AsciiString& atype)
     AddString(textendlist);
     AddString(" ", 1); // skl 29.01.2003
   }
-  themult = Standard_True;
+  themult = true;
   // AddString(" ",1);  //skl 29.01.2003
   AddString(atype);
   thelevel  = 0;
   theindval = thecurr.Length();
   thecurr.SetInitial(0);
-  thefirst = Standard_True;
+  thefirst = true;
   OpenSub();
 }
 
@@ -537,10 +537,10 @@ void StepData_StepWriter::EndComplex()
 //=================================================================================================
 
 void StepData_StepWriter::SendField(const StepData_Field&          fild,
-                                    const Handle(StepData_PDescr)& descr)
+                                    const occ::handle<StepData_PDescr>& descr)
 {
-  Standard_Boolean done = Standard_True;
-  Standard_Integer kind = fild.Kind(Standard_False); // valeur interne
+  bool done = true;
+  int kind = fild.Kind(false); // valeur interne
 
   if (kind == 16)
   {
@@ -576,20 +576,20 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
       Send(fild.Entity());
       break;
     case 8:
-      done = Standard_False;
+      done = false;
       break;
     case 9:
       SendDerived();
       break;
     default:
-      done = Standard_False;
+      done = false;
       break;
   }
   if (done)
     return;
 
   //  What remains: the arrays ...
-  Standard_Integer arity = fild.Arity();
+  int arity = fild.Arity();
   if (arity == 0)
   {
     SendUndef();
@@ -598,11 +598,11 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
   if (arity == 1)
   {
     OpenSub();
-    Standard_Integer i, low = fild.Lower(), up = low + fild.Length() - 1;
+    int i, low = fild.Lower(), up = low + fild.Length() - 1;
     for (i = low; i <= up; i++)
     {
       kind = fild.ItemKind(i);
-      done = Standard_True;
+      done = true;
       switch (kind)
       {
         case 0:
@@ -631,7 +631,7 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
           break;
         default:
           SendUndef();
-          done = Standard_False;
+          done = false;
           break; // ANORMAL
       }
     }
@@ -641,15 +641,15 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
   if (arity == 2)
   {
     OpenSub();
-    Standard_Integer j, low1 = fild.Lower(1), up1 = low1 + fild.Length(1) - 1;
+    int j, low1 = fild.Lower(1), up1 = low1 + fild.Length(1) - 1;
     for (j = low1; j <= up1; j++)
     {
-      Standard_Integer i = 0, low2 = fild.Lower(2), up2 = low2 + fild.Length(2) - 1;
+      int i = 0, low2 = fild.Lower(2), up2 = low2 + fild.Length(2) - 1;
       OpenSub();
       for (i = low2; i <= up2; i++)
       {
         kind = fild.ItemKind(i, j);
-        done = Standard_True;
+        done = true;
         switch (kind)
         {
           case 0:
@@ -678,7 +678,7 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
             break;
           default:
             SendUndef();
-            done = Standard_False;
+            done = false;
             break; // ANORMAL
         }
       }
@@ -691,22 +691,22 @@ void StepData_StepWriter::SendField(const StepData_Field&          fild,
 
 //=================================================================================================
 
-void StepData_StepWriter::SendSelect(const Handle(StepData_SelectMember)& sm,
-                                     const Handle(StepData_PDescr)& /*descr*/)
+void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& sm,
+                                     const occ::handle<StepData_PDescr>& /*descr*/)
 {
   //    SelectMember case. Process the Select then the value
   //    NB: current processing non-recursive (no SELNAME(SELNAME(..)) )
-  Standard_Boolean selname = Standard_False;
+  bool selname = false;
   if (sm.IsNull())
     return; // ??
   if (sm->HasName())
   {
-    selname = Standard_True;
+    selname = true;
     //    SendString (sm->Name());
     //    AddString(textlist);     // SANS AJOUT DE PARAMETRE !!
     OpenTypedSub(sm->Name());
   }
-  Standard_Integer kind = sm->Kind();
+  int kind = sm->Kind();
   switch (kind)
   {
     case 0:
@@ -731,7 +731,7 @@ void StepData_StepWriter::SendSelect(const Handle(StepData_SelectMember)& sm,
       Send(sm->String());
       break;
     case 8:
-      SendArrReal(Handle(StepData_SelectArrReal)::DownCast(sm)->ArrReal());
+      SendArrReal(occ::down_cast<StepData_SelectArrReal>(sm)->ArrReal());
       break;
     default:
       break; // ??
@@ -743,13 +743,13 @@ void StepData_StepWriter::SendSelect(const Handle(StepData_SelectMember)& sm,
 //=================================================================================================
 
 void StepData_StepWriter::SendList(const StepData_FieldList&       list,
-                                   const Handle(StepData_ESDescr)& descr)
+                                   const occ::handle<StepData_ESDescr>& descr)
 {
   // start entity  ?
-  Standard_Integer i, nb = list.NbFields();
+  int i, nb = list.NbFields();
   for (i = 1; i <= nb; i++)
   {
-    Handle(StepData_PDescr) pde;
+    occ::handle<StepData_PDescr> pde;
     if (!descr.IsNull())
       pde = descr->Field(i);
     const StepData_Field& fild = list.Field(i);
@@ -766,19 +766,19 @@ void StepData_StepWriter::OpenSub()
 {
   AddParam();
   AddString(textlist);
-  thefirst = Standard_True;
+  thefirst = true;
   thelevel++;
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::OpenTypedSub(const Standard_CString subtype)
+void StepData_StepWriter::OpenTypedSub(const char* const subtype)
 {
   AddParam();
   if (subtype[0] != '\0')
-    AddString(subtype, (Standard_Integer)strlen(subtype));
+    AddString(subtype, (int)strlen(subtype));
   AddString(textlist);
-  thefirst = Standard_True;
+  thefirst = true;
   thelevel++;
 }
 
@@ -787,7 +787,7 @@ void StepData_StepWriter::OpenTypedSub(const Standard_CString subtype)
 void StepData_StepWriter::CloseSub()
 {
   AddString(textendlist);
-  thefirst = Standard_False; // the parameter following a sub-list is therefore not first
+  thefirst = false; // the parameter following a sub-list is therefore not first
   thelevel--;
 }
 
@@ -797,26 +797,26 @@ void StepData_StepWriter::AddParam()
 {
   if (!thefirst)
     AddString(textparam);
-  thefirst = Standard_False;
+  thefirst = false;
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::Send(const Standard_Integer val)
+void StepData_StepWriter::Send(const int val)
 {
   char lval[12];
   AddParam();
   Sprintf(lval, "%d", val);
-  AddString(lval, (Standard_Integer)strlen(lval));
+  AddString(lval, (int)strlen(lval));
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::Send(const Standard_Real val)
+void StepData_StepWriter::Send(const double val)
 {
   //    Floating point value, cleaned of trailing "0000" and "E+00"
   char             lval[24] = {};
-  Standard_Integer lng      = thefloatw.Write(val, lval);
+  int lng      = thefloatw.Write(val, lval);
   AddParam();
   AddString(lval, lng); // handles specific format: if needed
 }
@@ -830,7 +830,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
   AddParam();
   // Use helper function to clean text while preserving control directives
   TCollection_AsciiString aVal = CleanTextForSend(val);
-  Standard_Integer        aNn  = aVal.Length();
+  int        aNn  = aVal.Length();
 
   // Add surrounding quotes
   aVal.Insert(1, '\'');
@@ -846,7 +846,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
   else
   {
     thefile->Append(thecurr.Moved());
-    Standard_Integer anIndst = thelevel * 2;
+    int anIndst = thelevel * 2;
     if (theindent)
       anIndst += theindval;
     if (anIndst + aNn <= StepLong)
@@ -865,7 +865,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
           thecurr.FreezeInitial();
           break;
         }
-        Standard_Integer aStop = StepLong; // position of last separator
+        int aStop = StepLong; // position of last separator
         for (; aStop > 0 && aVal.Value(aStop) != ' '; aStop--)
           ;
         if (!aStop)
@@ -893,7 +893,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
 
 //=================================================================================================
 
-void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
+void StepData_StepWriter::Send(const occ::handle<Standard_Transient>& val)
 {
   char lident[20];
   //  Undefined ?
@@ -902,12 +902,12 @@ void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
     //   throw Interface_InterfaceMismatch("StepWriter : Sending Null Reference");
     thechecks.CCheck(thenum)->AddFail("Null Reference");
     SendUndef();
-    Comment(Standard_True);
+    Comment(true);
     SendComment(" NUL REF ");
-    Comment(Standard_False);
+    Comment(false);
     return;
   }
-  Standard_Integer num = themodel->Number(val);
+  int num = themodel->Number(val);
   //  String? (if not listed in the Model)
   if (num == 0)
   {
@@ -922,7 +922,7 @@ void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
     else if (val->IsKind(STANDARD_TYPE(StepData_SelectMember)))
     {
       DeclareAndCast(StepData_SelectMember, sm, val);
-      Handle(StepData_PDescr) descr; // null
+      occ::handle<StepData_PDescr> descr; // null
       SendSelect(sm, descr);
     }
     //  Otherwise, NOT NORMAL!
@@ -930,16 +930,16 @@ void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
     {
       thechecks.CCheck(thenum)->AddFail("UnknownReference");
       SendUndef();
-      Comment(Standard_True);
+      Comment(true);
       SendComment(" UNKNOWN REF ");
-      Comment(Standard_False);
+      Comment(false);
       //      throw Interface_InterfaceMismatch("StepWriter : Sending Unknown Reference");
     }
   }
   //  Normal case: a good Entity, we send its Ident.
   else
   {
-    Standard_Integer idnum = num, idtrue = 0;
+    int idnum = num, idtrue = 0;
     if (thelabmode > 0)
       idtrue = themodel->IdentLabel(val);
     if (thelabmode == 1)
@@ -951,13 +951,13 @@ void StepData_StepWriter::Send(const Handle(Standard_Transient)& val)
     else
       Sprintf(lident, "%d:#%d", idnum, idtrue);
     AddParam();
-    AddString(lident, (Standard_Integer)strlen(lident));
+    AddString(lident, (int)strlen(lident));
   }
 }
 
 //=================================================================================================
 
-void StepData_StepWriter::SendBoolean(const Standard_Boolean val)
+void StepData_StepWriter::SendBoolean(const bool val)
 {
   if (val)
     SendString(texttrue);
@@ -991,10 +991,10 @@ void StepData_StepWriter::SendString(const TCollection_AsciiString& val)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendString(const Standard_CString val)
+void StepData_StepWriter::SendString(const char* const val)
 {
   AddParam();
-  AddString(val, (Standard_Integer)strlen(val));
+  AddString(val, (int)strlen(val));
 }
 
 //  SendEnum: note, we send an Enum label ... so between .  .
@@ -1021,7 +1021,7 @@ void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendEnum(const Standard_CString val)
+void StepData_StepWriter::SendEnum(const char* const val)
 {
 
   if (val[0] == '$' && val[1] == '\0')
@@ -1035,14 +1035,14 @@ void StepData_StepWriter::SendEnum(const Standard_CString val)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendArrReal(const Handle(TColStd_HArray1OfReal)& anArr)
+void StepData_StepWriter::SendArrReal(const occ::handle<NCollection_HArray1<double>>& anArr)
 {
   AddString(textlist);
   if (anArr->Length() > 0)
   {
     // add real
     Send(anArr->Value(1));
-    for (Standard_Integer i = 2; i <= anArr->Length(); i++)
+    for (int i = 2; i <= anArr->Length(); i++)
     {
       //      AddString(textparam);
       // add real
@@ -1079,11 +1079,11 @@ void StepData_StepWriter::EndEntity()
   // clang-format on
   AddString(textendent);
   thelevel                = 0; // on garde theindval : sera traite au prochain NewLine
-  Standard_Boolean indent = theindent;
-  theindent               = Standard_False;
-  NewLine(Standard_False);
+  bool indent = theindent;
+  theindent               = false;
+  NewLine(false);
   theindent = indent;
-  themult   = Standard_False;
+  themult   = false;
   // to force indentation if necessary
 }
 
@@ -1092,12 +1092,12 @@ void StepData_StepWriter::EndEntity()
 //=================================================================================================
 
 void StepData_StepWriter::AddString(const TCollection_AsciiString& astr,
-                                    const Standard_Integer         more)
+                                    const int         more)
 {
   while (!thecurr.CanGet(astr.Length() + more))
   {
     thefile->Append(thecurr.Moved());
-    Standard_Integer indst = thelevel * 2;
+    int indst = thelevel * 2;
     if (theindent)
       indst += theindval;
     thecurr.SetInitial(indst);
@@ -1107,14 +1107,14 @@ void StepData_StepWriter::AddString(const TCollection_AsciiString& astr,
 
 //=================================================================================================
 
-void StepData_StepWriter::AddString(const Standard_CString astr,
-                                    const Standard_Integer lnstr,
-                                    const Standard_Integer more)
+void StepData_StepWriter::AddString(const char* const astr,
+                                    const int lnstr,
+                                    const int more)
 {
   while (!thecurr.CanGet(lnstr + more))
   {
     thefile->Append(thecurr.Moved());
-    Standard_Integer indst = thelevel * 2;
+    int indst = thelevel * 2;
     if (theindent)
       indst += theindval;
     thecurr.SetInitial(indst);
@@ -1133,25 +1133,25 @@ Interface_CheckIterator StepData_StepWriter::CheckList() const
 
 //=================================================================================================
 
-Standard_Integer StepData_StepWriter::NbLines() const
+int StepData_StepWriter::NbLines() const
 {
   return thefile->Length();
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepData_StepWriter::Line(const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> StepData_StepWriter::Line(const int num) const
 {
   return thefile->Value(num);
 }
 
 //=================================================================================================
 
-Standard_Boolean StepData_StepWriter::Print(Standard_OStream& S)
+bool StepData_StepWriter::Print(Standard_OStream& S)
 {
-  Standard_Boolean isGood = (S.good());
-  Standard_Integer nb     = thefile->Length();
-  for (Standard_Integer i = 1; i <= nb && isGood; i++)
+  bool isGood = (S.good());
+  int nb     = thefile->Length();
+  for (int i = 1; i <= nb && isGood; i++)
     S << thefile->Value(i)->ToCString() << "\n";
 
   S << std::flush;
@@ -1166,16 +1166,16 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
   const TCollection_AsciiString& theText)
 {
   TCollection_AsciiString aResult;
-  const Standard_Integer  aNb = theText.Length();
+  const int  aNb = theText.Length();
 
   // Process characters from beginning to end
-  for (Standard_Integer anI = 1; anI <= aNb; anI++)
+  for (int anI = 1; anI <= aNb; anI++)
   {
     const char anUncar = theText.Value(anI);
 
     // Check if we're at the start of a control directive
-    Standard_Boolean anIsDirective    = Standard_False;
-    Standard_Integer aDirectiveLength = 0;
+    bool anIsDirective    = false;
+    int aDirectiveLength = 0;
 
     if (anUncar == '\\' && anI <= aNb)
     {
@@ -1188,13 +1188,13 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
         // \X2, \X4, \X0 patterns - special control sequences
         if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
         {
-          anIsDirective    = Standard_True;
+          anIsDirective    = true;
           aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\
 
           // For \X2 and \X4, find the terminating \X0 sequence
           if (aThirdChar == '2' || aThirdChar == '4')
           {
-            Standard_Integer aJ = anI + 4;
+            int aJ = anI + 4;
             while (aJ <= aNb - 3)
             {
               if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
@@ -1217,7 +1217,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
         // Regular \X{HH}\ pattern - check for two hex characters
         if (std::isxdigit(aThirdChar) && std::isxdigit(aFourthChar))
         {
-          anIsDirective    = Standard_True;
+          anIsDirective    = true;
           aDirectiveLength = 5; // Control directive with two hex chars
         }
       }
@@ -1227,7 +1227,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
         const char aSecondChar = theText.Value(anI + 1);
         if (aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T')
         {
-          anIsDirective    = Standard_True;
+          anIsDirective    = true;
           aDirectiveLength = 3; // Simple directive pattern
         }
       }
@@ -1237,7 +1237,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
         const char aSecondChar = theText.Value(anI + 2);
         if (std::isalpha(aSecondChar))
         {
-          anIsDirective    = Standard_True;
+          anIsDirective    = true;
           aDirectiveLength = 4; // P directive with parameter
         }
       }
@@ -1246,7 +1246,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
     if (anIsDirective)
     {
       // Copy the entire directive as-is
-      for (Standard_Integer aJ = 0; aJ < aDirectiveLength; aJ++)
+      for (int aJ = 0; aJ < aDirectiveLength; aJ++)
       {
         aResult += theText.Value(anI + aJ);
       }

@@ -26,8 +26,8 @@
 
 StepData_GlobalNodeOfWriterLib::StepData_GlobalNodeOfWriterLib() {}
 
-void StepData_GlobalNodeOfWriterLib::Add(const Handle(StepData_ReadWriteModule)& amodule,
-                                         const Handle(StepData_Protocol)&        aprotocol)
+void StepData_GlobalNodeOfWriterLib::Add(const occ::handle<StepData_ReadWriteModule>& amodule,
+                                         const occ::handle<StepData_Protocol>&        aprotocol)
 {
   if (themod == amodule)
     return;
@@ -50,17 +50,17 @@ void StepData_GlobalNodeOfWriterLib::Add(const Handle(StepData_ReadWriteModule)&
     thenext->Add(amodule, aprotocol);
 }
 
-const Handle(StepData_ReadWriteModule)& StepData_GlobalNodeOfWriterLib::Module() const
+const occ::handle<StepData_ReadWriteModule>& StepData_GlobalNodeOfWriterLib::Module() const
 {
   return themod;
 }
 
-const Handle(StepData_Protocol)& StepData_GlobalNodeOfWriterLib::Protocol() const
+const occ::handle<StepData_Protocol>& StepData_GlobalNodeOfWriterLib::Protocol() const
 {
   return theprot;
 }
 
-const Handle(StepData_GlobalNodeOfWriterLib)& StepData_GlobalNodeOfWriterLib::Next() const
+const occ::handle<StepData_GlobalNodeOfWriterLib>& StepData_GlobalNodeOfWriterLib::Next() const
 {
   return thenext;
 }

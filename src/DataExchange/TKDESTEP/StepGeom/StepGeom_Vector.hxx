@@ -24,9 +24,6 @@
 class StepGeom_Direction;
 class TCollection_HAsciiString;
 
-class StepGeom_Vector;
-DEFINE_STANDARD_HANDLE(StepGeom_Vector, StepGeom_GeometricRepresentationItem)
-
 class StepGeom_Vector : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,24 +31,23 @@ public:
   //! Returns a Vector
   Standard_EXPORT StepGeom_Vector();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Direction)&       aOrientation,
-                            const Standard_Real                     aMagnitude);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Direction>&       aOrientation,
+                            const double                     aMagnitude);
 
-  Standard_EXPORT void SetOrientation(const Handle(StepGeom_Direction)& aOrientation);
+  Standard_EXPORT void SetOrientation(const occ::handle<StepGeom_Direction>& aOrientation);
 
-  Standard_EXPORT Handle(StepGeom_Direction) Orientation() const;
+  Standard_EXPORT occ::handle<StepGeom_Direction> Orientation() const;
 
-  Standard_EXPORT void SetMagnitude(const Standard_Real aMagnitude);
+  Standard_EXPORT void SetMagnitude(const double aMagnitude);
 
-  Standard_EXPORT Standard_Real Magnitude() const;
+  Standard_EXPORT double Magnitude() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Vector, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepGeom_Direction) orientation;
-  Standard_Real              magnitude;
+  occ::handle<StepGeom_Direction> orientation;
+  double              magnitude;
 };
 
 #endif // _StepGeom_Vector_HeaderFile

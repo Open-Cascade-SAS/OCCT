@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! represent shape + a list of shape
@@ -35,19 +36,18 @@ public:
   Standard_EXPORT TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape& S);
 
   Standard_EXPORT TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape&         S,
-                                                   const TopTools_ListOfShape& L);
+                                                   const NCollection_List<TopoDS_Shape>& L);
 
-  Standard_EXPORT const TopTools_ListOfShape& List() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& List() const;
 
-  Standard_EXPORT TopTools_ListOfShape& ChangeList();
+  Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeList();
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
   Standard_EXPORT TopoDS_Shape& ChangeShape();
 
-protected:
 private:
-  TopTools_ListOfShape myList;
+  NCollection_List<TopoDS_Shape> myList;
   TopoDS_Shape         myShape;
 };
 

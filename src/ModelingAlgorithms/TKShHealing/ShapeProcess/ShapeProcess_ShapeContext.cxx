@@ -29,22 +29,22 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext, ShapeProcess_Context)
 
 //=================================================================================================
 
-ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const Standard_CString file,
-                                                     const Standard_CString seq)
+ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* const file,
+                                                     const char* const seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
-      myNonManifold(Standard_False)
+      myNonManifold(false)
 {
 }
 
 //=================================================================================================
 
 ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const TopoDS_Shape&    S,
-                                                     const Standard_CString file,
-                                                     const Standard_CString seq)
+                                                     const char* const file,
+                                                     const char* const seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
-      myNonManifold(Standard_False)
+      myNonManifold(false)
 {
   Init(S);
 }
@@ -75,21 +75,21 @@ const TopoDS_Shape& ShapeProcess_ShapeContext::Result() const
 
 //=================================================================================================
 
-const TopTools_DataMapOfShapeShape& ShapeProcess_ShapeContext::Map() const
+const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapeProcess_ShapeContext::Map() const
 {
   return myMap;
 }
 
 //=================================================================================================
 
-Handle(ShapeExtend_MsgRegistrator)& ShapeProcess_ShapeContext::Messages()
+occ::handle<ShapeExtend_MsgRegistrator>& ShapeProcess_ShapeContext::Messages()
 {
   return myMsg;
 }
 
 //=================================================================================================
 
-const Handle(ShapeExtend_MsgRegistrator)& ShapeProcess_ShapeContext::Messages() const
+const occ::handle<ShapeExtend_MsgRegistrator>& ShapeProcess_ShapeContext::Messages() const
 {
   return myMsg;
 }
@@ -120,11 +120,11 @@ void ShapeProcess_ShapeContext::SetResult(const TopoDS_Shape& res)
 
 /*
 #ifdef OCCT_DEBUG
-static void DumpMap (const TopTools_DataMapOfShapeShape &map)
+static void DumpMap (const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> &map)
 {
   std::cout << "----" << std::endl;
   std::cout << "Map:" << std::endl;
-  for (TopTools_DataMapIteratorOfDataMapOfShapeShape It (map); It.More(); It.Next()) {
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It (map); It.More(); It.Next()) {
     TopoDS_Shape S0 = It.Key(), S = It.Value();
     std::cout << S0.TShape()->DynamicType()->Name() << "\t" << *(void**)&S0.TShape() <<
       "     \t->    " << S.TShape()->DynamicType()->Name() << "\t" << *(void**)&S.TShape() <<
@@ -136,10 +136,10 @@ std::endl;
 */
 
 static void RecModif(const TopoDS_Shape&                       S,
-                     const TopTools_DataMapOfShapeShape&       repl,
-                     const Handle(ShapeExtend_MsgRegistrator)& msg,
-                     TopTools_DataMapOfShapeShape&             map,
-                     Handle(ShapeExtend_MsgRegistrator)&       myMsg,
+                     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       repl,
+                     const occ::handle<ShapeExtend_MsgRegistrator>& msg,
+                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
+                     occ::handle<ShapeExtend_MsgRegistrator>&       myMsg,
                      const TopAbs_ShapeEnum                    until)
 {
   TopoDS_Shape r = S;
@@ -154,9 +154,9 @@ static void RecModif(const TopoDS_Shape&                       S,
   {
     TopoDS_Shape res = r;
 
-    if (repl.IsBound(r.Located(aShLoc, Standard_False)))
+    if (repl.IsBound(r.Located(aShLoc, false)))
     {
-      res = repl.Find(r.Located(aShLoc, Standard_False));
+      res = repl.Find(r.Located(aShLoc, false));
       // it is supposed that map is created for r having FORWARD orientation
       // hence, if it is reversed, result should be reversed too
       // INTERNAL or EXTERNAL orientations are not allowed
@@ -170,9 +170,9 @@ static void RecModif(const TopoDS_Shape&                       S,
     {
       TopoDS_Shape result = r.EmptyCopied();
       result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
-      Standard_Boolean modif = Standard_False;
+      bool modif = false;
       BRep_Builder     B;
-      for (TopoDS_Iterator it(r, Standard_False); it.More(); it.Next())
+      for (TopoDS_Iterator it(r, false); it.More(); it.Next())
       {
         const TopoDS_Shape& sh = it.Value();
         if (repl.IsBound(sh))
@@ -180,7 +180,7 @@ static void RecModif(const TopoDS_Shape&                       S,
           const TopoDS_Shape& newsh = repl.Find(sh);
           if (!newsh.IsNull())
             B.Add(result, newsh);
-          modif = Standard_True;
+          modif = true;
         }
         else
           B.Add(result, sh);
@@ -200,17 +200,17 @@ static void RecModif(const TopoDS_Shape&                       S,
   // update messages (messages must be taken from each level in the substitution map)
   if (!r.IsNull() && !myMsg.IsNull() && !msg.IsNull() && msg->MapShape().Extent() > 0)
   {
-    const ShapeExtend_DataMapOfShapeListOfMsg& msgmap = msg->MapShape();
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& msgmap = msg->MapShape();
     if (msgmap.IsBound(r))
     {
-      const Message_ListOfMsg& msglist = msgmap.Find(r);
-      for (Message_ListIteratorOfListOfMsg iter(msglist); iter.More(); iter.Next())
+      const NCollection_List<Message_Msg>& msglist = msgmap.Find(r);
+      for (NCollection_List<Message_Msg>::Iterator iter(msglist); iter.More(); iter.Next())
         myMsg->Send(S, iter.Value(), Message_Warning);
     }
     else if (msgmap.IsBound(S))
     {
-      const Message_ListOfMsg& msglist = msgmap.Find(S);
-      for (Message_ListIteratorOfListOfMsg iter(msglist); iter.More(); iter.Next())
+      const NCollection_List<Message_Msg>& msglist = msgmap.Find(S);
+      for (NCollection_List<Message_Msg>::Iterator iter(msglist); iter.More(); iter.Next())
         myMsg->Send(S, iter.Value(), Message_Warning);
     }
   }
@@ -224,8 +224,8 @@ static void RecModif(const TopoDS_Shape&                       S,
   }
 }
 
-void ShapeProcess_ShapeContext::RecordModification(const TopTools_DataMapOfShapeShape&       repl,
-                                                   const Handle(ShapeExtend_MsgRegistrator)& msg)
+void ShapeProcess_ShapeContext::RecordModification(const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       repl,
+                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
 {
   if (repl.Extent() <= 0)
     return;
@@ -240,10 +240,10 @@ void ShapeProcess_ShapeContext::RecordModification(const TopTools_DataMapOfShape
 //=================================================================================================
 
 static void RecModif(const TopoDS_Shape&                       S,
-                     const Handle(ShapeBuild_ReShape)&         repl,
-                     const Handle(ShapeExtend_MsgRegistrator)& msg,
-                     TopTools_DataMapOfShapeShape&             map,
-                     Handle(ShapeExtend_MsgRegistrator)&       myMsg,
+                     const occ::handle<ShapeBuild_ReShape>&         repl,
+                     const occ::handle<ShapeExtend_MsgRegistrator>& msg,
+                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
+                     occ::handle<ShapeExtend_MsgRegistrator>&       myMsg,
                      const TopAbs_ShapeEnum                    until)
 {
   if (S.IsNull())
@@ -258,14 +258,14 @@ static void RecModif(const TopoDS_Shape&                       S,
   if (!r.IsNull())
   {
     TopoDS_Shape res;
-    if (repl->Status(r, res, Standard_True) && res != r)
+    if (repl->Status(r, res, true) && res != r)
       map.Bind(aS, res);
 
     // Treat special case: if S was split, r will be a compound of
     // resulting shapes, recursive procedure should be applied
     else if (r.ShapeType() < S.ShapeType())
     {
-      res = repl->Apply(r, (TopAbs_ShapeEnum)((Standard_Integer)S.ShapeType() + 1));
+      res = repl->Apply(r, (TopAbs_ShapeEnum)((int)S.ShapeType() + 1));
       if (res != r)
         map.Bind(aS, res);
     }
@@ -275,7 +275,7 @@ static void RecModif(const TopoDS_Shape&                       S,
   if (!r.IsNull() && !myMsg.IsNull() && !msg.IsNull() && msg->MapShape().Extent() > 0)
   {
     TopoDS_Shape                               cur, next = r;
-    const ShapeExtend_DataMapOfShapeListOfMsg& msgmap = msg->MapShape();
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& msgmap = msg->MapShape();
     if (msgmap.IsBound(S))
       next = S;
     do
@@ -283,8 +283,8 @@ static void RecModif(const TopoDS_Shape&                       S,
       cur = next;
       if (msgmap.IsBound(cur))
       {
-        const Message_ListOfMsg& msglist = msgmap.Find(cur);
-        for (Message_ListIteratorOfListOfMsg iter(msglist); iter.More(); iter.Next())
+        const NCollection_List<Message_Msg>& msglist = msgmap.Find(cur);
+        for (NCollection_List<Message_Msg>::Iterator iter(msglist); iter.More(); iter.Next())
         {
           myMsg->Send(S, iter.Value(), Message_Warning);
         }
@@ -296,21 +296,21 @@ static void RecModif(const TopoDS_Shape&                       S,
   if (until == TopAbs_SHAPE || S.ShapeType() >= until)
     return;
 
-  for (TopoDS_Iterator it(S, Standard_False /*,Standard_False*/); it.More(); it.Next())
+  for (TopoDS_Iterator it(S, false /*,false*/); it.More(); it.Next())
   {
     RecModif(it.Value(), repl, msg, map, myMsg, until);
   }
 }
 
-void ShapeProcess_ShapeContext::RecordModification(const Handle(ShapeBuild_ReShape)&         repl,
-                                                   const Handle(ShapeExtend_MsgRegistrator)& msg)
+void ShapeProcess_ShapeContext::RecordModification(const occ::handle<ShapeBuild_ReShape>&         repl,
+                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
 {
 
   RecModif(myShape, repl, msg, myMap, myMsg, myUntil);
   if (myMap.IsBound(myShape))
   {
     myResult = myMap.Find(myShape);
-    myResult.Location(myShape.Location(), Standard_False);
+    myResult.Location(myShape.Location(), false);
   }
 #ifdef OCCT_DEBUG
 //  std::cout << "ReShape: " << std::endl; DumpMap (myMap);
@@ -319,9 +319,9 @@ void ShapeProcess_ShapeContext::RecordModification(const Handle(ShapeBuild_ReSha
 
 //=================================================================================================
 
-void ShapeProcess_ShapeContext::RecordModification(const Handle(ShapeBuild_ReShape)& repl)
+void ShapeProcess_ShapeContext::RecordModification(const occ::handle<ShapeBuild_ReShape>& repl)
 {
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   RecordModification(repl, msg);
 }
 
@@ -339,7 +339,7 @@ void ShapeProcess_ShapeContext::AddMessage(const TopoDS_Shape&   S,
 
 static void ExplodeModifier(const TopoDS_Shape&           S,
                             const BRepTools_Modifier&     repl,
-                            TopTools_DataMapOfShapeShape& map,
+                            NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map,
                             const TopAbs_ShapeEnum        until)
 {
   const TopoDS_Shape& res = repl.ModifiedShape(S);
@@ -358,21 +358,21 @@ static void ExplodeModifier(const TopoDS_Shape&           S,
 
 void ShapeProcess_ShapeContext::RecordModification(const TopoDS_Shape&                       S,
                                                    const BRepTools_Modifier&                 repl,
-                                                   const Handle(ShapeExtend_MsgRegistrator)& msg)
+                                                   const occ::handle<ShapeExtend_MsgRegistrator>& msg)
 {
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   ExplodeModifier(S, repl, map, myUntil);
   RecordModification(map, msg);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_ShapeContext::GetContinuity(const Standard_CString param,
+bool ShapeProcess_ShapeContext::GetContinuity(const char* const param,
                                                           GeomAbs_Shape&         cont) const
 {
   TCollection_AsciiString str;
   if (!GetString(param, str))
-    return Standard_False;
+    return false;
 
   str.LeftAdjust();
   str.RightAdjust();
@@ -393,13 +393,13 @@ Standard_Boolean ShapeProcess_ShapeContext::GetContinuity(const Standard_CString
   else if (str.IsEqual("CN"))
     cont = GeomAbs_CN;
   else
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const Standard_CString param,
+GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char* const param,
                                                        const GeomAbs_Shape    def) const
 {
   GeomAbs_Shape val;
@@ -410,8 +410,8 @@ GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const Standard_CString pa
 
 void ShapeProcess_ShapeContext::PrintStatistics() const
 {
-  Standard_Integer SS = 0, SN = 0, FF = 0, FS = 0, FN = 0;
-  for (TopTools_DataMapIteratorOfDataMapOfShapeShape It(myMap); It.More(); It.Next())
+  int SS = 0, SN = 0, FF = 0, FS = 0, FN = 0;
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(myMap); It.More(); It.Next())
   {
     TopoDS_Shape keyshape = It.Key(), valueshape = It.Value();
     if (keyshape.ShapeType() == TopAbs_SHELL)
@@ -457,9 +457,9 @@ void ShapeProcess_ShapeContext::PrintStatistics() const
   Messenger()->Send(EPMSG150, Message_Info);
 
   // preparation ratio
-  Standard_Real    SPR = 1, FPR = 1;
-  Standard_Integer STotalR = SS, FTotalR = FF + FS;
-  Standard_Integer NbS = STotalR + SN, NbF = FTotalR + FN;
+  double    SPR = 1, FPR = 1;
+  int STotalR = SS, FTotalR = FF + FS;
+  int NbS = STotalR + SN, NbF = FTotalR + FN;
   if (NbS > 0)
     SPR = 1. * (NbS - SN) / NbS;
   if (NbF > 0)
@@ -467,9 +467,9 @@ void ShapeProcess_ShapeContext::PrintStatistics() const
   Message_Msg PMSG200("PrResult.Print.MSG200"); // Preparation ratio:
   Messenger()->Send(PMSG200, Message_Info);
   Message_Msg PMSG205("PrResult.Print.MSG205"); //  Shells: %d per cent
-  PMSG205.Arg((Standard_Integer)(100. * SPR));
+  PMSG205.Arg((int)(100. * SPR));
   Messenger()->Send(PMSG205, Message_Info);
   Message_Msg PMSG210("PrResult.Print.MSG210"); //  Faces : %d per cent
-  PMSG210.Arg((Standard_Integer)(100. * FPR));
+  PMSG210.Arg((int)(100. * FPR));
   Messenger()->Send(PMSG210, Message_Info);
 }

@@ -54,10 +54,10 @@ public:
   //! Creates a Windows NT window class and registers it.
   Standard_EXPORT WNT_WClass(
     const TCollection_AsciiString& theClassName,
-    const Standard_Address         theWndProc,
+    void* const         theWndProc,
     const unsigned int             theStyle,
-    const Standard_Integer         theClassExtra  = 0,
-    const Standard_Integer         theWindowExtra = 0,
+    const int         theClassExtra  = 0,
+    const int         theWindowExtra = 0,
     const Aspect_Handle            theCursor      = NULL,
     const Aspect_Handle            theIcon        = NULL,
     const TCollection_AsciiString& theMenuName    = TCollection_AsciiString::EmptyString());
@@ -66,7 +66,7 @@ public:
   Standard_EXPORT ~WNT_WClass();
 
   //! Returns address of window procedure.
-  Standard_Address WndProc() const { return myWndProc; }
+  void* WndProc() const { return myWndProc; }
 
   //! Returns a class name.
   const TCollection_AsciiString& Name() const { return myClassName; }
@@ -77,10 +77,8 @@ public:
 protected:
   TCollection_AsciiString myClassName;
   Aspect_Handle           myAppInstance;
-  Standard_Address        myWndProc;
+  void*        myWndProc;
 };
-
-DEFINE_STANDARD_HANDLE(WNT_WClass, Standard_Transient)
 
 #endif // _WIN32
 #endif // _WNT_WClass_HeaderFile

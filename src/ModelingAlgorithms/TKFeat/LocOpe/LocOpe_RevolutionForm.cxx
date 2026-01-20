@@ -29,15 +29,18 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //=================================================================================================
 
 LocOpe_RevolutionForm::LocOpe_RevolutionForm()
     : myAngle(0.0),
       myAngTra(0.0),
-      myDone(Standard_False),
-      myIsTrans(Standard_False)
+      myDone(false),
+      myIsTrans(false)
 {
 }
 
@@ -45,7 +48,7 @@ LocOpe_RevolutionForm::LocOpe_RevolutionForm()
 
 void LocOpe_RevolutionForm::Perform(const TopoDS_Shape& Base,
                                     const gp_Ax1&       Axis,
-                                    const Standard_Real Angle)
+                                    const double Angle)
 {
   myMap.Clear();
   myFirstShape.Nullify();
@@ -56,7 +59,7 @@ void LocOpe_RevolutionForm::Perform(const TopoDS_Shape& Base,
   myAngle   = Angle;
   myAxis    = Axis;
   myAngTra  = 0.;
-  myIsTrans = Standard_False;
+  myIsTrans = false;
   IntPerf();
 }
 
@@ -70,7 +73,7 @@ void LocOpe_RevolutionForm::IntPerf()
   {
     gp_Trsf T;
     T.SetRotation(myAxis, myAngTra);
-    Handle(BRepTools_TrsfModification) modbase = new BRepTools_TrsfModification(T);
+    occ::handle<BRepTools_TrsfModification> modbase = new BRepTools_TrsfModification(T);
     Modif.Init(theBase);
     Modif.Perform(modbase);
     theBase = Modif.ModifiedShape(theBase);
@@ -89,7 +92,7 @@ void LocOpe_RevolutionForm::IntPerf()
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
       if (!myMap.IsBound(edg))
       {
-        TopTools_ListOfShape thelist;
+        NCollection_List<TopoDS_Shape> thelist;
         myMap.Bind(edg, thelist);
         TopoDS_Shape desc = theRevol.Shape(edg);
         if (!desc.IsNull())
@@ -104,21 +107,21 @@ void LocOpe_RevolutionForm::IntPerf()
   else
   {
     // Cas base != FACE
-    TopTools_IndexedDataMapOfShapeListOfShape theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
-    TopTools_ListOfShape lfaces;
-    Standard_Boolean     toremove = Standard_False;
-    for (Standard_Integer i = 1; i <= theEFMap.Extent(); i++)
+    NCollection_List<TopoDS_Shape> lfaces;
+    bool     toremove = false;
+    for (int i = 1; i <= theEFMap.Extent(); i++)
     {
       const TopoDS_Shape&  edg = theEFMap.FindKey(i);
-      TopTools_ListOfShape thelist1;
+      NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = theRevol.Shape(edg);
       if (!desc.IsNull())
       {
         if (theEFMap(i).Extent() >= 2)
         {
-          toremove = Standard_True;
+          toremove = true;
         }
         else
         {
@@ -149,7 +152,7 @@ void LocOpe_RevolutionForm::IntPerf()
         const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
         if (!myMap.IsBound(edg))
         {
-          TopTools_ListOfShape thelist2;
+          NCollection_List<TopoDS_Shape> thelist2;
           myMap.Bind(edg, thelist2);
           TopoDS_Shape desc = theRevol.Shape(edg);
           if (!desc.IsNull())
@@ -177,7 +180,7 @@ void LocOpe_RevolutionForm::IntPerf()
       }
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
@@ -207,7 +210,7 @@ const TopoDS_Shape& LocOpe_RevolutionForm::LastShape() const
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_RevolutionForm::Shapes(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& LocOpe_RevolutionForm::Shapes(const TopoDS_Shape& S) const
 {
   return myMap(S);
 }

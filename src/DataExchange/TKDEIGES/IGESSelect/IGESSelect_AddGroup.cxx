@@ -13,26 +13,28 @@
 
 #include <IFSelect_ContextModif.hxx>
 #include <IGESBasic_Group.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_AddGroup.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AddGroup, IGESSelect_ModelModifier)
 
 IGESSelect_AddGroup::IGESSelect_AddGroup()
-    : IGESSelect_ModelModifier(Standard_True)
+    : IGESSelect_ModelModifier(true)
 {
 }
 
 void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&            ctx,
-                                     const Handle(IGESData_IGESModel)& target,
+                                     const occ::handle<IGESData_IGESModel>& target,
                                      Interface_CopyTool& /*TC*/) const
 {
   if (ctx.IsForAll())
@@ -41,7 +43,7 @@ void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&            ctx,
     return;
   }
   Interface_EntityIterator list = ctx.SelectedResult();
-  Standard_Integer         i = 0, nb = list.NbEntities();
+  int         i = 0, nb = list.NbEntities();
   if (nb == 0)
   {
     ctx.CCheck(0)->AddWarning("Add Group : No entity selected");
@@ -52,14 +54,14 @@ void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&            ctx,
     ctx.CCheck(0)->AddWarning("Add Group : ONE entity selected");
     return;
   }
-  Handle(IGESData_HArray1OfIGESEntity) arr = new IGESData_HArray1OfIGESEntity(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arr = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
     i++;
     arr->SetValue(i, ent);
   }
-  Handle(IGESBasic_Group) gr = new IGESBasic_Group;
+  occ::handle<IGESBasic_Group> gr = new IGESBasic_Group;
   gr->Init(arr);
   target->AddEntity(gr);
 }

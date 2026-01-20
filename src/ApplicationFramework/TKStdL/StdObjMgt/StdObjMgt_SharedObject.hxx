@@ -24,7 +24,7 @@ public:
   class AbstractPersistentBase : public Standard_Transient
   {
   public:
-    virtual Handle(Transient) Import() const = 0;
+    virtual occ::handle<Transient> Import() const = 0;
   };
 
   template <class TransientT, class Base = StdObjMgt_Persistent>
@@ -32,13 +32,13 @@ public:
   {
   public:
     //! Changes transient object
-    inline void Transient(const Handle(TransientT)& theTransient) { myTransient = theTransient; }
+    inline void Transient(const occ::handle<TransientT>& theTransient) { myTransient = theTransient; }
 
     //! Import transient object from the persistent data.
-    inline const Handle(TransientT)& Import() { return myTransient; }
+    inline const occ::handle<TransientT>& Import() { return myTransient; }
 
   protected:
-    Handle(TransientT) myTransient;
+    occ::handle<TransientT> myTransient;
   };
 
   template <class Base, class Transient, class Persistent = AbstractPersistentBase<Transient>>
@@ -49,10 +49,10 @@ public:
     typedef Persistent PersistentBase;
 
     //! Import transient object from the persistent data.
-    virtual Handle(Transient) Import() { return myTransient; }
+    virtual occ::handle<Transient> Import() { return myTransient; }
 
   public:
-    Handle(Transient) myTransient;
+    occ::handle<Transient> myTransient;
   };
 
   template <class Base, class PersistentData, class Transient = typename Base::TransientBase>
@@ -75,10 +75,10 @@ public:
     }
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const { return PersistentData().PName(); }
+    virtual const char* PName() const { return PersistentData().PName(); }
 
     //! Import transient object from the persistent data.
-    virtual Handle(Transient) Import() { return NULL; }
+    virtual occ::handle<Transient> Import() { return NULL; }
   };
 
 private:
@@ -110,20 +110,20 @@ public:
     template <class T1, class T2>
     struct DownCast
     {
-      static Handle(T1) make(const Handle(T2)& theT2) { return Handle(T1)::DownCast(theT2); }
+      static occ::handle<T1> make(const occ::handle<T2>& theT2) { return occ::down_cast<T1>(theT2); }
     };
 
     template <class T>
     struct DownCast<T, T>
     {
-      static Handle(T) make(const Handle(T)& theT) { return theT; }
+      static occ::handle<T> make(const occ::handle<T>& theT) { return theT; }
     };
 
   public:
     //! Read persistent data from a file.
     virtual void Read(StdObjMgt_ReadData& theReadData)
     {
-      Handle(Persistent) aPersistent = new Persistent;
+      occ::handle<Persistent> aPersistent = new Persistent;
       aPersistent->Read(theReadData);
       this->myPersistent = aPersistent;
     }
@@ -131,7 +131,7 @@ public:
     //! Write persistent data to a file.
     virtual void Write(StdObjMgt_WriteData& theWriteData) const
     {
-      Handle(Persistent) aPersistent =
+      occ::handle<Persistent> aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
       Standard_NoSuchObject_Raise_if(
         aPersistent.IsNull(),
@@ -142,7 +142,7 @@ public:
     //! Gets persistent child objects
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
     {
-      Handle(Persistent) aPersistent =
+      occ::handle<Persistent> aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
       Standard_NoSuchObject_Raise_if(
         aPersistent.IsNull(),
@@ -151,9 +151,9 @@ public:
     }
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const
+    virtual const char* PName() const
     {
-      Handle(Persistent) aPersistent =
+      occ::handle<Persistent> aPersistent =
         DownCast<Persistent, typename Base::PersistentBase>::make(this->myPersistent);
       Standard_NoSuchObject_Raise_if(
         aPersistent.IsNull(),

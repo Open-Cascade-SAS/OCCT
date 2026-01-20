@@ -64,13 +64,13 @@ public:
   Standard_EXPORT void SetThreadSafe(const bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
-  Standard_EXPORT void* Allocate(const size_t size) Standard_OVERRIDE;
+  Standard_EXPORT void* Allocate(const size_t size) override;
 
   //! Allocate memory with given size. Returns NULL on failure
-  Standard_EXPORT void* AllocateOptimal(const size_t size) Standard_OVERRIDE;
+  Standard_EXPORT void* AllocateOptimal(const size_t size) override;
 
   //! Free a previously allocated memory. Does nothing
-  void Free(void*) Standard_OVERRIDE
+  void Free(void*) override
   {
     // Do nothing
   }
@@ -145,6 +145,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(NCollection_IncAllocator, NCollection_BaseAllocator)
-
 #endif

@@ -38,30 +38,30 @@ Geom2dToIGES_Geom2dEntity::Geom2dToIGES_Geom2dEntity(const Geom2dToIGES_Geom2dEn
 
 //=================================================================================================
 
-void Geom2dToIGES_Geom2dEntity::SetModel(const Handle(IGESData_IGESModel)& model)
+void Geom2dToIGES_Geom2dEntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
   TheModel                 = model;
-  Standard_Real unitfactor = TheModel->GlobalSection().UnitValue();
+  double unitfactor = TheModel->GlobalSection().UnitValue();
   TheUnitFactor            = unitfactor;
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESModel) Geom2dToIGES_Geom2dEntity::GetModel() const
+occ::handle<IGESData_IGESModel> Geom2dToIGES_Geom2dEntity::GetModel() const
 {
   return TheModel;
 }
 
 //=================================================================================================
 
-void Geom2dToIGES_Geom2dEntity::SetUnit(const Standard_Real unit)
+void Geom2dToIGES_Geom2dEntity::SetUnit(const double unit)
 {
   TheUnitFactor = unit;
 }
 
 //=================================================================================================
 
-Standard_Real Geom2dToIGES_Geom2dEntity::GetUnit() const
+double Geom2dToIGES_Geom2dEntity::GetUnit() const
 {
   return TheUnitFactor;
 }

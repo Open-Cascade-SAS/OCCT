@@ -33,8 +33,8 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud, AIS_InteractiveObject)
 
 //=================================================================================================
 
-AIS_PointCloudOwner::AIS_PointCloudOwner(const Handle(AIS_PointCloud)& theOrigin)
-    : SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)theOrigin, 5),
+AIS_PointCloudOwner::AIS_PointCloudOwner(const occ::handle<AIS_PointCloud>& theOrigin)
+    : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theOrigin, 5),
       myDetPoints(new TColStd_HPackedMapOfInteger()),
       mySelPoints(new TColStd_HPackedMapOfInteger())
 {
@@ -50,26 +50,26 @@ AIS_PointCloudOwner::~AIS_PointCloudOwner()
 
 //=================================================================================================
 
-Standard_Boolean AIS_PointCloudOwner::IsForcedHilight() const
+bool AIS_PointCloudOwner::IsForcedHilight() const
 {
   return true;
 }
 
 //=================================================================================================
 
-void AIS_PointCloudOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                           const Handle(Prs3d_Drawer)&               theStyle,
-                                           const Standard_Integer)
+void AIS_PointCloudOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                           const occ::handle<Prs3d_Drawer>&               theStyle,
+                                           const int)
 {
-  Handle(AIS_PointCloud) anObj = Handle(AIS_PointCloud)::DownCast(Selectable());
+  occ::handle<AIS_PointCloud> anObj = occ::down_cast<AIS_PointCloud>(Selectable());
   if (anObj.IsNull())
   {
     throw Standard_ProgramError("Internal Error within AIS_PointCloud::PointsOwner!");
   }
 
-  const Handle(TColStd_HPackedMapOfInteger)& aMap =
+  const occ::handle<TColStd_HPackedMapOfInteger>& aMap =
     thePrsMgr->IsImmediateModeOn() ? myDetPoints : mySelPoints;
-  Handle(Prs3d_Presentation) aPrs = thePrsMgr->IsImmediateModeOn()
+  occ::handle<Prs3d_Presentation> aPrs = thePrsMgr->IsImmediateModeOn()
                                       ? anObj->GetHilightPresentation(thePrsMgr)
                                       : anObj->GetSelectPresentation(thePrsMgr);
   const Graphic3d_ZLayerId   aZLayer =
@@ -77,20 +77,20 @@ void AIS_PointCloudOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
         ? theStyle->ZLayer()
         : (thePrsMgr->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : anObj->ZLayer());
   aMap->ChangeMap().Clear();
-  for (SelectMgr_SequenceOfSelection::Iterator aSelIter(anObj->Selections()); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(anObj->Selections()); aSelIter.More();
        aSelIter.Next())
   {
-    const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
-    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+    const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
+    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())
     {
-      const Handle(SelectMgr_SensitiveEntity)& aSelEnt = aSelEntIter.Value();
+      const occ::handle<SelectMgr_SensitiveEntity>& aSelEnt = aSelEntIter.Value();
       if (aSelEnt->BaseSensitive()->OwnerId() == this)
       {
-        if (Handle(Select3D_SensitivePrimitiveArray) aSensitive =
-              Handle(Select3D_SensitivePrimitiveArray)::DownCast(aSelEnt->BaseSensitive()))
+        if (occ::handle<Select3D_SensitivePrimitiveArray> aSensitive =
+              occ::down_cast<Select3D_SensitivePrimitiveArray>(aSelEnt->BaseSensitive()))
         {
           aMap->ChangeMap() = aSensitive->LastDetectedElementMap()->Map();
           if (aSensitive->LastDetectedElement() != -1)
@@ -113,20 +113,20 @@ void AIS_PointCloudOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
     return;
   }
 
-  const Handle(Graphic3d_ArrayOfPoints) anAllPoints = anObj->GetPoints();
+  const occ::handle<Graphic3d_ArrayOfPoints> anAllPoints = anObj->GetPoints();
   if (anAllPoints.IsNull())
   {
     return;
   }
 
-  Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints(aMap->Map().Extent());
+  occ::handle<Graphic3d_ArrayOfPoints> aPoints = new Graphic3d_ArrayOfPoints(aMap->Map().Extent());
   for (TColStd_PackedMapOfInteger::Iterator aPntIter(aMap->Map()); aPntIter.More(); aPntIter.Next())
   {
     const gp_Pnt aPnt = anAllPoints->Vertice(aPntIter.Key() + 1);
     aPoints->AddVertex(aPnt);
   }
 
-  Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = aPrs->NewGroup();
   aGroup->SetGroupPrimitivesAspect(theStyle->PointAspect()->Aspect());
   aGroup->AddPrimitiveArray(aPoints);
   if (thePrsMgr->IsImmediateModeOn())
@@ -141,11 +141,11 @@ void AIS_PointCloudOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 
 //=================================================================================================
 
-void AIS_PointCloudOwner::Unhilight(const Handle(PrsMgr_PresentationManager)&,
-                                    const Standard_Integer)
+void AIS_PointCloudOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>&,
+                                    const int)
 {
-  if (Handle(Prs3d_Presentation) aPrs =
-        Selectable()->GetSelectPresentation(Handle(PrsMgr_PresentationManager)()))
+  if (occ::handle<Prs3d_Presentation> aPrs =
+        Selectable()->GetSelectPresentation(occ::handle<PrsMgr_PresentationManager>()))
   {
     aPrs->Erase();
   }
@@ -153,8 +153,8 @@ void AIS_PointCloudOwner::Unhilight(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_PointCloudOwner::Clear(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                const Standard_Integer                    theMode)
+void AIS_PointCloudOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                const int                    theMode)
 {
   SelectMgr_EntityOwner::Clear(thePrsMgr, theMode);
 }
@@ -175,7 +175,7 @@ AIS_PointCloud::AIS_PointCloud()
 
 //=================================================================================================
 
-const Handle(Graphic3d_ArrayOfPoints) AIS_PointCloud::GetPoints() const
+const occ::handle<Graphic3d_ArrayOfPoints> AIS_PointCloud::GetPoints() const
 {
   return myPoints;
 }
@@ -188,7 +188,7 @@ Bnd_Box AIS_PointCloud::GetBoundingBox() const
 }
 
 //! Auxiliary method
-static inline Bnd_Box getBoundingBox(const Handle(Graphic3d_ArrayOfPoints)& thePoints)
+static inline Bnd_Box getBoundingBox(const occ::handle<Graphic3d_ArrayOfPoints>& thePoints)
 {
   Bnd_Box aBndBox;
   if (thePoints.IsNull())
@@ -196,8 +196,8 @@ static inline Bnd_Box getBoundingBox(const Handle(Graphic3d_ArrayOfPoints)& theP
     return aBndBox;
   }
 
-  const Standard_Integer aNbVertices = thePoints->VertexNumber();
-  for (Standard_Integer aVertIter = 1; aVertIter <= aNbVertices; ++aVertIter)
+  const int aNbVertices = thePoints->VertexNumber();
+  for (int aVertIter = 1; aVertIter <= aNbVertices; ++aVertIter)
   {
     aBndBox.Add(thePoints->Vertice(aVertIter));
   }
@@ -206,7 +206,7 @@ static inline Bnd_Box getBoundingBox(const Handle(Graphic3d_ArrayOfPoints)& theP
 
 //=================================================================================================
 
-void AIS_PointCloud::SetPoints(const Handle(Graphic3d_ArrayOfPoints)& thePoints)
+void AIS_PointCloud::SetPoints(const occ::handle<Graphic3d_ArrayOfPoints>& thePoints)
 {
   myPoints = thePoints;
   myBndBox = getBoundingBox(thePoints);
@@ -214,9 +214,9 @@ void AIS_PointCloud::SetPoints(const Handle(Graphic3d_ArrayOfPoints)& thePoints)
 
 //=================================================================================================
 
-void AIS_PointCloud::SetPoints(const Handle(TColgp_HArray1OfPnt)&     theCoords,
-                               const Handle(Quantity_HArray1OfColor)& theColors,
-                               const Handle(TColgp_HArray1OfDir)&     theNormals)
+void AIS_PointCloud::SetPoints(const occ::handle<NCollection_HArray1<gp_Pnt>>&     theCoords,
+                               const occ::handle<NCollection_HArray1<Quantity_Color>>& theColors,
+                               const occ::handle<NCollection_HArray1<gp_Dir>>&     theNormals)
 {
   myPoints.Nullify();
   myBndBox.SetVoid();
@@ -225,7 +225,7 @@ void AIS_PointCloud::SetPoints(const Handle(TColgp_HArray1OfPnt)&     theCoords,
     return;
   }
 
-  const Standard_Integer aNbPoints = theCoords->Length();
+  const int aNbPoints = theCoords->Length();
   if ((!theNormals.IsNull() && theNormals->Length() != aNbPoints)
       || (!theColors.IsNull() && theColors->Length() != aNbPoints))
   {
@@ -233,14 +233,14 @@ void AIS_PointCloud::SetPoints(const Handle(TColgp_HArray1OfPnt)&     theCoords,
     return;
   }
 
-  const Standard_Boolean hasColors  = !theColors.IsNull() && theColors->Length() == aNbPoints;
-  const Standard_Boolean hasNormals = !theNormals.IsNull() && theNormals->Length() == aNbPoints;
+  const bool hasColors  = !theColors.IsNull() && theColors->Length() == aNbPoints;
+  const bool hasNormals = !theNormals.IsNull() && theNormals->Length() == aNbPoints;
 
-  const Standard_Integer aDiffColors  = hasColors ? (theColors->Lower() - theCoords->Lower()) : 0;
-  const Standard_Integer aDiffNormals = hasNormals ? (theNormals->Lower() - theCoords->Lower()) : 0;
+  const int aDiffColors  = hasColors ? (theColors->Lower() - theCoords->Lower()) : 0;
+  const int aDiffNormals = hasNormals ? (theNormals->Lower() - theCoords->Lower()) : 0;
 
   myPoints = new Graphic3d_ArrayOfPoints(aNbPoints, hasColors, hasNormals);
-  for (Standard_Integer aPntIter = theCoords->Lower(); aPntIter <= theCoords->Upper(); ++aPntIter)
+  for (int aPntIter = theCoords->Lower(); aPntIter <= theCoords->Upper(); ++aPntIter)
   {
     myPoints->AddVertex(theCoords->Value(aPntIter));
     if (hasColors)
@@ -294,8 +294,8 @@ void AIS_PointCloud::UnsetColor()
     }
     if (IsTransparent())
     {
-      Standard_Real aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
-      aMat.SetTransparency(Standard_ShortReal(aTransp));
+      double aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+      aMat.SetTransparency(float(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial(aMat, myCurrentFacingModel);
     myDrawer->ShadingAspect()->Aspect()->SetInteriorColor(aColor);
@@ -308,7 +308,7 @@ void AIS_PointCloud::UnsetColor()
 
 void AIS_PointCloud::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 {
-  hasOwnMaterial = Standard_True;
+  hasOwnMaterial = true;
 
   myDrawer->ShadingAspect()->SetMaterial(theMat, myCurrentFacingModel);
   if (HasColor())
@@ -340,26 +340,26 @@ void AIS_PointCloud::UnsetMaterial()
       myDrawer->ShadingAspect()->SetTransparency(myDrawer->Transparency(), myCurrentFacingModel);
     }
   }
-  hasOwnMaterial = Standard_False;
+  hasOwnMaterial = false;
   SynchronizeAspects();
 }
 
 //=================================================================================================
 
-void AIS_PointCloud::Compute(const Handle(PrsMgr_PresentationManager)&,
-                             const Handle(Prs3d_Presentation)& thePrs,
-                             const Standard_Integer            theMode)
+void AIS_PointCloud::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                             const occ::handle<Prs3d_Presentation>& thePrs,
+                             const int            theMode)
 {
   switch (theMode)
   {
     case AIS_PointCloud::DM_Points: {
-      const Handle(Graphic3d_ArrayOfPoints) aPoints = GetPoints();
+      const occ::handle<Graphic3d_ArrayOfPoints> aPoints = GetPoints();
       if (aPoints.IsNull())
       {
         return;
       }
 
-      Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+      occ::handle<Graphic3d_Group> aGroup = thePrs->NewGroup();
       aGroup->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
       aGroup->AddPrimitiveArray(aPoints);
       break;
@@ -379,15 +379,15 @@ void AIS_PointCloud::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void AIS_PointCloud::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                      const Standard_Integer             theMode)
+void AIS_PointCloud::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                      const int             theMode)
 {
-  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
+  occ::handle<SelectMgr_EntityOwner> anOwner = new SelectMgr_EntityOwner(this);
   switch (theMode)
   {
     case SM_Points:
     case SM_SubsetOfPoints: {
-      const Handle(Graphic3d_ArrayOfPoints) aPoints = GetPoints();
+      const occ::handle<Graphic3d_ArrayOfPoints> aPoints = GetPoints();
       if (!aPoints.IsNull() && !aPoints->Attributes().IsNull())
       {
         if (theMode == SM_SubsetOfPoints)
@@ -396,8 +396,8 @@ void AIS_PointCloud::ComputeSelection(const Handle(SelectMgr_Selection)& theSele
         }
 
         // split large point clouds into several groups
-        const Standard_Integer aNbGroups = aPoints->Attributes()->NbElements > 500000 ? 8 : 1;
-        Handle(Select3D_SensitivePrimitiveArray) aSensitive =
+        const int aNbGroups = aPoints->Attributes()->NbElements > 500000 ? 8 : 1;
+        occ::handle<Select3D_SensitivePrimitiveArray> aSensitive =
           new Select3D_SensitivePrimitiveArray(anOwner);
         aSensitive->SetDetectElements(true);
         aSensitive->SetDetectElementMap(theMode == SM_SubsetOfPoints);
@@ -426,6 +426,6 @@ void AIS_PointCloud::ComputeSelection(const Handle(SelectMgr_Selection)& theSele
   {
     return;
   }
-  Handle(Select3D_SensitiveBox) aSensBox = new Select3D_SensitiveBox(anOwner, aBndBox);
+  occ::handle<Select3D_SensitiveBox> aSensBox = new Select3D_SensitiveBox(anOwner, aBndBox);
   theSelection->Add(aSensBox);
 }

@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape& aShape, const TDF_Label& access);
 
-  Standard_Boolean More() const;
+  bool More() const;
 
   Standard_EXPORT void Next();
 
@@ -46,13 +46,12 @@ public:
 
   friend class TNaming_Tool;
 
-protected:
 private:
   Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape&               aShape,
-                                            const Handle(TNaming_UsedShapes)& Shapes);
+                                            const occ::handle<TNaming_UsedShapes>& Shapes);
 
   TNaming_PtrNode  myNode;
-  Standard_Boolean myIsNew;
+  bool myIsNew;
 };
 
 #include <TNaming_SameShapeIterator.lxx>

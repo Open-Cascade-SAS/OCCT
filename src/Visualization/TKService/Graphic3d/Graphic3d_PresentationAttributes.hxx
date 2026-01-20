@@ -58,10 +58,10 @@ public:
 
   //! Returns basic presentation transparency (0 - opaque, 1 - fully transparent), 0 by default
   //! (opaque).
-  Standard_ShortReal Transparency() const { return 1.0f - myBasicColor.Alpha(); }
+  float Transparency() const { return 1.0f - myBasicColor.Alpha(); }
 
   //! Sets basic presentation transparency (0 - opaque, 1 - fully transparent).
-  virtual void SetTransparency(const Standard_ShortReal theTranspCoef)
+  virtual void SetTransparency(const float theTranspCoef)
   {
     myBasicColor.SetAlpha(1.0f - theTranspCoef);
   }
@@ -75,36 +75,34 @@ public:
 
   //! Returns display mode, 0 by default.
   //! -1 means undefined (main display mode of presentation to be used).
-  Standard_Integer DisplayMode() const { return myDispMode; }
+  int DisplayMode() const { return myDispMode; }
 
   //! Sets display mode.
-  virtual void SetDisplayMode(const Standard_Integer theMode) { myDispMode = theMode; }
+  virtual void SetDisplayMode(const int theMode) { myDispMode = theMode; }
 
   //! Return basic presentation fill area aspect, NULL by default.
   //! When set, might be used instead of Color() property.
-  const Handle(Graphic3d_AspectFillArea3d)& BasicFillAreaAspect() const
+  const occ::handle<Graphic3d_AspectFillArea3d>& BasicFillAreaAspect() const
   {
     return myBasicFillAreaAspect;
   }
 
   //! Sets basic presentation fill area aspect.
-  virtual void SetBasicFillAreaAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect)
+  virtual void SetBasicFillAreaAspect(const occ::handle<Graphic3d_AspectFillArea3d>& theAspect)
   {
     myBasicFillAreaAspect = theAspect;
   }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
 protected:
-  Handle(Graphic3d_AspectFillArea3d) myBasicFillAreaAspect; //!< presentation fill area aspect
+  occ::handle<Graphic3d_AspectFillArea3d> myBasicFillAreaAspect; //!< presentation fill area aspect
   Quantity_ColorRGBA                 myBasicColor;          //!< presentation color
   Aspect_TypeOfHighlightMethod       myHiMethod;            //!< box or color highlighting
   Graphic3d_ZLayerId                 myZLayer;              //!< Z-layer
-  Standard_Integer                   myDispMode;            //!< display mode
+  int                   myDispMode;            //!< display mode
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_PresentationAttributes, Standard_Transient)
 
 #endif // _Graphic3d_PresentationAttributes_HeaderFile

@@ -82,7 +82,7 @@ GC_MakeMirror::GC_MakeMirror(const gp_Pln& Plane)
   TheMirror->SetMirror(Plane.Position().Ax2());
 }
 
-const Handle(Geom_Transformation)& GC_MakeMirror::Value() const
+const occ::handle<Geom_Transformation>& GC_MakeMirror::Value() const
 {
   return TheMirror;
 }

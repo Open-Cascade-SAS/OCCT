@@ -35,51 +35,51 @@ public:
 
   HLRBRep_ShapeBounds();
 
-  Standard_EXPORT HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
-                                      const Handle(Standard_Transient)&   SData,
-                                      const Standard_Integer              nbIso,
-                                      const Standard_Integer              V1,
-                                      const Standard_Integer              V2,
-                                      const Standard_Integer              E1,
-                                      const Standard_Integer              E2,
-                                      const Standard_Integer              F1,
-                                      const Standard_Integer              F2);
+  Standard_EXPORT HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                      const occ::handle<Standard_Transient>&   SData,
+                                      const int              nbIso,
+                                      const int              V1,
+                                      const int              V2,
+                                      const int              E1,
+                                      const int              E2,
+                                      const int              F1,
+                                      const int              F2);
 
-  Standard_EXPORT HLRBRep_ShapeBounds(const Handle(HLRTopoBRep_OutLiner)& S,
-                                      const Standard_Integer              nbIso,
-                                      const Standard_Integer              V1,
-                                      const Standard_Integer              V2,
-                                      const Standard_Integer              E1,
-                                      const Standard_Integer              E2,
-                                      const Standard_Integer              F1,
-                                      const Standard_Integer              F2);
+  Standard_EXPORT HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                      const int              nbIso,
+                                      const int              V1,
+                                      const int              V2,
+                                      const int              E1,
+                                      const int              E2,
+                                      const int              F1,
+                                      const int              F2);
 
-  Standard_EXPORT void Translate(const Standard_Integer NV,
-                                 const Standard_Integer NE,
-                                 const Standard_Integer NF);
+  Standard_EXPORT void Translate(const int NV,
+                                 const int NE,
+                                 const int NF);
 
-  void Shape(const Handle(HLRTopoBRep_OutLiner)& S);
+  void Shape(const occ::handle<HLRTopoBRep_OutLiner>& S);
 
-  const Handle(HLRTopoBRep_OutLiner)& Shape() const;
+  const occ::handle<HLRTopoBRep_OutLiner>& Shape() const;
 
-  void ShapeData(const Handle(Standard_Transient)& SD);
+  void ShapeData(const occ::handle<Standard_Transient>& SD);
 
-  const Handle(Standard_Transient)& ShapeData() const;
+  const occ::handle<Standard_Transient>& ShapeData() const;
 
-  void NbOfIso(const Standard_Integer nbIso);
+  void NbOfIso(const int nbIso);
 
-  Standard_Integer NbOfIso() const;
+  int NbOfIso() const;
 
-  Standard_EXPORT void Sizes(Standard_Integer& NV,
-                             Standard_Integer& NE,
-                             Standard_Integer& NF) const;
+  Standard_EXPORT void Sizes(int& NV,
+                             int& NE,
+                             int& NF) const;
 
-  Standard_EXPORT void Bounds(Standard_Integer& V1,
-                              Standard_Integer& V2,
-                              Standard_Integer& E1,
-                              Standard_Integer& E2,
-                              Standard_Integer& F1,
-                              Standard_Integer& F2) const;
+  Standard_EXPORT void Bounds(int& V1,
+                              int& V2,
+                              int& E1,
+                              int& E2,
+                              int& F1,
+                              int& F2) const;
 
   void UpdateMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& theTotMinMax)
   {
@@ -88,17 +88,16 @@ public:
 
   HLRAlgo_EdgesBlock::MinMaxIndices& MinMax() { return myMinMax; }
 
-protected:
 private:
-  Handle(HLRTopoBRep_OutLiner)      myShape;
-  Handle(Standard_Transient)        myShapeData;
-  Standard_Integer                  myNbIso;
-  Standard_Integer                  myVertStart;
-  Standard_Integer                  myVertEnd;
-  Standard_Integer                  myEdgeStart;
-  Standard_Integer                  myEdgeEnd;
-  Standard_Integer                  myFaceStart;
-  Standard_Integer                  myFaceEnd;
+  occ::handle<HLRTopoBRep_OutLiner>      myShape;
+  occ::handle<Standard_Transient>        myShapeData;
+  int                  myNbIso;
+  int                  myVertStart;
+  int                  myVertEnd;
+  int                  myEdgeStart;
+  int                  myEdgeEnd;
+  int                  myFaceStart;
+  int                  myFaceEnd;
   HLRAlgo_EdgesBlock::MinMaxIndices myMinMax;
 };
 

@@ -35,10 +35,10 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
   if (TheError == gce_Done)
   {
     gp_Circ2d             C(Cir.Value());
-    Standard_Real         Alpha1 = ElCLib::Parameter(C, P1);
-    Standard_Real         Alpha2 = ElCLib::Parameter(C, P3);
-    Handle(Geom2d_Circle) Circ   = new Geom2d_Circle(C);
-    TheArc                       = new Geom2d_TrimmedCurve(Circ, Alpha1, Alpha2, Standard_True);
+    double         Alpha1 = ElCLib::Parameter(C, P1);
+    double         Alpha2 = ElCLib::Parameter(C, P3);
+    occ::handle<Geom2d_Circle> Circ   = new Geom2d_Circle(C);
+    TheArc                       = new Geom2d_TrimmedCurve(Circ, Alpha1, Alpha2, true);
   }
 }
 
@@ -46,7 +46,7 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
                                              const gp_Vec2d& V,
                                              const gp_Pnt2d& P2)
 {
-  Standard_Boolean Sense;
+  bool Sense;
   gp_Circ2d        cir;
   gp_Lin2d         corde = gce_MakeLin2d(P1, P2);
   gp_Dir2d         dir(corde.Direction());
@@ -62,7 +62,7 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
     if (!Intp.IsEmpty())
     {
       gp_Pnt2d      center(Intp.Point(1).Value());
-      Standard_Real rad = (center.Distance(P1) + center.Distance(P2)) / 2.;
+      double rad = (center.Distance(P1) + center.Distance(P2)) / 2.;
       cir               = gce_MakeCirc2d(center, rad);
       TheError          = gce_Done;
     }
@@ -70,11 +70,11 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
 
   if (TheError == gce_Done)
   {
-    Standard_Real         Alpha1 = ElCLib::Parameter(cir, P1);
-    Standard_Real         Alpha2 = ElCLib::Parameter(cir, P2);
-    Handle(Geom2d_Circle) Circ   = new Geom2d_Circle(cir);
+    double         Alpha1 = ElCLib::Parameter(cir, P1);
+    double         Alpha2 = ElCLib::Parameter(cir, P2);
+    occ::handle<Geom2d_Circle> Circ   = new Geom2d_Circle(cir);
     gp_Vec2d              vv(dir);
-    Standard_Real         cross = V ^ vv;
+    double         cross = V ^ vv;
     Sense                       = cross > 0.;
     TheArc                      = new Geom2d_TrimmedCurve(Circ, Alpha1, Alpha2, Sense);
   }
@@ -83,37 +83,37 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
 GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
                                              const gp_Pnt2d&        P1,
                                              const gp_Pnt2d&        P2,
-                                             const Standard_Boolean Sense)
+                                             const bool Sense)
 {
-  Standard_Real         Alpha1 = ElCLib::Parameter(Circ, P1);
-  Standard_Real         Alpha2 = ElCLib::Parameter(Circ, P2);
-  Handle(Geom2d_Circle) C      = new Geom2d_Circle(Circ);
+  double         Alpha1 = ElCLib::Parameter(Circ, P1);
+  double         Alpha2 = ElCLib::Parameter(Circ, P2);
+  occ::handle<Geom2d_Circle> C      = new Geom2d_Circle(Circ);
   TheArc                       = new Geom2d_TrimmedCurve(C, Alpha1, Alpha2, Sense);
   TheError                     = gce_Done;
 }
 
 GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
                                              const gp_Pnt2d&        P,
-                                             const Standard_Real    Alpha,
-                                             const Standard_Boolean Sense)
+                                             const double    Alpha,
+                                             const bool Sense)
 {
-  Standard_Real         Alphafirst = ElCLib::Parameter(Circ, P);
-  Handle(Geom2d_Circle) C          = new Geom2d_Circle(Circ);
+  double         Alphafirst = ElCLib::Parameter(Circ, P);
+  occ::handle<Geom2d_Circle> C          = new Geom2d_Circle(Circ);
   TheArc                           = new Geom2d_TrimmedCurve(C, Alphafirst, Alpha, Sense);
   TheError                         = gce_Done;
 }
 
 GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
-                                             const Standard_Real    Alpha1,
-                                             const Standard_Real    Alpha2,
-                                             const Standard_Boolean Sense)
+                                             const double    Alpha1,
+                                             const double    Alpha2,
+                                             const bool Sense)
 {
-  Handle(Geom2d_Circle) C = new Geom2d_Circle(Circ);
+  occ::handle<Geom2d_Circle> C = new Geom2d_Circle(Circ);
   TheArc                  = new Geom2d_TrimmedCurve(C, Alpha1, Alpha2, Sense);
   TheError                = gce_Done;
 }
 
-const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfCircle::Value() const
+const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfCircle::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeArcOfCircle::Value() - no result");
   return TheArc;

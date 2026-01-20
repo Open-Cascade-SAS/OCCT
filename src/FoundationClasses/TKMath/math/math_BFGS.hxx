@@ -46,10 +46,10 @@ public:
   //! A call to the Perform method must be made after this
   //! initialization to effectively compute the minimum of the
   //! function F.
-  Standard_EXPORT math_BFGS(const Standard_Integer NbVariables,
-                            const Standard_Real    Tolerance    = 1.0e-8,
-                            const Standard_Integer NbIterations = 200,
-                            const Standard_Real    ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BFGS(const int NbVariables,
+                            const double    Tolerance    = 1.0e-8,
+                            const int NbIterations = 200,
+                            const double    ZEPS         = 1.0e-12);
 
   Standard_EXPORT virtual ~math_BFGS();
 
@@ -71,11 +71,11 @@ public:
   //! solution is found.
   //! It can be redefined in a sub-class to implement a specific test to
   //! stop the iterations.
-  Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
+  Standard_EXPORT virtual bool IsSolutionReached(
     math_MultipleVarFunctionWithGradient& F) const;
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the location vector of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
@@ -89,7 +89,7 @@ public:
 
   //! returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Minimum() const;
+  double Minimum() const;
 
   //! Returns the gradient vector at the minimum.
   //! Exception NotDone is raised if the minimum was not found.
@@ -104,7 +104,7 @@ public:
   //! Returns the number of iterations really done in the
   //! calculation of the minimum.
   //! The exception NotDone is raised if the minimum was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
@@ -115,18 +115,18 @@ protected:
   math_Status      TheStatus;
   math_Vector      TheLocation;
   math_Vector      TheGradient;
-  Standard_Real    PreviousMinimum;
-  Standard_Real    TheMinimum;
-  Standard_Real    XTol;
-  Standard_Real    EPSZ;
-  Standard_Integer nbiter;
-  Standard_Boolean myIsBoundsDefined;
+  double    PreviousMinimum;
+  double    TheMinimum;
+  double    XTol;
+  double    EPSZ;
+  int nbiter;
+  bool myIsBoundsDefined;
   math_Vector      myLeft;
   math_Vector      myRight;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer Itermax;
+  bool Done;
+  int Itermax;
 };
 
 #include <math_BFGS.lxx>

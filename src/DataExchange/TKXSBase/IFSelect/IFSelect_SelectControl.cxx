@@ -18,27 +18,27 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectControl, IFSelect_Selection)
 
-Handle(IFSelect_Selection) IFSelect_SelectControl::MainInput() const
+occ::handle<IFSelect_Selection> IFSelect_SelectControl::MainInput() const
 {
   return themain;
 }
 
-Handle(IFSelect_Selection) IFSelect_SelectControl::SecondInput() const
+occ::handle<IFSelect_Selection> IFSelect_SelectControl::SecondInput() const
 {
   return thesecond;
 }
 
-Standard_Boolean IFSelect_SelectControl::HasSecondInput() const
+bool IFSelect_SelectControl::HasSecondInput() const
 {
   return (!thesecond.IsNull());
 }
 
-void IFSelect_SelectControl::SetMainInput(const Handle(IFSelect_Selection)& sel)
+void IFSelect_SelectControl::SetMainInput(const occ::handle<IFSelect_Selection>& sel)
 {
   themain = sel;
 }
 
-void IFSelect_SelectControl::SetSecondInput(const Handle(IFSelect_Selection)& sel)
+void IFSelect_SelectControl::SetSecondInput(const occ::handle<IFSelect_Selection>& sel)
 {
   thesecond = sel;
 }

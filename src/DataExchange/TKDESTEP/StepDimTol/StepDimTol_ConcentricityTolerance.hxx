@@ -20,10 +20,6 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-class StepDimTol_ConcentricityTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_ConcentricityTolerance,
-                       StepDimTol_GeometricToleranceWithDatumReference)
-
 //! Representation of STEP entity ConcentricityTolerance
 class StepDimTol_ConcentricityTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
@@ -35,8 +31,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ConcentricityTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_ConcentricityTolerance_HeaderFile

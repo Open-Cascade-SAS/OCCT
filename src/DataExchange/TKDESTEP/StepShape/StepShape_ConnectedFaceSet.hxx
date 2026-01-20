@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_Face.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepShape_Face;
-
-class StepShape_ConnectedFaceSet;
-DEFINE_STANDARD_HANDLE(StepShape_ConnectedFaceSet, StepShape_TopologicalRepresentationItem)
 
 class StepShape_ConnectedFaceSet : public StepShape_TopologicalRepresentationItem
 {
@@ -36,22 +35,21 @@ public:
   //! Returns a ConnectedFaceSet
   Standard_EXPORT StepShape_ConnectedFaceSet();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_HArray1OfFace)&  aCfsFaces);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&  aCfsFaces);
 
-  Standard_EXPORT virtual void SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces);
+  Standard_EXPORT virtual void SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces);
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfFace) CfsFaces() const;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces() const;
 
-  Standard_EXPORT virtual Handle(StepShape_Face) CfsFacesValue(const Standard_Integer num) const;
+  Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const;
 
-  Standard_EXPORT virtual Standard_Integer NbCfsFaces() const;
+  Standard_EXPORT virtual int NbCfsFaces() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSet, StepShape_TopologicalRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfFace) cfsFaces;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> cfsFaces;
 };
 
 #endif // _StepShape_ConnectedFaceSet_HeaderFile

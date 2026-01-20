@@ -18,7 +18,7 @@
 
 //  Cycles uses the services of StrongComponants :
 //  It retains the Strong Componants which are not Single
-IFGraph_Cycles::IFGraph_Cycles(const Interface_Graph& agraph, const Standard_Boolean whole)
+IFGraph_Cycles::IFGraph_Cycles(const Interface_Graph& agraph, const bool whole)
     : IFGraph_SubPartsIterator(agraph, whole)
 {
 }
@@ -30,7 +30,7 @@ IFGraph_Cycles::IFGraph_Cycles(IFGraph_StrongComponants& subparts)
 
 void IFGraph_Cycles::Evaluate()
 {
-  IFGraph_StrongComponants complist(Model(), Standard_False);
+  IFGraph_StrongComponants complist(Model(), false);
   complist.GetFromIter(Loaded());
   for (complist.Start(); complist.More(); complist.Next())
   {

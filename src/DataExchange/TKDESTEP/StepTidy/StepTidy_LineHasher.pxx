@@ -25,7 +25,7 @@
 struct StepTidy_LineHasher
 {
   // Hashes the Line by its name and Line ratios.
-  std::size_t operator()(const Handle(StepGeom_Line)& theLine) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_Line>& theLine) const noexcept
   {
     const size_t aHashes[2]{StepTidy_CartesianPointHasher{}(theLine->Pnt()),
                             StepTidy_VectorHasher{}(theLine->Dir())};
@@ -44,8 +44,8 @@ struct StepTidy_LineHasher
   }
 
   // Compares two Lines by their names and Line ratios.
-  bool operator()(const Handle(StepGeom_Line)& theLine1,
-                  const Handle(StepGeom_Line)& theLine2) const noexcept
+  bool operator()(const occ::handle<StepGeom_Line>& theLine1,
+                  const occ::handle<StepGeom_Line>& theLine2) const noexcept
 
   {
     // Compare names.

@@ -36,7 +36,7 @@ inline void TNaming_IteratorOnShapesSet::Init(const TNaming_ShapesSet& S)
 
 //=================================================================================================
 
-inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const
+inline bool TNaming_IteratorOnShapesSet::More() const
 {
   return (myIt.More());
 }

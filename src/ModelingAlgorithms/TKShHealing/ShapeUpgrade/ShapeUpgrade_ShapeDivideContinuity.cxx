@@ -48,14 +48,14 @@ ShapeUpgrade_ShapeDivideContinuity::ShapeUpgrade_ShapeDivideContinuity(const Top
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivideContinuity::SetTolerance(const Standard_Real Tol)
+void ShapeUpgrade_ShapeDivideContinuity::SetTolerance(const double Tol)
 {
   myTolerance3d = Tol;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivideContinuity::SetTolerance2d(const Standard_Real Tol)
+void ShapeUpgrade_ShapeDivideContinuity::SetTolerance2d(const double Tol)
 {
   myTolerance2d = Tol;
 }
@@ -83,13 +83,13 @@ void ShapeUpgrade_ShapeDivideContinuity::SetSurfaceCriterion(const GeomAbs_Shape
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeDivideContinuity::GetSplitFaceTool() const
+occ::handle<ShapeUpgrade_FaceDivide> ShapeUpgrade_ShapeDivideContinuity::GetSplitFaceTool() const
 {
-  Handle(ShapeUpgrade_SplitCurve2dContinuity) theSplitCurve2dTool =
+  occ::handle<ShapeUpgrade_SplitCurve2dContinuity> theSplitCurve2dTool =
     new ShapeUpgrade_SplitCurve2dContinuity;
-  Handle(ShapeUpgrade_SplitCurve3dContinuity) theSplitCurve3dTool =
+  occ::handle<ShapeUpgrade_SplitCurve3dContinuity> theSplitCurve3dTool =
     new ShapeUpgrade_SplitCurve3dContinuity;
-  Handle(ShapeUpgrade_SplitSurfaceContinuity) theSplitSurfaceTool =
+  occ::handle<ShapeUpgrade_SplitSurfaceContinuity> theSplitSurfaceTool =
     new ShapeUpgrade_SplitSurfaceContinuity;
   theSplitCurve2dTool->SetCriterion(myCurve2dCriterion);
   theSplitCurve3dTool->SetCriterion(myCurve3dCriterion);
@@ -97,10 +97,10 @@ Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeDivideContinuity::GetSplitFace
   theSplitCurve2dTool->SetTolerance(myTolerance2d);
   theSplitCurve3dTool->SetTolerance(myTolerance3d);
   theSplitSurfaceTool->SetTolerance(myTolerance3d);
-  Handle(ShapeUpgrade_WireDivide) theSplitWireTool = new ShapeUpgrade_WireDivide;
+  occ::handle<ShapeUpgrade_WireDivide> theSplitWireTool = new ShapeUpgrade_WireDivide;
   theSplitWireTool->SetSplitCurve2dTool(theSplitCurve2dTool);
   theSplitWireTool->SetSplitCurve3dTool(theSplitCurve3dTool);
-  Handle(ShapeUpgrade_FaceDivide) theSplitFaceTool = new ShapeUpgrade_FaceDivide;
+  occ::handle<ShapeUpgrade_FaceDivide> theSplitFaceTool = new ShapeUpgrade_FaceDivide;
   theSplitFaceTool->SetSplitSurfaceTool(theSplitSurfaceTool);
   theSplitFaceTool->SetWireDivideTool(theSplitWireTool);
   return theSplitFaceTool;

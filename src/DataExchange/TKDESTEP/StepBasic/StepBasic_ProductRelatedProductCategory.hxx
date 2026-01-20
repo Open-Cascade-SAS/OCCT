@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_Product.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ProductCategory.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_Product;
-
-class StepBasic_ProductRelatedProductCategory;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductRelatedProductCategory, StepBasic_ProductCategory)
 
 class StepBasic_ProductRelatedProductCategory : public StepBasic_ProductCategory
 {
@@ -37,24 +36,23 @@ public:
   //! Returns a ProductRelatedProductCategory
   Standard_EXPORT StepBasic_ProductRelatedProductCategory();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   aName,
-                            const Standard_Boolean                    hasAdescription,
-                            const Handle(TCollection_HAsciiString)&   aDescription,
-                            const Handle(StepBasic_HArray1OfProduct)& aProducts);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   aName,
+                            const bool                    hasAdescription,
+                            const occ::handle<TCollection_HAsciiString>&   aDescription,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
 
-  Standard_EXPORT void SetProducts(const Handle(StepBasic_HArray1OfProduct)& aProducts);
+  Standard_EXPORT void SetProducts(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfProduct) Products() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> Products() const;
 
-  Standard_EXPORT Handle(StepBasic_Product) ProductsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_Product> ProductsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbProducts() const;
+  Standard_EXPORT int NbProducts() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory, StepBasic_ProductCategory)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfProduct) products;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> products;
 };
 
 #endif // _StepBasic_ProductRelatedProductCategory_HeaderFile

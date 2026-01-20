@@ -29,10 +29,10 @@ RWStepDimTol_RWStraightnessTolerance::RWStepDimTol_RWStraightnessTolerance() {}
 //=================================================================================================
 
 void RWStepDimTol_RWStraightnessTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepDimTol_StraightnessTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepDimTol_StraightnessTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "straightness_tolerance"))
@@ -40,13 +40,13 @@ void RWStepDimTol_RWStraightnessTolerance::ReadStep(
 
   // Inherited fields of GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Name;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Name;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Description;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
-  Handle(Standard_Transient) aGeometricTolerance_Magnitude;
+  occ::handle<Standard_Transient> aGeometricTolerance_Magnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -72,7 +72,7 @@ void RWStepDimTol_RWStraightnessTolerance::ReadStep(
 
 void RWStepDimTol_RWStraightnessTolerance::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepDimTol_StraightnessTolerance)& ent) const
+  const occ::handle<StepDimTol_StraightnessTolerance>& ent) const
 {
 
   // Inherited fields of GeometricTolerance
@@ -89,7 +89,7 @@ void RWStepDimTol_RWStraightnessTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWStraightnessTolerance::Share(
-  const Handle(StepDimTol_StraightnessTolerance)& ent,
+  const occ::handle<StepDimTol_StraightnessTolerance>& ent,
   Interface_EntityIterator&                       iter) const
 {
 

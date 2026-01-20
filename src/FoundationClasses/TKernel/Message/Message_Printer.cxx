@@ -30,7 +30,7 @@ Message_Printer::Message_Printer()
 
 //=================================================================================================
 
-void Message_Printer::Send(const Standard_CString theString, const Message_Gravity theGravity) const
+void Message_Printer::Send(const char* const theString, const Message_Gravity theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
@@ -73,7 +73,7 @@ void Message_Printer::SendStringStream(const Standard_SStream& theStream,
 
 //=================================================================================================
 
-void Message_Printer::SendObject(const Handle(Standard_Transient)& theObject,
+void Message_Printer::SendObject(const occ::handle<Standard_Transient>& theObject,
                                  const Message_Gravity             theGravity) const
 {
   if (!theObject.IsNull() && theGravity >= myTraceLevel)

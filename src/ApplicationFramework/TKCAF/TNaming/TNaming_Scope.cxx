@@ -23,35 +23,35 @@
 //=================================================================================================
 
 TNaming_Scope::TNaming_Scope()
-    : myWithValid(Standard_False)
+    : myWithValid(false)
 {
 }
 
 //=================================================================================================
 
-TNaming_Scope::TNaming_Scope(TDF_LabelMap& map)
+TNaming_Scope::TNaming_Scope(NCollection_Map<TDF_Label>& map)
 {
-  myWithValid = Standard_True;
+  myWithValid = true;
   myValid     = map;
 }
 
 //=================================================================================================
 
-TNaming_Scope::TNaming_Scope(const Standard_Boolean with)
+TNaming_Scope::TNaming_Scope(const bool with)
     : myWithValid(with)
 {
 }
 
 //=================================================================================================
 
-Standard_Boolean TNaming_Scope::WithValid() const
+bool TNaming_Scope::WithValid() const
 {
   return myWithValid;
 }
 
 //=================================================================================================
 
-void TNaming_Scope::WithValid(const Standard_Boolean mode)
+void TNaming_Scope::WithValid(const bool mode)
 {
   myWithValid = mode;
 }
@@ -72,11 +72,11 @@ void TNaming_Scope::Valid(const TDF_Label& L)
 
 //=================================================================================================
 
-void TNaming_Scope::ValidChildren(const TDF_Label& L, const Standard_Boolean withroot)
+void TNaming_Scope::ValidChildren(const TDF_Label& L, const bool withroot)
 {
   if (L.HasChild())
   {
-    TDF_ChildIterator itc(L, Standard_True);
+    TDF_ChildIterator itc(L, true);
     for (; itc.More(); itc.Next())
       myValid.Add(itc.Value());
   }
@@ -93,11 +93,11 @@ void TNaming_Scope::Unvalid(const TDF_Label& L)
 
 //=================================================================================================
 
-void TNaming_Scope::UnvalidChildren(const TDF_Label& L, const Standard_Boolean withroot)
+void TNaming_Scope::UnvalidChildren(const TDF_Label& L, const bool withroot)
 {
   if (L.HasChild())
   {
-    TDF_ChildIterator itc(L, Standard_True);
+    TDF_ChildIterator itc(L, true);
     for (; itc.More(); itc.Next())
       myValid.Remove(itc.Value());
   }
@@ -107,30 +107,30 @@ void TNaming_Scope::UnvalidChildren(const TDF_Label& L, const Standard_Boolean w
 
 //=================================================================================================
 
-Standard_Boolean TNaming_Scope::IsValid(const TDF_Label& L) const
+bool TNaming_Scope::IsValid(const TDF_Label& L) const
 {
   if (myWithValid)
     return myValid.Contains(L);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-const TDF_LabelMap& TNaming_Scope::GetValid() const
+const NCollection_Map<TDF_Label>& TNaming_Scope::GetValid() const
 {
   return myValid;
 }
 
 //=================================================================================================
 
-TDF_LabelMap& TNaming_Scope::ChangeValid()
+NCollection_Map<TDF_Label>& TNaming_Scope::ChangeValid()
 {
   return myValid;
 }
 
 //=================================================================================================
 
-TopoDS_Shape TNaming_Scope::CurrentShape(const Handle(TNaming_NamedShape)& NS) const
+TopoDS_Shape TNaming_Scope::CurrentShape(const occ::handle<TNaming_NamedShape>& NS) const
 {
   if (myWithValid)
     return TNaming_Tool::CurrentShape(NS, myValid);

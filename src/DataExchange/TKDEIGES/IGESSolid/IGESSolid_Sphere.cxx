@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Sphere, IGESData_IGESEntity)
 
 IGESSolid_Sphere::IGESSolid_Sphere() {}
 
-void IGESSolid_Sphere::Init(const Standard_Real aRadius, const gp_XYZ& aCenter)
+void IGESSolid_Sphere::Init(const double aRadius, const gp_XYZ& aCenter)
 {
   theRadius = aRadius;
   theCenter = aCenter; // default (0,0,0)
   InitTypeAndForm(158, 0);
 }
 
-Standard_Real IGESSolid_Sphere::Radius() const
+double IGESSolid_Sphere::Radius() const
 {
   return theRadius;
 }

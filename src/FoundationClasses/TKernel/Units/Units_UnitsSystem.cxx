@@ -30,7 +30,9 @@
 #include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <Units_UnitSentence.hxx>
-#include <Units_UnitsSequence.hxx>
+#include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_UnitsSystem.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsSystem, Standard_Transient)
@@ -39,44 +41,44 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsSystem, Standard_Transient)
 
 Units_UnitsSystem::Units_UnitsSystem()
 {
-  thequantitiessequence  = new Units_QuantitiesSequence();
-  theactiveunitssequence = new TColStd_HSequenceOfInteger;
+  thequantitiessequence  = new NCollection_HSequence<occ::handle<Units_Quantity>>();
+  theactiveunitssequence = new NCollection_HSequence<int>;
 }
 
 //=================================================================================================
 
-Units_UnitsSystem::Units_UnitsSystem(const Standard_CString aName, const Standard_Boolean Verbose)
+Units_UnitsSystem::Units_UnitsSystem(const char* const aName, const bool Verbose)
 {
-  Handle(Resource_Manager) themanager = new Resource_Manager(aName, Verbose);
+  occ::handle<Resource_Manager> themanager = new Resource_Manager(aName, Verbose);
 
-  thequantitiessequence  = new Units_QuantitiesSequence();
-  theactiveunitssequence = new TColStd_HSequenceOfInteger;
+  thequantitiessequence  = new NCollection_HSequence<occ::handle<Units_Quantity>>();
+  theactiveunitssequence = new NCollection_HSequence<int>;
 }
 
 //=================================================================================================
 
-Handle(Units_QuantitiesSequence) Units_UnitsSystem::QuantitiesSequence() const
+occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Units_UnitsSystem::QuantitiesSequence() const
 {
   return thequantitiessequence;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfInteger) Units_UnitsSystem::ActiveUnitsSequence() const
+occ::handle<NCollection_HSequence<int>> Units_UnitsSystem::ActiveUnitsSequence() const
 {
   return theactiveunitssequence;
 }
 
 //=================================================================================================
 
-void Units_UnitsSystem::Specify(const Standard_CString aquantity, const Standard_CString aunit)
+void Units_UnitsSystem::Specify(const char* const aquantity, const char* const aunit)
 {
-  Standard_Integer                 index;
-  Handle(Units_Unit)               unit;
-  Handle(Units_UnitsSequence)      unitssequence;
-  Handle(Units_Quantity)           quantity;
-  Handle(Units_Quantity)           thequantity;
-  Handle(Units_QuantitiesSequence) quantitiessequence;
+  int                 index;
+  occ::handle<Units_Unit>               unit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>      unitssequence;
+  occ::handle<Units_Quantity>           quantity;
+  occ::handle<Units_Quantity>           thequantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitiessequence;
   TCollection_AsciiString          quantityname;
 
   Units_UnitSentence unitsentence(aunit);
@@ -85,12 +87,12 @@ void Units_UnitsSystem::Specify(const Standard_CString aquantity, const Standard
     std::cout << "Units_UnitsSystem::Specify : incorrect unit" << std::endl;
     return;
   }
-  Handle(Units_Token) token = unitsentence.Evaluate();
+  occ::handle<Units_Token> token = unitsentence.Evaluate();
 
   if (token->IsKind(STANDARD_TYPE(Units_ShiftedToken)))
   {
-    Handle(Units_ShiftedToken) stoken = Handle(Units_ShiftedToken)::DownCast(token);
-    Handle(Units_ShiftedUnit)  sunit;
+    occ::handle<Units_ShiftedToken> stoken = occ::down_cast<Units_ShiftedToken>(token);
+    occ::handle<Units_ShiftedUnit>  sunit;
     unit = sunit = new Units_ShiftedUnit(aunit, aunit);
     sunit->Value(stoken->Value());
     sunit->Move(stoken->Move());
@@ -122,7 +124,7 @@ void Units_UnitsSystem::Specify(const Standard_CString aquantity, const Standard
     return;
   }
 
-  unitssequence = new Units_UnitsSequence();
+  unitssequence = new NCollection_HSequence<occ::handle<Units_Unit>>();
   quantityname  = quantity->Name();
   thequantity = new Units_Quantity(quantityname.ToCString(), quantity->Dimensions(), unitssequence);
   unit->Quantity(thequantity);
@@ -133,12 +135,12 @@ void Units_UnitsSystem::Specify(const Standard_CString aquantity, const Standard
 
 //=================================================================================================
 
-void Units_UnitsSystem::Remove(const Standard_CString aquantity, const Standard_CString aunit)
+void Units_UnitsSystem::Remove(const char* const aquantity, const char* const aunit)
 {
-  Standard_Integer            index1, index2;
-  Handle(Units_Unit)          unit;
-  Handle(Units_UnitsSequence) unitssequence;
-  Handle(Units_Quantity)      quantity;
+  int            index1, index2;
+  occ::handle<Units_Unit>          unit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> unitssequence;
+  occ::handle<Units_Quantity>      quantity;
 
   for (index1 = 1; index1 <= thequantitiessequence->Length(); index1++)
   {
@@ -181,12 +183,12 @@ void Units_UnitsSystem::Remove(const Standard_CString aquantity, const Standard_
 
 //=================================================================================================
 
-void Units_UnitsSystem::Activate(const Standard_CString aquantity, const Standard_CString aunit)
+void Units_UnitsSystem::Activate(const char* const aquantity, const char* const aunit)
 {
-  Standard_Integer            index1, index2;
-  Handle(Units_Unit)          unit;
-  Handle(Units_UnitsSequence) unitssequence;
-  Handle(Units_Quantity)      quantity;
+  int            index1, index2;
+  occ::handle<Units_Unit>          unit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> unitssequence;
+  occ::handle<Units_Quantity>      quantity;
 
   for (index1 = 1; index1 <= thequantitiessequence->Length(); index1++)
   {
@@ -214,9 +216,9 @@ void Units_UnitsSystem::Activate(const Standard_CString aquantity, const Standar
 
 void Units_UnitsSystem::Activates()
 {
-  Standard_Integer            index;
-  Handle(Units_UnitsSequence) unitssequence;
-  Handle(Units_Quantity)      quantity;
+  int            index;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> unitssequence;
+  occ::handle<Units_Quantity>      quantity;
 
   for (index = 1; index <= thequantitiessequence->Length(); index++)
   {
@@ -231,12 +233,12 @@ void Units_UnitsSystem::Activates()
 
 //=================================================================================================
 
-TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const Standard_CString aquantity) const
+TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const char* const aquantity) const
 {
-  Standard_Integer            index1, index2;
-  Handle(Units_Unit)          unit;
-  Handle(Units_UnitsSequence) unitssequence;
-  Handle(Units_Quantity)      quantity;
+  int            index1, index2;
+  occ::handle<Units_Unit>          unit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> unitssequence;
+  occ::handle<Units_Quantity>      quantity;
 
   for (index1 = 1; index1 <= thequantitiessequence->Length(); index1++)
   {
@@ -262,9 +264,9 @@ TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const Standard_CString aqu
 
 //=================================================================================================
 
-Standard_Real Units_UnitsSystem::ConvertValueToUserSystem(const Standard_CString aquantity,
-                                                          const Standard_Real    avalue,
-                                                          const Standard_CString aunit) const
+double Units_UnitsSystem::ConvertValueToUserSystem(const char* const aquantity,
+                                                          const double    avalue,
+                                                          const char* const aunit) const
 {
   Units_UnitSentence unitsentence(aunit);
   if (!unitsentence.IsDone())
@@ -278,16 +280,16 @@ Standard_Real Units_UnitsSystem::ConvertValueToUserSystem(const Standard_CString
 
 //=================================================================================================
 
-Standard_Real Units_UnitsSystem::ConvertSIValueToUserSystem(const Standard_CString aquantity,
-                                                            const Standard_Real    avalue) const
+double Units_UnitsSystem::ConvertSIValueToUserSystem(const char* const aquantity,
+                                                            const double    avalue) const
 {
-  Standard_Integer                 index, activeunit;
-  Handle(Units_UnitsSequence)      unitssequence;
-  Handle(Units_Quantity)           quantity;
-  Handle(Units_QuantitiesSequence) quantitiessequence;
-  Handle(Units_Unit)               unit;
-  Handle(Units_ShiftedUnit)        sunit;
-  Standard_Real                    uvalue, umove;
+  int                 index, activeunit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>      unitssequence;
+  occ::handle<Units_Quantity>           quantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitiessequence;
+  occ::handle<Units_Unit>               unit;
+  occ::handle<Units_ShiftedUnit>        sunit;
+  double                    uvalue, umove;
 
   for (index = 1; index <= thequantitiessequence->Length(); index++)
   {
@@ -301,7 +303,7 @@ Standard_Real Units_UnitsSystem::ConvertSIValueToUserSystem(const Standard_CStri
         unit          = unitssequence->Value(activeunit);
         if (unit->IsKind(STANDARD_TYPE(Units_ShiftedUnit)))
         {
-          sunit  = Handle(Units_ShiftedUnit)::DownCast(unit);
+          sunit  = occ::down_cast<Units_ShiftedUnit>(unit);
           uvalue = sunit->Value();
           umove  = sunit->Move();
           return avalue / uvalue - umove;
@@ -328,16 +330,16 @@ Standard_Real Units_UnitsSystem::ConvertSIValueToUserSystem(const Standard_CStri
 
 //=================================================================================================
 
-Standard_Real Units_UnitsSystem::ConvertUserSystemValueToSI(const Standard_CString aquantity,
-                                                            const Standard_Real    avalue) const
+double Units_UnitsSystem::ConvertUserSystemValueToSI(const char* const aquantity,
+                                                            const double    avalue) const
 {
-  Standard_Integer                 index, activeunit;
-  Handle(Units_UnitsSequence)      unitssequence;
-  Handle(Units_Quantity)           quantity;
-  Handle(Units_QuantitiesSequence) quantitiessequence;
-  Handle(Units_Unit)               unit;
-  Handle(Units_ShiftedUnit)        sunit;
-  Standard_Real                    uvalue, umove;
+  int                 index, activeunit;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>      unitssequence;
+  occ::handle<Units_Quantity>           quantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitiessequence;
+  occ::handle<Units_Unit>               unit;
+  occ::handle<Units_ShiftedUnit>        sunit;
+  double                    uvalue, umove;
 
   for (index = 1; index <= thequantitiessequence->Length(); index++)
   {
@@ -351,7 +353,7 @@ Standard_Real Units_UnitsSystem::ConvertUserSystemValueToSI(const Standard_CStri
         unit          = unitssequence->Value(activeunit);
         if (unit->IsKind(STANDARD_TYPE(Units_ShiftedUnit)))
         {
-          sunit  = Handle(Units_ShiftedUnit)::DownCast(unit);
+          sunit  = occ::down_cast<Units_ShiftedUnit>(unit);
           uvalue = sunit->Value();
           umove  = sunit->Move();
           return avalue * (uvalue + umove);
@@ -380,8 +382,8 @@ Standard_Real Units_UnitsSystem::ConvertUserSystemValueToSI(const Standard_CStri
 
 void Units_UnitsSystem::Dump() const
 {
-  Handle(Standard_Transient) transient   = This();
-  Handle(Units_UnitsSystem)  unitssystem = Handle(Units_UnitsSystem)::DownCast(transient);
+  occ::handle<Standard_Transient> transient   = This();
+  occ::handle<Units_UnitsSystem>  unitssystem = occ::down_cast<Units_UnitsSystem>(transient);
   Units_Explorer             explorer(unitssystem);
   std::cout << " UNITSSYSTEM : " << std::endl;
   for (; explorer.MoreQuantity(); explorer.NextQuantity())
@@ -394,7 +396,7 @@ void Units_UnitsSystem::Dump() const
 
 //=================================================================================================
 
-Standard_Boolean Units_UnitsSystem::IsEmpty() const
+bool Units_UnitsSystem::IsEmpty() const
 {
-  return (thequantitiessequence->Length() > 0) ? Standard_False : Standard_True;
+  return (thequantitiessequence->Length() > 0) ? false : true;
 }

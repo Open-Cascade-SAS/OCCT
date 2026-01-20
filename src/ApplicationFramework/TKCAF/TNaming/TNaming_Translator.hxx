@@ -20,8 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Shape;
 
 //! only for Shape Copy test - to move in DNaming
@@ -36,21 +39,20 @@ public:
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns copied shape
   Standard_EXPORT const TopoDS_Shape Copied(const TopoDS_Shape& aShape) const;
 
   //! returns DataMap of results; (shape <-> copied shape)
-  Standard_EXPORT const TopTools_DataMapOfShapeShape& Copied() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Copied() const;
 
-  Standard_EXPORT void DumpMap(const Standard_Boolean isWrite = Standard_False) const;
+  Standard_EXPORT void DumpMap(const bool isWrite = false) const;
 
-protected:
 private:
-  Standard_Boolean                           myIsDone;
-  TColStd_IndexedDataMapOfTransientTransient myMap;
-  TopTools_DataMapOfShapeShape               myDataMapOfResults;
+  bool                           myIsDone;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>               myDataMapOfResults;
 };
 
 #endif // _TNaming_Translator_HeaderFile

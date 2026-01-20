@@ -46,7 +46,7 @@ public:
   Standard_EXPORT Vrml_Texture2Transform();
 
   Standard_EXPORT Vrml_Texture2Transform(const gp_Vec2d&     aTranslation,
-                                         const Standard_Real aRotation,
+                                         const double aRotation,
                                          const gp_Vec2d&     aScaleFactor,
                                          const gp_Vec2d&     aCenter);
 
@@ -54,9 +54,9 @@ public:
 
   Standard_EXPORT gp_Vec2d Translation() const;
 
-  Standard_EXPORT void SetRotation(const Standard_Real aRotation);
+  Standard_EXPORT void SetRotation(const double aRotation);
 
-  Standard_EXPORT Standard_Real Rotation() const;
+  Standard_EXPORT double Rotation() const;
 
   Standard_EXPORT void SetScaleFactor(const gp_Vec2d& aScaleFactor);
 
@@ -68,10 +68,9 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
   gp_Vec2d      myTranslation;
-  Standard_Real myRotation;
+  double myRotation;
   gp_Vec2d      myScaleFactor;
   gp_Vec2d      myCenter;
 };

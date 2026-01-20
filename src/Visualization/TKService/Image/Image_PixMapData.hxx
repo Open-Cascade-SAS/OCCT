@@ -26,7 +26,7 @@ class Image_PixMapData : public NCollection_Buffer
 public:
   //! Empty constructor.
   Image_PixMapData()
-      : NCollection_Buffer(Handle(NCollection_BaseAllocator)()),
+      : NCollection_Buffer(occ::handle<NCollection_BaseAllocator>()),
         myTopRowPtr(NULL),
         SizeBPP(0),
         SizeX(0),
@@ -34,32 +34,32 @@ public:
         SizeZ(0),
         SizeRowBytes(0),
         SizeSliceBytes(0),
-        TopToDown(Standard_Size(-1))
+        TopToDown(size_t(-1))
   {
     //
   }
 
   //! Initializer.
-  bool Init(const Handle(NCollection_BaseAllocator)& theAlloc,
-            const Standard_Size                      theSizeBPP,
-            const Standard_Size                      theSizeX,
-            const Standard_Size                      theSizeY,
-            const Standard_Size                      theSizeRowBytes,
-            Standard_Byte*                           theDataPtr)
+  bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
+            const size_t                      theSizeBPP,
+            const size_t                      theSizeX,
+            const size_t                      theSizeY,
+            const size_t                      theSizeRowBytes,
+            uint8_t*                           theDataPtr)
   {
     return Init(theAlloc,
                 theSizeBPP,
-                NCollection_Vec3<Standard_Size>(theSizeX, theSizeY, 1),
+                NCollection_Vec3<size_t>(theSizeX, theSizeY, 1),
                 theSizeRowBytes,
                 theDataPtr);
   }
 
   //! Initializer.
-  bool Init(const Handle(NCollection_BaseAllocator)& theAlloc,
-            const Standard_Size                      theSizeBPP,
-            const NCollection_Vec3<Standard_Size>&   theSizeXYZ,
-            const Standard_Size                      theSizeRowBytes,
-            Standard_Byte*                           theDataPtr)
+  bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
+            const size_t                      theSizeBPP,
+            const NCollection_Vec3<size_t>&   theSizeXYZ,
+            const size_t                      theSizeRowBytes,
+            uint8_t*                           theDataPtr)
   {
     SetAllocator(theAlloc); // will free old data as well
 
@@ -90,77 +90,77 @@ public:
   }
 
   //! Return data pointer to requested row (first column).
-  const Standard_Byte* Row(const Standard_Size theRow) const
+  const uint8_t* Row(const size_t theRow) const
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
   }
 
   //! Return data pointer to requested row (first column).
-  Standard_Byte* ChangeRow(const Standard_Size theRow)
+  uint8_t* ChangeRow(const size_t theRow)
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
   }
 
   //! Return data pointer to requested position.
-  const Standard_Byte* Value(const Standard_Size theRow, const Standard_Size theCol) const
+  const uint8_t* Value(const size_t theRow, const size_t theCol) const
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
-  Standard_Byte* ChangeValue(Standard_Size theRow, Standard_Size theCol)
+  uint8_t* ChangeValue(size_t theRow, size_t theCol)
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
-  const Standard_Byte* ValueXY(Standard_Size theX, Standard_Size theY) const
+  const uint8_t* ValueXY(size_t theX, size_t theY) const
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
   }
 
   //! Return data pointer to requested position.
-  Standard_Byte* ChangeValueXY(Standard_Size theX, Standard_Size theY)
+  uint8_t* ChangeValueXY(size_t theX, size_t theY)
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
   }
 
 public:
   //! Return data pointer to requested 2D slice.
-  const Standard_Byte* Slice(Standard_Size theSlice) const
+  const uint8_t* Slice(size_t theSlice) const
   {
     return myData + ptrdiff_t(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested 2D slice.
-  Standard_Byte* ChangeSlice(Standard_Size theSlice)
+  uint8_t* ChangeSlice(size_t theSlice)
   {
     return myData + ptrdiff_t(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested row (first column).
-  const Standard_Byte* SliceRow(Standard_Size theSlice, Standard_Size theRow) const
+  const uint8_t* SliceRow(size_t theSlice, size_t theRow) const
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown)
            + ptrdiff_t(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested row (first column).
-  Standard_Byte* ChangeSliceRow(Standard_Size theSlice, Standard_Size theRow)
+  uint8_t* ChangeSliceRow(size_t theSlice, size_t theRow)
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown)
            + ptrdiff_t(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested position.
-  const Standard_Byte* ValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ) const
+  const uint8_t* ValueXYZ(size_t theX, size_t theY, size_t theZ) const
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
            + ptrdiff_t(SizeSliceBytes * theZ);
   }
 
   //! Return data pointer to requested position.
-  Standard_Byte* ChangeValueXYZ(Standard_Size theX, Standard_Size theY, Standard_Size theZ)
+  uint8_t* ChangeValueXYZ(size_t theX, size_t theY, size_t theZ)
   {
     return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
            + ptrdiff_t(SizeSliceBytes * theZ);
@@ -168,12 +168,12 @@ public:
 
   //! Compute the maximal row alignment for current row size.
   //! @return maximal row alignment in bytes (up to 16 bytes).
-  Standard_Size MaxRowAligmentBytes() const
+  size_t MaxRowAligmentBytes() const
   {
-    Standard_Size anAlignment = 2;
+    size_t anAlignment = 2;
     for (; anAlignment <= 16; anAlignment <<= 1)
     {
-      if ((SizeRowBytes % anAlignment) != 0 || (Standard_Size(myData) % anAlignment) != 0)
+      if ((SizeRowBytes % anAlignment) != 0 || (size_t(myData) % anAlignment) != 0)
       {
         return (anAlignment >> 1);
       }
@@ -186,29 +186,27 @@ public:
   //! @param theIsTopDown top-down flag
   void SetTopDown(const bool theIsTopDown)
   {
-    TopToDown = (theIsTopDown ? 1 : Standard_Size(-1));
+    TopToDown = (theIsTopDown ? 1 : size_t(-1));
     myTopRowPtr =
       ((TopToDown == 1 || myData == NULL) ? myData : (myData + SizeRowBytes * (SizeY - 1)));
   }
 
 protected:
   // clang-format off
-  Standard_Byte* myTopRowPtr;  //!< pointer to the topmost row (depending on scanlines order in memory)
+  uint8_t* myTopRowPtr;  //!< pointer to the topmost row (depending on scanlines order in memory)
   // clang-format on
 
 public:
-  Standard_Size SizeBPP;        //!< bytes per pixel
-  Standard_Size SizeX;          //!< width  in pixels
-  Standard_Size SizeY;          //!< height in pixels
-  Standard_Size SizeZ;          //!< depth  in pixels
-  Standard_Size SizeRowBytes;   //!< number of bytes per line (in most cases equal to 3 * sizeX)
-  Standard_Size SizeSliceBytes; //!< number of bytes per 2D slice
-  Standard_Size TopToDown;      //!< image scanlines direction in memory from Top to the Down
+  size_t SizeBPP;        //!< bytes per pixel
+  size_t SizeX;          //!< width  in pixels
+  size_t SizeY;          //!< height in pixels
+  size_t SizeZ;          //!< depth  in pixels
+  size_t SizeRowBytes;   //!< number of bytes per line (in most cases equal to 3 * sizeX)
+  size_t SizeSliceBytes; //!< number of bytes per 2D slice
+  size_t TopToDown;      //!< image scanlines direction in memory from Top to the Down
 
 public:
   DEFINE_STANDARD_RTTIEXT(Image_PixMapData, NCollection_Buffer)
 };
-
-DEFINE_STANDARD_HANDLE(Image_PixMapData, NCollection_Buffer)
 
 #endif // _Image_PixMapData_H__

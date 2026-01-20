@@ -75,18 +75,17 @@ public:
                                        const Plate_D3& D3T,
                                        const gp_XYZ&   nP);
 
-  const Standard_Integer& nb_PPC() const;
+  const int& nb_PPC() const;
 
-  const Plate_PinpointConstraint& GetPPC(const Standard_Integer Index) const;
+  const Plate_PinpointConstraint& GetPPC(const int Index) const;
 
   const Plate_D1& D1SurfInit() const;
 
-protected:
 private:
   Plate_PinpointConstraint myPPC[9];
   Plate_D1                 myD1SurfInit;
   gp_XY                    pnt2d;
-  Standard_Integer         nb_PPConstraints;
+  int         nb_PPConstraints;
 };
 
 #include <Plate_GtoCConstraint.lxx>

@@ -20,7 +20,7 @@
 
 TCollection_AsciiString RWMesh::ReadNameAttribute(const TDF_Label& theLabel)
 {
-  Handle(TDataStd_Name) aNodeName;
+  occ::handle<TDataStd_Name> aNodeName;
   return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
            ? TCollection_AsciiString(aNodeName->Get())
            : TCollection_AsciiString();
@@ -38,38 +38,38 @@ TCollection_AsciiString RWMesh::FormatName(RWMesh_NameFormat theFormat,
       return TCollection_AsciiString();
     }
     case RWMesh_NameFormat_Product: {
-      Handle(TDataStd_Name) aRefNodeName;
+      occ::handle<TDataStd_Name> aRefNodeName;
       return theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
                ? TCollection_AsciiString(aRefNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_Instance: {
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
                ? TCollection_AsciiString(aNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_InstanceOrProduct: {
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName) && !aNodeName->Get().IsEmpty())
       {
         return TCollection_AsciiString(aNodeName->Get());
       }
 
-      Handle(TDataStd_Name) aRefNodeName;
+      occ::handle<TDataStd_Name> aRefNodeName;
       return theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
                ? TCollection_AsciiString(aRefNodeName->Get())
                : TCollection_AsciiString();
     }
     case RWMesh_NameFormat_ProductOrInstance: {
-      Handle(TDataStd_Name) aRefNodeName;
+      occ::handle<TDataStd_Name> aRefNodeName;
       if (theRefLabel.FindAttribute(TDataStd_Name::GetID(), aRefNodeName)
           && !aRefNodeName->Get().IsEmpty())
       {
         return TCollection_AsciiString(aRefNodeName->Get());
       }
 
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       return theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName)
                ? TCollection_AsciiString(aNodeName->Get())
                : TCollection_AsciiString();

@@ -19,10 +19,10 @@
 RWStepShape_RWPrecisionQualifier::RWStepShape_RWPrecisionQualifier() {}
 
 void RWStepShape_RWPrecisionQualifier::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepShape_PrecisionQualifier)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepShape_PrecisionQualifier>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -31,7 +31,7 @@ void RWStepShape_RWPrecisionQualifier::ReadStep(
 
   // --- own field : precision_value ---
 
-  Standard_Integer PV;
+  int PV;
   data->ReadInteger(num, 1, "precision_value", ach, PV);
 
   //--- Initialisation of the read entity ---
@@ -41,7 +41,7 @@ void RWStepShape_RWPrecisionQualifier::ReadStep(
 
 void RWStepShape_RWPrecisionQualifier::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepShape_PrecisionQualifier)& ent) const
+  const occ::handle<StepShape_PrecisionQualifier>& ent) const
 {
   SW.Send(ent->PrecisionValue());
 }

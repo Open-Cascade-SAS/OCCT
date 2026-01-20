@@ -34,9 +34,14 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_ByteArray.hxx>
@@ -52,7 +57,8 @@
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Application.hxx>
@@ -114,7 +120,7 @@
 
 //=================================================================================================
 
-static Standard_Integer newDoc(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int newDoc(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -122,11 +128,11 @@ static Standard_Integer newDoc(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Handle(TDocStd_Document)     D;
-  Handle(DDocStd_DrawDocument) DD;
-  Handle(TDocStd_Application)  A = DDocStd::GetApplication();
+  occ::handle<TDocStd_Document>     D;
+  occ::handle<DDocStd_DrawDocument> DD;
+  occ::handle<TDocStd_Application>  A = DDocStd::GetApplication();
 
-  if (!DDocStd::GetDocument(argv[1], D, Standard_False))
+  if (!DDocStd::GetDocument(argv[1], D, false))
   {
     A->NewDocument("BinXCAF", D);
     DD = new DDocStd_DrawDocument(D);
@@ -143,10 +149,10 @@ static Standard_Integer newDoc(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer saveDoc(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int saveDoc(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(TDocStd_Document)    D;
-  Handle(TDocStd_Application) A = DDocStd::GetApplication();
+  occ::handle<TDocStd_Document>    D;
+  occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
   if (argc == 1)
   {
@@ -160,7 +166,7 @@ static Standard_Integer saveDoc(Draw_Interpretor& di, Standard_Integer argc, con
       return 1;
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di);
 
   PCDM_StoreStatus aStatus = PCDM_SS_Doc_IsNull;
   if (argc == 3)
@@ -213,11 +219,11 @@ static Standard_Integer saveDoc(Draw_Interpretor& di, Standard_Integer argc, con
 
 //=================================================================================================
 
-static Standard_Integer openDoc(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int openDoc(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(TDocStd_Document)     D;
-  Handle(DDocStd_DrawDocument) DD;
-  Handle(TDocStd_Application)  A = DDocStd::GetApplication();
+  occ::handle<TDocStd_Document>     D;
+  occ::handle<DDocStd_DrawDocument> DD;
+  occ::handle<TDocStd_Application>  A = DDocStd::GetApplication();
 
   if (argc < 3)
   {
@@ -227,10 +233,10 @@ static Standard_Integer openDoc(Draw_Interpretor& di, Standard_Integer argc, con
   }
 
   TCollection_AsciiString Filename = argv[1];
-  Standard_CString        DocName  = argv[2];
+  const char*        DocName  = argv[2];
 
-  Handle(PCDM_ReaderFilter) aFilter = new PCDM_ReaderFilter;
-  for (Standard_Integer i = 3; i < argc; i++)
+  occ::handle<PCDM_ReaderFilter> aFilter = new PCDM_ReaderFilter;
+  for (int i = 3; i < argc; i++)
   {
     TCollection_AsciiString anArg(argv[i]);
     if (anArg == "-append")
@@ -260,13 +266,13 @@ static Standard_Integer openDoc(Draw_Interpretor& di, Standard_Integer argc, con
     }
   }
 
-  if (aFilter->IsAppendMode() && !DDocStd::GetDocument(DocName, D, Standard_False))
+  if (aFilter->IsAppendMode() && !DDocStd::GetDocument(DocName, D, false))
   {
     di << "for append mode document " << DocName << " must be already created\n";
     return 1;
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di);
   if (A->Open(Filename, D, aFilter, aProgress->Start()) != PCDM_RS_OK)
   {
     di << "cannot open XDE document\n";
@@ -287,14 +293,14 @@ static Standard_Integer openDoc(Draw_Interpretor& di, Standard_Integer argc, con
 
 //=================================================================================================
 
-static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int dump(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
     di << "Use: " << argv[0] << " Doc [int deep (0/1)]\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
+  occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -302,10 +308,10 @@ static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const 
     return 1;
   }
 
-  Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  Standard_Boolean          deep       = Standard_False;
+  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  bool          deep       = false;
   if ((argc == 3) && (Draw::Atoi(argv[2]) == 1))
-    deep = Standard_True;
+    deep = true;
   Standard_SStream aDumpLog;
   myAssembly->Dump(aDumpLog, deep);
   di << aDumpLog;
@@ -318,22 +324,22 @@ static Standard_Integer dump(Draw_Interpretor& di, Standard_Integer argc, const 
 //=======================================================================
 
 static void StatAssembly(const TDF_Label                   L,
-                         const Standard_Integer            level,
-                         Handle(TColStd_HArray1OfInteger)& HAI,
-                         Standard_Integer&                 NbCentroidProp,
-                         Standard_Integer&                 NbVolumeProp,
-                         Standard_Integer&                 NbAreaProp,
-                         Standard_Integer&                 NbShapesWithName,
-                         Standard_Integer&                 NbShapesWithColor,
-                         Standard_Integer&                 NbShapesWithLayer,
-                         Standard_Integer&                 NbShapesWithVisMaterial,
-                         Handle(TDocStd_Document)&         aDoc,
-                         Standard_Boolean&                 PrintStructMode,
+                         const int            level,
+                         occ::handle<NCollection_HArray1<int>>& HAI,
+                         int&                 NbCentroidProp,
+                         int&                 NbVolumeProp,
+                         int&                 NbAreaProp,
+                         int&                 NbShapesWithName,
+                         int&                 NbShapesWithColor,
+                         int&                 NbShapesWithLayer,
+                         int&                 NbShapesWithVisMaterial,
+                         occ::handle<TDocStd_Document>&         aDoc,
+                         bool&                 PrintStructMode,
                          Draw_Interpretor&                 di)
 {
   if (PrintStructMode)
   {
-    for (Standard_Integer j = 0; j <= level; j++)
+    for (int j = 0; j <= level; j++)
       di << "  ";
   }
   TCollection_AsciiString Entry;
@@ -341,7 +347,7 @@ static void StatAssembly(const TDF_Label                   L,
   if (PrintStructMode)
     di << Entry.ToCString();
 
-  Handle(TDataStd_Name) Name;
+  occ::handle<TDataStd_Name> Name;
   if (L.FindAttribute(TDataStd_Name::GetID(), Name))
   {
     NbShapesWithName++;
@@ -356,14 +362,14 @@ static void StatAssembly(const TDF_Label                   L,
       di << " NoName  has attributes: ";
   }
 
-  Handle(XCAFDoc_Centroid) aCentroid = new (XCAFDoc_Centroid);
+  occ::handle<XCAFDoc_Centroid> aCentroid = new (XCAFDoc_Centroid);
   if (L.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
   {
     if (PrintStructMode)
       di << "Centroid ";
     NbCentroidProp++;
   }
-  Standard_Real tmp;
+  double tmp;
   if (XCAFDoc_Volume::Get(L, tmp))
   {
     if (PrintStructMode)
@@ -376,25 +382,25 @@ static void StatAssembly(const TDF_Label                   L,
       di << "Area(" << tmp << ") ";
     NbAreaProp++;
   }
-  Handle(XCAFDoc_ColorTool)       CTool  = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
-  Handle(XCAFDoc_LayerTool)       LTool  = XCAFDoc_DocumentTool::LayerTool(aDoc->Main());
-  Handle(XCAFDoc_VisMaterialTool) VMTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
+  occ::handle<XCAFDoc_ColorTool>       CTool  = XCAFDoc_DocumentTool::ColorTool(aDoc->Main());
+  occ::handle<XCAFDoc_LayerTool>       LTool  = XCAFDoc_DocumentTool::LayerTool(aDoc->Main());
+  occ::handle<XCAFDoc_VisMaterialTool> VMTool = XCAFDoc_DocumentTool::VisMaterialTool(aDoc->Main());
   Quantity_ColorRGBA              col;
-  Standard_Boolean                IsColor   = Standard_False;
-  Standard_Boolean                IsByLayer = Standard_False;
+  bool                IsColor   = false;
+  bool                IsByLayer = false;
   if (CTool->GetColor(L, XCAFDoc_ColorGen, col))
-    IsColor = Standard_True;
+    IsColor = true;
   else if (CTool->GetColor(L, XCAFDoc_ColorSurf, col))
-    IsColor = Standard_True;
+    IsColor = true;
   else if (CTool->GetColor(L, XCAFDoc_ColorCurv, col))
-    IsColor = Standard_True;
+    IsColor = true;
   else if (CTool->IsColorByLayer(L))
-    IsByLayer = Standard_True;
+    IsByLayer = true;
   if (IsColor || IsByLayer)
   {
     if (IsByLayer)
     {
-      Handle(TColStd_HSequenceOfExtendedString) aLayerS;
+      occ::handle<NCollection_HSequence<TCollection_ExtendedString>> aLayerS;
       LTool->GetLayers(L, aLayerS);
       // Currently for DXF only, thus
       // only 1 Layer should be.
@@ -423,14 +429,14 @@ static void StatAssembly(const TDF_Label                   L,
       NbShapesWithColor++;
     }
   }
-  Handle(TColStd_HSequenceOfExtendedString) aLayerS;
+  occ::handle<NCollection_HSequence<TCollection_ExtendedString>> aLayerS;
   LTool->GetLayers(L, aLayerS);
   if (!aLayerS.IsNull() && aLayerS->Length() > 0)
   {
     if (PrintStructMode)
     {
       di << "Layer(";
-      for (Standard_Integer i = 1; i <= aLayerS->Length(); i++)
+      for (int i = 1; i <= aLayerS->Length(); i++)
       {
         TCollection_AsciiString Entry2(aLayerS->Value(i));
         if (i == 1)
@@ -449,7 +455,7 @@ static void StatAssembly(const TDF_Label                   L,
     if (PrintStructMode)
     {
       di << "VisMaterial(";
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       if (aVMat.FindAttribute(TDataStd_Name::GetID(), aNodeName))
       {
         di << "\"" << aNodeName->Get() << "\"";
@@ -464,7 +470,7 @@ static void StatAssembly(const TDF_Label                   L,
   HAI->SetValue(level, HAI->Value(level) + 1);
   if (L.HasChild())
   {
-    for (Standard_Integer i = 1; i <= L.NbChildren(); i++)
+    for (int i = 1; i <= L.NbChildren(); i++)
     {
       StatAssembly(L.FindChild(i),
                    level + 1,
@@ -485,14 +491,14 @@ static void StatAssembly(const TDF_Label                   L,
 
 //=================================================================================================
 
-static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int statdoc(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
     di << "Use: " << argv[0] << " Doc \n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
+  occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -500,21 +506,21 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  Standard_Boolean          PrintStructMode = (argc == 3);
-  Handle(XCAFDoc_ShapeTool) aTool           = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  bool          PrintStructMode = (argc == 3);
+  occ::handle<XCAFDoc_ShapeTool> aTool           = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
 
-  TDF_LabelSequence SeqLabels;
+  NCollection_Sequence<TDF_Label> SeqLabels;
   aTool->GetShapes(SeqLabels);
   if (SeqLabels.Length() <= 0)
     return 0;
   if (PrintStructMode)
     di << "\nStructure of shapes in the document:\n";
-  Standard_Integer level          = 0;
-  Standard_Integer NbCentroidProp = 0, NbVolumeProp = 0, NbAreaProp = 0;
-  Standard_Integer NbShapesWithName = 0, NbShapesWithColor = 0, NbShapesWithLayer = 0,
+  int level          = 0;
+  int NbCentroidProp = 0, NbVolumeProp = 0, NbAreaProp = 0;
+  int NbShapesWithName = 0, NbShapesWithColor = 0, NbShapesWithLayer = 0,
                    NbShapesWithVisMaterial = 0;
-  Handle(TColStd_HArray1OfInteger) HAI     = new TColStd_HArray1OfInteger(0, 20);
-  Standard_Integer                 i       = 0;
+  occ::handle<NCollection_HArray1<int>> HAI     = new NCollection_HArray1<int>(0, 20);
+  int                 i       = 0;
   for (i = 0; i <= 20; i++)
     HAI->SetValue(i, 0);
   for (i = 1; i <= SeqLabels.Length(); i++)
@@ -533,7 +539,7 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
                  PrintStructMode,
                  di);
   }
-  Standard_Integer NbLabelsShape = 0;
+  int NbLabelsShape = 0;
   di << "\nStatistis of shapes in the document:\n";
   for (i = 0; i <= 20; i++)
   {
@@ -554,8 +560,8 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
   di << "Number of Volume Props = " << NbVolumeProp << "\n";
   di << "Number of Area Props = " << NbAreaProp << "\n";
 
-  Handle(XCAFDoc_ColorTool) CTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  TDF_LabelSequence         CLabels;
+  occ::handle<XCAFDoc_ColorTool> CTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>         CLabels;
   CTool->GetColors(CLabels);
   di << "\nNumber of colors = " << CLabels.Length() << "\n";
   if (CLabels.Length() > 0)
@@ -570,8 +576,8 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
     di << "\n";
   }
 
-  Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_LabelSequence         LLabels;
+  occ::handle<XCAFDoc_LayerTool> LTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>         LLabels;
   LTool->GetLayerLabels(LLabels);
   di << "\nNumber of layers = " << LLabels.Length() << "\n";
   if (LLabels.Length() > 0)
@@ -586,15 +592,15 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
     di << "\n";
   }
 
-  Handle(XCAFDoc_VisMaterialTool) VMTool = XCAFDoc_DocumentTool::VisMaterialTool(Doc->Main());
-  TDF_LabelSequence               aVMats;
+  occ::handle<XCAFDoc_VisMaterialTool> VMTool = XCAFDoc_DocumentTool::VisMaterialTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>               aVMats;
   VMTool->GetMaterials(aVMats);
   di << "\nNumber of vis materials = " << aVMats.Length() << "\n";
   if (!aVMats.IsEmpty())
   {
-    for (TDF_LabelSequence::Iterator aVMIter(aVMats); aVMIter.More(); aVMIter.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator aVMIter(aVMats); aVMIter.More(); aVMIter.Next())
     {
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       if (aVMIter.Value().FindAttribute(TDataStd_Name::GetID(), aNodeName))
       {
         di << "\"" << aNodeName->Get() << "\" ";
@@ -609,7 +615,7 @@ static Standard_Integer statdoc(Draw_Interpretor& di, Standard_Integer argc, con
 
 //=================================================================================================
 
-static Standard_Integer setPrs(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int setPrs(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -617,7 +623,7 @@ static Standard_Integer setPrs(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Handle(TDocStd_Document) Doc;
+  occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -626,11 +632,11 @@ static Standard_Integer setPrs(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   // collect sequence of labels to set presentation
-  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TDF_LabelSequence         seq;
+  occ::handle<XCAFDoc_ShapeTool> shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>         seq;
   if (argc > 2)
   {
-    for (Standard_Integer i = 2; i < argc; i++)
+    for (int i = 2; i < argc; i++)
     {
       TDF_Label aLabel;
       TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
@@ -648,10 +654,10 @@ static Standard_Integer setPrs(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   // set presentations
-  Handle(XCAFDoc_ColorTool) colors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  for (Standard_Integer i = 1; i <= seq.Length(); i++)
+  occ::handle<XCAFDoc_ColorTool> colors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+  for (int i = 1; i <= seq.Length(); i++)
   {
-    Handle(TPrsStd_AISPresentation) prs;
+    occ::handle<TPrsStd_AISPresentation> prs;
     if (!seq.Value(i).FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
     {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i), XCAFPrs_Driver::GetID());
@@ -668,7 +674,7 @@ static Standard_Integer setPrs(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int show(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -676,7 +682,7 @@ static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const 
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -686,7 +692,7 @@ static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const 
 
   // init viewer
   TDF_Label                 aRoot = aDoc->GetData()->Root();
-  Handle(TPrsStd_AISViewer) aDocViewer;
+  occ::handle<TPrsStd_AISViewer> aDocViewer;
   TCollection_AsciiString   aViewName =
     TCollection_AsciiString("Driver1/Document_") + argv[1] + "/View1";
   if (!TPrsStd_AISViewer::Find(aRoot, aDocViewer))
@@ -696,11 +702,11 @@ static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const 
   }
 
   // collect sequence of labels to display
-  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-  TDF_LabelSequence         seq;
+  occ::handle<XCAFDoc_ShapeTool> shapes = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  NCollection_Sequence<TDF_Label>         seq;
   if (argc > 2)
   {
-    for (Standard_Integer i = 2; i < argc; i++)
+    for (int i = 2; i < argc; i++)
     {
       TDF_Label aLabel;
       TDF_Tool::Label(aDoc->GetData(), argv[i], aLabel);
@@ -718,10 +724,10 @@ static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const 
   }
 
   // set presentations and show
-  // Handle(XCAFDoc_ColorTool) colors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  for (Standard_Integer i = 1; i <= seq.Length(); i++)
+  // occ::handle<XCAFDoc_ColorTool> colors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+  for (int i = 1; i <= seq.Length(); i++)
   {
-    Handle(TPrsStd_AISPresentation) prs;
+    occ::handle<TPrsStd_AISPresentation> prs;
     if (!seq.Value(i).FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
     {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i), XCAFPrs_Driver::GetID());
@@ -732,7 +738,7 @@ static Standard_Integer show(Draw_Interpretor& di, Standard_Integer argc, const 
     //      prs->SetColor ( Col.Name() );
     //    else if ( colors.GetColor ( seq.Value(i), XCAFDoc_ColorCurv, Col ) )
     //      prs->SetColor ( Col.Name() );
-    prs->Display(Standard_True);
+    prs->Display(true);
   }
   TPrsStd_AISViewer::Update(aDoc->GetData()->Root());
   return 0;
@@ -743,8 +749,8 @@ class XDEDRAW_XDisplayTool
 {
 public:
   //! XDisplay command interface.
-  static Standard_Integer XDisplay(Draw_Interpretor& theDI,
-                                   Standard_Integer  theNbArgs,
+  static int XDisplay(Draw_Interpretor& theDI,
+                                   int  theNbArgs,
                                    const char**      theArgVec)
   {
     XDEDRAW_XDisplayTool aTool;
@@ -757,14 +763,14 @@ private:
       : myDispMode(-2),
         myHiMode(-2),
         myIsAutoTriang(-1),
-        myToPrefixDocName(Standard_True),
-        myToGetNames(Standard_True),
-        myToExplore(Standard_False)
+        myToPrefixDocName(true),
+        myToGetNames(true),
+        myToExplore(false)
   {
   }
 
   //! Display single label.
-  Standard_Integer displayLabel(Draw_Interpretor&              theDI,
+  int displayLabel(Draw_Interpretor&              theDI,
                                 const TDF_Label&               theLabel,
                                 const TCollection_AsciiString& theNamePrefix,
                                 const TopLoc_Location&         theLoc,
@@ -773,7 +779,7 @@ private:
     TCollection_AsciiString aName;
     if (myToGetNames)
     {
-      Handle(TDataStd_Name) aNodeName;
+      occ::handle<TDataStd_Name> aNodeName;
       if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNodeName))
       {
         aName = aNodeName->Get();
@@ -792,7 +798,7 @@ private:
       {
         TDF_Tool::Entry(theLabel, aName);
       }
-      for (Standard_Integer aNameIndex = 1;; ++aNameIndex)
+      for (int aNameIndex = 1;; ++aNameIndex)
       {
         if (myNameMap.Add(aName))
         {
@@ -826,7 +832,7 @@ private:
       }
     }
 
-    Handle(XCAFPrs_AISObject) aPrs = new XCAFPrs_AISObject(theLabel);
+    occ::handle<XCAFPrs_AISObject> aPrs = new XCAFPrs_AISObject(theLabel);
     if (!theLoc.IsIdentity())
     {
       aPrs->SetLocalTransformation(theLoc);
@@ -869,11 +875,11 @@ private:
   }
 
   //! XDisplay command implementation.
-  Standard_Integer xdisplay(Draw_Interpretor& theDI,
-                            Standard_Integer  theNbArgs,
+  int xdisplay(Draw_Interpretor& theDI,
+                            int  theNbArgs,
                             const char**      theArgVec)
   {
-    Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
     if (aContext.IsNull())
     {
       theDI << "Error: no active viewer";
@@ -881,7 +887,7 @@ private:
     }
 
     ViewerTest_AutoUpdater anAutoUpdater(aContext, ViewerTest::CurrentView());
-    for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+    for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
     {
       TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
       anArgCase.LowerCase();
@@ -911,7 +917,7 @@ private:
       }
       else if (anArgCase == "-docprefix" || anArgCase == "-nodocprefix")
       {
-        myToPrefixDocName = Standard_True;
+        myToPrefixDocName = true;
         if (anArgIter + 1 < theNbArgs
             && Draw::ParseOnOff(theArgVec[anArgIter + 1], myToPrefixDocName))
         {
@@ -924,7 +930,7 @@ private:
       }
       else if (anArgCase == "-names" || anArgCase == "-nonames")
       {
-        myToGetNames = Standard_True;
+        myToGetNames = true;
         if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], myToGetNames))
         {
           ++anArgIter;
@@ -936,7 +942,7 @@ private:
       }
       else if (anArgCase == "-explore" || anArgCase == "-noexplore")
       {
-        myToExplore = Standard_True;
+        myToExplore = true;
         if (anArgIter + 1 < theNbArgs && Draw::ParseOnOff(theArgVec[anArgIter + 1], myToExplore))
         {
           ++anArgIter;
@@ -953,20 +959,20 @@ private:
       }
       else
       {
-        if (myDoc.IsNull() && DDocStd::GetDocument(theArgVec[anArgIter], myDoc, Standard_False))
+        if (myDoc.IsNull() && DDocStd::GetDocument(theArgVec[anArgIter], myDoc, false))
         {
           myDocName = theArgVec[anArgIter];
           continue;
         }
 
         TCollection_AsciiString aValue(theArgVec[anArgIter]);
-        const Standard_Integer  aFirstSplit = aValue.Search(":");
+        const int  aFirstSplit = aValue.Search(":");
         if (!IsDigit(aValue.Value(1)) && aFirstSplit >= 2 && aFirstSplit < aValue.Length())
         {
           TCollection_AsciiString  aDocName    = aValue.SubString(1, aFirstSplit - 1);
-          Standard_CString         aDocNameStr = aDocName.ToCString();
-          Handle(TDocStd_Document) aDoc;
-          if (DDocStd::GetDocument(aDocNameStr, aDoc, Standard_False))
+          const char*         aDocNameStr = aDocName.ToCString();
+          occ::handle<TDocStd_Document> aDoc;
+          if (DDocStd::GetDocument(aDocNameStr, aDoc, false))
           {
             aValue = aValue.SubString(aFirstSplit + 1, aValue.Length());
             if (!myDoc.IsNull() && myDoc != aDoc)
@@ -1004,7 +1010,7 @@ private:
       XCAFDoc_DocumentTool::ShapeTool(myDoc->Main())->GetFreeShapes(myLabels);
     }
 
-    for (TDF_LabelSequence::Iterator aLabIter(myLabels); aLabIter.More(); aLabIter.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(myLabels); aLabIter.More(); aLabIter.Next())
     {
       const TDF_Label& aLabel = aLabIter.Value();
       if (displayLabel(theDI,
@@ -1030,22 +1036,22 @@ private:
 
 private:
   NCollection_Map<TCollection_AsciiString> myNameMap; //!< names map to handle collisions
-  Handle(TDocStd_Document)                 myDoc;     //!< document
+  occ::handle<TDocStd_Document>                 myDoc;     //!< document
   TCollection_AsciiString                  myDocName; //!< document name
   TCollection_AsciiString myOutDispListVar;           //!< tcl variable to print the result objects
   TCollection_AsciiString myOutDispList;     //!< string with list of all displayed object names
-  TDF_LabelSequence       myLabels;          //!< labels to display
-  Standard_Integer        myDispMode;        //!< shape display mode
-  Standard_Integer        myHiMode;          //!< shape highlight mode
-  Standard_Integer        myIsAutoTriang;    //!< auto-triangulation mode
-  Standard_Boolean        myToPrefixDocName; //!< flag to prefix objects with document name
-  Standard_Boolean        myToGetNames;      //!< flag to use label names or tags
-  Standard_Boolean        myToExplore;       //!< flag to explore assembles
+  NCollection_Sequence<TDF_Label>       myLabels;          //!< labels to display
+  int        myDispMode;        //!< shape display mode
+  int        myHiMode;          //!< shape highlight mode
+  int        myIsAutoTriang;    //!< auto-triangulation mode
+  bool        myToPrefixDocName; //!< flag to prefix objects with document name
+  bool        myToGetNames;      //!< flag to use label names or tags
+  bool        myToExplore;       //!< flag to explore assembles
 };
 
 //=================================================================================================
 
-static Standard_Integer xwd(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int xwd(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -1053,7 +1059,7 @@ static Standard_Integer xwd(Draw_Interpretor& di, Standard_Integer argc, const c
     return 1;
   }
 
-  Handle(TDocStd_Document) Doc;
+  occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -1061,15 +1067,15 @@ static Standard_Integer xwd(Draw_Interpretor& di, Standard_Integer argc, const c
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) IC;
+  occ::handle<AIS_InteractiveContext> IC;
   if (!TPrsStd_AISViewer::Find(Doc->GetData()->Root(), IC))
   {
     di << "Cannot find viewer for document " << argv[1] << "\n";
     return 1;
   }
 
-  Handle(V3d_Viewer)     aViewer   = IC->CurrentViewer();
-  V3d_ListOfViewIterator aViewIter = aViewer->ActiveViewIterator();
+  occ::handle<V3d_Viewer>     aViewer   = IC->CurrentViewer();
+  NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter = aViewer->ActiveViewIterator();
   if (aViewIter.More())
   {
     aViewIter.Value()->Dump(argv[2]);
@@ -1085,8 +1091,8 @@ static Standard_Integer xwd(Draw_Interpretor& di, Standard_Integer argc, const c
 
 //=================================================================================================
 
-static Standard_Integer XAttributeValue(Draw_Interpretor& di,
-                                        Standard_Integer  argc,
+static int XAttributeValue(Draw_Interpretor& di,
+                                        int  argc,
                                         const char**      argv)
 {
   if (argc < 4)
@@ -1094,7 +1100,7 @@ static Standard_Integer XAttributeValue(Draw_Interpretor& di,
     std::cout << "Syntax error: Too few args\n";
     return 1;
   }
-  Handle(DDF_Browser) browser = Handle(DDF_Browser)::DownCast(Draw::GetExisting(argv[1]));
+  occ::handle<DDF_Browser> browser = occ::down_cast<DDF_Browser>(Draw::GetExisting(argv[1]));
   if (browser.IsNull())
   {
     std::cout << "Syntax error: Not a browser: " << argv[1] << "\n";
@@ -1109,9 +1115,9 @@ static Standard_Integer XAttributeValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Standard_Integer      num = Draw::Atoi(argv[3]);
-  TDF_AttributeIterator itr(lab, Standard_False);
-  for (Standard_Integer i = 1; itr.More() && i < num; i++)
+  int      num = Draw::Atoi(argv[3]);
+  TDF_AttributeIterator itr(lab, false);
+  for (int i = 1; itr.More() && i < num; i++)
     itr.Next();
 
   if (!itr.More())
@@ -1130,24 +1136,24 @@ static Standard_Integer XAttributeValue(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer setviewName(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int setviewName(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
     di << "Use: " << argv[0] << " (1/0)\n";
     return 1;
   }
-  Standard_Boolean mode = Standard_False;
+  bool mode = false;
   if (Draw::Atoi(argv[1]) == 1)
-    mode = Standard_True;
+    mode = true;
   XCAFPrs::SetViewNameMode(mode);
   return 0;
 }
 
 //=================================================================================================
 
-static Standard_Integer getviewName(Draw_Interpretor& di,
-                                    Standard_Integer /*argc*/,
+static int getviewName(Draw_Interpretor& di,
+                                    int /*argc*/,
                                     const char** /*argv*/)
 {
   if (XCAFPrs::GetViewNameMode())
@@ -1159,8 +1165,8 @@ static Standard_Integer getviewName(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer XSetTransparency(Draw_Interpretor& di,
-                                         Standard_Integer  argc,
+static int XSetTransparency(Draw_Interpretor& di,
+                                         int  argc,
                                          const char**      argv)
 {
   if (argc < 3)
@@ -1169,7 +1175,7 @@ static Standard_Integer XSetTransparency(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) Doc;
+  occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -1177,14 +1183,14 @@ static Standard_Integer XSetTransparency(Draw_Interpretor& di,
     return 1;
   }
 
-  const Standard_Real aTransparency = Draw::Atof(argv[2]);
+  const double aTransparency = Draw::Atof(argv[2]);
 
   // collect sequence of labels
-  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TDF_LabelSequence         seq;
+  occ::handle<XCAFDoc_ShapeTool> shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>         seq;
   if (argc > 3)
   {
-    for (Standard_Integer i = 3; i < argc; i++)
+    for (int i = 3; i < argc; i++)
     {
       TDF_Label aLabel;
       TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
@@ -1202,9 +1208,9 @@ static Standard_Integer XSetTransparency(Draw_Interpretor& di,
   }
 
   // find presentations and set transparency
-  for (Standard_Integer i = 1; i <= seq.Length(); i++)
+  for (int i = 1; i <= seq.Length(); i++)
   {
-    Handle(TPrsStd_AISPresentation) prs;
+    occ::handle<TPrsStd_AISPresentation> prs;
     if (!seq.Value(i).FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
     {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i), XCAFPrs_Driver::GetID());
@@ -1218,8 +1224,8 @@ static Standard_Integer XSetTransparency(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer setLengthUnit(Draw_Interpretor& di,
-                                      Standard_Integer  argc,
+static int setLengthUnit(Draw_Interpretor& di,
+                                      int  argc,
                                       const char**      argv)
 {
   if (argc != 3)
@@ -1228,7 +1234,7 @@ static Standard_Integer setLengthUnit(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1237,12 +1243,12 @@ static Standard_Integer setLengthUnit(Draw_Interpretor& di,
   }
 
   TCollection_AsciiString anUnit(argv[2]);
-  Standard_Real           anUnitValue = 1.;
+  double           anUnitValue = 1.;
   TCollection_AsciiString anUnitName;
   if (!anUnit.IsRealValue(true))
   {
     UnitsMethods_LengthUnit aTypeUnit =
-      UnitsMethods::LengthUnitFromString(anUnit.ToCString(), Standard_False);
+      UnitsMethods::LengthUnitFromString(anUnit.ToCString(), false);
     if (aTypeUnit == UnitsMethods_LengthUnit_Undefined)
     {
       di << "Error: " << anUnit
@@ -1263,8 +1269,8 @@ static Standard_Integer setLengthUnit(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer dumpLengthUnit(Draw_Interpretor& di,
-                                       Standard_Integer  argc,
+static int dumpLengthUnit(Draw_Interpretor& di,
+                                       int  argc,
                                        const char**      argv)
 {
   if (argc != 2 && argc != 3)
@@ -1273,14 +1279,14 @@ static Standard_Integer dumpLengthUnit(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
     di << "Error: " << argv[1] << " is not a document\n";
     return 1;
   }
-  Handle(XCAFDoc_LengthUnit) aUnits;
+  occ::handle<XCAFDoc_LengthUnit> aUnits;
   if (!aDoc->Main().Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aUnits))
   {
     di << "Error: Document doesn't contain a Length Unit\n";
@@ -1309,8 +1315,8 @@ static Standard_Integer dumpLengthUnit(Draw_Interpretor& di,
 // function : XShowFaceBoundary
 // purpose  : Set face boundaries on/off
 //=======================================================================
-static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
-                                          Standard_Integer  argc,
+static int XShowFaceBoundary(Draw_Interpretor& di,
+                                          int  argc,
                                           const char**      argv)
 {
   if ((argc != 4 && argc < 7) || argc > 9)
@@ -1337,7 +1343,7 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
   }
 
   // get specified document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1345,7 +1351,7 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) aContext;
+  occ::handle<AIS_InteractiveContext> aContext;
   if (!TPrsStd_AISViewer::Find(aDoc->GetData()->Root(), aContext))
   {
     di << "Cannot find viewer for document " << argv[1] << "\n";
@@ -1353,7 +1359,7 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
   }
 
   // get shape tool for shape verification
-  Handle(XCAFDoc_ShapeTool) aShapes = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapes = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
 
   // get label and validate that it is a shape label
   TDF_Label aLabel;
@@ -1365,13 +1371,13 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
   }
 
   // get presentation from label
-  Handle(TPrsStd_AISPresentation) aPrs;
+  occ::handle<TPrsStd_AISPresentation> aPrs;
   if (!aLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), aPrs))
   {
     aPrs = TPrsStd_AISPresentation::Set(aLabel, XCAFPrs_Driver::GetID());
   }
 
-  Handle(AIS_InteractiveObject) anInteractive = aPrs->GetAIS();
+  occ::handle<AIS_InteractiveObject> anInteractive = aPrs->GetAIS();
   if (anInteractive.IsNull())
   {
     di << "Can't set drawer attributes.\n"
@@ -1380,17 +1386,17 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
   }
 
   // get drawer
-  const Handle(Prs3d_Drawer)& aDrawer = anInteractive->Attributes();
+  const occ::handle<Prs3d_Drawer>& aDrawer = anInteractive->Attributes();
 
   // default attributes
-  Standard_Real     aRed      = 0.0;
-  Standard_Real     aGreen    = 0.0;
-  Standard_Real     aBlue     = 0.0;
-  Standard_Real     aWidth    = 1.0;
+  double     aRed      = 0.0;
+  double     aGreen    = 0.0;
+  double     aBlue     = 0.0;
+  double     aWidth    = 1.0;
   Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
 
   // turn boundaries on/off
-  Standard_Boolean isBoundaryDraw = (Draw::Atoi(argv[3]) == 1);
+  bool isBoundaryDraw = (Draw::Atoi(argv[3]) == 1);
   aDrawer->SetFaceBoundaryDraw(isBoundaryDraw);
 
   // set boundary color
@@ -1405,7 +1411,7 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
   // set line width
   if (argc >= 8)
   {
-    aWidth = (Standard_Real)Draw::Atof(argv[7]);
+    aWidth = (double)Draw::Atof(argv[7]);
   }
 
   // select appropriate line type
@@ -1419,11 +1425,11 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
 
   Quantity_Color aColor(aRed, aGreen, aBlue, Quantity_TOC_RGB);
 
-  Handle(Prs3d_LineAspect) aBoundaryAspect = new Prs3d_LineAspect(aColor, aLineType, aWidth);
+  occ::handle<Prs3d_LineAspect> aBoundaryAspect = new Prs3d_LineAspect(aColor, aLineType, aWidth);
 
   aDrawer->SetFaceBoundaryAspect(aBoundaryAspect);
 
-  aContext->Redisplay(anInteractive, Standard_True);
+  aContext->Redisplay(anInteractive, true);
 
   return 0;
 }
@@ -1433,8 +1439,8 @@ static Standard_Integer XShowFaceBoundary(Draw_Interpretor& di,
 // purpose  : Prints assembly tree structure up to the specified level
 //=======================================================================
 
-static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
-                                          Standard_Integer  argc,
+static int XDumpAssemblyTree(Draw_Interpretor& di,
+                                          int  argc,
                                           const char**      argv)
 {
   if (argc < 2)
@@ -1449,7 +1455,7 @@ static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
   }
 
   // get specified document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1458,9 +1464,9 @@ static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
   }
 
   XCAFDoc_AssemblyItemId aRoot;
-  Standard_Integer       aLevel      = INT_MAX;
-  Standard_Boolean       aPrintNames = Standard_False;
-  for (Standard_Integer iarg = 2; iarg < argc; ++iarg)
+  int       aLevel      = INT_MAX;
+  bool       aPrintNames = false;
+  for (int iarg = 2; iarg < argc; ++iarg)
   {
     if (strcmp(argv[iarg], "-root") == 0)
     {
@@ -1476,7 +1482,7 @@ static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
     }
     else if (strcmp(argv[iarg], "-names") == 0)
     {
-      aPrintNames = Standard_True;
+      aPrintNames = true;
     }
   }
 
@@ -1486,21 +1492,21 @@ static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
                                                  : XCAFDoc_AssemblyIterator(aDoc, aRoot, aLevel);
   XCAFDoc_AssemblyTool::Traverse(
     anIt,
-    [&](const XCAFDoc_AssemblyItemId& theItem) -> Standard_Boolean {
+    [&](const XCAFDoc_AssemblyItemId& theItem) -> bool {
       if (aPrintNames)
       {
-        Standard_Boolean aFirst = Standard_True;
-        for (TColStd_ListOfAsciiString::Iterator anIt(theItem.GetPath()); anIt.More();
-             anIt.Next(), aFirst = Standard_False)
+        bool aFirst = true;
+        for (NCollection_List<TCollection_AsciiString>::Iterator anIt(theItem.GetPath()); anIt.More();
+             anIt.Next(), aFirst = false)
         {
           if (!aFirst)
             aSS << "/";
           TDF_Label aL;
-          TDF_Tool::Label(aDoc->GetData(), anIt.Value(), aL, Standard_False);
+          TDF_Tool::Label(aDoc->GetData(), anIt.Value(), aL, false);
           if (!aL.IsNull())
           {
             TCollection_ExtendedString aName;
-            Handle(TDataStd_Name)      aNameAttr;
+            occ::handle<TDataStd_Name>      aNameAttr;
             if (aL.FindAttribute(TDataStd_Name::GetID(), aNameAttr))
             {
               aName = aNameAttr->Get();
@@ -1516,7 +1522,7 @@ static Standard_Integer XDumpAssemblyTree(Draw_Interpretor& di,
       {
         aSS << theItem.ToString() << std::endl;
       }
-      return Standard_True;
+      return true;
     });
 
   di << aSS.str().c_str();
@@ -1552,8 +1558,8 @@ static const char* graphNodeTypename(const XCAFDoc_AssemblyGraph::NodeType theNo
 // purpose  : Prints assembly graph structure
 //=======================================================================
 
-static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
-                                           Standard_Integer  argc,
+static int XDumpAssemblyGraph(Draw_Interpretor& di,
+                                           int  argc,
                                            const char**      argv)
 {
   if (argc < 2)
@@ -1567,7 +1573,7 @@ static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
   }
 
   // get specified document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1575,31 +1581,31 @@ static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
     return 1;
   }
 
-  Standard_Boolean aPrintNames = Standard_False;
+  bool aPrintNames = false;
   TDF_Label        aLabel      = XCAFDoc_DocumentTool::ShapesLabel(aDoc->Main());
-  for (Standard_Integer iarg = 2; iarg < argc; ++iarg)
+  for (int iarg = 2; iarg < argc; ++iarg)
   {
     if (strcmp(argv[iarg], "-root") == 0)
     {
       Standard_ProgramError_Raise_if(iarg + 1 >= argc, "Root is expected!");
-      TDF_Tool::Label(aDoc->GetData(), argv[++iarg], aLabel, Standard_False);
+      TDF_Tool::Label(aDoc->GetData(), argv[++iarg], aLabel, false);
     }
     else if (strcmp(argv[iarg], "-names") == 0)
     {
-      aPrintNames = Standard_True;
+      aPrintNames = true;
     }
   }
 
-  Handle(XCAFDoc_AssemblyGraph) aG = new XCAFDoc_AssemblyGraph(aLabel);
+  occ::handle<XCAFDoc_AssemblyGraph> aG = new XCAFDoc_AssemblyGraph(aLabel);
 
   Standard_SStream aSS;
 
   XCAFDoc_AssemblyTool::Traverse(
     aG,
-    [](const Handle(XCAFDoc_AssemblyGraph)& /*theGraph*/,
-       const Standard_Integer /*theNode*/) -> Standard_Boolean { return Standard_True; },
-    [&](const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-        const Standard_Integer               theNode) -> Standard_Boolean {
+    [](const occ::handle<XCAFDoc_AssemblyGraph>& /*theGraph*/,
+       const int /*theNode*/) -> bool { return true; },
+    [&](const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+        const int               theNode) -> bool {
       const TDF_Label& aLabel = theGraph->GetNode(theNode);
 
       const XCAFDoc_AssemblyGraph::NodeType aNodeType = theGraph->GetNodeType(theNode);
@@ -1607,7 +1613,7 @@ static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
       TCollection_AsciiString aNodeEntry;
       if (aPrintNames)
       {
-        Handle(TDataStd_Name) aNameAttr;
+        occ::handle<TDataStd_Name> aNameAttr;
         if (aLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr))
         {
           aNodeEntry.AssignCat("'");
@@ -1632,7 +1638,7 @@ static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
       }
       aSS << std::endl;
 
-      return Standard_True;
+      return true;
     });
 
   di << aSS.str().c_str();
@@ -1644,8 +1650,8 @@ static Standard_Integer XDumpAssemblyGraph(Draw_Interpretor& di,
 // purpose  : Prints number of assembly instances
 //=======================================================================
 
-static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
-                                          Standard_Integer  argc,
+static int XDumpNomenclature(Draw_Interpretor& di,
+                                          int  argc,
                                           const char**      argv)
 {
   if (argc < 2)
@@ -1658,7 +1664,7 @@ static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
   }
 
   // get specified document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1666,30 +1672,30 @@ static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
     return 1;
   }
 
-  Standard_Boolean aPrintNames = Standard_False;
-  for (Standard_Integer iarg = 2; iarg < argc; ++iarg)
+  bool aPrintNames = false;
+  for (int iarg = 2; iarg < argc; ++iarg)
   {
     if (strcmp(argv[iarg], "-names") == 0)
     {
-      aPrintNames = Standard_True;
+      aPrintNames = true;
     }
   }
 
-  Handle(XCAFDoc_AssemblyGraph) aG = new XCAFDoc_AssemblyGraph(aDoc);
+  occ::handle<XCAFDoc_AssemblyGraph> aG = new XCAFDoc_AssemblyGraph(aDoc);
 
   Standard_SStream aSS;
 
   XCAFDoc_AssemblyTool::Traverse(
     aG,
-    [](const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-       const Standard_Integer               theNode) -> Standard_Boolean {
+    [](const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+       const int               theNode) -> bool {
       const XCAFDoc_AssemblyGraph::NodeType aNodeType = theGraph->GetNodeType(theNode);
       return (aNodeType == XCAFDoc_AssemblyGraph::NodeType_AssemblyRoot)
              || (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Subassembly)
              || (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Part);
     },
-    [&](const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-        const Standard_Integer               theNode) -> Standard_Boolean {
+    [&](const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+        const int               theNode) -> bool {
       const TDF_Label& aLabel = theGraph->GetNode(theNode);
 
       const XCAFDoc_AssemblyGraph::NodeType aNodeType = theGraph->GetNodeType(theNode);
@@ -1697,7 +1703,7 @@ static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
       TCollection_AsciiString aNodeEntry;
       if (aPrintNames)
       {
-        Handle(TDataStd_Name) aNameAttr;
+        occ::handle<TDataStd_Name> aNameAttr;
         if (aLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr))
         {
           aNodeEntry.AssignCat("'");
@@ -1713,7 +1719,7 @@ static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
       aSS << theNode << " " << graphNodeTypename(aNodeType) << " " << aNodeEntry << " "
           << theGraph->NbOccurrences(theNode) << std::endl;
 
-      return Standard_True;
+      return true;
     });
 
   di << aSS.str().c_str();
@@ -1726,8 +1732,8 @@ static Standard_Integer XDumpNomenclature(Draw_Interpretor& di,
 // purpose  : Applies geometrical scale to all assembly components
 //=======================================================================
 
-static Standard_Integer XRescaleGeometry(Draw_Interpretor& di,
-                                         Standard_Integer  argc,
+static int XRescaleGeometry(Draw_Interpretor& di,
+                                         int  argc,
                                          const char**      argv)
 {
   if (argc < 3)
@@ -1743,7 +1749,7 @@ static Standard_Integer XRescaleGeometry(Draw_Interpretor& di,
   }
 
   // get specified document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
@@ -1752,25 +1758,25 @@ static Standard_Integer XRescaleGeometry(Draw_Interpretor& di,
   }
 
   // get scale factor
-  Standard_Real aScaleFactor = Draw::Atof(argv[2]);
+  double aScaleFactor = Draw::Atof(argv[2]);
   if (aScaleFactor <= 0)
   {
     di << "Scale factor must be positive\n";
     return 1;
   }
 
-  Standard_Boolean aForce = Standard_False;
+  bool aForce = false;
   TDF_Label        aLabel = XCAFDoc_DocumentTool::ShapesLabel(aDoc->Main());
-  for (Standard_Integer iarg = 3; iarg < argc; ++iarg)
+  for (int iarg = 3; iarg < argc; ++iarg)
   {
     if (strcmp(argv[iarg], "-root") == 0)
     {
       Standard_ProgramError_Raise_if(iarg + 1 >= argc, "Root is expected!");
-      TDF_Tool::Label(aDoc->GetData(), argv[++iarg], aLabel, Standard_False);
+      TDF_Tool::Label(aDoc->GetData(), argv[++iarg], aLabel, false);
     }
     else if (strcmp(argv[iarg], "-force") == 0)
     {
-      aForce = Standard_True;
+      aForce = true;
     }
   }
 
@@ -1787,7 +1793,7 @@ static Standard_Integer XRescaleGeometry(Draw_Interpretor& di,
 // function : testDoc
 // purpose  : Method to test destruction of document
 //=======================================================================
-static Standard_Integer testDoc(Draw_Interpretor&, Standard_Integer argc, const char** argv)
+static int testDoc(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -1798,9 +1804,9 @@ static Standard_Integer testDoc(Draw_Interpretor&, Standard_Integer argc, const 
   if (shape.IsNull())
     return 1;
 
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
 
-  Handle(TDocStd_Document) aD1 = new TDocStd_Document("BinXCAF");
+  occ::handle<TDocStd_Document> aD1 = new TDocStd_Document("BinXCAF");
   aD1->Open(anApp);
 
   TCollection_AsciiString aViewName("Driver1/DummyDocument/View1");
@@ -1808,15 +1814,15 @@ static Standard_Integer testDoc(Draw_Interpretor&, Standard_Integer argc, const 
   TPrsStd_AISViewer::New(aD1->GetData()->Root(), ViewerTest::GetAISContext());
 
   // get shape tool for shape verification
-  Handle(XCAFDoc_ShapeTool) aShapes = XCAFDoc_DocumentTool::ShapeTool(aD1->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapes = XCAFDoc_DocumentTool::ShapeTool(aD1->Main());
   TDF_Label                 aLab    = aShapes->AddShape(shape);
 
-  Handle(Geom_Axis2Placement) aPlacement =
+  occ::handle<Geom_Axis2Placement> aPlacement =
     new Geom_Axis2Placement(gp::Origin(), gp::DZ(), gp::DX());
-  Handle(AIS_Trihedron) aTriShape = new AIS_Trihedron(aPlacement);
+  occ::handle<AIS_Trihedron> aTriShape = new AIS_Trihedron(aPlacement);
 
-  Handle(TNaming_NamedShape)      NS;
-  Handle(TPrsStd_AISPresentation) prs;
+  occ::handle<TNaming_NamedShape>      NS;
+  occ::handle<TPrsStd_AISPresentation> prs;
   if (aLab.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     prs = TPrsStd_AISPresentation::Set(NS);
@@ -1826,7 +1832,7 @@ static Standard_Integer testDoc(Draw_Interpretor&, Standard_Integer argc, const 
     prs->Display();
 
   TPrsStd_AISViewer::Update(aLab);
-  ViewerTest::GetAISContext()->Display(aTriShape, Standard_True);
+  ViewerTest::GetAISContext()->Display(aTriShape, true);
   aD1->BeforeClose();
   aD1->Close();
   ViewerTest::RemoveView(aViewName);
@@ -1837,15 +1843,15 @@ static Standard_Integer testDoc(Draw_Interpretor&, Standard_Integer argc, const 
 
 void XDEDRAW::Init(Draw_Interpretor& di)
 {
-  static Standard_Boolean initactor = Standard_False;
+  static bool initactor = false;
   if (initactor)
   {
     return;
   }
-  initactor = Standard_True;
+  initactor = true;
 
   // Initialize XCAF formats
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
   BinXCAFDrivers::DefineFormat(anApp);
   XmlXCAFDrivers::DefineFormat(anApp);
 
@@ -1857,7 +1863,7 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   // General commands
   //=====================================
 
-  Standard_CString g = "XDE general commands";
+  const char* g = "XDE general commands";
 
   di.Add("XNewDoc", "DocName \t: Create new DECAF document", __FILE__, newDoc, g);
 

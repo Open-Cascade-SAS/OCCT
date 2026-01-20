@@ -16,7 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_HArray2OfHArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
 #include <IGESData_IGESDumper.hxx>
@@ -32,28 +35,29 @@
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 30/07/98
 IGESGeom_ToolSplineSurface::IGESGeom_ToolSplineSurface() {}
 
-void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurface)& ent,
-                                               const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_SplineSurface>& ent,
+                                               const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                                IGESData_ParamReader& PR) const
 {
 
   // MGE 30/07/98
 
-  Standard_Integer              aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
-  Standard_Integer              i, j, k;
-  Standard_Boolean              ubreak = Standard_False, vbreak = Standard_False;
-  Handle(TColStd_HArray1OfReal) allUBreakPoints;
-  Handle(TColStd_HArray1OfReal) allVBreakPoints;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allXCoeffs;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allYCoeffs;
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allZCoeffs;
+  int              aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
+  int              i, j, k;
+  bool              ubreak = false, vbreak = false;
+  occ::handle<NCollection_HArray1<double>> allUBreakPoints;
+  occ::handle<NCollection_HArray1<double>> allVBreakPoints;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allXCoeffs;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allYCoeffs;
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allZCoeffs;
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadInteger(PR.Current(), aBoundaryType))
@@ -69,8 +73,8 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
   // st = PR.ReadInteger(PR.Current(), Msg141, allNbUSegments); //szv#4:S4163:12Mar99 moved in if
   if (PR.ReadInteger(PR.Current(), allNbUSegments))
   {
-    ubreak          = Standard_True;
-    allUBreakPoints = new TColStd_HArray1OfReal(1, allNbUSegments + 1);
+    ubreak          = true;
+    allUBreakPoints = new NCollection_HArray1<double>(1, allNbUSegments + 1);
   }
   else
   {
@@ -82,8 +86,8 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
   // st = PR.ReadInteger(PR.Current(), "Number Of V Segments", allNbVSegments);
   if (PR.ReadInteger(PR.Current(), allNbVSegments))
   {
-    vbreak          = Standard_True;
-    allVBreakPoints = new TColStd_HArray1OfReal(1, allNbVSegments + 1);
+    vbreak          = true;
+    allVBreakPoints = new NCollection_HArray1<double>(1, allNbVSegments + 1);
   }
   else
   {
@@ -108,16 +112,16 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
 
   if (ubreak && vbreak)
   {
-    allXCoeffs = new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
-    allYCoeffs = new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
-    allZCoeffs = new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
+    allXCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
+    allYCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
+    allZCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
   }
 
-  Handle(TColStd_HArray1OfReal) Temp; // = new TColStd_HArray1OfReal(1, 16);
+  occ::handle<NCollection_HArray1<double>> Temp; // = new NCollection_HArray1<double>(1, 16);
 
   if (!allXCoeffs.IsNull())
   {
-    Standard_Boolean st;
+    bool st;
 
     Message_Msg Msg145_X("XSTEP_145");
     Msg145_X.Arg("X");
@@ -166,11 +170,11 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
         {
           //  If end missing ... We redo temp !
           //  The values were not read ... we must first re-read them !
-          Temp = new TColStd_HArray1OfReal(1, 16);
+          Temp = new NCollection_HArray1<double>(1, 16);
           Temp->Init(0.);
           for (k = 1; k <= 16; k++)
           {
-            Standard_Real vl;
+            double vl;
             if (!PR.ReadReal(PR.Current(), vl))
             {
               Message_Msg Msg146("XSTEP_146");
@@ -184,7 +188,7 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
           PR.Mend("Last patch incomplete, defaulted");
         }
       }
-      for (Standard_Integer kk = 1; kk <= 48; kk++)
+      for (int kk = 1; kk <= 48; kk++)
         PR.SetCurrentNumber(PR.CurrentNumber() + 1);
       // Skip the Arbitrary Values
     }
@@ -204,16 +208,16 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const Handle(IGESGeom_SplineSurfa
             allZCoeffs);
 }
 
-void IGESGeom_ToolSplineSurface::WriteOwnParams(const Handle(IGESGeom_SplineSurface)& ent,
+void IGESGeom_ToolSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_SplineSurface>& ent,
                                                 IGESData_IGESWriter&                  IW) const
 {
-  Standard_Integer I, J, k;
+  int I, J, k;
 
   IW.Send(ent->BoundaryType());
   IW.Send(ent->PatchType());
 
-  Standard_Integer nbUSegs = ent->NbUSegments();
-  Standard_Integer nbVSegs = ent->NbVSegments();
+  int nbUSegs = ent->NbUSegments();
+  int nbVSegs = ent->NbVSegments();
   IW.Send(nbUSegs);
   IW.Send(nbVSegs);
 
@@ -241,27 +245,27 @@ void IGESGeom_ToolSplineSurface::WriteOwnParams(const Handle(IGESGeom_SplineSurf
     IW.Send(0.0); // Send Arbitrary Values
 }
 
-void IGESGeom_ToolSplineSurface::OwnShared(const Handle(IGESGeom_SplineSurface)& /* ent */,
+void IGESGeom_ToolSplineSurface::OwnShared(const occ::handle<IGESGeom_SplineSurface>& /* ent */,
                                            Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESGeom_ToolSplineSurface::OwnCopy(const Handle(IGESGeom_SplineSurface)& another,
-                                         const Handle(IGESGeom_SplineSurface)& ent,
+void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurface>& another,
+                                         const occ::handle<IGESGeom_SplineSurface>& ent,
                                          Interface_CopyTool& /* TC */) const
 {
 
-  Standard_Integer aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
-  Standard_Integer I, J;
+  int aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
+  int I, J;
 
   aBoundaryType  = another->BoundaryType();
   aPatchType     = another->PatchType();
   allNbUSegments = another->NbUSegments();
   allNbVSegments = another->NbVSegments();
 
-  Handle(TColStd_HArray1OfReal) allUBreakPoints = new TColStd_HArray1OfReal(1, allNbUSegments + 1);
+  occ::handle<NCollection_HArray1<double>> allUBreakPoints = new NCollection_HArray1<double>(1, allNbUSegments + 1);
 
-  Handle(TColStd_HArray1OfReal) allVBreakPoints = new TColStd_HArray1OfReal(1, allNbVSegments + 1);
+  occ::handle<NCollection_HArray1<double>> allVBreakPoints = new NCollection_HArray1<double>(1, allNbVSegments + 1);
 
   for (I = 1; I <= allNbUSegments + 1; I++)
     allUBreakPoints->SetValue(I, another->UBreakPoint(I));
@@ -269,16 +273,16 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const Handle(IGESGeom_SplineSurface)& a
   for (I = 1; I <= allNbVSegments + 1; I++)
     allVBreakPoints->SetValue(I, another->VBreakPoint(I));
 
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allXCoeffs =
-    new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allXCoeffs =
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allYCoeffs =
-    new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allYCoeffs =
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
-  Handle(IGESBasic_HArray2OfHArray1OfReal) allZCoeffs =
-    new IGESBasic_HArray2OfHArray1OfReal(1, allNbUSegments, 1, allNbVSegments);
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allZCoeffs =
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
-  Handle(TColStd_HArray1OfReal) temp = new TColStd_HArray1OfReal(1, 16);
+  occ::handle<NCollection_HArray1<double>> temp = new NCollection_HArray1<double>(1, 16);
 
   for (I = 1; I <= allNbUSegments; I++)
     for (J = 1; J <= allNbVSegments; J++)
@@ -301,7 +305,7 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const Handle(IGESGeom_SplineSurface)& a
 }
 
 IGESData_DirChecker IGESGeom_ToolSplineSurface::DirChecker(
-  const Handle(IGESGeom_SplineSurface)& /* ent */) const
+  const occ::handle<IGESGeom_SplineSurface>& /* ent */) const
 {
   IGESData_DirChecker DC(114, 0);
   DC.Structure(IGESData_DefVoid);
@@ -312,9 +316,9 @@ IGESData_DirChecker IGESGeom_ToolSplineSurface::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolSplineSurface::OwnCheck(const Handle(IGESGeom_SplineSurface)& ent,
+void IGESGeom_ToolSplineSurface::OwnCheck(const occ::handle<IGESGeom_SplineSurface>& ent,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& ach) const
+                                          occ::handle<Interface_Check>& ach) const
 {
 
   // MGE 30/07/98
@@ -332,17 +336,17 @@ void IGESGeom_ToolSplineSurface::OwnCheck(const Handle(IGESGeom_SplineSurface)& 
   //    ach.AddFail("Incorrect Patch Type not in [0-1]");
 }
 
-void IGESGeom_ToolSplineSurface::OwnDump(const Handle(IGESGeom_SplineSurface)& ent,
+void IGESGeom_ToolSplineSurface::OwnDump(const occ::handle<IGESGeom_SplineSurface>& ent,
                                          const IGESData_IGESDumper& /* dumper */,
                                          Standard_OStream&      S,
-                                         const Standard_Integer level) const
+                                         const int level) const
 {
   S << "IGESGeom_SplineSurface\n";
 
-  Standard_Integer              I, J;
-  Standard_Integer              nbUSegs = ent->NbUSegments();
-  Standard_Integer              nbVSegs = ent->NbVSegments();
-  Handle(TColStd_HArray1OfReal) temp;
+  int              I, J;
+  int              nbUSegs = ent->NbUSegments();
+  int              nbVSegs = ent->NbVSegments();
+  occ::handle<NCollection_HArray1<double>> temp;
 
   S << "The  Spline Boundary Type : " << ent->BoundaryType();
   switch (ent->BoundaryType())

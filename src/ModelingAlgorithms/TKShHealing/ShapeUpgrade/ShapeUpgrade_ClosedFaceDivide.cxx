@@ -30,7 +30,8 @@
 #include <ShapeUpgrade_ClosedFaceDivide.hxx>
 #include <ShapeUpgrade_SplitSurface.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -58,66 +59,66 @@ ShapeUpgrade_ClosedFaceDivide::ShapeUpgrade_ClosedFaceDivide(const TopoDS_Face& 
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real)
+bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
 {
-  Handle(ShapeUpgrade_SplitSurface) SplitSurf = GetSplitSurfaceTool();
+  occ::handle<ShapeUpgrade_SplitSurface> SplitSurf = GetSplitSurfaceTool();
   if (SplitSurf.IsNull())
-    return Standard_False;
+    return false;
 
   if (myResult.IsNull() || myResult.ShapeType() != TopAbs_FACE)
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
-    return Standard_False;
+    return false;
   }
   TopoDS_Face face = TopoDS::Face(myResult);
 
-  Standard_Real Uf, Ul, Vf, Vl;
+  double Uf, Ul, Vf, Vl;
   ShapeAnalysis::GetFaceUVBounds(myFace, Uf, Ul, Vf, Vl);
   // 01.10.99 pdn Porting on DEC
   if (::Precision::IsInfinite(Uf) || ::Precision::IsInfinite(Ul) || ::Precision::IsInfinite(Vf)
       || ::Precision::IsInfinite(Vl))
-    return Standard_False;
+    return false;
 
   TopLoc_Location      L;
-  Handle(Geom_Surface) surf;
+  occ::handle<Geom_Surface> surf;
   surf = BRep_Tool::Surface(face, L);
 
-  Standard_Boolean                isUSplit = Standard_False;
-  Standard_Boolean                doSplit  = Standard_False;
-  Handle(TColStd_HSequenceOfReal) split    = new TColStd_HSequenceOfReal;
+  bool                isUSplit = false;
+  bool                doSplit  = false;
+  occ::handle<NCollection_HSequence<double>> split    = new NCollection_HSequence<double>;
 
   for (TopoDS_Iterator iter(face); iter.More() && !doSplit; iter.Next())
   {
     if (iter.Value().ShapeType() != TopAbs_WIRE)
       continue;
     TopoDS_Wire                  wire = TopoDS::Wire(iter.Value());
-    Handle(ShapeExtend_WireData) sewd = new ShapeExtend_WireData(wire);
-    for (Standard_Integer i = 1; i <= sewd->NbEdges() && !doSplit; i++)
+    occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
+    for (int i = 1; i <= sewd->NbEdges() && !doSplit; i++)
       if (sewd->IsSeam(i))
       {
-        doSplit                   = Standard_True;
+        doSplit                   = true;
         TopoDS_Edge          edge = sewd->Edge(i);
         ShapeAnalysis_Edge   sae;
-        Handle(Geom2d_Curve) c1, c2;
-        Standard_Real        f1, f2, l1, l2;
-        if (!sae.PCurve(edge, face, c1, f1, l1, Standard_False))
+        occ::handle<Geom2d_Curve> c1, c2;
+        double        f1, f2, l1, l2;
+        if (!sae.PCurve(edge, face, c1, f1, l1, false))
           continue;
         // smh#8
         TopoDS_Shape tmpE = edge.Reversed();
-        if (!sae.PCurve(TopoDS::Edge(tmpE), face, c2, f2, l2, Standard_False))
+        if (!sae.PCurve(TopoDS::Edge(tmpE), face, c2, f2, l2, false))
           continue;
         if (c2 == c1)
           continue;
         // splitting
         ShapeAnalysis_Curve sac;
         Bnd_Box2d           B1, B2;
-        sac.FillBndBox(c1, f1, l1, 20, Standard_True, B1);
-        sac.FillBndBox(c2, f2, l2, 20, Standard_True, B2);
-        Standard_Real x1min, y1min, x1max, y1max;
-        Standard_Real x2min, y2min, x2max, y2max;
+        sac.FillBndBox(c1, f1, l1, 20, true, B1);
+        sac.FillBndBox(c2, f2, l2, 20, true, B2);
+        double x1min, y1min, x1max, y1max;
+        double x2min, y2min, x2max, y2max;
         B1.Get(x1min, y1min, x1max, y1max);
         B2.Get(x2min, y2min, x2max, y2max);
-        Standard_Real xf, xl, yf, yl;
+        double xf, xl, yf, yl;
         if (x1min < x2min)
         {
           xf = x1max;
@@ -139,23 +140,23 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
           yl = y1min;
         }
 
-        Standard_Real dU = xl - xf;
-        Standard_Real dV = yl - yf;
+        double dU = xl - xf;
+        double dV = yl - yf;
         if (dU > dV)
         {
-          Standard_Real step = dU / (myNbSplit + 1);
-          Standard_Real val  = xf + step;
-          for (Standard_Integer j = 1; j <= myNbSplit; j++, val += step)
+          double step = dU / (myNbSplit + 1);
+          double val  = xf + step;
+          for (int j = 1; j <= myNbSplit; j++, val += step)
             split->Append(val);
-          isUSplit = Standard_True;
+          isUSplit = true;
         }
         else
         {
-          Standard_Real step = dV / (myNbSplit + 1);
-          Standard_Real val  = yf + step;
-          for (Standard_Integer j = 1; j <= myNbSplit; j++, val += step)
+          double step = dV / (myNbSplit + 1);
+          double val  = yf + step;
+          for (int j = 1; j <= myNbSplit; j++, val += step)
             split->Append(val);
-          isUSplit = Standard_False;
+          isUSplit = false;
         }
       }
   }
@@ -163,28 +164,28 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
   if (!doSplit)
   {
     // pdn try to define geometric closure.
-    Handle(ShapeAnalysis_Surface) sas     = new ShapeAnalysis_Surface(surf);
-    Standard_Boolean              uclosed = sas->IsUClosed(Precision());
-    Standard_Boolean              vclosed = sas->IsVClosed(Precision());
-    Standard_Real                 U1, U2, V1, V2;
+    occ::handle<ShapeAnalysis_Surface> sas     = new ShapeAnalysis_Surface(surf);
+    bool              uclosed = sas->IsUClosed(Precision());
+    bool              vclosed = sas->IsVClosed(Precision());
+    double                 U1, U2, V1, V2;
     if (uclosed)
     {
       surf->Bounds(U1, U2, V1, V2);
       GeomAdaptor_Surface GAS(surf);
-      Standard_Real       toler = GAS.UResolution(Precision());
+      double       toler = GAS.UResolution(Precision());
       if ((U2 - U1) - (Ul - Uf) < toler)
       {
-        Handle(Geom_RectangularTrimmedSurface) rts =
-          new Geom_RectangularTrimmedSurface(surf, U1, (U2 + U1) / 2, Standard_True);
-        Handle(ShapeAnalysis_Surface) sast = new ShapeAnalysis_Surface(rts);
+        occ::handle<Geom_RectangularTrimmedSurface> rts =
+          new Geom_RectangularTrimmedSurface(surf, U1, (U2 + U1) / 2, true);
+        occ::handle<ShapeAnalysis_Surface> sast = new ShapeAnalysis_Surface(rts);
         if (!sast->IsUClosed(Precision()))
         {
-          doSplit            = Standard_True;
-          Standard_Real step = (Ul - Uf) / (myNbSplit + 1);
-          Standard_Real val  = Uf + step;
-          for (Standard_Integer i = 1; i <= myNbSplit; i++, val += step)
+          doSplit            = true;
+          double step = (Ul - Uf) / (myNbSplit + 1);
+          double val  = Uf + step;
+          for (int i = 1; i <= myNbSplit; i++, val += step)
             split->Append(val);
-          isUSplit = Standard_True;
+          isUSplit = true;
         }
 #ifdef OCCT_DEBUG
         else
@@ -196,20 +197,20 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
     {
       surf->Bounds(U1, U2, V1, V2);
       GeomAdaptor_Surface GAS(surf);
-      Standard_Real       toler = GAS.VResolution(Precision());
+      double       toler = GAS.VResolution(Precision());
       if ((V2 - V1) - (Vl - Vf) < toler)
       {
-        Handle(Geom_RectangularTrimmedSurface) rts =
-          new Geom_RectangularTrimmedSurface(surf, V1, (V2 + V1) / 2, Standard_False);
-        Handle(ShapeAnalysis_Surface) sast = new ShapeAnalysis_Surface(rts);
+        occ::handle<Geom_RectangularTrimmedSurface> rts =
+          new Geom_RectangularTrimmedSurface(surf, V1, (V2 + V1) / 2, false);
+        occ::handle<ShapeAnalysis_Surface> sast = new ShapeAnalysis_Surface(rts);
         if (!sast->IsVClosed(Precision()))
         {
-          doSplit            = Standard_True;
-          Standard_Real step = (Vl - Vf) / (myNbSplit + 1);
-          Standard_Real val  = Vf + step;
-          for (Standard_Integer i = 1; i <= myNbSplit; i++, val += step)
+          doSplit            = true;
+          double step = (Vl - Vf) / (myNbSplit + 1);
+          double val  = Vf + step;
+          for (int i = 1; i <= myNbSplit; i++, val += step)
             split->Append(val);
-          isUSplit = Standard_False;
+          isUSplit = false;
         }
 #ifdef OCCT_DEBUG
         else
@@ -220,7 +221,7 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
   }
 
   if (!doSplit)
-    return Standard_False;
+    return false;
 
   SplitSurf->Init(surf, Uf, Ul, Vf, Vl);
   if (isUSplit)
@@ -230,8 +231,8 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
 
   SplitSurf->Perform(mySegmentMode);
   if (!SplitSurf->Status(ShapeExtend_DONE))
-    return Standard_False;
-  Handle(ShapeExtend_CompositeSurface) Grid = SplitSurf->ResSurfaces();
+    return false;
+  occ::handle<ShapeExtend_CompositeSurface> Grid = SplitSurf->ResSurfaces();
 
   ShapeFix_ComposeShell CompShell;
   CompShell.Init(Grid, L, face, Precision());
@@ -253,12 +254,12 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real
       Context()->Replace(f, myResult);
   }
   myResult = Context()->Apply(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ClosedFaceDivide::SetNbSplitPoints(const Standard_Integer num)
+void ShapeUpgrade_ClosedFaceDivide::SetNbSplitPoints(const int num)
 {
   if (num > 0)
     myNbSplit = num;
@@ -266,7 +267,7 @@ void ShapeUpgrade_ClosedFaceDivide::SetNbSplitPoints(const Standard_Integer num)
 
 //=================================================================================================
 
-Standard_Integer ShapeUpgrade_ClosedFaceDivide::GetNbSplitPoints() const
+int ShapeUpgrade_ClosedFaceDivide::GetNbSplitPoints() const
 {
   return myNbSplit;
 }

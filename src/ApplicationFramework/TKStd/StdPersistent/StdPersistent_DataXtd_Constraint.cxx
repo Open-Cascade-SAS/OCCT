@@ -20,7 +20,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_DataXtd_Constraint::Import(const Handle(TDataXtd_Constraint)& theAttribute) const
+void StdPersistent_DataXtd_Constraint::Import(const occ::handle<TDataXtd_Constraint>& theAttribute) const
 {
   theAttribute->SetType(static_cast<TDataXtd_ConstraintEnum>(myType));
   theAttribute->Reversed(myIsReversed);
@@ -29,27 +29,27 @@ void StdPersistent_DataXtd_Constraint::Import(const Handle(TDataXtd_Constraint)&
 
   if (myGeometries)
   {
-    Handle(StdLPersistent_HArray1OfPersistent) aGeometries = myGeometries->Array();
-    for (Standard_Integer i = 1; i <= aGeometries->Length(); i++)
+    occ::handle<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>> aGeometries = myGeometries->Array();
+    for (int i = 1; i <= aGeometries->Length(); i++)
     {
-      Handle(StdObjMgt_Persistent) aPGeometry = aGeometries->Value(i);
+      occ::handle<StdObjMgt_Persistent> aPGeometry = aGeometries->Value(i);
       if (aPGeometry)
       {
-        Handle(TDF_Attribute) aTGeometry = aPGeometry->GetAttribute();
-        theAttribute->SetGeometry(i, Handle(TNaming_NamedShape)::DownCast(aTGeometry));
+        occ::handle<TDF_Attribute> aTGeometry = aPGeometry->GetAttribute();
+        theAttribute->SetGeometry(i, occ::down_cast<TNaming_NamedShape>(aTGeometry));
       }
     }
   }
 
   if (myValue)
   {
-    Handle(TDF_Attribute) aValue = myValue->GetAttribute();
-    theAttribute->SetValue(Handle(TDataStd_Real)::DownCast(aValue));
+    occ::handle<TDF_Attribute> aValue = myValue->GetAttribute();
+    theAttribute->SetValue(occ::down_cast<TDataStd_Real>(aValue));
   }
 
   if (myPlane)
   {
-    Handle(TDF_Attribute) aPlane = myPlane->GetAttribute();
-    theAttribute->SetPlane(Handle(TNaming_NamedShape)::DownCast(aPlane));
+    occ::handle<TDF_Attribute> aPlane = myPlane->GetAttribute();
+    theAttribute->SetPlane(occ::down_cast<TNaming_NamedShape>(aPlane));
   }
 }

@@ -32,10 +32,10 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground()
 //=================================================================================================
 
 Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
-                                                   Standard_ShortReal theCloudiness,
-                                                   Standard_ShortReal theTime,
-                                                   Standard_ShortReal theFogginess,
-                                                   Standard_Integer   theSize)
+                                                   float theCloudiness,
+                                                   float theTime,
+                                                   float theFogginess,
+                                                   int   theSize)
     : mySunDirection(theSunDirection),
       myCloudiness(theCloudiness),
       myTime(theTime),
@@ -62,7 +62,7 @@ Aspect_SkydomeBackground::~Aspect_SkydomeBackground()
 
 //=================================================================================================
 
-void Aspect_SkydomeBackground::SetCloudiness(Standard_ShortReal theCloudiness)
+void Aspect_SkydomeBackground::SetCloudiness(float theCloudiness)
 {
   Standard_RangeError_Raise_if(
     theCloudiness < 0,
@@ -72,7 +72,7 @@ void Aspect_SkydomeBackground::SetCloudiness(Standard_ShortReal theCloudiness)
 
 //=================================================================================================
 
-void Aspect_SkydomeBackground::SetFogginess(Standard_ShortReal theFogginess)
+void Aspect_SkydomeBackground::SetFogginess(float theFogginess)
 {
   Standard_RangeError_Raise_if(theFogginess < 0,
                                "Aspect_SkydomeBackground::SetFogginess() theFoggines must be >= 0");
@@ -81,7 +81,7 @@ void Aspect_SkydomeBackground::SetFogginess(Standard_ShortReal theFogginess)
 
 //=================================================================================================
 
-void Aspect_SkydomeBackground::SetSize(Standard_Integer theSize)
+void Aspect_SkydomeBackground::SetSize(int theSize)
 {
   Standard_RangeError_Raise_if(theSize <= 0,
                                "Aspect_SkydomeBackground::SetSize() theSize must be > 0");
@@ -91,7 +91,7 @@ void Aspect_SkydomeBackground::SetSize(Standard_Integer theSize)
 //=================================================================================================
 
 void Aspect_SkydomeBackground::DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth) const
+                                        int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Aspect_GradientBackground)
 

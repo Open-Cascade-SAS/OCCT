@@ -35,31 +35,31 @@ public:
     return thePolygon.Bounding();
   }
 
-  static Standard_Real DeflectionOverEstimation(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
+  static double DeflectionOverEstimation(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
   {
     return thePolygon.DeflectionOverEstimation();
   }
 
-  static Standard_Boolean Closed(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
+  static bool Closed(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
   {
     return thePolygon.Closed();
   }
 
-  static Standard_Integer NbSegments(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
+  static int NbSegments(const HLRBRep_ThePolygonOfInterCSurf& thePolygon)
   {
     return thePolygon.NbSegments();
   }
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& BeginOfSeg(const HLRBRep_ThePolygonOfInterCSurf& thePolygon,
-                                  const Standard_Integer                Index)
+                                  const int                Index)
   {
     return thePolygon.BeginOfSeg(Index);
   }
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& EndOfSeg(const HLRBRep_ThePolygonOfInterCSurf& thePolygon,
-                                const Standard_Integer                Index)
+                                const int                Index)
   {
     return thePolygon.EndOfSeg(Index);
   }

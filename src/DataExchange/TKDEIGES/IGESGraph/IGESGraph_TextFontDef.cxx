@@ -26,20 +26,20 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextFontDef, IGESData_IGESEntity)
 
 IGESGraph_TextFontDef::IGESGraph_TextFontDef() {}
 
-void IGESGraph_TextFontDef::Init(const Standard_Integer                  aFontCode,
-                                 const Handle(TCollection_HAsciiString)& aFontName,
-                                 const Standard_Integer                  aSupersededFont,
-                                 const Handle(IGESGraph_TextFontDef)&    aSupersededEntity,
-                                 const Standard_Integer                  aScale,
-                                 const Handle(TColStd_HArray1OfInteger)& allASCIICodes,
-                                 const Handle(TColStd_HArray1OfInteger)& allNextCharX,
-                                 const Handle(TColStd_HArray1OfInteger)& allNextCharY,
-                                 const Handle(TColStd_HArray1OfInteger)& allPenMotions,
-                                 const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allPenFlags,
-                                 const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allMovePenToX,
-                                 const Handle(IGESBasic_HArray1OfHArray1OfInteger)& allMovePenToY)
+void IGESGraph_TextFontDef::Init(const int                  aFontCode,
+                                 const occ::handle<TCollection_HAsciiString>& aFontName,
+                                 const int                  aSupersededFont,
+                                 const occ::handle<IGESGraph_TextFontDef>&    aSupersededEntity,
+                                 const int                  aScale,
+                                 const occ::handle<NCollection_HArray1<int>>& allASCIICodes,
+                                 const occ::handle<NCollection_HArray1<int>>& allNextCharX,
+                                 const occ::handle<NCollection_HArray1<int>>& allNextCharY,
+                                 const occ::handle<NCollection_HArray1<int>>& allPenMotions,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allPenFlags,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToX,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToY)
 {
-  Standard_Integer Len = allASCIICodes->Length();
+  int Len = allASCIICodes->Length();
   if (allASCIICodes->Lower() != 1 || (allNextCharX->Lower() != 1 || allNextCharX->Length() != Len)
       || (allNextCharY->Lower() != 1 || allNextCharY->Length() != Len)
       || (allPenMotions->Lower() != 1 || allPenMotions->Length() != Len)
@@ -63,71 +63,71 @@ void IGESGraph_TextFontDef::Init(const Standard_Integer                  aFontCo
   InitTypeAndForm(310, 0);
 }
 
-Standard_Integer IGESGraph_TextFontDef::FontCode() const
+int IGESGraph_TextFontDef::FontCode() const
 {
   return theFontCode;
 }
 
-Handle(TCollection_HAsciiString) IGESGraph_TextFontDef::FontName() const
+occ::handle<TCollection_HAsciiString> IGESGraph_TextFontDef::FontName() const
 {
   return theFontName;
 }
 
-Standard_Boolean IGESGraph_TextFontDef::IsSupersededFontEntity() const
+bool IGESGraph_TextFontDef::IsSupersededFontEntity() const
 {
   return (!theSupersededFontEntity.IsNull());
 }
 
-Standard_Integer IGESGraph_TextFontDef::SupersededFontCode() const
+int IGESGraph_TextFontDef::SupersededFontCode() const
 {
   return theSupersededFontCode;
 }
 
-Handle(IGESGraph_TextFontDef) IGESGraph_TextFontDef::SupersededFontEntity() const
+occ::handle<IGESGraph_TextFontDef> IGESGraph_TextFontDef::SupersededFontEntity() const
 {
   return theSupersededFontEntity;
 }
 
-Standard_Integer IGESGraph_TextFontDef::Scale() const
+int IGESGraph_TextFontDef::Scale() const
 {
   return theScale;
 }
 
-Standard_Integer IGESGraph_TextFontDef::NbCharacters() const
+int IGESGraph_TextFontDef::NbCharacters() const
 {
   return (theASCIICodes->Length());
 }
 
-Standard_Integer IGESGraph_TextFontDef::ASCIICode(const Standard_Integer Chnum) const
+int IGESGraph_TextFontDef::ASCIICode(const int Chnum) const
 {
   return (theASCIICodes->Value(Chnum));
 }
 
-void IGESGraph_TextFontDef::NextCharOrigin(const Standard_Integer Chnum,
-                                           Standard_Integer&      NX,
-                                           Standard_Integer&      NY) const
+void IGESGraph_TextFontDef::NextCharOrigin(const int Chnum,
+                                           int&      NX,
+                                           int&      NY) const
 {
   NX = theNextCharOriginX->Value(Chnum);
   NY = theNextCharOriginY->Value(Chnum);
 }
 
-Standard_Integer IGESGraph_TextFontDef::NbPenMotions(const Standard_Integer Chnum) const
+int IGESGraph_TextFontDef::NbPenMotions(const int Chnum) const
 {
   return (theNbPenMotions->Value(Chnum));
 }
 
-Standard_Boolean IGESGraph_TextFontDef::IsPenUp(const Standard_Integer Chnum,
-                                                const Standard_Integer Motionnum) const
+bool IGESGraph_TextFontDef::IsPenUp(const int Chnum,
+                                                const int Motionnum) const
 {
-  Handle(TColStd_HArray1OfInteger) MotionArr = thePenMotions->Value(Chnum);
-  Standard_Integer                 PenStatus = MotionArr->Value(Motionnum);
+  occ::handle<NCollection_HArray1<int>> MotionArr = thePenMotions->Value(Chnum);
+  int                 PenStatus = MotionArr->Value(Motionnum);
   return (PenStatus == 1);
 }
 
-void IGESGraph_TextFontDef::NextPenPosition(const Standard_Integer Chnum,
-                                            const Standard_Integer Motionnum,
-                                            Standard_Integer&      IX,
-                                            Standard_Integer&      IY) const
+void IGESGraph_TextFontDef::NextPenPosition(const int Chnum,
+                                            const int Motionnum,
+                                            int&      IX,
+                                            int&      IY) const
 {
   IX = thePenMovesToX->Value(Chnum)->Value(Motionnum);
   IY = thePenMovesToY->Value(Chnum)->Value(Motionnum);

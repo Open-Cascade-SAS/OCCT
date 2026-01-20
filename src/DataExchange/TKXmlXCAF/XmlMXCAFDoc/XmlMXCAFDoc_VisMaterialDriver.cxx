@@ -97,7 +97,7 @@ static Graphic3d_AlphaMode alphaModeFromString(const char* theMode)
 //! Encode short real value.
 static void writeReal(XmlObjMgt_Persistent&      theTarget,
                       const XmlObjMgt_DOMString& theName,
-                      const Standard_ShortReal   theValue)
+                      const float   theValue)
 {
   theTarget.Element().setAttribute(theName, TCollection_AsciiString(theValue).ToCString());
 }
@@ -105,12 +105,12 @@ static void writeReal(XmlObjMgt_Persistent&      theTarget,
 //! Encode short real value.
 static bool readReal(const XmlObjMgt_Element&   theElement,
                      const XmlObjMgt_DOMString& theName,
-                     Standard_ShortReal&        theValue)
+                     float&        theValue)
 {
-  Standard_Real aValue = 0.0;
+  double aValue = 0.0;
   if (XmlObjMgt::GetReal(theElement.getAttribute(theName), aValue))
   {
-    theValue = (Standard_ShortReal)aValue;
+    theValue = (float)aValue;
     return true;
   }
   return false;
@@ -119,7 +119,7 @@ static bool readReal(const XmlObjMgt_Element&   theElement,
 //! Encode vec3.
 static void writeVec3(XmlObjMgt_Persistent&      theTarget,
                       const XmlObjMgt_DOMString& theName,
-                      const Graphic3d_Vec3&      theVec3)
+                      const NCollection_Vec3<float>&      theVec3)
 {
   TCollection_AsciiString aString =
     TCollection_AsciiString() + theVec3[0] + " " + theVec3[1] + " " + theVec3[2];
@@ -129,9 +129,9 @@ static void writeVec3(XmlObjMgt_Persistent&      theTarget,
 //! Decode vec3.
 static bool readVec3(const XmlObjMgt_Element&   theElement,
                      const XmlObjMgt_DOMString& theName,
-                     Graphic3d_Vec3&            theVec3)
+                     NCollection_Vec3<float>&            theVec3)
 {
-  Graphic3d_Vec3 aVec3;
+  NCollection_Vec3<float> aVec3;
   LDOMString     aString = theElement.getAttribute(theName);
   const char*    aPos    = aString.GetString();
   char*          aNext   = NULL;
@@ -153,7 +153,7 @@ static bool readColor(const XmlObjMgt_Element&   theElement,
                       const XmlObjMgt_DOMString& theName,
                       Quantity_Color&            theColor)
 {
-  Graphic3d_Vec3 aVec3;
+  NCollection_Vec3<float> aVec3;
   if (readVec3(theElement, theName, aVec3))
   {
     theColor = Quantity_Color(aVec3);
@@ -165,7 +165,7 @@ static bool readColor(const XmlObjMgt_Element&   theElement,
 //! Encode vec4.
 static void writeVec4(XmlObjMgt_Persistent&      theTarget,
                       const XmlObjMgt_DOMString& theName,
-                      const Graphic3d_Vec4&      theVec4)
+                      const NCollection_Vec4<float>&      theVec4)
 {
   TCollection_AsciiString aString =
     TCollection_AsciiString() + theVec4[0] + " " + theVec4[1] + " " + theVec4[2] + " " + theVec4[3];
@@ -175,9 +175,9 @@ static void writeVec4(XmlObjMgt_Persistent&      theTarget,
 //! Decode vec34
 static bool readVec4(const XmlObjMgt_Element&   theElement,
                      const XmlObjMgt_DOMString& theName,
-                     Graphic3d_Vec4&            theVec4)
+                     NCollection_Vec4<float>&            theVec4)
 {
-  Graphic3d_Vec4 aVec4;
+  NCollection_Vec4<float> aVec4;
   LDOMString     aString = theElement.getAttribute(theName);
   const char*    aPos    = aString.GetString();
   char*          aNext   = NULL;
@@ -201,7 +201,7 @@ static bool readColor(const XmlObjMgt_Element&   theElement,
                       const XmlObjMgt_DOMString& theName,
                       Quantity_ColorRGBA&        theColor)
 {
-  Graphic3d_Vec4 aVec4;
+  NCollection_Vec4<float> aVec4;
   if (readVec4(theElement, theName, aVec4))
   {
     theColor = Quantity_ColorRGBA(aVec4);
@@ -213,7 +213,7 @@ static bool readColor(const XmlObjMgt_Element&   theElement,
 //! Encode texture path.
 static void writeTexture(XmlObjMgt_Persistent&        theTarget,
                          const XmlObjMgt_DOMString&   theName,
-                         const Handle(Image_Texture)& theImage)
+                         const occ::handle<Image_Texture>& theImage)
 {
   if (theImage.IsNull())
   {
@@ -242,7 +242,7 @@ static void writeTexture(XmlObjMgt_Persistent&        theTarget,
 //! Decode texture path.
 static void readTexture(const XmlObjMgt_Element&   theElement,
                         const XmlObjMgt_DOMString& theName,
-                        Handle(Image_Texture)&     theImage)
+                        occ::handle<Image_Texture>&     theImage)
 {
   TCollection_AsciiString aStr(theElement.getAttribute(theName).GetString());
   if (!aStr.IsEmpty())
@@ -257,7 +257,7 @@ static void readTexture(const XmlObjMgt_Element&   theElement,
   }
   TCollection_AsciiString aFilePath(anElement.getAttribute(::FilePath()).GetString());
   TCollection_AsciiString anId(anElement.getAttribute(::TextureId()).GetString());
-  Standard_Integer        anOffset = -1, aLength = -1;
+  int        anOffset = -1, aLength = -1;
   if (!aFilePath.IsEmpty())
   {
     anElement.getAttribute(::Offset()).GetInteger(anOffset);
@@ -279,7 +279,7 @@ static void readTexture(const XmlObjMgt_Element&   theElement,
 //=================================================================================================
 
 XmlMXCAFDoc_VisMaterialDriver::XmlMXCAFDoc_VisMaterialDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "VisMaterial")
 {
   //
@@ -287,7 +287,7 @@ XmlMXCAFDoc_VisMaterialDriver::XmlMXCAFDoc_VisMaterialDriver(
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_VisMaterialDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_VisMaterialDriver::NewEmpty() const
 {
   return new XCAFDoc_VisMaterial();
 }
@@ -296,16 +296,16 @@ Handle(TDF_Attribute) XmlMXCAFDoc_VisMaterialDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_VisMaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_VisMaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                      const occ::handle<TDF_Attribute>& theTarget,
                                                       XmlObjMgt_RRelocationTable&) const
 {
-  Handle(XCAFDoc_VisMaterial) aMat = Handle(XCAFDoc_VisMaterial)::DownCast(theTarget);
+  occ::handle<XCAFDoc_VisMaterial> aMat = occ::down_cast<XCAFDoc_VisMaterial>(theTarget);
 
   const XmlObjMgt_DOMString aDoubleSidedStr = theSource.Element().getAttribute(::IsDoubleSided());
-  Standard_Integer          aDoubleSidedInt = 1;
+  int          aDoubleSidedInt = 1;
   aDoubleSidedStr.GetInteger(aDoubleSidedInt);
-  Standard_ShortReal anAlphaCutOff = 0.5f;
+  float anAlphaCutOff = 0.5f;
   readReal(theSource, ::AlphaCutOff(), anAlphaCutOff);
   switch (aDoubleSidedInt)
   {
@@ -359,19 +359,19 @@ Standard_Boolean XmlMXCAFDoc_VisMaterialDriver::Paste(const XmlObjMgt_Persistent
     readTexture(theSource, ::DiffuseTexture(), aComMat.DiffuseTexture);
     aMat->SetCommonMaterial(aComMat);
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_VisMaterialDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_VisMaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           XmlObjMgt_Persistent&        theTarget,
                                           XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_VisMaterial) aMat            = Handle(XCAFDoc_VisMaterial)::DownCast(theSource);
-  Standard_Integer            aDoubleSidedInt = 0;
+  occ::handle<XCAFDoc_VisMaterial> aMat            = occ::down_cast<XCAFDoc_VisMaterial>(theSource);
+  int            aDoubleSidedInt = 0;
   switch (aMat->FaceCulling())
   {
     case Graphic3d_TypeOfBackfacingModel_DoubleSided:

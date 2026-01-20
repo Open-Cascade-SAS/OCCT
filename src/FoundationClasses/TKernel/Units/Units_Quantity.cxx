@@ -22,16 +22,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_Quantity, Standard_Transient)
 
 //=================================================================================================
 
-Standard_Boolean Units_Quantity::IsEqual(const Standard_CString astring) const
+bool Units_Quantity::IsEqual(const char* const astring) const
 {
   return (Name() == astring);
 }
 
 //=================================================================================================
 
-void Units_Quantity::Dump(const Standard_Integer ashift, const Standard_Integer alevel) const
+void Units_Quantity::Dump(const int ashift, const int alevel) const
 {
-  Standard_Integer index;
+  int index;
   std::cout << std::endl;
   for (int i = 0; i < ashift; i++)
     std::cout << "  ";
@@ -49,7 +49,7 @@ void Units_Quantity::Dump(const Standard_Integer ashift, const Standard_Integer 
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator==(const Handle(Units_Quantity)& aquantity, const Standard_CString astring)
+bool operator==(const occ::handle<Units_Quantity>& aquantity, const char* const astring)
 {
   return aquantity->IsEqual(astring);
 }

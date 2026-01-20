@@ -47,7 +47,7 @@ public:
   //!   Message::SendWarning() << "My Warning with " << theCounter << " arguments";
   //!   Message::SendFail ("My Failure"); // short-cut for Message_Fail
   //! @endcode
-  Standard_EXPORT static const Handle(Message_Messenger)& DefaultMessenger();
+  Standard_EXPORT static const occ::handle<Message_Messenger>& DefaultMessenger();
 
 public:
   //!@name Short-cuts to DefaultMessenger
@@ -103,32 +103,32 @@ public:
   //! 1. (5, 12, 26.3345) returns "05h:12m:26.33s",
   //! 2. (0,  6, 34.496 ) returns "06m:34.50s",
   //! 3. (0,  0,  4.5   ) returns "4.50s"
-  Standard_EXPORT static TCollection_AsciiString FillTime(const Standard_Integer Hour,
-                                                          const Standard_Integer Minute,
-                                                          const Standard_Real    Second);
+  Standard_EXPORT static TCollection_AsciiString FillTime(const int Hour,
+                                                          const int Minute,
+                                                          const double    Second);
 
 public:
   //! returns the only one instance of Report
   //! When theToCreate is true - automatically creates message report when not exist.
-  Standard_EXPORT static const Handle(Message_Report)& DefaultReport(
-    const Standard_Boolean theToCreate = Standard_False);
+  Standard_EXPORT static const occ::handle<Message_Report>& DefaultReport(
+    const bool theToCreate = false);
 
   //! Determines the metric from the given string identifier.
   //! @param theString string identifier
   //! @param theType detected type of metric
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static Standard_Boolean MetricFromString(const Standard_CString theString,
+  Standard_EXPORT static bool MetricFromString(const char* const theString,
                                                            Message_MetricType&    theType);
 
   //! Returns the string name for a given metric type.
   //! @param theType metric type
   //! @return string identifier from the list of Message_MetricType
-  Standard_EXPORT static Standard_CString MetricToString(const Message_MetricType theType);
+  Standard_EXPORT static const char* MetricToString(const Message_MetricType theType);
 
   //! Returns the metric type from the given string identifier.
   //! @param theString string identifier
   //! @return metric type or Message_MetricType_None if string identifier is invalid
-  static Message_MetricType MetricFromString(const Standard_CString theString)
+  static Message_MetricType MetricFromString(const char* const theString)
   {
     Message_MetricType aMetric = Message_MetricType_None;
     MetricFromString(theString, aMetric);
@@ -139,14 +139,14 @@ public:
   //! @param[in] theMetric  message metric
   //! @param[out] theMemInfo  filled memory info type
   //! @return true if converted
-  static Standard_EXPORT Standard_Boolean ToOSDMetric(const Message_MetricType theMetric,
+  static Standard_EXPORT bool ToOSDMetric(const Message_MetricType theMetric,
                                                       OSD_MemInfo::Counter&    theMemInfo);
 
   //! Converts OSD memory info type to message metric.
   //! @param theMemInfo [int] memory info type
   //! @param[out] theMetric  filled message metric
   //! @return true if converted
-  static Standard_EXPORT Standard_Boolean ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
+  static Standard_EXPORT bool ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
                                                           Message_MetricType&        theMetric);
 };
 

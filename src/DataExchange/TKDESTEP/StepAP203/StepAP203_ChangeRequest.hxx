@@ -19,12 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfChangeRequestItem.hxx>
+#include <StepAP203_ChangeRequestItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ActionRequestAssignment.hxx>
 class StepBasic_VersionedActionRequest;
-
-class StepAP203_ChangeRequest;
-DEFINE_STANDARD_HANDLE(StepAP203_ChangeRequest, StepBasic_ActionRequestAssignment)
 
 //! Representation of STEP entity ChangeRequest
 class StepAP203_ChangeRequest : public StepBasic_ActionRequestAssignment
@@ -36,20 +35,19 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest,
-    const Handle(StepAP203_HArray1OfChangeRequestItem)& aItems);
+    const occ::handle<StepBasic_VersionedActionRequest>& aActionRequestAssignment_AssignedActionRequest,
+    const occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfChangeRequestItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfChangeRequestItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_ChangeRequest, StepBasic_ActionRequestAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfChangeRequestItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>> theItems;
 };
 
 #endif // _StepAP203_ChangeRequest_HeaderFile

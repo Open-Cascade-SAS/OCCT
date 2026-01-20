@@ -45,7 +45,7 @@ void Geom2d_Geometry::Mirror(const gp_Ax2d& A)
   Transform(T);
 }
 
-void Geom2d_Geometry::Rotate(const gp_Pnt2d& P, const Standard_Real Ang)
+void Geom2d_Geometry::Rotate(const gp_Pnt2d& P, const double Ang)
 {
 
   Trsf2d T;
@@ -53,7 +53,7 @@ void Geom2d_Geometry::Rotate(const gp_Pnt2d& P, const Standard_Real Ang)
   Transform(T);
 }
 
-void Geom2d_Geometry::Scale(const gp_Pnt2d& P, const Standard_Real S)
+void Geom2d_Geometry::Scale(const gp_Pnt2d& P, const double S)
 {
 
   Trsf2d T;
@@ -76,56 +76,56 @@ void Geom2d_Geometry::Translate(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
   Translate(V);
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Mirrored(const gp_Pnt2d& P) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Mirrored(const gp_Pnt2d& P) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Mirror(P);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Mirrored(const gp_Ax2d& A) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Mirrored(const gp_Ax2d& A) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Mirror(A);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Rotated(const gp_Pnt2d& P, const Standard_Real Ang) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Rotated(const gp_Pnt2d& P, const double Ang) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Rotate(P, Ang);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Scaled(const gp_Pnt2d& P, const Standard_Real S) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Scaled(const gp_Pnt2d& P, const double S) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Scale(P, S);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Transformed(const gp_Trsf2d& T) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Transformed(const gp_Trsf2d& T) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Transform(T);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Translated(const gp_Vec2d& V) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Translated(const gp_Vec2d& V) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Translate(V);
   return G;
 }
 
-Handle(Geom2d_Geometry) Geom2d_Geometry::Translated(const gp_Pnt2d& P1, const gp_Pnt2d& P2) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Translated(const gp_Pnt2d& P1, const gp_Pnt2d& P2) const
 {
-  Handle(Geom2d_Geometry) G = Copy();
+  occ::handle<Geom2d_Geometry> G = Copy();
   G->Translate(P1, P2);
   return G;
 }
 
-void Geom2d_Geometry::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Geom2d_Geometry::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

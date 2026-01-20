@@ -50,7 +50,6 @@ public:
   Standard_EXPORT const TopoDS_Vertex& Vertex();
   Standard_EXPORT                      operator TopoDS_Vertex();
 
-protected:
 private:
   BRepLib_MakeVertex myMakeVertex;
 };

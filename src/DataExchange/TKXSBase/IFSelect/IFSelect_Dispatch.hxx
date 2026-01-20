@@ -30,9 +30,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class IFGraph_SubPartsIterator;
 
-class IFSelect_Dispatch;
-DEFINE_STANDARD_HANDLE(IFSelect_Dispatch, Standard_Transient)
-
 //! This class allows to describe how a set of Entities has to be
 //! dispatched into resulting Packets : a Packet is a sub-set of
 //! the initial set of entities.
@@ -55,22 +52,22 @@ public:
   //! Sets a Root Name as an HAsciiString
   //! To reset it, give a Null Handle (then, a ShareOut will have
   //! to define the Default Root Name)
-  Standard_EXPORT void SetRootName(const Handle(TCollection_HAsciiString)& name);
+  Standard_EXPORT void SetRootName(const occ::handle<TCollection_HAsciiString>& name);
 
   //! Returns True if a specific Root Name has been set
   //! (else, the Default Root Name has to be used)
-  Standard_EXPORT Standard_Boolean HasRootName() const;
+  Standard_EXPORT bool HasRootName() const;
 
   //! Returns the Root Name for files produced by this dispatch
   //! It is empty if it has not been set or if it has been reset
-  Standard_EXPORT const Handle(TCollection_HAsciiString)& RootName() const;
+  Standard_EXPORT const occ::handle<TCollection_HAsciiString>& RootName() const;
 
   //! Stores (or Changes) the Final Selection for a Dispatch
-  Standard_EXPORT void SetFinalSelection(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetFinalSelection(const occ::handle<IFSelect_Selection>& sel);
 
   //! Returns the Final Selection of a Dispatch
   //! we 'd like : C++ : return const &
-  Standard_EXPORT Handle(IFSelect_Selection) FinalSelection() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> FinalSelection() const;
 
   //! Returns the complete list of source Selections (starting
   //! from FinalSelection)
@@ -82,7 +79,7 @@ public:
   //! (to attach a RemainderFromDispatch Selection is not allowed if
   //! answer is True).
   //! Default answer given here is False (can be redefined)
-  Standard_EXPORT virtual Standard_Boolean CanHaveRemainder() const;
+  Standard_EXPORT virtual bool CanHaveRemainder() const;
 
   //! Returns True if a Dispatch generates a count of Packets always
   //! less than or equal to a maximum value : it can be computed
@@ -90,8 +87,8 @@ public:
   //! If answer is False, no limited maximum is expected for account
   //! If answer is True, expected maximum is given in argument <max>
   //! Default answer given here is False (can be redefined)
-  Standard_EXPORT virtual Standard_Boolean LimitedMax(const Standard_Integer nbent,
-                                                      Standard_Integer&      max) const;
+  Standard_EXPORT virtual bool LimitedMax(const int nbent,
+                                                      int&      max) const;
 
   //! Returns a text which defines the way a Dispatch produces
   //! packets (which will become files) from its Input
@@ -124,10 +121,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_Dispatch, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) thename;
-  Handle(IFSelect_Selection)       thefinal;
+  occ::handle<TCollection_HAsciiString> thename;
+  occ::handle<IFSelect_Selection>       thefinal;
 };
 
 #endif // _IFSelect_Dispatch_HeaderFile

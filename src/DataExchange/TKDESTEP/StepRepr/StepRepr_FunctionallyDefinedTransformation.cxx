@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_FunctionallyDefinedTransformation, Standard_
 StepRepr_FunctionallyDefinedTransformation::StepRepr_FunctionallyDefinedTransformation() {}
 
 void StepRepr_FunctionallyDefinedTransformation::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   // --- classe own fields ---
   name        = aName;
@@ -28,23 +28,23 @@ void StepRepr_FunctionallyDefinedTransformation::Init(
 }
 
 void StepRepr_FunctionallyDefinedTransformation::SetName(
-  const Handle(TCollection_HAsciiString)& aName)
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepRepr_FunctionallyDefinedTransformation::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_FunctionallyDefinedTransformation::Name() const
 {
   return name;
 }
 
 void StepRepr_FunctionallyDefinedTransformation::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(TCollection_HAsciiString) StepRepr_FunctionallyDefinedTransformation::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_FunctionallyDefinedTransformation::Description() const
 {
   return description;
 }

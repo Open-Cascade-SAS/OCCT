@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColGeom_HArray1OfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <ShapeUpgrade_SplitCurve.hxx>
 class Geom_Curve;
-
-class ShapeUpgrade_SplitCurve3d;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitCurve3d, ShapeUpgrade_SplitCurve)
 
 //! Splits a 3d curve with a criterion.
 class ShapeUpgrade_SplitCurve3d : public ShapeUpgrade_SplitCurve
@@ -36,28 +35,27 @@ public:
   Standard_EXPORT ShapeUpgrade_SplitCurve3d();
 
   //! Initializes with curve with its first and last parameters.
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& C);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C);
 
   //! Initializes with curve with its parameters.
-  Standard_EXPORT void Init(const Handle(Geom_Curve)& C,
-                            const Standard_Real       First,
-                            const Standard_Real       Last);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C,
+                            const double       First,
+                            const double       Last);
 
   //! If Segment is True, the result is composed with
   //! segments of the curve bounded by the SplitValues. If
   //! Segment is False, the result is composed with trimmed
   //! Curves all based on the same complete curve.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const bool Segment) override;
 
-  Standard_EXPORT const Handle(TColGeom_HArray1OfCurve)& GetCurves() const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& GetCurves() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3d, ShapeUpgrade_SplitCurve)
 
 protected:
-  Handle(Geom_Curve)              myCurve;
-  Handle(TColGeom_HArray1OfCurve) myResultingCurves;
+  occ::handle<Geom_Curve>              myCurve;
+  occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> myResultingCurves;
 
-private:
 };
 
 #endif // _ShapeUpgrade_SplitCurve3d_HeaderFile

@@ -4,9 +4,7 @@ set(OCCT_IGESGeom_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESGeom_FILES
   IGESGeom.cxx
   IGESGeom.hxx
-  IGESGeom_Array1OfBoundary.hxx
-  IGESGeom_Array1OfCurveOnSurface.hxx
-  IGESGeom_Array1OfTransformationMatrix.hxx
+
   IGESGeom_Boundary.cxx
   IGESGeom_Boundary.hxx
   IGESGeom_BoundedSurface.cxx
@@ -31,9 +29,7 @@ set(OCCT_IGESGeom_FILES
   IGESGeom_Flash.hxx
   IGESGeom_GeneralModule.cxx
   IGESGeom_GeneralModule.hxx
-  IGESGeom_HArray1OfBoundary.hxx
-  IGESGeom_HArray1OfCurveOnSurface.hxx
-  IGESGeom_HArray1OfTransformationMatrix.hxx
+
   IGESGeom_Line.cxx
   IGESGeom_Line.hxx
   IGESGeom_OffsetCurve.cxx

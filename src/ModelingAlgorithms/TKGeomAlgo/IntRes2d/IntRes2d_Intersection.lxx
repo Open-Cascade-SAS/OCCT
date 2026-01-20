@@ -17,7 +17,7 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntRes2d_Intersection::IsDone() const
+inline bool IntRes2d_Intersection::IsDone() const
 {
   return done;
 }
@@ -25,19 +25,19 @@ inline Standard_Boolean IntRes2d_Intersection::IsDone() const
 //----------------------------------------------------------------------
 inline IntRes2d_Intersection::IntRes2d_Intersection()
 {
-  done = reverse = Standard_False;
+  done = reverse = false;
 }
 
 //----------------------------------------------------------------------
 inline IntRes2d_Intersection::IntRes2d_Intersection(const IntRes2d_Intersection& Other)
 {
-  done = reverse = Standard_False;
+  done = reverse = false;
   lpnt           = Other.lpnt;
   lseg           = Other.lseg;
 }
 
 //----------------------------------------------------------------------
-inline Standard_Boolean IntRes2d_Intersection::IsEmpty() const
+inline bool IntRes2d_Intersection::IsEmpty() const
 {
   if (!done)
   {
@@ -47,7 +47,7 @@ inline Standard_Boolean IntRes2d_Intersection::IsEmpty() const
 }
 
 //----------------------------------------------------------------------
-inline Standard_Integer IntRes2d_Intersection::NbPoints() const
+inline int IntRes2d_Intersection::NbPoints() const
 {
   if (!done)
   {
@@ -58,7 +58,7 @@ inline Standard_Integer IntRes2d_Intersection::NbPoints() const
 
 //----------------------------------------------------------------------
 inline const IntRes2d_IntersectionPoint& IntRes2d_Intersection::Point(
-  const Standard_Integer N) const
+  const int N) const
 {
   if (!done)
   {
@@ -68,7 +68,7 @@ inline const IntRes2d_IntersectionPoint& IntRes2d_Intersection::Point(
 }
 
 //----------------------------------------------------------------------
-inline Standard_Integer IntRes2d_Intersection::NbSegments() const
+inline int IntRes2d_Intersection::NbSegments() const
 {
   if (!done)
   {
@@ -79,7 +79,7 @@ inline Standard_Integer IntRes2d_Intersection::NbSegments() const
 
 //----------------------------------------------------------------------
 inline const IntRes2d_IntersectionSegment& IntRes2d_Intersection::Segment(
-  const Standard_Integer N) const
+  const int N) const
 {
   if (!done)
   {
@@ -107,18 +107,18 @@ inline void IntRes2d_Intersection::ResetFields()
   {
     lseg.Clear();
     lpnt.Clear();
-    done = Standard_False;
+    done = false;
   }
 }
 
 //----------------------------------------------------------------------
-inline void IntRes2d_Intersection::SetReversedParameters(const Standard_Boolean flag)
+inline void IntRes2d_Intersection::SetReversedParameters(const bool flag)
 {
   reverse = flag;
 }
 
 //----------------------------------------------------------------------
-inline Standard_Boolean IntRes2d_Intersection::ReversedParameters() const
+inline bool IntRes2d_Intersection::ReversedParameters() const
 {
   return (reverse);
 }

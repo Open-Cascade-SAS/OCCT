@@ -38,16 +38,14 @@ public:
   //! Recognizes a kind of SourceItem select type
   //! 1 -> HAsciiString from TCollection
   //! 0 else
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
-  Standard_EXPORT virtual Handle(StepData_SelectMember) NewMember() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
 
   //! Returns Value as Identifier (or Null if another type)
-  Standard_EXPORT Handle(TCollection_HAsciiString) Identifier() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Identifier() const;
 
-protected:
-private:
 };
 
 #endif // _StepBasic_SourceItem_HeaderFile

@@ -19,12 +19,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_HArray1OfConnectedFaceSet.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
-
-class StepShape_FaceBasedSurfaceModel;
-DEFINE_STANDARD_HANDLE(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
 //! Representation of STEP entity FaceBasedSurfaceModel
 class StepShape_FaceBasedSurfaceModel : public StepGeom_GeometricRepresentationItem
@@ -35,20 +34,19 @@ public:
   Standard_EXPORT StepShape_FaceBasedSurfaceModel();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                            const Handle(StepShape_HArray1OfConnectedFaceSet)& aFbsmFaces);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& aFbsmFaces);
 
   //! Returns field FbsmFaces
-  Standard_EXPORT Handle(StepShape_HArray1OfConnectedFaceSet) FbsmFaces() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> FbsmFaces() const;
 
   //! Set field FbsmFaces
-  Standard_EXPORT void SetFbsmFaces(const Handle(StepShape_HArray1OfConnectedFaceSet)& FbsmFaces);
+  Standard_EXPORT void SetFbsmFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& FbsmFaces);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfConnectedFaceSet) theFbsmFaces;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> theFbsmFaces;
 };
 
 #endif // _StepShape_FaceBasedSurfaceModel_HeaderFile

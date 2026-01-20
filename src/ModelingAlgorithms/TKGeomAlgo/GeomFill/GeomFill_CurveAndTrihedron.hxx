@@ -22,15 +22,14 @@
 #include <gp_Mat.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class GeomFill_TrihedronLaw;
-
-class GeomFill_CurveAndTrihedron;
-DEFINE_STANDARD_HANDLE(GeomFill_CurveAndTrihedron, GeomFill_LocationLaw)
 
 //! Define location law with an TrihedronLaw and an
 //! curve
@@ -43,115 +42,114 @@ class GeomFill_CurveAndTrihedron : public GeomFill_LocationLaw
 {
 
 public:
-  Standard_EXPORT GeomFill_CurveAndTrihedron(const Handle(GeomFill_TrihedronLaw)& Trihedron);
+  Standard_EXPORT GeomFill_CurveAndTrihedron(const occ::handle<GeomFill_TrihedronLaw>& Trihedron);
 
   //! initialize curve of trihedron law
-  //! @return Standard_True in case if execution end correctly
-  Standard_EXPORT virtual Standard_Boolean SetCurve(const Handle(Adaptor3d_Curve)& C)
-    Standard_OVERRIDE;
+  //! @return true in case if execution end correctly
+  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C)
+    override;
 
-  Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Adaptor3d_Curve>& GetCurve() const override;
 
   //! Set a transformation Matrix like the law M(t) become
   //! Mat * M(t)
-  Standard_EXPORT virtual void SetTrsf(const gp_Mat& Transfo) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTrsf(const gp_Mat& Transfo) override;
 
-  Standard_EXPORT virtual Handle(GeomFill_LocationLaw) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<GeomFill_LocationLaw> Copy() const override;
 
   //! compute Location and 2d points
-  Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real Param,
+  Standard_EXPORT virtual bool D0(const double Param,
                                               gp_Mat&             M,
-                                              gp_Vec&             V) Standard_OVERRIDE;
+                                              gp_Vec&             V) override;
 
   //! compute Location and 2d points
-  Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real   Param,
+  Standard_EXPORT virtual bool D0(const double   Param,
                                               gp_Mat&               M,
                                               gp_Vec&               V,
-                                              TColgp_Array1OfPnt2d& Poles2d) Standard_OVERRIDE;
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d) override;
 
   //! compute location 2d points and associated
   //! first derivatives.
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real   Param,
+  Standard_EXPORT virtual bool D1(const double   Param,
                                               gp_Mat&               M,
                                               gp_Vec&               V,
                                               gp_Mat&               DM,
                                               gp_Vec&               DV,
-                                              TColgp_Array1OfPnt2d& Poles2d,
-                                              TColgp_Array1OfVec2d& DPoles2d) Standard_OVERRIDE;
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d) override;
 
   //! compute location 2d points and associated
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real   Param,
+  Standard_EXPORT virtual bool D2(const double   Param,
                                               gp_Mat&               M,
                                               gp_Vec&               V,
                                               gp_Mat&               DM,
                                               gp_Vec&               DV,
                                               gp_Mat&               D2M,
                                               gp_Vec&               D2V,
-                                              TColgp_Array1OfPnt2d& Poles2d,
-                                              TColgp_Array1OfVec2d& DPoles2d,
-                                              TColgp_Array1OfVec2d& D2Poles2d) Standard_OVERRIDE;
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                              NCollection_Array1<gp_Vec2d>& D2Poles2d) override;
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T,
-                                         const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape   S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const Standard_Real First,
-                                           const Standard_Real Last) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetInterval(const double First,
+                                           const double Last) override;
 
   //! Gets the bounds of the parametric interval on
   //! the function
-  Standard_EXPORT virtual void GetInterval(Standard_Real& First,
-                                           Standard_Real& Last) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetInterval(double& First,
+                                           double& Last) const override;
 
   //! Gets the bounds of the function parametric domain.
   //! Warning: This domain it is not modified by the
   //! SetValue method
-  Standard_EXPORT virtual void GetDomain(Standard_Real& First,
-                                         Standard_Real& Last) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetDomain(double& First,
+                                         double& Last) const override;
 
   //! Get the maximum Norm of the matrix-location part. It
   //! is usful to find a good Tolerance to approx M(t).
-  Standard_EXPORT virtual Standard_Real GetMaximalNorm() Standard_OVERRIDE;
+  Standard_EXPORT virtual double GetMaximalNorm() override;
 
   //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational surfaces.
-  Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetAverageLaw(gp_Mat& AM, gp_Vec& AV) override;
 
   //! Say if the Location Law, is an translation of Location
   //! The default implementation is " returns False ".
-  Standard_EXPORT virtual Standard_Boolean IsTranslation(Standard_Real& Error) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsTranslation(double& Error) const
+    override;
 
   //! Say if the Location Law, is a rotation of Location
   //! The default implementation is " returns False ".
-  Standard_EXPORT virtual Standard_Boolean IsRotation(Standard_Real& Error) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsRotation(double& Error) const override;
 
-  Standard_EXPORT virtual void Rotation(gp_Pnt& Center) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Rotation(gp_Pnt& Center) const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_CurveAndTrihedron, GeomFill_LocationLaw)
 
-protected:
 private:
-  Standard_Boolean              WithTrans;
-  Handle(GeomFill_TrihedronLaw) myLaw;
-  Handle(Adaptor3d_Curve)       myCurve;
-  Handle(Adaptor3d_Curve)       myTrimmed;
+  bool              WithTrans;
+  occ::handle<GeomFill_TrihedronLaw> myLaw;
+  occ::handle<Adaptor3d_Curve>       myCurve;
+  occ::handle<Adaptor3d_Curve>       myTrimmed;
   gp_Pnt                        Point;
   gp_Vec                        V1;
   gp_Vec                        V2;

@@ -22,17 +22,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedEdge, StepVisual_TessellatedStr
 
 StepVisual_TessellatedEdge::StepVisual_TessellatedEdge()
 {
-  myHasGeometricLink = Standard_False;
+  myHasGeometricLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedEdge::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theCoordinates,
-  const Standard_Boolean                    theHasGeometricLink,
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const bool                    theHasGeometricLink,
   const StepVisual_EdgeOrCurve&             theGeometricLink,
-  const Handle(TColStd_HArray1OfInteger)&   theLineStrip)
+  const occ::handle<NCollection_HArray1<int>>&   theLineStrip)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 
@@ -53,7 +53,7 @@ void StepVisual_TessellatedEdge::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedEdge::Coordinates() const
+occ::handle<StepVisual_CoordinatesList> StepVisual_TessellatedEdge::Coordinates() const
 {
   return myCoordinates;
 }
@@ -61,7 +61,7 @@ Handle(StepVisual_CoordinatesList) StepVisual_TessellatedEdge::Coordinates() con
 //=================================================================================================
 
 void StepVisual_TessellatedEdge::SetCoordinates(
-  const Handle(StepVisual_CoordinatesList)& theCoordinates)
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
@@ -82,28 +82,28 @@ void StepVisual_TessellatedEdge::SetGeometricLink(const StepVisual_EdgeOrCurve& 
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedEdge::HasGeometricLink() const
+bool StepVisual_TessellatedEdge::HasGeometricLink() const
 {
   return myHasGeometricLink;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TessellatedEdge::LineStrip() const
+occ::handle<NCollection_HArray1<int>> StepVisual_TessellatedEdge::LineStrip() const
 {
   return myLineStrip;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedEdge::SetLineStrip(const Handle(TColStd_HArray1OfInteger)& theLineStrip)
+void StepVisual_TessellatedEdge::SetLineStrip(const occ::handle<NCollection_HArray1<int>>& theLineStrip)
 {
   myLineStrip = theLineStrip;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedEdge::NbLineStrip() const
+int StepVisual_TessellatedEdge::NbLineStrip() const
 {
   if (myLineStrip.IsNull())
   {
@@ -114,7 +114,7 @@ Standard_Integer StepVisual_TessellatedEdge::NbLineStrip() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedEdge::LineStripValue(const Standard_Integer theNum) const
+int StepVisual_TessellatedEdge::LineStripValue(const int theNum) const
 {
   return myLineStrip->Value(theNum);
 }

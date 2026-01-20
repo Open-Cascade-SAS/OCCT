@@ -21,11 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <AppDef_HArray1OfMultiPointConstraint.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <AppDef_Array1OfMultiPointConstraint.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class AppDef_MultiPointConstraint;
 
@@ -63,26 +68,26 @@ public:
   //! called in order for the values of the multipoint
   //! constraint to be taken into account.
   //! An exception is raised if NbMult < 0.
-  Standard_EXPORT AppDef_MultiLine(const Standard_Integer NbMult);
+  Standard_EXPORT AppDef_MultiLine(const int NbMult);
 
   //! Constructs a MultiLine with an array of MultiPointConstraints.
-  Standard_EXPORT AppDef_MultiLine(const AppDef_Array1OfMultiPointConstraint& tabMultiP);
+  Standard_EXPORT AppDef_MultiLine(const NCollection_Array1<AppDef_MultiPointConstraint>& tabMultiP);
 
   //! The MultiLine constructed will have one line of
   //! 3d points without their tangencies.
-  Standard_EXPORT AppDef_MultiLine(const TColgp_Array1OfPnt& tabP3d);
+  Standard_EXPORT AppDef_MultiLine(const NCollection_Array1<gp_Pnt>& tabP3d);
 
   //! The MultiLine constructed will have one line of
   //! 2d points without their tangencies.
-  Standard_EXPORT AppDef_MultiLine(const TColgp_Array1OfPnt2d& tabP2d);
+  Standard_EXPORT AppDef_MultiLine(const NCollection_Array1<gp_Pnt2d>& tabP2d);
 
   //! returns the number of MultiPointConstraints of the
   //! MultiLine.
-  Standard_EXPORT Standard_Integer NbMultiPoints() const;
+  Standard_EXPORT int NbMultiPoints() const;
 
   //! returns the number of Points from MultiPoints composing
   //! the MultiLine.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Sets the value of the parameter for the
   //! MultiPointConstraint at position Index.
@@ -90,19 +95,19 @@ public:
   //! -   Standard_OutOfRange if Index is less
   //! than 0 or Index is greater than the number
   //! of Multipoint constraints in the MultiLine.
-  Standard_EXPORT void SetParameter(const Standard_Integer Index, const Standard_Real U);
+  Standard_EXPORT void SetParameter(const int Index, const double U);
 
   //! It sets the MultiPointConstraint of range Index to the
   //! value MPoint.
   //! An exception is raised if Index < 0 or Index> MPoint.
   //! An exception is raised if the dimensions of the
   //! MultiPoints are different.
-  Standard_EXPORT void SetValue(const Standard_Integer             Index,
+  Standard_EXPORT void SetValue(const int             Index,
                                 const AppDef_MultiPointConstraint& MPoint);
 
   //! returns the MultiPointConstraint of range Index
   //! An exception is raised if Index<0 or Index>MPoint.
-  Standard_EXPORT AppDef_MultiPointConstraint Value(const Standard_Integer Index) const;
+  Standard_EXPORT AppDef_MultiPointConstraint Value(const int Index) const;
 
   //! Prints on the stream o information on the current
   //! state of the object.
@@ -110,9 +115,8 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  Handle(AppDef_HArray1OfMultiPointConstraint) tabMult;
+  occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>> tabMult;
 
-private:
 };
 
 #endif // _AppDef_MultiLine_HeaderFile

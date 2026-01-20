@@ -16,23 +16,39 @@
 #ifndef _FSD_FileHeader_HeaderFile
 #define _FSD_FileHeader_HeaderFile
 
-#include <Standard_PrimitiveTypes.hxx>
+#include <stddef.h>
+
+#include <stdlib.h>
+
+#include <Standard_Macro.hxx>
+
+#include <Standard_Boolean.hxx>
+
+#include <Standard_Integer.hxx>
+
+#include <Standard_Real.hxx>
+
+#include <Standard_Character.hxx>
+
+#include <Standard_ExtCharacter.hxx>
+
+#include <Standard_CString.hxx>
 
 struct FSD_FileHeader
 {
-  Standard_Integer testindian;
-  Standard_Integer binfo;
-  Standard_Integer einfo;
-  Standard_Integer bcomment;
-  Standard_Integer ecomment;
-  Standard_Integer btype;
-  Standard_Integer etype;
-  Standard_Integer broot;
-  Standard_Integer eroot;
-  Standard_Integer bref;
-  Standard_Integer eref;
-  Standard_Integer bdata;
-  Standard_Integer edata;
+  int testindian;
+  int binfo;
+  int einfo;
+  int bcomment;
+  int ecomment;
+  int btype;
+  int etype;
+  int broot;
+  int eroot;
+  int bref;
+  int eref;
+  int bdata;
+  int edata;
 };
 
 #endif

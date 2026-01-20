@@ -18,18 +18,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Date, Standard_Transient)
 
 StepBasic_Date::StepBasic_Date() {}
 
-void StepBasic_Date::Init(const Standard_Integer aYearComponent)
+void StepBasic_Date::Init(const int aYearComponent)
 {
   // --- classe own fields ---
   yearComponent = aYearComponent;
 }
 
-void StepBasic_Date::SetYearComponent(const Standard_Integer aYearComponent)
+void StepBasic_Date::SetYearComponent(const int aYearComponent)
 {
   yearComponent = aYearComponent;
 }
 
-Standard_Integer StepBasic_Date::YearComponent() const
+int StepBasic_Date::YearComponent() const
 {
   return yearComponent;
 }

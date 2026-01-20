@@ -27,10 +27,10 @@ StepAP214_RepItemGroup::StepAP214_RepItemGroup() {}
 
 //=================================================================================================
 
-void StepAP214_RepItemGroup::Init(const Handle(TCollection_HAsciiString)& aGroup_Name,
-                                  const Standard_Boolean                  hasGroup_Description,
-                                  const Handle(TCollection_HAsciiString)& aGroup_Description,
-                                  const Handle(TCollection_HAsciiString)& aRepresentationItem_Name)
+void StepAP214_RepItemGroup::Init(const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+                                  const bool                  hasGroup_Description,
+                                  const occ::handle<TCollection_HAsciiString>& aGroup_Description,
+                                  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name)
 {
   StepBasic_Group::Init(aGroup_Name, hasGroup_Description, aGroup_Description);
   theRepresentationItem->Init(aRepresentationItem_Name);
@@ -38,7 +38,7 @@ void StepAP214_RepItemGroup::Init(const Handle(TCollection_HAsciiString)& aGroup
 
 //=================================================================================================
 
-Handle(StepRepr_RepresentationItem) StepAP214_RepItemGroup::RepresentationItem() const
+occ::handle<StepRepr_RepresentationItem> StepAP214_RepItemGroup::RepresentationItem() const
 {
   return theRepresentationItem;
 }
@@ -46,7 +46,7 @@ Handle(StepRepr_RepresentationItem) StepAP214_RepItemGroup::RepresentationItem()
 //=================================================================================================
 
 void StepAP214_RepItemGroup::SetRepresentationItem(
-  const Handle(StepRepr_RepresentationItem)& aRepresentationItem)
+  const occ::handle<StepRepr_RepresentationItem>& aRepresentationItem)
 {
   theRepresentationItem = aRepresentationItem;
 }

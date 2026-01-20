@@ -19,7 +19,7 @@
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_XRSession.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
@@ -44,17 +44,17 @@
 namespace
 {
 //! Format Frame Buffer format for logging messages.
-static TCollection_AsciiString printFboFormat(const Handle(OpenGl_FrameBuffer)& theFbo)
+static TCollection_AsciiString printFboFormat(const occ::handle<OpenGl_FrameBuffer>& theFbo)
 {
   return TCollection_AsciiString() + theFbo->GetInitVPSizeX() + "x" + theFbo->GetInitVPSizeY() + "@"
          + theFbo->NbSamples();
 }
 
 //! Return TRUE if Frame Buffer initialized has failed with the same parameters.
-static bool checkWasFailedFbo(const Handle(OpenGl_FrameBuffer)& theFboToCheck,
-                              Standard_Integer                  theSizeX,
-                              Standard_Integer                  theSizeY,
-                              Standard_Integer                  theNbSamples)
+static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToCheck,
+                              int                  theSizeX,
+                              int                  theSizeY,
+                              int                  theNbSamples)
 {
   return !theFboToCheck->IsValid() && theFboToCheck->GetInitVPSizeX() == theSizeX
          && theFboToCheck->GetInitVPSizeY() == theSizeY
@@ -62,8 +62,8 @@ static bool checkWasFailedFbo(const Handle(OpenGl_FrameBuffer)& theFboToCheck,
 }
 
 //! Return TRUE if Frame Buffer initialized has failed with the same parameters.
-static bool checkWasFailedFbo(const Handle(OpenGl_FrameBuffer)& theFboToCheck,
-                              const Handle(OpenGl_FrameBuffer)& theFboRef)
+static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToCheck,
+                              const occ::handle<OpenGl_FrameBuffer>& theFboRef)
 {
   return checkWasFailedFbo(theFboToCheck,
                            theFboRef->GetVPSizeX(),
@@ -72,9 +72,9 @@ static bool checkWasFailedFbo(const Handle(OpenGl_FrameBuffer)& theFboToCheck,
 }
 
 //! Chooses compatible internal color format for OIT frame buffer.
-static bool chooseOitColorConfiguration(const Handle(OpenGl_Context)& theGlContext,
-                                        const Standard_Integer        theConfigIndex,
-                                        OpenGl_ColorFormats&          theFormats)
+static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
+                                        const int        theConfigIndex,
+                                        NCollection_Vector<int>&          theFormats)
 {
   theFormats.Clear();
   switch (theConfigIndex)
@@ -104,14 +104,14 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View, Graphic3d_CView)
 
 //=================================================================================================
 
-OpenGl_View::OpenGl_View(const Handle(Graphic3d_StructureManager)& theMgr,
-                         const Handle(OpenGl_GraphicDriver)&       theDriver,
-                         const Handle(OpenGl_Caps)&                theCaps,
+OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
+                         const occ::handle<OpenGl_GraphicDriver>&       theDriver,
+                         const occ::handle<OpenGl_Caps>&                theCaps,
                          OpenGl_StateCounter*                      theCounter)
     : Graphic3d_CView(theMgr),
       myDriver(theDriver.operator->()),
       myCaps(theCaps),
-      myWasRedrawnGL(Standard_False),
+      myWasRedrawnGL(false),
       myToShowGradTrihedron(false),
       myStateCounter(theCounter),
       myCurrLightSourceState(theCounter->Increment()),
@@ -121,33 +121,33 @@ OpenGl_View::OpenGl_View(const Handle(Graphic3d_StructureManager)& theMgr,
       myFboColorFormat(GL_SRGB8_ALPHA8), // note that GL_SRGB8 is not required to be renderable,
                                          // unlike GL_RGB8, GL_RGBA8, GL_SRGB8_ALPHA8
       myFboDepthFormat(GL_DEPTH24_STENCIL8),
-      myToFlipOutput(Standard_False),
+      myToFlipOutput(false),
       //
       myFrameCounter(0),
-      myHasFboBlit(Standard_True),
-      myToDisableOIT(Standard_False),
-      myToDisableOITMSAA(Standard_False),
-      myToDisableMSAA(Standard_False),
-      myTransientDrawToFront(Standard_True),
-      myBackBufferRestored(Standard_False),
-      myIsImmediateDrawn(Standard_False),
+      myHasFboBlit(true),
+      myToDisableOIT(false),
+      myToDisableOITMSAA(false),
+      myToDisableMSAA(false),
+      myTransientDrawToFront(true),
+      myBackBufferRestored(false),
+      myIsImmediateDrawn(false),
       myTextureParams(new OpenGl_Aspects()),
       myCubeMapParams(new OpenGl_Aspects()),
       myColoredQuadParams(new OpenGl_Aspects()),
       myPBREnvState(OpenGl_PBREnvState_NONEXISTENT),
-      myPBREnvRequest(Standard_False),
+      myPBREnvRequest(false),
       // ray-tracing fields initialization
       myRaytraceInitStatus(OpenGl_RT_NONE),
-      myIsRaytraceDataValid(Standard_False),
-      myIsRaytraceWarnTextures(Standard_False),
-      myRaytraceBVHBuilder(new BVH_BinnedBuilder<Standard_ShortReal, 3, BVH_Constants_NbBinsBest>(
+      myIsRaytraceDataValid(false),
+      myIsRaytraceWarnTextures(false),
+      myRaytraceBVHBuilder(new BVH_BinnedBuilder<float, 3, BVH_Constants_NbBinsBest>(
         BVH_Constants_LeafNodeSizeAverage,
         BVH_Constants_MaxTreeDepth,
-        Standard_False,
+        false,
         OSD_Parallel::NbLogicalProcessors() + 1)),
       myRaytraceSceneRadius(0.0f),
       myRaytraceSceneEpsilon(1.0e-6f),
-      myToUpdateEnvironmentMap(Standard_False),
+      myToUpdateEnvironmentMap(false),
       myRaytraceLayerListState(0),
       myPrevCameraApertureRadius(0.f),
       myPrevCameraFocalPlaneDist(0.f)
@@ -159,7 +159,7 @@ OpenGl_View::OpenGl_View(const Handle(Graphic3d_StructureManager)& theMgr,
 
   myWorkspace = new OpenGl_Workspace(this, NULL);
 
-  Handle(Graphic3d_CLight) aLight = new Graphic3d_CLight(Graphic3d_TypeOfLightSource_Ambient);
+  occ::handle<Graphic3d_CLight> aLight = new Graphic3d_CLight(Graphic3d_TypeOfLightSource_Ambient);
   aLight->SetColor(Quantity_NOC_WHITE);
   myLights         = new Graphic3d_LightSet();
   myNoShadingLight = new Graphic3d_LightSet();
@@ -203,7 +203,7 @@ OpenGl_View::~OpenGl_View()
 
 //=================================================================================================
 
-void OpenGl_View::releaseSrgbResources(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::releaseSrgbResources(const occ::handle<OpenGl_Context>& theCtx)
 {
   myRenderParams.RebuildRayTracingShaders = true;
 
@@ -262,7 +262,7 @@ void OpenGl_View::releaseSrgbResources(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-void OpenGl_View::ReleaseGlResources(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
 {
   myGraduatedTrihedron.Release(theCtx.get());
   myFrameStatsPrs.Release(theCtx.get());
@@ -298,7 +298,7 @@ void OpenGl_View::Remove()
 void OpenGl_View::SetLocalOrigin(const gp_XYZ& theOrigin)
 {
   myLocalOrigin                      = theOrigin;
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (!aCtx.IsNull())
   {
     aCtx->ShaderManager()->SetLocalOrigin(theOrigin);
@@ -307,9 +307,9 @@ void OpenGl_View::SetLocalOrigin(const gp_XYZ& theOrigin)
 
 //=================================================================================================
 
-void OpenGl_View::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& theTextureEnv)
+void OpenGl_View::SetTextureEnv(const occ::handle<Graphic3d_TextureEnv>& theTextureEnv)
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (!aCtx.IsNull() && !myTextureEnv.IsNull())
   {
     for (OpenGl_TextureSet::Iterator aTextureIter(myTextureEnv); aTextureIter.More();
@@ -320,7 +320,7 @@ void OpenGl_View::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& theTextureEn
     }
   }
 
-  myToUpdateEnvironmentMap = Standard_True;
+  myToUpdateEnvironmentMap = true;
   myTextureEnvData         = theTextureEnv;
   myTextureEnv.Nullify();
   initTextureEnv(aCtx);
@@ -328,14 +328,14 @@ void OpenGl_View::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& theTextureEn
 
 //=================================================================================================
 
-void OpenGl_View::initTextureEnv(const Handle(OpenGl_Context)& theContext)
+void OpenGl_View::initTextureEnv(const occ::handle<OpenGl_Context>& theContext)
 {
   if (myTextureEnvData.IsNull() || theContext.IsNull() || !theContext->MakeCurrent())
   {
     return;
   }
 
-  Handle(OpenGl_Texture) aTextureEnv =
+  occ::handle<OpenGl_Texture> aTextureEnv =
     new OpenGl_Texture(myTextureEnvData->GetId(), myTextureEnvData->GetParams());
   aTextureEnv->Init(theContext, myTextureEnvData);
 
@@ -345,25 +345,25 @@ void OpenGl_View::initTextureEnv(const Handle(OpenGl_Context)& theContext)
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront(
-  const Standard_Boolean theDrawToFrontBuffer)
+bool OpenGl_View::SetImmediateModeDrawToFront(
+  const bool theDrawToFrontBuffer)
 {
-  const Standard_Boolean aPrevMode = myTransientDrawToFront;
+  const bool aPrevMode = myTransientDrawToFront;
   myTransientDrawToFront           = theDrawToFrontBuffer;
   return aPrevMode;
 }
 
 //=================================================================================================
 
-Handle(Aspect_Window) OpenGl_View::Window() const
+occ::handle<Aspect_Window> OpenGl_View::Window() const
 {
   return myWindow->SizeWindow();
 }
 
 //=================================================================================================
 
-void OpenGl_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
-                            const Handle(Aspect_Window)&   theWindow,
+void OpenGl_View::SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
+                            const occ::handle<Aspect_Window>&   theWindow,
                             const Aspect_RenderingContext  theContext)
 {
   if (theContext != nullptr && !theParentVIew.IsNull())
@@ -389,10 +389,10 @@ void OpenGl_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
     myParentView = aParentView;
     myParentView->AddSubview(this);
 
-    Handle(Aspect_NeutralWindow) aSubWindow = Handle(Aspect_NeutralWindow)::DownCast(theWindow);
+    occ::handle<Aspect_NeutralWindow> aSubWindow = occ::down_cast<Aspect_NeutralWindow>(theWindow);
     SubviewResized(aSubWindow);
 
-    const Handle(OpenGl_Window)& aParentGlWindow = aParentView->GlWindow();
+    const occ::handle<OpenGl_Window>& aParentGlWindow = aParentView->GlWindow();
     Aspect_RenderingContext      aRendCtx = aParentGlWindow->GetGlContext()->RenderingContext();
     myWindow = myDriver->CreateRenderWindow(aParentGlWindow->PlatformWindow(), theWindow, aRendCtx);
   }
@@ -407,12 +407,12 @@ void OpenGl_View::SetWindow(const Handle(Graphic3d_CView)& theParentVIew,
 
   myWorkspace = new OpenGl_Workspace(this, myWindow);
   myWorldViewProjState.Reset();
-  myToUpdateEnvironmentMap = Standard_True;
-  myHasFboBlit             = Standard_True;
+  myToUpdateEnvironmentMap = true;
+  myHasFboBlit             = true;
   Invalidate();
 
   // choose preferred FBO format
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (aCtx->IsWindowDeepColor() && aCtx->IsGlGreaterEqual(3, 0))
   {
     myFboColorFormat = GL_RGB10_A2;
@@ -457,12 +457,12 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
     gp_Pnt aMin = aBox.CornerMin();
     gp_Pnt aMax = aBox.CornerMax();
 
-    Graphic3d_Vec3 aMinVec((Standard_ShortReal)aMin.X(),
-                           (Standard_ShortReal)aMin.Y(),
-                           (Standard_ShortReal)aMin.Z());
-    Graphic3d_Vec3 aMaxVec((Standard_ShortReal)aMax.X(),
-                           (Standard_ShortReal)aMax.Y(),
-                           (Standard_ShortReal)aMax.Z());
+    NCollection_Vec3<float> aMinVec((float)aMin.X(),
+                           (float)aMin.Y(),
+                           (float)aMin.Z());
+    NCollection_Vec3<float> aMaxVec((float)aMax.X(),
+                           (float)aMax.Y(),
+                           (float)aMax.Z());
     aView->GraduatedTrihedronMinMaxValues(aMinVec, aMaxVec);
   }
 }
@@ -487,18 +487,18 @@ void OpenGl_View::GraduatedTrihedronErase()
 
 //=================================================================================================
 
-void OpenGl_View::GraduatedTrihedronMinMaxValues(const Graphic3d_Vec3 theMin,
-                                                 const Graphic3d_Vec3 theMax)
+void OpenGl_View::GraduatedTrihedronMinMaxValues(const NCollection_Vec3<float> theMin,
+                                                 const NCollection_Vec3<float> theMax)
 {
   myGraduatedTrihedron.SetMinMax(theMin, theMax);
 }
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_View::BufferDump(Image_PixMap&               theImage,
+bool OpenGl_View::BufferDump(Image_PixMap&               theImage,
                                          const Graphic3d_BufferType& theBufferType)
 {
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (theBufferType != Graphic3d_BT_RGB_RayTraceHdrLeft)
   {
     return myWorkspace->BufferDump(myFBO, theImage, theBufferType);
@@ -561,25 +561,25 @@ Standard_Boolean OpenGl_View::BufferDump(Image_PixMap&               theImage,
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_View::ShadowMapDump(Image_PixMap&                  theImage,
+bool OpenGl_View::ShadowMapDump(Image_PixMap&                  theImage,
                                             const TCollection_AsciiString& theLightName)
 {
   if (!myShadowMaps->IsValid())
   {
-    return Standard_False;
+    return false;
   }
 
-  const Handle(OpenGl_Context)& aGlCtx = myWorkspace->GetGlContext();
-  for (Standard_Integer aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+  const occ::handle<OpenGl_Context>& aGlCtx = myWorkspace->GetGlContext();
+  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
   {
-    Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->ChangeValue(aShadowIter);
+    occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
     if (!aShadow.IsNull() && aShadow->LightSource()->Name() == theLightName)
     {
-      const Handle(OpenGl_FrameBuffer)& aShadowFbo = aShadow->FrameBuffer();
+      const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() == myRenderParams.ShadowMapResolution)
       {
-        if ((Standard_Integer)theImage.Width() != aShadowFbo->GetVPSizeX()
-            || (Standard_Integer)theImage.Height() != aShadowFbo->GetVPSizeY())
+        if ((int)theImage.Width() != aShadowFbo->GetVPSizeX()
+            || (int)theImage.Height() != aShadowFbo->GetVPSizeY())
         {
           theImage.InitZero(Image_Format_GrayF, aShadowFbo->GetVPSizeX(), aShadowFbo->GetVPSizeY());
         }
@@ -629,7 +629,7 @@ Standard_Boolean OpenGl_View::ShadowMapDump(Image_PixMap&                  theIm
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -663,7 +663,7 @@ void OpenGl_View::SetGradientBackground(const Aspect_GradientBackground& theBack
   if (theBackground.BgGradientFillMethod() >= Aspect_GradientFillMethod_Corner1
       && theBackground.BgGradientFillMethod() <= Aspect_GradientFillMethod_Corner4)
   {
-    if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+    if (const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext())
     {
       myColoredQuadParams->Aspect()->SetShaderProgram(
         aCtx->ShaderManager()->GetColoredQuadProgram());
@@ -676,10 +676,10 @@ void OpenGl_View::SetGradientBackground(const Aspect_GradientBackground& theBack
 
 //=================================================================================================
 
-void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theTextureMap,
-                                     Standard_Boolean                    theToUpdatePBREnv)
+void OpenGl_View::SetBackgroundImage(const occ::handle<Graphic3d_TextureMap>& theTextureMap,
+                                     bool                    theToUpdatePBREnv)
 {
-  Handle(Graphic3d_TextureMap) aNewMap = theTextureMap;
+  occ::handle<Graphic3d_TextureMap> aNewMap = theTextureMap;
   if (theTextureMap.IsNull() || !theTextureMap->IsDone())
   {
     if (!theTextureMap.IsNull())
@@ -689,7 +689,7 @@ void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theText
     aNewMap.Nullify();
   }
 
-  Handle(Graphic3d_CubeMap) aCubeMap = Handle(Graphic3d_CubeMap)::DownCast(aNewMap);
+  occ::handle<Graphic3d_CubeMap> aCubeMap = occ::down_cast<Graphic3d_CubeMap>(aNewMap);
   if (theToUpdatePBREnv)
   {
     // update PBR environment
@@ -713,15 +713,15 @@ void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theText
     return;
   }
 
-  Handle(Graphic3d_AspectFillArea3d) anAspect    = new Graphic3d_AspectFillArea3d();
-  Handle(Graphic3d_TextureSet)       aTextureSet = new Graphic3d_TextureSet(aNewMap);
+  occ::handle<Graphic3d_AspectFillArea3d> anAspect    = new Graphic3d_AspectFillArea3d();
+  occ::handle<Graphic3d_TextureSet>       aTextureSet = new Graphic3d_TextureSet(aNewMap);
   anAspect->SetInteriorStyle(Aspect_IS_SOLID);
   anAspect->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_DoubleSided);
   anAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
   anAspect->SetTextureSet(aTextureSet);
   anAspect->SetTextureMapOn(true);
 
-  if (Handle(Graphic3d_Texture2D) aTextureMap = Handle(Graphic3d_Texture2D)::DownCast(aNewMap))
+  if (occ::handle<Graphic3d_Texture2D> aTextureMap = occ::down_cast<Graphic3d_Texture2D>(aNewMap))
   {
     myTextureParams->SetAspect(anAspect);
     myBackgroundType  = Graphic3d_TOB_TEXTURE;
@@ -731,8 +731,8 @@ void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theText
 
   if (!aCubeMap.IsNull())
   {
-    aCubeMap->SetMipmapsGeneration(Standard_True);
-    if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+    aCubeMap->SetMipmapsGeneration(true);
+    if (const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext())
     {
       anAspect->SetShaderProgram(aCtx->ShaderManager()->GetBgCubeMapProgram());
     }
@@ -755,7 +755,7 @@ void OpenGl_View::SetBackgroundImage(const Handle(Graphic3d_TextureMap)& theText
 
 //=================================================================================================
 
-void OpenGl_View::SetImageBasedLighting(Standard_Boolean theToEnableIBL)
+void OpenGl_View::SetImageBasedLighting(bool theToEnableIBL)
 {
   if (!theToEnableIBL || myBackgroundType != Graphic3d_TOB_CUBEMAP)
   {
@@ -834,10 +834,10 @@ void OpenGl_View::SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
 
 //=================================================================================================
 
-Standard_Integer OpenGl_View::ZLayerMax() const
+int OpenGl_View::ZLayerMax() const
 {
-  Standard_Integer aLayerMax = Graphic3d_ZLayerId_Default;
-  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(myZLayers.Layers());
+  int aLayerMax = Graphic3d_ZLayerId_Default;
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myZLayers.Layers());
        aLayerIter.More();
        aLayerIter.Next())
   {
@@ -848,16 +848,16 @@ Standard_Integer OpenGl_View::ZLayerMax() const
 
 //=================================================================================================
 
-const NCollection_List<Handle(Graphic3d_Layer)>& OpenGl_View::Layers() const
+const NCollection_List<occ::handle<Graphic3d_Layer>>& OpenGl_View::Layers() const
 {
   return myZLayers.Layers();
 }
 
 //=================================================================================================
 
-Handle(Graphic3d_Layer) OpenGl_View::Layer(const Graphic3d_ZLayerId theLayerId) const
+occ::handle<Graphic3d_Layer> OpenGl_View::Layer(const Graphic3d_ZLayerId theLayerId) const
 {
-  Handle(Graphic3d_Layer) aLayer;
+  occ::handle<Graphic3d_Layer> aLayer;
   if (theLayerId != Graphic3d_ZLayerId_UNKNOWN)
   {
     myZLayers.LayerIDs().Find(theLayerId, aLayer);
@@ -867,7 +867,7 @@ Handle(Graphic3d_Layer) OpenGl_View::Layer(const Graphic3d_ZLayerId theLayerId) 
 
 //=================================================================================================
 
-Bnd_Box OpenGl_View::MinMaxValues(const Standard_Boolean theToIncludeAuxiliary) const
+Bnd_Box OpenGl_View::MinMaxValues(const bool theToIncludeAuxiliary) const
 {
   if (!IsDefined())
   {
@@ -895,31 +895,31 @@ Bnd_Box OpenGl_View::MinMaxValues(const Standard_Boolean theToIncludeAuxiliary) 
 
 //=================================================================================================
 
-Handle(Standard_Transient) OpenGl_View::FBO() const
+occ::handle<Standard_Transient> OpenGl_View::FBO() const
 {
-  return Handle(Standard_Transient)(myFBO);
+  return occ::handle<Standard_Transient>(myFBO);
 }
 
 //=================================================================================================
 
-void OpenGl_View::SetFBO(const Handle(Standard_Transient)& theFbo)
+void OpenGl_View::SetFBO(const occ::handle<Standard_Transient>& theFbo)
 {
-  myFBO = Handle(OpenGl_FrameBuffer)::DownCast(theFbo);
+  myFBO = occ::down_cast<OpenGl_FrameBuffer>(theFbo);
 }
 
 //=================================================================================================
 
-Handle(Standard_Transient) OpenGl_View::FBOCreate(const Standard_Integer theWidth,
-                                                  const Standard_Integer theHeight)
+occ::handle<Standard_Transient> OpenGl_View::FBOCreate(const int theWidth,
+                                                  const int theHeight)
 {
   return myWorkspace->FBOCreate(theWidth, theHeight);
 }
 
 //=================================================================================================
 
-void OpenGl_View::FBORelease(Handle(Standard_Transient)& theFbo)
+void OpenGl_View::FBORelease(occ::handle<Standard_Transient>& theFbo)
 {
-  Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast(theFbo);
+  occ::handle<OpenGl_FrameBuffer> aFrameBuffer = occ::down_cast<OpenGl_FrameBuffer>(theFbo);
   if (aFrameBuffer.IsNull())
   {
     return;
@@ -931,13 +931,13 @@ void OpenGl_View::FBORelease(Handle(Standard_Transient)& theFbo)
 
 //=================================================================================================
 
-void OpenGl_View::FBOGetDimensions(const Handle(Standard_Transient)& theFbo,
-                                   Standard_Integer&                 theWidth,
-                                   Standard_Integer&                 theHeight,
-                                   Standard_Integer&                 theWidthMax,
-                                   Standard_Integer&                 theHeightMax)
+void OpenGl_View::FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
+                                   int&                 theWidth,
+                                   int&                 theHeight,
+                                   int&                 theWidthMax,
+                                   int&                 theHeightMax)
 {
-  const Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast(theFbo);
+  const occ::handle<OpenGl_FrameBuffer> aFrameBuffer = occ::down_cast<OpenGl_FrameBuffer>(theFbo);
   if (aFrameBuffer.IsNull())
   {
     return;
@@ -951,11 +951,11 @@ void OpenGl_View::FBOGetDimensions(const Handle(Standard_Transient)& theFbo,
 
 //=================================================================================================
 
-void OpenGl_View::FBOChangeViewport(const Handle(Standard_Transient)& theFbo,
-                                    const Standard_Integer            theWidth,
-                                    const Standard_Integer            theHeight)
+void OpenGl_View::FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
+                                    const int            theWidth,
+                                    const int            theHeight)
 {
-  const Handle(OpenGl_FrameBuffer) aFrameBuffer = Handle(OpenGl_FrameBuffer)::DownCast(theFbo);
+  const occ::handle<OpenGl_FrameBuffer> aFrameBuffer = occ::down_cast<OpenGl_FrameBuffer>(theFbo);
   if (aFrameBuffer.IsNull())
   {
     return;
@@ -966,7 +966,7 @@ void OpenGl_View::FBOChangeViewport(const Handle(Standard_Transient)& theFbo,
 
 //=================================================================================================
 
-void OpenGl_View::displayStructure(const Handle(Graphic3d_CStructure)& theStructure,
+void OpenGl_View::displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
                                    const Graphic3d_DisplayPriority     thePriority)
 {
   const OpenGl_Structure*  aStruct = static_cast<const OpenGl_Structure*>(theStructure.get());
@@ -976,7 +976,7 @@ void OpenGl_View::displayStructure(const Handle(Graphic3d_CStructure)& theStruct
 
 //=================================================================================================
 
-void OpenGl_View::eraseStructure(const Handle(Graphic3d_CStructure)& theStructure)
+void OpenGl_View::eraseStructure(const occ::handle<Graphic3d_CStructure>& theStructure)
 {
   const OpenGl_Structure* aStruct = static_cast<const OpenGl_Structure*>(theStructure.get());
   myZLayers.RemoveStructure(aStruct);
@@ -984,7 +984,7 @@ void OpenGl_View::eraseStructure(const Handle(Graphic3d_CStructure)& theStructur
 
 //=================================================================================================
 
-void OpenGl_View::changeZLayer(const Handle(Graphic3d_CStructure)& theStructure,
+void OpenGl_View::changeZLayer(const occ::handle<Graphic3d_CStructure>& theStructure,
                                const Graphic3d_ZLayerId            theNewLayerId)
 {
   const Graphic3d_ZLayerId anOldLayer = theStructure->ZLayer();
@@ -996,7 +996,7 @@ void OpenGl_View::changeZLayer(const Handle(Graphic3d_CStructure)& theStructure,
 
 //=================================================================================================
 
-void OpenGl_View::changePriority(const Handle(Graphic3d_CStructure)& theStructure,
+void OpenGl_View::changePriority(const occ::handle<Graphic3d_CStructure>& theStructure,
                                  const Graphic3d_DisplayPriority     theNewPriority)
 {
   const Graphic3d_ZLayerId aLayerId = theStructure->ZLayer();
@@ -1006,11 +1006,11 @@ void OpenGl_View::changePriority(const Handle(Graphic3d_CStructure)& theStructur
 
 //=================================================================================================
 
-void OpenGl_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& theDict,
+void OpenGl_View::DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
                                         Graphic3d_DiagnosticInfo              theFlags) const
 {
   base_type::DiagnosticInformation(theDict, theFlags);
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (!myWorkspace->Activate() || aCtx.IsNull())
   {
     return;
@@ -1024,11 +1024,11 @@ void OpenGl_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& th
     if (myMainSceneFbos[0]->IsValid())
     {
       TCollection_AsciiString anFboInfo;
-      if (const Handle(OpenGl_Texture)& aColorTex = myMainSceneFbos[0]->ColorTexture())
+      if (const occ::handle<OpenGl_Texture>& aColorTex = myMainSceneFbos[0]->ColorTexture())
       {
         anFboInfo += OpenGl_TextureFormat::FormatFormat(aColorTex->SizedFormat());
       }
-      if (const Handle(OpenGl_Texture)& aDepthTex = myMainSceneFbos[0]->DepthStencilTexture())
+      if (const occ::handle<OpenGl_Texture>& aDepthTex = myMainSceneFbos[0]->DepthStencilTexture())
       {
         anFboInfo = anFboInfo + " " + OpenGl_TextureFormat::FormatFormat(aDepthTex->SizedFormat());
       }
@@ -1039,11 +1039,11 @@ void OpenGl_View::DiagnosticInformation(TColStd_IndexedDataMapOfStringString& th
 
 //=================================================================================================
 
-void OpenGl_View::StatisticInformation(TColStd_IndexedDataMapOfStringString& theDict) const
+void OpenGl_View::StatisticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict) const
 {
-  if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+  if (const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext())
   {
-    const Handle(OpenGl_FrameStats)& aStats      = aCtx->FrameStats();
+    const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
     const Graphic3d_RenderingParams& aRendParams = myWorkspace->View()->RenderingParams();
     aStats->FormatStats(theDict, aRendParams.CollectedStats);
   }
@@ -1053,9 +1053,9 @@ void OpenGl_View::StatisticInformation(TColStd_IndexedDataMapOfStringString& the
 
 TCollection_AsciiString OpenGl_View::StatisticInformation() const
 {
-  if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+  if (const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext())
   {
-    const Handle(OpenGl_FrameStats)& aStats      = aCtx->FrameStats();
+    const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
     const Graphic3d_RenderingParams& aRendParams = myWorkspace->View()->RenderingParams();
     return aStats->FormatStats(aRendParams.CollectedStats);
   }
@@ -1064,10 +1064,10 @@ TCollection_AsciiString OpenGl_View::StatisticInformation() const
 
 //=================================================================================================
 
-void OpenGl_View::drawBackground(const Handle(OpenGl_Workspace)& theWorkspace,
+void OpenGl_View::drawBackground(const occ::handle<OpenGl_Workspace>& theWorkspace,
                                  Graphic3d_Camera::Projection    theProjection)
 {
-  const Handle(OpenGl_Context)& aCtx           = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx           = theWorkspace->GetGlContext();
   const bool                    wasUsedZBuffer = theWorkspace->SetUseZBuffer(false);
   if (wasUsedZBuffer)
   {
@@ -1143,7 +1143,7 @@ void OpenGl_View::drawBackground(const Handle(OpenGl_Workspace)& theWorkspace,
 
   if (wasUsedZBuffer)
   {
-    theWorkspace->SetUseZBuffer(Standard_True);
+    theWorkspace->SetUseZBuffer(true);
     aCtx->core11fwd->glEnable(GL_DEPTH_TEST);
   }
 #ifdef GL_DEPTH_CLAMP
@@ -1159,9 +1159,9 @@ void OpenGl_View::drawBackground(const Handle(OpenGl_Workspace)& theWorkspace,
 bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
 {
   theProj                            = myCamera->ProjectionType();
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
 
-  Standard_Integer    aSizeX = 0, aSizeY = 0;
+  int    aSizeX = 0, aSizeY = 0;
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
   if (aFrameBuffer != NULL)
   {
@@ -1179,18 +1179,18 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     aSizeY = myWindow->Height();
   }
 
-  const Graphic3d_Vec2i aRendSize(
-    Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
-    Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
+  const NCollection_Vec2<int> aRendSize(
+    int(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
+    int(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
   if (aSizeX < 1 || aSizeY < 1 || aRendSize.x() < 1 || aRendSize.y() < 1)
   {
-    myBackBufferRestored = Standard_False;
-    myIsImmediateDrawn   = Standard_False;
+    myBackBufferRestored = false;
+    myIsImmediateDrawn   = false;
     return false;
   }
 
   // determine multisampling parameters
-  Standard_Integer aNbSamples =
+  int aNbSamples =
     !myToDisableMSAA && aSizeX == aRendSize.x()
       ? std::max(std::min(myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
       : 0;
@@ -1292,7 +1292,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     if (aNbSamples != 0 || aSizeX != aRendSize.x())
     {
       hasXRBlitFbo = myXrSceneFbo->InitLazy(aCtx,
-                                            Graphic3d_Vec2i(aSizeX, aSizeY),
+                                            NCollection_Vec2<int>(aSizeX, aSizeY),
                                             myFboColorFormat,
                                             myFboDepthFormat,
                                             0);
@@ -1397,7 +1397,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
         myPBREnvironment.IsNull() ? OpenGl_PBREnvState_UNAVAILABLE : OpenGl_PBREnvState_CREATED;
       if (myPBREnvState == OpenGl_PBREnvState_CREATED)
       {
-        Handle(OpenGl_Texture)               anEnvLUT;
+        occ::handle<OpenGl_Texture>               anEnvLUT;
         static const TCollection_AsciiString THE_SHARED_ENV_LUT_KEY("EnvLUT");
         if (!aCtx->GetResource(THE_SHARED_ENV_LUT_KEY, anEnvLUT))
         {
@@ -1428,11 +1428,11 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
             anImgFormat = toConvertHalfFloat ? Image_Format_RGBAF_half : Image_Format_RGBAF;
           }
 
-          Handle(Image_PixMap) aPixMap = new Image_PixMap();
+          occ::handle<Image_PixMap> aPixMap = new Image_PixMap();
           if (anImgFormat == Image_Format_RGF)
           {
             aPixMap->InitWrapper(Image_Format_RGF,
-                                 (Standard_Byte*)Textures_EnvLUT,
+                                 (uint8_t*)Textures_EnvLUT,
                                  Textures_EnvLUTSize,
                                  Textures_EnvLUTSize);
           }
@@ -1441,12 +1441,12 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
             aPixMap->InitZero(anImgFormat, Textures_EnvLUTSize, Textures_EnvLUTSize);
             Image_PixMap aPixMapRG;
             aPixMapRG.InitWrapper(Image_Format_RGF,
-                                  (Standard_Byte*)Textures_EnvLUT,
+                                  (uint8_t*)Textures_EnvLUT,
                                   Textures_EnvLUTSize,
                                   Textures_EnvLUTSize);
-            for (Standard_Size aRowIter = 0; aRowIter < aPixMapRG.SizeY(); ++aRowIter)
+            for (size_t aRowIter = 0; aRowIter < aPixMapRG.SizeY(); ++aRowIter)
             {
-              for (Standard_Size aColIter = 0; aColIter < aPixMapRG.SizeX(); ++aColIter)
+              for (size_t aColIter = 0; aColIter < aPixMapRG.SizeX(); ++aColIter)
               {
                 const Image_ColorRGF& aPixelRG =
                   aPixMapRG.Value<Image_ColorRGF>(aRowIter, aColIter);
@@ -1476,15 +1476,15 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
             aTexFormat.SetInternalFormat(aCtx->arbTexRG ? GL_RG16F : GL_RGBA16F);
           }
 
-          Handle(Graphic3d_TextureParams) aParams = new Graphic3d_TextureParams();
+          occ::handle<Graphic3d_TextureParams> aParams = new Graphic3d_TextureParams();
           aParams->SetFilter(Graphic3d_TOTF_BILINEAR);
-          aParams->SetRepeat(Standard_False);
+          aParams->SetRepeat(false);
           aParams->SetTextureUnit(aCtx->PBREnvLUTTexUnit());
           anEnvLUT = new OpenGl_Texture(THE_SHARED_ENV_LUT_KEY, aParams);
           if (!aTexFormat.IsValid()
               || !anEnvLUT->Init(aCtx,
                                  aTexFormat,
-                                 Graphic3d_Vec2i((Standard_Integer)Textures_EnvLUTSize),
+                                 NCollection_Vec2<int>((int)Textures_EnvLUTSize),
                                  Graphic3d_TypeOfTexture_2D,
                                  aPixMap.get()))
           {
@@ -1516,7 +1516,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       {
         for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
         {
-          OpenGl_ColorFormats aColorFormats;
+          NCollection_Vector<int> aColorFormats;
           aColorFormats.Append(GL_RG32F);
           aColorFormats.Append(GL_RGBA16F);
           aColorFormats.Append(GL_RGBA16F);
@@ -1525,7 +1525,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                                                                   aColorFormats,
                                                                   0);
 
-          NCollection_Sequence<Handle(OpenGl_Texture)> anAttachments;
+          NCollection_Sequence<occ::handle<OpenGl_Texture>> anAttachments;
           anAttachments.Append(myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->ColorTexture(1));
           anAttachments.Append(myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->ColorTexture(2));
           myDepthPeelingFbos->FrontBackColorFbosOit()[aPairIter]->InitWrapper(aCtx, anAttachments);
@@ -1551,18 +1551,18 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
 
   if (toUseOit && myRenderParams.TransparencyMethod == Graphic3d_RTM_BLEND_OIT)
   {
-    Standard_Integer anFboIt = 0;
+    int anFboIt = 0;
     for (; anFboIt < 2; ++anFboIt)
     {
-      Handle(OpenGl_FrameBuffer)& aMainSceneFbo          = myMainSceneFbos[anFboIt];
-      Handle(OpenGl_FrameBuffer)& aMainSceneFboOit       = myMainSceneFbosOit[anFboIt];
-      Handle(OpenGl_FrameBuffer)& anImmediateSceneFbo    = myImmediateSceneFbos[anFboIt];
-      Handle(OpenGl_FrameBuffer)& anImmediateSceneFboOit = myImmediateSceneFbosOit[anFboIt];
+      occ::handle<OpenGl_FrameBuffer>& aMainSceneFbo          = myMainSceneFbos[anFboIt];
+      occ::handle<OpenGl_FrameBuffer>& aMainSceneFboOit       = myMainSceneFbosOit[anFboIt];
+      occ::handle<OpenGl_FrameBuffer>& anImmediateSceneFbo    = myImmediateSceneFbos[anFboIt];
+      occ::handle<OpenGl_FrameBuffer>& anImmediateSceneFboOit = myImmediateSceneFbosOit[anFboIt];
       if (aMainSceneFbo->IsValid()
           && (aMainSceneFboOit->GetVPSize() != aRendSize
               || aMainSceneFboOit->NbSamples() != aNbSamples))
       {
-        Standard_Integer aColorConfig = 0;
+        int aColorConfig = 0;
         for (;;) // seemly responding to driver limitation (GL_FRAMEBUFFER_UNSUPPORTED)
         {
           if (myFboOitColorConfig.IsEmpty())
@@ -1623,11 +1623,11 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                         "  Blended order-independent transparency will not be available.\n");
       if (aNbSamples > 0)
       {
-        myToDisableOITMSAA = Standard_True;
+        myToDisableOITMSAA = true;
       }
       else
       {
-        myToDisableOIT = Standard_True;
+        myToDisableOIT = true;
       }
       toUseOit = false;
     }
@@ -1646,7 +1646,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
   }
 
   // allocate shadow maps
-  const Handle(Graphic3d_LightSet)& aLights =
+  const occ::handle<Graphic3d_LightSet>& aLights =
     myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_Unlit ? myNoShadingLight : myLights;
   if (!aLights.IsNull())
   {
@@ -1664,9 +1664,9 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     }
 
     const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
-    for (Standard_Integer aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
     {
-      Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->ChangeValue(aShadowIter);
+      occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
       if (aShadow.IsNull())
       {
         aShadow = new OpenGl_ShadowMap();
@@ -1675,12 +1675,12 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       aShadow->Texture()->Sampler()->Parameters()->SetTextureUnit(
         (Graphic3d_TextureUnit)(aSamplFrom + aShadowIter));
 
-      const Handle(OpenGl_FrameBuffer)& aShadowFbo = aShadow->FrameBuffer();
+      const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() != myRenderParams.ShadowMapResolution && toUseShadowMap)
       {
-        OpenGl_ColorFormats aDummy;
+        NCollection_Vector<int> aDummy;
         if (!aShadowFbo->Init(aCtx,
-                              Graphic3d_Vec2i(myRenderParams.ShadowMapResolution),
+                              NCollection_Vec2<int>(myRenderParams.ShadowMapResolution),
                               aDummy,
                               myFboDepthFormat,
                               0))
@@ -1702,15 +1702,15 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
 
 void OpenGl_View::Redraw()
 {
-  const Standard_Boolean wasDisabledMSAA = myToDisableMSAA;
-  const Standard_Boolean hadFboBlit      = myHasFboBlit;
+  const bool wasDisabledMSAA = myToDisableMSAA;
+  const bool hadFboBlit      = myHasFboBlit;
   if (myRenderParams.Method == Graphic3d_RM_RAYTRACING && !myCaps->vboDisable
       && !myCaps->keepArrayData)
   {
     // caps are shared across all views, thus we need to invalidate all of them
     // if (myWasRedrawnGL) { myStructureManager->SetDeviceLost(); }
     myDriver->setDeviceLost();
-    myCaps->keepArrayData = Standard_True;
+    myCaps->keepArrayData = true;
   }
 
   if (!myWorkspace->Activate())
@@ -1722,11 +1722,11 @@ void OpenGl_View::Redraw()
   myWindow->SetSwapInterval(IsActiveXR());
 
   ++myFrameCounter;
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   aCtx->FrameStats()->FrameStart(myWorkspace->View(), false);
   aCtx->SetLineFeather(myRenderParams.LineFeather);
 
-  const Standard_Integer anSRgbState = aCtx->ToRenderSRGB() ? 1 : 0;
+  const int anSRgbState = aCtx->ToRenderSRGB() ? 1 : 0;
   if (mySRgbState != -1 && mySRgbState != anSRgbState)
   {
     releaseSrgbResources(aCtx);
@@ -1745,25 +1745,25 @@ void OpenGl_View::Redraw()
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
   if (!prepareFrameBuffers(aProjectType))
   {
-    myBackBufferRestored = Standard_False;
-    myIsImmediateDrawn   = Standard_False;
+    myBackBufferRestored = false;
+    myIsImmediateDrawn   = false;
     return;
   }
 
   // draw shadow maps
   if (myShadowMaps->IsValid())
   {
-    Standard_Integer aShadowIndex = myShadowMaps->Lower();
+    int aShadowIndex = myShadowMaps->Lower();
     for (Graphic3d_LightSet::Iterator aLightIter(
            myLights,
            Graphic3d_LightSet::IterationFilter_ActiveShadowCasters);
          aLightIter.More();
          aLightIter.Next())
     {
-      const Handle(Graphic3d_CLight)& aLight = aLightIter.Value();
+      const occ::handle<Graphic3d_CLight>& aLight = aLightIter.Value();
       if (aLight->ToCastShadows())
       {
-        const Handle(OpenGl_ShadowMap)& aShadowMap = myShadowMaps->ChangeValue(aShadowIndex);
+        const occ::handle<OpenGl_ShadowMap>& aShadowMap = myShadowMaps->ChangeValue(aShadowIndex);
         aShadowMap->SetLightSource(aLight);
         renderShadowMap(aShadowMap);
         ++aShadowIndex;
@@ -1771,7 +1771,7 @@ void OpenGl_View::Redraw()
     }
     for (; aShadowIndex <= myShadowMaps->Upper(); ++aShadowIndex)
     {
-      myShadowMaps->ChangeValue(aShadowIndex)->SetLightSource(Handle(Graphic3d_CLight)());
+      myShadowMaps->ChangeValue(aShadowIndex)->SetLightSource(occ::handle<Graphic3d_CLight>());
     }
   }
 
@@ -1838,8 +1838,8 @@ void OpenGl_View::Redraw()
                         aMainFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw(Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], aMainFbosOit[0]);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
+    myBackBufferRestored = true;
+    myIsImmediateDrawn   = false;
     aCtx->SetReadDrawBuffer(aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT
                                                                            : GL_BACK);
     aCtx->SetResolution(myRenderParams.Resolution,
@@ -1882,8 +1882,8 @@ void OpenGl_View::Redraw()
                         aMainFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw(Graphic3d_Camera::Projection_MonoRightEye, aMainFbos[1], aMainFbosOit[1]);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
+    myBackBufferRestored = true;
+    myIsImmediateDrawn   = false;
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
                         anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
@@ -1951,8 +1951,8 @@ void OpenGl_View::Redraw()
                         aMainFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw(aProjectType, aMainFbo, aMainFboOit);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
+    myBackBufferRestored = true;
+    myIsImmediateDrawn   = false;
     aCtx->SetResolution(myRenderParams.Resolution,
                         myRenderParams.ResolutionRatio(),
                         anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
@@ -1983,10 +1983,10 @@ void OpenGl_View::Redraw()
   }
 
   // reset state for safety
-  aCtx->BindProgram(Handle(OpenGl_ShaderProgram)());
+  aCtx->BindProgram(occ::handle<OpenGl_ShaderProgram>());
   if (aCtx->caps->ffpEnable)
   {
-    aCtx->ShaderManager()->PushState(Handle(OpenGl_ShaderProgram)());
+    aCtx->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   }
 
   // Swap the buffers
@@ -1995,7 +1995,7 @@ void OpenGl_View::Redraw()
     aCtx->SwapBuffers();
     if (!myMainSceneFbos[0]->IsValid())
     {
-      myBackBufferRestored = Standard_False;
+      myBackBufferRestored = false;
     }
   }
   else
@@ -2007,7 +2007,7 @@ void OpenGl_View::Redraw()
   aCtx->FetchState();
   aCtx->FrameStats()->FrameEnd(myWorkspace->View(), false);
 
-  myWasRedrawnGL = Standard_True;
+  myWasRedrawnGL = true;
 }
 
 //=================================================================================================
@@ -2019,7 +2019,7 @@ void OpenGl_View::RedrawImmediate()
 
   // no special handling of HMD display, since it will force full Redraw() due to no frame caching
   // (myBackBufferRestored)
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (!myTransientDrawToFront || !myBackBufferRestored
       || (aCtx->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
   {
@@ -2086,7 +2086,7 @@ void OpenGl_View::RedrawImmediate()
                              aMainFbos[0],
                              anImmFbos[0],
                              anImmFbosOit[0],
-                             Standard_True)
+                             true)
              || toSwap;
     if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip && toSwap && myFBO.get() == nullptr
         && !aCtx->caps->buffersNoSwap && myParentView == nullptr)
@@ -2110,7 +2110,7 @@ void OpenGl_View::RedrawImmediate()
                              aMainFbos[1],
                              anImmFbos[1],
                              anImmFbosOit[1],
-                             Standard_True)
+                             true)
              || toSwap;
     if (anImmFbos[0] != NULL)
     {
@@ -2137,7 +2137,7 @@ void OpenGl_View::RedrawImmediate()
                         myRenderParams.ResolutionRatio(),
                         anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap =
-      redrawImmediate(aProjectType, aMainFbo, anImmFbo, anImmFboOit, Standard_True) || toSwap;
+      redrawImmediate(aProjectType, aMainFbo, anImmFbo, anImmFboOit, true) || toSwap;
     if (anImmFbo != NULL && anImmFbo != aFrameBuffer)
     {
       blitBuffers(anImmFbo, aFrameBuffer, myToFlipOutput);
@@ -2148,10 +2148,10 @@ void OpenGl_View::RedrawImmediate()
   bindDefaultFbo();
 
   // reset state for safety
-  aCtx->BindProgram(Handle(OpenGl_ShaderProgram)());
+  aCtx->BindProgram(occ::handle<OpenGl_ShaderProgram>());
   if (aCtx->caps->ffpEnable)
   {
-    aCtx->ShaderManager()->PushState(Handle(OpenGl_ShaderProgram)());
+    aCtx->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   }
 
   if (toSwap && myFBO.get() == NULL && !aCtx->caps->buffersNoSwap && myParentView == nullptr)
@@ -2164,7 +2164,7 @@ void OpenGl_View::RedrawImmediate()
   }
   aCtx->FrameStats()->FrameEnd(myWorkspace->View(), true);
 
-  myWasRedrawnGL = Standard_True;
+  myWasRedrawnGL = true;
 }
 
 //=================================================================================================
@@ -2173,7 +2173,7 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
                          OpenGl_FrameBuffer*                theReadDrawFbo,
                          OpenGl_FrameBuffer*                theOitAccumFbo)
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   if (theReadDrawFbo != NULL)
   {
     theReadDrawFbo->BindBuffer(aCtx);
@@ -2181,15 +2181,15 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
   }
   else
   {
-    const Standard_Integer aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
+    const int aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
     aCtx->ResizeViewport(aViewport);
   }
 
   // request reset of material
   aCtx->ShaderManager()->UpdateMaterialState();
 
-  myWorkspace->UseZBuffer()    = Standard_True;
-  myWorkspace->UseDepthWrite() = Standard_True;
+  myWorkspace->UseZBuffer()    = true;
+  myWorkspace->UseDepthWrite() = true;
   GLbitfield toClear           = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
   aCtx->core11fwd->glDepthFunc(GL_LEQUAL);
   aCtx->core11fwd->glDepthMask(GL_TRUE);
@@ -2197,7 +2197,7 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
 
   aCtx->core11fwd->glClearDepth(1.0);
 
-  const OpenGl_Vec4 aBgColor = aCtx->Vec4FromQuantityColor(myBgColor);
+  const NCollection_Vec4<float> aBgColor = aCtx->Vec4FromQuantityColor(myBgColor);
   // clang-format off
   aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
   // clang-format on
@@ -2208,7 +2208,7 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
   aCtx->core11fwd->glClear(toClear);
   aCtx->SetColorMask(true); // restore default alpha component write state
 
-  render(theProjection, theReadDrawFbo, theOitAccumFbo, Standard_False);
+  render(theProjection, theReadDrawFbo, theOitAccumFbo, false);
 }
 
 //=================================================================================================
@@ -2217,13 +2217,13 @@ bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjecti
                                   OpenGl_FrameBuffer*                theReadFbo,
                                   OpenGl_FrameBuffer*                theDrawFbo,
                                   OpenGl_FrameBuffer*                theOitAccumFbo,
-                                  const Standard_Boolean             theIsPartialUpdate)
+                                  const bool             theIsPartialUpdate)
 {
-  const Handle(OpenGl_Context)& aCtx              = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx              = myWorkspace->GetGlContext();
   GLboolean                     toCopyBackToFront = GL_FALSE;
   if (theDrawFbo == theReadFbo && theDrawFbo != NULL && theDrawFbo->IsValid())
   {
-    myBackBufferRestored = Standard_False;
+    myBackBufferRestored = false;
     theDrawFbo->BindBuffer(aCtx);
   }
   else if (theReadFbo != NULL && theReadFbo->IsValid() && aCtx->IsRender())
@@ -2249,29 +2249,29 @@ bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjecti
       if (!copyBackToFront())
       {
         toCopyBackToFront    = GL_FALSE;
-        myBackBufferRestored = Standard_False;
+        myBackBufferRestored = false;
       }
     }
     else
     {
       toCopyBackToFront    = GL_FALSE;
-      myBackBufferRestored = Standard_False;
+      myBackBufferRestored = false;
     }
   }
   else
   {
-    myBackBufferRestored = Standard_False;
+    myBackBufferRestored = false;
   }
-  myIsImmediateDrawn = Standard_True;
+  myIsImmediateDrawn = true;
 
-  myWorkspace->UseZBuffer()    = Standard_True;
-  myWorkspace->UseDepthWrite() = Standard_True;
+  myWorkspace->UseZBuffer()    = true;
+  myWorkspace->UseDepthWrite() = true;
   aCtx->core11fwd->glDepthFunc(GL_LEQUAL);
   aCtx->core11fwd->glDepthMask(GL_TRUE);
   aCtx->core11fwd->glEnable(GL_DEPTH_TEST);
   aCtx->core11fwd->glClearDepth(1.0);
 
-  render(theProjection, theDrawFbo, theOitAccumFbo, Standard_True);
+  render(theProjection, theDrawFbo, theOitAccumFbo, true);
 
   blitSubviews(theProjection, theDrawFbo);
 
@@ -2282,14 +2282,14 @@ bool OpenGl_View::redrawImmediate(const Graphic3d_Camera::Projection theProjecti
 
 bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameBuffer* theDrawFbo)
 {
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (aCtx->arbFBOBlit == nullptr)
   {
     return false;
   }
 
   bool isChanged = false;
-  for (const Handle(Graphic3d_CView)& aChildIter : mySubviews)
+  for (const occ::handle<Graphic3d_CView>& aChildIter : mySubviews)
   {
     OpenGl_View* aSubView = dynamic_cast<OpenGl_View*>(aChildIter.get());
     if (!aSubView->IsActive())
@@ -2297,7 +2297,7 @@ bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameB
       continue;
     }
 
-    const Handle(OpenGl_FrameBuffer)& aChildFbo = !aSubView->myImmediateSceneFbos[0].IsNull()
+    const occ::handle<OpenGl_FrameBuffer>& aChildFbo = !aSubView->myImmediateSceneFbos[0].IsNull()
                                                     ? aSubView->myImmediateSceneFbos[0]
                                                     : aSubView->myMainSceneFbos[0];
     if (aChildFbo.IsNull() || !aChildFbo->IsValid())
@@ -2317,16 +2317,16 @@ bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameB
     }
 
     // clang-format off
-    Graphic3d_Vec2i aWinSize (aCtx->Viewport()[2], aCtx->Viewport()[3]); //aSubView->GlWindow()->PlatformWindow()->Dimensions();
+    NCollection_Vec2<int> aWinSize (aCtx->Viewport()[2], aCtx->Viewport()[3]); //aSubView->GlWindow()->PlatformWindow()->Dimensions();
     // clang-format on
-    Graphic3d_Vec2i aSubViewSize = aChildFbo->GetVPSize();
-    Graphic3d_Vec2i aSubViewPos  = aSubView->SubviewTopLeft();
-    Graphic3d_Vec2i aDestSize    = aSubViewSize;
+    NCollection_Vec2<int> aSubViewSize = aChildFbo->GetVPSize();
+    NCollection_Vec2<int> aSubViewPos  = aSubView->SubviewTopLeft();
+    NCollection_Vec2<int> aDestSize    = aSubViewSize;
     if (aSubView->RenderingParams().RenderResolutionScale != 1.0f)
     {
       aDestSize =
-        Graphic3d_Vec2i(Graphic3d_Vec2d(aDestSize)
-                        / Graphic3d_Vec2d(aSubView->RenderingParams().RenderResolutionScale));
+        NCollection_Vec2<int>(NCollection_Vec2<double>(aDestSize)
+                        / NCollection_Vec2<double>(aSubView->RenderingParams().RenderResolutionScale));
     }
     aSubViewPos.y() = aWinSize.y() - aDestSize.y() - aSubViewPos.y();
 
@@ -2377,9 +2377,9 @@ bool OpenGl_View::blitSubviews(const Graphic3d_Camera::Projection, OpenGl_FrameB
 
 //=================================================================================================
 
-void OpenGl_View::renderShadowMap(const Handle(OpenGl_ShadowMap)& theShadowMap)
+void OpenGl_View::renderShadowMap(const occ::handle<OpenGl_ShadowMap>& theShadowMap)
 {
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (!theShadowMap->UpdateCamera(*this))
   {
     return;
@@ -2397,10 +2397,10 @@ void OpenGl_View::renderShadowMap(const Handle(OpenGl_ShadowMap)& theShadowMap)
   aCtx->ApplyProjectionMatrix();
 
   aCtx->ShaderManager()->UpdateMaterialState();
-  aCtx->ShaderManager()->UpdateModelWorldStateTo(OpenGl_Mat4());
+  aCtx->ShaderManager()->UpdateModelWorldStateTo(NCollection_Mat4<float>());
   aCtx->ShaderManager()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
 
-  const Handle(OpenGl_FrameBuffer)& aShadowBuffer = theShadowMap->FrameBuffer();
+  const occ::handle<OpenGl_FrameBuffer>& aShadowBuffer = theShadowMap->FrameBuffer();
   aShadowBuffer->BindBuffer(aCtx);
   aShadowBuffer->SetupViewport(aCtx);
 
@@ -2424,11 +2424,11 @@ void OpenGl_View::renderShadowMap(const Handle(OpenGl_ShadowMap)& theShadowMap)
                                | OpenGl_RenderFilter_SkipTrsfPersistence);
   renderScene(aProjection, aShadowBuffer.get(), NULL, false);
   myWorkspace->SetRenderFilter(myWorkspace->RenderFilter()
-                               & ~(Standard_Integer)OpenGl_RenderFilter_SkipTrsfPersistence);
+                               & ~(int)OpenGl_RenderFilter_SkipTrsfPersistence);
 
   aCtx->SetColorMask(true);
   myWorkspace->ResetAppliedAspect();
-  aCtx->BindProgram(Handle(OpenGl_ShaderProgram)());
+  aCtx->BindProgram(occ::handle<OpenGl_ShaderProgram>());
 
   // Image_AlienPixMap anImage; anImage.InitZero (Image_Format_Gray, aShadowBuffer->GetVPSizeX(),
   // aShadowBuffer->GetVPSizeY()); OpenGl_FrameBuffer::BufferDump (aCtx, aShadowBuffer, anImage,
@@ -2443,13 +2443,13 @@ void OpenGl_View::renderShadowMap(const Handle(OpenGl_ShadowMap)& theShadowMap)
 void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
                          OpenGl_FrameBuffer*          theOutputFBO,
                          OpenGl_FrameBuffer*          theOitAccumFbo,
-                         const Standard_Boolean       theToDrawImmediate)
+                         const bool       theToDrawImmediate)
 {
   // ==================================
   //      Step 1: Prepare for render
   // ==================================
 
-  const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
   aContext->SetAllowSampleAlphaToCoverage(myRenderParams.ToEnableAlphaToCoverage
                                           && theOutputFBO != NULL
                                           && theOutputFBO->NbSamples() != 0);
@@ -2457,8 +2457,8 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   // Disable current clipping planes
   if (aContext->core11ffp != NULL)
   {
-    const Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
-    for (Standard_Integer aClipPlaneId = GL_CLIP_PLANE0; aClipPlaneId < GL_CLIP_PLANE0 + aMaxPlanes;
+    const int aMaxPlanes = aContext->MaxClipPlanes();
+    for (int aClipPlaneId = GL_CLIP_PLANE0; aClipPlaneId < GL_CLIP_PLANE0 + aMaxPlanes;
          ++aClipPlaneId)
     {
       aContext->core11fwd->glDisable(aClipPlaneId);
@@ -2474,10 +2474,10 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
                                 myRenderParams.ResolutionRatio());
   myBVHSelector.CacheClipPtsProjections();
 
-  const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
-  const Handle(Graphic3d_LightSet)&   aLights =
+  const occ::handle<OpenGl_ShaderManager>& aManager = aContext->ShaderManager();
+  const occ::handle<Graphic3d_LightSet>&   aLights =
     myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_Unlit ? myNoShadingLight : myLights;
-  Standard_Size aLightsRevision = 0;
+  size_t aLightsRevision = 0;
   if (!aLights.IsNull())
   {
     aLightsRevision = aLights->UpdateRevision();
@@ -2490,7 +2490,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
     aManager->UpdateLightSourceStateTo(aLights,
                                        SpecIBLMapLevels(),
                                        myShadowMaps->IsValid() ? myShadowMaps
-                                                               : Handle(OpenGl_ShadowMapArray)());
+                                                               : occ::handle<OpenGl_ShadowMapArray>());
     myLastLightSourceState =
       StateInfo(myCurrLightSourceState, aManager->LightSourceState().Index());
   }
@@ -2507,7 +2507,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   aContext->SetCamera(myCamera);
   if (aManager->ModelWorldState().Index() == 0)
   {
-    aContext->ShaderManager()->UpdateModelWorldStateTo(OpenGl_Mat4());
+    aContext->ShaderManager()->UpdateModelWorldStateTo(NCollection_Mat4<float>());
   }
 
   // ====================================
@@ -2535,11 +2535,11 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   const gp_Pnt anAxialScale = aContext->Camera()->AxialScale();
   if (anAxialScale.X() != 1.F || anAxialScale.Y() != 1.F || anAxialScale.Z() != 1.F)
   {
-    aContext->SetGlNormalizeEnabled(Standard_True);
+    aContext->SetGlNormalizeEnabled(true);
   }
   else
   {
-    aContext->SetGlNormalizeEnabled(Standard_False);
+    aContext->SetGlNormalizeEnabled(false);
   }
 
   aManager->SetShadingModel(
@@ -2563,10 +2563,10 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   const bool hasShadowMap = aContext->ShaderManager()->LightSourceState().HasShadowMaps();
   if (hasShadowMap)
   {
-    for (Standard_Integer aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper();
+    for (int aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper();
          ++aShadowIter)
     {
-      const Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->Value(aShadowIter);
+      const occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->Value(aShadowIter);
       aShadow->Texture()->Bind(aContext);
     }
   }
@@ -2575,10 +2575,10 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
 
   if (hasShadowMap)
   {
-    for (Standard_Integer aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper();
+    for (int aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper();
          ++aShadowIter)
     {
-      const Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->Value(aShadowIter);
+      const occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->Value(aShadowIter);
       aShadow->Texture()->Unbind(aContext);
     }
     if (aContext->core15fwd != NULL)
@@ -2587,7 +2587,7 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
     }
   }
 
-  myWorkspace->SetEnvironmentTexture(Handle(OpenGl_TextureSet)());
+  myWorkspace->SetEnvironmentTexture(occ::handle<OpenGl_TextureSet>());
 
   // ===============================
   //      Step 4: Trihedron
@@ -2613,10 +2613,10 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
   aContext->SetSampleAlphaToCoverage(false);
 
   // reset FFP state for safety
-  aContext->BindProgram(Handle(OpenGl_ShaderProgram)());
+  aContext->BindProgram(occ::handle<OpenGl_ShaderProgram>());
   if (aContext->caps->ffpEnable)
   {
-    aContext->ShaderManager()->PushState(Handle(OpenGl_ShaderProgram)());
+    aContext->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   }
 }
 
@@ -2632,7 +2632,7 @@ void OpenGl_View::InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
 void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
                                 OpenGl_FrameBuffer*          theReadDrawFbo,
                                 OpenGl_FrameBuffer*          theOitAccumFbo,
-                                const Standard_Boolean       theToDrawImmediate)
+                                const bool       theToDrawImmediate)
 {
   if (myIsSubviewComposer)
   {
@@ -2645,16 +2645,16 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
     return;
   }
 
-  Handle(OpenGl_Context) aCtx       = myWorkspace->GetGlContext();
-  Standard_Boolean       toRenderGL = theToDrawImmediate
+  occ::handle<OpenGl_Context> aCtx       = myWorkspace->GetGlContext();
+  bool       toRenderGL = theToDrawImmediate
                                 || myRenderParams.Method != Graphic3d_RM_RAYTRACING
                                 || myRaytraceInitStatus == OpenGl_RT_FAIL || aCtx->IsFeedback();
 
   if (!toRenderGL)
   {
-    const Graphic3d_Vec2i aSizeXY = theReadDrawFbo != NULL
+    const NCollection_Vec2<int> aSizeXY = theReadDrawFbo != NULL
                                       ? theReadDrawFbo->GetVPSize()
-                                      : Graphic3d_Vec2i(myWindow->Width(), myWindow->Height());
+                                      : NCollection_Vec2<int>(myWindow->Width(), myWindow->Height());
 
     toRenderGL = !initRaytraceResources(aSizeXY.x(), aSizeXY.y(), aCtx)
                  || !updateRaytraceGeometry(OpenGl_GUM_CHECK, myId, aCtx);
@@ -2680,9 +2680,9 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
                          theReadDrawFbo,
                          theOitAccumFbo);
 
-        const Standard_Integer aPrevFilter =
+        const int aPrevFilter =
           myWorkspace->RenderFilter()
-          & ~(Standard_Integer)(OpenGl_RenderFilter_NonRaytraceableOnly);
+          & ~(int)(OpenGl_RenderFilter_NonRaytraceableOnly);
         myWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_NonRaytraceableOnly);
         {
           if (theReadDrawFbo != NULL)
@@ -2747,13 +2747,13 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
                      theOitAccumFbo);
 
     // Set flag that scene was redrawn by standard pipeline
-    myWasRedrawnGL = Standard_True;
+    myWasRedrawnGL = true;
   }
 }
 
 //=================================================================================================
 
-void OpenGl_View::renderTrihedron(const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_View::renderTrihedron(const occ::handle<OpenGl_Workspace>& theWorkspace)
 {
   if (myToShowGradTrihedron)
   {
@@ -2777,7 +2777,7 @@ void OpenGl_View::renderFrameStats()
 
 void OpenGl_View::Invalidate()
 {
-  myBackBufferRestored = Standard_False;
+  myBackBufferRestored = false;
 }
 
 //=================================================================================================
@@ -2785,9 +2785,9 @@ void OpenGl_View::Invalidate()
 void OpenGl_View::renderScene(Graphic3d_Camera::Projection theProjection,
                               OpenGl_FrameBuffer*          theReadDrawFbo,
                               OpenGl_FrameBuffer*          theOitAccumFbo,
-                              const Standard_Boolean       theToDrawImmediate)
+                              const bool       theToDrawImmediate)
 {
-  const Handle(OpenGl_Context)& aContext = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
 
   // Specify clipping planes in view transformation space
   aContext->ChangeClipping().Reset(myClipPlanes);
@@ -2797,12 +2797,12 @@ void OpenGl_View::renderScene(Graphic3d_Camera::Projection theProjection,
   }
 
   renderStructs(theProjection, theReadDrawFbo, theOitAccumFbo, theToDrawImmediate);
-  aContext->BindTextures(Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+  aContext->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
 
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
 
-  aContext->ChangeClipping().Reset(Handle(Graphic3d_SequenceOfHClipPlane)());
+  aContext->ChangeClipping().Reset(occ::handle<Graphic3d_SequenceOfHClipPlane>());
   if (!myClipPlanes.IsNull() && !myClipPlanes->IsEmpty())
   {
     aContext->ShaderManager()->RevertClippingState();
@@ -2813,7 +2813,7 @@ void OpenGl_View::renderScene(Graphic3d_Camera::Projection theProjection,
 
 void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
   OpenGl_FrameBuffer*    anFbo =
     (theCustomFbo != NULL && theCustomFbo->IsValid())
          ? theCustomFbo
@@ -2836,14 +2836,14 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
       aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
 
-    const Standard_Integer aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
+    const int aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
     aCtx->ResizeViewport(aViewport);
   }
 }
 
 //=================================================================================================
 
-OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
+OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const bool theToFlip)
 {
   OpenGl_VertexBuffer* aVerts = NULL;
   if (!theToFlip)
@@ -2851,10 +2851,10 @@ OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
     aVerts = &myFullScreenQuad;
     if (!aVerts->IsValid())
     {
-      OpenGl_Vec4 aQuad[4] = {OpenGl_Vec4(1.0f, -1.0f, 1.0f, 0.0f),
-                              OpenGl_Vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                              OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
-                              OpenGl_Vec4(-1.0f, 1.0f, 0.0f, 1.0f)};
+      NCollection_Vec4<float> aQuad[4] = {NCollection_Vec4<float>(1.0f, -1.0f, 1.0f, 0.0f),
+                              NCollection_Vec4<float>(1.0f, 1.0f, 1.0f, 1.0f),
+                              NCollection_Vec4<float>(-1.0f, -1.0f, 0.0f, 0.0f),
+                              NCollection_Vec4<float>(-1.0f, 1.0f, 0.0f, 1.0f)};
       aVerts->Init(myWorkspace->GetGlContext(), 4, 4, aQuad[0].GetData());
     }
   }
@@ -2863,10 +2863,10 @@ OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
     aVerts = &myFullScreenQuadFlip;
     if (!aVerts->IsValid())
     {
-      OpenGl_Vec4 aQuad[4] = {OpenGl_Vec4(1.0f, -1.0f, 1.0f, 1.0f),
-                              OpenGl_Vec4(1.0f, 1.0f, 1.0f, 0.0f),
-                              OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 1.0f),
-                              OpenGl_Vec4(-1.0f, 1.0f, 0.0f, 0.0f)};
+      NCollection_Vec4<float> aQuad[4] = {NCollection_Vec4<float>(1.0f, -1.0f, 1.0f, 1.0f),
+                              NCollection_Vec4<float>(1.0f, 1.0f, 1.0f, 0.0f),
+                              NCollection_Vec4<float>(-1.0f, -1.0f, 0.0f, 1.0f),
+                              NCollection_Vec4<float>(-1.0f, 1.0f, 0.0f, 0.0f)};
       aVerts->Init(myWorkspace->GetGlContext(), 4, 4, aQuad[0].GetData());
     }
   }
@@ -2877,16 +2877,16 @@ OpenGl_VertexBuffer* OpenGl_View::initBlitQuad(const Standard_Boolean theToFlip)
 
 bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
                               OpenGl_FrameBuffer*    theDrawFbo,
-                              const Standard_Boolean theToFlip)
+                              const bool theToFlip)
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
-  const Standard_Integer aReadSizeX =
+  occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
+  const int aReadSizeX =
     theReadFbo != NULL ? theReadFbo->GetVPSizeX() : myWindow->Width();
-  const Standard_Integer aReadSizeY =
+  const int aReadSizeY =
     theReadFbo != NULL ? theReadFbo->GetVPSizeY() : myWindow->Height();
-  const Standard_Integer aDrawSizeX =
+  const int aDrawSizeX =
     theDrawFbo != NULL ? theDrawFbo->GetVPSizeX() : myWindow->Width();
-  const Standard_Integer aDrawSizeY =
+  const int aDrawSizeY =
     theDrawFbo != NULL ? theDrawFbo->GetVPSizeY() : myWindow->Height();
   if (theReadFbo == NULL || aCtx->IsFeedback())
   {
@@ -2907,7 +2907,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
     aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     aCtx->SetFrameBufferSRGB(false);
   }
-  const Standard_Integer aViewport[4] = {0, 0, aDrawSizeX, aDrawSizeY};
+  const int aViewport[4] = {0, 0, aDrawSizeX, aDrawSizeY};
   aCtx->ResizeViewport(aViewport);
 
   // clang-format off
@@ -3023,7 +3023,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
       aCtx->core20fwd->glDisable(GL_DEPTH_TEST);
     }
 
-    aCtx->BindTextures(Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+    aCtx->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
 
     const Graphic3d_TypeOfTextureFilter aFilter =
       (aDrawSizeX == aReadSizeX && aDrawSizeY == aReadSizeY) ? Graphic3d_TOTF_NEAREST
@@ -3031,7 +3031,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
     const GLint aFilterGl = aFilter == Graphic3d_TOTF_NEAREST ? GL_NEAREST : GL_LINEAR;
 
     OpenGl_VertexBuffer*                aVerts   = initBlitQuad(theToFlip);
-    const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
+    const occ::handle<OpenGl_ShaderManager>& aManager = aCtx->ShaderManager();
     if (aVerts->IsValid()
         && aManager->BindFboBlitProgram(theReadFbo != NULL ? theReadFbo->NbSamples() : 0,
                                         toApplyGamma))
@@ -3071,7 +3071,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
                         0,
                         GL_DEBUG_SEVERITY_HIGH,
                         aMsg);
-      myHasFboBlit = Standard_False;
+      myHasFboBlit = false;
       theReadFbo->Release(aCtx.operator->());
       return true;
     }
@@ -3083,7 +3083,7 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
 
 void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
 {
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   bindDefaultFbo(theDrawFbo);
   OpenGl_FrameBuffer* aPair[2] = {
     myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
@@ -3114,8 +3114,8 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
       return;
     }
 
-    if (!blitBuffers(aPair[0], myOpenGlFBO.operator->(), Standard_False)
-        || !blitBuffers(aPair[1], myOpenGlFBO2.operator->(), Standard_False))
+    if (!blitBuffers(aPair[0], myOpenGlFBO.operator->(), false)
+        || !blitBuffers(aPair[1], myOpenGlFBO2.operator->(), false))
     {
       bindDefaultFbo(theDrawFbo);
       return;
@@ -3128,21 +3128,21 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
 
   struct
   {
-    Standard_Integer left;
-    Standard_Integer top;
-    Standard_Integer right;
-    Standard_Integer bottom;
+    int left;
+    int top;
+    int right;
+    int bottom;
 
-    Standard_Integer dx() { return right - left; }
+    int dx() { return right - left; }
 
-    Standard_Integer dy() { return bottom - top; }
+    int dy() { return bottom - top; }
   } aGeom;
 
   myWindow->PlatformWindow()->Position(aGeom.left, aGeom.top, aGeom.right, aGeom.bottom);
 
-  Standard_Boolean       toReverse = myRenderParams.ToReverseStereo;
-  const Standard_Boolean isOddY    = (aGeom.top + aGeom.dy()) % 2 == 1;
-  const Standard_Boolean isOddX    = aGeom.left % 2 == 1;
+  bool       toReverse = myRenderParams.ToReverseStereo;
+  const bool isOddY    = (aGeom.top + aGeom.dy()) % 2 == 1;
+  const bool isOddX    = aGeom.left % 2 == 1;
   if (isOddY
       && (myRenderParams.StereoMode == Graphic3d_StereoMode_RowInterlaced
           || myRenderParams.StereoMode == Graphic3d_StereoMode_ChessBoard))
@@ -3165,10 +3165,10 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   aCtx->core20fwd->glDepthMask(GL_TRUE);
   aCtx->core20fwd->glEnable(GL_DEPTH_TEST);
 
-  aCtx->BindTextures(Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+  aCtx->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
   OpenGl_VertexBuffer* aVerts = initBlitQuad(myToFlipOutput);
 
-  const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
+  const occ::handle<OpenGl_ShaderManager>& aManager = aCtx->ShaderManager();
   if (!aVerts->IsValid() || !aManager->BindStereoProgram(myRenderParams.StereoMode))
   {
     aCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -3182,49 +3182,49 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   switch (myRenderParams.StereoMode)
   {
     case Graphic3d_StereoMode_Anaglyph: {
-      OpenGl_Mat4 aFilterL, aFilterR;
-      aFilterL.SetDiagonal(Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
-      aFilterR.SetDiagonal(Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+      NCollection_Mat4<float> aFilterL, aFilterR;
+      aFilterL.SetDiagonal(NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
+      aFilterR.SetDiagonal(NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
       switch (myRenderParams.AnaglyphFilter)
       {
         case Graphic3d_RenderingParams::Anaglyph_RedCyan_Simple: {
-          aFilterL.SetRow(0, Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(1, Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(2, Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+          aFilterL.SetRow(0, NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(1, NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(2, NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f));
           break;
         }
         case Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized: {
-          aFilterL.SetRow(0, Graphic3d_Vec4(0.4154f, 0.4710f, 0.16666667f, 0.0f));
-          aFilterL.SetRow(1, Graphic3d_Vec4(-0.0458f, -0.0484f, -0.0257f, 0.0f));
-          aFilterL.SetRow(2, Graphic3d_Vec4(-0.0547f, -0.0615f, 0.0128f, 0.0f));
-          aFilterL.SetRow(3, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(0, Graphic3d_Vec4(-0.01090909f, -0.03636364f, -0.00606061f, 0.0f));
-          aFilterR.SetRow(1, Graphic3d_Vec4(0.37560000f, 0.73333333f, 0.01111111f, 0.0f));
-          aFilterR.SetRow(2, Graphic3d_Vec4(-0.06510000f, -0.12870000f, 1.29710000f, 0.0f));
-          aFilterR.SetRow(3, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow(0, NCollection_Vec4<float>(0.4154f, 0.4710f, 0.16666667f, 0.0f));
+          aFilterL.SetRow(1, NCollection_Vec4<float>(-0.0458f, -0.0484f, -0.0257f, 0.0f));
+          aFilterL.SetRow(2, NCollection_Vec4<float>(-0.0547f, -0.0615f, 0.0128f, 0.0f));
+          aFilterL.SetRow(3, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(0, NCollection_Vec4<float>(-0.01090909f, -0.03636364f, -0.00606061f, 0.0f));
+          aFilterR.SetRow(1, NCollection_Vec4<float>(0.37560000f, 0.73333333f, 0.01111111f, 0.0f));
+          aFilterR.SetRow(2, NCollection_Vec4<float>(-0.06510000f, -0.12870000f, 1.29710000f, 0.0f));
+          aFilterR.SetRow(3, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
           break;
         }
         case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Simple: {
-          aFilterL.SetRow(0, Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterL.SetRow(1, Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(2, Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+          aFilterL.SetRow(0, NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow(1, NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(2, NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f));
           break;
         }
         case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized: {
-          aFilterL.SetRow(0, Graphic3d_Vec4(1.062f, -0.205f, 0.299f, 0.0f));
-          aFilterL.SetRow(1, Graphic3d_Vec4(-0.026f, 0.908f, 0.068f, 0.0f));
-          aFilterL.SetRow(2, Graphic3d_Vec4(-0.038f, -0.173f, 0.022f, 0.0f));
-          aFilterL.SetRow(3, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(0, Graphic3d_Vec4(-0.016f, -0.123f, -0.017f, 0.0f));
-          aFilterR.SetRow(1, Graphic3d_Vec4(0.006f, 0.062f, -0.017f, 0.0f));
-          aFilterR.SetRow(2, Graphic3d_Vec4(0.094f, 0.185f, 0.911f, 0.0f));
-          aFilterR.SetRow(3, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow(0, NCollection_Vec4<float>(1.062f, -0.205f, 0.299f, 0.0f));
+          aFilterL.SetRow(1, NCollection_Vec4<float>(-0.026f, 0.908f, 0.068f, 0.0f));
+          aFilterL.SetRow(2, NCollection_Vec4<float>(-0.038f, -0.173f, 0.022f, 0.0f));
+          aFilterL.SetRow(3, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(0, NCollection_Vec4<float>(-0.016f, -0.123f, -0.017f, 0.0f));
+          aFilterR.SetRow(1, NCollection_Vec4<float>(0.006f, 0.062f, -0.017f, 0.0f));
+          aFilterR.SetRow(2, NCollection_Vec4<float>(0.094f, 0.185f, 0.911f, 0.0f));
+          aFilterR.SetRow(3, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
           break;
         }
         case Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple: {
-          aFilterR.SetRow(0, Graphic3d_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-          aFilterL.SetRow(1, Graphic3d_Vec4(0.0f, 1.0f, 0.0f, 0.0f));
-          aFilterR.SetRow(2, Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f));
+          aFilterR.SetRow(0, NCollection_Vec4<float>(1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow(1, NCollection_Vec4<float>(0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow(2, NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f));
           break;
         }
         case Graphic3d_RenderingParams::Anaglyph_UserDefined: {
@@ -3238,24 +3238,24 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
       break;
     }
     case Graphic3d_StereoMode_RowInterlaced: {
-      Graphic3d_Vec2 aTexOffset = myRenderParams.ToSmoothInterlacing
-                                    ? Graphic3d_Vec2(0.0f, -0.5f / float(aPair[0]->GetSizeY()))
-                                    : Graphic3d_Vec2();
+      NCollection_Vec2<float> aTexOffset = myRenderParams.ToSmoothInterlacing
+                                    ? NCollection_Vec2<float>(0.0f, -0.5f / float(aPair[0]->GetSizeY()))
+                                    : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
     }
     case Graphic3d_StereoMode_ColumnInterlaced: {
-      Graphic3d_Vec2 aTexOffset = myRenderParams.ToSmoothInterlacing
-                                    ? Graphic3d_Vec2(0.5f / float(aPair[0]->GetSizeX()), 0.0f)
-                                    : Graphic3d_Vec2();
+      NCollection_Vec2<float> aTexOffset = myRenderParams.ToSmoothInterlacing
+                                    ? NCollection_Vec2<float>(0.5f / float(aPair[0]->GetSizeX()), 0.0f)
+                                    : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
     }
     case Graphic3d_StereoMode_ChessBoard: {
-      Graphic3d_Vec2 aTexOffset =
+      NCollection_Vec2<float> aTexOffset =
         myRenderParams.ToSmoothInterlacing
-          ? Graphic3d_Vec2(0.5f / float(aPair[0]->GetSizeX()), -0.5f / float(aPair[0]->GetSizeY()))
-          : Graphic3d_Vec2();
+          ? NCollection_Vec2<float>(0.5f / float(aPair[0]->GetSizeX()), -0.5f / float(aPair[0]->GetSizeY()))
+          : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
     }
@@ -3289,14 +3289,14 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
 
 bool OpenGl_View::copyBackToFront()
 {
-  myIsImmediateDrawn                 = Standard_False;
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  myIsImmediateDrawn                 = false;
+  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
   if (aCtx->core11ffp == NULL)
   {
     return false;
   }
 
-  OpenGl_Mat4 aProjectMat;
+  NCollection_Mat4<float> aProjectMat;
   Graphic3d_TransformUtils::Ortho2D(aProjectMat,
                                     0.0f,
                                     static_cast<GLfloat>(myWindow->Width()),
@@ -3313,8 +3313,8 @@ bool OpenGl_View::copyBackToFront()
   aCtx->ApplyWorldViewMatrix();
 
   // synchronize FFP state before copying pixels
-  aCtx->BindProgram(Handle(OpenGl_ShaderProgram)());
-  aCtx->ShaderManager()->PushState(Handle(OpenGl_ShaderProgram)());
+  aCtx->BindProgram(occ::handle<OpenGl_ShaderProgram>());
+  aCtx->ShaderManager()->PushState(occ::handle<OpenGl_ShaderProgram>());
   aCtx->DisableFeatures();
 
   switch (aCtx->DrawBuffer())
@@ -3353,14 +3353,14 @@ bool OpenGl_View::copyBackToFront()
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_View::checkOitCompatibility(const Handle(OpenGl_Context)& theGlContext,
-                                                    const Standard_Boolean        theMSAA)
+bool OpenGl_View::checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext,
+                                                    const bool        theMSAA)
 {
   // determine if OIT is supported by current OpenGl context
-  Standard_Boolean& aToDisableOIT = theMSAA ? myToDisableMSAA : myToDisableOIT;
+  bool& aToDisableOIT = theMSAA ? myToDisableMSAA : myToDisableOIT;
   if (aToDisableOIT)
   {
-    return Standard_False;
+    return false;
   }
 
   TCollection_ExtendedString aCompatibilityMsg;
@@ -3380,7 +3380,7 @@ Standard_Boolean OpenGl_View::checkOitCompatibility(const Handle(OpenGl_Context)
   }
   if (aCompatibilityMsg.IsEmpty())
   {
-    return Standard_True;
+    return true;
   }
 
   aCompatibilityMsg += "  Blended order-independent transparency will not be available.\n";
@@ -3390,13 +3390,13 @@ Standard_Boolean OpenGl_View::checkOitCompatibility(const Handle(OpenGl_Context)
                             GL_DEBUG_SEVERITY_HIGH,
                             aCompatibilityMsg);
 
-  aToDisableOIT = Standard_True;
-  return Standard_False;
+  aToDisableOIT = true;
+  return false;
 }
 
 //=================================================================================================
 
-void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::updateSkydomeBg(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (!myToUpdateSkydome)
   {
@@ -3406,17 +3406,17 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
   myToUpdateSkydome = false;
 
   // Set custom shader
-  Handle(OpenGl_ShaderProgram)    aProg;
-  Handle(Graphic3d_ShaderProgram) aProxy = theCtx->ShaderManager()->GetBgSkydomeProgram();
+  occ::handle<OpenGl_ShaderProgram>    aProg;
+  occ::handle<Graphic3d_ShaderProgram> aProxy = theCtx->ShaderManager()->GetBgSkydomeProgram();
   TCollection_AsciiString         anUnused;
   theCtx->ShaderManager()->Create(aProxy, anUnused, aProg);
-  Handle(OpenGl_ShaderProgram) aPrevProgram = theCtx->ActiveProgram();
+  occ::handle<OpenGl_ShaderProgram> aPrevProgram = theCtx->ActiveProgram();
   theCtx->BindProgram(aProg);
 
   // Setup uniforms
   aProg->SetUniform(theCtx,
                     "uSunDir",
-                    OpenGl_Vec3((float)mySkydomeAspect.SunDirection().X(),
+                    NCollection_Vec3<float>((float)mySkydomeAspect.SunDirection().X(),
                                 (float)mySkydomeAspect.SunDirection().Y(),
                                 (float)mySkydomeAspect.SunDirection().Z()));
   aProg->SetUniform(theCtx, "uCloudy", mySkydomeAspect.Cloudiness());
@@ -3430,15 +3430,15 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
   theCtx->arbFBO->glGenFramebuffers(1, &anFBO);
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, anFBO);
 
-  const Standard_Integer anOldViewport[4] = {theCtx->Viewport()[0],
+  const int anOldViewport[4] = {theCtx->Viewport()[0],
                                              theCtx->Viewport()[1],
                                              theCtx->Viewport()[2],
                                              theCtx->Viewport()[3]};
-  const Standard_Integer aViewport[4]     = {0, 0, mySkydomeAspect.Size(), mySkydomeAspect.Size()};
+  const int aViewport[4]     = {0, 0, mySkydomeAspect.Size(), mySkydomeAspect.Size()};
   theCtx->ResizeViewport(aViewport);
 
   // Fullscreen triangle
-  Handle(OpenGl_VertexBuffer) aVBO        = new OpenGl_VertexBuffer();
+  occ::handle<OpenGl_VertexBuffer> aVBO        = new OpenGl_VertexBuffer();
   const float                 aTriangle[] = {-1.0, -1.0, 3.0, -1.0, -1.0, 3.0};
   aVBO->Init(theCtx, 2, 3, aTriangle);
   aVBO->BindAttribute(theCtx, Graphic3d_TypeOfAttribute::Graphic3d_TOA_POS);
@@ -3463,7 +3463,7 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
     myCubeMapParams->Aspect()->SetFaceCulling(Graphic3d_TypeOfBackfacingModel_DoubleSided);
     myCubeMapParams->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
     myCubeMapParams->Aspect()->SetShaderProgram(theCtx->ShaderManager()->GetBgCubeMapProgram());
-    Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet(1);
+    occ::handle<Graphic3d_TextureSet> aTextureSet = new Graphic3d_TextureSet(1);
     myCubeMapParams->Aspect()->SetTextureSet(aTextureSet);
     myCubeMapParams->Aspect()->SetTextureMapOn(true);
     myCubeMapParams->SynchronizeAspects();
@@ -3472,7 +3472,7 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
   myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt("uZCoeff", 1);
   myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt("uYCoeff", 1);
 
-  for (Standard_Integer aSideIter = 0; aSideIter < 6; aSideIter++)
+  for (int aSideIter = 0; aSideIter < 6; aSideIter++)
   {
     aProg->SetUniform(theCtx, "uSide", aSideIter);
     theCtx->arbFBO->glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -3493,14 +3493,14 @@ void OpenGl_View::updateSkydomeBg(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_View::checkPBRAvailability() const
+bool OpenGl_View::checkPBRAvailability() const
 {
   return myWorkspace->GetGlContext()->HasPBR() && !myPBREnvironment.IsNull();
 }
 
 //=================================================================================================
 
-void OpenGl_View::updatePBREnvironment(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP && myToUpdateSkydome)
   {
@@ -3515,7 +3515,7 @@ void OpenGl_View::updatePBREnvironment(const Handle(OpenGl_Context)& theCtx)
 
   myPBREnvRequest = false;
 
-  Handle(OpenGl_TextureSet) aGlTextureSet;
+  occ::handle<OpenGl_TextureSet> aGlTextureSet;
   OpenGl_Aspects*           aTmpGlAspects = NULL;
   if (!myCubeMapIBL.IsNull() && myCubeMapIBL == myCubeMapBackground)
   {
@@ -3523,11 +3523,11 @@ void OpenGl_View::updatePBREnvironment(const Handle(OpenGl_Context)& theCtx)
   }
   else if (!myCubeMapIBL.IsNull())
   {
-    myCubeMapIBL->SetMipmapsGeneration(Standard_True);
+    myCubeMapIBL->SetMipmapsGeneration(true);
 
-    Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+    occ::handle<Graphic3d_AspectFillArea3d> anAspect = new Graphic3d_AspectFillArea3d();
     {
-      Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet(myCubeMapIBL);
+      occ::handle<Graphic3d_TextureSet> aTextureSet = new Graphic3d_TextureSet(myCubeMapIBL);
       anAspect->SetInteriorStyle(Aspect_IS_SOLID);
       anAspect->SetTextureSet(aTextureSet);
       anAspect->SetTextureMapOn(true);

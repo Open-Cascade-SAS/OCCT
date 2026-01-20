@@ -24,8 +24,8 @@ StepAP214_AppliedSecurityClassificationAssignment::
 }
 
 void StepAP214_AppliedSecurityClassificationAssignment::Init(
-  const Handle(StepBasic_SecurityClassification)&              aAssignedSecurityClassification,
-  const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
+  const occ::handle<StepBasic_SecurityClassification>&              aAssignedSecurityClassification,
+  const occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -34,24 +34,24 @@ void StepAP214_AppliedSecurityClassificationAssignment::Init(
 }
 
 void StepAP214_AppliedSecurityClassificationAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfSecurityClassificationItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfSecurityClassificationItem)
+occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>
   StepAP214_AppliedSecurityClassificationAssignment::Items() const
 {
   return items;
 }
 
 const StepAP214_SecurityClassificationItem& StepAP214_AppliedSecurityClassificationAssignment::
-  ItemsValue(const Standard_Integer num) const
+  ItemsValue(const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedSecurityClassificationAssignment::NbItems() const
+int StepAP214_AppliedSecurityClassificationAssignment::NbItems() const
 {
   if (items.IsNull())
     return 0;

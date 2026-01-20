@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Pcurve, StepGeom_Curve)
 
 StepGeom_Pcurve::StepGeom_Pcurve() {}
 
-void StepGeom_Pcurve::Init(const Handle(TCollection_HAsciiString)&            aName,
-                           const Handle(StepGeom_Surface)&                    aBasisSurface,
-                           const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
+void StepGeom_Pcurve::Init(const occ::handle<TCollection_HAsciiString>&            aName,
+                           const occ::handle<StepGeom_Surface>&                    aBasisSurface,
+                           const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve)
 {
   // --- classe own fields ---
   basisSurface     = aBasisSurface;
@@ -31,23 +31,23 @@ void StepGeom_Pcurve::Init(const Handle(TCollection_HAsciiString)&            aN
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_Pcurve::SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface)
+void StepGeom_Pcurve::SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface)
 {
   basisSurface = aBasisSurface;
 }
 
-Handle(StepGeom_Surface) StepGeom_Pcurve::BasisSurface() const
+occ::handle<StepGeom_Surface> StepGeom_Pcurve::BasisSurface() const
 {
   return basisSurface;
 }
 
 void StepGeom_Pcurve::SetReferenceToCurve(
-  const Handle(StepRepr_DefinitionalRepresentation)& aReferenceToCurve)
+  const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve)
 {
   referenceToCurve = aReferenceToCurve;
 }
 
-Handle(StepRepr_DefinitionalRepresentation) StepGeom_Pcurve::ReferenceToCurve() const
+occ::handle<StepRepr_DefinitionalRepresentation> StepGeom_Pcurve::ReferenceToCurve() const
 {
   return referenceToCurve;
 }

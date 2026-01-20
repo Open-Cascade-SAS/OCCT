@@ -24,8 +24,6 @@
 #include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 
-DEFINE_STANDARD_HANDLE(Standard_Failure, Standard_Transient)
-
 //! Forms the root of the entire exception hierarchy.
 class Standard_Failure : public Standard_Transient
 {
@@ -38,13 +36,13 @@ public:
 
   //! Creates a status object of type "Failure".
   //! @param[in] theDesc  exception description
-  Standard_EXPORT Standard_Failure(const Standard_CString theDesc);
+  Standard_EXPORT Standard_Failure(const char* const theDesc);
 
   //! Creates a status object of type "Failure" with stack trace.
   //! @param[in] theDesc  exception description
   //! @param[in] theStackTrace  associated stack trace
-  Standard_EXPORT Standard_Failure(const Standard_CString theDesc,
-                                   const Standard_CString theStackTrace);
+  Standard_EXPORT Standard_Failure(const char* const theDesc,
+                                   const char* const theStackTrace);
 
   //! Assignment operator
   Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& f);
@@ -54,24 +52,24 @@ public:
 
   //! Prints on the stream @p theStream the exception name followed by the error message.
   //!
-  //! Note: there is a short-cut @c operator<< (Standard_OStream&, Handle(Standard_Failure)&)
+  //! Note: there is a short-cut @c operator<< (Standard_OStream&, occ::handle<Standard_Failure>&)
   Standard_EXPORT void Print(Standard_OStream& theStream) const;
 
   //! Returns error message
-  Standard_EXPORT virtual Standard_CString GetMessageString() const;
+  Standard_EXPORT virtual const char* GetMessageString() const;
 
   //! Sets error message
-  Standard_EXPORT virtual void SetMessageString(const Standard_CString theMessage);
+  Standard_EXPORT virtual void SetMessageString(const char* const theMessage);
 
   //! Returns the stack trace string
-  Standard_EXPORT virtual Standard_CString GetStackString() const;
+  Standard_EXPORT virtual const char* GetStackString() const;
 
   //! Sets the stack trace string
-  Standard_EXPORT virtual void SetStackString(const Standard_CString theStack);
+  Standard_EXPORT virtual void SetStackString(const char* const theStack);
 
   Standard_EXPORT void Reraise();
 
-  Standard_EXPORT void Reraise(const Standard_CString aMessage);
+  Standard_EXPORT void Reraise(const char* const aMessage);
 
   //! Reraises a caught exception and changes its error message.
   Standard_EXPORT void Reraise(const Standard_SStream& aReason);
@@ -80,7 +78,7 @@ public:
   //! Raises an exception of type "Failure" and associates
   //! an error message to it. The message can be printed
   //! in an exception handler.
-  Standard_EXPORT static void Raise(const Standard_CString aMessage = "");
+  Standard_EXPORT static void Raise(const char* const aMessage = "");
 
   //! Raises an exception of type "Failure" and associates
   //! an error message to it. The message can be constructed
@@ -90,18 +88,18 @@ public:
   //! Used to construct an instance of the exception object as a handle.
   //! Shall be used to protect against possible construction of exception object in C stack,
   //! which is dangerous since some of methods require that object was allocated dynamically.
-  Standard_EXPORT static Handle(Standard_Failure) NewInstance(Standard_CString theMessage);
+  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage);
 
   //! Used to construct an instance of the exception object as a handle.
-  Standard_EXPORT static Handle(Standard_Failure) NewInstance(Standard_CString theMessage,
-                                                              Standard_CString theStackTrace);
+  Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage,
+                                                              const char* theStackTrace);
 
   //! Returns the default length of stack trace to be captured by Standard_Failure constructor;
   //! 0 by default meaning no stack trace.
-  Standard_EXPORT static Standard_Integer DefaultStackTraceLength();
+  Standard_EXPORT static int DefaultStackTraceLength();
 
   //! Sets default length of stack trace to be captured by Standard_Failure constructor.
-  Standard_EXPORT static void SetDefaultStackTraceLength(Standard_Integer theNbStackTraces);
+  Standard_EXPORT static void SetDefaultStackTraceLength(int theNbStackTraces);
 
 public:
   //! Used to throw CASCADE exception from C signal handler.
@@ -126,14 +124,14 @@ private:
   //! using low-level malloc() to avoid exceptions.
   struct StringRef
   {
-    Standard_Integer   Counter;
-    Standard_Character Message[1];
+    int   Counter;
+    char Message[1];
 
     //! Return message string.
-    Standard_CString GetMessage() const { return (Standard_CString)&Message[0]; }
+    const char* GetMessage() const { return (const char*)&Message[0]; }
 
     //! Allocate reference-counted message string.
-    static StringRef* allocate_message(Standard_CString theString);
+    static StringRef* allocate_message(const char* theString);
 
     //! Copy reference-counted message string.
     static StringRef* copy_message(StringRef* theString);
@@ -152,7 +150,7 @@ private:
 // purpose  :
 // =======================================================================
 inline Standard_OStream& operator<<(Standard_OStream&               theStream,
-                                    const Handle(Standard_Failure)& theFailure)
+                                    const occ::handle<Standard_Failure>& theFailure)
 {
   theFailure->Print(theStream);
   return theStream;

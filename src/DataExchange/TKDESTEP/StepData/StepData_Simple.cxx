@@ -20,73 +20,73 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_Simple, StepData_Described)
 
-StepData_Simple::StepData_Simple(const Handle(StepData_ESDescr)& descr)
+StepData_Simple::StepData_Simple(const occ::handle<StepData_ESDescr>& descr)
     : StepData_Described(descr),
       thefields(descr->NbFields())
 {
 }
 
-Handle(StepData_ESDescr) StepData_Simple::ESDescr() const
+occ::handle<StepData_ESDescr> StepData_Simple::ESDescr() const
 {
-  return Handle(StepData_ESDescr)::DownCast(Description());
+  return occ::down_cast<StepData_ESDescr>(Description());
 }
 
-Standard_CString StepData_Simple::StepType() const
+const char* StepData_Simple::StepType() const
 {
   return ESDescr()->TypeName();
 }
 
-Standard_Boolean StepData_Simple::IsComplex() const
+bool StepData_Simple::IsComplex() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean StepData_Simple::Matches(const Standard_CString steptype) const
+bool StepData_Simple::Matches(const char* const steptype) const
 {
   return ESDescr()->Matches(steptype);
 }
 
-Handle(StepData_Simple) StepData_Simple::As(const Standard_CString steptype) const
+occ::handle<StepData_Simple> StepData_Simple::As(const char* const steptype) const
 {
-  Handle(StepData_Simple) nulent;
+  occ::handle<StepData_Simple> nulent;
   if (Matches(steptype))
     return this;
   return nulent;
 }
 
-Standard_Boolean StepData_Simple::HasField(const Standard_CString name) const
+bool StepData_Simple::HasField(const char* const name) const
 {
-  Standard_Integer num = ESDescr()->Rank(name);
+  int num = ESDescr()->Rank(name);
   return (num > 0);
 }
 
-const StepData_Field& StepData_Simple::Field(const Standard_CString name) const
+const StepData_Field& StepData_Simple::Field(const char* const name) const
 {
-  Standard_Integer num = ESDescr()->Rank(name);
+  int num = ESDescr()->Rank(name);
   if (num == 0)
     throw Interface_InterfaceMismatch("StepData_Simple : Field");
   return FieldNum(num);
 }
 
-StepData_Field& StepData_Simple::CField(const Standard_CString name)
+StepData_Field& StepData_Simple::CField(const char* const name)
 {
-  Standard_Integer num = ESDescr()->Rank(name);
+  int num = ESDescr()->Rank(name);
   if (num == 0)
     throw Interface_InterfaceMismatch("StepData_Simple : Field");
   return CFieldNum(num);
 }
 
-Standard_Integer StepData_Simple::NbFields() const
+int StepData_Simple::NbFields() const
 {
   return thefields.NbFields();
 }
 
-const StepData_Field& StepData_Simple::FieldNum(const Standard_Integer num) const
+const StepData_Field& StepData_Simple::FieldNum(const int num) const
 {
   return thefields.Field(num);
 }
 
-StepData_Field& StepData_Simple::CFieldNum(const Standard_Integer num)
+StepData_Field& StepData_Simple::CFieldNum(const int num)
 {
   return thefields.CField(num);
 }
@@ -101,16 +101,16 @@ StepData_FieldListN& StepData_Simple::CFields()
   return thefields;
 }
 
-void StepData_Simple::Check(Handle(Interface_Check)& /*ach*/) const {
+void StepData_Simple::Check(occ::handle<Interface_Check>& /*ach*/) const {
 } // something? see the description
 
 void StepData_Simple::Shared(Interface_EntityIterator& list) const
 {
-  Standard_Integer i, nb = thefields.NbFields();
+  int i, nb = thefields.NbFields();
   for (i = 1; i <= nb; i++)
   {
     const StepData_Field& fi = thefields.Field(i);
-    Standard_Integer      j1, j2, l1, l2;
+    int      j1, j2, l1, l2;
     l1 = l2 = 1;
     if (fi.Arity() >= 1)
       l1 = fi.Length(1);
@@ -120,7 +120,7 @@ void StepData_Simple::Shared(Interface_EntityIterator& list) const
     {
       for (j2 = 1; j2 <= l2; j2++)
       {
-        Handle(Standard_Transient) ent = fi.Entity(j1, j2);
+        occ::handle<Standard_Transient> ent = fi.Entity(j1, j2);
         if (!ent.IsNull())
           list.AddItem(ent);
       }

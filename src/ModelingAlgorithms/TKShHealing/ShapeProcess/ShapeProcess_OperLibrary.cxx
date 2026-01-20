@@ -54,11 +54,11 @@
 //=======================================================================
 TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier(
   const TopoDS_Shape&                       S,
-  const Handle(ShapeProcess_ShapeContext)&  context,
-  const Handle(BRepTools_Modification)&     M,
-  TopTools_DataMapOfShapeShape&             map,
-  const Handle(ShapeExtend_MsgRegistrator)& msg,
-  Standard_Boolean                          theMutableInput)
+  const occ::handle<ShapeProcess_ShapeContext>&  context,
+  const occ::handle<BRepTools_Modification>&     M,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
+  const occ::handle<ShapeExtend_MsgRegistrator>& msg,
+  bool                          theMutableInput)
 {
   // protect against INTERNAL/EXTERNAL shapes
   TopoDS_Shape SF = S.Oriented(TopAbs_FORWARD);
@@ -66,7 +66,7 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier(
   // Process COMPOUNDs separately in order to handle sharing in assemblies
   if (SF.ShapeType() == TopAbs_COMPOUND)
   {
-    Standard_Boolean locModified = Standard_False;
+    bool locModified = false;
     TopoDS_Compound  C;
     BRep_Builder     B;
     B.MakeCompound(C);
@@ -85,8 +85,8 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier(
         map.Bind(shape, res);
       }
       if (!res.IsSame(shape))
-        locModified = Standard_True;
-      res.Location(L, Standard_False);
+        locModified = true;
+      res.Location(L, false);
       B.Add(C, res);
     }
     if (!locModified)
@@ -106,44 +106,44 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier(
 
 //=================================================================================================
 
-static Standard_Boolean directfaces(const Handle(ShapeProcess_Context)& context,
+static bool directfaces(const occ::handle<ShapeProcess_Context>& context,
                                     const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeCustom_DirectModification) DM = new ShapeCustom_DirectModification;
+  occ::handle<ShapeCustom_DirectModification> DM = new ShapeCustom_DirectModification;
   DM->SetMsgRegistrator(msg);
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   TopoDS_Shape                 res =
-    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, DM, map, msg, Standard_True);
+    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, DM, map, msg, true);
   ctx->RecordModification(map, msg);
   ctx->SetResult(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean sameparam(const Handle(ShapeProcess_Context)& context,
+static bool sameparam(const occ::handle<ShapeProcess_Context>& context,
                                   const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
   ShapeFix::SameParameter(ctx->Result(),
-                          ctx->BooleanVal("Force", Standard_False),
+                          ctx->BooleanVal("Force", false),
                           ctx->RealVal("Tolerance3d", Precision::Confusion() /* -1 */),
                           Message_ProgressRange(),
                           msg);
@@ -151,25 +151,25 @@ static Standard_Boolean sameparam(const Handle(ShapeProcess_Context)& context,
   if (!msg.IsNull())
   {
     // WARNING: not FULL update of context yet!
-    Handle(ShapeBuild_ReShape) reshape = new ShapeBuild_ReShape;
+    occ::handle<ShapeBuild_ReShape> reshape = new ShapeBuild_ReShape;
     ctx->RecordModification(reshape, msg);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean settol(const Handle(ShapeProcess_Context)& context,
+static bool settol(const occ::handle<ShapeProcess_Context>& context,
                                const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
-  Standard_Real val;
+  double val;
   if (ctx->IntegerVal("Mode", 0) > 0 && ctx->GetReal("Value", val))
   {
-    Standard_Real rat = ctx->RealVal("Ratio", 1.);
+    double rat = ctx->RealVal("Ratio", 1.);
     if (rat >= 1)
     {
       ShapeFix_ShapeTolerance SFST;
@@ -177,27 +177,27 @@ static Standard_Boolean settol(const Handle(ShapeProcess_Context)& context,
     }
   }
 
-  BRepLib::UpdateTolerances(ctx->Result(), Standard_True);
+  BRepLib::UpdateTolerances(ctx->Result(), true);
 
-  Standard_Real reg;
+  double reg;
   if (ctx->GetReal("Regularity", reg))
     BRepLib::EncodeRegularity(ctx->Result(), reg);
 
   // WARNING: no update of context yet!
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean splitangle(const Handle(ShapeProcess_Context)& context,
+static bool splitangle(const occ::handle<ShapeProcess_Context>& context,
                                    const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
@@ -210,45 +210,45 @@ static Standard_Boolean splitangle(const Handle(ShapeProcess_Context)& context,
 #ifdef OCCT_DEBUG
     std::cout << "ShapeDivideAngle failed" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
 
   ctx->RecordModification(SDA.GetContext(), msg);
   ctx->SetResult(SDA.Result());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean bsplinerestriction(const Handle(ShapeProcess_Context)& context,
+static bool bsplinerestriction(const occ::handle<ShapeProcess_Context>& context,
                                            const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Boolean ModeSurf = ctx->BooleanVal("SurfaceMode", Standard_True);
-  Standard_Boolean ModeC3d  = ctx->BooleanVal("Curve3dMode", Standard_True);
-  Standard_Boolean ModeC2d  = ctx->BooleanVal("Curve2dMode", Standard_True);
+  bool ModeSurf = ctx->BooleanVal("SurfaceMode", true);
+  bool ModeC3d  = ctx->BooleanVal("Curve3dMode", true);
+  bool ModeC2d  = ctx->BooleanVal("Curve2dMode", true);
 
-  Standard_Real aTol3d = ctx->RealVal("Tolerance3d", 0.01);
-  Standard_Real aTol2d = ctx->RealVal("Tolerance2d", 1e-06);
+  double aTol3d = ctx->RealVal("Tolerance3d", 0.01);
+  double aTol2d = ctx->RealVal("Tolerance2d", 1e-06);
 
   GeomAbs_Shape aCont3d = ctx->ContinuityVal("Continuity3d", GeomAbs_C1);
   GeomAbs_Shape aCont2d = ctx->ContinuityVal("Continuity2d", GeomAbs_C2);
 
-  Standard_Integer aMaxDeg = ctx->IntegerVal("RequiredDegree", 9);
-  Standard_Integer aMaxSeg = ctx->IntegerVal("RequiredNbSegments", 10000);
+  int aMaxDeg = ctx->IntegerVal("RequiredDegree", 9);
+  int aMaxSeg = ctx->IntegerVal("RequiredNbSegments", 10000);
 
-  Standard_Boolean ModeDeg  = ctx->BooleanVal("PreferDegree", Standard_True);
-  Standard_Boolean Rational = ctx->BooleanVal("RationalToPolynomial", Standard_False);
+  bool ModeDeg  = ctx->BooleanVal("PreferDegree", true);
+  bool Rational = ctx->BooleanVal("RationalToPolynomial", false);
 
-  Handle(ShapeCustom_RestrictionParameters) aParameters = new ShapeCustom_RestrictionParameters;
+  occ::handle<ShapeCustom_RestrictionParameters> aParameters = new ShapeCustom_RestrictionParameters;
   ctx->GetInteger("MaxDegree", aParameters->GMaxDegree());
   ctx->GetInteger("MaxNbSegments", aParameters->GMaxSeg());
   ctx->GetBoolean("OffsetSurfaceMode", aParameters->ConvertOffsetSurf());
@@ -268,7 +268,7 @@ static Standard_Boolean bsplinerestriction(const Handle(ShapeProcess_Context)& c
   ctx->GetBoolean("ToroidalSurfMode", aParameters->ConvertToroidalSurf());
   ctx->GetBoolean("SphericalSurfMode", aParameters->ConvertSphericalSurf());
 
-  Handle(ShapeCustom_BSplineRestriction) LD = new ShapeCustom_BSplineRestriction(ModeSurf,
+  occ::handle<ShapeCustom_BSplineRestriction> LD = new ShapeCustom_BSplineRestriction(ModeSurf,
                                                                                  ModeC3d,
                                                                                  ModeC2d,
                                                                                  aTol3d,
@@ -281,87 +281,87 @@ static Standard_Boolean bsplinerestriction(const Handle(ShapeProcess_Context)& c
                                                                                  Rational,
                                                                                  aParameters);
   LD->SetMsgRegistrator(msg);
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   TopoDS_Shape                 res =
-    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, LD, map, msg, Standard_True);
+    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, LD, map, msg, true);
   ctx->RecordModification(map, msg);
   ctx->SetResult(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean torevol(const Handle(ShapeProcess_Context)& context,
+static bool torevol(const occ::handle<ShapeProcess_Context>& context,
                                 const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeCustom_ConvertToRevolution) CR = new ShapeCustom_ConvertToRevolution();
+  occ::handle<ShapeCustom_ConvertToRevolution> CR = new ShapeCustom_ConvertToRevolution();
   CR->SetMsgRegistrator(msg);
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   TopoDS_Shape                 res =
-    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, CR, map, msg, Standard_True);
+    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, CR, map, msg, true);
   ctx->RecordModification(map, msg);
   ctx->SetResult(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean swepttoelem(const Handle(ShapeProcess_Context)& context,
+static bool swepttoelem(const occ::handle<ShapeProcess_Context>& context,
                                     const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeCustom_SweptToElementary) SE = new ShapeCustom_SweptToElementary();
+  occ::handle<ShapeCustom_SweptToElementary> SE = new ShapeCustom_SweptToElementary();
   SE->SetMsgRegistrator(msg);
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   TopoDS_Shape                 res =
-    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, SE, map, msg, Standard_True);
+    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, SE, map, msg, true);
   ctx->RecordModification(map, msg);
   ctx->SetResult(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean shapetobezier(const Handle(ShapeProcess_Context)& context,
+static bool shapetobezier(const occ::handle<ShapeProcess_Context>& context,
                                       const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Boolean ModeC3d        = ctx->BooleanVal("Curve3dMode", Standard_False);
-  Standard_Boolean ModeC2d        = ctx->BooleanVal("Curve2dMode", Standard_False);
-  Standard_Boolean ModeSurf       = ctx->BooleanVal("SurfaceMode", Standard_False);
-  Standard_Boolean ModeLine3d     = ctx->BooleanVal("Line3dMode", Standard_True);
-  Standard_Boolean ModeCircle3d   = ctx->BooleanVal("Circle3dMode", Standard_True);
-  Standard_Boolean ModeConic3d    = ctx->BooleanVal("Conic3dMode", Standard_True);
-  Standard_Boolean SegmentMode    = ctx->BooleanVal("SegmentSurfaceMode", Standard_True);
-  Standard_Boolean PlaneMode      = ctx->BooleanVal("PlaneMode", Standard_True);
-  Standard_Boolean RevolutionMode = ctx->BooleanVal("RevolutionMode", Standard_True);
-  Standard_Boolean ExtrusionMode  = ctx->BooleanVal("ExtrusionMode", Standard_True);
-  Standard_Boolean BSplineMode    = ctx->BooleanVal("BSplineMode", Standard_True);
+  bool ModeC3d        = ctx->BooleanVal("Curve3dMode", false);
+  bool ModeC2d        = ctx->BooleanVal("Curve2dMode", false);
+  bool ModeSurf       = ctx->BooleanVal("SurfaceMode", false);
+  bool ModeLine3d     = ctx->BooleanVal("Line3dMode", true);
+  bool ModeCircle3d   = ctx->BooleanVal("Circle3dMode", true);
+  bool ModeConic3d    = ctx->BooleanVal("Conic3dMode", true);
+  bool SegmentMode    = ctx->BooleanVal("SegmentSurfaceMode", true);
+  bool PlaneMode      = ctx->BooleanVal("PlaneMode", true);
+  bool RevolutionMode = ctx->BooleanVal("RevolutionMode", true);
+  bool ExtrusionMode  = ctx->BooleanVal("ExtrusionMode", true);
+  bool BSplineMode    = ctx->BooleanVal("BSplineMode", true);
 
   ShapeUpgrade_ShapeConvertToBezier SCB(ctx->Result());
   SCB.SetMsgRegistrator(msg);
@@ -383,13 +383,13 @@ static Standard_Boolean shapetobezier(const Handle(ShapeProcess_Context)& contex
     SCB.SetBSplineMode(BSplineMode);
   }
 
-  Standard_Real maxTol, minTol;
+  double maxTol, minTol;
   if (ctx->GetReal("MaxTolerance", maxTol))
     SCB.SetMaxTolerance(maxTol);
   if (ctx->GetReal("MinCurveLength", minTol))
     SCB.SetMinTolerance(minTol);
 
-  Standard_Boolean EdgeMode;
+  bool EdgeMode;
   if (ctx->GetBoolean("EdgeMode", EdgeMode))
     SCB.SetEdgeMode(EdgeMode);
 
@@ -398,62 +398,62 @@ static Standard_Boolean shapetobezier(const Handle(ShapeProcess_Context)& contex
 #ifdef OCCT_DEBUG
     std::cout << "Shape::ShapeConvertToBezier failed" << std::endl; // !!!!
 #endif
-    return Standard_False;
+    return false;
   }
 
   ctx->RecordModification(SCB.GetContext(), msg);
   ctx->SetResult(SCB.Result());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean converttobspline(const Handle(ShapeProcess_Context)& context,
+static bool converttobspline(const occ::handle<ShapeProcess_Context>& context,
                                          const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Boolean extrMode   = ctx->BooleanVal("LinearExtrusionMode", Standard_True);
-  Standard_Boolean revolMode  = ctx->BooleanVal("RevolutionMode", Standard_True);
-  Standard_Boolean offsetMode = ctx->BooleanVal("OffsetMode", Standard_True);
+  bool extrMode   = ctx->BooleanVal("LinearExtrusionMode", true);
+  bool revolMode  = ctx->BooleanVal("RevolutionMode", true);
+  bool offsetMode = ctx->BooleanVal("OffsetMode", true);
 
-  Handle(ShapeCustom_ConvertToBSpline) CBspl = new ShapeCustom_ConvertToBSpline();
+  occ::handle<ShapeCustom_ConvertToBSpline> CBspl = new ShapeCustom_ConvertToBSpline();
   CBspl->SetExtrusionMode(extrMode);
   CBspl->SetRevolutionMode(revolMode);
   CBspl->SetOffsetMode(offsetMode);
   CBspl->SetMsgRegistrator(msg);
 
-  TopTools_DataMapOfShapeShape map;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   TopoDS_Shape                 res =
-    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, CBspl, map, msg, Standard_True);
+    ShapeProcess_OperLibrary::ApplyModifier(ctx->Result(), ctx, CBspl, map, msg, true);
   ctx->RecordModification(map, msg);
   ctx->SetResult(res);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean splitcontinuity(const Handle(ShapeProcess_Context)& context,
+static bool splitcontinuity(const occ::handle<ShapeProcess_Context>& context,
                                         const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Real aTol       = ctx->RealVal("Tolerance3d", 1.e-7);
-  Standard_Real aTol2D     = ctx->RealVal("Tolerance2d", 1.e-9);
+  double aTol       = ctx->RealVal("Tolerance3d", 1.e-7);
+  double aTol2D     = ctx->RealVal("Tolerance2d", 1.e-9);
   GeomAbs_Shape aCrvCont   = ctx->ContinuityVal("CurveContinuity", GeomAbs_C1);
   GeomAbs_Shape aSrfCont   = ctx->ContinuityVal("SurfaceContinuity", GeomAbs_C1);
   GeomAbs_Shape aCrv2dCont = ctx->ContinuityVal("Curve2dContinuity", GeomAbs_C1);
@@ -466,7 +466,7 @@ static Standard_Boolean splitcontinuity(const Handle(ShapeProcess_Context)& cont
 
   tool.SetMsgRegistrator(msg);
 
-  Standard_Real maxTol;
+  double maxTol;
   if (ctx->GetReal("MaxTolerance", maxTol))
     tool.SetMaxTolerance(maxTol);
 
@@ -475,41 +475,41 @@ static Standard_Boolean splitcontinuity(const Handle(ShapeProcess_Context)& cont
 #ifdef OCCT_DEBUG
     std::cout << "SplitContinuity failed" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
 
   ctx->RecordModification(tool.GetContext(), msg);
   ctx->SetResult(tool.Result());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean splitclosedfaces(const Handle(ShapeProcess_Context)& context,
+static bool splitclosedfaces(const occ::handle<ShapeProcess_Context>& context,
                                          const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
   ShapeUpgrade_ShapeDivideClosed tool(ctx->Result());
   tool.SetMsgRegistrator(msg);
 
-  Standard_Real closeTol;
+  double closeTol;
   if (ctx->GetReal("CloseTolerance", closeTol))
     tool.SetPrecision(closeTol);
 
-  Standard_Real maxTol;
+  double maxTol;
   if (ctx->GetReal("MaxTolerance", maxTol))
     tool.SetMaxTolerance(maxTol);
 
-  Standard_Integer num    = ctx->IntegerVal("NbSplitPoints", 1);
-  Standard_Boolean hasSeg = Standard_True;
+  int num    = ctx->IntegerVal("NbSplitPoints", 1);
+  bool hasSeg = true;
   ctx->GetBoolean("SegmentSurfaceMode", hasSeg);
 
   tool.SetNbSplitPoints(num);
@@ -519,35 +519,35 @@ static Standard_Boolean splitclosedfaces(const Handle(ShapeProcess_Context)& con
 #ifdef OCCT_DEBUG
     std::cout << "Splitting of closed faces failed" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
 
   ctx->RecordModification(tool.GetContext(), msg);
   ctx->SetResult(tool.Result());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean fixfacesize(const Handle(ShapeProcess_Context)& context,
+static bool fixfacesize(const occ::handle<ShapeProcess_Context>& context,
                                     const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeBuild_ReShape) reshape = new ShapeBuild_ReShape;
+  occ::handle<ShapeBuild_ReShape> reshape = new ShapeBuild_ReShape;
   ShapeFix_FixSmallFace      FSC;
   FSC.SetContext(reshape);
   FSC.Init(ctx->Result());
   FSC.SetMsgRegistrator(msg);
 
-  Standard_Real aTol;
+  double aTol;
   if (ctx->GetReal("Tolerance", aTol))
     FSC.SetPrecision(aTol);
 
@@ -560,27 +560,27 @@ static Standard_Boolean fixfacesize(const Handle(ShapeProcess_Context)& context,
     ctx->SetResult(newsh);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean fixwgaps(const Handle(ShapeProcess_Context)& context,
+static bool fixwgaps(const occ::handle<ShapeProcess_Context>& context,
                                  const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Real aTol3d = ctx->RealVal("Tolerance3d", Precision::Confusion());
+  double aTol3d = ctx->RealVal("Tolerance3d", Precision::Confusion());
 
-  Handle(ShapeBuild_ReShape) reshape = new ShapeBuild_ReShape;
-  Handle(ShapeFix_Wireframe) sfwf    = new ShapeFix_Wireframe(ctx->Result());
+  occ::handle<ShapeBuild_ReShape> reshape = new ShapeBuild_ReShape;
+  occ::handle<ShapeFix_Wireframe> sfwf    = new ShapeFix_Wireframe(ctx->Result());
   sfwf->SetMsgRegistrator(msg);
   sfwf->SetContext(reshape);
   sfwf->SetPrecision(aTol3d);
@@ -592,28 +592,28 @@ static Standard_Boolean fixwgaps(const Handle(ShapeProcess_Context)& context,
     ctx->RecordModification(reshape, msg);
     ctx->SetResult(result);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean dropsmallsolids(const Handle(ShapeProcess_Context)& context,
+static bool dropsmallsolids(const occ::handle<ShapeProcess_Context>& context,
                                         const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
   ShapeFix_FixSmallSolid FSS;
   FSS.SetMsgRegistrator(msg);
 
-  Standard_Real    aThreshold;
-  Standard_Integer aMode;
+  double    aThreshold;
+  int aMode;
   if (ctx->GetInteger("FixMode", aMode))
     FSS.SetFixMode(aMode);
   if (ctx->GetReal("VolumeThreshold", aThreshold))
@@ -621,10 +621,10 @@ static Standard_Boolean dropsmallsolids(const Handle(ShapeProcess_Context)& cont
   if (ctx->GetReal("WidthFactorThreshold", aThreshold))
     FSS.SetWidthFactorThreshold(aThreshold);
 
-  Standard_Boolean aMerge = Standard_False;
+  bool aMerge = false;
   ctx->GetBoolean("MergeSolids", aMerge);
 
-  Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape;
+  occ::handle<ShapeBuild_ReShape> aReShape = new ShapeBuild_ReShape;
 
   TopoDS_Shape aResult;
   if (aMerge)
@@ -638,24 +638,24 @@ static Standard_Boolean dropsmallsolids(const Handle(ShapeProcess_Context)& cont
     ctx->SetResult(aResult);
   }
 
-  return Standard_True;
+  return true;
 }
 
 /*
 //=================================================================================================
 
-static Standard_Boolean dropsmalledges (const Handle(ShapeProcess_Context)& context)
+static bool dropsmalledges (const occ::handle<ShapeProcess_Context>& context)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast ( context );
-  if ( ctx.IsNull() ) return Standard_False;
+  occ::handle<ShapeProcess_ShapeContext> ctx = Handle(ShapeProcess_ShapeContext)::DownCast ( context );
+  if ( ctx.IsNull() ) return false;
 
-  //Handle(ShapeBuild_ReShape) ctx = new ShapeBuild_ReShape;
-  Handle(MoniFrame_Element) elem = astep->Operand();
+  //occ::handle<ShapeBuild_ReShape> ctx = new ShapeBuild_ReShape;
+  occ::handle<MoniFrame_Element> elem = astep->Operand();
   TopoDS_Shape Shape = MoniShape::Shape(elem);
-  Standard_Real aTol3d = Precision::Confusion();
-  Handle(MoniFrame_TypedValue) ptol3d   = aproc->StackParam("Tolerance3d",Standard_True);
+  double aTol3d = Precision::Confusion();
+  occ::handle<MoniFrame_TypedValue> ptol3d   = aproc->StackParam("Tolerance3d",true);
   if (ptol3d->IsSetValue()) aTol3d = ptol3d->RealValue();
-  Handle(ShapeBuild_ReShape) context;
+  occ::handle<ShapeBuild_ReShape> context;
   TopoDS_Shape result = ShapeFix::RemoveSmallEdges(Shape,aTol3d,context);
   if (result == Shape) astep->AddTouched (aproc->Infos(),MoniShape::Element(Shape));
   else
@@ -666,21 +666,21 @@ static Standard_Boolean dropsmalledges (const Handle(ShapeProcess_Context)& cont
 
 //=================================================================================================
 
-static Standard_Boolean mergesmalledges(const Handle(ShapeProcess_Context)& context,
+static bool mergesmalledges(const occ::handle<ShapeProcess_Context>& context,
                                         const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Real aTol3d = ctx->RealVal("Tolerance3d", Precision::Confusion());
+  double aTol3d = ctx->RealVal("Tolerance3d", Precision::Confusion());
 
-  Handle(ShapeBuild_ReShape) reshape = new ShapeBuild_ReShape;
+  occ::handle<ShapeBuild_ReShape> reshape = new ShapeBuild_ReShape;
   ShapeFix_Wireframe         ShapeFixWireframe(ctx->Result());
   ShapeFixWireframe.SetContext(reshape);
   ShapeFixWireframe.SetPrecision(aTol3d);
@@ -690,26 +690,26 @@ static Standard_Boolean mergesmalledges(const Handle(ShapeProcess_Context)& cont
   {
     ctx->RecordModification(reshape, msg);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
+static bool fixshape(const occ::handle<ShapeProcess_Context>& context,
                                  const Message_ProgressRange&        theProgress)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-  Handle(ShapeFix_Face)  sff = sfs->FixFaceTool();
-  Handle(ShapeFix_Wire)  sfw = sfs->FixWireTool();
+  occ::handle<ShapeFix_Shape> sfs = new ShapeFix_Shape;
+  occ::handle<ShapeFix_Face>  sff = sfs->FixFaceTool();
+  occ::handle<ShapeFix_Wire>  sfw = sfs->FixWireTool();
   sfs->SetMsgRegistrator(msg);
 
   sfs->SetPrecision(ctx->RealVal("Tolerance3d", Precision::Confusion()));
@@ -727,7 +727,7 @@ static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
   sfs->FixSolidTool()->FixShellMode()            = ctx->IntegerVal("FixShellMode", -1);
   sfs->FixSolidTool()->FixShellOrientationMode() = ctx->IntegerVal("FixShellOrientationMode", -1);
   sfs->FixSolidTool()->CreateOpenSolidMode() =
-    ctx->BooleanVal("CreateOpenSolidMode", Standard_True);
+    ctx->BooleanVal("CreateOpenSolidMode", true);
 
   sfs->FixShellTool()->FixFaceMode() = ctx->IntegerVal("FixFaceMode", -1);
   sfs->FixShellTool()->SetNonManifoldFlag(ctx->IsNonManifold());
@@ -745,10 +745,10 @@ static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
   sff->FixSplitFaceMode()         = ctx->IntegerVal("FixSplitFaceMode", -1);
 
   // parameters for ShapeFix_Wire
-  sfw->ModifyTopologyMode()      = ctx->BooleanVal("ModifyTopologyMode", Standard_False);
-  sfw->ModifyGeometryMode()      = ctx->BooleanVal("ModifyGeometryMode", Standard_True);
-  sfw->ClosedWireMode()          = ctx->BooleanVal("ClosedWireMode", Standard_True);
-  sfw->PreferencePCurveMode()    = ctx->BooleanVal("PreferencePCurveMode", Standard_True);
+  sfw->ModifyTopologyMode()      = ctx->BooleanVal("ModifyTopologyMode", false);
+  sfw->ModifyGeometryMode()      = ctx->BooleanVal("ModifyGeometryMode", true);
+  sfw->ClosedWireMode()          = ctx->BooleanVal("ClosedWireMode", true);
+  sfw->PreferencePCurveMode()    = ctx->BooleanVal("PreferencePCurveMode", true);
   sfw->FixReorderMode()          = ctx->IntegerVal("FixReorderMode", -1);
   sfw->FixSmallMode()            = ctx->IntegerVal("FixSmallMode", -1);
   sfw->FixConnectedMode()        = ctx->IntegerVal("FixConnectedMode", -1);
@@ -782,7 +782,7 @@ static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
     sfw->FixTailMode() = 1;
     if (aPS.UserBreak())
     {
-      return Standard_False;
+      return false;
     }
 
     TopoDS_Shape result = sfs->Shape();
@@ -797,7 +797,7 @@ static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
   sfs->Perform(aPS.Next());
   if (aPS.UserBreak())
   {
-    return Standard_False;
+    return false;
   }
 
   TopoDS_Shape result = sfs->Shape();
@@ -806,24 +806,24 @@ static Standard_Boolean fixshape(const Handle(ShapeProcess_Context)& context,
     ctx->RecordModification(sfs->Context(), msg);
     ctx->SetResult(result);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean spltclosededges(const Handle(ShapeProcess_Context)& context,
+static bool spltclosededges(const occ::handle<ShapeProcess_Context>& context,
                                         const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Standard_Integer nbSplits = ctx->IntegerVal("NbSplitPoints", 1);
+  int nbSplits = ctx->IntegerVal("NbSplitPoints", 1);
 
   ShapeUpgrade_ShapeDivideClosedEdges tool(ctx->Result());
   tool.SetNbSplitPoints(nbSplits);
@@ -834,12 +834,12 @@ static Standard_Boolean spltclosededges(const Handle(ShapeProcess_Context)& cont
 #ifdef OCCT_DEBUG
     std::cout << "Splitting of closed edges failed" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
 
   ctx->RecordModification(tool.GetContext(), msg);
   ctx->SetResult(tool.Result());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -848,19 +848,19 @@ static Standard_Boolean spltclosededges(const Handle(ShapeProcess_Context)& cont
 //           and isn't valid in STEP => before writing into STEP it is necessary
 //           to split this vertex (each wire must has one vertex)
 //=======================================================================
-static Standard_Boolean splitcommonvertex(const Handle(ShapeProcess_Context)& context,
+static bool splitcommonvertex(const occ::handle<ShapeProcess_Context>& context,
                                           const Message_ProgressRange&)
 {
-  Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context);
+  occ::handle<ShapeProcess_ShapeContext> ctx = occ::down_cast<ShapeProcess_ShapeContext>(context);
   if (ctx.IsNull())
-    return Standard_False;
+    return false;
 
   // activate message mechanism if it is supported by context
-  Handle(ShapeExtend_MsgRegistrator) msg;
+  occ::handle<ShapeExtend_MsgRegistrator> msg;
   if (!ctx->Messages().IsNull())
     msg = new ShapeExtend_MsgRegistrator;
 
-  Handle(ShapeBuild_ReShape) reshape = new ShapeBuild_ReShape;
+  occ::handle<ShapeBuild_ReShape> reshape = new ShapeBuild_ReShape;
   ShapeFix_SplitCommonVertex SCV;
   SCV.SetContext(reshape);
   SCV.Init(ctx->Result());
@@ -876,7 +876,7 @@ static Standard_Boolean splitcommonvertex(const Handle(ShapeProcess_Context)& co
     ctx->SetResult(newsh);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -886,10 +886,10 @@ static Standard_Boolean splitcommonvertex(const Handle(ShapeProcess_Context)& co
 
 void ShapeProcess_OperLibrary::Init()
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   ShapeExtend::Init();
 

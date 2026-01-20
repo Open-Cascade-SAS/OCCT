@@ -64,56 +64,54 @@ public:
   //! Transfer a GeometryEntity which answer True to the
   //! member : BRepToIGES::IsGeomCurve(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Curve)& start,
-                                                            const Standard_Real       Udeb,
-                                                            const Standard_Real       Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Curve>& start,
+                                                            const double       Udeb,
+                                                            const double       Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BoundedCurve)& start,
-                                                            const Standard_Real              Udeb,
-                                                            const Standard_Real              Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BoundedCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BSplineCurve)& start,
-                                                            const Standard_Real              Udeb,
-                                                            const Standard_Real              Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BSplineCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_BezierCurve)& start,
-                                                            const Standard_Real             Udeb,
-                                                            const Standard_Real             Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BezierCurve>& start,
+                                                            const double             Udeb,
+                                                            const double             Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_TrimmedCurve)& start,
-                                                            const Standard_Real              Udeb,
-                                                            const Standard_Real              Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_TrimmedCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Conic)& start,
-                                                            const Standard_Real       Udeb,
-                                                            const Standard_Real       Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Conic>& start,
+                                                            const double       Udeb,
+                                                            const double       Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Circle)& start,
-                                                            const Standard_Real        Udeb,
-                                                            const Standard_Real        Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Circle>& start,
+                                                            const double        Udeb,
+                                                            const double        Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Ellipse)& start,
-                                                            const Standard_Real         Udeb,
-                                                            const Standard_Real         Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Ellipse>& start,
+                                                            const double         Udeb,
+                                                            const double         Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Hyperbola)& start,
-                                                            const Standard_Real           Udeb,
-                                                            const Standard_Real           Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Hyperbola>& start,
+                                                            const double           Udeb,
+                                                            const double           Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Line)& start,
-                                                            const Standard_Real      Udeb,
-                                                            const Standard_Real      Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Line>& start,
+                                                            const double      Udeb,
+                                                            const double      Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_Parabola)& start,
-                                                            const Standard_Real          Udeb,
-                                                            const Standard_Real          Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Parabola>& start,
+                                                            const double          Udeb,
+                                                            const double          Ufin);
 
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCurve(const Handle(Geom_OffsetCurve)& start,
-                                                            const Standard_Real             Udeb,
-                                                            const Standard_Real             Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_OffsetCurve>& start,
+                                                            const double             Udeb,
+                                                            const double             Ufin);
 
-protected:
-private:
 };
 
 #endif // _GeomToIGES_GeomCurve_HeaderFile

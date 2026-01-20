@@ -18,13 +18,13 @@
 #include <StepGeom_CartesianPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-// #include <TColStd_HArray1OfReal.hxx>
+// #include <NCollection_HArray1<double>.hxx>
 RWStepGeom_RWCartesianPoint::RWStepGeom_RWCartesianPoint() {}
 
-void RWStepGeom_RWCartesianPoint::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepGeom_CartesianPoint)& ent) const
+void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepGeom_CartesianPoint>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   //   Protected
   if (!data->ReadString(num, 1, "name", ach, aName))
   {
@@ -46,19 +46,19 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const Handle(StepData_StepReaderData)
   // --- own field : coordinates ---
   //  OPTIMISED : X Y Z directly read and set
 
-  //	Handle(TColStd_HArray1OfReal) aCoordinates;
-  Standard_Real    aCoordinatesItem;
-  Standard_Integer nsub2, nbcoord = 0;
-  Standard_Real    XYZ[3] = {0., 0., 0.};
+  //	occ::handle<NCollection_HArray1<double>> aCoordinates;
+  double    aCoordinatesItem;
+  int nsub2, nbcoord = 0;
+  double    XYZ[3] = {0., 0., 0.};
   if (data->ReadSubList(num, 2, "coordinates", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
+    int nb2 = data->NbParams(nsub2);
     if (nb2 > 3)
     {
       ach->AddWarning("More than 3 coordinates, ignored");
     }
     nbcoord = std::min(nb2, 3);
-    for (Standard_Integer i2 = 0; i2 < nbcoord; i2++)
+    for (int i2 = 0; i2 < nbcoord; i2++)
     {
       if (data->ReadReal(nsub2, i2 + 1, "coordinates", ach, aCoordinatesItem))
       {
@@ -77,7 +77,7 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepGeom_RWCartesianPoint::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepGeom_CartesianPoint)& ent) const
+                                            const occ::handle<StepGeom_CartesianPoint>& ent) const
 {
 
   // --- inherited field name ---
@@ -87,7 +87,7 @@ void RWStepGeom_RWCartesianPoint::WriteStep(StepData_StepWriter&                
   // --- own field : coordinates ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbCoordinates(); i2++)
+  for (int i2 = 1; i2 <= ent->NbCoordinates(); i2++)
   {
     SW.Send(ent->CoordinatesValue(i2));
   }

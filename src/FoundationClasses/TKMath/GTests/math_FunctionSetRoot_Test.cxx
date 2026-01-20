@@ -21,38 +21,38 @@
 
 namespace
 {
-const Standard_Real TOLERANCE = 1.0e-6;
+const double TOLERANCE = 1.0e-6;
 
 // Simple 2x2 linear system: 2x + y = 5, x + 2y = 4
 // Solution: x = 2, y = 1
 class LinearSystem2D : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual Standard_Integer NbVariables() const override { return 2; }
+  virtual int NbVariables() const override { return 2; }
 
-  virtual Standard_Integer NbEquations() const override { return 2; }
+  virtual int NbEquations() const override { return 2; }
 
-  virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) override
+  virtual bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = 2.0 * X(1) + X(2) - 5.0; // 2x + y - 5 = 0
     F(2) = X(1) + 2.0 * X(2) - 4.0; // x + 2y - 4 = 0
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivatives(const math_Vector&, math_Matrix& D) override
+  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 2.0;
     D(1, 2) = 1.0;
     D(2, 1) = 1.0;
     D(2, 2) = 2.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -61,31 +61,31 @@ public:
 class NonlinearSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual Standard_Integer NbVariables() const override { return 2; }
+  virtual int NbVariables() const override { return 2; }
 
-  virtual Standard_Integer NbEquations() const override { return 2; }
+  virtual int NbEquations() const override { return 2; }
 
-  virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) override
+  virtual bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) * X(1) + X(2) * X(2) - 5.0; // x^2 + y^2 - 5 = 0
     F(2) = X(1) * X(2) - 2.0;               // xy - 2 = 0
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D) override
+  virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override
   {
     D(1, 1) = 2.0 * X(1);
     D(1, 2) = 2.0 * X(2);
     D(2, 1) = X(2);
     D(2, 2) = X(1);
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -94,27 +94,27 @@ public:
 class SingleVariableSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual Standard_Integer NbVariables() const override { return 1; }
+  virtual int NbVariables() const override { return 1; }
 
-  virtual Standard_Integer NbEquations() const override { return 1; }
+  virtual int NbEquations() const override { return 1; }
 
-  virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) override
+  virtual bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) * X(1) - 4.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D) override
+  virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override
   {
     D(1, 1) = 2.0 * X(1);
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -123,19 +123,19 @@ public:
 class OverdeterminedSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual Standard_Integer NbVariables() const override { return 2; }
+  virtual int NbVariables() const override { return 2; }
 
-  virtual Standard_Integer NbEquations() const override { return 3; }
+  virtual int NbEquations() const override { return 3; }
 
-  virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) override
+  virtual bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) + X(2) - 3.0; // x + y - 3 = 0
     F(2) = X(1) - X(2) - 1.0; // x - y - 1 = 0
     F(3) = 2.0 * X(1) - 4.0;  // 2x - 4 = 0
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivatives(const math_Vector&, math_Matrix& D) override
+  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 1.0;
     D(1, 2) = 1.0;
@@ -143,14 +143,14 @@ public:
     D(2, 2) = -1.0;
     D(3, 1) = 2.0;
     D(3, 2) = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -159,19 +159,19 @@ public:
 class ThreeVariableSystem : public math_FunctionSetWithDerivatives
 {
 public:
-  virtual Standard_Integer NbVariables() const override { return 3; }
+  virtual int NbVariables() const override { return 3; }
 
-  virtual Standard_Integer NbEquations() const override { return 3; }
+  virtual int NbEquations() const override { return 3; }
 
-  virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) override
+  virtual bool Value(const math_Vector& X, math_Vector& F) override
   {
     F(1) = X(1) + X(2) + X(3) - 6.0; // x + y + z - 6 = 0
     F(2) = 2.0 * X(1) - X(2) - 2.0;  // 2x - y - 2 = 0
     F(3) = X(3) - 2.0;               // z - 2 = 0
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivatives(const math_Vector&, math_Matrix& D) override
+  virtual bool Derivatives(const math_Vector&, math_Matrix& D) override
   {
     D(1, 1) = 1.0;
     D(1, 2) = 1.0;
@@ -182,14 +182,14 @@ public:
     D(3, 1) = 0.0;
     D(3, 2) = 0.0;
     D(3, 3) = 1.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
     Value(X, F);
     Derivatives(X, D);
-    return Standard_True;
+    return true;
   }
 };
 } // namespace
@@ -238,8 +238,8 @@ TEST(math_FunctionSetRoot, NonlinearSystem)
   const math_Vector& root = solver.Root();
   // Just check that we found a valid solution (may not be the exact analytical one due to algorithm
   // limitations)
-  Standard_Real x = root(1);
-  Standard_Real y = root(2);
+  double x = root(1);
+  double y = root(2);
 
   // Verify the solution is reasonable
   EXPECT_TRUE(std::isfinite(x));
@@ -416,7 +416,7 @@ TEST(math_FunctionSetRoot, StateNumber)
 
   EXPECT_TRUE(solver.IsDone());
 
-  Standard_Integer state = solver.StateNumber();
+  int state = solver.StateNumber();
   EXPECT_GE(state, 0); // State should be valid
 }
 
@@ -528,7 +528,7 @@ TEST(math_FunctionSetRoot, IterationCount)
 
   EXPECT_TRUE(solver.IsDone());
 
-  Standard_Integer iterations = solver.NbIterations();
+  int iterations = solver.NbIterations();
   EXPECT_GT(iterations, 0);
   EXPECT_LE(iterations, 100); // Default max iterations
 }
@@ -567,7 +567,7 @@ TEST(math_FunctionSetRoot, StopOnDivergent)
   startingPoint(1) = 100.0; // Start far from solution
   startingPoint(2) = 100.0;
 
-  solver.Perform(func, startingPoint, Standard_True); // Stop on divergent
+  solver.Perform(func, startingPoint, true); // Stop on divergent
 
   // May or may not converge from this bad starting point
   if (!solver.IsDone())

@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterToReport, Message_Printer)
 
 //=================================================================================================
 
-const Handle(Message_Report)& Message_PrinterToReport::Report() const
+const occ::handle<Message_Report>& Message_PrinterToReport::Report() const
 {
   if (!myReport.IsNull())
   {
     return myReport;
   }
 
-  return Message::DefaultReport(Standard_True);
+  return Message::DefaultReport(true);
 }
 
 //=================================================================================================
@@ -41,7 +41,7 @@ const Handle(Message_Report)& Message_PrinterToReport::Report() const
 void Message_PrinterToReport::SendStringStream(const Standard_SStream& theStream,
                                                const Message_Gravity   theGravity) const
 {
-  const Handle(Message_Report)& aReport = Report();
+  const occ::handle<Message_Report>& aReport = Report();
   if (!aReport->ActiveMetrics().IsEmpty())
   {
     sendMetricAlert(theStream.str().c_str(), theGravity);
@@ -68,10 +68,10 @@ void Message_PrinterToReport::SendStringStream(const Standard_SStream& theStream
 
 //=================================================================================================
 
-void Message_PrinterToReport::SendObject(const Handle(Standard_Transient)& theObject,
+void Message_PrinterToReport::SendObject(const occ::handle<Standard_Transient>& theObject,
                                          const Message_Gravity             theGravity) const
 {
-  const Handle(Message_Report)& aReport = Report();
+  const occ::handle<Message_Report>& aReport = Report();
   if (!aReport->ActiveMetrics().IsEmpty())
   {
     sendMetricAlert(myName, theGravity);
@@ -95,7 +95,7 @@ void Message_PrinterToReport::send(const TCollection_AsciiString& theString,
     send(aName, theGravity);
   }
 
-  const Handle(Message_Report)& aReport = Report();
+  const occ::handle<Message_Report>& aReport = Report();
   if (!aReport->ActiveMetrics().IsEmpty())
   {
     sendMetricAlert(theString, theGravity);

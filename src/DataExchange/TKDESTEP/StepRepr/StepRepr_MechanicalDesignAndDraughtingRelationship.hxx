@@ -19,10 +19,6 @@
 
 #include <StepRepr_RepresentationRelationship.hxx>
 
-class StepRepr_MechanicalDesignAndDraughtingRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_MechanicalDesignAndDraughtingRelationship,
-                       StepRepr_RepresentationRelationship)
-
 class StepRepr_MechanicalDesignAndDraughtingRelationship
     : public StepRepr_RepresentationRelationship
 {

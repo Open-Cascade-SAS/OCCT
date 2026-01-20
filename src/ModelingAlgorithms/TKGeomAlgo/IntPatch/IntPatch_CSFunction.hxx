@@ -33,35 +33,34 @@ public:
 
   //! S1 is the surface on which the intersection is searched.
   //! C is a curve on the surface S2.
-  Standard_EXPORT IntPatch_CSFunction(const Handle(Adaptor3d_Surface)& S1,
-                                      const Handle(Adaptor2d_Curve2d)& C,
-                                      const Handle(Adaptor3d_Surface)& S2);
+  Standard_EXPORT IntPatch_CSFunction(const occ::handle<Adaptor3d_Surface>& S1,
+                                      const occ::handle<Adaptor2d_Curve2d>& C,
+                                      const occ::handle<Adaptor3d_Surface>& S2);
 
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   Standard_EXPORT const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Real Root() const;
+  Standard_EXPORT double Root() const;
 
-  Standard_EXPORT const Handle(Adaptor3d_Surface)& AuxillarSurface() const;
+  Standard_EXPORT const occ::handle<Adaptor3d_Surface>& AuxillarSurface() const;
 
-  Standard_EXPORT const Handle(Adaptor2d_Curve2d)& AuxillarCurve() const;
+  Standard_EXPORT const occ::handle<Adaptor2d_Curve2d>& AuxillarCurve() const;
 
-protected:
 private:
-  Standard_Address curve;
-  Standard_Address surface1;
-  Standard_Address surface2;
+  void* curve;
+  void* surface1;
+  void* surface2;
   gp_Pnt           p;
-  Standard_Real    f;
+  double    f;
 };
 
 #endif // _IntPatch_CSFunction_HeaderFile

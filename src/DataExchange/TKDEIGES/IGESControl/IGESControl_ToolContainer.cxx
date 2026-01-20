@@ -29,7 +29,7 @@ IGESControl_ToolContainer::IGESControl_ToolContainer()
 
 //=================================================================================================
 
-Handle(IGESToBRep_IGESBoundary) IGESControl_ToolContainer::IGESBoundary() const
+occ::handle<IGESToBRep_IGESBoundary> IGESControl_ToolContainer::IGESBoundary() const
 {
   return new IGESControl_IGESBoundary;
 }

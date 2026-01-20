@@ -19,10 +19,10 @@
 RWStepBasic_RWApplicationContext::RWStepBasic_RWApplicationContext() {}
 
 void RWStepBasic_RWApplicationContext::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_ApplicationContext)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepBasic_ApplicationContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,8 +32,8 @@ void RWStepBasic_RWApplicationContext::ReadStep(
 
   // --- own field : application ---
 
-  Handle(TCollection_HAsciiString) aApplication;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aApplication;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "application", ach, aApplication);
 
   //--- Initialisation of the read entity ---
@@ -43,7 +43,7 @@ void RWStepBasic_RWApplicationContext::ReadStep(
 
 void RWStepBasic_RWApplicationContext::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepBasic_ApplicationContext)& ent) const
+  const occ::handle<StepBasic_ApplicationContext>& ent) const
 {
 
   // --- own field : application ---

@@ -22,12 +22,12 @@
 
 #include <QABugs_PresentableObject.hxx>
 
-Handle(QABugs_PresentableObject) theObject1 = NULL;
-Handle(QABugs_PresentableObject) theObject2 = NULL;
+occ::handle<QABugs_PresentableObject> theObject1 = NULL;
+occ::handle<QABugs_PresentableObject> theObject2 = NULL;
 
-static Standard_Integer BUC60720(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60720(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> myAISContext = ViewerTest::GetAISContext();
   if (myAISContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -45,7 +45,7 @@ static Standard_Integer BUC60720(Draw_Interpretor& di, Standard_Integer argc, co
     {
       theObject1 = new QABugs_PresentableObject();
       theObject1->SetDisplayMode(0);
-      myAISContext->Display(theObject1, Standard_True);
+      myAISContext->Display(theObject1, true);
     }
   }
   else if (Draw::Atoi(argv[1]) == 1)
@@ -54,7 +54,7 @@ static Standard_Integer BUC60720(Draw_Interpretor& di, Standard_Integer argc, co
     {
       theObject2 = new QABugs_PresentableObject();
       theObject2->SetDisplayMode(1);
-      myAISContext->Display(theObject2, Standard_True);
+      myAISContext->Display(theObject2, true);
     }
   }
   else

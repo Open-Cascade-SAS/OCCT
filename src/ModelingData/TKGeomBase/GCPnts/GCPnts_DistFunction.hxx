@@ -26,20 +26,20 @@ class GCPnts_DistFunction : public math_Function
 {
 public:
   Standard_EXPORT GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
-                                      const Standard_Real    U1,
-                                      const Standard_Real    U2);
+                                      const double    U1,
+                                      const double    U2);
   //
   Standard_EXPORT GCPnts_DistFunction(const GCPnts_DistFunction& theOther);
 
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT virtual bool Value(const double X, double& F);
 
 private:
   GCPnts_DistFunction& operator=(const GCPnts_DistFunction& theOther);
 
   const Adaptor3d_Curve& myCurve;
   gp_Lin                 myLin;
-  Standard_Real          myU1;
-  Standard_Real          myU2;
+  double          myU1;
+  double          myU2;
 };
 
 //
@@ -50,9 +50,9 @@ class GCPnts_DistFunctionMV : public math_MultipleVarFunction
 public:
   Standard_EXPORT GCPnts_DistFunctionMV(GCPnts_DistFunction& theCurvLinDist);
 
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F);
+  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F);
 
-  Standard_EXPORT virtual Standard_Integer NbVariables() const;
+  Standard_EXPORT virtual int NbVariables() const;
 
 private:
   GCPnts_DistFunctionMV& operator=(const GCPnts_DistFunctionMV& theOther);

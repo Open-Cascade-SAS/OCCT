@@ -22,11 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Bspline approximation of a surface.
 class AppBlend_Approx
@@ -34,65 +37,63 @@ class AppBlend_Approx
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT virtual Standard_Boolean IsDone() const = 0;
+  Standard_EXPORT virtual bool IsDone() const = 0;
 
-  Standard_EXPORT virtual void SurfShape(Standard_Integer& UDegree,
-                                         Standard_Integer& VDegree,
-                                         Standard_Integer& NbUPoles,
-                                         Standard_Integer& NbVPoles,
-                                         Standard_Integer& NbUKnots,
-                                         Standard_Integer& NbVKnots) const = 0;
+  Standard_EXPORT virtual void SurfShape(int& UDegree,
+                                         int& VDegree,
+                                         int& NbUPoles,
+                                         int& NbVPoles,
+                                         int& NbUKnots,
+                                         int& NbVKnots) const = 0;
 
-  Standard_EXPORT virtual void Surface(TColgp_Array2OfPnt&      TPoles,
-                                       TColStd_Array2OfReal&    TWeights,
-                                       TColStd_Array1OfReal&    TUKnots,
-                                       TColStd_Array1OfReal&    TVKnots,
-                                       TColStd_Array1OfInteger& TUMults,
-                                       TColStd_Array1OfInteger& TVMults) const = 0;
+  Standard_EXPORT virtual void Surface(NCollection_Array2<gp_Pnt>&      TPoles,
+                                       NCollection_Array2<double>&    TWeights,
+                                       NCollection_Array1<double>&    TUKnots,
+                                       NCollection_Array1<double>&    TVKnots,
+                                       NCollection_Array1<int>& TUMults,
+                                       NCollection_Array1<int>& TVMults) const = 0;
 
-  Standard_EXPORT virtual Standard_Integer UDegree() const = 0;
+  Standard_EXPORT virtual int UDegree() const = 0;
 
-  Standard_EXPORT virtual Standard_Integer VDegree() const = 0;
+  Standard_EXPORT virtual int VDegree() const = 0;
 
-  Standard_EXPORT virtual const TColgp_Array2OfPnt& SurfPoles() const = 0;
+  Standard_EXPORT virtual const NCollection_Array2<gp_Pnt>& SurfPoles() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array2OfReal& SurfWeights() const = 0;
+  Standard_EXPORT virtual const NCollection_Array2<double>& SurfWeights() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfReal& SurfUKnots() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<double>& SurfUKnots() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfReal& SurfVKnots() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<double>& SurfVKnots() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfInteger& SurfUMults() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<int>& SurfUMults() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfInteger& SurfVMults() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<int>& SurfVMults() const = 0;
 
-  Standard_EXPORT virtual Standard_Integer NbCurves2d() const = 0;
+  Standard_EXPORT virtual int NbCurves2d() const = 0;
 
-  Standard_EXPORT virtual void Curves2dShape(Standard_Integer& Degree,
-                                             Standard_Integer& NbPoles,
-                                             Standard_Integer& NbKnots) const = 0;
+  Standard_EXPORT virtual void Curves2dShape(int& Degree,
+                                             int& NbPoles,
+                                             int& NbKnots) const = 0;
 
-  Standard_EXPORT virtual void Curve2d(const Standard_Integer   Index,
-                                       TColgp_Array1OfPnt2d&    TPoles,
-                                       TColStd_Array1OfReal&    TKnots,
-                                       TColStd_Array1OfInteger& TMults) const = 0;
+  Standard_EXPORT virtual void Curve2d(const int   Index,
+                                       NCollection_Array1<gp_Pnt2d>&    TPoles,
+                                       NCollection_Array1<double>&    TKnots,
+                                       NCollection_Array1<int>& TMults) const = 0;
 
-  Standard_EXPORT virtual Standard_Integer Curves2dDegree() const = 0;
+  Standard_EXPORT virtual int Curves2dDegree() const = 0;
 
-  Standard_EXPORT virtual const TColgp_Array1OfPnt2d& Curve2dPoles(
-    const Standard_Integer Index) const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<gp_Pnt2d>& Curve2dPoles(
+    const int Index) const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfReal& Curves2dKnots() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<double>& Curves2dKnots() const = 0;
 
-  Standard_EXPORT virtual const TColStd_Array1OfInteger& Curves2dMults() const = 0;
+  Standard_EXPORT virtual const NCollection_Array1<int>& Curves2dMults() const = 0;
 
-  Standard_EXPORT virtual void TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d) const = 0;
+  Standard_EXPORT virtual void TolReached(double& Tol3d, double& Tol2d) const = 0;
 
-  Standard_EXPORT virtual Standard_Real TolCurveOnSurf(const Standard_Integer Index) const = 0;
+  Standard_EXPORT virtual double TolCurveOnSurf(const int Index) const = 0;
   Standard_EXPORT virtual ~AppBlend_Approx();
 
-protected:
-private:
 };
 
 #endif // _AppBlend_Approx_HeaderFile

@@ -44,7 +44,7 @@ Adaptor3d_TopolTool::Adaptor3d_TopolTool()
 {
 }
 
-Adaptor3d_TopolTool::Adaptor3d_TopolTool(const Handle(Adaptor3d_Surface)& S)
+Adaptor3d_TopolTool::Adaptor3d_TopolTool(const occ::handle<Adaptor3d_Surface>& S)
 {
   Initialize(S);
 }
@@ -54,9 +54,9 @@ void Adaptor3d_TopolTool::Initialize()
   throw Standard_NotImplemented("Adaptor3d_TopolTool::Initialize ()");
 }
 
-void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
+void Adaptor3d_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& S)
 {
-  Standard_Real pinf, psup, deltap;
+  double pinf, psup, deltap;
   // Adaptor2d_Line2d  * Line2dPtr ;
 
   myNbSamplesU = -1;
@@ -67,10 +67,10 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
   nbRestr      = 0;
   idRestr      = 0;
 
-  Standard_Boolean Uinfinfinite = Precision::IsNegativeInfinite(Uinf);
-  Standard_Boolean Usupinfinite = Precision::IsPositiveInfinite(Usup);
-  Standard_Boolean Vinfinfinite = Precision::IsNegativeInfinite(Vinf);
-  Standard_Boolean Vsupinfinite = Precision::IsPositiveInfinite(Vsup);
+  bool Uinfinfinite = Precision::IsNegativeInfinite(Uinf);
+  bool Usupinfinite = Precision::IsPositiveInfinite(Usup);
+  bool Vinfinfinite = Precision::IsNegativeInfinite(Vinf);
+  bool Vsupinfinite = Precision::IsPositiveInfinite(Vsup);
 
   if (!Vinfinfinite)
   {
@@ -180,7 +180,7 @@ void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& S)
 
   if (nbRestr == 2 && S->GetType() == GeomAbs_Cone)
   {
-    Standard_Real U = 0., V = 0.;
+    double U = 0., V = 0.;
     GetConeApexParam(S->Cone(), U, V);
 
     deltap = std::min(Usup - Uinf, 2. * myInfinite);
@@ -213,12 +213,12 @@ void Adaptor3d_TopolTool::Init()
   idRestr = 0;
 }
 
-Standard_Boolean Adaptor3d_TopolTool::More()
+bool Adaptor3d_TopolTool::More()
 {
   return (idRestr < nbRestr);
 }
 
-Handle(Adaptor2d_Curve2d) Adaptor3d_TopolTool::Value()
+occ::handle<Adaptor2d_Curve2d> Adaptor3d_TopolTool::Value()
 {
   if (idRestr >= nbRestr)
   {
@@ -232,11 +232,11 @@ void Adaptor3d_TopolTool::Next()
   idRestr++;
 }
 
-void Adaptor3d_TopolTool::Initialize(const Handle(Adaptor2d_Curve2d)& C)
+void Adaptor3d_TopolTool::Initialize(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   nbVtx = 0;
   idVtx = 0;
-  Standard_Real theUinf, theUsup;
+  double theUinf, theUsup;
   theUinf = C->FirstParameter();
   theUsup = C->LastParameter();
   //  if (!Precision::IsNegativeInfinite(theUinf)) {
@@ -258,12 +258,12 @@ void Adaptor3d_TopolTool::InitVertexIterator()
   idVtx = 0;
 }
 
-Standard_Boolean Adaptor3d_TopolTool::MoreVertex()
+bool Adaptor3d_TopolTool::MoreVertex()
 {
   return (idVtx < nbVtx);
 }
 
-Handle(Adaptor3d_HVertex) Adaptor3d_TopolTool::Vertex()
+occ::handle<Adaptor3d_HVertex> Adaptor3d_TopolTool::Vertex()
 {
   if (idVtx >= nbVtx)
   {
@@ -278,13 +278,13 @@ void Adaptor3d_TopolTool::NextVertex()
 }
 
 TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
-                                           const Standard_Real Tol,
-                                           const Standard_Boolean)
-//					 const Standard_Boolean RecadreOnPeriodic)
+                                           const double Tol,
+                                           const bool)
+//					 const bool RecadreOnPeriodic)
 {
 
-  Standard_Real U = P.X();
-  Standard_Real V = P.Y();
+  double U = P.X();
+  double V = P.Y();
 
   if (nbRestr == 4)
   {
@@ -305,45 +305,45 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
   }
   else
   {
-    Standard_Boolean dansu, dansv, surumin, surumax, survmin, survmax;
+    bool dansu, dansv, surumin, surumax, survmin, survmax;
     if (Precision::IsNegativeInfinite(Uinf) && Precision::IsPositiveInfinite(Usup))
     {
-      dansu   = Standard_True;
-      surumin = surumax = Standard_False;
+      dansu   = true;
+      surumin = surumax = false;
     }
     else if (Precision::IsNegativeInfinite(Uinf))
     {
-      surumin = Standard_False;
+      surumin = false;
       if (U >= Usup + Tol)
       {
-        dansu   = Standard_False;
-        surumax = Standard_False;
+        dansu   = false;
+        surumax = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumax = Standard_False;
+        dansu   = true;
+        surumax = false;
         if (std::abs(U - Usup) <= Tol)
         {
-          surumax = Standard_True;
+          surumax = true;
         }
       }
     }
     else if (Precision::IsPositiveInfinite(Usup))
     {
-      surumax = Standard_False;
+      surumax = false;
       if (U < Uinf - Tol)
       {
-        dansu   = Standard_False;
-        surumin = Standard_False;
+        dansu   = false;
+        surumin = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumin = Standard_False;
+        dansu   = true;
+        surumin = false;
         if (std::abs(U - Uinf) <= Tol)
         {
-          surumin = Standard_True;
+          surumin = true;
         }
       }
     }
@@ -351,61 +351,61 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
     {
       if ((U < Uinf - Tol) || (U > Usup + Tol))
       {
-        surumin = surumax = dansu = Standard_False;
+        surumin = surumax = dansu = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumin = surumax = Standard_False;
+        dansu   = true;
+        surumin = surumax = false;
         if (std::abs(U - Uinf) <= Tol)
         {
-          surumin = Standard_True;
+          surumin = true;
         }
         else if (std::abs(U - Usup) <= Tol)
         {
-          surumax = Standard_True;
+          surumax = true;
         }
       }
     }
 
     if (Precision::IsNegativeInfinite(Vinf) && Precision::IsPositiveInfinite(Vsup))
     {
-      dansv   = Standard_True;
-      survmin = survmax = Standard_False;
+      dansv   = true;
+      survmin = survmax = false;
     }
     else if (Precision::IsNegativeInfinite(Vinf))
     {
-      survmin = Standard_False;
+      survmin = false;
       if (V > Vsup + Tol)
       {
-        dansv   = Standard_False;
-        survmax = Standard_False;
+        dansv   = false;
+        survmax = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmax = Standard_False;
+        dansv   = true;
+        survmax = false;
         if (std::abs(V - Vsup) <= Tol)
         {
-          survmax = Standard_True;
+          survmax = true;
         }
       }
     }
     else if (Precision::IsPositiveInfinite(Vsup))
     {
-      survmax = Standard_False;
+      survmax = false;
       if (V < Vinf - Tol)
       {
-        dansv   = Standard_False;
-        survmin = Standard_False;
+        dansv   = false;
+        survmin = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmin = Standard_False;
+        dansv   = true;
+        survmin = false;
         if (std::abs(V - Vinf) <= Tol)
         {
-          survmin = Standard_True;
+          survmin = true;
         }
       }
     }
@@ -413,19 +413,19 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
     {
       if ((V < Vinf - Tol) || (V > Vsup + Tol))
       {
-        survmin = survmax = dansv = Standard_False;
+        survmin = survmax = dansv = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmin = survmax = Standard_False;
+        dansv   = true;
+        survmin = survmax = false;
         if (std::abs(V - Vinf) <= Tol)
         {
-          survmin = Standard_True;
+          survmin = true;
         }
         else if (std::abs(V - Vsup) <= Tol)
         {
-          survmax = Standard_True;
+          survmax = true;
         }
       }
     }
@@ -442,73 +442,73 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d&     P,
   }
 }
 
-Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
-                                                   const Standard_Real Tol,
-                                                   const Standard_Boolean)
-//					     const Standard_Boolean RecadreOnPeriodic)
+bool Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
+                                                   const double Tol,
+                                                   const bool)
+//					     const bool RecadreOnPeriodic)
 {
 
-  Standard_Real U = P.X();
-  Standard_Real V = P.Y();
+  double U = P.X();
+  double V = P.Y();
 
   if (nbRestr == 4)
   {
     if ((U < Uinf - Tol) || (U > Usup + Tol) || (V < Vinf - Tol) || (V > Vsup + Tol))
     {
-      return (Standard_False);
+      return (false);
     }
     if ((std::abs(U - Uinf) <= Tol) || (std::abs(U - Usup) <= Tol) || (std::abs(V - Vinf) <= Tol)
         || (std::abs(V - Vsup) <= Tol))
     {
-      return (Standard_True);
+      return (true);
     }
-    return (Standard_False);
+    return (false);
   }
   else if (nbRestr == 0)
   {
-    return (Standard_False);
+    return (false);
   }
   else
   {
-    Standard_Boolean dansu, dansv, surumin, surumax, survmin, survmax;
+    bool dansu, dansv, surumin, surumax, survmin, survmax;
     if (Precision::IsNegativeInfinite(Uinf) && Precision::IsPositiveInfinite(Usup))
     {
-      dansu   = Standard_True;
-      surumin = surumax = Standard_False;
+      dansu   = true;
+      surumin = surumax = false;
     }
     else if (Precision::IsNegativeInfinite(Uinf))
     {
-      surumin = Standard_False;
+      surumin = false;
       if (U >= Usup + Tol)
       {
-        dansu   = Standard_False;
-        surumax = Standard_False;
+        dansu   = false;
+        surumax = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumax = Standard_False;
+        dansu   = true;
+        surumax = false;
         if (std::abs(U - Usup) <= Tol)
         {
-          surumax = Standard_True;
+          surumax = true;
         }
       }
     }
     else if (Precision::IsPositiveInfinite(Usup))
     {
-      surumax = Standard_False;
+      surumax = false;
       if (U < Uinf - Tol)
       {
-        dansu   = Standard_False;
-        surumin = Standard_False;
+        dansu   = false;
+        surumin = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumin = Standard_False;
+        dansu   = true;
+        surumin = false;
         if (std::abs(U - Uinf) <= Tol)
         {
-          surumin = Standard_True;
+          surumin = true;
         }
       }
     }
@@ -516,61 +516,61 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
     {
       if ((U < Uinf - Tol) || (U > Usup + Tol))
       {
-        surumin = surumax = dansu = Standard_False;
+        surumin = surumax = dansu = false;
       }
       else
       {
-        dansu   = Standard_True;
-        surumin = surumax = Standard_False;
+        dansu   = true;
+        surumin = surumax = false;
         if (std::abs(U - Uinf) <= Tol)
         {
-          surumin = Standard_True;
+          surumin = true;
         }
         else if (std::abs(U - Usup) <= Tol)
         {
-          surumax = Standard_True;
+          surumax = true;
         }
       }
     }
 
     if (Precision::IsNegativeInfinite(Vinf) && Precision::IsPositiveInfinite(Vsup))
     {
-      dansv   = Standard_True;
-      survmin = survmax = Standard_False;
+      dansv   = true;
+      survmin = survmax = false;
     }
     else if (Precision::IsNegativeInfinite(Vinf))
     {
-      survmin = Standard_False;
+      survmin = false;
       if (V > Vsup + Tol)
       {
-        dansv   = Standard_False;
-        survmax = Standard_False;
+        dansv   = false;
+        survmax = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmax = Standard_False;
+        dansv   = true;
+        survmax = false;
         if (std::abs(V - Vsup) <= Tol)
         {
-          survmax = Standard_True;
+          survmax = true;
         }
       }
     }
     else if (Precision::IsPositiveInfinite(Vsup))
     {
-      survmax = Standard_False;
+      survmax = false;
       if (V < Vinf - Tol)
       {
-        dansv   = Standard_False;
-        survmin = Standard_False;
+        dansv   = false;
+        survmin = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmin = Standard_False;
+        dansv   = true;
+        survmin = false;
         if (std::abs(V - Vinf) <= Tol)
         {
-          survmin = Standard_True;
+          survmin = true;
         }
       }
     }
@@ -578,47 +578,47 @@ Standard_Boolean Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d&     P,
     {
       if ((V < Vinf - Tol) || (V > Vsup + Tol))
       {
-        survmin = survmax = dansv = Standard_False;
+        survmin = survmax = dansv = false;
       }
       else
       {
-        dansv   = Standard_True;
-        survmin = survmax = Standard_False;
+        dansv   = true;
+        survmin = survmax = false;
         if (std::abs(V - Vinf) <= Tol)
         {
-          survmin = Standard_True;
+          survmin = true;
         }
         else if (std::abs(V - Vsup) <= Tol)
         {
-          survmax = Standard_True;
+          survmax = true;
         }
       }
     }
 
     if (!dansu || !dansv)
     {
-      return (Standard_False);
+      return (false);
     }
     if (surumin || survmin || surumax || survmax)
     {
-      return (Standard_True);
+      return (true);
     }
-    return Standard_False;
+    return false;
   }
 }
 
-TopAbs_Orientation Adaptor3d_TopolTool::Orientation(const Handle(Adaptor2d_Curve2d)&)
+TopAbs_Orientation Adaptor3d_TopolTool::Orientation(const occ::handle<Adaptor2d_Curve2d>&)
 {
   return TopAbs_FORWARD;
 }
 
-TopAbs_Orientation Adaptor3d_TopolTool::Orientation(const Handle(Adaptor3d_HVertex)& V)
+TopAbs_Orientation Adaptor3d_TopolTool::Orientation(const occ::handle<Adaptor3d_HVertex>& V)
 {
   return V->Orientation();
 }
 
-Standard_Boolean Adaptor3d_TopolTool::Identical(const Handle(Adaptor3d_HVertex)& V1,
-                                                const Handle(Adaptor3d_HVertex)& V2)
+bool Adaptor3d_TopolTool::Identical(const occ::handle<Adaptor3d_HVertex>& V1,
+                                                const occ::handle<Adaptor3d_HVertex>& V2)
 {
   return V1->IsSame(V2);
 }
@@ -627,11 +627,12 @@ Standard_Boolean Adaptor3d_TopolTool::Identical(const Handle(Adaptor3d_HVertex)&
 //-- m e t h o d e s   u t i l i s e e s   p o u r   l e s
 //--  s a m p l e s
 //-- ============================================================
-#include <TColgp_Array2OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 // #include <gce_MakeLin.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
@@ -641,14 +642,14 @@ Standard_Boolean Adaptor3d_TopolTool::Identical(const Handle(Adaptor3d_HVertex)&
   4 // Absolute possible minimum of sample points
     // Restriction of IntPolyh
 
-static void Analyse(const TColgp_Array2OfPnt& array2,
-                    const Standard_Integer    nbup,
-                    const Standard_Integer    nbvp,
-                    Standard_Integer&         myNbSamplesU,
-                    Standard_Integer&         myNbSamplesV)
+static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
+                    const int    nbup,
+                    const int    nbvp,
+                    int&         myNbSamplesU,
+                    int&         myNbSamplesV)
 {
   gp_Vec           Vi, Vip1;
-  Standard_Integer sh, nbch, i, j;
+  int sh, nbch, i, j;
 
   sh   = 1;
   nbch = 0;
@@ -662,7 +663,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
       Vi.SetCoord(C.X() - B.X() - B.X() + A.X(),
                   C.Y() - B.Y() - B.Y() + A.Y(),
                   C.Z() - B.Z() - B.Z() + A.Z());
-      Standard_Integer locnbch = 0;
+      int locnbch = 0;
       for (j = 3; j < nbvp; j++)
       { //-- try
         const gp_Pnt& A1 = array2.Value(i, j - 1);
@@ -671,7 +672,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
         Vip1.SetCoord(C1.X() - B1.X() - B1.X() + A1.X(),
                       C1.Y() - B1.Y() - B1.Y() + A1.Y(),
                       C1.Z() - B1.Z() - B1.Z() + A1.Z());
-        Standard_Real pd = Vi.Dot(Vip1);
+        double pd = Vi.Dot(Vip1);
         Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
@@ -712,7 +713,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
       Vi.SetCoord(C.X() - B.X() - B.X() + A.X(),
                   C.Y() - B.Y() - B.Y() + A.Y(),
                   C.Z() - B.Z() - B.Z() + A.Z());
-      Standard_Integer locnbch = 0;
+      int locnbch = 0;
       for (i = 3; i < nbup; i++)
       { //-- try
         const gp_Pnt& A1 = array2.Value(i - 1, j);
@@ -721,7 +722,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
         Vip1.SetCoord(C1.X() - B1.X() - B1.X() + A1.X(),
                       C1.Y() - B1.Y() - B1.Y() + A1.Y(),
                       C1.Z() - B1.Z() - B1.Z() + A1.Z());
-        Standard_Real pd = Vi.Dot(Vip1);
+        double pd = Vi.Dot(Vip1);
         Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
@@ -752,22 +753,22 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
 
 void Adaptor3d_TopolTool::ComputeSamplePoints()
 {
-  const Standard_Integer aMaxNbSample = 50;
+  const int aMaxNbSample = 50;
 
-  Standard_Real uinf, usup, vinf, vsup;
+  double uinf, usup, vinf, vsup;
   uinf = myS->FirstUParameter();
   usup = myS->LastUParameter();
   vinf = myS->FirstVParameter();
   vsup = myS->LastVParameter();
   if (usup < uinf)
   {
-    Standard_Real temp = uinf;
+    double temp = uinf;
     uinf               = usup;
     usup               = temp;
   }
   if (vsup < vinf)
   {
-    Standard_Real temp = vinf;
+    double temp = vinf;
     vinf               = vsup;
     vsup               = temp;
   }
@@ -799,7 +800,7 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
     vsup = vinf + 2.e5;
   }
 
-  Standard_Integer    nbsu, nbsv;
+  int    nbsu, nbsv;
   GeomAbs_SurfaceType typS = myS->GetType();
   switch (typS)
   {
@@ -854,17 +855,17 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   {
     if (nbsu > 8 || nbsv > 8)
     {
-      const Handle(Geom_BSplineSurface)& Bspl = myS->BSpline();
-      Standard_Integer                   nbup = Bspl->NbUPoles();
-      Standard_Integer                   nbvp = Bspl->NbVPoles();
-      TColgp_Array2OfPnt                 array2(1, nbup, 1, nbvp);
+      const occ::handle<Geom_BSplineSurface>& Bspl = myS->BSpline();
+      int                   nbup = Bspl->NbUPoles();
+      int                   nbvp = Bspl->NbVPoles();
+      NCollection_Array2<gp_Pnt>                 array2(1, nbup, 1, nbvp);
       Bspl->Poles(array2);
       Analyse(array2, nbup, nbvp, nbsu, nbsv);
     }
     // Check anisotropy
-    Standard_Real anULen = (usup - uinf) / myS->UResolution(1.);
-    Standard_Real anVLen = (vsup - vinf) / myS->VResolution(1.);
-    Standard_Real aRatio = anULen / anVLen;
+    double anULen = (usup - uinf) / myS->UResolution(1.);
+    double anVLen = (vsup - vinf) / myS->VResolution(1.);
+    double aRatio = anULen / anVLen;
     if (aRatio >= 10.)
     {
       nbsu *= 2;
@@ -880,10 +881,10 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   {
     if (nbsu > 8 || nbsv > 8)
     {
-      const Handle(Geom_BezierSurface)& Bez  = myS->Bezier();
-      Standard_Integer                  nbup = Bez->NbUPoles();
-      Standard_Integer                  nbvp = Bez->NbVPoles();
-      TColgp_Array2OfPnt                array2(1, nbup, 1, nbvp);
+      const occ::handle<Geom_BezierSurface>& Bez  = myS->Bezier();
+      int                  nbup = Bez->NbUPoles();
+      int                  nbvp = Bez->NbVPoles();
+      NCollection_Array2<gp_Pnt>                array2(1, nbup, 1, nbvp);
       Bez->Poles(array2);
       Analyse(array2, nbup, nbvp, nbsu, nbsv);
     }
@@ -893,7 +894,7 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   myNbSamplesV = nbsv;
 }
 
-Standard_Integer Adaptor3d_TopolTool::NbSamplesU()
+int Adaptor3d_TopolTool::NbSamplesU()
 {
   if (myNbSamplesU < 0)
   {
@@ -902,7 +903,7 @@ Standard_Integer Adaptor3d_TopolTool::NbSamplesU()
   return (myNbSamplesU);
 }
 
-Standard_Integer Adaptor3d_TopolTool::NbSamplesV()
+int Adaptor3d_TopolTool::NbSamplesV()
 {
   if (myNbSamplesU < 0)
   {
@@ -911,7 +912,7 @@ Standard_Integer Adaptor3d_TopolTool::NbSamplesV()
   return (myNbSamplesV);
 }
 
-Standard_Integer Adaptor3d_TopolTool::NbSamples()
+int Adaptor3d_TopolTool::NbSamples()
 {
   if (myNbSamplesU < 0)
   {
@@ -920,24 +921,24 @@ Standard_Integer Adaptor3d_TopolTool::NbSamples()
   return (myNbSamplesU * myNbSamplesV);
 }
 
-void Adaptor3d_TopolTool::UParameters(TColStd_Array1OfReal& theArray) const
+void Adaptor3d_TopolTool::UParameters(NCollection_Array1<double>& theArray) const
 {
   theArray = myUPars->Array1();
 }
 
-void Adaptor3d_TopolTool::VParameters(TColStd_Array1OfReal& theArray) const
+void Adaptor3d_TopolTool::VParameters(NCollection_Array1<double>& theArray) const
 {
   theArray = myVPars->Array1();
 }
 
-void Adaptor3d_TopolTool::SamplePoint(const Standard_Integer i, gp_Pnt2d& P2d, gp_Pnt& P3d)
+void Adaptor3d_TopolTool::SamplePoint(const int i, gp_Pnt2d& P2d, gp_Pnt& P3d)
 {
-  Standard_Integer iu, iv;
-  Standard_Real    u, v;
+  int iu, iv;
+  double    u, v;
   if (myUPars.IsNull())
   {
-    Standard_Real myDU = (Usup - Uinf) / (myNbSamplesU + 1);
-    Standard_Real myDV = (Vsup - Vinf) / (myNbSamplesV + 1);
+    double myDU = (Usup - Uinf) / (myNbSamplesU + 1);
+    double myDV = (Vsup - Vinf) / (myNbSamplesV + 1);
     iv                 = 1 + i / myNbSamplesU;
     iu                 = 1 + i - (iv - 1) * myNbSamplesU;
     u                  = Uinf + iu * myDU;
@@ -955,74 +956,74 @@ void Adaptor3d_TopolTool::SamplePoint(const Standard_Integer i, gp_Pnt2d& P2d, g
   P3d = myS->Value(u, v);
 }
 
-Standard_Boolean Adaptor3d_TopolTool::DomainIsInfinite()
+bool Adaptor3d_TopolTool::DomainIsInfinite()
 {
   if (Precision::IsNegativeInfinite(Uinf))
-    return (Standard_True);
+    return (true);
   if (Precision::IsPositiveInfinite(Usup))
-    return (Standard_True);
+    return (true);
   if (Precision::IsNegativeInfinite(Vinf))
-    return (Standard_True);
+    return (true);
   if (Precision::IsPositiveInfinite(Vsup))
-    return (Standard_True);
-  return (Standard_False);
+    return (true);
+  return (false);
 }
 
 //=================================================================================================
 
-Standard_Address Adaptor3d_TopolTool::Edge() const
+void* Adaptor3d_TopolTool::Edge() const
 {
   return NULL;
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_TopolTool::Has3d() const
+bool Adaptor3d_TopolTool::Has3d() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor2d_Curve2d)&) const
+double Adaptor3d_TopolTool::Tol3d(const occ::handle<Adaptor2d_Curve2d>&) const
 {
   throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_TopolTool::Tol3d(const Handle(Adaptor3d_HVertex)&) const
+double Adaptor3d_TopolTool::Tol3d(const occ::handle<Adaptor3d_HVertex>&) const
 {
   throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 //=================================================================================================
 
-gp_Pnt Adaptor3d_TopolTool::Pnt(const Handle(Adaptor3d_HVertex)&) const
+gp_Pnt Adaptor3d_TopolTool::Pnt(const occ::handle<Adaptor3d_HVertex>&) const
 {
   throw Standard_DomainError("Adaptor3d_TopolTool: has no 3d representation");
 }
 
 //=================================================================================================
 
-void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
-                                     const Standard_Integer theNUmin,
-                                     const Standard_Integer theNVmin)
+void Adaptor3d_TopolTool::SamplePnts(const double    theDefl,
+                                     const int theNUmin,
+                                     const int theNVmin)
 {
-  Standard_Real uinf, usup, vinf, vsup;
+  double uinf, usup, vinf, vsup;
   uinf = myS->FirstUParameter();
   usup = myS->LastUParameter();
   vinf = myS->FirstVParameter();
   vsup = myS->LastVParameter();
   if (usup < uinf)
   {
-    Standard_Real temp = uinf;
+    double temp = uinf;
     uinf               = usup;
     usup               = temp;
   }
   if (vsup < vinf)
   {
-    Standard_Real temp = vinf;
+    double temp = vinf;
     vinf               = vsup;
     vsup               = temp;
   }
@@ -1054,7 +1055,7 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
     vsup = vinf + 2.e5;
   }
 
-  //   Standard_Integer nbsu,nbsv;
+  //   int nbsu,nbsv;
   GeomAbs_SurfaceType typS = myS->GetType();
   //   switch(typS) {
   //   case GeomAbs_Plane:          { nbsv=2; nbsu=2; } break;
@@ -1064,10 +1065,10 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
   //     nbsu = std::max(nbsu, theNUmin);
   //     nbsv = std::max(nbsv, theNVmin);
   //     if(nbsu>8 || nbsv>8) {
-  //       const Handle(Geom_BezierSurface)& Bez = myS->Bezier();
-  //       Standard_Integer nbup = Bez->NbUPoles();
-  //       Standard_Integer nbvp = Bez->NbVPoles();
-  //       TColgp_Array2OfPnt array2(1,nbup,1,nbvp);
+  //       const occ::handle<Geom_BezierSurface>& Bez = myS->Bezier();
+  //       int nbup = Bez->NbUPoles();
+  //       int nbvp = Bez->NbVPoles();
+  //       NCollection_Array2<gp_Pnt> array2(1,nbup,1,nbvp);
   //       Bez->Poles(array2);
   //       Analyse(array2,nbup,nbvp,myNbSamplesU,myNbSamplesV);
   //     }
@@ -1100,10 +1101,10 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
   //   myNbSamplesU = nbsu;
   //   myNbSamplesV = nbsv;
 
-  myUPars = new TColStd_HArray1OfReal(1, myNbSamplesU);
-  myVPars = new TColStd_HArray1OfReal(1, myNbSamplesV);
-  Standard_Integer i;
-  Standard_Real    t, dt = (usup - uinf) / (myNbSamplesU - 1);
+  myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
+  myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
+  int i;
+  double    t, dt = (usup - uinf) / (myNbSamplesU - 1);
   myUPars->SetValue(1, uinf);
   myUPars->SetValue(myNbSamplesU, usup);
   for (i = 2, t = uinf + dt; i < myNbSamplesU; ++i, t += dt)
@@ -1124,24 +1125,24 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real    theDefl,
 
 //=================================================================================================
 
-void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
-                                         const Standard_Integer theNUmin,
-                                         const Standard_Integer theNVmin)
+void Adaptor3d_TopolTool::BSplSamplePnts(const double    theDefl,
+                                         const int theNUmin,
+                                         const int theNVmin)
 {
-  const Standard_Integer             aMaxPnts = 1001;
-  const Handle(Geom_BSplineSurface)& aBS      = myS->BSpline();
-  Standard_Real                      uinf, usup, vinf, vsup;
+  const int             aMaxPnts = 1001;
+  const occ::handle<Geom_BSplineSurface>& aBS      = myS->BSpline();
+  double                      uinf, usup, vinf, vsup;
   uinf = myS->FirstUParameter();
   usup = myS->LastUParameter();
   vinf = myS->FirstVParameter();
   vsup = myS->LastVParameter();
 
-  Standard_Integer i, k, j = 1;
-  Standard_Real    t1, t2, dt;
-  Standard_Integer ui1 = aBS->FirstUKnotIndex();
-  Standard_Integer ui2 = aBS->LastUKnotIndex();
-  Standard_Integer vi1 = aBS->FirstVKnotIndex();
-  Standard_Integer vi2 = aBS->LastVKnotIndex();
+  int i, k, j = 1;
+  double    t1, t2, dt;
+  int ui1 = aBS->FirstUKnotIndex();
+  int ui2 = aBS->LastUKnotIndex();
+  int vi1 = aBS->FirstVKnotIndex();
+  int vi2 = aBS->LastVKnotIndex();
 
   for (i = ui1; i < ui2; ++i)
   {
@@ -1179,29 +1180,29 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     }
   }
 
-  Standard_Integer nbsu = ui2 - ui1 + 1;
+  int nbsu = ui2 - ui1 + 1;
   nbsu += (nbsu - 1) * (aBS->UDegree() - 1);
-  Standard_Integer nbsv = vi2 - vi1 + 1;
+  int nbsv = vi2 - vi1 + 1;
   nbsv += (nbsv - 1) * (aBS->VDegree() - 1);
-  Standard_Boolean bUuniform = Standard_False;
-  Standard_Boolean bVuniform = Standard_False;
+  bool bUuniform = false;
+  bool bVuniform = false;
 
   // modified by NIZHNY-EMV Mon Jun 10 14:19:04 2013
   if (nbsu < theNUmin || nbsv < theNVmin)
   {
-    Standard_Integer aNb;
+    int aNb;
     if (nbsu < nbsv)
     {
-      aNb       = (Standard_Integer)(nbsv * ((Standard_Real)theNUmin) / ((Standard_Real)nbsu));
+      aNb       = (int)(nbsv * ((double)theNUmin) / ((double)nbsu));
       aNb       = std::min(aNb, 30);
-      bVuniform = (aNb > nbsv) ? Standard_True : bVuniform;
+      bVuniform = (aNb > nbsv) ? true : bVuniform;
       nbsv      = bVuniform ? aNb : nbsv;
     }
     else
     {
-      aNb       = (Standard_Integer)(nbsu * ((Standard_Real)theNVmin) / ((Standard_Real)nbsv));
+      aNb       = (int)(nbsu * ((double)theNVmin) / ((double)nbsv));
       aNb       = std::min(aNb, 30);
-      bUuniform = (aNb > nbsu) ? Standard_True : bUuniform;
+      bUuniform = (aNb > nbsu) ? true : bUuniform;
       nbsu      = bUuniform ? aNb : nbsu;
     }
   }
@@ -1210,28 +1211,28 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
   if (nbsu < theNUmin)
   {
     nbsu      = theNUmin;
-    bUuniform = Standard_True;
+    bUuniform = true;
   }
   else if (nbsu > aMaxPnts)
   {
     nbsu      = aMaxPnts;
-    bUuniform = Standard_True;
+    bUuniform = true;
   }
   if (nbsv < theNVmin)
   {
     nbsv      = theNVmin;
-    bVuniform = Standard_True;
+    bVuniform = true;
   }
   else if (nbsv > aMaxPnts)
   {
     nbsv      = aMaxPnts;
-    bVuniform = Standard_True;
+    bVuniform = true;
   }
 
-  TColStd_Array1OfReal    anUPars(1, nbsu);
-  TColStd_Array1OfBoolean anUFlg(1, nbsu);
-  TColStd_Array1OfReal    aVPars(1, nbsv);
-  TColStd_Array1OfBoolean aVFlg(1, nbsv);
+  NCollection_Array1<double>    anUPars(1, nbsu);
+  NCollection_Array1<bool> anUFlg(1, nbsu);
+  NCollection_Array1<double>    aVPars(1, nbsv);
+  NCollection_Array1<bool> aVFlg(1, nbsv);
 
   // Filling of sample parameters
   if (bUuniform)
@@ -1240,18 +1241,18 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     t2            = usup;
     dt            = (t2 - t1) / (nbsu - 1);
     anUPars(1)    = t1;
-    anUFlg(1)     = Standard_False;
+    anUFlg(1)     = false;
     anUPars(nbsu) = t2;
-    anUFlg(nbsu)  = Standard_False;
+    anUFlg(nbsu)  = false;
     for (i = 2, t1 += dt; i < nbsu; ++i, t1 += dt)
     {
       anUPars(i) = t1;
-      anUFlg(i)  = Standard_False;
+      anUFlg(i)  = false;
     }
   }
   else
   {
-    Standard_Integer nbi = aBS->UDegree();
+    int nbi = aBS->UDegree();
     k                    = 0;
     t1                   = uinf;
     for (i = ui1 + 1; i <= ui2; ++i)
@@ -1266,7 +1267,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       {
         ++k;
         anUPars(k) = t1;
-        anUFlg(k)  = Standard_False;
+        anUFlg(k)  = false;
         t1 += dt;
       } while (++j <= nbi);
       t1 = t2;
@@ -1281,18 +1282,18 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     t2           = vsup;
     dt           = (t2 - t1) / (nbsv - 1);
     aVPars(1)    = t1;
-    aVFlg(1)     = Standard_False;
+    aVFlg(1)     = false;
     aVPars(nbsv) = t2;
-    aVFlg(nbsv)  = Standard_False;
+    aVFlg(nbsv)  = false;
     for (i = 2, t1 += dt; i < nbsv; ++i, t1 += dt)
     {
       aVPars(i) = t1;
-      aVFlg(i)  = Standard_False;
+      aVFlg(i)  = false;
     }
   }
   else
   {
-    Standard_Integer nbi = aBS->VDegree();
+    int nbi = aBS->VDegree();
     k                    = 0;
     t1                   = vinf;
     for (i = vi1 + 1; i <= vi2; ++i)
@@ -1307,7 +1308,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       {
         ++k;
         aVPars(k) = t1;
-        aVFlg(k)  = Standard_False;
+        aVFlg(k)  = false;
         t1 += dt;
       } while (++j <= nbi);
       t1 = t2;
@@ -1318,18 +1319,18 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
 
   // Analysis of deflection
 
-  Standard_Real    aDefl2 = std::max(theDefl * theDefl, 1.e-9);
-  Standard_Real    tol    = std::max(0.01 * aDefl2, 1.e-9);
-  Standard_Integer l;
+  double    aDefl2 = std::max(theDefl * theDefl, 1.e-9);
+  double    tol    = std::max(0.01 * aDefl2, 1.e-9);
+  int l;
 
-  anUFlg(1)    = Standard_True;
-  anUFlg(nbsu) = Standard_True;
+  anUFlg(1)    = true;
+  anUFlg(nbsu) = true;
   // myNbSamplesU = 2;
   for (i = 1; i <= nbsv; ++i)
   {
     t1                     = aVPars(i);
     j                      = 1;
-    Standard_Boolean bCont = Standard_True;
+    bool bCont = true;
     while (j < nbsu - 1 && bCont)
     {
 
@@ -1352,30 +1353,30 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
           continue;
 
         gp_Lin           lin(p1, gp_Dir(gp_Vec(p1, p2)));
-        Standard_Boolean ok = Standard_True;
+        bool ok = true;
         for (l = j + 1; l < k; ++l)
         {
 
           if (anUFlg(l))
           {
-            ok = Standard_False;
+            ok = false;
             break;
           }
 
           gp_Pnt        pp = myS->Value(anUPars(l), t1);
-          Standard_Real d  = lin.SquareDistance(pp);
+          double d  = lin.SquareDistance(pp);
 
           if (d <= aDefl2)
             continue;
 
-          ok = Standard_False;
+          ok = false;
           break;
         }
 
         if (!ok)
         {
           j         = k - 1;
-          anUFlg(j) = Standard_True;
+          anUFlg(j) = true;
           //++myNbSamplesU;
           break;
         }
@@ -1388,13 +1389,13 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       }
 
       if (k >= nbsu)
-        bCont = Standard_False;
+        bCont = false;
     }
   }
 
   myNbSamplesU = 0;
   for (i = 1; i <= nbsu; i++)
-    if (anUFlg(i) == Standard_True)
+    if (anUFlg(i) == true)
       myNbSamplesU++;
 
   if (myNbSamplesU < myMinPnts)
@@ -1402,9 +1403,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     if (myNbSamplesU == 2)
     {
       //"uniform" distribution;
-      Standard_Integer nn = nbsu / myMinPnts;
-      anUFlg(1 + nn)      = Standard_True;
-      anUFlg(nbsu - nn)   = Standard_True;
+      int nn = nbsu / myMinPnts;
+      anUFlg(1 + nn)      = true;
+      anUFlg(nbsu - nn)   = true;
     }
     else
     { // myNbSamplesU == 3
@@ -1417,18 +1418,18 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       else
         j = std::max(i / 2, 2);
     }
-    anUFlg(j)    = Standard_True;
+    anUFlg(j)    = true;
     myNbSamplesU = myMinPnts;
   }
 
-  aVFlg(1)    = Standard_True;
-  aVFlg(nbsv) = Standard_True;
+  aVFlg(1)    = true;
+  aVFlg(nbsv) = true;
   // myNbSamplesV = 2;
   for (i = 1; i <= nbsu; ++i)
   {
     t1                     = anUPars(i);
     j                      = 1;
-    Standard_Boolean bCont = Standard_True;
+    bool bCont = true;
     while (j < nbsv - 1 && bCont)
     {
 
@@ -1450,30 +1451,30 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
         // gce_MakeLin MkLin(p1, p2);
         // const gp_Lin& lin = MkLin.Value();
         gp_Lin           lin(p1, gp_Dir(gp_Vec(p1, p2)));
-        Standard_Boolean ok = Standard_True;
+        bool ok = true;
         for (l = j + 1; l < k; ++l)
         {
 
           if (aVFlg(l))
           {
-            ok = Standard_False;
+            ok = false;
             break;
           }
 
           gp_Pnt        pp = myS->Value(t1, aVPars(l));
-          Standard_Real d  = lin.SquareDistance(pp);
+          double d  = lin.SquareDistance(pp);
 
           if (d <= aDefl2)
             continue;
 
-          ok = Standard_False;
+          ok = false;
           break;
         }
 
         if (!ok)
         {
           j        = k - 1;
-          aVFlg(j) = Standard_True;
+          aVFlg(j) = true;
           //++myNbSamplesV;
           break;
         }
@@ -1486,13 +1487,13 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
       }
 
       if (k >= nbsv)
-        bCont = Standard_False;
+        bCont = false;
     }
   }
 
   myNbSamplesV = 0;
   for (i = 1; i <= nbsv; i++)
-    if (aVFlg(i) == Standard_True)
+    if (aVFlg(i) == true)
       myNbSamplesV++;
 
   if (myNbSamplesV < myMinPnts)
@@ -1500,9 +1501,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     if (myNbSamplesV == 2)
     {
       //"uniform" distribution;
-      Standard_Integer nn = nbsv / myMinPnts;
-      aVFlg(1 + nn)       = Standard_True;
-      aVFlg(nbsv - nn)    = Standard_True;
+      int nn = nbsv / myMinPnts;
+      aVFlg(1 + nn)       = true;
+      aVFlg(nbsv - nn)    = true;
       myNbSamplesV        = myMinPnts;
     }
     else
@@ -1517,12 +1518,12 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
         j = std::max(i / 2, 2);
     }
     myNbSamplesV = myMinPnts;
-    aVFlg(j)     = Standard_True;
+    aVFlg(j)     = true;
   }
   //
   // modified by NIZNHY-PKV Fri Dec 16 10:05:01 2011f
   //
-  Standard_Boolean bFlag;
+  bool bFlag;
   //
   // U
   bFlag = (myNbSamplesU < theNUmin);
@@ -1531,7 +1532,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     myNbSamplesU = nbsu;
   }
   //
-  myUPars = new TColStd_HArray1OfReal(1, myNbSamplesU);
+  myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
   //
   for (j = 0, i = 1; i <= nbsu; ++i)
   {
@@ -1556,7 +1557,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
     myNbSamplesV = nbsv;
   }
   //
-  myVPars = new TColStd_HArray1OfReal(1, myNbSamplesV);
+  myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
   //
   for (j = 0, i = 1; i <= nbsv; ++i)
   {
@@ -1575,8 +1576,8 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
   }
   //
   /*
-  myUPars = new TColStd_HArray1OfReal(1, myNbSamplesU);
-  myVPars = new TColStd_HArray1OfReal(1, myNbSamplesV);
+  myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
+  myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
 
   j = 0;
   for(i = 1; i <= nbsu; ++i) {
@@ -1599,13 +1600,13 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real    theDefl,
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_TopolTool::IsUniformSampling() const
+bool Adaptor3d_TopolTool::IsUniformSampling() const
 {
   GeomAbs_SurfaceType typS = myS->GetType();
 
   if (typS == GeomAbs_BSplineSurface)
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=======================================================================
@@ -1613,12 +1614,12 @@ Standard_Boolean Adaptor3d_TopolTool::IsUniformSampling() const
 // purpose  : Computes the cone's apex parameters
 //=======================================================================
 void Adaptor3d_TopolTool::GetConeApexParam(const gp_Cone& theC,
-                                           Standard_Real& theU,
-                                           Standard_Real& theV)
+                                           double& theU,
+                                           double& theV)
 {
   const gp_Ax3& Pos    = theC.Position();
-  Standard_Real Radius = theC.RefRadius();
-  Standard_Real SAngle = theC.SemiAngle();
+  double Radius = theC.RefRadius();
+  double SAngle = theC.SemiAngle();
   const gp_Pnt& P      = theC.Apex();
 
   gp_Trsf T;

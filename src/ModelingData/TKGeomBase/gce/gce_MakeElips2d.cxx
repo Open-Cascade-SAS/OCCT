@@ -31,10 +31,10 @@
 //=========================================================================
 gce_MakeElips2d::gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
-  Standard_Real D1 = S1.Distance(Center);
+  double D1 = S1.Distance(Center);
   gp_Dir2d      XAxis(gp_XY(S1.XY() - Center.XY()));
   gp_Dir2d      YAxis(gp_XY(S2.XY() - Center.XY()));
-  Standard_Real D2 = gp_Lin2d(Center, XAxis).Distance(S2);
+  double D2 = gp_Lin2d(Center, XAxis).Distance(S2);
   if (D1 < D2)
   {
     TheError = gce_InvertAxis;
@@ -51,9 +51,9 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const g
 }
 
 gce_MakeElips2d::gce_MakeElips2d(const gp_Ax2d&         MajorAxis,
-                                 const Standard_Real    MajorRadius,
-                                 const Standard_Real    MinorRadius,
-                                 const Standard_Boolean Sense)
+                                 const double    MajorRadius,
+                                 const double    MinorRadius,
+                                 const bool Sense)
 {
   if (MajorRadius < 0.0)
   {
@@ -71,8 +71,8 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Ax2d&         MajorAxis,
 }
 
 gce_MakeElips2d::gce_MakeElips2d(const gp_Ax22d&     A,
-                                 const Standard_Real MajorRadius,
-                                 const Standard_Real MinorRadius)
+                                 const double MajorRadius,
+                                 const double MinorRadius)
 {
   if (MajorRadius < 0.0)
   {

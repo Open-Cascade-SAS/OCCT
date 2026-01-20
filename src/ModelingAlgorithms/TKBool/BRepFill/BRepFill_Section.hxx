@@ -33,10 +33,10 @@ public:
 
   Standard_EXPORT BRepFill_Section(const TopoDS_Shape&    Profile,
                                    const TopoDS_Vertex&   V,
-                                   const Standard_Boolean WithContact,
-                                   const Standard_Boolean WithCorrection);
+                                   const bool WithContact,
+                                   const bool WithCorrection);
 
-  Standard_EXPORT void Set(const Standard_Boolean IsLaw);
+  Standard_EXPORT void Set(const bool IsLaw);
 
   const TopoDS_Shape& OriginalShape() const;
 
@@ -46,23 +46,22 @@ public:
 
   Standard_EXPORT TopoDS_Shape ModifiedShape(const TopoDS_Shape& theShape) const;
 
-  Standard_Boolean IsLaw() const;
+  bool IsLaw() const;
 
-  Standard_Boolean IsPunctual() const;
+  bool IsPunctual() const;
 
-  Standard_Boolean WithContact() const;
+  bool WithContact() const;
 
-  Standard_Boolean WithCorrection() const;
+  bool WithCorrection() const;
 
-protected:
 private:
   TopoDS_Shape     myOriginalShape;
   TopoDS_Wire      wire;
   TopoDS_Vertex    vertex;
-  Standard_Boolean islaw;
-  Standard_Boolean ispunctual;
-  Standard_Boolean contact;
-  Standard_Boolean correction;
+  bool islaw;
+  bool ispunctual;
+  bool contact;
+  bool correction;
 };
 
 #include <BRepFill_Section.lxx>

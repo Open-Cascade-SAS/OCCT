@@ -24,20 +24,20 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PinNumber, IGESData_IGESEntity)
 
 IGESAppli_PinNumber::IGESAppli_PinNumber() {}
 
-void IGESAppli_PinNumber::Init(const Standard_Integer                  nbPropVal,
-                               const Handle(TCollection_HAsciiString)& aValue)
+void IGESAppli_PinNumber::Init(const int                  nbPropVal,
+                               const occ::handle<TCollection_HAsciiString>& aValue)
 {
   thePinNumber        = aValue;
   theNbPropertyValues = nbPropVal;
   InitTypeAndForm(406, 8);
 }
 
-Standard_Integer IGESAppli_PinNumber::NbPropertyValues() const
+int IGESAppli_PinNumber::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Handle(TCollection_HAsciiString) IGESAppli_PinNumber::PinNumberVal() const
+occ::handle<TCollection_HAsciiString> IGESAppli_PinNumber::PinNumberVal() const
 {
   return thePinNumber;
 }

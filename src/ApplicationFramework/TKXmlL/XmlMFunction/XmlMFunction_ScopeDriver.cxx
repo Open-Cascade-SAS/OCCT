@@ -31,14 +31,14 @@ IMPLEMENT_DOMSTRING(ExtString, "string")
 
 //=================================================================================================
 
-XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMFunction_ScopeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMFunction_ScopeDriver::NewEmpty() const
 {
   return (new TFunction_Scope());
 }
@@ -47,15 +47,15 @@ Handle(TDF_Attribute) XmlMFunction_ScopeDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
+bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
                                                  XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(theTarget);
-  TColStd_ListOfInteger   IDs;
-  TDF_LabelList           Labels;
+  occ::handle<TFunction_Scope> S = occ::down_cast<TFunction_Scope>(theTarget);
+  NCollection_List<int>   IDs;
+  NCollection_List<TDF_Label>           Labels;
 
-  Standard_Integer         aFirstInd, aLastInd, aValue, ind, nbIDs = 0, nbLabels = 0;
+  int         aFirstInd, aLastInd, aValue, ind, nbIDs = 0, nbLabels = 0;
   const XmlObjMgt_Element& anElement = theSource;
 
   // IDs
@@ -71,26 +71,26 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for Scope attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   nbIDs = aLastInd - aFirstInd + 1;
 
   if (aFirstInd == aLastInd)
   {
-    Standard_Integer anInteger;
+    int anInteger;
     if (!XmlObjMgt::GetStringValue(anElement).GetInteger(anInteger))
     {
       TCollection_ExtendedString aMessageString =
         TCollection_ExtendedString("Cannot retrieve integer member"
                                    " for Scope attribute as \"");
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     IDs.Append(anInteger);
   }
   else
   {
-    Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -101,7 +101,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
                                      " for Scope attribute as \"")
           + aValueStr + "\"";
         myMessageDriver->Send(aMessageString, Message_Fail);
-        return Standard_False;
+        return false;
       }
       IDs.Append(aValue);
     }
@@ -119,7 +119,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
       TCollection_ExtendedString("Cannot retrieve the last index"
                                  " for Scope attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   nbLabels = aLastInd - aFirstInd + 1;
 
@@ -128,7 +128,7 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve an array of labels");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   LDOM_Node           aCurNode = anElement.getFirstChild() /*.getNextSibling().getNextSibling()*/;
@@ -144,18 +144,18 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
       continue;
     }
     TCollection_AsciiString anEntry;
-    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
+    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
     {
       TCollection_ExtendedString aMessage =
         TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
       myMessageDriver->Send(aMessage, Message_Fail);
-      return Standard_False;
+      return false;
     }
     // Find label by entry
     TDF_Label tLab; // Null label.
     if (anEntry.Length() > 0)
     {
-      TDF_Tool::Label(S->Label().Data(), anEntry, tLab, Standard_True);
+      TDF_Tool::Label(S->Label().Data(), anEntry, tLab, true);
     }
     Labels.Append(tLab);
     aCurNode    = aCurElement->getNextSibling();
@@ -167,21 +167,21 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   if (aValueStr == NULL)
   {
     myMessageDriver->Send("Cannot retrieve reference string from element", Message_Fail);
-    return Standard_False;
+    return false;
   }
   TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
+  if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == false)
   {
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Cannot retrieve reference from \"") + aValueStr + '\"';
     myMessageDriver->Send(aMessage, Message_Fail);
-    return Standard_False;
+    return false;
   }
   // Find label by entry
   TDF_Label tLab; // Null label.
   if (anEntry.Length() > 0)
   {
-    TDF_Tool::Label(S->Label().Data(), anEntry, tLab, Standard_True);
+    TDF_Tool::Label(S->Label().Data(), anEntry, tLab, true);
   }
   Labels.Append(tLab);
 
@@ -191,13 +191,13 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
     TCollection_ExtendedString aMessage =
       TCollection_ExtendedString("Numbers of IDs & Labels are different");
     myMessageDriver->Send(aMessage, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Set IDs & Labels into the Scope attribute
   int                                 freeID = 0;
-  TColStd_ListIteratorOfListOfInteger itri(IDs);
-  TDF_ListIteratorOfLabelList         itrl(Labels);
+  NCollection_List<int>::Iterator itri(IDs);
+  NCollection_List<TDF_Label>::Iterator         itrl(Labels);
   for (; itri.More(); itri.Next(), itrl.Next())
   {
     int ID = itri.Value();
@@ -208,18 +208,18 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   freeID++;
   S->SetFreeID(freeID);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMFunction_ScopeDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMFunction_ScopeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                      XmlObjMgt_Persistent&        theTarget,
                                      XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TFunction_Scope) S = Handle(TFunction_Scope)::DownCast(theSource);
+  occ::handle<TFunction_Scope> S = occ::down_cast<TFunction_Scope>(theSource);
 
   // IDs
   // ===
@@ -227,16 +227,16 @@ void XmlMFunction_ScopeDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget.Element().setAttribute(::LastIDIndex(), S->GetFunctions().Extent());
 
   TCollection_AsciiString                              aValueStr;
-  TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel itrd(S->GetFunctions());
+  NCollection_DoubleMap<int, TDF_Label>::Iterator itrd(S->GetFunctions());
   for (; itrd.More(); itrd.Next())
   {
-    const Standard_Integer ID = itrd.Key1();
+    const int ID = itrd.Key1();
     aValueStr += TCollection_AsciiString(ID);
     aValueStr += ' ';
   }
   aValueStr += "\n";
 
-  XmlObjMgt::SetStringValue(theTarget, aValueStr.ToCString(), Standard_True);
+  XmlObjMgt::SetStringValue(theTarget, aValueStr.ToCString(), true);
 
   // Labels
   // ======
@@ -256,7 +256,7 @@ void XmlMFunction_ScopeDriver::Paste(const Handle(TDF_Attribute)& theSource,
     XmlObjMgt_DOMString aDOMString;
     XmlObjMgt::SetTagEntryString(aDOMString, anEntry);
     XmlObjMgt_Element aCurTarget = aDoc.createElement(::ExtString());
-    XmlObjMgt::SetStringValue(aCurTarget, aDOMString, Standard_True);
+    XmlObjMgt::SetStringValue(aCurTarget, aDOMString, true);
     anElement.appendChild(aCurTarget);
   }
 }

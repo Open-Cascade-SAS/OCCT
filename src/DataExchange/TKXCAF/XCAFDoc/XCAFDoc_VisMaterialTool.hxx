@@ -15,7 +15,8 @@
 #define _XCAFDoc_VisMaterialTool_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
 
 class TopoDS_Shape;
 class XCAFDoc_ShapeTool;
@@ -39,7 +40,7 @@ class XCAFDoc_VisMaterialTool : public TDF_Attribute
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_VisMaterialTool, TDF_Attribute)
 public:
   //! Creates (if not exist) ColorTool.
-  Standard_EXPORT static Handle(XCAFDoc_VisMaterialTool) Set(const TDF_Label& L);
+  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterialTool> Set(const TDF_Label& L);
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
@@ -51,19 +52,19 @@ public:
   Standard_EXPORT TDF_Label BaseLabel() const { return Label(); }
 
   //! Returns internal XCAFDoc_ShapeTool tool
-  Standard_EXPORT const Handle(XCAFDoc_ShapeTool)& ShapeTool();
+  Standard_EXPORT const occ::handle<XCAFDoc_ShapeTool>& ShapeTool();
 
   //! Returns TRUE if Label belongs to a Material Table.
-  Standard_Boolean IsMaterial(const TDF_Label& theLabel) const
+  bool IsMaterial(const TDF_Label& theLabel) const
   {
     return !GetMaterial(theLabel).IsNull();
   }
 
   //! Returns Material defined by specified Label, or NULL if the label is not in Material Table.
-  Standard_EXPORT static Handle(XCAFDoc_VisMaterial) GetMaterial(const TDF_Label& theMatLabel);
+  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterial> GetMaterial(const TDF_Label& theMatLabel);
 
   //! Adds Material definition to a Material Table and returns its Label.
-  Standard_EXPORT TDF_Label AddMaterial(const Handle(XCAFDoc_VisMaterial)& theMat,
+  Standard_EXPORT TDF_Label AddMaterial(const occ::handle<XCAFDoc_VisMaterial>& theMat,
                                         const TCollection_AsciiString&     theName) const;
 
   //! Adds Material definition to a Material Table and returns its Label.
@@ -73,7 +74,7 @@ public:
   Standard_EXPORT void RemoveMaterial(const TDF_Label& theLabel) const;
 
   //! Returns a sequence of Materials currently stored in the Material Table.
-  Standard_EXPORT void GetMaterials(TDF_LabelSequence& Labels) const;
+  Standard_EXPORT void GetMaterials(NCollection_Sequence<TDF_Label>& Labels) const;
 
   //! Sets new material to the shape.
   Standard_EXPORT void SetShapeMaterial(const TDF_Label& theShapeLabel,
@@ -83,66 +84,64 @@ public:
   Standard_EXPORT void UnSetShapeMaterial(const TDF_Label& theShapeLabel) const;
 
   //! Returns TRUE if label has a material assignment.
-  Standard_EXPORT Standard_Boolean IsSetShapeMaterial(const TDF_Label& theLabel) const;
+  Standard_EXPORT bool IsSetShapeMaterial(const TDF_Label& theLabel) const;
 
   //! Returns label with material assigned to shape label.
   //! @param[in] theShapeLabel  shape label
   //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
-  Standard_EXPORT static Standard_Boolean GetShapeMaterial(const TDF_Label& theShapeLabel,
+  Standard_EXPORT static bool GetShapeMaterial(const TDF_Label& theShapeLabel,
                                                            TDF_Label&       theMaterialLabel);
 
   //! Returns material assigned to the shape label.
-  Standard_EXPORT static Handle(XCAFDoc_VisMaterial) GetShapeMaterial(
+  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterial> GetShapeMaterial(
     const TDF_Label& theShapeLabel);
 
   //! Sets a link with GUID XCAFDoc::VisMaterialRefGUID() from shape label to material label.
   //! @param[in] theShape  shape
   //! @param[in] theMaterialLabel  material label
   //! @return FALSE if cannot find a label for shape
-  Standard_EXPORT Standard_Boolean SetShapeMaterial(const TopoDS_Shape& theShape,
+  Standard_EXPORT bool SetShapeMaterial(const TopoDS_Shape& theShape,
                                                     const TDF_Label&    theMaterialLabel);
 
   //! Removes a link with GUID XCAFDoc::VisMaterialRefGUID() from shape label to material.
   //! @return TRUE if such link existed
-  Standard_EXPORT Standard_Boolean UnSetShapeMaterial(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool UnSetShapeMaterial(const TopoDS_Shape& theShape);
 
   //! Returns TRUE if shape has a material assignment.
-  Standard_EXPORT Standard_Boolean IsSetShapeMaterial(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool IsSetShapeMaterial(const TopoDS_Shape& theShape);
 
   //! Returns label with material assigned to shape.
   //! @param[in] theShape  shape
   //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
-  Standard_EXPORT Standard_Boolean GetShapeMaterial(const TopoDS_Shape& theShape,
+  Standard_EXPORT bool GetShapeMaterial(const TopoDS_Shape& theShape,
                                                     TDF_Label&          theMaterialLabel);
 
   //! Returns material assigned to shape or NULL if not assigned.
-  Standard_EXPORT Handle(XCAFDoc_VisMaterial) GetShapeMaterial(const TopoDS_Shape& theShape);
+  Standard_EXPORT occ::handle<XCAFDoc_VisMaterial> GetShapeMaterial(const TopoDS_Shape& theShape);
 
 public:
   //! Returns GUID of this attribute type.
-  virtual const Standard_GUID& ID() const Standard_OVERRIDE { return GetID(); }
+  virtual const Standard_GUID& ID() const override { return GetID(); }
 
   //! Does nothing.
-  virtual void Restore(const Handle(TDF_Attribute)&) Standard_OVERRIDE {}
+  virtual void Restore(const occ::handle<TDF_Attribute>&) override {}
 
   //! Creates new instance of this tool.
-  virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE
+  virtual occ::handle<TDF_Attribute> NewEmpty() const override
   {
     return new XCAFDoc_VisMaterialTool();
   }
 
   //! Does nothing.
-  virtual void Paste(const Handle(TDF_Attribute)&,
-                     const Handle(TDF_RelocationTable)&) const Standard_OVERRIDE
+  virtual void Paste(const occ::handle<TDF_Attribute>&,
+                     const occ::handle<TDF_RelocationTable>&) const override
   {
   }
 
 private:
-  Handle(XCAFDoc_ShapeTool) myShapeTool;
+  occ::handle<XCAFDoc_ShapeTool> myShapeTool;
 };
-
-DEFINE_STANDARD_HANDLE(XCAFDoc_VisMaterialTool, TDF_Attribute)
 
 #endif // _XCAFDoc_VisMaterialTool_HeaderFile

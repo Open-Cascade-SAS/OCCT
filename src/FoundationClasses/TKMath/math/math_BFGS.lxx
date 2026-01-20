@@ -15,7 +15,7 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline Standard_Boolean math_BFGS::IsDone() const
+inline bool math_BFGS::IsDone() const
 {
   return Done;
 }
@@ -38,7 +38,7 @@ inline void math_BFGS::Location(math_Vector& Loc) const
   Loc = TheLocation;
 }
 
-inline Standard_Real math_BFGS::Minimum() const
+inline double math_BFGS::Minimum() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheMinimum;
@@ -56,7 +56,7 @@ inline void math_BFGS::Gradient(math_Vector& Grad) const
   Grad = TheGradient;
 }
 
-inline Standard_Integer math_BFGS::NbIterations() const
+inline int math_BFGS::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return nbiter;

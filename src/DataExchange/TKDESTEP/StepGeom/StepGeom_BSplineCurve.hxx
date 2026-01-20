@@ -21,15 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
-
-class StepGeom_BSplineCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
 class StepGeom_BSplineCurve : public StepGeom_BoundedCurve
 {
@@ -38,26 +37,26 @@ public:
   //! Returns a BSplineCurve
   Standard_EXPORT StepGeom_BSplineCurve();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Standard_Integer                          aDegree,
-                            const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
                             const StepGeom_BSplineCurveForm                 aCurveForm,
                             const StepData_Logical                          aClosedCurve,
                             const StepData_Logical                          aSelfIntersect);
 
-  Standard_EXPORT void SetDegree(const Standard_Integer aDegree);
+  Standard_EXPORT void SetDegree(const int aDegree);
 
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   Standard_EXPORT void SetControlPointsList(
-    const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList);
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList);
 
-  Standard_EXPORT Handle(StepGeom_HArray1OfCartesianPoint) ControlPointsList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> ControlPointsList() const;
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) ControlPointsListValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ControlPointsListValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbControlPointsList() const;
+  Standard_EXPORT int NbControlPointsList() const;
 
   Standard_EXPORT void SetCurveForm(const StepGeom_BSplineCurveForm aCurveForm);
 
@@ -73,10 +72,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
-protected:
 private:
-  Standard_Integer                         degree;
-  Handle(StepGeom_HArray1OfCartesianPoint) controlPointsList;
+  int                         degree;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> controlPointsList;
   StepGeom_BSplineCurveForm                curveForm;
   StepData_Logical                         closedCurve;
   StepData_Logical                         selfIntersect;

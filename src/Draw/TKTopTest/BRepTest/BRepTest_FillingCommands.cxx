@@ -33,7 +33,9 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <BRepLib.hxx>
 #include <BRep_Builder.hxx>
@@ -54,8 +56,10 @@
 
 #include <Geom_BSplineSurface.hxx>
 
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
 
@@ -73,45 +77,45 @@
   #include <Geom_Line.hxx>
 #endif
 
-const Standard_Integer defDegree      = 3;
-const Standard_Integer defNbPtsOnCur  = 10;
-const Standard_Integer defNbIter      = 3;
-const Standard_Boolean defAnisotropie = Standard_False;
-const Standard_Real    defTol2d       = 0.00001;
-const Standard_Real    defTol3d       = 0.0001;
-const Standard_Real    defTolAng      = 0.01;
-const Standard_Real    defTolCurv     = 0.1;
-const Standard_Integer defMaxDeg      = 8;
-const Standard_Integer defMaxSegments = 9;
+const int defDegree      = 3;
+const int defNbPtsOnCur  = 10;
+const int defNbIter      = 3;
+const bool defAnisotropie = false;
+const double    defTol2d       = 0.00001;
+const double    defTol3d       = 0.0001;
+const double    defTolAng      = 0.01;
+const double    defTolCurv     = 0.1;
+const int defMaxDeg      = 8;
+const int defMaxSegments = 9;
 
-Standard_Integer Degree      = defDegree;
-Standard_Integer NbPtsOnCur  = defNbPtsOnCur;
-Standard_Integer NbIter      = defNbIter;
-Standard_Boolean Anisotropie = defAnisotropie;
-Standard_Real    Tol2d       = defTol2d;
-Standard_Real    Tol3d       = defTol3d;
-Standard_Real    TolAng      = defTolAng;
-Standard_Real    TolCurv     = defTolCurv;
-Standard_Integer MaxDeg      = defMaxDeg;
-Standard_Integer MaxSegments = defMaxSegments;
+int Degree      = defDegree;
+int NbPtsOnCur  = defNbPtsOnCur;
+int NbIter      = defNbIter;
+bool Anisotropie = defAnisotropie;
+double    Tol2d       = defTol2d;
+double    Tol3d       = defTol3d;
+double    TolAng      = defTolAng;
+double    TolCurv     = defTolCurv;
+int MaxDeg      = defMaxDeg;
+int MaxSegments = defMaxSegments;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  commande plate : resultat face sur surface plate
 ////////////////////////////////////////////////////////////////////////////////
 
-static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int plate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 8)
     return 1;
-  Standard_Integer                  NbCurFront = Draw::Atoi(a[3]);
-  Handle(GeomPlate_HArray1OfHCurve) Fronts     = new GeomPlate_HArray1OfHCurve(1, NbCurFront);
-  Handle(TColStd_HArray1OfInteger)  Tang       = new TColStd_HArray1OfInteger(1, NbCurFront);
-  Handle(TColStd_HArray1OfInteger)  NbPtsCur   = new TColStd_HArray1OfInteger(1, NbCurFront);
+  int                  NbCurFront = Draw::Atoi(a[3]);
+  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts     = new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  Tang       = new NCollection_HArray1<int>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  NbPtsCur   = new NCollection_HArray1<int>(1, NbCurFront);
   BRep_Builder                      B;
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= NbCurFront; i++)
   {
     TopoDS_Shape aLocalEdge(DBRep::Get(a[3 * i + 1], TopAbs_EDGE));
@@ -124,21 +128,21 @@ static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const ch
     //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if (F.IsNull())
       return 1;
-    Standard_Integer T = Draw::Atoi(a[3 * i + 3]);
+    int T = Draw::Atoi(a[3 * i + 3]);
     Tang->SetValue(i, T);
     NbPtsCur->SetValue(i, Draw::Atoi(a[2]));
-    Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+    occ::handle<BRepAdaptor_Surface> S = new BRepAdaptor_Surface();
     S->Initialize(F);
-    Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+    occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
     C->Initialize(E, F);
     Adaptor3d_CurveOnSurface         ConS(C, S);
-    Handle(Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
+    occ::handle<Adaptor3d_CurveOnSurface> HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i, HConS);
-    Handle(GeomPlate_CurveConstraint) Cont =
+    occ::handle<GeomPlate_CurveConstraint> Cont =
       new BRepFill_CurveConstraint(HConS, Tang->Value(i), NbPtsCur->Value(i));
     Henri.Add(Cont);
   }
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   Henri.Perform(aProgress->Start());
   if (aProgress->UserBreak())
   {
@@ -146,14 +150,14 @@ static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const ch
     return 0;
   }
 
-  Standard_Real ErrG0 = 1.1 * Henri.G0Error();
+  double ErrG0 = 1.1 * Henri.G0Error();
   // std::cout<<" dist. max = "<<Henri.G0Error()<<" ; angle max = "<<Henri.G1Error()<<std::endl;
   di << " dist. max = " << Henri.G0Error() << " ; angle max = " << Henri.G1Error() << "\n";
 
   BRepBuilderAPI_MakeWire MW;
   for (i = 1; i <= NbCurFront; i++)
   {
-    Standard_Integer iInOrder = Henri.Order()->Value(i);
+    int iInOrder = Henri.Order()->Value(i);
     TopoDS_Edge      E;
     if (Henri.Sense()->Value(iInOrder) == 1)
     {
@@ -178,7 +182,7 @@ static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const ch
     Sprintf(name, "Edge_%d", i);
     DBRep::Set(name, E);
     MW.Add(E);
-    if (MW.IsDone() == Standard_False)
+    if (MW.IsDone() == false)
     {
       throw Standard_Failure("mkWire is over ");
     }
@@ -187,7 +191,7 @@ static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const ch
   W = MW.Wire();
   if (!(W.Closed()))
     throw Standard_Failure("Wire is not closed");
-  BRepBuilderAPI_MakeFace MF(Henri.Surface(), W, Standard_True);
+  BRepBuilderAPI_MakeFace MF(Henri.Surface(), W, true);
   DBRep::Set(a[1], MF.Face());
   return 0;
 }
@@ -196,17 +200,17 @@ static Standard_Integer plate(Draw_Interpretor& di, Standard_Integer n, const ch
 //  commande gplate : resultat face egale a la surface approchee
 ////////////////////////////////////////////////////////////////////////////////
 
-static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int gplate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
     return 1;
-  Standard_Integer NbCurFront = Draw::Atoi(a[2]), NbPointConstraint = Draw::Atoi(a[3]);
+  int NbCurFront = Draw::Atoi(a[2]), NbPointConstraint = Draw::Atoi(a[3]);
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
 
-  Standard_Integer i;
-  Standard_Integer Conti;
-  Standard_Integer Indice = 4;
+  int i;
+  int Conti;
+  int Indice = 4;
   // Surface d'init
   TopoDS_Shape aLocalFace(DBRep::Get(a[Indice++], TopAbs_FACE));
   TopoDS_Face  SI = TopoDS::Face(aLocalFace);
@@ -215,7 +219,7 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
     Indice--;
   else
   {
-    Handle(BRepAdaptor_Surface) HSI = new BRepAdaptor_Surface();
+    occ::handle<BRepAdaptor_Surface> HSI = new BRepAdaptor_Surface();
     HSI->Initialize(SI);
     Henri.LoadInitSurface(BRep_Tool::Surface(HSI->Face()));
   }
@@ -229,10 +233,10 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
     Conti = Draw::Atoi(a[Indice++]);
     if ((Conti == 0) || (Conti == -1))
     {
-      Handle(BRepAdaptor_Curve) C = new BRepAdaptor_Curve();
+      occ::handle<BRepAdaptor_Curve> C = new BRepAdaptor_Curve();
       C->Initialize(E);
-      const Handle(Adaptor3d_Curve)&    aC   = C; // to avoid ambiguity
-      Handle(GeomPlate_CurveConstraint) Cont = new BRepFill_CurveConstraint(aC, Conti);
+      const occ::handle<Adaptor3d_Curve>&    aC   = C; // to avoid ambiguity
+      occ::handle<GeomPlate_CurveConstraint> Cont = new BRepFill_CurveConstraint(aC, Conti);
       Henri.Add(Cont);
     }
     else
@@ -242,13 +246,13 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
       //	TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
       if (F.IsNull())
         return 1;
-      Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+      occ::handle<BRepAdaptor_Surface> S = new BRepAdaptor_Surface();
       S->Initialize(F);
-      Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+      occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
       C->Initialize(E, F);
       Adaptor3d_CurveOnSurface          ConS(C, S);
-      Handle(Adaptor3d_CurveOnSurface)  HConS = new Adaptor3d_CurveOnSurface(ConS);
-      Handle(GeomPlate_CurveConstraint) Cont  = new BRepFill_CurveConstraint(HConS, Conti);
+      occ::handle<Adaptor3d_CurveOnSurface>  HConS = new Adaptor3d_CurveOnSurface(ConS);
+      occ::handle<GeomPlate_CurveConstraint> Cont  = new BRepFill_CurveConstraint(HConS, Conti);
       Henri.Add(Cont);
     }
   }
@@ -262,13 +266,13 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
     if (DrawTrSurf::GetPoint(a[Indice], P1))
     {
       Conti                                   = 0;
-      Handle(GeomPlate_PointConstraint) PCont = new GeomPlate_PointConstraint(P1, 0);
+      occ::handle<GeomPlate_PointConstraint> PCont = new GeomPlate_PointConstraint(P1, 0);
       Henri.Add(PCont);
       Indice++;
     }
     else
     {
-      Standard_Real u = Draw::Atof(a[Indice++]), v = Draw::Atof(a[Indice++]);
+      double u = Draw::Atof(a[Indice++]), v = Draw::Atof(a[Indice++]);
 
       Conti         = Draw::Atoi(a[Indice++]);
       aLocalFace    = DBRep::Get(a[Indice++], TopAbs_FACE);
@@ -276,9 +280,9 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
       //	  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
       if (F.IsNull())
         return 1;
-      Handle(BRepAdaptor_Surface) HF = new BRepAdaptor_Surface();
+      occ::handle<BRepAdaptor_Surface> HF = new BRepAdaptor_Surface();
       HF->Initialize(F);
-      Handle(GeomPlate_PointConstraint) PCont =
+      occ::handle<GeomPlate_PointConstraint> PCont =
         new GeomPlate_PointConstraint(u,
                                       v,
                                       BRep_Tool::Surface(HF->Face()),
@@ -289,20 +293,20 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
       Henri.Add(PCont);
     }
   }
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   Henri.Perform(aProgress->Start());
   if (aProgress->UserBreak())
   {
     di << "Error: UserBreak\n";
     return 0;
   }
-  Standard_Integer nbcarreau = 9;
-  Standard_Integer degmax    = 8;
-  Standard_Real    seuil;
+  int nbcarreau = 9;
+  int degmax    = 8;
+  double    seuil;
 
-  Handle(GeomPlate_Surface) gpPlate = Henri.Surface();
-  TColgp_SequenceOfXY       S2d;
-  TColgp_SequenceOfXYZ      S3d;
+  occ::handle<GeomPlate_Surface> gpPlate = Henri.Surface();
+  NCollection_Sequence<gp_XY>       S2d;
+  NCollection_Sequence<gp_XYZ>      S3d;
   S2d.Clear();
   S3d.Clear();
   Henri.Disc2dContour(4, S2d);
@@ -310,9 +314,9 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
   seuil = std::max(0.0001, 10 * Henri.G0Error());
   GeomPlate_PlateG0Criterion critere(S2d, S3d, seuil);
   GeomPlate_MakeApprox       Mapp(gpPlate, critere, 0.0001, nbcarreau, degmax);
-  Handle(Geom_Surface)       Surf(Mapp.Surface());
+  occ::handle<Geom_Surface>       Surf(Mapp.Surface());
 
-  Standard_Real Umin, Umax, Vmin, Vmax;
+  double Umin, Umax, Vmin, Vmax;
 
   Henri.Surface()->Bounds(Umin, Umax, Vmin, Vmax);
 
@@ -326,19 +330,19 @@ static Standard_Integer gplate(Draw_Interpretor& di, Standard_Integer n, const c
 //  commande approxplate : resultat face sur surface approchee
 ////////////////////////////////////////////////////////////////////////////////
 
-static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int approxplate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 9)
     return 1;
-  Standard_Integer                  NbMedium   = Draw::Atoi(a[2]);
-  Standard_Integer                  NbCurFront = Draw::Atoi(a[3]);
-  Handle(GeomPlate_HArray1OfHCurve) Fronts     = new GeomPlate_HArray1OfHCurve(1, NbCurFront);
-  Handle(TColStd_HArray1OfInteger)  Tang       = new TColStd_HArray1OfInteger(1, NbCurFront);
-  Handle(TColStd_HArray1OfInteger)  NbPtsCur   = new TColStd_HArray1OfInteger(1, NbCurFront);
+  int                  NbMedium   = Draw::Atoi(a[2]);
+  int                  NbCurFront = Draw::Atoi(a[3]);
+  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts     = new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  Tang       = new NCollection_HArray1<int>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  NbPtsCur   = new NCollection_HArray1<int>(1, NbCurFront);
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= NbCurFront; i++)
   {
     TopoDS_Shape aLocalShape(DBRep::Get(a[3 * i + 1], TopAbs_EDGE));
@@ -351,22 +355,22 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
     //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if (F.IsNull())
       return 1;
-    Standard_Integer T = Draw::Atoi(a[3 * i + 3]);
+    int T = Draw::Atoi(a[3 * i + 3]);
     Tang->SetValue(i, T);
     NbPtsCur->SetValue(i, NbMedium);
-    Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+    occ::handle<BRepAdaptor_Surface> S = new BRepAdaptor_Surface();
     S->Initialize(F);
-    Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+    occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
     C->Initialize(E, F);
     Adaptor3d_CurveOnSurface         ConS(C, S);
-    Handle(Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
+    occ::handle<Adaptor3d_CurveOnSurface> HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i, HConS);
-    Handle(GeomPlate_CurveConstraint) Cont =
+    occ::handle<GeomPlate_CurveConstraint> Cont =
       new BRepFill_CurveConstraint(HConS, Tang->Value(i), NbPtsCur->Value(i));
     Henri.Add(Cont);
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   Henri.Perform(aProgress->Start());
   if (aProgress->UserBreak())
   {
@@ -374,16 +378,16 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
     return 0;
   }
 
-  Standard_Real dmax = Henri.G0Error(), anmax = Henri.G1Error();
+  double dmax = Henri.G0Error(), anmax = Henri.G1Error();
   // std::cout<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<std::endl;
   di << " dist. max = " << dmax << " ; angle max = " << anmax << "\n";
 
   Tol3d                                 = Draw::Atof(a[3 * NbCurFront + 4]);
-  Standard_Integer            Nbmax     = Draw::Atoi(a[3 * NbCurFront + 5]);
-  Standard_Integer            degmax    = Draw::Atoi(a[3 * NbCurFront + 6]);
-  Standard_Integer            CritOrder = Draw::Atoi(a[3 * NbCurFront + 7]);
-  Handle(GeomPlate_Surface)   surf      = Henri.Surface();
-  Handle(Geom_BSplineSurface) support;
+  int            Nbmax     = Draw::Atoi(a[3 * NbCurFront + 5]);
+  int            degmax    = Draw::Atoi(a[3 * NbCurFront + 6]);
+  int            CritOrder = Draw::Atoi(a[3 * NbCurFront + 7]);
+  occ::handle<GeomPlate_Surface>   surf      = Henri.Surface();
+  occ::handle<Geom_BSplineSurface> support;
 
   if (CritOrder == -1)
   {
@@ -392,11 +396,11 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
   }
   else if (CritOrder >= 0)
   {
-    TColgp_SequenceOfXY  S2d;
-    TColgp_SequenceOfXYZ S3d;
+    NCollection_Sequence<gp_XY>  S2d;
+    NCollection_Sequence<gp_XYZ> S3d;
     S2d.Clear();
     S3d.Clear();
-    Standard_Real seuil;
+    double seuil;
     if (CritOrder == 0)
     {
       Henri.Disc2dContour(4, S2d);
@@ -421,7 +425,7 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
   BRep_Builder            B;
   for (i = 1; i <= NbCurFront; i++)
   {
-    Standard_Integer iInOrder = Henri.Order()->Value(i);
+    int iInOrder = Henri.Order()->Value(i);
     TopoDS_Edge      E;
     if (Henri.Sense()->Value(iInOrder) == 1)
     {
@@ -443,7 +447,7 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
     B.UpdateVertex(TopExp::LastVertex(E), dmax);
     BRepLib::BuildCurve3d(E);
     MW.Add(E);
-    if (MW.IsDone() == Standard_False)
+    if (MW.IsDone() == false)
     {
       throw Standard_Failure("mkWire is over ");
     }
@@ -452,13 +456,13 @@ static Standard_Integer approxplate(Draw_Interpretor& di, Standard_Integer n, co
   W = MW.Wire();
   if (!(W.Closed()))
     throw Standard_Failure("Wire is not closed");
-  BRepBuilderAPI_MakeFace MF(support, W, Standard_True);
+  BRepBuilderAPI_MakeFace MF(support, W, true);
   DBRep::Set(a[1], MF.Face());
 
   return 0;
 }
 
-static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int filling(Draw_Interpretor& di, int n, const char** a)
 {
 #ifdef OCCT_DEBUG
   // Chronometrage
@@ -473,9 +477,9 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
     return 1;
   }
 
-  Standard_Integer NbBounds      = Draw::Atoi(a[2]);
-  Standard_Integer NbConstraints = Draw::Atoi(a[3]);
-  Standard_Integer NbPoints      = Draw::Atoi(a[4]);
+  int NbBounds      = Draw::Atoi(a[2]);
+  int NbConstraints = Draw::Atoi(a[3]);
+  int NbPoints      = Draw::Atoi(a[4]);
 
   BRepOffsetAPI_MakeFilling MakeFilling(Degree,
                                         NbPtsOnCur,
@@ -491,12 +495,12 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
   if (!InitFace.IsNull())
     MakeFilling.LoadInitSurface(InitFace);
 
-  Standard_Integer     i = (InitFace.IsNull()) ? 5 : 6, k;
+  int     i = (InitFace.IsNull()) ? 5 : 6, k;
   TopoDS_Edge          E;
   TopoDS_Face          F;
   gp_Pnt               Point;
-  Standard_Integer     Order;
-  TopTools_ListOfShape ListForHistory;
+  int     Order;
+  NCollection_List<TopoDS_Shape> ListForHistory;
   for (k = 1; k <= NbBounds; k++)
   {
     E.Nullify();
@@ -546,9 +550,9 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
     Order = Draw::Atoi(a[i++]);
 
     if (F.IsNull())
-      MakeFilling.Add(E, (GeomAbs_Shape)Order, Standard_False);
+      MakeFilling.Add(E, (GeomAbs_Shape)Order, false);
     else
-      MakeFilling.Add(E, F, (GeomAbs_Shape)Order, Standard_False);
+      MakeFilling.Add(E, F, (GeomAbs_Shape)Order, false);
   }
   for (k = 1; k <= NbPoints; k++)
   {
@@ -559,7 +563,7 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
     }
     else
     {
-      Standard_Real U = Draw::Atof(a[i++]), V = Draw::Atof(a[i++]);
+      double U = Draw::Atof(a[i++]), V = Draw::Atof(a[i++]);
       F = TopoDS::Face(DBRep::Get(a[i++], TopAbs_FACE));
       if (F.IsNull())
       {
@@ -579,7 +583,7 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
     return 0;
   }
 
-  Standard_Real dmax = MakeFilling.G0Error(), angmax = MakeFilling.G1Error(),
+  double dmax = MakeFilling.G0Error(), angmax = MakeFilling.G1Error(),
                 curvmax = MakeFilling.G2Error();
   di << " dist. max = " << dmax << " ; angle max = " << angmax << " ; diffcurv max = " << curvmax
      << "\n";
@@ -589,7 +593,7 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
 
 #ifdef OCCT_DEBUG
   Chrono.Stop();
-  Standard_Real Tps;
+  double Tps;
   Chrono.Show(Tps);
   di << "*** FIN DE FILLING ***\n";
   di << "Temps de calcul  : " << Tps << "\n";
@@ -602,7 +606,7 @@ static Standard_Integer filling(Draw_Interpretor& di, Standard_Integer n, const 
   return 0;
 }
 
-static Standard_Integer fillingparam(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int fillingparam(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 1)
   {
@@ -644,7 +648,7 @@ static Standard_Integer fillingparam(Draw_Interpretor& di, Standard_Integer n, c
       di << "Degree = " << Degree << "\n";
       di << "NbPtsOnCur = " << NbPtsOnCur << "\n";
       di << "NbIter = " << NbIter << "\n";
-      di << "Anisotropie = " << (Standard_Integer)Anisotropie << "\n\n";
+      di << "Anisotropie = " << (int)Anisotropie << "\n\n";
 
       di << "Tol2d = " << Tol2d << "\n";
       di << "Tol3d = " << Tol3d << "\n";
@@ -700,10 +704,10 @@ static Standard_Integer fillingparam(Draw_Interpretor& di, Standard_Integer n, c
 
 void BRepTest::FillingCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
   GeometryTest::SurfaceCommands(theCommands);

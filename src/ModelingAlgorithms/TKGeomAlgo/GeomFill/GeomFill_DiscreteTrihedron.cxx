@@ -18,33 +18,36 @@
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomFill_Frenet.hxx>
-#include <GeomFill_HSequenceOfAx2.hxx>
+#include <gp_Ax2.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DiscreteTrihedron, GeomFill_TrihedronLaw)
 
-static const Standard_Real TolConf = Precision::Confusion();
+static const double TolConf = Precision::Confusion();
 
 //=================================================================================================
 
 GeomFill_DiscreteTrihedron::GeomFill_DiscreteTrihedron()
-    : myUseFrenet(Standard_False)
+    : myUseFrenet(false)
 {
   myFrenet     = new GeomFill_Frenet();
-  myKnots      = new TColStd_HSequenceOfReal();
-  myTrihedrons = new GeomFill_HSequenceOfAx2();
+  myKnots      = new NCollection_HSequence<double>();
+  myTrihedrons = new NCollection_HSequence<gp_Ax2>();
 }
 
 //=================================================================================================
 
-Handle(GeomFill_TrihedronLaw) GeomFill_DiscreteTrihedron::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_DiscreteTrihedron::Copy() const
 {
-  Handle(GeomFill_DiscreteTrihedron) copy = new (GeomFill_DiscreteTrihedron)();
+  occ::handle<GeomFill_DiscreteTrihedron> copy = new (GeomFill_DiscreteTrihedron)();
   if (!myCurve.IsNull())
     copy->SetCurve(myCurve);
   return copy;
@@ -52,7 +55,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_DiscreteTrihedron::Copy() const
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_DiscreteTrihedron::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   GeomFill_TrihedronLaw::SetCurve(C);
   if (!C.IsNull())
@@ -67,12 +70,12 @@ Standard_Boolean GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Cur
       case GeomAbs_Parabola:
       case GeomAbs_Line: {
         // No problem
-        myUseFrenet = Standard_True;
+        myUseFrenet = true;
         myFrenet->SetCurve(C);
         break;
       }
       default: {
-        myUseFrenet = Standard_False;
+        myUseFrenet = false;
         // We have to fill <myKnots> and <myTrihedrons>
         Init();
         break;
@@ -86,20 +89,20 @@ Standard_Boolean GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Cur
 
 void GeomFill_DiscreteTrihedron::Init()
 {
-  Standard_Integer     NbIntervals = myTrimmed->NbIntervals(GeomAbs_CN);
-  TColStd_Array1OfReal Knots(1, NbIntervals + 1);
+  int     NbIntervals = myTrimmed->NbIntervals(GeomAbs_CN);
+  NCollection_Array1<double> Knots(1, NbIntervals + 1);
   myTrimmed->Intervals(Knots, GeomAbs_CN);
 
-  // Standard_Real Tol = Precision::Confusion();
-  Standard_Integer NbSamples = 10;
+  // double Tol = Precision::Confusion();
+  int NbSamples = 10;
 
-  Standard_Integer i, j;
+  int i, j;
   for (i = 1; i <= NbIntervals; i++)
   {
-    Standard_Real delta = (Knots(i + 1) - Knots(i)) / NbSamples;
+    double delta = (Knots(i + 1) - Knots(i)) / NbSamples;
     for (j = 0; j < NbSamples; j++)
     {
-      Standard_Real Param = Knots(i) + j * delta;
+      double Param = Knots(i) + j * delta;
       myKnots->Append(Param);
     }
   }
@@ -108,15 +111,15 @@ void GeomFill_DiscreteTrihedron::Init()
   gp_Pnt        Origin(0., 0., 0.), Pnt, SubPnt;
   gp_Vec        Tangent;
   gp_Dir        TangDir;
-  Standard_Real norm;
+  double norm;
   for (i = 1; i <= myKnots->Length(); i++)
   {
-    Standard_Real Param = myKnots->Value(i);
+    double Param = myKnots->Value(i);
     myTrimmed->D1(Param, Pnt, Tangent);
     norm = Tangent.Magnitude();
     if (norm < TolConf)
     {
-      Standard_Real subdelta = (myKnots->Value(i + 1) - myKnots->Value(i)) / NbSamples;
+      double subdelta = (myKnots->Value(i + 1) - myKnots->Value(i)) / NbSamples;
       if (subdelta < Precision::PConfusion())
         subdelta = myKnots->Value(i + 1) - myKnots->Value(i);
       SubPnt = myTrimmed->Value(Param + subdelta);
@@ -137,12 +140,12 @@ void GeomFill_DiscreteTrihedron::Init()
       gp_Vec AxisOfRotation = LastTangent ^ Tangent;
       if (AxisOfRotation.Magnitude() <= gp::Resolution()) // tangents are equal or opposite
       {
-        Standard_Real ScalarProduct = LastTangent * Tangent;
+        double ScalarProduct = LastTangent * Tangent;
         if (ScalarProduct > 0.) // tangents are equal
           myTrihedrons->Append(LastAxis);
         else // tangents are opposite
         {
-          Standard_Real NewParam = (myKnots->Value(i - 1) + myKnots->Value(i)) / 2.;
+          double NewParam = (myKnots->Value(i - 1) + myKnots->Value(i)) / 2.;
           if (NewParam - myKnots->Value(i - 1) < gp::Resolution())
             throw Standard_ConstructionError(
               "GeomFill_DiscreteTrihedron : impassable singularities on path curve");
@@ -152,7 +155,7 @@ void GeomFill_DiscreteTrihedron::Init()
       }
       else // good value of angle
       {
-        Standard_Real theAngle = LastTangent.AngleWithRef(Tangent, AxisOfRotation);
+        double theAngle = LastTangent.AngleWithRef(Tangent, AxisOfRotation);
         gp_Ax1        theAxisOfRotation(Origin, AxisOfRotation);
         gp_Ax2        NewAxis = LastAxis.Rotated(theAxisOfRotation, theAngle);
         NewAxis.SetDirection(TangDir); // to prevent accumulation of floating computations error
@@ -164,7 +167,7 @@ void GeomFill_DiscreteTrihedron::Init()
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
+bool GeomFill_DiscreteTrihedron::D0(const double Param,
                                                 gp_Vec&             Tangent,
                                                 gp_Vec&             Normal,
                                                 gp_Vec&             BiNormal)
@@ -176,17 +179,17 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
   else
   {
     // Locate <Param> in the sequence <myKnots>
-    Standard_Integer        Index  = -1;
-    constexpr Standard_Real TolPar = Precision::PConfusion();
-    // Standard_Real TolConf = Precision::Confusion();
-    Standard_Integer NbSamples = 10;
+    int        Index  = -1;
+    constexpr double TolPar = Precision::PConfusion();
+    // double TolConf = Precision::Confusion();
+    int NbSamples = 10;
     gp_Pnt           Origin(0., 0., 0.);
 
-    Standard_Integer i;
+    int i;
     // gp_Ax2 PrevAxis;
-    // Standard_Real PrevParam;
+    // double PrevParam;
 
-    Standard_Integer I1, I2;
+    int I1, I2;
     I1 = 1;
     I2 = myKnots->Length();
     for (;;)
@@ -203,7 +206,7 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
     if (std::abs(Param - myKnots->Value(I2)) < TolPar)
       Index = I2;
 
-    Standard_Real PrevParam = myKnots->Value(Index);
+    double PrevParam = myKnots->Value(Index);
     gp_Ax2        PrevAxis  = myTrihedrons->Value(Index);
     gp_Ax2        theAxis;
     if (std::abs(Param - PrevParam) < TolPar)
@@ -211,10 +214,10 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
     else //<Param> is between knots
     {
       myTrimmed->D1(Param, myPoint, Tangent);
-      Standard_Real norm = Tangent.Magnitude();
+      double norm = Tangent.Magnitude();
       if (norm < TolConf)
       {
-        Standard_Real subdelta = (myKnots->Value(Index + 1) - Param) / NbSamples;
+        double subdelta = (myKnots->Value(Index + 1) - Param) / NbSamples;
         if (subdelta < Precision::PConfusion())
           subdelta = myKnots->Value(Index + 1) - Param;
         gp_Pnt SubPnt = myTrimmed->Value(Param + subdelta);
@@ -232,7 +235,7 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
       }
       else // good value of angle
       {
-        Standard_Real theAngle = PrevTangent.AngleWithRef(Tangent, AxisOfRotation);
+        double theAngle = PrevTangent.AngleWithRef(Tangent, AxisOfRotation);
         gp_Ax1        theAxisOfRotation(Origin, AxisOfRotation);
         theAxis = PrevAxis.Rotated(theAxisOfRotation, theAngle);
       }
@@ -243,12 +246,12 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D0(const Standard_Real Param,
     Normal   = theAxis.XDirection();
     BiNormal = theAxis.YDirection();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::D1(const Standard_Real Param,
+bool GeomFill_DiscreteTrihedron::D1(const double Param,
                                                 gp_Vec&             Tangent,
                                                 gp_Vec&             DTangent,
                                                 gp_Vec&             Normal,
@@ -268,12 +271,12 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D1(const Standard_Real Param,
     DNormal.SetCoord(0., 0., 0.);
     DBiNormal.SetCoord(0., 0., 0.);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::D2(const Standard_Real Param,
+bool GeomFill_DiscreteTrihedron::D2(const double Param,
                                                 gp_Vec&             Tangent,
                                                 gp_Vec&             DTangent,
                                                 gp_Vec&             D2Tangent,
@@ -308,33 +311,33 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D2(const Standard_Real Param,
     D2Normal.SetCoord(0., 0., 0.);
     D2BiNormal.SetCoord(0., 0., 0.);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_DiscreteTrihedron::NbIntervals(const GeomAbs_Shape) const
+int GeomFill_DiscreteTrihedron::NbIntervals(const GeomAbs_Shape) const
 {
   return (myTrimmed->NbIntervals(GeomAbs_CN));
 }
 
 //=================================================================================================
 
-void GeomFill_DiscreteTrihedron::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape) const
+void GeomFill_DiscreteTrihedron::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape) const
 {
   myTrimmed->Intervals(T, GeomAbs_CN);
 }
 
 void GeomFill_DiscreteTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  Standard_Integer Num = 20; // order of digitalization
+  int Num = 20; // order of digitalization
   gp_Vec           T, N, BN;
   ATangent           = gp_Vec(0, 0, 0);
   ANormal            = gp_Vec(0, 0, 0);
   ABiNormal          = gp_Vec(0, 0, 0);
-  Standard_Real Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
-  Standard_Real Param;
-  for (Standard_Integer i = 0; i <= Num; i++)
+  double Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
+  double Param;
+  for (int i = 0; i <= Num; i++)
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
@@ -354,14 +357,14 @@ void GeomFill_DiscreteTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::IsConstant() const
+bool GeomFill_DiscreteTrihedron::IsConstant() const
 {
   return (myCurve->GetType() == GeomAbs_Line);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_DiscreteTrihedron::IsOnlyBy3dCurve() const
+bool GeomFill_DiscreteTrihedron::IsOnlyBy3dCurve() const
 {
-  return Standard_True;
+  return true;
 }

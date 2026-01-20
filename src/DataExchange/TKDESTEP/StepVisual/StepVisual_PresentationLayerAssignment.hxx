@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepVisual_HArray1OfLayeredItem.hxx>
+#include <StepVisual_LayeredItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_LayeredItem;
-
-class StepVisual_PresentationLayerAssignment;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationLayerAssignment, Standard_Transient)
 
 class StepVisual_PresentationLayerAssignment : public Standard_Transient
 {
@@ -36,34 +35,33 @@ public:
   //! Returns a PresentationLayerAssignment
   Standard_EXPORT StepVisual_PresentationLayerAssignment();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aName,
-                            const Handle(TCollection_HAsciiString)&        aDescription,
-                            const Handle(StepVisual_HArray1OfLayeredItem)& aAssignedItems);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aName,
+                            const occ::handle<TCollection_HAsciiString>&        aDescription,
+                            const occ::handle<NCollection_HArray1<StepVisual_LayeredItem>>& aAssignedItems);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   Standard_EXPORT void SetAssignedItems(
-    const Handle(StepVisual_HArray1OfLayeredItem)& aAssignedItems);
+    const occ::handle<NCollection_HArray1<StepVisual_LayeredItem>>& aAssignedItems);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfLayeredItem) AssignedItems() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> AssignedItems() const;
 
-  Standard_EXPORT StepVisual_LayeredItem AssignedItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT StepVisual_LayeredItem AssignedItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbAssignedItems() const;
+  Standard_EXPORT int NbAssignedItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)        name;
-  Handle(TCollection_HAsciiString)        description;
-  Handle(StepVisual_HArray1OfLayeredItem) assignedItems;
+  occ::handle<TCollection_HAsciiString>        name;
+  occ::handle<TCollection_HAsciiString>        description;
+  occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> assignedItems;
 };
 
 #endif // _StepVisual_PresentationLayerAssignment_HeaderFile

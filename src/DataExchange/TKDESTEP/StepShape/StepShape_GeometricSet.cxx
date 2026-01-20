@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentat
 
 StepShape_GeometricSet::StepShape_GeometricSet() {}
 
-void StepShape_GeometricSet::Init(const Handle(TCollection_HAsciiString)&              aName,
-                                  const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
+void StepShape_GeometricSet::Init(const occ::handle<TCollection_HAsciiString>&              aName,
+                                  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
 {
   // --- classe own fields ---
   elements = aElements;
@@ -29,22 +29,22 @@ void StepShape_GeometricSet::Init(const Handle(TCollection_HAsciiString)&       
 }
 
 void StepShape_GeometricSet::SetElements(
-  const Handle(StepShape_HArray1OfGeometricSetSelect)& aElements)
+  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
 {
   elements = aElements;
 }
 
-Handle(StepShape_HArray1OfGeometricSetSelect) StepShape_GeometricSet::Elements() const
+occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> StepShape_GeometricSet::Elements() const
 {
   return elements;
 }
 
-StepShape_GeometricSetSelect StepShape_GeometricSet::ElementsValue(const Standard_Integer num) const
+StepShape_GeometricSetSelect StepShape_GeometricSet::ElementsValue(const int num) const
 {
   return elements->Value(num);
 }
 
-Standard_Integer StepShape_GeometricSet::NbElements() const
+int StepShape_GeometricSet::NbElements() const
 {
   if (elements.IsNull())
     return 0;

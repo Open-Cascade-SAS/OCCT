@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriver, Standard_Transient)
 
 //=================================================================================================
 
-BinMDF_ADriver::BinMDF_ADriver(const Handle(Message_Messenger)& theMsgDriver,
-                               const Standard_CString           theName)
+BinMDF_ADriver::BinMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDriver,
+                               const char* const           theName)
     : myMessageDriver(theMsgDriver)
 {
   if (theName)
@@ -29,7 +29,7 @@ BinMDF_ADriver::BinMDF_ADriver(const Handle(Message_Messenger)& theMsgDriver,
 
 //=================================================================================================
 
-const Handle(Standard_Type)& BinMDF_ADriver::SourceType() const
+const occ::handle<Standard_Type>& BinMDF_ADriver::SourceType() const
 {
   return NewEmpty()->DynamicType();
 }

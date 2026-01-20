@@ -21,13 +21,13 @@
 
 RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath() {}
 
-void RWStepShape_RWLoopAndPath::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num0,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_LoopAndPath)&   ent) const
+void RWStepShape_RWLoopAndPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num0,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepShape_LoopAndPath>&   ent) const
 {
 
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of plex component Loop ---
 
@@ -43,16 +43,16 @@ void RWStepShape_RWLoopAndPath::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- field : edgeList ---
 
-  Handle(StepShape_HArray1OfOrientedEdge) aEdgeList;
-  Handle(StepShape_OrientedEdge)          anent1;
-  Standard_Integer                        nsub1;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> aEdgeList;
+  occ::handle<StepShape_OrientedEdge>          anent1;
+  int                        nsub1;
   if (data->ReadSubList(num, 1, "edge_list", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aEdgeList            = new StepShape_HArray1OfOrientedEdge(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    aEdgeList            = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1,
                            i1,
                            "oriented_edge",
@@ -72,8 +72,8 @@ void RWStepShape_RWLoopAndPath::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   num = data->NextForComplex(num);
@@ -89,7 +89,7 @@ void RWStepShape_RWLoopAndPath::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepShape_RWLoopAndPath::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_LoopAndPath)& ent) const
+                                          const occ::handle<StepShape_LoopAndPath>& ent) const
 {
 
   // --- Instance of plex component Loop ---
@@ -102,7 +102,7 @@ void RWStepShape_RWLoopAndPath::WriteStep(StepData_StepWriter&                 S
   // --- field : edgeList ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbEdgeList(); i1++)
+  for (int i1 = 1; i1 <= ent->NbEdgeList(); i1++)
   {
     SW.Send(ent->EdgeListValue(i1));
   }
@@ -120,12 +120,12 @@ void RWStepShape_RWLoopAndPath::WriteStep(StepData_StepWriter&                 S
   SW.StartEntity("TOPOLOGICAL_REPRESENTATION_ITEM");
 }
 
-void RWStepShape_RWLoopAndPath::Share(const Handle(StepShape_LoopAndPath)& ent,
+void RWStepShape_RWLoopAndPath::Share(const occ::handle<StepShape_LoopAndPath>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbEdgeList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbEdgeList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->EdgeListValue(is1));
   }

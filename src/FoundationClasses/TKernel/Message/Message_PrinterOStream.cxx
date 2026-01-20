@@ -35,8 +35,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream, Message_Printer)
 //=======================================================================
 Message_PrinterOStream::Message_PrinterOStream(const Message_Gravity theTraceLevel)
     : myStream(&std::cout),
-      myIsFile(Standard_False),
-      myToColorize(Standard_True)
+      myIsFile(false),
+      myToColorize(true)
 {
   myTraceLevel = theTraceLevel;
 }
@@ -46,12 +46,12 @@ Message_PrinterOStream::Message_PrinterOStream(const Message_Gravity theTraceLev
 // purpose  : Opening a file as an std::ostream
 //           for specific file names standard streams are created
 //=======================================================================
-Message_PrinterOStream::Message_PrinterOStream(const Standard_CString theFileName,
-                                               const Standard_Boolean theToAppend,
+Message_PrinterOStream::Message_PrinterOStream(const char* const theFileName,
+                                               const bool theToAppend,
                                                const Message_Gravity  theTraceLevel)
     : myStream(&std::cout),
-      myIsFile(Standard_False),
-      myToColorize(Standard_True)
+      myIsFile(false),
+      myToColorize(true)
 {
   myTraceLevel = theTraceLevel;
   if (strcasecmp(theFileName, "cerr") == 0)
@@ -77,8 +77,8 @@ Message_PrinterOStream::Message_PrinterOStream(const Standard_CString theFileNam
   if (aFile->is_open())
   {
     myStream     = (Standard_OStream*)aFile;
-    myIsFile     = Standard_True;
-    myToColorize = Standard_False;
+    myIsFile     = true;
+    myToColorize = false;
   }
   else
   {
@@ -105,7 +105,7 @@ void Message_PrinterOStream::Close()
     std::ofstream* ofile = (std::ofstream*)ostr;
     ofile->close();
     delete ofile;
-    myIsFile = Standard_False;
+    myIsFile = false;
   }
 }
 

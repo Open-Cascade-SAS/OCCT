@@ -25,10 +25,10 @@ RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::
 }
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
-  const Handle(StepData_StepReaderData)&                                    data,
-  const Standard_Integer                                                    num0,
-  Handle(Interface_Check)&                                                  ach,
-  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                                    data,
+  const int                                                    num0,
+  occ::handle<Interface_Check>&                                                  ach,
+  const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent) const
 {
 
   //  Complex entity
@@ -37,7 +37,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
   // --- Instance of plex component RepresentationRelationship ---
 
-  Standard_Integer num = 0; // num0;
+  int num = 0; // num0;
   data->NamedForComplex("REPRESENTATION_RELATIONSHIP", "RPRRLT", num0, num, ach);
 
   // --- Number of Parameter Control ---
@@ -47,13 +47,13 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 2))
   { // abv 08.10.99 TRJ2
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -61,14 +61,14 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
   // --- inherited field : rep1 ---
 
-  Handle(StepRepr_Representation) aRep1;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepRepr_Representation> aRep1;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "rep_1", ach, STANDARD_TYPE(StepRepr_Representation), aRep1);
 
   // --- inherited field : rep2 ---
 
-  Handle(StepRepr_Representation) aRep2;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<StepRepr_Representation> aRep2;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadEntity(num, 4, "rep_2", ach, STANDARD_TYPE(StepRepr_Representation), aRep2);
 
   // --- Instance of plex component RepresentationRelationshipWithTransformation ---
@@ -80,7 +80,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
   // --- own field : transformation_operator
 
   StepRepr_Transformation aTrans;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadEntity(num, 1, "transformation_operator", ach, aTrans);
 
   // --- Instance of plex component ShapeRepresentationRelationship ---
@@ -96,7 +96,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
   StepData_StepWriter&                                                      SW,
-  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent) const
+  const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent) const
 {
   // --- Instance of plex component RepresentationRelationship ---
 
@@ -129,7 +129,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep(
 }
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::Share(
-  const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent,
+  const occ::handle<StepRepr_ShapeRepresentationRelationshipWithTransformation>& ent,
   Interface_EntityIterator&                                                 iter) const
 {
 

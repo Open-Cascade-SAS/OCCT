@@ -24,9 +24,6 @@
 class StepGeom_Axis2Placement3d;
 class TCollection_HAsciiString;
 
-class StepGeom_ElementarySurface;
-DEFINE_STANDARD_HANDLE(StepGeom_ElementarySurface, StepGeom_Surface)
-
 class StepGeom_ElementarySurface : public StepGeom_Surface
 {
 
@@ -34,18 +31,17 @@ public:
   //! Returns a ElementarySurface
   Standard_EXPORT StepGeom_ElementarySurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
-                            const Handle(StepGeom_Axis2Placement3d)& aPosition);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                            const occ::handle<StepGeom_Axis2Placement3d>& aPosition);
 
-  Standard_EXPORT void SetPosition(const Handle(StepGeom_Axis2Placement3d)& aPosition);
+  Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition);
 
-  Standard_EXPORT Handle(StepGeom_Axis2Placement3d) Position() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> Position() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_ElementarySurface, StepGeom_Surface)
 
-protected:
 private:
-  Handle(StepGeom_Axis2Placement3d) position;
+  occ::handle<StepGeom_Axis2Placement3d> position;
 };
 
 #endif // _StepGeom_ElementarySurface_HeaderFile

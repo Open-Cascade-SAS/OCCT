@@ -26,11 +26,11 @@
 //=================================================================================================
 
 HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&           T,
-                                       const HLRAlgo_ListIteratorOfInterferenceList& I)
+                                       const NCollection_List<HLRAlgo_Interference>::Iterator& I)
     : myIterator(I),
       myTool(T),
-      fromEdge(Standard_False),
-      fromInterf(Standard_False)
+      fromEdge(false),
+      fromInterf(false)
 {
   myTool.InitVertices();
   Next();
@@ -38,14 +38,14 @@ HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&      
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_VertexList::IsPeriodic() const
+bool HLRBRep_VertexList::IsPeriodic() const
 {
   return myTool.IsPeriodic();
 }
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_VertexList::More() const
+bool HLRBRep_VertexList::More() const
 {
   return (fromEdge || fromInterf);
 }
@@ -66,11 +66,11 @@ void HLRBRep_VertexList::Next()
     {
       if (myTool.CurrentParameter() < myTool.ParameterOfInterference(myIterator.Value()))
       {
-        fromInterf = Standard_False;
+        fromInterf = false;
       }
       else
       {
-        fromEdge = Standard_False;
+        fromEdge = false;
       }
     }
   }
@@ -90,14 +90,14 @@ const HLRAlgo_Intersection& HLRBRep_VertexList::Current() const
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_VertexList::IsBoundary() const
+bool HLRBRep_VertexList::IsBoundary() const
 {
   return fromEdge;
 }
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_VertexList::IsInterference() const
+bool HLRBRep_VertexList::IsInterference() const
 {
   return fromInterf;
 }

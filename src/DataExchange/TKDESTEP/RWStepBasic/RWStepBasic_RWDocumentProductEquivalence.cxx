@@ -29,10 +29,10 @@ RWStepBasic_RWDocumentProductEquivalence::RWStepBasic_RWDocumentProductEquivalen
 //=================================================================================================
 
 void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_DocumentProductEquivalence)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                              num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_DocumentProductEquivalence>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document_product_equivalence"))
@@ -40,15 +40,15 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
 
   // Inherited fields of DocumentProductAssociation
 
-  Handle(TCollection_HAsciiString) aDocumentProductAssociation_Name;
+  occ::handle<TCollection_HAsciiString> aDocumentProductAssociation_Name;
   data->ReadString(num,
                    1,
                    "document_product_association.name",
                    ach,
                    aDocumentProductAssociation_Name);
 
-  Handle(TCollection_HAsciiString) aDocumentProductAssociation_Description;
-  Standard_Boolean                 hasDocumentProductAssociation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDocumentProductAssociation_Description;
+  bool                 hasDocumentProductAssociation_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -59,10 +59,10 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
   }
   else
   {
-    hasDocumentProductAssociation_Description = Standard_False;
+    hasDocumentProductAssociation_Description = false;
   }
 
-  Handle(StepBasic_Document) aDocumentProductAssociation_RelatingDocument;
+  occ::handle<StepBasic_Document> aDocumentProductAssociation_RelatingDocument;
   data->ReadEntity(num,
                    3,
                    "document_product_association.relating_document",
@@ -89,7 +89,7 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
 
 void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_DocumentProductEquivalence)& ent) const
+  const occ::handle<StepBasic_DocumentProductEquivalence>& ent) const
 {
 
   // Inherited fields of DocumentProductAssociation
@@ -111,7 +111,7 @@ void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWDocumentProductEquivalence::Share(
-  const Handle(StepBasic_DocumentProductEquivalence)& ent,
+  const occ::handle<StepBasic_DocumentProductEquivalence>& ent,
   Interface_EntityIterator&                           iter) const
 {
 

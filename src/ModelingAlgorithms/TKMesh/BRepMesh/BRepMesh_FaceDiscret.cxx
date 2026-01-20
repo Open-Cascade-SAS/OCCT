@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
 
 //=================================================================================================
 
-BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(const Handle(IMeshTools_MeshAlgoFactory)& theAlgoFactory)
+BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory)
     : myAlgoFactory(theAlgoFactory)
 {
 }
@@ -42,13 +42,13 @@ public:
         myScope(theRange, "Face Discret", theAlgo->myModel->FacesNb())
   {
     myRanges.reserve(theAlgo->myModel->FacesNb());
-    for (Standard_Integer aFaceIter = 0; aFaceIter < theAlgo->myModel->FacesNb(); ++aFaceIter)
+    for (int aFaceIter = 0; aFaceIter < theAlgo->myModel->FacesNb(); ++aFaceIter)
     {
       myRanges.push_back(myScope.Next());
     }
   }
 
-  void operator()(const Standard_Integer theFaceIndex) const
+  void operator()(const int theFaceIndex) const
   {
     if (!myScope.More())
     {
@@ -66,7 +66,7 @@ private:
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_FaceDiscret::performInternal(const Handle(IMeshData_Model)& theModel,
+bool BRepMesh_FaceDiscret::performInternal(const occ::handle<IMeshData_Model>& theModel,
                                                        const IMeshTools_Parameters&   theParameters,
                                                        const Message_ProgressRange&   theRange)
 {
@@ -74,7 +74,7 @@ Standard_Boolean BRepMesh_FaceDiscret::performInternal(const Handle(IMeshData_Mo
   myParameters = theParameters;
   if (myModel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   FaceListFunctor aFunctor(this, theRange);
@@ -84,16 +84,16 @@ Standard_Boolean BRepMesh_FaceDiscret::performInternal(const Handle(IMeshData_Mo
                     !(myParameters.InParallel && myModel->FacesNb() > 1));
   if (!theRange.More())
   {
-    return Standard_False;
+    return false;
   }
 
   myModel.Nullify(); // Do not hold link to model.
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BRepMesh_FaceDiscret::process(const Standard_Integer       theFaceIndex,
+void BRepMesh_FaceDiscret::process(const int       theFaceIndex,
                                    const Message_ProgressRange& theRange) const
 {
   const IMeshData::IFaceHandle& aDFace = myModel->GetFace(theFaceIndex);
@@ -106,7 +106,7 @@ void BRepMesh_FaceDiscret::process(const Standard_Integer       theFaceIndex,
   {
     OCC_CATCH_SIGNALS
 
-    Handle(IMeshTools_MeshAlgo) aMeshingAlgo =
+    occ::handle<IMeshTools_MeshAlgo> aMeshingAlgo =
       myAlgoFactory->GetAlgo(aDFace->GetSurface()->GetType(), myParameters);
 
     if (aMeshingAlgo.IsNull())

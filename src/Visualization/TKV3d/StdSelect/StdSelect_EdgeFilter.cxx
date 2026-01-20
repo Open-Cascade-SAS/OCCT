@@ -52,20 +52,20 @@ StdSelect_TypeOfEdge StdSelect_EdgeFilter::Type() const
 
 //=================================================================================================
 
-Standard_Boolean StdSelect_EdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+bool StdSelect_EdgeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
-  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
+  occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
-    return Standard_False;
+    return false;
 
   const TopoDS_Shape& sh = aBO->Shape();
   if (sh.ShapeType() != TopAbs_EDGE)
-    return Standard_False;
+    return false;
 
   switch (mytype)
   {
     case StdSelect_AnyEdge:
-      return Standard_True;
+      return true;
     case StdSelect_Line: {
       BRepAdaptor_Curve curv(TopoDS::Edge(sh));
       return (curv.GetType() == GeomAbs_Line);
@@ -76,10 +76,10 @@ Standard_Boolean StdSelect_EdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)&
       return (curv.GetType() == GeomAbs_Circle);
   }
 
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean StdSelect_EdgeFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+bool StdSelect_EdgeFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
 {
   return aStandardMode == TopAbs_EDGE;
 }

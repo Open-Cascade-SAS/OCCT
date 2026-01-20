@@ -19,7 +19,7 @@
 
 TEST(BVH_TreeTest, DefaultConstructor)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   EXPECT_EQ(aTree.Length(), 0);
   EXPECT_EQ(aTree.Depth(), 0);
@@ -27,7 +27,7 @@ TEST(BVH_TreeTest, DefaultConstructor)
 
 TEST(BVH_TreeTest, AddLeafNode)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   BVH_Vec3d aMin(0.0, 0.0, 0.0);
   BVH_Vec3d aMax(1.0, 1.0, 1.0);
@@ -44,7 +44,7 @@ TEST(BVH_TreeTest, AddLeafNode)
 
 TEST(BVH_TreeTest, AddInnerNode)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   // Add two leaf nodes first
   BVH_Vec3d aMin1(0.0, 0.0, 0.0);
@@ -68,7 +68,7 @@ TEST(BVH_TreeTest, AddInnerNode)
 
 TEST(BVH_TreeTest, MinMaxPoints)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   BVH_Vec3d aMin(1.0, 2.0, 3.0);
   BVH_Vec3d aMax(4.0, 5.0, 6.0);
@@ -85,7 +85,7 @@ TEST(BVH_TreeTest, MinMaxPoints)
 
 TEST(BVH_TreeTest, Clear)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
   aTree.AddLeafNode(BVH_Vec3d(1.0, 0.0, 0.0), BVH_Vec3d(2.0, 1.0, 1.0), 1, 1);
@@ -100,7 +100,7 @@ TEST(BVH_TreeTest, Clear)
 
 TEST(BVH_TreeTest, Reserve)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   // Reserve should not throw
   aTree.Reserve(100);
@@ -112,7 +112,7 @@ TEST(BVH_TreeTest, Reserve)
 
 TEST(BVH_TreeTest, SetOuterInner)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   // Add leaf and change to inner
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
@@ -128,7 +128,7 @@ TEST(BVH_TreeTest, SetOuterInner)
 
 TEST(BVH_TreeTest, Level)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
 
@@ -142,9 +142,9 @@ TEST(BVH_TreeTest, Level)
 
 TEST(BVH_TreeTest, AddLeafNodeWithBox)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
-  BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
+  BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   int aNodeIndex = aTree.AddLeafNode(aBox, 0, 5);
 
@@ -156,11 +156,11 @@ TEST(BVH_TreeTest, AddLeafNodeWithBox)
 
 TEST(BVH_TreeTest, AddInnerNodeWithBox)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
-  BVH_Box<Standard_Real, 3> aBox1(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
-  BVH_Box<Standard_Real, 3> aBox2(BVH_Vec3d(2.0, 0.0, 0.0), BVH_Vec3d(3.0, 1.0, 1.0));
-  BVH_Box<Standard_Real, 3> aRootBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(3.0, 1.0, 1.0));
+  BVH_Box<double, 3> aBox1(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
+  BVH_Box<double, 3> aBox2(BVH_Vec3d(2.0, 0.0, 0.0), BVH_Vec3d(3.0, 1.0, 1.0));
+  BVH_Box<double, 3> aRootBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(3.0, 1.0, 1.0));
 
   int aLeaf1 = aTree.AddLeafNode(aBox1, 0, 5);
   int aLeaf2 = aTree.AddLeafNode(aBox2, 6, 10);
@@ -173,7 +173,7 @@ TEST(BVH_TreeTest, AddInnerNodeWithBox)
 
 TEST(BVH_TreeTest, EstimateSAH)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   // Create a simple tree with root and two leaves
   BVH_Vec3d aMin1(0.0, 0.0, 0.0);
@@ -188,7 +188,7 @@ TEST(BVH_TreeTest, EstimateSAH)
   BVH_Vec3d aMaxRoot(3.0, 1.0, 1.0);
   aTree.AddInnerNode(aMinRoot, aMaxRoot, aLeaf1, aLeaf2);
 
-  Standard_Real aSAH = aTree.EstimateSAH();
+  double aSAH = aTree.EstimateSAH();
 
   // SAH should be positive
   EXPECT_GT(aSAH, 0.0);
@@ -196,7 +196,7 @@ TEST(BVH_TreeTest, EstimateSAH)
 
 TEST(BVH_TreeTest, NbPrimitives)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 5, 15);
 
@@ -206,7 +206,7 @@ TEST(BVH_TreeTest, NbPrimitives)
 
 TEST(BVH_TreeTest, SinglePrimitive)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 7, 7);
 
@@ -217,7 +217,7 @@ TEST(BVH_TreeTest, SinglePrimitive)
 
 TEST(BVH_TreeTest, Float3DTree)
 {
-  BVH_Tree<Standard_ShortReal, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<float, 3, BVH_BinaryTree> aTree;
 
   BVH_Vec3f aMin(0.0f, 0.0f, 0.0f);
   BVH_Vec3f aMax(1.0f, 1.0f, 1.0f);
@@ -231,7 +231,7 @@ TEST(BVH_TreeTest, Float3DTree)
 
 TEST(BVH_TreeTest, Tree2D)
 {
-  BVH_Tree<Standard_Real, 2, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 2, BVH_BinaryTree> aTree;
 
   BVH_Vec2d aMin(0.0, 0.0);
   BVH_Vec2d aMax(1.0, 1.0);
@@ -245,7 +245,7 @@ TEST(BVH_TreeTest, Tree2D)
 
 TEST(BVH_TreeTest, Tree4D)
 {
-  BVH_Tree<Standard_Real, 4, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 4, BVH_BinaryTree> aTree;
 
   BVH_Vec4d aMin(0.0, 0.0, 0.0, 0.0);
   BVH_Vec4d aMax(1.0, 1.0, 1.0, 1.0);
@@ -259,7 +259,7 @@ TEST(BVH_TreeTest, Tree4D)
 
 TEST(BVH_TreeTest, MultipleLeaves)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   for (int i = 0; i < 10; ++i)
   {
@@ -280,7 +280,7 @@ TEST(BVH_TreeTest, MultipleLeaves)
 
 TEST(BVH_TreeTest, DeepTree)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   // Create leaves
   BVH_Vec3d aMin1(0.0, 0.0, 0.0);
@@ -323,7 +323,7 @@ TEST(BVH_TreeTest, DeepTree)
 
 TEST(BVH_TreeTest, ModifyPrimitiveIndices)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 5);
 
@@ -338,7 +338,7 @@ TEST(BVH_TreeTest, ModifyPrimitiveIndices)
 
 TEST(BVH_TreeTest, ModifyMinMaxPoints)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
 
@@ -352,7 +352,7 @@ TEST(BVH_TreeTest, ModifyMinMaxPoints)
 
 TEST(BVH_TreeTest, ChangeChild)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   int aLeaf1 = aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
   int aLeaf2 = aTree.AddLeafNode(BVH_Vec3d(1.0, 0.0, 0.0), BVH_Vec3d(2.0, 1.0, 1.0), 1, 1);
@@ -372,7 +372,7 @@ TEST(BVH_TreeTest, ChangeChild)
 
 TEST(BVH_TreeTest, NodeInfoBuffer)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 5, 10);
 
@@ -384,7 +384,7 @@ TEST(BVH_TreeTest, NodeInfoBuffer)
 
 TEST(BVH_TreeTest, MinMaxPointBuffers)
 {
-  BVH_Tree<Standard_Real, 3, BVH_BinaryTree> aTree;
+  BVH_Tree<double, 3, BVH_BinaryTree> aTree;
 
   aTree.AddLeafNode(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0), 0, 0);
 
@@ -392,8 +392,8 @@ TEST(BVH_TreeTest, MinMaxPointBuffers)
   const auto& aMinBuffer = aTree.MinPointBuffer();
   const auto& aMaxBuffer = aTree.MaxPointBuffer();
 
-  int aMinSize = BVH::Array<Standard_Real, 3>::Size(aMinBuffer);
-  int aMaxSize = BVH::Array<Standard_Real, 3>::Size(aMaxBuffer);
+  int aMinSize = BVH::Array<double, 3>::Size(aMinBuffer);
+  int aMaxSize = BVH::Array<double, 3>::Size(aMaxBuffer);
   EXPECT_EQ(aMinSize, 1);
   EXPECT_EQ(aMaxSize, 1);
 }

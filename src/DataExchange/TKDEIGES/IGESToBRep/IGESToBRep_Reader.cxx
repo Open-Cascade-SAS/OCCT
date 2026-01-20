@@ -58,7 +58,7 @@
 #endif
 // extern int errno;
 
-static Handle(IGESData_FileProtocol) protocol;
+static occ::handle<IGESData_FileProtocol> protocol;
 
 namespace
 {
@@ -66,16 +66,16 @@ namespace
 // function : EncodeRegul
 // purpose  : INTERNAL to encode regularity on edges
 //=======================================================================
-static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
+static bool EncodeRegul(const TopoDS_Shape& theShape)
 {
-  const Standard_Real aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
+  const double aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
   if (theShape.IsNull())
   {
-    return Standard_True;
+    return true;
   }
   if (aToleranceAngle <= 0.)
   {
-    return Standard_True;
+    return true;
   }
 
   try
@@ -85,16 +85,16 @@ static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
   }
   catch (const Standard_Failure&)
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : TrimTolerances
 // purpose  : Trims tolerances of the shape according to static parameters
 //=======================================================================
-static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real theTolerance)
+static void TrimTolerances(const TopoDS_Shape& theShape, const double theTolerance)
 {
   if (Interface_Static::IVal("read.maxprecision.mode") == 1)
   {
@@ -109,7 +109,7 @@ static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real the
 //=============================================================================
 
 IGESToBRep_Reader::IGESToBRep_Reader()
-    : theDone(Standard_False)
+    : theDone(false)
 {
   if (protocol.IsNull())
   {
@@ -125,11 +125,11 @@ IGESToBRep_Reader::IGESToBRep_Reader()
 
 //=============================================================================
 
-Standard_Integer IGESToBRep_Reader::LoadFile(const Standard_CString filename)
+int IGESToBRep_Reader::LoadFile(const char* const filename)
 {
   if (theProc.IsNull())
     theProc = new Transfer_TransientProcess;
-  Handle(Message_Messenger) TF = theProc->Messenger();
+  occ::handle<Message_Messenger> TF = theProc->Messenger();
 
   // Message for Diagnostic file.
   Message_Msg msg2000("IGES_2000");
@@ -140,13 +140,13 @@ Standard_Integer IGESToBRep_Reader::LoadFile(const Standard_CString filename)
   msg2005.Arg(theProc->TraceLevel());
   TF->Send(msg2005, Message_Info);
   /////////////////////////////////////////////////////////
-  Handle(IGESData_IGESModel) model = new IGESData_IGESModel;
+  occ::handle<IGESData_IGESModel> model = new IGESData_IGESModel;
 
   OSD_Timer c;
   c.Reset();
   c.Start();
   char*            pfilename  = (char*)filename;
-  Standard_Integer StatusFile = IGESFile_Read(pfilename, model, protocol);
+  int StatusFile = IGESFile_Read(pfilename, model, protocol);
   if (StatusFile != 0)
   {
     // Sending of message : IGES file opening error
@@ -198,13 +198,13 @@ Standard_Integer IGESToBRep_Reader::LoadFile(const Standard_CString filename)
   Message_Msg Msg26("XSTEP_26");
   // Nb warning in global section.
 
-  Standard_Integer nbWarn = 0, nbFail = 0;
+  int nbWarn = 0, nbFail = 0;
   // Add the number of warning on entities :
   Interface_CheckTool     cht(model, protocol);
   Interface_CheckIterator anIter = cht.CompleteCheckList();
   for (anIter.Start(); anIter.More(); anIter.Next())
   {
-    const Handle(Interface_Check)& ach = anIter.Value();
+    const occ::handle<Interface_Check>& ach = anIter.Value();
     nbWarn += ach->NbWarnings();
     nbFail += ach->NbFails();
   }
@@ -217,8 +217,8 @@ Standard_Integer IGESToBRep_Reader::LoadFile(const Standard_CString filename)
   // Message fin de loading iGES file (elapsed time %s)
   char t[20];
   t[0] = '\0';
-  Standard_Real    second, cpu;
-  Standard_Integer minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -236,10 +236,10 @@ Standard_Integer IGESToBRep_Reader::LoadFile(const Standard_CString filename)
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetModel(const Handle(IGESData_IGESModel)& model)
+void IGESToBRep_Reader::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
   theModel = model;
-  theDone  = Standard_False;
+  theDone  = false;
   theShapes.Clear();
   if (theProc.IsNull())
     theProc = new Transfer_TransientProcess(theModel->NbEntities());
@@ -249,28 +249,28 @@ void IGESToBRep_Reader::SetModel(const Handle(IGESData_IGESModel)& model)
 
 //=============================================================================
 
-Handle(IGESData_IGESModel) IGESToBRep_Reader::Model() const
+occ::handle<IGESData_IGESModel> IGESToBRep_Reader::Model() const
 {
   return theModel;
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetTransientProcess(const Handle(Transfer_TransientProcess)& TP)
+void IGESToBRep_Reader::SetTransientProcess(const occ::handle<Transfer_TransientProcess>& TP)
 {
   theProc = TP;
 }
 
 //=============================================================================
 
-Handle(Transfer_TransientProcess) IGESToBRep_Reader::TransientProcess() const
+occ::handle<Transfer_TransientProcess> IGESToBRep_Reader::TransientProcess() const
 {
   return theProc;
 }
 
 //=============================================================================
 
-Handle(IGESToBRep_Actor) IGESToBRep_Reader::Actor() const
+occ::handle<IGESToBRep_Actor> IGESToBRep_Reader::Actor() const
 {
   return theActor;
 }
@@ -279,13 +279,13 @@ Handle(IGESToBRep_Actor) IGESToBRep_Reader::Actor() const
 
 void IGESToBRep_Reader::Clear()
 {
-  theDone = Standard_False;
+  theDone = false;
   theShapes.Clear();
 }
 
 //=============================================================================
 
-Standard_Boolean IGESToBRep_Reader::Check(const Standard_Boolean withprint) const
+bool IGESToBRep_Reader::Check(const bool withprint) const
 {
   Interface_CheckTool     cht(theModel, protocol);
   Interface_CheckIterator chl = cht.CompleteCheckList();
@@ -294,25 +294,25 @@ Standard_Boolean IGESToBRep_Reader::Check(const Standard_Boolean withprint) cons
     Message_Messenger::StreamBuffer aBuffer = theProc->Messenger()->SendInfo();
     cht.Print(chl, aBuffer);
   }
-  return chl.IsEmpty(Standard_True);
+  return chl.IsEmpty(true);
 }
 
 //=============================================================================
 
-Standard_Boolean IGESToBRep_Reader::IsDone() const
+bool IGESToBRep_Reader::IsDone() const
 {
   return theDone;
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
+void IGESToBRep_Reader::TransferRoots(const bool       onlyvisible,
                                       const Message_ProgressRange& theProgress)
 {
   if (theModel.IsNull() || theProc.IsNull())
     return;
 
-  Handle(Message_Messenger) TF = theProc->Messenger();
+  occ::handle<Message_Messenger> TF = theProc->Messenger();
   // Declaration of messages.
   Message_Msg msg2030("IGES_2030");
   TF->Send(msg2030, Message_Info);
@@ -320,26 +320,26 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
   OSD_Timer   c;
   c.Reset();
   c.Start(); // Initialisation du CHRONO
-  theDone = Standard_False;
+  theDone = false;
   theShapes.Clear();
 
-  Standard_Integer level = theProc->TraceLevel();
-  theProc->SetErrorHandle(Standard_True);
-  theProc->SetRootManagement(Standard_True);
+  int level = theProc->TraceLevel();
+  theProc->SetErrorHandle(true);
+  theProc->SetRootManagement(true);
   //  PrepareTransfer();  -> protocol, actor
   theActor->SetModel(theModel);
-  Standard_Integer continuity = Interface_Static::IVal("read.iges.bspline.continuity");
+  int continuity = Interface_Static::IVal("read.iges.bspline.continuity");
   theActor->SetContinuity(continuity);
   theProc->SetModel(theModel);
   theProc->SetActor(theActor);
   Transfer_TransferOutput TP(theProc, theModel);
 
-  const Handle(Interface_Protocol) aProtocol = protocol; // to avoid ambiguity
+  const occ::handle<Interface_Protocol> aProtocol = protocol; // to avoid ambiguity
   Interface_ShareFlags             SH(theModel, aProtocol);
-  Standard_Integer                 nb = theModel->NbEntities();
+  int                 nb = theModel->NbEntities();
   ShapeExtend_Explorer             SBE;
 
-  Standard_Integer precisionMode = Interface_Static::IVal("read.precision.mode");
+  int precisionMode = Interface_Static::IVal("read.precision.mode");
   Message_Msg      msg2035("IGES_2035");
   msg2035.Arg(precisionMode);
   TF->Send(msg2035, Message_Info);
@@ -360,10 +360,10 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
   Interface_Static::SetIVal("read.iges.onlyvisible", onlyvisible);
 
   Message_ProgressScope PS(theProgress, "Root", nb);
-  for (Standard_Integer i = 1; i <= nb && PS.More(); i++)
+  for (int i = 1; i <= nb && PS.More(); i++)
   {
     Message_ProgressRange       aRange = PS.Next();
-    Handle(IGESData_IGESEntity) ent    = theModel->Entity(i);
+    occ::handle<IGESData_IGESEntity> ent    = theModel->Entity(i);
     if (SH.IsShared(ent) || !theActor->Recognize(ent))
       continue;
     if (level > 0)
@@ -377,7 +377,7 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
     if (!onlyvisible || ent->BlankStatus() == 0)
     {
       TopoDS_Shape shape;
-      theDone = Standard_True;
+      theDone = true;
       try
       {
         OCC_CATCH_SIGNALS
@@ -397,7 +397,7 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
       }
       else
       {
-        if (SBE.ShapeType(shape, Standard_True) != TopAbs_SHAPE)
+        if (SBE.ShapeType(shape, true) != TopAbs_SHAPE)
         {
           if (!shape.IsNull())
           {
@@ -412,8 +412,8 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
   }
   char t[20];
   t[0] = '\0';
-  Standard_Real    second, cpu;
-  Standard_Integer minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -428,23 +428,23 @@ void IGESToBRep_Reader::TransferRoots(const Standard_Boolean       onlyvisible,
 
 //=============================================================================
 
-Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
+bool IGESToBRep_Reader::Transfer(const int       num,
                                              const Message_ProgressRange& theProgress)
 {
-  Handle(Message_Messenger) TF = theProc->Messenger();
-  theDone                      = Standard_False;
+  occ::handle<Message_Messenger> TF = theProc->Messenger();
+  theDone                      = false;
   if (theModel.IsNull())
   {
     Message_Msg msg2031("IGES_2031");
     TF->Send(msg2031, Message_Info);
-    return Standard_False;
+    return false;
   }
   if (num <= 0 || num > theModel->NbEntities())
   {
     Message_Msg msg2032("IGES_2032");
     msg2032.Arg(num);
     TF->Send(msg2032, Message_Info);
-    return Standard_False;
+    return false;
   }
   // declaration of messages
   Message_Msg msg2030("IGES_2030");
@@ -454,15 +454,15 @@ Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
   c.Reset();
   c.Start(); // Initialisation du CHRONO
 
-  Handle(IGESData_IGESEntity) ent = theModel->Entity(num);
+  occ::handle<IGESData_IGESEntity> ent = theModel->Entity(num);
 
   Message_ProgressScope aPS(theProgress, "OneEnt", 2);
 
   XSAlgo_ShapeProcessor::PrepareForTransfer();
   IGESToBRep_CurveAndSurface CAS;
   CAS.SetModel(theModel);
-  Standard_Real    eps;
-  Standard_Integer Ival = Interface_Static::IVal("read.precision.mode");
+  double    eps;
+  int Ival = Interface_Static::IVal("read.precision.mode");
   Message_Msg      msg2035("IGES_2035");
   msg2035.Arg(Ival);
   TF->Send(msg2035, Message_Info);
@@ -493,22 +493,22 @@ Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
     CAS.SetEpsGeom(eps);
   CAS.SetTransferProcess(theProc);
 
-  Standard_Boolean exceptionRaised = Standard_False;
+  bool exceptionRaised = false;
   TopoDS_Shape     shape;
-  Standard_Integer nbTPitems = theProc->NbMapped();
+  int nbTPitems = theProc->NbMapped();
   {
     try
     {
       OCC_CATCH_SIGNALS
       shape = CAS.TransferGeometry(ent, aPS.Next());
       if (aPS.UserBreak())
-        return Standard_False;
+        return false;
     }
     catch (Standard_Failure const&)
     {
       Message_Msg msg1015("IGES_1015");
       TF->Send(msg1015, Message_Info);
-      exceptionRaised = Standard_True;
+      exceptionRaised = true;
     }
   }
   if (!exceptionRaised)
@@ -532,19 +532,19 @@ Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
 
     if (aPS.UserBreak())
     {
-      return Standard_False;
+      return false;
     }
 
     aShapeProcessor.MergeTransferInfo(theProc, nbTPitems);
 
     ShapeExtend_Explorer SBE;
-    if (SBE.ShapeType(shape, Standard_True) != TopAbs_SHAPE)
+    if (SBE.ShapeType(shape, true) != TopAbs_SHAPE)
     {
       TransferBRep::SetShapeResult(theProc, ent, shape);
       theProc->SetRoot(ent);
       if (!shape.IsNull())
       {
-        theDone = Standard_True;
+        theDone = true;
         EncodeRegul(shape);
         // #74 rln 03.03.99 S4135
         TrimTolerances(shape, CAS.GetMaxTol());
@@ -555,8 +555,8 @@ Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
 
   char t[20];
   t[0] = '\0';
-  Standard_Real    second, cpu;
-  Standard_Integer minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -567,26 +567,26 @@ Standard_Boolean IGESToBRep_Reader::Transfer(const Standard_Integer       num,
   // Sending of message : End of Loading
   msg2065.Arg(t);
   TF->Send(msg2065, Message_Info);
-  return Standard_True;
+  return true;
 }
 
 //=============================================================================
 
-Standard_Real IGESToBRep_Reader::UsedTolerance() const
+double IGESToBRep_Reader::UsedTolerance() const
 {
   return theActor->UsedTolerance();
 }
 
 //=============================================================================
 
-Standard_Integer IGESToBRep_Reader::NbShapes() const
+int IGESToBRep_Reader::NbShapes() const
 {
   return theShapes.Length();
 }
 
 //=============================================================================
 
-TopoDS_Shape IGESToBRep_Reader::Shape(const Standard_Integer num) const
+TopoDS_Shape IGESToBRep_Reader::Shape(const int num) const
 {
   TopoDS_Shape res;
   if (num > 0 && num <= theShapes.Length())
@@ -599,7 +599,7 @@ TopoDS_Shape IGESToBRep_Reader::Shape(const Standard_Integer num) const
 TopoDS_Shape IGESToBRep_Reader::OneShape() const
 {
   TopoDS_Shape     res;
-  Standard_Integer nb = theShapes.Length();
+  int nb = theShapes.Length();
   if (nb == 0)
     return res;
   else if (nb == 1)
@@ -609,7 +609,7 @@ TopoDS_Shape IGESToBRep_Reader::OneShape() const
     TopoDS_Compound C;
     BRep_Builder    B;
     B.MakeCompound(C);
-    for (Standard_Integer i = 1; i <= nb; i++)
+    for (int i = 1; i <= nb; i++)
       B.Add(C, theShapes.Value(i));
     return C;
   }

@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_CharacterizedObject, Standard_Transient)
 
 StepBasic_CharacterizedObject::StepBasic_CharacterizedObject()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_CharacterizedObject::Init(const Handle(TCollection_HAsciiString)& aName,
-                                         const Standard_Boolean                  hasDescription,
-                                         const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_CharacterizedObject::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                         const bool                  hasDescription,
+                                         const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theName = aName;
 
@@ -46,21 +46,21 @@ void StepBasic_CharacterizedObject::Init(const Handle(TCollection_HAsciiString)&
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_CharacterizedObject::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_CharacterizedObject::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_CharacterizedObject::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_CharacterizedObject::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_CharacterizedObject::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_CharacterizedObject::Description() const
 {
   return theDescription;
 }
@@ -68,14 +68,14 @@ Handle(TCollection_HAsciiString) StepBasic_CharacterizedObject::Description() co
 //=================================================================================================
 
 void StepBasic_CharacterizedObject::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_CharacterizedObject::HasDescription() const
+bool StepBasic_CharacterizedObject::HasDescription() const
 {
   return defDescription;
 }

@@ -35,14 +35,14 @@ class BRepMesh_ShapeTool : public Standard_Transient
 public:
   //! Returns maximum tolerance of the given face.
   //! Considers tolerances of edges and vertices contained in the given face.
-  Standard_EXPORT static Standard_Real MaxFaceTolerance(const TopoDS_Face& theFace);
+  Standard_EXPORT static double MaxFaceTolerance(const TopoDS_Face& theFace);
 
   //! Gets the maximum dimension of the given bounding box.
   //! If the given bounding box is void leaves the resulting value unchanged.
   //! @param theBox bounding box to be processed.
   //! @param theMaxDimension maximum dimension of the given box.
   Standard_EXPORT static void BoxMaxDimension(const Bnd_Box& theBox,
-                                              Standard_Real& theMaxDimension);
+                                              double& theMaxDimension);
 
   //! Checks same parameter, same range and degenerativity attributes
   //! using geometrical data of the given edge and updates edge model
@@ -57,7 +57,7 @@ public:
   //! @param theFace face to be updated by triangulation.
   //! @param theTriangulation triangulation to be stored into the face.
   Standard_EXPORT static void AddInFace(const TopoDS_Face&          theFace,
-                                        Handle(Poly_Triangulation)& theTriangulation);
+                                        occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Nullifies triangulation stored in the face.
   //! @param theFace face to be updated by null triangulation.
@@ -68,7 +68,7 @@ public:
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
   Standard_EXPORT static void NullifyEdge(const TopoDS_Edge&                theEdge,
-                                          const Handle(Poly_Triangulation)& theTriangulation,
+                                          const occ::handle<Poly_Triangulation>& theTriangulation,
                                           const TopLoc_Location&            theLocation);
 
   //! Nullifies 3d polygon stored in the edge.
@@ -83,15 +83,15 @@ public:
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
   Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&                         theEdge,
-                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon,
-                                         const Handle(Poly_Triangulation)& theTriangulation,
+                                         const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+                                         const occ::handle<Poly_Triangulation>& theTriangulation,
                                          const TopLoc_Location&            theLocation);
 
   //! Updates the given edge by the given tessellated representation.
   //! @param theEdge edge to be updated.
   //! @param thePolygon tessellated representation of the edge to be stored.
   Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&            theEdge,
-                                         const Handle(Poly_Polygon3D)& thePolygon);
+                                         const occ::handle<Poly_Polygon3D>& thePolygon);
 
   //! Updates the given seam edge by the given tessellated representations.
   //! @param theEdge edge to be updated.
@@ -102,9 +102,9 @@ public:
   //! @param theTriangulation triangulation the given edge is associated to.
   //! @param theLocation face location.
   Standard_EXPORT static void UpdateEdge(const TopoDS_Edge&                         theEdge,
-                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon1,
-                                         const Handle(Poly_PolygonOnTriangulation)& thePolygon2,
-                                         const Handle(Poly_Triangulation)& theTriangulation,
+                                         const occ::handle<Poly_PolygonOnTriangulation>& thePolygon1,
+                                         const occ::handle<Poly_PolygonOnTriangulation>& thePolygon2,
+                                         const occ::handle<Poly_Triangulation>& theTriangulation,
                                          const TopLoc_Location&            theLocation);
 
   //! Applies location to the given point and return result.
@@ -113,29 +113,29 @@ public:
   Standard_EXPORT static gp_Pnt UseLocation(const gp_Pnt& thePnt, const TopLoc_Location& theLoc);
 
   //! Gets the strict UV locations of the extremities of the edge using pcurve.
-  Standard_EXPORT static Standard_Boolean UVPoints(
+  Standard_EXPORT static bool UVPoints(
     const TopoDS_Edge&     theEdge,
     const TopoDS_Face&     theFace,
     gp_Pnt2d&              theFirstPoint2d,
     gp_Pnt2d&              theLastPoint2d,
-    const Standard_Boolean isConsiderOrientation = Standard_False);
+    const bool isConsiderOrientation = false);
 
   //! Gets the parametric range of the given edge on the given face.
-  Standard_EXPORT static Standard_Boolean Range(
+  Standard_EXPORT static bool Range(
     const TopoDS_Edge&     theEdge,
     const TopoDS_Face&     theFace,
-    Handle(Geom2d_Curve)&  thePCurve,
-    Standard_Real&         theFirstParam,
-    Standard_Real&         theLastParam,
-    const Standard_Boolean isConsiderOrientation = Standard_False);
+    occ::handle<Geom2d_Curve>&  thePCurve,
+    double&         theFirstParam,
+    double&         theLastParam,
+    const bool isConsiderOrientation = false);
 
   //! Gets the 3d range of the given edge.
-  Standard_EXPORT static Standard_Boolean Range(
+  Standard_EXPORT static bool Range(
     const TopoDS_Edge&     theEdge,
-    Handle(Geom_Curve)&    theCurve,
-    Standard_Real&         theFirstParam,
-    Standard_Real&         theLastParam,
-    const Standard_Boolean isConsiderOrientation = Standard_False);
+    occ::handle<Geom_Curve>&    theCurve,
+    double&         theFirstParam,
+    double&         theLastParam,
+    const bool isConsiderOrientation = false);
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeTool, Standard_Transient)
 };

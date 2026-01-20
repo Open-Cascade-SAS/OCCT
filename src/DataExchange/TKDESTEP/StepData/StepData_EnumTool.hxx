@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_CString.hxx>
 class TCollection_AsciiString;
 
@@ -58,46 +59,46 @@ public:
   //! A null definition can be input by given "$" :the corresponding
   //! position is attached to "null/undefined" value (as one
   //! particular item of the enumeration list)
-  Standard_EXPORT StepData_EnumTool(const Standard_CString e0  = "",
-                                    const Standard_CString e1  = "",
-                                    const Standard_CString e2  = "",
-                                    const Standard_CString e3  = "",
-                                    const Standard_CString e4  = "",
-                                    const Standard_CString e5  = "",
-                                    const Standard_CString e6  = "",
-                                    const Standard_CString e7  = "",
-                                    const Standard_CString e8  = "",
-                                    const Standard_CString e9  = "",
-                                    const Standard_CString e10 = "",
-                                    const Standard_CString e11 = "",
-                                    const Standard_CString e12 = "",
-                                    const Standard_CString e13 = "",
-                                    const Standard_CString e14 = "",
-                                    const Standard_CString e15 = "",
-                                    const Standard_CString e16 = "",
-                                    const Standard_CString e17 = "",
-                                    const Standard_CString e18 = "",
-                                    const Standard_CString e19 = "",
-                                    const Standard_CString e20 = "",
-                                    const Standard_CString e21 = "",
-                                    const Standard_CString e22 = "",
-                                    const Standard_CString e23 = "",
-                                    const Standard_CString e24 = "",
-                                    const Standard_CString e25 = "",
-                                    const Standard_CString e26 = "",
-                                    const Standard_CString e27 = "",
-                                    const Standard_CString e28 = "",
-                                    const Standard_CString e29 = "",
-                                    const Standard_CString e30 = "",
-                                    const Standard_CString e31 = "",
-                                    const Standard_CString e32 = "",
-                                    const Standard_CString e33 = "",
-                                    const Standard_CString e34 = "",
-                                    const Standard_CString e35 = "",
-                                    const Standard_CString e36 = "",
-                                    const Standard_CString e37 = "",
-                                    const Standard_CString e38 = "",
-                                    const Standard_CString e39 = "");
+  Standard_EXPORT StepData_EnumTool(const char* const e0  = "",
+                                    const char* const e1  = "",
+                                    const char* const e2  = "",
+                                    const char* const e3  = "",
+                                    const char* const e4  = "",
+                                    const char* const e5  = "",
+                                    const char* const e6  = "",
+                                    const char* const e7  = "",
+                                    const char* const e8  = "",
+                                    const char* const e9  = "",
+                                    const char* const e10 = "",
+                                    const char* const e11 = "",
+                                    const char* const e12 = "",
+                                    const char* const e13 = "",
+                                    const char* const e14 = "",
+                                    const char* const e15 = "",
+                                    const char* const e16 = "",
+                                    const char* const e17 = "",
+                                    const char* const e18 = "",
+                                    const char* const e19 = "",
+                                    const char* const e20 = "",
+                                    const char* const e21 = "",
+                                    const char* const e22 = "",
+                                    const char* const e23 = "",
+                                    const char* const e24 = "",
+                                    const char* const e25 = "",
+                                    const char* const e26 = "",
+                                    const char* const e27 = "",
+                                    const char* const e28 = "",
+                                    const char* const e29 = "",
+                                    const char* const e30 = "",
+                                    const char* const e31 = "",
+                                    const char* const e32 = "",
+                                    const char* const e33 = "",
+                                    const char* const e34 = "",
+                                    const char* const e35 = "",
+                                    const char* const e36 = "",
+                                    const char* const e37 = "",
+                                    const char* const e38 = "",
+                                    const char* const e39 = "");
 
   //! Processes a definition, splits it according blanks if any
   //! empty definitions are ignored
@@ -105,7 +106,7 @@ public:
   //! position is attached to "null/undefined" value (as one
   //! particular item of the enumeration list)
   //! See also IsSet
-  Standard_EXPORT void AddDefinition(const Standard_CString term);
+  Standard_EXPORT void AddDefinition(const char* const term);
 
   //! Returns True if at least one definition has been entered after
   //! creation time (i.e. by AddDefinition only)
@@ -117,43 +118,42 @@ public:
   //! myenumtool.AddDefinition("e21");
   //! ...
   //! }
-  Standard_EXPORT Standard_Boolean IsSet() const;
+  Standard_EXPORT bool IsSet() const;
 
   //! Returns the maximum integer for a suitable value
   //! Remark : while values begin at zero, MaxValue is the count of
   //! recorded values minus one
-  Standard_EXPORT Standard_Integer MaxValue() const;
+  Standard_EXPORT int MaxValue() const;
 
   //! Sets or Unsets the EnumTool to accept undefined value (for
   //! optional field). Ignored if no null value is defined (by "$")
   //! Can be changed during execution (to read each field),
   //! Default is True (if a null value is defined)
-  Standard_EXPORT void Optional(const Standard_Boolean mode);
+  Standard_EXPORT void Optional(const bool mode);
 
   //! Returns the value attached to "null/undefined value"
   //! If none is specified or if Optional has been set to False,
   //! returns -1
   //! Null Value has been specified by definition "$"
-  Standard_EXPORT Standard_Integer NullValue() const;
+  Standard_EXPORT int NullValue() const;
 
   //! Returns the text which corresponds to a given numeric value
   //! It is limited by dots
   //! If num is out of range, returns an empty string
-  Standard_EXPORT const TCollection_AsciiString& Text(const Standard_Integer num) const;
+  Standard_EXPORT const TCollection_AsciiString& Text(const int num) const;
 
   //! Returns the numeric value found for a text
   //! The text must be in capitals and limited by dots
   //! A non-suitable text gives a negative value to be returned
-  Standard_EXPORT Standard_Integer Value(const Standard_CString txt) const;
+  Standard_EXPORT int Value(const char* const txt) const;
 
   //! Same as above but works on an AsciiString
-  Standard_EXPORT Standard_Integer Value(const TCollection_AsciiString& txt) const;
+  Standard_EXPORT int Value(const TCollection_AsciiString& txt) const;
 
-protected:
 private:
-  TColStd_SequenceOfAsciiString thetexts;
-  Standard_Integer              theinit;
-  Standard_Boolean              theopt;
+  NCollection_Sequence<TCollection_AsciiString> thetexts;
+  int              theinit;
+  bool              theopt;
 };
 
 #endif // _StepData_EnumTool_HeaderFile

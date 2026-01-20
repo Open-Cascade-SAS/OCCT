@@ -40,15 +40,15 @@ void TopOpeBRepBuild_WireToFace::AddWire(const TopoDS_Wire& W)
 
 //=================================================================================================
 
-void TopOpeBRepBuild_WireToFace::MakeFaces(const TopoDS_Face& F, TopTools_ListOfShape& LF)
+void TopOpeBRepBuild_WireToFace::MakeFaces(const TopoDS_Face& F, NCollection_List<TopoDS_Shape>& LF)
 {
   LF.Clear();
 
   TopOpeBRepBuild_WireEdgeSet wes(F);
-  for (TopTools_ListIteratorOfListOfShape it(myLW); it.More(); it.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator it(myLW); it.More(); it.Next())
     wes.AddShape(it.Value());
 
-  Standard_Boolean            ForceClass = Standard_True;
+  bool            ForceClass = true;
   TopOpeBRepBuild_FaceBuilder FB;
   FB.InitFaceBuilder(wes, F, ForceClass);
 

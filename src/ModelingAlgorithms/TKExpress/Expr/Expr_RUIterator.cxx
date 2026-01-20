@@ -21,11 +21,11 @@
 #include <Expr_UnknownIterator.hxx>
 #include <Standard_NoMoreObject.hxx>
 
-Expr_RUIterator::Expr_RUIterator(const Handle(Expr_GeneralRelation)& rel)
+Expr_RUIterator::Expr_RUIterator(const occ::handle<Expr_GeneralRelation>& rel)
 {
   Expr_RelationIterator       ri(rel);
-  Handle(Expr_SingleRelation) srel;
-  Handle(Expr_NamedUnknown)   var;
+  occ::handle<Expr_SingleRelation> srel;
+  occ::handle<Expr_NamedUnknown>   var;
   myCurrent = 1;
   while (ri.More())
   {
@@ -54,7 +54,7 @@ Expr_RUIterator::Expr_RUIterator(const Handle(Expr_GeneralRelation)& rel)
   }
 }
 
-Standard_Boolean Expr_RUIterator::More() const
+bool Expr_RUIterator::More() const
 {
   return (myCurrent <= myMap.Extent());
 }
@@ -68,7 +68,7 @@ void Expr_RUIterator::Next()
   myCurrent++;
 }
 
-Handle(Expr_NamedUnknown) Expr_RUIterator::Value() const
+occ::handle<Expr_NamedUnknown> Expr_RUIterator::Value() const
 {
   return myMap(myCurrent);
 }

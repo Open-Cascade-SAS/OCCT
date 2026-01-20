@@ -18,7 +18,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
@@ -28,14 +28,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_ViewSorter, Standard_Transient)
 
 IGESSelect_ViewSorter::IGESSelect_ViewSorter() {}
 
-void IGESSelect_ViewSorter::SetModel(const Handle(IGESData_IGESModel)& model)
+void IGESSelect_ViewSorter::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
   themodel = model;
 }
 
 void IGESSelect_ViewSorter::Clear()
 {
-  Standard_Integer nb = themodel->NbEntities();
+  int nb = themodel->NbEntities();
   if (nb < 100)
     nb = 100;
   themap.Clear();
@@ -48,36 +48,36 @@ void IGESSelect_ViewSorter::Clear()
   theindfin.Clear(); // seq//
 }
 
-Standard_Boolean IGESSelect_ViewSorter::Add(const Handle(Standard_Transient)& ent)
+bool IGESSelect_ViewSorter::Add(const occ::handle<Standard_Transient>& ent)
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (!igesent.IsNull())
     return AddEntity(igesent);
-  DeclareAndCast(TColStd_HSequenceOfTransient, list, ent);
+  DeclareAndCast(NCollection_HSequence<occ::handle<Standard_Transient>>, list, ent);
   if (!list.IsNull())
   {
     AddList(list);
-    return Standard_True;
+    return true;
   }
   DeclareAndCast(Interface_InterfaceModel, model, ent);
   if (!model.IsNull())
   {
     AddModel(model);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IGESSelect_ViewSorter::AddEntity(const Handle(IGESData_IGESEntity)& igesent)
+bool IGESSelect_ViewSorter::AddEntity(const occ::handle<IGESData_IGESEntity>& igesent)
 {
   //  Reception, controle de type et de map
   if (igesent.IsNull())
-    return Standard_False;
+    return false;
   if (themap.FindIndex(igesent))
-    return Standard_False;
+    return false;
   themap.Add(igesent);
   //  View recovery (watch out for Drawing case)
-  Handle(IGESData_IGESEntity) view;
+  occ::handle<IGESData_IGESEntity> view;
   if (igesent->TypeNumber() == PourDrawing)
     view = igesent; // DRAWING
   else
@@ -93,7 +93,7 @@ Standard_Boolean IGESSelect_ViewSorter::AddEntity(const Handle(IGESData_IGESEnti
     */
   }
   //  On enregistre
-  Standard_Integer viewindex = 0; // 0 sera pour remain
+  int viewindex = 0; // 0 sera pour remain
   if (!view.IsNull())
   {
     viewindex = theitems.FindIndex(view);
@@ -102,51 +102,51 @@ Standard_Boolean IGESSelect_ViewSorter::AddEntity(const Handle(IGESData_IGESEnti
   }
   theinditem.Append(viewindex);
   theindfin.Append(0);
-  return Standard_True;
+  return true;
 }
 
-void IGESSelect_ViewSorter::AddList(const Handle(TColStd_HSequenceOfTransient)& list)
+void IGESSelect_ViewSorter::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
-  Standard_Integer nb = list->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = list->Length();
+  for (int i = 1; i <= nb; i++)
     Add(list->Value(i));
 }
 
-void IGESSelect_ViewSorter::AddModel(const Handle(Interface_InterfaceModel)& model)
+void IGESSelect_ViewSorter::AddModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   DeclareAndCast(IGESData_IGESModel, igesmod, model);
   if (igesmod.IsNull())
     return;
-  Standard_Integer nb = igesmod->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = igesmod->NbEntities();
+  for (int i = 1; i <= nb; i++)
     AddEntity(igesmod->Entity(i));
 }
 
-Standard_Integer IGESSelect_ViewSorter::NbEntities() const
+int IGESSelect_ViewSorter::NbEntities() const
 {
   return themap.Extent();
 }
 
 //  .....    Attention    .....
 
-void IGESSelect_ViewSorter::SortSingleViews(const Standard_Boolean alsoframes)
+void IGESSelect_ViewSorter::SortSingleViews(const bool alsoframes)
 {
   // From the initial pile, we exclude : null views, and according to alsoframe the drawings
   // Null views : see theremain (initial remain carried forward)
 
   //  Note : the IsSingle filter has been applied by Add
   thefinals.Clear();
-  Standard_Integer nb = theinditem.Length();
-  // Standard_Integer numit = 0; //szv#4:S4163:12Mar99 not needed
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = theinditem.Length();
+  // int numit = 0; //szv#4:S4163:12Mar99 not needed
+  for (int i = 1; i <= nb; i++)
   {
-    Standard_Integer numitem    = theinditem.Value(i);
-    Standard_Integer finalindex = 0; // 0 sera pour remain
+    int numitem    = theinditem.Value(i);
+    int finalindex = 0; // 0 sera pour remain
     if (numitem > 0)
     {
       // numit = numitem; //szv#4:S4163:12Mar99 not needed
       DeclareAndCast(IGESData_IGESEntity, item, theitems.FindKey(numitem));
-      Standard_Boolean ok = Standard_False;
+      bool ok = false;
       if (alsoframes)
         ok = (item->TypeNumber() == PourDrawing);
       if (!ok)
@@ -171,12 +171,12 @@ void IGESSelect_ViewSorter::SortDrawings(const Interface_Graph& G)
   // Pour chaque item (vue ou drawing), drawing contenant, silya (sinon tant pis)
 
   thefinals.Clear();
-  Standard_Integer nb = theinditem.Length();
-  // Standard_Integer numit = 0; //szv#4:S4163:12Mar99 not needed
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = theinditem.Length();
+  // int numit = 0; //szv#4:S4163:12Mar99 not needed
+  for (int i = 1; i <= nb; i++)
   {
-    Standard_Integer numitem    = theinditem.Value(i);
-    Standard_Integer finalindex = 0; // 0 sera pour remain
+    int numitem    = theinditem.Value(i);
+    int finalindex = 0; // 0 sera pour remain
     if (numitem > 0)
     {
       // numit = numitem; //szv#4:S4163:12Mar99 not needed
@@ -184,7 +184,7 @@ void IGESSelect_ViewSorter::SortDrawings(const Interface_Graph& G)
       if (item.IsNull())
         continue;
       //  Si cest un Drawing, il definit le Set. Sinon, chercher Drawing contenant
-      Handle(Standard_Transient) drawing;
+      occ::handle<Standard_Transient> drawing;
       if (item->TypeNumber() == PourDrawing)
         drawing = item;
       else
@@ -212,7 +212,7 @@ void IGESSelect_ViewSorter::SortDrawings(const Interface_Graph& G)
 
 //  ....    Queries    ....
 
-Standard_Integer IGESSelect_ViewSorter::NbSets(const Standard_Boolean final) const
+int IGESSelect_ViewSorter::NbSets(const bool final) const
 {
   if (final)
     return thefinals.Extent();
@@ -220,8 +220,8 @@ Standard_Integer IGESSelect_ViewSorter::NbSets(const Standard_Boolean final) con
     return theitems.Extent();
 }
 
-Handle(IGESData_IGESEntity) IGESSelect_ViewSorter::SetItem(const Standard_Integer num,
-                                                           const Standard_Boolean final) const
+occ::handle<IGESData_IGESEntity> IGESSelect_ViewSorter::SetItem(const int num,
+                                                           const bool final) const
 {
   if (final)
     return GetCasted(IGESData_IGESEntity, thefinals.FindKey(num));
@@ -229,13 +229,13 @@ Handle(IGESData_IGESEntity) IGESSelect_ViewSorter::SetItem(const Standard_Intege
     return GetCasted(IGESData_IGESEntity, theitems.FindKey(num));
 }
 
-Handle(IFSelect_PacketList) IGESSelect_ViewSorter::Sets(const Standard_Boolean final) const
+occ::handle<IFSelect_PacketList> IGESSelect_ViewSorter::Sets(const bool final) const
 {
-  Handle(IFSelect_PacketList) list = new IFSelect_PacketList(themodel);
-  Standard_Integer            i, nb;
+  occ::handle<IFSelect_PacketList> list = new IFSelect_PacketList(themodel);
+  int            i, nb;
   nb                   = (final ? theindfin.Length() : theinditem.Length());
-  Standard_Integer nbs = NbSets(final);
-  for (Standard_Integer num = 1; num <= nbs; num++)
+  int nbs = NbSets(final);
+  for (int num = 1; num <= nbs; num++)
   {
     list->AddPacket();
     if (final)

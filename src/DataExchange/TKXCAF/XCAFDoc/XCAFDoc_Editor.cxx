@@ -60,17 +60,17 @@
 // function : Expand
 // purpose  : Convert Shape to assembly
 //=======================================================================
-Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
+bool XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
                                         const TDF_Label&       theShape,
-                                        const Standard_Boolean theRecursively)
+                                        const bool theRecursively)
 {
   if (theDoc.IsNull() || theShape.IsNull())
   {
-    return Standard_False;
+    return false;
   }
-  Handle(XCAFDoc_ShapeTool) aShapeTool   = XCAFDoc_DocumentTool::ShapeTool(theDoc);
-  Standard_Boolean          isAutoNaming = aShapeTool->AutoNaming();
-  aShapeTool->SetAutoNaming(Standard_False);
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool   = XCAFDoc_DocumentTool::ShapeTool(theDoc);
+  bool          isAutoNaming = aShapeTool->AutoNaming();
+  aShapeTool->SetAutoNaming(false);
 
   TDF_Label aCompoundPartL = theShape;
   if (aShapeTool->IsReference(theShape))
@@ -80,7 +80,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
   if (aShapeTool->Expand(aCompoundPartL))
   {
     // move attributes
-    for (TDF_ChildIterator aPartIter(aCompoundPartL, Standard_True); aPartIter.More();
+    for (TDF_ChildIterator aPartIter(aCompoundPartL, true); aPartIter.More();
          aPartIter.Next())
     {
       TDF_Label aChild = aPartIter.Value();
@@ -99,7 +99,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
             aShapeTool->SetShape(aPart, aShape);
           }
           aPart.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
-          aChild.ForgetAllAttributes(Standard_False);
+          aChild.ForgetAllAttributes(false);
         }
         aChild.ForgetAttribute(TNaming_NamedShape::GetID());
         aChild.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
@@ -108,10 +108,10 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
       {
         // If new original shape is not created, try to process this child
         // as subshape of new part
-        TDF_LabelSequence aUsers;
+        NCollection_Sequence<TDF_Label> aUsers;
         if (aShapeTool->GetUsers(aChild, aUsers) > 0)
         {
-          for (TDF_LabelSequence::Iterator anIter(aUsers); anIter.More(); anIter.Next())
+          for (NCollection_Sequence<TDF_Label>::Iterator anIter(aUsers); anIter.More(); anIter.Next())
           {
             TDF_Label aSubLabel = anIter.Value();
             // remove unnecessary links
@@ -119,7 +119,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
             aSubLabel.ForgetAttribute(XCAFDoc_ShapeMapTool::GetID());
             CloneMetaData(aChild, aSubLabel, NULL);
           }
-          aChild.ForgetAllAttributes(Standard_False);
+          aChild.ForgetAllAttributes(false);
         }
       }
     }
@@ -138,28 +138,28 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
       }
     }
     aShapeTool->SetAutoNaming(isAutoNaming);
-    return Standard_True;
+    return true;
   }
   aShapeTool->SetAutoNaming(isAutoNaming);
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : Expand
 // purpose  : Convert all compounds in Doc to assembly
 //=======================================================================
-Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
-                                        const Standard_Boolean theRecursively)
+bool XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
+                                        const bool theRecursively)
 {
   if (theDoc.IsNull())
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Boolean          aResult = Standard_False;
-  TDF_LabelSequence         aLabels;
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc);
+  bool          aResult = false;
+  NCollection_Sequence<TDF_Label>         aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc);
   aShapeTool->GetFreeShapes(aLabels);
-  for (TDF_LabelSequence::Iterator anIter(aLabels); anIter.More(); anIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator anIter(aLabels); anIter.More(); anIter.Next())
   {
     const TDF_Label    aLabel = anIter.Value();
     const TopoDS_Shape aS     = aShapeTool->GetShape(aLabel);
@@ -167,7 +167,7 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
     {
       if (Expand(theDoc, aLabel, theRecursively))
       {
-        aResult = Standard_True;
+        aResult = true;
       }
     }
   }
@@ -176,26 +176,26 @@ Standard_Boolean XCAFDoc_Editor::Expand(const TDF_Label&       theDoc,
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Editor::Extract(const TDF_LabelSequence& theSrcLabels,
+bool XCAFDoc_Editor::Extract(const NCollection_Sequence<TDF_Label>& theSrcLabels,
                                          const TDF_Label&         theDstLabel,
-                                         const Standard_Boolean   theIsNoVisMat)
+                                         const bool   theIsNoVisMat)
 {
   if (theDstLabel.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(XCAFDoc_ShapeTool) aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDstLabel);
-  NCollection_DataMap<Handle(XCAFDoc_VisMaterial), Handle(XCAFDoc_VisMaterial)> aVisMatMap;
-  for (TDF_LabelSequence::Iterator aNewRootIter(theSrcLabels); aNewRootIter.More();
+  occ::handle<XCAFDoc_ShapeTool> aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDstLabel);
+  NCollection_DataMap<occ::handle<XCAFDoc_VisMaterial>, occ::handle<XCAFDoc_VisMaterial>> aVisMatMap;
+  for (NCollection_Sequence<TDF_Label>::Iterator aNewRootIter(theSrcLabels); aNewRootIter.More();
        aNewRootIter.Next())
   {
     // Shape
     TopLoc_Location           aLoc;
-    TDF_LabelDataMap          aMap;
+    NCollection_DataMap<TDF_Label, TDF_Label>          aMap;
     const TDF_Label           aSrcLabel     = aNewRootIter.Value();
-    Handle(XCAFDoc_ShapeTool) aSrcShapeTool = XCAFDoc_DocumentTool::ShapeTool(aSrcLabel);
-    Handle(XCAFDoc_Location)  aLocationAttr;
+    occ::handle<XCAFDoc_ShapeTool> aSrcShapeTool = XCAFDoc_DocumentTool::ShapeTool(aSrcLabel);
+    occ::handle<XCAFDoc_Location>  aLocationAttr;
     if (aSrcLabel.FindAttribute(XCAFDoc_Location::GetID(), aLocationAttr))
     {
       aLoc = aLocationAttr->Get();
@@ -214,7 +214,7 @@ Standard_Boolean XCAFDoc_Editor::Extract(const TDF_LabelSequence& theSrcLabels,
     aMap.Bind(aCompLabel, aResLabel);
     aDstShapeTool->UpdateAssemblies();
     // Attributes
-    for (TDF_LabelDataMap::Iterator aLabelIter(aMap); aLabelIter.More(); aLabelIter.Next())
+    for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator aLabelIter(aMap); aLabelIter.More(); aLabelIter.Next())
     {
       CloneMetaData(aLabelIter.Key(),
                     aLabelIter.Value(),
@@ -225,16 +225,16 @@ Standard_Boolean XCAFDoc_Editor::Extract(const TDF_LabelSequence& theSrcLabels,
                     !theIsNoVisMat);
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Editor::Extract(const TDF_Label&       theSrcLabel,
+bool XCAFDoc_Editor::Extract(const TDF_Label&       theSrcLabel,
                                          const TDF_Label&       theDstLabel,
-                                         const Standard_Boolean theIsNoVisMat)
+                                         const bool theIsNoVisMat)
 {
-  TDF_LabelSequence aSeq;
+  NCollection_Sequence<TDF_Label> aSeq;
   aSeq.Append(theSrcLabel);
   return Extract(aSeq, theDstLabel, theIsNoVisMat);
 }
@@ -242,9 +242,9 @@ Standard_Boolean XCAFDoc_Editor::Extract(const TDF_Label&       theSrcLabel,
 //=================================================================================================
 
 TDF_Label XCAFDoc_Editor::CloneShapeLabel(const TDF_Label&                 theSrcLabel,
-                                          const Handle(XCAFDoc_ShapeTool)& theSrcShapeTool,
-                                          const Handle(XCAFDoc_ShapeTool)& theDstShapeTool,
-                                          TDF_LabelDataMap&                theMap)
+                                          const occ::handle<XCAFDoc_ShapeTool>& theSrcShapeTool,
+                                          const occ::handle<XCAFDoc_ShapeTool>& theDstShapeTool,
+                                          NCollection_DataMap<TDF_Label, TDF_Label>&                theMap)
 {
   TDF_Label aNewShL;
   if (theMap.Find(theSrcLabel, aNewShL))
@@ -261,15 +261,15 @@ TDF_Label XCAFDoc_Editor::CloneShapeLabel(const TDF_Label&                 theSr
     aNewShL = theDstShapeTool->AddShape(aComp);
     theMap.Bind(theSrcLabel, aNewShL);
 
-    TDF_LabelSequence aComponents;
+    NCollection_Sequence<TDF_Label> aComponents;
     theSrcShapeTool->GetComponents(theSrcLabel, aComponents);
-    for (TDF_LabelSequence::Iterator aCompIter(aComponents); aCompIter.More(); aCompIter.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator aCompIter(aComponents); aCompIter.More(); aCompIter.Next())
     {
       TDF_Label aCompL = aCompIter.Value();
       TDF_Label aRefL;
       theSrcShapeTool->GetReferredShape(aCompL, aRefL);
       TDF_Label aCompOriginalL = CloneShapeLabel(aRefL, theSrcShapeTool, theDstShapeTool, theMap);
-      Handle(XCAFDoc_Location) aLocationAttr;
+      occ::handle<XCAFDoc_Location> aLocationAttr;
       aCompL.FindAttribute(XCAFDoc_Location::GetID(), aLocationAttr);
       TDF_Label aNewCompL =
         theDstShapeTool->AddComponent(aNewShL, aCompOriginalL, aLocationAttr->Get());
@@ -292,9 +292,9 @@ TDF_Label XCAFDoc_Editor::CloneShapeLabel(const TDF_Label&                 theSr
     theMap.Bind(anOldOriginalL, aNewShL);
   }
   // copy subshapes
-  TDF_LabelSequence anOldSubShapes;
+  NCollection_Sequence<TDF_Label> anOldSubShapes;
   theSrcShapeTool->GetSubShapes(anOldOriginalL, anOldSubShapes);
-  for (TDF_LabelSequence::Iterator aSubIter(anOldSubShapes); aSubIter.More(); aSubIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aSubIter(anOldSubShapes); aSubIter.More(); aSubIter.Next())
   {
     TopoDS_Shape aSubShape     = theSrcShapeTool->GetShape(aSubIter.Value());
     TDF_Label    aNewSubShapeL = theDstShapeTool->AddSubShape(aNewShL, aSubShape);
@@ -308,30 +308,30 @@ TDF_Label XCAFDoc_Editor::CloneShapeLabel(const TDF_Label&                 theSr
 void XCAFDoc_Editor::CloneMetaData(
   const TDF_Label&                                                               theSrcLabel,
   const TDF_Label&                                                               theDstLabel,
-  NCollection_DataMap<Handle(XCAFDoc_VisMaterial), Handle(XCAFDoc_VisMaterial)>* theVisMatMap,
-  const Standard_Boolean                                                         theToCopyColor,
-  const Standard_Boolean                                                         theToCopyLayer,
-  const Standard_Boolean                                                         theToCopyMaterial,
-  const Standard_Boolean theToCopyVisMaterial,
-  const Standard_Boolean theToCopyAttribute)
+  NCollection_DataMap<occ::handle<XCAFDoc_VisMaterial>, occ::handle<XCAFDoc_VisMaterial>>* theVisMatMap,
+  const bool                                                         theToCopyColor,
+  const bool                                                         theToCopyLayer,
+  const bool                                                         theToCopyMaterial,
+  const bool theToCopyVisMaterial,
+  const bool theToCopyAttribute)
 {
   if (theSrcLabel == theDstLabel || theSrcLabel.IsNull() || theDstLabel.IsNull())
   {
     return;
   }
-  const Standard_Boolean toCopyColor =
+  const bool toCopyColor =
     theToCopyColor && XCAFDoc_DocumentTool::CheckColorTool(theSrcLabel);
-  const Standard_Boolean toCopyLayer =
+  const bool toCopyLayer =
     theToCopyLayer && XCAFDoc_DocumentTool::CheckLayerTool(theSrcLabel);
-  const Standard_Boolean toCopyMaterial =
+  const bool toCopyMaterial =
     theToCopyMaterial && XCAFDoc_DocumentTool::CheckMaterialTool(theSrcLabel);
-  const Standard_Boolean toCopyVisMaterial =
+  const bool toCopyVisMaterial =
     XCAFDoc_DocumentTool::CheckVisMaterialTool(theSrcLabel);
   // Colors
   if (toCopyColor)
   {
-    Handle(XCAFDoc_ColorTool) aSrcColorTool = XCAFDoc_DocumentTool::ColorTool(theSrcLabel);
-    Handle(XCAFDoc_ColorTool) aDstColorTool = XCAFDoc_DocumentTool::ColorTool(theDstLabel);
+    occ::handle<XCAFDoc_ColorTool> aSrcColorTool = XCAFDoc_DocumentTool::ColorTool(theSrcLabel);
+    occ::handle<XCAFDoc_ColorTool> aDstColorTool = XCAFDoc_DocumentTool::ColorTool(theDstLabel);
     const XCAFDoc_ColorType   aTypes[] = {XCAFDoc_ColorGen, XCAFDoc_ColorSurf, XCAFDoc_ColorCurv};
     for (int anInd = 0; anInd < 3; anInd++)
     {
@@ -349,11 +349,11 @@ void XCAFDoc_Editor::CloneMetaData(
   // Layers
   if (toCopyLayer)
   {
-    Handle(XCAFDoc_LayerTool) aSrcLayerTool = XCAFDoc_DocumentTool::LayerTool(theSrcLabel);
-    Handle(XCAFDoc_LayerTool) aDstLayerTool = XCAFDoc_DocumentTool::LayerTool(theDstLabel);
-    TDF_LabelSequence         aLayers;
+    occ::handle<XCAFDoc_LayerTool> aSrcLayerTool = XCAFDoc_DocumentTool::LayerTool(theSrcLabel);
+    occ::handle<XCAFDoc_LayerTool> aDstLayerTool = XCAFDoc_DocumentTool::LayerTool(theDstLabel);
+    NCollection_Sequence<TDF_Label>         aLayers;
     aSrcLayerTool->GetLayers(theSrcLabel, aLayers);
-    for (TDF_LabelSequence::Iterator aLayerIter(aLayers); aLayerIter.More(); aLayerIter.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator aLayerIter(aLayers); aLayerIter.More(); aLayerIter.Next())
     {
       TCollection_ExtendedString aLayerName;
       aSrcLayerTool->GetLayer(aLayerIter.Value(), aLayerName);
@@ -363,18 +363,18 @@ void XCAFDoc_Editor::CloneMetaData(
   // Materials
   if (toCopyMaterial)
   {
-    Handle(TDataStd_TreeNode) aMatNode;
+    occ::handle<TDataStd_TreeNode> aMatNode;
     if (theSrcLabel.FindAttribute(XCAFDoc::MaterialRefGUID(), aMatNode) && aMatNode->HasFather())
     {
       TDF_Label aMaterialL = aMatNode->Father()->Label();
       if (!aMaterialL.IsNull())
       {
-        Handle(XCAFDoc_MaterialTool) aSrcMaterialTool =
+        occ::handle<XCAFDoc_MaterialTool> aSrcMaterialTool =
           XCAFDoc_DocumentTool::MaterialTool(theSrcLabel);
-        Handle(XCAFDoc_MaterialTool) aDstMaterialTool =
+        occ::handle<XCAFDoc_MaterialTool> aDstMaterialTool =
           XCAFDoc_DocumentTool::MaterialTool(theDstLabel);
         double                           aDensity = 0.0;
-        Handle(TCollection_HAsciiString) aName, aDescription, aDensName, aDensValType;
+        occ::handle<TCollection_HAsciiString> aName, aDescription, aDensName, aDensValType;
         if (aSrcMaterialTool
               ->GetMaterial(aMaterialL, aName, aDescription, aDensity, aDensName, aDensValType)
             && !aName.IsNull() && aName->Length() != 0)
@@ -388,14 +388,14 @@ void XCAFDoc_Editor::CloneMetaData(
   // Visual Materials
   if (toCopyVisMaterial && (theToCopyVisMaterial || toCopyColor))
   {
-    Handle(XCAFDoc_VisMaterialTool) aSrcVisMatTool =
+    occ::handle<XCAFDoc_VisMaterialTool> aSrcVisMatTool =
       XCAFDoc_DocumentTool::VisMaterialTool(theSrcLabel);
     TDF_Label aVisMaterialL;
     aSrcVisMatTool->GetShapeMaterial(theSrcLabel, aVisMaterialL);
     if (!aVisMaterialL.IsNull())
     {
-      Handle(XCAFDoc_VisMaterialTool) aDstVisMatTool;
-      Handle(XCAFDoc_ColorTool)       aDstColorTool;
+      occ::handle<XCAFDoc_VisMaterialTool> aDstVisMatTool;
+      occ::handle<XCAFDoc_ColorTool>       aDstColorTool;
       if (theToCopyVisMaterial)
       {
         aDstVisMatTool = XCAFDoc_DocumentTool::VisMaterialTool(theDstLabel);
@@ -404,10 +404,10 @@ void XCAFDoc_Editor::CloneMetaData(
       {
         aDstColorTool = XCAFDoc_DocumentTool::ColorTool(theDstLabel);
       }
-      Handle(XCAFDoc_VisMaterial) aVisMatSrc = aSrcVisMatTool->GetMaterial(aVisMaterialL);
+      occ::handle<XCAFDoc_VisMaterial> aVisMatSrc = aSrcVisMatTool->GetMaterial(aVisMaterialL);
       if (theToCopyVisMaterial)
       {
-        Handle(XCAFDoc_VisMaterial) aVisMatDst;
+        occ::handle<XCAFDoc_VisMaterial> aVisMatDst;
         if (theVisMatMap != NULL)
         {
           if (!theVisMatMap->Find(aVisMatSrc, aVisMatDst))
@@ -418,7 +418,7 @@ void XCAFDoc_Editor::CloneMetaData(
             aVisMatDst->SetAlphaMode(aVisMatSrc->AlphaMode(), aVisMatSrc->AlphaCutOff());
             aVisMatDst->SetFaceCulling(aVisMatSrc->FaceCulling());
             TCollection_AsciiString aName;
-            Handle(TDataStd_Name)   aNodeName;
+            occ::handle<TDataStd_Name>   aNodeName;
             if (aVisMatSrc->Label().FindAttribute(TDataStd_Name::GetID(), aNodeName))
             {
               aName = aNodeName->Get();
@@ -445,7 +445,7 @@ void XCAFDoc_Editor::CloneMetaData(
     // Finds the target attributes or creates them empty
     for (TDF_AttributeIterator anAttIter(theSrcLabel); anAttIter.More(); anAttIter.Next())
     {
-      const Handle(TDF_Attribute) anAttSrc = anAttIter.Value();
+      const occ::handle<TDF_Attribute> anAttSrc = anAttIter.Value();
       // protect against color and layer coping without link to colors and layers
       if (const TDataStd_TreeNode* aTreeNode =
             dynamic_cast<const TDataStd_TreeNode*>(anAttSrc.get()))
@@ -477,20 +477,20 @@ void XCAFDoc_Editor::CloneMetaData(
         (void)aLocAttr;
         continue;
       }
-      Handle(TDF_Attribute) anAttDst;
+      occ::handle<TDF_Attribute> anAttDst;
       if (!theDstLabel.FindAttribute(anAttSrc->ID(), anAttDst))
       {
         anAttDst = anAttSrc->NewEmpty();
         theDstLabel.AddAttribute(anAttDst);
       }
-      Handle(TDF_RelocationTable) aRT = new TDF_RelocationTable();
+      occ::handle<TDF_RelocationTable> aRT = new TDF_RelocationTable();
       anAttSrc->Paste(anAttDst, aRT);
     }
   }
   // Name
-  Handle(TDataStd_Name) aNameAttr;
+  occ::handle<TDataStd_Name> aNameAttr;
   theSrcLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr);
-  Handle(XCAFDoc_ShapeTool) aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDstLabel);
+  occ::handle<XCAFDoc_ShapeTool> aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDstLabel);
   if (!aNameAttr.IsNull())
   {
     TDF_Label aRefLabel;
@@ -514,21 +514,21 @@ void XCAFDoc_Editor::CloneMetaData(
 //           not belonging to the assembly graph
 //=======================================================================
 
-static void rescaleDimensionRefLabels(const TDF_LabelSequence&             theRefLabels,
+static void rescaleDimensionRefLabels(const NCollection_Sequence<TDF_Label>&             theRefLabels,
                                       BRepBuilderAPI_Transform&            theBRepTrsf,
-                                      const Handle(XCAFDoc_AssemblyGraph)& theGraph,
+                                      const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
                                       const TCollection_AsciiString&       theEntryDimension)
 {
-  for (TDF_LabelSequence::Iterator anIt(theRefLabels); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator anIt(theRefLabels); anIt.More(); anIt.Next())
   {
     const TDF_Label& aL = anIt.Value();
     if (!theGraph->GetNodes().Contains(aL))
     {
-      Handle(TNaming_NamedShape) aNS;
+      occ::handle<TNaming_NamedShape> aNS;
       if (aL.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
         TopoDS_Shape aShape = aNS->Get();
-        theBRepTrsf.Perform(aShape, Standard_True, Standard_True);
+        theBRepTrsf.Perform(aShape, true, true);
         if (!theBRepTrsf.IsDone())
         {
           Standard_SStream aSS;
@@ -553,43 +553,43 @@ static void rescaleDimensionRefLabels(const TDF_LabelSequence&             theRe
 //           to the assembly graph.
 //=======================================================================
 
-static Standard_Boolean shouldRescaleAndCheckRefLabels(
-  const Handle(TDF_Data)&              theData,
-  const TDF_LabelSequence&             theRefLabels,
-  const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-  Standard_Boolean&                    theAllInG)
+static bool shouldRescaleAndCheckRefLabels(
+  const occ::handle<TDF_Data>&              theData,
+  const NCollection_Sequence<TDF_Label>&             theRefLabels,
+  const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+  bool&                    theAllInG)
 {
-  theAllInG                       = Standard_True;
-  Standard_Boolean aShouldRescale = Standard_False;
-  for (TDF_LabelSequence::Iterator anIt1(theRefLabels); anIt1.More(); anIt1.Next())
+  theAllInG                       = true;
+  bool aShouldRescale = false;
+  for (NCollection_Sequence<TDF_Label>::Iterator anIt1(theRefLabels); anIt1.More(); anIt1.Next())
   {
     const TDF_Label& aL = anIt1.Value();
     if (theGraph->GetNodes().Contains(aL))
     {
-      aShouldRescale = Standard_True;
+      aShouldRescale = true;
     }
     else
     {
-      Handle(XCAFDoc_AssemblyItemRef) anItemRefAttr;
+      occ::handle<XCAFDoc_AssemblyItemRef> anItemRefAttr;
       if (!aL.FindAttribute(XCAFDoc_AssemblyItemRef::GetID(), anItemRefAttr))
       {
-        theAllInG = Standard_False;
+        theAllInG = false;
         continue;
       }
       const XCAFDoc_AssemblyItemId& anItemId = anItemRefAttr->GetItem();
       if (anItemId.IsNull())
       {
-        theAllInG = Standard_False;
+        theAllInG = false;
         continue;
       }
       TDF_Label aLRef;
-      TDF_Tool::Label(theData, anItemId.GetPath().Last(), aLRef, Standard_False);
+      TDF_Tool::Label(theData, anItemId.GetPath().Last(), aLRef, false);
       if (aLRef.IsNull() || !theGraph->GetNodes().Contains(aLRef))
       {
-        theAllInG = Standard_False;
+        theAllInG = false;
         continue;
       }
-      aShouldRescale = Standard_True;
+      aShouldRescale = true;
     }
   }
   return aShouldRescale;
@@ -597,7 +597,7 @@ static Standard_Boolean shouldRescaleAndCheckRefLabels(
 
 //=================================================================================================
 
-void XCAFDoc_Editor::GetChildShapeLabels(const TDF_Label& theLabel, TDF_LabelMap& theRelatedLabels)
+void XCAFDoc_Editor::GetChildShapeLabels(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theRelatedLabels)
 {
   if (theLabel.IsNull() || !XCAFDoc_ShapeTool::IsShape(theLabel))
   {
@@ -625,7 +625,7 @@ void XCAFDoc_Editor::GetChildShapeLabels(const TDF_Label& theLabel, TDF_LabelMap
 
 //=================================================================================================
 
-void XCAFDoc_Editor::GetParentShapeLabels(const TDF_Label& theLabel, TDF_LabelMap& theRelatedLabels)
+void XCAFDoc_Editor::GetParentShapeLabels(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theRelatedLabels)
 {
   if (theLabel.IsNull() || !XCAFDoc_ShapeTool::IsShape(theLabel))
   {
@@ -642,11 +642,11 @@ void XCAFDoc_Editor::GetParentShapeLabels(const TDF_Label& theLabel, TDF_LabelMa
   }
   else
   {
-    TDF_LabelSequence aUsers;
+    NCollection_Sequence<TDF_Label> aUsers;
     XCAFDoc_ShapeTool::GetUsers(theLabel, aUsers);
     if (!aUsers.IsEmpty())
     {
-      for (TDF_LabelSequence::Iterator aUserIter(aUsers); aUserIter.More(); aUserIter.Next())
+      for (NCollection_Sequence<TDF_Label>::Iterator aUserIter(aUsers); aUserIter.More(); aUserIter.Next())
       {
         const TDF_Label& aUserLabel = aUserIter.Value();
         GetParentShapeLabels(aUserLabel, theRelatedLabels);
@@ -657,21 +657,21 @@ void XCAFDoc_Editor::GetParentShapeLabels(const TDF_Label& theLabel, TDF_LabelMa
 
 //=================================================================================================
 
-bool XCAFDoc_Editor::FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTool,
-                                     const TDF_LabelMap&              theLabelsToKeep)
+bool XCAFDoc_Editor::FilterShapeTree(const occ::handle<XCAFDoc_ShapeTool>& theShapeTool,
+                                     const NCollection_Map<TDF_Label>&              theLabelsToKeep)
 {
   if (theLabelsToKeep.IsEmpty())
   {
     return false;
   }
-  Handle(NCollection_BaseAllocator) anAllocator = new NCollection_IncAllocator();
-  TDF_LabelMap                      aLabelsToKeep(theLabelsToKeep.Size(), anAllocator);
-  for (TDF_LabelMap::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
+  occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  NCollection_Map<TDF_Label>                      aLabelsToKeep(theLabelsToKeep.Size(), anAllocator);
+  for (NCollection_Map<TDF_Label>::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
   {
     GetChildShapeLabels(aLabelIter.Key(), aLabelsToKeep);
   }
-  TDF_LabelMap aInternalLabels(1, anAllocator);
-  for (TDF_LabelMap::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
+  NCollection_Map<TDF_Label> aInternalLabels(1, anAllocator);
+  for (NCollection_Map<TDF_Label>::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
   {
     GetParentShapeLabels(aLabelIter.Key(), aInternalLabels);
     NCollection_MapAlgo::Unite(aLabelsToKeep, aInternalLabels);
@@ -683,7 +683,7 @@ bool XCAFDoc_Editor::FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTo
     const TDF_Label& aLabel = aLabelIter.Value();
     if (!aLabelsToKeep.Contains(aLabel))
     {
-      aLabel.ForgetAllAttributes(Standard_False);
+      aLabel.ForgetAllAttributes(false);
     }
   }
   theShapeTool->UpdateAssemblies();
@@ -695,39 +695,39 @@ bool XCAFDoc_Editor::FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTo
 // purpose  : Applies geometrical scale to all assembly parts, component
 //           locations and related attributes
 //=======================================================================
-Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel,
-                                                 const Standard_Real    theScaleFactor,
-                                                 const Standard_Boolean theForceIfNotRoot)
+bool XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel,
+                                                 const double    theScaleFactor,
+                                                 const bool theForceIfNotRoot)
 {
   if (theLabel.IsNull())
   {
     Message::SendFail("Null label.");
-    return Standard_False;
+    return false;
   }
 
   if (std::abs(theScaleFactor) <= gp::Resolution())
   {
     Message::SendFail("Scale factor is too small.");
-    return Standard_False;
+    return false;
   }
 
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theLabel);
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theLabel);
   if (aShapeTool.IsNull())
   {
     Message::SendFail("Couldn't find XCAFDoc_ShapeTool attribute.");
-    return Standard_False;
+    return false;
   }
 
   if (!theForceIfNotRoot && aShapeTool->Label() != theLabel)
   {
-    TDF_LabelSequence aFreeLabels;
+    NCollection_Sequence<TDF_Label> aFreeLabels;
     aShapeTool->GetFreeShapes(aFreeLabels);
-    Standard_Boolean aFound = Standard_False;
-    for (TDF_LabelSequence::Iterator anIt(aFreeLabels); anIt.More(); anIt.Next())
+    bool aFound = false;
+    for (NCollection_Sequence<TDF_Label>::Iterator anIt(aFreeLabels); anIt.More(); anIt.Next())
     {
       if (theLabel == anIt.Value())
       {
-        aFound = Standard_True;
+        aFound = true;
         break;
       }
     }
@@ -738,18 +738,18 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
       Standard_SStream aSS;
       aSS << "Label " << anEntry << " is not a root. Set ForceIfNotRoot true to rescale forcibly.";
       Message::SendFail(aSS.str().c_str());
-      return Standard_False;
+      return false;
     }
   }
 
-  Handle(XCAFDoc_AssemblyGraph) aG = new XCAFDoc_AssemblyGraph(theLabel);
+  occ::handle<XCAFDoc_AssemblyGraph> aG = new XCAFDoc_AssemblyGraph(theLabel);
   if (aG.IsNull())
   {
     Message::SendFail("Couldn't create assembly graph.");
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean anIsDone = Standard_True;
+  bool anIsDone = true;
 
   gp_Trsf aTrsf;
   aTrsf.SetScaleFactor(theScaleFactor);
@@ -757,21 +757,21 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
 
   XCAFDoc_AssemblyTool::Traverse(
     aG,
-    [](const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-       const Standard_Integer               theNode) -> Standard_Boolean {
+    [](const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+       const int               theNode) -> bool {
       const XCAFDoc_AssemblyGraph::NodeType aNodeType = theGraph->GetNodeType(theNode);
       return (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Part)
              || (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Occurrence);
     },
-    [&](const Handle(XCAFDoc_AssemblyGraph)& theGraph,
-        const Standard_Integer               theNode) -> Standard_Boolean {
+    [&](const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
+        const int               theNode) -> bool {
       const TDF_Label&                      aLabel    = theGraph->GetNode(theNode);
       const XCAFDoc_AssemblyGraph::NodeType aNodeType = theGraph->GetNodeType(theNode);
 
       if (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Part)
       {
         const TopoDS_Shape aShape = aShapeTool->GetShape(aLabel);
-        aBRepTrsf.Perform(aShape, Standard_True, Standard_True);
+        aBRepTrsf.Perform(aShape, true, true);
         if (!aBRepTrsf.IsDone())
         {
           Standard_SStream        aSS;
@@ -779,16 +779,16 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
           TDF_Tool::Entry(aLabel, anEntry);
           aSS << "Shape " << anEntry << " is not scaled!";
           Message::SendFail(aSS.str().c_str());
-          anIsDone = Standard_False;
-          return Standard_False;
+          anIsDone = false;
+          return false;
         }
         TopoDS_Shape aScaledShape = aBRepTrsf.Shape();
         aShapeTool->SetShape(aLabel, aScaledShape);
 
         // Update sub-shapes
-        TDF_LabelSequence aSubshapes;
+        NCollection_Sequence<TDF_Label> aSubshapes;
         aShapeTool->GetSubShapes(aLabel, aSubshapes);
-        for (TDF_LabelSequence::Iterator anItSs(aSubshapes); anItSs.More(); anItSs.Next())
+        for (NCollection_Sequence<TDF_Label>::Iterator anItSs(aSubshapes); anItSs.More(); anItSs.Next())
         {
           const TDF_Label&   aLSs = anItSs.Value();
           const TopoDS_Shape aSs  = aShapeTool->GetShape(aLSs);
@@ -796,19 +796,19 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
           aShapeTool->SetShape(aLSs, aSs1);
         }
 
-        Handle(XCAFDoc_Area) aArea;
+        occ::handle<XCAFDoc_Area> aArea;
         if (aLabel.FindAttribute(XCAFDoc_Area::GetID(), aArea))
         {
           aArea->Set(aArea->Get() * theScaleFactor * theScaleFactor);
         }
 
-        Handle(XCAFDoc_Centroid) aCentroid;
+        occ::handle<XCAFDoc_Centroid> aCentroid;
         if (aLabel.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
         {
           aCentroid->Set(aCentroid->Get().XYZ() * theScaleFactor);
         }
 
-        Handle(XCAFDoc_Volume) aVolume;
+        occ::handle<XCAFDoc_Volume> aVolume;
         if (aLabel.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
         {
           aVolume->Set(aVolume->Get() * theScaleFactor * theScaleFactor * theScaleFactor);
@@ -822,36 +822,36 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
         XCAFDoc_Location::Set(aLabel, aTrsf);
       }
 
-      return Standard_True;
+      return true;
     });
 
   if (!anIsDone)
   {
-    return Standard_False;
+    return false;
   }
 
   aShapeTool->UpdateAssemblies();
 
-  Handle(XCAFDoc_DimTolTool) aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(theLabel);
+  occ::handle<XCAFDoc_DimTolTool> aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(theLabel);
   if (!aDimTolTool.IsNull())
   {
-    TDF_LabelSequence aDimensions;
+    NCollection_Sequence<TDF_Label> aDimensions;
     aDimTolTool->GetDimensionLabels(aDimensions);
-    for (TDF_LabelSequence::Iterator anItD(aDimensions); anItD.More(); anItD.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator anItD(aDimensions); anItD.More(); anItD.Next())
     {
       const TDF_Label& aDimension = anItD.Value();
 
       TCollection_AsciiString anEntryDimension;
       TDF_Tool::Entry(aDimension, anEntryDimension);
 
-      Handle(XCAFDoc_Dimension) aDimAttr;
+      occ::handle<XCAFDoc_Dimension> aDimAttr;
       if (aDimension.FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr))
       {
-        Standard_Boolean  aShouldRescale = Standard_False;
-        Standard_Boolean  aFirstLInG     = Standard_True;
-        Standard_Boolean  aSecondLInG    = Standard_True;
-        TDF_LabelSequence aShapeLFirst, aShapeLSecond;
-        Standard_Boolean  aHasShapeRefs =
+        bool  aShouldRescale = false;
+        bool  aFirstLInG     = true;
+        bool  aSecondLInG    = true;
+        NCollection_Sequence<TDF_Label> aShapeLFirst, aShapeLSecond;
+        bool  aHasShapeRefs =
           aDimTolTool->GetRefShapeLabel(aDimension, aShapeLFirst, aShapeLSecond);
         if (aHasShapeRefs)
         {
@@ -868,7 +868,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
           continue;
         }
 
-        Handle(XCAFDimTolObjects_DimensionObject) aDimObj = aDimAttr->GetObject();
+        occ::handle<XCAFDimTolObjects_DimensionObject> aDimObj = aDimAttr->GetObject();
 
         if (aDimObj->HasTextPoint())
         {
@@ -892,7 +892,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
           aDimObj->SetPlane(aPln);
         }
 
-        Handle(TColStd_HArray1OfReal) aValues = aDimObj->GetValues();
+        occ::handle<NCollection_HArray1<double>> aValues = aDimObj->GetValues();
         if (!aValues.IsNull())
         {
           if (!aFirstLInG || !aSecondLInG)
@@ -903,8 +903,8 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
             Message::SendWarning(aSS.str().c_str());
             continue;
           }
-          Standard_Boolean      aRescaleOtherValues = Standard_False;
-          TColStd_Array1OfReal& anArray             = aValues->ChangeArray1();
+          bool      aRescaleOtherValues = false;
+          NCollection_Array1<double>& anArray             = aValues->ChangeArray1();
           switch (aDimObj->GetType())
           {
             case XCAFDimTolObjects_DimensionType_Location_None:
@@ -924,7 +924,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
             case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToOuter:
             case XCAFDimTolObjects_DimensionType_Location_LinearDistance_FromInnerToInner:
               anArray.ChangeFirst() *= theScaleFactor;
-              aRescaleOtherValues = Standard_True;
+              aRescaleOtherValues = true;
               break;
             case XCAFDimTolObjects_DimensionType_Location_Angular:
             case XCAFDimTolObjects_DimensionType_Size_Angular:
@@ -952,7 +952,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
             case XCAFDimTolObjects_DimensionType_Size_Thickness:
             case XCAFDimTolObjects_DimensionType_Size_WithPath:
               anArray.ChangeFirst() *= theScaleFactor;
-              aRescaleOtherValues = Standard_True;
+              aRescaleOtherValues = true;
               break;
             case XCAFDimTolObjects_DimensionType_CommonLabel:
             case XCAFDimTolObjects_DimensionType_DimensionPresentation: {
@@ -971,10 +971,10 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
           rescaleDimensionRefLabels(aShapeLSecond, aBRepTrsf, aG, anEntryDimension);
           if (aRescaleOtherValues)
           {
-            for (Standard_Integer i = anArray.Lower() + 1; i <= anArray.Upper(); ++i)
+            for (int i = anArray.Lower() + 1; i <= anArray.Upper(); ++i)
               anArray.ChangeValue(i) *= theScaleFactor;
 
-            Handle(TCollection_HAsciiString) aName = aDimObj->GetSemanticName();
+            occ::handle<TCollection_HAsciiString> aName = aDimObj->GetSemanticName();
             if (!aName.IsNull())
             {
               aName->AssignCat(" (Rescaled to ");
@@ -996,19 +996,19 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
       }
     }
 
-    TDF_LabelSequence aDatums;
+    NCollection_Sequence<TDF_Label> aDatums;
     aDimTolTool->GetDatumLabels(aDatums);
-    for (TDF_LabelSequence::Iterator anIt(aDatums); anIt.More(); anIt.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator anIt(aDatums); anIt.More(); anIt.Next())
     {
       const TDF_Label& aDatum = anIt.Value();
 
       TCollection_AsciiString anEntryDatum;
       TDF_Tool::Entry(aDatum, anEntryDatum);
 
-      Handle(XCAFDoc_Datum) aDatumAttr;
+      occ::handle<XCAFDoc_Datum> aDatumAttr;
       if (aDatum.FindAttribute(XCAFDoc_Datum::GetID(), aDatumAttr))
       {
-        Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatumAttr->GetObject();
+        occ::handle<XCAFDimTolObjects_DatumObject> aDatumObj = aDatumAttr->GetObject();
 
         if (aDatumObj->HasDatumTargetParams())
         {
@@ -1044,16 +1044,16 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
       }
     }
 
-    TDF_LabelSequence aDimTols;
+    NCollection_Sequence<TDF_Label> aDimTols;
     aDimTolTool->GetDimTolLabels(aDimTols);
-    for (TDF_LabelSequence::Iterator anIt(aDimTols); anIt.More(); anIt.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator anIt(aDimTols); anIt.More(); anIt.Next())
     {
       const TDF_Label& aDimTol = anIt.Value();
 
       TCollection_AsciiString anEntryDimTol;
       TDF_Tool::Entry(aDimTol, anEntryDimTol);
 
-      Handle(XCAFDoc_DimTol) aDimTolAttr;
+      occ::handle<XCAFDoc_DimTol> aDimTolAttr;
       if (aDimTol.FindAttribute(XCAFDoc_DimTol::GetID(), aDimTolAttr))
       {
         Standard_SStream aSS;
@@ -1063,21 +1063,21 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label&       theLabel
     }
   }
 
-  Handle(XCAFDoc_NotesTool) aNotesTool = XCAFDoc_DocumentTool::NotesTool(theLabel);
+  occ::handle<XCAFDoc_NotesTool> aNotesTool = XCAFDoc_DocumentTool::NotesTool(theLabel);
   if (!aNotesTool.IsNull())
   {
-    TDF_LabelSequence aNotes;
+    NCollection_Sequence<TDF_Label> aNotes;
     aNotesTool->GetNotes(aNotes);
-    for (TDF_LabelSequence::Iterator anIt(aNotes); anIt.More(); anIt.Next())
+    for (NCollection_Sequence<TDF_Label>::Iterator anIt(aNotes); anIt.More(); anIt.Next())
     {
       const TDF_Label& aNote = anIt.Value();
 
-      Handle(XCAFDoc_Note) aNoteAttr;
+      occ::handle<XCAFDoc_Note> aNoteAttr;
       if (aNote.FindAttribute(XCAFDoc_NoteComment::GetID(), aNoteAttr)
           || aNote.FindAttribute(XCAFDoc_NoteBalloon::GetID(), aNoteAttr)
           || aNote.FindAttribute(XCAFDoc_NoteBinData::GetID(), aNoteAttr))
       {
-        Handle(XCAFNoteObjects_NoteObject) aNoteObj = aNoteAttr->GetObject();
+        occ::handle<XCAFNoteObjects_NoteObject> aNoteObj = aNoteAttr->GetObject();
 
         if (aNoteObj->HasPointText())
         {

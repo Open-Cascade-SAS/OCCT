@@ -34,22 +34,22 @@ TopoDS_AlertAttribute::TopoDS_AlertAttribute(const TopoDS_Shape&            theS
 
 //=================================================================================================
 
-void TopoDS_AlertAttribute::Send(const Handle(Message_Messenger)& theMessenger,
+void TopoDS_AlertAttribute::Send(const occ::handle<Message_Messenger>& theMessenger,
                                  const TopoDS_Shape&              theShape)
 {
-  for (Message_SequenceOfPrinters::Iterator aPrinterIter(theMessenger->Printers());
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(theMessenger->Printers());
        aPrinterIter.More();
        aPrinterIter.Next())
   {
-    const Handle(Message_Printer)& aPrinter = aPrinterIter.Value();
+    const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
     if (!aPrinter->IsKind(STANDARD_TYPE(Message_PrinterToReport)))
     {
       continue;
     }
 
-    Handle(Message_PrinterToReport) aPrinterToReport =
-      Handle(Message_PrinterToReport)::DownCast(aPrinter);
-    const Handle(Message_Report)& aReport = aPrinterToReport->Report();
+    occ::handle<Message_PrinterToReport> aPrinterToReport =
+      occ::down_cast<Message_PrinterToReport>(aPrinter);
+    const occ::handle<Message_Report>& aReport = aPrinterToReport->Report();
 
     Message_AlertExtended::AddAlert(aReport, new TopoDS_AlertAttribute(theShape), Message_Info);
   }
@@ -57,7 +57,7 @@ void TopoDS_AlertAttribute::Send(const Handle(Message_Messenger)& theMessenger,
 
 //=================================================================================================
 
-void TopoDS_AlertAttribute::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TopoDS_AlertAttribute::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Message_Attribute)

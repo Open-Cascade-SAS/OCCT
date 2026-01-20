@@ -45,9 +45,9 @@ const Standard_GUID& XCAFDoc_Area::ID() const
 
 //=================================================================================================
 
-Handle(XCAFDoc_Area) XCAFDoc_Area::Set(const TDF_Label& L, const Standard_Real V)
+occ::handle<XCAFDoc_Area> XCAFDoc_Area::Set(const TDF_Label& L, const double V)
 {
-  Handle(XCAFDoc_Area) A;
+  occ::handle<XCAFDoc_Area> A;
   if (!L.FindAttribute(XCAFDoc_Area::GetID(), A))
   {
     A = new XCAFDoc_Area;
@@ -59,28 +59,28 @@ Handle(XCAFDoc_Area) XCAFDoc_Area::Set(const TDF_Label& L, const Standard_Real V
 
 //=================================================================================================
 
-void XCAFDoc_Area::Set(const Standard_Real V)
+void XCAFDoc_Area::Set(const double V)
 {
   TDataStd_Real::Set(V);
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDoc_Area::Get() const
+double XCAFDoc_Area::Get() const
 {
   return TDataStd_Real::Get();
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Area::Get(const TDF_Label& label, Standard_Real& area)
+bool XCAFDoc_Area::Get(const TDF_Label& label, double& area)
 {
-  Handle(XCAFDoc_Area) anArea;
+  occ::handle<XCAFDoc_Area> anArea;
   if (!label.FindAttribute(XCAFDoc_Area::GetID(), anArea))
-    return Standard_False;
+    return false;
 
   area = anArea->Get();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -94,7 +94,7 @@ Standard_OStream& XCAFDoc_Area::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void XCAFDoc_Area::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Area::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

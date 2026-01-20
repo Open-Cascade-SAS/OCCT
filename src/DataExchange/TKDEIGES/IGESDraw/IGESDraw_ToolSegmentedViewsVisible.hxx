@@ -45,41 +45,39 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
-                                     const Handle(IGESData_IGESReaderData)&        IR,
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
+                                     const occ::handle<IGESData_IGESReaderData>&        IR,
                                      IGESData_ParamReader&                         PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
                                       IGESData_IGESWriter&                          IW) const;
 
   //! Lists the Entities shared by a SegmentedViewsVisible <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  Standard_EXPORT void OwnShared(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
                                  Interface_EntityIterator&                     iter) const;
 
   //! Returns specific DirChecker
   Standard_EXPORT IGESData_DirChecker
-    DirChecker(const Handle(IGESDraw_SegmentedViewsVisible)& ent) const;
+    DirChecker(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
                                 const Interface_ShareTool&                    shares,
-                                Handle(Interface_Check)&                      ach) const;
+                                occ::handle<Interface_Check>&                      ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESDraw_SegmentedViewsVisible)& entfrom,
-                               const Handle(IGESDraw_SegmentedViewsVisible)& entto,
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESDraw_SegmentedViewsVisible>& entfrom,
+                               const occ::handle<IGESDraw_SegmentedViewsVisible>& entto,
                                Interface_CopyTool&                           TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  Standard_EXPORT void OwnDump(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
                                const IGESData_IGESDumper&                    dumper,
                                Standard_OStream&                             S,
-                               const Standard_Integer                        own) const;
+                               const int                        own) const;
 
-protected:
-private:
 };
 
 #endif // _IGESDraw_ToolSegmentedViewsVisible_HeaderFile

@@ -16,19 +16,25 @@
 #include <Vrml_Normal.hxx>
 #include <TopoDS.hxx>
 #include <Poly_Connect.hxx>
-#include <TColgp_Array1OfDir.hxx>
-#include <TColgp_HArray1OfVec.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <Vrml_IndexedFaceSet.hxx>
 #include <Vrml_Coordinate3.hxx>
 #include <math.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Geom_Surface.hxx>
 #include <CSLib.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -43,22 +49,22 @@
 
 void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStream,
                                     const TopoDS_Shape&                 aShape,
-                                    const Handle(VrmlConverter_Drawer)& aDrawer)
+                                    const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
-  Handle(Poly_Triangulation) T;
+  occ::handle<Poly_Triangulation> T;
   TopLoc_Location            theLocation;
-  Standard_Integer           i, j, k, decal, nnv, EI;
+  int           i, j, k, decal, nnv, EI;
 
-  Standard_Integer t[3], n[3];
+  int t[3], n[3];
   gp_Pnt           p;
   TopExp_Explorer  ex;
 
   // counting phase. This phase will count the valid triangle
   // and the vertices to allocate the correct size for the arrays:
 
-  Standard_Integer nbTriangles = 0, nbVertices = 0;
+  int nbTriangles = 0, nbVertices = 0;
 
-  Standard_Integer nt, nnn, n1, n2, n3;
+  int nt, nnn, n1, n2, n3;
 
   // iterating on each face of the shape:
   for (ex.Init(aShape, TopAbs_FACE); ex.More(); ex.Next())
@@ -119,19 +125,19 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
   {
     // allocating the graphic arrays.
 
-    Handle(VrmlConverter_ShadingAspect) SA = new VrmlConverter_ShadingAspect;
+    occ::handle<VrmlConverter_ShadingAspect> SA = new VrmlConverter_ShadingAspect;
     SA                                     = aDrawer->ShadingAspect();
 
-    Handle(TColgp_HArray1OfVec) HAV1 = new TColgp_HArray1OfVec(1, nbVertices);
-    Handle(TColgp_HArray1OfVec) HAV2 = new TColgp_HArray1OfVec(1, nbVertices);
+    occ::handle<NCollection_HArray1<gp_Vec>> HAV1 = new NCollection_HArray1<gp_Vec>(1, nbVertices);
+    occ::handle<NCollection_HArray1<gp_Vec>> HAV2 = new NCollection_HArray1<gp_Vec>(1, nbVertices);
 
     gp_Vec V, VV;
 
-    Handle(TColStd_HArray1OfInteger) HAI1 = new TColStd_HArray1OfInteger(1, 4 * nbTriangles);
-    Handle(TColStd_HArray1OfInteger) HAI3 =
-      new TColStd_HArray1OfInteger(1, (nbVertices / 3 * 4 + nbVertices % 3));
-    Handle(TColStd_HArray1OfInteger) HAI2 = new TColStd_HArray1OfInteger(1, 1);
-    Handle(TColStd_HArray1OfInteger) HAI4 = new TColStd_HArray1OfInteger(1, 1);
+    occ::handle<NCollection_HArray1<int>> HAI1 = new NCollection_HArray1<int>(1, 4 * nbTriangles);
+    occ::handle<NCollection_HArray1<int>> HAI3 =
+      new NCollection_HArray1<int>(1, (nbVertices / 3 * 4 + nbVertices % 3));
+    occ::handle<NCollection_HArray1<int>> HAI2 = new NCollection_HArray1<int>(1, 1);
+    occ::handle<NCollection_HArray1<int>> HAI4 = new NCollection_HArray1<int>(1, 1);
 
     HAI2->SetValue(1, -1);
     HAI4->SetValue(1, -1);
@@ -152,7 +158,7 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
         // 1 -  Building HAV1 -  array of all XYZ of nodes for Vrml_Coordinate3 from the triangles
         //            and HAV2 - array of all normals of nodes for Vrml_Normal
 
-        TColgp_Array1OfDir NORMAL(1, T->NbNodes());
+        NCollection_Array1<gp_Dir> NORMAL(1, T->NbNodes());
 
         decal = nnv - 1;
 
@@ -299,14 +305,14 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
       if (SA->HasMaterial())
       {
 
-        Handle(Vrml_Material) M;
+        occ::handle<Vrml_Material> M;
         M = SA->FrontMaterial();
 
         M->Print(anOStream);
       }
 
       // Coordinate3
-      Handle(Vrml_Coordinate3) C3 = new Vrml_Coordinate3(HAV1);
+      occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV1);
       C3->Print(anOStream);
       // ShapeHints
       SH.Print(anOStream);
@@ -339,13 +345,13 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
       if (SA->HasMaterial())
       {
 
-        Handle(Vrml_Material) M;
+        occ::handle<Vrml_Material> M;
         M = SA->FrontMaterial();
 
         M->Print(anOStream);
       }
       // Coordinate3
-      Handle(Vrml_Coordinate3) C3 = new Vrml_Coordinate3(HAV1);
+      occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV1);
       C3->Print(anOStream);
       // ShapeHints
       SH.Print(anOStream);
@@ -372,22 +378,22 @@ void VrmlConverter_ShadedShape::Add(Standard_OStream&                   anOStrea
 
 void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face&  aFace,
                                               Poly_Connect&       pc,
-                                              TColgp_Array1OfDir& Nor)
+                                              NCollection_Array1<gp_Dir>& Nor)
 {
-  const Handle(Poly_Triangulation)& T = pc.Triangulation();
+  const occ::handle<Poly_Triangulation>& T = pc.Triangulation();
   BRepAdaptor_Surface               S;
-  Standard_Boolean                  hasUV = T->HasUVNodes();
-  Standard_Integer                  i;
+  bool                  hasUV = T->HasUVNodes();
+  int                  i;
   TopLoc_Location                   l;
-  Handle(Geom_Surface)              GS = BRep_Tool::Surface(aFace, l);
+  occ::handle<Geom_Surface>              GS = BRep_Tool::Surface(aFace, l);
 
   if (hasUV && !GS.IsNull())
   {
-    Standard_Boolean       OK = Standard_True;
+    bool       OK = true;
     gp_Vec                 D1U, D1V;
     gp_Vec                 D2U, D2V, D2UV;
     gp_Pnt                 P;
-    Standard_Real          U, V;
+    double          U, V;
     CSLib_DerivativeStatus aStatus;
     CSLib_NormalStatus     NStat;
     S.Initialize(aFace);
@@ -408,7 +414,7 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face&  aFace,
   }
   else
   {
-    Standard_Integer n[3];
+    int n[3];
 
     for (i = 1; i <= T->NbNodes(); i++)
     {

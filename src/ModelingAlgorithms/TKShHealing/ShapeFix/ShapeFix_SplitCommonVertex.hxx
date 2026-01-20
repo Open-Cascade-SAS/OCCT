@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
 
-class ShapeFix_SplitCommonVertex;
-DEFINE_STANDARD_HANDLE(ShapeFix_SplitCommonVertex, ShapeFix_Root)
-
 //! Two wires have common vertex - this case is valid in BRep model
 //! and isn't valid in STEP => before writing into STEP it is necessary
 //! to split this vertex (each wire must has one vertex)
@@ -43,11 +40,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex, ShapeFix_Root)
 
-protected:
 private:
   TopoDS_Shape     myShape;
   TopoDS_Shape     myResult;
-  Standard_Integer myStatus;
+  int myStatus;
 };
 
 #endif // _ShapeFix_SplitCommonVertex_HeaderFile

@@ -31,12 +31,12 @@ StepDimTol_GeometricToleranceWithMaximumTolerance::
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceWithMaximumTolerance::Init(
-  const Handle(TCollection_HAsciiString)&                       theName,
-  const Handle(TCollection_HAsciiString)&                       theDescription,
-  const Handle(Standard_Transient)&                             theMagnitude,
+  const occ::handle<TCollection_HAsciiString>&                       theName,
+  const occ::handle<TCollection_HAsciiString>&                       theDescription,
+  const occ::handle<Standard_Transient>&                             theMagnitude,
   const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
-  const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers,
-  const Handle(StepBasic_LengthMeasureWithUnit)&                theMaximumUpperTolerance)
+  const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>&                theMaximumUpperTolerance)
 {
   StepDimTol_GeometricToleranceWithModifiers::Init(theName,
                                                    theDescription,

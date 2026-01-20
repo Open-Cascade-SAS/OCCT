@@ -29,28 +29,28 @@
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsTriangulated(const TopoDS_Shape& theShape)
+bool StdPrs_ToolTriangulatedShape::IsTriangulated(const TopoDS_Shape& theShape)
 {
   TopLoc_Location aLocDummy;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&                aFace = TopoDS::Face(aFaceIter.Current());
-    const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation(aFace, aLocDummy);
+    const occ::handle<Poly_Triangulation>& aTri  = BRep_Tool::Triangulation(aFace, aLocDummy);
     if (aTri.IsNull())
     {
-      return Standard_False;
+      return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theShape)
+bool StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
   {
-    return Standard_True;
+    return true;
   }
 
   switch (theShape.ShapeType())
@@ -64,17 +64,17 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theS
         const TopoDS_Shape& aShape = anIter.Value();
         if (!IsClosed(aShape))
         {
-          return Standard_False;
+          return false;
         }
       }
-      return Standard_True;
+      return true;
     }
     case TopAbs_SOLID: {
       // Check for non-manifold topology first of all:
       // have to use BRep_Tool::IsClosed() because it checks the face connectivity
       // inside the shape
       if (!BRep_Tool::IsClosed(theShape))
-        return Standard_False;
+        return false;
 
       for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
       {
@@ -87,34 +87,34 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed(const TopoDS_Shape& theS
         if (aShape.ShapeType() == TopAbs_FACE)
         {
           // invalid solid
-          return Standard_False;
+          return false;
         }
         else if (!IsTriangulated(aShape))
         {
           // mesh contains holes
-          return Standard_False;
+          return false;
         }
       }
-      return Standard_True;
+      return true;
     }
     case TopAbs_SHELL:
     case TopAbs_FACE: {
       // free faces / shell are not allowed
-      return Standard_False;
+      return false;
     }
     case TopAbs_WIRE:
     case TopAbs_EDGE:
     case TopAbs_VERTEX: {
       // ignore
-      return Standard_True;
+      return true;
     }
   }
 }
 
 //=================================================================================================
 
-Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&         theShape,
-                                                          const Handle(Prs3d_Drawer)& theDrawer)
+double StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&         theShape,
+                                                          const occ::handle<Prs3d_Drawer>& theDrawer)
 {
   if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
   {
@@ -122,7 +122,7 @@ Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&   
   }
 
   Bnd_Box aBndBox;
-  BRepBndLib::Add(theShape, aBndBox, Standard_False);
+  BRepBndLib::Add(theShape, aBndBox, false);
   if (aBndBox.IsVoid())
   {
     return theDrawer->MaximalChordialDeviation();
@@ -138,7 +138,7 @@ Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&   
 
   // store computed relative deflection of shape as absolute deviation coefficient in case relative
   // type to use it later on for sub-shapes
-  const Standard_Real aDeflection = Prs3d::GetDeflection(aBndBox,
+  const double aDeflection = Prs3d::GetDeflection(aBndBox,
                                                          theDrawer->DeviationCoefficient(),
                                                          theDrawer->MaximalChordialDeviation());
   theDrawer->SetMaximalChordialDeviation(aDeflection);
@@ -147,33 +147,33 @@ Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection(const TopoDS_Shape&   
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&         theShape,
-                                                             const Handle(Prs3d_Drawer)& theDrawer)
+bool StdPrs_ToolTriangulatedShape::IsTessellated(const TopoDS_Shape&         theShape,
+                                                             const occ::handle<Prs3d_Drawer>& theDrawer)
 {
   return BRepTools::Triangulation(theShape, GetDeflection(theShape, theDrawer), true);
 }
 
 //=================================================================================================
 
-Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theShape,
-                                                          const Handle(Prs3d_Drawer)& theDrawer)
+bool StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&         theShape,
+                                                          const occ::handle<Prs3d_Drawer>& theDrawer)
 {
-  Standard_Boolean wasRecomputed = Standard_False;
+  bool wasRecomputed = false;
   // Check if it is possible to avoid unnecessary recomputation of shape triangulation
   if (IsTessellated(theShape, theDrawer))
   {
     return wasRecomputed;
   }
 
-  const Standard_Real aDeflection = GetDeflection(theShape, theDrawer);
+  const double aDeflection = GetDeflection(theShape, theDrawer);
 
   // retrieve meshing tool from Factory
-  Handle(BRepMesh_DiscretRoot) aMeshAlgo =
+  occ::handle<BRepMesh_DiscretRoot> aMeshAlgo =
     BRepMesh_DiscretFactory::Get().Discret(theShape, aDeflection, theDrawer->DeviationAngle());
   if (!aMeshAlgo.IsNull())
   {
     aMeshAlgo->Perform();
-    wasRecomputed = Standard_True;
+    wasRecomputed = true;
   }
 
   return wasRecomputed;
@@ -183,20 +183,20 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate(const TopoDS_Shape&   
 
 void StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(
   const TopoDS_Shape&         theShape,
-  const Handle(Prs3d_Drawer)& theDrawer,
-  const Standard_Boolean      theToResetCoeff)
+  const occ::handle<Prs3d_Drawer>& theDrawer,
+  const bool      theToResetCoeff)
 {
   if (!theDrawer->IsAutoTriangulation() || theShape.IsNull())
   {
     return;
   }
 
-  const Standard_Boolean isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
-  const Standard_Boolean isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
-  const Standard_Real    anAngleNew                = theDrawer->DeviationAngle();
-  const Standard_Real    anAnglePrev               = theDrawer->PreviousDeviationAngle();
-  const Standard_Real    aCoeffNew                 = theDrawer->DeviationCoefficient();
-  const Standard_Real    aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
+  const bool isOwnDeviationAngle       = theDrawer->HasOwnDeviationAngle();
+  const bool isOwnDeviationCoefficient = theDrawer->HasOwnDeviationCoefficient();
+  const double    anAngleNew                = theDrawer->DeviationAngle();
+  const double    anAnglePrev               = theDrawer->PreviousDeviationAngle();
+  const double    aCoeffNew                 = theDrawer->DeviationCoefficient();
+  const double    aCoeffPrev                = theDrawer->PreviousDeviationCoefficient();
   if ((!isOwnDeviationAngle || std::abs(anAngleNew - anAnglePrev) <= Precision::Angular())
       && (!isOwnDeviationCoefficient || std::abs(aCoeffNew - aCoeffPrev) <= Precision::Confusion()))
   {

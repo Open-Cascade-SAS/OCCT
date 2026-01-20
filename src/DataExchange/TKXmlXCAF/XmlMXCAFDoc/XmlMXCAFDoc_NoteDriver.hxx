@@ -27,26 +27,23 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-class XmlMXCAFDoc_NoteDriver;
-DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_NoteDriver, XmlMDF_ADriver)
-
 //! Attribute Driver.
 class XmlMXCAFDoc_NoteDriver : public XmlMDF_ADriver
 {
 public:
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Paste(const XmlObjMgt_Persistent&  theSource,
-          const Handle(TDF_Attribute)& theTarget,
-          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+          const occ::handle<TDF_Attribute>& theTarget,
+          XmlObjMgt_RRelocationTable&  theRelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
                              XmlObjMgt_Persistent&        theTarget,
-                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_SRelocationTable&  theRelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_NoteDriver, XmlMDF_ADriver)
 
 protected:
-  XmlMXCAFDoc_NoteDriver(const Handle(Message_Messenger)& theMsgDriver, Standard_CString theName);
+  XmlMXCAFDoc_NoteDriver(const occ::handle<Message_Messenger>& theMsgDriver, const char* theName);
 };
 
 #endif // _XmlMXCAFDoc_NoteDriver_HeaderFile

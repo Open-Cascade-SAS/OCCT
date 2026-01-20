@@ -41,22 +41,21 @@ public:
   //! In other terms, this is the content of the CONNECTED COMPONENT
   //! which include a specific Entity
   Standard_EXPORT IFGraph_AllConnected(const Interface_Graph&            agraph,
-                                       const Handle(Standard_Transient)& ent);
+                                       const occ::handle<Standard_Transient>& ent);
 
   //! adds an entity and its Connected ones to the list (allows to
   //! cumulate all Entities Connected by some ones)
   //! Note that if "ent" is in the already computed list,, no entity
   //! will be added, but if "ent" is not already in the list, a new
   //! Connected Component will be cumulated
-  Standard_EXPORT void GetFromEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent);
 
   //! Allows to restart on a new data set
   Standard_EXPORT void ResetData();
 
   //! does the specific evaluation (Connected entities atall levels)
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
-protected:
 private:
   Interface_Graph thegraph;
 };

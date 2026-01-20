@@ -41,27 +41,27 @@ public:
   Standard_EXPORT virtual ~BinTools_ShapeSetBase();
 
   //! Return true if shape should be stored with triangles.
-  Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+  bool IsWithTriangles() const { return myWithTriangles; }
 
   //! Return true if shape should be stored triangulation with normals.
-  Standard_Boolean IsWithNormals() const { return myWithNormals; }
+  bool IsWithNormals() const { return myWithNormals; }
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
-  void SetWithTriangles(const Standard_Boolean theWithTriangles)
+  void SetWithTriangles(const bool theWithTriangles)
   {
     myWithTriangles = theWithTriangles;
   }
 
   //! Define if shape will be stored triangulation with normals.
   //! Ignored (always written) if face defines only triangulation (no surface).
-  void SetWithNormals(const Standard_Boolean theWithNormals) { myWithNormals = theWithNormals; }
+  void SetWithNormals(const bool theWithNormals) { myWithNormals = theWithNormals; }
 
   //! Sets the BinTools_FormatVersion.
-  Standard_EXPORT void SetFormatNb(const Standard_Integer theFormatNb);
+  Standard_EXPORT void SetFormatNb(const int theFormatNb);
 
   //! Returns the BinTools_FormatVersion.
-  Standard_EXPORT Standard_Integer FormatNb() const { return myFormatNb; }
+  Standard_EXPORT int FormatNb() const { return myFormatNb; }
 
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() {}
@@ -113,12 +113,12 @@ public:
   //! An empty virtual method for redefinition in shape-reader.
   Standard_EXPORT virtual void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) {}
 
-  static const Standard_CString THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
+  static const char* const THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
 
 private:
-  Standard_Integer myFormatNb;
-  Standard_Boolean myWithTriangles;
-  Standard_Boolean myWithNormals;
+  int myFormatNb;
+  bool myWithTriangles;
+  bool myWithNormals;
 };
 
 #endif // _BinTools_ShapeSet_HeaderFile

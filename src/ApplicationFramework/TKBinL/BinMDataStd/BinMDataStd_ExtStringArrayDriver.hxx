@@ -21,13 +21,11 @@
 
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
-
-class BinMDataStd_ExtStringArrayDriver;
-DEFINE_STANDARD_HANDLE(BinMDataStd_ExtStringArrayDriver, BinMDF_ADriver)
 
 //! Array of extended string attribute Driver.
 class BinMDataStd_ExtStringArrayDriver : public BinMDF_ADriver
@@ -35,24 +33,22 @@ class BinMDataStd_ExtStringArrayDriver : public BinMDF_ADriver
 
 public:
   Standard_EXPORT BinMDataStd_ExtStringArrayDriver(
-    const Handle(Message_Messenger)& theMessageDriver);
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  Source,
-                                                 const Handle(TDF_Attribute)& Target,
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  Source,
+                                                 const occ::handle<TDF_Attribute>& Target,
                                                  BinObjMgt_RRelocationTable&  RelocTable) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& Source,
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& Source,
                                      BinObjMgt_Persistent&        Target,
-                                     BinObjMgt_SRelocationTable&  RelocTable) const
-    Standard_OVERRIDE;
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_ExtStringArrayDriver, BinMDF_ADriver)
 
-protected:
-private:
 };
 
 #endif // _BinMDataStd_ExtStringArrayDriver_HeaderFile

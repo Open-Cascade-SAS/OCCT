@@ -33,7 +33,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Returns the Protocol for this Package
-  Standard_EXPORT static Handle(IGESBasic_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<IGESBasic_Protocol> Protocol();
 };
 
 #endif // _IGESBasic_HeaderFile

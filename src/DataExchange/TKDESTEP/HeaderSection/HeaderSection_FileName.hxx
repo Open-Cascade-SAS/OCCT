@@ -19,13 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
-
-class HeaderSection_FileName;
-DEFINE_STANDARD_HANDLE(HeaderSection_FileName, Standard_Transient)
 
 class HeaderSection_FileName : public Standard_Transient
 {
@@ -34,65 +33,64 @@ public:
   //! Returns a FileName
   Standard_EXPORT HeaderSection_FileName();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&        aName,
-                            const Handle(TCollection_HAsciiString)&        aTimeStamp,
-                            const Handle(Interface_HArray1OfHAsciiString)& aAuthor,
-                            const Handle(Interface_HArray1OfHAsciiString)& aOrganization,
-                            const Handle(TCollection_HAsciiString)&        aPreprocessorVersion,
-                            const Handle(TCollection_HAsciiString)&        aOriginatingSystem,
-                            const Handle(TCollection_HAsciiString)&        aAuthorisation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aName,
+                            const occ::handle<TCollection_HAsciiString>&        aTimeStamp,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization,
+                            const occ::handle<TCollection_HAsciiString>&        aPreprocessorVersion,
+                            const occ::handle<TCollection_HAsciiString>&        aOriginatingSystem,
+                            const occ::handle<TCollection_HAsciiString>&        aAuthorisation);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetTimeStamp(const Handle(TCollection_HAsciiString)& aTimeStamp);
+  Standard_EXPORT void SetTimeStamp(const occ::handle<TCollection_HAsciiString>& aTimeStamp);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) TimeStamp() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> TimeStamp() const;
 
-  Standard_EXPORT void SetAuthor(const Handle(Interface_HArray1OfHAsciiString)& aAuthor);
+  Standard_EXPORT void SetAuthor(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) Author() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Author() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) AuthorValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AuthorValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbAuthor() const;
+  Standard_EXPORT int NbAuthor() const;
 
   Standard_EXPORT void SetOrganization(
-    const Handle(Interface_HArray1OfHAsciiString)& aOrganization);
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) Organization() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Organization() const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) OrganizationValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OrganizationValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbOrganization() const;
+  Standard_EXPORT int NbOrganization() const;
 
   Standard_EXPORT void SetPreprocessorVersion(
-    const Handle(TCollection_HAsciiString)& aPreprocessorVersion);
+    const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) PreprocessorVersion() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PreprocessorVersion() const;
 
   Standard_EXPORT void SetOriginatingSystem(
-    const Handle(TCollection_HAsciiString)& aOriginatingSystem);
+    const occ::handle<TCollection_HAsciiString>& aOriginatingSystem);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) OriginatingSystem() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OriginatingSystem() const;
 
-  Standard_EXPORT void SetAuthorisation(const Handle(TCollection_HAsciiString)& aAuthorisation);
+  Standard_EXPORT void SetAuthorisation(const occ::handle<TCollection_HAsciiString>& aAuthorisation);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Authorisation() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Authorisation() const;
 
   DEFINE_STANDARD_RTTIEXT(HeaderSection_FileName, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)        name;
-  Handle(TCollection_HAsciiString)        timeStamp;
-  Handle(Interface_HArray1OfHAsciiString) author;
-  Handle(Interface_HArray1OfHAsciiString) organization;
-  Handle(TCollection_HAsciiString)        preprocessorVersion;
-  Handle(TCollection_HAsciiString)        originatingSystem;
-  Handle(TCollection_HAsciiString)        authorisation;
+  occ::handle<TCollection_HAsciiString>        name;
+  occ::handle<TCollection_HAsciiString>        timeStamp;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> author;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> organization;
+  occ::handle<TCollection_HAsciiString>        preprocessorVersion;
+  occ::handle<TCollection_HAsciiString>        originatingSystem;
+  occ::handle<TCollection_HAsciiString>        authorisation;
 };
 
 #endif // _HeaderSection_FileName_HeaderFile

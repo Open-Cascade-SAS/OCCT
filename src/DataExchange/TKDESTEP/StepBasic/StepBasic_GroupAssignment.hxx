@@ -22,9 +22,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Group;
 
-class StepBasic_GroupAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_GroupAssignment, Standard_Transient)
-
 //! Representation of STEP entity GroupAssignment
 class StepBasic_GroupAssignment : public Standard_Transient
 {
@@ -34,19 +31,18 @@ public:
   Standard_EXPORT StepBasic_GroupAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_Group)& aAssignedGroup);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Group>& aAssignedGroup);
 
   //! Returns field AssignedGroup
-  Standard_EXPORT Handle(StepBasic_Group) AssignedGroup() const;
+  Standard_EXPORT occ::handle<StepBasic_Group> AssignedGroup() const;
 
   //! Set field AssignedGroup
-  Standard_EXPORT void SetAssignedGroup(const Handle(StepBasic_Group)& AssignedGroup);
+  Standard_EXPORT void SetAssignedGroup(const occ::handle<StepBasic_Group>& AssignedGroup);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_GroupAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(StepBasic_Group) theAssignedGroup;
+  occ::handle<StepBasic_Group> theAssignedGroup;
 };
 
 #endif // _StepBasic_GroupAssignment_HeaderFile

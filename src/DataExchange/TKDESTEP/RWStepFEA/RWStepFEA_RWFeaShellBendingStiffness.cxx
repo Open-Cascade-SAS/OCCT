@@ -28,10 +28,10 @@ RWStepFEA_RWFeaShellBendingStiffness::RWStepFEA_RWFeaShellBendingStiffness() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellBendingStiffness::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepFEA_FeaShellBendingStiffness)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepFEA_FeaShellBendingStiffness>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_shell_bending_stiffness"))
@@ -39,7 +39,7 @@ void RWStepFEA_RWFeaShellBendingStiffness::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FeaShellBendingStiffness
@@ -55,7 +55,7 @@ void RWStepFEA_RWFeaShellBendingStiffness::ReadStep(
 
 void RWStepFEA_RWFeaShellBendingStiffness::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepFEA_FeaShellBendingStiffness)& ent) const
+  const occ::handle<StepFEA_FeaShellBendingStiffness>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -70,7 +70,7 @@ void RWStepFEA_RWFeaShellBendingStiffness::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellBendingStiffness::Share(
-  const Handle(StepFEA_FeaShellBendingStiffness)& ent,
+  const occ::handle<StepFEA_FeaShellBendingStiffness>& ent,
   Interface_EntityIterator&                       iter) const
 {
 

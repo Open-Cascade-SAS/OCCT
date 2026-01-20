@@ -30,10 +30,14 @@
 #include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColgp_SequenceOfVec2d.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -57,7 +61,7 @@ IntTools_FClass2d::IntTools_FClass2d() {}
 
 //=================================================================================================
 
-IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace, const Standard_Real TolUV)
+IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace, const double TolUV)
     : Toluv(TolUV),
       Face(aFace)
 {
@@ -66,44 +70,44 @@ IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace, const Standard_Re
 
 //=================================================================================================
 
-Standard_Boolean IntTools_FClass2d::IsHole() const
+bool IntTools_FClass2d::IsHole() const
 {
   return myIsHole;
 }
 
 //=================================================================================================
 
-void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV)
+void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
 {
-  Standard_Boolean WireIsNotEmpty, Ancienpnt3dinitialise, degenerated;
-  Standard_Integer firstpoint, NbEdges;
-  Standard_Integer iX, aNbs1, nbs, Avant, BadWire;
-  Standard_Real    u, du, Tole, Tol, pfbid, plbid;
-  Standard_Real    FlecheU, FlecheV, TolVertex1, TolVertex;
-  Standard_Real    uFirst, uLast;
-  Standard_Real    aPrCf, aPrCf2;
+  bool WireIsNotEmpty, Ancienpnt3dinitialise, degenerated;
+  int firstpoint, NbEdges;
+  int iX, aNbs1, nbs, Avant, BadWire;
+  double    u, du, Tole, Tol, pfbid, plbid;
+  double    FlecheU, FlecheV, TolVertex1, TolVertex;
+  double    uFirst, uLast;
+  double    aPrCf, aPrCf2;
   //
   TopoDS_Edge                     edge;
   TopoDS_Vertex                   Va, Vb;
   TopAbs_Orientation              Or;
   BRepTools_WireExplorer          aWExp;
   TopExp_Explorer                 aExpF, aExp;
-  Handle(Geom2d_Curve)            aC2D;
+  occ::handle<Geom2d_Curve>            aC2D;
   gp_Pnt                          Ancienpnt3d;
-  TColgp_SequenceOfPnt2d          SeqPnt2d;
-  TColStd_DataMapOfIntegerInteger anIndexMap;
-  TColgp_SequenceOfVec2d          aD1Prev;
-  TColgp_SequenceOfVec2d          aD1Next;
+  NCollection_Sequence<gp_Pnt2d>          SeqPnt2d;
+  NCollection_DataMap<int, int> anIndexMap;
+  NCollection_Sequence<gp_Vec2d>          aD1Prev;
+  NCollection_Sequence<gp_Vec2d>          aD1Next;
   //
   aPrCf    = Precision::Confusion();
   aPrCf2   = aPrCf * aPrCf;
-  myIsHole = Standard_True;
+  myIsHole = true;
   //
   Toluv = TolUV;
   Face  = aFace;
   Face.Orientation(TopAbs_FORWARD);
-  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
-  surf->Initialize(aFace, Standard_False);
+  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
+  surf->Initialize(aFace, false);
   //
   Tole = 0.;
   Tol  = 0.;
@@ -125,8 +129,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
     FlecheV               = 0.;
     TolVertex1            = 0.;
     TolVertex             = 0.;
-    WireIsNotEmpty        = Standard_False;
-    Ancienpnt3dinitialise = Standard_False;
+    WireIsNotEmpty        = false;
+    Ancienpnt3dinitialise = false;
     Ancienpnt3d.SetCoord(0., 0., 0.);
     //
     SeqPnt2d.Clear();
@@ -162,10 +166,10 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       BRepAdaptor_Curve2d C(edge, Face);
       BRepAdaptor_Curve   C3d;
       //------------------------------------------
-      degenerated = Standard_False;
+      degenerated = false;
       if (BRep_Tool::Degenerated(edge) || BRep_Tool::IsClosed(edge, Face))
       {
-        degenerated = Standard_True;
+        degenerated = true;
       }
       //
       TopExp::Vertices(edge, Va, Vb);
@@ -174,7 +178,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       TolVertex  = 0.;
       if (Va.IsNull())
       {
-        degenerated = Standard_True;
+        degenerated = true;
       }
       else
       {
@@ -182,7 +186,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       }
       if (Vb.IsNull())
       {
-        degenerated = Standard_True;
+        degenerated = true;
       }
       else
       {
@@ -203,16 +207,16 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         gp_Pnt P3da           = C3d.Value(0.5 * (pfbid + plbid));
         du                    = plbid - pfbid;
         const int     NBSTEPS = 10;
-        Standard_Real aPrec2  = 0.25 * Precision::Confusion() * Precision::Confusion();
-        degenerated           = Standard_True;
-        for (Standard_Integer i = 0; i <= NBSTEPS; i++)
+        double aPrec2  = 0.25 * Precision::Confusion() * Precision::Confusion();
+        degenerated           = true;
+        for (int i = 0; i <= NBSTEPS; i++)
         {
-          Standard_Real U    = pfbid + i * du / NBSTEPS;
+          double U    = pfbid + i * du / NBSTEPS;
           gp_Pnt        P3db = C3d.Value(U);
-          Standard_Real aR2  = P3da.SquareDistance(P3db);
+          double aR2  = P3da.SquareDistance(P3db);
           if (aR2 > aPrec2)
           {
-            degenerated = Standard_False;
+            degenerated = false;
             break;
           }
         }
@@ -230,7 +234,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       {
         nbs *= 4;
       }
-      du = (plbid - pfbid) / (Standard_Real)(nbs - 1);
+      du = (plbid - pfbid) / (double)(nbs - 1);
       //
       if (Or == TopAbs_FORWARD)
       {
@@ -248,11 +252,11 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       //
       // aPrms
       aNbs1 = nbs + 1;
-      TColStd_Array1OfReal aPrms(1, aNbs1);
+      NCollection_Array1<double> aPrms(1, aNbs1);
       //
       if (nbs == 2)
       {
-        Standard_Real aCoef = 0.0025;
+        double aCoef = 0.0025;
         aPrms(1)            = uFirst;
         aPrms(2)            = uFirst + aCoef * (uLast - uFirst);
         aPrms(3)            = uLast;
@@ -276,9 +280,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       Avant = SeqPnt2d.Length();
       for (iX = firstpoint; iX <= aNbs1; iX++)
       {
-        Standard_Boolean IsRealCurve3d;
-        Standard_Integer ii;
-        Standard_Real    aDstX;
+        bool IsRealCurve3d;
+        int ii;
+        double    aDstX;
         gp_Pnt2d         P2d;
         gp_Pnt           P3d;
         //
@@ -294,7 +298,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
           Vmax = P2d.Y();
         //
         aDstX = RealLast();
-        if (degenerated == Standard_False)
+        if (degenerated == false)
         {
           P3d = C3d.Value(u);
           if (!SeqPnt2d.IsEmpty())
@@ -306,29 +310,29 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
           }
         }
         //
-        IsRealCurve3d = Standard_True;
+        IsRealCurve3d = true;
         if (aDstX < aPrCf2)
         {
           if (iX > 1)
           {
-            Standard_Real aDstX1;
+            double aDstX1;
             gp_Pnt        MidP3d;
             //
             MidP3d = C3d.Value(0.5 * (u + aPrms(iX - 1)));
             aDstX1 = P3d.SquareDistance(MidP3d);
             if (aDstX1 < aPrCf2)
             {
-              IsRealCurve3d = Standard_False;
+              IsRealCurve3d = false;
             }
           }
         }
         //
         if (IsRealCurve3d)
         {
-          if (degenerated == Standard_False)
+          if (degenerated == false)
           {
             Ancienpnt3d           = P3d;
-            Ancienpnt3dinitialise = Standard_True;
+            Ancienpnt3dinitialise = true;
           }
           SeqPnt2d.Append(P2d);
         }
@@ -336,7 +340,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         ii = SeqPnt2d.Length();
         if (ii > (Avant + 4))
         {
-          Standard_Real ul, dU, dV;
+          double ul, dU, dV;
           gp_Pnt2d      Pp;
           //
           gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
@@ -364,9 +368,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       //
       if (firstpoint == 1)
         firstpoint = 2;
-      WireIsNotEmpty = Standard_True;
+      WireIsNotEmpty = true;
       // Append the derivative of the first parameter.
-      Standard_Real aU = aPrms(1);
+      double aU = aPrms(1);
       gp_Pnt2d      aP;
       gp_Vec2d      aV;
 
@@ -400,7 +404,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
     if (NbEdges)
     {
       //-- count ++ with normal explorer and -- with Wire Explorer
-      TColgp_Array1OfPnt2d PClass(1, 2);
+      NCollection_Array1<gp_Pnt2d> PClass(1, 2);
       gp_Pnt2d             anInitPnt(0., 0.);
       //
       PClass.Init(anInitPnt);
@@ -414,9 +418,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       if (SeqPnt2d.Length() > 3)
       {
 #ifdef DEBUG_PCLASS_POLYGON
-        TColgp_Array1OfPnt2d    PClass(1, nbpnts);
-        TColStd_Array1OfReal    aKnots(1, nbpnts);
-        TColStd_Array1OfInteger aMults(1, nbpnts);
+        NCollection_Array1<gp_Pnt2d>    PClass(1, nbpnts);
+        NCollection_Array1<double>    aKnots(1, nbpnts);
+        NCollection_Array1<int> aMults(1, nbpnts);
         for (int i = 1; i <= nbpnts; i++)
         {
           aKnots(i)  = i;
@@ -424,25 +428,25 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
           PClass(ii) = SeqPnt2d.Value(ii);
         }
         aMults(1) = aMults(nbpnts)       = 2;
-        Handle(Geom2d_BSplineCurve) aPol = new Geom2d_BSplineCurve(PClass, aKnots, aMults, 1);
+        occ::handle<Geom2d_BSplineCurve> aPol = new Geom2d_BSplineCurve(PClass, aKnots, aMults, 1);
         DrawTrSurf::Set("pol", aPol);
 #endif
 
-        Standard_Real aS   = 0.;
-        Standard_Real aPer = 0.;
+        double aS   = 0.;
+        double aPer = 0.;
         Poly::PolygonProperties(SeqPnt2d, aS, aPer);
 
-        Standard_Real    anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
-        Standard_Real    aDefl      = std::max(FlecheU, FlecheV);
-        Standard_Real    aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
-        Standard_Boolean isChanged  = Standard_False;
+        double    anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
+        double    aDefl      = std::max(FlecheU, FlecheV);
+        double    aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
+        bool isChanged  = false;
         while (aDefl > anExpThick && aDiscrDefl > 1e-7)
         {
           // Deflection of the polygon is too much for this ratio of area and perimeter,
           // and this might lead to self-intersections.
           // Discretize the wire more tightly to eliminate the error.
           firstpoint = 1;
-          isChanged  = Standard_True;
+          isChanged  = true;
           SeqPnt2d.Clear();
           FlecheU = 0.0;
           FlecheV = 0.0;
@@ -459,8 +463,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
               if (!aDiscr.IsDone())
                 break;
-              Standard_Integer nbp   = aDiscr.NbPoints();
-              Standard_Integer iStep = 1, i = 1, iEnd = nbp + 1;
+              int nbp   = aDiscr.NbPoints();
+              int iStep = 1, i = 1, iEnd = nbp + 1;
               if (Or == TopAbs_REVERSED)
               {
                 iStep = -1;
@@ -476,12 +480,12 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
               }
               if (nbp > 2)
               {
-                Standard_Integer ii = SeqPnt2d.Length();
+                int ii = SeqPnt2d.Length();
                 gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-                Standard_Real ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+                double ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
                 gp_Pnt2d      Pp = ElCLib::Value(ul, Lin);
-                Standard_Real dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                Standard_Real dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                double dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                double dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
                   FlecheU = dU;
                 if (dV > FlecheV)
@@ -517,12 +521,12 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         {
           if (aS > 0.0)
           {
-            myIsHole = Standard_False;
+            myIsHole = false;
             TabOrien.Append(1);
           }
           else
           {
-            myIsHole = Standard_True;
+            myIsHole = true;
             TabOrien.Append(0);
           }
         }
@@ -531,14 +535,14 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       {
         BadWire = 1;
         TabOrien.Append(-1);
-        TColgp_Array1OfPnt2d PPClass(1, 2);
+        NCollection_Array1<gp_Pnt2d> PPClass(1, 2);
         SeqPnt2d.Clear();
         TabClass.Append(CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       }
     } // else if(WireIsNotEmpty)
   } // for(; aExpF.More();  aExpF.Next()) {
   //
-  Standard_Integer nbtabclass = TabClass.Length();
+  int nbtabclass = TabClass.Length();
   //
   if (nbtabclass > 0)
   {
@@ -552,7 +556,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         || surf->GetType() == GeomAbs_Torus || surf->GetType() == GeomAbs_Sphere
         || surf->GetType() == GeomAbs_SurfaceOfRevolution)
     {
-      Standard_Real uuu = M_PI + M_PI - (Umax - Umin);
+      double uuu = M_PI + M_PI - (Umax - Umin);
       if (uuu < 0)
         uuu = 0;
       U1 = Umin - uuu * 0.5;
@@ -565,7 +569,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
 
     if (surf->GetType() == GeomAbs_Torus)
     {
-      Standard_Real uuu = M_PI + M_PI - (Vmax - Vmin);
+      double uuu = M_PI + M_PI - (Vmax - Vmin);
       if (uuu < 0)
         uuu = 0;
 
@@ -588,44 +592,44 @@ TopAbs_State IntTools_FClass2d::PerformInfinitePoint() const
     return (TopAbs_IN);
   }
   gp_Pnt2d P(Umin - (Umax - Umin), Vmin - (Vmax - Vmin));
-  return (Perform(P, Standard_False));
+  return (Perform(P, false));
 }
 
 //=================================================================================================
 
 TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
-                                        const Standard_Boolean RecadreOnPeriodic) const
+                                        const bool RecadreOnPeriodic) const
 {
-  Standard_Integer nbtabclass = TabClass.Length();
+  int nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
   {
     return TopAbs_IN;
   }
 
   //-- U1 is the First Param and U2 is in this case U1+Period
-  Standard_Real u       = _Puv.X();
-  Standard_Real v       = _Puv.Y();
-  Standard_Real uu      = u;
-  Standard_Real vv      = v;
+  double u       = _Puv.X();
+  double v       = _Puv.Y();
+  double uu      = u;
+  double vv      = v;
   TopAbs_State  aStatus = TopAbs_UNKNOWN;
 
-  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, Standard_False);
+  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
+  surf->Initialize(Face, false);
 
-  const Standard_Boolean IsUPer  = surf->IsUPeriodic();
-  const Standard_Boolean IsVPer  = surf->IsVPeriodic();
-  const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
-  const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
+  const bool IsUPer  = surf->IsUPeriodic();
+  const bool IsVPer  = surf->IsVPeriodic();
+  const double    uperiod = IsUPer ? surf->UPeriod() : 0.0;
+  const double    vperiod = IsVPer ? surf->VPeriod() : 0.0;
 
-  Standard_Boolean urecadre, vrecadre, bUseClassifier;
-  Standard_Integer dedans = 1;
+  bool urecadre, vrecadre, bUseClassifier;
+  int dedans = 1;
   //
-  urecadre = Standard_False;
-  vrecadre = Standard_False;
+  urecadre = false;
+  vrecadre = false;
   //
   if (RecadreOnPeriodic)
   {
-    Standard_Real du, dv;
+    double du, dv;
     if (IsUPer)
     {
       GeomInt::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
@@ -644,7 +648,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
     bUseClassifier = (TabOrien(1) == -1);
     if (!bUseClassifier)
     {
-      Standard_Integer n, cur, TabOrien_n;
+      int n, cur, TabOrien_n;
       for (n = 1; n <= nbtabclass; n++)
       {
         cur        = TabClass(n).SiDans(Puv);
@@ -675,7 +679,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
 
       if (dedans == 0)
       {
-        bUseClassifier = Standard_True;
+        bUseClassifier = true;
       }
       else
       {
@@ -686,8 +690,8 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
     if (bUseClassifier)
     {
       // compute tolerance to use in face classifier
-      Standard_Real    aURes, aVRes, aFCTol;
-      Standard_Boolean bUIn, bVIn;
+      double    aURes, aVRes, aFCTol;
+      bool bUIn, bVIn;
       //
       aURes = surf->UResolution(Toluv);
       aVRes = surf->VResolution(Toluv);
@@ -722,7 +726,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
     if (!urecadre)
     {
       u        = uu;
-      urecadre = Standard_True;
+      urecadre = true;
     }
     else
     {
@@ -737,7 +741,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
       if (!vrecadre)
       {
         v        = vv;
-        vrecadre = Standard_True;
+        vrecadre = true;
       }
       else
       {
@@ -760,33 +764,33 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
 //=================================================================================================
 
 TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
-                                                  const Standard_Real    Tol,
-                                                  const Standard_Boolean RecadreOnPeriodic) const
+                                                  const double    Tol,
+                                                  const bool RecadreOnPeriodic) const
 {
-  Standard_Integer nbtabclass = TabClass.Length();
+  int nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
   {
     return TopAbs_IN;
   }
 
   //-- U1 is the First Param and U2 in this case is U1+Period
-  Standard_Real u  = _Puv.X();
-  Standard_Real v  = _Puv.Y();
-  Standard_Real uu = u, vv = v;
+  double u  = _Puv.X();
+  double v  = _Puv.Y();
+  double uu = u, vv = v;
 
-  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, Standard_False);
-  const Standard_Boolean IsUPer   = surf->IsUPeriodic();
-  const Standard_Boolean IsVPer   = surf->IsVPeriodic();
-  const Standard_Real    uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const Standard_Real    vperiod  = IsVPer ? surf->VPeriod() : 0.0;
+  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
+  surf->Initialize(Face, false);
+  const bool IsUPer   = surf->IsUPeriodic();
+  const bool IsVPer   = surf->IsVPeriodic();
+  const double    uperiod  = IsUPer ? surf->UPeriod() : 0.0;
+  const double    vperiod  = IsVPer ? surf->VPeriod() : 0.0;
   TopAbs_State           aStatus  = TopAbs_UNKNOWN;
-  Standard_Boolean       urecadre = Standard_False, vrecadre = Standard_False;
-  Standard_Integer       dedans = 1;
+  bool       urecadre = false, vrecadre = false;
+  int       dedans = 1;
 
   if (RecadreOnPeriodic)
   {
-    Standard_Real du, dv;
+    double du, dv;
     if (IsUPer)
     {
       GeomInt::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
@@ -805,9 +809,9 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
 
     if (TabOrien(1) != -1)
     {
-      for (Standard_Integer n = 1; n <= nbtabclass; n++)
+      for (int n = 1; n <= nbtabclass; n++)
       {
-        Standard_Integer cur = TabClass(n).SiDans_OnMode(Puv, Tol);
+        int cur = TabClass(n).SiDans_OnMode(Puv, Tol);
         if (cur == 1)
         {
           if (TabOrien(n) == 0)
@@ -862,7 +866,7 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
     if (!urecadre)
     {
       u        = uu;
-      urecadre = Standard_True;
+      urecadre = true;
     }
     else if (IsUPer)
       u += uperiod;
@@ -871,7 +875,7 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
       if (!vrecadre)
       {
         v        = vv;
-        vrecadre = Standard_True;
+        vrecadre = true;
       }
       else if (IsVPer)
         v += vperiod;

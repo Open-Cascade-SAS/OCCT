@@ -36,46 +36,46 @@ class TDocStd_Document;
 //! Methods for managing reading attributes.
 //! Colors
 //! reader.SetColorMode(colormode);
-//! Standard_Boolean colormode = reader.GetColorMode();
+//! bool colormode = reader.GetColorMode();
 //! Layers
 //! reader.SetLayerMode(layermode);
-//! Standard_Boolean layermode = reader.GetLayerMode();
+//! bool layermode = reader.GetLayerMode();
 //! Names
 //! reader.SetNameMode(namemode);
-//! Standard_Boolean namemode = reader.GetNameMode();
+//! bool namemode = reader.GetNameMode();
 class IGESCAFControl_Reader : public IGESControl_Reader
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a reader with an empty
-  //! IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
+  //! IGES model and sets ColorMode, LayerMode and NameMode to true.
   IGESCAFControl_Reader()
-      : myColorMode(Standard_True),
-        myNameMode(Standard_True),
-        myLayerMode(Standard_True)
+      : myColorMode(true),
+        myNameMode(true),
+        myLayerMode(true)
   {
   }
 
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
-  IGESCAFControl_Reader(const Handle(XSControl_WorkSession)& theWS,
-                        const Standard_Boolean               FromScratch = Standard_True)
-      : myColorMode(Standard_True),
-        myNameMode(Standard_True),
-        myLayerMode(Standard_True)
+  IGESCAFControl_Reader(const occ::handle<XSControl_WorkSession>& theWS,
+                        const bool               FromScratch = true)
+      : myColorMode(true),
+        myNameMode(true),
+        myLayerMode(true)
   {
     SetWS(theWS, FromScratch);
   }
 
   //! Translates currently loaded IGES file into the document
   //! Returns True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean
-    Transfer(const Handle(TDocStd_Document)& theDoc,
+  Standard_EXPORT bool
+    Transfer(const occ::handle<TDocStd_Document>& theDoc,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
-  Standard_Boolean Perform(const TCollection_AsciiString&  theFileName,
-                           const Handle(TDocStd_Document)& theDoc,
+  bool Perform(const TCollection_AsciiString&  theFileName,
+                           const occ::handle<TDocStd_Document>& theDoc,
                            const Message_ProgressRange&    theProgress = Message_ProgressRange())
   {
     return Perform(theFileName.ToCString(), theDoc, theProgress);
@@ -83,30 +83,30 @@ public:
 
   //! Translate IGES file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean
-    Perform(const Standard_CString          theFileName,
-            const Handle(TDocStd_Document)& theDoc,
+  Standard_EXPORT bool
+    Perform(const char* const          theFileName,
+            const occ::handle<TDocStd_Document>& theDoc,
             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Set ColorMode for indicate read Colors or not.
-  void SetColorMode(const Standard_Boolean theMode) { myColorMode = theMode; }
+  void SetColorMode(const bool theMode) { myColorMode = theMode; }
 
-  Standard_Boolean GetColorMode() const { return myColorMode; }
+  bool GetColorMode() const { return myColorMode; }
 
   //! Set NameMode for indicate read Name or not.
-  void SetNameMode(const Standard_Boolean theMode) { myNameMode = theMode; }
+  void SetNameMode(const bool theMode) { myNameMode = theMode; }
 
-  Standard_Boolean GetNameMode() const { return myNameMode; }
+  bool GetNameMode() const { return myNameMode; }
 
   //! Set LayerMode for indicate read Layers or not.
-  void SetLayerMode(const Standard_Boolean theMode) { myLayerMode = theMode; }
+  void SetLayerMode(const bool theMode) { myLayerMode = theMode; }
 
-  Standard_Boolean GetLayerMode() const { return myLayerMode; }
+  bool GetLayerMode() const { return myLayerMode; }
 
 private:
-  Standard_Boolean myColorMode;
-  Standard_Boolean myNameMode;
-  Standard_Boolean myLayerMode;
+  bool myColorMode;
+  bool myNameMode;
+  bool myLayerMode;
 };
 
 #endif // _IGESCAFControl_Reader_HeaderFile

@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicLink, StepShape_Vertex)
-
 //! Representation of STEP entity KinematicLink
 class StepKinematics_KinematicLink : public StepShape_Vertex
 {

@@ -22,10 +22,10 @@
 #include <StdFail_NotDone.hxx>
 
 IntAna2d_AnaIntersection::IntAna2d_AnaIntersection()
-    : done(Standard_False),
-      para(Standard_False),
-      iden(Standard_False),
-      empt(Standard_True),
+    : done(false),
+      para(false),
+      iden(false),
+      empt(true),
       nbp(0)
 {
 }

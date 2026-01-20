@@ -35,12 +35,12 @@
 
 IGESDimen_ToolBasicDimension::IGESDimen_ToolBasicDimension() {}
 
-void IGESDimen_ToolBasicDimension::ReadOwnParams(const Handle(IGESDimen_BasicDimension)& ent,
-                                                 const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDimen_ToolBasicDimension::ReadOwnParams(const occ::handle<IGESDimen_BasicDimension>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                                  IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer nbPropVal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int nbPropVal;
   gp_XY            templl;
   gp_XY            templr;
   gp_XY            tempur;
@@ -58,7 +58,7 @@ void IGESDimen_ToolBasicDimension::ReadOwnParams(const Handle(IGESDimen_BasicDim
   ent->Init(nbPropVal, templl, templr, tempur, tempul);
 }
 
-void IGESDimen_ToolBasicDimension::WriteOwnParams(const Handle(IGESDimen_BasicDimension)& ent,
+void IGESDimen_ToolBasicDimension::WriteOwnParams(const occ::handle<IGESDimen_BasicDimension>& ent,
                                                   IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -72,13 +72,13 @@ void IGESDimen_ToolBasicDimension::WriteOwnParams(const Handle(IGESDimen_BasicDi
   IW.Send(ent->UpperLeft().Y());
 }
 
-void IGESDimen_ToolBasicDimension::OwnShared(const Handle(IGESDimen_BasicDimension)& /* ent */,
+void IGESDimen_ToolBasicDimension::OwnShared(const occ::handle<IGESDimen_BasicDimension>& /* ent */,
                                              Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDimen_ToolBasicDimension::OwnCopy(const Handle(IGESDimen_BasicDimension)& another,
-                                           const Handle(IGESDimen_BasicDimension)& ent,
+void IGESDimen_ToolBasicDimension::OwnCopy(const occ::handle<IGESDimen_BasicDimension>& another,
+                                           const occ::handle<IGESDimen_BasicDimension>& ent,
                                            Interface_CopyTool& /* TC */) const
 {
   ent->Init(8,
@@ -88,10 +88,10 @@ void IGESDimen_ToolBasicDimension::OwnCopy(const Handle(IGESDimen_BasicDimension
             another->UpperLeft().XY());
 }
 
-Standard_Boolean IGESDimen_ToolBasicDimension::OwnCorrect(
-  const Handle(IGESDimen_BasicDimension)& ent) const
+bool IGESDimen_ToolBasicDimension::OwnCorrect(
+  const occ::handle<IGESDimen_BasicDimension>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 8);
+  bool res = (ent->NbPropertyValues() != 8);
   if (res)
     ent->Init(8,
               ent->LowerLeft().XY(),
@@ -102,7 +102,7 @@ Standard_Boolean IGESDimen_ToolBasicDimension::OwnCorrect(
 }
 
 IGESData_DirChecker IGESDimen_ToolBasicDimension::DirChecker(
-  const Handle(IGESDimen_BasicDimension)& /* ent */) const
+  const occ::handle<IGESDimen_BasicDimension>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 31); // Type = 406, Form = 31
   DC.Structure(IGESData_DefVoid);
@@ -114,18 +114,18 @@ IGESData_DirChecker IGESDimen_ToolBasicDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolBasicDimension::OwnCheck(const Handle(IGESDimen_BasicDimension)& ent,
+void IGESDimen_ToolBasicDimension::OwnCheck(const occ::handle<IGESDimen_BasicDimension>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 8)
     ach->AddFail("Num of Property Values != 8");
 }
 
-void IGESDimen_ToolBasicDimension::OwnDump(const Handle(IGESDimen_BasicDimension)& ent,
+void IGESDimen_ToolBasicDimension::OwnDump(const occ::handle<IGESDimen_BasicDimension>& ent,
                                            const IGESData_IGESDumper& /* dumper */,
                                            Standard_OStream& S,
-                                           const Standard_Integer /* level */) const
+                                           const int /* level */) const
 {
   S << "IGESDimen_BasicDimension\n"
     << "Number of Property Values : " << ent->NbPropertyValues() << "\n\n"

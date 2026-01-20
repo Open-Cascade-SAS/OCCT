@@ -38,7 +38,7 @@ Standard_EXPORT FILE* OSD_OpenFile(const TCollection_ExtendedString& theName, co
 //! Function retrieves file timestamp.
 //! @param theName name of file encoded in UTF-8
 //! @return stat.st_ctime value
-Standard_EXPORT Standard_Time OSD_FileStatCTime(const char* theName);
+Standard_EXPORT std::time_t OSD_FileStatCTime(const char* theName);
 
 //! Open file descriptor for specified UTF-16 file path.
 //! @param theName name of file encoded in UTF-16
@@ -79,7 +79,7 @@ inline bool OSD_OpenStream(::std::filebuf&                   theFileBuf,
     #endif
   #else
   // conversion to UTF-8 for linux
-  NCollection_Utf8String aString(theName.ToExtString());
+  NCollection_UtfString<char> aString(theName.ToExtString());
   return theFileBuf.open(aString.ToCString(), theMode) != 0;
   #endif
 }
@@ -112,7 +112,7 @@ inline void OSD_OpenStream(T&                                theStream,
     #endif
   #else
   // conversion in UTF-8 for linux
-  NCollection_Utf8String aString(theName.ToExtString());
+  NCollection_UtfString<char> aString(theName.ToExtString());
   theStream.open(aString.ToCString(), theMode);
   #endif
 }
@@ -126,7 +126,7 @@ inline void OSD_OpenStream(T& theStream, const char* theName, const std::ios_bas
 {
   #if defined(_WIN32)
   // redirect to method taking UTF-16 string
-  const TCollection_ExtendedString aFileNameW(theName, Standard_True);
+  const TCollection_ExtendedString aFileNameW(theName, true);
   OSD_OpenStream(theStream, aFileNameW, theMode);
   #else
   theStream.open(theName, theMode);

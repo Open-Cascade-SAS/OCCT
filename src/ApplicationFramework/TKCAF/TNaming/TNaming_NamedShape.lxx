@@ -30,14 +30,14 @@ inline TNaming_Evolution TNaming_NamedShape::Evolution() const
 
 //=================================================================================================
 
-inline Standard_Integer TNaming_NamedShape::Version() const
+inline int TNaming_NamedShape::Version() const
 {
   return myVersion;
 }
 
 //=================================================================================================
 
-inline void TNaming_NamedShape::SetVersion(const Standard_Integer v)
+inline void TNaming_NamedShape::SetVersion(const int v)
 {
   myVersion = v;
 }

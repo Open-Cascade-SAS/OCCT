@@ -43,27 +43,27 @@ public:
   //! the curve C and the surface S.
   //! Warning
   //! Use function IsDone to verify that the intersections are computed successfully.
-  Standard_EXPORT GeomAPI_IntCS(const Handle(Geom_Curve)& C, const Handle(Geom_Surface)& S);
+  Standard_EXPORT GeomAPI_IntCS(const occ::handle<Geom_Curve>& C, const occ::handle<Geom_Surface>& S);
 
   //! This function Initializes an algorithm with the curve C and the
   //! surface S and computes the intersections between C and S.
   //! Warning
   //! Use function IsDone to verify that the intersections are computed successfully.
-  Standard_EXPORT void Perform(const Handle(Geom_Curve)& C, const Handle(Geom_Surface)& S);
+  Standard_EXPORT void Perform(const occ::handle<Geom_Curve>& C, const occ::handle<Geom_Surface>& S);
 
   //! Returns true if the intersections are successfully computed.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of Intersection Points
   //! if IsDone returns True.
   //! else NotDone is raised.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Returns the Intersection Point of range <Index>in case of cross intersection.
   //! Raises NotDone if the computation has failed or if
   //! the computation has not been done
   //! raises OutOfRange if Index is not in the range <1..NbPoints>
-  Standard_EXPORT const gp_Pnt& Point(const Standard_Integer Index) const;
+  Standard_EXPORT const gp_Pnt& Point(const int Index) const;
 
   //! Returns parameter W on the curve
   //! and (parameters U,V) on the surface of the computed intersection point
@@ -72,16 +72,16 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of computed intersection points.
-  Standard_EXPORT void Parameters(const Standard_Integer Index,
-                                  Standard_Real&         U,
-                                  Standard_Real&         V,
-                                  Standard_Real&         W) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U,
+                                  double&         V,
+                                  double&         W) const;
 
   //! Returns the number of computed
   //! intersection segments in case of tangential intersection.
   //! Exceptions
   //! StdFail_NotDone if the intersection algorithm fails or is not initialized.
-  Standard_EXPORT Standard_Integer NbSegments() const;
+  Standard_EXPORT int NbSegments() const;
 
   //! Returns the computed intersection
   //! segment of index Index in case of tangential intersection.
@@ -90,7 +90,7 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
   //! where NbSegments is the number of computed intersection segments.
-  Standard_EXPORT Handle(Geom_Curve) Segment(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<Geom_Curve> Segment(const int Index) const;
 
   //! Returns the parameters of the first (U1,V1) and the last (U2,V2) points
   //! of curve's segment on the surface in case of tangential intersection.
@@ -99,15 +99,14 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
   //! where NbSegments is the number of computed intersection segments.
-  Standard_EXPORT void Parameters(const Standard_Integer Index,
-                                  Standard_Real&         U1,
-                                  Standard_Real&         V1,
-                                  Standard_Real&         U2,
-                                  Standard_Real&         V2) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U1,
+                                  double&         V1,
+                                  double&         U2,
+                                  double&         V2) const;
 
-protected:
 private:
-  Handle(Geom_Curve)     myCurve;
+  occ::handle<Geom_Curve>     myCurve;
   IntCurveSurface_HInter myIntCS;
 };
 

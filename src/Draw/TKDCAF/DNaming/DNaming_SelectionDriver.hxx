@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 class TFunction_Logbook;
 
-class DNaming_SelectionDriver;
-DEFINE_STANDARD_HANDLE(DNaming_SelectionDriver, TFunction_Driver)
-
 class DNaming_SelectionDriver : public TFunction_Driver
 {
 
@@ -40,24 +37,22 @@ public:
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT virtual void Validate(Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Validate(occ::handle<TFunction_Logbook>& theLog) const override;
 
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
-  Standard_EXPORT virtual Standard_Boolean MustExecute(
-    const Handle(TFunction_Logbook)& theLog) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool MustExecute(
+    const occ::handle<TFunction_Logbook>& theLog) const override;
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual Standard_Integer Execute(Handle(TFunction_Logbook)& theLog) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(DNaming_SelectionDriver, TFunction_Driver)
 
-protected:
-private:
 };
 
 #endif // _DNaming_SelectionDriver_HeaderFile

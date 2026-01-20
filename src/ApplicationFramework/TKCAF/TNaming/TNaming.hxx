@@ -21,10 +21,17 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <TDF_IDList.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 #include <TNaming_Evolution.hxx>
 #include <TNaming_NameType.hxx>
@@ -103,7 +110,7 @@ public:
   //! vers cible
   Standard_EXPORT static void Substitute(const TDF_Label&              labelsource,
                                          const TDF_Label&              labelcible,
-                                         TopTools_DataMapOfShapeShape& mapOldNew);
+                                         NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
 
   //! Mise a jour des shapes du label et de ses fils en
   //! tenant compte des substitutions decrite par
@@ -113,17 +120,17 @@ public:
   //! les attributs qui le contiennent meme si ceux
   //! ci ne sont pas associees a des sous-labels de <Label>.
   Standard_EXPORT static void Update(const TDF_Label&              label,
-                                     TopTools_DataMapOfShapeShape& mapOldNew);
+                                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
 
   //! Application de la Location sur les shapes du label
   //! et de ses sous labels.
   Standard_EXPORT static void Displace(const TDF_Label&       label,
                                        const TopLoc_Location& aLocation,
-                                       const Standard_Boolean WithOld = Standard_True);
+                                       const bool WithOld = true);
 
   //! Remplace les shapes du label et des sous-labels
   //! par des copies.
-  Standard_EXPORT static void ChangeShapes(const TDF_Label& label, TopTools_DataMapOfShapeShape& M);
+  Standard_EXPORT static void ChangeShapes(const TDF_Label& label, NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& M);
 
   //! Application de la transformation sur les shapes du
   //! label et de ses sous labels.
@@ -135,7 +142,7 @@ public:
   //! Replicates the named shape with the transformation <T>
   //! on the label <L> (and sub-labels if necessary)
   //! (TNaming_GENERATED is set)
-  Standard_EXPORT static void Replicate(const Handle(TNaming_NamedShape)& NS,
+  Standard_EXPORT static void Replicate(const occ::handle<TNaming_NamedShape>& NS,
                                         const gp_Trsf&                    T,
                                         const TDF_Label&                  L);
 
@@ -147,7 +154,7 @@ public:
                                         const TDF_Label&    L);
 
   //! Builds shape from map content
-  Standard_EXPORT static TopoDS_Shape MakeShape(const TopTools_MapOfShape& MS);
+  Standard_EXPORT static TopoDS_Shape MakeShape(const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
 
   //! Find unique context of shape <S>
   Standard_EXPORT static TopoDS_Shape FindUniqueContext(const TopoDS_Shape& S,
@@ -158,27 +165,27 @@ public:
   //! single contexts
   Standard_EXPORT static TopoDS_Shape FindUniqueContextSet(const TopoDS_Shape&              S,
                                                            const TopoDS_Shape&              Context,
-                                                           Handle(TopTools_HArray1OfShape)& Arr);
+                                                           occ::handle<NCollection_HArray1<TopoDS_Shape>>& Arr);
 
   //! Substitutes shape in source structure
-  Standard_EXPORT static Standard_Boolean SubstituteSShape(const TDF_Label&    accesslabel,
+  Standard_EXPORT static bool SubstituteSShape(const TDF_Label&    accesslabel,
                                                            const TopoDS_Shape& From,
                                                            TopoDS_Shape&       To);
 
   //! Returns True if outer wire is found and the found wire in <theWire>.
-  Standard_EXPORT static Standard_Boolean OuterWire(const TopoDS_Face& theFace,
+  Standard_EXPORT static bool OuterWire(const TopoDS_Face& theFace,
                                                     TopoDS_Wire&       theWire);
 
   //! Returns True if outer Shell is found and the found shell in <theShell>.
   //! Print of TNaming enumeration
   //! =============================
-  Standard_EXPORT static Standard_Boolean OuterShell(const TopoDS_Solid& theSolid,
+  Standard_EXPORT static bool OuterShell(const TopoDS_Solid& theSolid,
                                                      TopoDS_Shell&       theShell);
 
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package.
   //! CAUTION: <anIDList> is NOT cleared before use.
-  Standard_EXPORT static void IDList(TDF_IDList& anIDList);
+  Standard_EXPORT static void IDList(NCollection_List<Standard_GUID>& anIDList);
 
   //! Prints the evolution <EVOL> as a String on the
   //! Stream <S> and returns <S>.

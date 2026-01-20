@@ -20,10 +20,10 @@
 
 RWStepShape_RWRightAngularWedge::RWStepShape_RWRightAngularWedge() {}
 
-void RWStepShape_RWRightAngularWedge::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepShape_RightAngularWedge)& ent) const
+void RWStepShape_RWRightAngularWedge::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_RightAngularWedge>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,38 +33,38 @@ void RWStepShape_RWRightAngularWedge::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : position ---
 
-  Handle(StepGeom_Axis2Placement3d) aPosition;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Axis2Placement3d> aPosition;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "position", ach, STANDARD_TYPE(StepGeom_Axis2Placement3d), aPosition);
 
   // --- own field : x ---
 
-  Standard_Real aX;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aX;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "x", ach, aX);
 
   // --- own field : y ---
 
-  Standard_Real aY;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aY;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "y", ach, aY);
 
   // --- own field : z ---
 
-  Standard_Real aZ;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  double aZ;
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadReal(num, 5, "z", ach, aZ);
 
   // --- own field : ltx ---
 
-  Standard_Real aLtx;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  double aLtx;
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadReal(num, 6, "ltx", ach, aLtx);
 
   //--- Initialisation of the read entity ---
@@ -74,7 +74,7 @@ void RWStepShape_RWRightAngularWedge::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepShape_RWRightAngularWedge::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepShape_RightAngularWedge)& ent) const
+  const occ::handle<StepShape_RightAngularWedge>& ent) const
 {
 
   // --- inherited field name ---
@@ -102,7 +102,7 @@ void RWStepShape_RWRightAngularWedge::WriteStep(
   SW.Send(ent->Ltx());
 }
 
-void RWStepShape_RWRightAngularWedge::Share(const Handle(StepShape_RightAngularWedge)& ent,
+void RWStepShape_RWRightAngularWedge::Share(const occ::handle<StepShape_RightAngularWedge>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 

@@ -26,8 +26,6 @@
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PlanarCurvePairRange, StepKinematics_PlanarCurvePair)
-
 //! Representation of STEP entity PlanarCurvePairRange
 class StepKinematics_PlanarCurvePairRange : public StepKinematics_PlanarCurvePair
 {
@@ -37,33 +35,33 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Handle(StepGeom_Curve)&                thePlanarCurvePair_Curve1,
-    const Handle(StepGeom_Curve)&                thePlanarCurvePair_Curve2,
-    const Standard_Boolean                       thePlanarCurvePair_Orientation,
-    const Handle(StepGeom_TrimmedCurve)&         theRangeOnCurve1,
-    const Handle(StepGeom_TrimmedCurve)&         theRangeOnCurve2);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve1,
+    const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve2,
+    const bool                       thePlanarCurvePair_Orientation,
+    const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve1,
+    const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve2);
 
   //! Returns field RangeOnCurve1
-  Standard_EXPORT Handle(StepGeom_TrimmedCurve) RangeOnCurve1() const;
+  Standard_EXPORT occ::handle<StepGeom_TrimmedCurve> RangeOnCurve1() const;
   //! Sets field RangeOnCurve1
-  Standard_EXPORT void SetRangeOnCurve1(const Handle(StepGeom_TrimmedCurve)& theRangeOnCurve1);
+  Standard_EXPORT void SetRangeOnCurve1(const occ::handle<StepGeom_TrimmedCurve>& theRangeOnCurve1);
 
   //! Returns field RangeOnCurve2
-  Standard_EXPORT Handle(StepGeom_TrimmedCurve) RangeOnCurve2() const;
+  Standard_EXPORT occ::handle<StepGeom_TrimmedCurve> RangeOnCurve2() const;
   //! Sets field RangeOnCurve2
-  Standard_EXPORT void SetRangeOnCurve2(const Handle(StepGeom_TrimmedCurve)& theRangeOnCurve2);
+  Standard_EXPORT void SetRangeOnCurve2(const occ::handle<StepGeom_TrimmedCurve>& theRangeOnCurve2);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PlanarCurvePairRange, StepKinematics_PlanarCurvePair)
 
 private:
-  Handle(StepGeom_TrimmedCurve) myRangeOnCurve1;
-  Handle(StepGeom_TrimmedCurve) myRangeOnCurve2;
+  occ::handle<StepGeom_TrimmedCurve> myRangeOnCurve1;
+  occ::handle<StepGeom_TrimmedCurve> myRangeOnCurve2;
 };
 #endif // _StepKinematics_PlanarCurvePairRange_HeaderFile_

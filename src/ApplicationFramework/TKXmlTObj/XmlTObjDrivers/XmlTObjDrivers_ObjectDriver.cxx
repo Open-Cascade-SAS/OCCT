@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : XmlMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -38,7 +38,7 @@ XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) XmlTObjDrivers_ObjectDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlTObjDrivers_ObjectDriver::NewEmpty() const
 {
   return new TObj_TObject;
 }
@@ -50,22 +50,22 @@ Handle(TDF_Attribute) XmlTObjDrivers_ObjectDriver::NewEmpty() const
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-Standard_Boolean XmlTObjDrivers_ObjectDriver::Paste(
+bool XmlTObjDrivers_ObjectDriver::Paste(
   const XmlObjMgt_Persistent&  Source,
-  const Handle(TDF_Attribute)& Target,
+  const occ::handle<TDF_Attribute>& Target,
   XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   TCollection_ExtendedString aString;
   if (XmlObjMgt::GetExtendedString(Source, aString))
   {
     TCollection_AsciiString anAscii(aString);
-    Handle(TObj_Object)     anObject =
+    occ::handle<TObj_Object>     anObject =
       TObj_Persistence::CreateNewObject(anAscii.ToCString(), Target->Label());
-    Handle(TObj_TObject)::DownCast(Target)->Set(anObject);
-    return Standard_True;
+    occ::down_cast<TObj_TObject>(Target)->Set(anObject);
+    return true;
   }
   myMessageDriver->Send("error retrieving ExtendedString for type TObj_TModel", Message_Fail);
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -76,12 +76,12 @@ Standard_Boolean XmlTObjDrivers_ObjectDriver::Paste(
 //           anObject is stored as a Name of class derived from TObj_Object
 //=======================================================================
 
-void XmlTObjDrivers_ObjectDriver::Paste(const Handle(TDF_Attribute)& Source,
+void XmlTObjDrivers_ObjectDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                         XmlObjMgt_Persistent&        Target,
                                         XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
-  Handle(TObj_TObject) aTObj     = Handle(TObj_TObject)::DownCast(Source);
-  Handle(TObj_Object)  anIObject = aTObj->Get();
+  occ::handle<TObj_TObject> aTObj     = occ::down_cast<TObj_TObject>(Source);
+  occ::handle<TObj_Object>  anIObject = aTObj->Get();
 
   XmlObjMgt::SetExtendedString(Target, anIObject->DynamicType()->Name());
 }

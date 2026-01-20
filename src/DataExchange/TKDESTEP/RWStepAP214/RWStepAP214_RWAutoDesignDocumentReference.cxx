@@ -16,7 +16,9 @@
 #include "RWStepAP214_RWAutoDesignDocumentReference.pxx"
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignReferencingItem.hxx>
-#include <StepAP214_HArray1OfAutoDesignReferencingItem.hxx>
+#include <StepAP214_AutoDesignReferencingItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_Document.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -25,10 +27,10 @@
 RWStepAP214_RWAutoDesignDocumentReference::RWStepAP214_RWAutoDesignDocumentReference() {}
 
 void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
-  const Handle(StepData_StepReaderData)&               data,
-  const Standard_Integer                               num,
-  Handle(Interface_Check)&                             ach,
-  const Handle(StepAP214_AutoDesignDocumentReference)& ent) const
+  const occ::handle<StepData_StepReaderData>&               data,
+  const int                               num,
+  occ::handle<Interface_Check>&                             ach,
+  const occ::handle<StepAP214_AutoDesignDocumentReference>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -37,26 +39,26 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
 
   // --- inherited field : assigned_document
 
-  Handle(StepBasic_Document) adoc;
+  occ::handle<StepBasic_Document> adoc;
   data->ReadEntity(num, 1, "assigned_document", ach, STANDARD_TYPE(StepBasic_Document), adoc);
 
   // --- inherited field : source ---
 
-  Handle(TCollection_HAsciiString) asource;
+  occ::handle<TCollection_HAsciiString> asource;
   data->ReadString(num, 2, "source", ach, asource);
 
   // --- own field : items ---
 
-  Handle(StepAP214_HArray1OfAutoDesignReferencingItem) aItems;
+  occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>> aItems;
   StepAP214_AutoDesignReferencingItem                  anItem;
-  Standard_Integer                                     nsub3;
+  int                                     nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aItems               = new StepAP214_HArray1OfAutoDesignReferencingItem(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aItems               = new NCollection_HArray1<StepAP214_AutoDesignReferencingItem>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadEntity(nsub3, i3, "item", ach, anItem);
+      bool stat3 = data->ReadEntity(nsub3, i3, "item", ach, anItem);
       if (stat3)
         aItems->SetValue(i3, anItem);
     }
@@ -69,7 +71,7 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
 
 void RWStepAP214_RWAutoDesignDocumentReference::WriteStep(
   StepData_StepWriter&                                 SW,
-  const Handle(StepAP214_AutoDesignDocumentReference)& ent) const
+  const occ::handle<StepAP214_AutoDesignDocumentReference>& ent) const
 {
 
   // --- inherited field : assigned_document ---
@@ -83,7 +85,7 @@ void RWStepAP214_RWAutoDesignDocumentReference::WriteStep(
   // --- own field : items ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
   {
     SW.Send(ent->ItemsValue(i3).Value());
   }
@@ -91,10 +93,10 @@ void RWStepAP214_RWAutoDesignDocumentReference::WriteStep(
 }
 
 void RWStepAP214_RWAutoDesignDocumentReference::Share(
-  const Handle(StepAP214_AutoDesignDocumentReference)& ent,
+  const occ::handle<StepAP214_AutoDesignDocumentReference>& ent,
   Interface_EntityIterator&                            iter) const
 {
   iter.AddItem(ent->AssignedDocument());
-  for (Standard_Integer i3 = 1; i3 <= ent->NbItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbItems(); i3++)
     iter.AddItem(ent->ItemsValue(i3).Value());
 }

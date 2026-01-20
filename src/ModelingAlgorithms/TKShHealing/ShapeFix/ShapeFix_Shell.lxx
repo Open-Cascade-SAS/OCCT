@@ -16,21 +16,21 @@
 
 //=================================================================================================
 
-inline Handle(ShapeFix_Face) ShapeFix_Shell::FixFaceTool()
+inline occ::handle<ShapeFix_Face> ShapeFix_Shell::FixFaceTool()
 {
   return myFixFace;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shell::FixFaceMode()
+inline int& ShapeFix_Shell::FixFaceMode()
 {
   return myFixFaceMode;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& ShapeFix_Shell::FixOrientationMode()
+inline int& ShapeFix_Shell::FixOrientationMode()
 {
   return myFixOrientationMode;
 }

@@ -34,7 +34,7 @@ DDF_Transaction::DDF_Transaction()
 
 //=================================================================================================
 
-DDF_Transaction::DDF_Transaction(const Handle(TDF_Data)& aDF)
+DDF_Transaction::DDF_Transaction(const occ::handle<TDF_Data>& aDF)
     : myTransaction(TCollection_AsciiString())
 {
   myTransaction.Initialize(aDF);
@@ -42,14 +42,14 @@ DDF_Transaction::DDF_Transaction(const Handle(TDF_Data)& aDF)
 
 //=================================================================================================
 
-Standard_Integer DDF_Transaction::Open()
+int DDF_Transaction::Open()
 {
   return myTransaction.Open();
 }
 
 //=================================================================================================
 
-Handle(TDF_Delta) DDF_Transaction::Commit(const Standard_Boolean withDelta)
+occ::handle<TDF_Delta> DDF_Transaction::Commit(const bool withDelta)
 {
   return myTransaction.Commit(withDelta);
 }
@@ -63,21 +63,21 @@ void DDF_Transaction::Abort()
 
 //=================================================================================================
 
-Handle(TDF_Data) DDF_Transaction::Data() const
+occ::handle<TDF_Data> DDF_Transaction::Data() const
 {
   return myTransaction.Data();
 }
 
 //=================================================================================================
 
-Standard_Integer DDF_Transaction::Transaction() const
+int DDF_Transaction::Transaction() const
 {
   return myTransaction.Transaction();
 }
 
 //=================================================================================================
 
-Standard_Boolean DDF_Transaction::IsOpen() const
+bool DDF_Transaction::IsOpen() const
 {
   return myTransaction.IsOpen();
 }

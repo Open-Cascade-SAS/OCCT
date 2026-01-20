@@ -22,7 +22,7 @@
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax3.hxx>
-#include <TColStd_ListOfReal.hxx>
+#include <NCollection_List.hxx>
 
 class gp_Cone;
 class gp_Cylinder;
@@ -40,134 +40,134 @@ public:
   //! Sets the parameters used to compute Points and Derivative
   //! on the curve.
   Standard_EXPORT void SetCylinderQuadValues(const gp_Cylinder&     Cylinder,
-                                             const Standard_Real    Qxx,
-                                             const Standard_Real    Qyy,
-                                             const Standard_Real    Qzz,
-                                             const Standard_Real    Qxy,
-                                             const Standard_Real    Qxz,
-                                             const Standard_Real    Qyz,
-                                             const Standard_Real    Qx,
-                                             const Standard_Real    Qy,
-                                             const Standard_Real    Qz,
-                                             const Standard_Real    Q1,
-                                             const Standard_Real    Tol,
-                                             const Standard_Real    DomInf,
-                                             const Standard_Real    DomSup,
-                                             const Standard_Boolean TwoZForATheta,
-                                             const Standard_Boolean ZIsPositive);
+                                             const double    Qxx,
+                                             const double    Qyy,
+                                             const double    Qzz,
+                                             const double    Qxy,
+                                             const double    Qxz,
+                                             const double    Qyz,
+                                             const double    Qx,
+                                             const double    Qy,
+                                             const double    Qz,
+                                             const double    Q1,
+                                             const double    Tol,
+                                             const double    DomInf,
+                                             const double    DomSup,
+                                             const bool TwoZForATheta,
+                                             const bool ZIsPositive);
 
   //! Sets the parameters used to compute Points and
   //! Derivative on the curve.
   Standard_EXPORT void SetConeQuadValues(const gp_Cone&         Cone,
-                                         const Standard_Real    Qxx,
-                                         const Standard_Real    Qyy,
-                                         const Standard_Real    Qzz,
-                                         const Standard_Real    Qxy,
-                                         const Standard_Real    Qxz,
-                                         const Standard_Real    Qyz,
-                                         const Standard_Real    Qx,
-                                         const Standard_Real    Qy,
-                                         const Standard_Real    Qz,
-                                         const Standard_Real    Q1,
-                                         const Standard_Real    Tol,
-                                         const Standard_Real    DomInf,
-                                         const Standard_Real    DomSup,
-                                         const Standard_Boolean TwoZForATheta,
-                                         const Standard_Boolean ZIsPositive);
+                                         const double    Qxx,
+                                         const double    Qyy,
+                                         const double    Qzz,
+                                         const double    Qxy,
+                                         const double    Qxz,
+                                         const double    Qyz,
+                                         const double    Qx,
+                                         const double    Qy,
+                                         const double    Qz,
+                                         const double    Q1,
+                                         const double    Tol,
+                                         const double    DomInf,
+                                         const double    DomSup,
+                                         const bool TwoZForATheta,
+                                         const bool ZIsPositive);
 
   //! Returns TRUE if the curve is not infinite at the
   //! last parameter or at the first parameter of the domain.
-  Standard_EXPORT Standard_Boolean IsOpen() const;
+  Standard_EXPORT bool IsOpen() const;
 
   //! Returns the parametric domain of the curve.
-  Standard_EXPORT void Domain(Standard_Real& theFirst, Standard_Real& theLast) const;
+  Standard_EXPORT void Domain(double& theFirst, double& theLast) const;
 
   //! Returns TRUE if the function is constant.
-  Standard_EXPORT Standard_Boolean IsConstant() const;
+  Standard_EXPORT bool IsConstant() const;
 
   //! Returns TRUE if the domain is open at the beginning.
-  Standard_EXPORT Standard_Boolean IsFirstOpen() const;
+  Standard_EXPORT bool IsFirstOpen() const;
 
   //! Returns TRUE if the domain is open at the end.
-  Standard_EXPORT Standard_Boolean IsLastOpen() const;
+  Standard_EXPORT bool IsLastOpen() const;
 
   //! Returns the point at parameter Theta on the curve.
-  Standard_EXPORT gp_Pnt Value(const Standard_Real Theta);
+  Standard_EXPORT gp_Pnt Value(const double Theta);
 
   //! Returns the point and the first derivative at parameter
   //! Theta on the curve.
-  Standard_EXPORT Standard_Boolean D1u(const Standard_Real Theta, gp_Pnt& P, gp_Vec& V);
+  Standard_EXPORT bool D1u(const double Theta, gp_Pnt& P, gp_Vec& V);
 
   //! Tries to find the parameter of the point P on the curve.
   //! If the method returns False, the "projection" is
   //! impossible.
   //! If the method returns True at least one parameter has been found.
   //! theParams is always sorted in ascending order.
-  Standard_EXPORT void FindParameter(const gp_Pnt& P, TColStd_ListOfReal& theParams) const;
+  Standard_EXPORT void FindParameter(const gp_Pnt& P, NCollection_List<double>& theParams) const;
 
   //! If flag is True, the Curve is not defined at the
   //! first parameter of its domain.
-  Standard_EXPORT void SetIsFirstOpen(const Standard_Boolean Flag);
+  Standard_EXPORT void SetIsFirstOpen(const bool Flag);
 
   //! If flag is True, the Curve is not defined at the
   //! first parameter of its domain.
-  Standard_EXPORT void SetIsLastOpen(const Standard_Boolean Flag);
+  Standard_EXPORT void SetIsLastOpen(const bool Flag);
 
   //! Trims this curve
-  Standard_EXPORT void SetDomain(const Standard_Real theFirst, const Standard_Real theLast);
+  Standard_EXPORT void SetDomain(const double theFirst, const double theLast);
 
 protected:
   //! Protected function.
-  Standard_EXPORT gp_Pnt InternalValue(const Standard_Real Theta1,
-                                       const Standard_Real Theta2) const;
+  Standard_EXPORT gp_Pnt InternalValue(const double Theta1,
+                                       const double Theta2) const;
 
   //! Protected function.
-  Standard_EXPORT void InternalUVValue(const Standard_Real Param,
-                                       Standard_Real&      U,
-                                       Standard_Real&      V,
-                                       Standard_Real&      A,
-                                       Standard_Real&      B,
-                                       Standard_Real&      C,
-                                       Standard_Real&      Co,
-                                       Standard_Real&      Si,
-                                       Standard_Real&      Di) const;
+  Standard_EXPORT void InternalUVValue(const double Param,
+                                       double&      U,
+                                       double&      V,
+                                       double&      A,
+                                       double&      B,
+                                       double&      C,
+                                       double&      Co,
+                                       double&      Si,
+                                       double&      Di) const;
 
 private:
-  Standard_Real    Z0Cte;
-  Standard_Real    Z0Sin;
-  Standard_Real    Z0Cos;
-  Standard_Real    Z0SinSin;
-  Standard_Real    Z0CosCos;
-  Standard_Real    Z0CosSin;
-  Standard_Real    Z1Cte;
-  Standard_Real    Z1Sin;
-  Standard_Real    Z1Cos;
-  Standard_Real    Z1SinSin;
-  Standard_Real    Z1CosCos;
-  Standard_Real    Z1CosSin;
-  Standard_Real    Z2Cte;
-  Standard_Real    Z2Sin;
-  Standard_Real    Z2Cos;
-  Standard_Real    Z2SinSin;
-  Standard_Real    Z2CosCos;
-  Standard_Real    Z2CosSin;
-  Standard_Boolean TwoCurves;
-  Standard_Boolean TakeZPositive;
-  Standard_Real    Tolerance;
+  double    Z0Cte;
+  double    Z0Sin;
+  double    Z0Cos;
+  double    Z0SinSin;
+  double    Z0CosCos;
+  double    Z0CosSin;
+  double    Z1Cte;
+  double    Z1Sin;
+  double    Z1Cos;
+  double    Z1SinSin;
+  double    Z1CosCos;
+  double    Z1CosSin;
+  double    Z2Cte;
+  double    Z2Sin;
+  double    Z2Cos;
+  double    Z2SinSin;
+  double    Z2CosCos;
+  double    Z2CosSin;
+  bool TwoCurves;
+  bool TakeZPositive;
+  double    Tolerance;
 
   //! Internal fields defining the default domain
-  Standard_Real       DomainInf, DomainSup;
-  Standard_Boolean    RestrictedInf;
-  Standard_Boolean    RestrictedSup;
-  Standard_Boolean    firstbounded;
-  Standard_Boolean    lastbounded;
+  double       DomainInf, DomainSup;
+  bool    RestrictedInf;
+  bool    RestrictedSup;
+  bool    firstbounded;
+  bool    lastbounded;
   GeomAbs_SurfaceType typequadric;
-  Standard_Real       RCyl;
-  Standard_Real       Angle;
+  double       RCyl;
+  double       Angle;
   gp_Ax3              Ax3;
 
   //! Trim boundaries
-  Standard_Real myFirstParameter, myLastParameter;
+  double myFirstParameter, myLastParameter;
 };
 
 #endif // _IntAna_Curve_HeaderFile

@@ -24,9 +24,12 @@
 #include <TopoDS_Face.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TopTools_DataMapOfShapeReal.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 class TopOpeBRepTool_mkTondgE
 {
@@ -35,29 +38,28 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_mkTondgE();
 
-  Standard_EXPORT Standard_Boolean Initialize(const TopoDS_Edge& dgE,
+  Standard_EXPORT bool Initialize(const TopoDS_Edge& dgE,
                                               const TopoDS_Face& F,
                                               const gp_Pnt2d&    uvi,
                                               const TopoDS_Face& Fi);
 
-  Standard_EXPORT Standard_Boolean SetclE(const TopoDS_Edge& clE);
+  Standard_EXPORT bool SetclE(const TopoDS_Edge& clE);
 
-  Standard_EXPORT Standard_Boolean IsT2d() const;
+  Standard_EXPORT bool IsT2d() const;
 
-  Standard_EXPORT Standard_Boolean SetRest(const Standard_Real pari, const TopoDS_Edge& Ei);
+  Standard_EXPORT bool SetRest(const double pari, const TopoDS_Edge& Ei);
 
-  Standard_EXPORT Standard_Integer GetAllRest(TopTools_ListOfShape& lEi);
+  Standard_EXPORT int GetAllRest(NCollection_List<TopoDS_Shape>& lEi);
 
-  Standard_EXPORT Standard_Boolean MkTonE(Standard_Integer& mkT,
-                                          Standard_Real&    par1,
-                                          Standard_Real&    par2);
+  Standard_EXPORT bool MkTonE(int& mkT,
+                                          double&    par1,
+                                          double&    par2);
 
-  Standard_EXPORT Standard_Boolean MkTonE(const TopoDS_Edge& Ei,
-                                          Standard_Integer&  mkT,
-                                          Standard_Real&     par1,
-                                          Standard_Real&     par2);
+  Standard_EXPORT bool MkTonE(const TopoDS_Edge& Ei,
+                                          int&  mkT,
+                                          double&     par1,
+                                          double&     par2);
 
-protected:
 private:
   TopoDS_Edge                 mydgE;
   TopoDS_Face                 myF;
@@ -65,9 +67,9 @@ private:
   gp_Dir                      mydirINcle;
   TopoDS_Face                 myFi;
   gp_Pnt2d                    myuvi;
-  Standard_Boolean            isT2d;
-  TopTools_DataMapOfShapeReal myEpari;
-  Standard_Boolean            hasRest;
+  bool            isT2d;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> myEpari;
+  bool            hasRest;
   gp_Dir                      myngf;
   gp_Dir                      myngfi;
 };

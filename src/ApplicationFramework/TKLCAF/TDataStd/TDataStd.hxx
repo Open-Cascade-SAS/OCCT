@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_IDList.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 #include <TDataStd_RealEnum.hxx>
 
@@ -37,7 +38,7 @@
 //! information using the method GetID as follows: Standard_GUID anID =
 //! MyAttributeClass::GetID();
 //! Then, use the method Find for the label as follows:
-//! Standard_Boolean HasAttribute
+//! bool HasAttribute
 //! =
 //! aLabel.Find(anID,anAttribute);
 //! Note
@@ -51,7 +52,7 @@ public:
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package. CAUTION: <anIDList> is NOT
   //! cleared before use.
-  Standard_EXPORT static void IDList(TDF_IDList& anIDList);
+  Standard_EXPORT static void IDList(NCollection_List<Standard_GUID>& anIDList);
 
   //! Prints the name of the real dimension <DIM> as a String on
   //! the Stream <S> and returns <S>.

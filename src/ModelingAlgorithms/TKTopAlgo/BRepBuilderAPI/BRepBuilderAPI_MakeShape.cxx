@@ -47,7 +47,7 @@ BRepBuilderAPI_MakeShape::operator TopoDS_Shape()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepBuilderAPI_MakeShape::Generated(const TopoDS_Shape&)
+const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_MakeShape::Generated(const TopoDS_Shape&)
 
 {
   myGenerated.Clear();
@@ -56,7 +56,7 @@ const TopTools_ListOfShape& BRepBuilderAPI_MakeShape::Generated(const TopoDS_Sha
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepBuilderAPI_MakeShape::Modified(const TopoDS_Shape&)
+const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_MakeShape::Modified(const TopoDS_Shape&)
 
 {
   myGenerated.Clear();
@@ -65,8 +65,8 @@ const TopTools_ListOfShape& BRepBuilderAPI_MakeShape::Modified(const TopoDS_Shap
 
 //=================================================================================================
 
-Standard_Boolean BRepBuilderAPI_MakeShape::IsDeleted(const TopoDS_Shape&)
+bool BRepBuilderAPI_MakeShape::IsDeleted(const TopoDS_Shape&)
 
 {
-  return Standard_False;
+  return false;
 }

@@ -20,8 +20,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepElement_CurveElementFreedomMember, StepData_SelectNamed)
 
-static Standard_CString ECEF = "ENUMERATED_CURVE_ELEMENT_FREEDOM";
-static Standard_CString ADDF = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
+static const char* ECEF = "ENUMERATED_CURVE_ELEMENT_FREEDOM";
+static const char* ADDF = "APPLICATION_DEFINED_DEGREE_OF_FREEDOM";
 
 //=================================================================================================
 
@@ -32,14 +32,14 @@ StepElement_CurveElementFreedomMember::StepElement_CurveElementFreedomMember()
 
 //=================================================================================================
 
-Standard_Boolean StepElement_CurveElementFreedomMember::HasName() const
+bool StepElement_CurveElementFreedomMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepElement_CurveElementFreedomMember::Name() const
+const char* StepElement_CurveElementFreedomMember::Name() const
 {
   switch (mycase)
   {
@@ -55,9 +55,9 @@ Standard_CString StepElement_CurveElementFreedomMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& /*numen*/)
+static int CompareNames(const char* const name, int& /*numen*/)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
 
@@ -74,9 +74,9 @@ static Standard_Integer CompareNames(const Standard_CString name, Standard_Integ
 
 //=================================================================================================
 
-Standard_Boolean StepElement_CurveElementFreedomMember::SetName(const Standard_CString name)
+bool StepElement_CurveElementFreedomMember::SetName(const char* const name)
 {
-  Standard_Integer numit = 0;
+  int numit = 0;
   mycase                 = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
@@ -85,9 +85,9 @@ Standard_Boolean StepElement_CurveElementFreedomMember::SetName(const Standard_C
 
 //=================================================================================================
 
-Standard_Boolean StepElement_CurveElementFreedomMember::Matches(const Standard_CString name) const
+bool StepElement_CurveElementFreedomMember::Matches(const char* const name) const
 {
-  Standard_Integer numit   = 0;
-  Standard_Integer thecase = CompareNames(name, numit);
+  int numit   = 0;
+  int thecase = CompareNames(name, numit);
   return (mycase == thecase);
 }

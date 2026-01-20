@@ -26,16 +26,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation, Standard_Transi
 
 StepBasic_DocumentProductAssociation::StepBasic_DocumentProductAssociation()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
 void StepBasic_DocumentProductAssociation::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Boolean                          hasDescription,
-  const Handle(TCollection_HAsciiString)&         aDescription,
-  const Handle(StepBasic_Document)&               aRelatingDocument,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const bool                          hasDescription,
+  const occ::handle<TCollection_HAsciiString>&         aDescription,
+  const occ::handle<StepBasic_Document>&               aRelatingDocument,
   const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct)
 {
 
@@ -56,21 +56,21 @@ void StepBasic_DocumentProductAssociation::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_DocumentProductAssociation::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_DocumentProductAssociation::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_DocumentProductAssociation::Description() const
 {
   return theDescription;
 }
@@ -78,21 +78,21 @@ Handle(TCollection_HAsciiString) StepBasic_DocumentProductAssociation::Descripti
 //=================================================================================================
 
 void StepBasic_DocumentProductAssociation::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_DocumentProductAssociation::HasDescription() const
+bool StepBasic_DocumentProductAssociation::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Document) StepBasic_DocumentProductAssociation::RelatingDocument() const
+occ::handle<StepBasic_Document> StepBasic_DocumentProductAssociation::RelatingDocument() const
 {
   return theRelatingDocument;
 }
@@ -100,7 +100,7 @@ Handle(StepBasic_Document) StepBasic_DocumentProductAssociation::RelatingDocumen
 //=================================================================================================
 
 void StepBasic_DocumentProductAssociation::SetRelatingDocument(
-  const Handle(StepBasic_Document)& aRelatingDocument)
+  const occ::handle<StepBasic_Document>& aRelatingDocument)
 {
   theRelatingDocument = aRelatingDocument;
 }

@@ -4,7 +4,7 @@ set(OCCT_GeomLib_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_GeomLib_FILES
   GeomLib.cxx
   GeomLib.hxx
-  GeomLib_Array1OfMat.hxx
+
   GeomLib_Check2dBSplineCurve.cxx
   GeomLib_Check2dBSplineCurve.hxx
   GeomLib_Check2dBSplineCurve.lxx

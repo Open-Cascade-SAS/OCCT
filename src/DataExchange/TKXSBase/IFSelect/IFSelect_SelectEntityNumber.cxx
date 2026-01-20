@@ -23,12 +23,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
 
 IFSelect_SelectEntityNumber::IFSelect_SelectEntityNumber() {}
 
-void IFSelect_SelectEntityNumber::SetNumber(const Handle(IFSelect_IntParam)& num)
+void IFSelect_SelectEntityNumber::SetNumber(const occ::handle<IFSelect_IntParam>& num)
 {
   thenum = num;
 }
 
-Handle(IFSelect_IntParam) IFSelect_SelectEntityNumber::Number() const
+occ::handle<IFSelect_IntParam> IFSelect_SelectEntityNumber::Number() const
 {
   return thenum;
 }
@@ -36,7 +36,7 @@ Handle(IFSelect_IntParam) IFSelect_SelectEntityNumber::Number() const
 Interface_EntityIterator IFSelect_SelectEntityNumber::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter;
-  Standard_Integer         num = 0;
+  int         num = 0;
   if (!thenum.IsNull())
     num = thenum->Value();
   if (num < 1)
@@ -48,7 +48,7 @@ Interface_EntityIterator IFSelect_SelectEntityNumber::RootResult(const Interface
 
 TCollection_AsciiString IFSelect_SelectEntityNumber::Label() const
 {
-  Standard_Integer num = 0;
+  int num = 0;
   if (!thenum.IsNull())
     num = thenum->Value();
   TCollection_AsciiString labl(num);

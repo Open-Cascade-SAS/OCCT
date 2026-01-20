@@ -15,7 +15,9 @@
 
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
@@ -26,9 +28,9 @@
 TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
 {
   // Create 5 points along a sine wave
-  Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
+  occ::handle<NCollection_HArray1<gp_Pnt>> aPnts = new NCollection_HArray1<gp_Pnt>(1, 5);
   gp_Pnt                      aP(0., 0., 0.);
-  for (Standard_Integer i = 1; i <= 5; i++)
+  for (int i = 1; i <= 5; i++)
   {
     aP.SetX((i - 1) * 1.57);
     aP.SetY(sin((i - 1) * 1.57));
@@ -36,12 +38,12 @@ TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
   }
 
   // First interpolation without tangents
-  GeomAPI_Interpolate anInterpolater(aPnts, Standard_False, Precision::Confusion());
+  GeomAPI_Interpolate anInterpolater(aPnts, false, Precision::Confusion());
   anInterpolater.Perform();
   ASSERT_TRUE(anInterpolater.IsDone()) << "First interpolation should succeed";
 
   // Get the generated tangents
-  Handle(Geom_BSplineCurve) aCur = anInterpolater.Curve();
+  occ::handle<Geom_BSplineCurve> aCur = anInterpolater.Curve();
   ASSERT_FALSE(aCur.IsNull()) << "Interpolated curve should not be null";
 
   gp_Vec aFirstTang, aLastTang;
@@ -49,8 +51,8 @@ TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
   aCur->D1(aCur->LastParameter(), aP, aLastTang);
 
   // Second interpolation with the same tangents explicitly provided
-  GeomAPI_Interpolate anInterpolater1(aPnts, Standard_False, Precision::Confusion());
-  anInterpolater1.Load(aFirstTang, aLastTang, Standard_False);
+  GeomAPI_Interpolate anInterpolater1(aPnts, false, Precision::Confusion());
+  anInterpolater1.Load(aFirstTang, aLastTang, false);
   anInterpolater1.Perform();
   ASSERT_TRUE(anInterpolater1.IsDone()) << "Second interpolation should succeed";
 

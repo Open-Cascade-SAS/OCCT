@@ -47,8 +47,8 @@ ShapeProcess_Context::ShapeProcess_Context()
 
 //=================================================================================================
 
-ShapeProcess_Context::ShapeProcess_Context(const Standard_CString file,
-                                           const Standard_CString scope)
+ShapeProcess_Context::ShapeProcess_Context(const char* const file,
+                                           const char* const scope)
 {
   Init(file, scope);
   myMessenger = Message::DefaultMessenger();
@@ -57,8 +57,8 @@ ShapeProcess_Context::ShapeProcess_Context(const Standard_CString file,
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::Init(const Standard_CString file,
-                                            const Standard_CString scope)
+bool ShapeProcess_Context::Init(const char* const file,
+                                            const char* const scope)
 {
   myScope.Nullify();
   if (file != nullptr && strlen(file) != 0)
@@ -73,39 +73,39 @@ Standard_Boolean ShapeProcess_Context::Init(const Standard_CString file,
   {
     SetScope(scope);
   }
-  return Standard_True; // myRC->Length() >0; NOT IMPLEMENTED
+  return true; // myRC->Length() >0; NOT IMPLEMENTED
 }
 
 //=================================================================================================
 
-Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager(const Standard_CString name)
+occ::handle<Resource_Manager> ShapeProcess_Context::LoadResourceManager(const char* const name)
 {
   // Mutex is needed because we are initializing and changing static variables here, so
   // without mutex it leads to race condition.
   std::lock_guard<std::mutex> aLock(GetShapeProcessMutex());
   // Optimisation of loading resource file: file is load only once
   // and reloaded only if file date has changed
-  static Handle(Resource_Manager) sRC;
-  static Standard_Time            sMtime, sUMtime;
+  static occ::handle<Resource_Manager> sRC;
+  static std::time_t            sMtime, sUMtime;
   static TCollection_AsciiString  sName;
 
   struct stat             buf;
-  Standard_Time           aMtime(0), aUMtime(0);
+  std::time_t           aMtime(0), aUMtime(0);
   TCollection_AsciiString aPath, aUserPath;
-  Resource_Manager::GetResourcePath(aPath, name, Standard_False);
-  Resource_Manager::GetResourcePath(aUserPath, name, Standard_True);
+  Resource_Manager::GetResourcePath(aPath, name, false);
+  Resource_Manager::GetResourcePath(aUserPath, name, true);
   if (!aPath.IsEmpty())
   {
     stat(aPath.ToCString(), &buf);
-    aMtime = (Standard_Time)buf.st_mtime;
+    aMtime = (std::time_t)buf.st_mtime;
   }
   if (!aUserPath.IsEmpty())
   {
     stat(aUserPath.ToCString(), &buf);
-    aUMtime = (Standard_Time)buf.st_mtime;
+    aUMtime = (std::time_t)buf.st_mtime;
   }
 
-  Standard_Boolean isFileModified = Standard_False;
+  bool isFileModified = false;
   if (!sRC.IsNull())
   {
     if (sName.IsEqual(name))
@@ -113,12 +113,12 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager(const Standar
       if (sMtime != aMtime)
       {
         sMtime         = aMtime;
-        isFileModified = Standard_True;
+        isFileModified = true;
       }
       if (sUMtime != aUMtime)
       {
         sUMtime        = aUMtime;
-        isFileModified = Standard_True;
+        isFileModified = true;
       }
       if (isFileModified)
         sRC.Nullify();
@@ -148,18 +148,18 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager(const Standar
 
 //=================================================================================================
 
-const Handle(Resource_Manager)& ShapeProcess_Context::ResourceManager() const
+const occ::handle<Resource_Manager>& ShapeProcess_Context::ResourceManager() const
 {
   return myRC;
 }
 
 //=================================================================================================
 
-void ShapeProcess_Context::SetScope(const Standard_CString scope)
+void ShapeProcess_Context::SetScope(const char* const scope)
 {
   if (myScope.IsNull())
-    myScope = new TColStd_HSequenceOfHAsciiString;
-  Handle(TCollection_HAsciiString) str;
+    myScope = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>;
+  occ::handle<TCollection_HAsciiString> str;
   if (myScope->Length() > 0)
   {
     str = new TCollection_HAsciiString(myScope->Value(myScope->Length()));
@@ -181,11 +181,11 @@ void ShapeProcess_Context::UnSetScope()
 
 //=================================================================================================
 
-static Handle(TCollection_HAsciiString) MakeName(
-  const Handle(TColStd_HSequenceOfHAsciiString)& scope,
-  const Standard_CString                         param)
+static occ::handle<TCollection_HAsciiString> MakeName(
+  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& scope,
+  const char* const                         param)
 {
-  Handle(TCollection_HAsciiString) str;
+  occ::handle<TCollection_HAsciiString> str;
   if (!scope.IsNull() && scope->Length() > 0)
   {
     str = new TCollection_HAsciiString(scope->Value(scope->Length())->String());
@@ -197,47 +197,47 @@ static Handle(TCollection_HAsciiString) MakeName(
   return str;
 }
 
-Standard_Boolean ShapeProcess_Context::IsParamSet(const Standard_CString param) const
+bool ShapeProcess_Context::IsParamSet(const char* const param) const
 {
   return !myRC.IsNull() && myRC->Find(MakeName(myScope, param)->ToCString());
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::GetString(const Standard_CString   param,
+bool ShapeProcess_Context::GetString(const char* const   param,
                                                  TCollection_AsciiString& str) const
 {
   if (myRC.IsNull())
-    return Standard_False;
-  Handle(TCollection_HAsciiString) pname = MakeName(myScope, param);
+    return false;
+  occ::handle<TCollection_HAsciiString> pname = MakeName(myScope, param);
   if (!myRC->Find(pname->ToCString()))
   {
 #ifdef OCCT_DEBUG
     std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << pname->ToCString()
               << " is not defined" << std::endl;
 #endif
-    return Standard_False;
+    return false;
   }
   str = myRC->Value(pname->ToCString());
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::GetReal(const Standard_CString param,
-                                               Standard_Real&         val) const
+bool ShapeProcess_Context::GetReal(const char* const param,
+                                               double&         val) const
 {
   if (myRC.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_AsciiString str;
   if (!GetString(param, str))
-    return Standard_False;
+    return false;
 
   if (str.IsRealValue())
   {
     val = str.RealValue();
-    return Standard_True;
+    return true;
   }
 
   // if not real, try to treat as alias "&param"
@@ -253,38 +253,38 @@ Standard_Boolean ShapeProcess_Context::GetReal(const Standard_CString param,
       std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString()
                 << " is not defined" << std::endl;
 #endif
-      return Standard_False;
+      return false;
     }
     str = myRC->Value(ref.ToCString());
     if (str.IsRealValue())
     {
       val = str.RealValue();
-      return Standard_True;
+      return true;
     }
   }
 #ifdef OCCT_DEBUG
   std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param
             << " is neither Real nor reference to Real";
 #endif
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::GetInteger(const Standard_CString param,
-                                                  Standard_Integer&      val) const
+bool ShapeProcess_Context::GetInteger(const char* const param,
+                                                  int&      val) const
 {
   if (myRC.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_AsciiString str;
   if (!GetString(param, str))
-    return Standard_False;
+    return false;
 
   if (str.IsIntegerValue())
   {
     val = str.IntegerValue();
-    return Standard_True;
+    return true;
   }
 
   // if not integer, try to treat as alias "&param"
@@ -300,34 +300,34 @@ Standard_Boolean ShapeProcess_Context::GetInteger(const Standard_CString param,
       std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString()
                 << " is not defined" << std::endl;
 #endif
-      return Standard_False;
+      return false;
     }
     str = myRC->Value(ref.ToCString());
     if (str.IsIntegerValue())
     {
       val = str.IntegerValue();
-      return Standard_True;
+      return true;
     }
   }
 #ifdef OCCT_DEBUG
   std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param
             << " is neither Integer nor reference to Integer";
 #endif
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::GetBoolean(const Standard_CString param,
-                                                  Standard_Boolean&      val) const
+bool ShapeProcess_Context::GetBoolean(const char* const param,
+                                                  bool&      val) const
 {
   if (myRC.IsNull())
-    return Standard_False;
+    return false;
   try
   {
     OCC_CATCH_SIGNALS
     val = myRC->Integer(MakeName(myScope, param)->ToCString()) != 0;
-    return Standard_True;
+    return true;
   }
   catch (Standard_Failure const& anException)
   {
@@ -338,40 +338,40 @@ Standard_Boolean ShapeProcess_Context::GetBoolean(const Standard_CString param,
 #endif
     (void)anException;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real ShapeProcess_Context::RealVal(const Standard_CString param,
-                                            const Standard_Real    def) const
+double ShapeProcess_Context::RealVal(const char* const param,
+                                            const double    def) const
 {
-  Standard_Real val;
+  double val;
   return GetReal(param, val) ? val : def;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_Context::BooleanVal(const Standard_CString param,
-                                                  const Standard_Boolean def) const
+bool ShapeProcess_Context::BooleanVal(const char* const param,
+                                                  const bool def) const
 {
-  Standard_Boolean val;
+  bool val;
   return GetBoolean(param, val) ? val : def;
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeProcess_Context::IntegerVal(const Standard_CString param,
-                                                  const Standard_Integer def) const
+int ShapeProcess_Context::IntegerVal(const char* const param,
+                                                  const int def) const
 {
-  Standard_Integer val;
+  int val;
   return GetInteger(param, val) ? val : def;
 }
 
 //=================================================================================================
 
-Standard_CString ShapeProcess_Context::StringVal(const Standard_CString param,
-                                                 const Standard_CString def) const
+const char* ShapeProcess_Context::StringVal(const char* const param,
+                                                 const char* const def) const
 {
   if (myRC.IsNull())
     return def;
@@ -394,7 +394,7 @@ Standard_CString ShapeProcess_Context::StringVal(const Standard_CString param,
 
 //=================================================================================================
 
-void ShapeProcess_Context::SetMessenger(const Handle(Message_Messenger)& messenger)
+void ShapeProcess_Context::SetMessenger(const occ::handle<Message_Messenger>& messenger)
 {
   if (messenger.IsNull())
     myMessenger = Message::DefaultMessenger();
@@ -404,21 +404,21 @@ void ShapeProcess_Context::SetMessenger(const Handle(Message_Messenger)& messeng
 
 //=================================================================================================
 
-Handle(Message_Messenger) ShapeProcess_Context::Messenger() const
+occ::handle<Message_Messenger> ShapeProcess_Context::Messenger() const
 {
   return myMessenger;
 }
 
 //=================================================================================================
 
-void ShapeProcess_Context::SetTraceLevel(const Standard_Integer tracelev)
+void ShapeProcess_Context::SetTraceLevel(const int tracelev)
 {
   myTraceLev = tracelev;
 }
 
 //=================================================================================================
 
-Standard_Integer ShapeProcess_Context::TraceLevel() const
+int ShapeProcess_Context::TraceLevel() const
 {
   return myTraceLev;
 }

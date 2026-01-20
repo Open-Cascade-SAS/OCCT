@@ -21,15 +21,17 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
-#include <StepShape_HArray1OfOrientedClosedShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
 
 RWStepShape_RWBrepWithVoids::RWStepShape_RWBrepWithVoids() {}
 
-void RWStepShape_RWBrepWithVoids::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                           const Standard_Integer                 num,
-                                           Handle(Interface_Check)&               ach,
-                                           const Handle(StepShape_BrepWithVoids)& ent) const
+void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                           const int                 num,
+                                           occ::handle<Interface_Check>&               ach,
+                                           const occ::handle<StepShape_BrepWithVoids>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -39,28 +41,28 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const Handle(StepData_StepReaderData)
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : outer ---
 
-  Handle(StepShape_ClosedShell) aOuter;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_ClosedShell> aOuter;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "outer", ach, STANDARD_TYPE(StepShape_ClosedShell), aOuter);
 
   // --- own field : voids ---
 
-  Handle(StepShape_HArray1OfOrientedClosedShell) aVoids;
-  Handle(StepShape_OrientedClosedShell)          anent3;
-  Standard_Integer                               nsub3;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
+  occ::handle<StepShape_OrientedClosedShell>          anent3;
+  int                               nsub3;
   if (data->ReadSubList(num, 3, "voids", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aVoids               = new StepShape_HArray1OfOrientedClosedShell(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aVoids               = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3,
                            i3,
                            "oriented_closed_shell",
@@ -77,7 +79,7 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const Handle(StepData_StepReaderData)
 }
 
 void RWStepShape_RWBrepWithVoids::WriteStep(StepData_StepWriter&                   SW,
-                                            const Handle(StepShape_BrepWithVoids)& ent) const
+                                            const occ::handle<StepShape_BrepWithVoids>& ent) const
 {
 
   // --- inherited field name ---
@@ -91,32 +93,32 @@ void RWStepShape_RWBrepWithVoids::WriteStep(StepData_StepWriter&                
   // --- own field : voids ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbVoids(); i3++)
+  for (int i3 = 1; i3 <= ent->NbVoids(); i3++)
   {
     SW.Send(ent->VoidsValue(i3));
   }
   SW.CloseSub();
 }
 
-void RWStepShape_RWBrepWithVoids::Share(const Handle(StepShape_BrepWithVoids)& ent,
+void RWStepShape_RWBrepWithVoids::Share(const occ::handle<StepShape_BrepWithVoids>& ent,
                                         Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->Outer());
 
-  Standard_Integer nbElem2 = ent->NbVoids();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbVoids();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     iter.GetOneItem(ent->VoidsValue(is2));
   }
 }
 
 //: k4 abv 30 Nov 98: ProSTEP TR9: add warning
-void RWStepShape_RWBrepWithVoids::Check(const Handle(StepShape_BrepWithVoids)& ent,
+void RWStepShape_RWBrepWithVoids::Check(const occ::handle<StepShape_BrepWithVoids>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
-  for (Standard_Integer i = 1; i <= ent->NbVoids(); i++)
+  for (int i = 1; i <= ent->NbVoids(); i++)
     if (ent->VoidsValue(i)->Orientation())
     {
       ach->AddWarning("Void has orientation .T. while .F. is required by API 214");

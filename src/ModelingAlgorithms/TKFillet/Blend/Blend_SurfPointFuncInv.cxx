@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-Standard_Integer Blend_SurfPointFuncInv::NbVariables() const
+int Blend_SurfPointFuncInv::NbVariables() const
 {
   return 3;
 }

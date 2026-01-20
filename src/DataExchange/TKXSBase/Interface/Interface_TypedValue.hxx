@@ -24,9 +24,6 @@
 #include <MoniTool_ValueType.hxx>
 class TCollection_HAsciiString;
 
-class Interface_TypedValue;
-DEFINE_STANDARD_HANDLE(Interface_TypedValue, MoniTool_TypedValue)
-
 //! Now strictly equivalent to TypedValue from MoniTool,
 //! except for ParamType which remains for compatibility reasons
 //!
@@ -39,7 +36,7 @@ DEFINE_STANDARD_HANDLE(Interface_TypedValue, MoniTool_TypedValue)
 //! if any) and a value. Its basic form is a string, it can be
 //! specified as integer or real or enumerative string, then
 //! queried as such.
-//! Its string content, which is a Handle(HAsciiString) can be
+//! Its string content, which is a occ::handle<HAsciiString> can be
 //! shared by other data structures, hence gives a direct on line
 //! access to its value.
 class Interface_TypedValue : public MoniTool_TypedValue
@@ -55,9 +52,9 @@ public:
   //!
   //! init gives an initial value. If it is not given, the
   //! TypedValue begins as "not set", its value is empty
-  Standard_EXPORT Interface_TypedValue(const Standard_CString    name,
+  Standard_EXPORT Interface_TypedValue(const char* const    name,
                                        const Interface_ParamType type = Interface_ParamText,
-                                       const Standard_CString    init = "");
+                                       const char* const    init = "");
 
   //! Returns the type
   //! I.E. calls ValueType then makes correspondence between
@@ -73,18 +70,17 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Interface_TypedValue, MoniTool_TypedValue)
 
-protected:
 private:
   TCollection_AsciiString                                        thename;
   TCollection_AsciiString                                        thedef;
   TCollection_AsciiString                                        thelabel;
-  Handle(Standard_Type)                                          theotyp;
+  occ::handle<Standard_Type>                                          theotyp;
   TCollection_AsciiString                                        theunidef;
-  Handle(TColStd_HArray1OfAsciiString)                           theenums;
-  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> theeadds;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>>                           theenums;
+  NCollection_DataMap<TCollection_AsciiString, int> theeadds;
   TCollection_AsciiString                                        thesatisn;
-  Handle(TCollection_HAsciiString)                               thehval;
-  Handle(Standard_Transient)                                     theoval;
+  occ::handle<TCollection_HAsciiString>                               thehval;
+  occ::handle<Standard_Transient>                                     theoval;
 };
 
 #endif // _Interface_TypedValue_HeaderFile

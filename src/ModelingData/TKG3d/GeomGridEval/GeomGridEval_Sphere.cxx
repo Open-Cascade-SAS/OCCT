@@ -258,8 +258,8 @@ gp_Vec GeomGridEval_Sphere::computeDN(const Data&     theData,
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_Sphere::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -290,8 +290,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Sphere::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Sphere::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -322,8 +322,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Sphere::EvaluateGridD1(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Sphere::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -354,8 +354,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Sphere::EvaluateGridD2(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Sphere::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -386,8 +386,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Sphere::EvaluateGridD3(
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_Sphere::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {

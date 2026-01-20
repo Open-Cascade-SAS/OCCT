@@ -18,7 +18,9 @@
 #include <Storage_Root.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
-#include <Storage_DataMapIteratorOfMapOfPers.hxx>
+#include <Storage_Root.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData, Standard_Transient)
@@ -28,14 +30,14 @@ Storage_RootData::Storage_RootData()
 {
 }
 
-Standard_Boolean Storage_RootData::Read(const Handle(Storage_BaseDriver)& theDriver)
+bool Storage_RootData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Read root section
@@ -43,14 +45,14 @@ Standard_Boolean Storage_RootData::Read(const Handle(Storage_BaseDriver)& theDri
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadRootSection";
-    return Standard_False;
+    return false;
   }
 
   TCollection_AsciiString aRootName, aTypeName;
-  Standard_Integer        aRef;
+  int        aRef;
 
-  Standard_Integer len = theDriver->RootSectionSize();
-  for (Standard_Integer i = 1; i <= len; i++)
+  int len = theDriver->RootSectionSize();
+  for (int i = 1; i <= len; i++)
   {
     try
     {
@@ -61,10 +63,10 @@ Standard_Boolean Storage_RootData::Read(const Handle(Storage_BaseDriver)& theDri
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadRoot";
-      return Standard_False;
+      return false;
     }
 
-    Handle(Storage_Root) aRoot = new Storage_Root(aRootName, aRef, aTypeName);
+    occ::handle<Storage_Root> aRoot = new Storage_Root(aRootName, aRef, aTypeName);
     myObjects.Bind(aRootName, aRoot);
   }
 
@@ -72,26 +74,26 @@ Standard_Boolean Storage_RootData::Read(const Handle(Storage_BaseDriver)& theDri
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadRootSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer Storage_RootData::NumberOfRoots() const
+int Storage_RootData::NumberOfRoots() const
 {
   return myObjects.Extent();
 }
 
-void Storage_RootData::AddRoot(const Handle(Storage_Root)& aRoot)
+void Storage_RootData::AddRoot(const occ::handle<Storage_Root>& aRoot)
 {
   myObjects.Bind(aRoot->Name(), aRoot);
 }
 
-Handle(Storage_HSeqOfRoot) Storage_RootData::Roots() const
+occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Storage_RootData::Roots() const
 {
-  Handle(Storage_HSeqOfRoot)         anObjectsSeq = new Storage_HSeqOfRoot;
-  Storage_DataMapIteratorOfMapOfPers it(myObjects);
+  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>>         anObjectsSeq = new NCollection_HSequence<occ::handle<Storage_Root>>;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_Root>>::Iterator it(myObjects);
 
   for (; it.More(); it.Next())
   {
@@ -101,9 +103,9 @@ Handle(Storage_HSeqOfRoot) Storage_RootData::Roots() const
   return anObjectsSeq;
 }
 
-Handle(Storage_Root) Storage_RootData::Find(const TCollection_AsciiString& aName) const
+occ::handle<Storage_Root> Storage_RootData::Find(const TCollection_AsciiString& aName) const
 {
-  Handle(Storage_Root) p;
+  occ::handle<Storage_Root> p;
 
   if (myObjects.IsBound(aName))
   {
@@ -113,7 +115,7 @@ Handle(Storage_Root) Storage_RootData::Find(const TCollection_AsciiString& aName
   return p;
 }
 
-Standard_Boolean Storage_RootData::IsRoot(const TCollection_AsciiString& aName) const
+bool Storage_RootData::IsRoot(const TCollection_AsciiString& aName) const
 {
   return myObjects.IsBound(aName);
 }
@@ -127,7 +129,7 @@ void Storage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
 }
 
 void Storage_RootData::UpdateRoot(const TCollection_AsciiString&     aName,
-                                  const Handle(Standard_Persistent)& aPers)
+                                  const occ::handle<Standard_Persistent>& aPers)
 {
   if (myObjects.IsBound(aName))
   {

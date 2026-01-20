@@ -28,10 +28,10 @@ RWStepBasic_RWContractType::RWStepBasic_RWContractType() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWContractType::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_ContractType)&  ent) const
+void RWStepBasic_RWContractType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepBasic_ContractType>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "contract_type"))
@@ -39,7 +39,7 @@ void RWStepBasic_RWContractType::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Own fields of ContractType
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 1, "description", ach, aDescription);
 
   // Initialize entity
@@ -49,7 +49,7 @@ void RWStepBasic_RWContractType::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepBasic_RWContractType::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_ContractType)& ent) const
+                                           const occ::handle<StepBasic_ContractType>& ent) const
 {
 
   // Own fields of ContractType
@@ -59,7 +59,7 @@ void RWStepBasic_RWContractType::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepBasic_RWContractType::Share(const Handle(StepBasic_ContractType)&,
+void RWStepBasic_RWContractType::Share(const occ::handle<StepBasic_ContractType>&,
                                        Interface_EntityIterator&) const
 {
   // Own fields of ContractType

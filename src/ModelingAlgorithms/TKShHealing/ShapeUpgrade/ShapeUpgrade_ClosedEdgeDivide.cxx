@@ -24,7 +24,8 @@
 #include <ShapeUpgrade_SplitCurve2d.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -39,7 +40,7 @@ ShapeUpgrade_ClosedEdgeDivide::ShapeUpgrade_ClosedEdgeDivide()
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
+bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
 {
   Clear();
   ShapeAnalysis_Edge sae;
@@ -47,30 +48,30 @@ Standard_Boolean ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdg
   TopoDS_Vertex      V2 = sae.LastVertex(anEdge);
   if (V1.IsSame(V2) && !BRep_Tool::Degenerated(anEdge))
   {
-    const Standard_Integer nbPoints = 23;
+    const int nbPoints = 23;
     gp_Pnt                 pntV     = BRep_Tool::Pnt(V1);
-    Standard_Real          TolV1    = LimitTolerance(BRep_Tool::Tolerance(V1));
+    double          TolV1    = LimitTolerance(BRep_Tool::Tolerance(V1));
     TolV1                           = TolV1 * TolV1;
-    Standard_Real      f, l;
-    Handle(Geom_Curve) curve3d = BRep_Tool::Curve(anEdge, f, l);
+    double      f, l;
+    occ::handle<Geom_Curve> curve3d = BRep_Tool::Curve(anEdge, f, l);
     myHasCurve3d               = !curve3d.IsNull();
-    Standard_Real        f2d = 0., l2d = 0.;
-    Handle(Geom2d_Curve) pcurve1;
+    double        f2d = 0., l2d = 0.;
+    occ::handle<Geom2d_Curve> pcurve1;
     if (!myFace.IsNull())
     { // process free edges
-      sae.PCurve(anEdge, myFace, pcurve1, f2d, l2d, Standard_False);
+      sae.PCurve(anEdge, myFace, pcurve1, f2d, l2d, false);
     }
     myHasCurve2d = !pcurve1.IsNull();
 
     if (myHasCurve3d)
     {
-      Standard_Real maxPar = f, dMax = 0;
-      Standard_Real step  = (l - f) / (nbPoints - 1);
-      Standard_Real param = f + step;
-      for (Standard_Integer i = 1; i < 23; i++, param += step)
+      double maxPar = f, dMax = 0;
+      double step  = (l - f) / (nbPoints - 1);
+      double param = f + step;
+      for (int i = 1; i < 23; i++, param += step)
       {
         gp_Pnt        curPnt = curve3d->Value(param);
-        Standard_Real dist   = pntV.SquareDistance(curPnt);
+        double dist   = pntV.SquareDistance(curPnt);
         if (dist > dMax)
         {
           maxPar = param;
@@ -79,37 +80,37 @@ Standard_Boolean ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdg
       }
       if (dMax > TolV1)
       {
-        Handle(ShapeUpgrade_SplitCurve3d) theSplit3dTool = GetSplitCurve3dTool();
+        occ::handle<ShapeUpgrade_SplitCurve3d> theSplit3dTool = GetSplitCurve3dTool();
         theSplit3dTool->Init(curve3d, f, l);
 
-        Handle(TColStd_HSequenceOfReal) values = new TColStd_HSequenceOfReal;
+        occ::handle<NCollection_HSequence<double>> values = new NCollection_HSequence<double>;
         values->Append(maxPar);
         theSplit3dTool->SetSplitValues(values);
         myKnots3d = theSplit3dTool->SplitValues();
 
         if (myHasCurve2d)
         {
-          Handle(ShapeUpgrade_SplitCurve2d) theSplit2dTool = GetSplitCurve2dTool();
+          occ::handle<ShapeUpgrade_SplitCurve2d> theSplit2dTool = GetSplitCurve2dTool();
           theSplit2dTool->Init(pcurve1, f2d, l2d);
           myKnots2d = theSplit2dTool->SplitValues();
         }
-        return Standard_True;
+        return true;
       }
       else
-        return Standard_False;
+        return false;
     }
 
     if (myHasCurve2d)
     {
-      Handle(Geom_Surface) surf   = BRep_Tool::Surface(myFace);
-      Standard_Real        maxPar = f2d, dMax = 0;
-      Standard_Real        step  = (l2d - f2d) / (nbPoints - 1);
-      Standard_Real        param = f2d + step;
-      for (Standard_Integer i = 1; i < 23; i++, param += step)
+      occ::handle<Geom_Surface> surf   = BRep_Tool::Surface(myFace);
+      double        maxPar = f2d, dMax = 0;
+      double        step  = (l2d - f2d) / (nbPoints - 1);
+      double        param = f2d + step;
+      for (int i = 1; i < 23; i++, param += step)
       {
         gp_Pnt2d      p2d    = pcurve1->Value(param);
         gp_Pnt        curPnt = surf->Value(p2d.X(), p2d.Y());
-        Standard_Real dist   = pntV.SquareDistance(curPnt);
+        double dist   = pntV.SquareDistance(curPnt);
         if (dist > dMax)
         {
           maxPar = param;
@@ -119,21 +120,21 @@ Standard_Boolean ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdg
       if (dMax > TolV1)
       {
 
-        Handle(ShapeUpgrade_SplitCurve2d) theSplit2dTool = GetSplitCurve2dTool();
+        occ::handle<ShapeUpgrade_SplitCurve2d> theSplit2dTool = GetSplitCurve2dTool();
         theSplit2dTool->Init(pcurve1, f2d, l2d);
 
-        Handle(TColStd_HSequenceOfReal) values = new TColStd_HSequenceOfReal;
+        occ::handle<NCollection_HSequence<double>> values = new NCollection_HSequence<double>;
         values->Append(maxPar);
         theSplit2dTool->SetSplitValues(values);
         myKnots2d = theSplit2dTool->SplitValues();
-        return Standard_True;
+        return true;
       }
       else
-        return Standard_False;
+        return false;
     }
 
-    return Standard_False;
+    return false;
   }
   else
-    return Standard_False;
+    return false;
 }

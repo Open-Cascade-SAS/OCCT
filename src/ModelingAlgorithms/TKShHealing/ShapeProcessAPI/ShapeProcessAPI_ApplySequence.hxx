@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -38,12 +40,12 @@ public:
 
   //! Creates an object and loads resource file and sequence of
   //! operators given by their names.
-  Standard_EXPORT ShapeProcessAPI_ApplySequence(const Standard_CString rscName,
-                                                const Standard_CString seqName = "");
+  Standard_EXPORT ShapeProcessAPI_ApplySequence(const char* const rscName,
+                                                const char* const seqName = "");
 
   //! Returns object for managing resource file and sequence of
   //! operators.
-  Standard_EXPORT Handle(ShapeProcess_ShapeContext)& Context();
+  Standard_EXPORT occ::handle<ShapeProcess_ShapeContext>& Context();
 
   //! Performs sequence of operators stored in myRsc.
   //! If <fillmap> is True adds history "shape-shape" into myMap
@@ -51,7 +53,7 @@ public:
   //! If <until> is TopAbs_SHAPE, all the subshapes are considered.
   Standard_EXPORT TopoDS_Shape
     PrepareShape(const TopoDS_Shape&          shape,
-                 const Standard_Boolean       fillmap     = Standard_False,
+                 const bool       fillmap     = false,
                  const TopAbs_ShapeEnum       until       = TopAbs_SHAPE,
                  const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -59,17 +61,16 @@ public:
   Standard_EXPORT void ClearMap();
 
   //! Returns myMap with accumulated history.
-  Standard_EXPORT const TopTools_DataMapOfShapeShape& Map() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Map() const;
 
   //! Prints result of preparation onto the messenger of the context.
   //! Note that results can be accumulated from previous preparations
   //! it method ClearMap was not called before PrepareShape.
   Standard_EXPORT void PrintPreparationResult() const;
 
-protected:
 private:
-  Handle(ShapeProcess_ShapeContext) myContext;
-  TopTools_DataMapOfShapeShape      myMap;
+  occ::handle<ShapeProcess_ShapeContext> myContext;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>      myMap;
   TCollection_AsciiString           mySeq;
 };
 

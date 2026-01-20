@@ -20,13 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Real.hxx>
-
-class IGESGeom_SplineCurve;
-DEFINE_STANDARD_HANDLE(IGESGeom_SplineCurve, IGESData_IGESEntity)
 
 //! Defines IGESSplineCurve, Type <112> Form <0>
 //! in package IGESGeom
@@ -71,94 +70,93 @@ public:
   //! raises exception if allXPolynomials, allYPolynomials
   //! & allZPolynomials are not of same size OR allXValues, allYValues
   //! & allZValues are not of size 4
-  Standard_EXPORT void Init(const Standard_Integer               aType,
-                            const Standard_Integer               aDegree,
-                            const Standard_Integer               nbDimensions,
-                            const Handle(TColStd_HArray1OfReal)& allBreakPoints,
-                            const Handle(TColStd_HArray2OfReal)& allXPolynomials,
-                            const Handle(TColStd_HArray2OfReal)& allYPolynomials,
-                            const Handle(TColStd_HArray2OfReal)& allZPolynomials,
-                            const Handle(TColStd_HArray1OfReal)& allXvalues,
-                            const Handle(TColStd_HArray1OfReal)& allYvalues,
-                            const Handle(TColStd_HArray1OfReal)& allZvalues);
+  Standard_EXPORT void Init(const int               aType,
+                            const int               aDegree,
+                            const int               nbDimensions,
+                            const occ::handle<NCollection_HArray1<double>>& allBreakPoints,
+                            const occ::handle<NCollection_HArray2<double>>& allXPolynomials,
+                            const occ::handle<NCollection_HArray2<double>>& allYPolynomials,
+                            const occ::handle<NCollection_HArray2<double>>& allZPolynomials,
+                            const occ::handle<NCollection_HArray1<double>>& allXvalues,
+                            const occ::handle<NCollection_HArray1<double>>& allYvalues,
+                            const occ::handle<NCollection_HArray1<double>>& allZvalues);
 
   //! returns the type of Spline curve
-  Standard_EXPORT Standard_Integer SplineType() const;
+  Standard_EXPORT int SplineType() const;
 
   //! returns the degree of the curve
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! returns the number of dimensions
   //! 2 = Planar
   //! 3 = Non-planar
-  Standard_EXPORT Standard_Integer NbDimensions() const;
+  Standard_EXPORT int NbDimensions() const;
 
   //! returns the number of segments
-  Standard_EXPORT Standard_Integer NbSegments() const;
+  Standard_EXPORT int NbSegments() const;
 
   //! returns breakpoint of piecewise polynomial
   //! raises exception if Index <= 0 or Index > NbSegments() + 1
-  Standard_EXPORT Standard_Real BreakPoint(const Standard_Integer Index) const;
+  Standard_EXPORT double BreakPoint(const int Index) const;
 
   //! returns X coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
-  Standard_EXPORT void XCoordPolynomial(const Standard_Integer Index,
-                                        Standard_Real&         AX,
-                                        Standard_Real&         BX,
-                                        Standard_Real&         CX,
-                                        Standard_Real&         DX) const;
+  Standard_EXPORT void XCoordPolynomial(const int Index,
+                                        double&         AX,
+                                        double&         BX,
+                                        double&         CX,
+                                        double&         DX) const;
 
   //! returns Y coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
-  Standard_EXPORT void YCoordPolynomial(const Standard_Integer Index,
-                                        Standard_Real&         AY,
-                                        Standard_Real&         BY,
-                                        Standard_Real&         CY,
-                                        Standard_Real&         DY) const;
+  Standard_EXPORT void YCoordPolynomial(const int Index,
+                                        double&         AY,
+                                        double&         BY,
+                                        double&         CY,
+                                        double&         DY) const;
 
   //! returns Z coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
-  Standard_EXPORT void ZCoordPolynomial(const Standard_Integer Index,
-                                        Standard_Real&         AZ,
-                                        Standard_Real&         BZ,
-                                        Standard_Real&         CZ,
-                                        Standard_Real&         DZ) const;
+  Standard_EXPORT void ZCoordPolynomial(const int Index,
+                                        double&         AZ,
+                                        double&         BZ,
+                                        double&         CZ,
+                                        double&         DZ) const;
 
   //! returns the value of X polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the X polynomial at the terminate point
-  Standard_EXPORT void XValues(Standard_Real& TPX0,
-                               Standard_Real& TPX1,
-                               Standard_Real& TPX2,
-                               Standard_Real& TPX3) const;
+  Standard_EXPORT void XValues(double& TPX0,
+                               double& TPX1,
+                               double& TPX2,
+                               double& TPX3) const;
 
   //! returns the value of Y polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the Y polynomial at the termminate point
-  Standard_EXPORT void YValues(Standard_Real& TPY0,
-                               Standard_Real& TPY1,
-                               Standard_Real& TPY2,
-                               Standard_Real& TPY3) const;
+  Standard_EXPORT void YValues(double& TPY0,
+                               double& TPY1,
+                               double& TPY2,
+                               double& TPY3) const;
 
   //! returns the value of Z polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the Z polynomial at the termminate point
-  Standard_EXPORT void ZValues(Standard_Real& TPZ0,
-                               Standard_Real& TPZ1,
-                               Standard_Real& TPZ2,
-                               Standard_Real& TPZ3) const;
+  Standard_EXPORT void ZValues(double& TPZ0,
+                               double& TPZ1,
+                               double& TPZ2,
+                               double& TPZ3) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineCurve, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer              theType;
-  Standard_Integer              theDegree;
-  Standard_Integer              theNbDimensions;
-  Handle(TColStd_HArray1OfReal) theBreakPoints;
-  Handle(TColStd_HArray2OfReal) theXCoordsPolynomial;
-  Handle(TColStd_HArray2OfReal) theYCoordsPolynomial;
-  Handle(TColStd_HArray2OfReal) theZCoordsPolynomial;
-  Handle(TColStd_HArray1OfReal) theXvalues;
-  Handle(TColStd_HArray1OfReal) theYvalues;
-  Handle(TColStd_HArray1OfReal) theZvalues;
+  int              theType;
+  int              theDegree;
+  int              theNbDimensions;
+  occ::handle<NCollection_HArray1<double>> theBreakPoints;
+  occ::handle<NCollection_HArray2<double>> theXCoordsPolynomial;
+  occ::handle<NCollection_HArray2<double>> theYCoordsPolynomial;
+  occ::handle<NCollection_HArray2<double>> theZCoordsPolynomial;
+  occ::handle<NCollection_HArray1<double>> theXvalues;
+  occ::handle<NCollection_HArray1<double>> theYvalues;
+  occ::handle<NCollection_HArray1<double>> theZvalues;
 };
 
 #endif // _IGESGeom_SplineCurve_HeaderFile

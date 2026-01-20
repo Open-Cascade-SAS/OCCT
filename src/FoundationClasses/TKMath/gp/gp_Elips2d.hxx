@@ -62,9 +62,9 @@ public:
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
   constexpr gp_Elips2d(const gp_Ax2d&         theMajorAxis,
-                       const Standard_Real    theMajorRadius,
-                       const Standard_Real    theMinorRadius,
-                       const Standard_Boolean theIsSense = Standard_True)
+                       const double    theMajorRadius,
+                       const double    theMinorRadius,
+                       const bool theIsSense = true)
       : pos(theMajorAxis, theIsSense),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -89,8 +89,8 @@ public:
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
   constexpr gp_Elips2d(const gp_Ax22d&     theA,
-                       const Standard_Real theMajorRadius,
-                       const Standard_Real theMinorRadius)
+                       const double theMajorRadius,
+                       const double theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -105,7 +105,7 @@ public:
 
   //! Changes the value of the major radius.
   //! Raises ConstructionError if theMajorRadius < MinorRadius.
-  void SetMajorRadius(const Standard_Real theMajorRadius)
+  void SetMajorRadius(const double theMajorRadius)
   {
     Standard_ConstructionError_Raise_if(
       theMajorRadius < minorRadius,
@@ -115,7 +115,7 @@ public:
 
   //! Changes the value of the minor radius.
   //! Raises ConstructionError if MajorRadius < theMinorRadius or MinorRadius < 0.0
-  void SetMinorRadius(const Standard_Real theMinorRadius)
+  void SetMinorRadius(const double theMinorRadius)
   {
     Standard_ConstructionError_Raise_if(theMinorRadius < 0.0 || majorRadius < theMinorRadius,
                                         "gp_Elips2d::SetMinorRadius() - minor radius should be a "
@@ -142,16 +142,16 @@ public:
   constexpr void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
 
   //! Computes the area of the ellipse.
-  constexpr Standard_Real Area() const noexcept { return M_PI * majorRadius * minorRadius; }
+  constexpr double Area() const noexcept { return M_PI * majorRadius * minorRadius; }
 
   //! Returns the coefficients of the implicit equation of the ellipse.
   //! theA * (X**2) + theB * (Y**2) + 2*theC*(X*Y) + 2*theD*X + 2*theE*Y + theF = 0.
-  Standard_EXPORT void Coefficients(Standard_Real& theA,
-                                    Standard_Real& theB,
-                                    Standard_Real& theC,
-                                    Standard_Real& theD,
-                                    Standard_Real& theE,
-                                    Standard_Real& theF) const;
+  Standard_EXPORT void Coefficients(double& theA,
+                                    double& theB,
+                                    double& theC,
+                                    double& theD,
+                                    double& theE,
+                                    double& theF) const;
 
   //! This directrix is the line normal to the XAxis of the ellipse
   //! in the local plane (Z = 0) at a distance d = MajorRadius / e
@@ -176,11 +176,11 @@ public:
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0.
-  Standard_Real Eccentricity() const;
+  double Eccentricity() const;
 
   //! Returns the distance between the center of the ellipse
   //! and focus1 or focus2.
-  Standard_Real Focal() const
+  double Focal() const
   {
     return 2.0 * sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   }
@@ -197,15 +197,15 @@ public:
   constexpr const gp_Pnt2d& Location() const noexcept { return pos.Location(); }
 
   //! Returns the major radius of the Ellipse.
-  constexpr Standard_Real MajorRadius() const noexcept { return majorRadius; }
+  constexpr double MajorRadius() const noexcept { return majorRadius; }
 
   //! Returns the minor radius of the Ellipse.
-  constexpr Standard_Real MinorRadius() const noexcept { return minorRadius; }
+  constexpr double MinorRadius() const noexcept { return minorRadius; }
 
   //! Returns p = (1 - e * e) * MajorRadius where e is the eccentricity
   //! of the ellipse.
   //! Returns 0 if MajorRadius = 0
-  constexpr Standard_Real Parameter() const noexcept;
+  constexpr double Parameter() const noexcept;
 
   //! Returns the major axis of the ellipse.
   constexpr const gp_Ax22d& Axis() const noexcept { return pos; }
@@ -224,11 +224,11 @@ public:
     pos.SetAxis(gp_Ax22d(pos.Location(), pos.XDirection(), aTemp));
   }
 
-  Standard_NODISCARD gp_Elips2d Reversed() const noexcept;
+  [[nodiscard]] gp_Elips2d Reversed() const noexcept;
 
   //! Returns true if the local coordinate system is direct
   //! and false in the other case.
-  constexpr Standard_Boolean IsDirect() const noexcept
+  constexpr bool IsDirect() const noexcept
   {
     return (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
   }
@@ -237,38 +237,38 @@ public:
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to the point theP which is the center of the symmetry
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Elips2d Mirrored(const gp_Pnt2d& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax2d& theA) noexcept;
 
   //! Performs the symmetrical transformation of a ellipse with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Elips2d Mirrored(const gp_Ax2d& theA) const noexcept;
 
-  void Rotate(const gp_Pnt2d& theP, const Standard_Real theAng) { pos.Rotate(theP, theAng); }
+  void Rotate(const gp_Pnt2d& theP, const double theAng) { pos.Rotate(theP, theAng); }
 
-  Standard_NODISCARD gp_Elips2d Rotated(const gp_Pnt2d& theP, const Standard_Real theAng) const
+  [[nodiscard]] gp_Elips2d Rotated(const gp_Pnt2d& theP, const double theAng) const
   {
     gp_Elips2d anE = *this;
     anE.pos.Rotate(theP, theAng);
     return anE;
   }
 
-  void Scale(const gp_Pnt2d& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt2d& theP, const double theS);
 
   //! Scales a ellipse. theS is the scaling value.
-  Standard_NODISCARD gp_Elips2d Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Elips2d Scaled(const gp_Pnt2d& theP, const double theS) const;
 
   void Transform(const gp_Trsf2d& theT);
 
   //! Transforms an ellipse with the transformation theT from class Trsf2d.
-  Standard_NODISCARD gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
+  [[nodiscard]] gp_Elips2d Transformed(const gp_Trsf2d& theT) const;
 
   constexpr void Translate(const gp_Vec2d& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Elips2d Translated(const gp_Vec2d& theV) const noexcept
+  [[nodiscard]] constexpr gp_Elips2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theV);
@@ -281,7 +281,7 @@ public:
   }
 
   //! Translates a ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Elips2d Translated(const gp_Pnt2d& theP1,
+  [[nodiscard]] constexpr gp_Elips2d Translated(const gp_Pnt2d& theP1,
                                                      const gp_Pnt2d& theP2) const noexcept
   {
     gp_Elips2d anE = *this;
@@ -291,15 +291,15 @@ public:
 
 private:
   gp_Ax22d      pos;
-  Standard_Real majorRadius;
-  Standard_Real minorRadius;
+  double majorRadius;
+  double minorRadius;
 };
 
 //=================================================================================================
 
 inline gp_Ax2d gp_Elips2d::Directrix1() const
 {
-  Standard_Real anE = Eccentricity();
+  double anE = Eccentricity();
   Standard_ConstructionError_Raise_if(anE <= gp::Resolution(),
                                       "gp_Elips2d::Directrix1() - zero eccentricity");
   gp_XY anOrig = pos.XDirection().XY();
@@ -312,7 +312,7 @@ inline gp_Ax2d gp_Elips2d::Directrix1() const
 
 inline gp_Ax2d gp_Elips2d::Directrix2() const
 {
-  Standard_Real anE = Eccentricity();
+  double anE = Eccentricity();
   Standard_ConstructionError_Raise_if(anE <= gp::Resolution(),
                                       "gp_Elips2d::Directrix2() - zero eccentricity");
   gp_XY anOrig = pos.XDirection().XY();
@@ -323,7 +323,7 @@ inline gp_Ax2d gp_Elips2d::Directrix2() const
 
 //=================================================================================================
 
-inline Standard_Real gp_Elips2d::Eccentricity() const
+inline double gp_Elips2d::Eccentricity() const
 {
   if (majorRadius == 0.0)
   {
@@ -339,7 +339,7 @@ inline Standard_Real gp_Elips2d::Eccentricity() const
 
 inline gp_Pnt2d gp_Elips2d::Focus1() const
 {
-  Standard_Real   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt2d& aPP = pos.Location();
   const gp_Dir2d& aDD = pos.XDirection();
   return gp_Pnt2d(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y());
@@ -349,7 +349,7 @@ inline gp_Pnt2d gp_Elips2d::Focus1() const
 
 inline gp_Pnt2d gp_Elips2d::Focus2() const
 {
-  Standard_Real   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt2d& aPP = pos.Location();
   const gp_Dir2d& aDD = pos.XDirection();
   return gp_Pnt2d(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y());
@@ -357,7 +357,7 @@ inline gp_Pnt2d gp_Elips2d::Focus2() const
 
 //=================================================================================================
 
-inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
+inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const double theS)
 {
   majorRadius *= theS;
   if (majorRadius < 0)
@@ -374,7 +374,7 @@ inline void gp_Elips2d::Scale(const gp_Pnt2d& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real theS) const
+inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const double theS) const
 {
   gp_Elips2d anE = *this;
   anE.majorRadius *= theS;
@@ -393,7 +393,7 @@ inline gp_Elips2d gp_Elips2d::Scaled(const gp_Pnt2d& theP, const Standard_Real t
 
 //=================================================================================================
 
-inline constexpr Standard_Real gp_Elips2d::Parameter() const noexcept
+inline constexpr double gp_Elips2d::Parameter() const noexcept
 {
   if (majorRadius == 0.0)
   {
@@ -420,7 +420,7 @@ inline gp_Elips2d gp_Elips2d::Reversed() const noexcept
 
 inline void gp_Elips2d::Transform(const gp_Trsf2d& theT)
 {
-  Standard_Real aTSca = theT.ScaleFactor();
+  double aTSca = theT.ScaleFactor();
   if (aTSca < 0.0)
   {
     aTSca = -aTSca;

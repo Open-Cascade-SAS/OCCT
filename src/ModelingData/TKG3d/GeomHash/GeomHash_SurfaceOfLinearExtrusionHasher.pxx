@@ -24,7 +24,7 @@
 struct GeomHash_SurfaceOfLinearExtrusionHasher
 {
   // Hashes the extrusion surface by its direction and basis curve.
-  std::size_t operator()(const Handle(Geom_SurfaceOfLinearExtrusion)& theSurface) const noexcept
+  std::size_t operator()(const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface) const noexcept
   {
     const GeomHash_DirectionHasher aDirHasher;
     const GeomHash_CurveHasher     aCurveHasher;
@@ -34,8 +34,8 @@ struct GeomHash_SurfaceOfLinearExtrusionHasher
   }
 
   // Compares two extrusion surfaces.
-  bool operator()(const Handle(Geom_SurfaceOfLinearExtrusion)& theSurface1,
-                  const Handle(Geom_SurfaceOfLinearExtrusion)& theSurface2) const noexcept
+  bool operator()(const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface1,
+                  const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurface2) const noexcept
   {
     const GeomHash_DirectionHasher aDirHasher;
     const GeomHash_CurveHasher     aCurveHasher;

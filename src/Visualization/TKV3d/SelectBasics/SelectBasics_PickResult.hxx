@@ -41,8 +41,8 @@ public:
   }
 
   //! Constructor with initialization.
-  SelectBasics_PickResult(Standard_Real theDepth,
-                          Standard_Real theDistToCenter,
+  SelectBasics_PickResult(double theDepth,
+                          double theDistToCenter,
                           const gp_Pnt& theObjPickedPnt)
       : myObjPickedPnt(theObjPickedPnt),
         myDepth(theDepth),
@@ -52,7 +52,7 @@ public:
 
 public:
   //! Return TRUE if result was been defined.
-  Standard_Boolean IsValid() const { return myDepth != RealLast(); }
+  bool IsValid() const { return myDepth != RealLast(); }
 
   //! Reset depth value.
   void Invalidate()
@@ -63,13 +63,13 @@ public:
   }
 
   //! Return depth along picking ray.
-  Standard_Real Depth() const { return myDepth; }
+  double Depth() const { return myDepth; }
 
   //! Set depth along picking ray.
-  void SetDepth(Standard_Real theDepth) { myDepth = theDepth; }
+  void SetDepth(double theDepth) { myDepth = theDepth; }
 
   //! Return TRUE if Picked Point lying on detected entity was set.
-  Standard_Boolean HasPickedPoint() const { return myObjPickedPnt.X() != RealLast(); }
+  bool HasPickedPoint() const { return myObjPickedPnt.X() != RealLast(); }
 
   //! Return picked point lying on detected entity.
   //! WARNING! Point is defined in local coordinate system and should be translated into World
@@ -80,10 +80,10 @@ public:
   void SetPickedPoint(const gp_Pnt& theObjPickedPnt) { myObjPickedPnt = theObjPickedPnt; }
 
   //! Return distance to geometry center (auxiliary value for comparing results).
-  Standard_Real DistToGeomCenter() const { return myDistToCenter; }
+  double DistToGeomCenter() const { return myDistToCenter; }
 
   //! Set distance to geometry center.
-  void SetDistToGeomCenter(Standard_Real theDistToCenter) { myDistToCenter = theDistToCenter; }
+  void SetDistToGeomCenter(double theDistToCenter) { myDistToCenter = theDistToCenter; }
 
   //! Return (unnormalized) surface normal at picked point or zero vector if undefined.
   //! WARNING! Normal is defined in local coordinate system and should be translated into World
@@ -102,9 +102,9 @@ public:
 private:
   gp_Pnt                  myObjPickedPnt; //!< User-picked selection point onto object
   NCollection_Vec3<float> myNormal;       //!< surface normal
-  Standard_Real           myDepth;        //!< Depth to detected point
+  double           myDepth;        //!< Depth to detected point
   // clang-format off
-  Standard_Real           myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
+  double           myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
   // clang-format on
 };
 

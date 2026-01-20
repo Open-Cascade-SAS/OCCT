@@ -27,7 +27,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_EntityList.hxx>
 #include <Interface_InterfaceError.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -35,17 +35,17 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESEntity, Standard_Transient)
 
-#define ThisEntity Handle(IGESData_IGESEntity)::DownCast(This())
+#define ThisEntity occ::down_cast<IGESData_IGESEntity>(This())
 
 namespace
 {
-static const Standard_Integer IGESFlagAssocs  = 131072;
-static const Standard_Integer IGESFlagProps   = 262144;
-static const Standard_Integer IGESFourStatus  = 65535;
-static const Standard_Integer IGESStatusField = 15;
-static const Standard_Integer IGESShiftSubord = 4;
-static const Standard_Integer IGESShiftUse    = 8;
-static const Standard_Integer IGESShiftHier   = 12;
+static const int IGESFlagAssocs  = 131072;
+static const int IGESFlagProps   = 262144;
+static const int IGESFourStatus  = 65535;
+static const int IGESStatusField = 15;
+static const int IGESShiftSubord = 4;
+static const int IGESShiftUse    = 8;
+static const int IGESShiftHier   = 12;
 } // namespace
 
 //=================================================================================================
@@ -97,19 +97,19 @@ IGESData_IGESType IGESData_IGESEntity::IGESType() const
   return IGESData_IGESType(theType, theForm);
 }
 
-Standard_Integer IGESData_IGESEntity::TypeNumber() const
+int IGESData_IGESEntity::TypeNumber() const
 {
   return theType;
 }
 
-Standard_Integer IGESData_IGESEntity::FormNumber() const
+int IGESData_IGESEntity::FormNumber() const
 {
   return theForm;
 }
 
-Handle(IGESData_IGESEntity) IGESData_IGESEntity::DirFieldEntity(const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::DirFieldEntity(const int num) const
 {
-  Handle(IGESData_IGESEntity) ent;
+  occ::handle<IGESData_IGESEntity> ent;
   if (num == 3)
     ent = theStructure;
   if (num == 4)
@@ -127,12 +127,12 @@ Handle(IGESData_IGESEntity) IGESData_IGESEntity::DirFieldEntity(const Standard_I
   return ent;
 }
 
-Standard_Boolean IGESData_IGESEntity::HasStructure() const
+bool IGESData_IGESEntity::HasStructure() const
 {
   return (!theStructure.IsNull());
 }
 
-Handle(IGESData_IGESEntity) IGESData_IGESEntity::Structure() const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::Structure() const
 {
   return theStructure;
 }
@@ -142,12 +142,12 @@ IGESData_DefType IGESData_IGESEntity::DefLineFont() const
   return theDefLineFont.DefType();
 }
 
-Standard_Integer IGESData_IGESEntity::RankLineFont() const
+int IGESData_IGESEntity::RankLineFont() const
 {
   return theDefLineFont.Value();
 }
 
-Handle(IGESData_LineFontEntity) IGESData_IGESEntity::LineFont() const
+occ::handle<IGESData_LineFontEntity> IGESData_IGESEntity::LineFont() const
 {
   return GetCasted(IGESData_LineFontEntity, theLineFont);
 }
@@ -161,12 +161,12 @@ IGESData_DefList IGESData_IGESEntity::DefLevel() const
   return IGESData_DefNone;
 }
 
-Standard_Integer IGESData_IGESEntity::Level() const
+int IGESData_IGESEntity::Level() const
 {
   return theDefLevel;
 }
 
-Handle(IGESData_LevelListEntity) IGESData_IGESEntity::LevelList() const
+occ::handle<IGESData_LevelListEntity> IGESData_IGESEntity::LevelList() const
 {
   return GetCasted(IGESData_LevelListEntity, theLevelList);
 }
@@ -181,43 +181,43 @@ IGESData_DefList IGESData_IGESEntity::DefView() const
     return IGESData_DefSeveral;
 }
 
-Handle(IGESData_ViewKindEntity) IGESData_IGESEntity::View() const
+occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::View() const
 {
   return GetCasted(IGESData_ViewKindEntity, theView);
 }
 
-Handle(IGESData_ViewKindEntity) IGESData_IGESEntity::SingleView() const
+occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::SingleView() const
 {
-  Handle(IGESData_ViewKindEntity) nulvue;
+  occ::handle<IGESData_ViewKindEntity> nulvue;
   if (DefView() != IGESData_DefOne)
     return nulvue;
   return View();
 }
 
-Handle(IGESData_ViewKindEntity) IGESData_IGESEntity::ViewList() const
+occ::handle<IGESData_ViewKindEntity> IGESData_IGESEntity::ViewList() const
 {
-  Handle(IGESData_ViewKindEntity) nulvue;
+  occ::handle<IGESData_ViewKindEntity> nulvue;
   if (DefView() != IGESData_DefSeveral)
     return nulvue;
   return View();
 }
 
-Standard_Boolean IGESData_IGESEntity::HasTransf() const
+bool IGESData_IGESEntity::HasTransf() const
 {
   return (!theTransf.IsNull());
 }
 
-Handle(IGESData_TransfEntity) IGESData_IGESEntity::Transf() const
+occ::handle<IGESData_TransfEntity> IGESData_IGESEntity::Transf() const
 {
   return GetCasted(IGESData_TransfEntity, theTransf);
 }
 
-Standard_Boolean IGESData_IGESEntity::HasLabelDisplay() const
+bool IGESData_IGESEntity::HasLabelDisplay() const
 {
   return (!theLabDisplay.IsNull());
 }
 
-Handle(IGESData_LabelDisplayEntity) IGESData_IGESEntity::LabelDisplay() const
+occ::handle<IGESData_LabelDisplayEntity> IGESData_IGESEntity::LabelDisplay() const
 {
   return GetCasted(IGESData_LabelDisplayEntity, theLabDisplay);
 }
@@ -225,32 +225,32 @@ Handle(IGESData_LabelDisplayEntity) IGESData_IGESEntity::LabelDisplay() const
 // Status : an Integer for BlankStatus,SubordinateStatus,UseFlag,HierarchySt.
 // Division : 4 bits each (BlankStatus on the right, etc)
 
-Standard_Integer IGESData_IGESEntity::BlankStatus() const
+int IGESData_IGESEntity::BlankStatus() const
 {
   return (theStatusNum & IGESStatusField);
 }
 
-Standard_Integer IGESData_IGESEntity::SubordinateStatus() const
+int IGESData_IGESEntity::SubordinateStatus() const
 {
   return ((theStatusNum >> IGESShiftSubord) & IGESStatusField);
 }
 
-Standard_Integer IGESData_IGESEntity::UseFlag() const
+int IGESData_IGESEntity::UseFlag() const
 {
   return ((theStatusNum >> IGESShiftUse) & IGESStatusField);
 }
 
-Standard_Integer IGESData_IGESEntity::HierarchyStatus() const
+int IGESData_IGESEntity::HierarchyStatus() const
 {
   return ((theStatusNum >> IGESShiftHier) & IGESStatusField);
 }
 
-Standard_Integer IGESData_IGESEntity::LineWeightNumber() const
+int IGESData_IGESEntity::LineWeightNumber() const
 {
   return theLWeightNum;
 }
 
-Standard_Real IGESData_IGESEntity::LineWeight() const
+double IGESData_IGESEntity::LineWeight() const
 {
   return theLWeightVal;
 }
@@ -260,34 +260,34 @@ IGESData_DefType IGESData_IGESEntity::DefColor() const
   return theDefColor.DefType();
 }
 
-Standard_Integer IGESData_IGESEntity::RankColor() const
+int IGESData_IGESEntity::RankColor() const
 {
   return theDefColor.Value();
 }
 
-Handle(IGESData_ColorEntity) IGESData_IGESEntity::Color() const
+occ::handle<IGESData_ColorEntity> IGESData_IGESEntity::Color() const
 {
   return GetCasted(IGESData_ColorEntity, theColor);
 }
 
 //=================================================================================================
 
-Standard_Boolean IGESData_IGESEntity::CResValues(const Standard_CString res1,
-                                                 const Standard_CString res2) const
+bool IGESData_IGESEntity::CResValues(const char* const res1,
+                                                 const char* const res2) const
 {
-  Standard_Boolean    res = Standard_False;
+  bool    res = false;
   Standard_PCharacter pres1, pres2;
   //
   pres1 = (Standard_PCharacter)res1;
   pres2 = (Standard_PCharacter)res2;
   //
-  for (Standard_Integer i = 0; i < 8; i++)
+  for (int i = 0; i < 8; i++)
   {
     pres1[i] = theRes1[i];
     pres2[i] = theRes2[i];
     if (theRes1[i] > ' ' || theRes2[i] > ' ')
     {
-      res = Standard_True;
+      res = true;
     }
   }
   pres1[8] = '\0';
@@ -296,22 +296,22 @@ Standard_Boolean IGESData_IGESEntity::CResValues(const Standard_CString res1,
   return res;
 }
 
-Standard_Boolean IGESData_IGESEntity::HasShortLabel() const
+bool IGESData_IGESEntity::HasShortLabel() const
 {
   return (!theShortLabel.IsNull());
 }
 
-Handle(TCollection_HAsciiString) IGESData_IGESEntity::ShortLabel() const
+occ::handle<TCollection_HAsciiString> IGESData_IGESEntity::ShortLabel() const
 {
   return theShortLabel;
 }
 
-Standard_Boolean IGESData_IGESEntity::HasSubScriptNumber() const
+bool IGESData_IGESEntity::HasSubScriptNumber() const
 {
   return (theSubScriptN >= 0);
 } // =0 nul mais defini, <0 absent
 
-Standard_Integer IGESData_IGESEntity::SubScriptNumber() const
+int IGESData_IGESEntity::SubScriptNumber() const
 {
   if (theSubScriptN < 0)
     return 0;
@@ -320,15 +320,15 @@ Standard_Integer IGESData_IGESEntity::SubScriptNumber() const
 
 //  ....                (Re)Initialisation du Directory                 ....
 
-void IGESData_IGESEntity::InitTypeAndForm(const Standard_Integer typenum,
-                                          const Standard_Integer formnum)
+void IGESData_IGESEntity::InitTypeAndForm(const int typenum,
+                                          const int formnum)
 {
   theType = typenum;
   theForm = formnum;
 }
 
-void IGESData_IGESEntity::InitDirFieldEntity(const Standard_Integer             num,
-                                             const Handle(IGESData_IGESEntity)& ent)
+void IGESData_IGESEntity::InitDirFieldEntity(const int             num,
+                                             const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (num == 3)
     theStructure = ent;
@@ -346,41 +346,41 @@ void IGESData_IGESEntity::InitDirFieldEntity(const Standard_Integer             
     theColor = ent;
 }
 
-void IGESData_IGESEntity::InitTransf(const Handle(IGESData_TransfEntity)& ent)
+void IGESData_IGESEntity::InitTransf(const occ::handle<IGESData_TransfEntity>& ent)
 {
   theTransf = ent;
 }
 
-void IGESData_IGESEntity::InitView(const Handle(IGESData_ViewKindEntity)& ent)
+void IGESData_IGESEntity::InitView(const occ::handle<IGESData_ViewKindEntity>& ent)
 {
   theView = ent;
 }
 
-void IGESData_IGESEntity::InitLineFont(const Handle(IGESData_LineFontEntity)& ent,
-                                       const Standard_Integer                 rank)
+void IGESData_IGESEntity::InitLineFont(const occ::handle<IGESData_LineFontEntity>& ent,
+                                       const int                 rank)
 {
   theDefLineFont.SetRank((ent.IsNull() ? rank : -1));
   theLineFont = ent;
 }
 
-void IGESData_IGESEntity::InitLevel(const Handle(IGESData_LevelListEntity)& ent,
-                                    const Standard_Integer                  val)
+void IGESData_IGESEntity::InitLevel(const occ::handle<IGESData_LevelListEntity>& ent,
+                                    const int                  val)
 {
   theLevelList = ent;
   theDefLevel  = (ent.IsNull() ? val : -1);
 }
 
-void IGESData_IGESEntity::InitColor(const Handle(IGESData_ColorEntity)& ent,
-                                    const Standard_Integer              rank)
+void IGESData_IGESEntity::InitColor(const occ::handle<IGESData_ColorEntity>& ent,
+                                    const int              rank)
 {
   theDefColor.SetRank((ent.IsNull() ? rank : -1));
   theColor = ent;
 }
 
-void IGESData_IGESEntity::InitStatus(const Standard_Integer blank,
-                                     const Standard_Integer subordinate,
-                                     const Standard_Integer useflag,
-                                     const Standard_Integer hierarchy)
+void IGESData_IGESEntity::InitStatus(const int blank,
+                                     const int subordinate,
+                                     const int useflag,
+                                     const int hierarchy)
 {
   theStatusNum = (theStatusNum & (!IGESFourStatus));
   theStatusNum += (blank & IGESStatusField) | ((subordinate & IGESStatusField) << IGESShiftSubord)
@@ -388,16 +388,16 @@ void IGESData_IGESEntity::InitStatus(const Standard_Integer blank,
                   | ((hierarchy & IGESStatusField) << IGESShiftHier);
 }
 
-void IGESData_IGESEntity::SetLabel(const Handle(TCollection_HAsciiString)& label,
-                                   const Standard_Integer                  sub)
+void IGESData_IGESEntity::SetLabel(const occ::handle<TCollection_HAsciiString>& label,
+                                   const int                  sub)
 {
   theShortLabel = label;
   theSubScriptN = sub;
 }
 
-void IGESData_IGESEntity::InitMisc(const Handle(IGESData_IGESEntity)&         str,
-                                   const Handle(IGESData_LabelDisplayEntity)& lab,
-                                   const Standard_Integer                     weightnum)
+void IGESData_IGESEntity::InitMisc(const occ::handle<IGESData_IGESEntity>&         str,
+                                   const occ::handle<IGESData_LabelDisplayEntity>& lab,
+                                   const int                     weightnum)
 {
   theStructure  = str;
   theLabDisplay = lab;
@@ -413,12 +413,12 @@ void IGESData_IGESEntity::InitMisc(const Handle(IGESData_IGESEntity)&         st
 //  SingleParent : ici on ne traite que l Associativity SingleParent
 //  Pour considerer le partage implicite, il faut remonter au Modele ...
 
-Standard_Boolean IGESData_IGESEntity::HasOneParent() const
+bool IGESData_IGESEntity::HasOneParent() const
 {
   return (NbTypedProperties(STANDARD_TYPE(IGESData_SingleParentEntity)) == 1);
 }
 
-Handle(IGESData_IGESEntity) IGESData_IGESEntity::UniqueParent() const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::UniqueParent() const
 {
   if (NbTypedProperties(STANDARD_TYPE(IGESData_SingleParentEntity)) != 1)
     throw Interface_InterfaceError("IGESEntity : UniqueParent");
@@ -438,7 +438,7 @@ gp_GTrsf IGESData_IGESEntity::Location() const
   // else return Transf()->Value();          // c-a-d Compoound
   if (!HasTransf())
     return gp_GTrsf(); // Identite
-  Handle(IGESData_TransfEntity) trsf = Transf();
+  occ::handle<IGESData_TransfEntity> trsf = Transf();
   return (trsf.IsNull()) ? gp_GTrsf() : trsf->Value();
 }
 
@@ -462,18 +462,18 @@ gp_GTrsf IGESData_IGESEntity::CompoundLocation() const
   return loca;
 }
 
-Standard_Boolean IGESData_IGESEntity::HasName() const
+bool IGESData_IGESEntity::HasName() const
 {
   if (HasShortLabel())
-    return Standard_True;
+    return true;
   return (NbTypedProperties(STANDARD_TYPE(IGESData_NameEntity)) == 1);
 }
 
-Handle(TCollection_HAsciiString) IGESData_IGESEntity::NameValue() const
+occ::handle<TCollection_HAsciiString> IGESData_IGESEntity::NameValue() const
 {
-  Handle(TCollection_HAsciiString) nom; // au depart vide
+  occ::handle<TCollection_HAsciiString> nom; // au depart vide
   //   Question : concatene-t-on le SubScript ?  Oui, forme label(subscript)
-  Standard_Integer nbname = NbTypedProperties(STANDARD_TYPE(IGESData_NameEntity));
+  int nbname = NbTypedProperties(STANDARD_TYPE(IGESData_NameEntity));
   if (nbname == 0)
   {
     if (!HasShortLabel())
@@ -495,14 +495,14 @@ Handle(TCollection_HAsciiString) IGESData_IGESEntity::NameValue() const
 
 //  ....            Listes d'infos Optionnelles (Assocs,Props)            ....
 
-Standard_Boolean IGESData_IGESEntity::ArePresentAssociativities() const
+bool IGESData_IGESEntity::ArePresentAssociativities() const
 {
   if (!theAssocs.IsEmpty())
-    return Standard_True;
+    return true;
   return (theStatusNum & IGESFlagAssocs) != 0;
 }
 
-Standard_Integer IGESData_IGESEntity::NbAssociativities() const
+int IGESData_IGESEntity::NbAssociativities() const
 {
   if (theAssocs.IsEmpty())
     return 0;
@@ -516,24 +516,24 @@ Interface_EntityIterator IGESData_IGESEntity::Associativities() const
   return iter;
 }
 
-Standard_Integer IGESData_IGESEntity::NbTypedAssociativities(
-  const Handle(Standard_Type)& atype) const
+int IGESData_IGESEntity::NbTypedAssociativities(
+  const occ::handle<Standard_Type>& atype) const
 {
   return theAssocs.NbTypedEntities(atype);
 }
 
-Handle(IGESData_IGESEntity) IGESData_IGESEntity::TypedAssociativity(
-  const Handle(Standard_Type)& atype) const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::TypedAssociativity(
+  const occ::handle<Standard_Type>& atype) const
 {
   return GetCasted(IGESData_IGESEntity, theAssocs.TypedEntity(atype));
 }
 
-void IGESData_IGESEntity::AddAssociativity(const Handle(IGESData_IGESEntity)& ent)
+void IGESData_IGESEntity::AddAssociativity(const occ::handle<IGESData_IGESEntity>& ent)
 {
   theAssocs.Append(ent);
 }
 
-void IGESData_IGESEntity::RemoveAssociativity(const Handle(IGESData_IGESEntity)& ent)
+void IGESData_IGESEntity::RemoveAssociativity(const occ::handle<IGESData_IGESEntity>& ent)
 {
   theAssocs.Remove(ent);
 }
@@ -549,26 +549,26 @@ void IGESData_IGESEntity::ClearAssociativities()
   theAssocs.Clear();
 }
 
-void IGESData_IGESEntity::Associate(const Handle(IGESData_IGESEntity)& ent) const
+void IGESData_IGESEntity::Associate(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   if (!ent.IsNull())
     ent->AddAssociativity(ThisEntity);
 }
 
-void IGESData_IGESEntity::Dissociate(const Handle(IGESData_IGESEntity)& ent) const
+void IGESData_IGESEntity::Dissociate(const occ::handle<IGESData_IGESEntity>& ent) const
 {
   if (!ent.IsNull())
     ent->RemoveAssociativity(ThisEntity);
 }
 
-Standard_Boolean IGESData_IGESEntity::ArePresentProperties() const
+bool IGESData_IGESEntity::ArePresentProperties() const
 {
   if (!theProps.IsEmpty())
-    return Standard_True;
+    return true;
   return (theStatusNum & IGESFlagProps) != 0;
 }
 
-Standard_Integer IGESData_IGESEntity::NbProperties() const
+int IGESData_IGESEntity::NbProperties() const
 {
   if (theProps.IsEmpty())
     return 0;
@@ -582,23 +582,23 @@ Interface_EntityIterator IGESData_IGESEntity::Properties() const
   return iter;
 }
 
-Standard_Integer IGESData_IGESEntity::NbTypedProperties(const Handle(Standard_Type)& atype) const
+int IGESData_IGESEntity::NbTypedProperties(const occ::handle<Standard_Type>& atype) const
 {
   return theProps.NbTypedEntities(atype);
 }
 
-Handle(IGESData_IGESEntity) IGESData_IGESEntity::TypedProperty(const Handle(Standard_Type)& atype,
-                                                               const Standard_Integer anum) const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::TypedProperty(const occ::handle<Standard_Type>& atype,
+                                                               const int anum) const
 {
   return GetCasted(IGESData_IGESEntity, theProps.TypedEntity(atype, anum));
 }
 
-void IGESData_IGESEntity::AddProperty(const Handle(IGESData_IGESEntity)& ent)
+void IGESData_IGESEntity::AddProperty(const occ::handle<IGESData_IGESEntity>& ent)
 {
   theProps.Append(ent);
 }
 
-void IGESData_IGESEntity::RemoveProperty(const Handle(IGESData_IGESEntity)& ent)
+void IGESData_IGESEntity::RemoveProperty(const occ::handle<IGESData_IGESEntity>& ent)
 {
   theProps.Remove(ent);
 }
@@ -616,9 +616,9 @@ void IGESData_IGESEntity::ClearProperties()
 
 // ....                     Actions liees au Transfert                     ....
 
-void IGESData_IGESEntity::SetLineWeight(const Standard_Real    defw,
-                                        const Standard_Real    maxw,
-                                        const Standard_Integer gradw)
+void IGESData_IGESEntity::SetLineWeight(const double    defw,
+                                        const double    maxw,
+                                        const int gradw)
 {
   if (theLWeightNum == 0)
     theLWeightVal = defw;

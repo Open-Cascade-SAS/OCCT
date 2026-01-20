@@ -31,7 +31,8 @@
 #include <ShapeFix_Shape.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -44,13 +45,16 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_FixSmallFace, ShapeFix_Root)
 
 // #include <GeomLProp_SLProps.hxx>
-// #include <TColStd_Array2OfReal.hxx>
-// #include <TColStd_Array1OfReal.hxx>
+// #include <NCollection_Array2<double>.hxx>
+// #include <NCollection_Array1<double>.hxx>
 ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
@@ -76,8 +80,8 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
 {
 
   // gp_Pnt spot;
-  // Standard_Real spotol;
-  Standard_Boolean done = Standard_False;
+  // double spotol;
+  bool done = false;
   TopAbs_ShapeEnum st   = myShape.ShapeType();
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID || st == TopAbs_SOLID || st == TopAbs_SHELL
       || st == TopAbs_FACE)
@@ -94,11 +98,11 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
         ReplaceVerticesInCaseOfSpot(F, Precision());
         RemoveFacesInCaseOfSpot(F);
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-        done     = Standard_True;
+        done     = true;
       }
     }
     myShape                   = Context()->Apply(myShape);
-    Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+    occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
     if (done)
     {
       if (myShape.IsNull())
@@ -125,16 +129,16 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
   return myShape;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
+bool ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
   TopoDS_Face& F,
-  const Standard_Real /*tol*/) const
+  const double /*tol*/) const
 {
 
-  TColgp_SequenceOfXYZ thePositions;
+  NCollection_Sequence<gp_XYZ> thePositions;
   gp_XYZ               thePosition;
   BRep_Builder         theBuilder;
-  Standard_Real        theMaxDev;
-  Standard_Real        theMaxTol = 0.0;
+  double        theMaxDev;
+  double        theMaxTol = 0.0;
   thePositions.Clear();
   gp_Pnt thePoint;
   // smh#8
@@ -142,20 +146,20 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
   F                    = TopoDS::Face(tmpFace);
   // gka Mar2000 Protection against faces without wires
   // but they occur due to bugs in the algorithm itself, it needs to be fixed
-  Standard_Boolean isWir = Standard_False;
-  for (TopoDS_Iterator itw(F, Standard_False); itw.More(); itw.Next())
+  bool isWir = false;
+  for (TopoDS_Iterator itw(F, false); itw.More(); itw.Next())
   {
     if (itw.Value().ShapeType() != TopAbs_WIRE)
       continue;
     TopoDS_Wire w1 = TopoDS::Wire(itw.Value());
     if (!w1.IsNull())
     {
-      isWir = Standard_True;
+      isWir = true;
       break;
     }
   }
   if (!isWir)
-    return Standard_True;
+    return true;
   // Accumulating positions and maximal vertex tolerance
   for (TopExp_Explorer iter_vertex(F, TopAbs_VERTEX); iter_vertex.More(); iter_vertex.Next())
   {
@@ -167,8 +171,8 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
   }
   // Calculate common vertex position
   thePosition               = gp_XYZ(0., 0., 0.);
-  Standard_Integer theNbPos = thePositions.Length();
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int theNbPos = thePositions.Length();
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= theNbPos; i++)
     thePosition += thePositions.Value(i);
   if (theNbPos > 1)
@@ -178,7 +182,7 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
   theMaxDev = 0.;
   for (i = 1; i <= theNbPos; i++)
   {
-    Standard_Real theDeviation = (thePosition - thePositions.Value(i)).Modulus();
+    double theDeviation = (thePosition - thePositions.Value(i)).Modulus();
     if (theDeviation > theMaxDev)
       theMaxDev = theDeviation;
   }
@@ -209,10 +213,10 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
     }
     Context()->Replace(V, theNewVertex);
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::RemoveFacesInCaseOfSpot(const TopoDS_Face& F) const
+bool ShapeFix_FixSmallFace::RemoveFacesInCaseOfSpot(const TopoDS_Face& F) const
 {
   for (TopExp_Explorer iter_vert(F, TopAbs_EDGE); iter_vert.More(); iter_vert.Next())
   {
@@ -221,16 +225,16 @@ Standard_Boolean ShapeFix_FixSmallFace::RemoveFacesInCaseOfSpot(const TopoDS_Fac
   }
   Context()->Remove(F);
   SendWarning(F, Message_Msg("FixAdvFace.FixSpotFace.MSG0"));
-  return Standard_True;
+  return true;
 }
 
-TopoDS_Shape ShapeFix_FixSmallFace::FixStripFace(const Standard_Boolean wasdone)
+TopoDS_Shape ShapeFix_FixSmallFace::FixStripFace(const bool wasdone)
 {
   if (myShape.IsNull())
     return myShape;
   TopAbs_ShapeEnum st = myShape.ShapeType();
   // BRep_Builder theBuilder;
-  Standard_Boolean done = wasdone;
+  bool done = wasdone;
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID || st == TopAbs_SOLID || st == TopAbs_SHELL
       || st == TopAbs_FACE)
   {
@@ -242,14 +246,14 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixStripFace(const Standard_Boolean wasdone)
       F                    = TopoDS::Face(tmpFace);
       if (F.IsNull())
         continue;
-      // Standard_Real dmax = 1;
+      // double dmax = 1;
       TopoDS_Edge E1, E2;
       if (myAnalyzer.CheckStripFace(F, E1, E2, Precision()))
       {
         if (ReplaceInCaseOfStrip(F, E1, E2, Precision()))
           RemoveFacesInCaseOfStrip(F);
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
-        done     = Standard_True;
+        done     = true;
       }
     }
     myShape = Context()->Apply(myShape);
@@ -282,13 +286,13 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixStripFace(const Standard_Boolean wasdone)
   return myShape;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&        F,
+bool ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&        F,
                                                              TopoDS_Edge&        E1,
                                                              TopoDS_Edge&        E2,
-                                                             const Standard_Real tol) const
+                                                             const double tol) const
 {
   if (E1.IsNull() || E2.IsNull())
-    return Standard_False;
+    return false;
   TopoDS_Edge theSharedEdge;
   TopoDS_Face F1, F2;
   // smh#8
@@ -315,7 +319,7 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&       
 
   // Compute shared edge for this face
   if (F1.IsNull() && F2.IsNull())
-    return Standard_True;
+    return true;
   TopoDS_Edge E1tmp = E1;
   TopoDS_Edge E2tmp = E2;
   if (F1.IsNull())
@@ -327,7 +331,7 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&       
   theSharedEdge = ComputeSharedEdgeForStripFace(F, E1tmp, E2tmp, F1, tol);
   // Replace two long edges by new one
   if (theSharedEdge.IsNull())
-    return Standard_False;
+    return false;
   if (E1.Orientation() == TopAbs_REVERSED)
   {
     Context()->Replace(E1tmp, theSharedEdge.Oriented(TopAbs_REVERSED));
@@ -353,21 +357,21 @@ Standard_Boolean ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&       
       Context()->Remove(shortedge);
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::RemoveFacesInCaseOfStrip(const TopoDS_Face& F) const
+bool ShapeFix_FixSmallFace::RemoveFacesInCaseOfStrip(const TopoDS_Face& F) const
 {
   Context()->Remove(F);
   SendWarning(F, Message_Msg("FixAdvFace.FixStripFace.MSG0"));
-  return Standard_True;
+  return true;
 }
 
 TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Face& /*F*/,
                                                                  const TopoDS_Edge&  E1,
                                                                  const TopoDS_Edge&  E2,
                                                                  const TopoDS_Face&  F1,
-                                                                 const Standard_Real tol) const
+                                                                 const double tol) const
 {
 
   BRep_Builder theBuilder;
@@ -377,7 +381,7 @@ TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Fa
   TopExp::Vertices(E1, V1, V2);
   TopExp::Vertices(E2, V3, V4);
   gp_Pnt        p1, p2;
-  Standard_Real dev;
+  double dev;
   p1  = BRep_Tool::Pnt(V1);
   p2  = BRep_Tool::Pnt(V3);
   dev = p1.Distance(p2);
@@ -517,11 +521,11 @@ TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Fa
     return theNewEdge;
   // Create new edge
   theBuilder.MakeEdge(theNewEdge);
-  Standard_Real      f, l, fp1, lp1 /*, fp2, lp2*/;
+  double      f, l, fp1, lp1 /*, fp2, lp2*/;
   TopLoc_Location    loc;
-  Handle(Geom_Curve) the3dcurve;
+  occ::handle<Geom_Curve> the3dcurve;
   the3dcurve = BRep_Tool::Curve(E1, f, l);
-  Handle(Geom2d_Curve) the2dcurve1, the2dcurve2, thenew1, thenew2;
+  occ::handle<Geom2d_Curve> the2dcurve1, the2dcurve2, thenew1, thenew2;
   if (!F1.IsNull())
   {
     the2dcurve1 = BRep_Tool::CurveOnSurface(E1, F1, fp1, lp1);
@@ -536,27 +540,27 @@ TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Fa
      f, l, thenew2);
      }*/
 
-  Standard_Real maxdev;
+  double maxdev;
   if ((BRep_Tool::Tolerance(theFirstVer)) <= (BRep_Tool::Tolerance(theSecondVer)))
     maxdev = (BRep_Tool::Tolerance(theSecondVer));
   else
     maxdev = (BRep_Tool::Tolerance(theFirstVer));
   theBuilder.UpdateVertex(theFirstVer, maxdev);
   theBuilder.UpdateVertex(theSecondVer, maxdev);
-  // Standard_Boolean IsFree = Standard_True;
-  theBuilder.SameParameter(theNewEdge, Standard_False);
+  // bool IsFree = true;
+  theBuilder.SameParameter(theNewEdge, false);
   the3dcurve = BRep_Tool::Curve(E1, f, l);
   theBuilder.UpdateEdge(theNewEdge, the3dcurve, maxdev);
   theBuilder.Range(theNewEdge, f, l);
   if (!F1.IsNull() && !thenew1.IsNull())
   {
     theBuilder.UpdateEdge(theNewEdge, thenew1, F1, maxdev);
-    // IsFree = Standard_False;
+    // IsFree = false;
   }
   /*if (!F2.IsNull() && !thenew2.IsNull())
     {
       theBuilder.UpdateEdge(theNewEdge, thenew2, F2, maxdev);
-      IsFree = Standard_False;
+      IsFree = false;
     }*/
   theBuilder.Add(theNewEdge, theFirstVer.Oriented(TopAbs_FORWARD));
   theBuilder.Add(theNewEdge, theSecondVer.Oriented(TopAbs_REVERSED));
@@ -576,7 +580,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSplitFace(const TopoDS_Shape& /*S*/)
   if (myShape.IsNull())
     return myShape;
   TopAbs_ShapeEnum st   = myShape.ShapeType();
-  Standard_Boolean done = Standard_False;
+  bool done = false;
   TopoDS_Compound  theSplittedFaces;
   BRep_Builder     theBuilder;
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID || st == TopAbs_SOLID || st == TopAbs_SHELL
@@ -589,7 +593,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSplitFace(const TopoDS_Shape& /*S*/)
       theBuilder.MakeCompound(CompSplittedFaces);
       if (SplitOneFace(F, CompSplittedFaces))
       {
-        done = Standard_True;
+        done = true;
         Context()->Replace(F, CompSplittedFaces);
       }
     }
@@ -601,11 +605,11 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSplitFace(const TopoDS_Shape& /*S*/)
   return myShape;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
+bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
                                                      TopoDS_Compound& theSplittedFaces)
 {
-  TopTools_DataMapOfShapeListOfShape     MapEdges;
-  ShapeAnalysis_DataMapOfShapeListOfReal MapParam;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>     MapEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<double>, TopTools_ShapeMapHasher> MapParam;
   TopoDS_Compound                        theAllVert;
   BRep_Builder                           theBuilder;
   theBuilder.MakeCompound(theAllVert);
@@ -617,13 +621,13 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
     TopoDS_Wire tempwire;
     // Take information about splitting vertices
     if (theAllVert.IsNull())
-      return Standard_False;
-    // Standard_Integer i;
+      return false;
+    // int i;
     TopoDS_Vertex   V;
     TopExp_Explorer itc(theAllVert, TopAbs_VERTEX);
     V = TopoDS::Vertex(itc.Current());
     if (V.IsNull())
-      return Standard_False;
+      return false;
     gp_Pnt        proj;
     gp_Pnt        vp = BRep_Tool::Pnt(V);
     TopoDS_Vertex theNewVertex;
@@ -638,15 +642,15 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
         E = TopoDS::Edge(ite.Current());
         TopoDS_Vertex V1, V2;
         TopExp::Vertices(E, V1, V2);
-        Standard_Real      cf, cl;
-        Handle(Geom_Curve) C3D = BRep_Tool::Curve(E, cf, cl);
+        double      cf, cl;
+        occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(E, cf, cl);
         if (C3D.IsNull())
           continue;
         if (V.IsSame(V1) || V.IsSame(V2))
           continue;
-        Standard_Real vt = BRep_Tool::Tolerance(V);
-        Standard_Real param;
-        Standard_Real dist = SAC.Project(C3D, vp, vt * 10., proj, param, cf, cl);
+        double vt = BRep_Tool::Tolerance(V);
+        double param;
+        double dist = SAC.Project(C3D, vp, vt * 10., proj, param, cf, cl);
         if (dist == 0)
           continue; // Projection on same curve but on other edge ?
         if (dist <= vt)
@@ -655,8 +659,8 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
           theBuilder.UpdateVertex(theNewVertex, proj, Precision::Confusion());
           theBuilder.MakeEdge(theFirstEdge);
           theBuilder.MakeEdge(theSecondEdge);
-          Standard_Real      f, l;
-          Handle(Geom_Curve) the3dcurve = BRep_Tool::Curve(E, f, l);
+          double      f, l;
+          occ::handle<Geom_Curve> the3dcurve = BRep_Tool::Curve(E, f, l);
           theBuilder.UpdateEdge(theFirstEdge, the3dcurve, Precision::Confusion());
           theBuilder.UpdateEdge(theSecondEdge, the3dcurve, Precision::Confusion());
           if (V1.Orientation() == TopAbs_FORWARD)
@@ -693,21 +697,21 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
         }
       }
       if (theNewVertex.IsNull())
-        return Standard_False;
+        return false;
       // Create split edge
       TopoDS_Edge        theSplitEdge;
       gp_Lin             lin(vp, gp_Dir(gp_Vec(vp, proj)));
-      Standard_Real      firstparam = ElCLib::Parameter(lin, vp);
-      Standard_Real      lastparam  = ElCLib::Parameter(lin, proj);
-      Handle(Geom_Line)  L          = new Geom_Line(vp, gp_Vec(vp, proj));
-      Handle(Geom_Curve) the3dc     = L;
+      double      firstparam = ElCLib::Parameter(lin, vp);
+      double      lastparam  = ElCLib::Parameter(lin, proj);
+      occ::handle<Geom_Line>  L          = new Geom_Line(vp, gp_Vec(vp, proj));
+      occ::handle<Geom_Curve> the3dc     = L;
       theBuilder.MakeEdge(theSplitEdge, the3dc, Precision::Confusion());
       theBuilder.Add(theSplitEdge, V.Oriented(TopAbs_FORWARD));
       theBuilder.Add(theSplitEdge, theNewVertex.Oriented(TopAbs_REVERSED));
       theBuilder.Range(theSplitEdge, firstparam, lastparam);
       // Add pcurve in new edge
-      Handle(ShapeFix_Edge) sfe = new ShapeFix_Edge;
-      sfe->FixAddPCurve(theSplitEdge, F, Standard_False);
+      occ::handle<ShapeFix_Edge> sfe = new ShapeFix_Edge;
+      sfe->FixAddPCurve(theSplitEdge, F, false);
       // Reorder the wire
       TopoDS_Wire wireonface;
       // Inher loop is not support yet !!!
@@ -715,8 +719,8 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
       wireonface = TopoDS::Wire(itw.Current());
       itw.Next();
       if (itw.More())
-        return Standard_False; // if face contains more than one wire
-      Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+        return false; // if face contains more than one wire
+      occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
       sfw->Init(wireonface, F, Precision::Confusion());
       sfw->FixReorder();
       wireonface = sfw->Wire();
@@ -765,7 +769,7 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
         }
       }
       if (w1.IsNull() || w2.IsNull())
-        return Standard_False;
+        return false;
       // Create two new faces and replace old one
       TopoDS_Face F1;
       TopoDS_Face F2;
@@ -783,9 +787,9 @@ Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
       if (!SplitOneFace(F2, theSplittedFaces))
         theBuilder.Add(theSplittedFaces, F2);
     }
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 TopoDS_Face ShapeFix_FixSmallFace::FixFace(const TopoDS_Face& F)
@@ -795,7 +799,7 @@ TopoDS_Face ShapeFix_FixSmallFace::FixFace(const TopoDS_Face& F)
   TopoDS_Face  theFixedFace = TopoDS::Face(emptyCopied);
   // BRep_Builder theBuilder;
 
-  // Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+  // occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
   // sfw->SetContext(Context());
   // for (TopExp_Explorer exp_w (F,TopAbs_WIRE); exp_w.More(); exp_w.Next()) {
   //   TopoDS_Wire theCurWire = TopoDS::Wire (exp_w.Current());
@@ -807,7 +811,7 @@ TopoDS_Face ShapeFix_FixSmallFace::FixFace(const TopoDS_Face& F)
   //   theCurWire = sfw->Wire();
   //   theBuilder.Add(theFixedFace, theCurWire);
   // }
-  Handle(ShapeFix_Face) sff = new ShapeFix_Face;
+  occ::handle<ShapeFix_Face> sff = new ShapeFix_Face;
   sff->SetContext(Context());
   sff->Init(F);
   sff->Perform();
@@ -847,7 +851,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::Shape()
   return myShape;
 }
 
-Standard_Boolean ShapeFix_FixSmallFace::FixPinFace(TopoDS_Face& /*F*/)
+bool ShapeFix_FixSmallFace::FixPinFace(TopoDS_Face& /*F*/)
 {
-  return Standard_True;
+  return true;
 }

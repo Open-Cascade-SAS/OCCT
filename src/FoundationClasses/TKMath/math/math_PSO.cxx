@@ -18,7 +18,7 @@
 #include <math_BullardGenerator.hxx>
 #include <math_PSOParticlesPool.hxx>
 
-const Standard_Real aBorderDivisor = 1.0e+4;
+const double aBorderDivisor = 1.0e+4;
 
 //=================================================================================================
 
@@ -26,8 +26,8 @@ math_PSO::math_PSO(math_MultipleVarFunction* theFunc,
                    const math_Vector&        theLowBorder,
                    const math_Vector&        theUppBorder,
                    const math_Vector&        theSteps,
-                   const Standard_Integer    theNbParticles,
-                   const Standard_Integer    theNbIter)
+                   const int    theNbParticles,
+                   const int    theNbIter)
     : myLowBorder(1, theFunc->NbVariables()),
       myUppBorder(1, theFunc->NbVariables()),
       mySteps(1, theFunc->NbVariables())
@@ -45,10 +45,10 @@ math_PSO::math_PSO(math_MultipleVarFunction* theFunc,
 //=================================================================================================
 
 void math_PSO::Perform(math_PSOParticlesPool& theParticles,
-                       Standard_Integer       theNbParticles,
-                       Standard_Real&         theValue,
+                       int       theNbParticles,
+                       double&         theValue,
                        math_Vector&           theOutPnt,
-                       const Standard_Integer theNbIter)
+                       const int theNbIter)
 {
   performPSOWithGivenParticles(theParticles, theNbParticles, theValue, theOutPnt, theNbIter);
 }
@@ -56,9 +56,9 @@ void math_PSO::Perform(math_PSOParticlesPool& theParticles,
 //=================================================================================================
 
 void math_PSO::Perform(const math_Vector&     theSteps,
-                       Standard_Real&         theValue,
+                       double&         theValue,
                        math_Vector&           theOutPnt,
-                       const Standard_Integer theNbIter)
+                       const int theNbIter)
 {
   // Initialization.
   math_Vector aMinUV(1, myN), aMaxUV(1, myN);
@@ -71,8 +71,8 @@ void math_PSO::Perform(const math_Vector&     theSteps,
   math_PSOParticlesPool aPool(myNbParticles, myN);
 
   // Generate initial particles distribution.
-  Standard_Boolean isRegularGridFinished = Standard_False;
-  Standard_Real    aCurrValue;
+  bool isRegularGridFinished = false;
+  double    aCurrValue;
   math_Vector      aCurrPoint(1, myN);
 
   PSO_Particle* aParticle = aPool.GetWorstParticle();
@@ -83,7 +83,7 @@ void math_PSO::Perform(const math_Vector&     theSteps,
 
     if (aCurrValue < aParticle->Distance)
     {
-      Standard_Integer aDimIdx;
+      int aDimIdx;
       for (aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
       {
         aParticle->Position[aDimIdx]     = aCurrPoint(aDimIdx + 1);
@@ -97,7 +97,7 @@ void math_PSO::Perform(const math_Vector&     theSteps,
 
     // Step.
     aCurrPoint(1) += std::max(mySteps(1), 1.0e-15); // Avoid too small step
-    for (Standard_Integer aDimIdx = 1; aDimIdx < myN; ++aDimIdx)
+    for (int aDimIdx = 1; aDimIdx < myN; ++aDimIdx)
     {
       if (aCurrPoint(aDimIdx) > aMaxUV(aDimIdx))
       {
@@ -110,7 +110,7 @@ void math_PSO::Perform(const math_Vector&     theSteps,
 
     // Stop criteria.
     if (aCurrPoint(myN) > aMaxUV(myN))
-      isRegularGridFinished = Standard_True;
+      isRegularGridFinished = true;
   } while (!isRegularGridFinished);
 
   performPSOWithGivenParticles(aPool, myNbParticles, theValue, theOutPnt, theNbIter);
@@ -119,10 +119,10 @@ void math_PSO::Perform(const math_Vector&     theSteps,
 //=================================================================================================
 
 void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
-                                            Standard_Integer       theNbParticles,
-                                            Standard_Real&         theValue,
+                                            int       theNbParticles,
+                                            double&         theValue,
                                             math_Vector&           theOutPnt,
-                                            const Standard_Integer theNbIter)
+                                            const int theNbIter)
 {
   math_Vector aMinUV(1, myN), aMaxUV(1, myN);
   aMinUV                            = myLowBorder + (myUppBorder - myLowBorder) / aBorderDivisor;
@@ -138,20 +138,20 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
 
   // Generate initial particle velocities.
   math_BullardGenerator aRandom;
-  for (Standard_Integer aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
+  for (int aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
   {
     aParticle = aParticles.GetParticle(aPartIdx);
-    for (Standard_Integer aDimIdx = 1; aDimIdx <= myN; ++aDimIdx)
+    for (int aDimIdx = 1; aDimIdx <= myN; ++aDimIdx)
     {
-      const Standard_Real aKsi         = aRandom.NextReal();
+      const double aKsi         = aRandom.NextReal();
       aParticle->Velocity[aDimIdx - 1] = mySteps(aDimIdx) * (aKsi - 0.5) * 2.0;
     }
   }
 
   aParticle = aParticles.GetBestParticle();
-  for (Standard_Integer aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+  for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
     aBestGlobalPosition(aDimIdx + 1) = aParticle->Position[aDimIdx];
-  Standard_Real aBestGlobalDistance = aParticle->Distance;
+  double aBestGlobalDistance = aParticle->Distance;
 
   // This velocity is used for detecting stagnation state.
   math_Vector aTerminationVelocity(1, myN);
@@ -160,22 +160,22 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
   math_Vector aMinimalVelocity(1, myN);
 
   // Run PSO iterations
-  for (Standard_Integer aStep = 1; aStep < myNbIter; ++aStep)
+  for (int aStep = 1; aStep < myNbIter; ++aStep)
   {
     aMinimalVelocity.Init(RealLast());
 
-    for (Standard_Integer aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
+    for (int aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
     {
-      const Standard_Real aKsi1 = aRandom.NextReal();
-      const Standard_Real aKsi2 = aRandom.NextReal();
+      const double aKsi1 = aRandom.NextReal();
+      const double aKsi2 = aRandom.NextReal();
 
       aParticle = aParticles.GetParticle(aPartIdx);
 
-      const Standard_Real aRetentWeight = 0.72900;
-      const Standard_Real aPersonWeight = 1.49445;
-      const Standard_Real aSocialWeight = 1.49445;
+      const double aRetentWeight = 0.72900;
+      const double aPersonWeight = 1.49445;
+      const double aSocialWeight = 1.49445;
 
-      for (Standard_Integer aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+      for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
       {
         aParticle->Velocity[aDimIdx] =
           aParticle->Velocity[aDimIdx] * aRetentWeight
@@ -198,24 +198,24 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
       if (aParticle->Distance < aParticle->BestDistance)
       {
         aParticle->BestDistance = aParticle->Distance;
-        for (Standard_Integer aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+        for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
           aParticle->BestPosition[aDimIdx] = aParticle->Position[aDimIdx];
 
         if (aParticle->Distance < aBestGlobalDistance)
         {
           aBestGlobalDistance = aParticle->Distance;
-          for (Standard_Integer aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+          for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
             aBestGlobalPosition(aDimIdx + 1) = aParticle->Position[aDimIdx];
         }
       }
     }
 
-    Standard_Boolean isTerminalVelocityReached = Standard_True;
-    for (Standard_Integer aDimIdx = 1; aDimIdx <= myN; ++aDimIdx)
+    bool isTerminalVelocityReached = true;
+    for (int aDimIdx = 1; aDimIdx <= myN; ++aDimIdx)
     {
       if (aMinimalVelocity(aDimIdx) > aTerminationVelocity(aDimIdx))
       {
-        isTerminalVelocityReached = Standard_False;
+        isTerminalVelocityReached = false;
         break;
       }
     }
@@ -223,20 +223,20 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
     if (isTerminalVelocityReached)
     {
       // Minimum number of steps
-      const Standard_Integer aMinSteps = 16;
+      const int aMinSteps = 16;
 
       if (aStep > aMinSteps)
       {
         break;
       }
 
-      for (Standard_Integer aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
+      for (int aPartIdx = 1; aPartIdx <= myNbParticles; ++aPartIdx)
       {
-        const Standard_Real aKsi = aRandom.NextReal();
+        const double aKsi = aRandom.NextReal();
 
         aParticle = aParticles.GetParticle(aPartIdx);
 
-        for (Standard_Integer aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
+        for (int aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
         {
           if (aParticle->Position[aDimIdx] == aMinUV(aDimIdx + 1)
               || aParticle->Position[aDimIdx] == aMaxUV(aDimIdx + 1))

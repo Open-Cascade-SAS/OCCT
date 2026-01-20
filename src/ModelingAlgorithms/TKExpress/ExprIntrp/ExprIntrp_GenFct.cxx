@@ -24,21 +24,21 @@ IMPLEMENT_STANDARD_RTTIEXT(ExprIntrp_GenFct, ExprIntrp_Generator)
 
 ExprIntrp_GenFct::ExprIntrp_GenFct()
 {
-  done = Standard_False;
+  done = false;
 }
 
-Handle(ExprIntrp_GenFct) ExprIntrp_GenFct::Create()
+occ::handle<ExprIntrp_GenFct> ExprIntrp_GenFct::Create()
 {
   return new ExprIntrp_GenFct();
 }
 
 void ExprIntrp_GenFct::Process(const TCollection_AsciiString& str)
 {
-  Handle(ExprIntrp_GenFct) me = this;
+  occ::handle<ExprIntrp_GenFct> me = this;
   done                        = ExprIntrp::Parse(me, str);
 }
 
-Standard_Boolean ExprIntrp_GenFct::IsDone() const
+bool ExprIntrp_GenFct::IsDone() const
 {
   return done;
 }

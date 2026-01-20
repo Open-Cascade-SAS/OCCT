@@ -20,10 +20,10 @@
 
 RWStepBasic_RWLocalTime::RWStepBasic_RWLocalTime() {}
 
-void RWStepBasic_RWLocalTime::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                       const Standard_Integer                 num,
-                                       Handle(Interface_Check)&               ach,
-                                       const Handle(StepBasic_LocalTime)&     ent) const
+void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                       const int                 num,
+                                       occ::handle<Interface_Check>&               ach,
+                                       const occ::handle<StepBasic_LocalTime>&     ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,44 +33,44 @@ void RWStepBasic_RWLocalTime::ReadStep(const Handle(StepData_StepReaderData)& da
 
   // --- own field : hourComponent ---
 
-  Standard_Integer aHourComponent;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aHourComponent;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "hour_component", ach, aHourComponent);
 
   // --- own field : minuteComponent ---
 
-  Standard_Integer aMinuteComponent;
-  Standard_Boolean hasAminuteComponent = Standard_True;
+  int aMinuteComponent;
+  bool hasAminuteComponent = true;
   if (data->IsParamDefined(num, 2))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadInteger(num, 2, "minute_component", ach, aMinuteComponent);
   }
   else
   {
-    hasAminuteComponent = Standard_False;
+    hasAminuteComponent = false;
     aMinuteComponent    = 0;
   }
 
   // --- own field : secondComponent ---
 
-  Standard_Real    aSecondComponent;
-  Standard_Boolean hasAsecondComponent = Standard_True;
+  double    aSecondComponent;
+  bool hasAsecondComponent = true;
   if (data->IsParamDefined(num, 3))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat3 =` not needed
     data->ReadReal(num, 3, "second_component", ach, aSecondComponent);
   }
   else
   {
-    hasAsecondComponent = Standard_False;
+    hasAsecondComponent = false;
     aSecondComponent    = 0.;
   }
 
   // --- own field : zone ---
 
-  Handle(StepBasic_CoordinatedUniversalTimeOffset) aZone;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<StepBasic_CoordinatedUniversalTimeOffset> aZone;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadEntity(num,
                    4,
                    "zone",
@@ -89,7 +89,7 @@ void RWStepBasic_RWLocalTime::ReadStep(const Handle(StepData_StepReaderData)& da
 }
 
 void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
-                                        const Handle(StepBasic_LocalTime)& ent) const
+                                        const occ::handle<StepBasic_LocalTime>& ent) const
 {
 
   // --- own field : hourComponent ---
@@ -98,7 +98,7 @@ void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
 
   // --- own field : minuteComponent ---
 
-  Standard_Boolean hasAminuteComponent = ent->HasMinuteComponent();
+  bool hasAminuteComponent = ent->HasMinuteComponent();
   if (hasAminuteComponent)
   {
     SW.Send(ent->MinuteComponent());
@@ -110,7 +110,7 @@ void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
 
   // --- own field : secondComponent ---
 
-  Standard_Boolean hasAsecondComponent = ent->HasSecondComponent();
+  bool hasAsecondComponent = ent->HasSecondComponent();
   if (hasAsecondComponent)
   {
     SW.Send(ent->SecondComponent());
@@ -125,7 +125,7 @@ void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
   SW.Send(ent->Zone());
 }
 
-void RWStepBasic_RWLocalTime::Share(const Handle(StepBasic_LocalTime)& ent,
+void RWStepBasic_RWLocalTime::Share(const occ::handle<StepBasic_LocalTime>& ent,
                                     Interface_EntityIterator&          iter) const
 {
 

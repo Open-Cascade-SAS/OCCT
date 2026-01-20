@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepGeom_Curve.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RollingCurvePair, StepKinematics_PlanarCurvePair)
-
 //! Representation of STEP entity RollingCurvePair
 class StepKinematics_RollingCurvePair : public StepKinematics_PlanarCurvePair
 {

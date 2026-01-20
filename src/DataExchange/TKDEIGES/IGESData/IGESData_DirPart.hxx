@@ -33,61 +33,61 @@ public:
   Standard_EXPORT IGESData_DirPart();
 
   //! fills DirPart with consistent data read from file
-  Standard_EXPORT void Init(const Standard_Integer i1,
-                            const Standard_Integer i2,
-                            const Standard_Integer i3,
-                            const Standard_Integer i4,
-                            const Standard_Integer i5,
-                            const Standard_Integer i6,
-                            const Standard_Integer i7,
-                            const Standard_Integer i8,
-                            const Standard_Integer i9,
-                            const Standard_Integer i19,
-                            const Standard_Integer i11,
-                            const Standard_Integer i12,
-                            const Standard_Integer i13,
-                            const Standard_Integer i14,
-                            const Standard_Integer i15,
-                            const Standard_Integer i16,
-                            const Standard_Integer i17,
-                            const Standard_CString res1,
-                            const Standard_CString res2,
-                            const Standard_CString label,
-                            const Standard_CString subscript);
+  Standard_EXPORT void Init(const int i1,
+                            const int i2,
+                            const int i3,
+                            const int i4,
+                            const int i5,
+                            const int i6,
+                            const int i7,
+                            const int i8,
+                            const int i9,
+                            const int i19,
+                            const int i11,
+                            const int i12,
+                            const int i13,
+                            const int i14,
+                            const int i15,
+                            const int i16,
+                            const int i17,
+                            const char* const res1,
+                            const char* const res2,
+                            const char* const label,
+                            const char* const subscript);
 
   //! returns values recorded in DirPart
   //! (content of cstrings are modified)
-  Standard_EXPORT void Values(Standard_Integer&      i1,
-                              Standard_Integer&      i2,
-                              Standard_Integer&      i3,
-                              Standard_Integer&      i4,
-                              Standard_Integer&      i5,
-                              Standard_Integer&      i6,
-                              Standard_Integer&      i7,
-                              Standard_Integer&      i8,
-                              Standard_Integer&      i9,
-                              Standard_Integer&      i19,
-                              Standard_Integer&      i11,
-                              Standard_Integer&      i12,
-                              Standard_Integer&      i13,
-                              Standard_Integer&      i14,
-                              Standard_Integer&      i15,
-                              Standard_Integer&      i16,
-                              Standard_Integer&      i17,
-                              const Standard_CString res1,
-                              const Standard_CString res2,
-                              const Standard_CString label,
-                              const Standard_CString subscript) const;
+  Standard_EXPORT void Values(int&      i1,
+                              int&      i2,
+                              int&      i3,
+                              int&      i4,
+                              int&      i5,
+                              int&      i6,
+                              int&      i7,
+                              int&      i8,
+                              int&      i9,
+                              int&      i19,
+                              int&      i11,
+                              int&      i12,
+                              int&      i13,
+                              int&      i14,
+                              int&      i15,
+                              int&      i16,
+                              int&      i17,
+                              const char* const res1,
+                              const char* const res2,
+                              const char* const label,
+                              const char* const subscript) const;
 
   //! returns "type" and "form" info, used to recognize the entity
   Standard_EXPORT IGESData_IGESType Type() const;
 
 private:
-  Standard_Integer   thevals[17];
-  Standard_Character theres1[10];
-  Standard_Character theres2[10];
-  Standard_Character thelabl[10];
-  Standard_Character thesubs[10];
+  int   thevals[17];
+  char theres1[10];
+  char theres2[10];
+  char thelabl[10];
+  char thesubs[10];
 };
 
 #endif // _IGESData_DirPart_HeaderFile

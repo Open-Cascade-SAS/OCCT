@@ -65,8 +65,8 @@ void ProjLib_Cylinder::Init(const gp_Cylinder& Cyl)
 {
   myType       = GeomAbs_OtherCurve;
   myCylinder   = Cyl;
-  myIsPeriodic = Standard_False;
-  isDone       = Standard_False;
+  myIsPeriodic = false;
+  isDone       = false;
 }
 
 //=======================================================================
@@ -78,10 +78,10 @@ void ProjLib_Cylinder::Init(const gp_Cylinder& Cyl)
 static gp_Pnt2d EvalPnt2d(const gp_Pnt& P, const gp_Cylinder& Cy)
 {
   gp_Vec        OP(Cy.Location(), P);
-  Standard_Real X = OP.Dot(gp_Vec(Cy.Position().XDirection()));
-  Standard_Real Y = OP.Dot(gp_Vec(Cy.Position().YDirection()));
-  Standard_Real Z = OP.Dot(gp_Vec(Cy.Position().Direction()));
-  Standard_Real U;
+  double X = OP.Dot(gp_Vec(Cy.Position().XDirection()));
+  double Y = OP.Dot(gp_Vec(Cy.Position().YDirection()));
+  double Z = OP.Dot(gp_Vec(Cy.Position().Direction()));
+  double U;
 
   if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
@@ -111,12 +111,12 @@ void ProjLib_Cylinder::Project(const gp_Lin& L)
   {
     P2d.SetX(P2d.X() + 2 * M_PI);
   }
-  Standard_Real Signe = L.Direction().Dot(myCylinder.Position().Direction());
+  double Signe = L.Direction().Dot(myCylinder.Position().Direction());
   Signe               = (Signe > 0.) ? 1. : -1.;
   gp_Dir2d D2d(0., Signe);
 
   myLin  = gp_Lin2d(P2d, D2d);
-  isDone = Standard_True;
+  isDone = true;
 }
 
 //=================================================================================================
@@ -135,10 +135,10 @@ void ProjLib_Cylinder::Project(const gp_Circ& C)
 
   gp_Dir ZCyl = aCylPos.XDirection().Crossed(aCylPos.YDirection());
 
-  Standard_Real U = aCylPos.XDirection().AngleWithRef(aCircPos.XDirection(), ZCyl);
+  double U = aCylPos.XDirection().AngleWithRef(aCircPos.XDirection(), ZCyl);
 
   gp_Vec        OP(myCylinder.Location(), C.Location());
-  Standard_Real V = OP.Dot(gp_Vec(aCylPos.Direction()));
+  double V = OP.Dot(gp_Vec(aCylPos.Direction()));
 
   gp_Pnt2d P2d1(U, V);
   gp_Dir2d D2d;
@@ -148,7 +148,7 @@ void ProjLib_Cylinder::Project(const gp_Circ& C)
     D2d.SetCoord(-1., 0.);
 
   myLin  = gp_Lin2d(P2d1, D2d);
-  isDone = Standard_True;
+  isDone = true;
 }
 
 //=================================================================================================

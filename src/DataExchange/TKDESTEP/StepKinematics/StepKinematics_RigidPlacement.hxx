@@ -40,13 +40,13 @@ public:
   //! Recognizes a kind of RigidPlacement select type
   //! -- 1 -> Axis2Placement3d
   //! -- 2 -> SuParameters
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Axis2Placement3d (or Null if another type)
-  Standard_EXPORT Handle(StepGeom_Axis2Placement3d) Axis2Placement3d() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> Axis2Placement3d() const;
 
   //! Returns Value as SuParameters (or Null if another type)
-  Standard_EXPORT Handle(StepGeom_SuParameters) SuParameters() const;
+  Standard_EXPORT occ::handle<StepGeom_SuParameters> SuParameters() const;
 };
 #endif // _StepKinematics_RigidPlacement_HeaderFile

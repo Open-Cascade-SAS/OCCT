@@ -29,7 +29,7 @@ public:
 public:
   //! Empty constructor.
   OpenGl_AspectsTextureSet()
-      : myIsTextureReady(Standard_False)
+      : myIsTextureReady(false)
   {
   }
 
@@ -40,10 +40,10 @@ public:
   void Invalidate() { myIsTextureReady = false; }
 
   //! Return textures array.
-  const Handle(OpenGl_TextureSet)& TextureSet(const Handle(OpenGl_Context)&     theCtx,
-                                              const Handle(Graphic3d_Aspects)&  theAspect,
-                                              const Handle(OpenGl_PointSprite)& theSprite,
-                                              const Handle(OpenGl_PointSprite)& theSpriteA,
+  const occ::handle<OpenGl_TextureSet>& TextureSet(const occ::handle<OpenGl_Context>&     theCtx,
+                                              const occ::handle<Graphic3d_Aspects>&  theAspect,
+                                              const occ::handle<OpenGl_PointSprite>& theSprite,
+                                              const occ::handle<OpenGl_PointSprite>& theSpriteA,
                                               bool                              theToHighlight)
   {
     if (!myIsTextureReady)
@@ -55,21 +55,21 @@ public:
   }
 
   //! Update texture resource up-to-date state.
-  Standard_EXPORT void UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect);
+  Standard_EXPORT void UpdateRediness(const occ::handle<Graphic3d_Aspects>& theAspect);
 
   //! Release texture resource.
   Standard_EXPORT void Release(OpenGl_Context* theCtx);
 
 private:
   //! Build texture resource.
-  Standard_EXPORT void build(const Handle(OpenGl_Context)&     theCtx,
-                             const Handle(Graphic3d_Aspects)&  theAspect,
-                             const Handle(OpenGl_PointSprite)& theSprite,
-                             const Handle(OpenGl_PointSprite)& theSpriteA);
+  Standard_EXPORT void build(const occ::handle<OpenGl_Context>&     theCtx,
+                             const occ::handle<Graphic3d_Aspects>&  theAspect,
+                             const occ::handle<OpenGl_PointSprite>& theSprite,
+                             const occ::handle<OpenGl_PointSprite>& theSpriteA);
 
 private:
-  Handle(OpenGl_TextureSet) myTextures[2];
-  Standard_Boolean          myIsTextureReady;
+  occ::handle<OpenGl_TextureSet> myTextures[2];
+  bool          myIsTextureReady;
 };
 
 #endif // _OpenGl_AspectsTextureSet_Header

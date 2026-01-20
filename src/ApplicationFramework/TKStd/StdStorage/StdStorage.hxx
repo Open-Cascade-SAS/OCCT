@@ -49,22 +49,22 @@ public:
   //! browsed in order to extract the root objects from the container.
   //! Note: - theData object will be created if it is null or cleared otherwise.
   Standard_EXPORT static Storage_Error Read(const TCollection_AsciiString& theFileName,
-                                            Handle(StdStorage_Data)&       theData);
+                                            occ::handle<StdStorage_Data>&       theData);
 
   //! Returns the data read from the container defined by theDriver.
   //! The storage format is compartible with legacy persistent one.
   //! These data are aggregated in a StdStorage_Data object which may be
   //! browsed in order to extract the root objects from the container.
   //! Note: - theData object will be created if it is null or cleared otherwise.
-  Standard_EXPORT static Storage_Error Read(const Handle(Storage_BaseDriver)& theDriver,
-                                            Handle(StdStorage_Data)&          theData);
+  Standard_EXPORT static Storage_Error Read(const occ::handle<Storage_BaseDriver>& theDriver,
+                                            occ::handle<StdStorage_Data>&          theData);
 
   //! Writes the data aggregated in theData object into the container defined by
   //! theDriver. The storage format is compartible with legacy persistent one.
   //! Note: - theData may aggregate several root objects to be stored together.
   //!       - creation date specified in the storage header will be overwritten.
-  Standard_EXPORT static Storage_Error Write(const Handle(Storage_BaseDriver)& theDriver,
-                                             const Handle(StdStorage_Data)&    theData);
+  Standard_EXPORT static Storage_Error Write(const occ::handle<Storage_BaseDriver>& theDriver,
+                                             const occ::handle<StdStorage_Data>&    theData);
 };
 
 #endif // _StdStorage_HeaderFile

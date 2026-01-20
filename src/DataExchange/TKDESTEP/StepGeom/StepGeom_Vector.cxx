@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Vector, StepGeom_GeometricRepresentationItem
 
 StepGeom_Vector::StepGeom_Vector() {}
 
-void StepGeom_Vector::Init(const Handle(TCollection_HAsciiString)& aName,
-                           const Handle(StepGeom_Direction)&       aOrientation,
-                           const Standard_Real                     aMagnitude)
+void StepGeom_Vector::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                           const occ::handle<StepGeom_Direction>&       aOrientation,
+                           const double                     aMagnitude)
 {
   // --- classe own fields ---
   orientation = aOrientation;
@@ -30,22 +30,22 @@ void StepGeom_Vector::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_Vector::SetOrientation(const Handle(StepGeom_Direction)& aOrientation)
+void StepGeom_Vector::SetOrientation(const occ::handle<StepGeom_Direction>& aOrientation)
 {
   orientation = aOrientation;
 }
 
-Handle(StepGeom_Direction) StepGeom_Vector::Orientation() const
+occ::handle<StepGeom_Direction> StepGeom_Vector::Orientation() const
 {
   return orientation;
 }
 
-void StepGeom_Vector::SetMagnitude(const Standard_Real aMagnitude)
+void StepGeom_Vector::SetMagnitude(const double aMagnitude)
 {
   magnitude = aMagnitude;
 }
 
-Standard_Real StepGeom_Vector::Magnitude() const
+double StepGeom_Vector::Magnitude() const
 {
   return magnitude;
 }

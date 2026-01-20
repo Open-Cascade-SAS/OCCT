@@ -31,10 +31,10 @@ RWStepKinematics_RWRotationAboutDirection::RWStepKinematics_RWRotationAboutDirec
 //=================================================================================================
 
 void RWStepKinematics_RWRotationAboutDirection::ReadStep(
-  const Handle(StepData_StepReaderData)&               theData,
-  const Standard_Integer                               theNum,
-  Handle(Interface_Check)&                             theArch,
-  const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&               theData,
+  const int                               theNum,
+  occ::handle<Interface_Check>&                             theArch,
+  const occ::handle<StepKinematics_RotationAboutDirection>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "rotation_about_direction"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWRotationAboutDirection::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Own fields of RotationAboutDirection
 
-  Handle(StepGeom_Direction) aDirectionOfAxis;
+  occ::handle<StepGeom_Direction> aDirectionOfAxis;
   theData->ReadEntity(theNum,
                       2,
                       "direction_of_axis",
@@ -55,7 +55,7 @@ void RWStepKinematics_RWRotationAboutDirection::ReadStep(
                       STANDARD_TYPE(StepGeom_Direction),
                       aDirectionOfAxis);
 
-  Standard_Real aRotationAngle;
+  double aRotationAngle;
   theData->ReadReal(theNum, 3, "rotation_angle", theArch, aRotationAngle);
 
   // Initialize entity
@@ -66,7 +66,7 @@ void RWStepKinematics_RWRotationAboutDirection::ReadStep(
 
 void RWStepKinematics_RWRotationAboutDirection::WriteStep(
   StepData_StepWriter&                                 theSW,
-  const Handle(StepKinematics_RotationAboutDirection)& theEnt) const
+  const occ::handle<StepKinematics_RotationAboutDirection>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -83,7 +83,7 @@ void RWStepKinematics_RWRotationAboutDirection::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRotationAboutDirection::Share(
-  const Handle(StepKinematics_RotationAboutDirection)& theEnt,
+  const occ::handle<StepKinematics_RotationAboutDirection>& theEnt,
   Interface_EntityIterator&                            iter) const
 {
 

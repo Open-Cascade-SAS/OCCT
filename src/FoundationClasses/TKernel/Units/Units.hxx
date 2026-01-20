@@ -41,58 +41,58 @@ public:
   //! Defines the location of the file containing all the
   //! information useful in creating the dictionary of all
   //! the units known to the system.
-  Standard_EXPORT static void UnitsFile(const Standard_CString afile);
+  Standard_EXPORT static void UnitsFile(const char* const afile);
 
   //! Defines the location of the file containing the lexicon
   //! useful in manipulating composite units.
-  Standard_EXPORT static void LexiconFile(const Standard_CString afile);
+  Standard_EXPORT static void LexiconFile(const char* const afile);
 
   //! Returns a unique instance of the dictionary of units.
   //! If <amode> is True, then it forces the recomputation of
   //! the dictionary of units.
-  Standard_EXPORT static Handle(Units_UnitsDictionary) DictionaryOfUnits(
-    const Standard_Boolean amode = Standard_False);
+  Standard_EXPORT static occ::handle<Units_UnitsDictionary> DictionaryOfUnits(
+    const bool amode = false);
 
   //! Returns a unique quantity instance corresponding to <aquantity>.
-  Standard_EXPORT static Handle(Units_Quantity) Quantity(const Standard_CString aquantity);
+  Standard_EXPORT static occ::handle<Units_Quantity> Quantity(const char* const aquantity);
 
   //! Returns the first quantity string founded from the unit <aUnit>.
-  Standard_EXPORT static Standard_CString FirstQuantity(const Standard_CString aunit);
+  Standard_EXPORT static const char* FirstQuantity(const char* const aunit);
 
   //! Returns a unique instance of the Units_Lexicon.
   //! If <amode> is True, it forces the recomputation of
   //! the dictionary of units, and by consequence the
   //! completion of the Units_Lexicon.
-  Standard_EXPORT static Handle(Units_Lexicon) LexiconUnits(
-    const Standard_Boolean amode = Standard_True);
+  Standard_EXPORT static occ::handle<Units_Lexicon> LexiconUnits(
+    const bool amode = true);
 
   //! Return a unique instance of LexiconFormula.
-  Standard_EXPORT static Handle(Units_Lexicon) LexiconFormula();
+  Standard_EXPORT static occ::handle<Units_Lexicon> LexiconFormula();
 
   //! Returns always the same instance of Dimensions.
-  Standard_EXPORT static Handle(Units_Dimensions) NullDimensions();
+  Standard_EXPORT static occ::handle<Units_Dimensions> NullDimensions();
 
   //! Converts <avalue> expressed in <afirstunit> into the <asecondunit>.
-  Standard_EXPORT static Standard_Real Convert(const Standard_Real    avalue,
-                                               const Standard_CString afirstunit,
-                                               const Standard_CString asecondunit);
+  Standard_EXPORT static double Convert(const double    avalue,
+                                               const char* const afirstunit,
+                                               const char* const asecondunit);
 
-  Standard_EXPORT static Standard_Real ToSI(const Standard_Real    aData,
-                                            const Standard_CString aUnit);
+  Standard_EXPORT static double ToSI(const double    aData,
+                                            const char* const aUnit);
 
-  Standard_EXPORT static Standard_Real ToSI(const Standard_Real       aData,
-                                            const Standard_CString    aUnit,
-                                            Handle(Units_Dimensions)& aDim);
+  Standard_EXPORT static double ToSI(const double       aData,
+                                            const char* const    aUnit,
+                                            occ::handle<Units_Dimensions>& aDim);
 
-  Standard_EXPORT static Standard_Real FromSI(const Standard_Real    aData,
-                                              const Standard_CString aUnit);
+  Standard_EXPORT static double FromSI(const double    aData,
+                                              const char* const aUnit);
 
-  Standard_EXPORT static Standard_Real FromSI(const Standard_Real       aData,
-                                              const Standard_CString    aUnit,
-                                              Handle(Units_Dimensions)& aDim);
+  Standard_EXPORT static double FromSI(const double       aData,
+                                              const char* const    aUnit,
+                                              occ::handle<Units_Dimensions>& aDim);
 
   //! return the dimension associated to the Type
-  Standard_EXPORT static Handle(Units_Dimensions) Dimensions(const Standard_CString aType);
+  Standard_EXPORT static occ::handle<Units_Dimensions> Dimensions(const char* const aType);
 };
 
 #endif // _Units_HeaderFile

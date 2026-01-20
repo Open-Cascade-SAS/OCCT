@@ -27,9 +27,9 @@
 #include <TopExp.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 
-static const Standard_Real Probing_Start = 0.123;
-static const Standard_Real Probing_End   = 0.7;
-static const Standard_Real Probing_Step  = 0.2111;
+static const double Probing_Start = 0.123;
+static const double Probing_End   = 0.7;
+static const double Probing_Step  = 0.2111;
 
 //=================================================================================================
 
@@ -38,7 +38,7 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F)
       myCurEdgeInd(1),
       myCurEdgePar(Probing_Start),
       myMaxTolerance(0.1),
-      myUseBndBox(Standard_False),
+      myUseBndBox(false),
       myUMin(Precision::Infinite()),
       myUMax(-Precision::Infinite()),
       myVMin(Precision::Infinite()),
@@ -53,7 +53,7 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F)
 void BRepClass_FaceExplorer::ComputeFaceBounds()
 {
   TopLoc_Location             aLocation;
-  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(myFace, aLocation);
+  const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(myFace, aLocation);
   aSurface->Bounds(myUMin, myUMax, myVMin, myVMax);
   if (Precision::IsInfinite(myUMin) || Precision::IsInfinite(myUMax)
       || Precision::IsInfinite(myVMin) || Precision::IsInfinite(myVMax))
@@ -64,7 +64,7 @@ void BRepClass_FaceExplorer::ComputeFaceBounds()
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
+bool BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
 {
   if (myUMin > myUMax)
   {
@@ -74,41 +74,41 @@ Standard_Boolean BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
   if (Precision::IsInfinite(myUMin) || Precision::IsInfinite(myUMax)
       || Precision::IsInfinite(myVMin) || Precision::IsInfinite(myVMax))
   {
-    return Standard_True;
+    return true;
   }
 
   gp_Pnt2d      aCenterPnt((myUMin + myUMax) / 2, (myVMin + myVMax) / 2);
-  Standard_Real aDistance = aCenterPnt.Distance(thePoint);
+  double aDistance = aCenterPnt.Distance(thePoint);
   if (Precision::IsInfinite(aDistance))
   {
     thePoint.SetCoord(myUMin - (myUMax - myUMin), myVMin - (myVMax - myVMin));
-    return Standard_False;
+    return false;
   }
   else
   {
-    Standard_Real anEpsilon = Epsilon(aDistance);
+    double anEpsilon = Epsilon(aDistance);
     if (anEpsilon > std::max(myUMax - myUMin, myVMax - myVMin))
     {
       gp_Vec2d aLinVec(aCenterPnt, thePoint);
       gp_Dir2d aLinDir(aLinVec);
       thePoint = aCenterPnt.XY() + aLinDir.XY() * (2. * anEpsilon);
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::Reject(const gp_Pnt2d&) const
+bool BRepClass_FaceExplorer::Reject(const gp_Pnt2d&) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L, Standard_Real& Par)
+bool BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
 {
   myCurEdgeInd = 1;
   myCurEdgePar = Probing_Start;
@@ -118,18 +118,18 @@ Standard_Boolean BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L,
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
+bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
                                                       gp_Lin2d&       L,
-                                                      Standard_Real&  Par)
+                                                      double&  Par)
 {
   TopExp_Explorer         anExpF(myFace, TopAbs_EDGE);
-  Standard_Integer        i;
-  Standard_Real           aFPar;
-  Standard_Real           aLPar;
-  Handle(Geom2d_Curve)    aC2d;
-  constexpr Standard_Real aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
+  int        i;
+  double           aFPar;
+  double           aLPar;
+  occ::handle<Geom2d_Curve>    aC2d;
+  constexpr double aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
   gp_Pnt2d                aPOnC;
-  Standard_Real           aParamIn;
+  double           aParamIn;
 
   for (i = 1; anExpF.More(); anExpF.Next(), i++)
   {
@@ -176,16 +176,16 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
             gp_Vec2d aLinVec(P, aPOnC);
             gp_Dir2d aLinDir(aLinVec);
 
-            Standard_Real aTanMod = aTanVec.SquareMagnitude();
+            double aTanMod = aTanVec.SquareMagnitude();
             if (aTanMod < aTolParConf2)
               continue;
             aTanVec /= std::sqrt(aTanMod);
-            Standard_Real       aSinA        = aTanVec.Crossed(aLinDir.XY());
-            const Standard_Real SmallAngle   = 0.001;
-            Standard_Boolean    isSmallAngle = Standard_False;
+            double       aSinA        = aTanVec.Crossed(aLinDir.XY());
+            const double SmallAngle   = 0.001;
+            bool    isSmallAngle = false;
             if (std::abs(aSinA) < SmallAngle)
             {
-              isSmallAngle = Standard_True;
+              isSmallAngle = true;
               // The line from the input point P to the current point on edge
               // is tangent to the edge curve. This condition is bad for classification.
               // Therefore try to go to another point in the hope that there will be
@@ -215,9 +215,9 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
                   if (aProj.NbPoints() > 0)
                   {
                     gp_Pnt2d      aLPOnC   = aPOnC;
-                    Standard_Real aFDist   = P.SquareDistance(aFPOnC);
-                    Standard_Real aLDist   = P.SquareDistance(aLPOnC);
-                    Standard_Real aMinDist = aProj.LowerDistance();
+                    double aFDist   = P.SquareDistance(aFPOnC);
+                    double aLDist   = P.SquareDistance(aLPOnC);
+                    double aMinDist = aProj.LowerDistance();
                     aMinDist *= aMinDist;
                     aPOnC = aProj.NearestPoint();
                     if (aMinDist > aFDist)
@@ -253,7 +253,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
                 }
 
                 Par = std::sqrt(Par);
-                return Standard_True;
+                return true;
               }
             }
           }
@@ -270,7 +270,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
   Par = RealLast();
   L   = gp_Lin2d(P, gp_Dir2d(gp_Dir2d::D::X));
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -282,9 +282,9 @@ void BRepClass_FaceExplorer::InitWires()
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::RejectWire(const gp_Lin2d&, const Standard_Real) const
+bool BRepClass_FaceExplorer::RejectWire(const gp_Lin2d&, const double) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -298,9 +298,9 @@ void BRepClass_FaceExplorer::InitEdges()
 
 //=================================================================================================
 
-Standard_Boolean BRepClass_FaceExplorer::RejectEdge(const gp_Lin2d&, const Standard_Real) const
+bool BRepClass_FaceExplorer::RejectEdge(const gp_Lin2d&, const double) const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

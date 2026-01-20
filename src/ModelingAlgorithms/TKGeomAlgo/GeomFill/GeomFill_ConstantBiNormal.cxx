@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_ConstantBiNormal, GeomFill_TrihedronLaw)
 //=======================================================================
 static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 {
-  Standard_Real Norma  = F.Magnitude();
+  double Norma  = F.Magnitude();
   gp_Vec        Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
   return Result;
 }
@@ -44,7 +44,7 @@ static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 //=======================================================================
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
-  Standard_Real Norma = F.Magnitude();
+  double Norma = F.Magnitude();
   gp_Vec        Result =
     (D2F - 2 * DF * (F * DF) / (Norma * Norma)) / Norma
     - F
@@ -59,17 +59,17 @@ GeomFill_ConstantBiNormal::GeomFill_ConstantBiNormal(const gp_Dir& BiNormal)
   frenet = new GeomFill_Frenet();
 }
 
-Handle(GeomFill_TrihedronLaw) GeomFill_ConstantBiNormal::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_ConstantBiNormal::Copy() const
 {
-  Handle(GeomFill_TrihedronLaw) copy = new GeomFill_ConstantBiNormal(gp_Dir(BN));
+  occ::handle<GeomFill_TrihedronLaw> copy = new GeomFill_ConstantBiNormal(gp_Dir(BN));
   if (!myCurve.IsNull())
     copy->SetCurve(myCurve);
   return copy;
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_ConstantBiNormal::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
-  Standard_Boolean isOK = Standard_False;
+  bool isOK = false;
   GeomFill_TrihedronLaw::SetCurve(C);
   if (!C.IsNull())
   {
@@ -78,7 +78,7 @@ Standard_Boolean GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_Curv
   return isOK;
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::D0(const Standard_Real Param,
+bool GeomFill_ConstantBiNormal::D0(const double Param,
                                                gp_Vec&             Tangent,
                                                gp_Vec&             Normal,
                                                gp_Vec&             BiNormal)
@@ -103,10 +103,10 @@ Standard_Boolean GeomFill_ConstantBiNormal::D0(const Standard_Real Param,
     D2(Param, Tangent, DTangent, D2Tangent,
        Normal, DNormal, D2Normal, BiNormal, DBiNormal, D2BiNormal);
   */
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::D1(const Standard_Real Param,
+bool GeomFill_ConstantBiNormal::D1(const double Param,
                                                gp_Vec&             Tangent,
                                                gp_Vec&             DTangent,
                                                gp_Vec&             Normal,
@@ -139,7 +139,7 @@ Standard_Boolean GeomFill_ConstantBiNormal::D1(const Standard_Real Param,
     DNormal = BiNormal.Crossed(DTangent);
   }
   /*test
-    Standard_Real h = 1.e-10;
+    double h = 1.e-10;
     gp_Vec cTangent, cNormal, cBiNormal, Tangent_, Normal_, BiNormal_;
     D0(Param, cTangent, cNormal, cBiNormal);
     D0(Param + h, Tangent_, Normal_, BiNormal_);
@@ -154,10 +154,10 @@ Standard_Boolean GeomFill_ConstantBiNormal::D1(const Standard_Real Param,
     "<<DBiNormal.Z()<<")"<<std::endl; std::cout<<"CBiNormal = ("<<cBiNormal.X()<<",
     "<<cBiNormal.Y()<<", "<<cBiNormal.Z()<<")"<<std::endl;
   */
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::D2(const Standard_Real Param,
+bool GeomFill_ConstantBiNormal::D2(const double Param,
                                                gp_Vec&             Tangent,
                                                gp_Vec&             DTangent,
                                                gp_Vec&             D2Tangent,
@@ -219,15 +219,15 @@ Standard_Boolean GeomFill_ConstantBiNormal::D2(const Standard_Real Param,
     "<<DBiNormal.Z()<<")"<<std::endl; std::cout<<"D2BiNormal = ("<<D2BiNormal.X()<<",
     "<<D2BiNormal.Y()<<", "<<D2BiNormal.Z()<<")"<<std::endl;
   */
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer GeomFill_ConstantBiNormal::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_ConstantBiNormal::NbIntervals(const GeomAbs_Shape S) const
 {
   return frenet->NbIntervals(S);
 }
 
-void GeomFill_ConstantBiNormal::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_ConstantBiNormal::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   frenet->Intervals(T, S);
 }
@@ -248,12 +248,12 @@ void GeomFill_ConstantBiNormal::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal,
   }
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::IsConstant() const
+bool GeomFill_ConstantBiNormal::IsConstant() const
 {
   return frenet->IsConstant();
 }
 
-Standard_Boolean GeomFill_ConstantBiNormal::IsOnlyBy3dCurve() const
+bool GeomFill_ConstantBiNormal::IsOnlyBy3dCurve() const
 {
   GeomAbs_CurveType TheType = myCurve->GetType();
   gp_Ax1            TheAxe;
@@ -282,7 +282,7 @@ Standard_Boolean GeomFill_ConstantBiNormal::IsOnlyBy3dCurve() const
       return V.IsNormal(BN, Precision::Angular());
     }
     default:
-      return Standard_False; // pas de risques
+      return false; // pas de risques
   }
 
   // La normale du plan de la courbe est il // a la BiNormale ?

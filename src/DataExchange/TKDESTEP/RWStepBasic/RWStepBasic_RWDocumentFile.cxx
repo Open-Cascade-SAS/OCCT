@@ -29,10 +29,10 @@ RWStepBasic_RWDocumentFile::RWStepBasic_RWDocumentFile() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWDocumentFile::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepBasic_DocumentFile)&  ent) const
+void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepBasic_DocumentFile>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "document_file"))
@@ -40,24 +40,24 @@ void RWStepBasic_RWDocumentFile::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of Document
 
-  Handle(TCollection_HAsciiString) aDocument_Id;
+  occ::handle<TCollection_HAsciiString> aDocument_Id;
   data->ReadString(num, 1, "document.id", ach, aDocument_Id);
 
-  Handle(TCollection_HAsciiString) aDocument_Name;
+  occ::handle<TCollection_HAsciiString> aDocument_Name;
   data->ReadString(num, 2, "document.name", ach, aDocument_Name);
 
-  Handle(TCollection_HAsciiString) aDocument_Description;
-  Standard_Boolean                 hasDocument_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDocument_Description;
+  bool                 hasDocument_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "document.description", ach, aDocument_Description);
   }
   else
   {
-    hasDocument_Description = Standard_False;
+    hasDocument_Description = false;
   }
 
-  Handle(StepBasic_DocumentType) aDocument_Kind;
+  occ::handle<StepBasic_DocumentType> aDocument_Kind;
   data->ReadEntity(num,
                    4,
                    "document.kind",
@@ -67,11 +67,11 @@ void RWStepBasic_RWDocumentFile::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of CharacterizedObject
 
-  Handle(TCollection_HAsciiString) aCharacterizedObject_Name;
+  occ::handle<TCollection_HAsciiString> aCharacterizedObject_Name;
   data->ReadString(num, 5, "characterized_object.name", ach, aCharacterizedObject_Name);
 
-  Handle(TCollection_HAsciiString) aCharacterizedObject_Description;
-  Standard_Boolean                 hasCharacterizedObject_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aCharacterizedObject_Description;
+  bool                 hasCharacterizedObject_Description = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num,
@@ -82,7 +82,7 @@ void RWStepBasic_RWDocumentFile::ReadStep(const Handle(StepData_StepReaderData)&
   }
   else
   {
-    hasCharacterizedObject_Description = Standard_False;
+    hasCharacterizedObject_Description = false;
   }
 
   // Initialize entity
@@ -99,7 +99,7 @@ void RWStepBasic_RWDocumentFile::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepBasic_DocumentFile)& ent) const
+                                           const occ::handle<StepBasic_DocumentFile>& ent) const
 {
 
   // Inherited fields of Document
@@ -131,7 +131,7 @@ void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepBasic_RWDocumentFile::Share(const Handle(StepBasic_DocumentFile)& ent,
+void RWStepBasic_RWDocumentFile::Share(const occ::handle<StepBasic_DocumentFile>& ent,
                                        Interface_EntityIterator&             iter) const
 {
 

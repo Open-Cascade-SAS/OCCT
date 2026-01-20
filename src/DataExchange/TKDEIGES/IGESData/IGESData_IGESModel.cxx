@@ -20,7 +20,7 @@
 #include <IGESData_IGESModel.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_Transient.hxx>
@@ -30,18 +30,18 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_IGESModel, Interface_InterfaceModel)
 
-static Standard_CString voidline = "";
+static const char* voidline = "";
 
 // Internal routine used for VerifyCheck
-void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
-                         Handle(Interface_Check)&                ach,
-                         const Standard_CString                  mess);
+void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
+                         occ::handle<Interface_Check>&                ach,
+                         const char* const                  mess);
 
 //=================================================================================================
 
 IGESData_IGESModel::IGESData_IGESModel()
 {
-  thestart = new TColStd_HSequenceOfHAsciiString();
+  thestart = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   //  thecheckstx = new Interface_Check;
   //  thechecksem = new Interface_Check;
 }
@@ -52,19 +52,19 @@ void IGESData_IGESModel::ClearHeader()
 {
   IGESData_GlobalSection newheader; // Un peu brutal, certes
   theheader = newheader;
-  thestart  = new TColStd_HSequenceOfHAsciiString();
+  thestart  = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
 }
 
 //=================================================================================================
 
-void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const Standard_Integer) const
+void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const int) const
 {
-  Standard_Integer ns = thestart->Length();
+  int ns = thestart->Length();
   S << "****    Dump of IGES Model , Start and Global Sections   ****" << std::endl;
   if (ns > 0)
   {
     S << "****    Start Section : " << ns << " Line(s)   ****\n";
-    for (Standard_Integer i = 1; i <= ns; i++)
+    for (int i = 1; i <= ns; i++)
       S << "[" << (i < 10 ? " " : "") << i << "]:" << thestart->Value(i)->ToCString() << std::endl;
   }
   S << "\n****    Global Section    ****\n";
@@ -79,7 +79,7 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const Standard_Integer)
   else
     S << "        [ 2]  Non Default End Mark  : " << emk;
   S << "\n";
-  Handle(TCollection_HAsciiString) str;
+  occ::handle<TCollection_HAsciiString> str;
   str = theheader.SendName();
   if (!str.IsNull())
     S << "[ 3]  Sender                : " << str->ToCString() << std::endl;
@@ -133,7 +133,7 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const Standard_Integer)
   str = theheader.CompanyName();
   if (!str.IsNull())
     S << "[22]  Company               : " << str->ToCString() << "\n";
-  Standard_Integer num = theheader.IGESVersion();
+  int num = theheader.IGESVersion();
   S << "[23]  IGES Version Number   : " << num
     << "   -> Name : " << IGESData_BasicEditor::IGESVersionName(num);
 
@@ -163,21 +163,21 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const Standard_Integer)
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfHAsciiString) IGESData_IGESModel::StartSection() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESData_IGESModel::StartSection() const
 {
   return thestart;
 }
 
 //=================================================================================================
 
-Standard_Integer IGESData_IGESModel::NbStartLines() const
+int IGESData_IGESModel::NbStartLines() const
 {
   return thestart->Length();
 }
 
 //=================================================================================================
 
-Standard_CString IGESData_IGESModel::StartLine(const Standard_Integer num) const
+const char* IGESData_IGESModel::StartLine(const int num) const
 {
   if (num > 0 && num <= thestart->Length())
     return thestart->Value(num)->ToCString();
@@ -191,27 +191,27 @@ void IGESData_IGESModel::ClearStartSection()
   thestart->Clear();
 }
 
-void IGESData_IGESModel::SetStartSection(const Handle(TColStd_HSequenceOfHAsciiString)& list,
-                                         const Standard_Boolean                         copy)
+void IGESData_IGESModel::SetStartSection(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+                                         const bool                         copy)
 {
   if (copy)
   {
-    thestart = new TColStd_HSequenceOfHAsciiString();
+    thestart = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     if (list.IsNull())
       return;
-    Standard_Integer i, nb = list->Length();
+    int i, nb = list->Length();
     for (i = 1; i <= nb; i++)
       thestart->Append(new TCollection_HAsciiString(list->Value(i)->ToCString()));
   }
   else if (list.IsNull())
-    thestart = new TColStd_HSequenceOfHAsciiString();
+    thestart = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   else
     thestart = list;
 }
 
 //=================================================================================================
 
-void IGESData_IGESModel::AddStartLine(const Standard_CString line, const Standard_Integer atnum)
+void IGESData_IGESModel::AddStartLine(const char* const line, const int atnum)
 {
   if (atnum <= 0 || atnum > thestart->Length())
     thestart->Append(new TCollection_HAsciiString(line));
@@ -228,54 +228,54 @@ void IGESData_IGESModel::SetGlobalSection(const IGESData_GlobalSection& header)
 
 //=================================================================================================
 
-Standard_Boolean IGESData_IGESModel::ApplyStatic(const Standard_CString param)
+bool IGESData_IGESModel::ApplyStatic(const char* const param)
 {
   if (param[0] == '\0')
   {
-    // Standard_Boolean ret = Standard_True; //szv#4:S4163:12Mar99 not needed
+    // bool ret = true; //szv#4:S4163:12Mar99 not needed
     ApplyStatic("receiver"); // szv#4:S4163:12Mar99 'ret =' not needed
     ApplyStatic("author");   // szv#4:S4163:12Mar99 'ret =' not needed
     ApplyStatic("company");  // szv#4:S4163:12Mar99 'ret =' not needed
-    return Standard_True;
+    return true;
   }
 
-  Standard_CString val;
+  const char* val;
   if (param[0] == 'r')
   {
     val = Interface_Static::CVal("write.iges.header.receiver");
     if (!val || val[0] == '\0')
-      return Standard_False;
+      return false;
     theheader.SetReceiveName(new TCollection_HAsciiString(val));
   }
   if (param[0] == 'a')
   {
     val = Interface_Static::CVal("write.iges.header.author");
     if (!val || val[0] == '\0')
-      return Standard_False;
+      return false;
     theheader.SetAuthorName(new TCollection_HAsciiString(val));
   }
   if (param[0] == 'c')
   {
     val = Interface_Static::CVal("write.iges.header.company");
     if (!val || val[0] == '\0')
-      return Standard_False;
+      return false;
     theheader.SetCompanyName(new TCollection_HAsciiString(val));
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESEntity) IGESData_IGESModel::Entity(const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESData_IGESModel::Entity(const int num) const
 {
   return GetCasted(IGESData_IGESEntity, Value(num));
 }
 
 //=================================================================================================
 
-Standard_Integer IGESData_IGESModel::DNum(const Handle(IGESData_IGESEntity)& ent) const
+int IGESData_IGESModel::DNum(const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  Standard_Integer num = Number(ent);
+  int num = Number(ent);
   if (num == 0)
     return 0;
   else
@@ -284,24 +284,24 @@ Standard_Integer IGESData_IGESModel::DNum(const Handle(IGESData_IGESEntity)& ent
 
 //=================================================================================================
 
-void IGESData_IGESModel::GetFromAnother(const Handle(Interface_InterfaceModel)& other)
+void IGESData_IGESModel::GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
 {
   DeclareAndCast(IGESData_IGESModel, another, other);
   theheader = another->GlobalSection();
   theheader.CopyRefs();
-  SetStartSection(another->StartSection(), Standard_True);
+  SetStartSection(another->StartSection(), true);
 }
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) IGESData_IGESModel::NewEmptyModel() const
+occ::handle<Interface_InterfaceModel> IGESData_IGESModel::NewEmptyModel() const
 {
   return new IGESData_IGESModel;
 }
 
 //=================================================================================================
 
-void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
+void IGESData_IGESModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
 {
   // MGE 23/07/98
   // =====================================
@@ -387,7 +387,7 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
     ach->SendFail(Msg47);
   }
 
-  Standard_Integer unf = theheader.UnitFlag();
+  int unf = theheader.UnitFlag();
 
   // Sending of message : Unit Flag parameter is incorrect.
   if (unf < 1 || unf > 11)
@@ -408,8 +408,8 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
   }
   else
   {
-    Standard_CString unm  = theheader.UnitName()->ToCString();
-    Standard_Boolean unok = Standard_True;
+    const char* unm  = theheader.UnitName()->ToCString();
+    bool unok = true;
     switch (unf)
     {
       case 1:
@@ -419,7 +419,7 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
         unok = !strcmp(unm, "MM");
         break;
       case 3:
-        unok = Standard_True;
+        unok = true;
         break; // nom libre
       case 4:
         unok = !strcmp(unm, "FT");
@@ -497,9 +497,9 @@ void IGESData_IGESModel::VerifyCheck(Handle(Interface_Check)& ach) const
   }
 }
 
-void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
-                         Handle(Interface_Check)&                ach,
-                         const Standard_CString                  mess)
+void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
+                         occ::handle<Interface_Check>&                ach,
+                         const char* const                  mess)
 {
   // MGE 23/07/98
   // =====================================
@@ -513,7 +513,7 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
     return;
   }
 
-  const Handle(TCollection_HAsciiString)& stdvar = str;
+  const occ::handle<TCollection_HAsciiString>& stdvar = str;
   if (strcmp(mess, "Last Change Date") == 0)
     Msg57.Arg(25);
   else
@@ -551,17 +551,17 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
 
 //=================================================================================================
 
-void IGESData_IGESModel::SetLineWeights(const Standard_Real defw)
+void IGESData_IGESModel::SetLineWeights(const double defw)
 {
-  Standard_Integer nb   = NbEntities();
-  Standard_Integer lwg  = theheader.LineWeightGrad();
-  Standard_Real    maxw = theheader.MaxLineWeight();
+  int nb   = NbEntities();
+  int lwg  = theheader.LineWeightGrad();
+  double    maxw = theheader.MaxLineWeight();
   if (lwg > 0)
   {
     maxw = maxw / lwg;
     lwg  = 1;
   }
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
     Entity(i)->SetLineWeight(defw, maxw, lwg);
 }
 
@@ -571,7 +571,7 @@ void IGESData_IGESModel::ClearLabels() {}
 
 //=================================================================================================
 
-void IGESData_IGESModel::PrintLabel(const Handle(Standard_Transient)& ent,
+void IGESData_IGESModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
                                     Standard_OStream&                 S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
@@ -579,7 +579,7 @@ void IGESData_IGESModel::PrintLabel(const Handle(Standard_Transient)& ent,
     S << "Null";
   else
   {
-    Standard_Integer num = Number(ent);
+    int num = Number(ent);
     if (num == 0)
       S << "??";
     else
@@ -589,33 +589,33 @@ void IGESData_IGESModel::PrintLabel(const Handle(Standard_Transient)& ent,
 
 //=================================================================================================
 
-void IGESData_IGESModel::PrintToLog(const Handle(Standard_Transient)& ent,
+void IGESData_IGESModel::PrintToLog(const occ::handle<Standard_Transient>& ent,
                                     Standard_OStream&                 S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (!igesent.IsNull())
   {
-    Standard_Integer num = Number(ent);
+    int num = Number(ent);
     if (num == 0)
       S << "??";
     else
     {
       S << " DE : " << (2 * num - 1) << " type : " << igesent->TypeNumber();
-      //      Standard_Integer num2 = igesent->TypeNumber();
+      //      int num2 = igesent->TypeNumber();
     }
   }
 }
 
 //=================================================================================================
 
-void IGESData_IGESModel::PrintInfo(const Handle(Standard_Transient)& ent, Standard_OStream& S) const
+void IGESData_IGESModel::PrintInfo(const occ::handle<Standard_Transient>& ent, Standard_OStream& S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     S << "(NOT IGES)";
   else
   {
-    Standard_Integer num = Number(ent);
+    int num = Number(ent);
     if (num == 0)
       S << "??";
     else
@@ -627,17 +627,17 @@ void IGESData_IGESModel::PrintInfo(const Handle(Standard_Transient)& ent, Standa
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) IGESData_IGESModel::StringLabel(
-  const Handle(Standard_Transient)& ent) const
+occ::handle<TCollection_HAsciiString> IGESData_IGESModel::StringLabel(
+  const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(TCollection_HAsciiString) label;
+  occ::handle<TCollection_HAsciiString> label;
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     return new TCollection_HAsciiString("(NOT IGES)");
   else
   {
     char             text[20];
-    Standard_Integer num = Number(ent);
+    int num = Number(ent);
     if (num > 0)
       Sprintf(text, "D%d", 2 * num - 1);
     else

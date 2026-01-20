@@ -30,7 +30,7 @@
   #define THE_PROMPT L"Command >> "
   #define COMMANDSIZE 1000 // Max nb of characters for a command
 
-Standard_Boolean Draw_Interprete(const char* command);
+bool Draw_Interprete(const char* command);
 
 namespace
 {
@@ -217,7 +217,7 @@ LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
           return 0;
         }
         default: {
-          if (IsAlphanumeric((Standard_Character)LOWORD(wParam)))
+          if (IsAlphanumeric((char)LOWORD(wParam)))
           {
             // Place the cursor at the end of text before display
             LRESULT index = SendMessageW(hWnd, WM_GETTEXTLENGTH, 0l, 0l);

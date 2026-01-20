@@ -14,18 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const gp_Pnt& IntPatch_ArcFunction::Valpoint(const Standard_Integer Index) const
+inline const gp_Pnt& IntPatch_ArcFunction::Valpoint(const int Index) const
 {
   return seqpt(Index);
 }
 
-inline void IntPatch_ArcFunction::Set(const Handle(Adaptor2d_Curve2d)& A)
+inline void IntPatch_ArcFunction::Set(const occ::handle<Adaptor2d_Curve2d>& A)
 {
   myArc = A;
   seqpt.Clear();
 }
 
-inline void IntPatch_ArcFunction::Set(const Handle(Adaptor3d_Surface)& S)
+inline void IntPatch_ArcFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
   seqpt.Clear();
@@ -42,12 +42,12 @@ inline const IntSurf_Quadric& IntPatch_ArcFunction::Quadric() const
   return (myQuad);
 }
 
-inline const Handle(Adaptor2d_Curve2d)& IntPatch_ArcFunction::Arc() const
+inline const occ::handle<Adaptor2d_Curve2d>& IntPatch_ArcFunction::Arc() const
 {
   return (myArc);
 }
 
-inline const Handle(Adaptor3d_Surface)& IntPatch_ArcFunction::Surface() const
+inline const occ::handle<Adaptor3d_Surface>& IntPatch_ArcFunction::Surface() const
 {
   return (mySurf);
 }

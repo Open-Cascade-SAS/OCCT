@@ -28,7 +28,7 @@ Aspect_XRSession::Aspect_XRSession()
       myIod(0.0),
       myDispFreq(0.0f)
 {
-  for (Standard_Integer aRoleIter = 0; aRoleIter < Aspect_XRTrackedDeviceRole_NB; ++aRoleIter)
+  for (int aRoleIter = 0; aRoleIter < Aspect_XRTrackedDeviceRole_NB; ++aRoleIter)
   {
     myRoleActions[aRoleIter].Resize(0, Aspect_XRGenericAction_NB - 1, false);
   }
@@ -36,14 +36,14 @@ Aspect_XRSession::Aspect_XRSession()
 
 //=================================================================================================
 
-void Aspect_XRSession::AbortHapticVibrationAction(const Handle(Aspect_XRAction)& theAction)
+void Aspect_XRSession::AbortHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction)
 {
   triggerHapticVibrationAction(theAction, Aspect_XRHapticActionData());
 }
 
 //=================================================================================================
 
-void Aspect_XRSession::TriggerHapticVibrationAction(const Handle(Aspect_XRAction)&   theAction,
+void Aspect_XRSession::TriggerHapticVibrationAction(const occ::handle<Aspect_XRAction>&   theAction,
                                                     const Aspect_XRHapticActionData& theParams)
 {
   if (!theParams.IsValid())

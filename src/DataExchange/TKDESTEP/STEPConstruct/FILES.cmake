@@ -10,10 +10,7 @@ set(OCCT_STEPConstruct_FILES
   STEPConstruct_Assembly.hxx
   STEPConstruct_ContextTool.cxx
   STEPConstruct_ContextTool.hxx
-  STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient.hxx
-  STEPConstruct_DataMapIteratorOfDataMapOfPointTransient.hxx
-  STEPConstruct_DataMapOfAsciiStringTransient.hxx
-  STEPConstruct_DataMapOfPointTransient.hxx
+
   STEPConstruct_ExternRefs.cxx
   STEPConstruct_ExternRefs.hxx
   STEPConstruct_Part.cxx

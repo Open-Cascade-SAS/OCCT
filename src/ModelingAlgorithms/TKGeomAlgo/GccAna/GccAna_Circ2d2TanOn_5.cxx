@@ -39,7 +39,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
                                          const gp_Pnt2d&     Point2,
                                          const gp_Lin2d&     OnLine,
-                                         const Standard_Real Tolerance)
+                                         const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -56,14 +56,14 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
 {
   TheSame1.Init(0);
   TheSame2.Init(0);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real dist = Point1.Distance(Point2);
+  double dist = Point1.Distance(Point2);
   if (dist < std::abs(Tolerance))
   {
-    WellDone = Standard_True;
+    WellDone = true;
   }
   else
   {
@@ -74,7 +74,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
     {
       if (!Intp.IsEmpty())
       {
-        for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+        for (int i = 1; i <= Intp.NbPoints(); i++)
         {
           NbrSol++;
           gp_Ax2d axe(Intp.Point(i).Value(), dirx);
@@ -92,7 +92,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
           parcen3(NbrSol)    = ElCLib::Parameter(OnLine, pntcen(NbrSol));
         }
       }
-      WellDone = Standard_True;
+      WellDone = true;
     }
   }
 }

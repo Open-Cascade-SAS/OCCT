@@ -28,9 +28,12 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -42,9 +45,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_LocationLaw, Standard_Transient)
 
 //=================================================================================================
 
-static Standard_Real Norm(const gp_Mat& M)
+static double Norm(const gp_Mat& M)
 {
-  Standard_Real R, Norme;
+  double R, Norme;
   gp_XYZ        Coord;
   Coord = M.Row(1);
   Norme = std::abs(Coord.X()) + std::abs(Coord.Y()) + std::abs(Coord.Z());
@@ -76,7 +79,7 @@ static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T)
 void BRepFill_LocationLaw::Init(const TopoDS_Wire& Path)
 
 {
-  Standard_Integer       NbEdge;
+  int       NbEdge;
   BRepTools_WireExplorer wexp;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
@@ -90,11 +93,11 @@ void BRepFill_LocationLaw::Init(const TopoDS_Wire& Path)
     if (!BRep_Tool::Degenerated(wexp.Current()))
       NbEdge++;
 
-  myLaws   = new (GeomFill_HArray1OfLocationLaw)(1, NbEdge);
-  myLength = new (TColStd_HArray1OfReal)(1, NbEdge + 1);
+  myLaws   = new (NCollection_HArray1<occ::handle<GeomFill_LocationLaw>>)(1, NbEdge);
+  myLength = new (NCollection_HArray1<double>)(1, NbEdge + 1);
   myLength->Init(-1.);
   myLength->SetValue(1, 0.);
-  myEdges = new (TopTools_HArray1OfShape)(1, NbEdge);
+  myEdges = new (NCollection_HArray1<TopoDS_Shape>)(1, NbEdge);
   myDisc.Nullify();
   TangentIsMain();
 }
@@ -103,7 +106,7 @@ void BRepFill_LocationLaw::Init(const TopoDS_Wire& Path)
 
 GeomFill_PipeError BRepFill_LocationLaw::GetStatus() const
 {
-  Standard_Integer   ii, N = myLaws->Length();
+  int   ii, N = myLaws->Length();
   GeomFill_PipeError Status = GeomFill_PipeOk;
   for (ii = 1; ii <= N && (Status == GeomFill_PipeOk); ii++)
   {
@@ -137,11 +140,11 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 // function : TransformInCompatibleLaw
 // purpose  : Set in continuity of laws
 //=======================================================================
-void BRepFill_LocationLaw::TransformInCompatibleLaw(const Standard_Real TolAngular)
+void BRepFill_LocationLaw::TransformInCompatibleLaw(const double TolAngular)
 {
 
-  Standard_Real    First, Last, Angle;
-  Standard_Integer ipath;
+  double    First, Last, Angle;
+  int ipath;
   gp_Mat           Trsf, M1, M2;
   gp_Vec           V, T1, T2, N1, N2;
   gp_XYZ           OZ(0, 0, 1);
@@ -163,7 +166,7 @@ void BRepFill_LocationLaw::TransformInCompatibleLaw(const Standard_Real TolAngul
     }
     else
     {
-      Standard_Real alpha;
+      double alpha;
       gp_Vec        cross(T1);
       cross.Cross(T2);
       alpha = T2.AngleWithRef(T1, cross);
@@ -196,8 +199,8 @@ void BRepFill_LocationLaw::TransformInCompatibleLaw(const Standard_Real TolAngul
 void BRepFill_LocationLaw::TransformInG0Law()
 {
 
-  Standard_Real    First, Last;
-  Standard_Integer ipath;
+  double    First, Last;
+  int ipath;
   gp_Mat           M1, M2, aux; //,Trsf
   gp_Vec           V;
   myLaws->Value(1)->GetDomain(First, Last);
@@ -227,7 +230,7 @@ void BRepFill_LocationLaw::DeleteTransform()
 {
   gp_Mat Id;
   Id.SetIdentity();
-  for (Standard_Integer ii = 1; ii <= myEdges->Length(); ii++)
+  for (int ii = 1; ii <= myEdges->Length(); ii++)
   {
     myLaws->ChangeValue(ii)->SetTrsf(Id);
   }
@@ -238,12 +241,12 @@ void BRepFill_LocationLaw::DeleteTransform()
 // function : NbHoles
 // purpose  : Find "Holes"
 //=======================================================================
-Standard_Integer BRepFill_LocationLaw::NbHoles(const Standard_Real Tol)
+int BRepFill_LocationLaw::NbHoles(const double Tol)
 {
   if (myDisc.IsNull())
   {
-    TColStd_SequenceOfInteger Seq;
-    Standard_Integer          ii, NbDisc;
+    NCollection_Sequence<int> Seq;
+    int          ii, NbDisc;
     for (ii = 2, NbDisc = -1; ii <= myLaws->Length() + 1; ii++)
     {
       if (IsG1(ii - 1, Tol, 1.e-12) == -1)
@@ -254,7 +257,7 @@ Standard_Integer BRepFill_LocationLaw::NbHoles(const Standard_Real Tol)
     NbDisc = Seq.Length();
     if (NbDisc > 0)
     {
-      myDisc = new (TColStd_HArray1OfInteger)(1, NbDisc);
+      myDisc = new (NCollection_HArray1<int>)(1, NbDisc);
       for (ii = 1; ii <= NbDisc; ii++)
         myDisc->SetValue(ii, Seq(ii));
     }
@@ -266,25 +269,25 @@ Standard_Integer BRepFill_LocationLaw::NbHoles(const Standard_Real Tol)
 
 //=================================================================================================
 
-void BRepFill_LocationLaw::Holes(TColStd_Array1OfInteger& Disc) const
+void BRepFill_LocationLaw::Holes(NCollection_Array1<int>& Disc) const
 {
   if (!myDisc.IsNull())
   {
-    for (Standard_Integer ii = 1; ii <= myDisc->Length(); ii++)
+    for (int ii = 1; ii <= myDisc->Length(); ii++)
       Disc(ii) = myDisc->Value(ii);
   }
 }
 
 //=================================================================================================
 
-Standard_Integer BRepFill_LocationLaw::NbLaw() const
+int BRepFill_LocationLaw::NbLaw() const
 {
   return myLaws->Length();
 }
 
 //=================================================================================================
 
-const Handle(GeomFill_LocationLaw)& BRepFill_LocationLaw::Law(const Standard_Integer Index) const
+const occ::handle<GeomFill_LocationLaw>& BRepFill_LocationLaw::Law(const int Index) const
 {
   return myLaws->Value(Index);
 }
@@ -298,14 +301,14 @@ const TopoDS_Wire& BRepFill_LocationLaw::Wire() const
 
 //=================================================================================================
 
-const TopoDS_Edge& BRepFill_LocationLaw::Edge(const Standard_Integer Index) const
+const TopoDS_Edge& BRepFill_LocationLaw::Edge(const int Index) const
 {
   return TopoDS::Edge(myEdges->Value(Index));
 }
 
 //=================================================================================================
 
-TopoDS_Vertex BRepFill_LocationLaw::Vertex(const Standard_Integer Index) const
+TopoDS_Vertex BRepFill_LocationLaw::Vertex(const int Index) const
 {
   TopoDS_Edge   E;
   TopoDS_Vertex V;
@@ -333,15 +336,15 @@ TopoDS_Vertex BRepFill_LocationLaw::Vertex(const Standard_Integer Index) const
 // purpose  : Calculate a vertex of sweeping from a vertex of section
 //           and the index of the edge in the trajectory
 //===================================================================
-void BRepFill_LocationLaw::PerformVertex(const Standard_Integer Index,
+void BRepFill_LocationLaw::PerformVertex(const int Index,
                                          const TopoDS_Vertex&   Input,
-                                         const Standard_Real    TolMin,
+                                         const double    TolMin,
                                          TopoDS_Vertex&         Output,
-                                         const Standard_Integer ILoc) const
+                                         const int ILoc) const
 {
   BRep_Builder     B;
-  Standard_Boolean IsBary = (ILoc == 0);
-  Standard_Real    First, Last;
+  bool IsBary = (ILoc == 0);
+  double    First, Last;
   gp_Pnt           P;
   gp_Vec           V1, V2; //, V;
   gp_Mat           M1, M2;
@@ -368,7 +371,7 @@ void BRepFill_LocationLaw::PerformVertex(const Standard_Integer Index,
   {
     if (!myPath.Closed() || (IsG1(Index, TolMin) != 1))
     {
-      IsBary = Standard_False;
+      IsBary = false;
       if (Index == 0)
       {
         myLaws->Value(1)->GetDomain(First, Last);
@@ -411,7 +414,7 @@ void BRepFill_LocationLaw::PerformVertex(const Standard_Integer Index,
 
     P.ChangeCoord().SetLinearForm(0.5, P1, 0.5, P2);
     P1 -= P2;
-    Standard_Real Tol = P1.Modulus() / 2;
+    double Tol = P1.Modulus() / 2;
     Tol += TolMin;
     B.MakeVertex(Output, P, Tol);
   }
@@ -425,16 +428,16 @@ void BRepFill_LocationLaw::PerformVertex(const Standard_Integer Index,
 
 //=================================================================================================
 
-void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
-                                             Standard_Real&         First,
-                                             Standard_Real&         Last) const
+void BRepFill_LocationLaw::CurvilinearBounds(const int Index,
+                                             double&         First,
+                                             double&         Last) const
 {
   First = myLength->Value(Index);
   Last  = myLength->Value(Index + 1);
   if (Last < 0)
   { // It is required to carry out the calculation
-    Standard_Integer     ii, NbE = myEdges->Length();
-    Standard_Real        Length, f, l;
+    int     ii, NbE = myEdges->Length();
+    double        Length, f, l;
     GCPnts_AbscissaPoint AbsC;
 
     for (ii = 1, Length = 0.; ii <= NbE; ii++)
@@ -449,10 +452,10 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean BRepFill_LocationLaw::IsClosed() const
+bool BRepFill_LocationLaw::IsClosed() const
 {
   if (myPath.Closed())
-    return Standard_True;
+    return true;
 
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(myPath, V1, V2);
@@ -463,19 +466,19 @@ Standard_Boolean BRepFill_LocationLaw::IsClosed() const
 // function : IsG1
 // purpose  : Evaluate the continuity of the law by a vertex
 //=======================================================================
-Standard_Integer BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
-                                            const Standard_Real    SpatialTolerance,
-                                            const Standard_Real    AngularTolerance) const
+int BRepFill_LocationLaw::IsG1(const int Index,
+                                            const double    SpatialTolerance,
+                                            const double    AngularTolerance) const
 {
   gp_Vec               V1, DV1, V2, DV2;
   gp_Mat               M1, M2, DM1, DM2;
-  Standard_Real        First, Last, EpsNul = 1.e-12;
-  Standard_Real        TolEps = SpatialTolerance;
-  Standard_Boolean     Ok_D1  = Standard_False;
+  double        First, Last, EpsNul = 1.e-12;
+  double        TolEps = SpatialTolerance;
+  bool     Ok_D1  = false;
   TopoDS_Vertex        V;
   TopoDS_Edge          E;
-  TColgp_Array1OfPnt2d Bid1(1, 1);
-  TColgp_Array1OfVec2d Bid2(1, 1);
+  NCollection_Array1<gp_Pnt2d> Bid1(1, 1);
+  NCollection_Array1<gp_Vec2d> Bid2(1, 1);
 
   if (Index > 0 && Index < myLaws->Length())
   {
@@ -517,13 +520,13 @@ Standard_Integer BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
 
   TolEps += 2 * BRep_Tool::Tolerance(V);
 
-  Standard_Boolean isG0 = Standard_True;
-  Standard_Boolean isG1 = Standard_True;
+  bool isG0 = true;
+  bool isG1 = true;
 
   if ((V1 - V2).Magnitude() > TolEps)
-    isG0 = Standard_False;
+    isG0 = false;
   if (Norm(M1 - M2) > SpatialTolerance)
-    isG0 = Standard_False;
+    isG0 = false;
 
   if (!isG0)
     return -1;
@@ -532,11 +535,11 @@ Standard_Integer BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
 
   if ((DV1.Magnitude() > EpsNul) && (DV2.Magnitude() > EpsNul)
       && (DV1.Angle(DV2) > AngularTolerance))
-    isG1 = Standard_False;
+    isG1 = false;
 
   // For the next, the tests are mostly empirical
-  Standard_Real Norm1 = Norm(DM1);
-  Standard_Real Norm2 = Norm(DM2);
+  double Norm1 = Norm(DM1);
+  double Norm2 = Norm(DM2);
   // It two 2 norms are null, it is good
   if ((Norm1 > EpsNul) || (Norm2 > EpsNul))
   {
@@ -546,10 +549,10 @@ Standard_Integer BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
       DM1 /= Norm1;
       DM2 /= Norm2;
       if (Norm(DM1 - DM2) > AngularTolerance)
-        isG1 = Standard_False;
+        isG1 = false;
     }
     else
-      isG1 = Standard_False; // 1 Null the other is not
+      isG1 = false; // 1 Null the other is not
   }
 
   if (isG1)
@@ -560,17 +563,17 @@ Standard_Integer BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
 
 //=================================================================================================
 
-void BRepFill_LocationLaw::Parameter(const Standard_Real Abcissa,
-                                     Standard_Integer&   Index,
-                                     Standard_Real&      U)
+void BRepFill_LocationLaw::Parameter(const double Abcissa,
+                                     int&   Index,
+                                     double&      U)
 {
-  Standard_Integer iedge, NbE = myEdges->Length();
-  Standard_Boolean Trouve = Standard_False;
+  int iedge, NbE = myEdges->Length();
+  bool Trouve = false;
 
   // Control that the lengths are calculated
   if (myLength->Value(NbE + 1) < 0)
   {
-    Standard_Real f, l;
+    double f, l;
     CurvilinearBounds(NbE, f, l);
   }
 
@@ -579,7 +582,7 @@ void BRepFill_LocationLaw::Parameter(const Standard_Real Abcissa,
   {
     if (myLength->Value(iedge + 1) >= Abcissa)
     {
-      Trouve = Standard_True;
+      Trouve = true;
     }
     else
       iedge++;
@@ -587,8 +590,8 @@ void BRepFill_LocationLaw::Parameter(const Standard_Real Abcissa,
 
   if (Trouve)
   {
-    Standard_Real                       f, l;
-    const Handle(GeomFill_LocationLaw)& Law = myLaws->Value(iedge);
+    double                       f, l;
+    const occ::handle<GeomFill_LocationLaw>& Law = myLaws->Value(iedge);
     Law->GetDomain(f, l);
 
     if (Abcissa == myLength->Value(iedge + 1))
@@ -619,10 +622,10 @@ void BRepFill_LocationLaw::Parameter(const Standard_Real Abcissa,
 // function : D0
 // purpose  : Position of a section, with a given curviline abscissa
 //===================================================================
-void BRepFill_LocationLaw::D0(const Standard_Real Abcissa, TopoDS_Shape& W)
+void BRepFill_LocationLaw::D0(const double Abcissa, TopoDS_Shape& W)
 {
-  Standard_Real    u;
-  Standard_Integer ind;
+  double    u;
+  int ind;
   gp_Mat           M;
   gp_Vec           V;
 
@@ -646,7 +649,7 @@ void BRepFill_LocationLaw::D0(const Standard_Real Abcissa, TopoDS_Shape& W)
                    V.Z());
     // TopLoc_Location Loc(fila);
     // W.Location(Loc.Multiplied(W.Location()));
-    W = BRepBuilderAPI_Transform(W, fila, Standard_True); // copy
+    W = BRepBuilderAPI_Transform(W, fila, true); // copy
     ///////////////////////////////////////////
   }
   else
@@ -662,14 +665,14 @@ void BRepFill_LocationLaw::D0(const Standard_Real Abcissa, TopoDS_Shape& W)
 // function : Abscissa
 // purpose  : Calculate the abscissa of a point
 //=======================================================================
-Standard_Real BRepFill_LocationLaw::Abscissa(const Standard_Integer Index,
-                                             const Standard_Real    Param)
+double BRepFill_LocationLaw::Abscissa(const int Index,
+                                             const double    Param)
 {
   GCPnts_AbscissaPoint AbsC;
-  Standard_Real        Length = myLength->Value(Index);
+  double        Length = myLength->Value(Index);
   if (Length < 0)
   {
-    Standard_Real bid;
+    double bid;
     CurvilinearBounds(Index, bid, Length);
   }
 

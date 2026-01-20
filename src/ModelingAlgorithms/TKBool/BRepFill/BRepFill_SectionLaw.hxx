@@ -20,8 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <GeomFill_HArray1OfSectionLaw.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
@@ -32,43 +37,40 @@ class TopoDS_Shape;
 class TopoDS_Wire;
 class TopoDS_Edge;
 
-class BRepFill_SectionLaw;
-DEFINE_STANDARD_HANDLE(BRepFill_SectionLaw, Standard_Transient)
-
 //! Build Section Law, with an Vertex, or an Wire
 class BRepFill_SectionLaw : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Standard_Integer NbLaw() const;
+  Standard_EXPORT int NbLaw() const;
 
-  Standard_EXPORT const Handle(GeomFill_SectionLaw)& Law(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<GeomFill_SectionLaw>& Law(const int Index) const;
 
-  Standard_EXPORT Standard_Integer IndexOfEdge(const TopoDS_Shape& anEdge) const;
+  Standard_EXPORT int IndexOfEdge(const TopoDS_Shape& anEdge) const;
 
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const = 0;
+  Standard_EXPORT virtual bool IsConstant() const = 0;
 
-  Standard_EXPORT Standard_Boolean IsUClosed() const;
+  Standard_EXPORT bool IsUClosed() const;
 
-  Standard_EXPORT Standard_Boolean IsVClosed() const;
+  Standard_EXPORT bool IsVClosed() const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Say if the input shape is a vertex.
-  Standard_EXPORT virtual Standard_Boolean IsVertex() const = 0;
+  Standard_EXPORT virtual bool IsVertex() const = 0;
 
-  Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const = 0;
+  Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const = 0;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const Standard_Integer Index,
-                                                   const Standard_Real    TolAngular) const = 0;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int Index,
+                                                   const double    TolAngular) const = 0;
 
-  Standard_EXPORT virtual Standard_Real VertexTol(const Standard_Integer Index,
-                                                  const Standard_Real    Param) const = 0;
+  Standard_EXPORT virtual double VertexTol(const int Index,
+                                                  const double    Param) const = 0;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const Standard_Integer Index,
-                                               const Standard_Real    Param) const = 0;
+  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index,
+                                               const double    Param) const = 0;
 
-  Standard_EXPORT virtual void D0(const Standard_Real U, TopoDS_Shape& S) = 0;
+  Standard_EXPORT virtual void D0(const double U, TopoDS_Shape& S) = 0;
 
   Standard_EXPORT void Init(const TopoDS_Wire& W);
 
@@ -77,11 +79,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepFill_SectionLaw, Standard_Transient)
 
 protected:
-  Handle(GeomFill_HArray1OfSectionLaw) myLaws;
-  Standard_Boolean                     uclosed;
-  Standard_Boolean                     vclosed;
-  Standard_Boolean                     myDone;
-  TopTools_DataMapOfShapeInteger       myIndices;
+  occ::handle<NCollection_HArray1<occ::handle<GeomFill_SectionLaw>>> myLaws;
+  bool                     uclosed;
+  bool                     vclosed;
+  bool                     myDone;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>       myIndices;
 
 private:
   BRepTools_WireExplorer myIterator;

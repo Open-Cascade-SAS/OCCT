@@ -6,8 +6,7 @@ set(OCCT_Resource_FILES
   Resource_CodePages.pxx
   Resource_ConvertUnicode.c
   Resource_ConvertUnicode.hxx
-  Resource_DataMapOfAsciiStringAsciiString.hxx
-  Resource_DataMapOfAsciiStringExtendedString.hxx
+
   Resource_FormatType.hxx
   Resource_GB2312.pxx
   Resource_GBK.pxx

@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage, Standard_Transient)
 StepVisual_SurfaceStyleUsage::StepVisual_SurfaceStyleUsage() {}
 
 void StepVisual_SurfaceStyleUsage::Init(const StepVisual_SurfaceSide               aSide,
-                                        const Handle(StepVisual_SurfaceSideStyle)& aStyle)
+                                        const occ::handle<StepVisual_SurfaceSideStyle>& aStyle)
 {
   // --- classe own fields ---
   side  = aSide;
@@ -36,12 +36,12 @@ StepVisual_SurfaceSide StepVisual_SurfaceStyleUsage::Side() const
   return side;
 }
 
-void StepVisual_SurfaceStyleUsage::SetStyle(const Handle(StepVisual_SurfaceSideStyle)& aStyle)
+void StepVisual_SurfaceStyleUsage::SetStyle(const occ::handle<StepVisual_SurfaceSideStyle>& aStyle)
 {
   style = aStyle;
 }
 
-Handle(StepVisual_SurfaceSideStyle) StepVisual_SurfaceStyleUsage::Style() const
+occ::handle<StepVisual_SurfaceSideStyle> StepVisual_SurfaceStyleUsage::Style() const
 {
   return style;
 }

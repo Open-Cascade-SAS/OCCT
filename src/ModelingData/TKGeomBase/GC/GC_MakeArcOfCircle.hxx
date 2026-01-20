@@ -44,24 +44,24 @@ public:
   //! a circle between two angles Alpha1 and Alpha2
   //! given in radiians.
   Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
-                                     const Standard_Real    Alpha1,
-                                     const Standard_Real    Alpha2,
-                                     const Standard_Boolean Sense);
+                                     const double    Alpha1,
+                                     const double    Alpha2,
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! a circle between point <P> and the angle Alpha
   //! given in radians.
   Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
                                      const gp_Pnt&          P,
-                                     const Standard_Real    Alpha,
-                                     const Standard_Boolean Sense);
+                                     const double    Alpha,
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! a circle between two points P1 and P2.
   Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
                                      const gp_Pnt&          P1,
                                      const gp_Pnt&          P2,
-                                     const Standard_Boolean Sense);
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! three points P1,P2,P3 between two points P1 and P2.
@@ -91,12 +91,12 @@ public:
 
   //! Returns the constructed arc of circle.
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.
-  Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
-  operator const Handle(Geom_TrimmedCurve)&() const { return Value(); }
+  operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:
-  Handle(Geom_TrimmedCurve) TheArc;
+  occ::handle<Geom_TrimmedCurve> TheArc;
 };
 
 #endif // _GC_MakeArcOfCircle_HeaderFile

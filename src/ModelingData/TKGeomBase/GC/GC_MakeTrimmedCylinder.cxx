@@ -40,8 +40,8 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Pnt& P1, const gp_Pnt& P
                                                 2. * M_PI,
                                                 0.,
                                                 P2.Distance(P1),
-                                                Standard_True,
-                                                Standard_True);
+                                                true,
+                                                true);
   }
 }
 
@@ -49,7 +49,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Pnt& P1, const gp_Pnt& P
 //   Creation of a cylinder limited by a circle and height.               +
 //=========================================================================
 
-GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ& Circ, const Standard_Real Height)
+GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ& Circ, const double Height)
 {
   GC_MakeCylindricalSurface Cyl(Circ);
   TheError = Cyl.Status();
@@ -60,8 +60,8 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ& Circ, const Standa
                                                 2. * M_PI,
                                                 0.,
                                                 Height,
-                                                Standard_True,
-                                                Standard_True);
+                                                true,
+                                                true);
   }
 }
 
@@ -69,8 +69,8 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ& Circ, const Standa
 //=========================================================================
 
 GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Ax1&       A1,
-                                               const Standard_Real Radius,
-                                               const Standard_Real Height)
+                                               const double Radius,
+                                               const double Height)
 {
   GC_MakeCylindricalSurface Cyl(A1, Radius);
   TheError = Cyl.Status();
@@ -81,12 +81,12 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Ax1&       A1,
                                                 2. * M_PI,
                                                 0.,
                                                 Height,
-                                                Standard_True,
-                                                Standard_True);
+                                                true,
+                                                true);
   }
 }
 
-const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCylinder::Value() const
+const occ::handle<Geom_RectangularTrimmedSurface>& GC_MakeTrimmedCylinder::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeTrimmedCylinder::Value() - no result");
   return TheCyl;

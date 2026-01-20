@@ -20,9 +20,6 @@
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
 
-class StepRepr_NextAssemblyUsageOccurrence;
-DEFINE_STANDARD_HANDLE(StepRepr_NextAssemblyUsageOccurrence, StepRepr_AssemblyComponentUsage)
-
 //! Representation of STEP entity NextAssemblyUsageOccurrence
 class StepRepr_NextAssemblyUsageOccurrence : public StepRepr_AssemblyComponentUsage
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_NextAssemblyUsageOccurrence, StepRepr_AssemblyComponentUsage)
 
-protected:
-private:
 };
 
 #endif // _StepRepr_NextAssemblyUsageOccurrence_HeaderFile

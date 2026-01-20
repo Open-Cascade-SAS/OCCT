@@ -19,42 +19,42 @@
 
 //=================================================================================================
 
-Standard_Boolean StlAPI_Reader::Read(TopoDS_Shape& theShape, const Standard_CString theFileName)
+bool StlAPI_Reader::Read(TopoDS_Shape& theShape, const char* const theFileName)
 {
-  Handle(Poly_Triangulation) aMesh = RWStl::ReadFile(theFileName);
+  occ::handle<Poly_Triangulation> aMesh = RWStl::ReadFile(theFileName);
   if (aMesh.IsNull())
-    return Standard_False;
+    return false;
 
   BRepBuilderAPI_MakeShapeOnMesh aConverter(aMesh);
   aConverter.Build();
   if (!aConverter.IsDone())
-    return Standard_False;
+    return false;
 
   TopoDS_Shape aResult = aConverter.Shape();
   if (aResult.IsNull())
-    return Standard_False;
+    return false;
 
   theShape = aResult;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean StlAPI_Reader::Read(TopoDS_Shape& theShape, Standard_IStream& theStream)
+bool StlAPI_Reader::Read(TopoDS_Shape& theShape, Standard_IStream& theStream)
 {
-  Handle(Poly_Triangulation) aMesh = RWStl::ReadStream(theStream);
+  occ::handle<Poly_Triangulation> aMesh = RWStl::ReadStream(theStream);
   if (aMesh.IsNull())
-    return Standard_False;
+    return false;
 
   BRepBuilderAPI_MakeShapeOnMesh aConverter(aMesh);
   aConverter.Build();
   if (!aConverter.IsDone())
-    return Standard_False;
+    return false;
 
   TopoDS_Shape aResult = aConverter.Shape();
   if (aResult.IsNull())
-    return Standard_False;
+    return false;
 
   theShape = aResult;
-  return Standard_True;
+  return true;
 }

@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit, StepBasic_NamedUnit)
 
 StepBasic_ConversionBasedUnit::StepBasic_ConversionBasedUnit() {}
 
-void StepBasic_ConversionBasedUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
-                                         const Handle(TCollection_HAsciiString)&       aName,
-                                         const Handle(Standard_Transient)& aConversionFactor)
+void StepBasic_ConversionBasedUnit::Init(const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+                                         const occ::handle<TCollection_HAsciiString>&       aName,
+                                         const occ::handle<Standard_Transient>& aConversionFactor)
 {
   // --- classe own fields ---
   name             = aName;
@@ -31,23 +31,23 @@ void StepBasic_ConversionBasedUnit::Init(const Handle(StepBasic_DimensionalExpon
   StepBasic_NamedUnit::Init(aDimensions);
 }
 
-void StepBasic_ConversionBasedUnit::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_ConversionBasedUnit::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ConversionBasedUnit::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_ConversionBasedUnit::Name() const
 {
   return name;
 }
 
 void StepBasic_ConversionBasedUnit::SetConversionFactor(
-  const Handle(Standard_Transient)& aConversionFactor)
+  const occ::handle<Standard_Transient>& aConversionFactor)
 {
   conversionFactor = aConversionFactor;
 }
 
-Handle(Standard_Transient) StepBasic_ConversionBasedUnit::ConversionFactor() const
+occ::handle<Standard_Transient> StepBasic_ConversionBasedUnit::ConversionFactor() const
 {
   return conversionFactor;
 }

@@ -15,7 +15,9 @@
 // commercial license or contractual agreement.
 
 #include <TopoDS.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
@@ -29,7 +31,7 @@ inline void ShapeAnalysis_FreeBoundData::SetFreeBound(const TopoDS_Wire& freebou
 // purpose  : Sets area of the contour
 //=======================================================================
 
-inline void ShapeAnalysis_FreeBoundData::SetArea(const Standard_Real area)
+inline void ShapeAnalysis_FreeBoundData::SetArea(const double area)
 {
   myArea = area;
 }
@@ -39,7 +41,7 @@ inline void ShapeAnalysis_FreeBoundData::SetArea(const Standard_Real area)
 // purpose  : Sets perimeter of the contour
 //=======================================================================
 
-inline void ShapeAnalysis_FreeBoundData::SetPerimeter(const Standard_Real perimeter)
+inline void ShapeAnalysis_FreeBoundData::SetPerimeter(const double perimeter)
 {
   myPerimeter = perimeter;
 }
@@ -49,7 +51,7 @@ inline void ShapeAnalysis_FreeBoundData::SetPerimeter(const Standard_Real perime
 // purpose  : Sets ratio of average length to average width of the contour
 //=======================================================================
 
-inline void ShapeAnalysis_FreeBoundData::SetRatio(const Standard_Real ratio)
+inline void ShapeAnalysis_FreeBoundData::SetRatio(const double ratio)
 {
   myRatio = ratio;
 }
@@ -59,7 +61,7 @@ inline void ShapeAnalysis_FreeBoundData::SetRatio(const Standard_Real ratio)
 // purpose  : Sets average width of the contour
 //=======================================================================
 
-inline void ShapeAnalysis_FreeBoundData::SetWidth(const Standard_Real width)
+inline void ShapeAnalysis_FreeBoundData::SetWidth(const double width)
 {
   myWidth = width;
 }
@@ -81,7 +83,7 @@ inline TopoDS_Wire ShapeAnalysis_FreeBoundData::FreeBound() const
 // purpose  : Returns area of the contour
 //=======================================================================
 
-inline Standard_Real ShapeAnalysis_FreeBoundData::Area() const
+inline double ShapeAnalysis_FreeBoundData::Area() const
 {
   return myArea;
 }
@@ -91,7 +93,7 @@ inline Standard_Real ShapeAnalysis_FreeBoundData::Area() const
 // purpose  : Returns perimeter of the contour
 //=======================================================================
 
-inline Standard_Real ShapeAnalysis_FreeBoundData::Perimeter() const
+inline double ShapeAnalysis_FreeBoundData::Perimeter() const
 {
   return myPerimeter;
 }
@@ -101,7 +103,7 @@ inline Standard_Real ShapeAnalysis_FreeBoundData::Perimeter() const
 // purpose  : Returns ratio of average length to average width of the contour
 //=======================================================================
 
-inline Standard_Real ShapeAnalysis_FreeBoundData::Ratio() const
+inline double ShapeAnalysis_FreeBoundData::Ratio() const
 {
   return myRatio;
 }
@@ -111,7 +113,7 @@ inline Standard_Real ShapeAnalysis_FreeBoundData::Ratio() const
 // purpose  : Returns average width of the contour
 //=======================================================================
 
-inline Standard_Real ShapeAnalysis_FreeBoundData::Width() const
+inline double ShapeAnalysis_FreeBoundData::Width() const
 {
   return myWidth;
 }
@@ -121,7 +123,7 @@ inline Standard_Real ShapeAnalysis_FreeBoundData::Width() const
 // purpose  : Returns number of notches on the contour
 //=======================================================================
 
-inline Standard_Integer ShapeAnalysis_FreeBoundData::NbNotches() const
+inline int ShapeAnalysis_FreeBoundData::NbNotches() const
 {
   return myNotches->Length();
 }
@@ -131,7 +133,7 @@ inline Standard_Integer ShapeAnalysis_FreeBoundData::NbNotches() const
 // purpose  : Returns sequence of notches on the contour
 //=======================================================================
 
-inline Handle(TopTools_HSequenceOfShape) ShapeAnalysis_FreeBoundData::Notches() const
+inline occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBoundData::Notches() const
 {
   return myNotches;
 }
@@ -141,7 +143,7 @@ inline Handle(TopTools_HSequenceOfShape) ShapeAnalysis_FreeBoundData::Notches() 
 // purpose  : Returns notch on the contour
 //=======================================================================
 
-inline TopoDS_Wire ShapeAnalysis_FreeBoundData::Notch(const Standard_Integer index) const
+inline TopoDS_Wire ShapeAnalysis_FreeBoundData::Notch(const int index) const
 {
   return TopoDS::Wire(myNotches->Value(index));
 }

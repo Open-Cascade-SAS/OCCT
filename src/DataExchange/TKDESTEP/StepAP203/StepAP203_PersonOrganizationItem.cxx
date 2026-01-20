@@ -35,8 +35,8 @@ StepAP203_PersonOrganizationItem::StepAP203_PersonOrganizationItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_PersonOrganizationItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP203_PersonOrganizationItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -65,72 +65,72 @@ Standard_Integer StepAP203_PersonOrganizationItem::CaseNum(
 
 //=================================================================================================
 
-Handle(StepAP203_Change) StepAP203_PersonOrganizationItem::Change() const
+occ::handle<StepAP203_Change> StepAP203_PersonOrganizationItem::Change() const
 {
-  return Handle(StepAP203_Change)::DownCast(Value());
+  return occ::down_cast<StepAP203_Change>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartWork) StepAP203_PersonOrganizationItem::StartWork() const
+occ::handle<StepAP203_StartWork> StepAP203_PersonOrganizationItem::StartWork() const
 {
-  return Handle(StepAP203_StartWork)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartWork>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_ChangeRequest) StepAP203_PersonOrganizationItem::ChangeRequest() const
+occ::handle<StepAP203_ChangeRequest> StepAP203_PersonOrganizationItem::ChangeRequest() const
 {
-  return Handle(StepAP203_ChangeRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_ChangeRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartRequest) StepAP203_PersonOrganizationItem::StartRequest() const
+occ::handle<StepAP203_StartRequest> StepAP203_PersonOrganizationItem::StartRequest() const
 {
-  return Handle(StepAP203_StartRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ConfigurationItem) StepAP203_PersonOrganizationItem::ConfigurationItem() const
+occ::handle<StepRepr_ConfigurationItem> StepAP203_PersonOrganizationItem::ConfigurationItem() const
 {
-  return Handle(StepRepr_ConfigurationItem)::DownCast(Value());
+  return occ::down_cast<StepRepr_ConfigurationItem>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Product) StepAP203_PersonOrganizationItem::Product() const
+occ::handle<StepBasic_Product> StepAP203_PersonOrganizationItem::Product() const
 {
-  return Handle(StepBasic_Product)::DownCast(Value());
+  return occ::down_cast<StepBasic_Product>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP203_PersonOrganizationItem::
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_PersonOrganizationItem::
   ProductDefinitionFormation() const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepAP203_PersonOrganizationItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP203_PersonOrganizationItem::ProductDefinition() const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Contract) StepAP203_PersonOrganizationItem::Contract() const
+occ::handle<StepBasic_Contract> StepAP203_PersonOrganizationItem::Contract() const
 {
-  return Handle(StepBasic_Contract)::DownCast(Value());
+  return occ::down_cast<StepBasic_Contract>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassification) StepAP203_PersonOrganizationItem::SecurityClassification()
+occ::handle<StepBasic_SecurityClassification> StepAP203_PersonOrganizationItem::SecurityClassification()
   const
 {
-  return Handle(StepBasic_SecurityClassification)::DownCast(Value());
+  return occ::down_cast<StepBasic_SecurityClassification>(Value());
 }

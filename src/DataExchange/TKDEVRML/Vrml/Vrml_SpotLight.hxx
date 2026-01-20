@@ -44,21 +44,21 @@ public:
 
   Standard_EXPORT Vrml_SpotLight();
 
-  Standard_EXPORT Vrml_SpotLight(const Standard_Boolean aOnOff,
-                                 const Standard_Real    aIntensity,
+  Standard_EXPORT Vrml_SpotLight(const bool aOnOff,
+                                 const double    aIntensity,
                                  const Quantity_Color&  aColor,
                                  const gp_Vec&          aLocation,
                                  const gp_Vec&          aDirection,
-                                 const Standard_Real    aDropOffRate,
-                                 const Standard_Real    aCutOffAngle);
+                                 const double    aDropOffRate,
+                                 const double    aCutOffAngle);
 
-  Standard_EXPORT void SetOnOff(const Standard_Boolean anOnOff);
+  Standard_EXPORT void SetOnOff(const bool anOnOff);
 
-  Standard_EXPORT Standard_Boolean OnOff() const;
+  Standard_EXPORT bool OnOff() const;
 
-  Standard_EXPORT void SetIntensity(const Standard_Real aIntensity);
+  Standard_EXPORT void SetIntensity(const double aIntensity);
 
-  Standard_EXPORT Standard_Real Intensity() const;
+  Standard_EXPORT double Intensity() const;
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor);
 
@@ -72,25 +72,24 @@ public:
 
   Standard_EXPORT gp_Vec Direction() const;
 
-  Standard_EXPORT void SetDropOffRate(const Standard_Real aDropOffRate);
+  Standard_EXPORT void SetDropOffRate(const double aDropOffRate);
 
-  Standard_EXPORT Standard_Real DropOffRate() const;
+  Standard_EXPORT double DropOffRate() const;
 
-  Standard_EXPORT void SetCutOffAngle(const Standard_Real aCutOffAngle);
+  Standard_EXPORT void SetCutOffAngle(const double aCutOffAngle);
 
-  Standard_EXPORT Standard_Real CutOffAngle() const;
+  Standard_EXPORT double CutOffAngle() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Boolean myOnOff;
-  Standard_Real    myIntensity;
+  bool myOnOff;
+  double    myIntensity;
   Quantity_Color   myColor;
   gp_Vec           myLocation;
   gp_Vec           myDirection;
-  Standard_Real    myDropOffRate;
-  Standard_Real    myCutOffAngle;
+  double    myDropOffRate;
+  double    myCutOffAngle;
 };
 
 #endif // _Vrml_SpotLight_HeaderFile

@@ -45,26 +45,24 @@ public:
   //! 4 -> ShapeAspect from StepRepr
   //! 5 -> ShapeAspectRelationship from StepRepr
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as GeneralProperty (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_GeneralProperty) GeneralProperty() const;
+  Standard_EXPORT occ::handle<StepBasic_GeneralProperty> GeneralProperty() const;
 
   //! Returns Value as PropertyDefinition (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_PropertyDefinition) PropertyDefinition() const;
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! Returns Value as PropertyDefinitionRelationship (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_PropertyDefinitionRelationship) PropertyDefinitionRelationship()
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinitionRelationship> PropertyDefinitionRelationship()
     const;
 
   //! Returns Value as ShapeAspect (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! Returns Value as ShapeAspectRelationship (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspectRelationship) ShapeAspectRelationship() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 
-protected:
-private:
 };
 
 #endif // _StepRepr_RepresentedDefinition_HeaderFile

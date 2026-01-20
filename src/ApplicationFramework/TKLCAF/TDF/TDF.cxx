@@ -15,9 +15,11 @@
 
 #include <TDF.hxx>
 
-#include <TDF_GUIDProgIDMap.hxx>
+#include <Standard_GUID.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DoubleMap.hxx>
 
-static TDF_GUIDProgIDMap guidprogidmap;
+static NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString> guidprogidmap;
 
 //=================================================================================================
 
@@ -47,24 +49,24 @@ void TDF::AddLinkGUIDToProgID(const Standard_GUID& ID, const TCollection_Extende
 
 //=================================================================================================
 
-Standard_Boolean TDF::GUIDFromProgID(const TCollection_ExtendedString& ProgID, Standard_GUID& ID)
+bool TDF::GUIDFromProgID(const TCollection_ExtendedString& ProgID, Standard_GUID& ID)
 {
   if (guidprogidmap.IsBound2(ProgID))
   {
     ID = guidprogidmap.Find2(ProgID);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean TDF::ProgIDFromGUID(const Standard_GUID& ID, TCollection_ExtendedString& ProgID)
+bool TDF::ProgIDFromGUID(const Standard_GUID& ID, TCollection_ExtendedString& ProgID)
 {
   if (guidprogidmap.IsBound1(ID))
   {
     ProgID = guidprogidmap.Find1(ID);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }

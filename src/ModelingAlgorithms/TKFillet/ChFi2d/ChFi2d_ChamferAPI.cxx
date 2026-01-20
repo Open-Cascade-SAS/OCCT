@@ -26,8 +26,8 @@ ChFi2d_ChamferAPI::ChFi2d_ChamferAPI()
       myEnd1(0.0),
       myStart2(0.0),
       myEnd2(0.0),
-      myCommonStart1(Standard_False),
-      myCommonStart2(Standard_False)
+      myCommonStart1(false),
+      myCommonStart2(false)
 {
 }
 
@@ -37,8 +37,8 @@ ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Wire& theWire)
       myEnd1(0.0),
       myStart2(0.0),
       myEnd2(0.0),
-      myCommonStart1(Standard_False),
-      myCommonStart2(Standard_False)
+      myCommonStart1(false),
+      myCommonStart2(false)
 {
   Init(theWire);
 }
@@ -51,8 +51,8 @@ ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Edge& theEdge1, const TopoDS_E
       myEnd1(0.0),
       myStart2(0.0),
       myEnd2(0.0),
-      myCommonStart1(Standard_False),
-      myCommonStart2(Standard_False)
+      myCommonStart1(false),
+      myCommonStart2(false)
 {
 }
 
@@ -82,7 +82,7 @@ void ChFi2d_ChamferAPI::Init(const TopoDS_Edge& theEdge1, const TopoDS_Edge& the
 
 // Constructs a chamfer edge.
 // Returns true if the edge is constructed.
-Standard_Boolean ChFi2d_ChamferAPI::Perform()
+bool ChFi2d_ChamferAPI::Perform()
 {
   myCurve1 = BRep_Tool::Curve(myEdge1, myStart1, myEnd1);
   myCurve2 = BRep_Tool::Curve(myEdge2, myStart2, myEnd2);
@@ -113,14 +113,14 @@ Standard_Boolean ChFi2d_ChamferAPI::Perform()
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 // Returns the result (chamfer edge, modified edge1, modified edge2).
 TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge&        theEdge1,
                                       TopoDS_Edge&        theEdge2,
-                                      const Standard_Real theLength1,
-                                      const Standard_Real theLength2)
+                                      const double theLength1,
+                                      const double theLength2)
 {
   TopoDS_Edge aResult;
   if (std::abs(myEnd1 - myStart1) < theLength1)
@@ -128,9 +128,9 @@ TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge&        theEdge1,
   if (std::abs(myEnd2 - myStart2) < theLength2)
     return aResult;
 
-  Standard_Real aCommon1 = (myCommonStart1 ? myStart1 : myEnd1)
+  double aCommon1 = (myCommonStart1 ? myStart1 : myEnd1)
                            + (((myStart1 > myEnd1) ^ myCommonStart1) ? theLength1 : -theLength1);
-  Standard_Real aCommon2 = (myCommonStart2 ? myStart2 : myEnd2)
+  double aCommon2 = (myCommonStart2 ? myStart2 : myEnd2)
                            + (((myStart2 > myEnd2) ^ myCommonStart2) ? theLength2 : -theLength2);
 
   // make chamfer edge

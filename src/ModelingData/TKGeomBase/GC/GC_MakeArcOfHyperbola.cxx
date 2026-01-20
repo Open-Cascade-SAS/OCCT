@@ -25,37 +25,37 @@
 GC_MakeArcOfHyperbola::GC_MakeArcOfHyperbola(const gp_Hypr&         Hypr,
                                              const gp_Pnt&          P1,
                                              const gp_Pnt&          P2,
-                                             const Standard_Boolean Sense)
+                                             const bool Sense)
 {
-  Standard_Real          Alpha1 = ElCLib::Parameter(Hypr, P1);
-  Standard_Real          Alpha2 = ElCLib::Parameter(Hypr, P2);
-  Handle(Geom_Hyperbola) H      = new Geom_Hyperbola(Hypr);
+  double          Alpha1 = ElCLib::Parameter(Hypr, P1);
+  double          Alpha2 = ElCLib::Parameter(Hypr, P2);
+  occ::handle<Geom_Hyperbola> H      = new Geom_Hyperbola(Hypr);
   TheArc                        = new Geom_TrimmedCurve(H, Alpha1, Alpha2, Sense);
   TheError                      = gce_Done;
 }
 
 GC_MakeArcOfHyperbola::GC_MakeArcOfHyperbola(const gp_Hypr&         Hypr,
                                              const gp_Pnt&          P,
-                                             const Standard_Real    Alpha,
-                                             const Standard_Boolean Sense)
+                                             const double    Alpha,
+                                             const bool Sense)
 {
-  Standard_Real          Alphafirst = ElCLib::Parameter(Hypr, P);
-  Handle(Geom_Hyperbola) H          = new Geom_Hyperbola(Hypr);
+  double          Alphafirst = ElCLib::Parameter(Hypr, P);
+  occ::handle<Geom_Hyperbola> H          = new Geom_Hyperbola(Hypr);
   TheArc                            = new Geom_TrimmedCurve(H, Alphafirst, Alpha, Sense);
   TheError                          = gce_Done;
 }
 
 GC_MakeArcOfHyperbola::GC_MakeArcOfHyperbola(const gp_Hypr&         Hypr,
-                                             const Standard_Real    Alpha1,
-                                             const Standard_Real    Alpha2,
-                                             const Standard_Boolean Sense)
+                                             const double    Alpha1,
+                                             const double    Alpha2,
+                                             const bool Sense)
 {
-  Handle(Geom_Hyperbola) H = new Geom_Hyperbola(Hypr);
+  occ::handle<Geom_Hyperbola> H = new Geom_Hyperbola(Hypr);
   TheArc                   = new Geom_TrimmedCurve(H, Alpha1, Alpha2, Sense);
   TheError                 = gce_Done;
 }
 
-const Handle(Geom_TrimmedCurve)& GC_MakeArcOfHyperbola::Value() const
+const occ::handle<Geom_TrimmedCurve>& GC_MakeArcOfHyperbola::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfHyperbola::Value() - no result");
   return TheArc;

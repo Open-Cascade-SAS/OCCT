@@ -10,7 +10,7 @@ set(OCCT_Vrml_FILES
   Vrml_Cone.cxx
   Vrml_Cone.hxx
   Vrml_ConeParts.hxx
-  Vrml_ConfigurationNode.hxx
+
   Vrml_Coordinate3.cxx
   Vrml_Coordinate3.hxx
   Vrml_Cube.cxx
@@ -56,7 +56,7 @@ set(OCCT_Vrml_FILES
   Vrml_PointLight.hxx
   Vrml_PointSet.cxx
   Vrml_PointSet.hxx
-  Vrml_Provider.hxx
+
   Vrml_Rotation.cxx
   Vrml_Rotation.hxx
   Vrml_Scale.cxx

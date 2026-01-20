@@ -9,5 +9,5 @@ set(OCCT_Intrv_FILES
   Intrv_Intervals.hxx
   Intrv_Intervals.lxx
   Intrv_Position.hxx
-  Intrv_SequenceOfInterval.hxx
+
 )

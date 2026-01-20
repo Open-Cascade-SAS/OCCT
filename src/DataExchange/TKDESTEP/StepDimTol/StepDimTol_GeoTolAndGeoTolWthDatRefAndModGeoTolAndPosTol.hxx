@@ -27,10 +27,6 @@ class StepDimTol_PositionTolerance;
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 
-class StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol,
-                       StepDimTol_GeometricTolerance)
-
 class StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol
     : public StepDimTol_GeometricTolerance
 {
@@ -38,44 +34,43 @@ class StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol
 public:
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(Standard_Transient)&       aMagnitude,
-                            const Handle(StepRepr_ShapeAspect)&     aTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
-                            const Handle(StepDimTol_ModifiedGeometricTolerance)&           aMGT);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<Standard_Transient>&       aMagnitude,
+                            const occ::handle<StepRepr_ShapeAspect>&     aTolerancedShapeAspect,
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
+                            const occ::handle<StepDimTol_ModifiedGeometricTolerance>&           aMGT);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
-                            const Handle(TCollection_HAsciiString)&    aDescription,
-                            const Handle(Standard_Transient)&          aMagnitude,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
+                            const occ::handle<TCollection_HAsciiString>&    aDescription,
+                            const occ::handle<Standard_Transient>&          aMagnitude,
                             const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
-                            const Handle(StepDimTol_ModifiedGeometricTolerance)&           aMGT);
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
+                            const occ::handle<StepDimTol_ModifiedGeometricTolerance>&           aMGT);
 
   Standard_EXPORT void SetGeometricToleranceWithDatumReference(
-    const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR);
+    const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR);
 
-  Standard_EXPORT Handle(StepDimTol_GeometricToleranceWithDatumReference)
+  Standard_EXPORT occ::handle<StepDimTol_GeometricToleranceWithDatumReference>
     GetGeometricToleranceWithDatumReference() const;
 
   Standard_EXPORT void SetModifiedGeometricTolerance(
-    const Handle(StepDimTol_ModifiedGeometricTolerance)& aMGT);
+    const occ::handle<StepDimTol_ModifiedGeometricTolerance>& aMGT);
 
-  Standard_EXPORT Handle(StepDimTol_ModifiedGeometricTolerance) GetModifiedGeometricTolerance()
+  Standard_EXPORT occ::handle<StepDimTol_ModifiedGeometricTolerance> GetModifiedGeometricTolerance()
     const;
 
-  Standard_EXPORT void SetPositionTolerance(const Handle(StepDimTol_PositionTolerance)& aPT);
+  Standard_EXPORT void SetPositionTolerance(const occ::handle<StepDimTol_PositionTolerance>& aPT);
 
-  Standard_EXPORT Handle(StepDimTol_PositionTolerance) GetPositionTolerance() const;
+  Standard_EXPORT occ::handle<StepDimTol_PositionTolerance> GetPositionTolerance() const;
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol,
                           StepDimTol_GeometricTolerance)
 
-protected:
 private:
-  Handle(StepDimTol_GeometricToleranceWithDatumReference) myGeometricToleranceWithDatumReference;
-  Handle(StepDimTol_ModifiedGeometricTolerance)           myModifiedGeometricTolerance;
-  Handle(StepDimTol_PositionTolerance)                    myPositionTolerance;
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> myGeometricToleranceWithDatumReference;
+  occ::handle<StepDimTol_ModifiedGeometricTolerance>           myModifiedGeometricTolerance;
+  occ::handle<StepDimTol_PositionTolerance>                    myPositionTolerance;
 };
 
 #endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol_HeaderFile

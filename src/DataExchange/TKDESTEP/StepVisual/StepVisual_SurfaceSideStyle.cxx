@@ -20,42 +20,42 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle, Standard_Transient)
 StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle() {}
 
 void StepVisual_SurfaceSideStyle::Init(
-  const Handle(TCollection_HAsciiString)&                      aName,
-  const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles)
+  const occ::handle<TCollection_HAsciiString>&                      aName,
+  const occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>>& aStyles)
 {
   // --- classe own fields ---
   name   = aName;
   styles = aStyles;
 }
 
-void StepVisual_SurfaceSideStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_SurfaceSideStyle::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_SurfaceSideStyle::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_SurfaceSideStyle::Name() const
 {
   return name;
 }
 
 void StepVisual_SurfaceSideStyle::SetStyles(
-  const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles)
+  const occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>>& aStyles)
 {
   styles = aStyles;
 }
 
-Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) StepVisual_SurfaceSideStyle::Styles() const
+occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>> StepVisual_SurfaceSideStyle::Styles() const
 {
   return styles;
 }
 
 StepVisual_SurfaceStyleElementSelect StepVisual_SurfaceSideStyle::StylesValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return styles->Value(num);
 }
 
-Standard_Integer StepVisual_SurfaceSideStyle::NbStyles() const
+int StepVisual_SurfaceSideStyle::NbStyles() const
 {
   return (styles.IsNull()) ? 0 : styles->Length();
 }

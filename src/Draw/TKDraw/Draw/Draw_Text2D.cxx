@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Text2D, Draw_Drawable2D)
 
 //=================================================================================================
 
-Draw_Text2D::Draw_Text2D(const gp_Pnt2d& p, const Standard_CString T, const Draw_Color& col)
+Draw_Text2D::Draw_Text2D(const gp_Pnt2d& p, const char* const T, const Draw_Color& col)
     : myPoint(p),
       myColor(col),
       myText(T),
@@ -35,10 +35,10 @@ Draw_Text2D::Draw_Text2D(const gp_Pnt2d& p, const Standard_CString T, const Draw
 //=================================================================================================
 
 Draw_Text2D::Draw_Text2D(const gp_Pnt2d&        p,
-                         const Standard_CString T,
+                         const char* const T,
                          const Draw_Color&      col,
-                         const Standard_Integer moveX,
-                         const Standard_Integer moveY)
+                         const int moveX,
+                         const int moveY)
     : myPoint(p),
       myColor(col),
       myText(T),
@@ -59,5 +59,5 @@ void Draw_Text2D::SetPnt2d(const gp_Pnt2d& p)
 void Draw_Text2D::DrawOn(Draw_Display& dis) const
 {
   dis.SetColor(myColor);
-  dis.DrawString(myPoint, myText.ToCString(), (Standard_Real)mymoveX, (Standard_Real)mymoveY);
+  dis.DrawString(myPoint, myText.ToCString(), (double)mymoveX, (double)mymoveY);
 }

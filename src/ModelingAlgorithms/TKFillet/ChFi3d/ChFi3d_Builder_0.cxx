@@ -65,9 +65,11 @@
 #include <Law_Composite.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -79,24 +81,24 @@
 #include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND();
-extern Standard_Boolean ChFi3d_GettraceDRAWINT();
-extern Standard_Boolean ChFi3d_GettraceDRAWENLARGE();
-extern Standard_Boolean ChFi3d_GettraceDRAWSPINE();
-extern Standard_Real    t_sameparam, t_batten;
-extern void             ChFi3d_SettraceDRAWINT(const Standard_Boolean b);
-extern void             ChFi3d_SettraceDRAWSPINE(const Standard_Boolean b);
+extern bool ChFi3d_GetcontextFORCEBLEND();
+extern bool ChFi3d_GettraceDRAWINT();
+extern bool ChFi3d_GettraceDRAWENLARGE();
+extern bool ChFi3d_GettraceDRAWSPINE();
+extern double    t_sameparam, t_batten;
+extern void             ChFi3d_SettraceDRAWINT(const bool b);
+extern void             ChFi3d_SettraceDRAWSPINE(const bool b);
 #endif
 
 //=================================================================================================
 
-Standard_Real ChFi3d_InPeriod(const Standard_Real U,
-                              const Standard_Real UFirst,
-                              const Standard_Real ULast,
-                              const Standard_Real Eps)
+double ChFi3d_InPeriod(const double U,
+                              const double UFirst,
+                              const double ULast,
+                              const double Eps)
 {
-  const Standard_Real period = ULast - UFirst;
-  Standard_Real       u      = U;
+  const double period = ULast - UFirst;
+  double       u      = U;
   while (Eps < (UFirst - u))
     u += period;
   while (Eps > (ULast - u))
@@ -112,10 +114,10 @@ Standard_Real ChFi3d_InPeriod(const Standard_Real U,
 //=======================================================================
 void ChFi3d_Boite(const gp_Pnt2d& p1,
                   const gp_Pnt2d& p2,
-                  Standard_Real&  mu,
-                  Standard_Real&  Mu,
-                  Standard_Real&  mv,
-                  Standard_Real&  Mv)
+                  double&  mu,
+                  double&  Mu,
+                  double&  mv,
+                  double&  Mv)
 {
   mu = std::min(p1.X(), p2.X());
   Mu = std::max(p1.X(), p2.X());
@@ -131,14 +133,14 @@ void ChFi3d_Boite(const gp_Pnt2d& p1,
                   const gp_Pnt2d& p2,
                   const gp_Pnt2d& p3,
                   const gp_Pnt2d& p4,
-                  Standard_Real&  Du,
-                  Standard_Real&  Dv,
-                  Standard_Real&  mu,
-                  Standard_Real&  Mu,
-                  Standard_Real&  mv,
-                  Standard_Real&  Mv)
+                  double&  Du,
+                  double&  Dv,
+                  double&  mu,
+                  double&  Mu,
+                  double&  mv,
+                  double&  Mv)
 {
-  Standard_Real a, b;
+  double a, b;
   a  = std::min(p1.X(), p2.X());
   b  = std::min(p3.X(), p4.X());
   mu = std::min(a, b);
@@ -159,25 +161,25 @@ void ChFi3d_Boite(const gp_Pnt2d& p1,
 // function : EnlargeBox and its friends.
 // purpose  :
 //=======================================================================
-static Handle(Adaptor3d_Surface) Geometry(TopOpeBRepDS_DataStructure& DStr,
-                                          const Standard_Integer      ind)
+static occ::handle<Adaptor3d_Surface> Geometry(TopOpeBRepDS_DataStructure& DStr,
+                                          const int      ind)
 {
   if (ind == 0)
-    return Handle(Adaptor3d_Surface)();
+    return occ::handle<Adaptor3d_Surface>();
   if (ind > 0)
   {
     TopoDS_Face F = TopoDS::Face(DStr.Shape(ind));
     if (F.IsNull())
-      return Handle(Adaptor3d_Surface)();
-    Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface();
+      return occ::handle<Adaptor3d_Surface>();
+    occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface();
     HS->Initialize(F, 0);
     return HS;
   }
   else
   {
-    Handle(Geom_Surface) S = DStr.Surface(-ind).Surface();
+    occ::handle<Geom_Surface> S = DStr.Surface(-ind).Surface();
     if (S.IsNull())
-      return Handle(Adaptor3d_Surface)();
+      return occ::handle<Adaptor3d_Surface>();
     return new GeomAdaptor_Surface(S);
   }
 }
@@ -186,9 +188,9 @@ static Handle(Adaptor3d_Surface) Geometry(TopOpeBRepDS_DataStructure& DStr,
 
 void ChFi3d_SetPointTolerance(TopOpeBRepDS_DataStructure& DStr,
                               const Bnd_Box&              box,
-                              const Standard_Integer      IP)
+                              const int      IP)
 {
-  Standard_Real a, b, c, d, e, f, vtol;
+  double a, b, c, d, e, f, vtol;
   box.Get(a, b, c, d, e, f);
   d -= a;
   e -= b;
@@ -202,9 +204,9 @@ void ChFi3d_SetPointTolerance(TopOpeBRepDS_DataStructure& DStr,
 
 //=================================================================================================
 
-void ChFi3d_EnlargeBox(const Handle(Geom_Curve)& C,
-                       const Standard_Real       wd,
-                       const Standard_Real       wf,
+void ChFi3d_EnlargeBox(const occ::handle<Geom_Curve>& C,
+                       const double       wd,
+                       const double       wf,
                        Bnd_Box&                  box1,
                        Bnd_Box&                  box2)
 {
@@ -214,14 +216,14 @@ void ChFi3d_EnlargeBox(const Handle(Geom_Curve)& C,
 
 //=================================================================================================
 
-void ChFi3d_EnlargeBox(const Handle(Adaptor3d_Surface)& S,
-                       const Handle(Geom2d_Curve)&      PC,
-                       const Standard_Real              wd,
-                       const Standard_Real              wf,
+void ChFi3d_EnlargeBox(const occ::handle<Adaptor3d_Surface>& S,
+                       const occ::handle<Geom2d_Curve>&      PC,
+                       const double              wd,
+                       const double              wf,
                        Bnd_Box&                         box1,
                        Bnd_Box&                         box2)
 {
-  Standard_Real u, v;
+  double u, v;
   PC->Value(wd).Coord(u, v);
   box1.Add(S->Value(u, v));
   PC->Value(wf).Coord(u, v);
@@ -231,14 +233,14 @@ void ChFi3d_EnlargeBox(const Handle(Adaptor3d_Surface)& S,
 //=================================================================================================
 
 void ChFi3d_EnlargeBox(const TopoDS_Edge&          E,
-                       const TopTools_ListOfShape& LF,
-                       const Standard_Real         w,
+                       const NCollection_List<TopoDS_Shape>& LF,
+                       const double         w,
                        Bnd_Box&                    box)
 
 {
   BRepAdaptor_Curve BC(E);
   box.Add(BC.Value(w));
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   for (It.Initialize(LF); It.More(); It.Next())
   {
     TopoDS_Face F = TopoDS::Face(It.Value());
@@ -253,27 +255,27 @@ void ChFi3d_EnlargeBox(const TopoDS_Edge&          E,
 //=================================================================================================
 
 void ChFi3d_EnlargeBox(TopOpeBRepDS_DataStructure&    DStr,
-                       const Handle(ChFiDS_Stripe)&   st,
-                       const Handle(ChFiDS_SurfData)& sd,
+                       const occ::handle<ChFiDS_Stripe>&   st,
+                       const occ::handle<ChFiDS_SurfData>& sd,
                        Bnd_Box&                       b1,
                        Bnd_Box&                       b2,
-                       const Standard_Boolean         isfirst)
+                       const bool         isfirst)
 {
-  Standard_Real             u, v;
+  double             u, v;
   const ChFiDS_CommonPoint& cp1 = sd->Vertex(isfirst, 1);
   const ChFiDS_CommonPoint& cp2 = sd->Vertex(isfirst, 2);
   b1.Add(cp1.Point());
   b2.Add(cp2.Point());
   const ChFiDS_FaceInterference& fi1  = sd->InterferenceOnS1();
   const ChFiDS_FaceInterference& fi2  = sd->InterferenceOnS2();
-  const Handle(Geom_Surface)&    S    = DStr.Surface(sd->Surf()).Surface();
-  const Handle(Geom2d_Curve)&    pcs1 = fi1.PCurveOnSurf();
-  const Handle(Geom2d_Curve)&    pcs2 = fi2.PCurveOnSurf();
-  const Handle(Geom_Curve)&      c3d1 = DStr.Curve(fi1.LineIndex()).Curve();
-  const Handle(Geom_Curve)&      c3d2 = DStr.Curve(fi2.LineIndex()).Curve();
-  Handle(Adaptor3d_Surface)      F1   = Geometry(DStr, sd->IndexOfS1());
-  Handle(Adaptor3d_Surface)      F2   = Geometry(DStr, sd->IndexOfS2());
-  Standard_Real                  p1   = fi1.Parameter(isfirst);
+  const occ::handle<Geom_Surface>&    S    = DStr.Surface(sd->Surf()).Surface();
+  const occ::handle<Geom2d_Curve>&    pcs1 = fi1.PCurveOnSurf();
+  const occ::handle<Geom2d_Curve>&    pcs2 = fi2.PCurveOnSurf();
+  const occ::handle<Geom_Curve>&      c3d1 = DStr.Curve(fi1.LineIndex()).Curve();
+  const occ::handle<Geom_Curve>&      c3d2 = DStr.Curve(fi2.LineIndex()).Curve();
+  occ::handle<Adaptor3d_Surface>      F1   = Geometry(DStr, sd->IndexOfS1());
+  occ::handle<Adaptor3d_Surface>      F2   = Geometry(DStr, sd->IndexOfS2());
+  double                  p1   = fi1.Parameter(isfirst);
   if (!c3d1.IsNull())
     b1.Add(c3d1->Value(p1));
   if (!pcs1.IsNull())
@@ -283,14 +285,14 @@ void ChFi3d_EnlargeBox(TopOpeBRepDS_DataStructure&    DStr,
   }
   if (!F1.IsNull())
   {
-    const Handle(Geom2d_Curve)& pcf1 = fi1.PCurveOnFace();
+    const occ::handle<Geom2d_Curve>& pcf1 = fi1.PCurveOnFace();
     if (!pcf1.IsNull())
     {
       pcf1->Value(p1).Coord(u, v);
       b1.Add(F1->Value(u, v));
     }
   }
-  Standard_Real p2 = fi2.Parameter(isfirst);
+  double p2 = fi2.Parameter(isfirst);
   if (!c3d2.IsNull())
     b2.Add(c3d2->Value(p2));
   if (!pcs2.IsNull())
@@ -300,7 +302,7 @@ void ChFi3d_EnlargeBox(TopOpeBRepDS_DataStructure&    DStr,
   }
   if (!F2.IsNull())
   {
-    const Handle(Geom2d_Curve)& pcf2 = fi2.PCurveOnFace();
+    const occ::handle<Geom2d_Curve>& pcf2 = fi2.PCurveOnFace();
     if (!pcf2.IsNull())
     {
       pcf2->Value(p2).Coord(u, v);
@@ -309,8 +311,8 @@ void ChFi3d_EnlargeBox(TopOpeBRepDS_DataStructure&    DStr,
   }
   if (!st.IsNull())
   {
-    const Handle(Geom_Curve)&   c3d = DStr.Curve(st->Curve(isfirst)).Curve();
-    const Handle(Geom2d_Curve)& c2d = st->PCurve(isfirst);
+    const occ::handle<Geom_Curve>&   c3d = DStr.Curve(st->Curve(isfirst)).Curve();
+    const occ::handle<Geom2d_Curve>& c2d = st->PCurve(isfirst);
     if (st->Orientation(isfirst) == TopAbs_FORWARD)
       st->Parameters(isfirst, p1, p2);
     else
@@ -337,7 +339,7 @@ void ChFi3d_conexfaces(const TopoDS_Edge& E,
                        TopoDS_Face&       F2,
                        const ChFiDS_Map&  EFMap)
 {
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   F1.Nullify();
   F2.Nullify();
   for (It.Initialize(EFMap(E)); It.More(); It.Next())
@@ -366,7 +368,7 @@ void ChFi3d_conexfaces(const TopoDS_Edge& E,
 ChFiDS_State ChFi3d_EdgeState(TopoDS_Edge* E, const ChFiDS_Map& EFMap)
 {
   ChFiDS_State     sst;
-  Standard_Integer i, j;
+  int i, j;
   // TopoDS_Face F[3];
   TopoDS_Face F1, F2, F3, F4, F5, F6;
   ChFi3d_conexfaces(E[0], F1, F2, EFMap);
@@ -439,7 +441,7 @@ GeomAbs_Shape ChFi3d_evalconti(const TopoDS_Edge& /*E*/,
     return cont;
   TopoDS_Face F = F1;
   F.Orientation(TopAbs_FORWARD);
-  BRepAdaptor_Surface S(F, Standard_False);
+  BRepAdaptor_Surface S(F, false);
   GeomAbs_SurfaceType typ = S.GetType();
   if (typ != GeomAbs_Cone && typ != GeomAbs_Sphere && typ != GeomAbs_Torus)
     return cont;
@@ -449,23 +451,23 @@ GeomAbs_Shape ChFi3d_evalconti(const TopoDS_Edge& /*E*/,
 // modified by NIZNHY-PKV Wed Dec 15 11:22:35 2010f
 //=================================================================================================
 
-Standard_Boolean ChFi3d_KParticular(const Handle(ChFiDS_Spine)& Spine,
-                                    const Standard_Integer      IE,
+bool ChFi3d_KParticular(const occ::handle<ChFiDS_Spine>& Spine,
+                                    const int      IE,
                                     const BRepAdaptor_Surface&  S1,
                                     const BRepAdaptor_Surface&  S2)
 {
-  Standard_Boolean bRet;
+  bool bRet;
   //
-  bRet = Standard_True;
+  bRet = true;
   //
-  Handle(ChFiDS_FilSpine) fs = Handle(ChFiDS_FilSpine)::DownCast(Spine);
+  occ::handle<ChFiDS_FilSpine> fs = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (!fs.IsNull() && !fs->IsConstant(IE))
   {
     return !bRet;
   }
   //
-  Standard_Boolean    bIsPlane1, bIsPlane2;
-  Standard_Real       aPA;
+  bool    bIsPlane1, bIsPlane2;
+  double       aPA;
   GeomAbs_CurveType   aCT;
   GeomAbs_SurfaceType aST1, aST2;
   //
@@ -537,11 +539,11 @@ Standard_Boolean ChFi3d_KParticular(const Handle(ChFiDS_Spine)& Spine,
 //            Useful for intersections with known extremities.
 //=======================================================================
 void ChFi3d_BoundFac(BRepAdaptor_Surface&   S,
-                     const Standard_Real    uumin,
-                     const Standard_Real    uumax,
-                     const Standard_Real    vvmin,
-                     const Standard_Real    vvmax,
-                     const Standard_Boolean checknaturalbounds)
+                     const double    uumin,
+                     const double    uumax,
+                     const double    vvmin,
+                     const double    vvmax,
+                     const bool checknaturalbounds)
 {
   ChFi3d_BoundSrf(S.ChangeSurface(), uumin, uumax, vvmin, vvmax, checknaturalbounds);
 }
@@ -552,21 +554,21 @@ void ChFi3d_BoundFac(BRepAdaptor_Surface&   S,
 //           Useful for intersections with known extremities.
 //=======================================================================
 void ChFi3d_BoundSrf(GeomAdaptor_Surface&   S,
-                     const Standard_Real    uumin,
-                     const Standard_Real    uumax,
-                     const Standard_Real    vvmin,
-                     const Standard_Real    vvmax,
-                     const Standard_Boolean checknaturalbounds)
+                     const double    uumin,
+                     const double    uumax,
+                     const double    vvmin,
+                     const double    vvmax,
+                     const bool checknaturalbounds)
 {
-  Standard_Real                          umin = uumin, umax = uumax, vmin = vvmin, vmax = vvmax;
-  Handle(Geom_Surface)                   surface = S.Surface();
-  Handle(Geom_RectangularTrimmedSurface) trs =
-    Handle(Geom_RectangularTrimmedSurface)::DownCast(surface);
+  double                          umin = uumin, umax = uumax, vmin = vvmin, vmax = vvmax;
+  occ::handle<Geom_Surface>                   surface = S.Surface();
+  occ::handle<Geom_RectangularTrimmedSurface> trs =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(surface);
   if (!trs.IsNull())
     surface = trs->BasisSurface();
-  Standard_Real u1, u2, v1, v2;
+  double u1, u2, v1, v2;
   surface->Bounds(u1, u2, v1, v2);
-  Standard_Real peru = 0, perv = 0;
+  double peru = 0, perv = 0;
   if (surface->IsUPeriodic())
   {
     peru = surface->UPeriod();
@@ -575,16 +577,16 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface&   S,
   {
     perv = surface->VPeriod();
   }
-  Standard_Real Stepu = umax - umin;
-  Standard_Real Stepv = vmax - vmin;
+  double Stepu = umax - umin;
+  double Stepv = vmax - vmin;
 
   // It is supposed that box uv is not null in at least
   // one direction.
-  Standard_Real scalu = S.UResolution(1.);
-  Standard_Real scalv = S.VResolution(1.);
+  double scalu = S.UResolution(1.);
+  double scalv = S.VResolution(1.);
 
-  Standard_Real step3du = Stepu / scalu;
-  Standard_Real step3dv = Stepv / scalv;
+  double step3du = Stepu / scalu;
+  double step3dv = Stepv / scalv;
 
   if (step3du > step3dv)
     Stepv = step3du * scalv;
@@ -596,10 +598,10 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface&   S,
   if (perv > 0)
     Stepv = 0.1 * (perv - (vmax - vmin));
 
-  Standard_Real uu1 = umin - Stepu;
-  Standard_Real uu2 = umax + Stepu;
-  Standard_Real vv1 = vmin - Stepv;
-  Standard_Real vv2 = vmax + Stepv;
+  double uu1 = umin - Stepu;
+  double uu2 = umax + Stepu;
+  double vv1 = vmin - Stepv;
+  double vv2 = vmax + Stepv;
   if (checknaturalbounds)
   {
     if (!S.IsUPeriodic())
@@ -618,16 +620,16 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface&   S,
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_InterPlaneEdge(const Handle(Adaptor3d_Surface)& Plan,
-                                       const Handle(Adaptor3d_Curve)&   C,
-                                       Standard_Real&                   W,
-                                       const Standard_Boolean           Sens,
-                                       const Standard_Real              tolc)
+bool ChFi3d_InterPlaneEdge(const occ::handle<Adaptor3d_Surface>& Plan,
+                                       const occ::handle<Adaptor3d_Curve>&   C,
+                                       double&                   W,
+                                       const bool           Sens,
+                                       const double              tolc)
 {
   IntCurveSurface_HInter Intersection;
-  Standard_Integer       isol = 0, nbp, iip;
-  Standard_Real          uf = C->FirstParameter(), ul = C->LastParameter();
-  Standard_Real          CW;
+  int       isol = 0, nbp, iip;
+  double          uf = C->FirstParameter(), ul = C->LastParameter();
+  double          CW;
 
   Intersection.Perform(C, Plan);
 
@@ -663,26 +665,26 @@ Standard_Boolean ChFi3d_InterPlaneEdge(const Handle(Adaptor3d_Surface)& Plan,
     }
   }
   if (isol == 0)
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
 void ChFi3d_ExtrSpineCarac(const TopOpeBRepDS_DataStructure& DStr,
-                           const Handle(ChFiDS_Stripe)&      cd,
-                           const Standard_Integer            i,
-                           const Standard_Real               p,
-                           const Standard_Integer            jf,
-                           const Standard_Integer            sens,
+                           const occ::handle<ChFiDS_Stripe>&      cd,
+                           const int            i,
+                           const double               p,
+                           const int            jf,
+                           const int            sens,
                            gp_Pnt&                           P,
                            gp_Vec&                           V,
-                           Standard_Real& R) // check if it is necessary to add D1,D2 and DR
+                           double& R) // check if it is necessary to add D1,D2 and DR
 {
   // Attention for approximated surfaces it is assumed that e
   // the parameters of the pcurve are the same as of
   // elspine used for its construction.
-  const Handle(Geom_Surface)& fffil = DStr.Surface(cd->SetOfSurfData()->Value(i)->Surf()).Surface();
+  const occ::handle<Geom_Surface>& fffil = DStr.Surface(cd->SetOfSurfData()->Value(i)->Surf()).Surface();
   gp_Pnt2d            pp = cd->SetOfSurfData()->Value(i)->Interference(jf).PCurveOnSurf()->Value(p);
   GeomAdaptor_Surface gs(fffil);
   P = fffil->Value(pp.X(), pp.Y());
@@ -703,11 +705,11 @@ void ChFi3d_ExtrSpineCarac(const TopOpeBRepDS_DataStructure& DStr,
     }
     break;
     default: {
-      Standard_Integer            nbelspine;
-      const Handle(ChFiDS_Spine)& sp  = cd->Spine();
-      Handle(ChFiDS_FilSpine)     fsp = Handle(ChFiDS_FilSpine)::DownCast(sp);
+      int            nbelspine;
+      const occ::handle<ChFiDS_Spine>& sp  = cd->Spine();
+      occ::handle<ChFiDS_FilSpine>     fsp = occ::down_cast<ChFiDS_FilSpine>(sp);
       nbelspine                       = sp->NbEdges();
-      Handle(ChFiDS_ElSpine) hels;
+      occ::handle<ChFiDS_ElSpine> hels;
       if (nbelspine == 1)
         hels = sp->ElSpine(1);
       else
@@ -735,13 +737,13 @@ void ChFi3d_ExtrSpineCarac(const TopOpeBRepDS_DataStructure& DStr,
 //           tangent points and vectors calculated at the extremities
 //           of guidelines of start and end fillets.
 //=======================================================================
-Handle(Geom_Circle) ChFi3d_CircularSpine(Standard_Real&      WFirst,
-                                         Standard_Real&      WLast,
+occ::handle<Geom_Circle> ChFi3d_CircularSpine(double&      WFirst,
+                                         double&      WLast,
                                          const gp_Pnt&       Pdeb,
                                          const gp_Vec&       Vdeb,
                                          const gp_Pnt&       Pfin,
                                          const gp_Vec&       Vfin,
-                                         const Standard_Real rad)
+                                         const double rad)
 {
   gp_Circ            ccc;
   gp_Pln             Pl1(Pdeb, gp_Dir(Vdeb)), Pl2(Pfin, gp_Dir(Vfin));
@@ -758,7 +760,7 @@ Handle(Geom_Circle) ChFi3d_CircularSpine(Standard_Real&      WFirst,
     gp_Dir ddfin(vvfin);
     if (Vdeb.Crossed(vvdeb).Dot(Vfin.Crossed(vvfin)) > 0.)
     {
-      return Handle(Geom_Circle)();
+      return occ::handle<Geom_Circle>();
     }
     gp_Ax2 circax2(cendeb, dddeb ^ ddfin, dddeb);
     ccc.SetPosition(circax2);
@@ -768,7 +770,7 @@ Handle(Geom_Circle) ChFi3d_CircularSpine(Standard_Real&      WFirst,
     return new Geom_Circle(ccc);
   }
 
-  return Handle(Geom_Circle)();
+  return occ::handle<Geom_Circle>();
 }
 
 //=======================================================================
@@ -777,14 +779,14 @@ Handle(Geom_Circle) ChFi3d_CircularSpine(Standard_Real&      WFirst,
 //           tangent points and vectors calculated at the extremities of
 //           guidelines of start and end fillets.
 //=======================================================================
-Handle(Geom_BezierCurve) ChFi3d_Spine(const gp_Pnt&       pd,
+occ::handle<Geom_BezierCurve> ChFi3d_Spine(const gp_Pnt&       pd,
                                       gp_Vec&             vd,
                                       const gp_Pnt&       pf,
                                       gp_Vec&             vf,
-                                      const Standard_Real R)
+                                      const double R)
 {
-  TColgp_Array1OfPnt  pol(1, 4);
-  const Standard_Real fac = 0.5 * tan((M_PI - vd.Angle(vf)) * 0.5);
+  NCollection_Array1<gp_Pnt>  pol(1, 4);
+  const double fac = 0.5 * tan((M_PI - vd.Angle(vf)) * 0.5);
   pol(1)                  = pd;
   vd.Multiply(fac * R);
   pol(2).SetCoord(pd.X() + vd.X(), pd.Y() + vd.Y(), pd.Z() + vd.Z());
@@ -798,33 +800,33 @@ Handle(Geom_BezierCurve) ChFi3d_Spine(const gp_Pnt&       pd,
 // function : IsInFront
 // purpose  : Checks if surfdata i1 and i2 are face to face
 //=======================================================================
-Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
-                                  const Handle(ChFiDS_Stripe)& cd1,
-                                  const Handle(ChFiDS_Stripe)& cd2,
-                                  const Standard_Integer       i1,
-                                  const Standard_Integer       i2,
-                                  const Standard_Integer       sens1,
-                                  const Standard_Integer       sens2,
-                                  Standard_Real&               p1,
-                                  Standard_Real&               p2,
+bool ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
+                                  const occ::handle<ChFiDS_Stripe>& cd1,
+                                  const occ::handle<ChFiDS_Stripe>& cd2,
+                                  const int       i1,
+                                  const int       i2,
+                                  const int       sens1,
+                                  const int       sens2,
+                                  double&               p1,
+                                  double&               p2,
                                   TopoDS_Face&                 face,
-                                  Standard_Boolean&            sameside,
-                                  Standard_Integer&            jf1,
-                                  Standard_Integer&            jf2,
-                                  Standard_Boolean&            visavis,
+                                  bool&            sameside,
+                                  int&            jf1,
+                                  int&            jf2,
+                                  bool&            visavis,
                                   const TopoDS_Vertex&         Vtx,
-                                  const Standard_Boolean       Check2dDistance,
-                                  const Standard_Boolean       enlarge)
+                                  const bool       Check2dDistance,
+                                  const bool       enlarge)
 {
-  Standard_Boolean               isf1 = (sens1 == 1), isf2 = (sens2 == 1);
-  const Handle(ChFiDS_SurfData)& fd1 = cd1->SetOfSurfData()->Value(i1);
-  const Handle(ChFiDS_SurfData)& fd2 = cd2->SetOfSurfData()->Value(i2);
+  bool               isf1 = (sens1 == 1), isf2 = (sens2 == 1);
+  const occ::handle<ChFiDS_SurfData>& fd1 = cd1->SetOfSurfData()->Value(i1);
+  const occ::handle<ChFiDS_SurfData>& fd2 = cd2->SetOfSurfData()->Value(i2);
 
   TopAbs_Orientation Or, OrSave1, OrSave2, OrFace1, OrFace2;
-  visavis             = Standard_False;
-  Standard_Real    u1 = 0., u2 = 0.;
-  Standard_Boolean ss = 0, ok = 0;
-  Standard_Integer j1 = 0, j2 = 0;
+  visavis             = false;
+  double    u1 = 0., u2 = 0.;
+  bool ss = 0, ok = 0;
+  int j1 = 0, j2 = 0;
   TopoDS_Face      ff;
   if (fd1->IndexOfS1() == fd2->IndexOfS1())
   {
@@ -840,12 +842,12 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
     if (shape2.IsNull())
       throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
     OrFace2  = shape2.Orientation();
-    visavis  = Standard_True;
+    visavis  = true;
     sameside = ChFi3d::SameSide(Or, OrSave1, OrSave2, OrFace1, OrFace2);
     // The parameters of the other side are not used for orientation. This would raise problems
-    Standard_Integer kf1 = jf1, kf2 = jf2;
-    Standard_Real    pref1 = fd1->Interference(kf1).Parameter(isf1);
-    Standard_Real    pref2 = fd2->Interference(kf2).Parameter(isf2);
+    int kf1 = jf1, kf2 = jf2;
+    double    pref1 = fd1->Interference(kf1).Parameter(isf1);
+    double    pref2 = fd2->Interference(kf2).Parameter(isf2);
     gp_Pnt2d         P2d;
     if (Check2dDistance)
       P2d = BRep_Tool::Parameters(Vtx, face);
@@ -886,12 +888,12 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
     if (shape2.IsNull())
       throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
     OrFace2  = shape2.Orientation();
-    visavis  = Standard_True;
+    visavis  = true;
     sameside = ChFi3d::SameSide(Or, OrSave1, OrSave2, OrFace1, OrFace2);
     // The parameters of the other side are not used for orientation. This would raise problems
-    Standard_Integer kf1 = jf1, kf2 = jf2;
-    Standard_Real    pref1 = fd1->Interference(kf1).Parameter(isf1);
-    Standard_Real    pref2 = fd2->Interference(kf2).Parameter(isf2);
+    int kf1 = jf1, kf2 = jf2;
+    double    pref1 = fd1->Interference(kf1).Parameter(isf1);
+    double    pref2 = fd2->Interference(kf2).Parameter(isf2);
     gp_Pnt2d         P2d;
     if (Check2dDistance)
       P2d = BRep_Tool::Parameters(Vtx, face);
@@ -909,7 +911,7 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
                          Check2dDistance,
                          enlarge))
     {
-      Standard_Boolean restore =
+      bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
       ok = 1;
       if (restore)
@@ -956,12 +958,12 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
     if (shape2.IsNull())
       throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
     OrFace2  = shape2.Orientation();
-    visavis  = Standard_True;
+    visavis  = true;
     sameside = ChFi3d::SameSide(Or, OrSave1, OrSave2, OrFace1, OrFace2);
     // The parameters of the other side are not used for orientation.
-    Standard_Integer kf1 = jf1, kf2 = jf2;
-    Standard_Real    pref1 = fd1->Interference(kf1).Parameter(isf1);
-    Standard_Real    pref2 = fd2->Interference(kf2).Parameter(isf2);
+    int kf1 = jf1, kf2 = jf2;
+    double    pref1 = fd1->Interference(kf1).Parameter(isf1);
+    double    pref2 = fd2->Interference(kf2).Parameter(isf2);
     gp_Pnt2d         P2d;
     if (Check2dDistance)
       P2d = BRep_Tool::Parameters(Vtx, face);
@@ -979,7 +981,7 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
                          Check2dDistance,
                          enlarge))
     {
-      Standard_Boolean restore =
+      bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
       ok = 1;
       if (restore)
@@ -1026,12 +1028,12 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
     if (shape2.IsNull())
       throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
     OrFace2  = shape2.Orientation();
-    visavis  = Standard_True;
+    visavis  = true;
     sameside = ChFi3d::SameSide(Or, OrSave1, OrSave2, OrFace1, OrFace2);
     // The parameters of the other side are not used for orientation.
-    Standard_Integer kf1 = jf1, kf2 = jf2;
-    Standard_Real    pref1 = fd1->Interference(kf1).Parameter(isf1);
-    Standard_Real    pref2 = fd2->Interference(kf2).Parameter(isf2);
+    int kf1 = jf1, kf2 = jf2;
+    double    pref1 = fd1->Interference(kf1).Parameter(isf1);
+    double    pref2 = fd2->Interference(kf2).Parameter(isf2);
     gp_Pnt2d         P2d;
     if (Check2dDistance)
       P2d = BRep_Tool::Parameters(Vtx, face);
@@ -1049,7 +1051,7 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
                          Check2dDistance,
                          enlarge))
     {
-      Standard_Boolean restore =
+      bool restore =
         ok && ((j1 == jf1 && sens1 * (p1 - u1) > 0.) || (j2 == jf2 && sens2 * (p2 - u2) > 0.));
       ok = 1;
       if (restore)
@@ -1087,31 +1089,31 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure&  DStr,
 
 //=================================================================================================
 
-static Standard_Real recadre(const Standard_Real    p,
-                             const Standard_Real    ref,
-                             const Standard_Integer sens,
-                             const Standard_Real    first,
-                             const Standard_Real    last)
+static double recadre(const double    p,
+                             const double    ref,
+                             const int sens,
+                             const double    first,
+                             const double    last)
 {
-  const Standard_Real pp = p + (sens > 0 ? (first - last) : (last - first));
+  const double pp = p + (sens > 0 ? (first - last) : (last - first));
   return ((std::abs(pp - ref) < std::abs(p - ref)) ? pp : p);
 }
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
-                                  const Standard_Real            pref1,
-                                  Standard_Real&                 p1,
-                                  const Standard_Integer         jf1,
-                                  const Standard_Integer         sens1,
-                                  const Handle(ChFiDS_SurfData)& fd2,
-                                  const Standard_Real            pref2,
-                                  Standard_Real&                 p2,
-                                  const Standard_Integer         jf2,
-                                  const Standard_Integer         sens2,
+bool ChFi3d_IntTraces(const occ::handle<ChFiDS_SurfData>& fd1,
+                                  const double            pref1,
+                                  double&                 p1,
+                                  const int         jf1,
+                                  const int         sens1,
+                                  const occ::handle<ChFiDS_SurfData>& fd2,
+                                  const double            pref2,
+                                  double&                 p2,
+                                  const int         jf2,
+                                  const int         sens2,
                                   const gp_Pnt2d&                RefP2d,
-                                  const Standard_Boolean         Check2dDistance,
-                                  const Standard_Boolean         enlarge)
+                                  const bool         Check2dDistance,
+                                  const bool         enlarge)
 {
   Geom2dAdaptor_Curve C1;
   Geom2dAdaptor_Curve C2;
@@ -1119,52 +1121,52 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
   // additionally all periodic curves are taken and points on
   // them are filtered using a specific criterion.
 
-  Standard_Real first, last, delta = 0.;
+  double first, last, delta = 0.;
   first = fd1->Interference(jf1).FirstParameter();
   last  = fd1->Interference(jf1).LastParameter();
   if ((last - first) < Precision::PConfusion())
-    return Standard_False;
+    return false;
   if (enlarge)
     delta = std::min(0.1, 0.05 * (last - first));
-  Handle(Geom2d_Curve) pcf1 = fd1->Interference(jf1).PCurveOnFace();
+  occ::handle<Geom2d_Curve> pcf1 = fd1->Interference(jf1).PCurveOnFace();
   if (pcf1.IsNull())
-    return Standard_False;
-  Standard_Boolean isper1 = pcf1->IsPeriodic();
+    return false;
+  bool isper1 = pcf1->IsPeriodic();
   if (isper1)
   {
-    Handle(Geom2d_TrimmedCurve) tr1 = Handle(Geom2d_TrimmedCurve)::DownCast(pcf1);
+    occ::handle<Geom2d_TrimmedCurve> tr1 = occ::down_cast<Geom2d_TrimmedCurve>(pcf1);
     if (!tr1.IsNull())
       pcf1 = tr1->BasisCurve();
     C1.Load(pcf1);
   }
   else
     C1.Load(pcf1, first - delta, last + delta);
-  Standard_Real first1 = pcf1->FirstParameter(), last1 = pcf1->LastParameter();
+  double first1 = pcf1->FirstParameter(), last1 = pcf1->LastParameter();
 
   first = fd2->Interference(jf2).FirstParameter();
   last  = fd2->Interference(jf2).LastParameter();
   if ((last - first) < Precision::PConfusion())
-    return Standard_False;
+    return false;
   if (enlarge)
     delta = std::min(0.1, 0.05 * (last - first));
-  Handle(Geom2d_Curve) pcf2 = fd2->Interference(jf2).PCurveOnFace();
+  occ::handle<Geom2d_Curve> pcf2 = fd2->Interference(jf2).PCurveOnFace();
   if (pcf2.IsNull())
-    return Standard_False;
-  Standard_Boolean isper2 = pcf2->IsPeriodic();
+    return false;
+  bool isper2 = pcf2->IsPeriodic();
   if (isper2)
   {
-    Handle(Geom2d_TrimmedCurve) tr2 = Handle(Geom2d_TrimmedCurve)::DownCast(pcf2);
+    occ::handle<Geom2d_TrimmedCurve> tr2 = occ::down_cast<Geom2d_TrimmedCurve>(pcf2);
     if (!tr2.IsNull())
       pcf2 = tr2->BasisCurve();
     C2.Load(pcf2);
   }
   else
     C2.Load(fd2->Interference(jf2).PCurveOnFace(), first - delta, last + delta);
-  Standard_Real first2 = pcf2->FirstParameter(), last2 = pcf2->LastParameter();
+  double first2 = pcf2->FirstParameter(), last2 = pcf2->LastParameter();
 
   IntRes2d_IntersectionPoint int2d;
   Geom2dInt_GInter           Intersection;
-  Standard_Integer           nbpt, nbseg;
+  int           nbpt, nbseg;
   gp_Pnt2d                   p2d;
   if (fd1->Interference(jf1).PCurveOnFace() == fd2->Interference(jf2).PCurveOnFace())
   {
@@ -1199,12 +1201,12 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
           p1 = recadre(p1, pref1, sens1, first1, last1);
         if (isper2)
           p2 = recadre(p2, pref2, sens2, first2, last2);
-        for (Standard_Integer i = 2; i <= nbpt; i++)
+        for (int i = 2; i <= nbpt; i++)
         {
           int2d = Intersection.Point(i);
           if (isper1)
           {
-            Standard_Real pp1 = int2d.ParamOnFirst();
+            double pp1 = int2d.ParamOnFirst();
             pp1               = recadre(pp1, pref1, sens1, first1, last1);
             if ((std::abs(pp1 - pref1) < std::abs(p1 - pref1)))
             {
@@ -1215,7 +1217,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
             //  Modified by skv - Mon Jun 16 15:51:21 2003 OCC615 Begin
             else if (Check2dDistance && RefP2d.Distance(int2d.Value()) < RefP2d.Distance(p2d))
             {
-              Standard_Real pp2 = int2d.ParamOnSecond();
+              double pp2 = int2d.ParamOnSecond();
 
               if (isper2)
                 pp2 = recadre(pp2, pref2, sens2, first2, last2);
@@ -1228,7 +1230,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
           }
           else if (isper2)
           {
-            Standard_Real pp2 = int2d.ParamOnSecond();
+            double pp2 = int2d.ParamOnSecond();
             pp2               = recadre(pp2, pref2, sens2, first2, last2);
             if ((std::abs(pp2 - pref2) < std::abs(p2 - pref2)))
             {
@@ -1239,7 +1241,7 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
             //  Modified by skv - Mon Jun 16 15:51:21 2003 OCC615 Begin
             else if (Check2dDistance && RefP2d.Distance(int2d.Value()) < RefP2d.Distance(p2d))
             {
-              Standard_Real pp1 = int2d.ParamOnFirst();
+              double pp1 = int2d.ParamOnFirst();
 
               if (isper1)
                 pp1 = recadre(pp1, pref1, sens1, first1, last1);
@@ -1271,18 +1273,18 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
             p2d = int2d.Value();
           }
         }
-        return Standard_True;
+        return true;
       }
-      return Standard_False;
+      return false;
     }
     else
     {
-      return Standard_False;
+      return false;
     }
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }
 
@@ -1291,15 +1293,15 @@ Standard_Boolean ChFi3d_IntTraces(const Handle(ChFiDS_SurfData)& fd1,
 void ChFi3d_Coefficient(const gp_Vec&  V3d,
                         const gp_Vec&  D1u,
                         const gp_Vec&  D1v,
-                        Standard_Real& DU,
-                        Standard_Real& DV)
+                        double& DU,
+                        double& DV)
 {
-  const Standard_Real AA    = D1u.SquareMagnitude();
-  const Standard_Real BB    = D1u.Dot(D1v);
-  const Standard_Real CC    = D1v.SquareMagnitude();
-  const Standard_Real DD    = D1u.Dot(V3d);
-  const Standard_Real EE    = D1v.Dot(V3d);
-  const Standard_Real Delta = AA * CC - BB * BB;
+  const double AA    = D1u.SquareMagnitude();
+  const double BB    = D1u.Dot(D1v);
+  const double CC    = D1v.SquareMagnitude();
+  const double DD    = D1u.Dot(V3d);
+  const double EE    = D1v.Dot(V3d);
+  const double Delta = AA * CC - BB * BB;
   DU                        = (DD * CC - EE * BB) / Delta;
   DV                        = (AA * EE - BB * DD) / Delta;
 }
@@ -1309,19 +1311,19 @@ void ChFi3d_Coefficient(const gp_Vec&  V3d,
 // purpose  : Dans le cas ou la pcurve est une BSpline on verifie
 //           ses parametres et on la reparametre eventuellement.
 //=======================================================================
-void ChFi3d_ReparamPcurv(const Standard_Real   Uf,
-                         const Standard_Real   Ul,
-                         Handle(Geom2d_Curve)& Pcurv)
+void ChFi3d_ReparamPcurv(const double   Uf,
+                         const double   Ul,
+                         occ::handle<Geom2d_Curve>& Pcurv)
 {
   if (Pcurv.IsNull())
     return;
-  Standard_Real               upcf  = Pcurv->FirstParameter();
-  Standard_Real               upcl  = Pcurv->LastParameter();
-  Handle(Geom2d_Curve)        basis = Pcurv;
-  Handle(Geom2d_TrimmedCurve) trpc  = Handle(Geom2d_TrimmedCurve)::DownCast(Pcurv);
+  double               upcf  = Pcurv->FirstParameter();
+  double               upcl  = Pcurv->LastParameter();
+  occ::handle<Geom2d_Curve>        basis = Pcurv;
+  occ::handle<Geom2d_TrimmedCurve> trpc  = occ::down_cast<Geom2d_TrimmedCurve>(Pcurv);
   if (!trpc.IsNull())
     basis = trpc->BasisCurve();
-  Handle(Geom2d_BSplineCurve) pc = Handle(Geom2d_BSplineCurve)::DownCast(basis);
+  occ::handle<Geom2d_BSplineCurve> pc = occ::down_cast<Geom2d_BSplineCurve>(basis);
   if (pc.IsNull())
     return;
   if (std::abs(upcf - pc->FirstParameter()) > Precision::PConfusion()
@@ -1332,13 +1334,13 @@ void ChFi3d_ReparamPcurv(const Standard_Real   Uf,
   if (std::abs(Uf - pc->FirstParameter()) > Precision::PConfusion()
       || std::abs(Ul - pc->LastParameter()) > Precision::PConfusion())
   {
-    TColgp_Array1OfPnt2d pol(1, pc->NbPoles());
+    NCollection_Array1<gp_Pnt2d> pol(1, pc->NbPoles());
     pc->Poles(pol);
-    TColStd_Array1OfReal kn(1, pc->NbKnots());
+    NCollection_Array1<double> kn(1, pc->NbKnots());
     pc->Knots(kn);
-    TColStd_Array1OfInteger mu(1, pc->NbKnots());
+    NCollection_Array1<int> mu(1, pc->NbKnots());
     pc->Multiplicities(mu);
-    Standard_Integer deg = pc->Degree();
+    int deg = pc->Degree();
     BSplCLib::Reparametrize(Uf, Ul, kn);
     pc = new Geom2d_BSplineCurve(pol, kn, mu, deg);
   }
@@ -1350,11 +1352,11 @@ void ChFi3d_ReparamPcurv(const Standard_Real   Uf,
 // purpose  : Calculation of the pcurve corresponding to a line of intersection
 //           3d. Should be called only in analytic cases.
 //=======================================================================
-void ChFi3d_ProjectPCurv(const Handle(Adaptor3d_Curve)&   HCg,
-                         const Handle(Adaptor3d_Surface)& HSg,
-                         Handle(Geom2d_Curve)&            Pcurv,
-                         const Standard_Real              tol,
-                         Standard_Real&                   tolreached)
+void ChFi3d_ProjectPCurv(const occ::handle<Adaptor3d_Curve>&   HCg,
+                         const occ::handle<Adaptor3d_Surface>& HSg,
+                         occ::handle<Geom2d_Curve>&            Pcurv,
+                         const double              tol,
+                         double&                   tolreached)
 {
   if (HSg->GetType() != GeomAbs_BezierSurface && HSg->GetType() != GeomAbs_BSplineSurface)
   {
@@ -1401,76 +1403,76 @@ void ChFi3d_ProjectPCurv(const Handle(Adaptor3d_Curve)&   HCg,
 // function : CheckSameParameter
 // purpose  : Controls a posteriori that sameparameter worked well
 //=======================================================================
-Standard_Boolean ChFi3d_CheckSameParameter(const Handle(Adaptor3d_Curve)&   C3d,
-                                           Handle(Geom2d_Curve)&            Pcurv,
-                                           const Handle(Adaptor3d_Surface)& S,
-                                           const Standard_Real              tol3d,
-                                           Standard_Real&                   tolreached)
+bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
+                                           occ::handle<Geom2d_Curve>&            Pcurv,
+                                           const occ::handle<Adaptor3d_Surface>& S,
+                                           const double              tol3d,
+                                           double&                   tolreached)
 {
   tolreached            = 0.;
-  Standard_Real    f    = C3d->FirstParameter();
-  Standard_Real    l    = C3d->LastParameter();
-  Standard_Integer nbp  = 45;
-  Standard_Real    step = 1. / (nbp - 1);
-  for (Standard_Integer i = 0; i < nbp; i++)
+  double    f    = C3d->FirstParameter();
+  double    l    = C3d->LastParameter();
+  int nbp  = 45;
+  double    step = 1. / (nbp - 1);
+  for (int i = 0; i < nbp; i++)
   {
-    Standard_Real t, u, v;
+    double t, u, v;
     t = step * i;
     t = (1 - t) * f + t * l;
     Pcurv->Value(t).Coord(u, v);
     gp_Pnt        pS = S->Value(u, v);
     gp_Pnt        pC = C3d->Value(t);
-    Standard_Real d2 = pS.SquareDistance(pC);
+    double d2 = pS.SquareDistance(pC);
     tolreached       = std::max(tolreached, d2);
   }
   tolreached = sqrt(tolreached);
   if (tolreached > tol3d)
   {
     tolreached *= 2.;
-    return Standard_False;
+    return false;
   }
   tolreached *= 2.;
   tolreached = std::max(tolreached, Precision::Confusion());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : SameParameter
 // purpose  : Encapsulation of Sameparameter
 //=======================================================================
-Standard_Boolean ChFi3d_SameParameter(const Handle(Adaptor3d_Curve)&   C3d,
-                                      Handle(Geom2d_Curve)&            Pcurv,
-                                      const Handle(Adaptor3d_Surface)& S,
-                                      const Standard_Real              tol3d,
-                                      Standard_Real&                   tolreached)
+bool ChFi3d_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
+                                      occ::handle<Geom2d_Curve>&            Pcurv,
+                                      const occ::handle<Adaptor3d_Surface>& S,
+                                      const double              tol3d,
+                                      double&                   tolreached)
 {
   if (ChFi3d_CheckSameParameter(C3d, Pcurv, S, tol3d, tolreached))
-    return Standard_True;
+    return true;
   Approx_SameParameter sp(C3d, Pcurv, S, tol3d);
   if (sp.IsDone() && !sp.IsSameParameter())
     Pcurv = sp.Curve2d();
   else if (!sp.IsDone() && !sp.IsSameParameter())
   {
-    return Standard_False;
+    return false;
   }
   tolreached = sp.TolReached();
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : SameParameter
 // purpose  : Encapsulation de Sameparameter
 //=======================================================================
-Standard_Boolean ChFi3d_SameParameter(const Handle(Geom_Curve)&   C3d,
-                                      Handle(Geom2d_Curve)&       Pcurv,
-                                      const Handle(Geom_Surface)& S,
-                                      const Standard_Real         Pardeb,
-                                      const Standard_Real         Parfin,
-                                      const Standard_Real         tol3d,
-                                      Standard_Real&              tolreached)
+bool ChFi3d_SameParameter(const occ::handle<Geom_Curve>&   C3d,
+                                      occ::handle<Geom2d_Curve>&       Pcurv,
+                                      const occ::handle<Geom_Surface>& S,
+                                      const double         Pardeb,
+                                      const double         Parfin,
+                                      const double         tol3d,
+                                      double&              tolreached)
 {
-  /*szv:static*/ Handle(GeomAdaptor_Surface) hs(new GeomAdaptor_Surface(S));
-  /*szv:static*/ Handle(GeomAdaptor_Curve)   hc(new GeomAdaptor_Curve(C3d, Pardeb, Parfin));
+  /*szv:static*/ occ::handle<GeomAdaptor_Surface> hs(new GeomAdaptor_Surface(S));
+  /*szv:static*/ occ::handle<GeomAdaptor_Curve>   hc(new GeomAdaptor_Curve(C3d, Pardeb, Parfin));
   return ChFi3d_SameParameter(hc, Pcurv, hs, tol3d, tolreached);
 }
 
@@ -1480,16 +1482,16 @@ Standard_Boolean ChFi3d_SameParameter(const Handle(Geom_Curve)&   C3d,
 //           to guarantee the same range and parameters as of the
 //           reference 3D curve.
 //=======================================================================
-void ChFi3d_ComputePCurv(const Handle(Adaptor3d_Curve)&   C3d,
+void ChFi3d_ComputePCurv(const occ::handle<Adaptor3d_Curve>&   C3d,
                          const gp_Pnt2d&                  UV1,
                          const gp_Pnt2d&                  UV2,
-                         Handle(Geom2d_Curve)&            Pcurv,
-                         const Handle(Adaptor3d_Surface)& S,
-                         const Standard_Real              Pardeb,
-                         const Standard_Real              Parfin,
-                         const Standard_Real              tol3d,
-                         Standard_Real&                   tolreached,
-                         const Standard_Boolean           reverse)
+                         occ::handle<Geom2d_Curve>&            Pcurv,
+                         const occ::handle<Adaptor3d_Surface>& S,
+                         const double              Pardeb,
+                         const double              Parfin,
+                         const double              tol3d,
+                         double&                   tolreached,
+                         const bool           reverse)
 {
   ChFi3d_ComputePCurv(UV1, UV2, Pcurv, Pardeb, Parfin, reverse);
   ChFi3d_SameParameter(C3d, Pcurv, S, tol3d, tolreached);
@@ -1501,19 +1503,19 @@ void ChFi3d_ComputePCurv(const Handle(Adaptor3d_Curve)&   C3d,
 //           to guarantee the same range and parameters as of the
 //           reference 3D curve.
 //=======================================================================
-void ChFi3d_ComputePCurv(const Handle(Geom_Curve)&   C3d,
+void ChFi3d_ComputePCurv(const occ::handle<Geom_Curve>&   C3d,
                          const gp_Pnt2d&             UV1,
                          const gp_Pnt2d&             UV2,
-                         Handle(Geom2d_Curve)&       Pcurv,
-                         const Handle(Geom_Surface)& S,
-                         const Standard_Real         Pardeb,
-                         const Standard_Real         Parfin,
-                         const Standard_Real         tol3d,
-                         Standard_Real&              tolreached,
-                         const Standard_Boolean      reverse)
+                         occ::handle<Geom2d_Curve>&       Pcurv,
+                         const occ::handle<Geom_Surface>& S,
+                         const double         Pardeb,
+                         const double         Parfin,
+                         const double         tol3d,
+                         double&              tolreached,
+                         const bool      reverse)
 {
-  Handle(Adaptor3d_Surface) hs(new GeomAdaptor_Surface(S));
-  Handle(Adaptor3d_Curve)   hc(new GeomAdaptor_Curve(C3d, Pardeb, Parfin));
+  occ::handle<Adaptor3d_Surface> hs(new GeomAdaptor_Surface(S));
+  occ::handle<Adaptor3d_Curve>   hc(new GeomAdaptor_Curve(C3d, Pardeb, Parfin));
   ChFi3d_ComputePCurv(hc, UV1, UV2, Pcurv, hs, Pardeb, Parfin, tol3d, tolreached, reverse);
 }
 
@@ -1524,12 +1526,12 @@ void ChFi3d_ComputePCurv(const Handle(Geom_Curve)&   C3d,
 //=======================================================================
 void ChFi3d_ComputePCurv(const gp_Pnt2d&        UV1,
                          const gp_Pnt2d&        UV2,
-                         Handle(Geom2d_Curve)&  Pcurv,
-                         const Standard_Real    Pardeb,
-                         const Standard_Real    Parfin,
-                         const Standard_Boolean reverse)
+                         occ::handle<Geom2d_Curve>&  Pcurv,
+                         const double    Pardeb,
+                         const double    Parfin,
+                         const bool reverse)
 {
-  const Standard_Real tol = Precision::PConfusion();
+  const double tol = Precision::PConfusion();
   gp_Pnt2d            p1, p2;
   if (!reverse)
   {
@@ -1567,9 +1569,9 @@ void ChFi3d_ComputePCurv(const gp_Pnt2d&        UV1,
   }
   else
   {
-    TColgp_Array1OfPnt2d    p(1, 2);
-    TColStd_Array1OfReal    k(1, 2);
-    TColStd_Array1OfInteger m(1, 2);
+    NCollection_Array1<gp_Pnt2d>    p(1, 2);
+    NCollection_Array1<double>    k(1, 2);
+    NCollection_Array1<int> m(1, 2);
     m.Init(2);
     k(1)  = Pardeb;
     k(2)  = Parfin;
@@ -1582,16 +1584,16 @@ void ChFi3d_ComputePCurv(const gp_Pnt2d&        UV1,
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Fac,
-                                         Handle(Geom2d_Curve)&            curv,
-                                         const Standard_Integer           sens1,
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surface>& Fac,
+                                         occ::handle<Geom2d_Curve>&            curv,
+                                         const int           sens1,
                                          const gp_Pnt2d&                  pfac1,
                                          const gp_Vec2d&                  vfac1,
-                                         const Standard_Integer           sens2,
+                                         const int           sens2,
                                          const gp_Pnt2d&                  pfac2,
                                          const gp_Vec2d&                  vfac2,
-                                         const Standard_Real              t3d,
-                                         const Standard_Real              ta)
+                                         const double              t3d,
+                                         const double              ta)
 {
   gp_Dir2d v1(vfac1);
   if (sens1 == 1)
@@ -1599,22 +1601,22 @@ Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Fac,
   gp_Dir2d v2(vfac2);
   if (sens2 == 1)
     v2.Reverse();
-  curv = ChFi3d_BuildPCurve(Fac, pfac1, v1, pfac2, v2, Standard_False);
+  curv = ChFi3d_BuildPCurve(Fac, pfac1, v1, pfac2, v2, false);
   return ChFi3d_mkbound(Fac, curv, t3d, ta);
 }
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Surf,
-                                         Handle(Geom2d_Curve)&            curv,
-                                         const Standard_Integer           sens1,
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surface>& Surf,
+                                         occ::handle<Geom2d_Curve>&            curv,
+                                         const int           sens1,
                                          const gp_Pnt2d&                  p1,
                                          gp_Vec&                          v1,
-                                         const Standard_Integer           sens2,
+                                         const int           sens2,
                                          const gp_Pnt2d&                  p2,
                                          gp_Vec&                          v2,
-                                         const Standard_Real              t3d,
-                                         const Standard_Real              ta)
+                                         const double              t3d,
+                                         const double              ta)
 {
   if (sens1 == 1)
     v1.Reverse();
@@ -1626,46 +1628,46 @@ Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Surf,
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Geom_Surface)& s,
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Geom_Surface>& s,
                                          const gp_Pnt2d&             p1,
                                          const gp_Pnt2d&             p2,
-                                         const Standard_Real         t3d,
-                                         const Standard_Real         ta,
-                                         const Standard_Boolean      isfreeboundary)
+                                         const double         t3d,
+                                         const double         ta,
+                                         const bool      isfreeboundary)
 {
-  Handle(Adaptor3d_Surface) HS = new GeomAdaptor_Surface(s);
+  occ::handle<Adaptor3d_Surface> HS = new GeomAdaptor_Surface(s);
   return ChFi3d_mkbound(HS, p1, p2, t3d, ta, isfreeboundary);
 }
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& HS,
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surface>& HS,
                                          const gp_Pnt2d&                  p1,
                                          const gp_Pnt2d&                  p2,
-                                         const Standard_Real              t3d,
-                                         const Standard_Real              ta,
-                                         const Standard_Boolean           isfreeboundary)
+                                         const double              t3d,
+                                         const double              ta,
+                                         const bool           isfreeboundary)
 {
-  TColgp_Array1OfPnt2d pol(1, 2);
+  NCollection_Array1<gp_Pnt2d> pol(1, 2);
   pol(1)                    = p1;
   pol(2)                    = p2;
-  Handle(Geom2d_Curve) curv = new Geom2d_BezierCurve(pol);
+  occ::handle<Geom2d_Curve> curv = new Geom2d_BezierCurve(pol);
   return ChFi3d_mkbound(HS, curv, t3d, ta, isfreeboundary);
 }
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& HS,
-                                         const Handle(Geom2d_Curve)&      curv,
-                                         const Standard_Real              t3d,
-                                         const Standard_Real              ta,
-                                         const Standard_Boolean           isfreeboundary)
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surface>& HS,
+                                         const occ::handle<Geom2d_Curve>&      curv,
+                                         const double              t3d,
+                                         const double              ta,
+                                         const bool           isfreeboundary)
 {
-  Handle(Geom2dAdaptor_Curve) HC = new Geom2dAdaptor_Curve(curv);
+  occ::handle<Geom2dAdaptor_Curve> HC = new Geom2dAdaptor_Curve(curv);
   Adaptor3d_CurveOnSurface    COnS(HC, HS);
   if (isfreeboundary)
   {
-    Handle(Adaptor3d_CurveOnSurface) HCOnS = new Adaptor3d_CurveOnSurface(COnS);
+    occ::handle<Adaptor3d_CurveOnSurface> HCOnS = new Adaptor3d_CurveOnSurface(COnS);
     return new GeomFill_SimpleBound(HCOnS, t3d, ta);
   }
   return new GeomFill_BoundWithSurf(COnS, t3d, ta);
@@ -1673,15 +1675,15 @@ Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& HS,
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Fac,
-                                         Handle(Geom2d_Curve)&            curv,
+occ::handle<GeomFill_Boundary> ChFi3d_mkbound(const occ::handle<Adaptor3d_Surface>& Fac,
+                                         occ::handle<Geom2d_Curve>&            curv,
                                          const gp_Pnt2d&                  p1,
                                          const gp_Pnt2d&                  p2,
-                                         const Standard_Real              t3d,
-                                         const Standard_Real              ta,
-                                         const Standard_Boolean           isfreeboundary)
+                                         const double              t3d,
+                                         const double              ta,
+                                         const bool           isfreeboundary)
 {
-  TColgp_Array1OfPnt2d pol(1, 2);
+  NCollection_Array1<gp_Pnt2d> pol(1, 2);
   pol(1) = p1;
   pol(2) = p2;
   curv   = new Geom2d_BezierCurve(pol);
@@ -1690,15 +1692,15 @@ Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Adaptor3d_Surface)& Fac,
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const gp_Pnt2d&        p1,
+occ::handle<Geom2d_Curve> ChFi3d_BuildPCurve(const gp_Pnt2d&        p1,
                                         gp_Dir2d&              d1,
                                         const gp_Pnt2d&        p2,
                                         gp_Dir2d&              d2,
-                                        const Standard_Boolean redresse)
+                                        const bool redresse)
 {
   gp_Vec2d      vref(p1, p2);
   gp_Dir2d      dref(vref);
-  Standard_Real mref = vref.Magnitude();
+  double mref = vref.Magnitude();
   if (redresse)
   {
     if (d1.Dot(dref) < 0.)
@@ -1707,13 +1709,13 @@ Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const gp_Pnt2d&        p1,
       d2.Reverse();
   }
   // On fait une cubique a la mords moi le noeud
-  TColgp_Array1OfPnt2d pol(1, 4);
+  NCollection_Array1<gp_Pnt2d> pol(1, 4);
   pol(1)                = p1;
   pol(4)                = p2;
-  Standard_Real Lambda1 = std::max(std::abs(d2.Dot(d1)), std::abs(dref.Dot(d1)));
+  double Lambda1 = std::max(std::abs(d2.Dot(d1)), std::abs(dref.Dot(d1)));
   Lambda1               = std::max(0.5 * mref * Lambda1, 1.e-5);
   pol(2)                = gp_Pnt2d(p1.XY() + Lambda1 * d1.XY());
-  Standard_Real Lambda2 = std::max(std::abs(d1.Dot(d2)), std::abs(dref.Dot(d2)));
+  double Lambda2 = std::max(std::abs(d1.Dot(d2)), std::abs(dref.Dot(d2)));
   Lambda2               = std::max(0.5 * mref * Lambda2, 1.e-5);
   pol(3)                = gp_Pnt2d(p2.XY() + Lambda2 * d2.XY());
   return new Geom2d_BezierCurve(pol);
@@ -1721,19 +1723,19 @@ Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const gp_Pnt2d&        p1,
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const Handle(Adaptor3d_Surface)& Surf,
+occ::handle<Geom2d_Curve> ChFi3d_BuildPCurve(const occ::handle<Adaptor3d_Surface>& Surf,
                                         const gp_Pnt2d&                  p1,
                                         const gp_Vec2d&                  v1,
                                         const gp_Pnt2d&                  p2,
                                         const gp_Vec2d&                  v2,
-                                        const Standard_Boolean           redresse)
+                                        const bool           redresse)
 {
   gp_Pnt2d            pp1 = p1, pp2 = p2;
   gp_Vec2d            vv1 = v1, vv2 = v2;
-  const Standard_Real ures    = Surf->UResolution(1.);
-  const Standard_Real vres    = Surf->VResolution(1.);
-  const Standard_Real invures = 1. / ures;
-  const Standard_Real invvres = 1. / vres;
+  const double ures    = Surf->UResolution(1.);
+  const double vres    = Surf->VResolution(1.);
+  const double invures = 1. / ures;
+  const double invvres = 1. / vres;
   pp1.SetX(invures * pp1.X());
   pp1.SetY(invvres * pp1.Y());
   pp2.SetX(invures * pp2.X());
@@ -1743,10 +1745,10 @@ Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const Handle(Adaptor3d_Surface)& Surf,
   vv2.SetX(invures * vv2.X());
   vv2.SetY(invvres * vv2.Y());
   gp_Dir2d                   d1(vv1), d2(vv2);
-  Handle(Geom2d_Curve)       g2dc = ChFi3d_BuildPCurve(pp1, d1, pp2, d2, redresse);
-  Handle(Geom2d_BezierCurve) pc   = Handle(Geom2d_BezierCurve)::DownCast(g2dc);
-  const Standard_Integer     nbp  = pc->NbPoles();
-  for (Standard_Integer ip = 1; ip <= nbp; ip++)
+  occ::handle<Geom2d_Curve>       g2dc = ChFi3d_BuildPCurve(pp1, d1, pp2, d2, redresse);
+  occ::handle<Geom2d_BezierCurve> pc   = occ::down_cast<Geom2d_BezierCurve>(g2dc);
+  const int     nbp  = pc->NbPoles();
+  for (int ip = 1; ip <= nbp; ip++)
   {
     gp_Pnt2d pol = pc->Pole(ip);
     pol.SetX(ures * pol.X());
@@ -1758,16 +1760,16 @@ Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const Handle(Adaptor3d_Surface)& Surf,
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) ChFi3d_BuildPCurve(const Handle(Adaptor3d_Surface)& Surf,
+occ::handle<Geom2d_Curve> ChFi3d_BuildPCurve(const occ::handle<Adaptor3d_Surface>& Surf,
                                         const gp_Pnt2d&                  p1,
                                         const gp_Vec&                    v1,
                                         const gp_Pnt2d&                  p2,
                                         const gp_Vec&                    v2,
-                                        const Standard_Boolean           redresse)
+                                        const bool           redresse)
 {
   gp_Vec        D1u, D1v;
   gp_Pnt        PP1, PP2;
-  Standard_Real DU, DV;
+  double DU, DV;
   Surf->D1(p1.X(), p1.Y(), PP1, D1u, D1v);
   ChFi3d_Coefficient(v1, D1u, D1v, DU, DV);
   gp_Vec2d vv1(DU, DV);
@@ -1804,20 +1806,20 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
                          const gp_Pnt2d&             UV1,
                          const ChFiDS_CommonPoint&   P2,
                          const gp_Pnt2d&             UV2,
-                         const Handle(Geom_Surface)& Surf,
-                         Handle(Geom_Curve)&         C3d,
-                         Handle(Geom2d_Curve)&       Pcurv,
-                         Standard_Real&              Pardeb,
-                         Standard_Real&              Parfin,
-                         const Standard_Real         tol3d,
-                         const Standard_Real         tol2d,
-                         Standard_Real&              tolreached,
-                         const Standard_Integer      IFlag)
+                         const occ::handle<Geom_Surface>& Surf,
+                         occ::handle<Geom_Curve>&         C3d,
+                         occ::handle<Geom2d_Curve>&       Pcurv,
+                         double&              Pardeb,
+                         double&              Parfin,
+                         const double         tol3d,
+                         const double         tol2d,
+                         double&              tolreached,
+                         const int      IFlag)
 // IFlag=0 pcurve et courbe 3d
 // IFlag>0 pcurve (parametrage impose si IFlag=2)
 {
-  /*szv:static*/ Handle(GeomAdaptor_Surface) hs(new GeomAdaptor_Surface());
-  /*szv:static*/ Handle(GeomAdaptor_Curve)   hc(new GeomAdaptor_Curve());
+  /*szv:static*/ occ::handle<GeomAdaptor_Surface> hs(new GeomAdaptor_Surface());
+  /*szv:static*/ occ::handle<GeomAdaptor_Curve>   hc(new GeomAdaptor_Curve());
 
   tolreached = tol3d;
 
@@ -1834,7 +1836,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
         Parfin = C3d->ReversedParameter(Parfin);
         C3d->Reverse();
       }
-      Handle(Geom_TrimmedCurve) tc = Handle(Geom_TrimmedCurve)::DownCast(C3d);
+      occ::handle<Geom_TrimmedCurve> tc = occ::down_cast<Geom_TrimmedCurve>(C3d);
       if (!tc.IsNull())
       {
         C3d = tc->BasisCurve();
@@ -1852,7 +1854,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
     {
       hs->Load(Surf);
       hc->Load(C3d, Pardeb, Parfin);
-      const Handle(Adaptor3d_Curve)& aHCurve = hc; // to avoid ambiguity
+      const occ::handle<Adaptor3d_Curve>& aHCurve = hc; // to avoid ambiguity
       ChFi3d_ComputePCurv(aHCurve,
                           UV1,
                           UV2,
@@ -1862,7 +1864,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
                           Parfin,
                           tol3d,
                           tolreached,
-                          Standard_False);
+                          false);
     }
     else
     {
@@ -1883,7 +1885,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
         Parfin = C3d->ReversedParameter(Parfin);
         C3d->Reverse();
       }
-      Handle(Geom_TrimmedCurve) tc = Handle(Geom_TrimmedCurve)::DownCast(C3d);
+      occ::handle<Geom_TrimmedCurve> tc = occ::down_cast<Geom_TrimmedCurve>(C3d);
       if (!tc.IsNull())
       {
         C3d = tc->BasisCurve();
@@ -1901,7 +1903,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
     {
       hs->Load(Surf);
       hc->Load(C3d, Pardeb, Parfin);
-      const Handle(Adaptor3d_Curve)& aHCurve = hc; // to avoid ambiguity
+      const occ::handle<Adaptor3d_Curve>& aHCurve = hc; // to avoid ambiguity
       ChFi3d_ComputePCurv(aHCurve,
                           UV1,
                           UV2,
@@ -1911,7 +1913,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
                           Parfin,
                           tol3d,
                           tolreached,
-                          Standard_False);
+                          false);
     }
     else
     {
@@ -1925,7 +1927,7 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
     {
       // A straight line is constructed to avoid
       // arc and tangent.
-      TColgp_Array1OfPnt2d qoles(1, 2);
+      NCollection_Array1<gp_Pnt2d> qoles(1, 2);
       qoles(1) = UV1;
       qoles(2) = UV2;
       Pcurv    = new Geom2d_BezierCurve(qoles);
@@ -1940,24 +1942,24 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
       gp_Vec Vv2;
       C1.D1(P2.ParameterOnArc(), Pp, Vv2);
       hs->Load(Surf);
-      Pcurv = ChFi3d_BuildPCurve(hs, UV1, Vv1, UV2, Vv2, Standard_True);
+      Pcurv = ChFi3d_BuildPCurve(hs, UV1, Vv1, UV2, Vv2, true);
       // There are some cases when PCurve constructed in this way
       // leaves the surface, in particular if it results from an
       // extension. A posteriori checking is required and if
       // the curve leaves the surface it is replaced by straight line UV1 UV2
       // non regarding the tangency with neighboring arcs!
       Bnd_Box2d     bs;
-      Standard_Real umin, umax, vmin, vmax;
+      double umin, umax, vmin, vmax;
       Surf->Bounds(umin, umax, vmin, vmax);
       bs.Update(umin, vmin, umax, vmax);
       bs.SetGap(Precision::PConfusion());
-      Standard_Boolean aIN = Standard_True;
-      for (Standard_Integer ii = 1; ii <= 4 && aIN; ii++)
+      bool aIN = true;
+      for (int ii = 1; ii <= 4 && aIN; ii++)
       {
-        if (bs.IsOut(Handle(Geom2d_BezierCurve)::DownCast(Pcurv)->Pole(ii)))
+        if (bs.IsOut(occ::down_cast<Geom2d_BezierCurve>(Pcurv)->Pole(ii)))
         {
-          aIN = Standard_False;
-          TColgp_Array1OfPnt2d qoles(1, 2);
+          aIN = false;
+          NCollection_Array1<gp_Pnt2d> qoles(1, 2);
           qoles(1) = UV1;
           qoles(2) = UV2;
           Pcurv    = new Geom2d_BezierCurve(qoles);
@@ -1965,13 +1967,13 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
       }
     }
     Geom2dAdaptor_Curve         AC(Pcurv);
-    Handle(Geom2dAdaptor_Curve) AHC = new Geom2dAdaptor_Curve(AC);
+    occ::handle<Geom2dAdaptor_Curve> AHC = new Geom2dAdaptor_Curve(AC);
     GeomAdaptor_Surface         AS(Surf);
-    Handle(GeomAdaptor_Surface) AHS = new GeomAdaptor_Surface(AS);
+    occ::handle<GeomAdaptor_Surface> AHS = new GeomAdaptor_Surface(AS);
     Adaptor3d_CurveOnSurface    Cs(AHC, AHS);
     Pardeb = Cs.FirstParameter();
     Parfin = Cs.LastParameter();
-    Standard_Real avtol;
+    double avtol;
     GeomLib::BuildCurve3d(tol3d, Cs, Pardeb, Parfin, C3d, tolreached, avtol);
   }
   else
@@ -1990,12 +1992,12 @@ void ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
 
 //=================================================================================================
 
-Handle(TopOpeBRepDS_SurfaceCurveInterference) ChFi3d_FilCurveInDS(const Standard_Integer      Icurv,
-                                                                  const Standard_Integer      Isurf,
-                                                                  const Handle(Geom2d_Curve)& Pcurv,
+occ::handle<TopOpeBRepDS_SurfaceCurveInterference> ChFi3d_FilCurveInDS(const int      Icurv,
+                                                                  const int      Isurf,
+                                                                  const occ::handle<Geom2d_Curve>& Pcurv,
                                                                   const TopAbs_Orientation    Et)
 {
-  Handle(TopOpeBRepDS_SurfaceCurveInterference) SC1;
+  occ::handle<TopOpeBRepDS_SurfaceCurveInterference> SC1;
   SC1 = new TopOpeBRepDS_SurfaceCurveInterference(TopOpeBRepDS_Transition(Et),
                                                   TopOpeBRepDS_SURFACE,
                                                   Isurf,
@@ -2028,12 +2030,12 @@ TopAbs_Orientation ChFi3d_TrsfTrans(const IntSurf_TypeTrans T1)
 //=======================================================================
 Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
                                            const IntSurf_TypeTrans    TransLine,
-                                           const Standard_Boolean     Start,
+                                           const bool     Start,
                                            ChFiDS_CommonPoint&        CP,
-                                           const Standard_Real        Tol)
+                                           const double        Tol)
 {
   //  BRep_Tool Outil;
-  Standard_Real Dist, maxtol = std::max(Tol, CP.Tolerance());
+  double Dist, maxtol = std::max(Tol, CP.Tolerance());
 
   CP.SetPoint(SP.Value()); // One starts with the point and the vector
   if (SP.HasTangent())
@@ -2053,7 +2055,7 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
   if (SP.IsVertex())
   { // the Vertex is loaded if required
     // (inside of a face)
-    TopoDS_Vertex V = Handle(BRepTopAdaptor_HVertex)::DownCast(SP.Vertex())->Vertex();
+    TopoDS_Vertex V = occ::down_cast<BRepTopAdaptor_HVertex>(SP.Vertex())->Vertex();
 
     CP.SetVertex(V);
     Dist = (SP.Value()).Distance(BRep_Tool::Pnt(V));
@@ -2071,12 +2073,12 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
   { //  An arc, and/or a vertex is loaded
 
     const BRepBlend_PointOnRst& PR   = SP.PointOnRst(1);
-    Handle(BRepAdaptor_Curve2d) Harc = Handle(BRepAdaptor_Curve2d)::DownCast(PR.Arc());
+    occ::handle<BRepAdaptor_Curve2d> Harc = occ::down_cast<BRepAdaptor_Curve2d>(PR.Arc());
     if (!Harc.IsNull())
     {
 
-      Standard_Real    DistF, DistL, LeParamAmoi;
-      Standard_Integer Index_min;
+      double    DistF, DistL, LeParamAmoi;
+      int Index_min;
       TopoDS_Edge      E = Harc->Edge();
 
       TopoDS_Vertex V[2];
@@ -2133,7 +2135,7 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
 
 //=================================================================================================
 
-Standard_Integer ChFi3d_SolidIndex(const Handle(ChFiDS_Spine)& sp,
+int ChFi3d_SolidIndex(const occ::handle<ChFiDS_Spine>& sp,
                                    TopOpeBRepDS_DataStructure& DStr,
                                    ChFiDS_Map&                 MapESo,
                                    ChFiDS_Map&                 MapESh)
@@ -2146,13 +2148,13 @@ Standard_Integer ChFi3d_SolidIndex(const Handle(ChFiDS_Spine)& sp,
     shellousolid = MapESo(edref).First();
   else
     shellousolid = MapESh(edref).First();
-  const Standard_Integer solidindex = DStr.AddShape(shellousolid);
+  const int solidindex = DStr.AddShape(shellousolid);
   return solidindex;
 }
 
 //=================================================================================================
 
-Standard_Integer ChFi3d_IndexPointInDS(const ChFiDS_CommonPoint&   P1,
+int ChFi3d_IndexPointInDS(const ChFiDS_CommonPoint&   P1,
                                        TopOpeBRepDS_DataStructure& DStr)
 {
   if (P1.IsVertex())
@@ -2169,13 +2171,13 @@ Standard_Integer ChFi3d_IndexPointInDS(const ChFiDS_CommonPoint&   P1,
 
 //=================================================================================================
 
-Handle(TopOpeBRepDS_CurvePointInterference) ChFi3d_FilPointInDS(const TopAbs_Orientation Et,
-                                                                const Standard_Integer   Ic,
-                                                                const Standard_Integer   Ip,
-                                                                const Standard_Real      Par,
-                                                                const Standard_Boolean   IsVertex)
+occ::handle<TopOpeBRepDS_CurvePointInterference> ChFi3d_FilPointInDS(const TopAbs_Orientation Et,
+                                                                const int   Ic,
+                                                                const int   Ip,
+                                                                const double      Par,
+                                                                const bool   IsVertex)
 {
-  Handle(TopOpeBRepDS_CurvePointInterference) CP1;
+  occ::handle<TopOpeBRepDS_CurvePointInterference> CP1;
   if (IsVertex)
     CP1 = new TopOpeBRepDS_CurvePointInterference(TopOpeBRepDS_Transition(Et),
                                                   TopOpeBRepDS_CURVE,
@@ -2195,13 +2197,13 @@ Handle(TopOpeBRepDS_CurvePointInterference) ChFi3d_FilPointInDS(const TopAbs_Ori
 
 //=================================================================================================
 
-Handle(TopOpeBRepDS_CurvePointInterference) ChFi3d_FilVertexInDS(const TopAbs_Orientation Et,
-                                                                 const Standard_Integer   Ic,
-                                                                 const Standard_Integer   Ip,
-                                                                 const Standard_Real      Par)
+occ::handle<TopOpeBRepDS_CurvePointInterference> ChFi3d_FilVertexInDS(const TopAbs_Orientation Et,
+                                                                 const int   Ic,
+                                                                 const int   Ip,
+                                                                 const double      Par)
 {
 
-  Handle(TopOpeBRepDS_CurvePointInterference) CP1 =
+  occ::handle<TopOpeBRepDS_CurvePointInterference> CP1 =
     new TopOpeBRepDS_CurvePointInterference(TopOpeBRepDS_Transition(Et),
                                             TopOpeBRepDS_CURVE,
                                             Ic,
@@ -2217,12 +2219,12 @@ Handle(TopOpeBRepDS_CurvePointInterference) ChFi3d_FilVertexInDS(const TopAbs_Or
 //           in the list).
 //=======================================================================
 
-static Standard_Boolean ChFi3d_Orientation(const TopOpeBRepDS_ListOfInterference& LI,
-                                           const Standard_Integer                 igros,
-                                           const Standard_Integer                 ipetit,
+static bool ChFi3d_Orientation(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                                           const int                 igros,
+                                           const int                 ipetit,
                                            TopAbs_Orientation&                    Or,
-                                           const Standard_Boolean isvertex = Standard_False,
-                                           const Standard_Boolean aprendre = Standard_False)
+                                           const bool isvertex = false,
+                                           const bool aprendre = false)
 {
   // In case, when it is necessary to insert a point/vertex, it should be
   // known if this is a point or a vertex, because their index can be the same.
@@ -2231,21 +2233,21 @@ static Standard_Boolean ChFi3d_Orientation(const TopOpeBRepDS_ListOfInterference
     typepetit = TopOpeBRepDS_VERTEX;
   else
     typepetit = TopOpeBRepDS_POINT;
-  TopOpeBRepDS_ListIteratorOfListOfInterference itLI(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itLI(LI);
   for (; itLI.More(); itLI.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)& cur = itLI.Value();
+    const occ::handle<TopOpeBRepDS_Interference>& cur = itLI.Value();
     TopOpeBRepDS_Kind                        GK;
     TopOpeBRepDS_Kind                        SK;
-    Standard_Integer                         S;
-    Standard_Integer                         G;
+    int                         S;
+    int                         G;
     cur->GKGSKS(GK, G, SK, S);
     if (aprendre)
     {
       if (S == igros && G == ipetit && GK == typepetit)
       {
         Or = cur->Transition().Orientation(TopAbs_IN);
-        return Standard_True;
+        return true;
       }
     }
     else
@@ -2253,11 +2255,11 @@ static Standard_Boolean ChFi3d_Orientation(const TopOpeBRepDS_ListOfInterference
       if (S == igros && G == ipetit)
       {
         Or = cur->Transition().Orientation(TopAbs_IN);
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -2265,11 +2267,11 @@ static Standard_Boolean ChFi3d_Orientation(const TopOpeBRepDS_ListOfInterference
 // purpose  : Check if the interference does not already exist.
 //====================================================================
 
-static Standard_Boolean ChFi3d_Contains(const TopOpeBRepDS_ListOfInterference& LI,
-                                        const Standard_Integer                 igros,
-                                        const Standard_Integer                 ipetit,
-                                        const Standard_Boolean isvertex = Standard_False,
-                                        const Standard_Boolean aprendre = Standard_False)
+static bool ChFi3d_Contains(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                                        const int                 igros,
+                                        const int                 ipetit,
+                                        const bool isvertex = false,
+                                        const bool aprendre = false)
 {
   TopAbs_Orientation bidOr;
   return ChFi3d_Orientation(LI, igros, ipetit, bidOr, isvertex, aprendre);
@@ -2277,24 +2279,24 @@ static Standard_Boolean ChFi3d_Contains(const TopOpeBRepDS_ListOfInterference& L
 
 //=================================================================================================
 
-static void QueryAddVertexInEdge(TopOpeBRepDS_ListOfInterference& LI,
-                                 const Standard_Integer           IC,
-                                 const Standard_Integer           IV,
-                                 const Standard_Real              par,
+static void QueryAddVertexInEdge(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                                 const int           IC,
+                                 const int           IV,
+                                 const double              par,
                                  const TopAbs_Orientation         Or)
 {
-  TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI);
   for (; it.More(); it.Next())
   {
-    const Handle(TopOpeBRepDS_Interference)&    cur = it.Value();
-    Handle(TopOpeBRepDS_CurvePointInterference) cpi(
-      Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(cur));
+    const occ::handle<TopOpeBRepDS_Interference>&    cur = it.Value();
+    occ::handle<TopOpeBRepDS_CurvePointInterference> cpi(
+      occ::down_cast<TopOpeBRepDS_CurvePointInterference>(cur));
     if (!cpi.IsNull())
     {
-      Standard_Integer   newIV  = cpi->Geometry();
+      int   newIV  = cpi->Geometry();
       TopOpeBRepDS_Kind  kv     = cpi->GeometryType();
       TopAbs_Orientation newOr  = cpi->Transition().Orientation(TopAbs_IN);
-      Standard_Real      newpar = cpi->Parameter();
+      double      newpar = cpi->Parameter();
       if (IV == newIV && kv == TopOpeBRepDS_VERTEX && Or == newOr
           && std::abs(par - newpar) < 1.e-10)
       {
@@ -2302,23 +2304,23 @@ static void QueryAddVertexInEdge(TopOpeBRepDS_ListOfInterference& LI,
       }
     }
   }
-  Handle(TopOpeBRepDS_CurvePointInterference) interf = ChFi3d_FilVertexInDS(Or, IC, IV, par);
+  occ::handle<TopOpeBRepDS_CurvePointInterference> interf = ChFi3d_FilVertexInDS(Or, IC, IV, par);
   LI.Append(interf);
 }
 
 //=================================================================================================
 
 static void CutEdge(const TopoDS_Vertex&           V,
-                    const Handle(ChFiDS_SurfData)& SD,
+                    const occ::handle<ChFiDS_SurfData>& SD,
                     TopOpeBRepDS_DataStructure&    DStr,
-                    const Standard_Boolean,
-                    const Standard_Integer ons)
+                    const bool,
+                    const int ons)
 {
   if (!SD->IsOnCurve(ons))
     return;
-  Standard_Integer                 IC = SD->IndexOfC(ons);
-  Standard_Integer                 IV = DStr.AddShape(V);
-  TopOpeBRepDS_ListOfInterference& LI = DStr.ChangeShapeInterferences(IC);
+  int                 IC = SD->IndexOfC(ons);
+  int                 IV = DStr.AddShape(V);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = DStr.ChangeShapeInterferences(IC);
   TopoDS_Edge                      E  = TopoDS::Edge(DStr.Shape(IC));
   E.Orientation(TopAbs_FORWARD);
   TopExp_Explorer ex;
@@ -2330,7 +2332,7 @@ static void CutEdge(const TopoDS_Vertex&           V,
     if (vv.IsSame(V))
     {
       TopAbs_Orientation Or  = TopAbs::Reverse(vv.Orientation());
-      Standard_Real      par = BRep_Tool::Parameter(vv, E);
+      double      par = BRep_Tool::Parameter(vv, E);
       QueryAddVertexInEdge(LI, IC, IV, par, Or);
     }
   }
@@ -2341,81 +2343,81 @@ static void CutEdge(const TopoDS_Vertex&           V,
 // purpose  : returns in <ipon> index of point bounding a courve interfering
 //           with <Fd> and coinciding with last common point on <OnS> face
 //=======================================================================
-static Standard_Boolean findIndexPoint(const TopOpeBRepDS_DataStructure& DStr,
-                                       const Handle(ChFiDS_SurfData)&    Fd,
-                                       const Standard_Integer            OnS,
-                                       Standard_Integer&                 ipoin)
+static bool findIndexPoint(const TopOpeBRepDS_DataStructure& DStr,
+                                       const occ::handle<ChFiDS_SurfData>&    Fd,
+                                       const int            OnS,
+                                       int&                 ipoin)
 {
   ipoin    = 0;
-  gp_Pnt P = Fd->Vertex(Standard_False, OnS).Point();
+  gp_Pnt P = Fd->Vertex(false, OnS).Point();
 
-  TopOpeBRepDS_ListIteratorOfListOfInterference SCIIt, CPIIt;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator SCIIt, CPIIt;
 
   SCIIt.Initialize(DStr.SurfaceInterferences(Fd->Surf()));
   for (; SCIIt.More(); SCIIt.Next())
   {
-    Handle(TopOpeBRepDS_SurfaceCurveInterference) SCI =
-      Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast(SCIIt.Value());
+    occ::handle<TopOpeBRepDS_SurfaceCurveInterference> SCI =
+      occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(SCIIt.Value());
     if (SCI.IsNull())
       continue;
     CPIIt.Initialize(DStr.CurveInterferences(SCI->Geometry()));
     for (; CPIIt.More(); CPIIt.Next())
     {
-      Handle(TopOpeBRepDS_CurvePointInterference) CPI =
-        Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(CPIIt.Value());
+      occ::handle<TopOpeBRepDS_CurvePointInterference> CPI =
+        occ::down_cast<TopOpeBRepDS_CurvePointInterference>(CPIIt.Value());
       if (CPI.IsNull())
         continue;
-      Standard_Integer   iPoint = CPI->Geometry();
+      int   iPoint = CPI->Geometry();
       TopOpeBRepDS_Point tp     = DStr.Point(iPoint);
       if (P.IsEqual(tp.Point(), tp.Tolerance()))
       {
         ipoin = iPoint;
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
-                  const Handle(ChFiDS_Stripe)& CorDat,
+void ChFi3d_FilDS(const int       SolidIndex,
+                  const occ::handle<ChFiDS_Stripe>& CorDat,
                   TopOpeBRepDS_DataStructure&  DStr,
-                  ChFiDS_Regularities&         reglist,
-                  const Standard_Real          tol3d,
-                  const Standard_Real          tol2d)
+                  NCollection_List<ChFiDS_Regul>&         reglist,
+                  const double          tol3d,
+                  const double          tol2d)
 {
   //  BRep_Tool Outil;
   TopExp_Explorer      ex;
-  Handle(ChFiDS_Spine) spine  = CorDat->Spine();
-  Standard_Boolean     Closed = Standard_False;
-  Standard_Boolean     Degene = 0, isVertex1 = 0, isVertex2 = 0, Singulier_en_Bout = 0;
+  occ::handle<ChFiDS_Spine> spine  = CorDat->Spine();
+  bool     Closed = false;
+  bool     Degene = 0, isVertex1 = 0, isVertex2 = 0, Singulier_en_Bout = 0;
   if (!spine.IsNull())
   {
     Closed = spine->IsPeriodic();
   }
-  const ChFiDS_SequenceOfSurfData&              SeqFil  = CorDat->SetOfSurfData()->Sequence();
-  Standard_Integer                              Ipoin1  = CorDat->IndexFirstPointOnS1();
-  Standard_Integer                              Ipoin2  = CorDat->IndexFirstPointOnS2();
-  Standard_Integer                              NumEdge = 1;
+  const NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&              SeqFil  = CorDat->SetOfSurfData()->Sequence();
+  int                              Ipoin1  = CorDat->IndexFirstPointOnS1();
+  int                              Ipoin2  = CorDat->IndexFirstPointOnS2();
+  int                              NumEdge = 1;
   TopoDS_Vertex                                 BoutdeVtx;
-  Standard_Integer                              Icurv = 0;
-  Standard_Integer                              Iarc1 = 0, Iarc2 = 0;
+  int                              Icurv = 0;
+  int                              Iarc1 = 0, Iarc2 = 0;
   TopAbs_Orientation                            trafil1 = TopAbs_FORWARD, trafil2 = TopAbs_FORWARD;
-  Standard_Integer                              IcFil1, IcFil2, Isurf, Ishape1, Ishape2;
-  Standard_Real                                 Pardeb = 0., Parfin = 0.;
+  int                              IcFil1, IcFil2, Isurf, Ishape1, Ishape2;
+  double                                 Pardeb = 0., Parfin = 0.;
   TopAbs_Orientation                            ET1;
-  Handle(TopOpeBRepDS_CurvePointInterference)   Interfp1, Interfp2;
-  Handle(TopOpeBRepDS_SurfaceCurveInterference) Interfc1, Interfc2;
-  Handle(TopOpeBRepDS_SurfaceCurveInterference) Interfc3, Interfc4;
-  Handle(TopOpeBRepDS_CurvePointInterference)   Interfp3, Interfp4;
-  Handle(TopOpeBRepDS_CurvePointInterference)   Interfp5, Interfp6;
+  occ::handle<TopOpeBRepDS_CurvePointInterference>   Interfp1, Interfp2;
+  occ::handle<TopOpeBRepDS_SurfaceCurveInterference> Interfc1, Interfc2;
+  occ::handle<TopOpeBRepDS_SurfaceCurveInterference> Interfc3, Interfc4;
+  occ::handle<TopOpeBRepDS_CurvePointInterference>   Interfp3, Interfp4;
+  occ::handle<TopOpeBRepDS_CurvePointInterference>   Interfp5, Interfp6;
   TopoDS_Face                                   F;
-  Handle(Geom2d_Curve)                          PCurv;
+  occ::handle<Geom2d_Curve>                          PCurv;
   TopOpeBRepDS_Curve                            Crv;
 
-  TopOpeBRepDS_ListOfInterference& SolidInterfs = DStr.ChangeShapeInterferences(SolidIndex);
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& SolidInterfs = DStr.ChangeShapeInterferences(SolidIndex);
 
   ChFiDS_Regul regcout;   // for closed and tangent CD
   ChFiDS_Regul regfilfil; // for connections Surf/Surf
@@ -2424,20 +2426,20 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
   ChFiDS_CommonPoint V4;
 
   // Nullify degenerated ChFi/Faces interferences, eap occ293
-  Standard_Integer j;
+  int j;
   if (SeqFil.Length() > 1)
   {
     for (j = 1; j <= SeqFil.Length(); j++)
     {
-      Handle(ChFiDS_SurfData) Fd = SeqFil(j);
-      Standard_Integer        onS;
+      occ::handle<ChFiDS_SurfData> Fd = SeqFil(j);
+      int        onS;
       for (onS = 1; onS <= 2; onS++)
       {
         const ChFiDS_FaceInterference& Fi = Fd->Interference(onS);
         IcFil1                            = Fi.LineIndex();
         if (!IcFil1)
           continue;
-        Standard_Real FiLen = std::abs(Fi.FirstParameter() - Fi.LastParameter());
+        double FiLen = std::abs(Fi.FirstParameter() - Fi.LastParameter());
         if (FiLen > Precision::PConfusion())
           continue;
         TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil1);
@@ -2446,8 +2448,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         // care of CommonPoint, eap occ354
         if (j != 1 && j != SeqFil.Length())
           continue;
-        Standard_Boolean    isfirst = (j == 1);
-        Standard_Integer    i       = isfirst ? j + 1 : j - 1;
+        bool    isfirst = (j == 1);
+        int    i       = isfirst ? j + 1 : j - 1;
         ChFiDS_CommonPoint& CP1     = SeqFil(i)->ChangeVertex(isfirst, onS);
         if (Fd->Vertex(isfirst, onS).IsOnArc() && CP1.IsOnArc())
         {
@@ -2464,7 +2466,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
   for (j = 1; j <= SeqFil.Length(); j++)
   {
 
-    const Handle(ChFiDS_SurfData)& Fd = SeqFil(j);
+    const occ::handle<ChFiDS_SurfData>& Fd = SeqFil(j);
     Isurf                             = Fd->Surf();
     Ishape1                           = Fd->IndexOfS1();
     Ishape2                           = Fd->IndexOfS2();
@@ -2472,21 +2474,21 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
     // eap, Apr 29 2002, occ 293
     // now IsInDS() returns nb of surfaces at end being in DS;
     // vars showing which end is in DS
-    Standard_Boolean isInDS1 = Standard_False, isInDS2 = Standard_False;
-    if (j <= CorDat->IsInDS(Standard_True))
+    bool isInDS1 = false, isInDS2 = false;
+    if (j <= CorDat->IsInDS(true))
     {
-      isInDS1 = Standard_True;
-      isInDS2 = (j + 1 <= CorDat->IsInDS(Standard_True));
+      isInDS1 = true;
+      isInDS2 = (j + 1 <= CorDat->IsInDS(true));
     }
-    if (SeqFil.Length() - j < CorDat->IsInDS(Standard_False))
+    if (SeqFil.Length() - j < CorDat->IsInDS(false))
     {
-      isInDS2 = Standard_True;
-      isInDS1 = isInDS1 || SeqFil.Length() - j + 1 < CorDat->IsInDS(Standard_False);
+      isInDS2 = true;
+      isInDS1 = isInDS1 || SeqFil.Length() - j + 1 < CorDat->IsInDS(false);
     }
 
     // creation of SolidSurfaceInterference
 
-    Handle(TopOpeBRepDS_SolidSurfaceInterference) SSI =
+    occ::handle<TopOpeBRepDS_SolidSurfaceInterference> SSI =
       new TopOpeBRepDS_SolidSurfaceInterference(TopOpeBRepDS_Transition(Fd->Orientation()),
                                                 TopOpeBRepDS_SOLID,
                                                 SolidIndex,
@@ -2599,12 +2601,12 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         }
         else
         {
-          isVertex1 = isVertex2 = Standard_True; // caution...
+          isVertex1 = isVertex2 = true; // caution...
           // The edge is removed from spine starting on this vertex.
           TopoDS_Edge Arcspine       = spine->Edges(1);
           BoutdeVtx                  = V1.Vertex();
-          Standard_Integer IArcspine = DStr.AddShape(Arcspine);
-          Standard_Integer IVtx      = CorDat->IndexFirstPointOnS1();
+          int IArcspine = DStr.AddShape(Arcspine);
+          int IVtx      = CorDat->IndexFirstPointOnS1();
 
           TopAbs_Orientation OVtx = TopAbs_FORWARD;
 
@@ -2617,8 +2619,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
             }
           }
           OVtx                 = TopAbs::Reverse(OVtx);
-          Standard_Real parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
-          Handle(TopOpeBRepDS_CurvePointInterference) interfv =
+          double parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
+          occ::handle<TopOpeBRepDS_CurvePointInterference> interfv =
             ChFi3d_FilVertexInDS(OVtx, IArcspine, IVtx, parVtx);
           DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
         }
@@ -2661,12 +2663,12 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         if (Closed && !Singulier_en_Bout)
         {
           regcout.SetCurve(Icurv);
-          regcout.SetS1(Isurf, Standard_False);
+          regcout.SetS1(Isurf, false);
         }
         PCurv = CorDat->FirstPCurve();
         CorDat->FirstParameters(Pardeb, Parfin);
 
-        TopOpeBRepDS_ListOfInterference& Li = DStr.ChangeCurveInterferences(Icurv);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li = DStr.ChangeCurveInterferences(Icurv);
         if (Li.IsEmpty())
         {
           if (CorDat->FirstPCurveOrientation() == TopAbs_REVERSED)
@@ -2688,7 +2690,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         {
           TopOpeBRepDS_Curve& TCurv = DStr.ChangeCurve(Icurv);
           TCurv.ChangeCurve().Nullify();
-          Handle(TopOpeBRepDS_Interference) bidinterf;
+          occ::handle<TopOpeBRepDS_Interference> bidinterf;
           TCurv.SetSCI(Interfc1, bidinterf);
         }
       }
@@ -2705,8 +2707,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
           // The edge is removed from the spine starting on this vertex.
           NumEdge++; // The previous edge of the vertex has already been found.
           TopoDS_Edge        Arcspine  = spine->Edges(NumEdge);
-          Standard_Integer   IArcspine = DStr.AddShape(Arcspine);
-          Standard_Integer   IVtx      = DStr.AddShape(BoutdeVtx);
+          int   IArcspine = DStr.AddShape(Arcspine);
+          int   IVtx      = DStr.AddShape(BoutdeVtx);
           TopAbs_Orientation OVtx      = TopAbs_FORWARD;
           for (ex.Init(Arcspine.Oriented(TopAbs_FORWARD), TopAbs_VERTEX); ex.More(); ex.Next())
           {
@@ -2717,8 +2719,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
             }
           }
           OVtx                 = TopAbs::Reverse(OVtx);
-          Standard_Real parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
-          Handle(TopOpeBRepDS_CurvePointInterference) interfv =
+          double parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
+          occ::handle<TopOpeBRepDS_CurvePointInterference> interfv =
             ChFi3d_FilVertexInDS(OVtx, IArcspine, IVtx, parVtx);
           DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
         } // End of the removal
@@ -2735,14 +2737,14 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
           Interfc1 = ChFi3d_FilCurveInDS(Icurv, Isurf, PCurv, ET1);
           DStr.ChangeSurfaceInterferences(Isurf).Append(Interfc1);
           TCurv.ChangeCurve().Nullify();
-          Handle(TopOpeBRepDS_Interference) bidinterf;
+          occ::handle<TopOpeBRepDS_Interference> bidinterf;
           TCurv.SetSCI(Interfc1, bidinterf);
         }
         else
         {
-          regfilfil.SetS2(Isurf, Standard_False);
+          regfilfil.SetS2(Isurf, false);
           reglist.Append(regfilfil);
-          Standard_Real tolreached;
+          double tolreached;
           ChFi3d_ComputePCurv(TCurv.ChangeCurve(),
                               UV1,
                               UV2,
@@ -2772,32 +2774,32 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
       TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil1);
       if (cc.Curve().IsNull())
       {
-        Handle(TopOpeBRepDS_Interference) bidinterf;
+        occ::handle<TopOpeBRepDS_Interference> bidinterf;
         cc.SetSCI(Interfc3, bidinterf);
       }
       else
       {
         ChFiDS_Regul regon1;
         regon1.SetCurve(IcFil1);
-        regon1.SetS1(Isurf, Standard_False);
+        regon1.SetS1(Isurf, false);
         if (Ishape1 < 0)
         {
           Ishape1 = -Ishape1;
-          regon1.SetS2(Ishape1, Standard_False);
+          regon1.SetS2(Ishape1, false);
           Interfc1 = ChFi3d_FilCurveInDS(IcFil1, Ishape1, Fi1.PCurveOnFace(), Fi1.Transition());
           DStr.ChangeSurfaceInterferences(Ishape1).Append(Interfc1);
         }
         else if (Ishape1 > 0)
         {
-          regon1.SetS2(Ishape1, Standard_True);
+          regon1.SetS2(Ishape1, true);
           Interfc1 = ChFi3d_FilCurveInDS(IcFil1, Ishape1, Fi1.PCurveOnFace(), Fi1.Transition());
           DStr.ChangeShapeInterferences(Ishape1).Append(Interfc1);
         }
         reglist.Append(regon1);
       }
       // Indice and type of the point at End
-      Standard_Integer ipoin;
-      Standard_Boolean isVertex = Fd->VertexLastOnS1().IsVertex();
+      int ipoin;
+      bool isVertex = Fd->VertexLastOnS1().IsVertex();
       if (j == SeqFil.Length())
         ipoin = CorDat->IndexLastPointOnS1();
       else if (j == (SeqFil.Length() - 1) && /*Closed &&*/
@@ -2835,7 +2837,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
       else
         ipoin = ChFi3d_IndexPointInDS(Fd->VertexLastOnS1(), DStr);
 
-      TopOpeBRepDS_ListOfInterference& Li = DStr.ChangeCurveInterferences(IcFil1);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li = DStr.ChangeCurveInterferences(IcFil1);
 
       if (!ChFi3d_Contains(Li, IcFil1, Ipoin1))
       {
@@ -2865,32 +2867,32 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
       TopOpeBRepDS_Curve& cc = DStr.ChangeCurve(IcFil2);
       if (cc.Curve().IsNull())
       {
-        Handle(TopOpeBRepDS_Interference) bidinterf;
+        occ::handle<TopOpeBRepDS_Interference> bidinterf;
         cc.SetSCI(Interfc4, bidinterf);
       }
       else
       {
         ChFiDS_Regul regon2;
         regon2.SetCurve(IcFil2);
-        regon2.SetS1(Isurf, Standard_False);
+        regon2.SetS1(Isurf, false);
         if (Ishape2 < 0)
         {
           Ishape2 = -Ishape2;
-          regon2.SetS2(Ishape2, Standard_False);
+          regon2.SetS2(Ishape2, false);
           Interfc2 = ChFi3d_FilCurveInDS(IcFil2, Ishape2, Fi2.PCurveOnFace(), Fi2.Transition());
           DStr.ChangeSurfaceInterferences(Ishape2).Append(Interfc2);
         }
         else if (Ishape2 > 0)
         {
-          regon2.SetS2(Ishape2, Standard_True);
+          regon2.SetS2(Ishape2, true);
           Interfc2 = ChFi3d_FilCurveInDS(IcFil2, Ishape2, Fi2.PCurveOnFace(), Fi2.Transition());
           DStr.ChangeShapeInterferences(Ishape2).Append(Interfc2);
         }
         reglist.Append(regon2);
       }
       // Indice and type of the point in End
-      Standard_Integer ipoin;
-      Standard_Boolean isVertex = Fd->VertexLastOnS2().IsVertex();
+      int ipoin;
+      bool isVertex = Fd->VertexLastOnS2().IsVertex();
       if (j == SeqFil.Length())
         ipoin = CorDat->IndexLastPointOnS2();
       else if (j == (SeqFil.Length() - 1) && /*Closed &&*/
@@ -2933,7 +2935,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
       else
         ipoin = ChFi3d_IndexPointInDS(Fd->VertexLastOnS2(), DStr);
 
-      TopOpeBRepDS_ListOfInterference& Li = DStr.ChangeCurveInterferences(IcFil2);
+      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li = DStr.ChangeCurveInterferences(IcFil2);
 
       if (!ChFi3d_Contains(Li, IcFil2, Ipoin2))
       {
@@ -2959,13 +2961,13 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         Icurv = CorDat->LastCurve();
         if (Closed && !Singulier_en_Bout && (Ipoin1 != Ipoin2))
         {
-          regcout.SetS2(Isurf, Standard_False);
+          regcout.SetS2(Isurf, false);
           reglist.Append(regcout);
         }
         PCurv = CorDat->LastPCurve();
         ET1   = TopAbs::Compose(ET1, CorDat->LastPCurveOrientation());
         CorDat->LastParameters(Pardeb, Parfin);
-        TopOpeBRepDS_ListOfInterference& Li = DStr.ChangeCurveInterferences(Icurv);
+        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li = DStr.ChangeCurveInterferences(Icurv);
         if (Li.IsEmpty())
         {
           if (CorDat->LastPCurveOrientation() == TopAbs_REVERSED)
@@ -2987,7 +2989,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         {
           TopOpeBRepDS_Curve& TCurv = DStr.ChangeCurve(Icurv);
           TCurv.ChangeCurve().Nullify();
-          Handle(TopOpeBRepDS_Interference) bidinterf;
+          occ::handle<TopOpeBRepDS_Interference> bidinterf;
           TCurv.SetSCI(Interfc1, bidinterf);
           //         bidinterf = TCurv.GetSCI1();
           //	  TCurv.SetSCI(bidinterf, Interfc1);
@@ -3003,8 +3005,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
       if (!isInDS2)
       {
 
-        Handle(Geom_Curve) C3d;
-        Standard_Real      tolreached;
+        occ::handle<Geom_Curve> C3d;
+        double      tolreached;
         ChFi3d_ComputeArete(
           Fd->VertexLastOnS1(),
           Fd->InterferenceOnS1().PCurveOnSurf()->Value(Fd->InterferenceOnS1().LastParameter()),
@@ -3022,7 +3024,7 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
         Crv   = TopOpeBRepDS_Curve(C3d, tolreached);
         Icurv = DStr.AddCurve(Crv);
         regfilfil.SetCurve(Icurv);
-        regfilfil.SetS1(Isurf, Standard_False);
+        regfilfil.SetS1(Isurf, false);
         Interfp5 = ChFi3d_FilPointInDS(TopAbs_FORWARD, Icurv, Ipoin1, Pardeb, isVertex1);
         DStr.ChangeCurveInterferences(Icurv).Append(Interfp5);
         Interfp6 = ChFi3d_FilPointInDS(TopAbs_REVERSED, Icurv, Ipoin2, Parfin, isVertex2);
@@ -3038,14 +3040,14 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
     if (Degene)
     {
       // Queue de Billard
-      Standard_Boolean Vertex = (V3.IsVertex()) && (V4.IsVertex());
+      bool Vertex = (V3.IsVertex()) && (V4.IsVertex());
       if (!Vertex)
       {
       }
       else
       {
         // The edge of the spine starting on this vertex is removed.
-        Standard_Boolean   Trouve = Standard_False;
+        bool   Trouve = false;
         TopoDS_Edge        Arcspine;
         TopAbs_Orientation OVtx = TopAbs_FORWARD;
         BoutdeVtx               = V3.Vertex();
@@ -3062,14 +3064,14 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
               if (Closed && (NumEdge == 1))
                 Trouve = (spine->NbEdges() == 1);
               else
-                Trouve = Standard_True;
+                Trouve = true;
             }
           }
           if (!Trouve)
             NumEdge++; // Go to the next edge
         }
-        Standard_Integer IArcspine = DStr.AddShape(Arcspine);
-        Standard_Integer IVtx;
+        int IArcspine = DStr.AddShape(Arcspine);
+        int IVtx;
         if (j == SeqFil.Length())
         {
           IVtx = CorDat->IndexLastPointOnS1();
@@ -3079,8 +3081,8 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
           IVtx = DStr.AddShape(BoutdeVtx);
         }
         OVtx                 = TopAbs::Reverse(OVtx);
-        Standard_Real parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
-        Handle(TopOpeBRepDS_CurvePointInterference) interfv =
+        double parVtx = BRep_Tool::Parameter(BoutdeVtx, Arcspine);
+        occ::handle<TopOpeBRepDS_CurvePointInterference> interfv =
           ChFi3d_FilVertexInDS(OVtx, IArcspine, IVtx, parVtx);
         DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
       }
@@ -3097,9 +3099,9 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
                                Iarc1,
                                Ipoin1,
                                V3.IsVertex(),
-                               Standard_True))
+                               true))
           {
-            Handle(TopOpeBRepDS_CurvePointInterference) Interfpp =
+            occ::handle<TopOpeBRepDS_CurvePointInterference> Interfpp =
               ChFi3d_FilPointInDS(V3.TransitionOnArc(),
                                   Iarc1,
                                   Ipoin1,
@@ -3119,9 +3121,9 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
                                Iarc2,
                                Ipoin2,
                                V4.IsVertex(),
-                               Standard_True))
+                               true))
           {
-            Handle(TopOpeBRepDS_CurvePointInterference) Intfpp =
+            occ::handle<TopOpeBRepDS_CurvePointInterference> Intfpp =
               ChFi3d_FilPointInDS(V4.TransitionOnArc(),
                                   Iarc2,
                                   Ipoin2,
@@ -3144,36 +3146,36 @@ void ChFi3d_FilDS(const Standard_Integer       SolidIndex,
 //           this function will become useless.
 // author   : akm, 06/02/02. Against bug OCC119.
 //=======================================================================
-void ChFi3d_StripeEdgeInter(const Handle(ChFiDS_Stripe)& theStripe1,
-                            const Handle(ChFiDS_Stripe)& theStripe2,
+void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
+                            const occ::handle<ChFiDS_Stripe>& theStripe2,
                             TopOpeBRepDS_DataStructure& /*DStr*/,
-                            const Standard_Real tol2d)
+                            const double tol2d)
 {
   // Do not check the stripeshaving common corner points
-  for (Standard_Integer iSur1 = 1; iSur1 <= 2; iSur1++)
-    for (Standard_Integer iSur2 = 1; iSur2 <= 2; iSur2++)
+  for (int iSur1 = 1; iSur1 <= 2; iSur1++)
+    for (int iSur2 = 1; iSur2 <= 2; iSur2++)
       if (theStripe1->IndexPoint(0, iSur1) == theStripe2->IndexPoint(0, iSur2)
           || theStripe1->IndexPoint(0, iSur1) == theStripe2->IndexPoint(1, iSur2)
           || theStripe1->IndexPoint(1, iSur1) == theStripe2->IndexPoint(0, iSur2)
           || theStripe1->IndexPoint(1, iSur1) == theStripe2->IndexPoint(1, iSur2))
         return;
 
-  Handle(ChFiDS_HData) aSurDat1 = theStripe1->SetOfSurfData();
-  Handle(ChFiDS_HData) aSurDat2 = theStripe2->SetOfSurfData();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> aSurDat1 = theStripe1->SetOfSurfData();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> aSurDat2 = theStripe2->SetOfSurfData();
 
   Geom2dInt_GInter anIntersector;
-  Standard_Integer iPart1, iPart2;
-  Standard_Integer Ishape11, Ishape12, Ishape21, Ishape22;
+  int iPart1, iPart2;
+  int Ishape11, Ishape12, Ishape21, Ishape22;
   // Loop on parts of the first stripe
   for (iPart1 = 1; iPart1 <= aSurDat1->Length(); iPart1++)
   {
-    Handle(ChFiDS_SurfData) aDat1 = aSurDat1->Value(iPart1);
+    occ::handle<ChFiDS_SurfData> aDat1 = aSurDat1->Value(iPart1);
     Ishape11                      = aDat1->IndexOfS1();
     Ishape12                      = aDat1->IndexOfS2();
     // Loop on parts of the second stripe
     for (iPart2 = 1; iPart2 <= aSurDat2->Length(); iPart2++)
     {
-      Handle(ChFiDS_SurfData) aDat2 = aSurDat2->Value(iPart2);
+      occ::handle<ChFiDS_SurfData> aDat2 = aSurDat2->Value(iPart2);
       Ishape21                      = aDat2->IndexOfS1();
       Ishape22                      = aDat2->IndexOfS2();
 
@@ -3226,12 +3228,12 @@ void ChFi3d_StripeEdgeInter(const Handle(ChFiDS_Stripe)& theStripe1,
 
 //=================================================================================================
 
-Standard_Integer ChFi3d_IndexOfSurfData(const TopoDS_Vertex&         V1,
-                                        const Handle(ChFiDS_Stripe)& CD,
-                                        Standard_Integer&            sens)
+int ChFi3d_IndexOfSurfData(const TopoDS_Vertex&         V1,
+                                        const occ::handle<ChFiDS_Stripe>& CD,
+                                        int&            sens)
 {
-  Handle(ChFiDS_Spine) spine = CD->Spine();
-  Standard_Integer     Index = 0;
+  occ::handle<ChFiDS_Spine> spine = CD->Spine();
+  int     Index = 0;
   sens                       = 1;
   TopoDS_Vertex      Vref;
   const TopoDS_Edge& E = spine->Edges(1);
@@ -3262,10 +3264,10 @@ Standard_Integer ChFi3d_IndexOfSurfData(const TopoDS_Vertex&         V1,
 //=================================================================================================
 
 TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex&         V1,
-                              const Handle(ChFiDS_Stripe)& CD,
-                              Standard_Integer&            sens)
+                              const occ::handle<ChFiDS_Stripe>& CD,
+                              int&            sens)
 {
-  Handle(ChFiDS_Spine) spine = CD->Spine();
+  occ::handle<ChFiDS_Spine> spine = CD->Spine();
   sens                       = 1;
   TopoDS_Vertex      Vref;
   const TopoDS_Edge& E = spine->Edges(1);
@@ -3295,12 +3297,12 @@ TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex&         V1,
 // purpose  : Comme son nom l indique.
 //=======================================================================
 
-Standard_Real ChFi3d_ConvTol2dToTol3d(const Handle(Adaptor3d_Surface)& S, const Standard_Real tol2d)
+double ChFi3d_ConvTol2dToTol3d(const occ::handle<Adaptor3d_Surface>& S, const double tol2d)
 {
-  Standard_Real ures     = S->UResolution(1.e-7);
-  Standard_Real vres     = S->VResolution(1.e-7);
-  Standard_Real uresto3d = 1.e-7 * tol2d / ures;
-  Standard_Real vresto3d = 1.e-7 * tol2d / vres;
+  double ures     = S->UResolution(1.e-7);
+  double vres     = S->VResolution(1.e-7);
+  double uresto3d = 1.e-7 * tol2d / ures;
+  double vresto3d = 1.e-7 * tol2d / vres;
   return std::max(uresto3d, vresto3d);
 }
 
@@ -3310,21 +3312,21 @@ Standard_Real ChFi3d_ConvTol2dToTol3d(const Handle(Adaptor3d_Surface)& S, const 
 //           parametrization of surfaces is not homogeneous.
 //=======================================================================
 
-Standard_Real ChFi3d_EvalTolReached(const Handle(Adaptor3d_Surface)& S1,
-                                    const Handle(Geom2d_Curve)&      pc1,
-                                    const Handle(Adaptor3d_Surface)& S2,
-                                    const Handle(Geom2d_Curve)&      pc2,
-                                    const Handle(Geom_Curve)&        C)
+double ChFi3d_EvalTolReached(const occ::handle<Adaptor3d_Surface>& S1,
+                                    const occ::handle<Geom2d_Curve>&      pc1,
+                                    const occ::handle<Adaptor3d_Surface>& S2,
+                                    const occ::handle<Geom2d_Curve>&      pc2,
+                                    const occ::handle<Geom_Curve>&        C)
 {
-  Standard_Real distmax = 0.;
+  double distmax = 0.;
 
-  Standard_Real    f    = C->FirstParameter();
-  Standard_Real    l    = C->LastParameter();
-  Standard_Integer nbp  = 45;
-  Standard_Real    step = 1. / (nbp - 1);
-  for (Standard_Integer i = 0; i < nbp; i++)
+  double    f    = C->FirstParameter();
+  double    l    = C->LastParameter();
+  int nbp  = 45;
+  double    step = 1. / (nbp - 1);
+  for (int i = 0; i < nbp; i++)
   {
-    Standard_Real t, u, v;
+    double t, u, v;
     t = step * i;
     t = (1 - t) * f + t * l;
     pc1->Value(t).Coord(u, v);
@@ -3332,7 +3334,7 @@ Standard_Real ChFi3d_EvalTolReached(const Handle(Adaptor3d_Surface)& S1,
     pc2->Value(t).Coord(u, v);
     gp_Pnt        pS2 = S2->Value(u, v);
     gp_Pnt        pC  = C->Value(t);
-    Standard_Real d   = pS1.SquareDistance(pC);
+    double d   = pS1.SquareDistance(pC);
     if (d > distmax)
       distmax = d;
     d = pS2.SquareDistance(pC);
@@ -3349,33 +3351,33 @@ Standard_Real ChFi3d_EvalTolReached(const Handle(Adaptor3d_Surface)& S1,
 
 //=================================================================================================
 
-Handle(Geom_Surface) trsfsurf(const Handle(Adaptor3d_Surface)& HS,
-                              Handle(Adaptor3d_TopolTool)& /*dom*/)
+occ::handle<Geom_Surface> trsfsurf(const occ::handle<Adaptor3d_Surface>& HS,
+                              occ::handle<Adaptor3d_TopolTool>& /*dom*/)
 {
   // Pour l utilisation des domaines voir avec BUBUCH!!
-  Handle(Geom_Surface)        res;
-  Handle(BRepAdaptor_Surface) hbs = Handle(BRepAdaptor_Surface)::DownCast(HS);
-  Handle(GeomAdaptor_Surface) hgs = Handle(GeomAdaptor_Surface)::DownCast(HS);
+  occ::handle<Geom_Surface>        res;
+  occ::handle<BRepAdaptor_Surface> hbs = occ::down_cast<BRepAdaptor_Surface>(HS);
+  occ::handle<GeomAdaptor_Surface> hgs = occ::down_cast<GeomAdaptor_Surface>(HS);
   if (!hbs.IsNull())
   {
     res          = hbs->Surface().Surface();
     gp_Trsf trsf = hbs->Trsf();
-    res          = Handle(Geom_Surface)::DownCast(res->Transformed(trsf));
+    res          = occ::down_cast<Geom_Surface>(res->Transformed(trsf));
   }
   else if (!hgs.IsNull())
   {
     res = hgs->Surface();
   }
-  Handle(Geom_RectangularTrimmedSurface) tr = Handle(Geom_RectangularTrimmedSurface)::DownCast(res);
+  occ::handle<Geom_RectangularTrimmedSurface> tr = occ::down_cast<Geom_RectangularTrimmedSurface>(res);
   if (!tr.IsNull())
     res = tr->BasisSurface();
 
-  Standard_Real U1 = HS->FirstUParameter(), U2 = HS->LastUParameter();
-  Standard_Real V1 = HS->FirstVParameter(), V2 = HS->LastVParameter();
+  double U1 = HS->FirstUParameter(), U2 = HS->LastUParameter();
+  double V1 = HS->FirstVParameter(), V2 = HS->LastVParameter();
   if (!res.IsNull())
   {
     // Protection against Construction Errors
-    Standard_Real u1, u2, v1, v2;
+    double u1, u2, v1, v2;
     res->Bounds(u1, u2, v1, v2);
     if (!res->IsUPeriodic())
     {
@@ -3393,7 +3395,7 @@ Handle(Geom_Surface) trsfsurf(const Handle(Adaptor3d_Surface)& HS,
     }
     res = new Geom_RectangularTrimmedSurface(res, U1, U2, V1, V2);
   }
-  //  Handle(GeomAdaptor_Surface) temp = new GeomAdaptor_Surface(res,U1,U2,V1,V2);
+  //  occ::handle<GeomAdaptor_Surface> temp = new GeomAdaptor_Surface(res,U1,U2,V1,V2);
   //  dom = new Adaptor3d_TopolTool(temp);
   return res;
 }
@@ -3403,14 +3405,14 @@ Handle(Geom_Surface) trsfsurf(const Handle(Adaptor3d_Surface)& HS,
 // purpose  : Makes a BSpline as much continued as possible
 //           at a given tolerance
 //=======================================================================
-static void CurveCleaner(Handle(Geom_BSplineCurve)& BS,
-                         const Standard_Real        Tol,
-                         const Standard_Integer     MultMin)
+static void CurveCleaner(occ::handle<Geom_BSplineCurve>& BS,
+                         const double        Tol,
+                         const int     MultMin)
 
 {
-  Standard_Real          tol = Tol;
-  Standard_Integer       Mult, ii;
-  const Standard_Integer NbK = BS->NbKnots();
+  double          tol = Tol;
+  int       Mult, ii;
+  const int NbK = BS->NbKnots();
 
   for (Mult = BS->Degree(); Mult > MultMin; Mult--)
   {
@@ -3434,25 +3436,25 @@ static void CurveCleaner(Handle(Geom_BSplineCurve)& BS,
 //           <wholeCurv> means that the resulting curve is restricted by
 //           boundaries of input surfaces (eap 30 May occ354)
 //=======================================================================
-Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
-                                      const Handle(Adaptor3d_Surface)& S2,
-                                      const TColStd_Array1OfReal&      Pardeb,
-                                      const TColStd_Array1OfReal&      Parfin,
-                                      Handle(Geom_Curve)&              C3d,
-                                      Handle(Geom2d_Curve)&            Pc1,
-                                      Handle(Geom2d_Curve)&            Pc2,
-                                      const Standard_Real              tol3d,
-                                      const Standard_Real              tol2d,
-                                      Standard_Real&                   tolreached,
-                                      const Standard_Boolean           wholeCurv)
+bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
+                                      const occ::handle<Adaptor3d_Surface>& S2,
+                                      const NCollection_Array1<double>&      Pardeb,
+                                      const NCollection_Array1<double>&      Parfin,
+                                      occ::handle<Geom_Curve>&              C3d,
+                                      occ::handle<Geom2d_Curve>&            Pc1,
+                                      occ::handle<Geom2d_Curve>&            Pc2,
+                                      const double              tol3d,
+                                      const double              tol2d,
+                                      double&                   tolreached,
+                                      const bool           wholeCurv)
 {
   gp_Pnt pdeb1 = S1->Value(Pardeb(1), Pardeb(2));
   gp_Pnt pfin1 = S1->Value(Parfin(1), Parfin(2));
   gp_Pnt pdeb2 = S2->Value(Pardeb(3), Pardeb(4));
   gp_Pnt pfin2 = S2->Value(Parfin(3), Parfin(4));
 
-  Standard_Real distrefdeb = pdeb1.Distance(pdeb2); // checks the worthiness
-  Standard_Real distreffin = pfin1.Distance(pfin2); // of input data
+  double distrefdeb = pdeb1.Distance(pdeb2); // checks the worthiness
+  double distreffin = pfin1.Distance(pfin2); // of input data
   if (distrefdeb < tol3d)
     distrefdeb = tol3d;
   if (distreffin < tol3d)
@@ -3462,7 +3464,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
   pdeb.SetXYZ(0.5 * (pdeb1.XYZ() + pdeb2.XYZ()));
   pfin.SetXYZ(0.5 * (pfin1.XYZ() + pfin2.XYZ()));
 
-  Standard_Real distref = 0.005 * pdeb.Distance(pfin);
+  double distref = 0.005 * pdeb.Distance(pfin);
   if (distref < distrefdeb)
     distref = distrefdeb;
   if (distref < distreffin)
@@ -3474,8 +3476,8 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
   // in the direction of the start/end line.
   gp_Vec        Vint, Vref(pdeb, pfin);
   gp_Pnt        Pbid;
-  Standard_Real Udeb = 0., Ufin = 0.;
-  Standard_Real tolr1, tolr2;
+  double Udeb = 0., Ufin = 0.;
+  double tolr1, tolr2;
   tolr1 = tolr2 = tolreached = tol3d;
   if ((S1->GetType() == GeomAbs_Cylinder && S2->GetType() == GeomAbs_Plane)
       || (S1->GetType() == GeomAbs_Plane && S2->GetType() == GeomAbs_Cylinder))
@@ -3493,26 +3495,26 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       cyl = S1->Cylinder();
     }
     IntAna_QuadQuadGeo ImpKK(pl, cyl, Precision::Angular(), tol3d);
-    Standard_Boolean   isIntDone = ImpKK.IsDone();
+    bool   isIntDone = ImpKK.IsDone();
 
     if (ImpKK.TypeInter() == IntAna_Ellipse)
     {
       const gp_Elips      anEl    = ImpKK.Ellipse(1);
-      const Standard_Real aMajorR = anEl.MajorRadius();
-      const Standard_Real aMinorR = anEl.MinorRadius();
+      const double aMajorR = anEl.MajorRadius();
+      const double aMinorR = anEl.MinorRadius();
       isIntDone                   = (aMajorR < 100000.0 * aMinorR);
     }
 
     if (isIntDone)
     {
-      Standard_Boolean c1line = 0;
+      bool c1line = 0;
       switch (ImpKK.TypeInter())
       {
         case IntAna_Line: {
           c1line                 = 1;
-          Standard_Integer nbsol = ImpKK.NbSolutions();
+          int nbsol = ImpKK.NbSolutions();
           gp_Lin           C1;
-          for (Standard_Integer ilin = 1; ilin <= nbsol; ilin++)
+          for (int ilin = 1; ilin <= nbsol; ilin++)
           {
             C1           = ImpKK.Line(ilin);
             Udeb         = ElCLib::Parameter(C1, pdeb);
@@ -3560,12 +3562,12 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       }
       if (!c1line)
         ElCLib::AdjustPeriodic(0., 2 * M_PI, Precision::Angular(), Udeb, Ufin);
-      Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+      occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
       HC->Load(C3d, Udeb, Ufin);
       ChFi3d_ProjectPCurv(HC, S1, Pc1, tol3d, tolr1);
       if (S1->GetType() == GeomAbs_Cylinder)
       {
-        Standard_Real x, y;
+        double x, y;
         Pc1->Value(Udeb).Coord(x, y);
         x = Pardeb(1) - x;
         y = Pardeb(2) - y;
@@ -3575,7 +3577,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       ChFi3d_ProjectPCurv(HC, S2, Pc2, tol3d, tolr2);
       if (S2->GetType() == GeomAbs_Cylinder)
       {
-        Standard_Real x, y;
+        double x, y;
         Pc2->Value(Udeb).Coord(x, y);
         x = Pardeb(3) - x;
         y = Pardeb(4) - y;
@@ -3585,7 +3587,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       C3d        = new Geom_TrimmedCurve(C3d, Udeb, Ufin);
       tolreached = 1.5 * std::max(tolr1, tolr2);
       tolreached = std::min(tolreached, ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d));
-      return Standard_True;
+      return true;
     }
   }
   else if (S1->GetType() == GeomAbs_Plane && S2->GetType() == GeomAbs_Plane)
@@ -3604,28 +3606,28 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         Udeb = -Udeb;
         Ufin = -Ufin;
       }
-      Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+      occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
       HC->Load(C3d, Udeb, Ufin);
       ChFi3d_ProjectPCurv(HC, S1, Pc1, tol3d, tolr1);
       ChFi3d_ProjectPCurv(HC, S2, Pc2, tol3d, tolr2);
       C3d = new Geom_TrimmedCurve(C3d, Udeb, Ufin);
-      return Standard_True;
+      return true;
     }
   }
   else
   {
     // here GeomInt is approached.
-    Handle(Adaptor3d_TopolTool) dom1, dom2;
-    Handle(Geom_Surface)        gs1 = trsfsurf(S1, dom1);
-    Handle(Geom_Surface)        gs2 = trsfsurf(S2, dom2);
-    Standard_Integer            nbl;
+    occ::handle<Adaptor3d_TopolTool> dom1, dom2;
+    occ::handle<Geom_Surface>        gs1 = trsfsurf(S1, dom1);
+    occ::handle<Geom_Surface>        gs2 = trsfsurf(S2, dom2);
+    int            nbl;
     if (!gs1.IsNull() && !gs2.IsNull())
     {
       GeomInt_IntSS inter;
       //  Modified by skv - Fri Oct 24 14:24:47 2003 OCC4077 Begin
-      //       Standard_Real tolap = 1.e-7;//car l approx de la wline est faite dans [0,1]
+      //       double tolap = 1.e-7;//car l approx de la wline est faite dans [0,1]
       // Set the lowest tolerance which is used in new boolean operations.
-      Standard_Real tolap = 2.e-7;
+      double tolap = 2.e-7;
       //  Modified by skv - Fri Oct 24 14:24:48 2003 OCC4077 End
       inter.Perform(gs1, gs2, tolap, 1, 1, 1);
       if (inter.IsDone())
@@ -3642,17 +3644,17 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
           inter.Perform(gs2, gs1, tolap, 1, 1, 1);
           //          inter.Perform(gs2,dom2,gs1,dom1,tolap,1,1,1);
           if (!inter.IsDone())
-            return Standard_False;
+            return false;
           nbl = inter.NbLines();
 
           //  if GeomInt does not make the intersection the solution of adjustment
           //  is not attempted
           if (nbl == 0)
-            return Standard_False;
+            return false;
         }
 #endif
         GeomAPI_ProjectPointOnCurve proj;
-        for (Standard_Integer ilin = 1; ilin <= nbl; ilin++)
+        for (int ilin = 1; ilin <= nbl; ilin++)
         {
           if (inter.HasLineOnS1(ilin) && inter.HasLineOnS2(ilin))
           {
@@ -3660,7 +3662,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
             Pc1 = inter.LineOnS1(ilin);
             Pc2 = inter.LineOnS2(ilin);
             gp_Pnt        ptestdeb, ptestfin;
-            Standard_Real Uf = 0., Ul = 0.;
+            double Uf = 0., Ul = 0.;
             if (wholeCurv)
             {
               Uf       = C3d->FirstParameter();
@@ -3671,20 +3673,20 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
             else
             {
               // find end parameters
-              Standard_Boolean failedF, failedL;
-              failedF = failedL = Standard_False;
+              bool failedF, failedL;
+              failedF = failedL = false;
               proj.Init(pdeb1, C3d);
               if (proj.NbPoints() == 0 && distrefdeb > Precision::Confusion())
                 proj.Perform(pdeb2);
               if (proj.NbPoints() == 0)
-                failedF = Standard_True;
+                failedF = true;
               else
                 Uf = proj.LowerDistanceParameter();
               proj.Perform(pfin1);
               if (proj.NbPoints() == 0 && distreffin > Precision::Confusion())
                 proj.Perform(pfin2);
               if (proj.NbPoints() == 0)
-                failedL = Standard_True;
+                failedL = true;
               else
                 Ul = proj.LowerDistanceParameter();
 
@@ -3696,8 +3698,8 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
               else if (failedF || failedL)
               {
                 // select right end parameter
-                Standard_Real Uok = failedF ? Ul : Uf;
-                Standard_Real U1 = C3d->FirstParameter(), U2 = C3d->LastParameter();
+                double Uok = failedF ? Ul : Uf;
+                double U1 = C3d->FirstParameter(), U2 = C3d->LastParameter();
                 Uok = std::abs(Uok - U1) > std::abs(Uok - U2) ? U1 : U2;
                 if (failedF)
                   Uf = Uok;
@@ -3720,7 +3722,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
                 C3d->D1(Uf, Ptmp, DirOld);
                 if (DirOld * DirNew < 0)
                 {
-                  Standard_Real Utmp = Uf;
+                  double Utmp = Uf;
                   Uf                 = Ul;
                   Ul                 = Utmp;
                   Ptmp               = ptestdeb;
@@ -3733,10 +3735,10 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
             Pc1 = new Geom2d_TrimmedCurve(Pc1, Uf, Ul);
             Pc2 = new Geom2d_TrimmedCurve(Pc2, Uf, Ul);
             // is it necessary to invert ?
-            Standard_Real DistDebToDeb = ptestdeb.Distance(pdeb);
-            Standard_Real DistDebToFin = ptestdeb.Distance(pfin);
-            Standard_Real DistFinToFin = ptestfin.Distance(pfin);
-            Standard_Real DistFinToDeb = ptestfin.Distance(pdeb);
+            double DistDebToDeb = ptestdeb.Distance(pdeb);
+            double DistDebToFin = ptestdeb.Distance(pfin);
+            double DistFinToFin = ptestfin.Distance(pfin);
+            double DistFinToDeb = ptestfin.Distance(pdeb);
 
             if (DistDebToDeb > DistDebToFin && DistFinToFin > DistFinToDeb)
             {
@@ -3754,7 +3756,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
               Ul = C3d->LastParameter();
               ChFi3d_ReparamPcurv(Uf, Ul, Pc1);
               ChFi3d_ReparamPcurv(Uf, Ul, Pc2);
-              Standard_Real x, y;
+              double x, y;
               Pc1->Value(Uf).Coord(x, y);
               x = Pardeb(1) - x;
               y = Pardeb(2) - y;
@@ -3766,7 +3768,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
               if (std::abs(x) > tol2d || std::abs(y) > tol2d)
                 Pc2->Translate(gp_Vec2d(x, y));
               tolreached = ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d);
-              return Standard_True;
+              return true;
             }
           }
         }
@@ -3777,26 +3779,26 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
   // At this stage :
   // classic intersections have failed, the path is approached in vain.
 
-  Standard_Real Step = 0.1;
+  double Step = 0.1;
   for (;;)
   {
     // Attention the parameters of arrow for the path and
     // the tolerance for the approximation can't be taken as those of the
     // Builder, so they are reestimated as much as possible.
-    Standard_Real    fleche = 1.e-3 * pdeb.Distance(pfin);
-    Standard_Real    tolap  = 1.e-7;
+    double    fleche = 1.e-3 * pdeb.Distance(pfin);
+    double    tolap  = 1.e-7;
     IntWalk_PWalking IntKK(S1, S2, tol3d, tol3d, fleche, Step);
 
     // The extremities of the intersection (Pardeb,Parfin) are known,
     // one tries to find the start point at the
     // middle to avoid obstacles on the path.
-    Standard_Boolean     depok = Standard_False;
+    bool     depok = false;
     IntSurf_PntOn2S      pintdep;
-    TColStd_Array1OfReal depart(1, 4);
-    for (Standard_Integer ipdep = 2; ipdep <= 7 && !depok; ipdep++)
+    NCollection_Array1<double> depart(1, 4);
+    for (int ipdep = 2; ipdep <= 7 && !depok; ipdep++)
     {
-      Standard_Real alpha        = 0.1 * ipdep;
-      Standard_Real unmoinsalpha = 1. - alpha;
+      double alpha        = 0.1 * ipdep;
+      double unmoinsalpha = 1. - alpha;
       depart(1)                  = alpha * Pardeb(1) + unmoinsalpha * Parfin(1);
       depart(2)                  = alpha * Pardeb(2) + unmoinsalpha * Parfin(2);
       depart(3)                  = alpha * Pardeb(3) + unmoinsalpha * Parfin(3);
@@ -3805,18 +3807,18 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
     }
     if (!depok)
     {
-      return Standard_False;
+      return false;
     }
     pintdep.Parameters(depart(1), depart(2), depart(3), depart(4));
     IntKK.Perform(depart);
     if (!IntKK.IsDone())
-      return Standard_False;
+      return false;
     if (IntKK.NbPoints() <= 30)
     {
       Step *= 0.5;
       if (Step <= 0.0001)
       {
-        return Standard_False;
+        return false;
       }
     }
     else
@@ -3825,25 +3827,25 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       // between the points closest to known  extremites
       // in fact there is a WLine and the approximation is launched.
       // Then the result is corrected to get proper start and end points.
-      const Handle(IntSurf_LineOn2S)& L2S = IntKK.Line();
+      const occ::handle<IntSurf_LineOn2S>& L2S = IntKK.Line();
 
       gp_Pnt           codeb1 = S1->Value(Pardeb(1), Pardeb(2));
       gp_Pnt           codeb2 = S2->Value(Pardeb(3), Pardeb(4));
-      Standard_Real    tol1   = std::max(codeb1.Distance(codeb2), tol3d);
-      Standard_Boolean bondeb = (tol1 == tol3d);
+      double    tol1   = std::max(codeb1.Distance(codeb2), tol3d);
+      bool bondeb = (tol1 == tol3d);
       gp_Pnt           pntd(0.5 * (codeb1.Coord() + codeb2.Coord()));
 
       gp_Pnt           cofin1 = S1->Value(Parfin(1), Parfin(2));
       gp_Pnt           cofin2 = S2->Value(Parfin(3), Parfin(4));
-      Standard_Real    tol2   = std::max(cofin1.Distance(cofin2), tol3d);
-      Standard_Boolean bonfin = (tol2 == tol3d);
+      double    tol2   = std::max(cofin1.Distance(cofin2), tol3d);
+      bool bonfin = (tol2 == tol3d);
       gp_Pnt           pntf(0.5 * (cofin1.Coord() + cofin2.Coord()));
 
-      Standard_Integer nbp  = L2S->NbPoints(), i;
-      Standard_Real    ddeb = Precision::Infinite();
-      Standard_Real    dfin = Precision::Infinite();
-      Standard_Real    dd;
-      Standard_Integer indd = 0, indf = 0;
+      int nbp  = L2S->NbPoints(), i;
+      double    ddeb = Precision::Infinite();
+      double    dfin = Precision::Infinite();
+      double    dd;
+      int indd = 0, indf = 0;
       for (i = 1; i <= nbp; i++)
       {
         dd = L2S->Value(i).Value().Distance(pntd);
@@ -3877,7 +3879,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
       }
       nbp = indf;
       if (nbp == 1)
-        return Standard_False;
+        return false;
       // The extremities are inserted in the line if the extremity points on it
       // are too far and if pardeb and parfin are good.
       if (ddeb >= tol3d && bondeb)
@@ -3938,29 +3940,29 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         dfin = 0.;
       }
       //
-      Handle(IntPatch_WLine) WL = new IntPatch_WLine(L2S, Standard_False);
+      occ::handle<IntPatch_WLine> WL = new IntPatch_WLine(L2S, false);
 
 #ifdef OCCT_DEBUG
       // WL->Dump(0);
 #endif
 
       GeomInt_WLApprox approx;
-      approx.SetParameters(tolap, tol2d, 4, 8, 0, 30, Standard_True);
+      approx.SetParameters(tolap, tol2d, 4, 8, 0, 30, true);
       // manage here the approximations that are not useful on planes!
-      approx.Perform(S1, S2, WL, Standard_True, Standard_True, Standard_True, 1, nbp);
+      approx.Perform(S1, S2, WL, true, true, true, 1, nbp);
       if (!approx.IsDone())
-        return Standard_False;
+        return false;
       //      tolreached = approx.TolReached3d();
-      //      Standard_Real tolr2d = approx.TolReached2d();
+      //      double tolr2d = approx.TolReached2d();
       //      tolreached = std::max(tolreached,ChFi3d_ConvTol2dToTol3d(S1,tolr2d));
       //      tolreached = std::max(tolreached,ChFi3d_ConvTol2dToTol3d(S2,tolr2d));
       const AppParCurves_MultiBSpCurve& mbs   = approx.Value(1);
-      Standard_Integer                  nbpol = mbs.NbPoles();
-      TColgp_Array1OfPnt                pol3d(1, nbpol);
+      int                  nbpol = mbs.NbPoles();
+      NCollection_Array1<gp_Pnt>                pol3d(1, nbpol);
       mbs.Curve(1, pol3d);
-      TColgp_Array1OfPnt2d pol2d1(1, nbpol);
+      NCollection_Array1<gp_Pnt2d> pol2d1(1, nbpol);
       mbs.Curve(2, pol2d1);
-      TColgp_Array1OfPnt2d pol2d2(1, nbpol);
+      NCollection_Array1<gp_Pnt2d> pol2d2(1, nbpol);
       mbs.Curve(3, pol2d2);
       // The extremities of the intersection are reset on known points.
       if (ddeb >= tol1)
@@ -3978,16 +3980,16 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
         pol2d2(nbpol).SetCoord(Parfin(3), Parfin(4));
         //	tolreached = std::max(tolreached,dfin);
       }
-      const TColStd_Array1OfReal&    knots = mbs.Knots();
-      const TColStd_Array1OfInteger& mults = mbs.Multiplicities();
-      Standard_Integer               deg   = mbs.Degree();
+      const NCollection_Array1<double>&    knots = mbs.Knots();
+      const NCollection_Array1<int>& mults = mbs.Multiplicities();
+      int               deg   = mbs.Degree();
       C3d                                  = new Geom_BSplineCurve(pol3d, knots, mults, deg);
       Pc1                                  = new Geom2d_BSplineCurve(pol2d1, knots, mults, deg);
       Pc2                                  = new Geom2d_BSplineCurve(pol2d2, knots, mults, deg);
       tolreached                           = ChFi3d_EvalTolReached(S1, Pc1, S2, Pc2, C3d);
       tolreached                           = std::max(tolreached, ddeb);
       tolreached                           = std::max(tolreached, dfin);
-      return Standard_True;
+      return true;
     }
   }
 }
@@ -3998,33 +4000,33 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)& S1,
 //
 //=======================================================================
 
-Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_Surface)& S,
-                              const Handle(Adaptor3d_Curve)&   C,
+bool ChFi3d_IntCS(const occ::handle<Adaptor3d_Surface>& S,
+                              const occ::handle<Adaptor3d_Curve>&   C,
                               gp_Pnt2d&                        p2dS,
-                              Standard_Real&                   wc)
+                              double&                   wc)
 {
   IntCurveSurface_HInter Intersection;
 
-  Standard_Real                     uf = C->FirstParameter(), ul = C->LastParameter();
-  Standard_Real                     u1 = S->FirstUParameter(), u2 = S->LastUParameter();
-  Standard_Real                     v1 = S->FirstVParameter(), v2 = S->LastVParameter();
+  double                     uf = C->FirstParameter(), ul = C->LastParameter();
+  double                     u1 = S->FirstUParameter(), u2 = S->LastUParameter();
+  double                     v1 = S->FirstVParameter(), v2 = S->LastVParameter();
   IntCurveSurface_IntersectionPoint pint;
   Intersection.Perform(C, S);
-  Standard_Boolean keepfirst = (wc < -1.e100), keeplast = (wc > 1.e100);
-  Standard_Real    temp = 0.;
+  bool keepfirst = (wc < -1.e100), keeplast = (wc > 1.e100);
+  double    temp = 0.;
   if (keepfirst)
     temp = 1.e100;
   if (keeplast)
     temp = -1.e100;
-  Standard_Real dist = 2.e100;
+  double dist = 2.e100;
   if (Intersection.IsDone())
   {
-    Standard_Integer nbp = Intersection.NbPoints(), i, isol = 0;
+    int nbp = Intersection.NbPoints(), i, isol = 0;
     for (i = 1; i <= nbp; i++)
     {
       pint             = Intersection.Point(i);
-      Standard_Real up = pint.U();
-      Standard_Real vp = pint.V();
+      double up = pint.U();
+      double vp = pint.V();
       if (S->IsUPeriodic())
         up = ChFi3d_InPeriod(up, u1, u1 + S->UPeriod(), 1.e-8);
       if (S->IsVPeriodic())
@@ -4049,19 +4051,19 @@ Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_Surface)& S,
       }
     }
     if (isol == 0)
-      return Standard_False;
+      return false;
     pint             = Intersection.Point(isol);
-    Standard_Real up = pint.U();
-    Standard_Real vp = pint.V();
+    double up = pint.U();
+    double vp = pint.V();
     if (S->IsUPeriodic())
       up = ChFi3d_InPeriod(up, u1, u1 + S->UPeriod(), 1.e-8);
     if (S->IsVPeriodic())
       vp = ChFi3d_InPeriod(vp, v1, v1 + S->VPeriod(), 1.e-8);
     p2dS.SetCoord(up, vp);
     wc = pint.W();
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -4073,10 +4075,10 @@ Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_Surface)& S,
 
 void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
                           const ChFiDS_FaceInterference&     Fi2,
-                          const Handle(GeomAdaptor_Surface)& HS1,
-                          const Handle(GeomAdaptor_Surface)& HS2,
-                          Standard_Real&                     UInt1,
-                          Standard_Real&                     UInt2)
+                          const occ::handle<GeomAdaptor_Surface>& HS1,
+                          const occ::handle<GeomAdaptor_Surface>& HS2,
+                          double&                     UInt1,
+                          double&                     UInt2)
 {
   gp_Pnt bid;
   ChFi3d_ComputesIntPC(Fi1, Fi2, HS1, HS2, UInt1, UInt2, bid);
@@ -4086,17 +4088,17 @@ void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
 
 void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
                           const ChFiDS_FaceInterference&     Fi2,
-                          const Handle(GeomAdaptor_Surface)& HS1,
-                          const Handle(GeomAdaptor_Surface)& HS2,
-                          Standard_Real&                     UInt1,
-                          Standard_Real&                     UInt2,
+                          const occ::handle<GeomAdaptor_Surface>& HS1,
+                          const occ::handle<GeomAdaptor_Surface>& HS2,
+                          double&                     UInt1,
+                          double&                     UInt2,
                           gp_Pnt&                            P)
 {
   // Only one intersection to be carried out, however, the effort
   // is taken to check the extremities by an extrema c3d/c3d
   // created on pcurveonsurf of fillets.
 
-  Standard_Real x, y, distref2;
+  double x, y, distref2;
   Fi1.PCurveOnSurf()->Value(UInt1).Coord(x, y);
   gp_Pnt p3d1 = HS1->Value(x, y);
   Fi2.PCurveOnSurf()->Value(UInt2).Coord(x, y);
@@ -4104,18 +4106,18 @@ void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
   distref2    = p3d1.SquareDistance(p3d2);
   P.SetXYZ(0.5 * (p3d1.XYZ() + p3d2.XYZ()));
   // recalculation of the extremums
-  Standard_Real delt1 = std::min(0.1, 0.05 * (Fi1.LastParameter() - Fi1.FirstParameter()));
-  Handle(Geom2dAdaptor_Curve) hc2d1 =
+  double delt1 = std::min(0.1, 0.05 * (Fi1.LastParameter() - Fi1.FirstParameter()));
+  occ::handle<Geom2dAdaptor_Curve> hc2d1 =
     new Geom2dAdaptor_Curve(Fi1.PCurveOnSurf(), UInt1 - delt1, UInt1 + delt1);
   Adaptor3d_CurveOnSurface cons1(hc2d1, HS1);
-  Standard_Real delt2 = std::min(0.1, 0.05 * (Fi2.LastParameter() - Fi2.FirstParameter()));
-  Handle(Geom2dAdaptor_Curve) hc2d2 =
+  double delt2 = std::min(0.1, 0.05 * (Fi2.LastParameter() - Fi2.FirstParameter()));
+  occ::handle<Geom2dAdaptor_Curve> hc2d2 =
     new Geom2dAdaptor_Curve(Fi2.PCurveOnSurf(), UInt2 - delt2, UInt2 + delt2);
   Adaptor3d_CurveOnSurface cons2(hc2d2, HS2);
   Extrema_LocateExtCC      ext(cons1, cons2, UInt1, UInt2);
   if (ext.IsDone())
   {
-    Standard_Real dist2 = ext.SquareDistance();
+    double dist2 = ext.SquareDistance();
     if (dist2 < distref2)
     {
       Extrema_POnCurv ponc1, ponc2;
@@ -4135,17 +4137,17 @@ void ChFi3d_ComputesIntPC(const ChFiDS_FaceInterference&     Fi1,
 //           SurfData Fd1 and trims it to allow the intersection computation
 
 //=======================================================================
-Handle(GeomAdaptor_Surface) ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr,
-                                             const Handle(ChFiDS_SurfData)& Fd1,
-                                             const Standard_Integer&        IFaCo1,
-                                             const Standard_Integer&        IFaArc1)
+occ::handle<GeomAdaptor_Surface> ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr,
+                                             const occ::handle<ChFiDS_SurfData>& Fd1,
+                                             const int&        IFaCo1,
+                                             const int&        IFaArc1)
 {
   // rmq : as in fact 2 interferences of Fd1 serve only to set limits
   //       indexes IFaCo1 and IFaArc1 are not useful.
   //       They are preserver here as an option in case it will be necessary to set
   //       more restrictive limits (with intersection points as additional argument).
 
-  Handle(GeomAdaptor_Surface) HS1 = new GeomAdaptor_Surface();
+  occ::handle<GeomAdaptor_Surface> HS1 = new GeomAdaptor_Surface();
   GeomAdaptor_Surface&        S1  = *HS1;
   S1.Load(DStr.Surface(Fd1->Surf()).Surface());
 
@@ -4155,7 +4157,7 @@ Handle(GeomAdaptor_Surface) ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr
   const ChFiDS_FaceInterference& FiCo1  = Fd1->Interference(IFaCo1);
   const ChFiDS_FaceInterference& FiArc1 = Fd1->Interference(IFaArc1);
 
-  Standard_Real Du, Dv, mu, Mu, mv, Mv;
+  double Du, Dv, mu, Mu, mv, Mv;
   gp_Pnt2d      UVf1, UVf2, UVl1, UVl2;
 
   UVf1 = FiCo1.PCurveOnSurf()->Value(FiCo1.FirstParameter());
@@ -4189,9 +4191,9 @@ Handle(GeomAdaptor_Surface) ChFi3d_BoundSurf(TopOpeBRepDS_DataStructure&    DStr
 
 //=================================================================================================
 
-Standard_Integer ChFi3d_SearchPivot(Standard_Integer*   s,
-                                    Standard_Real       u[3][3],
-                                    const Standard_Real t)
+int ChFi3d_SearchPivot(int*   s,
+                                    double       u[3][3],
+                                    const double t)
 {
   //           This function finds as pivot a cd the sections which of
   //           do not cross on the opposite face.
@@ -4202,8 +4204,8 @@ Standard_Integer ChFi3d_SearchPivot(Standard_Integer*   s,
   //           it should be refined by comparing the parameters on
   //           guide lines and (/or) radiuses.
 
-  Standard_Boolean bondeb, bonfin;
-  for (Standard_Integer i = 0; i <= 2; i++)
+  bool bondeb, bonfin;
+  for (int i = 0; i <= 2; i++)
   {
     if (s[(i + 1) % 3] == 1)
     {
@@ -4231,30 +4233,30 @@ Standard_Integer ChFi3d_SearchPivot(Standard_Integer*   s,
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
-                                 const Handle(ChFiDS_Stripe)& cd1,
-                                 const Handle(ChFiDS_Stripe)& cd2,
-                                 const Standard_Integer       sens1,
-                                 const Standard_Integer       sens2,
-                                 Standard_Integer&            i1,
-                                 Standard_Integer&            i2,
-                                 Standard_Real&               p1,
-                                 Standard_Real&               p2,
-                                 const Standard_Integer       ind1,
-                                 const Standard_Integer       ind2,
+bool ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
+                                 const occ::handle<ChFiDS_Stripe>& cd1,
+                                 const occ::handle<ChFiDS_Stripe>& cd2,
+                                 const int       sens1,
+                                 const int       sens2,
+                                 int&            i1,
+                                 int&            i2,
+                                 double&               p1,
+                                 double&               p2,
+                                 const int       ind1,
+                                 const int       ind2,
                                  TopoDS_Face&                 face,
-                                 Standard_Boolean&            sameside,
-                                 Standard_Integer&            jf1,
-                                 Standard_Integer&            jf2)
+                                 bool&            sameside,
+                                 int&            jf1,
+                                 int&            jf2)
 {
-  Standard_Boolean found = Standard_False;
-  Standard_Integer id1 = ind1, id2 = ind2;
-  Standard_Integer if1 = ind1, if2 = ind2;
-  Standard_Integer l1 = cd1->SetOfSurfData()->Length();
-  Standard_Integer l2 = cd2->SetOfSurfData()->Length();
-  Standard_Integer i;
-  Standard_Boolean fini1 = Standard_False, fini2 = Standard_False;
-  Standard_Boolean visavis, visavisok            = Standard_False;
+  bool found = false;
+  int id1 = ind1, id2 = ind2;
+  int if1 = ind1, if2 = ind2;
+  int l1 = cd1->SetOfSurfData()->Length();
+  int l2 = cd2->SetOfSurfData()->Length();
+  int i;
+  bool fini1 = false, fini2 = false;
+  bool visavis, visavisok            = false;
   TopoDS_Vertex    Vtx;
   while (!found)
   {
@@ -4275,16 +4277,16 @@ Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
                            jf2,
                            visavis,
                            Vtx,
-                           Standard_False,
+                           false,
                            0))
       {
         i1    = i;
         i2    = if2;
-        found = Standard_True;
+        found = true;
       }
       else if (visavis && !visavisok)
       {
-        visavisok = Standard_True;
+        visavisok = true;
         i1        = i;
         i2        = if2;
       }
@@ -4295,7 +4297,7 @@ Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
       if (if1 < 1 || if1 > l1)
       {
         if1   = if1 - sens1;
-        fini1 = Standard_True;
+        fini1 = true;
       }
     }
 
@@ -4316,16 +4318,16 @@ Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
                            jf2,
                            visavis,
                            Vtx,
-                           Standard_False,
+                           false,
                            0))
       {
         i1    = if1;
         i2    = i;
-        found = Standard_True;
+        found = true;
       }
       else if (visavis && !visavisok)
       {
-        visavisok = Standard_True;
+        visavisok = true;
         i1        = if1;
         i2        = i;
       }
@@ -4336,7 +4338,7 @@ Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
       if (if2 < 1 || if2 > l2)
       {
         if2   = if2 - sens2;
-        fini2 = Standard_True;
+        fini2 = true;
       }
     }
     if (fini1 && fini2)
@@ -4351,10 +4353,10 @@ Standard_Boolean ChFi3d_SearchFD(TopOpeBRepDS_DataStructure&  DStr,
 //           on the surface <S> if it's an analytic surface
 //=======================================================================
 
-void ChFi3d_Parameters(const Handle(Geom_Surface)& S,
+void ChFi3d_Parameters(const occ::handle<Geom_Surface>& S,
                        const gp_Pnt&               p3d,
-                       Standard_Real&              u,
-                       Standard_Real&              v)
+                       double&              u,
+                       double&              v)
 {
   GeomAdaptor_Surface gas(S);
   switch (gas.GetType())
@@ -4392,12 +4394,12 @@ void ChFi3d_Parameters(const Handle(Geom_Surface)& S,
 //           <LastP>. The trimmed curve is <gtc>
 //=======================================================================
 
-void ChFi3d_TrimCurve(const Handle(Geom_Curve)&  gc,
+void ChFi3d_TrimCurve(const occ::handle<Geom_Curve>&  gc,
                       const gp_Pnt&              FirstP,
                       const gp_Pnt&              LastP,
-                      Handle(Geom_TrimmedCurve)& gtc)
+                      occ::handle<Geom_TrimmedCurve>& gtc)
 {
-  Standard_Real     uf = 0., ul = 0.;
+  double     uf = 0., ul = 0.;
   GeomAdaptor_Curve gac(gc);
   switch (gac.GetType())
   {
@@ -4444,45 +4446,45 @@ void ChFi3d_TrimCurve(const Handle(Geom_Curve)&  gc,
 
 //=================================================================================================
 
-static Standard_Boolean GoodExt(const Handle(Geom_Curve)& C,
+static bool GoodExt(const occ::handle<Geom_Curve>& C,
                                 const gp_Vec&             V,
-                                const Standard_Real       f,
-                                const Standard_Real       l,
-                                const Standard_Real       a)
+                                const double       f,
+                                const double       l,
+                                const double       a)
 {
-  for (Standard_Integer i = 0; i < 6; i++)
+  for (int i = 0; i < 6; i++)
   {
     gp_Pnt              d0;
     gp_Vec              d1;
-    const Standard_Real t = i * 0.2;
+    const double t = i * 0.2;
     C->D1(((1 - t) * f + t * l), d0, d1);
-    const Standard_Real ang    = d1.Angle(V);
-    const Standard_Real angref = a * t + 0.002;
+    const double ang    = d1.Angle(V);
+    const double angref = a * t + 0.002;
     if (ang > angref)
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
-                                           Handle(ChFiDS_Spine)&   Spine,
+Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
+                                           occ::handle<ChFiDS_Spine>&   Spine,
                                            const GeomAbs_Shape     continuity,
-                                           const Standard_Real     tol,
-                                           const Standard_Boolean  IsOffset)
+                                           const double     tol,
+                                           const bool  IsOffset)
 {
 
-  Standard_Boolean          periodic, Bof, checkdeb, cepadur, bIsSmooth;
-  Standard_Integer          IEdge, IF, IL, nbed, iToApproxByC2;
-  Standard_Real             WF, WL, Wrefdeb, Wreffin, nwf, nwl, period, pared = 0., tolpared;
-  Standard_Real             First, Last, epsV, urefdeb, tolrac;
+  bool          periodic, Bof, checkdeb, cepadur, bIsSmooth;
+  int          IEdge, IF, IL, nbed, iToApproxByC2;
+  double             WF, WL, Wrefdeb, Wreffin, nwf, nwl, period, pared = 0., tolpared;
+  double             First, Last, epsV, urefdeb, tolrac;
   GeomAbs_Shape             aContinuity;
   gp_Pnt                    PDeb, PFin, Bout;
   gp_Vec                    VrefDeb, VrefFin;
-  Handle(Geom_Curve)        Cv;
-  Handle(Geom_BoundedCurve) TC;
-  Handle(Geom_BSplineCurve) BS, BSpline;
+  occ::handle<Geom_Curve>        Cv;
+  occ::handle<Geom_BoundedCurve> TC;
+  occ::handle<Geom_BSplineCurve> BS, BSpline;
   TopoDS_Edge               E, Eold;
   TopoDS_Vertex             V;
   //
@@ -4518,9 +4520,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   VrefDeb.Normalize();
   VrefFin.Normalize();
   //
-  TColgp_Array1OfPnt ExtrapPole(1, 5);
-  TColgp_Array1OfPnt ExtraCoeffs(1, 5);
-  TColgp_Array1OfXYZ Cont(1, 5);
+  NCollection_Array1<gp_Pnt> ExtrapPole(1, 5);
+  NCollection_Array1<gp_Pnt> ExtraCoeffs(1, 5);
+  NCollection_Array1<gp_XYZ> Cont(1, 5);
   // Attention on segmente eventuellement la premiere et la
   // derniere arete.
   // Traitment de la premiere arete
@@ -4533,7 +4535,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   // Add vertex with tangent
   if (ES.IsPeriodic())
   {
-    Standard_Real ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
     gp_Pnt        PntForElSpine;
     gp_Vec        DirForElSpine;
     Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
@@ -4549,7 +4551,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   //
   if (E.Orientation() == TopAbs_REVERSED)
   {
-    Standard_Real sov = First;
+    double sov = First;
     First             = Cv->ReversedParameter(Last);
     Last              = Cv->ReversedParameter(sov);
     if (checkdeb)
@@ -4566,8 +4568,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     }
     if (IL == IF)
     {
-      Standard_Real    ureffin  = Spine->LastParameter(IL);
-      Standard_Boolean checkfin = (nwl < ureffin);
+      double    ureffin  = Spine->LastParameter(IL);
+      bool checkfin = (nwl < ureffin);
       if (checkfin)
       {
         Spine->Parameter(IL, nwl, pared, 0);
@@ -4596,8 +4598,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     }
     if (IL == IF)
     {
-      Standard_Real    ureffin  = Spine->LastParameter(IL);
-      Standard_Boolean checkfin = (nwl < ureffin);
+      double    ureffin  = Spine->LastParameter(IL);
+      bool checkfin = (nwl < ureffin);
       if (checkfin)
       {
         Spine->Parameter(IL, nwl, pared, 0);
@@ -4622,7 +4624,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   // sans parvenir a terminer. On tire une droite.
   if (cepadur)
   {
-    Handle(Geom_Line) L;
+    occ::handle<Geom_Line> L;
     gp_Pnt            ptemp;
     gp_Vec            vtemp;
     if (WL < Spine->FirstParameter(1) + tol)
@@ -4667,7 +4669,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   Eold = E;
   for (IEdge = IF + 1; IEdge <= IL; ++IEdge)
   {
-    Standard_Integer iloc = IEdge;
+    int iloc = IEdge;
     if (periodic)
     {
       iloc = (IEdge - 1) % nbed + 1;
@@ -4694,7 +4696,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     //
     Cv = BRep_Tool::Curve(E, First, Last);
     // Add vertex with tangent
-    Standard_Real ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
     gp_Pnt        PntForElSpine;
     gp_Vec        DirForElSpine;
     Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
@@ -4702,8 +4704,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     /////////////////////////
     if (IEdge == IL)
     {
-      Standard_Real    ureffin  = Spine->LastParameter(iloc);
-      Standard_Boolean checkfin = (nwl < ureffin);
+      double    ureffin  = Spine->LastParameter(iloc);
+      bool checkfin = (nwl < ureffin);
       if (checkfin)
       {
         Spine->Parameter(iloc, nwl, pared, 0);
@@ -4714,7 +4716,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
       }
       if (E.Orientation() == TopAbs_REVERSED)
       {
-        Standard_Real sov = First;
+        double sov = First;
         First             = Cv->ReversedParameter(Last);
         Last              = Cv->ReversedParameter(sov);
         if (checkfin)
@@ -4748,15 +4750,15 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     }
     //
     tolrac = std::min(tol, epsV);
-    Bof    = Concat.Add(TC, 2. * tolrac, Standard_True);
+    Bof    = Concat.Add(TC, 2. * tolrac, true);
     // si l'ajout ne s'est pas bien passe on essai d'augmenter la tolerance
     if (!Bof)
     {
-      Bof = Concat.Add(TC, 2. * epsV, Standard_True);
+      Bof = Concat.Add(TC, 2. * epsV, true);
     }
     if (!Bof)
     {
-      Bof = Concat.Add(TC, 200. * epsV, Standard_True);
+      Bof = Concat.Add(TC, 200. * epsV, true);
       if (!Bof)
       {
         throw Standard_ConstructionError("PerformElSpine: spine merged error");
@@ -4769,16 +4771,16 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   // valide des aretes du chemin.
   BSpline = Concat.BSplineCurve();
   // There is a reparametrisation to maximally connect the abscissas of edges.
-  TColStd_Array1OfReal BSNoeuds(1, BSpline->NbKnots());
+  NCollection_Array1<double> BSNoeuds(1, BSpline->NbKnots());
   BSpline->Knots(BSNoeuds);
   BSplCLib::Reparametrize(Wrefdeb, Wreffin, BSNoeuds);
   BSpline->SetKnots(BSNoeuds);
   //
   // Traitement des Extremites
-  Standard_Integer          caredeb, carefin;
-  Standard_Real             LocalWL, LocalWF, Angle;
+  int          caredeb, carefin;
+  double             LocalWL, LocalWF, Angle;
   GeomAdaptor_Curve         gacurve;
-  Handle(Geom_BSplineCurve) newc;
+  occ::handle<Geom_BSplineCurve> newc;
   //
   caredeb = 0;
   carefin = 0;
@@ -4795,14 +4797,14 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
       caredeb = 1;
     }
     //
-    Standard_Real rabdist    = Wrefdeb - WF;
+    double rabdist    = Wrefdeb - WF;
     Bout                     = PDeb.Translated(-20 * rabdist * VrefDeb);
-    Standard_Boolean goodext = 0;
-    for (Standard_Integer icont = 3; icont >= 1 && !goodext; icont--)
+    bool goodext = 0;
+    for (int icont = 3; icont >= 1 && !goodext; icont--)
     {
-      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
-      GeomLib::ExtendCurveToPoint(anExtCurve, Bout, icont, Standard_False);
-      newc = Handle(Geom_BSplineCurve)::DownCast(anExtCurve);
+      occ::handle<Geom_BoundedCurve> anExtCurve = BSpline;
+      GeomLib::ExtendCurveToPoint(anExtCurve, Bout, icont, false);
+      newc = occ::down_cast<Geom_BSplineCurve>(anExtCurve);
       gacurve.Load(newc);
       GCPnts_AbscissaPoint GCP(gacurve, -rabdist, Wrefdeb, WF);
       if (GCP.IsDone())
@@ -4826,14 +4828,14 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     {
       carefin = 1;
     }
-    Standard_Real rabdist    = WL - Wreffin;
+    double rabdist    = WL - Wreffin;
     Bout                     = PFin.Translated(20 * rabdist * VrefFin);
-    Standard_Boolean goodext = 0;
-    for (Standard_Integer icont = 3; icont >= 1 && !goodext; icont--)
+    bool goodext = 0;
+    for (int icont = 3; icont >= 1 && !goodext; icont--)
     {
-      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
-      GeomLib::ExtendCurveToPoint(anExtCurve, Bout, icont, Standard_True);
-      newc = Handle(Geom_BSplineCurve)::DownCast(anExtCurve);
+      occ::handle<Geom_BoundedCurve> anExtCurve = BSpline;
+      GeomLib::ExtendCurveToPoint(anExtCurve, Bout, icont, true);
+      newc = occ::down_cast<Geom_BSplineCurve>(anExtCurve);
       gacurve.Load(newc);
       GCPnts_AbscissaPoint GCP(gacurve, rabdist, Wreffin, WL);
       if (GCP.IsDone())
@@ -4869,8 +4871,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   //
   if (BSpline->IsRational())
   {
-    Handle(Geom_BSplineCurve) C1;
-    C1 = Handle(Geom_BSplineCurve)::DownCast(BSpline->Copy());
+    occ::handle<Geom_BSplineCurve> C1;
+    C1 = occ::down_cast<Geom_BSplineCurve>(BSpline->Copy());
     GeomConvert::C0BSplineToC1BSplineCurve(C1, tol, 0.1);
     // Il faut s'assurer que l'origine n'a pas bouge (cts21158)
     if (C1->FirstParameter() == BSpline->FirstParameter())
@@ -4883,7 +4885,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
     }
   }
   //
-  Standard_Integer fk, lk, MultMax, ii;
+  int fk, lk, MultMax, ii;
   // Deformation eventuelle pour rendre la spine C2.
   // ou C3 pour des approx C2
   if ((caredeb || carefin) && BSpline->Degree() < 8)
@@ -4925,7 +4927,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   // correction C2 or C3 (if possible)
   CurveCleaner(BSpline, std::abs(WL - WF) * 1.e-4, 1);
   CurveCleaner(BSpline, std::abs(WL - WF) * 1.e-2, MultMax);
-  Standard_Integer MultMin = std::max(BSpline->Degree() - 4, 1);
+  int MultMin = std::max(BSpline->Degree() - 4, 1);
   for (ii = fk; ii <= lk; ii++)
   {
     if (BSpline->Multiplicity(ii) > MultMax)
@@ -4957,34 +4959,34 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
   {
     // Otherwise is it necessary to move the poles to adapt
     // them to new tangents ?
-    Standard_Boolean adjust = Standard_False;
+    bool adjust = false;
     gp_Pnt           P1, P2;
     gp_Vec           V1, V2;
     BSpline->D1(WF, P1, V1);
     V1.Normalize();
     ES.FirstPointAndTgt(PDeb, VrefDeb);
-    Standard_Real scaldeb = VrefDeb.Dot(V1);
-    Standard_Real disdeb  = PDeb.Distance(P1);
+    double scaldeb = VrefDeb.Dot(V1);
+    double disdeb  = PDeb.Distance(P1);
     if ((std::abs(WF - LocalWF) < 1.e-12) && ((scaldeb <= 0.9999999) || disdeb >= tol))
     {
       // Yes if there was no extension and the tangent is not the good one.
-      adjust = Standard_True;
+      adjust = true;
     }
     BSpline->D1(WL, P2, V2);
     V2.Normalize();
     ES.LastPointAndTgt(PFin, VrefFin);
-    Standard_Real scalfin = VrefFin.Dot(V2);
-    Standard_Real disfin  = PFin.Distance(P2);
+    double scalfin = VrefFin.Dot(V2);
+    double disfin  = PFin.Distance(P2);
     if ((std::abs(WL - LocalWL) < 1.e-12) && ((scalfin <= 0.9999999) || disfin >= tol))
     {
       // the same at the end
-      adjust = Standard_True;
+      adjust = true;
     }
     if (adjust)
     {
-      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
+      occ::handle<Geom_BoundedCurve> anExtCurve = BSpline;
       GeomLib::AdjustExtremity(anExtCurve, PDeb, PFin, VrefDeb, VrefFin);
-      BSpline = Handle(Geom_BSplineCurve)::DownCast(anExtCurve);
+      BSpline = occ::down_cast<Geom_BSplineCurve>(anExtCurve);
     }
   }
 
@@ -5002,18 +5004,18 @@ Standard_EXPORT void ChFi3d_PerformElSpine(Handle(ChFiDS_ElSpine)& HES,
 // purpose  : find face F different from F1 in the map.
 // The map contains two faces adjacent to an edge
 //=======================================================================
-void ChFi3d_cherche_face1(const TopTools_ListOfShape& map, const TopoDS_Face& F1, TopoDS_Face& F)
+void ChFi3d_cherche_face1(const NCollection_List<TopoDS_Shape>& map, const TopoDS_Face& F1, TopoDS_Face& F)
 {
   TopoDS_Face                        Fcur;
-  Standard_Boolean                   trouve = Standard_False;
-  TopTools_ListIteratorOfListOfShape It;
+  bool                   trouve = false;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   for (It.Initialize(map); It.More() && !trouve; It.Next())
   {
     Fcur = TopoDS::Face(It.Value());
     if (!Fcur.IsSame(F1))
     {
       F      = Fcur;
-      trouve = Standard_True;
+      trouve = true;
     }
   }
   if (F.IsNull())
@@ -5033,18 +5035,18 @@ void ChFi3d_cherche_element(const TopoDS_Vertex& V,
                             TopoDS_Edge&         E,
                             TopoDS_Vertex&       Vtx)
 {
-  Standard_Integer           ie;
+  int           ie;
   TopoDS_Vertex              V1, V2;
-  Standard_Boolean           trouve = Standard_False;
+  bool           trouve = false;
   TopoDS_Edge                Ecur;
-  TopTools_IndexedMapOfShape MapE;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapE;
   TopExp::MapShapes(F1, TopAbs_EDGE, MapE);
   for (ie = 1; ie <= MapE.Extent() && !trouve; ie++)
   {
     Ecur = TopoDS::Edge(MapE(ie));
     if (!Ecur.IsSame(E1))
     {
-      TopTools_IndexedMapOfShape MapV;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapV;
       TopExp::MapShapes(Ecur, TopAbs_VERTEX, MapV);
       if (MapV.Extent() == 2)
       {
@@ -5054,13 +5056,13 @@ void ChFi3d_cherche_element(const TopoDS_Vertex& V,
         {
           Vtx    = V2;
           E      = Ecur;
-          trouve = Standard_True;
+          trouve = true;
         }
         else if (V2.IsSame(V))
         {
           Vtx    = V1;
           E      = Ecur;
-          trouve = Standard_True;
+          trouve = true;
         }
       }
     }
@@ -5077,30 +5079,30 @@ void ChFi3d_cherche_element(const TopoDS_Vertex& V,
 //           containing vertex V  Vtx is the other vertex of E.
 //=======================================================================
 void ChFi3d_cherche_edge(const TopoDS_Vertex&          V,
-                         const TopTools_Array1OfShape& E1,
+                         const NCollection_Array1<TopoDS_Shape>& E1,
                          const TopoDS_Face&            F1,
                          TopoDS_Edge&                  E,
                          TopoDS_Vertex&                Vtx)
 {
-  Standard_Integer           ie, i;
+  int           ie, i;
   TopoDS_Vertex              V1, V2;
-  Standard_Boolean           trouve = Standard_False;
+  bool           trouve = false;
   TopoDS_Edge                Ecur;
-  Standard_Boolean           same;
-  TopTools_IndexedMapOfShape MapE;
+  bool           same;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapE;
   TopExp::MapShapes(F1, TopAbs_EDGE, MapE);
   for (ie = 1; ie <= MapE.Extent() && !trouve; ie++)
   {
     Ecur = TopoDS::Edge(MapE(ie));
-    same = Standard_False;
+    same = false;
     for (i = E1.Lower(); i <= E1.Upper(); i++)
     {
       if (Ecur.IsSame(E1.Value(i)))
-        same = Standard_True;
+        same = true;
     }
     if (!same)
     {
-      TopTools_IndexedMapOfShape MapV;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapV;
       TopExp::MapShapes(Ecur, TopAbs_VERTEX, MapV);
       if (MapV.Extent() == 2)
       {
@@ -5110,13 +5112,13 @@ void ChFi3d_cherche_edge(const TopoDS_Vertex&          V,
         {
           Vtx    = V2;
           E      = Ecur;
-          trouve = Standard_True;
+          trouve = true;
         }
         else if (V2.IsSame(V))
         {
           Vtx    = V1;
           E      = Ecur;
-          trouve = Standard_True;
+          trouve = true;
         }
       }
     }
@@ -5132,15 +5134,15 @@ void ChFi3d_cherche_edge(const TopoDS_Vertex&          V,
 // purpose  : calculates the number of faces common to a vertex
 //
 //=======================================================================
-Standard_Integer ChFi3d_nbface(const TopTools_ListOfShape& mapVF)
+int ChFi3d_nbface(const NCollection_List<TopoDS_Shape>& mapVF)
 {
-  Standard_Integer                   nface = 0;
-  TopTools_ListIteratorOfListOfShape ItF, JtF;
-  Standard_Integer                   fj = 0;
+  int                   nface = 0;
+  NCollection_List<TopoDS_Shape>::Iterator ItF, JtF;
+  int                   fj = 0;
   for (ItF.Initialize(mapVF); ItF.More(); ItF.Next())
   {
     fj++;
-    Standard_Integer    kf  = 1;
+    int    kf  = 1;
     const TopoDS_Shape& cur = ItF.Value();
     for (JtF.Initialize(mapVF); JtF.More() && (kf < fj); JtF.Next(), kf++)
     {
@@ -5158,21 +5160,21 @@ Standard_Integer ChFi3d_nbface(const TopTools_ListOfShape& mapVF)
 // purpose  :  determines two faces sharing an edge.
 //            F1 = F2 if there is an edge to parce
 //=======================================================================
-void ChFi3d_edge_common_faces(const TopTools_ListOfShape& mapEF, TopoDS_Face& F1, TopoDS_Face& F2)
+void ChFi3d_edge_common_faces(const NCollection_List<TopoDS_Shape>& mapEF, TopoDS_Face& F1, TopoDS_Face& F2)
 {
-  TopTools_ListIteratorOfListOfShape It;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   TopoDS_Face                        F;
-  Standard_Boolean                   trouve;
+  bool                   trouve;
   It.Initialize(mapEF);
   F1     = TopoDS::Face(It.Value());
-  trouve = Standard_False;
+  trouve = false;
   for (It.Initialize(mapEF); It.More() && !trouve; It.Next())
   {
     F = TopoDS::Face(It.Value());
     if (!F.IsSame(F1))
     {
       F2     = F;
-      trouve = Standard_True;
+      trouve = true;
     }
   }
   if (!trouve)
@@ -5183,14 +5185,14 @@ void ChFi3d_edge_common_faces(const TopTools_ListOfShape& mapEF, TopoDS_Face& F1
 // gives the angle between edges E1 and E2.
 // Vtx is the vertex common to the edges
 /************************************************************/
-Standard_Real ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
+double ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
                                const TopoDS_Edge&   E1,
                                const TopoDS_Edge&   E2)
 {
-  Standard_Real     angle;
+  double     angle;
   BRepAdaptor_Curve BCurv1(E1);
   BRepAdaptor_Curve BCurv2(E2);
-  Standard_Real     parE1, parE2;
+  double     parE1, parE2;
   gp_Vec            dir1, dir2;
   gp_Pnt            P1, P2;
   parE1 = BRep_Tool::Parameter(Vtx, E1);
@@ -5213,13 +5215,13 @@ Standard_Real ChFi3d_AngleEdge(const TopoDS_Vertex& Vtx,
 //===================================================================
 void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
                                const TopoDS_Vertex& V1,
-                               Standard_Boolean&    bordlibre,
+                               bool&    bordlibre,
                                TopoDS_Edge&         edgelibre1,
                                TopoDS_Edge&         edgelibre2)
 {
-  bordlibre = Standard_False;
-  TopTools_ListIteratorOfListOfShape ItE, ItE1;
-  Standard_Integer                   nboccur;
+  bordlibre = false;
+  NCollection_List<TopoDS_Shape>::Iterator ItE, ItE1;
+  int                   nboccur;
   for (ItE.Initialize(myVEMap(V1)); ItE.More() && !bordlibre; ItE.Next())
   {
     nboccur                = 0;
@@ -5236,12 +5238,12 @@ void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
     if (nboccur == 1)
     {
       edgelibre1 = cur;
-      bordlibre  = Standard_True;
+      bordlibre  = true;
     }
   }
   if (bordlibre)
   {
-    bordlibre = Standard_False;
+    bordlibre = false;
     for (ItE.Initialize(myVEMap(V1)); ItE.More() && !bordlibre; ItE.Next())
     {
       nboccur                = 0;
@@ -5258,7 +5260,7 @@ void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
       if (nboccur == 1)
       {
         edgelibre2 = cur;
-        bordlibre  = Standard_True;
+        bordlibre  = true;
       }
     }
   }
@@ -5269,10 +5271,10 @@ void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
 // purpose  : calculate the number of non-degenerated edges of Map VEMap(Vtx)
 // Attention the edges of junctions are taken into account twice
 //=======================================================================
-Standard_Integer ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
+int ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
 {
-  TopTools_ListIteratorOfListOfShape ItE;
-  Standard_Integer                   nba = VEMap(Vtx).Extent();
+  NCollection_List<TopoDS_Shape>::Iterator ItE;
+  int                   nba = VEMap(Vtx).Extent();
   for (ItE.Initialize(VEMap(Vtx)); ItE.More(); ItE.Next())
   {
     const TopoDS_Edge& cur = TopoDS::Edge(ItE.Value());
@@ -5287,12 +5289,12 @@ Standard_Integer ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const Ch
 // purpose  : calculate the number of sharp edges of Map VEMap(Vtx)
 // Attention the edges of junctions are taken into account twice
 //=======================================================================
-Standard_Integer ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
+int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
                                      const ChFiDS_Map&    VEMap,
                                      const ChFiDS_Map&    EFMap)
 {
-  TopTools_ListIteratorOfListOfShape ItE;
-  Standard_Integer                   nba = VEMap(Vtx).Extent();
+  NCollection_List<TopoDS_Shape>::Iterator ItE;
+  int                   nba = VEMap(Vtx).Extent();
   for (ItE.Initialize(VEMap(Vtx)); ItE.More(); ItE.Next())
   {
     const TopoDS_Edge& cur = TopoDS::Edge(ItE.Value());
@@ -5314,10 +5316,10 @@ Standard_Integer ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
 // purpose  : calculate the number of edges arriving to the top Vtx
 // degenerated edges are not taken into account.
 //=======================================================================
-Standard_Integer ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
+int ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
 {
-  Standard_Integer nba;
-  Standard_Boolean bordlibre;
+  int nba;
+  bool bordlibre;
   TopoDS_Edge      edgelibre1, edgelibre2;
   nba = ChFi3d_NbNotDegeneratedEdges(Vtx, VEMap);
   ChFi3d_ChercheBordsLibres(VEMap, Vtx, bordlibre, edgelibre1, edgelibre2);
@@ -5333,12 +5335,12 @@ Standard_Integer ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map
 // purpose  : calculate the number of edges arriving to the top Vtx
 // degenerated edges are not taken into account.
 //=======================================================================
-Standard_Integer ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
+int ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
                                            const ChFiDS_Map&    VEMap,
                                            const ChFiDS_Map&    EFmap)
 {
-  Standard_Integer nba;
-  Standard_Boolean bordlibre;
+  int nba;
+  bool bordlibre;
   TopoDS_Edge      edgelibre1, edgelibre2;
   nba = ChFi3d_NbSharpEdges(Vtx, VEMap, EFmap);
   ChFi3d_ChercheBordsLibres(VEMap, Vtx, bordlibre, edgelibre1, edgelibre2);
@@ -5357,12 +5359,12 @@ Standard_Integer ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
 void ChFi3d_cherche_vertex(const TopoDS_Edge& E1,
                            const TopoDS_Edge& E2,
                            TopoDS_Vertex&     vertex,
-                           Standard_Boolean&  trouve)
+                           bool&  trouve)
 {
-  Standard_Integer i, j;
+  int i, j;
   TopoDS_Vertex    Vcur1, Vcur2;
-  trouve = Standard_False;
-  TopTools_IndexedMapOfShape MapV1, MapV2;
+  trouve = false;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapV1, MapV2;
   TopExp::MapShapes(E1, TopAbs_VERTEX, MapV1);
   TopExp::MapShapes(E2, TopAbs_VERTEX, MapV2);
   for (i = 1; i <= MapV1.Extent() && !trouve; i++)
@@ -5378,7 +5380,7 @@ void ChFi3d_cherche_vertex(const TopoDS_Edge& E1,
       if (Vcur2.IsSame(Vcur1))
       {
         vertex = Vcur1;
-        trouve = Standard_True;
+        trouve = true;
       }
     }
   }
@@ -5388,22 +5390,22 @@ void ChFi3d_cherche_vertex(const TopoDS_Edge& E1,
 // function : ChFi3d_Couture
 // purpose  : determine si F a une arete de couture
 //=======================================================================
-void ChFi3d_Couture(const TopoDS_Face& F, Standard_Boolean& couture, TopoDS_Edge& edgecouture)
+void ChFi3d_Couture(const TopoDS_Face& F, bool& couture, TopoDS_Edge& edgecouture)
 {
   TopoDS_Edge Ecur;
-  couture = Standard_False;
-  TopTools_IndexedMapOfShape MapE1;
+  couture = false;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapE1;
   TopExp::MapShapes(F, TopAbs_EDGE, MapE1);
   TopLoc_Location      Loc;
-  Handle(Geom_Surface) Surf = BRep_Tool::Surface(F, Loc);
-  for (Standard_Integer i = 1; i <= MapE1.Extent() && !couture; i++)
+  occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(F, Loc);
+  for (int i = 1; i <= MapE1.Extent() && !couture; i++)
   {
     TopoDS_Shape aLocalShape = TopoDS_Shape(MapE1(i));
     Ecur                     = TopoDS::Edge(aLocalShape);
     //      Ecur=TopoDS::Edge(TopoDS_Shape (MapE1(i)));
     if (BRep_Tool::IsClosed(Ecur, Surf, Loc))
     {
-      couture     = Standard_True;
+      couture     = true;
       edgecouture = Ecur;
     }
   }
@@ -5413,16 +5415,16 @@ void ChFi3d_Couture(const TopoDS_Face& F, Standard_Boolean& couture, TopoDS_Edge
 
 void ChFi3d_CoutureOnVertex(const TopoDS_Face&   F,
                             const TopoDS_Vertex& V,
-                            Standard_Boolean&    couture,
+                            bool&    couture,
                             TopoDS_Edge&         edgecouture)
 {
   TopoDS_Edge Ecur;
-  couture = Standard_False;
-  TopTools_IndexedMapOfShape MapE1;
+  couture = false;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapE1;
   TopExp::MapShapes(F, TopAbs_EDGE, MapE1);
   TopLoc_Location      Loc;
-  Handle(Geom_Surface) Surf = BRep_Tool::Surface(F, Loc);
-  for (Standard_Integer i = 1; i <= MapE1.Extent(); i++)
+  occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(F, Loc);
+  for (int i = 1; i <= MapE1.Extent(); i++)
   {
     TopoDS_Shape aLocalShape = TopoDS_Shape(MapE1(i));
     Ecur                     = TopoDS::Edge(aLocalShape);
@@ -5433,7 +5435,7 @@ void ChFi3d_CoutureOnVertex(const TopoDS_Face&   F,
       TopExp::Vertices(Ecur, Vf, Vl);
       if (Vf.IsSame(V) || Vl.IsSame(V))
       {
-        couture     = Standard_True;
+        couture     = true;
         edgecouture = Ecur;
         break;
       }
@@ -5443,12 +5445,12 @@ void ChFi3d_CoutureOnVertex(const TopoDS_Face&   F,
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_IsPseudoSeam(const TopoDS_Edge& E, const TopoDS_Face& F)
+bool ChFi3d_IsPseudoSeam(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   if (!BRep_Tool::IsClosed(E, F))
-    return Standard_False;
+    return false;
 
-  Standard_Boolean NeighborSeamFound = Standard_False;
+  bool NeighborSeamFound = false;
   TopoDS_Vertex    Vf, Vl, V1, V2;
   TopExp::Vertices(E, Vf, Vl);
   TopExp_Explorer Explo(F, TopAbs_EDGE);
@@ -5461,7 +5463,7 @@ Standard_Boolean ChFi3d_IsPseudoSeam(const TopoDS_Edge& E, const TopoDS_Face& F)
       if ((V1.IsSame(Vf) || V1.IsSame(Vl) || V2.IsSame(Vf) || V2.IsSame(Vl))
           && BRepTools::IsReallyClosed(Ecur, F))
       {
-        NeighborSeamFound = Standard_True;
+        NeighborSeamFound = true;
         break;
       }
     }
@@ -5471,56 +5473,56 @@ Standard_Boolean ChFi3d_IsPseudoSeam(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) ChFi3d_ApproxByC2(const Handle(Geom_Curve)& C)
+occ::handle<Geom_BSplineCurve> ChFi3d_ApproxByC2(const occ::handle<Geom_Curve>& C)
 {
-  Standard_Real    First = C->FirstParameter(), Last = C->LastParameter();
-  Standard_Integer NbPoints = 101;
+  double    First = C->FirstParameter(), Last = C->LastParameter();
+  int NbPoints = 101;
 
-  TColgp_Array1OfPnt Points(1, NbPoints);
-  Standard_Real      delta = (Last - First) / (NbPoints - 1);
-  for (Standard_Integer i = 1; i <= NbPoints - 1; i++)
+  NCollection_Array1<gp_Pnt> Points(1, NbPoints);
+  double      delta = (Last - First) / (NbPoints - 1);
+  for (int i = 1; i <= NbPoints - 1; i++)
     Points(i) = C->Value(First + (i - 1) * delta);
   Points(NbPoints) = C->Value(Last);
 
   GeomAPI_PointsToBSpline   Approx(Points, Approx_ChordLength, 3, 8, GeomAbs_C2, 1.000001e-3);
-  Handle(Geom_BSplineCurve) BS = Approx.Curve();
+  occ::handle<Geom_BSplineCurve> BS = Approx.Curve();
   return BS;
 }
 
 //=================================================================================================
 
-Standard_Boolean ChFi3d_IsSmooth(const Handle(Geom_Curve)& C)
+bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
 {
   GeomAdaptor_Curve GAC(C);
 
-  Standard_Integer     ii;
-  Standard_Integer     intrv, nbintv = GAC.NbIntervals(GeomAbs_CN);
-  TColStd_Array1OfReal TI(1, nbintv + 1);
+  int     ii;
+  int     intrv, nbintv = GAC.NbIntervals(GeomAbs_CN);
+  NCollection_Array1<double> TI(1, nbintv + 1);
   GAC.Intervals(TI, GeomAbs_CN);
-  Standard_Real     Resolution = gp::Resolution(), Curvature;
+  double     Resolution = gp::Resolution(), Curvature;
   GeomLProp_CLProps LProp(C, 2, Resolution);
   gp_Pnt            P1, P2;
-  Standard_Integer  Discretisation = 30;
+  int  Discretisation = 30;
 
   gp_Vec           PrevVec;
-  Standard_Boolean prevVecFound = Standard_False;
-  Standard_Integer intrvFound   = 0;
+  bool prevVecFound = false;
+  int intrvFound   = 0;
   for (intrv = 1; intrv <= nbintv; intrv++)
   {
-    Standard_Real t    = TI(intrv);
-    Standard_Real step = (TI(intrv + 1) - t) / Discretisation;
+    double t    = TI(intrv);
+    double step = (TI(intrv + 1) - t) / Discretisation;
     for (ii = 1; ii <= Discretisation; ii++)
     {
       LProp.SetParameter(t);
       if (!LProp.IsTangentDefined())
-        return Standard_False;
+        return false;
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
         C->D0(t, P1);
         LProp.CentreOfCurvature(P2);
         PrevVec      = gp_Vec(P1, P2);
-        prevVecFound = Standard_True;
+        prevVecFound = true;
         break;
       }
       t += step;
@@ -5533,37 +5535,37 @@ Standard_Boolean ChFi3d_IsSmooth(const Handle(Geom_Curve)& C)
   }
 
   if (!prevVecFound)
-    return Standard_True;
+    return true;
 
   // for (intrv = 1; intrv <= nbintv; intrv++) {
   for (intrv = intrvFound; intrv <= nbintv; intrv++)
   {
-    Standard_Real t    = TI(intrv);
-    Standard_Real step = (TI(intrv + 1) - t) / Discretisation;
+    double t    = TI(intrv);
+    double step = (TI(intrv + 1) - t) / Discretisation;
     for (ii = 1; ii <= Discretisation; ii++)
     {
       LProp.SetParameter(t);
       if (!LProp.IsTangentDefined())
-        return Standard_False;
+        return false;
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
         C->D0(t, P1);
         LProp.CentreOfCurvature(P2);
         gp_Vec        Vec(P1, P2);
-        Standard_Real Angle = PrevVec.Angle(Vec);
+        double Angle = PrevVec.Angle(Vec);
         if (Angle > M_PI / 3.)
-          return Standard_False;
-        Standard_Real Ratio = Vec.Magnitude() / PrevVec.Magnitude();
+          return false;
+        double Ratio = Vec.Magnitude() / PrevVec.Magnitude();
         if (Ratio < 1.)
           Ratio = 1. / Ratio;
         if (Ratio > 2. && (intrv != nbintv || ii != Discretisation))
-          return Standard_False;
+          return false;
         PrevVec = Vec;
       }
       t += step;
     }
   }
 
-  return Standard_True;
+  return true;
 }
