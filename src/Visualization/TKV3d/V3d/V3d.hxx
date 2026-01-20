@@ -136,7 +136,7 @@ public:
   //! comparison).
   //! @param theTypeString string identifier
   //! @return orientation type or V3d_TypeOfOrientation if string identifier is invalid
-  static V3d_TypeOfOrientation TypeOfOrientationFromString(const char* theTypeString)
+  static V3d_TypeOfOrientation TypeOfOrientationFromString(const char* const theTypeString)
   {
     V3d_TypeOfOrientation aType = V3d_Xpos;
     TypeOfOrientationFromString(theTypeString, aType);

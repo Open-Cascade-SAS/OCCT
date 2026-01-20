@@ -31,7 +31,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Assert.hxx>
 
-const char* const MAGICNUMBER = "BINFILE";
+static const char* const MAGICNUMBER = "BINFILE";
 
 IMPLEMENT_STANDARD_RTTIEXT(FSD_BinaryFile, Storage_BaseDriver)
 

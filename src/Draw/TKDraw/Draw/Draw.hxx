@@ -70,7 +70,7 @@ public: //! @name Tcl variables management tools
   }
 
   //! Returns a variable value.
-  static occ::handle<Draw_Drawable3D> GetExisting(const char* const& theName)
+  static occ::handle<Draw_Drawable3D> GetExisting(const char* const theName)
   {
     const char* aName = theName;
     return getDrawable(aName, false);

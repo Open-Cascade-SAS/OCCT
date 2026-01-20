@@ -3667,7 +3667,7 @@ static void dumpShapeVertices(const TopoDS_Shape& shape, std::vector<double>& co
   }
 }
 
-static void GetCoords(const char* const& path_to_file, std::vector<double>& coords)
+static void GetCoords(const char* const path_to_file, std::vector<double>& coords)
 {
   TopoDS_Shape shape;
   BRep_Builder builder;

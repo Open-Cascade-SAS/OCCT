@@ -24,9 +24,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-const char* const MAGICNUMBER                 = "FSDFILE";
-const char* const ENDOFNORMALEXTENDEDSECTION  = "BEGIN_REF_SECTION";
-static const int  SIZEOFNORMALEXTENDEDSECTION = 16;
+namespace
+{
+static const char* const MAGICNUMBER                 = "FSDFILE";
+static const char* const ENDOFNORMALEXTENDEDSECTION  = "BEGIN_REF_SECTION";
+static const int         SIZEOFNORMALEXTENDEDSECTION = 16;
+} // namespace
 
 #define USEOSDREAL 1
 

@@ -18,7 +18,7 @@
 #include <Storage_StreamTypeMismatchError.hxx>
 #include <Storage_StreamWriteError.hxx>
 
-const char* const MAGICNUMBER = "CMPFILE";
+static const char* const MAGICNUMBER = "CMPFILE";
 
 IMPLEMENT_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
 

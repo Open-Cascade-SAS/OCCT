@@ -21,7 +21,7 @@
 class Standard_CStringHasher
 {
 public:
-  size_t operator()(const char* const& theString) const noexcept
+  size_t operator()(const char* theString) const noexcept
   {
     const int aLen = static_cast<int>(strlen(theString));
     if (aLen < 4)
@@ -31,7 +31,7 @@ public:
     return opencascade::hashBytes(theString, aLen);
   }
 
-  bool operator()(const char* const& theString1, const char* const& theString2) const noexcept
+  bool operator()(const char* theString1, const char* theString2) const noexcept
   {
     return strcmp(theString1, theString2) == 0;
   }
